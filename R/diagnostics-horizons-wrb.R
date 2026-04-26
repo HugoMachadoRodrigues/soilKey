@@ -234,3 +234,153 @@ mollic <- function(pedon,
                  } else NA_character_
   )
 }
+
+
+#' Calcic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the calcic horizon criteria. The
+#' calcic horizon is a horizon of secondary carbonate accumulation,
+#' diagnostic for Calcisols and qualifying many other RSGs.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 15).
+#' @param min_caco3_pct Minimum CaCO3 percent in fine earth (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' Sub-tests called:
+#' \itemize{
+#'   \item \code{\link{test_caco3_concentration}} -- CaCO3 >= 15\%.
+#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#' }
+#'
+#' v0.2 limitations: the WRB criterion of "5\% absolute or relative more
+#' CaCO3 than the underlying horizon" is not enforced; this captures
+#' true calcic horizons but may also mark uniformly carbonate-rich
+#' substrates that are not pedologically calcic. Cementation
+#' (petrocalcic) is not yet detected. Both refinements are scheduled
+#' for v0.3.
+#'
+#' @references IUSS Working Group WRB (2022). \emph{World Reference Base
+#' for Soil Resources}, 4th edition. International Union of Soil Sciences,
+#' Vienna. Chapter 3 -- Calcic horizon.
+#'
+#' @export
+calcic <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$caco3     <- test_caco3_concentration(h, min_pct = min_caco3_pct)
+  tests$thickness <- test_minimum_thickness(h,
+                                              min_cm           = min_thickness,
+                                              candidate_layers = tests$caco3$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "calcic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Calcic horizon"
+  )
+}
+
+
+#' Gypsic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the gypsic horizon criteria. The
+#' gypsic horizon is a horizon of secondary gypsum accumulation,
+#' diagnostic for Gypsisols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 15).
+#' @param min_gypsum_pct Minimum gypsum percent in fine earth (default 5).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' Sub-tests called:
+#' \itemize{
+#'   \item \code{\link{test_caso4_concentration}} -- gypsum >= 5\%.
+#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#' }
+#'
+#' v0.2 limitations: the WRB rule that gypsum content must exceed the
+#' underlying horizon by 1\% (absolute) is not enforced. Petrogypsic
+#' (cemented) horizons are not yet detected. Both deferred to v0.3.
+#'
+#' @references IUSS Working Group WRB (2022). \emph{World Reference Base
+#' for Soil Resources}, 4th edition. International Union of Soil Sciences,
+#' Vienna. Chapter 3 -- Gypsic horizon.
+#'
+#' @export
+gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$gypsum    <- test_caso4_concentration(h, min_pct = min_gypsum_pct)
+  tests$thickness <- test_minimum_thickness(h,
+                                              min_cm           = min_thickness,
+                                              candidate_layers = tests$gypsum$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "gypsic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Gypsic horizon"
+  )
+}
+
+
+#' Salic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the salic horizon criteria. The
+#' salic horizon is a horizon of soluble-salt accumulation, diagnostic
+#' for Solonchaks.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 15).
+#' @param min_ec_dS_m Minimum electrical conductivity (dS/m) at 25C
+#'        (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' Sub-tests called:
+#' \itemize{
+#'   \item \code{\link{test_ec_concentration}} -- EC >= 15 dS/m.
+#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#' }
+#'
+#' v0.2 limitations: the alternate WRB criterion (EC >= 8 dS/m if pH of
+#' the saturated paste >= 8.5) is not implemented. Defer to v0.3.
+#'
+#' @references IUSS Working Group WRB (2022). \emph{World Reference Base
+#' for Soil Resources}, 4th edition. International Union of Soil Sciences,
+#' Vienna. Chapter 3 -- Salic horizon.
+#'
+#' @export
+salic <- function(pedon, min_thickness = 15, min_ec_dS_m = 15) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$ec        <- test_ec_concentration(h, min_dS_m = min_ec_dS_m)
+  tests$thickness <- test_minimum_thickness(h,
+                                              min_cm           = min_thickness,
+                                              candidate_layers = tests$ec$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "salic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Salic horizon"
+  )
+}

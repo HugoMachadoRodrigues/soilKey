@@ -580,6 +580,101 @@ test_mollic_structure <- function(h, candidate_layers = NULL) {
 }
 
 
+# ============================================================== v0.2 sub-tests ====
+
+#' Test for CaCO3 concentration above threshold (per layer)
+#'
+#' Default 15\% (calcic horizon, WRB 2022 Chapter 3). Used by
+#' \code{\link{calcic}}.
+#'
+#' @export
+test_caco3_concentration <- function(h, min_pct = 15,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$caco3_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "caco3_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, caco3_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for CaSO4 (gypsum) concentration above threshold (per layer)
+#'
+#' Default 5\% (gypsic horizon, WRB 2022 Chapter 3). Used by
+#' \code{\link{gypsic}}.
+#'
+#' @export
+test_caso4_concentration <- function(h, min_pct = 5,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$caso4_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "caso4_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, caso4_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for electrical conductivity above threshold (per layer)
+#'
+#' Default 15 dS/m (salic horizon, WRB 2022 Chapter 3). Used by
+#' \code{\link{salic}}.
+#'
+#' @export
+test_ec_concentration <- function(h, min_dS_m = 15,
+                                    candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$ec_dS_m[i]
+    if (is.na(val)) {
+      missing <- c(missing, "ec_dS_m")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, ec_dS_m = val,
+      threshold = min_dS_m, passed = val >= min_dS_m
+    )
+    if (val >= min_dS_m) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
 # ============================================================== aggregation ====
 
 #' Aggregate sub-test results into a passed/missing summary

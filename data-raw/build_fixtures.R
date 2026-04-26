@@ -26,7 +26,10 @@ dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 fixtures <- list(
   ferralsol_canonical = make_ferralsol_canonical(),
   luvisol_canonical   = make_luvisol_canonical(),
-  chernozem_canonical = make_chernozem_canonical()
+  chernozem_canonical = make_chernozem_canonical(),
+  calcisol_canonical  = make_calcisol_canonical(),
+  gypsisol_canonical  = make_gypsisol_canonical(),
+  solonchak_canonical = make_solonchak_canonical()
 )
 
 for (nm in names(fixtures)) {

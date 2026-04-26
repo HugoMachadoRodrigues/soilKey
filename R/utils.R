@@ -75,7 +75,12 @@ horizon_column_spec <- function() {
     # ---- physical ----
     bulk_density_g_cm3      = "numeric",
     water_content_33kpa     = "numeric",
-    water_content_1500kpa   = "numeric"
+    water_content_1500kpa   = "numeric",
+    # ---- v0.2 additions: salinity, redoximorphism, vertic ----
+    ec_dS_m                       = "numeric",   # electrical conductivity (saturated paste, 25C)
+    plinthite_pct                 = "numeric",   # volume % of plinthite (Fe-rich nodules / mottles)
+    redoximorphic_features_pct    = "numeric",   # volume % of Fe/Mn redox features
+    slickensides                  = "character"  # absent / few / common / many / continuous
   )
 }
 

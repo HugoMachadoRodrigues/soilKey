@@ -9,6 +9,9 @@ export(ClassificationResult)
 export(argic)
 export(ferralic)
 export(mollic)
+export(calcic)
+export(gypsic)
+export(salic)
 
 # ---- WRB 2022 sub-tests (exported for auditability) ----
 export(test_clay_increase_argic)
@@ -23,6 +26,9 @@ export(test_mollic_organic_carbon)
 export(test_mollic_base_saturation)
 export(test_mollic_thickness)
 export(test_mollic_structure)
+export(test_caco3_concentration)
+export(test_caso4_concentration)
+export(test_ec_concentration)
 
 # ---- key + classification ----
 export(classify_wrb2022)
@@ -34,6 +40,9 @@ export(evaluate_rsg_tests)
 export(make_ferralsol_canonical)
 export(make_luvisol_canonical)
 export(make_chernozem_canonical)
+export(make_calcisol_canonical)
+export(make_gypsisol_canonical)
+export(make_solonchak_canonical)
 export(make_empty_horizons)
 
 # ---- utilities ----

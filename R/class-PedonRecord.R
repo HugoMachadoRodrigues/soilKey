@@ -203,6 +203,25 @@ PedonRecord <- R6::R6Class("PedonRecord",
             paste(bad, collapse = ", ")
           ))
         }
+
+        # 10. EC, plinthite_pct, redoximorphic_features_pct (v0.2 additions)
+        bad <- which(!is.na(h$ec_dS_m) & h$ec_dS_m < 0)
+        if (length(bad) > 0) {
+          errors <- c(errors, sprintf(
+            "Implausible ec_dS_m (< 0) at horizons %s",
+            paste(bad, collapse = ", ")
+          ))
+        }
+        for (vol_col in c("plinthite_pct", "redoximorphic_features_pct")) {
+          vals <- h[[vol_col]]
+          bad <- which(!is.na(vals) & (vals < 0 | vals > 100))
+          if (length(bad) > 0) {
+            errors <- c(errors, sprintf(
+              "Implausible %s (outside [0,100]) at horizons %s",
+              vol_col, paste(bad, collapse = ", ")
+            ))
+          }
+        }
       }
 
       # 10. Site coordinates
