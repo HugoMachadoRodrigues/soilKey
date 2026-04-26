@@ -61,9 +61,22 @@ export(test_chernic_color)
 
 # ---- key + classification ----
 export(classify_wrb2022)
+export(classify_usda)
+export(classify_sibcs)
 export(load_rules)
 export(run_wrb_key)
+export(run_usda_key)
+export(run_sibcs_key)
+export(run_taxonomic_key)
 export(evaluate_rsg_tests)
+
+# ---- USDA Soil Taxonomy diagnostics (v0.2 scaffold) ----
+export(oxic_usda)
+export(argillic_usda)
+
+# ---- SiBCS 5a edicao diagnosticos (v0.2 scaffold) ----
+export(B_latossolico)
+export(B_textural)
 
 # ---- fixtures ----
 export(make_ferralsol_canonical)

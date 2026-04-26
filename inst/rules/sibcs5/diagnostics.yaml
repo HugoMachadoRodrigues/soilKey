@@ -1,0 +1,42 @@
+version: "SiBCS 5a edicao (Embrapa, 2018)"
+implementation_status: "soilKey v0.2 scaffold"
+
+diagnostics:
+
+  B_latossolico:
+    function: B_latossolico
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-sibcs.R
+    delegates_to: ferralic
+    reference: "Embrapa (2018), SiBCS 5a ed., B latossolico"
+    v02_notes: |
+      Delegacao para WRB ferralic(). SiBCS B latossolico exige ainda
+      Ki <= 2.2, Kr <= 1.7, uniformidade textural e exclusao de
+      gradiente textural -- agendado para v0.7.
+
+  B_textural:
+    function: B_textural
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-sibcs.R
+    delegates_to: argic
+    reference: "Embrapa (2018), SiBCS 5a ed., B textural"
+    v02_notes: |
+      Delegacao para WRB argic(). Refinamentos SiBCS em v0.7.
+
+  # ----- planejados v0.7 -----
+  B_nitico:                          { status: planned, target_version: v0.7 }
+  B_espodico:                        { status: planned, target_version: v0.7 }
+  B_incipiente:                      { status: planned, target_version: v0.7 }
+  B_planico:                         { status: planned, target_version: v0.7 }
+  B_textural_alta_atividade:         { status: planned, target_version: v0.7 }
+  A_chernozemico:                    { status: planned, target_version: v0.7 }
+  A_humico:                          { status: planned, target_version: v0.7 }
+  A_proeminente:                     { status: planned, target_version: v0.7 }
+  caracter_vertico:                  { status: planned, target_version: v0.7 }
+  glei_dentro_top_50:                { status: planned, target_version: v0.7 }
+  horizonte_plintico:                { status: planned, target_version: v0.7 }
+  horizonte_hidromorfico_organico:   { status: planned, target_version: v0.7 }
+  horizonte_hortico:                 { status: planned, target_version: v0.7 }
+  caracter_alitico:                  { status: planned, target_version: v0.7 }
+  caracter_alumin:                   { status: planned, target_version: v0.7 }
+  caracter_acrico:                   { status: planned, target_version: v0.7 }

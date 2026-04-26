@@ -33,28 +33,7 @@
 #' @export
 run_wrb_key <- function(pedon, rules = NULL) {
   rules <- rules %||% load_rules("wrb2022")
-  trace <- list()
-
-  for (rsg in rules$rsgs) {
-    result <- evaluate_rsg_tests(pedon, rsg$tests)
-    trace[[rsg$code]] <- list(
-      code     = rsg$code,
-      name     = rsg$name,
-      passed   = result$passed,
-      evidence = result$evidence,
-      missing  = result$missing %||% character(0),
-      notes    = result$notes
-    )
-    if (isTRUE(result$passed)) {
-      return(list(assigned = rsg, trace = trace))
-    }
-  }
-
-  # Fall through to the last entry (default catch-all).
-  list(
-    assigned = rules$rsgs[[length(rules$rsgs)]],
-    trace    = trace
-  )
+  run_taxonomic_key(pedon, rules, level_key = "rsgs")
 }
 
 

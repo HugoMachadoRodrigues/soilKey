@@ -24,13 +24,16 @@
 
 #' Load a soilKey rule set (YAML)
 #'
-#' @param system Either \code{"wrb2022"} or \code{"sibcs5"}. Only
-#'        \code{"wrb2022"} ships in v0.1.
+#' @param system One of \code{"wrb2022"} (full WRB 2022 key, v0.2 wires
+#'        16/32 RSGs), \code{"usda"} (USDA Soil Taxonomy, v0.2 scaffold
+#'        with one delegating diagnostic), or \code{"sibcs5"} (SiBCS
+#'        5th edition, v0.2 scaffold with one delegating diagnostic).
 #' @param package Package owning the rule files (default \code{"soilKey"}).
 #' @return A parsed YAML list with elements \code{version},
-#'         \code{source}, \code{rsgs}, etc.
+#'         \code{source}, and a system-specific taxa list
+#'         (\code{rsgs}, \code{orders}, or \code{ordens}).
 #' @export
-load_rules <- function(system = c("wrb2022", "sibcs5"),
+load_rules <- function(system = c("wrb2022", "usda", "sibcs5"),
                          package = "soilKey") {
   system <- match.arg(system)
   path <- system.file("rules", system, "key.yaml", package = package)
@@ -41,6 +44,52 @@ load_rules <- function(system = c("wrb2022", "sibcs5"),
     ))
   }
   yaml::read_yaml(path)
+}
+
+
+#' Run a taxonomic key (system-agnostic engine)
+#'
+#' Iterates over the taxa list at \code{rules[[level_key]]} in
+#' canonical order; the first taxon whose tests pass is assigned.
+#' \code{evaluate_rsg_tests} is reused as the per-taxon evaluator
+#' regardless of system -- the test combinator semantics
+#' (\code{all_of} / \code{any_of} / \code{default} /
+#' \code{not_implemented_v01}) are the same in all three systems.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param rules A parsed rule set (output of \code{\link{load_rules}}).
+#' @param level_key Name of the taxa list inside \code{rules}: typically
+#'        \code{"rsgs"} (WRB), \code{"orders"} (USDA), or
+#'        \code{"ordens"} (SiBCS).
+#' @return A list with \code{assigned} (the YAML entry of the assigned
+#'         taxon) and \code{trace} (one entry per taxon tested).
+#' @export
+run_taxonomic_key <- function(pedon, rules, level_key) {
+  taxa <- rules[[level_key]]
+  if (is.null(taxa) || length(taxa) == 0L) {
+    rlang::abort(sprintf("Rule set has no '%s' list", level_key))
+  }
+
+  trace <- list()
+  for (taxon in taxa) {
+    result <- evaluate_rsg_tests(pedon, taxon$tests)
+    trace[[taxon$code]] <- list(
+      code     = taxon$code,
+      name     = taxon$name,
+      passed   = result$passed,
+      evidence = result$evidence,
+      missing  = result$missing %||% character(0),
+      notes    = result$notes
+    )
+    if (isTRUE(result$passed)) {
+      return(list(assigned = taxon, trace = trace))
+    }
+  }
+
+  list(
+    assigned = taxa[[length(taxa)]],
+    trace    = trace
+  )
 }
 
 

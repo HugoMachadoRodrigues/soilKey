@@ -1,0 +1,82 @@
+version: "SiBCS 5a edicao (Embrapa, 2018)"
+implementation_status: "soilKey v0.2 (Modulo 6 scaffold)"
+source: |
+  Empresa Brasileira de Pesquisa Agropecuaria (Embrapa), Centro Nacional
+  de Pesquisa de Solos. Sistema Brasileiro de Classificacao de Solos.
+  5a edicao revista e ampliada. Embrapa Solos, Brasilia, 2018.
+
+# 13 ordens em ordem aproximada de chave (provisoria em v0.2; a
+# ordem canonica do SiBCS 5a ed. sera revisada em v0.7 com
+# validacao Embrapa Solos). v0.2 liga apenas Latossolos
+# (via B_latossolico) e Argissolos (via B_textural); restantes
+# stubadas. Default = Neossolos (catch-all).
+
+ordens:
+
+  - code: O
+    name: Organossolos
+    tests:
+      not_implemented_v01: horizonte_hidromorfico_organico
+
+  - code: V
+    name: Vertissolos
+    tests:
+      not_implemented_v01: caracter_vertico
+
+  - code: E
+    name: Espodossolos
+    tests:
+      not_implemented_v01: B_espodico
+
+  - code: F
+    name: Plintossolos
+    tests:
+      not_implemented_v01: horizonte_plintico
+
+  - code: G
+    name: Gleissolos
+    tests:
+      not_implemented_v01: glei_dentro_top_50
+
+  - code: M
+    name: Chernossolos
+    tests:
+      not_implemented_v01: A_chernozemico
+
+  - code: P
+    name: Argissolos
+    tests:
+      all_of:
+        - B_textural: {}
+
+  - code: T
+    name: Luvissolos
+    tests:
+      not_implemented_v01: B_textural_alta_atividade
+
+  - code: L
+    name: Latossolos
+    tests:
+      all_of:
+        - B_latossolico: {}
+
+  - code: N
+    name: Nitossolos
+    tests:
+      not_implemented_v01: B_nitico
+
+  - code: C
+    name: Cambissolos
+    tests:
+      not_implemented_v01: B_incipiente
+
+  - code: S
+    name: Planossolos
+    tests:
+      not_implemented_v01: B_planico
+
+  - code: R
+    name: Neossolos
+    tests:
+      default: true
+    notes: "Catch-all -- solos sem desenvolvimento pedogenetico marcado."

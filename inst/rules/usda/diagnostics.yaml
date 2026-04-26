@@ -1,0 +1,51 @@
+version: "USDA Soil Taxonomy (12th edition)"
+implementation_status: "soilKey v0.2 scaffold"
+
+diagnostics:
+
+  oxic_usda:
+    function: oxic_usda
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-usda.R
+    delegates_to: ferralic
+    reference: "Soil Survey Staff (2014), Ch. 3, oxic horizon"
+    v02_notes: |
+      Delegates to WRB ferralic(). The two diagnostics agree on the
+      central tendency (low-activity clay, low CEC/clay, low
+      weatherable-mineral content). Differences in edge-case
+      criteria (water-dispersible-clay test, specific cement
+      thresholds) are scheduled for v0.8.
+
+  argillic_usda:
+    function: argillic_usda
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-usda.R
+    delegates_to: argic
+    reference: "Soil Survey Staff (2014), Ch. 3, argillic horizon"
+    v02_notes: |
+      Delegates to WRB argic(). Real USDA argillic also requires
+      illuviation evidence (clay films / clay bridges on >= 1% of
+      surfaces); v0.8 will enforce this against clay_films column.
+
+  # ----- planned v0.8 -----
+  mollic_usda:                  { status: planned, target_version: v0.8 }
+  umbric_usda:                  { status: planned, target_version: v0.8 }
+  ochric:                       { status: planned, target_version: v0.8 }
+  kandic:                       { status: planned, target_version: v0.8 }
+  spodic_usda:                  { status: planned, target_version: v0.8 }
+  cambic_usda:                  { status: planned, target_version: v0.8 }
+  calcic_usda:                  { status: planned, target_version: v0.8 }
+  gypsic_usda:                  { status: planned, target_version: v0.8 }
+  duripan:                      { status: planned, target_version: v0.8 }
+  fragipan:                     { status: planned, target_version: v0.8 }
+  placic:                       { status: planned, target_version: v0.8 }
+  albic:                        { status: planned, target_version: v0.8 }
+  petrocalcic:                  { status: planned, target_version: v0.8 }
+  petrogypsic:                  { status: planned, target_version: v0.8 }
+  gelic_conditions:             { status: planned, target_version: v0.8 }
+  organic_materials_usda:       { status: planned, target_version: v0.8 }
+  andic_properties_usda:        { status: planned, target_version: v0.8 }
+  vertic_features_usda:         { status: planned, target_version: v0.8 }
+  aridic_moisture_regime:       { status: planned, target_version: v0.8 }
+  argillic_low_bs:              { status: planned, target_version: v0.8 }
+  argillic_high_bs:             { status: planned, target_version: v0.8 }

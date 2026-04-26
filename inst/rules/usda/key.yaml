@@ -1,0 +1,74 @@
+version: "USDA Soil Taxonomy (12th edition, 2014, with later supplements)"
+implementation_status: "soilKey v0.2 (Module 5 scaffold)"
+source: |
+  Soil Survey Staff (2014). Keys to Soil Taxonomy. 12th edition. USDA
+  Natural Resources Conservation Service, Washington, DC.
+
+# 12 Orders in canonical key order. v0.2 wires only Oxisols
+# (oxic_usda(), delegating to WRB ferralic). All other Orders are
+# stubbed; the engine returns NA for them and continues. Default
+# catch-all is Entisols.
+
+orders:
+
+  - code: GE
+    name: Gelisols
+    tests:
+      not_implemented_v01: gelic_conditions
+
+  - code: HI
+    name: Histosols
+    tests:
+      not_implemented_v01: organic_materials_usda
+
+  - code: SP
+    name: Spodosols
+    tests:
+      not_implemented_v01: spodic_usda
+
+  - code: AD
+    name: Andisols
+    tests:
+      not_implemented_v01: andic_properties_usda
+
+  - code: OX
+    name: Oxisols
+    tests:
+      all_of:
+        - oxic_usda: {}
+
+  - code: VE
+    name: Vertisols
+    tests:
+      not_implemented_v01: vertic_features_usda
+
+  - code: AS
+    name: Aridisols
+    tests:
+      not_implemented_v01: aridic_moisture_regime
+
+  - code: UT
+    name: Ultisols
+    tests:
+      not_implemented_v01: argillic_low_bs
+
+  - code: MO
+    name: Mollisols
+    tests:
+      not_implemented_v01: mollic_usda
+
+  - code: AF
+    name: Alfisols
+    tests:
+      not_implemented_v01: argillic_high_bs
+
+  - code: IN
+    name: Inceptisols
+    tests:
+      not_implemented_v01: cambic_usda
+
+  - code: EN
+    name: Entisols
+    tests:
+      default: true
+    notes: "Catch-all for soils that do not match any prior Order."

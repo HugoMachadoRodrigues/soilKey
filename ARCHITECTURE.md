@@ -826,19 +826,42 @@ Esse benchmark é o núcleo empírico do paper (candidatos: *SoftwareX*, *Geoder
 
 ## 12. Roadmap de implementação
 
-| Versão | Escopo | Estimativa |
+| Versão | Escopo | Status |
 |---|---|---|
-| v0.1 | Esqueleto do pacote, `PedonRecord`, `DiagnosticResult`, 3 diagnósticos WRB (argic, ferralic, mollic), 1 RSG completo (Ferralsols), testes, vignette 01. | 2–3 semanas |
-| v0.2 | Todos os diagnósticos de horizonte WRB (argic, calcic, cambic, chernic, duric, ferralic, fragic, gypsic, hortic, hydragric, irragric, mollic, natric, nitic, petrocalcic, petroduric, petrogypsic, petroplinthic, pisoplinthic, plaggic, plinthic, pretic, protic, retic, salic, sombric, spodic, terric, thionic, umbric, voronic), 10 RSGs mais comuns. | 1–2 meses |
-| v0.3 | Chave WRB completa (32 RSGs), qualifiers principais. | 1 mês |
+| v0.1 | Esqueleto, classes core, 3 diagnósticos WRB (argic, ferralic, mollic), Ferralsols end-to-end. | **shipped (commit `613c3f2`)** |
+| v0.2 | +8 diagnósticos WRB (calcic, gypsic, salic, cambic, plinthic, spodic, gleyic_properties, vertic_properties); +7 diagnósticos RSG-derivados (acrisol, lixisol, alisol, luvisol, chernozem, kastanozem, phaeozem); 16/32 RSGs ligados na chave; scaffolds Módulo 5 (USDA) e Módulo 6 (SiBCS). | **shipped (5 commits, `8077adb`...`8a7d6d9`)** |
+| v0.3 | Restantes 16 RSGs (HS, AT, TC, CR, LP, SN, AN, NT, PL, ST, UM, DU, RT, AR, FL); WRB qualifier resolution; Petros— variantes. | 1–2 meses |
 | v0.4 | Módulo 4 — integração OSSL, MBL, PLSR local. | 3 semanas |
 | v0.5 | Módulo 3 — SoilGrids prior + Embrapa raster. | 2 semanas |
 | v0.6 | Módulo 2 — VLM extraction via ellmer. | 1 mês |
-| v0.7 | SiBCS paralelo completo. | 1–2 meses |
-| v0.8 | Qualifiers suplementares WRB (total 202), vignettes 05–09, benchmark WoSIS. | 1 mês |
+| v0.7 | **Módulo 6 — SiBCS paralelo completo** (13 ordens + diagnósticos próprios + parceria Embrapa Solos). | 1–2 meses |
+| v0.8 | **Módulo 5 — USDA Soil Taxonomy paralelo** (12 orders + suborders + great groups + diagnósticos USDA com criterios próprios). | 3–4 semanas |
+| v0.9 | Qualifiers suplementares WRB (total 202), vignettes 05–09, benchmark WoSIS. | 1 mês |
 | v1.0 | CRAN submission, paper metodológico submetido. | + 1 mês revisão |
 
-Total estimado: **8–12 meses** para v1.0 com dedicação parcial.
+Total estimado: **9–14 meses** para v1.0 com dedicação parcial.
+
+### Módulo 5 — USDA Soil Taxonomy (v0.8)
+
+Adicionado ao escopo em 2026-04-25 a pedido do usuário. v0.2 entrega o scaffold estrutural:
+- `inst/rules/usda/key.yaml` — 12 Orders em ordem canônica de chave (GE, HI, SP, AD, OX, VE, AS, UT, MO, AF, IN, EN). Apenas Oxisols ligado em v0.2 via `oxic_usda()` (delegação para WRB ferralic).
+- `R/key-usda.R` — `classify_usda()`, `run_usda_key()`.
+- `R/diagnostics-horizons-usda.R` — `oxic_usda()` e `argillic_usda()` como delegações para WRB ferralic / argic em v0.2 (criterios centrais coincidem; diferenças de borda agendadas para v0.8).
+
+v0.8 implementará: mollic_usda, umbric_usda, ochric, kandic, spodic_usda, cambic_usda, calcic_usda, gypsic_usda, duripan, fragipan, placic, albic, petrocalcic, petrogypsic, gelic conditions, organic materials USDA, andic properties USDA, vertic features USDA, aridic moisture regime, argillic_low_bs, argillic_high_bs.
+
+Posicionamento: USDA Soil Taxonomy não tem implementação pública mantida da chave; o pacote `SoilTaxonomy` no CRAN cobre tabelas de lookup. soilKey + Módulo 5 será a primeira implementação pública da chave USDA.
+
+### Módulo 6 — SiBCS 5ª edição (v0.7)
+
+v0.2 entrega o scaffold estrutural:
+- `inst/rules/sibcs5/key.yaml` — 13 ordens em ordem provisória de chave (O, V, E, F, G, M, P, T, L, N, C, S, R). Latossolos ligado via `B_latossolico()` (delegação para ferralic). Argissolos ligado via `B_textural()` (delegação para argic).
+- `R/key-sibcs.R` — `classify_sibcs()`, `run_sibcs_key()`.
+- `R/diagnostics-horizons-sibcs.R` — `B_latossolico()` e `B_textural()` como delegações em v0.2.
+
+v0.7 implementará: B nítico, B espódico, B incipiente, B plânico, B textural com alta atividade, A chernozêmico, A húmico, A proeminente, caráter vértico, glei dentro top 50, horizonte plíntico, horizonte hidromórfico orgânico, horizonte hortico, caráter alítico, caráter alumínico, caráter ácrico. Validação direta com Embrapa Solos (parceria via UFRRJ).
+
+Posicionamento: nenhum pacote R/Python público implementa o SiBCS hoje. soilKey + Módulo 6 será a primeira implementação pública.
 
 ---
 
