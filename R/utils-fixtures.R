@@ -489,7 +489,11 @@ make_plinthosol_canonical <- function() {
     bs_pct                     = c(28,   25,   27),
     al_sat_pct                 = c(20,   28,   25),
     plinthite_pct              = c(0,    25,   18),
-    redoximorphic_features_pct = c(0,    30,   25),
+    # Plinthite (hardening Fe nodules) is conceptually distinct from
+    # gleyic redoximorphic features (softer reduction mottles); the
+    # canonical fixture separates them so the WRB-key order
+    # (GL @ #9 before PT @ #12) does not misclassify the Plinthosol.
+    redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),
     bulk_density_g_cm3         = c(1.30, 1.45, 1.55)
   )

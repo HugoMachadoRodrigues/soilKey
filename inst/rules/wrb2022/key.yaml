@@ -1,5 +1,5 @@
 version: "WRB 2022 (4th edition)"
-implementation_status: "soilKey v0.1"
+implementation_status: "soilKey v0.2"
 source: |
   IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
   International soil classification system for naming soils and creating
@@ -7,19 +7,22 @@ source: |
   Vienna.
 
 # Each RSG is tested in canonical key order. The first whose tests pass
-# (any_of, all_of, or default) is assigned. Tests marked
-# `not_implemented_v01:` return NA; the engine continues to the next
-# RSG. The default catch-all is RG (Regosols).
+# is assigned. Tests marked `not_implemented_v01:` return NA; the
+# engine continues. Default catch-all is RG (Regosols).
 #
-# v0.1 ships with Ferralsols fully wired; the other 30 mineral RSGs are
-# stubbed and scheduled for v0.2 (10 most common) and v0.3 (full key).
+# v0.2 wires 15 of the 32 RSGs end-to-end:
+#   FR, VR, SC, GL, PZ, PT, CH, KS, PH, GY, CL, AC, LX, AL, LV, CM, RG
+# (16 explicit + RG default = 17 of 32). The remaining 15 require
+# additional horizons (histic, hortic, anthric, cryic, technic,
+# leptic, natric, nitic, andic, planic, stagnic, umbric, duric,
+# retic, fluvic, arenic) and are scheduled for v0.3.
 
 rsgs:
 
   - code: HS
     name: Histosols
     tests:
-      not_implemented_v01: organic_material
+      not_implemented_v01: histic_horizon
 
   - code: AT
     name: Anthrosols
@@ -49,17 +52,20 @@ rsgs:
   - code: VR
     name: Vertisols
     tests:
-      not_implemented_v01: vertic_features
+      all_of:
+        - vertic_properties: {}
 
   - code: SC
     name: Solonchaks
     tests:
-      not_implemented_v01: salic_horizon
+      all_of:
+        - salic: {}
 
   - code: GL
     name: Gleysols
     tests:
-      not_implemented_v01: gleyic_properties
+      all_of:
+        - gleyic_properties: {}
 
   - code: AN
     name: Andosols
@@ -69,12 +75,14 @@ rsgs:
   - code: PZ
     name: Podzols
     tests:
-      not_implemented_v01: spodic_horizon
+      all_of:
+        - spodic: {}
 
   - code: PT
     name: Plinthosols
     tests:
-      not_implemented_v01: plinthic_horizon
+      all_of:
+        - plinthic: {}
 
   - code: NT
     name: Nitisols
@@ -87,10 +95,10 @@ rsgs:
       all_of:
         - ferralic: {}
     notes: |
-      v0.1: tests the ferralic horizon directly. WRB 2022 Ferralsol also
-      requires that the ferralic horizon begins within 150 cm of the
-      surface and that no nitic or argic horizon is present above. These
-      additional gates are scheduled for v0.3 (full key resolution).
+      v0.1: tests the ferralic horizon directly. WRB 2022 Ferralsol
+      also requires the ferralic horizon to begin within 150 cm and no
+      argic / nitic horizon above; these depth gates are scheduled for
+      v0.3 (full key resolution).
 
   - code: PL
     name: Planosols
@@ -105,17 +113,20 @@ rsgs:
   - code: CH
     name: Chernozems
     tests:
-      not_implemented_v01: chernic_horizon
+      all_of:
+        - chernozem: {}
 
   - code: KS
     name: Kastanozems
     tests:
-      not_implemented_v01: kastanozem_diagnostics
+      all_of:
+        - kastanozem: {}
 
   - code: PH
     name: Phaeozems
     tests:
-      not_implemented_v01: phaeozem_diagnostics
+      all_of:
+        - phaeozem: {}
 
   - code: UM
     name: Umbrisols
@@ -130,12 +141,14 @@ rsgs:
   - code: GY
     name: Gypsisols
     tests:
-      not_implemented_v01: gypsic_horizon
+      all_of:
+        - gypsic: {}
 
   - code: CL
     name: Calcisols
     tests:
-      not_implemented_v01: calcic_horizon
+      all_of:
+        - calcic: {}
 
   - code: RT
     name: Retisols
@@ -145,27 +158,32 @@ rsgs:
   - code: AC
     name: Acrisols
     tests:
-      not_implemented_v01: argic_with_low_cec_low_bs
+      all_of:
+        - acrisol: {}
 
   - code: LX
     name: Lixisols
     tests:
-      not_implemented_v01: argic_with_low_cec_high_bs
+      all_of:
+        - lixisol: {}
 
   - code: AL
     name: Alisols
     tests:
-      not_implemented_v01: argic_with_high_cec_high_al
+      all_of:
+        - alisol: {}
 
   - code: LV
     name: Luvisols
     tests:
-      not_implemented_v01: argic_with_high_cec_low_al
+      all_of:
+        - luvisol: {}
 
   - code: CM
     name: Cambisols
     tests:
-      not_implemented_v01: cambic_horizon
+      all_of:
+        - cambic: {}
 
   - code: AR
     name: Arenosols

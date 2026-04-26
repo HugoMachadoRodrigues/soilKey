@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 `soilKey` provides automated soil profile classification under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key itself is implemented as deterministic R code driven by versioned YAML rules; vision-language extraction, spatial priors, and OSSL-based attribute prediction sit alongside it as modular layers, never inside it.
 
-This vignette walks through the v0.1 deliverable: building a `PedonRecord`, calling the three implemented WRB 2022 horizon diagnostics directly, running the WRB key end-to-end on the canonical Ferralsol fixture, and watching the evidence grade respond to provenance.
+This vignette walks through the v0.2 deliverable: building a `PedonRecord`, calling the eleven implemented WRB 2022 horizon and property diagnostics directly, classifying canonical fixtures end-to-end through the wired key, and watching the evidence grade respond to provenance.
 
 ```{r load}
 library(soilKey)
@@ -56,13 +56,29 @@ The validator catches inverted depths, texture sums far from 100, implausible pH
 
 # 2. Canonical fixtures
 
-`soilKey` ships three canonical fixtures designed so that exactly one of the three v0.1 diagnostics passes on each:
+`soilKey` ships sixteen canonical fixtures designed so that exactly one of the eleven v0.2 diagnostics passes on each. Each profile also classifies cleanly through the wired WRB key.
 
-```{r fixtures}
-ferralsol <- make_ferralsol_canonical()
-luvisol   <- make_luvisol_canonical()
-chernozem <- make_chernozem_canonical()
+```{r fixture-list}
+fixtures <- list(
+  Ferralsol  = make_ferralsol_canonical(),
+  Luvisol    = make_luvisol_canonical(),
+  Acrisol    = make_acrisol_canonical(),
+  Lixisol    = make_lixisol_canonical(),
+  Alisol     = make_alisol_canonical(),
+  Chernozem  = make_chernozem_canonical(),
+  Kastanozem = make_kastanozem_canonical(),
+  Phaeozem   = make_phaeozem_canonical(),
+  Calcisol   = make_calcisol_canonical(),
+  Gypsisol   = make_gypsisol_canonical(),
+  Solonchak  = make_solonchak_canonical(),
+  Cambisol   = make_cambisol_canonical(),
+  Plinthosol = make_plinthosol_canonical(),
+  Podzol     = make_podzol_canonical(),
+  Gleysol    = make_gleysol_canonical(),
+  Vertisol   = make_vertisol_canonical()
+)
 
+ferralsol <- fixtures$Ferralsol
 ferralsol
 ```
 
@@ -74,64 +90,60 @@ Every diagnostic returns a `DiagnosticResult` carrying the per-sub-test evidence
 ferralic(ferralsol)
 ```
 
-Notice `passed: PASSED`, the layers that satisfy (Bw1, Bw2), and the named sub-tests (`texture`, `cec_per_clay`, `ecec_per_clay`, `thickness`) -- each themselves with their own pass/fail and details. This level of evidence is what the rule engine and the final `ClassificationResult` build on.
+# 4. Diagnostic matrix across the canonical fixtures
 
-```{r argic}
-argic(ferralsol)
+```{r matrix, results='asis'}
+diagnostics <- c("argic", "ferralic", "mollic", "calcic", "gypsic", "salic",
+                  "cambic", "plinthic", "spodic",
+                  "gleyic_properties", "vertic_properties")
+
+mat <- vapply(fixtures, function(p) {
+  vapply(diagnostics, function(d) {
+    fn <- get(d, envir = asNamespace("soilKey"))
+    isTRUE(fn(p)$passed)
+  }, logical(1))
+}, logical(length(diagnostics)))
+
+knitr::kable(t(mat))
 ```
 
-`argic` correctly fails on the Ferralsol fixture: clay content rises gradually (50 -> 60\%) but no consecutive pair satisfies the WRB clay-increase rule.
+Every fixture activates exactly one diagnostic (or, for the argic-derived RSGs Acrisol / Lixisol / Alisol / Luvisol, just the shared `argic`).
 
-```{r mollic}
-mollic(ferralsol)
+# 5. RSG-derived diagnostics: argic and mollic families
+
+The argic horizon is shared by four RSGs -- Acrisols, Lixisols, Alisols, Luvisols -- which differ by clay activity (CEC per kg clay) and chemistry (BS or Al saturation). soilKey provides one diagnostic per RSG that runs `argic()` internally, then applies the activity and chemistry tests on the argic layer:
+
+```{r argic-derived}
+acrisol(make_acrisol_canonical())$passed
+lixisol(make_lixisol_canonical())$passed
+alisol (make_alisol_canonical())$passed
+luvisol(make_luvisol_canonical())$passed
 ```
 
-`mollic` also fails: the surface horizon has chroma 4 (above the cap of 3), base saturation 24\% (below 50\%), and is only 15 cm thick.
+Same pattern for the mollic-derived family (Chernozems / Kastanozems / Phaeozems):
 
-# 4. Cross-fixture diagnostic behaviour
-
-Each fixture is constructed so that exactly one diagnostic passes:
-
-```{r diagnostic-matrix}
-diag_matrix <- function(p) c(
-  argic    = isTRUE(argic(p)$passed),
-  ferralic = isTRUE(ferralic(p)$passed),
-  mollic   = isTRUE(mollic(p)$passed)
-)
-
-rbind(
-  Ferralsol = diag_matrix(ferralsol),
-  Luvisol   = diag_matrix(luvisol),
-  Chernozem = diag_matrix(chernozem)
-)
+```{r mollic-derived}
+chernozem (make_chernozem_canonical())$passed
+kastanozem(make_kastanozem_canonical())$passed
+phaeozem  (make_phaeozem_canonical())$passed
 ```
 
-This single matrix is the cleanest way to demonstrate that v0.1's three diagnostics are mutually discriminating on canonical profiles. The same shape generalises to v0.2's ten diagnostics and v0.3's full set.
+# 6. End-to-end WRB classification
 
-# 5. End-to-end WRB classification
+`classify_wrb2022()` consumes a `PedonRecord` and runs it through the YAML key (`inst/rules/wrb2022/key.yaml`). v0.2 wires 16 of 32 RSGs end-to-end; the other 16 are stubbed with `not_implemented_v01:` markers and return NA in the trace.
 
-`classify_wrb2022()` consumes a `PedonRecord` and returns a `ClassificationResult` with the full key trace, ambiguities, missing-data hints, and a provenance-aware evidence grade.
-
-```{r classify-ferralsol}
-result <- classify_wrb2022(ferralsol)
-result
+```{r classify-fr}
+classify_wrb2022(ferralsol)
 ```
 
-The trace shows every RSG that was tested, in canonical key order. RSGs whose diagnostics are stubbed in v0.1 (Histosols through Nitisols) report `NA` and the engine continues; Ferralsols passes and is assigned.
-
-# 6. v0.1 honesty: when the catch-all fires
-
-The Luvisol and Chernozem fixtures pass `argic` and `mollic` respectively, but the WRB RSGs that depend on those diagnostics (Acrisols, Lixisols, Alisols, Luvisols, Retisols for argic; Chernozems, Kastanozems, Phaeozems, Umbrisols for mollic) are not yet wired in v0.1. The classification therefore correctly reports the catch-all (`Regosols`) and surfaces the passing diagnostic in its name and warnings:
-
-```{r classify-luvisol}
-classify_wrb2022(luvisol)
+```{r classify-all}
+classifications <- vapply(fixtures, function(p) {
+  classify_wrb2022(p, on_missing = "silent")$rsg_or_order
+}, character(1))
+data.frame(fixture = names(classifications), assigned_rsg = classifications)
 ```
 
-```{r classify-chernozem}
-classify_wrb2022(chernozem)
-```
-
-This behaviour is intentional. Rather than silently misclassifying a Luvisol as a Regosol, v0.1 makes the gap visible: the diagnostic *is* identifiable, the v0.2 release will wire it to the appropriate RSG.
+Each canonical fixture maps to its intended RSG. The trace shows which RSGs were tested, in canonical key order, before the assigned one.
 
 # 7. Provenance and evidence grade
 
@@ -170,18 +182,19 @@ class(spc)
 aqp::profile_id(spc)
 ```
 
-# 9. v0.1 scope and the v0.2+ roadmap
+# 9. v0.2 scope and the v0.3+ roadmap
 
-| Version | Scope                                                                                            |
-|---------|--------------------------------------------------------------------------------------------------|
-| v0.1    | Core classes; argic, ferralic, mollic; Ferralsols path; canonical fixtures; rule engine          |
-| v0.2    | Ten most common WRB horizons (calcic, cambic, gypsic, gleyic, plinthic, salic, spodic, vertic, ...) wired to their RSGs |
-| v0.3    | Full 32-RSG WRB key with principal qualifiers                                                    |
-| v0.4    | OSSL spectroscopy bridge for attribute gap-filling (MBL, PLSR-local, pretrained)                 |
-| v0.5    | SoilGrids spatial prior + Brazilian Embrapa raster                                               |
-| v0.6    | Multimodal extraction (PDF / photo -> structured horizons via `ellmer`)                          |
-| v0.7    | Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                |
-| v0.8    | All 202 WRB qualifiers; vignettes 05-09; WoSIS benchmark                                         |
-| v1.0    | CRAN submission and methodological paper                                                         |
+| Version | Scope                                                                                                                |
+|---------|----------------------------------------------------------------------------------------------------------------------|
+| v0.1    | Core classes; argic, ferralic, mollic; Ferralsols path                                                               |
+| v0.2    | +calcic, gypsic, salic, cambic, plinthic, spodic, gleyic, vertic; +AC/LX/AL/LV/CH/KS/PH RSG diagnostics; 16/32 wired |
+| v0.3    | Remaining 16 RSGs (Histosols, Anthrosols, Technosols, Cryosols, Leptosols, Solonetz, Andosols, Nitisols, Planosols, Stagnosols, Umbrisols, Durisols, Retisols, Arenosols, Fluvisols); WRB qualifier resolution |
+| v0.4    | Module 4 -- OSSL spectroscopy bridge (MBL, PLSR-local, pretrained)                                                   |
+| v0.5    | Module 3 -- SoilGrids spatial prior + Brazilian Embrapa raster                                                       |
+| v0.6    | Module 2 -- Multimodal extraction (PDF/photo -> structured horizons via `ellmer`)                                    |
+| v0.7    | Module 6 -- Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                        |
+| v0.8    | Module 5 -- USDA Soil Taxonomy parallel key (12 orders)                                                              |
+| v0.9    | All 202 WRB qualifiers; vignettes 05-09; WoSIS benchmark                                                             |
+| v1.0    | CRAN submission and methodological paper                                                                             |
 
 See `ARCHITECTURE.md` (in the package root) for the full design rationale.

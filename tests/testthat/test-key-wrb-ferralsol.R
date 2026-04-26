@@ -19,20 +19,22 @@ test_that("trace shows expected NAs for stubbed RSGs before Ferralsols", {
   expect_true(isTRUE(res$trace$FR$passed))
 })
 
-test_that("Luvisol fixture lands at Regosols catch-all with argic disambiguation", {
+test_that("Luvisol fixture classifies as Luvisols (v0.2 wired)", {
+  # In v0.1 this fixture landed at the RG catch-all because no argic-
+  # derived RSG was wired. In v0.2 LV is wired and the fixture is a
+  # canonical Luvisol (high CEC, low Al sat).
   pr <- make_luvisol_canonical()
   res <- classify_wrb2022(pr)
-  expect_equal(res$rsg_or_order, "Regosols")
-  expect_match(res$name, "Argic", ignore.case = TRUE)
-  expect_true(any(grepl("argic", res$warnings, ignore.case = TRUE)))
+  expect_equal(res$rsg_or_order, "Luvisols")
 })
 
-test_that("Chernozem fixture lands at Regosols catch-all with mollic disambiguation", {
+test_that("Chernozem fixture classifies as Chernozems (v0.2 wired)", {
+  # In v0.1 this fixture landed at the RG catch-all. In v0.2 CH is
+  # wired with the chernozem() RSG diagnostic (mollic + carbonates +
+  # chroma <= 2 in upper 20 cm).
   pr <- make_chernozem_canonical()
   res <- classify_wrb2022(pr)
-  expect_equal(res$rsg_or_order, "Regosols")
-  expect_match(res$name, "Mollic", ignore.case = TRUE)
-  expect_true(any(grepl("mollic", res$warnings, ignore.case = TRUE)))
+  expect_equal(res$rsg_or_order, "Chernozems")
 })
 
 test_that("evidence_grade B when an attribute is predicted_spectra", {
