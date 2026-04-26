@@ -644,6 +644,204 @@ test_caso4_concentration <- function(h, min_pct = 5,
 }
 
 
+#' Test for plinthite concentration above threshold (per layer)
+#'
+#' Default 15\% by volume (plinthic horizon, WRB 2022 Chapter 3). Used
+#' by \code{\link{plinthic}}.
+#'
+#' @export
+test_plinthite_concentration <- function(h, min_pct = 15,
+                                           candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$plinthite_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "plinthite_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, plinthite_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test the spodic Al/Fe oxalate criterion: (al_ox + 0.5*fe_ox) >= threshold
+#'
+#' Default 0.5\% (WRB 2022 Chapter 3, Spodic horizon). Used by
+#' \code{\link{spodic}}.
+#'
+#' @export
+test_spodic_aluminum_iron <- function(h, min_pct = 0.5,
+                                        candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    al_ox <- h$al_ox_pct[i]
+    fe_ox <- h$fe_ox_pct[i]
+    if (is.na(al_ox) || is.na(fe_ox)) {
+      if (is.na(al_ox)) missing <- c(missing, "al_ox_pct")
+      if (is.na(fe_ox)) missing <- c(missing, "fe_ox_pct")
+      next
+    }
+    val <- al_ox + fe_ox / 2
+    details[[as.character(i)]] <- list(
+      idx = i, al_ox = al_ox, fe_ox = fe_ox,
+      al_plus_half_fe = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that ph_h2o is at or below a threshold
+#'
+#' Default 5.9 (Spodic horizon supplementary criterion, WRB 2022).
+#'
+#' @export
+test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$ph_h2o[i]
+    if (is.na(val)) {
+      missing <- c(missing, "ph_h2o")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, ph_h2o = val,
+      threshold = max_ph, passed = val <= max_ph
+    )
+    if (val <= max_ph) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for gleyic redoximorphic features within top 50 cm
+#'
+#' v0.2 implementation: requires \code{redoximorphic_features_pct} to be
+#' reported and >= \code{min_redox_pct} (default 5\%) within
+#' \code{max_top_cm} (default 50). The Munsell-color proxy
+#' (chroma <= 2, value >= 4) is too inclusive for albic / bleached
+#' horizons and is therefore not used as a primary criterion in v0.2;
+#' v0.3 will distinguish reductimorphic from albic via additional
+#' indicators. If \code{redoximorphic_features_pct} is missing for all
+#' candidate layers, returns NA.
+#'
+#' @export
+test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
+                                   candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] <= max_top_cm]
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$redoximorphic_features_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "redoximorphic_features_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, redoximorphic_features_pct = val,
+      threshold = min_redox_pct, top_cm = h$top_cm[i],
+      passed = val >= min_redox_pct
+    )
+    if (val >= min_redox_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that clay_pct is at or above a threshold
+#'
+#' Default 30\% (vertic features minimum, WRB 2022 Chapter 3).
+#'
+#' @export
+test_clay_above <- function(h, min_pct = 30, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$clay_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "clay_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, clay_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for slickensides at or above a presence level
+#'
+#' Default accepted levels are \code{c("common", "many", "continuous")}
+#' (vertic features, WRB 2022). The \code{slickensides} column accepts
+#' \code{c("absent", "few", "common", "many", "continuous")}.
+#'
+#' @export
+test_slickensides_present <- function(h,
+                                        levels = c("common", "many",
+                                                    "continuous"),
+                                        candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$slickensides[i]
+    if (is.na(val)) {
+      missing <- c(missing, "slickensides")
+      next
+    }
+    ok <- val %in% levels
+    details[[as.character(i)]] <- list(
+      idx = i, slickensides = val,
+      accepted_levels = levels, passed = ok
+    )
+    if (ok) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
 #' Test for electrical conductivity above threshold (per layer)
 #'
 #' Default 15 dS/m (salic horizon, WRB 2022 Chapter 3). Used by

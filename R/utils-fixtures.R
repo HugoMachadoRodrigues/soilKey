@@ -370,6 +370,382 @@ make_solonchak_canonical <- function() {
 }
 
 
+#' Build the canonical Cambisol fixture
+#'
+#' Synthetic temperate-zone Cambisol on weathered colluvium: modest
+#' subsurface alteration in Bw without meeting argic clay-increase or
+#' ferralic CEC criteria. By construction:
+#' \itemize{
+#'   \item \code{\link{cambic}}: PASSES on Bw (thickness 35 cm, sandy
+#'         clay loam, no argic / no ferralic).
+#'   \item \code{\link{argic}}, \code{\link{ferralic}},
+#'         \code{\link{mollic}}, \code{\link{calcic}},
+#'         \code{\link{gypsic}}, \code{\link{salic}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_cambisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   50,   100),
+    bottom_cm                  = c(15,   50,   100,  150),
+    designation                = c("A",  "Bw", "BC", "C"),
+    munsell_hue_moist          = c("10YR","7.5YR","7.5YR","7.5YR"),
+    munsell_value_moist        = c(4,    4,    5,    5),
+    munsell_chroma_moist       = c(3,    4,    4,    3),
+    munsell_value_dry          = c(5,    5,    6,    6),
+    munsell_chroma_dry         = c(3,    4,    4,    3),
+    structure_grade            = c("moderate","moderate","weak","weak"),
+    structure_size             = c("medium","medium","medium","medium"),
+    structure_type             = c("subangular blocky","subangular blocky",
+                                     "subangular blocky","massive"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    coarse_fragments_pct       = c(5,    8,    12,   15),
+    clay_pct                   = c(25,   27,   25,   22),
+    silt_pct                   = c(35,   33,   33,   33),
+    sand_pct                   = c(40,   40,   42,   45),
+    ph_h2o                     = c(6.5,  6.7,  6.8,  6.8),
+    ph_kcl                     = c(5.8,  6.0,  6.1,  6.1),
+    oc_pct                     = c(1.5,  0.5,  0.3,  0.2),
+    cec_cmol                   = c(18,   17,   16,   14),
+    ca_cmol                    = c(8,    8,    8,    7),
+    mg_cmol                    = c(2.5,  2.5,  2.0,  1.8),
+    k_cmol                     = c(0.4,  0.3,  0.2,  0.2),
+    na_cmol                    = c(0.1,  0.1,  0.1,  0.1),
+    al_cmol                    = c(0.1,  0.1,  0.1,  0.1),
+    bs_pct                     = c(60,   65,   65,   65),
+    al_sat_pct                 = c(1,    1,    1,    1),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.30, 1.40, 1.50, 1.55)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "CM-canonical-01",
+      lat             = 47.3,
+      lon             = 11.5,
+      crs             = 4326,
+      date            = as.Date("2023-08-22"),
+      country         = "AT",
+      parent_material = "weathered colluvium over schist",
+      elevation_m     = 920,
+      slope_pct       = 18,
+      land_use        = "alpine pasture",
+      vegetation      = "subalpine grassland",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Plinthosol fixture
+#'
+#' Synthetic seasonally-saturated tropical Plinthosol: A horizon with
+#' typical Cerrado SOC; Btv with diagnostic plinthite (25\% by volume
+#' over 60 cm); persistent plinthite at depth. By construction:
+#' \itemize{
+#'   \item \code{\link{plinthic}}: PASSES on Btv and Cv.
+#'   \item \code{\link{argic}}, \code{\link{ferralic}},
+#'         \code{\link{mollic}}, \code{\link{spodic}},
+#'         \code{\link{calcic}}, \code{\link{gypsic}},
+#'         \code{\link{salic}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_plinthosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    20,   80),
+    bottom_cm                  = c(20,   80,   150),
+    designation                = c("A",  "Btv","Cv"),
+    munsell_hue_moist          = c("7.5YR","5YR","5YR"),
+    munsell_value_moist        = c(4,    4,    5),
+    munsell_chroma_moist       = c(3,    6,    6),
+    munsell_value_dry          = c(5,    5,    6),
+    munsell_chroma_dry         = c(4,    6,    6),
+    structure_grade            = c("moderate","strong","moderate"),
+    structure_size             = c("fine","medium","medium"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","firm","firm"),
+    coarse_fragments_pct       = c(2,    8,    20),
+    clay_pct                   = c(35,   38,   35),
+    silt_pct                   = c(20,   22,   25),
+    sand_pct                   = c(45,   40,   40),
+    ph_h2o                     = c(5.0,  5.2,  5.3),
+    ph_kcl                     = c(4.4,  4.5,  4.6),
+    oc_pct                     = c(2.0,  0.5,  0.2),
+    cec_cmol                   = c(14,   12,   10),
+    ca_cmol                    = c(2.5,  2.0,  1.8),
+    mg_cmol                    = c(1.0,  0.8,  0.7),
+    k_cmol                     = c(0.2,  0.1,  0.1),
+    na_cmol                    = c(0.1,  0.1,  0.1),
+    al_cmol                    = c(1.0,  1.2,  1.0),
+    bs_pct                     = c(28,   25,   27),
+    al_sat_pct                 = c(20,   28,   25),
+    plinthite_pct              = c(0,    25,   18),
+    redoximorphic_features_pct = c(0,    30,   25),
+    slickensides               = c("absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.30, 1.45, 1.55)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "PT-canonical-01",
+      lat             = -15.5,
+      lon             = -47.8,
+      crs             = 4326,
+      date            = as.Date("2024-04-05"),
+      country         = "BR",
+      parent_material = "Tertiary plinthitic sediments",
+      elevation_m     = 920,
+      slope_pct       = 3,
+      land_use        = "Cerrado native",
+      vegetation      = "campo cerrado",
+      drainage_class  = "imperfectly drained (seasonal saturation)"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Podzol fixture
+#'
+#' Synthetic boreal / temperate-coniferous Podzol: bleached E (low
+#' clay, low CEC), illuvial Bs with diagnostic Al/Fe oxalate
+#' accumulation, weathered C. By construction:
+#' \itemize{
+#'   \item \code{\link{spodic}}: PASSES on Bs (Al_ox + 0.5*Fe_ox = 0.6,
+#'         pH 4.5, 40 cm thick).
+#'   \item \code{\link{argic}}, \code{\link{ferralic}},
+#'         \code{\link{mollic}}, \code{\link{cambic}},
+#'         \code{\link{plinthic}}, \code{\link{calcic}},
+#'         \code{\link{gypsic}}, \code{\link{salic}}: FAIL.
+#' }
+#'
+#' E horizon Munsell is set to chroma 3 (rather than canonical 1-2 of a
+#' true albic) to keep \code{gleyic_properties} clearly negative under
+#' the conservative v0.2 criterion.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_podzol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    5,    30,   70),
+    bottom_cm                  = c(5,    30,   70,   150),
+    designation                = c("Oa", "E",  "Bs", "BC"),
+    munsell_hue_moist          = c("10YR","10YR","7.5YR","10YR"),
+    munsell_value_moist        = c(2,    6,    3,    5),
+    munsell_chroma_moist       = c(1,    3,    4,    3),
+    munsell_value_dry          = c(3,    7,    4,    6),
+    munsell_chroma_dry         = c(1,    3,    4,    3),
+    structure_grade            = c("weak","weak","strong","weak"),
+    structure_size             = c("fine","fine","medium","fine"),
+    structure_type             = c("granular","platy","subangular blocky","massive"),
+    consistence_moist          = c("loose","loose","friable","firm"),
+    coarse_fragments_pct       = c(0,    5,    10,   20),
+    clay_pct                   = c(8,    5,    8,    7),
+    silt_pct                   = c(20,   10,   12,   13),
+    sand_pct                   = c(72,   85,   80,   80),
+    ph_h2o                     = c(4.2,  4.0,  4.5,  4.8),
+    ph_kcl                     = c(3.5,  3.4,  3.8,  4.0),
+    oc_pct                     = c(35,   0.5,  1.5,  0.4),
+    cec_cmol                   = c(60,   3,    5,    4),
+    ca_cmol                    = c(2,    0.1,  0.2,  0.2),
+    mg_cmol                    = c(1,    0.05, 0.1,  0.1),
+    k_cmol                     = c(0.5,  0.05, 0.05, 0.05),
+    na_cmol                    = c(0.1,  0.05, 0.05, 0.05),
+    al_cmol                    = c(3,    1,    2,    1),
+    bs_pct                     = c(6,    8,    8,    10),
+    al_sat_pct                 = c(45,   80,   83,   70),
+    al_ox_pct                  = c(0.05, 0.05, 0.40, 0.10),
+    fe_ox_pct                  = c(0.05, 0.05, 0.40, 0.10),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(0.40, 1.40, 1.30, 1.50)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "PZ-canonical-01",
+      lat             = 60.5,
+      lon             = 17.5,
+      crs             = 4326,
+      date            = as.Date("2023-09-30"),
+      country         = "SE",
+      parent_material = "glacial sandy till",
+      elevation_m     = 95,
+      slope_pct       = 5,
+      land_use        = "boreal forest (managed)",
+      vegetation      = "Pinus sylvestris / Vaccinium",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Gleysol fixture
+#'
+#' Synthetic Gleysol from a high-water-table floodplain: A with low
+#' chroma but no explicit redox features (so gleyic test is anchored on
+#' Bg); Bg with diagnostic redoximorphic features (35\% by volume) within
+#' the upper 50 cm. By construction:
+#' \itemize{
+#'   \item \code{\link{gleyic_properties}}: PASSES on Bg.
+#'   \item \code{\link{argic}}, \code{\link{ferralic}},
+#'         \code{\link{mollic}}, \code{\link{cambic}},
+#'         \code{\link{plinthic}}, \code{\link{spodic}},
+#'         \code{\link{calcic}}, \code{\link{gypsic}},
+#'         \code{\link{salic}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_gleysol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   45,   100),
+    bottom_cm                  = c(15,   45,   100,  150),
+    designation                = c("A",  "Bg1","Bg2","Cg"),
+    munsell_hue_moist          = c("10YR","2.5Y","2.5Y","5GY"),
+    munsell_value_moist        = c(3,    5,    5,    5),
+    munsell_chroma_moist       = c(2,    1,    1,    1),
+    munsell_value_dry          = c(4,    7,    6,    6),
+    munsell_chroma_dry         = c(2,    2,    1,    1),
+    structure_grade            = c("moderate","weak","weak","massive"),
+    structure_size             = c("fine","medium","medium","fine"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky","massive"),
+    consistence_moist          = c("friable","firm","firm","sticky"),
+    coarse_fragments_pct       = c(2,    2,    5,    8),
+    clay_pct                   = c(28,   30,   32,   30),
+    silt_pct                   = c(45,   45,   42,   40),
+    sand_pct                   = c(27,   25,   26,   30),
+    ph_h2o                     = c(5.5,  5.8,  6.0,  6.2),
+    ph_kcl                     = c(4.8,  5.1,  5.3,  5.5),
+    oc_pct                     = c(3.0,  0.8,  0.4,  0.2),
+    cec_cmol                   = c(22,   18,   16,   14),
+    ca_cmol                    = c(7,    8,    8,    8),
+    mg_cmol                    = c(2,    2,    2,    2),
+    k_cmol                     = c(0.4,  0.3,  0.3,  0.3),
+    na_cmol                    = c(0.2,  0.2,  0.2,  0.2),
+    al_cmol                    = c(0.5,  0.4,  0.3,  0.2),
+    bs_pct                     = c(43,   58,   65,   75),
+    al_sat_pct                 = c(5,    4,    3,    2),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(2,    35,   40,   30),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.15, 1.40, 1.50, 1.55)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "GL-canonical-01",
+      lat             = 52.0,
+      lon             = 5.5,
+      crs             = 4326,
+      date            = as.Date("2023-06-18"),
+      country         = "NL",
+      parent_material = "Holocene fluvial clay",
+      elevation_m     = 1,
+      slope_pct       = 0,
+      land_use        = "intensive grassland",
+      vegetation      = "Lolium perenne / Trifolium",
+      drainage_class  = "poorly drained (high groundwater)"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Vertisol fixture
+#'
+#' Synthetic Vertisol from a smectite-rich plain: deep clay (50-55\%)
+#' with strong slickensides in the Bss horizon. Surface chroma 4
+#' (above the mollic cap) so that vertic_properties is the only v0.2
+#' diagnostic that passes. By construction:
+#' \itemize{
+#'   \item \code{\link{vertic_properties}}: PASSES on Bss and BC.
+#'   \item \code{\link{argic}}, \code{\link{ferralic}},
+#'         \code{\link{mollic}}, \code{\link{cambic}},
+#'         \code{\link{plinthic}}, \code{\link{spodic}},
+#'         \code{\link{calcic}}, \code{\link{gypsic}},
+#'         \code{\link{salic}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_vertisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    25,   80),
+    bottom_cm                  = c(25,   80,   150),
+    designation                = c("Aw", "Bss","BCss"),
+    munsell_hue_moist          = c("10YR","10YR","10YR"),
+    munsell_value_moist        = c(3,    4,    4),
+    munsell_chroma_moist       = c(4,    3,    3),
+    munsell_value_dry          = c(5,    5,    5),
+    munsell_chroma_dry         = c(3,    3,    3),
+    structure_grade            = c("strong","strong","moderate"),
+    structure_size             = c("medium","coarse","coarse"),
+    structure_type             = c("subangular blocky","wedge-shaped",
+                                     "wedge-shaped"),
+    consistence_moist          = c("firm","very firm","very firm"),
+    coarse_fragments_pct       = c(0,    0,    2),
+    clay_pct                   = c(50,   55,   52),
+    silt_pct                   = c(30,   28,   30),
+    sand_pct                   = c(20,   17,   18),
+    ph_h2o                     = c(7.0,  7.2,  7.5),
+    ph_kcl                     = c(6.4,  6.6,  6.9),
+    oc_pct                     = c(1.5,  0.6,  0.3),
+    cec_cmol                   = c(45,   48,   45),
+    ca_cmol                    = c(28,   30,   28),
+    mg_cmol                    = c(7,    8,    8),
+    k_cmol                     = c(0.6,  0.4,  0.3),
+    na_cmol                    = c(0.4,  0.5,  0.6),
+    al_cmol                    = c(0,    0,    0),
+    bs_pct                     = c(80,   81,   82),
+    al_sat_pct                 = c(0,    0,    0),
+    caco3_pct                  = c(0,    1,    3),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","common","many"),
+    bulk_density_g_cm3         = c(1.40, 1.55, 1.60)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "VR-canonical-01",
+      lat             = -18.5,
+      lon             = 35.0,
+      crs             = 4326,
+      date            = as.Date("2023-11-12"),
+      country         = "MZ",
+      parent_material = "alluvium over basalt",
+      elevation_m     = 80,
+      slope_pct       = 1,
+      land_use        = "extensive cropping",
+      vegetation      = "savanna fallow",
+      drainage_class  = "imperfectly drained"
+    ),
+    horizons = hz
+  )
+}
+
+
 #' Build the canonical Chernozem fixture
 #'
 #' Synthetic Ukrainian / Russian steppe Chernozem on loess: thick dark

@@ -337,6 +337,179 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 }
 
 
+#' Cambic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the cambic horizon criteria. The
+#' cambic horizon is a subsurface horizon with evidence of pedological
+#' alteration that does not meet the criteria for any stronger
+#' diagnostic horizon. It is the diagnostic of Cambisols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' v0.2 implementation tests three conditions:
+#' \itemize{
+#'   \item thickness >= 15 cm (\code{\link{test_minimum_thickness}})
+#'   \item texture sandy loam or finer (\code{\link{test_texture_argic}})
+#'   \item NOT \code{\link{argic}} AND NOT \code{\link{ferralic}}
+#' }
+#'
+#' v0.2 limitations: WRB 2022 also excludes profiles with spodic,
+#' calcic, gypsic, plinthic, vertic, and several other diagnostic
+#' horizons. Those exclusions, plus the WRB criteria of "evidence of
+#' alteration" (color/structure differences from parent material,
+#' carbonate removal), are scheduled for v0.3.
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
+#' @export
+cambic <- function(pedon, min_thickness = 15) {
+  h <- pedon$horizons
+
+  arg_res <- argic(pedon)
+  fer_res <- ferralic(pedon)
+
+  tests <- list()
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness)
+  tests$texture   <- test_texture_argic(h,
+                                          candidate_layers = tests$thickness$layers)
+  tests$not_argic    <- list(
+    passed  = !isTRUE(arg_res$passed),
+    layers  = if (isTRUE(arg_res$passed)) integer(0) else seq_len(nrow(h)),
+    missing = arg_res$missing %||% character(0),
+    details = list(argic_passed = arg_res$passed),
+    notes   = if (isTRUE(arg_res$passed))
+                "Excluded -- profile has an argic horizon" else NA_character_
+  )
+  tests$not_ferralic <- list(
+    passed  = !isTRUE(fer_res$passed),
+    layers  = if (isTRUE(fer_res$passed)) integer(0) else seq_len(nrow(h)),
+    missing = fer_res$missing %||% character(0),
+    details = list(ferralic_passed = fer_res$passed),
+    notes   = if (isTRUE(fer_res$passed))
+                "Excluded -- profile has a ferralic horizon" else NA_character_
+  )
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "cambic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Cambic horizon"
+  )
+}
+
+
+#' Plinthic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the plinthic horizon criteria.
+#' Plinthite is Fe-rich material that hardens irreversibly on repeated
+#' wetting and drying; the plinthic horizon is the diagnostic of
+#' Plinthosols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 15).
+#' @param min_plinthite_pct Minimum volume \% plinthite (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' Sub-tests:
+#' \itemize{
+#'   \item \code{\link{test_plinthite_concentration}} -- plinthite
+#'         volume \% >= 15
+#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm
+#' }
+#'
+#' v0.2 limitations: WRB 2022 also accepts profiles with >= 40\% red
+#' Fe-rich mottles as alternative criterion -- not yet wired. The
+#' "irreversibly hardens" criterion is conceptual and requires field
+#' observation; v0.2 takes \code{plinthite_pct} as already representing
+#' true plinthite (as opposed to soft mottles).
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.
+#' @export
+plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$plinthite <- test_plinthite_concentration(h,
+                                                    min_pct = min_plinthite_pct)
+  tests$thickness <- test_minimum_thickness(h,
+                                              min_cm           = min_thickness,
+                                              candidate_layers = tests$plinthite$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "plinthic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon"
+  )
+}
+
+
+#' Spodic horizon (WRB 2022)
+#'
+#' Tests whether any horizon meets the spodic horizon criteria. The
+#' spodic horizon is an illuvial horizon with active Al + Fe oxalate-
+#' extractable material plus organic matter; diagnostic of Podzols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness in cm (default 2.5).
+#' @param min_alfe Minimum (Al_ox + 0.5 * Fe_ox) percent (default 0.5).
+#' @param max_ph Maximum ph_h2o (default 5.9).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' Sub-tests:
+#' \itemize{
+#'   \item \code{\link{test_spodic_aluminum_iron}} -- (Al_ox +
+#'         0.5*Fe_ox) >= 0.5\%
+#'   \item \code{\link{test_ph_below}} -- ph_h2o <= 5.9
+#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 2.5 cm
+#' }
+#'
+#' v0.2 limitations: the WRB color criterion (hue 5YR or yellower with
+#' chroma <= 5, or specific dark colors) is not enforced. The
+#' (Al_ox + Fe_ox)/clay >= 0.05 alternative ratio test is not yet wired.
+#' Both deferred to v0.3.
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Spodic horizon.
+#' @export
+spodic <- function(pedon,
+                     min_thickness = 2.5,
+                     min_alfe      = 0.5,
+                     max_ph        = 5.9) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$alfe_oxalate <- test_spodic_aluminum_iron(h, min_pct = min_alfe)
+  tests$ph           <- test_ph_below(h, max_ph = max_ph,
+                                        candidate_layers = tests$alfe_oxalate$layers)
+  tests$thickness    <- test_minimum_thickness(h,
+                                                  min_cm           = min_thickness,
+                                                  candidate_layers = tests$alfe_oxalate$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "spodic",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon"
+  )
+}
+
+
 #' Salic horizon (WRB 2022)
 #'
 #' Tests whether any horizon meets the salic horizon criteria. The
