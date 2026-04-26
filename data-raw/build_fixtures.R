@@ -39,7 +39,15 @@ fixtures <- list(
   lixisol_canonical    = make_lixisol_canonical(),
   alisol_canonical     = make_alisol_canonical(),
   kastanozem_canonical = make_kastanozem_canonical(),
-  phaeozem_canonical   = make_phaeozem_canonical()
+  phaeozem_canonical   = make_phaeozem_canonical(),
+  histosol_canonical   = make_histosol_canonical(),
+  leptosol_canonical   = make_leptosol_canonical(),
+  arenosol_canonical   = make_arenosol_canonical(),
+  umbrisol_canonical   = make_umbrisol_canonical(),
+  durisol_canonical    = make_durisol_canonical(),
+  technosol_canonical  = make_technosol_canonical(),
+  andosol_canonical    = make_andosol_canonical(),
+  fluvisol_canonical   = make_fluvisol_canonical()
 )
 
 for (nm in names(fixtures)) {

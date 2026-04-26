@@ -212,7 +212,8 @@ PedonRecord <- R6::R6Class("PedonRecord",
             paste(bad, collapse = ", ")
           ))
         }
-        for (vol_col in c("plinthite_pct", "redoximorphic_features_pct")) {
+        for (vol_col in c("plinthite_pct", "redoximorphic_features_pct",
+                            "artefacts_pct", "duripan_pct")) {
           vals <- h[[vol_col]]
           bad <- which(!is.na(vals) & (vals < 0 | vals > 100))
           if (length(bad) > 0) {

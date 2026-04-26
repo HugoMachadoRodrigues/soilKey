@@ -59,6 +59,93 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5) {
 }
 
 
+#' Leptic features (WRB 2022)
+#'
+#' Tests whether continuous rock or rock-like material occurs within
+#' \code{max_depth} cm of the surface. Diagnostic of Leptosols.
+#'
+#' v0.3 implementation infers continuous rock from horizon designation
+#' (any layer with designation matching \code{"^R"} or
+#' \code{"^Cr"} -- standard pedological codes for hard / continuous
+#' rock and weathered rock-like substrate respectively).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth Maximum depth (cm) at which continuous rock must
+#'        appear (default 25).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 5, Leptosols.
+#' @export
+leptic_features <- function(pedon, max_depth = 25) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$rock_designation <- test_designation_pattern(h, pattern = "^R$|^Cr|^R[a-z]")
+  tests$shallow          <- test_top_at_or_above(h,
+                                                    max_top_cm       = max_depth,
+                                                    candidate_layers = tests$rock_designation$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "leptic_features",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 5, Leptosols"
+  )
+}
+
+
+#' Andic properties (WRB 2022)
+#'
+#' Tests for the andic property complex -- volcanic-ash-derived
+#' allophanic / imogolitic / Al-humus material with low bulk density,
+#' high active Al + Fe. Diagnostic of Andosols.
+#'
+#' v0.3 simplified criteria:
+#' \itemize{
+#'   \item (Al_ox + 0.5 * Fe_ox) >= 2.0\%
+#'   \item bulk_density <= 0.9 g/cm^3
+#' }
+#' Both must hold on the same layer.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_alfe Minimum (Al_ox + 0.5*Fe_ox) percent (default 2.0).
+#' @param max_bd Maximum bulk density g/cm^3 (default 0.9).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @details
+#' v0.3 limitations: WRB 2022 also accepts phosphate retention
+#' >= 70\%, glass content >= 30\% in the sand fraction, or
+#' specific Si-oxalate alternatives. None of these are in the
+#' canonical schema; v0.4 will extend.
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Andic
+#'   properties.
+#' @export
+andic_properties <- function(pedon, min_alfe = 2.0, max_bd = 0.9) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$alfe_oxalate <- test_andic_alfe(h, min_pct = min_alfe)
+  tests$low_bd       <- test_bulk_density_below(h,
+                                                   max_g_cm3        = max_bd,
+                                                   candidate_layers = tests$alfe_oxalate$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "andic_properties",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Andic properties"
+  )
+}
+
+
 #' Vertic properties (WRB 2022)
 #'
 #' Tests whether any horizon shows vertic properties -- shrink-swell

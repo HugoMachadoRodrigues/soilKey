@@ -1120,6 +1120,513 @@ make_phaeozem_canonical <- function() {
 }
 
 
+#' Build the canonical Histosol fixture
+#'
+#' Synthetic boreal-mire Histosol: thick (50 cm) surface organic
+#' horizon with OC ~ 35\%, low chroma, no exchangeable-base data
+#' reported (typical of histic profiles where laboratory chemistry on
+#' organic material is reported separately). By construction:
+#' \itemize{
+#'   \item \code{\link{histic_horizon}}: PASSES on Oa.
+#'   \item Mineral horizons below; mollic / umbric NA (no BS reported).
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_histosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    50,   100),
+    bottom_cm                  = c(50,   100,  150),
+    designation                = c("Oa", "Oe", "C"),
+    munsell_hue_moist          = c("10YR","10YR","2.5Y"),
+    munsell_value_moist        = c(2,    3,    5),
+    munsell_chroma_moist       = c(1,    2,    2),
+    munsell_value_dry          = c(3,    4,    6),
+    munsell_chroma_dry         = c(1,    2,    2),
+    structure_grade            = c("weak","weak","massive"),
+    structure_size             = c("fine","fine","fine"),
+    structure_type             = c("granular","granular","massive"),
+    consistence_moist          = c("loose","loose","sticky"),
+    coarse_fragments_pct       = c(0,    0,    2),
+    clay_pct                   = c(NA_real_, NA_real_, 25),
+    silt_pct                   = c(NA_real_, NA_real_, 50),
+    sand_pct                   = c(NA_real_, NA_real_, 25),
+    ph_h2o                     = c(4.5,  4.8,  5.2),
+    oc_pct                     = c(35,   28,   0.5),
+    bs_pct                     = c(NA_real_, NA_real_, 35),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0),
+    duripan_pct                = c(0,    0,    0),
+    bulk_density_g_cm3         = c(0.18, 0.25, 1.40)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "HS-canonical-01",
+      lat             = 60.0, lon = 24.5,
+      crs             = 4326,
+      date            = as.Date("2023-08-04"),
+      country         = "FI",
+      parent_material = "peat over postglacial till",
+      elevation_m     = 90,
+      slope_pct       = 1,
+      land_use        = "boreal mire (drained)",
+      vegetation      = "Sphagnum / Carex / Pinus sylvestris",
+      drainage_class  = "very poorly drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Leptosol fixture
+#'
+#' Synthetic mountain-slope Leptosol on metamorphic rock: a thin A
+#' (10 cm) directly over continuous rock. By construction:
+#' \itemize{
+#'   \item \code{\link{leptic_features}}: PASSES (R at 10 cm <= 25).
+#'   \item Other diagnostics fail on thickness, missing data, or
+#'         absent diagnostic features.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_leptosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    10),
+    bottom_cm                  = c(10,   100),
+    designation                = c("A",  "R"),
+    munsell_hue_moist          = c("10YR", NA_character_),
+    munsell_value_moist        = c(4,    NA_real_),
+    munsell_chroma_moist       = c(3,    NA_real_),
+    munsell_value_dry          = c(5,    NA_real_),
+    munsell_chroma_dry         = c(3,    NA_real_),
+    structure_grade            = c("moderate", NA_character_),
+    structure_type             = c("granular", NA_character_),
+    consistence_moist          = c("friable",  NA_character_),
+    coarse_fragments_pct       = c(35,   90),
+    clay_pct                   = c(20,   NA_real_),
+    silt_pct                   = c(30,   NA_real_),
+    sand_pct                   = c(50,   NA_real_),
+    ph_h2o                     = c(6.0,  NA_real_),
+    oc_pct                     = c(2.0,  NA_real_),
+    cec_cmol                   = c(15,   NA_real_),
+    bs_pct                     = c(55,   NA_real_),
+    al_sat_pct                 = c(0,    NA_real_),
+    plinthite_pct              = c(0,    NA_real_),
+    redoximorphic_features_pct = c(0,    NA_real_),
+    slickensides               = c("absent", NA_character_),
+    artefacts_pct              = c(0,    NA_real_),
+    duripan_pct                = c(0,    NA_real_),
+    bulk_density_g_cm3         = c(1.30, NA_real_)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "LP-canonical-01",
+      lat             = 46.5, lon = 11.0,
+      crs             = 4326,
+      date            = as.Date("2023-09-12"),
+      country         = "IT",
+      parent_material = "metamorphic schist",
+      elevation_m     = 1850,
+      slope_pct       = 35,
+      land_use        = "alpine grassland",
+      vegetation      = "Carex curvula community",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Arenosol fixture
+#'
+#' Synthetic coastal-dune Arenosol: sandy throughout the upper 100 cm
+#' (silt + 2*clay << 30). By construction \code{\link{arenic_texture}}
+#' passes uniformly while every clay-dependent diagnostic fails.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_arenosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    25,   80),
+    bottom_cm                  = c(25,   80,   150),
+    designation                = c("A",  "C1", "C2"),
+    munsell_hue_moist          = c("10YR","10YR","10YR"),
+    munsell_value_moist        = c(4,    5,    6),
+    munsell_chroma_moist       = c(3,    3,    3),
+    munsell_value_dry          = c(6,    7,    7),
+    munsell_chroma_dry         = c(3,    2,    2),
+    structure_grade            = c("weak","massive","massive"),
+    structure_type             = c("single grain","single grain",
+                                     "single grain"),
+    consistence_moist          = c("loose","loose","loose"),
+    coarse_fragments_pct       = c(0,    0,    0),
+    clay_pct                   = c(3,    4,    3),
+    silt_pct                   = c(8,    10,   7),
+    sand_pct                   = c(89,   86,   90),
+    ph_h2o                     = c(5.5,  5.8,  6.0),
+    oc_pct                     = c(0.4,  0.1,  0.05),
+    cec_cmol                   = c(2.5,  2.0,  1.5),
+    ca_cmol                    = c(0.3,  0.2,  0.1),
+    mg_cmol                    = c(0.1,  0.1,  0.1),
+    k_cmol                     = c(0.05, 0.05, 0.05),
+    na_cmol                    = c(0.05, 0.05, 0.05),
+    al_cmol                    = c(0.1,  0.1,  0.1),
+    bs_pct                     = c(20,   22,   23),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0),
+    duripan_pct                = c(0,    0,    0),
+    bulk_density_g_cm3         = c(1.55, 1.60, 1.60)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "AR-canonical-01",
+      lat             = 36.0, lon = -6.5,
+      crs             = 4326,
+      date            = as.Date("2023-07-22"),
+      country         = "ES",
+      parent_material = "Holocene aeolian dune sand",
+      elevation_m     = 8,
+      slope_pct       = 4,
+      land_use        = "coastal pine plantation",
+      vegetation      = "Pinus pinea / Halimium",
+      drainage_class  = "excessively drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Umbrisol fixture
+#'
+#' Synthetic humid-temperate Umbrisol on weathered acidic schist: deep
+#' organic-rich dark surface with low base saturation -- the acid
+#' analogue of a Phaeozem. By construction \code{\link{umbric_horizon}}
+#' passes; \code{\link{mollic}} fails on BS < 50.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_umbrisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    30,   70),
+    bottom_cm                  = c(30,   70,   150),
+    designation                = c("Ah", "AB", "Bw"),
+    munsell_hue_moist          = c("10YR","10YR","10YR"),
+    munsell_value_moist        = c(2,    3,    4),
+    munsell_chroma_moist       = c(2,    2,    3),
+    munsell_value_dry          = c(3,    4,    5),
+    munsell_chroma_dry         = c(2,    2,    3),
+    structure_grade            = c("strong","moderate","weak"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","friable","firm"),
+    coarse_fragments_pct       = c(8,    15,   25),
+    clay_pct                   = c(22,   24,   25),
+    silt_pct                   = c(35,   33,   30),
+    sand_pct                   = c(43,   43,   45),
+    ph_h2o                     = c(4.8,  5.0,  5.2),
+    ph_kcl                     = c(4.0,  4.2,  4.4),
+    oc_pct                     = c(4.5,  2.0,  0.6),
+    cec_cmol                   = c(20,   16,   12),
+    ca_cmol                    = c(2.5,  2.0,  1.5),
+    mg_cmol                    = c(1.0,  0.8,  0.6),
+    k_cmol                     = c(0.3,  0.2,  0.2),
+    na_cmol                    = c(0.1,  0.1,  0.1),
+    al_cmol                    = c(2.0,  1.8,  1.5),
+    bs_pct                     = c(20,   20,   22),
+    al_sat_pct                 = c(34,   38,   38),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0),
+    duripan_pct                = c(0,    0,    0),
+    bulk_density_g_cm3         = c(0.95, 1.20, 1.40)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "UM-canonical-01",
+      lat             = 43.0, lon = -5.0,
+      crs             = 4326,
+      date            = as.Date("2023-10-04"),
+      country         = "ES",
+      parent_material = "weathered acid schist",
+      elevation_m     = 1100,
+      slope_pct       = 18,
+      land_use        = "atlantic deciduous forest",
+      vegetation      = "Quercus robur / Fagus",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Durisol fixture
+#'
+#' Synthetic semi-arid Durisol with a Si-cemented subsurface horizon
+#' (35\% duripan nodules over 45 cm). By construction
+#' \code{\link{duric_horizon}} passes on Bdu.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_durisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   60),
+    bottom_cm                  = c(15,   60,   150),
+    designation                = c("A",  "Bdu","C"),
+    munsell_hue_moist          = c("10YR","10YR","10YR"),
+    munsell_value_moist        = c(5,    6,    6),
+    munsell_chroma_moist       = c(3,    3,    3),
+    munsell_value_dry          = c(6,    7,    7),
+    munsell_chroma_dry         = c(3,    3,    3),
+    structure_grade            = c("weak","massive","massive"),
+    structure_type             = c("subangular blocky","cemented","massive"),
+    consistence_moist          = c("firm","extremely firm","firm"),
+    coarse_fragments_pct       = c(15,   40,   25),
+    clay_pct                   = c(20,   18,   18),
+    silt_pct                   = c(35,   30,   32),
+    sand_pct                   = c(45,   52,   50),
+    ph_h2o                     = c(7.5,  7.8,  7.9),
+    oc_pct                     = c(0.6,  0.2,  0.1),
+    cec_cmol                   = c(14,   10,   9),
+    ca_cmol                    = c(11,   8,    7),
+    mg_cmol                    = c(2.0,  1.5,  1.2),
+    k_cmol                     = c(0.3,  0.2,  0.1),
+    na_cmol                    = c(0.2,  0.2,  0.2),
+    al_cmol                    = c(0,    0,    0),
+    bs_pct                     = c(96,   99,   99),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0),
+    duripan_pct                = c(0,    35,   8),
+    bulk_density_g_cm3         = c(1.40, 1.85, 1.50)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "DU-canonical-01",
+      lat             = -33.0, lon = -71.0,
+      crs             = 4326,
+      date            = as.Date("2023-04-18"),
+      country         = "CL",
+      parent_material = "Pleistocene alluvium",
+      elevation_m     = 380,
+      slope_pct       = 5,
+      land_use        = "extensive grazing",
+      vegetation      = "Mediterranean matorral",
+      drainage_class  = "moderately well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Technosol fixture
+#'
+#' Synthetic urban / industrial Technosol: surface horizon with 30\%
+#' anthropogenic artefacts (brick, glass, slag, plastic). By
+#' construction \code{\link{technic_features}} passes.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_technosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    35,   80),
+    bottom_cm                  = c(35,   80,   150),
+    designation                = c("Au", "C1", "C2"),
+    munsell_hue_moist          = c("10YR","10YR","10YR"),
+    munsell_value_moist        = c(3,    4,    5),
+    munsell_chroma_moist       = c(2,    3,    3),
+    munsell_value_dry          = c(5,    6,    6),
+    munsell_chroma_dry         = c(2,    3,    3),
+    structure_grade            = c("weak","massive","massive"),
+    structure_type             = c("subangular blocky","massive","massive"),
+    consistence_moist          = c("firm","firm","firm"),
+    coarse_fragments_pct       = c(20,   30,   20),
+    clay_pct                   = c(20,   18,   18),
+    silt_pct                   = c(35,   32,   30),
+    sand_pct                   = c(45,   50,   52),
+    ph_h2o                     = c(7.8,  7.5,  7.3),
+    oc_pct                     = c(2.0,  0.5,  0.2),
+    cec_cmol                   = c(14,   12,   10),
+    bs_pct                     = c(85,   82,   78),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(30,   12,   3),
+    duripan_pct                = c(0,    0,    0),
+    bulk_density_g_cm3         = c(1.55, 1.65, 1.70)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "TC-canonical-01",
+      lat             = 51.5, lon = -0.1,
+      crs             = 4326,
+      date            = as.Date("2023-11-09"),
+      country         = "GB",
+      parent_material = "anthropogenic backfill (post-industrial)",
+      elevation_m     = 25,
+      slope_pct       = 0,
+      land_use        = "former industrial site (rewilded)",
+      vegetation      = "ruderal grassland",
+      drainage_class  = "moderately drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Andosol fixture
+#'
+#' Synthetic Andosol on volcanic tephra: very dark surface with low
+#' bulk density (0.7 g/cm^3) and high active Al + Fe (Al_ox + 0.5 *
+#' Fe_ox = 2.25\%). By construction \code{\link{andic_properties}}
+#' passes.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_andosol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    30,   80),
+    bottom_cm                  = c(30,   80,   150),
+    designation                = c("Ah", "Bw", "C"),
+    munsell_hue_moist          = c("10YR","7.5YR","7.5YR"),
+    munsell_value_moist        = c(2,    3,    4),
+    munsell_chroma_moist       = c(2,    3,    4),
+    munsell_value_dry          = c(3,    4,    5),
+    munsell_chroma_dry         = c(2,    3,    4),
+    structure_grade            = c("strong","moderate","weak"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","friable","firm"),
+    coarse_fragments_pct       = c(5,    8,    15),
+    clay_pct                   = c(18,   22,   20),
+    silt_pct                   = c(40,   38,   35),
+    sand_pct                   = c(42,   40,   45),
+    ph_h2o                     = c(5.5,  5.8,  6.0),
+    ph_kcl                     = c(4.7,  5.0,  5.2),
+    oc_pct                     = c(8.0,  3.5,  1.2),
+    cec_cmol                   = c(35,   25,   18),
+    ca_cmol                    = c(3.0,  2.5,  2.0),
+    mg_cmol                    = c(1.5,  1.2,  1.0),
+    k_cmol                     = c(0.4,  0.3,  0.2),
+    na_cmol                    = c(0.1,  0.1,  0.1),
+    al_cmol                    = c(2.5,  2.0,  1.5),
+    bs_pct                     = c(15,   16,   18),
+    al_sat_pct                 = c(33,   34,   31),
+    al_ox_pct                  = c(1.5,  1.2,  0.6),
+    fe_ox_pct                  = c(1.5,  1.0,  0.5),
+    plinthite_pct              = c(0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0),
+    slickensides               = c("absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0),
+    duripan_pct                = c(0,    0,    0),
+    bulk_density_g_cm3         = c(0.70, 0.85, 1.10)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "AN-canonical-01",
+      lat             = 36.5, lon = 138.0,
+      crs             = 4326,
+      date            = as.Date("2024-02-20"),
+      country         = "JP",
+      parent_material = "Holocene volcanic ash",
+      elevation_m     = 980,
+      slope_pct       = 12,
+      land_use        = "Cryptomeria plantation",
+      vegetation      = "temperate broadleaf-conifer",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Fluvisol fixture
+#'
+#' Synthetic floodplain Fluvisol: stratified textures across
+#' consecutive C horizons, OC pattern non-monotone with depth
+#' (because C2 is more recently deposited, OC-richer than C1).
+#' By construction \code{\link{fluvic_material}} passes.
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_fluvisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   45,   80),
+    bottom_cm                  = c(15,   45,   80,   150),
+    designation                = c("Ah", "C1", "C2", "C3"),
+    munsell_hue_moist          = c("10YR","10YR","2.5Y","10YR"),
+    munsell_value_moist        = c(3,    5,    4,    5),
+    munsell_chroma_moist       = c(2,    3,    3,    3),
+    munsell_value_dry          = c(5,    6,    5,    6),
+    munsell_chroma_dry         = c(2,    3,    3,    3),
+    structure_grade            = c("moderate","weak","weak","massive"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky","massive"),
+    consistence_moist          = c("friable","firm","firm","firm"),
+    coarse_fragments_pct       = c(0,    2,    0,    5),
+    clay_pct                   = c(30,   18,   35,   22),
+    silt_pct                   = c(45,   30,   45,   33),
+    sand_pct                   = c(25,   52,   20,   45),
+    ph_h2o                     = c(6.5,  6.8,  6.6,  7.0),
+    oc_pct                     = c(1.5,  0.8,  1.2,  0.5),
+    cec_cmol                   = c(20,   15,   22,   16),
+    bs_pct                     = c(70,   72,   70,   75),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    3,    5,    2),
+    slickensides               = c("absent","absent","absent","absent"),
+    artefacts_pct              = c(0,    0,    0,    0),
+    duripan_pct                = c(0,    0,    0,    0),
+    bulk_density_g_cm3         = c(1.20, 1.40, 1.30, 1.45)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "FL-canonical-01",
+      lat             = -3.5, lon = -60.0,
+      crs             = 4326,
+      date            = as.Date("2024-03-22"),
+      country         = "BR",
+      parent_material = "Holocene alluvium (Solimoes / Negro junction)",
+      elevation_m     = 35,
+      slope_pct       = 0,
+      land_use        = "varzea natural",
+      vegetation      = "varzea forest",
+      drainage_class  = "imperfectly drained (seasonal flooding)"
+    ),
+    horizons = hz
+  )
+}
+
+
 #' Build the canonical Chernozem fixture
 #'
 #' Synthetic Ukrainian / Russian steppe Chernozem on loess: thick dark

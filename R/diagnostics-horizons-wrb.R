@@ -510,6 +510,98 @@ spodic <- function(pedon,
 }
 
 
+#' Umbric horizon (WRB 2022)
+#'
+#' Tests for the umbric horizon -- a thick, dark, organic-rich surface
+#' horizon like mollic, but with low base saturation (< 50\%).
+#' Diagnostic of Umbrisols.
+#'
+#' Implementation reuses every mollic sub-test except the BS test,
+#' which is inverted via \code{\link{test_bs_below}}.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness (cm; default 20).
+#' @param min_oc Minimum SOC \% (default 0.6).
+#' @param max_bs Maximum base saturation \% (default 50; profile must
+#'        be BELOW this).
+#' @param surface_top_cm Maximum top_cm for surface-related layers
+#'        (default 5).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.
+#' @export
+umbric_horizon <- function(pedon,
+                              min_thickness  = 20,
+                              min_oc         = 0.6,
+                              max_bs         = 50,
+                              surface_top_cm = 5) {
+  h <- pedon$horizons
+  candidate_layers <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+
+  tests <- list()
+  tests$color           <- test_mollic_color(h, candidate_layers = candidate_layers)
+  tests$organic_carbon  <- test_mollic_organic_carbon(h, min_pct = min_oc,
+                                                        candidate_layers = candidate_layers)
+  tests$bs_low          <- test_bs_below(h, max_pct = max_bs,
+                                            candidate_layers = candidate_layers)
+  tests$thickness       <- test_mollic_thickness(h, min_cm = min_thickness,
+                                                    candidate_layers = candidate_layers)
+  tests$structure       <- test_mollic_structure(h,
+                                                    candidate_layers = candidate_layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "umbric_horizon",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Umbric horizon",
+    notes     = if (length(candidate_layers) == 0L) {
+                   "No surface-related candidate layers"
+                 } else NA_character_
+  )
+}
+
+
+#' Duric horizon (WRB 2022)
+#'
+#' Tests for >= 15\% volume of duripan nodules (Si-cemented) within a
+#' horizon at least 15 cm thick. Diagnostic of Durisols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Minimum thickness (cm; default 15).
+#' @param min_duripan_pct Minimum duripan volume \% (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#'
+#' v0.3 limitations: petroduric (cemented continuous duripan)
+#' detection is not yet implemented and will be added in v0.4.
+#'
+#' @references IUSS Working Group WRB (2022), Chapter 3, Duric horizon.
+#' @export
+duric_horizon <- function(pedon, min_thickness = 15, min_duripan_pct = 15) {
+  h <- pedon$horizons
+
+  tests <- list()
+  tests$duripan   <- test_duripan_concentration(h, min_pct = min_duripan_pct)
+  tests$thickness <- test_minimum_thickness(h,
+                                              min_cm           = min_thickness,
+                                              candidate_layers = tests$duripan$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "duric_horizon",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Duric horizon"
+  )
+}
+
+
 #' Salic horizon (WRB 2022)
 #'
 #' Tests whether any horizon meets the salic horizon criteria. The

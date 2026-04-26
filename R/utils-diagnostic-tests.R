@@ -1123,6 +1123,336 @@ test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
 }
 
 
+# ============================================================ v0.3a sub-tests ====
+
+#' Test that organic carbon is at or above a threshold
+#'
+#' Default 12\% (histic horizon, WRB 2022 Chapter 3).
+#'
+#' @export
+test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$oc_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "oc_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, oc_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that a candidate layer starts at or above a top_cm threshold
+#'
+#' Used to require surface contact (default top_cm <= 0, i.e., layer
+#' must reach the surface) or near-surface presence.
+#'
+#' @export
+test_top_at_or_above <- function(h, max_top_cm = 0,
+                                    candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$top_cm[i]
+    if (is.na(val)) {
+      missing <- c(missing, "top_cm")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, top_cm = val,
+      threshold = max_top_cm, passed = val <= max_top_cm
+    )
+    if (val <= max_top_cm) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that a horizon designation matches a regex pattern
+#'
+#' Useful for diagnostics that key on field-described features
+#' (e.g., glossic tongues for retic, R / Cr for leptic, "f" suffix
+#' for cryic / frozen, hortic / irragric / plaggic / pretic / terric
+#' for anthric).
+#'
+#' @param pattern A regex (case-insensitive).
+#' @export
+test_designation_pattern <- function(h, pattern,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$designation[i]
+    if (is.na(val)) {
+      missing <- c(missing, "designation")
+      next
+    }
+    ok <- grepl(pattern, val, ignore.case = TRUE)
+    details[[as.character(i)]] <- list(
+      idx = i, designation = val,
+      pattern = pattern, passed = ok
+    )
+    if (ok) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for coarse texture throughout the upper part of the profile
+#'
+#' Default predicate: \code{silt + 2 * clay < 15} (loamy sand or
+#' coarser) in EVERY layer that intersects the upper
+#' \code{max_top_cm} (default 100). Diagnostic for Arenosols.
+#'
+#' @export
+test_coarse_texture_throughout <- function(h, max_top_cm = 100,
+                                              candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
+  if (length(cl) == 0L) {
+    return(.subtest_result(passed = FALSE, layers = integer(0)))
+  }
+
+  passing <- integer(0); missing <- character(0); details <- list()
+  all_coarse <- TRUE
+  for (i in cl) {
+    s <- is_loamy_sand_or_finer(h$sand_pct[i], h$silt_pct[i], h$clay_pct[i])
+    if (is.na(s)) {
+      missing <- c(missing, "sand_pct", "silt_pct", "clay_pct")
+      all_coarse <- NA
+      next
+    }
+    is_coarse <- !s   # loamy sand boundary -- if NOT loamy-sand-or-finer, coarse
+    # Actually arenic uses "loamy sand or coarser" = NOT sandy loam or finer
+    # silt + 2*clay < 30 is "coarser than sandy loam"
+    is_coarse <- (h$silt_pct[i] + 2 * h$clay_pct[i]) < 30
+    details[[as.character(i)]] <- list(
+      idx = i, sand = h$sand_pct[i], silt = h$silt_pct[i],
+      clay = h$clay_pct[i],
+      silt_plus_2clay = h$silt_pct[i] + 2 * h$clay_pct[i],
+      is_coarse = is_coarse
+    )
+    if (is_coarse) {
+      passing <- c(passing, i)
+    } else {
+      all_coarse <- FALSE
+    }
+  }
+
+  passed <- if (isTRUE(all_coarse) && length(passing) == length(cl)) TRUE
+            else if (is.na(all_coarse) && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test the andic Al/Fe oxalate criterion: (al_ox + 0.5*fe_ox) >= 2.0\%
+#'
+#' Distinct from spodic (which uses 0.5\%); the andic threshold is
+#' four times higher per WRB 2022 Chapter 3.
+#'
+#' @export
+test_andic_alfe <- function(h, min_pct = 2.0, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    al_ox <- h$al_ox_pct[i]; fe_ox <- h$fe_ox_pct[i]
+    if (is.na(al_ox) || is.na(fe_ox)) {
+      if (is.na(al_ox)) missing <- c(missing, "al_ox_pct")
+      if (is.na(fe_ox)) missing <- c(missing, "fe_ox_pct")
+      next
+    }
+    val <- al_ox + fe_ox / 2
+    details[[as.character(i)]] <- list(
+      idx = i, al_ox = al_ox, fe_ox = fe_ox,
+      al_plus_half_fe = val, threshold = min_pct,
+      passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that bulk density is at or below a threshold
+#'
+#' Default 0.9 g/cm^3 (andic property, WRB 2022).
+#'
+#' @export
+test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$bulk_density_g_cm3[i]
+    if (is.na(val)) {
+      missing <- c(missing, "bulk_density_g_cm3")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, bulk_density_g_cm3 = val,
+      threshold = max_g_cm3, passed = val <= max_g_cm3
+    )
+    if (val <= max_g_cm3) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that artefacts_pct >= threshold within the upper max_top_cm
+#'
+#' Default 20\% by volume (Technosols criterion, WRB 2022).
+#'
+#' @export
+test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
+                                            candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$artefacts_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "artefacts_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, artefacts_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that duripan_pct >= threshold (Si-cemented nodules)
+#'
+#' Default 15\% (duric horizon, WRB 2022).
+#'
+#' @export
+test_duripan_concentration <- function(h, min_pct = 15,
+                                          candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$duripan_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "duripan_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, duripan_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for fluvic stratification: irregular OC pattern + texture
+#' variability across consecutive horizons
+#'
+#' v0.3 simplified: returns TRUE when (a) at least 3 layers within the
+#' upper 100 cm exist, AND (b) clay_pct varies by >= 8 percentage
+#' points across consecutive layers (indicating depositional
+#' alternation), AND (c) OC does not decrease monotonically with depth.
+#'
+#' @export
+test_fluvic_stratification <- function(h, max_top_cm = 100,
+                                          min_clay_swing = 8) {
+  cl <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
+  if (length(cl) < 3L) {
+    return(.subtest_result(
+      passed = FALSE, layers = integer(0),
+      notes = sprintf("Need >= 3 layers within top %g cm; have %d",
+                       max_top_cm, length(cl))
+    ))
+  }
+
+  clays <- h$clay_pct[cl]
+  ocs   <- h$oc_pct[cl]
+
+  if (any(is.na(clays))) {
+    return(.subtest_result(passed = NA, layers = integer(0),
+                            missing = "clay_pct"))
+  }
+
+  swings <- abs(diff(clays))
+  texture_alternates <- any(swings >= min_clay_swing)
+
+  oc_irregular <- if (any(is.na(ocs))) NA
+                   else any(diff(ocs) > 0.1)   # any increase with depth
+
+  if (is.na(oc_irregular)) {
+    # We can still flag based on texture alone, but mark missing
+    if (texture_alternates) {
+      return(.subtest_result(passed = TRUE, layers = cl,
+                              missing = "oc_pct",
+                              notes = "Stratification by texture; OC pattern unverified"))
+    } else {
+      return(.subtest_result(passed = FALSE, layers = integer(0),
+                              missing = "oc_pct"))
+    }
+  }
+
+  passed <- texture_alternates && oc_irregular
+  .subtest_result(
+    passed  = passed,
+    layers  = if (passed) cl else integer(0),
+    details = list(
+      texture_swings   = swings,
+      texture_alternates = texture_alternates,
+      oc_diffs         = diff(ocs),
+      oc_irregular     = oc_irregular
+    )
+  )
+}
+
+
 # ============================================================== aggregation ====
 
 #' Aggregate sub-test results into a passed/missing summary

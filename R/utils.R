@@ -80,7 +80,10 @@ horizon_column_spec <- function() {
     ec_dS_m                       = "numeric",   # electrical conductivity (saturated paste, 25C)
     plinthite_pct                 = "numeric",   # volume % of plinthite (Fe-rich nodules / mottles)
     redoximorphic_features_pct    = "numeric",   # volume % of Fe/Mn redox features
-    slickensides                  = "character"  # absent / few / common / many / continuous
+    slickensides                  = "character", # absent / few / common / many / continuous
+    # ---- v0.3 additions: technic, duric ----
+    artefacts_pct                 = "numeric",   # volume % of human artefacts (for Technosols)
+    duripan_pct                   = "numeric"    # volume % of Si-cemented duripan (for Durisols)
   )
 }
 
