@@ -830,7 +830,7 @@ Esse benchmark é o núcleo empírico do paper (candidatos: *SoftwareX*, *Geoder
 |---|---|---|
 | v0.1 | Esqueleto, classes core, 3 diagnósticos WRB (argic, ferralic, mollic), Ferralsols end-to-end. | **shipped (commit `613c3f2`)** |
 | v0.2 | +8 diagnósticos WRB (calcic, gypsic, salic, cambic, plinthic, spodic, gleyic_properties, vertic_properties); +7 diagnósticos RSG-derivados (acrisol, lixisol, alisol, luvisol, chernozem, kastanozem, phaeozem); 16/32 RSGs ligados na chave; scaffolds Módulo 5 (USDA) e Módulo 6 (SiBCS). | **shipped (5 commits, `8077adb`...`8a7d6d9`)** |
-| v0.3 | Restantes 16 RSGs (HS, AT, TC, CR, LP, SN, AN, NT, PL, ST, UM, DU, RT, AR, FL); WRB qualifier resolution; Petros— variantes. | 1–2 meses |
+| v0.3 | +15 diagnósticos WRB (histic, leptic, arenic, umbric, duric, technic, andic, fluvic, natric, nitic, planic, stagnic, retic, cryic, anthric); **chave WRB 32/32 RSGs ligados end-to-end**; 31 fixtures canônicas; refinamento gleyic/stagnic via padrão de decay; nitic/ferralic exclusion. | **shipped (3 commits, v0.3a-c)** |
 | v0.4 | Módulo 4 — integração OSSL, MBL, PLSR local. | 3 semanas |
 | v0.5 | Módulo 3 — SoilGrids prior + Embrapa raster. | 2 semanas |
 | v0.6 | Módulo 2 — VLM extraction via ellmer. | 1 mês |

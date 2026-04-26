@@ -38,22 +38,44 @@
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
 #' @export
-gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5) {
+gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
+                                 stagnic_decay_factor = 3) {
   h <- pedon$horizons
 
   tests <- list()
   tests$gleyic_features <- test_gleyic_features(h,
                                                    max_top_cm    = max_top_cm,
                                                    min_redox_pct = min_redox_pct)
+  # Refined v0.3 criterion: gleyic vs stagnic discrimination.
+  # Gleyic implies groundwater saturation, so redox features should
+  # CONTINUE with depth (no substantial decay). If redox decays with
+  # depth by stagnic_decay_factor, the profile is more consistent
+  # with stagnic / perched-water regime and gleyic_properties must
+  # NOT fire (otherwise Stagnosols would never key correctly given
+  # GL @ #9 < ST @ #16 in the canonical WRB order).
+  tests$stagnic_pattern <- test_stagnic_pattern(h,
+                                                   max_top_cm    = max_top_cm,
+                                                   min_redox_pct = min_redox_pct,
+                                                   decay_factor  = stagnic_decay_factor)
 
-  agg <- aggregate_subtests(tests)
+  features_ok <- isTRUE(tests$gleyic_features$passed)
+  stagnic_pat <- isTRUE(tests$stagnic_pattern$passed)
+  any_na      <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
+
+  passed <- if (features_ok && !stagnic_pat) TRUE
+            else if (any_na && !features_ok) NA
+            else FALSE
+
+  layers <- if (isTRUE(passed)) tests$gleyic_features$layers else integer(0)
+  missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
+  if (is.null(missing)) missing <- character(0)
 
   DiagnosticResult$new(
     name      = "gleyic_properties",
-    passed    = agg$passed,
-    layers    = agg$layers,
+    passed    = passed,
+    layers    = layers,
     evidence  = tests,
-    missing   = agg$missing,
+    missing   = missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Gleyic properties"
   )
 }

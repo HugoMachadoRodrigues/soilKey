@@ -1,53 +1,79 @@
 version: "WRB 2022 (4th edition)"
-implementation_status: "soilKey v0.2"
+implementation_status: "soilKey v0.3 -- 32/32 RSGs wired end-to-end"
 source: |
   IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
   International soil classification system for naming soils and creating
   legends for soil maps. 4th edition. International Union of Soil Sciences,
   Vienna.
 
-# Each RSG is tested in canonical key order. The first whose tests pass
-# is assigned. Tests marked `not_implemented_v01:` return NA; the
-# engine continues. Default catch-all is RG (Regosols).
+# All 32 RSGs are wired in canonical key order. The first whose tests
+# pass is assigned. Default catch-all is RG (Regosols).
 #
-# v0.2 wires 15 of the 32 RSGs end-to-end:
-#   FR, VR, SC, GL, PZ, PT, CH, KS, PH, GY, CL, AC, LX, AL, LV, CM, RG
-# (16 explicit + RG default = 17 of 32). The remaining 15 require
-# additional horizons (histic, hortic, anthric, cryic, technic,
-# leptic, natric, nitic, andic, planic, stagnic, umbric, duric,
-# retic, fluvic, arenic) and are scheduled for v0.3.
+# v0.3 simplifications (documented in each diagnostic's roxygen):
+#   - Histosols: histic_horizon detects 10cm contiguous organic from
+#     surface only; cumulative-thickness variant is v0.4.
+#   - Anthrosols: anthric_horizons uses designation pattern matching
+#     hortic|irragric|plaggic|pretic|terric (5 horizon types).
+#   - Technosols: only the artefacts >= 20% path is wired; the
+#     geomembrane and technic-hard-material alternatives are v0.4.
+#   - Cryosols: cryic_conditions detects via designation pattern (^Cf,
+#     -f suffix, perma-); explicit permafrost depth is v0.4.
+#   - Leptosols: leptic_features detects via R / Cr designation; the
+#     coarse-fragments-90% alternative is v0.4.
+#   - Solonetz: natric_horizon = argic + ESP >= 15.
+#   - Andosols: andic_properties = (Al_ox + 0.5*Fe_ox) >= 2 AND
+#     bulk_density <= 0.9; phosphate-retention and glass-content
+#     alternatives are v0.4.
+#   - Nitisols: nitic_horizon = clay >= 30 + Fe_DCB >= 4 +
+#     thickness >= 30; polyhedral-structure / shiny-peds /
+#     gradual-clay-decrease tests are v0.4.
+#   - Planosols: planic_features = clay-doubling + abrupt boundary.
+#   - Stagnosols: stagnic_properties = redox in shallow + decay
+#     with depth (perched-water signature). gleyic_properties was
+#     refined in v0.3 to require non-decay so GL and ST are mutually
+#     exclusive.
+#   - Retisols: retic_properties detects via glossic|retic|albeluvic
+#     designation pattern.
+#   - Fluvisols: fluvic_material = stratified texture + non-monotone
+#     OC; the < 100-year-age criterion is implicit.
 
 rsgs:
 
   - code: HS
     name: Histosols
     tests:
-      not_implemented_v01: histic_horizon
+      all_of:
+        - histic_horizon: {}
 
   - code: AT
     name: Anthrosols
     tests:
-      not_implemented_v01: anthric_horizons
+      all_of:
+        - anthric_horizons: {}
 
   - code: TC
     name: Technosols
     tests:
-      not_implemented_v01: technic_features
+      all_of:
+        - technic_features: {}
 
   - code: CR
     name: Cryosols
     tests:
-      not_implemented_v01: cryic_conditions
+      all_of:
+        - cryic_conditions: {}
 
   - code: LP
     name: Leptosols
     tests:
-      not_implemented_v01: shallow_continuous_rock
+      all_of:
+        - leptic_features: {}
 
   - code: SN
     name: Solonetz
     tests:
-      not_implemented_v01: natric_horizon
+      all_of:
+        - natric_horizon: {}
 
   - code: VR
     name: Vertisols
@@ -70,7 +96,8 @@ rsgs:
   - code: AN
     name: Andosols
     tests:
-      not_implemented_v01: andic_properties
+      all_of:
+        - andic_properties: {}
 
   - code: PZ
     name: Podzols
@@ -87,28 +114,26 @@ rsgs:
   - code: NT
     name: Nitisols
     tests:
-      not_implemented_v01: nitic_horizon
+      all_of:
+        - nitic_horizon: {}
 
   - code: FR
     name: Ferralsols
     tests:
       all_of:
         - ferralic: {}
-    notes: |
-      v0.1: tests the ferralic horizon directly. WRB 2022 Ferralsol
-      also requires the ferralic horizon to begin within 150 cm and no
-      argic / nitic horizon above; these depth gates are scheduled for
-      v0.3 (full key resolution).
 
   - code: PL
     name: Planosols
     tests:
-      not_implemented_v01: planic_features
+      all_of:
+        - planic_features: {}
 
   - code: ST
     name: Stagnosols
     tests:
-      not_implemented_v01: stagnic_properties
+      all_of:
+        - stagnic_properties: {}
 
   - code: CH
     name: Chernozems
@@ -131,12 +156,14 @@ rsgs:
   - code: UM
     name: Umbrisols
     tests:
-      not_implemented_v01: umbric_horizon
+      all_of:
+        - umbric_horizon: {}
 
   - code: DU
     name: Durisols
     tests:
-      not_implemented_v01: duric_horizon
+      all_of:
+        - duric_horizon: {}
 
   - code: GY
     name: Gypsisols
@@ -153,7 +180,8 @@ rsgs:
   - code: RT
     name: Retisols
     tests:
-      not_implemented_v01: retic_properties
+      all_of:
+        - retic_properties: {}
 
   - code: AC
     name: Acrisols
@@ -188,12 +216,14 @@ rsgs:
   - code: AR
     name: Arenosols
     tests:
-      not_implemented_v01: coarse_texture
+      all_of:
+        - arenic_texture: {}
 
   - code: FL
     name: Fluvisols
     tests:
-      not_implemented_v01: fluvic_material
+      all_of:
+        - fluvic_material: {}
 
   - code: RG
     name: Regosols

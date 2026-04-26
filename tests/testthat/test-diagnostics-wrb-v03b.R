@@ -25,12 +25,15 @@ test_that("nitic_horizon passes on canonical Nitisol fixture", {
   expect_true(isTRUE(res$passed))
 })
 
-test_that("nitic_horizon fails on Ferralsol (lower clay/Fe in upper Bw)", {
-  # Ferralsol has clay >= 30 and high Fe but our v0.3 simplified test
-  # also passes on Ferralsol -- this overlap is expected and resolved
-  # by WRB key order (NT @ #13 before FR @ #14).
+test_that("nitic_horizon excludes profiles with ferralic horizon", {
+  # The Ferralsol fixture has clay >= 30 and high Fe -- those criteria
+  # alone would let nitic pass. v0.3 added an explicit ferralic
+  # exclusion to nitic_horizon so that NT @ #13 in the WRB key does
+  # not steal the assignment from FR @ #14.
   pr <- make_ferralsol_canonical()
-  expect_true(isTRUE(nitic_horizon(pr)$passed))
+  res <- nitic_horizon(pr)
+  expect_false(isTRUE(res$passed))
+  expect_match(res$notes, "ferralic")
 })
 
 test_that("planic_features passes on canonical Planosol fixture", {

@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 `soilKey` provides automated soil profile classification under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key itself is implemented as deterministic R code driven by versioned YAML rules; vision-language extraction, spatial priors, and OSSL-based attribute prediction sit alongside it as modular layers, never inside it.
 
-This vignette walks through the v0.2 deliverable: building a `PedonRecord`, calling the eleven implemented WRB 2022 horizon and property diagnostics directly, classifying canonical fixtures end-to-end through the wired key, and watching the evidence grade respond to provenance.
+This vignette walks through the v0.3 deliverable: building a `PedonRecord`, calling the 26 implemented WRB 2022 diagnostics directly, classifying any of the 31 canonical fixtures end-to-end through the fully-wired WRB key (32/32 RSGs), and watching the evidence grade respond to provenance.
 
 ```{r load}
 library(soilKey)
@@ -188,7 +188,7 @@ aqp::profile_id(spc)
 |---------|----------------------------------------------------------------------------------------------------------------------|
 | v0.1    | Core classes; argic, ferralic, mollic; Ferralsols path                                                               |
 | v0.2    | +calcic, gypsic, salic, cambic, plinthic, spodic, gleyic, vertic; +AC/LX/AL/LV/CH/KS/PH RSG diagnostics; 16/32 wired |
-| v0.3    | Remaining 16 RSGs (Histosols, Anthrosols, Technosols, Cryosols, Leptosols, Solonetz, Andosols, Nitisols, Planosols, Stagnosols, Umbrisols, Durisols, Retisols, Arenosols, Fluvisols); WRB qualifier resolution |
+| **v0.3**| **+histic, leptic, arenic, umbric, duric, technic, andic, fluvic, natric, nitic, planic, stagnic, retic, cryic, anthric; full WRB key (32/32 RSGs wired); 31 canonical fixtures** |
 | v0.4    | Module 4 -- OSSL spectroscopy bridge (MBL, PLSR-local, pretrained)                                                   |
 | v0.5    | Module 3 -- SoilGrids spatial prior + Brazilian Embrapa raster                                                       |
 | v0.6    | Module 2 -- Multimodal extraction (PDF/photo -> structured horizons via `ellmer`)                                    |

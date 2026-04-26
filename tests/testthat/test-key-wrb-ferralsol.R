@@ -6,15 +6,19 @@ test_that("classify_wrb2022 assigns Ferralsols to canonical Ferralsol fixture", 
   expect_equal(res$evidence_grade, "A")
 })
 
-test_that("trace shows expected NAs for stubbed RSGs before Ferralsols", {
+test_that("trace evaluates RSGs before Ferralsols without short-circuiting", {
+  # In v0.1 the RSGs before FR were all not_implemented_v01 stubs
+  # returning NA. In v0.3 they are all wired with real diagnostics;
+  # for the canonical Ferralsol fixture they correctly fail (FALSE)
+  # or, where a required attribute is missing, return NA. The key
+  # property we test is that none short-circuits with passed=TRUE
+  # and that FR PASSES.
   pr <- make_ferralsol_canonical()
-  res <- classify_wrb2022(pr)
+  res <- classify_wrb2022(pr, on_missing = "silent")
 
-  # The 13 RSGs before FR (HS, AT, TC, CR, LP, SN, VR, SC, GL, AN, PZ,
-  # PT, NT) are all stubbed in v0.1 -> all NA.
   pre_fr <- res$trace[1:13]
-  na_codes <- vapply(pre_fr, function(t) is.na(t$passed), logical(1))
-  expect_true(all(na_codes))
+  pre_passed <- vapply(pre_fr, function(t) isTRUE(t$passed), logical(1))
+  expect_false(any(pre_passed))
 
   expect_true(isTRUE(res$trace$FR$passed))
 })
@@ -90,10 +94,13 @@ test_that("load_rules returns a parsed rule set with 32 RSGs", {
   expect_equal(codes[length(codes)], "RG")
 })
 
-test_that("trace records notes for stubbed RSGs", {
+test_that("HS is no longer a stub (v0.3 wiring)", {
+  # In v0.1 / v0.2 HS used the not_implemented_v01 marker which set a
+  # 'scheduled' note. In v0.3 HS is wired with histic_horizon and
+  # the trace reports a real evaluation -- no scheduled note.
   pr <- make_ferralsol_canonical()
-  res <- classify_wrb2022(pr)
-  expect_match(res$trace$HS$notes, "scheduled")
+  res <- classify_wrb2022(pr, on_missing = "silent")
+  expect_false(is.na(res$trace$HS$passed))
 })
 
 test_that("ClassificationResult prints without error", {

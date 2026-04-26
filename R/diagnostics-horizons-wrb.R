@@ -674,7 +674,34 @@ natric_horizon <- function(pedon, min_esp = 15) {
 nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
                             min_thickness = 30) {
   h <- pedon$horizons
+
+  # WRB exclusion: a profile with a ferralic horizon does not key to
+  # Nitisols. The two diagnostics overlap on the clay-rich + Fe-rich
+  # axis but differ in clay activity (ferralic = low CEC/clay; nitic
+  # accepts higher activity). Without this exclusion, Ferralsol
+  # fixtures would key to Nitisols at position 13 instead of
+  # Ferralsols at position 14.
+  fer <- ferralic(pedon)
+  if (isTRUE(fer$passed)) {
+    return(DiagnosticResult$new(
+      name      = "nitic_horizon",
+      passed    = FALSE,
+      layers    = integer(0),
+      evidence  = list(ferralic = fer),
+      missing   = fer$missing %||% character(0),
+      reference = "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon",
+      notes     = "Excluded -- profile has a ferralic horizon (Ferralsol path)"
+    ))
+  }
+
   tests <- list()
+  tests$not_ferralic <- list(
+    passed  = !isTRUE(fer$passed),
+    layers  = if (isTRUE(fer$passed)) integer(0) else seq_len(nrow(h)),
+    missing = fer$missing %||% character(0),
+    details = list(ferralic_passed = fer$passed),
+    notes   = NA_character_
+  )
   tests$clay      <- test_clay_above(h, min_pct = min_clay)
   tests$fe_dcb    <- test_fe_dcb_above(h, min_pct = min_fe_dcb,
                                           candidate_layers = tests$clay$layers)
