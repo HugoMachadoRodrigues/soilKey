@@ -1057,6 +1057,72 @@ test_al_saturation_below <- function(h, max_pct = 50,
 }
 
 
+# ============================================================ v0.2d sub-tests ====
+
+#' Test for any layer with caco3_pct above a (low) threshold
+#'
+#' Default threshold is 0.01\% -- effectively "any measurable secondary
+#' carbonate". Used to distinguish Phaeozems (no carbonates within 100
+#' cm) from Chernozems and Kastanozems.
+#'
+#' @export
+test_carbonates_present <- function(h, min_pct = 0.01,
+                                      candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$caco3_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "caco3_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, caco3_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for chroma <= 2 (moist) within the upper part of the profile
+#'
+#' Default upper boundary is 20 cm (Chernozem criterion: dark colour in
+#' the upper 20 cm of the mollic horizon).
+#'
+#' @export
+test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
+                                  candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$munsell_chroma_moist[i]
+    if (is.na(val)) {
+      missing <- c(missing, "munsell_chroma_moist")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, top_cm = h$top_cm[i], chroma_moist = val,
+      threshold = max_chroma, passed = val <= max_chroma
+    )
+    if (val <= max_chroma) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
 # ============================================================== aggregation ====
 
 #' Aggregate sub-test results into a passed/missing summary

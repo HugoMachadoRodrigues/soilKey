@@ -37,7 +37,9 @@ fixtures <- list(
   vertisol_canonical   = make_vertisol_canonical(),
   acrisol_canonical    = make_acrisol_canonical(),
   lixisol_canonical    = make_lixisol_canonical(),
-  alisol_canonical     = make_alisol_canonical()
+  alisol_canonical     = make_alisol_canonical(),
+  kastanozem_canonical = make_kastanozem_canonical(),
+  phaeozem_canonical   = make_phaeozem_canonical()
 )
 
 for (nm in names(fixtures)) {

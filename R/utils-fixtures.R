@@ -969,6 +969,153 @@ make_alisol_canonical <- function() {
 }
 
 
+#' Build the canonical Kastanozem fixture
+#'
+#' Synthetic continental-semiarid Kastanozem on loess-like substrate:
+#' mollic surface (chroma 3, value 3) -- dark enough for mollic but
+#' not dark enough for Chernozem (chroma 3 > 2 in the upper 20 cm);
+#' secondary carbonates accumulating in the Bk. By construction:
+#' \itemize{
+#'   \item \code{\link{mollic}}: PASSES.
+#'   \item \code{\link{kastanozem}}: PASSES.
+#'   \item \code{\link{chernozem}}, \code{\link{phaeozem}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_kastanozem_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    25,   60,   100),
+    bottom_cm                  = c(25,   60,   100,  150),
+    designation                = c("A",  "AB", "Bk", "Ck"),
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
+    munsell_value_moist        = c(3,    4,    5,    5),
+    munsell_chroma_moist       = c(3,    3,    3,    3),
+    munsell_value_dry          = c(5,    6,    7,    7),
+    munsell_chroma_dry         = c(3,    3,    3,    3),
+    structure_grade            = c("strong","moderate","weak","weak"),
+    structure_size             = c("medium","medium","medium","medium"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky","massive"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    coarse_fragments_pct       = c(0,    0,    0,    2),
+    clay_pct                   = c(22,   23,   23,   22),
+    silt_pct                   = c(48,   48,   48,   48),
+    sand_pct                   = c(30,   29,   29,   30),
+    ph_h2o                     = c(7.0,  7.4,  7.9,  8.2),
+    ph_kcl                     = c(6.5,  6.9,  7.3,  7.5),
+    oc_pct                     = c(2.0,  1.0,  0.5,  0.2),
+    cec_cmol                   = c(22,   20,   18,   16),
+    ca_cmol                    = c(15,   14,   14,   13),
+    mg_cmol                    = c(3,    3,    3,    2.5),
+    k_cmol                     = c(0.4,  0.3,  0.2,  0.2),
+    na_cmol                    = c(0.1,  0.1,  0.1,  0.1),
+    al_cmol                    = c(0,    0,    0,    0),
+    bs_pct                     = c(84,   87,   97,   99),
+    al_sat_pct                 = c(0,    0,    0,    0),
+    caco3_pct                  = c(0,    0,    7,    14),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.20, 1.30, 1.40, 1.45)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "KS-canonical-01",
+      lat             = 50.5,
+      lon             = 53.5,
+      crs             = 4326,
+      date            = as.Date("2023-07-01"),
+      country         = "KZ",
+      parent_material = "calcareous loess",
+      elevation_m     = 250,
+      slope_pct       = 1,
+      land_use        = "extensive grain cropping",
+      vegetation      = "former dry steppe",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Phaeozem fixture
+#'
+#' Synthetic humid-temperate Phaeozem on non-calcareous loess: mollic
+#' (chroma 2, value 2-3) and high BS, but no secondary carbonates
+#' anywhere -- typical of more leached / less-arid steppe-forest
+#' transition. By construction:
+#' \itemize{
+#'   \item \code{\link{mollic}}: PASSES.
+#'   \item \code{\link{phaeozem}}: PASSES.
+#'   \item \code{\link{chernozem}}, \code{\link{kastanozem}}: FAIL
+#'         (no carbonates).
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_phaeozem_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    30,   60,   100),
+    bottom_cm                  = c(30,   60,   100,  150),
+    designation                = c("Ah", "AB", "Bw", "C"),
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
+    munsell_value_moist        = c(2,    3,    4,    5),
+    munsell_chroma_moist       = c(2,    2,    3,    4),
+    munsell_value_dry          = c(3,    4,    5,    6),
+    munsell_chroma_dry         = c(2,    2,    3,    4),
+    structure_grade            = c("strong","moderate","weak","weak"),
+    structure_size             = c("medium","medium","medium","medium"),
+    structure_type             = c("granular","subangular blocky",
+                                     "subangular blocky","massive"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    coarse_fragments_pct       = c(0,    0,    2,    5),
+    clay_pct                   = c(25,   26,   27,   25),
+    silt_pct                   = c(50,   50,   48,   48),
+    sand_pct                   = c(25,   24,   25,   27),
+    ph_h2o                     = c(6.5,  6.7,  6.8,  6.9),
+    ph_kcl                     = c(5.9,  6.1,  6.2,  6.3),
+    oc_pct                     = c(4.0,  2.0,  0.8,  0.3),
+    cec_cmol                   = c(28,   25,   22,   20),
+    ca_cmol                    = c(18,   16,   15,   14),
+    mg_cmol                    = c(4,    4,    4,    3.5),
+    k_cmol                     = c(0.5,  0.4,  0.3,  0.2),
+    na_cmol                    = c(0.1,  0.1,  0.1,  0.1),
+    al_cmol                    = c(0,    0,    0,    0),
+    bs_pct                     = c(81,   82,   88,   89),
+    al_sat_pct                 = c(0,    0,    0,    0),
+    caco3_pct                  = c(0,    0,    0,    0),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.10, 1.20, 1.30, 1.40)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "PH-canonical-01",
+      lat             = 39.5,
+      lon             = -88.0,
+      crs             = 4326,
+      date            = as.Date("2023-09-22"),
+      country         = "US",
+      parent_material = "leached loess",
+      elevation_m     = 220,
+      slope_pct       = 2,
+      land_use        = "corn-soybean rotation",
+      vegetation      = "former tall-grass prairie / oak savanna",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
 #' Build the canonical Chernozem fixture
 #'
 #' Synthetic Ukrainian / Russian steppe Chernozem on loess: thick dark

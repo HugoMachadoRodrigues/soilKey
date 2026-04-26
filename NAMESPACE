@@ -24,6 +24,11 @@ export(lixisol)
 export(alisol)
 export(luvisol)
 
+# ---- WRB 2022 mollic-derived RSG diagnostics ----
+export(chernozem)
+export(kastanozem)
+export(phaeozem)
+
 # ---- WRB 2022 sub-tests (exported for auditability) ----
 export(test_clay_increase_argic)
 export(test_minimum_thickness)
@@ -51,6 +56,8 @@ export(test_bs_above)
 export(test_bs_below)
 export(test_al_saturation_above)
 export(test_al_saturation_below)
+export(test_carbonates_present)
+export(test_chernic_color)
 
 # ---- key + classification ----
 export(classify_wrb2022)
@@ -73,6 +80,8 @@ export(make_vertisol_canonical)
 export(make_acrisol_canonical)
 export(make_lixisol_canonical)
 export(make_alisol_canonical)
+export(make_kastanozem_canonical)
+export(make_phaeozem_canonical)
 export(make_empty_horizons)
 
 # ---- utilities ----
