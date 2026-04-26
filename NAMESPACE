@@ -18,6 +18,12 @@ export(spodic)
 export(gleyic_properties)
 export(vertic_properties)
 
+# ---- WRB 2022 argic-derived RSG diagnostics ----
+export(acrisol)
+export(lixisol)
+export(alisol)
+export(luvisol)
+
 # ---- WRB 2022 sub-tests (exported for auditability) ----
 export(test_clay_increase_argic)
 export(test_minimum_thickness)
@@ -40,6 +46,11 @@ export(test_ph_below)
 export(test_gleyic_features)
 export(test_clay_above)
 export(test_slickensides_present)
+export(test_cec_per_clay_above)
+export(test_bs_above)
+export(test_bs_below)
+export(test_al_saturation_above)
+export(test_al_saturation_below)
 
 # ---- key + classification ----
 export(classify_wrb2022)
@@ -59,6 +70,9 @@ export(make_plinthosol_canonical)
 export(make_podzol_canonical)
 export(make_gleysol_canonical)
 export(make_vertisol_canonical)
+export(make_acrisol_canonical)
+export(make_lixisol_canonical)
+export(make_alisol_canonical)
 export(make_empty_horizons)
 
 # ---- utilities ----

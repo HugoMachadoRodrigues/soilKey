@@ -873,6 +873,190 @@ test_ec_concentration <- function(h, min_dS_m = 15,
 }
 
 
+# ============================================================ v0.2c sub-tests ====
+
+#' Compute aluminium saturation (\%) from exchangeable bases and Al
+#'
+#' Returns \code{al_cmol / (ca + mg + k + na + al) * 100}, or NA if any
+#' input is missing or the sum (ECEC) is non-positive.
+#'
+#' @keywords internal
+compute_al_saturation <- function(ca, mg, k, na, al) {
+  parts <- c(ca, mg, k, na, al)
+  if (any(is.na(parts))) return(NA_real_)
+  ecec <- sum(parts)
+  if (ecec <= 0) return(NA_real_)
+  al / ecec * 100
+}
+
+
+#' Test that CEC per kg clay is at or above a threshold
+#'
+#' Default 24 cmol_c/kg clay -- WRB 2022 boundary that distinguishes
+#' "low-activity-clay" RSGs (Acrisols, Lixisols) from "high-activity-
+#' clay" RSGs (Alisols, Luvisols).
+#'
+#' @export
+test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    cpc <- cec_per_clay(h$cec_cmol[i], h$clay_pct[i])
+    details[[as.character(i)]] <- list(
+      idx = i, cec_cmol = h$cec_cmol[i], clay_pct = h$clay_pct[i],
+      cec_per_clay = cpc, threshold = min_cmol_per_kg_clay
+    )
+    if (is.na(cpc)) {
+      if (is.na(h$cec_cmol[i]))  missing <- c(missing, "cec_cmol")
+      if (is.na(h$clay_pct[i]))  missing <- c(missing, "clay_pct")
+      next
+    }
+    details[[as.character(i)]]$passed <- cpc >= min_cmol_per_kg_clay
+    if (cpc >= min_cmol_per_kg_clay) passing <- c(passing, i)
+  }
+  evaluated <- sum(vapply(details, function(d) !is.null(d$passed), logical(1)))
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that base saturation is at or above a threshold
+#'
+#' Default 50\% (Lixisol / Luvisol RSG criterion). Reads
+#' \code{bs_pct} directly.
+#'
+#' @export
+test_bs_above <- function(h, min_pct = 50, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$bs_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "bs_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, bs_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that base saturation is below a threshold
+#'
+#' Default 50\% (Acrisol RSG criterion). Reads \code{bs_pct}.
+#'
+#' @export
+test_bs_below <- function(h, max_pct = 50, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$bs_pct[i]
+    if (is.na(val)) {
+      missing <- c(missing, "bs_pct")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, bs_pct = val,
+      threshold = max_pct, passed = val < max_pct
+    )
+    if (val < max_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that aluminium saturation is at or above a threshold
+#'
+#' Default 50\% (Alisol RSG criterion). Uses \code{al_sat_pct} when
+#' reported; otherwise falls back to
+#' \code{al_cmol / (ca+mg+k+na+al)_cmol * 100}.
+#'
+#' @export
+test_al_saturation_above <- function(h, min_pct = 50,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$al_sat_pct[i]
+    if (is.na(val)) {
+      val <- compute_al_saturation(h$ca_cmol[i], h$mg_cmol[i],
+                                     h$k_cmol[i], h$na_cmol[i],
+                                     h$al_cmol[i])
+    }
+    if (is.na(val)) {
+      missing <- c(missing, "al_sat_pct (or ca+mg+k+na+al_cmol)")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, al_sat_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test that aluminium saturation is below a threshold
+#'
+#' Default 50\% (Luvisol RSG criterion). Uses \code{al_sat_pct} when
+#' reported; otherwise falls back to computation from exchangeable
+#' bases and Al.
+#'
+#' @export
+test_al_saturation_below <- function(h, max_pct = 50,
+                                       candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$al_sat_pct[i]
+    if (is.na(val)) {
+      val <- compute_al_saturation(h$ca_cmol[i], h$mg_cmol[i],
+                                     h$k_cmol[i], h$na_cmol[i],
+                                     h$al_cmol[i])
+    }
+    if (is.na(val)) {
+      missing <- c(missing, "al_sat_pct (or ca+mg+k+na+al_cmol)")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, al_sat_pct = val,
+      threshold = max_pct, passed = val < max_pct
+    )
+    if (val < max_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
 # ============================================================== aggregation ====
 
 #' Aggregate sub-test results into a passed/missing summary

@@ -746,6 +746,229 @@ make_vertisol_canonical <- function() {
 }
 
 
+#' Build the canonical Acrisol fixture
+#'
+#' Synthetic tropical-humid Acrisol on weathered gneiss: argic horizon
+#' at Bt1 with low-activity clay (CEC/clay ~ 17 cmol_c/kg clay) and low
+#' base saturation (BS ~ 25\%). By construction:
+#' \itemize{
+#'   \item \code{\link{argic}}: PASSES on Bt1.
+#'   \item \code{\link{acrisol}}: PASSES (CEC low, BS low).
+#'   \item \code{\link{lixisol}}, \code{\link{alisol}},
+#'         \code{\link{luvisol}}: FAIL.
+#'   \item Other diagnostics: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_acrisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   30,   70),
+    bottom_cm                  = c(15,   30,   70,   150),
+    designation                = c("A",  "E",  "Bt1","Bt2"),
+    munsell_hue_moist          = c("10YR","10YR","5YR","5YR"),
+    munsell_value_moist        = c(4,    5,    4,    4),
+    munsell_chroma_moist       = c(3,    3,    6,    6),
+    munsell_value_dry          = c(5,    6,    5,    5),
+    munsell_chroma_dry         = c(3,    3,    6,    6),
+    structure_grade            = c("moderate","weak","strong","strong"),
+    structure_size             = c("fine","fine","medium","medium"),
+    structure_type             = c("granular","platy","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    clay_films                 = c(NA_character_, NA_character_, "common", "common"),
+    coarse_fragments_pct       = c(2,    2,    5,    8),
+    clay_pct                   = c(22,   18,   35,   38),
+    silt_pct                   = c(30,   28,   25,   22),
+    sand_pct                   = c(48,   54,   40,   40),
+    ph_h2o                     = c(4.5,  4.6,  4.7,  4.8),
+    ph_kcl                     = c(3.9,  4.0,  4.1,  4.2),
+    oc_pct                     = c(1.5,  0.5,  0.3,  0.2),
+    cec_cmol                   = c(8,    6,    6,    6.5),
+    ca_cmol                    = c(0.8,  0.5,  0.6,  0.6),
+    mg_cmol                    = c(0.4,  0.3,  0.4,  0.4),
+    k_cmol                     = c(0.15, 0.10, 0.10, 0.10),
+    na_cmol                    = c(0.05, 0.05, 0.05, 0.05),
+    al_cmol                    = c(0.4,  0.5,  0.4,  0.4),
+    bs_pct                     = c(18,   16,   19,   18),
+    al_sat_pct                 = c(22,   33,   25,   26),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.30, 1.45, 1.45, 1.50)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "AC-canonical-01",
+      lat             = -20.0,
+      lon             = -44.0,
+      crs             = 4326,
+      date            = as.Date("2024-01-15"),
+      country         = "BR",
+      parent_material = "weathered gneiss",
+      elevation_m     = 750,
+      slope_pct       = 12,
+      land_use        = "Eucalyptus plantation",
+      vegetation      = "Mata Atlantica residual",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Lixisol fixture
+#'
+#' Synthetic Mediterranean / sub-tropical Lixisol on weathered
+#' calcareous parent material: argic horizon at Bt1 with low-activity
+#' clay (CEC/clay ~ 20) but high base saturation (BS ~ 70\%) thanks to
+#' carbonate-buffered weathering. By construction:
+#' \itemize{
+#'   \item \code{\link{argic}}: PASSES on Bt1.
+#'   \item \code{\link{lixisol}}: PASSES (CEC low, BS high).
+#'   \item \code{\link{acrisol}}, \code{\link{alisol}},
+#'         \code{\link{luvisol}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_lixisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   30,   70),
+    bottom_cm                  = c(15,   30,   70,   150),
+    designation                = c("A",  "E",  "Bt1","Bt2"),
+    munsell_hue_moist          = c("7.5YR","7.5YR","5YR","5YR"),
+    munsell_value_moist        = c(4,    5,    4,    4),
+    munsell_chroma_moist       = c(3,    3,    6,    6),
+    munsell_value_dry          = c(5,    6,    5,    5),
+    munsell_chroma_dry         = c(3,    3,    6,    6),
+    structure_grade            = c("moderate","weak","strong","strong"),
+    structure_size             = c("fine","fine","medium","medium"),
+    structure_type             = c("granular","platy","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    clay_films                 = c(NA_character_, NA_character_, "common", "many"),
+    coarse_fragments_pct       = c(5,    5,    8,    10),
+    clay_pct                   = c(22,   18,   35,   38),
+    silt_pct                   = c(30,   28,   25,   22),
+    sand_pct                   = c(48,   54,   40,   40),
+    ph_h2o                     = c(6.0,  6.1,  6.2,  6.4),
+    ph_kcl                     = c(5.4,  5.5,  5.6,  5.8),
+    oc_pct                     = c(1.5,  0.5,  0.3,  0.2),
+    cec_cmol                   = c(9,    7,    7,    8),
+    ca_cmol                    = c(5.0,  4.0,  4.0,  5.0),
+    mg_cmol                    = c(1.5,  1.0,  1.0,  1.0),
+    k_cmol                     = c(0.4,  0.3,  0.3,  0.3),
+    na_cmol                    = c(0.1,  0.1,  0.1,  0.1),
+    al_cmol                    = c(0,    0,    0,    0),
+    bs_pct                     = c(78,   77,   77,   80),
+    al_sat_pct                 = c(0,    0,    0,    0),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.30, 1.45, 1.50, 1.55)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "LX-canonical-01",
+      lat             = 35.0,
+      lon             = -7.5,
+      crs             = 4326,
+      date            = as.Date("2023-10-08"),
+      country         = "PT",
+      parent_material = "weathered marl over limestone",
+      elevation_m     = 280,
+      slope_pct       = 6,
+      land_use        = "vineyard",
+      vegetation      = "Mediterranean (degraded)",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Build the canonical Alisol fixture
+#'
+#' Synthetic humid-tropical Alisol on weathered shale: argic horizon
+#' at Bt1 with high-activity clay (CEC/clay ~ 34) AND high Al
+#' saturation (Al sat ~ 70\%); the canonical "young weathering on a 2:1
+#' clay parent that has not yet released enough Al into the
+#' precipitate-stabilised pool". By construction:
+#' \itemize{
+#'   \item \code{\link{argic}}: PASSES on Bt1.
+#'   \item \code{\link{alisol}}: PASSES (CEC high, Al sat high).
+#'   \item \code{\link{acrisol}}, \code{\link{lixisol}},
+#'         \code{\link{luvisol}}: FAIL.
+#' }
+#'
+#' @return A \code{\link{PedonRecord}}.
+#' @export
+make_alisol_canonical <- function() {
+  hz <- data.table::data.table(
+    top_cm                     = c(0,    15,   30,   70),
+    bottom_cm                  = c(15,   30,   70,   150),
+    designation                = c("A",  "E",  "Bt1","Bt2"),
+    munsell_hue_moist          = c("10YR","10YR","7.5YR","7.5YR"),
+    munsell_value_moist        = c(4,    5,    4,    4),
+    munsell_chroma_moist       = c(3,    3,    4,    4),
+    munsell_value_dry          = c(5,    6,    5,    5),
+    munsell_chroma_dry         = c(3,    3,    4,    4),
+    structure_grade            = c("moderate","weak","strong","strong"),
+    structure_size             = c("fine","fine","medium","medium"),
+    structure_type             = c("granular","platy","subangular blocky",
+                                     "subangular blocky"),
+    consistence_moist          = c("friable","friable","firm","firm"),
+    clay_films                 = c(NA_character_, NA_character_, "common", "common"),
+    coarse_fragments_pct       = c(3,    3,    6,    8),
+    clay_pct                   = c(22,   18,   35,   38),
+    silt_pct                   = c(30,   28,   25,   22),
+    sand_pct                   = c(48,   54,   40,   40),
+    ph_h2o                     = c(4.2,  4.3,  4.3,  4.4),
+    ph_kcl                     = c(3.6,  3.7,  3.7,  3.8),
+    oc_pct                     = c(2.0,  0.7,  0.5,  0.3),
+    cec_cmol                   = c(14,   11,   12,   13),
+    ca_cmol                    = c(0.8,  0.6,  0.8,  0.8),
+    mg_cmol                    = c(0.4,  0.3,  0.4,  0.4),
+    k_cmol                     = c(0.15, 0.10, 0.10, 0.10),
+    na_cmol                    = c(0.05, 0.05, 0.05, 0.05),
+    al_cmol                    = c(3.5,  3.0,  4.0,  4.5),
+    bs_pct                     = c(10,   9,    11,   10),
+    al_sat_pct                 = c(72,   74,   75,   77),
+    plinthite_pct              = c(0,    0,    0,    0),
+    redoximorphic_features_pct = c(0,    0,    0,    0),
+    slickensides               = c("absent","absent","absent","absent"),
+    bulk_density_g_cm3         = c(1.25, 1.40, 1.45, 1.50)
+  )
+
+  hz <- ensure_horizon_schema(hz)
+
+  PedonRecord$new(
+    site = list(
+      id              = "AL-canonical-01",
+      lat             = -8.0,
+      lon             = -78.0,
+      crs             = 4326,
+      date            = as.Date("2023-12-03"),
+      country         = "PE",
+      parent_material = "weathered Cretaceous shale",
+      elevation_m     = 1850,
+      slope_pct       = 22,
+      land_use        = "subsistence cropping",
+      vegetation      = "montane forest residual",
+      drainage_class  = "well drained"
+    ),
+    horizons = hz
+  )
+}
+
+
 #' Build the canonical Chernozem fixture
 #'
 #' Synthetic Ukrainian / Russian steppe Chernozem on loess: thick dark

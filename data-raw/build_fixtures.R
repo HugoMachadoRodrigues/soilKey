@@ -34,7 +34,10 @@ fixtures <- list(
   plinthosol_canonical = make_plinthosol_canonical(),
   podzol_canonical     = make_podzol_canonical(),
   gleysol_canonical    = make_gleysol_canonical(),
-  vertisol_canonical   = make_vertisol_canonical()
+  vertisol_canonical   = make_vertisol_canonical(),
+  acrisol_canonical    = make_acrisol_canonical(),
+  lixisol_canonical    = make_lixisol_canonical(),
+  alisol_canonical     = make_alisol_canonical()
 )
 
 for (nm in names(fixtures)) {
