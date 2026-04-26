@@ -1,0 +1,187 @@
+---
+title: "Getting started with soilKey"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with soilKey}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+`soilKey` provides automated soil profile classification under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key itself is implemented as deterministic R code driven by versioned YAML rules; vision-language extraction, spatial priors, and OSSL-based attribute prediction sit alongside it as modular layers, never inside it.
+
+This vignette walks through the v0.1 deliverable: building a `PedonRecord`, calling the three implemented WRB 2022 horizon diagnostics directly, running the WRB key end-to-end on the canonical Ferralsol fixture, and watching the evidence grade respond to provenance.
+
+```{r load}
+library(soilKey)
+```
+
+# 1. Building a PedonRecord from scratch
+
+`PedonRecord` is the central data carrier. It bundles site metadata, the horizons table (with a fixed canonical schema -- see `horizon_column_spec()` for the full list of columns), and optional spectra, images, documents, and a per-attribute provenance log.
+
+```{r build-pedon}
+my_pedon <- PedonRecord$new(
+  site = list(
+    id              = "example-001",
+    lat             = -22.5,
+    lon             = -43.7,
+    country         = "BR",
+    parent_material = "gneiss"
+  ),
+  horizons = data.frame(
+    top_cm      = c(0,  15, 65, 130),
+    bottom_cm   = c(15, 65, 130, 200),
+    designation = c("A", "Bw1", "Bw2", "C"),
+    clay_pct    = c(50, 60,  65,  60),
+    silt_pct    = c(15, 10,  8,   8),
+    sand_pct    = c(35, 30,  27,  32),
+    cec_cmol    = c(8,  5,   4.5, 4),
+    bs_pct      = c(20, 12,  10,  11),
+    ph_h2o      = c(4.8, 4.9, 5.0, 5.1),
+    oc_pct      = c(2.0, 0.4, 0.2, 0.1)
+  )
+)
+
+my_pedon$validate()
+```
+
+The validator catches inverted depths, texture sums far from 100, implausible pH, sum of bases above CEC, Munsell out-of-range, and a handful of other soil-physical sanity checks.
+
+# 2. Canonical fixtures
+
+`soilKey` ships three canonical fixtures designed so that exactly one of the three v0.1 diagnostics passes on each:
+
+```{r fixtures}
+ferralsol <- make_ferralsol_canonical()
+luvisol   <- make_luvisol_canonical()
+chernozem <- make_chernozem_canonical()
+
+ferralsol
+```
+
+# 3. Calling the diagnostics directly
+
+Every diagnostic returns a `DiagnosticResult` carrying the per-sub-test evidence, missing-attribute report, layer indices that satisfied, and the WRB literature reference.
+
+```{r ferralic}
+ferralic(ferralsol)
+```
+
+Notice `passed: PASSED`, the layers that satisfy (Bw1, Bw2), and the named sub-tests (`texture`, `cec_per_clay`, `ecec_per_clay`, `thickness`) -- each themselves with their own pass/fail and details. This level of evidence is what the rule engine and the final `ClassificationResult` build on.
+
+```{r argic}
+argic(ferralsol)
+```
+
+`argic` correctly fails on the Ferralsol fixture: clay content rises gradually (50 -> 60\%) but no consecutive pair satisfies the WRB clay-increase rule.
+
+```{r mollic}
+mollic(ferralsol)
+```
+
+`mollic` also fails: the surface horizon has chroma 4 (above the cap of 3), base saturation 24\% (below 50\%), and is only 15 cm thick.
+
+# 4. Cross-fixture diagnostic behaviour
+
+Each fixture is constructed so that exactly one diagnostic passes:
+
+```{r diagnostic-matrix}
+diag_matrix <- function(p) c(
+  argic    = isTRUE(argic(p)$passed),
+  ferralic = isTRUE(ferralic(p)$passed),
+  mollic   = isTRUE(mollic(p)$passed)
+)
+
+rbind(
+  Ferralsol = diag_matrix(ferralsol),
+  Luvisol   = diag_matrix(luvisol),
+  Chernozem = diag_matrix(chernozem)
+)
+```
+
+This single matrix is the cleanest way to demonstrate that v0.1's three diagnostics are mutually discriminating on canonical profiles. The same shape generalises to v0.2's ten diagnostics and v0.3's full set.
+
+# 5. End-to-end WRB classification
+
+`classify_wrb2022()` consumes a `PedonRecord` and returns a `ClassificationResult` with the full key trace, ambiguities, missing-data hints, and a provenance-aware evidence grade.
+
+```{r classify-ferralsol}
+result <- classify_wrb2022(ferralsol)
+result
+```
+
+The trace shows every RSG that was tested, in canonical key order. RSGs whose diagnostics are stubbed in v0.1 (Histosols through Nitisols) report `NA` and the engine continues; Ferralsols passes and is assigned.
+
+# 6. v0.1 honesty: when the catch-all fires
+
+The Luvisol and Chernozem fixtures pass `argic` and `mollic` respectively, but the WRB RSGs that depend on those diagnostics (Acrisols, Lixisols, Alisols, Luvisols, Retisols for argic; Chernozems, Kastanozems, Phaeozems, Umbrisols for mollic) are not yet wired in v0.1. The classification therefore correctly reports the catch-all (`Regosols`) and surfaces the passing diagnostic in its name and warnings:
+
+```{r classify-luvisol}
+classify_wrb2022(luvisol)
+```
+
+```{r classify-chernozem}
+classify_wrb2022(chernozem)
+```
+
+This behaviour is intentional. Rather than silently misclassifying a Luvisol as a Regosol, v0.1 makes the gap visible: the diagnostic *is* identifiable, the v0.2 release will wire it to the appropriate RSG.
+
+# 7. Provenance and evidence grade
+
+`PedonRecord$add_measurement()` records a value's provenance in a structured log. The final `ClassificationResult$evidence_grade` summarises that log on an A--D scale: A means every recorded value was laboratory-measured, D means the result rests on attributes extracted by VLM or assumed by the user.
+
+```{r provenance}
+ferralsol_v <- make_ferralsol_canonical()
+
+# Mark the Bw1 clay value as predicted from spectroscopy
+ferralsol_v$add_measurement(
+  horizon_idx = 4,
+  attribute   = "clay_pct",
+  value       = 60,
+  source      = "predicted_spectra",
+  confidence  = 0.85,
+  overwrite   = TRUE
+)
+
+classify_wrb2022(ferralsol_v)$evidence_grade
+```
+
+```{r provenance-vlm}
+ferralsol_w <- make_ferralsol_canonical()
+ferralsol_w$add_measurement(1, "clay_pct", 50, "extracted_vlm",
+                              confidence = 0.7, overwrite = TRUE)
+classify_wrb2022(ferralsol_w)$evidence_grade
+```
+
+# 8. Interoperability with `aqp`
+
+`PedonRecord$to_aqp()` returns an `aqp::SoilProfileCollection`, allowing soilKey to plug into aqp's plotting and aggregation tooling without owning that infrastructure:
+
+```{r to-aqp, eval = requireNamespace("aqp", quietly = TRUE)}
+spc <- ferralsol$to_aqp()
+class(spc)
+aqp::profile_id(spc)
+```
+
+# 9. v0.1 scope and the v0.2+ roadmap
+
+| Version | Scope                                                                                            |
+|---------|--------------------------------------------------------------------------------------------------|
+| v0.1    | Core classes; argic, ferralic, mollic; Ferralsols path; canonical fixtures; rule engine          |
+| v0.2    | Ten most common WRB horizons (calcic, cambic, gypsic, gleyic, plinthic, salic, spodic, vertic, ...) wired to their RSGs |
+| v0.3    | Full 32-RSG WRB key with principal qualifiers                                                    |
+| v0.4    | OSSL spectroscopy bridge for attribute gap-filling (MBL, PLSR-local, pretrained)                 |
+| v0.5    | SoilGrids spatial prior + Brazilian Embrapa raster                                               |
+| v0.6    | Multimodal extraction (PDF / photo -> structured horizons via `ellmer`)                          |
+| v0.7    | Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                |
+| v0.8    | All 202 WRB qualifiers; vignettes 05-09; WoSIS benchmark                                         |
+| v1.0    | CRAN submission and methodological paper                                                         |
+
+See `ARCHITECTURE.md` (in the package root) for the full design rationale.

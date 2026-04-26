@@ -1,0 +1,184 @@
+version: "WRB 2022 (4th edition)"
+implementation_status: "soilKey v0.1"
+source: |
+  IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
+  International soil classification system for naming soils and creating
+  legends for soil maps. 4th edition. International Union of Soil Sciences,
+  Vienna.
+
+# Each RSG is tested in canonical key order. The first whose tests pass
+# (any_of, all_of, or default) is assigned. Tests marked
+# `not_implemented_v01:` return NA; the engine continues to the next
+# RSG. The default catch-all is RG (Regosols).
+#
+# v0.1 ships with Ferralsols fully wired; the other 30 mineral RSGs are
+# stubbed and scheduled for v0.2 (10 most common) and v0.3 (full key).
+
+rsgs:
+
+  - code: HS
+    name: Histosols
+    tests:
+      not_implemented_v01: organic_material
+
+  - code: AT
+    name: Anthrosols
+    tests:
+      not_implemented_v01: anthric_horizons
+
+  - code: TC
+    name: Technosols
+    tests:
+      not_implemented_v01: technic_features
+
+  - code: CR
+    name: Cryosols
+    tests:
+      not_implemented_v01: cryic_conditions
+
+  - code: LP
+    name: Leptosols
+    tests:
+      not_implemented_v01: shallow_continuous_rock
+
+  - code: SN
+    name: Solonetz
+    tests:
+      not_implemented_v01: natric_horizon
+
+  - code: VR
+    name: Vertisols
+    tests:
+      not_implemented_v01: vertic_features
+
+  - code: SC
+    name: Solonchaks
+    tests:
+      not_implemented_v01: salic_horizon
+
+  - code: GL
+    name: Gleysols
+    tests:
+      not_implemented_v01: gleyic_properties
+
+  - code: AN
+    name: Andosols
+    tests:
+      not_implemented_v01: andic_properties
+
+  - code: PZ
+    name: Podzols
+    tests:
+      not_implemented_v01: spodic_horizon
+
+  - code: PT
+    name: Plinthosols
+    tests:
+      not_implemented_v01: plinthic_horizon
+
+  - code: NT
+    name: Nitisols
+    tests:
+      not_implemented_v01: nitic_horizon
+
+  - code: FR
+    name: Ferralsols
+    tests:
+      all_of:
+        - ferralic: {}
+    notes: |
+      v0.1: tests the ferralic horizon directly. WRB 2022 Ferralsol also
+      requires that the ferralic horizon begins within 150 cm of the
+      surface and that no nitic or argic horizon is present above. These
+      additional gates are scheduled for v0.3 (full key resolution).
+
+  - code: PL
+    name: Planosols
+    tests:
+      not_implemented_v01: planic_features
+
+  - code: ST
+    name: Stagnosols
+    tests:
+      not_implemented_v01: stagnic_properties
+
+  - code: CH
+    name: Chernozems
+    tests:
+      not_implemented_v01: chernic_horizon
+
+  - code: KS
+    name: Kastanozems
+    tests:
+      not_implemented_v01: kastanozem_diagnostics
+
+  - code: PH
+    name: Phaeozems
+    tests:
+      not_implemented_v01: phaeozem_diagnostics
+
+  - code: UM
+    name: Umbrisols
+    tests:
+      not_implemented_v01: umbric_horizon
+
+  - code: DU
+    name: Durisols
+    tests:
+      not_implemented_v01: duric_horizon
+
+  - code: GY
+    name: Gypsisols
+    tests:
+      not_implemented_v01: gypsic_horizon
+
+  - code: CL
+    name: Calcisols
+    tests:
+      not_implemented_v01: calcic_horizon
+
+  - code: RT
+    name: Retisols
+    tests:
+      not_implemented_v01: retic_properties
+
+  - code: AC
+    name: Acrisols
+    tests:
+      not_implemented_v01: argic_with_low_cec_low_bs
+
+  - code: LX
+    name: Lixisols
+    tests:
+      not_implemented_v01: argic_with_low_cec_high_bs
+
+  - code: AL
+    name: Alisols
+    tests:
+      not_implemented_v01: argic_with_high_cec_high_al
+
+  - code: LV
+    name: Luvisols
+    tests:
+      not_implemented_v01: argic_with_high_cec_low_al
+
+  - code: CM
+    name: Cambisols
+    tests:
+      not_implemented_v01: cambic_horizon
+
+  - code: AR
+    name: Arenosols
+    tests:
+      not_implemented_v01: coarse_texture
+
+  - code: FL
+    name: Fluvisols
+    tests:
+      not_implemented_v01: fluvic_material
+
+  - code: RG
+    name: Regosols
+    tests:
+      default: true
+    notes: "Catch-all for mineral soils that do not match any prior RSG."

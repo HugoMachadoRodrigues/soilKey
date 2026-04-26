@@ -1,0 +1,127 @@
+version: "WRB 2022 (4th edition)"
+implementation_status: "soilKey v0.1"
+
+# Reference catalogue of diagnostic functions and their parameters. The
+# rule engine resolves diagnostic names directly from the soilKey
+# namespace; this file is a human-readable index.
+
+diagnostics:
+
+  argic:
+    function: argic
+    status: implemented
+    file: R/diagnostics-horizons-wrb.R
+    reference: "WRB 2022, Chapter 3, Argic horizon"
+    parameters:
+      min_thickness:
+        type: numeric
+        default: 7.5
+        units: cm
+        description: "Minimum thickness of the argic horizon."
+    sub_tests:
+      - test_clay_increase_argic
+      - test_minimum_thickness
+      - test_texture_argic
+      - test_not_albeluvic
+    v01_limitations:
+      - "Vertical-distance constraint on the clay-increase zone (<= 30 cm,
+        or <= 15 cm with abrupt textural change) is not enforced."
+
+  ferralic:
+    function: ferralic
+    status: implemented
+    file: R/diagnostics-horizons-wrb.R
+    reference: "WRB 2022, Chapter 3, Ferralic horizon"
+    parameters:
+      min_thickness:
+        type: numeric
+        default: 30
+        units: cm
+      max_cec:
+        type: numeric
+        default: 16
+        units: "cmol_c per kg clay"
+        description: "Maximum CEC (1M NH4OAc, pH 7) per kg clay."
+      max_ecec:
+        type: numeric
+        default: 12
+        units: "cmol_c per kg clay"
+        description: "Maximum effective CEC per kg clay."
+    sub_tests:
+      - test_ferralic_texture
+      - test_cec_per_clay
+      - test_ecec_per_clay
+      - test_ferralic_thickness
+    v01_limitations:
+      - "Weatherable-mineral test (<= 10% by volume in silt and sand) not
+        enforced -- requires mineralogy not in canonical horizon schema."
+      - "Water-dispersible-clay test not enforced."
+      - "Stratification / rock-structure exclusions not enforced."
+
+  mollic:
+    function: mollic
+    status: implemented
+    file: R/diagnostics-horizons-wrb.R
+    reference: "WRB 2022, Chapter 3, Mollic horizon"
+    parameters:
+      min_thickness:
+        type: numeric
+        default: 20
+        units: cm
+      min_oc:
+        type: numeric
+        default: 0.6
+        units: percent
+      min_bs:
+        type: numeric
+        default: 50
+        units: percent
+      surface_top_cm:
+        type: numeric
+        default: 5
+        units: cm
+        description: |
+          Maximum top depth (cm) for a horizon to be considered surface-
+          related; v0.1 proxy for the WRB rule that mollic must form
+          continuously from the soil surface.
+    sub_tests:
+      - test_mollic_color
+      - test_mollic_organic_carbon
+      - test_mollic_base_saturation
+      - test_mollic_thickness
+      - test_mollic_structure
+    v01_limitations:
+      - "Cumulative thickness across contiguous mollic-qualifying
+        horizons is not implemented (single-layer thickness only)."
+      - "Mixing of upper 20 cm before evaluation (per WRB) not
+        implemented."
+
+  # ----- planned for v0.2 -----
+  organic_material:        { status: planned, target_version: v0.2 }
+  cambic_horizon:          { status: planned, target_version: v0.2 }
+  spodic_horizon:          { status: planned, target_version: v0.2 }
+  vertic_features:         { status: planned, target_version: v0.2 }
+  histic_horizon:          { status: planned, target_version: v0.2 }
+  umbric_horizon:          { status: planned, target_version: v0.2 }
+  natric_horizon:          { status: planned, target_version: v0.2 }
+  calcic_horizon:          { status: planned, target_version: v0.2 }
+  gypsic_horizon:          { status: planned, target_version: v0.2 }
+  salic_horizon:           { status: planned, target_version: v0.2 }
+  gleyic_properties:       { status: planned, target_version: v0.2 }
+  stagnic_properties:      { status: planned, target_version: v0.2 }
+  andic_properties:        { status: planned, target_version: v0.2 }
+  plinthic_horizon:        { status: planned, target_version: v0.2 }
+  nitic_horizon:           { status: planned, target_version: v0.2 }
+  fluvic_material:         { status: planned, target_version: v0.2 }
+
+  # ----- planned for v0.3 -----
+  argic_with_low_cec_low_bs:    { status: planned, target_version: v0.3 }
+  argic_with_low_cec_high_bs:   { status: planned, target_version: v0.3 }
+  argic_with_high_cec_low_al:   { status: planned, target_version: v0.3 }
+  argic_with_high_cec_high_al:  { status: planned, target_version: v0.3 }
+  hortic_horizon:               { status: planned, target_version: v0.3 }
+  irragric_horizon:             { status: planned, target_version: v0.3 }
+  plaggic_horizon:              { status: planned, target_version: v0.3 }
+  pretic_horizon:               { status: planned, target_version: v0.3 }
+  terric_horizon:               { status: planned, target_version: v0.3 }
+  chernic_horizon:              { status: planned, target_version: v0.3 }

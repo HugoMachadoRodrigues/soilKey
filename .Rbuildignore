@@ -1,0 +1,16 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^README\.Rmd$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^codecov\.yml$
+^\.travis\.yml$
+^cran-comments\.md$
+^revdep$
+^ARCHITECTURE\.md$
+^\.gitignore$
+^\.DS_Store$
+^.*\.code-workspace$
