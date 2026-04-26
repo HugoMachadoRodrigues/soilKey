@@ -1453,6 +1453,180 @@ test_fluvic_stratification <- function(h, max_top_cm = 100,
 }
 
 
+# ============================================================ v0.3b sub-tests ====
+
+#' Compute exchangeable sodium percentage (ESP)
+#'
+#' \code{na_cmol / cec_cmol * 100}, returning NA on missing/zero CEC.
+#'
+#' @keywords internal
+compute_esp <- function(na_cmol, cec_cmol) {
+  if (is.na(na_cmol) || is.na(cec_cmol) || cec_cmol <= 0) return(NA_real_)
+  na_cmol / cec_cmol * 100
+}
+
+
+#' Test exchangeable sodium percentage above threshold
+#'
+#' Default 15\% (natric horizon, WRB 2022 Chapter 3).
+#'
+#' @export
+test_esp_above <- function(h, min_pct = 15, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- compute_esp(h$na_cmol[i], h$cec_cmol[i])
+    if (is.na(val)) {
+      if (is.na(h$na_cmol[i]))  missing <- c(missing, "na_cmol")
+      if (is.na(h$cec_cmol[i])) missing <- c(missing, "cec_cmol")
+      next
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, na_cmol = h$na_cmol[i], cec_cmol = h$cec_cmol[i],
+      esp_pct = val, threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for high free-iron content (\code{fe_dcb_pct} >= threshold)
+#'
+#' Default 4\% (an indicator of strong red colour and Fe-richness; used
+#' as a v0.3 simplified marker for nitic horizon's typical Fe content).
+#'
+#' @export
+test_fe_dcb_above <- function(h, min_pct = 4, candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    val <- h$fe_dcb_pct[i]
+    if (is.na(val)) { missing <- c(missing, "fe_dcb_pct"); next }
+    details[[as.character(i)]] <- list(
+      idx = i, fe_dcb_pct = val,
+      threshold = min_pct, passed = val >= min_pct
+    )
+    if (val >= min_pct) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for an abrupt textural change between adjacent horizons
+#'
+#' WRB 2022 planic criterion: clay content of the underlying horizon is
+#' at least double that of the overlying horizon, with the transition
+#' occurring within 7.5 cm vertical distance. v0.3 implements the
+#' clay-doubling test plus an optional \code{boundary_distinctness}
+#' check (must be \code{"abrupt"} or \code{"very abrupt"} on the upper
+#' horizon).
+#'
+#' @export
+test_abrupt_textural_change <- function(h, min_ratio = 2.0,
+                                          require_abrupt_boundary = TRUE) {
+  if (nrow(h) < 2L) {
+    return(.subtest_result(
+      passed = FALSE, layers = integer(0),
+      notes = "Fewer than 2 horizons -- abrupt textural change inapplicable"
+    ))
+  }
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in seq.int(2L, nrow(h))) {
+    above <- h$clay_pct[i - 1L]; here <- h$clay_pct[i]
+    if (is.na(above) || is.na(here)) {
+      missing <- c(missing, "clay_pct")
+      next
+    }
+    if (above <= 0) next
+    ratio <- here / above
+    boundary_ok <- if (!require_abrupt_boundary) TRUE
+                    else !is.na(h$boundary_distinctness[i - 1L]) &&
+                          grepl("abrupt", h$boundary_distinctness[i - 1L],
+                                  ignore.case = TRUE)
+    if (require_abrupt_boundary && is.na(h$boundary_distinctness[i - 1L])) {
+      missing <- c(missing, "boundary_distinctness")
+    }
+    ok <- ratio >= min_ratio && boundary_ok
+    details[[as.character(i)]] <- list(
+      above_idx = i - 1L, here_idx = i,
+      above_clay = above, here_clay = here, ratio = ratio,
+      boundary = h$boundary_distinctness[i - 1L],
+      boundary_ok = boundary_ok, passed = ok
+    )
+    if (ok) passing <- c(passing, i)
+  }
+  any_evaluable <- length(details) > 0L
+  passed <- if (length(passing) > 0L) TRUE
+            else if (!any_evaluable && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test for stagnic redox features (perched water signature)
+#'
+#' Distinct from gleyic (groundwater): stagnic = redoximorphic features
+#' in some layer within the upper \code{max_top_cm} (default 100) AND
+#' redox in deeper layers DROPS substantially (decay to < third of the
+#' shallow value). The decay condition is what separates perched water
+#' (sits above an impermeable layer; deeper soil is not saturated)
+#' from groundwater-driven gleying (saturation continues with depth).
+#'
+#' @export
+test_stagnic_pattern <- function(h, max_top_cm = 100, min_redox_pct = 5,
+                                    decay_factor = 3) {
+  cl <- which(!is.na(h$top_cm) & h$top_cm <= max_top_cm)
+  if (length(cl) < 2L) {
+    return(.subtest_result(passed = FALSE, layers = integer(0)))
+  }
+  redox <- h$redoximorphic_features_pct
+  if (all(is.na(redox))) {
+    return(.subtest_result(passed = NA, layers = integer(0),
+                            missing = "redoximorphic_features_pct"))
+  }
+
+  # For every candidate layer with redox >= threshold, check whether
+  # ALL deeper layers fall below redox / decay_factor (i.e., the redox
+  # decays substantially with depth -> perched-water signature).
+  passing <- integer(0)
+  details <- list()
+  for (i in cl) {
+    r_i <- redox[i]
+    if (is.na(r_i) || r_i < min_redox_pct) next
+    deeper <- which(!is.na(h$top_cm) & h$top_cm >= h$bottom_cm[i])
+    if (length(deeper) == 0L) next
+    deeper_redox <- redox[deeper]
+    if (all(is.na(deeper_redox))) next
+    deeper_max <- max(deeper_redox, na.rm = TRUE)
+    decays <- deeper_max < r_i / decay_factor
+    details[[as.character(i)]] <- list(
+      shallow_idx = i, shallow_redox = r_i,
+      deeper_max = deeper_max, decay_factor = decay_factor,
+      passed = decays
+    )
+    if (decays) passing <- c(passing, i)
+  }
+
+  .subtest_result(
+    passed  = length(passing) > 0L,
+    layers  = passing,
+    details = details
+  )
+}
+
+
 # ============================================================== aggregation ====
 
 #' Aggregate sub-test results into a passed/missing summary

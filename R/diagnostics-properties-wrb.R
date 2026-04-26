@@ -146,6 +146,181 @@ andic_properties <- function(pedon, min_alfe = 2.0, max_bd = 0.9) {
 }
 
 
+#' Planic features (WRB 2022)
+#'
+#' Tests whether the profile shows an abrupt textural change between
+#' adjacent horizons (clay-doubling within 7.5 cm vertical distance,
+#' typically at the E/Bt boundary). Diagnostic of Planosols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_ratio Minimum clay ratio (default 2.0).
+#' @param require_abrupt_boundary If TRUE (default), the upper horizon
+#'        must have \code{boundary_distinctness} matching "abrupt".
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 5, Planosols.
+#' @export
+planic_features <- function(pedon, min_ratio = 2.0,
+                              require_abrupt_boundary = TRUE) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$abrupt <- test_abrupt_textural_change(h,
+                                                 min_ratio              = min_ratio,
+                                                 require_abrupt_boundary = require_abrupt_boundary)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "planic_features",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 5, Planosols"
+  )
+}
+
+
+#' Stagnic properties (WRB 2022)
+#'
+#' Tests for redoximorphic features driven by perched water. Distinct
+#' from gleyic (groundwater): stagnic features appear in upper layers
+#' AND redox decreases substantially with depth (the perched layer
+#' sits above a slowly permeable subsoil that itself is not
+#' saturated).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Maximum top depth (cm) of candidate shallow
+#'        layers (default 100).
+#' @param min_redox_pct Minimum redox feature percent in the shallow
+#'        layer (default 5).
+#' @param decay_factor Required factor of redox decrease with depth
+#'        (default 3, i.e., deeper redox < shallow / 3).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 3, Stagnic
+#'   properties.
+#' @export
+stagnic_properties <- function(pedon, max_top_cm = 100,
+                                  min_redox_pct = 5, decay_factor = 3) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$stagnic_pattern <- test_stagnic_pattern(h,
+                                                   max_top_cm    = max_top_cm,
+                                                   min_redox_pct = min_redox_pct,
+                                                   decay_factor  = decay_factor)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "stagnic_properties",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Stagnic properties"
+  )
+}
+
+
+#' Retic properties (WRB 2022)
+#'
+#' Tests whether any horizon designation indicates retic features
+#' (glossic tongues of bleached material penetrating into a clay-
+#' enriched horizon). v0.3 detects these via designation pattern
+#' matching \code{"glossic|retic|albeluvic"} (case-insensitive).
+#' Diagnostic of Retisols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param pattern Regex (default
+#'        \code{"glossic|retic|albeluvic"}).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 5, Retisols.
+#' @export
+retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
+  h <- pedon$horizons
+  tests <- list()
+  tests$retic_designation <- test_designation_pattern(h, pattern = pattern)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "retic_properties",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 5, Retisols"
+  )
+}
+
+
+#' Cryic conditions (WRB 2022)
+#'
+#' Tests whether continuous frozen / permafrost material occurs within
+#' the upper 100 cm. v0.3 detects via designation pattern: any layer
+#' with designation containing the suffix \code{"f"} (frozen) within
+#' the top 100 cm, or the explicit pattern \code{"^Cf"} / \code{"perma"}.
+#' Diagnostic of Cryosols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Maximum top depth (cm) (default 100).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 5, Cryosols.
+#' @export
+cryic_conditions <- function(pedon, max_top_cm = 100) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$frozen_designation <- test_designation_pattern(
+    h, pattern = "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
+  )
+  tests$within_depth <- test_top_at_or_above(
+    h, max_top_cm = max_top_cm,
+    candidate_layers = tests$frozen_designation$layers
+  )
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "cryic_conditions",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 5, Cryosols"
+  )
+}
+
+
+#' Anthric horizons (WRB 2022)
+#'
+#' Tests for any of five anthropogenic surface horizons recognised by
+#' WRB 2022: hortic, irragric, plaggic, pretic, terric.
+#' v0.3 detects via designation pattern matching any of those names.
+#' Diagnostic of Anthrosols.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 5, Anthrosols.
+#' @export
+anthric_horizons <- function(pedon) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$anthric_designation <- test_designation_pattern(
+    h, pattern = "hortic|irragric|plaggic|pretic|terric"
+  )
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "anthric_horizons",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 5, Anthrosols"
+  )
+}
+
+
 #' Vertic properties (WRB 2022)
 #'
 #' Tests whether any horizon shows vertic properties -- shrink-swell

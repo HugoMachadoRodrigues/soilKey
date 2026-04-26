@@ -47,7 +47,14 @@ fixtures <- list(
   durisol_canonical    = make_durisol_canonical(),
   technosol_canonical  = make_technosol_canonical(),
   andosol_canonical    = make_andosol_canonical(),
-  fluvisol_canonical   = make_fluvisol_canonical()
+  fluvisol_canonical   = make_fluvisol_canonical(),
+  solonetz_canonical   = make_solonetz_canonical(),
+  nitisol_canonical    = make_nitisol_canonical(),
+  planosol_canonical   = make_planosol_canonical(),
+  stagnosol_canonical  = make_stagnosol_canonical(),
+  retisol_canonical    = make_retisol_canonical(),
+  cryosol_canonical    = make_cryosol_canonical(),
+  anthrosol_canonical  = make_anthrosol_canonical()
 )
 
 for (nm in names(fixtures)) {

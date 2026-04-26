@@ -602,6 +602,98 @@ duric_horizon <- function(pedon, min_thickness = 15, min_duripan_pct = 15) {
 }
 
 
+#' Natric horizon (WRB 2022)
+#'
+#' Tests for the natric horizon: an argic horizon with diagnostic
+#' sodium accumulation (ESP >= 15\%) within at least one argic layer.
+#' Diagnostic of Solonetz.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_esp Minimum ESP \% (default 15).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 3, Natric horizon.
+#' @export
+natric_horizon <- function(pedon, min_esp = 15) {
+  arg <- argic(pedon)
+  if (!isTRUE(arg$passed)) {
+    return(DiagnosticResult$new(
+      name      = "natric_horizon",
+      passed    = if (is.na(arg$passed)) NA else FALSE,
+      layers    = integer(0),
+      evidence  = list(argic = arg),
+      missing   = arg$missing %||% character(0),
+      reference = "IUSS Working Group WRB (2022), Chapter 3, Natric horizon",
+      notes     = "Profile lacks an argic horizon -- natric inapplicable"
+    ))
+  }
+
+  h <- pedon$horizons
+  layers <- arg$layers
+
+  tests <- list(argic = arg)
+  tests$esp_high <- test_esp_above(h, min_pct = min_esp,
+                                      candidate_layers = layers)
+
+  layer_lists <- list(arg$layers, tests$esp_high$layers)
+  layers_passing <- Reduce(intersect, layer_lists)
+  missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
+  if (is.null(missing)) missing <- character(0)
+  any_test_na <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
+  passed <- if (length(layers_passing) > 0L) TRUE
+            else if (any_test_na && length(missing) > 0L) NA
+            else FALSE
+
+  DiagnosticResult$new(
+    name      = "natric_horizon",
+    passed    = passed,
+    layers    = layers_passing,
+    evidence  = tests,
+    missing   = missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Natric horizon"
+  )
+}
+
+
+#' Nitic horizon (WRB 2022)
+#'
+#' Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich
+#' subsurface horizon at least 30 cm thick. Diagnostic of Nitisols.
+#'
+#' v0.3 simplification: WRB 2022 also requires polyhedral / nutty
+#' structure with shiny ped surfaces and a gradual clay decrease with
+#' depth (no clay maximum at the top of the B). v0.4 will add the
+#' structural / depth-pattern tests.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_clay Minimum clay \% (default 30).
+#' @param min_fe_dcb Minimum DCB-extractable Fe \% (default 4).
+#' @param min_thickness Minimum thickness in cm (default 30).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.
+#' @export
+nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
+                            min_thickness = 30) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$clay      <- test_clay_above(h, min_pct = min_clay)
+  tests$fe_dcb    <- test_fe_dcb_above(h, min_pct = min_fe_dcb,
+                                          candidate_layers = tests$clay$layers)
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                              candidate_layers = tests$fe_dcb$layers)
+
+  agg <- aggregate_subtests(tests)
+
+  DiagnosticResult$new(
+    name      = "nitic_horizon",
+    passed    = agg$passed,
+    layers    = agg$layers,
+    evidence  = tests,
+    missing   = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon"
+  )
+}
+
+
 #' Salic horizon (WRB 2022)
 #'
 #' Tests whether any horizon meets the salic horizon criteria. The
