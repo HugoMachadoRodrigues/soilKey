@@ -34,9 +34,9 @@ test_that("CEC-per-clay computation is correct", {
   expect_true(is.na(soilKey:::cec_per_clay(8, 0)))
 })
 
-test_that("ECEC computed from sum of bases + Al when not measured", {
+test_that("ferralic still passes with NA ECEC (v0.3.1 no longer requires it)", {
   pr <- make_ferralsol_canonical()
-  pr$horizons$ecec_cmol <- NA_real_   # force ECEC computation from components
+  pr$horizons$ecec_cmol <- NA_real_   # ECEC dropped from ferralic in v0.3.1
   res <- ferralic(pr)
   expect_true(isTRUE(res$passed))
 })
@@ -59,9 +59,9 @@ test_that("texture predicate at the loamy sand / sandy loam boundary", {
   expect_true(is.na(soilKey:::is_sandy_loam_or_finer(NA, 10, 5)))
 })
 
-test_that("ferralic evidence includes all four sub-tests", {
+test_that("ferralic evidence includes the three v0.3.1 sub-tests", {
+  # v0.3.1: ECEC/clay test removed (not in WRB 2022 Ch 3.1.10)
   pr <- make_ferralsol_canonical()
   res <- ferralic(pr)
-  expect_named(res$evidence, c("texture", "cec_per_clay",
-                                 "ecec_per_clay", "thickness"))
+  expect_named(res$evidence, c("texture", "cec_per_clay", "thickness"))
 })

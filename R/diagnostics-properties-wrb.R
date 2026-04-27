@@ -351,6 +351,8 @@ anthric_horizons <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Minimum clay percent (default 30, per WRB 2022).
+#' @param min_thickness Minimum thickness (cm) of the vertic layer
+#'        (default 25 per WRB 2022 Ch 3.2.x).
 #' @param slickenside_levels Vector of \code{slickensides} values
 #'        accepted as evidence (default \code{c("common", "many",
 #'        "continuous")}).
@@ -362,18 +364,22 @@ anthric_horizons <- function(pedon) {
 #'   \item \code{\link{test_clay_above}} -- clay >= 30\%
 #'   \item \code{\link{test_slickensides_present}} -- slickensides at
 #'         or above the "common" level
+#'   \item \code{\link{test_minimum_thickness}} -- combined vertic layer
+#'         thickness >= 25 cm (v0.3.1 added per WRB 2022)
 #' }
 #'
-#' v0.2 limitations: WRB also accepts deep cracks (>= 1 cm wide
-#' extending from the surface to >= 50 cm depth, when soil is dry) and
-#' wedge-shaped peds as alternative evidence; v0.2 only uses the
-#' clay + slickensides combination. The "after mixing of upper 18 cm"
-#' clause from WRB is also not yet implemented. Both scheduled for v0.3.
+#' v0.3.1: thickness gate added. Limitations remaining: WRB also accepts
+#' deep cracks (>= 1 cm wide extending from the surface to >= 50 cm
+#' depth, when soil is dry) and wedge-shaped peds as alternative
+#' evidence; this implementation requires clay + slickensides. The
+#' "after mixing of upper 18 cm" clause from WRB is still deferred.
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Vertic properties.
+#' @references IUSS Working Group WRB (2022), Chapter 3.2 -- Vertic
+#'   properties.
 #' @export
 vertic_properties <- function(pedon,
-                                min_clay = 30,
+                                min_clay        = 30,
+                                min_thickness   = 25,
                                 slickenside_levels = c("common", "many",
                                                          "continuous")) {
   h <- pedon$horizons
@@ -383,6 +389,11 @@ vertic_properties <- function(pedon,
   tests$slickensides <- test_slickensides_present(h,
                                                      levels           = slickenside_levels,
                                                      candidate_layers = tests$clay$layers)
+  # Layers that pass BOTH clay and slickensides feed the thickness gate.
+  shared <- intersect(tests$clay$layers, tests$slickensides$layers)
+  tests$thickness    <- test_minimum_thickness(h,
+                                                 min_cm           = min_thickness,
+                                                 candidate_layers = shared)
 
   agg <- aggregate_subtests(tests)
 
@@ -392,6 +403,6 @@ vertic_properties <- function(pedon,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Vertic properties"
+    reference = "IUSS Working Group WRB (2022), Chapter 3.2, Vertic properties"
   )
 }

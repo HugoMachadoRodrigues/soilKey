@@ -98,19 +98,24 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #' Test the argic clay-increase criterion (WRB 2022)
 #'
 #' Tests every consecutive pair of horizons in the profile against the
-#' WRB 2022 clay-increase rules:
+#' WRB 2022 (4th ed., Chapter 3.1.3, criterion 2.a.iv-vi) clay-increase
+#' rules. v0.3.1 brings these into compliance with the actual text
+#' (earlier versions used loosened thresholds 3/1.2/8 from older WRB
+#' editions):
 #' \itemize{
-#'   \item overlying clay < 15\%: argic must contain at least 3\% absolute
-#'         more clay;
-#'   \item overlying clay 15-40\%: argic / overlying ratio must be >= 1.2;
-#'   \item overlying clay >= 40\%: argic must contain at least 8\% absolute
-#'         more clay.
+#'   \item overlying clay < 15\%: argic horizon must contain at least
+#'         **6\% (absolute)** more clay;
+#'   \item overlying clay 15 to <50\%: argic / overlying clay ratio
+#'         must be **>= 1.4**;
+#'   \item overlying clay >= 50\%: argic must contain at least
+#'         **20\% (absolute)** more clay.
 #' }
-#' Returns the indices of horizons that satisfy as the argic candidate.
+#' Returns the indices of horizons that satisfy as argic candidates.
 #'
 #' @param h Horizons data.table (canonical schema).
 #' @return Sub-test result list.
-#' @references IUSS Working Group WRB (2022), Chapter 3, Argic horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
+#'   horizon, criteria 2.a.iv-vi (p. 36).
 #' @export
 test_clay_increase_argic <- function(h) {
   if (nrow(h) < 2L) {
@@ -133,16 +138,16 @@ test_clay_increase_argic <- function(h) {
       next
     }
 
-    rule_label <- if (above < 15)        "<15%: +3pp absolute"
-                  else if (above < 40)   "15-40%: ratio >= 1.2"
-                  else                   ">=40%: +8pp absolute"
+    rule_label <- if (above < 15)        "<15%: +6pp absolute"
+                  else if (above < 50)   "15 to <50%: ratio >= 1.4"
+                  else                   ">=50%: +20pp absolute"
 
     rule_passed <- if (above < 15) {
-      here - above >= 3
-    } else if (above < 40) {
-      here / above >= 1.2
+      here - above >= 6
+    } else if (above < 50) {
+      here / above >= 1.4
     } else {
-      here - above >= 8
+      here - above >= 20
     }
 
     details[[as.character(i)]] <- list(
@@ -844,13 +849,28 @@ test_slickensides_present <- function(h,
 
 #' Test for electrical conductivity above threshold (per layer)
 #'
-#' Default 15 dS/m (salic horizon, WRB 2022 Chapter 3). Used by
-#' \code{\link{salic}}.
+#' Default 15 dS/m (salic horizon, WRB 2022 Ch 3.1.20). The WRB salic
+#' horizon also accepts an alkaline alternate: EC \\>= 8 dS/m if
+#' pH(H2O) \\>= 8.5. Pass \code{alkaline_min_dS_m = 8} and
+#' \code{alkaline_min_pH = 8.5} to enable that path -- a layer is then
+#' \"qualifying\" if it satisfies the primary OR the alkaline gate. The
+#' \code{path} field in each \code{details} entry records which gate
+#' carried the layer.
 #'
+#' @param h Horizons table.
+#' @param min_dS_m Primary EC threshold (default 15).
+#' @param alkaline_min_dS_m Optional alkaline-path EC threshold
+#'        (default \code{NA}: alkaline path disabled).
+#' @param alkaline_min_pH Required pH(H2O) for the alkaline path
+#'        (default 8.5; only used when \code{alkaline_min_dS_m} is set).
+#' @param candidate_layers Optional layer index restriction.
 #' @export
 test_ec_concentration <- function(h, min_dS_m = 15,
+                                    alkaline_min_dS_m = NA_real_,
+                                    alkaline_min_pH   = 8.5,
                                     candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
+  alkaline_enabled <- !is.na(alkaline_min_dS_m)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
     val <- h$ec_dS_m[i]
@@ -858,11 +878,90 @@ test_ec_concentration <- function(h, min_dS_m = 15,
       missing <- c(missing, "ec_dS_m")
       next
     }
+    primary_ok <- val >= min_dS_m
+    alk_ok <- FALSE
+    pH_val <- NA_real_
+    if (alkaline_enabled) {
+      pH_val <- if ("ph_h2o" %in% names(h)) h$ph_h2o[i] else NA_real_
+      if (!is.na(pH_val)) {
+        alk_ok <- val >= alkaline_min_dS_m && pH_val >= alkaline_min_pH
+      }
+    }
+    layer_pass <- primary_ok || alk_ok
+    path <- if (primary_ok) "primary" else if (alk_ok) "alkaline" else "none"
     details[[as.character(i)]] <- list(
-      idx = i, ec_dS_m = val,
-      threshold = min_dS_m, passed = val >= min_dS_m
+      idx = i, ec_dS_m = val, ph_h2o = pH_val,
+      threshold = min_dS_m,
+      alkaline_threshold = alkaline_min_dS_m,
+      alkaline_min_pH = alkaline_min_pH,
+      path = path, passed = layer_pass
     )
-    if (val >= min_dS_m) passing <- c(passing, i)
+    if (layer_pass) passing <- c(passing, i)
+  }
+  evaluated <- length(details)
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  .subtest_result(passed = passed, layers = passing,
+                   missing = missing, details = details)
+}
+
+
+#' Test the salic horizon EC * thickness product (WRB 2022)
+#'
+#' Tests whether each candidate layer's product
+#' \code{ec_dS_m * (bottom_cm - top_cm)} reaches the canonical WRB 2022
+#' threshold (Ch 3.1.20, p. 49):
+#' \itemize{
+#'   \item \code{>= 450} dS/m * cm for the primary path (EC \\>= 15);
+#'   \item \code{>= 240} dS/m * cm for the alkaline path
+#'         (EC \\>= 8 with pH(H2O) \\>= 8.5).
+#' }
+#' The path used per layer is taken from a prior
+#' \code{\link{test_ec_concentration}} result (its \code{details[[i]]\\$path}
+#' field). When no prior is supplied, every candidate is treated as
+#' "primary" and the 450 threshold is applied uniformly.
+#'
+#' @param h Horizons table.
+#' @param min_product Primary product threshold (default 450).
+#' @param alkaline_min_product Alkaline-path product threshold
+#'        (default 240).
+#' @param ec_path_lookup Optional named list (keys = layer index as
+#'        character) returning either "primary" or "alkaline" per layer
+#'        -- typically built by passing
+#'        \code{test_ec_concentration(...)\\$details}.
+#' @param candidate_layers Layer index restriction (typically the layers
+#'        that already passed the primary EC gate).
+#' @export
+test_salic_product <- function(h, min_product = 450,
+                                alkaline_min_product = 240,
+                                ec_path_lookup = NULL,
+                                candidate_layers = NULL) {
+  cl <- .candidate_layers(h, candidate_layers)
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in cl) {
+    ec <- h$ec_dS_m[i]
+    top <- h$top_cm[i]
+    bot <- h$bottom_cm[i]
+    if (is.na(ec)) { missing <- c(missing, "ec_dS_m"); next }
+    if (is.na(top) || is.na(bot)) {
+      missing <- c(missing, "top_cm", "bottom_cm"); next
+    }
+    thk <- bot - top
+    prod <- ec * thk
+    path <- if (!is.null(ec_path_lookup) &&
+                  !is.null(ec_path_lookup[[as.character(i)]])) {
+              ec_path_lookup[[as.character(i)]]$path %||% "primary"
+            } else "primary"
+    threshold <- if (identical(path, "alkaline")) alkaline_min_product
+                 else min_product
+    layer_pass <- prod >= threshold
+    details[[as.character(i)]] <- list(
+      idx = i, ec_dS_m = ec, thickness_cm = thk,
+      product = prod, path = path,
+      threshold = threshold, passed = layer_pass
+    )
+    if (layer_pass) passing <- c(passing, i)
   }
   evaluated <- length(details)
   passed <- if (length(passing) > 0L) TRUE
@@ -1365,10 +1464,11 @@ test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
 
 #' Test that duripan_pct >= threshold (Si-cemented nodules)
 #'
-#' Default 15\% (duric horizon, WRB 2022).
+#' Default 10\% per WRB 2022 Ch 3.1.7 (Duric horizon, p. 41).
+#' v0.3.1 reduced default from 15\% to 10\% to match the canonical text.
 #'
 #' @export
-test_duripan_concentration <- function(h, min_pct = 15,
+test_duripan_concentration <- function(h, min_pct = 10,
                                           candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()

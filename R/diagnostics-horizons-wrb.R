@@ -98,7 +98,6 @@ argic <- function(pedon, min_thickness = 7.5) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 30).
 #' @param max_cec Maximum CEC (1M NH4OAc, pH 7) per kg clay (default 16).
-#' @param max_ecec Maximum effective CEC per kg clay (default 12).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -108,37 +107,31 @@ argic <- function(pedon, min_thickness = 7.5) {
 #'         finer.
 #'   \item \code{\link{test_cec_per_clay}} -- CEC / clay <= 16
 #'         cmol_c/kg clay.
-#'   \item \code{\link{test_ecec_per_clay}} -- ECEC / clay <= 12
-#'         cmol_c/kg clay; ECEC computed from sum of exchangeable bases
-#'         plus Al if not measured directly.
 #'   \item \code{\link{test_ferralic_thickness}} -- thickness >= 30 cm.
 #' }
 #'
-#' v0.1 limitations: weatherable-mineral test (<= 10\% by volume in silt
-#' and sand fractions), water-dispersible-clay test, and stratification /
-#' rock-structure exclusions are deferred to v0.2 -- they require
-#' mineralogical data not present in the canonical horizon schema. In
-#' practice, profiles that meet the CEC/ECEC and texture criteria are
-#' overwhelmingly true ferralic horizons; the deferred tests are
-#' refinements rather than gates.
+#' v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
+#' "ECEC <= 12 cmol_c/kg clay" gate was removed because it is not in the
+#' canonical text -- only CEC (1M NH4OAc, pH 7) <= 16 is required. The
+#' weatherable-mineral test (<= 10\% by volume), water-dispersible-clay
+#' test, and stratification / rock-structure exclusions remain deferred
+#' (they need mineralogical data outside the canonical horizon schema)
+#' and are refinements rather than gates.
 #'
 #' @references IUSS Working Group WRB (2022). \emph{World Reference Base
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
-#' Vienna. Chapter 3 -- Ferralic horizon.
+#' Vienna. Chapter 3.1.10 -- Ferralic horizon (p. 44).
 #'
 #' @export
 ferralic <- function(pedon,
                        min_thickness = 30,
-                       max_cec       = 16,
-                       max_ecec      = 12) {
+                       max_cec       = 16) {
   h <- pedon$horizons
 
   tests <- list()
   tests$texture       <- test_ferralic_texture(h)
   tests$cec_per_clay  <- test_cec_per_clay(h,
                                              max_cmol_per_kg_clay = max_cec)
-  tests$ecec_per_clay <- test_ecec_per_clay(h,
-                                              max_cmol_per_kg_clay = max_ecec)
   tests$thickness     <- test_ferralic_thickness(h, min_cm = min_thickness)
 
   agg <- aggregate_subtests(tests)
@@ -149,7 +142,8 @@ ferralic <- function(pedon,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Ferralic horizon"
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p. 44)",
+    notes     = "v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic definition"
   )
 }
 
@@ -567,20 +561,23 @@ umbric_horizon <- function(pedon,
 
 #' Duric horizon (WRB 2022)
 #'
-#' Tests for >= 15\% volume of duripan nodules (Si-cemented) within a
-#' horizon at least 15 cm thick. Diagnostic of Durisols.
+#' Tests for >= 10\% volume of duripan nodules (Si-cemented) within a
+#' horizon at least 10 cm thick. Diagnostic of Durisols.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_thickness Minimum thickness (cm; default 15).
-#' @param min_duripan_pct Minimum duripan volume \% (default 15).
+#' @param min_thickness Minimum thickness (cm; default 10 per WRB 2022).
+#' @param min_duripan_pct Minimum duripan volume \% (default 10 per WRB
+#'        2022).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
-#' v0.3 limitations: petroduric (cemented continuous duripan)
-#' detection is not yet implemented and will be added in v0.4.
+#' v0.3.1: thresholds aligned with WRB 2022 Ch 3.1.7 (10\%, 10 cm) --
+#' previous v0.3 used 15\%/15 cm. Petroduric (cemented continuous
+#' duripan) detection still deferred and will be added in v0.4.
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Duric horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.7 -- Duric
+#' horizon (p. 41).
 #' @export
-duric_horizon <- function(pedon, min_thickness = 15, min_duripan_pct = 15) {
+duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
   h <- pedon$horizons
 
   tests <- list()
@@ -597,7 +594,7 @@ duric_horizon <- function(pedon, min_thickness = 15, min_duripan_pct = 15) {
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Duric horizon"
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.7, Duric horizon (p. 41)"
   )
 }
 
@@ -729,33 +726,60 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 15).
-#' @param min_ec_dS_m Minimum electrical conductivity (dS/m) at 25C
-#'        (default 15).
+#' @param min_ec_dS_m Primary EC threshold (default 15 dS/m at 25C).
+#' @param alkaline_min_ec_dS_m Alkaline-path EC threshold (default 8
+#'        dS/m, used when pH(H2O) \\>= \code{alkaline_min_pH}).
+#' @param alkaline_min_pH Required pH(H2O) for alkaline path
+#'        (default 8.5).
+#' @param min_product Primary path product (EC * thickness in
+#'        dS/m * cm) threshold (default 450 per WRB 2022).
+#' @param alkaline_min_product Alkaline-path product threshold
+#'        (default 240).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_ec_concentration}} -- EC >= 15 dS/m.
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#'   \item \code{\link{test_ec_concentration}} -- EC \\>= 15 dS/m
+#'         (primary) OR (EC \\>= 8 dS/m AND pH(H2O) \\>= 8.5)
+#'         (alkaline).
+#'   \item \code{\link{test_minimum_thickness}} -- thickness \\>= 15 cm.
+#'   \item \code{\link{test_salic_product}} -- EC * thickness product
+#'         \\>= 450 (primary) or \\>= 240 (alkaline) per qualifying
+#'         layer.
 #' }
 #'
-#' v0.2 limitations: the alternate WRB criterion (EC >= 8 dS/m if pH of
-#' the saturated paste >= 8.5) is not implemented. Defer to v0.3.
+#' v0.3.1: alkaline-path and product test added (WRB 2022 Ch 3.1.20,
+#' p. 49). Earlier versions only enforced the primary EC + thickness
+#' gate.
 #'
 #' @references IUSS Working Group WRB (2022). \emph{World Reference Base
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
-#' Vienna. Chapter 3 -- Salic horizon.
+#' Vienna. Chapter 3.1.20 -- Salic horizon (p. 49).
 #'
 #' @export
-salic <- function(pedon, min_thickness = 15, min_ec_dS_m = 15) {
+salic <- function(pedon,
+                    min_thickness        = 15,
+                    min_ec_dS_m          = 15,
+                    alkaline_min_ec_dS_m = 8,
+                    alkaline_min_pH      = 8.5,
+                    min_product          = 450,
+                    alkaline_min_product = 240) {
   h <- pedon$horizons
 
   tests <- list()
-  tests$ec        <- test_ec_concentration(h, min_dS_m = min_ec_dS_m)
+  tests$ec        <- test_ec_concentration(h,
+                                              min_dS_m          = min_ec_dS_m,
+                                              alkaline_min_dS_m = alkaline_min_ec_dS_m,
+                                              alkaline_min_pH   = alkaline_min_pH)
   tests$thickness <- test_minimum_thickness(h,
                                               min_cm           = min_thickness,
                                               candidate_layers = tests$ec$layers)
+  tests$product   <- test_salic_product(h,
+                                          min_product          = min_product,
+                                          alkaline_min_product = alkaline_min_product,
+                                          ec_path_lookup       = tests$ec$details,
+                                          candidate_layers     = tests$thickness$layers)
 
   agg <- aggregate_subtests(tests)
 
@@ -765,6 +789,6 @@ salic <- function(pedon, min_thickness = 15, min_ec_dS_m = 15) {
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Salic horizon"
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.20, Salic horizon (p. 49)"
   )
 }

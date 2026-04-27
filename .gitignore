@@ -7,3 +7,7 @@
 inst/doc
 docs/
 *.code-workspace
+# Claude Code worktrees (agent isolation; do not commit)
+.claude/
+# Logo art (not part of the package build)
+logo_soilkey.png

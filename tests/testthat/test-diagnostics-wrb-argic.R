@@ -28,29 +28,32 @@ test_that("argic returns NA when clay data missing", {
 })
 
 test_that("clay-increase rule tiers correctly by overlying clay (<15%)", {
-  h <- data.table::data.table(clay_pct = c(10, 14))   # +4 absolute, threshold +3
+  # WRB 2022 Ch 3.1.3 criterion 2.a.iv: +6 percentage points absolute
+  h <- data.table::data.table(clay_pct = c(10, 17))   # +7 absolute, threshold +6
   res <- test_clay_increase_argic(h)
   expect_true(2L %in% res$layers)
   expect_true(isTRUE(res$passed))
 
-  h2 <- data.table::data.table(clay_pct = c(10, 12))  # +2 < 3, fails
+  h2 <- data.table::data.table(clay_pct = c(10, 14))  # +4 < 6, fails
   res2 <- test_clay_increase_argic(h2)
   expect_false(2L %in% res2$layers)
 })
 
-test_that("clay-increase rule tiers correctly (15-40% band)", {
-  h_fail <- data.table::data.table(clay_pct = c(20, 23))   # ratio 1.15 < 1.2
+test_that("clay-increase rule tiers correctly (15 to <50% band)", {
+  # WRB 2022 Ch 3.1.3 criterion 2.a.v: ratio >= 1.4
+  h_fail <- data.table::data.table(clay_pct = c(20, 26))   # ratio 1.30 < 1.4
   expect_false(2L %in% test_clay_increase_argic(h_fail)$layers)
 
-  h_pass <- data.table::data.table(clay_pct = c(20, 25))   # ratio 1.25 >= 1.2
+  h_pass <- data.table::data.table(clay_pct = c(20, 30))   # ratio 1.50 >= 1.4
   expect_true(2L %in% test_clay_increase_argic(h_pass)$layers)
 })
 
-test_that("clay-increase rule tiers correctly (>=40% band)", {
-  h_fail <- data.table::data.table(clay_pct = c(45, 50))   # +5 < 8
+test_that("clay-increase rule tiers correctly (>=50% band)", {
+  # WRB 2022 Ch 3.1.3 criterion 2.a.vi: +20 percentage points absolute
+  h_fail <- data.table::data.table(clay_pct = c(55, 65))   # +10 < 20
   expect_false(2L %in% test_clay_increase_argic(h_fail)$layers)
 
-  h_pass <- data.table::data.table(clay_pct = c(45, 53))   # +8 >= 8
+  h_pass <- data.table::data.table(clay_pct = c(55, 75))   # +20 >= 20
   expect_true(2L %in% test_clay_increase_argic(h_pass)$layers)
 })
 
