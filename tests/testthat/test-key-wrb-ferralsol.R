@@ -84,13 +84,20 @@ test_that("rule engine handles a custom rule set", {
   expect_equal(res$rsg_or_order, "Hypothetical-2")
 })
 
-test_that("load_rules returns a parsed rule set with 32 RSGs", {
+test_that("load_rules returns the 32 RSGs in canonical WRB 2022 order", {
   rules <- load_rules("wrb2022")
   expect_true("rsgs" %in% names(rules))
   expect_equal(length(rules$rsgs), 32L)
   codes <- vapply(rules$rsgs, function(r) r$code, character(1))
-  expect_equal(codes[1], "HS")
-  expect_equal(codes[14], "FR")
+  # v0.3.2: reordered to canonical WRB 2022 (Ch 4, pp 95-126).
+  # PL/ST inserted between PT and NT; FL precedes AR.
+  expect_equal(codes[1],  "HS")
+  expect_equal(codes[13], "PL")
+  expect_equal(codes[14], "ST")
+  expect_equal(codes[15], "NT")
+  expect_equal(codes[16], "FR")
+  expect_equal(codes[30], "FL")
+  expect_equal(codes[31], "AR")
   expect_equal(codes[length(codes)], "RG")
 })
 

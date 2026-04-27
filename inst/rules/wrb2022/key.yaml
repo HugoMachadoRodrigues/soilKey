@@ -1,13 +1,18 @@
 version: "WRB 2022 (4th edition)"
-implementation_status: "soilKey v0.3 -- 32/32 RSGs wired end-to-end"
+implementation_status: "soilKey v0.3.2 -- 32/32 RSGs wired in canonical key order"
 source: |
   IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
   International soil classification system for naming soils and creating
   legends for soil maps. 4th edition. International Union of Soil Sciences,
   Vienna.
 
-# All 32 RSGs are wired in canonical key order. The first whose tests
-# pass is assigned. Default catch-all is RG (Regosols).
+# All 32 RSGs are wired in canonical WRB 2022 key order (Ch 4, pp 95-126).
+# The first whose tests pass is assigned. Default catch-all is RG (Regosols).
+#
+# v0.3.2 reordering: PL (Planosols) and ST (Stagnosols) moved from positions
+# 15-16 to their canonical positions 13-14 (between PT and NT). FL
+# (Fluvisols) and AR (Arenosols) swapped (canonical: FL=30, AR=31). All 31
+# canonical fixtures still classify to their intended RSG.
 #
 # v0.3 simplifications (documented in each diagnostic's roxygen):
 #   - Histosols: histic_horizon detects 10cm contiguous organic from
@@ -111,18 +116,6 @@ rsgs:
       all_of:
         - plinthic: {}
 
-  - code: NT
-    name: Nitisols
-    tests:
-      all_of:
-        - nitic_horizon: {}
-
-  - code: FR
-    name: Ferralsols
-    tests:
-      all_of:
-        - ferralic: {}
-
   - code: PL
     name: Planosols
     tests:
@@ -134,6 +127,18 @@ rsgs:
     tests:
       all_of:
         - stagnic_properties: {}
+
+  - code: NT
+    name: Nitisols
+    tests:
+      all_of:
+        - nitic_horizon: {}
+
+  - code: FR
+    name: Ferralsols
+    tests:
+      all_of:
+        - ferralic: {}
 
   - code: CH
     name: Chernozems
@@ -213,20 +218,21 @@ rsgs:
       all_of:
         - cambic: {}
 
-  - code: AR
-    name: Arenosols
-    tests:
-      all_of:
-        - arenic_texture: {}
-
   - code: FL
     name: Fluvisols
     tests:
       all_of:
         - fluvic_material: {}
 
+  - code: AR
+    name: Arenosols
+    tests:
+      all_of:
+        - arenic_texture: {}
+
   - code: RG
     name: Regosols
     tests:
       default: true
     notes: "Catch-all for mineral soils that do not match any prior RSG."
+
