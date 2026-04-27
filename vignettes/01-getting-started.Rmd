@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 `soilKey` provides automated soil profile classification under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key itself is implemented as deterministic R code driven by versioned YAML rules; vision-language extraction, spatial priors, and OSSL-based attribute prediction sit alongside it as modular layers, never inside it.
 
-This vignette walks through the **v0.6 deliverable** (post-v0.3.2 reorder): building a `PedonRecord`, calling the 26 implemented WRB 2022 diagnostics directly, classifying any of the 31 canonical fixtures end-to-end through the fully-wired WRB key (32/32 RSGs in canonical key order, pp 95-126 of WRB 2022), and watching the evidence grade respond to provenance. Sections 10-12 demonstrate the three side modules:
+This vignette walks through the **post-v0.3.4 deliverable**: building a `PedonRecord`, calling any of the now ~70 implemented WRB 2022 diagnostics directly (Ch 3.1 + 3.2 + 3.3 essentially complete after v0.3.3), classifying any of the 31 canonical fixtures end-to-end through the fully-wired WRB key (32/32 RSGs in canonical Ch 4 order, pp 95-126), and watching the evidence grade respond to provenance. v0.3.4 adds **strict RSG-level gates** (vertisol, andosol, gleysol, planosol, ferralsol, chernozem_strict, kastanozem_strict) that enforce the Ch 4 exclusion rules and multi-criterion gates, replacing the v0.2 single-horizon shortcuts. Sections 10-12 demonstrate the three side modules:
 
 * **Module 4 (OSSL)** -- gap-fill missing horizon attributes from Vis-NIR/SWIR spectra;
 * **Module 3 (SoilGrids prior)** -- sanity-check the deterministic outcome against a global spatial prior, *without* ever overriding the key;
@@ -290,7 +290,8 @@ res
 | **v0.4** | **Module 4 -- OSSL spectroscopy bridge (MBL, PLSR-local, pretrained)**                                               |
 | **v0.5** | **Module 3 -- SoilGrids spatial prior + Embrapa raster (sanity-check, never overrides)**                              |
 | **v0.6** | **Module 2 -- Multimodal extraction (PDF / photo / fieldsheet) via `ellmer`, schema-validated**                      |
-| v0.3.3   | Tier-2 gate strengthening: Ferralsol argic-exclusion, Vertisol shrink-swell cracks, Chernozem/Kastanozem protocalcic |
+| **v0.3.3** | **Complete WRB Ch 3.1 / 3.2 / 3.3 coverage** -- +18 horizons, +12 properties, +16 materials. Schema +24 columns.  |
+| **v0.3.4** | **Tier-2 RSG gate strengthening** -- vertisol, andosol, gleysol, planosol, ferralsol, chernozem_strict, kastanozem_strict wired into key.yaml; spodic refined to disambiguate from andic. |
 | v0.7     | Module 6 -- Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                        |
 | v0.8     | Module 5 -- USDA Soil Taxonomy parallel key (12 orders)                                                              |
 | v0.9     | All ~202 WRB qualifiers + 10 specifiers; vignettes 05-09; WoSIS benchmark                                            |
