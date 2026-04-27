@@ -1,0 +1,301 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "soilKey horizon extraction schema",
+  "description": "Schema for VLM-extracted horizon data. Each numeric / categorical attribute is wrapped in an object that carries the value, a confidence score in [0,1], and a verbatim source quote (<= 20 words) from the source document or photo. Top-level structure is an array of horizons. The VLM never classifies; it only extracts. NA / not-stated -> null.",
+  "type": "object",
+  "properties": {
+    "horizons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "top_cm": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "bottom_cm": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "designation": {
+            "type": ["string", "null"],
+            "pattern": "^[A-Z][a-zA-Z0-9]*$"
+          },
+          "boundary_distinctness": {
+            "type": ["string", "null"],
+            "enum": [null, "abrupt", "clear", "gradual", "diffuse"]
+          },
+          "boundary_topography": {
+            "type": ["string", "null"],
+            "enum": [null, "smooth", "wavy", "irregular", "broken"]
+          },
+          "munsell_moist": {
+            "type": ["object", "null"],
+            "properties": {
+              "hue": {"type": "string"},
+              "value": {"type": "integer", "minimum": 2, "maximum": 8},
+              "chroma": {"type": "integer", "minimum": 1, "maximum": 8},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["hue", "value", "chroma", "confidence"]
+          },
+          "munsell_dry": {
+            "type": ["object", "null"],
+            "properties": {
+              "hue": {"type": "string"},
+              "value": {"type": "integer", "minimum": 2, "maximum": 8},
+              "chroma": {"type": "integer", "minimum": 1, "maximum": 8},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["hue", "value", "chroma", "confidence"]
+          },
+          "structure_grade": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string", "enum": ["structureless", "weak", "moderate", "strong"]},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "structure_size": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "structure_type": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "consistence_moist": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "clay_films": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "coarse_fragments_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "clay_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "silt_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "sand_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "ph_h2o": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 1, "maximum": 12},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "ph_kcl": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 1, "maximum": 12},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "oc_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 60},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "n_total_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 10},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "cec_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 200},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "ecec_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 200},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "bs_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "al_sat_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "ca_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 200},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "mg_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 200},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "k_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 50},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "na_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 50},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "al_cmol": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "caco3_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "caso4_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "fe_dcb_pct": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 100},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "ec_dS_m": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 1000},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          },
+          "bulk_density_g_cm3": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "number", "minimum": 0, "maximum": 3},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            },
+            "required": ["value", "confidence"]
+          }
+        },
+        "required": ["top_cm", "bottom_cm"]
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["horizons"]
+}

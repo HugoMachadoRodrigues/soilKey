@@ -373,10 +373,18 @@ PedonRecord <- R6::R6Class("PedonRecord",
 
       # Authority check: if the cell already has a value with a higher-
       # authority source, keep it unless overwrite = TRUE.
+      #
+      # Note: we copy `attribute` into a local with a non-colliding
+      # name before subsetting because `data.table` indexing performs
+      # NSE that resolves bare names against the table's columns
+      # first. Without this, `self$provenance$attribute == attribute`
+      # gets evaluated as `column == column`, matching every row.
       if (!overwrite) {
+        .target_attr   <- attribute
+        .target_hz_idx <- horizon_idx
         prior <- self$provenance[
-          self$provenance$horizon_idx == horizon_idx &
-          self$provenance$attribute   == attribute, ]
+          self$provenance$horizon_idx == .target_hz_idx &
+          self$provenance$attribute   == .target_attr, ]
         if (nrow(prior) > 0L) {
           best <- max(provenance_authority(prior$source), na.rm = TRUE)
           if (provenance_authority(source) < best) {
