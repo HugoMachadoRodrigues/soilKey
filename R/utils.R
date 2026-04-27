@@ -83,7 +83,30 @@ horizon_column_spec <- function() {
     slickensides                  = "character", # absent / few / common / many / continuous
     # ---- v0.3 additions: technic, duric ----
     artefacts_pct                 = "numeric",   # volume % of human artefacts (for Technosols)
-    duripan_pct                   = "numeric"    # volume % of Si-cemented duripan (for Durisols)
+    duripan_pct                   = "numeric",   # volume % of Si-cemented duripan (for Durisols)
+    # ---- v0.3.3 additions: completing WRB Ch 3.1 / 3.2 / 3.3 coverage ----
+    cementation_class             = "character", # 'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants)
+    p_mehlich3_mg_kg              = "numeric",   # plant-available P (anthric / hortic / pretic / ornithogenic)
+    worm_holes_pct                = "numeric",   # volume % of worm holes / casts / coprolites (chernic / vermic / arenicolic)
+    water_dispersible_clay_pct    = "numeric",   # WDC / total clay (Ferralsols 'activic' check)
+    sulfidic_s_pct                = "numeric",   # inorganic sulfidic S (hypersulfidic / hyposulfidic / thionic)
+    volcanic_glass_pct            = "numeric",   # % volcanic glass in 0.02-2 mm fraction (vitric / tephric)
+    phosphate_retention_pct       = "numeric",   # P retention (vitric / andic threshold)
+    artefacts_industrial_pct      = "numeric",   # subset of artefacts: industrial-process glasses, slag, ash (organotechnic)
+    artefacts_urbic_pct           = "numeric",   # subset of artefacts: rubble / refuse from human settlements (Technosols urbic)
+    rock_origin                   = "character", # 'fluviatile' / 'marine' / 'lacustrine' / 'aeolian' / 'colluvial' / 'pyroclastic' / NA
+    permafrost_temp_C             = "numeric",   # mean annual soil temp at this depth (gelic / cryic)
+    cracks_width_cm               = "numeric",   # width of shrink-swell cracks when soil dry (vertic horizon / shrink_swell_cracks)
+    cracks_depth_cm               = "numeric",   # depth to which the crack extends from the surface
+    polygonal_cracks_spacing_cm   = "numeric",   # avg horizontal spacing of polygonal cracks (takyric properties)
+    desert_pavement_pct           = "numeric",   # % surface coverage by coarse fragments (yermic properties)
+    varnish_pct                   = "numeric",   # % of coarse fragments with desert varnish (yermic)
+    ventifact_pct                 = "numeric",   # % of coarse fragments wind-shaped (yermic)
+    vesicular_pores               = "character", # 'absent' / 'few' / 'common' / 'many' (yermic)
+    rupture_resistance            = "character", # 'loose' / 'soft' / 'slightly hard' / 'hard' / 'very hard' / 'extremely hard'
+    plasticity                    = "character", # 'non-plastic' / 'slightly plastic' / 'moderately plastic' / 'very plastic'
+    al_kcl_cmol                   = "numeric",   # KCl-extractable Al (Alisols criterion)
+    layer_origin                  = "character"  # 'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating)
   )
 }
 

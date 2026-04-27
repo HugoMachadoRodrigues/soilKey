@@ -1651,13 +1651,13 @@ test_abrupt_textural_change <- function(h, min_ratio = 2.0,
     if (above <= 0) next
     ratio <- here / above
     boundary_ok <- if (!require_abrupt_boundary) TRUE
-                    else !is.na(h$boundary_distinctness[i - 1L]) &&
-                          grepl("abrupt", h$boundary_distinctness[i - 1L],
+                    else if (is.na(h$boundary_distinctness[i - 1L])) FALSE
+                    else grepl("abrupt", h$boundary_distinctness[i - 1L],
                                   ignore.case = TRUE)
     if (require_abrupt_boundary && is.na(h$boundary_distinctness[i - 1L])) {
       missing <- c(missing, "boundary_distinctness")
     }
-    ok <- ratio >= min_ratio && boundary_ok
+    ok <- isTRUE(ratio >= min_ratio) && isTRUE(boundary_ok)
     details[[as.character(i)]] <- list(
       above_idx = i - 1L, here_idx = i,
       above_clay = above, here_clay = here, ratio = ratio,
