@@ -725,6 +725,8 @@ make_vertisol_canonical <- function() {
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","common","many"),
+    cracks_width_cm            = c(0.6,  0.8,  0.5),   # v0.3.4: strict vertisol gate
+    cracks_depth_cm            = c(80,   100,  120),
     bulk_density_g_cm3         = c(1.40, 1.55, 1.60)
   )
 
@@ -1543,6 +1545,8 @@ make_andosol_canonical <- function() {
     slickensides               = c("absent","absent","absent"),
     artefacts_pct              = c(0,    0,    0),
     duripan_pct                = c(0,    0,    0),
+    volcanic_glass_pct         = c(35,   25,   10),    # v0.3.4: vitric/tephric path
+    phosphate_retention_pct    = c(90,   85,   60),    # v0.3.4: andic+vitric criterion
     bulk_density_g_cm3         = c(0.70, 0.85, 1.10)
   )
 
@@ -2141,6 +2145,7 @@ make_chernozem_canonical <- function() {
     bs_pct                = c(89,   87,   86,   97,   95),
     al_sat_pct            = c(0,    0,    0,    0,    0),
     caco3_pct             = c(0,    0,    0,    8,    12),
+    worm_holes_pct        = c(60,   55,   45,   20,   5),    # v0.3.4: chernic strict gate
     bulk_density_g_cm3    = c(1.05, 1.10, 1.20, 1.30, 1.35)
   )
 

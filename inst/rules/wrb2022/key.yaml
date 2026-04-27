@@ -84,7 +84,7 @@ rsgs:
     name: Vertisols
     tests:
       all_of:
-        - vertic_properties: {}
+        - vertisol: {}                  # v0.3.4: strict gate (vertic horizon + clay-throughout + cracks)
 
   - code: SC
     name: Solonchaks
@@ -96,13 +96,13 @@ rsgs:
     name: Gleysols
     tests:
       all_of:
-        - gleyic_properties: {}
+        - gleysol: {}                   # v0.3.4: strict gate (gleyic + reducing + thickness)
 
   - code: AN
     name: Andosols
     tests:
       all_of:
-        - andic_properties: {}
+        - andosol: {}                   # v0.3.4: strict gate (andic OR vitric, thickness, exclusions)
 
   - code: PZ
     name: Podzols
@@ -120,7 +120,7 @@ rsgs:
     name: Planosols
     tests:
       all_of:
-        - planic_features: {}
+        - planosol: {}                  # v0.3.4: strict gate (abrupt + stagnic + reducing)
 
   - code: ST
     name: Stagnosols
@@ -138,19 +138,19 @@ rsgs:
     name: Ferralsols
     tests:
       all_of:
-        - ferralic: {}
+        - ferralsol: {}                 # v0.3.4: strict gate (ferralic + argic-exclusion with WDC/dpH/SOC paths)
 
   - code: CH
     name: Chernozems
     tests:
       all_of:
-        - chernozem: {}
+        - chernozem_strict: {}          # v0.3.4: strict gate (chernic + protocalcic/calcic + BS >= 50)
 
   - code: KS
     name: Kastanozems
     tests:
       all_of:
-        - kastanozem: {}
+        - kastanozem_strict: {}         # v0.3.4: strict gate (mollic + protocalcic/calcic <= 70 cm + BS >= 50)
 
   - code: PH
     name: Phaeozems

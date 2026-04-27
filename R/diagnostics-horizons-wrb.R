@@ -487,9 +487,39 @@ spodic <- function(pedon,
   tests$alfe_oxalate <- test_spodic_aluminum_iron(h, min_pct = min_alfe)
   tests$ph           <- test_ph_below(h, max_ph = max_ph,
                                         candidate_layers = tests$alfe_oxalate$layers)
+  # v0.3.4: require either a B(h|s|hs) designation OR an albic-or-claric
+  # horizon directly overlying. This disambiguates spodic from andic
+  # (which has the same Al/Fe + low pH chemistry but no eluvial-illuvial
+  # designation pattern). Without this gate the spodic test triggers on
+  # any acidic Al/Fe-rich Bw and confuses Andosol vs Podzol.
+  desg <- test_pattern_match(h, "designation", "^B[hsr](h)?[s]?$|^Bhs|^Bsh|^Bs$|^Bh$")
+  has_albic_above <- integer(0)
+  if (length(tests$alfe_oxalate$layers) > 0L) {
+    al <- albic(pedon)
+    if (isTRUE(al$passed)) {
+      for (i in tests$alfe_oxalate$layers) {
+        above_layers <- which(seq_len(nrow(h)) < i)
+        if (any(above_layers %in% al$layers)) {
+          has_albic_above <- c(has_albic_above, i)
+        }
+      }
+    }
+  }
+  tests$illuvial_signature <- .subtest_result(
+    passed = if (length(union(desg$layers, has_albic_above)) > 0L) TRUE
+             else if (all(is.na(h$designation))) NA
+             else FALSE,
+    layers = union(desg$layers, has_albic_above),
+    missing = desg$missing,
+    details = list(designation_match = desg$layers,
+                     albic_above_match = has_albic_above)
+  )
   tests$thickness    <- test_minimum_thickness(h,
                                                   min_cm           = min_thickness,
-                                                  candidate_layers = tests$alfe_oxalate$layers)
+                                                  candidate_layers = intersect(
+                                                    tests$alfe_oxalate$layers,
+                                                    tests$illuvial_signature$layers
+                                                  ))
 
   agg <- aggregate_subtests(tests)
 
@@ -499,7 +529,8 @@ spodic <- function(pedon,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon"
+    reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon",
+    notes     = "v0.3.4: tightened with illuvial-signature requirement (designation B[hs]+ or albic-above)"
   )
 }
 
