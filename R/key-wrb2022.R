@@ -47,9 +47,15 @@ run_wrb_key <- function(pedon, rules = NULL) {
 #' check.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param prior Optional spatial prior. Currently unused (v0.5 scope);
-#'        if supplied, the result will record a \code{prior_check} entry
-#'        marked \code{"not run in v0.1"}.
+#' @param prior Optional spatial prior -- a \code{data.table} with
+#'        columns \code{rsg_code} and \code{probability}, typically the
+#'        return value of \code{\link{spatial_prior}}. If supplied, the
+#'        result records a \code{prior_check} entry from
+#'        \code{\link{prior_consistency_check}}; an inconsistent prior
+#'        also emits a warning. The deterministic key is NEVER
+#'        overridden by the prior.
+#' @param prior_threshold Probability below which the prior triggers
+#'        an "inconsistent" warning (default 0.01).
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}. Behaviour when the trace reports missing
 #'        attributes.
@@ -57,9 +63,10 @@ run_wrb_key <- function(pedon, rules = NULL) {
 #' @return A \code{\link{ClassificationResult}}.
 #' @export
 classify_wrb2022 <- function(pedon,
-                               prior      = NULL,
-                               on_missing = c("warn", "silent", "error"),
-                               rules      = NULL) {
+                               prior           = NULL,
+                               prior_threshold = 0.01,
+                               on_missing      = c("warn", "silent", "error"),
+                               rules           = NULL) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("wrb2022")
 
@@ -115,12 +122,17 @@ classify_wrb2022 <- function(pedon,
     }
   }
 
-  prior_check <- if (!is.null(prior)) {
-    list(
-      status = "not_run_v01",
-      note   = "Spatial prior support is scheduled for v0.5 (SoilGrids/Embrapa)"
+  prior_check <- NULL
+  if (!is.null(prior)) {
+    prior_check <- prior_consistency_check(
+      rsg_code  = rsg$code,
+      prior     = prior,
+      threshold = prior_threshold
     )
-  } else NULL
+    if (isFALSE(prior_check$consistent)) {
+      warnings <- c(warnings, prior_check$note)
+    }
+  }
 
   ClassificationResult$new(
     system         = "WRB 2022",

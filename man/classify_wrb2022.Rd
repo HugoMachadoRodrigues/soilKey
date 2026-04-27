@@ -7,6 +7,7 @@
 classify_wrb2022(
   pedon,
   prior = NULL,
+  prior_threshold = 0.01,
   on_missing = c("warn", "silent", "error"),
   rules = NULL
 )
@@ -14,9 +15,16 @@ classify_wrb2022(
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{prior}{Optional spatial prior. Currently unused (v0.5 scope);
-if supplied, the result will record a \code{prior_check} entry
-marked \code{"not run in v0.1"}.}
+\item{prior}{Optional spatial prior -- a \code{data.table} with
+columns \code{rsg_code} and \code{probability}, typically the
+return value of \code{\link{spatial_prior}}. If supplied, the
+result records a \code{prior_check} entry from
+\code{\link{prior_consistency_check}}; an inconsistent prior
+also emits a warning. The deterministic key is NEVER
+overridden by the prior.}
+
+\item{prior_threshold}{Probability below which the prior triggers
+an "inconsistent" warning (default 0.01).}
 
 \item{on_missing}{One of \code{"warn"} (default), \code{"silent"},
 \code{"error"}. Behaviour when the trace reports missing
