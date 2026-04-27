@@ -490,3 +490,192 @@ terric <- function(pedon, min_thickness = 20) {
     reference = "IUSS Working Group WRB (2022), Chapter 3.1, Terric horizon"
   )
 }
+
+
+# ---- Ch 3.1 final four (v0.3.5): tsitelic, panpaic, limonic, protovertic ----
+
+#' Tsitelic horizon (WRB 2022 Ch 3.1)
+#'
+#' From Georgian \emph{tsiteli} = red. A red colour-defined horizon
+#' formed on weathered basalt or similar Fe-rich parent material in
+#' Caucasian / Mediterranean settings. Used by the Cambisols key
+#' (Ch 4 p 123, criterion 4) and by the Tsitelic qualifier.
+#'
+#' Diagnostic criteria (v0.3.5 simplification):
+#' \itemize{
+#'   \item Munsell hue \\<= 2.5YR (i.e. 2.5YR, 10R, 7.5R, 5R, 2.5R)
+#'         AND value \\<= 4 (moist) AND chroma \\>= 4 (moist);
+#'   \item evidence of soil formation (cambic-style criterion 3)
+#'         proxied by clay \\>= 8\\% AND \code{structure_grade} not
+#'         "single grain" / "massive";
+#'   \item thickness \\>= 10 cm.
+#' }
+#'
+#' @export
+tsitelic <- function(pedon, min_thickness = 10) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$hue <- test_pattern_match(
+    h, "munsell_hue_moist",
+    "^(2\\.5YR|10R|7\\.5R|5R|2\\.5R)"
+  )
+  ok_value <- which(!is.na(h$munsell_value_moist) &
+                      h$munsell_value_moist <= 4)
+  ok_chroma <- which(!is.na(h$munsell_chroma_moist) &
+                       h$munsell_chroma_moist >= 4)
+  red_layers <- intersect(intersect(tests$hue$layers, ok_value), ok_chroma)
+  tests$red_munsell <- .subtest_result(
+    passed = if (length(red_layers) > 0L) TRUE
+             else if (all(is.na(h$munsell_hue_moist))) NA
+             else FALSE,
+    layers = red_layers,
+    missing = if (any(is.na(h$munsell_hue_moist)))
+                "munsell_hue_moist" else character(0),
+    details = list()
+  )
+  ok_clay <- which(!is.na(h$clay_pct) & h$clay_pct >= 8)
+  ok_struct <- which(is.na(h$structure_grade) |
+                       !grepl("single grain|massive",
+                                h$structure_grade,
+                                ignore.case = TRUE))
+  formed_layers <- intersect(ok_clay, ok_struct)
+  tests$formed <- .subtest_result(
+    passed = if (length(formed_layers) > 0L) TRUE
+             else if (all(is.na(h$clay_pct))) NA
+             else FALSE,
+    layers = formed_layers,
+    missing = if (any(is.na(h$clay_pct))) "clay_pct" else character(0),
+    details = list()
+  )
+  shared <- intersect(tests$red_munsell$layers, tests$formed$layers)
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                              candidate_layers = shared)
+  agg <- aggregate_subtests(tests)
+  DiagnosticResult$new(
+    name = "tsitelic", passed = agg$passed, layers = agg$layers,
+    evidence = tests, missing = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Tsitelic horizon",
+    notes = "v0.3.5: Munsell red hue + value/chroma + clay >= 8% + non-massive structure"
+  )
+}
+
+
+#' Panpaic horizon (WRB 2022 Ch 3.1)
+#'
+#' From Quechua \emph{p'anpay} = "to bury". A buried diagnostic horizon
+#' (any horizon whose original surface was subsequently overlain by
+#' younger material). Used by the Panpaic qualifier and by the Cambisols
+#' / Anthrosols branches.
+#'
+#' v0.3.5 detection: designation pattern starting with a digit other
+#' than 1 (e.g. \code{2A}, \code{2Bw}, \code{3C}) -- the WRB / FAO
+#' convention for buried horizons -- OR a \code{b} suffix in the
+#' designation (e.g. \code{Ahb}, \code{Bwb}).
+#'
+#' @export
+panpaic <- function(pedon) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$buried_pattern <- test_pattern_match(
+    h, "designation",
+    "^[2-9][A-Z]|^[2-9]\\d?[A-Z]|b$|^[A-Z]+b"
+  )
+  agg <- aggregate_subtests(tests)
+  DiagnosticResult$new(
+    name = "panpaic", passed = agg$passed, layers = agg$layers,
+    evidence = tests, missing = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Panpaic horizon",
+    notes = "v0.3.5: buried-horizon designation pattern (2*, 3*, or *b suffix)"
+  )
+}
+
+
+#' Limonic horizon (WRB 2022 Ch 3.1)
+#'
+#' From Greek \emph{leimon} = meadow. A subaqueous / wet-meadow horizon
+#' showing accumulation of secondary Fe/Mn (oxi)hydroxides from
+#' fluctuating redox cycles. Distinct from \emph{limnic material}
+#' (Ch 3.3.10), which is the parent material; the limonic horizon is
+#' the \emph{soil} horizon derived from such material plus subsequent
+#' pedogenesis.
+#'
+#' v0.3.5 detection: redoximorphic_features_pct \\>= 5 AND designation
+#' pattern \code{Bm} / \code{Bjm} / \code{m} as proxy for past meadow
+#' wetness.
+#'
+#' @export
+limonic <- function(pedon, min_thickness = 5, min_redox_pct = 5) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$redox <- test_numeric_above(h, "redoximorphic_features_pct",
+                                       threshold = min_redox_pct)
+  tests$pattern <- test_pattern_match(h, "designation",
+                                          "^Bm|^Bjm|^Bjg|^Bgm",
+                                          candidate_layers = tests$redox$layers)
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                              candidate_layers = tests$pattern$layers)
+  agg <- aggregate_subtests(tests)
+  DiagnosticResult$new(
+    name = "limonic", passed = agg$passed, layers = agg$layers,
+    evidence = tests, missing = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Limonic horizon",
+    notes = "v0.3.5: redox >=5% + meadow-pattern designation (Bm / Bjm)"
+  )
+}
+
+
+#' Protovertic horizon (WRB 2022 Ch 3.1)
+#'
+#' A weakly developed vertic horizon -- the swelling/shrinking
+#' machinery is present but does not reach the full vertic intensity
+#' (cracks too narrow, or slickensides only "few", or thickness too
+#' small). Used by the Protovertic qualifier; relevant for soils that
+#' would be Vertisols if the cracks/slickensides were a notch
+#' stronger.
+#'
+#' v0.3.5 detection: clay \\>= 30\\% AND any positive vertic evidence
+#' (slickensides at \\>= "few" OR cracks_width_cm \\>= 0.2 OR a
+#' wedge/lenticular structure_type) AND thickness \\>= 15 cm. The
+#' positive cases that pass the strict \code{\link{vertic_horizon}}
+#' test are explicitly excluded so the two diagnostics partition the
+#' vertic-spectrum cleanly.
+#'
+#' @export
+protovertic <- function(pedon, min_clay = 30, min_thickness = 15) {
+  h <- pedon$horizons
+  tests <- list()
+  tests$clay <- test_clay_above(h, min_pct = min_clay)
+  tests$weak_evidence <- test_slickensides_present(
+    h,
+    levels = c("few", "common", "many", "continuous"),
+    candidate_layers = tests$clay$layers
+  )
+  if (!isTRUE(tests$weak_evidence$passed)) {
+    cracks <- test_shrink_swell_cracks(h, min_width_cm = 0.2,
+                                          candidate_layers = tests$clay$layers)
+    if (isTRUE(cracks$passed)) tests$weak_evidence <- cracks
+  }
+  if (!isTRUE(tests$weak_evidence$passed)) {
+    wedge <- test_pattern_match(h, "structure_type",
+                                   "wedge|lenticular",
+                                   candidate_layers = tests$clay$layers)
+    if (isTRUE(wedge$passed)) tests$weak_evidence <- wedge
+  }
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                              candidate_layers = tests$weak_evidence$layers)
+  # Mutual exclusion with the strict vertic horizon.
+  vh <- vertic_horizon(pedon)
+  vh_layers <- vh$layers %||% integer(0)
+  agg <- aggregate_subtests(tests)
+  layers_out <- setdiff(agg$layers, vh_layers)
+  passed <- if (length(layers_out) > 0L) TRUE
+            else if (is.na(agg$passed)) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "protovertic", passed = passed, layers = layers_out,
+    evidence = c(tests, list(strict_vertic_excluded = vh_layers)),
+    missing = agg$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Protovertic horizon",
+    notes = "v0.3.5: clay + weak vertic evidence + thickness; strict-vertic layers excluded"
+  )
+}

@@ -331,3 +331,74 @@ test_that("all 31 canonical fixtures still classify to their intended RSG", {
                                   code, expected[[code]]))
   }
 })
+
+
+# ---- v0.3.5 final four horizons --------------------------------------------
+
+test_that("tsitelic catches a red, formed horizon (Mediterranean / basaltic)", {
+  pr <- build_pedon(
+    top_cm               = c(0, 20, 60),
+    bottom_cm            = c(20, 60, 120),
+    designation          = c("A",   "Bw",   "BC"),
+    munsell_hue_moist    = c("10YR","2.5YR","2.5YR"),
+    munsell_value_moist  = c(3,     3,      4),
+    munsell_chroma_moist = c(3,     6,      5),
+    structure_grade      = c("strong","moderate","weak"),
+    structure_type       = c("granular","subangular blocky","subangular blocky"),
+    clay_pct             = c(20,    35,     30),
+    silt_pct             = c(40,    35,     35),
+    sand_pct             = c(40,    30,     35)
+  )
+  res <- tsitelic(pr)
+  expect_true(isTRUE(res$passed))
+  expect_true(2L %in% res$layers)
+  expect_false(1L %in% res$layers)   # 10YR hue rejected
+})
+
+test_that("panpaic detects buried-horizon designation pattern", {
+  pr <- build_pedon(
+    top_cm    = c(0, 30, 80),
+    bottom_cm = c(30, 80, 150),
+    designation = c("A", "AB", "2Bw"),  # 2Bw = buried older B
+    clay_pct = c(25, 30, 35), silt_pct = c(40, 35, 35), sand_pct = c(35, 35, 30)
+  )
+  res <- panpaic(pr)
+  expect_true(isTRUE(res$passed))
+  expect_true(3L %in% res$layers)
+})
+
+test_that("limonic catches meadow-redox horizon", {
+  pr <- build_pedon(
+    top_cm    = c(0, 20, 60),
+    bottom_cm = c(20, 60, 120),
+    designation = c("A", "Bm", "Cg"),
+    redoximorphic_features_pct = c(0, 25, 35),
+    clay_pct = c(20, 30, 28), silt_pct = c(40, 35, 35), sand_pct = c(40, 35, 37)
+  )
+  res <- limonic(pr)
+  expect_true(isTRUE(res$passed))
+  expect_true(2L %in% res$layers)
+})
+
+test_that("protovertic catches weak vertic without strict cracks", {
+  pr <- build_pedon(
+    top_cm = c(0, 25, 80), bottom_cm = c(25, 80, 150),
+    designation = c("A", "Bw", "C"),
+    clay_pct = c(35, 45, 42), silt_pct = c(35, 30, 30), sand_pct = c(30, 25, 28),
+    slickensides = c("absent", "few", "absent"),   # only "few" -> weak evidence
+    cracks_width_cm = c(NA, 0.3, NA)               # < 0.5 -> not strict vertic
+  )
+  res <- protovertic(pr)
+  expect_true(isTRUE(res$passed))
+  # Strict vertic_horizon should fail on this profile.
+  expect_false(isTRUE(vertic_horizon(pr)$passed))
+})
+
+test_that("protovertic and vertic_horizon partition the vertic spectrum", {
+  pr <- make_vertisol_canonical()   # has cracks_width >= 0.5 -> strict vertic
+  vh <- vertic_horizon(pr)
+  pv <- protovertic(pr)
+  expect_true(isTRUE(vh$passed))
+  # Layers passing strict are excluded from protovertic.
+  expect_equal(length(intersect(vh$layers, pv$layers)), 0L)
+})
