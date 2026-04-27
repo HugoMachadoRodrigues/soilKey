@@ -425,9 +425,57 @@ evaluate_rsg_tests <- function(pedon, tests) {
 
 ### 6.4 Qualifiers (WRB)
 
-Após o RSG ser atribuído, `qualifiers-wrb2022.R` roda os 202 qualifiers, filtrando aqueles disponíveis para aquele RSG (Chapter 4 da WRB 2022). Cada qualifier é também uma função pura com mesmo padrão. Principal qualifiers são ordenados conforme a especificação; supplementary são listados em ordem alfabética.
+Após o RSG ser atribuído, `qualifiers-wrb2022.R` roda os ~202 qualifiers, filtrando aqueles disponíveis para aquele RSG (Chapter 4 da WRB 2022). Cada qualifier é também uma função pura com mesmo padrão. Principal qualifiers são ordenados conforme a especificação; supplementary são listados em ordem alfabética.
 
 Output final do nome: `"Rhodic Ferralsol (Clayic, Humic, Dystric)"`.
+
+#### 6.4.1 Inventário canônico para v0.9 (WRB 2022 Ch 5, pp 127-156)
+
+A tabela completa de códigos está em **Ch 6 (pp 152-153)** e contém 4 grupos:
+
+| Grupo | Conteúdo | n |
+|---|---|---|
+| **Reference Soil Groups** | 32 RSGs com seus códigos de 2 letras (HS, AT, ..., RG) | 32 |
+| **Qualifiers** | Qualifiers principais e suplementares + sub-qualifiers (Hyper-, Hypo-, Proto-, Neo-, Orto-, Endoab-, Subaq-, etc.) | ~190 |
+| **Specifiers** | Modificadores de profundidade/posição: `..a` Ano- (≤50 cm), `..n` Endo- (50-100 cm), `..p` Epi-, `..k` Kato- (parte inferior), `..e` Panto- (todo o perfil), `..y` Poly-, `..d` Bathy- (>100 cm), `..s` Supra- (acima de barreira), `..b` Thapto- (em soil sepultado), `..m` Amphi- | 10 |
+| **Combinações Novic** | Material novo sobre solo sepultado, e.g. `nva` Aeoli-Novic, `nvf` Fluvi-Novic | 5+ |
+
+**Estratégia de implementação para v0.9:**
+
+A maioria dos qualifiers se reduz a 4 padrões estruturais:
+
+1. **"Having X horizon at depth ≤ Y cm"** (>= 60% dos qualifiers): `Calcic`, `Petrocalcic`, `Argic` (já indireto via RSG), `Spodic`, `Histic`, `Plinthic`, `Andic`, etc. Implementação: thin wrapper `qualifier_has_horizon(horizon_diagnostic_fn, max_top_cm)`.
+2. **"Having layer with Z properties at depth ≤ Y cm"** (~25%): `Stagnic`, `Gleyic`, `Vitric`, `Vertic`, `Sodic`, `Reducing`, etc. Wrapper análogo com `property_diagnostic_fn`.
+3. **"Material gating"** (~10%): `Calcaric`, `Dolomitic`, `Tephric`, `Fluvic`, `Sulfidic` etc. Wrapper sobre `material_diagnostic_fn`.
+4. **"Composição química/física específica"** (~5%): `Dystric`, `Eutric`, `Hyperdystric`, `Hypereutric` (BS thresholds), `Magnesic`, `Hyperalic`, `Geric`, `Pellic`, `Rubic`, `Xanthic` (Munsell), `Vermic` (worm features), `Skeletic` (coarse fragments), etc. Implementação caso a caso.
+
+Sub-qualifiers (`Hyper-`, `Hypo-`, `Proto-`, `Neo-`) são variantes paramétricas do qualifier base — são naturais como sufixos no mesmo arquivo YAML, com thresholds modificados.
+
+**Specifiers** se aplicam compositorialmente sobre qualifiers (e.g. `Epileptic` = leptic na faixa 0-50 cm; `Endoleptic` = leptic na faixa 50-100 cm) — implementação via decorator.
+
+**YAML schema proposto** para `inst/rules/wrb2022/qualifiers.yaml`:
+
+```yaml
+qualifiers:
+  - code: ap
+    name: Abruptic
+    type: principal
+    applicable_rsgs: [PL, ST, LV, AC, LX, AL, RT]  # do Ch 4
+    test:
+      diagnostic: abrupt_textural_difference
+      max_top_cm: 100
+    references: "Ch 5, p 127"
+    sub_qualifiers:
+      - code: go
+        name: Geoabruptic
+        condition: "abrupt_textural_difference NOT associated with argic/natric/spodic upper limit"
+```
+
+Esse formato torna a expansão dos 200+ qualifiers uma questão de gerar YAML programaticamente a partir do texto canônico (que já tenho indexado).
+
+**Riscos do v0.9:**
+- Vários qualifiers requerem diagnósticos de Ch 3 ainda não implementados (chernic, hortic, irragric, plaggic, pretic, terric, anthraquic, hydragric, hortic, panpaic, etc.). v0.9 deve incluir esses ~12 diagnósticos faltantes antes da resolução de qualifiers.
+- A ordem dos principal qualifiers no nome do solo importa: a WRB lista os qualifiers principais "according to the list from top to bottom" do Ch 4 — ou seja, a ordem listada por RSG é canônica e precisa ser preservada no YAML.
 
 ### 6.5 SiBCS (chave paralela, 13 ordens)
 
@@ -831,15 +879,27 @@ Esse benchmark é o núcleo empírico do paper (candidatos: *SoftwareX*, *Geoder
 | v0.1 | Esqueleto, classes core, 3 diagnósticos WRB (argic, ferralic, mollic), Ferralsols end-to-end. | **shipped (commit `613c3f2`)** |
 | v0.2 | +8 diagnósticos WRB (calcic, gypsic, salic, cambic, plinthic, spodic, gleyic_properties, vertic_properties); +7 diagnósticos RSG-derivados (acrisol, lixisol, alisol, luvisol, chernozem, kastanozem, phaeozem); 16/32 RSGs ligados na chave; scaffolds Módulo 5 (USDA) e Módulo 6 (SiBCS). | **shipped (5 commits, `8077adb`...`8a7d6d9`)** |
 | v0.3 | +15 diagnósticos WRB (histic, leptic, arenic, umbric, duric, technic, andic, fluvic, natric, nitic, planic, stagnic, retic, cryic, anthric); **chave WRB 32/32 RSGs ligados end-to-end**; 31 fixtures canônicas; refinamento gleyic/stagnic via padrão de decay; nitic/ferralic exclusion. | **shipped (3 commits, v0.3a-c)** |
-| v0.4 | Módulo 4 — integração OSSL, MBL, PLSR local. | 3 semanas |
-| v0.5 | Módulo 3 — SoilGrids prior + Embrapa raster. | 2 semanas |
-| v0.6 | Módulo 2 — VLM extraction via ellmer. | 1 mês |
-| v0.7 | **Módulo 6 — SiBCS paralelo completo** (13 ordens + diagnósticos próprios + parceria Embrapa Solos). | 1–2 meses |
-| v0.8 | **Módulo 5 — USDA Soil Taxonomy paralelo** (12 orders + suborders + great groups + diagnósticos USDA com criterios próprios). | 3–4 semanas |
-| v0.9 | Qualifiers suplementares WRB (total 202), vignettes 05–09, benchmark WoSIS. | 1 mês |
-| v1.0 | CRAN submission, paper metodológico submetido. | + 1 mês revisão |
+| **v0.3.1** | **Correções Tier-1 contra texto canônico WRB 2022 Ch 3.1**: argic 6/1.4/20 + faixa 50, ferralic remove ECEC, duric 10/10, vertic ≥25 cm, salic alkaline + produto. | **shipped (`a63925b`)** |
+| **v0.3.2** | **Correção da ordem dos RSGs**: PL/ST entre PT e NT (canonical pp 95-126); FL antes de AR. 31 fixtures continuam classificando corretamente. | **shipped (`27d8f14`)** |
+| **v0.4** | **Módulo 4 — integração OSSL**: `predict_ossl_mbl()`, `predict_ossl_plsr_local()`, `predict_ossl_pretrained()`, `preprocess_spectra()` (SNV / SG1), `pi_to_confidence()`, `fill_from_spectra()`. Provenance tag `predicted_spectra` rebaixa evidence_grade A→B. | **shipped (`381c3ce`)** |
+| **v0.5** | **Módulo 3 — SoilGrids/Embrapa prior**: `spatial_soilgrids_prior()` (WCS), `spatial_embrapa_prior()`, `prior_consistency_check()`. Wired em `classify_wrb2022()` via `prior` e `prior_threshold`. **A chave determinística nunca é sobrescrita pelo prior.** | **shipped (`98e524e`)** |
+| **v0.6** | **Módulo 2 — VLM extraction via ellmer**: `extract_horizons_from_pdf()`, `extract_munsell_from_photo()`, `extract_site_from_fieldsheet()`. Schema-validation via jsonvalidate (draft-07). `MockVLMProvider` exportado para testes. Bug-fix NSE em `PedonRecord$add_measurement`. | **shipped (`80735f6`)** |
+| v0.3.3 | Tier-2 gate strengthening: Ferralsol argic-exclusion, Vertisol shrink-swell cracks, Chernozem/Kastanozem protocalcic/calcic, Andosol thickness aggregation, Gleysol multi-path, Planosol abrupt-textural-difference + stagnic. | 2 semanas |
+| v0.7 | **Módulo 6 — SiBCS paralelo completo** (13 ordens + diagnósticos próprios + parceria Embrapa Solos). Requer livro do SiBCS 5ª ed. (Embrapa 2018) carregado. | 1–2 meses |
+| v0.8 | **Módulo 5 — USDA Soil Taxonomy paralelo** (12 orders + suborders + great groups + diagnósticos USDA). Requer "Keys to Soil Taxonomy" (USDA-NRCS, 12th ed. 2014). | 3–4 semanas |
+| v0.9 | **Qualifiers WRB completos** — ~202 qualifiers + 10 specifiers (Ano-, Bathy-, Endo-, Epi-, Kato-, Panto-, Poly-, Supra-, Thapto-, Amphi-) + sub-qualifiers (Hyper-, Hypo-, Proto-, Neo-, Orto-). Ver inventário em §6.4. Vignettes 05–09; benchmark WoSIS. | 1 mês |
+| v1.0 | CRAN submission, paper metodológico submetido (SoftwareX / Geoderma / C&G / EJSS). | + 1 mês revisão |
 
 Total estimado: **9–14 meses** para v1.0 com dedicação parcial.
+
+### Estado factual em 2026-04-27 (após `80735f6`)
+
+- **15 commits** no `main`. Todos os 4 módulos do escopo original estão funcionalmente implementados (Módulo 1 chave, Módulo 2 VLM, Módulo 3 prior espacial, Módulo 4 OSSL).
+- **310 test_that blocks / 668 expectations** passando. **1 skip deliberado** (test que requer ellmer instalado).
+- **Chave WRB 2022 32/32 RSGs em ordem canônica.** 31 fixtures canônicas, cada uma classifica para a RSG pretendida.
+- **Cobertura de Ch 3.1 (horizontes diagnósticos):** 26 dos ~32 horizontes implementados; os faltantes (chernic, hortic, irragric, plaggic, pretic, terric, anthraquic, hydragric, fragic, sombric, ferric, pisoplinthic, petroplinthic, petrocalcic, petrogypsic, petroduric, tsitelic, panpaic, limonic, thionic) são alvo do v0.7 (SiBCS) / v0.8 (USDA) / v0.9 (qualifiers — alguns são gates de qualifiers principais).
+- **Cobertura de Ch 3.2 (propriedades):** 7 das 17 propriedades implementadas (gleyic, vertic, leptic, andic, planic, stagnic, retic, cryic). Faltam: abrupt textural difference (parcial — usado em planic), albeluvic glossae, anthric (parcial), continuous rock, lithic discontinuity, protocalcic, protogypsic, reducing conditions, shrink-swell cracks, sideralic, takyric, vitric, yermic.
+- **Cobertura de Ch 3.3 (materiais):** 4 dos 19 materiais implementados (arenic_texture, fluvic_material, technic_features parcial, anthric_horizons via designation pattern). Faltam: aeolic, artefacts (definição plena), calcaric, claric, dolomitic, gypsiric, hypersulfidic, hyposulfidic, limnic, mineral material (implícito), mulmic, organic material (parcial via histic), organotechnic, ornithogenic, soil organic carbon, solimovic, technic hard material, tephric.
 
 ### Módulo 5 — USDA Soil Taxonomy (v0.8)
 

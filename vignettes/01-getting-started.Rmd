@@ -16,7 +16,11 @@ knitr::opts_chunk$set(
 
 `soilKey` provides automated soil profile classification under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key itself is implemented as deterministic R code driven by versioned YAML rules; vision-language extraction, spatial priors, and OSSL-based attribute prediction sit alongside it as modular layers, never inside it.
 
-This vignette walks through the v0.3 deliverable: building a `PedonRecord`, calling the 26 implemented WRB 2022 diagnostics directly, classifying any of the 31 canonical fixtures end-to-end through the fully-wired WRB key (32/32 RSGs), and watching the evidence grade respond to provenance.
+This vignette walks through the **v0.6 deliverable** (post-v0.3.2 reorder): building a `PedonRecord`, calling the 26 implemented WRB 2022 diagnostics directly, classifying any of the 31 canonical fixtures end-to-end through the fully-wired WRB key (32/32 RSGs in canonical key order, pp 95-126 of WRB 2022), and watching the evidence grade respond to provenance. Sections 10-12 demonstrate the three side modules:
+
+* **Module 4 (OSSL)** -- gap-fill missing horizon attributes from Vis-NIR/SWIR spectra;
+* **Module 3 (SoilGrids prior)** -- sanity-check the deterministic outcome against a global spatial prior, *without* ever overriding the key;
+* **Module 2 (VLM extraction)** -- pull horizons from a PDF or photo via `ellmer`, schema-validated.
 
 ```{r load}
 library(soilKey)
@@ -182,19 +186,114 @@ class(spc)
 aqp::profile_id(spc)
 ```
 
-# 9. v0.2 scope and the v0.3+ roadmap
+# 9. Module 4 -- OSSL spectroscopy bridge (gap-filling)
 
-| Version | Scope                                                                                                                |
-|---------|----------------------------------------------------------------------------------------------------------------------|
-| v0.1    | Core classes; argic, ferralic, mollic; Ferralsols path                                                               |
-| v0.2    | +calcic, gypsic, salic, cambic, plinthic, spodic, gleyic, vertic; +AC/LX/AL/LV/CH/KS/PH RSG diagnostics; 16/32 wired |
-| **v0.3**| **+histic, leptic, arenic, umbric, duric, technic, andic, fluvic, natric, nitic, planic, stagnic, retic, cryic, anthric; full WRB key (32/32 RSGs wired); 31 canonical fixtures** |
-| v0.4    | Module 4 -- OSSL spectroscopy bridge (MBL, PLSR-local, pretrained)                                                   |
-| v0.5    | Module 3 -- SoilGrids spatial prior + Brazilian Embrapa raster                                                       |
-| v0.6    | Module 2 -- Multimodal extraction (PDF/photo -> structured horizons via `ellmer`)                                    |
-| v0.7    | Module 6 -- Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                        |
-| v0.8    | Module 5 -- USDA Soil Taxonomy parallel key (12 orders)                                                              |
-| v0.9    | All 202 WRB qualifiers; vignettes 05-09; WoSIS benchmark                                                             |
-| v1.0    | CRAN submission and methodological paper                                                                             |
+When some horizon attributes are missing, but the profile carries
+Vis-NIR or MIR spectra, soilKey can fill the gaps via the Open Soil
+Spectral Library. The pipeline preprocesses the spectra (SNV / SG1 /
+trim), dispatches to a memory-based or PLSR backend, and writes each
+prediction into the `PedonRecord` with provenance
+`predicted_spectra` -- which the authority hierarchy treats as below
+laboratory-measured but above VLM-extracted values. The PI95
+prediction interval is mapped to a `[0, 1]` confidence score via
+`pi_to_confidence()`.
+
+```{r ossl, eval = FALSE}
+# Synthetic example -- a profile with measured spectra but missing CEC.
+pr_spec <- make_synthetic_pedon_with_spectra(n_horizons = 4)
+pr_spec$horizons$cec_cmol <- NA_real_   # erase CEC
+
+# Predict via memory-based learning against the OSSL global library.
+pr_filled <- fill_from_spectra(
+  pedon   = pr_spec,
+  backend = "mbl",         # or "plsr_local" / "pretrained"
+  attrs   = c("cec_cmol")  # which attributes to gap-fill
+)
+
+# Each predicted cell is logged with provenance source = "predicted_spectra".
+pr_filled$provenance
+classify_wrb2022(pr_filled)$evidence_grade   # B (predicted_spectra present)
+```
+
+# 10. Module 3 -- SoilGrids / Embrapa spatial prior (sanity check)
+
+Once the deterministic key has reached a verdict, soilKey can
+**cross-check** that verdict against a spatial prior derived from
+ISRIC SoilGrids (global) or the Embrapa raster (Brazil). The prior
+*never* overrides the key -- it only attaches a `prior_check` entry
+to the result and emits a warning if the deterministic outcome lies
+in a low-probability region of the prior.
+
+```{r prior, eval = FALSE}
+prior <- spatial_prior(lon = -43.7, lat = -22.5, source = "auto")
+prior   # data.table of (rsg_code, probability)
+
+res <- classify_wrb2022(
+  pedon           = ferralsol,
+  prior           = prior,
+  prior_threshold = 0.01   # warn if assigned RSG has prior < 1%
+)
+res$prior_check
+```
+
+# 11. Module 2 -- Multimodal extraction via `ellmer`
+
+A field PDF or photo can be turned into a `PedonRecord` via the
+`extract_*` functions, each driven by an `ellmer` chat object
+(Anthropic, OpenAI, Google, or Ollama). The output is a
+schema-validated JSON (draft-07, in `inst/schemas/`) with
+`{value, confidence, source_quote}` per attribute, then merged into
+the `PedonRecord` with provenance `extracted_vlm`.
+
+The package ships a `MockVLMProvider` (R6) so the validation +
+retry loop can be exercised in tests without an API key:
+
+```{r vlm-mock, eval = FALSE}
+mock <- MockVLMProvider$new(
+  responses = list(
+    list(horizons = list(
+      list(top_cm = 0,  bottom_cm = 15, designation = "A",
+            clay_pct = list(value = 30, confidence = 0.9,
+                            source_quote = "30% clay (table 1)")),
+      list(top_cm = 15, bottom_cm = 65, designation = "Bw",
+            clay_pct = list(value = 55, confidence = 0.85,
+                            source_quote = "Bw horizon, 55% clay"))
+    ))
+  )
+)
+pr_extracted <- extract_horizons_from_pdf(
+  pdf_path = "fieldsheet.pdf",
+  provider = mock          # in production: vlm_provider("anthropic")
+)
+classify_wrb2022(pr_extracted)$evidence_grade   # C or D depending on cell coverage
+```
+
+For real use:
+
+```{r vlm-real, eval = FALSE}
+chat <- vlm_provider("anthropic", model = "claude-sonnet-4-5")
+pr   <- extract_horizons_from_pdf("RADAMBRASIL_perfil_007.pdf",
+                                    provider = chat)
+res  <- classify_wrb2022(pr)
+res
+```
+
+# 12. v0.6 scope and the v0.3.3+ roadmap
+
+| Version  | Scope                                                                                                                |
+|----------|----------------------------------------------------------------------------------------------------------------------|
+| v0.1     | Core classes; argic, ferralic, mollic; Ferralsols path                                                               |
+| v0.2     | +calcic, gypsic, salic, cambic, plinthic, spodic, gleyic, vertic; +AC/LX/AL/LV/CH/KS/PH RSG diagnostics; 16/32 wired |
+| v0.3     | +histic, leptic, arenic, umbric, duric, technic, andic, fluvic, natric, nitic, planic, stagnic, retic, cryic, anthric; full WRB key (32/32 RSGs wired); 31 canonical fixtures |
+| v0.3.1   | Tier-1 corrections vs WRB 2022 Ch 3.1: argic 6/1.4/20 + band 50, ferralic drops ECEC, duric 10/10, vertic >=25 cm, salic alkaline + product gate |
+| v0.3.2   | RSG order in `key.yaml` aligned to canonical WRB 2022 Ch 4 (PL/ST before NT/FR; FL before AR)                        |
+| **v0.4** | **Module 4 -- OSSL spectroscopy bridge (MBL, PLSR-local, pretrained)**                                               |
+| **v0.5** | **Module 3 -- SoilGrids spatial prior + Embrapa raster (sanity-check, never overrides)**                              |
+| **v0.6** | **Module 2 -- Multimodal extraction (PDF / photo / fieldsheet) via `ellmer`, schema-validated**                      |
+| v0.3.3   | Tier-2 gate strengthening: Ferralsol argic-exclusion, Vertisol shrink-swell cracks, Chernozem/Kastanozem protocalcic |
+| v0.7     | Module 6 -- Parallel SiBCS key (13 ordens), Embrapa partnership for validation                                        |
+| v0.8     | Module 5 -- USDA Soil Taxonomy parallel key (12 orders)                                                              |
+| v0.9     | All ~202 WRB qualifiers + 10 specifiers; vignettes 05-09; WoSIS benchmark                                            |
+| v1.0     | CRAN submission and methodological paper                                                                             |
 
 See `ARCHITECTURE.md` (in the package root) for the full design rationale.
