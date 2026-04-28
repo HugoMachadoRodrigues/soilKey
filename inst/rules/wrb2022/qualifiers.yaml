@@ -1,0 +1,83 @@
+version: "WRB 2022 (4th ed.) -- Qualifier mapping per RSG (Ch 4 + Ch 5)"
+implementation_status: "soilKey v0.9 -- ~50 core qualifiers (subset of ~200)"
+source: |
+  IUSS Working Group WRB (2022). World Reference Base for Soil
+  Resources, 4th edition. Chapter 4 (RSG-specific principal-qualifier
+  lists) + Chapter 5 (qualifier definitions) + Chapter 6 (codes).
+
+# v0.9 implements ~50 of the ~200 WRB qualifiers. The principal
+# qualifiers listed below for each RSG are the canonical-order subset
+# that v0.9 wires; the full list per Ch 4 is the v0.9.1 target.
+#
+# Qualifier name resolution: each entry name N maps to function
+# qual_<tolower(N)> in R/qualifiers-wrb2022.R. The first principal
+# qualifier whose function returns passed=TRUE wins; if none pass,
+# Haplic is used as default. Supplementary qualifiers are deferred to
+# v0.9.1.
+
+rsg_qualifiers:
+
+  HS:   # Histosols
+    principal: [Folic, Cryic, Andic, Skeletic]
+  AT:   # Anthrosols
+    principal: [Stagnic, Gleyic, Andic]
+  TC:   # Technosols
+    principal: [Leptic, Skeletic, Stagnic, Gleyic, Andic]
+  CR:   # Cryosols
+    principal: [Histic, Andic, Salic, Spodic, Retic, Calcic, Cambic]
+  LP:   # Leptosols
+    principal: [Histic, Andic, Mollic, Umbric, Gypsic, Calcic, Cambic]
+  SN:   # Solonetz
+    principal: [Gleyic, Stagnic, Mollic, Salic, Gypsic, Petrocalcic, Calcic, Vertic]
+  VR:   # Vertisols
+    principal: [Salic, Sodic, Leptic, Petroduric, Duric, Gypsic, Petrocalcic, Calcic, Chromic]
+  SC:   # Solonchaks
+    principal: [Gleyic, Stagnic, Sodic, Petrogypsic, Gypsic, Petrocalcic, Calcic, Mollic, Fluvic]
+  GL:   # Gleysols
+    principal: [Histic, Andic, Mollic, Umbric, Spodic, Calcic, Gypsic, Fluvic]
+  AN:   # Andosols
+    principal: [Vitric, Leptic, Gleyic, Histic, Mollic, Umbric, Petroduric, Duric, Gypsic, Calcic]
+  PZ:   # Podzols
+    principal: [Albic, Leptic, Histic, Gleyic, Andic, Vitric, Stagnic, Umbric, Retic]
+  PT:   # Plinthosols
+    principal: [Petric, Stagnic, Albic, Leptic, Mollic, Umbric]
+  PL:   # Planosols
+    principal: [Stagnic, Histic, Gleyic, Mollic, Umbric, Albic, Vertic]
+  ST:   # Stagnosols
+    principal: [Leptic, Histic, Mollic, Umbric, Albic, Fluvic, Vertic]
+  NT:   # Nitisols
+    principal: [Ferralic, Ferric, Leptic, Rhodic, Chromic, Mollic, Umbric]
+  FR:   # Ferralsols
+    principal: [Ferric, Rhodic, Chromic, Xanthic, Gleyic, Stagnic, Mollic, Umbric, Acric, Lixic]
+  CH:   # Chernozems
+    principal: [Petroduric, Petrocalcic, Leptic, Calcic, Cambic, Skeletic]
+  KS:   # Kastanozems
+    principal: [Petrogypsic, Petroduric, Gypsic, Petrocalcic, Leptic, Gleyic, Fluvic, Vertic, Luvic, Calcic, Cambic]
+  PH:   # Phaeozems
+    principal: [Mollic, Petroduric, Petrocalcic, Leptic, Gleyic, Stagnic, Fluvic, Vertic]
+  UM:   # Umbrisols
+    principal: [Histic, Leptic, Gleyic, Stagnic, Fluvic]
+  DU:   # Durisols
+    principal: [Petric, Petrogypsic, Gypsic, Petrocalcic, Calcic, Leptic, Cambic]
+  GY:   # Gypsisols
+    principal: [Petric, Petrocalcic, Leptic, Gleyic, Stagnic, Cambic, Calcic]
+  CL:   # Calcisols
+    principal: [Petric, Leptic, Gleyic, Stagnic, Cambic]
+  RT:   # Retisols
+    principal: [Albic, Leptic, Histic, Gleyic, Stagnic]
+  AC:   # Acrisols
+    principal: [Leptic, Gleyic, Stagnic, Ferralic, Plinthic, Vertic, Mollic, Umbric]
+  LX:   # Lixisols
+    principal: [Petrocalcic, Leptic, Gleyic, Stagnic, Ferralic, Plinthic, Vertic]
+  AL:   # Alisols
+    principal: [Leptic, Gleyic, Stagnic, Ferralic, Plinthic, Vertic, Mollic, Umbric]
+  LV:   # Luvisols
+    principal: [Petrocalcic, Leptic, Gleyic, Stagnic, Vertic, Calcic]
+  CM:   # Cambisols
+    principal: [Andic, Vitric, Leptic, Gleyic, Stagnic, Histic, Mollic, Umbric, Vertic, Fluvic, Skeletic]
+  FL:   # Fluvisols
+    principal: [Histic, Mollic, Umbric, Salic, Gleyic, Stagnic]
+  AR:   # Arenosols
+    principal: [Albic, Leptic, Gleyic, Stagnic, Andic, Vitric, Calcic]
+  RG:   # Regosols
+    principal: [Leptic, Gleyic, Stagnic, Andic, Vitric, Calcic]

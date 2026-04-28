@@ -134,11 +134,23 @@ classify_wrb2022 <- function(pedon,
     }
   }
 
+  # v0.9: Resolve principal qualifiers for the assigned RSG.
+  qual_result <- tryCatch(
+    resolve_wrb_qualifiers(pedon, rsg$code, rules),
+    error = function(e) list(principal = character(0), trace = list())
+  )
+  full_name <- if (length(qual_result$principal) > 0L) {
+    format_wrb_name(rsg$name, principal = qual_result$principal)
+  } else {
+    name
+  }
+
   ClassificationResult$new(
     system         = "WRB 2022",
-    name           = name,
+    name           = full_name,
     rsg_or_order   = rsg$name,
-    qualifiers     = list(),
+    qualifiers     = list(principal = qual_result$principal,
+                            trace     = qual_result$trace),
     trace          = key_result$trace,
     ambiguities    = ambiguities,
     missing_data   = missing_data,
