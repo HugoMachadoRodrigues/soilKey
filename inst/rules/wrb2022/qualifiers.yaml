@@ -54,20 +54,27 @@ rsg_qualifiers:
                 Gleyic, Stagnic, Yermic, Takyric, Skeletic, Calcaric,
                 Hortic, Plaggic, Terric, Vertic]
   SN:   # Solonetz (WRB 2022 Ch 4)
-    principal: [Vitric, Andic, Folic, Histic, Vertic, Salic, Mollic,
-                Chernic, Calcic, Petrocalcic, Gypsic, Petrogypsic,
-                Stagnic, Gleyic, Albic, Magnesic, Yermic, Takyric,
-                Plaggic, Hortic, Terric, Abruptic]
+    principal: [Vitric, Andic, Folic, Histic, Vertic, Salic, Hyposalic,
+                Mollic, Chernic, Calcic, Petrocalcic, Hypercalcic,
+                Hypocalcic, Protocalcic, Gypsic, Petrogypsic,
+                Hypergypsic, Hypogypsic, Stagnic, Gleyic, Albic,
+                Magnesic, Hyposodic, Yermic, Takyric, Plaggic, Hortic,
+                Terric, Abruptic]
   VR:   # Vertisols (WRB 2022 Ch 4)
-    principal: [Mazic, Grumic, Pellic, Albic, Salic, Sodic, Leptic,
-                Petroduric, Duric, Gypsic, Petrogypsic, Petrocalcic,
-                Calcic, Chromic, Mollic, Stagnic, Gleyic, Hortic,
-                Plaggic, Terric, Pretic, Hyposalic, Hyposodic]
+    principal: [Mazic, Grumic, Pellic, Protovertic, Albic, Salic,
+                Hyposalic, Sodic, Hyposodic, Hypersodic, Leptic,
+                Petroduric, Duric, Gypsic, Petrogypsic, Hypergypsic,
+                Petrocalcic, Hypercalcic, Calcic, Hypocalcic,
+                Protocalcic, Chromic, Mollic, Stagnic, Gleyic, Hortic,
+                Plaggic, Terric, Pretic]
   SC:   # Solonchaks (WRB 2022 Ch 4)
-    principal: [Vitric, Andic, Folic, Histic, Vertic, Aceric, Sodic,
-                Hypersalic, Petrogypsic, Gypsic, Petrocalcic, Calcic,
-                Mollic, Stagnic, Gleyic, Yermic, Takyric,
-                Plaggic, Hortic, Terric, Fluvic, Skeletic]
+    principal: [Vitric, Andic, Folic, Histic, Vertic, Aceric,
+                Hypersodic, Sodic, Hyposodic, Hypersalic, Hyposalic,
+                Petrogypsic, Hypergypsic, Gypsic, Hypogypsic,
+                Protogypsic, Petrocalcic, Hypercalcic, Calcic,
+                Hypocalcic, Protocalcic, Mollic, Stagnic, Gleyic,
+                Yermic, Takyric, Plaggic, Hortic, Terric, Fluvic,
+                Skeletic]
   GL:   # Gleysols (WRB 2022 Ch 4)
     principal: [Tidalic, Subaquatic, Floatic, Folic, Histic, Vitric,
                 Andic, Vertic, Thionic, Sulfidic, Salic, Petrogypsic,
@@ -118,36 +125,44 @@ rsg_qualifiers:
                 Plaggic, Hortic, Pretic, Terric, Anthraquic, Hydragric,
                 Skeletic]
   CH:   # Chernozems (WRB 2022 Ch 4)
-    principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Stagnic,
-                Gleyic, Sodic, Salic, Petrocalcic, Calcic, Petrogypsic,
-                Gypsic, Luvic, Cambic, Petroduric, Leptic, Skeletic,
-                Plaggic, Hortic, Terric]
-  KS:   # Kastanozems (WRB 2022 Ch 4)
-    principal: [Vermic, Pachic, Chernic, Vertic, Stagnic, Gleyic,
-                Sodic, Salic, Petrogypsic, Gypsic, Petrocalcic,
-                Calcic, Luvic, Cambic, Petroduric, Leptic, Fluvic,
+    principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Protovertic,
+                Stagnic, Gleyic, Sodic, Hyposodic, Salic, Hyposalic,
+                Petrocalcic, Hypercalcic, Calcic, Hypocalcic,
+                Protocalcic, Petrogypsic, Hypergypsic, Gypsic,
+                Hypogypsic, Luvic, Cambic, Petroduric, Leptic,
                 Skeletic, Plaggic, Hortic, Terric]
+  KS:   # Kastanozems (WRB 2022 Ch 4)
+    principal: [Vermic, Pachic, Chernic, Vertic, Protovertic, Stagnic,
+                Gleyic, Sodic, Hyposodic, Salic, Hyposalic, Petrogypsic,
+                Hypergypsic, Gypsic, Hypogypsic, Petrocalcic,
+                Hypercalcic, Calcic, Hypocalcic, Protocalcic, Luvic,
+                Cambic, Petroduric, Leptic, Fluvic, Skeletic, Plaggic,
+                Hortic, Terric]
   PH:   # Phaeozems (WRB 2022 Ch 4)
-    principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Stagnic,
-                Gleyic, Sodic, Petrocalcic, Calcic, Luvic, Cambic,
-                Petroduric, Leptic, Andic, Vitric, Fluvic, Plaggic,
-                Hortic, Terric, Skeletic]
+    principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Protovertic,
+                Stagnic, Gleyic, Sodic, Hyposodic, Petrocalcic,
+                Hypercalcic, Calcic, Hypocalcic, Protocalcic, Luvic,
+                Cambic, Petroduric, Leptic, Andic, Vitric, Fluvic,
+                Plaggic, Hortic, Terric, Skeletic]
   UM:   # Umbrisols (WRB 2022 Ch 4)
     principal: [Folic, Histic, Andic, Vitric, Leptic, Gleyic, Stagnic,
                 Cambic, Hyperdystric, Fluvic, Skeletic, Plaggic,
                 Hortic, Terric, Pretic]
   DU:   # Durisols (WRB 2022 Ch 4)
-    principal: [Petric, Petroduric, Duric, Petrogypsic, Gypsic,
-                Petrocalcic, Calcic, Salic, Sodic, Vertic, Yermic,
-                Takyric, Leptic, Cambic, Skeletic, Plaggic, Hortic,
-                Terric]
+    principal: [Petric, Petroduric, Duric, Petrogypsic, Hypergypsic,
+                Gypsic, Hypogypsic, Protogypsic, Petrocalcic,
+                Hypercalcic, Calcic, Hypocalcic, Protocalcic, Salic,
+                Hyposalic, Sodic, Hyposodic, Vertic, Yermic, Takyric,
+                Leptic, Cambic, Skeletic, Plaggic, Hortic, Terric]
   GY:   # Gypsisols (WRB 2022 Ch 4)
-    principal: [Petric, Petrogypsic, Petrocalcic, Calcic, Mollic,
-                Vertic, Salic, Sodic, Yermic, Takyric, Stagnic,
-                Gleyic, Cambic, Leptic, Skeletic, Plaggic, Hortic,
-                Terric]
+    principal: [Petric, Petrogypsic, Hypergypsic, Gypsic, Hypogypsic,
+                Petrocalcic, Hypercalcic, Calcic, Hypocalcic,
+                Protocalcic, Mollic, Vertic, Salic, Hyposalic, Sodic,
+                Hyposodic, Yermic, Takyric, Stagnic, Gleyic, Cambic,
+                Leptic, Skeletic, Plaggic, Hortic, Terric]
   CL:   # Calcisols (WRB 2022 Ch 4)
-    principal: [Petric, Petrocalcic, Calcic, Vertic, Salic, Sodic,
+    principal: [Petric, Petrocalcic, Hypercalcic, Calcic, Hypocalcic,
+                Protocalcic, Vertic, Salic, Hyposalic, Sodic, Hyposodic,
                 Mollic, Yermic, Takyric, Stagnic, Gleyic, Cambic,
                 Leptic, Skeletic, Plaggic, Hortic, Terric, Fluvic]
   RT:   # Retisols (WRB 2022 Ch 4)

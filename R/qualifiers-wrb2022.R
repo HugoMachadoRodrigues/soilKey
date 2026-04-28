@@ -564,6 +564,38 @@ qual_haplic <- function(pedon) {
 #'         names in canonical order) and \code{trace} (per-qualifier
 #'         passed/missing).
 #' @export
+# v0.9.2 family-suppression table.
+# When several qualifiers from the same family pass for the same RSG,
+# WRB convention is to print only the most-specific one. Each entry is
+# ordered from most-specific (kept) to least-specific (suppressed).
+.wrb_qualifier_families <- list(
+  salinity   = c("Hypersalic",  "Salic",        "Hyposalic"),
+  sodicity   = c("Hypersodic",  "Sodic",        "Hyposodic"),
+  calcic     = c("Hypercalcic", "Calcic",       "Hypocalcic",  "Protocalcic"),
+  gypsic     = c("Hypergypsic", "Gypsic",       "Hypogypsic",  "Protogypsic"),
+  vertic     = c("Vertic",      "Protovertic"),
+  albic      = c("Hyperalbic",  "Albic"),
+  skeletic   = c("Hyperskeletic", "Skeletic"),
+  eutric     = c("Hypereutric", "Eutric"),
+  dystric    = c("Hyperdystric", "Dystric"),
+  alic       = c("Hyperalic",   "Alic")
+)
+
+# Drop suppressed siblings within each family while preserving the
+# original YAML order of the surviving names.
+.suppress_qualifier_siblings <- function(matched) {
+  if (length(matched) <= 1L) return(matched)
+  drop <- character(0)
+  for (family in .wrb_qualifier_families) {
+    in_match <- intersect(family, matched)
+    if (length(in_match) > 1L) {
+      keeper <- in_match[which.min(match(in_match, family))]
+      drop <- c(drop, setdiff(in_match, keeper))
+    }
+  }
+  setdiff(matched, drop)
+}
+
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   rules <- rules %||% load_rules("wrb2022")
   qfile <- system.file("rules/wrb2022/qualifiers.yaml",
@@ -601,6 +633,7 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
                               missing = res$missing %||% character(0))
     if (isTRUE(res$passed)) matched <- c(matched, qname)
   }
+  matched <- .suppress_qualifier_siblings(matched)
   if (length(matched) == 0L) matched <- "Haplic"
   list(principal = matched, trace = trace)
 }
