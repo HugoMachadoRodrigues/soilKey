@@ -105,8 +105,50 @@ qual_hortic     <- function(pedon) .q_presence("Hortic",     hortic(pedon),     
 qual_irragric   <- function(pedon) .q_presence("Irragric",   irragric(pedon),   50, pedon)
 
 #' Plaggic qualifier (pa): plaggic horizon (sod-amended surface).
+#'
+#' v0.9.1 stricter than the bare v0.3.3 \code{\link{plaggic}} diagnostic:
+#' the underlying plaggic test passes on any thick low-density high-OC
+#' surface, which over-fires on natural mollic / umbric / chernic A
+#' horizons. The qualifier requires the plaggic diagnostic to pass AND
+#' some independent anthropogenic-input evidence within the upper 50
+#' cm: elevated phosphorus (\eqn{P_{\mathrm{Mehlich-3}} \geq 50}
+#' mg/kg), artefacts (volume \eqn{\geq 0.5\%}), or an explicit plaggic
+#' designation (\code{Apl}, \code{Aplg}, "plagg"). v0.9.2 will replace
+#' this gate by tightening the diagnostic itself.
 #' @export
-qual_plaggic    <- function(pedon) .q_presence("Plaggic",    plaggic(pedon),    50, pedon)
+qual_plaggic <- function(pedon) {
+  pl <- plaggic(pedon)
+  if (!isTRUE(pl$passed))
+    return(DiagnosticResult$new(name = "Plaggic", passed = FALSE,
+            layers = integer(0), evidence = list(plaggic = pl),
+            missing = pl$missing %||% character(0),
+            reference = "WRB (2022) Ch 5, Plaggic"))
+  h <- pedon$horizons
+  in_upper <- intersect(pl$layers, .in_upper(pedon, 50))
+  if (length(in_upper) == 0L)
+    return(DiagnosticResult$new(name = "Plaggic", passed = FALSE,
+            layers = integer(0), evidence = list(plaggic = pl),
+            missing = character(0),
+            reference = "WRB (2022) Ch 5, Plaggic"))
+  p   <- h$p_mehlich3_mg_kg[in_upper]
+  art <- h$artefacts_pct[in_upper]
+  dsg <- h$designation[in_upper]
+  ev_p   <- !is.na(p)   & p   >= 50
+  ev_art <- !is.na(art) & art >= 0.5
+  ev_dsg <- !is.na(dsg) & grepl("^Apl|^Aplg|plagg|^Aphu|^Apk", dsg,
+                                  ignore.case = TRUE)
+  has_evidence <- any(ev_p | ev_art | ev_dsg)
+  passed <- has_evidence
+  DiagnosticResult$new(
+    name = "Plaggic", passed = passed,
+    layers = if (passed) in_upper[ev_p | ev_art | ev_dsg] else integer(0),
+    evidence = list(plaggic = pl, p_mehlich3 = p,
+                    artefacts_pct = art, designation = dsg),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Plaggic",
+    notes = "v0.9.1 anthropic-evidence gate: P>=50, artefacts>=0.5%, or Apl-family designation"
+  )
+}
 
 #' Pretic qualifier (pt): pretic (pre-Columbian Amerindian dark earth) horizon.
 #' @export

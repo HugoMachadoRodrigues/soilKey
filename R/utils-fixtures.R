@@ -1540,6 +1540,7 @@ make_andosol_canonical <- function() {
     al_sat_pct                 = c(33,   34,   31),
     al_ox_pct                  = c(1.5,  1.2,  0.6),
     fe_ox_pct                  = c(1.5,  1.0,  0.5),
+    si_ox_pct                  = c(3.5,  2.5,  1.4),    # v0.9.1: aluandic / silandic split
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),
@@ -1547,6 +1548,7 @@ make_andosol_canonical <- function() {
     duripan_pct                = c(0,    0,    0),
     volcanic_glass_pct         = c(35,   25,   10),    # v0.3.4: vitric/tephric path
     phosphate_retention_pct    = c(90,   85,   60),    # v0.3.4: andic+vitric criterion
+    water_content_1500kpa      = c(110,  90,   60),    # v0.9.1: hydric (>= 100 % undried)
     bulk_density_g_cm3         = c(0.70, 0.85, 1.10)
   )
 
