@@ -616,6 +616,27 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   trace <- list()
   matched <- character(0)
   for (qname in per_rsg$principal) {
+    # v0.9.2.B: detect Ano-/Epi-/Endo-/Bathy-/Panto- specifier prefixes
+    # and dispatch to the specifier handler instead of the bare lookup.
+    spec <- .detect_specifier(qname)
+    if (!is.null(spec)) {
+      res <- tryCatch(
+        .apply_specifier(pedon, spec$prefix, spec$base,
+                          spec$min_top_cm, spec$max_top_cm),
+        error = function(e) NULL)
+      if (is.null(res)) {
+        trace[[qname]] <- list(passed = NA,
+                                  note = "specifier dispatch threw error")
+        next
+      }
+      trace[[qname]] <- list(passed = res$passed,
+                                missing = res$missing %||% character(0),
+                                specifier = spec$prefix,
+                                base = spec$base)
+      if (isTRUE(res$passed)) matched <- c(matched, qname)
+      next
+    }
+
     fn_name <- paste0("qual_", tolower(qname))
     fn <- tryCatch(get(fn_name, envir = asNamespace("soilKey")),
                      error = function(e) NULL)

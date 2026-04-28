@@ -126,11 +126,12 @@ rsg_qualifiers:
                 Skeletic]
   CH:   # Chernozems (WRB 2022 Ch 4)
     principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Protovertic,
-                Stagnic, Gleyic, Sodic, Hyposodic, Salic, Hyposalic,
-                Petrocalcic, Hypercalcic, Calcic, Hypocalcic,
-                Protocalcic, Petrogypsic, Hypergypsic, Gypsic,
-                Hypogypsic, Luvic, Cambic, Petroduric, Leptic,
-                Skeletic, Plaggic, Hortic, Terric]
+                Stagnic, Endostagnic, Gleyic, Endogleyic, Sodic,
+                Hyposodic, Salic, Hyposalic, Petrocalcic, Hypercalcic,
+                Calcic, Endocalcic, Hypocalcic, Protocalcic,
+                Petrogypsic, Hypergypsic, Gypsic, Hypogypsic, Luvic,
+                Cambic, Petroduric, Leptic, Skeletic, Plaggic, Hortic,
+                Terric]
   KS:   # Kastanozems (WRB 2022 Ch 4)
     principal: [Vermic, Pachic, Chernic, Vertic, Protovertic, Stagnic,
                 Gleyic, Sodic, Hyposodic, Salic, Hyposalic, Petrogypsic,
