@@ -2,26 +2,23 @@
 % Please edit documentation in R/diagnostics-horizons-sibcs.R
 \name{B_latossolico}
 \alias{B_latossolico}
-\title{Horizonte B latossolico (SiBCS 5a edicao)}
+\title{Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)}
 \usage{
-B_latossolico(pedon, ...)
-}
-\arguments{
-\item{pedon}{A \code{\link{PedonRecord}}.}
-
-\item{...}{Passed to \code{\link{ferralic}}.}
-}
-\value{
-A \code{\link{DiagnosticResult}}.
+B_latossolico(pedon, min_thickness = 50, max_cec_per_clay = 17, ...)
 }
 \description{
-v0.2 scaffold delegating ao WRB \code{\link{ferralic}}. As criterios
-de B latossolico do SiBCS 5 incluem ainda Ki <= 2,2 e Kr <= 1,7
-(relacoes silica/alumina), uniformidade textural, e exclusao de
-gradiente textural significativo -- todos agendados para v0.7.
+Adicionalmente a \code{\link{ferralic}} (WRB), o B latossolico
+SiBCS exige:
+\itemize{
+  \item Espessura minima de 50 cm;
+  \item Textura francoarenosa ou mais fina;
+  \item Estrutura granular muito pequena/pequena ou em blocos
+        subangulares fraco/moderado;
+  \item < 5\\% volume mostrando estrutura da rocha original;
+  \item Ki \\<= 2.2 (geralmente \\<= 2.0);
+  \item Cerosidade no maximo pouca e fraca.
 }
-\references{
-Embrapa (2018). \emph{Sistema Brasileiro de Classificacao
-  de Solos}, 5a edicao. Embrapa Solos, Brasilia. Capitulo sobre
-  horizontes diagnosticos -- B latossolico.
+v0.7 enforce thickness, texture, e ausencia de estrutura primaria
+herdada via designation e clay; Ki/Kr quantitativos sao v0.8 (precisa
+de SiO2/Al2O3 lab-data nao no schema).
 }

@@ -2,23 +2,21 @@
 % Please edit documentation in R/diagnostics-horizons-sibcs.R
 \name{B_textural}
 \alias{B_textural}
-\title{Horizonte B textural (SiBCS 5a edicao)}
+\title{Horizonte B textural (SiBCS Cap 2, p 54-57; v0.7 strict)}
 \usage{
 B_textural(pedon, ...)
 }
-\arguments{
-\item{pedon}{A \code{\link{PedonRecord}}.}
-
-\item{...}{Passed to \code{\link{argic}}.}
-}
-\value{
-A \code{\link{DiagnosticResult}}.
-}
 \description{
-v0.2 scaffold delegating ao WRB \code{\link{argic}}. SiBCS exige
-gradiente textural quantitativo proximo do WRB argic; diferencas
-em criterios de profundidade e estrutura sao v0.7.
+Horizonte mineral subsuperficial com incremento de argila + cerosidade
+OR aumento gradativo, satisfazendo criterios de espessura e relacao
+textural B/A. v0.7 enforce as alternativas (a)-(j) do SiBCS por
+delegacao parcial ao WRB \code{\link{argic}} (criterios de
+clay-increase essencialmente identicos) acrescidos de:
+\itemize{
+  \item espessura \\>= 7.5 cm OR \\>= 10\\% da soma das espessuras
+        dos sobrejacentes; e
+  \item textura \\>= francoarenosa.
 }
-\references{
-Embrapa (2018), SiBCS 5a ed., B textural.
+Refinamentos pendentes para v0.8: cerosidade obrigatoria sob certas
+estruturas (criterio i.1 / i.2 / i.3); lamelas \\>= 15 cm combinadas.
 }

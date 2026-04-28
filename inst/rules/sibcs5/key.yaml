@@ -1,82 +1,109 @@
 version: "SiBCS 5a edicao (Embrapa, 2018)"
-implementation_status: "soilKey v0.2 (Modulo 6 scaffold)"
+implementation_status: "soilKey v0.7 -- 13/13 ordens wired (Cap 4 chave canonica)"
 source: |
-  Empresa Brasileira de Pesquisa Agropecuaria (Embrapa), Centro Nacional
-  de Pesquisa de Solos. Sistema Brasileiro de Classificacao de Solos.
-  5a edicao revista e ampliada. Embrapa Solos, Brasilia, 2018.
+  Empresa Brasileira de Pesquisa Agropecuaria (Embrapa). Embrapa Solos.
+  Sistema Brasileiro de Classificacao de Solos. 5a ed. rev. e ampl.
+  Brasilia, DF: Embrapa, 2018, 356 p. ISBN 978-85-7035-800-4.
 
-# 13 ordens em ordem aproximada de chave (provisoria em v0.2; a
-# ordem canonica do SiBCS 5a ed. sera revisada em v0.7 com
-# validacao Embrapa Solos). v0.2 liga apenas Latossolos
-# (via B_latossolico) e Argissolos (via B_textural); restantes
-# stubadas. Default = Neossolos (catch-all).
+# CHAVE CANONICA DO 1o NIVEL (Cap 4, pp 110-114).
+#
+# A chave do SiBCS 5a ed. nao segue ordem alfabetica -- ela testa
+# primeiro as ordens com sinais mais distintivos:
+#   1. Organossolos (O)  -- horizonte histico dominante
+#   2. Neossolos    (R)  -- sem horizonte B diagnostico
+#   3. Vertissolos  (V)  -- horizonte vertico dentro 100 cm
+#   4. Espodossolos (E)  -- B espodico
+#   5. Planossolos  (S)  -- B planico (sem coincidencia plintico)
+#   6. Gleissolos   (G)  -- horizonte glei
+#   7. Latossolos   (L)  -- B latossolico
+#   8. Chernossolos (M)  -- A chernozemico + alta sat / carbonatos
+#   9. Cambissolos  (C)  -- B incipiente (sem plintossolo)
+#  10. Plintossolos (F)  -- horizonte plintico
+#  11. Luvissolos   (T)  -- B textural + Ta + V alta
+#  12. Nitossolos   (N)  -- B nitico + clay >= 35%
+#  13. Argissolos   (P)  -- B textural (catch-all)
+#
+# v0.7 wiring: cada ordem chama seu RSG-level diagnostic em
+# R/diagnostics-rsg-sibcs.R, que aplica o gate canonico AND a exclusao
+# das classes que vem antes na chave.
 
 ordens:
 
   - code: "O"
     name: Organossolos
     tests:
-      not_implemented_v01: horizonte_hidromorfico_organico
+      all_of:
+        - organossolo: {}
+
+  - code: "R"
+    name: Neossolos
+    tests:
+      all_of:
+        - neossolo: {}
 
   - code: "V"
     name: Vertissolos
     tests:
-      not_implemented_v01: caracter_vertico
+      all_of:
+        - vertissolo: {}
 
   - code: "E"
     name: Espodossolos
     tests:
-      not_implemented_v01: B_espodico
+      all_of:
+        - espodossolo: {}
 
-  - code: "F"
-    name: Plintossolos
+  - code: "S"
+    name: Planossolos
     tests:
-      not_implemented_v01: horizonte_plintico
+      all_of:
+        - planossolo: {}
 
   - code: "G"
     name: Gleissolos
     tests:
-      not_implemented_v01: glei_dentro_top_50
-
-  - code: "M"
-    name: Chernossolos
-    tests:
-      not_implemented_v01: A_chernozemico
-
-  - code: "P"
-    name: Argissolos
-    tests:
       all_of:
-        - B_textural: {}
-
-  - code: "T"
-    name: Luvissolos
-    tests:
-      not_implemented_v01: B_textural_alta_atividade
+        - gleissolo: {}
 
   - code: "L"
     name: Latossolos
     tests:
       all_of:
-        - B_latossolico: {}
+        - latossolo: {}
 
-  - code: "N"
-    name: Nitossolos
+  - code: "M"
+    name: Chernossolos
     tests:
-      not_implemented_v01: B_nitico
+      all_of:
+        - chernossolo: {}
 
   - code: "C"
     name: Cambissolos
     tests:
-      not_implemented_v01: B_incipiente
+      all_of:
+        - cambissolo: {}
 
-  - code: "S"
-    name: Planossolos
+  - code: "F"
+    name: Plintossolos
     tests:
-      not_implemented_v01: B_planico
+      all_of:
+        - plintossolo: {}
 
-  - code: "R"
-    name: Neossolos
+  - code: "T"
+    name: Luvissolos
     tests:
-      default: true
-    notes: "Catch-all -- solos sem desenvolvimento pedogenetico marcado."
+      all_of:
+        - luvissolo: {}
+
+  - code: "N"
+    name: Nitossolos
+    tests:
+      all_of:
+        - nitossolo: {}
+
+  - code: "P"
+    name: Argissolos
+    tests:
+      all_of:
+        - argissolo: {}
+    notes: "Catch-all final: B textural que nao se enquadra em Luvissolos / Nitossolos."
