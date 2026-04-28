@@ -1,32 +1,58 @@
 version: "WRB 2022 (4th ed.) -- Qualifier mapping per RSG (Ch 4 + Ch 5)"
-implementation_status: "soilKey v0.9 -- ~50 core qualifiers (subset of ~200)"
+implementation_status: "soilKey v0.9.1 -- Bloco A canonical lists (HS/AT/TC/CR/LP)"
 source: |
   IUSS Working Group WRB (2022). World Reference Base for Soil
   Resources, 4th edition. Chapter 4 (RSG-specific principal-qualifier
   lists) + Chapter 5 (qualifier definitions) + Chapter 6 (codes).
 
-# v0.9 implements ~50 of the ~200 WRB qualifiers. The principal
-# qualifiers listed below for each RSG are the canonical-order subset
-# that v0.9 wires; the full list per Ch 4 is the v0.9.1 target.
+# v0.9 wired ~50 core qualifier diagnostics. v0.9.1 extends those
+# diagnostics for the first 5 RSGs of the canonical key (Bloco A):
+# Histosols, Anthrosols, Technosols, Cryosols, Leptosols. Each RSG's
+# `principal:` list now reproduces the full Ch 4 canonical principal
+# order. Subsequent blocs (B...E) wire the remaining 27 RSGs in v0.9.1+.
 #
 # Qualifier name resolution: each entry name N maps to function
-# qual_<tolower(N)> in R/qualifiers-wrb2022.R. The first principal
-# qualifier whose function returns passed=TRUE wins; if none pass,
-# Haplic is used as default. Supplementary qualifiers are deferred to
-# v0.9.1.
+# qual_<tolower(N)>. The principals are tested in YAML order; every
+# one whose function returns passed=TRUE is appended to the result
+# in YAML order (so the prefix on the soil name follows Ch 4). When
+# no principal passes, Haplic is the default.
+#
+# Some Ch 4 qualifiers still lack a backing diagnostic in v0.9.1 (the
+# engine reports them as "function not implemented in v0.9" in the
+# trace and skips them). They are listed here so the canonical Ch 4
+# coverage stays visible; v0.9.2 will close the remaining gaps with
+# schema-extension diagnostics. See R/qualifiers-wrb2022-v091.R for
+# the v0.9.1 implementations and proxy notes.
 
 rsg_qualifiers:
 
-  HS:   # Histosols
-    principal: [Folic, Cryic, Andic, Skeletic]
-  AT:   # Anthrosols
-    principal: [Stagnic, Gleyic, Andic]
-  TC:   # Technosols
-    principal: [Leptic, Skeletic, Stagnic, Gleyic, Andic]
-  CR:   # Cryosols
-    principal: [Histic, Andic, Salic, Spodic, Retic, Calcic, Cambic]
-  LP:   # Leptosols
-    principal: [Histic, Andic, Mollic, Umbric, Gypsic, Calcic, Cambic]
+  HS:   # Histosols (WRB 2022 Ch 4)
+    principal: [Floatic, Subaquatic, Tidalic, Thionic, Folic, Limnic,
+                Technic, Toxic, Cryic, Salic, Calcaric, Sapric, Hemic,
+                Fibric, Ombric, Rheic, Drainic, Andic, Mollic, Umbric,
+                Skeletic]
+  AT:   # Anthrosols (WRB 2022 Ch 4)
+    principal: [Hydragric, Anthraquic, Hortic, Plaggic, Pretic,
+                Irragric, Terric, Salic, Calcic, Hyperartefactic,
+                Stagnic, Gleyic, Andic, Vitric, Mollic, Umbric, Cambic]
+  TC:   # Technosols (WRB 2022 Ch 4)
+    principal: [Ekranic, Linic, Subaquatic, Urbic, Spolic, Garbic,
+                Hyperartefactic, Cryic, Salic, Calcic, Calcaric,
+                Reductic, Folic, Histic, Hyperskeletic, Limnic, Andic,
+                Vitric, Stagnic, Gleyic, Mollic, Umbric, Plaggic,
+                Hortic, Irragric, Terric, Skeletic, Leptic]
+  CR:   # Cryosols (WRB 2022 Ch 4)
+    principal: [Glacic, Turbic, Histic, Folic, Technic, Hyperartefactic,
+                Leptic, Hyperskeletic, Andic, Vitric, Salic, Sodic,
+                Spodic, Yermic, Takyric, Mollic, Umbric, Calcic,
+                Petrocalcic, Gypsic, Petrogypsic, Fluvic, Gleyic,
+                Stagnic, Cambic, Skeletic]
+  LP:   # Leptosols (WRB 2022 Ch 4)
+    principal: [Nudilithic, Lithic, Hyperskeletic, Rendzic, Folic,
+                Histic, Andic, Vitric, Mollic, Vermic, Umbric, Spodic,
+                Cambic, Salic, Gypsic, Petrogypsic, Calcic, Petrocalcic,
+                Gleyic, Stagnic, Yermic, Takyric, Skeletic, Calcaric,
+                Hortic, Plaggic, Terric, Vertic]
   SN:   # Solonetz
     principal: [Gleyic, Stagnic, Mollic, Salic, Gypsic, Petrocalcic, Calcic, Vertic]
   VR:   # Vertisols

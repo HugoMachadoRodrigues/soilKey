@@ -2065,6 +2065,7 @@ make_anthrosol_canonical <- function() {
     oc_pct                     = c(5.5,  2.0,  0.6),
     cec_cmol                   = c(35,   25,   18),
     bs_pct                     = c(85,   80,   72),
+    p_mehlich3_mg_kg           = c(250,  80,   25),  # v0.9.1: hortic gate
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),

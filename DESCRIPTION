@@ -1,8 +1,8 @@
 Package: soilKey
 Type: Package
 Title: Automated Soil Profile Classification per WRB 2022 and SiBCS
-Version: 0.1.0
-Date: 2026-04-25
+Version: 0.9.1
+Date: 2026-04-28
 Authors@R:
     person("Hugo", "Rodrigues",
            email = "rodrigues.machado.hugo@gmail.com",
