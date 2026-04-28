@@ -1,74 +1,94 @@
-version: "USDA Soil Taxonomy (12th edition, 2014, with later supplements)"
-implementation_status: "soilKey v0.2 (Module 5 scaffold)"
+version: "USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)"
+implementation_status: "soilKey v0.8 -- 12/12 orders wired (Ch 4 Order Key, pp 65-72)"
 source: |
-  Soil Survey Staff (2014). Keys to Soil Taxonomy. 12th edition. USDA
-  Natural Resources Conservation Service, Washington, DC.
+  Soil Survey Staff (2022). Keys to Soil Taxonomy. 13th edition.
+  USDA Natural Resources Conservation Service, Washington, DC.
 
-# 12 Orders in canonical key order. v0.2 wires only Oxisols
-# (oxic_usda(), delegating to WRB ferralic). All other Orders are
-# stubbed; the engine returns NA for them and continues. Default
-# catch-all is Entisols.
+# 12 Orders in canonical key order (Ch 4, pp 65-72). The first whose
+# diagnostic test passes is assigned. Default catch-all is Entisols.
+#
+# v0.8 wires every order via diagnostics-orders-usda.R. Each order's
+# gate enforces the specific diagnostic horizon/property AND the
+# exclusion of all orders earlier in the key (mutual exclusion in the
+# canonical chave order).
+#
+# Where the USDA diagnostic horizon overlaps with WRB (which is most
+# of them: oxic ~ ferralic, argillic ~ argic, mollic ~ mollic, etc.),
+# the v0.8 implementation delegates to the WRB equivalent. Pure-USDA
+# diagnostics (kandic, fragipan, duripan with USDA-specific criteria)
+# are scheduled for v0.8.1.
 
 orders:
 
   - code: GE
     name: Gelisols
     tests:
-      not_implemented_v01: gelic_conditions
+      all_of:
+        - gelisol_usda: {}
 
   - code: HI
     name: Histosols
     tests:
-      not_implemented_v01: organic_materials_usda
+      all_of:
+        - histosol_usda: {}
 
   - code: SP
     name: Spodosols
     tests:
-      not_implemented_v01: spodic_usda
+      all_of:
+        - spodosol_usda: {}
 
   - code: AD
     name: Andisols
     tests:
-      not_implemented_v01: andic_properties_usda
+      all_of:
+        - andisol_usda: {}
 
   - code: OX
     name: Oxisols
     tests:
       all_of:
-        - oxic_usda: {}
+        - oxisol_usda: {}
 
   - code: VE
     name: Vertisols
     tests:
-      not_implemented_v01: vertic_features_usda
+      all_of:
+        - vertisol_usda: {}
 
   - code: AS
     name: Aridisols
     tests:
-      not_implemented_v01: aridic_moisture_regime
+      all_of:
+        - aridisol_usda: {}
 
   - code: UT
     name: Ultisols
     tests:
-      not_implemented_v01: argillic_low_bs
+      all_of:
+        - ultisol_usda: {}
 
   - code: MO
     name: Mollisols
     tests:
-      not_implemented_v01: mollic_usda
+      all_of:
+        - mollisol_usda: {}
 
   - code: AF
     name: Alfisols
     tests:
-      not_implemented_v01: argillic_high_bs
+      all_of:
+        - alfisol_usda: {}
 
   - code: IN
     name: Inceptisols
     tests:
-      not_implemented_v01: cambic_usda
+      all_of:
+        - inceptisol_usda: {}
 
   - code: EN
     name: Entisols
     tests:
-      default: true
+      all_of:
+        - entisol_usda: {}
     notes: "Catch-all for soils that do not match any prior Order."
