@@ -4,7 +4,13 @@
 \alias{B_nitico}
 \title{Horizonte B nitico (SiBCS Cap 2, p 61-62; v0.7)}
 \usage{
-B_nitico(pedon, min_thickness = 30, min_clay_pct = 35, max_b_a_ratio = 1.5)
+B_nitico(
+  pedon,
+  min_thickness = 30,
+  min_clay_pct = 35,
+  max_b_a_ratio = 1.5,
+  min_cerosidade = c("common", "many", "abundant", "strong")
+)
 }
 \description{
 Subsuperficial nao hidromorfico, textura argilosa/muito argilosa

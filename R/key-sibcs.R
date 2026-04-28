@@ -1,12 +1,10 @@
 # ================================================================
-# SiBCS 5a edicao -- chave (v0.2 scaffold)
+# SiBCS 5a edicao -- chave (v0.7.1: 13 ordens + 44 subordens)
 #
-# v0.2 wires duas ordens end-to-end (Latossolos via B_latossolico,
-# Argissolos via B_textural). As outras 11 ordens estao stubadas em
-# inst/rules/sibcs5/key.yaml e voltam NA no trace.
-#
-# Implementacao completa do SiBCS -- 13 ordens, subordens, grandes
-# grupos, subgrupos, validacao com Embrapa Solos -- agendada para v0.7.
+# v0.7 wired all 13 ordens via diagnostics-rsg-sibcs.R.
+# v0.7.1 adds the 2nd categorical level (subordens, Caps 5-17) --
+# 44 classes -- via diagnostics-subordens-sibcs.R and a `subordens`
+# block in inst/rules/sibcs5/key.yaml.
 # ================================================================
 
 
@@ -24,20 +22,68 @@ run_sibcs_key <- function(pedon, rules = NULL) {
 }
 
 
-#' Classifica um pedon segundo o SiBCS 5a edicao
+#' Resolve a subordem de um pedon ja classificado em uma ordem SiBCS
 #'
-#' v0.2 scaffold: apenas os caminhos de Latossolos (via
-#' \code{\link{B_latossolico}}) e Argissolos (via
-#' \code{\link{B_textural}}) estao ligados; ambos delegam aos
-#' diagnosticos WRB. As outras 11 ordens estao stubadas e qualquer
-#' perfil que nao satisfaca essas tem recolhido na ordem default
-#' (Neossolos -- catch-all).
+#' Itera as subordens da ordem em ordem canonica; a primeira cuja
+#' funcao-diagnostico passa captura o perfil. Retorna uma lista com
+#' \code{code}, \code{name}, \code{trace} (lista de subordem -> {passed,
+#' missing}). Se nenhuma passar, retorna a ultima subordem (catch-all).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ordem_code Codigo de uma letra da ordem (e.g. "L" para
+#'        Latossolos).
+#' @param rules Lista de regras carregada via \code{\link{load_rules}}.
+#' @return Lista com \code{assigned} e \code{trace}.
+#' @export
+run_sibcs_subordem <- function(pedon, ordem_code, rules = NULL) {
+  rules <- rules %||% load_rules("sibcs5")
+  if (is.null(rules$subordens) || is.null(rules$subordens[[ordem_code]])) {
+    return(list(assigned = NULL, trace = list()))
+  }
+  candidates <- rules$subordens[[ordem_code]]
+  trace <- list()
+  for (sub in candidates) {
+    fn_name <- sub$test
+    fn <- tryCatch(get(fn_name, envir = asNamespace("soilKey")),
+                     error = function(e) NULL)
+    if (is.null(fn)) {
+      trace[[sub$code]] <- list(passed = NA, missing = character(0),
+                                  reason = "diagnostic function not found")
+      next
+    }
+    res <- tryCatch(fn(pedon), error = function(e) NULL)
+    if (is.null(res)) {
+      trace[[sub$code]] <- list(passed = NA, missing = character(0),
+                                  reason = "diagnostic threw error")
+      next
+    }
+    trace[[sub$code]] <- list(passed = res$passed,
+                                missing = res$missing %||% character(0))
+    if (isTRUE(res$passed)) {
+      return(list(assigned = sub, trace = trace))
+    }
+  }
+  # Catch-all: a ultima e por construcao TRUE; mas sanity guard:
+  fallback <- candidates[[length(candidates)]]
+  list(assigned = fallback, trace = trace)
+}
+
+
+#' Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o niveis)
+#'
+#' v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
+#' \code{\link{run_sibcs_subordem}} usando a chave em
+#' \code{inst/rules/sibcs5/key.yaml}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Conjunto de regras pre-carregado.
 #' @param on_missing Um de \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}.
-#' @return Um \code{\link{ClassificationResult}}.
+#' @return Um \code{\link{ClassificationResult}} cujo \code{name} eh o
+#'         nome completo da subordem (e.g. "Latossolos Vermelhos") e
+#'         \code{rsg_or_order} eh o nome da ordem (e.g. "Latossolos").
+#'         O codigo da subordem e o trace ficam em
+#'         \code{$trace$subordem}.
 #' @export
 classify_sibcs <- function(pedon,
                              rules      = NULL,
@@ -45,25 +91,26 @@ classify_sibcs <- function(pedon,
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("sibcs5")
 
+  # Nivel 1: ordem
   key_result <- run_sibcs_key(pedon, rules)
   ordem      <- key_result$assigned
 
-  codes      <- vapply(rules$ordens, function(o) o$code, character(1))
-  is_default <- identical(ordem$code, tail(codes, 1L))
+  # Nivel 2: subordem
+  sub_result <- run_sibcs_subordem(pedon, ordem$code, rules)
+  subordem   <- sub_result$assigned
+
+  display_name <- if (!is.null(subordem)) subordem$name else ordem$name
+  trace_combined <- list(
+    ordens     = key_result$trace,
+    subordens  = sub_result$trace,
+    subordem_assigned = subordem
+  )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)
   grade        <- compute_evidence_grade(pedon, key_result$trace)
   missing_data <- collect_missing_attributes(key_result$trace)
 
   warnings <- character(0)
-  if (is_default) {
-    warnings <- c(warnings, paste0(
-      "Perfil chaveou para Neossolos catch-all. v0.2 liga apenas ",
-      "Latossolos (via B_latossolico) e Argissolos (via B_textural); ",
-      "as outras 11 ordens estao agendadas para v0.7."
-    ))
-  }
-
   if (length(missing_data) > 0L) {
     msg <- sprintf(
       "%d atributo(s) faltando ao longo do trace -- veja $missing_data",
@@ -75,10 +122,10 @@ classify_sibcs <- function(pedon,
 
   ClassificationResult$new(
     system         = "SiBCS 5a edicao",
-    name           = ordem$name,
+    name           = display_name,
     rsg_or_order   = ordem$name,
     qualifiers     = list(),
-    trace          = key_result$trace,
+    trace          = trace_combined,
     ambiguities    = ambiguities,
     missing_data   = missing_data,
     evidence_grade = grade,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/key-sibcs.R
 \name{classify_sibcs}
 \alias{classify_sibcs}
-\title{Classifica um pedon segundo o SiBCS 5a edicao}
+\title{Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o niveis)}
 \usage{
 classify_sibcs(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 }
@@ -15,13 +15,14 @@ classify_sibcs(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 \code{"error"}.}
 }
 \value{
-Um \code{\link{ClassificationResult}}.
+Um \code{\link{ClassificationResult}} cujo \code{name} eh o
+        nome completo da subordem (e.g. "Latossolos Vermelhos") e
+        \code{rsg_or_order} eh o nome da ordem (e.g. "Latossolos").
+        O codigo da subordem e o trace ficam em
+        \code{$trace$subordem}.
 }
 \description{
-v0.2 scaffold: apenas os caminhos de Latossolos (via
-\code{\link{B_latossolico}}) e Argissolos (via
-\code{\link{B_textural}}) estao ligados; ambos delegam aos
-diagnosticos WRB. As outras 11 ordens estao stubadas e qualquer
-perfil que nao satisfaca essas tem recolhido na ordem default
-(Neossolos -- catch-all).
+v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
+\code{\link{run_sibcs_subordem}} usando a chave em
+\code{inst/rules/sibcs5/key.yaml}.
 }

@@ -107,3 +107,84 @@ ordens:
       all_of:
         - argissolo: {}
     notes: "Catch-all final: B textural que nao se enquadra em Luvissolos / Nitossolos."
+
+# =============================================================
+# CHAVE DO 2o NIVEL (subordens) -- Caps 5-17
+# =============================================================
+#
+# Para cada ordem, lista as subordens em ordem canonica do livro.
+# A primeira subordem cujo diagnostico passa captura o perfil; a
+# ultima de cada lista e o catch-all (Haplicos / Vermelho-Amarelos /
+# Regoliticos / Ferri-humiluvicos).
+
+subordens:
+
+  "P":   # Argissolos (Cap 5)
+    - { code: "PBAC", name: "Argissolos Bruno-Acinzentados", test: argissolo_bruno_acinzentado }
+    - { code: "PAC",  name: "Argissolos Acinzentados",        test: argissolo_acinzentado }
+    - { code: "PA",   name: "Argissolos Amarelos",            test: argissolo_amarelo }
+    - { code: "PV",   name: "Argissolos Vermelhos",           test: argissolo_vermelho }
+    - { code: "PVA",  name: "Argissolos Vermelho-Amarelos",   test: argissolo_vermelho_amarelo }
+
+  "C":   # Cambissolos (Cap 6)
+    - { code: "CH",   name: "Cambissolos Histicos",  test: cambissolo_histico }
+    - { code: "CHU",  name: "Cambissolos Humicos",   test: cambissolo_humico }
+    - { code: "CY",   name: "Cambissolos Fluvicos",  test: cambissolo_fluvico }
+    - { code: "CX",   name: "Cambissolos Haplicos",  test: cambissolo_haplico }
+
+  "M":   # Chernossolos (Cap 7)
+    - { code: "MD",   name: "Chernossolos Rendzicos",   test: chernossolo_rendzico }
+    - { code: "ME",   name: "Chernossolos Ebanicos",    test: chernossolo_ebanico }
+    - { code: "MT",   name: "Chernossolos Argiluvicos", test: chernossolo_argiluvico }
+    - { code: "MX",   name: "Chernossolos Haplicos",    test: chernossolo_haplico }
+
+  "E":   # Espodossolos (Cap 8)
+    - { code: "EK",   name: "Espodossolos Humiluvicos",       test: espodossolo_humiluvico }
+    - { code: "EJ",   name: "Espodossolos Ferriluvicos",      test: espodossolo_ferriluvico }
+    - { code: "ES",   name: "Espodossolos Ferri-humiluvicos", test: espodossolo_ferri_humiluvico }
+
+  "G":   # Gleissolos (Cap 9)
+    - { code: "GJ",   name: "Gleissolos Tiomorficos", test: gleissolo_tiomorfico }
+    - { code: "GZ",   name: "Gleissolos Salicos",     test: gleissolo_salico }
+    - { code: "GM",   name: "Gleissolos Melanicos",   test: gleissolo_melanico }
+    - { code: "GX",   name: "Gleissolos Haplicos",    test: gleissolo_haplico }
+
+  "L":   # Latossolos (Cap 10)
+    - { code: "LB",   name: "Latossolos Brunos",            test: latossolo_bruno }
+    - { code: "LA",   name: "Latossolos Amarelos",          test: latossolo_amarelo }
+    - { code: "LV",   name: "Latossolos Vermelhos",         test: latossolo_vermelho }
+    - { code: "LVA",  name: "Latossolos Vermelho-Amarelos", test: latossolo_vermelho_amarelo }
+
+  "T":   # Luvissolos (Cap 11)
+    - { code: "TC",   name: "Luvissolos Cromicos", test: luvissolo_cromico }
+    - { code: "TX",   name: "Luvissolos Haplicos", test: luvissolo_haplico }
+
+  "R":   # Neossolos (Cap 12)
+    - { code: "RL",   name: "Neossolos Litolicos",      test: neossolo_litolico }
+    - { code: "RY",   name: "Neossolos Fluvicos",       test: neossolo_fluvico }
+    - { code: "RQ",   name: "Neossolos Quartzarenicos", test: neossolo_quartzarenico }
+    - { code: "RR",   name: "Neossolos Regoliticos",    test: neossolo_regolitico }
+
+  "N":   # Nitossolos (Cap 13)
+    - { code: "NB",   name: "Nitossolos Brunos",    test: nitossolo_bruno }
+    - { code: "NV",   name: "Nitossolos Vermelhos", test: nitossolo_vermelho }
+    - { code: "NX",   name: "Nitossolos Haplicos",  test: nitossolo_haplico }
+
+  "O":   # Organossolos (Cap 14)
+    - { code: "OJ",   name: "Organossolos Tiomorficos", test: organossolo_tiomorfico }
+    - { code: "OO",   name: "Organossolos Folicos",     test: organossolo_folico }
+    - { code: "OX",   name: "Organossolos Haplicos",    test: organossolo_haplico }
+
+  "S":   # Planossolos (Cap 15)
+    - { code: "SN",   name: "Planossolos Natricos", test: planossolo_natrico }
+    - { code: "SX",   name: "Planossolos Haplicos", test: planossolo_haplico }
+
+  "F":   # Plintossolos (Cap 16)
+    - { code: "FF",   name: "Plintossolos Petricos",    test: plintossolo_petrico }
+    - { code: "FT",   name: "Plintossolos Argiluvicos", test: plintossolo_argiluvico }
+    - { code: "FX",   name: "Plintossolos Haplicos",    test: plintossolo_haplico }
+
+  "V":   # Vertissolos (Cap 17)
+    - { code: "VG",   name: "Vertissolos Hidromorficos", test: vertissolo_hidromorfico }
+    - { code: "VE",   name: "Vertissolos Ebanicos",      test: vertissolo_ebanico }
+    - { code: "VX",   name: "Vertissolos Haplicos",      test: vertissolo_haplico }
