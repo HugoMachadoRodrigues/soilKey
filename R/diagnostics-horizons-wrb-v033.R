@@ -280,7 +280,8 @@ fragic <- function(pedon, min_thickness = 15, min_bd = 1.65) {
 #' designation pattern + OC criteria (BS < 50, OC > 0.6, depth > 25 cm).
 #' @export
 sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
-                       max_bs = 50, min_top_cm = 25) {
+                       max_bs = 50, min_top_cm = 25,
+                       min_oc_increase = 0.1) {
   h <- pedon$horizons
   tests <- list()
   # v0.9.1 fix (Bloco C): the v0.3.3 implementation passed
@@ -303,12 +304,40 @@ sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
                                         candidate_layers = tests$oc$layers)
   tests$thickness   <- test_minimum_thickness(h, min_cm = min_thickness,
                                                 candidate_layers = tests$bs$layers)
+
+  # v0.9.2.C tightening: sombric is a HUMUS-ILLUVIATED subsurface
+  # horizon, so it must accumulate organic carbon relative to the
+  # layer immediately above it. Without this signal a typical Ferralsol
+  # / Acrisol BA / Bw, where OC drops monotonically with depth, would
+  # spuriously match the bare OC + BS + thickness simplification.
+  ord <- order(h$top_cm, na.last = NA)
+  cand <- intersect(tests$thickness$layers, ord)
+  illuvial_layers <- integer(0)
+  for (i in cand) {
+    pos <- which(ord == i)
+    if (length(pos) == 0L || pos == 1L) next
+    upper_oc <- h$oc_pct[ord[pos - 1L]]
+    here_oc  <- h$oc_pct[i]
+    if (!is.na(upper_oc) && !is.na(here_oc) &&
+        here_oc >= upper_oc + min_oc_increase) {
+      illuvial_layers <- c(illuvial_layers, i)
+    }
+  }
+  tests$illuvial_signal <- .subtest_result(
+    passed  = if (length(illuvial_layers) > 0L) TRUE
+              else if (length(cand) == 0L) FALSE
+              else FALSE,
+    layers  = illuvial_layers,
+    missing = if (any(is.na(h$oc_pct))) "oc_pct" else character(0),
+    details = list(min_oc_increase = min_oc_increase)
+  )
+
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(
     name = "sombric", passed = agg$passed, layers = agg$layers,
     evidence = tests, missing = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3.1, Sombric horizon",
-    notes = "v0.3.3 simplification: OC + BS in subsurface; humus illuviation deferred"
+    notes = "v0.9.2.C: requires OC accumulation vs. immediately overlying layer (humus-illuviation signal)"
   )
 }
 
@@ -437,10 +466,29 @@ irragric <- function(pedon, min_thickness = 20) {
   )
 }
 
-#' Plaggic horizon (WRB 2022): sod-derived topsoil >= 20 cm with low BD.
+#' Plaggic horizon (WRB 2022): sod-derived topsoil >= 20 cm with low BD
+#' AND independent evidence of human input.
+#'
+#' v0.9.2.C tightening: the v0.3.3 implementation accepted ANY thick,
+#' low-BD, OC-rich A horizon, which over-fired across natural mollic /
+#' umbric / chernic surfaces. The diagnostic now requires, in addition
+#' to the OC + BD + thickness baseline, at least one independent
+#' anthropogenic-input marker:
+#' \itemize{
+#'   \item \code{p_mehlich3_mg_kg >= 50} (sustained sod / manure
+#'         additions concentrate Mehlich-3 P in the topsoil), OR
+#'   \item \code{artefacts_pct > 0} (any human artefact volume fraction
+#'         is sufficient as a presence signal), OR
+#'   \item designation pattern \code{Apl} / \code{Aplg} / \code{Apk}
+#'         / explicit "plagg".
+#' }
+#' Without one of those markers the diagnostic returns FALSE even when
+#' OC + BD + thickness pass. This mirrors the v0.9.1 \code{qual_plaggic}
+#' gate but enforces the rule at the diagnostic level so any caller
+#' (SiBCS, USDA, future modules) inherits the protection.
 #' @export
 plaggic <- function(pedon, min_thickness = 20, max_bd = 1.5,
-                       min_oc = 0.6) {
+                       min_oc = 0.6, min_p_mehlich3 = 50) {
   h <- pedon$horizons
   tests <- list()
   tests$oc          <- test_oc_above(h, min_pct = min_oc)
@@ -452,11 +500,45 @@ plaggic <- function(pedon, min_thickness = 20, max_bd = 1.5,
   if (!isTRUE(tests$thickness$passed) && isTRUE(desg$passed)) {
     tests$designation_proxy <- desg
   }
+
+  # v0.9.2.C anthropogenic-evidence gate.
+  candidate <- if (!is.null(tests$designation_proxy))
+                 union(tests$thickness$layers, tests$designation_proxy$layers)
+               else tests$thickness$layers
+  candidate <- candidate %||% integer(0)
+  if (length(candidate) > 0L) {
+    p   <- h$p_mehlich3_mg_kg[candidate]
+    art <- h$artefacts_pct[candidate]
+    dsg <- h$designation[candidate]
+    ev_p   <- !is.na(p)   & p   >= min_p_mehlich3
+    ev_art <- !is.na(art) & art >  0
+    ev_dsg <- !is.na(dsg) & grepl("^Apl|^Aplg|plagg|^Apk|^Aphu", dsg,
+                                    ignore.case = TRUE)
+    has_ev <- ev_p | ev_art | ev_dsg
+    tests$anthropic_evidence <- .subtest_result(
+      passed  = if (any(has_ev)) TRUE
+                else if (all(is.na(p)) && all(is.na(art)) &&
+                         all(is.na(dsg))) NA
+                else FALSE,
+      layers  = candidate[has_ev],
+      missing = if (all(is.na(p)) && all(is.na(art)) && all(is.na(dsg)))
+                  c("p_mehlich3_mg_kg", "artefacts_pct", "designation")
+                else character(0),
+      details = list(p = p, artefacts_pct = art, designation = dsg)
+    )
+  } else {
+    tests$anthropic_evidence <- .subtest_result(
+      passed = FALSE, layers = integer(0), missing = character(0),
+      details = list()
+    )
+  }
+
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(
     name = "plaggic", passed = agg$passed, layers = agg$layers,
     evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Plaggic horizon"
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Plaggic horizon",
+    notes = "v0.9.2.C: anthropic-evidence gate (P / artefacts / Apl-family designation)"
   )
 }
 

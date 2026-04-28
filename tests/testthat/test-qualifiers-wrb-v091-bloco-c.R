@@ -323,12 +323,12 @@ test_that("Hyperalbic accumulates only contiguous eluvial-evidence albic", {
 })
 
 test_that("Sombric excludes layers that simultaneously meet spodic / ferralic", {
-  # The FR canonical fixture passes the v0.3.3 sombric() Munsell test
-  # but its candidate layers also pass ferralic; v0.9.1's qual_sombric
-  # therefore correctly returns FALSE.
+  # qual_sombric must return FALSE on the FR canonical fixture because
+  # the candidate layers either also meet ferralic (the v0.9.1
+  # exclusion path) or fail the v0.9.2.C humus-illuviation OC-increase
+  # test that the bare sombric() diagnostic now enforces.
   pr <- make_ferralsol_canonical()
   expect_false(isTRUE(qual_sombric(pr)$passed))
-  expect_true(isTRUE(sombric(pr)$passed))   # bare diagnostic still passes
 })
 
 test_that("Densic / Placic / Ortsteinic key on physical/cementation fields", {

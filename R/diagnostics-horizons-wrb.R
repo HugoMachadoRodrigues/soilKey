@@ -358,16 +358,54 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
 #' @export
-cambic <- function(pedon, min_thickness = 15) {
+cambic <- function(pedon, min_thickness = 15, min_top_cm = 5) {
   h <- pedon$horizons
 
   arg_res <- argic(pedon)
   fer_res <- ferralic(pedon)
 
   tests <- list()
-  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness)
+  # v0.9.2.C: cambic is by definition a SUBSURFACE horizon. The bare
+  # v0.x test fired on any horizon that met thickness + texture, which
+  # included surface A horizons, leading to false-positive Brunic-of-
+  # Mollic-A across many fixtures. Anchor the candidate set to layers
+  # that start at or below `min_top_cm` (default 5 cm).
+  subsurface <- which(!is.na(h$top_cm) & h$top_cm >= min_top_cm)
+  tests$subsurface <- .subtest_result(
+    passed  = if (length(subsurface) > 0L) TRUE
+              else if (any(is.na(h$top_cm))) NA else FALSE,
+    layers  = subsurface,
+    missing = if (any(is.na(h$top_cm))) "top_cm" else character(0),
+    details = list(min_top_cm = min_top_cm)
+  )
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                              candidate_layers = subsurface)
   tests$texture   <- test_texture_argic(h,
                                           candidate_layers = tests$thickness$layers)
+  # v0.9.2.C: cambic requires evidence of soil formation, NOT just
+  # texture. A C horizon (massive structure, single-grain or
+  # structureless) is parent material, not an altered B; without
+  # structural development the layer is ineligible.
+  cand_str <- tests$texture$layers
+  if (length(cand_str) > 0L) {
+    grade <- h$structure_grade[cand_str]
+    type  <- h$structure_type[cand_str]
+    has_dev <- !is.na(grade) & grade %in% c("weak", "moderate", "strong") &
+                 (is.na(type) | !grepl("^massive$|^single grain$",
+                                          type, ignore.case = TRUE))
+    tests$structure_development <- .subtest_result(
+      passed  = if (any(has_dev)) TRUE
+                else if (all(is.na(grade))) NA else FALSE,
+      layers  = cand_str[has_dev],
+      missing = if (all(is.na(grade))) "structure_grade" else character(0),
+      details = list(grade = grade, type = type)
+    )
+  } else {
+    tests$structure_development <- .subtest_result(
+      passed = FALSE, layers = integer(0),
+      missing = character(0), details = list()
+    )
+  }
   tests$not_argic    <- list(
     passed  = !isTRUE(arg_res$passed),
     layers  = if (isTRUE(arg_res$passed)) integer(0) else seq_len(nrow(h)),

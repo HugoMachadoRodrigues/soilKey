@@ -30,6 +30,11 @@ test_that("cambic respects custom thickness", {
 test_that("cambic evidence carries the named sub-tests", {
   pr <- make_cambisol_canonical()
   res <- cambic(pr)
+  # v0.9.2.C added the "subsurface" depth-gate AND a
+  # "structure_development" gate so massive C horizons no longer
+  # qualify as cambic.
   expect_named(res$evidence,
-                c("thickness", "texture", "not_argic", "not_ferralic"))
+                c("subsurface", "thickness", "texture",
+                  "structure_development",
+                  "not_argic", "not_ferralic"))
 })
