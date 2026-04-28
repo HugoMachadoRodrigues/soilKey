@@ -283,7 +283,20 @@ sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
                        max_bs = 50, min_top_cm = 25) {
   h <- pedon$horizons
   tests <- list()
-  tests$top         <- test_top_at_or_above(h, min_top_cm = min_top_cm)
+  # v0.9.1 fix (Bloco C): the v0.3.3 implementation passed
+  # `min_top_cm = ...` to `test_top_at_or_above`, whose only argument is
+  # `max_top_cm`; the call errored out and sombric() was effectively
+  # never callable. The intent of the test is "layer starts AT OR BELOW
+  # min_top_cm" (sombric is a subsurface humus-illuviated horizon), so
+  # we anchor the candidate layers via a direct depth filter.
+  deep_layers <- which(!is.na(h$top_cm) & h$top_cm >= min_top_cm)
+  tests$top <- .subtest_result(
+    passed  = if (length(deep_layers) > 0L) TRUE
+              else if (any(is.na(h$top_cm))) NA else FALSE,
+    layers  = deep_layers,
+    missing = if (any(is.na(h$top_cm))) "top_cm" else character(0),
+    details = list(min_top_cm = min_top_cm)
+  )
   tests$oc          <- test_oc_above(h, min_pct = min_oc,
                                         candidate_layers = tests$top$layers)
   tests$bs          <- test_bs_below(h, max_pct = max_bs,
