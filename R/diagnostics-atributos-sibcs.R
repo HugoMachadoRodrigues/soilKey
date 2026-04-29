@@ -1319,6 +1319,150 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- Carater coeso (Cap 1, pp 32-33) -------------------------------------
+
+#' Carater coeso (SiBCS Cap 1, pp 32-33)
+#'
+#' Solos com horizontes coesos: muito duros a extremamente duros
+#' quando secos, friaveis a firmes quando umidos, decorrentes do
+#' empacotamento das particulas e/ou cimentacao. Discrimina os
+#' Grandes Grupos Distrocoesos / Eutrocoesos de Argissolos
+#' (Cap 5, pp 117-119) e Latossolos (Cap 10).
+#'
+#' Criterios canonicos:
+#' \itemize{
+#'   \item \code{rupture_resistance} \eqn{\in}\{"very hard",
+#'         "extremely hard"\} (em estado seco)
+#'   \item \code{consistence_moist} \eqn{\in}\{"friable", "firm"\}
+#'         (em estado umido)
+#'   \item Excluido: textura areia / areia franca (\code{clay_pct} < 15\%)
+#' }
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima onde camadas qualificam
+#'        (default \code{150}, conforme SiBCS Cap 5: "dentro de
+#'        150 cm a partir da superficie").
+#' @return \code{\link{DiagnosticResult}}; \code{passed = TRUE} se ao
+#'         menos uma camada (com textura suficiente) atende aos dois
+#'         criterios de consistencia.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, pp 32-33;
+#'             Cap 5 (Argissolos), pp 117-119.
+#' @export
+carater_coeso <- function(pedon, max_depth_cm = 150) {
+  h <- pedon$horizons
+  hard_dry      <- c("very hard", "extremely hard")
+  friable_moist <- c("friable", "firm")
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in seq_len(nrow(h))) {
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
+    rr <- h$rupture_resistance[i]
+    cm <- h$consistence_moist[i]
+    clay <- h$clay_pct[i]
+    if (is.na(rr) && is.na(cm)) {
+      missing <- c(missing, "rupture_resistance", "consistence_moist"); next
+    }
+    # Textura excluida: areia / areia franca (clay < 15%).
+    if (!is.na(clay) && clay < 15) {
+      details[[as.character(i)]] <- list(idx = i, clay_pct = clay,
+                                          excluded = "sandy texture (clay < 15%)")
+      next
+    }
+    rr_ok <- !is.na(rr) && tolower(rr) %in% hard_dry
+    cm_ok <- !is.na(cm) && tolower(cm) %in% friable_moist
+    layer_pass <- isTRUE(rr_ok) && isTRUE(cm_ok)
+    details[[as.character(i)]] <- list(
+      idx = i, rupture_resistance = rr, consistence_moist = cm,
+      clay_pct = clay, passed = layer_pass
+    )
+    if (layer_pass) passing <- c(passing, i)
+  }
+  evaluated <- length(details) -
+                 sum(vapply(details, function(x) !is.null(x$excluded),
+                              logical(1)))
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_coeso", passed = passed, layers = passing,
+    evidence = list(layers = details, max_depth_cm = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, pp 32-33"
+  )
+}
+
+
+# ---- Carater ferrico (Fe2O3 sulfurico em B) -----------------------------
+
+#' Carater ferrico (SiBCS Cap 1, p 35; Cap 5 e Cap 10)
+#'
+#' Teor de Fe2O3 (pelo ataque sulfurico-NaOH) entre 180 e 360 g/kg
+#' de solo (= 18\%-36\% mass) na maior parte dos primeiros 100 cm do
+#' horizonte B. Acima de 360 g/kg = "perferrico" (nao implementado
+#' aqui). Discrimina os Grandes Grupos Eutroferricos / Distroferricos
+#' / Aluminoferricos de Latossolos (Cap 10), Argissolos (Cap 5
+#' Eutroferricos) e Cambissolos (Cap 6 Aluminoferricos).
+#'
+#' Implementacao v0.7.4: testa se \emph{algum} horizonte B dentro de
+#' \code{max_depth_cm} atende ao intervalo. SiBCS estrito ("na maior
+#' parte de") seria uma media ponderada por espessura -- refinamento
+#' planejado para v0.7.5.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_fe2o3_pct Limite inferior de Fe2O3 sulfurico em \% mass
+#'        (default 18 = 180 g/kg).
+#' @param max_fe2o3_pct Limite superior (exclusivo) em \% mass
+#'        (default 36 = 360 g/kg).
+#' @param max_depth_cm Profundidade maxima de B avaliado (default 100).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 35; Cap 5
+#'             (Argissolos Eutroferricos, p 118); Cap 10 (Latossolos).
+#' @export
+carater_ferrico <- function(pedon,
+                              min_fe2o3_pct = 18,
+                              max_fe2o3_pct = 36,
+                              max_depth_cm  = 100) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_ferrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 35"
+    ))
+  }
+  passing <- integer(0); missing <- character(0); details <- list()
+  evaluated <- 0L
+  for (i in b_layers) {
+    fe <- h$fe2o3_sulfuric_pct[i]
+    if (is.na(fe)) {
+      missing <- c(missing, "fe2o3_sulfuric_pct"); next
+    }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
+    layer_pass <- fe >= min_fe2o3_pct && fe < max_fe2o3_pct
+    details[[as.character(i)]] <- list(idx = i,
+                                         fe2o3_sulfuric_pct = fe,
+                                         passed = layer_pass)
+    evaluated <- evaluated + 1L
+    if (layer_pass) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_ferrico", passed = passed, layers = passing,
+    evidence = list(layers = details,
+                      min_fe2o3_pct = min_fe2o3_pct,
+                      max_fe2o3_pct = max_fe2o3_pct,
+                      max_depth_cm  = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 35"
+  )
+}
+
+
 #' Carater cambissolico (SiBCS Cap 14)
 #'
 #' Solos com B incipiente (\code{\link{B_incipiente}}) abaixo do

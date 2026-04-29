@@ -44,6 +44,10 @@ diagnostics:
   carater_terrico:              { function: carater_terrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
   carater_cambissolico:         { function: carater_cambissolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
 
+  # ----- v0.7.4 SiBCS Cap 5 (Argissolos) Grandes Grupos -----
+  carater_coeso:                { function: carater_coeso,                status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_ferrico:              { function: carater_ferrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

@@ -1,0 +1,181 @@
+# =============================================================
+# SiBCS 5a edicao -- Argissolos (Cap 5, pp 115-138)
+#
+# Grandes grupos (3o nivel categorico) -- 23 classes em 5 subordens:
+#
+#   PBAC Bruno-Acinzentados:  3 GGs (Ta_Al / Al / Distrofico)
+#   PAC  Acinzentados:        3 GGs (Distrocoeso / Distrofico / Eutrofico)
+#   PA   Amarelos:            6 GGs (+ Distrocoeso, Eutrocoeso)
+#   PV   Vermelhos:           6 GGs (Ta_Al / Al / Ta_D / D / EutroFerrico / E)
+#   PVA  Vermelho-Amarelos:   5 GGs (Ta_Al / Al / Ta_D / D / E)
+#
+# Discriminantes (todos avaliados na maior parte dos primeiros 100 cm
+# do horizonte B, inclusive BA):
+#
+#   Ta            atividade da argila >= 27 cmolc/kg argila
+#   Al  / alumin. carater_alitico (Al >= 4 cmolc/kg + sat Al >= 50% + V <50%)
+#   Distrofico    V% < 50% em B
+#   Eutrofico     V% >= 50% em B
+#   Coeso         consistencia muito-/extremamente-dura seca + friavel umida
+#   Eutroferrico  V >= 50% + Fe2O3 (sulfurico) 180-360 g/kg em B
+#   Ta_D          Ta + V < 50%
+#
+# Ordem canonica do livro -- "primeiro a passar captura". NAO ha
+# catch-all 'default: true' nesta ordem (run_taxa_list demota o
+# fallback automatico para NULL via classify_sibcs).
+# =============================================================
+
+grandes_grupos:
+
+  # ============================================================
+  # PBAC Bruno-Acinzentados (Cap 5, p 116) -- 3 GGs
+  # ============================================================
+  "PBAC":
+    - code: "PBACtal"
+      name: "Argissolos Bruno-Acinzentados Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "PBACal"
+      name: "Argissolos Bruno-Acinzentados Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "PBACd"
+      name: "Argissolos Bruno-Acinzentados Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+
+  # ============================================================
+  # PAC Acinzentados (Cap 5, pp 116-117) -- 3 GGs
+  # ============================================================
+  "PAC":
+    - code: "PACdc"
+      name: "Argissolos Acinzentados Distrocoesos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_coeso: { max_depth_cm: 150 }
+    - code: "PACd"
+      name: "Argissolos Acinzentados Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "PACe"
+      name: "Argissolos Acinzentados Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # PA Amarelos (Cap 5, pp 117-118) -- 6 GGs
+  # ============================================================
+  "PA":
+    - code: "PAtal"
+      name: "Argissolos Amarelos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "PAal"
+      name: "Argissolos Amarelos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "PAdc"
+      name: "Argissolos Amarelos Distrocoesos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_coeso: { max_depth_cm: 150 }
+    - code: "PAd"
+      name: "Argissolos Amarelos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "PAec"
+      name: "Argissolos Amarelos Eutrocoesos"
+      tests:
+        all_of:
+          - eutrofico: {}
+          - carater_coeso: { max_depth_cm: 150 }
+    - code: "PAe"
+      name: "Argissolos Amarelos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # PV Vermelhos (Cap 5, pp 118-119) -- 6 GGs
+  # 4.5 PVef (Eutroferricos) usa carater_ferrico (Fe2O3 sulfurico
+  # 180-360 g/kg = 18-36% em B dentro de 100 cm) -- precisa
+  # ataque sulfurico no lab.
+  # ============================================================
+  "PV":
+    - code: "PVtal"
+      name: "Argissolos Vermelhos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "PVal"
+      name: "Argissolos Vermelhos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "PVtd"
+      name: "Argissolos Vermelhos Ta Distroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - distrofico: {}
+    - code: "PVd"
+      name: "Argissolos Vermelhos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "PVef"
+      name: "Argissolos Vermelhos Eutroferricos"
+      tests:
+        all_of:
+          - eutrofico: {}
+          - carater_ferrico: {}
+    - code: "PVe"
+      name: "Argissolos Vermelhos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # PVA Vermelho-Amarelos (Cap 5, p 119) -- 5 GGs
+  # ============================================================
+  "PVA":
+    - code: "PVAtal"
+      name: "Argissolos Vermelho-Amarelos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "PVAal"
+      name: "Argissolos Vermelho-Amarelos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "PVAtd"
+      name: "Argissolos Vermelho-Amarelos Ta Distroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - distrofico: {}
+    - code: "PVAd"
+      name: "Argissolos Vermelho-Amarelos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "PVAe"
+      name: "Argissolos Vermelho-Amarelos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
