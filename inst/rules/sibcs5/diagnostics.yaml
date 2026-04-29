@@ -78,6 +78,10 @@ diagnostics:
   carater_vertissolico:         { function: carater_vertissolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
   carater_argiluvico:           { function: carater_argiluvico,           status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
 
+  # ----- v0.7.5.D SiBCS Cap 8 Espodossolos Grandes Grupos -----
+  carater_espodico_profundo:    { function: carater_espodico_profundo,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+  carater_hidromorfico:         { function: carater_hidromorfico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

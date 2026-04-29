@@ -60,8 +60,8 @@ test_that("MEcaVs (Ebanicos Carbonaticos vertissolicos) usa carater_vertissolico
 test_that("Cap 14 + Cap 5 + Cap 6 + Cap 7 GGs preservados", {
   rules <- load_rules("sibcs5")
   total_ggs <- sum(vapply(rules$grandes_grupos, length, integer(1)))
-  # 9 (Cap 14) + 23 (Cap 5) + 26 (Cap 6) + 11 (Cap 7) = 69
-  expect_equal(total_ggs, 69L)
+  # >= 69 (9 + 23 + 26 + 11); cresce com novos caps.
+  expect_gte(total_ggs, 69L)
 })
 
 test_that("WRB / USDA inalterados apos Cap 7 add", {

@@ -1,0 +1,254 @@
+# =============================================================
+# SiBCS 5a edicao -- Espodossolos (Cap 8, pp 169-174)
+#
+# Subgrupos (4o nivel categorico) -- 42 classes em 12 GGs:
+#
+#   EKhh / EJhh / EShh: 2+2+2 = 6 SGs (organossolicos / tipicos)
+#   EKhm / EJhm / EShm: 5+5+5 = 15 SGs (espessarenicos / arenicos /
+#                                        duricos / organossolicos / tipicos)
+#   EKhe / EJhe / EShe: 1+1+1 = 3 SGs (typicos)
+#   EKo  / EJo:           5+5 = 10 SGs (espessarenicos / arenicos /
+#                                        duricos / fragipanicos / tipicos)
+#   ESo:                        8 SGs (carbonaticos / eutricos+arenicos /
+#                                       eutricos / espessarenicos / arenicos /
+#                                       duricos / fragipanicos / tipicos)
+#
+# "Organossolicos" = horizonte_histico em camada (sem atender espessura
+# para Organossolos -- garantido pelo dispatcher que ja sabe que eh
+# Espodossolo).
+#
+# "Eutricos" do ESo 3.4.2/3.4.3 = carater_eutrico (existing).
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # EKhh / EJhh / EShh -- Hidro-hiperespessos (mesmo padrao)
+  # ============================================================
+  "EKhh":
+    - code: "EKhhOg"
+      name: "Espodossolos Humiluvicos Hidro-hiperespessos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EKhhTp"
+      name: "Espodossolos Humiluvicos Hidro-hiperespessos tipicos"
+      tests:
+        default: true
+  "EJhh":
+    - code: "EJhhOg"
+      name: "Espodossolos Ferriluvicos Hidro-hiperespessos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EJhhTp"
+      name: "Espodossolos Ferriluvicos Hidro-hiperespessos tipicos"
+      tests:
+        default: true
+  "EShh":
+    - code: "EShhOg"
+      name: "Espodossolos Ferri-humiluvicos Hidro-hiperespessos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EShhTp"
+      name: "Espodossolos Ferri-humiluvicos Hidro-hiperespessos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # EKhm / EJhm / EShm -- Hidromorficos (mesmo padrao 5 SGs)
+  # ============================================================
+  "EKhm":
+    - code: "EKhmEs"
+      name: "Espodossolos Humiluvicos Hidromorficos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "EKhmAr"
+      name: "Espodossolos Humiluvicos Hidromorficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "EKhmDu"
+      name: "Espodossolos Humiluvicos Hidromorficos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "EKhmOg"
+      name: "Espodossolos Humiluvicos Hidromorficos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EKhmTp"
+      name: "Espodossolos Humiluvicos Hidromorficos tipicos"
+      tests:
+        default: true
+  "EJhm":
+    - code: "EJhmEs"
+      name: "Espodossolos Ferriluvicos Hidromorficos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "EJhmAr"
+      name: "Espodossolos Ferriluvicos Hidromorficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "EJhmDu"
+      name: "Espodossolos Ferriluvicos Hidromorficos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "EJhmOg"
+      name: "Espodossolos Ferriluvicos Hidromorficos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EJhmTp"
+      name: "Espodossolos Ferriluvicos Hidromorficos tipicos"
+      tests:
+        default: true
+  "EShm":
+    - code: "EShmEs"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "EShmAr"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "EShmDu"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "EShmOg"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos organossolicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "EShmTp"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # EKhe / EJhe / EShe -- Hiperespessos (catch-all only, 1 SG cada)
+  # ============================================================
+  "EKhe":
+    - code: "EKheTp"
+      name: "Espodossolos Humiluvicos Hiperespessos tipicos"
+      tests:
+        default: true
+  "EJhe":
+    - code: "EJheTp"
+      name: "Espodossolos Ferriluvicos Hiperespessos tipicos"
+      tests:
+        default: true
+  "EShe":
+    - code: "ESheTp"
+      name: "Espodossolos Ferri-humiluvicos Hiperespessos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # EKo / EJo -- Orticos (mesmo padrao 5 SGs)
+  # ============================================================
+  "EKo":
+    - code: "EKoEs"
+      name: "Espodossolos Humiluvicos Orticos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "EKoAr"
+      name: "Espodossolos Humiluvicos Orticos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "EKoDu"
+      name: "Espodossolos Humiluvicos Orticos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "EKoFr"
+      name: "Espodossolos Humiluvicos Orticos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "EKoTp"
+      name: "Espodossolos Humiluvicos Orticos tipicos"
+      tests:
+        default: true
+  "EJo":
+    - code: "EJoEs"
+      name: "Espodossolos Ferriluvicos Orticos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "EJoAr"
+      name: "Espodossolos Ferriluvicos Orticos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "EJoDu"
+      name: "Espodossolos Ferriluvicos Orticos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "EJoFr"
+      name: "Espodossolos Ferriluvicos Orticos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "EJoTp"
+      name: "Espodossolos Ferriluvicos Orticos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # ESo -- Ferri-humiluvicos Orticos -- 8 SGs
+  # ============================================================
+  "ESo":
+    - code: "ESoCa"
+      name: "Espodossolos Ferri-humiluvicos Orticos carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "ESoEuAr"
+      name: "Espodossolos Ferri-humiluvicos Orticos eutricos arenicos"
+      tests:
+        all_of:
+          - carater_eutrico: {}
+          - carater_arenico: {}
+    - code: "ESoEu"
+      name: "Espodossolos Ferri-humiluvicos Orticos eutricos"
+      tests:
+        all_of:
+          - carater_eutrico: {}
+    - code: "ESoEs"
+      name: "Espodossolos Ferri-humiluvicos Orticos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "ESoAr"
+      name: "Espodossolos Ferri-humiluvicos Orticos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "ESoDu"
+      name: "Espodossolos Ferri-humiluvicos Orticos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "ESoFr"
+      name: "Espodossolos Ferri-humiluvicos Orticos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "ESoTp"
+      name: "Espodossolos Ferri-humiluvicos Orticos tipicos"
+      tests:
+        default: true

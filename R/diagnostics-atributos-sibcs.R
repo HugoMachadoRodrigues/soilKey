@@ -1540,6 +1540,119 @@ carater_sombrico <- function(pedon,
 }
 
 
+# ---- v0.7.5.D: Caracteres para Cap 8 (Espodossolos) ---------------------
+#
+# 2 diagnosticos novos:
+#
+#   carater_espodico_profundo  B espodico com top em [200, 400] cm
+#                              (Hiperespessos / Hidro-hiperespessos)
+#   carater_hidromorfico       saturacao com agua em <100 cm + indicios
+#                              hidromorficos (horizonte_glei OU redoxico)
+# -------------------------------------------------------------------------
+
+#' Carater B espodico profundo (SiBCS Cap 8)
+#'
+#' Solos com horizonte B espodico cujo \code{top_cm} esta entre
+#' \code{min_top_cm} (default 200) e \code{max_top_cm} (default 400).
+#' Discrimina os Grandes Grupos Hiperespessos / Hidro-hiperespessos
+#' de Espodossolos (Cap 8 1.1, 1.3, 2.1, 2.3, 3.1, 3.3).
+#'
+#' Implementacao: chama \code{\link{carater_espodico}} e filtra por
+#' \code{top_cm} no intervalo [\code{min_top_cm}, \code{max_top_cm}].
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Default 200.
+#' @param max_top_cm Default 400.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 8, pp 165-168.
+#' @export
+carater_espodico_profundo <- function(pedon,
+                                         min_top_cm = 200,
+                                         max_top_cm = 400) {
+  ce <- carater_espodico(pedon)
+  if (!isTRUE(ce$passed) || length(ce$layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_espodico_profundo", passed = FALSE,
+      layers = integer(0),
+      evidence = list(carater_espodico = ce,
+                        reason = "B espodico nao passa"),
+      missing = ce$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 8"
+    ))
+  }
+  h <- pedon$horizons
+  in_window <- !is.na(h$top_cm[ce$layers]) &
+                 h$top_cm[ce$layers] >= min_top_cm &
+                 h$top_cm[ce$layers] <= max_top_cm
+  passing <- ce$layers[in_window]
+  passed <- length(passing) > 0L
+  DiagnosticResult$new(
+    name = "carater_espodico_profundo", passed = passed,
+    layers = passing,
+    evidence = list(carater_espodico = ce,
+                      min_top_cm = min_top_cm,
+                      max_top_cm = max_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 8"
+  )
+}
+
+
+#' Carater hidromorfico (SiBCS Cap 8)
+#'
+#' Solos saturados com agua em camada(s) dentro de \code{max_depth_cm}
+#' (default 100 cm), evidenciado por horizonte glei
+#' (\code{\link{horizonte_glei}}) OU caracter redoxico
+#' (\code{\link{carater_redoxico}}) OU horizonte Eg na designation OU
+#' acumulacao de Mn em horizonte E ou B espodico. Discrimina os
+#' Grandes Grupos Hidromorficos / Hidro-hiperespessos de Espodossolos
+#' (Cap 8 1.1, 1.2, 2.1, 2.2, 3.1, 3.2).
+#'
+#' Implementacao v0.7.5 (aproximacao):
+#' \itemize{
+#'   \item \code{\link{horizonte_glei}} dentro de max_depth_cm, OR
+#'   \item \code{\link{carater_redoxico}} ate max_depth_cm, OR
+#'   \item designation pattern \code{Eg} dentro de max_depth_cm.
+#' }
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Default 100 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 8, pp 165-168.
+#' @export
+carater_hidromorfico <- function(pedon, max_depth_cm = 100) {
+  gl <- horizonte_glei(pedon)
+  rx <- carater_redoxico(pedon, max_top_cm = max_depth_cm)
+  h <- pedon$horizons
+  eg_layers <- which(!is.na(h$designation) &
+                       grepl("^Eg|Eg[0-9]?$", h$designation))
+  if (length(eg_layers) > 0L) {
+    eg_layers <- eg_layers[!is.na(h$top_cm[eg_layers]) &
+                              h$top_cm[eg_layers] < max_depth_cm]
+  }
+  gl_in_depth <- if (!isTRUE(gl$passed) || length(gl$layers) == 0L)
+                   FALSE
+                 else any(!is.na(h$top_cm[gl$layers]) &
+                              h$top_cm[gl$layers] < max_depth_cm)
+  passed <- isTRUE(gl_in_depth) ||
+              isTRUE(rx$passed) ||
+              length(eg_layers) > 0L
+  DiagnosticResult$new(
+    name = "carater_hidromorfico", passed = passed,
+    layers = unique(c(if (isTRUE(gl_in_depth)) gl$layers else integer(0),
+                          rx$layers,
+                          eg_layers)),
+    evidence = list(horizonte_glei = gl,
+                      carater_redoxico = rx,
+                      eg_layers = eg_layers,
+                      max_depth_cm = max_depth_cm),
+    missing = unique(c(gl$missing %||% character(0),
+                          rx$missing %||% character(0))),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 8"
+  )
+}
+
+
 # ---- v0.7.4.C: Caracteres para Subgrupos de Argissolos PA + PV ---------
 #
 # 3 diagnosticos novos (Cap 5 PA + PV subgrupos):

@@ -1,0 +1,99 @@
+# =============================================================
+# SiBCS 5a edicao -- Espodossolos (Cap 8, pp 165-168)
+#
+# Grandes grupos (3o nivel categorico) -- 12 classes em 3 subordens:
+#
+#   EK Humilúvicos:        4 GGs (Hidro-hiperespessos / Hidromorficos /
+#                                  Hiperespessos / Orticos)
+#   EJ Ferrilúvicos:       4 GGs (mesma estrutura)
+#   ES Ferri-humilúvicos:  4 GGs (mesma estrutura)
+#
+# Discriminantes (todos avaliados na profundidade do B espódico):
+#
+#   Hidro-hiperespesso:  B espodico em [200, 400] cm + hidromorfico
+#   Hidromorfico:        B espodico <= 200 cm + hidromorfico
+#   Hiperespesso:        B espodico em [200, 400] cm (sem hidromorf)
+#   Ortico:              catch-all (B espodico <= 200 cm sem hidromorf)
+#
+# Codigos: 4-6 chars (subordem 2 + suffix camelCase Hh, Hm, He, O).
+# =============================================================
+
+grandes_grupos:
+
+  # ============================================================
+  # EK -- Espodossolos Humiluvicos (Cap 8, pp 166-167) -- 4 GGs
+  # ============================================================
+  "EK":
+    - code: "EKhh"
+      name: "Espodossolos Humiluvicos Hidro-hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+          - carater_hidromorfico: {}
+    - code: "EKhm"
+      name: "Espodossolos Humiluvicos Hidromorficos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+          - carater_hidromorfico: {}
+    - code: "EKhe"
+      name: "Espodossolos Humiluvicos Hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+    - code: "EKo"
+      name: "Espodossolos Humiluvicos Orticos"
+      tests:
+        default: true
+
+  # ============================================================
+  # EJ -- Espodossolos Ferriluvicos (Cap 8, p 167) -- 4 GGs
+  # ============================================================
+  "EJ":
+    - code: "EJhh"
+      name: "Espodossolos Ferriluvicos Hidro-hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+          - carater_hidromorfico: {}
+    - code: "EJhm"
+      name: "Espodossolos Ferriluvicos Hidromorficos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+          - carater_hidromorfico: {}
+    - code: "EJhe"
+      name: "Espodossolos Ferriluvicos Hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+    - code: "EJo"
+      name: "Espodossolos Ferriluvicos Orticos"
+      tests:
+        default: true
+
+  # ============================================================
+  # ES -- Espodossolos Ferri-humiluvicos (Cap 8, p 168) -- 4 GGs
+  # ============================================================
+  "ES":
+    - code: "EShh"
+      name: "Espodossolos Ferri-humiluvicos Hidro-hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+          - carater_hidromorfico: {}
+    - code: "EShm"
+      name: "Espodossolos Ferri-humiluvicos Hidromorficos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+          - carater_hidromorfico: {}
+    - code: "EShe"
+      name: "Espodossolos Ferri-humiluvicos Hiperespessos"
+      tests:
+        all_of:
+          - carater_espodico_profundo: {}
+    - code: "ESo"
+      name: "Espodossolos Ferri-humiluvicos Orticos"
+      tests:
+        default: true
