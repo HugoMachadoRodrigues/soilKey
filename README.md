@@ -8,7 +8,7 @@
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
 <!-- Status & coverage badges -->
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI Zenodo](https://img.shields.io/badge/DOI-pending-yellow.svg?style=flat-square)](https://zenodo.org/)
 [![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/actions)
@@ -17,6 +17,11 @@
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens-blue.svg?style=flat-square)](#-coverage)
 [![USDA ST 13](https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders-blue.svg?style=flat-square)](#-coverage)
+<br/>
+<!-- Author / social badges -->
+[![X / Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&logo=x&logoColor=white)](https://x.com/Hugo_MRodrigues)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0000-0002-8070-8126)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-Hugo--Rodrigues--12-00CCBB.svg?style=flat-square&logo=researchgate&logoColor=white)](https://www.researchgate.net/profile/Hugo-Rodrigues-12)
 
 ---
 
