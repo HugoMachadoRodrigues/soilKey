@@ -56,6 +56,17 @@ diagnostics:
   carater_durico:               { function: carater_durico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
   carater_latossolico:          { function: carater_latossolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
 
+  # ----- v0.7.4.B.3 SiBCS Cap 5 PVA Subgrupos -----
+  carater_espessarenico:        { function: carater_espessarenico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_petroplintico:        { function: carater_petroplintico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_planossolico:         { function: carater_planossolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_nitossolico:          { function: carater_nitossolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_leptico:              { function: carater_leptico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_leptofragmentario:    { function: carater_leptofragmentario,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_saprolitico:          { function: carater_saprolitico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_luvissolico:          { function: carater_luvissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_chernossolico:        { function: carater_chernossolico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================
