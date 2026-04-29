@@ -191,9 +191,9 @@ test_that("Cap 14 + Cap 5 GGs preservados apos Cap 6 GGs add", {
   expect_equal(length(rules$grandes_grupos$OJ), 3L)
   # Cap 5 Argissolos
   expect_equal(length(rules$grandes_grupos$PVA), 5L)
-  # Total GGs nos systemas: 9 (Cap 14) + 23 (Cap 5) + 26 (Cap 6) = 58
+  # Total GGs >= 58 (9 Cap 14 + 23 Cap 5 + 26 Cap 6); cresce com novos caps.
   total_ggs <- sum(vapply(rules$grandes_grupos, length, integer(1)))
-  expect_equal(total_ggs, 58L)
+  expect_gte(total_ggs, 58L)
 })
 
 test_that("WRB / USDA classificacao inalterada apos Cap 6 GGs add", {

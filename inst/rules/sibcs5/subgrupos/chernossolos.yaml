@@ -1,0 +1,201 @@
+# =============================================================
+# SiBCS 5a edicao -- Chernossolos (Cap 7, pp 159-163)
+#
+# Subgrupos (4o nivel categorico) -- 34 classes em 11 GGs:
+#
+#   MD Rendzicos:    1 + 2 + 2 = 5 SGs
+#   ME Ebanicos:           2 + 2 = 4 SGs
+#   MT Argiluvicos:  2 + 4 + 9 = 15 SGs
+#   MX Haplicos:     1 + 5 + 4 = 10 SGs
+#
+# Reusa todos os caracteres existentes (Lf, Le, Sp, So, Vs, Ab,
+# EpRx, EnRx, Tp). Zero diagnosticos novos.
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # MD -- Rendzicos -- 5 SGs
+  # ============================================================
+  "MDpc":
+    - code: "MDpcTp"
+      name: "Chernossolos Rendzicos Petrocalcicos tipicos"
+      tests:
+        default: true
+  "MDli":
+    - code: "MDliFr"
+      name: "Chernossolos Rendzicos Liticos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "MDliTp"
+      name: "Chernossolos Rendzicos Liticos tipicos"
+      tests:
+        default: true
+  "MDo":
+    - code: "MDoSp"
+      name: "Chernossolos Rendzicos Orticos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "MDoTp"
+      name: "Chernossolos Rendzicos Orticos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # ME -- Ebanicos -- 4 SGs
+  # ============================================================
+  "MEca":
+    - code: "MEcaVs"
+      name: "Chernossolos Ebanicos Carbonaticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MEcaTp"
+      name: "Chernossolos Ebanicos Carbonaticos tipicos"
+      tests:
+        default: true
+  "MEo":
+    - code: "MEoVs"
+      name: "Chernossolos Ebanicos Orticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MEoTp"
+      name: "Chernossolos Ebanicos Orticos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # MT -- Argiluvicos -- 15 SGs
+  # ============================================================
+  "MTfe":
+    - code: "MTfeSp"
+      name: "Chernossolos Argiluvicos Ferricos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "MTfeTp"
+      name: "Chernossolos Argiluvicos Ferricos tipicos"
+      tests:
+        default: true
+  "MTca":
+    - code: "MTcaSp"
+      name: "Chernossolos Argiluvicos Carbonaticos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "MTcaAb"
+      name: "Chernossolos Argiluvicos Carbonaticos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "MTcaVs"
+      name: "Chernossolos Argiluvicos Carbonaticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MTcaTp"
+      name: "Chernossolos Argiluvicos Carbonaticos tipicos"
+      tests:
+        default: true
+  "MTo":
+    - code: "MToLf"
+      name: "Chernossolos Argiluvicos Orticos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "MToLe"
+      name: "Chernossolos Argiluvicos Orticos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "MToSp"
+      name: "Chernossolos Argiluvicos Orticos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "MToSo"
+      name: "Chernossolos Argiluvicos Orticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "MToAb"
+      name: "Chernossolos Argiluvicos Orticos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "MToVs"
+      name: "Chernossolos Argiluvicos Orticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MToEpRx"
+      name: "Chernossolos Argiluvicos Orticos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "MToEnRx"
+      name: "Chernossolos Argiluvicos Orticos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "MToTp"
+      name: "Chernossolos Argiluvicos Orticos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # MX -- Haplicos -- 10 SGs
+  # ============================================================
+  "MXfe":
+    - code: "MXfeTp"
+      name: "Chernossolos Haplicos Ferricos tipicos"
+      tests:
+        default: true
+  "MXca":
+    - code: "MXcaLf"
+      name: "Chernossolos Haplicos Carbonaticos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "MXcaLe"
+      name: "Chernossolos Haplicos Carbonaticos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "MXcaSp"
+      name: "Chernossolos Haplicos Carbonaticos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "MXcaVs"
+      name: "Chernossolos Haplicos Carbonaticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MXcaTp"
+      name: "Chernossolos Haplicos Carbonaticos tipicos"
+      tests:
+        default: true
+  "MXo":
+    - code: "MXoLf"
+      name: "Chernossolos Haplicos Orticos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "MXoLe"
+      name: "Chernossolos Haplicos Orticos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "MXoVs"
+      name: "Chernossolos Haplicos Orticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "MXoTp"
+      name: "Chernossolos Haplicos Orticos tipicos"
+      tests:
+        default: true

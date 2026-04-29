@@ -1,0 +1,95 @@
+# =============================================================
+# SiBCS 5a edicao -- Chernossolos (Cap 7, pp 158-159)
+#
+# Grandes grupos (3o nivel categorico) -- 11 classes em 4 subordens:
+#
+#   MD Rendzicos:   3 GGs (Petrocalcicos / Liticos / Orticos)
+#   ME Ebanicos:    2 GGs (Carbonaticos / Orticos)
+#   MT Argiluvicos: 3 GGs (Ferricos / Carbonaticos / Orticos)
+#   MX Haplicos:    3 GGs (Ferricos / Carbonaticos / Orticos)
+#
+# Cap 7 NAO requer novos diagnosticos -- reusa massivamente os
+# atributos ja implementados (horizonte_petrocalcico, contato_litico,
+# carater_carbonatico, carater_ferrico, carater_perferrico).
+#
+# "Ferricos" no Cap 7 = Fe2O3 >= 18% (sem upper bound = 36%);
+# combinamos carater_ferrico OR carater_perferrico via any_of.
+#
+# Codigos: 3-4 chars (subordem 2 + suffix).
+# =============================================================
+
+grandes_grupos:
+
+  # ============================================================
+  # MD -- Chernossolos Rendzicos (Cap 7, p 158) -- 3 GGs
+  # ============================================================
+  "MD":
+    - code: "MDpc"
+      name: "Chernossolos Rendzicos Petrocalcicos"
+      tests:
+        all_of:
+          - horizonte_petrocalcico: {}
+    - code: "MDli"
+      name: "Chernossolos Rendzicos Liticos"
+      tests:
+        any_of:
+          - contato_litico: { max_depth_cm: 50 }
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "MDo"
+      name: "Chernossolos Rendzicos Orticos"
+      tests:
+        default: true
+
+  # ============================================================
+  # ME -- Chernossolos Ebanicos (Cap 7, p 158) -- 2 GGs
+  # ============================================================
+  "ME":
+    - code: "MEca"
+      name: "Chernossolos Ebanicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "MEo"
+      name: "Chernossolos Ebanicos Orticos"
+      tests:
+        default: true
+
+  # ============================================================
+  # MT -- Chernossolos Argiluvicos (Cap 7, pp 158-159) -- 3 GGs
+  # ============================================================
+  "MT":
+    - code: "MTfe"
+      name: "Chernossolos Argiluvicos Ferricos"
+      tests:
+        any_of:
+          - carater_ferrico: {}
+          - carater_perferrico: {}
+    - code: "MTca"
+      name: "Chernossolos Argiluvicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "MTo"
+      name: "Chernossolos Argiluvicos Orticos"
+      tests:
+        default: true
+
+  # ============================================================
+  # MX -- Chernossolos Haplicos (Cap 7, p 159) -- 3 GGs
+  # ============================================================
+  "MX":
+    - code: "MXfe"
+      name: "Chernossolos Haplicos Ferricos"
+      tests:
+        any_of:
+          - carater_ferrico: {}
+          - carater_perferrico: {}
+    - code: "MXca"
+      name: "Chernossolos Haplicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "MXo"
+      name: "Chernossolos Haplicos Orticos"
+      tests:
+        default: true
