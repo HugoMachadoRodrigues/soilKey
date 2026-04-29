@@ -67,6 +67,11 @@ diagnostics:
   carater_luvissolico:          { function: carater_luvissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
   carater_chernossolico:        { function: carater_chernossolico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
 
+  # ----- v0.7.4.C SiBCS Cap 5 PA + PV Subgrupos -----
+  carater_gleissolico:          { function: carater_gleissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_cambissolico_arg:     { function: carater_cambissolico_arg,     status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_placico:              { function: carater_placico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

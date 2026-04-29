@@ -416,3 +416,313 @@ subgrupos:
       name: "Argissolos Vermelho-Amarelos Eutroficos tipicos"
       tests:
         default: true
+
+  # ============================================================
+  # v0.7.4.C.1 -- PA subgrupos (Cap 5, pp 122-128) -- 52 SGs
+  # ============================================================
+  #
+  # PA Amarelos -- a maior subordem de Cap 5: 6 GGs com 6+5+21+6+8+6 SGs.
+  # PAdc Distrocoesos eh especialmente grande (21 SGs com varias
+  # combinacoes abrupticos + fragipanicos + espodossolicos /
+  # plintossolicos / planossolicos).
+  #
+  # Codigos suffix: Ab=abruptico, Ar=arenico, Cb=cambissolico,
+  # Du=durico, EnRx=endorredoxico, EpRx=epirredoxico, Ep=espodossolico,
+  # Fr=fragipanico, Gl=gleissolico, Hu=humico, La=latossolico,
+  # Le=leptico, Lf=leptofragmentario, Pc=placico, Pl=plintossolico,
+  # Pp=petroplintico, Ps=planossolico, Sd=solodico, Sp=saprolitico,
+  # Tp=tipico (catch-all), An=antropico.
+
+  # ----- 3.1 PA Ta Aluminicos -- 6 subgrupos (Cap 5, p 122-123) -----
+  "PAtal":
+    - code: "PAtalSpAbEnRx"
+      name: "Argissolos Amarelos Ta Aluminicos saproliticos abrupticos endorredoxicos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+          - mudanca_textural_abrupta: {}
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PAtalAb"
+      name: "Argissolos Amarelos Ta Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAtalPl"
+      name: "Argissolos Amarelos Ta Aluminicos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAtalEpRx"
+      name: "Argissolos Amarelos Ta Aluminicos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PAtalEnRx"
+      name: "Argissolos Amarelos Ta Aluminicos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PAtalTp"
+      name: "Argissolos Amarelos Ta Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.2 PA Aluminicos -- 5 subgrupos (Cap 5, p 123) -----
+  "PAal":
+    - code: "PAalAb"
+      name: "Argissolos Amarelos Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAalPl"
+      name: "Argissolos Amarelos Aluminicos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAalEpRx"
+      name: "Argissolos Amarelos Aluminicos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PAalEnRx"
+      name: "Argissolos Amarelos Aluminicos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PAalTp"
+      name: "Argissolos Amarelos Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.3 PA Distrocoesos -- 21 subgrupos (Cap 5, p 123-126) -----
+  # Maior GG do Cap 5. Ordem canonica preservada do livro:
+  # SdAb > ArFr > Ar > AbFrEp > AbFr > AbPp > AbPl > AbEp > Ab >
+  # PcFr > FrPl > FrEp > FrPs > Fr > Pl > Ep > Ps > La > EpRx > EnRx > Tp.
+  "PAdc":
+    - code: "PAdcSdAb"
+      name: "Argissolos Amarelos Distrocoesos solodicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "PAdcArFr"
+      name: "Argissolos Amarelos Distrocoesos arenicos fragipanicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+          - fragipa: {}
+    - code: "PAdcAr"
+      name: "Argissolos Amarelos Distrocoesos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "PAdcAbFrEp"
+      name: "Argissolos Amarelos Distrocoesos abrupticos fragipanicos espodossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - fragipa: {}
+          - carater_espodico: {}
+    - code: "PAdcAbFr"
+      name: "Argissolos Amarelos Distrocoesos abrupticos fragipanicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - fragipa: {}
+    - code: "PAdcAbPp"
+      name: "Argissolos Amarelos Distrocoesos abrupticos petroplinticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_petroplintico: {}
+    - code: "PAdcAbPl"
+      name: "Argissolos Amarelos Distrocoesos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PAdcAbEp"
+      name: "Argissolos Amarelos Distrocoesos abrupticos espodossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_espodico: {}
+    - code: "PAdcAb"
+      name: "Argissolos Amarelos Distrocoesos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAdcPcFr"
+      name: "Argissolos Amarelos Distrocoesos placicos fragipanicos"
+      tests:
+        all_of:
+          - carater_placico: {}
+          - fragipa: {}
+    - code: "PAdcFrPl"
+      name: "Argissolos Amarelos Distrocoesos fragipanicos plintossolicos"
+      tests:
+        all_of:
+          - fragipa: {}
+          - carater_plintico: {}
+    - code: "PAdcFrEp"
+      name: "Argissolos Amarelos Distrocoesos fragipanicos espodossolicos"
+      tests:
+        all_of:
+          - fragipa: {}
+          - carater_espodico: {}
+    - code: "PAdcFrPs"
+      name: "Argissolos Amarelos Distrocoesos fragipanicos planossolicos"
+      tests:
+        all_of:
+          - fragipa: {}
+          - carater_planossolico: {}
+    - code: "PAdcFr"
+      name: "Argissolos Amarelos Distrocoesos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "PAdcPl"
+      name: "Argissolos Amarelos Distrocoesos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAdcEp"
+      name: "Argissolos Amarelos Distrocoesos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "PAdcPs"
+      name: "Argissolos Amarelos Distrocoesos planossolicos"
+      tests:
+        all_of:
+          - carater_planossolico: {}
+    - code: "PAdcLa"
+      name: "Argissolos Amarelos Distrocoesos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PAdcEpRx"
+      name: "Argissolos Amarelos Distrocoesos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PAdcEnRx"
+      name: "Argissolos Amarelos Distrocoesos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PAdcTp"
+      name: "Argissolos Amarelos Distrocoesos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.4 PA Distroficos -- 6 subgrupos (Cap 5, p 126-127) -----
+  "PAd":
+    - code: "PAdAb"
+      name: "Argissolos Amarelos Distroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAdGl"
+      name: "Argissolos Amarelos Distroficos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "PAdPlAn"
+      name: "Argissolos Amarelos Distroficos plintossolicos antropicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+          - horizonte_A_antropico: {}
+    - code: "PAdPl"
+      name: "Argissolos Amarelos Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAdCb"
+      name: "Argissolos Amarelos Distroficos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "PAdTp"
+      name: "Argissolos Amarelos Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.5 PA Eutrocoesos -- 8 subgrupos (Cap 5, p 127-128) -----
+  "PAec":
+    - code: "PAecLf"
+      name: "Argissolos Amarelos Eutrocoesos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "PAecLe"
+      name: "Argissolos Amarelos Eutrocoesos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "PAecSdPlPs"
+      name: "Argissolos Amarelos Eutrocoesos solodicos plintossolicos planossolicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - carater_plintico: {}
+          - carater_planossolico: {}
+    - code: "PAecAbPl"
+      name: "Argissolos Amarelos Eutrocoesos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PAecAb"
+      name: "Argissolos Amarelos Eutrocoesos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAecFr"
+      name: "Argissolos Amarelos Eutrocoesos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "PAecPl"
+      name: "Argissolos Amarelos Eutrocoesos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAecTp"
+      name: "Argissolos Amarelos Eutrocoesos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.6 PA Eutroficos -- 6 subgrupos (Cap 5, p 128) -----
+  "PAe":
+    - code: "PAeSd"
+      name: "Argissolos Amarelos Eutroficos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "PAeAbPl"
+      name: "Argissolos Amarelos Eutroficos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PAeAb"
+      name: "Argissolos Amarelos Eutroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PAePl"
+      name: "Argissolos Amarelos Eutroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PAePs"
+      name: "Argissolos Amarelos Eutroficos planossolicos"
+      tests:
+        all_of:
+          - carater_planossolico: {}
+    - code: "PAeTp"
+      name: "Argissolos Amarelos Eutroficos tipicos"
+      tests:
+        default: true

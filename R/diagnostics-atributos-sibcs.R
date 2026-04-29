@@ -1319,6 +1319,156 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- v0.7.4.C: Caracteres para Subgrupos de Argissolos PA + PV ---------
+#
+# 3 diagnosticos novos (Cap 5 PA + PV subgrupos):
+#
+#   carater_gleissolico       horizonte_glei dentro de max_depth_cm
+#   carater_cambissolico_arg  4%+ minerais alteraveis OU 5%+ frag rocha em B
+#                              (Cap 5 Argissolos -- distinto do
+#                               carater_cambissolico Cap 14 Folicos)
+#   carater_placico           horizonte placico (Fe/Mn cementado)
+# -------------------------------------------------------------------------
+
+#' Carater gleissolico (SiBCS Cap 5; horizonte_glei em posicao nao-Gleissolo)
+#'
+#' Solos com horizonte glei (\code{\link{horizonte_glei}}) em posicao
+#' nao diagnostica para Gleissolos (i.e., dentro de
+#' \code{max_depth_cm} mas NAO satisfazendo os requisitos completos de
+#' Gleissolo). Discrimina os Subgrupos gleissolicos de Argissolos
+#' (Cap 5 PA), Cambissolos (Cap 6) e outros.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima onde camadas qualificam
+#'        (default 150).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5, p 126; Cap 9
+#'             (Gleissolos).
+#' @export
+carater_gleissolico <- function(pedon, max_depth_cm = 150) {
+  res <- horizonte_glei(pedon)
+  layers <- res$layers
+  h <- pedon$horizons
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) &
+                  h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE
+            else isTRUE(res$passed) || (is.na(res$passed) && length(layers) > 0L)
+  if (length(layers) > 0L) passed <- TRUE
+  DiagnosticResult$new(
+    name = "carater_gleissolico", passed = passed, layers = layers,
+    evidence = list(horizonte_glei = res, max_depth_cm = max_depth_cm),
+    missing = res$missing %||% character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 126"
+  )
+}
+
+
+#' Carater cambissolico (Argissolos -- Cap 5)
+#'
+#' Solos com 4\% ou mais de minerais alteraveis visiveis E/OU 5\% ou
+#' mais de fragmentos de rocha (\code{coarse_fragments_pct}) no
+#' horizonte B (exclusive BC ou B/C), dentro de \code{max_depth_cm}.
+#' Discrimina os Subgrupos cambissolicos de Argissolos PA (Cap 5,
+#' p 126) -- DISTINTO do \code{\link{carater_cambissolico}} (Cap 14
+#' Organossolos Folicos: B incipiente abaixo de histico/A).
+#'
+#' Implementacao v0.7.4 (aproximacao): apenas \code{coarse_fragments_pct}
+#' \eqn{\ge} \code{min_coarse_pct} (default 5) eh testado. O criterio
+#' "minerais alteraveis visiveis" exigiria campo adicional no schema
+#' (e.g. \code{weatherable_minerals_pct}) que sera adicionado em release
+#' futura. Documentado como limitacao conhecida.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_coarse_pct Default 5\% volume.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5, p 126.
+#' @export
+carater_cambissolico_arg <- function(pedon,
+                                        min_coarse_pct = 5,
+                                        max_depth_cm   = 150) {
+  h <- pedon$horizons
+  b_only <- which(!is.na(h$designation) &
+                     grepl("^B[twiog]?[0-9]?$|^B$", h$designation) &
+                     !grepl("^BC|^B/C", h$designation))
+  if (length(b_only) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_cambissolico_arg", passed = FALSE,
+      layers = integer(0),
+      evidence = list(reason = "no B horizons (excluding BC/B/C)"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 126"
+    ))
+  }
+  if (!is.null(max_depth_cm)) {
+    b_only <- b_only[!is.na(h$top_cm[b_only]) &
+                        h$top_cm[b_only] < max_depth_cm]
+  }
+  passing <- integer(0); missing <- character(0)
+  for (i in b_only) {
+    cf <- h$coarse_fragments_pct[i]
+    if (is.na(cf)) {
+      missing <- c(missing, "coarse_fragments_pct"); next
+    }
+    if (cf >= min_coarse_pct) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (length(b_only) == length(missing) && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_cambissolico_arg", passed = passed, layers = passing,
+    evidence = list(b_layers = b_only, min_coarse_pct = min_coarse_pct,
+                      max_depth_cm = max_depth_cm,
+                      note = "v0.7.4 simplification: minerais_alteraveis_pct nao no schema"),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 126"
+  )
+}
+
+
+#' Carater placico (SiBCS Cap 5; horizonte placico cementado por Fe/Mn)
+#'
+#' Camada cimentada por Fe/Mn (geralmente fina, 1-25 mm), detectada via
+#' \code{cementation_class \%in\% \{"strongly", "indurated"\}} dentro
+#' de \code{max_depth_cm}. Discrimina os Subgrupos placicos de
+#' Argissolos PA (Cap 5).
+#'
+#' Implementacao v0.7.4 (aproximacao): \code{cementation_class} forte
+#' ou indurada. SiBCS estrito requeria espessura minima e composicao
+#' Fe/Mn confirmada. Refinamento planejado para v0.8.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5, p 125.
+#' @export
+carater_placico <- function(pedon, max_depth_cm = 150) {
+  h <- pedon$horizons
+  passing <- integer(0); missing <- character(0)
+  strong_or_ind <- c("strongly", "indurated")
+  for (i in seq_len(nrow(h))) {
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
+    cem <- h$cementation_class[i]
+    if (is.na(cem)) { missing <- c(missing, "cementation_class"); next }
+    if (tolower(cem) %in% strong_or_ind) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (length(missing) > 0L && length(passing) == 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_placico", passed = passed, layers = passing,
+    evidence = list(max_depth_cm = max_depth_cm,
+                      criterion = "cementation_class strongly/indurated"),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 125"
+  )
+}
+
+
 # ---- v0.7.4.B.3: Caracteres para Subgrupos de Argissolos PVA -----------
 #
 # 9 diagnosticos novos (todos para Subgrupos do Cap 5: PVA, parte de PV
