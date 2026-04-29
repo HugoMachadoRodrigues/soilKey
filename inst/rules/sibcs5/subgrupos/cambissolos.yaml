@@ -1,0 +1,638 @@
+# =============================================================
+# SiBCS 5a edicao -- Cambissolos (Cap 6, pp 143-156)
+#
+# Subgrupos (4o nivel categorico) -- 109 classes em 26 GGs:
+#
+#   CH  Histicos:   2 GGs com 4+4 = 8 SGs
+#   CHU Humicos:    4 GGs com 5+4+4+5 = 18 SGs
+#   CY  Fluvicos:   8 GGs com 4+3+2+2+2+5+2+2 = 22 SGs
+#   CX  Haplicos:  12 GGs com 6+4+2+4+3+3+9+6+3+7+7+7 = 61 SGs
+#
+# Codigos suffix: Lf=leptofragmentario, Le=leptico, Sp=saprolitico,
+# Ep=espodossolico, La=latossolico, Vs=vertissolico, Gl=gleissolico,
+# Sa=salino, So=solodico, Sd=sodico, Ps=planossolico, Pp=petroplintico,
+# Pl=plintossolico, Ar=argiluvico, Ch=chernossolico, Fr=fragmentario,
+# Li=litico, HC=hipocarbonatico, Tp=tipico (catch-all).
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # CH -- Cambissolos Histicos (Cap 6, pp 143-144) -- 8 SGs
+  # ============================================================
+
+  # ----- 1.1 CH Aluminicos -- 4 subgrupos -----
+  "CHal":
+    - code: "CHalLf"
+      name: "Cambissolos Histicos Aluminicos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHalLe"
+      name: "Cambissolos Histicos Aluminicos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHalEp"
+      name: "Cambissolos Histicos Aluminicos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "CHalTp"
+      name: "Cambissolos Histicos Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 1.2 CH Distroficos -- 4 subgrupos -----
+  "CHd":
+    - code: "CHdLf"
+      name: "Cambissolos Histicos Distroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHdLe"
+      name: "Cambissolos Histicos Distroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHdEp"
+      name: "Cambissolos Histicos Distroficos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "CHdTp"
+      name: "Cambissolos Histicos Distroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # CHU -- Cambissolos Humicos (Cap 6, pp 144-146) -- 18 SGs
+  # ============================================================
+
+  # ----- 2.1 CHU Aluminoferricos -- 5 subgrupos -----
+  "CHUaf":
+    - code: "CHUafLf"
+      name: "Cambissolos Humicos Aluminoferricos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHUafLe"
+      name: "Cambissolos Humicos Aluminoferricos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHUafEp"
+      name: "Cambissolos Humicos Aluminoferricos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "CHUafLa"
+      name: "Cambissolos Humicos Aluminoferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CHUafTp"
+      name: "Cambissolos Humicos Aluminoferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.2 CHU Aluminicos -- 4 subgrupos -----
+  "CHUal":
+    - code: "CHUalLf"
+      name: "Cambissolos Humicos Aluminicos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHUalLe"
+      name: "Cambissolos Humicos Aluminicos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHUalEp"
+      name: "Cambissolos Humicos Aluminicos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "CHUalTp"
+      name: "Cambissolos Humicos Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.3 CHU Distroferricos -- 4 subgrupos -----
+  "CHUdf":
+    - code: "CHUdfLf"
+      name: "Cambissolos Humicos Distroferricos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHUdfLe"
+      name: "Cambissolos Humicos Distroferricos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHUdfLa"
+      name: "Cambissolos Humicos Distroferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CHUdfTp"
+      name: "Cambissolos Humicos Distroferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.4 CHU Distroficos -- 5 subgrupos -----
+  "CHUd":
+    - code: "CHUdLf"
+      name: "Cambissolos Humicos Distroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CHUdLe"
+      name: "Cambissolos Humicos Distroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CHUdSp"
+      name: "Cambissolos Humicos Distroficos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "CHUdLa"
+      name: "Cambissolos Humicos Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CHUdTp"
+      name: "Cambissolos Humicos Distroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # CY -- Cambissolos Fluvicos (Cap 6, pp 146-149) -- 22 SGs
+  # ============================================================
+
+  # ----- 3.1 CY Carbonaticos -- 4 subgrupos -----
+  "CYca":
+    - code: "CYcaLf"
+      name: "Cambissolos Fluvicos Carbonaticos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CYcaLe"
+      name: "Cambissolos Fluvicos Carbonaticos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CYcaVs"
+      name: "Cambissolos Fluvicos Carbonaticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CYcaTp"
+      name: "Cambissolos Fluvicos Carbonaticos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.2 CY Sodicos -- 3 subgrupos -----
+  # Composto SaGl > Sa > Tp (chave canonica)
+  "CYsd":
+    - code: "CYsdSaGl"
+      name: "Cambissolos Fluvicos Sodicos salinos gleissolicos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+          - carater_gleissolico: {}
+    - code: "CYsdSa"
+      name: "Cambissolos Fluvicos Sodicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "CYsdTp"
+      name: "Cambissolos Fluvicos Sodicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.3 CY Salicos -- 2 subgrupos -----
+  "CYsl":
+    - code: "CYslGl"
+      name: "Cambissolos Fluvicos Salicos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYslTp"
+      name: "Cambissolos Fluvicos Salicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.4 CY Aluminicos -- 2 subgrupos -----
+  "CYal":
+    - code: "CYalGl"
+      name: "Cambissolos Fluvicos Aluminicos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYalTp"
+      name: "Cambissolos Fluvicos Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.5 CY Ta Distroficos -- 2 subgrupos -----
+  "CYtd":
+    - code: "CYtdGl"
+      name: "Cambissolos Fluvicos Ta Distroficos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYtdTp"
+      name: "Cambissolos Fluvicos Ta Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.6 CY Ta Eutroficos -- 5 subgrupos -----
+  "CYte":
+    - code: "CYteSo"
+      name: "Cambissolos Fluvicos Ta Eutroficos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "CYteVs"
+      name: "Cambissolos Fluvicos Ta Eutroficos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CYteGl"
+      name: "Cambissolos Fluvicos Ta Eutroficos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYtePs"
+      name: "Cambissolos Fluvicos Ta Eutroficos planossolicos"
+      tests:
+        all_of:
+          - carater_planossolico: {}
+    - code: "CYteTp"
+      name: "Cambissolos Fluvicos Ta Eutroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.7 CY Tb Distroficos -- 2 subgrupos -----
+  "CYbd":
+    - code: "CYbdGl"
+      name: "Cambissolos Fluvicos Tb Distroficos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYbdTp"
+      name: "Cambissolos Fluvicos Tb Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.8 CY Tb Eutroficos -- 2 subgrupos -----
+  "CYbe":
+    - code: "CYbeGl"
+      name: "Cambissolos Fluvicos Tb Eutroficos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CYbeTp"
+      name: "Cambissolos Fluvicos Tb Eutroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # CX -- Cambissolos Haplicos (Cap 6, pp 149-156) -- 61 SGs
+  # ============================================================
+
+  # ----- 4.1 CX Carbonaticos -- 6 subgrupos -----
+  "CXca":
+    - code: "CXcaLf"
+      name: "Cambissolos Haplicos Carbonaticos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXcaLe"
+      name: "Cambissolos Haplicos Carbonaticos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXcaSp"
+      name: "Cambissolos Haplicos Carbonaticos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "CXcaSo"
+      name: "Cambissolos Haplicos Carbonaticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "CXcaVs"
+      name: "Cambissolos Haplicos Carbonaticos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CXcaTp"
+      name: "Cambissolos Haplicos Carbonaticos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.2 CX Sodicos -- 4 subgrupos -----
+  "CXsd":
+    - code: "CXsdLf"
+      name: "Cambissolos Haplicos Sodicos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXsdLe"
+      name: "Cambissolos Haplicos Sodicos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXsdVs"
+      name: "Cambissolos Haplicos Sodicos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CXsdTp"
+      name: "Cambissolos Haplicos Sodicos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.3 CX Perferricos -- 2 subgrupos -----
+  "CXpf":
+    - code: "CXpfLa"
+      name: "Cambissolos Haplicos Perferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CXpfTp"
+      name: "Cambissolos Haplicos Perferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.4 CX Ta Aluminicos -- 4 subgrupos -----
+  "CXtal":
+    - code: "CXtalLf"
+      name: "Cambissolos Haplicos Ta Aluminicos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXtalLe"
+      name: "Cambissolos Haplicos Ta Aluminicos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXtalGl"
+      name: "Cambissolos Haplicos Ta Aluminicos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CXtalTp"
+      name: "Cambissolos Haplicos Ta Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.5 CX Ta Distroficos -- 3 subgrupos -----
+  "CXtd":
+    - code: "CXtdLf"
+      name: "Cambissolos Haplicos Ta Distroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXtdLe"
+      name: "Cambissolos Haplicos Ta Distroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXtdTp"
+      name: "Cambissolos Haplicos Ta Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.6 CX Ta Eutroferricos -- 3 subgrupos -----
+  "CXtef":
+    - code: "CXtefLf"
+      name: "Cambissolos Haplicos Ta Eutroferricos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXtefLe"
+      name: "Cambissolos Haplicos Ta Eutroferricos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXtefTp"
+      name: "Cambissolos Haplicos Ta Eutroferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.7 CX Ta Eutroficos -- 9 subgrupos -----
+  # Inclui contato litico fragmentario raso (Fr <50 cm), litico raso
+  # (Li <50 cm), composto leptico+hipocarbonatico (LeHC),
+  # vertissolicos, argissolicos.
+  "CXte":
+    - code: "CXteFr"
+      name: "Cambissolos Haplicos Ta Eutroficos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "CXteLi"
+      name: "Cambissolos Haplicos Ta Eutroficos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "CXteLf"
+      name: "Cambissolos Haplicos Ta Eutroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXteLeHC"
+      name: "Cambissolos Haplicos Ta Eutroficos lepticos hipocarbonaticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+          - carater_hipocarbonatico: { max_depth_cm: 100 }
+    - code: "CXteLe"
+      name: "Cambissolos Haplicos Ta Eutroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXteSo"
+      name: "Cambissolos Haplicos Ta Eutroficos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "CXteVs"
+      name: "Cambissolos Haplicos Ta Eutroficos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CXteAr"
+      name: "Cambissolos Haplicos Ta Eutroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "CXteTp"
+      name: "Cambissolos Haplicos Ta Eutroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.8 CX Tb Aluminicos -- 6 subgrupos -----
+  "CXbal":
+    - code: "CXbalLf"
+      name: "Cambissolos Haplicos Tb Aluminicos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXbalLe"
+      name: "Cambissolos Haplicos Tb Aluminicos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXbalPp"
+      name: "Cambissolos Haplicos Tb Aluminicos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "CXbalPl"
+      name: "Cambissolos Haplicos Tb Aluminicos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "CXbalEp"
+      name: "Cambissolos Haplicos Tb Aluminicos espodossolicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "CXbalTp"
+      name: "Cambissolos Haplicos Tb Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.9 CX Tb Distroferricos -- 3 subgrupos -----
+  "CXbdf":
+    - code: "CXbdfLf"
+      name: "Cambissolos Haplicos Tb Distroferricos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXbdfLe"
+      name: "Cambissolos Haplicos Tb Distroferricos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXbdfTp"
+      name: "Cambissolos Haplicos Tb Distroferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.10 CX Tb Distroficos -- 7 subgrupos -----
+  "CXbd":
+    - code: "CXbdLf"
+      name: "Cambissolos Haplicos Tb Distroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXbdLe"
+      name: "Cambissolos Haplicos Tb Distroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXbdPp"
+      name: "Cambissolos Haplicos Tb Distroficos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "CXbdPl"
+      name: "Cambissolos Haplicos Tb Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "CXbdAr"
+      name: "Cambissolos Haplicos Tb Distroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "CXbdLa"
+      name: "Cambissolos Haplicos Tb Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CXbdTp"
+      name: "Cambissolos Haplicos Tb Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.11 CX Tb Eutroferricos -- 7 subgrupos -----
+  "CXbef":
+    - code: "CXbefLf"
+      name: "Cambissolos Haplicos Tb Eutroferricos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXbefLe"
+      name: "Cambissolos Haplicos Tb Eutroferricos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXbefSo"
+      name: "Cambissolos Haplicos Tb Eutroferricos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "CXbefVs"
+      name: "Cambissolos Haplicos Tb Eutroferricos vertissolicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "CXbefGl"
+      name: "Cambissolos Haplicos Tb Eutroferricos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "CXbefLa"
+      name: "Cambissolos Haplicos Tb Eutroferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CXbefTp"
+      name: "Cambissolos Haplicos Tb Eutroferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.12 CX Tb Eutroficos -- 7 subgrupos -----
+  "CXbe":
+    - code: "CXbeLf"
+      name: "Cambissolos Haplicos Tb Eutroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "CXbeLe"
+      name: "Cambissolos Haplicos Tb Eutroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "CXbeSoPl"
+      name: "Cambissolos Haplicos Tb Eutroficos solodicos plintossolicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - carater_plintico: {}
+    - code: "CXbePs"
+      name: "Cambissolos Haplicos Tb Eutroficos planossolicos"
+      tests:
+        all_of:
+          - carater_planossolico: {}
+    - code: "CXbeLa"
+      name: "Cambissolos Haplicos Tb Eutroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "CXbeCh"
+      name: "Cambissolos Haplicos Tb Eutroficos chernossolicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "CXbeTp"
+      name: "Cambissolos Haplicos Tb Eutroficos tipicos"
+      tests:
+        default: true
