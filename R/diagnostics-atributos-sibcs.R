@@ -1319,6 +1319,228 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- Carater arenico (Cap 5; textura arenosa 50-100 cm) ------------------
+
+#' Carater arenico (SiBCS Cap 5)
+#'
+#' Solos com textura arenosa (clay\% < \code{max_clay_pct}, default
+#' 15\%) desde a superficie ate uma profundidade entre
+#' \code{min_depth_cm} e \code{max_depth_cm} (default 50-100 cm).
+#' Discrimina os Subgrupos arenicos de Argissolos (Cap 5: PAC, PA,
+#' PV, PVA) e Neossolos (Cap 12).
+#'
+#' Implementacao: ordena horizontes por \code{top_cm}, identifica o
+#' PRIMEIRO horizonte com \code{clay_pct >= max_clay_pct}, e verifica
+#' que (a) todos os horizontes acima desse boundary sao arenosos
+#' (sem camada argilosa intercalada acima) e (b) o boundary
+#' (\code{top_cm}) cai no intervalo \code{[min_depth_cm,
+#' max_depth_cm]}.
+#'
+#' Para "espessarenicos" (boundary 100-200 cm), use
+#' \code{carater_espessarenico} (planejado v0.7.4.B.3).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_clay_pct Limite superior de \% argila para "arenoso"
+#'        (default 15 = areia / areia franca).
+#' @param min_depth_cm Profundidade minima do boundary (default 50).
+#' @param max_depth_cm Profundidade maxima do boundary (default 100).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5 (Argissolos),
+#'             pp 120-138.
+#' @export
+carater_arenico <- function(pedon,
+                              max_clay_pct = 15,
+                              min_depth_cm = 50,
+                              max_depth_cm = 100) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_arenico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "empty horizons"), missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  if (all(is.na(h$clay_pct))) {
+    return(DiagnosticResult$new(
+      name = "carater_arenico", passed = NA, layers = integer(0),
+      evidence = list(reason = "all clay_pct NA"),
+      missing = "clay_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  ord <- order(h$top_cm)
+  ordered_clay <- h$clay_pct[ord]
+  ordered_top  <- h$top_cm[ord]
+  # Identify first clearly non-sandy layer (clay >= max_clay_pct).
+  non_sandy_seq <- !is.na(ordered_clay) & ordered_clay >= max_clay_pct
+  if (!any(non_sandy_seq)) {
+    return(DiagnosticResult$new(
+      name = "carater_arenico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "profile sem camada argilosa identificavel"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  first_idx <- which(non_sandy_seq)[1]
+  # Verify all layers above first non-sandy are sandy (sem clay intercalada).
+  if (first_idx > 1L) {
+    above_clay <- ordered_clay[seq_len(first_idx - 1L)]
+    if (any(!is.na(above_clay) & above_clay >= max_clay_pct)) {
+      return(DiagnosticResult$new(
+        name = "carater_arenico", passed = FALSE, layers = integer(0),
+        evidence = list(reason = "camada argilosa intercalada acima do boundary"),
+        missing = character(0),
+        reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+      ))
+    }
+  }
+  boundary_top <- ordered_top[first_idx]
+  passed <- !is.na(boundary_top) &&
+              boundary_top >= min_depth_cm &&
+              boundary_top <= max_depth_cm
+  DiagnosticResult$new(
+    name = "carater_arenico", passed = passed,
+    layers = if (passed) ord[seq_len(first_idx - 1L)] else integer(0),
+    evidence = list(boundary_top_cm = boundary_top,
+                      first_non_sandy_idx = ord[first_idx],
+                      ordered_clay_pct = ordered_clay,
+                      min_depth_cm = min_depth_cm,
+                      max_depth_cm = max_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+  )
+}
+
+
+# ---- Carater durico (Cap 1; cimentacao parcial por silica) ---------------
+
+#' Carater durico (SiBCS Cap 1)
+#'
+#' Solos com endurecimento por cimentacao parcial de silica (SiO2),
+#' insuficiente para qualificar como horizonte durico (\code{\link{duripa}})
+#' completo. Detectado quando:
+#'
+#' \itemize{
+#'   \item \code{duripan_pct} > 0 (presenca de noduros / concrecoes
+#'         de silica), OR
+#'   \item \code{cementation_class} \eqn{\in}\{"weakly", "moderately"\}
+#'         (cimentacao fraca a moderada, NAO indurada/strongly).
+#' }
+#'
+#' Discrimina os Subgrupos duricos / abrupticos duricos de Argissolos
+#' Acinzentados (Cap 5 PAC) e Latossolos com caracter durico
+#' (Cap 10).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima onde camadas qualificam
+#'        (default 150, conforme SiBCS Cap 5: "dentro de 150 cm").
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 (Argissolos
+#'             Acinzentados Distrocoesos abrupticos duricos), p 120.
+#' @export
+carater_durico <- function(pedon, max_depth_cm = 150) {
+  h <- pedon$horizons
+  weak_or_mod <- c("weakly", "moderately")
+  passing <- integer(0); missing <- character(0); details <- list()
+  for (i in seq_len(nrow(h))) {
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
+    dur <- h$duripan_pct[i]
+    cem <- h$cementation_class[i]
+    if (is.na(dur) && is.na(cem)) {
+      missing <- c(missing, "duripan_pct", "cementation_class"); next
+    }
+    by_pct <- !is.na(dur) && dur > 0
+    by_cem <- !is.na(cem) && tolower(cem) %in% weak_or_mod
+    layer_pass <- isTRUE(by_pct) || isTRUE(by_cem)
+    details[[as.character(i)]] <- list(idx = i,
+                                         duripan_pct = dur,
+                                         cementation_class = cem,
+                                         passed = layer_pass)
+    if (layer_pass) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (length(details) == 0L && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_durico", passed = passed, layers = passing,
+    evidence = list(layers = details, max_depth_cm = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1"
+  )
+}
+
+
+# ---- Carater latossolico (Cap 5; B latossolico abaixo do B textural) -----
+
+#' Carater latossolico (SiBCS Cap 5)
+#'
+#' Solos com horizonte B latossolico (\code{\link{B_latossolico}}) abaixo
+#' do horizonte B textural (\code{\link{B_textural}}), dentro de
+#' \code{max_depth_cm} (default 150 cm). Discrimina os Subgrupos
+#' latossolicos de Argissolos (Cap 5: PAC, PA, PV, PVA) -- transicao
+#' entre Argissolo e Latossolo dentro do mesmo perfil.
+#'
+#' Implementacao: requer (1) \code{B_textural()} passa, (2)
+#' \code{B_latossolico()} passa, e (3) ao menos uma camada com
+#' B latossolico tem \code{top_cm} maior que o \code{top_cm} maximo
+#' das camadas com B textural (i.e., latossolico ocorre abaixo).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima do B latossolico (default 150).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5 (Argissolos),
+#'             pp 121-138.
+#' @export
+carater_latossolico <- function(pedon, max_depth_cm = 150) {
+  bt <- B_textural(pedon)
+  if (!isTRUE(bt$passed)) {
+    return(DiagnosticResult$new(
+      name = "carater_latossolico", passed = FALSE, layers = integer(0),
+      evidence = list(B_textural = bt,
+                        reason = "B textural nao passa"),
+      missing = bt$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  bl <- B_latossolico(pedon)
+  if (!isTRUE(bl$passed)) {
+    return(DiagnosticResult$new(
+      name = "carater_latossolico", passed = FALSE, layers = integer(0),
+      evidence = list(B_textural = bt, B_latossolico = bl,
+                        reason = "B latossolico nao passa"),
+      missing = bl$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  h <- pedon$horizons
+  bt_tops <- h$top_cm[bt$layers]
+  if (all(is.na(bt_tops))) {
+    return(DiagnosticResult$new(
+      name = "carater_latossolico", passed = NA, layers = integer(0),
+      evidence = list(B_textural = bt, B_latossolico = bl),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+    ))
+  }
+  bt_max_top <- max(bt_tops, na.rm = TRUE)
+  bl_below <- bl$layers[!is.na(h$top_cm[bl$layers]) &
+                          h$top_cm[bl$layers] > bt_max_top &
+                          h$top_cm[bl$layers] < max_depth_cm]
+  passed <- length(bl_below) > 0L
+  DiagnosticResult$new(
+    name = "carater_latossolico", passed = passed,
+    layers = bl_below,
+    evidence = list(B_textural = bt, B_latossolico = bl,
+                      bt_max_top = bt_max_top,
+                      bl_below = bl_below,
+                      max_depth_cm = max_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
+  )
+}
+
+
 # ---- Carater espesso-humico (Cap 5 PBAC subgrupos) -----------------------
 
 #' Carater espesso-humico (SiBCS Cap 5, p 119)

@@ -51,6 +51,11 @@ diagnostics:
   # ----- v0.7.4.B.1 SiBCS Cap 5 PBAC Subgrupos -----
   carater_humico_espesso:       { function: carater_humico_espesso,       status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
 
+  # ----- v0.7.4.B.2 SiBCS Cap 5 PAC Subgrupos -----
+  carater_arenico:              { function: carater_arenico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_durico:               { function: carater_durico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_latossolico:          { function: carater_latossolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

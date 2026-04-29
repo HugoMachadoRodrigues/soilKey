@@ -69,3 +69,131 @@ subgrupos:
       name: "Argissolos Bruno-Acinzentados Distroficos tipicos"
       tests:
         default: true
+
+  # ============================================================
+  # v0.7.4.B.2 -- PAC subgrupos (Cap 5, pp 120-122) -- 21 SGs
+  # ============================================================
+  #
+  # PACdc Distrocoesos: 9 SGs (arenicos, abrup+durico, abrup+fragipa,
+  #   abrupticos, duricos, fragipanicos, plintossolicos, latossolicos,
+  #   tipicos)
+  # PACd  Distroficos:  9 SGs (mesmo padrao)
+  # PACe  Eutroficos:   3 SGs (abrupticos, plintossolicos, tipicos)
+
+  # ----- 2.1 PAC Distrocoesos -- 9 subgrupos (Cap 5, p 120) -----
+  # Ordem canonica: arenicos > abrup+durico > abrup+fragipa >
+  # abrupticos > duricos > fragipanicos > plintossolicos > latossolicos > tipicos.
+  "PACdc":
+    - code: "PACdcAr"
+      name: "Argissolos Acinzentados Distrocoesos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "PACdcAbDu"
+      name: "Argissolos Acinzentados Distrocoesos abrupticos duricos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "PACdcAbFr"
+      name: "Argissolos Acinzentados Distrocoesos abrupticos fragipanicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - fragipa: {}
+    - code: "PACdcAb"
+      name: "Argissolos Acinzentados Distrocoesos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PACdcDu"
+      name: "Argissolos Acinzentados Distrocoesos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "PACdcFr"
+      name: "Argissolos Acinzentados Distrocoesos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "PACdcPl"
+      name: "Argissolos Acinzentados Distrocoesos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PACdcLa"
+      name: "Argissolos Acinzentados Distrocoesos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PACdcTp"
+      name: "Argissolos Acinzentados Distrocoesos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.2 PAC Distroficos -- 9 subgrupos (Cap 5, p 121) -----
+  # Mesmo padrao de 2.1.
+  "PACd":
+    - code: "PACdAr"
+      name: "Argissolos Acinzentados Distroficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "PACdAbDu"
+      name: "Argissolos Acinzentados Distroficos abrupticos duricos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "PACdAbFr"
+      name: "Argissolos Acinzentados Distroficos abrupticos fragipanicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - fragipa: {}
+    - code: "PACdAb"
+      name: "Argissolos Acinzentados Distroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PACdDu"
+      name: "Argissolos Acinzentados Distroficos duricos"
+      tests:
+        all_of:
+          - carater_durico: { max_depth_cm: 150 }
+    - code: "PACdFr"
+      name: "Argissolos Acinzentados Distroficos fragipanicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "PACdPl"
+      name: "Argissolos Acinzentados Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PACdLa"
+      name: "Argissolos Acinzentados Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PACdTp"
+      name: "Argissolos Acinzentados Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.3 PAC Eutroficos -- 3 subgrupos (Cap 5, p 122) -----
+  "PACe":
+    - code: "PACeAb"
+      name: "Argissolos Acinzentados Eutroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PACePl"
+      name: "Argissolos Acinzentados Eutroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PACeTp"
+      name: "Argissolos Acinzentados Eutroficos tipicos"
+      tests:
+        default: true
