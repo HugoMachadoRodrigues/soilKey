@@ -37,7 +37,7 @@ test_that("Profondic requires argic that continues to bottom_cm >= 150", {
     top_cm = c(0, 15, 35), bottom_cm = c(15, 35, 200),
     designation = c("A", "E", "Bt"),
     munsell_value_moist = c(4, 6, 4), munsell_chroma_moist = c(3, 3, 4),
-    clay_films = c(NA_character_, NA_character_, "common"),
+    clay_films_amount = c(NA_character_, NA_character_, "common"),
     clay_pct = c(15, 12, 35), silt_pct = c(40, 38, 35), sand_pct = c(45, 50, 30),
     cec_cmol = c(15, 10, 18), bs_pct = c(50, 48, 65),
     ph_h2o = c(6, 6, 6.2)

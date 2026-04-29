@@ -53,7 +53,7 @@ oxic_usda <- function(pedon, ...) {
 #' diagnostics' clay-increase rules are essentially the same; USDA
 #' argillic additionally requires evidence of clay illuviation (clay
 #' films / clay bridges) on at least 1\% of the surface area, which
-#' v0.8 will enforce against the \code{clay_films} column.
+#' v0.8 will enforce against the \code{clay_films_amount} column.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Passed to \code{\link{argic}}.

@@ -17,13 +17,17 @@ test_that("each ordem has at least one subordem and the last is a catch-all", {
     subs <- rules$subordens[[code]]
     expect_gt(length(subs), 0L,
                 label = sprintf("ordem %s should have subordens", code))
-    last_test <- subs[[length(subs)]]$test
-    fn <- get(last_test, envir = asNamespace("soilKey"))
-    expect_true(isTRUE(fn(make_argissolo_canonical())$passed) ||
-                  isTRUE(fn(make_latossolo_canonical())$passed) ||
-                  isTRUE(fn(make_organossolo_canonical())$passed),
-                  info = sprintf("catch-all for %s should pass on at least one fixture",
-                                  code))
+    # v0.7.2 contract: last subordem of each ordem uses tests:{default:true}
+    # so the engine assigns it deterministically as catch-all without
+    # re-invoking a per-subordem diagnostic function.
+    last_entry <- subs[[length(subs)]]
+    expect_true(
+      isTRUE(last_entry$tests$default),
+      info = sprintf(
+        "last subordem of ordem %s should be tests:{default:true}; got tests:{%s}",
+        code, paste(names(last_entry$tests), collapse = ",")
+      )
+    )
   }
 })
 

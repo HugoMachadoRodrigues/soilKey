@@ -239,7 +239,7 @@ make_luvissolo_canonical <- function() {
     structure_grade      = c("moderate","strong","strong","moderate"),
     structure_type       = c("granular","subangular blocky",
                               "prismatic","massive"),
-    clay_films           = c(NA,   "common", "many",   NA),
+    clay_films_amount    = c(NA,   "common", "many",   NA),
     clay_pct             = c(20,   30,   45,   40),
     silt_pct             = c(40,   35,   30,   30),
     sand_pct             = c(40,   35,   25,   30),
@@ -280,7 +280,7 @@ make_nitossolo_canonical <- function() {
     structure_grade      = c("strong","strong","strong","moderate"),
     structure_type       = c("granular","subangular blocky",
                               "subangular blocky","subangular blocky"),
-    clay_films           = c(NA,   "common", "many",   "common"),
+    clay_films_amount    = c(NA,   "common", "many",   "common"),
     clay_pct             = c(45,   55,   60,   55),     # argila >= 35% desde A
     silt_pct             = c(25,   23,   20,   22),
     sand_pct             = c(30,   22,   20,   23),
@@ -316,7 +316,7 @@ make_argissolo_canonical <- function() {
     structure_grade      = c("moderate","moderate","strong","moderate"),
     structure_type       = c("granular","subangular blocky",
                               "subangular blocky","subangular blocky"),
-    clay_films           = c(NA,   "few",  "common", "common"),
+    clay_films_amount    = c(NA,   "few",  "common", "common"),
     clay_pct             = c(18,   28,   45,   42),     # gradiente >> Bt
     silt_pct             = c(30,   25,   20,   22),
     sand_pct             = c(52,   47,   35,   36),

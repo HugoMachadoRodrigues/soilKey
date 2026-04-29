@@ -1,5 +1,5 @@
 version: "SiBCS 5a edicao (Embrapa, 2018)"
-implementation_status: "soilKey v0.7 -- Modulo 6 SiBCS implementado"
+implementation_status: "soilKey v0.7.2 -- 13 ordens + 44 subordens + 7 pendentes implementados"
 
 # Inventario dos diagnosticos SiBCS implementados em v0.7. Cada entrada
 # aponta para a funcao R que aplica o gate canonico.
@@ -27,6 +27,18 @@ diagnostics:
   mudanca_textural_abrupta:     { function: mudanca_textural_abrupta,     status: implemented, file: R/diagnostics-atributos-sibcs.R }
   contato_litico:               { function: contato_litico,               status: implemented, file: R/diagnostics-atributos-sibcs.R }
   contato_litico_fragmentario:  { function: contato_litico_fragmentario,  status: implemented, file: R/diagnostics-atributos-sibcs.R }
+
+  # ----- v0.7.2 pendentes implementados -----
+  carater_acrico:               { function: carater_acrico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_ebanico:              { function: carater_ebanico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_retratil:             { function: carater_retratil,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_espodico:             { function: carater_espodico,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  cerosidade:                   { function: cerosidade,                   status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  saprico:                      { function: saprico,                      status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  hemico:                       { function: hemico,                       status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  fibrico:                      { function: fibrico,                      status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  latossolo_ki_kr:              { function: latossolo_ki_kr,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  # compute_ki / compute_kr sao utilitarios molares, consumidos por latossolo_ki_kr
 
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
@@ -81,11 +93,22 @@ diagnostics:
   argissolo:                    { function: argissolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
 
   # =========================================================================
-  # Pendentes para v0.7.x (refinamentos)
+  # v0.7.x deliveries (atualizado 2026-04-29)
   # =========================================================================
-  # - Subordens do 2o nivel categorico (cada ordem tem ~5-10 subordens)
-  # - Grandes grupos (3o nivel categorico)
-  # - Subgrupos (4o nivel categorico)
-  # - Atributos especificos: carater acrico, espodico, ebanico, retratil
-  #   ainda nao implementados (uso restrito a niveis baixos)
-  # - Ki/Kr quantitativos para B latossolico (precisa SiO2/Al2O3 lab data)
+  # v0.7.0 -- 13 ordens (1o nivel) wirados via R/diagnostics-rsg-sibcs.R
+  # v0.7.1 -- 44 subordens (2o nivel) wirados via
+  #           R/diagnostics-subordens-sibcs.R + bloco subordens em key.yaml
+  # v0.7.2 -- engine refactor (run_taxa_list helper); migracao
+  #           clay_films -> clay_films_amount + clay_films_strength;
+  #           7 atributos pendentes implementados: carater acrico,
+  #           ebanico, retratil, espodico, cerosidade, saprico/hemico/
+  #           fibrico, latossolo_ki_kr (Cap 1, 7, 10, 13, 14, 17).
+  #
+  # =========================================================================
+  # Roadmap aberto
+  # =========================================================================
+  # - 3o nivel (Grandes Grupos, ~150 classes): em desenvolvimento, Caps 5-17
+  # - 4o nivel (Subgrupos, ~600-800 classes): planejado para v0.8
+  # - 5o nivel (Familia, motor de adjetivos): planejado para v0.9
+  # - Diagnosticos auxiliares (cerosidade ja parametrizada -- B_nitico
+  #   pode migrar para usar cerosidade() em vez do check inline em B_nitico)

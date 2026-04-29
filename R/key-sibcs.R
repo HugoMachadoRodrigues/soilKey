@@ -24,48 +24,24 @@ run_sibcs_key <- function(pedon, rules = NULL) {
 
 #' Resolve a subordem de um pedon ja classificado em uma ordem SiBCS
 #'
-#' Itera as subordens da ordem em ordem canonica; a primeira cuja
-#' funcao-diagnostico passa captura o perfil. Retorna uma lista com
-#' \code{code}, \code{name}, \code{trace} (lista de subordem -> {passed,
-#' missing}). Se nenhuma passar, retorna a ultima subordem (catch-all).
+#' Itera as subordens da ordem em ordem canonica via o engine generico
+#' \code{\link{run_taxa_list}}; a primeira cuja test-block passa captura
+#' o perfil. Se nenhuma passar, retorna a ultima subordem (catch-all
+#' \code{tests:{default:true}}).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ordem_code Codigo de uma letra da ordem (e.g. "L" para
 #'        Latossolos).
 #' @param rules Lista de regras carregada via \code{\link{load_rules}}.
-#' @return Lista com \code{assigned} e \code{trace}.
+#' @return Lista com \code{assigned} (entrada YAML da subordem ou
+#'         \code{NULL} se a ordem nao tiver bloco) e \code{trace}.
 #' @export
 run_sibcs_subordem <- function(pedon, ordem_code, rules = NULL) {
   rules <- rules %||% load_rules("sibcs5")
   if (is.null(rules$subordens) || is.null(rules$subordens[[ordem_code]])) {
     return(list(assigned = NULL, trace = list()))
   }
-  candidates <- rules$subordens[[ordem_code]]
-  trace <- list()
-  for (sub in candidates) {
-    fn_name <- sub$test
-    fn <- tryCatch(get(fn_name, envir = asNamespace("soilKey")),
-                     error = function(e) NULL)
-    if (is.null(fn)) {
-      trace[[sub$code]] <- list(passed = NA, missing = character(0),
-                                  reason = "diagnostic function not found")
-      next
-    }
-    res <- tryCatch(fn(pedon), error = function(e) NULL)
-    if (is.null(res)) {
-      trace[[sub$code]] <- list(passed = NA, missing = character(0),
-                                  reason = "diagnostic threw error")
-      next
-    }
-    trace[[sub$code]] <- list(passed = res$passed,
-                                missing = res$missing %||% character(0))
-    if (isTRUE(res$passed)) {
-      return(list(assigned = sub, trace = trace))
-    }
-  }
-  # Catch-all: a ultima e por construcao TRUE; mas sanity guard:
-  fallback <- candidates[[length(candidates)]]
-  list(assigned = fallback, trace = trace)
+  run_taxa_list(pedon, rules$subordens[[ordem_code]])
 }
 
 

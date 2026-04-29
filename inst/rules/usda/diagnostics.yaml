@@ -25,7 +25,7 @@ diagnostics:
     v02_notes: |
       Delegates to WRB argic(). Real USDA argillic also requires
       illuviation evidence (clay films / clay bridges on >= 1% of
-      surfaces); v0.8 will enforce this against clay_films column.
+      surfaces); v0.8 will enforce this against clay_films_amount column.
 
   # ----- planned v0.8 -----
   mollic_usda:                  { status: planned, target_version: v0.8 }

@@ -163,7 +163,7 @@ test_that("Cutanic requires argic + visible clay films", {
     top_cm = c(0, 15, 35), bottom_cm = c(15, 35, 100),
     designation = c("A", "E", "Bt"),
     munsell_value_moist = c(4, 6, 4), munsell_chroma_moist = c(3, 3, 4),
-    clay_films = c(NA_character_, NA_character_, "many"),
+    clay_films_amount = c(NA_character_, NA_character_, "many"),
     clay_pct = c(15, 12, 35), silt_pct = c(40, 38, 35), sand_pct = c(45, 50, 30),
     cec_cmol = c(15, 10, 18), bs_pct = c(50, 48, 70), ph_h2o = c(6, 6, 6.2)
   )
@@ -175,7 +175,7 @@ test_that("Cutanic requires argic + visible clay films", {
   expect_true(isTRUE(qual_cutanic(pr)$passed))
 
   # Same profile but no clay films -> Cutanic FAILS.
-  hz$clay_films <- c(NA_character_, NA_character_, NA_character_)
+  hz$clay_films_amount <- c(NA_character_, NA_character_, NA_character_)
   pr2 <- PedonRecord$new(
     site = list(id = "CT2", lat = 0, lon = 0, country = "TEST",
                   parent_material = "loess"),
@@ -225,7 +225,7 @@ test_that("Glossic requires mollic + albeluvic glossae", {
     structure_grade = c("strong","moderate","strong"),
     structure_type  = c("granular","subangular blocky","subangular blocky"),
     consistence_moist = c("friable","firm","firm"),
-    clay_films = c(NA_character_, NA_character_, "common"),
+    clay_films_amount = c(NA_character_, NA_character_, "common"),
     clay_pct = c(25, 22, 35), silt_pct = c(40, 40, 30), sand_pct = c(35, 38, 35),
     oc_pct = c(2.5, 0.8, 0.3), bs_pct = c(85, 75, 60),
     cec_cmol = c(28, 20, 22), ca_cmol = c(20, 14, 15),

@@ -29,7 +29,7 @@
 #' Cutanic qualifier (ct): visible illuvial clay coatings on argic-
 #' horizon ped surfaces (the "Cutanic Luvisol" / "Cutanic Argissol"
 #' signature). v0.9.1: argic horizon passes AND the schema column
-#' \code{clay_films} contains "common", "many", or "continuous" (or
+#' \code{clay_films_amount} contains "common", "many", or "continuous" (or
 #' "shiny" -- common Brazilian descriptor for nitic surfaces) in some
 #' argic layer.
 #' @export
@@ -42,15 +42,15 @@ qual_cutanic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Cutanic"))
   h <- pedon$horizons
   ly <- arg$layers
-  films <- h$clay_films[ly]
+  films <- h$clay_films_amount[ly]
   ok <- !is.na(films) & grepl("common|many|continuous|shiny",
                                   films, ignore.case = TRUE)
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Cutanic", passed = passed,
     layers = ly[ok],
-    evidence = list(argic = arg, clay_films = films),
-    missing = if (all(is.na(films))) "clay_films" else character(0),
+    evidence = list(argic = arg, clay_films_amount = films),
+    missing = if (all(is.na(films))) "clay_films_amount" else character(0),
     reference = "WRB (2022) Ch 5, Cutanic"
   )
 }

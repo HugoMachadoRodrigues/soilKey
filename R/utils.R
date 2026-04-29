@@ -41,7 +41,8 @@ horizon_column_spec <- function() {
     structure_type          = "character",
     consistence_moist       = "character",
     consistence_wet         = "character",
-    clay_films              = "character",
+    clay_films_amount       = "character",
+    clay_films_strength     = "character",
     coarse_fragments_pct    = "numeric",
     # ---- texture ----
     clay_pct                = "numeric",
@@ -106,7 +107,15 @@ horizon_column_spec <- function() {
     rupture_resistance            = "character", # 'loose' / 'soft' / 'slightly hard' / 'hard' / 'very hard' / 'extremely hard'
     plasticity                    = "character", # 'non-plastic' / 'slightly plastic' / 'moderately plastic' / 'very plastic'
     al_kcl_cmol                   = "numeric",   # KCl-extractable Al (Alisols criterion)
-    layer_origin                  = "character"  # 'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating)
+    layer_origin                  = "character", # 'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating)
+    # ---- v0.7.2 additions: SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack) ----
+    fiber_content_rubbed_pct      = "numeric",   # SiBCS Cap 14: % fibras apos esfregamento (Saprico < 17, Hemico 17-40, Fibrico >= 40)
+    fiber_content_unrubbed_pct    = "numeric",   # SiBCS Cap 14: % fibras antes do esfregamento (auxiliar)
+    von_post_index                = "integer",   # Indice de decomposicao von Post 1924 (H1-H10): H1-H4 Fibrico / H5-H6 Hemico / H7-H10 Saprico
+    cole_value                    = "numeric",   # Coefficient of Linear Extensibility (1500 kPa moist -> oven dry); SiBCS retratil >= 0.06
+    sio2_sulfuric_pct             = "numeric",   # SiO2 por ataque sulfurico-NaOH (Embrapa Manual de Metodos), para Ki/Kr
+    al2o3_sulfuric_pct            = "numeric",   # Al2O3 por ataque sulfurico, para Ki = (SiO2/60.08)/(Al2O3/101.96) molar
+    fe2o3_sulfuric_pct            = "numeric"    # Fe2O3 por ataque sulfurico, para Kr = SiO2/(Al2O3+Fe2O3) molar (Latossolos Acriferricos)
   )
 }
 

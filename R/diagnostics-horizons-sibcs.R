@@ -511,10 +511,10 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   struct_ok <- any(!is.na(h$structure_type[clay_ok]) &
                      grepl("blocks|block|blocos|bloco|prismatic|prismatica",
                               h$structure_type[clay_ok], ignore.case = TRUE))
-  # Step 4: cerosidade (clay_films) no minimo "comum" -- discriminante
+  # Step 4: cerosidade (clay_films_amount) no minimo "comum" -- discriminante
   # critico vs Latossolos (que tem no maximo "pouca e fraca")
-  cerosidade_ok <- any(!is.na(h$clay_films[clay_ok]) &
-                           h$clay_films[clay_ok] %in% min_cerosidade)
+  cerosidade_ok <- any(!is.na(h$clay_films_amount[clay_ok]) &
+                           h$clay_films_amount[clay_ok] %in% min_cerosidade)
   # Step 5: thickness
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
                                    candidate_layers = clay_ok)

@@ -85,7 +85,15 @@
               "source_quote": {"type": "string", "maxLength": 200}
             }
           },
-          "clay_films": {
+          "clay_films_amount": {
+            "type": ["object", "null"],
+            "properties": {
+              "value": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source_quote": {"type": "string", "maxLength": 200}
+            }
+          },
+          "clay_films_strength": {
             "type": ["object", "null"],
             "properties": {
               "value": {"type": "string"},

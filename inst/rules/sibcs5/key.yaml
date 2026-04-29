@@ -112,79 +112,296 @@ ordens:
 # CHAVE DO 2o NIVEL (subordens) -- Caps 5-17
 # =============================================================
 #
-# Para cada ordem, lista as subordens em ordem canonica do livro.
-# A primeira subordem cujo diagnostico passa captura o perfil; a
-# ultima de cada lista e o catch-all (Haplicos / Vermelho-Amarelos /
-# Regoliticos / Ferri-humiluvicos).
+# v0.7.2: cada subordem usa o contrato canonico tests:{all_of:[...]}
+# (igual ao bloco ordens: acima, ao bloco rsgs: do WRB e ao bloco
+# orders: do USDA), o que permite iterar via run_taxa_list() generico.
+# A ultima subordem de cada ordem usa tests:{default:true} e e o
+# catch-all canonico (Haplicos / Vermelho-Amarelos / Regoliticos /
+# Ferri-humiluvicos), conforme a chave dos Caps 5-17.
 
 subordens:
 
-  "P":   # Argissolos (Cap 5)
-    - { code: "PBAC", name: "Argissolos Bruno-Acinzentados", test: argissolo_bruno_acinzentado }
-    - { code: "PAC",  name: "Argissolos Acinzentados",        test: argissolo_acinzentado }
-    - { code: "PA",   name: "Argissolos Amarelos",            test: argissolo_amarelo }
-    - { code: "PV",   name: "Argissolos Vermelhos",           test: argissolo_vermelho }
-    - { code: "PVA",  name: "Argissolos Vermelho-Amarelos",   test: argissolo_vermelho_amarelo }
+  # -----------------------------------------------------------
+  # P -- Argissolos (Cap 5)  ------------------------------------
+  # -----------------------------------------------------------
+  "P":
+    - code: "PBAC"
+      name: "Argissolos Bruno-Acinzentados"
+      tests:
+        all_of:
+          - argissolo_bruno_acinzentado: {}
+    - code: "PAC"
+      name: "Argissolos Acinzentados"
+      tests:
+        all_of:
+          - argissolo_acinzentado: {}
+    - code: "PA"
+      name: "Argissolos Amarelos"
+      tests:
+        all_of:
+          - argissolo_amarelo: {}
+    - code: "PV"
+      name: "Argissolos Vermelhos"
+      tests:
+        all_of:
+          - argissolo_vermelho: {}
+    - code: "PVA"
+      name: "Argissolos Vermelho-Amarelos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Argissolos."
 
-  "C":   # Cambissolos (Cap 6)
-    - { code: "CH",   name: "Cambissolos Histicos",  test: cambissolo_histico }
-    - { code: "CHU",  name: "Cambissolos Humicos",   test: cambissolo_humico }
-    - { code: "CY",   name: "Cambissolos Fluvicos",  test: cambissolo_fluvico }
-    - { code: "CX",   name: "Cambissolos Haplicos",  test: cambissolo_haplico }
+  # -----------------------------------------------------------
+  # C -- Cambissolos (Cap 6)
+  # -----------------------------------------------------------
+  "C":
+    - code: "CH"
+      name: "Cambissolos Histicos"
+      tests:
+        all_of:
+          - cambissolo_histico: {}
+    - code: "CHU"
+      name: "Cambissolos Humicos"
+      tests:
+        all_of:
+          - cambissolo_humico: {}
+    - code: "CY"
+      name: "Cambissolos Fluvicos"
+      tests:
+        all_of:
+          - cambissolo_fluvico: {}
+    - code: "CX"
+      name: "Cambissolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Cambissolos."
 
-  "M":   # Chernossolos (Cap 7)
-    - { code: "MD",   name: "Chernossolos Rendzicos",   test: chernossolo_rendzico }
-    - { code: "ME",   name: "Chernossolos Ebanicos",    test: chernossolo_ebanico }
-    - { code: "MT",   name: "Chernossolos Argiluvicos", test: chernossolo_argiluvico }
-    - { code: "MX",   name: "Chernossolos Haplicos",    test: chernossolo_haplico }
+  # -----------------------------------------------------------
+  # M -- Chernossolos (Cap 7)
+  # -----------------------------------------------------------
+  "M":
+    - code: "MD"
+      name: "Chernossolos Rendzicos"
+      tests:
+        all_of:
+          - chernossolo_rendzico: {}
+    - code: "ME"
+      name: "Chernossolos Ebanicos"
+      tests:
+        all_of:
+          - chernossolo_ebanico: {}
+    - code: "MT"
+      name: "Chernossolos Argiluvicos"
+      tests:
+        all_of:
+          - chernossolo_argiluvico: {}
+    - code: "MX"
+      name: "Chernossolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Chernossolos."
 
-  "E":   # Espodossolos (Cap 8)
-    - { code: "EK",   name: "Espodossolos Humiluvicos",       test: espodossolo_humiluvico }
-    - { code: "EJ",   name: "Espodossolos Ferriluvicos",      test: espodossolo_ferriluvico }
-    - { code: "ES",   name: "Espodossolos Ferri-humiluvicos", test: espodossolo_ferri_humiluvico }
+  # -----------------------------------------------------------
+  # E -- Espodossolos (Cap 8)
+  # -----------------------------------------------------------
+  "E":
+    - code: "EK"
+      name: "Espodossolos Humiluvicos"
+      tests:
+        all_of:
+          - espodossolo_humiluvico: {}
+    - code: "EJ"
+      name: "Espodossolos Ferriluvicos"
+      tests:
+        all_of:
+          - espodossolo_ferriluvico: {}
+    - code: "ES"
+      name: "Espodossolos Ferri-humiluvicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Espodossolos."
 
-  "G":   # Gleissolos (Cap 9)
-    - { code: "GJ",   name: "Gleissolos Tiomorficos", test: gleissolo_tiomorfico }
-    - { code: "GZ",   name: "Gleissolos Salicos",     test: gleissolo_salico }
-    - { code: "GM",   name: "Gleissolos Melanicos",   test: gleissolo_melanico }
-    - { code: "GX",   name: "Gleissolos Haplicos",    test: gleissolo_haplico }
+  # -----------------------------------------------------------
+  # G -- Gleissolos (Cap 9)
+  # -----------------------------------------------------------
+  "G":
+    - code: "GJ"
+      name: "Gleissolos Tiomorficos"
+      tests:
+        all_of:
+          - gleissolo_tiomorfico: {}
+    - code: "GZ"
+      name: "Gleissolos Salicos"
+      tests:
+        all_of:
+          - gleissolo_salico: {}
+    - code: "GM"
+      name: "Gleissolos Melanicos"
+      tests:
+        all_of:
+          - gleissolo_melanico: {}
+    - code: "GX"
+      name: "Gleissolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Gleissolos."
 
-  "L":   # Latossolos (Cap 10)
-    - { code: "LB",   name: "Latossolos Brunos",            test: latossolo_bruno }
-    - { code: "LA",   name: "Latossolos Amarelos",          test: latossolo_amarelo }
-    - { code: "LV",   name: "Latossolos Vermelhos",         test: latossolo_vermelho }
-    - { code: "LVA",  name: "Latossolos Vermelho-Amarelos", test: latossolo_vermelho_amarelo }
+  # -----------------------------------------------------------
+  # L -- Latossolos (Cap 10)
+  # -----------------------------------------------------------
+  "L":
+    - code: "LB"
+      name: "Latossolos Brunos"
+      tests:
+        all_of:
+          - latossolo_bruno: {}
+    - code: "LA"
+      name: "Latossolos Amarelos"
+      tests:
+        all_of:
+          - latossolo_amarelo: {}
+    - code: "LV"
+      name: "Latossolos Vermelhos"
+      tests:
+        all_of:
+          - latossolo_vermelho: {}
+    - code: "LVA"
+      name: "Latossolos Vermelho-Amarelos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Latossolos."
 
-  "T":   # Luvissolos (Cap 11)
-    - { code: "TC",   name: "Luvissolos Cromicos", test: luvissolo_cromico }
-    - { code: "TX",   name: "Luvissolos Haplicos", test: luvissolo_haplico }
+  # -----------------------------------------------------------
+  # T -- Luvissolos (Cap 11)
+  # -----------------------------------------------------------
+  "T":
+    - code: "TC"
+      name: "Luvissolos Cromicos"
+      tests:
+        all_of:
+          - luvissolo_cromico: {}
+    - code: "TX"
+      name: "Luvissolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Luvissolos."
 
-  "R":   # Neossolos (Cap 12)
-    - { code: "RL",   name: "Neossolos Litolicos",      test: neossolo_litolico }
-    - { code: "RY",   name: "Neossolos Fluvicos",       test: neossolo_fluvico }
-    - { code: "RQ",   name: "Neossolos Quartzarenicos", test: neossolo_quartzarenico }
-    - { code: "RR",   name: "Neossolos Regoliticos",    test: neossolo_regolitico }
+  # -----------------------------------------------------------
+  # R -- Neossolos (Cap 12)
+  # -----------------------------------------------------------
+  "R":
+    - code: "RL"
+      name: "Neossolos Litolicos"
+      tests:
+        all_of:
+          - neossolo_litolico: {}
+    - code: "RY"
+      name: "Neossolos Fluvicos"
+      tests:
+        all_of:
+          - neossolo_fluvico: {}
+    - code: "RQ"
+      name: "Neossolos Quartzarenicos"
+      tests:
+        all_of:
+          - neossolo_quartzarenico: {}
+    - code: "RR"
+      name: "Neossolos Regoliticos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Neossolos."
 
-  "N":   # Nitossolos (Cap 13)
-    - { code: "NB",   name: "Nitossolos Brunos",    test: nitossolo_bruno }
-    - { code: "NV",   name: "Nitossolos Vermelhos", test: nitossolo_vermelho }
-    - { code: "NX",   name: "Nitossolos Haplicos",  test: nitossolo_haplico }
+  # -----------------------------------------------------------
+  # N -- Nitossolos (Cap 13)
+  # -----------------------------------------------------------
+  "N":
+    - code: "NB"
+      name: "Nitossolos Brunos"
+      tests:
+        all_of:
+          - nitossolo_bruno: {}
+    - code: "NV"
+      name: "Nitossolos Vermelhos"
+      tests:
+        all_of:
+          - nitossolo_vermelho: {}
+    - code: "NX"
+      name: "Nitossolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Nitossolos."
 
-  "O":   # Organossolos (Cap 14)
-    - { code: "OJ",   name: "Organossolos Tiomorficos", test: organossolo_tiomorfico }
-    - { code: "OO",   name: "Organossolos Folicos",     test: organossolo_folico }
-    - { code: "OX",   name: "Organossolos Haplicos",    test: organossolo_haplico }
+  # -----------------------------------------------------------
+  # O -- Organossolos (Cap 14)
+  # -----------------------------------------------------------
+  "O":
+    - code: "OJ"
+      name: "Organossolos Tiomorficos"
+      tests:
+        all_of:
+          - organossolo_tiomorfico: {}
+    - code: "OO"
+      name: "Organossolos Folicos"
+      tests:
+        all_of:
+          - organossolo_folico: {}
+    - code: "OX"
+      name: "Organossolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Organossolos."
 
-  "S":   # Planossolos (Cap 15)
-    - { code: "SN",   name: "Planossolos Natricos", test: planossolo_natrico }
-    - { code: "SX",   name: "Planossolos Haplicos", test: planossolo_haplico }
+  # -----------------------------------------------------------
+  # S -- Planossolos (Cap 15)
+  # -----------------------------------------------------------
+  "S":
+    - code: "SN"
+      name: "Planossolos Natricos"
+      tests:
+        all_of:
+          - planossolo_natrico: {}
+    - code: "SX"
+      name: "Planossolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Planossolos."
 
-  "F":   # Plintossolos (Cap 16)
-    - { code: "FF",   name: "Plintossolos Petricos",    test: plintossolo_petrico }
-    - { code: "FT",   name: "Plintossolos Argiluvicos", test: plintossolo_argiluvico }
-    - { code: "FX",   name: "Plintossolos Haplicos",    test: plintossolo_haplico }
+  # -----------------------------------------------------------
+  # F -- Plintossolos (Cap 16)
+  # -----------------------------------------------------------
+  "F":
+    - code: "FF"
+      name: "Plintossolos Petricos"
+      tests:
+        all_of:
+          - plintossolo_petrico: {}
+    - code: "FT"
+      name: "Plintossolos Argiluvicos"
+      tests:
+        all_of:
+          - plintossolo_argiluvico: {}
+    - code: "FX"
+      name: "Plintossolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Plintossolos."
 
-  "V":   # Vertissolos (Cap 17)
-    - { code: "VG",   name: "Vertissolos Hidromorficos", test: vertissolo_hidromorfico }
-    - { code: "VE",   name: "Vertissolos Ebanicos",      test: vertissolo_ebanico }
-    - { code: "VX",   name: "Vertissolos Haplicos",      test: vertissolo_haplico }
+  # -----------------------------------------------------------
+  # V -- Vertissolos (Cap 17)
+  # -----------------------------------------------------------
+  "V":
+    - code: "VG"
+      name: "Vertissolos Hidromorficos"
+      tests:
+        all_of:
+          - vertissolo_hidromorfico: {}
+    - code: "VE"
+      name: "Vertissolos Ebanicos"
+      tests:
+        all_of:
+          - vertissolo_ebanico: {}
+    - code: "VX"
+      name: "Vertissolos Haplicos"
+      tests:
+        default: true
+      notes: "Catch-all final dos Vertissolos."

@@ -468,3 +468,657 @@ contato_litico_fragmentario <- function(pedon) {
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 40"
   )
 }
+
+
+# ============================================================================
+# v0.7.2: SiBCS pendentes
+#
+# Sete diagnosticos prontos para usar nos niveis 3o-4o (Grandes Grupos /
+# Subgrupos) e nas chamadas de B_latossolico / B_nitico:
+#
+#   1. saprico / hemico / fibrico -- grau de decomposicao do material
+#      organico em horizontes histicos. Cap 14 (Organossolos) usa no 3o
+#      nivel para distinguir Organossolos Sapricos / Hemicos / Fibricos.
+#
+#   2. carater_acrico -- DeltapH (KCl - H2O) >= 0 e CECef <= 1.5 cmolc/kg
+#      argila em horizontes B. Cap 1, p 31; Cap 10 (Latossolos Acricos).
+#
+#   3. carater_ebanico -- preto (value <= 3 e chroma <= 2 em umido) +
+#      atividade da argila Ta + V% >= 65 em TODO horizonte B. Cap 7
+#      (Chernossolos Ebanicos) e Cap 17 (Vertissolos Ebanicos).
+#
+#   4. carater_retratil -- COLE >= 0.06 OU slickensides + cracks. Cap 1,
+#      p 33; usado por Vertissolos / Cambissolos / Argissolos retrateis.
+#
+#   5. carater_espodico -- evidencia iluvial de Al/Fe/MO em camada
+#      >= 2.5 cm, insuficiente para B espodico mas indicando
+#      espodicidade. Cap 1, p 35.
+#
+#   6. compute_ki / compute_kr / latossolo_ki_kr -- indices molares
+#      SiO2/Al2O3 e SiO2/(Al2O3+Fe2O3) por ataque sulfurico-NaOH
+#      (Embrapa Manual de Metodos). Limites canonicos para Latossolos:
+#      Ki <= 2.2 e Kr <= 1.7 (Cap 10, p 173-176).
+#
+#   7. cerosidade -- diagnostico parametrizado quantidade x intensidade,
+#      consumindo as colunas v0.7.2 clay_films_amount + clay_films_strength
+#      (substituem o legado clay_films). Discriminante critico
+#      Nitossolos vs Argissolos no Cap 13 (>= comum + >= moderada).
+# ============================================================================
+
+
+# ---- Three-valued ALL helper ---------------------------------------------
+
+#' Three-valued ALL across a logical vector, NA-aware
+#'
+#' Returns FALSE if any element is exactly FALSE; TRUE if every element is
+#' exactly TRUE; NA if no FALSE but at least one NA. Used inside SiBCS
+#' pendente diagnostics that combine per-layer tests with proper
+#' propagation.
+#' @keywords internal
+.three_valued_all <- function(x) {
+  if (length(x) == 0L) return(NA)
+  if (any(x %in% FALSE)) return(FALSE)
+  if (all(x %in% TRUE))  return(TRUE)
+  NA
+}
+
+
+# ---- Grau de decomposicao do material organico (von Post / fibras) -------
+
+#' Classifica grau de decomposicao por camada: saprico / hemico / fibrico
+#'
+#' SiBCS Cap 14 adota o criterio USDA Soil Taxonomy:
+#'
+#'   Saprico:  < 17\% fibras esfregadas  ou  von Post H7-H10
+#'   Hemico:   17-40\% fibras            ou  von Post H5-H6
+#'   Fibrico:  >= 40\% fibras            ou  von Post H1-H4
+#'
+#' @keywords internal
+.classify_decomposition <- function(fiber_pct, von_post) {
+  out <- rep(NA_character_, length(fiber_pct))
+  for (i in seq_along(fiber_pct)) {
+    fp <- fiber_pct[i]; vp <- von_post[i]
+    cls <- if (!is.na(fp)) {
+      if (fp >= 40)      "fibrico"
+      else if (fp >= 17) "hemico"
+      else               "saprico"
+    } else if (!is.na(vp)) {
+      if (vp <= 4)       "fibrico"
+      else if (vp <= 6)  "hemico"
+      else               "saprico"
+    } else NA_character_
+    out[i] <- cls
+  }
+  out
+}
+
+
+.histic_layers <- function(h) {
+  # Horizontes histicos canonicos: H (saturado) ou O (folico).
+  which(!is.na(h$designation) & grepl("^[HO]", h$designation))
+}
+
+
+.decomposition_diagnostic <- function(pedon, target,
+                                         page = "Cap 14, pp 224-226") {
+  h <- pedon$horizons
+  hist_idx <- .histic_layers(h)
+  if (length(hist_idx) == 0L) {
+    return(DiagnosticResult$new(
+      name = paste0(target, "_decomposicao"), passed = FALSE,
+      layers = integer(0),
+      evidence = list(reason = "no histic (H/O) layers"),
+      missing = character(0),
+      reference = paste0("Embrapa (2018), SiBCS 5a ed., ", page),
+      notes = "Sem horizontes H/O -- grau de decomposicao nao se aplica."
+    ))
+  }
+  fiber <- h$fiber_content_rubbed_pct[hist_idx]
+  vp    <- h$von_post_index[hist_idx]
+  cls   <- .classify_decomposition(fiber, vp)
+
+  passing <- hist_idx[!is.na(cls) & cls == target]
+  passed  <- length(passing) > 0L
+  missing <- if (all(is.na(fiber)) && all(is.na(vp)))
+               c("fiber_content_rubbed_pct", "von_post_index")
+             else character(0)
+  DiagnosticResult$new(
+    name = paste0(target, "_decomposicao"),
+    passed = passed, layers = passing,
+    evidence = list(
+      histic_layers            = hist_idx,
+      fiber_content_rubbed_pct = fiber,
+      von_post_index           = vp,
+      classification           = cls
+    ),
+    missing = missing,
+    reference = paste0("Embrapa (2018), SiBCS 5a ed., ", page)
+  )
+}
+
+
+#' Material organico saprico (SiBCS Cap 14)
+#'
+#' Material organico altamente decomposto: < 17\% de fibras esfregadas
+#' OU indice de von Post H7-H10. Discrimina Organossolos Sapricos no
+#' 3o nivel categorico.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 14 (Organossolos),
+#'             pp 224-226.
+#' @export
+saprico <- function(pedon) {
+  .decomposition_diagnostic(pedon, "saprico")
+}
+
+
+#' Material organico hemico (SiBCS Cap 14)
+#'
+#' Material organico em decomposicao intermediaria: 17-40\% de fibras
+#' esfregadas OU indice de von Post H5-H6. Discrimina Organossolos
+#' Hemicos no 3o nivel.
+#' @inherit saprico
+#' @export
+hemico <- function(pedon) {
+  .decomposition_diagnostic(pedon, "hemico")
+}
+
+
+#' Material organico fibrico (SiBCS Cap 14)
+#'
+#' Material organico pouco decomposto: >= 40\% de fibras esfregadas
+#' OU indice de von Post H1-H4. Discrimina Organossolos Fibricos no
+#' 3o nivel.
+#' @inherit saprico
+#' @export
+fibrico <- function(pedon) {
+  .decomposition_diagnostic(pedon, "fibrico")
+}
+
+
+# ---- Carater acrico (DeltapH >= 0 e CECef baixa) -------------------------
+
+#' Carater acrico (SiBCS Cap 1, p 31)
+#'
+#' Indica solos com balanca de cargas predominante eletropositiva ou
+#' eletricamente neutra. Discrimina Latossolos Acricos / Acriferricos no
+#' 3o nivel (Cap 10).
+#'
+#' Criterios canonicos (todos verificados em horizontes B):
+#'
+#'   1. \eqn{\Delta pH = pH(KCl) - pH(H_2O) \ge 0}
+#'   2. CECef por kg de argila \eqn{\le} 1.5 cmolc/kg argila
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_ecec_clay Limite superior de CECef/argila em cmolc/kg
+#'        argila (default 1.5).
+#' @param min_delta_ph Limite inferior de \eqn{\Delta pH} (default 0).
+#' @return \code{\link{DiagnosticResult}}; \code{passed = TRUE} se
+#'         pelo menos um horizonte B satisfaz ambos os criterios.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 31; Cap 10
+#'             (Latossolos), pp 173-176.
+#' @export
+carater_acrico <- function(pedon,
+                              max_ecec_clay = 1.5,
+                              min_delta_ph  = 0) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_acrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 31"
+    ))
+  }
+  details <- list(); passing <- integer(0); missing <- character(0)
+  evaluated <- 0L
+  for (i in b_layers) {
+    pkcl <- h$ph_kcl[i]; ph2o <- h$ph_h2o[i]
+    ecec <- h$ecec_cmol[i]; clay <- h$clay_pct[i]
+    if (is.na(pkcl) || is.na(ph2o)) {
+      missing <- c(missing, "ph_kcl", "ph_h2o"); next
+    }
+    if (is.na(ecec) || is.na(clay) || clay <= 0) {
+      missing <- c(missing, "ecec_cmol", "clay_pct"); next
+    }
+    delta_ph  <- pkcl - ph2o
+    ecec_clay <- ecec * 100 / clay   # cmolc/kg argila
+    pass <- delta_ph >= min_delta_ph && ecec_clay <= max_ecec_clay
+    details[[as.character(i)]] <- list(
+      idx = i, ph_h2o = ph2o, ph_kcl = pkcl, delta_ph = delta_ph,
+      ecec_cmol = ecec, clay_pct = clay, ecec_per_kg_clay = ecec_clay,
+      passed = pass
+    )
+    evaluated <- evaluated + 1L
+    if (pass) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_acrico", passed = passed, layers = passing,
+    evidence = list(layers = details,
+                      max_ecec_clay = max_ecec_clay,
+                      min_delta_ph  = min_delta_ph),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 31"
+  )
+}
+
+
+# ---- Carater ebanico (preto + Ta + V alta) -------------------------------
+
+#' Carater ebanico (SiBCS Cap 1; Cap 7 e Cap 17)
+#'
+#' Cor preta uniforme (value \eqn{\le} 3 e chroma \eqn{\le} 2 em umido) em
+#' TODO o horizonte B + atividade da argila alta (Ta) + saturacao por
+#' bases V\% \eqn{\ge} 65. Discrimina Chernossolos Ebanicos (Cap 7) e
+#' Vertissolos Ebanicos (Cap 17) no 2o nivel.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_value Limite superior de Munsell value em umido (default 3).
+#' @param max_chroma Limite superior de chroma em umido (default 2).
+#' @param min_v Limite inferior de V\% (default 65).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 7
+#'             (Chernossolos), pp 144-148; Cap 17 (Vertissolos),
+#'             pp 271-274.
+#' @export
+carater_ebanico <- function(pedon,
+                               max_value  = 3,
+                               max_chroma = 2,
+                               min_v      = 65) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_ebanico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1"
+    ))
+  }
+  ta <- atividade_argila_alta(pedon)
+  details <- list(); missing <- character(0)
+  preto_results <- v_results <- rep(NA, length(b_layers))
+  for (k in seq_along(b_layers)) {
+    i <- b_layers[k]
+    val <- h$munsell_value_moist[i]; chr <- h$munsell_chroma_moist[i]
+    bs  <- h$bs_pct[i]
+    if (!is.na(val) && !is.na(chr)) {
+      preto_results[k] <- val <= max_value && chr <= max_chroma
+    } else {
+      missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist")
+    }
+    if (!is.na(bs)) {
+      v_results[k] <- bs >= min_v
+    } else {
+      missing <- c(missing, "bs_pct")
+    }
+    details[[as.character(i)]] <- list(
+      idx = i, value = val, chroma = chr, bs_pct = bs,
+      preto = preto_results[k], v_ge_min = v_results[k]
+    )
+  }
+  preto_all <- .three_valued_all(preto_results)
+  v_all     <- .three_valued_all(v_results)
+  combined  <- c(preto_all, v_all, ta$passed)
+  passed <- if (any(combined %in% FALSE)) FALSE
+            else if (all(combined %in% TRUE)) TRUE
+            else NA
+  DiagnosticResult$new(
+    name = "carater_ebanico", passed = passed,
+    layers = if (isTRUE(passed)) b_layers else integer(0),
+    evidence = list(layers = details,
+                      atividade_argila_alta = ta,
+                      preto_all = preto_all,
+                      v_all = v_all,
+                      max_value = max_value, max_chroma = max_chroma,
+                      min_v = min_v),
+    missing = unique(c(missing, ta$missing %||% character(0))),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 7; Cap 17"
+  )
+}
+
+
+# ---- Carater retratil (COLE / contracao) ---------------------------------
+
+#' Carater retratil (SiBCS Cap 1, p 33)
+#'
+#' Solos com retracao significativa quando secos: COLE \eqn{\ge} 0,06
+#' sobre a secao de controle, OU presenca de slickensides + fendas
+#' (cracks) suficientemente desenvolvidas. Discrimina Cambissolos
+#' retrateis (Cap 6), Vertissolos (Cap 17) e Argissolos retrateis
+#' (Cap 5).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_cole Limite inferior de COLE (default 0,06).
+#' @param min_crack_width Largura minima de fenda em cm para o caminho
+#'        slickensides+cracks (default 1).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 33.
+#' @export
+carater_retratil <- function(pedon,
+                                min_cole        = 0.06,
+                                min_crack_width = 1) {
+  h <- pedon$horizons
+  cole     <- h$cole_value
+  cracks_w <- h$cracks_width_cm
+  slks     <- h$slickensides
+  cole_ok   <- !is.na(cole) & cole >= min_cole
+  cracks_ok <- !is.na(cracks_w) & cracks_w >= min_crack_width
+  slick_ok  <- !is.na(slks) & grepl("few|common|many|continuous",
+                                       slks, ignore.case = TRUE)
+  passed_layers <- which(cole_ok | (slick_ok & cracks_ok))
+  passed <- length(passed_layers) > 0L
+  missing <- if (all(is.na(cole)) && all(is.na(cracks_w)) &&
+                  all(is.na(slks)))
+               c("cole_value", "cracks_width_cm", "slickensides")
+             else character(0)
+  DiagnosticResult$new(
+    name = "carater_retratil", passed = passed, layers = passed_layers,
+    evidence = list(cole_value = cole, cracks_width_cm = cracks_w,
+                      slickensides = slks,
+                      min_cole = min_cole,
+                      min_crack_width = min_crack_width),
+    missing = missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 33"
+  )
+}
+
+
+# ---- Carater espodico (subsuperficial, incipiente) -----------------------
+
+#' Carater espodico (SiBCS Cap 1, p 35; Cap 8)
+#'
+#' Evidencia iluvial de Al / Fe / materia organica em camada de pelo
+#' menos 2,5 cm de espessura, em quantidade insuficiente para qualificar
+#' como horizonte B espodico (\code{\link{B_espodico}}), mas suficiente
+#' para indicar espodicidade incipiente. Usado em Cambissolos /
+#' Argissolos / Plintossolos espodicos (Caps 5, 6 e 16) e em
+#' Espodossolos rasos (Cap 8).
+#'
+#' Diferenca para \code{\link{B_espodico}}: thickness >= 2,5 cm em vez
+#' de exigir o gate completo de espessura espodica; OC >= 0,5\% em vez
+#' do gate de iluviacao quantitativa; sinais de iluviacao Fe/Al
+#' (\code{al_ox_pct} ou \code{fe_ox_pct} ou \code{fe_dcb_pct}).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Espessura minima da camada espodica incipiente
+#'        em cm (default 2,5).
+#' @param min_oc_pct OC\% minimo em camada candidata (default 0,5).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 35; Cap 8
+#'             (Espodossolos), pp 156-160.
+#' @export
+carater_espodico <- function(pedon,
+                                min_thickness = 2.5,
+                                min_oc_pct    = 0.5) {
+  h <- pedon$horizons
+  candidate <- which(!is.na(h$designation) &
+                       grepl("^Bh|^Bs|^Bsh|^Bhs", h$designation))
+  if (length(candidate) == 0L) {
+    candidate <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  }
+  if (length(candidate) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_espodico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 35"
+    ))
+  }
+  thickness <- h$bottom_cm[candidate] - h$top_cm[candidate]
+  oc        <- h$oc_pct[candidate]
+  fe_dcb    <- h$fe_dcb_pct[candidate]
+  al_ox     <- h$al_ox_pct[candidate]
+  fe_ox     <- h$fe_ox_pct[candidate]
+  thick_ok  <- !is.na(thickness) & thickness >= min_thickness
+  oc_ok     <- !is.na(oc) & oc >= min_oc_pct
+  iluv_ok   <- (!is.na(al_ox)  & al_ox  >= 0.2) |
+               (!is.na(fe_ox)  & fe_ox  >= 0.1) |
+               (!is.na(fe_dcb) & fe_dcb >= 0.5)
+  pass <- thick_ok & oc_ok & iluv_ok
+  passed_layers <- candidate[pass]
+  passed <- length(passed_layers) > 0L
+  missing <- character(0)
+  if (all(is.na(oc))) missing <- c(missing, "oc_pct")
+  if (all(is.na(al_ox)) && all(is.na(fe_ox)) && all(is.na(fe_dcb)))
+    missing <- c(missing, "al_ox_pct", "fe_ox_pct", "fe_dcb_pct")
+  DiagnosticResult$new(
+    name = "carater_espodico", passed = passed, layers = passed_layers,
+    evidence = list(candidate_layers = candidate,
+                      thickness_cm = thickness, oc_pct = oc,
+                      al_ox_pct = al_ox, fe_ox_pct = fe_ox,
+                      fe_dcb_pct = fe_dcb,
+                      min_thickness = min_thickness,
+                      min_oc_pct    = min_oc_pct),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 35"
+  )
+}
+
+
+# ---- Ki / Kr quantitativos (ataque sulfurico) ----------------------------
+
+#' Ki (silica:alumina molar) -- SiBCS Cap 1, p 32
+#'
+#' Calcula o indice molar Ki = SiO2 / Al2O3 a partir de teores
+#' percentuais por ataque sulfurico-NaOH (Embrapa Manual de Metodos).
+#' Massas molares: 60.08 (SiO2), 101.96 (Al2O3):
+#'
+#'   Ki (molar) = (\% SiO2 / 60.08) / (\% Al2O3 / 101.96)
+#'              \eqn{\approx} 1.6973 \eqn{\times} (\% SiO2 / \% Al2O3)
+#'
+#' @param sio2_pct Teor de SiO2 por ataque sulfurico (\%).
+#' @param al2o3_pct Teor de Al2O3 por ataque sulfurico (\%).
+#' @return Ki molar (numeric); NA se algum input for NA ou Al2O3 \eqn{\le} 0.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 32; Embrapa Manual
+#'             de Metodos de Analise de Solo (3a ed., 2017).
+#' @export
+compute_ki <- function(sio2_pct, al2o3_pct) {
+  ifelse(is.na(sio2_pct) | is.na(al2o3_pct) | al2o3_pct <= 0,
+           NA_real_,
+           (sio2_pct / 60.08) / (al2o3_pct / 101.96))
+}
+
+
+#' Kr (silica:sesquioxidos molar) -- SiBCS Cap 1, p 32
+#'
+#' Calcula o indice molar Kr = SiO2 / (Al2O3 + Fe2O3) usando massas
+#' molares 60.08 (SiO2), 101.96 (Al2O3) e 159.69 (Fe2O3):
+#'
+#'   Kr (molar) = (\% SiO2 / 60.08) /
+#'                (\% Al2O3 / 101.96 + \% Fe2O3 / 159.69)
+#'
+#' @param sio2_pct Teor de SiO2 por ataque sulfurico (\%).
+#' @param al2o3_pct Teor de Al2O3 por ataque sulfurico (\%).
+#' @param fe2o3_pct Teor de Fe2O3 por ataque sulfurico (\%).
+#' @return Kr molar (numeric); NA se algum input for NA ou denominador
+#'         \eqn{\le} 0.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 32.
+#' @export
+compute_kr <- function(sio2_pct, al2o3_pct, fe2o3_pct) {
+  denom <- al2o3_pct / 101.96 + fe2o3_pct / 159.69
+  ifelse(is.na(sio2_pct) | is.na(al2o3_pct) | is.na(fe2o3_pct) |
+            denom <= 0,
+           NA_real_,
+           (sio2_pct / 60.08) / denom)
+}
+
+
+#' Ki/Kr para Latossolos (SiBCS Cap 10, p 173-176)
+#'
+#' Diagnostico SiBCS estrito sobre o B latossolico: requer Ki
+#' \eqn{\le} max_ki em todos os horizontes B avaliados, e Kr
+#' \eqn{\le} max_kr quando Fe2O3 estiver disponivel. Sub-classes
+#' acricas (Latossolos Acricos) e acriferricas adicionalmente exigem
+#' \code{\link{carater_acrico}}.
+#'
+#' Quando os campos de ataque sulfurico
+#' (\code{sio2_sulfuric_pct}, \code{al2o3_sulfuric_pct},
+#' \code{fe2o3_sulfuric_pct}) estao todos NA, o diagnostico retorna
+#' \code{passed = NA} com \code{missing} explicito.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_ki Ki limite superior (default 2.2 -- limite kaolinitico
+#'        SiBCS Cap 10).
+#' @param max_kr Kr limite superior (default 1.7).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 10 (Latossolos),
+#'             pp 173-176.
+#' @export
+latossolo_ki_kr <- function(pedon, max_ki = 2.2, max_kr = 1.7) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "latossolo_ki_kr", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, p 173-176"
+    ))
+  }
+  sio2  <- h$sio2_sulfuric_pct[b_layers]
+  al2o3 <- h$al2o3_sulfuric_pct[b_layers]
+  fe2o3 <- h$fe2o3_sulfuric_pct[b_layers]
+  ki <- compute_ki(sio2, al2o3)
+  kr <- compute_kr(sio2, al2o3, fe2o3)
+  ki_ok <- !is.na(ki) & ki <= max_ki
+  # Kr is optional: only check when fe2o3 present (kr non-NA).
+  kr_ok <- is.na(kr) | kr <= max_kr
+  passing <- b_layers[ki_ok & kr_ok]
+  evaluated <- sum(!is.na(ki))
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L) NA
+            else FALSE
+  missing <- character(0)
+  if (all(is.na(ki)))
+    missing <- c(missing, "sio2_sulfuric_pct", "al2o3_sulfuric_pct")
+  if (all(is.na(kr)))
+    missing <- c(missing, "fe2o3_sulfuric_pct")
+  DiagnosticResult$new(
+    name = "latossolo_ki_kr", passed = passed, layers = passing,
+    evidence = list(b_layers           = b_layers,
+                      sio2_sulfuric_pct  = sio2,
+                      al2o3_sulfuric_pct = al2o3,
+                      fe2o3_sulfuric_pct = fe2o3,
+                      ki = ki, kr = kr,
+                      max_ki = max_ki, max_kr = max_kr),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, p 173-176"
+  )
+}
+
+
+# ---- Cerosidade quantitativa (clay films amount x strength) --------------
+
+# Look-up tables for ordinal mapping. Aceita PT-BR e EN; "shiny" -> "strong".
+# Usar list() (nao c()) garante que `[[chave_inexistente]]` devolva NULL em
+# vez de erro `subscript out of bounds`, o que permite a validacao explicita
+# em cerosidade() reportar mensagens claras quando o usuario passa um termo
+# desconhecido em min_amount / min_strength.
+.cerosidade_amount_levels <- list(
+  few = 1L, common = 2L, many = 3L, continuous = 4L,
+  pouca = 1L, comum = 2L, abundante = 3L, continua = 4L
+)
+.cerosidade_strength_levels <- list(
+  weak = 1L, moderate = 2L, strong = 3L,
+  fraca = 1L, moderada = 2L, forte = 3L,
+  shiny = 3L
+)
+
+
+.rank_term <- function(x, levels) {
+  out <- rep(NA_integer_, length(x))
+  if (is.null(x) || all(is.na(x))) return(out)
+  nm <- tolower(trimws(x))
+  for (i in seq_along(nm)) {
+    if (is.na(nm[i])) next
+    v <- levels[[nm[i]]]
+    if (!is.null(v)) out[i] <- v
+  }
+  out
+}
+
+
+#' Cerosidade quantitativa (SiBCS Cap 13, p 207; Cap 1)
+#'
+#' Diagnostico parametrizado quantidade x intensidade de cerosidade
+#' (clay films / cutans). Consume as colunas v0.7.2
+#' \code{clay_films_amount} (ordinal: few/pouca, common/comum,
+#' many/abundante, continuous/continua) e \code{clay_films_strength}
+#' (ordinal: weak/fraca, moderate/moderada, strong/forte; "shiny"
+#' mapeado a "strong"), introduzidas em substituicao ao legado
+#' \code{clay_films}.
+#'
+#' Discriminante critico Nitossolos vs Argissolos no Cap 13:
+#' Nitossolos exigem cerosidade \eqn{\ge} comum + \eqn{\ge} moderada
+#' (defaults).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_amount Quantidade minima: \code{"few"}, \code{"common"},
+#'        \code{"many"}, \code{"continuous"} (ou equivalentes em PT-BR).
+#'        Default \code{"common"}.
+#' @param min_strength Intensidade minima: \code{"weak"},
+#'        \code{"moderate"}, \code{"strong"}. Default \code{"moderate"}.
+#'        Pass \code{NULL} para ignorar a dimensao de intensidade.
+#' @return \code{\link{DiagnosticResult}}; \code{passed = TRUE} se ao
+#'         menos um horizonte B atende ambos os limiares.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 13 (Nitossolos), p 207;
+#'             Cap 1 (atributos diagnosticos).
+#' @export
+cerosidade <- function(pedon,
+                        min_amount   = "common",
+                        min_strength = "moderate") {
+  min_amt_rank <- .cerosidade_amount_levels[[tolower(min_amount)]]
+  if (is.null(min_amt_rank))
+    rlang::abort(sprintf("Unknown min_amount '%s'", min_amount))
+  if (!is.null(min_strength)) {
+    min_str_rank <- .cerosidade_strength_levels[[tolower(min_strength)]]
+    if (is.null(min_str_rank))
+      rlang::abort(sprintf("Unknown min_strength '%s'", min_strength))
+  } else {
+    min_str_rank <- 0L
+  }
+
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "cerosidade", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, p 207"
+    ))
+  }
+  amt <- h$clay_films_amount[b_layers]
+  str <- h$clay_films_strength[b_layers]
+  amt_rank <- .rank_term(amt, .cerosidade_amount_levels)
+  str_rank <- .rank_term(str, .cerosidade_strength_levels)
+  amt_ok <- !is.na(amt_rank) & amt_rank >= min_amt_rank
+  str_ok <- if (is.null(min_strength))
+              rep(TRUE, length(b_layers))
+            else
+              !is.na(str_rank) & str_rank >= min_str_rank
+  passing <- b_layers[amt_ok & str_ok]
+  passed <- length(passing) > 0L
+  missing <- character(0)
+  if (all(is.na(amt))) missing <- c(missing, "clay_films_amount")
+  if (!is.null(min_strength) && all(is.na(str)))
+    missing <- c(missing, "clay_films_strength")
+  DiagnosticResult$new(
+    name = "cerosidade", passed = passed, layers = passing,
+    evidence = list(b_layers = b_layers,
+                      clay_films_amount   = amt,
+                      clay_films_strength = str,
+                      amount_rank   = amt_rank,
+                      strength_rank = str_rank,
+                      min_amount = min_amount,
+                      min_strength = min_strength),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, p 207"
+  )
+}

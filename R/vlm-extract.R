@@ -127,7 +127,8 @@ horizon_simple_attr_map <- function() {
     structure_size       = "structure_size",
     structure_type       = "structure_type",
     consistence_moist    = "consistence_moist",
-    clay_films           = "clay_films",
+    clay_films_amount    = "clay_films_amount",
+    clay_films_strength  = "clay_films_strength",
     boundary_distinctness = "boundary_distinctness",
     boundary_topography   = "boundary_topography"
   )

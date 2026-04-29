@@ -56,6 +56,10 @@ load_rules <- function(system = c("wrb2022", "usda", "sibcs5"),
 #' (\code{all_of} / \code{any_of} / \code{default} /
 #' \code{not_implemented_v01}) are the same in all three systems.
 #'
+#' Used at the TOP level (RSG / Order / Ordem). For nested categorical
+#' levels (subordens, grandes grupos, subgrupos, familias) iterate the
+#' flat taxa list directly via \code{\link{run_taxa_list}}.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules A parsed rule set (output of \code{\link{load_rules}}).
 #' @param level_key Name of the taxa list inside \code{rules}: typically
@@ -68,6 +72,36 @@ run_taxonomic_key <- function(pedon, rules, level_key) {
   taxa <- rules[[level_key]]
   if (is.null(taxa) || length(taxa) == 0L) {
     rlang::abort(sprintf("Rule set has no '%s' list", level_key))
+  }
+  run_taxa_list(pedon, taxa)
+}
+
+
+#' Iterate a flat taxa list and evaluate tests in canonical order
+#'
+#' Internal iterator extracted from \code{\link{run_taxonomic_key}} so
+#' nested categorical levels (subordens, grandes grupos, subgrupos,
+#' familias) can be iterated directly, without going through the
+#' \code{rules[[level_key]]} indirection that only makes sense at the
+#' top level.
+#'
+#' Behavioural note: when \code{taxa} is empty or \code{NULL}, returns
+#' \code{list(assigned = NULL, trace = list())} -- a sub-level lookup
+#' with no canonical entries is non-fatal. The top-level
+#' \code{\link{run_taxonomic_key}} keeps the stricter "missing list is
+#' an error" semantics by guarding before calling this helper.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param taxa A list of taxon entries; each entry must have
+#'        \code{code}, \code{name}, and \code{tests} fields, where
+#'        \code{tests} is a block parseable by
+#'        \code{\link{evaluate_rsg_tests}}.
+#' @return A list with \code{assigned} (the entry of the assigned taxon,
+#'         or NULL when \code{taxa} was empty) and \code{trace}.
+#' @export
+run_taxa_list <- function(pedon, taxa) {
+  if (is.null(taxa) || length(taxa) == 0L) {
+    return(list(assigned = NULL, trace = list()))
   }
 
   trace <- list()
