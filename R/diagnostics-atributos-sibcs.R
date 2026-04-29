@@ -1540,6 +1540,54 @@ carater_sombrico <- function(pedon,
 }
 
 
+# ---- v0.7.6: Carater tionico (Cap 9 Gleissolos) -------------------------
+
+#' Carater tionico (SiBCS Cap 9; Cap 1 thionic-related)
+#'
+#' Solos com horizonte sulfurico (\code{\link{horizonte_sulfurico}})
+#' OU materiais sulfidricos a profundidades entre \code{min_depth_cm}
+#' e \code{max_depth_cm} (default 100-150 cm). Discrimina os Subgrupos
+#' tionicos de Gleissolos (Cap 9 GZsd, GMtal, GMtd, GXte) -- variante
+#' "tionico subordinado" (vs Tiomorfico, que e a subordem completa).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_depth_cm Default 100 cm.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 9, pp 180-191.
+#' @export
+carater_tionico <- function(pedon,
+                              min_depth_cm = 100,
+                              max_depth_cm = 150) {
+  hs <- horizonte_sulfurico(pedon)
+  layers <- hs$layers
+  h <- pedon$horizons
+  if (length(layers) > 0L) {
+    in_window <- !is.na(h$top_cm[layers]) &
+                   h$top_cm[layers] >= min_depth_cm &
+                   h$top_cm[layers] <= max_depth_cm
+    layers <- layers[in_window]
+  }
+  # Tambem aceita sulfidic_s_pct >= 0.5 dentro do window
+  sulfidic_layers <- which(!is.na(h$sulfidic_s_pct) &
+                              h$sulfidic_s_pct >= 0.5 &
+                              !is.na(h$top_cm) &
+                              h$top_cm >= min_depth_cm &
+                              h$top_cm <= max_depth_cm)
+  passing <- unique(c(layers, sulfidic_layers))
+  passed <- length(passing) > 0L
+  DiagnosticResult$new(
+    name = "carater_tionico", passed = passed, layers = passing,
+    evidence = list(horizonte_sulfurico = hs,
+                      sulfidic_layers = sulfidic_layers,
+                      min_depth_cm = min_depth_cm,
+                      max_depth_cm = max_depth_cm),
+    missing = hs$missing %||% character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 9"
+  )
+}
+
+
 # ---- v0.7.5.D: Caracteres para Cap 8 (Espodossolos) ---------------------
 #
 # 2 diagnosticos novos:
