@@ -1319,6 +1319,77 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- Carater espesso-humico (Cap 5 PBAC subgrupos) -----------------------
+
+#' Carater espesso-humico (SiBCS Cap 5, p 119)
+#'
+#' Solos com horizonte A humico e conteudo de carbono >= \code{min_oc_pct}
+#' (default 1\% = 10 g/kg) extendendo-se ate \code{min_depth_cm} (default
+#' 80 cm) ou mais de profundidade. Discrimina os Subgrupos
+#' "espesso-humicos" de Argissolos Bruno-Acinzentados Ta Aluminicos
+#' (Cap 5 PBAC 1.1.2) -- camadas humosas espessas tipicas de
+#' Argissolos do RS.
+#'
+#' Implementacao: requer (1) \code{\link{horizonte_A_humico}} passa
+#' AND (2) ha camada com \code{oc_pct} >= \code{min_oc_pct} cuja
+#' \code{bottom_cm} >= \code{min_depth_cm}.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc_pct Limite inferior de OC\% nas camadas inferiores
+#'        (default 1.0 = 10 g/kg).
+#' @param min_depth_cm Profundidade minima de extensao do C alto
+#'        (default 80 cm).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 5 (Argissolos), p 119.
+#' @export
+carater_humico_espesso <- function(pedon,
+                                       min_oc_pct   = 1.0,
+                                       min_depth_cm = 80) {
+  ah <- horizonte_A_humico(pedon)
+  if (!isTRUE(ah$passed)) {
+    return(DiagnosticResult$new(
+      name = "carater_humico_espesso", passed = FALSE,
+      layers = integer(0),
+      evidence = list(A_humico = ah,
+                        reason = "horizonte A humico nao passa"),
+      missing = ah$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 119"
+    ))
+  }
+  h <- pedon$horizons
+  if (all(is.na(h$oc_pct))) {
+    return(DiagnosticResult$new(
+      name = "carater_humico_espesso", passed = NA,
+      layers = integer(0),
+      evidence = list(A_humico = ah),
+      missing = "oc_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 119"
+    ))
+  }
+  carbon_layers <- which(!is.na(h$oc_pct) & h$oc_pct >= min_oc_pct)
+  passed <- FALSE
+  deepest_bottom <- NA_real_
+  if (length(carbon_layers) > 0L) {
+    bottoms <- h$bottom_cm[carbon_layers]
+    if (any(!is.na(bottoms))) {
+      deepest_bottom <- max(bottoms, na.rm = TRUE)
+      passed <- deepest_bottom >= min_depth_cm
+    }
+  }
+  DiagnosticResult$new(
+    name = "carater_humico_espesso", passed = passed,
+    layers = if (passed) carbon_layers else integer(0),
+    evidence = list(A_humico = ah,
+                      carbon_layers = carbon_layers,
+                      deepest_bottom_cm = deepest_bottom,
+                      min_oc_pct = min_oc_pct,
+                      min_depth_cm = min_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, p 119"
+  )
+}
+
+
 # ---- Carater coeso (Cap 1, pp 32-33) -------------------------------------
 
 #' Carater coeso (SiBCS Cap 1, pp 32-33)

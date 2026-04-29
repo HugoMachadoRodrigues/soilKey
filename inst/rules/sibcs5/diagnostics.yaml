@@ -48,6 +48,9 @@ diagnostics:
   carater_coeso:                { function: carater_coeso,                status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
   carater_ferrico:              { function: carater_ferrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
 
+  # ----- v0.7.4.B.1 SiBCS Cap 5 PBAC Subgrupos -----
+  carater_humico_espesso:       { function: carater_humico_espesso,       status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

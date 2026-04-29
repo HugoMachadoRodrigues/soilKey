@@ -1,0 +1,71 @@
+# =============================================================
+# SiBCS 5a edicao -- Argissolos (Cap 5, pp 119-138)
+#
+# Subgrupos (4o nivel categorico) -- ~165 classes em 23 GGs (5
+# subordens). Wirados em 3 stages sequenciais:
+#
+#   v0.7.4.B.1 -- PBAC subgrupos (8 classes)        ESTE COMMIT
+#   v0.7.4.B.2 -- PAC subgrupos  (21 classes)       proximo commit
+#   v0.7.4.B.3 -- PVA subgrupos  (36 classes)
+#   v0.7.4.C   -- PA + PV subgrupos (~100 classes)
+#
+# Codigos: 6-12 chars, sempre comecando com o GG code (PBACtal,
+# PBACal, PBACd) + 2-4 char suffix em camelCase descritivo.
+# Cada GG termina com sufixo "Tp" (catch-all 'tipicos').
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # v0.7.4.B.1 -- PBAC subgrupos (Cap 5, p 119)
+  # ============================================================
+  #
+  # PBACtal: 4 SGs canonicos (Ta_Al com espesso-humico tipico do RS)
+  # PBACal:  2 SGs (abrupticos / tipicos)
+  # PBACd:   2 SGs (abrupticos / tipicos)
+
+  # ----- 1.1 PBAC Ta Aluminicos -- 4 subgrupos -----
+  "PBACtal":
+    - code: "PBACtalAb"
+      name: "Argissolos Bruno-Acinzentados Ta Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PBACtalEh"
+      name: "Argissolos Bruno-Acinzentados Ta Aluminicos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "PBACtalHu"
+      name: "Argissolos Bruno-Acinzentados Ta Aluminicos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "PBACtalTp"
+      name: "Argissolos Bruno-Acinzentados Ta Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 1.2 PBAC Aluminicos -- 2 subgrupos -----
+  "PBACal":
+    - code: "PBACalAb"
+      name: "Argissolos Bruno-Acinzentados Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PBACalTp"
+      name: "Argissolos Bruno-Acinzentados Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 1.3 PBAC Distroficos -- 2 subgrupos -----
+  "PBACd":
+    - code: "PBACdAb"
+      name: "Argissolos Bruno-Acinzentados Distroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PBACdTp"
+      name: "Argissolos Bruno-Acinzentados Distroficos tipicos"
+      tests:
+        default: true
