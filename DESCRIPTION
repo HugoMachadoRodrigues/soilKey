@@ -7,7 +7,7 @@ Authors@R:
     person("Hugo", "Rodrigues",
            email = "rodrigues.machado.hugo@gmail.com",
            role  = c("aut", "cre"),
-           comment = c(ORCID = "0000-0000-0000-0000"))
+           comment = c(ORCID = "0000-0002-8070-8126"))
 Description: Implements deterministic classification keys for the World
     Reference Base for Soil Resources 2022 (4th edition) and the Brazilian
     System of Soil Classification (SiBCS, 5th edition). Provides a unified

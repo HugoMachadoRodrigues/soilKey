@@ -386,15 +386,15 @@ SOFTWARE.
 ---
 
 <p align="center">
-  Made with ❤️ by <strong>Hugo Rodrigues</strong> for Soil Science
+  Made with ❤️ by <a href="https://orcid.org/0000-0002-8070-8126"><strong>Hugo Rodrigues</strong></a> for Soil Science
 </p>
 
 <p align="center">
-  <a href="https://x.com/"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X / Twitter"/></a>
+  <a href="https://x.com/Hugo_MRodrigues"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X / Twitter"/></a>
   &nbsp;
-  <a href="https://orcid.org/"><img src="https://img.shields.io/badge/ORCID-A6CE39?style=for-the-badge&logo=orcid&logoColor=white" alt="ORCID"/></a>
+  <a href="https://orcid.org/0000-0002-8070-8126"><img src="https://img.shields.io/badge/ORCID-A6CE39?style=for-the-badge&logo=orcid&logoColor=white" alt="ORCID"/></a>
   &nbsp;
-  <a href="https://www.researchgate.net/"><img src="https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=researchgate&logoColor=white" alt="ResearchGate"/></a>
+  <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12"><img src="https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=researchgate&logoColor=white" alt="ResearchGate"/></a>
 </p>
 
 ---
