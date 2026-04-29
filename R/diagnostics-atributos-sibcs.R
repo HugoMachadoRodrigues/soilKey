@@ -3115,3 +3115,171 @@ subgrupo_planossolo_mesicos <- function(pedon,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
   )
 }
+
+
+# ---- v0.7.12: Caracteres para Subgrupos de Plintossolos (Cap 16) -----------
+#
+# 3 diagnosticos novos:
+#
+#   subgrupo_plintossolo_espessos              horizonte plintico topo
+#                                              em (100, 200] cm
+#   subgrupo_plintossolo_endico_litoplintico   horizonte litoplintico topo
+#                                              >= 40 cm
+#   subgrupo_plintossolo_endico_concrecionario horizonte concrecionario
+#                                              topo >= 40 cm
+# ---------------------------------------------------------------------------
+
+#' Subgrupo "espessos" de Plintossolos (horizonte plintico topo > 100 cm)
+#'
+#' Discrimina os Subgrupos espessos de Plintossolos Argiluvicos
+#' (FT*Es) e Haplicos (FXacEs, FXdEs, FXeEs): horizonte plintico cujo
+#' topo ocorre entre \code{min_top_cm} (exclusivo) e
+#' \code{max_top_cm} (inclusivo).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Profundidade minima exclusiva (default 100).
+#' @param max_top_cm Profundidade maxima inclusiva (default 200).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 16 (Plintossolos),
+#'             pp 261-272.
+#' @export
+subgrupo_plintossolo_espessos <- function(pedon,
+                                            min_top_cm = 100,
+                                            max_top_cm = 200) {
+  hp <- horizonte_plintico(pedon)
+  h <- pedon$horizons
+  if (!isTRUE(hp$passed)) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_espessos", passed = hp$passed,
+      layers = integer(0),
+      evidence = list(horizonte_plintico = hp,
+                        reason = "horizonte plintico nao identificado"),
+      missing = hp$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  hp_layers <- hp$layers
+  hp_tops <- h$top_cm[hp_layers]
+  hp_tops <- hp_tops[!is.na(hp_tops)]
+  if (length(hp_tops) == 0L) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_espessos", passed = NA,
+      layers = integer(0),
+      evidence = list(horizonte_plintico = hp, reason = "top_cm NA"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  topo_min <- min(hp_tops)
+  passed <- topo_min > min_top_cm && topo_min <= max_top_cm
+  DiagnosticResult$new(
+    name = "subgrupo_plintossolo_espessos", passed = passed,
+    layers = if (passed) hp_layers else integer(0),
+    evidence = list(horizonte_plintico = hp, topo_min_cm = topo_min,
+                      min_top_cm = min_top_cm, max_top_cm = max_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+  )
+}
+
+
+#' Subgrupo "endico" de Plintossolos Litoplinticos (topo de horizonte
+#' litoplintico >= 40 cm)
+#'
+#' Discrimina o Subgrupo FFlpEn (Plintossolos Petricos Litoplinticos
+#' endicos): horizonte litoplintico cujo topo ocorre a >=
+#' \code{min_top_cm} cm.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Profundidade minima inclusiva (default 40).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 16, p 264.
+#' @export
+subgrupo_plintossolo_endico_litoplintico <- function(pedon,
+                                                       min_top_cm = 40) {
+  hl <- horizonte_litoplintico(pedon)
+  h <- pedon$horizons
+  if (!isTRUE(hl$passed)) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_endico_litoplintico", passed = hl$passed,
+      layers = integer(0),
+      evidence = list(horizonte_litoplintico = hl,
+                        reason = "horizonte litoplintico nao identificado"),
+      missing = hl$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  hl_layers <- hl$layers
+  hl_tops <- h$top_cm[hl_layers]
+  hl_tops <- hl_tops[!is.na(hl_tops)]
+  if (length(hl_tops) == 0L) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_endico_litoplintico", passed = NA,
+      layers = integer(0),
+      evidence = list(horizonte_litoplintico = hl, reason = "top_cm NA"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  topo_min <- min(hl_tops)
+  passed <- topo_min >= min_top_cm
+  DiagnosticResult$new(
+    name = "subgrupo_plintossolo_endico_litoplintico", passed = passed,
+    layers = if (passed) hl_layers else integer(0),
+    evidence = list(horizonte_litoplintico = hl, topo_min_cm = topo_min,
+                      min_top_cm = min_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+  )
+}
+
+
+#' Subgrupo "endico" de Plintossolos Concrecionarios (topo de horizonte
+#' concrecionario >= 40 cm)
+#'
+#' Discrimina o Subgrupo FFcoEn (Plintossolos Petricos Concrecionarios
+#' endicos): horizonte concrecionario cujo topo ocorre a >=
+#' \code{min_top_cm} cm.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Profundidade minima inclusiva (default 40).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 16, p 264.
+#' @export
+subgrupo_plintossolo_endico_concrecionario <- function(pedon,
+                                                         min_top_cm = 40) {
+  hc <- horizonte_concrecionario(pedon)
+  h <- pedon$horizons
+  if (!isTRUE(hc$passed)) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_endico_concrecionario", passed = hc$passed,
+      layers = integer(0),
+      evidence = list(horizonte_concrecionario = hc,
+                        reason = "horizonte concrecionario nao identificado"),
+      missing = hc$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  hc_layers <- hc$layers
+  hc_tops <- h$top_cm[hc_layers]
+  hc_tops <- hc_tops[!is.na(hc_tops)]
+  if (length(hc_tops) == 0L) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_plintossolo_endico_concrecionario", passed = NA,
+      layers = integer(0),
+      evidence = list(horizonte_concrecionario = hc, reason = "top_cm NA"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+    ))
+  }
+  topo_min <- min(hc_tops)
+  passed <- topo_min >= min_top_cm
+  DiagnosticResult$new(
+    name = "subgrupo_plintossolo_endico_concrecionario", passed = passed,
+    layers = if (passed) hc_layers else integer(0),
+    evidence = list(horizonte_concrecionario = hc, topo_min_cm = topo_min,
+                      min_top_cm = min_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16"
+  )
+}

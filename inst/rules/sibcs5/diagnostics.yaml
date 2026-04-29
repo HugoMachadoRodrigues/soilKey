@@ -96,6 +96,11 @@ diagnostics:
   subgrupo_planossolo_espessos: { function: subgrupo_planossolo_espessos, status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.11 }
   subgrupo_planossolo_mesicos:  { function: subgrupo_planossolo_mesicos,  status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.11 }
 
+  # ----- v0.7.12 SiBCS Cap 16 Plintossolos -----
+  subgrupo_plintossolo_espessos:               { function: subgrupo_plintossolo_espessos,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+  subgrupo_plintossolo_endico_litoplintico:    { function: subgrupo_plintossolo_endico_litoplintico,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+  subgrupo_plintossolo_endico_concrecionario:  { function: subgrupo_plintossolo_endico_concrecionario,  status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

@@ -1,0 +1,61 @@
+# =============================================================
+# SiBCS 5a edicao -- Plintossolos (Cap 16, pp 261-272)
+#
+# Grandes grupos -- 9 classes em 3 subordens:
+#   FF Petricos:    2 GGs (Litoplinticos / Concrecionarios)
+#   FT Argiluvicos: 3 GGs (Aluminicos / Distroficos / Eutroficos)
+#   FX Haplicos:    4 GGs (Acricos / Aluminicos / Distroficos / Eutroficos)
+# =============================================================
+
+grandes_grupos:
+
+  # -- FF Petricos -----
+  "FF":
+    - code: "FFlp"
+      name: "Plintossolos Petricos Litoplinticos"
+      tests:
+        all_of:
+          - horizonte_litoplintico: {}
+    - code: "FFco"
+      name: "Plintossolos Petricos Concrecionarios"
+      tests:
+        default: true
+
+  # -- FT Argiluvicos -----
+  "FT":
+    - code: "FTal"
+      name: "Plintossolos Argiluvicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "FTd"
+      name: "Plintossolos Argiluvicos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "FTe"
+      name: "Plintossolos Argiluvicos Eutroficos"
+      tests:
+        default: true
+
+  # -- FX Haplicos -----
+  "FX":
+    - code: "FXac"
+      name: "Plintossolos Haplicos Acricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+    - code: "FXal"
+      name: "Plintossolos Haplicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "FXd"
+      name: "Plintossolos Haplicos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "FXe"
+      name: "Plintossolos Haplicos Eutroficos"
+      tests:
+        default: true
