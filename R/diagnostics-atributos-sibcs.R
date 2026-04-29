@@ -1319,6 +1319,152 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- v0.7.5.A: Caracteres para Cap 6 (Cambissolos) ----------------------
+#
+# 3 diagnosticos novos:
+#
+#   carater_perferrico    Fe2O3 >= 360 g/kg (= 36%) por sulfurico em B
+#                          (vs ferrico = 18-36%)
+#   carater_vertissolico  horizonte vertico OU caracter vertico em
+#                          posicao nao-Vertissolo, dentro de 150 cm
+#   carater_argiluvico    B textural ou caracter argiluvico em posicao
+#                          nao diagnostica, dentro de 150 cm
+# -------------------------------------------------------------------------
+
+#' Carater perferrico (SiBCS Cap 1; Cap 6 CX Perferricos)
+#'
+#' Teor de Fe2O3 (pelo ataque sulfurico-NaOH) >= 360 g/kg de solo
+#' (= 36\%) na maior parte dos primeiros 100 cm do horizonte B.
+#' Discrimina os Grandes Grupos Perferricos (acima do range
+#' "ferrico" 180-360 g/kg). Cap 6 CX 4.3 e Cap 10 (Latossolos
+#' Perferricos).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_fe2o3_pct Limite inferior em \% mass (default 36 = 360 g/kg).
+#' @param max_depth_cm Profundidade maxima de B avaliado (default 100).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 142;
+#'             Cap 10 (Latossolos Perferricos).
+#' @export
+carater_perferrico <- function(pedon,
+                                  min_fe2o3_pct = 36,
+                                  max_depth_cm  = 100) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_perferrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 142"
+    ))
+  }
+  passing <- integer(0); missing <- character(0); details <- list()
+  evaluated <- 0L
+  for (i in b_layers) {
+    fe <- h$fe2o3_sulfuric_pct[i]
+    if (is.na(fe)) {
+      missing <- c(missing, "fe2o3_sulfuric_pct"); next
+    }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
+    layer_pass <- fe >= min_fe2o3_pct
+    details[[as.character(i)]] <- list(idx = i,
+                                         fe2o3_sulfuric_pct = fe,
+                                         passed = layer_pass)
+    evaluated <- evaluated + 1L
+    if (layer_pass) passing <- c(passing, i)
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (evaluated == 0L && length(missing) > 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_perferrico", passed = passed, layers = passing,
+    evidence = list(layers = details, min_fe2o3_pct = min_fe2o3_pct,
+                      max_depth_cm = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 142"
+  )
+}
+
+
+#' Carater vertissolico (SiBCS Cap 6)
+#'
+#' Solos com horizonte vertico OU caracter vertico em posicao nao
+#' diagnostica para Vertissolos, dentro de \code{max_depth_cm}
+#' (default 150). Discrimina os Subgrupos vertissolicos de
+#' Cambissolos Carbonaticos / Eutroficos / Tb Eutroferricos
+#' (Cap 6 CY 3.1.3, 3.6.2, CX 4.1.5, 4.7.7, 4.11.4).
+#'
+#' Implementacao: passa se \code{\link{horizonte_vertico}} retornar
+#' TRUE em ao menos uma camada com \code{top_cm} \eqn{<}
+#' \code{max_depth_cm}. SiBCS estrito requer "posicao nao
+#' diagnostica para Vertissolos" -- aproximamos isso confiando no
+#' dispatcher (apenas chamamos quando ja sabemos que nao e
+#' Vertissolo).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 6, pp 146-153;
+#'             Cap 17 (Vertissolos).
+#' @export
+carater_vertissolico <- function(pedon, max_depth_cm = 150) {
+  res <- horizonte_vertico(pedon)
+  layers <- res$layers
+  h <- pedon$horizons
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) &
+                  h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- length(layers) > 0L
+  DiagnosticResult$new(
+    name = "carater_vertissolico", passed = passed, layers = layers,
+    evidence = list(horizonte_vertico = res, max_depth_cm = max_depth_cm),
+    missing = res$missing %||% character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 6; Cap 17"
+  )
+}
+
+
+#' Carater argiluvico (SiBCS Cap 1; Cap 6)
+#'
+#' Solos com B textural (\code{\link{B_textural}}) em posicao NAO
+#' diagnostica para Argissolos, dentro de \code{max_depth_cm}.
+#' Discrimina os Subgrupos argissolicos de Cambissolos (Cap 6 CX
+#' 4.7.8, 4.10.5).
+#'
+#' Implementacao v0.7.5: requer \code{\link{B_textural}} passa em
+#' alguma camada com \code{top_cm} \eqn{<} \code{max_depth_cm}.
+#' Distingue-se de Argissolo pleno por contexto: chamado dentro de
+#' Cambissolos onde B incipiente (\code{\link{B_incipiente}}) ja
+#' definiu a ordem como Cambissolo.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 153.
+#' @export
+carater_argiluvico <- function(pedon, max_depth_cm = 150) {
+  bt <- B_textural(pedon)
+  layers <- bt$layers
+  h <- pedon$horizons
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) &
+                  h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- length(layers) > 0L
+  DiagnosticResult$new(
+    name = "carater_argiluvico", passed = passed, layers = layers,
+    evidence = list(B_textural = bt, max_depth_cm = max_depth_cm),
+    missing = bt$missing %||% character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 153"
+  )
+}
+
+
 # ---- v0.7.4.C.2: Carater sombrico (Cap 5 PV Aluminicos sombricos) -------
 
 #' Carater sombrico (SiBCS Cap 1; Cap 5 PV)

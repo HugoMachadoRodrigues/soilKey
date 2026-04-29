@@ -1,0 +1,197 @@
+# =============================================================
+# SiBCS 5a edicao -- Cambissolos (Cap 6, pp 139-156)
+#
+# Grandes grupos (3o nivel categorico) -- 26 classes em 4 subordens:
+#
+#   CH  Histicos:  2 GGs (Aluminicos / Distroficos)
+#   CHU Humicos:   4 GGs (Aluminoferrico / Aluminico / Distroferrico
+#                          / Distrofico)
+#   CY  Fluvicos:  8 GGs (Carbonatico / Sodico / Salico / Aluminico /
+#                          Ta Distrofico / Ta Eutrofico / Tb Distrofico /
+#                          Tb Eutrofico)
+#   CX  Haplicos: 12 GGs (Carbonatico / Sodico / Perferrico / Ta Aluminico /
+#                          Ta Distrofico / Ta Eutroferrico / Ta Eutrofico /
+#                          Tb Aluminico / Tb Distroferrico / Tb Distrofico /
+#                          Tb Eutroferrico / Tb Eutrofico)
+#
+# Discriminantes (todos avaliados na maior parte dos primeiros 100 cm
+# do horizonte B, inclusive BA):
+#
+#   Aluminico       carater_alitico
+#   Aluminoferrico  alitico + ferrico (Fe2O3 18-36%)
+#   Distrofico      V% < 50%
+#   Distroferrico   distrofico + ferrico
+#   Eutrofico       V% >= 50%
+#   Eutroferrico    eutrofico + ferrico
+#   Perferrico      Fe2O3 >= 36% (NEW carater_perferrico)
+#   Carbonatico     CaCO3 >= 15% dentro de 150 cm
+#   Sodico          PST >= 15% dentro de 150 cm
+#   Salico          CE >= 7 dS/m dentro de 150 cm
+#   Ta              atividade da argila >= 27 cmolc/kg argila
+#   Tb              atividade da argila < 27 cmolc/kg argila (default)
+#
+# Codigos: 5-9 chars (subordem 2-3 + suffix camelCase).
+# =============================================================
+
+grandes_grupos:
+
+  # ============================================================
+  # CH -- Cambissolos Histicos (Cap 6, p 140) -- 2 GGs
+  # ============================================================
+  "CH":
+    - code: "CHal"
+      name: "Cambissolos Histicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "CHd"
+      name: "Cambissolos Histicos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+
+  # ============================================================
+  # CHU -- Cambissolos Humicos (Cap 6, p 140) -- 4 GGs
+  # ============================================================
+  "CHU":
+    - code: "CHUaf"
+      name: "Cambissolos Humicos Aluminoferricos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+          - carater_ferrico: {}
+    - code: "CHUal"
+      name: "Cambissolos Humicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "CHUdf"
+      name: "Cambissolos Humicos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "CHUd"
+      name: "Cambissolos Humicos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+
+  # ============================================================
+  # CY -- Cambissolos Fluvicos (Cap 6, pp 140-141) -- 8 GGs
+  # ============================================================
+  "CY":
+    - code: "CYca"
+      name: "Cambissolos Fluvicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "CYsd"
+      name: "Cambissolos Fluvicos Sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 150 }
+    - code: "CYsl"
+      name: "Cambissolos Fluvicos Salicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "CYal"
+      name: "Cambissolos Fluvicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "CYtd"
+      name: "Cambissolos Fluvicos Ta Distroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - distrofico: {}
+    - code: "CYte"
+      name: "Cambissolos Fluvicos Ta Eutroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - eutrofico: {}
+    - code: "CYbd"
+      name: "Cambissolos Fluvicos Tb Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "CYbe"
+      name: "Cambissolos Fluvicos Tb Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # CX -- Cambissolos Haplicos (Cap 6, pp 141-143) -- 12 GGs
+  # ============================================================
+  "CX":
+    - code: "CXca"
+      name: "Cambissolos Haplicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "CXsd"
+      name: "Cambissolos Haplicos Sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 150 }
+    - code: "CXpf"
+      name: "Cambissolos Haplicos Perferricos"
+      tests:
+        all_of:
+          - carater_perferrico: {}
+    - code: "CXtal"
+      name: "Cambissolos Haplicos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "CXtd"
+      name: "Cambissolos Haplicos Ta Distroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - distrofico: {}
+    - code: "CXtef"
+      name: "Cambissolos Haplicos Ta Eutroferricos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - eutrofico: {}
+          - carater_ferrico: {}
+    - code: "CXte"
+      name: "Cambissolos Haplicos Ta Eutroficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - eutrofico: {}
+    - code: "CXbal"
+      name: "Cambissolos Haplicos Tb Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "CXbdf"
+      name: "Cambissolos Haplicos Tb Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "CXbd"
+      name: "Cambissolos Haplicos Tb Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "CXbef"
+      name: "Cambissolos Haplicos Tb Eutroferricos"
+      tests:
+        all_of:
+          - eutrofico: {}
+          - carater_ferrico: {}
+    - code: "CXbe"
+      name: "Cambissolos Haplicos Tb Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
