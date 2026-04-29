@@ -1,0 +1,237 @@
+# =============================================================
+# SiBCS 5a edicao -- Vertissolos (Cap 17, pp 275-280)
+#
+# Subgrupos -- 42 classes em 11 GGs.
+# Codigos suffix: Sd=solodicos, Sn=salinos, Ch=chernossolicos,
+#   Gl=gleissolicos, Lf=fragmentarios, Lt=liticos,
+#   HcSd=hipocarbonaticos solodicos, HcCh=hipocarbonaticos chernossolicos,
+#   Tp=tipicos.
+# =============================================================
+
+subgrupos:
+
+  # -- VG Hidromorficos -----
+  "VGca":
+    - code: "VGcaSd"
+      name: "Vertissolos Hidromorficos Carbonaticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VGcaTp"
+      name: "Vertissolos Hidromorficos Carbonaticos tipicos"
+      tests:
+        default: true
+
+  "VGsd":
+    - code: "VGsdSn"
+      name: "Vertissolos Hidromorficos Sodicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "VGsdTp"
+      name: "Vertissolos Hidromorficos Sodicos tipicos"
+      tests:
+        default: true
+
+  "VGsl":
+    - code: "VGslSd"
+      name: "Vertissolos Hidromorficos Salicos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VGslTp"
+      name: "Vertissolos Hidromorficos Salicos tipicos"
+      tests:
+        default: true
+
+  "VGo":
+    - code: "VGoSd"
+      name: "Vertissolos Hidromorficos Orticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VGoCh"
+      name: "Vertissolos Hidromorficos Orticos chernossolicos"
+      tests:
+        all_of:
+          - horizonte_A_chernozemico: {}
+    - code: "VGoTp"
+      name: "Vertissolos Hidromorficos Orticos tipicos"
+      tests:
+        default: true
+
+  # -- VE Ebanicos -----
+  "VEca":
+    - code: "VEcaCh"
+      name: "Vertissolos Ebanicos Carbonaticos chernossolicos"
+      tests:
+        all_of:
+          - horizonte_A_chernozemico: {}
+    - code: "VEcaTp"
+      name: "Vertissolos Ebanicos Carbonaticos tipicos"
+      tests:
+        default: true
+
+  "VEsd":
+    - code: "VEsdSn"
+      name: "Vertissolos Ebanicos Sodicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "VEsdTp"
+      name: "Vertissolos Ebanicos Sodicos tipicos"
+      tests:
+        default: true
+
+  "VEo":
+    - code: "VEoSd"
+      name: "Vertissolos Ebanicos Orticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VEoGl"
+      name: "Vertissolos Ebanicos Orticos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: { max_depth_cm: 100 }
+    - code: "VEoCh"
+      name: "Vertissolos Ebanicos Orticos chernossolicos"
+      tests:
+        all_of:
+          - horizonte_A_chernozemico: {}
+    - code: "VEoTp"
+      name: "Vertissolos Ebanicos Orticos tipicos"
+      tests:
+        default: true
+
+  # -- VX Haplicos -----
+  "VXca":
+    - code: "VXcaLf"
+      name: "Vertissolos Haplicos Carbonaticos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "VXcaLt"
+      name: "Vertissolos Haplicos Carbonaticos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "VXcaSd"
+      name: "Vertissolos Haplicos Carbonaticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VXcaGl"
+      name: "Vertissolos Haplicos Carbonaticos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: { max_depth_cm: 100 }
+    - code: "VXcaCh"
+      name: "Vertissolos Haplicos Carbonaticos chernossolicos"
+      tests:
+        all_of:
+          - horizonte_A_chernozemico: {}
+    - code: "VXcaTp"
+      name: "Vertissolos Haplicos Carbonaticos tipicos"
+      tests:
+        default: true
+
+  "VXsd":
+    - code: "VXsdLf"
+      name: "Vertissolos Haplicos Sodicos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "VXsdLt"
+      name: "Vertissolos Haplicos Sodicos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "VXsdSn"
+      name: "Vertissolos Haplicos Sodicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "VXsdGl"
+      name: "Vertissolos Haplicos Sodicos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: { max_depth_cm: 100 }
+    - code: "VXsdTp"
+      name: "Vertissolos Haplicos Sodicos tipicos"
+      tests:
+        default: true
+
+  "VXsl":
+    - code: "VXslLf"
+      name: "Vertissolos Haplicos Salicos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "VXslLt"
+      name: "Vertissolos Haplicos Salicos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "VXslSd"
+      name: "Vertissolos Haplicos Salicos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VXslGl"
+      name: "Vertissolos Haplicos Salicos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: { max_depth_cm: 100 }
+    - code: "VXslTp"
+      name: "Vertissolos Haplicos Salicos tipicos"
+      tests:
+        default: true
+
+  "VXo":
+    - code: "VXoLf"
+      name: "Vertissolos Haplicos Orticos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "VXoLt"
+      name: "Vertissolos Haplicos Orticos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "VXoSn"
+      name: "Vertissolos Haplicos Orticos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "VXoHcSd"
+      name: "Vertissolos Haplicos Orticos hipocarbonaticos solodicos"
+      tests:
+        all_of:
+          - carater_hipocarbonatico: { max_depth_cm: 150 }
+          - carater_solodico: {}
+    - code: "VXoHcCh"
+      name: "Vertissolos Haplicos Orticos hipocarbonaticos chernossolicos"
+      tests:
+        all_of:
+          - carater_hipocarbonatico: { max_depth_cm: 150 }
+          - horizonte_A_chernozemico: {}
+    - code: "VXoSd"
+      name: "Vertissolos Haplicos Orticos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: {}
+    - code: "VXoGl"
+      name: "Vertissolos Haplicos Orticos gleissolicos"
+      tests:
+        all_of:
+          - carater_gleissolico: { max_depth_cm: 100 }
+    - code: "VXoCh"
+      name: "Vertissolos Haplicos Orticos chernossolicos"
+      tests:
+        all_of:
+          - horizonte_A_chernozemico: {}
+    - code: "VXoTp"
+      name: "Vertissolos Haplicos Orticos tipicos"
+      tests:
+        default: true

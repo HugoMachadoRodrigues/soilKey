@@ -1,0 +1,71 @@
+# =============================================================
+# SiBCS 5a edicao -- Vertissolos (Cap 17, pp 273-280)
+#
+# Grandes grupos -- 11 classes em 3 subordens:
+#   VG Hidromorficos: 4 GGs (Carbonaticos / Sodicos / Salicos / Orticos)
+#   VE Ebanicos:      3 GGs (Carbonaticos / Sodicos / Orticos)
+#   VX Haplicos:      4 GGs (Carbonaticos / Sodicos / Salicos / Orticos)
+# =============================================================
+
+grandes_grupos:
+
+  # -- VG Hidromorficos -----
+  "VG":
+    - code: "VGca"
+      name: "Vertissolos Hidromorficos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 100 }
+    - code: "VGsd"
+      name: "Vertissolos Hidromorficos Sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 100 }
+    - code: "VGsl"
+      name: "Vertissolos Hidromorficos Salicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 100 }
+    - code: "VGo"
+      name: "Vertissolos Hidromorficos Orticos"
+      tests:
+        default: true
+
+  # -- VE Ebanicos -----
+  "VE":
+    - code: "VEca"
+      name: "Vertissolos Ebanicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 100 }
+    - code: "VEsd"
+      name: "Vertissolos Ebanicos Sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 100 }
+    - code: "VEo"
+      name: "Vertissolos Ebanicos Orticos"
+      tests:
+        default: true
+
+  # -- VX Haplicos -----
+  "VX":
+    - code: "VXca"
+      name: "Vertissolos Haplicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 100 }
+    - code: "VXsd"
+      name: "Vertissolos Haplicos Sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 100 }
+    - code: "VXsl"
+      name: "Vertissolos Haplicos Salicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 100 }
+    - code: "VXo"
+      name: "Vertissolos Haplicos Orticos"
+      tests:
+        default: true
