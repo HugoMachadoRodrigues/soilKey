@@ -7,19 +7,21 @@ test_that(".detect_specifier recognises Ano/Epi/Endo/Bathy/Panto prefixes", {
   s <- soilKey:::.detect_specifier("Endogleyic")
   expect_equal(s$prefix, "Endo")
   expect_equal(s$base,   "Gleyic")
-  expect_equal(s$min_top_cm, 50)
-  expect_equal(s$max_top_cm, 100)
+  # v0.9.3.A moved depth params under spec$.
+  expect_equal(s$spec$kind,       "depth")
+  expect_equal(s$spec$min_top_cm,  50)
+  expect_equal(s$spec$max_top_cm, 100)
 
   s <- soilKey:::.detect_specifier("Bathysalic")
   expect_equal(s$prefix, "Bathy")
   expect_equal(s$base,   "Salic")
-  expect_equal(s$min_top_cm, 100)
-  expect_true(is.infinite(s$max_top_cm))
+  expect_equal(s$spec$min_top_cm, 100)
+  expect_true(is.infinite(s$spec$max_top_cm))
 
   s <- soilKey:::.detect_specifier("Episalic")
   expect_equal(s$prefix, "Epi")
-  expect_equal(s$min_top_cm, 0)
-  expect_equal(s$max_top_cm, 50)
+  expect_equal(s$spec$min_top_cm, 0)
+  expect_equal(s$spec$max_top_cm, 50)
 
   s <- soilKey:::.detect_specifier("Anocalcic")
   expect_equal(s$prefix, "Ano")
@@ -52,16 +54,19 @@ test_that(".apply_specifier filters base qualifier layers by depth band", {
                   parent_material = "calcareous loess"),
     horizons = ensure_horizon_schema(hz)
   )
-  endo <- soilKey:::.apply_specifier(pr, "Endo", "Calcic", 50, 100)
+  spec_endo  <- list(kind = "depth", min_top_cm = 50,  max_top_cm = 100)
+  spec_epi   <- list(kind = "depth", min_top_cm =  0,  max_top_cm =  50)
+  spec_bathy <- list(kind = "depth", min_top_cm = 100, max_top_cm = Inf)
+  endo <- soilKey:::.apply_specifier(pr, "Endo", "Calcic", spec_endo)
   expect_true(isTRUE(endo$passed))
   # Only layer 3 (Bk, top=60, in 50-100 band) survives the filter.
   expect_equal(endo$layers, 3L)
 
-  epi <- soilKey:::.apply_specifier(pr, "Epi", "Calcic", 0, 50)
+  epi <- soilKey:::.apply_specifier(pr, "Epi", "Calcic", spec_epi)
   # Calcic passes only on layer 3 (top=60 -- outside 0-50) -> Epi fails.
   expect_false(isTRUE(epi$passed))
 
-  bathy <- soilKey:::.apply_specifier(pr, "Bathy", "Calcic", 100, Inf)
+  bathy <- soilKey:::.apply_specifier(pr, "Bathy", "Calcic", spec_bathy)
   # Layer 3 top=60 is NOT >= 100 -> Bathy fails.
   expect_false(isTRUE(bathy$passed))
 })

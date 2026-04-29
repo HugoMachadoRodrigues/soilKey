@@ -596,67 +596,92 @@ qual_haplic <- function(pedon) {
   setdiff(matched, drop)
 }
 
+# Internal: evaluate a single qualifier name against a pedon. Returns
+# a list(passed, layers, trace_entry). Used for both principal and
+# supplementary slots.
+.evaluate_qualifier <- function(pedon, qname) {
+  spec <- .detect_specifier(qname)
+  if (!is.null(spec)) {
+    res <- tryCatch(
+      .apply_specifier(pedon, spec$prefix, spec$base, spec$spec),
+      error = function(e) NULL)
+    if (is.null(res)) {
+      return(list(passed = NA,
+                  trace_entry = list(passed = NA,
+                                     note = "specifier dispatch threw error")))
+    }
+    return(list(
+      passed = res$passed,
+      trace_entry = list(passed = res$passed,
+                         missing = res$missing %||% character(0),
+                         specifier = spec$prefix,
+                         base = spec$base)
+    ))
+  }
+  fn_name <- paste0("qual_", tolower(qname))
+  fn <- tryCatch(get(fn_name, envir = asNamespace("soilKey")),
+                   error = function(e) NULL)
+  if (is.null(fn)) {
+    return(list(passed = NA,
+                trace_entry = list(passed = NA,
+                                   note = "function not implemented in v0.9")))
+  }
+  res <- tryCatch(fn(pedon), error = function(e) NULL)
+  if (is.null(res)) {
+    return(list(passed = NA,
+                trace_entry = list(passed = NA,
+                                   note = "diagnostic threw error")))
+  }
+  list(passed = res$passed,
+       trace_entry = list(passed = res$passed,
+                          missing = res$missing %||% character(0)))
+}
+
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   rules <- rules %||% load_rules("wrb2022")
   qfile <- system.file("rules/wrb2022/qualifiers.yaml",
                           package = "soilKey")
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   if (!file.exists(qfile)) {
-    return(list(principal = character(0), trace = list(),
-                  note = "qualifiers.yaml not found"))
+    return(list(principal = character(0), supplementary = character(0),
+                  trace = list(), note = "qualifiers.yaml not found"))
   }
   qrules <- yaml::read_yaml(qfile)
   per_rsg <- qrules$rsg_qualifiers[[rsg_code]]
   if (is.null(per_rsg)) {
-    return(list(principal = character(0), trace = list(),
+    return(list(principal = character(0), supplementary = character(0),
+                  trace = list(),
                   note = sprintf("No qualifiers defined for RSG %s",
                                   rsg_code)))
   }
 
-  trace <- list()
-  matched <- character(0)
-  for (qname in per_rsg$principal) {
-    # v0.9.2.B: detect Ano-/Epi-/Endo-/Bathy-/Panto- specifier prefixes
-    # and dispatch to the specifier handler instead of the bare lookup.
-    spec <- .detect_specifier(qname)
-    if (!is.null(spec)) {
-      res <- tryCatch(
-        .apply_specifier(pedon, spec$prefix, spec$base,
-                          spec$min_top_cm, spec$max_top_cm),
-        error = function(e) NULL)
-      if (is.null(res)) {
-        trace[[qname]] <- list(passed = NA,
-                                  note = "specifier dispatch threw error")
-        next
-      }
-      trace[[qname]] <- list(passed = res$passed,
-                                missing = res$missing %||% character(0),
-                                specifier = spec$prefix,
-                                base = spec$base)
-      if (isTRUE(res$passed)) matched <- c(matched, qname)
-      next
-    }
+  trace_principal     <- list()
+  trace_supplementary <- list()
+  matched_principal     <- character(0)
+  matched_supplementary <- character(0)
 
-    fn_name <- paste0("qual_", tolower(qname))
-    fn <- tryCatch(get(fn_name, envir = asNamespace("soilKey")),
-                     error = function(e) NULL)
-    if (is.null(fn)) {
-      trace[[qname]] <- list(passed = NA,
-                                note = "function not implemented in v0.9")
-      next
-    }
-    res <- tryCatch(fn(pedon), error = function(e) NULL)
-    if (is.null(res)) {
-      trace[[qname]] <- list(passed = NA, note = "diagnostic threw error")
-      next
-    }
-    trace[[qname]] <- list(passed = res$passed,
-                              missing = res$missing %||% character(0))
-    if (isTRUE(res$passed)) matched <- c(matched, qname)
+  for (qname in per_rsg$principal %||% character(0)) {
+    ev <- .evaluate_qualifier(pedon, qname)
+    trace_principal[[qname]] <- ev$trace_entry
+    if (isTRUE(ev$passed)) matched_principal <- c(matched_principal, qname)
   }
-  matched <- .suppress_qualifier_siblings(matched)
-  if (length(matched) == 0L) matched <- "Haplic"
-  list(principal = matched, trace = trace)
+  for (qname in per_rsg$supplementary %||% character(0)) {
+    ev <- .evaluate_qualifier(pedon, qname)
+    trace_supplementary[[qname]] <- ev$trace_entry
+    if (isTRUE(ev$passed)) matched_supplementary <- c(matched_supplementary, qname)
+  }
+
+  matched_principal <- .suppress_qualifier_siblings(matched_principal)
+  if (length(matched_principal) == 0L) matched_principal <- "Haplic"
+  # Apply family suppression to supplementary too -- the same logic
+  # (only the most-specific sibling survives) keeps parenthesised
+  # tags concise.
+  matched_supplementary <- .suppress_qualifier_siblings(matched_supplementary)
+
+  list(principal     = matched_principal,
+       supplementary = matched_supplementary,
+       trace         = trace_principal,
+       trace_supplementary = trace_supplementary)
 }
 
 

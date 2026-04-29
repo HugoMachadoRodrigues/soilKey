@@ -135,12 +135,19 @@ classify_wrb2022 <- function(pedon,
   }
 
   # v0.9: Resolve principal qualifiers for the assigned RSG.
+  # v0.9.3.A: also resolve supplementary qualifiers (parenthesised
+  # tags per WRB 2022 Ch 6 -- e.g. "Rhodic Ferralsol (Clayic, Humic,
+  # Dystric)").
   qual_result <- tryCatch(
     resolve_wrb_qualifiers(pedon, rsg$code, rules),
-    error = function(e) list(principal = character(0), trace = list())
+    error = function(e) list(principal = character(0),
+                              supplementary = character(0),
+                              trace = list())
   )
   full_name <- if (length(qual_result$principal) > 0L) {
-    format_wrb_name(rsg$name, principal = qual_result$principal)
+    format_wrb_name(rsg$name,
+                     principal     = qual_result$principal,
+                     supplementary = qual_result$supplementary %||% character(0))
   } else {
     name
   }
@@ -149,8 +156,10 @@ classify_wrb2022 <- function(pedon,
     system         = "WRB 2022",
     name           = full_name,
     rsg_or_order   = rsg$name,
-    qualifiers     = list(principal = qual_result$principal,
-                            trace     = qual_result$trace),
+    qualifiers     = list(principal     = qual_result$principal,
+                            supplementary = qual_result$supplementary %||% character(0),
+                            trace         = qual_result$trace,
+                            trace_supplementary = qual_result$trace_supplementary %||% list()),
     trace          = key_result$trace,
     ambiguities    = ambiguities,
     missing_data   = missing_data,
