@@ -1,5 +1,5 @@
-version: "USDA Soil Taxonomy (12th edition)"
-implementation_status: "soilKey v0.2 scaffold"
+version: "USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)"
+implementation_status: "soilKey v0.8.x -- diagnostic epipedons (Ch 3) + 12 orders wired"
 
 diagnostics:
 
@@ -27,10 +27,18 @@ diagnostics:
       illuviation evidence (clay films / clay bridges on >= 1% of
       surfaces); v0.8 will enforce this against clay_films_amount column.
 
-  # ----- planned v0.8 -----
-  mollic_usda:                  { status: planned, target_version: v0.8 }
-  umbric_usda:                  { status: planned, target_version: v0.8 }
-  ochric:                       { status: planned, target_version: v0.8 }
+  # ----- v0.8.1 USDA epipedons (Ch 3, KST 13ed) -----
+  histic_epipedon_usda:         { function: histic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 14-15" }
+  folistic_epipedon_usda:       { function: folistic_epipedon_usda,  status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 13-14" }
+  melanic_epipedon_usda:        { function: melanic_epipedon_usda,   status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-16" }
+  mollic_epipedon_usda:         { function: mollic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-17" }
+  ochric_epipedon_usda:         { function: ochric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, p 17" }
+  umbric_epipedon_usda:         { function: umbric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 18-20" }
+  anthropic_epipedon_usda:      { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria not yet captured in schema" }
+  plaggen_epipedon_usda:        { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria" }
+
+  # ----- planned v0.8.x -----
+  kandic:                       { status: planned, target_version: v0.8 }
   kandic:                       { status: planned, target_version: v0.8 }
   spodic_usda:                  { status: planned, target_version: v0.8 }
   cambic_usda:                  { status: planned, target_version: v0.8 }
