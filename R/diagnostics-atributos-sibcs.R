@@ -187,26 +187,48 @@ carater_alitico <- function(pedon, min_al = 4, min_al_sat = 50, max_v = 50) {
 #' >= 150 g/kg (15\%) de CaCO3 equivalente em qualquer forma de
 #' segregacao (incl. nodulos, concrecoes). Excludente: nao satisfaz
 #' aos requisitos de horizonte calcico.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_caco3_pct Limite de CaCO3 (default 15\%).
+#' @param max_depth_cm Profundidade maxima (\code{top_cm}) em que
+#'        camadas qualificam (default \code{NULL} = sem restricao).
+#'        SiBCS Cap 14 Subgrupos usam \code{max_depth_cm = 150}.
 #' @export
-carater_carbonatico <- function(pedon, min_caco3_pct = 15) {
+carater_carbonatico <- function(pedon, min_caco3_pct = 15,
+                                   max_depth_cm = NULL) {
   h <- pedon$horizons
   res <- test_caco3_concentration(h, min_pct = min_caco3_pct)
+  layers <- res$layers
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) & h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE else res$passed
   DiagnosticResult$new(
     name = "carater_carbonatico",
-    passed = res$passed, layers = res$layers,
-    evidence = list(caco3 = res), missing = res$missing,
+    passed = passed, layers = layers,
+    evidence = list(caco3 = res, max_depth_cm = max_depth_cm),
+    missing = res$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 33"
   )
 }
 
 #' Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150 g/kg.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima em que camadas qualificam
+#'        (default \code{NULL} = sem restricao). SiBCS Cap 14 Subgrupos
+#'        de Organossolos Haplicos Sapricos usam
+#'        \code{max_depth_cm = 150}.
 #' @export
-carater_hipocarbonatico <- function(pedon) {
+carater_hipocarbonatico <- function(pedon, max_depth_cm = NULL) {
   h <- pedon$horizons
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in seq_len(nrow(h))) {
     val <- h$caco3_pct[i]
     if (is.na(val)) { missing <- c(missing, "caco3_pct"); next }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
     layer_pass <- val >= 5 && val < 15
     details[[as.character(i)]] <- list(idx = i, caco3_pct = val,
                                         passed = layer_pass)
@@ -325,8 +347,13 @@ carater_redoxico <- function(pedon, min_redox_pct = 5, max_top_cm = 150) {
 }
 
 #' Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15%.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_pst PST minimo (\%) (default 15).
+#' @param max_depth_cm Profundidade maxima em que camadas qualificam
+#'        (default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.
 #' @export
-carater_sodico <- function(pedon, min_pst = 15) {
+carater_sodico <- function(pedon, min_pst = 15, max_depth_cm = NULL) {
   h <- pedon$horizons
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in seq_len(nrow(h))) {
@@ -334,6 +361,8 @@ carater_sodico <- function(pedon, min_pst = 15) {
     if (is.na(cec) || is.na(na) || cec <= 0) {
       missing <- c(missing, "cec_cmol", "na_cmol"); next
     }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
     pst <- 100 * na / cec
     layer_pass <- pst >= min_pst
     details[[as.character(i)]] <- list(idx = i, na_cmol = na, cec_cmol = cec,
@@ -352,8 +381,15 @@ carater_sodico <- function(pedon, min_pst = 15) {
 }
 
 #' Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e < 15%.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_pst PST minimo (\%) (default 6).
+#' @param max_pst PST maximo (\%) (default 15).
+#' @param max_depth_cm Profundidade maxima em que camadas qualificam
+#'        (default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.
 #' @export
-carater_solodico <- function(pedon, min_pst = 6, max_pst = 15) {
+carater_solodico <- function(pedon, min_pst = 6, max_pst = 15,
+                                max_depth_cm = NULL) {
   h <- pedon$horizons
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in seq_len(nrow(h))) {
@@ -361,6 +397,8 @@ carater_solodico <- function(pedon, min_pst = 6, max_pst = 15) {
     if (is.na(cec) || is.na(na) || cec <= 0) {
       missing <- c(missing, "cec_cmol", "na_cmol"); next
     }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
     pst <- 100 * na / cec
     layer_pass <- pst >= min_pst && pst < max_pst
     details[[as.character(i)]] <- list(idx = i, pst_pct = pst,
@@ -378,26 +416,47 @@ carater_solodico <- function(pedon, min_pst = 6, max_pst = 15) {
 }
 
 #' Carater salico (SiBCS Cap 1, p 38): CE >= 7 dS/m em alguma epoca.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_ec Limite de CE em dS/m (default 7).
+#' @param max_depth_cm Profundidade maxima em que camadas qualificam
+#'        (default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.
 #' @export
-carater_salico <- function(pedon, min_ec = 7) {
+carater_salico <- function(pedon, min_ec = 7, max_depth_cm = NULL) {
   h <- pedon$horizons
   res <- test_ec_concentration(h, min_dS_m = min_ec)
+  layers <- res$layers
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) & h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE else res$passed
   DiagnosticResult$new(
-    name = "carater_salico", passed = res$passed,
-    layers = res$layers,
-    evidence = list(ec = res), missing = res$missing,
+    name = "carater_salico", passed = passed,
+    layers = layers,
+    evidence = list(ec = res, max_depth_cm = max_depth_cm),
+    missing = res$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 38"
   )
 }
 
 #' Carater salino (SiBCS Cap 1, p 39): 4 <= CE < 7 dS/m.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_ec Limite inferior de CE em dS/m (default 4).
+#' @param max_ec Limite superior (exclusivo) (default 7).
+#' @param max_depth_cm Profundidade maxima em que camadas qualificam
+#'        (default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.
 #' @export
-carater_salino <- function(pedon, min_ec = 4, max_ec = 7) {
+carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
+                              max_depth_cm = NULL) {
   h <- pedon$horizons
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in seq_len(nrow(h))) {
     val <- h$ec_dS_m[i]
     if (is.na(val)) { missing <- c(missing, "ec_dS_m"); next }
+    if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
+          h$top_cm[i] >= max_depth_cm) next
     layer_pass <- val >= min_ec && val < max_ec
     details[[as.character(i)]] <- list(idx = i, ec_dS_m = val,
                                         passed = layer_pass)
@@ -445,26 +504,50 @@ mudanca_textural_abrupta <- function(pedon) {
 
 #' Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de
 #' \code{\link{continuous_rock}} via designacao R / Cr.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima do contato (default
+#'        \code{NULL}). SiBCS Cap 14 Subgrupos liticos de Folicos usam
+#'        \code{max_depth_cm = 50}.
 #' @export
-contato_litico <- function(pedon) {
+contato_litico <- function(pedon, max_depth_cm = NULL) {
+  h <- pedon$horizons
   res <- continuous_rock(pedon)
+  layers <- res$layers
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) & h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE else res$passed
   DiagnosticResult$new(
-    name = "contato_litico", passed = res$passed,
-    layers = res$layers, evidence = list(rock = res),
+    name = "contato_litico", passed = passed,
+    layers = layers, evidence = list(rock = res, max_depth_cm = max_depth_cm),
     missing = res$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 40"
   )
 }
 
 #' Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade maxima do contato (default
+#'        \code{NULL}). SiBCS Cap 14 Subgrupos fragmentarios de Folicos
+#'        usam \code{max_depth_cm = 50}.
 #' @export
-contato_litico_fragmentario <- function(pedon) {
+contato_litico_fragmentario <- function(pedon, max_depth_cm = NULL) {
   h <- pedon$horizons
   res <- test_pattern_match(h, "designation", "^Cr|^Crf|^R/Cr|fragm")
+  layers <- res$layers
+  if (!is.null(max_depth_cm) && length(layers) > 0L) {
+    in_depth <- !is.na(h$top_cm[layers]) & h$top_cm[layers] < max_depth_cm
+    layers <- layers[in_depth]
+  }
+  passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE else res$passed
   DiagnosticResult$new(
     name = "contato_litico_fragmentario",
-    passed = res$passed, layers = res$layers,
-    evidence = list(pattern = res), missing = res$missing,
+    passed = passed, layers = layers,
+    evidence = list(pattern = res, max_depth_cm = max_depth_cm),
+    missing = res$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 40"
   )
 }

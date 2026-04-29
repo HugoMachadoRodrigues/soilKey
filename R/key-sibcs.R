@@ -80,7 +80,38 @@ run_sibcs_grande_grupo <- function(pedon, subordem_code, rules = NULL) {
 }
 
 
-#' Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o + 3o niveis)
+#' Resolve o subgrupo (4o nivel) de um pedon classificado em um Grande
+#' Grupo SiBCS
+#'
+#' v0.7.3.B: itera os Subgrupos do Grande Grupo em ordem canonica via o
+#' engine generico \code{\link{run_taxa_list}}; a primeira test-block
+#' que passa captura o perfil. Os Subgrupos sao carregados de
+#' \code{inst/rules/sibcs5/subgrupos/<ordem>.yaml} (split por ordem) e
+#' mergeados pelo \code{\link{load_rules}}.
+#'
+#' Em contraste com o 3o nivel (Grandes Grupos de Organossolos),
+#' Subgrupos de Cap 14 SEMPRE tem catch-all \code{tests:{default:true}}
+#' como ultima entrada de cada lista (subgrupo "tipico"), entao a
+#' classificacao sempre desce ao 4o nivel quando o GG foi resolvido.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param gg_code Codigo do Grande Grupo (e.g. "OJF" para Organossolos
+#'        Tiomorficos Fibricos).
+#' @param rules Lista de regras carregada via \code{\link{load_rules}}.
+#' @return Lista com \code{assigned} (entrada YAML do Subgrupo ou
+#'         \code{NULL}) e \code{trace}.
+#' @export
+run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
+  rules <- rules %||% load_rules("sibcs5")
+  if (is.null(rules$subgrupos) ||
+      is.null(rules$subgrupos[[gg_code]])) {
+    return(list(assigned = NULL, trace = list()))
+  }
+  run_taxa_list(pedon, rules$subgrupos[[gg_code]])
+}
+
+
+#' Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o + 3o + 4o niveis)
 #'
 #' v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
 #' \code{\link{run_sibcs_subordem}}; v0.7.3 desce ao 3o nivel (Grandes
@@ -121,7 +152,7 @@ classify_sibcs <- function(pedon,
                  run_sibcs_grande_grupo(pedon, subordem$code, rules)
                else list(assigned = NULL, trace = list())
   gg <- gg_result$assigned
-  # O engine genero retorna o ULTIMO taxon como fallback quando nenhum
+  # O engine generico retorna o ULTIMO taxon como fallback quando nenhum
   # passa. Para o 3o nivel sem catch-all 'default: true', isso e um
   # falso positivo -- demote para NULL se o trace mostra que o
   # candidato escolhido nao passou de fato.
@@ -129,16 +160,29 @@ classify_sibcs <- function(pedon,
     gg <- NULL
   }
 
-  # Display name = Grande Grupo (se houver) > Subordem > Ordem
-  display_name <- if (!is.null(gg))         gg$name
+  # Nivel 4: subgrupo (v0.7.3.B) -- so desce se o GG foi resolvido e
+  # o YAML tem bloco de Subgrupos para esse GG. Como Subgrupos do
+  # Cap 14 SEMPRE tem catch-all 'tipico' (default: true), o engine
+  # generico vai assinalar deterministicamente uma entrada quando o
+  # GG e wirado.
+  sg_result <- if (!is.null(gg))
+                 run_sibcs_subgrupo(pedon, gg$code, rules)
+               else list(assigned = NULL, trace = list())
+  sg <- sg_result$assigned
+
+  # Display name = Subgrupo (se houver) > Grande Grupo > Subordem > Ordem
+  display_name <- if (!is.null(sg))            sg$name
+                  else if (!is.null(gg))       gg$name
                   else if (!is.null(subordem)) subordem$name
-                  else                       ordem$name
+                  else                         ordem$name
   trace_combined <- list(
     ordens                = key_result$trace,
     subordens             = sub_result$trace,
     subordem_assigned     = subordem,
     grandes_grupos        = gg_result$trace,
-    grande_grupo_assigned = gg
+    grande_grupo_assigned = gg,
+    subgrupos             = sg_result$trace,
+    subgrupo_assigned     = sg
   )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)

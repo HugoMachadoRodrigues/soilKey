@@ -1,0 +1,283 @@
+# =============================================================
+# SiBCS 5a edicao -- Organossolos (Cap 14, pp 245-250)
+#
+# Subgrupos (4o nivel categorico) -- 42 classes:
+#
+#   OJ Tiomorficos:  3 GG x 4 SG = 12 subgrupos
+#   OO Folicos:      3 GG x 4 SG = 12 subgrupos
+#   OX Haplicos:                     18 subgrupos
+#                      OXF: 3 / OXH: 7 / OXS: 8
+#
+# Ordem canonica do livro -- "primeiro a passar captura" (engine
+# generico run_taxa_list). Cada GG termina com "tipicos" como
+# catch-all (tests:{default:true}).
+#
+# Codigos: 3-char GG + 2-char suffix (5-char total). Excecao:
+# OXShst (6-char) para o composto "Hipocarbonaticos Solodicos
+# Terricos" do Cap 14, p 250 (3.3.5).
+#
+# Atalhos de sufixo:
+#   sa = salino           so = solodico        te = terrico
+#   sd = sodico           sl = salico          ca = carbonatico
+#   fr = fragmentario     li = litico          cs = cambissolico
+#   tp = tipico (catch-all)
+#   hst = hipocarbonatico+solodico+terrico (composto)
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # OJ Tiomorficos -- 1.1, 1.2, 1.3 (Cap 14, pp 245-247)
+  # Cada GG (Fibricos / Hemicos / Sapricos) tem 4 SG canonicos
+  # discriminados por carater (todos com criterio "dentro de
+  # 150 cm" para os caracteres salino/solodico, e 30 cm dentro
+  # de 100 cm para terrico).
+  # ============================================================
+
+  # ----- 1.1 OJ Fibricos -- 4 subgrupos -----
+  "OJF":
+    - code: "OJFsa"
+      name: "Organossolos Tiomorficos Fibricos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "OJFso"
+      name: "Organossolos Tiomorficos Fibricos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OJFte"
+      name: "Organossolos Tiomorficos Fibricos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OJFtp"
+      name: "Organossolos Tiomorficos Fibricos tipicos"
+      tests:
+        default: true
+
+  # ----- 1.2 OJ Hemicos -- 4 subgrupos -----
+  "OJH":
+    - code: "OJHsa"
+      name: "Organossolos Tiomorficos Hemicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "OJHso"
+      name: "Organossolos Tiomorficos Hemicos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OJHte"
+      name: "Organossolos Tiomorficos Hemicos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OJHtp"
+      name: "Organossolos Tiomorficos Hemicos tipicos"
+      tests:
+        default: true
+
+  # ----- 1.3 OJ Sapricos -- 4 subgrupos -----
+  "OJS":
+    - code: "OJSsa"
+      name: "Organossolos Tiomorficos Sapricos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "OJSso"
+      name: "Organossolos Tiomorficos Sapricos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OJSte"
+      name: "Organossolos Tiomorficos Sapricos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OJStp"
+      name: "Organossolos Tiomorficos Sapricos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # OO Folicos -- 2.1, 2.2, 2.3 (Cap 14, pp 247-248)
+  # Discriminados por contato litico (raso, < 50 cm),
+  # contato litico fragmentario (raso, < 50 cm), ou
+  # B_incipiente abaixo de hístico ou A (carater_cambissolico).
+  # ============================================================
+
+  # ----- 2.1 OO Fibricos -- 4 subgrupos -----
+  "OOF":
+    - code: "OOFfr"
+      name: "Organossolos Folicos Fibricos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "OOFli"
+      name: "Organossolos Folicos Fibricos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "OOFcs"
+      name: "Organossolos Folicos Fibricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico: {}
+    - code: "OOFtp"
+      name: "Organossolos Folicos Fibricos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.2 OO Hemicos -- 4 subgrupos -----
+  "OOH":
+    - code: "OOHfr"
+      name: "Organossolos Folicos Hemicos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "OOHli"
+      name: "Organossolos Folicos Hemicos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "OOHcs"
+      name: "Organossolos Folicos Hemicos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico: {}
+    - code: "OOHtp"
+      name: "Organossolos Folicos Hemicos tipicos"
+      tests:
+        default: true
+
+  # ----- 2.3 OO Sapricos -- 4 subgrupos -----
+  "OOS":
+    - code: "OOSfr"
+      name: "Organossolos Folicos Sapricos fragmentarios"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: { max_depth_cm: 50 }
+    - code: "OOSli"
+      name: "Organossolos Folicos Sapricos liticos"
+      tests:
+        all_of:
+          - contato_litico: { max_depth_cm: 50 }
+    - code: "OOScs"
+      name: "Organossolos Folicos Sapricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico: {}
+    - code: "OOStp"
+      name: "Organossolos Folicos Sapricos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # OX Haplicos -- 3.1, 3.2, 3.3 (Cap 14, pp 248-250)
+  # Os tres GG tem listas de comprimento diferente:
+  # OXF: 3 / OXH: 7 / OXS: 8.
+  # ============================================================
+
+  # ----- 3.1 OX Fibricos -- 3 subgrupos (NAO ha "salinos") -----
+  "OXF":
+    - code: "OXFso"
+      name: "Organossolos Haplicos Fibricos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OXFte"
+      name: "Organossolos Haplicos Fibricos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OXFtp"
+      name: "Organossolos Haplicos Fibricos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.2 OX Hemicos -- 7 subgrupos -----
+  # Ordem canonica: ca, sd, sl, sa, so, te, tp
+  "OXH":
+    - code: "OXHca"
+      name: "Organossolos Haplicos Hemicos carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "OXHsd"
+      name: "Organossolos Haplicos Hemicos sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 150 }
+    - code: "OXHsl"
+      name: "Organossolos Haplicos Hemicos salicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "OXHsa"
+      name: "Organossolos Haplicos Hemicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "OXHso"
+      name: "Organossolos Haplicos Hemicos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OXHte"
+      name: "Organossolos Haplicos Hemicos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OXHtp"
+      name: "Organossolos Haplicos Hemicos tipicos"
+      tests:
+        default: true
+
+  # ----- 3.3 OX Sapricos -- 8 subgrupos (inclui composto hst) -----
+  # Ordem canonica: ca, sd, sl, sa, hst (composto), so, te, tp
+  "OXS":
+    - code: "OXSca"
+      name: "Organossolos Haplicos Sapricos carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "OXSsd"
+      name: "Organossolos Haplicos Sapricos sodicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 150 }
+    - code: "OXSsl"
+      name: "Organossolos Haplicos Sapricos salicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "OXSsa"
+      name: "Organossolos Haplicos Sapricos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    # 3.3.5 -- subgrupo composto: hipocarbonatico + solodico + terrico
+    # (Embrapa SiBCS 5a ed., Cap 14, p 250; perfil GB-48
+    # Palmieri & Santos 1980).
+    - code: "OXShst"
+      name: "Organossolos Haplicos Sapricos hipocarbonaticos solodicos terricos"
+      tests:
+        all_of:
+          - carater_hipocarbonatico: { max_depth_cm: 150 }
+          - carater_solodico: { max_depth_cm: 150 }
+          - carater_terrico: {}
+    - code: "OXSso"
+      name: "Organossolos Haplicos Sapricos solodicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "OXSte"
+      name: "Organossolos Haplicos Sapricos terricos"
+      tests:
+        all_of:
+          - carater_terrico: {}
+    - code: "OXStp"
+      name: "Organossolos Haplicos Sapricos tipicos"
+      tests:
+        default: true
