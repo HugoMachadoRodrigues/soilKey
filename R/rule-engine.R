@@ -43,7 +43,32 @@ load_rules <- function(system = c("wrb2022", "usda", "sibcs5"),
       system, package
     ))
   }
-  yaml::read_yaml(path)
+  rules <- yaml::read_yaml(path)
+
+  # v0.7.3: merge split sub-level YAMLs from `grandes-grupos/` and
+  # `subgrupos/` subdirectories. Each file contributes its
+  # `grandes_grupos:` or `subgrupos:` block, keyed by parent code
+  # (subordem code for grandes_grupos, GG code for subgrupos), into
+  # the merged rules object returned to the caller. Allows per-ordem
+  # files for the SiBCS 3o-4o categorical levels (and future USDA
+  # suborder/great-group/subgroup split). Backward-compatible: WRB
+  # and USDA without subdirs keep their current behavior.
+  for (subdir_name in c("grandes-grupos", "subgrupos")) {
+    sub_path <- system.file("rules", system, subdir_name, package = package)
+    if (!nzchar(sub_path) || !dir.exists(sub_path)) next
+    files <- list.files(sub_path, pattern = "\\.yaml$", full.names = TRUE)
+    if (length(files) == 0L) next
+    yaml_key <- gsub("-", "_", subdir_name)
+    merged <- list()
+    for (f in files) {
+      content <- yaml::read_yaml(f)
+      block <- content[[yaml_key]]
+      if (!is.null(block)) merged <- c(merged, block)
+    }
+    rules[[yaml_key]] <- c(rules[[yaml_key]] %||% list(), merged)
+  }
+
+  rules
 }
 
 

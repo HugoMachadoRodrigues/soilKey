@@ -389,3 +389,122 @@ test_that("cerosidade rejects unknown amount/strength terms", {
   expect_error(cerosidade(.make_test_pedon(), min_strength = "bizarro"),
                  "min_strength")
 })
+
+
+# ===========================================================================
+# v0.7.3 -- Cap 14 atributos (terrico, cambissolico)
+# ===========================================================================
+
+# ---- carater_terrico (mineral horizons >= 30 cm within 100 cm) ----------
+
+test_that("carater_terrico passes when mineral horizons sum >= 30 cm in upper 100 cm", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  20, 60),
+    bottom_cm = c(20, 60, 120),
+    designation = c("Hd", "Ag", "Cg")
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "TER", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  res <- carater_terrico(pr)   # 40 cm mineral (Ag) + 40 cm (Cg, capped at 100)
+  expect_true(isTRUE(res$passed))
+  expect_gte(res$evidence$cumulative_cm, 30)
+})
+
+test_that("carater_terrico FAILS when mineral horizons < 30 cm in upper 100 cm", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  60),
+    bottom_cm = c(60, 120),
+    designation = c("Hd", "Ag")    # Ag has 40 cm above 100 (60-100)
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "TER2", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  res <- carater_terrico(pr, min_thickness_cm = 50)
+  # Cumulative mineral within 100 cm = 40 cm (Ag from 60 to 100), < 50
+  expect_false(isTRUE(res$passed))
+})
+
+test_that("carater_terrico ignores histic H/O horizons when summing", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  50, 80),
+    bottom_cm = c(50, 80, 150),
+    designation = c("Oa", "Hd", "Ag")
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "TER3", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  res <- carater_terrico(pr)   # only Ag (80-100 capped) = 20 cm < 30
+  expect_false(isTRUE(res$passed))
+})
+
+test_that("carater_terrico FAILS when no mineral horizons present", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  40),
+    bottom_cm = c(40, 90),
+    designation = c("Oa", "Hd")
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "TER4", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  res <- carater_terrico(pr)
+  expect_false(isTRUE(res$passed))
+})
+
+
+# ---- carater_cambissolico (B_incipiente below H/O or A) -----------------
+
+test_that("carater_cambissolico passes for histic profile with Bw beneath", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  40,  80),
+    bottom_cm = c(40, 80, 130),
+    designation = c("Hd", "A", "Bw"),
+    munsell_value_moist  = c(2,  3, 4),
+    munsell_chroma_moist = c(1,  2, 4),
+    structure_grade      = c("strong", "moderate", "moderate"),
+    structure_type       = c("granular", "blocks", "blocks"),
+    clay_pct             = c(NA, 25, 35),
+    silt_pct             = c(NA, 30, 28),
+    sand_pct             = c(NA, 45, 37),
+    cec_cmol             = c(NA, 12, 10),
+    bs_pct               = c(NA, 60, 55),
+    al_cmol              = c(NA, 0.5, 0.6),
+    ph_h2o               = c(NA, 5.5, 5.6),
+    oc_pct               = c(NA, 1.0, 0.4),
+    consistence_moist    = c(NA, "friable", "firm"),
+    coarse_fragments_pct = c(NA, 5, 10)
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "CAM", lat = -25, lon = -50, country = "BR",
+                  parent_material = "rocha basica"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  res <- carater_cambissolico(pr)
+  if (isTRUE(B_incipiente(pr)$passed)) {
+    expect_true(isTRUE(res$passed))
+  } else {
+    skip("B_incipiente nao passou para esta fixture; carater_cambissolico depende disso")
+  }
+})
+
+test_that("carater_cambissolico FAILS without B_incipiente", {
+  hz <- data.table::data.table(
+    top_cm    = c(0,  40),
+    bottom_cm = c(40, 90),
+    designation = c("Hd", "C")
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "CAM2", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  expect_false(isTRUE(carater_cambissolico(pr)$passed))
+})

@@ -1122,3 +1122,191 @@ cerosidade <- function(pedon,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, p 207"
   )
 }
+
+
+# ============================================================================
+# v0.7.3: SiBCS Cap 14 -- 2 novos atributos para os Subgrupos de Organossolos
+# ============================================================================
+#
+# carater_terrico       -- horizontes minerais (A/Ag/Big/Cg) totalizando
+#                          >= 30 cm dentro de 100 cm da superficie. Cap 14
+#                          subgrupos terricos.
+#
+# carater_cambissolico  -- B_incipiente abaixo do hístico ou A. Cap 14
+#                          subgrupos cambissolicos (Folicos).
+# ============================================================================
+
+
+# ---- Carater terrico (Cap 14, p 246) -------------------------------------
+
+#' Carater terrico (SiBCS Cap 14)
+#'
+#' Solos com horizontes ou camadas constituidos por materiais minerais
+#' (horizonte A, Ag, Big e/ou Cg), com espessura cumulativa
+#' \eqn{\ge} \code{min_thickness_cm} dentro de \code{within_depth_cm}
+#' da superficie do solo. Discrimina os Subgrupos terricos de
+#' Organossolos (Cap 14, pp 245-250) e Cambissolos terricos (Cap 6).
+#'
+#' Padroes de designacao reconhecidos para horizonte mineral:
+#' \itemize{
+#'   \item \code{A}, \code{Ap}, \code{An} (mineral superficial)
+#'   \item \code{Ag} (mineral hidromorfico)
+#'   \item \code{Big}, \code{Bg} (B mineral hidromorfico)
+#'   \item \code{Cg} (C mineral hidromorfico)
+#'   \item \code{C}, \code{Cr}, \code{Crf} (mineral subsuperficial)
+#' }
+#'
+#' Excluidos do somatorio: horizontes histicos (\code{H*}, \code{O*})
+#' e horizontes cementados puros sem material mineral.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness_cm Espessura cumulativa minima de material
+#'        mineral (default 30 cm).
+#' @param within_depth_cm Profundidade de busca (default 100 cm).
+#' @return \code{\link{DiagnosticResult}}; \code{passed = TRUE} se a
+#'         soma da espessura dos horizontes minerais (truncada em
+#'         \code{within_depth_cm}) for \eqn{\ge}
+#'         \code{min_thickness_cm}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 14, p 246
+#'             (subgrupos terricos de Organossolos).
+#' @export
+carater_terrico <- function(pedon,
+                               min_thickness_cm = 30,
+                               within_depth_cm  = 100) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_terrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "empty horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, p 246"
+    ))
+  }
+  # Mineral horizon designation pattern -- aceita A/Ap/An, Ag, Big/Bg, Cg/C/Cr.
+  # Exclui horizontes histicos H/O.
+  is_mineral <- !is.na(h$designation) &
+                  grepl("^(A|Ag|Big|Bg|C|Cg|Cr|Crf)", h$designation) &
+                  !grepl("^[HO]", h$designation)
+  if (!any(is_mineral)) {
+    return(DiagnosticResult$new(
+      name = "carater_terrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no mineral horizons in profile"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, p 246"
+    ))
+  }
+  mineral_idx <- which(is_mineral)
+  # Truncate thickness contribution to within_depth_cm.
+  top  <- h$top_cm[mineral_idx]
+  bot  <- h$bottom_cm[mineral_idx]
+  if (any(is.na(top)) || any(is.na(bot))) {
+    return(DiagnosticResult$new(
+      name = "carater_terrico", passed = NA, layers = integer(0),
+      evidence = list(mineral_layers = mineral_idx),
+      missing = c("top_cm", "bottom_cm"),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, p 246"
+    ))
+  }
+  # Layer's contribution is bot - top, but capped at within_depth_cm
+  # for the upper bound and at top for the lower bound (skip layers
+  # entirely below within_depth_cm).
+  capped_bot <- pmin(bot, within_depth_cm)
+  capped_top <- pmax(top, 0)
+  in_range   <- capped_bot > capped_top
+  contributing <- mineral_idx[in_range]
+  thickness_contrib <- pmax(0, capped_bot[in_range] - capped_top[in_range])
+  cumulative <- sum(thickness_contrib, na.rm = TRUE)
+  passed <- cumulative >= min_thickness_cm
+  DiagnosticResult$new(
+    name = "carater_terrico", passed = passed,
+    layers = if (passed) contributing else integer(0),
+    evidence = list(
+      mineral_layers     = mineral_idx,
+      contributing       = contributing,
+      thickness_contrib  = thickness_contrib,
+      cumulative_cm      = cumulative,
+      min_thickness_cm   = min_thickness_cm,
+      within_depth_cm    = within_depth_cm
+    ),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, p 246"
+  )
+}
+
+
+# ---- Carater cambissolico (Cap 14, p 247) --------------------------------
+
+#' Carater cambissolico (SiBCS Cap 14)
+#'
+#' Solos com B incipiente (\code{\link{B_incipiente}}) abaixo do
+#' horizonte hístico (H/O) ou A. Discrimina os Subgrupos cambissolicos
+#' de Organossolos Folicos (Cap 14, pp 247-248): Folicos Fibricos /
+#' Hemicos / Sapricos cambissolicos.
+#'
+#' Implementado como uma interseccao de duas condicoes:
+#' \enumerate{
+#'   \item \code{B_incipiente} passa em ao menos um horizonte
+#'   \item Esse horizonte B incipiente esta abaixo de um horizonte
+#'         H/O (hístico) ou A
+#' }
+#' Em pedons sem H/O ou A acima do B incipiente, o teste falha
+#' (B incipiente isolado nao caracteriza Organossolo Cambissolico).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248.
+#' @export
+carater_cambissolico <- function(pedon) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_cambissolico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "empty horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248"
+    ))
+  }
+  # Step 1: B incipiente em alguma camada
+  bi <- B_incipiente(pedon)
+  if (!isTRUE(bi$passed)) {
+    return(DiagnosticResult$new(
+      name = "carater_cambissolico", passed = FALSE,
+      layers = integer(0),
+      evidence = list(B_incipiente = bi,
+                        reason = "no B incipiente layer"),
+      missing = bi$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248"
+    ))
+  }
+  # Step 2: pelo menos um horizonte B incipiente esta ABAIXO de um H/O ou A
+  bi_layers <- bi$layers
+  hist_or_a_idx <- which(!is.na(h$designation) &
+                            grepl("^[HO]|^A", h$designation))
+  if (length(hist_or_a_idx) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_cambissolico", passed = FALSE, layers = integer(0),
+      evidence = list(B_incipiente = bi,
+                        reason = "no histic (H/O) or A layer above B incipiente"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248"
+    ))
+  }
+  # Para cada B incipiente, verificar se HÁ H/O ou A com bottom_cm <= top_cm do B.
+  passing_bi <- integer(0)
+  for (bi_i in bi_layers) {
+    bi_top <- h$top_cm[bi_i]
+    above_match <- any(!is.na(h$bottom_cm[hist_or_a_idx]) &
+                          h$bottom_cm[hist_or_a_idx] <= bi_top)
+    if (isTRUE(above_match)) passing_bi <- c(passing_bi, bi_i)
+  }
+  passed <- length(passing_bi) > 0L
+  DiagnosticResult$new(
+    name = "carater_cambissolico", passed = passed,
+    layers = passing_bi,
+    evidence = list(B_incipiente = bi,
+                      hist_or_a_layers = hist_or_a_idx,
+                      passing_bi = passing_bi),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248"
+  )
+}

@@ -40,6 +40,10 @@ diagnostics:
   latossolo_ki_kr:              { function: latossolo_ki_kr,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
   # compute_ki / compute_kr sao utilitarios molares, consumidos por latossolo_ki_kr
 
+  # ----- v0.7.3 SiBCS Cap 14 (Organossolos) Subgrupos -----
+  carater_terrico:              { function: carater_terrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
+  carater_cambissolico:         { function: carater_cambissolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
+
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
   # =========================================================================

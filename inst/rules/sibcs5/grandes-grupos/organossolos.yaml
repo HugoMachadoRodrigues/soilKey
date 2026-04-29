@@ -1,0 +1,76 @@
+# =============================================================
+# SiBCS 5a edicao -- Organossolos (Cap 14, pp 243-250)
+#
+# Grandes grupos (3o nivel categorico) -- 9 classes
+#
+# Discriminante unico: grau de decomposicao do material organico
+# (saprico < 17% fibras esfregadas / hemico 17-40% / fibrico >= 40%,
+# ou von Post H7-H10 / H5-H6 / H1-H4 -- v0.7.2 implementado).
+#
+# Cada subordem (OJ Tiomorficos, OO Folicos, OX Haplicos) tem 3 GGs
+# Fibrico / Hemico / Saprico (ordem canonica do livro). NAO ha
+# catch-all "default: true" -- se grau de decomposicao nao puder ser
+# determinado, classify_sibcs deve parar no 2o nivel (subordem).
+# =============================================================
+
+grandes_grupos:
+
+  # ----------------------------------------------------------
+  # OJ -- Organossolos Tiomorficos (Cap 14, p 244)
+  # ----------------------------------------------------------
+  "OJ":
+    - code: "OJF"
+      name: "Organossolos Tiomorficos Fibricos"
+      tests:
+        all_of:
+          - fibrico: {}
+    - code: "OJH"
+      name: "Organossolos Tiomorficos Hemicos"
+      tests:
+        all_of:
+          - hemico: {}
+    - code: "OJS"
+      name: "Organossolos Tiomorficos Sapricos"
+      tests:
+        all_of:
+          - saprico: {}
+
+  # ----------------------------------------------------------
+  # OO -- Organossolos Folicos (Cap 14, p 244)
+  # ----------------------------------------------------------
+  "OO":
+    - code: "OOF"
+      name: "Organossolos Folicos Fibricos"
+      tests:
+        all_of:
+          - fibrico: {}
+    - code: "OOH"
+      name: "Organossolos Folicos Hemicos"
+      tests:
+        all_of:
+          - hemico: {}
+    - code: "OOS"
+      name: "Organossolos Folicos Sapricos"
+      tests:
+        all_of:
+          - saprico: {}
+
+  # ----------------------------------------------------------
+  # OX -- Organossolos Haplicos (Cap 14, p 245)
+  # ----------------------------------------------------------
+  "OX":
+    - code: "OXF"
+      name: "Organossolos Haplicos Fibricos"
+      tests:
+        all_of:
+          - fibrico: {}
+    - code: "OXH"
+      name: "Organossolos Haplicos Hemicos"
+      tests:
+        all_of:
+          - hemico: {}
+    - code: "OXS"
+      name: "Organossolos Haplicos Sapricos"
+      tests:
+        all_of:
+          - saprico: {}
