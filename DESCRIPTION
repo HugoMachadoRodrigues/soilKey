@@ -19,7 +19,7 @@ Description: Implements deterministic classification keys for the World
     model; LLMs are restricted to schema-validated extraction. Each
     classification result reports a key trace, a provenance-aware evidence
     grade, and ambiguities that further measurement would resolve.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
