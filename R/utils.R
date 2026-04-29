@@ -115,7 +115,12 @@ horizon_column_spec <- function() {
     cole_value                    = "numeric",   # Coefficient of Linear Extensibility (1500 kPa moist -> oven dry); SiBCS retratil >= 0.06
     sio2_sulfuric_pct             = "numeric",   # SiO2 por ataque sulfurico-NaOH (Embrapa Manual de Metodos), para Ki/Kr
     al2o3_sulfuric_pct            = "numeric",   # Al2O3 por ataque sulfurico, para Ki = (SiO2/60.08)/(Al2O3/101.96) molar
-    fe2o3_sulfuric_pct            = "numeric"    # Fe2O3 por ataque sulfurico, para Kr = SiO2/(Al2O3+Fe2O3) molar (Latossolos Acriferricos)
+    fe2o3_sulfuric_pct            = "numeric",   # Fe2O3 por ataque sulfurico, para Kr = SiO2/(Al2O3+Fe2O3) molar (Latossolos Acriferricos)
+    # ---- v0.7.14.C additions: SiBCS Cap 18 mineralogia da fracao areia ----
+    sand_mica_pct                 = "numeric",   # SiBCS Cap 18 p 286: % volume de micas na fracao areia (>= 15% -> Familia "micacea")
+    sand_amphibole_pct            = "numeric",   # SiBCS Cap 18 p 286: % volume de anfibolios (>= 15% -> Familia "anfibolitica")
+    sand_feldspar_pct             = "numeric",   # SiBCS Cap 18 p 286: % volume de feldspatos (>= 15% -> Familia "feldspatica")
+    sand_mineralogy               = "character"  # SiBCS Cap 18 p 286 fallback: 'micacea' / 'anfibolitica' / 'feldspatica' / 'quartzosa' / NA (atalho qualitativo)
   )
 }
 

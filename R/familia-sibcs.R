@@ -415,35 +415,113 @@ familia_tipo_horizonte_superficial <- function(pedon) {
   #  - skip_sat_bases: ordem ja usa V em nivel mais alto (e.g.
   #      ordens com classes Distrofico/Eutrofico nos GGs: L, C, P,
   #      N, R [exceto RQ], T, S [parcial], F, V).
-  #  - skip_alico: ordem ja usa carater alitico em nivel mais alto
-  #      (e.g. P*al, L*al, N*al, T*al, S*al, F*al).
+  #  - skip_alico: ordem ja usa carater alitico em nivel mais alto.
+  #  - mineralogia_areia: ordem se beneficia da mineralogia da areia.
+  #      Aplicavel a Cambissolos, Chernossolos, Gleissolos, Luvissolos,
+  #      Neossolos (excepto Quartzarenicos), Nitossolos, Planossolos,
+  #      Plintossolos, Vertissolos (Cap 18, p 286).
+  #  - mineralogia_argila_lat: somente Latossolos (e opcionalmente
+  #      Argissolos, Cambissolos, Plintossolos com info da argila).
+  #  - skip_atividade_argila: ordem ja usa atividade da argila em
+  #      nivel mais alto (Latossolos = Tb por definicao; Chernossolos /
+  #      Luvissolos / Vertissolos = Ta por definicao).
+  #  - skip_oxidos_ferro: ordem ja usa Fe2O3 em nivel mais alto
+  #      (Latossolos *f / Argissolos *f / Cambissolos *f / Nitossolos
+  #      *f / Plintossolos *f / Vertissolos sem Fe).
+  #  - andico: aplicavel para Cambissolos Histicos e Organossolos
+  #      Folicos (sera filtrado por sg_code no motor).
   list(
     "P" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = FALSE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "L" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = FALSE,
+                  mineralogia_argila_lat = TRUE,
+                  skip_atividade_argila = TRUE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "C" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = TRUE),  # Cambissolos Histicos
     "M" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE,
-                  skip_sat_bases = TRUE, skip_alico = FALSE),
+                  skip_sat_bases = TRUE, skip_alico = FALSE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = TRUE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "E" = list(use_subgrupamento = TRUE,  skip_tipo_A = FALSE,
-                  skip_sat_bases = FALSE, skip_alico = FALSE),
+                  skip_sat_bases = FALSE, skip_alico = FALSE,
+                  mineralogia_areia = FALSE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = FALSE),
     "G" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = FALSE, skip_alico = FALSE),
+                  skip_sat_bases = FALSE, skip_alico = FALSE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = FALSE),
     "N" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "R" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = FALSE),
+                  skip_sat_bases = TRUE, skip_alico = FALSE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "T" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = TRUE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = FALSE),
     "S" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = FALSE),
     "F" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = TRUE, skip_alico = TRUE),
+                  skip_sat_bases = TRUE, skip_alico = TRUE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = FALSE,
+                  skip_oxidos_ferro = FALSE,
+                  andico = FALSE),
     "V" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
-                  skip_sat_bases = FALSE, skip_alico = FALSE),
+                  skip_sat_bases = FALSE, skip_alico = FALSE,
+                  mineralogia_areia = TRUE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = TRUE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = FALSE),
     "O" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE,
-                  skip_sat_bases = TRUE, skip_alico = FALSE)
+                  skip_sat_bases = TRUE, skip_alico = FALSE,
+                  mineralogia_areia = FALSE,
+                  mineralogia_argila_lat = FALSE,
+                  skip_atividade_argila = TRUE,
+                  skip_oxidos_ferro = TRUE,
+                  andico = TRUE)  # Organossolos Folicos
   )
 }
 
@@ -492,7 +570,12 @@ classify_sibcs_familia <- function(pedon,
   cfg <- cfg_map[[ordem_code]] %||% list(use_subgrupamento = FALSE,
                                             skip_tipo_A = FALSE,
                                             skip_sat_bases = FALSE,
-                                            skip_alico = FALSE)
+                                            skip_alico = FALSE,
+                                            mineralogia_areia = FALSE,
+                                            mineralogia_argila_lat = FALSE,
+                                            skip_atividade_argila = FALSE,
+                                            skip_oxidos_ferro = FALSE,
+                                            andico = FALSE)
 
   # Override: SGs arenicos / espessarenicos sempre usam subgrupamento
   if (!is.null(sg_code) && grepl("(Ar|Ea)$", sg_code)) {
@@ -532,6 +615,37 @@ classify_sibcs_familia <- function(pedon,
   # Dimensao 7 (v0.7.14.B): saturacao por aluminio (alico)
   if (!isTRUE(cfg$skip_alico)) {
     out$saturacao_aluminio <- familia_saturacao_aluminio(pedon)
+  }
+
+  # Dimensao 8 (v0.7.14.C): mineralogia da fracao areia
+  if (isTRUE(cfg$mineralogia_areia)) {
+    out$mineralogia_areia <- familia_mineralogia_areia(
+      pedon, max_depth_cm = max_depth_cm
+    )
+  }
+
+  # Dimensao 9 (v0.7.14.C): mineralogia da fracao argila (Latossolos)
+  if (isTRUE(cfg$mineralogia_argila_lat)) {
+    out$mineralogia_argila <- familia_mineralogia_argila_latossolo(
+      pedon, max_depth_cm = max_depth_cm
+    )
+  }
+
+  # Dimensao 10 (v0.7.14.C): atividade da argila
+  if (!isTRUE(cfg$skip_atividade_argila)) {
+    out$atividade_argila <- familia_atividade_argila(pedon)
+  }
+
+  # Dimensao 11 (v0.7.14.C): teor de oxidos de ferro
+  if (!isTRUE(cfg$skip_oxidos_ferro)) {
+    out$oxidos_ferro <- familia_oxidos_ferro(pedon)
+  }
+
+  # Dimensao 12 (v0.7.14.C): propriedades andicas
+  # Sempre testavel quando ordem permite, MAS so retornara value
+  # nao-nulo para subgrupos histicos (Cambissolos / Organossolos Folicos)
+  if (isTRUE(cfg$andico)) {
+    out$andico <- familia_andico(pedon)
   }
 
   out
@@ -696,6 +810,324 @@ familia_saturacao_aluminio <- function(pedon,
                       prefixo    = prefixo),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 285"
+  )
+}
+
+
+# ---- v0.7.14.C: mineralogia + atividade da argila + oxidos Fe + andico ---
+
+#' Familia: mineralogia da fracao areia (Cap 18, p 286)
+#'
+#' Identifica predominio de minerais facilmente alteraveis na
+#' fracao areia (>= 0,05 mm) na secao de controle. Classes:
+#' \itemize{
+#'   \item \code{micacea}: \code{sand_mica_pct >= 15} (% volume).
+#'   \item \code{anfibolitica}: \code{sand_amphibole_pct >= 15}.
+#'   \item \code{feldspatica}: \code{sand_feldspar_pct >= 15}.
+#' }
+#'
+#' Quando os percentuais especificos estao ausentes, busca a
+#' coluna \code{sand_mineralogy} (atalho qualitativo, valores
+#' aceitos: "micacea", "anfibolitica", "feldspatica").
+#'
+#' Aplicavel a Cambissolos, Chernossolos, Gleissolos, Luvissolos,
+#' Neossolos (excepto Quartzarenicos), Nitossolos, Planossolos,
+#' Plintossolos e Vertissolos.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 200).
+#' @param threshold Limiar de % volume (default 15).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286.
+#' @export
+familia_mineralogia_areia <- function(pedon, max_depth_cm = 200,
+                                          threshold = 15) {
+  h <- pedon$horizons
+  pcts <- list(
+    micacea     = .weighted_avg_in_depth(h, "sand_mica_pct",
+                                              max_depth_cm = max_depth_cm),
+    anfibolitica = .weighted_avg_in_depth(h, "sand_amphibole_pct",
+                                              max_depth_cm = max_depth_cm),
+    feldspatica  = .weighted_avg_in_depth(h, "sand_feldspar_pct",
+                                              max_depth_cm = max_depth_cm)
+  )
+  # Tenta % explicito primeiro
+  qualifying <- vapply(pcts, function(p) !is.na(p) && p >= threshold,
+                          logical(1))
+  classe <- NULL
+  if (any(qualifying)) {
+    # Se mais de um qualifica, retorna o de maior valor
+    vals <- unlist(pcts)
+    vals[!qualifying] <- -Inf
+    classe <- names(vals)[which.max(vals)]
+  } else {
+    # Fallback: coluna qualitativa sand_mineralogy
+    sm <- h$sand_mineralogy
+    if (!is.null(sm)) {
+      tops <- h$top_cm
+      bots <- h$bottom_cm
+      ok <- !is.na(sm) & !is.na(tops) & !is.na(bots) &
+              tops < max_depth_cm
+      if (any(ok)) {
+        candidates <- unique(sm[ok])
+        candidates <- candidates[candidates %in%
+                                     c("micacea", "anfibolitica",
+                                       "feldspatica")]
+        if (length(candidates) >= 1) classe <- candidates[1]
+      }
+    }
+  }
+  miss <- character(0)
+  if (all(vapply(pcts, is.na, logical(1)))) {
+    if (is.null(classe)) {
+      miss <- c("sand_mica_pct", "sand_amphibole_pct",
+                  "sand_feldspar_pct", "sand_mineralogy")
+    }
+  }
+  FamilyAttribute$new(
+    name = "mineralogia_areia", value = classe,
+    evidence = list(pcts = pcts, threshold = threshold,
+                      max_depth_cm = max_depth_cm),
+    missing = miss,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 286"
+  )
+}
+
+
+#' Familia: mineralogia da fracao argila para Latossolos
+#' (Cap 18, p 286-287)
+#'
+#' Classifica via Ki = SiO2/(Al2O3) e Kr = SiO2/(Al2O3 + Fe2O3)
+#' molares (helpers \code{\link{compute_ki}} / \code{\link{compute_kr}}):
+#' \itemize{
+#'   \item \code{caulinitico}: Ki > 0.75 e Kr > 0.75
+#'   \item \code{caulinitico-oxidico}: Ki > 0.75 e Kr <= 0.75
+#'   \item \code{gibsitico-oxidico}: Ki <= 0.75 e Kr <= 0.75
+#'   \item \code{oxidico}: Kr <= 0.75 (predominio Fe2O3 + Al2O3)
+#' }
+#'
+#' Aplicavel principalmente para Latossolos; tambem pode ser
+#' usado em Argissolos, Cambissolos e Plintossolos quando ha
+#' informacao de mineralogia da argila pelo menos semiquantitativa.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 200).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287.
+#' @export
+familia_mineralogia_argila_latossolo <- function(pedon,
+                                                    max_depth_cm = 200) {
+  h <- pedon$horizons
+  sio2 <- .weighted_avg_in_depth(h, "sio2_sulfuric_pct",
+                                    max_depth_cm = max_depth_cm)
+  al2o3 <- .weighted_avg_in_depth(h, "al2o3_sulfuric_pct",
+                                     max_depth_cm = max_depth_cm)
+  fe2o3 <- .weighted_avg_in_depth(h, "fe2o3_sulfuric_pct",
+                                     max_depth_cm = max_depth_cm)
+  miss <- character(0)
+  if (is.na(sio2)) miss <- c(miss, "sio2_sulfuric_pct")
+  if (is.na(al2o3)) miss <- c(miss, "al2o3_sulfuric_pct")
+  if (is.na(fe2o3)) miss <- c(miss, "fe2o3_sulfuric_pct")
+  if (length(miss) > 0L) {
+    return(FamilyAttribute$new(
+      name = "mineralogia_argila", value = NULL,
+      evidence = list(reason = "Ki/Kr nao computavel"),
+      missing = miss,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287"
+    ))
+  }
+  ki <- compute_ki(sio2, al2o3)
+  kr <- compute_kr(sio2, al2o3, fe2o3)
+  classe <- if (is.na(ki) || is.na(kr)) NULL
+            else if (ki > 0.75 && kr > 0.75) "caulinitico"
+            else if (ki > 0.75 && kr <= 0.75) "caulinitico-oxidico"
+            else if (ki <= 0.75 && kr <= 0.75) "gibsitico-oxidico"
+            else NULL
+  FamilyAttribute$new(
+    name = "mineralogia_argila", value = classe,
+    evidence = list(sio2_sulfuric_pct = sio2,
+                      al2o3_sulfuric_pct = al2o3,
+                      fe2o3_sulfuric_pct = fe2o3,
+                      ki = ki, kr = kr),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287"
+  )
+}
+
+
+#' Familia: subgrupamento de atividade da fracao argila (Cap 18, p 287)
+#'
+#' Classifica pela CTC da fracao argila T = (cec_cmol * 100 / clay_pct):
+#' \itemize{
+#'   \item \code{Tmb}: T < 8 cmolc/kg argila (muito baixa)
+#'   \item \code{Tmob}: 8 <= T < 17 (moderadamente baixa)
+#'   \item \code{Tm}: 17 <= T < 27 (media)
+#'   \item \code{Tmoa}: 27 <= T < 40 (moderadamente alta)
+#'   \item \code{Tma}: T >= 40 (muito alta)
+#' }
+#'
+#' Considerada na maior parte do horizonte B (ou C, na ausencia de B).
+#' Nao aplicavel a solos de classe textural areia ou areia franca
+#' (clay < 15 g kg-1 = 1,5\%).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 150).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
+#' @export
+familia_atividade_argila <- function(pedon, max_depth_cm = 150) {
+  h <- pedon$horizons
+  cec <- .weighted_avg_in_depth(h, "cec_cmol",
+                                   max_depth_cm = max_depth_cm)
+  clay <- .weighted_avg_in_depth(h, "clay_pct",
+                                    max_depth_cm = max_depth_cm)
+  miss <- character(0)
+  if (is.na(cec)) miss <- c(miss, "cec_cmol")
+  if (is.na(clay)) miss <- c(miss, "clay_pct")
+  if (length(miss) > 0L) {
+    return(FamilyAttribute$new(
+      name = "atividade_argila", value = NULL,
+      evidence = list(reason = "CEC ou clay nao informado"),
+      missing = miss,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  if (clay < 1.5) {  # ~ areia / areia franca: nao aplicavel
+    return(FamilyAttribute$new(
+      name = "atividade_argila", value = NULL,
+      evidence = list(reason = "textura areia/areia franca",
+                        clay_pct = clay),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  T_argila <- cec * 100 / clay
+  classe <- if (T_argila < 8) "Tmb"
+            else if (T_argila < 17) "Tmob"
+            else if (T_argila < 27) "Tm"
+            else if (T_argila < 40) "Tmoa"
+            else "Tma"
+  FamilyAttribute$new(
+    name = "atividade_argila", value = classe,
+    evidence = list(cec_cmol_avg = cec, clay_pct_avg = clay,
+                      T_argila_cmol_kg = T_argila),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+  )
+}
+
+
+#' Familia: teor de oxidos de ferro (Cap 1, p 42)
+#'
+#' Classifica pelo teor de Fe2O3 (g/kg de solo, equivalente a
+#' fe2o3_sulfuric_pct * 10) na maior parte do horizonte B:
+#' \itemize{
+#'   \item \code{hipoferrico}: < 80 g/kg (= < 8\%)
+#'   \item \code{mesoferrico}: 80 - 180 g/kg ([8\%, 18\%))
+#'   \item \code{ferrico}: 180 - 360 g/kg ([18\%, 36\%))
+#'   \item \code{perferrico}: >= 360 g/kg (>= 36\%)
+#' }
+#'
+#' Aplicavel a Argissolos, Cambissolos, Chernossolos, Latossolos,
+#' Neossolos Litolicos, Neossolos Regoliticos, Nitossolos e
+#' Plintossolos. Quando o atributo ja foi considerado em nivel
+#' categorico mais alto (e.g. Latossolos Eutroferricos /
+#' Distroferricos / Acriferricos), o motor de Familia pula esta
+#' dimensao.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 150).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 42.
+#' @export
+familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (length(b_layers) == 0L) {
+    return(FamilyAttribute$new(
+      name = "oxidos_ferro", value = NULL,
+      evidence = list(reason = "no B horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42"
+    ))
+  }
+  fe_avg <- .weighted_avg_in_depth(h, "fe2o3_sulfuric_pct",
+                                      max_depth_cm = max_depth_cm)
+  if (is.na(fe_avg)) {
+    return(FamilyAttribute$new(
+      name = "oxidos_ferro", value = NULL,
+      evidence = list(reason = "fe2o3_sulfuric_pct nao informado"),
+      missing = "fe2o3_sulfuric_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42"
+    ))
+  }
+  classe <- if (fe_avg < 8) "hipoferrico"
+            else if (fe_avg < 18) "mesoferrico"
+            else if (fe_avg < 36) "ferrico"
+            else "perferrico"
+  FamilyAttribute$new(
+    name = "oxidos_ferro", value = classe,
+    evidence = list(fe2o3_sulfuric_pct_avg = fe_avg,
+                      max_depth_cm = max_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42"
+  )
+}
+
+
+#' Familia: propriedades andicas (Cap 1, p 42-43)
+#'
+#' Aplica o termo "andico" quando, em qualquer horizonte:
+#' \itemize{
+#'   \item densidade do solo <= 0,9 g/cm3, E
+#'   \item retencao de fosfato >= 85\%, E
+#'   \item Alo + 0.5 * Feo >= 2\% (oxalato extraivel)
+#' }
+#'
+#' Aplicavel para Cambissolos Histicos e Organossolos Folicos
+#' (Cap 18 p 287), em fase de validacao.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_db Densidade maxima (default 0.9 g/cm3).
+#' @param min_pret Retencao minima de fosfato (default 85\%).
+#' @param min_aloxfeox Limite de Alo + 0.5*Feo (default 2\%).
+#' @return \code{\link{FamilyAttribute}} com \code{value} =
+#'         \code{"andico"} ou NULL.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43;
+#'             Cap 18, p 287.
+#' @export
+familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
+                              min_aloxfeox = 2) {
+  h <- pedon$horizons
+  db <- h$bulk_density_g_cm3
+  pret <- h$phosphate_retention_pct
+  alox <- h$al_ox_pct
+  feox <- h$fe_ox_pct
+  miss <- character(0)
+  if (all(is.na(db))) miss <- c(miss, "bulk_density_g_cm3")
+  if (all(is.na(pret))) miss <- c(miss, "phosphate_retention_pct")
+  if (all(is.na(alox))) miss <- c(miss, "al_ox_pct")
+  if (all(is.na(feox))) miss <- c(miss, "fe_ox_pct")
+  if (length(miss) > 0L) {
+    return(FamilyAttribute$new(
+      name = "andico", value = NULL,
+      evidence = list(reason = "criterios andicos nao computaveis"),
+      missing = miss,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43"
+    ))
+  }
+  passes <- !is.na(db) & db <= max_db &
+              !is.na(pret) & pret >= min_pret &
+              !is.na(alox) & !is.na(feox) &
+              (alox + 0.5 * feox) >= min_aloxfeox
+  classe <- if (any(passes)) "andico" else NULL
+  FamilyAttribute$new(
+    name = "andico", value = classe,
+    evidence = list(passing_layers = which(passes),
+                      max_db = max_db, min_pret = min_pret,
+                      min_aloxfeox = min_aloxfeox),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43"
   )
 }
 
