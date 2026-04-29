@@ -120,7 +120,9 @@ horizon_column_spec <- function() {
     sand_mica_pct                 = "numeric",   # SiBCS Cap 18 p 286: % volume de micas na fracao areia (>= 15% -> Familia "micacea")
     sand_amphibole_pct            = "numeric",   # SiBCS Cap 18 p 286: % volume de anfibolios (>= 15% -> Familia "anfibolitica")
     sand_feldspar_pct             = "numeric",   # SiBCS Cap 18 p 286: % volume de feldspatos (>= 15% -> Familia "feldspatica")
-    sand_mineralogy               = "character"  # SiBCS Cap 18 p 286 fallback: 'micacea' / 'anfibolitica' / 'feldspatica' / 'quartzosa' / NA (atalho qualitativo)
+    sand_mineralogy               = "character", # SiBCS Cap 18 p 286 fallback: 'micacea' / 'anfibolitica' / 'feldspatica' / 'quartzosa' / NA (atalho qualitativo)
+    # ---- v0.7.14.D additions: SiBCS Cap 18 Organossolos -----------------
+    woody_fragments_pct           = "numeric"    # SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos)
   )
 }
 

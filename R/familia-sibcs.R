@@ -648,6 +648,15 @@ classify_sibcs_familia <- function(pedon,
     out$andico <- familia_andico(pedon)
   }
 
+  # Dimensoes 13-15 (v0.7.14.D): especificas de Organossolos
+  if (ordem_code == "O") {
+    out$material_subjacente <-
+      familia_organossolo_material_subjacente(pedon,
+                                                 max_depth_cm = max_depth_cm)
+    out$espessura_organica <- familia_organossolo_espessura(pedon)
+    out$lenhosidade <- familia_organossolo_lenhosidade(pedon)
+  }
+
   out
 }
 
@@ -1128,6 +1137,178 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
                       min_aloxfeox = min_aloxfeox),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43"
+  )
+}
+
+
+# ---- v0.7.14.D: Organossolos especificos (Cap 18, p 287-288) -------------
+
+# Helper: identifica camadas orgânicas no perfil via designation
+# H/O (horizontes organicos no SiBCS Cap 14).
+.organic_layers <- function(h) {
+  is_org <- !is.na(h$designation) & grepl("^[HO]", h$designation)
+  which(is_org)
+}
+
+
+#' Familia: material subjacente em Organossolos (Cap 18, p 287)
+#'
+#' Identifica a textura da primeira camada nao-organica abaixo das
+#' camadas organicas, na secao de controle. Retorna o grupamento
+#' textural daquele material como adjetivo (e.g. "arenoso",
+#' "argiloso").
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 200).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
+#' @export
+familia_organossolo_material_subjacente <- function(pedon,
+                                                       max_depth_cm = 200) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) {
+    return(FamilyAttribute$new(
+      name = "material_subjacente", value = NULL,
+      evidence = list(reason = "no horizons"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  ord <- order(h$top_cm, na.last = TRUE)
+  org <- .organic_layers(h)
+  # Primeira camada nao-organica DEPOIS da ultima organica
+  org_in_order <- ord[ord %in% org]
+  if (length(org_in_order) == 0L) {
+    return(FamilyAttribute$new(
+      name = "material_subjacente", value = NULL,
+      evidence = list(reason = "nenhuma camada organica encontrada"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  pos_last_org <- max(which(ord %in% org))
+  candidates <- ord[seq_len(length(ord))][-seq_len(pos_last_org)]
+  candidates <- candidates[!is.na(h$top_cm[candidates]) &
+                              h$top_cm[candidates] < max_depth_cm]
+  candidates <- setdiff(candidates, org)
+  if (length(candidates) == 0L) {
+    return(FamilyAttribute$new(
+      name = "material_subjacente", value = NULL,
+      evidence = list(reason = "no material mineral subjacente na SC"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  i <- candidates[1]
+  clay <- h$clay_pct[i]
+  sand <- h$sand_pct[i]
+  if (is.na(clay) || is.na(sand)) {
+    return(FamilyAttribute$new(
+      name = "material_subjacente", value = NULL,
+      evidence = list(reason = "textura mineral subjacente NA",
+                        layer = i),
+      missing = c("clay_pct", "sand_pct"),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  classe <- if (sand - clay > 70) "arenoso"
+            else if (clay > 60) "muito_argiloso"
+            else if (clay >= 35) "argiloso"
+            else if (clay < 35 && sand < 15) "siltoso"
+            else "medio"
+  FamilyAttribute$new(
+    name = "material_subjacente", value = classe,
+    evidence = list(layer = i, clay_pct = clay, sand_pct = sand),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+  )
+}
+
+
+#' Familia: espessura > 100 cm de material organico em Organossolos
+#' (Cap 18, p 287)
+#'
+#' Retorna \code{"espesso"} quando a soma das espessuras de
+#' camadas organicas a partir da superficie excede 100 cm
+#' (Cap 18 p 287: "Organossolos com mais de 100 cm de material
+#' organico a partir da sua superficie").
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_cm Default 100 cm.
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
+#' @export
+familia_organossolo_espessura <- function(pedon, min_cm = 100) {
+  h <- pedon$horizons
+  org <- .organic_layers(h)
+  if (length(org) == 0L) {
+    return(FamilyAttribute$new(
+      name = "espessura_organica", value = NULL,
+      evidence = list(reason = "no organic layers"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+    ))
+  }
+  thk <- sum(pmax(h$bottom_cm[org] - h$top_cm[org], 0), na.rm = TRUE)
+  classe <- if (thk > min_cm) "espesso" else NULL
+  FamilyAttribute$new(
+    name = "espessura_organica", value = classe,
+    evidence = list(thickness_cm = thk, threshold_cm = min_cm,
+                      organic_layers = org),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 287"
+  )
+}
+
+
+#' Familia: lenhosidade em Organossolos (Cap 18, p 288)
+#'
+#' Classifica a presenca de galhos / fragmentos de troncos > 2 cm em
+#' camadas organicas, "a semelhanca do utilizado para qualificar
+#' as classes de pedregosidade" (Cap 18 p 288):
+#' \itemize{
+#'   \item \code{lenhoso}: 10\% <= woody_fragments < 30\%
+#'   \item \code{muito_lenhoso}: 30\% <= woody_fragments <= 50\%
+#'   \item \code{extremamente_lenhoso}: woody_fragments > 50\%
+#' }
+#' (Limites adotados a partir das classes de pedregosidade,
+#' Santos et al. 2015.)
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 288.
+#' @export
+familia_organossolo_lenhosidade <- function(pedon) {
+  h <- pedon$horizons
+  org <- .organic_layers(h)
+  if (length(org) == 0L) {
+    return(FamilyAttribute$new(
+      name = "lenhosidade", value = NULL,
+      evidence = list(reason = "no organic layers"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 288"
+    ))
+  }
+  wf <- h$woody_fragments_pct[org]
+  if (all(is.na(wf))) {
+    return(FamilyAttribute$new(
+      name = "lenhosidade", value = NULL,
+      evidence = list(reason = "woody_fragments_pct nao informado"),
+      missing = "woody_fragments_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 288"
+    ))
+  }
+  max_wf <- max(wf, na.rm = TRUE)
+  classe <- if (max_wf > 50) "extremamente_lenhoso"
+            else if (max_wf >= 30) "muito_lenhoso"
+            else if (max_wf >= 10) "lenhoso"
+            else NULL
+  FamilyAttribute$new(
+    name = "lenhosidade", value = classe,
+    evidence = list(woody_fragments_pct_max = max_wf,
+                      organic_layers = org),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 288"
   )
 }
 

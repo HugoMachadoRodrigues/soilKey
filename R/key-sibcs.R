@@ -126,6 +126,11 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #' @param rules Conjunto de regras pre-carregado.
 #' @param on_missing Um de \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}.
+#' @param include_familia Quando \code{TRUE} (default \code{FALSE}),
+#'        adiciona o 5o nivel categorico (Familia) via
+#'        \code{\link{classify_sibcs_familia}}. O label textual da
+#'        Familia aparece em \code{$trace$familia_label}, e a lista
+#'        de \code{\link{FamilyAttribute}}s em \code{$trace$familia}.
 #' @return Um \code{\link{ClassificationResult}} cujo \code{name} eh o
 #'         nome completo da classe atribuida no nivel mais profundo
 #'         (Grande Grupo > Subordem > Ordem) e \code{rsg_or_order} eh
@@ -134,7 +139,8 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #' @export
 classify_sibcs <- function(pedon,
                              rules      = NULL,
-                             on_missing = c("warn", "silent", "error")) {
+                             on_missing = c("warn", "silent", "error"),
+                             include_familia = FALSE) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("sibcs5")
 
@@ -170,11 +176,32 @@ classify_sibcs <- function(pedon,
                else list(assigned = NULL, trace = list())
   sg <- sg_result$assigned
 
-  # Display name = Subgrupo (se houver) > Grande Grupo > Subordem > Ordem
+  # Nivel 5 (v0.7.14.D): familia (5o nivel categorico). Multi-rotulo,
+  # nao chave -- desce sempre que include_familia=TRUE e o pedon
+  # tem ordem/sg conhecidos.
+  familia_attrs <- NULL
+  familia_lbl <- NULL
+  if (isTRUE(include_familia)) {
+    familia_attrs <- tryCatch(
+      classify_sibcs_familia(
+        pedon,
+        ordem_code = ordem$code,
+        sg_code = if (!is.null(sg)) sg$code else NULL
+      ),
+      error = function(e) list()
+    )
+    familia_lbl <- familia_label(familia_attrs)
+  }
+
+  # Display name = (Subgrupo + Familia) > Subgrupo > Grande Grupo > ...
   display_name <- if (!is.null(sg))            sg$name
                   else if (!is.null(gg))       gg$name
                   else if (!is.null(subordem)) subordem$name
                   else                         ordem$name
+  if (isTRUE(include_familia) && !is.null(familia_lbl) &&
+        nzchar(familia_lbl)) {
+    display_name <- paste0(display_name, ", ", familia_lbl)
+  }
   trace_combined <- list(
     ordens                = key_result$trace,
     subordens             = sub_result$trace,
@@ -182,7 +209,9 @@ classify_sibcs <- function(pedon,
     grandes_grupos        = gg_result$trace,
     grande_grupo_assigned = gg,
     subgrupos             = sg_result$trace,
-    subgrupo_assigned     = sg
+    subgrupo_assigned     = sg,
+    familia               = familia_attrs,
+    familia_label         = familia_lbl
   )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)
