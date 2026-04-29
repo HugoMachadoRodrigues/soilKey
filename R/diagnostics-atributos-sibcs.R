@@ -1540,6 +1540,57 @@ carater_sombrico <- function(pedon,
 }
 
 
+# ---- v0.7.8: Carater palico (Cap 11 Luvissolos Palicos) ------------------
+
+#' Carater palico (SiBCS Cap 11)
+#'
+#' Solos com espessura do solum (A + B, inclusive E e exclusive BC)
+#' maior que \code{min_solum_cm} (default 80). Discrimina os Grandes
+#' Grupos Palicos de Luvissolos (Cap 11 TCp, TXp) -- "desenvolvimento
+#' excessivo" (do latim "pale").
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_solum_cm Default 80.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 11, p 214.
+#' @export
+carater_palico <- function(pedon, min_solum_cm = 80) {
+  h <- pedon$horizons
+  # Solum = A, AB, BA, B*, E (excluido BC e B/C, e qualquer C, R, Cr).
+  solum_idx <- which(!is.na(h$designation) &
+                       grepl("^A|^B[twiogphsm]?[0-9]?$|^B$|^E", h$designation) &
+                       !grepl("^BC|^B/C|^C$|^Cr|^R", h$designation))
+  if (length(solum_idx) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_palico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no solum (A/B/E) horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 11, p 214"
+    ))
+  }
+  thickness <- h$bottom_cm[solum_idx] - h$top_cm[solum_idx]
+  if (any(is.na(thickness))) {
+    return(DiagnosticResult$new(
+      name = "carater_palico", passed = NA, layers = integer(0),
+      evidence = list(solum_idx = solum_idx),
+      missing = c("top_cm", "bottom_cm"),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 11, p 214"
+    ))
+  }
+  total_solum <- sum(thickness, na.rm = TRUE)
+  passed <- total_solum > min_solum_cm
+  DiagnosticResult$new(
+    name = "carater_palico", passed = passed,
+    layers = if (passed) solum_idx else integer(0),
+    evidence = list(solum_layers = solum_idx,
+                      total_solum_cm = total_solum,
+                      min_solum_cm = min_solum_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 11, p 214"
+  )
+}
+
+
 # ---- v0.7.7: Caracteres para Cap 10 (Latossolos) ------------------------
 #
 # 2 diagnosticos novos:

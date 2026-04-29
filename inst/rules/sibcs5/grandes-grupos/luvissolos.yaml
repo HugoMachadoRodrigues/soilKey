@@ -1,0 +1,36 @@
+# =============================================================
+# SiBCS 5a edicao -- Luvissolos (Cap 11, pp 213-218)
+#
+# Grandes grupos -- 5 classes em 2 subordens:
+#   TC Cromicos: 3 GGs (Carbonatico / Palico / Ortico)
+#   TX Haplicos: 2 GGs (Palico / Ortico)
+# =============================================================
+
+grandes_grupos:
+
+  "TC":
+    - code: "TCca"
+      name: "Luvissolos Cromicos Carbonaticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 100 }
+    - code: "TCp"
+      name: "Luvissolos Cromicos Palicos"
+      tests:
+        all_of:
+          - carater_palico: {}
+    - code: "TCo"
+      name: "Luvissolos Cromicos Orticos"
+      tests:
+        default: true
+
+  "TX":
+    - code: "TXp"
+      name: "Luvissolos Haplicos Palicos"
+      tests:
+        all_of:
+          - carater_palico: {}
+    - code: "TXo"
+      name: "Luvissolos Haplicos Orticos"
+      tests:
+        default: true
