@@ -406,20 +406,44 @@ familia_tipo_horizonte_superficial <- function(pedon) {
 #  - "skip_tipo_A":       ordem ja usa o tipo de A em nivel mais alto
 #                         (M chernozemico, O = histico).
 .familia_dimensoes_por_ordem <- function() {
+  # Convencoes:
+  #  - use_subgrupamento: ordem usa subgrupamento textural em vez do
+  #      grupamento (E, RQ, RR; outras ordens podem tambem usar para
+  #      SGs arenico/espessarenico, tratado depois com sg_code).
+  #  - skip_tipo_A: ordem ja usa o tipo de A em nivel mais alto
+  #      (M chernozemico, O = histico).
+  #  - skip_sat_bases: ordem ja usa V em nivel mais alto (e.g.
+  #      ordens com classes Distrofico/Eutrofico nos GGs: L, C, P,
+  #      N, R [exceto RQ], T, S [parcial], F, V).
+  #  - skip_alico: ordem ja usa carater alitico em nivel mais alto
+  #      (e.g. P*al, L*al, N*al, T*al, S*al, F*al).
   list(
-    "P" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "L" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "C" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "M" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE),
-    "E" = list(use_subgrupamento = TRUE,  skip_tipo_A = FALSE),
-    "G" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "N" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "R" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "T" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "S" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "F" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "V" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE),
-    "O" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE)
+    "P" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "L" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "C" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "M" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE,
+                  skip_sat_bases = TRUE, skip_alico = FALSE),
+    "E" = list(use_subgrupamento = TRUE,  skip_tipo_A = FALSE,
+                  skip_sat_bases = FALSE, skip_alico = FALSE),
+    "G" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = FALSE, skip_alico = FALSE),
+    "N" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "R" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = FALSE),
+    "T" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "S" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "F" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = TRUE, skip_alico = TRUE),
+    "V" = list(use_subgrupamento = FALSE, skip_tipo_A = FALSE,
+                  skip_sat_bases = FALSE, skip_alico = FALSE),
+    "O" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE,
+                  skip_sat_bases = TRUE, skip_alico = FALSE)
   )
 }
 
@@ -466,7 +490,9 @@ classify_sibcs_familia <- function(pedon,
   }
   cfg_map <- .familia_dimensoes_por_ordem()
   cfg <- cfg_map[[ordem_code]] %||% list(use_subgrupamento = FALSE,
-                                            skip_tipo_A = FALSE)
+                                            skip_tipo_A = FALSE,
+                                            skip_sat_bases = FALSE,
+                                            skip_alico = FALSE)
 
   # Override: SGs arenicos / espessarenicos sempre usam subgrupamento
   if (!is.null(sg_code) && grepl("(Ar|Ea)$", sg_code)) {
@@ -498,7 +524,179 @@ classify_sibcs_familia <- function(pedon,
       familia_tipo_horizonte_superficial(pedon)
   }
 
+  # Dimensao 6 (v0.7.14.B): saturacao por bases (V)
+  if (!isTRUE(cfg$skip_sat_bases)) {
+    out$saturacao_bases <- familia_saturacao_bases(pedon)
+  }
+
+  # Dimensao 7 (v0.7.14.B): saturacao por aluminio (alico)
+  if (!isTRUE(cfg$skip_alico)) {
+    out$saturacao_aluminio <- familia_saturacao_aluminio(pedon)
+  }
+
   out
+}
+
+
+# ---- v0.7.14.B: prefixos epi/meso/endo + saturacoes ----------------------
+
+# Helper interno: recebe vetor de top_cm onde um atributo ocorre,
+# devolve "epi" / "meso" / "endo" / NULL (atributo nao ocorre).
+.classifica_prefixo_profundidade <- function(tops_cm) {
+  tops_cm <- tops_cm[!is.na(tops_cm)]
+  if (length(tops_cm) == 0L) return(NULL)
+  topo_min <- min(tops_cm)
+  if (topo_min < 50)          "epi"
+  else if (topo_min < 100)    "meso"
+  else                          "endo"
+}
+
+
+#' Familia: prefixo de profundidade epi-/meso-/endo- (Cap 18, p 284-285)
+#'
+#' Classifica a profundidade onde um diagnostico ocorre em
+#' um dos tres prefixos:
+#' \itemize{
+#'   \item \code{epi-}: topo da primeira camada que satisfaz < 50 cm
+#'   \item \code{meso-}: topo da primeira camada em [50, 100) cm
+#'   \item \code{endo-}: topo da primeira camada em >= 100 cm
+#' }
+#'
+#' Wrapper generico para ser usado com qualquer
+#' \code{\link{DiagnosticResult}}. Retorna NULL se o diagnostico
+#' nao passou ou se nao ha camadas identificadas.
+#'
+#' @param diag Um \code{\link{DiagnosticResult}} com \code{layers}
+#'        (indices de horizontes que satisfazem o atributo).
+#' @param horizons \code{data.table} de horizontes do pedon.
+#' @return String "epi" / "meso" / "endo" ou NULL.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 284-285.
+#' @export
+familia_prefixo_profundidade <- function(diag, horizons) {
+  if (!isTRUE(diag$passed)) return(NULL)
+  layers <- diag$layers %||% integer(0)
+  if (length(layers) == 0L) return(NULL)
+  tops <- horizons$top_cm[layers]
+  .classifica_prefixo_profundidade(tops)
+}
+
+
+#' Familia: saturacao por bases (Cap 18, p 285)
+#'
+#' Retorna \code{"eutrofico"} (V >= 50\%) ou \code{"distrofico"}
+#' (V < 50\%) baseado na media ponderada de \code{bs_pct} na
+#' secao de controle. Pode ser combinado com prefixos
+#' epi-/meso-/endo- via \code{familia_prefixo_profundidade}.
+#'
+#' Aplicavel a todas as classes que ainda nao consideram saturacao
+#' por bases em nivel categorico mais alto (p.ex. Latossolos
+#' Eutroficos / Distroficos ja a consideram).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default
+#'        150 cm; p. 31 do SiBCS define a secao de controle dos
+#'        Argissolos / Latossolos como 0-150 cm de B).
+#' @param threshold Limiar de eutrofico (default 50\%).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 31; Cap 18,
+#'             p 285.
+#' @export
+familia_saturacao_bases <- function(pedon, max_depth_cm = 150,
+                                       threshold = 50) {
+  h <- pedon$horizons
+  v <- .weighted_avg_in_depth(h, "bs_pct", max_depth_cm = max_depth_cm)
+  if (is.na(v)) {
+    return(FamilyAttribute$new(
+      name = "saturacao_bases", value = NULL,
+      evidence = list(reason = "bs_pct nao informado"),
+      missing = "bs_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 31"
+    ))
+  }
+  classe <- if (v >= threshold) "eutrofico" else "distrofico"
+  FamilyAttribute$new(
+    name = "saturacao_bases", value = classe,
+    evidence = list(bs_pct_avg = v, threshold = threshold,
+                      max_depth_cm = max_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 31; Cap 18, p 285"
+  )
+}
+
+
+#' Familia: saturacao por aluminio -- "alico" (Cap 18, p 285)
+#'
+#' Aplica o termo "alico" quando, em qualquer camada do horizonte
+#' B (ou C, na ausencia de B):
+#' \itemize{
+#'   \item al_sat_pct >= 50\% (saturacao por Al = 100*Al/(S+Al)),
+#'   \item E al_cmol > 0.5 cmolc/kg.
+#' }
+#' Quando aplicavel, o prefixo de profundidade (epi-/meso-/endo-)
+#' eh determinado pelo topo da primeira camada que satisfaz, e
+#' concatenado ao adjetivo: "epialico", "mesoalico", "endoalico".
+#'
+#' Aplicavel a classes cujo carater alumınico nao tenha sido
+#' considerado em nivel categorico mais alto (p.ex. Argissolos
+#' Aluminicos ja o usam).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_al_sat Default 50.
+#' @param min_al_cmol Default 0.5.
+#' @return \code{\link{FamilyAttribute}} com \code{value} igual a
+#'         \code{"epialico"} / \code{"mesoalico"} / \code{"endoalico"}
+#'         ou NULL.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 285.
+#' @export
+familia_saturacao_aluminio <- function(pedon,
+                                          min_al_sat = 50,
+                                          min_al_cmol = 0.5) {
+  h <- pedon$horizons
+  layers_b <- which(!is.na(h$designation) &
+                       grepl("^B|^C", h$designation))
+  if (length(layers_b) == 0L) {
+    return(FamilyAttribute$new(
+      name = "saturacao_aluminio", value = NULL,
+      evidence = list(reason = "no B/C horizons"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 285"
+    ))
+  }
+  als <- h$al_sat_pct[layers_b]
+  alc <- h$al_cmol[layers_b]
+  miss <- character(0)
+  if (all(is.na(als))) miss <- c(miss, "al_sat_pct")
+  if (all(is.na(alc))) miss <- c(miss, "al_cmol")
+  if (length(miss) > 0L) {
+    return(FamilyAttribute$new(
+      name = "saturacao_aluminio", value = NULL,
+      evidence = list(reason = "Al insuficiente"),
+      missing = miss,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 285"
+    ))
+  }
+  passes <- !is.na(als) & !is.na(alc) &
+              als >= min_al_sat & alc > min_al_cmol
+  if (!any(passes)) {
+    return(FamilyAttribute$new(
+      name = "saturacao_aluminio", value = NULL,
+      evidence = list(reason = "nenhuma camada B/C atinge alico"),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 285"
+    ))
+  }
+  passing_layers <- layers_b[passes]
+  prefixo <- .classifica_prefixo_profundidade(h$top_cm[passing_layers])
+  classe <- if (is.null(prefixo)) "alico" else paste0(prefixo, "alico")
+  FamilyAttribute$new(
+    name = "saturacao_aluminio", value = classe,
+    evidence = list(passing_layers = passing_layers,
+                      al_sat_pct = als[passes],
+                      al_cmol    = alc[passes],
+                      prefixo    = prefixo),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 285"
+  )
 }
 
 
