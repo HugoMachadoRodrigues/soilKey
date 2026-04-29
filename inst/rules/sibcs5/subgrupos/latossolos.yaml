@@ -1,0 +1,529 @@
+# =============================================================
+# SiBCS 5a edicao -- Latossolos (Cap 10, pp 199-212)
+#
+# Subgrupos (4o nivel categorico) -- 99 classes em 25 GGs.
+#
+# Codigos suffix: Ru=rubrico, Eh=espesso-humico, Hu=humico,
+# Pp=petroplintico, Pl=plintossolico, Ar=argissolico, An=antropico,
+# Ps=psamitico, Cb=cambissolico (LA/LV/LVA: minerais alteraveis +
+# frag rocha em B), Rt=retratico (carater_retratil), Tp=tipico.
+#
+# Cap 10 reusa massivamente carater_acrico, ferrico, perferrico,
+# alitico, coeso, retratil, plintico, petroplintico, argiluvico,
+# cambissolico_arg, antropico, humico, espesso_humico, e os novos
+# carater_rubrico (LB) + carater_psamitico (LA Distroficos).
+# =============================================================
+
+subgrupos:
+
+  # ============================================================
+  # LB -- Latossolos Brunos (Cap 10, pp 199-200) -- 10 SGs
+  # ============================================================
+  "LBaf":
+    - code: "LBafRu"
+      name: "Latossolos Brunos Aluminoferricos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "LBafTp"
+      name: "Latossolos Brunos Aluminoferricos tipicos"
+      tests:
+        default: true
+  "LBal":
+    - code: "LBalRu"
+      name: "Latossolos Brunos Aluminicos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "LBalTp"
+      name: "Latossolos Brunos Aluminicos tipicos"
+      tests:
+        default: true
+  "LBdf":
+    - code: "LBdfRu"
+      name: "Latossolos Brunos Distroferricos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "LBdfTp"
+      name: "Latossolos Brunos Distroferricos tipicos"
+      tests:
+        default: true
+  "LBd":
+    - code: "LBdRu"
+      name: "Latossolos Brunos Distroficos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "LBdEh"
+      name: "Latossolos Brunos Distroficos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LBdHu"
+      name: "Latossolos Brunos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LBdTp"
+      name: "Latossolos Brunos Distroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # LA -- Latossolos Amarelos (Cap 10, pp 200-204) -- 31 SGs
+  # ============================================================
+  "LAaf":
+    - code: "LAafEh"
+      name: "Latossolos Amarelos Acriferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LAafHu"
+      name: "Latossolos Amarelos Acriferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LAafTp"
+      name: "Latossolos Amarelos Acriferricos tipicos"
+      tests:
+        default: true
+  "LAac":
+    - code: "LAacPp"
+      name: "Latossolos Amarelos Acricos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LAacPl"
+      name: "Latossolos Amarelos Acricos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "LAacEh"
+      name: "Latossolos Amarelos Acricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LAacHu"
+      name: "Latossolos Amarelos Acricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LAacTp"
+      name: "Latossolos Amarelos Acricos tipicos"
+      tests:
+        default: true
+  "LAal":
+    - code: "LAalAr"
+      name: "Latossolos Amarelos Aluminicos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LAalTp"
+      name: "Latossolos Amarelos Aluminicos tipicos"
+      tests:
+        default: true
+  "LAdf":
+    - code: "LAdfEh"
+      name: "Latossolos Amarelos Distroferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LAdfHu"
+      name: "Latossolos Amarelos Distroferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LAdfTp"
+      name: "Latossolos Amarelos Distroferricos tipicos"
+      tests:
+        default: true
+  "LAdc":
+    - code: "LAdcPp"
+      name: "Latossolos Amarelos Distrocoesos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LAdcPl"
+      name: "Latossolos Amarelos Distrocoesos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "LAdcAr"
+      name: "Latossolos Amarelos Distrocoesos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LAdcAn"
+      name: "Latossolos Amarelos Distrocoesos antropicos"
+      tests:
+        all_of:
+          - horizonte_A_antropico: {}
+    - code: "LAdcEh"
+      name: "Latossolos Amarelos Distrocoesos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LAdcHu"
+      name: "Latossolos Amarelos Distrocoesos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LAdcTp"
+      name: "Latossolos Amarelos Distrocoesos tipicos"
+      tests:
+        default: true
+  "LAd":
+    - code: "LAdPs"
+      name: "Latossolos Amarelos Distroficos psamiticos"
+      tests:
+        all_of:
+          - carater_psamitico: {}
+    - code: "LAdPpPl"
+      name: "Latossolos Amarelos Distroficos petroplinticos plintossolicos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+          - carater_plintico: {}
+    - code: "LAdPp"
+      name: "Latossolos Amarelos Distroficos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LAdPl"
+      name: "Latossolos Amarelos Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "LAdAr"
+      name: "Latossolos Amarelos Distroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LAdAn"
+      name: "Latossolos Amarelos Distroficos antropicos"
+      tests:
+        all_of:
+          - horizonte_A_antropico: {}
+    - code: "LAdEh"
+      name: "Latossolos Amarelos Distroficos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LAdHu"
+      name: "Latossolos Amarelos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LAdTp"
+      name: "Latossolos Amarelos Distroficos tipicos"
+      tests:
+        default: true
+  "LAe":
+    - code: "LAeAr"
+      name: "Latossolos Amarelos Eutroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LAeTp"
+      name: "Latossolos Amarelos Eutroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # LV -- Latossolos Vermelhos (Cap 10, pp 204-209) -- 36 SGs
+  # ============================================================
+  "LVpf":
+    - code: "LVpfCb"
+      name: "Latossolos Vermelhos Perferricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVpfEh"
+      name: "Latossolos Vermelhos Perferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVpfHu"
+      name: "Latossolos Vermelhos Perferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVpfTp"
+      name: "Latossolos Vermelhos Perferricos tipicos"
+      tests:
+        default: true
+  "LVaf":
+    - code: "LVafPp"
+      name: "Latossolos Vermelhos Acriferricos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVafEh"
+      name: "Latossolos Vermelhos Acriferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVafHu"
+      name: "Latossolos Vermelhos Acriferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVafTp"
+      name: "Latossolos Vermelhos Acriferricos tipicos"
+      tests:
+        default: true
+  "LVac":
+    - code: "LVacPp"
+      name: "Latossolos Vermelhos Acricos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVacEh"
+      name: "Latossolos Vermelhos Acricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVacHu"
+      name: "Latossolos Vermelhos Acricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVacTp"
+      name: "Latossolos Vermelhos Acricos tipicos"
+      tests:
+        default: true
+  "LValf":
+    - code: "LValfRt"
+      name: "Latossolos Vermelhos Aluminoferricos retraticos"
+      tests:
+        all_of:
+          - carater_retratil: {}
+    - code: "LValfCb"
+      name: "Latossolos Vermelhos Aluminoferricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LValfEh"
+      name: "Latossolos Vermelhos Aluminoferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LValfHu"
+      name: "Latossolos Vermelhos Aluminoferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LValfTp"
+      name: "Latossolos Vermelhos Aluminoferricos tipicos"
+      tests:
+        default: true
+  "LVdf":
+    - code: "LVdfRt"
+      name: "Latossolos Vermelhos Distroferricos retraticos"
+      tests:
+        all_of:
+          - carater_retratil: {}
+    - code: "LVdfPp"
+      name: "Latossolos Vermelhos Distroferricos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVdfPl"
+      name: "Latossolos Vermelhos Distroferricos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "LVdfCb"
+      name: "Latossolos Vermelhos Distroferricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVdfEh"
+      name: "Latossolos Vermelhos Distroferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVdfHu"
+      name: "Latossolos Vermelhos Distroferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVdfTp"
+      name: "Latossolos Vermelhos Distroferricos tipicos"
+      tests:
+        default: true
+  "LVd":
+    - code: "LVdRt"
+      name: "Latossolos Vermelhos Distroficos retraticos"
+      tests:
+        all_of:
+          - carater_retratil: {}
+    - code: "LVdPp"
+      name: "Latossolos Vermelhos Distroficos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVdAr"
+      name: "Latossolos Vermelhos Distroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVdCb"
+      name: "Latossolos Vermelhos Distroficos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVdEh"
+      name: "Latossolos Vermelhos Distroficos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVdHu"
+      name: "Latossolos Vermelhos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVdTp"
+      name: "Latossolos Vermelhos Distroficos tipicos"
+      tests:
+        default: true
+  "LVef":
+    - code: "LVefCb"
+      name: "Latossolos Vermelhos Eutroferricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVefTp"
+      name: "Latossolos Vermelhos Eutroferricos tipicos"
+      tests:
+        default: true
+  "LVe":
+    - code: "LVeAr"
+      name: "Latossolos Vermelhos Eutroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVeCb"
+      name: "Latossolos Vermelhos Eutroficos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVeTp"
+      name: "Latossolos Vermelhos Eutroficos tipicos"
+      tests:
+        default: true
+
+  # ============================================================
+  # LVA -- Latossolos Vermelho-Amarelos (Cap 10, pp 209-212) -- 22 SGs
+  # ============================================================
+  "LVAaf":
+    - code: "LVAafEh"
+      name: "Latossolos Vermelho-Amarelos Acriferricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVAafHu"
+      name: "Latossolos Vermelho-Amarelos Acriferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVAafTp"
+      name: "Latossolos Vermelho-Amarelos Acriferricos tipicos"
+      tests:
+        default: true
+  "LVAac":
+    - code: "LVAacPp"
+      name: "Latossolos Vermelho-Amarelos Acricos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVAacEh"
+      name: "Latossolos Vermelho-Amarelos Acricos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVAacHu"
+      name: "Latossolos Vermelho-Amarelos Acricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVAacTp"
+      name: "Latossolos Vermelho-Amarelos Acricos tipicos"
+      tests:
+        default: true
+  "LVAal":
+    - code: "LVAalAr"
+      name: "Latossolos Vermelho-Amarelos Aluminicos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVAalTp"
+      name: "Latossolos Vermelho-Amarelos Aluminicos tipicos"
+      tests:
+        default: true
+  "LVAdf":
+    - code: "LVAdfAr"
+      name: "Latossolos Vermelho-Amarelos Distroferricos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVAdfCb"
+      name: "Latossolos Vermelho-Amarelos Distroferricos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVAdfTp"
+      name: "Latossolos Vermelho-Amarelos Distroferricos tipicos"
+      tests:
+        default: true
+  "LVAd":
+    - code: "LVAdPp"
+      name: "Latossolos Vermelho-Amarelos Distroficos petroplinticos"
+      tests:
+        all_of:
+          - carater_petroplintico: {}
+    - code: "LVAdPl"
+      name: "Latossolos Vermelho-Amarelos Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "LVAdAr"
+      name: "Latossolos Vermelho-Amarelos Distroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVAdCb"
+      name: "Latossolos Vermelho-Amarelos Distroficos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVAdEh"
+      name: "Latossolos Vermelho-Amarelos Distroficos espesso-humicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "LVAdHu"
+      name: "Latossolos Vermelho-Amarelos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "LVAdTp"
+      name: "Latossolos Vermelho-Amarelos Distroficos tipicos"
+      tests:
+        default: true
+  "LVAe":
+    - code: "LVAeAr"
+      name: "Latossolos Vermelho-Amarelos Eutroficos argissolicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "LVAeCb"
+      name: "Latossolos Vermelho-Amarelos Eutroficos cambissolicos"
+      tests:
+        all_of:
+          - carater_cambissolico_arg: {}
+    - code: "LVAeTp"
+      name: "Latossolos Vermelho-Amarelos Eutroficos tipicos"
+      tests:
+        default: true

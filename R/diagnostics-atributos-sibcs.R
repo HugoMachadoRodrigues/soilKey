@@ -1540,6 +1540,134 @@ carater_sombrico <- function(pedon,
 }
 
 
+# ---- v0.7.7: Caracteres para Cap 10 (Latossolos) ------------------------
+#
+# 2 diagnosticos novos:
+#
+#   carater_rubrico   matiz mais vermelho que 5YR + chroma >= 4 em B
+#   carater_psamitico clay < 20% nos primeiros 150 cm
+# -------------------------------------------------------------------------
+
+# Hue ladder reused from .hue_redder_or_eq (subordens). For 5YR threshold:
+.is_redder_than_5yr <- function(hue) {
+  if (is.na(hue)) return(NA)
+  red_hues <- c("5R", "7.5R", "10R", "2.5YR")
+  tolower(trimws(hue)) %in% tolower(red_hues)
+}
+
+#' Carater rubrico (SiBCS Cap 1; Cap 10 Latossolos Brunos)
+#'
+#' Solos com matiz Munsell mais vermelho que 5YR (i.e., 2.5YR, 10R, 5R)
+#' E chroma \eqn{\ge} 4 em alguma parte do horizonte B (inclusive BA),
+#' dentro de \code{max_depth_cm} (default 100). Discrimina os Subgrupos
+#' rubricos de Latossolos Brunos (Cap 10 LB).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_chroma Default 4.
+#' @param max_depth_cm Default 100.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 10 LB, p 199-200.
+#' @export
+carater_rubrico <- function(pedon, min_chroma = 4, max_depth_cm = 100) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (!is.null(max_depth_cm)) {
+    b_layers <- b_layers[!is.na(h$top_cm[b_layers]) &
+                            h$top_cm[b_layers] < max_depth_cm]
+  }
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_rubrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons within max_depth_cm"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 10 LB"
+    ))
+  }
+  passing <- integer(0); missing <- character(0)
+  for (i in b_layers) {
+    hue <- h$munsell_hue_moist[i]
+    chr <- h$munsell_chroma_moist[i]
+    if (is.na(hue) || is.na(chr)) {
+      missing <- c(missing, "munsell_hue_moist", "munsell_chroma_moist")
+      next
+    }
+    if (isTRUE(.is_redder_than_5yr(hue)) && chr >= min_chroma) {
+      passing <- c(passing, i)
+    }
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (length(missing) > 0L && length(passing) == 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_rubrico", passed = passed, layers = passing,
+    evidence = list(b_layers = b_layers, min_chroma = min_chroma,
+                      max_depth_cm = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 10 LB"
+  )
+}
+
+
+#' Carater psamitico (SiBCS Cap 10)
+#'
+#' Solos com conteudo de argila inferior a \code{max_clay_pct}
+#' (default 20\% = 200 g/kg) na maior parte dos primeiros
+#' \code{max_depth_cm} (default 150 cm) a partir da superficie do
+#' solo. Discrimina os Subgrupos psamiticos de Latossolos Amarelos
+#' Distroficos (Cap 10 LA 2.6.1).
+#'
+#' Implementacao: testa se a media ponderada por espessura de
+#' \code{clay_pct} dentro de [0, max_depth_cm] esta abaixo de
+#' max_clay_pct.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_clay_pct Default 20\% = 200 g/kg.
+#' @param max_depth_cm Default 150 cm.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 10 LA, p 203.
+#' @export
+carater_psamitico <- function(pedon,
+                                max_clay_pct = 20,
+                                max_depth_cm = 150) {
+  h <- pedon$horizons
+  layers <- which(!is.na(h$top_cm) & h$top_cm < max_depth_cm)
+  if (length(layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_psamitico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no layers in upper max_depth_cm"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 10 LA, p 203"
+    ))
+  }
+  if (all(is.na(h$clay_pct[layers]))) {
+    return(DiagnosticResult$new(
+      name = "carater_psamitico", passed = NA, layers = integer(0),
+      evidence = list(reason = "all clay_pct NA"),
+      missing = "clay_pct",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 10 LA, p 203"
+    ))
+  }
+  # Weighted mean by thickness
+  thick <- pmax(0, pmin(h$bottom_cm[layers], max_depth_cm) -
+                       pmax(h$top_cm[layers], 0))
+  clay  <- h$clay_pct[layers]
+  valid <- !is.na(clay) & thick > 0
+  weighted_clay <- if (any(valid)) {
+                     sum(clay[valid] * thick[valid]) / sum(thick[valid])
+                   } else NA_real_
+  passed <- !is.na(weighted_clay) && weighted_clay < max_clay_pct
+  DiagnosticResult$new(
+    name = "carater_psamitico", passed = passed,
+    layers = if (passed) layers[valid] else integer(0),
+    evidence = list(weighted_mean_clay_pct = weighted_clay,
+                      max_clay_pct = max_clay_pct,
+                      max_depth_cm = max_depth_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10 LA, p 203"
+  )
+}
+
+
 # ---- v0.7.6: Carater tionico (Cap 9 Gleissolos) -------------------------
 
 #' Carater tionico (SiBCS Cap 9; Cap 1 thionic-related)

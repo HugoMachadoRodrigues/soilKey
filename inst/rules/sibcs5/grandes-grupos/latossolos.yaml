@@ -1,0 +1,185 @@
+# =============================================================
+# SiBCS 5a edicao -- Latossolos (Cap 10, pp 195-212)
+#
+# Grandes grupos (3o nivel categorico) -- 25 classes em 4 subordens:
+#
+#   LB  Brunos:            4 GGs (Aluminoferrico/Aluminico/Distroferrico/
+#                                   Distrofico)
+#   LA  Amarelos:          7 GGs (Acriferrico/Acrico/Aluminico/Distroferrico/
+#                                   Distrocoeso/Distrofico/Eutrofico)
+#   LV  Vermelhos:         8 GGs (Perferrico/Acriferrico/Acrico/Aluminoferrico/
+#                                   Distroferrico/Distrofico/Eutroferrico/
+#                                   Eutrofico)
+#   LVA Vermelho-Amarelos: 6 GGs (Acriferrico/Acrico/Aluminico/Distroferrico/
+#                                   Distrofico/Eutrofico)
+#
+# Discriminantes:
+#   Acrico         carater_acrico
+#   Acriferrico    carater_acrico + carater_ferrico
+#   Aluminoferrico carater_alitico + carater_ferrico
+#   Aluminico      carater_alitico
+#   Distrocoeso   distrofico + carater_coeso
+#   Distroferrico  distrofico + carater_ferrico
+#   Distrofico     distrofico
+#   Eutroferrico   eutrofico + carater_ferrico
+#   Eutrofico      eutrofico
+#   Perferrico     carater_perferrico (>= 36% Fe2O3)
+# =============================================================
+
+grandes_grupos:
+
+  # ============================================================
+  # LB -- Latossolos Brunos (Cap 10, pp 196-197) -- 4 GGs
+  # ============================================================
+  "LB":
+    - code: "LBaf"
+      name: "Latossolos Brunos Aluminoferricos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+          - carater_ferrico: {}
+    - code: "LBal"
+      name: "Latossolos Brunos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "LBdf"
+      name: "Latossolos Brunos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "LBd"
+      name: "Latossolos Brunos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+
+  # ============================================================
+  # LA -- Latossolos Amarelos (Cap 10, pp 196-197) -- 7 GGs
+  # ============================================================
+  "LA":
+    - code: "LAaf"
+      name: "Latossolos Amarelos Acriferricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+          - carater_ferrico: {}
+    - code: "LAac"
+      name: "Latossolos Amarelos Acricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+    - code: "LAal"
+      name: "Latossolos Amarelos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "LAdf"
+      name: "Latossolos Amarelos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "LAdc"
+      name: "Latossolos Amarelos Distrocoesos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_coeso: { max_depth_cm: 150 }
+    - code: "LAd"
+      name: "Latossolos Amarelos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "LAe"
+      name: "Latossolos Amarelos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # LV -- Latossolos Vermelhos (Cap 10, pp 197-198) -- 8 GGs
+  # ============================================================
+  "LV":
+    - code: "LVpf"
+      name: "Latossolos Vermelhos Perferricos"
+      tests:
+        all_of:
+          - carater_perferrico: {}
+    - code: "LVaf"
+      name: "Latossolos Vermelhos Acriferricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+          - carater_ferrico: {}
+    - code: "LVac"
+      name: "Latossolos Vermelhos Acricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+    - code: "LValf"
+      name: "Latossolos Vermelhos Aluminoferricos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+          - carater_ferrico: {}
+    - code: "LVdf"
+      name: "Latossolos Vermelhos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "LVd"
+      name: "Latossolos Vermelhos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "LVef"
+      name: "Latossolos Vermelhos Eutroferricos"
+      tests:
+        all_of:
+          - eutrofico: {}
+          - carater_ferrico: {}
+    - code: "LVe"
+      name: "Latossolos Vermelhos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # ============================================================
+  # LVA -- Latossolos Vermelho-Amarelos (Cap 10, p 199) -- 6 GGs
+  # ============================================================
+  "LVA":
+    - code: "LVAaf"
+      name: "Latossolos Vermelho-Amarelos Acriferricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+          - carater_ferrico: {}
+    - code: "LVAac"
+      name: "Latossolos Vermelho-Amarelos Acricos"
+      tests:
+        all_of:
+          - carater_acrico: {}
+    - code: "LVAal"
+      name: "Latossolos Vermelho-Amarelos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "LVAdf"
+      name: "Latossolos Vermelho-Amarelos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "LVAd"
+      name: "Latossolos Vermelho-Amarelos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "LVAe"
+      name: "Latossolos Vermelho-Amarelos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
