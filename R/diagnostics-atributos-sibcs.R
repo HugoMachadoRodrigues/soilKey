@@ -2989,3 +2989,129 @@ carater_cambissolico <- function(pedon) {
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248"
   )
 }
+
+
+# ---- v0.7.11: Caracteres para Subgrupos de Planossolos (Cap 15) -----------
+#
+# 2 diagnosticos novos baseados na profundidade do topo do horizonte
+# B planico (\code{\link{B_planico}}):
+#
+#   subgrupo_planossolo_espessos   B planico topo > 100 e <= 200 cm
+#   subgrupo_planossolo_mesicos    B planico topo em [50, 100] cm
+#
+# A condicao adicional "textura francoarenosa ou mais fina" do livro
+# eh implicitamente satisfeita pela ordem das chaves: arenicos (clay
+# < 15%) e espessarenicos sao testados antes, pelo que solos que
+# falham aqueles e passam estes tem textura mais fina.
+# -------------------------------------------------------------------------
+
+#' Subgrupo "espessos" de Planossolos (B planico profundo, > 100 cm)
+#'
+#' Discrimina os Subgrupos espessos de Planossolos (Cap 15:
+#' SNs Espessos, SNo Espessos, SXs Espessos, SXal Espessos,
+#' SXd Espessos, SXe Espessos): B planico cujo topo ocorre entre
+#' \code{min_top_cm} (exclusivo) e \code{max_top_cm} (inclusivo).
+#'
+#' Implementacao: identifica B planico via
+#' \code{\link{B_planico}}, captura o topo (mais raso) das camadas
+#' que passam, e testa se cai em \code{(min_top_cm, max_top_cm]}.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Profundidade minima exclusiva do topo do
+#'        B planico (default 100; passa se top > 100).
+#' @param max_top_cm Profundidade maxima inclusiva (default 200).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 15 (Planossolos),
+#'             pp 251-260.
+#' @export
+subgrupo_planossolo_espessos <- function(pedon,
+                                            min_top_cm = 100,
+                                            max_top_cm = 200) {
+  bp <- B_planico(pedon)
+  h <- pedon$horizons
+  if (!isTRUE(bp$passed)) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_planossolo_espessos", passed = bp$passed,
+      layers = integer(0),
+      evidence = list(B_planico = bp,
+                        reason = "B planico nao identificado"),
+      missing = bp$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+    ))
+  }
+  bp_layers <- bp$layers
+  bp_tops <- h$top_cm[bp_layers]
+  bp_tops <- bp_tops[!is.na(bp_tops)]
+  if (length(bp_tops) == 0L) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_planossolo_espessos", passed = NA,
+      layers = integer(0),
+      evidence = list(B_planico = bp, reason = "top_cm NA"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+    ))
+  }
+  topo_min <- min(bp_tops)
+  passed <- topo_min > min_top_cm && topo_min <= max_top_cm
+  DiagnosticResult$new(
+    name = "subgrupo_planossolo_espessos", passed = passed,
+    layers = if (passed) bp_layers else integer(0),
+    evidence = list(B_planico = bp, topo_min_cm = topo_min,
+                      min_top_cm = min_top_cm, max_top_cm = max_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+  )
+}
+
+
+#' Subgrupo "mesicos" de Planossolos (B planico topo em [50, 100] cm)
+#'
+#' Discrimina os Subgrupos mesicos de Planossolos (Cap 15:
+#' SNs Mesicos, SNo Mesicos, SXs Mesicos, SXal Mesicos, SXd Mesicos,
+#' SXe Mesicos): B planico cujo topo ocorre entre \code{min_top_cm}
+#' (inclusivo) e \code{max_top_cm} (inclusivo).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_top_cm Profundidade minima inclusiva (default 50).
+#' @param max_top_cm Profundidade maxima inclusiva (default 100).
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 15 (Planossolos).
+#' @export
+subgrupo_planossolo_mesicos <- function(pedon,
+                                           min_top_cm = 50,
+                                           max_top_cm = 100) {
+  bp <- B_planico(pedon)
+  h <- pedon$horizons
+  if (!isTRUE(bp$passed)) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_planossolo_mesicos", passed = bp$passed,
+      layers = integer(0),
+      evidence = list(B_planico = bp,
+                        reason = "B planico nao identificado"),
+      missing = bp$missing %||% character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+    ))
+  }
+  bp_layers <- bp$layers
+  bp_tops <- h$top_cm[bp_layers]
+  bp_tops <- bp_tops[!is.na(bp_tops)]
+  if (length(bp_tops) == 0L) {
+    return(DiagnosticResult$new(
+      name = "subgrupo_planossolo_mesicos", passed = NA,
+      layers = integer(0),
+      evidence = list(B_planico = bp, reason = "top_cm NA"),
+      missing = "top_cm",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+    ))
+  }
+  topo_min <- min(bp_tops)
+  passed <- topo_min >= min_top_cm && topo_min <= max_top_cm
+  DiagnosticResult$new(
+    name = "subgrupo_planossolo_mesicos", passed = passed,
+    layers = if (passed) bp_layers else integer(0),
+    evidence = list(B_planico = bp, topo_min_cm = topo_min,
+                      min_top_cm = min_top_cm, max_top_cm = max_top_cm),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 15"
+  )
+}
