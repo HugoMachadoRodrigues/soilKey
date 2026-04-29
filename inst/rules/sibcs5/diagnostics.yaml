@@ -71,6 +71,7 @@ diagnostics:
   carater_gleissolico:          { function: carater_gleissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
   carater_cambissolico_arg:     { function: carater_cambissolico_arg,     status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
   carater_placico:              { function: carater_placico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_sombrico:             { function: carater_sombrico,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
 
   # =========================================================================
   # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)

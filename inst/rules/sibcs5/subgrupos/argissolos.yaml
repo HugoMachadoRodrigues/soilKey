@@ -726,3 +726,280 @@ subgrupos:
       name: "Argissolos Amarelos Eutroficos tipicos"
       tests:
         default: true
+
+  # ============================================================
+  # v0.7.4.C.2 -- PV subgrupos (Cap 5, pp 128-134) -- 48 SGs
+  # ============================================================
+  #
+  # PV Vermelhos -- 6 GGs com 6+7+4+9+6+16 = 48 SGs.
+  # PVe Eutroficos eh especialmente grande (16 SGs) com varias
+  # combinacoes leptofragmentarios/lepticos/saproliticos abrupticos.
+  # PVal Aluminicos inclui sombricos (4.2.6) -- caracter sombrico.
+
+  # ----- 4.1 PV Ta Aluminicos -- 6 subgrupos (Cap 5, p 128-129) -----
+  "PVtal":
+    - code: "PVtalAb"
+      name: "Argissolos Vermelhos Ta Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PVtalPl"
+      name: "Argissolos Vermelhos Ta Aluminicos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PVtalNi"
+      name: "Argissolos Vermelhos Ta Aluminicos nitossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+    - code: "PVtalEpRx"
+      name: "Argissolos Vermelhos Ta Aluminicos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PVtalEnRx"
+      name: "Argissolos Vermelhos Ta Aluminicos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PVtalTp"
+      name: "Argissolos Vermelhos Ta Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.2 PV Aluminicos -- 7 subgrupos (Cap 5, p 129-130) -----
+  # Inclui sombricos (4.2.6) -- carater sombrico (Lunardi Neto 2012).
+  "PVal":
+    - code: "PValAb"
+      name: "Argissolos Vermelhos Aluminicos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PValPl"
+      name: "Argissolos Vermelhos Aluminicos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PValNi"
+      name: "Argissolos Vermelhos Aluminicos nitossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+    - code: "PValEpRx"
+      name: "Argissolos Vermelhos Aluminicos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PValEnRx"
+      name: "Argissolos Vermelhos Aluminicos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PValSm"
+      name: "Argissolos Vermelhos Aluminicos sombricos"
+      tests:
+        all_of:
+          - carater_sombrico: {}
+    - code: "PValTp"
+      name: "Argissolos Vermelhos Aluminicos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.3 PV Ta Distroficos -- 4 subgrupos (Cap 5, p 130) -----
+  "PVtd":
+    - code: "PVtdAb"
+      name: "Argissolos Vermelhos Ta Distroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PVtdEpRx"
+      name: "Argissolos Vermelhos Ta Distroficos epirredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 50 }
+    - code: "PVtdEnRx"
+      name: "Argissolos Vermelhos Ta Distroficos endorredoxicos"
+      tests:
+        all_of:
+          - carater_redoxico: { max_top_cm: 150 }
+    - code: "PVtdTp"
+      name: "Argissolos Vermelhos Ta Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.4 PV Distroficos -- 9 subgrupos (Cap 5, p 130-131) -----
+  "PVd":
+    - code: "PVdEs"
+      name: "Argissolos Vermelhos Distroficos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "PVdAr"
+      name: "Argissolos Vermelhos Distroficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "PVdAbPl"
+      name: "Argissolos Vermelhos Distroficos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PVdAb"
+      name: "Argissolos Vermelhos Distroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PVdPl"
+      name: "Argissolos Vermelhos Distroficos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "PVdPs"
+      name: "Argissolos Vermelhos Distroficos planossolicos"
+      tests:
+        all_of:
+          - carater_planossolico: {}
+    - code: "PVdNi"
+      name: "Argissolos Vermelhos Distroficos nitossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+    - code: "PVdLa"
+      name: "Argissolos Vermelhos Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PVdTp"
+      name: "Argissolos Vermelhos Distroficos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.5 PV Eutroferricos -- 6 subgrupos (Cap 5, p 131-132) -----
+  "PVef":
+    - code: "PVefSpAb"
+      name: "Argissolos Vermelhos Eutroferricos saproliticos abrupticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+          - mudanca_textural_abrupta: {}
+    - code: "PVefAb"
+      name: "Argissolos Vermelhos Eutroferricos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PVefNiCh"
+      name: "Argissolos Vermelhos Eutroferricos nitossolicos chernossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+          - carater_chernossolico: {}
+    - code: "PVefNi"
+      name: "Argissolos Vermelhos Eutroferricos nitossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+    - code: "PVefLa"
+      name: "Argissolos Vermelhos Eutroferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PVefTp"
+      name: "Argissolos Vermelhos Eutroferricos tipicos"
+      tests:
+        default: true
+
+  # ----- 4.6 PV Eutroficos -- 16 subgrupos (Cap 5, p 132-134) -----
+  # O maior bloco de Cap 5: leptofragmentarios > lepticos > saproliticos
+  # > espessarenicos > arenicos > solodicos+abrupt+plintic > solodicos+abrupt
+  # > abrupticos+plintic > abrupticos+latossolicos+antropicos > abrupticos+
+  # chernossolicos > abrupticos > luvissolicos > nitossolicos > latossolicos
+  # > chernossolicos > tipicos.
+  "PVe":
+    - code: "PVeLf"
+      name: "Argissolos Vermelhos Eutroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "PVeLe"
+      name: "Argissolos Vermelhos Eutroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "PVeSp"
+      name: "Argissolos Vermelhos Eutroficos saproliticos"
+      tests:
+        all_of:
+          - carater_saprolitico: {}
+    - code: "PVeEs"
+      name: "Argissolos Vermelhos Eutroficos espessarenicos"
+      tests:
+        all_of:
+          - carater_espessarenico: {}
+    - code: "PVeAr"
+      name: "Argissolos Vermelhos Eutroficos arenicos"
+      tests:
+        all_of:
+          - carater_arenico: {}
+    - code: "PVeSdAbPl"
+      name: "Argissolos Vermelhos Eutroficos solodicos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PVeSdAb"
+      name: "Argissolos Vermelhos Eutroficos solodicos abrupticos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - mudanca_textural_abrupta: {}
+    - code: "PVeAbPl"
+      name: "Argissolos Vermelhos Eutroficos abrupticos plintossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_plintico: {}
+    - code: "PVeAbLaAn"
+      name: "Argissolos Vermelhos Eutroficos abrupticos latossolicos antropicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_latossolico: {}
+          - horizonte_A_antropico: {}
+    - code: "PVeAbCh"
+      name: "Argissolos Vermelhos Eutroficos abrupticos chernossolicos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+          - carater_chernossolico: {}
+    - code: "PVeAb"
+      name: "Argissolos Vermelhos Eutroficos abrupticos"
+      tests:
+        all_of:
+          - mudanca_textural_abrupta: {}
+    - code: "PVeLu"
+      name: "Argissolos Vermelhos Eutroficos luvissolicos"
+      tests:
+        all_of:
+          - carater_luvissolico: {}
+    - code: "PVeNi"
+      name: "Argissolos Vermelhos Eutroficos nitossolicos"
+      tests:
+        all_of:
+          - carater_nitossolico: {}
+    - code: "PVeLa"
+      name: "Argissolos Vermelhos Eutroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "PVeCh"
+      name: "Argissolos Vermelhos Eutroficos chernossolicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "PVeTp"
+      name: "Argissolos Vermelhos Eutroficos tipicos"
+      tests:
+        default: true

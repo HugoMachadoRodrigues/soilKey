@@ -1319,6 +1319,81 @@ carater_terrico <- function(pedon,
 
 # ---- Carater cambissolico (Cap 14, p 247) --------------------------------
 
+# ---- v0.7.4.C.2: Carater sombrico (Cap 5 PV Aluminicos sombricos) -------
+
+#' Carater sombrico (SiBCS Cap 1; Cap 5 PV)
+#'
+#' Camada subsuperficial com acumulacao iluvial de materia organica,
+#' caracterizada por cores escuras (\code{munsell_value_moist}
+#' \eqn{\le} 4, \code{munsell_chroma_moist} \eqn{\le} 3) e
+#' \code{oc_pct} \eqn{\ge} 0.5\%, em B abaixo de A/E. Distinto de B
+#' espodico por nao requerer iluviacao Al/Fe. Tipico de solos
+#' altitudinais (planaltos sul-brasileiros). Discrimina o Subgrupo
+#' sombricos de Argissolos Vermelhos Aluminicos (Cap 5 PV 4.2.6).
+#'
+#' Implementacao v0.7.4 (aproximacao):
+#' \itemize{
+#'   \item Camada B (\code{designation} matches \code{^B}) com
+#'         value \eqn{\le} max_value E chroma \eqn{\le} max_chroma E
+#'         oc_pct \eqn{\ge} min_oc_pct, dentro de max_depth_cm.
+#' }
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_value Default 4 (escuro).
+#' @param max_chroma Default 3.
+#' @param min_oc_pct Default 0.5\%.
+#' @param max_depth_cm Default 150.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 PV 4.2.6,
+#'             p 130 (Lunardi Neto, 2012, perfil PVa).
+#' @export
+carater_sombrico <- function(pedon,
+                                max_value    = 4,
+                                max_chroma   = 3,
+                                min_oc_pct   = 0.5,
+                                max_depth_cm = 150) {
+  h <- pedon$horizons
+  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  if (!is.null(max_depth_cm)) {
+    b_layers <- b_layers[!is.na(h$top_cm[b_layers]) &
+                            h$top_cm[b_layers] < max_depth_cm]
+  }
+  if (length(b_layers) == 0L) {
+    return(DiagnosticResult$new(
+      name = "carater_sombrico", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "no B horizons within max_depth_cm"),
+      missing = "designation",
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 PV 4.2.6"
+    ))
+  }
+  passing <- integer(0); missing <- character(0)
+  for (i in b_layers) {
+    val <- h$munsell_value_moist[i]
+    chr <- h$munsell_chroma_moist[i]
+    oc  <- h$oc_pct[i]
+    if (is.na(val) || is.na(chr) || is.na(oc)) {
+      missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist",
+                     "oc_pct")
+      next
+    }
+    if (val <= max_value && chr <= max_chroma && oc >= min_oc_pct) {
+      passing <- c(passing, i)
+    }
+  }
+  passed <- if (length(passing) > 0L) TRUE
+            else if (length(missing) > 0L && length(passing) == 0L) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "carater_sombrico", passed = passed, layers = passing,
+    evidence = list(b_layers = b_layers, max_value = max_value,
+                      max_chroma = max_chroma, min_oc_pct = min_oc_pct,
+                      max_depth_cm = max_depth_cm),
+    missing = unique(missing),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 PV 4.2.6"
+  )
+}
+
+
 # ---- v0.7.4.C: Caracteres para Subgrupos de Argissolos PA + PV ---------
 #
 # 3 diagnosticos novos (Cap 5 PA + PV subgrupos):
