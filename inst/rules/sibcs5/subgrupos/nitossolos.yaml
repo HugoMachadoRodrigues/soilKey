@@ -1,0 +1,232 @@
+# =============================================================
+# SiBCS 5a edicao -- Nitossolos (Cap 13, pp 236-241)
+#
+# Subgrupos -- 43 classes em 14 GGs.
+# Codigos suffix: RuHu=rubricos+humicos, Ru=rubricos, Hu=humicos,
+# La=latossolicos, Lf=leptofragmentarios, Le=lepticos, Pl=plintossolicos,
+# Ch=chernossolicos, Tp=tipicos.
+# =============================================================
+
+subgrupos:
+
+  "NBaf":
+    - code: "NBafRuHu"
+      name: "Nitossolos Brunos Aluminoferricos rubricos humicos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+          - horizonte_A_humico: {}
+    - code: "NBafRu"
+      name: "Nitossolos Brunos Aluminoferricos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "NBafHu"
+      name: "Nitossolos Brunos Aluminoferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NBafTp"
+      name: "Nitossolos Brunos Aluminoferricos tipicos"
+      tests:
+        default: true
+  "NBal":
+    - code: "NBalRuHu"
+      name: "Nitossolos Brunos Aluminicos rubricos humicos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+          - horizonte_A_humico: {}
+    - code: "NBalRu"
+      name: "Nitossolos Brunos Aluminicos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "NBalHu"
+      name: "Nitossolos Brunos Aluminicos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NBalTp"
+      name: "Nitossolos Brunos Aluminicos tipicos"
+      tests:
+        default: true
+  "NBdf":
+    - code: "NBdfRuHu"
+      name: "Nitossolos Brunos Distroferricos rubricos humicos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+          - horizonte_A_humico: {}
+    - code: "NBdfRu"
+      name: "Nitossolos Brunos Distroferricos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "NBdfHu"
+      name: "Nitossolos Brunos Distroferricos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NBdfTp"
+      name: "Nitossolos Brunos Distroferricos tipicos"
+      tests:
+        default: true
+  "NBd":
+    - code: "NBdRuHu"
+      name: "Nitossolos Brunos Distroficos rubricos humicos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+          - horizonte_A_humico: {}
+    - code: "NBdRu"
+      name: "Nitossolos Brunos Distroficos rubricos"
+      tests:
+        all_of:
+          - carater_rubrico: {}
+    - code: "NBdHu"
+      name: "Nitossolos Brunos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NBdTp"
+      name: "Nitossolos Brunos Distroficos tipicos"
+      tests:
+        default: true
+
+  "NVtal":
+    - code: "NVtalHu"
+      name: "Nitossolos Vermelhos Ta Aluminicos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NVtalTp"
+      name: "Nitossolos Vermelhos Ta Aluminicos tipicos"
+      tests:
+        default: true
+  "NVal":
+    - code: "NValHu"
+      name: "Nitossolos Vermelhos Aluminicos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NValTp"
+      name: "Nitossolos Vermelhos Aluminicos tipicos"
+      tests:
+        default: true
+  "NVdf":
+    - code: "NVdfLa"
+      name: "Nitossolos Vermelhos Distroferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NVdfTp"
+      name: "Nitossolos Vermelhos Distroferricos tipicos"
+      tests:
+        default: true
+  "NVd":
+    - code: "NVdLa"
+      name: "Nitossolos Vermelhos Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NVdTp"
+      name: "Nitossolos Vermelhos Distroficos tipicos"
+      tests:
+        default: true
+  "NVef":
+    - code: "NVefPl"
+      name: "Nitossolos Vermelhos Eutroferricos plintossolicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "NVefLa"
+      name: "Nitossolos Vermelhos Eutroferricos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NVefCh"
+      name: "Nitossolos Vermelhos Eutroferricos chernossolicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "NVefTp"
+      name: "Nitossolos Vermelhos Eutroferricos tipicos"
+      tests:
+        default: true
+  "NVe":
+    - code: "NVeLf"
+      name: "Nitossolos Vermelhos Eutroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "NVeLe"
+      name: "Nitossolos Vermelhos Eutroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "NVeLa"
+      name: "Nitossolos Vermelhos Eutroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NVeCh"
+      name: "Nitossolos Vermelhos Eutroficos chernossolicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "NVeTp"
+      name: "Nitossolos Vermelhos Eutroficos tipicos"
+      tests:
+        default: true
+
+  "NXtal":
+    - code: "NXtalTp"
+      name: "Nitossolos Haplicos Ta Aluminicos tipicos"
+      tests:
+        default: true
+  "NXal":
+    - code: "NXalLa"
+      name: "Nitossolos Haplicos Aluminicos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NXalTp"
+      name: "Nitossolos Haplicos Aluminicos tipicos"
+      tests:
+        default: true
+  "NXd":
+    - code: "NXdLa"
+      name: "Nitossolos Haplicos Distroficos latossolicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "NXdHu"
+      name: "Nitossolos Haplicos Distroficos humicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "NXdTp"
+      name: "Nitossolos Haplicos Distroficos tipicos"
+      tests:
+        default: true
+  "NXe":
+    - code: "NXeLf"
+      name: "Nitossolos Haplicos Eutroficos leptofragmentarios"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "NXeLe"
+      name: "Nitossolos Haplicos Eutroficos lepticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "NXeCh"
+      name: "Nitossolos Haplicos Eutroficos chernossolicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "NXeTp"
+      name: "Nitossolos Haplicos Eutroficos tipicos"
+      tests:
+        default: true

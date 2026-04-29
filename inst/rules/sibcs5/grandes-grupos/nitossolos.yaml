@@ -1,0 +1,96 @@
+# =============================================================
+# SiBCS 5a edicao -- Nitossolos (Cap 13, pp 234-236)
+#
+# Grandes grupos -- 14 classes em 3 subordens:
+#   NB Brunos:    4 GGs (Aluminoferrico/Aluminico/Distroferrico/Distrofico)
+#   NV Vermelhos: 6 GGs (TaAl/Al/Distroferrico/Distrofico/Eutroferrico/Eutrofico)
+#   NX Haplicos:  4 GGs (TaAl/Al/Distrofico/Eutrofico)
+#
+# Note: Cap 13 NB usa Fe2O3 150-360 g/kg (15-36%). Aproximamos com
+# carater_ferrico (18-36%) -- pequena divergencia, pode ser refinada
+# em release futura com parametro min_fe2o3_pct=15.
+# =============================================================
+
+grandes_grupos:
+
+  "NB":
+    - code: "NBaf"
+      name: "Nitossolos Brunos Aluminoferricos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+          - carater_ferrico: {}
+    - code: "NBal"
+      name: "Nitossolos Brunos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "NBdf"
+      name: "Nitossolos Brunos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "NBd"
+      name: "Nitossolos Brunos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+
+  "NV":
+    - code: "NVtal"
+      name: "Nitossolos Vermelhos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "NVal"
+      name: "Nitossolos Vermelhos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "NVdf"
+      name: "Nitossolos Vermelhos Distroferricos"
+      tests:
+        all_of:
+          - distrofico: {}
+          - carater_ferrico: {}
+    - code: "NVd"
+      name: "Nitossolos Vermelhos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "NVef"
+      name: "Nitossolos Vermelhos Eutroferricos"
+      tests:
+        all_of:
+          - eutrofico: {}
+          - carater_ferrico: {}
+    - code: "NVe"
+      name: "Nitossolos Vermelhos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  "NX":
+    - code: "NXtal"
+      name: "Nitossolos Haplicos Ta Aluminicos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - carater_alitico: {}
+    - code: "NXal"
+      name: "Nitossolos Haplicos Aluminicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "NXd"
+      name: "Nitossolos Haplicos Distroficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "NXe"
+      name: "Nitossolos Haplicos Eutroficos"
+      tests:
+        all_of:
+          - eutrofico: {}

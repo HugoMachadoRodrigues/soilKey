@@ -117,8 +117,8 @@ test_that("Cap 8 Espodossolos SGs: 6+15+3+10+8 = 42 classes em 12 GGs", {
 test_that("Cap 14 + Cap 5 + Cap 6 + Cap 7 + Cap 8 GGs preservados", {
   rules <- load_rules("sibcs5")
   total_ggs <- sum(vapply(rules$grandes_grupos, length, integer(1)))
-  # 9 + 23 + 26 + 11 + 12 = 81
-  expect_equal(total_ggs, 81L)
+  # Caps 5-8 minimo: 9 + 23 + 26 + 11 + 12 = 81. Caps subsequentes acumulam.
+  expect_gte(total_ggs, 81L)
 })
 
 # ============================================================================
