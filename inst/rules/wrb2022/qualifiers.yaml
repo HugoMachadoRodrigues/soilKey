@@ -117,6 +117,9 @@ rsg_qualifiers:
                 Hyperdystric, Hypereutric, Andic, Ferralic, Ferric,
                 Leptic, Mollic, Chernic, Umbric, Pretic, Plaggic,
                 Hortic, Terric, Posic, Rhodic, Chromic]
+    supplementary: [Aric, Clayic, Loamic, Humic, Dystric, Eutric,
+                    Hyperdystric, Hypereutric, Ochric, Profondic,
+                    Rubic, Skeletic]
   FR:   # Ferralsols (WRB 2022 Ch 4)
     principal: [Vetic, Posic, Acric, Lixic, Geric, Hyperdystric,
                 Hypereutric, Histic, Folic, Andic, Vitric, Sombric,
@@ -124,6 +127,9 @@ rsg_qualifiers:
                 Ferric, Rhodic, Chromic, Xanthic, Stagnic, Gleyic,
                 Plaggic, Hortic, Pretic, Terric, Anthraquic, Hydragric,
                 Skeletic]
+    supplementary: [Aric, Brunic, Clayic, Loamic, Siltic, Humic,
+                    Dystric, Eutric, Hyperdystric, Hypereutric,
+                    Lamellic, Ochric, Profondic, Rubic, Skeletic]
   CH:   # Chernozems (WRB 2022 Ch 4)
     principal: [Vermic, Pachic, Chernic, Glossic, Vertic, Protovertic,
                 Stagnic, Endostagnic, Gleyic, Endogleyic, Sodic,
@@ -176,28 +182,44 @@ rsg_qualifiers:
                 Ferralic, Gleyic, Stagnic, Andic, Vitric, Vertic,
                 Cutanic, Leptic, Skeletic, Plaggic, Hortic, Pretic,
                 Terric]
+    supplementary: [Aric, Brunic, Clayic, Loamic, Siltic, Humic,
+                    Dystric, Eutric, Hyperdystric, Hypereutric,
+                    Lamellic, Ochric, Profondic, Rhodic, Rubic,
+                    Skeletic, Chromic]
   LX:   # Lixisols (WRB 2022 Ch 4)
     principal: [Vetic, Posic, Hypereutric, Calcic, Petrocalcic, Mollic,
                 Chernic, Umbric, Albic, Hyperalbic, Plinthic,
                 Petroplinthic, Pisoplinthic, Ferralic, Gleyic, Stagnic,
                 Andic, Vitric, Vertic, Cutanic, Leptic, Skeletic,
                 Plaggic, Hortic, Terric]
+    supplementary: [Aric, Brunic, Clayic, Loamic, Siltic, Humic,
+                    Dystric, Eutric, Hyperdystric, Hypereutric,
+                    Lamellic, Ochric, Profondic, Rhodic, Rubic,
+                    Skeletic, Chromic]
   AL:   # Alisols (WRB 2022 Ch 4)
     principal: [Hyperalic, Vetic, Hyperdystric, Mollic, Chernic, Umbric,
                 Albic, Hyperalbic, Plinthic, Petroplinthic, Andic,
                 Gleyic, Stagnic, Vertic, Cutanic, Leptic, Skeletic,
                 Plaggic, Hortic, Terric]
+    supplementary: [Aric, Brunic, Clayic, Loamic, Siltic, Humic,
+                    Dystric, Hyperdystric, Lamellic, Ochric, Profondic,
+                    Rhodic, Rubic, Skeletic, Chromic]
   LV:   # Luvisols (WRB 2022 Ch 4)
     principal: [Hypereutric, Calcic, Petrocalcic, Mollic, Chernic,
                 Umbric, Albic, Hyperalbic, Glossic, Andic, Gleyic,
                 Stagnic, Vertic, Cutanic, Leptic, Cambic, Skeletic,
                 Plaggic, Hortic, Pretic, Terric]
+    supplementary: [Aric, Brunic, Clayic, Loamic, Siltic, Humic,
+                    Eutric, Hypereutric, Lamellic, Ochric, Profondic,
+                    Rhodic, Rubic, Skeletic, Chromic]
   CM:   # Cambisols (WRB 2022 Ch 4)
     principal: [Andic, Vitric, Folic, Histic, Mollic, Chernic, Umbric,
                 Vertic, Salic, Sodic, Calcic, Calcaric, Dolomitic,
                 Tephric, Stagnic, Gleyic, Plinthic, Petric, Hyperdystric,
                 Hypereutric, Eutric, Dystric, Skeletic, Leptic, Fluvic,
                 Plaggic, Hortic, Pretic, Terric]
+    supplementary: [Aric, Brunic, Clayic, Cumulic, Loamic, Siltic,
+                    Humic, Ochric, Rhodic, Rubic, Skeletic, Chromic]
   AR:   # Arenosols (WRB 2022 Ch 4)
     principal: [Protic, Brunic, Albic, Hyperalbic, Folic, Histic,
                 Mollic, Umbric, Cambic, Stagnic, Gleyic, Tidalic,

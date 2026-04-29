@@ -219,17 +219,19 @@ test_that("resolve_wrb_qualifiers exposes a supplementary slot", {
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("supplementary" %in% names(res))
   expect_type(res$supplementary, "character")
-  # Until v0.9.3.B adds canonical supplementary lists to the YAML,
-  # this is empty for every RSG, but the engine path is wired.
-  expect_equal(length(res$supplementary), 0L)
+  # An RSG without a YAML supplementary slot returns character(0).
+  res_gl <- resolve_wrb_qualifiers(make_gleysol_canonical(), "GL")
+  expect_equal(length(res_gl$supplementary), 0L)
 })
 
 test_that("classify_wrb2022 stores supplementary in qualifiers and renders the name", {
   pr  <- make_ferralsol_canonical()
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_true("supplementary" %in% names(cls$qualifiers))
-  # No parenthesised supplementary tag yet (YAML still empty for FR).
-  expect_false(grepl("\\(", cls$name))
+  # FR has supplementary qualifiers wired in v0.9.3.B -- the rendered
+  # name carries the parenthesised tag block.
+  expect_match(cls$name, "Ferralsol \\(")
+  expect_match(cls$name, "Clayic")
 })
 
 
