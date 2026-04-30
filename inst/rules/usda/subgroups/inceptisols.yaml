@@ -1,0 +1,168 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Inceptisols Subgroups -- Cap 11
+# =============================================================
+# Cobertura cientifica focada (~110 SGs).
+# =============================================================
+
+subgroups:
+
+  # ====== AQUEPTS ======
+  "KAA":  # Sulfaquepts (3)
+    - { code: "KAAA", name: "Halic Sulfaquepts", tests: { all_of: [{halic_subgroup_usda: {}}] } }
+    - { code: "KAAB", name: "Lithic Sulfaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAAC", name: "Typic Sulfaquepts", tests: { default: true } }
+  "KAB":  # Petraquepts (2)
+    - { code: "KABA", name: "Lithic Petraquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KABB", name: "Typic Petraquepts", tests: { default: true } }
+  "KAC":  # Halaquepts (3)
+    - { code: "KACA", name: "Sodic Halaquepts", tests: { all_of: [{sodic_subgroup_usda: {}}] } }
+    - { code: "KACB", name: "Vertic Halaquepts", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "KACC", name: "Typic Halaquepts", tests: { default: true } }
+  "KAD":  # Fragiaquepts (2)
+    - { code: "KADA", name: "Aeric Fragiaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KADB", name: "Typic Fragiaquepts", tests: { default: true } }
+  "KAE":  # Densiaquepts (2)
+    - { code: "KAEA", name: "Aeric Densiaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KAEB", name: "Typic Densiaquepts", tests: { default: true } }
+  "KAF":  # Gelaquepts (3)
+    - { code: "KAFA", name: "Lithic Gelaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAFB", name: "Histic Gelaquepts", tests: { all_of: [{histic_subgroup_usda: {}}] } }
+    - { code: "KAFC", name: "Typic Gelaquepts", tests: { default: true } }
+  "KAG":  # Cryaquepts (4)
+    - { code: "KAGA", name: "Lithic Cryaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAGB", name: "Histic Cryaquepts", tests: { all_of: [{histic_subgroup_usda: {}}] } }
+    - { code: "KAGC", name: "Andic Cryaquepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KAGD", name: "Typic Cryaquepts", tests: { default: true } }
+  "KAH":  # Vermaquepts (2)
+    - { code: "KAHA", name: "Aeric Vermaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KAHB", name: "Typic Vermaquepts", tests: { default: true } }
+  "KAI":  # Humaquepts (4)
+    - { code: "KAIA", name: "Lithic Humaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAIB", name: "Histic Humaquepts", tests: { all_of: [{histic_subgroup_usda: {}}] } }
+    - { code: "KAIC", name: "Cumulic Humaquepts", tests: { all_of: [{cumulic_subgroup_usda: {}}] } }
+    - { code: "KAID", name: "Typic Humaquepts", tests: { default: true } }
+  "KAJ":  # Epiaquepts (4)
+    - { code: "KAJA", name: "Lithic Epiaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAJB", name: "Aeric Epiaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KAJC", name: "Vertic Epiaquepts", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "KAJD", name: "Typic Epiaquepts", tests: { default: true } }
+  "KAK":  # Endoaquepts (4)
+    - { code: "KAKA", name: "Lithic Endoaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KAKB", name: "Aeric Endoaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KAKC", name: "Vertic Endoaquepts", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "KAKD", name: "Typic Endoaquepts", tests: { default: true } }
+
+  # ====== GELEPTS ======
+  "KBA":  # Humigelepts (2)
+    - { code: "KBAA", name: "Lithic Humigelepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KBAB", name: "Typic Humigelepts", tests: { default: true } }
+  "KBB":  # Dystrogelepts (2)
+    - { code: "KBBA", name: "Lithic Dystrogelepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KBBB", name: "Typic Dystrogelepts", tests: { default: true } }
+  "KBC":  # Haplogelepts (3)
+    - { code: "KBCA", name: "Lithic Haplogelepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KBCB", name: "Aquic Haplogelepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KBCC", name: "Typic Haplogelepts", tests: { default: true } }
+
+  # ====== CRYEPTS ======
+  "KCA":  # Humicryepts (3)
+    - { code: "KCAA", name: "Lithic Humicryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KCAB", name: "Andic Humicryepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KCAC", name: "Typic Humicryepts", tests: { default: true } }
+  "KCB":  # Calcicryepts (3)
+    - { code: "KCBA", name: "Lithic Calcicryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KCBB", name: "Petrocalcic Calcicryepts", tests: { all_of: [{petrocalcic_subgroup_usda: {}}] } }
+    - { code: "KCBC", name: "Typic Calcicryepts", tests: { default: true } }
+  "KCC":  # Dystrocryepts (4)
+    - { code: "KCCA", name: "Lithic Dystrocryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KCCB", name: "Andic Dystrocryepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KCCC", name: "Aquic Dystrocryepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KCCD", name: "Typic Dystrocryepts", tests: { default: true } }
+  "KCD":  # Haplocryepts (4)
+    - { code: "KCDA", name: "Lithic Haplocryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KCDB", name: "Andic Haplocryepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KCDC", name: "Aquic Haplocryepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KCDD", name: "Typic Haplocryepts", tests: { default: true } }
+
+  # ====== XEREPTS ======
+  "KDA":  # Durixerepts (2)
+    - { code: "KDAA", name: "Aquic Durixerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KDAB", name: "Typic Durixerepts", tests: { default: true } }
+  "KDB":  # Fragixerepts (3)
+    - { code: "KDBA", name: "Aquic Fragixerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KDBB", name: "Andic Fragixerepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KDBC", name: "Typic Fragixerepts", tests: { default: true } }
+  "KDC":  # Humixerepts (3)
+    - { code: "KDCA", name: "Lithic Humixerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDCB", name: "Aquic Humixerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KDCC", name: "Typic Humixerepts", tests: { default: true } }
+  "KDD":  # Calcixerepts (3)
+    - { code: "KDDA", name: "Lithic Calcixerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDDB", name: "Petrocalcic Calcixerepts", tests: { all_of: [{petrocalcic_subgroup_usda: {}}] } }
+    - { code: "KDDC", name: "Typic Calcixerepts", tests: { default: true } }
+  "KDE":  # Dystroxerepts (4)
+    - { code: "KDEA", name: "Lithic Dystroxerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDEB", name: "Andic Dystroxerepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KDEC", name: "Aquic Dystroxerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KDED", name: "Typic Dystroxerepts", tests: { default: true } }
+  "KDF":  # Haploxerepts (4)
+    - { code: "KDFA", name: "Lithic Haploxerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDFB", name: "Andic Haploxerepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KDFC", name: "Aquic Haploxerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KDFD", name: "Typic Haploxerepts", tests: { default: true } }
+
+  # ====== USTEPTS ======
+  "KEA":  # Durustepts (2)
+    - { code: "KEAA", name: "Aquic Durustepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KEAB", name: "Typic Durustepts", tests: { default: true } }
+  "KEB":  # Calciustepts (3)
+    - { code: "KEBA", name: "Lithic Calciustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KEBB", name: "Petrocalcic Calciustepts", tests: { all_of: [{petrocalcic_subgroup_usda: {}}] } }
+    - { code: "KEBC", name: "Typic Calciustepts", tests: { default: true } }
+  "KEC":  # Humustepts (3)
+    - { code: "KECA", name: "Lithic Humustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KECB", name: "Aquic Humustepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KECC", name: "Typic Humustepts", tests: { default: true } }
+  "KED":  # Dystrustepts (4)
+    - { code: "KEDA", name: "Lithic Dystrustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KEDB", name: "Andic Dystrustepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KEDC", name: "Aquic Dystrustepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KEDD", name: "Typic Dystrustepts", tests: { default: true } }
+  "KEE":  # Haplustepts (5)
+    - { code: "KEEA", name: "Lithic Haplustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KEEB", name: "Andic Haplustepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KEEC", name: "Aquic Haplustepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KEED", name: "Calcic Haplustepts", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
+    - { code: "KEEE", name: "Typic Haplustepts", tests: { default: true } }
+
+  # ====== UDEPTS ======
+  "KFA":  # Sulfudepts (2)
+    - { code: "KFAA", name: "Halic Sulfudepts", tests: { all_of: [{halic_subgroup_usda: {}}] } }
+    - { code: "KFAB", name: "Typic Sulfudepts", tests: { default: true } }
+  "KFB":  # Durudepts (2)
+    - { code: "KFBA", name: "Aquic Durudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFBB", name: "Typic Durudepts", tests: { default: true } }
+  "KFC":  # Fragiudepts (3)
+    - { code: "KFCA", name: "Aquic Fragiudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFCB", name: "Andic Fragiudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KFCC", name: "Typic Fragiudepts", tests: { default: true } }
+  "KFD":  # Densiudepts (2)
+    - { code: "KFDA", name: "Aquic Densiudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFDB", name: "Typic Densiudepts", tests: { default: true } }
+  "KFE":  # Humudepts (4)
+    - { code: "KFEA", name: "Lithic Humudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KFEB", name: "Andic Humudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KFEC", name: "Aquic Humudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFED", name: "Typic Humudepts", tests: { default: true } }
+  "KFF":  # Eutrudepts (5)
+    - { code: "KFFA", name: "Lithic Eutrudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KFFB", name: "Andic Eutrudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KFFC", name: "Aquic Eutrudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFFD", name: "Vertic Eutrudepts", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "KFFE", name: "Typic Eutrudepts", tests: { default: true } }
+  "KFG":  # Dystrudepts (5)
+    - { code: "KFGA", name: "Lithic Dystrudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KFGB", name: "Andic Dystrudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "KFGC", name: "Aquic Dystrudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFGD", name: "Humic Dystrudepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
+    - { code: "KFGE", name: "Typic Dystrudepts", tests: { default: true } }

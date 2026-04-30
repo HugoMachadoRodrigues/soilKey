@@ -1,0 +1,39 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Inceptisols Suborders -- Cap 11
+# =============================================================
+# 6 Suborders: KA Aquepts, KB Gelepts, KC Cryepts, KD Xerepts,
+#              KE Ustepts, KF Udepts (default)
+# =============================================================
+
+suborders:
+
+  "IN":
+    - code: "KA"
+      name: "Aquepts"
+      tests:
+        all_of:
+          - aquept_qualifying_usda: {}
+    - code: "KB"
+      name: "Gelepts"
+      tests:
+        all_of:
+          - str_gelic_usda: {}
+    - code: "KC"
+      name: "Cryepts"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "KD"
+      name: "Xerepts"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "KE"
+      name: "Ustepts"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "KF"
+      name: "Udepts"
+      tests:
+        default: true

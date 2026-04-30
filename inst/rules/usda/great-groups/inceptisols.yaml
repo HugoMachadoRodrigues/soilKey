@@ -1,0 +1,171 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Inceptisols Great Groups -- Cap 11
+# =============================================================
+# 36 GGs total:
+#   Aquepts (KA): 11 / Gelepts (KB): 3 / Cryepts (KC): 4 /
+#   Xerepts (KD): 6 / Ustepts (KE): 5 / Udepts (KF): 7
+# =============================================================
+
+great_groups:
+
+  # ---- Aquepts (KA) ----
+  "KA":
+    - code: "KAA"
+      name: "Sulfaquepts"
+      tests:
+        all_of: [{sulfuric_horizon_usda: {}}]
+    - code: "KAB"
+      name: "Petraquepts"
+      tests:
+        all_of: [{petrocalcic_subgroup_usda: {}}]
+    - code: "KAC"
+      name: "Halaquepts"
+      tests:
+        all_of: [{halaquept_qualifying_usda: {}}]
+    - code: "KAD"
+      name: "Fragiaquepts"
+      tests:
+        all_of: [{fragipan_usda: {}}]
+    - code: "KAE"
+      name: "Densiaquepts"
+      tests:
+        all_of: [{densiaquept_qualifying_usda: {}}]
+    - code: "KAF"
+      name: "Gelaquepts"
+      tests:
+        all_of: [{str_gelic_usda: {}}]
+    - code: "KAG"
+      name: "Cryaquepts"
+      tests:
+        all_of: [{str_cryic_usda: {}}]
+    - code: "KAH"
+      name: "Vermaquepts"
+      tests:
+        all_of: [{vermic_subgroup_usda: {}}]
+    - code: "KAI"
+      name: "Humaquepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KAJ"
+      name: "Epiaquepts"
+      tests:
+        all_of: [{episaturation_usda: {}}]
+    - code: "KAK"
+      name: "Endoaquepts"
+      tests:
+        default: true
+
+  # ---- Gelepts (KB) ----
+  "KB":
+    - code: "KBA"
+      name: "Humigelepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KBB"
+      name: "Dystrogelepts"
+      tests:
+        all_of: [{dystric_subgroup_usda: {}}]
+    - code: "KBC"
+      name: "Haplogelepts"
+      tests:
+        default: true
+
+  # ---- Cryepts (KC) ----
+  "KC":
+    - code: "KCA"
+      name: "Humicryepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KCB"
+      name: "Calcicryepts"
+      tests:
+        all_of: [{calcic_subgroup_usda: {}}]
+    - code: "KCC"
+      name: "Dystrocryepts"
+      tests:
+        all_of: [{dystric_subgroup_usda: {}}]
+    - code: "KCD"
+      name: "Haplocryepts"
+      tests:
+        default: true
+
+  # ---- Xerepts (KD) ----
+  "KD":
+    - code: "KDA"
+      name: "Durixerepts"
+      tests:
+        all_of: [{duripan_usda: {}}]
+    - code: "KDB"
+      name: "Fragixerepts"
+      tests:
+        all_of: [{fragipan_usda: {}}]
+    - code: "KDC"
+      name: "Humixerepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KDD"
+      name: "Calcixerepts"
+      tests:
+        all_of: [{calcic_subgroup_usda: {}}]
+    - code: "KDE"
+      name: "Dystroxerepts"
+      tests:
+        all_of: [{dystric_subgroup_usda: {}}]
+    - code: "KDF"
+      name: "Haploxerepts"
+      tests:
+        default: true
+
+  # ---- Ustepts (KE) ----
+  "KE":
+    - code: "KEA"
+      name: "Durustepts"
+      tests:
+        all_of: [{duripan_usda: {}}]
+    - code: "KEB"
+      name: "Calciustepts"
+      tests:
+        all_of: [{calcic_subgroup_usda: {}}]
+    - code: "KEC"
+      name: "Humustepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KED"
+      name: "Dystrustepts"
+      tests:
+        all_of: [{dystric_subgroup_usda: {}}]
+    - code: "KEE"
+      name: "Haplustepts"
+      tests:
+        default: true
+
+  # ---- Udepts (KF) ----
+  "KF":
+    - code: "KFA"
+      name: "Sulfudepts"
+      tests:
+        all_of: [{sulfuric_horizon_usda: {}}]
+    - code: "KFB"
+      name: "Durudepts"
+      tests:
+        all_of: [{duripan_usda: {}}]
+    - code: "KFC"
+      name: "Fragiudepts"
+      tests:
+        all_of: [{fragipan_usda: {}}]
+    - code: "KFD"
+      name: "Densiudepts"
+      tests:
+        all_of: [{densiaquept_qualifying_usda: {}}]
+    - code: "KFE"
+      name: "Humudepts"
+      tests:
+        all_of: [{humic_inceptisol_usda: {}}]
+    - code: "KFF"
+      name: "Eutrudepts"
+      tests:
+        all_of: [{eutric_inceptisol_usda: {}}]
+    - code: "KFG"
+      name: "Dystrudepts"
+      tests:
+        default: true
