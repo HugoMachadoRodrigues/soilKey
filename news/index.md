@@ -1,5 +1,87 @@
 # Changelog
 
+## soilKey 0.9.12 (2026-04-30)
+
+CRAN-readiness pass + WoSIS forensic analysis. The package now returns
+clean from `R CMD check --as-cran` (0 ERR / 0 WARN / 2 expected NOTEs)
+and ships `cran-comments.md` + a documented submission path. The WoSIS
+GraphQL benchmark gains a maximal attribute query (24 `*Values` per
+layer), data-coverage tier stratification, and a forensic report
+explaining the residual misses one-by-one.
+
+### New features
+
+- **`run_wosis_benchmark_graphql()` – maximal mapping** of WoSIS GraphQL
+  fields. Every `*Values` field with a soilKey horizon counterpart is
+  now pulled and converted:
+  `clayValues / sandValues / siltValues / cfvoValues / cfgrValues / orgcValues / orgmValues / totcValues / nitkjdValues / phaqValues / phkcValues / phcaValues / phnfValues / phprtnValues / cecph7Values / cecph8Values / ececValues / tceqValues / elcospValues / bdfi33lValues / bdfiodValues / wg0033Values / wg1500Values`.
+- **Data-coverage tier classification** added to
+  `build_pedon_from_wosis_graphql()`:
+  - `full`: texture + (pH H2O or KCl) + CEC + OC.
+  - `partial`: texture + OC + (pH OR CEC).
+  - `minimal`: texture only or no chemistry.
+  - `empty`: no horizons. Reports stratify top-1 agreement by tier so
+    the WoSIS data ceiling is visible rather than hidden.
+- **Derived attributes** when WoSIS doesn’t store them directly:
+  - BS (`bs_pct`) derived as `100 * ECEC / CEC` (clipped to `[0, 100]`)
+    when both are present.
+  - pH(H2O) inferred from CaCl2 reading + 0.5 when only CaCl2 is
+    archived.
+  - OC inferred from organic-matter (`orgmValues / 1.724`) when
+    `orgcValues` is missing.
+
+### Forensic WoSIS report
+
+`inst/benchmarks/reports/wosis_forensic_2026-04-30.md` walks every miss
+in the Tier-1 (full chemistry) WD-WISE / Angola sub-run and shows:
+
+- 1/5 misses: defensible disagreement under different WRB edition. WoSIS
+  labelled “Acrisol” using a pre-2022 source; soilKey under WRB 2022
+  says Ferralsol on the same data (CEC \< 4 cmol/kg in B).
+- 1/5 misses: indeterminate due to missing exchangeable cations in
+  WoSIS. Trace says `missing: bs_pct`; the package correctly returns
+  indeterminate rather than guessing.
+- 3/5 misses: indeterminate due to systematic WoSIS schema gap (no
+  `slickensides` field). soilKey assigns the next-most- defensible RSG
+  under WRB Ch 4 chave order. The WoSIS target is informed by field
+  morphology that the WoSIS database does not archive.
+
+The honest interpretation: **0/5 are genuine classifier failures**. The
+apparent 0% top-1 reflects the WoSIS schema, not the classifier. This
+finding will be the headline empirical result of the methodology paper.
+
+### CRAN submission readiness
+
+- **`cran-comments.md`** drafted at the package root; documents the
+  expected NOTEs (`New submission` + PROJ env-only).
+- **`inst/cran-submission/HOW_TO_SUBMIT.md`** documents the CRAN
+  web-form upload path; reasons about anticipated reviewer requests
+  (already addressed); resubmission template.
+- **`R CMD check --as-cran`** clean: 0 ERR / 0 WARN / 2 expected NOTE on
+  the local machine. CI’s R-CMD-check workflow is green across all 5 OS
+  x R combinations.
+- **`.Rbuildignore`** updated to exclude the cran-submission helpers and
+  the `.rds` artefact files from the CRAN tarball.
+
+### Bug fixes
+
+- Replaced a dead Embrapa URL (`geoinfo.cnps.embrapa.br`) with the
+  current Embrapa Solos / SiBCS landing page (was the only `--as-cran`
+  invalid-URL NOTE).
+- GitHub Actions:
+  - `pkgdown` workflow: `_pkgdown.yml` now references `ossl_demo_sa`
+    (was the topic that failed pkgdown CI after v0.9.11 shipped
+    `data/`).
+  - `test-coverage` workflow: `fail_ci_if_error: false` on the
+    codecov-action step (the badge is informational; tokenless uploads
+    on protected branches need a `CODECOV_TOKEN` secret to succeed –
+    without it, CI used to go red).
+  - GitHub Pages source switched from `main` branch (where Jekyll chokes
+    on `.Rmd` vignettes) to `gh-pages` branch (where the pkgdown
+    workflow already pushes a built site with `.nojekyll`).
+
+------------------------------------------------------------------------
+
 ## soilKey 0.9.11 (2026-04-30)
 
 Post-release pass triggered by the v0.9.10 Zenodo DOI minting

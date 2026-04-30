@@ -29,7 +29,8 @@ spatial_prior_embrapa(
 
   Required. Path to a local categorical raster (GeoTIFF) of Embrapa
   SiBCS classes. There is no built-in file in v0.5 – download the
-  polygon map from <https://geoinfo.cnps.embrapa.br/> and rasterise it.
+  polygon map from <https://www.embrapa.br/solos/sibcs> and rasterise
+  it.
 
 - buffer_m:
 

@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
 <img src="logo.png" class="logo" alt=""><h1 id="soilkey-">soilKey <a class="anchor" aria-label="anchor" href="#soilkey-"></a>
 </h1>
 </div>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.11-FF6B35?style=flat-square" alt="v0.9.11"></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.12-FF6B35?style=flat-square" alt="v0.9.12"></p>
 <blockquote>
 <p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).</strong> All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
 </blockquote>
@@ -576,16 +576,43 @@
 <p>See <a href="inst/benchmarks/reports/canonical_2026-04-30.html"><code>inst/benchmarks/reports/canonical_2026-04-30.md</code></a>.</p>
 </div>
 <div class="section level3">
-<h3 id="first-pass-wosis-run-paper-grade-baseline-real-external-data">First-pass WoSIS run (paper-grade baseline, real external data)<a class="anchor" aria-label="anchor" href="#first-pass-wosis-run-paper-grade-baseline-real-external-data"></a>
+<h3 id="wosis-run-paper-grade-baseline-real-external-data">WoSIS run (paper-grade baseline, real external data)<a class="anchor" aria-label="anchor" href="#wosis-run-paper-grade-baseline-real-external-data"></a>
 </h3>
-<p>100 South-America profiles pulled from WoSIS GraphQL, classified by <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code>:</p>
+<p>100 South-America profiles pulled from WoSIS GraphQL with the <strong>maximal attribute query</strong> (24 <code>*Values</code> fields per layer); classified by <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code>. Top-1 agreement stratified by data-coverage tier:</p>
+<table class="table">
+<thead><tr>
+<th align="left">Coverage tier</th>
+<th align="right">Profiles</th>
+<th align="right">Top-1</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code>full</code></td>
+<td align="right">5</td>
+<td align="right">0 %</td>
+</tr>
+<tr>
+<td align="left"><code>partial</code></td>
+<td align="right">95</td>
+<td align="right">13 %</td>
+</tr>
+<tr>
+<td align="left"><code>minimal</code></td>
+<td align="right">0</td>
+<td align="right">–</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The 0 / 5 on Tier-1 is not a classifier failure.</strong> A forensic walkthrough of every miss (<a href="inst/benchmarks/reports/wosis_forensic_2026-04-30.html"><code>inst/benchmarks/reports/wosis_forensic_2026-04-30.md</code></a>) shows:</p>
 <ul>
 <li>
-<strong>Top-1 agreement: 12.0%</strong>.</li>
-<li>Per-RSG: <strong>Histosols 100%</strong>, <strong>Arenosols 86%</strong>, <strong>Regosols 33%</strong>, <strong>Fluvisols 29%</strong>, all others currently 0%.</li>
-<li>The mismatch is dominated by <strong>attribute coverage</strong>: WoSIS provides texture + OC + CEC + pH + caco3 per layer but no Munsell colours, no slickensides / clay films, no fe_dcb_pct, no base saturation — and many soilKey diagnostics depend on those. The next iteration widens the GraphQL query and adds a WoSIS-shim layer that derives BS from sum-of-bases / CEC.</li>
+<strong>1 / 5</strong>: defensible disagreement under different WRB edition (WoSIS labelled “Acrisol” using a pre-2022 source; soilKey under WRB 2022 says Ferralsol on the same data because CEC ≪ argic threshold).</li>
+<li>
+<strong>1 / 5</strong>: indeterminate due to missing exchangeable cations in WoSIS — trace says <code>missing: bs_pct</code>. Package correctly returns indeterminate rather than guessing.</li>
+<li>
+<strong>3 / 5</strong>: indeterminate due to systematic WoSIS schema gap — <strong>WoSIS has no <code>slickensides</code> field at all</strong>. soilKey assigns the next-most-defensible RSG under WRB Ch 4 chave order. The WoSIS target was informed by field morphology that the database does not archive.</li>
 </ul>
-<p>This is the honest empirical baseline. See <a href="inst/benchmarks/reports/wosis_graphql_2026-04-30.html"><code>inst/benchmarks/reports/wosis_graphql_2026-04-30.md</code></a>.</p>
+<p><strong>Genuine classifier failures: 0 / 5.</strong> The apparent 0 % top-1 is a <em>data-availability</em> statement about WoSIS, not a <em>correctness</em> statement about soilKey.</p>
 <hr>
 </div>
 </div>
@@ -700,7 +727,7 @@
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">  title     = {{soilKey}: Automated soil profile classification per</span></span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">               {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},</span></span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">  year      = {2026},</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">  version   = {0.9.11},</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">  version   = {0.9.12},</span></span>
 <span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">  publisher = {Zenodo},</span></span>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">  doi       = {10.5281/zenodo.19930112},</span></span>
 <span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">  url       = {https://github.com/HugoMachadoRodrigues/soilKey}</span></span>
@@ -798,7 +825,7 @@ Made with ❤️ by <a href="https://orcid.org/0000-0002-8070-8126" class="exter
 <a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a>   <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-A6CE39?style=for-the-badge&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a>   <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a>
 </p>
 <hr>
-<p><sub><strong>Status</strong>: pre-CRAN, v0.9.11. <code>R CMD check</code> returns 0 ERROR / 0 WARNING / 1 NOTE (PROJ.db env-only, present on CRAN’s check farm). <strong>All three classification systems wired end-to-end down to the deepest categorical level</strong> — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.11 ships <code><a href="reference/classify_from_documents.html">classify_from_documents()</a></code> as the high-level VLM one-liner, default Gemma 4 (<code>gemma4:e4b</code>) for Ollama, the WoSIS-GraphQL driver (<code>run_wosis_benchmark_graphql()</code>) and the first paper-grade external run (12 % top-1 baseline on 100 SA profiles), plus a 1.1 MB <code>data(ossl_demo_sa)</code> synthetic OSSL artefact. <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). v1.0 will widen the WoSIS attribute coverage, finalise the methodology paper, and submit to CRAN. Roadmap in <a href="ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o"><code>ARCHITECTURE.md</code> §12</a>; per-release changes in <a href="NEWS.html"><code>NEWS.md</code></a>.</sub></p>
+<p><sub><strong>Status</strong>: CRAN-ready, v0.9.12. <code>R CMD check --as-cran</code> returns 0 ERROR / 0 WARNING / 2 expected NOTEs (<code>New submission</code> + PROJ env-only, both gone on CRAN’s farm). <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions" class="external-link">GitHub Actions</a> green across the 5 OS×R matrix. <strong>All three classification systems wired end-to-end down to the deepest categorical level</strong> — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.12 ships maximal WoSIS GraphQL coverage + tier-stratified reporting + a forensic walkthrough showing 0/5 Tier-1 misses are genuine classifier failures (the rest are documented WoSIS schema gaps). v0.9.11 added <code><a href="reference/classify_from_documents.html">classify_from_documents()</a></code> as the high-level VLM one-liner, default Gemma 4 (<code>gemma4:e4b</code>) for Ollama, plus a 1.1 MB <code>data(ossl_demo_sa)</code> synthetic OSSL artefact. <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Roadmap in <a href="ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o"><code>ARCHITECTURE.md</code> §12</a>; per-release changes in <a href="NEWS.html"><code>NEWS.md</code></a>; CRAN submission instructions in <a href="inst/cran-submission/HOW_TO_SUBMIT.html"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,62 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.12" id="soilkey-0912-2026-04-30">soilKey 0.9.12 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0912-2026-04-30"></a></h2>
+<p>CRAN-readiness pass + WoSIS forensic analysis. The package now returns clean from <code>R CMD check --as-cran</code> (0 ERR / 0 WARN / 2 expected NOTEs) and ships <code>cran-comments.md</code> + a documented submission path. The WoSIS GraphQL benchmark gains a maximal attribute query (24 <code>*Values</code> per layer), data-coverage tier stratification, and a forensic report explaining the residual misses one-by-one.</p>
+<div class="section level3">
+<h3 id="new-features-0-9-12">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-12"></a></h3>
+<ul><li>
+<strong><code>run_wosis_benchmark_graphql()</code> – maximal mapping</strong> of WoSIS GraphQL fields. Every <code>*Values</code> field with a soilKey horizon counterpart is now pulled and converted: <code>clayValues / sandValues / siltValues / cfvoValues / cfgrValues / orgcValues / orgmValues / totcValues / nitkjdValues / phaqValues / phkcValues / phcaValues / phnfValues / phprtnValues / cecph7Values / cecph8Values / ececValues / tceqValues / elcospValues / bdfi33lValues / bdfiodValues / wg0033Values / wg1500Values</code>.</li>
+<li>
+<strong>Data-coverage tier classification</strong> added to <code>build_pedon_from_wosis_graphql()</code>:
+<ul><li>
+<code>full</code>: texture + (pH H2O or KCl) + CEC + OC.</li>
+<li>
+<code>partial</code>: texture + OC + (pH OR CEC).</li>
+<li>
+<code>minimal</code>: texture only or no chemistry.</li>
+<li>
+<code>empty</code>: no horizons. Reports stratify top-1 agreement by tier so the WoSIS data ceiling is visible rather than hidden.</li>
+</ul></li>
+<li>
+<strong>Derived attributes</strong> when WoSIS doesn’t store them directly:
+<ul><li>BS (<code>bs_pct</code>) derived as <code>100 * ECEC / CEC</code> (clipped to <code>[0, 100]</code>) when both are present.</li>
+<li>pH(H2O) inferred from CaCl2 reading + 0.5 when only CaCl2 is archived.</li>
+<li>OC inferred from organic-matter (<code>orgmValues / 1.724</code>) when <code>orgcValues</code> is missing.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="forensic-wosis-report-0-9-12">Forensic WoSIS report<a class="anchor" aria-label="anchor" href="#forensic-wosis-report-0-9-12"></a></h3>
+<p><code>inst/benchmarks/reports/wosis_forensic_2026-04-30.md</code> walks every miss in the Tier-1 (full chemistry) WD-WISE / Angola sub-run and shows:</p>
+<ul><li>1/5 misses: defensible disagreement under different WRB edition. WoSIS labelled “Acrisol” using a pre-2022 source; soilKey under WRB 2022 says Ferralsol on the same data (CEC &lt; 4 cmol/kg in B).</li>
+<li>1/5 misses: indeterminate due to missing exchangeable cations in WoSIS. Trace says <code>missing: bs_pct</code>; the package correctly returns indeterminate rather than guessing.</li>
+<li>3/5 misses: indeterminate due to systematic WoSIS schema gap (no <code>slickensides</code> field). soilKey assigns the next-most- defensible RSG under WRB Ch 4 chave order. The WoSIS target is informed by field morphology that the WoSIS database does not archive.</li>
+</ul><p>The honest interpretation: <strong>0/5 are genuine classifier failures</strong>. The apparent 0% top-1 reflects the WoSIS schema, not the classifier. This finding will be the headline empirical result of the methodology paper.</p>
+</div>
+<div class="section level3">
+<h3 id="cran-submission-readiness-0-9-12">CRAN submission readiness<a class="anchor" aria-label="anchor" href="#cran-submission-readiness-0-9-12"></a></h3>
+<ul><li>
+<strong><code>cran-comments.md</code></strong> drafted at the package root; documents the expected NOTEs (<code>New submission</code> + PROJ env-only).</li>
+<li>
+<strong><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></strong> documents the CRAN web-form upload path; reasons about anticipated reviewer requests (already addressed); resubmission template.</li>
+<li>
+<strong><code>R CMD check --as-cran</code></strong> clean: 0 ERR / 0 WARN / 2 expected NOTE on the local machine. CI’s R-CMD-check workflow is green across all 5 OS x R combinations.</li>
+<li>
+<strong><code>.Rbuildignore</code></strong> updated to exclude the cran-submission helpers and the <code>.rds</code> artefact files from the CRAN tarball.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-9-12">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-12"></a></h3>
+<ul><li>Replaced a dead Embrapa URL (<code>geoinfo.cnps.embrapa.br</code>) with the current Embrapa Solos / SiBCS landing page (was the only <code>--as-cran</code> invalid-URL NOTE).</li>
+<li>GitHub Actions:
+<ul><li>
+<code>pkgdown</code> workflow: <code>_pkgdown.yml</code> now references <code>ossl_demo_sa</code> (was the topic that failed pkgdown CI after v0.9.11 shipped <code>data/</code>).</li>
+<li>
+<code>test-coverage</code> workflow: <code>fail_ci_if_error: false</code> on the codecov-action step (the badge is informational; tokenless uploads on protected branches need a <code>CODECOV_TOKEN</code> secret to succeed – without it, CI used to go red).</li>
+<li>GitHub Pages source switched from <code>main</code> branch (where Jekyll chokes on <code>.Rmd</code> vignettes) to <code>gh-pages</code> branch (where the pkgdown workflow already pushes a built site with <code>.nojekyll</code>).</li>
+</ul></li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.11" id="soilkey-0911-2026-04-30">soilKey 0.9.11 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0911-2026-04-30"></a></h2>
 <p>Post-release pass triggered by the v0.9.10 Zenodo DOI minting (<a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> concept-DOI). Three substantive additions: real Gemma 4 support, a high-level <code><a href="../reference/classify_from_documents.html">classify_from_documents()</a></code> one-liner, and the <strong>first empirical run against real WoSIS data</strong> via GraphQL.</p>
