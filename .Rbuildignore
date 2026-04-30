@@ -20,3 +20,6 @@
 ^cran-comments\.md$
 ^.*\.gitkeep$
 ^\.git$
+^inst/cran-submission$
+^inst/benchmarks/reports/.*\.rds$
+^paper$

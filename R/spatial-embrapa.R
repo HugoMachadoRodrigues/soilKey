@@ -8,7 +8,7 @@
 # and stored it locally; v0.5 does not embed the file.
 #
 # Download / styling guidance:
-#   https://geoinfo.cnps.embrapa.br/
+#   https://www.embrapa.br/solos/sibcs
 #   https://www.embrapa.br/solos/sibcs
 #
 # Future work (v0.6+):
@@ -34,7 +34,7 @@
 #' @param raster_path Required. Path to a local categorical raster
 #'        (GeoTIFF) of Embrapa SiBCS classes. There is no built-in
 #'        file in v0.5 -- download the polygon map from
-#'        \url{https://geoinfo.cnps.embrapa.br/} and rasterise it.
+#'        \url{https://www.embrapa.br/solos/sibcs} and rasterise it.
 #' @param buffer_m Buffer radius in metres (default 3750, i.e.
 #'        ~15-cell neighbourhood at 250 m resolution).
 #' @param lut Optional named character vector mapping raster integer
@@ -65,7 +65,7 @@ spatial_prior_embrapa <- function(pedon,
     rlang::abort(paste0(
       "Embrapa raster not found. v0.5 requires a local raster path. ",
       "Pass raster_path= or set options(soilKey.embrapa_raster = '...'). ",
-      "Download instructions: https://geoinfo.cnps.embrapa.br/"
+      "Download instructions: https://www.embrapa.br/solos/sibcs"
     ))
   }
 

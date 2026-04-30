@@ -19,7 +19,7 @@ spatial_prior_embrapa(
 \item{raster_path}{Required. Path to a local categorical raster
 (GeoTIFF) of Embrapa SiBCS classes. There is no built-in
 file in v0.5 -- download the polygon map from
-\url{https://geoinfo.cnps.embrapa.br/} and rasterise it.}
+\url{https://www.embrapa.br/solos/sibcs} and rasterise it.}
 
 \item{buffer_m}{Buffer radius in metres (default 3750, i.e.
 ~15-cell neighbourhood at 250 m resolution).}

@@ -9,8 +9,31 @@
 
 ## Top-1 agreement
 
-- Top-1: **0.120**
+- **Overall top-1: 0.130** (no stratification)
 - Indeterminate (NA assignments): 0.000
+
+## Top-1 stratified by data-coverage tier
+
+Different profiles in WoSIS carry very different attribute sets.
+soilKey reports `coverage_tier` per profile based on what was
+actually present (not on the WoSIS schema):
+
+- **full**: texture + (pH H2O or KCl) + CEC + OC.
+- **partial**: texture + OC + (pH OR CEC).
+- **minimal**: texture only or no chemistry.
+- **empty**: no horizons.
+
+| Coverage tier | Profiles | Top-1 |
+|:--------------|---------:|:------|
+| partial      |      100 | 13/100 (13.0%) |
+
+Profiles below the **full** tier face a hard data ceiling:
+many WRB RSGs (Vertisols, Nitisols, Andosols, Ferralsols) require
+attributes (cracks, slickensides, Fe-DCB, Munsell, allophane
+indicators) that WoSIS does not store at all. The honest
+interpretation: top-1 in the **full** tier reflects soilKey
+performance; top-1 in the **partial / minimal / empty** tiers
+reflects the unrecoverable WoSIS data ceiling.
 
 ## Per-RSG agreement
 
@@ -31,7 +54,7 @@
 | Phaeozem | 0/15 (0.0%) |
 | Planosol | 0/1 (0.0%) |
 | Regosol | 3/9 (33.3%) |
-| Solonchak | 0/5 (0.0%) |
+| Solonchak | 1/5 (20.0%) |
 | Solonetz | 0/13 (0.0%) |
 | Vertisol | 0/2 (0.0%) |
 
@@ -39,25 +62,25 @@
 
 ```
             assigned
-target       Arenosol Calcisol Fluvisol Histosol Regosol
-  Arenosol          6        1        0        0       0
-  Calcisol          1        0        2        0       5
-  Cambisol          3        0        0        0       3
-  Chernozem         0        0        0        0       1
-  Cryosol           1        0        0        0       0
-  Fluvisol          1        0        2        0       4
-  Gleysol           0        0        0        0       4
-  Gypsisol          0        0        0        0       1
-  Histosol          0        0        0        1       0
-  Kastanozem        1        0        1        0       7
-  Leptosol          2        0        0        0       1
-  Luvisol           0        1        0        0       6
-  Phaeozem          1        2        2        0      10
-  Planosol          0        0        0        0       1
-  Regosol           5        0        1        0       3
-  Solonchak         0        0        0        0       5
-  Solonetz          0        1        6        0       6
-  Vertisol          0        1        0        0       1
+target       Arenosol Calcisol Fluvisol Histosol Regosol Solonchak
+  Arenosol          6        1        0        0       0         0
+  Calcisol          1        0        2        0       5         0
+  Cambisol          3        0        0        0       3         0
+  Chernozem         0        0        0        0       1         0
+  Cryosol           1        0        0        0       0         0
+  Fluvisol          1        0        2        0       4         0
+  Gleysol           0        0        0        0       4         0
+  Gypsisol          0        0        0        0       1         0
+  Histosol          0        0        0        1       0         0
+  Kastanozem        1        0        1        0       7         0
+  Leptosol          2        0        0        0       1         0
+  Luvisol           0        1        0        0       6         0
+  Phaeozem          1        2        2        0      10         0
+  Planosol          0        0        0        0       1         0
+  Regosol           5        0        1        0       3         0
+  Solonchak         0        0        0        0       4         1
+  Solonetz          0        0        6        0       5         2
+  Vertisol          0        1        0        0       1         0
 ```
 
 ## Evidence-grade distribution
@@ -68,4 +91,4 @@ grade
 100 
 ```
 
-_Report emitted by `run_wosis_benchmark_graphql()` -- soilKey v0.9.10_
+_Report emitted by `run_wosis_benchmark_graphql()` -- soilKey v0.9.11_
