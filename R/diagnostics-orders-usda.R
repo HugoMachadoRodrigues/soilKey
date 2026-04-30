@@ -60,17 +60,18 @@ gelisol_usda <- function(pedon) {
 
 # ---- B. Histosols (Cap 10, p 199) -----------------------------------------
 
-#' Histosols (USDA Cap 10): organic materials.
-#' Delegates to histic_horizon (WRB).
+#' Histosols (USDA Cap 10): organic materials >= 40 cm in 0-100.
+#' Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
+#' threshold) instead of WRB histic_horizon (10 cm).
 #' @export
 histosol_usda <- function(pedon) {
-  hi <- histic_horizon(pedon)
-  # Excludes Gelisols
+  hi <- histosol_qualifying_usda(pedon)
   ge <- gelisol_usda(pedon)
   passed <- isTRUE(hi$passed) && !isTRUE(ge$passed)
   DiagnosticResult$new(
     name = "histosol_usda", passed = passed,
-    layers = hi$layers, evidence = list(histic = hi, gelisol_excluded = ge),
+    layers = hi$layers, evidence = list(histosol_qualifying = hi,
+                                          gelisol_excluded = ge),
     missing = hi$missing,
     reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 10 Histosols (p 199)"
   )

@@ -1,0 +1,38 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Spodosols Suborders -- Cap 14, p 311
+# =============================================================
+# 5 Suborders:
+#   CA. Aquods   -- aquic conditions + histic/spodic in upper 50 cm
+#   CB. Gelods   -- gelic STR
+#   CC. Cryods   -- cryic STR
+#   CD. Humods   -- 6%+ OC in spodic
+#   CE. Orthods  -- catch-all
+# =============================================================
+
+suborders:
+
+  "SP":
+    - code: "CA"
+      name: "Aquods"
+      tests:
+        all_of:
+          - aquic_conditions_usda: { max_top_cm: 50 }
+    - code: "CB"
+      name: "Gelods"
+      tests:
+        all_of:
+          - str_gelic_usda: {}
+    - code: "CC"
+      name: "Cryods"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "CD"
+      name: "Humods"
+      tests:
+        all_of:
+          - humic_spodic_usda: {}
+    - code: "CE"
+      name: "Orthods"
+      tests:
+        default: true
