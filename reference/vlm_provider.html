@@ -15,7 +15,7 @@ any request."><meta property="og:image" content="https://hugomachadorodrigues.gi
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ any request."><meta property="og:image" content="https://hugomachadorodrigues.gi
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Construct a VLM provider chat object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.10/R/vlm-providers.R" class="external-link"><code>R/vlm-providers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/R/vlm-providers.R" class="external-link"><code>R/vlm-providers.R</code></a></small>
       <div class="d-none name"><code>vlm_provider.Rd</code></div>
     </div>
 
@@ -110,10 +110,17 @@ constructor. <code>ellmer</code> must be installed.</p>
 
 
 <p>Passing <code>name = "ollama"</code> runs every extraction locally via
-an Ollama server (default <code>gemma3:27b</code>). No data leaves the
+an Ollama server (default <code>gemma4:e4b</code>, Gemma 4 edge with
+multimodal text+image+audio support). No data leaves the
 machine, which is the recommended setting for sensitive field
 descriptions (e.g. governmental surveys, indigenous land studies)
-where institutional independence and data sovereignty matter.</p>
+where institutional independence and data sovereignty matter.
+Pull the model first:</p><div class="sourceCode"><pre><code>
+  ollama pull gemma4:e4b      # ~3 GB edge variant (default)
+  ollama pull gemma4:31b      # frontier dense variant
+  ollama pull gemma3:27b      # earlier generation, still solid
+</code></pre></div><p>Then start an Ollama server (<code>ollama serve</code>) and the chat
+object returned here will dispatch over HTTP locally.</p>
     </div>
 
     <div class="section level2">
@@ -122,8 +129,14 @@ where institutional independence and data sovereignty matter.</p>
 <span class="r-in"><span><span class="co"># Cloud provider (needs ANTHROPIC_API_KEY)</span></span></span>
 <span class="r-in"><span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu">vlm_provider</span><span class="op">(</span><span class="st">"anthropic"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Local provider (needs a running Ollama server)</span></span></span>
-<span class="r-in"><span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu">vlm_provider</span><span class="op">(</span><span class="st">"ollama"</span>, model <span class="op">=</span> <span class="st">"gemma3:27b"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Local Gemma 4 edge model -- default, ~3 GB, runs anywhere</span></span></span>
+<span class="r-in"><span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu">vlm_provider</span><span class="op">(</span><span class="st">"ollama"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Local Gemma 4 frontier dense model -- best quality</span></span></span>
+<span class="r-in"><span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu">vlm_provider</span><span class="op">(</span><span class="st">"ollama"</span>, model <span class="op">=</span> <span class="st">"gemma4:31b"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Any other multimodal model the user has pulled</span></span></span>
+<span class="r-in"><span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu">vlm_provider</span><span class="op">(</span><span class="st">"ollama"</span>, model <span class="op">=</span> <span class="st">"qwen2.5vl:32b"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

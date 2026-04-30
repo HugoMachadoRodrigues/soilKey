@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Vision-language extraction of pedon data (Module 2)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.10/vignettes/v04_vlm_extraction.Rmd" class="external-link"><code>vignettes/v04_vlm_extraction.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/vignettes/v04_vlm_extraction.Rmd" class="external-link"><code>vignettes/v04_vlm_extraction.Rmd</code></a></small>
       <div class="d-none name"><code>v04_vlm_extraction.Rmd</code></div>
     </div>
 
@@ -244,20 +244,72 @@ ladder.)</p>
 </h2>
 <p>In production, replace <code>MockVLMProvider</code> with a chat
 object from <code>ellmer</code>. The rest of the pipeline is
-unchanged:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("ellmer")</span></span>
-<span><span class="va">chat</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span></span>
-<span>  model  <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
-<span>  system <span class="op">=</span> <span class="st">"You extract structured pedon data from Brazilian field reports."</span></span>
-<span><span class="op">)</span></span>
+unchanged.</p>
+<div class="section level3">
+<h3 id="a--local-first-with-gemma-4-ollama">6a. Local-first with Gemma 4 (Ollama)<a class="anchor" aria-label="anchor" href="#a--local-first-with-gemma-4-ollama"></a>
+</h3>
+<p>For sensitive field descriptions, governmental surveys or just for
+reproducibility without an API key, the recommended path is a
+<strong>local Gemma 4</strong> model via <a href="https://ollama.com" class="external-link">Ollama</a>. The data never leaves your
+machine.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Install once (any platform)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="ex">ollama</span> pull gemma4:e4b           <span class="co"># ~3 GB, multimodal, fits a laptop</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># ollama pull gemma4:31b         # frontier dense, best quality</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># ollama serve                   # background server</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Local Gemma 4 edge -- multimodal text + image (and audio).</span></span>
+<span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vlm_provider.html">vlm_provider</a></span><span class="op">(</span><span class="st">"ollama"</span><span class="op">)</span>             <span class="co"># default: gemma4:e4b</span></span>
+<span><span class="co"># provider &lt;- vlm_provider("ollama", model = "gemma4:31b")  # frontier</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/extract_horizons_from_pdf.html">extract_horizons_from_pdf</a></span><span class="op">(</span></span>
 <span>  pedon       <span class="op">=</span> <span class="va">pr</span>,</span>
 <span>  pdf_path    <span class="op">=</span> <span class="st">"field-reports/perfil-LV-001.pdf"</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="va">chat</span>,</span>
+<span>  provider    <span class="op">=</span> <span class="va">provider</span>,</span>
 <span>  max_retries <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="b--cloud-providers-anthropic-openai-google">6b. Cloud providers (Anthropic, OpenAI, Google)<a class="anchor" aria-label="anchor" href="#b--cloud-providers-anthropic-openai-google"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("ellmer")</span></span>
+<span></span>
+<span><span class="co"># Anthropic Claude (needs ANTHROPIC_API_KEY in the environment).</span></span>
+<span><span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vlm_provider.html">vlm_provider</a></span><span class="op">(</span><span class="st">"anthropic"</span><span class="op">)</span>          <span class="co"># default: claude-sonnet-4-7</span></span>
+<span></span>
+<span><span class="co"># Or OpenAI / Google in the same one-liner shape:</span></span>
+<span><span class="co"># provider &lt;- vlm_provider("openai")           # default: gpt-4o</span></span>
+<span><span class="co"># provider &lt;- vlm_provider("google")           # default: gemini-2.0-pro</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/extract_horizons_from_pdf.html">extract_horizons_from_pdf</a></span><span class="op">(</span></span>
+<span>  pedon       <span class="op">=</span> <span class="va">pr</span>,</span>
+<span>  pdf_path    <span class="op">=</span> <span class="st">"field-reports/perfil-LV-001.pdf"</span>,</span>
+<span>  provider    <span class="op">=</span> <span class="va">provider</span>,</span>
+<span>  max_retries <span class="op">=</span> <span class="fl">3L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="c--the-one-liner-classify_from_documents">6c. The one-liner: <code>classify_from_documents()</code><a class="anchor" aria-label="anchor" href="#c--the-one-liner-classify_from_documents"></a>
+</h3>
+<p>For the canonical case – “I have a PDF and (optionally) a profile
+photo, give me the three classifications and a one-pager report” – chain
+everything in a single call. The default provider is local Gemma 4
+edge:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span></span>
+<span>  pdf      <span class="op">=</span> <span class="st">"perfil_042_descricao.pdf"</span>,</span>
+<span>  image    <span class="op">=</span> <span class="st">"perfil_042_parede.jpg"</span>,</span>
+<span>  report   <span class="op">=</span> <span class="st">"perfil_042.html"</span>            <span class="co"># optional output report</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">wrb</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
+<span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">sibcs</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
+<span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">usda</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; "Rhodic Hapludox"</span></span></code></pre></div>
 <p>Photos go through <code><a href="../reference/extract_munsell_from_photo.html">extract_munsell_from_photo()</a></code>; site
 metadata through <code><a href="../reference/extract_site_from_fieldsheet.html">extract_site_from_fieldsheet()</a></code>. All three
 follow the same validate-or-retry contract so they accept any provider
@@ -265,6 +317,7 @@ that exposes <code>$chat(prompt, ...)</code>.</p>
 <p>The next vignette (<code>v05_spatial_spectra_pipeline</code>) shows
 how the SoilGrids spatial prior and OSSL Vis-NIR predictions can fill
 remaining gaps in the pedon before classification.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

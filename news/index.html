@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,9 +43,45 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.10/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.11" id="soilkey-0911-2026-04-30">soilKey 0.9.11 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0911-2026-04-30"></a></h2>
+<p>Post-release pass triggered by the v0.9.10 Zenodo DOI minting (<a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> concept-DOI). Three substantive additions: real Gemma 4 support, a high-level <code><a href="../reference/classify_from_documents.html">classify_from_documents()</a></code> one-liner, and the <strong>first empirical run against real WoSIS data</strong> via GraphQL.</p>
+<div class="section level3">
+<h3 id="new-features-0-9-11">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-11"></a></h3>
+<ul><li>
+<strong><code>classify_from_documents(pdf, image, fieldsheet, provider, ...)</code></strong> – the high-level one-liner promised in <code>ARCHITECTURE.md</code> § 10: takes a soil-description PDF and / or a profile-wall image, extracts horizons + Munsell + site metadata via the configured VLM provider (default: local Gemma 4 edge), runs all three keys (WRB / SiBCS / USDA), and optionally writes a self-contained HTML / PDF report. The architectural invariants are preserved: the VLM never classifies, every extracted value carries <code>source = "extracted_vlm"</code>, and <code>evidence_grade</code> reflects the provenance.</li>
+<li>
+<strong>Gemma 4 default for Ollama.</strong> The default model for <code>vlm_provider("ollama")</code> is now <code>gemma4:e4b</code> (Gemma 4 edge, ~3 GB, multimodal text+image+audio). Gemma 4 was released by Google DeepMind in 2026; it ships in five sizes (E2B / E4B / 26B-MoE / 31B / cloud-31B) on Ollama. Older defaults are documented and remain accessible (<code>model = "gemma3:27b"</code>).</li>
+<li>
+<strong><code>run_wosis_benchmark_graphql()</code></strong> – the WoSIS REST API has been deprecated in favour of GraphQL at <code>https://graphql.isric.org/wosis/graphql</code>. The new driver speaks GraphQL natively, with <code>continent</code>, <code>wrb_rsg</code>, and <code>country</code> filters; queries <code>wosisLatestProfiles</code> for site metadata and pulls <code>clayValues / sandValues / siltValues / orgcValues / cecph7Values / phaqValues / tceqValues</code> per layer. Wraps every HTTP call with <code>tryCatch</code> and a clear error path on offline / non-200; sends <code>User-Agent</code> per the ISRIC ToS.</li>
+<li>
+<strong><code>data(ossl_demo_sa)</code></strong> – a 1.1 MB synthetic OSSL South-America artefact bundled in <code>data/ossl_demo_sa.rda</code> for vignettes / examples / tests when the real OSSL data isn’t available. Same <code>list(Xr, Yr, metadata)</code> shape as <code><a href="../reference/download_ossl_subset.html">download_ossl_subset()</a></code> so the in-package demo path matches the real-data path. 80 profiles x 2151 wavelengths (350-2500 nm). Synthetic-but-property-correlated spectra (1400 nm OH-water, 1900 nm clay-OH, 2200 nm Al-OH, 900 nm Fe-oxide bands).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="first-wosis-run-paper-grade-0-9-11">First WoSIS run (paper-grade)<a class="anchor" aria-label="anchor" href="#first-wosis-run-paper-grade-0-9-11"></a></h3>
+<p><code>inst/benchmarks/reports/wosis_graphql_2026-04-30.md</code> – 100 South America profiles via GraphQL, classified with <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code>: <strong>top-1 = 12.0%</strong>. Per-RSG breakdown:</p>
+<ul><li>Histosols: 1/1 (100 %)</li>
+<li>Arenosols: 6/7 (85.7 %)</li>
+<li>Regosols: 3/9 (33.3 %)</li>
+<li>Fluvisols: 2/7 (28.6 %)</li>
+<li>All other RSGs: 0% (most fall through to Regosol or Arenosol).</li>
+</ul><p>This is the honest empirical baseline. The mismatch is dominated by attribute coverage: WoSIS provides texture + OC + CEC + pH + caco3 per layer but no Munsell colours, no slickensides, no clay films, no fe_dcb_pct, no BS — and many soilKey diagnostics depend on those. The next iteration will (a) widen the GraphQL query to include Munsell + base saturation + dominant chemistry; (b) derive BS from sum-of-bases / CEC; (c) provide a “WoSIS-curated” attribute shim that maps available WoSIS variables into soilKey’s expected schema. Tracked in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/benchmarks/reports/wosis_graphql_2026-04-30.md" class="external-link"><code>inst/benchmarks/reports/wosis_graphql_2026-04-30.md</code></a>.</p>
+</div>
+<div class="section level3">
+<h3 id="documentation-0-9-11">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-9-11"></a></h3>
+<ul><li>Vignette 04 (VLM extraction) gains a “Local-first with Gemma 4 (Ollama)” section, a “Cloud providers” section, and a <code><a href="../reference/classify_from_documents.html">classify_from_documents()</a></code> one-liner example. The default pipeline is now demonstrably end-to-end in three lines.</li>
+<li>README citation block updated with the real concept-DOI (<code>10.5281/zenodo.19930112</code>); BibTeX block points at it.</li>
+<li>Vignette 02 references the v0.9.10 <code><a href="../reference/report.html">report()</a></code> API.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-9-11">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-11"></a></h3>
+<ul><li>
+<code>report-html.R::.html_classification_card</code> is now resilient to trace entries that arrive as bare logical / atomic values (some classify-* helpers emit <code>NA</code> for layers they couldn’t evaluate); previously these triggered <code>$ operator is invalid for atomic vectors</code> deep inside vapply.</li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.10" id="soilkey-0910-2026-04-30">soilKey 0.9.10 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0910-2026-04-30"></a></h2>
 <p>CRAN-readiness pass: <code>R CMD check</code> now returns 0 ERROR / 0 WARNING / 1 NOTE (the lone NOTE is environmental – a missing <code>proj.db</code> on the local system, not present on CRAN’s own check farm). Plus a real OSSL fetch helper and a hardened WoSIS driver, closing the v0.9.6 audit gap and the paper-grade WoSIS run pre-requisites.</p>

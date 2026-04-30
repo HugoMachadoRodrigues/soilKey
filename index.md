@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.10](https://img.shields.io/badge/version-0.9.10-FF6B35?style=flat-square)
+![v0.9.11](https://img.shields.io/badge/version-0.9.11-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA
 > Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All
@@ -15,8 +15,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?sty
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
-[![DOI
-Zenodo](https://img.shields.io/badge/DOI-mint--on--first--release-yellow.svg?style=flat-square)](https://zenodo.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
 [![tests](https://img.shields.io/badge/tests-2596%20passing-brightgreen.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/tests/)
 [![Codecov test
@@ -357,22 +356,94 @@ evidence grade, key trace, ambiguities, and missing-data hints.
 
 ## ✦ Empirical validation
 
-soilKey ships **two benchmark drivers** under `inst/benchmarks/`:
+soilKey ships **three benchmark drivers** under `inst/benchmarks/`:
 
 | Driver | Network | Scope | Output |
 |:---|:---|:---|:---|
-| `run_canonical_benchmark()` | none | 31 canonical fixtures (one per RSG, real published profiles from WRB 2022 didactic exemplars + ISRIC ISMC + Soil Atlas of Europe). Run on every release. | `inst/benchmarks/reports/canonical_<DATE>.md` |
-| `run_wosis_benchmark()` | WoSIS REST API | Paper-grade run over a configurable WoSIS subset; produces concordance + confusion matrix per RSG. | `inst/benchmarks/reports/wosis_<DATE>.md` |
+| `run_canonical_benchmark()` | none | 31 canonical fixtures (one per RSG, real published profiles from WRB 2022 didactic exemplars + ISRIC ISMC + Soil Atlas of Europe). Run every release. | `inst/benchmarks/reports/canonical_<DATE>.md` |
+| `run_wosis_benchmark_graphql()` | WoSIS GraphQL | Paper-grade run over a region-filtered WoSIS slice; queries `https://graphql.isric.org/wosis/graphql`. Continent / country / WRB-RSG filters. | `inst/benchmarks/reports/wosis_graphql_<DATE>.md` |
+| `run_wosis_benchmark()` | (legacy REST) | Kept for sites mirroring the deprecated WoSIS REST v3 API. | `inst/benchmarks/reports/wosis_<DATE>.md` |
 
-The most recent canonical run reports **WRB 2022: 26/31 (83.9 %) top-1
-agreement**, **SiBCS 5: 13/20 (65.0 %)** where a target is unambiguously
-defined, and **USDA ST 13: 8/31 (25.8 %)** — see
+### Canonical-fixture run (release-time CI)
+
+| System     |   n | match |     top-1 |
+|:-----------|----:|------:|----------:|
+| WRB 2022   |  31 |    31 | **1.000** |
+| SiBCS 5    |  20 |    20 | **1.000** |
+| USDA ST 13 |  31 |    31 | **1.000** |
+
+See
 [`inst/benchmarks/reports/canonical_2026-04-30.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/canonical_2026-04-30.md).
-The lower USDA number is a known, bounded gap caused by the canonical
-fixtures being curated for WRB diagnostics — they lack USDA-specific
-attributes (soil moisture / temperature regime, phosphate retention for
-Andisols, …) needed to fire the upper Path C branches. Tracked as a
-v0.9.10+ task.
+
+### First-pass WoSIS run (paper-grade baseline, real external data)
+
+100 South-America profiles pulled from WoSIS GraphQL, classified by
+[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md):
+
+- **Top-1 agreement: 12.0%**.
+- Per-RSG: **Histosols 100%**, **Arenosols 86%**, **Regosols 33%**,
+  **Fluvisols 29%**, all others currently 0%.
+- The mismatch is dominated by **attribute coverage**: WoSIS provides
+  texture + OC + CEC + pH + caco3 per layer but no Munsell colours, no
+  slickensides / clay films, no fe_dcb_pct, no base saturation — and
+  many soilKey diagnostics depend on those. The next iteration widens
+  the GraphQL query and adds a WoSIS-shim layer that derives BS from
+  sum-of-bases / CEC.
+
+This is the honest empirical baseline. See
+[`inst/benchmarks/reports/wosis_graphql_2026-04-30.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/wosis_graphql_2026-04-30.md).
+
+------------------------------------------------------------------------
+
+## ✦ VLM / Gemma 4 / one-liner pipeline
+
+soilKey separates **extraction** (multimodal LLM) from
+**classification** (deterministic R code driven by versioned YAML
+rules). The VLM never classifies; every value it extracts carries
+`source = "extracted_vlm"` and the deterministic key consumes the
+`PedonRecord` unaware of how each value got there.
+
+The default local stack uses **Gemma 4** via
+[Ollama](https://ollama.com) (`gemma4:e4b`, ~3 GB, multimodal
+text+image+audio). Cloud providers (`anthropic` / `openai` / `google`)
+remain one argument away. The full canonical pipeline – *extract from
+PDF + extract Munsell from photo + classify in three systems + render
+report* – is one function call:
+
+``` r
+
+library(soilKey)
+
+# One-liner. Local-first; no API key needed; data never leaves your machine.
+res <- classify_from_documents(
+  pdf      = "perfil_042_descricao.pdf",
+  image    = "perfil_042_parede.jpg",
+  report   = "perfil_042.html"          # optional self-contained HTML output
+)
+
+res$classifications$wrb$name
+#> "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+
+res$classifications$sibcs$name
+#> "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
+
+res$classifications$usda$name
+#> "Rhodic Hapludox"
+```
+
+Switch model / provider with one argument:
+
+``` r
+
+classify_from_documents(pdf = "...", provider = "ollama",   model = "gemma4:31b")
+classify_from_documents(pdf = "...", provider = "anthropic")  # claude-sonnet-4-7
+classify_from_documents(pdf = "...", provider = "openai")     # gpt-4o
+classify_from_documents(pdf = "...", provider = "google")     # gemini-2.0-pro
+```
+
+The `MockVLMProvider` (offline, schema-validated) is documented in
+[`v04_vlm_extraction.Rmd`](https://hugomachadorodrigues.github.io/soilKey/vignettes/v04_vlm_extraction.Rmd)
+for tests and CI runs.
 
 ------------------------------------------------------------------------
 
@@ -443,13 +514,10 @@ If `soilKey` contributes to your work, please cite:
   title     = {{soilKey}: Automated soil profile classification per
                {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
   year      = {2026},
-  version   = {0.9.10},
+  version   = {0.9.11},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.PLACEHOLDER},
-  url       = {https://github.com/HugoMachadoRodrigues/soilKey},
-  note      = {Zenodo concept-DOI is minted automatically on the first
-               GitHub release; replace PLACEHOLDER with the assigned
-               record id (see \texttt{.zenodo.json}).}
+  doi       = {10.5281/zenodo.19930112},
+  url       = {https://github.com/HugoMachadoRodrigues/soilKey}
 }
 ```
 
@@ -580,4 +648,4 @@ Twitter](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoCo
 
 ------------------------------------------------------------------------
 
-_(**Status**: pre-CRAN, v0.9.10. `R CMD check` returns 0 ERROR / 0 WARNING / 1 NOTE (the lone NOTE is environmental — missing `proj.db` on the local system, present on CRAN’s check farm). **All three classification systems are wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + principal qualifiers + 32/32 supplementary baselines + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), and USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.10 adds the real OSSL fetch helper ([`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)), the WoSIS REST v3-aligned driver with regional subsets, and full CRAN-readiness polish on top of v0.9.9 (which shipped [`report_html()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_html.md) / [`report_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_pdf.md), the offline canonical-fixture benchmark, GitHub Actions CI, NEWS.md, pkgdown, Zenodo/CITATION metadata, and the OSSL audit). v1.0 will close the WoSIS paper-grade run, the methodology paper, and the CRAN submission. Track the roadmap in [`ARCHITECTURE.md` §12](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o) and per-release changes in [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md).)
+_(**Status**: pre-CRAN, v0.9.11. `R CMD check` returns 0 ERROR / 0 WARNING / 1 NOTE (PROJ.db env-only, present on CRAN’s check farm). **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.11 ships [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md) as the high-level VLM one-liner, default Gemma 4 (`gemma4:e4b`) for Ollama, the WoSIS-GraphQL driver (`run_wosis_benchmark_graphql()`) and the first paper-grade external run (12 % top-1 baseline on 100 SA profiles), plus a 1.1 MB `data(ossl_demo_sa)` synthetic OSSL artefact. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). v1.0 will widen the WoSIS attribute coverage, finalise the methodology paper, and submit to CRAN. Roadmap in [`ARCHITECTURE.md` §12](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o); per-release changes in [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md).)

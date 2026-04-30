@@ -1,5 +1,96 @@
 # Changelog
 
+## soilKey 0.9.11 (2026-04-30)
+
+Post-release pass triggered by the v0.9.10 Zenodo DOI minting
+([10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112)
+concept-DOI). Three substantive additions: real Gemma 4 support, a
+high-level
+[`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+one-liner, and the **first empirical run against real WoSIS data** via
+GraphQL.
+
+### New features
+
+- **`classify_from_documents(pdf, image, fieldsheet, provider, ...)`** –
+  the high-level one-liner promised in `ARCHITECTURE.md` § 10: takes a
+  soil-description PDF and / or a profile-wall image, extracts
+  horizons + Munsell + site metadata via the configured VLM provider
+  (default: local Gemma 4 edge), runs all three keys (WRB / SiBCS /
+  USDA), and optionally writes a self-contained HTML / PDF report. The
+  architectural invariants are preserved: the VLM never classifies,
+  every extracted value carries `source = "extracted_vlm"`, and
+  `evidence_grade` reflects the provenance.
+- **Gemma 4 default for Ollama.** The default model for
+  `vlm_provider("ollama")` is now `gemma4:e4b` (Gemma 4 edge, ~3 GB,
+  multimodal text+image+audio). Gemma 4 was released by Google DeepMind
+  in 2026; it ships in five sizes (E2B / E4B / 26B-MoE / 31B /
+  cloud-31B) on Ollama. Older defaults are documented and remain
+  accessible (`model = "gemma3:27b"`).
+- **`run_wosis_benchmark_graphql()`** – the WoSIS REST API has been
+  deprecated in favour of GraphQL at
+  `https://graphql.isric.org/wosis/graphql`. The new driver speaks
+  GraphQL natively, with `continent`, `wrb_rsg`, and `country` filters;
+  queries `wosisLatestProfiles` for site metadata and pulls
+  `clayValues / sandValues / siltValues / orgcValues / cecph7Values / phaqValues / tceqValues`
+  per layer. Wraps every HTTP call with `tryCatch` and a clear error
+  path on offline / non-200; sends `User-Agent` per the ISRIC ToS.
+- **`data(ossl_demo_sa)`** – a 1.1 MB synthetic OSSL South-America
+  artefact bundled in `data/ossl_demo_sa.rda` for vignettes / examples /
+  tests when the real OSSL data isn’t available. Same
+  `list(Xr, Yr, metadata)` shape as
+  [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
+  so the in-package demo path matches the real-data path. 80 profiles x
+  2151 wavelengths (350-2500 nm). Synthetic-but-property-correlated
+  spectra (1400 nm OH-water, 1900 nm clay-OH, 2200 nm Al-OH, 900 nm
+  Fe-oxide bands).
+
+### First WoSIS run (paper-grade)
+
+`inst/benchmarks/reports/wosis_graphql_2026-04-30.md` – 100 South
+America profiles via GraphQL, classified with
+[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md):
+**top-1 = 12.0%**. Per-RSG breakdown:
+
+- Histosols: 1/1 (100 %)
+- Arenosols: 6/7 (85.7 %)
+- Regosols: 3/9 (33.3 %)
+- Fluvisols: 2/7 (28.6 %)
+- All other RSGs: 0% (most fall through to Regosol or Arenosol).
+
+This is the honest empirical baseline. The mismatch is dominated by
+attribute coverage: WoSIS provides texture + OC + CEC + pH + caco3 per
+layer but no Munsell colours, no slickensides, no clay films, no
+fe_dcb_pct, no BS — and many soilKey diagnostics depend on those. The
+next iteration will (a) widen the GraphQL query to include Munsell +
+base saturation + dominant chemistry; (b) derive BS from sum-of-bases /
+CEC; (c) provide a “WoSIS-curated” attribute shim that maps available
+WoSIS variables into soilKey’s expected schema. Tracked in
+[`inst/benchmarks/reports/wosis_graphql_2026-04-30.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/benchmarks/reports/wosis_graphql_2026-04-30.md).
+
+### Documentation
+
+- Vignette 04 (VLM extraction) gains a “Local-first with Gemma 4
+  (Ollama)” section, a “Cloud providers” section, and a
+  [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+  one-liner example. The default pipeline is now demonstrably end-to-end
+  in three lines.
+- README citation block updated with the real concept-DOI
+  (`10.5281/zenodo.19930112`); BibTeX block points at it.
+- Vignette 02 references the v0.9.10
+  [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+  API.
+
+### Bug fixes
+
+- `report-html.R::.html_classification_card` is now resilient to trace
+  entries that arrive as bare logical / atomic values (some classify-\*
+  helpers emit `NA` for layers they couldn’t evaluate); previously these
+  triggered `$ operator is invalid for atomic vectors` deep inside
+  vapply.
+
+------------------------------------------------------------------------
+
 ## soilKey 0.9.10 (2026-04-30)
 
 CRAN-readiness pass: `R CMD check` now returns 0 ERROR / 0 WARNING / 1

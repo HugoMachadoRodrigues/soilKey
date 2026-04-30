@@ -171,22 +171,79 @@ grade ladder.)
 ## 6. Production: swap the mock for an `ellmer` chat
 
 In production, replace `MockVLMProvider` with a chat object from
-`ellmer`. The rest of the pipeline is unchanged:
+`ellmer`. The rest of the pipeline is unchanged.
+
+### 6a. Local-first with Gemma 4 (Ollama)
+
+For sensitive field descriptions, governmental surveys or just for
+reproducibility without an API key, the recommended path is a **local
+Gemma 4** model via [Ollama](https://ollama.com). The data never leaves
+your machine.
+
+``` bash
+# Install once (any platform)
+ollama pull gemma4:e4b           # ~3 GB, multimodal, fits a laptop
+# ollama pull gemma4:31b         # frontier dense, best quality
+# ollama serve                   # background server
+```
 
 ``` r
 
-# install.packages("ellmer")
-chat <- ellmer::chat_anthropic(
-  model  = "claude-sonnet-4-6",
-  system = "You extract structured pedon data from Brazilian field reports."
-)
+# Local Gemma 4 edge -- multimodal text + image (and audio).
+provider <- vlm_provider("ollama")             # default: gemma4:e4b
+# provider <- vlm_provider("ollama", model = "gemma4:31b")  # frontier
 
 extract_horizons_from_pdf(
   pedon       = pr,
   pdf_path    = "field-reports/perfil-LV-001.pdf",
-  provider    = chat,
+  provider    = provider,
   max_retries = 3L
 )
+```
+
+### 6b. Cloud providers (Anthropic, OpenAI, Google)
+
+``` r
+
+# install.packages("ellmer")
+
+# Anthropic Claude (needs ANTHROPIC_API_KEY in the environment).
+provider <- vlm_provider("anthropic")          # default: claude-sonnet-4-7
+
+# Or OpenAI / Google in the same one-liner shape:
+# provider <- vlm_provider("openai")           # default: gpt-4o
+# provider <- vlm_provider("google")           # default: gemini-2.0-pro
+
+extract_horizons_from_pdf(
+  pedon       = pr,
+  pdf_path    = "field-reports/perfil-LV-001.pdf",
+  provider    = provider,
+  max_retries = 3L
+)
+```
+
+### 6c. The one-liner: `classify_from_documents()`
+
+For the canonical case – “I have a PDF and (optionally) a profile photo,
+give me the three classifications and a one-pager report” – chain
+everything in a single call. The default provider is local Gemma 4 edge:
+
+``` r
+
+res <- classify_from_documents(
+  pdf      = "perfil_042_descricao.pdf",
+  image    = "perfil_042_parede.jpg",
+  report   = "perfil_042.html"            # optional output report
+)
+
+res$classifications$wrb$name
+#> "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+
+res$classifications$sibcs$name
+#> "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
+
+res$classifications$usda$name
+#> "Rhodic Hapludox"
 ```
 
 Photos go through

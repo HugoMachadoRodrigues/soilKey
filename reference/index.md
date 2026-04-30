@@ -35,6 +35,8 @@ the evidence grade.
   : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
 - [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
+- [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+  : Build a fully-classified \`PedonRecord\` from documents in one call
 
 ## WRB 2022 – diagnostic horizons (Ch 3.1)
 
@@ -2561,6 +2563,9 @@ plus auxiliaries) used in the test suite.
 
 - [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
   : Download an OSSL subset and return an \`ossl_library\` artefact
+
+- [`ossl_demo_sa`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_demo_sa.md)
+  : Synthetic OSSL South America demo subset
 
 - [`planosol()`](https://hugomachadorodrigues.github.io/soilKey/reference/planosol.md)
   : Planosol RSG gate (WRB 2022 Ch 4, p 107)
