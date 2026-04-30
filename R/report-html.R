@@ -100,6 +100,7 @@ report <- function(x,
                   error = function(e) NULL)
   if (is.null(v)) "dev" else as.character(v)
 }
+#' Internal helper: .html_escape
 
 
 #' @keywords internal
@@ -113,6 +114,7 @@ report <- function(x,
   x <- gsub("\"", "&quot;", x, fixed = TRUE)
   x
 }
+#' Internal helper: .normalise_results
 
 #' @keywords internal
 .normalise_results <- function(x, pedon = NULL) {
@@ -218,6 +220,15 @@ report <- function(x,
   } else {
     paste0(vapply(seq_along(res$trace), function(i) {
       t <- res$trace[[i]]
+      # v0.9.11: tolerate atomic / non-list trace entries (some
+      # diagnostics return a bare logical when no metadata is
+      # available). Promote to a minimal list so the field accesses
+      # below are uniform.
+      if (!is.list(t)) {
+        t <- list(passed = if (is.logical(t)) t else NA,
+                  code = NA_character_, name = NA_character_,
+                  missing = character(0))
+      }
       passed <- t$passed
       sym <- if (isTRUE(passed))      'class="passed">PASSED'
              else if (isFALSE(passed)) 'class="failed">failed'

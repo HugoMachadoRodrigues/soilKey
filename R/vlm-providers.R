@@ -18,9 +18,31 @@
 #' Default VLM model per provider
 #'
 #' Returns a sensible default model name for the requested provider.
-#' These defaults are chosen for vision capability (multimodal) and
-#' general structured-extraction reliability; users can override via
-#' the \code{model} argument of \code{\link{vlm_provider}}.
+#' These defaults are picked for **vision capability** (multimodal)
+#' AND **structured-extraction reliability** -- the two things the
+#' soilKey extraction layer needs.
+#'
+#' Defaults (as of v0.9.11):
+#' \itemize{
+#'   \item \code{anthropic = "claude-sonnet-4-7"} -- the strongest
+#'         Claude vision model at our 2026 cutoff for document /
+#'         photo extraction.
+#'   \item \code{openai = "gpt-4o"} -- text + vision.
+#'   \item \code{google = "gemini-2.0-pro"} -- successor to 1.5
+#'         with longer context + better multimodal grounding.
+#'   \item \code{ollama = "gemma4:e4b"} -- Gemma 4 edge
+#'         multimodal (text + image; audio also). For larger
+#'         contexts use \code{"gemma4:31b"}; for cloud-only
+#'         offload via Ollama, \code{"gemma4-cloud:31b"}. Pull the
+#'         desired size first with \code{ollama pull gemma4:e4b}.
+#' }
+#'
+#' Users can override at any time:
+#' \preformatted{
+#' vlm_provider("ollama", model = "gemma4:31b")
+#' vlm_provider("ollama", model = "gemma3:27b")  # back-compat
+#' vlm_provider("ollama", model = "qwen2.5vl:32b")  # any pulled model
+#' }
 #'
 #' @param name Provider name; one of \code{"anthropic"}, \code{"openai"},
 #'        \code{"google"}, \code{"ollama"}.
@@ -29,10 +51,10 @@
 default_model <- function(name) {
   name <- match.arg(name, c("anthropic", "openai", "google", "ollama"))
   switch(name,
-    anthropic = "claude-sonnet-4-5",
+    anthropic = "claude-sonnet-4-7",
     openai    = "gpt-4o",
-    google    = "gemini-1.5-pro",
-    ollama    = "gemma3:27b"
+    google    = "gemini-2.0-pro",
+    ollama    = "gemma4:e4b"
   )
 }
 
@@ -52,10 +74,19 @@ default_model <- function(name) {
 #'
 #' @section Local-first option:
 #' Passing \code{name = "ollama"} runs every extraction locally via
-#' an Ollama server (default \code{gemma3:27b}). No data leaves the
+#' an Ollama server (default \code{gemma4:e4b}, Gemma 4 edge with
+#' multimodal text+image+audio support). No data leaves the
 #' machine, which is the recommended setting for sensitive field
 #' descriptions (e.g. governmental surveys, indigenous land studies)
 #' where institutional independence and data sovereignty matter.
+#' Pull the model first:
+#' \preformatted{
+#'   ollama pull gemma4:e4b      # ~3 GB edge variant (default)
+#'   ollama pull gemma4:31b      # frontier dense variant
+#'   ollama pull gemma3:27b      # earlier generation, still solid
+#' }
+#' Then start an Ollama server (\code{ollama serve}) and the chat
+#' object returned here will dispatch over HTTP locally.
 #'
 #' @param name Provider name. One of \code{"anthropic"} (Claude),
 #'        \code{"openai"} (GPT-4o family), \code{"google"} (Gemini),
@@ -73,8 +104,14 @@ default_model <- function(name) {
 #' # Cloud provider (needs ANTHROPIC_API_KEY)
 #' provider <- vlm_provider("anthropic")
 #'
-#' # Local provider (needs a running Ollama server)
-#' provider <- vlm_provider("ollama", model = "gemma3:27b")
+#' # Local Gemma 4 edge model -- default, ~3 GB, runs anywhere
+#' provider <- vlm_provider("ollama")
+#'
+#' # Local Gemma 4 frontier dense model -- best quality
+#' provider <- vlm_provider("ollama", model = "gemma4:31b")
+#'
+#' # Any other multimodal model the user has pulled
+#' provider <- vlm_provider("ollama", model = "qwen2.5vl:32b")
 #' }
 vlm_provider <- function(name = c("anthropic", "openai", "google", "ollama"),
                           model = NULL, ...) {

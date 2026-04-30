@@ -188,6 +188,7 @@ luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
 
 
 # ----------------------------------------------------------- helpers ----
+#' Internal helper: .argic_derived_negative
 
 #' @keywords internal
 .argic_derived_negative <- function(name, arg_res, note) {
@@ -202,6 +203,7 @@ luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
     notes     = note
   )
 }
+#' Internal helper: .argic_derived_aggregate
 
 #' @keywords internal
 .argic_derived_aggregate <- function(tests, layer_keys) {

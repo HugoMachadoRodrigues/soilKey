@@ -15,6 +15,7 @@
 
 
 # ---------------------------------------------------------------- helpers ----
+#' Internal helper: .subtest_result
 
 #' @keywords internal
 .subtest_result <- function(passed,
@@ -30,6 +31,7 @@
     notes   = notes
   )
 }
+#' Internal helper: .candidate_layers
 
 #' @keywords internal
 .candidate_layers <- function(h, candidate_layers = NULL) {

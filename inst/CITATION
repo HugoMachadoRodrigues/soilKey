@@ -17,7 +17,7 @@ bibentry(
                     comment = c(ORCID = "0000-0002-8070-8126")),
   year     = format(Sys.Date(), "%Y"),
   note     = sprintf("R package version %s", .soilkey_ver),
-  doi      = "10.5281/zenodo.PLACEHOLDER",
+  doi      = "10.5281/zenodo.19930112",
   url      = "https://github.com/HugoMachadoRodrigues/soilKey",
   textVersion = paste(
     "Rodrigues, H. (",

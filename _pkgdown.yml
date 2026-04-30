@@ -73,6 +73,7 @@ reference:
       - classify_sibcs
       - classify_sibcs_familia
       - classify_usda
+      - classify_from_documents
 
   - title: "WRB 2022 -- diagnostic horizons (Ch 3.1)"
     desc: "32/32 diagnostic horizons per IUSS Working Group WRB (2022) Ch 3.1."

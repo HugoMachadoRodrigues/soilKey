@@ -7,13 +7,16 @@
 # versioned report under inst/benchmarks/reports/wosis_<DATE>.md.
 #
 # This driver is *not* called automatically. It is intended to be sourced
-# manually by a maintainer with WoSIS API credentials (or a local extract):
+# manually by a maintainer:
 #
-#   options(soilKey.wosis_endpoint = "https://wosis.isric.org/api/v3/profiles")
 #   source("inst/benchmarks/run_wosis_benchmark.R")
-#   report <- run_wosis_benchmark(n_max = 5000L)
+#   # GraphQL path (recommended; what wosis.isric.org actually serves):
+#   res <- run_wosis_benchmark_graphql(n_max = 200L,
+#                                        continent = "South America")
+#   # Legacy REST path (kept for sites that mirror the deprecated v3 API):
+#   res <- run_wosis_benchmark(n_max = 5000L)
 #
-# The vignette 06-wosis-benchmark.Rmd documents the protocol in full.
+# The vignette v06_wosis_benchmark.Rmd documents the protocol in full.
 # =============================================================================
 
 
@@ -211,6 +214,282 @@ run_wosis_benchmark <- function(n_max  = 5000L,
 
   message(sprintf("Report written to %s", out_path))
   invisible(report)
+}
+
+
+# =============================================================================
+# WoSIS GraphQL driver (current, recommended)
+#
+# wosis.isric.org now serves data via a GraphQL API at
+# https://graphql.isric.org/wosis/graphql (REST v3 has been
+# deprecated). This block contains the real-data path used to
+# generate the paper-grade benchmark numbers.
+# =============================================================================
+
+
+.wosis_graphql_endpoint <- function() {
+  getOption("soilKey.wosis_graphql",
+            default = "https://graphql.isric.org/wosis/graphql")
+}
+
+
+#' Pull WoSIS profiles via the GraphQL API.
+#'
+#' @param continent Continent name ("South America", "Africa",
+#'        "Europe", "North America", "Asia", "Oceania", or NULL for
+#'        global).
+#' @param wrb_rsg Optional WRB Reference Soil Group filter
+#'        (e.g. "Ferralsol"). When supplied, only profiles whose
+#'        WoSIS-recorded RSG equals this value are pulled.
+#' @param country Optional country filter (e.g. "Brazil").
+#' @param n_max Maximum number of profiles to pull.
+#' @param page_size Profiles per GraphQL request (default 50;
+#'        WoSIS imposes a soft cap).
+#' @param verbose Print per-page progress.
+#' @keywords internal
+read_wosis_profiles_graphql <- function(continent  = NULL,
+                                          wrb_rsg    = NULL,
+                                          country    = NULL,
+                                          n_max      = 500L,
+                                          page_size  = 50L,
+                                          verbose    = TRUE) {
+  if (!requireNamespace("httr",     quietly = TRUE)) stop("Install 'httr'.")
+  if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Install 'jsonlite'.")
+
+  endpoint <- .wosis_graphql_endpoint()
+
+  filter_parts <- character(0)
+  if (!is.null(continent))
+    filter_parts <- c(filter_parts,
+                        sprintf('continent: {equalTo: "%s"}', continent))
+  if (!is.null(wrb_rsg))
+    filter_parts <- c(filter_parts,
+                        sprintf('wrbReferenceSoilGroup: {equalTo: "%s"}',
+                                  wrb_rsg))
+  if (!is.null(country))
+    filter_parts <- c(filter_parts,
+                        sprintf('countryName: {equalTo: "%s"}', country))
+  filter_clause <- if (length(filter_parts) > 0L)
+                      sprintf("filter: {%s},",
+                                paste(filter_parts, collapse = ", "))
+                    else
+                      ""
+
+  layer_q <- paste(
+    "layers(first: 30) {",
+    "  upperDepth lowerDepth layerName",
+    "  clayValues(first: 1)   { valueAvg }",
+    "  sandValues(first: 1)   { valueAvg }",
+    "  siltValues(first: 1)   { valueAvg }",
+    "  orgcValues(first: 1)   { valueAvg }",
+    "  cecph7Values(first: 1) { valueAvg }",
+    "  phaqValues(first: 1)   { valueAvg }",
+    "  tceqValues(first: 1)   { valueAvg }",
+    "}"
+  )
+
+  out    <- list()
+  offset <- 0L
+  while (length(out) < n_max) {
+    take <- min(page_size, n_max - length(out))
+    q <- sprintf(
+      "{ wosisLatestProfiles(%s offset: %d, first: %d) { profileId profileCode countryName continent latitude longitude wrbReferenceSoilGroup usdaOrderName %s } }",
+      filter_clause, offset, take, layer_q
+    )
+    body <- jsonlite::toJSON(list(query = q), auto_unbox = TRUE)
+    resp <- tryCatch(
+      httr::POST(endpoint,
+                   body  = body,
+                   httr::content_type_json(),
+                   httr::user_agent("soilKey (https://github.com/HugoMachadoRodrigues/soilKey)"),
+                   httr::timeout(60)),
+      error = function(e)
+        stop(sprintf("WoSIS GraphQL request failed: %s\n", conditionMessage(e)),
+             "  Endpoint: ", endpoint, call. = FALSE)
+    )
+    if (httr::status_code(resp) != 200L)
+      stop(sprintf("WoSIS GraphQL HTTP %d for %s\n",
+                     httr::status_code(resp), endpoint),
+           "  Body: ", httr::content(resp, as = "text",
+                                       encoding = "UTF-8"))
+    parsed <- jsonlite::fromJSON(httr::content(resp, as = "text",
+                                                  encoding = "UTF-8"),
+                                    simplifyVector = FALSE)
+    if (!is.null(parsed$errors))
+      stop("WoSIS GraphQL errors: ",
+           paste(vapply(parsed$errors, function(e) e$message, character(1)),
+                   collapse = "; "))
+    page <- parsed$data$wosisLatestProfiles
+    if (length(page) == 0L) break
+    out <- c(out, page)
+    if (verbose)
+      message(sprintf("[WoSIS-graphql] offset=%d, fetched=%d, total=%d",
+                        offset, length(page), length(out)))
+    if (length(page) < take) break
+    offset <- offset + take
+  }
+  utils::head(out, n_max)
+}
+
+
+#' Convert a single WoSIS GraphQL profile into a PedonRecord.
+#'
+#' Maps the GraphQL response to the canonical PedonRecord schema:
+#' upperDepth/lowerDepth -> top_cm/bottom_cm; layerName ->
+#' designation; clayValues[1].valueAvg -> clay_pct; etc. WoSIS' OC
+#' is reported in g/kg (orgcValues is per-mille for the *Values
+#' wrapper; valueAvg is the per-kg value), so we divide by 10 to
+#' bring it back to %.
+#'
+#' @keywords internal
+build_pedon_from_wosis_graphql <- function(profile) {
+  layers_raw <- profile$layers %||% list()
+  if (length(layers_raw) == 0L)
+    return(PedonRecord$new(
+      site = list(id = profile$profileCode %||% as.character(profile$profileId),
+                    lat = profile$latitude, lon = profile$longitude,
+                    country = profile$countryName,
+                    wosis_rsg = profile$wrbReferenceSoilGroup,
+                    wosis_usda_order = profile$usdaOrderName)
+    ))
+  pull <- function(x) if (length(x) > 0L) x[[1]]$valueAvg else NA_real_
+  hz <- data.table::rbindlist(
+    lapply(layers_raw, function(L) data.table::data.table(
+      top_cm      = as.numeric(L$upperDepth %||% NA_real_),
+      bottom_cm   = as.numeric(L$lowerDepth %||% NA_real_),
+      designation = L$layerName %||% NA_character_,
+      clay_pct    = pull(L$clayValues),
+      silt_pct    = pull(L$siltValues),
+      sand_pct    = pull(L$sandValues),
+      oc_pct      = (pull(L$orgcValues) %||% NA_real_) / 10, # g/kg -> %
+      cec_cmol    = pull(L$cecph7Values),
+      ph_h2o      = pull(L$phaqValues),
+      caco3_pct   = pull(L$tceqValues)
+    )), fill = TRUE)
+  PedonRecord$new(
+    site = list(
+      id      = profile$profileCode %||% as.character(profile$profileId),
+      lat     = profile$latitude,
+      lon     = profile$longitude,
+      country = profile$countryName,
+      wosis_rsg        = profile$wrbReferenceSoilGroup,
+      wosis_usda_order = profile$usdaOrderName
+    ),
+    horizons = hz
+  )
+}
+
+
+#' Run the WoSIS benchmark via GraphQL.
+#'
+#' This is the path the methodological paper actually uses: one query
+#' to wosis.isric.org/wosis/graphql, then `classify_wrb2022()` on each
+#' profile, then write a report.
+#'
+#' @param n_max     Max profiles to include.
+#' @param continent Optional continent filter (e.g. "South America").
+#' @param wrb_rsg   Optional WRB RSG filter for stratified runs.
+#' @param country   Optional country filter.
+#' @param page_size Profiles per GraphQL request.
+#' @param out_dir   Reports directory.
+#' @keywords internal
+run_wosis_benchmark_graphql <- function(n_max     = 500L,
+                                          continent = "South America",
+                                          wrb_rsg   = NULL,
+                                          country   = NULL,
+                                          page_size = 50L,
+                                          out_dir   = file.path("inst",
+                                                                  "benchmarks",
+                                                                  "reports")) {
+  profs <- read_wosis_profiles_graphql(continent = continent,
+                                         wrb_rsg   = wrb_rsg,
+                                         country   = country,
+                                         n_max     = n_max,
+                                         page_size = page_size)
+  message(sprintf("WoSIS pulled %d profiles", length(profs)))
+
+  pedons <- lapply(profs, build_pedon_from_wosis_graphql)
+
+  classifications <- lapply(pedons, function(p)
+    tryCatch(classify_wrb2022(p, on_missing = "silent"),
+              error = function(e) NULL))
+
+  # Build the bench frame.
+  bench <- do.call(rbind, Map(function(c, p) {
+    if (is.null(c)) return(NULL)
+    data.frame(
+      profile_id = p$site$id,
+      target     = p$site$wosis_rsg %||% NA_character_,
+      assigned   = sub("s$", "", c$rsg_or_order %||% NA_character_),
+      grade      = c$evidence_grade,
+      stringsAsFactors = FALSE
+    )
+  }, classifications, pedons))
+  if (is.null(bench) || nrow(bench) == 0L)
+    stop("No usable WoSIS profiles classified.")
+  bench$match <- bench$target == bench$assigned
+
+  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  out_path <- file.path(out_dir,
+                          sprintf("wosis_graphql_%s.md", Sys.Date()))
+
+  top1 <- mean(bench$match, na.rm = TRUE)
+  ind  <- mean(is.na(bench$assigned))
+  per_target <- aggregate(match ~ target, data = bench,
+                            FUN = function(x) sprintf("%d/%d (%.1f%%)",
+                                                          sum(x, na.rm = TRUE),
+                                                          length(x),
+                                                          100 * mean(x, na.rm = TRUE)))
+
+  lines <- c(
+    sprintf("# WoSIS benchmark report (GraphQL) -- %s", Sys.Date()),
+    "",
+    sprintf("**Endpoint:** %s", .wosis_graphql_endpoint()),
+    sprintf("**Continent filter:** %s", continent %||% "(global)"),
+    sprintf("**WRB RSG filter:** %s",   wrb_rsg %||% "(none)"),
+    sprintf("**Country filter:** %s",   country %||% "(none)"),
+    sprintf("**Profiles pulled:** %d",  length(profs)),
+    sprintf("**Profiles classified:** %d", nrow(bench)),
+    "",
+    "## Top-1 agreement",
+    "",
+    sprintf("- Top-1: **%.3f**", top1),
+    sprintf("- Indeterminate (NA assignments): %.3f", ind),
+    "",
+    "## Per-RSG agreement",
+    "",
+    "| Target RSG | Match |",
+    "|:-----------|:------|",
+    if (nrow(per_target) > 0L)
+      paste(sprintf("| %s | %s |", per_target$target, per_target$match),
+              collapse = "\n")
+    else "| (none) | - |",
+    "",
+    "## Confusion matrix",
+    "",
+    "```",
+    paste(capture.output(print(table(target = bench$target,
+                                          assigned = bench$assigned))),
+            collapse = "\n"),
+    "```",
+    "",
+    "## Evidence-grade distribution",
+    "",
+    "```",
+    paste(capture.output(print(table(grade = bench$grade,
+                                          useNA = "ifany"))),
+            collapse = "\n"),
+    "```",
+    "",
+    sprintf("_Report emitted by `run_wosis_benchmark_graphql()` -- soilKey v%s_",
+              .soilkey_version())
+  )
+  writeLines(lines, out_path, useBytes = TRUE)
+  message(sprintf("Report written to %s", out_path))
+
+  invisible(list(bench = bench, profiles = profs,
+                   pedons = pedons, top1 = top1,
+                   report_path = out_path))
 }
 
 

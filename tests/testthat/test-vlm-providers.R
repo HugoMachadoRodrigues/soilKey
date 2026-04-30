@@ -1,8 +1,11 @@
 test_that("default_model returns sensible per-provider defaults", {
-  expect_equal(soilKey:::default_model("anthropic"), "claude-sonnet-4-5")
+  # v0.9.11: bumped Anthropic to 4-7 (vision-capable Claude Sonnet),
+  # Google to 2.0 Pro, and Ollama to gemma4:e4b (Gemma 4 edge,
+  # multimodal). OpenAI default remains gpt-4o.
+  expect_equal(soilKey:::default_model("anthropic"), "claude-sonnet-4-7")
   expect_equal(soilKey:::default_model("openai"),    "gpt-4o")
-  expect_equal(soilKey:::default_model("google"),    "gemini-1.5-pro")
-  expect_equal(soilKey:::default_model("ollama"),    "gemma3:27b")
+  expect_equal(soilKey:::default_model("google"),    "gemini-2.0-pro")
+  expect_equal(soilKey:::default_model("ollama"),    "gemma4:e4b")
 })
 
 test_that("default_model rejects unknown providers", {

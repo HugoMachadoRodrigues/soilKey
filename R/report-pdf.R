@@ -94,6 +94,7 @@ report_pdf <- function(x,
 
 
 # ---- internal: build an Rmd from the assembled data --------------------------
+#' Internal helper: .escape_latex
 
 
 #' @keywords internal
@@ -108,6 +109,7 @@ report_pdf <- function(x,
   x <- gsub("\\^", "\\\\textasciicircum{}", x)
   x
 }
+#' Internal helper: .rmd_header
 
 #' @keywords internal
 .rmd_header <- function(title) {
@@ -134,6 +136,7 @@ report_pdf <- function(x,
     "```\n\n"
   )
 }
+#' Internal helper: .rmd_classification_block
 
 #' @keywords internal
 .rmd_classification_block <- function(res) {
@@ -198,6 +201,7 @@ report_pdf <- function(x,
       else ""
   )
 }
+#' Internal helper: .rmd_summary_block
 
 #' @keywords internal
 .rmd_summary_block <- function(results) {
@@ -216,6 +220,7 @@ report_pdf <- function(x,
     "\n\n"
   )
 }
+#' Internal helper: .rmd_horizons_block
 
 #' @keywords internal
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -243,6 +248,7 @@ report_pdf <- function(x,
     "```\n\n"
   )
 }
+#' Internal helper: .rmd_site_block
 
 #' @keywords internal
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -270,6 +276,7 @@ report_pdf <- function(x,
     "\n\n"
   )
 }
+#' Internal helper: .build_report_rmd
 
 #' @keywords internal
 .build_report_rmd <- function(results, pedon, title) {

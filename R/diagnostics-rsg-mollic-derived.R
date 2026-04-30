@@ -163,6 +163,7 @@ phaeozem <- function(pedon) {
 
 
 # ----------------------------------------------------------- helpers ----
+#' Internal helper: .mollic_derived_negative
 
 #' @keywords internal
 .mollic_derived_negative <- function(name, mol_res, note) {
@@ -177,6 +178,7 @@ phaeozem <- function(pedon) {
     notes     = note
   )
 }
+#' Internal helper: .mollic_derived_aggregate
 
 #' @keywords internal
 .mollic_derived_aggregate <- function(tests, require_pass) {

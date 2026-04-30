@@ -42,10 +42,19 @@ constructor. \code{ellmer} must be installed.
 \section{Local-first option}{
 
 Passing \code{name = "ollama"} runs every extraction locally via
-an Ollama server (default \code{gemma3:27b}). No data leaves the
+an Ollama server (default \code{gemma4:e4b}, Gemma 4 edge with
+multimodal text+image+audio support). No data leaves the
 machine, which is the recommended setting for sensitive field
 descriptions (e.g. governmental surveys, indigenous land studies)
 where institutional independence and data sovereignty matter.
+Pull the model first:
+\preformatted{
+  ollama pull gemma4:e4b      # ~3 GB edge variant (default)
+  ollama pull gemma4:31b      # frontier dense variant
+  ollama pull gemma3:27b      # earlier generation, still solid
+}
+Then start an Ollama server (\code{ollama serve}) and the chat
+object returned here will dispatch over HTTP locally.
 }
 
 \examples{
@@ -54,8 +63,14 @@ where institutional independence and data sovereignty matter.
 # Cloud provider (needs ANTHROPIC_API_KEY)
 provider <- vlm_provider("anthropic")
 
-# Local provider (needs a running Ollama server)
-provider <- vlm_provider("ollama", model = "gemma3:27b")
+# Local Gemma 4 edge model -- default, ~3 GB, runs anywhere
+provider <- vlm_provider("ollama")
+
+# Local Gemma 4 frontier dense model -- best quality
+provider <- vlm_provider("ollama", model = "gemma4:31b")
+
+# Any other multimodal model the user has pulled
+provider <- vlm_provider("ollama", model = "qwen2.5vl:32b")
 }
 \dontshow{\}) # examplesIf}
 }
