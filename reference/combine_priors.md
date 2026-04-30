@@ -1,0 +1,45 @@
+# Combine multiple spatial priors via weighted geometric mean
+
+Given a list of priors (each a data.table with `rsg_code, probability`),
+pools them into a single distribution using a weighted geometric mean
+and renormalises to sum to 1.
+
+## Usage
+
+``` r
+combine_priors(priors, weights = NULL, epsilon = 1e-06)
+```
+
+## Arguments
+
+- priors:
+
+  A list of `data.table`s with columns `rsg_code` and `probability`.
+
+- weights:
+
+  Optional non-negative numeric vector of length `length(priors)`.
+  Defaults to equal weights. Will be renormalised to sum to 1.
+
+- epsilon:
+
+  Smoothing floor for classes missing from a prior (default 1e-6). Must
+  be \> 0 – otherwise any class missing from a single prior is
+  suppressed entirely.
+
+## Value
+
+A `data.table` with columns `rsg_code`, `probability`, sorted by
+descending probability.
+
+## Details
+
+Geometric pooling has two desirable properties for soil-class priors:
+
+1.  externally Bayesian (the pooled posterior under any common
+    likelihood matches what one would get by individual updates), and
+
+2.  zero-preserving: a class assigned probability 0 by any prior is
+    suppressed in the pooled distribution. To avoid that, classes absent
+    from a given prior are imputed with the smoothing constant
+    `epsilon`.

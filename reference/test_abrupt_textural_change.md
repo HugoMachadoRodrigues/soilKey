@@ -1,0 +1,27 @@
+# Test for an abrupt textural change between adjacent horizons
+
+WRB 2022 planic criterion: clay content of the underlying horizon is at
+least double that of the overlying horizon, with the transition
+occurring within 7.5 cm vertical distance. v0.3 implements the
+clay-doubling test plus an optional `boundary_distinctness` check (must
+be `"abrupt"` or `"very abrupt"` on the upper horizon).
+
+## Usage
+
+``` r
+test_abrupt_textural_change(h, min_ratio = 2, require_abrupt_boundary = TRUE)
+```
+
+## Arguments
+
+- h:
+
+  Numeric threshold or option (see Details).
+
+- min_ratio:
+
+  Numeric threshold or option (see Details).
+
+- require_abrupt_boundary:
+
+  Numeric threshold or option (see Details).

@@ -1,0 +1,14 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  v01_getting_started: v01_getting_started.html
+  v02_classify_wrb_end_to_end: v02_classify_wrb_end_to_end.html
+  v03_cross_system_correlation: v03_cross_system_correlation.html
+  v04_vlm_extraction: v04_vlm_extraction.html
+  v05_spatial_spectra_pipeline: v05_spatial_spectra_pipeline.html
+  v06_wosis_benchmark: v06_wosis_benchmark.html
+last_built: 2026-04-30T20:35Z
+urls:
+  reference: https://hugomachadorodrigues.github.io/soilKey/reference
+  article: https://hugomachadorodrigues.github.io/soilKey/articles
