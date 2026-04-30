@@ -1,0 +1,433 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Vertisols Subgroups -- Cap 16
+# =============================================================
+# Cobertura cientifica focada -- ~85 SGs.
+# =============================================================
+
+subgroups:
+
+  # ====== AQUERTS ======
+
+  "FAA":  # Sulfaquerts (3)
+    - code: "FAAA"
+      name: "Halic Sulfaquerts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FAAB"
+      name: "Sodic Sulfaquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FAAC"
+      name: "Typic Sulfaquerts"
+      tests:
+        default: true
+
+  "FAB":  # Salaquerts (3)
+    - code: "FABA"
+      name: "Sulfic Salaquerts"
+      tests:
+        all_of:
+          - sulfic_subgroup_usda: {}
+    - code: "FABB"
+      name: "Sodic Salaquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FABC"
+      name: "Typic Salaquerts"
+      tests:
+        default: true
+
+  "FAC":  # Duraquerts (3)
+    - code: "FACA"
+      name: "Sodic Duraquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FACB"
+      name: "Calcic Duraquerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FACC"
+      name: "Typic Duraquerts"
+      tests:
+        default: true
+
+  "FAD":  # Natraquerts (3)
+    - code: "FADA"
+      name: "Salic Natraquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FADB"
+      name: "Calcic Natraquerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FADC"
+      name: "Typic Natraquerts"
+      tests:
+        default: true
+
+  "FAE":  # Calciaquerts (3)
+    - code: "FAEA"
+      name: "Sodic Calciaquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FAEB"
+      name: "Salic Calciaquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FAEC"
+      name: "Typic Calciaquerts"
+      tests:
+        default: true
+
+  "FAF":  # Dystraquerts (3)
+    - code: "FAFA"
+      name: "Aeric Dystraquerts"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "FAFB"
+      name: "Humic Dystraquerts"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "FAFC"
+      name: "Typic Dystraquerts"
+      tests:
+        default: true
+
+  "FAG":  # Epiaquerts (4)
+    - code: "FAGA"
+      name: "Sodic Epiaquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FAGB"
+      name: "Salic Epiaquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FAGC"
+      name: "Calcic Epiaquerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FAGD"
+      name: "Typic Epiaquerts"
+      tests:
+        default: true
+
+  "FAH":  # Endoaquerts (4)
+    - code: "FAHA"
+      name: "Sodic Endoaquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FAHB"
+      name: "Salic Endoaquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FAHC"
+      name: "Calcic Endoaquerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FAHD"
+      name: "Typic Endoaquerts"
+      tests:
+        default: true
+
+  # ====== CRYERTS ======
+
+  "FBA":  # Humicryerts (2)
+    - code: "FBAA"
+      name: "Aquic Humicryerts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FBAB"
+      name: "Typic Humicryerts"
+      tests:
+        default: true
+
+  "FBB":  # Haplocryerts (3)
+    - code: "FBBA"
+      name: "Aquic Haplocryerts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FBBB"
+      name: "Lithic Haplocryerts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FBBC"
+      name: "Typic Haplocryerts"
+      tests:
+        default: true
+
+  # ====== XERERTS ======
+
+  "FCA":  # Durixererts (3)
+    - code: "FCAA"
+      name: "Aquic Durixererts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FCAB"
+      name: "Sodic Durixererts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FCAC"
+      name: "Typic Durixererts"
+      tests:
+        default: true
+
+  "FCB":  # Calcixererts (3)
+    - code: "FCBA"
+      name: "Aquic Calcixererts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FCBB"
+      name: "Sodic Calcixererts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FCBC"
+      name: "Typic Calcixererts"
+      tests:
+        default: true
+
+  "FCC":  # Haploxererts (4)
+    - code: "FCCA"
+      name: "Aquic Haploxererts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FCCB"
+      name: "Sodic Haploxererts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FCCC"
+      name: "Lithic Haploxererts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FCCD"
+      name: "Typic Haploxererts"
+      tests:
+        default: true
+
+  # ====== TORRERTS ======
+
+  "FDA":  # Salitorrerts (2)
+    - code: "FDAA"
+      name: "Sodic Salitorrerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FDAB"
+      name: "Typic Salitorrerts"
+      tests:
+        default: true
+
+  "FDB":  # Gypsitorrerts (3)
+    - code: "FDBA"
+      name: "Salic Gypsitorrerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FDBB"
+      name: "Sodic Gypsitorrerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FDBC"
+      name: "Typic Gypsitorrerts"
+      tests:
+        default: true
+
+  "FDC":  # Calcitorrerts (3)
+    - code: "FDCA"
+      name: "Salic Calcitorrerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FDCB"
+      name: "Sodic Calcitorrerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FDCC"
+      name: "Typic Calcitorrerts"
+      tests:
+        default: true
+
+  "FDD":  # Haplotorrerts (4)
+    - code: "FDDA"
+      name: "Aquic Haplotorrerts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FDDB"
+      name: "Sodic Haplotorrerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FDDC"
+      name: "Calcic Haplotorrerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FDDD"
+      name: "Typic Haplotorrerts"
+      tests:
+        default: true
+
+  # ====== USTERTS ======
+
+  "FEA":  # Dystrusterts (3)
+    - code: "FEAA"
+      name: "Aquic Dystrusterts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FEAB"
+      name: "Lithic Dystrusterts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEAC"
+      name: "Typic Dystrusterts"
+      tests:
+        default: true
+
+  "FEB":  # Salusterts (3)
+    - code: "FEBA"
+      name: "Sulfic Salusterts"
+      tests:
+        all_of:
+          - sulfic_subgroup_usda: {}
+    - code: "FEBB"
+      name: "Aquic Salusterts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FEBC"
+      name: "Typic Salusterts"
+      tests:
+        default: true
+
+  "FEC":  # Gypsiusterts (3)
+    - code: "FECA"
+      name: "Aquic Gypsiusterts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FECB"
+      name: "Salic Gypsiusterts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FECC"
+      name: "Typic Gypsiusterts"
+      tests:
+        default: true
+
+  "FED":  # Calciusterts (4)
+    - code: "FEDA"
+      name: "Aquic Calciusterts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FEDB"
+      name: "Sodic Calciusterts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FEDC"
+      name: "Salic Calciusterts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FEDD"
+      name: "Typic Calciusterts"
+      tests:
+        default: true
+
+  "FEE":  # Haplusterts (5)
+    - code: "FEEA"
+      name: "Aquic Haplusterts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FEEB"
+      name: "Sodic Haplusterts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FEEC"
+      name: "Calcic Haplusterts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FEED"
+      name: "Lithic Haplusterts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEEE"
+      name: "Typic Haplusterts"
+      tests:
+        default: true
+
+  # ====== UDERTS ======
+
+  "FFA":  # Dystruderts (3)
+    - code: "FFAA"
+      name: "Aquic Dystruderts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FFAB"
+      name: "Lithic Dystruderts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FFAC"
+      name: "Typic Dystruderts"
+      tests:
+        default: true
+
+  "FFB":  # Hapluderts (4)
+    - code: "FFBA"
+      name: "Aquic Hapluderts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FFBB"
+      name: "Calcic Hapluderts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FFBC"
+      name: "Lithic Hapluderts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FFBD"
+      name: "Typic Hapluderts"
+      tests:
+        default: true
