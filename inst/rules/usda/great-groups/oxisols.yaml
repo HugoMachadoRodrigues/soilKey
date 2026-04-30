@@ -1,0 +1,132 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Oxisols Great Groups -- Cap 13
+# =============================================================
+# 22 GGs total:
+#   Aquox  (EA): 4
+#   Torrox (EB): 3
+#   Ustox  (EC): 5
+#   Perox  (ED): 5
+#   Udox   (EE): 5
+# =============================================================
+
+great_groups:
+
+  # ---- Aquox (EA) ----
+  "EA":
+    - code: "EAA"
+      name: "Acraquox"
+      tests:
+        all_of:
+          - acric_oxisol_usda: {}
+    - code: "EAB"
+      name: "Plinthaquox"
+      tests:
+        all_of:
+          - plinthaquox_qualifying_usda: {}
+    - code: "EAC"
+      name: "Eutraquox"
+      tests:
+        all_of:
+          - eutric_oxisol_usda: {}
+    - code: "EAD"
+      name: "Haplaquox"
+      tests:
+        default: true
+
+  # ---- Torrox (EB) ----
+  "EB":
+    - code: "EBA"
+      name: "Acrotorrox"
+      tests:
+        all_of:
+          - acric_oxisol_usda: {}
+    - code: "EBB"
+      name: "Eutrotorrox"
+      tests:
+        all_of:
+          - eutric_oxisol_usda: {}
+    - code: "EBC"
+      name: "Haplotorrox"
+      tests:
+        default: true
+
+  # ---- Ustox (EC) ----
+  "EC":
+    - code: "ECA"
+      name: "Sombriustox"
+      tests:
+        all_of:
+          - sombric_subgroup_usda: {}
+    - code: "ECB"
+      name: "Acrustox"
+      tests:
+        all_of:
+          - acric_oxisol_usda: {}
+    - code: "ECC"
+      name: "Eutrustox"
+      tests:
+        all_of:
+          - eutric_oxisol_usda: {}
+    - code: "ECD"
+      name: "Kandiustox"
+      tests:
+        all_of:
+          - kandic_oxisol_usda: {}
+    - code: "ECE"
+      name: "Haplustox"
+      tests:
+        default: true
+
+  # ---- Perox (ED) ----
+  "ED":
+    - code: "EDA"
+      name: "Sombriperox"
+      tests:
+        all_of:
+          - sombric_subgroup_usda: {}
+    - code: "EDB"
+      name: "Acroperox"
+      tests:
+        all_of:
+          - acric_oxisol_usda: {}
+    - code: "EDC"
+      name: "Eutroperox"
+      tests:
+        all_of:
+          - eutric_oxisol_usda: {}
+    - code: "EDD"
+      name: "Kandiperox"
+      tests:
+        all_of:
+          - kandic_oxisol_usda: {}
+    - code: "EDE"
+      name: "Haploperox"
+      tests:
+        default: true
+
+  # ---- Udox (EE) ----
+  "EE":
+    - code: "EEA"
+      name: "Sombriudox"
+      tests:
+        all_of:
+          - sombric_subgroup_usda: {}
+    - code: "EEB"
+      name: "Acrudox"
+      tests:
+        all_of:
+          - acric_oxisol_usda: {}
+    - code: "EEC"
+      name: "Eutrudox"
+      tests:
+        all_of:
+          - eutric_oxisol_usda: {}
+    - code: "EED"
+      name: "Kandiudox"
+      tests:
+        all_of:
+          - kandic_oxisol_usda: {}
+    - code: "EEE"
+      name: "Hapludox"
+      tests:
+        default: true

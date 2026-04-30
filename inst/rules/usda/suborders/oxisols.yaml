@@ -1,0 +1,39 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Oxisols Suborders -- Cap 13, p 295
+# =============================================================
+# 5 Suborders:
+#   EA. Aquox  -- aquic conditions
+#   EB. Torrox -- aridic SMR
+#   EC. Ustox  -- ustic/xeric SMR
+#   ED. Perox  -- perudic SMR
+#   EE. Udox   -- catch-all (udic)
+# =============================================================
+
+suborders:
+
+  "OX":
+    - code: "EA"
+      name: "Aquox"
+      tests:
+        all_of:
+          - aquic_conditions_usda: { max_top_cm: 50 }
+    - code: "EB"
+      name: "Torrox"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "EC"
+      name: "Ustox"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "ED"
+      name: "Perox"
+      tests:
+        all_of:
+          - smr_udic_usda: {}
+      notes: "Perudic is a subdivision of udic; v0.8 uses udic as proxy."
+    - code: "EE"
+      name: "Udox"
+      tests:
+        default: true
