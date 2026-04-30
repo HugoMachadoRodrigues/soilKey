@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.12](https://img.shields.io/badge/version-0.9.12-FF6B35?style=flat-square)
+![v0.9.13](https://img.shields.io/badge/version-0.9.13-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -337,6 +337,54 @@ See [`inst/benchmarks/reports/canonical_2026-04-30.md`](inst/benchmarks/reports/
 
 ---
 
+## ✦ Two user-facing helpers that *guide* classification (v0.9.13)
+
+soilKey ships two ways for a user to get a *prior* expectation of the soil class **before** running the deterministic key — the canonical "I'm in the field, what should I expect?" use case.
+
+### `soil_classes_at_location(lat, lon)` — spatial classification aid
+
+Given coordinates, returns a ranked list of likely RSGs / SiBCS ordens / USDA orders at that location plus the canonical attribute thresholds that distinguish them. Backed by SoilGrids 2.0 (or any WRB-coded raster the user provides) and the WRB ↔ SiBCS Schad (2023) Annex Table 1 correspondence.
+
+```r
+library(soilKey)
+
+# Mata Atlântica (Seropédica RJ).
+res <- soil_classes_at_location(
+  lat        = -22.7,
+  lon        = -43.7,
+  system     = "wrb2022",
+  source_url = "https://files.isric.org/soilgrids/latest/data/wrb/MostProbable.vrt"
+)
+res$distribution        # ranked list of likely RSGs with P(RSG | location)
+res$typical_attributes  # canonical thresholds per RSG -- "what to confirm"
+```
+
+This does **not** classify a profile. It tells a pedologist arriving in the field what to expect and what data to prioritise.
+
+### `classify_by_spectral_neighbours(spectrum, ossl_library)` — spectral analogy
+
+Given a Vis-NIR (or MIR) spectrum and an OSSL library enriched with WRB / SiBCS / USDA labels, returns the K most spectrally similar profiles plus a probabilistic class prediction. Optional region filter (`lat / lon / radius_km`) keeps the analogy biome-aware: a Cerrado profile shouldn't be analogised to Boreal taiga.
+
+```r
+data(ossl_demo_sa)
+ossl_demo_sa$Yr$wrb_rsg <- c(...)  # real OSSL ships labels; demo lacks them
+
+res <- classify_by_spectral_neighbours(
+  spectrum     = my_vnir_spectrum,
+  ossl_library = ossl_demo_sa,
+  k            = 25,
+  region       = list(lat = -22.7, lon = -43.7, radius_km = 500)
+)
+res$distribution    # ranked classes with P(class | spectral neighbours)
+res$neighbours      # the 25 closest profiles + their distances + labels
+```
+
+Distance is computed in PLS-score space when `resemble` is installed (matching the OSSL reference workflow, Ramirez-Lopez et al. 2013), with a PCA fallback otherwise.
+
+**Both are guides, not classifiers.** They populate priors before the deterministic key runs. The architectural invariant — "the key is never delegated to a model" — still holds: the canonical assignment still comes from `classify_wrb2022()` / `classify_sibcs()` / `classify_usda()` consuming a fully populated `PedonRecord`.
+
+---
+
 ## ✦ VLM / Gemma 4 / one-liner pipeline
 
 soilKey separates **extraction** (multimodal LLM) from **classification** (deterministic R code driven by versioned YAML rules). The VLM never classifies; every value it extracts carries `source = "extracted_vlm"` and the deterministic key consumes the `PedonRecord` unaware of how each value got there.
@@ -431,7 +479,7 @@ If `soilKey` contributes to your work, please cite:
   title     = {{soilKey}: Automated soil profile classification per
                {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
   year      = {2026},
-  version   = {0.9.12},
+  version   = {0.9.13},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.19930112},
   url       = {https://github.com/HugoMachadoRodrigues/soilKey}

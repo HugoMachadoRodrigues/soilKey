@@ -1,3 +1,57 @@
+# soilKey 0.9.13 (2026-04-30)
+
+Two user-facing helpers that **guide** classification before the
+deterministic key runs. These close the "help-the-user-classify-a-
+new-profile" gap that the architecture document promised but the
+package only half-delivered: `spatial_prior_*()` was a check, not a
+guide; `predict_ossl_*()` predicted attributes, not classes.
+
+## New features
+
+* **`soil_classes_at_location(lat, lon, system, ...)`** -- the
+  spatial classification aid. Given GPS coordinates, returns a
+  ranked list of likely soil classes at that location (WRB, SiBCS,
+  or USDA) + the canonical attribute thresholds that distinguish
+  them. Backed by SoilGrids 2.0 (or any WRB-coded raster the user
+  provides). For SiBCS, translates the WRB-RSG distribution via
+  Schad (2023) Annex Table 1 / SiBCS 5ª ed. Annex A. Closes the
+  "I'm in the field, what should I expect here?" use case before
+  the user has a pedon.
+
+* **`classify_by_spectral_neighbours(spectrum, ossl_library, ...)`**
+  -- the spectral-analogy classifier. Given a Vis-NIR (or MIR)
+  spectrum and an OSSL library enriched with WRB / SiBCS / USDA
+  labels, returns the K most spectrally similar profiles plus a
+  probabilistic class prediction. Distance is computed in PLS-score
+  space when `resemble` is installed (matching the OSSL reference
+  workflow, Ramirez-Lopez et al. 2013), with a PCA fallback
+  otherwise. Optional `region = list(lat, lon, radius_km)` keeps
+  the analogy biome-aware: a Cerrado profile is never analogised
+  to Boreal taiga. Closes the "predict-the-class-by-analogy" use
+  case the architecture promised but the previous OSSL plumbing
+  could not deliver (it predicted *attributes*, not *classes*).
+
+Both are guides, not classifiers. The architectural invariant --
+"the key is never delegated to a model" -- still holds: the
+canonical assignment still comes from `classify_wrb2022()` /
+`classify_sibcs()` / `classify_usda()` consuming a fully populated
+`PedonRecord`. The two helpers populate priors **before** that
+canonical step.
+
+## Documentation
+
+* `ARCHITECTURE.md` translated from PT-BR to English.
+* README gains a "Two user-facing helpers that guide classification"
+  section with end-to-end examples for both new functions.
+* `_pkgdown.yml` reference index includes the new entry points.
+
+## Tests
+
+* +13 expectations across `test-soil-classes-at-location.R` and
+  `test-spectra-neighbours.R`. Total: 2 658 passing, 0 failing.
+
+---
+
 # soilKey 0.9.12 (2026-04-30)
 
 CRAN-readiness pass + WoSIS forensic analysis. The package now

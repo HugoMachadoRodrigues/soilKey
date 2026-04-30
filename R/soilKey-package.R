@@ -55,6 +55,6 @@
 #'
 #' @keywords internal
 #' @importFrom R6 R6Class
-#' @importFrom stats predict rnorm runif setNames weighted.mean
+#' @importFrom stats aggregate predict rnorm runif setNames weighted.mean
 #' @importFrom utils tail
 "_PACKAGE"
