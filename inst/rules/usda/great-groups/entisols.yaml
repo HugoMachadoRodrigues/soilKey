@@ -1,0 +1,152 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Entisols Great Groups -- Cap 8
+# =============================================================
+# 32 GGs total:
+#   Wassents (LA): 6 / Aquents (LB): 8 / Fluvents (LC): 6 /
+#   Psamments (LD): 6 / Orthents (LE): 6
+# =============================================================
+
+great_groups:
+
+  # ---- Wassents (LA) ----
+  "LA":
+    - code: "LAA"
+      name: "Frasiwassents"
+      tests:
+        all_of: [{frasic_qualifying_usda: {}}]
+    - code: "LAB"
+      name: "Psammowassents"
+      tests:
+        all_of: [{psamment_qualifying_usda: {}}]
+    - code: "LAC"
+      name: "Sulfiwassents"
+      tests:
+        all_of: [{sulfidic_materials_usda: {}}]
+    - code: "LAD"
+      name: "Hydrowassents"
+      tests:
+        all_of: [{hydraquent_qualifying_usda: {}}]
+    - code: "LAE"
+      name: "Fluviwassents"
+      tests:
+        all_of: [{fluvent_qualifying_usda: {}}]
+    - code: "LAF"
+      name: "Haplowassents"
+      tests:
+        default: true
+
+  # ---- Aquents (LB) ----
+  "LB":
+    - code: "LBA"
+      name: "Sulfaquents"
+      tests:
+        all_of: [{sulfuric_horizon_usda: {}}]
+    - code: "LBB"
+      name: "Hydraquents"
+      tests:
+        all_of: [{hydraquent_qualifying_usda: {}}]
+    - code: "LBC"
+      name: "Gelaquents"
+      tests:
+        all_of: [{str_gelic_usda: {}}]
+    - code: "LBD"
+      name: "Cryaquents"
+      tests:
+        all_of: [{str_cryic_usda: {}}]
+    - code: "LBE"
+      name: "Psammaquents"
+      tests:
+        all_of: [{psamment_qualifying_usda: {}}]
+    - code: "LBF"
+      name: "Fluvaquents"
+      tests:
+        all_of: [{fluvaquentic_usda: {}}]
+    - code: "LBG"
+      name: "Epiaquents"
+      tests:
+        all_of: [{episaturation_usda: {}}]
+    - code: "LBH"
+      name: "Endoaquents"
+      tests:
+        default: true
+
+  # ---- Fluvents (LC) ----
+  "LC":
+    - code: "LCA"
+      name: "Gelifluvents"
+      tests:
+        all_of: [{str_gelic_usda: {}}]
+    - code: "LCB"
+      name: "Cryofluvents"
+      tests:
+        all_of: [{str_cryic_usda: {}}]
+    - code: "LCC"
+      name: "Torrifluvents"
+      tests:
+        all_of: [{smr_aridic_usda: {}}]
+    - code: "LCD"
+      name: "Xerofluvents"
+      tests:
+        all_of: [{smr_xeric_usda: {}}]
+    - code: "LCE"
+      name: "Ustifluvents"
+      tests:
+        all_of: [{smr_ustic_usda: {}}]
+    - code: "LCF"
+      name: "Udifluvents"
+      tests:
+        default: true
+
+  # ---- Psamments (LD) ----
+  "LD":
+    - code: "LDA"
+      name: "Cryopsamments"
+      tests:
+        all_of: [{str_cryic_usda: {}}]
+    - code: "LDB"
+      name: "Torripsamments"
+      tests:
+        all_of: [{smr_aridic_usda: {}}]
+    - code: "LDC"
+      name: "Quartzipsamments"
+      tests:
+        all_of: [{quartzipsamment_qualifying_usda: {}}]
+    - code: "LDD"
+      name: "Ustipsamments"
+      tests:
+        all_of: [{smr_ustic_usda: {}}]
+    - code: "LDE"
+      name: "Xeropsamments"
+      tests:
+        all_of: [{smr_xeric_usda: {}}]
+    - code: "LDF"
+      name: "Udipsamments"
+      tests:
+        default: true
+
+  # ---- Orthents (LE) ----
+  "LE":
+    - code: "LEA"
+      name: "Gelorthents"
+      tests:
+        all_of: [{str_gelic_usda: {}}]
+    - code: "LEB"
+      name: "Cryorthents"
+      tests:
+        all_of: [{str_cryic_usda: {}}]
+    - code: "LEC"
+      name: "Torriorthents"
+      tests:
+        all_of: [{smr_aridic_usda: {}}]
+    - code: "LED"
+      name: "Xerorthents"
+      tests:
+        all_of: [{smr_xeric_usda: {}}]
+    - code: "LEE"
+      name: "Ustorthents"
+      tests:
+        all_of: [{smr_ustic_usda: {}}]
+    - code: "LEF"
+      name: "Udorthents"
+      tests:
+        default: true

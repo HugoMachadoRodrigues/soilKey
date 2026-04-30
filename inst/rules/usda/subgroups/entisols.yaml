@@ -1,0 +1,135 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Entisols Subgroups -- Cap 8
+# =============================================================
+# Cobertura cientifica focada (~95 SGs).
+# =============================================================
+
+subgroups:
+
+  # ====== WASSENTS ======
+  "LAA":  # Frasiwassents (3)
+    - { code: "LAAA", name: "Sulfic Frasiwassents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LAAB", name: "Fluventic Frasiwassents", tests: { all_of: [{fluventic_usda: {}}] } }
+    - { code: "LAAC", name: "Typic Frasiwassents", tests: { default: true } }
+  "LAB":  # Psammowassents (2)
+    - { code: "LABA", name: "Sulfic Psammowassents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LABB", name: "Typic Psammowassents", tests: { default: true } }
+  "LAC":  # Sulfiwassents (2)
+    - { code: "LACA", name: "Haplic Sulfiwassents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LACB", name: "Typic Sulfiwassents", tests: { default: true } }
+  "LAD":  # Hydrowassents (2)
+    - { code: "LADA", name: "Sulfic Hydrowassents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LADB", name: "Typic Hydrowassents", tests: { default: true } }
+  "LAE":  # Fluviwassents (2)
+    - { code: "LAEA", name: "Sulfic Fluviwassents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LAEB", name: "Typic Fluviwassents", tests: { default: true } }
+  "LAF":  # Haplowassents (3)
+    - { code: "LAFA", name: "Sulfic Haplowassents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LAFB", name: "Fluventic Haplowassents", tests: { all_of: [{fluventic_usda: {}}] } }
+    - { code: "LAFC", name: "Typic Haplowassents", tests: { default: true } }
+
+  # ====== AQUENTS ======
+  "LBA":  # Sulfaquents (2)
+    - { code: "LBAA", name: "Halic Sulfaquents", tests: { all_of: [{halic_subgroup_usda: {}}] } }
+    - { code: "LBAB", name: "Typic Sulfaquents", tests: { default: true } }
+  "LBB":  # Hydraquents (2)
+    - { code: "LBBA", name: "Sulfic Hydraquents", tests: { all_of: [{sulfic_subgroup_usda: {}}] } }
+    - { code: "LBBB", name: "Typic Hydraquents", tests: { default: true } }
+  "LBC":  # Gelaquents (2)
+    - { code: "LBCA", name: "Histic Gelaquents", tests: { all_of: [{histic_subgroup_usda: {}}] } }
+    - { code: "LBCB", name: "Typic Gelaquents", tests: { default: true } }
+  "LBD":  # Cryaquents (3)
+    - { code: "LBDA", name: "Lithic Cryaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LBDB", name: "Histic Cryaquents", tests: { all_of: [{histic_subgroup_usda: {}}] } }
+    - { code: "LBDC", name: "Typic Cryaquents", tests: { default: true } }
+  "LBE":  # Psammaquents (3)
+    - { code: "LBEA", name: "Lithic Psammaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LBEB", name: "Aeric Psammaquents", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "LBEC", name: "Typic Psammaquents", tests: { default: true } }
+  "LBF":  # Fluvaquents (4)
+    - { code: "LBFA", name: "Aeric Fluvaquents", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "LBFB", name: "Vertic Fluvaquents", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "LBFC", name: "Mollic Fluvaquents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LBFD", name: "Typic Fluvaquents", tests: { default: true } }
+  "LBG":  # Epiaquents (3)
+    - { code: "LBGA", name: "Lithic Epiaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LBGB", name: "Aeric Epiaquents", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "LBGC", name: "Typic Epiaquents", tests: { default: true } }
+  "LBH":  # Endoaquents (4)
+    - { code: "LBHA", name: "Lithic Endoaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LBHB", name: "Aeric Endoaquents", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "LBHC", name: "Mollic Endoaquents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LBHD", name: "Typic Endoaquents", tests: { default: true } }
+
+  # ====== FLUVENTS ======
+  "LCA":  # Gelifluvents (2)
+    - { code: "LCAA", name: "Aquic Gelifluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCAB", name: "Typic Gelifluvents", tests: { default: true } }
+  "LCB":  # Cryofluvents (3)
+    - { code: "LCBA", name: "Aquic Cryofluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCBB", name: "Mollic Cryofluvents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LCBC", name: "Typic Cryofluvents", tests: { default: true } }
+  "LCC":  # Torrifluvents (3)
+    - { code: "LCCA", name: "Aquic Torrifluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCCB", name: "Vertic Torrifluvents", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "LCCC", name: "Typic Torrifluvents", tests: { default: true } }
+  "LCD":  # Xerofluvents (3)
+    - { code: "LCDA", name: "Aquic Xerofluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCDB", name: "Mollic Xerofluvents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LCDC", name: "Typic Xerofluvents", tests: { default: true } }
+  "LCE":  # Ustifluvents (3)
+    - { code: "LCEA", name: "Aquic Ustifluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCEB", name: "Mollic Ustifluvents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LCEC", name: "Typic Ustifluvents", tests: { default: true } }
+  "LCF":  # Udifluvents (3)
+    - { code: "LCFA", name: "Aquic Udifluvents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LCFB", name: "Mollic Udifluvents", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "LCFC", name: "Typic Udifluvents", tests: { default: true } }
+
+  # ====== PSAMMENTS ======
+  "LDA":  # Cryopsamments (2)
+    - { code: "LDAA", name: "Lithic Cryopsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDAB", name: "Typic Cryopsamments", tests: { default: true } }
+  "LDB":  # Torripsamments (2)
+    - { code: "LDBA", name: "Lithic Torripsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDBB", name: "Typic Torripsamments", tests: { default: true } }
+  "LDC":  # Quartzipsamments (3)
+    - { code: "LDCA", name: "Lithic Quartzipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDCB", name: "Spodic Quartzipsamments", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
+    - { code: "LDCC", name: "Typic Quartzipsamments", tests: { default: true } }
+  "LDD":  # Ustipsamments (2)
+    - { code: "LDDA", name: "Lithic Ustipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDDB", name: "Typic Ustipsamments", tests: { default: true } }
+  "LDE":  # Xeropsamments (2)
+    - { code: "LDEA", name: "Lithic Xeropsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDEB", name: "Typic Xeropsamments", tests: { default: true } }
+  "LDF":  # Udipsamments (3)
+    - { code: "LDFA", name: "Lithic Udipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LDFB", name: "Spodic Udipsamments", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
+    - { code: "LDFC", name: "Typic Udipsamments", tests: { default: true } }
+
+  # ====== ORTHENTS ======
+  "LEA":  # Gelorthents (2)
+    - { code: "LEAA", name: "Lithic Gelorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LEAB", name: "Typic Gelorthents", tests: { default: true } }
+  "LEB":  # Cryorthents (3)
+    - { code: "LEBA", name: "Lithic Cryorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LEBB", name: "Aquic Cryorthents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LEBC", name: "Typic Cryorthents", tests: { default: true } }
+  "LEC":  # Torriorthents (3)
+    - { code: "LECA", name: "Lithic Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LECB", name: "Vertic Torriorthents", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "LECC", name: "Typic Torriorthents", tests: { default: true } }
+  "LED":  # Xerorthents (3)
+    - { code: "LEDA", name: "Lithic Xerorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LEDB", name: "Aquic Xerorthents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LEDC", name: "Typic Xerorthents", tests: { default: true } }
+  "LEE":  # Ustorthents (3)
+    - { code: "LEEA", name: "Lithic Ustorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LEEB", name: "Vertic Ustorthents", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "LEEC", name: "Typic Ustorthents", tests: { default: true } }
+  "LEF":  # Udorthents (4)
+    - { code: "LEFA", name: "Lithic Udorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "LEFB", name: "Aquic Udorthents", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "LEFC", name: "Andic Udorthents", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "LEFD", name: "Typic Udorthents", tests: { default: true } }
