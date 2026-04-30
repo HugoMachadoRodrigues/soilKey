@@ -40,7 +40,14 @@ jobs:
 
       - uses: codecov/codecov-action@v4
         with:
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          # Don't fail CI when Codecov rejects the upload -- this is
+          # tolerable: coverage is for the badge, not a hard gate.
+          # Codecov requires CODECOV_TOKEN as a repo secret to accept
+          # uploads on protected branches; until that is set, the
+          # action errors out and CI would otherwise go red. Set the
+          # token under Settings -> Secrets and variables -> Actions
+          # to enable real uploads.
+          fail_ci_if_error: false
           files: ./cobertura.xml
           plugins: noop
           disable_search: true

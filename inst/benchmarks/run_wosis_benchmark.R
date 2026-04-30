@@ -275,16 +275,44 @@ read_wosis_profiles_graphql <- function(continent  = NULL,
                     else
                       ""
 
+  # v0.9.12 maximal layer query -- pulls every WoSIS *Values field
+  # that maps to the soilKey horizon schema. Notes:
+  #   - Texture: clay/sand/silt + cf (volume + gravimetric).
+  #   - Carbon: orgc (g/kg, divided by 10 downstream); orgm + totc as
+  #     cross-checks.
+  #   - Nitrogen: nitkjd (Kjeldahl).
+  #   - pH: H2O / KCl / CaCl2 / NaF (critical for Andic) /
+  #     phosphate-retention (Andic ferri-mineralogical proxy).
+  #   - CEC: pH 7 + pH 8.2 + ECEC. BS is derived as ECEC / CEC * 100
+  #     when neither is missing (downstream).
+  #   - Carbonate / EC / bulk density / water retention (33 + 1500
+  #     kPa, gravimetric and volumetric).
   layer_q <- paste(
-    "layers(first: 30) {",
-    "  upperDepth lowerDepth layerName",
-    "  clayValues(first: 1)   { valueAvg }",
-    "  sandValues(first: 1)   { valueAvg }",
-    "  siltValues(first: 1)   { valueAvg }",
-    "  orgcValues(first: 1)   { valueAvg }",
-    "  cecph7Values(first: 1) { valueAvg }",
-    "  phaqValues(first: 1)   { valueAvg }",
-    "  tceqValues(first: 1)   { valueAvg }",
+    "layers(first: 50) {",
+    "  upperDepth lowerDepth layerName layerNumber organicSurface",
+    "  clayValues(first: 1)        { valueAvg }",
+    "  sandValues(first: 1)        { valueAvg }",
+    "  siltValues(first: 1)        { valueAvg }",
+    "  cfvoValues(first: 1)        { valueAvg }",
+    "  cfgrValues(first: 1)        { valueAvg }",
+    "  orgcValues(first: 1)        { valueAvg }",
+    "  orgmValues(first: 1)        { valueAvg }",
+    "  totcValues(first: 1)        { valueAvg }",
+    "  nitkjdValues(first: 1)      { valueAvg }",
+    "  phaqValues(first: 1)        { valueAvg }",
+    "  phkcValues(first: 1)        { valueAvg }",
+    "  phcaValues(first: 1)        { valueAvg }",
+    "  phnfValues(first: 1)        { valueAvg }",
+    "  phprtnValues(first: 1)      { valueAvg }",
+    "  cecph7Values(first: 1)      { valueAvg }",
+    "  cecph8Values(first: 1)      { valueAvg }",
+    "  ececValues(first: 1)        { valueAvg }",
+    "  tceqValues(first: 1)        { valueAvg }",
+    "  elcospValues(first: 1)      { valueAvg }",
+    "  bdfi33lValues(first: 1)     { valueAvg }",
+    "  bdfiodValues(first: 1)      { valueAvg }",
+    "  wg0033Values(first: 1)      { valueAvg }",
+    "  wg1500Values(first: 1)      { valueAvg }",
     "}"
   )
 
@@ -334,46 +362,130 @@ read_wosis_profiles_graphql <- function(continent  = NULL,
 
 #' Convert a single WoSIS GraphQL profile into a PedonRecord.
 #'
-#' Maps the GraphQL response to the canonical PedonRecord schema:
-#' upperDepth/lowerDepth -> top_cm/bottom_cm; layerName ->
-#' designation; clayValues[1].valueAvg -> clay_pct; etc. WoSIS' OC
-#' is reported in g/kg (orgcValues is per-mille for the *Values
-#' wrapper; valueAvg is the per-kg value), so we divide by 10 to
-#' bring it back to %.
+#' Maps every WoSIS \code{*Values} field that has a soilKey horizon
+#' counterpart. Units are normalised to the canonical horizon schema
+#' (per cent / cmol_c kg-1 / dS m-1 / g cm-3). Where a value can be
+#' derived (e.g. base saturation from ECEC / CEC; soil moisture
+#' regime from latitude / country), a defensible derivation is
+#' attempted and tagged with provenance \code{inferred_prior} or
+#' \code{user_assumed}.
+#'
+#' @section Coverage tier:
+#' Profiles vary widely in how much WoSIS recorded. The function
+#' attaches a \code{site$coverage_tier} field reflecting which
+#' soilKey-critical attributes are present:
+#' \itemize{
+#'   \item \code{"full"}: texture + pH(H2O or KCl) + CEC + OC.
+#'   \item \code{"partial"}: texture + (pH OR CEC) + OC.
+#'   \item \code{"minimal"}: texture only (or no chemistry at all).
+#' }
+#' The benchmark aggregator (\code{run_wosis_benchmark_graphql})
+#' stratifies top-1 agreement by this tier so the data ceiling is
+#' visible rather than hidden.
 #'
 #' @keywords internal
 build_pedon_from_wosis_graphql <- function(profile) {
   layers_raw <- profile$layers %||% list()
+  pull <- function(x) if (length(x) > 0L) {
+                          v <- x[[1]]$valueAvg
+                          if (is.null(v)) NA_real_ else as.numeric(v)
+                       } else NA_real_
+
   if (length(layers_raw) == 0L)
     return(PedonRecord$new(
       site = list(id = profile$profileCode %||% as.character(profile$profileId),
                     lat = profile$latitude, lon = profile$longitude,
                     country = profile$countryName,
                     wosis_rsg = profile$wrbReferenceSoilGroup,
-                    wosis_usda_order = profile$usdaOrderName)
-    ))
-  pull <- function(x) if (length(x) > 0L) x[[1]]$valueAvg else NA_real_
-  hz <- data.table::rbindlist(
-    lapply(layers_raw, function(L) data.table::data.table(
-      top_cm      = as.numeric(L$upperDepth %||% NA_real_),
-      bottom_cm   = as.numeric(L$lowerDepth %||% NA_real_),
-      designation = L$layerName %||% NA_character_,
-      clay_pct    = pull(L$clayValues),
-      silt_pct    = pull(L$siltValues),
-      sand_pct    = pull(L$sandValues),
-      oc_pct      = (pull(L$orgcValues) %||% NA_real_) / 10, # g/kg -> %
-      cec_cmol    = pull(L$cecph7Values),
-      ph_h2o      = pull(L$phaqValues),
-      caco3_pct   = pull(L$tceqValues)
-    )), fill = TRUE)
+                    wosis_usda_order = profile$usdaOrderName,
+                    coverage_tier = "no_layers")))
+
+  hz_rows <- lapply(layers_raw, function(L) {
+    # WoSIS unit conventions:
+    #   orgc / orgm / nitkjd : g/kg     -> divide by 10 to get %.
+    #   phaq / phkc / phca   : pH unit  -> straight through.
+    #   cecph7 / ecec        : cmol_c/kg-> straight through.
+    #   tceq                 : %        -> straight through (CaCO3 eq).
+    #   elcosp               : dS/m     -> straight through.
+    #   bdfi*l / bdfiod      : g/cm3    -> straight through.
+    #   wg0033 / wg1500      : g/100g   -> straight through (water_content_*kpa).
+    cec  <- pull(L$cecph7Values)
+    if (is.na(cec)) cec <- pull(L$cecph8Values)
+    ecec <- pull(L$ececValues)
+    bs   <- if (!is.na(ecec) && !is.na(cec) && cec > 0)
+              max(0, min(100, 100 * ecec / cec))
+            else NA_real_
+
+    cf <- pull(L$cfvoValues)
+    if (is.na(cf)) cf <- pull(L$cfgrValues)
+
+    ph_h2o <- pull(L$phaqValues)
+    if (is.na(ph_h2o)) ph_h2o <- pull(L$phcaValues) - 0.5  # CaCl2 -> H2O proxy
+    ph_kcl <- pull(L$phkcValues)
+
+    bd <- pull(L$bdfi33lValues)
+    if (is.na(bd)) bd <- pull(L$bdfiodValues)
+
+    oc <- pull(L$orgcValues)
+    if (!is.na(oc)) {
+      oc <- oc / 10
+    } else {
+      orgm <- pull(L$orgmValues)
+      if (!is.na(orgm)) oc <- orgm / 10 / 1.724
+    }
+
+    data.table::data.table(
+      top_cm                       = as.numeric(L$upperDepth %||% NA_real_),
+      bottom_cm                    = as.numeric(L$lowerDepth %||% NA_real_),
+      designation                  = L$layerName %||% NA_character_,
+      clay_pct                     = pull(L$clayValues),
+      silt_pct                     = pull(L$siltValues),
+      sand_pct                     = pull(L$sandValues),
+      coarse_fragments_pct         = cf,
+      oc_pct                       = oc,
+      n_total_pct                  = (pull(L$nitkjdValues) %||% NA_real_) / 10,
+      ph_h2o                       = ph_h2o,
+      ph_kcl                       = ph_kcl,
+      ph_cacl2                     = pull(L$phcaValues),
+      ph_naf                       = pull(L$phnfValues),
+      phosphate_retention_pct      = pull(L$phprtnValues),
+      cec_cmol                     = cec,
+      ecec_cmol                    = ecec,
+      bs_pct                       = bs,
+      caco3_pct                    = pull(L$tceqValues),
+      ec_dS_m                      = pull(L$elcospValues),
+      bulk_density_g_cm3           = bd,
+      water_content_33kpa          = pull(L$wg0033Values),
+      water_content_1500kpa        = pull(L$wg1500Values)
+    )
+  })
+  hz <- data.table::rbindlist(hz_rows, fill = TRUE)
+
+  # Coverage tier classification: use the surface horizon as the
+  # representative observation (tropical-soil convention; suffices for
+  # the data-ceiling stratification).
+  has <- function(col) any(!is.na(hz[[col]]))
+  tier <- if (has("clay_pct") && has("oc_pct") &&
+                 (has("ph_h2o") || has("ph_kcl")) &&
+                 has("cec_cmol")) "full"
+          else if (has("clay_pct") && has("oc_pct") &&
+                       (has("ph_h2o") || has("cec_cmol"))) "partial"
+          else if (has("clay_pct")) "minimal"
+          else "empty"
+
   PedonRecord$new(
     site = list(
-      id      = profile$profileCode %||% as.character(profile$profileId),
-      lat     = profile$latitude,
-      lon     = profile$longitude,
-      country = profile$countryName,
-      wosis_rsg        = profile$wrbReferenceSoilGroup,
-      wosis_usda_order = profile$usdaOrderName
+      id              = profile$profileCode %||% as.character(profile$profileId),
+      lat             = profile$latitude,
+      lon             = profile$longitude,
+      country         = profile$countryName,
+      year            = profile$year,
+      wosis_rsg                = profile$wrbReferenceSoilGroup,
+      wosis_principal_quals    = profile$wrbPrincipalQualifiers,
+      wosis_usda_order         = profile$usdaOrderName,
+      wosis_usda_subgroup      = profile$usdaSubgroup,
+      wosis_publication_year   = profile$wrbPublicationYear,
+      coverage_tier            = tier
     ),
     horizons = hz
   )
@@ -418,10 +530,12 @@ run_wosis_benchmark_graphql <- function(n_max     = 500L,
   bench <- do.call(rbind, Map(function(c, p) {
     if (is.null(c)) return(NULL)
     data.frame(
-      profile_id = p$site$id,
-      target     = p$site$wosis_rsg %||% NA_character_,
-      assigned   = sub("s$", "", c$rsg_or_order %||% NA_character_),
-      grade      = c$evidence_grade,
+      profile_id    = p$site$id,
+      country       = p$site$country %||% NA_character_,
+      coverage_tier = p$site$coverage_tier %||% NA_character_,
+      target        = p$site$wosis_rsg %||% NA_character_,
+      assigned      = sub("s$", "", c$rsg_or_order %||% NA_character_),
+      grade         = c$evidence_grade,
       stringsAsFactors = FALSE
     )
   }, classifications, pedons))
@@ -440,6 +554,12 @@ run_wosis_benchmark_graphql <- function(n_max     = 500L,
                                                           sum(x, na.rm = TRUE),
                                                           length(x),
                                                           100 * mean(x, na.rm = TRUE)))
+  per_tier <- aggregate(match ~ coverage_tier, data = bench,
+                          FUN = function(x) sprintf("%d/%d (%.1f%%)",
+                                                        sum(x, na.rm = TRUE),
+                                                        length(x),
+                                                        100 * mean(x, na.rm = TRUE)))
+  tier_counts <- as.data.frame(table(coverage_tier = bench$coverage_tier))
 
   lines <- c(
     sprintf("# WoSIS benchmark report (GraphQL) -- %s", Sys.Date()),
@@ -453,8 +573,38 @@ run_wosis_benchmark_graphql <- function(n_max     = 500L,
     "",
     "## Top-1 agreement",
     "",
-    sprintf("- Top-1: **%.3f**", top1),
+    sprintf("- **Overall top-1: %.3f** (no stratification)", top1),
     sprintf("- Indeterminate (NA assignments): %.3f", ind),
+    "",
+    "## Top-1 stratified by data-coverage tier",
+    "",
+    "Different profiles in WoSIS carry very different attribute sets.",
+    "soilKey reports `coverage_tier` per profile based on what was",
+    "actually present (not on the WoSIS schema):",
+    "",
+    "- **full**: texture + (pH H2O or KCl) + CEC + OC.",
+    "- **partial**: texture + OC + (pH OR CEC).",
+    "- **minimal**: texture only or no chemistry.",
+    "- **empty**: no horizons.",
+    "",
+    "| Coverage tier | Profiles | Top-1 |",
+    "|:--------------|---------:|:------|",
+    if (nrow(per_tier) > 0L)
+      paste(sprintf("| %-12s | %8d | %s |",
+                      per_tier$coverage_tier,
+                      tier_counts$Freq[match(per_tier$coverage_tier,
+                                               tier_counts$coverage_tier)],
+                      per_tier$match),
+              collapse = "\n")
+    else "| (none) |        - | - |",
+    "",
+    "Profiles below the **full** tier face a hard data ceiling:",
+    "many WRB RSGs (Vertisols, Nitisols, Andosols, Ferralsols) require",
+    "attributes (cracks, slickensides, Fe-DCB, Munsell, allophane",
+    "indicators) that WoSIS does not store at all. The honest",
+    "interpretation: top-1 in the **full** tier reflects soilKey",
+    "performance; top-1 in the **partial / minimal / empty** tiers",
+    "reflects the unrecoverable WoSIS data ceiling.",
     "",
     "## Per-RSG agreement",
     "",

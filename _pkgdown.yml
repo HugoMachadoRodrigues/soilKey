@@ -307,6 +307,7 @@ reference:
       - ossl_library_template
       - clear_ossl_cache
       - download_ossl_subset
+      - ossl_demo_sa
       - planosol
       - posterior_classify
       - resolve_wrb_qualifiers
