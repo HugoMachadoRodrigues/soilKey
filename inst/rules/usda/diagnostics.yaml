@@ -37,6 +37,13 @@ diagnostics:
   anthropic_epipedon_usda:      { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria not yet captured in schema" }
   plaggen_epipedon_usda:        { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria" }
 
+  # ----- v0.8.2 USDA diagnostic characteristics (Ch 3, KST 13ed) -----
+  aquic_conditions_usda:        { function: aquic_conditions_usda,        status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, pp 41-44" }
+  anhydrous_conditions_usda:    { function: anhydrous_conditions_usda,    status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 33" }
+  cryoturbation_usda:           { function: cryoturbation_usda,           status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 43" }
+  glacic_layer_usda:            { function: glacic_layer_usda,            status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 45" }
+  permafrost_within_usda:       { function: permafrost_within_usda,       status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 47" }
+
   # ----- planned v0.8.x -----
   kandic:                       { status: planned, target_version: v0.8 }
   kandic:                       { status: planned, target_version: v0.8 }
