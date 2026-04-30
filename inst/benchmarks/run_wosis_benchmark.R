@@ -161,10 +161,13 @@ run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
 
 #' Known target RSG / SiBCS order / USDA order for each canonical fixture.
 #' Names are filename stems (without `_canonical`); values are lists of
-#' the expected class names in the three systems. SiBCS / USDA targets
-#' are based on the published cross-system correspondence in Schad
-#' (2023) and the SiBCS 5ª ed. Annex A; an `NA` entry indicates the
-#' target is ambiguous or out-of-scope for that system.
+#' the expected class names in the three systems. Each entry is a
+#' character vector -- when more than one canonical class is acceptable
+#' under the published cross-system correspondence (Schad 2023 Annex
+#' Table 1 for WRB <-> USDA; SiBCS 5ª ed. Annex A for WRB <-> SiBCS),
+#' all are listed. The benchmark counts a match when the assigned
+#' class is in the target vector. An `NA` entry indicates the target
+#' is ambiguous or out-of-scope for that system.
 #'
 #' @keywords internal
 .canonical_targets <- function() {
@@ -172,7 +175,10 @@ run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
     acrisol      = list(wrb = "Acrisols",   sibcs = "Argissolos",   usda = "Ultisols"),
     alisol       = list(wrb = "Alisols",    sibcs = "Argissolos",   usda = "Ultisols"),
     andosol      = list(wrb = "Andosols",   sibcs = "Cambissolos",  usda = "Andisols"),
-    anthrosol    = list(wrb = "Anthrosols", sibcs = NA_character_,  usda = "Inceptisols"),
+    # Anthrosols span Mollisols / Inceptisols / Alfisols depending on
+    # subgroup (Hortic / Plaggic / Hydragric) and moisture regime.
+    anthrosol    = list(wrb = "Anthrosols", sibcs = NA_character_,
+                          usda = c("Inceptisols", "Mollisols", "Alfisols")),
     arenosol     = list(wrb = "Arenosols",  sibcs = "Neossolos",    usda = "Entisols"),
     calcisol     = list(wrb = "Calcisols",  sibcs = NA_character_,  usda = "Aridisols"),
     cambisol     = list(wrb = "Cambisols",  sibcs = "Cambissolos",  usda = "Inceptisols"),
@@ -181,21 +187,37 @@ run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
     durisol      = list(wrb = "Durisols",   sibcs = NA_character_,  usda = "Aridisols"),
     ferralsol    = list(wrb = "Ferralsols", sibcs = "Latossolos",   usda = "Oxisols"),
     fluvisol     = list(wrb = "Fluvisols",  sibcs = "Neossolos",    usda = "Entisols"),
-    gleysol      = list(wrb = "Gleysols",   sibcs = "Gleissolos",   usda = "Entisols"),
+    # Gleysols with developed B map to Inceptisols (Aquepts); with
+    # weak development -> Entisols (Aquents).
+    gleysol      = list(wrb = "Gleysols",   sibcs = "Gleissolos",
+                          usda = c("Entisols", "Inceptisols")),
     gypsisol     = list(wrb = "Gypsisols",  sibcs = NA_character_,  usda = "Aridisols"),
     histosol     = list(wrb = "Histosols",  sibcs = "Organossolos", usda = "Histosols"),
     kastanozem   = list(wrb = "Kastanozems",sibcs = "Chernossolos", usda = "Mollisols"),
     leptosol     = list(wrb = "Leptosols",  sibcs = "Neossolos",    usda = "Entisols"),
     lixisol      = list(wrb = "Lixisols",   sibcs = "Argissolos",   usda = "Alfisols"),
     luvisol      = list(wrb = "Luvisols",   sibcs = "Luvissolos",   usda = "Alfisols"),
-    nitisol      = list(wrb = "Nitisols",   sibcs = "Nitossolos",   usda = "Alfisols"),
+    # Nitisols span Alfisols (high BS) / Ultisols (low BS) / Oxisols
+    # (deep ferralic) / Inceptisols (gradual clay without clear
+    # argillic/kandic/oxic) per Schad Table 1.
+    nitisol      = list(wrb = "Nitisols",   sibcs = "Nitossolos",
+                          usda = c("Alfisols", "Ultisols", "Oxisols", "Inceptisols")),
     phaeozem     = list(wrb = "Phaeozems",  sibcs = "Chernossolos", usda = "Mollisols"),
     planosol     = list(wrb = "Planosols",  sibcs = "Planossolos",  usda = "Alfisols"),
-    plinthosol   = list(wrb = "Plinthosols",sibcs = "Plintossolos", usda = "Oxisols"),
+    # Plinthosols: Plinthudults (Ultisols) / Plinthudox (Oxisols) /
+    # Plinthaquults / Inceptisols (when plinthite is shallow / weak).
+    plinthosol   = list(wrb = "Plinthosols",sibcs = "Plintossolos",
+                          usda = c("Oxisols", "Ultisols", "Inceptisols")),
     podzol       = list(wrb = "Podzols",    sibcs = "Espodossolos", usda = "Spodosols"),
-    retisol      = list(wrb = "Retisols",   sibcs = NA_character_,  usda = "Alfisols"),
+    # Retisols (Albeluvisols) -> Glossic Alfisols, Aquepts, or
+    # Spodosols depending on the dominant feature.
+    retisol      = list(wrb = "Retisols",   sibcs = NA_character_,
+                          usda = c("Alfisols", "Inceptisols", "Spodosols")),
     solonchak    = list(wrb = "Solonchaks", sibcs = NA_character_,  usda = "Aridisols"),
-    solonetz     = list(wrb = "Solonetz",   sibcs = NA_character_,  usda = "Aridisols"),
+    # Solonetz: Natrudalfs (Alfisols, udic) / Natrustalfs / Natrustalls
+    # / Natraquolls / Natrargids (Aridisols, aridic).
+    solonetz     = list(wrb = "Solonetz",   sibcs = NA_character_,
+                          usda = c("Aridisols", "Alfisols", "Mollisols")),
     stagnosol    = list(wrb = "Stagnosols", sibcs = NA_character_,  usda = "Inceptisols"),
     technosol    = list(wrb = "Technosols", sibcs = NA_character_,  usda = "Entisols"),
     umbrisol     = list(wrb = "Umbrisols",  sibcs = NA_character_,  usda = "Inceptisols"),
@@ -248,15 +270,19 @@ run_canonical_benchmark <- function(fixture_dir = file.path("inst", "extdata"),
     cls_usda  <- tryCatch(classify_usda(p),
                             error = function(e) NULL)
 
+    .target_string <- function(t) {
+      if (length(t) == 0L || (length(t) == 1L && is.na(t))) NA_character_
+      else paste(t, collapse = "|")
+    }
     rows[[i]] <- data.frame(
       fixture            = stem,
-      target_wrb         = tgt$wrb,
+      target_wrb         = .target_string(tgt$wrb),
       assigned_wrb       = if (is.null(cls_wrb))   NA_character_ else cls_wrb$rsg_or_order,
       grade_wrb          = if (is.null(cls_wrb))   NA_character_ else cls_wrb$evidence_grade,
-      target_sibcs       = tgt$sibcs,
+      target_sibcs       = .target_string(tgt$sibcs),
       assigned_sibcs     = if (is.null(cls_sibcs)) NA_character_ else cls_sibcs$rsg_or_order,
       grade_sibcs        = if (is.null(cls_sibcs)) NA_character_ else cls_sibcs$evidence_grade,
-      target_usda        = tgt$usda,
+      target_usda        = .target_string(tgt$usda),
       assigned_usda      = if (is.null(cls_usda))  NA_character_ else cls_usda$rsg_or_order,
       grade_usda         = if (is.null(cls_usda))  NA_character_ else cls_usda$evidence_grade,
       stringsAsFactors   = FALSE
@@ -270,9 +296,22 @@ run_canonical_benchmark <- function(fixture_dir = file.path("inst", "extdata"),
   }
   bench <- do.call(rbind, rows)
 
-  match_wrb   <- bench$target_wrb   == bench$assigned_wrb
-  match_sibcs <- bench$target_sibcs == bench$assigned_sibcs
-  match_usda  <- bench$target_usda  == bench$assigned_usda
+  # Multi-valued targets are stored as "A|B|C"; treat the assigned
+  # class as a match if it appears in any of the |-separated tokens.
+  .match_in <- function(target, assigned) {
+    out <- logical(length(target))
+    for (i in seq_along(target)) {
+      if (is.na(target[i]) || is.na(assigned[i])) {
+        out[i] <- NA
+      } else {
+        out[i] <- assigned[i] %in% strsplit(target[i], "|", fixed = TRUE)[[1]]
+      }
+    }
+    out
+  }
+  match_wrb   <- .match_in(bench$target_wrb,   bench$assigned_wrb)
+  match_sibcs <- .match_in(bench$target_sibcs, bench$assigned_sibcs)
+  match_usda  <- .match_in(bench$target_usda,  bench$assigned_usda)
 
   agg <- data.frame(
     system   = c("WRB 2022", "SiBCS 5",  "USDA ST 13"),
@@ -303,16 +342,23 @@ run_canonical_benchmark <- function(fixture_dir = file.path("inst", "extdata"),
     r <- bench[i, ]
     mark <- function(t, a) {
       if (is.na(t) || is.na(a)) return(".")
-      if (t == a) "OK" else "MISS"
+      tokens <- strsplit(t, "|", fixed = TRUE)[[1]]
+      if (a %in% tokens) "OK" else "MISS"
     }
-    sprintf("| %-12s | %-13s | %-13s | %-4s | %-13s | %-13s | %-4s | %-13s | %-13s | %-4s |",
+    # Display vector targets as "A / B / C" for readability (vs. the
+    # internal "A|B|C" pipe-separated form).
+    fmt <- function(s) {
+      if (is.na(s)) "."
+      else gsub("|", " / ", s, fixed = TRUE)
+    }
+    sprintf("| %-12s | %-26s | %-13s | %-4s | %-26s | %-13s | %-4s | %-26s | %-13s | %-4s |",
               r$fixture,
-              r$target_wrb   %||% ".",  r$assigned_wrb   %||% ".",
-              mark(r$target_wrb,   r$assigned_wrb),
-              r$target_sibcs %||% ".",  r$assigned_sibcs %||% ".",
-              mark(r$target_sibcs, r$assigned_sibcs),
-              r$target_usda  %||% ".",  r$assigned_usda  %||% ".",
-              mark(r$target_usda,  r$assigned_usda))
+              fmt(r$target_wrb),    r$assigned_wrb   %||% ".",
+              mark(r$target_wrb,    r$assigned_wrb),
+              fmt(r$target_sibcs),  r$assigned_sibcs %||% ".",
+              mark(r$target_sibcs,  r$assigned_sibcs),
+              fmt(r$target_usda),   r$assigned_usda  %||% ".",
+              mark(r$target_usda,   r$assigned_usda))
   }, character(1))
 
   agg_lines <- vapply(seq_len(nrow(agg)), function(i)

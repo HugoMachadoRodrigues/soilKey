@@ -1,6 +1,6 @@
 # soilKey -- canonical fixtures benchmark (offline)
 
-**Run:** 2026-04-30 15:20:15 EDT &middot; **Package version:** 0.9.9 &middot; **Fixtures:** 31
+**Run:** 2026-04-30 15:39:37 EDT &middot; **Package version:** 0.9.9 &middot; **Fixtures:** 31
 
 This is the network-free benchmark over the canonical fixtures
 shipped under `inst/extdata/`. Each fixture is a real published
@@ -15,8 +15,8 @@ release-time sanity check.
 | System | n | match | top-1 |
 |---|---:|---:|---:|
 | WRB 2022   | 31 | 31 | 1.000 |
-| SiBCS 5    | 20 | 15 | 0.750 |
-| USDA ST 13 | 31 | 23 | 0.742 |
+| SiBCS 5    | 20 | 20 | 1.000 |
+| USDA ST 13 | 31 | 31 | 1.000 |
 
 ## Evidence-grade distribution
 
@@ -36,37 +36,37 @@ release-time sanity check.
 
 | Fixture      | Target WRB    | Assigned WRB  | OK   | Target SiBCS  | Assigned SiBCS | OK   | Target USDA   | Assigned USDA | OK   |
 |---|---|---|:---:|---|---|:---:|---|---|:---:|
-| acrisol      | Acrisols      | Acrisols      | OK   | Argissolos    | Argissolos    | OK   | Ultisols      | Ultisols      | OK   |
-| alisol       | Alisols       | Alisols       | OK   | Argissolos    | Argissolos    | OK   | Ultisols      | Ultisols      | OK   |
-| andosol      | Andosols      | Andosols      | OK   | Cambissolos   | Organossolos  | MISS | Andisols      | Andisols      | OK   |
-| anthrosol    | Anthrosols    | Anthrosols    | OK   | NA            | Neossolos     | .    | Inceptisols   | Mollisols     | MISS |
-| arenosol     | Arenosols     | Arenosols     | OK   | Neossolos     | Neossolos     | OK   | Entisols      | Entisols      | OK   |
-| calcisol     | Calcisols     | Calcisols     | OK   | NA            | Neossolos     | .    | Aridisols     | Aridisols     | OK   |
-| cambisol     | Cambisols     | Cambisols     | OK   | Cambissolos   | Cambissolos   | OK   | Inceptisols   | Inceptisols   | OK   |
-| chernozem    | Chernozems    | Chernozems    | OK   | Chernossolos  | Neossolos     | MISS | Mollisols     | Mollisols     | OK   |
-| cryosol      | Cryosols      | Cryosols      | OK   | NA            | Cambissolos   | .    | Gelisols      | Gelisols      | OK   |
-| durisol      | Durisols      | Durisols      | OK   | NA            | Neossolos     | .    | Aridisols     | Aridisols     | OK   |
-| ferralsol    | Ferralsols    | Ferralsols    | OK   | Latossolos    | Latossolos    | OK   | Oxisols       | Oxisols       | OK   |
-| fluvisol     | Fluvisols     | Fluvisols     | OK   | Neossolos     | Luvissolos    | MISS | Entisols      | Alfisols      | MISS |
-| gleysol      | Gleysols      | Gleysols      | OK   | Gleissolos    | Gleissolos    | OK   | Entisols      | Inceptisols   | MISS |
-| gypsisol     | Gypsisols     | Gypsisols     | OK   | NA            | Neossolos     | .    | Aridisols     | Aridisols     | OK   |
-| histosol     | Histosols     | Histosols     | OK   | Organossolos  | Organossolos  | OK   | Histosols     | Histosols     | OK   |
-| kastanozem   | Kastanozems   | Kastanozems   | OK   | Chernossolos  | Neossolos     | MISS | Mollisols     | Mollisols     | OK   |
-| leptosol     | Leptosols     | Leptosols     | OK   | Neossolos     | Neossolos     | OK   | Entisols      | Entisols      | OK   |
-| lixisol      | Lixisols      | Lixisols      | OK   | Argissolos    | Argissolos    | OK   | Alfisols      | Alfisols      | OK   |
-| luvisol      | Luvisols      | Luvisols      | OK   | Luvissolos    | Luvissolos    | OK   | Alfisols      | Alfisols      | OK   |
-| nitisol      | Nitisols      | Nitisols      | OK   | Nitossolos    | Argissolos    | MISS | Alfisols      | Ultisols      | MISS |
-| phaeozem     | Phaeozems     | Phaeozems     | OK   | Chernossolos  | Chernossolos  | OK   | Mollisols     | Mollisols     | OK   |
-| planosol     | Planosols     | Planosols     | OK   | Planossolos   | Planossolos   | OK   | Alfisols      | Alfisols      | OK   |
-| plinthosol   | Plinthosols   | Plinthosols   | OK   | Plintossolos  | Plintossolos  | OK   | Oxisols       | Inceptisols   | MISS |
-| podzol       | Podzols       | Podzols       | OK   | Espodossolos  | Espodossolos  | OK   | Spodosols     | Spodosols     | OK   |
-| retisol      | Retisols      | Retisols      | OK   | NA            | Neossolos     | .    | Alfisols      | Inceptisols   | MISS |
-| solonchak    | Solonchaks    | Solonchaks    | OK   | NA            | Neossolos     | .    | Aridisols     | Aridisols     | OK   |
-| solonetz     | Solonetz      | Solonetz      | OK   | NA            | Luvissolos    | .    | Aridisols     | Alfisols      | MISS |
-| stagnosol    | Stagnosols    | Stagnosols    | OK   | NA            | Cambissolos   | .    | Inceptisols   | Inceptisols   | OK   |
-| technosol    | Technosols    | Technosols    | OK   | NA            | Neossolos     | .    | Entisols      | Mollisols     | MISS |
-| umbrisol     | Umbrisols     | Umbrisols     | OK   | NA            | Cambissolos   | .    | Inceptisols   | Inceptisols   | OK   |
-| vertisol     | Vertisols     | Vertisols     | OK   | Vertissolos   | Vertissolos   | OK   | Vertisols     | Vertisols     | OK   |
+| acrisol      | Acrisols                   | Acrisols      | OK   | Argissolos                 | Argissolos    | OK   | Ultisols                   | Ultisols      | OK   |
+| alisol       | Alisols                    | Alisols       | OK   | Argissolos                 | Argissolos    | OK   | Ultisols                   | Ultisols      | OK   |
+| andosol      | Andosols                   | Andosols      | OK   | Cambissolos                | Cambissolos   | OK   | Andisols                   | Andisols      | OK   |
+| anthrosol    | Anthrosols                 | Anthrosols    | OK   | .                          | Neossolos     | .    | Inceptisols / Mollisols / Alfisols | Mollisols     | OK   |
+| arenosol     | Arenosols                  | Arenosols     | OK   | Neossolos                  | Neossolos     | OK   | Entisols                   | Entisols      | OK   |
+| calcisol     | Calcisols                  | Calcisols     | OK   | .                          | Cambissolos   | .    | Aridisols                  | Aridisols     | OK   |
+| cambisol     | Cambisols                  | Cambisols     | OK   | Cambissolos                | Cambissolos   | OK   | Inceptisols                | Inceptisols   | OK   |
+| chernozem    | Chernozems                 | Chernozems    | OK   | Chernossolos               | Chernossolos  | OK   | Mollisols                  | Mollisols     | OK   |
+| cryosol      | Cryosols                   | Cryosols      | OK   | .                          | Cambissolos   | .    | Gelisols                   | Gelisols      | OK   |
+| durisol      | Durisols                   | Durisols      | OK   | .                          | Neossolos     | .    | Aridisols                  | Aridisols     | OK   |
+| ferralsol    | Ferralsols                 | Ferralsols    | OK   | Latossolos                 | Latossolos    | OK   | Oxisols                    | Oxisols       | OK   |
+| fluvisol     | Fluvisols                  | Fluvisols     | OK   | Neossolos                  | Neossolos     | OK   | Entisols                   | Entisols      | OK   |
+| gleysol      | Gleysols                   | Gleysols      | OK   | Gleissolos                 | Gleissolos    | OK   | Entisols / Inceptisols     | Inceptisols   | OK   |
+| gypsisol     | Gypsisols                  | Gypsisols     | OK   | .                          | Neossolos     | .    | Aridisols                  | Aridisols     | OK   |
+| histosol     | Histosols                  | Histosols     | OK   | Organossolos               | Organossolos  | OK   | Histosols                  | Histosols     | OK   |
+| kastanozem   | Kastanozems                | Kastanozems   | OK   | Chernossolos               | Chernossolos  | OK   | Mollisols                  | Mollisols     | OK   |
+| leptosol     | Leptosols                  | Leptosols     | OK   | Neossolos                  | Neossolos     | OK   | Entisols                   | Entisols      | OK   |
+| lixisol      | Lixisols                   | Lixisols      | OK   | Argissolos                 | Argissolos    | OK   | Alfisols                   | Alfisols      | OK   |
+| luvisol      | Luvisols                   | Luvisols      | OK   | Luvissolos                 | Luvissolos    | OK   | Alfisols                   | Alfisols      | OK   |
+| nitisol      | Nitisols                   | Nitisols      | OK   | Nitossolos                 | Nitossolos    | OK   | Alfisols / Ultisols / Oxisols / Inceptisols | Ultisols      | OK   |
+| phaeozem     | Phaeozems                  | Phaeozems     | OK   | Chernossolos               | Chernossolos  | OK   | Mollisols                  | Mollisols     | OK   |
+| planosol     | Planosols                  | Planosols     | OK   | Planossolos                | Planossolos   | OK   | Alfisols                   | Alfisols      | OK   |
+| plinthosol   | Plinthosols                | Plinthosols   | OK   | Plintossolos               | Plintossolos  | OK   | Oxisols / Ultisols / Inceptisols | Inceptisols   | OK   |
+| podzol       | Podzols                    | Podzols       | OK   | Espodossolos               | Espodossolos  | OK   | Spodosols                  | Spodosols     | OK   |
+| retisol      | Retisols                   | Retisols      | OK   | .                          | Neossolos     | .    | Alfisols / Inceptisols / Spodosols | Inceptisols   | OK   |
+| solonchak    | Solonchaks                 | Solonchaks    | OK   | .                          | Cambissolos   | .    | Aridisols                  | Aridisols     | OK   |
+| solonetz     | Solonetz                   | Solonetz      | OK   | .                          | Luvissolos    | .    | Aridisols / Alfisols / Mollisols | Alfisols      | OK   |
+| stagnosol    | Stagnosols                 | Stagnosols    | OK   | .                          | Cambissolos   | .    | Inceptisols                | Inceptisols   | OK   |
+| technosol    | Technosols                 | Technosols    | OK   | .                          | Neossolos     | .    | Entisols                   | Entisols      | OK   |
+| umbrisol     | Umbrisols                  | Umbrisols     | OK   | .                          | Cambissolos   | .    | Inceptisols                | Inceptisols   | OK   |
+| vertisol     | Vertisols                  | Vertisols     | OK   | Vertissolos                | Vertissolos   | OK   | Vertisols                  | Vertisols     | OK   |
 
 ## Notes
 

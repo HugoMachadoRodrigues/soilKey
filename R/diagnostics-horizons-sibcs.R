@@ -30,7 +30,19 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   h <- pedon$horizons
   # Convert g/kg threshold to %.
   min_oc_pct <- min_oc_g_kg / 10
-  candidates <- which(!is.na(h$oc_pct) & h$oc_pct >= min_oc_pct &
+  # v0.9.10: candidate layers must EITHER carry an organic-horizon
+  # designation (O, H, Op, Oa, Oe, Oi, Hr, Hd) OR have OC well above
+  # the mineral-soil ceiling (>= 12 % is the threshold for organic-
+  # dominant material per SiBCS Cap 1). Pre-v0.9.10 the test only
+  # checked oc_pct >= 8 %, which falsely matched mineral A horizons of
+  # high-OC andic profiles (canonical Andosol with Ah of 8 % OC was
+  # being routed into Organossolos).
+  desg <- h$designation
+  is_organic_designation <- !is.na(desg) &
+                              grepl("^[OH][a-z]?", desg)
+  is_dominantly_organic  <- !is.na(h$oc_pct) & h$oc_pct >= 12
+  candidates <- which((is_organic_designation | is_dominantly_organic) &
+                        !is.na(h$oc_pct) & h$oc_pct >= min_oc_pct &
                         !is.na(h$top_cm) & h$top_cm <= 5)
   if (length(candidates) == 0L) {
     have_oc <- !all(is.na(h$oc_pct))
@@ -441,7 +453,18 @@ B_latossolico <- function(pedon, min_thickness = 50,
 #' @export
 B_incipiente <- function(pedon, min_thickness = 10) {
   h <- pedon$horizons
-  desg_match <- test_pattern_match(h, "designation", "^B[wi]|^Bg|^Bv")
+  # v0.9.10: extended designation pattern to cover the full set of
+  # "weakly developed B" suffixes used in canonical descriptions:
+  # Bw (weathered), Bi (incipient), Bk (calcic accumulation),
+  # Bv (vertic-like), Bg (gleyed), Bn (natric-incipient), Bj
+  # (jarositic), Bz (salt-accumulating). Excludes Bt (argic / textural),
+  # Bo (latossolic / oxic), Bs / Bh (spodic), Bp (plinthic) -- those
+  # are caught by the exclusion list below. Pre-v0.9.10 the regex was
+  # `^B[wi]|^Bg|^Bv`, which dropped chernozem-style Bk and similar
+  # calcic / saline B horizons and is what made the canonical
+  # chernozem fixture fall through chernossolo() (no Bi nor Bt
+  # path) into Neossolos.
+  desg_match <- test_pattern_match(h, "designation", "^B[wikvgnzj]")
   candidates <- desg_match$layers
   # Exclusoes
   fer  <- ferralic(pedon)
@@ -507,9 +530,15 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                mean(h$clay_pct[a_layers], na.rm = TRUE)
            else NA_real_
   ratio_ok <- !is.na(ratio) && ratio <= max_b_a_ratio
-  # Step 3: estrutura em blocos / prismatica
+  # Step 3: estrutura em blocos / prismatica / polyhedral.
+  # v0.9.10: added "polyhedral" / "polyedric" -- canonical SiBCS B
+  # nitico structure descriptor in tropical Nitossolos (estrutura em
+  # blocos sub-angulares evoluindo para "poliedrica") that the older
+  # regex was missing.
   struct_ok <- any(!is.na(h$structure_type[clay_ok]) &
-                     grepl("blocks|block|blocos|bloco|prismatic|prismatica",
+                     grepl(paste0("blocks|block|blocos|bloco|",
+                                    "prismatic|prismatica|",
+                                    "polyhedral|polyedric|poliedric"),
                               h$structure_type[clay_ok], ignore.case = TRUE))
   # Step 4: cerosidade (clay_films_amount) no minimo "comum" -- discriminante
   # critico vs Latossolos (que tem no maximo "pouca e fraca")
@@ -518,10 +547,20 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # Step 5: thickness
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
                                    candidate_layers = clay_ok)
-  # Step 6: argila atividade baixa OR (alta + alitico)
+  # Step 6: argila atividade baixa OR (alta + alitico) OR (alta +
+  # carater ferri). Per SiBCS Cap 2 p. 62, the canonical Nitossolos
+  # Vermelho Ferri / Eutroferrico carry high CTC clays *plus* a
+  # ferri-mineralogical signature (>= 8 % Fe-DCB or >= 18 % Fe2O3 in
+  # the clay fraction); without the ferric path, every Tropical Ta
+  # Nitossolo without aluminic character was being rejected by
+  # B_nitico (and falling through to Argissolos). v0.9.10 adds the
+  # ferri short-circuit using `fe_dcb_pct` on the candidate B layers.
   ta_alta <- atividade_argila_alta(pedon)
   ali     <- carater_alitico(pedon)
-  ativ_ok <- !isTRUE(ta_alta$passed) || isTRUE(ali$passed)
+  fe_vals <- if ("fe_dcb_pct" %in% names(h)) h$fe_dcb_pct[clay_ok]
+             else NA_real_
+  ferri_ok <- any(!is.na(fe_vals) & fe_vals >= 8)
+  ativ_ok <- !isTRUE(ta_alta$passed) || isTRUE(ali$passed) || ferri_ok
   passed <- length(clay_ok) > 0L && ratio_ok && struct_ok &&
               cerosidade_ok && isTRUE(thk$passed) && ativ_ok
   DiagnosticResult$new(

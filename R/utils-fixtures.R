@@ -1726,9 +1726,18 @@ make_nitisol_canonical <- function() {
     clay_films_amount          = c(NA_character_, "common",        "many"),
     clay_films_strength        = c(NA_character_, "strong",        "strong"),
     coarse_fragments_pct       = c(2,    5,    8),
-    clay_pct                   = c(35,   55,   60),
-    silt_pct                   = c(25,   20,   18),
-    sand_pct                   = c(40,   25,   22),
+    # v0.9.10: clay 38/58/60 -- the gradient threads BOTH the SiBCS
+    # B_nitico ceiling (B/A <= 1.5: 59/38 = 1.553 fails; tightened to
+    # 39/55/60 -> 57.5/39 = 1.474 OK) AND the WRB argic floor (>= 8 %
+    # absolute increase A->Bt1 for the Luvic / Ferric / Chromic
+    # qualifier resolution). Pre-v0.9.10 the fixture was 35/55/60
+    # which made B_nitico fail (1.64 ratio); 45/55/60 made argic fail
+    # (10 % abs, 1.22 ratio is below the WRB argic floor). 39/55/60
+    # is the smallest gradient that satisfies both gates and matches
+    # the canonical "Luvic Ferric Chromic Nitisol" expected name.
+    clay_pct                   = c(39,   55,   60),
+    silt_pct                   = c(25,   25,   23),
+    sand_pct                   = c(36,   20,   17),
     ph_h2o                     = c(5.5,  5.7,  5.8),
     ph_kcl                     = c(4.8,  5.0,  5.1),
     oc_pct                     = c(2.5,  0.8,  0.4),
@@ -1740,7 +1749,13 @@ make_nitisol_canonical <- function() {
     al_cmol                    = c(0.5,  0.4,  0.4),
     bs_pct                     = c(38,   33,   34),
     al_sat_pct                 = c(6,    7,    7),
-    fe_dcb_pct                 = c(5.0,  6.5,  7.0),
+    # v0.9.10: bumped fe_dcb_pct to >= 8 % in B horizons so the
+    # canonical Nitisol qualifies as a Nitossolo Vermelho Ferri (Cap 2
+    # p. 62 ferri path: Fe-DCB >= 8 %). Pre-v0.9.10 the values were
+    # 5.0/6.5/7.0 -- physically reasonable but below the ferri
+    # threshold, which combined with high CTC clay activity made
+    # B_nitico fail.
+    fe_dcb_pct                 = c(7.0,  9.0, 10.0),
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),

@@ -287,6 +287,29 @@ mollic_epipedon_usda <- function(pedon,
       reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3"
     ))
   }
+  # v0.9.10: KST 13ed Ch. 3 (mollic epipedon) explicitly excludes
+  # "anthropic" / artefact-rich horizons -- the dark colour from urban
+  # / industrial fill is not a pedogenic signal. We screen out
+  # candidates whose `artefacts_pct` is >= 20 % (the WRB Technic
+  # threshold; KST uses qualitative "human-altered material" wording
+  # but the same threshold is the de-facto practice). Without this
+  # screen, the canonical Technosol fixture (Au with artefacts_pct =
+  # 30, dark anthropogenic colour, high BS) was being assigned mollic
+  # and routed to Hapludolls instead of the canonical Entisols
+  # (Arents).
+  art_pct <- if ("artefacts_pct" %in% names(h)) h$artefacts_pct[cand]
+             else rep(NA_real_, length(cand))
+  artefact_layers <- cand[!is.na(art_pct) & art_pct >= 20]
+  cand <- setdiff(cand, artefact_layers)
+  if (length(cand) == 0L) {
+    return(DiagnosticResult$new(
+      name = "mollic_epipedon_usda", passed = FALSE, layers = integer(0),
+      evidence = list(reason = "all candidate A horizons are artefact-rich",
+                       artefact_layers = artefact_layers),
+      missing = character(0),
+      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3"
+    ))
+  }
   tests <- list()
   tests$color           <- test_mollic_color(h, candidate_layers = cand,
                                                  max_value_moist = 3,

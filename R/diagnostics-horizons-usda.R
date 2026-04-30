@@ -63,10 +63,28 @@ oxic_usda <- function(pedon, ...) {
 #' @export
 argillic_usda <- function(pedon, ...) {
   res <- argic(pedon, ...)
+  # v0.9.10: USDA Keys to Soil Taxonomy 13ed Ch. 3 (argillic horizon)
+  # explicitly excludes horizons whose clay-distribution pattern is
+  # depositional (alluvial / lithologic discontinuity / fluvic
+  # material) -- the increase must be PEDOGENIC (illuvial clay
+  # accumulation evidenced by clay films, lamellae, or oriented clay
+  # bridges). Without this exclusion the canonical Fluvisol fixture
+  # was incorrectly assigned to Alfisols (Paleudalfs) because the
+  # C1->C2 stratification triggered argic. The exclusion mirrors the
+  # SiBCS Cap 4 fix in `neossolo()` for the same fixture.
+  if (isTRUE(res$passed)) {
+    fluv <- carater_fluvico(pedon)
+    if (isTRUE(fluv$passed)) {
+      res$passed <- FALSE
+      res$layers <- integer(0)
+      res$notes  <- paste0("v0.9.10: argic clay-jump matched but ",
+                             "carater_fluvico(pedon) is TRUE -- ",
+                             "depositional pattern, not pedogenic. ",
+                             "Argillic excluded.")
+    }
+  }
   res$name      <- "argillic_usda"
-  res$reference <- paste0("Soil Survey Staff (2014), Keys to Soil Taxonomy, ",
-                            "Ch. 3, argillic horizon -- delegating to WRB ",
-                            "argic() in v0.2 scaffold")
-  res$notes     <- "v0.2 scaffold delegates to WRB argic; clay-films requirement v0.8"
+  res$reference <- paste0("Soil Survey Staff (2022), Keys to Soil Taxonomy ",
+                            "13th ed., Ch. 3, argillic horizon")
   res
 }

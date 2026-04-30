@@ -224,7 +224,14 @@ ultisol_usda <- function(pedon) {
 #' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50%.
 #' @export
 mollisol_usda <- function(pedon) {
-  m <- mollic(pedon)
+  # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
+  # scaffold leftover) to the USDA-native `mollic_epipedon_usda()`,
+  # which carries the artefact-rich exclusion in v0.9.10 and the
+  # full KST 13ed Ch. 3 thickness / colour / OC / BS / structure
+  # contract. This is the fix that prevents Technosol fixtures
+  # (artefacts >= 20 % in the surface A) from being routed to
+  # Hapludolls.
+  m <- mollic_epipedon_usda(pedon)
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),

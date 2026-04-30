@@ -37,6 +37,13 @@ organossolo <- function(pedon) {
 #' carbonatico ou cálcico.
 #' @export
 neossolo <- function(pedon) {
+  # v0.9.10: when `carater_fluvico` is TRUE, the apparent B-textural
+  # pattern is depositional / allochthonous (Neossolos Fluvicos), not a
+  # pedogenic B horizon. We therefore short-circuit the has-B exclusion
+  # for fluvic profiles -- otherwise the canonical Fluvisol fixture is
+  # rejected by neossolo() (because argic-via-clay-jump triggers on the
+  # C1->C2 stratification) and falls through to Luvissolos.
+  fluv <- carater_fluvico(pedon)
   has_b <- any(c(
     isTRUE(B_textural(pedon)$passed),
     isTRUE(B_latossolico(pedon)$passed),
@@ -45,11 +52,12 @@ neossolo <- function(pedon) {
     isTRUE(B_espodico(pedon)$passed),
     isTRUE(B_planico(pedon)$passed)
   ))
-  if (has_b) {
+  if (has_b && !isTRUE(fluv$passed)) {
     return(DiagnosticResult$new(
       name = "neossolo", passed = FALSE,
       layers = integer(0),
-      evidence = list(reason = "has B diagnostic horizon"),
+      evidence = list(reason = "has B diagnostic horizon",
+                       carater_fluvico = fluv),
       missing = character(0),
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 111-112"
     ))
