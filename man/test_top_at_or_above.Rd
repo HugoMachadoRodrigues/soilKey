@@ -6,6 +6,13 @@
 \usage{
 test_top_at_or_above(h, max_top_cm = 0, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Used to require surface contact (default top_cm <= 0, i.e., layer
 must reach the surface) or near-surface presence.

@@ -6,6 +6,9 @@
 \usage{
 gelisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Order-level gate: cryic_conditions diagnostic from WRB delegated +
 optional permafrost_temp_C if available.

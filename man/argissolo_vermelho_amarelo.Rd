@@ -6,6 +6,9 @@
 \usage{
 argissolo_vermelho_amarelo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
 }

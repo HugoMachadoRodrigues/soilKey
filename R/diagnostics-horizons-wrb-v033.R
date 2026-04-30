@@ -95,8 +95,11 @@ ferric <- function(pedon, min_thickness = 15, min_fe_dith_pct = 5) {
 #' Petrocalcic horizon (WRB 2022)
 #'
 #' A continuously cemented variant of the calcic horizon. Same chemistry
-#' (CaCO3 \\>= 15\\%) plus moderate-or-greater cementation in at least
-#' 50\\% of the layer.
+#' (CaCO3 \\>= 15\%) plus moderate-or-greater cementation in at least
+#' 50\% of the layer.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_caco3_pct Numeric threshold or option (see Details).
 #' @export
 petrocalcic <- function(pedon, min_thickness = 10, min_caco3_pct = 15) {
   h <- pedon$horizons
@@ -118,6 +121,9 @@ petrocalcic <- function(pedon, min_thickness = 10, min_caco3_pct = 15) {
 }
 
 #' Petroduric horizon (WRB 2022): cemented duric.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_duripan_pct Numeric threshold or option (see Details).
 #' @export
 petroduric <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
   h <- pedon$horizons
@@ -136,6 +142,9 @@ petroduric <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 }
 
 #' Petrogypsic horizon (WRB 2022): cemented gypsic.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_gypsum_pct Numeric threshold or option (see Details).
 #' @export
 petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
   h <- pedon$horizons
@@ -154,6 +163,9 @@ petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
 }
 
 #' Petroplinthic horizon (WRB 2022): cemented plinthic.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_plinthite_pct Numeric threshold or option (see Details).
 #' @export
 petroplinthic <- function(pedon, min_thickness = 10, min_plinthite_pct = 15) {
   h <- pedon$horizons
@@ -172,8 +184,11 @@ petroplinthic <- function(pedon, min_thickness = 10, min_plinthite_pct = 15) {
 }
 
 #' Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-#' designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\\%
+#' designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
 #' AND structure_type containing 'pisol'.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_plinthite_pct Numeric threshold or option (see Details).
 #' @export
 pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
   h <- pedon$horizons
@@ -197,8 +212,11 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' Vertic horizon (WRB 2022 Ch 3.1)
 #'
 #' Stricter than the vertic *properties*: the vertic *horizon* requires
-#' \\>= 30\\% clay throughout, slickensides at \\>= "common" level, AND
+#' \\>= 30\% clay throughout, slickensides at \\>= "common" level, AND
 #' shrink-swell cracks \\>= 0.5 cm wide. Used by Vertisols.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_clay Numeric threshold or option (see Details).
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25) {
   h <- pedon$horizons
@@ -226,6 +244,10 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25) {
 
 #' Thionic horizon (WRB 2022): post-oxidation acid sulfate horizon.
 #' Requires sulfidic_s_pct >= 0.01 AND pH(H2O) <= 4.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param max_pH Numeric threshold or option (see Details).
+#' @param min_sulfidic_s Numeric threshold or option (see Details).
 #' @export
 thionic <- function(pedon, min_thickness = 15, max_pH = 4,
                        min_sulfidic_s = 0.01) {
@@ -248,6 +270,9 @@ thionic <- function(pedon, min_thickness = 15, max_pH = 4,
 #' Fragic horizon (WRB 2022): a high-bulk-density horizon with restricted
 #' rooting. v0.3.3: detects via bulk_density_g_cm3 >= 1.65 AND structure
 #' grade massive/very firm OR designation pattern \code{x}/\code{Bx}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_bd Numeric threshold or option (see Details).
 #' @export
 fragic <- function(pedon, min_thickness = 15, min_bd = 1.65) {
   h <- pedon$horizons
@@ -278,6 +303,12 @@ fragic <- function(pedon, min_thickness = 15, min_bd = 1.65) {
 #' qualified neither as spodic nor as a true mollic-like horizon
 #' (low-base-saturation cool tropical highlands). v0.3.3 detects via
 #' designation pattern + OC criteria (BS < 50, OC > 0.6, depth > 25 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param max_bs Numeric threshold or option (see Details).
+#' @param min_top_cm Numeric threshold or option (see Details).
+#' @param min_oc_increase Numeric threshold or option (see Details).
 #' @export
 sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
                        max_bs = 50, min_top_cm = 25,
@@ -345,6 +376,8 @@ sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
 #' biological activity (worm holes, casts, coprolites). v0.3.3:
 #' delegates to mollic + worm_holes_pct >= 50 (proxy for "biological
 #' homogenization").
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_worm_pct Numeric threshold or option (see Details).
 #' @export
 chernic <- function(pedon, min_worm_pct = 50) {
   m <- mollic(pedon)
@@ -385,6 +418,9 @@ chernic <- function(pedon, min_worm_pct = 50) {
 
 #' Anthraquic horizon (WRB 2022): puddled-rice / paddy plough layer.
 #' v0.3.3 detects via designation pattern \code{Apl|Ap|Hh}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 anthraquic <- function(pedon, min_thickness = 20, max_top_cm = 50) {
   h <- pedon$horizons
@@ -405,6 +441,8 @@ anthraquic <- function(pedon, min_thickness = 20, max_top_cm = 50) {
 #' Hydragric horizon (WRB 2022): subsoil hydric horizon under anthraquic.
 #' v0.3.3 detects via designation pattern \code{Bg|Brg} immediately below
 #' an anthraquic-like topsoil.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 hydragric <- function(pedon, min_thickness = 20) {
   h <- pedon$horizons
@@ -423,6 +461,10 @@ hydragric <- function(pedon, min_thickness = 20) {
 #' Hortic horizon (WRB 2022): garden / kitchen-midden topsoil. Diagnostic
 #' criteria: thickness \\>= 20 cm, dark colour (mollic-like), high P
 #' (Mehlich-3 P >= 100 mg/kg or P2O5_1pct_citric >= 175 mg/kg), high SOC.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param min_p_mehlich3 Numeric threshold or option (see Details).
 #' @export
 hortic <- function(pedon, min_thickness = 20, min_oc = 1.0,
                       min_p_mehlich3 = 100) {
@@ -451,6 +493,8 @@ hortic <- function(pedon, min_thickness = 20, min_oc = 1.0,
 #' Irragric horizon (WRB 2022): topsoil thickened by irrigation deposits.
 #' v0.3.3: thickness >= 20 cm + sediment-derived structure proxied via
 #' designation \code{Apk|Apg|Au}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 irragric <- function(pedon, min_thickness = 20) {
   h <- pedon$horizons
@@ -486,13 +530,18 @@ irragric <- function(pedon, min_thickness = 20) {
 #' OC + BD + thickness pass. This mirrors the v0.9.1 \code{qual_plaggic}
 #' gate but enforces the rule at the diagnostic level so any caller
 #' (SiBCS, USDA, future modules) inherits the protection.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param max_bd Numeric threshold or option (see Details).
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param min_p_mehlich3 Numeric threshold or option (see Details).
 #' @export
 plaggic <- function(pedon, min_thickness = 20, max_bd = 1.5,
                        min_oc = 0.6, min_p_mehlich3 = 50) {
   h <- pedon$horizons
   tests <- list()
   tests$oc          <- test_oc_above(h, min_pct = min_oc)
-  tests$bd          <- test_bulk_density_below(h, max = max_bd,
+  tests$bd          <- test_bulk_density_below(h, max_g_cm3 = max_bd,
                                                   candidate_layers = tests$oc$layers)
   tests$thickness   <- test_minimum_thickness(h, min_cm = min_thickness,
                                                  candidate_layers = tests$bd$layers)
@@ -545,6 +594,10 @@ plaggic <- function(pedon, min_thickness = 20, max_bd = 1.5,
 #' Pretic horizon (WRB 2022): "Amazonian Dark Earth" (terra preta de
 #' indio) horizon -- thick anthropogenic surface with high P, SOC, and
 #' incorporated charcoal / pottery.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param min_p_mehlich3 Numeric threshold or option (see Details).
 #' @export
 pretic <- function(pedon, min_thickness = 20, min_oc = 1.5,
                       min_p_mehlich3 = 30) {
@@ -571,6 +624,8 @@ pretic <- function(pedon, min_thickness = 20, min_oc = 1.5,
 #' Terric horizon (WRB 2022): topsoil thickened by long-term application
 #' of mineral material (sediment / sand additions). v0.3.3: thickness >=
 #' 20 cm + designation Au / Apc.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 terric <- function(pedon, min_thickness = 20) {
   h <- pedon$horizons
@@ -601,11 +656,13 @@ terric <- function(pedon, min_thickness = 20) {
 #'   \item Munsell hue \\<= 2.5YR (i.e. 2.5YR, 10R, 7.5R, 5R, 2.5R)
 #'         AND value \\<= 4 (moist) AND chroma \\>= 4 (moist);
 #'   \item evidence of soil formation (cambic-style criterion 3)
-#'         proxied by clay \\>= 8\\% AND \code{structure_grade} not
+#'         proxied by clay \\>= 8\% AND \code{structure_grade} not
 #'         "single grain" / "massive";
 #'   \item thickness \\>= 10 cm.
 #' }
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 tsitelic <- function(pedon, min_thickness = 10) {
   h <- pedon$horizons
@@ -667,6 +724,7 @@ tsitelic <- function(pedon, min_thickness = 10) {
 #' convention for buried horizons -- OR a \code{b} suffix in the
 #' designation (e.g. \code{Ahb}, \code{Bwb}).
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 panpaic <- function(pedon) {
   h <- pedon$horizons
@@ -698,6 +756,9 @@ panpaic <- function(pedon) {
 #' pattern \code{Bm} / \code{Bjm} / \code{m} as proxy for past meadow
 #' wetness.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_redox_pct Numeric threshold or option (see Details).
 #' @export
 limonic <- function(pedon, min_thickness = 5, min_redox_pct = 5) {
   h <- pedon$horizons
@@ -728,13 +789,16 @@ limonic <- function(pedon, min_thickness = 5, min_redox_pct = 5) {
 #' would be Vertisols if the cracks/slickensides were a notch
 #' stronger.
 #'
-#' v0.3.5 detection: clay \\>= 30\\% AND any positive vertic evidence
+#' v0.3.5 detection: clay \\>= 30\% AND any positive vertic evidence
 #' (slickensides at \\>= "few" OR cracks_width_cm \\>= 0.2 OR a
 #' wedge/lenticular structure_type) AND thickness \\>= 15 cm. The
 #' positive cases that pass the strict \code{\link{vertic_horizon}}
 #' test are explicitly excluded so the two diagnostics partition the
 #' vertic-spectrum cleanly.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_clay Numeric threshold or option (see Details).
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 protovertic <- function(pedon, min_clay = 30, min_thickness = 15) {
   h <- pedon$horizons

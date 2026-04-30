@@ -6,6 +6,9 @@
 \usage{
 qual_salic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Salic qualifier (sz): salic horizon <= 100 cm.
 }

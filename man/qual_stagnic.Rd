@@ -6,6 +6,9 @@
 \usage{
 qual_stagnic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Stagnic qualifier (st): stagnic properties <= 75 cm.
 }

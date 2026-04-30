@@ -6,6 +6,11 @@
 \usage{
 latossolo(pedon, max_top_cm = 200)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Horizonte B latossolico imediatamente abaixo de qualquer tipo de A
 (exceto histico), dentro de 200 cm (ou 300 se A > 150 cm).

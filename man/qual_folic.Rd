@@ -7,6 +7,9 @@ delegates to histic_horizon with surface-only filter.}
 \usage{
 qual_folic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Folic qualifier (fo): folic horizon at the soil surface. v0.9
 delegates to histic_horizon with surface-only filter.

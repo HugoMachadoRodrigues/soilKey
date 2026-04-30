@@ -7,6 +7,9 @@ simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.}
 \usage{
 horizonte_A_fraco(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
 simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.

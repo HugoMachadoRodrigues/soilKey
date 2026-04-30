@@ -6,6 +6,9 @@
 \usage{
 qual_lixic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Lixic qualifier (lx): argic + low CEC, low Al.
 }

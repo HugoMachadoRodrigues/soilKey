@@ -6,6 +6,13 @@
 \usage{
 test_ph_below(h, max_ph = 5.9, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_ph}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 5.9 (Spodic horizon supplementary criterion, WRB 2022).
 }

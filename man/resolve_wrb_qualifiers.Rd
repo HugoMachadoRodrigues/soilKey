@@ -2,27 +2,26 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{resolve_wrb_qualifiers}
 \alias{resolve_wrb_qualifiers}
-\title{Resolve WRB qualifiers for an assigned RSG}
+\title{Resolve WRB 2022 qualifiers for a Reference Soil Group}
 \usage{
 resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{rsg_code}{Two-letter RSG code (e.g. "FR", "PZ").}
+\item{rsg_code}{Two-letter RSG code (e.g. \code{"FR"} for Ferralsols).}
 
-\item{rules}{Optional pre-loaded WRB 2022 rules.}
+\item{rules}{Optional pre-loaded rules list (saves I/O when many
+RSGs are tested).}
 }
 \value{
-List with \code{principal} (character vector of qualifier
-        names in canonical order) and \code{trace} (per-qualifier
-        passed/missing).
+A list with \code{principal} (character vector),
+        \code{supplementary} (character vector), \code{trace}, and
+        \code{trace_supplementary}.
 }
 \description{
-Given a pedon and the RSG code (e.g. "FR" for Ferralsols), returns a
-list of applied qualifiers per the WRB 2022 Ch 4 RSG-specific
-principal-qualifier list (read from
-\code{inst/rules/wrb2022/qualifiers.yaml}). Principal qualifiers
-that pass are returned in the canonical Ch 4 order; if none pass,
-\code{Haplic} is returned.
+Walks the YAML qualifier list for a given RSG code and tests every
+principal / supplementary qualifier against the pedon. Returns the
+resolved canonical name pieces (principal + supplementary) plus a
+per-qualifier trace.
 }

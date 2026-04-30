@@ -6,6 +6,9 @@
 \usage{
 qual_retic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Retic qualifier (rt): retic properties <= 100 cm.
 }

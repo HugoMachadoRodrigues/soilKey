@@ -8,6 +8,9 @@ altos.}
 \usage{
 luvissolo_cromico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Luvissolos Cromicos (Cap 11): caracter cromico (cores fortes em B).
 Aplicado pela presenca de Munsell vermelho-amarelado em B com cromas

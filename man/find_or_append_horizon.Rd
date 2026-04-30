@@ -6,6 +6,9 @@
 \usage{
 find_or_append_horizon(pedon, top_cm, bottom_cm)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 For PDF-extracted horizons we may be merging into a pedon that
 already has the horizons table from another source, or starting

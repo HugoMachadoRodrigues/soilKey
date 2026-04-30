@@ -8,6 +8,11 @@ designation \code{Apk|Apg|Au}.}
 \usage{
 irragric(pedon, min_thickness = 20)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Irragric horizon (WRB 2022): topsoil thickened by irrigation deposits.
 v0.3.3: thickness >= 20 cm + sediment-derived structure proxied via

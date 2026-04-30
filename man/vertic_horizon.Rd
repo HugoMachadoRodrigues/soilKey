@@ -6,8 +6,15 @@
 \usage{
 vertic_horizon(pedon, min_clay = 30, min_thickness = 25)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_clay}{Numeric threshold or option (see Details).}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Stricter than the vertic *properties*: the vertic *horizon* requires
-\\>= 30\\% clay throughout, slickensides at \\>= "common" level, AND
+\\>= 30\% clay throughout, slickensides at \\>= "common" level, AND
 shrink-swell cracks \\>= 0.5 cm wide. Used by Vertisols.
 }

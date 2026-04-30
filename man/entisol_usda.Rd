@@ -7,6 +7,9 @@ other Order. Always passes.}
 \usage{
 entisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Entisols (USDA Cap 8): catch-all for soils that don't match any
 other Order. Always passes.

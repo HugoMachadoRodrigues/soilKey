@@ -32,6 +32,7 @@
 #' \code{clay_films_amount} contains "common", "many", or "continuous" (or
 #' "shiny" -- common Brazilian descriptor for nitic surfaces) in some
 #' argic layer.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_cutanic <- function(pedon) {
   arg <- argic(pedon)
@@ -59,6 +60,7 @@ qual_cutanic <- function(pedon) {
 #' Glossic qualifier (gs): mollic horizon penetrated by albeluvic
 #' tongues (glossae). Diagnostic of Glossic Chernozems / Phaeozems on
 #' the steppe / forest-steppe transition.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_glossic <- function(pedon) {
   mo <- mollic(pedon)
@@ -82,6 +84,7 @@ qual_glossic <- function(pedon) {
 #' into Cambisol / Acrisol / Lixisol / Ferralsol territory; in those
 #' RSGs the cambic alone is the gating diagnostic and Brunic would be
 #' redundant.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_brunic <- function(pedon) {
   cm  <- cambic(pedon)
@@ -114,6 +117,7 @@ qual_brunic <- function(pedon) {
 #' argic, no spodic, no ferralic, no nitic horizon is present in the
 #' upper 100 cm. v0.9.1 implements as the conjunction of the "no B
 #' horizon" diagnostics.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_protic <- function(pedon) {
   cm <- cambic(pedon)

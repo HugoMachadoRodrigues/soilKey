@@ -7,6 +7,9 @@ Delegates to vertic_horizon.}
 \usage{
 vertisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Vertisols (USDA Cap 16): slickensides + cracks.
 Delegates to vertic_horizon.

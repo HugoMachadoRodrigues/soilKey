@@ -6,6 +6,9 @@
 \usage{
 organossolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Organossolos Haplicos (catch-all).
 }

@@ -31,6 +31,7 @@
 #'   com atividade alta (Ta).
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, "Atividade da fracao
 #'   argila", p. 30.
+#' @param min_ta Numeric threshold or option (see Details).
 #' @export
 atividade_argila_alta <- function(pedon, min_ta = 27) {
   h <- pedon$horizons
@@ -83,9 +84,11 @@ atividade_argila_alta <- function(pedon, min_ta = 27) {
 
 #' Solo eutrofico (SiBCS Cap 1, p 30)
 #'
-#' Returns TRUE se a saturacao por bases (V%) >= 50% no horizonte
-#' diagnostico subsuperficial (B ou C). 65% para A chernozemico.
+#' Returns TRUE se a saturacao por bases (V\%) >= 50\% no horizonte
+#' diagnostico subsuperficial (B ou C). 65\% para A chernozemico.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_v Numeric threshold or option (see Details).
 #' @export
 eutrofico <- function(pedon, min_v = 50) {
   h <- pedon$horizons
@@ -115,8 +118,10 @@ eutrofico <- function(pedon, min_v = 50) {
 
 #' Solo distrofico (SiBCS Cap 1, p 30)
 #'
-#' Negacao operacional de \code{\link{eutrofico}}: V < 50% no
+#' Negacao operacional de \code{\link{eutrofico}}: V < 50\% no
 #' horizonte diagnostico subsuperficial.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_v Numeric threshold or option (see Details).
 #' @export
 distrofico <- function(pedon, max_v = 50) {
   e <- eutrofico(pedon, min_v = max_v)
@@ -136,9 +141,13 @@ distrofico <- function(pedon, max_v = 50) {
 #' Carater alitico (SiBCS Cap 1, p 32)
 #'
 #' Critérios canônicos: Al(extr) >= 4 cmolc/kg solo, saturacao por
-#' aluminio [100 * Al / (S + Al)] >= 50%, e saturacao por bases V < 50%.
+#' aluminio [100 * Al / (S + Al)] >= 50\%, e saturacao por bases V < 50\%.
 #' Avaliado no horizonte B (ou C, na ausencia de B).
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_al Numeric threshold or option (see Details).
+#' @param min_al_sat Numeric threshold or option (see Details).
+#' @param max_v Numeric threshold or option (see Details).
 #' @export
 carater_alitico <- function(pedon, min_al = 4, min_al_sat = 50, max_v = 50) {
   h <- pedon$horizons
@@ -252,6 +261,9 @@ carater_hipocarbonatico <- function(pedon, max_depth_cm = NULL) {
 #'
 #' Distinto de "eutrofico": exige pH(H2O) >= 5.7 conjugado com
 #' S (soma de bases) >= 2.0 cmolc/kg solo dentro da secao de controle.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_pH Numeric threshold or option (see Details).
+#' @param min_s Numeric threshold or option (see Details).
 #' @export
 carater_eutrico <- function(pedon, min_pH = 5.7, min_s = 2.0) {
   h <- pedon$horizons
@@ -286,6 +298,7 @@ carater_eutrico <- function(pedon, min_pH = 5.7, min_s = 2.0) {
 
 #' Carater fluvico (SiBCS Cap 1, p 35-36): camadas estratificadas +
 #' distribuicao irregular de C organico. Reuso de fluvic_material (WRB).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 carater_fluvico <- function(pedon) {
   res <- fluvic_material(pedon)
@@ -297,8 +310,11 @@ carater_fluvico <- function(pedon) {
   )
 }
 
-#' Carater plintico (SiBCS Cap 1, p 36): plintita >= 5% em quantidade
+#' Carater plintico (SiBCS Cap 1, p 36): plintita >= 5\% em quantidade
 #' insuficiente para horizonte plintico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_plinthite_pct Numeric threshold or option (see Details).
+#' @param max_plinthite_pct Numeric threshold or option (see Details).
 #' @export
 carater_plintico <- function(pedon, min_plinthite_pct = 5,
                                  max_plinthite_pct = 15) {
@@ -326,6 +342,9 @@ carater_plintico <- function(pedon, min_plinthite_pct = 5,
 #' em quantidade pelo menos comum, dentro da secao de controle.
 #' \code{epirredoxico} se dentro de 50 cm; \code{endorredoxico} se
 #' 50-150 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_redox_pct Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 carater_redoxico <- function(pedon, min_redox_pct = 5, max_top_cm = 150) {
   h <- pedon$horizons
@@ -346,7 +365,7 @@ carater_redoxico <- function(pedon, min_redox_pct = 5, max_top_cm = 150) {
   )
 }
 
-#' Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15%.
+#' Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15\%.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_pst PST minimo (\%) (default 15).
@@ -380,7 +399,7 @@ carater_sodico <- function(pedon, min_pst = 15, max_depth_cm = NULL) {
   )
 }
 
-#' Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e < 15%.
+#' Carater solodico (SiBCS Cap 1, p 39): PST entre 6\% e < 15\%.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_pst PST minimo (\%) (default 6).
@@ -488,6 +507,7 @@ carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
 #' }
 #' Reuso de \code{\link{abrupt_textural_difference}} (WRB Ch 3.2.1)
 #' que ja codifica criterios essencialmente equivalentes.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 mudanca_textural_abrupta <- function(pedon) {
   res <- abrupt_textural_difference(pedon)
@@ -702,6 +722,7 @@ saprico <- function(pedon) {
 #' esfregadas OU indice de von Post H5-H6. Discrimina Organossolos
 #' Hemicos no 3o nivel.
 #' @inherit saprico
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 hemico <- function(pedon) {
   .decomposition_diagnostic(pedon, "hemico")
@@ -714,6 +735,7 @@ hemico <- function(pedon) {
 #' OU indice de von Post H1-H4. Discrimina Organossolos Fibricos no
 #' 3o nivel.
 #' @inherit saprico
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 fibrico <- function(pedon) {
   .decomposition_diagnostic(pedon, "fibrico")

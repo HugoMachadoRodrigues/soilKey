@@ -6,6 +6,9 @@
 \usage{
 qual_calcic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Calcic qualifier (cc): calcic horizon <= 100 cm.
 }

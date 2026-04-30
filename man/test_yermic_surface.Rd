@@ -7,9 +7,9 @@
 test_yermic_surface(h)
 }
 \description{
-Coarse surface fragments (\code{desert_pavement_pct}) >= 20\\% AND
+Coarse surface fragments (\code{desert_pavement_pct}) >= 20\% AND
 (\code{varnish_pct} >= 10 OR \code{ventifact_pct} >= 10 OR
-\code{vesicular_pores} %in% c("common", "many")) on the surface
+\code{vesicular_pores} \%in\% c("common", "many")) on the surface
 layer (top_cm <= 5).
 }
 \keyword{internal}

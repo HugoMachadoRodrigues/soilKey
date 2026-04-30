@@ -6,6 +6,9 @@
 \usage{
 neossolo_regolitico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Neossolos Regoliticos (catch-all dos Neossolos).
 }

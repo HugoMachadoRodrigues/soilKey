@@ -8,6 +8,9 @@ as the default when no other qualifier matched.}
 \usage{
 qual_haplic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Haplic qualifier (ha): no other principal qualifier of the RSG
 applies. Always passes; the qualifier resolution machinery uses it

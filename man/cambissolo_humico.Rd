@@ -6,6 +6,9 @@
 \usage{
 cambissolo_humico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cambissolos Humicos (Cap 6): horizonte A humico.
 }

@@ -8,6 +8,15 @@ incorporated charcoal / pottery.}
 \usage{
 pretic(pedon, min_thickness = 20, min_oc = 1.5, min_p_mehlich3 = 30)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_oc}{Numeric threshold or option (see Details).}
+
+\item{min_p_mehlich3}{Numeric threshold or option (see Details).}
+}
 \description{
 Pretic horizon (WRB 2022): "Amazonian Dark Earth" (terra preta de
 indio) horizon -- thick anthropogenic surface with high P, SOC, and

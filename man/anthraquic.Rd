@@ -7,6 +7,13 @@ v0.3.3 detects via designation pattern \code{Apl|Ap|Hh}.}
 \usage{
 anthraquic(pedon, min_thickness = 20, max_top_cm = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Anthraquic horizon (WRB 2022): puddled-rice / paddy plough layer.
 v0.3.3 detects via designation pattern \code{Apl|Ap|Hh}.

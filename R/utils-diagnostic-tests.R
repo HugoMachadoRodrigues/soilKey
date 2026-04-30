@@ -225,6 +225,8 @@ test_minimum_thickness <- function(h, min_cm = 7.5, candidate_layers = NULL) {
 
 #' Test sandy-loam-or-finer texture (used by argic, ferralic)
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_texture_argic <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -293,6 +295,9 @@ test_not_albeluvic <- function(h) {
 #'
 #' Default threshold is 16 cmol_c/kg clay (WRB 2022 ferralic horizon).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
                                 candidate_layers = NULL) {
@@ -335,6 +340,9 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
 #' \code{ecec_cmol} is missing, computes ECEC from \code{ca_cmol +
 #' mg_cmol + k_cmol + na_cmol + al_cmol} when those are available.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_ecec_per_clay <- function(h, max_cmol_per_kg_clay = 12,
                                  candidate_layers = NULL) {
@@ -382,6 +390,9 @@ test_ecec_per_clay <- function(h, max_cmol_per_kg_clay = 12,
 #'
 #' Wraps \code{\link{test_minimum_thickness}}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_cm Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
   test_minimum_thickness(h, min_cm = min_cm,
@@ -390,6 +401,8 @@ test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
 
 #' Ferralic texture: sandy loam or finer (same predicate as argic)
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_ferralic_texture <- function(h, candidate_layers = NULL) {
   test_texture_argic(h, candidate_layers = candidate_layers)
@@ -404,6 +417,11 @@ test_ferralic_texture <- function(h, candidate_layers = NULL) {
 #' \code{munsell_value_dry} is missing, uses the conservative substitute
 #' \code{munsell_value_moist + 1}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_value_moist Numeric threshold or option (see Details).
+#' @param max_chroma_moist Numeric threshold or option (see Details).
+#' @param max_value_dry Numeric threshold or option (see Details).
+#' @param candidate_layers Optional restriction.
 #' @export
 test_mollic_color <- function(h,
                                 max_value_moist  = 3,
@@ -453,8 +471,11 @@ test_mollic_color <- function(h,
   )
 }
 
-#' Mollic organic-carbon test (WRB 2022, default >= 0.6%)
+#' Mollic organic-carbon test (WRB 2022, default >= 0.6\%)
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_mollic_organic_carbon <- function(h, min_pct = 0.6,
                                          candidate_layers = NULL) {
@@ -488,8 +509,11 @@ test_mollic_organic_carbon <- function(h, min_pct = 0.6,
   )
 }
 
-#' Mollic base-saturation test (NH4OAc, pH 7, default >= 50%)
+#' Mollic base-saturation test (NH4OAc, pH 7, default >= 50\%)
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_mollic_base_saturation <- function(h, min_pct = 50,
                                           candidate_layers = NULL) {
@@ -531,6 +555,9 @@ test_mollic_base_saturation <- function(h, min_pct = 50,
 #' thickness across multiple contiguous mollic-qualifying horizons is a
 #' v0.2 refinement.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_cm Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_mollic_thickness <- function(h, min_cm = 20, candidate_layers = NULL) {
   test_minimum_thickness(h, min_cm = min_cm,
@@ -543,6 +570,8 @@ test_mollic_thickness <- function(h, min_cm = 20, candidate_layers = NULL) {
 #' dry. v0.1 implementation reads \code{structure_grade} and
 #' \code{consistence_moist} as text and looks for the keyword pair.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_mollic_structure <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -592,6 +621,9 @@ test_mollic_structure <- function(h, candidate_layers = NULL) {
 #' Default 15\% (calcic horizon, WRB 2022 Chapter 3). Used by
 #' \code{\link{calcic}}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_caco3_concentration <- function(h, min_pct = 15,
                                        candidate_layers = NULL) {
@@ -623,6 +655,9 @@ test_caco3_concentration <- function(h, min_pct = 15,
 #' Default 5\% (gypsic horizon, WRB 2022 Chapter 3). Used by
 #' \code{\link{gypsic}}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_caso4_concentration <- function(h, min_pct = 5,
                                        candidate_layers = NULL) {
@@ -654,6 +689,9 @@ test_caso4_concentration <- function(h, min_pct = 5,
 #' Default 15\% by volume (plinthic horizon, WRB 2022 Chapter 3). Used
 #' by \code{\link{plinthic}}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_plinthite_concentration <- function(h, min_pct = 15,
                                            candidate_layers = NULL) {
@@ -685,6 +723,9 @@ test_plinthite_concentration <- function(h, min_pct = 15,
 #' Default 0.5\% (WRB 2022 Chapter 3, Spodic horizon). Used by
 #' \code{\link{spodic}}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_spodic_aluminum_iron <- function(h, min_pct = 0.5,
                                         candidate_layers = NULL) {
@@ -719,6 +760,9 @@ test_spodic_aluminum_iron <- function(h, min_pct = 0.5,
 #'
 #' Default 5.9 (Spodic horizon supplementary criterion, WRB 2022).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_ph Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -755,6 +799,10 @@ test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
 #' indicators. If \code{redoximorphic_features_pct} is missing for all
 #' candidate layers, returns NA.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_redox_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
                                    candidate_layers = NULL) {
@@ -787,6 +835,9 @@ test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
 #'
 #' Default 30\% (vertic features minimum, WRB 2022 Chapter 3).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_clay_above <- function(h, min_pct = 30, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -818,6 +869,9 @@ test_clay_above <- function(h, min_pct = 30, candidate_layers = NULL) {
 #' (vertic features, WRB 2022). The \code{slickensides} column accepts
 #' \code{c("absent", "few", "common", "many", "continuous")}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param levels Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_slickensides_present <- function(h,
                                         levels = c("common", "many",
@@ -995,6 +1049,9 @@ compute_al_saturation <- function(ca, mg, k, na, al) {
 #' "low-activity-clay" RSGs (Acrisols, Lixisols) from "high-activity-
 #' clay" RSGs (Alisols, Luvisols).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_cmol_per_kg_clay Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
                                        candidate_layers = NULL) {
@@ -1028,6 +1085,9 @@ test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
 #' Default 50\% (Lixisol / Luvisol RSG criterion). Reads
 #' \code{bs_pct} directly.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_bs_above <- function(h, min_pct = 50, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1057,6 +1117,9 @@ test_bs_above <- function(h, min_pct = 50, candidate_layers = NULL) {
 #'
 #' Default 50\% (Acrisol RSG criterion). Reads \code{bs_pct}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_bs_below <- function(h, max_pct = 50, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1088,6 +1151,9 @@ test_bs_below <- function(h, max_pct = 50, candidate_layers = NULL) {
 #' reported; otherwise falls back to
 #' \code{al_cmol / (ca+mg+k+na+al)_cmol * 100}.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_al_saturation_above <- function(h, min_pct = 50,
                                        candidate_layers = NULL) {
@@ -1125,6 +1191,9 @@ test_al_saturation_above <- function(h, min_pct = 50,
 #' reported; otherwise falls back to computation from exchangeable
 #' bases and Al.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_al_saturation_below <- function(h, max_pct = 50,
                                        candidate_layers = NULL) {
@@ -1164,6 +1233,9 @@ test_al_saturation_below <- function(h, max_pct = 50,
 #' carbonate". Used to distinguish Phaeozems (no carbonates within 100
 #' cm) from Chernozems and Kastanozems.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_carbonates_present <- function(h, min_pct = 0.01,
                                       candidate_layers = NULL) {
@@ -1195,6 +1267,10 @@ test_carbonates_present <- function(h, min_pct = 0.01,
 #' Default upper boundary is 20 cm (Chernozem criterion: dark colour in
 #' the upper 20 cm of the mollic horizon).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_chroma Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
                                   candidate_layers = NULL) {
@@ -1228,6 +1304,9 @@ test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
 #'
 #' Default 12\% (histic horizon, WRB 2022 Chapter 3).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1258,6 +1337,9 @@ test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
 #' Used to require surface contact (default top_cm <= 0, i.e., layer
 #' must reach the surface) or near-surface presence.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_top_at_or_above <- function(h, max_top_cm = 0,
                                     candidate_layers = NULL) {
@@ -1292,6 +1374,8 @@ test_top_at_or_above <- function(h, max_top_cm = 0,
 #' for anthric).
 #'
 #' @param pattern A regex (case-insensitive).
+#' @param h Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_designation_pattern <- function(h, pattern,
                                        candidate_layers = NULL) {
@@ -1325,6 +1409,9 @@ test_designation_pattern <- function(h, pattern,
 #' coarser) in EVERY layer that intersects the upper
 #' \code{max_top_cm} (default 100). Diagnostic for Arenosols.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_coarse_texture_throughout <- function(h, max_top_cm = 100,
                                               candidate_layers = NULL) {
@@ -1373,6 +1460,9 @@ test_coarse_texture_throughout <- function(h, max_top_cm = 100,
 #' Distinct from spodic (which uses 0.5\%); the andic threshold is
 #' four times higher per WRB 2022 Chapter 3.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_andic_alfe <- function(h, min_pct = 2.0, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1405,6 +1495,9 @@ test_andic_alfe <- function(h, min_pct = 2.0, candidate_layers = NULL) {
 #'
 #' Default 0.9 g/cm^3 (andic property, WRB 2022).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_g_cm3 Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
                                        candidate_layers = NULL) {
@@ -1435,6 +1528,10 @@ test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
 #'
 #' Default 20\% by volume (Technosols criterion, WRB 2022).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
                                             candidate_layers = NULL) {
@@ -1467,6 +1564,9 @@ test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
 #' Default 10\% per WRB 2022 Ch 3.1.7 (Duric horizon, p. 41).
 #' v0.3.1 reduced default from 15\% to 10\% to match the canonical text.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_duripan_concentration <- function(h, min_pct = 10,
                                           candidate_layers = NULL) {
@@ -1501,6 +1601,9 @@ test_duripan_concentration <- function(h, min_pct = 10,
 #' points across consecutive layers (indicating depositional
 #' alternation), AND (c) OC does not decrease monotonically with depth.
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_clay_swing Numeric threshold or option (see Details).
 #' @export
 test_fluvic_stratification <- function(h, max_top_cm = 100,
                                           min_clay_swing = 8) {
@@ -1570,6 +1673,9 @@ compute_esp <- function(na_cmol, cec_cmol) {
 #'
 #' Default 15\% (natric horizon, WRB 2022 Chapter 3).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_esp_above <- function(h, min_pct = 15, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1601,6 +1707,9 @@ test_esp_above <- function(h, min_pct = 15, candidate_layers = NULL) {
 #' Default 4\% (an indicator of strong red colour and Fe-richness; used
 #' as a v0.3 simplified marker for nitic horizon's typical Fe content).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_pct Numeric threshold or option (see Details).
+#' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_fe_dcb_above <- function(h, min_pct = 4, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1632,6 +1741,9 @@ test_fe_dcb_above <- function(h, min_pct = 4, candidate_layers = NULL) {
 #' check (must be \code{"abrupt"} or \code{"very abrupt"} on the upper
 #' horizon).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param min_ratio Numeric threshold or option (see Details).
+#' @param require_abrupt_boundary Numeric threshold or option (see Details).
 #' @export
 test_abrupt_textural_change <- function(h, min_ratio = 2.0,
                                           require_abrupt_boundary = TRUE) {
@@ -1684,6 +1796,10 @@ test_abrupt_textural_change <- function(h, min_ratio = 2.0,
 #' (sits above an impermeable layer; deeper soil is not saturated)
 #' from groundwater-driven gleying (saturation continues with depth).
 #'
+#' @param h Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_redox_pct Numeric threshold or option (see Details).
+#' @param decay_factor Numeric threshold or option (see Details).
 #' @export
 test_stagnic_pattern <- function(h, max_top_cm = 100, min_redox_pct = 5,
                                     decay_factor = 3) {

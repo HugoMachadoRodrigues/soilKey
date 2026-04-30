@@ -8,6 +8,9 @@ passes within 100 cm.}
 \usage{
 qual_andic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Andic qualifier (an): andic OR vitric properties combined >= 30 cm.
 v0.9 simplification: passes if andic_properties or vitric_properties

@@ -3,11 +3,14 @@
 \name{qual_dystric}
 \alias{qual_dystric}
 \title{Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-50% from 20 to 100 cm in mineral material.}
+50\% from 20 to 100 cm in mineral material.}
 \usage{
 qual_dystric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-50% from 20 to 100 cm in mineral material.
+50\% from 20 to 100 cm in mineral material.
 }

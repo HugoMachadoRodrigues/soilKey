@@ -240,7 +240,7 @@ folistic_epipedon_usda <- function(pedon,
 #'         is 4-5 moist; or 0.6 absolute > C horizon);
 #'   \item Thickness: 18 cm general, 25 cm if texture is loamy fine
 #'         sand or coarser, 10 cm if directly above lithic/densic/
-#'         paralithic contact (\\code{thin_lithic_overlay} branch);
+#'         paralithic contact (\code{thin_lithic_overlay} branch);
 #'   \item Structure: peds <= 30 cm OR rupture-resistance <=
 #'         moderately hard;
 #'   \item Some part moist 90+ days when soil temp at 50 cm is

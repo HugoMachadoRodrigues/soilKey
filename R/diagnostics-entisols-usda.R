@@ -12,6 +12,7 @@
 #' Wassent Suborder qualifier (subaqueous Entisol).
 #' Pass when site$water_table_cm_above_surface > 0 (water column
 #' permanently above the surface).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 wassent_qualifying_usda <- function(pedon) {
   wt <- pedon$site$water_table_cm_above_surface %||% NA_real_
@@ -28,6 +29,7 @@ wassent_qualifying_usda <- function(pedon) {
 
 
 #' Aquent Suborder qualifier (Entisol with aquic conditions <50 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aquent_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -38,6 +40,7 @@ aquent_qualifying_usda <- function(pedon) {
 
 #' Fluvent Suborder qualifier (irregular OC decrease in 25-125 cm,
 #' OR layered alluvial designation).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 fluvent_qualifying_usda <- function(pedon) {
   res <- fluventic_usda(pedon)
@@ -64,6 +67,7 @@ fluvent_qualifying_usda <- function(pedon) {
 
 #' Psamment Suborder qualifier (sandy texture: clay + 2*silt < 30
 #' AND no clay films / argillic).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 psamment_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -95,8 +99,9 @@ psamment_qualifying_usda <- function(pedon) {
 }
 
 
-#' Quartzipsamment helper (Quartzipsamments: >= 95% silica)
-#' v0.8 proxy: clay <= 5% AND coarse_fragments_pct <= 5%.
+#' Quartzipsamment helper (Quartzipsamments: >= 95\% silica)
+#' v0.8 proxy: clay <= 5\% AND coarse_fragments_pct <= 5\%.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 quartzipsamment_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -126,7 +131,8 @@ quartzipsamment_qualifying_usda <- function(pedon) {
 
 #' Hydric Aquent helper (Hydraquents)
 #' Pass when surface 0-50 has high water content (n value high).
-#' v0.8 proxy: water_content_1500kpa >= 80% in surface.
+#' v0.8 proxy: water_content_1500kpa >= 80\% in surface.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 hydraquent_qualifying_usda <- function(pedon) {
   h <- pedon$horizons

@@ -6,6 +6,9 @@
 \usage{
 soilgrids_buffer_vect(pedon, buffer_m = 250)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Internal: prefers \code{sf} for the geographic-to-UTM transform if
 available; otherwise uses terra's own projection machinery. The

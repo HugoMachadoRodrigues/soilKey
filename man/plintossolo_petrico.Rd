@@ -7,6 +7,9 @@ litoplintico (sem horizonte plintico precedendo).}
 \usage{
 plintossolo_petrico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Plintossolos Petricos (Cap 16): horizonte concrecionario OR
 litoplintico (sem horizonte plintico precedendo).

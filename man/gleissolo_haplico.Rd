@@ -6,6 +6,9 @@
 \usage{
 gleissolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gleissolos Haplicos (catch-all).
 }

@@ -6,9 +6,12 @@
 \usage{
 organossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Solos com horizonte hístico atendendo a um dos criterios de
 espessura: \\>= 20 cm sobre rocha, \\>= 40 cm continuo OR cumulativo
-nos 80 cm superficiais, OR \\>= 60 cm se \\>= 75\\% volume tecido
+nos 80 cm superficiais, OR \\>= 60 cm se \\>= 75\% volume tecido
 vegetal.
 }

@@ -6,6 +6,9 @@
 \usage{
 neossolo_fluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Neossolos Fluvicos (Cap 12): caracter fluvico em < 150 cm.
 }

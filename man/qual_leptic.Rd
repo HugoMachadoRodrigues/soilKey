@@ -6,6 +6,9 @@
 \usage{
 qual_leptic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Leptic qualifier (le): continuous rock <= 100 cm.
 }

@@ -11,6 +11,15 @@ test_gleyic_features(
   candidate_layers = NULL
 )
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{min_redox_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 v0.2 implementation: requires \code{redoximorphic_features_pct} to be
 reported and >= \code{min_redox_pct} (default 5\%) within

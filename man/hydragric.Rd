@@ -8,6 +8,11 @@ an anthraquic-like topsoil.}
 \usage{
 hydragric(pedon, min_thickness = 20)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Hydragric horizon (WRB 2022): subsoil hydric horizon under anthraquic.
 v0.3.3 detects via designation pattern \code{Bg|Brg} immediately below

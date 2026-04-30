@@ -6,7 +6,12 @@
 \usage{
 distrofico(pedon, max_v = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_v}{Numeric threshold or option (see Details).}
+}
 \description{
-Negacao operacional de \code{\link{eutrofico}}: V < 50% no
+Negacao operacional de \code{\link{eutrofico}}: V < 50\% no
 horizonte diagnostico subsuperficial.
 }

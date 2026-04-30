@@ -3,11 +3,18 @@
 \name{protogypsic_properties}
 \alias{protogypsic_properties}
 \title{Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
-\\>= 1\\% but below the gypsic gate.}
+\\>= 1\% but below the gypsic gate.}
 \usage{
 protogypsic_properties(pedon, min_caso4_pct = 1, max_caso4_pct = 5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_caso4_pct}{Numeric threshold or option (see Details).}
+
+\item{max_caso4_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
-\\>= 1\\% but below the gypsic gate.
+\\>= 1\% but below the gypsic gate.
 }

@@ -220,8 +220,8 @@ anhydrous_conditions_usda <- function(pedon) {
 #' \itemize{
 #'   \item Designation contains 'jj' (cryoturbation symbol) per
 #'         KST notation;
-#'   \item OR boundary_topography in {"irregular", "broken",
-#'         "involuted"};
+#'   \item OR boundary_topography in \{"irregular", "broken",
+#'         "involuted"\};
 #'   \item OR coarse_fragments_pct varying non-monotonically with
 #'         depth (proxy for "oriented rock fragments");
 #'   \item OR designation contains 'f' (frozen) AND irregular

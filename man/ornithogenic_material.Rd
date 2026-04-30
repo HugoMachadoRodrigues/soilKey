@@ -7,6 +7,11 @@ Mehlich-3 P >= 750 mg/kg + designation pattern \code{Aornit|Bornit}.}
 \usage{
 ornithogenic_material(pedon, min_p_mehlich3 = 750)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_p_mehlich3}{Numeric threshold or option (see Details).}
+}
 \description{
 Ornithogenic material (WRB 2022 Ch 3.3.15): bird-influenced topsoil.
 Mehlich-3 P >= 750 mg/kg + designation pattern \code{Aornit|Bornit}.

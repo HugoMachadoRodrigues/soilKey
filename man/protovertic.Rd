@@ -6,6 +6,13 @@
 \usage{
 protovertic(pedon, min_clay = 30, min_thickness = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_clay}{Numeric threshold or option (see Details).}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 A weakly developed vertic horizon -- the swelling/shrinking
 machinery is present but does not reach the full vertic intensity
@@ -15,7 +22,7 @@ would be Vertisols if the cracks/slickensides were a notch
 stronger.
 }
 \details{
-v0.3.5 detection: clay \\>= 30\\% AND any positive vertic evidence
+v0.3.5 detection: clay \\>= 30\% AND any positive vertic evidence
 (slickensides at \\>= "few" OR cracks_width_cm \\>= 0.2 OR a
 wedge/lenticular structure_type) AND thickness \\>= 15 cm. The
 positive cases that pass the strict \code{\link{vertic_horizon}}

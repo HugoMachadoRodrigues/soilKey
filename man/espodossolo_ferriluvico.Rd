@@ -7,6 +7,9 @@ OC iluvial).}
 \usage{
 espodossolo_ferriluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al, baixo
 OC iluvial).

@@ -6,6 +6,9 @@
 \usage{
 qual_albic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Albic qualifier (ab): albic horizon <= 100 cm.
 }

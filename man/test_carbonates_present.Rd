@@ -6,6 +6,13 @@
 \usage{
 test_carbonates_present(h, min_pct = 0.01, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default threshold is 0.01\% -- effectively "any measurable secondary
 carbonate". Used to distinguish Phaeozems (no carbonates within 100

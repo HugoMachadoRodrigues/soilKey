@@ -6,6 +6,9 @@
 \usage{
 nitossolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Nitossolos Haplicos (catch-all).
 }

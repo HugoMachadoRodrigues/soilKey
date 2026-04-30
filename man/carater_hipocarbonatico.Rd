@@ -4,7 +4,15 @@
 \alias{carater_hipocarbonatico}
 \title{Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150 g/kg.}
 \usage{
-carater_hipocarbonatico(pedon)
+carater_hipocarbonatico(pedon, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_depth_cm}{Profundidade maxima em que camadas qualificam
+(default \code{NULL} = sem restricao). SiBCS Cap 14 Subgrupos
+de Organossolos Haplicos Sapricos usam
+\code{max_depth_cm = 150}.}
 }
 \description{
 Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150 g/kg.

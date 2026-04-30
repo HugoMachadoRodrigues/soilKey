@@ -6,6 +6,9 @@
 \usage{
 continuous_rock(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Consolidated material below the soil. v0.3.3: detects via designation
 \code{R} or \code{Cr} on the lowermost (or any) layer.

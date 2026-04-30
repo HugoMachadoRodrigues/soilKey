@@ -13,6 +13,7 @@
 
 #' Oxic horizon (USDA, KST 13ed, Ch 3)
 #' Delegates to WRB \code{ferralic}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 oxic_horizon_usda <- function(pedon) {
   res <- oxic_usda(pedon)  # already exists, delegates to ferralic
@@ -23,8 +24,8 @@ oxic_horizon_usda <- function(pedon) {
 
 #' Petroferric contact helper (USDA, KST 13ed Ch 3, p 48)
 #'
-#' Ironstone-like layer with >50% Fe oxides, indurated. v0.8 proxy:
-#' \code{cementation_class} in {strongly, indurated} AND
+#' Ironstone-like layer with >50\% Fe oxides, indurated. v0.8 proxy:
+#' \code{cementation_class} in \{strongly, indurated\} AND
 #' \code{plinthite_pct >= 50} (Fe-rich) AND \code{coarse_fragments_pct >= 50}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -91,8 +92,9 @@ anionic_subgroup_usda <- function(pedon) {
 
 
 #' Rhodic Subgroup helper (Oxisols, Mollisols, etc.)
-#' Pass when 50%+ colors have hue <= 2.5YR AND value <= 3 in
+#' Pass when 50\%+ colors have hue <= 2.5YR AND value <= 3 in
 #' B horizons 25-125 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 rhodic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -114,7 +116,8 @@ rhodic_subgroup_usda <- function(pedon) {
 
 
 #' Xanthic Subgroup helper (Oxisols)
-#' Pass when 50%+ colors have hue >= 7.5YR AND value >= 6 in B horizons.
+#' Pass when 50\%+ colors have hue >= 7.5YR AND value >= 6 in B horizons.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 xanthic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -139,6 +142,7 @@ xanthic_subgroup_usda <- function(pedon) {
 #' Pass when sombric horizon (humus illuviation in tropics) is
 #' present. v0.8: detects via 'sombric' designation OR a B horizon
 #' with V<=4 + V<=4 + chroma<=2 + OC>1 in 50-150 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 sombric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -160,8 +164,9 @@ sombric_subgroup_usda <- function(pedon) {
 
 #' Humic-Oxisol Subgroup helper
 #' Pass when cumulative organic carbon mass is >= 16 kg/m2 between
-#' surface and 100 cm (computed as SUM(OC% * bulk_density * dz)).
+#' surface and 100 cm (computed as SUM(OC\% * bulk_density * dz)).
 #' v0.8 proxy: uses default bulk_density 1.0 g/cm3 if unavailable.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 humic_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -197,7 +202,9 @@ humic_oxisol_usda <- function(pedon) {
 
 
 #' Plinthic Subgroup helper (Oxisols)
-#' Pass when plinthite >= 5% in any horizon within 125 cm.
+#' Pass when plinthite >= 5\% in any horizon within 125 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 plinthic_subgroup_usda <- function(pedon, max_top_cm = 125) {
   h <- pedon$horizons
@@ -217,7 +224,8 @@ plinthic_subgroup_usda <- function(pedon, max_top_cm = 125) {
 
 #' Aeric Subgroup (for Oxisols Aquox) -- chroma-3 below epipedon
 #' Already defined for Aquods; here we add Oxisol-specific variant
-#' (any 10+ cm horizon below A with chroma >= 3 in 50%+ peds).
+#' (any 10+ cm horizon below A with chroma >= 3 in 50\%+ peds).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aeric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -241,6 +249,7 @@ aeric_oxisol_usda <- function(pedon) {
 #' Acric Oxisol Suborder helper (Acroperox/Acrudox/Acrustox/Acraquox)
 #' Pass when oxic or kandic horizon has ECEC < 1.5 cmol/kg clay AND
 #' pH (KCl) >= 5.0.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 acric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -270,6 +279,7 @@ acric_oxisol_usda <- function(pedon) {
 
 #' Kandic Suborder helper for Oxisols (Kandiperox/Kandiudox/Kandiustox)
 #' Delegates to kandic_horizon_usda.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 kandic_oxisol_usda <- function(pedon) {
   res <- kandic_horizon_usda(pedon)
@@ -279,7 +289,8 @@ kandic_oxisol_usda <- function(pedon) {
 
 
 #' Eutric Oxisol Suborder helper (Eutroperox/Eutrudox/etc.)
-#' Pass when BS (NH4OAc) >= 35% in all layers within 125 cm.
+#' Pass when BS (NH4OAc) >= 35\% in all layers within 125 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 eutric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -299,6 +310,8 @@ eutric_oxisol_usda <- function(pedon) {
 #' Plinthaquox qualifying helper (Aquox: continuous plinthite phase)
 #' Pass when plinthite >= 50\% in some 10+ cm layer (continuous phase
 #' proxy).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 plinthaquox_qualifying_usda <- function(pedon, max_top_cm = 125) {
   h <- pedon$horizons

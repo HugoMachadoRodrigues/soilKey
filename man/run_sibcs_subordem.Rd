@@ -15,11 +15,12 @@ Latossolos).}
 \item{rules}{Lista de regras carregada via \code{\link{load_rules}}.}
 }
 \value{
-Lista com \code{assigned} e \code{trace}.
+Lista com \code{assigned} (entrada YAML da subordem ou
+        \code{NULL} se a ordem nao tiver bloco) e \code{trace}.
 }
 \description{
-Itera as subordens da ordem em ordem canonica; a primeira cuja
-funcao-diagnostico passa captura o perfil. Retorna uma lista com
-\code{code}, \code{name}, \code{trace} (lista de subordem -> {passed,
-missing}). Se nenhuma passar, retorna a ultima subordem (catch-all).
+Itera as subordens da ordem em ordem canonica via o engine generico
+\code{\link{run_taxa_list}}; a primeira cuja test-block passa captura
+o perfil. Se nenhuma passar, retorna a ultima subordem (catch-all
+\code{tests:{default:true}}).
 }

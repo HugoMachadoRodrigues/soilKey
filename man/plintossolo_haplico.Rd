@@ -6,6 +6,9 @@
 \usage{
 plintossolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Plintossolos Haplicos (catch-all).
 }

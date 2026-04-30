@@ -7,7 +7,7 @@
 make_vertissolo_canonical()
 }
 \description{
-Solo argiloso (>= 30% argila desde superficie) com horizonte vertico
+Solo argiloso (>= 30\% argila desde superficie) com horizonte vertico
 (slickensides + fendas + clay alto) iniciando dentro de 100 cm.
 Reusa structure / fixture do WRB Vertisol.
 }

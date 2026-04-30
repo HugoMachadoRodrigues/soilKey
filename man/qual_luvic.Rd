@@ -6,6 +6,9 @@
 \usage{
 qual_luvic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Luvic qualifier (lv): argic + high CEC, low Al saturation.
 }

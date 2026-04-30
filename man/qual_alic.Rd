@@ -6,6 +6,9 @@
 \usage{
 qual_alic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Alic qualifier (al): argic + high CEC + high Al saturation.
 }

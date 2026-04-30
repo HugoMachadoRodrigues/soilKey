@@ -6,6 +6,9 @@
 \usage{
 chernossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 A chernozemico seguido de:
 (a) Bi OR Bt, ambos com argila ativ alta + V alta; OR

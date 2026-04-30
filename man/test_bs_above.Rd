@@ -6,6 +6,13 @@
 \usage{
 test_bs_above(h, min_pct = 50, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 50\% (Lixisol / Luvisol RSG criterion). Reads
 \code{bs_pct} directly.

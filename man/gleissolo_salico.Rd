@@ -6,6 +6,9 @@
 \usage{
 gleissolo_salico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gleissolos Salicos (Cap 9): caracter salico em < 100 cm.
 }

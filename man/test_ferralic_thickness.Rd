@@ -6,6 +6,13 @@
 \usage{
 test_ferralic_thickness(h, min_cm = 30, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_cm}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Wraps \code{\link{test_minimum_thickness}}.
 }

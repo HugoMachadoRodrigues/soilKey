@@ -6,6 +6,9 @@
 \usage{
 qual_cryic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cryic qualifier (cy): cryic horizon <= 100 cm.
 }

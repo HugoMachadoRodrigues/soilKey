@@ -7,6 +7,9 @@ carater argiluvico.}
 \usage{
 plintossolo_argiluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural OR
 carater argiluvico.

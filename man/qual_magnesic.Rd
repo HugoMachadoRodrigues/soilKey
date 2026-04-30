@@ -6,6 +6,9 @@
 \usage{
 qual_magnesic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Magnesic qualifier (mg): exchangeable Ca/Mg < 1 in upper 100 cm.
 }

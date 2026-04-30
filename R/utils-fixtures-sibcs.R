@@ -81,7 +81,7 @@ make_neossolo_canonical <- function() {
 
 #' Perfil canonico de Vertissolo (SiBCS 5a ed., Cap 17)
 #'
-#' Solo argiloso (>= 30% argila desde superficie) com horizonte vertico
+#' Solo argiloso (>= 30\% argila desde superficie) com horizonte vertico
 #' (slickensides + fendas + clay alto) iniciando dentro de 100 cm.
 #' Reusa structure / fixture do WRB Vertisol.
 #' @export
@@ -265,7 +265,7 @@ make_luvissolo_canonical <- function() {
 
 #' Perfil canonico de Nitossolo Vermelho (SiBCS 5a ed., Cap 13)
 #'
-#' Solo argiloso (>= 35% argila desde superficie) com B nitico
+#' Solo argiloso (>= 35\% argila desde superficie) com B nitico
 #' (estrutura forte em blocos + cerosidade), gradiente textural
 #' baixo (B/A <= 1.5).
 #' @export

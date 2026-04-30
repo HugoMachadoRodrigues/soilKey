@@ -6,10 +6,13 @@
 \usage{
 planosol(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
 directly above or below the abrupt textural difference, stagnic
-properties (>= 50\\% redoximorphic features) AND reducing conditions.
+properties (>= 50\% redoximorphic features) AND reducing conditions.
 }
 \details{
 v0.3.4 enforces all three components. The 5-cm-window restriction is

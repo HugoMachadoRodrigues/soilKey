@@ -7,6 +7,9 @@ subsoil 25-150 cm).}
 \usage{
 qual_chromic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Chromic qualifier (cr): hue redder than 7.5YR + chroma > 4 (in upper
 subsoil 25-150 cm).

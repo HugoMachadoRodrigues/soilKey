@@ -7,6 +7,9 @@ Munsell criteria.}
 \usage{
 claric_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Claric material (WRB 2022 Ch 3.3.4): light-coloured fine earth with
 Munsell criteria.

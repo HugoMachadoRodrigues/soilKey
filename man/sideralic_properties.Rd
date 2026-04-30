@@ -6,8 +6,15 @@
 \usage{
 sideralic_properties(pedon, max_cec_per_clay = 24, max_bulk_cec = 2)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_cec_per_clay}{Numeric threshold or option (see Details).}
+
+\item{max_bulk_cec}{Numeric threshold or option (see Details).}
+}
 \description{
-Mineral material with low CEC: clay >= 8\\% AND CEC/clay < 24, OR
+Mineral material with low CEC: clay >= 8\% AND CEC/clay < 24, OR
 bulk CEC < 2 cmol_c/kg soil. Plus evidence of soil formation
 (cambic-style criterion 3).
 }

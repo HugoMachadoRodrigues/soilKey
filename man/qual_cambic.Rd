@@ -6,6 +6,9 @@
 \usage{
 qual_cambic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cambic qualifier (cm): cambic horizon <= 50 cm.
 }

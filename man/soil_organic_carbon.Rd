@@ -8,6 +8,13 @@ artefacts_industrial_pct < 35.}
 \usage{
 soil_organic_carbon(pedon, min_oc = 0.1, max_artefacts = 35)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_oc}{Numeric threshold or option (see Details).}
+
+\item{max_artefacts}{Numeric threshold or option (see Details).}
+}
 \description{
 Soil organic carbon (WRB 2022 Ch 3.3.16): organic C that does NOT
 belong to artefacts. v0.3.3: any layer with oc_pct >= 0.1 and

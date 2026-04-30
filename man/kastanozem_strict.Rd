@@ -6,6 +6,13 @@
 \usage{
 kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_bs}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Same structure as \code{\link{chernozem_strict}} but using the mollic
 horizon (no chernic gate) and starting \\<= 70 cm of mineral soil

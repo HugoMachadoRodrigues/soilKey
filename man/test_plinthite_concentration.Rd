@@ -6,6 +6,13 @@
 \usage{
 test_plinthite_concentration(h, min_pct = 15, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 15\% by volume (plinthic horizon, WRB 2022 Chapter 3). Used
 by \code{\link{plinthic}}.

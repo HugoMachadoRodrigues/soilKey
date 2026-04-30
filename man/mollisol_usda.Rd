@@ -2,10 +2,13 @@
 % Please edit documentation in R/diagnostics-orders-usda.R
 \name{mollisol_usda}
 \alias{mollisol_usda}
-\title{Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50%.}
+\title{Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.}
 \usage{
 mollisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50%.
+Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
 }

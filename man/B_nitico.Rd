@@ -12,9 +12,20 @@ B_nitico(
   min_cerosidade = c("common", "many", "abundant", "strong")
 )
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_clay_pct}{Numeric threshold or option (see Details).}
+
+\item{max_b_a_ratio}{Numeric threshold or option (see Details).}
+
+\item{min_cerosidade}{Numeric threshold or option (see Details).}
+}
 \description{
 Subsuperficial nao hidromorfico, textura argilosa/muito argilosa
-(clay \\>= 35\\% desde a superficie), com pequeno incremento de
+(clay \\>= 35\% desde a superficie), com pequeno incremento de
 argila (B/A \\<= 1.5), estrutura em blocos sub/angulares ou
 prismatica grau moderado/forte, cerosidade no minimo comum +
 moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +

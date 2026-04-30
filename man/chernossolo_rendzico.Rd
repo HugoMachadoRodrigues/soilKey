@@ -7,6 +7,9 @@ OR carater carbonatico).}
 \usage{
 chernossolo_rendzico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Chernossolos Rendzicos (Cap 7): A chernozemico + (calcico/petrocalcico
 OR carater carbonatico).

@@ -12,13 +12,13 @@
 
 #' Vertisol RSG gate (WRB 2022 Ch 4, p 101)
 #'
-#' WRB-canonical: vertic horizon \\<= 100 cm AND \\>= 30\\% clay between
+#' WRB-canonical: vertic horizon \\<= 100 cm AND \\>= 30\% clay between
 #' the surface and the vertic horizon throughout AND shrink-swell cracks
 #' that start at the surface (or below a plough layer / below a self-
 #' mulching surface / below a surface crust) and extend to the vertic
 #' horizon.
 #'
-#' v0.3.4 enforces (1) vertic horizon, (2) all overlying layers \\>= 30\\%
+#' v0.3.4 enforces (1) vertic horizon, (2) all overlying layers \\>= 30\%
 #' clay, and (3) shrink-swell cracks that start within the upper 20 cm.
 #' "Cracks extending to the vertic horizon" is enforced indirectly by the
 #' test_shrink_swell_cracks test that already requires an explicit
@@ -70,7 +70,7 @@ vertisol <- function(pedon) {
 #'
 #' WRB-canonical: layer(s) with \emph{andic} OR \emph{vitric}
 #' properties, combined thickness \\>= 30 cm within 100 cm starting
-#' \\<= 25 cm; OR \\>= 60\\% of the entire soil thickness when a
+#' \\<= 25 cm; OR \\>= 60\% of the entire soil thickness when a
 #' limiting layer starts 25-50 cm. Plus: no argic, ferralic,
 #' petroplinthic, pisoplinthic, plinthic or spodic horizon \\<= 100 cm
 #' (unless buried below 50 cm).
@@ -79,6 +79,9 @@ vertisol <- function(pedon) {
 #' \\>= 30 cm starting in the upper 25 cm AND (3) the negative-list
 #' exclusions on argic / ferralic / plinthic / spodic.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 andosol <- function(pedon, min_thickness = 30, max_top_cm = 25) {
   ap <- andic_properties(pedon)
@@ -149,6 +152,7 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25) {
 #' (W / saturated marker). Path 2 is deferred (requires a depth-of-
 #' saturation column that's not standard).
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 gleysol <- function(pedon) {
   gp <- gleyic_properties(pedon)
@@ -192,12 +196,13 @@ gleysol <- function(pedon) {
 #'
 #' WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
 #' directly above or below the abrupt textural difference, stagnic
-#' properties (>= 50\\% redoximorphic features) AND reducing conditions.
+#' properties (>= 50\% redoximorphic features) AND reducing conditions.
 #'
 #' v0.3.4 enforces all three components. The 5-cm-window restriction is
 #' relaxed to "the layer immediately above or below the abrupt textural
 #' difference satisfies stagnic + reducing".
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 planosol <- function(pedon) {
   atd <- abrupt_textural_difference(pedon)
@@ -251,14 +256,15 @@ planosol <- function(pedon) {
 #' starting above (or at the upper limit of) the ferralic, UNLESS the
 #' argic in its upper 30 cm or throughout has one or more of:
 #' \itemize{
-#'   \item < 10\\% water-dispersible clay; OR
+#'   \item < 10\% water-dispersible clay; OR
 #'   \item DeltapH (pH_KCl - pH_water) \\>= 0; OR
-#'   \item \\>= 1.4\\% soil organic carbon.
+#'   \item \\>= 1.4\% soil organic carbon.
 #' }
 #' v0.3.4 enforces all three exception paths. The DeltapH check uses
 #' \code{ph_kcl} and \code{ph_h2o}; the WDC check uses
 #' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema).
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 ferralsol <- function(pedon) {
   fr <- ferralic(pedon)
@@ -340,17 +346,20 @@ ferralsol <- function(pedon) {
 #' WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 #' lower limit of the mollic horizon and (if a petrocalcic horizon is
 #' present) above it, a layer with protocalcic properties \\>= 5 cm thick
-#' OR a calcic horizon AND base saturation \\>= 50\\% from the surface
+#' OR a calcic horizon AND base saturation \\>= 50\% from the surface
 #' to the protocalcic / calcic layer throughout.
 #'
 #' v0.3.4 strengthens the previous v0.2 chernozem (which only required
 #' mollic + chernic_color) by adding the protocalcic / calcic gate and
-#' the BS \\>= 50\\% requirement.
+#' the BS \\>= 50\% requirement.
 #'
 #' Note: the v0.2 \code{chernozem()} diagnostic remains available as a
 #' less-strict variant; \code{chernozem_strict()} is what the v0.3.4
 #' key.yaml uses for the CH RSG.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_bs Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50) {
   ch <- chernic(pedon)
@@ -402,6 +411,9 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50) {
 #' horizon (no chernic gate) and starting \\<= 70 cm of mineral soil
 #' surface.
 #'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_bs Numeric threshold or option (see Details).
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70) {
   m <- mollic(pedon)

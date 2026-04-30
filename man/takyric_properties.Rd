@@ -7,6 +7,9 @@
 \usage{
 takyric_properties(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
 \code{\link{test_takyric_surface}}.

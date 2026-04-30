@@ -18,3 +18,5 @@
 ^\.zenodo\.json$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^.*\.gitkeep$
+^\.git$

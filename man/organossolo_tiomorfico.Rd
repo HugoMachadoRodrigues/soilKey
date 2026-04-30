@@ -7,6 +7,9 @@ horizonte sulfurico em < 100 cm.}
 \usage{
 organossolo_tiomorfico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Organossolos Tiomorficos (Cap 14): materiais sulfidricos OR
 horizonte sulfurico em < 100 cm.

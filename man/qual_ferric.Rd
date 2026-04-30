@@ -6,6 +6,9 @@
 \usage{
 qual_ferric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Ferric qualifier (fr): ferric horizon <= 100 cm.
 }

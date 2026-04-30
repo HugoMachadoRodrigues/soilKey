@@ -6,6 +6,9 @@
 \usage{
 chernossolo_argiluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Chernossolos Argiluvicos (Cap 7): B textural abaixo do A chernozemico.
 }

@@ -8,6 +8,8 @@ atividade_argila_alta(pedon, min_ta = 27)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_ta}{Numeric threshold or option (see Details).}
 }
 \value{
 Um \code{\link{DiagnosticResult}}; \code{passed = TRUE} sse

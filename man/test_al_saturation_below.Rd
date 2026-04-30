@@ -6,6 +6,13 @@
 \usage{
 test_al_saturation_below(h, max_pct = 50, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 50\% (Luvisol RSG criterion). Uses \code{al_sat_pct} when
 reported; otherwise falls back to computation from exchangeable

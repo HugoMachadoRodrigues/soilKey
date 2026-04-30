@@ -6,6 +6,13 @@
 \usage{
 petroduric(pedon, min_thickness = 10, min_duripan_pct = 10)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_duripan_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Petroduric horizon (WRB 2022): cemented duric.
 }

@@ -14,8 +14,23 @@ horizonte_A_chernozemico(
   min_thickness_cm = 18
 )
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_oc_g_kg}{Numeric threshold or option (see Details).}
+
+\item{min_v_pct}{Numeric threshold or option (see Details).}
+
+\item{max_value_moist}{Numeric threshold or option (see Details).}
+
+\item{max_chroma_moist}{Numeric threshold or option (see Details).}
+
+\item{max_value_dry}{Numeric threshold or option (see Details).}
+
+\item{min_thickness_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Horizonte mineral superficial relativamente espesso, escuro, com
-alta saturacao por bases (V \\>= 65\\%), OC \\>= 6 g/kg, estrutura
+alta saturacao por bases (V \\>= 65\%), OC \\>= 6 g/kg, estrutura
 desenvolvida e espessura conforme criterio.
 }

@@ -6,8 +6,15 @@
 \usage{
 horizonte_plintico(pedon, min_plinthite_pct = 15, min_thickness = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_plinthite_pct}{Numeric threshold or option (see Details).}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
-Plintita \\>= 15\\% volume, espessura \\>= 15 cm. Tem precedencia
+Plintita \\>= 15\% volume, espessura \\>= 15 cm. Tem precedencia
 sobre B textural, latossolico, nitico, B incipiente, planico (sem
 carater sodico), e glei. Reuso de \code{\link{plinthic}} (WRB).
 }

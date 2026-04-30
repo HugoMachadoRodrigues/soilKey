@@ -13,6 +13,24 @@ skip_if_no_terra <- function() {
   testthat::skip_if_not_installed("terra")
 }
 
+# v0.9.10: skip these tests when the PROJ database is unavailable
+# (e.g. a minimal R install without proj.db on PATH). The raster
+# constructor in `terra` then errors with "empty srs" before any of
+# our code runs, which is unrelated to soilKey functionality. This
+# helper centralises the skip so individual tests can call it.
+skip_if_no_proj <- function() {
+  testthat::skip_if_not_installed("terra")
+  ok <- tryCatch({
+    suppressWarnings(suppressMessages(
+      terra::rast(nrows = 1, ncols = 1,
+                   ext = terra::ext(0, 1, 0, 1),
+                   crs = "EPSG:4326")
+    ))
+    TRUE
+  }, error = function(e) FALSE)
+  if (!ok) testthat::skip("PROJ database (proj.db) not available")
+}
+
 
 # Helper: build a synthetic 10x10 categorical raster centred at the
 # given lon/lat. Cell size is 0.0025 degrees (~250 m at the equator)
@@ -24,6 +42,7 @@ build_synthetic_raster <- function(lon = -43.7,
                                      mix      = list(`1` = 5L, `24` = 1L),
                                      path = NULL) {
   testthat::skip_if_not_installed("terra")
+  skip_if_no_proj()
 
   ncell_side <- 10L
   cell_size  <- 0.0025

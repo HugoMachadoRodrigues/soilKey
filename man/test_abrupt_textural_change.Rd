@@ -6,6 +6,13 @@
 \usage{
 test_abrupt_textural_change(h, min_ratio = 2, require_abrupt_boundary = TRUE)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_ratio}{Numeric threshold or option (see Details).}
+
+\item{require_abrupt_boundary}{Numeric threshold or option (see Details).}
+}
 \description{
 WRB 2022 planic criterion: clay content of the underlying horizon is
 at least double that of the overlying horizon, with the transition

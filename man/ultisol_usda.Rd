@@ -2,10 +2,13 @@
 % Please edit documentation in R/diagnostics-orders-usda.R
 \name{ultisol_usda}
 \alias{ultisol_usda}
-\title{Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35%.}
+\title{Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35\%.}
 \usage{
 ultisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35%.
+Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35\%.
 }

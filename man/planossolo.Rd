@@ -6,6 +6,9 @@
 \usage{
 planossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte B planico nao coincidente com plintico (sem carater
 sodico), imediatamente abaixo de A ou E.

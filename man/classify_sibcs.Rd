@@ -2,9 +2,14 @@
 % Please edit documentation in R/key-sibcs.R
 \name{classify_sibcs}
 \alias{classify_sibcs}
-\title{Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o niveis)}
+\title{Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o + 3o + 4o niveis)}
 \usage{
-classify_sibcs(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
+classify_sibcs(
+  pedon,
+  rules = NULL,
+  on_missing = c("warn", "silent", "error"),
+  include_familia = FALSE
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -13,16 +18,27 @@ classify_sibcs(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 
 \item{on_missing}{Um de \code{"warn"} (default), \code{"silent"},
 \code{"error"}.}
+
+\item{include_familia}{Quando \code{TRUE} (default \code{FALSE}),
+adiciona o 5o nivel categorico (Familia) via
+\code{\link{classify_sibcs_familia}}. O label textual da
+Familia aparece em \code{$trace$familia_label}, e a lista
+de \code{\link{FamilyAttribute}}s em \code{$trace$familia}.}
 }
 \value{
 Um \code{\link{ClassificationResult}} cujo \code{name} eh o
-        nome completo da subordem (e.g. "Latossolos Vermelhos") e
-        \code{rsg_or_order} eh o nome da ordem (e.g. "Latossolos").
-        O codigo da subordem e o trace ficam em
-        \code{$trace$subordem}.
+        nome completo da classe atribuida no nivel mais profundo
+        (Grande Grupo > Subordem > Ordem) e \code{rsg_or_order} eh
+        o nome da ordem (e.g. "Organossolos"). Os codigos de cada
+        nivel e o trace ficam em \code{$trace}.
 }
 \description{
 v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
-\code{\link{run_sibcs_subordem}} usando a chave em
-\code{inst/rules/sibcs5/key.yaml}.
+\code{\link{run_sibcs_subordem}}; v0.7.3 desce ao 3o nivel (Grandes
+Grupos) via \code{\link{run_sibcs_grande_grupo}} para as ordens
+progressivamente wiradas em
+\code{inst/rules/sibcs5/grandes-grupos/<ordem>.yaml} (Cap 14
+Organossolos primeiro). Quando a subordem ainda nao tem bloco de
+Grandes Grupos, ou quando nenhum Grande Grupo passa (e nao ha
+catch-all default), a classificacao para no 2o nivel.
 }

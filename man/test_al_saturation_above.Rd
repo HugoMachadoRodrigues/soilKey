@@ -6,6 +6,13 @@
 \usage{
 test_al_saturation_above(h, min_pct = 50, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 50\% (Alisol RSG criterion). Uses \code{al_sat_pct} when
 reported; otherwise falls back to

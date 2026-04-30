@@ -6,6 +6,13 @@
 \usage{
 test_coarse_texture_throughout(h, max_top_cm = 100, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default predicate: \code{silt + 2 * clay < 15} (loamy sand or
 coarser) in EVERY layer that intersects the upper

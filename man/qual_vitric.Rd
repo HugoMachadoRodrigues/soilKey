@@ -6,6 +6,9 @@
 \usage{
 qual_vitric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Vitric qualifier (vi): vitric properties >= 30 cm within 100 cm.
 }

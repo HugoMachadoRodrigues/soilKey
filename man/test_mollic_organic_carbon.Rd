@@ -2,10 +2,17 @@
 % Please edit documentation in R/utils-diagnostic-tests.R
 \name{test_mollic_organic_carbon}
 \alias{test_mollic_organic_carbon}
-\title{Mollic organic-carbon test (WRB 2022, default >= 0.6%)}
+\title{Mollic organic-carbon test (WRB 2022, default >= 0.6\%)}
 \usage{
 test_mollic_organic_carbon(h, min_pct = 0.6, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
-Mollic organic-carbon test (WRB 2022, default >= 0.6%)
+Mollic organic-carbon test (WRB 2022, default >= 0.6\%)
 }

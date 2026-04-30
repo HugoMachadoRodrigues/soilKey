@@ -6,6 +6,9 @@
 \usage{
 nitossolo_vermelho(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Nitossolos Vermelhos (Cap 13): matiz \\<= 2.5YR.
 }

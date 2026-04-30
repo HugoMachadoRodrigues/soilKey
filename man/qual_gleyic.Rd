@@ -7,6 +7,9 @@ starting <= 75 cm + reducing conditions.}
 \usage{
 qual_gleyic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gleyic qualifier (gl): gleyic properties throughout a layer >= 25 cm
 starting <= 75 cm + reducing conditions.

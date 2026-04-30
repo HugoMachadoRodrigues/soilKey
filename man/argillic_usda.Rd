@@ -19,7 +19,7 @@ v0.2 scaffold delegating to WRB \code{\link{argic}}. The two
 diagnostics' clay-increase rules are essentially the same; USDA
 argillic additionally requires evidence of clay illuviation (clay
 films / clay bridges) on at least 1\% of the surface area, which
-v0.8 will enforce against the \code{clay_films} column.
+v0.8 will enforce against the \code{clay_films_amount} column.
 }
 \references{
 Soil Survey Staff (2014), Keys to Soil Taxonomy,

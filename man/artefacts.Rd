@@ -6,6 +6,11 @@
 \usage{
 artefacts(pedon, min_pct = 1)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Per the canonical definition: human-made / human-altered / human-
 excavated material. v0.3.3 returns the layers where

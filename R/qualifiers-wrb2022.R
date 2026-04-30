@@ -44,12 +44,14 @@
 # ---------- HORIZON-BASED PRINCIPAL QUALIFIERS ------------------------------
 
 #' Albic qualifier (ab): albic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_albic       <- function(pedon) .q_presence("Albic",       albic(pedon),       100, pedon)
 
 #' Andic qualifier (an): andic OR vitric properties combined >= 30 cm.
 #' v0.9 simplification: passes if andic_properties or vitric_properties
 #' passes within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_andic       <- function(pedon) {
   ap <- andic_properties(pedon); vp <- vitric_properties(pedon)
@@ -66,39 +68,48 @@ qual_andic       <- function(pedon) {
 }
 
 #' Anthric qualifier (ak): anthric properties.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_anthric     <- function(pedon) .q_presence("Anthric",     anthric_horizons(pedon), 100, pedon)
 
 #' Calcic qualifier (cc): calcic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_calcic      <- function(pedon) .q_presence("Calcic",      calcic(pedon),      100, pedon)
 
 #' Cambic qualifier (cm): cambic horizon <= 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_cambic      <- function(pedon) .q_presence("Cambic",      cambic(pedon),      50,  pedon)
 
 #' Cryic qualifier (cy): cryic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_cryic       <- function(pedon) .q_presence("Cryic",       cryic_conditions(pedon), 100, pedon)
 
 #' Duric qualifier (du): duric horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_duric       <- function(pedon) .q_presence("Duric",       duric_horizon(pedon),    100, pedon)
 
 #' Ferralic qualifier (fl): ferralic horizon <= 150 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_ferralic    <- function(pedon) .q_presence("Ferralic",    ferralic(pedon),    150, pedon)
 
 #' Ferric qualifier (fr): ferric horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_ferric      <- function(pedon) .q_presence("Ferric",      ferric(pedon),      100, pedon)
 
 #' Fluvic qualifier (fv): fluvic material >= 25 cm thick starting <= 75 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_fluvic      <- function(pedon) .q_presence("Fluvic",      fluvic_material(pedon),  75,  pedon)
 
 #' Folic qualifier (fo): folic horizon at the soil surface. v0.9
 #' delegates to histic_horizon with surface-only filter.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_folic       <- function(pedon) {
   h <- histic_horizon(pedon)
@@ -116,78 +127,97 @@ qual_folic       <- function(pedon) {
 
 #' Gleyic qualifier (gl): gleyic properties throughout a layer >= 25 cm
 #' starting <= 75 cm + reducing conditions.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_gleyic      <- function(pedon) .q_presence("Gleyic",      gleyic_properties(pedon), 75, pedon)
 
 #' Gypsic qualifier (gy): gypsic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_gypsic      <- function(pedon) .q_presence("Gypsic",      gypsic(pedon),      100, pedon)
 
 #' Histic qualifier (hi): histic horizon at or near the surface.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_histic      <- function(pedon) .q_presence("Histic",      histic_horizon(pedon),   100, pedon)
 
 #' Leptic qualifier (le): continuous rock <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_leptic      <- function(pedon) .q_presence("Leptic",      continuous_rock(pedon),  100, pedon)
 
 #' Mollic qualifier (mo): mollic horizon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_mollic      <- function(pedon) .q_presence("Mollic",      mollic(pedon),      100, pedon)
 
 #' Natric qualifier (na): natric horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_natric      <- function(pedon) .q_presence("Natric",      natric_horizon(pedon),   100, pedon)
 
 #' Nitic qualifier (ni): nitic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_nitic       <- function(pedon) .q_presence("Nitic",       nitic_horizon(pedon),    100, pedon)
 
 #' Petrocalcic qualifier (pc): petrocalcic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_petrocalcic <- function(pedon) .q_presence("Petrocalcic", petrocalcic(pedon),      100, pedon)
 
 #' Petroduric qualifier (pd): petroduric horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_petroduric  <- function(pedon) .q_presence("Petroduric",  petroduric(pedon),       100, pedon)
 
 #' Petrogypsic qualifier (pg): petrogypsic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_petrogypsic <- function(pedon) .q_presence("Petrogypsic", petrogypsic(pedon),      100, pedon)
 
 #' Petroplinthic qualifier (pp): petroplinthic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_petroplinthic <- function(pedon) .q_presence("Petroplinthic", petroplinthic(pedon), 100, pedon)
 
 #' Plinthic qualifier (pl): plinthic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_plinthic    <- function(pedon) .q_presence("Plinthic",    plinthic(pedon),    100, pedon)
 
 #' Retic qualifier (rt): retic properties <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_retic       <- function(pedon) .q_presence("Retic",       retic_properties(pedon), 100, pedon)
 
 #' Salic qualifier (sz): salic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_salic       <- function(pedon) .q_presence("Salic",       salic(pedon),       100, pedon)
 
 #' Spodic qualifier (sd): spodic horizon <= 200 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_spodic      <- function(pedon) .q_presence("Spodic",      spodic(pedon),      200, pedon)
 
 #' Stagnic qualifier (st): stagnic properties <= 75 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_stagnic     <- function(pedon) .q_presence("Stagnic",     stagnic_properties(pedon), 75, pedon)
 
 #' Umbric qualifier (um): umbric horizon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_umbric      <- function(pedon) .q_presence("Umbric",      umbric_horizon(pedon),   100, pedon)
 
 #' Vertic qualifier (vr): vertic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_vertic      <- function(pedon) .q_presence("Vertic",      vertic_horizon(pedon),   100, pedon)
 
 #' Vitric qualifier (vi): vitric properties >= 30 cm within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_vitric      <- function(pedon) .q_presence("Vitric",      vitric_properties(pedon), 100, pedon)
 
@@ -196,6 +226,7 @@ qual_vitric      <- function(pedon) .q_presence("Vitric",      vitric_properties
 
 #' Acric qualifier (ac): argic horizon + low CEC + high Al.
 #' v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_acric <- function(pedon) {
   arg <- argic(pedon)
@@ -211,6 +242,7 @@ qual_acric <- function(pedon) {
 }
 
 #' Alic qualifier (al): argic + high CEC + high Al saturation.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_alic <- function(pedon) {
   al <- alisol(pedon)
@@ -220,6 +252,7 @@ qual_alic <- function(pedon) {
 }
 
 #' Lixic qualifier (lx): argic + low CEC, low Al.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_lixic <- function(pedon) {
   lx <- lixisol(pedon)
@@ -229,6 +262,7 @@ qual_lixic <- function(pedon) {
 }
 
 #' Luvic qualifier (lv): argic + high CEC, low Al saturation.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_luvic <- function(pedon) {
   lv <- luvisol(pedon)
@@ -238,7 +272,8 @@ qual_luvic <- function(pedon) {
 }
 
 #' Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-#' 50% from 20 to 100 cm in mineral material.
+#' 50\% from 20 to 100 cm in mineral material.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_dystric <- function(pedon) {
   h <- pedon$horizons
@@ -257,8 +292,9 @@ qual_dystric <- function(pedon) {
     reference = "WRB (2022) Ch 5, Dystric")
 }
 
-#' Eutric qualifier (eu): high base saturation. v0.9: BS >= 50%
+#' Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
 #' throughout 20-100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_eutric <- function(pedon) {
   h <- pedon$horizons
@@ -278,6 +314,7 @@ qual_eutric <- function(pedon) {
 }
 
 #' Magnesic qualifier (mg): exchangeable Ca/Mg < 1 in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_magnesic <- function(pedon) {
   h <- pedon$horizons
@@ -297,7 +334,8 @@ qual_magnesic <- function(pedon) {
     reference = "WRB (2022) Ch 5, Magnesic")
 }
 
-#' Sodic qualifier (so): ESP >= 6% (incl. SAR-derived).
+#' Sodic qualifier (so): ESP >= 6\% (incl. SAR-derived).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_sodic <- function(pedon) {
   h <- pedon$horizons
@@ -325,6 +363,7 @@ qual_sodic <- function(pedon) {
 
 #' Rhodic qualifier (ro): hue redder than 5YR + value < 4 + dry no
 #' more than 1 unit higher than moist (in upper subsoil 25-150 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_rhodic <- function(pedon) {
   h <- pedon$horizons
@@ -352,6 +391,7 @@ qual_rhodic <- function(pedon) {
 
 #' Chromic qualifier (cr): hue redder than 7.5YR + chroma > 4 (in upper
 #' subsoil 25-150 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_chromic <- function(pedon) {
   h <- pedon$horizons
@@ -378,6 +418,7 @@ qual_chromic <- function(pedon) {
 
 #' Xanthic qualifier (xa): ferralic + hue 7.5YR or yellower + value >=
 #' 4 + chroma >= 5.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_xanthic <- function(pedon) {
   fr <- ferralic(pedon)
@@ -407,11 +448,13 @@ qual_xanthic <- function(pedon) {
 # ---------- TEXTURE / SKELETIC QUALIFIERS ----------------------------------
 
 #' Arenic qualifier (ar): texture sand or loamy sand >= 30 cm in <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_arenic <- function(pedon) .q_presence("Arenic", arenic_texture(pedon), 100, pedon)
 
-#' Clayic qualifier (ce): clay >= 60% texture for a layer >= 30 cm in
+#' Clayic qualifier (ce): clay >= 60\% texture for a layer >= 30 cm in
 #' the upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_clayic <- function(pedon) {
   h <- pedon$horizons
@@ -426,6 +469,7 @@ qual_clayic <- function(pedon) {
 }
 
 #' Loamic qualifier (lo): loam-class texture >= 30 cm in the upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_loamic <- function(pedon) {
   h <- pedon$horizons
@@ -443,6 +487,7 @@ qual_loamic <- function(pedon) {
 
 #' Siltic qualifier (sl): silt or silt-loam texture >= 30 cm in the upper
 #' 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_siltic <- function(pedon) {
   h <- pedon$horizons
@@ -457,7 +502,8 @@ qual_siltic <- function(pedon) {
     missing = character(0), reference = "WRB (2022) Ch 5, Siltic")
 }
 
-#' Skeletic qualifier (sk): coarse fragments >= 40% averaged over 100 cm.
+#' Skeletic qualifier (sk): coarse fragments >= 40\% averaged over 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_skeletic <- function(pedon) {
   h <- pedon$horizons
@@ -479,7 +525,8 @@ qual_skeletic <- function(pedon) {
 
 # ---------- ORGANIC / HUMUS QUALIFIERS --------------------------------------
 
-#' Humic qualifier (hu): >= 1% SOC in upper 50 cm (weighted average).
+#' Humic qualifier (hu): >= 1\% SOC in upper 50 cm (weighted average).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_humic <- function(pedon) {
   h <- pedon$horizons
@@ -503,7 +550,8 @@ qual_humic <- function(pedon) {
     reference = "WRB (2022) Ch 5, Humic")
 }
 
-#' Ochric qualifier (oh): SOC >= 0.2% upper 10 cm + no mollic/umbric.
+#' Ochric qualifier (oh): SOC >= 0.2\% upper 10 cm + no mollic/umbric.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_ochric <- function(pedon) {
   has_mollic <- isTRUE(mollic(pedon)$passed)
@@ -536,6 +584,7 @@ qual_ochric <- function(pedon) {
 #' Haplic qualifier (ha): no other principal qualifier of the RSG
 #' applies. Always passes; the qualifier resolution machinery uses it
 #' as the default when no other qualifier matched.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_haplic <- function(pedon) {
   DiagnosticResult$new(name = "Haplic", passed = TRUE,
@@ -548,26 +597,13 @@ qual_haplic <- function(pedon) {
 
 # ---------- v0.9 RESOLUTION ENGINE ------------------------------------------
 
-#' Resolve WRB qualifiers for an assigned RSG
-#'
-#' Given a pedon and the RSG code (e.g. "FR" for Ferralsols), returns a
-#' list of applied qualifiers per the WRB 2022 Ch 4 RSG-specific
-#' principal-qualifier list (read from
-#' \code{inst/rules/wrb2022/qualifiers.yaml}). Principal qualifiers
-#' that pass are returned in the canonical Ch 4 order; if none pass,
-#' \code{Haplic} is returned.
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @param rsg_code Two-letter RSG code (e.g. "FR", "PZ").
-#' @param rules Optional pre-loaded WRB 2022 rules.
-#' @return List with \code{principal} (character vector of qualifier
-#'         names in canonical order) and \code{trace} (per-qualifier
-#'         passed/missing).
-#' @export
 # v0.9.2 family-suppression table.
 # When several qualifiers from the same family pass for the same RSG,
 # WRB convention is to print only the most-specific one. Each entry is
 # ordered from most-specific (kept) to least-specific (suppressed).
+# (Internal data; not exported. The full @export-tagged
+# documentation for the resolve_wrb_qualifiers() function lives on
+# the function definition itself, further down this file.)
 .wrb_qualifier_families <- list(
   salinity   = c("Hypersalic",  "Salic",        "Hyposalic"),
   sodicity   = c("Hypersodic",  "Sodic",        "Hyposodic"),
@@ -637,6 +673,21 @@ qual_haplic <- function(pedon) {
                           missing = res$missing %||% character(0)))
 }
 
+#' Resolve WRB 2022 qualifiers for a Reference Soil Group
+#'
+#' Walks the YAML qualifier list for a given RSG code and tests every
+#' principal / supplementary qualifier against the pedon. Returns the
+#' resolved canonical name pieces (principal + supplementary) plus a
+#' per-qualifier trace.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param rsg_code Two-letter RSG code (e.g. \code{"FR"} for Ferralsols).
+#' @param rules Optional pre-loaded rules list (saves I/O when many
+#'        RSGs are tested).
+#' @return A list with \code{principal} (character vector),
+#'         \code{supplementary} (character vector), \code{trace}, and
+#'         \code{trace_supplementary}.
+#' @export
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   rules <- rules %||% load_rules("wrb2022")
   qfile <- system.file("rules/wrb2022/qualifiers.yaml",

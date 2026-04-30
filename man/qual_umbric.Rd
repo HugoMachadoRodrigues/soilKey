@@ -6,6 +6,9 @@
 \usage{
 qual_umbric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Umbric qualifier (um): umbric horizon.
 }

@@ -12,6 +12,17 @@ test_mollic_color(
   candidate_layers = NULL
 )
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_value_moist}{Numeric threshold or option (see Details).}
+
+\item{max_chroma_moist}{Numeric threshold or option (see Details).}
+
+\item{max_value_dry}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Optional restriction.}
+}
 \description{
 Moist value <= 3 AND moist chroma <= 3 AND dry value <= 5. If
 \code{munsell_value_dry} is missing, uses the conservative substitute

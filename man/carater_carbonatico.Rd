@@ -4,7 +4,16 @@
 \alias{carater_carbonatico}
 \title{Carater carbonatico (SiBCS Cap 1, p 33)}
 \usage{
-carater_carbonatico(pedon, min_caco3_pct = 15)
+carater_carbonatico(pedon, min_caco3_pct = 15, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_caco3_pct}{Limite de CaCO3 (default 15\%).}
+
+\item{max_depth_cm}{Profundidade maxima (\code{top_cm}) em que
+camadas qualificam (default \code{NULL} = sem restricao).
+SiBCS Cap 14 Subgrupos usam \code{max_depth_cm = 150}.}
 }
 \description{
 >= 150 g/kg (15\%) de CaCO3 equivalente em qualquer forma de

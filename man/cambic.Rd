@@ -4,12 +4,14 @@
 \alias{cambic}
 \title{Cambic horizon (WRB 2022)}
 \usage{
-cambic(pedon, min_thickness = 15)
+cambic(pedon, min_thickness = 15, min_top_cm = 5)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Minimum thickness in cm (default 15).}
+
+\item{min_top_cm}{Numeric threshold or option (see Details).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

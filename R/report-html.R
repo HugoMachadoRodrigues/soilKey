@@ -298,6 +298,7 @@ report <- function(x,
 
 #' Render the horizons table from a PedonRecord.
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 .html_horizons_table <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$horizons) || nrow(pedon$horizons) == 0) {
     return("")
@@ -337,6 +338,7 @@ report <- function(x,
 
 #' Render a provenance summary from a PedonRecord.
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 .html_provenance_table <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$provenance) ||
         nrow(pedon$provenance) == 0) {
@@ -381,6 +383,7 @@ report <- function(x,
 
 #' Render site metadata header.
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 .html_site_header <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$site)) return("")
   s <- pedon$site

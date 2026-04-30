@@ -2,10 +2,13 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_humic}
 \alias{qual_humic}
-\title{Humic qualifier (hu): >= 1% SOC in upper 50 cm (weighted average).}
+\title{Humic qualifier (hu): >= 1\% SOC in upper 50 cm (weighted average).}
 \usage{
 qual_humic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Humic qualifier (hu): >= 1% SOC in upper 50 cm (weighted average).
+Humic qualifier (hu): >= 1\% SOC in upper 50 cm (weighted average).
 }

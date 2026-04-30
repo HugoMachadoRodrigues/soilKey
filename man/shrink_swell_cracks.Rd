@@ -7,6 +7,11 @@
 \usage{
 shrink_swell_cracks(pedon, min_width_cm = 0.5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_width_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Shrink-swell cracks (WRB 2022 Ch 3.2.12) -- per-pedon test wrapping
 \code{\link{test_shrink_swell_cracks}}.

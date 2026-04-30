@@ -11,7 +11,16 @@ vitric_properties(
   min_p_retention = 25
 )
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_glass_pct}{Numeric threshold or option (see Details).}
+
+\item{min_alfe}{Numeric threshold or option (see Details).}
+
+\item{min_p_retention}{Numeric threshold or option (see Details).}
+}
 \description{
-Volcanic glass \\>= 5\\% in 0.02-2 mm fraction, Al_ox + 1/2 Fe_ox \\>=
-0.4\\%, phosphate retention \\>= 25\\%.
+Volcanic glass \\>= 5\% in 0.02-2 mm fraction, Al_ox + 1/2 Fe_ox \\>=
+0.4\%, phosphate retention \\>= 25\%.
 }

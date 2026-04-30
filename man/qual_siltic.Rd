@@ -7,6 +7,9 @@
 \usage{
 qual_siltic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Siltic qualifier (sl): silt or silt-loam texture >= 30 cm in the upper
 100 cm.

@@ -6,6 +6,9 @@
 \usage{
 argissolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte B textural -- catch-all final na chave SiBCS apos
 Luvissolos / Nitossolos terem sido excluidos. v0.7 enforce: B

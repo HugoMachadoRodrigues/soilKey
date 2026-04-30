@@ -4,7 +4,17 @@
 \alias{carater_salino}
 \title{Carater salino (SiBCS Cap 1, p 39): 4 <= CE < 7 dS/m.}
 \usage{
-carater_salino(pedon, min_ec = 4, max_ec = 7)
+carater_salino(pedon, min_ec = 4, max_ec = 7, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_ec}{Limite inferior de CE em dS/m (default 4).}
+
+\item{max_ec}{Limite superior (exclusivo) (default 7).}
+
+\item{max_depth_cm}{Profundidade maxima em que camadas qualificam
+(default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.}
 }
 \description{
 Carater salino (SiBCS Cap 1, p 39): 4 <= CE < 7 dS/m.

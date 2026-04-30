@@ -7,7 +7,11 @@
 test_designation_pattern(h, pattern, candidate_layers = NULL)
 }
 \arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
 \item{pattern}{A regex (case-insensitive).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
 }
 \description{
 Useful for diagnostics that key on field-described features

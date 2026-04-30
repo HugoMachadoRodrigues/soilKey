@@ -6,6 +6,9 @@
 \usage{
 qual_duric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Duric qualifier (du): duric horizon <= 100 cm.
 }

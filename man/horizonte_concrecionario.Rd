@@ -10,7 +10,14 @@ horizonte_concrecionario(
   min_thickness = 30
 )
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_petroplinthite_pct}{Numeric threshold or option (see Details).}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
-\\>= 50\\% volume material grosso (predominio petroplintita) numa
+\\>= 50\% volume material grosso (predominio petroplintita) numa
 matriz, espessura \\>= 30 cm. Designation Ac/Ec/Bc/Cc.
 }

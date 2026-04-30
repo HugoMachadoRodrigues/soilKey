@@ -6,6 +6,9 @@
 \usage{
 horizonte_A_proeminente(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\\%**.
+Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\%**.
 }

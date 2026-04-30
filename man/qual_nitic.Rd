@@ -6,6 +6,9 @@
 \usage{
 qual_nitic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Nitic qualifier (ni): nitic horizon <= 100 cm.
 }

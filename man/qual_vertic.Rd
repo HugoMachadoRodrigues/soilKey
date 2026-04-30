@@ -6,6 +6,9 @@
 \usage{
 qual_vertic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Vertic qualifier (vr): vertic horizon <= 100 cm.
 }

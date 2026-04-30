@@ -13,9 +13,10 @@
 #' Aeolic material (WRB 2022 Ch 3.3.1)
 #'
 #' Wind-deposited material in the upper 20 cm: rounded matt-surfaced sand
-#' grains OR aeroturbation features, AND < 1\\% SOC in the upper 10 cm.
+#' grains OR aeroturbation features, AND < 1\% SOC in the upper 10 cm.
 #' v0.3.3 detects via \code{rock_origin == "aeolian"} OR
 #' \code{layer_origin == "aeolic"}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aeolic_material <- function(pedon) {
   h <- pedon$horizons
@@ -40,6 +41,8 @@ aeolic_material <- function(pedon) {
 #' Per the canonical definition: human-made / human-altered / human-
 #' excavated material. v0.3.3 returns the layers where
 #' \code{artefacts_pct >= 1}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_pct Numeric threshold or option (see Details).
 #' @export
 artefacts <- function(pedon, min_pct = 1) {
   h <- pedon$horizons
@@ -56,8 +59,10 @@ artefacts <- function(pedon, min_pct = 1) {
 }
 
 
-#' Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\\% CaCO3 throughout the
+#' Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\% CaCO3 throughout the
 #' fine earth, primary carbonates from the parent material.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_caco3_pct Numeric threshold or option (see Details).
 #' @export
 calcaric_material <- function(pedon, min_caco3_pct = 2) {
   h <- pedon$horizons
@@ -76,6 +81,7 @@ calcaric_material <- function(pedon, min_caco3_pct = 2) {
 
 #' Claric material (WRB 2022 Ch 3.3.4): light-coloured fine earth with
 #' Munsell criteria.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 claric_material <- function(pedon) {
   h <- pedon$horizons
@@ -91,9 +97,10 @@ claric_material <- function(pedon) {
 }
 
 
-#' Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\\% Mg-rich carbonate,
+#' Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\% Mg-rich carbonate,
 #' CaCO3/MgCO3 < 1.5. v0.3.3: detects via designation pattern
 #' \code{kdo|do|magn} as proxy when ratio data missing.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 dolomitic_material <- function(pedon) {
   h <- pedon$horizons
@@ -115,10 +122,12 @@ dolomitic_material <- function(pedon) {
 }
 
 
-#' Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\\% gypsum that is
+#' Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\% gypsum that is
 #' primary (not secondary). Without a "secondary fraction" schema column,
 #' v0.3.3 treats any layer with caso4_pct >= 5 as gypsiric unless it
 #' explicitly carries gypsic-horizon designation.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_caso4_pct Numeric threshold or option (see Details).
 #' @export
 gypsiric_material <- function(pedon, min_caso4_pct = 5) {
   h <- pedon$horizons
@@ -140,9 +149,12 @@ gypsiric_material <- function(pedon, min_caso4_pct = 5) {
 }
 
 
-#' Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\\% inorganic
+#' Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\% inorganic
 #' sulfidic S, pH \\>= 4, capable of severe acidification on aerobic
 #' incubation.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_s_pct Numeric threshold or option (see Details).
+#' @param min_pH Numeric threshold or option (see Details).
 #' @export
 hypersulfidic_material <- function(pedon, min_s_pct = 0.01,
                                       min_pH = 4) {
@@ -183,6 +195,9 @@ hypersulfidic_material <- function(pedon, min_s_pct = 0.01,
 #' hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
 #' of severe acidification). v0.3.3: returns sulfidic layers that don't
 #' meet hypersulfidic.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_s_pct Numeric threshold or option (see Details).
+#' @param min_pH Numeric threshold or option (see Details).
 #' @export
 hyposulfidic_material <- function(pedon, min_s_pct = 0.01,
                                      min_pH = 4) {
@@ -210,7 +225,8 @@ hyposulfidic_material <- function(pedon, min_s_pct = 0.01,
 
 #' Limnic material (WRB 2022 Ch 3.3.10): subaquatic deposits (coprogenous
 #' earth, diatomaceous earth, marl, gyttja). v0.3.3: detects via
-#' \code{rock_origin %in% c("lacustrine", "marine")} or designation pattern.
+#' \code{rock_origin \%in\% c("lacustrine", "marine")} or designation pattern.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 limnic_material <- function(pedon) {
   h <- pedon$horizons
@@ -231,9 +247,12 @@ limnic_material <- function(pedon) {
 }
 
 
-#' Mineral material (WRB 2022 Ch 3.3.11): < 20\\% SOC AND < 35\\% volume
-#' artefacts containing >= 20\\% organic carbon. The complement of
+#' Mineral material (WRB 2022 Ch 3.3.11): < 20\% SOC AND < 35\% volume
+#' artefacts containing >= 20\% organic carbon. The complement of
 #' organic_material / organotechnic_material.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_oc Numeric threshold or option (see Details).
+#' @param max_organotechnic Numeric threshold or option (see Details).
 #' @export
 mineral_material <- function(pedon, max_oc = 20, max_organotechnic = 35) {
   h <- pedon$horizons
@@ -267,8 +286,11 @@ mineral_material <- function(pedon, max_oc = 20, max_organotechnic = 35) {
 
 
 #' Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed from
-#' organic material; \\>= 8\\% SOC, with low BD, structural / chroma
+#' organic material; \\>= 8\% SOC, with low BD, structural / chroma
 #' criteria.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param max_chroma Numeric threshold or option (see Details).
 #' @export
 mulmic_material <- function(pedon, min_oc = 8, max_chroma = 2) {
   h <- pedon$horizons
@@ -299,8 +321,10 @@ mulmic_material <- function(pedon, min_oc = 8, max_chroma = 2) {
 }
 
 
-#' Organic material (WRB 2022 Ch 3.3.13): \\>= 20\\% SOC + recognisability
+#' Organic material (WRB 2022 Ch 3.3.13): \\>= 20\% SOC + recognisability
 #' criteria. v0.3.3: SOC threshold only.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc Numeric threshold or option (see Details).
 #' @export
 organic_material <- function(pedon, min_oc = 20) {
   h <- pedon$horizons
@@ -316,9 +340,12 @@ organic_material <- function(pedon, min_oc = 20) {
 }
 
 
-#' Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\\% volume of
-#' artefacts that themselves contain \\>= 20\\% organic C. Soil itself
-#' has < 20\\% SOC.
+#' Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\% volume of
+#' artefacts that themselves contain \\>= 20\% organic C. Soil itself
+#' has < 20\% SOC.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_artefacts Numeric threshold or option (see Details).
+#' @param max_oc Numeric threshold or option (see Details).
 #' @export
 organotechnic_material <- function(pedon, min_artefacts = 35,
                                      max_oc = 20) {
@@ -350,6 +377,8 @@ organotechnic_material <- function(pedon, min_artefacts = 35,
 
 #' Ornithogenic material (WRB 2022 Ch 3.3.15): bird-influenced topsoil.
 #' Mehlich-3 P >= 750 mg/kg + designation pattern \code{Aornit|Bornit}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_p_mehlich3 Numeric threshold or option (see Details).
 #' @export
 ornithogenic_material <- function(pedon, min_p_mehlich3 = 750) {
   h <- pedon$horizons
@@ -379,6 +408,9 @@ ornithogenic_material <- function(pedon, min_p_mehlich3 = 750) {
 #' Soil organic carbon (WRB 2022 Ch 3.3.16): organic C that does NOT
 #' belong to artefacts. v0.3.3: any layer with oc_pct >= 0.1 and
 #' artefacts_industrial_pct < 35.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc Numeric threshold or option (see Details).
+#' @param max_artefacts Numeric threshold or option (see Details).
 #' @export
 soil_organic_carbon <- function(pedon, min_oc = 0.1,
                                    max_artefacts = 35) {
@@ -412,6 +444,7 @@ soil_organic_carbon <- function(pedon, min_oc = 0.1,
 #' material on slopes / footslopes (formerly "colluvic"). v0.3.3: detects
 #' via \code{rock_origin == "colluvial"} OR \code{layer_origin ==
 #' "solimovic"}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 solimovic_material <- function(pedon) {
   h <- pedon$horizons
@@ -434,6 +467,7 @@ solimovic_material <- function(pedon) {
 
 #' Technic hard material (WRB 2022 Ch 3.3.18): consolidated human-made
 #' material (asphalt, concrete, worked stones).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 technic_hard_material <- function(pedon) {
   h <- pedon$horizons
@@ -459,8 +493,10 @@ technic_hard_material <- function(pedon) {
 }
 
 
-#' Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\\% volcanic glass in
+#' Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\% volcanic glass in
 #' 0.02-2 mm fraction AND no andic / vitric properties.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_glass Numeric threshold or option (see Details).
 #' @export
 tephric_material <- function(pedon, min_glass = 30) {
   h <- pedon$horizons

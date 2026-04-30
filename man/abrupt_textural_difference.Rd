@@ -6,14 +6,17 @@
 \usage{
 abrupt_textural_difference(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Sharp clay-content increase between two superimposed mineral layers
 meeting all of:
 \itemize{
-  \item underlying clay \\>= 15\\% AND thickness \\>= 7.5 cm;
+  \item underlying clay \\>= 15\% AND thickness \\>= 7.5 cm;
   \item underlying starts \\>= 10 cm below mineral soil surface;
-  \item underlying has, vs overlying: 2x clay if overlying < 20\\%, OR
-        \\>= 20pp (absolute) more clay if overlying \\>= 20\\%;
+  \item underlying has, vs overlying: 2x clay if overlying < 20\%, OR
+        \\>= 20pp (absolute) more clay if overlying \\>= 20\%;
   \item transitional layer, if any, \\<= 2 cm.
 }
 v0.3.3 enforces criteria 1, 2, 3. The transitional-layer check is

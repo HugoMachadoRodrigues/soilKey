@@ -7,6 +7,9 @@ proeminente, chernozemico.}
 \usage{
 gleissolo_melanico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gleissolos Melanicos (Cap 9): horizonte hístico < 40 cm OR A humico,
 proeminente, chernozemico.

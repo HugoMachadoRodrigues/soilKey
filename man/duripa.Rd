@@ -6,7 +6,12 @@
 \usage{
 duripa(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{duric_horizon}} (WRB Ch 3.1): subsuperficial
-cimentado por silica, continuo ou em \\>= 50\\% volume.
+cimentado por silica, continuo ou em \\>= 50\% volume.
 }

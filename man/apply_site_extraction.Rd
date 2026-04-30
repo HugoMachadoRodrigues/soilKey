@@ -6,6 +6,9 @@
 \usage{
 apply_site_extraction(pedon, parsed, overwrite = FALSE)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Site metadata is not under provenance control (PedonRecord$site is
 a free-form list, not a column with an authority-ranked log). We

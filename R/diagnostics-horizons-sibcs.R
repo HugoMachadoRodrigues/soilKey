@@ -18,13 +18,15 @@
 #' Horizonte hístico (SiBCS Cap 2, p 49-50)
 #'
 #' Horizonte O ou H de coloracao preta/cinza muito escura/brunada,
-#' \\>= 80 g/kg (8\\%) C organico, com:
+#' \\>= 80 g/kg (8\%) C organico, com:
 #' \itemize{
 #'   \item espessura \\>= 20 cm; OR
-#'   \item espessura \\>= 40 cm se \\>= 75\\% volume tecido vegetal; OR
+#'   \item espessura \\>= 40 cm se \\>= 75\% volume tecido vegetal; OR
 #'   \item espessura \\>= 10 cm sobre contato litico/fragmentario OR
-#'         camada com \\>= 90\\% material > 2 mm.
+#'         camada com \\>= 90\% material > 2 mm.
 #' }
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc_g_kg Numeric threshold or option (see Details).
 #' @export
 horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   h <- pedon$horizons
@@ -88,8 +90,15 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
 #' Horizonte A chernozemico (SiBCS Cap 2, p 50-51)
 #'
 #' Horizonte mineral superficial relativamente espesso, escuro, com
-#' alta saturacao por bases (V \\>= 65\\%), OC \\>= 6 g/kg, estrutura
+#' alta saturacao por bases (V \\>= 65\%), OC \\>= 6 g/kg, estrutura
 #' desenvolvida e espessura conforme criterio.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_oc_g_kg Numeric threshold or option (see Details).
+#' @param min_v_pct Numeric threshold or option (see Details).
+#' @param max_value_moist Numeric threshold or option (see Details).
+#' @param max_chroma_moist Numeric threshold or option (see Details).
+#' @param max_value_dry Numeric threshold or option (see Details).
+#' @param min_thickness_cm Numeric threshold or option (see Details).
 #' @export
 horizonte_A_chernozemico <- function(pedon,
                                         min_oc_g_kg = 6,
@@ -153,8 +162,11 @@ horizonte_A_chernozemico <- function(pedon,
 #' Horizonte A humico (SiBCS Cap 2, p 51-52)
 #'
 #' Horizonte A com cor moderadamente escura (value/chroma <= 4),
-#' V < 65\\%, e C organico total >= 60 + 0.1 * argila_media (g/kg).
+#' V < 65\%, e C organico total >= 60 + 0.1 * argila_media (g/kg).
 #' Espessura \\>= a do A chernozemico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_v_pct_max Numeric threshold or option (see Details).
+#' @param min_thickness_cm Numeric threshold or option (see Details).
 #' @export
 horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
                                   min_thickness_cm = 18) {
@@ -222,7 +234,8 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
 
 #' Horizonte A proeminente (SiBCS Cap 2, p 52-53)
 #'
-#' Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\\%**.
+#' Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\%**.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_proeminente <- function(pedon) {
   ch <- horizonte_A_chernozemico(pedon, min_v_pct = 0)  # bypass V check
@@ -253,6 +266,7 @@ horizonte_A_proeminente <- function(pedon) {
 #' Antropic surface formed by long human use; \\>= 20 cm + P Mehlich-1
 #' \\>= 30 mg/kg + evidencias antropogenicas. Reuso de \code{\link{hortic}}
 #' (WRB) com criterios SiBCS-specific.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_antropico <- function(pedon) {
   res <- hortic(pedon, min_thickness = 20, min_oc = 0.6,
@@ -268,6 +282,7 @@ horizonte_A_antropico <- function(pedon) {
 
 #' Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
 #' simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_fraco <- function(pedon) {
   h <- pedon$horizons
@@ -322,6 +337,7 @@ horizonte_A_fraco <- function(pedon) {
 #' Horizonte A moderado (SiBCS Cap 2, p 53-54): catch-all.
 #' Returns TRUE quando o solo tem horizonte superficial mas nao se
 #' enquadra nas demais classes diagnosticas superficiais.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_moderado <- function(pedon) {
   others <- list(
@@ -358,12 +374,14 @@ horizonte_A_moderado <- function(pedon) {
 #' delegacao parcial ao WRB \code{\link{argic}} (criterios de
 #' clay-increase essencialmente identicos) acrescidos de:
 #' \itemize{
-#'   \item espessura \\>= 7.5 cm OR \\>= 10\\% da soma das espessuras
+#'   \item espessura \\>= 7.5 cm OR \\>= 10\% da soma das espessuras
 #'         dos sobrejacentes; e
 #'   \item textura \\>= francoarenosa.
 #' }
 #' Refinamentos pendentes para v0.8: cerosidade obrigatoria sob certas
 #' estruturas (criterio i.1 / i.2 / i.3); lamelas \\>= 15 cm combinadas.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 B_textural <- function(pedon, ...) {
   res <- argic(pedon, ...)
@@ -384,13 +402,17 @@ B_textural <- function(pedon, ...) {
 #'   \item Textura francoarenosa ou mais fina;
 #'   \item Estrutura granular muito pequena/pequena ou em blocos
 #'         subangulares fraco/moderado;
-#'   \item < 5\\% volume mostrando estrutura da rocha original;
+#'   \item < 5\% volume mostrando estrutura da rocha original;
 #'   \item Ki \\<= 2.2 (geralmente \\<= 2.0);
 #'   \item Cerosidade no maximo pouca e fraca.
 #' }
 #' v0.7 enforce thickness, texture, e ausencia de estrutura primaria
 #' herdada via designation e clay; Ki/Kr quantitativos sao v0.8 (precisa
 #' de SiO2/Al2O3 lab-data nao no schema).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param max_cec_per_clay Numeric threshold or option (see Details).
+#' @param ... Reserved for future arguments.
 #' @export
 B_latossolico <- function(pedon, min_thickness = 50,
                               max_cec_per_clay = 17, ...) {
@@ -444,12 +466,14 @@ B_latossolico <- function(pedon, min_thickness = 50,
 #' \itemize{
 #'   \item espessura \\>= 10 cm;
 #'   \item textura francoarenosa ou mais fina;
-#'   \item < 50\\% estrutura da rocha original;
+#'   \item < 50\% estrutura da rocha original;
 #'   \item evidencias de pedogenese (cor mais viva OR remocao de
 #'         carbonatos OR designation \code{Bw}/\code{Bi});
 #'   \item NAO satisfaz: argic, ferralic, espodic, planic, e nao tem
 #'         duripa/petrocalcico/fragipa.
 #' }
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 B_incipiente <- function(pedon, min_thickness = 10) {
   h <- pedon$horizons
@@ -500,11 +524,16 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' Horizonte B nitico (SiBCS Cap 2, p 61-62; v0.7)
 #'
 #' Subsuperficial nao hidromorfico, textura argilosa/muito argilosa
-#' (clay \\>= 35\\% desde a superficie), com pequeno incremento de
+#' (clay \\>= 35\% desde a superficie), com pequeno incremento de
 #' argila (B/A \\<= 1.5), estrutura em blocos sub/angulares ou
 #' prismatica grau moderado/forte, cerosidade no minimo comum +
 #' moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +
 #' carater alumínico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_clay_pct Numeric threshold or option (see Details).
+#' @param max_b_a_ratio Numeric threshold or option (see Details).
+#' @param min_cerosidade Numeric threshold or option (see Details).
 #' @export
 B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                         max_b_a_ratio = 1.5,
@@ -587,6 +616,8 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
 #' espessura \\>= 2.5 cm. Tipos: Bs, Bhs, Bh, ortstein. Reuso de
 #' \code{\link{spodic}} (WRB) que ja codifica criterios essencialmente
 #' identicos.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 B_espodico <- function(pedon, ...) {
   res <- spodic(pedon, ...)
@@ -600,6 +631,7 @@ B_espodico <- function(pedon, ...) {
 #'
 #' Tipo especial de B textural com mudanca textural abrupta +
 #' permeabilidade lenta + cores neutras/escurecidas + cromas baixos.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 B_planico <- function(pedon) {
   h <- pedon$horizons
@@ -629,6 +661,8 @@ B_planico <- function(pedon) {
 #' Horizonte E albico (SiBCS Cap 2, p 66-67; v0.7)
 #'
 #' Reuso de \code{\link{albic}} (WRB Ch 3.1) com criterios identicos.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 horizonte_E_albico <- function(pedon, ...) {
   res <- albic(pedon, ...)
@@ -640,9 +674,12 @@ horizonte_E_albico <- function(pedon, ...) {
 
 #' Horizonte plintico (SiBCS Cap 2, p 67-68; v0.7)
 #'
-#' Plintita \\>= 15\\% volume, espessura \\>= 15 cm. Tem precedencia
+#' Plintita \\>= 15\% volume, espessura \\>= 15 cm. Tem precedencia
 #' sobre B textural, latossolico, nitico, B incipiente, planico (sem
 #' carater sodico), e glei. Reuso de \code{\link{plinthic}} (WRB).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_plinthite_pct Numeric threshold or option (see Details).
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
                                   min_thickness = 15) {
@@ -656,8 +693,11 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
 
 #' Horizonte concrecionario (SiBCS Cap 2, p 68-69; v0.7)
 #'
-#' \\>= 50\\% volume material grosso (predominio petroplintita) numa
+#' \\>= 50\% volume material grosso (predominio petroplintita) numa
 #' matriz, espessura \\>= 30 cm. Designation Ac/Ec/Bc/Cc.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_petroplinthite_pct Numeric threshold or option (see Details).
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
                                         min_thickness = 30) {
@@ -684,6 +724,8 @@ horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
 #'
 #' Petroplintita continua (ironstone). Reuso de
 #' \code{\link{petroplinthic}} (WRB), espessura \\>= 10 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 horizonte_litoplintico <- function(pedon, min_thickness = 10) {
   res <- petroplinthic(pedon, min_thickness = min_thickness)
@@ -699,6 +741,8 @@ horizonte_litoplintico <- function(pedon, min_thickness = 10) {
 #' azuladas / esverdeadas devido a reducao de Fe; espessura \\>= 15 cm.
 #' Reuso de \code{\link{gleyic_properties}} (WRB) com nomenclatura
 #' SiBCS.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_thickness Numeric threshold or option (see Details).
 #' @export
 horizonte_glei <- function(pedon, min_thickness = 15) {
   gl <- gleyic_properties(pedon)
@@ -728,6 +772,8 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
 #' Reuso direto de \code{\link{calcic}} (WRB Ch 3.1.5) -- criterios
 #' identicos: 150 g/kg CaCO3 + 50 g/kg a mais que sub-jacente +
 #' espessura \\>= 15 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 horizonte_calcico <- function(pedon, ...) {
   res <- calcic(pedon, ...)
@@ -740,6 +786,8 @@ horizonte_calcico <- function(pedon, ...) {
 #' Horizonte petrocalcico (SiBCS Cap 2, p 72; v0.7)
 #'
 #' Reuso de \code{\link{petrocalcic}} (WRB v0.3.3).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 horizonte_petrocalcico <- function(pedon, ...) {
   res <- petrocalcic(pedon, ...)
@@ -753,6 +801,8 @@ horizonte_petrocalcico <- function(pedon, ...) {
 #'
 #' Reuso de \code{\link{thionic}} (WRB v0.3.3): pH \\<= 3.5 + sulfidic
 #' material + espessura \\>= 15 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 horizonte_sulfurico <- function(pedon, ...) {
   res <- thionic(pedon, max_pH = 3.5, ...)
@@ -765,9 +815,11 @@ horizonte_sulfurico <- function(pedon, ...) {
 #' Horizonte vertico (SiBCS Cap 2, p 73; v0.7)
 #'
 #' Reuso de \code{\link{vertic_horizon}} (WRB Ch 3.1, v0.3.3) com
-#' criterios essencialmente identicos: clay \\>= 30\\%, slickensides,
+#' criterios essencialmente identicos: clay \\>= 30\%, slickensides,
 #' fendas \\>= 1 cm, espessura \\>= 20 cm. v0.7 SiBCS additional gate:
 #' COLE \\>= 0.06 (proxy via shrink-swell).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 horizonte_vertico <- function(pedon, ...) {
   res <- vertic_horizon(pedon, min_thickness = 20, ...)
@@ -782,6 +834,8 @@ horizonte_vertico <- function(pedon, ...) {
 #' Reuso de \code{\link{fragic}} (WRB v0.3.3): horizonte
 #' subsuperficial endurecido quando seco, baixa MO, BD elevada,
 #' quebradicidade.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 fragipa <- function(pedon, ...) {
   res <- fragic(pedon, ...)
@@ -794,7 +848,9 @@ fragipa <- function(pedon, ...) {
 #' Duripa (SiBCS Cap 2, p 74; v0.7)
 #'
 #' Reuso de \code{\link{duric_horizon}} (WRB Ch 3.1): subsuperficial
-#' cimentado por silica, continuo ou em \\>= 50\\% volume.
+#' cimentado por silica, continuo ou em \\>= 50\% volume.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param ... Reserved for future arguments.
 #' @export
 duripa <- function(pedon, ...) {
   res <- duric_horizon(pedon, ...)

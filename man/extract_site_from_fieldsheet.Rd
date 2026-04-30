@@ -15,8 +15,7 @@ extract_site_from_fieldsheet(
 )
 }
 \arguments{
-\item{pedon}{A \code{\link{PedonRecord}} to merge into. Mutated in
-place AND returned invisibly.}
+\item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{image_path}{Path to the field-sheet image.}
 

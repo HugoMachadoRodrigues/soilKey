@@ -6,8 +6,15 @@
 \usage{
 horizonte_A_humico(pedon, min_v_pct_max = 65, min_thickness_cm = 18)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_v_pct_max}{Numeric threshold or option (see Details).}
+
+\item{min_thickness_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Horizonte A com cor moderadamente escura (value/chroma <= 4),
-V < 65\\%, e C organico total >= 60 + 0.1 * argila_media (g/kg).
+V < 65\%, e C organico total >= 60 + 0.1 * argila_media (g/kg).
 Espessura \\>= a do A chernozemico.
 }

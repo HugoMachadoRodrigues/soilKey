@@ -2,15 +2,20 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{gypsiric_material}
 \alias{gypsiric_material}
-\title{Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\\% gypsum that is
+\title{Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\% gypsum that is
 primary (not secondary). Without a "secondary fraction" schema column,
 v0.3.3 treats any layer with caso4_pct >= 5 as gypsiric unless it
 explicitly carries gypsic-horizon designation.}
 \usage{
 gypsiric_material(pedon, min_caso4_pct = 5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_caso4_pct}{Numeric threshold or option (see Details).}
+}
 \description{
-Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\\% gypsum that is
+Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\% gypsum that is
 primary (not secondary). Without a "secondary fraction" schema column,
 v0.3.3 treats any layer with caso4_pct >= 5 as gypsiric unless it
 explicitly carries gypsic-horizon designation.

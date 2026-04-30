@@ -6,6 +6,9 @@
 \usage{
 gleysol(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 WRB-canonical (multi-path):
 \enumerate{

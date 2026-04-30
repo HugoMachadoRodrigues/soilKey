@@ -7,6 +7,9 @@ Detectado via designation pattern \"^O\".}
 \usage{
 organossolo_folico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Organossolos Folicos (Cap 14): horizonte O histico (drenado).
 Detectado via designation pattern \"^O\".

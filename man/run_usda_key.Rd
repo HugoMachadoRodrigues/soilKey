@@ -2,7 +2,7 @@
 % Please edit documentation in R/key-usda.R
 \name{run_usda_key}
 \alias{run_usda_key}
-\title{Run the USDA Soil Taxonomy key over a pedon}
+\title{Run the USDA Soil Taxonomy Order key over a pedon}
 \usage{
 run_usda_key(pedon, rules = NULL)
 }
@@ -17,5 +17,5 @@ A list with \code{assigned} (the YAML entry of the assigned
         Order) and \code{trace}.
 }
 \description{
-Run the USDA Soil Taxonomy key over a pedon
+Run the USDA Soil Taxonomy Order key over a pedon
 }

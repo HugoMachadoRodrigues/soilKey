@@ -2,10 +2,17 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{limnic_material}
 \alias{limnic_material}
-\title{}
+\title{Limnic material (WRB 2022 Ch 3.3.10): subaquatic deposits (coprogenous
+earth, diatomaceous earth, marl, gyttja). v0.3.3: detects via
+\code{rock_origin \%in\% c("lacustrine", "marine")} or designation pattern.}
 \usage{
 limnic_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-
+Limnic material (WRB 2022 Ch 3.3.10): subaquatic deposits (coprogenous
+earth, diatomaceous earth, marl, gyttja). v0.3.3: detects via
+\code{rock_origin \%in\% c("lacustrine", "marine")} or designation pattern.
 }

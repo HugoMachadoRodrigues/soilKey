@@ -6,6 +6,13 @@
 \usage{
 test_ecec_per_clay(h, max_cmol_per_kg_clay = 12, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_cmol_per_kg_clay}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default threshold is 12 cmol_c/kg clay (WRB 2022 ferralic horizon). If
 \code{ecec_cmol} is missing, computes ECEC from \code{ca_cmol +

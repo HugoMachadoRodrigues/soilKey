@@ -6,6 +6,9 @@
 \usage{
 latossolo_amarelo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Latossolos Amarelos (Cap 10): matiz \\>= 7.5YR (mais amarelo).
 }

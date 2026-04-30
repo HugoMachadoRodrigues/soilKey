@@ -124,6 +124,7 @@ andisol_qualifying_usda <- function(pedon) {
 #' Aquands Suborder qualifier (Cap 6, p 117)
 #' Pass when histic OR aquic conditions in 40-50 cm with redox
 #' features. Simplified: histic OR aquic_conditions(max_top=50).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aquand_qualifying_usda <- function(pedon) {
   hi <- histic_epipedon_usda(pedon)
@@ -145,6 +146,8 @@ aquand_qualifying_usda <- function(pedon) {
 #' Pass when 1500 kPa water retention < 15\% (air-dried) and
 #' < 30\% (undried) throughout 60\%+ of the thickness. v0.8 proxy:
 #' uses water_content_1500kpa < 15\%.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 vitrand_qualifying_usda <- function(pedon, max_top_cm = 60) {
   h <- pedon$horizons
@@ -175,6 +178,7 @@ vitrand_qualifying_usda <- function(pedon, max_top_cm = 60) {
 
 #' Hydric (Andisols): 1500 kPa water retention >= 70\% on undried
 #' samples throughout a 35+ cm layer within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 hydric_andisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -199,6 +203,7 @@ hydric_andisol_usda <- function(pedon) {
 # ---- Melanic / Fulvic Andisols --------------------------------------
 
 #' Melanic Andisols: melanic_epipedon present.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 melanic_andisol_usda <- function(pedon) {
   res <- melanic_epipedon_usda(pedon)
@@ -210,6 +215,7 @@ melanic_andisol_usda <- function(pedon) {
 #' Fulvic Andisols: similar to melanic but with melanic_index > 1.70
 #' (more humic acid). v0.8: detected via OC >= 6 in cumulative 30 cm
 #' but WITHOUT melanic_epipedon (since melanic requires index <= 1.70).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 fulvic_andisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -239,6 +245,7 @@ fulvic_andisol_usda <- function(pedon) {
 #' Pass when the sum of extractable bases (NH4OAc) plus 1N KCl-Al
 #' is < 2.0 cmol(+)/kg in fine earth, in a 30+ cm layer between
 #' 25 and 100 cm. v0.8 proxy: ECEC <= 2.0 in B horizons.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 acric_andisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -264,6 +271,7 @@ acric_andisol_usda <- function(pedon) {
 
 #' Alic Subgroup helper (Andisols)
 #' Pass when al_kcl_cmol > 2.0 in a 10+ cm layer between 25 and 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 alic_andisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -289,6 +297,7 @@ alic_andisol_usda <- function(pedon) {
 
 #' Pachic Subgroup helper (Andisols, Mollisols)
 #' Pass when mollic OR umbric epipedon is >= 50 cm thick.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 pachic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -315,6 +324,7 @@ pachic_subgroup_usda <- function(pedon) {
 #' Thaptic Subgroup helper (Andisols)
 #' Pass when, between 25 and 100 cm, a 10+ cm layer with OC > 3.0\%
 #' and mollic colors exists, underlying lighter horizons.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 thaptic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -340,6 +350,7 @@ thaptic_subgroup_usda <- function(pedon) {
 
 #' Eutric Subgroup helper (Andisols)
 #' Pass when base_saturation (sum-of-cations) >= 50\% in some part.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 eutric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -359,6 +370,7 @@ eutric_subgroup_usda <- function(pedon) {
 
 #' Vitric Subgroup helper (Andisols)
 #' Pass when volcanic_glass_pct >= 30 in a 25+ cm layer within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 vitric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -384,7 +396,8 @@ vitric_subgroup_usda <- function(pedon) {
 
 #' Spodic-Andisols Subgroup helper
 #' Pass when albic horizon overlies a cambic OR spodic horizon,
-#' OR when a spodic horizon is present in 50%+ of the pedon.
+#' OR when a spodic horizon is present in 50\%+ of the pedon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 spodic_andisol_usda <- function(pedon) {
   sp <- spodic_horizon_usda(pedon)
@@ -407,6 +420,7 @@ spodic_andisol_usda <- function(pedon) {
 
 #' Humic Andisols Subgroup helper
 #' Pass when mollic OR umbric epipedon present.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 humic_andisol_usda <- function(pedon) {
   mo <- mollic_epipedon_usda(pedon)

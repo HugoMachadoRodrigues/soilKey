@@ -6,6 +6,9 @@
 \usage{
 qual_petroduric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Petroduric qualifier (pd): petroduric horizon <= 100 cm.
 }

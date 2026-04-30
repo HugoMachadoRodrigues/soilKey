@@ -6,8 +6,17 @@
 \usage{
 carater_alitico(pedon, min_al = 4, min_al_sat = 50, max_v = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_al}{Numeric threshold or option (see Details).}
+
+\item{min_al_sat}{Numeric threshold or option (see Details).}
+
+\item{max_v}{Numeric threshold or option (see Details).}
+}
 \description{
 Critérios canônicos: Al(extr) >= 4 cmolc/kg solo, saturacao por
-aluminio [100 * Al / (S + Al)] >= 50%, e saturacao por bases V < 50%.
+aluminio [100 * Al / (S + Al)] >= 50\%, e saturacao por bases V < 50\%.
 Avaliado no horizonte B (ou C, na ausencia de B).
 }

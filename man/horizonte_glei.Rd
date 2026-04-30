@@ -6,6 +6,11 @@
 \usage{
 horizonte_glei(pedon, min_thickness = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Subsuperficial (ou eventualmente superficial) com cores neutras /
 azuladas / esverdeadas devido a reducao de Fe; espessura \\>= 15 cm.

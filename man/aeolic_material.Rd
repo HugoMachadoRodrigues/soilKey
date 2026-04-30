@@ -6,9 +6,12 @@
 \usage{
 aeolic_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Wind-deposited material in the upper 20 cm: rounded matt-surfaced sand
-grains OR aeroturbation features, AND < 1\\% SOC in the upper 10 cm.
+grains OR aeroturbation features, AND < 1\% SOC in the upper 10 cm.
 v0.3.3 detects via \code{rock_origin == "aeolian"} OR
 \code{layer_origin == "aeolic"}.
 }

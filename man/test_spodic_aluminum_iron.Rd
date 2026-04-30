@@ -6,6 +6,13 @@
 \usage{
 test_spodic_aluminum_iron(h, min_pct = 0.5, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 0.5\% (WRB 2022 Chapter 3, Spodic horizon). Used by
 \code{\link{spodic}}.

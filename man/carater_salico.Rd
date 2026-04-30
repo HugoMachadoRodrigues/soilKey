@@ -4,7 +4,15 @@
 \alias{carater_salico}
 \title{Carater salico (SiBCS Cap 1, p 38): CE >= 7 dS/m em alguma epoca.}
 \usage{
-carater_salico(pedon, min_ec = 7)
+carater_salico(pedon, min_ec = 7, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_ec}{Limite de CE em dS/m (default 7).}
+
+\item{max_depth_cm}{Profundidade maxima em que camadas qualificam
+(default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.}
 }
 \description{
 Carater salico (SiBCS Cap 1, p 38): CE >= 7 dS/m em alguma epoca.

@@ -64,6 +64,7 @@ unpack_vlm_attr <- function(x) {
 #' }
 #'
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 find_or_append_horizon <- function(pedon, top_cm, bottom_cm) {
   h <- pedon$horizons
   n <- nrow(h)
@@ -144,6 +145,7 @@ horizon_simple_attr_map <- function() {
 #' Returns the count of provenance entries added.
 #'
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 apply_horizons_extraction <- function(pedon,
                                        parsed,
                                        overwrite = FALSE,
@@ -259,6 +261,7 @@ apply_horizons_extraction <- function(pedon,
 #' field can be filled by the VLM.
 #'
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
   if (is.null(parsed$site)) return(0L)
 
@@ -412,7 +415,7 @@ extract_horizons_from_pdf <- function(pedon,
 #' photos without a reference card should yield confidence below 0.5
 #' per the prompt specification.
 #'
-#' Quantitative non-color attributes (clay %, CEC, pH, etc.) are
+#' Quantitative non-color attributes (clay \%, CEC, pH, etc.) are
 #' \strong{never} extracted from photos, by prompt-level instruction.
 #' If the model returns one anyway, it is silently dropped.
 #'
@@ -420,6 +423,7 @@ extract_horizons_from_pdf <- function(pedon,
 #' @param image_path Path to the image file (JPG / PNG).
 #' @return Invisibly, the mutated \code{pedon}, with the photo added
 #'         to \code{pedon$images}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 extract_munsell_from_photo <- function(pedon,
                                         image_path,
@@ -494,6 +498,7 @@ extract_munsell_from_photo <- function(pedon,
 #' @inheritParams extract_horizons_from_pdf
 #' @param image_path Path to the field-sheet image.
 #' @return Invisibly, the mutated \code{pedon}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 extract_site_from_fieldsheet <- function(pedon,
                                           image_path,

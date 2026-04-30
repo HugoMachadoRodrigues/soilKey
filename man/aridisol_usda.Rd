@@ -9,6 +9,9 @@ surface + low OC (no organic accumulation).}
 \usage{
 aridisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Aridisols (USDA Cap 7): aridic moisture regime + ochric/anthropic +
 subsurface diagnostic. v0.8 simplification: detected via aridity

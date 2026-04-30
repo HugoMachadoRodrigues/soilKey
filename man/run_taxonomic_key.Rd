@@ -27,3 +27,8 @@ regardless of system -- the test combinator semantics
 (\code{all_of} / \code{any_of} / \code{default} /
 \code{not_implemented_v01}) are the same in all three systems.
 }
+\details{
+Used at the TOP level (RSG / Order / Ordem). For nested categorical
+levels (subordens, grandes grupos, subgrupos, familias) iterate the
+flat taxa list directly via \code{\link{run_taxa_list}}.
+}

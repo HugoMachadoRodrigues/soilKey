@@ -2,14 +2,21 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{mineral_material}
 \alias{mineral_material}
-\title{Mineral material (WRB 2022 Ch 3.3.11): < 20\\% SOC AND < 35\\% volume
-artefacts containing >= 20\\% organic carbon. The complement of
+\title{Mineral material (WRB 2022 Ch 3.3.11): < 20\% SOC AND < 35\% volume
+artefacts containing >= 20\% organic carbon. The complement of
 organic_material / organotechnic_material.}
 \usage{
 mineral_material(pedon, max_oc = 20, max_organotechnic = 35)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_oc}{Numeric threshold or option (see Details).}
+
+\item{max_organotechnic}{Numeric threshold or option (see Details).}
+}
 \description{
-Mineral material (WRB 2022 Ch 3.3.11): < 20\\% SOC AND < 35\\% volume
-artefacts containing >= 20\\% organic carbon. The complement of
+Mineral material (WRB 2022 Ch 3.3.11): < 20\% SOC AND < 35\% volume
+artefacts containing >= 20\% organic carbon. The complement of
 organic_material / organotechnic_material.
 }

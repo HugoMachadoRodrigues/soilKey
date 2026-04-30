@@ -9,6 +9,9 @@ via \code{rock_origin == "colluvial"} OR \code{layer_origin ==
 \usage{
 solimovic_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Solimovic material (WRB 2022 Ch 3.3.17): hetero genous mass-movement
 material on slopes / footslopes (formerly "colluvic"). v0.3.3: detects

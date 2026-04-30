@@ -2,14 +2,17 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{dolomitic_material}
 \alias{dolomitic_material}
-\title{Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\\% Mg-rich carbonate,
+\title{Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\% Mg-rich carbonate,
 CaCO3/MgCO3 < 1.5. v0.3.3: detects via designation pattern
 \code{kdo|do|magn} as proxy when ratio data missing.}
 \usage{
 dolomitic_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\\% Mg-rich carbonate,
+Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\% Mg-rich carbonate,
 CaCO3/MgCO3 < 1.5. v0.3.3: detects via designation pattern
 \code{kdo|do|magn} as proxy when ratio data missing.
 }

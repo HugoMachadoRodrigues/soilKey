@@ -7,6 +7,9 @@ pouco/sem Fe).}
 \usage{
 espodossolo_humiluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
 pouco/sem Fe).

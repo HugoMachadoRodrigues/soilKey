@@ -3,13 +3,20 @@
 \name{mulmic_material}
 \alias{mulmic_material}
 \title{Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed from
-organic material; \\>= 8\\% SOC, with low BD, structural / chroma
+organic material; \\>= 8\% SOC, with low BD, structural / chroma
 criteria.}
 \usage{
 mulmic_material(pedon, min_oc = 8, max_chroma = 2)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_oc}{Numeric threshold or option (see Details).}
+
+\item{max_chroma}{Numeric threshold or option (see Details).}
+}
 \description{
 Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed from
-organic material; \\>= 8\\% SOC, with low BD, structural / chroma
+organic material; \\>= 8\% SOC, with low BD, structural / chroma
 criteria.
 }

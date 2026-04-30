@@ -2,12 +2,17 @@
 % Please edit documentation in R/diagnostics-orders-usda.R
 \name{histosol_usda}
 \alias{histosol_usda}
-\title{Histosols (USDA Cap 10): organic materials.
-Delegates to histic_horizon (WRB).}
+\title{Histosols (USDA Cap 10): organic materials >= 40 cm in 0-100.
+Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
+threshold) instead of WRB histic_horizon (10 cm).}
 \usage{
 histosol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Histosols (USDA Cap 10): organic materials.
-Delegates to histic_horizon (WRB).
+Histosols (USDA Cap 10): organic materials >= 40 cm in 0-100.
+Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
+threshold) instead of WRB histic_horizon (10 cm).
 }

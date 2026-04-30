@@ -6,6 +6,9 @@
 \usage{
 nitossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 \\>= 350 g/kg argila incluindo no horizonte A, com B nitico abaixo
 do A, com argila ativ baixa OR ativ alta + carater alumínico, na

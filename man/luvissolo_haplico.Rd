@@ -6,6 +6,9 @@
 \usage{
 luvissolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Luvissolos Haplicos (catch-all).
 }

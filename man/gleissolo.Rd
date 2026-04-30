@@ -6,6 +6,9 @@
 \usage{
 gleissolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte glei iniciando \\<= 50 cm OR entre 50-150 cm imediatamente
 subjacente a A/E ou H histico (com espessura insuficiente para

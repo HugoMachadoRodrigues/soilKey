@@ -8,6 +8,13 @@ grade massive/very firm OR designation pattern \code{x}/\code{Bx}.}
 \usage{
 fragic(pedon, min_thickness = 15, min_bd = 1.65)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_bd}{Numeric threshold or option (see Details).}
+}
 \description{
 Fragic horizon (WRB 2022): a high-bulk-density horizon with restricted
 rooting. v0.3.3: detects via bulk_density_g_cm3 >= 1.65 AND structure

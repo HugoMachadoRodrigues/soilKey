@@ -6,6 +6,13 @@
 \usage{
 test_caso4_concentration(h, min_pct = 5, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 5\% (gypsic horizon, WRB 2022 Chapter 3). Used by
 \code{\link{gypsic}}.

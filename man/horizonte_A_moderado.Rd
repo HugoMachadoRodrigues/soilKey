@@ -8,6 +8,9 @@ enquadra nas demais classes diagnosticas superficiais.}
 \usage{
 horizonte_A_moderado(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte A moderado (SiBCS Cap 2, p 53-54): catch-all.
 Returns TRUE quando o solo tem horizonte superficial mas nao se

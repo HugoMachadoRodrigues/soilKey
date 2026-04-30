@@ -6,6 +6,9 @@
 \usage{
 qual_anthric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Anthric qualifier (ak): anthric properties.
 }

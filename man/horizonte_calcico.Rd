@@ -6,6 +6,11 @@
 \usage{
 horizonte_calcico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso direto de \code{\link{calcic}} (WRB Ch 3.1.5) -- criterios
 identicos: 150 g/kg CaCO3 + 50 g/kg a mais que sub-jacente +

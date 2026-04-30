@@ -1,6 +1,6 @@
 # soilKey -- canonical fixtures benchmark (offline)
 
-**Run:** 2026-04-30 15:39:37 EDT &middot; **Package version:** 0.9.9 &middot; **Fixtures:** 31
+**Run:** 2026-04-30 16:17:57 EDT &middot; **Package version:** 0.9.9 &middot; **Fixtures:** 31
 
 This is the network-free benchmark over the canonical fixtures
 shipped under `inst/extdata/`. Each fixture is a real published

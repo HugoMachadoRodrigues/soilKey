@@ -14,7 +14,7 @@ Munsell criteria:
         \\<= 2;
   \item moist: value \\>= 6 with chroma \\<= 4, OR value \\>= 5 with
         chroma \\<= 3, OR value \\>= 4 with chroma \\<= 2, OR (hue 5YR or
-        redder AND value \\>= 4 AND chroma \\<= 3 AND \\>= 25\\% of sand /
+        redder AND value \\>= 4 AND chroma \\<= 3 AND \\>= 25\% of sand /
         coarse silt grains uncoated).
 }
 v0.3.3 implementation: requires moist Munsell value/chroma to satisfy

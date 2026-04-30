@@ -153,6 +153,7 @@ spatial_prior_soilgrids <- function(pedon,
 #' to terra::extract regardless of the raster CRS.
 #'
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 soilgrids_buffer_vect <- function(pedon, buffer_m = 250) {
   lon <- pedon$site$lon
   lat <- pedon$site$lat

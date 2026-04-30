@@ -6,6 +6,11 @@
 \usage{
 horizonte_E_albico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{albic}} (WRB Ch 3.1) com criterios identicos.
 }

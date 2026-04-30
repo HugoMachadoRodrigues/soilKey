@@ -2,14 +2,21 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{hypersulfidic_material}
 \alias{hypersulfidic_material}
-\title{Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\\% inorganic
+\title{Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\% inorganic
 sulfidic S, pH \\>= 4, capable of severe acidification on aerobic
 incubation.}
 \usage{
 hypersulfidic_material(pedon, min_s_pct = 0.01, min_pH = 4)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_s_pct}{Numeric threshold or option (see Details).}
+
+\item{min_pH}{Numeric threshold or option (see Details).}
+}
 \description{
-Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\\% inorganic
+Hypersulfidic material (WRB 2022 Ch 3.3.8): \\>= 0.01\% inorganic
 sulfidic S, pH \\>= 4, capable of severe acidification on aerobic
 incubation.
 }

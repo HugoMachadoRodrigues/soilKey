@@ -19,29 +19,92 @@
 
 #' Pull a paginated set of WoSIS profiles via the WoSIS REST API.
 #'
+#' v0.9.10 hardening:
+#' - Aligns the request schema with WoSIS REST v3
+#'   (`https://wosis.isric.org/api/v3/profiles`):
+#'   pagination via `offset` + `limit` (the v3 default), not page+page_size.
+#' - Adds `subset = c("global", "south_america", ...)` filter that
+#'   maps to the v3 `country` and `bbox` query parameters per region.
+#' - Honours `getOption("soilKey.wosis_endpoint")` for testing /
+#'   private mirrors.
+#' - Wraps every HTTP call in `tryCatch` and reports a clear error
+#'   when offline or when the server returns a non-200 status.
+#'
+#' @param url      WoSIS REST v3 endpoint (e.g.
+#'                 \code{"https://wosis.isric.org/api/v3/profiles"}).
+#' @param subset   Optional region subset name; one of
+#'                 \code{c("global","south_america","north_america",
+#'                 "europe","africa","asia","oceania","brazil")}. The
+#'                 South America bbox is approximate; tighten via
+#'                 \code{options(soilKey.wosis_bbox_<region> = c(xmin, ymin, xmax, ymax))}.
+#' @param limit    Profiles per page (REST v3 default: 100; max 500).
+#' @param n_max    Maximum number of profiles to return.
+#' @param verbose  Emit per-page progress.
 #' @keywords internal
-read_wosis_profiles <- function(url       = getOption("soilKey.wosis_endpoint"),
-                                  page_size = 500L,
-                                  n_max     = Inf) {
+read_wosis_profiles <- function(url       = getOption("soilKey.wosis_endpoint",
+                                                        "https://wosis.isric.org/api/v3/profiles"),
+                                  subset    = c("global", "south_america",
+                                                "north_america", "europe",
+                                                "africa", "asia", "oceania",
+                                                "brazil"),
+                                  limit     = 100L,
+                                  n_max     = Inf,
+                                  verbose   = TRUE) {
   if (is.null(url) || !nzchar(url))
     stop("Set options(soilKey.wosis_endpoint = '...') before calling read_wosis_profiles().")
   if (!requireNamespace("httr",     quietly = TRUE)) stop("Install 'httr'.")
   if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Install 'jsonlite'.")
+  subset <- match.arg(subset)
 
-  out  <- list()
-  page <- 1L
+  # Region-specific filter parameters (bbox = c(xmin, ymin, xmax, ymax)).
+  region_filter <- switch(subset,
+    global         = list(),
+    south_america  = list(bbox = "-82,-56,-34,13"),
+    north_america  = list(bbox = "-170,15,-50,84"),
+    europe         = list(bbox = "-25,34,45,72"),
+    africa         = list(bbox = "-20,-35,52,38"),
+    asia           = list(bbox = "26,-12,180,82"),
+    oceania        = list(bbox = "110,-50,180,0"),
+    brazil         = list(country = "BR")
+  )
+  # Allow user override per region (e.g. for SiBCS tighter bbox).
+  override <- getOption(paste0("soilKey.wosis_bbox_", subset))
+  if (!is.null(override)) {
+    region_filter <- list(bbox = paste(override, collapse = ","))
+  }
+
+  out    <- list()
+  offset <- 0L
   while (length(out) < n_max) {
-    resp <- httr::GET(url,
-                       query = list(page = page, page_size = page_size,
-                                      format = "json"))
-    httr::stop_for_status(resp)
+    page_limit <- min(limit, n_max - length(out))
+    qparams <- c(list(offset = offset, limit = page_limit, format = "json"),
+                   region_filter)
+    resp <- tryCatch(
+      httr::GET(url, query = qparams,
+                  httr::user_agent("soilKey (https://github.com/HugoMachadoRodrigues/soilKey)")),
+      error = function(e)
+        stop(sprintf("WoSIS HTTP request failed: %s\n", conditionMessage(e)),
+             "  Check network connectivity, then retry.\n",
+             "  Endpoint: ", url, call. = FALSE)
+    )
+    if (httr::status_code(resp) != 200L) {
+      stop(sprintf("WoSIS returned HTTP %d for %s\n",
+                     httr::status_code(resp), url),
+           "  Body: ", httr::content(resp, as = "text",
+                                       encoding = "UTF-8"),
+           call. = FALSE)
+    }
     body <- jsonlite::fromJSON(httr::content(resp, as = "text",
                                                  encoding = "UTF-8"),
                                  simplifyVector = FALSE)
-    if (length(body$results) == 0L) break
-    out <- c(out, body$results)
-    if (length(body$results) < page_size) break
-    page <- page + 1L
+    page <- body$results %||% body$features %||% body
+    if (!is.list(page) || length(page) == 0L) break
+    out <- c(out, page)
+    if (verbose)
+      message(sprintf("[WoSIS] offset=%d, fetched=%d, running total=%d",
+                        offset, length(page), length(out)))
+    if (length(page) < page_limit) break  # last page
+    offset <- offset + page_limit
   }
   utils::head(out, n_max)
 }
@@ -85,17 +148,20 @@ build_pedon_from_wosis <- function(profile) {
 
 #' Run the benchmark and emit the report.
 #'
-#' @param n_max Maximum number of WoSIS profiles to include (caps run time).
-#' @param subset Optional region filter, e.g. "South America" or "Brazil".
+#' @param n_max  Maximum number of WoSIS profiles to include (caps run
+#'        time). Default 5 000.
+#' @param subset Region subset (passed through to
+#'        \code{read_wosis_profiles}). Default \code{"global"}.
 #' @keywords internal
-run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
-  profiles <- read_wosis_profiles(n_max = n_max)
-  if (!is.null(subset)) {
-    profiles <- Filter(function(p)
-      identical(p$region, subset) || identical(p$country, subset),
-      profiles)
-  }
-  message(sprintf("WoSIS subset: %d profiles", length(profiles)))
+run_wosis_benchmark <- function(n_max  = 5000L,
+                                  subset = c("global", "south_america",
+                                             "north_america", "europe",
+                                             "africa", "asia", "oceania",
+                                             "brazil")) {
+  subset   <- match.arg(subset)
+  profiles <- read_wosis_profiles(n_max = n_max, subset = subset)
+  message(sprintf("WoSIS subset (%s): %d profiles",
+                    subset, length(profiles)))
 
   pedons <- lapply(profiles, build_pedon_from_wosis)
 
@@ -115,6 +181,9 @@ run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
     )
   }, classifications, pedons))
 
+  if (is.null(bench) || nrow(bench) == 0L) {
+    stop("No WoSIS profiles to benchmark -- empty subset.")
+  }
   bench$match <- bench$target == bench$assigned
 
   report <- list(

@@ -6,6 +6,13 @@
 \usage{
 test_andic_alfe(h, min_pct = 2, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Distinct from spodic (which uses 0.5\%); the andic threshold is
 four times higher per WRB 2022 Chapter 3.

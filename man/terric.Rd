@@ -8,6 +8,11 @@ of mineral material (sediment / sand additions). v0.3.3: thickness >=
 \usage{
 terric(pedon, min_thickness = 20)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Terric horizon (WRB 2022): topsoil thickened by long-term application
 of mineral material (sediment / sand additions). v0.3.3: thickness >=

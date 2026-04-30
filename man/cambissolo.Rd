@@ -6,6 +6,9 @@
 \usage{
 cambissolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte B incipiente imediatamente abaixo de A ou histico < 40 cm,
 com plintita/petroplintita (se presente) que NAO satisfaca aos

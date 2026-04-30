@@ -7,6 +7,9 @@ dominantes).}
 \usage{
 vertissolo_ebanico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
 dominantes).

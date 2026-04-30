@@ -6,6 +6,11 @@
 \usage{
 horizonte_sulfurico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{thionic}} (WRB v0.3.3): pH \\<= 3.5 + sulfidic
 material + espessura \\>= 15 cm.

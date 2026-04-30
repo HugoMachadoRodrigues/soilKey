@@ -6,13 +6,18 @@
 \usage{
 horizonte_histico(pedon, min_oc_g_kg = 80)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_oc_g_kg}{Numeric threshold or option (see Details).}
+}
 \description{
 Horizonte O ou H de coloracao preta/cinza muito escura/brunada,
-\\>= 80 g/kg (8\\%) C organico, com:
+\\>= 80 g/kg (8\%) C organico, com:
 \itemize{
   \item espessura \\>= 20 cm; OR
-  \item espessura \\>= 40 cm se \\>= 75\\% volume tecido vegetal; OR
+  \item espessura \\>= 40 cm se \\>= 75\% volume tecido vegetal; OR
   \item espessura \\>= 10 cm sobre contato litico/fragmentario OR
-        camada com \\>= 90\\% material > 2 mm.
+        camada com \\>= 90\% material > 2 mm.
 }
 }

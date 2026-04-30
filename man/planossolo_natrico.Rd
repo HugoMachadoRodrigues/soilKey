@@ -6,6 +6,9 @@
 \usage{
 planossolo_natrico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Planossolos Natricos (Cap 15): caracter sodico em \\< 100 cm.
 }

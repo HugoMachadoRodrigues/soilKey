@@ -10,6 +10,13 @@ test_slickensides_present(
   candidate_layers = NULL
 )
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{levels}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default accepted levels are \code{c("common", "many", "continuous")}
 (vertic features, WRB 2022). The \code{slickensides} column accepts

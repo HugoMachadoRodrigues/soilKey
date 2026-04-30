@@ -6,6 +6,11 @@
 \usage{
 test_mollic_structure(h, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Excludes horizons that are simultaneously massive AND very hard when
 dry. v0.1 implementation reads \code{structure_grade} and

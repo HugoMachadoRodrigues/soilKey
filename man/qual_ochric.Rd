@@ -2,10 +2,13 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_ochric}
 \alias{qual_ochric}
-\title{Ochric qualifier (oh): SOC >= 0.2% upper 10 cm + no mollic/umbric.}
+\title{Ochric qualifier (oh): SOC >= 0.2\% upper 10 cm + no mollic/umbric.}
 \usage{
 qual_ochric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Ochric qualifier (oh): SOC >= 0.2% upper 10 cm + no mollic/umbric.
+Ochric qualifier (oh): SOC >= 0.2\% upper 10 cm + no mollic/umbric.
 }

@@ -6,6 +6,15 @@
 \usage{
 test_chernic_color(h, max_top_cm = 20, max_chroma = 2, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{max_chroma}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default upper boundary is 20 cm (Chernozem criterion: dark colour in
 the upper 20 cm of the mollic horizon).

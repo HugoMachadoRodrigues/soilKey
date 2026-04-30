@@ -133,17 +133,34 @@ Compact summary list.
 \if{html}{\out{<a id="method-ClassificationResult-report"></a>}}
 \if{latex}{\out{\hypertarget{method-ClassificationResult-report}{}}}
 \subsection{Method \code{report()}}{
-Render a report. Not implemented in v0.1.
+Render this classification as a self-contained
+             report (delegates to the package-level
+             \code{\link{report}} generic). HTML output is
+             dependency-free; PDF requires \code{rmarkdown}
+             and a working LaTeX engine.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$report(file, format = c("html", "pdf", "md"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$report(
+  file,
+  format = c("auto", "html", "pdf"),
+  pedon = NULL,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{Path.}
+\item{\code{file}}{Output path. Format is inferred from the
+extension.}
 
-\item{\code{format}}{One of "html", "pdf", "md".}
+\item{\code{format}}{One of "html" or "pdf" (defaults to "auto",
+which infers from the extension).}
+
+\item{\code{pedon}}{Optional \code{PedonRecord} whose horizons /
+provenance are added to the report.}
+
+\item{\code{...}}{Forwarded to \code{\link{report_html}} or
+\code{\link{report_pdf}}.}
 }
 \if{html}{\out{</div>}}
 }

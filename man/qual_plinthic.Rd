@@ -6,6 +6,9 @@
 \usage{
 qual_plinthic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Plinthic qualifier (pl): plinthic horizon <= 100 cm.
 }

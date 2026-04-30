@@ -6,6 +6,9 @@
 \usage{
 qual_petroplinthic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Petroplinthic qualifier (pp): petroplinthic horizon <= 100 cm.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/key-usda.R
 \name{classify_usda}
 \alias{classify_usda}
-\title{Classify a pedon under USDA Soil Taxonomy}
+\title{Classify a pedon under USDA Soil Taxonomy (13th edition)}
 \usage{
 classify_usda(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 }
@@ -15,12 +15,25 @@ classify_usda(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 \code{"error"}.}
 }
 \value{
-A \code{\link{ClassificationResult}}.
+A \code{\link{ClassificationResult}} with deepest-level
+        taxon name. Each level's trace is in \code{$trace}.
 }
 \description{
-v0.2 scaffold: only the Oxisols path is wired, via the
-\code{\link{oxic_usda}} diagnostic that delegates to WRB
-\code{\link{ferralic}}. The other 11 Orders are stubbed and any
-profile not meeting the oxic criteria falls through to the
-Entisols catch-all.
+Walks the canonical 4-level USDA key (Order -> Suborder ->
+Great Group -> Subgroup) using YAML rule files at:
+\itemize{
+  \item \code{inst/rules/usda/key.yaml}: Order key (12 entries)
+  \item \code{inst/rules/usda/suborders/<order>.yaml}
+  \item \code{inst/rules/usda/great-groups/<order>.yaml}
+  \item \code{inst/rules/usda/subgroups/<order>.yaml}
+}
+}
+\details{
+Stops at the deepest level for which a YAML rule file is
+available (e.g. v0.8.x: Gelisols full Path C; other 11 Orders at
+Order level only).
+}
+\references{
+Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th
+  edition. USDA Natural Resources Conservation Service.
 }

@@ -9,6 +9,13 @@ em quantidade pelo menos comum, dentro da secao de controle.
 \usage{
 carater_redoxico(pedon, min_redox_pct = 5, max_top_cm = 150)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_redox_pct}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Carater redoxico (SiBCS Cap 1, p 36-37): feicoes redoximorficas
 em quantidade pelo menos comum, dentro da secao de controle.

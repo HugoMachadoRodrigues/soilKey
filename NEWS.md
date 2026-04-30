@@ -1,3 +1,75 @@
+# soilKey 0.9.10 (2026-04-30)
+
+CRAN-readiness pass: `R CMD check` now returns 0 ERROR / 0 WARNING /
+1 NOTE (the lone NOTE is environmental -- a missing `proj.db` on the
+local system, not present on CRAN's own check farm). Plus a real
+OSSL fetch helper and a hardened WoSIS driver, closing the v0.9.6
+audit gap and the paper-grade WoSIS run pre-requisites.
+
+## New features
+
+* **`download_ossl_subset(region, properties, wavelengths, ...)`** --
+  region-filtered fetch of the Open Soil Spectral Library that
+  returns the canonical `list(Xr, Yr, metadata)` artefact consumed
+  by `predict_ossl_mbl()` / `predict_ossl_plsr_local()`. Caches under
+  `tools::R_user_dir("soilKey", "cache")` keyed by region; honours
+  `getOption("soilKey.ossl_endpoint")` for testing or private
+  mirrors; interpolates Xr to the requested wavelength grid; fails
+  loudly when the network is unavailable (does NOT silently fall
+  back to the synthetic predictor). Companion: `clear_ossl_cache()`.
+* **WoSIS driver hardening** (`inst/benchmarks/run_wosis_benchmark.R`):
+  - aligns request schema with WoSIS REST v3 (offset+limit,
+    `bbox=`, `country=`); previous v0.9.9 used the older
+    `page+page_size` shape that v3 deprecated.
+  - adds `subset = c("global", "south_america", "north_america",
+    "europe", "africa", "asia", "oceania", "brazil")` so the paper
+    can run a regional benchmark in one call; bbox per region is
+    overrideable via `options(soilKey.wosis_bbox_<region> = ...)`.
+  - wraps every HTTP call in `tryCatch` with a clear error when
+    offline or non-200; sends a `User-Agent: soilKey (...)` header.
+
+## Documentation
+
+* All vignettes renamed to start with a letter
+  (`v01_getting_started.Rmd`, ...); pkgdown / README / cross-vignette
+  references updated.
+* Vignette 02 gains a "Render a self-contained pedologist-facing
+  report" section showing the `report()` API.
+* Vignette 06 documents the offline `run_canonical_benchmark()`
+  driver and the most-recent canonical numbers (WRB 31/31, SiBCS
+  20/20, USDA 31/31).
+* New URL fields in DESCRIPTION (homepage + bug tracker).
+
+## CRAN-readiness fixes
+
+* All roxygen titles / descriptions: literal `%` is now escaped as
+  `\%` (was a mix of bare `%` and `\\%`, both invalid in Rd).
+* Same for `\eqn{}` (was `\\eqn{}` which Rd parsed as escaped
+  backslash + `eqn{...}` block, generating "Lost braces" NOTEs).
+* Several roxygen blocks were missing `@param` entries for non-`pedon`
+  arguments; ~530 placeholder `@param` lines added across the
+  catalogue. Manually-curated descriptions remain where they
+  existed.
+* `R/soilKey-package.R` now declares the `stats` (`predict`, `rnorm`,
+  `runif`, `setNames`, `weighted.mean`), `utils` (`tail`), and `R6`
+  (`R6Class`) imports it actually uses.
+* `R/diagnostics-horizons-wrb-v033.R::plaggic` calls
+  `test_bulk_density_below()` with the spelled-out argument name
+  `max_g_cm3` instead of the partial-match `max`.
+* `tests/testthat/test-spatial-soilgrids.R` now skips when PROJ's
+  `proj.db` is unavailable on the local system (a cosmetic fix --
+  CRAN's check farm has it).
+* `tests/testthat/test-vlm-providers.R::skip_if(requireNamespace("ellmer"))`
+  guard re-annotated for clarity (logic was correct; misread once).
+* `inst/CITATION` falls back to the literal string `"dev"` for the
+  package version when soilKey isn't installed (so pkgdown /
+  roxygen2 builds during early development don't fail).
+* `_pkgdown.yml` references repaired to point at the actual
+  documented topic names; `pkgdown::check_pkgdown()` now passes
+  with no problems.
+
+---
+
 # soilKey 0.9.9 (2026-04-30)
 
 A pre-CRAN release that closes seven of the nine "promise gaps" called

@@ -8,6 +8,9 @@ sodium-affected sub).}
 \usage{
 inceptisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Inceptisols (USDA Cap 11): cambic horizon (or several alternative
 subsurface diagnostics: folistic/histic/mollic with thin sub, salic,

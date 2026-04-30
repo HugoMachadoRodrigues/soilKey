@@ -6,6 +6,9 @@
 \usage{
 plintossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte plintico (nao coincidente com B planico de carater sodico),
 OR litoplintico, OR concrecionario, iniciando dentro de 40 cm OR

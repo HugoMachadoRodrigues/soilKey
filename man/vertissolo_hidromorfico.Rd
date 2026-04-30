@@ -7,6 +7,9 @@ redoxico.}
 \usage{
 vertissolo_hidromorfico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Vertissolos Hidromorficos (Cap 17): horizonte glei OR caracter
 redoxico.

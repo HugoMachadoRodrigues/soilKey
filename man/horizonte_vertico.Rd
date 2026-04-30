@@ -6,9 +6,14 @@
 \usage{
 horizonte_vertico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{vertic_horizon}} (WRB Ch 3.1, v0.3.3) com
-criterios essencialmente identicos: clay \\>= 30\\%, slickensides,
+criterios essencialmente identicos: clay \\>= 30\%, slickensides,
 fendas \\>= 1 cm, espessura \\>= 20 cm. v0.7 SiBCS additional gate:
 COLE \\>= 0.06 (proxy via shrink-swell).
 }

@@ -6,6 +6,9 @@
 \usage{
 cambissolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cambissolos Haplicos (catch-all).
 }

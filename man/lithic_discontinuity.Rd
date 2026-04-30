@@ -6,6 +6,9 @@
 \usage{
 lithic_discontinuity(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Significant abrupt change in parent material between two layers.
 v0.3.3 simplified: detects via large discontinuity in

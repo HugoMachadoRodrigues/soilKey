@@ -2,12 +2,17 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{calcaric_material}
 \alias{calcaric_material}
-\title{Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\\% CaCO3 throughout the
+\title{Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\% CaCO3 throughout the
 fine earth, primary carbonates from the parent material.}
 \usage{
 calcaric_material(pedon, min_caco3_pct = 2)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_caco3_pct}{Numeric threshold or option (see Details).}
+}
 \description{
-Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\\% CaCO3 throughout the
+Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\% CaCO3 throughout the
 fine earth, primary carbonates from the parent material.
 }

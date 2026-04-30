@@ -7,6 +7,9 @@ catch-all dos espodossolos.}
 \usage{
 espodossolo_ferri_humiluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
 catch-all dos espodossolos.

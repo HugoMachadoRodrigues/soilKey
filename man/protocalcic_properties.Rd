@@ -6,6 +6,13 @@
 \usage{
 protocalcic_properties(pedon, min_caco3_pct = 0.5, max_caco3_pct = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_caco3_pct}{Numeric threshold or option (see Details).}
+
+\item{max_caco3_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Visible secondary carbonate accumulations, less than the calcic gate.
 Detects via caco3_pct between 0.5 and the calcic threshold (15) AND

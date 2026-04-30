@@ -7,6 +7,9 @@ sulfurico em < 100 cm.}
 \usage{
 gleissolo_tiomorfico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
 sulfurico em < 100 cm.

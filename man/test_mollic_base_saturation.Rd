@@ -2,10 +2,17 @@
 % Please edit documentation in R/utils-diagnostic-tests.R
 \name{test_mollic_base_saturation}
 \alias{test_mollic_base_saturation}
-\title{Mollic base-saturation test (NH4OAc, pH 7, default >= 50%)}
+\title{Mollic base-saturation test (NH4OAc, pH 7, default >= 50\%)}
 \usage{
 test_mollic_base_saturation(h, min_pct = 50, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
-Mollic base-saturation test (NH4OAc, pH 7, default >= 50%)
+Mollic base-saturation test (NH4OAc, pH 7, default >= 50\%)
 }

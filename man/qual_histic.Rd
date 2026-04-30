@@ -6,6 +6,9 @@
 \usage{
 qual_histic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Histic qualifier (hi): histic horizon at or near the surface.
 }

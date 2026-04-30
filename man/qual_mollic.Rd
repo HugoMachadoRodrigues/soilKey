@@ -6,6 +6,9 @@
 \usage{
 qual_mollic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Mollic qualifier (mo): mollic horizon.
 }

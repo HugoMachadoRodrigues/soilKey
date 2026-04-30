@@ -6,6 +6,11 @@
 \usage{
 espodossolo(pedon, max_top_cm = 200)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 Horizonte B espodico imediatamente abaixo de horizontes E ou A,
 dentro de 200 cm (ou 400 cm se A+E ou histico+E ultrapassam 200).

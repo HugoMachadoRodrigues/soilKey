@@ -6,6 +6,13 @@
 \usage{
 petroplinthic(pedon, min_thickness = 10, min_plinthite_pct = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_plinthite_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Petroplinthic horizon (WRB 2022): cemented plinthic.
 }

@@ -6,6 +6,13 @@
 \usage{
 carater_eutrico(pedon, min_pH = 5.7, min_s = 2)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_pH}{Numeric threshold or option (see Details).}
+
+\item{min_s}{Numeric threshold or option (see Details).}
+}
 \description{
 Distinto de "eutrofico": exige pH(H2O) >= 5.7 conjugado com
 S (soma de bases) >= 2.0 cmolc/kg solo dentro da secao de controle.

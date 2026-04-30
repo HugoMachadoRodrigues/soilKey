@@ -13,15 +13,16 @@
 #' Sharp clay-content increase between two superimposed mineral layers
 #' meeting all of:
 #' \itemize{
-#'   \item underlying clay \\>= 15\\% AND thickness \\>= 7.5 cm;
+#'   \item underlying clay \\>= 15\% AND thickness \\>= 7.5 cm;
 #'   \item underlying starts \\>= 10 cm below mineral soil surface;
-#'   \item underlying has, vs overlying: 2x clay if overlying < 20\\%, OR
-#'         \\>= 20pp (absolute) more clay if overlying \\>= 20\\%;
+#'   \item underlying has, vs overlying: 2x clay if overlying < 20\%, OR
+#'         \\>= 20pp (absolute) more clay if overlying \\>= 20\%;
 #'   \item transitional layer, if any, \\<= 2 cm.
 #' }
 #' v0.3.3 enforces criteria 1, 2, 3. The transitional-layer check is
 #' deferred (the canonical horizon schema does not carry a "transitional"
 #' marker; it can be added later via boundary_distinctness inspection).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 abrupt_textural_difference <- function(pedon) {
   h <- pedon$horizons
@@ -79,6 +80,7 @@ abrupt_textural_difference <- function(pedon) {
 #' Tongues of bleached, coarser-textured material penetrating an argic
 #' horizon. v0.3.3 detects via designation pattern \code{glossic|albeluvic}
 #' on a layer that overlies an argic-horizon-passing layer.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 albeluvic_glossae <- function(pedon) {
   h <- pedon$horizons
@@ -109,6 +111,7 @@ albeluvic_glossae <- function(pedon) {
 #'
 #' Consolidated material below the soil. v0.3.3: detects via designation
 #' \code{R} or \code{Cr} on the lowermost (or any) layer.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 continuous_rock <- function(pedon) {
   h <- pedon$horizons
@@ -130,6 +133,7 @@ continuous_rock <- function(pedon) {
 #' v0.3.3 simplified: detects via large discontinuity in
 #' coarse_fragments_pct (>= 10pp absolute jump) OR rock_origin difference
 #' between consecutive layers.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 lithic_discontinuity <- function(pedon) {
   h <- pedon$horizons
@@ -185,6 +189,9 @@ lithic_discontinuity <- function(pedon) {
 #' Visible secondary carbonate accumulations, less than the calcic gate.
 #' Detects via caco3_pct between 0.5 and the calcic threshold (15) AND
 #' designation effervescence pattern (\code{k}).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_caco3_pct Numeric threshold or option (see Details).
+#' @param max_caco3_pct Numeric threshold or option (see Details).
 #' @export
 protocalcic_properties <- function(pedon, min_caco3_pct = 0.5,
                                       max_caco3_pct = 15) {
@@ -219,7 +226,10 @@ protocalcic_properties <- function(pedon, min_caco3_pct = 0.5,
 
 
 #' Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
-#' \\>= 1\\% but below the gypsic gate.
+#' \\>= 1\% but below the gypsic gate.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_caso4_pct Numeric threshold or option (see Details).
+#' @param max_caso4_pct Numeric threshold or option (see Details).
 #' @export
 protogypsic_properties <- function(pedon, min_caso4_pct = 1.0,
                                       max_caso4_pct = 5.0) {
@@ -255,6 +265,8 @@ protogypsic_properties <- function(pedon, min_caso4_pct = 1.0,
 
 #' Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
 #' \code{\link{test_reducing_conditions}}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_redox_pct Numeric threshold or option (see Details).
 #' @export
 reducing_conditions <- function(pedon, min_redox_pct = 5) {
   h <- pedon$horizons
@@ -272,6 +284,8 @@ reducing_conditions <- function(pedon, min_redox_pct = 5) {
 
 #' Shrink-swell cracks (WRB 2022 Ch 3.2.12) -- per-pedon test wrapping
 #' \code{\link{test_shrink_swell_cracks}}.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_width_cm Numeric threshold or option (see Details).
 #' @export
 shrink_swell_cracks <- function(pedon, min_width_cm = 0.5) {
   h <- pedon$horizons
@@ -289,9 +303,12 @@ shrink_swell_cracks <- function(pedon, min_width_cm = 0.5) {
 
 #' Sideralic properties (WRB 2022 Ch 3.2.13)
 #'
-#' Mineral material with low CEC: clay >= 8\\% AND CEC/clay < 24, OR
+#' Mineral material with low CEC: clay >= 8\% AND CEC/clay < 24, OR
 #' bulk CEC < 2 cmol_c/kg soil. Plus evidence of soil formation
 #' (cambic-style criterion 3).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_cec_per_clay Numeric threshold or option (see Details).
+#' @param max_bulk_cec Numeric threshold or option (see Details).
 #' @export
 sideralic_properties <- function(pedon, max_cec_per_clay = 24,
                                     max_bulk_cec = 2) {
@@ -335,6 +352,7 @@ sideralic_properties <- function(pedon, max_cec_per_clay = 24,
 
 #' Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
 #' \code{\link{test_takyric_surface}}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 takyric_properties <- function(pedon) {
   h <- pedon$horizons
@@ -352,8 +370,12 @@ takyric_properties <- function(pedon) {
 
 #' Vitric properties (WRB 2022 Ch 3.2.16)
 #'
-#' Volcanic glass \\>= 5\\% in 0.02-2 mm fraction, Al_ox + 1/2 Fe_ox \\>=
-#' 0.4\\%, phosphate retention \\>= 25\\%.
+#' Volcanic glass \\>= 5\% in 0.02-2 mm fraction, Al_ox + 1/2 Fe_ox \\>=
+#' 0.4\%, phosphate retention \\>= 25\%.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param min_glass_pct Numeric threshold or option (see Details).
+#' @param min_alfe Numeric threshold or option (see Details).
+#' @param min_p_retention Numeric threshold or option (see Details).
 #' @export
 vitric_properties <- function(pedon, min_glass_pct = 5,
                                  min_alfe = 0.4,
@@ -379,6 +401,7 @@ vitric_properties <- function(pedon, min_glass_pct = 5,
 
 #' Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
 #' \code{\link{test_yermic_surface}}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 yermic_properties <- function(pedon) {
   h <- pedon$horizons

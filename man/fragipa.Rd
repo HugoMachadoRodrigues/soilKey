@@ -6,6 +6,11 @@
 \usage{
 fragipa(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{fragic}} (WRB v0.3.3): horizonte
 subsuperficial endurecido quando seco, baixa MO, BD elevada,

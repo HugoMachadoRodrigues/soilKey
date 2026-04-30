@@ -7,6 +7,9 @@ distribuicao irregular de C organico. Reuso de fluvic_material (WRB).}
 \usage{
 carater_fluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Carater fluvico (SiBCS Cap 1, p 35-36): camadas estratificadas +
 distribuicao irregular de C organico. Reuso de fluvic_material (WRB).

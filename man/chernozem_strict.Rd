@@ -6,17 +6,24 @@
 \usage{
 chernozem_strict(pedon, min_bs = 50, max_top_cm = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_bs}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 lower limit of the mollic horizon and (if a petrocalcic horizon is
 present) above it, a layer with protocalcic properties \\>= 5 cm thick
-OR a calcic horizon AND base saturation \\>= 50\\% from the surface
+OR a calcic horizon AND base saturation \\>= 50\% from the surface
 to the protocalcic / calcic layer throughout.
 }
 \details{
 v0.3.4 strengthens the previous v0.2 chernozem (which only required
 mollic + chernic_color) by adding the protocalcic / calcic gate and
-the BS \\>= 50\\% requirement.
+the BS \\>= 50\% requirement.
 
 Note: the v0.2 \code{chernozem()} diagnostic remains available as a
 less-strict variant; \code{chernozem_strict()} is what the v0.3.4

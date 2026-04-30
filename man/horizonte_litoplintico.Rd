@@ -6,6 +6,11 @@
 \usage{
 horizonte_litoplintico(pedon, min_thickness = 10)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Petroplintita continua (ironstone). Reuso de
 \code{\link{petroplinthic}} (WRB), espessura \\>= 10 cm.

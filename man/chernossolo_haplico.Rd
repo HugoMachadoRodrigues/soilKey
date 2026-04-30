@@ -6,6 +6,9 @@
 \usage{
 chernossolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Chernossolos Haplicos (catch-all).
 }

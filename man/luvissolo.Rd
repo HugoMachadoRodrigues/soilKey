@@ -6,8 +6,11 @@
 \usage{
 luvissolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Horizonte B textural com argila ativ alta E saturacao por bases
-alta (V \\>= 50\\%) na maior parte dos primeiros 100 cm do B
+alta (V \\>= 50\%) na maior parte dos primeiros 100 cm do B
 (incl. BA), abaixo de A ou E.
 }

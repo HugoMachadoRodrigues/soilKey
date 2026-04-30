@@ -6,6 +6,9 @@
 \usage{
 B_planico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Tipo especial de B textural com mudanca textural abrupta +
 permeabilidade lenta + cores neutras/escurecidas + cromas baixos.

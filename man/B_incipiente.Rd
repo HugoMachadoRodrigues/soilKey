@@ -6,6 +6,11 @@
 \usage{
 B_incipiente(pedon, min_thickness = 10)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 Subsuperficial sob A/Ap/AB com alteracao fisica e quimica
 incipiente, NAO satisfazendo a B textural / latossolico / nitico /
@@ -13,7 +18,7 @@ espodico / planico, com:
 \itemize{
   \item espessura \\>= 10 cm;
   \item textura francoarenosa ou mais fina;
-  \item < 50\\% estrutura da rocha original;
+  \item < 50\% estrutura da rocha original;
   \item evidencias de pedogenese (cor mais viva OR remocao de
         carbonatos OR designation \code{Bw}/\code{Bi});
   \item NAO satisfaz: argic, ferralic, espodic, planic, e nao tem

@@ -7,6 +7,9 @@
 \usage{
 qual_xanthic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Xanthic qualifier (xa): ferralic + hue 7.5YR or yellower + value >=
 4 + chroma >= 5.

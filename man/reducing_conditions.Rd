@@ -7,6 +7,11 @@
 \usage{
 reducing_conditions(pedon, min_redox_pct = 5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_redox_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
 \code{\link{test_reducing_conditions}}.

@@ -2,12 +2,17 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{tephric_material}
 \alias{tephric_material}
-\title{Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\\% volcanic glass in
+\title{Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\% volcanic glass in
 0.02-2 mm fraction AND no andic / vitric properties.}
 \usage{
 tephric_material(pedon, min_glass = 30)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_glass}{Numeric threshold or option (see Details).}
+}
 \description{
-Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\\% volcanic glass in
+Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\% volcanic glass in
 0.02-2 mm fraction AND no andic / vitric properties.
 }

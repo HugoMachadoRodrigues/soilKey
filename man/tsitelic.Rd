@@ -6,6 +6,11 @@
 \usage{
 tsitelic(pedon, min_thickness = 10)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+}
 \description{
 From Georgian \emph{tsiteli} = red. A red colour-defined horizon
 formed on weathered basalt or similar Fe-rich parent material in
@@ -18,7 +23,7 @@ Diagnostic criteria (v0.3.5 simplification):
   \item Munsell hue \\<= 2.5YR (i.e. 2.5YR, 10R, 7.5R, 5R, 2.5R)
         AND value \\<= 4 (moist) AND chroma \\>= 4 (moist);
   \item evidence of soil formation (cambic-style criterion 3)
-        proxied by clay \\>= 8\\% AND \code{structure_grade} not
+        proxied by clay \\>= 8\% AND \code{structure_grade} not
         "single grain" / "massive";
   \item thickness \\>= 10 cm.
 }

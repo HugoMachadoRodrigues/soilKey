@@ -8,8 +8,9 @@
 
 
 #' Ultisol Order qualifier (USDA, KST 13ed, Ch 2)
-#' Pass when argillic OR kandic horizon present + BS < 35% in some
+#' Pass when argillic OR kandic horizon present + BS < 35\% in some
 #' part of the upper 200 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 ultisol_qualifying_usda <- function(pedon) {
   ar <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
@@ -40,6 +41,7 @@ ultisol_qualifying_usda <- function(pedon) {
 
 #' Aquult Suborder qualifier
 #' Pass when aquic_conditions within 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aquult_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -49,9 +51,10 @@ aquult_qualifying_usda <- function(pedon) {
 
 
 #' Humult Suborder qualifier (Ultisols with thick humus accumulation)
-#' Pass when 0.9% OC weighted average in 0-15 cm AND/OR
+#' Pass when 0.9\% OC weighted average in 0-15 cm AND/OR
 #' organic carbon mass >= 12 kg/m2 in 0-100 cm (proxy via humic_oxisol_usda
 #' with lower threshold).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 humult_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -80,6 +83,7 @@ humult_qualifying_usda <- function(pedon) {
 
 #' Albic-over-argillic qualifying (Albaquults)
 #' Pass when albic horizon overlies an argillic horizon directly.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 albaquult_qualifying_usda <- function(pedon) {
   al <- albic(pedon)
@@ -113,6 +117,7 @@ albaquult_qualifying_usda <- function(pedon) {
 #'         from its maximum.
 #' }
 #' v0.8 proxy: clay_pct >= 35\% in upper argillic.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 pale_qualifying_usda <- function(pedon) {
   res <- paleargid_qualifying_usda(pedon)
@@ -124,6 +129,7 @@ pale_qualifying_usda <- function(pedon) {
 #' Kanhapl qualifying helper (Kanhapludults / Kanhaplustults / etc.)
 #' Pass when kandic horizon present BUT NOT meeting Pale criteria
 #' (i.e. younger / less developed kandic).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 kanhapl_qualifying_usda <- function(pedon) {
   ka <- kandic_horizon_usda(pedon)
@@ -140,7 +146,9 @@ kanhapl_qualifying_usda <- function(pedon) {
 
 
 #' Plinth qualifying helper (Plinth*ults)
-#' Pass when plinthite >= 5% in 50%+ of layers within 150 cm.
+#' Pass when plinthite >= 5\% in 50\%+ of layers within 150 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 plinth_subgroup_usda <- function(pedon, max_top_cm = 150) {
   res <- plinthic_subgroup_usda(pedon, max_top_cm = max_top_cm)
@@ -150,6 +158,7 @@ plinth_subgroup_usda <- function(pedon, max_top_cm = 150) {
 
 
 #' Albic Subgroup helper (Albaquultic / Albaquic)
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 albic_subgroup_usda <- function(pedon) {
   res <- albic_horizon_usda(pedon)

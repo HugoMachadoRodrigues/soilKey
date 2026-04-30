@@ -15,8 +15,7 @@ extract_munsell_from_photo(
 )
 }
 \arguments{
-\item{pedon}{A \code{\link{PedonRecord}} to merge into. Mutated in
-place AND returned invisibly.}
+\item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{image_path}{Path to the image file (JPG / PNG).}
 
@@ -47,7 +46,7 @@ photos without a reference card should yield confidence below 0.5
 per the prompt specification.
 }
 \details{
-Quantitative non-color attributes (clay %, CEC, pH, etc.) are
+Quantitative non-color attributes (clay \%, CEC, pH, etc.) are
 \strong{never} extracted from photos, by prompt-level instruction.
 If the model returns one anyway, it is silently dropped.
 }

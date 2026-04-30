@@ -6,6 +6,13 @@
 \usage{
 petrogypsic(pedon, min_thickness = 10, min_gypsum_pct = 5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_gypsum_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Petrogypsic horizon (WRB 2022): cemented gypsic.
 }

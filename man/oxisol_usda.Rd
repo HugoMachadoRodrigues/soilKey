@@ -7,6 +7,9 @@ Adds the explicit prior-order exclusion list per Cap 4 Key F.}
 \usage{
 oxisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Oxisol (USDA Cap 13): oxic horizon. Delegates to oxic_usda.
 Adds the explicit prior-order exclusion list per Cap 4 Key F.

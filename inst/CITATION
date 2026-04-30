@@ -1,5 +1,12 @@
 ## CITATION file -- canonical citation for the soilKey package.
-## Updated automatically when DESCRIPTION$Version changes.
+## Falls back to "dev" when soilKey isn't installed (so pkgdown /
+## roxygen2 / R CMD check during early development don't blow up
+## on an unfound package).
+
+.soilkey_ver <- tryCatch(
+  utils::packageVersion("soilKey"),
+  error = function(e) "dev"
+)
 
 bibentry(
   bibtype  = "Manual",
@@ -9,7 +16,7 @@ bibentry(
                     role    = c("aut", "cre"),
                     comment = c(ORCID = "0000-0002-8070-8126")),
   year     = format(Sys.Date(), "%Y"),
-  note     = sprintf("R package version %s", utils::packageVersion("soilKey")),
+  note     = sprintf("R package version %s", .soilkey_ver),
   doi      = "10.5281/zenodo.PLACEHOLDER",
   url      = "https://github.com/HugoMachadoRodrigues/soilKey",
   textVersion = paste(
@@ -17,7 +24,7 @@ bibentry(
     format(Sys.Date(), "%Y"),
     "). soilKey: Automated soil profile classification per WRB 2022, ",
     "SiBCS 5, and USDA Soil Taxonomy 13. R package version ",
-    utils::packageVersion("soilKey"),
+    .soilkey_ver,
     ". https://github.com/HugoMachadoRodrigues/soilKey",
     sep = ""
   )

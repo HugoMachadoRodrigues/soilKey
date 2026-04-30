@@ -23,6 +23,7 @@
 #' Hypersalic qualifier (yz): EC (1:5 H2O extract) >= 30 dS/m in some
 #' layer within the upper 100 cm. Stronger than the Salic horizon
 #' (default >= 15 dS/m).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypersalic <- function(pedon) {
   h <- pedon$horizons
@@ -47,6 +48,7 @@ qual_hypersalic <- function(pedon) {
 #' Hyposalic qualifier (jz): EC (1:5 H2O extract) >= 4 dS/m AND < 15
 #' dS/m in some layer within the upper 100 cm. Used for soils too
 #' weak to qualify as Solonchak but still carrying a salinity tag.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hyposalic <- function(pedon) {
   h <- pedon$horizons
@@ -80,8 +82,9 @@ qual_hyposalic <- function(pedon) {
   }, numeric(1))
 }
 
-#' Hypersodic qualifier (yo): ESP >= 50% in some layer within 100 cm.
-#' Stronger than Sodic (default ESP >= 6%).
+#' Hypersodic qualifier (yo): ESP >= 50\% in some layer within 100 cm.
+#' Stronger than Sodic (default ESP >= 6\%).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypersodic <- function(pedon) {
   h <- pedon$horizons
@@ -103,8 +106,9 @@ qual_hypersodic <- function(pedon) {
   )
 }
 
-#' Hyposodic qualifier (jo): ESP >= 6% AND < 15% in some layer within
+#' Hyposodic qualifier (jo): ESP >= 6\% AND < 15\% in some layer within
 #' 100 cm. Marginal sodicity tag.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hyposodic <- function(pedon) {
   h <- pedon$horizons
@@ -129,8 +133,9 @@ qual_hyposodic <- function(pedon) {
 
 # ---------- CARBONATES -----------------------------------------------------
 
-#' Hypercalcic qualifier (yc): calcic horizon AND CaCO3 >= 50% in some
+#' Hypercalcic qualifier (yc): calcic horizon AND CaCO3 >= 50\% in some
 #' calcic layer.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypercalcic <- function(pedon) {
   cc <- calcic(pedon)
@@ -153,10 +158,11 @@ qual_hypercalcic <- function(pedon) {
   )
 }
 
-#' Hypocalcic qualifier (jc): CaCO3 >= 5% AND < 15% in some layer
-#' within 100 cm (between protocalcic 0.5% and the calcic-horizon
-#' 15% threshold). Marks the broad "carbonate-bearing" middle band
+#' Hypocalcic qualifier (jc): CaCO3 >= 5\% AND < 15\% in some layer
+#' within 100 cm (between protocalcic 0.5\% and the calcic-horizon
+#' 15\% threshold). Marks the broad "carbonate-bearing" middle band
 #' that doesn't meet the Calcic horizon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypocalcic <- function(pedon) {
   h <- pedon$horizons
@@ -181,6 +187,7 @@ qual_hypocalcic <- function(pedon) {
 #' Protocalcic qualifier (qc): protocalcic properties (incipient
 #' carbonate accumulation) within the upper 100 cm. Wraps
 #' \code{\link{protocalcic_properties}}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_protocalcic <- function(pedon) .q_presence("Protocalcic",
   protocalcic_properties(pedon), 100, pedon)
@@ -188,8 +195,9 @@ qual_protocalcic <- function(pedon) .q_presence("Protocalcic",
 
 # ---------- GYPSUM ---------------------------------------------------------
 
-#' Hypergypsic qualifier (yg): gypsic horizon AND gypsum >= 60% in
+#' Hypergypsic qualifier (yg): gypsic horizon AND gypsum >= 60\% in
 #' some gypsic layer.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypergypsic <- function(pedon) {
   gy <- gypsic(pedon)
@@ -212,9 +220,10 @@ qual_hypergypsic <- function(pedon) {
   )
 }
 
-#' Hypogypsic qualifier (jg): gypsum >= 1% AND < 5% in some layer
+#' Hypogypsic qualifier (jg): gypsum >= 1\% AND < 5\% in some layer
 #' within 100 cm (below the gypsic-horizon threshold but above the
 #' protogypsic-properties bare-detection bar).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypogypsic <- function(pedon) {
   h <- pedon$horizons
@@ -239,6 +248,7 @@ qual_hypogypsic <- function(pedon) {
 #' Protogypsic qualifier (qg): protogypsic properties (incipient
 #' gypsum accumulation) within the upper 100 cm. Wraps
 #' \code{\link{protogypsic_properties}}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_protogypsic <- function(pedon) .q_presence("Protogypsic",
   protogypsic_properties(pedon), 100, pedon)
@@ -251,6 +261,7 @@ qual_protogypsic <- function(pedon) .q_presence("Protogypsic",
 #' shrink-swell signal is already present) within the upper 100 cm.
 #' Wraps \code{\link{protovertic}} and is mutually exclusive with the
 #' strict Vertic qualifier.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_protovertic <- function(pedon) {
   pv <- protovertic(pedon)

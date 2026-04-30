@@ -6,6 +6,9 @@
 \usage{
 spodosol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
 }

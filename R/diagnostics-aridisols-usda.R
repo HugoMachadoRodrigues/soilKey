@@ -15,6 +15,7 @@
 #' Pass when the soil has aridic SMR AND any one of: argillic, natric,
 #' kandic, calcic, petrocalcic, gypsic, petrogypsic, salic, duripan,
 #' cambic, sulfuric horizon. Also requires no other prior order match.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aridisol_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -55,6 +56,8 @@ aridisol_qualifying_usda <- function(pedon) {
 
 #' Petrocalcic Subgroup helper (Aridisols Petrocalcids)
 #' Cemented calcic horizon with cementation_class >= "strongly".
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 petrocalcic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
@@ -78,6 +81,8 @@ petrocalcic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 
 
 #' Petrogypsic Subgroup helper -- delegate to petrogypsic_horizon_usda
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 petrogypsic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   res <- petrogypsic_horizon_usda(pedon, max_top_cm = max_top_cm)
@@ -87,6 +92,7 @@ petrogypsic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 
 
 #' Sodic Subgroup helper -- delegate to natric_horizon (USDA)
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 sodic_subgroup_usda <- function(pedon) {
   res <- natric_horizon_usda(pedon)
@@ -98,6 +104,8 @@ sodic_subgroup_usda <- function(pedon) {
 #' Petronodic Subgroup helper (Aridisols)
 #' Pass when 5\%+ rock fragments cemented by carbonates within 100 cm.
 #' v0.8 proxy: caco3_pct >= 15 AND coarse_fragments_pct >= 5.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 petronodic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
@@ -117,6 +125,7 @@ petronodic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 
 
 #' Argic Aridisol helper -- argillic-or-kandic in Argids/Cryids/etc.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 argic_aridisol_usda <- function(pedon) {
   res <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
@@ -129,6 +138,7 @@ argic_aridisol_usda <- function(pedon) {
 #' Pass when argillic horizon has continuous clay films AND
 #' clay >> 35\% in upper 10 cm (proxy for old, well-developed argillic).
 #' v0.8 proxy: argillic + clay_pct >= 35 in upper 30 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 paleargid_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -156,6 +166,7 @@ paleargid_qualifying_usda <- function(pedon) {
 
 
 #' Vertic Aridisols helper -- delegates to vertic_subgroup_usda
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 vertic_aridisol_usda <- function(pedon) {
   res <- vertic_subgroup_usda(pedon)

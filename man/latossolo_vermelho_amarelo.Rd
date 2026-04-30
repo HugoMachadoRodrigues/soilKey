@@ -6,6 +6,9 @@
 \usage{
 latossolo_vermelho_amarelo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Latossolos Vermelho-Amarelos (catch-all).
 }

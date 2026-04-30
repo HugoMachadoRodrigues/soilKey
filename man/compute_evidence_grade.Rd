@@ -6,6 +6,9 @@
 \usage{
 compute_evidence_grade(pedon, trace)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 v0.1 rule: A if every recorded provenance is \code{"measured"}, B if
 any \code{"predicted_spectra"}, C if any \code{"inferred_prior"}, D

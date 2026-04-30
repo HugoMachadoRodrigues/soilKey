@@ -54,7 +54,7 @@ report_pdf <- function(x,
   if (is.null(title)) {
     pedon_id <- if (!is.null(pedon) && !is.null(pedon$site$id))
                   pedon$site$id else "soilKey report"
-    title <- paste0("soilKey — ", pedon_id)
+    title <- paste0("soilKey -- ", pedon_id)
   }
 
   rmd <- .build_report_rmd(results, pedon = pedon, title = title)
@@ -218,6 +218,7 @@ report_pdf <- function(x,
 }
 
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 .rmd_horizons_block <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$horizons) ||
         nrow(pedon$horizons) == 0) {
@@ -244,6 +245,7 @@ report_pdf <- function(x,
 }
 
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 .rmd_site_block <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$site)) return("")
   s <- pedon$site

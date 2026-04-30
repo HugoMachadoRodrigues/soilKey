@@ -2,12 +2,19 @@
 % Please edit documentation in R/diagnostics-atributos-sibcs.R
 \name{carater_plintico}
 \alias{carater_plintico}
-\title{Carater plintico (SiBCS Cap 1, p 36): plintita >= 5% em quantidade
+\title{Carater plintico (SiBCS Cap 1, p 36): plintita >= 5\% em quantidade
 insuficiente para horizonte plintico.}
 \usage{
 carater_plintico(pedon, min_plinthite_pct = 5, max_plinthite_pct = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_plinthite_pct}{Numeric threshold or option (see Details).}
+
+\item{max_plinthite_pct}{Numeric threshold or option (see Details).}
+}
 \description{
-Carater plintico (SiBCS Cap 1, p 36): plintita >= 5% em quantidade
+Carater plintico (SiBCS Cap 1, p 36): plintita >= 5\% em quantidade
 insuficiente para horizonte plintico.
 }

@@ -3,13 +3,20 @@
 \name{pisoplinthic}
 \alias{pisoplinthic}
 \title{Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\\%
+designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
 AND structure_type containing 'pisol'.}
 \usage{
 pisoplinthic(pedon, min_thickness = 15, min_plinthite_pct = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_plinthite_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\\%
+designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
 AND structure_type containing 'pisol'.
 }

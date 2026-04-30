@@ -6,6 +6,9 @@
 \usage{
 neossolo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Solos pouco evoluidos: SEM horizonte B diagnostico + ausencia de:
 (a) glei dentro 150 cm, (b) plintico dentro 40 cm, (c) vertico

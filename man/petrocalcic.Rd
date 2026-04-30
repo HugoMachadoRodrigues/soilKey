@@ -6,8 +6,15 @@
 \usage{
 petrocalcic(pedon, min_thickness = 10, min_caco3_pct = 15)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_caco3_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 A continuously cemented variant of the calcic horizon. Same chemistry
-(CaCO3 \\>= 15\\%) plus moderate-or-greater cementation in at least
-50\\% of the layer.
+(CaCO3 \\>= 15\%) plus moderate-or-greater cementation in at least
+50\% of the layer.
 }

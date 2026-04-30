@@ -7,6 +7,9 @@ material (asphalt, concrete, worked stones).}
 \usage{
 technic_hard_material(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Technic hard material (WRB 2022 Ch 3.3.18): consolidated human-made
 material (asphalt, concrete, worked stones).

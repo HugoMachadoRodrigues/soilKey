@@ -21,7 +21,7 @@ home:
     - text: "Browse the canonical books"
       href: "#references"
     - text: "WoSIS benchmark report"
-      href: "articles/06-wosis-benchmark.html"
+      href: "articles/v06_wosis_benchmark.html"
 
 navbar:
   structure:
@@ -32,20 +32,21 @@ navbar:
       text: "Articles"
       menu:
         - text: "Getting started"
-          href: "articles/01-getting-started.html"
+          href: "articles/v01_getting_started.html"
         - text: "WRB 2022 end-to-end"
-          href: "articles/02-classify-wrb-end-to-end.html"
+          href: "articles/v02_classify_wrb_end_to_end.html"
         - text: "Cross-system correspondence"
-          href: "articles/03-cross-system-correlation.html"
+          href: "articles/v03_cross_system_correlation.html"
         - text: "VLM extraction (Module 2)"
-          href: "articles/04-vlm-extraction.html"
+          href: "articles/v04_vlm_extraction.html"
         - text: "Spatial + spectra pipeline (Modules 3 + 4)"
-          href: "articles/05-spatial-spectra-pipeline.html"
+          href: "articles/v05_spatial_spectra_pipeline.html"
         - text: "WoSIS benchmark"
-          href: "articles/06-wosis-benchmark.html"
+          href: "articles/v06_wosis_benchmark.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
+      aria-label: GitHub
 
 reference:
 
@@ -80,15 +81,15 @@ reference:
       - albic
       - cambic
       - calcic
-      - duric
+      - duric_horizon
       - ferralic
       - ferric
       - fragic
       - gypsic
-      - histic
+      - histic_horizon
       - mollic
       - natric_horizon
-      - nitic
+      - nitic_horizon
       - petrocalcic
       - petroduric
       - petrogypsic
@@ -119,7 +120,7 @@ reference:
       - abrupt_textural_difference
       - albeluvic_glossae
       - andic_properties
-      - anthric_properties
+      - anthric_horizons
       - continuous_rock
       - gleyic_properties
       - lithic_discontinuity
@@ -139,23 +140,23 @@ reference:
     contents:
       - aeolic_material
       - artefacts
-      - calcaric
-      - claric
-      - dolomitic
-      - fluvic
-      - gypsiric
-      - hypersulfidic
-      - hyposulfidic
-      - limnic
-      - mineral
-      - mulmic
-      - organic
-      - organotechnic
-      - ornithogenic
+      - calcaric_material
+      - claric_material
+      - dolomitic_material
+      - fluvic_material
+      - gypsiric_material
+      - hypersulfidic_material
+      - hyposulfidic_material
+      - limnic_material
+      - mineral_material
+      - mulmic_material
+      - organic_material
+      - organotechnic_material
+      - ornithogenic_material
       - soil_organic_carbon
-      - solimovic
-      - technic_hard
-      - tephric
+      - solimovic_material
+      - technic_features
+      - tephric_material
 
   - title: "WRB 2022 -- RSG-level gates"
     contents:
@@ -180,7 +181,6 @@ reference:
       run inside `classify_wrb2022()`.
     contents:
       - matches("^qual_")
-      - .wrb_qualifier_families
 
   - title: "SiBCS 5ª ed. -- atributos diagnósticos (Cap 1)"
     contents:
@@ -264,22 +264,93 @@ reference:
     contents:
       - matches("^make_.*_canonical$")
 
-  - title: "Helpers"
+  - title: "Helpers and miscellaneous"
     contents:
       - matches("^run_")
       - matches("^test_")
+      - matches("^compute_")
+      - matches("^contato_")
+      - matches("^load_")
+      - matches("^apply_")
+      - matches("^format_")
+      - matches("^validate_")
+      - matches("^strip_")
+      - matches("^as_chat_")
+      - matches("_predominant_usda$")
+      - matches("_horizon_usda$")
+      - matches("_features$")
+      - matches("_properties$")
       - "%||%"
+      - arenic_texture
+      - cerosidade
+      - combine_priors
+      - cryic_conditions
+      - distrofico
+      - duripa
+      - eutrofico
+      - evaluate_rsg_tests
+      - fibrico
+      - fragipa
+      - hemico
+      - prompt_path
+      - schema_path
+      - default_model
+      - oxic_usda
+      - vertic_horizon
+      - protovertic
+      - panpaic
+      - tsitelic
+      - limonic
+      - make_synthetic_pedon_with_spectra
+      - mudanca_textural_abrupta
+      - ossl_library_template
+      - clear_ossl_cache
+      - download_ossl_subset
+      - planosol
+      - posterior_classify
+      - resolve_wrb_qualifiers
+      - saprico
+      - soilgrids_usda_lut
+      - soilgrids_wrb_lut
+      - subgrupo_planossolo_espessos
+      - subgrupo_planossolo_mesicos
+      - subgrupo_plintossolo_endico_concrecionario
+      - subgrupo_plintossolo_endico_litoplintico
+      - subgrupo_plintossolo_espessos
+
+  - title: "RSG-level gates and other materials"
+    contents:
+      - ferralsol
+      - gleysol
+      - vertisol
+      - acrisol
+      - alisol
+      - lixisol
+      - luvisol
+      - chernozem
+      - chernozem_strict
+      - kastanozem
+      - kastanozem_strict
+      - phaeozem
+      - andosol
+      - calcaric_material
+      - dolomitic_material
+      - hypersulfidic_material
+      - hyposulfidic_material
+      - solimovic_material
+      - technic_hard_material
+      - tephric_material
 
 articles:
   - title: "Vignettes"
     navbar: ~
     contents:
-      - 01-getting-started
-      - 02-classify-wrb-end-to-end
-      - 03-cross-system-correlation
-      - 04-vlm-extraction
-      - 05-spatial-spectra-pipeline
-      - 06-wosis-benchmark
+      - v01_getting_started
+      - v02_classify_wrb_end_to_end
+      - v03_cross_system_correlation
+      - v04_vlm_extraction
+      - v05_spatial_spectra_pipeline
+      - v06_wosis_benchmark
 
 news:
   releases:

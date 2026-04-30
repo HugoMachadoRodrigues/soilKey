@@ -11,6 +11,15 @@ test_artefacts_concentration(
   candidate_layers = NULL
 )
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 20\% by volume (Technosols criterion, WRB 2022).
 }

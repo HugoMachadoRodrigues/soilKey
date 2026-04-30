@@ -6,6 +6,9 @@
 \usage{
 cambissolo_histico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cambissolos Histicos (Cap 6): horizonte histico sem espessura para Organossolo.
 }

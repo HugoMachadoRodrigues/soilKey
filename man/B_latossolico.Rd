@@ -6,6 +6,15 @@
 \usage{
 B_latossolico(pedon, min_thickness = 50, max_cec_per_clay = 17, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{max_cec_per_clay}{Numeric threshold or option (see Details).}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Adicionalmente a \code{\link{ferralic}} (WRB), o B latossolico
 SiBCS exige:
@@ -14,7 +23,7 @@ SiBCS exige:
   \item Textura francoarenosa ou mais fina;
   \item Estrutura granular muito pequena/pequena ou em blocos
         subangulares fraco/moderado;
-  \item < 5\\% volume mostrando estrutura da rocha original;
+  \item < 5\% volume mostrando estrutura da rocha original;
   \item Ki \\<= 2.2 (geralmente \\<= 2.0);
   \item Cerosidade no maximo pouca e fraca.
 }

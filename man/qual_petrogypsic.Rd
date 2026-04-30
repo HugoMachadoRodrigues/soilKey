@@ -6,6 +6,9 @@
 \usage{
 qual_petrogypsic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Petrogypsic qualifier (pg): petrogypsic horizon <= 100 cm.
 }

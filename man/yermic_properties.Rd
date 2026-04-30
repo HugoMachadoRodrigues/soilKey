@@ -7,6 +7,9 @@
 \usage{
 yermic_properties(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
 \code{\link{test_yermic_surface}}.

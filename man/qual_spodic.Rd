@@ -6,6 +6,9 @@
 \usage{
 qual_spodic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Spodic qualifier (sd): spodic horizon <= 200 cm.
 }

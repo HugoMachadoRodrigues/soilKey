@@ -6,6 +6,9 @@
 \usage{
 argissolo_bruno_acinzentado(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Argissolos com horizonte B textural, com matiz \\>= 5YR e cor escura
 (valor \\<= 4 + croma \\<= 4 umidos) na maior parte do B (inclusive

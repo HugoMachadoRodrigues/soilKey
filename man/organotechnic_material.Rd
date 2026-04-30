@@ -2,14 +2,21 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{organotechnic_material}
 \alias{organotechnic_material}
-\title{Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\\% volume of
-artefacts that themselves contain \\>= 20\\% organic C. Soil itself
-has < 20\\% SOC.}
+\title{Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\% volume of
+artefacts that themselves contain \\>= 20\% organic C. Soil itself
+has < 20\% SOC.}
 \usage{
 organotechnic_material(pedon, min_artefacts = 35, max_oc = 20)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_artefacts}{Numeric threshold or option (see Details).}
+
+\item{max_oc}{Numeric threshold or option (see Details).}
+}
 \description{
-Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\\% volume of
-artefacts that themselves contain \\>= 20\\% organic C. Soil itself
-has < 20\\% SOC.
+Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\% volume of
+artefacts that themselves contain \\>= 20\% organic C. Soil itself
+has < 20\% SOC.
 }

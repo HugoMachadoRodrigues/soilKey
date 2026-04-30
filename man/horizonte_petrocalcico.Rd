@@ -6,6 +6,11 @@
 \usage{
 horizonte_petrocalcico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Reuso de \code{\link{petrocalcic}} (WRB v0.3.3).
 }

@@ -2,10 +2,13 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_skeletic}
 \alias{qual_skeletic}
-\title{Skeletic qualifier (sk): coarse fragments >= 40% averaged over 100 cm.}
+\title{Skeletic qualifier (sk): coarse fragments >= 40\% averaged over 100 cm.}
 \usage{
 qual_skeletic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Skeletic qualifier (sk): coarse fragments >= 40% averaged over 100 cm.
+Skeletic qualifier (sk): coarse fragments >= 40\% averaged over 100 cm.
 }

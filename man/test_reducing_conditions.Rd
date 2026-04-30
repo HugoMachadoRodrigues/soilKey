@@ -12,7 +12,7 @@ Reducing conditions show one or more of:
   \item rH < 20 (we don't carry rH so this is deferred);
   \item presence of free Fe2+ (alpha,alpha-dipyridyl test) -- detected via
         designation \code{r}, \code{g}, \code{Br}, etc., or via the
-        \code{redoximorphic_features_pct} >= 5\\%;
+        \code{redoximorphic_features_pct} >= 5\%;
   \item iron sulfide (designation pattern \code{S}, \code{Aj}, \code{Ar});
   \item methane (not in schema, deferred).
 }

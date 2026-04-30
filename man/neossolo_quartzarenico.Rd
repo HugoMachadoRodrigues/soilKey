@@ -3,11 +3,14 @@
 \name{neossolo_quartzarenico}
 \alias{neossolo_quartzarenico}
 \title{Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
-todos os horizontes ate 150 cm + 95% quartzo.}
+todos os horizontes ate 150 cm + 95\% quartzo.}
 \usage{
 neossolo_quartzarenico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
-todos os horizontes ate 150 cm + 95% quartzo.
+todos os horizontes ate 150 cm + 95\% quartzo.
 }

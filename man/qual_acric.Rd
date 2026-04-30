@@ -7,6 +7,9 @@ v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.}
 \usage{
 qual_acric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Acric qualifier (ac): argic horizon + low CEC + high Al.
 v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.

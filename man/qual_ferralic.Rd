@@ -6,6 +6,9 @@
 \usage{
 qual_ferralic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Ferralic qualifier (fl): ferralic horizon <= 150 cm.
 }

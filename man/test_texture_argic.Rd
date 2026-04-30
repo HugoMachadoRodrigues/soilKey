@@ -6,6 +6,11 @@
 \usage{
 test_texture_argic(h, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Test sandy-loam-or-finer texture (used by argic, ferralic)
 }

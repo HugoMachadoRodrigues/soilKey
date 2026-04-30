@@ -6,6 +6,9 @@
 \usage{
 argissolo_amarelo(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Matiz \\>= 7.5YR (mais amarelo) na maior parte do B, sem ser
 Acinzentado (croma \\>= 4).

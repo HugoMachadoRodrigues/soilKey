@@ -6,6 +6,9 @@
 \usage{
 qual_gypsic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Gypsic qualifier (gy): gypsic horizon <= 100 cm.
 }

@@ -6,7 +6,12 @@
 \usage{
 eutrofico(pedon, min_v = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_v}{Numeric threshold or option (see Details).}
+}
 \description{
-Returns TRUE se a saturacao por bases (V%) >= 50% no horizonte
-diagnostico subsuperficial (B ou C). 65% para A chernozemico.
+Returns TRUE se a saturacao por bases (V\%) >= 50\% no horizonte
+diagnostico subsuperficial (B ou C). 65\% para A chernozemico.
 }

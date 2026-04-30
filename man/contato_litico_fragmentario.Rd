@@ -4,7 +4,14 @@
 \alias{contato_litico_fragmentario}
 \title{Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.}
 \usage{
-contato_litico_fragmentario(pedon)
+contato_litico_fragmentario(pedon, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_depth_cm}{Profundidade maxima do contato (default
+\code{NULL}). SiBCS Cap 14 Subgrupos fragmentarios de Folicos
+usam \code{max_depth_cm = 50}.}
 }
 \description{
 Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.

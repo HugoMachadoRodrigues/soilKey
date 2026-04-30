@@ -37,6 +37,7 @@
 #' discrimination once we model field-described mottle properties.
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
+#' @param stagnic_decay_factor Numeric threshold or option (see Details).
 #' @export
 gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
                                  stagnic_decay_factor = 3) {

@@ -2,12 +2,15 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_eutric}
 \alias{qual_eutric}
-\title{Eutric qualifier (eu): high base saturation. v0.9: BS >= 50%
+\title{Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
 throughout 20-100 cm.}
 \usage{
 qual_eutric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Eutric qualifier (eu): high base saturation. v0.9: BS >= 50%
+Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
 throughout 20-100 cm.
 }

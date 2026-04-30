@@ -6,6 +6,9 @@
 \usage{
 argissolo_acinzentado(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Matiz \\>= 7.5YR, valor \\>= 5, croma \\< 4 (cores mais cinzentas /
 palidas), na maior parte do B (inclusive BA).

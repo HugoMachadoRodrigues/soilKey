@@ -6,14 +6,17 @@
 \usage{
 ferralsol(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 WRB-canonical: ferralic horizon \\<= 150 cm AND no argic horizon
 starting above (or at the upper limit of) the ferralic, UNLESS the
 argic in its upper 30 cm or throughout has one or more of:
 \itemize{
-  \item < 10\\% water-dispersible clay; OR
+  \item < 10\% water-dispersible clay; OR
   \item DeltapH (pH_KCl - pH_water) \\>= 0; OR
-  \item \\>= 1.4\\% soil organic carbon.
+  \item \\>= 1.4\% soil organic carbon.
 }
 v0.3.4 enforces all three exception paths. The DeltapH check uses
 \code{ph_kcl} and \code{ph_h2o}; the WDC check uses

@@ -7,6 +7,9 @@ more than 1 unit higher than moist (in upper subsoil 25-150 cm).}
 \usage{
 qual_rhodic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Rhodic qualifier (ro): hue redder than 5YR + value < 4 + dry no
 more than 1 unit higher than moist (in upper subsoil 25-150 cm).

@@ -6,6 +6,13 @@
 \usage{
 test_oc_above(h, min_pct = 12, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_pct}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 12\% (histic horizon, WRB 2022 Chapter 3).
 }

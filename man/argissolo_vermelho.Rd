@@ -6,6 +6,9 @@
 \usage{
 argissolo_vermelho(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Matiz \\<= 2.5YR (mais vermelho) na maior parte do B.
 }

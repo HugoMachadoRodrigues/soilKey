@@ -6,6 +6,9 @@
 \usage{
 cambissolo_fluvico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Cambissolos Fluvicos (Cap 6): carater fluvico.
 }

@@ -2,10 +2,20 @@
 % Please edit documentation in R/diagnostics-atributos-sibcs.R
 \name{carater_solodico}
 \alias{carater_solodico}
-\title{Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e < 15%.}
+\title{Carater solodico (SiBCS Cap 1, p 39): PST entre 6\% e < 15\%.}
 \usage{
-carater_solodico(pedon, min_pst = 6, max_pst = 15)
+carater_solodico(pedon, min_pst = 6, max_pst = 15, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_pst}{PST minimo (\%) (default 6).}
+
+\item{max_pst}{PST maximo (\%) (default 15).}
+
+\item{max_depth_cm}{Profundidade maxima em que camadas qualificam
+(default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.}
 }
 \description{
-Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e < 15%.
+Carater solodico (SiBCS Cap 1, p 39): PST entre 6\% e < 15\%.
 }

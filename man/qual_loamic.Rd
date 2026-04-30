@@ -6,6 +6,9 @@
 \usage{
 qual_loamic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Loamic qualifier (lo): loam-class texture >= 30 cm in the upper 100 cm.
 }

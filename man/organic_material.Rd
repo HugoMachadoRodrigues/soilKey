@@ -2,12 +2,17 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{organic_material}
 \alias{organic_material}
-\title{Organic material (WRB 2022 Ch 3.3.13): \\>= 20\\% SOC + recognisability
+\title{Organic material (WRB 2022 Ch 3.3.13): \\>= 20\% SOC + recognisability
 criteria. v0.3.3: SOC threshold only.}
 \usage{
 organic_material(pedon, min_oc = 20)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_oc}{Numeric threshold or option (see Details).}
+}
 \description{
-Organic material (WRB 2022 Ch 3.3.13): \\>= 20\\% SOC + recognisability
+Organic material (WRB 2022 Ch 3.3.13): \\>= 20\% SOC + recognisability
 criteria. v0.3.3: SOC threshold only.
 }

@@ -3,11 +3,14 @@
 \name{alfisol_usda}
 \alias{alfisol_usda}
 \title{Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
->= 35% at the implicit reference depth.}
+>= 35\% at the implicit reference depth.}
 \usage{
 alfisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
->= 35% at the implicit reference depth.
+>= 35\% at the implicit reference depth.
 }

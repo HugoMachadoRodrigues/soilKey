@@ -6,6 +6,13 @@
 \usage{
 limonic(pedon, min_thickness = 5, min_redox_pct = 5)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{min_redox_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 From Greek \emph{leimon} = meadow. A subaqueous / wet-meadow horizon
 showing accumulation of secondary Fe/Mn (oxi)hydroxides from

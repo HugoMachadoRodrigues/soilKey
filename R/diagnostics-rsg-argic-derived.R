@@ -23,7 +23,7 @@
 #'
 #' Tests whether a profile satisfies the Acrisol RSG criteria: an
 #' argic horizon with low-activity clay (CEC < 24 cmol_c/kg clay) AND
-#' low base saturation (BS < 50%) within at least one argic layer.
+#' low base saturation (BS < 50\%) within at least one argic layer.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_cec Maximum CEC per kg clay (default 24).

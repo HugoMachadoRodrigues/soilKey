@@ -216,6 +216,7 @@ compute_v01_classification_name <- function(rsg, diags, is_default) {
 #' provenance is recorded, defaults to A (assume measured).
 #'
 #' @keywords internal
+#' @param pedon A \code{\link{PedonRecord}}.
 compute_evidence_grade <- function(pedon, trace) {
   prov <- pedon$provenance
   if (is.null(prov) || nrow(prov) == 0L) {

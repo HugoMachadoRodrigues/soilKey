@@ -19,6 +19,8 @@ gleyic_properties(
 
 \item{min_redox_pct}{Minimum \code{redoximorphic_features_pct}
 (default 5).}
+
+\item{stagnic_decay_factor}{Numeric threshold or option (see Details).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

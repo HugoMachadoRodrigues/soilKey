@@ -249,18 +249,18 @@ familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
 
 #' Familia: distribuicao de cascalhos no perfil (Cap 1, p 47-48)
 #'
-#' Utiliza coarse_fragments_pct (% volume de cascalhos 2 mm a 2 cm
+#' Utiliza coarse_fragments_pct (\% volume de cascalhos 2 mm a 2 cm
 #' relativo a terra fina) como modificador do grupamento textural.
 #'
 #' Classes (Santos et al., 2015; valores em g kg-1):
 #' \itemize{
-#'   \item pouco_cascalhenta: 8% <= cascalho < 15%
-#'   \item cascalhenta: 15% <= cascalho <= 50%
-#'   \item muito_cascalhenta: cascalho > 50%
+#'   \item pouco_cascalhenta: 8\% <= cascalho < 15\%
+#'   \item cascalhenta: 15\% <= cascalho <= 50\%
+#'   \item muito_cascalhenta: cascalho > 50\%
 #' }
 #'
 #' Aplica-se a TODAS as classes que apresentam cascalho > 80 g/kg
-#' (8% do volume) na secao de controle.
+#' (8\% do volume) na secao de controle.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_depth_cm Profundidade da secao de controle (default 200).
@@ -830,7 +830,7 @@ familia_saturacao_aluminio <- function(pedon,
 #' Identifica predominio de minerais facilmente alteraveis na
 #' fracao areia (>= 0,05 mm) na secao de controle. Classes:
 #' \itemize{
-#'   \item \code{micacea}: \code{sand_mica_pct >= 15} (% volume).
+#'   \item \code{micacea}: \code{sand_mica_pct >= 15} (\% volume).
 #'   \item \code{anfibolitica}: \code{sand_amphibole_pct >= 15}.
 #'   \item \code{feldspatica}: \code{sand_feldspar_pct >= 15}.
 #' }
@@ -845,7 +845,7 @@ familia_saturacao_aluminio <- function(pedon,
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_depth_cm Profundidade da secao de controle (default 200).
-#' @param threshold Limiar de % volume (default 15).
+#' @param threshold Limiar de \% volume (default 15).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286.
 #' @export

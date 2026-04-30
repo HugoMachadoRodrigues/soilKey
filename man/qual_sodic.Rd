@@ -2,10 +2,13 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_sodic}
 \alias{qual_sodic}
-\title{Sodic qualifier (so): ESP >= 6% (incl. SAR-derived).}
+\title{Sodic qualifier (so): ESP >= 6\% (incl. SAR-derived).}
 \usage{
 qual_sodic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Sodic qualifier (so): ESP >= 6% (incl. SAR-derived).
+Sodic qualifier (so): ESP >= 6\% (incl. SAR-derived).
 }

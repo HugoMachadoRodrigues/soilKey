@@ -2,10 +2,13 @@
 % Please edit documentation in R/diagnostics-orders-usda.R
 \name{andisol_usda}
 \alias{andisol_usda}
-\title{Andisols (USDA Cap 6): andic soil properties >= 60% of thickness.}
+\title{Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.}
 \usage{
 andisol_usda(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Andisols (USDA Cap 6): andic soil properties >= 60% of thickness.
+Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
 }

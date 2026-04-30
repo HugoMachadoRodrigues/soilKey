@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.9](https://img.shields.io/badge/version-0.9.9-FF6B35?style=flat-square)
+![v0.9.10](https://img.shields.io/badge/version-0.9.10-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -316,12 +316,12 @@ Six vignettes walk every layer of the package:
 
 | Vignette                                | Topic                                                                  |
 | :-------------------------------------- | :--------------------------------------------------------------------- |
-| `01-getting-started`                    | Build `PedonRecord` · run diagnostics · key trace                     |
-| `02-classify-wrb-end-to-end`            | Full Latossolo with the canonical Ch 6 name + family suppression      |
-| `03-cross-system-correlation`           | WRB ↔ SiBCS ↔ USDA on the same profile                                |
-| `04-vlm-extraction`                     | Multimodal extraction with `MockVLMProvider` (offline)                |
-| `05-spatial-spectra-pipeline`           | SoilGrids prior + OSSL gap-fill                                       |
-| `06-wosis-benchmark`                    | Validation protocol; mini-benchmark on 31 fixtures                    |
+| `v01_getting_started`                    | Build `PedonRecord` · run diagnostics · key trace                     |
+| `v02_classify_wrb_end_to_end`            | Full Latossolo with the canonical Ch 6 name + family suppression      |
+| `v03_cross_system_correlation`           | WRB ↔ SiBCS ↔ USDA on the same profile                                |
+| `v04_vlm_extraction`                     | Multimodal extraction with `MockVLMProvider` (offline)                |
+| `v05_spatial_spectra_pipeline`           | SoilGrids prior + OSSL gap-fill                                       |
+| `v06_wosis_benchmark`                    | Validation protocol; mini-benchmark on 31 fixtures                    |
 
 Browse:
 
@@ -365,7 +365,7 @@ If `soilKey` contributes to your work, please cite:
   title     = {{soilKey}: Automated soil profile classification per
                {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
   year      = {2026},
-  version   = {0.9.9},
+  version   = {0.9.10},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.PLACEHOLDER},
   url       = {https://github.com/HugoMachadoRodrigues/soilKey},
@@ -468,4 +468,4 @@ SOFTWARE.
 
 ---
 
-<sub>**Status**: pre-CRAN, v0.9.9. **All three classification systems are wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + principal qualifiers + 32/32 supplementary baselines + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), and USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.9 also ships `report_html()` / `report_pdf()`, the offline canonical-fixture benchmark, GitHub Actions CI, a curated `NEWS.md`, a pkgdown site, Zenodo/CITATION metadata, and an honest OSSL audit. v1.0 will close the WoSIS paper-grade run, the methodology paper, and the CRAN submission. Track the roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação) and per-release changes in [`NEWS.md`](NEWS.md).</sub>
+<sub>**Status**: pre-CRAN, v0.9.10. `R CMD check` returns 0 ERROR / 0 WARNING / 1 NOTE (the lone NOTE is environmental — missing `proj.db` on the local system, present on CRAN's check farm). **All three classification systems are wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + principal qualifiers + 32/32 supplementary baselines + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), and USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.10 adds the real OSSL fetch helper (`download_ossl_subset()`), the WoSIS REST v3-aligned driver with regional subsets, and full CRAN-readiness polish on top of v0.9.9 (which shipped `report_html()` / `report_pdf()`, the offline canonical-fixture benchmark, GitHub Actions CI, NEWS.md, pkgdown, Zenodo/CITATION metadata, and the OSSL audit). v1.0 will close the WoSIS paper-grade run, the methodology paper, and the CRAN submission. Track the roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação) and per-release changes in [`NEWS.md`](NEWS.md).</sub>

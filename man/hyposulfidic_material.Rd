@@ -9,6 +9,13 @@ meet hypersulfidic.}
 \usage{
 hyposulfidic_material(pedon, min_s_pct = 0.01, min_pH = 4)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_s_pct}{Numeric threshold or option (see Details).}
+
+\item{min_pH}{Numeric threshold or option (see Details).}
+}
 \description{
 Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
 hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable

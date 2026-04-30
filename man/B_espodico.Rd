@@ -6,6 +6,11 @@
 \usage{
 B_espodico(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Subsuperficial com acumulo iluvial de Al + Fe + materia organica;
 espessura \\>= 2.5 cm. Tipos: Bs, Bhs, Bh, ortstein. Reuso de

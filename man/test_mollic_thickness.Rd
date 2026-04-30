@@ -6,6 +6,13 @@
 \usage{
 test_mollic_thickness(h, min_cm = 20, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{min_cm}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 WRB 2022 has more nuanced thickness criteria depending on whether the
 soil overlies continuous rock at <75 cm, but the simple absolute

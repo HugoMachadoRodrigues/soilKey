@@ -24,23 +24,28 @@
 # ---------- MATERIAL-BASED PRINCIPAL QUALIFIERS -----------------------------
 
 #' Calcaric qualifier (cl): calcaric material >= 25 cm in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_calcaric <- function(pedon) .q_presence("Calcaric", calcaric_material(pedon), 100, pedon)
 
 #' Dolomitic qualifier (do): dolomitic material in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_dolomitic <- function(pedon) .q_presence("Dolomitic", dolomitic_material(pedon), 100, pedon)
 
 #' Gypsiric qualifier (gc): gypsiric material >= 25 cm in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_gypsiric <- function(pedon) .q_presence("Gypsiric", gypsiric_material(pedon), 100, pedon)
 
 #' Tephric qualifier (tf): tephric material >= 30 cm in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_tephric <- function(pedon) .q_presence("Tephric", tephric_material(pedon), 100, pedon)
 
 #' Limnic qualifier (lm): limnic material (lacustrine / marine subaquatic
 #' deposits) anywhere in the profile.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_limnic <- function(pedon) {
   lm <- limnic_material(pedon)
@@ -54,6 +59,7 @@ qual_limnic <- function(pedon) {
 }
 
 #' Solimovic qualifier (sv): solimovic material (mass-movement deposits).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_solimovic <- function(pedon) {
   sv <- solimovic_material(pedon)
@@ -68,11 +74,13 @@ qual_solimovic <- function(pedon) {
 
 #' Ornithic qualifier (oc): ornithogenic material (bird-influenced topsoil)
 #' in the upper 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_ornithic <- function(pedon) .q_presence("Ornithic", ornithogenic_material(pedon), 50, pedon)
 
 #' Sulfidic qualifier (sf): hyper- OR hyposulfidic material in upper 100 cm
 #' (the WRB Sulfidic qualifier covers either acidification class).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_sulfidic <- function(pedon) {
   hyper <- hypersulfidic_material(pedon)
@@ -90,6 +98,7 @@ qual_sulfidic <- function(pedon) {
 }
 
 #' Mulmic qualifier (ml): mulmic material in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_mulmic <- function(pedon) .q_presence("Mulmic", mulmic_material(pedon), 100, pedon)
 
@@ -97,10 +106,12 @@ qual_mulmic <- function(pedon) .q_presence("Mulmic", mulmic_material(pedon), 100
 # ---------- ANTHROPOGENIC-HORIZON PRINCIPAL QUALIFIERS ----------------------
 
 #' Hortic qualifier (ht): hortic horizon (long-cultivated dark surface).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hortic     <- function(pedon) .q_presence("Hortic",     hortic(pedon),     50, pedon)
 
 #' Irragric qualifier (ir): irragric horizon (irrigation-deposited surface).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_irragric   <- function(pedon) .q_presence("Irragric",   irragric(pedon),   50, pedon)
 
@@ -110,23 +121,28 @@ qual_irragric   <- function(pedon) .q_presence("Irragric",   irragric(pedon),   
 #' diagnostic now that the anthropic-evidence gate (P / artefacts /
 #' Apl-family designation) lives inside the diagnostic itself. The
 #' v0.9.1 qualifier-side gate is therefore retired.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_plaggic <- function(pedon) .q_presence("Plaggic", plaggic(pedon), 50, pedon)
 
 #' Pretic qualifier (pt): pretic (pre-Columbian Amerindian dark earth) horizon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_pretic     <- function(pedon) .q_presence("Pretic",     pretic(pedon),     100, pedon)
 
 #' Terric qualifier (te): terric horizon (anthropogenic added mineral
 #' material on top of cultivated land).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_terric     <- function(pedon) .q_presence("Terric",     terric(pedon),     50, pedon)
 
 #' Hydragric qualifier (hg): hydragric horizon (puddled-rice subsurface).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hydragric  <- function(pedon) .q_presence("Hydragric",  hydragric(pedon),  100, pedon)
 
 #' Anthraquic qualifier (aq): anthraquic horizon (puddled-rice surface).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_anthraquic <- function(pedon) .q_presence("Anthraquic", anthraquic(pedon), 50, pedon)
 
@@ -139,8 +155,9 @@ qual_anthraquic <- function(pedon) .q_presence("Anthraquic", anthraquic(pedon), 
 # Only `artefacts_pct` and `artefacts_urbic_pct` are first-class schema
 # columns today; the rest fall back to a designation-pattern proxy.
 
-#' Technic qualifier (tc): >= 20% artefacts in upper 100 cm OR equivalent
+#' Technic qualifier (tc): >= 20\% artefacts in upper 100 cm OR equivalent
 #' geomembrane / technic-hard cover.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_technic <- function(pedon) {
   tf <- technic_features(pedon)
@@ -157,8 +174,9 @@ qual_technic <- function(pedon) {
   )
 }
 
-#' Hyperartefactic qualifier (yr): >= 80% artefacts (any type) in the
+#' Hyperartefactic qualifier (yr): >= 80\% artefacts (any type) in the
 #' upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hyperartefactic <- function(pedon) {
   h <- pedon$horizons
@@ -179,8 +197,9 @@ qual_hyperartefactic <- function(pedon) {
   )
 }
 
-#' Urbic qualifier (ub): >= 20% urbic artefacts (rubble, refuse) in the
+#' Urbic qualifier (ub): >= 20\% urbic artefacts (rubble, refuse) in the
 #' upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_urbic <- function(pedon) {
   h <- pedon$horizons
@@ -205,10 +224,11 @@ qual_urbic <- function(pedon) {
   )
 }
 
-#' Spolic qualifier (sp): >= 20% mineral spoil artefacts (mining /
+#' Spolic qualifier (sp): >= 20\% mineral spoil artefacts (mining /
 #' industrial-process slag) in the upper 100 cm. v0.9.1 proxy: designation
 #' pattern (\code{Cspol|spoil|slag|mine}) or \code{rock_origin == "spoil"}.
 #' Hard schema column \code{artefacts_spolic_pct} scheduled for v0.9.2.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_spolic <- function(pedon) {
   h <- pedon$horizons
@@ -234,10 +254,11 @@ qual_spolic <- function(pedon) {
   )
 }
 
-#' Garbic qualifier (ga): >= 20% organic-waste artefacts (landfill
+#' Garbic qualifier (ga): >= 20\% organic-waste artefacts (landfill
 #' refuse) in the upper 100 cm. v0.9.1 proxy: designation pattern
 #' (\code{Cgarb|garb|landfill|refuse}). Hard schema column
 #' \code{artefacts_garbic_pct} scheduled for v0.9.2.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_garbic <- function(pedon) {
   h <- pedon$horizons
@@ -264,6 +285,7 @@ qual_garbic <- function(pedon) {
 #' Ekranic qualifier (ek): impervious cover (asphalt, concrete) starting
 #' within 5 cm of the surface. v0.9.1: technic_hard_material with top
 #' depth <= 5 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_ekranic <- function(pedon) {
   th <- technic_hard_material(pedon)
@@ -286,6 +308,7 @@ qual_ekranic <- function(pedon) {
 
 #' Linic qualifier (li): continuous artificial geomembrane within 100 cm.
 #' v0.9.1 proxy: designation pattern (\code{linic|geomemb|liner}).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_linic <- function(pedon) {
   h <- pedon$horizons
@@ -313,19 +336,22 @@ qual_linic <- function(pedon) {
 # ---------- ARIDIC PRINCIPAL QUALIFIERS -------------------------------------
 
 #' Yermic qualifier (ye): yermic properties in upper 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_yermic <- function(pedon) .q_presence("Yermic", yermic_properties(pedon), 50, pedon)
 
 #' Takyric qualifier (ty): takyric properties in upper 50 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_takyric <- function(pedon) .q_presence("Takyric", takyric_properties(pedon), 50, pedon)
 
 
 # ---------- COLD / CRYO PRINCIPAL QUALIFIERS -------------------------------
 
-#' Glacic qualifier (gc): >= 75% ice by volume within 100 cm. v0.9.1
+#' Glacic qualifier (gc): >= 75\% ice by volume within 100 cm. v0.9.1
 #' proxy: cryic conditions + designation pattern (\code{ice|gel|glac}).
 #' Schema column \code{ice_pct} scheduled for v0.9.2.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_glacic <- function(pedon) {
   cy <- cryic_conditions(pedon)
@@ -353,6 +379,7 @@ qual_glacic <- function(pedon) {
 #' Turbic qualifier (tb): cryoturbation features within 100 cm. v0.9.1
 #' proxy: cryic conditions + designation pattern (\code{turb|jj|cryot})
 #' OR slickensides "common"/"many" in a cryic profile.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_turbic <- function(pedon) {
   cy <- cryic_conditions(pedon)
@@ -384,6 +411,7 @@ qual_turbic <- function(pedon) {
 
 #' Lithic qualifier (lt): continuous rock starting within 10 cm. Tighter
 #' depth gate than Leptic (which is <= 100 cm) and Nudilithic (== 0 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_lithic <- function(pedon) {
   rk <- continuous_rock(pedon)
@@ -405,6 +433,7 @@ qual_lithic <- function(pedon) {
 }
 
 #' Nudilithic qualifier (nt): continuous rock at the soil surface (top_cm == 0).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_nudilithic <- function(pedon) {
   rk <- continuous_rock(pedon)
@@ -425,8 +454,9 @@ qual_nudilithic <- function(pedon) {
   )
 }
 
-#' Hyperskeletic qualifier (hk): coarse fragments >= 90% throughout the
+#' Hyperskeletic qualifier (hk): coarse fragments >= 90\% throughout the
 #' upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hyperskeletic <- function(pedon) {
   h <- pedon$horizons
@@ -450,6 +480,7 @@ qual_hyperskeletic <- function(pedon) {
 #' Rendzic qualifier (rz): mollic horizon directly over calcaric material
 #' (or limestone), shallow. Defined as Mollic + (Calcaric OR continuous
 #' rock with carbonate parent material).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_rendzic <- function(pedon) {
   mo <- mollic(pedon)
@@ -472,8 +503,9 @@ qual_rendzic <- function(pedon) {
   )
 }
 
-#' Vermic qualifier (vm): >= 50% bioturbation by worm casts / krotovinas
+#' Vermic qualifier (vm): >= 50\% bioturbation by worm casts / krotovinas
 #' in the upper 100 cm. v0.9.1: \code{worm_holes_pct >= 50}.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_vermic <- function(pedon) {
   h <- pedon$horizons
@@ -499,6 +531,7 @@ qual_vermic <- function(pedon) {
 
 #' Petric qualifier (pt): any petro-cemented horizon (petrocalcic /
 #' petroduric / petrogypsic / petroplinthic) within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_petric <- function(pedon) {
   pc <- petrocalcic(pedon)
@@ -521,6 +554,7 @@ qual_petric <- function(pedon) {
 }
 
 #' Thionic qualifier (tn): thionic horizon within 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_thionic <- function(pedon) .q_presence("Thionic", thionic(pedon), 100, pedon)
 
@@ -592,18 +626,21 @@ qual_thionic <- function(pedon) .q_presence("Thionic", thionic(pedon), 100, pedo
 #' Sapric qualifier (sa): organic material whose dominant decomposition
 #' class in the upper 100 cm is sapric (rubbed fiber < 1/6).
 #' v0.9.1: thickness-weighted dominance via Oa designation.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_sapric <- function(pedon) .qual_decomp(pedon, "sapric", "Sapric")
 
 #' Hemic qualifier (hc): organic material whose dominant decomposition
 #' class in the upper 100 cm is hemic (1/6 - 2/3 fiber).
 #' v0.9.1: thickness-weighted dominance via Oe designation.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hemic <- function(pedon) .qual_decomp(pedon, "hemic", "Hemic")
 
 #' Fibric qualifier (fi): organic material whose dominant decomposition
 #' class in the upper 100 cm is fibric (>= 2/3 fiber).
 #' v0.9.1: thickness-weighted dominance via Oi designation.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_fibric <- function(pedon) .qual_decomp(pedon, "fibric", "Fibric")
 
@@ -612,6 +649,7 @@ qual_fibric <- function(pedon) .qual_decomp(pedon, "fibric", "Fibric")
 #' \emph{artificial} drainage marker AND organic_material passes.
 #' Natural drainage classes (e.g. "very poorly drained", "well drained")
 #' do NOT trigger Drainic on their own.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_drainic <- function(pedon) {
   om <- organic_material(pedon)
@@ -637,6 +675,7 @@ qual_drainic <- function(pedon) {
 
 #' Subaquatic qualifier (sq): permanently under water. v0.9.1:
 #' site$drainage_class == "subaquatic" or "submerged".
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_subaquatic <- function(pedon) {
   drain <- pedon$site$drainage_class %||% NA_character_
@@ -654,6 +693,7 @@ qual_subaquatic <- function(pedon) {
 
 #' Tidalic qualifier (td): subject to tidal flooding. v0.9.1:
 #' site$drainage_class contains "tidal".
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_tidalic <- function(pedon) {
   drain <- pedon$site$drainage_class %||% NA_character_
@@ -673,6 +713,7 @@ qual_tidalic <- function(pedon) {
 #' Reductic qualifier (rd): permanently reducing conditions caused by
 #' anthropogenic gas / liquid emissions (typical of Technosols on
 #' landfills). v0.9.1: reducing_conditions + Technic context.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_reductic <- function(pedon) {
   rc <- reducing_conditions(pedon)
@@ -693,6 +734,7 @@ qual_reductic <- function(pedon) {
 # ---------- ORGANO-TECHNIC QUALIFIER ----------------------------------------
 
 #' Organotechnic qualifier (ot): organotechnic material in upper 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_organotechnic <- function(pedon) {
   ot <- organotechnic_material(pedon)

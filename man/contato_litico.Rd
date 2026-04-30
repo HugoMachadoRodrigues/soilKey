@@ -5,7 +5,14 @@
 \title{Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de
 \code{\link{continuous_rock}} via designacao R / Cr.}
 \usage{
-contato_litico(pedon)
+contato_litico(pedon, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{max_depth_cm}{Profundidade maxima do contato (default
+\code{NULL}). SiBCS Cap 14 Subgrupos liticos de Folicos usam
+\code{max_depth_cm = 50}.}
 }
 \description{
 Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de

@@ -6,6 +6,9 @@
 \usage{
 mudanca_textural_abrupta(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Aumento consideravel de argila em pequena distancia vertical
 (\\<= 7.5 cm) na transicao A/E -> B:

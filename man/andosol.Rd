@@ -6,10 +6,17 @@
 \usage{
 andosol(pedon, min_thickness = 30, max_top_cm = 25)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness}{Numeric threshold or option (see Details).}
+
+\item{max_top_cm}{Numeric threshold or option (see Details).}
+}
 \description{
 WRB-canonical: layer(s) with \emph{andic} OR \emph{vitric}
 properties, combined thickness \\>= 30 cm within 100 cm starting
-\\<= 25 cm; OR \\>= 60\\% of the entire soil thickness when a
+\\<= 25 cm; OR \\>= 60\% of the entire soil thickness when a
 limiting layer starts 25-50 cm. Plus: no argic, ferralic,
 petroplinthic, pisoplinthic, plinthic or spodic horizon \\<= 100 cm
 (unless buried below 50 cm).

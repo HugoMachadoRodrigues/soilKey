@@ -6,6 +6,9 @@
 \usage{
 panpaic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 From Quechua \emph{p'anpay} = "to bury". A buried diagnostic horizon
 (any horizon whose original surface was subsequently overlain by

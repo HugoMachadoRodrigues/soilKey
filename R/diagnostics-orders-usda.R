@@ -41,6 +41,7 @@
 #'
 #' Order-level gate: cryic_conditions diagnostic from WRB delegated +
 #' optional permafrost_temp_C if available.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 gelisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -63,6 +64,7 @@ gelisol_usda <- function(pedon) {
 #' Histosols (USDA Cap 10): organic materials >= 40 cm in 0-100.
 #' Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
 #' threshold) instead of WRB histic_horizon (10 cm).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 histosol_usda <- function(pedon) {
   hi <- histosol_qualifying_usda(pedon)
@@ -81,6 +83,7 @@ histosol_usda <- function(pedon) {
 # ---- C. Spodosols (Cap 14, p 311) -----------------------------------------
 
 #' Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 spodosol_usda <- function(pedon) {
   sp <- spodic(pedon)
@@ -97,7 +100,8 @@ spodosol_usda <- function(pedon) {
 
 # ---- D. Andisols (Cap 6, p 117) -------------------------------------------
 
-#' Andisols (USDA Cap 6): andic soil properties >= 60% of thickness.
+#' Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 andisol_usda <- function(pedon) {
   # Refined v0.8.6: uses andisol_qualifying_usda which enforces the
@@ -122,6 +126,7 @@ andisol_usda <- function(pedon) {
 
 #' Oxisol (USDA Cap 13): oxic horizon. Delegates to oxic_usda.
 #' Adds the explicit prior-order exclusion list per Cap 4 Key F.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 oxisol_usda <- function(pedon) {
   ox <- oxic_usda(pedon)
@@ -143,6 +148,7 @@ oxisol_usda <- function(pedon) {
 
 #' Vertisols (USDA Cap 16): slickensides + cracks.
 #' Delegates to vertic_horizon.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 vertisol_usda <- function(pedon) {
   vh <- vertic_horizon(pedon)
@@ -167,6 +173,7 @@ vertisol_usda <- function(pedon) {
 #' subsurface diagnostic. v0.8 simplification: detected via aridity
 #' proxies (low EC OR salic OR caracter combinations) + non-mollic
 #' surface + low OC (no organic accumulation).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 aridisol_usda <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
@@ -192,7 +199,8 @@ aridisol_usda <- function(pedon) {
 
 # ---- H. Ultisols (Cap 15, p 321) -------------------------------------------
 
-#' Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35%.
+#' Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35\%.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 ultisol_usda <- function(pedon) {
   ar <- argic(pedon)
@@ -221,7 +229,8 @@ ultisol_usda <- function(pedon) {
 
 # ---- I. Mollisols (Cap 12, p 247) ------------------------------------------
 
-#' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50%.
+#' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 mollisol_usda <- function(pedon) {
   # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
@@ -255,7 +264,8 @@ mollisol_usda <- function(pedon) {
 # ---- J. Alfisols (Cap 5, p 73) ---------------------------------------------
 
 #' Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
-#' >= 35% at the implicit reference depth.
+#' >= 35\% at the implicit reference depth.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 alfisol_usda <- function(pedon) {
   ar <- argillic_usda(pedon)
@@ -289,6 +299,7 @@ alfisol_usda <- function(pedon) {
 #' Inceptisols (USDA Cap 11): cambic horizon (or several alternative
 #' subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
 #' sodium-affected sub).
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 inceptisol_usda <- function(pedon) {
   cb <- cambic(pedon)
@@ -318,6 +329,7 @@ inceptisol_usda <- function(pedon) {
 
 #' Entisols (USDA Cap 8): catch-all for soils that don't match any
 #' other Order. Always passes.
+#' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 entisol_usda <- function(pedon) {
   DiagnosticResult$new(

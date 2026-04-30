@@ -6,6 +6,9 @@
 \usage{
 qual_natric(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Natric qualifier (na): natric horizon <= 100 cm.
 }

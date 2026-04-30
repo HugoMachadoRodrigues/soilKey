@@ -6,6 +6,9 @@
 \usage{
 albeluvic_glossae(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Tongues of bleached, coarser-textured material penetrating an argic
 horizon. v0.3.3 detects via designation pattern \code{glossic|albeluvic}

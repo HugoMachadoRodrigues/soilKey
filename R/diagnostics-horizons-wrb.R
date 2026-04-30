@@ -357,6 +357,7 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' carbonate removal), are scheduled for v0.3.
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
+#' @param min_top_cm Numeric threshold or option (see Details).
 #' @export
 cambic <- function(pedon, min_thickness = 15, min_top_cm = 5) {
   h <- pedon$horizons

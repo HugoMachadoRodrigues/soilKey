@@ -718,7 +718,7 @@ sulfuric_horizon_usda <- function(pedon, max_top_cm = 100,
 #' Petrogypsic horizon helper (USDA)
 #'
 #' Pass when a horizon has \code{cementation_class} in
-#' {strongly, indurated} AND \code{caso4_pct >= 5} within
+#' \{strongly, indurated\} AND \code{caso4_pct >= 5} within
 #' \code{max_top_cm}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -893,6 +893,8 @@ natric_horizon_usda <- function(pedon) {
 # ---- Salic / Gypsic / Calcic helpers (delegating WRB) ---------------
 
 #' Salic horizon (USDA, delegates to WRB salic).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 salic_horizon_usda <- function(pedon, max_top_cm = 100) {
   res <- salic(pedon)
@@ -907,6 +909,8 @@ salic_horizon_usda <- function(pedon, max_top_cm = 100) {
 }
 
 #' Gypsic horizon (USDA, delegates to WRB gypsic).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 gypsic_horizon_usda <- function(pedon, max_top_cm = 100) {
   res <- gypsic(pedon)
@@ -921,6 +925,8 @@ gypsic_horizon_usda <- function(pedon, max_top_cm = 100) {
 }
 
 #' Calcic horizon (USDA, delegates to WRB calcic).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Numeric threshold or option (see Details).
 #' @export
 calcic_horizon_usda <- function(pedon, max_top_cm = 100) {
   res <- calcic(pedon)

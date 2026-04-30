@@ -1,7 +1,7 @@
 Package: soilKey
 Type: Package
 Title: Automated Soil Profile Classification per WRB 2022, SiBCS 5 and USDA Soil Taxonomy 13
-Version: 0.9.9
+Version: 0.9.10
 Date: 2026-04-30
 Authors@R:
     person("Hugo", "Rodrigues",
@@ -20,6 +20,9 @@ Description: Implements deterministic classification keys for the World
     classification result reports a key trace, a provenance-aware evidence
     grade, and ambiguities that further measurement would resolve.
 License: MIT + file LICENSE
+URL: https://github.com/HugoMachadoRodrigues/soilKey,
+    https://hugomachadorodrigues.github.io/soilKey/
+BugReports: https://github.com/HugoMachadoRodrigues/soilKey/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3

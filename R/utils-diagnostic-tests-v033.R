@@ -177,7 +177,7 @@ test_cemented <- function(h, min_class = "moderately",
 #'         \\<= 2;
 #'   \item moist: value \\>= 6 with chroma \\<= 4, OR value \\>= 5 with
 #'         chroma \\<= 3, OR value \\>= 4 with chroma \\<= 2, OR (hue 5YR or
-#'         redder AND value \\>= 4 AND chroma \\<= 3 AND \\>= 25\\% of sand /
+#'         redder AND value \\>= 4 AND chroma \\<= 3 AND \\>= 25\% of sand /
 #'         coarse silt grains uncoated).
 #' }
 #' v0.3.3 implementation: requires moist Munsell value/chroma to satisfy
@@ -290,7 +290,7 @@ test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
 #'   \item rH < 20 (we don't carry rH so this is deferred);
 #'   \item presence of free Fe2+ (alpha,alpha-dipyridyl test) -- detected via
 #'         designation \code{r}, \code{g}, \code{Br}, etc., or via the
-#'         \code{redoximorphic_features_pct} >= 5\\%;
+#'         \code{redoximorphic_features_pct} >= 5\%;
 #'   \item iron sulfide (designation pattern \code{S}, \code{Aj}, \code{Ar});
 #'   \item methane (not in schema, deferred).
 #' }
@@ -375,9 +375,9 @@ test_alfe_ox_above <- function(h, min_pct,
 
 #' Test for WRB 2022 Ch 3.2.17 yermic surface signature
 #'
-#' Coarse surface fragments (\code{desert_pavement_pct}) >= 20\\% AND
+#' Coarse surface fragments (\code{desert_pavement_pct}) >= 20\% AND
 #' (\code{varnish_pct} >= 10 OR \code{ventifact_pct} >= 10 OR
-#' \code{vesicular_pores} %in% c("common", "many")) on the surface
+#' \code{vesicular_pores} \%in\% c("common", "many")) on the surface
 #' layer (top_cm <= 5).
 #' @keywords internal
 test_yermic_surface <- function(h) {

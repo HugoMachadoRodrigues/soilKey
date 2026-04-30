@@ -67,8 +67,17 @@ Beaudette, D. E., Roudier, P., & O'Geen, A. T. (2013). Algorithms for
 Quantitative Pedology: A toolkit for soil scientists. \emph{Computers &
 Geosciences}, 52, 258--268.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/HugoMachadoRodrigues/soilKey}
+  \item \url{https://hugomachadorodrigues.github.io/soilKey/}
+  \item Report bugs at \url{https://github.com/HugoMachadoRodrigues/soilKey/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Hugo Rodrigues \email{rodrigues.machado.hugo@gmail.com} (\href{https://orcid.org/0000-0000-0000-0000}{ORCID})
+\strong{Maintainer}: Hugo Rodrigues \email{rodrigues.machado.hugo@gmail.com} (\href{https://orcid.org/0000-0002-8070-8126}{ORCID})
 
 }
 \keyword{internal}

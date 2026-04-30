@@ -7,6 +7,9 @@
 \usage{
 neossolo_litolico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Neossolos Litolicos (Cap 12): contato litico ou litico fragmentario
 \\<= 50 cm.

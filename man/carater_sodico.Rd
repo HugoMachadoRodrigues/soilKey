@@ -2,10 +2,18 @@
 % Please edit documentation in R/diagnostics-atributos-sibcs.R
 \name{carater_sodico}
 \alias{carater_sodico}
-\title{Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15%.}
+\title{Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15\%.}
 \usage{
-carater_sodico(pedon, min_pst = 15)
+carater_sodico(pedon, min_pst = 15, max_depth_cm = NULL)
+}
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_pst}{PST minimo (\%) (default 15).}
+
+\item{max_depth_cm}{Profundidade maxima em que camadas qualificam
+(default \code{NULL}). SiBCS Cap 14 Subgrupos usam 150.}
 }
 \description{
-Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15%.
+Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15\%.
 }

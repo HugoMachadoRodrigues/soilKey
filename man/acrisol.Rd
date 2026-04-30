@@ -19,7 +19,7 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Tests whether a profile satisfies the Acrisol RSG criteria: an
 argic horizon with low-activity clay (CEC < 24 cmol_c/kg clay) AND
-low base saturation (BS < 50%) within at least one argic layer.
+low base saturation (BS < 50\%) within at least one argic layer.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 5, Acrisols.

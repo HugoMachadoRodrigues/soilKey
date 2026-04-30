@@ -2,12 +2,15 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_clayic}
 \alias{qual_clayic}
-\title{Clayic qualifier (ce): clay >= 60% texture for a layer >= 30 cm in
+\title{Clayic qualifier (ce): clay >= 60\% texture for a layer >= 30 cm in
 the upper 100 cm.}
 \usage{
 qual_clayic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
-Clayic qualifier (ce): clay >= 60% texture for a layer >= 30 cm in
+Clayic qualifier (ce): clay >= 60\% texture for a layer >= 30 cm in
 the upper 100 cm.
 }

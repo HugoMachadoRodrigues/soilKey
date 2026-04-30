@@ -11,6 +11,9 @@ apply_horizons_extraction(
   source_label = "extracted_vlm"
 )
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Walks the \code{horizons} array of a parsed extraction response,
 creating / matching horizon rows and recording each non-null

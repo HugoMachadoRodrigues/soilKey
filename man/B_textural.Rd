@@ -6,6 +6,11 @@
 \usage{
 B_textural(pedon, ...)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{...}{Reserved for future arguments.}
+}
 \description{
 Horizonte mineral subsuperficial com incremento de argila + cerosidade
 OR aumento gradativo, satisfazendo criterios de espessura e relacao
@@ -13,7 +18,7 @@ textural B/A. v0.7 enforce as alternativas (a)-(j) do SiBCS por
 delegacao parcial ao WRB \code{\link{argic}} (criterios de
 clay-increase essencialmente identicos) acrescidos de:
 \itemize{
-  \item espessura \\>= 7.5 cm OR \\>= 10\\% da soma das espessuras
+  \item espessura \\>= 7.5 cm OR \\>= 10\% da soma das espessuras
         dos sobrejacentes; e
   \item textura \\>= francoarenosa.
 }

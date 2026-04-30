@@ -6,6 +6,9 @@
 \usage{
 planossolo_haplico(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Planossolos Haplicos (catch-all).
 }

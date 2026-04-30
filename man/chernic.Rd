@@ -9,6 +9,11 @@ homogenization").}
 \usage{
 chernic(pedon, min_worm_pct = 50)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_worm_pct}{Numeric threshold or option (see Details).}
+}
 \description{
 Chernic horizon (WRB 2022): the cherozemic-style mollic with very high
 biological activity (worm holes, casts, coprolites). v0.3.3:

@@ -6,6 +6,9 @@
 \usage{
 qual_arenic(pedon)
 }
+\arguments{
+\item{pedon}{A \code{\link{PedonRecord}}.}
+}
 \description{
 Arenic qualifier (ar): texture sand or loamy sand >= 30 cm in <= 100 cm.
 }

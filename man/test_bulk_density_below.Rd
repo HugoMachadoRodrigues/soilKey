@@ -6,6 +6,13 @@
 \usage{
 test_bulk_density_below(h, max_g_cm3 = 0.9, candidate_layers = NULL)
 }
+\arguments{
+\item{h}{Numeric threshold or option (see Details).}
+
+\item{max_g_cm3}{Numeric threshold or option (see Details).}
+
+\item{candidate_layers}{Numeric threshold or option (see Details).}
+}
 \description{
 Default 0.9 g/cm^3 (andic property, WRB 2022).
 }
