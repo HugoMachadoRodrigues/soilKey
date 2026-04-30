@@ -1,0 +1,752 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Mollisols Subgroups -- Cap 12
+# =============================================================
+# Cobertura cientifica focada (~115 SGs).
+# Comuns: Lithic, Aquic, Pachic, Vertic, Andic, Vermic, Cumulic,
+#         Aridic, Calcic, Sodic, Typic.
+# =============================================================
+
+subgroups:
+
+  # ====== ALBOLLS ======
+
+  "IAA":  # Natralbolls (3)
+    - code: "IAAA"
+      name: "Aquic Natralbolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IAAB"
+      name: "Vertic Natralbolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IAAC"
+      name: "Typic Natralbolls"
+      tests:
+        default: true
+
+  "IAB":  # Argialbolls (4)
+    - code: "IABA"
+      name: "Aquic Argialbolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IABB"
+      name: "Pachic Argialbolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IABC"
+      name: "Vertic Argialbolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IABD"
+      name: "Typic Argialbolls"
+      tests:
+        default: true
+
+  # ====== AQUOLLS ======
+
+  "IBA":  # Cryaquolls (4)
+    - code: "IBAA"
+      name: "Lithic Cryaquolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IBAB"
+      name: "Vertic Cryaquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBAC"
+      name: "Cumulic Cryaquolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IBAD"
+      name: "Typic Cryaquolls"
+      tests:
+        default: true
+
+  "IBB":  # Duraquolls (3)
+    - code: "IBBA"
+      name: "Vertic Duraquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBBB"
+      name: "Argic Duraquolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IBBC"
+      name: "Typic Duraquolls"
+      tests:
+        default: true
+
+  "IBC":  # Natraquolls (3)
+    - code: "IBCA"
+      name: "Vertic Natraquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBCB"
+      name: "Salic Natraquolls"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "IBCC"
+      name: "Typic Natraquolls"
+      tests:
+        default: true
+
+  "IBD":  # Calciaquolls (3)
+    - code: "IBDA"
+      name: "Vertic Calciaquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBDB"
+      name: "Petrocalcic Calciaquolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IBDC"
+      name: "Typic Calciaquolls"
+      tests:
+        default: true
+
+  "IBE":  # Argiaquolls (4)
+    - code: "IBEA"
+      name: "Lithic Argiaquolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IBEB"
+      name: "Vertic Argiaquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBEC"
+      name: "Pachic Argiaquolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IBED"
+      name: "Typic Argiaquolls"
+      tests:
+        default: true
+
+  "IBF":  # Epiaquolls (4)
+    - code: "IBFA"
+      name: "Lithic Epiaquolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IBFB"
+      name: "Vertic Epiaquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBFC"
+      name: "Cumulic Epiaquolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IBFD"
+      name: "Typic Epiaquolls"
+      tests:
+        default: true
+
+  "IBG":  # Endoaquolls (5)
+    - code: "IBGA"
+      name: "Lithic Endoaquolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IBGB"
+      name: "Vertic Endoaquolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IBGC"
+      name: "Cumulic Endoaquolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IBGD"
+      name: "Calcic Endoaquolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IBGE"
+      name: "Typic Endoaquolls"
+      tests:
+        default: true
+
+  # ====== RENDOLLS ======
+
+  "ICA":  # Cryrendolls (2)
+    - code: "ICAA"
+      name: "Lithic Cryrendolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ICAB"
+      name: "Typic Cryrendolls"
+      tests:
+        default: true
+
+  "ICB":  # Haprendolls (3)
+    - code: "ICBA"
+      name: "Lithic Haprendolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ICBB"
+      name: "Aquic Haprendolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ICBC"
+      name: "Typic Haprendolls"
+      tests:
+        default: true
+
+  # ====== GELOLLS ======
+
+  "IDA":  # Haplogelolls (2)
+    - code: "IDAA"
+      name: "Lithic Haplogelolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IDAB"
+      name: "Typic Haplogelolls"
+      tests:
+        default: true
+
+  # ====== CRYOLLS ======
+
+  "IEA":  # Duricryolls (3)
+    - code: "IEAA"
+      name: "Argic Duricryolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IEAB"
+      name: "Vertic Duricryolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IEAC"
+      name: "Typic Duricryolls"
+      tests:
+        default: true
+
+  "IEB":  # Natricryolls (3)
+    - code: "IEBA"
+      name: "Vertic Natricryolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IEBB"
+      name: "Aquic Natricryolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IEBC"
+      name: "Typic Natricryolls"
+      tests:
+        default: true
+
+  "IEC":  # Palecryolls (3)
+    - code: "IECA"
+      name: "Vertic Palecryolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IECB"
+      name: "Pachic Palecryolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IECC"
+      name: "Typic Palecryolls"
+      tests:
+        default: true
+
+  "IED":  # Argicryolls (4)
+    - code: "IEDA"
+      name: "Lithic Argicryolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IEDB"
+      name: "Vertic Argicryolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IEDC"
+      name: "Pachic Argicryolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IEDD"
+      name: "Typic Argicryolls"
+      tests:
+        default: true
+
+  "IEE":  # Calcicryolls (3)
+    - code: "IEEA"
+      name: "Lithic Calcicryolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IEEB"
+      name: "Petrocalcic Calcicryolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IEEC"
+      name: "Typic Calcicryolls"
+      tests:
+        default: true
+
+  "IEF":  # Haplocryolls (5)
+    - code: "IEFA"
+      name: "Lithic Haplocryolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IEFB"
+      name: "Aquic Haplocryolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IEFC"
+      name: "Pachic Haplocryolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IEFD"
+      name: "Vertic Haplocryolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IEFE"
+      name: "Typic Haplocryolls"
+      tests:
+        default: true
+
+  # ====== XEROLLS ======
+
+  "IFA":  # Durixerolls (3)
+    - code: "IFAA"
+      name: "Argic Durixerolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IFAB"
+      name: "Vertic Durixerolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IFAC"
+      name: "Typic Durixerolls"
+      tests:
+        default: true
+
+  "IFB":  # Natrixerolls (3)
+    - code: "IFBA"
+      name: "Aquic Natrixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFBB"
+      name: "Vertic Natrixerolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IFBC"
+      name: "Typic Natrixerolls"
+      tests:
+        default: true
+
+  "IFC":  # Palexerolls (4)
+    - code: "IFCA"
+      name: "Lithic Palexerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFCB"
+      name: "Vertic Palexerolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IFCC"
+      name: "Pachic Palexerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IFCD"
+      name: "Typic Palexerolls"
+      tests:
+        default: true
+
+  "IFD":  # Calcixerolls (4)
+    - code: "IFDA"
+      name: "Lithic Calcixerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFDB"
+      name: "Petrocalcic Calcixerolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IFDC"
+      name: "Aridic Calcixerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IFDD"
+      name: "Typic Calcixerolls"
+      tests:
+        default: true
+
+  "IFE":  # Argixerolls (5)
+    - code: "IFEA"
+      name: "Lithic Argixerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFEB"
+      name: "Aquic Argixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFEC"
+      name: "Vertic Argixerolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IFED"
+      name: "Pachic Argixerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IFEE"
+      name: "Typic Argixerolls"
+      tests:
+        default: true
+
+  "IFF":  # Haploxerolls (5)
+    - code: "IFFA"
+      name: "Lithic Haploxerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFFB"
+      name: "Aquic Haploxerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFFC"
+      name: "Vertic Haploxerolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IFFD"
+      name: "Pachic Haploxerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IFFE"
+      name: "Typic Haploxerolls"
+      tests:
+        default: true
+
+  # ====== USTOLLS ======
+
+  "IGA":  # Durustolls (3)
+    - code: "IGAA"
+      name: "Argic Durustolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IGAB"
+      name: "Vertic Durustolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IGAC"
+      name: "Typic Durustolls"
+      tests:
+        default: true
+
+  "IGB":  # Natrustolls (3)
+    - code: "IGBA"
+      name: "Aquic Natrustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGBB"
+      name: "Vertic Natrustolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IGBC"
+      name: "Typic Natrustolls"
+      tests:
+        default: true
+
+  "IGC":  # Calciustolls (4)
+    - code: "IGCA"
+      name: "Lithic Calciustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGCB"
+      name: "Petrocalcic Calciustolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IGCC"
+      name: "Aridic Calciustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IGCD"
+      name: "Typic Calciustolls"
+      tests:
+        default: true
+
+  "IGD":  # Paleustolls (5)
+    - code: "IGDA"
+      name: "Lithic Paleustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGDB"
+      name: "Vertic Paleustolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IGDC"
+      name: "Pachic Paleustolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IGDD"
+      name: "Calcic Paleustolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IGDE"
+      name: "Typic Paleustolls"
+      tests:
+        default: true
+
+  "IGE":  # Argiustolls (5)
+    - code: "IGEA"
+      name: "Lithic Argiustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGEB"
+      name: "Aquic Argiustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGEC"
+      name: "Vertic Argiustolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IGED"
+      name: "Pachic Argiustolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IGEE"
+      name: "Typic Argiustolls"
+      tests:
+        default: true
+
+  "IGF":  # Vermustolls (3)
+    - code: "IGFA"
+      name: "Lithic Vermustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGFB"
+      name: "Pachic Vermustolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IGFC"
+      name: "Typic Vermustolls"
+      tests:
+        default: true
+
+  "IGG":  # Haplustolls (6)
+    - code: "IGGA"
+      name: "Lithic Haplustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGGB"
+      name: "Aquic Haplustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGGC"
+      name: "Vertic Haplustolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IGGD"
+      name: "Pachic Haplustolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IGGE"
+      name: "Calcic Haplustolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IGGF"
+      name: "Typic Haplustolls"
+      tests:
+        default: true
+
+  # ====== UDOLLS ======
+
+  "IHA":  # Natrudolls (3)
+    - code: "IHAA"
+      name: "Vertic Natrudolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IHAB"
+      name: "Aquic Natrudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IHAC"
+      name: "Typic Natrudolls"
+      tests:
+        default: true
+
+  "IHB":  # Calciudolls (3)
+    - code: "IHBA"
+      name: "Lithic Calciudolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IHBB"
+      name: "Petrocalcic Calciudolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IHBC"
+      name: "Typic Calciudolls"
+      tests:
+        default: true
+
+  "IHC":  # Paleudolls (4)
+    - code: "IHCA"
+      name: "Vertic Paleudolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IHCB"
+      name: "Pachic Paleudolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IHCC"
+      name: "Aquic Paleudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IHCD"
+      name: "Typic Paleudolls"
+      tests:
+        default: true
+
+  "IHD":  # Argiudolls (5)
+    - code: "IHDA"
+      name: "Lithic Argiudolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IHDB"
+      name: "Aquic Argiudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IHDC"
+      name: "Vertic Argiudolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IHDD"
+      name: "Pachic Argiudolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IHDE"
+      name: "Typic Argiudolls"
+      tests:
+        default: true
+
+  "IHE":  # Vermudolls (3)
+    - code: "IHEA"
+      name: "Lithic Vermudolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IHEB"
+      name: "Pachic Vermudolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IHEC"
+      name: "Typic Vermudolls"
+      tests:
+        default: true
+
+  "IHF":  # Hapludolls (6)
+    - code: "IHFA"
+      name: "Lithic Hapludolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IHFB"
+      name: "Aquic Hapludolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IHFC"
+      name: "Vertic Hapludolls"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "IHFD"
+      name: "Pachic Hapludolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IHFE"
+      name: "Cumulic Hapludolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IHFF"
+      name: "Typic Hapludolls"
+      tests:
+        default: true

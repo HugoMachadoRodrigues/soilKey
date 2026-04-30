@@ -1,0 +1,211 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Mollisols Great Groups -- Cap 12
+# =============================================================
+# 37 GGs total:
+#   Albolls (IA): 2 / Aquolls (IB): 7 / Rendolls (IC): 2 /
+#   Gelolls (ID): 1 / Cryolls (IE): 6 / Xerolls (IF): 6 /
+#   Ustolls (IG): 7 / Udolls (IH): 6
+# =============================================================
+
+great_groups:
+
+  # ---- Albolls (IA) ----
+  "IA":
+    - code: "IAA"
+      name: "Natralbolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IAB"
+      name: "Argialbolls"
+      tests:
+        default: true
+
+  # ---- Aquolls (IB) ----
+  "IB":
+    - code: "IBA"
+      name: "Cryaquolls"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "IBB"
+      name: "Duraquolls"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "IBC"
+      name: "Natraquolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IBD"
+      name: "Calciaquolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IBE"
+      name: "Argiaquolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IBF"
+      name: "Epiaquolls"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "IBG"
+      name: "Endoaquolls"
+      tests:
+        default: true
+
+  # ---- Rendolls (IC) ----
+  "IC":
+    - code: "ICA"
+      name: "Cryrendolls"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "ICB"
+      name: "Haprendolls"
+      tests:
+        default: true
+
+  # ---- Gelolls (ID) ----
+  "ID":
+    - code: "IDA"
+      name: "Haplogelolls"
+      tests:
+        default: true
+
+  # ---- Cryolls (IE) ----
+  "IE":
+    - code: "IEA"
+      name: "Duricryolls"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "IEB"
+      name: "Natricryolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IEC"
+      name: "Palecryolls"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "IED"
+      name: "Argicryolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IEE"
+      name: "Calcicryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IEF"
+      name: "Haplocryolls"
+      tests:
+        default: true
+
+  # ---- Xerolls (IF) ----
+  "IF":
+    - code: "IFA"
+      name: "Durixerolls"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "IFB"
+      name: "Natrixerolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IFC"
+      name: "Palexerolls"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "IFD"
+      name: "Calcixerolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IFE"
+      name: "Argixerolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IFF"
+      name: "Haploxerolls"
+      tests:
+        default: true
+
+  # ---- Ustolls (IG) ----
+  "IG":
+    - code: "IGA"
+      name: "Durustolls"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "IGB"
+      name: "Natrustolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IGC"
+      name: "Calciustolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IGD"
+      name: "Paleustolls"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "IGE"
+      name: "Argiustolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IGF"
+      name: "Vermustolls"
+      tests:
+        all_of:
+          - vermic_subgroup_usda: {}
+    - code: "IGG"
+      name: "Haplustolls"
+      tests:
+        default: true
+
+  # ---- Udolls (IH) ----
+  "IH":
+    - code: "IHA"
+      name: "Natrudolls"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "IHB"
+      name: "Calciudolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IHC"
+      name: "Paleudolls"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "IHD"
+      name: "Argiudolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IHE"
+      name: "Vermudolls"
+      tests:
+        all_of:
+          - vermic_subgroup_usda: {}
+    - code: "IHF"
+      name: "Hapludolls"
+      tests:
+        default: true
