@@ -1,0 +1,185 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Alfisols Subgroups -- Cap 5
+# =============================================================
+# Cobertura cientifica focada (~140 SGs).
+# Comuns: Lithic, Aquic, Vertic, Pachic, Andic, Mollic, Glossic,
+#         Plinthic, Typic.
+# =============================================================
+
+subgroups:
+
+  # ====== AQUALFS ======
+  "JAA":  # Plinthaqualfs (3)
+    - { code: "JAAA", name: "Lithic Plinthaqualfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JAAB", name: "Aeric Plinthaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAAC", name: "Typic Plinthaqualfs", tests: { default: true } }
+  "JAB":  # Cryaqualfs (3)
+    - { code: "JABA", name: "Lithic Cryaqualfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JABB", name: "Vertic Cryaqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JABC", name: "Typic Cryaqualfs", tests: { default: true } }
+  "JAC":  # Natraqualfs (3)
+    - { code: "JACA", name: "Vertic Natraqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JACB", name: "Mollic Natraqualfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JACC", name: "Typic Natraqualfs", tests: { default: true } }
+  "JAD":  # Fragiaqualfs (3)
+    - { code: "JADA", name: "Aeric Fragiaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JADB", name: "Mollic Fragiaqualfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JADC", name: "Typic Fragiaqualfs", tests: { default: true } }
+  "JAE":  # Kandiaqualfs (3)
+    - { code: "JAEA", name: "Aeric Kandiaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAEB", name: "Plinthic Kandiaqualfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
+    - { code: "JAEC", name: "Typic Kandiaqualfs", tests: { default: true } }
+  "JAF":  # Vermaqualfs (2)
+    - { code: "JAFA", name: "Aeric Vermaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAFB", name: "Typic Vermaqualfs", tests: { default: true } }
+  "JAG":  # Albaqualfs (3)
+    - { code: "JAGA", name: "Vertic Albaqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JAGB", name: "Mollic Albaqualfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JAGC", name: "Typic Albaqualfs", tests: { default: true } }
+  "JAH":  # Glossaqualfs (3)
+    - { code: "JAHA", name: "Vertic Glossaqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JAHB", name: "Mollic Glossaqualfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JAHC", name: "Typic Glossaqualfs", tests: { default: true } }
+  "JAI":  # Duraqualfs (3)
+    - { code: "JAIA", name: "Aeric Duraqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAIB", name: "Vertic Duraqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JAIC", name: "Typic Duraqualfs", tests: { default: true } }
+  "JAJ":  # Epiaqualfs (4)
+    - { code: "JAJA", name: "Lithic Epiaqualfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JAJB", name: "Aeric Epiaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAJC", name: "Vertic Epiaqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JAJD", name: "Typic Epiaqualfs", tests: { default: true } }
+  "JAK":  # Endoaqualfs (5)
+    - { code: "JAKA", name: "Lithic Endoaqualfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JAKB", name: "Aeric Endoaqualfs", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "JAKC", name: "Vertic Endoaqualfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JAKD", name: "Mollic Endoaqualfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JAKE", name: "Typic Endoaqualfs", tests: { default: true } }
+
+  # ====== CRYALFS ======
+  "JBA":  # Palecryalfs (3)
+    - { code: "JBAA", name: "Vertic Palecryalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JBAB", name: "Mollic Palecryalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JBAC", name: "Typic Palecryalfs", tests: { default: true } }
+  "JBB":  # Glossocryalfs (3)
+    - { code: "JBBA", name: "Lithic Glossocryalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JBBB", name: "Mollic Glossocryalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JBBC", name: "Typic Glossocryalfs", tests: { default: true } }
+  "JBC":  # Haplocryalfs (4)
+    - { code: "JBCA", name: "Lithic Haplocryalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JBCB", name: "Andic Haplocryalfs", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "JBCC", name: "Mollic Haplocryalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JBCD", name: "Typic Haplocryalfs", tests: { default: true } }
+
+  # ====== USTALFS ======
+  "JCA":  # Durustalfs (3)
+    - { code: "JCAA", name: "Aquic Durustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCAB", name: "Vertic Durustalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JCAC", name: "Typic Durustalfs", tests: { default: true } }
+  "JCB":  # Plinthustalfs (3)
+    - { code: "JCBA", name: "Lithic Plinthustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCBB", name: "Aquic Plinthustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCBC", name: "Typic Plinthustalfs", tests: { default: true } }
+  "JCC":  # Natrustalfs (3)
+    - { code: "JCCA", name: "Aquic Natrustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCCB", name: "Vertic Natrustalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JCCC", name: "Typic Natrustalfs", tests: { default: true } }
+  "JCD":  # Kandiustalfs (3)
+    - { code: "JCDA", name: "Lithic Kandiustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCDB", name: "Plinthic Kandiustalfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
+    - { code: "JCDC", name: "Typic Kandiustalfs", tests: { default: true } }
+  "JCE":  # Kanhaplustalfs (3)
+    - { code: "JCEA", name: "Lithic Kanhaplustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCEB", name: "Aquic Kanhaplustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCEC", name: "Typic Kanhaplustalfs", tests: { default: true } }
+  "JCF":  # Paleustalfs (4)
+    - { code: "JCFA", name: "Lithic Paleustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCFB", name: "Aquic Paleustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCFC", name: "Vertic Paleustalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JCFD", name: "Typic Paleustalfs", tests: { default: true } }
+  "JCG":  # Rhodustalfs (3)
+    - { code: "JCGA", name: "Lithic Rhodustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCGB", name: "Mollic Rhodustalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JCGC", name: "Typic Rhodustalfs", tests: { default: true } }
+  "JCH":  # Haplustalfs (5)
+    - { code: "JCHA", name: "Lithic Haplustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JCHB", name: "Aquic Haplustalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JCHC", name: "Vertic Haplustalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JCHD", name: "Mollic Haplustalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JCHE", name: "Typic Haplustalfs", tests: { default: true } }
+
+  # ====== XERALFS ======
+  "JDA":  # Durixeralfs (3)
+    - { code: "JDAA", name: "Aquic Durixeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDAB", name: "Vertic Durixeralfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JDAC", name: "Typic Durixeralfs", tests: { default: true } }
+  "JDB":  # Natrixeralfs (3)
+    - { code: "JDBA", name: "Aquic Natrixeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDBB", name: "Vertic Natrixeralfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JDBC", name: "Typic Natrixeralfs", tests: { default: true } }
+  "JDC":  # Fragixeralfs (3)
+    - { code: "JDCA", name: "Aquic Fragixeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDCB", name: "Andic Fragixeralfs", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "JDCC", name: "Typic Fragixeralfs", tests: { default: true } }
+  "JDD":  # Plinthoxeralfs (2)
+    - { code: "JDDA", name: "Aquic Plinthoxeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDDB", name: "Typic Plinthoxeralfs", tests: { default: true } }
+  "JDE":  # Rhodoxeralfs (3)
+    - { code: "JDEA", name: "Lithic Rhodoxeralfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JDEB", name: "Mollic Rhodoxeralfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JDEC", name: "Typic Rhodoxeralfs", tests: { default: true } }
+  "JDF":  # Palexeralfs (4)
+    - { code: "JDFA", name: "Aquic Palexeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDFB", name: "Vertic Palexeralfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JDFC", name: "Mollic Palexeralfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JDFD", name: "Typic Palexeralfs", tests: { default: true } }
+  "JDG":  # Haploxeralfs (5)
+    - { code: "JDGA", name: "Lithic Haploxeralfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JDGB", name: "Aquic Haploxeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JDGC", name: "Vertic Haploxeralfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JDGD", name: "Mollic Haploxeralfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JDGE", name: "Typic Haploxeralfs", tests: { default: true } }
+
+  # ====== UDALFS ======
+  "JEA":  # Natrudalfs (3)
+    - { code: "JEAA", name: "Aquic Natrudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEAB", name: "Vertic Natrudalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JEAC", name: "Typic Natrudalfs", tests: { default: true } }
+  "JEB":  # Ferrudalfs (2)
+    - { code: "JEBA", name: "Aquic Ferrudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEBB", name: "Typic Ferrudalfs", tests: { default: true } }
+  "JEC":  # Fraglossudalfs (3)
+    - { code: "JECA", name: "Aquic Fraglossudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JECB", name: "Mollic Fraglossudalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JECC", name: "Typic Fraglossudalfs", tests: { default: true } }
+  "JED":  # Fragiudalfs (3)
+    - { code: "JEDA", name: "Aquic Fragiudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEDB", name: "Andic Fragiudalfs", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "JEDC", name: "Typic Fragiudalfs", tests: { default: true } }
+  "JEE":  # Kandiudalfs (3)
+    - { code: "JEEA", name: "Aquic Kandiudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEEB", name: "Plinthic Kandiudalfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
+    - { code: "JEEC", name: "Typic Kandiudalfs", tests: { default: true } }
+  "JEF":  # Kanhapludalfs (3)
+    - { code: "JEFA", name: "Lithic Kanhapludalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JEFB", name: "Aquic Kanhapludalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEFC", name: "Typic Kanhapludalfs", tests: { default: true } }
+  "JEG":  # Paleudalfs (4)
+    - { code: "JEGA", name: "Aquic Paleudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEGB", name: "Vertic Paleudalfs", tests: { all_of: [{vertic_subgroup_usda: {}}] } }
+    - { code: "JEGC", name: "Mollic Paleudalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JEGD", name: "Typic Paleudalfs", tests: { default: true } }
+  "JEH":  # Rhodudalfs (3)
+    - { code: "JEHA", name: "Lithic Rhodudalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JEHB", name: "Mollic Rhodudalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JEHC", name: "Typic Rhodudalfs", tests: { default: true } }
+  "JEI":  # Glossudalfs (3)
+    - { code: "JEIA", name: "Aquic Glossudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEIB", name: "Mollic Glossudalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JEIC", name: "Typic Glossudalfs", tests: { default: true } }
+  "JEJ":  # Hapludalfs (5)
+    - { code: "JEJA", name: "Lithic Hapludalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "JEJB", name: "Aquic Hapludalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEJC", name: "Andic Hapludalfs", tests: { all_of: [{andic_subgroup_usda: {}}] } }
+    - { code: "JEJD", name: "Mollic Hapludalfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
+    - { code: "JEJE", name: "Typic Hapludalfs", tests: { default: true } }

@@ -1,0 +1,33 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Alfisols Suborders -- Cap 5
+# =============================================================
+# 5 Suborders: JA Aqualfs, JB Cryalfs, JC Ustalfs, JD Xeralfs, JE Udalfs
+# =============================================================
+
+suborders:
+
+  "AF":
+    - code: "JA"
+      name: "Aqualfs"
+      tests:
+        all_of:
+          - aqualf_qualifying_usda: {}
+    - code: "JB"
+      name: "Cryalfs"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "JC"
+      name: "Ustalfs"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "JD"
+      name: "Xeralfs"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "JE"
+      name: "Udalfs"
+      tests:
+        default: true
