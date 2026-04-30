@@ -139,15 +139,23 @@ download_ossl_subset <- function(region      = c("global", "south_america",
   Xr <- obj$Xr
   Yr <- as.data.frame(obj$Yr)
 
-  # Align Yr to the requested properties (drop unused columns -- keeps
-  # the in-memory artefact small and downstream code predictable).
+  # Align Yr to the requested properties (drop unused property columns
+  # -- keeps the artefact small and downstream code predictable). We
+  # ALSO retain any geographic / metadata columns that downstream
+  # workflows (spatial filter, WoSIS spatial-join label inheritance)
+  # depend on, even when the user did not list them in `properties`.
+  geo_cols <- intersect(c("lat", "lon", "country", "continent",
+                            "wrb_rsg", "sibcs_ordem", "usda_order",
+                            "profile_code", "site_id"),
+                          names(Yr))
   keep_props <- intersect(properties, names(Yr))
-  if (length(keep_props) == 0L) {
-    stop("None of the requested properties are present in the OSSL subset.\n",
+  if (length(keep_props) == 0L && length(geo_cols) == 0L) {
+    stop("None of the requested properties or geographic columns ",
+         "are present in the OSSL subset.\n",
          "  Requested: ", paste(properties, collapse = ", "), "\n",
          "  Available: ", paste(names(Yr), collapse = ", "))
   }
-  Yr <- Yr[, keep_props, drop = FALSE]
+  Yr <- Yr[, unique(c(keep_props, geo_cols)), drop = FALSE]
 
   # Interpolate Xr to the requested wavelengths if needed.
   src_wl <- suppressWarnings(as.integer(colnames(Xr)))

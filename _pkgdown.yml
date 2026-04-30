@@ -43,6 +43,8 @@ navbar:
           href: "articles/v05_spatial_spectra_pipeline.html"
         - text: "WoSIS benchmark"
           href: "articles/v06_wosis_benchmark.html"
+        - text: "End-to-end pipeline"
+          href: "articles/v07_end_to_end_pipeline.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
@@ -261,6 +263,7 @@ reference:
       - report
       - report_html
       - report_pdf
+      - report_to_qgis
 
   - title: "Canonical fixtures"
     desc: "One-call constructors for the 31 canonical fixtures (one per WRB RSG, plus auxiliaries) used in the test suite."
@@ -309,6 +312,7 @@ reference:
       - ossl_library_template
       - clear_ossl_cache
       - download_ossl_subset
+      - download_ossl_subset_with_labels
       - ossl_demo_sa
       - planosol
       - posterior_classify
@@ -355,6 +359,7 @@ articles:
       - v04_vlm_extraction
       - v05_spatial_spectra_pipeline
       - v06_wosis_benchmark
+      - v07_end_to_end_pipeline
 
 news:
   releases:

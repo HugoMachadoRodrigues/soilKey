@@ -15,6 +15,7 @@
 ^\.gitignore$
 ^\.DS_Store$
 ^.*\.code-workspace$
+^\.Renviron$
 ^\.zenodo\.json$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$

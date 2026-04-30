@@ -28,6 +28,16 @@ jobs:
         with:
           use-public-rspm: true
 
+      - name: Set PROJ_LIB / GDAL_DATA
+        shell: bash
+        run: |
+          for d in /usr/share/proj /usr/lib/x86_64-linux-gnu/proj; do
+            if [ -d "$d" ]; then echo "PROJ_LIB=$d" >> "$GITHUB_ENV"; break; fi
+          done
+          for d in /usr/share/gdal /usr/lib/gdal; do
+            if [ -d "$d" ]; then echo "GDAL_DATA=$d" >> "$GITHUB_ENV"; break; fi
+          done
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.

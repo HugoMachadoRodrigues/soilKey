@@ -44,6 +44,35 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Set PROJ_LIB / GDAL_DATA (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # Set PROJ_LIB / GDAL_DATA only if the system dirs exist, so
+          # terra::rast(crs = "EPSG:4326") finds proj.db. Eliminates the
+          # "PROJ: proj_create: no database context" NOTE on as-cran.
+          for d in /usr/share/proj /usr/lib/x86_64-linux-gnu/proj; do
+            if [ -d "$d" ]; then echo "PROJ_LIB=$d" >> "$GITHUB_ENV"; break; fi
+          done
+          for d in /usr/share/gdal /usr/lib/gdal; do
+            if [ -d "$d" ]; then echo "GDAL_DATA=$d" >> "$GITHUB_ENV"; break; fi
+          done
+
+      - name: Set PROJ_LIB / GDAL_DATA (macOS Homebrew)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          if [ -d /opt/homebrew/share/proj ]; then
+            echo "PROJ_LIB=/opt/homebrew/share/proj" >> "$GITHUB_ENV"
+          elif [ -d /usr/local/share/proj ]; then
+            echo "PROJ_LIB=/usr/local/share/proj" >> "$GITHUB_ENV"
+          fi
+          if [ -d /opt/homebrew/share/gdal ]; then
+            echo "GDAL_DATA=/opt/homebrew/share/gdal" >> "$GITHUB_ENV"
+          elif [ -d /usr/local/share/gdal ]; then
+            echo "GDAL_DATA=/usr/local/share/gdal" >> "$GITHUB_ENV"
+          fi
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
