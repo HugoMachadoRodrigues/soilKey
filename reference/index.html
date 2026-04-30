@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
+    <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -4193,6 +4194,13 @@
 
         </dt>
         <dd>Render a soilKey classification report as PDF</dd>
+
+        <dt>
+
+          <code><a href="report_to_qgis.html">report_to_qgis()</a></code>
+
+        </dt>
+        <dd>Export a classification result + pedon to a QGIS GeoPackage</dd>
       </dl></div><div class="section level2">
       <h2 id="canonical-fixtures">Canonical fixtures<a class="anchor" aria-label="anchor" href="#canonical-fixtures"></a></h2>
 
@@ -5303,6 +5311,13 @@
 
         </dt>
         <dd>Download an OSSL subset and return an `ossl_library` artefact</dd>
+
+        <dt>
+
+          <code><a href="download_ossl_subset_with_labels.html">download_ossl_subset_with_labels()</a></code>
+
+        </dt>
+        <dd>Download an OSSL subset and attach WRB / SiBCS / USDA labels</dd>
 
         <dt>
 

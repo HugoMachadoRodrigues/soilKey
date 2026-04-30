@@ -10,6 +10,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v04_vlm_extraction.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v05_spatial_spectra_pipeline.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v06_wosis_benchmark.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v07_end_to_end_pipeline.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/authors.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/index.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/news/index.html</loc></url>
@@ -180,6 +181,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dolomitic_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_aggregate.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_negative.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_pedon_point_row.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_report_rmd.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-candidate_layers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-check_predict_inputs.html</loc></url>
@@ -201,6 +203,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-ossl_property_ranges.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_ossl_mbl_resemble.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_synthetic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_classification_block.html</loc></url>
@@ -217,8 +220,12 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-subtest_result.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-three_valued_all.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-typical_attribute_table.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_canonical_plural.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_sibcs_distribution.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_sibcs_modal_ordem.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_usda_modal_order.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duripa.html</loc></url>
@@ -648,6 +655,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report_html.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report_pdf.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/resolve_assigned_rsg_code.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.html</loc></url>

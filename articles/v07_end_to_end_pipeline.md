@@ -1,0 +1,292 @@
+# End-to-end pipeline: Gemma 4 + spatial + spectral + key + GIS export
+
+This vignette walks the **complete soilKey pipeline** on a real
+Brazilian soil profile, hitting every public entry point in canonical
+order:
+
+1.  **Spatial guide** —
+    [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
+    returns ranked likely classes at the field GPS coordinate before any
+    pedon data is collected.
+2.  **Multimodal extraction** —
+    [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+    runs Gemma 4 (local Ollama) on a soil-description PDF and a
+    profile-wall photograph, extracts horizons + Munsell + site
+    metadata, and feeds everything into a `PedonRecord`.
+3.  **Spectral analogy** —
+    [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
+    consumes a Vis-NIR scan of the surface horizon, finds the K most
+    similar OSSL profiles within a regional radius, and returns a
+    probabilistic class prediction.
+4.  **Deterministic classification** —
+    [`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md),
+    `classify_sibcs(include_familia = TRUE)`,
+    [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+    walk the canonical YAML rules and produce the final names with full
+    key trace + provenance + evidence grade.
+5.  **Reports** —
+    [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+    writes a self-contained HTML pedologist report.
+6.  **GIS export** —
+    [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
+    produces a multi-layer GeoPackage that QGIS opens natively.
+
+The whole pipeline runs offline once the Ollama Gemma 4 model is pulled;
+the only network hit is the optional SoilGrids fetch in step 1.
+
+## 1. Set the scene
+
+We use a canonical Latossolo Vermelho Distrocoeso from the Mata
+Atlântica around Seropédica, RJ, parent material gneiss. The fixture
+mimics a real Embrapa survey profile.
+
+``` r
+
+# Field GPS coordinates of the planned profile pit.
+field_lat <- -22.7
+field_lon <- -43.7
+```
+
+## 2. Spatial guide – before any pedon data
+
+[`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
+queries SoilGrids 2.0 (or any WRB-coded raster the user provides) and
+returns a ranked list of likely classes plus the canonical attribute
+thresholds that distinguish them.
+
+``` r
+
+guide <- soil_classes_at_location(
+  lat        = field_lat,
+  lon        = field_lon,
+  system     = "wrb2022",
+  source_url = "https://files.isric.org/soilgrids/latest/data/wrb/MostProbable.vrt"
+)
+
+guide$distribution
+#> # Ranked candidate classes:
+#> # rsg_code  rsg_name      probability
+#> # FR        Ferralsols    0.62
+#> # AC        Acrisols      0.21
+#> # NT        Nitisols      0.12
+#> # CM        Cambisols     0.05
+guide$typical_attributes
+#> # Per-class diagnostic thresholds to confirm in the field.
+```
+
+The function does **not** classify – it tells the pedologist “you are
+most likely standing on a Ferralsol; here is what to look for to
+confirm”.
+
+## 3. Multimodal extraction with local Gemma 4
+
+The pedologist arrives at the pit, photographs the wall against a
+Munsell chart, scans the field sheet, and exports the survey report PDF.
+[`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+chains the entire downstream pipeline – VLM extraction, all three
+classifications, optional report rendering – in a single call.
+
+The default provider is local Gemma 4 edge (`gemma4:e4b`, ~3 GB,
+multimodal text + image + audio) via [Ollama](https://ollama.com) – no
+API key, no data leaving the laptop. Pull the model once:
+
+``` bash
+ollama pull gemma4:e4b
+ollama serve
+```
+
+``` r
+
+res <- classify_from_documents(
+  pdf      = "perfil_042_descricao.pdf",
+  image    = "perfil_042_parede.jpg",
+  report   = "perfil_042.html",
+  provider = "ollama"  # default; uses gemma4:e4b
+)
+
+res$classifications$wrb$name
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+res$classifications$sibcs$name
+#> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
+res$classifications$usda$name
+#> [1] "Rhodic Hapludox"
+```
+
+Every extracted attribute is stamped `source = "extracted_vlm"` in the
+`PedonRecord`’s provenance log; the deterministic key is consumed by the
+`PedonRecord` unaware of how each value got there. The architectural
+invariant – **the key is never delegated to a model** – holds.
+
+For the rest of the vignette we keep working with the populated pedon
+`res$pedon`.
+
+``` r
+
+# For a runnable demo without Ollama / a real PDF, reuse the
+# canonical Ferralsol fixture -- the downstream code is the same.
+pedon <- make_ferralsol_canonical()
+```
+
+## 4. Spectral analogy
+
+If a Vis-NIR scan is available for the surface horizon,
+[`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
+adds another evidence layer. It finds the K most spectrally similar OSSL
+profiles within a regional radius and returns a probabilistic class
+prediction.
+
+``` r
+
+# Hypothetical: a real OSSL South-America library with WRB labels
+# obtained via `download_ossl_subset_with_labels()`.
+ossl_lib <- download_ossl_subset_with_labels(
+  region          = "south_america",
+  max_distance_km = 10
+)
+
+# Pull the surface-horizon Vis-NIR scan from the populated pedon.
+query_spectrum <- pedon$spectra$vnir[1, ]
+
+spectral <- classify_by_spectral_neighbours(
+  spectrum     = query_spectrum,
+  ossl_library = ossl_lib,
+  k            = 25,
+  region       = list(lat = field_lat, lon = field_lon,
+                      radius_km = 500)
+)
+spectral$distribution
+#> # class    n_neighbours  probability
+#> # FR              22       0.88
+#> # AC               2       0.08
+#> # NT               1       0.04
+spectral$neighbours
+#> # The 25 closest OSSL profiles + their distances + labels.
+```
+
+The biome-aware regional filter prevents the analogy from drifting to
+non-tropical reference soils.
+
+## 5. Deterministic classification
+
+The canonical step.
+[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
+/
+[`classify_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
+/
+[`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+walk the canonical YAML rules over the populated `PedonRecord`.
+
+``` r
+
+cls_wrb   <- classify_wrb2022(pedon, on_missing = "silent")
+cls_sibcs <- classify_sibcs(pedon, include_familia = TRUE)
+cls_usda  <- classify_usda(pedon)
+
+cls_wrb$name
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+cls_sibcs$name
+#> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
+cls_usda$name
+#> [1] "Rhodic Hapludox"
+
+# Each ClassificationResult carries the full key trace, the per-
+# attribute provenance, and an evidence grade A/B/C/D.
+cls_wrb$evidence_grade
+#> [1] "A"
+length(cls_wrb$trace)         # number of RSGs tested before assignment
+#> [1] 16
+```
+
+## 6. HTML report
+
+[`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+writes a self-contained HTML one-pager with the cross-system summary,
+full key trace, evidence grade, qualifiers, ambiguities, missing-data
+hints, the horizons table, and the per-source provenance summary.
+
+``` r
+
+results <- list(wrb = cls_wrb, sibcs = cls_sibcs, usda = cls_usda)
+report(results, file = "perfil_042.html", pedon = pedon)
+```
+
+The output is a single HTML file with inline CSS – no external network
+requests, suitable for emailing to a colleague or attaching to a laudo.
+
+## 7. GIS export
+
+[`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
+produces a multi-layer GeoPackage (`.gpkg`) that QGIS reads natively.
+
+``` r
+
+results <- list(wrb = cls_wrb, sibcs = cls_sibcs, usda = cls_usda)
+report_to_qgis(
+  pedon           = pedon,
+  classifications = results,
+  file            = "perfil_042.gpkg",
+  report_html     = "perfil_042.html"
+)
+```
+
+The GeoPackage carries three layers:
+
+- **`pedon_point`** – POINT geometry at the profile coordinates with all
+  classification metadata as attributes (WRB / SiBCS / USDA names, RSG /
+  Ordem / Order codes, evidence grades, principal qualifiers,
+  supplementary qualifiers, hyperlink to the rendered HTML report).
+- **`horizons_table`** – one row per horizon, with the canonical
+  horizon-schema attributes. Joined to `pedon_point` by `site_id`.
+- **`provenance_log`** – per-`(horizon, attribute, source)` provenance
+  rows for downstream auditing.
+
+In QGIS: **Layer → Add Layer → Add Vector Layer → `perfil_042.gpkg`**.
+The point appears on the canvas with all classification metadata in the
+feature pop-up; styling rules can map symbol colour to the evidence
+grade or the assigned RSG.
+
+## 8. The complete picture
+
+``` r
+
+# Pipeline summary:
+#
+#   field GPS      ->  soil_classes_at_location()         "what to expect"
+#                                  |
+#                                  v
+#   PDF + photo    ->  classify_from_documents() (Gemma 4)  populates PedonRecord
+#                                  |
+#                                  v
+#   Vis-NIR scan   ->  classify_by_spectral_neighbours()    spectral prior
+#                                  |
+#                                  v
+#                  ->  classify_wrb2022()  + classify_sibcs() + classify_usda()
+#                                  |       (the deterministic step -- canonical)
+#                                  v
+#                  ->  report() / report_to_qgis()         deliverables
+```
+
+Each step’s output carries explicit provenance into the next; the final
+`evidence_grade` reflects the worst-source rule applied to the
+attributes that were decisive in the assigned name. Two pedologists
+running this pipeline on the same documents get the same output
+bit-for-bit.
+
+## Summary
+
+soilKey separates four distinct stages:
+
+1.  **Spatial guides** (`soil_classes_at_location`) – expectations from
+    a soil-class raster.
+2.  **Extraction** (`classify_from_documents`, `extract_*`) – VLM
+    populates a `PedonRecord`, never classifies.
+3.  **Spectral analogy** (`classify_by_spectral_neighbours`) – OSSL
+    nearest-neighbour analogy as a prior.
+4.  **Deterministic classification**
+    (`classify_wrb2022 / classify_sibcs / classify_usda`) – the
+    canonical step.
+
+Plus two delivery formats: HTML reports (`report`) and GeoPackage
+exports (`report_to_qgis`). All four stages preserve provenance and
+evidence grading; the deterministic key remains the only thing that
+*assigns* a class.

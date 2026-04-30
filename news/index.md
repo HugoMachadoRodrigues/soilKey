@@ -1,5 +1,62 @@
 # Changelog
 
+## soilKey 0.9.14 (2026-04-30)
+
+Closes three gaps that the v0.9.13 spec called out as remaining work:
+the OSSL bundle had no WRB labels, there was no GIS deliverable, and the
+seven existing vignettes never showed the full end-to-end pipeline in
+one place.
+
+### New features
+
+- **`download_ossl_subset_with_labels(region, max_distance_km, ...)`** –
+  fetches a regional OSSL subset and joins WRB labels by spatial nearest
+  neighbour against WoSIS. Adds the columns `wrb_rsg`,
+  `wrb_label_source` (`"missing"` / `"ossl_native"` /
+  `"wosis_spatial_join"`), and `wrb_label_distance_km` to the returned
+  `Yr` data frame. With `translate_systems = TRUE`, also fills
+  `sibcs_ordem` and `usda_order` via the Schad (2023) modal
+  correspondence. The result drops directly into
+  `classify_by_spectral_neighbours(ossl_library = ...)` – no manual join
+  required. Network-free testability via the injected `query_fn`
+  parameter (defaults to the real WoSIS GraphQL call).
+
+- **`report_to_qgis(pedon, classifications, file, ...)`** – writes a
+  multi-layer GeoPackage (`.gpkg`) that QGIS opens natively. Three
+  layers: `pedon_point` (POINT geometry with WRB / SiBCS / USDA names,
+  RSG / Ordem / Order codes, evidence grades, and qualifiers as feature
+  attributes), `horizons_table` (one row per horizon, joined by
+  `site_id`), and `provenance_log` (per-`(horizon, attribute, source)`
+  audit rows). Falls back to a non-spatial `pedon_point_attributes`
+  table with a warning when the pedon has no coordinates. Closes the
+  “drop the result into QGIS for soil-survey overlay” use case.
+
+- **New vignette `v07_end_to_end_pipeline.Rmd`** walks the complete
+  pipeline on a Brazilian Latossolo:
+  [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
+  -\>
+  [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
+  (Gemma 4 via Ollama) -\>
+  [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
+  -\> `classify_wrb2022 / sibcs / usda` -\>
+  [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+  -\>
+  [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md).
+
+### Internal changes
+
+- [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
+  now preserves the `lat`, `lon`, `country`, `continent`, and
+  pre-existing label columns on `Yr` regardless of the `properties`
+  argument. Required so that the spatial-join layer in
+  [`download_ossl_subset_with_labels()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.md)
+  always has coordinates to work with.
+
+- CI workflows (R-CMD-check, test-coverage, pkgdown) now set `PROJ_LIB`
+  / `GDAL_DATA` per-OS so that `terra::rast(crs = "EPSG:4326")` finds
+  `proj.db`. Eliminates the lone non-cosmetic NOTE that surfaced under
+  `R CMD check --as-cran` on macOS.
+
 ## soilKey 0.9.13 (2026-04-30)
 
 Two user-facing helpers that **guide** classification before the

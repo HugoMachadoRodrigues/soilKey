@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
+    <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
@@ -43,9 +44,24 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.13/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.14" id="soilkey-0914-2026-04-30">soilKey 0.9.14 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0914-2026-04-30"></a></h2>
+<p>Closes three gaps that the v0.9.13 spec called out as remaining work: the OSSL bundle had no WRB labels, there was no GIS deliverable, and the seven existing vignettes never showed the full end-to-end pipeline in one place.</p>
+<div class="section level3">
+<h3 id="new-features-0-9-14">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-14"></a></h3>
+<ul><li><p><strong><code>download_ossl_subset_with_labels(region, max_distance_km, ...)</code></strong> – fetches a regional OSSL subset and joins WRB labels by spatial nearest neighbour against WoSIS. Adds the columns <code>wrb_rsg</code>, <code>wrb_label_source</code> (<code>"missing"</code> / <code>"ossl_native"</code> / <code>"wosis_spatial_join"</code>), and <code>wrb_label_distance_km</code> to the returned <code>Yr</code> data frame. With <code>translate_systems = TRUE</code>, also fills <code>sibcs_ordem</code> and <code>usda_order</code> via the Schad (2023) modal correspondence. The result drops directly into <code>classify_by_spectral_neighbours(ossl_library = ...)</code> – no manual join required. Network-free testability via the injected <code>query_fn</code> parameter (defaults to the real WoSIS GraphQL call).</p></li>
+<li><p><strong><code>report_to_qgis(pedon, classifications, file, ...)</code></strong> – writes a multi-layer GeoPackage (<code>.gpkg</code>) that QGIS opens natively. Three layers: <code>pedon_point</code> (POINT geometry with WRB / SiBCS / USDA names, RSG / Ordem / Order codes, evidence grades, and qualifiers as feature attributes), <code>horizons_table</code> (one row per horizon, joined by <code>site_id</code>), and <code>provenance_log</code> (per-<code>(horizon, attribute, source)</code> audit rows). Falls back to a non-spatial <code>pedon_point_attributes</code> table with a warning when the pedon has no coordinates. Closes the “drop the result into QGIS for soil-survey overlay” use case.</p></li>
+<li><p><strong>New vignette <code>v07_end_to_end_pipeline.Rmd</code></strong> walks the complete pipeline on a Brazilian Latossolo: <code><a href="../reference/soil_classes_at_location.html">soil_classes_at_location()</a></code> -&gt; <code><a href="../reference/classify_from_documents.html">classify_from_documents()</a></code> (Gemma 4 via Ollama) -&gt; <code><a href="../reference/classify_by_spectral_neighbours.html">classify_by_spectral_neighbours()</a></code> -&gt; <code>classify_wrb2022 / sibcs / usda</code> -&gt; <code><a href="../reference/report.html">report()</a></code> -&gt; <code><a href="../reference/report_to_qgis.html">report_to_qgis()</a></code>.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-changes-0-9-14">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-9-14"></a></h3>
+<ul><li><p><code><a href="../reference/download_ossl_subset.html">download_ossl_subset()</a></code> now preserves the <code>lat</code>, <code>lon</code>, <code>country</code>, <code>continent</code>, and pre-existing label columns on <code>Yr</code> regardless of the <code>properties</code> argument. Required so that the spatial-join layer in <code><a href="../reference/download_ossl_subset_with_labels.html">download_ossl_subset_with_labels()</a></code> always has coordinates to work with.</p></li>
+<li><p>CI workflows (R-CMD-check, test-coverage, pkgdown) now set <code>PROJ_LIB</code> / <code>GDAL_DATA</code> per-OS so that <code>terra::rast(crs = "EPSG:4326")</code> finds <code>proj.db</code>. Eliminates the lone non-cosmetic NOTE that surfaced under <code>R CMD check --as-cran</code> on macOS.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.13" id="soilkey-0913-2026-04-30">soilKey 0.9.13 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0913-2026-04-30"></a></h2>
 <p>Two user-facing helpers that <strong>guide</strong> classification before the deterministic key runs. These close the “help-the-user-classify-a- new-profile” gap that the architecture document promised but the package only half-delivered: <code>spatial_prior_*()</code> was a check, not a guide; <code>predict_ossl_*()</code> predicted attributes, not classes.</p>

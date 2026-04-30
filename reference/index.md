@@ -2116,6 +2116,8 @@ Render a complete pedologist-facing report from one or more
   : Render a soilKey classification report as self-contained HTML
 - [`report_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_pdf.md)
   : Render a soilKey classification report as PDF
+- [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
+  : Export a classification result + pedon to a QGIS GeoPackage
 
 ## Canonical fixtures
 
@@ -2568,6 +2570,9 @@ plus auxiliaries) used in the test suite.
 
 - [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
   : Download an OSSL subset and return an \`ossl_library\` artefact
+
+- [`download_ossl_subset_with_labels()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.md)
+  : Download an OSSL subset and attach WRB / SiBCS / USDA labels
 
 - [`ossl_demo_sa`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_demo_sa.md)
   : Synthetic OSSL South America demo subset

@@ -14,3 +14,5 @@
   4)](https://hugomachadorodrigues.github.io/soilKey/articles/v05_spatial_spectra_pipeline.md):
 - [Benchmarking soilKey against
   WoSIS](https://hugomachadorodrigues.github.io/soilKey/articles/v06_wosis_benchmark.md):
+- [End-to-end pipeline: Gemma 4 + spatial + spectral + key + GIS
+  export](https://hugomachadorodrigues.github.io/soilKey/articles/v07_end_to_end_pipeline.md):
