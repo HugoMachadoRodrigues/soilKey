@@ -5,6 +5,30 @@
 # ============================================================================
 
 
+#' Robust per-layer column accessor.
+#'
+#' `h[[col]][i]` returns `NULL` (length 0) when the column is absent
+#' from the horizon schema entirely (e.g. older fixtures pre-dating a
+#' schema extension). Downstream code then reaches `is.na(NULL)`,
+#' which is `logical(0)`, and crashes inside `if (...)`. This helper
+#' converts an absent column to `NA` of the requested mode so the
+#' "missing" branch in every sub-test is exercised cleanly.
+#'
+#' Added 2026-04-30 after the canonical-fixture benchmark surfaced
+#' five errors of the form "argument is of length zero" coming from
+#' `test_numeric_above`, `test_pattern_match`, `test_shrink_swell_cracks`
+#' on fixtures whose schema predates v0.3.3 column extensions.
+#'
+#' @keywords internal
+.col_at <- function(h, column, i, default = NA) {
+  v <- h[[column]]
+  if (is.null(v)) return(default)
+  out <- v[i]
+  if (length(out) == 0L) return(default)
+  out
+}
+
+
 # ---- generic numeric column tests -------------------------------------------
 
 #' Test that an arbitrary numeric column exceeds a threshold per layer
@@ -24,7 +48,7 @@ test_numeric_above <- function(h, column, threshold,
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
-    val <- h[[column]][i]
+    val <- .col_at(h, column, i, default = NA_real_)
     if (is.na(val)) { missing <- c(missing, column); next }
     details[[as.character(i)]] <- list(
       idx = i, value = val, threshold = threshold,
@@ -54,7 +78,7 @@ test_pattern_match <- function(h, column, pattern,
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
-    val <- h[[column]][i]
+    val <- .col_at(h, column, i, default = NA_character_)
     if (is.na(val)) { missing <- c(missing, column); next }
     matched <- grepl(pattern, val, ignore.case = TRUE, perl = TRUE)
     details[[as.character(i)]] <- list(
@@ -222,10 +246,10 @@ test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
-    w <- h$cracks_width_cm[i]
-    d <- h$cracks_depth_cm[i] %||% NA_real_
-    desg <- h$designation[i]
-    sl <- h$slickensides[i]
+    w    <- .col_at(h, "cracks_width_cm", i, default = NA_real_)
+    d    <- .col_at(h, "cracks_depth_cm", i, default = NA_real_)
+    desg <- .col_at(h, "designation",     i, default = NA_character_)
+    sl   <- .col_at(h, "slickensides",    i, default = NA_character_)
     if (!is.na(w)) {
       ok_width <- w >= min_width_cm
       ok_depth <- is.na(d) || d >= min_depth_cm
@@ -235,7 +259,7 @@ test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
         threshold_width = min_width_cm, threshold_depth = min_depth_cm,
         path = "measured", passed = layer_pass
       )
-    } else if (!is.na(desg) && grepl("ss|Vss", desg) ||
+    } else if ((!is.na(desg) && grepl("ss|Vss", desg)) ||
                (!is.na(sl) && sl %in% c("common", "many", "continuous"))) {
       layer_pass <- TRUE
       details[[as.character(i)]] <- list(
