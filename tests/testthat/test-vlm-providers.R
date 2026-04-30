@@ -10,8 +10,16 @@ test_that("default_model rejects unknown providers", {
 })
 
 test_that("vlm_provider errors clearly when ellmer is not installed", {
-  skip_if(requireNamespace("ellmer", quietly = TRUE),
-          "ellmer is installed; cannot test missing-package branch")
+  # Logic is correct (clarified for future readers): `skip_if(cond)` skips
+  # when `cond` is TRUE; `requireNamespace("ellmer")` returns TRUE iff
+  # ellmer is installed. So this skips when ellmer IS installed (because
+  # the missing-package error path can only be exercised when the
+  # package is genuinely absent), and runs the assertion when ellmer is
+  # NOT installed.
+  skip_if(
+    requireNamespace("ellmer", quietly = TRUE),
+    "ellmer is installed; cannot exercise the missing-package error path"
+  )
   expect_error(
     vlm_provider("anthropic"),
     regexp = "ellmer.*not installed|Package 'ellmer' is required",

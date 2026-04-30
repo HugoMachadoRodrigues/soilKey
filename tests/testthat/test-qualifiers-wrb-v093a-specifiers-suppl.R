@@ -219,9 +219,12 @@ test_that("resolve_wrb_qualifiers exposes a supplementary slot", {
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("supplementary" %in% names(res))
   expect_type(res$supplementary, "character")
-  # An RSG without a YAML supplementary slot returns character(0).
-  res_gl <- resolve_wrb_qualifiers(make_gleysol_canonical(), "GL")
-  expect_equal(length(res_gl$supplementary), 0L)
+  # All 32 RSGs now have supplementary slots after v0.9.5 (Bloco F);
+  # an RSG code that is *not* in the YAML at all returns character(0)
+  # via the "No qualifiers defined for RSG ..." branch.
+  res_unknown <- resolve_wrb_qualifiers(make_gleysol_canonical(), "ZZ")
+  expect_equal(length(res_unknown$supplementary), 0L)
+  expect_equal(length(res_unknown$principal),     0L)
 })
 
 test_that("classify_wrb2022 stores supplementary in qualifiers and renders the name", {

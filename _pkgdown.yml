@@ -1,0 +1,296 @@
+url: https://hugomachadorodrigues.github.io/soilKey/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#FF6B35"
+    base_font:    {google: "Source Sans Pro"}
+    heading_font: {google: "Source Serif Pro"}
+    code_font:    {google: "JetBrains Mono"}
+
+home:
+  title: "soilKey -- Automated soil profile classification"
+  description: >
+    Deterministic classification keys for WRB 2022 (4th ed.),
+    SiBCS 5ª ed. (Embrapa, 2018), and USDA Soil Taxonomy (13th ed.,
+    2022). Multimodal extraction, OSSL spectroscopy, SoilGrids spatial
+    prior, and explicit per-attribute provenance -- without ever
+    delegating the taxonomic key to a language model.
+  links:
+    - text: "Browse the canonical books"
+      href: "#references"
+    - text: "WoSIS benchmark report"
+      href: "articles/06-wosis-benchmark.html"
+
+navbar:
+  structure:
+    left:  [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    articles:
+      text: "Articles"
+      menu:
+        - text: "Getting started"
+          href: "articles/01-getting-started.html"
+        - text: "WRB 2022 end-to-end"
+          href: "articles/02-classify-wrb-end-to-end.html"
+        - text: "Cross-system correspondence"
+          href: "articles/03-cross-system-correlation.html"
+        - text: "VLM extraction (Module 2)"
+          href: "articles/04-vlm-extraction.html"
+        - text: "Spatial + spectra pipeline (Modules 3 + 4)"
+          href: "articles/05-spatial-spectra-pipeline.html"
+        - text: "WoSIS benchmark"
+          href: "articles/06-wosis-benchmark.html"
+    github:
+      icon: fa-github
+      href: https://github.com/HugoMachadoRodrigues/soilKey
+
+reference:
+
+  - title: "Core data structures"
+    desc: >
+      The unified profile carrier. Every classification, every
+      provenance tag, every key-trace lives on one of these objects.
+    contents:
+      - PedonRecord
+      - DiagnosticResult
+      - ClassificationResult
+      - FamilyAttribute
+      - horizon_column_spec
+      - make_empty_horizons
+      - ensure_horizon_schema
+
+  - title: "Classification entry points"
+    desc: >
+      One function per system. Each returns a `ClassificationResult`
+      with the assigned name, the full key trace, the per-attribute
+      provenance log, and the evidence grade.
+    contents:
+      - classify_wrb2022
+      - classify_sibcs
+      - classify_sibcs_familia
+      - classify_usda
+
+  - title: "WRB 2022 -- diagnostic horizons (Ch 3.1)"
+    desc: "32/32 diagnostic horizons per IUSS Working Group WRB (2022) Ch 3.1."
+    contents:
+      - argic
+      - albic
+      - cambic
+      - calcic
+      - duric
+      - ferralic
+      - ferric
+      - fragic
+      - gypsic
+      - histic
+      - mollic
+      - natric_horizon
+      - nitic
+      - petrocalcic
+      - petroduric
+      - petrogypsic
+      - petroplinthic
+      - pisoplinthic
+      - plinthic
+      - salic
+      - sombric
+      - spodic
+      - thionic
+      - umbric_horizon
+      - vertic_horizon
+      - chernic
+      - tsitelic
+      - panpaic
+      - limonic
+      - protovertic
+      - anthraquic
+      - hydragric
+      - hortic
+      - irragric
+      - plaggic
+      - pretic
+      - terric
+
+  - title: "WRB 2022 -- diagnostic properties (Ch 3.2)"
+    contents:
+      - abrupt_textural_difference
+      - albeluvic_glossae
+      - andic_properties
+      - anthric_properties
+      - continuous_rock
+      - gleyic_properties
+      - lithic_discontinuity
+      - protocalcic_properties
+      - protogypsic_properties
+      - reducing_conditions
+      - retic_properties
+      - shrink_swell_cracks
+      - sideralic_properties
+      - stagnic_properties
+      - takyric_properties
+      - vertic_properties
+      - vitric_properties
+      - yermic_properties
+
+  - title: "WRB 2022 -- diagnostic materials (Ch 3.3)"
+    contents:
+      - aeolic_material
+      - artefacts
+      - calcaric
+      - claric
+      - dolomitic
+      - fluvic
+      - gypsiric
+      - hypersulfidic
+      - hyposulfidic
+      - limnic
+      - mineral
+      - mulmic
+      - organic
+      - organotechnic
+      - ornithogenic
+      - soil_organic_carbon
+      - solimovic
+      - technic_hard
+      - tephric
+
+  - title: "WRB 2022 -- RSG-level gates"
+    contents:
+      - has_concept("rsg-gates-wrb")
+      - acrisol
+      - alisol
+      - lixisol
+      - luvisol
+      - chernozem
+      - kastanozem
+      - phaeozem
+      - andosol
+      - chernozem_strict
+      - kastanozem_strict
+
+  - title: "WRB 2022 -- qualifiers and specifiers (Ch 4--6)"
+    desc: >
+      Resolved by the rule-engine in canonical Ch 4 order; the
+      sub-qualifier suppression machinery (Hyper- / Hypo- / Proto-)
+      and the specifier prefix dispatch (Ano- / Epi- / Endo- /
+      Bathy- / Panto- / Kato- / Amphi- / Poly- / Supra- / Thapto-)
+      run inside `classify_wrb2022()`.
+    contents:
+      - matches("^qual_")
+      - .wrb_qualifier_families
+
+  - title: "SiBCS 5ª ed. -- atributos diagnósticos (Cap 1)"
+    contents:
+      - matches("^carater_")
+      - matches("^atividade_")
+
+  - title: "SiBCS 5ª ed. -- horizontes diagnósticos (Cap 2)"
+    contents:
+      - matches("^horizonte_")
+      - B_textural
+      - B_latossolico
+      - B_nitico
+      - B_espodico
+      - B_incipiente
+      - B_planico
+
+  - title: "SiBCS 5ª ed. -- chave (1º--4º níveis, Caps 3--17)"
+    desc: >
+      Per-Ordem dispatchers walk Subordem -> Grande Grupo ->
+      Subgrupo. Triggered by `classify_sibcs(pedon)`.
+    contents:
+      - matches("^(latossolo|argissolo|cambissolo|chernossolo|espodossolo|gleissolo|luvissolo|neossolo|nitossolo|organossolo|planossolo|plintossolo|vertissolo)")
+
+  - title: "SiBCS 5ª ed. -- Família (5º nível, Cap 18)"
+    desc: >
+      15 dimensões adjectivais ortogonais (grupamento textural,
+      mineralogia, atividade da argila, óxidos, ândico, ...).
+    contents:
+      - matches("^familia_")
+      - classify_sibcs_familia
+
+  - title: "USDA Soil Taxonomy 13ed -- Path C (Order -> Subgroup)"
+    desc: "Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`."
+    contents:
+      - matches("_usda$")
+
+  - title: "Module 2 -- VLM extraction"
+    desc: >
+      Schema-validated multimodal extraction via `ellmer`. The VLM
+      never classifies; every extracted value carries provenance =
+      `extracted_vlm`.
+    contents:
+      - vlm_provider
+      - MockVLMProvider
+      - extract_horizons_from_pdf
+      - extract_munsell_from_photo
+      - extract_site_from_fieldsheet
+
+  - title: "Module 3 -- Spatial prior"
+    desc: >
+      SoilGrids + Embrapa raster. Used as a sanity-check; never
+      overrides the deterministic key.
+    contents:
+      - spatial_prior
+      - spatial_prior_soilgrids
+      - spatial_prior_embrapa
+      - prior_consistency_check
+
+  - title: "Module 4 -- OSSL spectroscopy"
+    desc: >
+      Vis-NIR / MIR gap-fill. Predicted attributes carry provenance
+      = `predicted_spectra`, which downgrades the evidence grade
+      from A to B.
+    contents:
+      - preprocess_spectra
+      - predict_ossl_mbl
+      - predict_ossl_plsr_local
+      - predict_ossl_pretrained
+      - fill_from_spectra
+      - pi_to_confidence
+
+  - title: "Reporting"
+    desc: "Render a complete pedologist-facing report from one or more `ClassificationResult` objects."
+    contents:
+      - report
+      - report_html
+      - report_pdf
+
+  - title: "Canonical fixtures"
+    desc: "One-call constructors for the 31 canonical fixtures (one per WRB RSG, plus auxiliaries) used in the test suite."
+    contents:
+      - matches("^make_.*_canonical$")
+
+  - title: "Helpers"
+    contents:
+      - matches("^run_")
+      - matches("^test_")
+      - "%||%"
+
+articles:
+  - title: "Vignettes"
+    navbar: ~
+    contents:
+      - 01-getting-started
+      - 02-classify-wrb-end-to-end
+      - 03-cross-system-correlation
+      - 04-vlm-extraction
+      - 05-spatial-spectra-pipeline
+      - 06-wosis-benchmark
+
+news:
+  releases:
+    - text: "v0.9.8"
+      href: "https://github.com/HugoMachadoRodrigues/soilKey/releases/tag/v0.9.8"
+
+footer:
+  structure:
+    left:  developed_by
+    right: built_with
+  components:
+    developed_by: >
+      Developed by [Hugo Rodrigues](https://orcid.org/0000-0002-8070-8126)
+      at [UFRRJ -- Departamento de Solos](https://institutos.ufrrj.br/ia/).

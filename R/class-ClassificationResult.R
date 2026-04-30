@@ -146,15 +146,26 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       )
     },
 
-    #' @description Render a report. Not implemented in v0.1.
-    #' @param file Path.
-    #' @param format One of "html", "pdf", "md".
-    report = function(file, format = c("html", "pdf", "md")) {
+    #' @description Render this classification as a self-contained
+    #'              report (delegates to the package-level
+    #'              \code{\link{report}} generic). HTML output is
+    #'              dependency-free; PDF requires \code{rmarkdown}
+    #'              and a working LaTeX engine.
+    #' @param file Output path. Format is inferred from the
+    #'             extension.
+    #' @param format One of "html" or "pdf" (defaults to "auto",
+    #'               which infers from the extension).
+    #' @param pedon Optional \code{PedonRecord} whose horizons /
+    #'              provenance are added to the report.
+    #' @param ... Forwarded to \code{\link{report_html}} or
+    #'            \code{\link{report_pdf}}.
+    report = function(file,
+                      format = c("auto", "html", "pdf"),
+                      pedon  = NULL,
+                      ...) {
       format <- match.arg(format)
-      rlang::abort(sprintf(
-        "report() is not yet implemented in v0.1 (requested format: %s)",
-        format
-      ))
+      report(self, file = file, format = format,
+              pedon = pedon, ...)
     }
   )
 )

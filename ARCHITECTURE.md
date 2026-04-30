@@ -9,7 +9,7 @@
 ## 1. Nome e identidade
 
 - **Nome:** `soilKey`. Decidido em 2026-04-25, após avaliação de alternativas (`pedokey`, `pedorules`, `autopedo`).
-- **Licença:** GPL-3 (alinhado com aqp, SoilTaxonomy, prospectr).
+- **Licença:** MIT (ver `LICENSE` / `LICENSE.md`). Escolha reconciliada com `DESCRIPTION` em 2026-04-30. MIT (em vez de GPL-3, considerado nos rascunhos iniciais) maximiza interoperabilidade com pipelines acadêmicos e governamentais — sem viralidade copyleft que limite uso embarcado em ferramentas internas da Embrapa, FAO ou IUSS-WRB.
 - **Público-alvo:** pedólogos, agrônomos, consultores ambientais, instituições de pesquisa. Não requer expertise em ML.
 
 ---

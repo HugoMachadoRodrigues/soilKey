@@ -1,0 +1,24 @@
+## CITATION file -- canonical citation for the soilKey package.
+## Updated automatically when DESCRIPTION$Version changes.
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13",
+  author   = person("Hugo", "Rodrigues",
+                    email   = "rodrigues.machado.hugo@gmail.com",
+                    role    = c("aut", "cre"),
+                    comment = c(ORCID = "0000-0002-8070-8126")),
+  year     = format(Sys.Date(), "%Y"),
+  note     = sprintf("R package version %s", utils::packageVersion("soilKey")),
+  doi      = "10.5281/zenodo.PLACEHOLDER",
+  url      = "https://github.com/HugoMachadoRodrigues/soilKey",
+  textVersion = paste(
+    "Rodrigues, H. (",
+    format(Sys.Date(), "%Y"),
+    "). soilKey: Automated soil profile classification per WRB 2022, ",
+    "SiBCS 5, and USDA Soil Taxonomy 13. R package version ",
+    utils::packageVersion("soilKey"),
+    ". https://github.com/HugoMachadoRodrigues/soilKey",
+    sep = ""
+  )
+)

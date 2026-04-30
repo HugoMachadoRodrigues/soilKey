@@ -3,17 +3,17 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.8](https://img.shields.io/badge/version-0.9.8-FF6B35?style=flat-square)
+![v0.9.9](https://img.shields.io/badge/version-0.9.9-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
 <!-- Status & coverage badges -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
-[![DOI Zenodo](https://img.shields.io/badge/DOI-pending-yellow.svg?style=flat-square)](https://zenodo.org/)
-[![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/actions)
-[![tests](https://img.shields.io/badge/tests-2602%20expectations-brightgreen.svg?style=flat-square)](tests/)
-[![coverage](https://img.shields.io/badge/coverage-pending-yellow.svg?style=flat-square)](https://app.codecov.io/)
+[![DOI Zenodo](https://img.shields.io/badge/DOI-mint--on--first--release-yellow.svg?style=flat-square)](https://zenodo.org/)
+[![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
+[![tests](https://img.shields.io/badge/tests-2596%20passing-brightgreen.svg?style=flat-square)](tests/)
+[![Codecov test coverage](https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square)](#-coverage)
 [![USDA ST 13](https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders%20%C2%B7%201288%20SGs-blue.svg?style=flat-square)](#-coverage)
@@ -116,7 +116,7 @@ flowchart TB
 | Ch 4    | Reference Soil Groups (RSGs) + tier-2 gates | **32 / 32**  |
 | Ch 5    | Principal qualifiers (full lists)        | **all 32 RSGs** |
 | Ch 5    | Sub-qualifiers (Hyper- / Hypo- / Proto-) | **11 wired**  |
-| Ch 6    | Supplementary qualifiers (parenthesised) | **seed (5 new + ~30 reused)** |
+| Ch 6    | Supplementary qualifiers (parenthesised) | **32 / 32 RSGs wired** (489 total entries; ~110 unique functions reused from the principal-qualifier set; v0.9.5 baseline lists, page-precise canonical lists deferred to v0.9.6+) |
 | Ch 6    | Specifiers (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly- / Supra- / Thapto-) | **10 / 10** |
 
 Each WRB diagnostic function returns a `DiagnosticResult` with per-sub-test evidence, layer indices, missing-attribute report and the literature reference (e.g. *"IUSS Working Group WRB (2022), Chapter 3.1.20, Salic horizon (p. 49)"*).
@@ -154,13 +154,13 @@ Each USDA YAML rule cross-references the chapter and page of *Keys to Soil Taxon
 
 | Metric                            | Value |
 | :-------------------------------- | :---- |
-| Public functions (`NAMESPACE` exports) | **694** |
-| R source (lines)                  | **~28 400** |
-| YAML rules (keys + diagnostics + qualifiers) | **~16 200 lines** |
-| Test files / expectations         | **82 / 2 602** |
-| Tests passing                     | **922** (0 failures) |
+| Public functions (`NAMESPACE` exports) | **697** |
+| R source (lines)                  | **~30 100** |
+| YAML rules (keys + diagnostics + qualifiers) | **~16 600 lines** |
+| Test files / expectations         | **83 / 2 596** passing (0 failures) |
 | Vignettes                         | 6 |
 | Canonical fixtures                | 31 (one per WRB RSG, plus auxiliaries) |
+| Canonical-fixture benchmark       | WRB **26/31** · SiBCS **13/20** · USDA **8/31** ([report](inst/benchmarks/reports/canonical_2026-04-30.md)) |
 
 ---
 
@@ -275,6 +275,39 @@ prior_consistency_check(rsg_code = result$rsg_or_order, prior = prior)
 #> $note       : "Ferralsols at probability 0.62 in the SoilGrids buffer"
 ```
 
+### 6. Render a self-contained report (HTML or PDF)
+
+```r
+# All three results in a single one-pager (HTML, no external deps):
+report(pr, file = "perfil_042_report.html")
+
+# Or pass an explicit list of results:
+results <- list(
+  classify_wrb2022(pr),
+  classify_sibcs(pr, include_familia = TRUE),
+  classify_usda(pr)
+)
+report(results, file = "perfil_042_report.html", pedon = pr)
+
+# PDF (requires rmarkdown + LaTeX):
+report(results, file = "perfil_042_report.pdf", pedon = pr)
+```
+
+The HTML output is a single self-contained file (inline CSS, no external network requests) suitable for emailing or attaching to a laudo. Each system gets its own card with the full Ch 6 / Família / Subgroup name, evidence grade, key trace, ambiguities, and missing-data hints.
+
+---
+
+## ✦ Empirical validation
+
+soilKey ships **two benchmark drivers** under `inst/benchmarks/`:
+
+| Driver                       | Network | Scope                                                     | Output                                                |
+| :--------------------------- | :------ | :-------------------------------------------------------- | :---------------------------------------------------- |
+| `run_canonical_benchmark()`  | none    | 31 canonical fixtures (one per RSG, real published profiles from WRB 2022 didactic exemplars + ISRIC ISMC + Soil Atlas of Europe). Run on every release. | `inst/benchmarks/reports/canonical_<DATE>.md`        |
+| `run_wosis_benchmark()`      | WoSIS REST API | Paper-grade run over a configurable WoSIS subset; produces concordance + confusion matrix per RSG. | `inst/benchmarks/reports/wosis_<DATE>.md`             |
+
+The most recent canonical run reports **WRB 2022: 26/31 (83.9 %) top-1 agreement**, **SiBCS 5: 13/20 (65.0 %)** where a target is unambiguously defined, and **USDA ST 13: 8/31 (25.8 %)** — see [`inst/benchmarks/reports/canonical_2026-04-30.md`](inst/benchmarks/reports/canonical_2026-04-30.md). The lower USDA number is a known, bounded gap caused by the canonical fixtures being curated for WRB diagnostics — they lack USDA-specific attributes (soil moisture / temperature regime, phosphate retention for Andisols, ...) needed to fire the upper Path C branches. Tracked as a v0.9.10+ task.
+
 ---
 
 ## ✦ Documentation
@@ -328,15 +361,23 @@ If `soilKey` contributes to your work, please cite:
 
 ```bibtex
 @software{rodrigues_soilkey_2026,
-  author  = {Rodrigues Machado, Hugo},
-  title   = {{soilKey}: Automated soil profile classification per
-             {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
-  year    = {2026},
-  version = {0.9.8},
-  doi     = {pending},
-  url     = {https://github.com/HugoMachadoRodrigues/soilKey}
+  author    = {Rodrigues Machado, Hugo},
+  title     = {{soilKey}: Automated soil profile classification per
+               {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
+  year      = {2026},
+  version   = {0.9.9},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.PLACEHOLDER},
+  url       = {https://github.com/HugoMachadoRodrigues/soilKey},
+  note      = {Zenodo concept-DOI is minted automatically on the first
+               GitHub release; replace PLACEHOLDER with the assigned
+               record id (see \texttt{.zenodo.json}).}
 }
 ```
+
+You can also obtain the canonical citation programmatically via
+`citation("soilKey")`, which renders both the BibTeX block above and a
+plain-text version backed by `inst/CITATION`.
 
 A peer-reviewed methodology paper is in preparation (target: *SoftwareX*, *Geoderma*, *Computers & Geosciences*, or *European Journal of Soil Science*).
 
@@ -427,4 +468,4 @@ SOFTWARE.
 
 ---
 
-<sub>**Status**: pre-CRAN, v0.9.8. **All three classification systems are wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), and USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v1.0 will close the WoSIS benchmark run, the methodology paper, and the CRAN submission. Track the roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação).</sub>
+<sub>**Status**: pre-CRAN, v0.9.9. **All three classification systems are wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + principal qualifiers + 32/32 supplementary baselines + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), and USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.9 also ships `report_html()` / `report_pdf()`, the offline canonical-fixture benchmark, GitHub Actions CI, a curated `NEWS.md`, a pkgdown site, Zenodo/CITATION metadata, and an honest OSSL audit. v1.0 will close the WoSIS paper-grade run, the methodology paper, and the CRAN submission. Track the roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação) and per-release changes in [`NEWS.md`](NEWS.md).</sub>

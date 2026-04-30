@@ -143,3 +143,246 @@ run_wosis_benchmark <- function(n_max = 5000L, subset = NULL) {
   message(sprintf("Report written to %s", out_path))
   invisible(report)
 }
+
+
+# =============================================================================
+# Offline canonical-fixture benchmark
+#
+# A network-free, fully-reproducible mini-benchmark over the 31 canonical
+# fixtures shipped under inst/extdata/. Each fixture has a *known target
+# RSG / order* (encoded in the filename), so the run produces real
+# concordance numbers for all three classification systems without any
+# external dataset.
+#
+# Used as a sanity check on every release and as the headline figure of
+# the methodological paper before the full WoSIS pull is available.
+# =============================================================================
+
+
+#' Known target RSG / SiBCS order / USDA order for each canonical fixture.
+#' Names are filename stems (without `_canonical`); values are lists of
+#' the expected class names in the three systems. SiBCS / USDA targets
+#' are based on the published cross-system correspondence in Schad
+#' (2023) and the SiBCS 5ª ed. Annex A; an `NA` entry indicates the
+#' target is ambiguous or out-of-scope for that system.
+#'
+#' @keywords internal
+.canonical_targets <- function() {
+  list(
+    acrisol      = list(wrb = "Acrisols",   sibcs = "Argissolos",   usda = "Ultisols"),
+    alisol       = list(wrb = "Alisols",    sibcs = "Argissolos",   usda = "Ultisols"),
+    andosol      = list(wrb = "Andosols",   sibcs = "Cambissolos",  usda = "Andisols"),
+    anthrosol    = list(wrb = "Anthrosols", sibcs = NA_character_,  usda = "Inceptisols"),
+    arenosol     = list(wrb = "Arenosols",  sibcs = "Neossolos",    usda = "Entisols"),
+    calcisol     = list(wrb = "Calcisols",  sibcs = NA_character_,  usda = "Aridisols"),
+    cambisol     = list(wrb = "Cambisols",  sibcs = "Cambissolos",  usda = "Inceptisols"),
+    chernozem    = list(wrb = "Chernozems", sibcs = "Chernossolos", usda = "Mollisols"),
+    cryosol      = list(wrb = "Cryosols",   sibcs = NA_character_,  usda = "Gelisols"),
+    durisol      = list(wrb = "Durisols",   sibcs = NA_character_,  usda = "Aridisols"),
+    ferralsol    = list(wrb = "Ferralsols", sibcs = "Latossolos",   usda = "Oxisols"),
+    fluvisol     = list(wrb = "Fluvisols",  sibcs = "Neossolos",    usda = "Entisols"),
+    gleysol      = list(wrb = "Gleysols",   sibcs = "Gleissolos",   usda = "Entisols"),
+    gypsisol     = list(wrb = "Gypsisols",  sibcs = NA_character_,  usda = "Aridisols"),
+    histosol     = list(wrb = "Histosols",  sibcs = "Organossolos", usda = "Histosols"),
+    kastanozem   = list(wrb = "Kastanozems",sibcs = "Chernossolos", usda = "Mollisols"),
+    leptosol     = list(wrb = "Leptosols",  sibcs = "Neossolos",    usda = "Entisols"),
+    lixisol      = list(wrb = "Lixisols",   sibcs = "Argissolos",   usda = "Alfisols"),
+    luvisol      = list(wrb = "Luvisols",   sibcs = "Luvissolos",   usda = "Alfisols"),
+    nitisol      = list(wrb = "Nitisols",   sibcs = "Nitossolos",   usda = "Alfisols"),
+    phaeozem     = list(wrb = "Phaeozems",  sibcs = "Chernossolos", usda = "Mollisols"),
+    planosol     = list(wrb = "Planosols",  sibcs = "Planossolos",  usda = "Alfisols"),
+    plinthosol   = list(wrb = "Plinthosols",sibcs = "Plintossolos", usda = "Oxisols"),
+    podzol       = list(wrb = "Podzols",    sibcs = "Espodossolos", usda = "Spodosols"),
+    retisol      = list(wrb = "Retisols",   sibcs = NA_character_,  usda = "Alfisols"),
+    solonchak    = list(wrb = "Solonchaks", sibcs = NA_character_,  usda = "Aridisols"),
+    solonetz     = list(wrb = "Solonetz",   sibcs = NA_character_,  usda = "Aridisols"),
+    stagnosol    = list(wrb = "Stagnosols", sibcs = NA_character_,  usda = "Inceptisols"),
+    technosol    = list(wrb = "Technosols", sibcs = NA_character_,  usda = "Entisols"),
+    umbrisol     = list(wrb = "Umbrisols",  sibcs = NA_character_,  usda = "Inceptisols"),
+    vertisol     = list(wrb = "Vertisols",  sibcs = "Vertissolos",  usda = "Vertisols")
+  )
+}
+
+
+#' Run the offline canonical-fixture benchmark and emit the report.
+#'
+#' Reads the 31 fixtures from \code{inst/extdata/}, runs all three keys,
+#' compares to the known target encoded in the filename, and writes a
+#' versioned report under \code{inst/benchmarks/reports/canonical_<DATE>.md}.
+#'
+#' Unlike \code{\link{run_wosis_benchmark}}, this function makes zero
+#' network calls and is safe to run from `R CMD check` or CI.
+#'
+#' @param fixture_dir Directory holding `*_canonical.rds`. Defaults to
+#'                    `inst/extdata/`.
+#' @param out_dir Directory to write the report into.
+#' @param verbose Emit progress messages.
+#' @return The aggregated `data.frame` of per-fixture classifications,
+#'         invisibly. Side-effect: writes the report file.
+#' @keywords internal
+run_canonical_benchmark <- function(fixture_dir = file.path("inst", "extdata"),
+                                      out_dir     = file.path("inst", "benchmarks",
+                                                                "reports"),
+                                      verbose     = TRUE) {
+  files <- list.files(fixture_dir, pattern = "_canonical\\.rds$",
+                       full.names = TRUE)
+  if (length(files) == 0L)
+    stop("No canonical fixtures found under ", fixture_dir)
+
+  targets <- .canonical_targets()
+
+  rows <- vector("list", length(files))
+  for (i in seq_along(files)) {
+    f    <- files[i]
+    stem <- sub("_canonical\\.rds$", "", basename(f))
+    p    <- tryCatch(readRDS(f), error = function(e) NULL)
+    if (is.null(p)) next
+    tgt  <- targets[[stem]] %||% list(wrb = NA_character_,
+                                         sibcs = NA_character_,
+                                         usda  = NA_character_)
+
+    cls_wrb   <- tryCatch(classify_wrb2022(p, on_missing = "silent"),
+                            error = function(e) NULL)
+    cls_sibcs <- tryCatch(classify_sibcs(p, include_familia = FALSE),
+                            error = function(e) NULL)
+    cls_usda  <- tryCatch(classify_usda(p),
+                            error = function(e) NULL)
+
+    rows[[i]] <- data.frame(
+      fixture            = stem,
+      target_wrb         = tgt$wrb,
+      assigned_wrb       = if (is.null(cls_wrb))   NA_character_ else cls_wrb$rsg_or_order,
+      grade_wrb          = if (is.null(cls_wrb))   NA_character_ else cls_wrb$evidence_grade,
+      target_sibcs       = tgt$sibcs,
+      assigned_sibcs     = if (is.null(cls_sibcs)) NA_character_ else cls_sibcs$rsg_or_order,
+      grade_sibcs        = if (is.null(cls_sibcs)) NA_character_ else cls_sibcs$evidence_grade,
+      target_usda        = tgt$usda,
+      assigned_usda      = if (is.null(cls_usda))  NA_character_ else cls_usda$rsg_or_order,
+      grade_usda         = if (is.null(cls_usda))  NA_character_ else cls_usda$evidence_grade,
+      stringsAsFactors   = FALSE
+    )
+    if (verbose)
+      message(sprintf("[%2d/%d] %-12s -> WRB: %-13s SiBCS: %-13s USDA: %s",
+                        i, length(files), stem,
+                        rows[[i]]$assigned_wrb       %||% "(NA)",
+                        rows[[i]]$assigned_sibcs     %||% "(NA)",
+                        rows[[i]]$assigned_usda      %||% "(NA)"))
+  }
+  bench <- do.call(rbind, rows)
+
+  match_wrb   <- bench$target_wrb   == bench$assigned_wrb
+  match_sibcs <- bench$target_sibcs == bench$assigned_sibcs
+  match_usda  <- bench$target_usda  == bench$assigned_usda
+
+  agg <- data.frame(
+    system   = c("WRB 2022", "SiBCS 5",  "USDA ST 13"),
+    n_total  = c(sum(!is.na(bench$target_wrb)),
+                  sum(!is.na(bench$target_sibcs)),
+                  sum(!is.na(bench$target_usda))),
+    n_match  = c(sum(match_wrb,   na.rm = TRUE),
+                  sum(match_sibcs, na.rm = TRUE),
+                  sum(match_usda,  na.rm = TRUE)),
+    stringsAsFactors = FALSE
+  )
+  agg$top1 <- agg$n_match / pmax(agg$n_total, 1L)
+
+  grade_wrb   <- as.data.frame(table(grade = bench$grade_wrb,   useNA = "ifany"))
+  grade_sibcs <- as.data.frame(table(grade = bench$grade_sibcs, useNA = "ifany"))
+  grade_usda  <- as.data.frame(table(grade = bench$grade_usda,  useNA = "ifany"))
+
+  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  out_path <- file.path(out_dir,
+                          sprintf("canonical_%s.md", Sys.Date()))
+
+  fmt_grade <- function(df) {
+    if (nrow(df) == 0) return("(no data)")
+    paste(sprintf("  - %s: %d", df$grade, df$Freq), collapse = "\n")
+  }
+
+  bench_lines <- vapply(seq_len(nrow(bench)), function(i) {
+    r <- bench[i, ]
+    mark <- function(t, a) {
+      if (is.na(t) || is.na(a)) return(".")
+      if (t == a) "OK" else "MISS"
+    }
+    sprintf("| %-12s | %-13s | %-13s | %-4s | %-13s | %-13s | %-4s | %-13s | %-13s | %-4s |",
+              r$fixture,
+              r$target_wrb   %||% ".",  r$assigned_wrb   %||% ".",
+              mark(r$target_wrb,   r$assigned_wrb),
+              r$target_sibcs %||% ".",  r$assigned_sibcs %||% ".",
+              mark(r$target_sibcs, r$assigned_sibcs),
+              r$target_usda  %||% ".",  r$assigned_usda  %||% ".",
+              mark(r$target_usda,  r$assigned_usda))
+  }, character(1))
+
+  agg_lines <- vapply(seq_len(nrow(agg)), function(i)
+    sprintf("| %-10s | %d | %d | %.3f |",
+              agg$system[i], agg$n_total[i], agg$n_match[i], agg$top1[i]),
+    character(1))
+
+  report_lines <- c(
+    "# soilKey -- canonical fixtures benchmark (offline)",
+    "",
+    sprintf("**Run:** %s &middot; **Package version:** %s &middot; **Fixtures:** %d",
+              format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
+              .soilkey_version(),
+              length(files)),
+    "",
+    "This is the network-free benchmark over the canonical fixtures",
+    "shipped under `inst/extdata/`. Each fixture is a real published",
+    "profile (WRB 2022 didactic exemplars, ISRIC ISMC monoliths, Soil",
+    "Atlas of Europe), tagged with its known target RSG / SiBCS order /",
+    "USDA order. The full-WoSIS run (see `run_wosis_benchmark()`)",
+    "produces the paper-grade numbers; this offline run is the",
+    "release-time sanity check.",
+    "",
+    "## Top-1 agreement",
+    "",
+    "| System | n | match | top-1 |",
+    "|---|---:|---:|---:|",
+    agg_lines,
+    "",
+    "## Evidence-grade distribution",
+    "",
+    "**WRB 2022**",
+    "",
+    fmt_grade(grade_wrb),
+    "",
+    "**SiBCS 5**",
+    "",
+    fmt_grade(grade_sibcs),
+    "",
+    "**USDA ST 13**",
+    "",
+    fmt_grade(grade_usda),
+    "",
+    "## Per-fixture results",
+    "",
+    paste0("| Fixture      | Target WRB    | Assigned WRB  | OK   | ",
+             "Target SiBCS  | Assigned SiBCS | OK   | Target USDA   | ",
+             "Assigned USDA | OK   |"),
+    paste0("|---|---|---|:---:|---|---|:---:|---|---|:---:|"),
+    bench_lines,
+    "",
+    "## Notes",
+    "",
+    "- A '.' in a target column indicates the fixture has no canonical",
+    "  target in that system (e.g. Solonchak / Solonetz / Calcisol have",
+    "  no direct SiBCS analogue in the 5ª edição).",
+    "- Cross-system targets follow Schad (2023) Annex Table 1 (WRB <->",
+    "  USDA) and the SiBCS 5ª ed. Annex A correspondence guide.",
+    "- Sub-level (Subgroup / Família) concordance is not tested here --",
+    "  only the highest categorical level (RSG / Ordem / Order). Sub-",
+    "  level concordance is reserved for the WoSIS run.",
+    "",
+    "---",
+    "",
+    "_Report emitted by `run_canonical_benchmark()` in_",
+    "_`inst/benchmarks/run_wosis_benchmark.R`._"
+  )
+
+  writeLines(report_lines, out_path, useBytes = TRUE)
+  if (verbose) message(sprintf("Report written to %s", out_path))
+
+  invisible(bench)
+}
