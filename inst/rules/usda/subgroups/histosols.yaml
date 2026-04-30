@@ -1,0 +1,412 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition -- Histosols Subgroups -- Cap 10
+# 75 SGs total: 8 Folists + 13 Wassists + 20 Fibrists + 17 Saprists +
+#               17 Hemists
+# =============================================================
+
+subgroups:
+
+  # ====== FOLISTS ======
+
+  "BAA":  # Cryofolists (2)
+    - code: "BAAA"
+      name: "Lithic Cryofolists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "BAAB"
+      name: "Typic Cryofolists"
+      tests:
+        default: true
+
+  "BAB":  # Torrifolists (2)
+    - code: "BABA"
+      name: "Lithic Torrifolists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "BABB"
+      name: "Typic Torrifolists"
+      tests:
+        default: true
+
+  "BAC":  # Ustifolists (2)
+    - code: "BACA"
+      name: "Lithic Ustifolists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "BACB"
+      name: "Typic Ustifolists"
+      tests:
+        default: true
+
+  "BAD":  # Udifolists (2)
+    - code: "BADA"
+      name: "Lithic Udifolists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "BADB"
+      name: "Typic Udifolists"
+      tests:
+        default: true
+
+  # ====== WASSISTS ======
+
+  "BBA":  # Frasiwassists (4)
+    - code: "BBAA"
+      name: "Terric Frasiwassists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BBAB"
+      name: "Fibric Frasiwassists"
+      tests:
+        all_of:
+          - fibric_subgroup_usda: {}
+    - code: "BBAC"
+      name: "Sapric Frasiwassists"
+      tests:
+        all_of:
+          - sapric_subgroup_usda: {}
+    - code: "BBAD"
+      name: "Typic Frasiwassists"
+      tests:
+        default: true
+
+  "BBB":  # Sulfiwassists (4)
+    - code: "BBBA"
+      name: "Terric Sulfiwassists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BBBB"
+      name: "Fibric Sulfiwassists"
+      tests:
+        all_of:
+          - fibric_subgroup_usda: {}
+    - code: "BBBC"
+      name: "Sapric Sulfiwassists"
+      tests:
+        all_of:
+          - sapric_subgroup_usda: {}
+    - code: "BBBD"
+      name: "Typic Sulfiwassists"
+      tests:
+        default: true
+
+  "BBC":  # Haplowassists (5)
+    - code: "BBCA"
+      name: "Sulfic Haplowassists"
+      tests:
+        all_of:
+          - sulfic_subgroup_usda: {}
+    - code: "BBCB"
+      name: "Terric Haplowassists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BBCC"
+      name: "Fibric Haplowassists"
+      tests:
+        all_of:
+          - fibric_subgroup_usda: {}
+    - code: "BBCD"
+      name: "Sapric Haplowassists"
+      tests:
+        all_of:
+          - sapric_subgroup_usda: {}
+    - code: "BBCE"
+      name: "Typic Haplowassists"
+      tests:
+        default: true
+
+  # ====== FIBRISTS ======
+
+  "BCA":  # Cryofibrists (6)
+    - code: "BCAA"
+      name: "Hydric Cryofibrists"
+      tests:
+        all_of:
+          - hydric_subgroup_usda: {}
+    - code: "BCAB"
+      name: "Lithic Cryofibrists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BCAC"
+      name: "Terric Cryofibrists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BCAD"
+      name: "Fluvaquentic Cryofibrists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BCAE"
+      name: "Sphagnic Cryofibrists"
+      tests:
+        all_of:
+          - sphagnic_usda: {}
+    - code: "BCAF"
+      name: "Typic Cryofibrists"
+      tests:
+        default: true
+
+  "BCB":  # Sphagnofibrists (7)
+    - code: "BCBA"
+      name: "Hydric Sphagnofibrists"
+      tests:
+        all_of:
+          - hydric_subgroup_usda: {}
+    - code: "BCBB"
+      name: "Lithic Sphagnofibrists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BCBC"
+      name: "Limnic Sphagnofibrists"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "BCBD"
+      name: "Terric Sphagnofibrists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BCBE"
+      name: "Fluvaquentic Sphagnofibrists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BCBF"
+      name: "Hemic Sphagnofibrists"
+      tests:
+        all_of:
+          - hemic_subgroup_usda: {}
+    - code: "BCBG"
+      name: "Typic Sphagnofibrists"
+      tests:
+        default: true
+
+  "BCC":  # Haplofibrists (7)
+    - code: "BCCA"
+      name: "Hydric Haplofibrists"
+      tests:
+        all_of:
+          - hydric_subgroup_usda: {}
+    - code: "BCCB"
+      name: "Lithic Haplofibrists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BCCC"
+      name: "Limnic Haplofibrists"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "BCCD"
+      name: "Terric Haplofibrists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BCCE"
+      name: "Fluvaquentic Haplofibrists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BCCF"
+      name: "Hemic Haplofibrists"
+      tests:
+        all_of:
+          - hemic_subgroup_usda: {}
+    - code: "BCCG"
+      name: "Typic Haplofibrists"
+      tests:
+        default: true
+
+  # ====== SAPRISTS ======
+
+  "BDA":  # Sulfosaprists (1)
+    - code: "BDAA"
+      name: "Typic Sulfosaprists"
+      tests:
+        default: true
+
+  "BDB":  # Sulfisaprists (3)
+    - code: "BDBA"
+      name: "Lithic Sulfisaprists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BDBB"
+      name: "Terric Sulfisaprists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BDBC"
+      name: "Typic Sulfisaprists"
+      tests:
+        default: true
+
+  "BDC":  # Cryosaprists (5)
+    - code: "BDCA"
+      name: "Lithic Cryosaprists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BDCB"
+      name: "Limnic Cryosaprists"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "BDCC"
+      name: "Terric Cryosaprists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BDCD"
+      name: "Fluvaquentic Cryosaprists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BDCE"
+      name: "Typic Cryosaprists"
+      tests:
+        default: true
+
+  "BDD":  # Haplosaprists (8)
+    - code: "BDDA"
+      name: "Lithic Haplosaprists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BDDB"
+      name: "Limnic Haplosaprists"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "BDDC"
+      name: "Halic Terric Haplosaprists"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+          - terric_usda: {}
+    - code: "BDDD"
+      name: "Halic Haplosaprists"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "BDDE"
+      name: "Terric Haplosaprists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BDDF"
+      name: "Fluvaquentic Haplosaprists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BDDG"
+      name: "Hemic Haplosaprists"
+      tests:
+        all_of:
+          - hemic_subgroup_usda: {}
+    - code: "BDDH"
+      name: "Typic Haplosaprists"
+      tests:
+        default: true
+
+  # ====== HEMISTS ======
+
+  "BEA":  # Sulfohemists (1)
+    - code: "BEAA"
+      name: "Typic Sulfohemists"
+      tests:
+        default: true
+
+  "BEB":  # Sulfihemists (2)
+    - code: "BEBA"
+      name: "Terric Sulfihemists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BEBB"
+      name: "Typic Sulfihemists"
+      tests:
+        default: true
+
+  "BEC":  # Luvihemists (1)
+    - code: "BECA"
+      name: "Typic Luvihemists"
+      tests:
+        default: true
+
+  "BED":  # Cryohemists (5)
+    - code: "BEDA"
+      name: "Hydric Cryohemists"
+      tests:
+        all_of:
+          - hydric_subgroup_usda: {}
+    - code: "BEDB"
+      name: "Lithic Cryohemists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BEDC"
+      name: "Terric Cryohemists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BEDD"
+      name: "Fluvaquentic Cryohemists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BEDE"
+      name: "Typic Cryohemists"
+      tests:
+        default: true
+
+  "BEE":  # Haplohemists (8)
+    - code: "BEEA"
+      name: "Hydric Haplohemists"
+      tests:
+        all_of:
+          - hydric_subgroup_usda: {}
+    - code: "BEEB"
+      name: "Lithic Haplohemists"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 130 }
+    - code: "BEEC"
+      name: "Limnic Haplohemists"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "BEED"
+      name: "Terric Haplohemists"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "BEEE"
+      name: "Fluvaquentic Haplohemists"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "BEEF"
+      name: "Fibric Haplohemists"
+      tests:
+        all_of:
+          - fibric_subgroup_usda: {}
+    - code: "BEEG"
+      name: "Sapric Haplohemists"
+      tests:
+        all_of:
+          - sapric_subgroup_usda: {}
+    - code: "BEEH"
+      name: "Typic Haplohemists"
+      tests:
+        default: true
