@@ -1,0 +1,503 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Aridisols Subgroups -- Cap 7
+# =============================================================
+# Cobertura cientifica focada (~110 SGs).
+# =============================================================
+
+subgroups:
+
+  # ====== CRYIDS Subgroups ======
+
+  "GAA":  # Salicryids (3)
+    - code: "GAAA"
+      name: "Aquic Salicryids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GAAB"
+      name: "Sodic Salicryids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GAAC"
+      name: "Typic Salicryids"
+      tests:
+        default: true
+
+  "GAB":  # Petrocryids (3)
+    - code: "GABA"
+      name: "Lithic Petrocryids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GABB"
+      name: "Vertic Petrocryids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GABC"
+      name: "Typic Petrocryids"
+      tests:
+        default: true
+
+  "GAC":  # Gypsicryids (3)
+    - code: "GACA"
+      name: "Petrogypsic Gypsicryids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
+    - code: "GACB"
+      name: "Sodic Gypsicryids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GACC"
+      name: "Typic Gypsicryids"
+      tests:
+        default: true
+
+  "GAD":  # Argicryids (3)
+    - code: "GADA"
+      name: "Lithic Argicryids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GADB"
+      name: "Vertic Argicryids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GADC"
+      name: "Typic Argicryids"
+      tests:
+        default: true
+
+  "GAE":  # Calcicryids (3)
+    - code: "GAEA"
+      name: "Petrocalcic Calcicryids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GAEB"
+      name: "Lithic Calcicryids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GAEC"
+      name: "Typic Calcicryids"
+      tests:
+        default: true
+
+  "GAF":  # Haplocryids (4)
+    - code: "GAFA"
+      name: "Lithic Haplocryids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GAFB"
+      name: "Aquic Haplocryids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GAFC"
+      name: "Vertic Haplocryids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GAFD"
+      name: "Typic Haplocryids"
+      tests:
+        default: true
+
+  # ====== SALIDS Subgroups ======
+
+  "GBA":  # Aquisalids (3)
+    - code: "GBAA"
+      name: "Sulfic Aquisalids"
+      tests:
+        all_of:
+          - sulfic_subgroup_usda: {}
+    - code: "GBAB"
+      name: "Gypsic Aquisalids"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "GBAC"
+      name: "Typic Aquisalids"
+      tests:
+        default: true
+
+  "GBB":  # Haplosalids (3)
+    - code: "GBBA"
+      name: "Calcic Haplosalids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GBBB"
+      name: "Gypsic Haplosalids"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "GBBC"
+      name: "Typic Haplosalids"
+      tests:
+        default: true
+
+  # ====== DURIDS ======
+
+  "GCA":  # Natridurids (3)
+    - code: "GCAA"
+      name: "Aquic Natridurids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GCAB"
+      name: "Vertic Natridurids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GCAC"
+      name: "Typic Natridurids"
+      tests:
+        default: true
+
+  "GCB":  # Argidurids (3)
+    - code: "GCBA"
+      name: "Aquic Argidurids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GCBB"
+      name: "Vertic Argidurids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GCBC"
+      name: "Typic Argidurids"
+      tests:
+        default: true
+
+  "GCC":  # Haplodurids (4)
+    - code: "GCCA"
+      name: "Aquic Haplodurids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GCCB"
+      name: "Vertic Haplodurids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GCCC"
+      name: "Lithic Haplodurids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GCCD"
+      name: "Typic Haplodurids"
+      tests:
+        default: true
+
+  # ====== GYPSIDS ======
+
+  "GDA":  # Petrogypsids (3)
+    - code: "GDAA"
+      name: "Calcic Petrogypsids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GDAB"
+      name: "Sodic Petrogypsids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GDAC"
+      name: "Typic Petrogypsids"
+      tests:
+        default: true
+
+  "GDB":  # Natrigypsids (3)
+    - code: "GDBA"
+      name: "Petronodic Natrigypsids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GDBB"
+      name: "Calcic Natrigypsids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GDBC"
+      name: "Typic Natrigypsids"
+      tests:
+        default: true
+
+  "GDC":  # Argigypsids (3)
+    - code: "GDCA"
+      name: "Petronodic Argigypsids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GDCB"
+      name: "Calcic Argigypsids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GDCC"
+      name: "Typic Argigypsids"
+      tests:
+        default: true
+
+  "GDD":  # Calcigypsids (3)
+    - code: "GDDA"
+      name: "Lithic Calcigypsids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDDB"
+      name: "Sodic Calcigypsids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GDDC"
+      name: "Typic Calcigypsids"
+      tests:
+        default: true
+
+  "GDE":  # Haplogypsids (4)
+    - code: "GDEA"
+      name: "Lithic Haplogypsids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDEB"
+      name: "Calcic Haplogypsids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GDEC"
+      name: "Sodic Haplogypsids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GDED"
+      name: "Typic Haplogypsids"
+      tests:
+        default: true
+
+  # ====== ARGIDS ======
+
+  "GEA":  # Petroargids (3)
+    - code: "GEAA"
+      name: "Sodic Petroargids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GEAB"
+      name: "Vertic Petroargids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GEAC"
+      name: "Typic Petroargids"
+      tests:
+        default: true
+
+  "GEB":  # Natrargids (4)
+    - code: "GEBA"
+      name: "Petrocalcic Natrargids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GEBB"
+      name: "Aquic Natrargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GEBC"
+      name: "Vertic Natrargids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GEBD"
+      name: "Typic Natrargids"
+      tests:
+        default: true
+
+  "GEC":  # Paleargids (3)
+    - code: "GECA"
+      name: "Petrocalcic Paleargids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GECB"
+      name: "Vertic Paleargids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GECC"
+      name: "Typic Paleargids"
+      tests:
+        default: true
+
+  "GED":  # Gypsiargids (3)
+    - code: "GEDA"
+      name: "Petrogypsic Gypsiargids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
+    - code: "GEDB"
+      name: "Sodic Gypsiargids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GEDC"
+      name: "Typic Gypsiargids"
+      tests:
+        default: true
+
+  "GEE":  # Calciargids (4)
+    - code: "GEEA"
+      name: "Petrocalcic Calciargids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GEEB"
+      name: "Vertic Calciargids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GEEC"
+      name: "Sodic Calciargids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GEED"
+      name: "Typic Calciargids"
+      tests:
+        default: true
+
+  "GEF":  # Haplargids (5)
+    - code: "GEFA"
+      name: "Lithic Haplargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GEFB"
+      name: "Aquic Haplargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GEFC"
+      name: "Vertic Haplargids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GEFD"
+      name: "Calcic Haplargids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GEFE"
+      name: "Typic Haplargids"
+      tests:
+        default: true
+
+  # ====== CALCIDS ======
+
+  "GFA":  # Petrocalcids (3)
+    - code: "GFAA"
+      name: "Lithic Petrocalcids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GFAB"
+      name: "Vertic Petrocalcids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GFAC"
+      name: "Typic Petrocalcids"
+      tests:
+        default: true
+
+  "GFB":  # Haplocalcids (4)
+    - code: "GFBA"
+      name: "Petrocalcic Haplocalcids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GFBB"
+      name: "Lithic Haplocalcids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GFBC"
+      name: "Aquic Haplocalcids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GFBD"
+      name: "Typic Haplocalcids"
+      tests:
+        default: true
+
+  # ====== CAMBIDS ======
+
+  "GGA":  # Aquicambids (3)
+    - code: "GGAA"
+      name: "Sodic Aquicambids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GGAB"
+      name: "Vertic Aquicambids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GGAC"
+      name: "Typic Aquicambids"
+      tests:
+        default: true
+
+  "GGB":  # Petrocambids (3)
+    - code: "GGBA"
+      name: "Lithic Petrocambids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GGBB"
+      name: "Vertic Petrocambids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GGBC"
+      name: "Typic Petrocambids"
+      tests:
+        default: true
+
+  "GGC":  # Haplocambids (5)
+    - code: "GGCA"
+      name: "Lithic Haplocambids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GGCB"
+      name: "Aquic Haplocambids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GGCC"
+      name: "Vertic Haplocambids"
+      tests:
+        all_of:
+          - vertic_aridisol_usda: {}
+    - code: "GGCD"
+      name: "Sodic Haplocambids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GGCE"
+      name: "Typic Haplocambids"
+      tests:
+        default: true

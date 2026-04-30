@@ -169,31 +169,22 @@ vertisol_usda <- function(pedon) {
 #' surface + low OC (no organic accumulation).
 #' @export
 aridisol_usda <- function(pedon) {
-  h <- pedon$horizons
-  # Aridity proxy: low surface OC (< 1%) AND any of:
-  #   - calcic / petrocalcic / gypsic / petrogypsic / salic horizon, OR
-  #   - duripan, OR aridic-style argillic with low BS
-  surface <- which(h$top_cm <= 5)
-  low_oc_surface <- length(surface) > 0L &&
-    all(is.na(h$oc_pct[surface]) | h$oc_pct[surface] < 1)
-  has_arid_signal <- isTRUE(calcic(pedon)$passed) ||
-                       isTRUE(petrocalcic(pedon)$passed) ||
-                       isTRUE(gypsic(pedon)$passed) ||
-                       isTRUE(salic(pedon)$passed) ||
-                       isTRUE(duric_horizon(pedon)$passed)
+  # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
+  # aridic SMR + a diagnostic subsurface horizon (KST 13ed Ch 7
+  # p 137). Fallback to aridity proxies when SMR not provided.
+  aq <- aridisol_qualifying_usda(pedon)
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed) ||
           isTRUE(andisol_usda(pedon)$passed) ||
           isTRUE(oxisol_usda(pedon)$passed) ||
           isTRUE(vertisol_usda(pedon)$passed)
-  passed <- isTRUE(low_oc_surface) && isTRUE(has_arid_signal) && !ex
+  passed <- isTRUE(aq$passed) && !ex
   DiagnosticResult$new(
     name = "aridisol_usda", passed = passed,
-    layers = if (passed) seq_len(nrow(h)) else integer(0),
-    evidence = list(low_oc_surface = low_oc_surface,
-                     arid_signal = has_arid_signal, prior_order = ex),
-    missing = character(0),
+    layers = aq$layers,
+    evidence = list(aridisol_qualifying = aq, prior_order = ex),
+    missing = aq$missing,
     reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 7 Aridisols (p 137)"
   )
 }

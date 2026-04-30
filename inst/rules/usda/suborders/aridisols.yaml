@@ -1,0 +1,44 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Aridisols Suborders -- Cap 7
+# =============================================================
+# 7 Suborders: GA Cryids, GB Salids, GC Durids, GD Gypsids,
+#              GE Argids, GF Calcids, GG Cambids
+# =============================================================
+
+suborders:
+
+  "AS":
+    - code: "GA"
+      name: "Cryids"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "GB"
+      name: "Salids"
+      tests:
+        all_of:
+          - salic_subgroup_usda: { max_top_cm: 100 }
+    - code: "GC"
+      name: "Durids"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "GD"
+      name: "Gypsids"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: { max_top_cm: 100 }
+    - code: "GE"
+      name: "Argids"
+      tests:
+        all_of:
+          - argillic_or_kandic_usda: { max_top_cm: 200 }
+    - code: "GF"
+      name: "Calcids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "GG"
+      name: "Cambids"
+      tests:
+        default: true
