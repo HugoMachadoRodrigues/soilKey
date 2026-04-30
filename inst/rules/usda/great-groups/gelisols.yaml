@@ -1,0 +1,120 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)
+# Gelisols Great Groups -- Chapter 9, pp 189-198
+# =============================================================
+#
+# Great groups in canonical key order. 20 GGs total:
+#   Histels: 5 (Folistels, Glacistels, Fibristels, Hemistels, Sapristels)
+#   Turbels: 7 (Histoturbels, Aquiturbels, Anhyturbels, Molliturbels,
+#               Umbriturbels, Psammoturbels, Haploturbels)
+#   Orthels: 8 (Historthels, Aquorthels, Anhyorthels, Mollorthels,
+#               Umbrorthels, Argiorthels, Psammorthels, Haplorthels)
+# =============================================================
+
+great_groups:
+
+  # ---- AA Histels (Cap 9, pp 189-191) ----
+  "AA":
+    - code: "AAA"
+      name: "Folistels"
+      tests:
+        all_of:
+          - folistic_epipedon_usda: {}
+    - code: "AAB"
+      name: "Glacistels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "AAC"
+      name: "Fibristels"
+      tests:
+        all_of:
+          - fibrico: {}
+    - code: "AAD"
+      name: "Hemistels"
+      tests:
+        all_of:
+          - hemico: {}
+    - code: "AAE"
+      name: "Sapristels"
+      tests:
+        default: true
+
+  # ---- AB Turbels (Cap 9, pp 195-198) ----
+  "AB":
+    - code: "ABA"
+      name: "Histoturbels"
+      tests:
+        all_of:
+          - histic_epipedon_usda: {}
+    - code: "ABB"
+      name: "Aquiturbels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ABC"
+      name: "Anhyturbels"
+      tests:
+        all_of:
+          - anhydrous_conditions_usda: {}
+    - code: "ABD"
+      name: "Molliturbels"
+      tests:
+        all_of:
+          - mollic_epipedon_usda: {}
+    - code: "ABE"
+      name: "Umbriturbels"
+      tests:
+        all_of:
+          - umbric_epipedon_usda: {}
+    - code: "ABF"
+      name: "Psammoturbels"
+      tests:
+        all_of:
+          - psammentic_subgroup_usda: {}
+    - code: "ABG"
+      name: "Haploturbels"
+      tests:
+        default: true
+
+  # ---- AC Orthels (Cap 9, pp 191-195) ----
+  "AC":
+    - code: "ACA"
+      name: "Historthels"
+      tests:
+        all_of:
+          - histic_epipedon_usda: {}
+    - code: "ACB"
+      name: "Aquorthels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ACC"
+      name: "Anhyorthels"
+      tests:
+        all_of:
+          - anhydrous_conditions_usda: {}
+    - code: "ACD"
+      name: "Mollorthels"
+      tests:
+        all_of:
+          - mollic_epipedon_usda: {}
+    - code: "ACE"
+      name: "Umbrorthels"
+      tests:
+        all_of:
+          - umbric_epipedon_usda: {}
+    - code: "ACF"
+      name: "Argiorthels"
+      tests:
+        all_of:
+          - argillic_within_usda: {}
+    - code: "ACG"
+      name: "Psammorthels"
+      tests:
+        all_of:
+          - psammentic_subgroup_usda: {}
+    - code: "ACH"
+      name: "Haplorthels"
+      tests:
+        default: true

@@ -1,0 +1,677 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)
+# Gelisols Subgroups -- Chapter 9, pp 189-198
+# =============================================================
+
+subgroups:
+
+  # ====== HISTELS Subgroups ======
+
+  "AAA":  # Folistels (3 SGs)
+    - code: "AAAA"
+      name: "Lithic Folistels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "AAAB"
+      name: "Glacic Folistels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "AAAC"
+      name: "Typic Folistels"
+      tests:
+        default: true
+
+  "AAB":  # Glacistels (3 SGs)
+    - code: "AABA"
+      name: "Hemic Glacistels"
+      tests:
+        all_of:
+          - hemico: {}
+    - code: "AABB"
+      name: "Sapric Glacistels"
+      tests:
+        all_of:
+          - saprico: {}
+    - code: "AABC"
+      name: "Typic Glacistels"
+      tests:
+        default: true
+
+  "AAC":  # Fibristels (6 SGs)
+    - code: "AACA"
+      name: "Lithic Fibristels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 100 }
+    - code: "AACB"
+      name: "Terric Fibristels"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "AACC"
+      name: "Thapto-Humic Fibristels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "AACD"
+      name: "Fluvaquentic Fibristels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "AACE"
+      name: "Sphagnic Fibristels"
+      tests:
+        all_of:
+          - sphagnic_usda: {}
+    - code: "AACF"
+      name: "Typic Fibristels"
+      tests:
+        default: true
+
+  "AAD":  # Hemistels (6 SGs)
+    - code: "AADA"
+      name: "Lithic Hemistels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 100 }
+    - code: "AADB"
+      name: "Limnic Hemistels"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "AADC"
+      name: "Terric Hemistels"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "AADD"
+      name: "Thapto-Humic Hemistels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "AADE"
+      name: "Fluvaquentic Hemistels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "AADF"
+      name: "Typic Hemistels"
+      tests:
+        default: true
+
+  "AAE":  # Sapristels (6 SGs)
+    - code: "AAEA"
+      name: "Lithic Sapristels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 100 }
+    - code: "AAEB"
+      name: "Limnic Sapristels"
+      tests:
+        all_of:
+          - limnic_usda: {}
+    - code: "AAEC"
+      name: "Terric Sapristels"
+      tests:
+        all_of:
+          - terric_usda: {}
+    - code: "AAED"
+      name: "Thapto-Humic Sapristels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "AAEE"
+      name: "Fluvaquentic Sapristels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "AAEF"
+      name: "Typic Sapristels"
+      tests:
+        default: true
+
+  # ====== TURBELS Subgroups ======
+
+  "ABA":  # Histoturbels (4 SGs)
+    - code: "ABAA"
+      name: "Lithic Histoturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABAB"
+      name: "Glacic Histoturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABAC"
+      name: "Ruptic Histoturbels"
+      tests:
+        all_of:
+          - ruptic_subgroup_usda: {}
+    - code: "ABAD"
+      name: "Typic Histoturbels"
+      tests:
+        default: true
+
+  "ABB":  # Aquiturbels (6 SGs)
+    - code: "ABBA"
+      name: "Lithic Aquiturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABBB"
+      name: "Glacic Aquiturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABBC"
+      name: "Sulfuric Aquiturbels"
+      tests:
+        all_of:
+          - sulfuric_horizon_usda: {}
+    - code: "ABBD"
+      name: "Ruptic-Histic Aquiturbels"
+      tests:
+        all_of:
+          - ruptic_histic_subgroup_usda: {}
+    - code: "ABBE"
+      name: "Psammentic Aquiturbels"
+      tests:
+        all_of:
+          - psammentic_subgroup_usda: {}
+    - code: "ABBF"
+      name: "Typic Aquiturbels"
+      tests:
+        default: true
+
+  "ABC":  # Anhyturbels (8 SGs)
+    - code: "ABCA"
+      name: "Lithic Anhyturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABCB"
+      name: "Glacic Anhyturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABCC"
+      name: "Petrogypsic Anhyturbels"
+      tests:
+        all_of:
+          - petrogypsic_horizon_usda: {}
+    - code: "ABCD"
+      name: "Gypsic Anhyturbels"
+      tests:
+        all_of:
+          - gypsic_horizon_usda: {}
+    - code: "ABCE"
+      name: "Nitric Anhyturbels"
+      tests:
+        all_of:
+          - nitric_subgroup_usda: {}
+    - code: "ABCF"
+      name: "Salic Anhyturbels"
+      tests:
+        all_of:
+          - salic_horizon_usda: {}
+    - code: "ABCG"
+      name: "Calcic Anhyturbels"
+      tests:
+        all_of:
+          - calcic_horizon_usda: {}
+    - code: "ABCH"
+      name: "Typic Anhyturbels"
+      tests:
+        default: true
+
+  "ABD":  # Molliturbels (9 SGs)
+    - code: "ABDA"
+      name: "Lithic Molliturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABDB"
+      name: "Glacic Molliturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABDC"
+      name: "Vertic Molliturbels"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "ABDD"
+      name: "Andic Molliturbels"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "ABDE"
+      name: "Vitrandic Molliturbels"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "ABDF"
+      name: "Folistic Molliturbels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ABDG"
+      name: "Cumulic Molliturbels"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "ABDH"
+      name: "Aquic Molliturbels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ABDI"
+      name: "Typic Molliturbels"
+      tests:
+        default: true
+
+  "ABE":  # Umbriturbels (9 SGs)
+    - code: "ABEA"
+      name: "Lithic Umbriturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABEB"
+      name: "Glacic Umbriturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABEC"
+      name: "Vertic Umbriturbels"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "ABED"
+      name: "Andic Umbriturbels"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "ABEE"
+      name: "Vitrandic Umbriturbels"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "ABEF"
+      name: "Folistic Umbriturbels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ABEG"
+      name: "Cumulic Umbriturbels"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "ABEH"
+      name: "Aquic Umbriturbels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ABEI"
+      name: "Typic Umbriturbels"
+      tests:
+        default: true
+
+  "ABF":  # Psammoturbels (4 SGs)
+    - code: "ABFA"
+      name: "Lithic Psammoturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABFB"
+      name: "Glacic Psammoturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABFC"
+      name: "Spodic Psammoturbels"
+      tests:
+        all_of:
+          - spodic_subgroup_usda: {}
+    - code: "ABFD"
+      name: "Typic Psammoturbels"
+      tests:
+        default: true
+
+  "ABG":  # Haploturbels (5 SGs)
+    - code: "ABGA"
+      name: "Lithic Haploturbels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ABGB"
+      name: "Glacic Haploturbels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ABGC"
+      name: "Folistic Haploturbels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ABGD"
+      name: "Aquic Haploturbels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ABGE"
+      name: "Typic Haploturbels"
+      tests:
+        default: true
+
+  # ====== ORTHELS Subgroups ======
+
+  "ACA":  # Historthels (7 SGs)
+    - code: "ACAA"
+      name: "Lithic Historthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACAB"
+      name: "Glacic Historthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACAC"
+      name: "Thapto-Humic Historthels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "ACAD"
+      name: "Fluvaquentic Historthels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "ACAE"
+      name: "Fluventic Historthels"
+      tests:
+        all_of:
+          - fluventic_usda: {}
+    - code: "ACAF"
+      name: "Ruptic Historthels"
+      tests:
+        all_of:
+          - ruptic_subgroup_usda: {}
+    - code: "ACAG"
+      name: "Typic Historthels"
+      tests:
+        default: true
+
+  "ACB":  # Aquorthels (11 SGs)
+    - code: "ACBA"
+      name: "Lithic Aquorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACBB"
+      name: "Glacic Aquorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACBC"
+      name: "Sulfuric Aquorthels"
+      tests:
+        all_of:
+          - sulfuric_horizon_usda: {}
+    - code: "ACBD"
+      name: "Ruptic-Histic Aquorthels"
+      tests:
+        all_of:
+          - ruptic_histic_subgroup_usda: {}
+    - code: "ACBE"
+      name: "Andic Aquorthels"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "ACBF"
+      name: "Vitrandic Aquorthels"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "ACBG"
+      name: "Salic Aquorthels"
+      tests:
+        all_of:
+          - salic_horizon_usda: {}
+    - code: "ACBH"
+      name: "Psammentic Aquorthels"
+      tests:
+        all_of:
+          - psammentic_subgroup_usda: {}
+    - code: "ACBI"
+      name: "Thapto-Humic Aquorthels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "ACBJ"
+      name: "Fluvaquentic Aquorthels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "ACBK"
+      name: "Typic Aquorthels"
+      tests:
+        default: true
+
+  "ACC":  # Anhyorthels (8 SGs)
+    - code: "ACCA"
+      name: "Lithic Anhyorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACCB"
+      name: "Glacic Anhyorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACCC"
+      name: "Petrogypsic Anhyorthels"
+      tests:
+        all_of:
+          - petrogypsic_horizon_usda: {}
+    - code: "ACCD"
+      name: "Gypsic Anhyorthels"
+      tests:
+        all_of:
+          - gypsic_horizon_usda: {}
+    - code: "ACCE"
+      name: "Nitric Anhyorthels"
+      tests:
+        all_of:
+          - nitric_subgroup_usda: {}
+    - code: "ACCF"
+      name: "Salic Anhyorthels"
+      tests:
+        all_of:
+          - salic_horizon_usda: {}
+    - code: "ACCG"
+      name: "Calcic Anhyorthels"
+      tests:
+        all_of:
+          - calcic_horizon_usda: {}
+    - code: "ACCH"
+      name: "Typic Anhyorthels"
+      tests:
+        default: true
+
+  "ACD":  # Mollorthels (9 SGs)
+    - code: "ACDA"
+      name: "Lithic Mollorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACDB"
+      name: "Glacic Mollorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACDC"
+      name: "Vertic Mollorthels"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "ACDD"
+      name: "Andic Mollorthels"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "ACDE"
+      name: "Vitrandic Mollorthels"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "ACDF"
+      name: "Folistic Mollorthels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ACDG"
+      name: "Cumulic Mollorthels"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "ACDH"
+      name: "Aquic Mollorthels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ACDI"
+      name: "Typic Mollorthels"
+      tests:
+        default: true
+
+  "ACE":  # Umbrorthels (9 SGs)
+    - code: "ACEA"
+      name: "Lithic Umbrorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACEB"
+      name: "Glacic Umbrorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACEC"
+      name: "Vertic Umbrorthels"
+      tests:
+        all_of:
+          - vertic_subgroup_usda: {}
+    - code: "ACED"
+      name: "Andic Umbrorthels"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "ACEE"
+      name: "Vitrandic Umbrorthels"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "ACEF"
+      name: "Folistic Umbrorthels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ACEG"
+      name: "Cumulic Umbrorthels"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "ACEH"
+      name: "Aquic Umbrorthels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ACEI"
+      name: "Typic Umbrorthels"
+      tests:
+        default: true
+
+  "ACF":  # Argiorthels (4 SGs)
+    - code: "ACFA"
+      name: "Lithic Argiorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACFB"
+      name: "Glacic Argiorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACFC"
+      name: "Natric Argiorthels"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
+    - code: "ACFD"
+      name: "Typic Argiorthels"
+      tests:
+        default: true
+
+  "ACG":  # Psammorthels (4 SGs)
+    - code: "ACGA"
+      name: "Lithic Psammorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACGB"
+      name: "Glacic Psammorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACGC"
+      name: "Spodic Psammorthels"
+      tests:
+        all_of:
+          - spodic_subgroup_usda: {}
+    - code: "ACGD"
+      name: "Typic Psammorthels"
+      tests:
+        default: true
+
+  "ACH":  # Haplorthels (8 SGs)
+    - code: "ACHA"
+      name: "Lithic Haplorthels"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "ACHB"
+      name: "Glacic Haplorthels"
+      tests:
+        all_of:
+          - glacic_layer_usda: {}
+    - code: "ACHC"
+      name: "Thapto-Humic Haplorthels"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "ACHD"
+      name: "Fluvaquentic Haplorthels"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "ACHE"
+      name: "Folistic Haplorthels"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "ACHF"
+      name: "Aquic Haplorthels"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "ACHG"
+      name: "Fluventic Haplorthels"
+      tests:
+        all_of:
+          - fluventic_usda: {}
+    - code: "ACHH"
+      name: "Typic Haplorthels"
+      tests:
+        default: true

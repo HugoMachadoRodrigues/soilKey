@@ -45,15 +45,24 @@ load_rules <- function(system = c("wrb2022", "usda", "sibcs5"),
   }
   rules <- yaml::read_yaml(path)
 
-  # v0.7.3: merge split sub-level YAMLs from `grandes-grupos/` and
-  # `subgrupos/` subdirectories. Each file contributes its
-  # `grandes_grupos:` or `subgrupos:` block, keyed by parent code
-  # (subordem code for grandes_grupos, GG code for subgrupos), into
-  # the merged rules object returned to the caller. Allows per-ordem
-  # files for the SiBCS 3o-4o categorical levels (and future USDA
-  # suborder/great-group/subgroup split). Backward-compatible: WRB
-  # and USDA without subdirs keep their current behavior.
-  for (subdir_name in c("grandes-grupos", "subgrupos")) {
+  # v0.7.3 / v0.8.3: merge split sub-level YAMLs from per-level
+  # subdirectories. Each file contributes its named block (matching
+  # the directory name with hyphens replaced by underscores) into the
+  # merged rules object returned to the caller. Allows per-ordem
+  # files for the SiBCS 3o-4o categorical levels and the USDA
+  # Suborders / Great Groups / Subgroups (Path C, v0.8+).
+  # Backward-compatible: WRB without subdirs keeps current behavior.
+  #
+  # Mapping subdir -> rules block:
+  #   grandes-grupos/ (SiBCS) -> rules$grandes_grupos
+  #   subgrupos/      (SiBCS) -> rules$subgrupos
+  #   subordens/      (SiBCS) -> rules$subordens (currently in key.yaml,
+  #                              future-proofing)
+  #   suborders/      (USDA)  -> rules$suborders
+  #   great-groups/   (USDA)  -> rules$great_groups
+  #   subgroups/      (USDA)  -> rules$subgroups
+  for (subdir_name in c("grandes-grupos", "subgrupos", "subordens",
+                          "suborders", "great-groups", "subgroups")) {
     sub_path <- system.file("rules", system, subdir_name, package = package)
     if (!nzchar(sub_path) || !dir.exists(sub_path)) next
     files <- list.files(sub_path, pattern = "\\.yaml$", full.names = TRUE)
