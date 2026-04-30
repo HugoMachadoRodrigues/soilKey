@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
 <img src="logo.png" class="logo" alt=""><h1 id="soilkey-">soilKey <a class="anchor" aria-label="anchor" href="#soilkey-"></a>
 </h1>
 </div>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.12-FF6B35?style=flat-square" alt="v0.9.12"></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.13-FF6B35?style=flat-square" alt="v0.9.13"></p>
 <blockquote>
 <p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).</strong> All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
 </blockquote>
@@ -617,11 +617,56 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="id_-two-user-facing-helpers-that-guide-classification-v0913">✦ Two user-facing helpers that <em>guide</em> classification (v0.9.13)<a class="anchor" aria-label="anchor" href="#id_-two-user-facing-helpers-that-guide-classification-v0913"></a>
+</h2>
+<p>soilKey ships two ways for a user to get a <em>prior</em> expectation of the soil class <strong>before</strong> running the deterministic key — the canonical “I’m in the field, what should I expect?” use case.</p>
+<div class="section level3">
+<h3 id="soil_classes_at_locationlat-lon--spatial-classification-aid">
+<code>soil_classes_at_location(lat, lon)</code> — spatial classification aid<a class="anchor" aria-label="anchor" href="#soil_classes_at_locationlat-lon--spatial-classification-aid"></a>
+</h3>
+<p>Given coordinates, returns a ranked list of likely RSGs / SiBCS ordens / USDA orders at that location plus the canonical attribute thresholds that distinguish them. Backed by SoilGrids 2.0 (or any WRB-coded raster the user provides) and the WRB ↔︎ SiBCS Schad (2023) Annex Table 1 correspondence.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Mata Atlântica (Seropédica RJ).</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/soil_classes_at_location.html">soil_classes_at_location</a></span><span class="op">(</span></span>
+<span>  lat        <span class="op">=</span> <span class="op">-</span><span class="fl">22.7</span>,</span>
+<span>  lon        <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>,</span>
+<span>  system     <span class="op">=</span> <span class="st">"wrb2022"</span>,</span>
+<span>  source_url <span class="op">=</span> <span class="st">"https://files.isric.org/soilgrids/latest/data/wrb/MostProbable.vrt"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">distribution</span>        <span class="co"># ranked list of likely RSGs with P(RSG | location)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">typical_attributes</span>  <span class="co"># canonical thresholds per RSG -- "what to confirm"</span></span></code></pre></div>
+<p>This does <strong>not</strong> classify a profile. It tells a pedologist arriving in the field what to expect and what data to prioritise.</p>
+</div>
+<div class="section level3">
+<h3 id="classify_by_spectral_neighboursspectrum-ossl_library--spectral-analogy">
+<code>classify_by_spectral_neighbours(spectrum, ossl_library)</code> — spectral analogy<a class="anchor" aria-label="anchor" href="#classify_by_spectral_neighboursspectrum-ossl_library--spectral-analogy"></a>
+</h3>
+<p>Given a Vis-NIR (or MIR) spectrum and an OSSL library enriched with WRB / SiBCS / USDA labels, returns the K most spectrally similar profiles plus a probabilistic class prediction. Optional region filter (<code>lat / lon / radius_km</code>) keeps the analogy biome-aware: a Cerrado profile shouldn’t be analogised to Boreal taiga.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ossl_demo_sa</span><span class="op">)</span></span>
+<span><span class="va">ossl_demo_sa</span><span class="op">$</span><span class="va">Yr</span><span class="op">$</span><span class="va">wrb_rsg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>  <span class="co"># real OSSL ships labels; demo lacks them</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_by_spectral_neighbours.html">classify_by_spectral_neighbours</a></span><span class="op">(</span></span>
+<span>  spectrum     <span class="op">=</span> <span class="va">my_vnir_spectrum</span>,</span>
+<span>  ossl_library <span class="op">=</span> <span class="va">ossl_demo_sa</span>,</span>
+<span>  k            <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  region       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="op">-</span><span class="fl">22.7</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>, radius_km <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">distribution</span>    <span class="co"># ranked classes with P(class | spectral neighbours)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">neighbours</span>      <span class="co"># the 25 closest profiles + their distances + labels</span></span></code></pre></div>
+<p>Distance is computed in PLS-score space when <code>resemble</code> is installed (matching the OSSL reference workflow, Ramirez-Lopez et al. 2013), with a PCA fallback otherwise.</p>
+<p><strong>Both are guides, not classifiers.</strong> They populate priors before the deterministic key runs. The architectural invariant — “the key is never delegated to a model” — still holds: the canonical assignment still comes from <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code> / <code><a href="reference/classify_sibcs.html">classify_sibcs()</a></code> / <code><a href="reference/classify_usda.html">classify_usda()</a></code> consuming a fully populated <code>PedonRecord</code>.</p>
+<hr>
+</div>
+</div>
+<div class="section level2">
 <h2 id="id_-vlm--gemma-4--one-liner-pipeline">✦ VLM / Gemma 4 / one-liner pipeline<a class="anchor" aria-label="anchor" href="#id_-vlm--gemma-4--one-liner-pipeline"></a>
 </h2>
 <p>soilKey separates <strong>extraction</strong> (multimodal LLM) from <strong>classification</strong> (deterministic R code driven by versioned YAML rules). The VLM never classifies; every value it extracts carries <code>source = "extracted_vlm"</code> and the deterministic key consumes the <code>PedonRecord</code> unaware of how each value got there.</p>
 <p>The default local stack uses <strong>Gemma 4</strong> via <a href="https://ollama.com" class="external-link">Ollama</a> (<code>gemma4:e4b</code>, ~3 GB, multimodal text+image+audio). Cloud providers (<code>anthropic</code> / <code>openai</code> / <code>google</code>) remain one argument away. The full canonical pipeline – <em>extract from PDF + extract Munsell from photo + classify in three systems + render report</em> – is one function call:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># One-liner. Local-first; no API key needed; data never leaves your machine.</span></span>
@@ -640,7 +685,7 @@
 <span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">usda</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; "Rhodic Hapludox"</span></span></code></pre></div>
 <p>Switch model / provider with one argument:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"ollama"</span>,   model <span class="op">=</span> <span class="st">"gemma4:31b"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"anthropic"</span><span class="op">)</span>  <span class="co"># claude-sonnet-4-7</span></span>
 <span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"openai"</span><span class="op">)</span>     <span class="co"># gpt-4o</span></span>
@@ -689,7 +734,7 @@
 </tbody>
 </table>
 <p>Browse:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"soilKey"</span><span class="op">)</span></span></code></pre></div>
 <p>The complete design document is in <a href="ARCHITECTURE.html"><code>ARCHITECTURE.md</code></a> (40 KB, Portuguese, with the full v0.1 → v1.0 roadmap).</p>
 <hr>
@@ -710,7 +755,7 @@
 <code>notes</code> : free-form (often the source quote)</li>
 </ul>
 <p>The <code>ClassificationResult$evidence_grade</code> is the worst-source rule applied to the <em>attributes that were actually decisive in the classification</em> — so a Ferralsol classified entirely from lab data yields <strong>A</strong>; the same profile with one critical clay value predicted from spectra yields <strong>B</strong>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pr</span><span class="op">$</span><span class="fu">add_measurement</span><span class="op">(</span><span class="fl">4</span>, <span class="st">"clay_pct"</span>, <span class="fl">60</span>,</span>
 <span>                   source <span class="op">=</span> <span class="st">"predicted_spectra"</span>, confidence <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span><span class="op">$</span><span class="va">evidence_grade</span></span>
@@ -722,16 +767,16 @@
 <h2 id="id_-citing">✦ Citing<a class="anchor" aria-label="anchor" href="#id_-citing"></a>
 </h2>
 <p>If <code>soilKey</code> contributes to your work, please cite:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co">@software{rodrigues_soilkey_2026,</span></span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">  author    = {Rodrigues Machado, Hugo},</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">  title     = {{soilKey}: Automated soil profile classification per</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">               {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">  year      = {2026},</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">  version   = {0.9.12},</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">  publisher = {Zenodo},</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">  doi       = {10.5281/zenodo.19930112},</span></span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">  url       = {https://github.com/HugoMachadoRodrigues/soilKey}</span></span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co">@software{rodrigues_soilkey_2026,</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">  author    = {Rodrigues Machado, Hugo},</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">  title     = {{soilKey}: Automated soil profile classification per</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">               {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">  year      = {2026},</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">  version   = {0.9.13},</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">  publisher = {Zenodo},</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">  doi       = {10.5281/zenodo.19930112},</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">  url       = {https://github.com/HugoMachadoRodrigues/soilKey}</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">}</span></span></code></pre></div>
 <p>You can also obtain the canonical citation programmatically via <code>citation("soilKey")</code>, which renders both the BibTeX block above and a plain-text version backed by <code>inst/CITATION</code>.</p>
 <p>A peer-reviewed methodology paper is in preparation (target: <em>SoftwareX</em>, <em>Geoderma</em>, <em>Computers &amp; Geosciences</em>, or <em>European Journal of Soil Science</em>).</p>
 <hr>

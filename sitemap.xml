@@ -152,6 +152,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/chernozem_strict.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/claric_material.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.html</loc></url>
@@ -186,6 +187,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-col_at.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-escape_latex.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-grade_class.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-haversine_km.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_classification_card.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_escape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_head.html</loc></url>
@@ -199,12 +201,14 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-ossl_property_ranges.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_ossl_mbl_resemble.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_synthetic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_classification_block.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_header.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_horizons_block.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_site_block.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_summary_block.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rsg_name_for_system.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-seed_from_matrix.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-sg1.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-sg_coefficients.html</loc></url>
@@ -212,6 +216,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-soilkey_version.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-subtest_result.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-three_valued_all.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-typical_attribute_table.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_sibcs_distribution.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_subgroup_usda.html</loc></url>
@@ -676,6 +682,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/smr_xeric_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/sodic_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/soil_moisture_regime_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/soil_organic_carbon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/soil_temperature_regime_usda.html</loc></url>

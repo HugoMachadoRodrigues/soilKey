@@ -37,6 +37,11 @@ the evidence grade.
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
+- [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
+  : Classify a soil by spectral similarity to OSSL reference profiles
+- [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
+  : Likely soil classes at a geographic location (spatial classification
+  aid)
 
 ## WRB 2022 – diagnostic horizons (Ch 3.1)
 

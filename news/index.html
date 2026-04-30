@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,28 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.13" id="soilkey-0913-2026-04-30">soilKey 0.9.13 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0913-2026-04-30"></a></h2>
+<p>Two user-facing helpers that <strong>guide</strong> classification before the deterministic key runs. These close the “help-the-user-classify-a- new-profile” gap that the architecture document promised but the package only half-delivered: <code>spatial_prior_*()</code> was a check, not a guide; <code>predict_ossl_*()</code> predicted attributes, not classes.</p>
+<div class="section level3">
+<h3 id="new-features-0-9-13">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-13"></a></h3>
+<ul><li><p><strong><code>soil_classes_at_location(lat, lon, system, ...)</code></strong> – the spatial classification aid. Given GPS coordinates, returns a ranked list of likely soil classes at that location (WRB, SiBCS, or USDA) + the canonical attribute thresholds that distinguish them. Backed by SoilGrids 2.0 (or any WRB-coded raster the user provides). For SiBCS, translates the WRB-RSG distribution via Schad (2023) Annex Table 1 / SiBCS 5ª ed. Annex A. Closes the “I’m in the field, what should I expect here?” use case before the user has a pedon.</p></li>
+<li><p><strong><code>classify_by_spectral_neighbours(spectrum, ossl_library, ...)</code></strong> – the spectral-analogy classifier. Given a Vis-NIR (or MIR) spectrum and an OSSL library enriched with WRB / SiBCS / USDA labels, returns the K most spectrally similar profiles plus a probabilistic class prediction. Distance is computed in PLS-score space when <code>resemble</code> is installed (matching the OSSL reference workflow, Ramirez-Lopez et al. 2013), with a PCA fallback otherwise. Optional <code>region = list(lat, lon, radius_km)</code> keeps the analogy biome-aware: a Cerrado profile is never analogised to Boreal taiga. Closes the “predict-the-class-by-analogy” use case the architecture promised but the previous OSSL plumbing could not deliver (it predicted <em>attributes</em>, not <em>classes</em>).</p></li>
+</ul><p>Both are guides, not classifiers. The architectural invariant – “the key is never delegated to a model” – still holds: the canonical assignment still comes from <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> / <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> / <code><a href="../reference/classify_usda.html">classify_usda()</a></code> consuming a fully populated <code>PedonRecord</code>. The two helpers populate priors <strong>before</strong> that canonical step.</p>
+</div>
+<div class="section level3">
+<h3 id="documentation-0-9-13">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-9-13"></a></h3>
+<ul><li>
+<code>ARCHITECTURE.md</code> translated from PT-BR to English.</li>
+<li>README gains a “Two user-facing helpers that guide classification” section with end-to-end examples for both new functions.</li>
+<li>
+<code>_pkgdown.yml</code> reference index includes the new entry points.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-13">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-13"></a></h3>
+<ul><li>+13 expectations across <code>test-soil-classes-at-location.R</code> and <code>test-spectra-neighbours.R</code>. Total: 2 658 passing, 0 failing.</li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.12" id="soilkey-0912-2026-04-30">soilKey 0.9.12 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0912-2026-04-30"></a></h2>
 <p>CRAN-readiness pass + WoSIS forensic analysis. The package now returns clean from <code>R CMD check --as-cran</code> (0 ERR / 0 WARN / 2 expected NOTEs) and ships <code>cran-comments.md</code> + a documented submission path. The WoSIS GraphQL benchmark gains a maximal attribute query (24 <code>*Values</code> per layer), data-coverage tier stratification, and a forensic report explaining the residual misses one-by-one.</p>
