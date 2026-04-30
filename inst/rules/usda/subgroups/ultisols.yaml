@@ -1,0 +1,567 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Ultisols Subgroups -- Cap 15
+# =============================================================
+# Cobertura cientifica focada (~110 SGs).
+# =============================================================
+
+subgroups:
+
+  # ====== AQUULTS Subgroups ======
+
+  "HAA":  # Plinthaquults (4)
+    - code: "HAAA"
+      name: "Aeric Plinthaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAAB"
+      name: "Umbric Plinthaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HAAC"
+      name: "Lithic Plinthaquults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAAD"
+      name: "Typic Plinthaquults"
+      tests:
+        default: true
+
+  "HAB":  # Fragiaquults (3)
+    - code: "HABA"
+      name: "Aeric Fragiaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HABB"
+      name: "Umbric Fragiaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HABC"
+      name: "Typic Fragiaquults"
+      tests:
+        default: true
+
+  "HAC":  # Albaquults (4)
+    - code: "HACA"
+      name: "Aeric Albaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HACB"
+      name: "Umbric Albaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HACC"
+      name: "Plinthic Albaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HACD"
+      name: "Typic Albaquults"
+      tests:
+        default: true
+
+  "HAD":  # Kandiaquults (4)
+    - code: "HADA"
+      name: "Aeric Kandiaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HADB"
+      name: "Umbric Kandiaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HADC"
+      name: "Plinthic Kandiaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HADD"
+      name: "Typic Kandiaquults"
+      tests:
+        default: true
+
+  "HAE":  # Kanhaplaquults (3)
+    - code: "HAEA"
+      name: "Aeric Kanhaplaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAEB"
+      name: "Lithic Kanhaplaquults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAEC"
+      name: "Typic Kanhaplaquults"
+      tests:
+        default: true
+
+  "HAF":  # Paleaquults (4)
+    - code: "HAFA"
+      name: "Aeric Paleaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAFB"
+      name: "Umbric Paleaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HAFC"
+      name: "Plinthic Paleaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HAFD"
+      name: "Typic Paleaquults"
+      tests:
+        default: true
+
+  "HAG":  # Umbraquults (3)
+    - code: "HAGA"
+      name: "Aeric Umbraquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAGB"
+      name: "Lithic Umbraquults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAGC"
+      name: "Typic Umbraquults"
+      tests:
+        default: true
+
+  "HAH":  # Epiaquults (4)
+    - code: "HAHA"
+      name: "Aeric Epiaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAHB"
+      name: "Lithic Epiaquults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAHC"
+      name: "Plinthic Epiaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HAHD"
+      name: "Typic Epiaquults"
+      tests:
+        default: true
+
+  "HAI":  # Endoaquults (4)
+    - code: "HAIA"
+      name: "Aeric Endoaquults"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "HAIB"
+      name: "Lithic Endoaquults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAIC"
+      name: "Umbric Endoaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HAID"
+      name: "Typic Endoaquults"
+      tests:
+        default: true
+
+  # ====== HUMULTS ======
+
+  "HBA":  # Sombrihumults (2)
+    - code: "HBAA"
+      name: "Lithic Sombrihumults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HBAB"
+      name: "Typic Sombrihumults"
+      tests:
+        default: true
+
+  "HBB":  # Plinthohumults (3)
+    - code: "HBBA"
+      name: "Lithic Plinthohumults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HBBB"
+      name: "Aquic Plinthohumults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HBBC"
+      name: "Typic Plinthohumults"
+      tests:
+        default: true
+
+  "HBC":  # Kandihumults (4)
+    - code: "HBCA"
+      name: "Lithic Kandihumults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HBCB"
+      name: "Aquic Kandihumults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HBCC"
+      name: "Plinthic Kandihumults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HBCD"
+      name: "Typic Kandihumults"
+      tests:
+        default: true
+
+  "HBD":  # Kanhaplohumults (3)
+    - code: "HBDA"
+      name: "Lithic Kanhaplohumults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HBDB"
+      name: "Aquic Kanhaplohumults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HBDC"
+      name: "Typic Kanhaplohumults"
+      tests:
+        default: true
+
+  "HBE":  # Palehumults (3)
+    - code: "HBEA"
+      name: "Aquic Palehumults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HBEB"
+      name: "Plinthic Palehumults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HBEC"
+      name: "Typic Palehumults"
+      tests:
+        default: true
+
+  "HBF":  # Haplohumults (4)
+    - code: "HBFA"
+      name: "Lithic Haplohumults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HBFB"
+      name: "Aquic Haplohumults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HBFC"
+      name: "Andic Haplohumults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HBFD"
+      name: "Typic Haplohumults"
+      tests:
+        default: true
+
+  # ====== UDULTS ======
+
+  "HCA":  # Plinthudults (3)
+    - code: "HCAA"
+      name: "Lithic Plinthudults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCAB"
+      name: "Aquic Plinthudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCAC"
+      name: "Typic Plinthudults"
+      tests:
+        default: true
+
+  "HCB":  # Fragiudults (3)
+    - code: "HCBA"
+      name: "Aquic Fragiudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCBB"
+      name: "Humic Fragiudults"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "HCBC"
+      name: "Typic Fragiudults"
+      tests:
+        default: true
+
+  "HCC":  # Kandiudults (4)
+    - code: "HCCA"
+      name: "Lithic Kandiudults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCCB"
+      name: "Aquic Kandiudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCCC"
+      name: "Plinthic Kandiudults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HCCD"
+      name: "Typic Kandiudults"
+      tests:
+        default: true
+
+  "HCD":  # Kanhapludults (3)
+    - code: "HCDA"
+      name: "Lithic Kanhapludults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCDB"
+      name: "Aquic Kanhapludults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCDC"
+      name: "Typic Kanhapludults"
+      tests:
+        default: true
+
+  "HCE":  # Paleudults (4)
+    - code: "HCEA"
+      name: "Lithic Paleudults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCEB"
+      name: "Aquic Paleudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCEC"
+      name: "Plinthic Paleudults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HCED"
+      name: "Typic Paleudults"
+      tests:
+        default: true
+
+  "HCF":  # Rhodudults (3)
+    - code: "HCFA"
+      name: "Lithic Rhodudults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCFB"
+      name: "Humic Rhodudults"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "HCFC"
+      name: "Typic Rhodudults"
+      tests:
+        default: true
+
+  "HCG":  # Hapludults (5)
+    - code: "HCGA"
+      name: "Lithic Hapludults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HCGB"
+      name: "Aquic Hapludults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HCGC"
+      name: "Andic Hapludults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HCGD"
+      name: "Humic Hapludults"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "HCGE"
+      name: "Typic Hapludults"
+      tests:
+        default: true
+
+  # ====== USTULTS ======
+
+  "HDA":  # Plinthustults (3)
+    - code: "HDAA"
+      name: "Lithic Plinthustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDAB"
+      name: "Aquic Plinthustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDAC"
+      name: "Typic Plinthustults"
+      tests:
+        default: true
+
+  "HDB":  # Kandiustults (3)
+    - code: "HDBA"
+      name: "Lithic Kandiustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDBB"
+      name: "Plinthic Kandiustults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HDBC"
+      name: "Typic Kandiustults"
+      tests:
+        default: true
+
+  "HDC":  # Kanhaplustults (3)
+    - code: "HDCA"
+      name: "Lithic Kanhaplustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDCB"
+      name: "Aquic Kanhaplustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDCC"
+      name: "Typic Kanhaplustults"
+      tests:
+        default: true
+
+  "HDD":  # Paleustults (4)
+    - code: "HDDA"
+      name: "Lithic Paleustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDDB"
+      name: "Aquic Paleustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDDC"
+      name: "Plinthic Paleustults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HDDD"
+      name: "Typic Paleustults"
+      tests:
+        default: true
+
+  "HDE":  # Rhodustults (3)
+    - code: "HDEA"
+      name: "Lithic Rhodustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDEB"
+      name: "Aquic Rhodustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDEC"
+      name: "Typic Rhodustults"
+      tests:
+        default: true
+
+  "HDF":  # Haplustults (4)
+    - code: "HDFA"
+      name: "Lithic Haplustults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HDFB"
+      name: "Aquic Haplustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDFC"
+      name: "Humic Haplustults"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "HDFD"
+      name: "Typic Haplustults"
+      tests:
+        default: true
+
+  # ====== XERULTS ======
+
+  "HEA":  # Palexerults (3)
+    - code: "HEAA"
+      name: "Lithic Palexerults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HEAB"
+      name: "Aquic Palexerults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HEAC"
+      name: "Typic Palexerults"
+      tests:
+        default: true
+
+  "HEB":  # Haploxerults (4)
+    - code: "HEBA"
+      name: "Lithic Haploxerults"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HEBB"
+      name: "Aquic Haploxerults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HEBC"
+      name: "Andic Haploxerults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HEBD"
+      name: "Typic Haploxerults"
+      tests:
+        default: true

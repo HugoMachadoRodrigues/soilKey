@@ -1,0 +1,169 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Ultisols Great Groups -- Cap 15
+# =============================================================
+# 30 GGs total:
+#   Aquults (HA): 9 / Humults (HB): 6 / Udults (HC): 7 /
+#   Ustults (HD): 6 / Xerults (HE): 2
+# =============================================================
+
+great_groups:
+
+  # ---- Aquults (HA) ----
+  "HA":
+    - code: "HAA"
+      name: "Plinthaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HAB"
+      name: "Fragiaquults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "HAC"
+      name: "Albaquults"
+      tests:
+        all_of:
+          - albaquult_qualifying_usda: {}
+    - code: "HAD"
+      name: "Kandiaquults"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "HAE"
+      name: "Kanhaplaquults"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "HAF"
+      name: "Paleaquults"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "HAG"
+      name: "Umbraquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "HAH"
+      name: "Epiaquults"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "HAI"
+      name: "Endoaquults"
+      tests:
+        default: true
+
+  # ---- Humults (HB) ----
+  "HB":
+    - code: "HBA"
+      name: "Sombrihumults"
+      tests:
+        all_of:
+          - sombric_subgroup_usda: {}
+    - code: "HBB"
+      name: "Plinthohumults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HBC"
+      name: "Kandihumults"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "HBD"
+      name: "Kanhaplohumults"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "HBE"
+      name: "Palehumults"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "HBF"
+      name: "Haplohumults"
+      tests:
+        default: true
+
+  # ---- Udults (HC) ----
+  "HC":
+    - code: "HCA"
+      name: "Plinthudults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HCB"
+      name: "Fragiudults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "HCC"
+      name: "Kandiudults"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "HCD"
+      name: "Kanhapludults"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "HCE"
+      name: "Paleudults"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "HCF"
+      name: "Rhodudults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
+    - code: "HCG"
+      name: "Hapludults"
+      tests:
+        default: true
+
+  # ---- Ustults (HD) ----
+  "HD":
+    - code: "HDA"
+      name: "Plinthustults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HDB"
+      name: "Kandiustults"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "HDC"
+      name: "Kanhaplustults"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "HDD"
+      name: "Paleustults"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "HDE"
+      name: "Rhodustults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
+    - code: "HDF"
+      name: "Haplustults"
+      tests:
+        default: true
+
+  # ---- Xerults (HE) ----
+  "HE":
+    - code: "HEA"
+      name: "Palexerults"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "HEB"
+      name: "Haploxerults"
+      tests:
+        default: true
