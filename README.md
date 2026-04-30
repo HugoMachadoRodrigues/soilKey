@@ -426,10 +426,7 @@ If `soilKey` contributes to your work, please cite:
   version   = {0.9.11},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.19930112},
-  url       = {https://github.com/HugoMachadoRodrigues/soilKey},
-  note      = {Concept-DOI (resolves to the latest version);
-                version-specific DOI for v0.9.10 is
-                10.5281/zenodo.19930113.}
+  url       = {https://github.com/HugoMachadoRodrigues/soilKey}
 }
 ```
 
@@ -526,4 +523,4 @@ SOFTWARE.
 
 ---
 
-<sub>**Status**: pre-CRAN, v0.9.11. `R CMD check` returns 0 ERROR / 0 WARNING / 1 NOTE (PROJ.db env-only, present on CRAN's check farm). **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.11 ships `classify_from_documents()` as the high-level VLM one-liner, default Gemma 4 (`gemma4:e4b`) for Ollama, the WoSIS-GraphQL driver (`run_wosis_benchmark_graphql()`) and the first paper-grade external run (12 % top-1 baseline on 100 SA profiles), plus a 1.1 MB `data(ossl_demo_sa)` synthetic OSSL artefact. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (concept) · [10.5281/zenodo.19930113](https://doi.org/10.5281/zenodo.19930113) (v0.9.10). v1.0 will widen the WoSIS attribute coverage, finalise the methodology paper, and submit to CRAN. Roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); per-release changes in [`NEWS.md`](NEWS.md).</sub>
+<sub>**Status**: pre-CRAN, v0.9.11. `R CMD check` returns 0 ERROR / 0 WARNING / 1 NOTE (PROJ.db env-only, present on CRAN's check farm). **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.11 ships `classify_from_documents()` as the high-level VLM one-liner, default Gemma 4 (`gemma4:e4b`) for Ollama, the WoSIS-GraphQL driver (`run_wosis_benchmark_graphql()`) and the first paper-grade external run (12 % top-1 baseline on 100 SA profiles), plus a 1.1 MB `data(ossl_demo_sa)` synthetic OSSL artefact. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). v1.0 will widen the WoSIS attribute coverage, finalise the methodology paper, and submit to CRAN. Roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); per-release changes in [`NEWS.md`](NEWS.md).</sub>
