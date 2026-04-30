@@ -100,15 +100,19 @@ spodosol_usda <- function(pedon) {
 #' Andisols (USDA Cap 6): andic soil properties >= 60% of thickness.
 #' @export
 andisol_usda <- function(pedon) {
-  ap <- andic_properties(pedon)
+  # Refined v0.8.6: uses andisol_qualifying_usda which enforces the
+  # 60% / 60 cm rule (KST 13ed, Ch 6 p 117) instead of just any
+  # andic-property layer.
+  aq <- andisol_qualifying_usda(pedon)
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed)
-  passed <- isTRUE(ap$passed) && !ex
+  passed <- isTRUE(aq$passed) && !ex
   DiagnosticResult$new(
     name = "andisol_usda", passed = passed,
-    layers = ap$layers, evidence = list(andic = ap, prior_order = ex),
-    missing = ap$missing,
+    layers = aq$layers,
+    evidence = list(andisol_qualifying = aq, prior_order = ex),
+    missing = aq$missing,
     reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 6 Andisols (p 117)"
   )
 }

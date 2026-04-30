@@ -1,0 +1,186 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Andisols Great Groups -- Cap 6
+# =============================================================
+# 31 GGs total:
+#   Aquands  (DA): 8
+#   Gelands  (DB): 1
+#   Cryands  (DC): 6
+#   Torrands (DD): 3
+#   Xerands  (DE): 3
+#   Vitrands (DF): 2
+#   Ustands  (DG): 2
+#   Udands   (DH): 6
+# =============================================================
+
+great_groups:
+
+  # ---- Aquands (DA) ----
+  "DA":
+    - code: "DAA"
+      name: "Gelaquands"
+      tests:
+        all_of:
+          - str_gelic_usda: {}
+    - code: "DAB"
+      name: "Cryaquands"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "DAC"
+      name: "Placaquands"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "DAD"
+      name: "Duraquands"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "DAE"
+      name: "Vitraquands"
+      tests:
+        all_of:
+          - vitrand_qualifying_usda: {}
+    - code: "DAF"
+      name: "Melanaquands"
+      tests:
+        all_of:
+          - melanic_andisol_usda: {}
+    - code: "DAG"
+      name: "Epiaquands"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "DAH"
+      name: "Endoaquands"
+      tests:
+        default: true
+
+  # ---- Gelands (DB) ----
+  "DB":
+    - code: "DBA"
+      name: "Vitrigelands"
+      tests:
+        default: true
+
+  # ---- Cryands (DC) ----
+  "DC":
+    - code: "DCA"
+      name: "Duricryands"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "DCB"
+      name: "Hydrocryands"
+      tests:
+        all_of:
+          - hydric_andisol_usda: {}
+    - code: "DCC"
+      name: "Melanocryands"
+      tests:
+        all_of:
+          - melanic_andisol_usda: {}
+    - code: "DCD"
+      name: "Fulvicryands"
+      tests:
+        all_of:
+          - fulvic_andisol_usda: {}
+    - code: "DCE"
+      name: "Vitricryands"
+      tests:
+        all_of:
+          - vitrand_qualifying_usda: {}
+    - code: "DCF"
+      name: "Haplocryands"
+      tests:
+        default: true
+
+  # ---- Torrands (DD) ----
+  "DD":
+    - code: "DDA"
+      name: "Duritorrands"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "DDB"
+      name: "Vitritorrands"
+      tests:
+        all_of:
+          - vitrand_qualifying_usda: {}
+    - code: "DDC"
+      name: "Haplotorrands"
+      tests:
+        default: true
+
+  # ---- Xerands (DE) ----
+  "DE":
+    - code: "DEA"
+      name: "Vitrixerands"
+      tests:
+        all_of:
+          - vitrand_qualifying_usda: {}
+    - code: "DEB"
+      name: "Melanoxerands"
+      tests:
+        all_of:
+          - melanic_andisol_usda: {}
+    - code: "DEC"
+      name: "Haploxerands"
+      tests:
+        default: true
+
+  # ---- Vitrands (DF) ----
+  "DF":
+    - code: "DFA"
+      name: "Ustivitrands"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "DFB"
+      name: "Udivitrands"
+      tests:
+        default: true
+
+  # ---- Ustands (DG) ----
+  "DG":
+    - code: "DGA"
+      name: "Durustands"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "DGB"
+      name: "Haplustands"
+      tests:
+        default: true
+
+  # ---- Udands (DH) ----
+  "DH":
+    - code: "DHA"
+      name: "Placudands"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "DHB"
+      name: "Durudands"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "DHC"
+      name: "Hydrudands"
+      tests:
+        all_of:
+          - hydric_andisol_usda: {}
+    - code: "DHD"
+      name: "Melanudands"
+      tests:
+        all_of:
+          - melanic_andisol_usda: {}
+    - code: "DHE"
+      name: "Fulvudands"
+      tests:
+        all_of:
+          - fulvic_andisol_usda: {}
+    - code: "DHF"
+      name: "Hapludands"
+      tests:
+        default: true
