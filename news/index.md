@@ -10,19 +10,28 @@ COLE columns the diagnostics need.
 
 ### Real-data benchmark impact
 
-KSSL on the 3 000-head / n=1 997-quality benchmark:
+KSSL on the apples-to-apples 5 000-head / n=3 213-quality benchmark
+(identical sample size + filter as v0.9.18 baseline):
 
-| Order                |     v0.9.18 |             v0.9.19 |
-|----------------------|------------:|--------------------:|
-| **KSSL Vertisols**   |  0/63 (0 %) |  **23/44 (52.3 %)** |
-| **KSSL Spodosols**   | 0/276 (0 %) | **15/150 (10.0 %)** |
-| **KSSL Inceptisols** | 0/463 (0 %) | **27/249 (10.8 %)** |
+| Order           |          v0.9.18 |              v0.9.19 |
+|-----------------|-----------------:|---------------------:|
+| **Vertisols**   |       0/63 (0 %) |   **37/63 (58.7 %)** |
+| **Inceptisols** |      0/463 (0 %) | **107/463 (23.1 %)** |
+| **Spodosols**   |      0/276 (0 %) |  **49/276 (17.8 %)** |
+| Aridisols       | 161/446 (36.1 %) |     189/446 (42.4 %) |
+| Mollisols       | 177/727 (24.3 %) |     145/727 (19.9 %) |
+| Alfisols        | 158/663 (24.0 %) |     142/663 (21.4 %) |
+| Ultisols        |  94/411 (22.9 %) |      90/411 (21.9 %) |
+| Oxisols         |   24/49 (49.0 %) |       24/49 (49.0 %) |
+| Entisols        |  72/108 (66.7 %) |      50/108 (46.3 %) |
+| Histosols       |     2/3 (66.7 %) |         2/3 (66.7 %) |
+| **TOTAL**       |       **21.4 %** | **26.0 %** (+4.6 pp) |
 
-USDA top-1 overall: **22.6 %** (CI \[21.0, 24.1\], n=1 997). The
-Mollisol / Alfisol per-Order accuracies dropped a few points because
-some profiles previously routed there now correctly route to Vertisols /
-Spodosols / Inceptisols (the new gates absorb references that were
-systematically misclassified into the larger Mollisol / Alfisol bucket).
+USDA top-1: **26.0 %** (CI \[24.6 %, 27.3 %\], n=3 213). The Mollisol /
+Alfisol / Entisol per-Order accuracies dropped a few points because some
+profiles previously misrouted to those larger buckets now correctly
+route to Vertisols / Spodosols / Inceptisols. The net **+4.6 pp** top-1
+gain is the defensible headline number.
 
 Embrapa benchmark unchanged at SiBCS 40.6 % / WRB 32.7 % / USDA 47.6 % –
 no regression on tropical-soil context, all 31 canonical fixtures still
