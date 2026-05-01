@@ -11,7 +11,7 @@ munsell_value_moist + 1."><meta property="og:image" content="https://hugomachado
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.18</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ munsell_value_moist + 1."><meta property="og:image" content="https://hugomachado
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Mollic Munsell color test (WRB 2022)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.17/R/utils-diagnostic-tests.R" class="external-link"><code>R/utils-diagnostic-tests.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/R/utils-diagnostic-tests.R" class="external-link"><code>R/utils-diagnostic-tests.R</code></a></small>
       <div class="d-none name"><code>test_mollic_color.Rd</code></div>
     </div>
 
@@ -65,7 +65,8 @@ munsell_value_moist + 1."><meta property="og:image" content="https://hugomachado
 <span>  max_value_moist <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  max_chroma_moist <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  max_value_dry <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  candidate_layers <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  candidate_layers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  allow_oc_inference <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,6 +92,12 @@ munsell_value_moist + 1."><meta property="og:image" content="https://hugomachado
 
 <dt id="arg-candidate-layers">candidate_layers<a class="anchor" aria-label="anchor" href="#arg-candidate-layers"></a></dt>
 <dd><p>Optional restriction.</p></dd>
+
+
+<dt id="arg-allow-oc-inference">allow_oc_inference<a class="anchor" aria-label="anchor" href="#arg-allow-oc-inference"></a></dt>
+<dd><p>If <code>TRUE</code> (default), accept OC \&gt;=
+1.5 % in a surface A horizon as evidence of dark colour
+when both moist and dry Munsell are missing.</p></dd>
 
 </dl></div>
 

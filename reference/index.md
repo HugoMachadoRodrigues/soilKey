@@ -2148,6 +2148,8 @@ label-normalisation helpers (v0.9.16).
 - [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
   : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
   classification
+- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
+  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
 - [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
   : Load EU-LUCAS / ESDB pedons with reference WRB classification
 - [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
@@ -2452,6 +2454,9 @@ plus auxiliaries) used in the test suite.
 - [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
   : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
   classification
+
+- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
+  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
 
 - [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
   : Load EU-LUCAS / ESDB pedons with reference WRB classification

@@ -12,7 +12,8 @@ test_mollic_color(
   max_value_moist = 3,
   max_chroma_moist = 3,
   max_value_dry = 5,
-  candidate_layers = NULL
+  candidate_layers = NULL,
+  allow_oc_inference = TRUE
 )
 ```
 
@@ -37,3 +38,8 @@ test_mollic_color(
 - candidate_layers:
 
   Optional restriction.
+
+- allow_oc_inference:
+
+  If `TRUE` (default), accept OC \\= 1.5 % in a surface A horizon as
+  evidence of dark colour when both moist and dry Munsell are missing.

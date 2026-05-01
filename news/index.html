@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.18</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,167 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.17/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.18" id="soilkey-0918-2026-05-01">soilKey 0.9.18 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0918-2026-05-01"></a></h2>
+<p>The “missing-data resilience + KSSL unlocked” release. Three layered improvements over v0.9.17:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Mollic detection</strong> is no longer brittle to missing Munsell. The color test now falls back to dry Munsell only, then to OC-inferred “dark” when both Munsell columns are absent.</li>
+<li>
+<strong>Nitisol detection</strong> loses its hard veto on missing <code>structure_type</code>, gains an Fe-DCB inference path (Bt designation
+<ul><li>CEC/clay 8-36 + no albic E above), and the FEBR loader now maps the legacy “NITOSOL” / “GREYZEM” / “AGRISOL” spellings to the canonical WRB 2022 RSG names.</li>
+</ul></li>
+<li>
+<strong>KSSL gpkg loader</strong> lands. The new <code><a href="../reference/load_kssl_pedons_gpkg.html">load_kssl_pedons_gpkg()</a></code> reads the <code>ncss_labdata.gpkg</code> GeoPackage (joining <code>lab_combine_nasis_ncss</code> / <code>lab_site</code> / <code>lab_layer</code> / <code>lab_chemical_properties</code> / <code>lab_physical_properties</code>) and yields a list of <code>PedonRecord</code>s ready for benchmarking. First benchmark on 666 KSSL pedons reports USDA top-1 = <strong>23.7 %</strong> (CI [20.8 %, 26.7 %]) — the first US-context external validation number for soilKey.</li>
+</ol><div class="section level3">
+<h3 id="real-data-benchmark-impact-0-9-18">Real-data benchmark impact<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-0-9-18"></a></h3>
+<table class="table"><thead><tr><th>Dataset / system</th>
+<th align="right">v0.9.16</th>
+<th align="right">v0.9.17</th>
+<th align="right">v0.9.18</th>
+</tr></thead><tbody><tr><td>Embrapa FEBR / USDA</td>
+<td align="right">34.0 %</td>
+<td align="right">46.4 %</td>
+<td align="right"><strong>47.6 %</strong></td>
+</tr><tr><td>Embrapa FEBR / WRB</td>
+<td align="right">21.6 %</td>
+<td align="right">25.5 %</td>
+<td align="right"><strong>32.7 %</strong></td>
+</tr><tr><td>Embrapa FEBR / SiBCS</td>
+<td align="right">40.6 %</td>
+<td align="right">40.6 %</td>
+<td align="right">40.6 %</td>
+</tr><tr><td>
+<strong>KSSL / USDA</strong> (n=3213)</td>
+<td align="right">n/a</td>
+<td align="right">n/a</td>
+<td align="right">
+<strong>21.4 %</strong> (CI [19.9, 22.7])</td>
+</tr></tbody></table><p>Per-Order changes that matter on Embrapa FEBR:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.17</th>
+<th align="right">v0.9.18</th>
+</tr></thead><tbody><tr><td>USDA Mollisols</td>
+<td align="right">0/34 (0 %)</td>
+<td align="right"><strong>9/34 (26.5 %)</strong></td>
+</tr><tr><td>WRB Nitisols</td>
+<td align="right">0/14 (0 %)</td>
+<td align="right"><strong>7/15 (46.7 %)</strong></td>
+</tr><tr><td>WRB Acrisols</td>
+<td align="right">4/10 (40 %)</td>
+<td align="right">4/11 (36.4 %)</td>
+</tr><tr><td>WRB Ferralsols</td>
+<td align="right">22/22 (100 %)</td>
+<td align="right">22/22 (100 %)</td>
+</tr></tbody></table><p>KSSL per-Order on the 3 213-pedon production run:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">n</th>
+<th align="right">correct</th>
+<th align="right">accuracy</th>
+</tr></thead><tbody><tr><td>Histosols</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right"><strong>66.7 %</strong></td>
+</tr><tr><td>Entisols</td>
+<td align="right">108</td>
+<td align="right">72</td>
+<td align="right"><strong>66.7 %</strong></td>
+</tr><tr><td>Oxisols</td>
+<td align="right">49</td>
+<td align="right">24</td>
+<td align="right">49.0 %</td>
+</tr><tr><td>Aridisols</td>
+<td align="right">446</td>
+<td align="right">161</td>
+<td align="right">36.1 %</td>
+</tr><tr><td>Mollisols</td>
+<td align="right">727</td>
+<td align="right">177</td>
+<td align="right">24.3 %</td>
+</tr><tr><td>Alfisols</td>
+<td align="right">663</td>
+<td align="right">158</td>
+<td align="right">24.0 %</td>
+</tr><tr><td>Ultisols</td>
+<td align="right">411</td>
+<td align="right">94</td>
+<td align="right">22.9 %</td>
+</tr><tr><td><strong>Spodosols</strong></td>
+<td align="right">276</td>
+<td align="right"><strong>0</strong></td>
+<td align="right"><strong>0 %</strong></td>
+</tr><tr><td><strong>Inceptisols</strong></td>
+<td align="right">463</td>
+<td align="right"><strong>0</strong></td>
+<td align="right"><strong>0 %</strong></td>
+</tr><tr><td><strong>Vertisols</strong></td>
+<td align="right">63</td>
+<td align="right"><strong>0</strong></td>
+<td align="right"><strong>0 %</strong></td>
+</tr><tr><td><strong>Andisols</strong></td>
+<td align="right">4</td>
+<td align="right"><strong>0</strong></td>
+<td align="right"><strong>0 %</strong></td>
+</tr></tbody></table><p>Spodosols and Inceptisols are the next-priority KSSL failure modes – both 0 % despite n &gt;= 50 each. Inceptisol is the canonical “residual cambic” Order; Spodosol detection requires the spodic horizon (Bs / Bh) which we have implemented but appears to be strict on missing data. v0.9.19 candidates.</p>
+</div>
+<div class="section level3">
+<h3 id="code-changes-0-9-18">Code changes<a class="anchor" aria-label="anchor" href="#code-changes-0-9-18"></a></h3>
+<div class="section level4">
+<h4 id="test_mollic_color--three-path-fallback-0-9-18">
+<code>test_mollic_color()</code> – three-path fallback<a class="anchor" aria-label="anchor" href="#test_mollic_color--three-path-fallback-0-9-18"></a></h4>
+<ul><li>
+<strong>Path 1 (canonical)</strong>: <code>value_moist &lt;= 3</code> AND <code>chroma_moist &lt;= 3</code> AND (dry path: <code>value_dry &lt;= 5</code>, or <code>value_moist + 1 &lt;= 5</code> if dry is missing). Lab-grade profiles use this path verbatim.</li>
+<li>
+<strong>Path 2 (v0.9.18)</strong>: only dry Munsell available. Tests <code>value_dry &lt;= 5</code> plus <code>chroma_dry</code> (or moist) <code>&lt;= 3</code> if any chroma evidence is present.</li>
+<li>
+<strong>Path 3 (v0.9.18)</strong>: no Munsell at all. When <code>oc_pct &gt;= 1.5</code> in a surface A horizon, the colour is inferred dark (Embrapa Manual de Metodos 2017 + KST 13ed Ch 3 commentary – every Mollic / Phaeozemic / Chernozemic surface horizon reported in tropical pedon descriptions has OC &gt;&gt; 1.5 in the A1).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="test_mollic_base_saturation--three-path-fallback-0-9-18">
+<code>test_mollic_base_saturation()</code> – three-path fallback<a class="anchor" aria-label="anchor" href="#test_mollic_base_saturation--three-path-fallback-0-9-18"></a></h4>
+<ul><li>Path 1 (canonical): measured <code>bs_pct &gt;= 50</code>.</li>
+<li>Path 2: computed from sum-of-cations + CEC when both available (<code>(Ca + Mg + K + Na) / CEC * 100</code>).</li>
+<li>Path 3: inferred from <code>al_sat_pct &lt; 20</code> OR <code>ph_h2o &gt;= 5.8</code>.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="test_polyhedral_or_nutty_structure--never-gates-0-9-18">
+<code>test_polyhedral_or_nutty_structure()</code> – never gates<a class="anchor" aria-label="anchor" href="#test_polyhedral_or_nutty_structure--never-gates-0-9-18"></a></h4>
+<p>Previously returned <code>passed = FALSE</code> when structure_type was reported but did not match polyhedral / nutty / sub-angular blocky. Now returns <code>passed = NA</code> – the supplementary structure test no longer hard-vetoes the diagnostic. Only the gradual-clay-decrease test still has veto power (it requires measured clay data showing a &gt; 8 percentage-point drop, which IS mineralogically incompatible with a nitic horizon).</p>
+</div>
+<div class="section level4">
+<h4 id="nitic_horizon--fe-dcb-inference-path-0-9-18">
+<code>nitic_horizon()</code> – Fe-DCB inference path<a class="anchor" aria-label="anchor" href="#nitic_horizon--fe-dcb-inference-path-0-9-18"></a></h4>
+<p>When <code>fe_dcb_pct</code> is missing across all clay-qualifying layers AND the profile has a Bt designation AND CEC/clay sits in [8, 36] cmol/kg-clay AND there is no albic E horizon above the Bt, the gate accepts <code>fe_dcb</code> test as TRUE on inference grounds. The no-albic-E gate keeps the canonical Acrisol / Lixisol / Alisol fixtures (which all have an E horizon) on their proper paths.</p>
+</div>
+<div class="section level4">
+<h4 id="normalise_febr_wrb--legacy-spelling-map-0-9-18">
+<code>normalise_febr_wrb()</code> – legacy spelling map<a class="anchor" aria-label="anchor" href="#normalise_febr_wrb--legacy-spelling-map-0-9-18"></a></h4>
+<p>Maps the FEBR / pre-2014 RSG spellings to WRB 2022 4th-edition names: NITOSOL -&gt; Nitisols, GREYZEM -&gt; Phaeozems, AGRISOL -&gt; Acrisols, LUVISSOL -&gt; Luvisols, etc. Also handles the “VERMELHO- AMARELO” / “NATRAQUOLL” miscellany that occasionally appears as a qualifier-only or USDA-borrowed value.</p>
+</div>
+<div class="section level4">
+<h4 id="load_kssl_pedons_gpkggpkg-head-require_b_horizon-verbose-0-9-18"><code>load_kssl_pedons_gpkg(gpkg, head, require_b_horizon, verbose)</code><a class="anchor" aria-label="anchor" href="#load_kssl_pedons_gpkggpkg-head-require_b_horizon-verbose-0-9-18"></a></h4>
+<p>New function. Reads the NCSS Lab Data Mart GeoPackage and joins the five layer / site / pedon / chemistry / physics tables into a list of PedonRecord objects with <code>site$reference_usda</code> set from <code>samp_taxorder</code>. Designed for scale: <code>head = N</code> for parser validation; full run handles all 36 090 classified pedons in \u2248 5 minutes per N pedon batch.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="tests--cran-0-9-18">Tests + CRAN<a class="anchor" aria-label="anchor" href="#tests--cran-0-9-18"></a></h3>
+<ul><li>2 827 testthat expectations passing, 0 failed.</li>
+<li>31/31 canonical fixtures still classify to their intended RSG.</li>
+<li>
+<code>R CMD check --as-cran</code> with PROJ env: Status: OK.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="what-is-not-fixed-yet-0-9-18">What is NOT fixed yet<a class="anchor" aria-label="anchor" href="#what-is-not-fixed-yet-0-9-18"></a></h3>
+<ul><li>
+<strong>Spodosols (KSSL 0/57)</strong> – spodic horizon detection too strict.</li>
+<li>
+<strong>Inceptisols (KSSL 0/80)</strong> – needs the cambic-residual Order catch-all logic relaxed.</li>
+<li>
+<strong>EU-LUCAS WRB labels</strong> – the country folders ship JPG photos for land-cover classification, not the WRB-coded soil archive. Still needs ESDB profile join.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.17" id="soilkey-0917-2026-05-01">soilKey 0.9.17 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0917-2026-05-01"></a></h2>
 <p>The “argillic-prefer-over-kandic” release. Fixes the single biggest failure mode the v0.9.16 benchmark exposed: the USDA Oxisol gate did not exclude profiles with an argillic horizon overlying the oxic, so all 270 Embrapa FEBR Ultisols were misclassified (mostly to Oxisols).</p>
