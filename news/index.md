@@ -38,28 +38,28 @@ phorizon with the largest `(hzdept, hzdepb)` overlap. NASIS also
 provides richer designations (`hzname`) – when the lab gpkg designation
 is NA, the NASIS one is used.
 
-### Real-data benchmark impact (KSSL apples-to-apples, 3 000-head)
+### Real-data benchmark impact (KSSL apples-to-apples, 5 000-head)
 
 Both runs filter to the same quality criteria (clay + lab + B horizon).
-v0.9.19 lab-only run: n=1 997 quality. v0.9.20 lab+NASIS run: n=2 002
-quality (more pedons pass because NASIS supplies designation when the
-lab gpkg has NA).
+v0.9.19 lab-only run: n=3 213 quality. v0.9.20 lab+NASIS run: n=3 218
+quality (essentially identical sample).
 
 | Order           |      v0.9.19 lab |    v0.9.20 lab+NASIS |            Δ |
 |-----------------|-----------------:|---------------------:|-------------:|
-| **Inceptisols** |  10.8 % (27/249) | **47.2 % (118/250)** | **+36.4 pp** |
-| **Vertisols**   |   52.3 % (23/44) |   **65.2 % (30/46)** | **+12.9 pp** |
-| **Spodosols**   |  10.0 % (15/150) |  **26.0 % (39/150)** | **+16.0 pp** |
-| Aridisols       | 43.4 % (121/279) |     46.6 % (130/279) |         +3.2 |
-| Mollisols       |  18.4 % (93/505) |     22.2 % (112/505) |         +3.8 |
-| Alfisols        |  18.6 % (78/420) |      19.4 % (82/422) |         +0.8 |
-| Ultisols        |  20.8 % (56/269) |      20.4 % (55/269) |         -0.4 |
-| Entisols        |   54.0 % (34/63) |       42.9 % (27/63) |        -11.1 |
-| Oxisols         |    28.6 % (4/14) |        28.6 % (4/14) |            0 |
+| **Inceptisols** | 23.1 % (107/463) | **46.3 % (215/464)** | **+23.2 pp** |
+| **Vertisols**   |   58.7 % (37/63) |   **70.8 % (46/65)** | **+12.1 pp** |
+| **Spodosols**   |  17.8 % (49/276) |  **29.0 % (80/276)** | **+11.2 pp** |
+| Mollisols       | 19.9 % (145/727) |     25.0 % (182/727) |         +5.1 |
+| Aridisols       | 42.4 % (189/446) |     46.6 % (208/446) |         +4.2 |
+| Alfisols        | 21.4 % (142/663) |     22.6 % (150/665) |         +1.2 |
+| Ultisols        |  21.9 % (90/411) |      21.7 % (89/411) |         -0.2 |
+| Entisols        |  46.3 % (50/108) |      36.1 % (39/108) |        -10.2 |
+| Oxisols         |   49.0 % (24/49) |       49.0 % (24/49) |            0 |
+| Histosols       |     66.7 % (2/3) |         66.7 % (2/3) |            0 |
 | Andisols        |        0/4 (0 %) |            0/4 (0 %) |            0 |
-| **TOTAL**       |       **22.6 %** |           **29.8 %** |  **+7.2 pp** |
+| **TOTAL**       |       **26.0 %** |           **32.2 %** |  **+6.2 pp** |
 
-USDA top-1: **29.8 %** (CI \[27.5, 32.0\], n=2 002).
+USDA top-1: **32.2 %** (CI \[30.7, 33.6\], n=3 218).
 
 ### Why it works scientifically
 

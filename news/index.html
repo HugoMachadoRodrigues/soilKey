@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.20/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -71,57 +71,61 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20">Real-data benchmark impact (KSSL apples-to-apples, 3 000-head)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20"></a></h3>
-<p>Both runs filter to the same quality criteria (clay + lab + B horizon). v0.9.19 lab-only run: n=1 997 quality. v0.9.20 lab+NASIS run: n=2 002 quality (more pedons pass because NASIS supplies designation when the lab gpkg has NA).</p>
+<h3 id="real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20">Real-data benchmark impact (KSSL apples-to-apples, 5 000-head)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20"></a></h3>
+<p>Both runs filter to the same quality criteria (clay + lab + B horizon). v0.9.19 lab-only run: n=3 213 quality. v0.9.20 lab+NASIS run: n=3 218 quality (essentially identical sample).</p>
 <table class="table"><colgroup><col width="25%"><col width="31%"><col width="35%"><col width="7%"></colgroup><thead><tr><th>Order</th>
 <th align="right">v0.9.19 lab</th>
 <th align="right">v0.9.20 lab+NASIS</th>
 <th align="right">Δ</th>
 </tr></thead><tbody><tr><td><strong>Inceptisols</strong></td>
-<td align="right">10.8 % (27/249)</td>
-<td align="right"><strong>47.2 % (118/250)</strong></td>
-<td align="right"><strong>+36.4 pp</strong></td>
+<td align="right">23.1 % (107/463)</td>
+<td align="right"><strong>46.3 % (215/464)</strong></td>
+<td align="right"><strong>+23.2 pp</strong></td>
 </tr><tr><td><strong>Vertisols</strong></td>
-<td align="right">52.3 % (23/44)</td>
-<td align="right"><strong>65.2 % (30/46)</strong></td>
-<td align="right"><strong>+12.9 pp</strong></td>
+<td align="right">58.7 % (37/63)</td>
+<td align="right"><strong>70.8 % (46/65)</strong></td>
+<td align="right"><strong>+12.1 pp</strong></td>
 </tr><tr><td><strong>Spodosols</strong></td>
-<td align="right">10.0 % (15/150)</td>
-<td align="right"><strong>26.0 % (39/150)</strong></td>
-<td align="right"><strong>+16.0 pp</strong></td>
-</tr><tr><td>Aridisols</td>
-<td align="right">43.4 % (121/279)</td>
-<td align="right">46.6 % (130/279)</td>
-<td align="right">+3.2</td>
+<td align="right">17.8 % (49/276)</td>
+<td align="right"><strong>29.0 % (80/276)</strong></td>
+<td align="right"><strong>+11.2 pp</strong></td>
 </tr><tr><td>Mollisols</td>
-<td align="right">18.4 % (93/505)</td>
-<td align="right">22.2 % (112/505)</td>
-<td align="right">+3.8</td>
+<td align="right">19.9 % (145/727)</td>
+<td align="right">25.0 % (182/727)</td>
+<td align="right">+5.1</td>
+</tr><tr><td>Aridisols</td>
+<td align="right">42.4 % (189/446)</td>
+<td align="right">46.6 % (208/446)</td>
+<td align="right">+4.2</td>
 </tr><tr><td>Alfisols</td>
-<td align="right">18.6 % (78/420)</td>
-<td align="right">19.4 % (82/422)</td>
-<td align="right">+0.8</td>
+<td align="right">21.4 % (142/663)</td>
+<td align="right">22.6 % (150/665)</td>
+<td align="right">+1.2</td>
 </tr><tr><td>Ultisols</td>
-<td align="right">20.8 % (56/269)</td>
-<td align="right">20.4 % (55/269)</td>
-<td align="right">-0.4</td>
+<td align="right">21.9 % (90/411)</td>
+<td align="right">21.7 % (89/411)</td>
+<td align="right">-0.2</td>
 </tr><tr><td>Entisols</td>
-<td align="right">54.0 % (34/63)</td>
-<td align="right">42.9 % (27/63)</td>
-<td align="right">-11.1</td>
+<td align="right">46.3 % (50/108)</td>
+<td align="right">36.1 % (39/108)</td>
+<td align="right">-10.2</td>
 </tr><tr><td>Oxisols</td>
-<td align="right">28.6 % (4/14)</td>
-<td align="right">28.6 % (4/14)</td>
+<td align="right">49.0 % (24/49)</td>
+<td align="right">49.0 % (24/49)</td>
+<td align="right">0</td>
+</tr><tr><td>Histosols</td>
+<td align="right">66.7 % (2/3)</td>
+<td align="right">66.7 % (2/3)</td>
 <td align="right">0</td>
 </tr><tr><td>Andisols</td>
 <td align="right">0/4 (0 %)</td>
 <td align="right">0/4 (0 %)</td>
 <td align="right">0</td>
 </tr><tr><td><strong>TOTAL</strong></td>
-<td align="right"><strong>22.6 %</strong></td>
-<td align="right"><strong>29.8 %</strong></td>
-<td align="right"><strong>+7.2 pp</strong></td>
-</tr></tbody></table><p>USDA top-1: <strong>29.8 %</strong> (CI [27.5, 32.0], n=2 002).</p>
+<td align="right"><strong>26.0 %</strong></td>
+<td align="right"><strong>32.2 %</strong></td>
+<td align="right"><strong>+6.2 pp</strong></td>
+</tr></tbody></table><p>USDA top-1: <strong>32.2 %</strong> (CI [30.7, 33.6], n=3 218).</p>
 </div>
 <div class="section level3">
 <h3 id="why-it-works-scientifically-0-9-20">Why it works scientifically<a class="anchor" aria-label="anchor" href="#why-it-works-scientifically-0-9-20"></a></h3>
