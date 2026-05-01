@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.19</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.20</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,100 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.20" id="soilkey-0920-2026-05-01">soilKey 0.9.20 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0920-2026-05-01"></a></h2>
+<p>The “field morphology unlocks the lab” release. Integrates the NASIS Morphological export (<code>NASIS_Morphological_09142021.sqlite</code>, 562 MB, 431 415 phorizon rows) with the existing NCSS Lab Data Mart GeoPackage. The lab gpkg has chemistry + physics; the NASIS sqlite has Munsell colour, structure grade, clay films, slickensides, cracks, and surveyor-identified diagnostic horizons. Joining them on <code>peiid</code> (Pedon Element ID) unlocks every diagnostic gate that needed field morphology to fire.</p>
+<div class="section level3">
+<h3 id="new-code-0-9-20">New code<a class="anchor" aria-label="anchor" href="#new-code-0-9-20"></a></h3>
+<div class="section level4">
+<h4 id="load_kssl_pedons_with_nasisgpkg-sqlite-head--0-9-20"><code>load_kssl_pedons_with_nasis(gpkg, sqlite, head, ...)</code><a class="anchor" aria-label="anchor" href="#load_kssl_pedons_with_nasisgpkg-sqlite-head--0-9-20"></a></h4>
+<p>Reads the lab gpkg via the existing <code><a href="../reference/load_kssl_pedons_gpkg.html">load_kssl_pedons_gpkg()</a></code>, then joins each pedon’s lab horizons with the matching NASIS phorizon by <code>(peiid, hzdept, hzdepb)</code>, and pulls into the canonical horizon schema:</p>
+<ul><li>
+<code>phcolor</code> -&gt; <code>munsell_hue_moist</code> / <code>munsell_value_moist</code> / <code>munsell_chroma_moist</code> / <code>munsell_*_dry</code> (528 421 rows)</li>
+<li>
+<code>phstructure</code> -&gt; <code>structure_grade</code> / <code>structure_size</code> / <code>structure_type</code> (lowercase-normalised; 421 881 rows)</li>
+<li>
+<code>phpvsf</code> (clay films) -&gt; <code>clay_films_amount</code> (mapped from <code>pvsfpct</code> to soilKey’s qualitative tiers; 109 793 clay-film rows)</li>
+<li>
+<code>phpvsf</code> (slickensides pedogenic / non-intersecting) -&gt; <code>slickensides</code> (4 275 rows)</li>
+<li>
+<code>phcracks</code> -&gt; <code>cracks_width_cm</code> / <code>cracks_depth_cm</code> (170 rows)</li>
+<li>
+<code>pediagfeatures</code> -&gt; <code>site$nasis_diagnostic_features</code> (64 169 rows – the surveyor-identified diagnostic horizons; informational per-site list, not currently fed into the deterministic key)</li>
+</ul><p>The matching is depth-overlap-based: for each lab layer, find the NASIS phorizon with the largest <code>(hzdept, hzdepb)</code> overlap. NASIS also provides richer designations (<code>hzname</code>) – when the lab gpkg designation is NA, the NASIS one is used.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20">Real-data benchmark impact (KSSL apples-to-apples, 3 000-head)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-kssl-apples-to-apples-head-0-9-20"></a></h3>
+<p>Both runs filter to the same quality criteria (clay + lab + B horizon). v0.9.19 lab-only run: n=1 997 quality. v0.9.20 lab+NASIS run: n=2 002 quality (more pedons pass because NASIS supplies designation when the lab gpkg has NA).</p>
+<table class="table"><colgroup><col width="25%"><col width="31%"><col width="35%"><col width="7%"></colgroup><thead><tr><th>Order</th>
+<th align="right">v0.9.19 lab</th>
+<th align="right">v0.9.20 lab+NASIS</th>
+<th align="right">Δ</th>
+</tr></thead><tbody><tr><td><strong>Inceptisols</strong></td>
+<td align="right">10.8 % (27/249)</td>
+<td align="right"><strong>47.2 % (118/250)</strong></td>
+<td align="right"><strong>+36.4 pp</strong></td>
+</tr><tr><td><strong>Vertisols</strong></td>
+<td align="right">52.3 % (23/44)</td>
+<td align="right"><strong>65.2 % (30/46)</strong></td>
+<td align="right"><strong>+12.9 pp</strong></td>
+</tr><tr><td><strong>Spodosols</strong></td>
+<td align="right">10.0 % (15/150)</td>
+<td align="right"><strong>26.0 % (39/150)</strong></td>
+<td align="right"><strong>+16.0 pp</strong></td>
+</tr><tr><td>Aridisols</td>
+<td align="right">43.4 % (121/279)</td>
+<td align="right">46.6 % (130/279)</td>
+<td align="right">+3.2</td>
+</tr><tr><td>Mollisols</td>
+<td align="right">18.4 % (93/505)</td>
+<td align="right">22.2 % (112/505)</td>
+<td align="right">+3.8</td>
+</tr><tr><td>Alfisols</td>
+<td align="right">18.6 % (78/420)</td>
+<td align="right">19.4 % (82/422)</td>
+<td align="right">+0.8</td>
+</tr><tr><td>Ultisols</td>
+<td align="right">20.8 % (56/269)</td>
+<td align="right">20.4 % (55/269)</td>
+<td align="right">-0.4</td>
+</tr><tr><td>Entisols</td>
+<td align="right">54.0 % (34/63)</td>
+<td align="right">42.9 % (27/63)</td>
+<td align="right">-11.1</td>
+</tr><tr><td>Oxisols</td>
+<td align="right">28.6 % (4/14)</td>
+<td align="right">28.6 % (4/14)</td>
+<td align="right">0</td>
+</tr><tr><td>Andisols</td>
+<td align="right">0/4 (0 %)</td>
+<td align="right">0/4 (0 %)</td>
+<td align="right">0</td>
+</tr><tr><td><strong>TOTAL</strong></td>
+<td align="right"><strong>22.6 %</strong></td>
+<td align="right"><strong>29.8 %</strong></td>
+<td align="right"><strong>+7.2 pp</strong></td>
+</tr></tbody></table><p>USDA top-1: <strong>29.8 %</strong> (CI [27.5, 32.0], n=2 002).</p>
+</div>
+<div class="section level3">
+<h3 id="why-it-works-scientifically-0-9-20">Why it works scientifically<a class="anchor" aria-label="anchor" href="#why-it-works-scientifically-0-9-20"></a></h3>
+<p>The lab gpkg lacks every field morphology variable that KST 13ed Ch 3 lists as “the diagnostic features that disambiguate Order membership when chemistry alone is ambiguous”:</p>
+<ul><li>
+<strong>Mollic epipedon</strong> (KST 13ed Ch 3 p 15): requires Munsell value moist &lt;= 3 + chroma &lt;= 3. Lab gpkg has zero Munsell.</li>
+<li>
+<strong>Argillic horizon</strong> (KST 13ed Ch 3 p 4): requires “evidence of clay illuviation” (clay films, lamellae, oriented clay bridges). Lab gpkg has only clay percentages.</li>
+<li>
+<strong>Cambic horizon</strong> (KST 13ed Ch 3 p 13): requires structure or designation evidence of weathering. Lab gpkg has only chemistry.</li>
+<li>
+<strong>Vertic horizon</strong> (KST 13ed Ch 3 p 23): requires slickensides OR cracks OR LE &gt;= 6 cm. Lab gpkg has only COLE.</li>
+</ul><p>NASIS provides all four: 99 % of pedons have at least one Munsell record, 93 % have structure data, 36 % have clay films, 3 % have slickensides directly recorded (with another ~5 % via <code>pediagfeatures.featkind = "Slickensides"</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="dependencies-0-9-20">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies-0-9-20"></a></h3>
+<p><code>Suggests:</code> adds <code>DBI</code> and <code>RSQLite</code> (only required when calling <code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code>; the existing lab-only loader <code><a href="../reference/load_kssl_pedons_gpkg.html">load_kssl_pedons_gpkg()</a></code> does not need them).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.19" id="soilkey-0919-2026-05-01">soilKey 0.9.19 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0919-2026-05-01"></a></h2>
 <p>The “lab-data-poor diagnostic recovery” release. Three KSSL Order gates that were 0 % in v0.9.18 (Spodosols 0/276, Vertisols 0/63, Inceptisols 0/463) all gained scientifically-grounded morphological inference paths, plus the KSSL gpkg loader now extracts the oxalate + pyrophosphate + COLE columns the diagnostics need.</p>

@@ -1,5 +1,95 @@
 # Changelog
 
+## soilKey 0.9.20 (2026-05-01)
+
+The “field morphology unlocks the lab” release. Integrates the NASIS
+Morphological export (`NASIS_Morphological_09142021.sqlite`, 562 MB, 431
+415 phorizon rows) with the existing NCSS Lab Data Mart GeoPackage. The
+lab gpkg has chemistry + physics; the NASIS sqlite has Munsell colour,
+structure grade, clay films, slickensides, cracks, and
+surveyor-identified diagnostic horizons. Joining them on `peiid` (Pedon
+Element ID) unlocks every diagnostic gate that needed field morphology
+to fire.
+
+### New code
+
+#### `load_kssl_pedons_with_nasis(gpkg, sqlite, head, ...)`
+
+Reads the lab gpkg via the existing
+[`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md),
+then joins each pedon’s lab horizons with the matching NASIS phorizon by
+`(peiid, hzdept, hzdepb)`, and pulls into the canonical horizon schema:
+
+- `phcolor` -\> `munsell_hue_moist` / `munsell_value_moist` /
+  `munsell_chroma_moist` / `munsell_*_dry` (528 421 rows)
+- `phstructure` -\> `structure_grade` / `structure_size` /
+  `structure_type` (lowercase-normalised; 421 881 rows)
+- `phpvsf` (clay films) -\> `clay_films_amount` (mapped from `pvsfpct`
+  to soilKey’s qualitative tiers; 109 793 clay-film rows)
+- `phpvsf` (slickensides pedogenic / non-intersecting) -\>
+  `slickensides` (4 275 rows)
+- `phcracks` -\> `cracks_width_cm` / `cracks_depth_cm` (170 rows)
+- `pediagfeatures` -\> `site$nasis_diagnostic_features` (64 169 rows –
+  the surveyor-identified diagnostic horizons; informational per-site
+  list, not currently fed into the deterministic key)
+
+The matching is depth-overlap-based: for each lab layer, find the NASIS
+phorizon with the largest `(hzdept, hzdepb)` overlap. NASIS also
+provides richer designations (`hzname`) – when the lab gpkg designation
+is NA, the NASIS one is used.
+
+### Real-data benchmark impact (KSSL apples-to-apples, 3 000-head)
+
+Both runs filter to the same quality criteria (clay + lab + B horizon).
+v0.9.19 lab-only run: n=1 997 quality. v0.9.20 lab+NASIS run: n=2 002
+quality (more pedons pass because NASIS supplies designation when the
+lab gpkg has NA).
+
+| Order           |      v0.9.19 lab |    v0.9.20 lab+NASIS |            Δ |
+|-----------------|-----------------:|---------------------:|-------------:|
+| **Inceptisols** |  10.8 % (27/249) | **47.2 % (118/250)** | **+36.4 pp** |
+| **Vertisols**   |   52.3 % (23/44) |   **65.2 % (30/46)** | **+12.9 pp** |
+| **Spodosols**   |  10.0 % (15/150) |  **26.0 % (39/150)** | **+16.0 pp** |
+| Aridisols       | 43.4 % (121/279) |     46.6 % (130/279) |         +3.2 |
+| Mollisols       |  18.4 % (93/505) |     22.2 % (112/505) |         +3.8 |
+| Alfisols        |  18.6 % (78/420) |      19.4 % (82/422) |         +0.8 |
+| Ultisols        |  20.8 % (56/269) |      20.4 % (55/269) |         -0.4 |
+| Entisols        |   54.0 % (34/63) |       42.9 % (27/63) |        -11.1 |
+| Oxisols         |    28.6 % (4/14) |        28.6 % (4/14) |            0 |
+| Andisols        |        0/4 (0 %) |            0/4 (0 %) |            0 |
+| **TOTAL**       |       **22.6 %** |           **29.8 %** |  **+7.2 pp** |
+
+USDA top-1: **29.8 %** (CI \[27.5, 32.0\], n=2 002).
+
+### Why it works scientifically
+
+The lab gpkg lacks every field morphology variable that KST 13ed Ch 3
+lists as “the diagnostic features that disambiguate Order membership
+when chemistry alone is ambiguous”:
+
+- **Mollic epipedon** (KST 13ed Ch 3 p 15): requires Munsell value moist
+  \<= 3 + chroma \<= 3. Lab gpkg has zero Munsell.
+- **Argillic horizon** (KST 13ed Ch 3 p 4): requires “evidence of clay
+  illuviation” (clay films, lamellae, oriented clay bridges). Lab gpkg
+  has only clay percentages.
+- **Cambic horizon** (KST 13ed Ch 3 p 13): requires structure or
+  designation evidence of weathering. Lab gpkg has only chemistry.
+- **Vertic horizon** (KST 13ed Ch 3 p 23): requires slickensides OR
+  cracks OR LE \>= 6 cm. Lab gpkg has only COLE.
+
+NASIS provides all four: 99 % of pedons have at least one Munsell
+record, 93 % have structure data, 36 % have clay films, 3 % have
+slickensides directly recorded (with another ~5 % via
+`pediagfeatures.featkind = "Slickensides"`).
+
+### Dependencies
+
+`Suggests:` adds `DBI` and `RSQLite` (only required when calling
+[`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md);
+the existing lab-only loader
+[`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
+does not need them).
+
 ## soilKey 0.9.19 (2026-05-01)
 
 The “lab-data-poor diagnostic recovery” release. Three KSSL Order gates
