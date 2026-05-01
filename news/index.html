@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.20</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.21</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,136 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.21" id="soilkey-0921-2026-05-01">soilKey 0.9.21 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0921-2026-05-01"></a></h2>
+<p>The “surveyor’s diagnostic identification as scientific tie-breaker” release. Wires the NASIS <code>pediagfeatures.featkind</code> table (64 169 records of field-surveyor-identified diagnostic horizons) into the USDA Order gates as a TIE-BREAKER ONLY: when the canonical lab + morphology gate returns <code>passed = NA</code> (insufficient data), the surveyor’s identification flips it to TRUE. When the canonical gate returns TRUE / FALSE, the tag is recorded as evidence but does NOT override – preserving the deterministic-key-on-data invariant.</p>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-ksslnasis-apples-to-apples-0-9-21">Real-data benchmark impact (KSSL+NASIS apples-to-apples)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-ksslnasis-apples-to-apples-0-9-21"></a></h3>
+<p>3 000-head sample, n=2 002 quality-filtered, identical filter between runs:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.20 NASIS</th>
+<th align="right">v0.9.21 +tie-breaker</th>
+</tr></thead><tbody><tr><td><strong>Spodosols</strong></td>
+<td align="right">26.0 % (39/150)</td>
+<td align="right">
+<strong>42.0 % (63/150)</strong> (+16.0 pp)</td>
+</tr><tr><td><strong>Vertisols</strong></td>
+<td align="right">65.2 % (30/46)</td>
+<td align="right">
+<strong>69.6 % (32/46)</strong> (+4.4 pp)</td>
+</tr><tr><td>Mollisols</td>
+<td align="right">22.2 % (112/505)</td>
+<td align="right">23.2 % (117/505) (+1.0 pp)</td>
+</tr><tr><td>Inceptisols</td>
+<td align="right">47.2 % (118/250)</td>
+<td align="right">47.2 % (118/250) (=)</td>
+</tr><tr><td>Aridisols</td>
+<td align="right">46.6 % (130/279)</td>
+<td align="right">46.6 % (130/279) (=)</td>
+</tr><tr><td>Alfisols</td>
+<td align="right">19.4 % (82/422)</td>
+<td align="right">19.4 % (82/422) (=)</td>
+</tr><tr><td>Ultisols</td>
+<td align="right">20.4 % (55/269)</td>
+<td align="right">20.4 % (55/269) (=)</td>
+</tr><tr><td>Entisols</td>
+<td align="right">42.9 % (27/63)</td>
+<td align="right">41.3 % (26/63) (-1.6 pp)</td>
+</tr><tr><td>Oxisols</td>
+<td align="right">28.6 % (4/14)</td>
+<td align="right">28.6 % (4/14) (=)</td>
+</tr><tr><td>Andisols</td>
+<td align="right">0/4</td>
+<td align="right">0/4 (=)</td>
+</tr><tr><td><strong>TOTAL</strong></td>
+<td align="right"><strong>29.8 %</strong></td>
+<td align="right"><strong>31.3 %</strong></td>
+</tr></tbody></table><p>USDA top-1: <strong>31.3 %</strong> (CI [29.0 %, 33.5 %], n=2 002).</p>
+<p>The Spodosol jump (+16 pp) is the headline: when Al/Fe oxalate are absent and morphology is sparse, the surveyor’s direct identification of “Spodic horizon” or “Spodic materials” in <code>pediagfeatures.featkind</code> recovers the diagnostic. Vertisol and Mollisol gains are smaller but consistent with the tie-breaker philosophy: it fires only on NA cases. Most other Orders see no change because their canonical gates were already conclusive.</p>
+</div>
+<div class="section level3">
+<h3 id="what-pediagfeatures-provides-0-9-21">What pediagfeatures provides<a class="anchor" aria-label="anchor" href="#what-pediagfeatures-provides-0-9-21"></a></h3>
+<p>NASIS <code>pediagfeatures.featkind</code> distribution (top entries):</p>
+<table class="table"><thead><tr><th>featkind</th>
+<th align="right">n</th>
+</tr></thead><tbody><tr><td>Ochric epipedon</td>
+<td align="right">13 833</td>
+</tr><tr><td>Argillic horizon</td>
+<td align="right">13 501</td>
+</tr><tr><td>Mollic epipedon</td>
+<td align="right">6 860</td>
+</tr><tr><td>Cambic horizon</td>
+<td align="right">4 970</td>
+</tr><tr><td>Lithic contact</td>
+<td align="right">2 193</td>
+</tr><tr><td>Aquic conditions</td>
+<td align="right">1 750</td>
+</tr><tr><td>Calcic horizon</td>
+<td align="right">1 541</td>
+</tr><tr><td>Albic horizon</td>
+<td align="right">1 415</td>
+</tr><tr><td>Fragipan</td>
+<td align="right">1 091</td>
+</tr><tr><td>Spodic horizon</td>
+<td align="right">829</td>
+</tr><tr><td>Umbric epipedon</td>
+<td align="right">803</td>
+</tr><tr><td>Slickensides</td>
+<td align="right">519</td>
+</tr><tr><td>Andic soil properties</td>
+<td align="right">494</td>
+</tr><tr><td>Glossic horizon</td>
+<td align="right">429</td>
+</tr><tr><td>Histic epipedon</td>
+<td align="right">201</td>
+</tr></tbody></table><p>The 13 501 “Argillic horizon” + 6 860 “Mollic epipedon” records are particularly impactful – they directly identify the diagnostic horizons that drive Mollisol / Alfisol / Ultisol / Inceptisol disambiguation.</p>
+</div>
+<div class="section level3">
+<h3 id="code-0-9-21">Code<a class="anchor" aria-label="anchor" href="#code-0-9-21"></a></h3>
+<div class="section level4">
+<h4 id="has_nasis_featurepedon-pattern-0-9-21"><code>.has_nasis_feature(pedon, pattern)</code><a class="anchor" aria-label="anchor" href="#has_nasis_featurepedon-pattern-0-9-21"></a></h4>
+<p>Checks <code>pedon$site$nasis_diagnostic_features</code> (populated by <code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code>) for a regex match against the NASIS featkind values.</p>
+</div>
+<div class="section level4">
+<h4 id="apply_nasis_tiebreakerresult-pedon-pattern-feature_label-0-9-21"><code>.apply_nasis_tiebreaker(result, pedon, pattern, feature_label)</code><a class="anchor" aria-label="anchor" href="#apply_nasis_tiebreakerresult-pedon-pattern-feature_label-0-9-21"></a></h4>
+<p>Applied at the start of each USDA Order gate. If the input <code>DiagnosticResult$passed == NA</code> AND the surveyor identified the matching feature, flips <code>passed</code> to TRUE and records the provenance. Does NOT override TRUE / FALSE.</p>
+</div>
+<div class="section level4">
+<h4 id="usda-order-gates-with-tie-breaker-v0921-0-9-21">USDA Order gates with tie-breaker (v0.9.21)<a class="anchor" aria-label="anchor" href="#usda-order-gates-with-tie-breaker-v0921-0-9-21"></a></h4>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Gate</th>
+<th>Tie-breaker pattern</th>
+</tr></thead><tbody><tr><td><code>histosol_usda</code></td>
+<td>Histic / Folistic / Hemic / Sapric / Fibric / Limnic / Coprogenous</td>
+</tr><tr><td><code>spodosol_usda</code></td>
+<td>Spodic horizon / Spodic materials / Ortstein / Placic</td>
+</tr><tr><td><code>andisol_usda</code></td>
+<td>Andic soil properties / Vitric / Volcanic glass</td>
+</tr><tr><td><code>vertisol_usda</code></td>
+<td>Slickensides / Vertic features / Gilgai</td>
+</tr><tr><td><code>ultisol_usda</code></td>
+<td>Argillic horizon / Kandic horizon</td>
+</tr><tr><td><code>mollisol_usda</code></td>
+<td>Mollic epipedon</td>
+</tr><tr><td><code>alfisol_usda</code></td>
+<td>Argillic horizon / Kandic horizon / Natric horizon</td>
+</tr><tr><td><code>inceptisol_usda</code></td>
+<td>Cambic horizon</td>
+</tr></tbody></table></div>
+</div>
+<div class="section level3">
+<h3 id="why-scientifically-defensible-0-9-21">Why scientifically defensible<a class="anchor" aria-label="anchor" href="#why-scientifically-defensible-0-9-21"></a></h3>
+<p>The tie-breaker fires ONLY when the canonical gate returns NA, i.e., when the deterministic key has insufficient data to decide. In that case, the field surveyor’s identification (recorded in NASIS by NRCS pedologists) is the most authoritative source short of re-running the field survey. When chemistry + morphology IS available and conclusive, the canonical gate’s TRUE / FALSE stands unmodified – the tie-breaker is strictly additive on missing-data cases.</p>
+<p>This preserves the package-level invariant: <strong>the deterministic key on lab + morphology data always wins; the surveyor tag is a fallback when the deterministic key is silent</strong>.</p>
+</div>
+<div class="section level3">
+<h3 id="tests--cran-0-9-21">Tests + CRAN<a class="anchor" aria-label="anchor" href="#tests--cran-0-9-21"></a></h3>
+<ul><li>2 829 testthat expectations passing, 0 failed</li>
+<li>31/31 canonical fixtures still classify correctly (no regression – canonical fixtures don’t have NASIS pediagfeatures, so the tie-breaker is inactive on them)</li>
+<li>Embrapa benchmark unchanged (USDA 47.6 %, WRB 32.7 %, SiBCS 40.6 %) – FEBR doesn’t carry NASIS pediagfeatures</li>
+<li>
+<code>R CMD check --as-cran</code> with PROJ env: Status: OK</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.20" id="soilkey-0920-2026-05-01">soilKey 0.9.20 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0920-2026-05-01"></a></h2>
 <p>The “field morphology unlocks the lab” release. Integrates the NASIS Morphological export (<code>NASIS_Morphological_09142021.sqlite</code>, 562 MB, 431 415 phorizon rows) with the existing NCSS Lab Data Mart GeoPackage. The lab gpkg has chemistry + physics; the NASIS sqlite has Munsell colour, structure grade, clay films, slickensides, cracks, and surveyor-identified diagnostic horizons. Joining them on <code>peiid</code> (Pedon Element ID) unlocks every diagnostic gate that needed field morphology to fire.</p>
