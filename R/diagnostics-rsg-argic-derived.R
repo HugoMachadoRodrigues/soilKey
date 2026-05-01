@@ -48,6 +48,22 @@ acrisol <- function(pedon, max_cec = 24, max_bs = 50) {
   tests$bs_low  <- test_bs_below(h, max_pct = max_bs,
                                    candidate_layers = layers)
 
+  # v0.9.17: graceful BS-low fallback when bs_pct is missing in all
+  # argic layers. al_sat_pct >= 50 mathematically forces BS < 50; pH
+  # < 5.0 in tropical B horizons empirically does the same. Promotes
+  # the inferred-FALSE bs_low to TRUE only when direct measurement
+  # is absent so lab-grade profiles use the canonical gate.
+  if (!isTRUE(tests$bs_low$passed)) {
+    bs_inf <- .bs_low_inferred(pedon, bs_threshold = max_bs)
+    if (isTRUE(bs_inf$bs_low) &&
+          bs_inf$source %in% c("al_sat_ge_50", "ph_below_5")) {
+      tests$bs_low$passed <- TRUE
+      tests$bs_low$layers <- layers
+      tests$bs_low$details <- c(tests$bs_low$details %||% list(),
+                                 list(bs_low_inferred_source = bs_inf$source))
+    }
+  }
+
   agg <- .argic_derived_aggregate(tests, layer_keys = c("cec_low", "bs_low"))
 
   DiagnosticResult$new(

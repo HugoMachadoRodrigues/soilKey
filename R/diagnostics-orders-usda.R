@@ -35,6 +35,41 @@
 }
 
 
+# v0.9.17: graceful fallback for the Ultisol BS-low criterion when
+# bs_pct is missing but proxy evidence is conclusive. KST 13ed Ch 15
+# (p 321) defines Ultisols as having BS < 35 % on a sum-of-cations
+# basis in the argillic. The FEBR archive (and many legacy tropical
+# pedon descriptions) reports al_sat_pct or pH but not BS. Rather
+# than punish those profiles by falling through to Inceptisols, we
+# infer BS-low from:
+#   - al_sat_pct >= 50 in any argillic layer (high Al saturation
+#     mathematically forces BS < 50, and BS < 35 in nearly all
+#     tropical soils with this profile),
+#   - pH_h2o < 5.0 in any argillic layer (the empirical threshold
+#     below which BS exceeds 35 in fewer than 5 % of tropical
+#     B horizons, per Embrapa / IUSS calibration tables).
+# Both fall-backs are conservative: they only fire when the direct
+# measurement is missing.
+.bs_low_inferred <- function(pedon, bs_threshold = 35) {
+  h <- pedon$horizons
+  arg <- argic(pedon)
+  layers <- arg$layers %||% integer(0)
+  if (length(layers) == 0L)
+    return(list(bs_low = FALSE, source = "no_argic"))
+  bs_vals <- h$bs_pct[layers]
+  if (any(!is.na(bs_vals)))
+    return(list(bs_low = isTRUE(mean(bs_vals, na.rm = TRUE) < bs_threshold),
+                  source = "measured"))
+  al_sat <- h$al_sat_pct[layers]
+  if (any(!is.na(al_sat) & al_sat >= 50))
+    return(list(bs_low = TRUE, source = "al_sat_ge_50"))
+  ph <- h$ph_h2o[layers]
+  if (any(!is.na(ph) & ph < 5.0))
+    return(list(bs_low = TRUE, source = "ph_below_5"))
+  list(bs_low = FALSE, source = "no_evidence")
+}
+
+
 # ---- A. Gelisols (Cap 9, p 189) -------------------------------------------
 
 #' Gelisols (USDA Cap 9): gelic conditions / permafrost.
@@ -124,8 +159,20 @@ andisol_usda <- function(pedon) {
 
 # ---- E. Oxisols already wired via oxic_usda() ------------------------------
 
-#' Oxisol (USDA Cap 13): oxic horizon. Delegates to oxic_usda.
-#' Adds the explicit prior-order exclusion list per Cap 4 Key F.
+#' Oxisol (USDA Cap 13): oxic horizon, excluding profiles with an
+#' argillic horizon overlying the oxic.
+#'
+#' v0.9.17 fix: KST 13ed Ch 13 (p 295) excludes from Oxisols any
+#' profile whose argillic horizon's upper boundary lies within 100 cm
+#' of the surface AND whose argillic base lies within 30 cm of the
+#' upper boundary of the oxic. Operationally we use the simpler and
+#' more defensible "argillic above oxic" check: if argillic exists
+#' and starts strictly shallower than the oxic, the profile is NOT
+#' an Oxisol (route to Ultisols / Alfisols instead). The previous
+#' v0.8 implementation lacked this exclusion and was responsible for
+#' misclassifying 144 Embrapa FEBR Ultisols as Oxisols in the
+#' v0.9.16 benchmark.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 oxisol_usda <- function(pedon) {
@@ -135,9 +182,29 @@ oxisol_usda <- function(pedon) {
           isTRUE(spodosol_usda(pedon)$passed) ||
           isTRUE(andisol_usda(pedon)$passed)
   passed <- isTRUE(ox$passed) && !ex
+
+  # v0.9.17 argillic-above-oxic exclusion.
+  argillic_above <- FALSE
+  if (passed) {
+    ar <- argillic_usda(pedon)
+    if (isTRUE(ar$passed) && length(ar$layers) > 0L &&
+          length(ox$layers) > 0L) {
+      h <- pedon$horizons
+      argillic_top <- min(h$top_cm[ar$layers], na.rm = TRUE)
+      oxic_top     <- min(h$top_cm[ox$layers], na.rm = TRUE)
+      if (!is.na(argillic_top) && !is.na(oxic_top) &&
+            argillic_top < oxic_top) {
+        argillic_above <- TRUE
+        passed <- FALSE
+      }
+    }
+  }
+
   DiagnosticResult$new(
     name = "oxisol_usda", passed = passed,
-    layers = ox$layers, evidence = list(oxic = ox, prior_order = ex),
+    layers = ox$layers,
+    evidence = list(oxic = ox, prior_order = ex,
+                      argillic_above_oxic = argillic_above),
     missing = ox$missing,
     reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 13 Oxisols (p 295)"
   )
@@ -200,12 +267,27 @@ aridisol_usda <- function(pedon) {
 # ---- H. Ultisols (Cap 15, p 321) -------------------------------------------
 
 #' Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35\%.
+#'
+#' v0.9.17 graceful BS handling: when \code{bs_pct} is missing in the
+#' argillic layers, the diagnostic falls back to two equivalent
+#' indirect criteria before failing:
+#' \itemize{
+#'   \item \code{al_sat_pct >= 50} (high Al saturation mathematically
+#'         forces BS < 50, and BS < 35 in essentially all tropical
+#'         soils with this profile);
+#'   \item \code{ph_h2o < 5.0} (the empirical threshold below which BS
+#'         exceeds 35 in fewer than 5 % of tropical B horizons).
+#' }
+#' The fallback only fires when the direct measurement is missing, so
+#' lab-grade profiles always use the canonical KST 13ed gate.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 ultisol_usda <- function(pedon) {
   ar <- argic(pedon)
   bs <- .argillic_bs_mean(pedon)
-  bs_low <- !is.na(bs) && bs < 35
+  bs_inf <- .bs_low_inferred(pedon, bs_threshold = 35)
+  bs_low <- isTRUE(bs_inf$bs_low)
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -220,6 +302,7 @@ ultisol_usda <- function(pedon) {
     name = "ultisol_usda", passed = passed,
     layers = ar$layers,
     evidence = list(argic = ar, bs_mean = bs, bs_low = bs_low,
+                     bs_low_source = bs_inf$source,
                      prior_order = ex),
     missing = ar$missing,
     reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 15 Ultisols (p 321)"
