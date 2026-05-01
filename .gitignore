@@ -18,3 +18,4 @@ vignettes/*_files/
 *.Rcheck/
 # Local-only PROJ/GDAL env (.Rbuildignore'd; per-machine paths)
 .Renviron
+/soil_data/

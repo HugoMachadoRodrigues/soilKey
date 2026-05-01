@@ -275,14 +275,19 @@ reference:
       - vlm_pick_provider
       - ollama_is_running
 
-  - title: "Real-data benchmarks (v0.9.15)"
+  - title: "Real-data benchmarks (v0.9.15+)"
     desc: >
       Loaders for the three external validation sets soilKey is
-      benchmarked against in the v1.0 methods paper.
+      benchmarked against in the v1.0 methods paper, plus FEBR /
+      BDsolos label-normalisation helpers (v0.9.16).
     contents:
       - load_kssl_pedons
       - load_lucas_pedons
       - load_embrapa_pedons
+      - load_febr_pedons
+      - normalise_febr_sibcs
+      - normalise_febr_wrb
+      - normalise_febr_usda
       - benchmark_run_classification
 
   - title: "Canonical fixtures"
