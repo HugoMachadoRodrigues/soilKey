@@ -1,0 +1,14 @@
+Quality: 3213
+KSSL USDA n=3213 top1=0.260 (26.0%) CI=[0.246, 0.273] took 22.1 min
+   reference n_total n_correct  accuracy
+   Mollisols     727       145 0.1994498
+    Alfisols     663       142 0.2141780
+ Inceptisols     463       107 0.2311015
+   Aridisols     446       189 0.4237668
+    Ultisols     411        90 0.2189781
+   Spodosols     276        49 0.1775362
+    Entisols     108        50 0.4629630
+   Vertisols      63        37 0.5873016
+     Oxisols      49        24 0.4897959
+    Andisols       4         0 0.0000000
+   Histosols       3         2 0.6666667
