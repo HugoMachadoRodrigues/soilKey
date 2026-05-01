@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.18</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.19</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,83 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.18/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.19/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.19" id="soilkey-0919-2026-05-01">soilKey 0.9.19 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0919-2026-05-01"></a></h2>
+<p>The “lab-data-poor diagnostic recovery” release. Three KSSL Order gates that were 0 % in v0.9.18 (Spodosols 0/276, Vertisols 0/63, Inceptisols 0/463) all gained scientifically-grounded morphological inference paths, plus the KSSL gpkg loader now extracts the oxalate + pyrophosphate + COLE columns the diagnostics need.</p>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-0-9-19">Real-data benchmark impact<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-0-9-19"></a></h3>
+<p>KSSL on the 3 000-head / n=1 997-quality benchmark:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.18</th>
+<th align="right">v0.9.19</th>
+</tr></thead><tbody><tr><td><strong>KSSL Vertisols</strong></td>
+<td align="right">0/63 (0 %)</td>
+<td align="right"><strong>23/44 (52.3 %)</strong></td>
+</tr><tr><td><strong>KSSL Spodosols</strong></td>
+<td align="right">0/276 (0 %)</td>
+<td align="right"><strong>15/150 (10.0 %)</strong></td>
+</tr><tr><td><strong>KSSL Inceptisols</strong></td>
+<td align="right">0/463 (0 %)</td>
+<td align="right"><strong>27/249 (10.8 %)</strong></td>
+</tr></tbody></table><p>USDA top-1 overall: <strong>22.6 %</strong> (CI [21.0, 24.1], n=1 997). The Mollisol / Alfisol per-Order accuracies dropped a few points because some profiles previously routed there now correctly route to Vertisols / Spodosols / Inceptisols (the new gates absorb references that were systematically misclassified into the larger Mollisol / Alfisol bucket).</p>
+<p>Embrapa benchmark unchanged at SiBCS 40.6 % / WRB 32.7 % / USDA 47.6 % – no regression on tropical-soil context, all 31 canonical fixtures still classify correctly.</p>
+</div>
+<div class="section level3">
+<h3 id="code-changes-0-9-19">Code changes<a class="anchor" aria-label="anchor" href="#code-changes-0-9-19"></a></h3>
+<div class="section level4">
+<h4 id="spodic--morphological-inference-path-0-9-19">
+<code>spodic()</code> – morphological inference path<a class="anchor" aria-label="anchor" href="#spodic--morphological-inference-path-0-9-19"></a></h4>
+<p>KST 13ed Ch 3 (spodic horizon, p 23) defines the spodic horizon via several equivalent paths: (Al + 0.5*Fe)_ox &gt;= 0.5 is one; spodic morphology with characteristic Bh / Bs designation + albic E above + low pH + elevated B-horizon OC is another (specific to “field-described spodic” without lab Al / Fe).</p>
+<p>When <code>al_ox_pct</code> and <code>fe_ox_pct</code> are missing across all candidate layers, v0.9.19 falls back to the morphological path:</p>
+<ul><li>designation matches <code>^Bh|^Bs|^Bhs|^Bsh</code>,</li>
+<li>an albic E horizon lies directly above,</li>
+<li>pH(H2O) &lt;= 5.9 in the Bh / Bs,</li>
+<li>OC in the Bh / Bs &gt;= 0.5 % (illuvial accumulation evidence).</li>
+</ul><p>The fallback only fires when <code>al_ox</code> / <code>fe_ox</code> are entirely absent from the pedon – lab-grade KSSL pedons still gate on the canonical chemical criteria.</p>
+</div>
+<div class="section level4">
+<h4 id="vertic_horizon--cole-based-linear-extensibility-path-0-9-19">
+<code>vertic_horizon()</code> – COLE-based linear-extensibility path<a class="anchor" aria-label="anchor" href="#vertic_horizon--cole-based-linear-extensibility-path-0-9-19"></a></h4>
+<p>KST 13ed Ch 16 (Vertisols, p 343) accepts linear extensibility (LE) summed over the upper 100 cm &gt;= 6 cm as an alternative to slickensides + cracks. v0.9.19 implements the LE path:</p>
+<pre><code>LE = sum(cole_value[i] * thickness_cm[i])
+     for layers with top_cm &lt; 100</code></pre>
+<p>Triggers when <code>cole_value</code> is measured in any layer; uses the canonical slickensides + cracks path when <code>cole_value</code> is absent.</p>
+</div>
+<div class="section level4">
+<h4 id="cambic--designation-based-morphological-evidence-0-9-19">
+<code>cambic()</code> – designation-based morphological evidence<a class="anchor" aria-label="anchor" href="#cambic--designation-based-morphological-evidence-0-9-19"></a></h4>
+<p>KST 13ed Ch 3 (cambic horizon, p 13) accepts a designation pattern (B[wgkjvzx]) as morphological evidence of soil formation in lieu of structure_grade data, since the surveyor’s “B*” suffix already records the alteration. When <code>structure_grade</code> is missing across all candidate layers, v0.9.19 falls back to the designation path: designations matching <code>^B[wgkjvzx]</code> qualify as evidence of weak horizon development.</p>
+</div>
+<div class="section level4">
+<h4 id="kssl-gpkg-loader--expanded-column-coverage-0-9-19">KSSL gpkg loader – expanded column coverage<a class="anchor" aria-label="anchor" href="#kssl-gpkg-loader--expanded-column-coverage-0-9-19"></a></h4>
+<p><code><a href="../reference/load_kssl_pedons_gpkg.html">load_kssl_pedons_gpkg()</a></code> now extracts the oxalate + pyrophosphate + COLE columns the diagnostics need:</p>
+<ul><li>
+<code>aluminum_ammonium_oxalate</code> -&gt; <code>al_ox_pct</code> (spodic, andic)</li>
+<li>
+<code>fe_ammoniumoxalate_extractable</code> -&gt; <code>fe_ox_pct</code>
+</li>
+<li>
+<code>silica_ammonium_oxalate</code> -&gt; <code>si_ox_pct</code>
+</li>
+<li>
+<code>cole_whole_soil</code> -&gt; <code>cole_value</code> (vertic LE-based path)</li>
+<li>
+<code>aluminum_saturation</code> -&gt; <code>al_sat_pct</code> (Ultisol BS-low inference)</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="what-is-not-fixed-yet-0-9-19">What is NOT fixed yet<a class="anchor" aria-label="anchor" href="#what-is-not-fixed-yet-0-9-19"></a></h3>
+<ul><li>
+<strong>Inceptisols</strong> still at 5.4 % (7/129) – the cambic-designation fallback unblocks some, but many Inceptisol references in KSSL have argillic-like clay increases that route them to Alfisols. Distinguishing field-judged “non-pedogenic clay variation” (Inceptisol) from “argillic horizon” (Alfisol) requires clay-film data which is in the NASIS sqlite but not in the lab-data gpkg.</li>
+<li>
+<strong>Andisols (KSSL n=3)</strong> still 0 % – sample size too small to diagnose; the gate requires bulk density + Al-ox + Fe-ox + clay
+<ul><li>glass mineralogy which KSSL Andisols may not always report.</li>
+</ul></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.18" id="soilkey-0918-2026-05-01">soilKey 0.9.18 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0918-2026-05-01"></a></h2>
 <p>The “missing-data resilience + KSSL unlocked” release. Three layered improvements over v0.9.17:</p>

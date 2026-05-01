@@ -7,7 +7,13 @@ material plus organic matter; diagnostic of Podzols.
 ## Usage
 
 ``` r
-spodic(pedon, min_thickness = 2.5, min_alfe = 0.5, max_ph = 5.9)
+spodic(
+  pedon,
+  min_thickness = 2.5,
+  min_alfe = 0.5,
+  max_ph = 5.9,
+  min_oc_in_b = 0.5
+)
 ```
 
 ## Arguments
@@ -28,6 +34,12 @@ spodic(pedon, min_thickness = 2.5, min_alfe = 0.5, max_ph = 5.9)
 - max_ph:
 
   Maximum ph_h2o (default 5.9).
+
+- min_oc_in_b:
+
+  Minimum OC % in the candidate Bh / Bs layer for the v0.9.19
+  morphological inference path when Al / Fe oxalate are missing (default
+  0.5).
 
 ## Value
 
