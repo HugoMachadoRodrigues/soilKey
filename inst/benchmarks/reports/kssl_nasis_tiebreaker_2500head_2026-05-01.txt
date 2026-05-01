@@ -1,0 +1,17 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+Ncells  1641454  87.7    3112246 166.3         NA   3112246  166.3
+Vcells 16497247 125.9   66966708 511.0      65536 163485334 1247.3
+Quality: 1679
+KSSL+NASIS+TieBreaker USDA n=1679 top1=0.320 (32.0%) CI=[0.298, 0.344]
+   reference n_total n_correct  accuracy
+   Mollisols     452       107 0.2367257
+    Alfisols     345        70 0.2028986
+   Aridisols     231       113 0.4891775
+    Ultisols     211        47 0.2227488
+ Inceptisols     204        96 0.4705882
+   Spodosols     139        60 0.4316547
+    Entisols      54        24 0.4444444
+   Vertisols      26        17 0.6538462
+     Oxisols      13         4 0.3076923
+    Andisols       4         0 0.0000000
