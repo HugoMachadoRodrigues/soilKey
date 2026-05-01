@@ -1,30 +1,30 @@
 # Getting started with soilKey
 
 `soilKey` provides automated soil profile classification under WRB 2022
-(4th edition) and SiBCS (5th edition). The taxonomic key itself is
-implemented as deterministic R code driven by versioned YAML rules;
-vision-language extraction, spatial priors, and OSSL-based attribute
-prediction sit alongside it as modular layers, never inside it.
+(4th edition), SiBCS 5ª ed. (2018), and USDA Soil Taxonomy (13th
+edition, 2022). The taxonomic key itself is implemented as deterministic
+R code driven by versioned YAML rules; vision-language extraction,
+spatial priors, and OSSL-based attribute prediction sit alongside it as
+modular layers, never inside it.
 
-This vignette walks through the **post-v0.3.4 deliverable**: building a
-`PedonRecord`, calling any of the now ~70 implemented WRB 2022
-diagnostics directly (Ch 3.1 + 3.2 + 3.3 essentially complete after
-v0.3.3), classifying any of the 31 canonical fixtures end-to-end through
-the fully-wired WRB key (32/32 RSGs in canonical Ch 4 order, pp 95-126),
-and watching the evidence grade respond to provenance. v0.3.4 adds
-**strict RSG-level gates** (vertisol, andosol, gleysol, planosol,
-ferralsol, chernozem_strict, kastanozem_strict) that enforce the Ch 4
-exclusion rules and multi-criterion gates, replacing the v0.2
-single-horizon shortcuts. Sections 10-12 demonstrate the three side
-modules:
+## 0. The 30-second on-ramp
 
-- **Module 4 (OSSL)** – gap-fill missing horizon attributes from
-  Vis-NIR/SWIR spectra;
-- **Module 3 (SoilGrids prior)** – sanity-check the deterministic
-  outcome against a global spatial prior, *without* ever overriding the
-  key;
-- **Module 2 (VLM extraction)** – pull horizons from a PDF or photo via
-  `ellmer`, schema-validated.
+If you just want to see soilKey work end-to-end on a real profile –
+without writing any R code – there are two paths.
+
+### A. Zero-code GUI
+
+``` r
+
+library(soilKey)
+run_demo()  # opens a one-screen Shiny app in your browser
+```
+
+Pick one of 31 canonical profiles from the dropdown (or upload your own
+horizons CSV), click **Classify**, and read the WRB / SiBCS / USDA names
+plus the deterministic key trace and the evidence grade.
+
+### B. One R call, one fixture
 
 ``` r
 
@@ -34,7 +34,19 @@ library(soilKey)
 #> The following object is masked from 'package:base':
 #> 
 #>     %||%
+
+pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
+classify_wrb2022(pedon, on_missing = "silent")$name
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+classify_sibcs(pedon)$name
+#> [1] "Latossolos Vermelhos Distroficos tipicos"
+classify_usda(pedon, on_missing = "silent")$name
+#> [1] "Rhodic Hapludox"
 ```
+
+That is the whole package: `PedonRecord` in, classification out. The
+remaining sections walk through how to build your own pedon and how the
+side modules (VLM, spatial, spectral) fit together.
 
 ## 1. Building a PedonRecord from scratch
 
@@ -234,43 +246,48 @@ classify_wrb2022(ferralsol)
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,
 #> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> al_ox_pct, fe_ox_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
-#> FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, FALSE,
-#> TRUE, TRUE, TRUE, FALSE, FALSE, redoximorphic_features_pct, FALSE,
-#> redoximorphic_features_pct, FALSE, FALSE, p_mehlich3_mg_kg, FALSE,
-#> p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
-#> TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE
+#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
+#> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
+#> plinthite_pct, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
+#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
+#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
+#> FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> TRUE, FALSE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
-#> - TC: Indeterminate -- missing 1 attribute(s): artefacts_pct
+#> - TC: Indeterminate -- missing 3 attribute(s): artefacts_pct,
+#> geomembrane_present, technic_hardmaterial_pct
+#> - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C
 #> - VR: Indeterminate -- missing 1 attribute(s): slickensides
 #> - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m
-#> - AN: Indeterminate -- missing 3 attribute(s): al_ox_pct, fe_ox_pct,
-#> volcanic_glass_pct
+#> - AN: Indeterminate -- missing 4 attribute(s): al_ox_pct, fe_ox_pct,
+#> phosphate_retention_pct, volcanic_glass_pct
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
 #> 
 #> ── Missing data that would refine result
-#> artefacts_pct, slickensides, ec_dS_m, redoximorphic_features_pct, al_ox_pct,
-#> fe_ox_pct, volcanic_glass_pct, plinthite_pct
+#> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
+#> permafrost_temp_C, slickensides, ec_dS_m, redoximorphic_features_pct,
+#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct,
+#> plinthite_pct
 #> 
 #> ── Warnings
-#> ! 8 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 12 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
 #> 1. HS Histosols -- failed
 #> 2. AT Anthrosols -- failed
-#> 3. TC Technosols -- NA (1 attrs missing)
-#> 4. CR Cryosols -- failed
+#> 3. TC Technosols -- NA (3 attrs missing)
+#> 4. CR Cryosols -- NA (1 attrs missing)
 #> 5. LP Leptosols -- failed
 #> 6. SN Solonetz -- failed
 #> 7. VR Vertisols -- NA (1 attrs missing)
 #> 8. SC Solonchaks -- NA (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
-#> 10. AN Andosols -- NA (3 attrs missing)
+#> 10. AN Andosols -- NA (4 attrs missing)
 #> 11. PZ Podzols -- NA (2 attrs missing)
 #> 12. PT Plinthosols -- NA (1 attrs missing)
 #> 13. PL Planosols -- failed

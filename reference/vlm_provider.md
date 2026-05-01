@@ -10,7 +10,7 @@ does not itself send any request.
 
 ``` r
 vlm_provider(
-  name = c("anthropic", "openai", "google", "ollama"),
+  name = c("auto", "anthropic", "openai", "google", "ollama"),
   model = NULL,
   ...
 )

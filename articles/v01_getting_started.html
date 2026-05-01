@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,48 +80,58 @@
       <img src="../logo.png" class="logo" alt=""><h1>Getting started with soilKey</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.14/vignettes/v01_getting_started.Rmd" class="external-link"><code>vignettes/v01_getting_started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/vignettes/v01_getting_started.Rmd" class="external-link"><code>vignettes/v01_getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>v01_getting_started.Rmd</code></div>
     </div>
 
     
     
 <p><code>soilKey</code> provides automated soil profile classification
-under WRB 2022 (4th edition) and SiBCS (5th edition). The taxonomic key
-itself is implemented as deterministic R code driven by versioned YAML
-rules; vision-language extraction, spatial priors, and OSSL-based
-attribute prediction sit alongside it as modular layers, never inside
-it.</p>
-<p>This vignette walks through the <strong>post-v0.3.4
-deliverable</strong>: building a <code>PedonRecord</code>, calling any
-of the now ~70 implemented WRB 2022 diagnostics directly (Ch 3.1 + 3.2 +
-3.3 essentially complete after v0.3.3), classifying any of the 31
-canonical fixtures end-to-end through the fully-wired WRB key (32/32
-RSGs in canonical Ch 4 order, pp 95-126), and watching the evidence
-grade respond to provenance. v0.3.4 adds <strong>strict RSG-level
-gates</strong> (vertisol, andosol, gleysol, planosol, ferralsol,
-chernozem_strict, kastanozem_strict) that enforce the Ch 4 exclusion
-rules and multi-criterion gates, replacing the v0.2 single-horizon
-shortcuts. Sections 10-12 demonstrate the three side modules:</p>
-<ul>
-<li>
-<strong>Module 4 (OSSL)</strong> – gap-fill missing horizon
-attributes from Vis-NIR/SWIR spectra;</li>
-<li>
-<strong>Module 3 (SoilGrids prior)</strong> – sanity-check the
-deterministic outcome against a global spatial prior, <em>without</em>
-ever overriding the key;</li>
-<li>
-<strong>Module 2 (VLM extraction)</strong> – pull horizons from a
-PDF or photo via <code>ellmer</code>, schema-validated.</li>
-</ul>
+under WRB 2022 (4th edition), SiBCS 5ª ed. (2018), and USDA Soil
+Taxonomy (13th edition, 2022). The taxonomic key itself is implemented
+as deterministic R code driven by versioned YAML rules; vision-language
+extraction, spatial priors, and OSSL-based attribute prediction sit
+alongside it as modular layers, never inside it.</p>
+<div class="section level2">
+<h2 id="the-30-second-on-ramp">0. The 30-second on-ramp<a class="anchor" aria-label="anchor" href="#the-30-second-on-ramp"></a>
+</h2>
+<p>If you just want to see soilKey work end-to-end on a real profile –
+without writing any R code – there are two paths.</p>
+<div class="section level3">
+<h3 id="a--zero-code-gui">A. Zero-code GUI<a class="anchor" aria-label="anchor" href="#a--zero-code-gui"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/run_demo.html">run_demo</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># opens a one-screen Shiny app in your browser</span></span></code></pre></div>
+<p>Pick one of 31 canonical profiles from the dropdown (or upload your
+own horizons CSV), click <strong>Classify</strong>, and read the WRB /
+SiBCS / USDA names plus the deterministic key trace and the evidence
+grade.</p>
+</div>
+<div class="section level3">
+<h3 id="b--one-r-call-one-fixture">B. One R call, one fixture<a class="anchor" aria-label="anchor" href="#b--one-r-call-one-fixture"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'soilKey'</span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     %||%</span></span></code></pre></div>
+<span><span class="co">#&gt;     %||%</span></span>
+<span></span>
+<span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span>      <span class="co"># canonical Latossolo Vermelho</span></span>
+<span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
+<span><span class="fu"><a href="../reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "Latossolos Vermelhos Distroficos tipicos"</span></span>
+<span><span class="fu"><a href="../reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
+<p>That is the whole package: <code>PedonRecord</code> in,
+classification out. The remaining sections walk through how to build
+your own pedon and how the side modules (VLM, spatial, spectral) fit
+together.</p>
+</div>
+</div>
 <div class="section level2">
 <h2 id="building-a-pedonrecord-from-scratch">1. Building a PedonRecord from scratch<a class="anchor" aria-label="anchor" href="#building-a-pedonrecord-from-scratch"></a>
 </h2>
@@ -130,7 +140,7 @@ metadata, the horizons table (with a fixed canonical schema – see
 <code><a href="../reference/horizon_column_spec.html">horizon_column_spec()</a></code> for the full list of columns), and
 optional spectra, images, documents, and a per-attribute provenance
 log.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_pedon</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/PedonRecord.html">PedonRecord</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    id              <span class="op">=</span> <span class="st">"example-001"</span>,</span>
@@ -165,7 +175,7 @@ handful of other soil-physical sanity checks.</p>
 <p><code>soilKey</code> ships sixteen canonical fixtures designed so
 that exactly one of the eleven v0.2 diagnostics passes on each. Each
 profile also classifies cleanly through the wired WRB key.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  Ferralsol  <span class="op">=</span> <span class="fu"><a href="../reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  Luvisol    <span class="op">=</span> <span class="fu"><a href="../reference/make_luvisol_canonical.html">make_luvisol_canonical</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -204,7 +214,7 @@ profile also classifies cleanly through the wired WRB key.</p>
 <p>Every diagnostic returns a <code>DiagnosticResult</code> carrying the
 per-sub-test evidence, missing-attribute report, layer indices that
 satisfied, and the WRB literature reference.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ferralic.html">ferralic</a></span><span class="op">(</span><span class="va">ferralsol</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── DiagnosticResult: ferralic</span></span>
@@ -222,7 +232,7 @@ satisfied, and the WRB literature reference.</p>
 <div class="section level2">
 <h2 id="diagnostic-matrix-across-the-canonical-fixtures">4. Diagnostic matrix across the canonical fixtures<a class="anchor" aria-label="anchor" href="#diagnostic-matrix-across-the-canonical-fixtures"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diagnostics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"argic"</span>, <span class="st">"ferralic"</span>, <span class="st">"mollic"</span>, <span class="st">"calcic"</span>, <span class="st">"gypsic"</span>, <span class="st">"salic"</span>,</span>
 <span>                  <span class="st">"cambic"</span>, <span class="st">"plinthic"</span>, <span class="st">"spodic"</span>,</span>
 <span>                  <span class="st">"gleyic_properties"</span>, <span class="st">"vertic_properties"</span><span class="op">)</span></span>
@@ -503,7 +513,7 @@ Alisols, Luvisols – which differ by clay activity (CEC per kg clay) and
 chemistry (BS or Al saturation). soilKey provides one diagnostic per RSG
 that runs <code><a href="../reference/argic.html">argic()</a></code> internally, then applies the activity and
 chemistry tests on the argic layer:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/acrisol.html">acrisol</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_acrisol_canonical.html">make_acrisol_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="../reference/lixisol.html">lixisol</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_lixisol_canonical.html">make_lixisol_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
@@ -514,7 +524,7 @@ chemistry tests on the argic layer:</p>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Same pattern for the mollic-derived family (Chernozems / Kastanozems
 / Phaeozems):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/chernozem.html">chernozem</a></span> <span class="op">(</span><span class="fu"><a href="../reference/make_chernozem_canonical.html">make_chernozem_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="../reference/kastanozem.html">kastanozem</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_kastanozem_canonical.html">make_kastanozem_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
@@ -531,7 +541,7 @@ and runs it through the YAML key
 end-to-end; the other 16 are stubbed with
 <code>not_implemented_v01:</code> markers and return NA in the
 trace.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">ferralsol</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
@@ -541,50 +551,55 @@ trace.</p>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
 <span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,</span></span>
 <span><span class="co">#&gt; Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; TRUE, TRUE, TRUE, FALSE, FALSE, redoximorphic_features_pct, FALSE,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, FALSE, p_mehlich3_mg_kg, FALSE,</span></span>
-<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE</span></span>
+<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,</span></span>
+<span><span class="co">#&gt; volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,</span></span>
+<span><span class="co">#&gt; plinthite_pct, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
+<span><span class="co">#&gt; TRUE, FALSE</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
-<span><span class="co">#&gt; - TC: Indeterminate -- missing 1 attribute(s): artefacts_pct</span></span>
+<span><span class="co">#&gt; - TC: Indeterminate -- missing 3 attribute(s): artefacts_pct,</span></span>
+<span><span class="co">#&gt; geomembrane_present, technic_hardmaterial_pct</span></span>
+<span><span class="co">#&gt; - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C</span></span>
 <span><span class="co">#&gt; - VR: Indeterminate -- missing 1 attribute(s): slickensides</span></span>
 <span><span class="co">#&gt; - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m</span></span>
-<span><span class="co">#&gt; - AN: Indeterminate -- missing 3 attribute(s): al_ox_pct, fe_ox_pct,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct</span></span>
+<span><span class="co">#&gt; - AN: Indeterminate -- missing 4 attribute(s): al_ox_pct, fe_ox_pct,</span></span>
+<span><span class="co">#&gt; phosphate_retention_pct, volcanic_glass_pct</span></span>
 <span><span class="co">#&gt; - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct</span></span>
 <span><span class="co">#&gt; - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct</span></span>
 <span><span class="co">#&gt; - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
-<span><span class="co">#&gt; artefacts_pct, slickensides, ec_dS_m, redoximorphic_features_pct, al_ox_pct,</span></span>
-<span><span class="co">#&gt; fe_ox_pct, volcanic_glass_pct, plinthite_pct</span></span>
+<span><span class="co">#&gt; artefacts_pct, geomembrane_present, technic_hardmaterial_pct,</span></span>
+<span><span class="co">#&gt; permafrost_temp_C, slickensides, ec_dS_m, redoximorphic_features_pct,</span></span>
+<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct,</span></span>
+<span><span class="co">#&gt; plinthite_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Warnings</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 8 distinct attribute(s) missing across the key trace -- see $missing_data</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 12 distinct attribute(s) missing across the key trace -- see $missing_data</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (16 RSGs tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. HS Histosols -- failed</span></span>
 <span><span class="co">#&gt; 2. AT Anthrosols -- failed</span></span>
-<span><span class="co">#&gt; 3. TC Technosols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 4. CR Cryosols -- failed</span></span>
+<span><span class="co">#&gt; 3. TC Technosols -- NA (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 4. CR Cryosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. LP Leptosols -- failed</span></span>
 <span><span class="co">#&gt; 6. SN Solonetz -- failed</span></span>
 <span><span class="co">#&gt; 7. VR Vertisols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 8. SC Solonchaks -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 9. GL Gleysols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 10. AN Andosols -- NA (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 10. AN Andosols -- NA (4 attrs missing)</span></span>
 <span><span class="co">#&gt; 11. PZ Podzols -- NA (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 12. PT Plinthosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 13. PL Planosols -- failed</span></span>
 <span><span class="co">#&gt; 14. ST Stagnosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 15. NT Nitisols -- failed</span></span>
 <span><span class="co">#&gt; 16. FR Ferralsols -- PASSED</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">classifications</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">fixtures</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">p</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">rsg_or_order</span></span>
 <span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -619,7 +634,7 @@ provenance in a structured log. The final
 an A–D scale: A means every recorded value was laboratory-measured, D
 means the result rests on attributes extracted by VLM or assumed by the
 user.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ferralsol_v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Mark the Bw1 clay value as predicted from spectroscopy</span></span>
@@ -634,7 +649,7 @@ user.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">ferralsol_v</span><span class="op">)</span><span class="op">$</span><span class="va">evidence_grade</span></span>
 <span><span class="co">#&gt; [1] "B"</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ferralsol_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ferralsol_w</span><span class="op">$</span><span class="fu">add_measurement</span><span class="op">(</span><span class="fl">1</span>, <span class="st">"clay_pct"</span>, <span class="fl">50</span>, <span class="st">"extracted_vlm"</span>,</span>
 <span>                              confidence <span class="op">=</span> <span class="fl">0.7</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -648,7 +663,7 @@ user.</p>
 <code><a href="https://ncss-tech.github.io/aqp/reference/SoilProfileCollection-class.html" class="external-link">aqp::SoilProfileCollection</a></code>, allowing soilKey to plug into
 aqp’s plotting and aggregation tooling without owning that
 infrastructure:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spc</span> <span class="op">&lt;-</span> <span class="va">ferralsol</span><span class="op">$</span><span class="fu">to_aqp</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">spc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "SoilProfileCollection"</span></span>
@@ -669,7 +684,7 @@ prediction into the <code>PedonRecord</code> with provenance
 below laboratory-measured but above VLM-extracted values. The PI95
 prediction interval is mapped to a <code>[0, 1]</code> confidence score
 via <code><a href="../reference/pi_to_confidence.html">pi_to_confidence()</a></code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Synthetic example -- a profile with measured spectra but missing CEC.</span></span>
 <span><span class="va">pr_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_synthetic_pedon_with_spectra.html">make_synthetic_pedon_with_spectra</a></span><span class="op">(</span>n_horizons <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">pr_spec</span><span class="op">$</span><span class="va">horizons</span><span class="op">$</span><span class="va">cec_cmol</span> <span class="op">&lt;-</span> <span class="cn">NA_real_</span>   <span class="co"># erase CEC</span></span>
@@ -694,7 +709,7 @@ derived from ISRIC SoilGrids (global) or the Embrapa raster (Brazil).
 The prior <em>never</em> overrides the key – it only attaches a
 <code>prior_check</code> entry to the result and emits a warning if the
 deterministic outcome lies in a low-probability region of the prior.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatial_prior.html">spatial_prior</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>, lat <span class="op">=</span> <span class="op">-</span><span class="fl">22.5</span>, source <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
 <span><span class="va">prior</span>   <span class="co"># data.table of (rsg_code, probability)</span></span>
 <span></span>
@@ -719,7 +734,7 @@ merged into the <code>PedonRecord</code> with provenance
 <p>The package ships a <code>MockVLMProvider</code> (R6) so the
 validation + retry loop can be exercised in tests without an API
 key:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mock</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/MockVLMProvider.html">MockVLMProvider</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  responses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>horizons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -738,7 +753,7 @@ key:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr_extracted</span><span class="op">)</span><span class="op">$</span><span class="va">evidence_grade</span>   <span class="co"># C or D depending on cell coverage</span></span></code></pre></div>
 <p>For real use:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vlm_provider.html">vlm_provider</a></span><span class="op">(</span><span class="st">"anthropic"</span>, model <span class="op">=</span> <span class="st">"claude-sonnet-4-5"</span><span class="op">)</span></span>
 <span><span class="va">pr</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_horizons_from_pdf.html">extract_horizons_from_pdf</a></span><span class="op">(</span><span class="st">"RADAMBRASIL_perfil_007.pdf"</span>,</span>
 <span>                                    provider <span class="op">=</span> <span class="va">chat</span><span class="op">)</span></span>
@@ -752,7 +767,7 @@ key:</p>
 ordens are wired in canonical Cap 4 order; calling
 <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> on any <code>PedonRecord</code> runs the
 same engine that backs <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A canonical Latossolo (Brazilian Ferralsol equivalent)</span></span>
 <span><span class="va">pr_lat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_latossolo_canonical.html">make_latossolo_canonical</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pr_lat</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">rsg_or_order</span></span>
@@ -775,7 +790,7 @@ same engine that backs <code><a href="../reference/classify_wrb2022.html">classi
 <span><span class="co">#&gt; [1] "Latossolos"</span></span></code></pre></div>
 <p>The diagnostic helpers also have Portuguese names that match the
 SiBCS literature. For example:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Atividade da fração argila (Ta vs Tb) per Cap 1, p 30</span></span>
 <span><span class="fu"><a href="../reference/atividade_argila_alta.html">atividade_argila_alta</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_luvissolo_canonical.html">make_luvissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span>   <span class="co"># TRUE  -&gt; Ta</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>

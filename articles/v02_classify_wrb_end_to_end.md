@@ -81,43 +81,48 @@ res
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,
 #> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> al_ox_pct, fe_ox_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
-#> FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, FALSE,
-#> TRUE, TRUE, TRUE, FALSE, FALSE, redoximorphic_features_pct, FALSE,
-#> redoximorphic_features_pct, FALSE, FALSE, p_mehlich3_mg_kg, FALSE,
-#> p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
-#> TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE
+#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
+#> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
+#> plinthite_pct, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
+#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
+#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
+#> FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> TRUE, FALSE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
-#> - TC: Indeterminate -- missing 1 attribute(s): artefacts_pct
+#> - TC: Indeterminate -- missing 3 attribute(s): artefacts_pct,
+#> geomembrane_present, technic_hardmaterial_pct
+#> - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C
 #> - VR: Indeterminate -- missing 1 attribute(s): slickensides
 #> - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m
-#> - AN: Indeterminate -- missing 3 attribute(s): al_ox_pct, fe_ox_pct,
-#> volcanic_glass_pct
+#> - AN: Indeterminate -- missing 4 attribute(s): al_ox_pct, fe_ox_pct,
+#> phosphate_retention_pct, volcanic_glass_pct
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
 #> 
 #> ── Missing data that would refine result
-#> artefacts_pct, slickensides, ec_dS_m, redoximorphic_features_pct, al_ox_pct,
-#> fe_ox_pct, volcanic_glass_pct, plinthite_pct
+#> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
+#> permafrost_temp_C, slickensides, ec_dS_m, redoximorphic_features_pct,
+#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct,
+#> plinthite_pct
 #> 
 #> ── Warnings
-#> ! 8 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 12 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
 #> 1. HS Histosols -- failed
 #> 2. AT Anthrosols -- failed
-#> 3. TC Technosols -- NA (1 attrs missing)
-#> 4. CR Cryosols -- failed
+#> 3. TC Technosols -- NA (3 attrs missing)
+#> 4. CR Cryosols -- NA (1 attrs missing)
 #> 5. LP Leptosols -- failed
 #> 6. SN Solonetz -- failed
 #> 7. VR Vertisols -- NA (1 attrs missing)
 #> 8. SC Solonchaks -- NA (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
-#> 10. AN Andosols -- NA (3 attrs missing)
+#> 10. AN Andosols -- NA (4 attrs missing)
 #> 11. PZ Podzols -- NA (2 attrs missing)
 #> 12. PT Plinthosols -- NA (1 attrs missing)
 #> 13. PL Planosols -- failed

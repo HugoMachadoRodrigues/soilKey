@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,76 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.14/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.15" id="soilkey-0915-2026-04-30">soilKey 0.9.15 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0915-2026-04-30"></a></h2>
+<p>The “robustness pass”: closes the seven v0.3 simplifications in the WRB 2022 key, adds a graceful VLM fallback, auto-detects PROJ / GDAL paths so the layperson on-ramp no longer requires environment variables, ships a one-screen Shiny demo, lays the groundwork for real-data benchmarks against KSSL / EU-LUCAS / Embrapa BDsolos, and captures empirical evidence that the Gemma 4 / Ollama path works end-to-end.</p>
+<div class="section level3">
+<h3 id="wrb--v03-simplifications-closed-0-9-15">WRB 2022 – v0.3 simplifications closed<a class="anchor" aria-label="anchor" href="#wrb--v03-simplifications-closed-0-9-15"></a></h3>
+<p>Each of the seven previously-simplified diagnostics now offers the WRB 2022 alternative qualifying paths verbatim. OR-alternative aggregation via the new <code><a href="../reference/aggregate_alternatives.html">aggregate_alternatives()</a></code> helper. Each path’s evidence is fully recorded in <code>DiagnosticResult$evidence</code> so the trace stays inspectable.</p>
+<ul><li>
+<code>histic_horizon</code> – adds the cumulative path (&gt;= 40 cm of organic material within the upper 80 cm), catching folic / mossy Histosols on slopes that the contiguous-10cm path misses.</li>
+<li>
+<code>anthric_horizons</code> – adds the property-based path (top_cm &lt;= 5 + thickness &gt;= 20 + Munsell value &lt;= 4 + P-Mehlich &gt;= 50), so surveys that only describe properties (no <code>hortic</code>/<code>pretic</code>/… designation) still qualify.</li>
+<li>
+<code>technic_features</code> – adds two new alternative paths: continuous geomembrane within 100 cm, OR technic hard material (concrete, asphalt, mine spoil) &gt;= 95% within the upper 5 cm. Adds the <code>geomembrane_present</code> and <code>technic_hardmaterial_pct</code> fields to the canonical horizon schema.</li>
+<li>
+<code>cryic_conditions</code> – adds the explicit permafrost-temperature path (<code>permafrost_temp_C &lt;= 0 C</code> within 100 cm), no longer depending on the <code>^Cf</code> / <code>-f</code> designation pattern alone.</li>
+<li>
+<code>leptic_features</code> – adds the coarse-fragments path (<code>coarse_fragments_pct &gt;= 90</code> within 25 cm), so rock-dominated profiles that were never formally <code>R</code>/<code>Cr</code>-designated still qualify.</li>
+<li>
+<code>andic_properties</code> – adds the WRB 2022 phosphate-retention alternative (<code>phosphate_retention_pct &gt;= 70</code>). The volcanic-glass alternative remains in the separate <code><a href="../reference/vitric_properties.html">vitric_properties()</a></code> diagnostic; the Andosol RSG gate (<code><a href="../reference/andosol.html">andosol()</a></code>) keys on (andic OR vitric).</li>
+<li>
+<code>nitic_horizon</code> – adds three supplementary tests AND-combined with the primary clay/Fe/thickness gate: polyhedral / nutty structure_type, gradual clay decrease with depth (no &gt;8 pp drop in the upper 50 cm), and shiny-ped-surface evidence (recorded as evidence only, not gating, since the schema lacks a dedicated field). Tests are permissive on missing data; conclusively-FALSE evidence forces the diagnostic to fail.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="layperson-on-ramp--friction-removed-0-9-15">Layperson on-ramp – friction removed<a class="anchor" aria-label="anchor" href="#layperson-on-ramp--friction-removed-0-9-15"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/run_demo.html">run_demo()</a></code></strong> – launches a one-screen Shiny app that lets a pedologist pick one of 31 canonical profiles or upload a small horizons CSV, click Classify, and read the WRB / SiBCS / USDA names plus the deterministic key trace and the evidence grade. No R code required. <code>inst/shiny-demo/app.R</code>.</li>
+<li>
+<strong><code><a href="../reference/auto_set_proj_env.html">auto_set_proj_env()</a></code></strong> – runs at package load (<code>.onLoad</code>) and probes the standard PROJ / GDAL data directories on macOS Homebrew (Apple silicon + Intel), Linuxbrew, conda / mamba, and Debian / Fedora apt / dnf. Sets <code>PROJ_LIB</code> and <code>GDAL_DATA</code> only when not already set, so the user-provided value always wins. Eliminates the most common installation foot-gun on non-Linux platforms.</li>
+<li>
+<strong>Simplified <code>vignettes/v01_getting_started.Rmd</code></strong> – now leads with the 30-second on-ramp (Shiny + one-call fixture path) before going into manual <code>PedonRecord$new()</code> construction.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="vlm-graceful-fallback-0-9-15">VLM graceful fallback<a class="anchor" aria-label="anchor" href="#vlm-graceful-fallback-0-9-15"></a></h3>
+<ul><li>
+<strong><code>provider = "auto"</code></strong> is now the new default for <code><a href="../reference/classify_from_documents.html">classify_from_documents()</a></code>. It picks local Ollama when running (<code><a href="../reference/ollama_is_running.html">ollama_is_running()</a></code>), then falls back to any cloud provider whose API key is set in this preference order: Anthropic, OpenAI, Google. A clear <code>cli</code> message reports the chosen provider.</li>
+<li>
+<strong><code><a href="../reference/vlm_pick_provider.html">vlm_pick_provider()</a></code></strong> – exposes the cascading-picker logic so users can reason about it programmatically. Errors with an actionable installation / API-key hint when nothing is reachable.</li>
+<li>
+<strong><code><a href="../reference/ollama_is_running.html">ollama_is_running()</a></code></strong> – probes the standard Ollama HTTP endpoint (default <code>http://127.0.0.1:11434/api/tags</code>) with a short timeout, configurable via <code>options(soilKey.ollama_url = ...)</code>.</li>
+<li>
+<strong><code><a href="../reference/extract_horizons_from_pdf.html">extract_horizons_from_pdf()</a></code></strong> now accepts a <code>pdf_text</code> parameter as an alternative to <code>pdf_path</code>, useful for smoke-testing without a real PDF and for unit tests that cannot rely on <code>pdftools</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="sibcs-cap-mineralogia--general-orden-coverage-0-9-15">SiBCS Cap 18 mineralogia – general-orden coverage<a class="anchor" aria-label="anchor" href="#sibcs-cap-mineralogia--general-orden-coverage-0-9-15"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/familia_mineralogia_argila_geral.html">familia_mineralogia_argila_geral()</a></code></strong> – new function. Covers Argissolos, Cambissolos, Plintossolos, Vertissolos, Luvissolos, Nitossolos, Chernossolos, Planossolos, Gleissolos – everything the Latossolo-only <code><a href="../reference/familia_mineralogia_argila_latossolo.html">familia_mineralogia_argila_latossolo()</a></code> did not address. Adds the four mineralogia da argila classes the earlier function lacked: <code>esmectitica</code> (T_argila &gt;= 27), <code>oxidica</code> (Kr &lt; 0.75), <code>caulinitica</code> (Ki, Kr &gt;= 0.75 with low T), and <code>mista</code> (catch-all when no gate closes).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="real-data-benchmark-scaffolding-0-9-15">Real-data benchmark scaffolding<a class="anchor" aria-label="anchor" href="#real-data-benchmark-scaffolding-0-9-15"></a></h3>
+<ul><li>
+<strong><code>load_kssl_pedons(pedon_csv, layer_csv)</code></strong> – loads NCSS / KSSL pedons (USDA Soil Taxonomy reference labels) into a list of <code>PedonRecord</code>s. The de-facto USDA validation set; ~50k profiles.</li>
+<li>
+<strong><code>load_lucas_pedons(lucas_csv)</code></strong> – loads EU-LUCAS topsoil records joined with ESDB profile sheets (WRB labels). ~28k profiles in the 2015-2018 release.</li>
+<li>
+<strong><code>load_embrapa_pedons(csv_path)</code></strong> – loads Embrapa BDsolos / dadosolos archive (SiBCS labels, PT-BR). ~5k profiles.</li>
+<li>
+<strong><code>benchmark_run_classification(pedons, system, level, boot_n)</code></strong> – runs each pedon through the deterministic key, compares against the published reference, and returns top-1 accuracy + bootstrap 95% CI + confusion matrix. The infrastructure for the v1.0 methods-paper benchmark.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="vlm-live-smoke-evidence-0-9-15">VLM live smoke evidence<a class="anchor" aria-label="anchor" href="#vlm-live-smoke-evidence-0-9-15"></a></h3>
+<ul><li>
+<strong><code>inst/benchmarks/run_vlm_live_smoke.R</code></strong> – runs a real Gemma 4 (<code>gemma4:e4b</code>) extraction against a synthetic PT-BR field description; verifies that the schema-validated extraction layer populates a <code>PedonRecord</code> and that the deterministic key classifies it. The 2026-04-30 reference run reports 4 horizons extracted, 28 attributes recorded with <code>extracted_vlm</code> provenance, and full WRB / SiBCS / USDA classification in 120 s. Re-run on every release to track regression in the VLM path.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-15">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-15"></a></h3>
+<ul><li>+84 expectations across <code>test-vlm-fallback.R</code>, <code>test-sibcs-mineralogia-geral.R</code>, <code>test-benchmark-loaders.R</code>, and the updated <code>test-diagnostics-wrb-v03a.R</code> (which now also exercises the cumulative-histic path and the andic OR-alternative paths). Total: <strong>2826</strong> passing, 0 failing, 13 skipped.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.14" id="soilkey-0914-2026-04-30">soilKey 0.9.14 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0914-2026-04-30"></a></h2>
 <p>Closes three gaps that the v0.9.13 spec called out as remaining work: the OSSL bundle had no WRB labels, there was no GIS deliverable, and the seven existing vignettes never showed the full end-to-end pipeline in one place.</p>

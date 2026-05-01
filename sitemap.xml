@@ -32,6 +32,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aeolic_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aeric_oxisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aeric_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aggregate_alternatives.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aggregate_subtests.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/al_rich_spodic_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/albaquult_qualifying_usda.html</loc></url>
@@ -87,6 +88,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/artefacts.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/as_chat_text.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/atividade_argila_alta.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.html</loc></url>
@@ -255,6 +258,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_grupamento_textural.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_label.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_areia.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_espessura.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_lenhosidade.html</loc></url>
@@ -372,6 +376,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lithic_contact_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lithic_discontinuity.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lixisol.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_schema.html</loc></url>
@@ -451,6 +458,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/nitric_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalize_prior.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/organic_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/organossolo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_folico.html</loc></url>
@@ -660,6 +668,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/rhodic_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_key.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_subgrupo.html</loc></url>
@@ -732,6 +741,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_al_saturation_below.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_alfe_ox_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_andic_alfe.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_anthric_horizon_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_artefacts_concentration.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_bs_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_bs_below.html</loc></url>
@@ -745,7 +755,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_chernic_color.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_claric_munsell.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_above.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_decreases_with_depth.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_fragments_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_texture_throughout.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_designation_pattern.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_duripan_concentration.html</loc></url>
@@ -756,6 +768,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_ferralic_texture.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_ferralic_thickness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_fluvic_stratification.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_geomembrane_within_depth.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_gleyic_features.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_base_saturation.html</loc></url>
@@ -766,19 +779,26 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_not_albeluvic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_numeric_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_oc_above.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_oc_cumulative_thickness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_pattern_match.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_permafrost_temp_below.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_ph_below.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_phosphate_retention_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_plinthite_concentration.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_polyhedral_or_nutty_structure.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_reducing_conditions.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_salic_product.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_shiny_ped_surfaces.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_shrink_swell_cracks.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_slickensides_present.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_spodic_aluminum_iron.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_stagnic_pattern.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_starts_within.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_takyric_surface.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_technic_hardmaterial_at_surface.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_texture_argic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_top_at_or_above.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_volcanic_glass_above.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/test_yermic_surface.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/thaptic_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/thapto_humic_usda.html</loc></url>
@@ -812,6 +832,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vitrandic_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vitric_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vitric_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wassent_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wassist_qualifying_usda.html</loc></url>

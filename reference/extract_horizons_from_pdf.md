@@ -12,12 +12,13 @@ verbatim source quote.
 ``` r
 extract_horizons_from_pdf(
   pedon,
-  pdf_path,
+  pdf_path = NULL,
   provider,
   max_retries = 3L,
   overwrite = FALSE,
   prompt_name = "extract_horizons",
-  schema_name = "horizon"
+  schema_name = "horizon",
+  pdf_text = NULL
 )
 ```
 
@@ -31,7 +32,8 @@ extract_horizons_from_pdf(
 
 - pdf_path:
 
-  Path to the PDF file.
+  Path to the PDF file. Either `pdf_path` or `pdf_text` must be
+  supplied.
 
 - provider:
 
@@ -57,6 +59,12 @@ extract_horizons_from_pdf(
 - schema_name:
 
   Override the default schema (`"horizon"`).
+
+- pdf_text:
+
+  Optional alternative to `pdf_path`: the already-extracted description
+  text. Useful for smoke tests, unit tests without `pdftools`, and for
+  already-OCR'd field-sheet text.
 
 ## Value
 

@@ -1,14 +1,22 @@
 # Cryic conditions (WRB 2022)
 
 Tests whether continuous frozen / permafrost material occurs within the
-upper 100 cm. v0.3 detects via designation pattern: any layer with
-designation containing the suffix `"f"` (frozen) within the top 100 cm,
-or the explicit pattern `"^Cf"` / `"perma"`. Diagnostic of Cryosols.
+upper `max_top_cm`. Two alternative paths qualify per WRB 2022:
+
+1.  **Permafrost temperature**: a layer at top_cm \<= `max_top_cm`
+    (default 100) with `permafrost_temp_C <= max_temp_C` (default 0 C).
+
+2.  **Designation pattern**: a layer at top_cm \<= `max_top_cm` with
+    designation containing suffix `"f"` (frozen) or matching `"^Cf"` /
+    `"perma"`. Used as a fallback when the temperature field is not in
+    the pedon (typical of legacy survey data).
+
+Either path qualifies. Diagnostic of Cryosols.
 
 ## Usage
 
 ``` r
-cryic_conditions(pedon, max_top_cm = 100)
+cryic_conditions(pedon, max_top_cm = 100, max_temp_C = 0)
 ```
 
 ## Arguments
@@ -21,6 +29,11 @@ cryic_conditions(pedon, max_top_cm = 100)
 - max_top_cm:
 
   Maximum top depth (cm) (default 100).
+
+- max_temp_C:
+
+  Maximum mean annual permafrost-zone temperature (deg C) for the
+  temperature path (default 0).
 
 ## Value
 

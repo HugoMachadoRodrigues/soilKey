@@ -17,7 +17,7 @@ confidence and verbatim source quote."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@ confidence and verbatim source quote."><meta property="og:image" content="https:
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Extract horizons from a soil description PDF</h1>
-      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.14/R/vlm-extract.R" class="external-link"><code>R/vlm-extract.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/R/vlm-extract.R" class="external-link"><code>R/vlm-extract.R</code></a></small>
       <div class="d-none name"><code>extract_horizons_from_pdf.Rd</code></div>
     </div>
 
@@ -71,12 +71,13 @@ confidence and verbatim source quote.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_horizons_from_pdf</span><span class="op">(</span></span>
 <span>  <span class="va">pedon</span>,</span>
-<span>  <span class="va">pdf_path</span>,</span>
+<span>  pdf_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">provider</span>,</span>
 <span>  max_retries <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prompt_name <span class="op">=</span> <span class="st">"extract_horizons"</span>,</span>
-<span>  schema_name <span class="op">=</span> <span class="st">"horizon"</span></span>
+<span>  schema_name <span class="op">=</span> <span class="st">"horizon"</span>,</span>
+<span>  pdf_text <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -90,7 +91,8 @@ place AND returned invisibly.</p></dd>
 
 
 <dt id="arg-pdf-path">pdf_path<a class="anchor" aria-label="anchor" href="#arg-pdf-path"></a></dt>
-<dd><p>Path to the PDF file.</p></dd>
+<dd><p>Path to the PDF file. Either <code>pdf_path</code> or
+<code>pdf_text</code> must be supplied.</p></dd>
 
 
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
@@ -115,6 +117,13 @@ to clobber higher-authority ones. Default <code>FALSE</code>.</p></dd>
 
 <dt id="arg-schema-name">schema_name<a class="anchor" aria-label="anchor" href="#arg-schema-name"></a></dt>
 <dd><p>Override the default schema (<code>"horizon"</code>).</p></dd>
+
+
+<dt id="arg-pdf-text">pdf_text<a class="anchor" aria-label="anchor" href="#arg-pdf-text"></a></dt>
+<dd><p>Optional alternative to <code>pdf_path</code>: the
+already-extracted description text. Useful for smoke
+tests, unit tests without <code>pdftools</code>, and for
+already-OCR'd field-sheet text.</p></dd>
 
 </dl></div>
     <div class="section level2">

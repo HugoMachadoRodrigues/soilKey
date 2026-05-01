@@ -2125,6 +2125,9 @@ atividade da argila, óxidos, ândico, …).
 - [`familia_mineralogia_areia()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_areia.md)
   : Familia: mineralogia da fracao areia (Cap 18, p 286)
 
+- [`familia_mineralogia_argila_geral()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.md)
+  : Familia: mineralogia da fracao argila (geral, nao-Latossolos)
+
 - [`familia_mineralogia_argila_latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.md)
   : Familia: mineralogia da fracao argila para Latossolos (Cap 18, p
   286-287)
@@ -2858,6 +2861,35 @@ Render a complete pedologist-facing report from one or more
 - [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
   : Export a classification result + pedon to a QGIS GeoPackage
 
+## Layperson on-ramp
+
+Zero-code Shiny GUI plus auto-detect helpers that remove the friction
+non-coders hit on a fresh install.
+
+- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
+  : Launch the soilKey Shiny demo (one-screen GUI)
+- [`auto_set_proj_env()`](https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.md)
+  : Auto-detect PROJ_LIB and GDAL_DATA directories
+- [`vlm_pick_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.md)
+  : Pick the best available VLM provider
+- [`ollama_is_running()`](https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.md)
+  : Is the local Ollama HTTP API reachable?
+
+## Real-data benchmarks (v0.9.15)
+
+Loaders for the three external validation sets soilKey is benchmarked
+against in the v1.0 methods paper.
+
+- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
+  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
+  classification
+- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
+  : Load EU-LUCAS / ESDB pedons with reference WRB classification
+- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
+  : Load Embrapa dadosolos pedons with reference SiBCS classification
+- [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md)
+  : Run a benchmark across one of the loaded pedon lists
+
 ## Canonical fixtures
 
 One-call constructors for the 31 canonical fixtures (one per WRB RSG,
@@ -2953,6 +2985,9 @@ plus auxiliaries) used in the test suite.
   : Perfil canonico de Vertissolo (SiBCS 5a ed., Cap 17)
 
 ## Helpers and miscellaneous
+
+- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
+  : Launch the soilKey Shiny demo (one-screen GUI)
 
 - [`run_sibcs_grande_grupo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.md)
   : Resolve o grande grupo (3o nivel) de um pedon classificado em uma
@@ -3135,6 +3170,16 @@ plus auxiliaries) used in the test suite.
 - [`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
   : Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
 
+- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
+  : Load Embrapa dadosolos pedons with reference SiBCS classification
+
+- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
+  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
+  classification
+
+- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
+  : Load EU-LUCAS / ESDB pedons with reference WRB classification
+
 - [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
   : Load a soilKey rule set (YAML)
 
@@ -3312,6 +3357,9 @@ plus auxiliaries) used in the test suite.
 
 - [`download_ossl_subset_with_labels()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.md)
   : Download an OSSL subset and attach WRB / SiBCS / USDA labels
+
+- [`familia_mineralogia_argila_geral()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.md)
+  : Familia: mineralogia da fracao argila (geral, nao-Latossolos)
 
 - [`ossl_demo_sa`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_demo_sa.md)
   : Synthetic OSSL South America demo subset

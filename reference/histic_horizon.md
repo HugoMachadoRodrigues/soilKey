@@ -1,12 +1,31 @@
 # Histic horizon (WRB 2022)
 
-A surface horizon (or near-surface, after drainage) of organic material
-\>= 10 cm thick; diagnostic of Histosols.
+A surface (or near-surface, after drainage) horizon of organic material;
+diagnostic of Histosols. Two alternative qualifying paths per WRB 2022:
+
+- **Contiguous**: a single layer of organic material (OC % \>= `min_oc`)
+  reaching the surface and at least `min_thickness` cm thick (default 10
+  cm).
+
+- **Cumulative**: organic material totalling `cumulative_min_cm` cm
+  (default 40) within the upper `cumulative_max_depth_cm` (default 80).
+  Relevant for folic / mossy Histosols on slopes.
+
+Either path qualifies. The "after drainage" qualifier (recently drained
+organic soils) is treated as implicit since the same OC and thickness
+criteria apply.
 
 ## Usage
 
 ``` r
-histic_horizon(pedon, min_thickness = 10, min_oc = 12, surface_top_cm = 0)
+histic_horizon(
+  pedon,
+  min_thickness = 10,
+  min_oc = 12,
+  surface_top_cm = 0,
+  cumulative_min_cm = 40,
+  cumulative_max_depth_cm = 80
+)
 ```
 
 ## Arguments
@@ -18,8 +37,7 @@ histic_horizon(pedon, min_thickness = 10, min_oc = 12, surface_top_cm = 0)
 
 - min_thickness:
 
-  Minimum thickness (cm) of contiguous organic material from the surface
-  (default 10).
+  Minimum thickness (cm) for the contiguous path (default 10).
 
 - min_oc:
 
@@ -29,32 +47,21 @@ histic_horizon(pedon, min_thickness = 10, min_oc = 12, surface_top_cm = 0)
 - surface_top_cm:
 
   Maximum top depth (cm) for a layer to be considered "surface-related"
-  (default 0; the histic horizon must reach the surface, possibly after
-  drainage).
+  in the contiguous path (default 0).
+
+- cumulative_min_cm:
+
+  Minimum cumulative thickness (cm) for the cumulative path (default
+  40).
+
+- cumulative_max_depth_cm:
+
+  Depth window (cm) for the cumulative path (default 80).
 
 ## Value
 
 A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md).
-
-## Details
-
-Sub-tests:
-
-- [`test_oc_above`](https://hugomachadorodrigues.github.io/soilKey/reference/test_oc_above.md)
-  – OC % \>= 12
-
-- [`test_top_at_or_above`](https://hugomachadorodrigues.github.io/soilKey/reference/test_top_at_or_above.md)
-  – top_cm \<= 0
-
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – thickness \>= 10 cm
-
-v0.3 limitations: WRB 2022 also accepts a 40 cm cumulative
-organic-material thickness within the upper 80 cm (relevant for folic /
-mossy Histosols on slopes); v0.4 will add the cumulative variant. The
-"after drainage" qualifier (recently-drained organic soils) is also
-deferred.
 
 ## References
 
