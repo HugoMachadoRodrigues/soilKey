@@ -51,10 +51,67 @@
 <h2 class="pkg-version" data-toc-text="0.9.21" id="soilkey-0921-2026-05-01">soilKey 0.9.21 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0921-2026-05-01"></a></h2>
 <p>The “surveyor’s diagnostic identification as scientific tie-breaker” release. Wires the NASIS <code>pediagfeatures.featkind</code> table (64 169 records of field-surveyor-identified diagnostic horizons) into the USDA Order gates as a TIE-BREAKER ONLY: when the canonical lab + morphology gate returns <code>passed = NA</code> (insufficient data), the surveyor’s identification flips it to TRUE. When the canonical gate returns TRUE / FALSE, the tag is recorded as evidence but does NOT override – preserving the deterministic-key-on-data invariant.</p>
 <div class="section level3">
-<h3 id="real-data-benchmark-impact-ksslnasis-two-independent-samples-0-9-21">Real-data benchmark impact (KSSL+NASIS, two independent samples)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-ksslnasis-two-independent-samples-0-9-21"></a></h3>
-<p>The per-Order improvements <strong>replicate consistently</strong> across two independently sampled subsets of the KSSL+NASIS data, confirming the tie-breaker is not noise.</p>
+<h3 id="real-data-benchmark-impact-ksslnasis-three-samples--definitive-0-9-21">Real-data benchmark impact (KSSL+NASIS, three samples + definitive)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-ksslnasis-three-samples--definitive-0-9-21"></a></h3>
+<p>The per-Order improvements <strong>replicate consistently</strong> across three independently sampled subsets of the KSSL+NASIS data. The 5 000-head sample is the apples-to-apples definitive run vs the v0.9.19 (n=3 213) and v0.9.20 (n=3 218) baselines.</p>
 <div class="section level4">
-<h4 id="id_3-head-sample-n2-quality-filtered-0-9-21">3 000-head sample, n=2 002 quality-filtered<a class="anchor" aria-label="anchor" href="#id_3-head-sample-n2-quality-filtered-0-9-21"></a></h4>
+<h4 id="definitive-head-sample-n3-quality-filtered-0-9-21">Definitive: 5 000-head sample, n=3 218 quality-filtered<a class="anchor" aria-label="anchor" href="#definitive-head-sample-n3-quality-filtered-0-9-21"></a></h4>
+<table class="table"><colgroup><col width="19%"><col width="23%"><col width="25%"><col width="30%"></colgroup><thead><tr><th>Order</th>
+<th align="right">v0.9.19 lab</th>
+<th align="right">v0.9.20 NASIS</th>
+<th align="right">v0.9.21 +tie-breaker</th>
+</tr></thead><tbody><tr><td><strong>Spodosols</strong></td>
+<td align="right">17.8 % (49/276)</td>
+<td align="right">29.0 % (80/276)</td>
+<td align="right"><strong>38.0 % (105/276)</strong></td>
+</tr><tr><td><strong>Vertisols</strong></td>
+<td align="right">58.7 % (37/63)</td>
+<td align="right">70.8 % (46/65)</td>
+<td align="right"><strong>73.8 % (48/65)</strong></td>
+</tr><tr><td>Mollisols</td>
+<td align="right">19.9 % (145/727)</td>
+<td align="right">25.0 % (182/727)</td>
+<td align="right">25.7 % (187/727)</td>
+</tr><tr><td>Inceptisols</td>
+<td align="right">23.1 % (107/463)</td>
+<td align="right">46.3 % (215/464)</td>
+<td align="right">46.3 % (215/464)</td>
+</tr><tr><td>Aridisols</td>
+<td align="right">42.4 % (189/446)</td>
+<td align="right">46.6 % (208/446)</td>
+<td align="right">46.6 % (208/446)</td>
+</tr><tr><td>Alfisols</td>
+<td align="right">21.4 % (142/663)</td>
+<td align="right">22.6 % (150/665)</td>
+<td align="right">22.6 % (150/665)</td>
+</tr><tr><td>Ultisols</td>
+<td align="right">21.9 % (90/411)</td>
+<td align="right">21.7 % (89/411)</td>
+<td align="right">21.7 % (89/411)</td>
+</tr><tr><td>Entisols</td>
+<td align="right">46.3 % (50/108)</td>
+<td align="right">36.1 % (39/108)</td>
+<td align="right">35.2 % (38/108)</td>
+</tr><tr><td>Oxisols</td>
+<td align="right">49.0 % (24/49)</td>
+<td align="right">49.0 % (24/49)</td>
+<td align="right">49.0 % (24/49)</td>
+</tr><tr><td>Histosols</td>
+<td align="right">66.7 % (2/3)</td>
+<td align="right">66.7 % (2/3)</td>
+<td align="right">66.7 % (2/3)</td>
+</tr><tr><td><strong>TOTAL</strong></td>
+<td align="right"><strong>26.0 %</strong></td>
+<td align="right"><strong>32.2 %</strong></td>
+<td align="right"><strong>33.1 %</strong></td>
+</tr><tr><td></td>
+<td align="right"></td>
+<td align="right"><strong>+6.2 pp</strong></td>
+<td align="right"><strong>+0.9 pp</strong></td>
+</tr></tbody></table><p><strong>USDA top-1: 33.1 % (CI [31.7 %, 34.6 %], n=3 218).</strong></p>
+<p>Cumulative improvement v0.9.19 -&gt; v0.9.21: <strong>+7.1 pp</strong>. The <strong>Spodosol +9 pp from tie-breaker alone (29.0 -&gt; 38.0)</strong> at n=276 is the largest per-Order gain in v0.9.21. Combined with v0.9.20 NASIS morphology (17.8 -&gt; 29.0), the total Spodosol improvement from v0.9.19 -&gt; v0.9.21 is <strong>+20.2 pp</strong>.</p>
+</div>
+<div class="section level4">
+<h4 id="replication-head-sample-n2-quality-filtered-0-9-21">Replication: 3 000-head sample, n=2 002 quality-filtered<a class="anchor" aria-label="anchor" href="#replication-head-sample-n2-quality-filtered-0-9-21"></a></h4>
 <table class="table"><thead><tr><th>Order</th>
 <th align="right">v0.9.20 NASIS</th>
 <th align="right">v0.9.21 +tie-breaker</th>

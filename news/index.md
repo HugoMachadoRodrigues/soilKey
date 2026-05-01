@@ -11,13 +11,39 @@ flips it to TRUE. When the canonical gate returns TRUE / FALSE, the tag
 is recorded as evidence but does NOT override – preserving the
 deterministic-key-on-data invariant.
 
-### Real-data benchmark impact (KSSL+NASIS, two independent samples)
+### Real-data benchmark impact (KSSL+NASIS, three samples + definitive)
 
-The per-Order improvements **replicate consistently** across two
-independently sampled subsets of the KSSL+NASIS data, confirming the
-tie-breaker is not noise.
+The per-Order improvements **replicate consistently** across three
+independently sampled subsets of the KSSL+NASIS data. The 5 000-head
+sample is the apples-to-apples definitive run vs the v0.9.19 (n=3 213)
+and v0.9.20 (n=3 218) baselines.
 
-#### 3 000-head sample, n=2 002 quality-filtered
+#### Definitive: 5 000-head sample, n=3 218 quality-filtered
+
+| Order         |      v0.9.19 lab |    v0.9.20 NASIS | v0.9.21 +tie-breaker |
+|---------------|-----------------:|-----------------:|---------------------:|
+| **Spodosols** |  17.8 % (49/276) |  29.0 % (80/276) | **38.0 % (105/276)** |
+| **Vertisols** |   58.7 % (37/63) |   70.8 % (46/65) |   **73.8 % (48/65)** |
+| Mollisols     | 19.9 % (145/727) | 25.0 % (182/727) |     25.7 % (187/727) |
+| Inceptisols   | 23.1 % (107/463) | 46.3 % (215/464) |     46.3 % (215/464) |
+| Aridisols     | 42.4 % (189/446) | 46.6 % (208/446) |     46.6 % (208/446) |
+| Alfisols      | 21.4 % (142/663) | 22.6 % (150/665) |     22.6 % (150/665) |
+| Ultisols      |  21.9 % (90/411) |  21.7 % (89/411) |      21.7 % (89/411) |
+| Entisols      |  46.3 % (50/108) |  36.1 % (39/108) |      35.2 % (38/108) |
+| Oxisols       |   49.0 % (24/49) |   49.0 % (24/49) |       49.0 % (24/49) |
+| Histosols     |     66.7 % (2/3) |     66.7 % (2/3) |         66.7 % (2/3) |
+| **TOTAL**     |       **26.0 %** |       **32.2 %** |           **33.1 %** |
+|               |                  |      **+6.2 pp** |          **+0.9 pp** |
+
+**USDA top-1: 33.1 % (CI \[31.7 %, 34.6 %\], n=3 218).**
+
+Cumulative improvement v0.9.19 -\> v0.9.21: **+7.1 pp**. The **Spodosol
++9 pp from tie-breaker alone (29.0 -\> 38.0)** at n=276 is the largest
+per-Order gain in v0.9.21. Combined with v0.9.20 NASIS morphology (17.8
+-\> 29.0), the total Spodosol improvement from v0.9.19 -\> v0.9.21 is
+**+20.2 pp**.
+
+#### Replication: 3 000-head sample, n=2 002 quality-filtered
 
 | Order         |    v0.9.20 NASIS |           v0.9.21 +tie-breaker |
 |---------------|-----------------:|-------------------------------:|
