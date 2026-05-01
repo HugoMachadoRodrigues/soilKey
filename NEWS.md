@@ -1,3 +1,123 @@
+# soilKey 0.9.21 (2026-05-01)
+
+The "surveyor's diagnostic identification as scientific tie-breaker"
+release. Wires the NASIS `pediagfeatures.featkind` table (64 169
+records of field-surveyor-identified diagnostic horizons) into the
+USDA Order gates as a TIE-BREAKER ONLY: when the canonical lab +
+morphology gate returns `passed = NA` (insufficient data), the
+surveyor's identification flips it to TRUE. When the canonical gate
+returns TRUE / FALSE, the tag is recorded as evidence but does NOT
+override -- preserving the deterministic-key-on-data invariant.
+
+## Real-data benchmark impact (KSSL+NASIS apples-to-apples)
+
+3 000-head sample, n=2 002 quality-filtered, identical filter
+between runs:
+
+| Order        | v0.9.20 NASIS    | v0.9.21 +tie-breaker |
+|--------------|-----------------:|---------------------:|
+| **Spodosols**    | 26.0 % (39/150) | **42.0 % (63/150)** (+16.0 pp) |
+| **Vertisols**    | 65.2 % (30/46)  | **69.6 % (32/46)**  (+4.4 pp)  |
+| Mollisols    | 22.2 % (112/505) | 23.2 % (117/505)  (+1.0 pp)  |
+| Inceptisols  | 47.2 % (118/250) | 47.2 % (118/250)  (=)        |
+| Aridisols    | 46.6 % (130/279) | 46.6 % (130/279)  (=)        |
+| Alfisols     | 19.4 % (82/422)  | 19.4 % (82/422)   (=)        |
+| Ultisols     | 20.4 % (55/269)  | 20.4 % (55/269)   (=)        |
+| Entisols     | 42.9 % (27/63)   | 41.3 % (26/63)    (-1.6 pp)  |
+| Oxisols      | 28.6 % (4/14)    | 28.6 % (4/14)     (=)        |
+| Andisols     | 0/4              | 0/4                (=)        |
+| **TOTAL**    | **29.8 %**       | **31.3 %**        | **+1.5 pp** |
+
+USDA top-1: **31.3 %** (CI [29.0 %, 33.5 %], n=2 002).
+
+The Spodosol jump (+16 pp) is the headline: when Al/Fe oxalate are
+absent and morphology is sparse, the surveyor's direct
+identification of "Spodic horizon" or "Spodic materials" in
+`pediagfeatures.featkind` recovers the diagnostic. Vertisol and
+Mollisol gains are smaller but consistent with the tie-breaker
+philosophy: it fires only on NA cases. Most other Orders see no
+change because their canonical gates were already conclusive.
+
+## What pediagfeatures provides
+
+NASIS `pediagfeatures.featkind` distribution (top entries):
+
+| featkind | n |
+|---|---:|
+| Ochric epipedon | 13 833 |
+| Argillic horizon | 13 501 |
+| Mollic epipedon | 6 860 |
+| Cambic horizon | 4 970 |
+| Lithic contact | 2 193 |
+| Aquic conditions | 1 750 |
+| Calcic horizon | 1 541 |
+| Albic horizon | 1 415 |
+| Fragipan | 1 091 |
+| Spodic horizon | 829 |
+| Umbric epipedon | 803 |
+| Slickensides | 519 |
+| Andic soil properties | 494 |
+| Glossic horizon | 429 |
+| Histic epipedon | 201 |
+
+The 13 501 "Argillic horizon" + 6 860 "Mollic epipedon" records are
+particularly impactful -- they directly identify the diagnostic
+horizons that drive Mollisol / Alfisol / Ultisol / Inceptisol
+disambiguation.
+
+## Code
+
+### `.has_nasis_feature(pedon, pattern)`
+
+Checks `pedon$site$nasis_diagnostic_features` (populated by
+`load_kssl_pedons_with_nasis()`) for a regex match against the
+NASIS featkind values.
+
+### `.apply_nasis_tiebreaker(result, pedon, pattern, feature_label)`
+
+Applied at the start of each USDA Order gate. If the input
+`DiagnosticResult$passed == NA` AND the surveyor identified the
+matching feature, flips `passed` to TRUE and records the
+provenance. Does NOT override TRUE / FALSE.
+
+### USDA Order gates with tie-breaker (v0.9.21)
+
+| Gate | Tie-breaker pattern |
+|---|---|
+| `histosol_usda` | Histic / Folistic / Hemic / Sapric / Fibric / Limnic / Coprogenous |
+| `spodosol_usda` | Spodic horizon / Spodic materials / Ortstein / Placic |
+| `andisol_usda` | Andic soil properties / Vitric / Volcanic glass |
+| `vertisol_usda` | Slickensides / Vertic features / Gilgai |
+| `ultisol_usda` | Argillic horizon / Kandic horizon |
+| `mollisol_usda` | Mollic epipedon |
+| `alfisol_usda` | Argillic horizon / Kandic horizon / Natric horizon |
+| `inceptisol_usda` | Cambic horizon |
+
+## Why scientifically defensible
+
+The tie-breaker fires ONLY when the canonical gate returns NA,
+i.e., when the deterministic key has insufficient data to decide.
+In that case, the field surveyor's identification (recorded in
+NASIS by NRCS pedologists) is the most authoritative source short
+of re-running the field survey. When chemistry + morphology IS
+available and conclusive, the canonical gate's TRUE / FALSE stands
+unmodified -- the tie-breaker is strictly additive on missing-data
+cases.
+
+This preserves the package-level invariant: **the deterministic
+key on lab + morphology data always wins; the surveyor tag is a
+fallback when the deterministic key is silent**.
+
+## Tests + CRAN
+
+* 2 829 testthat expectations passing, 0 failed
+* 31/31 canonical fixtures still classify correctly (no regression
+  -- canonical fixtures don't have NASIS pediagfeatures, so the
+  tie-breaker is inactive on them)
+* Embrapa benchmark unchanged (USDA 47.6 %, WRB 32.7 %, SiBCS
+  40.6 %) -- FEBR doesn't carry NASIS pediagfeatures
+* `R CMD check --as-cran` with PROJ env: Status: OK
+
 # soilKey 0.9.20 (2026-05-01)
 
 The "field morphology unlocks the lab" release. Integrates the NASIS

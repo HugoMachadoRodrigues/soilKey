@@ -103,6 +103,12 @@ gelisol_usda <- function(pedon) {
 #' @export
 histosol_usda <- function(pedon) {
   hi <- histosol_qualifying_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- Histic / Folistic / Hemic / Sapric
+  # / Fibric surveyor identification flips an NA histosol_qualifying
+  # to TRUE.
+  hi <- .apply_nasis_tiebreaker(hi, pedon,
+                                 pattern       = "^Histic epipedon$|^Folistic epipedon$|^Hemic|^Sapric|^Fibric|^Limnic|^Coprogenous",
+                                 feature_label = "Histic / Folistic / Hemic / Sapric / Fibric materials")
   ge <- gelisol_usda(pedon)
   passed <- isTRUE(hi$passed) && !isTRUE(ge$passed)
   DiagnosticResult$new(
@@ -122,6 +128,11 @@ histosol_usda <- function(pedon) {
 #' @export
 spodosol_usda <- function(pedon) {
   sp <- spodic(pedon)
+  # v0.9.21: NASIS tie-breaker -- "Spodic horizon" or "Spodic
+  # materials" surveyor identification flips an NA spodic to TRUE.
+  sp <- .apply_nasis_tiebreaker(sp, pedon,
+                                 pattern       = "^Spodic horizon$|^Spodic materials$|^Ortstein$|^Placic horizon$",
+                                 feature_label = "Spodic horizon / materials")
   ex <- isTRUE(gelisol_usda(pedon)$passed) || isTRUE(histosol_usda(pedon)$passed)
   passed <- isTRUE(sp$passed) && !ex
   DiagnosticResult$new(
@@ -143,6 +154,12 @@ andisol_usda <- function(pedon) {
   # 60% / 60 cm rule (KST 13ed, Ch 6 p 117) instead of just any
   # andic-property layer.
   aq <- andisol_qualifying_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- "Andic soil properties" or "Volcanic
+  # glass" surveyor identification flips an NA andisol_qualifying to
+  # TRUE.
+  aq <- .apply_nasis_tiebreaker(aq, pedon,
+                                 pattern       = "^Andic soil properties$|^Vitric|^Volcanic glass$",
+                                 feature_label = "Andic soil properties / Volcanic glass")
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed)
@@ -219,6 +236,12 @@ oxisol_usda <- function(pedon) {
 #' @export
 vertisol_usda <- function(pedon) {
   vh <- vertic_horizon(pedon)
+  # v0.9.21: NASIS tie-breaker -- Slickensides surveyor
+  # identification flips an NA vertic_horizon to TRUE (when no COLE
+  # or cracks measurement is available).
+  vh <- .apply_nasis_tiebreaker(vh, pedon,
+                                 pattern       = "^Slickensides$|^Vertic|^Gilgai$",
+                                 feature_label = "Slickensides / Vertic features / Gilgai")
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed) ||
@@ -285,6 +308,10 @@ aridisol_usda <- function(pedon) {
 #' @export
 ultisol_usda <- function(pedon) {
   ar <- argic(pedon)
+  # v0.9.21: NASIS tie-breaker for argic when canonical gate is NA.
+  ar <- .apply_nasis_tiebreaker(ar, pedon,
+                                 pattern       = "^Argillic horizon$|^Kandic horizon$",
+                                 feature_label = "Argillic / Kandic horizon")
   bs <- .argillic_bs_mean(pedon)
   bs_inf <- .bs_low_inferred(pedon, bs_threshold = 35)
   bs_low <- isTRUE(bs_inf$bs_low)
@@ -324,6 +351,13 @@ mollisol_usda <- function(pedon) {
   # (artefacts >= 20 % in the surface A) from being routed to
   # Hapludolls.
   m <- mollic_epipedon_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- when the canonical lab + morphology
+  # gate returns NA (insufficient data), the surveyor's
+  # pediagfeatures.featkind = "Mollic epipedon" identification flips
+  # the result to TRUE. Does NOT override TRUE / FALSE.
+  m <- .apply_nasis_tiebreaker(m, pedon,
+                                pattern       = "^Mollic epipedon$",
+                                feature_label = "Mollic epipedon")
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -352,6 +386,11 @@ mollisol_usda <- function(pedon) {
 #' @export
 alfisol_usda <- function(pedon) {
   ar <- argillic_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- argillic / kandic / natric horizon
+  # surveyor identification flips an NA argillic_usda to TRUE.
+  ar <- .apply_nasis_tiebreaker(ar, pedon,
+                                 pattern       = "^Argillic horizon$|^Kandic horizon$|^Natric horizon$",
+                                 feature_label = "Argillic / Kandic / Natric horizon")
   bs <- .argillic_bs_mean(pedon)
   bs_ok <- is.na(bs) || bs >= 35
   ex <- any(c(
@@ -386,6 +425,11 @@ alfisol_usda <- function(pedon) {
 #' @export
 inceptisol_usda <- function(pedon) {
   cb <- cambic(pedon)
+  # v0.9.21: NASIS tie-breaker -- cambic horizon surveyor
+  # identification flips an NA cambic to TRUE.
+  cb <- .apply_nasis_tiebreaker(cb, pedon,
+                                 pattern       = "^Cambic horizon$",
+                                 feature_label = "Cambic horizon")
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),

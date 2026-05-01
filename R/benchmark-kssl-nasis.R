@@ -119,12 +119,12 @@ load_kssl_pedons_with_nasis <- function(gpkg,
   pdf <- pdf[pdf$peiidref %in% peiid_set, ]
 
   # Pre-index by phiidref / peiidref for fast per-pedon filtering.
-  data.table::setkey(ph,   peiidref)
-  data.table::setkey(phc,  phiidref)
-  data.table::setkey(phs,  phiidref)
-  data.table::setkey(phpv, phiidref)
-  data.table::setkey(phcr, phiidref)
-  data.table::setkey(pdf,  peiidref)
+  data.table::setkeyv(ph,   "peiidref")
+  data.table::setkeyv(phc,  "phiidref")
+  data.table::setkeyv(phs,  "phiidref")
+  data.table::setkeyv(phpv, "phiidref")
+  data.table::setkeyv(phcr, "phiidref")
+  data.table::setkeyv(pdf,  "peiidref")
 
   # ---- enrich each lab PedonRecord -----------------------------------------
   if (verbose) cli::cli_alert_info("Enriching {.val {length(lab_peds)}} pedons with morphology ...")
