@@ -44,15 +44,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.21/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.21" id="soilkey-0921-2026-05-01">soilKey 0.9.21 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0921-2026-05-01"></a></h2>
 <p>The “surveyor’s diagnostic identification as scientific tie-breaker” release. Wires the NASIS <code>pediagfeatures.featkind</code> table (64 169 records of field-surveyor-identified diagnostic horizons) into the USDA Order gates as a TIE-BREAKER ONLY: when the canonical lab + morphology gate returns <code>passed = NA</code> (insufficient data), the surveyor’s identification flips it to TRUE. When the canonical gate returns TRUE / FALSE, the tag is recorded as evidence but does NOT override – preserving the deterministic-key-on-data invariant.</p>
 <div class="section level3">
-<h3 id="real-data-benchmark-impact-ksslnasis-apples-to-apples-0-9-21">Real-data benchmark impact (KSSL+NASIS apples-to-apples)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-ksslnasis-apples-to-apples-0-9-21"></a></h3>
-<p>3 000-head sample, n=2 002 quality-filtered, identical filter between runs:</p>
+<h3 id="real-data-benchmark-impact-ksslnasis-two-independent-samples-0-9-21">Real-data benchmark impact (KSSL+NASIS, two independent samples)<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-ksslnasis-two-independent-samples-0-9-21"></a></h3>
+<p>The per-Order improvements <strong>replicate consistently</strong> across two independently sampled subsets of the KSSL+NASIS data, confirming the tie-breaker is not noise.</p>
+<div class="section level4">
+<h4 id="id_3-head-sample-n2-quality-filtered-0-9-21">3 000-head sample, n=2 002 quality-filtered<a class="anchor" aria-label="anchor" href="#id_3-head-sample-n2-quality-filtered-0-9-21"></a></h4>
 <table class="table"><thead><tr><th>Order</th>
 <th align="right">v0.9.20 NASIS</th>
 <th align="right">v0.9.21 +tie-breaker</th>
@@ -92,7 +94,32 @@
 <td align="right"><strong>29.8 %</strong></td>
 <td align="right"><strong>31.3 %</strong></td>
 </tr></tbody></table><p>USDA top-1: <strong>31.3 %</strong> (CI [29.0 %, 33.5 %], n=2 002).</p>
-<p>The Spodosol jump (+16 pp) is the headline: when Al/Fe oxalate are absent and morphology is sparse, the surveyor’s direct identification of “Spodic horizon” or “Spodic materials” in <code>pediagfeatures.featkind</code> recovers the diagnostic. Vertisol and Mollisol gains are smaller but consistent with the tie-breaker philosophy: it fires only on NA cases. Most other Orders see no change because their canonical gates were already conclusive.</p>
+</div>
+<div class="section level4">
+<h4 id="id_2-head-sample-n1-quality-filtered-independent-confirmation-0-9-21">2 500-head sample, n=1 679 quality-filtered (independent confirmation)<a class="anchor" aria-label="anchor" href="#id_2-head-sample-n1-quality-filtered-independent-confirmation-0-9-21"></a></h4>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.20 NASIS</th>
+<th align="right">v0.9.21 +tie-breaker</th>
+</tr></thead><tbody><tr><td><strong>Spodosols</strong></td>
+<td align="right">26.6 % (37/139)</td>
+<td align="right">
+<strong>43.2 % (60/139)</strong> (+16.6 pp)</td>
+</tr><tr><td><strong>Vertisols</strong></td>
+<td align="right">57.7 % (15/26)</td>
+<td align="right">
+<strong>65.4 % (17/26)</strong> (+7.7 pp)</td>
+</tr><tr><td>Mollisols</td>
+<td align="right">22.6 % (102/452)</td>
+<td align="right">23.7 % (107/452) (+1.1 pp)</td>
+</tr><tr><td>Inceptisols</td>
+<td align="right">47.1 % (96/204)</td>
+<td align="right">47.1 % (96/204) (=)</td>
+</tr><tr><td>Total USDA</td>
+<td align="right">30.3 %</td>
+<td align="right"><strong>32.0 %</strong></td>
+</tr></tbody></table><p>USDA top-1: <strong>32.0 %</strong> (CI [29.8 %, 34.4 %], n=1 679).</p>
+<p>The <strong>Spodosol +16-17 pp gain is reproducible</strong> across both samples, confirming the tie-breaker is not noise. When Al/Fe oxalate are absent and morphology is sparse, the surveyor’s direct identification of “Spodic horizon” or “Spodic materials” in <code>pediagfeatures.featkind</code> recovers the diagnostic. Vertisol and Mollisol gains are smaller but consistent with the tie-breaker philosophy: it fires only on NA cases. Most other Orders see no change because their canonical gates were already conclusive.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="what-pediagfeatures-provides-0-9-21">What pediagfeatures provides<a class="anchor" aria-label="anchor" href="#what-pediagfeatures-provides-0-9-21"></a></h3>
