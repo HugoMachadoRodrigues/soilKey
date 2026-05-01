@@ -1,0 +1,15 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+Quality: 3218
+KSSL+NASIS USDA n=3218 top1=0.322 (32.2%) CI=[0.307, 0.336] took 26.9 min
+   reference n_total n_correct  accuracy
+   Mollisols     727       182 0.2503439
+    Alfisols     665       150 0.2255639
+ Inceptisols     464       215 0.4633621
+   Aridisols     446       208 0.4663677
+    Ultisols     411        89 0.2165450
+   Spodosols     276        80 0.2898551
+    Entisols     108        39 0.3611111
+   Vertisols      65        46 0.7076923
+     Oxisols      49        24 0.4897959
+    Andisols       4         0 0.0000000
+   Histosols       3         2 0.6666667
