@@ -4,26 +4,34 @@
 \alias{leptic_features}
 \title{Leptic features (WRB 2022)}
 \usage{
-leptic_features(pedon, max_depth = 25)
+leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{max_depth}{Maximum depth (cm) at which continuous rock must
-appear (default 25).}
+\item{max_depth}{Maximum depth (cm) at which continuous rock or
+rock-dominated material must appear (default 25).}
+
+\item{min_coarse_pct}{Minimum coarse-fragment percent for the
+coarse-fragments path (default 90).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
 Tests whether continuous rock or rock-like material occurs within
-\code{max_depth} cm of the surface. Diagnostic of Leptosols.
+\code{max_depth} cm of the surface. Two alternative paths qualify
+per WRB 2022:
+\enumerate{
+  \item \strong{Designation}: a layer at depth <= \code{max_depth}
+        with designation matching \code{"^R"} or \code{"^Cr"}
+        (continuous rock or weathered rock-like substrate).
+  \item \strong{Coarse fragments}: a layer at depth <= \code{max_depth}
+        with coarse_fragments_pct >= \code{min_coarse_pct} (default
+        90\% by volume), interpreted as rock-dominated even when not
+        R / Cr-designated.
 }
-\details{
-v0.3 implementation infers continuous rock from horizon designation
-(any layer with designation matching \code{"^R"} or
-\code{"^Cr"} -- standard pedological codes for hard / continuous
-rock and weathered rock-like substrate respectively).
+Either path qualifies.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 5, Leptosols.

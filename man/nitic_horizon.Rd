@@ -4,7 +4,14 @@
 \alias{nitic_horizon}
 \title{Nitic horizon (WRB 2022)}
 \usage{
-nitic_horizon(pedon, min_clay = 30, min_fe_dcb = 4, min_thickness = 30)
+nitic_horizon(
+  pedon,
+  min_clay = 30,
+  min_fe_dcb = 4,
+  min_thickness = 30,
+  max_clay_drop_pct = 8,
+  max_decrease_depth = 50
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -14,19 +21,47 @@ nitic_horizon(pedon, min_clay = 30, min_fe_dcb = 4, min_thickness = 30)
 \item{min_fe_dcb}{Minimum DCB-extractable Fe \% (default 4).}
 
 \item{min_thickness}{Minimum thickness in cm (default 30).}
+
+\item{max_clay_drop_pct}{Maximum clay drop (percentage points)
+between adjacent layers within \code{max_decrease_depth}
+before failing the gradual-decrease test (default 8).}
+
+\item{max_decrease_depth}{Depth window (cm) for the gradual-decrease
+check (default 50).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich
-subsurface horizon at least 30 cm thick. Diagnostic of Nitisols.
+Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich (DCB
+Fe >= 4\%) subsurface horizon at least 30 cm thick. Diagnostic of
+Nitisols. WRB 2022 additionally requires polyhedral / nutty
+structure with shiny ped surfaces and a gradual (non-abrupt) clay
+decrease with depth.
 }
 \details{
-v0.3 simplification: WRB 2022 also requires polyhedral / nutty
-structure with shiny ped surfaces and a gradual clay decrease with
-depth (no clay maximum at the top of the B). v0.4 will add the
-structural / depth-pattern tests.
+Required (AND-combined) sub-tests:
+\itemize{
+  \item Profile does not have a ferralic horizon (Ferralsol path
+        is canonical for the clay-rich + low-CEC corner).
+  \item clay \% >= \code{min_clay}.
+  \item fe_dcb_pct >= \code{min_fe_dcb}.
+  \item thickness >= \code{min_thickness}.
+}
+
+Supplementary (soft-AND) sub-tests -- evaluated when evidence is
+present in the pedon, evaluate to NA (not a fail) when missing:
+\itemize{
+  \item structure_type matches polyhedral / nutty / (sub)angular
+        blocky.
+  \item slickensides / shiny ped surfaces present (proxy for
+        WRB's "shiny ped surfaces").
+  \item clay does not decrease abruptly between adjacent layers
+        within 50 cm of the surface (gradual-decrease pattern;
+        drop > 8 percentage points fails).
+}
+Supplementary tests fail (return passed = FALSE) only when evidence
+actively contradicts the criterion; missing evidence is permissive.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.

@@ -49,7 +49,8 @@
 #' @return Character scalar with the default model identifier.
 #' @keywords internal
 default_model <- function(name) {
-  name <- match.arg(name, c("anthropic", "openai", "google", "ollama"))
+  name <- match.arg(name, c("auto", "anthropic", "openai", "google", "ollama"))
+  if (identical(name, "auto")) name <- vlm_pick_provider(verbose = FALSE)
   switch(name,
     anthropic = "claude-sonnet-4-7",
     openai    = "gpt-4o",
@@ -113,11 +114,10 @@ default_model <- function(name) {
 #' # Any other multimodal model the user has pulled
 #' provider <- vlm_provider("ollama", model = "qwen2.5vl:32b")
 #' }
-vlm_provider <- function(name = c("anthropic", "openai", "google", "ollama"),
+vlm_provider <- function(name = c("auto", "anthropic", "openai", "google", "ollama"),
                           model = NULL, ...) {
 
   name  <- match.arg(name)
-  model <- model %||% default_model(name)
 
   if (!requireNamespace("ellmer", quietly = TRUE)) {
     rlang::abort(paste0(
@@ -126,10 +126,92 @@ vlm_provider <- function(name = c("anthropic", "openai", "google", "ollama"),
     ))
   }
 
+  if (identical(name, "auto")) {
+    name <- vlm_pick_provider(verbose = TRUE)
+  }
+  model <- model %||% default_model(name)
+
   switch(name,
     anthropic = ellmer::chat_anthropic(model = model, ...),
     openai    = ellmer::chat_openai(   model = model, ...),
     google    = ellmer::chat_google_gemini(model = model, ...),
     ollama    = ellmer::chat_ollama(   model = model, ...)
   )
+}
+
+
+#' Pick the best available VLM provider
+#'
+#' Selects a provider based on what is reachable in the user's
+#' environment, in this preference order: local Ollama (if
+#' \code{ollama_is_running()}), then Anthropic, OpenAI, and Google
+#' (each requires the relevant \code{*_API_KEY} environment variable).
+#' Errors with an actionable installation / API-key hint when no
+#' provider is reachable.
+#'
+#' @param verbose If \code{TRUE} (default), emits a one-line
+#'        \code{cli} message explaining the chosen provider.
+#' @return Character scalar: one of \code{"ollama"}, \code{"anthropic"},
+#'         \code{"openai"}, \code{"google"}.
+#' @export
+vlm_pick_provider <- function(verbose = TRUE) {
+  if (ollama_is_running()) {
+    if (verbose)
+      cli::cli_alert_info("VLM provider {.field auto}: using local Ollama (preferred -- no data leaves the machine).")
+    return("ollama")
+  }
+  has_key <- function(env) nzchar(Sys.getenv(env, ""))
+  if (has_key("ANTHROPIC_API_KEY")) {
+    if (verbose)
+      cli::cli_alert_info("VLM provider {.field auto}: Ollama not reachable; falling back to Anthropic ({.field ANTHROPIC_API_KEY} detected).")
+    return("anthropic")
+  }
+  if (has_key("OPENAI_API_KEY")) {
+    if (verbose)
+      cli::cli_alert_info("VLM provider {.field auto}: Ollama not reachable; falling back to OpenAI ({.field OPENAI_API_KEY} detected).")
+    return("openai")
+  }
+  if (has_key("GOOGLE_API_KEY") || has_key("GEMINI_API_KEY")) {
+    if (verbose)
+      cli::cli_alert_info("VLM provider {.field auto}: Ollama not reachable; falling back to Google Gemini.")
+    return("google")
+  }
+  rlang::abort(c(
+    "No VLM provider is reachable.",
+    i = "To run a fully local pipeline, install and start Ollama:",
+    " " = "  https://ollama.com  -- then  ollama pull gemma4:e4b && ollama serve",
+    i = "Or set one of the cloud-provider API keys:",
+    " " = "  Sys.setenv(ANTHROPIC_API_KEY = 'sk-...')   # Claude",
+    " " = "  Sys.setenv(OPENAI_API_KEY    = 'sk-...')   # GPT-4o",
+    " " = "  Sys.setenv(GOOGLE_API_KEY    = '...')      # Gemini"
+  ))
+}
+
+
+#' Is the local Ollama HTTP API reachable?
+#'
+#' Probes \code{http://127.0.0.1:11434/api/tags} (the standard Ollama
+#' endpoint) with a short HTTP HEAD-style GET. Returns \code{TRUE}
+#' only if the request returns HTTP 200 in under \code{timeout_s}
+#' seconds. Used by \code{\link{vlm_pick_provider}} for the
+#' \code{provider = "auto"} fallback chain. Override the URL via
+#' \code{options(soilKey.ollama_url = "http://host:port")}.
+#'
+#' @param url Override URL to probe (default reads
+#'        \code{getOption("soilKey.ollama_url",
+#'        default = "http://127.0.0.1:11434/api/tags")}).
+#' @param timeout_s Request timeout in seconds (default 1.5).
+#' @return Logical scalar.
+#' @export
+ollama_is_running <- function(url = NULL, timeout_s = 1.5) {
+  url <- url %||% getOption("soilKey.ollama_url",
+                              default = "http://127.0.0.1:11434/api/tags")
+  if (!requireNamespace("httr", quietly = TRUE)) {
+    return(FALSE)
+  }
+  ok <- tryCatch({
+    resp <- httr::GET(url, httr::timeout(timeout_s))
+    isTRUE(httr::status_code(resp) == 200L)
+  }, error = function(e) FALSE)
+  isTRUE(ok)
 }

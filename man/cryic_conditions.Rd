@@ -4,22 +4,34 @@
 \alias{cryic_conditions}
 \title{Cryic conditions (WRB 2022)}
 \usage{
-cryic_conditions(pedon, max_top_cm = 100)
+cryic_conditions(pedon, max_top_cm = 100, max_temp_C = 0)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{max_top_cm}{Maximum top depth (cm) (default 100).}
+
+\item{max_temp_C}{Maximum mean annual permafrost-zone temperature
+(deg C) for the temperature path (default 0).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
 Tests whether continuous frozen / permafrost material occurs within
-the upper 100 cm. v0.3 detects via designation pattern: any layer
-with designation containing the suffix \code{"f"} (frozen) within
-the top 100 cm, or the explicit pattern \code{"^Cf"} / \code{"perma"}.
-Diagnostic of Cryosols.
+the upper \code{max_top_cm}. Two alternative paths qualify per WRB
+2022:
+\enumerate{
+  \item \strong{Permafrost temperature}: a layer at top_cm <=
+        \code{max_top_cm} (default 100) with
+        \code{permafrost_temp_C <= max_temp_C} (default 0 C).
+  \item \strong{Designation pattern}: a layer at top_cm <=
+        \code{max_top_cm} with designation containing suffix
+        \code{"f"} (frozen) or matching \code{"^Cf"} / \code{"perma"}.
+        Used as a fallback when the temperature field is not in the
+        pedon (typical of legacy survey data).
+}
+Either path qualifies. Diagnostic of Cryosols.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 5, Cryosols.

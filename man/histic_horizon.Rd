@@ -4,41 +4,53 @@
 \alias{histic_horizon}
 \title{Histic horizon (WRB 2022)}
 \usage{
-histic_horizon(pedon, min_thickness = 10, min_oc = 12, surface_top_cm = 0)
+histic_horizon(
+  pedon,
+  min_thickness = 10,
+  min_oc = 12,
+  surface_top_cm = 0,
+  cumulative_min_cm = 40,
+  cumulative_max_depth_cm = 80
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_thickness}{Minimum thickness (cm) of contiguous organic
-material from the surface (default 10).}
+\item{min_thickness}{Minimum thickness (cm) for the contiguous
+path (default 10).}
 
 \item{min_oc}{Minimum organic carbon \% (default 12, WRB 2022;
 equivalent to \code{>= 20\%} organic matter).}
 
 \item{surface_top_cm}{Maximum top depth (cm) for a layer to be
-considered "surface-related" (default 0; the histic horizon
-must reach the surface, possibly after drainage).}
+considered "surface-related" in the contiguous path
+(default 0).}
+
+\item{cumulative_min_cm}{Minimum cumulative thickness (cm) for the
+cumulative path (default 40).}
+
+\item{cumulative_max_depth_cm}{Depth window (cm) for the cumulative
+path (default 80).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-A surface horizon (or near-surface, after drainage) of organic
-material >= 10 cm thick; diagnostic of Histosols.
-}
-\details{
-Sub-tests:
+A surface (or near-surface, after drainage) horizon of organic
+material; diagnostic of Histosols. Two alternative qualifying
+paths per WRB 2022:
 \itemize{
-  \item \code{\link{test_oc_above}} -- OC \% >= 12
-  \item \code{\link{test_top_at_or_above}} -- top_cm <= 0
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 10 cm
+  \item \strong{Contiguous}: a single layer of organic material
+        (OC \% >= \code{min_oc}) reaching the surface and at
+        least \code{min_thickness} cm thick (default 10 cm).
+  \item \strong{Cumulative}: organic material totalling
+        \code{cumulative_min_cm} cm (default 40) within the upper
+        \code{cumulative_max_depth_cm} (default 80). Relevant for
+        folic / mossy Histosols on slopes.
 }
-
-v0.3 limitations: WRB 2022 also accepts a 40 cm cumulative
-organic-material thickness within the upper 80 cm (relevant for
-folic / mossy Histosols on slopes); v0.4 will add the cumulative
-variant. The "after drainage" qualifier (recently-drained organic
-soils) is also deferred.
+Either path qualifies. The "after drainage" qualifier (recently
+drained organic soils) is treated as implicit since the same OC
+and thickness criteria apply.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Histic horizon

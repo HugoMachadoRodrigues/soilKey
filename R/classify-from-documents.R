@@ -169,7 +169,7 @@ classify_from_documents <- function(pdf        = NULL,
                                       image      = NULL,
                                       fieldsheet = NULL,
                                       pedon      = NULL,
-                                      provider   = "ollama",
+                                      provider   = "auto",
                                       model      = NULL,
                                       systems    = c("wrb", "sibcs", "usda"),
                                       report     = NULL,
@@ -192,13 +192,20 @@ classify_from_documents <- function(pdf        = NULL,
     chat <- provider
     provider_label <- attr(provider, "name") %||% "(custom)"
   } else if (is.character(provider) && length(provider) == 1L) {
-    chat <- vlm_provider(provider, model = model)
-    provider_label <- if (is.null(model)) provider
-                       else sprintf("%s (model=%s)", provider, model)
+    # provider = "auto" picks Ollama if reachable, else falls back to
+    # any cloud provider whose API key is set. provider = "ollama"
+    # still hard-fails if Ollama is down -- the explicit choice is
+    # respected.
+    resolved <- if (identical(provider, "auto"))
+                  vlm_pick_provider(verbose = verbose)
+                else provider
+    chat <- vlm_provider(resolved, model = model)
+    provider_label <- if (is.null(model)) resolved
+                       else sprintf("%s (model=%s)", resolved, model)
   } else {
     rlang::abort(paste0(
-      "`provider` must be either a provider name (e.g. \"ollama\") ",
-      "or a pre-built ellmer chat object."))
+      "`provider` must be either a provider name (e.g. \"ollama\", ",
+      "\"auto\") or a pre-built ellmer chat object."))
   }
 
   # ---- 2. Seed the pedon ---------------------------------------------------

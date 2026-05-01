@@ -723,31 +723,53 @@ natric_horizon <- function(pedon, min_esp = 15) {
 
 #' Nitic horizon (WRB 2022)
 #'
-#' Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich
-#' subsurface horizon at least 30 cm thick. Diagnostic of Nitisols.
+#' Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich (DCB
+#' Fe >= 4\%) subsurface horizon at least 30 cm thick. Diagnostic of
+#' Nitisols. WRB 2022 additionally requires polyhedral / nutty
+#' structure with shiny ped surfaces and a gradual (non-abrupt) clay
+#' decrease with depth.
 #'
-#' v0.3 simplification: WRB 2022 also requires polyhedral / nutty
-#' structure with shiny ped surfaces and a gradual clay decrease with
-#' depth (no clay maximum at the top of the B). v0.4 will add the
-#' structural / depth-pattern tests.
+#' Required (AND-combined) sub-tests:
+#' \itemize{
+#'   \item Profile does not have a ferralic horizon (Ferralsol path
+#'         is canonical for the clay-rich + low-CEC corner).
+#'   \item clay \% >= \code{min_clay}.
+#'   \item fe_dcb_pct >= \code{min_fe_dcb}.
+#'   \item thickness >= \code{min_thickness}.
+#' }
+#'
+#' Supplementary (soft-AND) sub-tests -- evaluated when evidence is
+#' present in the pedon, evaluate to NA (not a fail) when missing:
+#' \itemize{
+#'   \item structure_type matches polyhedral / nutty / (sub)angular
+#'         blocky.
+#'   \item slickensides / shiny ped surfaces present (proxy for
+#'         WRB's "shiny ped surfaces").
+#'   \item clay does not decrease abruptly between adjacent layers
+#'         within 50 cm of the surface (gradual-decrease pattern;
+#'         drop > 8 percentage points fails).
+#' }
+#' Supplementary tests fail (return passed = FALSE) only when evidence
+#' actively contradicts the criterion; missing evidence is permissive.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Minimum clay \% (default 30).
 #' @param min_fe_dcb Minimum DCB-extractable Fe \% (default 4).
 #' @param min_thickness Minimum thickness in cm (default 30).
+#' @param max_clay_drop_pct Maximum clay drop (percentage points)
+#'        between adjacent layers within \code{max_decrease_depth}
+#'        before failing the gradual-decrease test (default 8).
+#' @param max_decrease_depth Depth window (cm) for the gradual-decrease
+#'        check (default 50).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.
 #' @export
 nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
-                            min_thickness = 30) {
+                            min_thickness        = 30,
+                            max_clay_drop_pct    = 8,
+                            max_decrease_depth   = 50) {
   h <- pedon$horizons
 
-  # WRB exclusion: a profile with a ferralic horizon does not key to
-  # Nitisols. The two diagnostics overlap on the clay-rich + Fe-rich
-  # axis but differ in clay activity (ferralic = low CEC/clay; nitic
-  # accepts higher activity). Without this exclusion, Ferralsol
-  # fixtures would key to Nitisols at position 13 instead of
-  # Ferralsols at position 14.
   fer <- ferralic(pedon)
   if (isTRUE(fer$passed)) {
     return(DiagnosticResult$new(
@@ -775,7 +797,38 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
   tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
                                               candidate_layers = tests$fe_dcb$layers)
 
-  agg <- aggregate_subtests(tests)
+  # Supplementary structure / morphology / pattern tests. These are
+  # AND-combined only when evidence is conclusive (passed is TRUE or
+  # FALSE). Missing evidence (passed is NA) is treated as permissive.
+  struct <- test_polyhedral_or_nutty_structure(
+              h, candidate_layers = tests$thickness$layers)
+  shiny  <- test_shiny_ped_surfaces(
+              h, candidate_layers = tests$thickness$layers)
+  clay_dec <- test_clay_decreases_with_depth(
+                h, candidate_layers = tests$thickness$layers,
+                   max_drop_pct     = max_clay_drop_pct,
+                   max_depth_cm     = max_decrease_depth)
+  if (isFALSE(struct$passed))   tests$structure        <- struct
+  if (isFALSE(shiny$passed))    tests$shiny_peds       <- shiny
+  if (isFALSE(clay_dec$passed)) tests$clay_decrease    <- clay_dec
+  # Always record the structural evidence that DID pass / NA in
+  # evidence so the trace is full.
+  tests$evidence_structure     <- struct
+  tests$evidence_shiny_peds    <- shiny
+  tests$evidence_clay_decrease <- clay_dec
+
+  agg <- aggregate_subtests(
+    tests,
+    layer_tests = c("not_ferralic", "clay", "fe_dcb", "thickness")
+  )
+  # Hard-fail if any supplementary test was conclusively FALSE.
+  conclusive_supp_fail <- isFALSE(struct$passed) ||
+                            isFALSE(shiny$passed) ||
+                            isFALSE(clay_dec$passed)
+  if (conclusive_supp_fail) {
+    agg$passed <- FALSE
+    agg$layers <- integer(0)
+  }
 
   DiagnosticResult$new(
     name      = "nitic_horizon",

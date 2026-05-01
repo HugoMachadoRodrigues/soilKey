@@ -4,30 +4,45 @@
 \alias{technic_features}
 \title{Technic features (WRB 2022)}
 \usage{
-technic_features(pedon, min_pct = 20, max_top_cm = 100)
+technic_features(
+  pedon,
+  artefacts_min_pct = 20,
+  max_top_cm = 100,
+  hardmaterial_min_pct = 95,
+  hardmaterial_max_top_cm = 5
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_pct}{Minimum artefact percent (default 20).}
+\item{artefacts_min_pct}{Minimum artefact percent (default 20).}
 
-\item{max_top_cm}{Maximum top depth (cm) (default 100).}
+\item{max_top_cm}{Maximum top depth (cm) for the artefact and
+geomembrane paths (default 100).}
+
+\item{hardmaterial_min_pct}{Minimum hard-material coverage (\%)
+for the technic-hard-material path (default 95).}
+
+\item{hardmaterial_max_top_cm}{Surface depth window (cm) for the
+technic-hard-material path (default 5).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests whether the profile contains >= 20\% by volume of artefacts
-(any human-made or human-altered material) within the upper 100 cm.
-Diagnostic of Technosols.
+Tests for any of three WRB 2022 alternative qualifying conditions
+for Technosols:
+\enumerate{
+  \item Artefacts >= \code{artefacts_min_pct} (default 20\%) by
+        volume within the upper \code{max_top_cm} (default 100 cm).
+  \item A continuous geomembrane (\code{geomembrane_present == TRUE})
+        within the upper 100 cm.
+  \item Technic hard material (concrete, asphalt, mine spoil) with
+        \code{technic_hardmaterial_pct >= hardmaterial_min_pct}
+        (default 95\%) at the surface (top_cm <=
+        \code{hardmaterial_max_top_cm}, default 5).
 }
-\details{
-Sub-test: \code{\link{test_artefacts_concentration}}.
-
-v0.3 limitations: WRB 2022 also accepts a continuous geomembrane
-within 100 cm OR technic hard material (concrete, asphalt, mine
-spoil) covering >= 95\% within 5 cm of the surface as alternative
-qualifying conditions. v0.4 will add these alternate paths.
+Either path qualifies.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 5, Technosols.

@@ -1,5 +1,5 @@
 version: "WRB 2022 (4th edition)"
-implementation_status: "soilKey v0.3.2 -- 32/32 RSGs wired in canonical key order"
+implementation_status: "soilKey v0.9.15 -- 32/32 RSGs canonical, 7 v0.3 simplifications closed"
 source: |
   IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
   International soil classification system for naming soils and creating
@@ -14,24 +14,33 @@ source: |
 # (Fluvisols) and AR (Arenosols) swapped (canonical: FL=30, AR=31). All 31
 # canonical fixtures still classify to their intended RSG.
 #
-# v0.3 simplifications (documented in each diagnostic's roxygen):
-#   - Histosols: histic_horizon detects 10cm contiguous organic from
-#     surface only; cumulative-thickness variant is v0.4.
-#   - Anthrosols: anthric_horizons uses designation pattern matching
-#     hortic|irragric|plaggic|pretic|terric (5 horizon types).
-#   - Technosols: only the artefacts >= 20% path is wired; the
-#     geomembrane and technic-hard-material alternatives are v0.4.
-#   - Cryosols: cryic_conditions detects via designation pattern (^Cf,
-#     -f suffix, perma-); explicit permafrost depth is v0.4.
-#   - Leptosols: leptic_features detects via R / Cr designation; the
-#     coarse-fragments-90% alternative is v0.4.
+# v0.9.15 closure of v0.3 simplifications (each diagnostic now offers
+# OR-alternative paths that match WRB 2022 verbatim):
+#   - Histosols: histic_horizon now offers (a) the contiguous 10-cm
+#     surface path AND (b) the cumulative >= 40 cm within upper 80 cm
+#     path (folic / mossy variants).
+#   - Anthrosols: anthric_horizons now offers (a) designation match
+#     hortic|irragric|plaggic|pretic|terric AND (b) property-based
+#     surface-horizon test (Munsell value <= 4 + P-Mehlich >= 50 +
+#     thickness >= 20 cm).
+#   - Technosols: technic_features now offers (a) artefacts >= 20%
+#     within 100 cm, (b) continuous geomembrane within 100 cm, OR
+#     (c) technic hard material >= 95% within upper 5 cm.
+#   - Cryosols: cryic_conditions now offers (a) explicit
+#     permafrost_temp_C <= 0 within 100 cm AND (b) the designation
+#     fallback (^Cf, -f suffix, perma-).
+#   - Leptosols: leptic_features now offers (a) R / Cr designation
+#     within 25 cm AND (b) coarse_fragments_pct >= 90 within 25 cm.
 #   - Solonetz: natric_horizon = argic + ESP >= 15.
-#   - Andosols: andic_properties = (Al_ox + 0.5*Fe_ox) >= 2 AND
-#     bulk_density <= 0.9; phosphate-retention and glass-content
-#     alternatives are v0.4.
-#   - Nitisols: nitic_horizon = clay >= 30 + Fe_DCB >= 4 +
-#     thickness >= 30; polyhedral-structure / shiny-peds /
-#     gradual-clay-decrease tests are v0.4.
+#   - Andosols: andic_properties now offers (a) (Al_ox + 0.5*Fe_ox)
+#     >= 2 AND BD <= 0.9 on the same layer, (b) phosphate retention
+#     >= 70%, OR (c) volcanic glass >= 30% in 0.02-2 mm sand fraction.
+#   - Nitisols: nitic_horizon now AND-combines the original clay >=
+#     30 + Fe_DCB >= 4 + thickness >= 30 with three supplementary
+#     tests (polyhedral / nutty structure, shiny ped surfaces,
+#     gradual clay-decrease with depth). Supplementary tests are
+#     permissive on missing data; conclusively FALSE evidence
+#     forces the diagnostic to fail.
 #   - Planosols: planic_features = clay-doubling + abrupt boundary.
 #   - Stagnosols: stagnic_properties = redox in shallow + decay
 #     with depth (perched-water signature). gleyic_properties was

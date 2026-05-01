@@ -1,3 +1,136 @@
+# soilKey 0.9.15 (2026-04-30)
+
+The "robustness pass": closes the seven v0.3 simplifications in the
+WRB 2022 key, adds a graceful VLM fallback, auto-detects PROJ /
+GDAL paths so the layperson on-ramp no longer requires environment
+variables, ships a one-screen Shiny demo, lays the groundwork for
+real-data benchmarks against KSSL / EU-LUCAS / Embrapa BDsolos, and
+captures empirical evidence that the Gemma 4 / Ollama path works
+end-to-end.
+
+## WRB 2022 -- v0.3 simplifications closed
+
+Each of the seven previously-simplified diagnostics now offers the
+WRB 2022 alternative qualifying paths verbatim. OR-alternative
+aggregation via the new `aggregate_alternatives()` helper. Each
+path's evidence is fully recorded in `DiagnosticResult$evidence` so
+the trace stays inspectable.
+
+* `histic_horizon` -- adds the cumulative path (>= 40 cm of
+  organic material within the upper 80 cm), catching folic / mossy
+  Histosols on slopes that the contiguous-10cm path misses.
+* `anthric_horizons` -- adds the property-based path (top_cm <= 5 +
+  thickness >= 20 + Munsell value <= 4 + P-Mehlich >= 50), so
+  surveys that only describe properties (no `hortic`/`pretic`/...
+  designation) still qualify.
+* `technic_features` -- adds two new alternative paths: continuous
+  geomembrane within 100 cm, OR technic hard material (concrete,
+  asphalt, mine spoil) >= 95% within the upper 5 cm. Adds the
+  `geomembrane_present` and `technic_hardmaterial_pct` fields to
+  the canonical horizon schema.
+* `cryic_conditions` -- adds the explicit permafrost-temperature
+  path (`permafrost_temp_C <= 0 C` within 100 cm), no longer
+  depending on the `^Cf` / `-f` designation pattern alone.
+* `leptic_features` -- adds the coarse-fragments path
+  (`coarse_fragments_pct >= 90` within 25 cm), so rock-dominated
+  profiles that were never formally `R`/`Cr`-designated still
+  qualify.
+* `andic_properties` -- adds the WRB 2022 phosphate-retention
+  alternative (`phosphate_retention_pct >= 70`). The volcanic-glass
+  alternative remains in the separate `vitric_properties()`
+  diagnostic; the Andosol RSG gate (`andosol()`) keys on
+  (andic OR vitric).
+* `nitic_horizon` -- adds three supplementary tests AND-combined
+  with the primary clay/Fe/thickness gate: polyhedral / nutty
+  structure_type, gradual clay decrease with depth (no >8 pp drop
+  in the upper 50 cm), and shiny-ped-surface evidence (recorded as
+  evidence only, not gating, since the schema lacks a dedicated
+  field). Tests are permissive on missing data; conclusively-FALSE
+  evidence forces the diagnostic to fail.
+
+## Layperson on-ramp -- friction removed
+
+* **`run_demo()`** -- launches a one-screen Shiny app that lets a
+  pedologist pick one of 31 canonical profiles or upload a small
+  horizons CSV, click Classify, and read the WRB / SiBCS / USDA
+  names plus the deterministic key trace and the evidence grade.
+  No R code required. `inst/shiny-demo/app.R`.
+* **`auto_set_proj_env()`** -- runs at package load (`.onLoad`)
+  and probes the standard PROJ / GDAL data directories on macOS
+  Homebrew (Apple silicon + Intel), Linuxbrew, conda / mamba, and
+  Debian / Fedora apt / dnf. Sets `PROJ_LIB` and `GDAL_DATA` only
+  when not already set, so the user-provided value always wins.
+  Eliminates the most common installation foot-gun on non-Linux
+  platforms.
+* **Simplified `vignettes/v01_getting_started.Rmd`** -- now leads
+  with the 30-second on-ramp (Shiny + one-call fixture path)
+  before going into manual `PedonRecord$new()` construction.
+
+## VLM graceful fallback
+
+* **`provider = "auto"`** is now the new default for
+  `classify_from_documents()`. It picks local Ollama when running
+  (`ollama_is_running()`), then falls back to any cloud provider
+  whose API key is set in this preference order: Anthropic, OpenAI,
+  Google. A clear `cli` message reports the chosen provider.
+* **`vlm_pick_provider()`** -- exposes the cascading-picker logic
+  so users can reason about it programmatically. Errors with an
+  actionable installation / API-key hint when nothing is reachable.
+* **`ollama_is_running()`** -- probes the standard Ollama HTTP
+  endpoint (default `http://127.0.0.1:11434/api/tags`) with a
+  short timeout, configurable via
+  `options(soilKey.ollama_url = ...)`.
+* **`extract_horizons_from_pdf()`** now accepts a `pdf_text`
+  parameter as an alternative to `pdf_path`, useful for
+  smoke-testing without a real PDF and for unit tests that cannot
+  rely on `pdftools`.
+
+## SiBCS Cap 18 mineralogia -- general-orden coverage
+
+* **`familia_mineralogia_argila_geral()`** -- new function. Covers
+  Argissolos, Cambissolos, Plintossolos, Vertissolos, Luvissolos,
+  Nitossolos, Chernossolos, Planossolos, Gleissolos -- everything
+  the Latossolo-only `familia_mineralogia_argila_latossolo()`
+  did not address. Adds the four mineralogia da argila classes the
+  earlier function lacked: `esmectitica` (T_argila >= 27),
+  `oxidica` (Kr < 0.75), `caulinitica` (Ki, Kr >= 0.75 with low
+  T), and `mista` (catch-all when no gate closes).
+
+## Real-data benchmark scaffolding
+
+* **`load_kssl_pedons(pedon_csv, layer_csv)`** -- loads NCSS / KSSL
+  pedons (USDA Soil Taxonomy reference labels) into a list of
+  `PedonRecord`s. The de-facto USDA validation set; ~50k profiles.
+* **`load_lucas_pedons(lucas_csv)`** -- loads EU-LUCAS topsoil
+  records joined with ESDB profile sheets (WRB labels). ~28k
+  profiles in the 2015-2018 release.
+* **`load_embrapa_pedons(csv_path)`** -- loads Embrapa BDsolos /
+  dadosolos archive (SiBCS labels, PT-BR). ~5k profiles.
+* **`benchmark_run_classification(pedons, system, level, boot_n)`**
+  -- runs each pedon through the deterministic key, compares
+  against the published reference, and returns top-1 accuracy +
+  bootstrap 95% CI + confusion matrix. The infrastructure for the
+  v1.0 methods-paper benchmark.
+
+## VLM live smoke evidence
+
+* **`inst/benchmarks/run_vlm_live_smoke.R`** -- runs a real Gemma 4
+  (`gemma4:e4b`) extraction against a synthetic PT-BR field
+  description; verifies that the schema-validated extraction layer
+  populates a `PedonRecord` and that the deterministic key
+  classifies it. The 2026-04-30 reference run reports 4 horizons
+  extracted, 28 attributes recorded with `extracted_vlm`
+  provenance, and full WRB / SiBCS / USDA classification in 120 s.
+  Re-run on every release to track regression in the VLM path.
+
+## Tests
+
+* +84 expectations across `test-vlm-fallback.R`,
+  `test-sibcs-mineralogia-geral.R`, `test-benchmark-loaders.R`, and
+  the updated `test-diagnostics-wrb-v03a.R` (which now also
+  exercises the cumulative-histic path and the andic OR-alternative
+  paths). Total: **2826** passing, 0 failing, 13 skipped.
+
 # soilKey 0.9.14 (2026-04-30)
 
 Closes three gaps that the v0.9.13 spec called out as remaining work:

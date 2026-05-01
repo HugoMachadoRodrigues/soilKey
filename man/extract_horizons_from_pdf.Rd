@@ -6,19 +6,21 @@
 \usage{
 extract_horizons_from_pdf(
   pedon,
-  pdf_path,
+  pdf_path = NULL,
   provider,
   max_retries = 3L,
   overwrite = FALSE,
   prompt_name = "extract_horizons",
-  schema_name = "horizon"
+  schema_name = "horizon",
+  pdf_text = NULL
 )
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}} to merge into. Mutated in
 place AND returned invisibly.}
 
-\item{pdf_path}{Path to the PDF file.}
+\item{pdf_path}{Path to the PDF file. Either \code{pdf_path} or
+\code{pdf_text} must be supplied.}
 
 \item{provider}{A chat provider from \code{\link{vlm_provider}} (or
 a \code{\link{MockVLMProvider}} for testing).}
@@ -33,6 +35,11 @@ to clobber higher-authority ones. Default \code{FALSE}.}
 (\code{"extract_horizons"}).}
 
 \item{schema_name}{Override the default schema (\code{"horizon"}).}
+
+\item{pdf_text}{Optional alternative to \code{pdf_path}: the
+already-extracted description text. Useful for smoke
+tests, unit tests without \code{pdftools}, and for
+already-OCR'd field-sheet text.}
 }
 \value{
 Invisibly, the (mutated) \code{pedon}. Carries a

@@ -964,6 +964,94 @@ familia_mineralogia_argila_latossolo <- function(pedon,
 }
 
 
+#' Familia: mineralogia da fracao argila (geral, nao-Latossolos)
+#'
+#' Classifica a mineralogia da argila para Argissolos, Cambissolos,
+#' Plintossolos, Luvissolos, Nitossolos, Vertissolos, Chernossolos,
+#' Planossolos, Gleissolos quando ha informacao quantitativa de
+#' atividade da argila e/ou Ki/Kr. Cobre as classes nao endereçadas
+#' por \code{\link{familia_mineralogia_argila_latossolo}}:
+#' \itemize{
+#'   \item \code{esmectitica}: T_argila >= \code{ta_threshold} (default
+#'         27 cmolc/kg argila), indicando dominancia de argilas 2:1
+#'         expansivas (esmectita / vermiculita / micas hidratadas).
+#'   \item \code{caulinitica}: Ki >= \code{ki_caulinitico_min} (default
+#'         0.75) e Kr >= \code{kr_caulinitico_min} (default 0.75),
+#'         alem de T_argila < \code{ta_threshold}.
+#'   \item \code{oxidica}: Kr < \code{kr_caulinitico_min}, indicando
+#'         predominancia de oxihidrooxidos de Fe e Al.
+#'   \item \code{mista}: nenhum dos outros gates fechou
+#'         conclusivamente -- evidencia heterogenea ou incompleta.
+#' }
+#' Quando os tres atributos (T_argila, Ki, Kr) estiverem ausentes, o
+#' resultado fica \code{NULL} e os atributos faltantes sao reportados.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Profundidade da secao de controle (default 200).
+#' @param ta_threshold Limite cmolc/kg argila para esmectitica
+#'        (default 27).
+#' @param ki_caulinitico_min Limite Ki para caulinitica (default 0.75).
+#' @param kr_caulinitico_min Limite Kr para caulinitica vs oxidica
+#'        (default 0.75).
+#' @return \code{\link{FamilyAttribute}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287.
+#' @export
+familia_mineralogia_argila_geral <- function(pedon,
+                                                max_depth_cm        = 200,
+                                                ta_threshold        = 27,
+                                                ki_caulinitico_min  = 0.75,
+                                                kr_caulinitico_min  = 0.75) {
+  h <- pedon$horizons
+
+  cec  <- .weighted_avg_in_depth(h, "cec_cmol",  max_depth_cm = max_depth_cm)
+  clay <- .weighted_avg_in_depth(h, "clay_pct",  max_depth_cm = max_depth_cm)
+  ta   <- if (!is.na(cec) && !is.na(clay) && clay > 0) cec * 100 / clay else NA_real_
+
+  sio2  <- .weighted_avg_in_depth(h, "sio2_sulfuric_pct",  max_depth_cm = max_depth_cm)
+  al2o3 <- .weighted_avg_in_depth(h, "al2o3_sulfuric_pct", max_depth_cm = max_depth_cm)
+  fe2o3 <- .weighted_avg_in_depth(h, "fe2o3_sulfuric_pct", max_depth_cm = max_depth_cm)
+  ki    <- if (!is.na(sio2) && !is.na(al2o3))                 compute_ki(sio2, al2o3)               else NA_real_
+  kr    <- if (!is.na(sio2) && !is.na(al2o3) && !is.na(fe2o3)) compute_kr(sio2, al2o3, fe2o3)        else NA_real_
+
+  miss <- character(0)
+  if (is.na(ta) && is.na(ki) && is.na(kr)) {
+    if (is.na(cec))  miss <- c(miss, "cec_cmol")
+    if (is.na(clay)) miss <- c(miss, "clay_pct")
+    if (is.na(sio2)) miss <- c(miss, "sio2_sulfuric_pct")
+    if (is.na(al2o3)) miss <- c(miss, "al2o3_sulfuric_pct")
+    if (is.na(fe2o3)) miss <- c(miss, "fe2o3_sulfuric_pct")
+    return(FamilyAttribute$new(
+      name = "mineralogia_argila", value = NULL,
+      evidence = list(reason = "T_argila e Ki/Kr ausentes"),
+      missing = miss,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287"
+    ))
+  }
+
+  classe <- if (!is.na(ta) && ta >= ta_threshold) {
+    "esmectitica"
+  } else if (!is.na(kr) && kr < kr_caulinitico_min) {
+    "oxidica"
+  } else if (!is.na(ki) && ki >= ki_caulinitico_min &&
+              !is.na(kr) && kr >= kr_caulinitico_min) {
+    "caulinitica"
+  } else {
+    "mista"
+  }
+
+  FamilyAttribute$new(
+    name = "mineralogia_argila", value = classe,
+    evidence = list(ta_argila = ta, ki = ki, kr = kr,
+                      cec_cmol = cec, clay_pct = clay,
+                      sio2_sulfuric_pct = sio2,
+                      al2o3_sulfuric_pct = al2o3,
+                      fe2o3_sulfuric_pct = fe2o3),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287"
+  )
+}
+
+
 #' Familia: subgrupamento de atividade da fracao argila (Cap 18, p 287)
 #'
 #' Classifica pela CTC da fracao argila T = (cec_cmol * 100 / clay_pct):

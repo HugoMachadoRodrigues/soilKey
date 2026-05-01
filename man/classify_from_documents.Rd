@@ -9,7 +9,7 @@ classify_from_documents(
   image = NULL,
   fieldsheet = NULL,
   pedon = NULL,
-  provider = "ollama",
+  provider = "auto",
   model = NULL,
   systems = c("wrb", "sibcs", "usda"),
   report = NULL,

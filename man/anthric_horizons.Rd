@@ -4,19 +4,43 @@
 \alias{anthric_horizons}
 \title{Anthric horizons (WRB 2022)}
 \usage{
-anthric_horizons(pedon)
+anthric_horizons(
+  pedon,
+  min_thickness_cm = 20,
+  min_p_mg_kg = 50,
+  max_munsell_value = 4
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{min_thickness_cm}{Minimum thickness for the property-based
+path (default 20).}
+
+\item{min_p_mg_kg}{Minimum plant-available P (Mehlich 3, mg/kg)
+for the property-based path (default 50).}
+
+\item{max_munsell_value}{Maximum Munsell value moist for the
+property-based path (default 4).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
 Tests for any of five anthropogenic surface horizons recognised by
-WRB 2022: hortic, irragric, plaggic, pretic, terric.
-v0.3 detects via designation pattern matching any of those names.
-Diagnostic of Anthrosols.
+WRB 2022 (hortic, irragric, plaggic, pretic, terric). Diagnostic
+of Anthrosols. Two alternative paths qualify:
+\enumerate{
+  \item \strong{Designation}: any layer's designation contains one
+        of \code{hortic|irragric|plaggic|pretic|terric}.
+  \item \strong{Property-based}: a surface layer (top_cm <= 5)
+        at least \code{min_thickness_cm} cm thick (default 20)
+        with elevated dark colour (Munsell value moist <=
+        \code{max_munsell_value}, default 4) AND elevated
+        plant-available P (\code{p_mehlich3_mg_kg} >=
+        \code{min_p_mg_kg}, default 50).
+}
+Either path qualifies.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 5, Anthrosols.

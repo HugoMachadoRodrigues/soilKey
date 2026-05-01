@@ -5,7 +5,7 @@
 \title{Construct a VLM provider chat object}
 \usage{
 vlm_provider(
-  name = c("anthropic", "openai", "google", "ollama"),
+  name = c("auto", "anthropic", "openai", "google", "ollama"),
   model = NULL,
   ...
 )

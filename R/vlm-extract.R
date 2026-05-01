@@ -325,7 +325,12 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
 #'
 #' @param pedon A \code{\link{PedonRecord}} to merge into. Mutated in
 #'        place AND returned invisibly.
-#' @param pdf_path Path to the PDF file.
+#' @param pdf_path Path to the PDF file. Either \code{pdf_path} or
+#'        \code{pdf_text} must be supplied.
+#' @param pdf_text Optional alternative to \code{pdf_path}: the
+#'        already-extracted description text. Useful for smoke
+#'        tests, unit tests without \code{pdftools}, and for
+#'        already-OCR'd field-sheet text.
 #' @param provider A chat provider from \code{\link{vlm_provider}} (or
 #'        a \code{\link{MockVLMProvider}} for testing).
 #' @param max_retries Integer; how many times to re-prompt on
@@ -340,28 +345,36 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
 #'         number of attempts, and number of provenance entries added.
 #' @export
 extract_horizons_from_pdf <- function(pedon,
-                                       pdf_path,
+                                       pdf_path = NULL,
                                        provider,
                                        max_retries = 3L,
                                        overwrite   = FALSE,
                                        prompt_name = "extract_horizons",
-                                       schema_name = "horizon") {
+                                       schema_name = "horizon",
+                                       pdf_text    = NULL) {
 
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
   }
-  if (!file.exists(pdf_path)) {
-    rlang::abort(sprintf("PDF not found: %s", pdf_path))
+  if (is.null(pdf_path) && is.null(pdf_text)) {
+    rlang::abort("Provide either `pdf_path` (a PDF file) or `pdf_text` (the description text directly).")
   }
-  if (!requireNamespace("pdftools", quietly = TRUE)) {
-    rlang::abort(paste0(
-      "Package 'pdftools' is required to read PDFs but is not installed. ",
-      "Install it with install.packages('pdftools')."
-    ))
+  if (!is.null(pdf_path)) {
+    if (!file.exists(pdf_path)) {
+      rlang::abort(sprintf("PDF not found: %s", pdf_path))
+    }
+    if (!requireNamespace("pdftools", quietly = TRUE)) {
+      rlang::abort(paste0(
+        "Package 'pdftools' is required to read PDFs but is not installed. ",
+        "Install it with install.packages('pdftools')."
+      ))
+    }
+    pages <- pdftools::pdf_text(pdf_path)
+    full  <- paste(pages, collapse = "\n\n")
+  } else {
+    pages <- list(pdf_text)
+    full  <- pdf_text
   }
-
-  pages <- pdftools::pdf_text(pdf_path)
-  full  <- paste(pages, collapse = "\n\n")
 
   # Chunk only if the document is unusually long; most field
   # descriptions fit comfortably under the threshold.
@@ -389,8 +402,9 @@ extract_horizons_from_pdf <- function(pedon,
   # Record document provenance.
   if (is.null(pedon$documents)) pedon$documents <- list()
   pedon$documents[[length(pedon$documents) + 1L]] <- list(
-    type        = "pdf",
-    path        = normalizePath(pdf_path, mustWork = FALSE),
+    type        = if (!is.null(pdf_path)) "pdf" else "pdf_text_inline",
+    path        = if (!is.null(pdf_path)) normalizePath(pdf_path, mustWork = FALSE)
+                  else "<inline pdf_text>",
     extracted_via = "VLM",
     extracted_at  = as.character(Sys.time()),
     attempts      = total_attempts,

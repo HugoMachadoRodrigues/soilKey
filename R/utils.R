@@ -84,6 +84,8 @@ horizon_column_spec <- function() {
     slickensides                  = "character", # absent / few / common / many / continuous
     # ---- v0.3 additions: technic, duric ----
     artefacts_pct                 = "numeric",   # volume % of human artefacts (for Technosols)
+    geomembrane_present           = "logical",   # WRB 2022 Ch 5 Technosols: continuous geomembrane within 100 cm
+    technic_hardmaterial_pct      = "numeric",   # WRB 2022 Ch 5 Technosols: % concrete/asphalt/mine spoil at surface (>= 95% within 5 cm)
     duripan_pct                   = "numeric",   # volume % of Si-cemented duripan (for Durisols)
     # ---- v0.3.3 additions: completing WRB Ch 3.1 / 3.2 / 3.3 coverage ----
     cementation_class             = "character", # 'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants)
@@ -142,7 +144,8 @@ make_empty_horizons <- function(n = 0L) {
     switch(type,
       numeric   = rep(NA_real_,      n),
       character = rep(NA_character_, n),
-      integer   = rep(NA_integer_,   n)
+      integer   = rep(NA_integer_,   n),
+      logical   = rep(NA,            n)
     )
   })
   data.table::as.data.table(cols)
@@ -167,12 +170,15 @@ ensure_horizon_schema <- function(h) {
       h[[col]] <- switch(spec[[col]],
         numeric   = rep(NA_real_,      n),
         character = rep(NA_character_, n),
-        integer   = rep(NA_integer_,   n)
+        integer   = rep(NA_integer_,   n),
+        logical   = rep(NA,            n)
       )
     } else if (spec[[col]] == "numeric" && !is.numeric(h[[col]])) {
       h[[col]] <- suppressWarnings(as.numeric(h[[col]]))
     } else if (spec[[col]] == "character" && !is.character(h[[col]])) {
       h[[col]] <- as.character(h[[col]])
+    } else if (spec[[col]] == "logical" && !is.logical(h[[col]])) {
+      h[[col]] <- as.logical(h[[col]])
     }
   }
   data.table::setcolorder(h, intersect(c(names(spec), names(h)), names(h)))

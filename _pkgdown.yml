@@ -265,6 +265,26 @@ reference:
       - report_pdf
       - report_to_qgis
 
+  - title: "Layperson on-ramp"
+    desc: >
+      Zero-code Shiny GUI plus auto-detect helpers that remove the
+      friction non-coders hit on a fresh install.
+    contents:
+      - run_demo
+      - auto_set_proj_env
+      - vlm_pick_provider
+      - ollama_is_running
+
+  - title: "Real-data benchmarks (v0.9.15)"
+    desc: >
+      Loaders for the three external validation sets soilKey is
+      benchmarked against in the v1.0 methods paper.
+    contents:
+      - load_kssl_pedons
+      - load_lucas_pedons
+      - load_embrapa_pedons
+      - benchmark_run_classification
+
   - title: "Canonical fixtures"
     desc: "One-call constructors for the 31 canonical fixtures (one per WRB RSG, plus auxiliaries) used in the test suite."
     contents:
@@ -313,6 +333,7 @@ reference:
       - clear_ossl_cache
       - download_ossl_subset
       - download_ossl_subset_with_labels
+      - familia_mineralogia_argila_geral
       - ossl_demo_sa
       - planosol
       - posterior_classify
