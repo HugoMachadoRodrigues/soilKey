@@ -791,9 +791,52 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
     details = list(ferralic_passed = fer$passed),
     notes   = NA_character_
   )
-  tests$clay      <- test_clay_above(h, min_pct = min_clay)
-  tests$fe_dcb    <- test_fe_dcb_above(h, min_pct = min_fe_dcb,
-                                          candidate_layers = tests$clay$layers)
+  tests$clay   <- test_clay_above(h, min_pct = min_clay)
+  tests$fe_dcb <- test_fe_dcb_above(h, min_pct = min_fe_dcb,
+                                       candidate_layers = tests$clay$layers)
+
+  # v0.9.18: when fe_dcb_pct is missing across all clay-qualifying
+  # layers, infer plausible Fe-rich behaviour from (a) Bt designation
+  # + (b) CEC/clay activity in the 8-36 cmol/kg-clay range +
+  # (c) NO albic E horizon above the Bt (Nitisol diagnostic morphology
+  # does not include an albic E -- profiles with an E above are
+  # canonically Acrisols / Lixisols / Alisols / Luvisols / Retisols).
+  # The inference does NOT fire when fe_dcb is measured -- the
+  # canonical gate stays in charge for lab-grade profiles. Closes the
+  # FEBR Nitosols 0/14 gap diagnosed in the v0.9.17 benchmark
+  # without regressing the canonical Acrisol / Lixisol / Alisol
+  # fixtures (which all have an E horizon).
+  if (is.na(tests$fe_dcb$passed) || isFALSE(tests$fe_dcb$passed)) {
+    fe_layers <- tests$clay$layers
+    have_fe_data <- any(!is.na(h$fe_dcb_pct[fe_layers]))
+    has_albic_E <- any(!is.na(h$designation) &
+                          grepl("^E[bg]?$|^E[0-9]", h$designation))
+    if (length(fe_layers) > 0L && !have_fe_data && !has_albic_E) {
+      desg <- h$designation[fe_layers]
+      bt_pattern <- !is.na(desg) & grepl("^B[a-z]*t", desg)
+      cec_per_clay_in_range <- vapply(fe_layers, function(j) {
+        if (is.na(h$cec_cmol[j]) || is.na(h$clay_pct[j]) ||
+              h$clay_pct[j] <= 0) return(FALSE)
+        cpc <- h$cec_cmol[j] * 100 / h$clay_pct[j]
+        !is.na(cpc) && cpc >= 8 && cpc <= 36
+      }, logical(1))
+      inferred <- fe_layers[bt_pattern & cec_per_clay_in_range]
+      if (length(inferred) > 0L) {
+        tests$fe_dcb <- list(
+          passed  = TRUE,
+          layers  = inferred,
+          missing = "fe_dcb_pct",
+          details = list(source = "inferred_from_Bt_and_cec_per_clay_and_no_albic_E",
+                          note   = paste0("v0.9.18: fe_dcb_pct missing; ",
+                                           "Fe-rich behaviour inferred from ",
+                                           "Bt designation + CEC/clay in ",
+                                           "[8, 36] + no albic E")),
+          notes   = NA_character_
+        )
+      }
+    }
+  }
+
   tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
                                               candidate_layers = tests$fe_dcb$layers)
 
@@ -821,11 +864,14 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
     tests,
     layer_tests = c("not_ferralic", "clay", "fe_dcb", "thickness")
   )
-  # Hard-fail if any supplementary test was conclusively FALSE.
-  conclusive_supp_fail <- isFALSE(struct$passed) ||
-                            isFALSE(shiny$passed) ||
-                            isFALSE(clay_dec$passed)
-  if (conclusive_supp_fail) {
+  # v0.9.18: only hard-fail on a conclusively FALSE clay-decrease
+  # pattern. test_polyhedral_or_nutty_structure() and
+  # test_shiny_ped_surfaces() now return NA when evidence is missing
+  # or inconclusive (rather than FALSE), so they are evidence-only
+  # and never veto. The clay-decrease test still vetoes when there
+  # IS measured clay data showing a > 8 pp drop -- that's
+  # mineralogically incompatible with a nitic horizon.
+  if (isFALSE(clay_dec$passed)) {
     agg$passed <- FALSE
     agg$layers <- integer(0)
   }

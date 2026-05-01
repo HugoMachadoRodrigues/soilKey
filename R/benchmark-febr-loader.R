@@ -255,12 +255,39 @@ normalise_febr_wrb <- function(x) {
   # Strip qualifiers in parens.
   s <- gsub("\\s*\\(.*$", "", s)
   out <- character(length(s))
+  # v0.9.18: legacy <-> canonical RSG spelling map. FEBR uses pre-2014
+  # RSG names ("NITOSOL", "GREYZEM", "AGRISOL", ...) that the WRB 2022
+  # 4th edition has merged or renamed (NITISOL, PHAEOZEM, ACRISOL, ...).
+  # Canonicalising here lets the benchmark compare apples to apples.
+  legacy_map <- c(
+    "NITOSOL"           = "Nitisols",
+    "NITOSOLS"          = "Nitisols",
+    "GREYZEM"           = "Phaeozems",
+    "GREYZEMS"          = "Phaeozems",
+    "CREYZEM"           = "Phaeozems",
+    "CREYZEMS"          = "Phaeozems",
+    "AGRISOL"           = "Acrisols",
+    "AGRISOLS"          = "Acrisols",
+    "ARGISOL"           = "Acrisols",
+    "ARGISOLS"          = "Acrisols",
+    "LUVISSOL"          = "Luvisols",
+    "LUVISSOLS"         = "Luvisols",
+    "SOLONETZS"         = "Solonetz",
+    "VERMELHO-AMARELO"  = NA_character_,
+    "VERMELHO-AMARELOS" = NA_character_,
+    "NATRAQUOLL"        = "Solonetz",
+    "NATRAQUOLLS"       = "Solonetz"
+  )
   for (i in seq_along(s)) {
     if (is.na(s[i])) { out[i] <- NA_character_; next }
     parts <- strsplit(trimws(s[i]), "\\s+", fixed = FALSE)[[1]]
     if (length(parts) == 0L) { out[i] <- NA_character_; next }
-    rsg <- parts[length(parts)]   # last word
-    rsg <- gsub("S$", "", rsg)    # singular
+    last <- parts[length(parts)]
+    if (last %in% names(legacy_map)) {
+      out[i] <- legacy_map[[last]]
+      next
+    }
+    rsg <- gsub("S$", "", last)
     out[i] <- paste0(substr(rsg, 1, 1),
                        tolower(substr(rsg, 2, nchar(rsg))),
                        "s")

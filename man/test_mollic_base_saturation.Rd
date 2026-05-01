@@ -4,7 +4,12 @@
 \alias{test_mollic_base_saturation}
 \title{Mollic base-saturation test (NH4OAc, pH 7, default >= 50\%)}
 \usage{
-test_mollic_base_saturation(h, min_pct = 50, candidate_layers = NULL)
+test_mollic_base_saturation(
+  h,
+  min_pct = 50,
+  candidate_layers = NULL,
+  allow_inference = TRUE
+)
 }
 \arguments{
 \item{h}{Numeric threshold or option (see Details).}
@@ -12,6 +17,10 @@ test_mollic_base_saturation(h, min_pct = 50, candidate_layers = NULL)
 \item{min_pct}{Numeric threshold or option (see Details).}
 
 \item{candidate_layers}{Numeric threshold or option (see Details).}
+
+\item{allow_inference}{If \code{TRUE} (default), fall back to
+sum-of-cations / CEC arithmetic OR \code{al_sat_pct < 20}
+OR \code{ph_h2o >= 5.8} when \code{bs_pct} is missing.}
 }
 \description{
 Mollic base-saturation test (NH4OAc, pH 7, default >= 50\%)

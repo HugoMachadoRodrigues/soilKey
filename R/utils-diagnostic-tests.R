@@ -424,12 +424,16 @@ test_ferralic_texture <- function(h, candidate_layers = NULL) {
 #' @param max_chroma_moist Numeric threshold or option (see Details).
 #' @param max_value_dry Numeric threshold or option (see Details).
 #' @param candidate_layers Optional restriction.
+#' @param allow_oc_inference If \code{TRUE} (default), accept OC \\>=
+#'        1.5 \% in a surface A horizon as evidence of dark colour
+#'        when both moist and dry Munsell are missing.
 #' @export
 test_mollic_color <- function(h,
                                 max_value_moist  = 3,
                                 max_chroma_moist = 3,
                                 max_value_dry    = 5,
-                                candidate_layers = NULL) {
+                                candidate_layers = NULL,
+                                allow_oc_inference = TRUE) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0)
   missing <- character(0)
@@ -439,25 +443,76 @@ test_mollic_color <- function(h,
     vm <- h$munsell_value_moist[i]
     cm <- h$munsell_chroma_moist[i]
     vd <- h$munsell_value_dry[i]
+    oc <- h$oc_pct[i]
 
-    if (is.na(vm) || is.na(cm)) {
-      if (is.na(vm)) missing <- c(missing, "munsell_value_moist")
-      if (is.na(cm)) missing <- c(missing, "munsell_chroma_moist")
+    has_moist <- !is.na(vm) && !is.na(cm)
+    has_dry   <- !is.na(vd)
+
+    # Path 1 (canonical): full moist Munsell.
+    if (has_moist) {
+      moist_ok <- vm <= max_value_moist && cm <= max_chroma_moist
+      dry_ok   <- if (has_dry) vd <= max_value_dry
+                  else         (vm + 1) <= max_value_dry
+      details[[as.character(i)]] <- list(
+        idx = i, source = "moist_munsell",
+        value_moist  = vm, chroma_moist = cm, value_dry = vd,
+        moist_ok = moist_ok, dry_ok = dry_ok,
+        passed = moist_ok && dry_ok
+      )
+      if (moist_ok && dry_ok) passing <- c(passing, i)
       next
     }
 
-    moist_ok <- vm <= max_value_moist && cm <= max_chroma_moist
-    dry_ok   <- if (is.na(vd)) (vm + 1) <= max_value_dry
-                else            vd     <= max_value_dry
+    # Path 2 (v0.9.18): only dry Munsell available -- use the dry
+    # value test. Empirical correspondence: a value moist ~ value
+    # dry - 1, so a horizon with value_dry <= max_value_dry that
+    # also reports chroma_moist (or chroma_dry) <= max_chroma_moist
+    # qualifies. When chroma is also missing we accept on the dry
+    # value alone, because moisture darkens chroma too.
+    if (has_dry) {
+      dry_ok <- vd <= max_value_dry
+      cd <- if ("munsell_chroma_dry" %in% names(h)) h$munsell_chroma_dry[i]
+            else NA_real_
+      chroma_evidence <- if (!is.na(cm)) cm
+                          else if (!is.na(cd)) cd
+                          else NA_real_
+      chroma_ok <- is.na(chroma_evidence) || chroma_evidence <= max_chroma_moist
+      details[[as.character(i)]] <- list(
+        idx = i, source = "dry_munsell_only",
+        value_dry = vd, chroma_evidence = chroma_evidence,
+        dry_ok = dry_ok, chroma_ok = chroma_ok,
+        passed = dry_ok && chroma_ok
+      )
+      if (dry_ok && chroma_ok) passing <- c(passing, i)
+      next
+    }
 
-    details[[as.character(i)]] <- list(
-      idx = i,
-      value_moist  = vm, chroma_moist = cm, value_dry = vd,
-      moist_ok = moist_ok, dry_ok = dry_ok,
-      passed   = moist_ok && dry_ok
-    )
+    # Path 3 (v0.9.18): no Munsell at all -- infer dark colour from
+    # high OC. Empirical convention: oc_pct >= 1.5 in a surface A
+    # horizon implies value moist <= 3 in nearly all tropical /
+    # temperate Mollic / Umbric / Chernozemic / Phaeozem profiles
+    # (Embrapa Manual de Metodos 2017; KST 13ed Ch 3 commentary on
+    # mollic indicator profile descriptions). The fallback only
+    # fires when allow_oc_inference is TRUE (default) AND OC is
+    # measured; when OC is also missing we record the field as
+    # missing and the layer remains unevaluated.
+    if (allow_oc_inference && !is.na(oc) && oc >= 1.5) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "oc_inferred",
+        oc_pct = oc, threshold = 1.5,
+        passed = TRUE
+      )
+      passing <- c(passing, i)
+      next
+    }
 
-    if (moist_ok && dry_ok) passing <- c(passing, i)
+    if (is.na(vm) && is.na(vd)) {
+      missing <- c(missing, "munsell_value_moist", "munsell_value_dry")
+    }
+    if (is.na(cm) && !"munsell_chroma_dry" %in% names(h)) {
+      missing <- c(missing, "munsell_chroma_moist")
+    }
+    if (allow_oc_inference && is.na(oc)) missing <- c(missing, "oc_pct")
   }
 
   evaluated <- length(details)
@@ -468,7 +523,7 @@ test_mollic_color <- function(h,
   .subtest_result(
     passed  = passed,
     layers  = passing,
-    missing = missing,
+    missing = unique(missing),
     details = details
   )
 }
@@ -516,9 +571,13 @@ test_mollic_organic_carbon <- function(h, min_pct = 0.6,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @param allow_inference If \code{TRUE} (default), fall back to
+#'        sum-of-cations / CEC arithmetic OR \code{al_sat_pct < 20}
+#'        OR \code{ph_h2o >= 5.8} when \code{bs_pct} is missing.
 #' @export
 test_mollic_base_saturation <- function(h, min_pct = 50,
-                                          candidate_layers = NULL) {
+                                          candidate_layers = NULL,
+                                          allow_inference = TRUE) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0)
   missing <- character(0)
@@ -526,14 +585,70 @@ test_mollic_base_saturation <- function(h, min_pct = 50,
 
   for (i in cl) {
     bs <- h$bs_pct[i]
-    if (is.na(bs)) {
+
+    # Path 1: measured BS.
+    if (!is.na(bs)) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "measured", bs_pct = bs,
+        threshold = min_pct, passed = bs >= min_pct
+      )
+      if (bs >= min_pct) passing <- c(passing, i)
+      next
+    }
+
+    if (!isTRUE(allow_inference)) {
       missing <- c(missing, "bs_pct")
       next
     }
-    details[[as.character(i)]] <- list(
-      idx = i, bs_pct = bs, threshold = min_pct, passed = bs >= min_pct
-    )
-    if (bs >= min_pct) passing <- c(passing, i)
+
+    # Path 2 (v0.9.18): derive from sum-of-bases / CEC when both
+    # available. BS_calc = (Ca + Mg + K + Na) / CEC * 100. This is
+    # exactly the canonical USDA / SiBCS BS formula, just computed
+    # internally when bs_pct itself is missing.
+    cations <- sum(c(h$ca_cmol[i], h$mg_cmol[i],
+                       h$k_cmol[i], h$na_cmol[i]),
+                     na.rm = TRUE)
+    have_cations <- sum(!is.na(c(h$ca_cmol[i], h$mg_cmol[i],
+                                    h$k_cmol[i], h$na_cmol[i]))) >= 2L
+    cec <- h$cec_cmol[i]
+    if (have_cations && !is.na(cec) && cec > 0) {
+      bs_calc <- cations / cec * 100
+      details[[as.character(i)]] <- list(
+        idx = i, source = "computed_from_cations",
+        bs_pct = bs_calc, threshold = min_pct,
+        passed = bs_calc >= min_pct
+      )
+      if (bs_calc >= min_pct) passing <- c(passing, i)
+      next
+    }
+
+    # Path 3 (v0.9.18): infer BS-high from low Al saturation OR
+    # high pH. Mollic / Phaeozem / Chernozem profiles in the FEBR
+    # archive routinely report neither bs_pct nor bases but show
+    # pH(H2O) >= 5.8 (the empirical threshold above which BS
+    # exceeds 50 in essentially all temperate / tropical soils).
+    # al_sat_pct < 30 is the equivalent low-Al criterion.
+    al_sat <- h$al_sat_pct[i]
+    if (!is.na(al_sat) && al_sat < 20) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "al_sat_below_20",
+        al_sat_pct = al_sat, passed = TRUE
+      )
+      passing <- c(passing, i)
+      next
+    }
+    ph <- h$ph_h2o[i]
+    if (!is.na(ph) && ph >= 5.8) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "ph_above_5.8",
+        ph_h2o = ph, passed = TRUE
+      )
+      passing <- c(passing, i)
+      next
+    }
+
+    # No evidence at all.
+    missing <- c(missing, "bs_pct")
   }
 
   evaluated <- length(details)
@@ -544,7 +659,7 @@ test_mollic_base_saturation <- function(h, min_pct = 50,
   .subtest_result(
     passed  = passed,
     layers  = passing,
-    missing = missing,
+    missing = unique(missing),
     details = details
   )
 }

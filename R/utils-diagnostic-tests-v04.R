@@ -338,16 +338,29 @@ test_technic_hardmaterial_at_surface <- function(h,
 #'
 #' WRB 2022 supplementary criterion for the nitic horizon:
 #' \code{structure_type} matches "polyhedral" or "nutty"
-#' (case-insensitive). Treated as evidence-supportive: when the field
-#' is missing entirely, the diagnostic does not fail; when present and
-#' clearly NOT polyhedral/nutty, the diagnostic fails.
+#' (case-insensitive). v0.9.18: now PURELY PERMISSIVE on missing
+#' data. The function returns:
+#' \itemize{
+#'   \item \code{passed = TRUE} when at least one candidate layer's
+#'         \code{structure_type} matches polyhedral / nutty /
+#'         (sub)angular blocky;
+#'   \item \code{passed = NA} when \code{structure_type} is missing
+#'         in all candidate layers (no evidence either way -- never
+#'         gates a conclusively-FALSE supplementary test);
+#'   \item \code{passed = NA} (NOT FALSE) when structure is reported
+#'         but NEITHER polyhedral NOR (sub)angular blocky (legacy
+#'         "granular" / "massive" descriptions are too coarse to
+#'         conclusively contradict). The Nitisol / Nitossolo gates
+#'         still fail when they have stronger contradicting evidence
+#'         elsewhere -- this test is no longer a hard veto.
+#' }
 #'
 #' @keywords internal
 test_polyhedral_or_nutty_structure <- function(h,
                                                   candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L)
-    return(.subtest_result(passed = FALSE, layers = integer(0)))
+    return(.subtest_result(passed = NA, layers = integer(0)))
 
   st <- h$structure_type
   if (all(is.na(st[cl]))) {
@@ -357,9 +370,14 @@ test_polyhedral_or_nutty_structure <- function(h,
   passing <- cl[grepl("polyhedr|nutty|sub.?angular.*block",
                         st[cl], ignore.case = TRUE)]
   if (length(passing) == 0L) {
-    # No structure layer matches -- treat as soft fail.
-    return(.subtest_result(passed = FALSE, layers = integer(0),
-                            details = list(structure_types = st[cl])))
+    # v0.9.18: legacy "granular" / "massive" descriptions can be the
+    # field interpreter's shorthand rather than a conclusive
+    # non-polyhedral observation. Return NA (no contradicting
+    # evidence) instead of FALSE so the diagnostic does not veto on
+    # a soft signal.
+    return(.subtest_result(passed = NA, layers = integer(0),
+                            details = list(structure_types = st[cl],
+                                            note = "no polyhedral match; treated as evidence-only, not gating")))
   }
   .subtest_result(passed = TRUE, layers = passing,
                   details = list(structure_types = st[cl]))

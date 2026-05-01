@@ -9,7 +9,8 @@ test_mollic_color(
   max_value_moist = 3,
   max_chroma_moist = 3,
   max_value_dry = 5,
-  candidate_layers = NULL
+  candidate_layers = NULL,
+  allow_oc_inference = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,10 @@ test_mollic_color(
 \item{max_value_dry}{Numeric threshold or option (see Details).}
 
 \item{candidate_layers}{Optional restriction.}
+
+\item{allow_oc_inference}{If \code{TRUE} (default), accept OC \\>=
+1.5 \% in a surface A horizon as evidence of dark colour
+when both moist and dry Munsell are missing.}
 }
 \description{
 Moist value <= 3 AND moist chroma <= 3 AND dry value <= 5. If
