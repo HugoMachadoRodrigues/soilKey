@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -3566,6 +3566,13 @@
 
         <dt>
 
+          <code><a href="normalise_febr_usda.html">normalise_febr_usda()</a></code>
+
+        </dt>
+        <dd>Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order</dd>
+
+        <dt>
+
           <code><a href="ochric_epipedon_usda.html">ochric_epipedon_usda()</a></code>
 
         </dt>
@@ -4246,9 +4253,9 @@
         </dt>
         <dd>Is the local Ollama HTTP API reachable?</dd>
       </dl></div><div class="section level2">
-      <h2 id="real-data-benchmarks-v-">Real-data benchmarks (v0.9.15)<a class="anchor" aria-label="anchor" href="#real-data-benchmarks-v-"></a></h2>
+      <h2 id="real-data-benchmarks-v-">Real-data benchmarks (v0.9.15+)<a class="anchor" aria-label="anchor" href="#real-data-benchmarks-v-"></a></h2>
 
-      <div class="section-desc"><p>Loaders for the three external validation sets soilKey is benchmarked against in the v1.0 methods paper.</p></div>
+      <div class="section-desc"><p>Loaders for the three external validation sets soilKey is benchmarked against in the v1.0 methods paper, plus FEBR / BDsolos label-normalisation helpers (v0.9.16).</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -4275,6 +4282,34 @@
 
         </dt>
         <dd>Load Embrapa dadosolos pedons with reference SiBCS classification</dd>
+
+        <dt>
+
+          <code><a href="load_febr_pedons.html">load_febr_pedons()</a></code>
+
+        </dt>
+        <dd>Load the Embrapa FEBR superconjunto into a list of PedonRecords</dd>
+
+        <dt>
+
+          <code><a href="normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code>
+
+        </dt>
+        <dd>Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case</dd>
+
+        <dt>
+
+          <code><a href="normalise_febr_wrb.html">normalise_febr_wrb()</a></code>
+
+        </dt>
+        <dd>Normalise FEBR WRB taxon strings to RSG-only</dd>
+
+        <dt>
+
+          <code><a href="normalise_febr_usda.html">normalise_febr_usda()</a></code>
+
+        </dt>
+        <dd>Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order</dd>
 
         <dt>
 
@@ -5021,6 +5056,13 @@
 
         </dt>
         <dd>Load Embrapa dadosolos pedons with reference SiBCS classification</dd>
+
+        <dt>
+
+          <code><a href="load_febr_pedons.html">load_febr_pedons()</a></code>
+
+        </dt>
+        <dd>Load the Embrapa FEBR superconjunto into a list of PedonRecords</dd>
 
         <dt>
 

@@ -377,6 +377,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lithic_discontinuity.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lixisol.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.html</loc></url>
@@ -456,6 +457,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_haplico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_vermelho.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/nitric_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalize_prior.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.html</loc></url>

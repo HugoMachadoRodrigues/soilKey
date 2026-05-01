@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,47 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.15/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.16" id="soilkey-0916-2026-05-01">soilKey 0.9.16 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0916-2026-05-01"></a></h2>
+<p>The “first real-data validation” release. Runs the v0.9.15 benchmark infrastructure against the full Embrapa FEBR / BDsolos archive (the de-facto Brazilian-context reference dataset, 50 485 horizon rows across 2 381 unique profiles) and produces the first defensible top-1 accuracy numbers for soilKey on a real, externally-published reference set.</p>
+<div class="section level3">
+<h3 id="real-data-benchmark-results-0-9-16">Real-data benchmark results<a class="anchor" aria-label="anchor" href="#real-data-benchmark-results-0-9-16"></a></h3>
+<p>Quality-filtered subset (793 profiles with B horizon + clay + at least one of CEC / BS / pH):</p>
+<table class="table"><thead><tr><th>System</th>
+<th align="right">n</th>
+<th align="right">top-1</th>
+<th>95 % CI</th>
+</tr></thead><tbody><tr><td><strong>SiBCS 5ª ed.</strong></td>
+<td align="right">128</td>
+<td align="right"><strong>40.6 %</strong></td>
+<td>[32.0 %, 50.8 %]</td>
+</tr><tr><td><strong>WRB 2022</strong></td>
+<td align="right">102</td>
+<td align="right"><strong>21.6 %</strong></td>
+<td>[13.7 %, 29.4 %]</td>
+</tr><tr><td><strong>USDA Soil Taxonomy 13ed</strong></td>
+<td align="right">614</td>
+<td align="right"><strong>34.0 %</strong></td>
+<td>[30.8 %, 37.5 %]</td>
+</tr></tbody></table><p>Per-Order accuracy reveals a clear pattern: <strong>soilKey is excellent on the Ferralsol / Latossolo / Oxisol cluster</strong> (WRB Ferralsols 22/22 = 100 %, USDA Oxisols 179/192 = 93.2 %), but the <strong>Argillic / Kandic discriminator</strong> is the principal failure mode (USDA Ultisols 0/270, WRB Acrisols 0/10, all routed to Oxisols / Ferralsols). A second failure cluster is <strong>mollic / umbric horizon detection</strong> (USDA Mollisols 0/34, WRB Phaeozems 0/6).</p>
+<p>These per-Order findings are the v1.0 roadmap. See <a href="inst/benchmarks/reports/embrapa_febr_2026-05-01.html">inst/benchmarks/reports/embrapa_febr_2026-05-01.md</a> for the full breakdown.</p>
+</div>
+<div class="section level3">
+<h3 id="new-code-0-9-16">New code<a class="anchor" aria-label="anchor" href="#new-code-0-9-16"></a></h3>
+<ul><li><p><strong><code>load_febr_pedons(path, head, require_classification, verbose)</code></strong> – loads the Embrapa FEBR <code>febr-superconjunto.txt</code> semicolon-CSV format with comma-decimal numeric fields and UTF-8 PT-BR classification strings. Groups one row per (camada, horizon) into one PedonRecord per (dataset_id, observacao_id), with all three reference taxa attached on <code>$site</code>. Drops profiles without a reference label.</p></li>
+<li><p><strong><code>normalise_febr_sibcs(x, level)</code></strong> – normalises FEBR’s all-caps PT-BR SiBCS strings (“LATOSSOLO VERMELHO”, “ARGISSOLO VERMELHO- AMARELO”) to soilKey’s plural Title Case (“Latossolos”, “Argissolos”) at order- or subordem-level granularity. Reusable beyond the FEBR loader.</p></li>
+<li><p><strong><code>normalise_febr_wrb(x)</code></strong> – strips qualifier parens from WRB full-name strings (“HUMIC FERRALSOL (…)”) and pluralises the bare RSG (“Ferralsols”).</p></li>
+<li><p><strong><code>normalise_febr_usda(x)</code></strong> – maps USDA subgroup / great-group suffixes (<code>...OX</code> -&gt; Oxisols, <code>...ULT</code> -&gt; Ultisols, <code>...EPT</code> -&gt; Inceptisols, etc.) to the canonical Order names that <code><a href="../reference/classify_usda.html">classify_usda()</a></code> returns at <code>level = "order"</code>.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="known-limitations-0-9-16">Known limitations<a class="anchor" aria-label="anchor" href="#known-limitations-0-9-16"></a></h3>
+<ul><li><p><strong>KSSL (Microsoft Access 2012 / .accdb)</strong> – the bundled <code>NCSSLabDataMart_MSAccess</code> archive uses Access 2012 format which mdbtools 1.0.1 reads partially. The <code>lab_layer</code> table reads as empty, breaking the layer-to-pedon join. Recommended workaround: source the KSSL CSV export (the “Export to CSV” path on ncsslabdatamart.sc.egov.usda.gov) and use the existing <code>load_kssl_pedons(pedon_csv, layer_csv)</code> from v0.9.15.</p></li>
+<li><p><strong>EU-LUCAS 2022</strong> – the bundled <code>EU_LUCAS_2022.csv</code> is the field-survey points file (399 652 records, 306 columns), but the WRB classifications come from the separate ESDB profile archive that needs to be joined by NUTS code. The 2022 file alone has no WRB column.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.15" id="soilkey-0915-2026-04-30">soilKey 0.9.15 (2026-04-30)<a class="anchor" aria-label="anchor" href="#soilkey-0915-2026-04-30"></a></h2>
 <p>The “robustness pass”: closes the seven v0.3 simplifications in the WRB 2022 key, adds a graceful VLM fallback, auto-detects PROJ / GDAL paths so the layperson on-ramp no longer requires environment variables, ships a one-screen Shiny demo, lays the groundwork for real-data benchmarks against KSSL / EU-LUCAS / Embrapa BDsolos, and captures empirical evidence that the Gemma 4 / Ollama path works end-to-end.</p>

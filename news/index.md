@@ -1,5 +1,76 @@
 # Changelog
 
+## soilKey 0.9.16 (2026-05-01)
+
+The “first real-data validation” release. Runs the v0.9.15 benchmark
+infrastructure against the full Embrapa FEBR / BDsolos archive (the
+de-facto Brazilian-context reference dataset, 50 485 horizon rows across
+2 381 unique profiles) and produces the first defensible top-1 accuracy
+numbers for soilKey on a real, externally-published reference set.
+
+### Real-data benchmark results
+
+Quality-filtered subset (793 profiles with B horizon + clay + at least
+one of CEC / BS / pH):
+
+| System                      |   n |      top-1 | 95 % CI            |
+|-----------------------------|----:|-----------:|--------------------|
+| **SiBCS 5ª ed.**            | 128 | **40.6 %** | \[32.0 %, 50.8 %\] |
+| **WRB 2022**                | 102 | **21.6 %** | \[13.7 %, 29.4 %\] |
+| **USDA Soil Taxonomy 13ed** | 614 | **34.0 %** | \[30.8 %, 37.5 %\] |
+
+Per-Order accuracy reveals a clear pattern: **soilKey is excellent on
+the Ferralsol / Latossolo / Oxisol cluster** (WRB Ferralsols 22/22 = 100
+%, USDA Oxisols 179/192 = 93.2 %), but the **Argillic / Kandic
+discriminator** is the principal failure mode (USDA Ultisols 0/270, WRB
+Acrisols 0/10, all routed to Oxisols / Ferralsols). A second failure
+cluster is **mollic / umbric horizon detection** (USDA Mollisols 0/34,
+WRB Phaeozems 0/6).
+
+These per-Order findings are the v1.0 roadmap. See
+[inst/benchmarks/reports/embrapa_febr_2026-05-01.md](https://hugomachadorodrigues.github.io/soilKey/news/inst/benchmarks/reports/embrapa_febr_2026-05-01.md)
+for the full breakdown.
+
+### New code
+
+- **`load_febr_pedons(path, head, require_classification, verbose)`** –
+  loads the Embrapa FEBR `febr-superconjunto.txt` semicolon-CSV format
+  with comma-decimal numeric fields and UTF-8 PT-BR classification
+  strings. Groups one row per (camada, horizon) into one PedonRecord per
+  (dataset_id, observacao_id), with all three reference taxa attached on
+  `$site`. Drops profiles without a reference label.
+
+- **`normalise_febr_sibcs(x, level)`** – normalises FEBR’s all-caps
+  PT-BR SiBCS strings (“LATOSSOLO VERMELHO”, “ARGISSOLO VERMELHO-
+  AMARELO”) to soilKey’s plural Title Case (“Latossolos”, “Argissolos”)
+  at order- or subordem-level granularity. Reusable beyond the FEBR
+  loader.
+
+- **`normalise_febr_wrb(x)`** – strips qualifier parens from WRB
+  full-name strings (“HUMIC FERRALSOL (…)”) and pluralises the bare RSG
+  (“Ferralsols”).
+
+- **`normalise_febr_usda(x)`** – maps USDA subgroup / great-group
+  suffixes (`...OX` -\> Oxisols, `...ULT` -\> Ultisols, `...EPT` -\>
+  Inceptisols, etc.) to the canonical Order names that
+  [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  returns at `level = "order"`.
+
+### Known limitations
+
+- **KSSL (Microsoft Access 2012 / .accdb)** – the bundled
+  `NCSSLabDataMart_MSAccess` archive uses Access 2012 format which
+  mdbtools 1.0.1 reads partially. The `lab_layer` table reads as empty,
+  breaking the layer-to-pedon join. Recommended workaround: source the
+  KSSL CSV export (the “Export to CSV” path on
+  ncsslabdatamart.sc.egov.usda.gov) and use the existing
+  `load_kssl_pedons(pedon_csv, layer_csv)` from v0.9.15.
+
+- **EU-LUCAS 2022** – the bundled `EU_LUCAS_2022.csv` is the
+  field-survey points file (399 652 records, 306 columns), but the WRB
+  classifications come from the separate ESDB profile archive that needs
+  to be joined by NUTS code. The 2022 file alone has no WRB column.
+
 ## soilKey 0.9.15 (2026-04-30)
 
 The “robustness pass”: closes the seven v0.3 simplifications in the WRB

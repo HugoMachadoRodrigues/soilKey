@@ -2546,6 +2546,9 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
 - [`nitric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitric_subgroup_usda.md)
   : Nitric Subgroup helper (Anhyturbels / Anhyorthels)
 
+- [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
+  : Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order
+
 - [`ochric_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.md)
   : Ochric epipedon (USDA Soil Taxonomy, 13th edition)
 
@@ -2875,10 +2878,11 @@ non-coders hit on a fresh install.
 - [`ollama_is_running()`](https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.md)
   : Is the local Ollama HTTP API reachable?
 
-## Real-data benchmarks (v0.9.15)
+## Real-data benchmarks (v0.9.15+)
 
 Loaders for the three external validation sets soilKey is benchmarked
-against in the v1.0 methods paper.
+against in the v1.0 methods paper, plus FEBR / BDsolos
+label-normalisation helpers (v0.9.16).
 
 - [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
   : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
@@ -2887,6 +2891,14 @@ against in the v1.0 methods paper.
   : Load EU-LUCAS / ESDB pedons with reference WRB classification
 - [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
   : Load Embrapa dadosolos pedons with reference SiBCS classification
+- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
+  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
+- [`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
+  : Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case
+- [`normalise_febr_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md)
+  : Normalise FEBR WRB taxon strings to RSG-only
+- [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
+  : Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order
 - [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md)
   : Run a benchmark across one of the loaded pedon lists
 
@@ -3172,6 +3184,9 @@ plus auxiliaries) used in the test suite.
 
 - [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
   : Load Embrapa dadosolos pedons with reference SiBCS classification
+
+- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
+  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
 
 - [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
   : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
