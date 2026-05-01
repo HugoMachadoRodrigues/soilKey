@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,67 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.16/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.17" id="soilkey-0917-2026-05-01">soilKey 0.9.17 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0917-2026-05-01"></a></h2>
+<p>The “argillic-prefer-over-kandic” release. Fixes the single biggest failure mode the v0.9.16 benchmark exposed: the USDA Oxisol gate did not exclude profiles with an argillic horizon overlying the oxic, so all 270 Embrapa FEBR Ultisols were misclassified (mostly to Oxisols).</p>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-0-9-17">Real-data benchmark impact<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-0-9-17"></a></h3>
+<p>Re-running the v0.9.16 Embrapa FEBR benchmark on the same 793 quality-filtered profiles, identical filter, same bootstrap CI:</p>
+<table class="table"><thead><tr><th>System</th>
+<th align="right">v0.9.16</th>
+<th align="right">v0.9.17</th>
+<th align="right">delta</th>
+</tr></thead><tbody><tr><td><strong>USDA Soil Taxonomy 13ed</strong></td>
+<td align="right">34.0 %</td>
+<td align="right"><strong>46.4 %</strong></td>
+<td align="right"><strong>+12.4 pp</strong></td>
+</tr><tr><td><strong>WRB 2022</strong></td>
+<td align="right">21.6 %</td>
+<td align="right"><strong>25.5 %</strong></td>
+<td align="right"><strong>+3.9 pp</strong></td>
+</tr><tr><td>SiBCS 5ª ed.</td>
+<td align="right">40.6 %</td>
+<td align="right">40.6 %</td>
+<td align="right">unchanged</td>
+</tr></tbody></table><p>Per-Order changes that matter:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.16</th>
+<th align="right">v0.9.17</th>
+</tr></thead><tbody><tr><td>USDA Ultisols</td>
+<td align="right">0/270 (0.0 %)</td>
+<td align="right">95/270 (35.2 %)</td>
+</tr><tr><td>USDA Oxisols</td>
+<td align="right">179/192 (93.2 %)</td>
+<td align="right">156/192 (81.3 %)</td>
+</tr><tr><td>USDA Alfisols</td>
+<td align="right">28/89 (31.5 %)</td>
+<td align="right">32/89 (36.0 %)</td>
+</tr><tr><td>WRB Acrisols</td>
+<td align="right">0/10 (0 %)</td>
+<td align="right">4/10 (40 %)</td>
+</tr><tr><td>WRB Ferralsols</td>
+<td align="right">22/22 (100 %)</td>
+<td align="right">22/22 (100 %)</td>
+</tr></tbody></table><p>The Oxisol drop (93.2 % -&gt; 81.3 %) is correct: the 23 lost profiles were FEBR Ultisols / Acrisols mislabelled as Oxisols by the v0.9.16 gate. They are now correctly routed to Ultisols / Argissolos.</p>
+</div>
+<div class="section level3">
+<h3 id="code-changes-0-9-17">Code changes<a class="anchor" aria-label="anchor" href="#code-changes-0-9-17"></a></h3>
+<ul><li><p><strong><code><a href="../reference/oxisol_usda.html">oxisol_usda()</a></code></strong> – adds the WRB-mirrored argillic-above-oxic exclusion. KST 13ed Ch 13 (p 295) requires that profiles whose argillic horizon’s upper boundary lies above the oxic upper boundary do NOT classify as Oxisols. The previous v0.8 gate had only the prior-Order exclusion list (Gelisol / Histosol / Spodosol / Andisol).</p></li>
+<li><p><strong><code><a href="../reference/ultisol_usda.html">ultisol_usda()</a></code></strong> – graceful BS-low fallback. When the measured <code>bs_pct</code> is missing in all argillic layers, the gate now infers BS &lt; 35 from <code>al_sat_pct &gt;= 50</code> (mathematically forces BS &lt; 50 and BS &lt; 35 in essentially all tropical soils with this profile) or <code>ph_h2o &lt; 5.0</code> (the empirical threshold below which fewer than 5 % of tropical B horizons exceed BS 35). The fallback only fires when the direct measurement is absent, so lab-grade profiles use the canonical KST 13ed gate. Same heuristic added internally to <code><a href="../reference/acrisol.html">acrisol()</a></code> (WRB) for the same reason.</p></li>
+<li><p><strong><code>.bs_low_inferred(pedon, bs_threshold)</code></strong> – new internal helper consolidating the BS-low inference logic so both USDA and WRB gates use the same fallback chain.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="what-the-numbers-say-0-9-17">What the numbers say<a class="anchor" aria-label="anchor" href="#what-the-numbers-say-0-9-17"></a></h3>
+<p>The Ferralsol / Latossolo / Oxisol cluster remains saturated (WRB 100 %, USDA 81 % after the fix); the change is that USDA Ultisols are no longer hidden inside the Oxisol bucket. The +12.4 pp on USDA closes most of the v0.9.16 forensic’s “biggest single fix” gap.</p>
+<p>The remaining v1.0 work items (still untouched):</p>
+<ol style="list-style-type: decimal"><li>Mollic / Umbric horizon detection (USDA Mollisols 0/34, WRB Phaeozems 0/6) – the dark-color sub-tests are stricter than typical FEBR Munsell precision. Relax with tolerance for missing dry Munsell.</li>
+<li>Nitosols / Nitossolos polyhedral structure – the v0.9.15 supplementary tests still fail when <code>structure_type</code> is missing entirely. Switch to permissive-on-missing.</li>
+<li>KSSL CSV export (Access 2012 .accdb is partially readable; recommend the CSV path on ncsslabdatamart).</li>
+</ol></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.16" id="soilkey-0916-2026-05-01">soilKey 0.9.16 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0916-2026-05-01"></a></h2>
 <p>The “first real-data validation” release. Runs the v0.9.15 benchmark infrastructure against the full Embrapa FEBR / BDsolos archive (the de-facto Brazilian-context reference dataset, 50 485 horizon rows across 2 381 unique profiles) and produces the first defensible top-1 accuracy numbers for soilKey on a real, externally-published reference set.</p>
