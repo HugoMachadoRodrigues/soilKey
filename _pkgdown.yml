@@ -283,6 +283,7 @@ reference:
     contents:
       - load_kssl_pedons
       - load_kssl_pedons_gpkg
+      - load_kssl_pedons_with_nasis
       - load_lucas_pedons
       - load_embrapa_pedons
       - load_febr_pedons
