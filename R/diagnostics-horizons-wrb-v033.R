@@ -213,13 +213,25 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #'
 #' Stricter than the vertic *properties*: the vertic *horizon* requires
 #' \\>= 30\% clay throughout, slickensides at \\>= "common" level, AND
-#' shrink-swell cracks \\>= 0.5 cm wide. Used by Vertisols.
+#' shrink-swell cracks \\>= 0.5 cm wide. Used by Vertisols. v0.9.19
+#' adds an OR-alternative COLE-based linear-extensibility path:
+#' summed (\code{cole_value * thickness}) over the upper 100 cm
+#' \\>= 6 cm passes the diagnostic even when slickensides + cracks
+#' are not recorded (KST 13ed Ch 16 LE alternative, p 343).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Numeric threshold or option (see Details).
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_le_cm Minimum LE sum (cm) for the COLE-based path
+#'        (default 6, per KST 13ed Ch 16).
+#' @param le_max_depth_cm Depth window (cm) for the COLE-based path
+#'        (default 100).
 #' @export
-vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25) {
+vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
+                              min_le_cm = 6, le_max_depth_cm = 100) {
   h <- pedon$horizons
+
+  # Path 1 (canonical WRB 2022 + KST 13ed): clay >= min_clay +
+  # slickensides "common"+ + cracks >= 0.5 cm + thickness >= min_thickness.
   tests <- list()
   tests$clay         <- test_clay_above(h, min_pct = min_clay)
   tests$slickensides <- test_slickensides_present(h,
@@ -231,11 +243,53 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25) {
   shared <- intersect(tests$slickensides$layers, tests$cracks$layers)
   tests$thickness    <- test_minimum_thickness(h, min_cm = min_thickness,
                                                   candidate_layers = shared)
-  agg <- aggregate_subtests(tests)
+  agg_canonical <- aggregate_subtests(tests)
+
+  # Path 2 (v0.9.19): KST 13ed Ch 16 (Vertisols, p 343) accepts
+  # linear extensibility (LE) sum >= 6 cm between the surface and
+  # 100 cm as an alternative to slickensides + cracks. LE = sum of
+  # (cole_value * thickness) over each layer in the upper 100 cm.
+  # Used by USDA Vertisols and by the WRB vertic-horizon definition
+  # for shrink-swell soils where field morphology was not recorded
+  # but COLE was measured (typical of KSSL profiles).
+  cole_path <- list()
+  if ("cole_value" %in% names(h)) {
+    cl <- which(!is.na(h$top_cm) & h$top_cm < le_max_depth_cm)
+    if (length(cl) > 0L) {
+      thk    <- pmax(h$bottom_cm[cl] - h$top_cm[cl], 0)
+      cole_v <- h$cole_value[cl]
+      le     <- sum(thk * cole_v, na.rm = TRUE)
+      clay_layers <- intersect(cl, tests$clay$layers)
+      cole_path <- list(
+        passed = if (any(!is.na(cole_v)) && le >= min_le_cm &&
+                       length(clay_layers) > 0L) TRUE
+                 else if (all(is.na(cole_v))) NA
+                 else FALSE,
+        layers = clay_layers,
+        details = list(le_total_cm = le, threshold_cm = min_le_cm,
+                        depth_window_cm = le_max_depth_cm)
+      )
+    }
+  }
+
+  passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed)
+  layers <- if (isTRUE(agg_canonical$passed)) agg_canonical$layers
+            else if (isTRUE(cole_path$passed)) cole_path$layers
+            else integer(0)
+  missing <- unique(c(agg_canonical$missing,
+                       if (length(cole_path) == 0L) "cole_value"))
+  if (is.null(missing)) missing <- character(0)
+
   DiagnosticResult$new(
-    name = "vertic_horizon", passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon"
+    name     = "vertic_horizon",
+    passed   = if (passed) TRUE
+                else if (is.na(agg_canonical$passed) ||
+                           (length(cole_path) > 0L && is.na(cole_path$passed))) NA
+                else FALSE,
+    layers   = layers,
+    evidence = c(tests, list(cole_le_path = cole_path)),
+    missing  = missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon; KST 13ed Ch 16 LE alternative"
   )
 }
 

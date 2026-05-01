@@ -81,7 +81,9 @@ load_kssl_pedons_gpkg <- function(gpkg,
   ))
   phys <- phys[phys$layer_key %in% layers$layer_key, ]
   keep_phys <- intersect(c("layer_key","clay_total","silt_total","sand_total",
-                              "bulk_density_third_bar","bulk_density_oven_dry"),
+                              "bulk_density_third_bar","bulk_density_oven_dry",
+                              # v0.9.19: COLE for vertic LE-based detection.
+                              "cole_whole_soil"),
                             names(phys))
   phys <- phys[, keep_phys, with = FALSE]
 
@@ -97,7 +99,16 @@ load_kssl_pedons_gpkg <- function(gpkg,
       "total_carbon_ncs","organic_carbon_walkley_black",
       "base_sat_nh4oac_ph_7","caco3_lt_2_mm",
       "aluminum_saturation",
-      "aluminum_dithionite_citrate"),
+      "aluminum_dithionite_citrate",
+      # v0.9.19: oxalate + pyrophosphate fields needed for the
+      # spodic / andic / vitric horizon tests.
+      "aluminum_ammonium_oxalate",
+      "fe_ammoniumoxalate_extractable",
+      "silica_ammonium_oxalate",
+      "phosphorus_ammonium_oxalate",
+      "aluminum_na_pyro_phosphate",
+      "iron_sodium_pyro_phosphate",
+      "carbon_sodium_pyro_phosphate"),
     names(chem))
   chem <- chem[, keep_chem, with = FALSE]
 
@@ -145,6 +156,10 @@ load_kssl_pedons_gpkg <- function(gpkg,
       al_cmol     = pull("aluminum_kcl_extractable"),
       al_sat_pct  = pull("aluminum_saturation"),
       caco3_pct   = pull("caco3_lt_2_mm"),
+      al_ox_pct   = pull("aluminum_ammonium_oxalate"),
+      fe_ox_pct   = pull("fe_ammoniumoxalate_extractable"),
+      si_ox_pct   = pull("silica_ammonium_oxalate"),
+      cole_value  = pull("cole_whole_soil"),
       bulk_density_g_cm3 = .pick_first_non_na(
         pull("bulk_density_third_bar"),
         pull("bulk_density_oven_dry"))

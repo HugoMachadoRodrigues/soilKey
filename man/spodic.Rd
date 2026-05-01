@@ -4,7 +4,13 @@
 \alias{spodic}
 \title{Spodic horizon (WRB 2022)}
 \usage{
-spodic(pedon, min_thickness = 2.5, min_alfe = 0.5, max_ph = 5.9)
+spodic(
+  pedon,
+  min_thickness = 2.5,
+  min_alfe = 0.5,
+  max_ph = 5.9,
+  min_oc_in_b = 0.5
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -14,6 +20,10 @@ spodic(pedon, min_thickness = 2.5, min_alfe = 0.5, max_ph = 5.9)
 \item{min_alfe}{Minimum (Al_ox + 0.5 * Fe_ox) percent (default 0.5).}
 
 \item{max_ph}{Maximum ph_h2o (default 5.9).}
+
+\item{min_oc_in_b}{Minimum OC \% in the candidate Bh / Bs layer
+for the v0.9.19 morphological inference path when Al / Fe
+oxalate are missing (default 0.5).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

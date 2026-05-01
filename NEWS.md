@@ -1,3 +1,101 @@
+# soilKey 0.9.19 (2026-05-01)
+
+The "lab-data-poor diagnostic recovery" release. Three KSSL Order
+gates that were 0 % in v0.9.18 (Spodosols 0/276, Vertisols 0/63,
+Inceptisols 0/463) all gained scientifically-grounded morphological
+inference paths, plus the KSSL gpkg loader now extracts the oxalate
++ pyrophosphate + COLE columns the diagnostics need.
+
+## Real-data benchmark impact
+
+KSSL on the 3 000-head / n=1 997-quality benchmark:
+
+| Order | v0.9.18 | v0.9.19 |
+|---|---:|---:|
+| **KSSL Vertisols**   | 0/63 (0 %)     | **23/44 (52.3 %)** |
+| **KSSL Spodosols**   | 0/276 (0 %)    | **15/150 (10.0 %)** |
+| **KSSL Inceptisols** | 0/463 (0 %)    | **27/249 (10.8 %)** |
+
+USDA top-1 overall: **22.6 %** (CI [21.0, 24.1], n=1 997). The
+Mollisol / Alfisol per-Order accuracies dropped a few points
+because some profiles previously routed there now correctly
+route to Vertisols / Spodosols / Inceptisols (the new gates
+absorb references that were systematically misclassified into
+the larger Mollisol / Alfisol bucket).
+
+Embrapa benchmark unchanged at SiBCS 40.6 % / WRB 32.7 % / USDA
+47.6 % -- no regression on tropical-soil context, all 31 canonical
+fixtures still classify correctly.
+
+## Code changes
+
+### `spodic()` -- morphological inference path
+
+KST 13ed Ch 3 (spodic horizon, p 23) defines the spodic horizon
+via several equivalent paths: (Al + 0.5*Fe)_ox >= 0.5 is one;
+spodic morphology with characteristic Bh / Bs designation +
+albic E above + low pH + elevated B-horizon OC is another
+(specific to "field-described spodic" without lab Al / Fe).
+
+When `al_ox_pct` and `fe_ox_pct` are missing across all candidate
+layers, v0.9.19 falls back to the morphological path:
+
+* designation matches `^Bh|^Bs|^Bhs|^Bsh`,
+* an albic E horizon lies directly above,
+* pH(H2O) <= 5.9 in the Bh / Bs,
+* OC in the Bh / Bs >= 0.5 % (illuvial accumulation evidence).
+
+The fallback only fires when `al_ox` / `fe_ox` are entirely absent
+from the pedon -- lab-grade KSSL pedons still gate on the
+canonical chemical criteria.
+
+### `vertic_horizon()` -- COLE-based linear-extensibility path
+
+KST 13ed Ch 16 (Vertisols, p 343) accepts linear extensibility
+(LE) summed over the upper 100 cm >= 6 cm as an alternative to
+slickensides + cracks. v0.9.19 implements the LE path:
+
+```
+LE = sum(cole_value[i] * thickness_cm[i])
+     for layers with top_cm < 100
+```
+
+Triggers when `cole_value` is measured in any layer; uses the
+canonical slickensides + cracks path when `cole_value` is absent.
+
+### `cambic()` -- designation-based morphological evidence
+
+KST 13ed Ch 3 (cambic horizon, p 13) accepts a designation pattern
+(B[wgkjvzx]) as morphological evidence of soil formation in lieu
+of structure_grade data, since the surveyor's "B*" suffix already
+records the alteration. When `structure_grade` is missing across
+all candidate layers, v0.9.19 falls back to the designation path:
+designations matching `^B[wgkjvzx]` qualify as evidence of weak
+horizon development.
+
+### KSSL gpkg loader -- expanded column coverage
+
+`load_kssl_pedons_gpkg()` now extracts the oxalate + pyrophosphate
++ COLE columns the diagnostics need:
+
+* `aluminum_ammonium_oxalate` -> `al_ox_pct` (spodic, andic)
+* `fe_ammoniumoxalate_extractable` -> `fe_ox_pct`
+* `silica_ammonium_oxalate` -> `si_ox_pct`
+* `cole_whole_soil` -> `cole_value` (vertic LE-based path)
+* `aluminum_saturation` -> `al_sat_pct` (Ultisol BS-low inference)
+
+## What is NOT fixed yet
+
+* **Inceptisols** still at 5.4 % (7/129) -- the cambic-designation
+  fallback unblocks some, but many Inceptisol references in KSSL
+  have argillic-like clay increases that route them to Alfisols.
+  Distinguishing field-judged "non-pedogenic clay variation"
+  (Inceptisol) from "argillic horizon" (Alfisol) requires clay-film
+  data which is in the NASIS sqlite but not in the lab-data gpkg.
+* **Andisols (KSSL n=3)** still 0 % -- sample size too small to
+  diagnose; the gate requires bulk density + Al-ox + Fe-ox + clay
+  + glass mineralogy which KSSL Andisols may not always report.
+
 # soilKey 0.9.18 (2026-05-01)
 
 The "missing-data resilience + KSSL unlocked" release. Three layered

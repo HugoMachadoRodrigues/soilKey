@@ -12,12 +12,30 @@ test_that("spodic fails on Ferralsol, Luvisol, Chernozem", {
   expect_false(isTRUE(spodic(make_chernozem_canonical())$passed))
 })
 
-test_that("spodic NA when oxalate-extractable Al/Fe missing", {
+test_that("spodic accepts morphological inference when Al/Fe missing (v0.9.19)", {
+  # v0.9.19: when al_ox_pct + fe_ox_pct are entirely missing, the
+  # spodic test falls back to a morphological inference path
+  # (Bh/Bs designation + albic E above + pH <= 5.9 + OC >= 0.5 in
+  # the Bh/Bs). The canonical Podzol fixture meets all four, so
+  # the test now PASSES with the inference path active.
   pr <- make_podzol_canonical()
   pr$horizons$al_ox_pct <- NA_real_
   pr$horizons$fe_ox_pct <- NA_real_
   res <- spodic(pr)
-  expect_true(is.na(res$passed))
+  expect_true(isTRUE(res$passed))
+  expect_equal(res$evidence$alfe_oxalate$details$source,
+                 "morphological_inference")
+})
+
+test_that("spodic morphological inference does NOT fire on profiles without Bh/Bs designation", {
+  # Permissive only when designation contains the spodic illuvial
+  # marker -- a non-spodic profile with low pH and no Bh/Bs should
+  # still NOT pass.
+  pr <- make_luvisol_canonical()
+  pr$horizons$al_ox_pct <- NA_real_
+  pr$horizons$fe_ox_pct <- NA_real_
+  res <- spodic(pr)
+  expect_false(isTRUE(res$passed))
 })
 
 test_that("spodic respects pH ceiling", {

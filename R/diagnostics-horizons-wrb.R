@@ -394,13 +394,41 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5) {
     has_dev <- !is.na(grade) & grade %in% c("weak", "moderate", "strong") &
                  (is.na(type) | !grepl("^massive$|^single grain$",
                                           type, ignore.case = TRUE))
-    tests$structure_development <- .subtest_result(
-      passed  = if (any(has_dev)) TRUE
-                else if (all(is.na(grade))) NA else FALSE,
-      layers  = cand_str[has_dev],
-      missing = if (all(is.na(grade))) "structure_grade" else character(0),
-      details = list(grade = grade, type = type)
-    )
+
+    # v0.9.19: when structure_grade is missing across all candidate
+    # layers, fall back to designation-based evidence. KST 13ed Ch 3
+    # (cambic horizon, p 13) accepts a B-horizon designation pattern
+    # (Bw weathered, Bg gleyed, Bk calcic, Bv vertic-like, Bj
+    # jarositic, Bz salt-accumulating, Bx fragic-like) as morphological
+    # evidence of soil formation in lieu of structure data, since the
+    # surveyor's "B*" suffix already records the alteration. Only
+    # fires when structure data is genuinely absent (lab-grade
+    # profiles still gate on measured structure).
+    if (all(is.na(grade))) {
+      desg <- h$designation[cand_str]
+      bdev_pattern <- !is.na(desg) &
+                       grepl("^B[wgkjvzx]|^B[wgkjvzx][0-9]", desg)
+      has_dev_morph <- bdev_pattern
+      tests$structure_development <- .subtest_result(
+        passed  = if (any(has_dev_morph)) TRUE
+                  else if (all(is.na(desg))) NA else FALSE,
+        layers  = cand_str[has_dev_morph],
+        missing = "structure_grade",
+        details = list(source = "designation_morphology_inference",
+                        designations = desg, note = paste0(
+                          "v0.9.19: structure_grade missing; ",
+                          "Bw/Bg/Bk/Bj/Bv/Bz/Bx designations accepted ",
+                          "as KST 13ed Ch 3 morphological evidence."))
+      )
+    } else {
+      tests$structure_development <- .subtest_result(
+        passed  = if (any(has_dev)) TRUE
+                  else if (all(is.na(grade))) NA else FALSE,
+        layers  = cand_str[has_dev],
+        missing = if (all(is.na(grade))) "structure_grade" else character(0),
+        details = list(grade = grade, type = type)
+      )
+    }
   } else {
     tests$structure_development <- .subtest_result(
       passed = FALSE, layers = integer(0),
@@ -498,6 +526,9 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' @param min_thickness Minimum thickness in cm (default 2.5).
 #' @param min_alfe Minimum (Al_ox + 0.5 * Fe_ox) percent (default 0.5).
 #' @param max_ph Maximum ph_h2o (default 5.9).
+#' @param min_oc_in_b Minimum OC \% in the candidate Bh / Bs layer
+#'        for the v0.9.19 morphological inference path when Al / Fe
+#'        oxalate are missing (default 0.5).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -519,7 +550,8 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 spodic <- function(pedon,
                      min_thickness = 2.5,
                      min_alfe      = 0.5,
-                     max_ph        = 5.9) {
+                     max_ph        = 5.9,
+                     min_oc_in_b   = 0.5) {
   h <- pedon$horizons
 
   tests <- list()
@@ -553,6 +585,54 @@ spodic <- function(pedon,
     details = list(designation_match = desg$layers,
                      albic_above_match = has_albic_above)
   )
+
+  # v0.9.19: morphological inference path. KST 13ed Ch 3 (spodic
+  # horizon, p 23) accepts (Al + 0.5*Fe)_ox >= 0.5 as ONE path; it
+  # also accepts spodic morphology with characteristic illuvial
+  # accumulation (Bs / Bh designation), eluvial depletion (albic
+  # E above), low pH, and elevated OC in B. When al_ox / fe_ox
+  # are missing across all candidate layers we fall back to that
+  # morphological path: Bh/Bs designation + albic E above the Bh/Bs
+  # + pH <= max_ph + OC in the Bh/Bs >= min_oc_in_b. The fallback
+  # only fires when the direct measurement is missing.
+  if (is.na(tests$alfe_oxalate$passed) ||
+        (isFALSE(tests$alfe_oxalate$passed) &&
+           length(tests$alfe_oxalate$layers) == 0L)) {
+    al_ox_measured <- any(!is.na(h$al_ox_pct))
+    fe_ox_measured <- any(!is.na(h$fe_ox_pct))
+    if (!al_ox_measured && !fe_ox_measured) {
+      al_check <- albic(pedon)
+      if (length(desg$layers) > 0L && isTRUE(al_check$passed)) {
+        morph_layers <- integer(0)
+        for (i in desg$layers) {
+          above <- which(seq_len(nrow(h)) < i)
+          if (!any(above %in% al_check$layers)) next
+          ph_ok <- !is.na(h$ph_h2o[i]) && h$ph_h2o[i] <= max_ph
+          oc_ok <- !is.na(h$oc_pct[i]) && h$oc_pct[i] >= min_oc_in_b
+          if (ph_ok && oc_ok) morph_layers <- c(morph_layers, i)
+        }
+        if (length(morph_layers) > 0L) {
+          tests$alfe_oxalate <- list(
+            passed  = TRUE,
+            layers  = morph_layers,
+            missing = c("al_ox_pct", "fe_ox_pct"),
+            details = list(source = "morphological_inference",
+                            note   = paste0("v0.9.19: Al/Fe oxalate missing; ",
+                                             "spodic accepted via Bh/Bs designation + ",
+                                             "albic E above + pH <= ", max_ph,
+                                             " + OC in B >= ", min_oc_in_b)),
+            notes   = NA_character_
+          )
+          tests$ph <- test_ph_below(h, max_ph = max_ph,
+                                       candidate_layers = morph_layers)
+          tests$illuvial_signature <- .subtest_result(
+            passed = TRUE, layers = morph_layers,
+            details = list(source = "morphological_inference"))
+        }
+      }
+    }
+  }
+
   tests$thickness    <- test_minimum_thickness(h,
                                                   min_cm           = min_thickness,
                                                   candidate_layers = intersect(
@@ -569,7 +649,7 @@ spodic <- function(pedon,
     evidence  = tests,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon",
-    notes     = "v0.3.4: tightened with illuvial-signature requirement (designation B[hs]+ or albic-above)"
+    notes     = "v0.9.19: + morphological inference path when Al/Fe oxalate missing"
   )
 }
 
