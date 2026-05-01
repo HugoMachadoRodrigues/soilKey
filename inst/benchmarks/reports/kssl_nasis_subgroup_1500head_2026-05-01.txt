@@ -1,0 +1,9 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+           used (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+Ncells  1491827 79.7    3404661 181.9         NA   3404661  181.9
+Vcells 11853081 90.5   86411961 659.3      65536 168619641 1286.5
+Quality: 998, with subgroup label: 977
+
+=== USDA Order vs Subgroup on same KSSL+NASIS sample ===
+Order:    n=998  top1=0.338  CI=[0.306, 0.367]
+Subgroup: n=977  top1=0.024  CI=[0.014, 0.034]

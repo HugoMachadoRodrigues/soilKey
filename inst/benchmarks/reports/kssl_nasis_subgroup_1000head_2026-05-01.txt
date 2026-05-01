@@ -1,0 +1,25 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+          used (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+Ncells 1412728 75.5    3400714 181.7         NA   3400714  181.7
+Vcells 9544033 72.9   86361158 658.9      65536 168664396 1286.9
+Quality: 669, with subgroup label: 656
+
+=== USDA Order vs Subgroup KSSL+NASIS ===
+Order:    n=669  top1=0.338  CI=[0.300, 0.374]
+Subgroup: n=656  top1=0.030  CI=[0.017, 0.044]
+
+First 5 subgroup matches:
+                  ref                 pred
+     typic hapludults     typic hapludults
+    typic dystrudepts    typic dystrudepts
+   typic calciaquolls   typic calciaquolls
+    typic endoaquolls    typic endoaquolls
+ oxyaquic haplorthods oxyaquic haplorthods
+
+First 5 subgroup misses:
+                ref              pred
+ aeric calciaquolls typic dystrudepts
+ aeric calciaquolls aquic dystrudepts
+  leptic natrudolls  typic eutrudepts
+  leptic natrudolls  typic natrudalfs
+   typic epiaquerts typic endoaquolls

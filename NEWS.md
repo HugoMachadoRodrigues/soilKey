@@ -1,3 +1,109 @@
+# soilKey 0.9.22 (2026-05-01)
+
+The "deeper-than-Order benchmark" release. Two scientific extensions:
+
+1. **`benchmark_run_classification` now supports `level = "subgroup"`**
+   (USDA full subgroup name) and **`level = "subordem"`** (SiBCS
+   2nd level "Ordem + Subordem"). Comparison is case-insensitive
+   with qualifier-paren stripping; `level = "subordem"` truncates
+   the predicted name to its first two tokens to match
+   FEBR-style references.
+
+2. **`load_kssl_pedons_gpkg` now also extracts the KSSL
+   `samp_taxsubgrp`, `samp_taxgrtgroup`, `samp_taxsuborder`** fields
+   into `site$reference_usda_subgroup`, `site$reference_usda_grtgroup`,
+   `site$reference_usda_suborder`. The benchmark reads
+   `reference_usda_subgroup` automatically when `level = "subgroup"`.
+
+## Critical scientific finding -- Embrapa FEBR Subordem ceiling
+
+FEBR (the open Brazilian soil-data archive used as soilKey's
+benchmark source) ships SiBCS labels at the 2nd-level (Subordem)
+maximum -- 31 unique strings total across the 50 485 horizon
+rows, e.g. "LATOSSOLO VERMELHO", "ARGISSOLO BRUNO-ACINZENTADO".
+The 5th-level (Familia, Cap 18) was therefore not benchmarkable
+with the FEBR data alone.
+
+This release pivots from "Familia validation" to "Subordem
+validation" as the deepest level FEBR actually supports. Future
+Familia validation requires a different reference dataset
+(IBGE soil-survey volumes, Embrapa BDsolos curated, or similar).
+
+## Real-data benchmark impact
+
+### KSSL + NASIS USDA, n=998 (apples-to-apples)
+
+| Level    | top-1 | CI 95 % |
+|----------|------:|---------|
+| Order    | 33.8 % | [30.6 %, 36.7 %] |
+| **Subgroup** | **2.4 %** | [1.4 %, 3.4 %] |
+
+The Subgroup ceiling reflects that even when the Order gate is
+correct (~ 1/3 of profiles), getting the full Subgroup modifier
+right (Typic / Aquic / Vertic / Oxyaquic / Pachic / Cumulic /
+Inceptic / Ultic / Mollic / etc.) requires the full Path C
+machinery for ALL twelve USDA Orders, which is partial in the
+current implementation. Each Order has 30-90 distinct subgroup
+permutations defined in KST 13ed Chs 5-16 -- not all are wired.
+
+This is the v1.0 / v1.1 work item: complete the Path C subgroup
+trees per Order (currently the subgroup machinery handles a
+representative subset within each Order, prioritising the
+"Typic" plus the most-common qualifying subgroups; the full
+combinatorial coverage is deferred).
+
+### Embrapa FEBR SiBCS, n=128
+
+| Level    | top-1 | CI 95 % |
+|----------|------:|---------|
+| Order    | 40.6 % | [32.0 %, 50.8 %] |
+| **Subordem** | **7.8 %** | [3.1 %, 14.1 %] |
+
+The Subordem drop is dominated by **Munsell-colour disagreement**
+(Vermelho / Amarelo / Bruno) on profiles where FEBR records the
+field-surveyor's colour judgement but the lab gpkg lacks Munsell.
+26 of 57 reference Argissolos are correctly Order'd as
+Argissolos but classified to a different colour Subordem.
+
+## Code
+
+### `benchmark_run_classification(level)` -- new values
+
+* `"order"` (default) -- compares `cls$rsg_or_order`.
+* `"subgroup"` (NEW) -- compares `cls$name` (case-insensitive,
+  qualifier-paren-stripped). For USDA, automatically reads
+  `reference_usda_subgroup`.
+* `"subordem"` (NEW) -- SiBCS 2nd-level. Truncates both reference
+  and prediction to the first two tokens before comparison.
+
+### `normalise_kssl_subgroup(x)` (NEW exported)
+
+Lowercases + collapses whitespace in KSSL `samp_taxsubgrp` strings
+so "TYPIC HAPLUDALFS" and "Typic Hapludalfs" compare equal.
+
+### `load_kssl_pedons_gpkg` -- expanded reference fields
+
+* `site$reference_usda` (Order, unchanged)
+* `site$reference_usda_subgroup` (NEW from `samp_taxsubgrp`)
+* `site$reference_usda_grtgroup` (NEW from `samp_taxgrtgroup`)
+* `site$reference_usda_suborder` (NEW from `samp_taxsuborder`)
+
+## Tests
+
+* +8 expectations in `test-benchmark-subgroup-subordem.R`:
+  * subgroup-level uses `reference_usda_subgroup` field
+  * subordem-level compares first 2 tokens
+  * order-level still works (no regression)
+  * `normalise_kssl_subgroup()` is idempotent + handles whitespace + NA
+* Total: **2 850** testthat expectations passing, 0 failed.
+
+## CRAN
+
+* `R CMD check --as-cran` with PROJ env: **Status: OK** (0 ERR /
+  0 WARN / 0 NOTE).
+* Embrapa Order-level benchmark unchanged at 40.6 % (regression-
+  safe).
+
 # soilKey 0.9.21 (2026-05-01)
 
 The "surveyor's diagnostic identification as scientific tie-breaker"

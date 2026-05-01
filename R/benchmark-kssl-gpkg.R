@@ -172,7 +172,16 @@ load_kssl_pedons_gpkg <- function(gpkg,
         lat             = as.numeric(rowi$latitude_std_decimal_degrees),
         lon             = as.numeric(rowi$longitude_std_decimal_degrees),
         country         = "US",
-        reference_usda   = .normalise_kssl_taxorder(rowi$samp_taxorder),
+        reference_usda             = .normalise_kssl_taxorder(rowi$samp_taxorder),
+        reference_usda_subgroup    = if ("samp_taxsubgrp" %in% names(rowi))
+                                       normalise_kssl_subgroup(rowi$samp_taxsubgrp)
+                                     else NA_character_,
+        reference_usda_grtgroup    = if ("samp_taxgrtgroup" %in% names(rowi))
+                                       normalise_kssl_subgroup(rowi$samp_taxgrtgroup)
+                                     else NA_character_,
+        reference_usda_suborder    = if ("samp_taxsuborder" %in% names(rowi))
+                                       normalise_kssl_subgroup(rowi$samp_taxsuborder)
+                                     else NA_character_,
         reference_source = "KSSL / NCSS Lab Data Mart"
       ),
       horizons = hz
@@ -192,6 +201,28 @@ load_kssl_pedons_gpkg <- function(gpkg,
   s <- tolower(as.character(x))
   s <- gsub("s$", "", s)
   paste0(toupper(substr(s, 1, 1)), substr(s, 2, nchar(s)), "s")
+}
+
+
+#' Normalise KSSL USDA subgroup labels for benchmark comparison
+#'
+#' KSSL stores `samp_taxsubgrp` in lower-case, space-separated form
+#' ("typic hapludalfs", "aquic argiudolls"). soilKey's
+#' `classify_usda()` returns Title Case names ("Typic Hapludalfs").
+#' The benchmark runner at `level = "subgroup"` lowercases both
+#' sides and trims whitespace, but this helper makes the
+#' normalisation explicit when users want to compare KSSL labels
+#' against arbitrary classifier output. Idempotent.
+#'
+#' @param x Character vector of KSSL subgroup names.
+#' @return Lowercase, single-space-separated vector.
+#' @export
+normalise_kssl_subgroup <- function(x) {
+  if (length(x) == 0L) return(character(0))
+  v <- tolower(trimws(as.character(x)))
+  v <- gsub("\\s+", " ", v)
+  v[!nzchar(v)] <- NA_character_
+  v
 }
 
 

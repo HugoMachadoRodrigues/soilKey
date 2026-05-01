@@ -7,7 +7,7 @@
 benchmark_run_classification(
   pedons,
   system = c("wrb2022", "sibcs", "usda"),
-  level = c("order", "subgroup"),
+  level = c("order", "subgroup", "subordem"),
   boot_n = 1000L
 )
 }
@@ -17,9 +17,19 @@ one of the \code{load_*} functions).}
 
 \item{system}{One of \code{"wrb2022"}, \code{"sibcs"}, \code{"usda"}.}
 
-\item{level}{Granularity of the comparison: \code{"order"} for the
-top-level RSG / Ordem / Order; \code{"subgroup"} for the
-full assigned name. Default \code{"order"}.}
+\item{level}{Granularity of the comparison:
+\itemize{
+  \item \code{"order"} (default) -- the top-level RSG / Ordem /
+        Order, compared against \code{cls$rsg_or_order};
+  \item \code{"subgroup"} -- the full classified name (Subgroup
+        in USDA, Subgrupo in SiBCS, RSG + qualifiers in WRB),
+        compared against \code{cls$name} after case-insensitive
+        token normalisation;
+  \item \code{"subordem"} -- SiBCS-only, the 2nd-level
+        "Ordem + Subordem" (e.g. "Latossolos Vermelhos").
+        Comparison via the first two normalised tokens of the
+        predicted name vs the reference.
+}}
 
 \item{boot_n}{Bootstrap replicates for CI (default 1000).}
 }

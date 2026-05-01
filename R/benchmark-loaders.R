@@ -254,9 +254,19 @@ load_embrapa_pedons <- function(csv_path, head = NULL, verbose = TRUE) {
 #' @param pedons List of \code{\link{PedonRecord}} objects (output of
 #'        one of the \code{load_*} functions).
 #' @param system One of \code{"wrb2022"}, \code{"sibcs"}, \code{"usda"}.
-#' @param level Granularity of the comparison: \code{"order"} for the
-#'        top-level RSG / Ordem / Order; \code{"subgroup"} for the
-#'        full assigned name. Default \code{"order"}.
+#' @param level Granularity of the comparison:
+#'   \itemize{
+#'     \item \code{"order"} (default) -- the top-level RSG / Ordem /
+#'           Order, compared against \code{cls$rsg_or_order};
+#'     \item \code{"subgroup"} -- the full classified name (Subgroup
+#'           in USDA, Subgrupo in SiBCS, RSG + qualifiers in WRB),
+#'           compared against \code{cls$name} after case-insensitive
+#'           token normalisation;
+#'     \item \code{"subordem"} -- SiBCS-only, the 2nd-level
+#'           "Ordem + Subordem" (e.g. "Latossolos Vermelhos").
+#'           Comparison via the first two normalised tokens of the
+#'           predicted name vs the reference.
+#'   }
 #' @param boot_n Bootstrap replicates for CI (default 1000).
 #' @return A list with elements \code{accuracy_top1},
 #'         \code{accuracy_ci}, \code{confusion}, and
@@ -266,14 +276,21 @@ load_embrapa_pedons <- function(csv_path, head = NULL, verbose = TRUE) {
 benchmark_run_classification <- function(pedons,
                                             system = c("wrb2022",
                                                        "sibcs", "usda"),
-                                            level  = c("order", "subgroup"),
+                                            level  = c("order", "subgroup",
+                                                       "subordem"),
                                             boot_n = 1000L) {
   system <- match.arg(system)
   level  <- match.arg(level)
+  # v0.9.22: USDA subgroup-level benchmark uses
+  # `reference_usda_subgroup` (populated by load_kssl_pedons_gpkg
+  # from KSSL `samp_taxsubgrp`). Falls back to `reference_usda` if
+  # the subgroup field is absent.
   ref_field <- switch(system,
                         wrb2022 = "reference_wrb",
                         sibcs   = "reference_sibcs",
-                        usda    = "reference_usda")
+                        usda    = if (level == "subgroup")
+                                    "reference_usda_subgroup"
+                                  else "reference_usda")
   classify <- switch(system,
                        wrb2022 = function(p) classify_wrb2022(p,
                                                                 on_missing = "silent"),
@@ -303,8 +320,40 @@ benchmark_run_classification <- function(pedons,
                   confusion = NULL, per_pedon = data.frame()))
   per_pedon <- do.call(rbind, lapply(rows, as.data.frame))
 
-  # Top-1 at the requested level.
-  pred_col <- if (level == "order") "order_pred" else "pred"
+  # Choose comparison column + normalisation per level. v0.9.22:
+  # subgroup + subordem use case-insensitive token normalisation
+  # (lowercase, strip leading qualifiers in parens, collapse
+  # whitespace) so that "Typic Hapludalfs" (soilKey output) matches
+  # "typic hapludalfs" (KSSL samp_taxsubgrp).
+  if (level == "order") {
+    pred_col <- "order_pred"
+    .norm <- function(x) as.character(x)
+  } else if (level == "subgroup") {
+    pred_col <- "pred"
+    .norm <- function(x) {
+      v <- as.character(x)
+      v <- gsub("\\s*\\(.*$", "", v)        # strip qualifiers in parens
+      v <- tolower(trimws(v))
+      v <- gsub("\\s+", " ", v)
+      v
+    }
+  } else if (level == "subordem") {
+    pred_col <- "pred"
+    .norm <- function(x) {
+      v <- as.character(x)
+      v <- gsub("\\s*\\(.*$", "", v)
+      v <- tolower(trimws(v))
+      v <- gsub("\\s+", " ", v)
+      # Take only the first two tokens (Ordem + Subordem in SiBCS).
+      vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
+        if (length(toks) >= 2L) paste(toks[1:2], collapse = " ")
+        else if (length(toks) == 1L) toks[1]
+        else NA_character_
+      }, character(1))
+    }
+  }
+  per_pedon$ref      <- .norm(per_pedon$ref)
+  per_pedon[[pred_col]] <- .norm(per_pedon[[pred_col]])
   matches  <- !is.na(per_pedon$ref) & !is.na(per_pedon[[pred_col]]) &
                 as.character(per_pedon$ref) ==
                   as.character(per_pedon[[pred_col]])
