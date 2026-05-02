@@ -1,0 +1,22 @@
+There were 50 or more warnings (use warnings() to see the first 50)
+           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+Ncells  1730067  92.4    3415789 182.5         NA   3415789  182.5
+Vcells 18918945 144.4   67007548 511.3      65536 163584400 1248.1
+Quality: 2002, with subgroup label: 1980
+
+=== USDA Order vs Subgroup on same KSSL+NASIS sample ===
+Order:    n=2002  top1=0.313  CI=[0.290, 0.335]
+Subgroup: n=1980  top1=0.021  CI=[0.015, 0.027]
+
+Subgroup accuracy by Order:
+   reference n_total n_correct    accuracy
+   Mollisols     511         5 0.009784736
+    Alfisols     417         7 0.016786571
+   Aridisols     277        14 0.050541516
+    Ultisols     259         8 0.030888031
+ Inceptisols     243         3 0.012345679
+   Spodosols     150         2 0.013333333
+    Entisols      62         2 0.032258065
+   Vertisols      46         0 0.000000000
+     Oxisols      12         0 0.000000000
+    Andisols       3         0 0.000000000

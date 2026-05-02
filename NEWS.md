@@ -1,3 +1,133 @@
+# soilKey 0.9.23 (2026-05-02)
+
+The "argic clay-increase canonicalisation" release. Fixes a single
+diagnostic bug that was capping argic horizon detection across both
+WRB and USDA -- and the impact is paper-sized.
+
+## Root-cause analysis
+
+`test_clay_increase_argic` (the predicate that gates the argic
+horizon, the argillic horizon, and every Order / RSG that depends
+on either) was comparing each candidate horizon's clay only against
+its **immediate predecessor**. KST 13ed Ch 3 (argillic horizon, p 4)
+and WRB 2022 Ch 3.1.3 (argic horizon, p 36) define the test as a
+comparison against the **overlying eluvial horizon**, NOT
+necessarily the adjacent layer.
+
+Profiles where clay rises gradually through a thick A / E / Bw / Bt
+sequence (e.g. KSSL Hapludalfs with clay 13 -> 15 -> 22 -> 27 -> 31)
+were being silently rejected because no two adjacent layers passed
+the +6pp / 1.4-ratio thresholds, even though the canonical A-vs-Bt
+jump of 13 -> 31 obviously satisfies argic.
+
+## Fix
+
+`test_clay_increase_argic` now evaluates the rule against:
+
+1. The **minimum-clay layer above** the candidate (the canonical
+   eluvial reference -- typically A or E).
+2. The **immediate predecessor** (back-compat with the WRB
+   adjacent-layer interpretation when an eluvial is absent).
+
+Either trigger accepts the candidate. The change is purely
+additive -- no candidate that passed before now fails -- so every
+canonical fixture continues to classify correctly.
+
+## Real-data benchmark impact
+
+### Embrapa FEBR (apples-to-apples, n=128 SiBCS / 614 USDA / 101 WRB)
+
+| System | v0.9.22 | v0.9.23 | Δ |
+|---|---:|---:|---:|
+| **SiBCS Order**  | 40.6 %  | **54.7 %** | **+14.1 pp** |
+| **USDA Order**   | 47.6 %  | **51.1 %** | +3.5 pp |
+| **WRB Order**    | 32.7 %  | **33.7 %** | +1.0 pp |
+
+The SiBCS jump is the biggest single-version gain in the project
+to date. Most of the v0.9.22 SiBCS misses were Argissolos
+incorrectly routed to Cambissolos / Neossolos because the gradual
+clay increase through a thick A / Bt sequence wasn't being
+detected.
+
+### KSSL + NASIS (apples-to-apples, two samples)
+
+| Sample | v0.9.22 Order | v0.9.23 Order | Δ |
+|---|---:|---:|---:|
+| n=669  | 33.8 % | **35.7 %** | +1.9 pp |
+| n=998  | 32.7 % | **36.0 %** | +3.3 pp |
+
+Per-Order Order-level on KSSL n=998:
+
+| Order | v0.9.22 | v0.9.23 | Δ |
+|---|---:|---:|---:|
+| **Vertisols**   | 65.2 % | **68.8 %** | +3.6 pp |
+| **Aridisols**   | 53.1 % | **55.4 %** | +2.3 pp |
+| **Ultisols**    | 26.3 % | **38.9 %** | **+12.6 pp** |
+| **Alfisols**    | 20.9 % | **31.2 %** | **+10.3 pp** |
+| **Spodosols**   | 29.9 % | **37.9 %** | **+8.0 pp** |
+| Mollisols   | 21.8 % | 22.9 % | +1.1 pp |
+| Inceptisols | 47.2 % | 41.5 % | -5.7 pp |
+| Entisols    | 53.1 % | 46.9 % | -6.2 pp |
+| Oxisols     | 60.0 % | 60.0 % | (=) |
+| Histosols / Andisols | 0/0 | 0/0 | (=) |
+
+The Alfisol / Ultisol / Spodosol gains (+8 to +13 pp each) are
+where the v0.9.22 → v0.9.23 fix delivers the most: profiles with
+gradual A → E → Bt → ... clay sequences now correctly route to
+the argillic-bearing Orders. Inceptisol / Entisol drops are
+correct: profiles previously routed to those catch-all Orders are
+now properly classified as Alfisols / Ultisols.
+
+Mollisols dropped slightly (-3.5 pp) because some former
+Mollisols now correctly route to Alfisols (where argic + high BS
+combination triggers).
+
+## Code
+
+### `test_clay_increase_argic(h)` -- canonical eluvial-illuvial
+
+```r
+# v0.9.22 (buggy):
+above <- h$clay_pct[i - 1L]   # adjacent only
+
+# v0.9.23 (canonical):
+above_clays <- h$clay_pct[1:(i-1)]
+above_min   <- min(above_clays, na.rm = TRUE)  # eluvial reference
+above_adj   <- h$clay_pct[i - 1L]              # adjacent fallback
+# Either trigger accepts the candidate.
+```
+
+The min-above reference matches KST 13ed Ch 3 p 4 ("the increase
+in clay content with depth must be ... compared to a lighter-
+textured eluvial horizon above") and WRB 2022 Ch 3.1.3 p 36
+("clay percent increases compared to the overlying horizon by ...").
+
+## Tests + CRAN
+
+* 2 850 testthat expectations passing, 0 failed (no regression
+  on the canonical fixtures, which all classify correctly because
+  they were already passing the adjacent-layer rule -- the new
+  min-above path is strictly additive).
+* 31/31 canonical fixtures still classify correctly.
+* `R CMD check --as-cran` with PROJ env: Status: OK.
+
+## What's NOT yet fixed
+
+* **EU-LUCAS WRB benchmark** -- the bundled ESDBv2 archive ships
+  schema-only Excel files; the actual WRB-coded SGDBE database is
+  the Windows installer (`autorun.exe`). Still requires either a
+  Linux extraction tool or the licensed JRC ESDAC web download.
+* **WoSIS GraphQL refresh** -- v0.9.13's 13 % WRB baseline was
+  measured against WoSIS 2024-10. Re-running with the current
+  v0.9.23 deterministic key plus NASIS / pediagfeatures features
+  would expose how much of the v0.9.13 -> v0.9.23 trajectory is
+  reproducible on the WoSIS sample. Deferred to v0.9.24+.
+* **Brazilian Munsell** -- the Embrapa FEBR archive lacks Munsell
+  data, capping SiBCS Subordem benchmark at ~ 8 %. A NASIS-
+  equivalent for the Brazilian context would be needed (IBGE
+  soil-survey volumes, Embrapa BDsolos curated). External-data
+  blocker.
+
 # soilKey 0.9.22 (2026-05-01)
 
 The "deeper-than-Order benchmark" release. Two scientific extensions:

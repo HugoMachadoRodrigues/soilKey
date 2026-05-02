@@ -131,34 +131,71 @@ test_clay_increase_argic <- function(h) {
   details    <- list()
   missing    <- character(0)
 
-  for (i in seq.int(2L, nrow(h))) {
-    above <- h$clay_pct[i - 1L]
-    here  <- h$clay_pct[i]
+  # v0.9.23: KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022
+  # Ch 3.1.3 (argic horizon, p 36) define the clay-increase test
+  # as a comparison of the (illuvial) candidate horizon against the
+  # OVERLYING ELUVIAL horizon, NOT against the immediate predecessor.
+  # The canonical eluvial reference is the lowest-clay layer
+  # ANYWHERE above the candidate (typically the E or A) -- NOT the
+  # adjacent layer. The pre-v0.9.23 implementation only compared
+  # i vs i-1, which missed gradual clay increases through a thick A
+  # / E / Bw / Bt sequence (FEBR Hapludalfs were the obvious fail
+  # mode: clay goes 13 -> 15 -> 21 -> 27 -> 31, no two adjacent
+  # layers triggered, but the A-to-Bt jump 13 -> 31 is canonical).
+  # We now also try a "min-above" reference and a "adjacent" check;
+  # if EITHER triggers the candidate is accepted.
 
-    if (is.na(above) || is.na(here)) {
+  for (i in seq.int(2L, nrow(h))) {
+    here <- h$clay_pct[i]
+    if (is.na(here)) {
       missing <- c(missing, "clay_pct")
       next
     }
-
-    rule_label <- if (above < 15)        "<15%: +6pp absolute"
-                  else if (above < 50)   "15 to <50%: ratio >= 1.4"
-                  else                   ">=50%: +20pp absolute"
-
-    rule_passed <- if (above < 15) {
-      here - above >= 6
-    } else if (above < 50) {
-      here / above >= 1.4
-    } else {
-      here - above >= 20
+    above_idx_set <- seq.int(1L, i - 1L)
+    above_clays   <- h$clay_pct[above_idx_set]
+    has_clay      <- !is.na(above_clays)
+    if (!any(has_clay)) {
+      missing <- c(missing, "clay_pct")
+      next
     }
+    # Reference 1: minimum clay above (canonical KST 13ed eluvial-
+    # illuvial comparison).
+    above_min     <- min(above_clays, na.rm = TRUE)
+    above_min_idx <- above_idx_set[has_clay][which.min(above_clays[has_clay])]
+    # Reference 2: immediate predecessor (back-compat with WRB
+    # adjacent-layer interpretation when a thick eluvial is absent).
+    above_adj     <- h$clay_pct[i - 1L]
+
+    eval_rule <- function(above) {
+      if (is.na(above)) return(list(passed = FALSE, rule = "NA above"))
+      rule_label <- if (above < 15)      "<15%: +6pp absolute"
+                    else if (above < 50) "15 to <50%: ratio >= 1.4"
+                    else                 ">=50%: +20pp absolute"
+      passed_rule <- if (above < 15)      here - above >= 6
+                     else if (above < 50) here / above >= 1.4
+                     else                 here - above >= 20
+      list(passed = passed_rule, rule = rule_label)
+    }
+    chk_min <- eval_rule(above_min)
+    chk_adj <- eval_rule(above_adj)
+    rule_passed <- isTRUE(chk_min$passed) || isTRUE(chk_adj$passed)
+    rule_label  <- if (isTRUE(chk_min$passed)) sprintf("min-above (idx=%d, clay=%.1f): %s",
+                                                          above_min_idx, above_min,
+                                                          chk_min$rule)
+                   else if (isTRUE(chk_adj$passed)) sprintf("adjacent (idx=%d, clay=%.1f): %s",
+                                                              i - 1L, above_adj,
+                                                              chk_adj$rule)
+                   else sprintf("no rule passed (min=%.1f, adj=%.1f)",
+                                  above_min, above_adj %||% NA_real_)
 
     details[[as.character(i)]] <- list(
-      above_idx  = i - 1L,
-      here_idx   = i,
-      above_clay = above,
-      here_clay  = here,
-      rule       = rule_label,
-      passed     = rule_passed
+      above_min_idx  = above_min_idx,
+      above_min_clay = above_min,
+      above_adj_clay = above_adj,
+      here_idx       = i,
+      here_clay      = here,
+      rule           = rule_label,
+      passed         = rule_passed
     )
 
     if (rule_passed) candidates <- c(candidates, i)
