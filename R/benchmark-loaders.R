@@ -385,7 +385,18 @@ benchmark_run_classification <- function(pedons,
   # "typic hapludalfs" (KSSL samp_taxsubgrp).
   if (level == "order") {
     pred_col <- "order_pred"
-    .norm <- function(x) as.character(x)
+    # v0.9.27: SiBCS-only -- the Embrapa FEBR loader populates
+    # `reference_sibcs` with the raw FEBR string ("NEOSSOLO LITOLICO",
+    # "LATOSSOLO VERMELHO") which is uppercase, singular, accented;
+    # soilKey's classify_sibcs() returns Title Case plural ("Neossolos",
+    # "Latossolos"). normalise_febr_sibcs() canonicalises both sides
+    # to soilKey format. WRB and USDA references on FEBR pedons are
+    # comparison-stable already because their classifiers emit the
+    # same Title-Case plural form the references use.
+    .norm <- if (system == "sibcs")
+                function(x) normalise_febr_sibcs(x, level = "order")
+              else
+                function(x) as.character(x)
   } else if (level == "subgroup") {
     # v0.9.25: canonicalise the Great Group token (the LAST word of
     # the subgroup name) via the KST 13ed obsolete-name map, so
@@ -409,8 +420,18 @@ benchmark_run_classification <- function(pedons,
     }
   } else if (level == "subordem") {
     pred_col <- "pred"
+    # v0.9.27: SiBCS-only -- canonicalise via normalise_febr_sibcs at
+    # subordem granularity, which converts FEBR-style "LATOSSOLO
+    # VERMELHO" to soilKey-style "Latossolos Vermelhos" (matching the
+    # classify_sibcs() output). Also fall back to the original
+    # token-pair lowercase comparison for non-SiBCS callers and for
+    # entries with > 2 tokens.
+    .norm_febr_subord <- if (system == "sibcs")
+                            function(x) normalise_febr_sibcs(x, level = "subordem")
+                          else
+                            function(x) as.character(x)
     .norm <- function(x) {
-      v <- as.character(x)
+      v <- .norm_febr_subord(x)
       v <- gsub("\\s*\\(.*$", "", v)
       v <- tolower(trimws(v))
       v <- gsub("\\s+", " ", v)

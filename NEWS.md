@@ -1,3 +1,139 @@
+# soilKey 0.9.27 (2026-05-03)
+
+The "clay-illuviation evidence test + Embrapa benchmark fix +
+housekeeping" release. Wires the v0.9.26-roadmap clay-films test
+into `argillic_usda` for NASIS-enriched profiles, fixes a
+benchmark-comparison bug that was producing 0% Embrapa accuracy,
+silences `max(-Inf)` warnings during testing, and converts two
+pre-existing skipped tests into proper assertions.
+
+## A. Clay-illuviation evidence test (KST 13ed Ch 3 p 4)
+
+`argillic_clay_films_test(pedon)`: a new exported test that reads
+two complementary NASIS-derived slots populated by
+`load_kssl_pedons_with_nasis()`:
+
+1. `pedon$site$nasis_diagnostic_features` -- the
+   `pediagfeatures.featkind` vector. The surveyor's
+   "Argillic horizon" entry directly confirms clay-illuviation
+   evidence (~13,500 entries in the 2021 NASIS snapshot).
+2. `pedon$horizons$clay_films_amount` -- per-horizon
+   clay-film abundance derived from NASIS `phpvsf` (values
+   `"few"` / `"common"` / `"many"` / `"continuous"`).
+
+Either source counts as positive evidence; `passed = NA` when
+neither is populated.
+
+`argillic_usda(pedon)` two-tier strategy:
+
+- **tier 1** (FULL evidence): clay-films-test passes ->
+  `argic(pedon, system = "usda")` with the looser KST 13ed
+  thresholds (3 pp / 1.2x / 8 pp).
+- **tier 2** (PROXY): clay-films-test does not pass ->
+  `argic(pedon, system = "wrb2022")` with the stricter WRB
+  thresholds (6 pp / 1.4x / 20 pp) as a conservative proxy.
+
+The fluvic-pattern exclusion (v0.9.10) is preserved across both
+tiers -- depositional clay distributions are NOT argillic
+regardless of clay-films evidence, because the increase is
+non-pedogenic.
+
+### A/B on KSSL+NASIS (n=865, identical filter)
+
+| Level         | v0.9.26 | v0.9.27 | Delta |
+|---------------|---:|---:|---:|
+| Order         | 37.23 % | 36.99 % | -0.24 pp (within CI) |
+| Suborder      | 17.84 % | 17.73 % | -0.11 pp (within CI) |
+| **Great Group** | 10.34 % | **10.57 %** | **+0.23 pp** |
+| **Subgroup**  | 4.97 %  | **5.09 %**  | **+0.12 pp** |
+
+### Coverage diagnostic (n=878 with quality filter)
+
+The lift is smaller than the v0.9.26-roadmap estimate (+3-5 pp)
+because clay-films evidence is sparse in the KSSL+NASIS snapshot:
+
+- 38.8 % of profiles have clay-films evidence -> KST tier;
+- 47.6 % have no NASIS pediagfeatures or phpvsf data -> WRB tier
+  (proxy);
+- 13.6 % have NASIS but no argillic flag -> WRB tier (correctly
+  rejecting the looser thresholds for these).
+
+The +0.23 pp Great Group lift reflects the fraction of the 38.8 %
+"with-evidence" profiles that fall in the marginal argillic band
+(3 pp <= Delta clay < 6 pp, or 1.2 <= ratio < 1.4) -- profiles
+where the looser KST thresholds catch a clay increase that WRB
+rejects.
+
+## B. Embrapa FEBR benchmark fix
+
+`benchmark_run_classification(system = "sibcs")` at `level =
+"order"` and `level = "subordem"` now wires
+`normalise_febr_sibcs()` into the comparison `.norm` function.
+Without this normalisation, FEBR-style ALL-CAPS singular labels
+("NEOSSOLO LITOLICO") were being string-compared verbatim against
+soilKey's Title Case plural output ("Neossolos Litolicos"),
+trivially producing 0 % accuracy on Embrapa profiles.
+
+### Embrapa SiBCS A/B (n=554)
+
+| Level    | v0.9.23 baseline | v0.9.27 | Delta |
+|----------|---:|---:|---:|
+| **Order**    | 54.70 % | **56.68 %** (CI 52.7-60.6) | **+1.98 pp** |
+| Subordem | -- | 9.93 % (CI 7.4-12.5) | (new measurement) |
+
+The +1.98 pp Order lift on Embrapa is the second concrete
+validation of the v0.9.24-26 changes (the first was the v0.9.25
+KSSL+NASIS Great Group +3.84 pp). Order accuracy on Embrapa is
+now 56.68 % -- up from the v0.9.22 baseline of 40.6 % via three
+incremental releases.
+
+## C. Housekeeping
+
+- Two `max()` calls in `R/diagnostics-horizons-sibcs.R` (lines
+  214, 252) now guard against all-NA `bs_pct` vectors that were
+  producing `no non-missing arguments to max; returning -Inf`
+  warnings during the test suite. Warning count drops from 24
+  to 12 (the remaining warnings are 2 distinct sources, both
+  "missing data attribute trace" warnings from the WRB key on
+  fixtures with intentionally sparse data).
+
+- `tests/testthat/test-sibcs-argissolos-sg-pac-v074.R:182`:
+  the `carater_latossolico` test was previously skipping
+  ("B_textural passes; cant test the no-textural path") because
+  the `.make_pac_subgrupo()` fixture has an abrupt clay jump.
+  Replaced with an explicit no-Bt fixture (clay 20-22-23, no
+  abrupt jump) that lets the test verify `carater_latossolico`
+  returns FALSE when `B_textural` cannot pass.
+
+- `tests/testthat/test-sibcs-plintossolos-v0712.R:31`:
+  the `subgrupo_plintossolo_endico_concrecionario` test was
+  previously skipping ("horizonte_concrecionario nao casa com
+  fixture sintetico") because the fixture used
+  `plinthite_pct = c(NA, 5, 5)` -- below the 50 % threshold.
+  Corrected to `plinthite_pct = c(NA, 60, 60)` so the
+  precondition fires and the topo-< 40 endico check exercises
+  correctly.
+
+- `inst/benchmarks/run_wosis_benchmark.R`:
+  `read_wosis_profiles_graphql()` gains per-page retry with
+  exponential backoff (1s, 2s, 4s, 8s) plus graceful degradation
+  -- after `min_pages = 1` succeeds, transient page failures
+  return the partial pull rather than aborting. Address the
+  ISRIC GraphQL endpoint's "canceling statement due to statement
+  timeout" intermittent failures observed in the v0.9.24 WoSIS
+  refresh.
+
+## Tests
+
+17 new unit tests in `tests/testthat/test-v0927-clay-films.R`
+covering the clay-films-test and the argillic_usda routing
+(NASIS pediagfeatures argillic, per-horizon clay_films_amount,
+indeterminate-NA, explicit-FALSE for non-argillic NASIS, and
+threshold-system selection in argillic_usda).
+
+Full suite: 2908 PASS / 0 FAIL / 10 SKIP. R CMD check **Status: OK**
+(0 errors, 0 warnings, 0 notes).
+
 # soilKey 0.9.26 (2026-05-03)
 
 The "argic / argillic per-system threshold infrastructure" release.

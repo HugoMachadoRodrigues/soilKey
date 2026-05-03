@@ -95,18 +95,20 @@ test_that("oxic_usda delegates faithfully to ferralic", {
   expect_match(oxi$reference, "Soil Survey Staff")
 })
 
-test_that("argillic_usda delegates faithfully to argic", {
-  # v0.9.26 design note: argillic_usda currently routes to
-  # argic(system = "wrb2022") -- NOT system = "usda" -- because the
-  # KST 13ed argillic spec also requires clay-illuviation evidence
-  # (clay films, oriented clays, lamellae) that we don't yet test
-  # for. The stricter WRB thresholds are a conservative proxy. See
-  # R/diagnostics-horizons-usda.R for the full rationale.
+test_that("argillic_usda delegates to argic with the correct system per clay-films evidence", {
+  # v0.9.27: argillic_usda routes to argic(system = "usda") when
+  # argillic_clay_films_test passes (NASIS pediagfeatures argillic
+  # OR per-horizon clay_films_amount populated), otherwise falls
+  # back to argic(system = "wrb2022"). The Luvisol canonical fixture
+  # has clay_films_amount = c(NA, NA, "common", "many", NA) so the
+  # KST tier fires.
   pr <- make_luvisol_canonical()
-  arg  <- argic(pr)
   argl <- argillic_usda(pr)
+  used <- argl$evidence$argillic_tier$threshold_system %||% "unknown"
+  arg  <- argic(pr, system = used)
   expect_identical(arg$passed, argl$passed)
   expect_identical(arg$layers, argl$layers)
+  expect_true(used %in% c("usda", "wrb2022"))
 })
 
 test_that("mutual exclusion: each USDA order excludes all earlier orders", {

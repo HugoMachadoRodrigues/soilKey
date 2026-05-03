@@ -180,14 +180,27 @@ test_that("carater_durico FAILS para 'strongly' (eh duripa)", {
 # ============================================================================
 
 test_that("carater_latossolico FAILS quando B_textural nao passa", {
-  pr <- .make_pac_subgrupo()  # No abrupt clay jump means may not have B_textural
-  # If B_textural doesn't pass, carater_latossolico returns FALSE
-  res <- carater_latossolico(pr)
-  if (!isTRUE(B_textural(pr)$passed)) {
-    expect_false(isTRUE(res$passed))
-  } else {
-    skip("B_textural passes; cant test the no-textural path")
-  }
+  # v0.9.27: build an explicit fixture WITHOUT the abrupt textural
+  # B horizon (clay jump) so B_textural cannot pass. carater_latossolico
+  # requires the textural-B precondition to fail; once that fails,
+  # the rule cannot pass regardless of other criteria.
+  hz <- data.table::data.table(
+    top_cm      = c(0,  30, 60),
+    bottom_cm   = c(30, 60, 120),
+    designation = c("A", "BA", "Bw"),
+    clay_pct    = c(20, 22, 23),   # gradual rise, no abrupt jump
+    silt_pct    = c(40, 38, 37),
+    sand_pct    = c(40, 40, 40),
+    bs_pct      = c(80, 80, 80),
+    oc_pct      = c(1.2, 0.5, 0.3)
+  )
+  pr <- PedonRecord$new(
+    site = list(id = "no-Bt", lat = 0, lon = 0, country = "TEST",
+                  parent_material = "test"),
+    horizons = ensure_horizon_schema(hz)
+  )
+  expect_false(isTRUE(B_textural(pr)$passed))
+  expect_false(isTRUE(carater_latossolico(pr)$passed))
 })
 
 

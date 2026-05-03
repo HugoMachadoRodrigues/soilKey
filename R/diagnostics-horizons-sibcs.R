@@ -211,7 +211,9 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
                                  espess_dm, na.rm = TRUE)
   oc_total <- sum(oc_g_kg * espess_dm, na.rm = TRUE)
   threshold <- 60 + 0.1 * argila_media
-  v_max <- max(h$bs_pct[a_layers], na.rm = TRUE)
+  # v0.9.27: guard against all-NA bs_pct returning -Inf with warning.
+  bs_vals <- h$bs_pct[a_layers]
+  v_max <- if (any(!is.na(bs_vals))) max(bs_vals, na.rm = TRUE) else NA_real_
   thickness_cm <- thickness_dm * 10
   passed <- !is.na(threshold) && oc_total >= threshold &&
               !is.na(v_max) && v_max < min_v_pct_max &&
@@ -249,7 +251,9 @@ horizonte_A_proeminente <- function(pedon) {
     ))
   }
   h <- pedon$horizons
-  v_max <- max(h$bs_pct[ch$layers], na.rm = TRUE)
+  # v0.9.27: guard against all-NA bs_pct returning -Inf with warning.
+  bs_vals <- h$bs_pct[ch$layers]
+  v_max <- if (any(!is.na(bs_vals))) max(bs_vals, na.rm = TRUE) else NA_real_
   passed <- !is.na(v_max) && v_max < 65
   DiagnosticResult$new(
     name = "horizonte_A_proeminente",
