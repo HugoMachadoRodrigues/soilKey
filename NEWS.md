@@ -1,3 +1,76 @@
+# soilKey 0.9.31 (2026-05-03)
+
+The "specialised Great Group tests" release. Two GG diagnostics
+that were under-detecting the v0.9.25-confusion-analysis targets:
+Quartzipsamments (mineralogy proxy too strict) and Fragiudults /
+Fragiudalfs / Fragiaqualfs (rupture_resistance rarely in KSSL data).
+
+## A. Quartzipsamment proxy broadened
+
+`quartzipsamment_qualifying_usda()`: KST 13ed Ch 8 (p 357) defines
+Quartzipsamments as Psamments where >= 95 % of the 0.02-2.0 mm
+fraction is resistant minerals (mostly quartz). The pre-v0.9.31
+proxy was clay <= 5 % AND coarse_fragments <= 5 %, which under-
+detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25
+confusion analysis showed 14 udipsamments / ustipsamments references
+should have been Quartzipsamments).
+
+v0.9.31 broadens to:
+
+  clay_pct <= 10 %       (loamy sand and finer sands qualify)
+  sand_pct >= 80 %       (NEW: sand-dominated texture required)
+  coarse_fragments <= 15 (some CF tolerated)
+
+At least 50 % of in-range layers must satisfy all three.
+
+## B. Fragipan accepts NASIS pediagfeatures flag
+
+`fragipan_usda()`: KSSL gpkg rarely populates `rupture_resistance`,
+the canonical fragipan signal. The 2021 NASIS snapshot, however,
+ships ~13 500 `pediagfeatures.featkind` entries, including
+"Fragipan" tags directly identified by the surveyor. v0.9.31 adds
+the NASIS path as an OR-evidence source:
+
+  passed = (rupture_resistance >= "firm" with thickness >= 15 cm)
+        OR (NASIS pediagfeatures contains "Fragipan")
+
+This closes the Fragiudults / Fragiudalfs / Fragiaqualfs / Fragixeralfs
+detection gap on KSSL+NASIS pedons.
+
+## C. KSSL+NASIS A/B (n=865)
+
+| Level         | v0.9.30 | v0.9.31 | Delta |
+|---------------|---:|---:|---:|
+| Order         | 36.99 % | 36.99 % | 0.00 pp (regression-safe) |
+| Suborder      | 17.73 % | 17.73 % | 0.00 pp (regression-safe) |
+| **Great Group** | 10.57 % | **10.92 %** | **+0.35 pp** |
+| **Subgroup**  | 5.09 %  | **5.32 %**  | **+0.23 pp** |
+
+Modest but positive lift; Order / Suborder unchanged confirms the
+fix is laser-focused at Great Group and below.
+
+## Roadmap deferred to follow-up
+
+The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs /
+Fraglossudalfs) were considered for this release but not shipped.
+The current `pale_qualifying_usda()` uses a clay >= 35 % proxy that
+is structurally too strict (KST 13ed actually defines Pale- by
+"clay does not decrease 20 % within 150 cm of mineral surface"),
+but only 11 KSSL+NASIS misses are in this confusion bucket --
+lower priority than the 14 Quartzipsamment + Fragipan misses
+addressed here. Tightening Pale- requires careful design to avoid
+regression on Hapludalfs (which are far more common) and is left
+for a future release with better validation infrastructure.
+
+## Tests
+
+9 new in `tests/testthat/test-v0931-quartzipsamment-fragipan.R`
+covering the broadened Quartzipsamment proxy (sandy / loamy-sand /
+loamy / missing-sand), the Fragipan NASIS path (with and without
+flag), and the rupture_resistance lab path.
+
+Full suite: 3 012 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.30 (2026-05-03)
 
 The "offline-ready WoSIS + CRAN-clean" release. Two infrastructure

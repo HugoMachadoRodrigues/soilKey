@@ -99,8 +99,35 @@ psamment_qualifying_usda <- function(pedon) {
 }
 
 
-#' Quartzipsamment helper (Quartzipsamments: >= 95\% silica)
-#' v0.8 proxy: clay <= 5\% AND coarse_fragments_pct <= 5\%.
+#' Quartzipsamment helper (Quartzipsamments: >= 95\% resistant minerals)
+#'
+#' KST 13ed Ch 8 (p 357) defines Quartzipsamments as Psamments where
+#' "a weighted average of the resistant minerals in the 0.02-2.0 mm
+#' fraction is at least 95 percent". Resistant minerals are dominated
+#' by quartz; the practical proxy is a profile that is uniformly
+#' sandy with very little clay AND minimal coarse fragments AND no
+#' explicit mineralogical evidence of weatherable minerals.
+#'
+#' v0.9.31 broadens the proxy from "clay <= 5 % AND coarse_fragments
+#' <= 5 %" (which under-detected; only 0/14 KSSL Quartzipsamments
+#' were caught) to:
+#'
+#' \itemize{
+#'   \item \code{clay_pct <= 10} (loamy sands and finer sands all
+#'         qualify -- the 5 % cutoff was too strict);
+#'   \item \code{sand_pct >= 80} (sand-dominated texture -- a NEW
+#'         requirement, since clay alone is not sufficient);
+#'   \item \code{coarse_fragments_pct <= 15} (some coarse fragments
+#'         tolerated; 5 % was overly strict);
+#'   \item at least 50 % of in-range layers must satisfy all three
+#'         (preserved from v0.8).
+#' }
+#'
+#' This still excludes Loamy Psamments and Sandy-Loamy Psamments
+#' (Udipsamments / Ustipsamments fallthroughs) by requiring sand >=
+#' 80 %; it captures the mineralogical signal indirectly via the
+#' near-pure-sand texture.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 quartzipsamment_qualifying_usda <- function(pedon) {
@@ -111,20 +138,32 @@ quartzipsamment_qualifying_usda <- function(pedon) {
       name = "quartzipsamment_qualifying_usda", passed = FALSE,
       layers = integer(0), evidence = list(reason = "no layers"),
       missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8"
+      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8 (p 357)"
     ))
   }
   cl <- h$clay_pct[cand]
+  sd <- h$sand_pct[cand]
   cf <- h$coarse_fragments_pct[cand]
-  passing <- cand[!is.na(cl) & cl <= 5 &
-                      (is.na(cf) | cf <= 5)]
+
+  # Layer is Quartzipsamment-compatible if all three conditions met.
+  layer_ok <- !is.na(cl) & cl <= 10 &
+                !is.na(sd) & sd >= 80 &
+                (is.na(cf) | cf <= 15)
+  passing <- cand[layer_ok]
   passed <- length(passing) >= 0.5 * length(cand)
+
   DiagnosticResult$new(
     name = "quartzipsamment_qualifying_usda", passed = passed,
     layers = passing,
-    evidence = list(threshold_clay = 5),
+    evidence = list(
+      threshold_clay_max = 10,
+      threshold_sand_min = 80,
+      threshold_cf_max   = 15,
+      total_layers       = length(cand),
+      passing_layers     = length(passing)
+    ),
     missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8"
+    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8 (p 357)"
   )
 }
 
