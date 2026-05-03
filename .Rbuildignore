@@ -24,3 +24,4 @@
 ^inst/cran-submission$
 ^inst/benchmarks/reports/.*\.rds$
 ^paper$
+^\.claude$

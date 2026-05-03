@@ -79,6 +79,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
 
     #' @description Pretty-print the result with key trace, ambiguities, and
     #'              warnings.
+    #' @param ... Ignored (S3 print signature compatibility).
     print = function(...) {
       cli::cli_h2(sprintf("ClassificationResult (%s)", self$system))
       cli::cli_text("Name: {self$name}")
@@ -133,6 +134,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     },
 
     #' @description Compact summary list.
+    #' @param ... Ignored (S3 summary signature compatibility).
     summary = function(...) {
       list(
         system         = self$system,

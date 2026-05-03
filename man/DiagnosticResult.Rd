@@ -99,6 +99,13 @@ Pretty-print the result with sub-test breakdown.
 \if{html}{\out{<div class="r">}}\preformatted{DiagnosticResult$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 print signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiagnosticResult-as_list"></a>}}

@@ -413,6 +413,7 @@ PedonRecord <- R6::R6Class("PedonRecord",
     },
 
     #' @description Compact summary list (for serialization or testing).
+    #' @param ... Ignored (S3 summary signature compatibility).
     summary = function(...) {
       list(
         n_horizons   = if (is.null(self$horizons)) 0L else nrow(self$horizons),
@@ -431,6 +432,7 @@ PedonRecord <- R6::R6Class("PedonRecord",
     },
 
     #' @description Pretty-print the record.
+    #' @param ... Ignored (S3 print signature compatibility).
     print = function(...) {
       cli::cli_h2("PedonRecord")
 
