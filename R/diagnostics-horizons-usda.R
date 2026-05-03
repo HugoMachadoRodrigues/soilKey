@@ -62,7 +62,23 @@ oxic_usda <- function(pedon, ...) {
 #'   Ch. 3 -- argillic horizon.
 #' @export
 argillic_usda <- function(pedon, ...) {
-  res <- argic(pedon, ...)
+  # v0.9.26 design note: KST 13ed Ch 3 (p 4) defines argillic with
+  # LOOSER clay-increase thresholds than WRB argic (3/1.2/8 vs
+  # 6/1.4/20) BUT REQUIRES additional evidence of clay illuviation
+  # -- oriented clays bridging sand grains, clay films lining pores
+  # or coating peds, OR lamellae > 5 mm thick. KSSL does not store
+  # this evidence reliably (NASIS does, sparsely). Empirically,
+  # using the LOOSER thresholds without the clay-illuviation test
+  # produces many false-positive argillic detections (KSSL+NASIS
+  # n=865 A/B: -1.28 pp Order, -0.92 pp Suborder).
+  #
+  # Pragmatic solution: keep the STRICTER WRB thresholds as a proxy
+  # for "argillic with strong clay-increase evidence" -- the +6/1.4/20
+  # cutoffs are restrictive enough that profiles passing them are
+  # very likely to also have clay films, even when we can't verify
+  # directly. Switch to system = "usda" once clay-films testing is
+  # implemented (probably via NASIS pediagfeatures `argillic` flag).
+  res <- argic(pedon, system = "wrb2022", ...)
   # v0.9.10: USDA Keys to Soil Taxonomy 13ed Ch. 3 (argillic horizon)
   # explicitly excludes horizons whose clay-distribution pattern is
   # depositional (alluvial / lithologic discontinuity / fluvic

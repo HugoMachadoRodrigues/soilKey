@@ -2,33 +2,45 @@
 % Please edit documentation in R/utils-diagnostic-tests.R
 \name{test_clay_increase_argic}
 \alias{test_clay_increase_argic}
-\title{Test the argic clay-increase criterion (WRB 2022)}
+\title{Test the argic / argillic clay-increase criterion}
 \usage{
-test_clay_increase_argic(h)
+test_clay_increase_argic(h, system = c("wrb2022", "usda"))
 }
 \arguments{
 \item{h}{Horizons data.table (canonical schema).}
+
+\item{system}{One of \code{"wrb2022"} (default) or \code{"usda"}.
+Selects the threshold set.}
 }
 \value{
 Sub-test result list.
 }
 \description{
-Tests every consecutive pair of horizons in the profile against the
-WRB 2022 (4th ed., Chapter 3.1.3, criterion 2.a.iv-vi) clay-increase
-rules. v0.3.1 brings these into compliance with the actual text
-(earlier versions used loosened thresholds 3/1.2/8 from older WRB
-editions):
-\itemize{
-  \item overlying clay < 15\%: argic horizon must contain at least
-        **6\% (absolute)** more clay;
-  \item overlying clay 15 to <50\%: argic / overlying clay ratio
-        must be **>= 1.4**;
-  \item overlying clay >= 50\%: argic must contain at least
-        **20\% (absolute)** more clay.
+Tests every horizon in the profile against the clay-increase rules
+of either WRB 2022 (default, \code{system = "wrb2022"}) or USDA Soil
+Taxonomy 13th edition (\code{system = "usda"}). The two systems
+use the SAME structural rule (three brackets keyed on overlying
+eluvial clay percent) but DIFFERENT thresholds:
 }
+\details{
+\tabular{lll}{
+  \strong{Eluvial clay} \tab \strong{WRB 2022 argic} \tab \strong{KST 13ed argillic} \cr
+  \code{< 15\%}     \tab \code{>= +6 pp absolute}    \tab \code{>= +3 pp absolute} \cr
+  \code{15-X\%}     \tab \code{>= 1.4x ratio} (X=50) \tab \code{>= 1.2x ratio} (X=40) \cr
+  \code{>= X\%}     \tab \code{>= +20 pp absolute}   \tab \code{>= +8 pp absolute}
+}
+
+KST 13ed thresholds are taken from Chapter 3, "Argillic horizon"
+(p. 4); WRB 2022 thresholds from Chapter 3.1.3, "Argic horizon"
+(p. 36). v0.9.26 introduces the per-system switch -- earlier
+versions used WRB thresholds for both systems, which under-detected
+the argillic horizon in KSSL profiles where clay increase is in
+the 1.2-1.4 ratio band or +3 to +6 pp absolute band.
+
 Returns the indices of horizons that satisfy as argic candidates.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
-  horizon, criteria 2.a.iv-vi (p. 36).
+  horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
+  Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 }

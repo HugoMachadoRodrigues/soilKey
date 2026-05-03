@@ -1,3 +1,81 @@
+# soilKey 0.9.26 (2026-05-03)
+
+The "argic / argillic per-system threshold infrastructure" release.
+Adds a system parameter to the clay-increase test so future code can
+opt into KST 13ed thresholds; documents the design tension that
+keeps `argillic_usda` on WRB thresholds for now; lays the
+infrastructure for the v0.9.27+ clay-films test that would justify
+the looser KST thresholds.
+
+## Background
+
+The argic horizon (WRB 2022 Ch 3.1.3 p 36) and the argillic horizon
+(KST 13ed Ch 3 p 4) use the SAME structural rule (three brackets
+keyed on overlying eluvial clay percent) but DIFFERENT thresholds:
+
+| Eluvial clay | WRB 2022 argic | KST 13ed argillic |
+|---|---|---|
+| < 15 %   | +6 pp absolute | **+3 pp absolute** |
+| 15-X %   | 1.4x ratio (X=50) | **1.2x ratio (X=40)** |
+| >= X %   | +20 pp absolute | **+8 pp absolute** |
+
+KST 13ed thresholds are looser by design BUT are paired with a
+required clay-illuviation test: oriented clays bridging sand grains
+on >= 1 % of horizon area, OR clay films lining pores / coating
+ped faces, OR lamellae > 5 mm thick. Neither soilKey nor KSSL store
+this evidence reliably (NASIS does, sparsely).
+
+## Changes
+
+`test_clay_increase_argic(h, system = c("wrb2022", "usda"))`: new
+`system` parameter routes between WRB and KST thresholds. Default
+remains \code{"wrb2022"} for back-compat. The KST branch is fully
+implemented and tested.
+
+`argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))`:
+mirrors the same parameter and forwards it to the clay-increase test.
+
+`argillic_usda(pedon, ...)`: continues to delegate to
+\code{argic(pedon, system = "wrb2022", ...)}, NOT system = "usda",
+with an inline design-note explaining why. Empirical A/B on
+KSSL+NASIS n=865 showed that switching to system = "usda" without
+also implementing the clay-illuviation test produced a **regression**
+of -1.28 pp at Order, -0.92 pp at Suborder, and -0.35 pp at Great
+Group. The looser thresholds without clay-films verification produce
+many false-positive argillic detections, which then mis-route
+genuinely non-argillic profiles to argillic-bearing Orders. The
+stricter WRB thresholds act as a conservative proxy for "argillic
+with strong clay-increase evidence" until the clay-films test is
+added.
+
+## Roadmap (v0.9.27+)
+
+- Implement `argillic_clay_films_test()` against NASIS
+  `pediagfeatures` records (the surveyor's argillic flag captures
+  the clay-illuviation evidence directly).
+- Switch `argillic_usda` to system = "usda" once the clay-films test
+  is wired in. The empirical hypothesis is that the looser KST
+  thresholds, paired with the clay-films gate, will produce a NET
+  positive lift at Great Group level (closing many of the
+  haplargids -> haplocambids and argiustolls -> hapludolls misses
+  documented in the v0.9.25 roadmap).
+
+## Tests
+
+11 new unit tests in \code{tests/testthat/test-v0926-argillic-thresholds.R}
+exercise:
+
+- KST-only-passing band at clay < 15 % (3.7 pp absolute increase)
+- KST-only-passing band at clay 15-40 % (ratio 1.39)
+- KST-only-passing band at clay >= 40 % (+13 pp absolute)
+- Both-passing canonical case (clay 13 -> 31)
+- Both-failing case (ratio 1.07)
+- Default system = wrb2022 (back-compat)
+- argillic_usda routing under the current design (WRB thresholds)
+- argillic_usda canonical Luvisol fixture (passes regardless)
+
+Full suite: 2886 PASS / 0 FAIL / 12 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.25 (2026-05-03)
 
 The "KST 13ed Great Group canonicalisation" release. A single

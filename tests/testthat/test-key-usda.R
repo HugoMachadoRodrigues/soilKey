@@ -96,6 +96,12 @@ test_that("oxic_usda delegates faithfully to ferralic", {
 })
 
 test_that("argillic_usda delegates faithfully to argic", {
+  # v0.9.26 design note: argillic_usda currently routes to
+  # argic(system = "wrb2022") -- NOT system = "usda" -- because the
+  # KST 13ed argillic spec also requires clay-illuviation evidence
+  # (clay films, oriented clays, lamellae) that we don't yet test
+  # for. The stricter WRB thresholds are a conservative proxy. See
+  # R/diagnostics-horizons-usda.R for the full rationale.
   pr <- make_luvisol_canonical()
   arg  <- argic(pr)
   argl <- argillic_usda(pr)

@@ -4,12 +4,17 @@
 \alias{argic}
 \title{Argic horizon (WRB 2022)}
 \usage{
-argic(pedon, min_thickness = 7.5)
+argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Minimum thickness in cm (default 7.5).}
+
+\item{system}{One of \code{"wrb2022"} (default) or \code{"usda"}.
+Selects the clay-increase threshold set: WRB uses
+6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
+See \code{\link{test_clay_increase_argic}} for the table.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
