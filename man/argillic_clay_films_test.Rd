@@ -22,25 +22,38 @@ of clay" alongside the clay-increase rule. Acceptable evidence:
 }
 }
 \details{
-This test reads two complementary slots populated by
-\code{\link{load_kssl_pedons_with_nasis}}:
+This test reads three complementary slots, in order of evidence strength:
 \enumerate{
   \item \code{pedon$site$nasis_diagnostic_features} -- the NASIS
         \code{pediagfeatures.featkind} vector. The surveyor's
-        "Argillic horizon" entry directly confirms clay-illuviation
-        evidence (~13 500 entries in the 2021 NASIS snapshot).
+        explicit "Argillic horizon" entry directly confirms
+        clay-illuviation evidence (~13 500 entries in the 2021
+        NASIS snapshot). Strongest evidence.
   \item \code{pedon$horizons$clay_films_amount} -- per-horizon
         clay-film abundance derived from NASIS \code{phpvsf}.
         Values: \code{"few"}, \code{"common"}, \code{"many"},
-        \code{"continuous"}.
+        \code{"continuous"}. Direct measurement.
+  \item \code{pedon$horizons$designation} containing a 't'
+        master suffix (e.g. \code{Bt}, \code{Btk}, \code{Btx},
+        \code{Bt1}, \code{2Bt}). v0.9.28: the pedologist who
+        wrote that designation explicitly identified the
+        horizon as clay-illuvial -- per KST 13ed Ch 18, the 't'
+        suffix means "accumulation of silicate clay" -- so it
+        counts as positive evidence even when NASIS records are
+        absent. This unlocks the KST 13ed argillic thresholds
+        for the ~47 % of KSSL profiles that lack NASIS
+        pediagfeatures and phpvsf records.
 }
 
-Either source counts as positive evidence. \code{passed = NA}
-when neither is populated (lab-only loaders, non-KSSL pedons,
-or KSSL pedons whose NASIS records lack pediagfeatures and
-phpvsf rows).
+Any of the three sources counts as positive evidence (logical OR).
+\code{passed = NA} when none is populated AND no horizon designation
+field is present at all (lab-only loaders without horizon
+descriptions). \code{passed = FALSE} when designations exist but
+none has a 't' suffix and NASIS slots are empty.
 }
 \references{
 Soil Survey Staff (2022), Keys to Soil Taxonomy 13th
-  ed., Ch. 3, argillic horizon (clay-illuviation criteria, p. 4).
+  ed., Ch. 3, argillic horizon (clay-illuviation criteria, p. 4);
+  Ch. 18, master horizon symbols (\code{t}: silicate-clay
+  accumulation, p. 332).
 }

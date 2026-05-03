@@ -1,3 +1,99 @@
+# soilKey 0.9.29 (2026-05-03)
+
+The "Neossolos Litolicos shallow-profile heuristic" release. Fixes
+a single classifier path that was sending ~190 of 191 FEBR Neossolos
+Litolicos to the catch-all "Regoliticos" subordem -- the dominant
+single SiBCS Subordem error in the v0.9.27 confusion analysis.
+
+## Root cause
+
+SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact
+within 50 cm. In the FEBR / BDsolos snapshot, surveyors document
+this implicitly by stopping the profile description at the rock
+boundary (median depth 17.5 cm, median 1 horizon) rather than
+entering a pseudo-R horizon. The pre-v0.9.29 `neossolo_litolico()`
+required `contato_litico()` OR `contato_litico_fragmentario()` to
+return TRUE, and both rely on an explicit `^R$|^Cr|^Rk` designation
+that FEBR almost never carries (0.5 % of Litolicos in the snapshot).
+
+Result: the classifier was routing **190 of 191 FEBR Litolicos** to
+the catch-all "Neossolos Regoliticos" subordem.
+
+## Fix
+
+`neossolo_litolico()` now adds an "implicit lithic contact" path:
+
+\itemize{
+  \item max profile depth <= 50 cm (shallow stop -- suggestive of
+        rock contact below);
+  \item no horizon designation begins with \code{B} (so we do NOT
+        flag shallow Cambissolos / Argissolos with a thin Bt or Bw
+        within 50 cm);
+  \item a non-empty \code{bottom_cm} column (otherwise we have no
+        signal).
+}
+
+Direct evidence (explicit R / Cr / Rk designation within 50 cm) is
+preserved as the canonical path.
+
+## A/B on Embrapa FEBR (n=554)
+
+| Level    | v0.9.27 | v0.9.29 | Delta |
+|----------|---:|---:|---:|
+| Order    | 56.68 % | 56.68 % | 0.00 pp (Order machinery unchanged) |
+| **Subordem** | 9.93 % | **38.63 %** | **+28.70 pp** |
+
+The +28.70 pp Subordem lift is the single biggest single-version
+SiBCS gain since the v0.9.23 argic clay-increase fix (+14.1 pp at
+Order). Cumulative SiBCS Subordem from v0.9.22: 0.0 % -> 38.63 %.
+
+## v0.9.28 changes (also shipped in this release)
+
+- **Designation-based clay-films proxy** for `argillic_clay_films_test()`:
+  the KST 13ed Ch 18 master horizon symbol \code{t} ("accumulation
+  of silicate clay") in any horizon designation (Bt, Btk, Btx, 2Bt,
+  etc.) is now accepted as positive clay-illuviation evidence
+  alongside NASIS pediagfeatures and per-horizon clay_films_amount.
+  Coverage on KSSL+NASIS n=865: 12.2 % of profiles gain a third
+  evidence path; total clay-films-positive coverage rises 38.8 % ->
+  51.0 %. Marginal-argillic flips: 8/107 designation-only profiles
+  switch from WRB tier (rejects) to KST tier (accepts) -- but the
+  KSSL+NASIS Order/Suborder/Great Group/Subgroup numbers remain
+  identical to v0.9.27 because those 8 marginal flips don't change
+  the eventual taxonomic assignment.
+
+- **`classify_all()` wrapper**: a single call returning all three
+  classifications plus a `summary` data.frame. Saves callers from
+  typing three separate `classify_*()` calls.
+
+- **Codecov configuration** (`codecov.yml`): soft gates (project
+  coverage drop allowed up to 1 pp; new patches at least 70 %
+  covered with 5 pp grace). Test-coverage workflow already ships
+  via `.github/workflows/test-coverage.yaml`; this release adds
+  the per-repo config.
+
+- **Additional `max(-Inf)` warning fix** in `R/diagnostics-horizons-sibcs.R`
+  (worm_holes_pct path).
+
+## Tests
+
+- 17 new unit tests in
+  \code{tests/testthat/test-v0928-designation-proxy.R} covering the
+  designation 't'-suffix detection, regex strictness (no
+  false-positive on "test"), evidence-source priority (NASIS
+  pediagfeatures > phpvsf > designation), and the integration with
+  argillic_usda routing.
+- 7 new tests in \code{tests/testthat/test-v0928-classify-all.R}
+  covering the wrapper API (subset, error handling, summary shape).
+- 8 new tests in
+  \code{tests/testthat/test-v0929-neossolo-litolico-heuristic.R}
+  covering the FEBR-style shallow profile path, B-horizon
+  exclusion, deep profile rejection, contradictory non-rock
+  material rejection, and the classify_sibcs end-to-end integration.
+
+Full suite: 2 976 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK
+(0 errors / 0 warnings / 0 notes).
+
 # soilKey 0.9.27 (2026-05-03)
 
 The "clay-illuviation evidence test + Embrapa benchmark fix +

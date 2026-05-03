@@ -81,35 +81,30 @@ test_that("default system is wrb2022 (back-compat)", {
 })
 
 # ---- argillic_usda design choice -------------------------------------------
-# v0.9.26 design note: argillic_usda KEEPS the stricter WRB thresholds
-# despite KST 13ed Ch 3 specifying looser ones (3/1.2/8). Reason: KST
-# 13ed argillic ALSO requires clay-illuviation evidence (oriented clays,
-# clay films, lamellae) that KSSL does not store reliably. Empirical
-# A/B on n=865: looser thresholds without clay-films test produced
-# -1.28 pp Order regression. The system="usda" routing on test_clay_
-# increase_argic / argic remains as a future-proof API; argillic_usda
-# will switch to it once a clay-films test (probably via NASIS
-# pediagfeatures `argillic` flag) is implemented.
+# v0.9.27 wired clay-films-test (NASIS pediagfeatures + phpvsf).
+# v0.9.28 added the designation 't'-suffix proxy.
+# argillic_usda now uses a two-tier strategy: KST 13ed thresholds when
+# clay-films evidence is present (any of the three sources), WRB
+# stricter thresholds (proxy) when not.
 
-test_that("argillic_usda currently uses WRB thresholds (clay-films compensation)", {
-  # +3.7 pp band: WRB rejects (needs +6), KST argillic per spec accepts.
-  # Until we test clay films, we use WRB thresholds for argillic_usda.
+test_that("argillic_usda falls back to WRB thresholds when no evidence at all", {
+  # +3.7 pp band: WRB rejects (needs +6), KST accepts (>=3).
+  # Use designation WITHOUT 't' suffix and no NASIS data so the
+  # clay-films-test cannot fire -> WRB tier.
   p <- PedonRecord$new(
     site = list(id = "kst-arg-test", lat = 0, lon = 0, country = "TEST"),
     horizons = mk_h(
       top_cm      = c(0,  10, 30),
       bottom_cm   = c(10, 30, 60),
-      designation = c("A", "E", "Bt"),
+      designation = c("A", "E", "Bw"),     # no 't' suffix
       clay_pct    = c(10, 8.6, 12.3),
       silt_pct    = c(40, 35, 30),
       sand_pct    = c(50, 56.4, 57.7)
     )
   )
   res <- argillic_usda(p)
-  # Currently FALSE because argillic_usda routes to WRB thresholds
-  # (the +3.7 pp profile fails WRB +6 pp). Will flip to TRUE when
-  # the clay-films test is added.
   expect_false(isTRUE(res$passed))
+  expect_equal(res$evidence$argillic_tier$threshold_system, "wrb2022")
 })
 
 test_that("argillic_usda accepts the canonical strong-argillic profile (Luvisol)", {
