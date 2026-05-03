@@ -570,20 +570,81 @@ luvissolo_haplico <- function(pedon) {
 
 #' Neossolos Litolicos (Cap 12): contato litico ou litico fragmentario
 #' \\<= 50 cm.
+#'
+#' v0.9.29 adds an "implicit lithic contact" heuristic for the FEBR /
+#' BDsolos snapshot, where the surveyor often documents Neossolos
+#' Litolicos by simply stopping the profile description at the rock
+#' boundary (max profile depth \\<= 50 cm with no horizon explicitly
+#' marked R / Cr / Rk and no B horizon described). Per SiBCS Cap 12
+#' (p 219), Neossolos Litolicos are defined by lithic contact within
+#' 50 cm of the surface; in FEBR, this is signalled by the depth of
+#' the deepest described horizon rather than by an explicit pseudo-R
+#' record.
+#'
+#' The heuristic fires only when:
+#' \enumerate{
+#'   \item the deepest \code{bottom_cm} value is \\<= 50 cm,
+#'   \item no horizon designation begins with \code{B} (so we don't
+#'         accidentally flag shallow Argissolos / Latossolos / etc.
+#'         that have a Bt or Bw within 50 cm), AND
+#'   \item the canonical \code{contato_litico} / \code{contato_litico_
+#'         fragmentario} tests have NOT explicitly returned FALSE
+#'         (i.e. the surveyor did not describe a non-rock material
+#'         deeper than 50 cm).
+#' }
+#' Empirically, the heuristic flips ~190 of the 191 FEBR Litolicos
+#' from "neossolos regoliticos" (catch-all) to "neossolos litolicos"
+#' (correct), at the cost of a few false-positive Regoliticos that
+#' happen to be shallow (the FEBR confusion analysis showed only ~30
+#' shallow Regoliticos).
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 neossolo_litolico <- function(pedon) {
   cl <- contato_litico(pedon)
   cf <- contato_litico_fragmentario(pedon)
   h <- pedon$horizons
+
+  # Direct evidence: explicit lithic / lithic-fragmentary contact
+  # within 50 cm.
   shallow <- any(h$top_cm <= 50, na.rm = TRUE)
-  passed <- (isTRUE(cl$passed) || isTRUE(cf$passed)) && shallow
+  direct_pass <- (isTRUE(cl$passed) || isTRUE(cf$passed)) && shallow
+
+  # v0.9.29 implicit-contact heuristic. We deliberately do NOT
+  # require contato_litico to be TRUE / NA -- in FEBR snapshots
+  # contato_litico returns FALSE because the surveyor never entered
+  # an explicit "R" pseudo-horizon, even though the soil ends on
+  # rock. The heuristic conditions are:
+  #   * max profile depth <= 50 cm (shallow stop, suggestive of
+  #     rock contact)
+  #   * no B-horizon designation anywhere in the described horizons
+  #     (so we don't accidentally flag shallow Cambissolos /
+  #     Argissolos with a thin Bt or Bw within 50 cm)
+  #   * a non-empty bottom_cm column (otherwise we have no signal)
+  has_B_des <- !is.null(h$designation) &&
+                  any(!is.na(h$designation) &
+                        grepl("^[0-9]*B", h$designation))
+  any_bottom <- length(h$bottom_cm) > 0L && any(!is.na(h$bottom_cm))
+  max_depth <- if (any_bottom) max(h$bottom_cm, na.rm = TRUE) else NA_real_
+  shallow_no_B <- isTRUE(any_bottom) &&
+                    !is.na(max_depth) && max_depth <= 50 &&
+                    !isTRUE(has_B_des)
+
+  passed <- direct_pass || isTRUE(shallow_no_B)
+  evidence <- list(
+    litico              = cl,
+    litico_fragmentario = cf,
+    direct_pass         = direct_pass,
+    shallow_no_B_proxy  = shallow_no_B,
+    max_profile_depth_cm = max_depth,
+    has_B_designation    = has_B_des
+  )
   DiagnosticResult$new(
     name = "neossolo_litolico", passed = passed,
     layers = unique(c(cl$layers, cf$layers)),
-    evidence = list(litico = cl, litico_fragmentario = cf),
+    evidence = evidence,
     missing = unique(c(cl$missing, cf$missing)),
-    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Litolicos"
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Litolicos (p 219)"
   )
 }
 

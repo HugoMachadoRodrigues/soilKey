@@ -127,28 +127,41 @@ argillic_usda <- function(pedon, ...) {
 #'   \item lamellae more than 5 mm thick.
 #' }
 #'
-#' This test reads two complementary slots populated by
-#' \code{\link{load_kssl_pedons_with_nasis}}:
+#' This test reads three complementary slots, in order of evidence strength:
 #' \enumerate{
 #'   \item \code{pedon$site$nasis_diagnostic_features} -- the NASIS
 #'         \code{pediagfeatures.featkind} vector. The surveyor's
-#'         "Argillic horizon" entry directly confirms clay-illuviation
-#'         evidence (~13 500 entries in the 2021 NASIS snapshot).
+#'         explicit "Argillic horizon" entry directly confirms
+#'         clay-illuviation evidence (~13 500 entries in the 2021
+#'         NASIS snapshot). Strongest evidence.
 #'   \item \code{pedon$horizons$clay_films_amount} -- per-horizon
 #'         clay-film abundance derived from NASIS \code{phpvsf}.
 #'         Values: \code{"few"}, \code{"common"}, \code{"many"},
-#'         \code{"continuous"}.
+#'         \code{"continuous"}. Direct measurement.
+#'   \item \code{pedon$horizons$designation} containing a 't'
+#'         master suffix (e.g. \code{Bt}, \code{Btk}, \code{Btx},
+#'         \code{Bt1}, \code{2Bt}). v0.9.28: the pedologist who
+#'         wrote that designation explicitly identified the
+#'         horizon as clay-illuvial -- per KST 13ed Ch 18, the 't'
+#'         suffix means "accumulation of silicate clay" -- so it
+#'         counts as positive evidence even when NASIS records are
+#'         absent. This unlocks the KST 13ed argillic thresholds
+#'         for the ~47 % of KSSL profiles that lack NASIS
+#'         pediagfeatures and phpvsf records.
 #' }
 #'
-#' Either source counts as positive evidence. \code{passed = NA}
-#' when neither is populated (lab-only loaders, non-KSSL pedons,
-#' or KSSL pedons whose NASIS records lack pediagfeatures and
-#' phpvsf rows).
+#' Any of the three sources counts as positive evidence (logical OR).
+#' \code{passed = NA} when none is populated AND no horizon designation
+#' field is present at all (lab-only loaders without horizon
+#' descriptions). \code{passed = FALSE} when designations exist but
+#' none has a 't' suffix and NASIS slots are empty.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), Keys to Soil Taxonomy 13th
-#'   ed., Ch. 3, argillic horizon (clay-illuviation criteria, p. 4).
+#'   ed., Ch. 3, argillic horizon (clay-illuviation criteria, p. 4);
+#'   Ch. 18, master horizon symbols (\code{t}: silicate-clay
+#'   accumulation, p. 332).
 #' @export
 argillic_clay_films_test <- function(pedon) {
   feats <- pedon$site$nasis_diagnostic_features
@@ -161,9 +174,46 @@ argillic_clay_films_test <- function(pedon) {
   has_films_any <- !is.null(cf_col) &&
                      any(!is.na(cf_col) & nzchar(cf_col))
 
-  has_evidence <- isTRUE(has_pediag) || isTRUE(has_films_any)
-  evidence_absent <- (is.null(feats) || length(feats) == 0L) &&
-                       (is.null(cf_col) || all(is.na(cf_col)))
+  # v0.9.28: designation-based proxy. KST 13ed Ch 18 (master horizon
+  # symbols) defines the suffix 't' as "an accumulation of silicate
+  # clay that has either formed in the horizon and is subsequently
+  # translocated within it, or has been moved into the horizon by
+  # illuviation". A pedologist who wrote 'Bt' / 'Btk' / 'Btx' / etc.
+  # in the field designation is making exactly the clay-illuviation
+  # claim that the KST 13ed argillic test requires. We treat that as
+  # positive evidence equivalent to a phpvsf clay-films record. The
+  # match is strict: the suffix must be a master horizon AND have 't'
+  # AS A SUFFIX OF THE MASTER (not just any 't' in the string -- "BAt"
+  # is fine, "Btx" is fine, but "test" is not, and a hypothetical
+  # made-up "BTest" would be rejected because we anchor to the master
+  # horizon letters [ABCEORW]).
+  des_col <- h$designation
+  has_t_designation <- FALSE
+  designation_layers <- integer(0)
+  if (!is.null(des_col) && length(des_col) > 0L) {
+    # Match: optional digit prefix + ONE OR MORE master letters
+    # [ABCEORW] (transitional horizons like AB / BA / BC have multiple
+    # master letters) + a 't' suffix possibly followed by other
+    # suffixes/digits. The 't' must be a lowercase suffix letter,
+    # NOT a master horizon letter.
+    # Examples that match: Bt, Bt1, Btk, Btx, 2Bt, Btss, BAt, ABt, B't.
+    # Examples that do NOT match: A, Bw, Bk, BC, C, R, O, Bg, Bs, Bh,
+    #                              "test" (no master letters).
+    t_pat <- "^[0-9']*[ABCEORW]+[a-z]*t[a-z0-9']*$"
+    designation_layers <- which(!is.na(des_col) & nzchar(des_col) &
+                                  grepl(t_pat, des_col, ignore.case = FALSE))
+    has_t_designation <- length(designation_layers) > 0L
+  }
+
+  has_evidence <- isTRUE(has_pediag) ||
+                    isTRUE(has_films_any) ||
+                    isTRUE(has_t_designation)
+
+  designation_absent <- is.null(des_col) || length(des_col) == 0L ||
+                          all(is.na(des_col) | !nzchar(des_col))
+  nasis_absent <- (is.null(feats) || length(feats) == 0L) &&
+                    (is.null(cf_col) || all(is.na(cf_col)))
+  evidence_absent <- nasis_absent && designation_absent
 
   passed <- if (has_evidence) TRUE
             else if (evidence_absent) NA
@@ -173,21 +223,34 @@ argillic_clay_films_test <- function(pedon) {
                       which(!is.na(cf_col) & nzchar(cf_col))
                     else integer(0)
 
+  # Identify which evidence source produced the TRUE: useful for
+  # downstream provenance / debugging.
+  evidence_source <- if (isTRUE(has_pediag)) "nasis_pediagfeatures"
+                     else if (isTRUE(has_films_any)) "nasis_phpvsf"
+                     else if (isTRUE(has_t_designation)) "designation_t_suffix"
+                     else NA_character_
+
   DiagnosticResult$new(
     name = "argillic_clay_films_test",
     passed = passed,
-    layers = films_layers,
+    layers = unique(c(films_layers, designation_layers)),
     evidence = list(
       pediagfeatures_argillic_flag = has_pediag,
       horizons_with_clay_films     = length(films_layers),
       films_summary                = if (length(films_layers) > 0L)
                                           unique(cf_col[films_layers])
-                                       else character(0)
+                                       else character(0),
+      horizons_with_t_designation  = length(designation_layers),
+      t_designations               = if (length(designation_layers) > 0L)
+                                          des_col[designation_layers]
+                                       else character(0),
+      evidence_source              = evidence_source
     ),
     missing = if (evidence_absent)
-                c("nasis_diagnostic_features", "clay_films_amount")
+                c("nasis_diagnostic_features", "clay_films_amount", "designation")
               else character(0),
     reference = paste0("Soil Survey Staff (2022), Keys to Soil Taxonomy ",
-                         "13th ed., Ch. 3, argillic horizon (clay illuviation, p 4)")
+                         "13th ed., Ch. 3, argillic horizon (clay illuviation, p 4); ",
+                         "Ch. 18, master horizon symbols (t suffix, p 332)")
   )
 }

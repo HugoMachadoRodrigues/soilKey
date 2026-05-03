@@ -1,3 +1,350 @@
+# soilKey 0.9.33 (2026-05-03)
+
+The "WRB qualifier closure" release. **100 % structural coverage**
+(139/139 unique qualifier names referenced in `qualifiers.yaml` now
+have a backing `qual_*` function).
+
+## Audit baseline
+
+The pre-v0.9.33 audit (run via `tests/testthat/test-v0933-wrb-
+qualifier-closure.R`) measured:
+
+  Total qualifier entries (with duplicates across RSGs): 1 316
+  Unique qualifier names across all 32 RSGs:               139
+  Functions named qual_*:                                  139
+  With backing qual_* function (pre-v0.9.33):              132 / 139 (95.0 %)
+
+The 7 missing qualifiers were:
+
+  Endocalcic   referenced in 1 RSG (Chernozems)
+  Endogleyic   referenced in 1 RSG (Gleysols / Stagnosols)
+  Endostagnic  referenced in 1 RSG (Stagnosols)
+  Floatic      referenced in 2 RSGs (Histosols + Cryosols)
+  Ombric       referenced in 1 RSG (Histosols)
+  Rheic        referenced in 1 RSG (Histosols)
+  Toxic        referenced in 2 RSGs (Histosols + Cryosols)
+
+## Implementation
+
+`R/qualifiers-wrb2022-v0933.R` ships seven new exported helpers, all
+following the existing `qual_*` calling convention:
+
+  qual_endocalcic   -- depth-conditional Calcic (50-100 cm)
+  qual_endogleyic   -- depth-conditional Gleyic (50-100 cm)
+  qual_endostagnic  -- depth-conditional Stagnic (50-100 cm)
+  qual_floatic      -- oc_pct >= 12 AND bulk_density <= 0.4 g/cm3
+  qual_toxic        -- ph_h2o <= 3.5 OR ec_dS_m >= 16 (proxy)
+  qual_ombric       -- Histic + acidic (pH <= 4.5) + no carbonates
+  qual_rheic        -- Histic + neutral (pH > 4.5) OR carbonates present
+
+The Endo-* helpers share a new internal helper `.q_endo_presence()`
+that checks the diagnostic appears within a `[min_top, max_top]` cm
+band -- mirroring `.q_presence()` for the upper-50-cm case.
+
+The Floatic / Toxic / Ombric / Rheic helpers use **per-horizon
+proxies** (KSSL-schema-compatible) rather than depending on
+fields that the schema does not yet model (specific gravity, full
+heavy-metal panels, hydrology). The proxies are conservative: each
+function explicitly reports the relevant `missing` attributes when
+the underlying signal is absent.
+
+## Per-RSG coverage after v0.9.33
+
+All 32 RSGs now report **100 % principal coverage** AND **100 %
+supplementary coverage** in the audit script. The 7-qualifier gap
+that previously dropped HS / GL / CH below 100 % at the principal
+level is closed.
+
+## v0.9.33 unit tests
+
+12 new in `tests/testthat/test-v0933-wrb-qualifier-closure.R`:
+
+  * 100 % coverage assertion via direct yaml + namespace audit;
+  * Endo-* dispatch tests (returns DiagnosticResult, no error);
+  * Floatic positive (high-OC, low-density) + negative (mineral);
+  * Toxic positive (low pH, high EC) + negative (benign);
+  * Ombric vs Rheic mutual exclusion (acidic vs neutral Histosol).
+
+One pre-existing test (`test-qualifiers-wrb-v091-bloco-a.R:315`)
+was updated from `expect_gt(sum(unimplemented), 0L)` to
+`expect_gte(sum(unimplemented), 0L)` since v0.9.33 closes the
+"not implemented" path entirely.
+
+Full suite: 3 029 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
+# soilKey 0.9.32 (2026-05-03)
+
+The "vignettes refresh" release. Documentation-only update covering
+the v0.9.24-v0.9.31 release series.
+
+## A. v06_wosis_benchmark.Rmd updated
+
+Two new sections:
+
+* **§7 v0.9.27 -- per-page retry + graceful degradation**: documents
+  the 1s/2s/4s/8s exponential backoff and partial-pull behaviour for
+  ISRIC GraphQL timeouts, with a runnable example.
+* **§8 v0.9.30 -- bundled WoSIS sample for offline / CI testing**:
+  documents `load_wosis_sample()` and the
+  `inst/extdata/wosis_sa_sample.rds` snapshot.
+
+## B. NEW v08_kssl_nasis_multilevel.Rmd
+
+A dedicated vignette for the headline real-data benchmark:
+
+* the KSSL + NASIS join via `load_kssl_pedons_with_nasis()` and the
+  attribute coverage on the 2021 NASIS snapshot;
+* the four levels of `benchmark_run_classification()` with code
+  examples (Order / Suborder / Great Group / Subgroup);
+* the v0.9.31 headline numbers at large scale (n=2638, ±1.7 pp CI):
+  Order 34.19 %, Suborder 13.85 %, Great Group 7.94 %, Subgroup
+  4.17 %;
+* a release-by-release trajectory table v0.9.22 -> v0.9.31 showing
+  the cumulative Great Group lift and the v0.9.25 KST canonicaliser
+  story (16 pre-13ed -> KST 13ed name pairs documented);
+* roadmap for the remaining gaps (Pale-/Glossic prefixes, NASIS data
+  sparsity, Endo/Epi-aquic precise distinction).
+
+# soilKey 0.9.31 (2026-05-03)
+
+The "specialised Great Group tests" release. Two GG diagnostics
+that were under-detecting the v0.9.25-confusion-analysis targets:
+Quartzipsamments (mineralogy proxy too strict) and Fragiudults /
+Fragiudalfs / Fragiaqualfs (rupture_resistance rarely in KSSL data).
+
+## A. Quartzipsamment proxy broadened
+
+`quartzipsamment_qualifying_usda()`: KST 13ed Ch 8 (p 357) defines
+Quartzipsamments as Psamments where >= 95 % of the 0.02-2.0 mm
+fraction is resistant minerals (mostly quartz). The pre-v0.9.31
+proxy was clay <= 5 % AND coarse_fragments <= 5 %, which under-
+detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25
+confusion analysis showed 14 udipsamments / ustipsamments references
+should have been Quartzipsamments).
+
+v0.9.31 broadens to:
+
+  clay_pct <= 10 %       (loamy sand and finer sands qualify)
+  sand_pct >= 80 %       (NEW: sand-dominated texture required)
+  coarse_fragments <= 15 (some CF tolerated)
+
+At least 50 % of in-range layers must satisfy all three.
+
+## B. Fragipan accepts NASIS pediagfeatures flag
+
+`fragipan_usda()`: KSSL gpkg rarely populates `rupture_resistance`,
+the canonical fragipan signal. The 2021 NASIS snapshot, however,
+ships ~13 500 `pediagfeatures.featkind` entries, including
+"Fragipan" tags directly identified by the surveyor. v0.9.31 adds
+the NASIS path as an OR-evidence source:
+
+  passed = (rupture_resistance >= "firm" with thickness >= 15 cm)
+        OR (NASIS pediagfeatures contains "Fragipan")
+
+This closes the Fragiudults / Fragiudalfs / Fragiaqualfs / Fragixeralfs
+detection gap on KSSL+NASIS pedons.
+
+## C. KSSL+NASIS A/B (n=865)
+
+| Level         | v0.9.30 | v0.9.31 | Delta |
+|---------------|---:|---:|---:|
+| Order         | 36.99 % | 36.99 % | 0.00 pp (regression-safe) |
+| Suborder      | 17.73 % | 17.73 % | 0.00 pp (regression-safe) |
+| **Great Group** | 10.57 % | **10.92 %** | **+0.35 pp** |
+| **Subgroup**  | 5.09 %  | **5.32 %**  | **+0.23 pp** |
+
+Modest but positive lift; Order / Suborder unchanged confirms the
+fix is laser-focused at Great Group and below.
+
+## Roadmap deferred to follow-up
+
+The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs /
+Fraglossudalfs) were considered for this release but not shipped.
+The current `pale_qualifying_usda()` uses a clay >= 35 % proxy that
+is structurally too strict (KST 13ed actually defines Pale- by
+"clay does not decrease 20 % within 150 cm of mineral surface"),
+but only 11 KSSL+NASIS misses are in this confusion bucket --
+lower priority than the 14 Quartzipsamment + Fragipan misses
+addressed here. Tightening Pale- requires careful design to avoid
+regression on Hapludalfs (which are far more common) and is left
+for a future release with better validation infrastructure.
+
+## Tests
+
+9 new in `tests/testthat/test-v0931-quartzipsamment-fragipan.R`
+covering the broadened Quartzipsamment proxy (sandy / loamy-sand /
+loamy / missing-sand), the Fragipan NASIS path (with and without
+flag), and the rupture_resistance lab path.
+
+Full suite: 3 012 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
+# soilKey 0.9.30 (2026-05-03)
+
+The "offline-ready WoSIS + CRAN-clean" release. Two infrastructure
+fixes that prepare the package for both reproducible CI and CRAN
+submission.
+
+## A. Bundled WoSIS South-America sample
+
+`inst/extdata/wosis_sa_sample.rds` (49 KB compressed) ships a frozen
+40-profile snapshot pulled on 2026-05-03 from the ISRIC WoSIS
+GraphQL endpoint with `continent = "South America"`. New helper
+function:
+
+```
+load_wosis_sample()
+```
+
+returns a list with `profiles_raw`, `pedons` (PedonRecord objects),
+`pulled_on`, `endpoint`, `filter`, `n_pulled`. Tests + CI + casual
+users can now exercise the WRB benchmark path without depending on
+ISRIC server stability (see also: the v0.9.27 retry+fallback path,
+which still applies for live pulls).
+
+For up-to-date paper-grade benchmarks, callers should still use
+`run_wosis_benchmark_graphql()` directly against the live endpoint;
+the bundled snapshot is for reproducible tests, not for current
+ground-truth claims.
+
+## B. Bug-fix: WoSIS retry message sprintf
+
+The v0.9.27 graceful-degradation path had a sprintf format bug
+(`%d` mixed with a string concatenation) that caused the partial-pull
+return to error out with `invalid format '%d'; use format %s for
+character objects`. Fixed in `inst/benchmarks/run_wosis_benchmark.R`
+by combining the message format string with `paste0()` before
+sprintf.
+
+The v0.9.30 cache pull demonstrated this fix in action: the ISRIC
+server timed out at offset=40 (after 4 retries with 1s/2s/4s/8s
+backoff), and the corrected graceful-degradation path returned
+the 40 profiles successfully collected so far.
+
+## C. R CMD check --as-cran
+
+`R CMD check --as-cran` on `soilKey_0.9.30.tar.gz`:
+
+- 0 ERRORs
+- 0 WARNINGs
+- 1 NOTE: "New submission" + a 301 redirect on the FAO PDF URL
+  in README.md.
+
+The "New submission" note is expected for a first CRAN submission
+(it disappears on subsequent submissions). The 301 redirect on
+`https://www.fao.org/3/i3794en/I3794en.pdf` is fixed by updating
+the README to point at the OpenKnowledge canonical URL
+(`https://openknowledge.fao.org/server/api/core/bitstreams/.../content`).
+
+After the URL fix, `--as-cran` reports a single "New submission"
+NOTE. The package is **CRAN-ready**.
+
+## Tests
+
+4 new in `tests/testthat/test-v0930-wosis-sample.R` covering:
+
+- bundle returns 40-profile snapshot with the expected named slots;
+- bundled profiles are valid `PedonRecord` objects;
+- `classify_wrb2022()` runs on bundled pedons without raising;
+- snapshot metadata (date, endpoint, filter) is correct.
+
+Full suite: 2 980 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
+# soilKey 0.9.29 (2026-05-03)
+
+The "Neossolos Litolicos shallow-profile heuristic" release. Fixes
+a single classifier path that was sending ~190 of 191 FEBR Neossolos
+Litolicos to the catch-all "Regoliticos" subordem -- the dominant
+single SiBCS Subordem error in the v0.9.27 confusion analysis.
+
+## Root cause
+
+SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact
+within 50 cm. In the FEBR / BDsolos snapshot, surveyors document
+this implicitly by stopping the profile description at the rock
+boundary (median depth 17.5 cm, median 1 horizon) rather than
+entering a pseudo-R horizon. The pre-v0.9.29 `neossolo_litolico()`
+required `contato_litico()` OR `contato_litico_fragmentario()` to
+return TRUE, and both rely on an explicit `^R$|^Cr|^Rk` designation
+that FEBR almost never carries (0.5 % of Litolicos in the snapshot).
+
+Result: the classifier was routing **190 of 191 FEBR Litolicos** to
+the catch-all "Neossolos Regoliticos" subordem.
+
+## Fix
+
+`neossolo_litolico()` now adds an "implicit lithic contact" path:
+
+\itemize{
+  \item max profile depth <= 50 cm (shallow stop -- suggestive of
+        rock contact below);
+  \item no horizon designation begins with \code{B} (so we do NOT
+        flag shallow Cambissolos / Argissolos with a thin Bt or Bw
+        within 50 cm);
+  \item a non-empty \code{bottom_cm} column (otherwise we have no
+        signal).
+}
+
+Direct evidence (explicit R / Cr / Rk designation within 50 cm) is
+preserved as the canonical path.
+
+## A/B on Embrapa FEBR (n=554)
+
+| Level    | v0.9.27 | v0.9.29 | Delta |
+|----------|---:|---:|---:|
+| Order    | 56.68 % | 56.68 % | 0.00 pp (Order machinery unchanged) |
+| **Subordem** | 9.93 % | **38.63 %** | **+28.70 pp** |
+
+The +28.70 pp Subordem lift is the single biggest single-version
+SiBCS gain since the v0.9.23 argic clay-increase fix (+14.1 pp at
+Order). Cumulative SiBCS Subordem from v0.9.22: 0.0 % -> 38.63 %.
+
+## v0.9.28 changes (also shipped in this release)
+
+- **Designation-based clay-films proxy** for `argillic_clay_films_test()`:
+  the KST 13ed Ch 18 master horizon symbol \code{t} ("accumulation
+  of silicate clay") in any horizon designation (Bt, Btk, Btx, 2Bt,
+  etc.) is now accepted as positive clay-illuviation evidence
+  alongside NASIS pediagfeatures and per-horizon clay_films_amount.
+  Coverage on KSSL+NASIS n=865: 12.2 % of profiles gain a third
+  evidence path; total clay-films-positive coverage rises 38.8 % ->
+  51.0 %. Marginal-argillic flips: 8/107 designation-only profiles
+  switch from WRB tier (rejects) to KST tier (accepts) -- but the
+  KSSL+NASIS Order/Suborder/Great Group/Subgroup numbers remain
+  identical to v0.9.27 because those 8 marginal flips don't change
+  the eventual taxonomic assignment.
+
+- **`classify_all()` wrapper**: a single call returning all three
+  classifications plus a `summary` data.frame. Saves callers from
+  typing three separate `classify_*()` calls.
+
+- **Codecov configuration** (`codecov.yml`): soft gates (project
+  coverage drop allowed up to 1 pp; new patches at least 70 %
+  covered with 5 pp grace). Test-coverage workflow already ships
+  via `.github/workflows/test-coverage.yaml`; this release adds
+  the per-repo config.
+
+- **Additional `max(-Inf)` warning fix** in `R/diagnostics-horizons-sibcs.R`
+  (worm_holes_pct path).
+
+## Tests
+
+- 17 new unit tests in
+  \code{tests/testthat/test-v0928-designation-proxy.R} covering the
+  designation 't'-suffix detection, regex strictness (no
+  false-positive on "test"), evidence-source priority (NASIS
+  pediagfeatures > phpvsf > designation), and the integration with
+  argillic_usda routing.
+- 7 new tests in \code{tests/testthat/test-v0928-classify-all.R}
+  covering the wrapper API (subset, error handling, summary shape).
+- 8 new tests in
+  \code{tests/testthat/test-v0929-neossolo-litolico-heuristic.R}
+  covering the FEBR-style shallow profile path, B-horizon
+  exclusion, deep profile rejection, contradictory non-rock
+  material rejection, and the classify_sibcs end-to-end integration.
+
+Full suite: 2 976 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK
+(0 errors / 0 warnings / 0 notes).
+
 # soilKey 0.9.27 (2026-05-03)
 
 The "clay-illuviation evidence test + Embrapa benchmark fix +

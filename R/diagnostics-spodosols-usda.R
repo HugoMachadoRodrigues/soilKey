@@ -94,11 +94,18 @@ placic_horizon_usda <- function(pedon, max_top_cm = 100) {
 #' Pass when a horizon has fragic soil properties:
 #' \itemize{
 #'   \item rupture_resistance class >= "firm" (firm, very firm,
-#'         extremely firm); AND
-#'   \item brittle manner of failure (proxy: not in schema; v0.8
-#'         uses rupture-resistance as primary indicator).
+#'         extremely firm); OR
+#'   \item NASIS pediagfeatures has a "Fragipan" entry (v0.9.31:
+#'         the surveyor's field-identified fragipan -- direct evidence,
+#'         used as a tie-breaker when rupture_resistance is missing
+#'         from the lab data); AND
+#'   \item thickness >= 15 cm.
 #' }
-#' Plus thickness >= 15 cm.
+#' KSSL pedons rarely carry rupture_resistance; NASIS pediagfeatures
+#' carries 13 500 entries including "Fragipan" tags from surveyors.
+#' v0.9.31 adds the NASIS path so fragipan can be detected on KSSL+
+#' NASIS pedons (closing the Fragiudults / Fragiudalfs / Fragiaqualfs
+#' confusion documented in the v0.9.25 Great Group analysis).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 100.
@@ -111,16 +118,27 @@ fragipan_usda <- function(pedon, max_top_cm = 100) {
   miss <- if (all(is.na(rr))) "rupture_resistance" else character(0)
   firm_classes <- c("firm", "very firm", "extremely firm")
   passing <- cand[!is.na(rr) & tolower(rr) %in% firm_classes]
-  thk <- if (length(passing) > 0L)
-           sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
-                 na.rm = TRUE)
-         else 0
-  passed <- thk >= 15
+  thk_lab <- if (length(passing) > 0L)
+               sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
+                     na.rm = TRUE)
+             else 0
+  passed_lab <- thk_lab >= 15
+
+  # v0.9.31: NASIS pediagfeatures Fragipan flag.
+  nasis_fragipan <- .has_nasis_feature(pedon, "fragipan")
+
+  passed <- isTRUE(passed_lab) || isTRUE(nasis_fragipan)
+  evidence_source <- if (isTRUE(passed_lab)) "rupture_resistance"
+                     else if (isTRUE(nasis_fragipan)) "nasis_pediagfeatures"
+                     else NA_character_
+
   DiagnosticResult$new(
     name = "fragipan_usda", passed = passed, layers = passing,
-    evidence = list(thickness_cm = thk, max_top_cm = max_top_cm,
-                      note = "v0.8: brittleness inferred from rupture_resistance"),
-    missing = miss,
+    evidence = list(thickness_cm = thk_lab, max_top_cm = max_top_cm,
+                      nasis_fragipan_flag = nasis_fragipan,
+                      evidence_source = evidence_source,
+                      note = "v0.9.31: NASIS pediagfeatures Fragipan accepted as tie-breaker"),
+    missing = if (isTRUE(passed)) character(0) else miss,
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 38"
   )
 }

@@ -64,16 +64,21 @@ test_that("clay-films-test PASSES with clay_films but NO pediagfeatures", {
 
 # ---- Indeterminate: no evidence at all -----------------------------------
 
-test_that("clay-films-test returns NA when both slots empty", {
+test_that("clay-films-test returns FALSE when no NASIS, no t-designation", {
+  # v0.9.28: when designations are present but lack 't' suffix, the
+  # designation-proxy path produces FALSE (not NA), because the
+  # surveyor described the horizons but did not identify any as
+  # clay-illuvial. NA is only for completely-absent designation +
+  # NASIS data.
   p <- PedonRecord$new(
     site = list(id = "p5", lat = 0, lon = 0, country = "US"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 60),
-                      designation = c("A", "Bt"),
+                      designation = c("A", "Bw"),  # no t-suffix
                       clay_pct = c(15, 25))
   )
   res <- argillic_clay_films_test(p)
-  expect_true(is.na(res$passed))
-  expect_true("nasis_diagnostic_features" %in% res$missing)
+  expect_false(isTRUE(res$passed))
+  expect_false(is.na(res$passed))
 })
 
 
@@ -119,13 +124,15 @@ test_that("argillic_usda uses KST thresholds when clay-films evidence present", 
 })
 
 test_that("argillic_usda uses WRB thresholds when no clay-films evidence", {
-  # Same +3.7 pp profile but WITHOUT clay-films evidence -> WRB rejects.
+  # v0.9.28: must use a designation WITHOUT 't' suffix to avoid the
+  # designation-based clay-films proxy. 'Bw' (cambic-suffix) does
+  # not imply clay illuviation, so the proxy stays FALSE.
   p <- PedonRecord$new(
     site = list(id = "p8", lat = 0, lon = 0, country = "US"),
     horizons = mk_h(
       top_cm      = c(0,  10, 30),
       bottom_cm   = c(10, 30, 60),
-      designation = c("A", "E", "Bt"),
+      designation = c("A", "E", "Bw"),     # no 't' suffix
       clay_pct    = c(10, 8.6, 12.3),
       silt_pct    = c(40, 35, 30),
       sand_pct    = c(50, 56.4, 57.7),
