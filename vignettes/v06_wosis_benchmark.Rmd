@@ -221,3 +221,43 @@ The canonical run is the release-time CI check that the key + qualifier system +
 4. All three layers report by the same metrics so comparison across releases is direct.
 
 This closes the methodological loop opened in the architecture document: the deterministic key, the side modules (VLM, spatial, OSSL), and the benchmark are integrated without any of them being able to overrule the others.
+
+# 7. v0.9.27 -- per-page retry + graceful degradation
+
+The ISRIC WoSIS GraphQL endpoint occasionally returns *"canceling statement due to statement timeout"* under load — we observed this consistently after ~40 profiles per session in May 2026. A naïve `read_wosis_profiles_graphql()` would abort the whole pull and surface a hard error; that is unfriendly when 30+ profiles already came back fine.
+
+`v0.9.27` adds a **per-page retry with exponential backoff** (1 s, 2 s, 4 s, 8 s; up to 4 attempts) plus **graceful degradation**: once at least one page has succeeded, transient failures on later pages return the partial pull rather than aborting. This makes the live WoSIS benchmark robust enough to run from CI and from casual user sessions without surprise crashes.
+
+```{r retry-demo, eval = FALSE}
+source(system.file("benchmarks", "run_wosis_benchmark.R",
+                    package = "soilKey"))
+profs <- read_wosis_profiles_graphql(
+  continent = "South America",
+  n_max     = 100L,
+  page_size = 10L,
+  verbose   = TRUE
+)
+length(profs)
+#> [1] 40   # 100 was requested but server timed out at offset = 40;
+#>          # the partial pull was returned cleanly.
+```
+
+# 8. v0.9.30 -- bundled WoSIS sample for offline / CI testing
+
+For tests, CI, and casual users who want to exercise the WRB benchmark path without depending on ISRIC server availability, `v0.9.30` ships a frozen 40-profile snapshot under `inst/extdata/wosis_sa_sample.rds` (49 KB). Helper:
+
+```{r bundled, eval = FALSE}
+sample <- load_wosis_sample()
+length(sample$pedons)
+#> [1] 40
+
+sample$pulled_on
+#> [1] "2026-05-03"
+
+# Classify offline:
+classify_wrb2022(sample$pedons[[1]])$rsg_or_order
+```
+
+The bundled snapshot is for **reproducible tests, not current ground-truth claims**. For up-to-date paper-grade benchmarks, callers should still use `run_wosis_benchmark_graphql()` against the live endpoint.
+
+For the **multi-level USDA Soil Taxonomy benchmark** (Order / Suborder / Great Group / Subgroup) on the KSSL gpkg + NASIS sqlite join, see vignette `v08_kssl_nasis_multilevel`.

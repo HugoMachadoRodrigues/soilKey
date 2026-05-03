@@ -1,3 +1,36 @@
+# soilKey 0.9.32 (2026-05-03)
+
+The "vignettes refresh" release. Documentation-only update covering
+the v0.9.24-v0.9.31 release series.
+
+## A. v06_wosis_benchmark.Rmd updated
+
+Two new sections:
+
+* **§7 v0.9.27 -- per-page retry + graceful degradation**: documents
+  the 1s/2s/4s/8s exponential backoff and partial-pull behaviour for
+  ISRIC GraphQL timeouts, with a runnable example.
+* **§8 v0.9.30 -- bundled WoSIS sample for offline / CI testing**:
+  documents `load_wosis_sample()` and the
+  `inst/extdata/wosis_sa_sample.rds` snapshot.
+
+## B. NEW v08_kssl_nasis_multilevel.Rmd
+
+A dedicated vignette for the headline real-data benchmark:
+
+* the KSSL + NASIS join via `load_kssl_pedons_with_nasis()` and the
+  attribute coverage on the 2021 NASIS snapshot;
+* the four levels of `benchmark_run_classification()` with code
+  examples (Order / Suborder / Great Group / Subgroup);
+* the v0.9.31 headline numbers at large scale (n=2638, ±1.7 pp CI):
+  Order 34.19 %, Suborder 13.85 %, Great Group 7.94 %, Subgroup
+  4.17 %;
+* a release-by-release trajectory table v0.9.22 -> v0.9.31 showing
+  the cumulative Great Group lift and the v0.9.25 KST canonicaliser
+  story (16 pre-13ed -> KST 13ed name pairs documented);
+* roadmap for the remaining gaps (Pale-/Glossic prefixes, NASIS data
+  sparsity, Endo/Epi-aquic precise distinction).
+
 # soilKey 0.9.31 (2026-05-03)
 
 The "specialised Great Group tests" release. Two GG diagnostics
