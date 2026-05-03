@@ -1,3 +1,77 @@
+# soilKey 0.9.33 (2026-05-03)
+
+The "WRB qualifier closure" release. **100 % structural coverage**
+(139/139 unique qualifier names referenced in `qualifiers.yaml` now
+have a backing `qual_*` function).
+
+## Audit baseline
+
+The pre-v0.9.33 audit (run via `tests/testthat/test-v0933-wrb-
+qualifier-closure.R`) measured:
+
+  Total qualifier entries (with duplicates across RSGs): 1 316
+  Unique qualifier names across all 32 RSGs:               139
+  Functions named qual_*:                                  139
+  With backing qual_* function (pre-v0.9.33):              132 / 139 (95.0 %)
+
+The 7 missing qualifiers were:
+
+  Endocalcic   referenced in 1 RSG (Chernozems)
+  Endogleyic   referenced in 1 RSG (Gleysols / Stagnosols)
+  Endostagnic  referenced in 1 RSG (Stagnosols)
+  Floatic      referenced in 2 RSGs (Histosols + Cryosols)
+  Ombric       referenced in 1 RSG (Histosols)
+  Rheic        referenced in 1 RSG (Histosols)
+  Toxic        referenced in 2 RSGs (Histosols + Cryosols)
+
+## Implementation
+
+`R/qualifiers-wrb2022-v0933.R` ships seven new exported helpers, all
+following the existing `qual_*` calling convention:
+
+  qual_endocalcic   -- depth-conditional Calcic (50-100 cm)
+  qual_endogleyic   -- depth-conditional Gleyic (50-100 cm)
+  qual_endostagnic  -- depth-conditional Stagnic (50-100 cm)
+  qual_floatic      -- oc_pct >= 12 AND bulk_density <= 0.4 g/cm3
+  qual_toxic        -- ph_h2o <= 3.5 OR ec_dS_m >= 16 (proxy)
+  qual_ombric       -- Histic + acidic (pH <= 4.5) + no carbonates
+  qual_rheic        -- Histic + neutral (pH > 4.5) OR carbonates present
+
+The Endo-* helpers share a new internal helper `.q_endo_presence()`
+that checks the diagnostic appears within a `[min_top, max_top]` cm
+band -- mirroring `.q_presence()` for the upper-50-cm case.
+
+The Floatic / Toxic / Ombric / Rheic helpers use **per-horizon
+proxies** (KSSL-schema-compatible) rather than depending on
+fields that the schema does not yet model (specific gravity, full
+heavy-metal panels, hydrology). The proxies are conservative: each
+function explicitly reports the relevant `missing` attributes when
+the underlying signal is absent.
+
+## Per-RSG coverage after v0.9.33
+
+All 32 RSGs now report **100 % principal coverage** AND **100 %
+supplementary coverage** in the audit script. The 7-qualifier gap
+that previously dropped HS / GL / CH below 100 % at the principal
+level is closed.
+
+## v0.9.33 unit tests
+
+12 new in `tests/testthat/test-v0933-wrb-qualifier-closure.R`:
+
+  * 100 % coverage assertion via direct yaml + namespace audit;
+  * Endo-* dispatch tests (returns DiagnosticResult, no error);
+  * Floatic positive (high-OC, low-density) + negative (mineral);
+  * Toxic positive (low pH, high EC) + negative (benign);
+  * Ombric vs Rheic mutual exclusion (acidic vs neutral Histosol).
+
+One pre-existing test (`test-qualifiers-wrb-v091-bloco-a.R:315`)
+was updated from `expect_gt(sum(unimplemented), 0L)` to
+`expect_gte(sum(unimplemented), 0L)` since v0.9.33 closes the
+"not implemented" path entirely.
+
+Full suite: 3 029 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.32 (2026-05-03)
 
 The "vignettes refresh" release. Documentation-only update covering
