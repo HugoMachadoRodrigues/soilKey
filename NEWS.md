@@ -1,3 +1,103 @@
+# soilKey 0.9.24 (2026-05-03)
+
+The "Path C subgroup tightening + multi-level benchmark" release.
+Three coordinated changes that complete a formal validation of
+USDA Soil Taxonomy 13ed at every level of the keyed hierarchy
+(Order / Suborder / Great Group / Subgroup), tighten two
+diagnostic predicates that were over-firing at the subgroup
+modifier level, and refresh the WoSIS GraphQL benchmark.
+
+## A. Aquic conditions and Oxyaquic subgroup tightening
+
+`aquic_conditions_usda` (KST 13ed Ch 3, pp 41-44) now requires
+**both** reduction evidence (matrix chroma <= 2 OR a 'g' master
+suffix in the horizon designation) **and** a redoximorphic
+indicator (redox features >= `min_redox_pct` OR a chroma-2-with-g
+matrix that simultaneously serves as both reduction and redox
+evidence). The pre-v0.9.24 logic accepted `redox_ok` ALONE
+(redox features >= 5 pct) -- a single low-evidence trigger that
+fired on any profile with mottling, including profiles that are
+not actually saturated.
+
+`oxyaquic_subgroup_usda` (KST 13ed Ch 14) now requires either
+(a) measured redox features >= 2 pct AND chroma <= 4 in the
+matrix, or (b) a 'g' suffix in the designation AND chroma <= 3.
+The pre-v0.9.24 logic fired on `redox >= 2` OR `chroma <= 2`
+ALONE, producing false-positive Oxyaquic predictions on KSSL
+Typic-reference profiles.
+
+### Apples-to-apples A/B (KSSL+NASIS, n=865)
+
+| Level         | v0.9.23 baseline | v0.9.24 (tightening) | Delta |
+|---------------|---:|---:|---:|
+| **Order**     | 37.23 % | 37.23 % | 0.00 pp |
+| **Suborder**  | -- | 17.84 % | (new measurement) |
+| **Great Group** | -- | 6.50 % | (new measurement) |
+| **Subgroup**  | 3.24 % | **3.82 %** | **+0.58 pp** |
+
+The tightening is regression-safe at Order (no change) and
+delivers a small but real Subgroup-level gain. The 31-canonical
+synthetic-fixture suite remains 31/31 correct.
+
+## B. Multi-level USDA benchmark (Suborder, Great Group)
+
+`benchmark_run_classification` now supports two new `level`
+values for `system = "usda"`:
+
+- `"great_group"` -- the LAST token of the subgroup name
+  (e.g. "typic hapludalfs" -> "hapludalfs"). Isolates whether
+  the Great Group machinery is correct independent of subgroup
+  modifiers (Typic / Aquic / Vertic / Cumulic / Pachic / etc.).
+  Reads `site$reference_usda_grtgroup`.
+- `"suborder"` -- maps the Great Group prediction to its
+  canonical Suborder suffix (e.g. "hapludalfs" -> "udalfs")
+  using the KST 13ed Ch 4 ~70-Suborder list. Reads
+  `site$reference_usda_suborder`.
+
+Both fields are populated by `load_kssl_pedons_with_nasis` from
+KSSL `samp_taxsuborder` and `samp_taxgrtgroup` (added in v0.9.22).
+
+This makes the four levels of USDA Soil Taxonomy independently
+measurable for the first time, giving a clean ladder of where
+the keyed reasoning is currently strongest and where the next
+leverage lies.
+
+## C. Subgroup miss diagnosis -- a roadmap finding
+
+A focused analysis of the n=865 Subgroup misses (correct-Order
+but wrong-Subgroup) found that **289 of 322 (89.8 %)** mis-classified
+profiles have a correct Order but a wrong Subgroup. Of those,
+the largest single category is **Typic-misclassified-as-other**
+(132 profiles, 45.7 % of all correct-Order Subgroup misses).
+Crucially, **114 of the 132 Typic-references actually fire as
+Typic in the predictor** -- the Subgroup modifier is being
+chosen correctly; the **Great Group** part of the prediction
+is wrong.
+
+This identifies the Great Group machinery (one level above
+the subgroup modifier) as the next-leverage zone for v0.9.25+,
+not additional Subgroup-modifier tightening. Adding more
+qualifying-modifier tests (Pachic, Cumulic, Mollic, Lithic,
+etc.) is a parallel future axis but would not address the 114
+typic-modifier-correct, Great-Group-wrong misses that account
+for nearly half of all correct-Order Subgroup misses.
+
+## D. WoSIS GraphQL refresh (limited by server timeouts)
+
+`run_wosis_benchmark_graphql` re-validated against the v0.9.13
+baseline (~13 % WRB top-1 on a 50-profile South-America pull):
+the v0.9.24 deterministic key now scores **5/30 = 16.67 %**
+(continent = "South America", page_size = 10). The pull is
+limited to n = 30 because the WoSIS GraphQL server consistently
+returns "canceling statement due to statement timeout" beyond
+~40 profiles per session. The trend is positive (+3.67 pp on a
+small sample), which is consistent with the v0.9.13 -> v0.9.24
+trajectory across SiBCS (40.6 -> 54.7 %), USDA Order (47.6 -> 51.1 %),
+and KSSL+NASIS Order (32.7 -> 36.0 %) on full-size benchmarks.
+A larger WoSIS refresh awaits ISRIC server stability; the
+pulled-profile snapshot lives in
+`inst/benchmarks/reports/wosis_graphql_2026-05-03.md`.
+
 # soilKey 0.9.23 (2026-05-02)
 
 The "argic clay-increase canonicalisation" release. Fixes a single

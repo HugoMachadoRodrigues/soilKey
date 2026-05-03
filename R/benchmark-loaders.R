@@ -244,6 +244,48 @@ load_embrapa_pedons <- function(csv_path, head = NULL, verbose = TRUE) {
 }
 
 
+# v0.9.24: Map USDA Great Group -> Suborder by canonical suffix.
+# KST 13ed Ch 4 (Order key, p 65-72) defines ~70 Suborders. Each
+# Great Group name ends with the Suborder name (e.g. "hapludalfs"
+# = Hap + udalfs, where "udalfs" is the Suborder). We match the
+# suffix against the canonical list.
+.gg_to_suborder <- function(gg) {
+  if (length(gg) == 0L) return(character(0))
+  suborders <- c(
+    # Alfisols
+    "aqualfs","cryalfs","udalfs","ustalfs","xeralfs",
+    # Andisols
+    "aquands","cryands","gelands","torrands","udands","ustands","vitrands","xerands",
+    # Aridisols
+    "argids","calcids","cambids","cryids","durids","gypsids","salids",
+    # Entisols
+    "aquents","arents","fluvents","orthents","psamments",
+    # Gelisols
+    "histels","orthels","turbels",
+    # Histosols
+    "fibrists","folists","hemists","saprists","wassists",
+    # Inceptisols
+    "anthrepts","aquepts","cryepts","gelepts","udepts","ustepts","xerepts",
+    # Mollisols
+    "albolls","aquolls","cryolls","gelolls","rendolls","udolls","ustolls","xerolls","borolls",
+    # Oxisols
+    "aquox","perox","torrox","udox","ustox",
+    # Spodosols
+    "aquods","cryods","gelods","humods","orthods",
+    # Ultisols
+    "aquults","humults","udults","ustults","xerults",
+    # Vertisols
+    "aquerts","cryerts","torrerts","uderts","usterts","xererts"
+  )
+  out <- rep(NA_character_, length(gg))
+  for (so in suborders) {
+    hit <- !is.na(gg) & is.na(out) & endsWith(gg, so)
+    out[hit] <- so
+  }
+  out
+}
+
+
 #' Run a benchmark across one of the loaded pedon lists
 #'
 #' Classifies each pedon in \code{pedons} against the named system,
@@ -265,7 +307,18 @@ load_embrapa_pedons <- function(csv_path, head = NULL, verbose = TRUE) {
 #'     \item \code{"subordem"} -- SiBCS-only, the 2nd-level
 #'           "Ordem + Subordem" (e.g. "Latossolos Vermelhos").
 #'           Comparison via the first two normalised tokens of the
-#'           predicted name vs the reference.
+#'           predicted name vs the reference;
+#'     \item \code{"great_group"} (USDA, v0.9.24) -- the LAST token
+#'           of the subgroup name (e.g. \code{"typic hapludalfs"} ->
+#'           \code{"hapludalfs"}). Isolates whether the Great Group
+#'           machinery is correct independent of subgroup modifiers
+#'           (Typic / Aquic / Vertic / Cumulic / Pachic / etc.).
+#'           Reads \code{site$reference_usda_grtgroup};
+#'     \item \code{"suborder"} (USDA, v0.9.24) -- maps the Great
+#'           Group prediction to its canonical Suborder suffix
+#'           (\code{"hapludalfs"} -> \code{"udalfs"}) using the
+#'           KST 13ed Ch 4 ~70-Suborder list. Reads
+#'           \code{site$reference_usda_suborder}.
 #'   }
 #' @param boot_n Bootstrap replicates for CI (default 1000).
 #' @return A list with elements \code{accuracy_top1},
@@ -277,20 +330,25 @@ benchmark_run_classification <- function(pedons,
                                             system = c("wrb2022",
                                                        "sibcs", "usda"),
                                             level  = c("order", "subgroup",
-                                                       "subordem"),
+                                                       "subordem",
+                                                       "great_group",
+                                                       "suborder"),
                                             boot_n = 1000L) {
   system <- match.arg(system)
   level  <- match.arg(level)
-  # v0.9.22: USDA subgroup-level benchmark uses
-  # `reference_usda_subgroup` (populated by load_kssl_pedons_gpkg
-  # from KSSL `samp_taxsubgrp`). Falls back to `reference_usda` if
-  # the subgroup field is absent.
+  # v0.9.22 / v0.9.24: USDA subgroup / great_group / suborder
+  # benchmarks read distinct reference fields populated by
+  # `load_kssl_pedons_gpkg` from KSSL `samp_taxsubgrp`,
+  # `samp_taxgrtgroup`, `samp_taxsuborder`. Each level falls back to
+  # the Order reference if the more-specific field is missing.
   ref_field <- switch(system,
                         wrb2022 = "reference_wrb",
                         sibcs   = "reference_sibcs",
-                        usda    = if (level == "subgroup")
-                                    "reference_usda_subgroup"
-                                  else "reference_usda")
+                        usda    = switch(level,
+                                          subgroup    = "reference_usda_subgroup",
+                                          great_group = "reference_usda_grtgroup",
+                                          suborder    = "reference_usda_suborder",
+                                          "reference_usda"))
   classify <- switch(system,
                        wrb2022 = function(p) classify_wrb2022(p,
                                                                 on_missing = "silent"),
@@ -350,6 +408,47 @@ benchmark_run_classification <- function(pedons,
         else if (length(toks) == 1L) toks[1]
         else NA_character_
       }, character(1))
+    }
+  } else if (level == "great_group") {
+    # v0.9.24: USDA Great Group is the LAST word of the subgroup
+    # name (e.g. "typic hapludalfs" -> "hapludalfs"). Comparing at
+    # this level isolates whether the Great Group machinery (one
+    # level above subgroup) is correct independent of subgroup
+    # modifiers like Typic / Aquic / Vertic / Cumulic.
+    pred_col <- "pred"
+    .norm <- function(x) {
+      v <- as.character(x)
+      v <- gsub("\\s*\\(.*$", "", v)
+      v <- tolower(trimws(v))
+      v <- gsub("\\s+", " ", v)
+      vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
+        if (length(toks) == 0L) NA_character_
+        else toks[length(toks)]
+      }, character(1))
+    }
+  } else if (level == "suborder") {
+    # v0.9.24: USDA Suborder = stem of the Great Group, dropping the
+    # Great Group prefix. KSSL `samp_taxsuborder` ships clean
+    # ("aquolls", "udolls", "borolls"). Comparison takes the last
+    # token of the predicted name (Great Group, e.g.
+    # "calciaquolls") and reduces to its Suborder suffix
+    # ("aquolls"). KST 13ed Suborders all end in a 4-6 char suffix
+    # that is the Suborder name itself; we strip the Great Group
+    # prefix by matching against the canonical Suborder name list.
+    pred_col <- "pred"
+    .norm <- function(x) {
+      v <- as.character(x)
+      v <- gsub("\\s*\\(.*$", "", v)
+      v <- tolower(trimws(v))
+      v <- gsub("\\s+", " ", v)
+      gg <- vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
+        if (length(toks) == 0L) NA_character_
+        else toks[length(toks)]
+      }, character(1))
+      # Map Great Group -> Suborder by suffix: take the trailing
+      # 4-7 character group that begins with one of the known
+      # Suborder roots (KST 13ed Ch 4 Order key, ~70 Suborders).
+      .gg_to_suborder(gg)
     }
   }
   per_pedon$ref      <- .norm(per_pedon$ref)
