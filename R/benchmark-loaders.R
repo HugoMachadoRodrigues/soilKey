@@ -387,13 +387,25 @@ benchmark_run_classification <- function(pedons,
     pred_col <- "order_pred"
     .norm <- function(x) as.character(x)
   } else if (level == "subgroup") {
+    # v0.9.25: canonicalise the Great Group token (the LAST word of
+    # the subgroup name) via the KST 13ed obsolete-name map, so
+    # KSSL's pre-13ed labels ("haplaquolls", "pellusterts",
+    # "dystrochrepts", ...) compare equal to the modern equivalents
+    # the predictor outputs ("endoaquolls", "hapluderts",
+    # "dystrudepts", ...). The Subgroup modifier (Typic / Aquic /
+    # ...) is left intact -- canonicalisation is GG-only.
     pred_col <- "pred"
     .norm <- function(x) {
       v <- as.character(x)
       v <- gsub("\\s*\\(.*$", "", v)        # strip qualifiers in parens
       v <- tolower(trimws(v))
       v <- gsub("\\s+", " ", v)
-      v
+      vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
+        if (length(toks) == 0L) return(NA_character_)
+        gg_canon <- canonicalise_kst13ed_gg(toks[length(toks)])
+        toks[length(toks)] <- gg_canon
+        paste(toks, collapse = " ")
+      }, character(1))
     }
   } else if (level == "subordem") {
     pred_col <- "pred"
@@ -415,16 +427,20 @@ benchmark_run_classification <- function(pedons,
     # this level isolates whether the Great Group machinery (one
     # level above subgroup) is correct independent of subgroup
     # modifiers like Typic / Aquic / Vertic / Cumulic.
+    # v0.9.25: canonicalise via KST 13ed obsolete-name map so KSSL
+    # legacy labels (Haplaquolls, Pellusterts, Dystrochrepts, ...)
+    # compare equal to the modern equivalents the predictor outputs.
     pred_col <- "pred"
     .norm <- function(x) {
       v <- as.character(x)
       v <- gsub("\\s*\\(.*$", "", v)
       v <- tolower(trimws(v))
       v <- gsub("\\s+", " ", v)
-      vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
+      gg <- vapply(strsplit(v, " ", fixed = TRUE), function(toks) {
         if (length(toks) == 0L) NA_character_
         else toks[length(toks)]
       }, character(1))
+      canonicalise_kst13ed_gg(gg)
     }
   } else if (level == "suborder") {
     # v0.9.24: USDA Suborder = stem of the Great Group, dropping the

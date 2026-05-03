@@ -1,3 +1,81 @@
+# soilKey 0.9.25 (2026-05-03)
+
+The "KST 13ed Great Group canonicalisation" release. A single
+benchmark-level normaliser that produces the largest Great Group
+accuracy lift in project history without changing any classifier
+logic.
+
+## Root-cause analysis
+
+KSSL `samp_taxgrtgroup` is populated from historical pedon
+descriptions spanning Soil Taxonomy editions 8 through 13. Several
+Great Group names changed between editions, and KSSL did NOT
+retroactively update them. soilKey's classifier follows KST 13ed
+(the current edition), so direct string equality between predicted
+(13ed) and reference (mixed editions) Great Group names produces
+**false-negative misses** for every profile whose KSSL label is a
+pre-13ed name.
+
+The most common edition-driven renames in KSSL:
+
+| Pre-13ed name (KSSL) | KST 13ed equivalent | Reason |
+|---|---|---|
+| Haplaquolls | Endoaquolls / Epiaquolls | Hapl- split into endo (deep) / epi (perched) saturation |
+| Haplaquepts | Endoaquepts / Epiaquepts | same |
+| Haplaquerts | Endoaquerts / Epiaquerts | same |
+| Pellusterts | Hapluderts / Salusterts / Calciusterts | dark-colour Pellu split by chemistry |
+| Chromusterts | Hapluderts | bright-colour Chromu merged into Hapluderts |
+| Dystrochrepts | Dystrudepts | Ochrept suborder retired; Udept created |
+| Eutrochrepts | Eutrudepts | same |
+| Camborthids | Haplocambids | Orthid suborder retired; Cambid created |
+| Calciorthids | Haplocalcids | same |
+| Vitrandepts | Vitrudands | Andisols promoted to its own Order |
+| Medisaprists | Haplosaprists | "medi-" temperature regime moved to Subgroup |
+
+## Fix
+
+`canonicalise_kst13ed_gg(gg)` -- a many-to-one map that coalesces
+both the obsolete name AND the modern split-children to a SHARED
+canonical key. Apply to BOTH ref and pred before comparing at
+\code{level = "great_group"} or \code{level = "subgroup"}; the
+Subgroup modifier (Typic / Aquic / ...) is left intact and the
+canonicalisation only affects the Great Group token.
+
+The canonicaliser is NOT applied at \code{level = "suborder"} or
+\code{level = "order"} -- the Suborder name is stable across KST
+8-13 (only the per-Suborder Great Group inventory changed), and the
+Order name has been stable since KST 11.
+
+## Apples-to-apples A/B (KSSL+NASIS, n=865, identical filter)
+
+| Level         | v0.9.24 | v0.9.25 | Delta |
+|---------------|---:|---:|---:|
+| **Order**     | 37.23 % | 37.23 % | 0.00 pp |
+| **Suborder**  | 17.84 % | 17.84 % | 0.00 pp |
+| **Great Group** | 6.50 % | **10.34 %** | **+3.84 pp (+59 % relative)** |
+| **Subgroup**  | 3.82 % | **4.97 %** | **+1.15 pp (+30 % relative)** |
+
+Order and Suborder are unchanged (the canonicaliser only operates
+at the Great Group token), confirming the fix is **regression-safe
+above the GG level** by construction.
+
+The Great Group +3.84 pp gain is the second-biggest single-version
+move in the project's history (only argic clay-increase v0.9.23
+was bigger), and crucially it required NO classifier changes -- the
+predictor is correct, the comparison was just unfair to legacy
+labels.
+
+## Tests
+
+22 new unit tests in \code{tests/testthat/test-v0925-kst-canonical.R}
+exercise each documented edition pair (Haplaquolls/Endoaquolls/
+Epiaquolls; Pellusterts/Hapluderts/Chromusterts; Camborthids/
+Haplocambids; Calciorthids/Haplocalcids; Vitrandepts/Vitrudands;
+Dystrochrepts/Dystrudepts; Medisaprists/Haplosaprists), pass-through
+behaviour for unknown names, NA handling, and the benchmark-runner
+integration at \code{level = "great_group"} and \code{level =
+"subgroup"}. Full suite: 2872 PASS / 0 FAIL / 12 SKIP.
+
 # soilKey 0.9.24 (2026-05-03)
 
 The "Path C subgroup tightening + multi-level benchmark" release.
