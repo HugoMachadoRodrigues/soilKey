@@ -97,29 +97,40 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 
 # =========================================================== argic sub-tests ====
 
-#' Test the argic clay-increase criterion (WRB 2022)
+#' Test the argic / argillic clay-increase criterion
 #'
-#' Tests every consecutive pair of horizons in the profile against the
-#' WRB 2022 (4th ed., Chapter 3.1.3, criterion 2.a.iv-vi) clay-increase
-#' rules. v0.3.1 brings these into compliance with the actual text
-#' (earlier versions used loosened thresholds 3/1.2/8 from older WRB
-#' editions):
-#' \itemize{
-#'   \item overlying clay < 15\%: argic horizon must contain at least
-#'         **6\% (absolute)** more clay;
-#'   \item overlying clay 15 to <50\%: argic / overlying clay ratio
-#'         must be **>= 1.4**;
-#'   \item overlying clay >= 50\%: argic must contain at least
-#'         **20\% (absolute)** more clay.
+#' Tests every horizon in the profile against the clay-increase rules
+#' of either WRB 2022 (default, \code{system = "wrb2022"}) or USDA Soil
+#' Taxonomy 13th edition (\code{system = "usda"}). The two systems
+#' use the SAME structural rule (three brackets keyed on overlying
+#' eluvial clay percent) but DIFFERENT thresholds:
+#'
+#' \tabular{lll}{
+#'   \strong{Eluvial clay} \tab \strong{WRB 2022 argic} \tab \strong{KST 13ed argillic} \cr
+#'   \code{< 15\%}     \tab \code{>= +6 pp absolute}    \tab \code{>= +3 pp absolute} \cr
+#'   \code{15-X\%}     \tab \code{>= 1.4x ratio} (X=50) \tab \code{>= 1.2x ratio} (X=40) \cr
+#'   \code{>= X\%}     \tab \code{>= +20 pp absolute}   \tab \code{>= +8 pp absolute}
 #' }
+#'
+#' KST 13ed thresholds are taken from Chapter 3, "Argillic horizon"
+#' (p. 4); WRB 2022 thresholds from Chapter 3.1.3, "Argic horizon"
+#' (p. 36). v0.9.26 introduces the per-system switch -- earlier
+#' versions used WRB thresholds for both systems, which under-detected
+#' the argillic horizon in KSSL profiles where clay increase is in
+#' the 1.2-1.4 ratio band or +3 to +6 pp absolute band.
+#'
 #' Returns the indices of horizons that satisfy as argic candidates.
 #'
 #' @param h Horizons data.table (canonical schema).
+#' @param system One of \code{"wrb2022"} (default) or \code{"usda"}.
+#'        Selects the threshold set.
 #' @return Sub-test result list.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
-#'   horizon, criteria 2.a.iv-vi (p. 36).
+#'   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
+#'   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 #' @export
-test_clay_increase_argic <- function(h) {
+test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
+  system <- match.arg(system)
   if (nrow(h) < 2L) {
     return(.subtest_result(
       passed = FALSE,
@@ -168,12 +179,24 @@ test_clay_increase_argic <- function(h) {
 
     eval_rule <- function(above) {
       if (is.na(above)) return(list(passed = FALSE, rule = "NA above"))
-      rule_label <- if (above < 15)      "<15%: +6pp absolute"
-                    else if (above < 50) "15 to <50%: ratio >= 1.4"
-                    else                 ">=50%: +20pp absolute"
-      passed_rule <- if (above < 15)      here - above >= 6
-                     else if (above < 50) here / above >= 1.4
-                     else                 here - above >= 20
+      # Per-system thresholds. WRB 2022 (4th ed Ch 3.1.3 p 36) is
+      # stricter; KST 13ed (Ch 3 p 4) is looser by design (USDA
+      # argillic includes more profiles than WRB argic).
+      if (system == "usda") {
+        rule_label <- if (above < 15)      "<15%: +3pp absolute"
+                      else if (above < 40) "15 to <40%: ratio >= 1.2"
+                      else                 ">=40%: +8pp absolute"
+        passed_rule <- if (above < 15)      here - above >= 3
+                       else if (above < 40) here / above >= 1.2
+                       else                 here - above >= 8
+      } else {
+        rule_label <- if (above < 15)      "<15%: +6pp absolute"
+                      else if (above < 50) "15 to <50%: ratio >= 1.4"
+                      else                 ">=50%: +20pp absolute"
+        passed_rule <- if (above < 15)      here - above >= 6
+                       else if (above < 50) here / above >= 1.4
+                       else                 here - above >= 20
+      }
       list(passed = passed_rule, rule = rule_label)
     }
     chk_min <- eval_rule(above_min)

@@ -7,7 +7,7 @@
 benchmark_run_classification(
   pedons,
   system = c("wrb2022", "sibcs", "usda"),
-  level = c("order", "subgroup", "subordem"),
+  level = c("order", "subgroup", "subordem", "great_group", "suborder"),
   boot_n = 1000L
 )
 }
@@ -28,7 +28,18 @@ one of the \code{load_*} functions).}
   \item \code{"subordem"} -- SiBCS-only, the 2nd-level
         "Ordem + Subordem" (e.g. "Latossolos Vermelhos").
         Comparison via the first two normalised tokens of the
-        predicted name vs the reference.
+        predicted name vs the reference;
+  \item \code{"great_group"} (USDA, v0.9.24) -- the LAST token
+        of the subgroup name (e.g. \code{"typic hapludalfs"} ->
+        \code{"hapludalfs"}). Isolates whether the Great Group
+        machinery is correct independent of subgroup modifiers
+        (Typic / Aquic / Vertic / Cumulic / Pachic / etc.).
+        Reads \code{site$reference_usda_grtgroup};
+  \item \code{"suborder"} (USDA, v0.9.24) -- maps the Great
+        Group prediction to its canonical Suborder suffix
+        (\code{"hapludalfs"} -> \code{"udalfs"}) using the
+        KST 13ed Ch 4 ~70-Suborder list. Reads
+        \code{site$reference_usda_suborder}.
 }}
 
 \item{boot_n}{Bootstrap replicates for CI (default 1000).}

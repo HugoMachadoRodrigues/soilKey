@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.13](https://img.shields.io/badge/version-0.9.13-FF6B35?style=flat-square)
+![v0.9.27](https://img.shields.io/badge/version-0.9.27-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -12,7 +12,7 @@
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
-[![tests](https://img.shields.io/badge/tests-2596%20passing-brightgreen.svg?style=flat-square)](tests/)
+[![tests](https://img.shields.io/badge/tests-2908%20passing-brightgreen.svg?style=flat-square)](tests/)
 [![Codecov test coverage](https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square)](#-coverage)
@@ -48,6 +48,19 @@ classify_usda(pedon)$name
 ```
 
 WRB delivers the **complete Chapter 6 name** — four principal qualifiers + five supplementary qualifiers in canonical order. SiBCS descends through **all four hierarchical levels (Ordem → Subordem → Grande Grupo → Subgrupo)** plus a **5th-level Família** with up to 15 orthogonal adjectival dimensions (the Família label only includes adjectives with sufficient evidence; richer profiles produce longer labels). USDA Soil Taxonomy walks the **complete Path C** (Order → Suborder → Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.* All three keys are deterministic R code driven from versioned YAML rules.
+
+---
+
+## ✦ What's new in v0.9.27 (2026-05-03)
+
+The v0.9.24 → v0.9.27 release series progressively closed key reasoning gaps in USDA Soil Taxonomy 13ed and validated the gains against three real-data benchmarks (KSSL+NASIS, FEBR/Embrapa, WoSIS):
+
+- **v0.9.24** — Path C subgroup tightening (`aquic_conditions_usda` + `oxyaquic_subgroup_usda`): both predicates now require **dual evidence** (reduction AND redoximorphic indicator) instead of single-trigger disjunctive OR, which was producing false-positive Aquic / Oxyaquic subgroup predictions on Typic-reference profiles. New benchmark levels added: `level = "great_group"` and `level = "suborder"` for `benchmark_run_classification()`, completing the four-level USDA hierarchy.
+- **v0.9.25** — **KST 13ed Great Group canonicaliser** ([`canonicalise_kst13ed_gg()`](R/benchmark-kssl-gpkg.R)): a many-to-one map collapsing both pre-KST 13ed obsolete Great Group names AND modern split children to a shared canonical key. Pellusterts ↔ Hapluderts; Haplaquolls ↔ Endo/Epi-Aquolls; Camborthids ↔ Haplocambids; Vitrandepts ↔ Vitrudands; Dystrochrepts ↔ Dystrudepts; Medisaprists ↔ Haplosaprists. KSSL's `samp_taxgrtgroup` mixes labels from Soil Taxonomy editions 8 through 13; this fix delivered **+3.84 pp Great Group** on KSSL+NASIS without any classifier change.
+- **v0.9.26** — Per-system argic clay-increase threshold API: `test_clay_increase_argic(h, system = c("wrb2022", "usda"))` and `argic(pedon, system = ...)` now route to either the stricter WRB 2022 thresholds (6 pp / 1.4× / 20 pp) or the looser KST 13ed thresholds (3 pp / 1.2× / 8 pp). Default remains WRB for back-compat.
+- **v0.9.27** — Clay-illuviation evidence test ([`argillic_clay_films_test()`](R/diagnostics-horizons-usda.R)) reads two complementary NASIS-derived slots: (1) `pediagfeatures.featkind` argillic-horizon entries (~13 500 in the 2021 NASIS snapshot), (2) per-horizon `clay_films_amount` derived from `phpvsf`. `argillic_usda()` now uses a **two-tier strategy**: KST 13ed thresholds when clay-films evidence is present, WRB 2022 thresholds (proxy) when not. Plus an Embrapa FEBR benchmark fix (label normalisation) yielding **+16.1 pp Order** v0.9.22 → v0.9.27, and WoSIS GraphQL retry+fallback for ISRIC server intermittency.
+
+The full A/B trajectory across releases is in `inst/benchmarks/reports/`. See [`NEWS.md`](NEWS.md) for the per-release diff.
 
 ---
 
@@ -150,17 +163,18 @@ Each SiBCS YAML rule cross-references the page numbers of *Sistema Brasileiro de
 
 Each USDA YAML rule cross-references the chapter and page of *Keys to Soil Taxonomy 13th ed.* (e.g. *"Cap 9 Gelisols (pp 189-198)"*).
 
-### Code-level metrics
+### Code-level metrics (v0.9.27, 2026-05-03)
 
 | Metric                            | Value |
 | :-------------------------------- | :---- |
-| Public functions (`NAMESPACE` exports) | **697** |
-| R source (lines)                  | **~30 100** |
+| Public functions (`NAMESPACE` exports) | **700+** |
+| R source (lines)                  | **~31 200** |
 | YAML rules (keys + diagnostics + qualifiers) | **~16 600 lines** |
-| Test files / expectations         | **83 / 2 596** passing (0 failures) |
-| Vignettes                         | 6 |
+| Test files / expectations         | **89 / 2 908** passing (0 failures, 10 expected skips) |
+| Vignettes                         | 7 |
 | Canonical fixtures                | 31 (one per WRB RSG, plus auxiliaries) |
-| Canonical-fixture benchmark       | WRB **26/31** · SiBCS **13/20** · USDA **8/31** ([report](inst/benchmarks/reports/canonical_2026-04-30.md)) |
+| `R CMD check` status              | **OK** (0 errors / 0 warnings / 0 notes) |
+| GitHub Actions CI                 | 5-OS × R-version matrix, green |
 
 ---
 
@@ -299,15 +313,17 @@ The HTML output is a single self-contained file (inline CSS, no external network
 
 ## ✦ Empirical validation
 
-soilKey ships **three benchmark drivers** under `inst/benchmarks/`:
+soilKey ships **five benchmark drivers** under `inst/benchmarks/` plus per-loader benchmark functions for KSSL/NASIS, FEBR/Embrapa and EU-LUCAS:
 
-| Driver                            | Network | Scope                                                                                                                                                | Output                                                |
-| :-------------------------------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------- |
-| `run_canonical_benchmark()`       | none    | 31 canonical fixtures (one per RSG, real published profiles from WRB 2022 didactic exemplars + ISRIC ISMC + Soil Atlas of Europe). Run every release. | `inst/benchmarks/reports/canonical_<DATE>.md`        |
-| `run_wosis_benchmark_graphql()`   | WoSIS GraphQL | Paper-grade run over a region-filtered WoSIS slice; queries `https://graphql.isric.org/wosis/graphql`. Continent / country / WRB-RSG filters.   | `inst/benchmarks/reports/wosis_graphql_<DATE>.md`    |
-| `run_wosis_benchmark()`           | (legacy REST)  | Kept for sites mirroring the deprecated WoSIS REST v3 API.                                                                                     | `inst/benchmarks/reports/wosis_<DATE>.md`             |
+| Driver / loader                                       | Source                              | Scope                                                                                                                                                | Output                                                       |
+| :---------------------------------------------------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
+| `run_canonical_benchmark()`                           | bundled                             | 31 canonical fixtures (one per RSG, real published profiles). Run every release.                                                                     | `inst/benchmarks/reports/canonical_<DATE>.md`               |
+| `load_kssl_pedons_with_nasis()` + `benchmark_run_classification()` | KSSL gpkg + NASIS sqlite | USDA Soil Taxonomy 13ed at four hierarchy levels: Order / Suborder / Great Group / Subgroup. Needs the (separately downloaded) NCSS lab + NASIS Morphological databases.  | `inst/benchmarks/reports/kssl_nasis_v0.9.27_<DATE>.md`        |
+| `load_febr_pedons()` + `benchmark_run_classification()` | FEBR `febr-superconjunto.txt`     | Brazilian SiBCS at Order and Subordem levels.                                                                                                         | `inst/benchmarks/reports/embrapa_v0.9.27_<DATE>.md`          |
+| `run_wosis_benchmark_graphql()`                       | ISRIC WoSIS GraphQL                 | Region-filtered WoSIS slice; queries `https://graphql.isric.org/wosis/graphql`. v0.9.27 ships per-page retry + graceful degradation.                  | `inst/benchmarks/reports/wosis_graphql_<DATE>.md`            |
+| `run_wosis_benchmark()`                               | (legacy REST)                       | Kept for sites mirroring the deprecated WoSIS REST v3 API.                                                                                            | `inst/benchmarks/reports/wosis_<DATE>.md`                    |
 
-### Canonical-fixture run (release-time CI)
+### 1. Canonical-fixture run (release-time CI)
 
 | System         | n  | match | top-1 |
 | :------------- | -: | ----: | ----: |
@@ -315,11 +331,48 @@ soilKey ships **three benchmark drivers** under `inst/benchmarks/`:
 | SiBCS 5        | 20 | 20    | **1.000** |
 | USDA ST 13     | 31 | 31    | **1.000** |
 
-See [`inst/benchmarks/reports/canonical_2026-04-30.md`](inst/benchmarks/reports/canonical_2026-04-30.md).
+### 2. KSSL + NASIS multi-level (USDA Soil Taxonomy 13ed)
 
-### WoSIS run (paper-grade baseline, real external data)
+The headline real-data benchmark: USDA Soil Taxonomy 13ed at every level of the keyed hierarchy on the NCSS / Kellogg Soil Survey Laboratory database joined with the NASIS Morphological sqlite (n=2638 after quality filter, 500 bootstrap reps, ±1.7 pp CI).
 
-100 South-America profiles pulled from WoSIS GraphQL with the **maximal attribute query** (24 `*Values` fields per layer); classified by `classify_wrb2022()`. Top-1 agreement stratified by data-coverage tier:
+| Level         | n     | top-1            | 95 % CI            |
+| :------------ | ----: | ---------------: | :----------------- |
+| **Order**     | 2 638 | **34.19 %**      | [32.4 %, 36.0 %]   |
+| **Suborder**  | 2 636 | **13.85 %**      | [12.5 %, 15.2 %]   |
+| **Great Group** | 2 633 | **7.94 %**     | [7.0 %, 8.9 %]     |
+| **Subgroup**  | 2 638 | **4.17 %**       | [3.5 %, 4.9 %]     |
+
+This is the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real, published lab data.
+
+The v0.9.24-v0.9.27 release series progressively closed key reasoning gaps. Apples-to-apples on the n=865 development sample (CI ±3 pp):
+
+| Release | Change                                     | Order  | Suborder | Great Group | Subgroup |
+| :------ | :----------------------------------------- | :----- | :------- | :---------- | :------- |
+| v0.9.22 | argic clay-increase canonicalisation (baseline) | 33.8 % | --       | --          | 3.0 %    |
+| v0.9.23 | clay-increase fix shipped (+canonical eluvial-illuvial comparison) | 35.7 % | --       | --          | --       |
+| v0.9.24 | aquic / oxyaquic subgroup tightening + new GG/Suborder benchmark levels | 37.2 % | 17.8 %   | 6.5 %       | 3.8 %    |
+| v0.9.25 | KST 13ed Great Group canonicaliser (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; etc.) | 37.2 % | 17.8 %   | **10.3 %** (+3.84 pp) | **5.0 %** (+1.15 pp) |
+| v0.9.26 | per-system argic threshold API (infrastructure) | 37.2 % | 17.8 %   | 10.3 %      | 5.0 %    |
+| v0.9.27 | clay-illuviation evidence test via NASIS `pediagfeatures` + `phpvsf` | 37.0 % | 17.7 %   | 10.6 %      | 5.1 %    |
+
+The v0.9.25 KST canonicaliser is the second-biggest single-version Great Group lift in the project's history (only the v0.9.23 argic clay-increase fix is bigger). It required no classifier changes — the predictor is already correct for KST 13ed; the comparison just needed to handle legacy KSSL labels (which span Soil Taxonomy editions 8 through 13) fairly.
+
+See [`inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.md`](inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.md) for the full A/B trajectory and per-Order breakdown.
+
+### 3. Embrapa FEBR (SiBCS, Brazilian system)
+
+Brazilian SiBCS validation against the FEBR (`febr-superconjunto.txt`) snapshot, n=554 after quality filter:
+
+| Level    | v0.9.22 baseline | v0.9.23 (argic fix) | **v0.9.27** | Δ (v0.9.22 → v0.9.27) |
+| :------- | ---------------: | ------------------: | ----------: | --------------------: |
+| **Ordem**   | 40.6 %           | 54.7 %              | **56.7 %** (CI 52.7 – 60.6) | **+16.1 pp** |
+| Subordem    | --               | --                  | 9.93 % (CI 7.4 – 12.5) | (new measurement) |
+
+**+16.1 pp Order on Embrapa across four releases** is the single biggest cumulative real-data lift in the project. See [`inst/benchmarks/reports/embrapa_v0927_2026-05-03.md`](inst/benchmarks/reports/embrapa_v0927_2026-05-03.md) for the per-Ordem confusion analysis.
+
+### 4. WoSIS GraphQL (paper-grade WRB baseline, real external data)
+
+100 South-America profiles pulled from WoSIS GraphQL with the maximal attribute query (24 `*Values` fields per layer); classified by `classify_wrb2022()`. Top-1 agreement stratified by data-coverage tier:
 
 | Coverage tier  | Profiles | Top-1 |
 | :------------- | -------: | ----: |
@@ -331,13 +384,15 @@ See [`inst/benchmarks/reports/canonical_2026-04-30.md`](inst/benchmarks/reports/
 
 * **1 / 5**: defensible disagreement under different WRB edition (WoSIS labelled "Acrisol" using a pre-2022 source; soilKey under WRB 2022 says Ferralsol on the same data because CEC ≪ argic threshold).
 * **1 / 5**: indeterminate due to missing exchangeable cations in WoSIS — trace says `missing: bs_pct`. Package correctly returns indeterminate rather than guessing.
-* **3 / 5**: indeterminate due to systematic WoSIS schema gap — **WoSIS has no `slickensides` field at all**. soilKey assigns the next-most-defensible RSG under WRB Ch 4 chave order. The WoSIS target was informed by field morphology that the database does not archive.
+* **3 / 5**: indeterminate due to systematic WoSIS schema gap — WoSIS has no `slickensides` field at all. soilKey assigns the next-most-defensible RSG under WRB Ch 4 chave order. The WoSIS target was informed by field morphology that the database does not archive.
 
 **Genuine classifier failures: 0 / 5.** The apparent 0 % top-1 is a *data-availability* statement about WoSIS, not a *correctness* statement about soilKey.
 
+v0.9.27 added per-page retry with exponential backoff (1 s, 2 s, 4 s, 8 s) plus graceful degradation in `read_wosis_profiles_graphql()` — after the first page succeeds, transient page failures return the partial pull rather than aborting. This addresses the ISRIC GraphQL endpoint's intermittent "canceling statement due to statement timeout" responses observed during the v0.9.24 refresh.
+
 ---
 
-## ✦ Two user-facing helpers that *guide* classification (v0.9.13)
+## ✦ Two user-facing helpers that *guide* classification
 
 soilKey ships two ways for a user to get a *prior* expectation of the soil class **before** running the deterministic key — the canonical "I'm in the field, what should I expect?" use case.
 
@@ -479,7 +534,7 @@ If `soilKey` contributes to your work, please cite:
   title     = {{soilKey}: Automated soil profile classification per
                {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
   year      = {2026},
-  version   = {0.9.13},
+  version   = {0.9.27},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.19930112},
   url       = {https://github.com/HugoMachadoRodrigues/soilKey}
@@ -579,4 +634,4 @@ SOFTWARE.
 
 ---
 
-<sub>**Status**: CRAN-ready, v0.9.12. `R CMD check --as-cran` returns 0 ERROR / 0 WARNING / 2 expected NOTEs (`New submission` + PROJ env-only, both gone on CRAN's farm). [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.12 ships maximal WoSIS GraphQL coverage + tier-stratified reporting + a forensic walkthrough showing 0/5 Tier-1 misses are genuine classifier failures (the rest are documented WoSIS schema gaps). v0.9.11 added `classify_from_documents()` as the high-level VLM one-liner, default Gemma 4 (`gemma4:e4b`) for Ollama, plus a 1.1 MB `data(ossl_demo_sa)` synthetic OSSL artefact. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); per-release changes in [`NEWS.md`](NEWS.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](inst/cran-submission/HOW_TO_SUBMIT.md).</sub>
+<sub>**Status**: CRAN-ready, v0.9.27 (2026-05-03). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **2 908 passing / 0 failing / 10 expected skips**. [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.27 highlights**: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount` from `phpvsf`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark normalisation fix (Order **+16.1 pp** v0.9.22 → v0.9.27 = 56.7 %); WoSIS GraphQL retry+fallback for ISRIC server intermittency. **v0.9.25** shipped the KST 13ed Great Group canonicaliser collapsing pre-13ed legacy KSSL labels (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; Camborthids → Haplocambids; etc.) — KSSL+NASIS **Great Group +3.84 pp** in a single release. Headline real-data benchmark at large scale (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %** (the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real lab data). **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](NEWS.md); roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](inst/cran-submission/HOW_TO_SUBMIT.md).</sub>

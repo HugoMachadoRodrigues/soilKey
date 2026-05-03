@@ -61,6 +61,7 @@ DiagnosticResult <- R6::R6Class("DiagnosticResult",
     },
 
     #' @description Pretty-print the result with sub-test breakdown.
+    #' @param ... Ignored (S3 print signature compatibility).
     print = function(...) {
       cli::cli_h3(sprintf("DiagnosticResult: %s", self$name))
       status <- if (isTRUE(self$passed)) {

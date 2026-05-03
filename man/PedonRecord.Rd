@@ -223,6 +223,13 @@ Compact summary list (for serialization or testing).
 \if{html}{\out{<div class="r">}}\preformatted{PedonRecord$summary(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 summary signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PedonRecord-print"></a>}}
@@ -233,6 +240,13 @@ Pretty-print the record.
 \if{html}{\out{<div class="r">}}\preformatted{PedonRecord$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 print signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PedonRecord-clone"></a>}}

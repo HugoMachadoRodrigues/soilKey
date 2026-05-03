@@ -483,17 +483,45 @@ umbric_subgroup_usda <- function(pedon) {
 oxyaquic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
+  if (length(cand) == 0L) {
+    return(DiagnosticResult$new(
+      name = "oxyaquic_subgroup_usda", passed = FALSE,
+      layers = integer(0),
+      evidence = list(reason = "no candidate layers in upper 100 cm"),
+      missing = character(0),
+      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
+    ))
+  }
   rdx <- h$redoximorphic_features_pct[cand]
   chr <- h$munsell_chroma_moist[cand]
-  passing <- cand[(!is.na(rdx) & rdx >= 2) |
-                      (!is.na(chr) & chr <= 2)]
+  des <- h$designation[cand]
+  # v0.9.24 tightening: KST 13ed Ch 14 (p 311) defines the Oxyaquic
+  # subgroup as a profile with saturation 20-30 days plus redox
+  # features but NOT meeting full aquic conditions. The pre-v0.9.24
+  # logic fired on `redox >= 2` OR `chroma <= 2` ALONE (a single
+  # disjunctive low-evidence trigger), which produced large numbers
+  # of false-positive Oxyaquic predictions on KSSL Typic-reference
+  # profiles. The canonical interpretation requires BOTH evidence
+  # of saturation (low chroma, redox features, or 'g' designation
+  # suffix) AND a redoximorphic indicator that does not yet meet
+  # the stronger aquic-conditions threshold. We now require either:
+  #   (a) measured redox features >= 2 % AND chroma <= 4 in the
+  #       matrix (presence of redox + non-bright matrix), OR
+  #   (b) a 'g' suffix in the designation AND chroma <= 3 (gleyed
+  #       designation evidence with somewhat low chroma).
+  redox_ok    <- !is.na(rdx) & rdx >= 2
+  chroma_low  <- !is.na(chr) & chr <= 4
+  glei_des    <- !is.na(des) & grepl("g", des, ignore.case = FALSE)
+  chroma_v3   <- !is.na(chr) & chr <= 3
+  passing <- cand[(redox_ok & chroma_low) |
+                      (glei_des & chroma_v3)]
   passed <- length(passing) > 0L
   DiagnosticResult$new(
     name = "oxyaquic_subgroup_usda", passed = passed,
     layers = passing,
-    evidence = list(note = "v0.8: 20-30 day saturation deferred; uses redox/chroma proxy"),
+    evidence = list(note = "v0.9.24: requires redox_ok + chroma<=4 OR glei_designation + chroma<=3"),
     missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
+    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14 (Oxyaquic subgroup)"
   )
 }
 

@@ -73,21 +73,40 @@ aquic_conditions_usda <- function(pedon,
   }
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
   passing <- integer(0); miss <- character(0); details <- list()
+  # v0.9.24 tightening: KST 13ed Ch 3 (p 41-44) defines aquic
+  # conditions as the joint presence of saturation + reduction +
+  # redoximorphic features. The pre-v0.9.24 logic accepted
+  # `redox_ok` ALONE (redox features >= 5 pct), which fired on any
+  # profile with mottling, including profiles that are not actually
+  # saturated. Empirically this caused 89 KSSL Typic-reference
+  # profiles to be misclassified as Aquic / Aeric / Oxyaquic
+  # subgroups. The canonical aquic conditions require BOTH:
+  #   (a) reduction evidence: chroma <= 2 in the matrix OR a 'g'
+  #       master suffix in the horizon designation; AND
+  #   (b) redoximorphic-feature evidence: redox features >=
+  #       min_redox_pct OR a chroma-2-with-g matrix (which serves
+  #       as both reduction + redox indicator simultaneously).
   for (i in cand) {
     rdx <- h$redoximorphic_features_pct[i]
     chr <- h$munsell_chroma_moist[i]
     des <- h$designation[i]
-    redox_ok <- !is.na(rdx) && rdx >= min_redox_pct
+    redox_ok  <- !is.na(rdx) && rdx >= min_redox_pct
     chroma_ok <- !is.na(chr) && chr <= max_chroma
-    glei_des <- !is.na(des) && grepl("g", des)
-    layer_pass <- isTRUE(redox_ok) || isTRUE(chroma_ok && glei_des) ||
-                    isTRUE(redox_ok && chroma_ok)
+    glei_des  <- !is.na(des) && grepl("g", des, ignore.case = FALSE)
+    # Reduction evidence: low chroma OR gleyed designation
+    reduction_ok <- isTRUE(chroma_ok) || isTRUE(glei_des)
+    # Redox evidence: explicit redox features OR reduction-marker
+    redox_evid   <- isTRUE(redox_ok) ||
+                       (isTRUE(chroma_ok) && isTRUE(glei_des))
+    layer_pass <- isTRUE(reduction_ok) && isTRUE(redox_evid)
     if (is.na(rdx)) miss <- c(miss, "redoximorphic_features_pct")
     if (is.na(chr)) miss <- c(miss, "munsell_chroma_moist")
     details[[as.character(i)]] <- list(idx = i,
                                           redox = redox_ok,
                                           chroma = chroma_ok,
                                           glei = glei_des,
+                                          reduction_ok = reduction_ok,
+                                          redox_evid = redox_evid,
                                           passed = layer_pass)
     if (layer_pass) passing <- c(passing, i)
   }

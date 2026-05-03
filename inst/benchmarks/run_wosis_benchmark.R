@@ -316,8 +316,21 @@ read_wosis_profiles_graphql <- function(continent  = NULL,
     "}"
   )
 
-  out    <- list()
-  offset <- 0L
+  # v0.9.27: per-page retry with exponential backoff. The ISRIC WoSIS
+  # GraphQL endpoint returns "canceling statement due to statement
+  # timeout" intermittently under load, often after 30-50 profiles in
+  # a session. Single transient failures should not abort the pull;
+  # retry up to `max_retries` times with backoff (1s, 2s, 4s, ...)
+  # before giving up. Also supports a `min_pages` floor: if at least
+  # one page succeeded and we hit a page failure after `min_pages`,
+  # return the partial pull rather than erroring (graceful degradation).
+  max_retries  <- 4L
+  base_backoff <- 1.0
+  min_pages    <- 1L
+
+  out      <- list()
+  offset   <- 0L
+  n_pages  <- 0L
   while (length(out) < n_max) {
     take <- min(page_size, n_max - length(out))
     q <- sprintf(
@@ -325,31 +338,57 @@ read_wosis_profiles_graphql <- function(continent  = NULL,
       filter_clause, offset, take, layer_q
     )
     body <- jsonlite::toJSON(list(query = q), auto_unbox = TRUE)
-    resp <- tryCatch(
-      httr::POST(endpoint,
-                   body  = body,
-                   httr::content_type_json(),
-                   httr::user_agent("soilKey (https://github.com/HugoMachadoRodrigues/soilKey)"),
-                   httr::timeout(60)),
-      error = function(e)
-        stop(sprintf("WoSIS GraphQL request failed: %s\n", conditionMessage(e)),
-             "  Endpoint: ", endpoint, call. = FALSE)
-    )
-    if (httr::status_code(resp) != 200L)
-      stop(sprintf("WoSIS GraphQL HTTP %d for %s\n",
-                     httr::status_code(resp), endpoint),
-           "  Body: ", httr::content(resp, as = "text",
-                                       encoding = "UTF-8"))
-    parsed <- jsonlite::fromJSON(httr::content(resp, as = "text",
-                                                  encoding = "UTF-8"),
-                                    simplifyVector = FALSE)
-    if (!is.null(parsed$errors))
-      stop("WoSIS GraphQL errors: ",
-           paste(vapply(parsed$errors, function(e) e$message, character(1)),
-                   collapse = "; "))
-    page <- parsed$data$wosisLatestProfiles
+
+    page <- NULL
+    last_err <- NULL
+    for (attempt in seq_len(max_retries)) {
+      resp <- tryCatch(
+        httr::POST(endpoint,
+                     body  = body,
+                     httr::content_type_json(),
+                     httr::user_agent("soilKey (https://github.com/HugoMachadoRodrigues/soilKey)"),
+                     httr::timeout(60)),
+        error = function(e) e
+      )
+      if (inherits(resp, "error")) {
+        last_err <- sprintf("HTTP error: %s", conditionMessage(resp))
+      } else if (httr::status_code(resp) != 200L) {
+        last_err <- sprintf("HTTP %d", httr::status_code(resp))
+      } else {
+        parsed <- jsonlite::fromJSON(httr::content(resp, as = "text",
+                                                      encoding = "UTF-8"),
+                                        simplifyVector = FALSE)
+        if (!is.null(parsed$errors)) {
+          last_err <- paste(vapply(parsed$errors, function(e) e$message, character(1)),
+                              collapse = "; ")
+        } else {
+          page <- parsed$data$wosisLatestProfiles
+          last_err <- NULL
+          break
+        }
+      }
+      if (verbose)
+        message(sprintf("[WoSIS-graphql] offset=%d attempt=%d/%d failed: %s -- backing off %.1fs",
+                          offset, attempt, max_retries, last_err,
+                          base_backoff * 2^(attempt - 1L)))
+      Sys.sleep(base_backoff * 2^(attempt - 1L))
+    }
+
+    if (is.null(page)) {
+      # Page failed after all retries.
+      if (n_pages >= min_pages) {
+        if (verbose)
+          message(sprintf("[WoSIS-graphql] page failed after %d retries; ",
+                            "returning %d profiles collected so far",
+                            max_retries, length(out)))
+        break
+      }
+      stop(sprintf("WoSIS GraphQL: page failed after %d retries: %s",
+                     max_retries, last_err))
+    }
     if (length(page) == 0L) break
     out <- c(out, page)
+    n_pages <- n_pages + 1L
     if (verbose)
       message(sprintf("[WoSIS-graphql] offset=%d, fetched=%d, total=%d",
                         offset, length(page), length(out)))

@@ -4,6 +4,11 @@
 \alias{FamilyAttribute}
 \title{Classe S4-like para atributos de Familia (5o nivel SiBCS)}
 \description{
+Classe S4-like para atributos de Familia (5o nivel SiBCS)
+
+Classe S4-like para atributos de Familia (5o nivel SiBCS)
+}
+\details{
 Estrutura categorica (em vez de booleana) que representa um
 adjetivo composto da Familia. \code{value} eh o adjetivo
 atribuido (string) ou \code{NULL} quando a dimensao nao se
@@ -36,6 +41,7 @@ aplica ou nao foi possivel determinar.
 \if{html}{\out{<a id="method-FamilyAttribute-new"></a>}}
 \if{latex}{\out{\hypertarget{method-FamilyAttribute-new}{}}}
 \subsection{Method \code{new()}}{
+Build a FamilyAttribute.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FamilyAttribute$new(
   name,
@@ -46,15 +52,38 @@ aplica ou nao foi possivel determinar.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{Nome da dimensao (e.g. "grupamento_textural").}
+
+\item{\code{value}}{Adjetivo atribuido (e.g. "argilosa") ou \code{NULL}.}
+
+\item{\code{evidence}}{Lista nomeada com valores intermediarios.}
+
+\item{\code{missing}}{Vetor de colunas necessarias mas indisponiveis.}
+
+\item{\code{reference}}{String com referencia bibliografica.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-FamilyAttribute-print"></a>}}
 \if{latex}{\out{\hypertarget{method-FamilyAttribute-print}{}}}
 \subsection{Method \code{print()}}{
+Pretty-print the attribute.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FamilyAttribute$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 print signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-FamilyAttribute-clone"></a>}}

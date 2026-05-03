@@ -721,8 +721,10 @@ saprico <- function(pedon) {
 #' Material organico em decomposicao intermediaria: 17-40\% de fibras
 #' esfregadas OU indice de von Post H5-H6. Discrimina Organossolos
 #' Hemicos no 3o nivel.
-#' @inherit saprico
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 14 (Organossolos),
+#'             pp 224-226.
 #' @export
 hemico <- function(pedon) {
   .decomposition_diagnostic(pedon, "hemico")
@@ -734,8 +736,10 @@ hemico <- function(pedon) {
 #' Material organico pouco decomposto: >= 40\% de fibras esfregadas
 #' OU indice de von Post H1-H4. Discrimina Organossolos Fibricos no
 #' 3o nivel.
-#' @inherit saprico
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @return \code{\link{DiagnosticResult}}.
+#' @references Embrapa (2018), SiBCS 5a ed., Cap 14 (Organossolos),
+#'             pp 224-226.
 #' @export
 fibrico <- function(pedon) {
   .decomposition_diagnostic(pedon, "fibrico")

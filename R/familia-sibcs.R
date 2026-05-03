@@ -74,6 +74,13 @@ FamilyAttribute <- R6::R6Class("FamilyAttribute",
     evidence = NULL,
     missing = NULL,
     reference = NULL,
+
+    #' @description Build a FamilyAttribute.
+    #' @param name Nome da dimensao (e.g. "grupamento_textural").
+    #' @param value Adjetivo atribuido (e.g. "argilosa") ou \code{NULL}.
+    #' @param evidence Lista nomeada com valores intermediarios.
+    #' @param missing Vetor de colunas necessarias mas indisponiveis.
+    #' @param reference String com referencia bibliografica.
     initialize = function(name,
                             value = NULL,
                             evidence = list(),
@@ -85,6 +92,9 @@ FamilyAttribute <- R6::R6Class("FamilyAttribute",
       self$missing <- missing
       self$reference <- reference
     },
+
+    #' @description Pretty-print the attribute.
+    #' @param ... Ignored (S3 print signature compatibility).
     print = function(...) {
       cat("<FamilyAttribute>\n")
       cat("  name:    ", self$name, "\n", sep = "")

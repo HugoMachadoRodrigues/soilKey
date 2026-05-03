@@ -118,6 +118,13 @@ Pretty-print the result with key trace, ambiguities, and
 \if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 print signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-summary"></a>}}
@@ -128,6 +135,13 @@ Compact summary list.
 \if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$summary(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Ignored (S3 summary signature compatibility).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-report"></a>}}

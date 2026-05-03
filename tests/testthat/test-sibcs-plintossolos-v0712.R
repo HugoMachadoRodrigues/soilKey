@@ -29,11 +29,16 @@ test_that("subgrupo_plintossolo_endico_litoplintico passa para topo >= 40", {
 })
 
 test_that("subgrupo_plintossolo_endico_concrecionario FAILS quando topo < 40", {
+  # v0.9.27: previous fixture used plinthite_pct = c(NA, 5, 5) but
+  # horizonte_concrecionario requires `plinthite_pct >= 50` (the
+  # function uses plinthite_pct as the petroplintita proxy). With
+  # plinthite_pct = 60 the diagnostic fires; topo_min = 20 < 40 so
+  # the endico variant correctly returns FALSE.
   hz <- data.table::data.table(
     top_cm    = c(0,  20,  60),
     bottom_cm = c(20, 60, 120),
     designation = c("A", "Bcf", "2Bcf"),
-    plinthite_pct = c(NA, 5, 5),
+    plinthite_pct = c(NA, 60, 60),  # >= 50 -> petroplintita proxy passes
     petroplinthite_pct = c(NA, 60, 60),
     coarse_fragments_pct = c(NA, 60, 70)
   )
@@ -43,12 +48,9 @@ test_that("subgrupo_plintossolo_endico_concrecionario FAILS quando topo < 40", {
     horizons = ensure_horizon_schema(hz)
   )
   res <- subgrupo_plintossolo_endico_concrecionario(pr)
-  if (isTRUE(res$evidence$horizonte_concrecionario$passed)) {
-    # topo do concrecionario = 20 < 40 -> NOT endico
-    expect_false(isTRUE(res$passed))
-  } else {
-    skip("horizonte_concrecionario nao casa com fixture sintetico")
-  }
+  expect_true(isTRUE(res$evidence$horizonte_concrecionario$passed))
+  # topo do concrecionario = 20 < 40 -> NOT endico
+  expect_false(isTRUE(res$passed))
 })
 
 # ------------------------------------------------------------------

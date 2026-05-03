@@ -27,6 +27,10 @@
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 7.5).
+#' @param system One of \code{"wrb2022"} (default) or \code{"usda"}.
+#'        Selects the clay-increase threshold set: WRB uses
+#'        6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
+#'        See \code{\link{test_clay_increase_argic}} for the table.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -52,11 +56,15 @@
 #' Vienna. Chapter 3 -- Argic horizon.
 #'
 #' @export
-argic <- function(pedon, min_thickness = 7.5) {
+argic <- function(pedon, min_thickness = 7.5,
+                    system = c("wrb2022", "usda")) {
+  system <- match.arg(system)
   h <- pedon$horizons
 
   tests <- list()
-  tests$clay_increase <- test_clay_increase_argic(h)
+  # v0.9.26: per-system clay-increase thresholds. WRB 2022 (default)
+  # uses 6/1.4/20; KST 13ed uses 3/1.2/8 (looser).
+  tests$clay_increase <- test_clay_increase_argic(h, system = system)
 
   candidate_layers <- tests$clay_increase$layers
 
