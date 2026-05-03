@@ -378,8 +378,8 @@ read_wosis_profiles_graphql <- function(continent  = NULL,
       # Page failed after all retries.
       if (n_pages >= min_pages) {
         if (verbose)
-          message(sprintf("[WoSIS-graphql] page failed after %d retries; ",
-                            "returning %d profiles collected so far",
+          message(sprintf(paste0("[WoSIS-graphql] page failed after %d retries; ",
+                                    "returning %d profiles collected so far"),
                             max_retries, length(out)))
         break
       }

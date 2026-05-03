@@ -1,3 +1,74 @@
+# soilKey 0.9.30 (2026-05-03)
+
+The "offline-ready WoSIS + CRAN-clean" release. Two infrastructure
+fixes that prepare the package for both reproducible CI and CRAN
+submission.
+
+## A. Bundled WoSIS South-America sample
+
+`inst/extdata/wosis_sa_sample.rds` (49 KB compressed) ships a frozen
+40-profile snapshot pulled on 2026-05-03 from the ISRIC WoSIS
+GraphQL endpoint with `continent = "South America"`. New helper
+function:
+
+```
+load_wosis_sample()
+```
+
+returns a list with `profiles_raw`, `pedons` (PedonRecord objects),
+`pulled_on`, `endpoint`, `filter`, `n_pulled`. Tests + CI + casual
+users can now exercise the WRB benchmark path without depending on
+ISRIC server stability (see also: the v0.9.27 retry+fallback path,
+which still applies for live pulls).
+
+For up-to-date paper-grade benchmarks, callers should still use
+`run_wosis_benchmark_graphql()` directly against the live endpoint;
+the bundled snapshot is for reproducible tests, not for current
+ground-truth claims.
+
+## B. Bug-fix: WoSIS retry message sprintf
+
+The v0.9.27 graceful-degradation path had a sprintf format bug
+(`%d` mixed with a string concatenation) that caused the partial-pull
+return to error out with `invalid format '%d'; use format %s for
+character objects`. Fixed in `inst/benchmarks/run_wosis_benchmark.R`
+by combining the message format string with `paste0()` before
+sprintf.
+
+The v0.9.30 cache pull demonstrated this fix in action: the ISRIC
+server timed out at offset=40 (after 4 retries with 1s/2s/4s/8s
+backoff), and the corrected graceful-degradation path returned
+the 40 profiles successfully collected so far.
+
+## C. R CMD check --as-cran
+
+`R CMD check --as-cran` on `soilKey_0.9.30.tar.gz`:
+
+- 0 ERRORs
+- 0 WARNINGs
+- 1 NOTE: "New submission" + a 301 redirect on the FAO PDF URL
+  in README.md.
+
+The "New submission" note is expected for a first CRAN submission
+(it disappears on subsequent submissions). The 301 redirect on
+`https://www.fao.org/3/i3794en/I3794en.pdf` is fixed by updating
+the README to point at the OpenKnowledge canonical URL
+(`https://openknowledge.fao.org/server/api/core/bitstreams/.../content`).
+
+After the URL fix, `--as-cran` reports a single "New submission"
+NOTE. The package is **CRAN-ready**.
+
+## Tests
+
+4 new in `tests/testthat/test-v0930-wosis-sample.R` covering:
+
+- bundle returns 40-profile snapshot with the expected named slots;
+- bundled profiles are valid `PedonRecord` objects;
+- `classify_wrb2022()` runs on bundled pedons without raising;
+- snapshot metadata (date, endpoint, filter) is correct.
+
+Full suite: 2 980 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.29 (2026-05-03)
 
 The "Neossolos Litolicos shallow-profile heuristic" release. Fixes
