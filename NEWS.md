@@ -1,3 +1,93 @@
+# soilKey 0.9.44 (2026-05-04)
+
+The "ESDB Raster Library lookup" release. Unblocks the
+**raster-lookup half of the EU-LUCAS WRB benchmark Route B**
+(open since the v0.9.27 roadmap) by adding a spatial-join
+utility against the ESDB Raster Library 1km GeoTIFF release
+(May 2024).
+
+## ESDB Raster Library lookup
+
+The European Soil Database (ESDB) Raster Library distributes
+71 thematic rasters at 1km resolution under LAEA Europe (EPSG:
+3035). v0.9.44 ships two new exported helpers:
+
+  available_esdb_attributes(raster_root)
+    -> character vector of the 71 attribute folder names
+       (WRBLV1, WRBFU, WRBADJ1/2, FAO90LV1, plus 65 thematic
+       rasters: clay/sand/silt sub+top, OC, parent material,
+       slope, depth-to-rock, mineralogy, etc.)
+
+  lookup_esdb(coords, attribute, raster_root, decode = TRUE)
+    -> WGS84 lat/lon -> reproject to LAEA Europe -> extract
+       raster value -> decode via .vat.dbf to coded label
+
+Coordinates outside the European raster footprint return NA
+silently so vectorised calls degrade gracefully.
+
+### Demonstration on 12 European cities
+
+  Wageningen NL  -> FL Fluvisol (eutric)
+  Helsinki FI    -> LP Leptosol (dystric)
+  Rovaniemi FI   -> CM Cambisol (dystric, boreal)
+  Athens GR      -> LV Luvisol (calcaric)
+  Vienna AT      -> CH Chernozem (haplic, pannonian)
+  Sevilla ES     -> FL Fluvisol (calcaric)
+
+Cities returning the "1" non-soil mask code (Lisbon, Berlin,
+Paris, Rome, Krakow) fall on 1km pixels coded as artificial /
+urban surfaces -- correct behaviour, not a bug.
+
+### What this enables
+
+For any European-coordinate `PedonRecord`, users can now:
+
+  1. Look up the ESDB raster's expected RSG at the pedon's coords
+  2. Run classify_wrb2022() on the pedon's chemistry
+  3. Compare the two and report agreement
+
+This becomes the **fourth validation axis** for soilKey, alongside
+the canonical fixtures, KSSL+NASIS (USDA), Embrapa FEBR (SiBCS),
+and WoSIS GraphQL.
+
+`foreign` is added to Suggests for `.vat.dbf` decoding via
+`foreign::read.dbf()`.
+
+### Tests
+
+8 new in `tests/testthat/test-v0944-esdb-raster.R`:
+
+- `available_esdb_attributes()` lists 60+ ESDB attributes
+- `lookup_esdb()` resolves Wageningen NL to a real RSG code
+- Returns NA for points outside the European raster footprint
+- Vectorised over multi-point coords
+- `decode = FALSE` returns raw integer raster values
+- Errors clearly when raster missing
+- Accepts both data.frame and matrix input
+- WRBLV1 vs FAO90LV1 cross-system agreement
+
+Tests skip cleanly via `Sys.getenv("SOILKEY_ESDB_RASTER_ROOT")`
+when the raster archive (~700 MB unpacked) is not available
+locally.
+
+## Songchao + EU_LUCAS_2022 inspection (no actionable change)
+
+Hugo also provided `febr-data-songchao.txt` (2 684 rows) and
+`EU_LUCAS_2022.csv` / `_updated.xlsx` (~338 000 rows). Both were
+inspected for soil-chemistry / Munsell / WRB-label content:
+
+| Source | What it has | What's missing |
+|---|---|---|
+| Songchao | basic chemistry (clay/silt/sand/SOC/BD), 16 cols | NO Munsell color, NO `taxon_*` reference -- cannot fix the v0.9.35 Argissolo color confusion, cannot use for benchmark validation |
+| LUCAS_2022.csv (455 MB, 306 cols) | lat/lon + point-survey metadata | NO soil chemistry, NO WRB labels -- the Soil Component Survey is a separate ESDAC download |
+
+Documented in
+`inst/benchmarks/reports/eu_lucas_roadmap_v0944_update_2026-05-04.md`
+and the `reference_eu_lucas_wrb_benchmark.md` memory file.
+The 44 FEBR Argissolo color-confusion misses (Vermelho /
+Amarelo / Vermelho-Amarelo) remain unfixable from the available
+data.
+
 # soilKey 0.9.43 (2026-05-04)
 
 The "JSON Schema for PedonRecord" release.
