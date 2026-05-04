@@ -171,12 +171,15 @@ test_that("latossolo_amarelo catches a 10YR profile (yellow latosol)", {
 })
 
 test_that("neossolo_quartzarenico passes on pure quartz sand profile", {
+  # v0.9.35: thresholds converted from g/kg to %, so sand >= 70 %,
+  # clay < 20 %. Pre-v0.9.35 fixture used g/kg values directly which
+  # was the bug we fixed. Updated to realistic % values.
   hz <- data.table::data.table(
     top_cm = c(0, 30, 100), bottom_cm = c(30, 100, 150),
     designation = c("A", "C1", "C2"),
-    clay_pct = c(50, 30, 20),    # all < 200
-    silt_pct = c(50, 30, 30),
-    sand_pct = c(900, 940, 950)
+    clay_pct = c(5, 3, 2),       # all < 20 %
+    silt_pct = c(5, 3, 3),
+    sand_pct = c(90, 94, 95)     # all >= 70 %
   )
   pr <- PedonRecord$new(
     site = list(id = "RQ", lat = -10, lon = -45, country = "BR",

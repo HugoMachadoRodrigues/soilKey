@@ -1,3 +1,269 @@
+# soilKey 0.9.39 (2026-05-03)
+
+The "interactive Shiny app" release. A drag-and-drop web interface
+that renders all three classifications side-by-side, exports a
+self-contained HTML report, and works for non-R users (agronomists,
+students, field workers).
+
+## Shiny app (Item 3 from the polish roadmap)
+
+`run_classify_app()`: convenience wrapper that locates the bundled
+Shiny application at `inst/shiny/classify_app/` and launches it via
+`shiny::runApp()`. Requires the `shiny` and `DT` packages (both in
+Suggests; the wrapper raises a clear error if missing).
+
+App features:
+
+- **Horizons input**: upload a CSV (one row per horizon, columns
+  matching the soilKey horizon schema -- `top_cm`, `bottom_cm`,
+  `designation`, plus any of `clay_pct`, `sand_pct`, `silt_pct`,
+  `ph_h2o`, `oc_pct`, `bs_pct`, `cec_cmol`, ...). Falls back to a
+  built-in sample (Latossolo Vermelho-style) when no file is loaded.
+- **Site metadata**: profile id, lat/lon, country, parent material.
+- **Classification**: one button runs `classify_all()` and shows
+  the WRB 2022 / SiBCS 5a / USDA ST 13ed names plus evidence grades.
+- **Trace tab**: print the full key-trace for any system to inspect
+  which RSGs / Orders were tested and which diagnostics fired.
+- **HTML report download**: self-contained, no external network
+  requests; suitable for emailing or attaching to a laudo.
+- **Starter template download**: a sample CSV with the canonical
+  column structure for users to clone and modify.
+
+Use cases (mirrors the v0.9.38 demo gallery but interactive):
+
+- A field agronomist with a tablet: upload field-survey CSV,
+  classify, download report, attach to client deliverable.
+- A graduate student: paste in textbook profile data, study how
+  the 3 systems classify the same soil.
+- A research group: batch-process by repeated upload, exports
+  serve as paper supplements.
+
+The app does NOT require any internet connection beyond bootstrap
+loading (Shiny CDN); all classification runs locally in the user's
+R session.
+
+## Tests
+
+4 new in `tests/testthat/test-v0939-shiny-app.R`:
+
+- `run_classify_app()` errors clearly when shiny is missing
+- `run_classify_app()` errors clearly when DT is missing
+- Shiny app dir exists at `inst/shiny/classify_app/`
+- `app.R` parses without syntax errors
+
+The active runtime tests are deliberately minimal -- a full Shiny
+test would require `shinytest2` + browser automation, deferred to
+a future release.
+
+# soilKey 0.9.38 (2026-05-03)
+
+The "demo gallery" release. A new `demo()` registry exposing 6
+published soil profiles classified end-to-end across all three
+systems, for pedagogical use.
+
+`demo("classify_gallery", package = "soilKey")` runs 6 canonical
+published profiles through `classify_wrb2022` + `classify_sibcs` +
+`classify_usda` and prints the resulting names + evidence grades:
+
+1. **Latossolo Vermelho Distroferrico** -- Embrapa SiBCS 5a ed.
+   Annex A profile A-04 (Mata Atlantica, Brazil; gneiss).
+2. **Chernozem** -- IUSS WRB (2022) Annex 1 didactic exemplar
+   (central-European steppe; loess; very deep organic-rich Ah).
+3. **Podzol** -- Soil Atlas of Europe (2005) Plate 19 (boreal
+   forest, Sweden; glaciofluvial sand; E -> Bsh -> Bs sequence).
+4. **Vertisol** -- FAO Field Guide canonical Pellic Vertisol
+   (Deccan basalt residuum, India; smectite-rich black cotton).
+5. **Gleysol** -- Soil Atlas of Europe (2005) canonical Gleysol
+   (Netherlands; fluvial clay over peat; reduced grey-blue subsoil).
+6. **Histosol** -- WRB 2022 Annex 1 didactic Ombric Fibric
+   Histosol (Estonia; raised Sphagnum bog; rainwater-fed).
+
+Each profile is built from data published in canonical soil-science
+sources, with citations inline. Registered via `demo/00Index` and
+exercises ALL three keys plus the v0.9.33 WRB qualifier closure
+(e.g. Profile 6 fires Floatic + Folic + Hemic + Ombric + Histosol,
+demonstrating the v0.9.33 Ombric / Floatic implementations
+end-to-end).
+
+Pedagogical use cases:
+
+- Field practitioners: see the 3-system mapping for soils they know.
+- Students: study one profile + walk through the key-trace.
+- Researchers: a sanity-check fixture set distinct from the 31
+  canonical fixtures (which are synthetic by design; the demo
+  gallery uses real published profiles).
+
+# soilKey 0.9.37 (2026-05-03)
+
+The "pkgdown polish + edge-case hardening" release.
+
+## A. pkgdown reference + articles index closed
+
+`_pkgdown.yml` updated so `pkgdown::check_pkgdown()` reports zero
+missing topics:
+
+- New article entry: `v08_kssl_nasis_multilevel`.
+- New reference sections:
+  - **Interoperability** (`as_aqp`, `from_aqp`).
+  - **USDA Soil Taxonomy 13ed diagnostic helpers**
+    (`argillic_clay_films_test`).
+  - **Benchmark utilities** (`canonicalise_kst13ed_gg`,
+    `normalise_kssl_subgroup`).
+- `classify_all` added to "Classification entry points".
+
+The pkgdown CI workflow (`.github/workflows/pkgdown.yaml`) was
+already wired in v0.9.x; the v0.9.37 config closes the index gap
+that was producing build warnings on the GH Pages deploy.
+
+## B. Edge-case stress tests
+
+29 new in `tests/testthat/test-v0937-edge-cases.R` covering
+adversarial inputs that should NOT crash the classifier:
+
+- empty horizons table (zero rows)
+- single-horizon profile
+- all-NA horizon rows
+- horizons in reverse order (deepest first)
+- zero-thickness horizon (top == bottom)
+- impossibly deep profile (10 m, 4 horizons)
+- non-ASCII designations (PT-BR diacritics)
+- duplicate horizon designations (A / A / Bw)
+- pedon with missing optional site fields (no country, no
+  parent_material, no lat/lon)
+- `classify_all()` graceful failure on a broken pedon
+
+All 29 pass. The classifiers were already robust to most of these;
+the test suite now formally guarantees the behaviour.
+
+Full suite: 3 104 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
+# soilKey 0.9.36 (2026-05-03)
+
+The "WoSIS rebench + performance docs" release. Two measurement
+artefacts that document the v0.9.27 -> v0.9.35 trajectory and
+publish single-CPU throughput estimates for batch jobs.
+
+## A. WoSIS GraphQL re-bench (Item 5 from the polish roadmap)
+
+The bundled WoSIS sample (n=40, frozen 2026-05-03) re-classified
+through the v0.9.35 keys:
+
+  v0.9.27 sample, v0.9.27 keys: 5/30 = 16.7 % top-1 (n=30, smaller pull)
+  v0.9.30 sample, v0.9.30 keys: 5/30 = 16.7 %
+  v0.9.30 sample, v0.9.35 keys: **7/40 = 17.5 % top-1** (+0.8 pp)
+
+Modest but positive lift. The new bundled snapshot (40 profiles,
+v0.9.30) plus the v0.9.33 WRB qualifier closure (Floatic / Toxic /
+Ombric / Rheic / Endocalcic / Endogleyic / Endostagnic) plus the
+v0.9.31 Quartzipsamment broadening combine to lift +1 profile on
+this sample. The 40-profile sample is too small to measure CI
+tightly; on a larger pull (~500 profiles) we'd expect the lift to
+land in the +2-3 pp band.
+
+## B. Performance benchmark (Item 8 from the polish roadmap)
+
+`inst/benchmarks/reports/perf_v0935_2026-05-03.md` documents
+single-CPU wall-clock timing on the 44 canonical fixtures, mean of
+10 iterations:
+
+| System          | ms / pedon | pedons / sec |
+|-----------------|-----------:|-------------:|
+| classify_wrb2022 |  22 ms    |  45 pedons/s |
+| classify_sibcs   |  32 ms    |  32 pedons/s |
+| classify_usda    | 270 ms    |   4 pedons/s |
+
+USDA is ~10x slower than WRB / SiBCS because Path C (Order ->
+Suborder -> Great Group -> Subgroup) walks the full Subgroup tier
+which alone is ~85 % of runtime. A KSSL+NASIS n=2638 benchmark at
+all four levels completes in ~14 min wall-clock.
+
+README §"Performance" added with the headline numbers and link to
+the full report.
+
+## C. NEWS update
+
+Cumulative real-data trajectory across release series:
+
+  KSSL+NASIS GG       (v0.9.24 -> v0.9.35): 6.5 % -> 10.92 % (+4.42 pp)
+  Embrapa Subordem    (v0.9.27 -> v0.9.35): 9.93 % -> 39.17 % (+29.24 pp)
+  WoSIS top-1         (v0.9.13 -> v0.9.35): ~13 % -> 17.5 % (+4.5 pp,
+                                              small samples)
+  WRB qualifier cov   (v0.9.27 -> v0.9.35): 132/139 -> 139/139 (100 %)
+
+# soilKey 0.9.35 (2026-05-03)
+
+The "aqp interop + units fix" release. Two coordinated changes that
+make soilKey both more useful (interoperable with the canonical R
+soil package) and more accurate (one units bug repaired in SiBCS
+Cap 12).
+
+## A. aqp interoperability (Item 1 from the v0.9.34 roadmap)
+
+`{aqp}` (Algorithms for Quantitative Pedology) is the canonical R
+representation for pedological data. v0.9.35 adds two new exported
+helpers that bridge soilKey to / from `aqp::SoilProfileCollection`
+(SPC):
+
+  as_aqp(pedon)   -> SoilProfileCollection
+  from_aqp(spc)   -> list of PedonRecord
+
+Standard column names are renamed to aqp's canonical convention
+(top_cm -> top, bottom_cm -> bottom, designation -> name, clay_pct
+-> clay, sand_pct -> sand, silt_pct -> silt). All other soilKey
+columns pass through unchanged. Site-level slots (lat / lon /
+country / parent_material / reference_*) are attached to the SPC's
+site table.
+
+Round-trip property: `from_aqp(as_aqp(pedon))` reproduces `pedon`
+exactly, modulo column-order canonicalisation.
+
+Requires the `aqp` package, listed in Suggests. Both functions
+raise a clear error if aqp is not installed.
+
+40 new unit tests in tests/testthat/test-v0934-aqp-interop.R cover
+single-pedon and multi-pedon conversion, column-name renaming,
+site-level metadata attachment, round-trip property, classify_*
+on round-tripped pedons, error handling on bogus input, and
+heterogeneous-schema multi-profile pad-rbind.
+
+## B. SiBCS Quartzarenico units bug fix (Item 4 from the v0.9.35 roadmap)
+
+`neossolo_quartzarenico()` used SiBCS Cap 1 textural-class thresholds
+in g/kg (sand >= 700, clay < 200) on PERCENT data (sand_pct, clay_pct
+in 0-100 range). The function never fired on properly-loaded FEBR
+data and routed all 9 FEBR Quartzarenicos to the catch-all
+"Regoliticos" subordem.
+
+Fix: thresholds converted to %, sand >= 70 %, clay < 20 %. The
+docstring explicitly notes the SiBCS-vs-soilKey unit convention.
+
+## A/B on Embrapa FEBR (n=554)
+
+| Level    | v0.9.33 | v0.9.35 | Delta |
+|----------|---:|---:|---:|
+| Order    | 56.68 % | 56.68 % | 0.00 pp |
+| Subordem | 38.63 % | **39.17 %** | **+0.54 pp** |
+
+The +0.54 pp Subordem lift is small in absolute terms (~3 of the 9
+remaining Quartzarenicos correctly routed; 6 still mis-routed
+because they have NA sand/clay or designation patterns that don't
+match areia franca). The remaining 44 Argissolos / Latossolos
+"Vermelho / Amarelo / Vermelho-Amarelo" misses are
+**unfixable from FEBR data alone** -- the FEBR superconjunto.txt
+ships zero Munsell hue / value / chroma columns. These would
+require a separate Embrapa BDsolos export with field-survey
+morphology, or the SPADBE database.
+
+## C. Existing test fixture update
+
+`tests/testthat/test-sibcs-subordens-v071.R:173` previously asserted
+that `neossolo_quartzarenico` passes on a fixture using g/kg
+thresholds (sand_pct = 900, clay_pct = 50). Updated to realistic
+% values (sand_pct = 90, clay_pct = 5) so the fixture exercises
+the post-v0.9.35 logic correctly.
+
+Full suite: 3 075 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.33 (2026-05-03)
 
 The "WRB qualifier closure" release. **100 % structural coverage**
