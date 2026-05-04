@@ -45,6 +45,8 @@ navbar:
           href: "articles/v06_wosis_benchmark.html"
         - text: "End-to-end pipeline"
           href: "articles/v07_end_to_end_pipeline.html"
+        - text: "KSSL+NASIS multi-level USDA benchmark"
+          href: "articles/v08_kssl_nasis_multilevel.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
@@ -75,9 +77,32 @@ reference:
       - classify_sibcs
       - classify_sibcs_familia
       - classify_usda
+      - classify_all
       - classify_from_documents
       - classify_by_spectral_neighbours
       - soil_classes_at_location
+
+  - title: "Interoperability"
+    desc: >
+      Conversion to / from the canonical R soil-data ecosystem:
+      `aqp::SoilProfileCollection`. Round-trip preserving.
+    contents:
+      - as_aqp
+      - from_aqp
+
+  - title: "USDA Soil Taxonomy 13ed -- diagnostic helpers"
+    desc: >
+      Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic
+      / clay-films logic.
+    contents:
+      - argillic_clay_films_test
+
+  - title: "Benchmark utilities"
+    desc: >
+      Benchmark drivers and KSSL/NASIS label normalisers.
+    contents:
+      - canonicalise_kst13ed_gg
+      - normalise_kssl_subgroup
 
   - title: "WRB 2022 -- diagnostic horizons (Ch 3.1)"
     desc: "32/32 diagnostic horizons per IUSS Working Group WRB (2022) Ch 3.1."
@@ -388,6 +413,7 @@ articles:
       - v05_spatial_spectra_pipeline
       - v06_wosis_benchmark
       - v07_end_to_end_pipeline
+      - v08_kssl_nasis_multilevel
 
 news:
   releases:

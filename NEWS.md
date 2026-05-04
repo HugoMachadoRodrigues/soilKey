@@ -1,3 +1,47 @@
+# soilKey 0.9.37 (2026-05-03)
+
+The "pkgdown polish + edge-case hardening" release.
+
+## A. pkgdown reference + articles index closed
+
+`_pkgdown.yml` updated so `pkgdown::check_pkgdown()` reports zero
+missing topics:
+
+- New article entry: `v08_kssl_nasis_multilevel`.
+- New reference sections:
+  - **Interoperability** (`as_aqp`, `from_aqp`).
+  - **USDA Soil Taxonomy 13ed diagnostic helpers**
+    (`argillic_clay_films_test`).
+  - **Benchmark utilities** (`canonicalise_kst13ed_gg`,
+    `normalise_kssl_subgroup`).
+- `classify_all` added to "Classification entry points".
+
+The pkgdown CI workflow (`.github/workflows/pkgdown.yaml`) was
+already wired in v0.9.x; the v0.9.37 config closes the index gap
+that was producing build warnings on the GH Pages deploy.
+
+## B. Edge-case stress tests
+
+29 new in `tests/testthat/test-v0937-edge-cases.R` covering
+adversarial inputs that should NOT crash the classifier:
+
+- empty horizons table (zero rows)
+- single-horizon profile
+- all-NA horizon rows
+- horizons in reverse order (deepest first)
+- zero-thickness horizon (top == bottom)
+- impossibly deep profile (10 m, 4 horizons)
+- non-ASCII designations (PT-BR diacritics)
+- duplicate horizon designations (A / A / Bw)
+- pedon with missing optional site fields (no country, no
+  parent_material, no lat/lon)
+- `classify_all()` graceful failure on a broken pedon
+
+All 29 pass. The classifiers were already robust to most of these;
+the test suite now formally guarantees the behaviour.
+
+Full suite: 3 104 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.36 (2026-05-03)
 
 The "WoSIS rebench + performance docs" release. Two measurement
