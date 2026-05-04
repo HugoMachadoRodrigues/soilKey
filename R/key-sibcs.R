@@ -111,6 +111,65 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 }
 
 
+# ============================================================
+# v0.9.45 -- color-undetermined graceful path.
+#
+# Subordens cuja regra discrimina por matiz Munsell em B (PV/PA/PVA,
+# LV/LA/LVA, NV/NB/NX, TC/TX) cairam silenciosamente no catch-all
+# quando o matiz nao foi medido. O codigo abaixo detecta esse padrao
+# e marca o resultado como "cor a determinar", para o classificador
+# parar no nivel da Ordem e expor o atributo que resolveria a duvida.
+# ============================================================
+
+.SIBCS_COLOR_CATCH_ALL_CODES <- c("PVA", "LVA", "NX", "TX")
+
+#' Detecta fallback "cor a determinar" no nivel de subordem SiBCS
+#'
+#' Quando a subordem atribuida e uma catch-all de cor (PVA, LVA, NX,
+#' TX) E pelo menos um predicado anterior na trace falhou exatamente
+#' por ausencia de \code{munsell_hue_moist}, considera-se que o
+#' fallback foi forçado pela ausencia de matiz, nao pelo conteudo
+#' do perfil. Retorna NULL se a situacao nao se aplica.
+#'
+#' @keywords internal
+.detect_color_undetermined_fallback <- function(sub_result, subordem) {
+  if (is.null(subordem)) return(NULL)
+  if (!isTRUE(subordem$code %in% .SIBCS_COLOR_CATCH_ALL_CODES)) return(NULL)
+  trace <- sub_result$trace %||% list()
+  if (length(trace) == 0L) return(NULL)
+  earlier_codes <- setdiff(names(trace), subordem$code)
+  if (length(earlier_codes) == 0L) return(NULL)
+  hue_blocked <- vapply(earlier_codes, function(code) {
+    t <- trace[[code]]
+    miss <- t$missing %||% character(0)
+    !isTRUE(t$passed) && "munsell_hue_moist" %in% miss
+  }, logical(1))
+  if (!any(hue_blocked)) return(NULL)
+  rejected_codes <- earlier_codes[hue_blocked]
+  rejected_names <- vapply(rejected_codes, function(code) {
+    trace[[code]]$name %||% code
+  }, character(1))
+  list(
+    detected = TRUE,
+    missing_attribute = "munsell_hue_moist_horizon_B",
+    horizon_target = "B",
+    fallback_subordem = list(code = subordem$code, name = subordem$name),
+    rejected_alternatives = data.frame(
+      code = rejected_codes,
+      name = rejected_names,
+      stringsAsFactors = FALSE
+    ),
+    would_resolve_with = "munsell_hue_moist_horizon_B",
+    reason = sprintf(
+      paste0("Subordem '%s' atribuida por fallback porque o matiz ",
+             "Munsell em B esta ausente. Medindo a cor seria possivel ",
+             "discriminar entre: %s."),
+      subordem$name, paste(rejected_names, collapse = ", ")
+    )
+  )
+}
+
+
 #' Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o + 3o + 4o niveis)
 #'
 #' v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
@@ -152,9 +211,17 @@ classify_sibcs <- function(pedon,
   sub_result <- run_sibcs_subordem(pedon, ordem$code, rules)
   subordem   <- sub_result$assigned
 
+  # v0.9.45: detectar fallback "cor a determinar" -- quando a subordem
+  # atribuida e a catch-all de cor (PVA/LVA/NX/TX) E pelo menos um
+  # predicado anterior falhou por ausencia de matiz Munsell em B, o
+  # classificador deve parar no nivel da ordem e expor o gap em vez
+  # de aceitar o catch-all em silencio.
+  color_fallback <- .detect_color_undetermined_fallback(sub_result, subordem)
+
   # Nivel 3: grande grupo (v0.7.3) -- so desce se a subordem foi
-  # resolvida e a ordem tem bloco de Grandes Grupos no YAML.
-  gg_result <- if (!is.null(subordem))
+  # resolvida E nao houve fallback de cor; ordem tem bloco de Grandes
+  # Grupos no YAML.
+  gg_result <- if (!is.null(subordem) && is.null(color_fallback))
                  run_sibcs_grande_grupo(pedon, subordem$code, rules)
                else list(assigned = NULL, trace = list())
   gg <- gg_result$assigned
@@ -194,8 +261,12 @@ classify_sibcs <- function(pedon,
   }
 
   # Display name = (Subgrupo + Familia) > Subgrupo > Grande Grupo > ...
+  # v0.9.45: quando o fallback "cor a determinar" e detectado, o
+  # display name para no nivel da Ordem com sufixo explicativo, em
+  # vez de aceitar o catch-all PVA/LVA/NX/TX em silencio.
   display_name <- if (!is.null(sg))            sg$name
                   else if (!is.null(gg))       gg$name
+                  else if (!is.null(color_fallback)) sprintf("%s (cor a determinar)", ordem$name)
                   else if (!is.null(subordem)) subordem$name
                   else                         ordem$name
   if (isTRUE(include_familia) && !is.null(familia_lbl) &&
@@ -211,12 +282,23 @@ classify_sibcs <- function(pedon,
     subgrupos             = sg_result$trace,
     subgrupo_assigned     = sg,
     familia               = familia_attrs,
-    familia_label         = familia_lbl
+    familia_label         = familia_lbl,
+    color_undetermined    = color_fallback
   )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)
   grade        <- compute_evidence_grade(pedon, key_result$trace)
   missing_data <- collect_missing_attributes(key_result$trace)
+
+  # v0.9.45: quando ha fallback de cor, garantir que
+  # munsell_hue_moist_horizon_B aparece em missing_data (usuario pode
+  # consultar o atributo a medir) e rebaixar evidence_grade para no
+  # maximo "C" (classificacao parcial).
+  if (!is.null(color_fallback)) {
+    missing_data <- unique(c(missing_data,
+                              color_fallback$would_resolve_with))
+    if (grade %in% c("A", "B", NA_character_)) grade <- "C"
+  }
 
   warnings <- character(0)
   if (length(missing_data) > 0L) {
@@ -226,6 +308,9 @@ classify_sibcs <- function(pedon,
     )
     if      (on_missing == "warn")  warnings <- c(warnings, msg)
     else if (on_missing == "error") rlang::abort(msg)
+  }
+  if (!is.null(color_fallback)) {
+    warnings <- c(warnings, color_fallback$reason)
   }
 
   ClassificationResult$new(
