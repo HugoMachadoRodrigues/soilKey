@@ -1,3 +1,41 @@
+# soilKey 0.9.38 (2026-05-03)
+
+The "demo gallery" release. A new `demo()` registry exposing 6
+published soil profiles classified end-to-end across all three
+systems, for pedagogical use.
+
+`demo("classify_gallery", package = "soilKey")` runs 6 canonical
+published profiles through `classify_wrb2022` + `classify_sibcs` +
+`classify_usda` and prints the resulting names + evidence grades:
+
+1. **Latossolo Vermelho Distroferrico** -- Embrapa SiBCS 5a ed.
+   Annex A profile A-04 (Mata Atlantica, Brazil; gneiss).
+2. **Chernozem** -- IUSS WRB (2022) Annex 1 didactic exemplar
+   (central-European steppe; loess; very deep organic-rich Ah).
+3. **Podzol** -- Soil Atlas of Europe (2005) Plate 19 (boreal
+   forest, Sweden; glaciofluvial sand; E -> Bsh -> Bs sequence).
+4. **Vertisol** -- FAO Field Guide canonical Pellic Vertisol
+   (Deccan basalt residuum, India; smectite-rich black cotton).
+5. **Gleysol** -- Soil Atlas of Europe (2005) canonical Gleysol
+   (Netherlands; fluvial clay over peat; reduced grey-blue subsoil).
+6. **Histosol** -- WRB 2022 Annex 1 didactic Ombric Fibric
+   Histosol (Estonia; raised Sphagnum bog; rainwater-fed).
+
+Each profile is built from data published in canonical soil-science
+sources, with citations inline. Registered via `demo/00Index` and
+exercises ALL three keys plus the v0.9.33 WRB qualifier closure
+(e.g. Profile 6 fires Floatic + Folic + Hemic + Ombric + Histosol,
+demonstrating the v0.9.33 Ombric / Floatic implementations
+end-to-end).
+
+Pedagogical use cases:
+
+- Field practitioners: see the 3-system mapping for soils they know.
+- Students: study one profile + walk through the key-trace.
+- Researchers: a sanity-check fixture set distinct from the 31
+  canonical fixtures (which are synthetic by design; the demo
+  gallery uses real published profiles).
+
 # soilKey 0.9.37 (2026-05-03)
 
 The "pkgdown polish + edge-case hardening" release.
