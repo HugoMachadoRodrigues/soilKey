@@ -90,6 +90,13 @@ reference:
       - as_aqp
       - from_aqp
 
+  - title: "Interactive Shiny app"
+    desc: >
+      Drag-and-drop CSV web interface; renders all three classifications
+      side-by-side and exports a self-contained HTML report.
+    contents:
+      - run_classify_app
+
   - title: "USDA Soil Taxonomy 13ed -- diagnostic helpers"
     desc: >
       Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic

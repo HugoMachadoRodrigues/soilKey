@@ -1,3 +1,60 @@
+# soilKey 0.9.39 (2026-05-03)
+
+The "interactive Shiny app" release. A drag-and-drop web interface
+that renders all three classifications side-by-side, exports a
+self-contained HTML report, and works for non-R users (agronomists,
+students, field workers).
+
+## Shiny app (Item 3 from the polish roadmap)
+
+`run_classify_app()`: convenience wrapper that locates the bundled
+Shiny application at `inst/shiny/classify_app/` and launches it via
+`shiny::runApp()`. Requires the `shiny` and `DT` packages (both in
+Suggests; the wrapper raises a clear error if missing).
+
+App features:
+
+- **Horizons input**: upload a CSV (one row per horizon, columns
+  matching the soilKey horizon schema -- `top_cm`, `bottom_cm`,
+  `designation`, plus any of `clay_pct`, `sand_pct`, `silt_pct`,
+  `ph_h2o`, `oc_pct`, `bs_pct`, `cec_cmol`, ...). Falls back to a
+  built-in sample (Latossolo Vermelho-style) when no file is loaded.
+- **Site metadata**: profile id, lat/lon, country, parent material.
+- **Classification**: one button runs `classify_all()` and shows
+  the WRB 2022 / SiBCS 5a / USDA ST 13ed names plus evidence grades.
+- **Trace tab**: print the full key-trace for any system to inspect
+  which RSGs / Orders were tested and which diagnostics fired.
+- **HTML report download**: self-contained, no external network
+  requests; suitable for emailing or attaching to a laudo.
+- **Starter template download**: a sample CSV with the canonical
+  column structure for users to clone and modify.
+
+Use cases (mirrors the v0.9.38 demo gallery but interactive):
+
+- A field agronomist with a tablet: upload field-survey CSV,
+  classify, download report, attach to client deliverable.
+- A graduate student: paste in textbook profile data, study how
+  the 3 systems classify the same soil.
+- A research group: batch-process by repeated upload, exports
+  serve as paper supplements.
+
+The app does NOT require any internet connection beyond bootstrap
+loading (Shiny CDN); all classification runs locally in the user's
+R session.
+
+## Tests
+
+4 new in `tests/testthat/test-v0939-shiny-app.R`:
+
+- `run_classify_app()` errors clearly when shiny is missing
+- `run_classify_app()` errors clearly when DT is missing
+- Shiny app dir exists at `inst/shiny/classify_app/`
+- `app.R` parses without syntax errors
+
+The active runtime tests are deliberately minimal -- a full Shiny
+test would require `shinytest2` + browser automation, deferred to
+a future release.
+
 # soilKey 0.9.38 (2026-05-03)
 
 The "demo gallery" release. A new `demo()` registry exposing 6
