@@ -678,10 +678,15 @@ neossolo_quartzarenico <- function(pedon) {
   }
   sand <- h$sand_pct[layers_in_150]
   clay <- h$clay_pct[layers_in_150]
-  # textura areia (sand >= 700, clay < 150) ou areia franca (sand >= 700,
-  # clay < 200)
+  # SiBCS Cap 1 textural classes are defined in g/kg (areia >= 700 g/kg
+  # AND clay < 150-200 g/kg). v0.9.35: our schema stores sand_pct and
+  # clay_pct in PERCENT (0-100), so convert thresholds: sand >= 70 %,
+  # clay < 20 % (areia franca; the more permissive of the two textura
+  # arenosa cutoffs). The pre-v0.9.35 code used 700/200 unconverted,
+  # which never fired on properly-loaded FEBR data and caused the 9
+  # FEBR Quartzarenicos to be misrouted to Regoliticos.
   is_arenoso <- !is.na(sand) & !is.na(clay) &
-                  sand >= 700 & clay < 200
+                  sand >= 70 & clay < 20
   passed <- length(is_arenoso) > 0L && all(is_arenoso, na.rm = TRUE)
   DiagnosticResult$new(
     name = "neossolo_quartzarenico", passed = passed,

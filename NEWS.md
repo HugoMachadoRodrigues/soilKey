@@ -1,3 +1,77 @@
+# soilKey 0.9.35 (2026-05-03)
+
+The "aqp interop + units fix" release. Two coordinated changes that
+make soilKey both more useful (interoperable with the canonical R
+soil package) and more accurate (one units bug repaired in SiBCS
+Cap 12).
+
+## A. aqp interoperability (Item 1 from the v0.9.34 roadmap)
+
+`{aqp}` (Algorithms for Quantitative Pedology) is the canonical R
+representation for pedological data. v0.9.35 adds two new exported
+helpers that bridge soilKey to / from `aqp::SoilProfileCollection`
+(SPC):
+
+  as_aqp(pedon)   -> SoilProfileCollection
+  from_aqp(spc)   -> list of PedonRecord
+
+Standard column names are renamed to aqp's canonical convention
+(top_cm -> top, bottom_cm -> bottom, designation -> name, clay_pct
+-> clay, sand_pct -> sand, silt_pct -> silt). All other soilKey
+columns pass through unchanged. Site-level slots (lat / lon /
+country / parent_material / reference_*) are attached to the SPC's
+site table.
+
+Round-trip property: `from_aqp(as_aqp(pedon))` reproduces `pedon`
+exactly, modulo column-order canonicalisation.
+
+Requires the `aqp` package, listed in Suggests. Both functions
+raise a clear error if aqp is not installed.
+
+40 new unit tests in tests/testthat/test-v0934-aqp-interop.R cover
+single-pedon and multi-pedon conversion, column-name renaming,
+site-level metadata attachment, round-trip property, classify_*
+on round-tripped pedons, error handling on bogus input, and
+heterogeneous-schema multi-profile pad-rbind.
+
+## B. SiBCS Quartzarenico units bug fix (Item 4 from the v0.9.35 roadmap)
+
+`neossolo_quartzarenico()` used SiBCS Cap 1 textural-class thresholds
+in g/kg (sand >= 700, clay < 200) on PERCENT data (sand_pct, clay_pct
+in 0-100 range). The function never fired on properly-loaded FEBR
+data and routed all 9 FEBR Quartzarenicos to the catch-all
+"Regoliticos" subordem.
+
+Fix: thresholds converted to %, sand >= 70 %, clay < 20 %. The
+docstring explicitly notes the SiBCS-vs-soilKey unit convention.
+
+## A/B on Embrapa FEBR (n=554)
+
+| Level    | v0.9.33 | v0.9.35 | Delta |
+|----------|---:|---:|---:|
+| Order    | 56.68 % | 56.68 % | 0.00 pp |
+| Subordem | 38.63 % | **39.17 %** | **+0.54 pp** |
+
+The +0.54 pp Subordem lift is small in absolute terms (~3 of the 9
+remaining Quartzarenicos correctly routed; 6 still mis-routed
+because they have NA sand/clay or designation patterns that don't
+match areia franca). The remaining 44 Argissolos / Latossolos
+"Vermelho / Amarelo / Vermelho-Amarelo" misses are
+**unfixable from FEBR data alone** -- the FEBR superconjunto.txt
+ships zero Munsell hue / value / chroma columns. These would
+require a separate Embrapa BDsolos export with field-survey
+morphology, or the SPADBE database.
+
+## C. Existing test fixture update
+
+`tests/testthat/test-sibcs-subordens-v071.R:173` previously asserted
+that `neossolo_quartzarenico` passes on a fixture using g/kg
+thresholds (sand_pct = 900, clay_pct = 50). Updated to realistic
+% values (sand_pct = 90, clay_pct = 5) so the fixture exercises
+the post-v0.9.35 logic correctly.
+
+Full suite: 3 075 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.
+
 # soilKey 0.9.33 (2026-05-03)
 
 The "WRB qualifier closure" release. **100 % structural coverage**
