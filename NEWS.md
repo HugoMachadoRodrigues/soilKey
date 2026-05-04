@@ -1,3 +1,58 @@
+# soilKey 0.9.46 (2026-05-04)
+
+The "OSSL pretrained models, end-to-end" release. Closes Module 4
+of the original soilKey scope by giving users a single-line path
+from a downloaded OSSL library to fully-attributed predictions on
+a new \code{PedonRecord}.
+
+## What changed
+
+`R/spectra-train.R` adds three new exported functions plus a
+`predict()` / `print()` S3 method:
+
+- **`train_pls_from_ossl(ossl_library, properties, ...)`** -- per-
+  property PLSR training over a downloaded OSSL subset. Picks
+  optimal `ncomp` via 10-fold CV, applies the same Vis-NIR
+  preprocessing the OSSL distribution uses (`snv+sg1` by default),
+  returns a named list of `soilKey_pls_model` objects compatible
+  with `predict_ossl_pretrained()` and `fill_from_spectra()`.
+
+- **`predict_from_spectra(pedon_or_spectra, models, ...)`** --
+  named ergonomic API. Accepts a `PedonRecord` (delegates to
+  `fill_from_spectra(method = "pretrained")` with provenance
+  writes) OR a raw numeric matrix / vector (returns long-form
+  prediction data.table directly). Auto-applies the preprocessing
+  recorded on the trained models.
+
+- **`save_ossl_models()` / `load_ossl_models()`** -- RDS
+  persistence with shape validation; soilKey version, training
+  time, preprocess label and per-property diagnostics preserved
+  as attributes.
+
+- **`predict.soilKey_pls_model` / `print.soilKey_pls_model`** --
+  S3 methods registered in NAMESPACE. `predict()` returns the
+  canonical `value / pi95_low / pi95_high` schema; the 95% PI is
+  built from the cross-validated training RMSE.
+
+## Why this matters
+
+Until v0.9.45, the package shipped `download_ossl_subset()`,
+`predict_ossl_pretrained(ossl_models)` and
+`fill_from_spectra(method = "pretrained")` -- but no loop to turn
+a downloaded `ossl_library` into the `ossl_models` list those
+functions consume. v0.9.46 closes that gap.
+
+## Tests
+
+13 new tests in `test-v0946-pls-training.R` (41 expectations) --
+pass when `pls` is available, skip cleanly when it is not.
+R CMD check Status OK.
+
+## DESCRIPTION
+
+`pls` added to Suggests (gated via `requireNamespace()`).
+
+
 # soilKey 0.9.45 (2026-05-04)
 
 The "color-undetermined graceful path" release. Fixes the
