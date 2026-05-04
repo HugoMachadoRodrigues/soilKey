@@ -1,3 +1,83 @@
+# soilKey 0.9.47 (2026-05-04)
+
+The "Vis-NIR -> Munsell via CIE colorimetry" release. Operational
+unblock for the v0.9.35 Argissolo Vermelho / Amarelo / Vermelho-
+Amarelo color-confusion case **without** waiting for the Embrapa
+BDsolos export -- whenever the user has Vis-NIR spectra (e.g. from
+the OSSL), the Munsell hue can be recovered physically.
+
+## Pipeline
+
+`reflectance R(lambda)` (380-780 nm range) integrated against the
+**CIE 1931 2-degree Standard Observer** color-matching functions
+weighted by the **D65 illuminant**, then converted XYZ -> xyY ->
+Munsell HVC via the **Munsell renotation interpolation** in the
+`munsellinterpol` CRAN package. No model training, no OSSL fit:
+the answer is fixed by physics + a public colorimetry lookup.
+
+## New API
+
+- **`predict_xyz_from_spectra(spectra, wavelengths)`** -- CIE XYZ
+  tristimulus on the standard scale (Y = 100 for a perfect
+  diffuse white). Auto-detects whether reflectance is decimal
+  (0..1) or percent (0..100). Dependency-free (CIE table bundled
+  in `R/sysdata.rda`).
+
+- **`predict_lab_from_spectra(spectra, wavelengths)`** -- CIE Lab
+  via standard XYZ -> Lab transform under D65 / 2-degree observer.
+
+- **`predict_munsell_from_spectra(spectra, wavelengths,
+  round_chip = TRUE)`** -- the headline function. Returns
+  `munsell_hue_moist`, `munsell_value_moist`,
+  `munsell_chroma_moist`, `munsell_string` (e.g. `"7.5YR 4/6"`).
+  Requires `munsellinterpol`; clear error if missing.
+
+- **`fill_munsell_from_spectra(pedon, overwrite, verbose)`** --
+  high-level helper. Iterates over `pedon$spectra$vnir`, runs the
+  prediction per horizon and writes the result via
+  `add_measurement(..., source = "predicted_spectra")`. After
+  this call, re-run `classify_sibcs()` -- the v0.9.45
+  "color-undetermined" fallback lifts and the descent proceeds to
+  subordem / GG / SG.
+
+## Why this matters
+
+The v0.9.45 fallback turned the 44 Argissolo profiles whose
+Munsell hue was missing into "Argissolos (cor a determinar)" with
+`evidence_grade = "C"`. v0.9.47 closes the loop: if the same
+profile has Vis-NIR (from OSSL or any laboratory spectrometer),
+**fill_munsell_from_spectra() -> classify_sibcs()** descends all
+the way to `Argissolo Vermelho Distrofico` (or whatever the
+spectrum implies), with `evidence_grade = "B"` (predicted_spectra
+provenance).
+
+Combined with v0.9.46 `predict_from_spectra()` (which fills clay /
+sand / silt / pH / OC / CEC), o pacote agora classifica perfis
+brasileiros **direto a partir de espectro**, sem morfologia
+descritiva nem morfologia laboratorial -- exatamente o que
+destrava casos onde a Embrapa BDsolos fornece so a quimica.
+
+## Tests
+
+13 new tests in `test-v0947-munsell-prediction.R` (36
+expectations). XYZ + Lab tests run unconditionally (CIE table is
+internal data). Munsell HVC tests skip cleanly when
+`munsellinterpol` is absent. R CMD check Status OK.
+
+## Internal data
+
+`R/sysdata.rda` now includes `.cie_d65_5nm` (81 rows from 380 to
+780 nm at 5 nm steps; columns: wavelength, xbar, ybar, zbar, D65).
+Generated once via `colorscience::ciexyz31` and
+`colorscience::illuminants$D65`; bundled directly so soilKey has
+no runtime dependency on `colorscience`.
+
+## DESCRIPTION
+
+`munsellinterpol` added to Suggests (gated via
+`requireNamespace()`).
+
+
 # soilKey 0.9.46 (2026-05-04)
 
 The "OSSL pretrained models, end-to-end" release. Closes Module 4
