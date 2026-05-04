@@ -1,3 +1,262 @@
+# soilKey 0.9.48 (2026-05-04)
+
+The "MapBiomas Solos + SoilGrids 250m raster lookup" release.
+Adds the **fourth and fifth spatial validation axes** for soilKey,
+complementing the ESDB raster axis from v0.9.44.
+
+## What changed
+
+`R/spatial-lookups.R` exports two new helpers, both shaped after
+`lookup_esdb()`:
+
+- **`lookup_mapbiomas_solos(coords, raster_path, legend = NULL)`**
+  -- Brazilian SiBCS national raster (MapBiomas Solos
+  Collection 2, 30 m, 2023+). Local-file lookup; user passes the
+  unpacked GeoTIFF path. Optional 2-column legend
+  (`value, class_name`) decodes integer codes to SiBCS class
+  strings. Auto-reprojection from WGS84.
+
+- **`lookup_soilgrids(coords, property, depth, quantile, baseurl,
+  raw)`** -- Global ISRIC SoilGrids 250m soil property
+  predictions, read **directly from the canonical Cloud-Optimized
+  GeoTIFF endpoint** at
+  `https://files.isric.org/soilgrids/latest/data/`. No download
+  required; only the pixel under each query coordinate is
+  transferred over HTTPS. Supports all 11 SoilGrids properties
+  (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, ocd, ocs,
+  cfvo) at all 6 standard depths (0-5, 5-15, 15-30, 30-60,
+  60-100, 100-200 cm) and all 5 quantiles (mean, Q0.05, Q0.5,
+  Q0.95, uncertainty). Returns values in conventional units via
+  the published per-property scale factors (clay/silt/sand
+  percent, pH, g/kg, cmol(c)/kg, g/cm^3).
+
+## Why this matters
+
+Combined with v0.9.44 `lookup_esdb()`, soilKey now offers **three
+spatial validation axes**:
+
+  - **Europe**: ESDB Raster Library 1 km (WRBLV1, WRBFU,
+    FAO90LV1) -- canonical reference per coordinate.
+  - **Brazil**: MapBiomas Solos 30 m -- canonical SiBCS class per
+    coordinate (national mapping).
+  - **Global**: SoilGrids 250 m -- continuous soil property
+    predictions (clay, pH, OC, etc.) per coordinate.
+
+Any `PedonRecord` with lat/lon can be cross-checked against the
+canonical map at its location -- supports the `prior_check`
+field of `ClassificationResult`.
+
+## Tests
+
+10 new tests in `test-v0948-spatial-lookups.R` (25 expectations).
+MapBiomas tests build a synthetic 4x4 raster on the fly via terra
+so they run unconditionally. SoilGrids tests cover argument
+validation + graceful NA on unreachable URL; live-network smoke
+test is opt-in via `SOILKEY_NETWORK_TESTS=1` (default skip on CI).
+R CMD check Status OK.
+
+
+# soilKey 0.9.47 (2026-05-04)
+
+The "Vis-NIR -> Munsell via CIE colorimetry" release. Operational
+unblock for the v0.9.35 Argissolo Vermelho / Amarelo / Vermelho-
+Amarelo color-confusion case **without** waiting for the Embrapa
+BDsolos export -- whenever the user has Vis-NIR spectra (e.g. from
+the OSSL), the Munsell hue can be recovered physically.
+
+## Pipeline
+
+`reflectance R(lambda)` (380-780 nm range) integrated against the
+**CIE 1931 2-degree Standard Observer** color-matching functions
+weighted by the **D65 illuminant**, then converted XYZ -> xyY ->
+Munsell HVC via the **Munsell renotation interpolation** in the
+`munsellinterpol` CRAN package. No model training, no OSSL fit:
+the answer is fixed by physics + a public colorimetry lookup.
+
+## New API
+
+- **`predict_xyz_from_spectra(spectra, wavelengths)`** -- CIE XYZ
+  tristimulus on the standard scale (Y = 100 for a perfect
+  diffuse white). Auto-detects whether reflectance is decimal
+  (0..1) or percent (0..100). Dependency-free (CIE table bundled
+  in `R/sysdata.rda`).
+
+- **`predict_lab_from_spectra(spectra, wavelengths)`** -- CIE Lab
+  via standard XYZ -> Lab transform under D65 / 2-degree observer.
+
+- **`predict_munsell_from_spectra(spectra, wavelengths,
+  round_chip = TRUE)`** -- the headline function. Returns
+  `munsell_hue_moist`, `munsell_value_moist`,
+  `munsell_chroma_moist`, `munsell_string` (e.g. `"7.5YR 4/6"`).
+  Requires `munsellinterpol`; clear error if missing.
+
+- **`fill_munsell_from_spectra(pedon, overwrite, verbose)`** --
+  high-level helper. Iterates over `pedon$spectra$vnir`, runs the
+  prediction per horizon and writes the result via
+  `add_measurement(..., source = "predicted_spectra")`. After
+  this call, re-run `classify_sibcs()` -- the v0.9.45
+  "color-undetermined" fallback lifts and the descent proceeds to
+  subordem / GG / SG.
+
+## Why this matters
+
+The v0.9.45 fallback turned the 44 Argissolo profiles whose
+Munsell hue was missing into "Argissolos (cor a determinar)" with
+`evidence_grade = "C"`. v0.9.47 closes the loop: if the same
+profile has Vis-NIR (from OSSL or any laboratory spectrometer),
+**fill_munsell_from_spectra() -> classify_sibcs()** descends all
+the way to `Argissolo Vermelho Distrofico` (or whatever the
+spectrum implies), with `evidence_grade = "B"` (predicted_spectra
+provenance).
+
+Combined with v0.9.46 `predict_from_spectra()` (which fills clay /
+sand / silt / pH / OC / CEC), o pacote agora classifica perfis
+brasileiros **direto a partir de espectro**, sem morfologia
+descritiva nem morfologia laboratorial -- exatamente o que
+destrava casos onde a Embrapa BDsolos fornece so a quimica.
+
+## Tests
+
+13 new tests in `test-v0947-munsell-prediction.R` (36
+expectations). XYZ + Lab tests run unconditionally (CIE table is
+internal data). Munsell HVC tests skip cleanly when
+`munsellinterpol` is absent. R CMD check Status OK.
+
+## Internal data
+
+`R/sysdata.rda` now includes `.cie_d65_5nm` (81 rows from 380 to
+780 nm at 5 nm steps; columns: wavelength, xbar, ybar, zbar, D65).
+Generated once via `colorscience::ciexyz31` and
+`colorscience::illuminants$D65`; bundled directly so soilKey has
+no runtime dependency on `colorscience`.
+
+## DESCRIPTION
+
+`munsellinterpol` added to Suggests (gated via
+`requireNamespace()`).
+
+
+# soilKey 0.9.46 (2026-05-04)
+
+The "OSSL pretrained models, end-to-end" release. Closes Module 4
+of the original soilKey scope by giving users a single-line path
+from a downloaded OSSL library to fully-attributed predictions on
+a new \code{PedonRecord}.
+
+## What changed
+
+`R/spectra-train.R` adds three new exported functions plus a
+`predict()` / `print()` S3 method:
+
+- **`train_pls_from_ossl(ossl_library, properties, ...)`** -- per-
+  property PLSR training over a downloaded OSSL subset. Picks
+  optimal `ncomp` via 10-fold CV, applies the same Vis-NIR
+  preprocessing the OSSL distribution uses (`snv+sg1` by default),
+  returns a named list of `soilKey_pls_model` objects compatible
+  with `predict_ossl_pretrained()` and `fill_from_spectra()`.
+
+- **`predict_from_spectra(pedon_or_spectra, models, ...)`** --
+  named ergonomic API. Accepts a `PedonRecord` (delegates to
+  `fill_from_spectra(method = "pretrained")` with provenance
+  writes) OR a raw numeric matrix / vector (returns long-form
+  prediction data.table directly). Auto-applies the preprocessing
+  recorded on the trained models.
+
+- **`save_ossl_models()` / `load_ossl_models()`** -- RDS
+  persistence with shape validation; soilKey version, training
+  time, preprocess label and per-property diagnostics preserved
+  as attributes.
+
+- **`predict.soilKey_pls_model` / `print.soilKey_pls_model`** --
+  S3 methods registered in NAMESPACE. `predict()` returns the
+  canonical `value / pi95_low / pi95_high` schema; the 95% PI is
+  built from the cross-validated training RMSE.
+
+## Why this matters
+
+Until v0.9.45, the package shipped `download_ossl_subset()`,
+`predict_ossl_pretrained(ossl_models)` and
+`fill_from_spectra(method = "pretrained")` -- but no loop to turn
+a downloaded `ossl_library` into the `ossl_models` list those
+functions consume. v0.9.46 closes that gap.
+
+## Tests
+
+13 new tests in `test-v0946-pls-training.R` (41 expectations) --
+pass when `pls` is available, skip cleanly when it is not.
+R CMD check Status OK.
+
+## DESCRIPTION
+
+`pls` added to Suggests (gated via `requireNamespace()`).
+
+
+# soilKey 0.9.45 (2026-05-04)
+
+The "color-undetermined graceful path" release. Fixes the
+**v0.9.35 Argissolo Vermelho / Amarelo / Vermelho-Amarelo
+silent-fallback case** (44 perfis brasileiros caiam silenciosamente
+em PVA quando o matiz Munsell em B nao foi medido).
+
+## What changed
+
+`classify_sibcs()` agora detecta o padrao "subordem catch-all de cor
+atribuida porque o matiz Munsell esta ausente" e:
+
+- Para a descida no nivel da Ordem (nao seleciona Grande Grupo nem
+  Subgrupo);
+- Mostra `display_name` no formato `"<Ordem> (cor a determinar)"`
+  em vez do catch-all enganoso (`Argissolos Vermelho-Amarelos`);
+- Adiciona `munsell_hue_moist_horizon_B` em `missing_data`;
+- Rebaixa `evidence_grade` para `"C"` (classificacao parcial);
+- Anexa um warning em PT-BR explicando o fallback e listando as
+  alternativas que perderam por falta de matiz;
+- Expoe o registro estruturado em `result$trace$color_undetermined`
+  (lista com `detected`, `fallback_subordem`,
+  `rejected_alternatives`, `would_resolve_with`, `reason`).
+
+A logica generica funciona para os 4 catch-alls de cor do SiBCS:
+`PVA` (Argissolos Vermelho-Amarelos), `LVA` (Latossolos
+Vermelho-Amarelos), `NX` (Nitossolos Haplicos) e `TX` (Luvissolos
+Haplicos).
+
+## Por que isso e importante
+
+Antes do v0.9.45, um perfil com B textural mas sem matiz Munsell
+medido era classificado como **Argissolo Vermelho-Amarelo** com
+`evidence_grade = "A"` -- o pacote afirmava com confianca maxima
+uma classe especifica que so pode ser determinada com a cor. Os
+44 perfis flagados no v0.9.35 cairam exatamente nesse padrao.
+
+Agora a saida fica:
+
+```
+Name           : Argissolos (cor a determinar)
+RSG/Order      : Argissolos
+Evidence grade : C
+Missing data   : munsell_hue_moist_horizon_B, ...
+Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
+                 por fallback porque o matiz Munsell em B esta
+                 ausente. Medindo a cor seria possivel discriminar
+                 entre: Argissolos Vermelhos, Argissolos Amarelos,
+                 Argissolos Bruno-Acinzentados, Argissolos
+                 Acinzentados.
+```
+
+A interpretacao sai do "falsa precisao" e entra no "honesto sobre
+o que se sabe e o que ainda falta medir".
+
+## Tests
+
+- 9 novos em `test-v0945-color-undetermined.R` (27 expectations) --
+  todos passam. Suite completa: 3202 testes, 0 falhas.
+
+## Internal API
+
+- `.SIBCS_COLOR_CATCH_ALL_CODES` (constante interna).
+- `.detect_color_undetermined_fallback()` (helper interno).
+
+
 # soilKey 0.9.44 (2026-05-04)
 
 The "ESDB Raster Library lookup" release. Unblocks the
