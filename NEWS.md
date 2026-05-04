@@ -1,3 +1,56 @@
+# soilKey 0.9.36 (2026-05-03)
+
+The "WoSIS rebench + performance docs" release. Two measurement
+artefacts that document the v0.9.27 -> v0.9.35 trajectory and
+publish single-CPU throughput estimates for batch jobs.
+
+## A. WoSIS GraphQL re-bench (Item 5 from the polish roadmap)
+
+The bundled WoSIS sample (n=40, frozen 2026-05-03) re-classified
+through the v0.9.35 keys:
+
+  v0.9.27 sample, v0.9.27 keys: 5/30 = 16.7 % top-1 (n=30, smaller pull)
+  v0.9.30 sample, v0.9.30 keys: 5/30 = 16.7 %
+  v0.9.30 sample, v0.9.35 keys: **7/40 = 17.5 % top-1** (+0.8 pp)
+
+Modest but positive lift. The new bundled snapshot (40 profiles,
+v0.9.30) plus the v0.9.33 WRB qualifier closure (Floatic / Toxic /
+Ombric / Rheic / Endocalcic / Endogleyic / Endostagnic) plus the
+v0.9.31 Quartzipsamment broadening combine to lift +1 profile on
+this sample. The 40-profile sample is too small to measure CI
+tightly; on a larger pull (~500 profiles) we'd expect the lift to
+land in the +2-3 pp band.
+
+## B. Performance benchmark (Item 8 from the polish roadmap)
+
+`inst/benchmarks/reports/perf_v0935_2026-05-03.md` documents
+single-CPU wall-clock timing on the 44 canonical fixtures, mean of
+10 iterations:
+
+| System          | ms / pedon | pedons / sec |
+|-----------------|-----------:|-------------:|
+| classify_wrb2022 |  22 ms    |  45 pedons/s |
+| classify_sibcs   |  32 ms    |  32 pedons/s |
+| classify_usda    | 270 ms    |   4 pedons/s |
+
+USDA is ~10x slower than WRB / SiBCS because Path C (Order ->
+Suborder -> Great Group -> Subgroup) walks the full Subgroup tier
+which alone is ~85 % of runtime. A KSSL+NASIS n=2638 benchmark at
+all four levels completes in ~14 min wall-clock.
+
+README §"Performance" added with the headline numbers and link to
+the full report.
+
+## C. NEWS update
+
+Cumulative real-data trajectory across release series:
+
+  KSSL+NASIS GG       (v0.9.24 -> v0.9.35): 6.5 % -> 10.92 % (+4.42 pp)
+  Embrapa Subordem    (v0.9.27 -> v0.9.35): 9.93 % -> 39.17 % (+29.24 pp)
+  WoSIS top-1         (v0.9.13 -> v0.9.35): ~13 % -> 17.5 % (+4.5 pp,
+                                              small samples)
+  WRB qualifier cov   (v0.9.27 -> v0.9.35): 132/139 -> 139/139 (100 %)
+
 # soilKey 0.9.35 (2026-05-03)
 
 The "aqp interop + units fix" release. Two coordinated changes that

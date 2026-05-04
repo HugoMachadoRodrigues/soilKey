@@ -163,7 +163,19 @@ Each SiBCS YAML rule cross-references the page numbers of *Sistema Brasileiro de
 
 Each USDA YAML rule cross-references the chapter and page of *Keys to Soil Taxonomy 13th ed.* (e.g. *"Cap 9 Gelisols (pp 189-198)"*).
 
-### Code-level metrics (v0.9.27, 2026-05-03)
+### Performance (v0.9.36)
+
+Single-CPU wall-clock timing on the 44 canonical fixtures, mean of 10 iterations:
+
+| System | ms / pedon | pedons / sec |
+|---|---:|---:|
+| `classify_wrb2022` | 22 | **45** |
+| `classify_sibcs` | 32 | **32** |
+| `classify_usda` | 270 | **4** |
+
+USDA is ~10x slower than WRB / SiBCS because Path C (Order → Suborder → Great Group → Subgroup) walks the full subgroup tier (~85% of runtime). A 4-level multi-tier benchmark on KSSL+NASIS n=2 638 takes ~14 min wall-clock; a 1 000-pedon classify-all runs in ~5 minutes. See [`inst/benchmarks/reports/perf_v0935_2026-05-03.md`](inst/benchmarks/reports/perf_v0935_2026-05-03.md) for full timing.
+
+### Code-level metrics (v0.9.36, 2026-05-03)
 
 | Metric                            | Value |
 | :-------------------------------- | :---- |
