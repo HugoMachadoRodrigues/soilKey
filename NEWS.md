@@ -1,3 +1,61 @@
+# soilKey 0.9.48 (2026-05-04)
+
+The "MapBiomas Solos + SoilGrids 250m raster lookup" release.
+Adds the **fourth and fifth spatial validation axes** for soilKey,
+complementing the ESDB raster axis from v0.9.44.
+
+## What changed
+
+`R/spatial-lookups.R` exports two new helpers, both shaped after
+`lookup_esdb()`:
+
+- **`lookup_mapbiomas_solos(coords, raster_path, legend = NULL)`**
+  -- Brazilian SiBCS national raster (MapBiomas Solos
+  Collection 2, 30 m, 2023+). Local-file lookup; user passes the
+  unpacked GeoTIFF path. Optional 2-column legend
+  (`value, class_name`) decodes integer codes to SiBCS class
+  strings. Auto-reprojection from WGS84.
+
+- **`lookup_soilgrids(coords, property, depth, quantile, baseurl,
+  raw)`** -- Global ISRIC SoilGrids 250m soil property
+  predictions, read **directly from the canonical Cloud-Optimized
+  GeoTIFF endpoint** at
+  `https://files.isric.org/soilgrids/latest/data/`. No download
+  required; only the pixel under each query coordinate is
+  transferred over HTTPS. Supports all 11 SoilGrids properties
+  (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, ocd, ocs,
+  cfvo) at all 6 standard depths (0-5, 5-15, 15-30, 30-60,
+  60-100, 100-200 cm) and all 5 quantiles (mean, Q0.05, Q0.5,
+  Q0.95, uncertainty). Returns values in conventional units via
+  the published per-property scale factors (clay/silt/sand
+  percent, pH, g/kg, cmol(c)/kg, g/cm^3).
+
+## Why this matters
+
+Combined with v0.9.44 `lookup_esdb()`, soilKey now offers **three
+spatial validation axes**:
+
+  - **Europe**: ESDB Raster Library 1 km (WRBLV1, WRBFU,
+    FAO90LV1) -- canonical reference per coordinate.
+  - **Brazil**: MapBiomas Solos 30 m -- canonical SiBCS class per
+    coordinate (national mapping).
+  - **Global**: SoilGrids 250 m -- continuous soil property
+    predictions (clay, pH, OC, etc.) per coordinate.
+
+Any `PedonRecord` with lat/lon can be cross-checked against the
+canonical map at its location -- supports the `prior_check`
+field of `ClassificationResult`.
+
+## Tests
+
+10 new tests in `test-v0948-spatial-lookups.R` (25 expectations).
+MapBiomas tests build a synthetic 4x4 raster on the fly via terra
+so they run unconditionally. SoilGrids tests cover argument
+validation + graceful NA on unreachable URL; live-network smoke
+test is opt-in via `SOILKEY_NETWORK_TESTS=1` (default skip on CI).
+R CMD check Status OK.
+
+
 # soilKey 0.9.47 (2026-05-04)
 
 The "Vis-NIR -> Munsell via CIE colorimetry" release. Operational
