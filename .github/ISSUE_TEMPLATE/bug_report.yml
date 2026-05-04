@@ -1,0 +1,100 @@
+name: 🐛 Bug report
+description: A reproducible problem in soilKey (wrong classification, error, unexpected behaviour, ...)
+title: "[BUG] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. The faster we can reproduce it, the
+        faster it gets fixed. Please fill the template below as much as
+        you can. If a section doesn't apply, just write `n/a`.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: One-line summary
+      placeholder: e.g. "classify_wrb2022 fails with 'invalid argument' when the pedon has a single horizon"
+    validations:
+      required: true
+
+  - type: textarea
+    id: minimal-reproduction
+    attributes:
+      label: Minimal reproducible example
+      description: |
+        A self-contained R snippet that produces the bug. Use
+        `make_*_canonical()` helpers or build a minimal `PedonRecord`
+        with synthetic horizon data. Don't paste private soil data.
+      render: r
+      value: |
+        library(soilKey)
+
+        # PedonRecord that triggers the bug:
+        p <- PedonRecord$new(
+          site = list(id = "demo"),
+          horizons = data.table::data.table(
+            top_cm = 0, bottom_cm = 30, designation = "A",
+            clay_pct = 25
+          )
+        )
+
+        # Failing call:
+        classify_wrb2022(p)
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      placeholder: e.g. "Should classify as Cambisol or return NA gracefully"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      placeholder: e.g. "Errors with `subscript out of bounds` -- traceback below"
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Full error / traceback (if any)
+      render: shell
+      placeholder: |
+        Run `traceback()` immediately after the error and paste the result.
+
+  - type: textarea
+    id: session-info
+    attributes:
+      label: Session info
+      description: Output of `sessionInfo()` (OS, R version, package version, ...)
+      render: text
+
+  - type: dropdown
+    id: classification-system
+    attributes:
+      label: Which classification system is affected?
+      multiple: true
+      options:
+        - "WRB 2022"
+        - "SiBCS 5ª edição"
+        - "USDA Soil Taxonomy 13ed"
+        - "Multimodal extraction (VLM)"
+        - "Spatial / OSSL pipeline"
+        - "Benchmark drivers"
+        - "Other / not sure"
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: "I have searched existing issues and this is not a duplicate."
+          required: true
+        - label: "I included a reproducible example using public / synthetic data."
+          required: true

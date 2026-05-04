@@ -1,3 +1,137 @@
+# soilKey 0.9.43 (2026-05-04)
+
+The "JSON Schema for PedonRecord" release.
+
+`pedon_json_schema(as = c("list", "json"))` returns a Draft-2020-12
+JSON Schema describing the canonical PedonRecord structure (site +
+horizons + optional provenance). `validate_pedon_json(x)` validates
+a PedonRecord (or compatible list) against that schema via
+`jsonvalidate::json_validate()`.
+
+The schema is also written to `inst/schemas/pedon-schema.json`
+(10 KB) for direct file access by external systems (web APIs, ETL
+pipelines, multimodal extraction validation).
+
+7 new tests in `tests/testthat/test-v0943-json-schema.R`.
+
+
+# soilKey 0.9.42 (2026-05-04)
+
+The "sensitivity / fragility analysis" release.
+
+`classification_robustness()`: Monte-Carlo perturbation analysis.
+Perturb input attributes (clay/sand/silt ±5 %, pH ±0.2, OC ±10 %)
+and report how often the classification matches the unperturbed
+baseline. Useful for paper-grade claims like "X % of profiles are
+robust to a 5 % analytical-error perturbation".
+
+`batch_robustness(pedons, ...)`: across-pedons wrapper returning a
+tidy data.frame (one row per pedon: id, baseline, robustness,
+n_flipped).
+
+7 new tests in `tests/testthat/test-v0942-sensitivity.R`.
+
+
+# soilKey 0.9.41 (2026-05-04)
+
+The "PT-BR vignette" release.
+
+## v01_getting_started_pt.Rmd (Item 4)
+
+Adds a Brazilian-Portuguese translation of `v01_getting_started`.
+Same content (zero-code Shiny path; building a PedonRecord from
+scratch; classify_all + cross-system view; key-trace inspection;
+provenance + evidence grade), but written for the PT-BR pedology
+community where SiBCS is the daily-driver classification system.
+
+The vignette is wired into `_pkgdown.yml` both in the navbar
+("Articles" menu) and the `articles:` index, so it builds on
+push to main and deploys to the GitHub Pages site at
+<https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.html>.
+
+The Brazilian community uses Embrapa SiBCS (Santos et al. 2018)
+as the canonical taxonomic reference and discusses pedology in
+Portuguese; an English-only `v01` was a barrier for that audience.
+PT-BR vignettes for v02-v07 are deferred to a future release; the
+v01 translation is the highest-leverage starting point because
+it's the entry vignette that everyone reads first.
+
+# soilKey 0.9.40 (2026-05-04)
+
+The "community polish" release. Four small but high-ROI changes
+that signal project maturity to anyone visiting the repo.
+
+## A. CITATION.cff (Item 5)
+
+Adds `CITATION.cff` at the repository root in CFF (Citation File
+Format) v1.2.0. GitHub auto-renders this in the repo sidebar as
+"Cite this repository" with a copy-paste BibTeX block. The file
+includes:
+
+- Project metadata (title, abstract, version, DOI, license, repo).
+- Author block with ORCID and UFRRJ affiliation.
+- Keywords for citation indexing.
+- `references` block with the three canonical books (WRB 2022,
+  KST 13ed, SiBCS 5ª ed.) so citation tools can chain through to
+  the underlying taxonomic sources.
+
+Listed in `.Rbuildignore` so it lives at the repo root for GitHub
+without bloating the package tarball.
+
+## B. GitHub issue / PR templates + community files (Item 6)
+
+`.github/ISSUE_TEMPLATE/`:
+
+- **bug_report.yml** -- structured form with required sections for
+  minimal reproducible example, expected vs actual behaviour,
+  traceback, session info, classification system affected, and a
+  confirmation checklist.
+- **feature_request.yml** -- use case + proposed API + canonical
+  references + scope dropdown (WRB / SiBCS / USDA / VLM / spatial /
+  benchmark / aqp / Shiny / docs).
+- **profile_classification_help.yml** -- structured form for
+  "I disagree with how soilKey classified my profile". Captures
+  horizons CSV, site metadata, expected vs got, key trace.
+- **config.yml** -- disables blank issues; routes general questions
+  to GitHub Discussions and documentation.
+
+`.github/PULL_REQUEST_TEMPLATE.md` -- type-of-change checkboxes,
+scope checklist, testing checklist, architecture-invariant
+reminders (the taxonomic key is never delegated to an LLM, every
+value carries provenance, side modules never overrule the key).
+
+`CONTRIBUTING.md` -- architecture invariants, issue-filing guide,
+development setup, branching / code-style conventions, recipes for
+adding diagnostics / qualifiers / dataset loaders, PR submission
+checklist.
+
+`CODE_OF_CONDUCT.md` -- Contributor Covenant 2.1 with a soil-
+community note distinguishing "what soilKey does" from "what the
+canonical books prescribe".
+
+## C. pkgdown site verified (Item 7)
+
+The pkgdown CI workflow (`.github/workflows/pkgdown.yaml`) was
+already wired in v0.9.x and the site is **live** at
+<https://hugomachadorodrigues.github.io/soilKey/> (HTTP 200, last
+modified 2026-05-04). v0.9.37 closed the index gap so the site now
+renders without missing-topic warnings.
+
+## D. Real coverage measurement (Item 8)
+
+Ran `covr::package_coverage()` locally against the v0.9.39 source
+tree. Result: **80.5 % statement coverage**.
+
+README badge updated from the unconfigured Codecov SVG (which
+rendered as "unknown" because no `CODECOV_TOKEN` secret was
+configured) to a static shields.io badge showing 80.5 %. The
+test-coverage workflow continues to upload to Codecov on every
+push, so the dynamic Codecov badge will become live as soon as
+the user adds the `CODECOV_TOKEN` secret in GitHub repo settings.
+
+Test count badge bumped 2 908 -> 3 137. Version badge bumped
+0.9.27 -> 0.9.40.
+
 # soilKey 0.9.39 (2026-05-03)
 
 The "interactive Shiny app" release. A drag-and-drop web interface

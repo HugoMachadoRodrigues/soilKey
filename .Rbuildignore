@@ -8,6 +8,9 @@
 ^pkgdown$
 ^codecov\.yml$
 ^cobertura\.xml$
+^CITATION\.cff$
+^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^revdep$

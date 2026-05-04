@@ -1,0 +1,197 @@
+---
+title: "Começando com soilKey (PT-BR)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Começando com soilKey (PT-BR)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+`soilKey` faz classificação automática de perfis de solo nos três sistemas canônicos: **WRB 2022** (4ª edição), **SiBCS 5ª ed.** (Embrapa, 2018) e **USDA Soil Taxonomy 13ª ed.** (USDA-NRCS, 2022). A chave taxonômica em si é implementada como código R determinístico orientado por regras YAML versionadas; extração via *vision-language model*, priors espaciais (SoilGrids) e predição de atributos via OSSL ficam ao lado da chave como módulos separados, **nunca dentro dela**.
+
+Esta vinheta é uma adaptação para PT-BR de `v01_getting_started`. O conteúdo cobre o mesmo material; preferimos PT-BR aqui porque a comunidade brasileira de pedologia é grande e quase toda a literatura SiBCS é escrita em português.
+
+# 0. O começo de 30 segundos
+
+Se você só quer ver `soilKey` funcionando ponta-a-ponta em um perfil real, sem escrever código R, há dois caminhos.
+
+## A. Interface Shiny (sem código)
+
+```{r run-app, eval = FALSE}
+library(soilKey)
+run_classify_app()   # abre um app Shiny em uma única tela no navegador
+```
+
+Faça upload de um CSV (uma linha por horizonte) ou edite manualmente, clique em **Classify**, e leia os nomes WRB / SiBCS / USDA junto com o *key trace* determinístico e a *evidence grade*.
+
+## B. Uma chamada R, uma fixture
+
+```{r quick-start}
+library(soilKey)
+
+pedon <- make_ferralsol_canonical()   # Latossolo Vermelho canônico
+classify_wrb2022(pedon, on_missing = "silent")$name
+classify_sibcs(pedon)$name
+classify_usda(pedon, on_missing = "silent")$name
+```
+
+É o pacote inteiro: `PedonRecord` entra, classificação sai. As seções seguintes mostram como construir o seu próprio pedon e como os módulos laterais (VLM, espacial, espectral) se conectam.
+
+# 1. Construindo um PedonRecord do zero
+
+`PedonRecord` é a estrutura central de dados. Ele agrupa:
+
+- **Metadados de sítio** (id, lat/lon, país, material de origem, ...)
+- **Tabela de horizontes** com o esquema canônico fixo (veja `horizon_column_spec()` para a lista completa de colunas)
+- **Espectros** opcionais (Vis-NIR / SWIR / MIR)
+- **Imagens** opcionais (foto de perfil)
+- **Documentos** opcionais (PDF / *field report*)
+- **Log de proveniência por atributo**: cada valor numérico ou categórico carrega uma tag `source` ∈ {`measured`, `predicted_spectra`, `extracted_vlm`, `inferred_prior`, `user_assumed`}
+
+```{r build-pedon}
+meu_pedon <- PedonRecord$new(
+  site = list(
+    id              = "exemplo-001",
+    lat             = -22.5,
+    lon             = -43.7,
+    country         = "BR",
+    parent_material = "gnaisse"
+  ),
+  horizons = data.frame(
+    top_cm      = c(0,  15, 65, 130),
+    bottom_cm   = c(15, 65, 130, 200),
+    designation = c("A", "AB", "Bw1", "Bw2"),
+    munsell_hue_moist    = rep("2.5YR", 4),
+    munsell_value_moist  = c(3, 3, 4, 4),
+    munsell_chroma_moist = c(4, 6, 6, 6),
+    clay_pct = c(50, 55, 60, 60),
+    silt_pct = c(15, 10, 8,  8),
+    sand_pct = c(35, 35, 32, 32),
+    cec_cmol = c(8, 5.5, 5.0, 4.8),
+    bs_pct   = c(24, 14, 13, 13),
+    ph_h2o   = c(4.8, 4.7, 4.8, 4.9),
+    oc_pct   = c(2.0, 0.6, 0.3, 0.2)
+  )
+)
+```
+
+Ao chamar qualquer `classify_*()` em cima desse pedon, soilKey lê os dados, anda a chave taxonômica, e retorna um objeto `ClassificationResult` com:
+
+- O **nome** atribuído (`Latossolos Vermelhos Distroficos tipicos` na SiBCS, por exemplo)
+- O **trace da chave** (quais RSGs / Ordens foram testadas, quais diagnósticos passaram)
+- O **evidence grade** A-D resumindo a qualidade dos dados que produziram a decisão
+- A lista de **atributos faltantes** que, se medidos, mudariam ou refinariam a classificação
+
+# 2. Classificando nos três sistemas
+
+A interface é simétrica: um `PedonRecord` entra, um `ClassificationResult` sai. As três funções aceitam um argumento `on_missing` que controla o que fazer quando atributos críticos não estão presentes:
+
+- `"warn"` (padrão): avisa, classifica com base no que tem
+- `"silent"`: classifica silenciosamente
+- `"error"`: para com erro
+
+```{r classify-three-systems}
+res_wrb   <- classify_wrb2022(meu_pedon, on_missing = "silent")
+res_sibcs <- classify_sibcs(meu_pedon, include_familia = TRUE)
+res_usda  <- classify_usda(meu_pedon,  on_missing = "silent")
+
+res_wrb$name
+res_sibcs$name
+res_usda$name
+```
+
+## Atalho: classificar nos três sistemas em uma chamada
+
+```{r classify-all}
+todos <- classify_all(meu_pedon, on_missing = "silent")
+todos$summary
+```
+
+`classify_all()` retorna uma lista nomeada com `wrb`, `sibcs`, `usda` (cada uma um `ClassificationResult` completo) e um resumo `summary` em `data.frame` de uma linha — útil para tabular muitos pedons de uma vez só.
+
+# 3. Inspecionando o key trace
+
+O *trace* da chave é o histórico determinístico da decisão. Cada RSG / Ordem / Sistema testado aparece com o resultado de cada diagnóstico envolvido:
+
+```{r trace}
+res_wrb$trace
+```
+
+Isso é a feature distintiva do soilKey vs. um classificador "caixa-preta" baseado em LLM: cada classificação carrega o motivo. Se você discorda do resultado, o trace mostra exatamente em qual diagnóstico a chave se desviou da sua expectativa.
+
+# 4. Provenance + evidence grade
+
+Cada valor que entra na chave tem uma tag de proveniência:
+
+```{r prov}
+meu_pedon$add_measurement(
+  horizon_idx = 4,
+  attribute   = "clay_pct",
+  value       = 60,
+  source      = "predicted_spectra",
+  confidence  = 0.85,
+  notes       = "Vis-NIR PLSR-local, OSSL South-America library",
+  overwrite   = TRUE
+)
+```
+
+O `evidence_grade` do `ClassificationResult` é a regra do "pior provenance entre os atributos que foram decisivos para a classificação":
+
+- **A**: tudo `measured` (laboratório)
+- **B**: ao menos um `predicted_spectra` decisivo
+- **C**: ao menos um `extracted_vlm` decisivo
+- **D**: ao menos um `inferred_prior` ou `user_assumed` decisivo
+
+Isso garante que um perfil classificado a partir de chemistry de laboratório recebe **A**, mas o mesmo perfil com um valor de argila chave preenchido por VLM ou predição espectral é honestamente **B** ou **C**, **mesmo que o nome final seja idêntico**.
+
+# 5. Cross-system: o mesmo perfil em três taxonomias
+
+```{r cross-system}
+todos <- classify_all(meu_pedon, on_missing = "silent")
+data.frame(
+  Sistema = c("WRB 2022", "SiBCS 5ª ed.", "USDA ST 13"),
+  Nome    = c(todos$wrb$name, todos$sibcs$name, todos$usda$name)
+)
+```
+
+Para um Latossolo Vermelho típico do Cerrado / Mata Atlântica brasileira, esperamos:
+
+- WRB: `Geric Ferric Rhodic Chromic Ferralsol (...)`
+- SiBCS: `Latossolos Vermelhos Distroficos tipicos`
+- USDA: `Rhodic Hapludox`
+
+A correspondência entre os três sistemas (Schad 2023, Annex Table 1) está documentada no pacote — veja `vignette("v03_cross_system_correlation", package = "soilKey")`.
+
+# 6. Onde ir a partir daqui
+
+| Vinheta | Tópico |
+|---|---|
+| `v02_classify_wrb_end_to_end` | WRB 2022 com nome canônico do Cap. 6 (qualifiers + suplementares + specifiers) |
+| `v03_cross_system_correlation` | Correspondência WRB ↔ SiBCS ↔ USDA |
+| `v04_vlm_extraction` | Extração multimodal (PDF, foto) via VLM com schema validation |
+| `v05_spatial_spectra_pipeline` | Prior espacial (SoilGrids) + gap-filling com OSSL |
+| `v06_wosis_benchmark` | Protocolo de validação contra a base WoSIS (ISRIC) |
+| `v07_end_to_end_pipeline` | Pipeline completo (Gemma 4 + espacial + espectral + chave + relatório) |
+| `v08_kssl_nasis_multilevel` | Benchmark USDA Soil Taxonomy 13ed em quatro níveis (Order/Suborder/Great Group/Subgroup) na base KSSL+NASIS |
+
+Para a comunidade brasileira: o caminho mais natural é começar aqui (`v01_getting_started_pt`), depois ir para `v03_cross_system_correlation` para entender a correspondência SiBCS ↔ WRB ↔ USDA, e finalmente `v06_wosis_benchmark` se você quiser validar contra dados reais.
+
+# 7. Onde reportar bugs / sugerir features / pedir ajuda
+
+- **Bugs reproduzíveis**: abra uma [issue no GitHub](https://github.com/HugoMachadoRodrigues/soilKey/issues/new?template=bug_report.yml) usando o template "🐛 Bug report".
+- **Pedido de feature** (novo diagnóstico, qualifier, loader): use o template "💡 Feature request".
+- **Discordância sobre classificação de um perfil real**: use o template "🌱 Soil profile classification help" — colamos juntos o trace da chave e identificamos exatamente onde soilKey divergiu da sua expectativa.
+- **Perguntas gerais**: [GitHub Discussions](https://github.com/HugoMachadoRodrigues/soilKey/discussions).
+
+# Referências canônicas
+
+- IUSS Working Group WRB (2022). *World Reference Base for Soil Resources*, 4ª ed. International Union of Soil Sciences, Vienna. [PDF](https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content)
+- Soil Survey Staff (2022). *Keys to Soil Taxonomy*, 13ª ed. USDA-NRCS, Washington, DC.
+- Santos, H.G. *et al.* (2018). *Sistema Brasileiro de Classificação de Solos*, 5ª ed. revista e ampliada. Embrapa, Brasília.

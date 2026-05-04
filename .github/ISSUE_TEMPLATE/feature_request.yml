@@ -1,0 +1,68 @@
+name: 💡 Feature request
+description: Suggest a new feature, diagnostic, qualifier, or workflow
+title: "[FEATURE] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please describe the use
+        case + the change you have in mind so we can scope it.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What is the use case?
+      description: |
+        Describe the workflow you're trying to enable or the problem
+        you're trying to solve. Be concrete -- "I want to classify
+        500 KSSL profiles per minute" is useful; "make it faster" is
+        not.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed change / API
+      placeholder: |
+        e.g. "Add a `parallel = TRUE` option to benchmark_run_classification"
+        or  "Add WRB qualifier `Lithic` for Leptosol shallow profiles"
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References (canonical books, papers, datasets)
+      description: |
+        For taxonomic features, please cite the relevant page of WRB 2022,
+        KST 13ed, or SiBCS 5ª ed. For data-loader features, link the
+        public dataset (DOI, URL).
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      multiple: true
+      options:
+        - "WRB 2022"
+        - "SiBCS 5ª edição"
+        - "USDA Soil Taxonomy 13ed"
+        - "Cross-system mapping"
+        - "Multimodal extraction"
+        - "Spatial / OSSL pipeline"
+        - "Benchmark drivers / loaders"
+        - "aqp interop"
+        - "Shiny app"
+        - "Documentation / vignettes"
+        - "Other"
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Are you willing to contribute?
+      options:
+        - label: "I am willing to submit a PR with the implementation."
+        - label: "I can write tests + documentation for the feature."
+        - label: "I can review a PR from someone else."

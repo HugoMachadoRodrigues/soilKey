@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.27](https://img.shields.io/badge/version-0.9.27-FF6B35?style=flat-square)
+![v0.9.40](https://img.shields.io/badge/version-0.9.40-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -12,8 +12,8 @@
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
-[![tests](https://img.shields.io/badge/tests-2908%20passing-brightgreen.svg?style=flat-square)](tests/)
-[![Codecov test coverage](https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
+[![tests](https://img.shields.io/badge/tests-3137%20passing-brightgreen.svg?style=flat-square)](tests/)
+[![coverage](https://img.shields.io/badge/coverage-80.5%25-brightgreen.svg?style=flat-square)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square)](#-coverage)
 [![USDA ST 13](https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders%20%C2%B7%201288%20SGs-blue.svg?style=flat-square)](#-coverage)
