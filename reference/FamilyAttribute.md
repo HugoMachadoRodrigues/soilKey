@@ -1,5 +1,11 @@
 # Classe S4-like para atributos de Familia (5o nivel SiBCS)
 
+Classe S4-like para atributos de Familia (5o nivel SiBCS)
+
+Classe S4-like para atributos de Familia (5o nivel SiBCS)
+
+## Details
+
 Estrutura categorica (em vez de booleana) que representa um adjetivo
 composto da Familia. `value` eh o adjetivo atribuido (string) ou `NULL`
 quando a dimensao nao se aplica ou nao foi possivel determinar.
@@ -40,6 +46,8 @@ quando a dimensao nao se aplica ou nao foi possivel determinar.
 
 ### Method `new()`
 
+Build a FamilyAttribute.
+
 #### Usage
 
     FamilyAttribute$new(
@@ -50,13 +58,43 @@ quando a dimensao nao se aplica ou nao foi possivel determinar.
       reference = ""
     )
 
+#### Arguments
+
+- `name`:
+
+  Nome da dimensao (e.g. "grupamento_textural").
+
+- `value`:
+
+  Adjetivo atribuido (e.g. "argilosa") ou `NULL`.
+
+- `evidence`:
+
+  Lista nomeada com valores intermediarios.
+
+- `missing`:
+
+  Vetor de colunas necessarias mas indisponiveis.
+
+- `reference`:
+
+  String com referencia bibliografica.
+
 ------------------------------------------------------------------------
 
 ### Method [`print()`](https://rdrr.io/r/base/print.html)
 
+Pretty-print the attribute.
+
 #### Usage
 
     FamilyAttribute$print(...)
+
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 print signature compatibility).
 
 ------------------------------------------------------------------------
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -144,6 +145,13 @@
 
         <dt>
 
+          <code><a href="classify_all.html">classify_all()</a></code>
+
+        </dt>
+        <dd>Classify a pedon across all three taxonomic systems</dd>
+
+        <dt>
+
           <code><a href="classify_from_documents.html">classify_from_documents()</a></code>
 
         </dt>
@@ -162,6 +170,84 @@
 
         </dt>
         <dd>Likely soil classes at a geographic location (spatial classification aid)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a></h2>
+
+      <div class="section-desc"><p>Conversion to / from the canonical R soil-data ecosystem: <code><a href="https://ncss-tech.github.io/aqp/reference/SoilProfileCollection-class.html" class="external-link">aqp::SoilProfileCollection</a></code>. Round-trip preserving.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="as_aqp.html">as_aqp()</a></code>
+
+        </dt>
+        <dd>Convert one or more PedonRecord objects to an aqp SoilProfileCollection</dd>
+
+        <dt>
+
+          <code><a href="from_aqp.html">from_aqp()</a></code>
+
+        </dt>
+        <dd>Convert an aqp SoilProfileCollection back to a list of PedonRecord</dd>
+      </dl></div><div class="section level2">
+      <h2 id="interactive-shiny-app">Interactive Shiny app<a class="anchor" aria-label="anchor" href="#interactive-shiny-app"></a></h2>
+
+      <div class="section-desc"><p>Drag-and-drop CSV web interface; renders all three classifications side-by-side and exports a self-contained HTML report.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="run_classify_app.html">run_classify_app()</a></code>
+
+        </dt>
+        <dd>Launch the soilKey interactive classification Shiny app</dd>
+      </dl></div><div class="section level2">
+      <h2 id="usda-soil-taxonomy-ed-diagnostic-helpers">USDA Soil Taxonomy 13ed – diagnostic helpers<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-ed-diagnostic-helpers"></a></h2>
+
+      <div class="section-desc"><p>Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic / clay-films logic.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="argillic_clay_films_test.html">argillic_clay_films_test()</a></code>
+
+        </dt>
+        <dd>Test for clay-illuviation evidence (KST 13ed Ch 3 p 4)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="benchmark-utilities">Benchmark utilities<a class="anchor" aria-label="anchor" href="#benchmark-utilities"></a></h2>
+
+      <div class="section-desc"><p>Benchmark drivers and KSSL/NASIS label normalisers.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="canonicalise_kst13ed_gg.html">canonicalise_kst13ed_gg()</a></code>
+
+        </dt>
+        <dd>Canonicalise a USDA Great Group label to a KST 13ed-compatible key</dd>
+
+        <dt>
+
+          <code><a href="normalise_kssl_subgroup.html">normalise_kssl_subgroup()</a></code>
+
+        </dt>
+        <dd>Normalise KSSL USDA subgroup labels for benchmark comparison</dd>
       </dl></div><div class="section level2">
       <h2 id="wrb-diagnostic-horizons-ch-">WRB 2022 – diagnostic horizons (Ch 3.1)<a class="anchor" aria-label="anchor" href="#wrb-diagnostic-horizons-ch-"></a></h2>
 
@@ -1001,6 +1087,27 @@
 
         <dt>
 
+          <code><a href="qual_endocalcic.html">qual_endocalcic()</a></code>
+
+        </dt>
+        <dd>Endocalcic qualifier (cam): calcic horizon between 50 and 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_endogleyic.html">qual_endogleyic()</a></code>
+
+        </dt>
+        <dd>Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_endostagnic.html">qual_endostagnic()</a></code>
+
+        </dt>
+        <dd>Endostagnic qualifier (ens): stagnic conditions between 50 and 100 cm.</dd>
+
+        <dt>
+
           <code><a href="qual_eutric.html">qual_eutric()</a></code>
 
         </dt>
@@ -1033,6 +1140,13 @@
 
         </dt>
         <dd>Fibric qualifier (fi): organic material whose dominant decomposition class in the upper 100 cm is fibric (&gt;= 2/3 fiber). v0.9.1: thickness-weighted dominance via Oi designation.</dd>
+
+        <dt>
+
+          <code><a href="qual_floatic.html">qual_floatic()</a></code>
+
+        </dt>
+        <dd>Floatic qualifier (fc): Histosol that floats on water.</dd>
 
         <dt>
 
@@ -1386,6 +1500,13 @@
 
         <dt>
 
+          <code><a href="qual_ombric.html">qual_ombric()</a></code>
+
+        </dt>
+        <dd>Ombric qualifier (om): rain-fed Histosol.</dd>
+
+        <dt>
+
           <code><a href="qual_organotechnic.html">qual_organotechnic()</a></code>
 
         </dt>
@@ -1554,6 +1675,13 @@
 
         <dt>
 
+          <code><a href="qual_rheic.html">qual_rheic()</a></code>
+
+        </dt>
+        <dd>Rheic qualifier (rh): water-fed Histosol.</dd>
+
+        <dt>
+
           <code><a href="qual_rhodic.html">qual_rhodic()</a></code>
 
         </dt>
@@ -1705,6 +1833,13 @@
 
         </dt>
         <dd>Tidalic qualifier (td): subject to tidal flooding. v0.9.1: site$drainage_class contains "tidal".</dd>
+
+        <dt>
+
+          <code><a href="qual_toxic.html">qual_toxic()</a></code>
+
+        </dt>
+        <dd>Toxic qualifier (tx): toxic concentration of organic or inorganic constituents.</dd>
 
         <dt>
 
@@ -3716,7 +3851,7 @@
           <code><a href="quartzipsamment_qualifying_usda.html">quartzipsamment_qualifying_usda()</a></code>
 
         </dt>
-        <dd>Quartzipsamment helper (Quartzipsamments: &gt;= 95% silica) v0.8 proxy: clay &lt;= 5% AND coarse_fragments_pct &lt;= 5%.</dd>
+        <dd>Quartzipsamment helper (Quartzipsamments: &gt;= 95% resistant minerals)</dd>
 
         <dt>
 
@@ -4660,6 +4795,13 @@
 
       <dl><dt>
 
+          <code><a href="run_classify_app.html">run_classify_app()</a></code>
+
+        </dt>
+        <dd>Launch the soilKey interactive classification Shiny app</dd>
+
+        <dt>
+
           <code><a href="run_demo.html">run_demo()</a></code>
 
         </dt>
@@ -4852,7 +4994,7 @@
           <code><a href="test_clay_increase_argic.html">test_clay_increase_argic()</a></code>
 
         </dt>
-        <dd>Test the argic clay-increase criterion (WRB 2022)</dd>
+        <dd>Test the argic / argillic clay-increase criterion</dd>
 
         <dt>
 
@@ -5112,6 +5254,13 @@
 
         </dt>
         <dd>Load a soilKey rule set (YAML)</dd>
+
+        <dt>
+
+          <code><a href="load_wosis_sample.html">load_wosis_sample()</a></code>
+
+        </dt>
+        <dd>Load the bundled WoSIS South-America sample</dd>
 
         <dt>
 

@@ -13,7 +13,7 @@ top-1 / top-3 accuracy + bootstrap CI on top-1."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,6 +30,7 @@ top-1 / top-3 accuracy + bootstrap CI on top-1."><meta property="og:image" conte
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -66,7 +67,7 @@ top-1 / top-3 accuracy + bootstrap CI on top-1.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">benchmark_run_classification</span><span class="op">(</span></span>
 <span>  <span class="va">pedons</span>,</span>
 <span>  system <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrb2022"</span>, <span class="st">"sibcs"</span>, <span class="st">"usda"</span><span class="op">)</span>,</span>
-<span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"order"</span>, <span class="st">"subgroup"</span><span class="op">)</span>,</span>
+<span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"order"</span>, <span class="st">"subgroup"</span>, <span class="st">"subordem"</span>, <span class="st">"great_group"</span>, <span class="st">"suborder"</span><span class="op">)</span>,</span>
 <span>  boot_n <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -85,9 +86,28 @@ one of the <code>load_*</code> functions).</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
-<dd><p>Granularity of the comparison: <code>"order"</code> for the
-top-level RSG / Ordem / Order; <code>"subgroup"</code> for the
-full assigned name. Default <code>"order"</code>.</p></dd>
+<dd><p>Granularity of the comparison:</p><ul><li><p><code>"order"</code> (default) – the top-level RSG / Ordem /
+        Order, compared against <code>cls$rsg_or_order</code>;</p></li>
+<li><p><code>"subgroup"</code> – the full classified name (Subgroup
+        in USDA, Subgrupo in SiBCS, RSG + qualifiers in WRB),
+        compared against <code>cls$name</code> after case-insensitive
+        token normalisation;</p></li>
+<li><p><code>"subordem"</code> – SiBCS-only, the 2nd-level
+        "Ordem + Subordem" (e.g. "Latossolos Vermelhos").
+        Comparison via the first two normalised tokens of the
+        predicted name vs the reference;</p></li>
+<li><p><code>"great_group"</code> (USDA, v0.9.24) – the LAST token
+        of the subgroup name (e.g. <code>"typic hapludalfs"</code> -&gt;
+        <code>"hapludalfs"</code>). Isolates whether the Great Group
+        machinery is correct independent of subgroup modifiers
+        (Typic / Aquic / Vertic / Cumulic / Pachic / etc.).
+        Reads <code>site$reference_usda_grtgroup</code>;</p></li>
+<li><p><code>"suborder"</code> (USDA, v0.9.24) – maps the Great
+        Group prediction to its canonical Suborder suffix
+        (<code>"hapludalfs"</code> -&gt; <code>"udalfs"</code>) using the
+        KST 13ed Ch 4 ~70-Suborder list. Reads
+        <code>site$reference_usda_suborder</code>.</p></li>
+</ul></dd>
 
 
 <dt id="arg-boot-n">boot_n<a class="anchor" aria-label="anchor" href="#arg-boot-n"></a></dt>

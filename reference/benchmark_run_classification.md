@@ -10,7 +10,7 @@ a confusion matrix + top-1 / top-3 accuracy + bootstrap CI on top-1.
 benchmark_run_classification(
   pedons,
   system = c("wrb2022", "sibcs", "usda"),
-  level = c("order", "subgroup"),
+  level = c("order", "subgroup", "subordem", "great_group", "suborder"),
   boot_n = 1000L
 )
 ```
@@ -29,8 +29,29 @@ benchmark_run_classification(
 
 - level:
 
-  Granularity of the comparison: `"order"` for the top-level RSG / Ordem
-  / Order; `"subgroup"` for the full assigned name. Default `"order"`.
+  Granularity of the comparison:
+
+  - `"order"` (default) – the top-level RSG / Ordem / Order, compared
+    against `cls$rsg_or_order`;
+
+  - `"subgroup"` – the full classified name (Subgroup in USDA, Subgrupo
+    in SiBCS, RSG + qualifiers in WRB), compared against `cls$name`
+    after case-insensitive token normalisation;
+
+  - `"subordem"` – SiBCS-only, the 2nd-level "Ordem + Subordem" (e.g.
+    "Latossolos Vermelhos"). Comparison via the first two normalised
+    tokens of the predicted name vs the reference;
+
+  - `"great_group"` (USDA, v0.9.24) – the LAST token of the subgroup
+    name (e.g. `"typic hapludalfs"` -\> `"hapludalfs"`). Isolates
+    whether the Great Group machinery is correct independent of subgroup
+    modifiers (Typic / Aquic / Vertic / Cumulic / Pachic / etc.). Reads
+    `site$reference_usda_grtgroup`;
+
+  - `"suborder"` (USDA, v0.9.24) – maps the Great Group prediction to
+    its canonical Suborder suffix (`"hapludalfs"` -\> `"udalfs"`) using
+    the KST 13ed Ch 4 ~70-Suborder list. Reads
+    `site$reference_usda_suborder`.
 
 - boot_n:
 

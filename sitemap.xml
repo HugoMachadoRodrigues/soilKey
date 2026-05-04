@@ -11,6 +11,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v05_spatial_spectra_pipeline.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v06_wosis_benchmark.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v07_end_to_end_pipeline.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/articles/v08_kssl_nasis_multilevel.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/authors.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/index.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/news/index.html</loc></url>
@@ -74,6 +75,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argic_aridisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argic_mollisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argic_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argillic_clay_films_test.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argillic_or_kandic_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argillic_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/argillic_within_usda.html</loc></url>
@@ -86,6 +88,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/artefacts.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/as_aqp.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/as_chat_text.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/atividade_argila_alta.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.html</loc></url>
@@ -100,6 +103,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_haplico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_histico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_humico.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/canonicalise_kst13ed_gg.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/carater_acrico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/carater_alitico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/carater_arenico.html</loc></url>
@@ -156,6 +160,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/chernozem_strict.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/claric_material.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.html</loc></url>
@@ -294,6 +299,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fragipa.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fragipan_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/frasic_qualifying_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fulvic_andisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/gelisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/glacic_layer_usda.html</loc></url>
@@ -387,6 +393,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_schema.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/luvisol.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo_cromico.html</loc></url>
@@ -464,6 +471,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalise_kssl_subgroup.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/normalize_prior.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.html</loc></url>
@@ -555,11 +563,15 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_duric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_dystric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ekranic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_endocalcic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogleyic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_endostagnic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutrosilic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ferralic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ferric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_fibric.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_floatic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_fluvic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_folic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_garbic.html</loc></url>
@@ -610,6 +622,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_nitic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_nudilithic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ochric.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ombric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_organotechnic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ornithic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_ortsteinic.html</loc></url>
@@ -634,6 +647,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_reductic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_rendzic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_retic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_rheic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_rhodic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_rubic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_rustic.html</loc></url>
@@ -656,6 +670,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_terric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_thionic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_tidalic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_toxic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_umbric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_urbic.html</loc></url>
@@ -676,6 +691,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/rhodic_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_key.html</loc></url>

@@ -44,7 +44,8 @@ spatial_prior(
 
 A `data.table` with columns `rsg_code` (character) and `probability`
 (numeric, summing to 1). Empty if the buffer extracts no valid pixels –
-callers should check [`nrow()`](https://rdrr.io/r/base/nrow.html).
+callers should check
+[`nrow()`](https://ncss-tech.github.io/aqp/reference/nrow.html).
 
 ## Details
 

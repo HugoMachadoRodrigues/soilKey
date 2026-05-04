@@ -122,6 +122,12 @@ Pretty-print the result with sub-test breakdown.
 
     DiagnosticResult$print(...)
 
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 print signature compatibility).
+
 ------------------------------------------------------------------------
 
 ### Method `as_list()`

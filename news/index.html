@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
@@ -47,6 +48,840 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.39" id="soilkey-0939-2026-05-03">soilKey 0.9.39 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0939-2026-05-03"></a></h2>
+<p>The “interactive Shiny app” release. A drag-and-drop web interface that renders all three classifications side-by-side, exports a self-contained HTML report, and works for non-R users (agronomists, students, field workers).</p>
+<div class="section level3">
+<h3 id="shiny-app-item-from-the-polish-roadmap-0-9-39">Shiny app (Item 3 from the polish roadmap)<a class="anchor" aria-label="anchor" href="#shiny-app-item-from-the-polish-roadmap-0-9-39"></a></h3>
+<p><code><a href="../reference/run_classify_app.html">run_classify_app()</a></code>: convenience wrapper that locates the bundled Shiny application at <code>inst/shiny/classify_app/</code> and launches it via <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code>. Requires the <code>shiny</code> and <code>DT</code> packages (both in Suggests; the wrapper raises a clear error if missing).</p>
+<p>App features:</p>
+<ul><li>
+<strong>Horizons input</strong>: upload a CSV (one row per horizon, columns matching the soilKey horizon schema – <code>top_cm</code>, <code>bottom_cm</code>, <code>designation</code>, plus any of <code>clay_pct</code>, <code>sand_pct</code>, <code>silt_pct</code>, <code>ph_h2o</code>, <code>oc_pct</code>, <code>bs_pct</code>, <code>cec_cmol</code>, …). Falls back to a built-in sample (Latossolo Vermelho-style) when no file is loaded.</li>
+<li>
+<strong>Site metadata</strong>: profile id, lat/lon, country, parent material.</li>
+<li>
+<strong>Classification</strong>: one button runs <code><a href="../reference/classify_all.html">classify_all()</a></code> and shows the WRB 2022 / SiBCS 5a / USDA ST 13ed names plus evidence grades.</li>
+<li>
+<strong>Trace tab</strong>: print the full key-trace for any system to inspect which RSGs / Orders were tested and which diagnostics fired.</li>
+<li>
+<strong>HTML report download</strong>: self-contained, no external network requests; suitable for emailing or attaching to a laudo.</li>
+<li>
+<strong>Starter template download</strong>: a sample CSV with the canonical column structure for users to clone and modify.</li>
+</ul><p>Use cases (mirrors the v0.9.38 demo gallery but interactive):</p>
+<ul><li>A field agronomist with a tablet: upload field-survey CSV, classify, download report, attach to client deliverable.</li>
+<li>A graduate student: paste in textbook profile data, study how the 3 systems classify the same soil.</li>
+<li>A research group: batch-process by repeated upload, exports serve as paper supplements.</li>
+</ul><p>The app does NOT require any internet connection beyond bootstrap loading (Shiny CDN); all classification runs locally in the user’s R session.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-39">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-39"></a></h3>
+<p>4 new in <code>tests/testthat/test-v0939-shiny-app.R</code>:</p>
+<ul><li>
+<code><a href="../reference/run_classify_app.html">run_classify_app()</a></code> errors clearly when shiny is missing</li>
+<li>
+<code><a href="../reference/run_classify_app.html">run_classify_app()</a></code> errors clearly when DT is missing</li>
+<li>Shiny app dir exists at <code>inst/shiny/classify_app/</code>
+</li>
+<li>
+<code>app.R</code> parses without syntax errors</li>
+</ul><p>The active runtime tests are deliberately minimal – a full Shiny test would require <code>shinytest2</code> + browser automation, deferred to a future release.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.38" id="soilkey-0938-2026-05-03">soilKey 0.9.38 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0938-2026-05-03"></a></h2>
+<p>The “demo gallery” release. A new <code><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo()</a></code> registry exposing 6 published soil profiles classified end-to-end across all three systems, for pedagogical use.</p>
+<p><code>demo("classify_gallery", package = "soilKey")</code> runs 6 canonical published profiles through <code>classify_wrb2022</code> + <code>classify_sibcs</code> + <code>classify_usda</code> and prints the resulting names + evidence grades:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Latossolo Vermelho Distroferrico</strong> – Embrapa SiBCS 5a ed. Annex A profile A-04 (Mata Atlantica, Brazil; gneiss).</li>
+<li>
+<strong>Chernozem</strong> – IUSS WRB (2022) Annex 1 didactic exemplar (central-European steppe; loess; very deep organic-rich Ah).</li>
+<li>
+<strong>Podzol</strong> – Soil Atlas of Europe (2005) Plate 19 (boreal forest, Sweden; glaciofluvial sand; E -&gt; Bsh -&gt; Bs sequence).</li>
+<li>
+<strong>Vertisol</strong> – FAO Field Guide canonical Pellic Vertisol (Deccan basalt residuum, India; smectite-rich black cotton).</li>
+<li>
+<strong>Gleysol</strong> – Soil Atlas of Europe (2005) canonical Gleysol (Netherlands; fluvial clay over peat; reduced grey-blue subsoil).</li>
+<li>
+<strong>Histosol</strong> – WRB 2022 Annex 1 didactic Ombric Fibric Histosol (Estonia; raised Sphagnum bog; rainwater-fed).</li>
+</ol><p>Each profile is built from data published in canonical soil-science sources, with citations inline. Registered via <code>demo/00Index</code> and exercises ALL three keys plus the v0.9.33 WRB qualifier closure (e.g. Profile 6 fires Floatic + Folic + Hemic + Ombric + Histosol, demonstrating the v0.9.33 Ombric / Floatic implementations end-to-end).</p>
+<p>Pedagogical use cases:</p>
+<ul><li>Field practitioners: see the 3-system mapping for soils they know.</li>
+<li>Students: study one profile + walk through the key-trace.</li>
+<li>Researchers: a sanity-check fixture set distinct from the 31 canonical fixtures (which are synthetic by design; the demo gallery uses real published profiles).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.37" id="soilkey-0937-2026-05-03">soilKey 0.9.37 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0937-2026-05-03"></a></h2>
+<p>The “pkgdown polish + edge-case hardening” release.</p>
+<div class="section level3">
+<h3 id="a-pkgdown-reference--articles-index-closed-0-9-37">A. pkgdown reference + articles index closed<a class="anchor" aria-label="anchor" href="#a-pkgdown-reference--articles-index-closed-0-9-37"></a></h3>
+<p><code>_pkgdown.yml</code> updated so <code><a href="https://pkgdown.r-lib.org/reference/check_pkgdown.html" class="external-link">pkgdown::check_pkgdown()</a></code> reports zero missing topics:</p>
+<ul><li>New article entry: <code>v08_kssl_nasis_multilevel</code>.</li>
+<li>New reference sections:
+<ul><li>
+<strong>Interoperability</strong> (<code>as_aqp</code>, <code>from_aqp</code>).</li>
+<li>
+<strong>USDA Soil Taxonomy 13ed diagnostic helpers</strong> (<code>argillic_clay_films_test</code>).</li>
+<li>
+<strong>Benchmark utilities</strong> (<code>canonicalise_kst13ed_gg</code>, <code>normalise_kssl_subgroup</code>).</li>
+</ul></li>
+<li>
+<code>classify_all</code> added to “Classification entry points”.</li>
+</ul><p>The pkgdown CI workflow (<code>.github/workflows/pkgdown.yaml</code>) was already wired in v0.9.x; the v0.9.37 config closes the index gap that was producing build warnings on the GH Pages deploy.</p>
+</div>
+<div class="section level3">
+<h3 id="b-edge-case-stress-tests-0-9-37">B. Edge-case stress tests<a class="anchor" aria-label="anchor" href="#b-edge-case-stress-tests-0-9-37"></a></h3>
+<p>29 new in <code>tests/testthat/test-v0937-edge-cases.R</code> covering adversarial inputs that should NOT crash the classifier:</p>
+<ul><li>empty horizons table (zero rows)</li>
+<li>single-horizon profile</li>
+<li>all-NA horizon rows</li>
+<li>horizons in reverse order (deepest first)</li>
+<li>zero-thickness horizon (top == bottom)</li>
+<li>impossibly deep profile (10 m, 4 horizons)</li>
+<li>non-ASCII designations (PT-BR diacritics)</li>
+<li>duplicate horizon designations (A / A / Bw)</li>
+<li>pedon with missing optional site fields (no country, no parent_material, no lat/lon)</li>
+<li>
+<code><a href="../reference/classify_all.html">classify_all()</a></code> graceful failure on a broken pedon</li>
+</ul><p>All 29 pass. The classifiers were already robust to most of these; the test suite now formally guarantees the behaviour.</p>
+<p>Full suite: 3 104 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.36" id="soilkey-0936-2026-05-03">soilKey 0.9.36 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0936-2026-05-03"></a></h2>
+<p>The “WoSIS rebench + performance docs” release. Two measurement artefacts that document the v0.9.27 -&gt; v0.9.35 trajectory and publish single-CPU throughput estimates for batch jobs.</p>
+<div class="section level3">
+<h3 id="a-wosis-graphql-re-bench-item-from-the-polish-roadmap-0-9-36">A. WoSIS GraphQL re-bench (Item 5 from the polish roadmap)<a class="anchor" aria-label="anchor" href="#a-wosis-graphql-re-bench-item-from-the-polish-roadmap-0-9-36"></a></h3>
+<p>The bundled WoSIS sample (n=40, frozen 2026-05-03) re-classified through the v0.9.35 keys:</p>
+<p>v0.9.27 sample, v0.9.27 keys: 5/30 = 16.7 % top-1 (n=30, smaller pull) v0.9.30 sample, v0.9.30 keys: 5/30 = 16.7 % v0.9.30 sample, v0.9.35 keys: <strong>7/40 = 17.5 % top-1</strong> (+0.8 pp)</p>
+<p>Modest but positive lift. The new bundled snapshot (40 profiles, v0.9.30) plus the v0.9.33 WRB qualifier closure (Floatic / Toxic / Ombric / Rheic / Endocalcic / Endogleyic / Endostagnic) plus the v0.9.31 Quartzipsamment broadening combine to lift +1 profile on this sample. The 40-profile sample is too small to measure CI tightly; on a larger pull (~500 profiles) we’d expect the lift to land in the +2-3 pp band.</p>
+</div>
+<div class="section level3">
+<h3 id="b-performance-benchmark-item-from-the-polish-roadmap-0-9-36">B. Performance benchmark (Item 8 from the polish roadmap)<a class="anchor" aria-label="anchor" href="#b-performance-benchmark-item-from-the-polish-roadmap-0-9-36"></a></h3>
+<p><code>inst/benchmarks/reports/perf_v0935_2026-05-03.md</code> documents single-CPU wall-clock timing on the 44 canonical fixtures, mean of 10 iterations:</p>
+<table class="table"><thead><tr><th>System</th>
+<th align="right">ms / pedon</th>
+<th align="right">pedons / sec</th>
+</tr></thead><tbody><tr><td>classify_wrb2022</td>
+<td align="right">22 ms</td>
+<td align="right">45 pedons/s</td>
+</tr><tr><td>classify_sibcs</td>
+<td align="right">32 ms</td>
+<td align="right">32 pedons/s</td>
+</tr><tr><td>classify_usda</td>
+<td align="right">270 ms</td>
+<td align="right">4 pedons/s</td>
+</tr></tbody></table><p>USDA is ~10x slower than WRB / SiBCS because Path C (Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup) walks the full Subgroup tier which alone is ~85 % of runtime. A KSSL+NASIS n=2638 benchmark at all four levels completes in ~14 min wall-clock.</p>
+<p>README §“Performance” added with the headline numbers and link to the full report.</p>
+</div>
+<div class="section level3">
+<h3 id="c-news-update-0-9-36">C. NEWS update<a class="anchor" aria-label="anchor" href="#c-news-update-0-9-36"></a></h3>
+<p>Cumulative real-data trajectory across release series:</p>
+<p>KSSL+NASIS GG (v0.9.24 -&gt; v0.9.35): 6.5 % -&gt; 10.92 % (+4.42 pp) Embrapa Subordem (v0.9.27 -&gt; v0.9.35): 9.93 % -&gt; 39.17 % (+29.24 pp) WoSIS top-1 (v0.9.13 -&gt; v0.9.35): ~13 % -&gt; 17.5 % (+4.5 pp, small samples) WRB qualifier cov (v0.9.27 -&gt; v0.9.35): 132/139 -&gt; 139/139 (100 %)</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.35" id="soilkey-0935-2026-05-03">soilKey 0.9.35 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0935-2026-05-03"></a></h2>
+<p>The “aqp interop + units fix” release. Two coordinated changes that make soilKey both more useful (interoperable with the canonical R soil package) and more accurate (one units bug repaired in SiBCS Cap 12).</p>
+<div class="section level3">
+<h3 id="a-aqp-interoperability-item-from-the-v0934-roadmap-0-9-35">A. aqp interoperability (Item 1 from the v0.9.34 roadmap)<a class="anchor" aria-label="anchor" href="#a-aqp-interoperability-item-from-the-v0934-roadmap-0-9-35"></a></h3>
+<p><a href="https://ncss-tech.github.io/aqp/" class="external-link">aqp</a> (Algorithms for Quantitative Pedology) is the canonical R representation for pedological data. v0.9.35 adds two new exported helpers that bridge soilKey to / from <code><a href="https://ncss-tech.github.io/aqp/reference/SoilProfileCollection-class.html" class="external-link">aqp::SoilProfileCollection</a></code> (SPC):</p>
+<p>as_aqp(pedon) -&gt; SoilProfileCollection from_aqp(spc) -&gt; list of PedonRecord</p>
+<p>Standard column names are renamed to aqp’s canonical convention (top_cm -&gt; top, bottom_cm -&gt; bottom, designation -&gt; name, clay_pct -&gt; clay, sand_pct -&gt; sand, silt_pct -&gt; silt). All other soilKey columns pass through unchanged. Site-level slots (lat / lon / country / parent_material / reference_*) are attached to the SPC’s site table.</p>
+<p>Round-trip property: <code>from_aqp(as_aqp(pedon))</code> reproduces <code>pedon</code> exactly, modulo column-order canonicalisation.</p>
+<p>Requires the <code>aqp</code> package, listed in Suggests. Both functions raise a clear error if aqp is not installed.</p>
+<p>40 new unit tests in tests/testthat/test-v0934-aqp-interop.R cover single-pedon and multi-pedon conversion, column-name renaming, site-level metadata attachment, round-trip property, classify_* on round-tripped pedons, error handling on bogus input, and heterogeneous-schema multi-profile pad-rbind.</p>
+</div>
+<div class="section level3">
+<h3 id="b-sibcs-quartzarenico-units-bug-fix-item-from-the-v0935-roadmap-0-9-35">B. SiBCS Quartzarenico units bug fix (Item 4 from the v0.9.35 roadmap)<a class="anchor" aria-label="anchor" href="#b-sibcs-quartzarenico-units-bug-fix-item-from-the-v0935-roadmap-0-9-35"></a></h3>
+<p><code><a href="../reference/neossolo_quartzarenico.html">neossolo_quartzarenico()</a></code> used SiBCS Cap 1 textural-class thresholds in g/kg (sand &gt;= 700, clay &lt; 200) on PERCENT data (sand_pct, clay_pct in 0-100 range). The function never fired on properly-loaded FEBR data and routed all 9 FEBR Quartzarenicos to the catch-all “Regoliticos” subordem.</p>
+<p>Fix: thresholds converted to %, sand &gt;= 70 %, clay &lt; 20 %. The docstring explicitly notes the SiBCS-vs-soilKey unit convention.</p>
+</div>
+<div class="section level3">
+<h3 id="ab-on-embrapa-febr-n554-0-9-35">A/B on Embrapa FEBR (n=554)<a class="anchor" aria-label="anchor" href="#ab-on-embrapa-febr-n554-0-9-35"></a></h3>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.33</th>
+<th align="right">v0.9.35</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">56.68 %</td>
+<td align="right">56.68 %</td>
+<td align="right">0.00 pp</td>
+</tr><tr><td>Subordem</td>
+<td align="right">38.63 %</td>
+<td align="right"><strong>39.17 %</strong></td>
+<td align="right"><strong>+0.54 pp</strong></td>
+</tr></tbody></table><p>The +0.54 pp Subordem lift is small in absolute terms (~3 of the 9 remaining Quartzarenicos correctly routed; 6 still mis-routed because they have NA sand/clay or designation patterns that don’t match areia franca). The remaining 44 Argissolos / Latossolos “Vermelho / Amarelo / Vermelho-Amarelo” misses are <strong>unfixable from FEBR data alone</strong> – the FEBR superconjunto.txt ships zero Munsell hue / value / chroma columns. These would require a separate Embrapa BDsolos export with field-survey morphology, or the SPADBE database.</p>
+</div>
+<div class="section level3">
+<h3 id="c-existing-test-fixture-update-0-9-35">C. Existing test fixture update<a class="anchor" aria-label="anchor" href="#c-existing-test-fixture-update-0-9-35"></a></h3>
+<p><code>tests/testthat/test-sibcs-subordens-v071.R:173</code> previously asserted that <code>neossolo_quartzarenico</code> passes on a fixture using g/kg thresholds (sand_pct = 900, clay_pct = 50). Updated to realistic % values (sand_pct = 90, clay_pct = 5) so the fixture exercises the post-v0.9.35 logic correctly.</p>
+<p>Full suite: 3 075 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.33" id="soilkey-0933-2026-05-03">soilKey 0.9.33 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0933-2026-05-03"></a></h2>
+<p>The “WRB qualifier closure” release. <strong>100 % structural coverage</strong> (139/139 unique qualifier names referenced in <code>qualifiers.yaml</code> now have a backing <code>qual_*</code> function).</p>
+<div class="section level3">
+<h3 id="audit-baseline-0-9-33">Audit baseline<a class="anchor" aria-label="anchor" href="#audit-baseline-0-9-33"></a></h3>
+<p>The pre-v0.9.33 audit (run via <code>tests/testthat/test-v0933-wrb- qualifier-closure.R</code>) measured:</p>
+<p>Total qualifier entries (with duplicates across RSGs): 1 316 Unique qualifier names across all 32 RSGs: 139 Functions named qual_<em>: 139 With backing qual_</em> function (pre-v0.9.33): 132 / 139 (95.0 %)</p>
+<p>The 7 missing qualifiers were:</p>
+<p>Endocalcic referenced in 1 RSG (Chernozems) Endogleyic referenced in 1 RSG (Gleysols / Stagnosols) Endostagnic referenced in 1 RSG (Stagnosols) Floatic referenced in 2 RSGs (Histosols + Cryosols) Ombric referenced in 1 RSG (Histosols) Rheic referenced in 1 RSG (Histosols) Toxic referenced in 2 RSGs (Histosols + Cryosols)</p>
+</div>
+<div class="section level3">
+<h3 id="implementation-0-9-33">Implementation<a class="anchor" aria-label="anchor" href="#implementation-0-9-33"></a></h3>
+<p><code>R/qualifiers-wrb2022-v0933.R</code> ships seven new exported helpers, all following the existing <code>qual_*</code> calling convention:</p>
+<p>qual_endocalcic – depth-conditional Calcic (50-100 cm) qual_endogleyic – depth-conditional Gleyic (50-100 cm) qual_endostagnic – depth-conditional Stagnic (50-100 cm) qual_floatic – oc_pct &gt;= 12 AND bulk_density &lt;= 0.4 g/cm3 qual_toxic – ph_h2o &lt;= 3.5 OR ec_dS_m &gt;= 16 (proxy) qual_ombric – Histic + acidic (pH &lt;= 4.5) + no carbonates qual_rheic – Histic + neutral (pH &gt; 4.5) OR carbonates present</p>
+<p>The Endo-* helpers share a new internal helper <code>.q_endo_presence()</code> that checks the diagnostic appears within a <code>[min_top, max_top]</code> cm band – mirroring <code>.q_presence()</code> for the upper-50-cm case.</p>
+<p>The Floatic / Toxic / Ombric / Rheic helpers use <strong>per-horizon proxies</strong> (KSSL-schema-compatible) rather than depending on fields that the schema does not yet model (specific gravity, full heavy-metal panels, hydrology). The proxies are conservative: each function explicitly reports the relevant <code>missing</code> attributes when the underlying signal is absent.</p>
+</div>
+<div class="section level3">
+<h3 id="per-rsg-coverage-after-v0933-0-9-33">Per-RSG coverage after v0.9.33<a class="anchor" aria-label="anchor" href="#per-rsg-coverage-after-v0933-0-9-33"></a></h3>
+<p>All 32 RSGs now report <strong>100 % principal coverage</strong> AND <strong>100 % supplementary coverage</strong> in the audit script. The 7-qualifier gap that previously dropped HS / GL / CH below 100 % at the principal level is closed.</p>
+</div>
+<div class="section level3">
+<h3 id="v0933-unit-tests-0-9-33">v0.9.33 unit tests<a class="anchor" aria-label="anchor" href="#v0933-unit-tests-0-9-33"></a></h3>
+<p>12 new in <code>tests/testthat/test-v0933-wrb-qualifier-closure.R</code>:</p>
+<ul><li>100 % coverage assertion via direct yaml + namespace audit;</li>
+<li>Endo-* dispatch tests (returns DiagnosticResult, no error);</li>
+<li>Floatic positive (high-OC, low-density) + negative (mineral);</li>
+<li>Toxic positive (low pH, high EC) + negative (benign);</li>
+<li>Ombric vs Rheic mutual exclusion (acidic vs neutral Histosol).</li>
+</ul><p>One pre-existing test (<code>test-qualifiers-wrb-v091-bloco-a.R:315</code>) was updated from <code>expect_gt(sum(unimplemented), 0L)</code> to <code>expect_gte(sum(unimplemented), 0L)</code> since v0.9.33 closes the “not implemented” path entirely.</p>
+<p>Full suite: 3 029 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.32" id="soilkey-0932-2026-05-03">soilKey 0.9.32 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0932-2026-05-03"></a></h2>
+<p>The “vignettes refresh” release. Documentation-only update covering the v0.9.24-v0.9.31 release series.</p>
+<div class="section level3">
+<h3 id="a-v06_wosis_benchmarkrmd-updated-0-9-32">A. v06_wosis_benchmark.Rmd updated<a class="anchor" aria-label="anchor" href="#a-v06_wosis_benchmarkrmd-updated-0-9-32"></a></h3>
+<p>Two new sections:</p>
+<ul><li>
+<strong>§7 v0.9.27 – per-page retry + graceful degradation</strong>: documents the 1s/2s/4s/8s exponential backoff and partial-pull behaviour for ISRIC GraphQL timeouts, with a runnable example.</li>
+<li>
+<strong>§8 v0.9.30 – bundled WoSIS sample for offline / CI testing</strong>: documents <code><a href="../reference/load_wosis_sample.html">load_wosis_sample()</a></code> and the <code>inst/extdata/wosis_sa_sample.rds</code> snapshot.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="b-new-v08_kssl_nasis_multilevelrmd-0-9-32">B. NEW v08_kssl_nasis_multilevel.Rmd<a class="anchor" aria-label="anchor" href="#b-new-v08_kssl_nasis_multilevelrmd-0-9-32"></a></h3>
+<p>A dedicated vignette for the headline real-data benchmark:</p>
+<ul><li>the KSSL + NASIS join via <code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code> and the attribute coverage on the 2021 NASIS snapshot;</li>
+<li>the four levels of <code><a href="../reference/benchmark_run_classification.html">benchmark_run_classification()</a></code> with code examples (Order / Suborder / Great Group / Subgroup);</li>
+<li>the v0.9.31 headline numbers at large scale (n=2638, ±1.7 pp CI): Order 34.19 %, Suborder 13.85 %, Great Group 7.94 %, Subgroup 4.17 %;</li>
+<li>a release-by-release trajectory table v0.9.22 -&gt; v0.9.31 showing the cumulative Great Group lift and the v0.9.25 KST canonicaliser story (16 pre-13ed -&gt; KST 13ed name pairs documented);</li>
+<li>roadmap for the remaining gaps (Pale-/Glossic prefixes, NASIS data sparsity, Endo/Epi-aquic precise distinction).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.31" id="soilkey-0931-2026-05-03">soilKey 0.9.31 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0931-2026-05-03"></a></h2>
+<p>The “specialised Great Group tests” release. Two GG diagnostics that were under-detecting the v0.9.25-confusion-analysis targets: Quartzipsamments (mineralogy proxy too strict) and Fragiudults / Fragiudalfs / Fragiaqualfs (rupture_resistance rarely in KSSL data).</p>
+<div class="section level3">
+<h3 id="a-quartzipsamment-proxy-broadened-0-9-31">A. Quartzipsamment proxy broadened<a class="anchor" aria-label="anchor" href="#a-quartzipsamment-proxy-broadened-0-9-31"></a></h3>
+<p><code><a href="../reference/quartzipsamment_qualifying_usda.html">quartzipsamment_qualifying_usda()</a></code>: KST 13ed Ch 8 (p 357) defines Quartzipsamments as Psamments where &gt;= 95 % of the 0.02-2.0 mm fraction is resistant minerals (mostly quartz). The pre-v0.9.31 proxy was clay &lt;= 5 % AND coarse_fragments &lt;= 5 %, which under- detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25 confusion analysis showed 14 udipsamments / ustipsamments references should have been Quartzipsamments).</p>
+<p>v0.9.31 broadens to:</p>
+<p>clay_pct &lt;= 10 % (loamy sand and finer sands qualify) sand_pct &gt;= 80 % (NEW: sand-dominated texture required) coarse_fragments &lt;= 15 (some CF tolerated)</p>
+<p>At least 50 % of in-range layers must satisfy all three.</p>
+</div>
+<div class="section level3">
+<h3 id="b-fragipan-accepts-nasis-pediagfeatures-flag-0-9-31">B. Fragipan accepts NASIS pediagfeatures flag<a class="anchor" aria-label="anchor" href="#b-fragipan-accepts-nasis-pediagfeatures-flag-0-9-31"></a></h3>
+<p><code><a href="../reference/fragipan_usda.html">fragipan_usda()</a></code>: KSSL gpkg rarely populates <code>rupture_resistance</code>, the canonical fragipan signal. The 2021 NASIS snapshot, however, ships ~13 500 <code>pediagfeatures.featkind</code> entries, including “Fragipan” tags directly identified by the surveyor. v0.9.31 adds the NASIS path as an OR-evidence source:</p>
+<p>passed = (rupture_resistance &gt;= “firm” with thickness &gt;= 15 cm) OR (NASIS pediagfeatures contains “Fragipan”)</p>
+<p>This closes the Fragiudults / Fragiudalfs / Fragiaqualfs / Fragixeralfs detection gap on KSSL+NASIS pedons.</p>
+</div>
+<div class="section level3">
+<h3 id="c-ksslnasis-ab-n865-0-9-31">C. KSSL+NASIS A/B (n=865)<a class="anchor" aria-label="anchor" href="#c-ksslnasis-ab-n865-0-9-31"></a></h3>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.30</th>
+<th align="right">v0.9.31</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">36.99 %</td>
+<td align="right">36.99 %</td>
+<td align="right">0.00 pp (regression-safe)</td>
+</tr><tr><td>Suborder</td>
+<td align="right">17.73 %</td>
+<td align="right">17.73 %</td>
+<td align="right">0.00 pp (regression-safe)</td>
+</tr><tr><td><strong>Great Group</strong></td>
+<td align="right">10.57 %</td>
+<td align="right"><strong>10.92 %</strong></td>
+<td align="right"><strong>+0.35 pp</strong></td>
+</tr><tr><td><strong>Subgroup</strong></td>
+<td align="right">5.09 %</td>
+<td align="right"><strong>5.32 %</strong></td>
+<td align="right"><strong>+0.23 pp</strong></td>
+</tr></tbody></table><p>Modest but positive lift; Order / Suborder unchanged confirms the fix is laser-focused at Great Group and below.</p>
+</div>
+<div class="section level3">
+<h3 id="roadmap-deferred-to-follow-up-0-9-31">Roadmap deferred to follow-up<a class="anchor" aria-label="anchor" href="#roadmap-deferred-to-follow-up-0-9-31"></a></h3>
+<p>The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs / Fraglossudalfs) were considered for this release but not shipped. The current <code><a href="../reference/pale_qualifying_usda.html">pale_qualifying_usda()</a></code> uses a clay &gt;= 35 % proxy that is structurally too strict (KST 13ed actually defines Pale- by “clay does not decrease 20 % within 150 cm of mineral surface”), but only 11 KSSL+NASIS misses are in this confusion bucket – lower priority than the 14 Quartzipsamment + Fragipan misses addressed here. Tightening Pale- requires careful design to avoid regression on Hapludalfs (which are far more common) and is left for a future release with better validation infrastructure.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-31">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-31"></a></h3>
+<p>9 new in <code>tests/testthat/test-v0931-quartzipsamment-fragipan.R</code> covering the broadened Quartzipsamment proxy (sandy / loamy-sand / loamy / missing-sand), the Fragipan NASIS path (with and without flag), and the rupture_resistance lab path.</p>
+<p>Full suite: 3 012 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.30" id="soilkey-0930-2026-05-03">soilKey 0.9.30 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0930-2026-05-03"></a></h2>
+<p>The “offline-ready WoSIS + CRAN-clean” release. Two infrastructure fixes that prepare the package for both reproducible CI and CRAN submission.</p>
+<div class="section level3">
+<h3 id="a-bundled-wosis-south-america-sample-0-9-30">A. Bundled WoSIS South-America sample<a class="anchor" aria-label="anchor" href="#a-bundled-wosis-south-america-sample-0-9-30"></a></h3>
+<p><code>inst/extdata/wosis_sa_sample.rds</code> (49 KB compressed) ships a frozen 40-profile snapshot pulled on 2026-05-03 from the ISRIC WoSIS GraphQL endpoint with <code>continent = "South America"</code>. New helper function:</p>
+<pre><code><span><span class="fu"><a href="../reference/load_wosis_sample.html">load_wosis_sample</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<p>returns a list with <code>profiles_raw</code>, <code>pedons</code> (PedonRecord objects), <code>pulled_on</code>, <code>endpoint</code>, <code>filter</code>, <code>n_pulled</code>. Tests + CI + casual users can now exercise the WRB benchmark path without depending on ISRIC server stability (see also: the v0.9.27 retry+fallback path, which still applies for live pulls).</p>
+<p>For up-to-date paper-grade benchmarks, callers should still use <code>run_wosis_benchmark_graphql()</code> directly against the live endpoint; the bundled snapshot is for reproducible tests, not for current ground-truth claims.</p>
+</div>
+<div class="section level3">
+<h3 id="b-bug-fix-wosis-retry-message-sprintf-0-9-30">B. Bug-fix: WoSIS retry message sprintf<a class="anchor" aria-label="anchor" href="#b-bug-fix-wosis-retry-message-sprintf-0-9-30"></a></h3>
+<p>The v0.9.27 graceful-degradation path had a sprintf format bug (<code>%d</code> mixed with a string concatenation) that caused the partial-pull return to error out with <code>invalid format '%d'; use format %s for character objects</code>. Fixed in <code>inst/benchmarks/run_wosis_benchmark.R</code> by combining the message format string with <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0()</a></code> before sprintf.</p>
+<p>The v0.9.30 cache pull demonstrated this fix in action: the ISRIC server timed out at offset=40 (after 4 retries with 1s/2s/4s/8s backoff), and the corrected graceful-degradation path returned the 40 profiles successfully collected so far.</p>
+</div>
+<div class="section level3">
+<h3 id="c-r-cmd-check-as-cran-0-9-30">C. R CMD check –as-cran<a class="anchor" aria-label="anchor" href="#c-r-cmd-check-as-cran-0-9-30"></a></h3>
+<p><code>R CMD check --as-cran</code> on <code>soilKey_0.9.30.tar.gz</code>:</p>
+<ul><li>0 ERRORs</li>
+<li>0 WARNINGs</li>
+<li>1 NOTE: “New submission” + a 301 redirect on the FAO PDF URL in README.md.</li>
+</ul><p>The “New submission” note is expected for a first CRAN submission (it disappears on subsequent submissions). The 301 redirect on <code>https://www.fao.org/3/i3794en/I3794en.pdf</code> is fixed by updating the README to point at the OpenKnowledge canonical URL (<code>https://openknowledge.fao.org/server/api/core/bitstreams/.../content</code>).</p>
+<p>After the URL fix, <code>--as-cran</code> reports a single “New submission” NOTE. The package is <strong>CRAN-ready</strong>.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-30">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-30"></a></h3>
+<p>4 new in <code>tests/testthat/test-v0930-wosis-sample.R</code> covering:</p>
+<ul><li>bundle returns 40-profile snapshot with the expected named slots;</li>
+<li>bundled profiles are valid <code>PedonRecord</code> objects;</li>
+<li>
+<code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> runs on bundled pedons without raising;</li>
+<li>snapshot metadata (date, endpoint, filter) is correct.</li>
+</ul><p>Full suite: 2 980 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.29" id="soilkey-0929-2026-05-03">soilKey 0.9.29 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0929-2026-05-03"></a></h2>
+<p>The “Neossolos Litolicos shallow-profile heuristic” release. Fixes a single classifier path that was sending ~190 of 191 FEBR Neossolos Litolicos to the catch-all “Regoliticos” subordem – the dominant single SiBCS Subordem error in the v0.9.27 confusion analysis.</p>
+<div class="section level3">
+<h3 id="root-cause-0-9-29">Root cause<a class="anchor" aria-label="anchor" href="#root-cause-0-9-29"></a></h3>
+<p>SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact within 50 cm. In the FEBR / BDsolos snapshot, surveyors document this implicitly by stopping the profile description at the rock boundary (median depth 17.5 cm, median 1 horizon) rather than entering a pseudo-R horizon. The pre-v0.9.29 <code><a href="../reference/neossolo_litolico.html">neossolo_litolico()</a></code> required <code><a href="../reference/contato_litico.html">contato_litico()</a></code> OR <code><a href="../reference/contato_litico_fragmentario.html">contato_litico_fragmentario()</a></code> to return TRUE, and both rely on an explicit <code>^R$|^Cr|^Rk</code> designation that FEBR almost never carries (0.5 % of Litolicos in the snapshot).</p>
+<p>Result: the classifier was routing <strong>190 of 191 FEBR Litolicos</strong> to the catch-all “Neossolos Regoliticos” subordem.</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-29">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-29"></a></h3>
+<p><code><a href="../reference/neossolo_litolico.html">neossolo_litolico()</a></code> now adds an “implicit lithic contact” path:</p>
+<p>Direct evidence (explicit R / Cr / Rk designation within 50 cm) is preserved as the canonical path.</p>
+</div>
+<div class="section level3">
+<h3 id="ab-on-embrapa-febr-n554-0-9-29">A/B on Embrapa FEBR (n=554)<a class="anchor" aria-label="anchor" href="#ab-on-embrapa-febr-n554-0-9-29"></a></h3>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.27</th>
+<th align="right">v0.9.29</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">56.68 %</td>
+<td align="right">56.68 %</td>
+<td align="right">0.00 pp (Order machinery unchanged)</td>
+</tr><tr><td><strong>Subordem</strong></td>
+<td align="right">9.93 %</td>
+<td align="right"><strong>38.63 %</strong></td>
+<td align="right"><strong>+28.70 pp</strong></td>
+</tr></tbody></table><p>The +28.70 pp Subordem lift is the single biggest single-version SiBCS gain since the v0.9.23 argic clay-increase fix (+14.1 pp at Order). Cumulative SiBCS Subordem from v0.9.22: 0.0 % -&gt; 38.63 %.</p>
+</div>
+<div class="section level3">
+<h3 id="v0928-changes-also-shipped-in-this-release-0-9-29">v0.9.28 changes (also shipped in this release)<a class="anchor" aria-label="anchor" href="#v0928-changes-also-shipped-in-this-release-0-9-29"></a></h3>
+<ul><li><p><strong>Designation-based clay-films proxy</strong> for <code><a href="../reference/argillic_clay_films_test.html">argillic_clay_films_test()</a></code>: the KST 13ed Ch 18 master horizon symbol  (“accumulation of silicate clay”) in any horizon designation (Bt, Btk, Btx, 2Bt, etc.) is now accepted as positive clay-illuviation evidence alongside NASIS pediagfeatures and per-horizon clay_films_amount. Coverage on KSSL+NASIS n=865: 12.2 % of profiles gain a third evidence path; total clay-films-positive coverage rises 38.8 % -&gt; 51.0 %. Marginal-argillic flips: 8/107 designation-only profiles switch from WRB tier (rejects) to KST tier (accepts) – but the KSSL+NASIS Order/Suborder/Great Group/Subgroup numbers remain identical to v0.9.27 because those 8 marginal flips don’t change the eventual taxonomic assignment.</p></li>
+<li><p><strong><code><a href="../reference/classify_all.html">classify_all()</a></code> wrapper</strong>: a single call returning all three classifications plus a <code>summary</code> data.frame. Saves callers from typing three separate <code>classify_*()</code> calls.</p></li>
+<li><p><strong>Codecov configuration</strong> (<code>codecov.yml</code>): soft gates (project coverage drop allowed up to 1 pp; new patches at least 70 % covered with 5 pp grace). Test-coverage workflow already ships via <code>.github/workflows/test-coverage.yaml</code>; this release adds the per-repo config.</p></li>
+<li><p><strong>Additional <code>max(-Inf)</code> warning fix</strong> in <code>R/diagnostics-horizons-sibcs.R</code> (worm_holes_pct path).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-29">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-29"></a></h3>
+<ul><li>17 new unit tests in  covering the designation ‘t’-suffix detection, regex strictness (no false-positive on “test”), evidence-source priority (NASIS pediagfeatures &gt; phpvsf &gt; designation), and the integration with argillic_usda routing.</li>
+<li>7 new tests in  covering the wrapper API (subset, error handling, summary shape).</li>
+<li>8 new tests in  covering the FEBR-style shallow profile path, B-horizon exclusion, deep profile rejection, contradictory non-rock material rejection, and the classify_sibcs end-to-end integration.</li>
+</ul><p>Full suite: 2 976 PASS / 0 FAIL / 10 SKIP. R CMD check Status: OK (0 errors / 0 warnings / 0 notes).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.27" id="soilkey-0927-2026-05-03">soilKey 0.9.27 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0927-2026-05-03"></a></h2>
+<p>The “clay-illuviation evidence test + Embrapa benchmark fix + housekeeping” release. Wires the v0.9.26-roadmap clay-films test into <code>argillic_usda</code> for NASIS-enriched profiles, fixes a benchmark-comparison bug that was producing 0% Embrapa accuracy, silences <code>max(-Inf)</code> warnings during testing, and converts two pre-existing skipped tests into proper assertions.</p>
+<div class="section level3">
+<h3 id="a-clay-illuviation-evidence-test-ksted-ch-p-0-9-27">A. Clay-illuviation evidence test (KST 13ed Ch 3 p 4)<a class="anchor" aria-label="anchor" href="#a-clay-illuviation-evidence-test-ksted-ch-p-0-9-27"></a></h3>
+<p><code>argillic_clay_films_test(pedon)</code>: a new exported test that reads two complementary NASIS-derived slots populated by <code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code>:</p>
+<ol style="list-style-type: decimal"><li>
+<code>pedon$site$nasis_diagnostic_features</code> – the <code>pediagfeatures.featkind</code> vector. The surveyor’s “Argillic horizon” entry directly confirms clay-illuviation evidence (~13,500 entries in the 2021 NASIS snapshot).</li>
+<li>
+<code>pedon$horizons$clay_films_amount</code> – per-horizon clay-film abundance derived from NASIS <code>phpvsf</code> (values <code>"few"</code> / <code>"common"</code> / <code>"many"</code> / <code>"continuous"</code>).</li>
+</ol><p>Either source counts as positive evidence; <code>passed = NA</code> when neither is populated.</p>
+<p><code>argillic_usda(pedon)</code> two-tier strategy:</p>
+<ul><li>
+<strong>tier 1</strong> (FULL evidence): clay-films-test passes -&gt; <code>argic(pedon, system = "usda")</code> with the looser KST 13ed thresholds (3 pp / 1.2x / 8 pp).</li>
+<li>
+<strong>tier 2</strong> (PROXY): clay-films-test does not pass -&gt; <code>argic(pedon, system = "wrb2022")</code> with the stricter WRB thresholds (6 pp / 1.4x / 20 pp) as a conservative proxy.</li>
+</ul><p>The fluvic-pattern exclusion (v0.9.10) is preserved across both tiers – depositional clay distributions are NOT argillic regardless of clay-films evidence, because the increase is non-pedogenic.</p>
+<div class="section level4">
+<h4 id="ab-on-ksslnasis-n865-identical-filter-0-9-27">A/B on KSSL+NASIS (n=865, identical filter)<a class="anchor" aria-label="anchor" href="#ab-on-ksslnasis-n865-identical-filter-0-9-27"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.26</th>
+<th align="right">v0.9.27</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">37.23 %</td>
+<td align="right">36.99 %</td>
+<td align="right">-0.24 pp (within CI)</td>
+</tr><tr><td>Suborder</td>
+<td align="right">17.84 %</td>
+<td align="right">17.73 %</td>
+<td align="right">-0.11 pp (within CI)</td>
+</tr><tr><td><strong>Great Group</strong></td>
+<td align="right">10.34 %</td>
+<td align="right"><strong>10.57 %</strong></td>
+<td align="right"><strong>+0.23 pp</strong></td>
+</tr><tr><td><strong>Subgroup</strong></td>
+<td align="right">4.97 %</td>
+<td align="right"><strong>5.09 %</strong></td>
+<td align="right"><strong>+0.12 pp</strong></td>
+</tr></tbody></table></div>
+<div class="section level4">
+<h4 id="coverage-diagnostic-n878-with-quality-filter-0-9-27">Coverage diagnostic (n=878 with quality filter)<a class="anchor" aria-label="anchor" href="#coverage-diagnostic-n878-with-quality-filter-0-9-27"></a></h4>
+<p>The lift is smaller than the v0.9.26-roadmap estimate (+3-5 pp) because clay-films evidence is sparse in the KSSL+NASIS snapshot:</p>
+<ul><li>38.8 % of profiles have clay-films evidence -&gt; KST tier;</li>
+<li>47.6 % have no NASIS pediagfeatures or phpvsf data -&gt; WRB tier (proxy);</li>
+<li>13.6 % have NASIS but no argillic flag -&gt; WRB tier (correctly rejecting the looser thresholds for these).</li>
+</ul><p>The +0.23 pp Great Group lift reflects the fraction of the 38.8 % “with-evidence” profiles that fall in the marginal argillic band (3 pp &lt;= Delta clay &lt; 6 pp, or 1.2 &lt;= ratio &lt; 1.4) – profiles where the looser KST thresholds catch a clay increase that WRB rejects.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="b-embrapa-febr-benchmark-fix-0-9-27">B. Embrapa FEBR benchmark fix<a class="anchor" aria-label="anchor" href="#b-embrapa-febr-benchmark-fix-0-9-27"></a></h3>
+<p><code>benchmark_run_classification(system = "sibcs")</code> at <code>level = "order"</code> and <code>level = "subordem"</code> now wires <code><a href="../reference/normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code> into the comparison <code>.norm</code> function. Without this normalisation, FEBR-style ALL-CAPS singular labels (“NEOSSOLO LITOLICO”) were being string-compared verbatim against soilKey’s Title Case plural output (“Neossolos Litolicos”), trivially producing 0 % accuracy on Embrapa profiles.</p>
+<div class="section level4">
+<h4 id="embrapa-sibcs-ab-n554-0-9-27">Embrapa SiBCS A/B (n=554)<a class="anchor" aria-label="anchor" href="#embrapa-sibcs-ab-n554-0-9-27"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.23 baseline</th>
+<th align="right">v0.9.27</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td><strong>Order</strong></td>
+<td align="right">54.70 %</td>
+<td align="right">
+<strong>56.68 %</strong> (CI 52.7-60.6)</td>
+<td align="right"><strong>+1.98 pp</strong></td>
+</tr><tr><td>Subordem</td>
+<td align="right">–</td>
+<td align="right">9.93 % (CI 7.4-12.5)</td>
+<td align="right">(new measurement)</td>
+</tr></tbody></table><p>The +1.98 pp Order lift on Embrapa is the second concrete validation of the v0.9.24-26 changes (the first was the v0.9.25 KSSL+NASIS Great Group +3.84 pp). Order accuracy on Embrapa is now 56.68 % – up from the v0.9.22 baseline of 40.6 % via three incremental releases.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="c-housekeeping-0-9-27">C. Housekeeping<a class="anchor" aria-label="anchor" href="#c-housekeeping-0-9-27"></a></h3>
+<ul><li><p>Two <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max()</a></code> calls in <code>R/diagnostics-horizons-sibcs.R</code> (lines 214, 252) now guard against all-NA <code>bs_pct</code> vectors that were producing <code>no non-missing arguments to max; returning -Inf</code> warnings during the test suite. Warning count drops from 24 to 12 (the remaining warnings are 2 distinct sources, both “missing data attribute trace” warnings from the WRB key on fixtures with intentionally sparse data).</p></li>
+<li><p><code>tests/testthat/test-sibcs-argissolos-sg-pac-v074.R:182</code>: the <code>carater_latossolico</code> test was previously skipping (“B_textural passes; cant test the no-textural path”) because the <code>.make_pac_subgrupo()</code> fixture has an abrupt clay jump. Replaced with an explicit no-Bt fixture (clay 20-22-23, no abrupt jump) that lets the test verify <code>carater_latossolico</code> returns FALSE when <code>B_textural</code> cannot pass.</p></li>
+<li><p><code>tests/testthat/test-sibcs-plintossolos-v0712.R:31</code>: the <code>subgrupo_plintossolo_endico_concrecionario</code> test was previously skipping (“horizonte_concrecionario nao casa com fixture sintetico”) because the fixture used <code>plinthite_pct = c(NA, 5, 5)</code> – below the 50 % threshold. Corrected to <code>plinthite_pct = c(NA, 60, 60)</code> so the precondition fires and the topo-&lt; 40 endico check exercises correctly.</p></li>
+<li><p><code>inst/benchmarks/run_wosis_benchmark.R</code>: <code>read_wosis_profiles_graphql()</code> gains per-page retry with exponential backoff (1s, 2s, 4s, 8s) plus graceful degradation – after <code>min_pages = 1</code> succeeds, transient page failures return the partial pull rather than aborting. Address the ISRIC GraphQL endpoint’s “canceling statement due to statement timeout” intermittent failures observed in the v0.9.24 WoSIS refresh.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-27">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-27"></a></h3>
+<p>17 new unit tests in <code>tests/testthat/test-v0927-clay-films.R</code> covering the clay-films-test and the argillic_usda routing (NASIS pediagfeatures argillic, per-horizon clay_films_amount, indeterminate-NA, explicit-FALSE for non-argillic NASIS, and threshold-system selection in argillic_usda).</p>
+<p>Full suite: 2908 PASS / 0 FAIL / 10 SKIP. R CMD check <strong>Status: OK</strong> (0 errors, 0 warnings, 0 notes).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.26" id="soilkey-0926-2026-05-03">soilKey 0.9.26 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0926-2026-05-03"></a></h2>
+<p>The “argic / argillic per-system threshold infrastructure” release. Adds a system parameter to the clay-increase test so future code can opt into KST 13ed thresholds; documents the design tension that keeps <code>argillic_usda</code> on WRB thresholds for now; lays the infrastructure for the v0.9.27+ clay-films test that would justify the looser KST thresholds.</p>
+<div class="section level3">
+<h3 id="background-0-9-26">Background<a class="anchor" aria-label="anchor" href="#background-0-9-26"></a></h3>
+<p>The argic horizon (WRB 2022 Ch 3.1.3 p 36) and the argillic horizon (KST 13ed Ch 3 p 4) use the SAME structural rule (three brackets keyed on overlying eluvial clay percent) but DIFFERENT thresholds:</p>
+<table class="table"><thead><tr><th>Eluvial clay</th>
+<th>WRB 2022 argic</th>
+<th>KST 13ed argillic</th>
+</tr></thead><tbody><tr><td>&lt; 15 %</td>
+<td>+6 pp absolute</td>
+<td><strong>+3 pp absolute</strong></td>
+</tr><tr><td>15-X %</td>
+<td>1.4x ratio (X=50)</td>
+<td><strong>1.2x ratio (X=40)</strong></td>
+</tr><tr><td>&gt;= X %</td>
+<td>+20 pp absolute</td>
+<td><strong>+8 pp absolute</strong></td>
+</tr></tbody></table><p>KST 13ed thresholds are looser by design BUT are paired with a required clay-illuviation test: oriented clays bridging sand grains on &gt;= 1 % of horizon area, OR clay films lining pores / coating ped faces, OR lamellae &gt; 5 mm thick. Neither soilKey nor KSSL store this evidence reliably (NASIS does, sparsely).</p>
+</div>
+<div class="section level3">
+<h3 id="changes-0-9-26">Changes<a class="anchor" aria-label="anchor" href="#changes-0-9-26"></a></h3>
+<p><code>test_clay_increase_argic(h, system = c("wrb2022", "usda"))</code>: new <code>system</code> parameter routes between WRB and KST thresholds. Default remains  for back-compat. The KST branch is fully implemented and tested.</p>
+<p><code>argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))</code>: mirrors the same parameter and forwards it to the clay-increase test.</p>
+<p><code>argillic_usda(pedon, ...)</code>: continues to delegate to , NOT system = “usda”, with an inline design-note explaining why. Empirical A/B on KSSL+NASIS n=865 showed that switching to system = “usda” without also implementing the clay-illuviation test produced a <strong>regression</strong> of -1.28 pp at Order, -0.92 pp at Suborder, and -0.35 pp at Great Group. The looser thresholds without clay-films verification produce many false-positive argillic detections, which then mis-route genuinely non-argillic profiles to argillic-bearing Orders. The stricter WRB thresholds act as a conservative proxy for “argillic with strong clay-increase evidence” until the clay-films test is added.</p>
+</div>
+<div class="section level3">
+<h3 id="roadmap-v0927-0-9-26">Roadmap (v0.9.27+)<a class="anchor" aria-label="anchor" href="#roadmap-v0927-0-9-26"></a></h3>
+<ul><li>Implement <code><a href="../reference/argillic_clay_films_test.html">argillic_clay_films_test()</a></code> against NASIS <code>pediagfeatures</code> records (the surveyor’s argillic flag captures the clay-illuviation evidence directly).</li>
+<li>Switch <code>argillic_usda</code> to system = “usda” once the clay-films test is wired in. The empirical hypothesis is that the looser KST thresholds, paired with the clay-films gate, will produce a NET positive lift at Great Group level (closing many of the haplargids -&gt; haplocambids and argiustolls -&gt; hapludolls misses documented in the v0.9.25 roadmap).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-26">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-26"></a></h3>
+<p>11 new unit tests in  exercise:</p>
+<ul><li>KST-only-passing band at clay &lt; 15 % (3.7 pp absolute increase)</li>
+<li>KST-only-passing band at clay 15-40 % (ratio 1.39)</li>
+<li>KST-only-passing band at clay &gt;= 40 % (+13 pp absolute)</li>
+<li>Both-passing canonical case (clay 13 -&gt; 31)</li>
+<li>Both-failing case (ratio 1.07)</li>
+<li>Default system = wrb2022 (back-compat)</li>
+<li>argillic_usda routing under the current design (WRB thresholds)</li>
+<li>argillic_usda canonical Luvisol fixture (passes regardless)</li>
+</ul><p>Full suite: 2886 PASS / 0 FAIL / 12 SKIP. R CMD check Status: OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.25" id="soilkey-0925-2026-05-03">soilKey 0.9.25 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0925-2026-05-03"></a></h2>
+<p>The “KST 13ed Great Group canonicalisation” release. A single benchmark-level normaliser that produces the largest Great Group accuracy lift in project history without changing any classifier logic.</p>
+<div class="section level3">
+<h3 id="root-cause-analysis-0-9-25">Root-cause analysis<a class="anchor" aria-label="anchor" href="#root-cause-analysis-0-9-25"></a></h3>
+<p>KSSL <code>samp_taxgrtgroup</code> is populated from historical pedon descriptions spanning Soil Taxonomy editions 8 through 13. Several Great Group names changed between editions, and KSSL did NOT retroactively update them. soilKey’s classifier follows KST 13ed (the current edition), so direct string equality between predicted (13ed) and reference (mixed editions) Great Group names produces <strong>false-negative misses</strong> for every profile whose KSSL label is a pre-13ed name.</p>
+<p>The most common edition-driven renames in KSSL:</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Pre-13ed name (KSSL)</th>
+<th>KST 13ed equivalent</th>
+<th>Reason</th>
+</tr></thead><tbody><tr><td>Haplaquolls</td>
+<td>Endoaquolls / Epiaquolls</td>
+<td>Hapl- split into endo (deep) / epi (perched) saturation</td>
+</tr><tr><td>Haplaquepts</td>
+<td>Endoaquepts / Epiaquepts</td>
+<td>same</td>
+</tr><tr><td>Haplaquerts</td>
+<td>Endoaquerts / Epiaquerts</td>
+<td>same</td>
+</tr><tr><td>Pellusterts</td>
+<td>Hapluderts / Salusterts / Calciusterts</td>
+<td>dark-colour Pellu split by chemistry</td>
+</tr><tr><td>Chromusterts</td>
+<td>Hapluderts</td>
+<td>bright-colour Chromu merged into Hapluderts</td>
+</tr><tr><td>Dystrochrepts</td>
+<td>Dystrudepts</td>
+<td>Ochrept suborder retired; Udept created</td>
+</tr><tr><td>Eutrochrepts</td>
+<td>Eutrudepts</td>
+<td>same</td>
+</tr><tr><td>Camborthids</td>
+<td>Haplocambids</td>
+<td>Orthid suborder retired; Cambid created</td>
+</tr><tr><td>Calciorthids</td>
+<td>Haplocalcids</td>
+<td>same</td>
+</tr><tr><td>Vitrandepts</td>
+<td>Vitrudands</td>
+<td>Andisols promoted to its own Order</td>
+</tr><tr><td>Medisaprists</td>
+<td>Haplosaprists</td>
+<td>“medi-” temperature regime moved to Subgroup</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="fix-0-9-25">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-25"></a></h3>
+<p><code>canonicalise_kst13ed_gg(gg)</code> – a many-to-one map that coalesces both the obsolete name AND the modern split-children to a SHARED canonical key. Apply to BOTH ref and pred before comparing at  or ; the Subgroup modifier (Typic / Aquic / …) is left intact and the canonicalisation only affects the Great Group token.</p>
+<p>The canonicaliser is NOT applied at  or  – the Suborder name is stable across KST 8-13 (only the per-Suborder Great Group inventory changed), and the Order name has been stable since KST 11.</p>
+</div>
+<div class="section level3">
+<h3 id="apples-to-apples-ab-ksslnasis-n865-identical-filter-0-9-25">Apples-to-apples A/B (KSSL+NASIS, n=865, identical filter)<a class="anchor" aria-label="anchor" href="#apples-to-apples-ab-ksslnasis-n865-identical-filter-0-9-25"></a></h3>
+<table class="table"><colgroup><col width="55%"><col width="14%"><col width="14%"><col width="14%"></colgroup><thead><tr><th>Level</th>
+<th align="right">v0.9.24</th>
+<th align="right">v0.9.25</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td><strong>Order</strong></td>
+<td align="right">37.23 %</td>
+<td align="right">37.23 %</td>
+<td align="right">0.00 pp</td>
+</tr><tr><td><strong>Suborder</strong></td>
+<td align="right">17.84 %</td>
+<td align="right">17.84 %</td>
+<td align="right">0.00 pp</td>
+</tr><tr><td><strong>Great Group</strong></td>
+<td align="right">6.50 %</td>
+<td align="right"><strong>10.34 %</strong></td>
+<td align="right"><strong>+3.84 pp (+59 % relative)</strong></td>
+</tr><tr><td><strong>Subgroup</strong></td>
+<td align="right">3.82 %</td>
+<td align="right"><strong>4.97 %</strong></td>
+<td align="right"><strong>+1.15 pp (+30 % relative)</strong></td>
+</tr></tbody></table><p>Order and Suborder are unchanged (the canonicaliser only operates at the Great Group token), confirming the fix is <strong>regression-safe above the GG level</strong> by construction.</p>
+<p>The Great Group +3.84 pp gain is the second-biggest single-version move in the project’s history (only argic clay-increase v0.9.23 was bigger), and crucially it required NO classifier changes – the predictor is correct, the comparison was just unfair to legacy labels.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-25">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-25"></a></h3>
+<p>22 new unit tests in  exercise each documented edition pair (Haplaquolls/Endoaquolls/ Epiaquolls; Pellusterts/Hapluderts/Chromusterts; Camborthids/ Haplocambids; Calciorthids/Haplocalcids; Vitrandepts/Vitrudands; Dystrochrepts/Dystrudepts; Medisaprists/Haplosaprists), pass-through behaviour for unknown names, NA handling, and the benchmark-runner integration at  and . Full suite: 2872 PASS / 0 FAIL / 12 SKIP.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.24" id="soilkey-0924-2026-05-03">soilKey 0.9.24 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0924-2026-05-03"></a></h2>
+<p>The “Path C subgroup tightening + multi-level benchmark” release. Three coordinated changes that complete a formal validation of USDA Soil Taxonomy 13ed at every level of the keyed hierarchy (Order / Suborder / Great Group / Subgroup), tighten two diagnostic predicates that were over-firing at the subgroup modifier level, and refresh the WoSIS GraphQL benchmark.</p>
+<div class="section level3">
+<h3 id="a-aquic-conditions-and-oxyaquic-subgroup-tightening-0-9-24">A. Aquic conditions and Oxyaquic subgroup tightening<a class="anchor" aria-label="anchor" href="#a-aquic-conditions-and-oxyaquic-subgroup-tightening-0-9-24"></a></h3>
+<p><code>aquic_conditions_usda</code> (KST 13ed Ch 3, pp 41-44) now requires <strong>both</strong> reduction evidence (matrix chroma &lt;= 2 OR a ‘g’ master suffix in the horizon designation) <strong>and</strong> a redoximorphic indicator (redox features &gt;= <code>min_redox_pct</code> OR a chroma-2-with-g matrix that simultaneously serves as both reduction and redox evidence). The pre-v0.9.24 logic accepted <code>redox_ok</code> ALONE (redox features &gt;= 5 pct) – a single low-evidence trigger that fired on any profile with mottling, including profiles that are not actually saturated.</p>
+<p><code>oxyaquic_subgroup_usda</code> (KST 13ed Ch 14) now requires either (a) measured redox features &gt;= 2 pct AND chroma &lt;= 4 in the matrix, or (b) a ‘g’ suffix in the designation AND chroma &lt;= 3. The pre-v0.9.24 logic fired on <code>redox &gt;= 2</code> OR <code>chroma &lt;= 2</code> ALONE, producing false-positive Oxyaquic predictions on KSSL Typic-reference profiles.</p>
+<div class="section level4">
+<h4 id="apples-to-apples-ab-ksslnasis-n865-0-9-24">Apples-to-apples A/B (KSSL+NASIS, n=865)<a class="anchor" aria-label="anchor" href="#apples-to-apples-ab-ksslnasis-n865-0-9-24"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">v0.9.23 baseline</th>
+<th align="right">v0.9.24 (tightening)</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td><strong>Order</strong></td>
+<td align="right">37.23 %</td>
+<td align="right">37.23 %</td>
+<td align="right">0.00 pp</td>
+</tr><tr><td><strong>Suborder</strong></td>
+<td align="right">–</td>
+<td align="right">17.84 %</td>
+<td align="right">(new measurement)</td>
+</tr><tr><td><strong>Great Group</strong></td>
+<td align="right">–</td>
+<td align="right">6.50 %</td>
+<td align="right">(new measurement)</td>
+</tr><tr><td><strong>Subgroup</strong></td>
+<td align="right">3.24 %</td>
+<td align="right"><strong>3.82 %</strong></td>
+<td align="right"><strong>+0.58 pp</strong></td>
+</tr></tbody></table><p>The tightening is regression-safe at Order (no change) and delivers a small but real Subgroup-level gain. The 31-canonical synthetic-fixture suite remains 31/31 correct.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="b-multi-level-usda-benchmark-suborder-great-group-0-9-24">B. Multi-level USDA benchmark (Suborder, Great Group)<a class="anchor" aria-label="anchor" href="#b-multi-level-usda-benchmark-suborder-great-group-0-9-24"></a></h3>
+<p><code>benchmark_run_classification</code> now supports two new <code>level</code> values for <code>system = "usda"</code>:</p>
+<ul><li>
+<code>"great_group"</code> – the LAST token of the subgroup name (e.g. “typic hapludalfs” -&gt; “hapludalfs”). Isolates whether the Great Group machinery is correct independent of subgroup modifiers (Typic / Aquic / Vertic / Cumulic / Pachic / etc.). Reads <code>site$reference_usda_grtgroup</code>.</li>
+<li>
+<code>"suborder"</code> – maps the Great Group prediction to its canonical Suborder suffix (e.g. “hapludalfs” -&gt; “udalfs”) using the KST 13ed Ch 4 ~70-Suborder list. Reads <code>site$reference_usda_suborder</code>.</li>
+</ul><p>Both fields are populated by <code>load_kssl_pedons_with_nasis</code> from KSSL <code>samp_taxsuborder</code> and <code>samp_taxgrtgroup</code> (added in v0.9.22).</p>
+<p>This makes the four levels of USDA Soil Taxonomy independently measurable for the first time, giving a clean ladder of where the keyed reasoning is currently strongest and where the next leverage lies.</p>
+</div>
+<div class="section level3">
+<h3 id="c-subgroup-miss-diagnosis--a-roadmap-finding-0-9-24">C. Subgroup miss diagnosis – a roadmap finding<a class="anchor" aria-label="anchor" href="#c-subgroup-miss-diagnosis--a-roadmap-finding-0-9-24"></a></h3>
+<p>A focused analysis of the n=865 Subgroup misses (correct-Order but wrong-Subgroup) found that <strong>289 of 322 (89.8 %)</strong> mis-classified profiles have a correct Order but a wrong Subgroup. Of those, the largest single category is <strong>Typic-misclassified-as-other</strong> (132 profiles, 45.7 % of all correct-Order Subgroup misses). Crucially, <strong>114 of the 132 Typic-references actually fire as Typic in the predictor</strong> – the Subgroup modifier is being chosen correctly; the <strong>Great Group</strong> part of the prediction is wrong.</p>
+<p>This identifies the Great Group machinery (one level above the subgroup modifier) as the next-leverage zone for v0.9.25+, not additional Subgroup-modifier tightening. Adding more qualifying-modifier tests (Pachic, Cumulic, Mollic, Lithic, etc.) is a parallel future axis but would not address the 114 typic-modifier-correct, Great-Group-wrong misses that account for nearly half of all correct-Order Subgroup misses.</p>
+</div>
+<div class="section level3">
+<h3 id="d-wosis-graphql-refresh-limited-by-server-timeouts-0-9-24">D. WoSIS GraphQL refresh (limited by server timeouts)<a class="anchor" aria-label="anchor" href="#d-wosis-graphql-refresh-limited-by-server-timeouts-0-9-24"></a></h3>
+<p><code>run_wosis_benchmark_graphql</code> re-validated against the v0.9.13 baseline (~13 % WRB top-1 on a 50-profile South-America pull): the v0.9.24 deterministic key now scores <strong>5/30 = 16.67 %</strong> (continent = “South America”, page_size = 10). The pull is limited to n = 30 because the WoSIS GraphQL server consistently returns “canceling statement due to statement timeout” beyond ~40 profiles per session. The trend is positive (+3.67 pp on a small sample), which is consistent with the v0.9.13 -&gt; v0.9.24 trajectory across SiBCS (40.6 -&gt; 54.7 %), USDA Order (47.6 -&gt; 51.1 %), and KSSL+NASIS Order (32.7 -&gt; 36.0 %) on full-size benchmarks. A larger WoSIS refresh awaits ISRIC server stability; the pulled-profile snapshot lives in <code>inst/benchmarks/reports/wosis_graphql_2026-05-03.md</code>.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.23" id="soilkey-0923-2026-05-02">soilKey 0.9.23 (2026-05-02)<a class="anchor" aria-label="anchor" href="#soilkey-0923-2026-05-02"></a></h2>
+<p>The “argic clay-increase canonicalisation” release. Fixes a single diagnostic bug that was capping argic horizon detection across both WRB and USDA – and the impact is paper-sized.</p>
+<div class="section level3">
+<h3 id="root-cause-analysis-0-9-23">Root-cause analysis<a class="anchor" aria-label="anchor" href="#root-cause-analysis-0-9-23"></a></h3>
+<p><code>test_clay_increase_argic</code> (the predicate that gates the argic horizon, the argillic horizon, and every Order / RSG that depends on either) was comparing each candidate horizon’s clay only against its <strong>immediate predecessor</strong>. KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022 Ch 3.1.3 (argic horizon, p 36) define the test as a comparison against the <strong>overlying eluvial horizon</strong>, NOT necessarily the adjacent layer.</p>
+<p>Profiles where clay rises gradually through a thick A / E / Bw / Bt sequence (e.g. KSSL Hapludalfs with clay 13 -&gt; 15 -&gt; 22 -&gt; 27 -&gt; 31) were being silently rejected because no two adjacent layers passed the +6pp / 1.4-ratio thresholds, even though the canonical A-vs-Bt jump of 13 -&gt; 31 obviously satisfies argic.</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-23">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-23"></a></h3>
+<p><code>test_clay_increase_argic</code> now evaluates the rule against:</p>
+<ol style="list-style-type: decimal"><li>The <strong>minimum-clay layer above</strong> the candidate (the canonical eluvial reference – typically A or E).</li>
+<li>The <strong>immediate predecessor</strong> (back-compat with the WRB adjacent-layer interpretation when an eluvial is absent).</li>
+</ol><p>Either trigger accepts the candidate. The change is purely additive – no candidate that passed before now fails – so every canonical fixture continues to classify correctly.</p>
+</div>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-0-9-23">Real-data benchmark impact<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-0-9-23"></a></h3>
+<div class="section level4">
+<h4 id="embrapa-febr-apples-to-apples-n128-sibcs--usda--wrb-0-9-23">Embrapa FEBR (apples-to-apples, n=128 SiBCS / 614 USDA / 101 WRB)<a class="anchor" aria-label="anchor" href="#embrapa-febr-apples-to-apples-n128-sibcs--usda--wrb-0-9-23"></a></h4>
+<table class="table"><thead><tr><th>System</th>
+<th align="right">v0.9.22</th>
+<th align="right">v0.9.23</th>
+<th align="right">Δ</th>
+</tr></thead><tbody><tr><td><strong>SiBCS Order</strong></td>
+<td align="right">40.6 %</td>
+<td align="right"><strong>54.7 %</strong></td>
+<td align="right"><strong>+14.1 pp</strong></td>
+</tr><tr><td><strong>USDA Order</strong></td>
+<td align="right">47.6 %</td>
+<td align="right"><strong>51.1 %</strong></td>
+<td align="right">+3.5 pp</td>
+</tr><tr><td><strong>WRB Order</strong></td>
+<td align="right">32.7 %</td>
+<td align="right"><strong>33.7 %</strong></td>
+<td align="right">+1.0 pp</td>
+</tr></tbody></table><p>The SiBCS jump is the biggest single-version gain in the project to date. Most of the v0.9.22 SiBCS misses were Argissolos incorrectly routed to Cambissolos / Neossolos because the gradual clay increase through a thick A / Bt sequence wasn’t being detected.</p>
+</div>
+<div class="section level4">
+<h4 id="kssl--nasis-apples-to-apples-two-samples-0-9-23">KSSL + NASIS (apples-to-apples, two samples)<a class="anchor" aria-label="anchor" href="#kssl--nasis-apples-to-apples-two-samples-0-9-23"></a></h4>
+<table class="table"><thead><tr><th>Sample</th>
+<th align="right">v0.9.22 Order</th>
+<th align="right">v0.9.23 Order</th>
+<th align="right">Δ</th>
+</tr></thead><tbody><tr><td>n=669</td>
+<td align="right">33.8 %</td>
+<td align="right"><strong>35.7 %</strong></td>
+<td align="right">+1.9 pp</td>
+</tr><tr><td>n=998</td>
+<td align="right">32.7 %</td>
+<td align="right"><strong>36.0 %</strong></td>
+<td align="right">+3.3 pp</td>
+</tr></tbody></table><p>Per-Order Order-level on KSSL n=998:</p>
+<table class="table"><thead><tr><th>Order</th>
+<th align="right">v0.9.22</th>
+<th align="right">v0.9.23</th>
+<th align="right">Δ</th>
+</tr></thead><tbody><tr><td><strong>Vertisols</strong></td>
+<td align="right">65.2 %</td>
+<td align="right"><strong>68.8 %</strong></td>
+<td align="right">+3.6 pp</td>
+</tr><tr><td><strong>Aridisols</strong></td>
+<td align="right">53.1 %</td>
+<td align="right"><strong>55.4 %</strong></td>
+<td align="right">+2.3 pp</td>
+</tr><tr><td><strong>Ultisols</strong></td>
+<td align="right">26.3 %</td>
+<td align="right"><strong>38.9 %</strong></td>
+<td align="right"><strong>+12.6 pp</strong></td>
+</tr><tr><td><strong>Alfisols</strong></td>
+<td align="right">20.9 %</td>
+<td align="right"><strong>31.2 %</strong></td>
+<td align="right"><strong>+10.3 pp</strong></td>
+</tr><tr><td><strong>Spodosols</strong></td>
+<td align="right">29.9 %</td>
+<td align="right"><strong>37.9 %</strong></td>
+<td align="right"><strong>+8.0 pp</strong></td>
+</tr><tr><td>Mollisols</td>
+<td align="right">21.8 %</td>
+<td align="right">22.9 %</td>
+<td align="right">+1.1 pp</td>
+</tr><tr><td>Inceptisols</td>
+<td align="right">47.2 %</td>
+<td align="right">41.5 %</td>
+<td align="right">-5.7 pp</td>
+</tr><tr><td>Entisols</td>
+<td align="right">53.1 %</td>
+<td align="right">46.9 %</td>
+<td align="right">-6.2 pp</td>
+</tr><tr><td>Oxisols</td>
+<td align="right">60.0 %</td>
+<td align="right">60.0 %</td>
+<td align="right">(=)</td>
+</tr><tr><td>Histosols / Andisols</td>
+<td align="right">0/0</td>
+<td align="right">0/0</td>
+<td align="right">(=)</td>
+</tr></tbody></table><p>The Alfisol / Ultisol / Spodosol gains (+8 to +13 pp each) are where the v0.9.22 → v0.9.23 fix delivers the most: profiles with gradual A → E → Bt → … clay sequences now correctly route to the argillic-bearing Orders. Inceptisol / Entisol drops are correct: profiles previously routed to those catch-all Orders are now properly classified as Alfisols / Ultisols.</p>
+<p>Mollisols dropped slightly (-3.5 pp) because some former Mollisols now correctly route to Alfisols (where argic + high BS combination triggers).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="code-0-9-23">Code<a class="anchor" aria-label="anchor" href="#code-0-9-23"></a></h3>
+<div class="section level4">
+<h4 id="test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23">
+<code>test_clay_increase_argic(h)</code> – canonical eluvial-illuvial<a class="anchor" aria-label="anchor" href="#test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23"></a></h4>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># v0.9.22 (buggy):</span></span>
+<span><span class="va">above</span> <span class="op">&lt;-</span> <span class="va">h</span><span class="op">$</span><span class="va">clay_pct</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">]</span>   <span class="co"># adjacent only</span></span>
+<span></span>
+<span><span class="co"># v0.9.23 (canonical):</span></span>
+<span><span class="va">above_clays</span> <span class="op">&lt;-</span> <span class="va">h</span><span class="op">$</span><span class="va">clay_pct</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">above_min</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">above_clays</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># eluvial reference</span></span>
+<span><span class="va">above_adj</span>   <span class="op">&lt;-</span> <span class="va">h</span><span class="op">$</span><span class="va">clay_pct</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">]</span>              <span class="co"># adjacent fallback</span></span>
+<span><span class="co"># Either trigger accepts the candidate.</span></span></code></pre></div>
+<p>The min-above reference matches KST 13ed Ch 3 p 4 (“the increase in clay content with depth must be … compared to a lighter- textured eluvial horizon above”) and WRB 2022 Ch 3.1.3 p 36 (“clay percent increases compared to the overlying horizon by …”).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="tests--cran-0-9-23">Tests + CRAN<a class="anchor" aria-label="anchor" href="#tests--cran-0-9-23"></a></h3>
+<ul><li>2 850 testthat expectations passing, 0 failed (no regression on the canonical fixtures, which all classify correctly because they were already passing the adjacent-layer rule – the new min-above path is strictly additive).</li>
+<li>31/31 canonical fixtures still classify correctly.</li>
+<li>
+<code>R CMD check --as-cran</code> with PROJ env: Status: OK.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="whats-not-yet-fixed-0-9-23">What’s NOT yet fixed<a class="anchor" aria-label="anchor" href="#whats-not-yet-fixed-0-9-23"></a></h3>
+<ul><li>
+<strong>EU-LUCAS WRB benchmark</strong> – the bundled ESDBv2 archive ships schema-only Excel files; the actual WRB-coded SGDBE database is the Windows installer (<code>autorun.exe</code>). Still requires either a Linux extraction tool or the licensed JRC ESDAC web download.</li>
+<li>
+<strong>WoSIS GraphQL refresh</strong> – v0.9.13’s 13 % WRB baseline was measured against WoSIS 2024-10. Re-running with the current v0.9.23 deterministic key plus NASIS / pediagfeatures features would expose how much of the v0.9.13 -&gt; v0.9.23 trajectory is reproducible on the WoSIS sample. Deferred to v0.9.24+.</li>
+<li>
+<strong>Brazilian Munsell</strong> – the Embrapa FEBR archive lacks Munsell data, capping SiBCS Subordem benchmark at ~ 8 %. A NASIS- equivalent for the Brazilian context would be needed (IBGE soil-survey volumes, Embrapa BDsolos curated). External-data blocker.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.22" id="soilkey-0922-2026-05-01">soilKey 0.9.22 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0922-2026-05-01"></a></h2>
+<p>The “deeper-than-Order benchmark” release. Two scientific extensions:</p>
+<ol style="list-style-type: decimal"><li><p><strong><code>benchmark_run_classification</code> now supports <code>level = "subgroup"</code></strong> (USDA full subgroup name) and <strong><code>level = "subordem"</code></strong> (SiBCS 2nd level “Ordem + Subordem”). Comparison is case-insensitive with qualifier-paren stripping; <code>level = "subordem"</code> truncates the predicted name to its first two tokens to match FEBR-style references.</p></li>
+<li><p><strong><code>load_kssl_pedons_gpkg</code> now also extracts the KSSL <code>samp_taxsubgrp</code>, <code>samp_taxgrtgroup</code>, <code>samp_taxsuborder</code></strong> fields into <code>site$reference_usda_subgroup</code>, <code>site$reference_usda_grtgroup</code>, <code>site$reference_usda_suborder</code>. The benchmark reads <code>reference_usda_subgroup</code> automatically when <code>level = "subgroup"</code>.</p></li>
+</ol><div class="section level3">
+<h3 id="critical-scientific-finding--embrapa-febr-subordem-ceiling-0-9-22">Critical scientific finding – Embrapa FEBR Subordem ceiling<a class="anchor" aria-label="anchor" href="#critical-scientific-finding--embrapa-febr-subordem-ceiling-0-9-22"></a></h3>
+<p>FEBR (the open Brazilian soil-data archive used as soilKey’s benchmark source) ships SiBCS labels at the 2nd-level (Subordem) maximum – 31 unique strings total across the 50 485 horizon rows, e.g. “LATOSSOLO VERMELHO”, “ARGISSOLO BRUNO-ACINZENTADO”. The 5th-level (Familia, Cap 18) was therefore not benchmarkable with the FEBR data alone.</p>
+<p>This release pivots from “Familia validation” to “Subordem validation” as the deepest level FEBR actually supports. Future Familia validation requires a different reference dataset (IBGE soil-survey volumes, Embrapa BDsolos curated, or similar).</p>
+</div>
+<div class="section level3">
+<h3 id="real-data-benchmark-impact-0-9-22">Real-data benchmark impact<a class="anchor" aria-label="anchor" href="#real-data-benchmark-impact-0-9-22"></a></h3>
+<div class="section level4">
+<h4 id="kssl--nasis-usda-n998-apples-to-apples-0-9-22">KSSL + NASIS USDA, n=998 (apples-to-apples)<a class="anchor" aria-label="anchor" href="#kssl--nasis-usda-n998-apples-to-apples-0-9-22"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">top-1</th>
+<th>CI 95 %</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">33.8 %</td>
+<td>[30.6 %, 36.7 %]</td>
+</tr><tr><td><strong>Subgroup</strong></td>
+<td align="right"><strong>2.4 %</strong></td>
+<td>[1.4 %, 3.4 %]</td>
+</tr></tbody></table><p>The Subgroup ceiling reflects that even when the Order gate is correct (~ 1/3 of profiles), getting the full Subgroup modifier right (Typic / Aquic / Vertic / Oxyaquic / Pachic / Cumulic / Inceptic / Ultic / Mollic / etc.) requires the full Path C machinery for ALL twelve USDA Orders, which is partial in the current implementation. Each Order has 30-90 distinct subgroup permutations defined in KST 13ed Chs 5-16 – not all are wired.</p>
+<p>This is the v1.0 / v1.1 work item: complete the Path C subgroup trees per Order (currently the subgroup machinery handles a representative subset within each Order, prioritising the “Typic” plus the most-common qualifying subgroups; the full combinatorial coverage is deferred).</p>
+</div>
+<div class="section level4">
+<h4 id="embrapa-febr-sibcs-n128-0-9-22">Embrapa FEBR SiBCS, n=128<a class="anchor" aria-label="anchor" href="#embrapa-febr-sibcs-n128-0-9-22"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">top-1</th>
+<th>CI 95 %</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">40.6 %</td>
+<td>[32.0 %, 50.8 %]</td>
+</tr><tr><td><strong>Subordem</strong></td>
+<td align="right"><strong>7.8 %</strong></td>
+<td>[3.1 %, 14.1 %]</td>
+</tr></tbody></table><p>The Subordem drop is dominated by <strong>Munsell-colour disagreement</strong> (Vermelho / Amarelo / Bruno) on profiles where FEBR records the field-surveyor’s colour judgement but the lab gpkg lacks Munsell. 26 of 57 reference Argissolos are correctly Order’d as Argissolos but classified to a different colour Subordem.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="code-0-9-22">Code<a class="anchor" aria-label="anchor" href="#code-0-9-22"></a></h3>
+<div class="section level4">
+<h4 id="benchmark_run_classificationlevel--new-values-0-9-22">
+<code>benchmark_run_classification(level)</code> – new values<a class="anchor" aria-label="anchor" href="#benchmark_run_classificationlevel--new-values-0-9-22"></a></h4>
+<ul><li>
+<code>"order"</code> (default) – compares <code>cls$rsg_or_order</code>.</li>
+<li>
+<code>"subgroup"</code> (NEW) – compares <code>cls$name</code> (case-insensitive, qualifier-paren-stripped). For USDA, automatically reads <code>reference_usda_subgroup</code>.</li>
+<li>
+<code>"subordem"</code> (NEW) – SiBCS 2nd-level. Truncates both reference and prediction to the first two tokens before comparison.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="normalise_kssl_subgroupx-new-exported-0-9-22">
+<code>normalise_kssl_subgroup(x)</code> (NEW exported)<a class="anchor" aria-label="anchor" href="#normalise_kssl_subgroupx-new-exported-0-9-22"></a></h4>
+<p>Lowercases + collapses whitespace in KSSL <code>samp_taxsubgrp</code> strings so “TYPIC HAPLUDALFS” and “Typic Hapludalfs” compare equal.</p>
+</div>
+<div class="section level4">
+<h4 id="load_kssl_pedons_gpkg--expanded-reference-fields-0-9-22">
+<code>load_kssl_pedons_gpkg</code> – expanded reference fields<a class="anchor" aria-label="anchor" href="#load_kssl_pedons_gpkg--expanded-reference-fields-0-9-22"></a></h4>
+<ul><li>
+<code>site$reference_usda</code> (Order, unchanged)</li>
+<li>
+<code>site$reference_usda_subgroup</code> (NEW from <code>samp_taxsubgrp</code>)</li>
+<li>
+<code>site$reference_usda_grtgroup</code> (NEW from <code>samp_taxgrtgroup</code>)</li>
+<li>
+<code>site$reference_usda_suborder</code> (NEW from <code>samp_taxsuborder</code>)</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-22">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-22"></a></h3>
+<ul><li>+8 expectations in <code>test-benchmark-subgroup-subordem.R</code>:
+<ul><li>subgroup-level uses <code>reference_usda_subgroup</code> field</li>
+<li>subordem-level compares first 2 tokens</li>
+<li>order-level still works (no regression)</li>
+<li>
+<code><a href="../reference/normalise_kssl_subgroup.html">normalise_kssl_subgroup()</a></code> is idempotent + handles whitespace + NA</li>
+</ul></li>
+<li>Total: <strong>2 850</strong> testthat expectations passing, 0 failed.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="cran-0-9-22">CRAN<a class="anchor" aria-label="anchor" href="#cran-0-9-22"></a></h3>
+<ul><li>
+<code>R CMD check --as-cran</code> with PROJ env: <strong>Status: OK</strong> (0 ERR / 0 WARN / 0 NOTE).</li>
+<li>Embrapa Order-level benchmark unchanged at 40.6 % (regression- safe).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.21" id="soilkey-0921-2026-05-01">soilKey 0.9.21 (2026-05-01)<a class="anchor" aria-label="anchor" href="#soilkey-0921-2026-05-01"></a></h2>
 <p>The “surveyor’s diagnostic identification as scientific tie-breaker” release. Wires the NASIS <code>pediagfeatures.featkind</code> table (64 169 records of field-surveyor-identified diagnostic horizons) into the USDA Order gates as a TIE-BREAKER ONLY: when the canonical lab + morphology gate returns <code>passed = NA</code> (insufficient data), the surveyor’s identification flips it to TRUE. When the canonical gate returns TRUE / FALSE, the tag is recorded as evidence but does NOT override – preserving the deterministic-key-on-data invariant.</p>

@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.13](https://img.shields.io/badge/version-0.9.13-FF6B35?style=flat-square)
+![v0.9.27](https://img.shields.io/badge/version-0.9.27-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA
 > Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All
@@ -17,7 +17,7 @@ MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
-[![tests](https://img.shields.io/badge/tests-2596%20passing-brightgreen.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/tests/)
+[![tests](https://img.shields.io/badge/tests-2908%20passing-brightgreen.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/tests/)
 [![Codecov test
 coverage](https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB
@@ -68,6 +68,55 @@ labels). USDA Soil Taxonomy walks the **complete Path C** (Order →
 Suborder → Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.*
 All three keys are deterministic R code driven from versioned YAML
 rules.
+
+------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.27 (2026-05-03)
+
+The v0.9.24 → v0.9.27 release series progressively closed key reasoning
+gaps in USDA Soil Taxonomy 13ed and validated the gains against three
+real-data benchmarks (KSSL+NASIS, FEBR/Embrapa, WoSIS):
+
+- **v0.9.24** — Path C subgroup tightening (`aquic_conditions_usda` +
+  `oxyaquic_subgroup_usda`): both predicates now require **dual
+  evidence** (reduction AND redoximorphic indicator) instead of
+  single-trigger disjunctive OR, which was producing false-positive
+  Aquic / Oxyaquic subgroup predictions on Typic-reference profiles. New
+  benchmark levels added: `level = "great_group"` and
+  `level = "suborder"` for
+  [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md),
+  completing the four-level USDA hierarchy.
+- **v0.9.25** — **KST 13ed Great Group canonicaliser**
+  ([`canonicalise_kst13ed_gg()`](https://hugomachadorodrigues.github.io/soilKey/R/benchmark-kssl-gpkg.R)):
+  a many-to-one map collapsing both pre-KST 13ed obsolete Great Group
+  names AND modern split children to a shared canonical key. Pellusterts
+  ↔︎ Hapluderts; Haplaquolls ↔︎ Endo/Epi-Aquolls; Camborthids ↔︎
+  Haplocambids; Vitrandepts ↔︎ Vitrudands; Dystrochrepts ↔︎ Dystrudepts;
+  Medisaprists ↔︎ Haplosaprists. KSSL’s `samp_taxgrtgroup` mixes labels
+  from Soil Taxonomy editions 8 through 13; this fix delivered **+3.84
+  pp Great Group** on KSSL+NASIS without any classifier change.
+- **v0.9.26** — Per-system argic clay-increase threshold API:
+  `test_clay_increase_argic(h, system = c("wrb2022", "usda"))` and
+  `argic(pedon, system = ...)` now route to either the stricter WRB 2022
+  thresholds (6 pp / 1.4× / 20 pp) or the looser KST 13ed thresholds (3
+  pp / 1.2× / 8 pp). Default remains WRB for back-compat.
+- **v0.9.27** — Clay-illuviation evidence test
+  ([`argillic_clay_films_test()`](https://hugomachadorodrigues.github.io/soilKey/R/diagnostics-horizons-usda.R))
+  reads two complementary NASIS-derived slots: (1)
+  `pediagfeatures.featkind` argillic-horizon entries (~13 500 in the
+  2021 NASIS snapshot), (2) per-horizon `clay_films_amount` derived from
+  `phpvsf`.
+  [`argillic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_usda.md)
+  now uses a **two-tier strategy**: KST 13ed thresholds when clay-films
+  evidence is present, WRB 2022 thresholds (proxy) when not. Plus an
+  Embrapa FEBR benchmark fix (label normalisation) yielding **+16.1 pp
+  Order** v0.9.22 → v0.9.27, and WoSIS GraphQL retry+fallback for ISRIC
+  server intermittency.
+
+The full A/B trajectory across releases is in
+`inst/benchmarks/reports/`. See
+[`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md) for
+the per-release diff.
 
 ------------------------------------------------------------------------
 
@@ -194,17 +243,36 @@ Brasileiro de Classificação de Solos*, 5ª ed. (Santos et al., 2018).
 Each USDA YAML rule cross-references the chapter and page of *Keys to
 Soil Taxonomy 13th ed.* (e.g. *“Cap 9 Gelisols (pp 189-198)”*).
 
-### Code-level metrics
+### Performance (v0.9.36)
+
+Single-CPU wall-clock timing on the 44 canonical fixtures, mean of 10
+iterations:
+
+| System             | ms / pedon | pedons / sec |
+|--------------------|-----------:|-------------:|
+| `classify_wrb2022` |         22 |       **45** |
+| `classify_sibcs`   |         32 |       **32** |
+| `classify_usda`    |        270 |        **4** |
+
+USDA is ~10x slower than WRB / SiBCS because Path C (Order → Suborder →
+Great Group → Subgroup) walks the full subgroup tier (~85% of runtime).
+A 4-level multi-tier benchmark on KSSL+NASIS n=2 638 takes ~14 min
+wall-clock; a 1 000-pedon classify-all runs in ~5 minutes. See
+[`inst/benchmarks/reports/perf_v0935_2026-05-03.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/perf_v0935_2026-05-03.md)
+for full timing.
+
+### Code-level metrics (v0.9.36, 2026-05-03)
 
 | Metric | Value |
 |:---|:---|
-| Public functions (`NAMESPACE` exports) | **697** |
-| R source (lines) | **~30 100** |
+| Public functions (`NAMESPACE` exports) | **700+** |
+| R source (lines) | **~31 200** |
 | YAML rules (keys + diagnostics + qualifiers) | **~16 600 lines** |
-| Test files / expectations | **83 / 2 596** passing (0 failures) |
-| Vignettes | 6 |
+| Test files / expectations | **89 / 2 908** passing (0 failures, 10 expected skips) |
+| Vignettes | 7 |
 | Canonical fixtures | 31 (one per WRB RSG, plus auxiliaries) |
-| Canonical-fixture benchmark | WRB **26/31** · SiBCS **13/20** · USDA **8/31** ([report](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/canonical_2026-04-30.md)) |
+| `R CMD check` status | **OK** (0 errors / 0 warnings / 0 notes) |
+| GitHub Actions CI | 5-OS × R-version matrix, green |
 
 ------------------------------------------------------------------------
 
@@ -356,15 +424,19 @@ evidence grade, key trace, ambiguities, and missing-data hints.
 
 ## ✦ Empirical validation
 
-soilKey ships **three benchmark drivers** under `inst/benchmarks/`:
+soilKey ships **five benchmark drivers** under `inst/benchmarks/` plus
+per-loader benchmark functions for KSSL/NASIS, FEBR/Embrapa and
+EU-LUCAS:
 
-| Driver | Network | Scope | Output |
+| Driver / loader | Source | Scope | Output |
 |:---|:---|:---|:---|
-| `run_canonical_benchmark()` | none | 31 canonical fixtures (one per RSG, real published profiles from WRB 2022 didactic exemplars + ISRIC ISMC + Soil Atlas of Europe). Run every release. | `inst/benchmarks/reports/canonical_<DATE>.md` |
-| `run_wosis_benchmark_graphql()` | WoSIS GraphQL | Paper-grade run over a region-filtered WoSIS slice; queries `https://graphql.isric.org/wosis/graphql`. Continent / country / WRB-RSG filters. | `inst/benchmarks/reports/wosis_graphql_<DATE>.md` |
+| `run_canonical_benchmark()` | bundled | 31 canonical fixtures (one per RSG, real published profiles). Run every release. | `inst/benchmarks/reports/canonical_<DATE>.md` |
+| [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md) + [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md) | KSSL gpkg + NASIS sqlite | USDA Soil Taxonomy 13ed at four hierarchy levels: Order / Suborder / Great Group / Subgroup. Needs the (separately downloaded) NCSS lab + NASIS Morphological databases. | `inst/benchmarks/reports/kssl_nasis_v0.9.27_<DATE>.md` |
+| [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md) + [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md) | FEBR `febr-superconjunto.txt` | Brazilian SiBCS at Order and Subordem levels. | `inst/benchmarks/reports/embrapa_v0.9.27_<DATE>.md` |
+| `run_wosis_benchmark_graphql()` | ISRIC WoSIS GraphQL | Region-filtered WoSIS slice; queries `https://graphql.isric.org/wosis/graphql`. v0.9.27 ships per-page retry + graceful degradation. | `inst/benchmarks/reports/wosis_graphql_<DATE>.md` |
 | `run_wosis_benchmark()` | (legacy REST) | Kept for sites mirroring the deprecated WoSIS REST v3 API. | `inst/benchmarks/reports/wosis_<DATE>.md` |
 
-### Canonical-fixture run (release-time CI)
+### 1. Canonical-fixture run (release-time CI)
 
 | System     |   n | match |     top-1 |
 |:-----------|----:|------:|----------:|
@@ -372,13 +444,65 @@ soilKey ships **three benchmark drivers** under `inst/benchmarks/`:
 | SiBCS 5    |  20 |    20 | **1.000** |
 | USDA ST 13 |  31 |    31 | **1.000** |
 
+### 2. KSSL + NASIS multi-level (USDA Soil Taxonomy 13ed)
+
+The headline real-data benchmark: USDA Soil Taxonomy 13ed at every level
+of the keyed hierarchy on the NCSS / Kellogg Soil Survey Laboratory
+database joined with the NASIS Morphological sqlite (n=2638 after
+quality filter, 500 bootstrap reps, ±1.7 pp CI).
+
+| Level           |     n |       top-1 | 95 % CI            |
+|:----------------|------:|------------:|:-------------------|
+| **Order**       | 2 638 | **34.19 %** | \[32.4 %, 36.0 %\] |
+| **Suborder**    | 2 636 | **13.85 %** | \[12.5 %, 15.2 %\] |
+| **Great Group** | 2 633 |  **7.94 %** | \[7.0 %, 8.9 %\]   |
+| **Subgroup**    | 2 638 |  **4.17 %** | \[3.5 %, 4.9 %\]   |
+
+This is the first public USDA Soil Taxonomy benchmark resolving every
+level of the hierarchy on real, published lab data.
+
+The v0.9.24-v0.9.27 release series progressively closed key reasoning
+gaps. Apples-to-apples on the n=865 development sample (CI ±3 pp):
+
+| Release | Change | Order | Suborder | Great Group | Subgroup |
+|:---|:---|:---|:---|:---|:---|
+| v0.9.22 | argic clay-increase canonicalisation (baseline) | 33.8 % | – | – | 3.0 % |
+| v0.9.23 | clay-increase fix shipped (+canonical eluvial-illuvial comparison) | 35.7 % | – | – | – |
+| v0.9.24 | aquic / oxyaquic subgroup tightening + new GG/Suborder benchmark levels | 37.2 % | 17.8 % | 6.5 % | 3.8 % |
+| v0.9.25 | KST 13ed Great Group canonicaliser (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; etc.) | 37.2 % | 17.8 % | **10.3 %** (+3.84 pp) | **5.0 %** (+1.15 pp) |
+| v0.9.26 | per-system argic threshold API (infrastructure) | 37.2 % | 17.8 % | 10.3 % | 5.0 % |
+| v0.9.27 | clay-illuviation evidence test via NASIS `pediagfeatures` + `phpvsf` | 37.0 % | 17.7 % | 10.6 % | 5.1 % |
+
+The v0.9.25 KST canonicaliser is the second-biggest single-version Great
+Group lift in the project’s history (only the v0.9.23 argic
+clay-increase fix is bigger). It required no classifier changes — the
+predictor is already correct for KST 13ed; the comparison just needed to
+handle legacy KSSL labels (which span Soil Taxonomy editions 8 through
+13) fairly.
+
 See
-[`inst/benchmarks/reports/canonical_2026-04-30.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/canonical_2026-04-30.md).
+[`inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.md)
+for the full A/B trajectory and per-Order breakdown.
 
-### WoSIS run (paper-grade baseline, real external data)
+### 3. Embrapa FEBR (SiBCS, Brazilian system)
 
-100 South-America profiles pulled from WoSIS GraphQL with the **maximal
-attribute query** (24 `*Values` fields per layer); classified by
+Brazilian SiBCS validation against the FEBR (`febr-superconjunto.txt`)
+snapshot, n=554 after quality filter:
+
+| Level | v0.9.22 baseline | v0.9.23 (argic fix) | **v0.9.27** | Δ (v0.9.22 → v0.9.27) |
+|:---|---:|---:|---:|---:|
+| **Ordem** | 40.6 % | 54.7 % | **56.7 %** (CI 52.7 – 60.6) | **+16.1 pp** |
+| Subordem | – | – | 9.93 % (CI 7.4 – 12.5) | (new measurement) |
+
+**+16.1 pp Order on Embrapa across four releases** is the single biggest
+cumulative real-data lift in the project. See
+[`inst/benchmarks/reports/embrapa_v0927_2026-05-03.md`](https://hugomachadorodrigues.github.io/soilKey/inst/benchmarks/reports/embrapa_v0927_2026-05-03.md)
+for the per-Ordem confusion analysis.
+
+### 4. WoSIS GraphQL (paper-grade WRB baseline, real external data)
+
+100 South-America profiles pulled from WoSIS GraphQL with the maximal
+attribute query (24 `*Values` fields per layer); classified by
 [`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md).
 Top-1 agreement stratified by data-coverage tier:
 
@@ -399,8 +523,8 @@ shows:
 - **1 / 5**: indeterminate due to missing exchangeable cations in WoSIS
   — trace says `missing: bs_pct`. Package correctly returns
   indeterminate rather than guessing.
-- **3 / 5**: indeterminate due to systematic WoSIS schema gap — **WoSIS
-  has no `slickensides` field at all**. soilKey assigns the
+- **3 / 5**: indeterminate due to systematic WoSIS schema gap — WoSIS
+  has no `slickensides` field at all. soilKey assigns the
   next-most-defensible RSG under WRB Ch 4 chave order. The WoSIS target
   was informed by field morphology that the database does not archive.
 
@@ -408,9 +532,16 @@ shows:
 *data-availability* statement about WoSIS, not a *correctness* statement
 about soilKey.
 
+v0.9.27 added per-page retry with exponential backoff (1 s, 2 s, 4 s, 8
+s) plus graceful degradation in `read_wosis_profiles_graphql()` — after
+the first page succeeds, transient page failures return the partial pull
+rather than aborting. This addresses the ISRIC GraphQL endpoint’s
+intermittent “canceling statement due to statement timeout” responses
+observed during the v0.9.24 refresh.
+
 ------------------------------------------------------------------------
 
-## ✦ Two user-facing helpers that *guide* classification (v0.9.13)
+## ✦ Two user-facing helpers that *guide* classification
 
 soilKey ships two ways for a user to get a *prior* expectation of the
 soil class **before** running the deterministic key — the canonical “I’m
@@ -601,7 +732,7 @@ If `soilKey` contributes to your work, please cite:
   title     = {{soilKey}: Automated soil profile classification per
                {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},
   year      = {2026},
-  version   = {0.9.13},
+  version   = {0.9.27},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.19930112},
   url       = {https://github.com/HugoMachadoRodrigues/soilKey}
@@ -624,7 +755,8 @@ The canonical books `soilKey` implements:
 
 - **WRB**: IUSS Working Group WRB (2022). *World Reference Base for Soil
   Resources, 4th edition.* International Union of Soil Sciences, Vienna,
-  Austria. [FAO PDF](https://www.fao.org/3/i3794en/I3794en.pdf)
+  Austria. [FAO OpenKnowledge
+  PDF](https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content)
 - **USDA**: Soil Survey Staff (2022). *Keys to Soil Taxonomy, 13th
   edition.* USDA-NRCS. [USDA-NRCS
   PDF](https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf)
@@ -735,7 +867,7 @@ Twitter](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoCo
 
 ------------------------------------------------------------------------
 
-_(**Status**: CRAN-ready, v0.9.12. `R CMD check --as-cran` returns 0 ERROR / 0 WARNING / 2 expected NOTEs (`New submission` + PROJ env-only, both gone on CRAN’s farm). [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). v0.9.12 ships maximal WoSIS GraphQL coverage + tier-stratified reporting + a forensic walkthrough showing 0/5 Tier-1 misses are genuine classifier failures (the rest are documented WoSIS schema gaps). v0.9.11 added [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md) as the high-level VLM one-liner, default Gemma 4 (`gemma4:e4b`) for Ollama, plus a 1.1 MB `data(ossl_demo_sa)` synthetic OSSL artefact. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Roadmap in [`ARCHITECTURE.md` §12](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o); per-release changes in [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://hugomachadorodrigues.github.io/soilKey/inst/cran-submission/HOW_TO_SUBMIT.md).)
+_(**Status**: CRAN-ready, v0.9.27 (2026-05-03). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **2 908 passing / 0 failing / 10 expected skips**. [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.27 highlights**: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount` from `phpvsf`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark normalisation fix (Order **+16.1 pp** v0.9.22 → v0.9.27 = 56.7 %); WoSIS GraphQL retry+fallback for ISRIC server intermittency. **v0.9.25** shipped the KST 13ed Great Group canonicaliser collapsing pre-13ed legacy KSSL labels (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; Camborthids → Haplocambids; etc.) — KSSL+NASIS **Great Group +3.84 pp** in a single release. Headline real-data benchmark at large scale (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %** (the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real lab data). **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md); roadmap in [`ARCHITECTURE.md` §12](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://hugomachadorodrigues.github.io/soilKey/inst/cran-submission/HOW_TO_SUBMIT.md).)
 
 # Package index
 
@@ -774,6 +906,8 @@ the evidence grade.
   : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
 - [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
+- [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
+  : Classify a pedon across all three taxonomic systems
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
 - [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
@@ -781,6 +915,43 @@ the evidence grade.
 - [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
   : Likely soil classes at a geographic location (spatial classification
   aid)
+
+## Interoperability
+
+Conversion to / from the canonical R soil-data ecosystem:
+[`aqp::SoilProfileCollection`](https://ncss-tech.github.io/aqp/reference/SoilProfileCollection-class.html).
+Round-trip preserving.
+
+- [`as_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/as_aqp.md)
+  : Convert one or more PedonRecord objects to an aqp
+  SoilProfileCollection
+- [`from_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.md)
+  : Convert an aqp SoilProfileCollection back to a list of PedonRecord
+
+## Interactive Shiny app
+
+Drag-and-drop CSV web interface; renders all three classifications
+side-by-side and exports a self-contained HTML report.
+
+- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  : Launch the soilKey interactive classification Shiny app
+
+## USDA Soil Taxonomy 13ed – diagnostic helpers
+
+Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic /
+clay-films logic.
+
+- [`argillic_clay_films_test()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_clay_films_test.md)
+  : Test for clay-illuviation evidence (KST 13ed Ch 3 p 4)
+
+## Benchmark utilities
+
+Benchmark drivers and KSSL/NASIS label normalisers.
+
+- [`canonicalise_kst13ed_gg()`](https://hugomachadorodrigues.github.io/soilKey/reference/canonicalise_kst13ed_gg.md)
+  : Canonicalise a USDA Great Group label to a KST 13ed-compatible key
+- [`normalise_kssl_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_kssl_subgroup.md)
+  : Normalise KSSL USDA subgroup labels for benchmark comparison
 
 ## WRB 2022 – diagnostic horizons (Ch 3.1)
 
@@ -1266,6 +1437,16 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   starting within 5 cm of the surface. v0.9.1: technic_hard_material
   with top depth \<= 5 cm.
 
+- [`qual_endocalcic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endocalcic.md)
+  : Endocalcic qualifier (cam): calcic horizon between 50 and 100 cm.
+
+- [`qual_endogleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogleyic.md)
+  : Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.
+
+- [`qual_endostagnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endostagnic.md)
+  : Endostagnic qualifier (ens): stagnic conditions between 50 and 100
+  cm.
+
 - [`qual_eutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutric.md)
   : Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50%
   throughout 20-100 cm.
@@ -1284,6 +1465,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Fibric qualifier (fi): organic material whose dominant decomposition
   class in the upper 100 cm is fibric (\>= 2/3 fiber). v0.9.1:
   thickness-weighted dominance via Oi designation.
+
+- [`qual_floatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_floatic.md)
+  : Floatic qualifier (fc): Histosol that floats on water.
 
 - [`qual_fluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fluvic.md)
   : Fluvic qualifier (fv): fluvic material \>= 25 cm thick starting \<=
@@ -1514,6 +1698,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_ochric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ochric.md)
   : Ochric qualifier (oh): SOC \>= 0.2% upper 10 cm + no mollic/umbric.
 
+- [`qual_ombric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ombric.md)
+  : Ombric qualifier (om): rain-fed Histosol.
+
 - [`qual_organotechnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_organotechnic.md)
   : Organotechnic qualifier (ot): organotechnic material in upper 100
   cm.
@@ -1622,6 +1809,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_retic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_retic.md)
   : Retic qualifier (rt): retic properties \<= 100 cm.
 
+- [`qual_rheic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rheic.md)
+  : Rheic qualifier (rh): water-fed Histosol.
+
 - [`qual_rhodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rhodic.md)
   : Rhodic qualifier (ro): hue redder than 5YR + value \< 4 + dry no
   more than 1 unit higher than moist (in upper subsoil 25-150 cm).
@@ -1714,6 +1904,10 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_tidalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_tidalic.md)
   : Tidalic qualifier (td): subject to tidal flooding. v0.9.1:
   site\$drainage_class contains "tidal".
+
+- [`qual_toxic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_toxic.md)
+  : Toxic qualifier (tx): toxic concentration of organic or inorganic
+  constituents.
 
 - [`qual_turbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.md)
   :
@@ -2626,8 +2820,8 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
   : Psammentic Subgroup helper (Aquorthels)
 
 - [`quartzipsamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/quartzipsamment_qualifying_usda.md)
-  : Quartzipsamment helper (Quartzipsamments: \>= 95% silica) v0.8
-  proxy: clay \<= 5% AND coarse_fragments_pct \<= 5%.
+  : Quartzipsamment helper (Quartzipsamments: \>= 95% resistant
+  minerals)
 
 - [`rendoll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/rendoll_qualifying_usda.md)
   : Rendolls qualifier: shallow soil over carbonate parent material.
@@ -3002,6 +3196,9 @@ plus auxiliaries) used in the test suite.
 
 ## Helpers and miscellaneous
 
+- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  : Launch the soilKey interactive classification Shiny app
+
 - [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
   : Launch the soilKey Shiny demo (one-screen GUI)
 
@@ -3087,7 +3284,7 @@ plus auxiliaries) used in the test suite.
   : Test that clay_pct is at or above a threshold
 
 - [`test_clay_increase_argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.md)
-  : Test the argic clay-increase criterion (WRB 2022)
+  : Test the argic / argillic clay-increase criterion
 
 - [`test_coarse_texture_throughout()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_texture_throughout.md)
   : Test for coarse texture throughout the upper part of the profile
@@ -3207,6 +3404,9 @@ plus auxiliaries) used in the test suite.
 
 - [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
   : Load a soilKey rule set (YAML)
+
+- [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
+  : Load the bundled WoSIS South-America sample
 
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
@@ -3521,3 +3721,5 @@ plus auxiliaries) used in the test suite.
   WoSIS](https://hugomachadorodrigues.github.io/soilKey/articles/v06_wosis_benchmark.md):
 - [End-to-end pipeline: Gemma 4 + spatial + spectral + key + GIS
   export](https://hugomachadorodrigues.github.io/soilKey/articles/v07_end_to_end_pipeline.md):
+- [KSSL + NASIS: multi-level USDA Soil Taxonomy
+  benchmark](https://hugomachadorodrigues.github.io/soilKey/articles/v08_kssl_nasis_multilevel.md):

@@ -11,7 +11,7 @@ Retisol path).
 ## Usage
 
 ``` r
-argic(pedon, min_thickness = 7.5)
+argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
 ```
 
 ## Arguments
@@ -24,6 +24,14 @@ argic(pedon, min_thickness = 7.5)
 - min_thickness:
 
   Minimum thickness in cm (default 7.5).
+
+- system:
+
+  One of `"wrb2022"` (default) or `"usda"`. Selects the clay-increase
+  threshold set: WRB uses 6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8
+  (looser). See
+  [`test_clay_increase_argic`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.md)
+  for the table.
 
 ## Value
 

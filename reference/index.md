@@ -35,6 +35,8 @@ the evidence grade.
   : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
 - [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
+- [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
+  : Classify a pedon across all three taxonomic systems
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
 - [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
@@ -42,6 +44,43 @@ the evidence grade.
 - [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
   : Likely soil classes at a geographic location (spatial classification
   aid)
+
+## Interoperability
+
+Conversion to / from the canonical R soil-data ecosystem:
+[`aqp::SoilProfileCollection`](https://ncss-tech.github.io/aqp/reference/SoilProfileCollection-class.html).
+Round-trip preserving.
+
+- [`as_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/as_aqp.md)
+  : Convert one or more PedonRecord objects to an aqp
+  SoilProfileCollection
+- [`from_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.md)
+  : Convert an aqp SoilProfileCollection back to a list of PedonRecord
+
+## Interactive Shiny app
+
+Drag-and-drop CSV web interface; renders all three classifications
+side-by-side and exports a self-contained HTML report.
+
+- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  : Launch the soilKey interactive classification Shiny app
+
+## USDA Soil Taxonomy 13ed – diagnostic helpers
+
+Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic /
+clay-films logic.
+
+- [`argillic_clay_films_test()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_clay_films_test.md)
+  : Test for clay-illuviation evidence (KST 13ed Ch 3 p 4)
+
+## Benchmark utilities
+
+Benchmark drivers and KSSL/NASIS label normalisers.
+
+- [`canonicalise_kst13ed_gg()`](https://hugomachadorodrigues.github.io/soilKey/reference/canonicalise_kst13ed_gg.md)
+  : Canonicalise a USDA Great Group label to a KST 13ed-compatible key
+- [`normalise_kssl_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_kssl_subgroup.md)
+  : Normalise KSSL USDA subgroup labels for benchmark comparison
 
 ## WRB 2022 – diagnostic horizons (Ch 3.1)
 
@@ -527,6 +566,16 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   starting within 5 cm of the surface. v0.9.1: technic_hard_material
   with top depth \<= 5 cm.
 
+- [`qual_endocalcic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endocalcic.md)
+  : Endocalcic qualifier (cam): calcic horizon between 50 and 100 cm.
+
+- [`qual_endogleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogleyic.md)
+  : Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.
+
+- [`qual_endostagnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endostagnic.md)
+  : Endostagnic qualifier (ens): stagnic conditions between 50 and 100
+  cm.
+
 - [`qual_eutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutric.md)
   : Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50%
   throughout 20-100 cm.
@@ -545,6 +594,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Fibric qualifier (fi): organic material whose dominant decomposition
   class in the upper 100 cm is fibric (\>= 2/3 fiber). v0.9.1:
   thickness-weighted dominance via Oi designation.
+
+- [`qual_floatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_floatic.md)
+  : Floatic qualifier (fc): Histosol that floats on water.
 
 - [`qual_fluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fluvic.md)
   : Fluvic qualifier (fv): fluvic material \>= 25 cm thick starting \<=
@@ -775,6 +827,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_ochric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ochric.md)
   : Ochric qualifier (oh): SOC \>= 0.2% upper 10 cm + no mollic/umbric.
 
+- [`qual_ombric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ombric.md)
+  : Ombric qualifier (om): rain-fed Histosol.
+
 - [`qual_organotechnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_organotechnic.md)
   : Organotechnic qualifier (ot): organotechnic material in upper 100
   cm.
@@ -883,6 +938,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_retic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_retic.md)
   : Retic qualifier (rt): retic properties \<= 100 cm.
 
+- [`qual_rheic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rheic.md)
+  : Rheic qualifier (rh): water-fed Histosol.
+
 - [`qual_rhodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rhodic.md)
   : Rhodic qualifier (ro): hue redder than 5YR + value \< 4 + dry no
   more than 1 unit higher than moist (in upper subsoil 25-150 cm).
@@ -975,6 +1033,10 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_tidalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_tidalic.md)
   : Tidalic qualifier (td): subject to tidal flooding. v0.9.1:
   site\$drainage_class contains "tidal".
+
+- [`qual_toxic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_toxic.md)
+  : Toxic qualifier (tx): toxic concentration of organic or inorganic
+  constituents.
 
 - [`qual_turbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.md)
   :
@@ -1887,8 +1949,8 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
   : Psammentic Subgroup helper (Aquorthels)
 
 - [`quartzipsamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/quartzipsamment_qualifying_usda.md)
-  : Quartzipsamment helper (Quartzipsamments: \>= 95% silica) v0.8
-  proxy: clay \<= 5% AND coarse_fragments_pct \<= 5%.
+  : Quartzipsamment helper (Quartzipsamments: \>= 95% resistant
+  minerals)
 
 - [`rendoll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/rendoll_qualifying_usda.md)
   : Rendolls qualifier: shallow soil over carbonate parent material.
@@ -2263,6 +2325,9 @@ plus auxiliaries) used in the test suite.
 
 ## Helpers and miscellaneous
 
+- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  : Launch the soilKey interactive classification Shiny app
+
 - [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
   : Launch the soilKey Shiny demo (one-screen GUI)
 
@@ -2348,7 +2413,7 @@ plus auxiliaries) used in the test suite.
   : Test that clay_pct is at or above a threshold
 
 - [`test_clay_increase_argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.md)
-  : Test the argic clay-increase criterion (WRB 2022)
+  : Test the argic / argillic clay-increase criterion
 
 - [`test_coarse_texture_throughout()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_texture_throughout.md)
   : Test for coarse texture throughout the upper part of the profile
@@ -2468,6 +2533,9 @@ plus auxiliaries) used in the test suite.
 
 - [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
   : Load a soilKey rule set (YAML)
+
+- [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
+  : Load the bundled WoSIS South-America sample
 
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers

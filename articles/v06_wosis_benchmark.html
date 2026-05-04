@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="../articles/v05_spatial_spectra_pipeline.html">Spatial + spectra pipeline (Modules 3 + 4)</a></li>
     <li><a class="dropdown-item" href="../articles/v06_wosis_benchmark.html">WoSIS benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -426,7 +427,7 @@ every fixture – i.e. top-1 agreement is 100% on this set.</p>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_profiles"</span>, <span class="st">"top1_agreement"</span>,</span>
 <span>             <span class="st">"indeterminate_rate"</span>, <span class="st">"evidence_grade_A"</span>,</span>
 <span>             <span class="st">"evidence_grade_B"</span><span class="op">)</span>,</span>
-<span>  value  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span>,</span>
+<span>  value  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://ncss-tech.github.io/aqp/reference/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span>,</span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">match</span><span class="op">)</span>,</span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">assigned</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">grade</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span>,</span>
@@ -673,7 +674,7 @@ fixture.</caption>
 <tr class="odd">
 <td align="left">HS</td>
 <td align="left">HS</td>
-<td align="left">Folic</td>
+<td align="left">Floatic</td>
 </tr>
 <tr class="even">
 <td align="left">AT</td>
@@ -868,7 +869,7 @@ The driver script is shipped at
 <span></span>
 <span><span class="co"># 5. Headline numbers.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  n              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span>,</span>
+<span>  n              <span class="op">=</span> <span class="fu"><a href="https://ncss-tech.github.io/aqp/reference/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span>,</span>
 <span>  top1           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">match</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  indeterminate  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">assigned</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  pct_grade_A    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">grade</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span>,</span>
@@ -982,6 +983,60 @@ releases is direct.</li>
 document: the deterministic key, the side modules (VLM, spatial, OSSL),
 and the benchmark are integrated without any of them being able to
 overrule the others.</p>
+</div>
+<div class="section level2">
+<h2 id="v0-9-27-per-page-retry-graceful-degradation">7. v0.9.27 – per-page retry + graceful degradation<a class="anchor" aria-label="anchor" href="#v0-9-27-per-page-retry-graceful-degradation"></a>
+</h2>
+<p>The ISRIC WoSIS GraphQL endpoint occasionally returns <em>“canceling
+statement due to statement timeout”</em> under load — we observed this
+consistently after ~40 profiles per session in May 2026. A naïve
+<code>read_wosis_profiles_graphql()</code> would abort the whole pull
+and surface a hard error; that is unfriendly when 30+ profiles already
+came back fine.</p>
+<p><code>v0.9.27</code> adds a <strong>per-page retry with exponential
+backoff</strong> (1 s, 2 s, 4 s, 8 s; up to 4 attempts) plus
+<strong>graceful degradation</strong>: once at least one page has
+succeeded, transient failures on later pages return the partial pull
+rather than aborting. This makes the live WoSIS benchmark robust enough
+to run from CI and from casual user sessions without surprise
+crashes.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"benchmarks"</span>, <span class="st">"run_wosis_benchmark.R"</span>,</span>
+<span>                    package <span class="op">=</span> <span class="st">"soilKey"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">profs</span> <span class="op">&lt;-</span> <span class="fu">read_wosis_profiles_graphql</span><span class="op">(</span></span>
+<span>  continent <span class="op">=</span> <span class="st">"South America"</span>,</span>
+<span>  n_max     <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  page_size <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>  verbose   <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">profs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 40   # 100 was requested but server timed out at offset = 40;</span></span>
+<span><span class="co">#&gt;          # the partial pull was returned cleanly.</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="v0-9-30-bundled-wosis-sample-for-offline-ci-testing">8. v0.9.30 – bundled WoSIS sample for offline / CI testing<a class="anchor" aria-label="anchor" href="#v0-9-30-bundled-wosis-sample-for-offline-ci-testing"></a>
+</h2>
+<p>For tests, CI, and casual users who want to exercise the WRB
+benchmark path without depending on ISRIC server availability,
+<code>v0.9.30</code> ships a frozen 40-profile snapshot under
+<code>inst/extdata/wosis_sa_sample.rds</code> (49 KB). Helper:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_wosis_sample.html">load_wosis_sample</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sample</span><span class="op">$</span><span class="va">pedons</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 40</span></span>
+<span></span>
+<span><span class="va">sample</span><span class="op">$</span><span class="va">pulled_on</span></span>
+<span><span class="co">#&gt; [1] "2026-05-03"</span></span>
+<span></span>
+<span><span class="co"># Classify offline:</span></span>
+<span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">sample</span><span class="op">$</span><span class="va">pedons</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">rsg_or_order</span></span></code></pre></div>
+<p>The bundled snapshot is for <strong>reproducible tests, not current
+ground-truth claims</strong>. For up-to-date paper-grade benchmarks,
+callers should still use <code>run_wosis_benchmark_graphql()</code>
+against the live endpoint.</p>
+<p>For the <strong>multi-level USDA Soil Taxonomy benchmark</strong>
+(Order / Suborder / Great Group / Subgroup) on the KSSL gpkg + NASIS
+sqlite join, see vignette <code>v08_kssl_nasis_multilevel</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

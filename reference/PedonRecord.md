@@ -165,7 +165,7 @@ A `SoilProfileCollection`. Requires the `aqp` package.
 
 ------------------------------------------------------------------------
 
-### Method `from_aqp()`
+### Method [`from_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.md)
 
 Populate this record from an aqp `SoilProfileCollection`.
 
@@ -256,6 +256,12 @@ Compact summary list (for serialization or testing).
 
     PedonRecord$summary(...)
 
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 summary signature compatibility).
+
 ------------------------------------------------------------------------
 
 ### Method [`print()`](https://rdrr.io/r/base/print.html)
@@ -265,6 +271,12 @@ Pretty-print the record.
 #### Usage
 
     PedonRecord$print(...)
+
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 print signature compatibility).
 
 ------------------------------------------------------------------------
 

@@ -149,6 +149,12 @@ Pretty-print the result with key trace, ambiguities, and warnings.
 
     ClassificationResult$print(...)
 
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 print signature compatibility).
+
 ------------------------------------------------------------------------
 
 ### Method [`summary()`](https://rdrr.io/r/base/summary.html)
@@ -158,6 +164,12 @@ Compact summary list.
 #### Usage
 
     ClassificationResult$summary(...)
+
+#### Arguments
+
+- `...`:
+
+  Ignored (S3 summary signature compatibility).
 
 ------------------------------------------------------------------------
 
