@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation (vignettes + pkgdown site)
+    url: https://hugomachadorodrigues.github.io/soilKey/
+    about: Read the package documentation, vignettes, and reference index
+  - name: 💬 Soil-classification question (not a bug)
+    url: https://github.com/HugoMachadoRodrigues/soilKey/discussions
+    about: General questions about soil classification, taxonomic rules, or how to use soilKey

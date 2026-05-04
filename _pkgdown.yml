@@ -33,6 +33,8 @@ navbar:
       menu:
         - text: "Getting started"
           href: "articles/v01_getting_started.html"
+        - text: "Começando com soilKey (PT-BR)"
+          href: "articles/v01_getting_started_pt.html"
         - text: "WRB 2022 end-to-end"
           href: "articles/v02_classify_wrb_end_to_end.html"
         - text: "Cross-system correspondence"
@@ -414,6 +416,7 @@ articles:
     navbar: ~
     contents:
       - v01_getting_started
+      - v01_getting_started_pt
       - v02_classify_wrb_end_to_end
       - v03_cross_system_correlation
       - v04_vlm_extraction

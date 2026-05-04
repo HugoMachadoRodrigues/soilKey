@@ -1,0 +1,102 @@
+cff-version: 1.2.0
+message: "If you use soilKey in research or applied work, please cite it as below."
+type: software
+title: "soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13"
+abstract: >
+  R package implementing deterministic classification keys for the World
+  Reference Base for Soil Resources 2022 (4th edition), the Brazilian
+  System of Soil Classification (SiBCS, 5ª edição), and USDA Soil
+  Taxonomy 13th edition. Provides a unified profile representation with
+  explicit per-attribute provenance, multimodal extraction from field
+  reports and photos via vision-language models, spatial priors from
+  SoilGrids and national soil maps, and gap-filling of soil attributes
+  from Vis-NIR or MIR spectra via the Open Soil Spectral Library.
+  The taxonomic key is never delegated to a language model.
+authors:
+  - family-names: "Rodrigues"
+    given-names: "Hugo"
+    email: "rodrigues.machado.hugo@gmail.com"
+    affiliation: "Universidade Federal Rural do Rio de Janeiro (UFRRJ), Departamento de Solos"
+    orcid: "https://orcid.org/0000-0002-8070-8126"
+version: "0.9.39"
+date-released: "2026-05-03"
+doi: "10.5281/zenodo.19930112"
+license: "MIT"
+repository-code: "https://github.com/HugoMachadoRodrigues/soilKey"
+url: "https://hugomachadorodrigues.github.io/soilKey/"
+keywords:
+  - "soil-classification"
+  - "WRB"
+  - "SiBCS"
+  - "USDA-Soil-Taxonomy"
+  - "pedology"
+  - "soil-survey"
+  - "Vis-NIR"
+  - "MIR"
+  - "OSSL"
+  - "SoilGrids"
+  - "WoSIS"
+  - "KSSL"
+  - "NASIS"
+  - "FEBR"
+  - "Embrapa"
+  - "R"
+  - "rstats"
+preferred-citation:
+  type: software
+  title: "soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13"
+  authors:
+    - family-names: "Rodrigues"
+      given-names: "Hugo"
+      email: "rodrigues.machado.hugo@gmail.com"
+      orcid: "https://orcid.org/0000-0002-8070-8126"
+  version: "0.9.39"
+  year: 2026
+  doi: "10.5281/zenodo.19930112"
+  url: "https://github.com/HugoMachadoRodrigues/soilKey"
+references:
+  - type: book
+    title: "World Reference Base for Soil Resources, 4th edition"
+    authors:
+      - name: "IUSS Working Group WRB"
+    year: 2022
+    publisher:
+      name: "International Union of Soil Sciences"
+      city: "Vienna"
+    url: "https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content"
+  - type: book
+    title: "Keys to Soil Taxonomy, 13th edition"
+    authors:
+      - name: "Soil Survey Staff"
+    year: 2022
+    publisher:
+      name: "USDA-NRCS"
+      city: "Washington, DC"
+    url: "https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf"
+  - type: book
+    title: "Sistema Brasileiro de Classificação de Solos, 5ª edição revista e ampliada"
+    authors:
+      - family-names: "Santos"
+        given-names: "H. G."
+      - family-names: "Jacomine"
+        given-names: "P. K. T."
+      - family-names: "Anjos"
+        given-names: "L. H. C. dos"
+      - family-names: "Oliveira"
+        given-names: "V. A. de"
+      - family-names: "Lumbreras"
+        given-names: "J. F."
+      - family-names: "Coelho"
+        given-names: "M. R."
+      - family-names: "Almeida"
+        given-names: "J. A. de"
+      - family-names: "Araújo Filho"
+        given-names: "J. C. de"
+      - family-names: "Oliveira"
+        given-names: "J. B. de"
+      - family-names: "Cunha"
+        given-names: "T. J. F."
+    year: 2018
+    publisher:
+      name: "Embrapa"
+      city: "Brasília"
