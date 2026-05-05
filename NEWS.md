@@ -1,3 +1,53 @@
+# soilKey 0.9.50 (2026-05-05)
+
+The "comprehensive subsoil fill + Vis-NIR wire-up" release. Lifts
+the v0.9.49 LUCAS WRB benchmark out of the Regosols catch-all by
+giving `benchmark_lucas_2018()` three new fill paths.
+
+## What changed
+
+- **`fill_topsoil_from = c("none", "soilgrids", "spectra")`** --
+  expands the v0.9.49 `fill_texture_from` to cover all 9
+  SoilGrids properties (clay, sand, silt, phh2o, soc, cec, bdod,
+  nitrogen, cfvo) at 0-5 cm. Legacy `fill_texture_from =
+  "soilgrids"` continues to work as a back-compat alias.
+
+- **`fill_subsoil_from = c("none", "soilgrids")`** --
+  synthesises a 30-60 cm B horizon from SoilGrids 250m at the
+  same 9 properties. Unlocks WRB cambic / argic / mollic / nitic
+  diagnostics that the LUCAS topsoil-only release cannot satisfy
+  alone.
+
+- **`fill_topsoil_from = "spectra"` + `ossl_models`** -- when
+  the LUCAS Spectral Library is available, runs
+  `predict_from_spectra()` (v0.9.46) per pedon to fill any
+  property still missing after the SoilGrids paths.
+
+- **`attach_lucas_spectra(pedons, spectra, point_id_col)`** --
+  new exported helper. Joins a wide (POINT_ID + wavelength
+  columns) or long (POINT_ID + wavelength_nm + reflectance)
+  spectra table onto the pedon list, populating
+  `pedon$spectra$vnir`.
+
+- **`.SOILGRIDS_TO_HORIZON_MAP`** + **`.fill_horizon_from_soilgrids()`**
+  internals. The helper accepts a `lookup_fn` parameter for
+  unit-test injection so the test suite runs offline.
+
+## Why cfvo matters
+
+The Leptosols predicate (`leptic_features` in
+`R/diagnostics-properties-wrb.R`) fires when
+`coarse_fragments_pct >= 90 within 25 cm`. SoilGrids `cfvo`
+maps directly to that. With `fill_properties` covering `cfvo`,
+Leptosols (39% of the LUCAS European reference) become reachable.
+
+## Tests
+
+13 new tests in `test-v0950-lucas-fills.R` (52 expectations), all
+exercised through the `soilgrids_lookup_fn` injection -- no
+network required. R CMD check Status OK.
+
+
 # soilKey 0.9.49 (2026-05-04)
 
 The "EU-LUCAS / WRB benchmark Route B end-to-end" release.

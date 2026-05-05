@@ -8,9 +8,15 @@ benchmark_lucas_2018(
   pedons,
   esdb_root,
   attribute = "WRBLV1",
-  fill_texture_from = c("none", "soilgrids"),
+  fill_texture_from = NULL,
+  fill_topsoil_from = c("none", "soilgrids", "spectra"),
+  fill_subsoil_from = c("none", "soilgrids"),
+  fill_properties = c("clay", "sand", "silt", "phh2o", "soc", "cec", "bdod", "nitrogen",
+    "cfvo"),
+  ossl_models = NULL,
   classify_with = c("wrb2022", "sibcs"),
   max_n = NULL,
+  soilgrids_lookup_fn = lookup_soilgrids,
   verbose = TRUE
 )
 }
@@ -25,18 +31,48 @@ from \code{\link{load_lucas_soil_2018}}.}
 \code{"WRBLV1"} (Reference Soil Group, 31 codes). Other
 sensible choices: \code{"FAO90LV1"} (legacy FAO 1990).}
 
-\item{fill_texture_from}{Optional source for clay / sand / silt
-when missing on a horizon. \code{"none"} (default) leaves
-them missing; \code{"soilgrids"} calls
-\code{\link{lookup_soilgrids}} per pedon. SoilGrids reads
-from the canonical Cloud-Optimized GeoTIFF endpoint over
-HTTPS (no download required).}
+\item{fill_texture_from}{Deprecated alias for
+\code{fill_topsoil_from} (v0.9.49 signature). When
+\code{"soilgrids"}, treated as
+\code{fill_topsoil_from = "soilgrids"} with
+\code{fill_properties = c("clay", "sand", "silt")} and
+\code{fill_subsoil_from = "none"}.}
+
+\item{fill_topsoil_from}{One of \code{"none"} (default),
+\code{"soilgrids"} (fills topsoil 0-20 cm from SoilGrids
+250m at 0-5 cm), or \code{"spectra"} (runs
+\code{\link{predict_from_spectra}} with the supplied
+\code{ossl_models}; pedons must have
+\code{$spectra$vnir} attached, e.g. via
+\code{\link{attach_lucas_spectra}}).}
+
+\item{fill_subsoil_from}{One of \code{"none"} (default) or
+\code{"soilgrids"} (synthesises a 30-60 cm B horizon from
+SoilGrids 250m). Unlocks WRB diagnostic horizons that
+depend on subsoil features (cambic, argic, mollic).}
+
+\item{fill_properties}{Character vector of SoilGrids properties
+to fill when \code{fill_topsoil_from = "soilgrids"} or
+\code{fill_subsoil_from = "soilgrids"}. Default uses all
+9 properties: clay, sand, silt, phh2o, soc, cec, bdod,
+nitrogen, cfvo. Set to \code{c("clay", "sand", "silt")}
+to recover the v0.9.49 behaviour. \code{cfvo} is mapped
+to \code{coarse_fragments_pct}, which drives the
+Leptosols diagnostic (>= 90 within 25 cm).}
+
+\item{ossl_models}{Required when \code{fill_topsoil_from =
+"spectra"}. A list of \code{soilKey_pls_model} objects
+from \code{\link{train_pls_from_ossl}} (v0.9.46).}
 
 \item{classify_with}{One of \code{"wrb2022"} (default) or
 \code{"sibcs"}.}
 
 \item{max_n}{Optional integer cap on the number of pedons
 benchmarked. Useful for quick development runs.}
+
+\item{soilgrids_lookup_fn}{Internal: SoilGrids lookup function
+(defaults to \code{\link{lookup_soilgrids}}). Override
+for unit tests to inject a deterministic stub.}
 
 \item{verbose}{If \code{TRUE} (default), prints progress.}
 }
