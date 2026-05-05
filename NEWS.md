@@ -1,3 +1,106 @@
+# soilKey 0.9.54 (2026-05-05)
+
+The "SmartSolosExpert API cross-validation" release. Wires
+soilKey to **Glauber Vaz's PROLOG-based SiBCS classifier**
+exposed by Embrapa's AgroAPI as a REST endpoint, giving users
+an authoritative external reference to compare the local
+classifier against.
+
+## What's shipped
+
+`R/classify-smartsolos.R` adds two exported functions plus a
+mapping layer:
+
+- **`classify_via_smartsolos_api(pedon, api_key, endpoint,
+  drenagem, reference_sibcs, base_url, timeout_seconds, post_fn,
+  verbose)`** -- POSTs a soilKey \code{PedonRecord} to
+  \code{https://api.cnptia.embrapa.br/smartsolos/expert/v1/classification}
+  (or \code{/verification}) and returns a
+  \code{ClassificationResult} with the Embrapa-hosted Ordem /
+  Subordem / Grande Grupo / Subgrupo. Bearer token comes from
+  \code{Sys.getenv("AGROAPI_TOKEN")} or the \code{api_key}
+  argument. The \code{post_fn} parameter lets unit tests inject
+  a deterministic stub so the package test suite is fully
+  offline.
+
+- **`compare_smartsolos(pedon, ...)`** -- runs both the local
+  `classify_sibcs()` and the remote
+  `classify_via_smartsolos_api()` on the same pedon and tabulates
+  agreement at each of the four SiBCS levels. Returns
+  `list(local, remote, agreement)`.
+
+- **Mapping helpers** (internal): convert soilKey horizon
+  attributes to the SmartSolos schema -- units (`% -> g/kg` for
+  texture and OC), categorical strings (`structure_grade`
+  weak/moderate/strong -> 1/2/3, `structure_type`
+  granular/blocks/prismatic/columnar/laminar -> 1..6,
+  `clay_films_amount` few/common/many -> 1..3), and the
+  `DRENAGEM` SiBCS scale (1..8).
+
+## Why this matters
+
+- **External reference for validation**: the SmartSolosExpert API
+  is maintained by Glauber Vaz / Embrapa Solos directly from the
+  SiBCS rule book. Disagreements between
+  \code{classify_sibcs()} (soilKey local) and
+  \code{classify_via_smartsolos_api()} (Embrapa remote) point at
+  either soilKey rule bugs or genuine SiBCS interpretation
+  ambiguities -- both worth investigating.
+- **Cross-language sanity check**: soilKey's SiBCS rules were
+  encoded by hand from the 5a edicao text; SmartSolos is in
+  PROLOG and was reviewed by the SiBCS authors. Two independent
+  implementations.
+- **Verification mode**: pass a user-supplied reference
+  classification to the \code{/verification} endpoint and the
+  API returns a per-level match summary
+  (\code{L0..L4}) -- useful for benchmarking against curated
+  perfis.
+
+## Authentication
+
+```r
+# 1. Register at https://www.agroapi.cnptia.embrapa.br/portal/
+# 2. Subscribe to SmartSolosExpert API
+# 3. Generate an access token
+# 4. Set the env var (or pass api_key= directly)
+Sys.setenv(AGROAPI_TOKEN = "<your token>")
+
+res <- classify_via_smartsolos_api(make_argissolo_canonical())
+res$rsg_or_order  # "ARGISSOLO"
+res$qualifiers
+#> $subordem  "VERMELHO"
+#> $gde_grupo "Distrofico"
+#> $subgrupo  "tipico"
+
+cmp <- compare_smartsolos(make_argissolo_canonical())
+cmp$agreement
+#>   point_id ordem subordem gde_grupo subgrupo n_match
+#> 1    P-... TRUE     TRUE      TRUE     TRUE       4
+```
+
+## Tests
+
+13 new tests in `test-v0954-smartsolos-api.R` (56 expectations).
+All HTTP work bypassed via the `post_fn` injection -- no network
+required. An opt-in live test is gated on
+\code{AGROAPI_TOKEN + SOILKEY_NETWORK_TESTS} env vars.
+
+Coverage:
+
+- Mapping helpers (struct grade / size / type, clay films, drainage)
+- Payload shape (29 documented JSON keys per horizon)
+- Unit conversions (% -> g/kg, sand split into AREIA_GROS / AREIA_FINA)
+- Subangular-vs-angular blocky disambiguation
+- Response parser (4-level Embrapa output -> ClassificationResult)
+- Stub-based end-to-end via `post_fn`
+- Verification endpoint with `items_bd + summary`
+- `compare_smartsolos()` agreement data.frame
+- Live-network test (opt-in)
+
+Suite total: 3529 / 0 / 16 (pass / fail / skip). R CMD check
+Status OK.
+
+
 # soilKey 0.9.53 (2026-05-05)
 
 The "performance benchmark documentado" release. Adds
