@@ -1,0 +1,35 @@
+# Excluded from the Docker build context.
+.git/
+.github/
+.claude/
+.Rcheck/
+.Rproj.user/
+.Rhistory
+.RData
+*.tar.gz
+*.Rcheck/
+
+# Per-user / IDE noise
+.DS_Store
+.idea/
+.vscode/
+
+# Build artefacts
+docs/
+inst/doc/
+soilKey.Rcheck/
+**/*.log
+
+# Heavy reference / soil data folders -- must be mounted with -v at run time
+# (these can be hundreds of GB; never bake them into the image).
+soil_data/
+*.tif
+*.shp
+*.dbf
+*.shx
+*.prj
+*.cpg
+*.qs
+*.gpkg
+*.mdb
+*.gdb/

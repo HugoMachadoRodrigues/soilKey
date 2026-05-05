@@ -225,7 +225,8 @@ test_that("benchmark_lucas_2018 runs end-to-end on a tiny synthetic stack", {
   expect_true(all(c("predicted", "reference_code", "reference_name",
                      "agree") %in% names(bench$predictions)))
   expect_equal(bench$config$classify_with, "wrb2022")
-  expect_equal(bench$config$fill_texture_from, "none")
+  expect_equal(bench$config$fill_topsoil_from, "none")
+  expect_equal(bench$config$fill_subsoil_from, "none")
 })
 
 

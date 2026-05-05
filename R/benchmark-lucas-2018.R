@@ -299,6 +299,201 @@ load_lucas_soil_2018 <- function(path,
 }
 
 
+# ---- v0.9.50: comprehensive SoilGrids fill + Vis-NIR wire-up -----------
+
+#' Mapping of SoilGrids 250m property names to soilKey horizon columns
+#'
+#' SoilGrids stores nine soil properties at six standard depths;
+#' \code{\link{lookup_soilgrids}} returns them in conventional units
+#' after the published per-property scale factor. This table records
+#' the corresponding soilKey horizon column plus an optional secondary
+#' multiplier needed to align with soilKey unit conventions.
+#'
+#' @keywords internal
+.SOILGRIDS_TO_HORIZON_MAP <- list(
+  clay     = list(col = "clay_pct",            scale_secondary = 1.0),
+  sand     = list(col = "sand_pct",            scale_secondary = 1.0),
+  silt     = list(col = "silt_pct",            scale_secondary = 1.0),
+  phh2o    = list(col = "ph_h2o",              scale_secondary = 1.0),
+  soc      = list(col = "oc_pct",              scale_secondary = 0.1),  # g/kg -> %
+  cec      = list(col = "cec_cmol",            scale_secondary = 1.0),
+  bdod     = list(col = "bulk_density_g_cm3",  scale_secondary = 1.0),
+  nitrogen = list(col = "n_total_pct",         scale_secondary = 0.1),  # g/kg -> %
+  cfvo     = list(col = "coarse_fragments_pct", scale_secondary = 1.0)
+)
+
+
+#' Fill a horizon (or synthesise a new one) from SoilGrids 250m
+#'
+#' Internal helper used by \code{\link{benchmark_lucas_2018}}. For
+#' each requested property, calls \code{lookup_fn} (default
+#' \code{\link{lookup_soilgrids}}) at \code{soilgrids_depth},
+#' converts to the soilKey unit and writes onto the pedon's horizon
+#' \code{horizon_idx} via \code{add_measurement(...,
+#' source = "inferred_prior")}. Synthesises the horizon if it does
+#' not exist yet (geometry from \code{horizon_top_cm} /
+#' \code{horizon_bottom_cm}).
+#'
+#' Test injection: pass \code{lookup_fn = function(...) value} to
+#' bypass the network when unit-testing.
+#'
+#' @keywords internal
+.fill_horizon_from_soilgrids <- function(pedon,
+                                            horizon_idx,
+                                            properties,
+                                            soilgrids_depth = "0-5cm",
+                                            horizon_top_cm    = 0,
+                                            horizon_bottom_cm = 20,
+                                            horizon_designation = "Ap",
+                                            lookup_fn = lookup_soilgrids) {
+  if (is.na(pedon$site$lon %||% NA_real_) ||
+        is.na(pedon$site$lat %||% NA_real_)) {
+    return(invisible(0L))
+  }
+  coord <- c(pedon$site$lon, pedon$site$lat)
+  if (horizon_idx > nrow(pedon$horizons)) {
+    new_hz <- data.table::data.table(
+      top_cm      = horizon_top_cm,
+      bottom_cm   = horizon_bottom_cm,
+      designation = horizon_designation
+    )
+    pedon$horizons <- ensure_horizon_schema(
+      data.table::rbindlist(list(pedon$horizons, new_hz), fill = TRUE)
+    )
+  }
+  written <- 0L
+  h <- pedon$horizons
+  for (prop in properties) {
+    spec <- .SOILGRIDS_TO_HORIZON_MAP[[prop]]
+    if (is.null(spec)) next
+    col <- spec$col
+    if (isTRUE(is.finite(h[[col]][horizon_idx]))) next
+    raw <- tryCatch(
+      lookup_fn(coord, property = prop,
+                  depth = soilgrids_depth, quantile = "mean"),
+      error   = function(e) NA_real_,
+      warning = function(w) NA_real_
+    )
+    if (!isTRUE(is.finite(raw))) next
+    val <- as.numeric(raw) * spec$scale_secondary
+    pedon$add_measurement(
+      horizon_idx = horizon_idx,
+      attribute   = col,
+      value       = val,
+      source      = "inferred_prior",
+      confidence  = 0.6,
+      notes       = sprintf("SoilGrids 250m mean, %s", soilgrids_depth),
+      overwrite   = FALSE
+    )
+    written <- written + 1L
+  }
+  invisible(written)
+}
+
+
+#' Attach LUCAS 2018 Vis-NIR spectra to a list of PedonRecord objects
+#'
+#' Joins the LUCAS Soil 2018 Spectral Library (separate ESDAC release,
+#' ~83 GB) onto the pedons returned by
+#' \code{\link{load_lucas_soil_2018}}, by matching the LUCAS
+#' \code{POINT_ID} of the spectra against \code{pedon$site$id}. Each
+#' matched pedon gets \code{$spectra$vnir} populated as a numeric
+#' matrix (rows = horizons, cols = wavelengths).
+#'
+#' Two input shapes are accepted:
+#'
+#' \itemize{
+#'   \item A wide \code{data.frame} keyed by an integer
+#'         \code{POINT_ID} column with one column per wavelength
+#'         (column names parseable as numeric nm). One row per
+#'         LUCAS point.
+#'   \item A long \code{data.frame} with columns \code{POINT_ID},
+#'         \code{wavelength_nm}, \code{reflectance}.
+#' }
+#'
+#' Spectra are attached only to the topsoil horizon (row 1); the
+#' subsoil horizon (if any) is left without spectra. After this call,
+#' \code{benchmark_lucas_2018(..., fill_topsoil_from = "spectra",
+#' ossl_models = ...)} feeds the spectra through
+#' \code{\link{predict_from_spectra}} (v0.9.46) to fill any
+#' chemistry / texture gap not already populated by SoilGrids.
+#'
+#' @param pedons List of \code{\link{PedonRecord}} objects.
+#' @param spectra A wide or long \code{data.frame} as described
+#'        above.
+#' @param point_id_col Name of the LUCAS point-id column in
+#'        \code{spectra}. Default \code{"POINT_ID"}.
+#' @param verbose If \code{TRUE} (default), reports the join hit
+#'        rate.
+#' @return The list of pedons (mutated in place; returned invisibly).
+#' @seealso \code{\link{predict_from_spectra}},
+#'          \code{\link{predict_munsell_from_spectra}},
+#'          \code{\link{load_lucas_soil_2018}}.
+#' @export
+attach_lucas_spectra <- function(pedons,
+                                   spectra,
+                                   point_id_col = "POINT_ID",
+                                   verbose      = TRUE) {
+  if (!is.list(pedons) || length(pedons) == 0L) {
+    stop("attach_lucas_spectra(): 'pedons' must be a non-empty list of PedonRecord.")
+  }
+  if (!is.data.frame(spectra)) {
+    stop("attach_lucas_spectra(): 'spectra' must be a data.frame.")
+  }
+  if (!point_id_col %in% names(spectra)) {
+    stop(sprintf("attach_lucas_spectra(): '%s' not in spectra columns.",
+                  point_id_col))
+  }
+  is_long <- all(c("wavelength_nm", "reflectance") %in% names(spectra))
+  if (is_long) {
+    # Pivot long -> wide
+    wl <- sort(unique(as.numeric(spectra$wavelength_nm)))
+    pids <- unique(spectra[[point_id_col]])
+    mat <- matrix(NA_real_, nrow = length(pids), ncol = length(wl),
+                    dimnames = list(as.character(pids), as.character(wl)))
+    for (j in seq_len(nrow(spectra))) {
+      r <- spectra[j, ]
+      i_row <- match(r[[point_id_col]], pids)
+      i_col <- match(as.numeric(r$wavelength_nm), wl)
+      mat[i_row, i_col] <- as.numeric(r$reflectance)
+    }
+    wide_ids <- pids
+  } else {
+    wide_ids <- spectra[[point_id_col]]
+    wl_cols <- setdiff(names(spectra), point_id_col)
+    wl <- suppressWarnings(as.numeric(wl_cols))
+    keep <- !is.na(wl)
+    wl <- wl[keep]
+    wl_cols <- wl_cols[keep]
+    mat <- as.matrix(spectra[, wl_cols, drop = FALSE])
+    storage.mode(mat) <- "double"
+    rownames(mat) <- as.character(wide_ids)
+    colnames(mat) <- as.character(wl)
+  }
+  hits <- 0L
+  for (p in pedons) {
+    pid <- p$site$id %||% NA_character_
+    if (is.na(pid)) next
+    row_idx <- match(as.character(pid), rownames(mat))
+    if (is.na(row_idx)) next
+    spec_row <- mat[row_idx, , drop = FALSE]
+    n_hz <- nrow(p$horizons)
+    full <- matrix(NA_real_, nrow = n_hz, ncol = ncol(mat),
+                     dimnames = list(NULL, colnames(mat)))
+    full[1L, ] <- spec_row
+    p$spectra <- list(vnir = full)
+    hits <- hits + 1L
+  }
+  if (isTRUE(verbose)) {
+    cli::cli_alert_success(sprintf(
+      "attach_lucas_spectra(): joined spectra to %d / %d pedons",
+      hits, length(pedons)
+    ))
+  }
+  invisible(pedons)
+}
+
+
 # ---- Benchmark ----------------------------------------------------------
 
 #' Run the LUCAS Soil 2018 / ESDB WRB benchmark
@@ -326,16 +521,41 @@ load_lucas_soil_2018 <- function(path,
 #' @param attribute ESDB attribute to use as reference. Default
 #'        \code{"WRBLV1"} (Reference Soil Group, 31 codes). Other
 #'        sensible choices: \code{"FAO90LV1"} (legacy FAO 1990).
-#' @param fill_texture_from Optional source for clay / sand / silt
-#'        when missing on a horizon. \code{"none"} (default) leaves
-#'        them missing; \code{"soilgrids"} calls
-#'        \code{\link{lookup_soilgrids}} per pedon. SoilGrids reads
-#'        from the canonical Cloud-Optimized GeoTIFF endpoint over
-#'        HTTPS (no download required).
+#' @param fill_texture_from Deprecated alias for
+#'        \code{fill_topsoil_from} (v0.9.49 signature). When
+#'        \code{"soilgrids"}, treated as
+#'        \code{fill_topsoil_from = "soilgrids"} with
+#'        \code{fill_properties = c("clay", "sand", "silt")} and
+#'        \code{fill_subsoil_from = "none"}.
+#' @param fill_topsoil_from One of \code{"none"} (default),
+#'        \code{"soilgrids"} (fills topsoil 0-20 cm from SoilGrids
+#'        250m at 0-5 cm), or \code{"spectra"} (runs
+#'        \code{\link{predict_from_spectra}} with the supplied
+#'        \code{ossl_models}; pedons must have
+#'        \code{$spectra$vnir} attached, e.g. via
+#'        \code{\link{attach_lucas_spectra}}).
+#' @param fill_subsoil_from One of \code{"none"} (default) or
+#'        \code{"soilgrids"} (synthesises a 30-60 cm B horizon from
+#'        SoilGrids 250m). Unlocks WRB diagnostic horizons that
+#'        depend on subsoil features (cambic, argic, mollic).
+#' @param fill_properties Character vector of SoilGrids properties
+#'        to fill when \code{fill_topsoil_from = "soilgrids"} or
+#'        \code{fill_subsoil_from = "soilgrids"}. Default uses all
+#'        9 properties: clay, sand, silt, phh2o, soc, cec, bdod,
+#'        nitrogen, cfvo. Set to \code{c("clay", "sand", "silt")}
+#'        to recover the v0.9.49 behaviour. \code{cfvo} is mapped
+#'        to \code{coarse_fragments_pct}, which drives the
+#'        Leptosols diagnostic (>= 90 within 25 cm).
+#' @param ossl_models Required when \code{fill_topsoil_from =
+#'        "spectra"}. A list of \code{soilKey_pls_model} objects
+#'        from \code{\link{train_pls_from_ossl}} (v0.9.46).
 #' @param classify_with One of \code{"wrb2022"} (default) or
 #'        \code{"sibcs"}.
 #' @param max_n Optional integer cap on the number of pedons
 #'        benchmarked. Useful for quick development runs.
+#' @param soilgrids_lookup_fn Internal: SoilGrids lookup function
+#'        (defaults to \code{\link{lookup_soilgrids}}). Override
+#'        for unit tests to inject a deterministic stub.
 #' @param verbose If \code{TRUE} (default), prints progress.
 #' @return A list with elements:
 #'   \describe{
@@ -375,13 +595,46 @@ load_lucas_soil_2018 <- function(path,
 #' @export
 benchmark_lucas_2018 <- function(pedons,
                                    esdb_root,
-                                   attribute         = "WRBLV1",
-                                   fill_texture_from = c("none", "soilgrids"),
-                                   classify_with     = c("wrb2022", "sibcs"),
-                                   max_n             = NULL,
-                                   verbose           = TRUE) {
-  fill_texture_from <- match.arg(fill_texture_from)
+                                   attribute          = "WRBLV1",
+                                   fill_texture_from  = NULL,
+                                   fill_topsoil_from  = c("none", "soilgrids", "spectra"),
+                                   fill_subsoil_from  = c("none", "soilgrids"),
+                                   fill_properties    = c("clay", "sand", "silt",
+                                                            "phh2o", "soc", "cec",
+                                                            "bdod", "nitrogen",
+                                                            "cfvo"),
+                                   ossl_models        = NULL,
+                                   classify_with      = c("wrb2022", "sibcs"),
+                                   max_n              = NULL,
+                                   soilgrids_lookup_fn = lookup_soilgrids,
+                                   verbose            = TRUE) {
+  # Backward compatibility: v0.9.49 fill_texture_from = "soilgrids" maps
+  # to fill_topsoil_from = "soilgrids" + fill_properties = clay/sand/silt
+  if (!is.null(fill_texture_from)) {
+    fill_texture_from <- match.arg(fill_texture_from,
+                                      choices = c("none", "soilgrids"))
+    if (fill_texture_from == "soilgrids") {
+      fill_topsoil_from <- "soilgrids"
+      fill_properties   <- c("clay", "sand", "silt")
+      fill_subsoil_from <- "none"
+    }
+  }
+  fill_topsoil_from <- match.arg(fill_topsoil_from)
+  fill_subsoil_from <- match.arg(fill_subsoil_from)
   classify_with     <- match.arg(classify_with)
+  unknown_props <- setdiff(fill_properties,
+                              names(.SOILGRIDS_TO_HORIZON_MAP))
+  if (length(unknown_props) > 0L) {
+    stop(sprintf(
+      "benchmark_lucas_2018(): unknown SoilGrids properties: %s",
+      paste(unknown_props, collapse = ", ")
+    ))
+  }
+  if (fill_topsoil_from == "spectra" &&
+        (is.null(ossl_models) || length(ossl_models) == 0L)) {
+    stop("benchmark_lucas_2018(): fill_topsoil_from = 'spectra' requires ",
+         "'ossl_models' (output of train_pls_from_ossl).")
+  }
 
   if (!is.list(pedons) || length(pedons) == 0L) {
     stop("benchmark_lucas_2018(): 'pedons' must be a non-empty list of PedonRecord.")
@@ -421,37 +674,79 @@ benchmark_lucas_2018 <- function(pedons,
     if (is.null(nm) || is.na(nm)) NA_character_ else as.character(nm)
   }, FUN.VALUE = character(1L))
 
-  # 2. Optional: fill texture from SoilGrids
-  if (fill_texture_from == "soilgrids") {
+  # 2a. Topsoil fill from SoilGrids 0-5cm.
+  if (fill_topsoil_from == "soilgrids") {
     if (isTRUE(verbose)) {
-      cli::cli_alert_info("Filling clay / sand / silt from SoilGrids 250m...")
+      cli::cli_alert_info(sprintf(
+        "Filling topsoil from SoilGrids 250m at 0-5cm: %s",
+        paste(fill_properties, collapse = ", ")
+      ))
     }
     for (i in seq_along(pedons)) {
       if (!has_coords[i]) next
+      .fill_horizon_from_soilgrids(
+        pedons[[i]],
+        horizon_idx       = 1L,
+        properties        = fill_properties,
+        soilgrids_depth   = "0-5cm",
+        lookup_fn         = soilgrids_lookup_fn
+      )
+    }
+  }
+
+  # 2b. Subsoil fill from SoilGrids 30-60cm. Synthesises a B horizon
+  # if absent. Unlocks WRB cambic / argic / mollic diagnostics that
+  # the LUCAS topsoil-only data cannot satisfy alone.
+  if (fill_subsoil_from == "soilgrids") {
+    if (isTRUE(verbose)) {
+      cli::cli_alert_info(sprintf(
+        "Filling subsoil from SoilGrids 250m at 30-60cm: %s",
+        paste(fill_properties, collapse = ", ")
+      ))
+    }
+    for (i in seq_along(pedons)) {
+      if (!has_coords[i]) next
+      n_hz <- nrow(pedons[[i]]$horizons)
+      sub_idx <- if (n_hz >= 2L) 2L else (n_hz + 1L)
+      .fill_horizon_from_soilgrids(
+        pedons[[i]],
+        horizon_idx         = sub_idx,
+        properties          = fill_properties,
+        soilgrids_depth     = "30-60cm",
+        horizon_top_cm      = 30,
+        horizon_bottom_cm   = 60,
+        horizon_designation = "B",
+        lookup_fn           = soilgrids_lookup_fn
+      )
+    }
+  }
+
+  # 2c. Topsoil fill from Vis-NIR spectra (v0.9.46 OSSL pretrained).
+  if (fill_topsoil_from == "spectra") {
+    if (isTRUE(verbose)) {
+      cli::cli_alert_info(sprintf(
+        "Filling topsoil from Vis-NIR via OSSL pretrained models (%d properties)",
+        length(ossl_models)
+      ))
+    }
+    n_filled <- 0L
+    for (i in seq_along(pedons)) {
       p <- pedons[[i]]
-      coord <- c(p$site$lon, p$site$lat)
-      h1 <- p$horizons
-      for (prop in c("clay", "sand", "silt")) {
-        col <- paste0(prop, "_pct")
-        if (isTRUE(is.finite(h1[[col]][1L]))) next
-        v <- tryCatch(
-          lookup_soilgrids(coord, property = prop,
-                            depth = "0-5cm", quantile = "mean"),
-          error   = function(e) NA_real_,
-          warning = function(w) NA_real_
-        )
-        if (isTRUE(is.finite(v))) {
-          p$add_measurement(
-            horizon_idx = 1L,
-            attribute   = col,
-            value       = as.numeric(v),
-            source      = "inferred_prior",
-            confidence  = 0.6,
-            notes       = "SoilGrids 250m mean, 0-5cm",
-            overwrite   = FALSE
-          )
-        }
-      }
+      if (is.null(p$spectra) || is.null(p$spectra$vnir)) next
+      tryCatch({
+        predict_from_spectra(p, models = ossl_models,
+                              overwrite = FALSE, verbose = FALSE)
+        n_filled <- n_filled + 1L
+      }, error = function(e) {
+        # Spectra path is best-effort; record but don't abort.
+        invisible(NULL)
+      })
+    }
+    if (isTRUE(verbose)) {
+      cli::cli_alert_info(sprintf(
+        "  ... %d / %d pedons had spectra and were filled",
+        n_filled, length(pedons)
+      ))
     }
   }
 
@@ -551,7 +846,9 @@ benchmark_lucas_2018 <- function(pedons,
     errors      = errors,
     config = list(
       esdb_attribute    = attribute,
-      fill_texture_from = fill_texture_from,
+      fill_topsoil_from = fill_topsoil_from,
+      fill_subsoil_from = fill_subsoil_from,
+      fill_properties   = fill_properties,
       classify_with     = classify_with
     )
   )

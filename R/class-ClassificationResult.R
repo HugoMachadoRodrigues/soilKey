@@ -116,6 +116,10 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       cli::cli_text("({n_tested} RSGs tested before assignment)")
       for (i in seq_along(self$trace)) {
         t <- self$trace[[i]]
+        # v0.9.52: nested classify_sibcs() trace contains scalar /
+        # NULL / data.frame entries (e.g. familia, color_undetermined).
+        # Skip them in the per-RSG dump rather than crashing.
+        if (!is.list(t) || inherits(t, "data.frame")) next
         sym <- if (isTRUE(t$passed)) "PASSED"
                else if (isFALSE(t$passed)) "failed"
                else "NA"

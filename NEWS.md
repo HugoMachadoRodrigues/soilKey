@@ -1,3 +1,164 @@
+# soilKey 0.9.53 (2026-05-05)
+
+The "performance benchmark documentado" release. Adds
+**`benchmark_performance(n, systems, ...)`** -- reproducible
+latency + batch-throughput measurement of the three classifiers.
+
+## What's shipped
+
+- **`benchmark_performance(n, systems, include_familia, seed,
+  verbose)`** -- generates `n` synthetic 5-horizon pedons (fixed
+  RNG seed -> reproducible across releases), times each
+  classifier, returns
+  `list(summary, per_pedon, config)` with median / mean / total /
+  pedons-per-minute per system. The `config` element captures
+  soilKey version, R version and platform for traceability.
+
+- **`inst/benchmarks/reports/performance_2026-05-05.md`** --
+  documents the canonical baseline:
+
+| System  | Median (s/pedon) | Throughput (pedons/min) |
+|---------|-----------------:|------------------------:|
+| WRB 2022    | **0.021** | **2,327** |
+| SiBCS 5a    | **0.037** | **1,549** |
+| USDA-ST 13a | **0.121** | **290** |
+
+  At-scale projections (LUCAS 18k ~8 min WRB; KSSL 36k ~2h USDA)
+  + per-system runtime breakdowns + memory profile + next
+  optimisation targets.
+
+## Tests
+
+6 new tests in `test-v0953-performance.R` (18 expectations)
+including a regression sentinel: median seconds < 5 per system
+on a 3-pedon mini-bench. A 50x slowdown on the synthetic
+fixture would trip CI before a release ships.
+
+R CMD check Status OK.
+
+
+# soilKey 0.9.52 (2026-05-05)
+
+The "vinheta PT-BR end-to-end" release. Adds
+**`v09_perfil_embrapa_pt.Rmd`** -- um perfil real (Argissolo
+Vermelho-Amarelo distrofico tipico, Itaguai-RJ, adaptado do
+Levantamento Embrapa Solos 2003) seguido do A ao Z atraves do
+pacote, em portugues.
+
+## What's shipped
+
+- **Vinheta v09 (PT-BR)** cobrindo: construcao do `PedonRecord`
+  com 5 horizontes; diagnosticos manuais (B textural, atividade
+  da argila, V%); `classify_all()` -> SiBCS / WRB / USDA-ST;
+  comparacao cross-system; relatorio HTML; cruzamento opcional
+  com MapBiomas Solos e SoilGrids.
+
+- **`ClassificationResult$print()` defensive fix**: o metodo
+  iterava `self$trace` e crashava em
+  \code{$ operator is invalid for atomic vectors} quando a trace
+  continha entradas escalares (`familia_label`), `NULL`
+  (`color_undetermined`) ou `data.frame`. Agora pula entradas
+  que nao sao listas (ou que sao data.frames) no dump per-RSG.
+
+## Tests
+
+4 novos em `test-v0952-vignette-pt.R` (18 expectations) cobrindo
+front-matter Rmd, presenca dos 3 sistemas + lookups espaciais +
+modulos espectrais, e o fix do print em traces com entradas
+escalares / NULL / data.frame.
+
+R CMD check Status OK.
+
+
+# soilKey 0.9.51 (2026-05-05)
+
+The "container reproducibility" release. Adds a Dockerfile + a
+GitHub Actions workflow that builds and publishes a container
+image to **ghcr.io/HugoMachadoRodrigues/soilKey** on every git tag.
+
+## What's shipped
+
+- **`Dockerfile`** -- FROM `rocker/r-ver:4.4.0`, installs the
+  GDAL/GEOS/PROJ stack required by `terra`, the dependency
+  closure of soilKey + key Suggests (`terra`, `foreign`, `pls`,
+  `munsellinterpol`, `shiny`, `DT`). Build-time smoke test
+  (`library(soilKey)`) so a broken image fails to publish.
+
+- **`.dockerignore`** -- excludes `soil_data/`, `.git/`, `*.tif`,
+  `*.shp`, R build artefacts. Keeps the build context lean.
+
+- **`.github/workflows/docker.yaml`** -- triggers on `v*` git
+  tags, runs `docker buildx`, pushes both `:<version>` and
+  `:latest` tags to GHCR with cache-from/cache-to gha caching.
+  Final step smoke-tests the published image.
+
+## Run it
+
+```bash
+docker run --rm -it ghcr.io/HugoMachadoRodrigues/soilKey:latest
+docker run --rm -it -p 3838:3838 ghcr.io/HugoMachadoRodrigues/soilKey:latest \
+  R -e 'soilKey::run_classify_app(host = "0.0.0.0", port = 3838L,
+                                    launch.browser = FALSE)'
+```
+
+## Tests
+
+7 new tests in `test-v0951-docker-ci.R` (21 expectations) -- lint
+the Dockerfile + workflow without a container build, ensuring
+future commits don't drop the GDAL stack, the key Suggests, or
+the GHCR push step. R CMD check Status OK.
+
+
+# soilKey 0.9.50 (2026-05-05)
+
+The "comprehensive subsoil fill + Vis-NIR wire-up" release. Lifts
+the v0.9.49 LUCAS WRB benchmark out of the Regosols catch-all by
+giving `benchmark_lucas_2018()` three new fill paths.
+
+## What changed
+
+- **`fill_topsoil_from = c("none", "soilgrids", "spectra")`** --
+  expands the v0.9.49 `fill_texture_from` to cover all 9
+  SoilGrids properties (clay, sand, silt, phh2o, soc, cec, bdod,
+  nitrogen, cfvo) at 0-5 cm. Legacy `fill_texture_from =
+  "soilgrids"` continues to work as a back-compat alias.
+
+- **`fill_subsoil_from = c("none", "soilgrids")`** --
+  synthesises a 30-60 cm B horizon from SoilGrids 250m at the
+  same 9 properties. Unlocks WRB cambic / argic / mollic / nitic
+  diagnostics that the LUCAS topsoil-only release cannot satisfy
+  alone.
+
+- **`fill_topsoil_from = "spectra"` + `ossl_models`** -- when
+  the LUCAS Spectral Library is available, runs
+  `predict_from_spectra()` (v0.9.46) per pedon to fill any
+  property still missing after the SoilGrids paths.
+
+- **`attach_lucas_spectra(pedons, spectra, point_id_col)`** --
+  new exported helper. Joins a wide (POINT_ID + wavelength
+  columns) or long (POINT_ID + wavelength_nm + reflectance)
+  spectra table onto the pedon list, populating
+  `pedon$spectra$vnir`.
+
+- **`.SOILGRIDS_TO_HORIZON_MAP`** + **`.fill_horizon_from_soilgrids()`**
+  internals. The helper accepts a `lookup_fn` parameter for
+  unit-test injection so the test suite runs offline.
+
+## Why cfvo matters
+
+The Leptosols predicate (`leptic_features` in
+`R/diagnostics-properties-wrb.R`) fires when
+`coarse_fragments_pct >= 90 within 25 cm`. SoilGrids `cfvo`
+maps directly to that. With `fill_properties` covering `cfvo`,
+Leptosols (39% of the LUCAS European reference) become reachable.
+
+## Tests
+
+13 new tests in `test-v0950-lucas-fills.R` (52 expectations), all
+exercised through the `soilgrids_lookup_fn` injection -- no
+network required. R CMD check Status OK.
+
+
 # soilKey 0.9.49 (2026-05-04)
 
 The "EU-LUCAS / WRB benchmark Route B end-to-end" release.
