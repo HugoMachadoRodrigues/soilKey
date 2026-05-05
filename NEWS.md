@@ -1,3 +1,42 @@
+# soilKey 0.9.53 (2026-05-05)
+
+The "performance benchmark documentado" release. Adds
+**`benchmark_performance(n, systems, ...)`** -- reproducible
+latency + batch-throughput measurement of the three classifiers.
+
+## What's shipped
+
+- **`benchmark_performance(n, systems, include_familia, seed,
+  verbose)`** -- generates `n` synthetic 5-horizon pedons (fixed
+  RNG seed -> reproducible across releases), times each
+  classifier, returns
+  `list(summary, per_pedon, config)` with median / mean / total /
+  pedons-per-minute per system. The `config` element captures
+  soilKey version, R version and platform for traceability.
+
+- **`inst/benchmarks/reports/performance_2026-05-05.md`** --
+  documents the canonical baseline:
+
+| System  | Median (s/pedon) | Throughput (pedons/min) |
+|---------|-----------------:|------------------------:|
+| WRB 2022    | **0.021** | **2,327** |
+| SiBCS 5a    | **0.037** | **1,549** |
+| USDA-ST 13a | **0.121** | **290** |
+
+  At-scale projections (LUCAS 18k ~8 min WRB; KSSL 36k ~2h USDA)
+  + per-system runtime breakdowns + memory profile + next
+  optimisation targets.
+
+## Tests
+
+6 new tests in `test-v0953-performance.R` (18 expectations)
+including a regression sentinel: median seconds < 5 per system
+on a 3-pedon mini-bench. A 50x slowdown on the synthetic
+fixture would trip CI before a release ships.
+
+R CMD check Status OK.
+
+
 # soilKey 0.9.52 (2026-05-05)
 
 The "vinheta PT-BR end-to-end" release. Adds
