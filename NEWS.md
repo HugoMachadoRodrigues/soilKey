@@ -1,3 +1,106 @@
+# soilKey 0.9.49 (2026-05-04)
+
+The "EU-LUCAS / WRB benchmark Route B end-to-end" release.
+Closes the EU-LUCAS WRB benchmark **chemistry half** that has
+been open since the v0.9.27 roadmap. v0.9.44 already shipped the
+raster-lookup half (`lookup_esdb()`); v0.9.49 ships the loader
+for the LUCAS Soil 2018 Topsoil release (~18,984 European
+points) plus the benchmark function that compares the soilKey
+classifier to the canonical ESDB WRB raster at every coordinate.
+
+## What's shipped
+
+`R/benchmark-lucas-2018.R` adds two new exported functions and
+an internal WRB code-name table:
+
+- **`load_lucas_soil_2018(path, attach_bulk_density, countries,
+  max_n, verbose)`** -- reads the canonical ESDAC release
+  (`LUCAS-SOIL-2018.csv`), joins
+  `BulkDensity_2018_final-2.csv` on `POINTID`, and returns a
+  list of `PedonRecord` objects. Unit conversions baked in
+  (g/kg -> %, mS/m -> dS/m), `< LOD` / `<LOD` / empty / `n.d.`
+  / `ND` cells coerced to `NA`, and a 20-30 cm subsoil horizon
+  is synthesised when the LUCAS subsoil OC / CaCO3 columns are
+  populated.
+
+- **`benchmark_lucas_2018(pedons, esdb_root, attribute,
+  fill_texture_from, classify_with, max_n, verbose)`** -- looks
+  up the ESDB Reference Soil Group at every coordinate via
+  `lookup_esdb(attribute = "WRBLV1")`, optionally fills missing
+  clay/sand/silt from SoilGrids 250m via `lookup_soilgrids()`,
+  runs `classify_wrb2022()` (or `classify_sibcs()`) per pedon,
+  and tabulates a confusion matrix + per-RSG recall. Returns a
+  list with `predictions`, `confusion`, `accuracy`, `per_rsg`,
+  `n_in_scope / n_total / n_errors` and the configuration recap.
+
+- **`.WRB_LV1_NAME_BY_CODE`** (internal) -- mapping the 31 ESDB
+  WRBLV1 2-letter codes to the English plural RSG names
+  returned by the classifier. Codes follow IUSS WRB 2022; the
+  legacy `AB` (Albeluvisols) is mapped to `NA`.
+
+## Demonstration
+
+200 LUCAS pedons stratified across ES / FR / PL / IT, pure
+chemistry baseline (no SoilGrids fill, no spectra fill):
+
+```
+Accuracy: 3.0%  in-scope: 199 / 200
+
+Reference:  Cambisols 53%  Leptosols 39%  others 8%
+Predicted:  Regosols  92%  Histosols 7%   Calcisols 1%
+```
+
+This is an honest baseline. LUCAS Soil 2018 ships only **topsoil
+0-20 cm** chemistry; WRB diagnostic horizons (cambic, argic,
+mollic, ferralic) require subsoil features that are not in this
+release. `classify_wrb2022()` correctly falls back to **Regosols**
+(WRB catch-all) when no diagnostic horizon triggers. Histosols
+recall is 33% (1/3): the histic threshold (OC >= 12%) is the only
+one detectable from a 20-cm sample alone.
+
+## The improvement path (v0.9.50 candidates)
+
+The package already has the building blocks to lift the accuracy:
+
+- **Subsoil texture from SoilGrids 30-60 cm** via
+  `lookup_soilgrids()` (v0.9.48) -- unlocks cambic / argic
+  thresholds.
+- **Vis-NIR spectra fill** via `predict_from_spectra()` (v0.9.46)
+  + `fill_munsell_from_spectra()` (v0.9.47) when the LUCAS Soil
+  2018 Spectral Library is downloaded (~83 GB ESDAC release) --
+  highest fidelity because per-point spectra capture local
+  mineralogy.
+- **Bedrock depth proxy** via SoilGrids `cfvo` -- unlocks
+  Leptosols.
+
+A natural v0.9.50 would extend `benchmark_lucas_2018()` with a
+`fill_subsoil_from = "soilgrids"` option that synthesises a
+30-60 cm horizon from SoilGrids per pedon.
+
+## Bottom line
+
+Route B is **end-to-end runnable as of v0.9.49**. Hugo can now
+drive the comparison loop on his own machine without waiting for
+the Embrapa export or the spectral-library download.
+
+## Tests
+
+12 new tests in `test-v0949-lucas-2018.R` (55 expectations) --
+all pass without network. Loader covers 4 chemistry rows (ES,
+FR, SE, IT) with mixed `< LOD` / empty cells, BD-join, country
+and `max_n` filters, and missing-file errors. Benchmark covers
+end-to-end on a synthetic 4x4 ESDB raster, code decoding, input
+validation, and both `wrb2022` / `sibcs` paths. Suite total:
+3362 / 0 / 15 (pass / fail / skip). R CMD check Status OK.
+
+## Documentation
+
+`inst/benchmarks/reports/lucas_2018_benchmark_2026-05-04.md`
+documents the loader, the 200-point baseline, the per-RSG
+confusion, the surface-only limitation and the v0.9.50
+improvement path.
+
+
 # soilKey 0.9.48 (2026-05-04)
 
 The "MapBiomas Solos + SoilGrids 250m raster lookup" release.
