@@ -1,3 +1,36 @@
+# soilKey 0.9.52 (2026-05-05)
+
+The "vinheta PT-BR end-to-end" release. Adds
+**`v09_perfil_embrapa_pt.Rmd`** -- um perfil real (Argissolo
+Vermelho-Amarelo distrofico tipico, Itaguai-RJ, adaptado do
+Levantamento Embrapa Solos 2003) seguido do A ao Z atraves do
+pacote, em portugues.
+
+## What's shipped
+
+- **Vinheta v09 (PT-BR)** cobrindo: construcao do `PedonRecord`
+  com 5 horizontes; diagnosticos manuais (B textural, atividade
+  da argila, V%); `classify_all()` -> SiBCS / WRB / USDA-ST;
+  comparacao cross-system; relatorio HTML; cruzamento opcional
+  com MapBiomas Solos e SoilGrids.
+
+- **`ClassificationResult$print()` defensive fix**: o metodo
+  iterava `self$trace` e crashava em
+  \code{$ operator is invalid for atomic vectors} quando a trace
+  continha entradas escalares (`familia_label`), `NULL`
+  (`color_undetermined`) ou `data.frame`. Agora pula entradas
+  que nao sao listas (ou que sao data.frames) no dump per-RSG.
+
+## Tests
+
+4 novos em `test-v0952-vignette-pt.R` (18 expectations) cobrindo
+front-matter Rmd, presenca dos 3 sistemas + lookups espaciais +
+modulos espectrais, e o fix do print em traces com entradas
+escalares / NULL / data.frame.
+
+R CMD check Status OK.
+
+
 # soilKey 0.9.51 (2026-05-05)
 
 The "container reproducibility" release. Adds a Dockerfile + a

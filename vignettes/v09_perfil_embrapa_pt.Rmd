@@ -1,0 +1,270 @@
+---
+title: "Um perfil real do A ao Z (estilo Embrapa, em portugues)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Um perfil real do A ao Z (estilo Embrapa, em portugues)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.width  = 6,
+  fig.height = 4
+)
+library(soilKey)
+```
+
+## Introducao
+
+Esta vinheta acompanha **um unico perfil de solo do Brasil tropical**
+desde os dados brutos de campo + laboratorio ate as **tres
+classificacoes paralelas** (SiBCS 5a edicao, WRB 2022, USDA Soil
+Taxonomy 13a edicao), passando por:
+
+1. construcao do `PedonRecord` no formato canonico do soilKey;
+2. inspecao dos diagnosticos disparados (B textural, atividade da
+   argila, V%);
+3. classificacao tripla com explicacao do trace;
+4. relatorio HTML pronto para entregar a um colega ou aluno;
+5. (opcional) cruzamento com o priore espacial do MapBiomas Solos
+   v0.9.48.
+
+O objetivo e dar ao agronomo / pedologo brasileiro um caminho
+**reproduzivel e em portugues**, no estilo dos boletins da Embrapa
+Solos. Todo o codigo abaixo roda sem dependencia externa pesada
+(nem rede, nem ESDB, nem OSSL); a etapa final do MapBiomas e
+opcional e exige um raster baixado.
+
+## O perfil: Argissolo Vermelho-Amarelo distrofico tipico
+
+Adaptado do **Levantamento Reconhecimento dos Solos do Estado do Rio
+de Janeiro** (Embrapa, 2003), perfil RJ-1 da regiao de Itaguai.
+Coordenadas aproximadas: 22.86 S, 43.78 W. Material de origem:
+sedimentos argilosos do Terciario.
+
+```{r profile-data}
+horizontes <- data.table::data.table(
+  top_cm                = c(0,    20,   55,   115,  170),
+  bottom_cm             = c(20,   55,   115,  170,  220),
+  designation           = c("A",  "AB", "Bt1","Bt2","BC"),
+  munsell_hue_moist     = c("10YR","7.5YR","5YR","2.5YR","2.5YR"),
+  munsell_value_moist   = c(4,     4,     4,     3,     3),
+  munsell_chroma_moist  = c(3,     5,     6,     6,     6),
+  structure_grade       = c("moderate", "moderate",
+                              "strong", "strong", "moderate"),
+  structure_type        = c("granular", "subangular blocky",
+                              "subangular blocky",
+                              "subangular blocky",
+                              "subangular blocky"),
+  clay_films_amount     = c(NA, "few", "common", "common", "few"),
+  clay_pct              = c(18,   28,   45,   42,   38),
+  silt_pct              = c(30,   25,   20,   22,   24),
+  sand_pct              = c(52,   47,   35,   36,   38),
+  ph_h2o                = c(5.5,  5.3,  5.0,  5.0,  5.1),
+  ph_kcl                = c(4.4,  4.3,  4.1,  4.1,  4.2),
+  oc_pct                = c(1.5,  0.6,  0.3,  0.2,  0.2),
+  cec_cmol              = c(8.0,  6.0,  5.5,  4.5,  4.0),
+  bs_pct                = c(35,   25,   20,   18,   20),   # V baixa -> distrofico
+  al_cmol               = c(0.5,  0.8,  1.2,  1.5,  1.4),
+  ca_cmol               = c(2.0,  1.4,  1.0,  0.7,  0.7),
+  mg_cmol               = c(0.6,  0.4,  0.3,  0.2,  0.2),
+  k_cmol                = c(0.10, 0.06, 0.04, 0.03, 0.03),
+  na_cmol               = c(0.02, 0.02, 0.02, 0.02, 0.02),
+  bulk_density_g_cm3    = c(1.30, 1.40, 1.45, 1.45, 1.42)
+)
+horizontes <- soilKey:::ensure_horizon_schema(horizontes)
+str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
+```
+
+Construindo o `PedonRecord` (R6 com `site` + `horizons`):
+
+```{r pedon}
+perfil <- PedonRecord$new(
+  site = list(
+    id        = "RJ-1-Itaguai",
+    lat       = -22.86,
+    lon       = -43.78,
+    country   = "BR",
+    state     = "RJ",
+    municipality = "Itaguai",
+    parent_material = "sedimentos argilosos do Terciario",
+    survey_year = 2003,
+    reference_source = "Embrapa Solos (2003) - Levantamento RJ"
+  ),
+  horizons = horizontes
+)
+perfil
+```
+
+## Diagnosticos manuais (sanity check)
+
+Antes de chamar a chave completa, vale rodar os predicados-chave para
+sentir o perfil. Isso e equivalente ao trabalho do classificador
+humano antes de aplicar a chave:
+
+```{r diagnostics}
+# B textural (SiBCS Cap 5 / WRB argic): gradiente de argila
+bt   <- soilKey::B_textural(perfil)
+arg  <- soilKey::argic(perfil)
+cat("B_textural (SiBCS):", bt$passed,
+    "  argic (WRB):",     arg$passed, "\n")
+
+# Atividade da argila (SiBCS Cap 5)
+ta <- soilKey::atividade_argila_alta(perfil)
+cat("atividade_argila_alta:", ta$passed, "\n")
+
+# Saturacao por bases (V%) -- distrofico se V < 50
+distr <- soilKey::distrofico(perfil)
+cat("distrofico:", distr$passed, "\n")
+```
+
+Os tres devem disparar `TRUE` para um Argissolo distrofico tipico.
+
+## Tres classificacoes paralelas
+
+A funcao `classify_all()` corre os tres sistemas e devolve um
+`ClassificationResult` por sistema:
+
+```{r classify-all}
+res <- soilKey::classify_all(perfil, on_missing = "silent")
+names(res)
+```
+
+### SiBCS 5a edicao
+
+```{r sibcs}
+print(res$sibcs)
+```
+
+A descida vai do nivel da Ordem (`Argissolos`) ate o Subgrupo,
+passando pelos discriminantes:
+
+- Matiz Munsell em B (`5YR` / `2.5YR`) -> Subordem **Vermelho-Amarelo**
+- V% baixa em B -> Grande Grupo **Distrofico**
+- Atividade da argila baixa, sem cerosidade forte -> Subgrupo **tipico**
+
+### WRB 2022
+
+```{r wrb}
+print(res$wrb)
+```
+
+WRB devolve o RSG mais qualificadores (em ordem canonica):
+**Acrisol Dystric Cutanic** (caracter argico + V baixa + presenca de
+revestimentos argilosos).
+
+### USDA Soil Taxonomy 13a edicao
+
+```{r usda}
+print(res$usda)
+```
+
+USDA-ST devolve a ordem (ate o nivel atualmente disponivel):
+**Ultisol** (B argilico + saturacao por bases baixa em todo o
+solum).
+
+## Comparacao cross-system
+
+```{r comparison}
+data.frame(
+  Sistema  = c("SiBCS 5a", "WRB 2022", "USDA-ST 13a"),
+  Classe   = c(res$sibcs$name, res$wrb$name, res$usda$name),
+  EvidGrade = c(res$sibcs$evidence_grade %||% NA,
+                  res$wrb$evidence_grade   %||% NA,
+                  res$usda$evidence_grade  %||% NA)
+)
+```
+
+Esses tres rotulos sao **complementares**, nao competidores. O
+SiBCS captura nuance brasileira (Distrofico, Tb, presenca/ausencia
+de cerosidade); o WRB captura o consenso internacional (Acrisol);
+o USDA-ST encaixa no esquema norte-americano (Ultisol). Todos os
+tres apontam para a mesma realidade: **um solo argico, acido,
+baixa em bases, vermelho-amarelo**.
+
+## Relatorio HTML
+
+```{r report, eval = FALSE}
+res$sibcs$report(
+  file  = "perfil_RJ1.html",
+  format = "html",
+  pedon = perfil
+)
+# Ou, para os tres sistemas em um arquivo:
+soilKey::report(
+  list(res$sibcs, res$wrb, res$usda),
+  file  = "perfil_RJ1_triplo.html",
+  format = "html",
+  pedon = perfil
+)
+```
+
+O HTML carrega: nome canonico em cada sistema, qualificadores,
+evidencia grade, trace dos predicados, ambiguidades, atributos
+faltantes, e os horizontes formatados estilo planilha de boletim.
+
+## Cruzamento com priore espacial (opcional)
+
+Se voce baixou o raster nacional do **MapBiomas Solos Colecao 2**
+(30 m, classes SiBCS, 2023+), pode cruzar a coordenada do perfil
+com o mapa para verificar consistencia:
+
+```{r mapbiomas, eval = FALSE}
+sibcs_no_mapa <- soilKey::lookup_mapbiomas_solos(
+  coords      = c(perfil$site$lon, perfil$site$lat),
+  raster_path = "soil_data/mapbiomas/mapbiomas_solos_30m_2023.tif",
+  legend      = data.frame(
+    value      = c(3),
+    class_name = c("Argissolo Vermelho-Amarelo")
+  )
+)
+sibcs_no_mapa
+#> [1] "Argissolo Vermelho-Amarelo"
+```
+
+Concordancia entre o classificador e o mapa nacional aumenta a
+confianca. Discordancia (ex.: classificador diz Argissolo, mapa
+diz Latossolo) e um sinal de revisao -- o pedologo decide qual
+fonte e mais confiavel para o caso.
+
+## Cruzamento com SoilGrids 250m (global)
+
+Para qualquer coordenada do mundo, `lookup_soilgrids()` (v0.9.48)
+le direto do endpoint COG da ISRIC sem download:
+
+```{r soilgrids, eval = FALSE}
+ph_topsoil <- soilKey::lookup_soilgrids(
+  coords   = c(perfil$site$lon, perfil$site$lat),
+  property = "phh2o",  depth = "0-5cm", quantile = "mean"
+)
+clay_subsoil <- soilKey::lookup_soilgrids(
+  coords   = c(perfil$site$lon, perfil$site$lat),
+  property = "clay",   depth = "30-60cm", quantile = "mean"
+)
+cat("SoilGrids pH (0-5cm):", ph_topsoil,
+    " | clay subsoil (30-60cm):", clay_subsoil, "%\n")
+```
+
+## Resumo
+
+| Etapa | Funcao | Onde |
+|---|---|---|
+| Construir o perfil | `PedonRecord$new()` | R |
+| Diagnosticos manuais | `B_textural()`, `argic()`, `distrofico()`, ... | R |
+| Tres classificacoes | `classify_all()` | R |
+| Relatorio | `res$sibcs$report()` ou `soilKey::report()` | R |
+| Munsell de espectros | `predict_munsell_from_spectra()` (v0.9.47) | R |
+| Quimica de espectros | `predict_from_spectra()` (v0.9.46) | R |
+| Cruzamento Brasil | `lookup_mapbiomas_solos()` (v0.9.48) | R + GeoTIFF |
+| Cruzamento global | `lookup_soilgrids()` (v0.9.48) | R + HTTPS |
+| Cruzamento Europa | `lookup_esdb()` (v0.9.44) | R + GeoTIFF |
+| App interativo | `run_classify_app()` | Shiny |
+
+Esse e o caminho **reproduzivel** que o pacote oferece: o pedologo
+chega com horizontes + cores Munsell + analises de laboratorio,
+roda **um comando** (`classify_all()`), e recebe os tres rotulos
+junto com o trace explicando exatamente quais diagnosticos
+dispararam em cada sistema. Em ~10 linhas de R.
