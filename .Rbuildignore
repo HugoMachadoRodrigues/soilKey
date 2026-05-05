@@ -29,3 +29,6 @@
 ^inst/benchmarks/reports/.*\.rds$
 ^paper$
 ^\.claude$
+^\.dockerignore$
+^Dockerfile$
+^soil_data$

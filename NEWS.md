@@ -1,3 +1,42 @@
+# soilKey 0.9.51 (2026-05-05)
+
+The "container reproducibility" release. Adds a Dockerfile + a
+GitHub Actions workflow that builds and publishes a container
+image to **ghcr.io/HugoMachadoRodrigues/soilKey** on every git tag.
+
+## What's shipped
+
+- **`Dockerfile`** -- FROM `rocker/r-ver:4.4.0`, installs the
+  GDAL/GEOS/PROJ stack required by `terra`, the dependency
+  closure of soilKey + key Suggests (`terra`, `foreign`, `pls`,
+  `munsellinterpol`, `shiny`, `DT`). Build-time smoke test
+  (`library(soilKey)`) so a broken image fails to publish.
+
+- **`.dockerignore`** -- excludes `soil_data/`, `.git/`, `*.tif`,
+  `*.shp`, R build artefacts. Keeps the build context lean.
+
+- **`.github/workflows/docker.yaml`** -- triggers on `v*` git
+  tags, runs `docker buildx`, pushes both `:<version>` and
+  `:latest` tags to GHCR with cache-from/cache-to gha caching.
+  Final step smoke-tests the published image.
+
+## Run it
+
+```bash
+docker run --rm -it ghcr.io/HugoMachadoRodrigues/soilKey:latest
+docker run --rm -it -p 3838:3838 ghcr.io/HugoMachadoRodrigues/soilKey:latest \
+  R -e 'soilKey::run_classify_app(host = "0.0.0.0", port = 3838L,
+                                    launch.browser = FALSE)'
+```
+
+## Tests
+
+7 new tests in `test-v0951-docker-ci.R` (21 expectations) -- lint
+the Dockerfile + workflow without a container build, ensuring
+future commits don't drop the GDAL stack, the key Suggests, or
+the GHCR push step. R CMD check Status OK.
+
+
 # soilKey 0.9.50 (2026-05-05)
 
 The "comprehensive subsoil fill + Vis-NIR wire-up" release. Lifts
