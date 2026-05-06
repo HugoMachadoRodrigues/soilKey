@@ -1,3 +1,73 @@
+# soilKey 0.9.56 (2026-05-06)
+
+The "download_bdsolos timeout fix" patch. v0.9.55 shipped
+\code{download_bdsolos()} but the synchronous \code{realizaBusca()}
+invocation in the JS frame timed out chromote on the slow Embrapa
+server (~5-10s default \code{Runtime.evaluate} timeout vs minutes
+of server-side PHP processing).
+
+## What changed
+
+- **\code{realizaBusca()} call deferred via \code{setTimeout(0)}**
+  -- the JS frame returns immediately, the AJAX runs in the
+  background, and the chromote eval no longer blocks. The polling
+  loop continues to monitor the DOM for "ETAPA 3" appearance.
+
+- **Defensive \code{tryCatch} around the submit eval** -- even if
+  chromote itself times out, the AJAX is likely still running, so
+  we proceed to the polling loop with a warning instead of
+  aborting.
+
+- **Polling probe enriched** -- each probe now also reports the
+  page's loading state (\code{aguarde / carregando / processando}
+  pattern), and the function emits a progress line every 30s
+  showing elapsed time + DOM state when \code{verbose = TRUE}.
+
+- **\code{CHROMOTE_TIMEOUT} env var bumped** at session init to
+  \code{max(60, timeout_seconds)}; chromote's default 5-10s isn't
+  enough for the SPA bootstrap on the BDsolos splash page.
+
+## Sentinel tests
+
+2 new tests in \code{test-v0955-bdsolos.R} (now 57 expectations):
+
+- \code{download_bdsolos source uses setTimeout-deferred realizaBusca}
+- \code{download_bdsolos sets CHROMOTE_TIMEOUT for resilience}
+
+These regression sentinels ensure the timeout fix doesn't get
+accidentally reverted in future refactors.
+
+Suite total: 3588 / 0 / 18 (pass / fail / skip). R CMD check
+Status OK.
+
+## How to use after this fix
+
+```r
+remotes::install_github("HugoMachadoRodrigues/soilKey",
+                          ref = "v0.9.56", force = TRUE)
+.rs.restartR()  # restart R / fresh session
+
+library(soilKey)
+ufs <- c("RJ", "SP", "MG", "ES")
+dir.create("./soil_data/embrapa_bdsolos", showWarnings = FALSE,
+           recursive = TRUE)
+for (uf in ufs) {
+  download_bdsolos(
+    out_path        = file.path("./soil_data/embrapa_bdsolos",
+                                  paste0(uf, ".csv")),
+    accept_terms    = TRUE,
+    filter_uf       = uf,
+    timeout_seconds = 600,
+    verbose         = TRUE
+  )
+}
+```
+
+If a particular UF still times out (full state too large or server
+overloaded), retry with \code{timeout_seconds = 1200} or pick a
+specific municipality once the Etapa 2 form supports it.
+
+
 # soilKey 0.9.55 (2026-05-06)
 
 The "BDsolos R-side helpers" release. Adds three R-side helpers
