@@ -1,3 +1,20 @@
+# soilKey 0.9.63 (2026-05-04)
+
+Documentation release. Updates `README.md` to reflect the
+v0.9.55 → v0.9.62 Brazilian benchmark series:
+
+- Version badge bumped 0.9.40 → 0.9.63
+- Tests-passing badge bumped 3 137 → 3 760
+- New "What's new in v0.9.62" section covering load_bdsolos_csv,
+  read_febr_pedons, benchmark_bdsolos_sibcs, the dominant-color-in-B
+  override and merge_brazilian_pedons (with the 590 / 722 RJ overlap
+  empirical result)
+- Status footer rewritten to merge the Brazilian highlights with
+  the existing USDA / WRB summary
+
+No code changes.
+
+
 # soilKey 0.9.62 (2026-05-04)
 
 The "Brazilian super-dataset" release. Joins the BDsolos and FEBR
