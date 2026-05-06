@@ -1,3 +1,100 @@
+# soilKey 0.9.55 (2026-05-06)
+
+The "BDsolos R-side helpers" release. Adds three R-side helpers
+to consume the **Embrapa BDsolos** profile database (~9,000
+perfis brasileiros, the canonical source for SiBCS-classified
+data with morphology + Munsell colors) without leaving R.
+
+## What's shipped
+
+`R/bdsolos.R` (new file) exports three functions plus an internal
+column-detection layer:
+
+- **`load_bdsolos_csv(path, sep, verbose)`** -- reads the long-
+  format BDsolos export (one row per horizon, profile-id key)
+  and returns a list of \code{\link{PedonRecord}}. Auto-detects
+  the column-name convention via regex patterns covering the
+  classic PT-BR shape (\code{matiz_umido / valor_umido /
+  croma_umido}, \code{argila / silte / areia}, \code{ph_em_agua},
+  \code{c_org}, \code{ca_troc / mg_troc / ...}, \code{classificacao})
+  AND the lowercase / SmartSolos-derived shape
+  (\code{cor_umida_matiz}, \code{argila_total}, \code{ph_h2o},
+  \code{taxon_sibcs}). Texture and OC are converted from g/kg to
+  percent (BDsolos canonical unit).
+
+- **`inspect_bdsolos_csv(path, sep)`** -- diagnostic helper. Prints
+  the raw schema, identifies which columns will map to which
+  soilKey horizon attribute, lists unmapped columns, and reports
+  Munsell coverage (matiz / valor / croma) + the surveyor's
+  taxonomic reference column. Run before `load_bdsolos_csv()` on
+  any new CSV from BDsolos.
+
+- **`download_bdsolos(out_path, accept_terms, filter_uf, attributes,
+  timeout_seconds, chromote_session, verbose)`** -- best-effort
+  programmatic downloader via headless Chrome
+  (\code{chromote}). Drives the 3-step Embrapa web form (accept
+  terms -> select all attributes -> submit query -> select all
+  results + radio CSV -> capture). Marked **experimental**:
+  full-table queries (no UF filter) frequently overload the
+  Embrapa server -- prefer \code{filter_uf =} batches of one or
+  two states at a time and stitch the resulting CSVs.
+
+- **`.bdsolos_norm()` / `.bdsolos_match_column()` / 
+  `.bdsolos_match_taxon_column()` / `.BDSOLOS_COLUMN_PATTERNS`**
+  internals: deterministic Portuguese-aware column normaliser
+  (handles \code{ã / ç / é} via \code{chartr}) plus regex table
+  for 30+ canonical BDsolos columns -> soilKey horizon schema.
+
+## Why R-side rather than the browser
+
+The first attempt used Chrome MCP to drive the BDsolos form
+interactively. The full-table query (~9k profiles x ~30 horizon
+attributes) reliably **freezes the renderer** -- the server-side
+PHP query takes minutes and the SPA does not handle it
+gracefully. Going pure R-side via headless Chrome (no on-screen
+rendering) lets the function batch by UF and recover via clean
+session restarts.
+
+## Terms-of-use
+
+Per the splash on \code{consulta_publica.html}:
+
+- Personal / academic use is allowed; commercial use requires a
+  separate Embrapa licence.
+- Publications must cite the source per ABNT.
+
+`download_bdsolos()` requires \code{accept_terms = TRUE} so no
+download happens without the user explicitly acknowledging
+those terms.
+
+## Tests
+
+10 new tests in `test-v0955-bdsolos.R` (55 expectations), all
+exercised via synthetic CSVs in tempdir() so they run
+unconditionally:
+
+- Norm function handles Portuguese diacritics (\code{ã -> a}, 
+  \code{ç -> c}) deterministically.
+- Column matcher maps Munsell + texture + chemistry + taxon
+  variants from both classic and lowercase BDsolos schemas.
+- `inspect_bdsolos_csv()` returns mapped / unmapped / Munsell
+  coverage / taxon column.
+- `load_bdsolos_csv()` reads both schema variants, performs the
+  g/kg -> % unit conversion deterministically (canonical column
+  names override the heuristic), and the resulting pedons
+  classify correctly via `classify_sibcs()`.
+- `download_bdsolos()` requires `accept_terms = TRUE` and
+  errors clearly when chromote is missing. Live network test
+  gated on `SOILKEY_NETWORK_TESTS`.
+
+Suite total: 3586 / 0 / 18 (pass / fail / skip). R CMD check
+Status OK.
+
+## DESCRIPTION
+
+`chromote` added to Suggests (gated via `requireNamespace()`).
+
+
 # soilKey 0.9.54 (2026-05-05)
 
 The "SmartSolosExpert API cross-validation" release. Wires
