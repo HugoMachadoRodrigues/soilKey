@@ -417,9 +417,19 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
            suppressWarnings(as.numeric(ob_row$coord_x)) else NA_real_
   estado <- if (!is.null(ob_row) && "estado_id" %in% names(ob_row))
               as.character(ob_row$estado_id) else NA_character_
+  # v0.9.62: capture sisb_id (BDsolos Codigo PA cross-reference) when
+  # the FEBR observacao table provides it. Stored as character even
+  # when numeric in the source so it joins cleanly to BDsolos
+  # site$sisb_id (also stored as character).
+  sisb <- if (!is.null(ob_row) && "sisb_id" %in% names(ob_row)) {
+    raw <- as.character(ob_row$sisb_id)
+    if (length(raw) == 0L || is.na(raw) || !nzchar(trimws(raw))) NA_character_
+    else trimws(raw)
+  } else NA_character_
   PedonRecord$new(
     site = list(
       id      = as.character(oid),
+      sisb_id = sisb,
       lat     = lat,
       lon     = lon,
       country = "BR",

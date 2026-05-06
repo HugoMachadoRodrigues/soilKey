@@ -508,6 +508,7 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     }
     site <- list(
       id      = rid,
+      sisb_id = rid,  # v0.9.62: Codigo PA == sisb_id (FEBR cross-ref)
       lat     = lat,
       lon     = lon,
       country = "BR",

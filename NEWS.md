@@ -1,3 +1,71 @@
+# soilKey 0.9.62 (2026-05-04)
+
+The "Brazilian super-dataset" release. Joins the BDsolos and FEBR
+PedonRecord lists by `site$sisb_id` to dedupe historic Embrapa
+pedons that appear in both corpuses, producing a single consolidated
+list. The diagnostic scan on Hugo's RJ snapshot found 590 of 905
+BDsolos pedons (65%) overlap a FEBR `sisb_id`, so dedup reduces the
+~9k + ~10k naive concatenation by roughly the magnitude of FEBR's
+8,124 sisb_id-bearing records.
+
+## What's shipped
+
+`R/merge-brazilian.R` (new) exports:
+
+- **`merge_brazilian_pedons(bdsolos, febr, prefer = c("bdsolos",
+  "febr"), verbose = TRUE)`** -- joins two PedonRecord lists by
+  `site$sisb_id`, drops duplicates from the non-preferred side, and
+  emits a single super-list. Each surviving pedon's `site` is tagged
+  with `merge_decision` (`"kept_bdsolos"` / `"kept_febr"` /
+  `"unique"`) and `merge_source` so downstream code can audit
+  provenance.
+
+- **`summarize_brazilian_overlap(bdsolos, febr)`** -- diagnostic
+  table reporting overlap counts (n_bdsolos, n_febr, n_shared,
+  n_bdsolos_only, n_febr_only, n_unmatchable). Useful for verifying
+  the dedup ratio before running the merge.
+
+- **`.get_sisb_id(pedon)`** internal: centralised lookup of
+  `site$sisb_id` with NA-safe trimming. Backwards-compatible with
+  PedonRecord objects that pre-date v0.9.62.
+
+`R/bdsolos.R`:
+
+- `load_bdsolos_csv()` now also assigns `site$sisb_id <- Codigo PA`
+  (BDsolos historical pedon ID, identical numbering to FEBR's
+  `observacao$sisb_id` field).
+
+`R/febr.R`:
+
+- `read_febr_pedons()` now captures `observacao$sisb_id` into
+  `site$sisb_id`.
+
+## RJ overlap scan (empirical)
+
+Loading BDsolos RJ + the FEBR-curated RJ observation table:
+
+- BDsolos RJ: 722 pedons, 722 with sisb_id
+- FEBR RJ obs with sisb_id: 829 (out of 884 total RJ obs)
+- Shared sisb_ids: **590**
+- BDsolos-only: 132 / FEBR-only: 239 / unmatchable: 55
+- Naive concat: 1606 -> after merge: **1016 distinct pedons**
+
+## Tests
+
+`tests/testthat/test-v0962-merge-brazilian.R` adds 12 tests
+(28 expectations):
+
+- `.get_sisb_id` NA / NULL / trimming
+- merge with prefer = "bdsolos" / "febr"
+- unique-on-each-side / unmatchable / empty / NULL inputs
+- non-PedonRecord input rejected
+- pedon ordering preservation
+- summarize_brazilian_overlap counts
+- Integration: load_bdsolos_csv populates site$sisb_id
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.61 (2026-05-04)
 
 The "thickness-weighted dominant-color-in-B" release.
