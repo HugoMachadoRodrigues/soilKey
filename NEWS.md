@@ -1,3 +1,138 @@
+# soilKey 0.9.58 (2026-05-06)
+
+The "BDsolos full export schema" release. \code{load_bdsolos_csv()}
+now correctly handles the **real Embrapa BDsolos public-consult CSV**
+(~222 columns, semicolon-delimited, preamble line, 100% Munsell
+coverage), not just the synthetic test schema v0.9.55 was built
+against.
+
+Validated on Hugo's RJ.csv (721 perfis) + ES.csv (124 perfis) =
+**845 perfis / 3,294 horizontes / 100% Munsell preservado**.
+
+## What changed
+
+`R/bdsolos.R`:
+
+- **`.bdsolos_find_header_line()`** -- auto-detects the BDsolos
+  preamble (1 line of "Dados obtidos a partir do BDSOLOS..." +
+  blank line) by picking the line with the most fields. Replaces
+  the v0.9.55 fixed-threshold approach (which assumed >= 30 fields
+  and broke on schemas with fewer columns).
+
+- **`.bdsolos_detect_sep()`** -- auto-picks `,` / `;` / `\t` based
+  on which gives the most fields on the header line. Real BDsolos
+  uses `;`; v0.9.55 hard-coded `,`.
+
+- **`.bdsolos_dms_to_decimal()`** -- converts the BDsolos coordinate
+  schema (\code{Latitude Graus / Minutos / Segundos / Hemisferio})
+  to decimal degrees, applying sign for S / W hemisphere.
+
+- **`.BDSOLOS_SITE_PATTERNS`** -- new internal registry of 19 site-
+  level columns: \code{codigo_pa}, \code{numero_pa}, \code{uf},
+  \code{municipio}, \code{altitude_m},
+  \code{classificacao_atual}, \code{classificacao_fao_wrb},
+  \code{classificacao_soil_taxonomy}, \code{classe_de_drenagem},
+  \code{material_de_origem}, \code{uso_atual}, plus 8 coordinate
+  components (4 graus/min/seg/hem each for lat + lon) and 2
+  decimal lat/lon for legacy exports.
+
+- **`.BDSOLOS_COLUMN_PATTERNS`** expanded to recognise the full
+  BDsolos column names:
+  \code{cor_da_amostra_umida_matiz/valor/croma}
+  (Munsell moist), \code{cor_da_amostra_seca_*} (Munsell dry),
+  \code{composicao_granulometrica_da_terra_fina_argila_g_kg} +
+  \code{silte} + \code{areia_total} (texture in g/kg),
+  \code{complexo_sortivo_calcio_cmolc_kg} +
+  \code{magnesio} + \code{potassio} + \code{sodio} +
+  \code{aluminio_trocavel_al3} + \code{valor_t} + \code{valor_v}
+  (exchange complex), \code{cdb_ferro} + \code{ataque_sulfurico_fe2o3}
+  (DCB iron / sulfuric attack), \code{oxalato_de_amonio_ferro/aluminio/silica}
+  (oxalate-extractable for Andic check), \code{nitrogenio_total}.
+
+- **\code{load_bdsolos_csv()}** rewritten to:
+  - Use `.bdsolos_find_header_line()` + `.bdsolos_detect_sep()`
+    to skip preamble + use the right separator
+  - Build a unified \code{site_cols} mapping from
+    \code{.BDSOLOS_SITE_PATTERNS}
+  - Group by codigo_pa via \code{ids %in% rid} (NOT \code{==} which
+    returns NA on empty IDs and causes data.table to include
+    NA-fill rows -- this was the v0.9.58 critical bug fix:
+    profiles were returning ~39 horizons instead of 5)
+  - Convert lat/lon from graus/min/seg/hem (or use direct decimal
+    columns when present)
+  - Extract state, municipality, altitude, drainage, parent
+    material, vegetation per pedon
+  - Capture the full SiBCS reference (\code{Classificacao Atual})
+    plus FAO/WRB and USDA-ST cross-references when present
+  - Apply deterministic g/kg -> % unit conversion for texture
+    when source column matches the BDsolos canonical pattern
+    (extends beyond the v0.9.55 heuristic which failed on
+    typical low-silt soils with median < 100)
+
+## Bug fixes
+
+- **NA-id row leakage** (v0.9.58 critical): \code{d[ids == rid, ]}
+  treats NA from \code{ids == rid} as TRUE-fill in
+  data.table, leaking NA-padded rows into every pedon. Fixed by
+  filtering \code{ids[!is.na(ids) & nzchar(ids)]} for unique-id
+  enumeration and using \code{%in%} for row selection (returns
+  FALSE on NA, not NA).
+
+- **Designation column collision** (v0.9.58): the prior pattern
+  \code{^codigo_horizonte$} was matching the BDsolos primary-key
+  integer ("Codigo Horizonte" = 13976) instead of the SiBCS
+  symbol ("Simbolo Horizonte" = "Bw1"). Removed the conflicting
+  alternative.
+
+- **Heuristic g/kg detection** (v0.9.58): texture columns with
+  median < 100 (low-silt Latossolos / Neossolos) were not
+  divided by 10. Now deterministic when the source column
+  matches \code{composicao_granulometrica.*?(argila|silte|areia)}
+  or \code{.*g_kg$}.
+
+## Tests
+
+5 new sentinel tests in \code{test-v0955-bdsolos.R} (now 83
+expectations total):
+
+- Header-line detection (handles preamble + blank line)
+- Separator detection (\code{;} chosen when most populous)
+- DMS -> decimal coordinates with hemisphere sign
+- Full BDsolos schema fixture: 19 columns including
+  \code{Codigo PA}, \code{Simbolo Horizonte}, full Munsell triple,
+  full granulometry triple, lat coords, taxonomy. Round-trip:
+  loader correctly groups 2 pedons (one with 2 horizons, one with
+  1), populates designations \code{A1, Bt1}, parses Munsell
+  \code{10YR 4/3} and \code{5YR 4/6}, divides texture by 10
+  (180 -> 18%), divides OC by 10 (15 -> 1.5%), converts
+  \code{22 51' 30" S} to \code{-22.858333}.
+- NA-id row regression sentinel: a row with empty \code{Codigo PA}
+  is dropped (not leaked into any pedon).
+
+Suite total: 3670 / 0 / 20 (pass / fail / skip). R CMD check
+Status OK.
+
+## Validated on real Embrapa BDsolos exports
+
+```
+RJ.csv (1.7 MB):  721 perfis, 2,884 horizontes, 100% Munsell
+ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
+                                              ----- ----- -----
+                                  Total: 845, 3,294, 100%
+```
+
+\code{load_bdsolos_csv()} loaded both files end-to-end without
+errors. 120/124 ES pedons have full data (state + municipality +
+reference + Munsell + chemistry); the remaining 4 are sparse
+analytical-only entries.
+
+\code{classify_sibcs()} on the loaded pedons matches the
+surveyor's reference Ordem in many cases; sub-Ordem accuracy is
+limited by current SiBCS-rule strictness on color discrimination
+and is the natural target for v0.9.59+ (the loader is correct;
+the classifier rules are the tuning frontier).
+
+
 # soilKey 0.9.57 (2026-05-06)
 
 The "FEBR loader -- Brazilian profiles with Munsell" release.

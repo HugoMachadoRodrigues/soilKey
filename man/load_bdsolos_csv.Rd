@@ -4,7 +4,7 @@
 \alias{load_bdsolos_csv}
 \title{Load a BDsolos CSV export as a list of PedonRecord objects}
 \usage{
-load_bdsolos_csv(path, sep = ",", verbose = TRUE)
+load_bdsolos_csv(path, sep = NULL, verbose = TRUE)
 }
 \arguments{
 \item{path}{Path to the BDsolos CSV.}

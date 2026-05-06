@@ -54,46 +54,87 @@
 #' @keywords internal
 .BDSOLOS_COLUMN_PATTERNS <- list(
   # ---- horizon geometry ----
-  designation       = "(simb_horiz|simbolo_horizonte|^horizonte$|^simbolo$)",
-  top_cm            = "(limite_sup|profundidade_superior|prof_sup|^topo)",
-  bottom_cm         = "(limite_inf|profundidade_inferior|prof_inf|^base)",
-  # ---- Munsell (matiz / valor / croma) ----
-  munsell_hue_moist    = "(cor_umida_matiz|matiz_umido|matiz_umida|^matiz$)",
-  munsell_value_moist  = "(cor_umida_valor|valor_umido|valor_umida)",
-  munsell_chroma_moist = "(cor_umida_croma|croma_umido|croma_umida)",
-  munsell_hue_dry      = "(cor_seca_matiz|matiz_seco|matiz_seca)",
-  munsell_value_dry    = "(cor_seca_valor|valor_seco|valor_seca)",
-  munsell_chroma_dry   = "(cor_seca_croma|croma_seco|croma_seca)",
+  designation       = "(simb_horiz|^simbolo_horizonte$|^horizonte$|^simbolo$)",
+  top_cm            = "(limite_sup|^profundidade_superior$|prof_sup|^topo)",
+  bottom_cm         = "(limite_inf|^profundidade_inferior$|prof_inf|^base)",
+  # ---- Munsell (matiz / valor / croma)
+  # BDsolos full schema uses "Cor da Amostra Umida - Matiz/Valor/Croma"
+  # which normalises to "cor_da_amostra_umida_matiz" etc. Earlier exports
+  # used shorter forms.
+  munsell_hue_moist    = "(cor_da_amostra_umida_matiz|cor_umida_matiz|matiz_umido|matiz_umida|^matiz$)",
+  munsell_value_moist  = "(cor_da_amostra_umida_valor|cor_umida_valor|valor_umido|valor_umida)",
+  munsell_chroma_moist = "(cor_da_amostra_umida_croma|cor_umida_croma|croma_umido|croma_umida)",
+  munsell_hue_dry      = "(cor_da_amostra_seca_matiz|cor_seca_matiz|matiz_seco|matiz_seca)",
+  munsell_value_dry    = "(cor_da_amostra_seca_valor|cor_seca_valor|valor_seco|valor_seca)",
+  munsell_chroma_dry   = "(cor_da_amostra_seca_croma|cor_seca_croma|croma_seco|croma_seca)",
   # ---- structure / consistence / clay films ----
-  structure_grade   = "(estrutura_grau|grau_estrutura)",
-  structure_size    = "(estrutura_tamanho|tamanho_estrutura)",
-  structure_type    = "(estrutura_tipo|tipo_estrutura)",
+  structure_grade   = "(estrutura_grau|grau_estrutura|grau_de_desenvolvimento_1)",
+  structure_size    = "(estrutura_tamanho|tamanho_estrutura|^tamanho_1)",
+  structure_type    = "(estrutura_tipo|tipo_estrutura|^forma_1)",
   clay_films_amount = "(cerosidade_quantidade|cerosidade_qtd)",
-  clay_films_strength = "(cerosidade_grau|grau_cerosidade)",
-  consistence_dry   = "(consistencia_seco|consistencia_seca)",
-  consistence_moist = "(consistencia_umido|consistencia_umida)",
-  # ---- texture (g/kg in BDsolos -> percent in soilKey) ----
-  clay_pct          = "(^argila$|argila_total)",
-  silt_pct          = "(^silte$|silte_total)",
-  sand_pct          = "(^areia$|areia_total)",
-  # ---- chemistry ----
-  ph_h2o            = "(ph_em_agua|ph_h2o|ph_agua|^ph_water)",
-  ph_kcl            = "(ph_em_kcl|ph_kcl)",
-  ph_cacl2          = "(ph_em_cacl2|ph_cacl2)",
-  oc_pct            = "(c_org|carbono_organico|^oc$|^c$|c_organico)",
-  cec_cmol          = "(cec|ctc|capacidade_troca_cationica)",
-  bs_pct            = "(^v$|saturacao_bases|sat_bases|^bs$)",
-  al_sat_pct        = "(saturacao_aluminio|sat_aluminio|^m$)",
-  ca_cmol           = "(ca_troc|calcio_trocavel|^ca$)",
-  mg_cmol           = "(mg_troc|magnesio_trocavel|^mg$)",
-  k_cmol            = "(k_troc|potassio_trocavel|^k$)",
-  na_cmol           = "(na_troc|sodio_trocavel|^na$)",
-  al_cmol           = "(al_troc|aluminio_trocavel|^al$)",
-  caco3_pct         = "(caco3|carbonato_calcio)",
-  p_mehlich3_mg_kg  = "(p_assim|fosforo_assimilavel|^p$|p_mehlich)",
-  bulk_density_g_cm3 = "(densidade_solo|densidade_aparente|^ds$|^bd$)",
-  fe_dcb_pct        = "(fe2o3|ferro_dcb|fe_dcb)",
-  coarse_fragments_pct = "(cascalho|^cf$|coarse_frag)"
+  clay_films_strength = "(cerosidade_grau|grau_cerosidade|cerosidade_grau_de_desenvolvimento)",
+  consistence_dry   = "(consistencia_seco|consistencia_seca|grau_de_consistencia_seca)",
+  consistence_moist = "(consistencia_umido|consistencia_umida|grau_de_consistencia_umida)",
+  # ---- texture (BDsolos g/kg -> soilKey %)
+  # Full BDsolos: "Composicao Granulometrica da terra fina - Argila (g/Kg)"
+  clay_pct          = "(composicao_granulometrica_da_terra_fina_argila|^argila_g_kg|^argila$|argila_total)",
+  silt_pct          = "(composicao_granulometrica_da_terra_fina_silte|^silte_g_kg|^silte$|silte_total)",
+  sand_pct          = "(composicao_granulometrica_da_terra_fina_areia_total|^areia_total$|^areia_g_kg|^areia$)",
+  coarse_fragments_pct = "(cascalho|^cf$|coarse_frag|fracoes_da_amostra_total_cascalho)",
+  # ---- acidity ----
+  ph_h2o            = "(^ph_h2o$|ph_em_agua|ph_agua|^ph_water)",
+  ph_kcl            = "(^ph_kcl$|ph_em_kcl)",
+  ph_cacl2          = "(^ph_cacl2$|ph_em_cacl2)",
+  # ---- organics ----
+  oc_pct            = "(c_org|^carbono_organico|^oc$|^c$|c_organico)",
+  n_total_pct       = "(^nitrogenio_total|^n_total)",
+  # ---- exchange complex (full BDsolos: Complexo Sortivo - <X>)
+  ca_cmol           = "(complexo_sortivo_calcio|ca_troc|calcio_trocavel|^ca$)",
+  mg_cmol           = "(complexo_sortivo_magnesio|mg_troc|magnesio_trocavel|^mg$)",
+  k_cmol            = "(complexo_sortivo_potassio|k_troc|potassio_trocavel|^k$)",
+  na_cmol           = "(complexo_sortivo_sodio|na_troc|sodio_trocavel|^na$)",
+  al_cmol           = "(complexo_sortivo_aluminio_trocavel|al_troc|aluminio_trocavel|^al$)",
+  cec_cmol          = "(complexo_sortivo_valor_t|^cec$|^ctc$|capacidade_troca_cationica)",
+  bs_pct            = "(complexo_sortivo_valor_v|^v$|saturacao_bases|sat_bases|^bs$)",
+  al_sat_pct        = "(complexo_sortivo_saturacao_por_aluminio|saturacao_aluminio|sat_aluminio|^m$)",
+  caco3_pct         = "(equivalente_de_carbonato_de_calcio|caco3|carbonato_calcio)",
+  p_mehlich3_mg_kg  = "(fosforo_assimilavel|p_assim|^p$|p_mehlich)",
+  # ---- physics ----
+  bulk_density_g_cm3 = "(densidade_solo_aparente|densidade_solo|densidade_aparente|^ds$|^bd$)",
+  # ---- iron / aluminium oxides ----
+  fe_dcb_pct        = "(cdb_ferro|ataque_sulfurico_fe2o3|fe2o3|ferro_dcb|fe_dcb)",
+  fe_ox_pct         = "(oxalato_de_amonio_ferro)",
+  al_ox_pct         = "(oxalato_de_amonio_aluminio)",
+  si_ox_pct         = "(oxalato_de_amonio_silica)"
+)
+
+
+#' Site-level columns (BDsolos full export). Mapped at the site, not
+#' horizon, level.
+#' @keywords internal
+.BDSOLOS_SITE_PATTERNS <- list(
+  profile_id      = "(^codigo_pa$|^id_perfil$|^profile_id$|^cod_perfil$)",
+  profile_id_alt  = "(^numero_pa$)",
+  uf              = "(^uf$|^estado$)",
+  municipio       = "(^municipio$)",
+  altitude_m      = "(^altitude_m$|^altitude$)",
+  reference_sibcs = "(^classificacao_atual$|^classificacao$|^taxon_sibcs$|^classe_sibcs$)",
+  reference_wrb   = "(^classificacao_fao_wrb$|^classificacao_wrb$|^taxon_wrb$)",
+  reference_st    = "(^classificacao_soil_taxonomy$|^taxon_st$|^taxon_soil_taxonomy$)",
+  drainage        = "(^classe_de_drenagem$|^drenagem$)",
+  parent_material = "(^material_de_origem$|^material_origem$)",
+  vegetacao       = "(^uso_atual$|^vegetacao$|^fase_de_vegetacao_primaria$)",
+  lat_graus       = "(^latitude_graus$)",
+  lat_minutos     = "(^latitude_minutos$)",
+  lat_segundos    = "(^latitude_segundos$)",
+  lat_hemisferio  = "(^latitude_hemisferio$)",
+  lon_graus       = "(^longitude_graus$)",
+  lon_minutos     = "(^longitude_minutos$)",
+  lon_segundos    = "(^longitude_segundos$)",
+  lon_hemisferio  = "(^longitude_hemisferio$)",
+  # Direct decimal lat/lon (legacy / FEBR-style exports)
+  lat_decimal     = "(^latitude$|^lat$|^coord_y$|^y$)",
+  lon_decimal     = "(^longitude$|^lon$|^lng$|^coord_x$|^x$)"
 )
 
 
@@ -150,6 +191,68 @@
 }
 
 
+# ---- v0.9.58: real BDsolos export support ------------------------------
+
+#' Detect the line where the BDsolos CSV header starts
+#'
+#' BDsolos exports prepend a 1-line preamble plus an empty line before
+#' the actual schema header (a long quoted-string row with hundreds of
+#' fields). This walks the first N lines and returns the 1-based index
+#' of the header row.
+#'
+#' @keywords internal
+.bdsolos_find_header_line <- function(path, n_probe = 10L) {
+  lines <- readLines(path, n = n_probe, encoding = "UTF-8", warn = FALSE)
+  if (length(lines) == 0L) return(1L)
+  # The header is the first line with the maximum number of fields
+  # (separator-agnostic: tries comma + semicolon + tab and picks the
+  # most-populous line). Real BDsolos has ~222 fields on the header
+  # row; minimal synthetic tests may have only ~5. Either way the
+  # header has more fields than the preamble (1-2 fields).
+  field_counts <- vapply(lines, function(s) {
+    if (!nzchar(s)) return(0L)
+    n_semi  <- length(strsplit(s, ";",  fixed = TRUE)[[1L]])
+    n_comma <- length(strsplit(s, ",",  fixed = TRUE)[[1L]])
+    n_tab   <- length(strsplit(s, "\t", fixed = TRUE)[[1L]])
+    max(n_semi, n_comma, n_tab)
+  }, integer(1L))
+  best <- unname(which.max(field_counts))
+  if (length(best) == 0L || field_counts[best] < 2L) return(1L)
+  as.integer(best)
+}
+
+
+#' Auto-detect the BDsolos field separator (`,`, `;`, or tab)
+#' @keywords internal
+.bdsolos_detect_sep <- function(path, header_line = 1L) {
+  hdr <- readLines(path, n = header_line, encoding = "UTF-8")[header_line]
+  candidates <- c(";" = ";", "," = ",", "\t" = "\t")
+  counts <- vapply(candidates,
+                     function(s) length(strsplit(hdr, s, fixed = TRUE)[[1L]]),
+                     integer(1L))
+  names(candidates)[which.max(counts)]
+}
+
+
+#' Convert BDsolos coords (graus / minutos / segundos / hemisferio) to decimal
+#'
+#' @keywords internal
+.bdsolos_dms_to_decimal <- function(graus, minutos, segundos, hemisferio) {
+  g <- suppressWarnings(as.numeric(graus))
+  m <- suppressWarnings(as.numeric(minutos))
+  s <- suppressWarnings(as.numeric(segundos))
+  if (is.na(g)) return(NA_real_)
+  if (is.na(m)) m <- 0
+  if (is.na(s)) s <- 0
+  dec <- g + m / 60 + s / 3600
+  hem <- toupper(trimws(as.character(hemisferio)))
+  if (length(hem) == 1L && nzchar(hem) && hem %in% c("S", "W", "O")) {
+    dec <- -dec
+  }
+  dec
+}
+
+
 #' Discover taxonomic column (the surveyor's SiBCS classification)
 #' @keywords internal
 .bdsolos_match_taxon_column <- function(raw_name) {
@@ -187,11 +290,15 @@
 #' @return Invisibly, a list with \code{mapped}, \code{unmapped},
 #'         \code{munsell_present}, \code{taxon_column}.
 #' @export
-inspect_bdsolos_csv <- function(path, sep = ",") {
+inspect_bdsolos_csv <- function(path, sep = NULL) {
   if (!file.exists(path)) {
     stop(sprintf("inspect_bdsolos_csv(): file not found: %s", path))
   }
-  hdr <- readLines(path, n = 1L, encoding = "UTF-8")
+  hdr_line <- .bdsolos_find_header_line(path)
+  if (is.null(sep) || !nzchar(sep)) {
+    sep <- .bdsolos_detect_sep(path, header_line = hdr_line)
+  }
+  hdr <- readLines(path, n = hdr_line, encoding = "UTF-8")[hdr_line]
   cols <- strsplit(hdr, sep, fixed = TRUE)[[1L]]
   cols <- trimws(gsub('"', "", cols))
   mapped   <- character(0)
@@ -215,6 +322,9 @@ inspect_bdsolos_csv <- function(path, sep = ",") {
                             valor_umido = has_valor_um,
                             croma_umido = has_croma_um)
   cli::cli_h2(sprintf("inspect_bdsolos_csv: %s", basename(path)))
+  cli::cli_alert_info(sprintf("Header line: %d   separator: %s",
+                                hdr_line,
+                                if (sep == "\t") "TAB" else sep))
   cli::cli_alert_info(sprintf("Total columns: %d", length(cols)))
   cli::cli_alert_info(sprintf("Mapped to soilKey: %d", length(mapped)))
   cli::cli_alert_info(sprintf("Unmapped: %d", length(unmapped)))
@@ -271,56 +381,108 @@ inspect_bdsolos_csv <- function(path, sep = ",") {
 #' @seealso \code{\link{inspect_bdsolos_csv}},
 #'          \code{\link{download_bdsolos}}.
 #' @export
-load_bdsolos_csv <- function(path, sep = ",", verbose = TRUE) {
+load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
   if (!file.exists(path)) {
     stop(sprintf("load_bdsolos_csv(): file not found: %s", path))
   }
-  d <- data.table::fread(path, sep = sep, encoding = "UTF-8")
+  hdr_line <- .bdsolos_find_header_line(path)
+  if (is.null(sep) || !nzchar(sep)) {
+    sep <- .bdsolos_detect_sep(path, header_line = hdr_line)
+  }
+  skip <- max(0L, hdr_line - 1L)
+  d <- data.table::fread(path, sep = sep, encoding = "UTF-8",
+                          skip = skip, header = TRUE,
+                          fill = TRUE, blank.lines.skip = TRUE)
   if (nrow(d) == 0L) {
     stop("load_bdsolos_csv(): CSV is empty.")
   }
 
-  # Map columns
+  # Map columns: build normalised lookup once
   raw_names <- names(d)
   norm_names <- vapply(raw_names, .bdsolos_norm, character(1L))
+  norm_to_raw <- setNames(raw_names, norm_names)
 
-  sk_map <- character(0)
-  taxon_col <- NA_character_
-  id_col <- NA_character_
-  lat_col <- NA_character_
-  lon_col <- NA_character_
-  for (i in seq_along(raw_names)) {
-    raw <- raw_names[i]
-    nrm <- norm_names[i]
-    if (grepl("id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$",
-                nrm, ignore.case = TRUE)) {
-      if (is.na(id_col)) id_col <- raw
-    } else if (grepl("^lat$|latitude|^y$|coord_y", nrm, ignore.case = TRUE)) {
-      if (is.na(lat_col)) lat_col <- raw
-    } else if (grepl("^lon$|^lng$|longitude|^x$|coord_x", nrm, ignore.case = TRUE)) {
-      if (is.na(lon_col)) lon_col <- raw
-    }
-    sk <- .bdsolos_match_column(raw)
-    if (!is.na(sk)) sk_map[raw] <- sk
-    tax <- .bdsolos_match_taxon_column(raw)
-    if (!is.na(tax) && is.na(taxon_col)) taxon_col <- raw
+  # Site-level column resolution
+  pick_site <- function(pattern) {
+    hits <- names(norm_to_raw)[grepl(pattern, names(norm_to_raw),
+                                        ignore.case = TRUE, perl = TRUE)]
+    if (length(hits) == 0L) return(NA_character_)
+    norm_to_raw[[hits[1L]]]
   }
+  site_cols <- lapply(.BDSOLOS_SITE_PATTERNS, pick_site)
+
+  # Horizon-level column mapping
+  sk_map <- character(0)
+  for (i in seq_along(raw_names)) {
+    sk <- .bdsolos_match_column(raw_names[i])
+    if (!is.na(sk) && !(sk %in% sk_map)) sk_map[raw_names[i]] <- sk
+  }
+  # Taxon column fallback (when classificacao_atual is absent)
+  taxon_col <- site_cols$reference_sibcs
+  if (is.na(taxon_col)) {
+    for (raw in raw_names) {
+      tax <- .bdsolos_match_taxon_column(raw)
+      if (!is.na(tax)) { taxon_col <- raw; break }
+    }
+  }
+  # Profile id: prefer codigo_pa, fall back to numero_pa or first column
+  id_col <- site_cols$profile_id
+  if (is.na(id_col)) id_col <- site_cols$profile_id_alt
   if (is.na(id_col)) id_col <- raw_names[1L]
 
   ids <- as.character(d[[id_col]])
-  uids <- unique(ids)
+  uids <- unique(ids[!is.na(ids) & nzchar(ids)])
   out <- vector("list", length(uids))
   for (k in seq_along(uids)) {
     rid <- uids[k]
-    rows <- d[ids == rid, ]
+    # Use %in% (returns FALSE for NA) rather than == (returns NA)
+    # to avoid data.table's NA-row inclusion via NA index.
+    rows <- d[ids %in% rid, ]
     if (nrow(rows) == 0L) next
     hz <- .bdsolos_rows_to_horizons(rows, sk_map)
+    # Coords: prefer direct decimal lat/lon when present, fall back to
+    # graus / minutos / segundos / hemisferio (BDsolos full schema).
+    lat <- NA_real_; lon <- NA_real_
+    if (!is.na(site_cols$lat_decimal)) {
+      lat <- suppressWarnings(as.numeric(rows[[site_cols$lat_decimal]][1L]))
+    }
+    if (!is.na(site_cols$lon_decimal)) {
+      lon <- suppressWarnings(as.numeric(rows[[site_cols$lon_decimal]][1L]))
+    }
+    if (!is.finite(lat) && !is.na(site_cols$lat_graus)) {
+      lat <- .bdsolos_dms_to_decimal(
+        rows[[site_cols$lat_graus]][1L],
+        if (!is.na(site_cols$lat_minutos))    rows[[site_cols$lat_minutos]][1L]    else 0,
+        if (!is.na(site_cols$lat_segundos))   rows[[site_cols$lat_segundos]][1L]   else 0,
+        if (!is.na(site_cols$lat_hemisferio)) rows[[site_cols$lat_hemisferio]][1L] else "")
+    }
+    if (!is.finite(lon) && !is.na(site_cols$lon_graus)) {
+      lon <- .bdsolos_dms_to_decimal(
+        rows[[site_cols$lon_graus]][1L],
+        if (!is.na(site_cols$lon_minutos))    rows[[site_cols$lon_minutos]][1L]    else 0,
+        if (!is.na(site_cols$lon_segundos))   rows[[site_cols$lon_segundos]][1L]   else 0,
+        if (!is.na(site_cols$lon_hemisferio)) rows[[site_cols$lon_hemisferio]][1L] else "")
+    }
+    safe_field <- function(col_name) {
+      if (is.na(col_name)) return(NA_character_)
+      v <- as.character(rows[[col_name]][1L])
+      if (length(v) == 0L || is.na(v) || !nzchar(trimws(v))) NA_character_
+      else trimws(v)
+    }
     site <- list(
       id      = rid,
-      lat     = if (!is.na(lat_col)) suppressWarnings(as.numeric(rows[[lat_col]][1L])) else NA_real_,
-      lon     = if (!is.na(lon_col)) suppressWarnings(as.numeric(rows[[lon_col]][1L])) else NA_real_,
+      lat     = lat,
+      lon     = lon,
       country = "BR",
-      reference_sibcs  = if (!is.na(taxon_col)) as.character(rows[[taxon_col]][1L]) else NA_character_,
+      state           = safe_field(site_cols$uf),
+      municipality    = safe_field(site_cols$municipio),
+      altitude_m      = suppressWarnings(as.numeric(safe_field(site_cols$altitude_m))),
+      reference_sibcs = if (!is.na(taxon_col)) safe_field(taxon_col) else NA_character_,
+      reference_wrb   = safe_field(site_cols$reference_wrb),
+      reference_st    = safe_field(site_cols$reference_st),
+      drainage        = safe_field(site_cols$drainage),
+      parent_material = safe_field(site_cols$parent_material),
+      land_cover      = safe_field(site_cols$vegetacao),
       reference_source = "Embrapa BDsolos"
     )
     out[[k]] <- PedonRecord$new(site = site, horizons = hz)
@@ -332,9 +494,12 @@ load_bdsolos_csv <- function(path, sep = ",", verbose = TRUE) {
     n_with_taxon <- sum(vapply(out, function(p) {
       !is.na(p$site$reference_sibcs %||% NA_character_)
     }, logical(1L)))
+    n_with_coords <- sum(vapply(out, function(p) {
+      isTRUE(is.finite(p$site$lat)) && isTRUE(is.finite(p$site$lon))
+    }, logical(1L)))
     cli::cli_alert_success(sprintf(
-      "load_bdsolos_csv(): %d perfis (Munsell em B em %d, taxon em %d)",
-      length(out), n_with_munsell, n_with_taxon
+      "load_bdsolos_csv(): %d perfis (Munsell em %d, taxon em %d, coords em %d)",
+      length(out), n_with_munsell, n_with_taxon, n_with_coords
     ))
   }
   out
@@ -356,7 +521,8 @@ load_bdsolos_csv <- function(path, sep = ",", verbose = TRUE) {
       # Detect the source name to decide unit conversion deterministically.
       raw_norm <- .bdsolos_norm(raw)
       if (sk %in% c("clay_pct", "silt_pct", "sand_pct") &&
-            grepl("^(argila|silte|areia)", raw_norm)) {
+            grepl("^(argila|silte|areia)|composicao_granulometrica.*?(argila|silte|areia)|.*g_kg$",
+                    raw_norm)) {
         val <- val / 10  # g/kg -> %
       } else if (sk %in% c("clay_pct", "silt_pct", "sand_pct")) {
         # Generic source -> heuristic: median > 100 means g/kg
