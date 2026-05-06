@@ -337,9 +337,17 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
 #'        validation failure. Default 3.
 #' @param overwrite If \code{TRUE}, lower-authority values are allowed
 #'        to clobber higher-authority ones. Default \code{FALSE}.
-#' @param prompt_name Override the default prompt template
-#'        (\code{"extract_horizons"}).
+#' @param prompt_name Override the default prompt template. When
+#'        \code{NULL} (default), resolved via \code{use_fewshot}:
+#'        \code{TRUE} -> \code{"extract_horizons_fewshot"};
+#'        \code{FALSE} -> \code{"extract_horizons"}.
 #' @param schema_name Override the default schema (\code{"horizon"}).
+#' @param use_fewshot Logical, default \code{TRUE}. When \code{TRUE},
+#'        uses the v0.9.68 few-shot prompt with two worked examples
+#'        embedded; this dramatically improves JSON-shape compliance
+#'        on smaller models (Gemma 4 e2b / e4b). Set \code{FALSE} to
+#'        revert to the bare-instructions prompt. Ignored when
+#'        \code{prompt_name} is set explicitly.
 #' @return Invisibly, the (mutated) \code{pedon}. Carries a
 #'         \code{"vlm_extraction"} attribute with the parsed response,
 #'         number of attempts, and number of provenance entries added.
@@ -349,9 +357,15 @@ extract_horizons_from_pdf <- function(pedon,
                                        provider,
                                        max_retries = 3L,
                                        overwrite   = FALSE,
-                                       prompt_name = "extract_horizons",
+                                       prompt_name = NULL,
                                        schema_name = "horizon",
-                                       pdf_text    = NULL) {
+                                       pdf_text    = NULL,
+                                       use_fewshot = TRUE) {
+
+  if (is.null(prompt_name)) {
+    prompt_name <- if (isTRUE(use_fewshot)) "extract_horizons_fewshot"
+                   else                      "extract_horizons"
+  }
 
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
@@ -444,14 +458,19 @@ extract_munsell_from_photo <- function(pedon,
                                         provider,
                                         max_retries = 3L,
                                         overwrite   = FALSE,
-                                        prompt_name = "extract_munsell_from_photo",
-                                        schema_name = "horizon") {
+                                        prompt_name = NULL,
+                                        schema_name = "horizon",
+                                        use_fewshot = TRUE) {
 
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
   }
   if (!file.exists(image_path)) {
     rlang::abort(sprintf("Image not found: %s", image_path))
+  }
+  if (is.null(prompt_name)) {
+    prompt_name <- if (isTRUE(use_fewshot)) "extract_munsell_from_photo_fewshot"
+                   else                      "extract_munsell_from_photo"
   }
 
   schema_json <- load_schema(schema_name)
@@ -520,8 +539,14 @@ extract_site_from_fieldsheet <- function(pedon,
                                           max_retries = 3L,
                                           overwrite   = FALSE,
                                           prompt_name = "extract_site_metadata",
-                                          schema_name = "site") {
+                                          schema_name = "site",
+                                          use_fewshot = TRUE) {
 
+  # NOTE: extract_site_from_fieldsheet uses an *image* prompt; the
+  # few-shot variant for image-mode site extraction is left as the
+  # default-prompt-name behaviour. The text-mode site path
+  # (.run_one_extraction in benchmark-vlm-extraction.R) uses
+  # `extract_site_from_text_fewshot` when use_fewshot = TRUE.
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
   }

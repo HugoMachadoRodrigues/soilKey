@@ -1,0 +1,30 @@
+Boletim de Levantamento de Reconhecimento, Bahia. Perfil Embrapa
+n. 184 (Chernossolo Argiluvico Carbonatico tipico).
+
+Localizacao: Sertao da Ressaca, BA. Coordenadas em UTM zona 23S
+mas sem datum explicito; convertido aproximadamente para
+-13.74, -41.20 (WGS84).
+
+Altitude 580 m. Declividade da paisagem: ~12 %. Vegetacao primaria:
+caatinga arborea. Material de origem: rochas calcarias do Grupo
+Salitre (Bambui).
+
+Descricao morfologica:
+
+Horizonte A1, profundidade de 0 ate 20 cm da superficie. Cor 10YR
+3/2 quando umida e 10YR 4/2 seca. Estrutura moderada granular fina.
+Textura argilo-siltosa: ~45 % de argila, 38 % silte, 17 % areia.
+Consistencia friavel umida, dura quando seca. pH em agua = 6,8 (com
+virgula decimal, padrao brasileiro). pH KCl 6,2. CTC 22 cmol_c/kg,
+saturacao por bases 78 %.
+
+A3 (20-45 cm). Cor 10YR 4/3 umida. Granular media a moderada blocos
+subangulares. Argila ~50 %. pH agua 6,9. CTC 24, V = 80 %.
+
+Bt (45 a 95 cm). Cor 10YR 4/4 umida; 10YR 5/4 seca. Estrutura forte
+em blocos subangulares medios; cerosidade comum. Textura muito
+argilosa, ~60 % argila. pH 7,1. CTC 26 cmol_c/kg, saturacao por
+bases 92 %, saturacao por aluminio nula. CaCO3 equivalente 4 %.
+
+Bk (95-150+). Carbonatos visiveis. CaCO3 equivalente ~30 %. Cor
+10YR 6/3.

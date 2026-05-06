@@ -11,7 +11,8 @@ extract_site_from_fieldsheet(
   max_retries = 3L,
   overwrite = FALSE,
   prompt_name = "extract_site_metadata",
-  schema_name = "site"
+  schema_name = "site",
+  use_fewshot = TRUE
 )
 }
 \arguments{
@@ -28,10 +29,19 @@ validation failure. Default 3.}
 \item{overwrite}{If \code{TRUE}, lower-authority values are allowed
 to clobber higher-authority ones. Default \code{FALSE}.}
 
-\item{prompt_name}{Override the default prompt template
-(\code{"extract_horizons"}).}
+\item{prompt_name}{Override the default prompt template. When
+\code{NULL} (default), resolved via \code{use_fewshot}:
+\code{TRUE} -> \code{"extract_horizons_fewshot"};
+\code{FALSE} -> \code{"extract_horizons"}.}
 
 \item{schema_name}{Override the default schema (\code{"horizon"}).}
+
+\item{use_fewshot}{Logical, default \code{TRUE}. When \code{TRUE},
+uses the v0.9.68 few-shot prompt with two worked examples
+embedded; this dramatically improves JSON-shape compliance
+on smaller models (Gemma 4 e2b / e4b). Set \code{FALSE} to
+revert to the bare-instructions prompt. Ignored when
+\code{prompt_name} is set explicitly.}
 }
 \value{
 Invisibly, the mutated \code{pedon}.

@@ -401,6 +401,16 @@ make_synthetic_horizons_fixture <- function(pedon,
 #' @param tasks Subset of `c("munsell", "horizons", "site")`.
 #' @param fixtures_dir Optional override; default = bundled fixtures.
 #' @param max_per_task Cap fixtures per task (useful for smoke tests).
+#' @param use_fewshot Logical, default `TRUE` (v0.9.68+). When TRUE,
+#'   uses the few-shot prompt variants (worked examples embedded in
+#'   the prompt) for horizons / site / munsell. Set to `FALSE` to
+#'   benchmark the bare-instructions baseline -- useful when
+#'   measuring few-shot lift.
+#' @param n_repeats Positive integer (default 1). Runs each
+#'   (provider, task, fixture) cell `n_repeats` times so the summary
+#'   table can report `metric_*_sd` alongside `metric_*_mean`. LLM
+#'   responses are stochastic; without `n_repeats >= 3` it is hard to
+#'   distinguish real lift from noise on a small fixture set.
 #' @param verbose Logical (default TRUE); print per-fixture progress.
 #'
 #' @return List with
@@ -438,7 +448,11 @@ benchmark_vlm_extraction <- function(providers,
                                          tasks        = c("horizons", "site", "munsell"),
                                          fixtures_dir = NULL,
                                          max_per_task = NULL,
+                                         use_fewshot  = TRUE,
+                                         n_repeats    = 1L,
                                          verbose      = TRUE) {
+  n_repeats <- as.integer(n_repeats)
+  if (!is.finite(n_repeats) || n_repeats < 1L) n_repeats <- 1L
   tasks <- match.arg(tasks, several.ok = TRUE)
   if (!is.list(providers) || length(providers) == 0L ||
         is.null(names(providers)) ||
@@ -463,25 +477,37 @@ benchmark_vlm_extraction <- function(providers,
       provider <- .resolve_provider(pspec)
       for (k in seq_len(nrow(fxs))) {
         fx <- fxs[k, ]
-        if (isTRUE(verbose)) {
-          cli::cli_alert_info("[{.field {pname}}] task={task} fixture={fx$id}")
+        for (rep in seq_len(n_repeats)) {
+          if (isTRUE(verbose)) {
+            if (n_repeats > 1L) {
+              cli::cli_alert_info(
+                "[{.field {pname}}] task={task} fixture={fx$id} fewshot={use_fewshot} rep={rep}/{n_repeats}"
+              )
+            } else {
+              cli::cli_alert_info(
+                "[{.field {pname}}] task={task} fixture={fx$id} fewshot={use_fewshot}"
+              )
+            }
+          }
+          out <- .run_one_extraction(provider, task, fx,
+                                         use_fewshot = use_fewshot)
+          metric <- .compute_metric(task, out$pred, out$golden)
+          rows[[length(rows) + 1L]] <- data.frame(
+            provider   = pname,
+            task       = task,
+            fixture    = fx$id,
+            repetition = rep,
+            ok         = isTRUE(out$ok),
+            error      = out$error %||% NA_character_,
+            metric_1   = metric[[1L]] %||% NA_real_,
+            metric_2   = metric[[2L]] %||% NA_real_,
+            metric_3   = metric[[3L]] %||% NA_real_,
+            metric_1_name = names(metric)[1L] %||% NA_character_,
+            metric_2_name = names(metric)[2L] %||% NA_character_,
+            metric_3_name = names(metric)[3L] %||% NA_character_,
+            stringsAsFactors = FALSE
+          )
         }
-        out <- .run_one_extraction(provider, task, fx)
-        metric <- .compute_metric(task, out$pred, out$golden)
-        rows[[length(rows) + 1L]] <- data.frame(
-          provider   = pname,
-          task       = task,
-          fixture    = fx$id,
-          ok         = isTRUE(out$ok),
-          error      = out$error %||% NA_character_,
-          metric_1   = metric[[1L]] %||% NA_real_,
-          metric_2   = metric[[2L]] %||% NA_real_,
-          metric_3   = metric[[3L]] %||% NA_real_,
-          metric_1_name = names(metric)[1L] %||% NA_character_,
-          metric_2_name = names(metric)[2L] %||% NA_character_,
-          metric_3_name = names(metric)[3L] %||% NA_character_,
-          stringsAsFactors = FALSE
-        )
       }
     }
   }
@@ -494,14 +520,21 @@ benchmark_vlm_extraction <- function(providers,
     df$ok_num <- as.integer(df$ok)
     parts <- split(df, list(df$provider, df$task), drop = TRUE)
     do.call(rbind, lapply(parts, function(d) {
+      sd_safe <- function(x) {
+        x <- x[is.finite(x)]
+        if (length(x) < 2L) NA_real_ else stats::sd(x)
+      }
       data.frame(
         provider = d$provider[1L],
         task     = d$task[1L],
         n        = nrow(d),
         ok_rate  = mean(d$ok_num, na.rm = TRUE),
         metric_1_mean = mean(d$metric_1, na.rm = TRUE),
+        metric_1_sd   = sd_safe(d$metric_1),
         metric_2_mean = mean(d$metric_2, na.rm = TRUE),
+        metric_2_sd   = sd_safe(d$metric_2),
         metric_3_mean = mean(d$metric_3, na.rm = TRUE),
+        metric_3_sd   = sd_safe(d$metric_3),
         metric_1_name = d$metric_1_name[1L],
         metric_2_name = d$metric_2_name[1L],
         metric_3_name = d$metric_3_name[1L],
@@ -530,7 +563,7 @@ benchmark_vlm_extraction <- function(providers,
 
 # Single (provider, fixture) extraction call. Loads input + golden,
 # routes to the right extract_* helper, returns parsed JSON or error.
-.run_one_extraction <- function(provider, task, fx) {
+.run_one_extraction <- function(provider, task, fx, use_fewshot = TRUE) {
   golden <- tryCatch(jsonlite::fromJSON(fx$golden_path, simplifyVector = FALSE),
                        error = function(e) NULL)
   if (is.null(golden)) {
@@ -548,7 +581,8 @@ benchmark_vlm_extraction <- function(providers,
         )
       )
       extract_horizons_from_pdf(ped, pdf_text = txt, provider = provider,
-                                  overwrite = TRUE)
+                                  overwrite = TRUE,
+                                  use_fewshot = use_fewshot)
       list(horizons = lapply(seq_len(nrow(ped$horizons)), function(i) {
         as.list(ped$horizons[i, ])
       }))
@@ -561,7 +595,10 @@ benchmark_vlm_extraction <- function(providers,
         txt <- paste(readLines(fx$input_path, warn = FALSE,
                                   encoding = "UTF-8"), collapse = "\n")
         schema_json <- load_schema("site")
-        rendered <- load_prompt("extract_site_from_text",
+        prompt_name <- if (isTRUE(use_fewshot))
+                          "extract_site_from_text_fewshot"
+                       else "extract_site_from_text"
+        rendered <- load_prompt(prompt_name,
                                   vars = list(schema_json = schema_json,
                                                  document_text = txt))
         res <- validate_or_retry(provider, rendered, "site",
@@ -595,7 +632,8 @@ benchmark_vlm_extraction <- function(providers,
         )
       )
       extract_munsell_from_photo(ped, image_path = fx$input_path,
-                                    provider = provider, overwrite = TRUE)
+                                    provider = provider, overwrite = TRUE,
+                                    use_fewshot = use_fewshot)
       list(horizons = lapply(seq_len(nrow(ped$horizons)), function(i) {
         as.list(ped$horizons[i, ])
       }))

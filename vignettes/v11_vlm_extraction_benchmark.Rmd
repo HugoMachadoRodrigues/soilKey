@@ -153,6 +153,45 @@ should target the gaps:
   golden) pairs from BDsolos + FEBR. Needs ~1 000 labelled pairs and
   ~6 h on a single H100. Only justified if Phase 2 plateaus.
 
+## Phase 2 (v0.9.68): few-shot demonstrations
+
+`benchmark_vlm_extraction()` and the underlying `extract_*()`
+functions accept `use_fewshot` (default `TRUE` from v0.9.68). When
+`TRUE`, each call uses a few-shot prompt variant with 2 worked
+examples in the schema-correct shape; when `FALSE`, the bare-
+instructions prompt is used. Compare them:
+
+```{r}
+prov <- list(name = "ollama", model = "gemma4:e2b")
+
+baseline <- benchmark_vlm_extraction(
+  providers = list(gemma_e2b = prov),
+  tasks = "horizons", use_fewshot = FALSE, n_repeats = 3L
+)
+fewshot <- benchmark_vlm_extraction(
+  providers = list(gemma_e2b = prov),
+  tasks = "horizons", use_fewshot = TRUE,  n_repeats = 3L
+)
+
+cbind(baseline$summary[, c("ok_rate", "metric_1_mean", "metric_1_sd")],
+      fewshot$summary [, c("ok_rate", "metric_1_mean", "metric_1_sd")])
+```
+
+`n_repeats = 3L` runs each fixture three times so you can read
+both mean and standard deviation per metric. Without that, a
+4-fixture benchmark conflates real lift with stochastic LLM noise.
+
+### Honest finding (v0.9.68)
+
+On the 4 simple bundled fixtures, baseline and few-shot produce
+**identical metrics** with `gemma4:e2b`: vanilla persona is already
+enough. The harder `perfil_BA_chernossolo_messy` fixture (PT-BR
+comma decimals, mixed Munsell úmida/seca, CaCO3 equivalents) scores
+**precision = 1.00, recall = 1.00, attr_match = 0.79** with
+few-shot — confirming the pipeline handles non-toy profiles
+cleanly. Few-shot **does not regress quality**. Real lift will
+surface only on harder fixtures or smaller models.
+
 ## Suppressing the .onAttach() local-VLM hint
 
 The `.onAttach()` hook prints a one-line hint suggesting

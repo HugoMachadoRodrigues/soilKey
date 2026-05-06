@@ -1,0 +1,59 @@
+{
+  "horizons": [
+    {
+      "designation": "A1",
+      "top_cm": 0,
+      "bottom_cm": 20,
+      "munsell_hue_moist": "10YR",
+      "munsell_value_moist": 3,
+      "munsell_chroma_moist": 2,
+      "munsell_hue_dry": "10YR",
+      "munsell_value_dry": 4,
+      "munsell_chroma_dry": 2,
+      "clay_pct": 45,
+      "silt_pct": 38,
+      "sand_pct": 17,
+      "ph_h2o": 6.8,
+      "ph_kcl": 6.2,
+      "cec_cmol": 22,
+      "bs_pct": 78
+    },
+    {
+      "designation": "A3",
+      "top_cm": 20,
+      "bottom_cm": 45,
+      "munsell_hue_moist": "10YR",
+      "munsell_value_moist": 4,
+      "munsell_chroma_moist": 3,
+      "clay_pct": 50,
+      "ph_h2o": 6.9,
+      "cec_cmol": 24,
+      "bs_pct": 80
+    },
+    {
+      "designation": "Bt",
+      "top_cm": 45,
+      "bottom_cm": 95,
+      "munsell_hue_moist": "10YR",
+      "munsell_value_moist": 4,
+      "munsell_chroma_moist": 4,
+      "munsell_hue_dry": "10YR",
+      "munsell_value_dry": 5,
+      "munsell_chroma_dry": 4,
+      "clay_pct": 60,
+      "ph_h2o": 7.1,
+      "cec_cmol": 26,
+      "bs_pct": 92,
+      "caco3_pct": 4
+    },
+    {
+      "designation": "Bk",
+      "top_cm": 95,
+      "bottom_cm": 150,
+      "munsell_hue_moist": "10YR",
+      "munsell_value_moist": 6,
+      "munsell_chroma_moist": 3,
+      "caco3_pct": 30
+    }
+  ]
+}

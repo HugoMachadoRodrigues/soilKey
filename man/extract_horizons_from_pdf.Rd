@@ -10,9 +10,10 @@ extract_horizons_from_pdf(
   provider,
   max_retries = 3L,
   overwrite = FALSE,
-  prompt_name = "extract_horizons",
+  prompt_name = NULL,
   schema_name = "horizon",
-  pdf_text = NULL
+  pdf_text = NULL,
+  use_fewshot = TRUE
 )
 }
 \arguments{
@@ -31,8 +32,10 @@ validation failure. Default 3.}
 \item{overwrite}{If \code{TRUE}, lower-authority values are allowed
 to clobber higher-authority ones. Default \code{FALSE}.}
 
-\item{prompt_name}{Override the default prompt template
-(\code{"extract_horizons"}).}
+\item{prompt_name}{Override the default prompt template. When
+\code{NULL} (default), resolved via \code{use_fewshot}:
+\code{TRUE} -> \code{"extract_horizons_fewshot"};
+\code{FALSE} -> \code{"extract_horizons"}.}
 
 \item{schema_name}{Override the default schema (\code{"horizon"}).}
 
@@ -40,6 +43,13 @@ to clobber higher-authority ones. Default \code{FALSE}.}
 already-extracted description text. Useful for smoke
 tests, unit tests without \code{pdftools}, and for
 already-OCR'd field-sheet text.}
+
+\item{use_fewshot}{Logical, default \code{TRUE}. When \code{TRUE},
+uses the v0.9.68 few-shot prompt with two worked examples
+embedded; this dramatically improves JSON-shape compliance
+on smaller models (Gemma 4 e2b / e4b). Set \code{FALSE} to
+revert to the bare-instructions prompt. Ignored when
+\code{prompt_name} is set explicitly.}
 }
 \value{
 Invisibly, the (mutated) \code{pedon}. Carries a

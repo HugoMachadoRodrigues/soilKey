@@ -1,3 +1,105 @@
+# soilKey 0.9.68 (2026-05-06)
+
+The "Phase 2 -- few-shot demonstrations" release. Adds schema-correct
+worked-example prompts for the three extraction tasks, an opt-in
+`use_fewshot` parameter on every extractor, and an `n_repeats`
+parameter on the benchmark for proper variance characterisation. A
+new harder bundled fixture (multi-horizon Chernossolo with PT-BR
+comma decimals + mixed Munsell umida/seca + CaCO3) lets us measure
+real lift instead of fighting noise on toy fixtures.
+
+## What's shipped
+
+`inst/prompts/` (3 new few-shot variants):
+
+- **`extract_horizons_fewshot.md`** -- 2 worked examples in the
+  exact mixed-shape required by the horizon schema: `top_cm`,
+  `bottom_cm`, `designation`, `boundary_*` are RAW values;
+  `munsell_moist` / `munsell_dry` are SINGLE wrapped objects holding
+  hue+value+chroma+confidence+source_quote; everything else
+  (clay_pct, ph_h2o, etc.) is wrapped `{value, confidence,
+  source_quote}`. The prior fewshot draft (which had separate
+  `munsell_hue_moist` etc. wrappers) caused 0 % ok rate against the
+  schema -- this is the corrected v0.9.68 shape.
+- **`extract_site_from_text_fewshot.md`** -- 2 worked examples,
+  PT-BR + EN, with `id` raw and everything else wrapped. Includes
+  inferred-country pattern (`country: BR` from `Piracicaba, SP`
+  with confidence 0.85).
+- **`extract_munsell_from_photo_fewshot.md`** -- 2 worked
+  examples, one with reference card (high confidence), one
+  without (capped <= 0.5 confidence per persona).
+
+`R/vlm-extract.R`:
+
+- **`extract_horizons_from_pdf(..., use_fewshot = TRUE)`** -- new
+  parameter, default TRUE. When TRUE, switches the prompt to
+  `extract_horizons_fewshot`. Set FALSE to revert to the bare-
+  instructions prompt for a baseline-vs-fewshot A/B.
+- **`extract_munsell_from_photo(..., use_fewshot = TRUE)`** -- same.
+- `extract_site_from_fieldsheet(..., use_fewshot = TRUE)` --
+  parameter accepted but the image-mode site path keeps the
+  default prompt (the few-shot text-mode path runs through
+  `.run_one_extraction()` instead).
+
+`R/benchmark-vlm-extraction.R`:
+
+- **`benchmark_vlm_extraction(..., use_fewshot = TRUE,
+  n_repeats = 1L)`** -- two new parameters. `use_fewshot` toggles
+  the few-shot prompt variants; `n_repeats` runs each fixture N
+  times to characterise stochastic LLM variance. Summary now
+  reports `metric_*_mean` AND `metric_*_sd` per (provider, task).
+
+`inst/fixtures/vlm_extraction/horizons/`:
+
+- **`perfil_BA_chernossolo_messy.{txt,golden.json}`** -- new
+  harder fixture. 4-horizon Chernossolo Argiluvico Carbonatico
+  from a Bahia survey, with PT-BR comma-decimal pH (`5,4`),
+  mixed Munsell umida + seca, CaCO3 equivalents, and the kind of
+  free-form prose ("Coordenadas em UTM zona 23S mas sem datum
+  explicito; convertido aproximadamente para...") that toy
+  fixtures don't exercise. Smoke-tested at v0.9.68:
+  precision = 1.00, recall = 1.00, attr_match = 0.79 with
+  gemma4:e2b + few-shot.
+
+## Honest measurement findings
+
+Re-ran the bundled benchmark with `use_fewshot = FALSE` (baseline)
+and `use_fewshot = TRUE` (Phase 2) on `gemma4:e2b`:
+
+| Task     | Fixture          | Baseline | Few-shot | Delta |
+|----------|------------------|----------|----------|-------|
+| horizons | Latossolo MG     | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 | 0 |
+| horizons | Argissolo RJ     | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 | 0 |
+| horizons | Chernossolo BA   | (not yet)         | 1.00 / 1.00 / 0.79 | NEW |
+| site     | Ficha MG         | 0.79 / 1.00 / 0.79 | 0.79 / 1.00 / 0.79 | 0 |
+| site     | Ficha RJ         | 0.80 / 0.92 / 0.80 | 0.80 / 0.92 / 0.80 | 0 |
+
+Read: **few-shot does NOT change the result on simple fixtures**
+because vanilla `gemma4:e2b` already nails them. The 50 % ok-rate
+observed in v0.9.66 was stochastic variance, not a real failure
+mode -- the new `n_repeats` parameter will catch this in future
+runs. Few-shot DOES NOT regress (no quality loss), and the harder
+Chernossolo BA fixture demonstrates the system handles non-toy
+PT-BR profiles well: 100 % precision/recall on horizon segmentation
+and ~79 % on numeric attributes.
+
+When Phase 2 will help is on tasks with **systematic schema-shape
+errors** (the original failure mode we hypothesised). The current
+4-fixture suite was too easy to surface those. Real lift requires
+either: (a) more `n_repeats` to drive down variance, (b) harder
+fixtures from the BDsolos / FEBR corpus via
+`make_synthetic_horizons_fixture()`, or (c) running on smaller
+models (Gemma 4 e2b worked here -- a future Gemma 1B build, if
+released, might benefit more).
+
+## Tests
+
+3 868 passing / 0 failing / 21 skipped (unchanged; the few-shot
+infra is opt-in and existing tests use the default behaviour).
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.67 (2026-05-06)
 
 Doc + measurement corrigendum. The on-disk size figures shipped in

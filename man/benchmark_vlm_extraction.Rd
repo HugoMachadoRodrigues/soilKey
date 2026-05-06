@@ -9,6 +9,8 @@ benchmark_vlm_extraction(
   tasks = c("horizons", "site", "munsell"),
   fixtures_dir = NULL,
   max_per_task = NULL,
+  use_fewshot = TRUE,
+  n_repeats = 1L,
   verbose = TRUE
 )
 }
@@ -23,6 +25,18 @@ a list `(name = ..., model = ...)` forwarded to
 \item{fixtures_dir}{Optional override; default = bundled fixtures.}
 
 \item{max_per_task}{Cap fixtures per task (useful for smoke tests).}
+
+\item{use_fewshot}{Logical, default `TRUE` (v0.9.68+). When TRUE,
+uses the few-shot prompt variants (worked examples embedded in
+the prompt) for horizons / site / munsell. Set to `FALSE` to
+benchmark the bare-instructions baseline -- useful when
+measuring few-shot lift.}
+
+\item{n_repeats}{Positive integer (default 1). Runs each
+(provider, task, fixture) cell `n_repeats` times so the summary
+table can report `metric_*_sd` alongside `metric_*_mean`. LLM
+responses are stochastic; without `n_repeats >= 3` it is hard to
+distinguish real lift from noise on a small fixture set.}
 
 \item{verbose}{Logical (default TRUE); print per-fixture progress.}
 }
