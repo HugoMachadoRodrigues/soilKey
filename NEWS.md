@@ -1,3 +1,80 @@
+# soilKey 0.9.60 (2026-05-06)
+
+The "Brazilian SiBCS surveyor-reference benchmark" release.
+Mirror of v0.9.49 \code{benchmark_lucas_2018()} but for the
+Embrapa BDsolos 27-UF corpus (~9k perfis, 7.4k with surveyor's
+SiBCS classification).
+
+## What's shipped
+
+`R/benchmark-bdsolos.R` (new) exports:
+
+- **`benchmark_bdsolos_sibcs(pedons, classify_with, classify_args,
+  max_n, verbose)`** -- runs \code{\link{classify_sibcs}} on each
+  pedon, compares predicted Ordem to surveyor's reference
+  (\code{site$reference_nivel_1}). Returns
+  \code{predictions} data.frame, \code{confusion} matrix,
+  \code{per_ordem} recall, \code{summary} (n_total, n_in_scope,
+  n_matched, n_errors, n_unmapped).
+
+- **`.bdsolos_normalize_ordem(s)`** internal: BDsolos
+  ALL-CAPS singular -> soilKey Title-Case plural mapping.
+  Handles modern Ordens (ARGISSOLO -> Argissolos) plus legacy /
+  pre-1999 names (PODZOLICO -> Argissolos, LATOSOL -> Latossolos,
+  GLEI -> Gleissolos, BRUNIZEM -> Chernossolos, ALUVIAL ->
+  Neossolos, etc.). Diacritic-aware via \code{intToUtf8} so the
+  source stays ASCII-pure.
+
+- Loader extension: \code{load_bdsolos_csv()} now captures
+  \code{site$reference_nivel_1/2/3} (BDsolos pre-parsed
+  Ordem / Subordem / Grande Grupo), used preferentially over the
+  full \code{Classificacao Atual} string.
+
+## Bug fix: header detection
+
+\code{.bdsolos_find_header_line()} was using \code{which.max}
+on field counts, but real BDsolos data rows often have MORE
+delimiters than the header (free-text fields like
+\code{Descricao Original} contain embedded \code{;}). Fix:
+return the FIRST line with field count >= 5 (preamble has 1-2).
+Validated: real RJ.csv now correctly resolves header at line 3
+instead of line 7.
+
+## Smoke results on real RJ.csv (100 random pedons)
+
+```
+Ordem accuracy: 34.0% (34 / 100 in-scope)
+
+Per-Ordem recall:
+  Argissolos    : 67.6% (23/34)   <- best
+  Cambissolos   : 42.8% (6/14)
+  Chernossolos  : 50.0% (1/2)
+  Organossolos  : 50.0% (1/2)
+  Neossolos     : 42.8% (3/7)
+  Espodossolos  :  0%   (0/3)
+  Gleissolos    :  0%   (0/16)    <- gleyic predicate not triggering
+  Latossolos    :  0%   (0/15)    <- B latossolico predicate too strict
+  Planossolos   :  0%   (0/6)
+  Plintossolos  :  0%   (0/1)
+```
+
+The 0% recalls on Gleissolos / Latossolos / Espodossolos /
+Planossolos / Plintossolos point at concrete classifier rules to
+relax in v0.9.61. Argissolos' 67.6% recall is healthy and
+consistent with the v0.9.45 / v0.9.58 work.
+
+## Tests
+
+10 new tests in `test-v0960-bdsolos-benchmark.R` (42
+expectations) covering Ordem normalisation (modern + legacy),
+benchmark schema, accuracy computation, confusion matrix,
+unmapped reference detection, max_n, error handling, and the
+loader extension for nivel_1/2/3.
+
+Suite total: 3717 / 0 / 20 (pass / fail / skip). R CMD check
+Status OK.
+
+
 # soilKey 0.9.59 (2026-05-06)
 
 The "read.csv2 fallback for malformed BDsolos UTF-8" patch.
