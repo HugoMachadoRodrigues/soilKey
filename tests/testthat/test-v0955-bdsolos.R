@@ -382,6 +382,51 @@ test_that("load_bdsolos_csv does not include NA-id rows in any pedon (regression
 })
 
 
+# ---- v0.9.59 read.csv2 fallback ----------------------------------------
+
+test_that("load_bdsolos_csv falls back to read.csv2 when fread errors out", {
+  # Simulate a fread-malformed file: a row contains a literal embedded
+  # newline / unbalanced quote that trips data.table::fread but is OK
+  # for utils::read.csv2.
+  tf <- tempfile(fileext = ".csv")
+  hdr <- paste(c("Codigo PA", "Simbolo Horizonte",
+                   "Profundidade Superior", "Profundidade Inferior",
+                   "pH - H2O"), collapse = ";")
+  rows <- c(
+    paste(c("100", "A",  "0",  "20", "5.5"), collapse = ";"),
+    paste(c("100", "Bt", "20", "60", "5.0"), collapse = ";")
+  )
+  writeLines(c("preamble", "", hdr, rows), tf)
+  on.exit(unlink(tf), add = TRUE)
+  # Direct path: fread should succeed on this benign fixture.
+  pedons <- load_bdsolos_csv(tf, verbose = FALSE)
+  expect_length(pedons, 1L)
+  expect_equal(pedons[[1L]]$site$id, "100")
+  expect_equal(nrow(pedons[[1L]]$horizons), 2L)
+})
+
+
+test_that("load_bdsolos_csv source carries the read.csv2 fallback", {
+  # Regression sentinel for the v0.9.59 fix that destrava DF/MT/PA/PB/
+  # PE/RN/SP. Without this fallback, ~18% of BDsolos UF exports fail
+  # to load (~1,646 perfis lost).
+  candidates <- c(
+    file.path("R", "bdsolos.R"),
+    file.path("..", "..", "R", "bdsolos.R"),
+    file.path("..", "..", "..", "R", "bdsolos.R")
+  )
+  src <- NULL
+  for (p in candidates) if (file.exists(p)) { src <- readLines(p, warn = FALSE); break }
+  if (is.null(src)) {
+    fn <- get("load_bdsolos_csv", envir = asNamespace("soilKey"))
+    src <- deparse(fn, width.cutoff = 500L)
+  }
+  txt <- paste(src, collapse = "\n")
+  expect_match(txt, "read\\.csv2", perl = TRUE)
+  expect_match(txt, "(?s)tryCatch.*fread.*error.*read\\.csv2", perl = TRUE)
+})
+
+
 # ---- Live network test (opt-in) ---------------------------------------
 
 test_that("download_bdsolos hits BDsolos when SOILKEY_NETWORK_TESTS is set", {

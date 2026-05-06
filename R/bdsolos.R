@@ -390,10 +390,42 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     sep <- .bdsolos_detect_sep(path, header_line = hdr_line)
   }
   skip <- max(0L, hdr_line - 1L)
-  d <- data.table::fread(path, sep = sep, encoding = "UTF-8",
+  # data.table::fread is fast but strict; ~25% of real BDsolos UF
+  # exports (DF, MT, PA, PB, PE, RN, SP in the May 2026 audit)
+  # contain malformed UTF-8 sequences that trip fread with
+  # "attempt to set index N/N in SET_STRING_ELT". Fall back to
+  # base R utils::read.csv2 (much slower, much more lenient) when
+  # fread errors out.
+  d <- tryCatch(
+    suppressWarnings(suppressMessages(
+      data.table::fread(path, sep = sep, encoding = "UTF-8",
                           skip = skip, header = TRUE,
                           fill = TRUE, blank.lines.skip = TRUE)
-  if (nrow(d) == 0L) {
+    )),
+    error = function(e) NULL
+  )
+  if (is.null(d) || nrow(d) == 0L) {
+    if (isTRUE(verbose)) {
+      cli::cli_alert_info(
+        "fread failed on this file; falling back to utils::read.csv2 (slower).")
+    }
+    d <- tryCatch(
+      data.table::as.data.table(
+        utils::read.csv2(path, skip = skip, header = TRUE,
+                          fileEncoding = "UTF-8",
+                          stringsAsFactors = FALSE,
+                          sep = sep,
+                          na.strings = c("", "NA", "n.d.", "ND"))
+      ),
+      error = function(e) {
+        stop(sprintf(
+          "load_bdsolos_csv(): both fread and read.csv2 failed on '%s': %s",
+          path, conditionMessage(e)
+        ))
+      }
+    )
+  }
+  if (is.null(d) || nrow(d) == 0L) {
     stop("load_bdsolos_csv(): CSV is empty.")
   }
 
