@@ -348,6 +348,14 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
 #'        on smaller models (Gemma 4 e2b / e4b). Set \code{FALSE} to
 #'        revert to the bare-instructions prompt. Ignored when
 #'        \code{prompt_name} is set explicitly.
+#' @param use_structured Logical, default \code{FALSE} (v0.9.70+).
+#'        When \code{TRUE} and the provider exposes
+#'        \code{chat_structured()} (Anthropic / OpenAI / Ollama 0.5+ /
+#'        Gemini), the validate-and-retry loop is replaced by a
+#'        single structured call that returns a schema-validated R
+#'        list directly -- removing JSON-shape errors at the protocol
+#'        level. Falls back to the legacy retry loop when the
+#'        provider has no \code{chat_structured} method.
 #' @return Invisibly, the (mutated) \code{pedon}. Carries a
 #'         \code{"vlm_extraction"} attribute with the parsed response,
 #'         number of attempts, and number of provenance entries added.
@@ -360,7 +368,8 @@ extract_horizons_from_pdf <- function(pedon,
                                        prompt_name = NULL,
                                        schema_name = "horizon",
                                        pdf_text    = NULL,
-                                       use_fewshot = TRUE) {
+                                       use_fewshot = TRUE,
+                                       use_structured = FALSE) {
 
   if (is.null(prompt_name)) {
     prompt_name <- if (isTRUE(use_fewshot)) "extract_horizons_fewshot"
@@ -400,18 +409,31 @@ extract_horizons_from_pdf <- function(pedon,
   total_attempts <- 0L
   parsed_list    <- vector("list", length(chunks))
 
+  # v0.9.71: per-chunk cli progress bar (no-op for single-chunk PDFs).
+  use_progress <- length(chunks) > 1L &&
+                     requireNamespace("cli", quietly = TRUE)
+  if (isTRUE(use_progress)) {
+    cli::cli_progress_bar(
+      total  = length(chunks),
+      format = "Extracting horizons {cli::pb_current}/{cli::pb_total} [{cli::pb_bar}] {cli::pb_eta}"
+    )
+  }
+
   for (i in seq_along(chunks)) {
     rendered <- load_prompt(prompt_name, vars = list(
       schema_json   = schema_json,
       document_text = chunks[[i]]
     ))
     res <- validate_or_retry(provider, rendered, schema_name,
-                              max_retries = max_retries)
+                              max_retries = max_retries,
+                              use_structured = use_structured)
     parsed_list[[i]] <- res$data
     total_attempts   <- total_attempts + res$attempts
     total_added      <- total_added +
       apply_horizons_extraction(pedon, res$data, overwrite = overwrite)
+    if (isTRUE(use_progress)) cli::cli_progress_update()
   }
+  if (isTRUE(use_progress)) cli::cli_progress_done()
 
   # Record document provenance.
   if (is.null(pedon$documents)) pedon$documents <- list()
@@ -460,7 +482,8 @@ extract_munsell_from_photo <- function(pedon,
                                         overwrite   = FALSE,
                                         prompt_name = NULL,
                                         schema_name = "horizon",
-                                        use_fewshot = TRUE) {
+                                        use_fewshot = TRUE,
+                                        use_structured = FALSE) {
 
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
@@ -487,7 +510,8 @@ extract_munsell_from_photo <- function(pedon,
 
   res <- validate_or_retry(provider, rendered, schema_name,
                             max_retries = max_retries,
-                            image       = image_content)
+                            image       = image_content,
+                            use_structured = use_structured)
 
   # Drop any quantitative non-color attributes the model may have
   # extracted; only Munsell entries should win provenance.
@@ -540,7 +564,8 @@ extract_site_from_fieldsheet <- function(pedon,
                                           overwrite   = FALSE,
                                           prompt_name = "extract_site_metadata",
                                           schema_name = "site",
-                                          use_fewshot = TRUE) {
+                                          use_fewshot = TRUE,
+                                          use_structured = FALSE) {
 
   # NOTE: extract_site_from_fieldsheet uses an *image* prompt; the
   # few-shot variant for image-mode site extraction is left as the
@@ -568,7 +593,8 @@ extract_site_from_fieldsheet <- function(pedon,
 
   res <- validate_or_retry(provider, rendered, schema_name,
                             max_retries = max_retries,
-                            image       = image_content)
+                            image       = image_content,
+                            use_structured = use_structured)
 
   added <- apply_site_extraction(pedon, res$data, overwrite = overwrite)
 

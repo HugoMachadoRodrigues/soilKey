@@ -68,14 +68,25 @@ strip_code_fence <- function(text) {
 #' @param image Optional \code{ellmer} image content object (e.g.
 #'        from \code{ellmer::content_image_file}) to pass alongside
 #'        the prompt for multimodal calls.
+#' @param use_structured Logical (default \code{FALSE}). When TRUE
+#'        and the provider supports \code{chat_structured()}
+#'        (Anthropic / OpenAI / Ollama 0.5+ / Gemini), skips the
+#'        chat-and-parse loop entirely: the provider receives the
+#'        ellmer type tree built from \code{inst/schemas/<schema>.json}
+#'        and returns a structurally-validated R list. Falls back to
+#'        the legacy retry loop when the provider has no
+#'        \code{chat_structured} method.
 #' @return A list with elements \code{data} (parsed R object),
-#'         \code{raw} (character scalar), \code{attempts} (integer).
+#'         \code{raw} (character scalar; NA when structured path was
+#'         used), \code{attempts} (integer), and (only when the
+#'         structured path fired) \code{used_structured = TRUE}.
 #' @keywords internal
 validate_or_retry <- function(provider,
                                 prompt,
                                 schema,
                                 max_retries = 3L,
-                                image       = NULL) {
+                                image       = NULL,
+                                use_structured = FALSE) {
 
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     rlang::abort("Package 'jsonlite' is required for VLM extraction.")
@@ -86,6 +97,34 @@ validate_or_retry <- function(provider,
       "`provider` must expose a `$chat()` method (e.g. an ellmer chat ",
       "object or a MockVLMProvider)."
     ))
+  }
+
+  # ---- v0.9.70: structured-output fast path ------------------------------
+  # When the caller asks for it AND the provider supports it (ellmer Chat
+  # with chat_structured), skip the chat -> JSON parse -> schema validate
+  # loop entirely: chat_structured() returns a parsed R list whose shape
+  # is provider-validated against the type tree we hand it.
+  if (isTRUE(use_structured) && .provider_supports_structured(provider)) {
+    type_tree <- tryCatch(
+      vlm_type_from_soilkey_schema(schema),
+      error = function(e) NULL
+    )
+    if (!is.null(type_tree)) {
+      data <- tryCatch({
+        if (is.null(image)) {
+          provider$chat_structured(prompt, type = type_tree)
+        } else {
+          provider$chat_structured(prompt, image, type = type_tree)
+        }
+      }, error = function(e) {
+        rlang::abort(sprintf(
+          "VLM structured call failed: %s. Set use_structured = FALSE ",
+          conditionMessage(e)
+        ))
+      })
+      return(list(data = data, raw = NA_character_, attempts = 1L,
+                    used_structured = TRUE))
+    }
   }
 
   current_prompt <- prompt

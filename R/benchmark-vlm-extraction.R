@@ -406,6 +406,15 @@ make_synthetic_horizons_fixture <- function(pedon,
 #'   the prompt) for horizons / site / munsell. Set to `FALSE` to
 #'   benchmark the bare-instructions baseline -- useful when
 #'   measuring few-shot lift.
+#' @param use_structured Logical, default `FALSE` (v0.9.70+). When
+#'   TRUE and the provider supports `chat_structured()` (Anthropic /
+#'   OpenAI / Ollama 0.5+ / Gemini), the validate-and-retry loop is
+#'   replaced by a single structured call where the provider is
+#'   handed the ellmer type tree built from the soilKey schema and
+#'   returns a structurally-valid R list directly. Removes the entire
+#'   class of "model returned prose / wrong shape" failures at the
+#'   protocol level. Falls back to the legacy retry loop when the
+#'   provider has no `chat_structured` method.
 #' @param n_repeats Positive integer (default 1). Runs each
 #'   (provider, task, fixture) cell `n_repeats` times so the summary
 #'   table can report `metric_*_sd` alongside `metric_*_mean`. LLM
@@ -449,6 +458,7 @@ benchmark_vlm_extraction <- function(providers,
                                          fixtures_dir = NULL,
                                          max_per_task = NULL,
                                          use_fewshot  = TRUE,
+                                         use_structured = FALSE,
                                          n_repeats    = 1L,
                                          verbose      = TRUE) {
   n_repeats <- as.integer(n_repeats)
@@ -490,7 +500,8 @@ benchmark_vlm_extraction <- function(providers,
             }
           }
           out <- .run_one_extraction(provider, task, fx,
-                                         use_fewshot = use_fewshot)
+                                         use_fewshot = use_fewshot,
+                                         use_structured = use_structured)
           metric <- .compute_metric(task, out$pred, out$golden)
           rows[[length(rows) + 1L]] <- data.frame(
             provider   = pname,
@@ -563,7 +574,8 @@ benchmark_vlm_extraction <- function(providers,
 
 # Single (provider, fixture) extraction call. Loads input + golden,
 # routes to the right extract_* helper, returns parsed JSON or error.
-.run_one_extraction <- function(provider, task, fx, use_fewshot = TRUE) {
+.run_one_extraction <- function(provider, task, fx, use_fewshot = TRUE,
+                                    use_structured = FALSE) {
   golden <- tryCatch(jsonlite::fromJSON(fx$golden_path, simplifyVector = FALSE),
                        error = function(e) NULL)
   if (is.null(golden)) {
@@ -582,7 +594,8 @@ benchmark_vlm_extraction <- function(providers,
       )
       extract_horizons_from_pdf(ped, pdf_text = txt, provider = provider,
                                   overwrite = TRUE,
-                                  use_fewshot = use_fewshot)
+                                  use_fewshot = use_fewshot,
+                                  use_structured = use_structured)
       list(horizons = lapply(seq_len(nrow(ped$horizons)), function(i) {
         as.list(ped$horizons[i, ])
       }))
@@ -602,7 +615,8 @@ benchmark_vlm_extraction <- function(providers,
                                   vars = list(schema_json = schema_json,
                                                  document_text = txt))
         res <- validate_or_retry(provider, rendered, "site",
-                                    max_retries = 3L, image = NULL)
+                                    max_retries = 3L, image = NULL,
+                                    use_structured = use_structured)
         # Schema wraps every field in {value, confidence, source_quote}.
         # Unwrap so the predicted site is flat -- matching the
         # canonical PedonRecord$site shape and the golden fixtures.
@@ -633,7 +647,8 @@ benchmark_vlm_extraction <- function(providers,
       )
       extract_munsell_from_photo(ped, image_path = fx$input_path,
                                     provider = provider, overwrite = TRUE,
-                                    use_fewshot = use_fewshot)
+                                    use_fewshot = use_fewshot,
+                                    use_structured = use_structured)
       list(horizons = lapply(seq_len(nrow(ped$horizons)), function(i) {
         as.list(ped$horizons[i, ])
       }))

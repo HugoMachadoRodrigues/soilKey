@@ -1,0 +1,45 @@
+# Descricao do perfil
+
+Local: RJ, Arraial do Cabo.
+Identificacao: 5340.
+
+## Horizonte A (0 a 11 cm)
+
+Cor Munsell umida: 10YR 4/1.
+Argila 2 %.
+Silte 7.3 %.
+Areia 90.7 %.
+pH em agua: 5.7.
+Carbono organico: 0.25 %.
+
+## Horizonte C1 (11 a 58 cm)
+
+Cor Munsell umida: 10YR 4/2.
+Argila 2 %.
+Silte 7.4 %.
+Areia 90.6 %.
+pH em agua: 6.0.
+Carbono organico: 0.08 %.
+
+## Horizonte C2 (58 a 115 cm)
+
+Cor Munsell umida: 10YR 5/2.
+Argila 2 %.
+Silte 7.4 %.
+Areia 90.6 %.
+pH em agua: 6.1.
+Carbono organico: 0.04 %.
+
+## Horizonte C3 (115 a 150 cm)
+
+Cor Munsell umida: 7.5YR 6/2.
+Argila 2 %.
+Silte 7.4 %.
+Areia 90.6 %.
+pH em agua: 6.3.
+Carbono organico: 0.06 %.
+
+## Horizonte C4 (150 a 270 cm)
+
+Cor Munsell umida: 10YR 6/2.
+

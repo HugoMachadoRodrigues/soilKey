@@ -10,6 +10,7 @@ benchmark_vlm_extraction(
   fixtures_dir = NULL,
   max_per_task = NULL,
   use_fewshot = TRUE,
+  use_structured = FALSE,
   n_repeats = 1L,
   verbose = TRUE
 )
@@ -31,6 +32,16 @@ uses the few-shot prompt variants (worked examples embedded in
 the prompt) for horizons / site / munsell. Set to `FALSE` to
 benchmark the bare-instructions baseline -- useful when
 measuring few-shot lift.}
+
+\item{use_structured}{Logical, default `FALSE` (v0.9.70+). When
+TRUE and the provider supports `chat_structured()` (Anthropic /
+OpenAI / Ollama 0.5+ / Gemini), the validate-and-retry loop is
+replaced by a single structured call where the provider is
+handed the ellmer type tree built from the soilKey schema and
+returns a structurally-valid R list directly. Removes the entire
+class of "model returned prose / wrong shape" failures at the
+protocol level. Falls back to the legacy retry loop when the
+provider has no `chat_structured` method.}
 
 \item{n_repeats}{Positive integer (default 1). Runs each
 (provider, task, fixture) cell `n_repeats` times so the summary

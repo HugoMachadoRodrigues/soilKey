@@ -1,3 +1,104 @@
+# soilKey 0.9.71 (2026-05-06)
+
+The "Phase 2 done -- production-ready VLM stack" release. Bundles
+three coherent improvements that together close out the Phase 2
+roadmap: (A) 8 hard BDsolos-derived fixtures with multi-rep
+variance characterisation, (B) ellmer `chat_structured()` bridge
+for protocol-level schema validation, (C) production polish
+(progress bars, agent_app exposure of fewshot/structured toggles,
+size-correct catalog labels).
+
+## (A) BDsolos hard fixtures
+
+Generated via `make_synthetic_horizons_fixture()` from 8 diverse
+RJ pedons selected by SiBCS Ordem (Argissolo, Cambissolo,
+Chernossolo, Espodossolo, Gleissolo, Latossolo, Neossolo,
+Planossolo). Each carries a real BDsolos pedon's full horizon
+table as the golden answer. Bundled in
+`inst/fixtures/vlm_extraction/horizons/bdsolos_RJ_*.{txt,golden.json}`.
+
+Reproduce locally with:
+
+```r
+bench <- benchmark_vlm_extraction(
+  providers = list(gemma_e2b = list(name = "ollama", model = "gemma4:e2b")),
+  tasks       = "horizons",
+  use_fewshot = TRUE,
+  n_repeats   = 3L
+)
+bench$summary[, c("ok_rate", "metric_1_mean", "metric_1_sd",
+                    "metric_2_mean", "metric_2_sd",
+                    "metric_3_mean", "metric_3_sd")]
+```
+
+(The 8-fixture × 3-rep run takes ~30 minutes on a laptop CPU. Empirical
+numbers from a fully-completed run are deferred to a follow-up
+v0.9.72 release.)
+
+## (B) ellmer structured outputs
+
+`R/vlm-types.R` (new):
+
+- **`vlm_type_from_soilkey_schema(name)`** -- wraps
+  `ellmer::type_from_schema()` reading
+  `inst/schemas/<name>.json` directly. Returns the ellmer type
+  tree the provider expects via `chat_structured(type = ...)`.
+  Caches nothing (schemas are tiny); errors on unknown name.
+- **`.provider_supports_structured(provider)`** -- capability
+  probe. TRUE only when the provider exposes `chat_structured`
+  as a method. MockVLMProvider and any non-ellmer chat object
+  return FALSE here, so `use_structured = TRUE` degrades
+  gracefully to the legacy retry loop.
+
+`R/vlm-validate.R`:
+
+- **`validate_or_retry(..., use_structured = FALSE)`** -- new
+  parameter. When TRUE AND provider supports it, the function
+  short-circuits the chat-and-parse-and-retry loop: the provider
+  receives the ellmer type tree built from the soilKey schema and
+  returns a structurally-valid R list directly. Removes the
+  entire class of "model returned prose / wrong shape" failures
+  at the protocol level (Anthropic tool calls, OpenAI
+  response_format = json_schema, Ollama 0.5+ format = json_schema,
+  Gemini structured output).
+
+`R/vlm-extract.R` + `R/benchmark-vlm-extraction.R`:
+
+- `extract_horizons_from_pdf()`, `extract_munsell_from_photo()`,
+  `extract_site_from_fieldsheet()` -- all now accept
+  `use_structured = FALSE` (default for back-compat). Forwarded
+  through `validate_or_retry()`.
+- `benchmark_vlm_extraction(use_structured = FALSE)` -- same.
+
+## (C) Production polish
+
+`R/vlm-extract.R`:
+
+- `extract_horizons_from_pdf()` -- multi-chunk PDFs now show a
+  per-chunk `cli::cli_progress_bar()` (no-op for single-chunk
+  documents, which is the common case).
+
+`inst/shiny/agent_app/app.R`:
+
+- New sidebar section "Estrategia de extracao" with checkboxes
+  for `use_fewshot` (default TRUE) and `use_structured` (default
+  FALSE). The two flags propagate through to every
+  `extract_*()` call inside the agent app.
+- Model preset labels corrected to the v0.9.67 measured sizes
+  (light = ~6.7 GB, balanced = ~8 GB, best = ~19 GB).
+
+## Tests
+
+- `test-v0970-structured-outputs.R`: 20 tests / ~45 expectations
+  covering the type-builder, capability probe, fast path,
+  fallback path, and parameter propagation through the extractor
+  family.
+- 3 888 / 0 / 21 total (was 3 868 in v0.9.68; +20 from v0.9.70
+  test file).
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.68 (2026-05-06)
 
 The "Phase 2 -- few-shot demonstrations" release. Adds schema-correct

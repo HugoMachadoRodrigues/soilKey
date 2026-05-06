@@ -1,0 +1,68 @@
+# Descricao do perfil
+
+Local: RJ, São Pedro da Aldeia.
+Identificacao: 5343.
+
+## Horizonte Azn1 (0 a 20 cm)
+
+Cor Munsell umida: 10YR 3.5/1.
+Argila 8 %.
+Silte 22 %.
+Areia 70 %.
+pH em agua: 7.3.
+Carbono organico: 0.41 %.
+
+## Horizonte Crosta (1 a 0 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 2 %.
+Silte 2 %.
+Areia 96 %.
+pH em agua: 8.0.
+Carbono organico: 2.78 %.
+
+## Horizonte 2Azn2 (20 a 28 cm)
+
+Cor Munsell umida: 10YR 3/1.
+Argila 16 %.
+Silte 13 %.
+Areia 71 %.
+pH em agua: 7.6.
+Carbono organico: 0.30 %.
+
+## Horizonte 3Cgzn1 (28 a 46 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 28 %.
+Silte 13 %.
+Areia 59 %.
+pH em agua: 7.5.
+Carbono organico: 0.18 %.
+
+## Horizonte 4Cgzn2 (46 a 70 cm)
+
+Cor Munsell umida:  NA/4.5.
+Argila 43 %.
+Silte 11 %.
+Areia 46 %.
+pH em agua: 7.5.
+Carbono organico: 0.15 %.
+
+## Horizonte 5Cgzn3 (70 a 100 cm)
+
+Cor Munsell umida:  NA/5.5.
+Argila 36 %.
+Silte 15 %.
+Areia 49 %.
+pH em agua: 7.9.
+Carbono organico: 0.09 %.
+
+## Horizonte 6Cgzn4 (100 a 175 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 29 %.
+Silte 12 %.
+Areia 59 %.
+pH em agua: 7.9.
+Carbono organico: 0.04 %.
+

@@ -1,0 +1,76 @@
+# Descricao do perfil
+
+Local: RJ, Itaguaí.
+Identificacao: 12870.
+
+## Horizonte Ap (0 a 14 cm)
+
+Cor Munsell umida: 10YR 3/2.
+Argila 20 %.
+Silte 16 %.
+Areia 64 %.
+pH em agua: 5.7.
+Carbono organico: 0.12 %.
+
+## Horizonte A2 (14 a 30 cm)
+
+Cor Munsell umida: 10YR 5/5.
+Argila 22 %.
+Silte 15 %.
+Areia 63 %.
+pH em agua: 5.0.
+Carbono organico: 0.05 %.
+
+## Horizonte IIB21t (30 a 45 cm)
+
+Cor Munsell umida: 2,5YR 4/6.
+Argila 22 %.
+Silte 15 %.
+Areia 63 %.
+pH em agua: 5.1.
+Carbono organico: 0.05 %.
+
+## Horizonte IIB22t (45 a 88 cm)
+
+Cor Munsell umida: 2,5YR 4/8.
+Argila 43 %.
+Silte 21 %.
+Areia 36 %.
+pH em agua: 5.3.
+Carbono organico: 0.03 %.
+
+## Horizonte IIB3t (88 a 108 cm)
+
+Cor Munsell umida: 5YR 5/7.
+Argila 35 %.
+Silte 25 %.
+Areia 40 %.
+pH em agua: 5.1.
+
+## Horizonte IIC1 (108 a 130 cm)
+
+Cor Munsell umida: 5YR 6/8.
+Argila 31 %.
+Silte 27 %.
+Areia 42 %.
+pH em agua: 5.1.
+Carbono organico: 0.02 %.
+
+## Horizonte IIC2 (130 a 147 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 24 %.
+Silte 32 %.
+Areia 44 %.
+pH em agua: 5.2.
+Carbono organico: 0.01 %.
+
+## Horizonte IIC3 (147 a 190 cm)
+
+Cor Munsell umida: 2,5Y 7/5.
+Argila 18 %.
+Silte 34 %.
+Areia 48 %.
+pH em agua: 5.2.
+Carbono organico: 0.01 %.
+

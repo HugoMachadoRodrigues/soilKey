@@ -1,0 +1,86 @@
+# Descricao do perfil
+
+Local: RJ, Itaperuna.
+Identificacao: 11969.
+
+## Horizonte Ap (0 a 17 cm)
+
+Cor Munsell umida: 2,5YR 3/2.
+Argila 38 %.
+Silte 13 %.
+Areia 49 %.
+pH em agua: 5.4.
+Carbono organico: 1.52 %.
+
+## Horizonte A3 (17 a 35 cm)
+
+Cor Munsell umida: 2,5YR 3/4.
+Argila 48 %.
+Silte 13 %.
+Areia 39 %.
+pH em agua: 5.1.
+Carbono organico: 0.98 %.
+
+## Horizonte B1 (35 a 70 cm)
+
+Cor Munsell umida: 2,5YR 4/6.
+Argila 55 %.
+Silte 13 %.
+Areia 32 %.
+pH em agua: 5.2.
+Carbono organico: 0.77 %.
+
+## Horizonte B21 (70 a 100 cm)
+
+Cor Munsell umida: 3,5YR 4/6.
+Argila 57 %.
+Silte 11 %.
+Areia 32 %.
+pH em agua: 5.0.
+Carbono organico: 0.45 %.
+
+## Horizonte B22 (100 a 145 cm)
+
+Cor Munsell umida: 4YR 4/6.
+Argila 53 %.
+Silte 16 %.
+Areia 31 %.
+pH em agua: 5.4.
+Carbono organico: 0.37 %.
+
+## Horizonte B23 (145 a 175 cm)
+
+Cor Munsell umida: 4YR 4/6.
+Argila 52 %.
+Silte 14 %.
+Areia 34 %.
+pH em agua: 5.5.
+Carbono organico: 0.31 %.
+
+## Horizonte B24 (175 a 250 cm)
+
+Cor Munsell umida: 4YR 4/7.
+Argila 52 %.
+Silte 14 %.
+Areia 34 %.
+pH em agua: 5.8.
+Carbono organico: 0.16 %.
+
+## Horizonte B3 (250 a 290 cm)
+
+Cor Munsell umida: 4YR 4/7.
+Argila 34 %.
+Silte 19 %.
+Areia 47 %.
+pH em agua: 5.8.
+Carbono organico: 0.14 %.
+
+## Horizonte C (290 a 320 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 23 %.
+Silte 20 %.
+Areia 57 %.
+pH em agua: 5.5.
+Carbono organico: 0.11 %.
+

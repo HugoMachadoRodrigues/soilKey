@@ -13,7 +13,8 @@ extract_horizons_from_pdf(
   prompt_name = NULL,
   schema_name = "horizon",
   pdf_text = NULL,
-  use_fewshot = TRUE
+  use_fewshot = TRUE,
+  use_structured = FALSE
 )
 }
 \arguments{
@@ -50,6 +51,15 @@ embedded; this dramatically improves JSON-shape compliance
 on smaller models (Gemma 4 e2b / e4b). Set \code{FALSE} to
 revert to the bare-instructions prompt. Ignored when
 \code{prompt_name} is set explicitly.}
+
+\item{use_structured}{Logical, default \code{FALSE} (v0.9.70+).
+When \code{TRUE} and the provider exposes
+\code{chat_structured()} (Anthropic / OpenAI / Ollama 0.5+ /
+Gemini), the validate-and-retry loop is replaced by a
+single structured call that returns a schema-validated R
+list directly -- removing JSON-shape errors at the protocol
+level. Falls back to the legacy retry loop when the
+provider has no \code{chat_structured} method.}
 }
 \value{
 Invisibly, the (mutated) \code{pedon}. Carries a

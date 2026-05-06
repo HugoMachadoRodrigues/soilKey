@@ -123,14 +123,26 @@ ui <- page_navbar(
                   selected = "auto"),
 
     selectInput("model_preset", "Modelo Gemma local",
-                  choices = c("Leve  (gemma4:e2b, ~1.5 GB)"      = "light",
-                                "Equilibrado (gemma4:e4b, ~3 GB)"  = "balanced",
+                  choices = c("Leve  (gemma4:e2b, ~6.7 GB)"      = "light",
+                                "Equilibrado (gemma4:e4b, ~8 GB)"  = "balanced",
                                 "Melhor (gemma4:31b, ~19 GB)"     = "best"),
                   selected = "light"),
 
     actionButton("setup_vlm", "Configurar Gemma local",
                   icon  = bs_icon("download"),
                   class = "btn-primary w-100"),
+
+    hr(),
+
+    h6(tagList(bs_icon("magic"), " Estrategia de extracao")),
+    checkboxInput("use_fewshot", "Few-shot (exemplos no prompt)", value = TRUE),
+    checkboxInput("use_structured",
+                    "Structured outputs (chat_structured se suportado)",
+                    value = FALSE),
+    p(tags$small(class = "text-muted",
+                   paste("Few-shot embute exemplos resolvidos no prompt; ",
+                           "structured ativa o schema-validation no protocolo. ",
+                           "Local Gemma via Ollama 0.5+ suporta ambos."))),
 
     hr(),
 
@@ -492,7 +504,9 @@ server <- function(input, output, session) {
     p <- isolate(pedon_rv())
     res <- tryCatch(
       extract_munsell_from_photo(p, image_path = input$photo$datapath,
-                                    provider = prov, overwrite = TRUE),
+                                    provider = prov, overwrite = TRUE,
+                                    use_fewshot    = isTRUE(input$use_fewshot),
+                                    use_structured = isTRUE(input$use_structured)),
       error = function(e) { showNotification(paste("Erro:", conditionMessage(e)),
                                                   type = "error"); NULL }
     )
@@ -531,7 +545,9 @@ server <- function(input, output, session) {
     showNotification("Extraindo horizontes com Gemma...", type = "message", id = "ex_h")
     res <- tryCatch(
       extract_horizons_from_pdf(p, pdf_path = pdf_path, pdf_text = pdf_text,
-                                   provider = prov, overwrite = TRUE),
+                                   provider = prov, overwrite = TRUE,
+                                   use_fewshot    = isTRUE(input$use_fewshot),
+                                   use_structured = isTRUE(input$use_structured)),
       error = function(e) { showNotification(paste("Erro:", conditionMessage(e)),
                                                   type = "error"); NULL }
     )
@@ -563,7 +579,9 @@ server <- function(input, output, session) {
     showNotification("Extraindo metadados de sitio...", type = "message", id = "ex_s")
     res <- tryCatch(
       extract_site_from_fieldsheet(p, image_path = input$fieldsheet$datapath,
-                                      provider = prov, overwrite = TRUE),
+                                      provider = prov, overwrite = TRUE,
+                                      use_fewshot    = isTRUE(input$use_fewshot),
+                                      use_structured = isTRUE(input$use_structured)),
       error = function(e) { showNotification(paste("Erro:", conditionMessage(e)),
                                                   type = "error"); NULL }
     )

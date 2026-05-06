@@ -4,7 +4,14 @@
 \alias{validate_or_retry}
 \title{Call a provider, validate JSON output, retry on failure}
 \usage{
-validate_or_retry(provider, prompt, schema, max_retries = 3L, image = NULL)
+validate_or_retry(
+  provider,
+  prompt,
+  schema,
+  max_retries = 3L,
+  image = NULL,
+  use_structured = FALSE
+)
 }
 \arguments{
 \item{provider}{An \code{ellmer} chat object (from
@@ -22,10 +29,21 @@ returning text (or a character vector of length 1).}
 \item{image}{Optional \code{ellmer} image content object (e.g.
 from \code{ellmer::content_image_file}) to pass alongside
 the prompt for multimodal calls.}
+
+\item{use_structured}{Logical (default \code{FALSE}). When TRUE
+and the provider supports \code{chat_structured()}
+(Anthropic / OpenAI / Ollama 0.5+ / Gemini), skips the
+chat-and-parse loop entirely: the provider receives the
+ellmer type tree built from \code{inst/schemas/<schema>.json}
+and returns a structurally-validated R list. Falls back to
+the legacy retry loop when the provider has no
+\code{chat_structured} method.}
 }
 \value{
 A list with elements \code{data} (parsed R object),
-        \code{raw} (character scalar), \code{attempts} (integer).
+        \code{raw} (character scalar; NA when structured path was
+        used), \code{attempts} (integer), and (only when the
+        structured path fired) \code{used_structured = TRUE}.
 }
 \description{
 Sends \code{prompt} to \code{provider}, parses the response as
