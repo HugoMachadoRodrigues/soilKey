@@ -1,3 +1,61 @@
+# soilKey 0.9.59 (2026-05-06)
+
+The "read.csv2 fallback for malformed BDsolos UTF-8" patch.
+Destrava 7 UFs (DF, MT, PA, PB, PE, RN, SP) que `data.table::fread`
+recusava por causa de bytes UTF-8 inválidos -- ~1,646 perfis (18%
+do total nacional) eram perdidos sem este fix.
+
+## Background
+
+Hugo baixou TODOS os 27 estados do BDsolos. A auditoria com
+`data.table::fread` falhava em 7 deles com:
+
+```
+attempt to set index N/N in SET_STRING_ELT
+```
+
+Esse erro ocorre quando o CSV contém uma sequência UTF-8
+malformada (caractere truncado em meio de bytes). \code{fread} e
+strict; \code{utils::read.csv2} e lenient e parseia o resto do
+arquivo OK.
+
+## Fix
+
+`load_bdsolos_csv()` agora tenta `data.table::fread` primeiro
+(rapido). Se falhar, cai para \code{utils::read.csv2}
+(mais lento mas tolerante a UTF-8 invalido). Mensagem em PT-BR
+informa quando o fallback foi acionado.
+
+## Audit completo (27 UFs com fallback ligado)
+
+```
+Perfis totais        : 8,995
+Horizontes totais    : 39,123
+Horizontes c/Munsell : 25,356 (64.8%)
+Perfis c/taxon SiBCS : 7,369  (81.9%)
+Perfis c/coords      : 3,895  (43.3%)
+```
+
+UFs que precisavam do fallback (1,646 perfis adicionais):
+
+```
+DF: 154 perfis  MT: 271 perfis  PA: 622 perfis
+PB:  99 perfis  PE: 163 perfis  RN: 108 perfis
+SP: 229 perfis
+```
+
+## Tests
+
+2 new tests in `test-v0955-bdsolos.R` (now 88 expectations):
+
+- Synthetic CSV roundtrip via fread path (control).
+- Source-level sentinel: \code{load_bdsolos_csv} body must
+  contain \code{tryCatch(fread, ..., read.csv2)} pattern.
+
+Suite total: 3675 / 0 / 20 (pass / fail / skip). R CMD check
+Status OK.
+
+
 # soilKey 0.9.58 (2026-05-06)
 
 The "BDsolos full export schema" release. \code{load_bdsolos_csv()}
