@@ -43,10 +43,12 @@ constructor. \code{ellmer} must be installed.
 
 Passing \code{name = "ollama"} runs every extraction locally via
 an Ollama server (default \code{gemma4:e2b}, Gemma 4 edge 2B,
-multimodal text+image, ~1.5 GB). No data leaves the machine,
-which is the recommended setting for sensitive field descriptions
-(e.g. governmental surveys, indigenous land studies) where
-institutional independence and data sovereignty matter.
+multimodal text+image, ~6.7 GB on disk -- the multimodal build
+bundles the vision encoder, which adds ~5 GB to the bare
+parameter weights). No data leaves the machine, which is the
+recommended setting for sensitive field descriptions (e.g.
+governmental surveys, indigenous land studies) where institutional
+independence and data sovereignty matter.
 
 One-shot setup (v0.9.64+):
 \preformatted{

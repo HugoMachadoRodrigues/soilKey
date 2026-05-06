@@ -33,7 +33,7 @@ task quality score, plus an `ok / total` reliability ratio.
 ```{r}
 library(soilKey)
 
-# Local Gemma 4 e2b (1.5 GB) -- assumes setup_local_vlm("light") was run.
+# Local Gemma 4 e2b (~6.7 GB on disk) -- assumes setup_local_vlm("light") was run.
 bench <- benchmark_vlm_extraction(
   providers = list(
     gemma_e2b = list(name = "ollama", model = "gemma4:e2b")
@@ -112,26 +112,37 @@ For Munsell-from-photo, add real images plus their hand-curated golden
 JSON to `inst/fixtures/vlm_extraction/munsell/` -- see the README in
 that directory for the schema and ΔE interpretation.
 
-## Baseline (v0.9.66, gemma4 8B, MacBook M1)
+## Baseline (v0.9.67, MacBook M1, two Gemma 4 sizes)
 
-Smoke run on the four bundled text fixtures:
+Smoke run on the four bundled text fixtures, comparing the
+laptop-friendly `gemma4:e2b` (~6.7 GB on disk, 2B params) with the
+mid-tier `gemma4` (`gemma4:latest`, 8B params, ~9 GB):
 
-| Provider | Task | Precision / IoU | Recall / value-acc | Attr-match |
-|----------|------|-----------------|--------------------|------------|
-| `gemma4` (8B, local) | horizons (Latossolo MG) | 1.00 | 1.00 | 1.00 |
-| `gemma4` (8B, local) | horizons (Argissolo RJ) | 1.00 | 1.00 | 1.00 |
-| `gemma4` (8B, local) | site (Ficha MG)         | 0.79 | 1.00 | 0.79 |
-| `gemma4` (8B, local) | site (Ficha RJ)         | 0.87 | 0.92 | 0.87 |
+| Provider | Task | Fixture | ok | precision / IoU | recall / value-acc | attr-match |
+|----------|------|---------|----|-----------------|--------------------|-----------|
+| `gemma4:e2b` | horizons | Latossolo MG | ✓ | **1.00** | **1.00** | **1.00** |
+| `gemma4:e2b` | horizons | Argissolo RJ | ✓ | **1.00** | **1.00** | **1.00** |
+| `gemma4` (8B) | horizons | Latossolo MG | ✓ | 1.00 | 1.00 | 1.00 |
+| `gemma4` (8B) | horizons | Argissolo RJ | ✓ | 1.00 | 1.00 | 1.00 |
+| `gemma4:e2b` | site     | Ficha MG     | ✓ | 0.71 | **1.00** | 0.71 |
+| `gemma4:e2b` | site     | Ficha RJ     | ✗ | — | — | — |
+| `gemma4` (8B) | site    | Ficha MG     | ✗ | — | — | — |
+| `gemma4` (8B) | site    | Ficha RJ     | ✗ | — | — | — |
 
 Reads:
 
-- **Horizons extraction is solved** for clean text profiles.
-  Precision = recall = 1.0; every numeric attribute (clay %, pH,
-  C-org) matched within 10 % tolerance.
-- **Site extraction is good but incomplete**: the model gets ~83 %
-  of fields and ~96 % of the matched fields agree on value -- but
-  fields mentioned only obliquely (`country: BR` inferred from
-  state) are missed by the smaller model.
+- **Horizons extraction is solved** at both sizes. The 2B model
+  matches the 8B model on clean text profiles (precision = recall
+  = 1.0; every numeric attribute matches within 10 % tolerance).
+  This locks in `gemma4:e2b` as the default for the agent app.
+- **Site extraction is unstable** — both sizes fail intermittently
+  (50 % `ok = TRUE` rate). Failures are *JSON validation errors*,
+  not bad extraction: the smaller model occasionally drifts into
+  free-form prose despite the persona prompt. This is what
+  Phase 2 (few-shot demos) targets.
+- When site succeeds, **value-accuracy on matched fields is 100 %**
+  -- the model knows the right answer, it just doesn't always
+  return it in valid JSON shape.
 
 These numbers establish the **vanilla baseline**. Phase 2 and Phase 3
 should target the gaps:

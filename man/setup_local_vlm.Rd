@@ -7,9 +7,13 @@
 setup_local_vlm(model = "balanced", ensure_running = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{model}{One of `"light"` (gemma4:e2b, ~1.5 GB), `"balanced"`
-(gemma4:e4b, ~3 GB; default), `"best"` (gemma4:31b, ~19 GB), OR
-any explicit Ollama model identifier (e.g. `"qwen2.5vl:7b"`).}
+\item{model}{One of `"light"` (gemma4:e2b, ~6.7 GB on disk),
+`"balanced"` (gemma4:e4b, ~8 GB; default), `"best"`
+(gemma4:31b, ~19 GB), OR any explicit Ollama model identifier
+(e.g. `"qwen2.5vl:7b"`). The on-disk footprint is significantly
+larger than the bare parameter count because the multimodal
+Gemma 4 builds bundle a vision encoder + tokenizers (~5 GB
+constant overhead).}
 
 \item{ensure_running}{Logical (default TRUE). When TRUE, also
 starts the daemon via [ollama_ensure_running()] when needed.}
@@ -55,10 +59,10 @@ status <- setup_local_vlm()
 status$ready  # TRUE on a healthy machine with disk + bandwidth
 
 # Lightweight option for laptops:
-setup_local_vlm("light")    # gemma4:e2b, ~1.5 GB
+setup_local_vlm("light")    # gemma4:e2b, ~6.7 GB on disk
 
 # Best quality (server / workstation):
-setup_local_vlm("best")     # gemma4:31b, ~19 GB
+setup_local_vlm("best")     # gemma4:31b, ~19 GB on disk
 
 # Any other multimodal model the user prefers:
 setup_local_vlm("qwen2.5vl:7b")

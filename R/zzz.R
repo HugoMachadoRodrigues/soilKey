@@ -90,12 +90,12 @@
     ))
   }
   paste0(
-    "soilKey: Ollama detected, but `", target_model, "` (~1.5 GB) is ",
-    "not yet pulled. Run `soilKey::setup_local_vlm(\"light\")` once to ",
-    "enable the local VLM agent, or set ",
-    "options(soilKey.auto_setup_vlm = TRUE) to let soilKey pull it ",
-    "next time the package is attached. Suppress this hint with ",
-    "options(soilKey.suggest_local_vlm = FALSE)."
+    "soilKey: Ollama detected, but `", target_model, "` (~6.7 GB on ",
+    "disk) is not yet pulled. Run ",
+    "`soilKey::setup_local_vlm(\"light\")` once to enable the local ",
+    "VLM agent, or set options(soilKey.auto_setup_vlm = TRUE) to let ",
+    "soilKey pull it next time the package is attached. Suppress this ",
+    "hint with options(soilKey.suggest_local_vlm = FALSE)."
   )
 }
 

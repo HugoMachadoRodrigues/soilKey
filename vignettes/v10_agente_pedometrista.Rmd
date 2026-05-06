@@ -35,7 +35,7 @@ USDA Soil Taxonomy 13ed).
 ```{r}
 library(soilKey)
 
-# Versão leve (laptop, ~1.5 GB, suficiente para Munsell + horizontes):
+# Versão leve (~6.7 GB on disk; suficiente para Munsell + horizontes):
 status <- setup_local_vlm("light")
 status$ready
 #> [1] TRUE
@@ -45,9 +45,15 @@ status$model
 
 `setup_local_vlm()` é idempotente: detecta o Ollama, sobe o daemon se
 necessário (`ollama serve` em background), e baixa o modelo escolhido
-(`light` = `gemma4:e2b` ~1.5 GB, `balanced` = `gemma4:e4b` ~3 GB,
+(`light` = `gemma4:e2b` ~6.7 GB, `balanced` = `gemma4:e4b` ~8 GB,
 `best` = `gemma4:31b` ~19 GB). Se o Ollama não está instalado, ela
 imprime as instruções específicas do SO (Homebrew/curl-pipe-sh/winget).
+
+> **Tamanho real medido (v0.9.67 corrigendum):** as builds multimodais
+> do Gemma 4 empacotam um *vision encoder* (~5 GB) e tokenizadores
+> além dos pesos puros, então `gemma4:e2b` (2B parâmetros) ocupa
+> ~6.7 GB em disco — bem maior que os ~1.5 GB que documentei
+> originalmente em v0.9.64–v0.9.66.
 
 Detalhes finos:
 

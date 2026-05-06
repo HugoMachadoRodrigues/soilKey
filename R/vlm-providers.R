@@ -31,10 +31,12 @@
 #'   \item \code{google = "gemini-2.0-pro"} -- successor to 1.5
 #'         with longer context + better multimodal grounding.
 #'   \item \code{ollama = "gemma4:e2b"} -- v0.9.64 default. Gemma 4
-#'         edge 2B (~1.5 GB), multimodal (text + image), runs on a
-#'         laptop CPU. Larger options: \code{"gemma4:e4b"} (~3 GB,
-#'         better accuracy on PT-BR field sheets), \code{"gemma4:31b"}
-#'         (~19 GB, frontier dense, requires GPU). One-shot bootstrap:
+#'         edge 2B (~6.7 GB on disk; multimodal builds bundle a
+#'         vision encoder that adds ~5 GB to the bare parameter
+#'         weights), runs on a laptop CPU. Larger options:
+#'         \code{"gemma4:e4b"} (~8 GB, better accuracy on PT-BR field
+#'         sheets), \code{"gemma4:31b"} (~19 GB, frontier dense,
+#'         requires GPU). One-shot bootstrap:
 #'         \code{\link{setup_local_vlm}("light"|"balanced"|"best")}.
 #' }
 #'
@@ -77,10 +79,12 @@ default_model <- function(name) {
 #' @section Local-first option:
 #' Passing \code{name = "ollama"} runs every extraction locally via
 #' an Ollama server (default \code{gemma4:e2b}, Gemma 4 edge 2B,
-#' multimodal text+image, ~1.5 GB). No data leaves the machine,
-#' which is the recommended setting for sensitive field descriptions
-#' (e.g. governmental surveys, indigenous land studies) where
-#' institutional independence and data sovereignty matter.
+#' multimodal text+image, ~6.7 GB on disk -- the multimodal build
+#' bundles the vision encoder, which adds ~5 GB to the bare
+#' parameter weights). No data leaves the machine, which is the
+#' recommended setting for sensitive field descriptions (e.g.
+#' governmental surveys, indigenous land studies) where institutional
+#' independence and data sovereignty matter.
 #'
 #' One-shot setup (v0.9.64+):
 #' \preformatted{

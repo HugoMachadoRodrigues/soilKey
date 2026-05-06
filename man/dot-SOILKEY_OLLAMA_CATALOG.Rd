@@ -12,9 +12,16 @@ An object of class \code{list} of length 3.
 }
 \description{
 Maps short labels ("light", "balanced", "best") to multimodal Gemma
-tags pullable via `ollama pull`. Lightest first; "balanced" is the
-soilKey default for the agent app (small enough to run on a laptop,
-large enough to read Munsell colors and parse PT-BR field reports
-reliably).
+tags pullable via `ollama pull`. Sizes are the **on-disk footprint
+Ollama reports after pull**, NOT the bare parameter count: the
+multimodal Gemma 4 builds bundle a vision encoder + tokenizers /
+adapters that add ~5 GB on top of the parameter weights, so the
+"edge 2B" variant lands at ~6.7 GB on disk despite the 2-billion
+parameter label.
+}
+\details{
+Sizes verified on Ollama Library 2026-05 (e2b measured locally;
+e4b and 31b approximated from the Ollama listing -- run
+\code{ollama show <tag>} after pull for the exact figure).
 }
 \keyword{internal}

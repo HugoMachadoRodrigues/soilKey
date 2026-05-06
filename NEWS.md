@@ -1,3 +1,52 @@
+# soilKey 0.9.67 (2026-05-06)
+
+Doc + measurement corrigendum. The on-disk size figures shipped in
+v0.9.64 - v0.9.66 for the local Gemma 4 catalog were wrong: I had
+documented `gemma4:e2b` at "~1.5 GB" assuming bare 2B parameters at
+4-bit quantisation, but the multimodal Gemma 4 builds bundle a
+vision encoder + tokenizers that add ~5 GB on top. Measured
+locally:
+
+| Catalog preset | Tag           | On-disk |
+|----------------|---------------|---------|
+| `light`        | `gemma4:e2b`  | **~6.7 GB** (was documented as ~1.5 GB) |
+| (default 8B)   | `gemma4`      | ~9 GB |
+| `balanced`     | `gemma4:e4b`  | ~8 GB (approx; not yet measured locally) |
+| `best`         | `gemma4:31b`  | ~19 GB (approx) |
+
+## What's fixed
+
+- `R/setup-local-vlm.R` `.SOILKEY_OLLAMA_CATALOG` -- corrected
+  size_gb fields and notes; new docstring explaining that the
+  multimodal build's vision encoder accounts for ~5 GB of fixed
+  overhead.
+- `R/zzz.R` `.suggest_local_vlm_message()` -- "~1.5 GB" replaced
+  with "~6.7 GB on disk".
+- `R/vlm-providers.R` -- both vlm_provider() docstrings updated
+  with the corrected size + multimodal-overhead note.
+- `vignettes/v10_agente_pedometrista.Rmd` -- corrected sizes,
+  added a corrigendum callout.
+- `vignettes/v11_vlm_extraction_benchmark.Rmd` -- corrected sizes
+  AND added a fresh head-to-head benchmark comparing `gemma4:e2b`
+  vs `gemma4` (8B) on the four bundled text fixtures.
+- `README.md` -- corrected sizes everywhere.
+
+## New baseline finding (e2b vs 8B head-to-head)
+
+Re-ran the four-fixture benchmark with both models:
+
+- **Horizons (text)**: 100 % / 100 % / 100 % at *both* sizes.
+  `gemma4:e2b` is exactly as good as the 8B for clean PT-BR
+  profile descriptions. Locks in `e2b` as the soilKey default.
+- **Site (text)**: both sizes fail in 50 % of fixtures (JSON
+  validation errors, not wrong content). When extraction
+  succeeds, **value-accuracy on matched fields is 100 %**. The
+  failure mode is shape, not knowledge. Phase 2 (few-shot
+  demonstration pairs in the prompt) targets this gap.
+
+R CMD check Status: OK. No code logic changes; tests unchanged.
+
+
 # soilKey 0.9.66 (2026-05-06)
 
 The "Phase 1 -- VLM extraction benchmark" release. Adds the harness

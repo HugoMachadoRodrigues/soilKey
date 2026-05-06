@@ -22,19 +22,31 @@
 #' Canonical Ollama model catalog used by setup_local_vlm()
 #'
 #' Maps short labels ("light", "balanced", "best") to multimodal Gemma
-#' tags pullable via `ollama pull`. Lightest first; "balanced" is the
-#' soilKey default for the agent app (small enough to run on a laptop,
-#' large enough to read Munsell colors and parse PT-BR field reports
-#' reliably).
+#' tags pullable via `ollama pull`. Sizes are the **on-disk footprint
+#' Ollama reports after pull**, NOT the bare parameter count: the
+#' multimodal Gemma 4 builds bundle a vision encoder + tokenizers /
+#' adapters that add ~5 GB on top of the parameter weights, so the
+#' "edge 2B" variant lands at ~6.7 GB on disk despite the 2-billion
+#' parameter label.
+#'
+#' Sizes verified on Ollama Library 2026-05 (e2b measured locally;
+#' e4b and 31b approximated from the Ollama listing -- run
+#' \code{ollama show <tag>} after pull for the exact figure).
 #'
 #' @keywords internal
 .SOILKEY_OLLAMA_CATALOG <- list(
-  light    = list(model = "gemma4:e2b", size_gb = 1.5,
-                   note  = "Gemma 4 edge 2B -- smallest multimodal, ~1.5 GB."),
-  balanced = list(model = "gemma4:e4b", size_gb = 3.0,
-                   note  = "Gemma 4 edge 4B -- recommended default, ~3 GB."),
+  light    = list(model = "gemma4:e2b", size_gb = 6.7,
+                   note  = paste0("Gemma 4 edge 2B (multimodal), ~6.7 GB ",
+                                    "on disk. Smallest tier; ideal for a ",
+                                    "laptop without GPU.")),
+  balanced = list(model = "gemma4:e4b", size_gb = 8.0,
+                   note  = paste0("Gemma 4 edge 4B (multimodal), ~8 GB on ",
+                                    "disk (approx). Higher accuracy on PT-BR ",
+                                    "field sheets than e2b.")),
   best     = list(model = "gemma4:31b", size_gb = 19.0,
-                   note  = "Gemma 4 31B dense -- best quality, ~19 GB.")
+                   note  = paste0("Gemma 4 31B dense (multimodal), ~19 GB ",
+                                    "on disk. Workstation-class -- needs ",
+                                    "GPU 24+ GB VRAM for usable latency."))
 )
 
 
@@ -249,9 +261,13 @@ ollama_pull_model <- function(model, verbose = TRUE) {
 #' daemon if needed, pulls the requested model and returns a status
 #' list the caller can render in a Shiny UI.
 #'
-#' @param model One of `"light"` (gemma4:e2b, ~1.5 GB), `"balanced"`
-#'   (gemma4:e4b, ~3 GB; default), `"best"` (gemma4:31b, ~19 GB), OR
-#'   any explicit Ollama model identifier (e.g. `"qwen2.5vl:7b"`).
+#' @param model One of `"light"` (gemma4:e2b, ~6.7 GB on disk),
+#'   `"balanced"` (gemma4:e4b, ~8 GB; default), `"best"`
+#'   (gemma4:31b, ~19 GB), OR any explicit Ollama model identifier
+#'   (e.g. `"qwen2.5vl:7b"`). The on-disk footprint is significantly
+#'   larger than the bare parameter count because the multimodal
+#'   Gemma 4 builds bundle a vision encoder + tokenizers (~5 GB
+#'   constant overhead).
 #' @param ensure_running Logical (default TRUE). When TRUE, also
 #'   starts the daemon via [ollama_ensure_running()] when needed.
 #' @param verbose Logical (default TRUE). Streams CLI status messages.
@@ -286,10 +302,10 @@ ollama_pull_model <- function(model, verbose = TRUE) {
 #' status$ready  # TRUE on a healthy machine with disk + bandwidth
 #'
 #' # Lightweight option for laptops:
-#' setup_local_vlm("light")    # gemma4:e2b, ~1.5 GB
+#' setup_local_vlm("light")    # gemma4:e2b, ~6.7 GB on disk
 #'
 #' # Best quality (server / workstation):
-#' setup_local_vlm("best")     # gemma4:31b, ~19 GB
+#' setup_local_vlm("best")     # gemma4:31b, ~19 GB on disk
 #'
 #' # Any other multimodal model the user prefers:
 #' setup_local_vlm("qwen2.5vl:7b")
