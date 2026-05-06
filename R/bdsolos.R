@@ -121,6 +121,10 @@
   reference_sibcs = "(^classificacao_atual$|^classificacao$|^taxon_sibcs$|^classe_sibcs$)",
   reference_wrb   = "(^classificacao_fao_wrb$|^classificacao_wrb$|^taxon_wrb$)",
   reference_st    = "(^classificacao_soil_taxonomy$|^taxon_st$|^taxon_soil_taxonomy$)",
+  # SiBCS levelled reference (BDsolos pre-parsed):
+  reference_nivel_1 = "(^classe_de_solos_nivel_1$)",
+  reference_nivel_2 = "(^classe_de_solos_nivel_2$)",
+  reference_nivel_3 = "(^classe_de_solos_nivel_3$)",
   drainage        = "(^classe_de_drenagem$|^drenagem$)",
   parent_material = "(^material_de_origem$|^material_origem$)",
   vegetacao       = "(^uso_atual$|^vegetacao$|^fase_de_vegetacao_primaria$)",
@@ -204,11 +208,10 @@
 .bdsolos_find_header_line <- function(path, n_probe = 10L) {
   lines <- readLines(path, n = n_probe, encoding = "UTF-8", warn = FALSE)
   if (length(lines) == 0L) return(1L)
-  # The header is the first line with the maximum number of fields
-  # (separator-agnostic: tries comma + semicolon + tab and picks the
-  # most-populous line). Real BDsolos has ~222 fields on the header
-  # row; minimal synthetic tests may have only ~5. Either way the
-  # header has more fields than the preamble (1-2 fields).
+  # The header is the FIRST line where field count jumps significantly
+  # (>= 5 fields). Cannot use which.max(field_counts): real BDsolos data
+  # rows often have MORE semicolons than the header because free-text
+  # fields ("Descricao Original", "Observacoes") contain embedded ';'.
   field_counts <- vapply(lines, function(s) {
     if (!nzchar(s)) return(0L)
     n_semi  <- length(strsplit(s, ";",  fixed = TRUE)[[1L]])
@@ -216,9 +219,11 @@
     n_tab   <- length(strsplit(s, "\t", fixed = TRUE)[[1L]])
     max(n_semi, n_comma, n_tab)
   }, integer(1L))
-  best <- unname(which.max(field_counts))
-  if (length(best) == 0L || field_counts[best] < 2L) return(1L)
-  as.integer(best)
+  # First line whose field count is large (>= 5) -- preamble has 1-2.
+  big <- which(field_counts >= 5L)
+  if (length(big) > 0L) return(as.integer(unname(big[1L])))
+  # Fallback: first line at all (no header detected)
+  1L
 }
 
 
@@ -503,6 +508,7 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     }
     site <- list(
       id      = rid,
+      sisb_id = rid,  # v0.9.62: Codigo PA == sisb_id (FEBR cross-ref)
       lat     = lat,
       lon     = lon,
       country = "BR",
@@ -510,6 +516,9 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       municipality    = safe_field(site_cols$municipio),
       altitude_m      = suppressWarnings(as.numeric(safe_field(site_cols$altitude_m))),
       reference_sibcs = if (!is.na(taxon_col)) safe_field(taxon_col) else NA_character_,
+      reference_nivel_1 = safe_field(site_cols$reference_nivel_1),
+      reference_nivel_2 = safe_field(site_cols$reference_nivel_2),
+      reference_nivel_3 = safe_field(site_cols$reference_nivel_3),
       reference_wrb   = safe_field(site_cols$reference_wrb),
       reference_st    = safe_field(site_cols$reference_st),
       drainage        = safe_field(site_cols$drainage),

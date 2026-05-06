@@ -1,0 +1,18 @@
+{
+  "site": {
+    "id": "P-203",
+    "date": "2024-09-03",
+    "observer": "A. Santos",
+    "country": "BR",
+    "state": "MG",
+    "municipality": "Lavras",
+    "lat": -21.2459,
+    "lon": -44.9941,
+    "elevation_m": 920,
+    "slope_pct": 8,
+    "drainage_class": "bem drenado",
+    "parent_material": "gnaisse-granitico do Embasamento Cristalino",
+    "vegetation": "Cerrado stricto sensu",
+    "land_use": "cafeicultura"
+  }
+}
