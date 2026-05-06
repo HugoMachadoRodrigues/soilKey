@@ -1,3 +1,98 @@
+# soilKey 0.9.66 (2026-05-06)
+
+The "Phase 1 -- VLM extraction benchmark" release. Adds the harness
+that lets us measure the local Gemma 4 baseline before deciding
+whether to invest in few-shot demonstrations (Phase 2) or LoRA
+fine-tuning (Phase 3).
+
+## What's shipped
+
+`R/zzz.R`:
+
+- **`.onAttach()`** -- in interactive sessions, prints a one-line
+  hint suggesting `setup_local_vlm("light")` whenever Ollama is
+  detected but `gemma4:e2b` is not yet pulled. The hook never
+  auto-modifies the system unless the user explicitly opts in via
+  `options(soilKey.auto_setup_vlm = TRUE)` or env var
+  `SOILKEY_AUTO_SETUP_VLM=1` (CRAN-compliance: Repository Policy 1.1
+  forbids packages writing to the system on attach without consent).
+  Suppress all hints with `options(soilKey.suggest_local_vlm =
+  FALSE)`.
+- **`.suggest_local_vlm_message(target_model)`** -- pure helper
+  exposed for testability (returns the hint string given the current
+  Ollama state, no side effects).
+
+`R/benchmark-vlm-extraction.R` (new):
+
+- **`benchmark_vlm_extraction(providers, tasks, fixtures_dir,
+  max_per_task)`** -- provider-agnostic benchmark over
+  `c("horizons", "site", "munsell")`. Each (provider, fixture) pair
+  feeds the matching `extract_*` function and the resulting JSON is
+  compared to the golden answer via task-specific metrics:
+  precision/recall + attribute-match (horizons), IoU + value-accuracy
+  (site), CIE Delta-E 2000 over Munsell triplets (munsell). Returns
+  `predictions` (long data.frame) and `summary` (per provider x task).
+  Accepts `MockVLMProvider` for unit tests.
+- **`list_vlm_fixtures(task)`** -- lists bundled `(input,
+  golden.json)` pairs.
+- **`make_synthetic_horizons_fixture(pedon, fixture_id)`** -- renders
+  any `PedonRecord` back into a Markdown profile description and
+  emits the original horizons table as the golden answer. Useful for
+  scaling the horizons fixture set from BDsolos / FEBR / KSSL data.
+- **`.metric_munsell_deltaE()`**, **`.metric_horizons_overlap()`**,
+  **`.metric_site_iou()`** -- the three metric helpers.
+- **`.munsell_delta_e()`** -- pairwise CIE Delta-E 2000 between two
+  Munsell triplets via `munsellinterpol::MunsellToLab` +
+  `CIEDE2000`. Returns `NA` on missing input.
+
+`inst/prompts/extract_site_from_text.md` (new) -- text-mode
+companion to `extract_site_metadata.md`. Required because the
+image-mode prompt explicitly says "Supplied as an image content
+block", which causes the local Gemma to return the schema shape with
+all-null values when fed text.
+
+`inst/fixtures/vlm_extraction/` (new) -- bundled fixtures:
+
+- `horizons/perfil_RJ_argissolo.{txt,golden.json}` (4-horizon
+  Argissolo Vermelho-Amarelo on Mata Atlantica gneiss).
+- `horizons/perfil_MG_latossolo.{txt,golden.json}` (4-horizon
+  Latossolo Vermelho).
+- `site/ficha_RJ_001.{txt,golden.json}` and
+  `site/ficha_MG_002.{txt,golden.json}`.
+- `munsell/README.md` -- format spec; users supply their own photo
+  fixtures (CRAN policy + licence reasons).
+
+`vignettes/v11_vlm_extraction_benchmark.Rmd` (new) -- walkthrough:
+quick start, fixture format, baseline numbers on the user's laptop,
+how to add real BDsolos pedons via `make_synthetic_horizons_fixture()`.
+
+## Baseline measured (gemma4 8B local, MacBook M1)
+
+| Task | Fixture | precision/iou | recall/value-acc | attr-match |
+|------|---------|---------------|------------------|-----------|
+| horizons | Latossolo MG | 1.00 | 1.00 | 1.00 |
+| horizons | Argissolo RJ | 1.00 | 1.00 | 1.00 |
+| site     | Ficha MG     | 0.79 | 1.00 | 0.79 |
+| site     | Ficha RJ     | 0.87 | 0.92 | 0.87 |
+
+Read: text-mode horizons extraction is solved (vanilla Gemma 4 + the
+`pedologist_system_prompt()` persona is enough for clean PT-BR
+profiles). Site extraction is ~83 % IoU but ~96 % value-accuracy on
+matched fields; gaps are inferred fields the smaller model misses.
+
+This baseline is the **input** for Phase 2 (few-shot) and Phase 3
+(LoRA fine-tune) decisions.
+
+## Tests
+
+`tests/testthat/test-v0966-benchmark-vlm-extraction.R`: 47 tests / ~70
+expectations covering fixture discovery, metric correctness on
+synthetic ground truths, end-to-end with `MockVLMProvider`, and the
+`.suggest_local_vlm_message()` shape on Ollama states.
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.65 (2026-05-06)
 
 The "Agente Pedometrista" release. A modern bslib-themed Shiny UI

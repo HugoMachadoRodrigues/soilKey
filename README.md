@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.65](https://img.shields.io/badge/version-0.9.65-FF6B35?style=flat-square)
+![v0.9.66](https://img.shields.io/badge/version-0.9.66-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -12,7 +12,7 @@
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
-[![tests](https://img.shields.io/badge/tests-3821%20passing-brightgreen.svg?style=flat-square)](tests/)
+[![tests](https://img.shields.io/badge/tests-3868%20passing-brightgreen.svg?style=flat-square)](tests/)
 [![coverage](https://img.shields.io/badge/coverage-80.5%25-brightgreen.svg?style=flat-square)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square)](#-coverage)
@@ -48,6 +48,45 @@ classify_usda(pedon)$name
 ```
 
 WRB delivers the **complete Chapter 6 name** — four principal qualifiers + five supplementary qualifiers in canonical order. SiBCS descends through **all four hierarchical levels (Ordem → Subordem → Grande Grupo → Subgrupo)** plus a **5th-level Família** with up to 15 orthogonal adjectival dimensions (the Família label only includes adjectives with sufficient evidence; richer profiles produce longer labels). USDA Soil Taxonomy walks the **complete Path C** (Order → Suborder → Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.* All three keys are deterministic R code driven from versioned YAML rules.
+
+---
+
+## ✦ What's new in v0.9.66 (2026-05-06) — **Phase 1: VLM extraction benchmark**
+
+A measurable baseline for the local Gemma 4 stack — the input we needed before deciding whether to invest in few-shot demos (Phase 2) or LoRA fine-tuning (Phase 3).
+
+```r
+# Compare local Gemma 4 vs cloud reference:
+bench <- benchmark_vlm_extraction(
+  providers = list(
+    gemma_e2b = list(name = "ollama", model = "gemma4:e2b"),
+    claude    = list(name = "anthropic")
+  ),
+  tasks = c("horizons", "site")
+)
+bench$summary
+```
+
+| | |
+|---|---|
+| **`benchmark_vlm_extraction()`** | Provider-agnostic harness over 3 tasks (`horizons` / `site` / `munsell`) × per-task metrics (precision+recall+attr-match / IoU+value-accuracy / CIE ΔE 2000). Returns long-format `predictions` + per-(provider × task) `summary` table. Accepts `MockVLMProvider` for unit tests. |
+| **`make_synthetic_horizons_fixture()`** | Renders any `PedonRecord` back into a Markdown profile description and emits the structured horizons as the golden answer — lets you scale the horizons fixture set from BDsolos / FEBR / KSSL data. |
+| **Bundled fixtures** | `inst/fixtures/vlm_extraction/{horizons,site,munsell}/` ships 4 paired text fixtures (Argissolo RJ + Latossolo MG profile descriptions; ficha de campo RJ + MG). Munsell tab waits for user-supplied photos (CRAN size + licence policy). |
+| **`.onAttach()` opt-in** | Prints a one-line hint suggesting `setup_local_vlm("light")` when Ollama is detected but `gemma4:e2b` is missing. Auto-pull only with `options(soilKey.auto_setup_vlm = TRUE)` (CRAN-compliant: never modifies system without explicit consent). |
+| **Persona text-mode prompt** | New `inst/prompts/extract_site_from_text.md` companion to the image-mode site prompt. Required because the original prompt explicitly says "Supplied as an image content block" and Gemma returns all-null when fed text. |
+
+### Baseline measured on this laptop (gemma4 8B, M1)
+
+| Task | Fixture | precision / IoU | recall / value-acc | attr-match |
+|------|---------|-----------------|--------------------|-----------|
+| `horizons` | Latossolo MG | **1.00** | **1.00** | **1.00** |
+| `horizons` | Argissolo RJ | **1.00** | **1.00** | **1.00** |
+| `site`     | Ficha MG     | 0.79 | 1.00 | 0.79 |
+| `site`     | Ficha RJ     | 0.87 | 0.92 | 0.87 |
+
+Read: **horizons extraction is solved** for clean PT-BR text profiles (vanilla Gemma + persona). **Site extraction is ~83 % IoU and ~96 % value-accuracy on matched fields** — gaps are inferred fields (`country: BR` from a Brazilian state) that the 8B model misses but a 32B/Claude would catch. This is the input for Phase 2 (few-shot demos) and Phase 3 (LoRA fine-tune).
+
+Vinheta walkthrough: [`v11_vlm_extraction_benchmark`](vignettes/v11_vlm_extraction_benchmark.Rmd).
 
 ---
 
@@ -687,4 +726,4 @@ SOFTWARE.
 
 ---
 
-<sub>**Status**: CRAN-ready, v0.9.65 (2026-05-06). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **3 821 passing / 0 failing / 21 expected skips**. **v0.9.65 highlights**: `setup_local_vlm()` one-call bootstrap of Ollama + Gemma 4 (`light`/`balanced`/`best` presets); `run_agent_app()` modern bslib Shiny UI with 8 tabs (foto / PDF / ficha de campo / espectro / tabela / classificar / trace / chat com pedometrista); `pedologist_system_prompt()` persona PT-BR / EN; default Ollama model lowered to `gemma4:e2b` (~1.5 GB, laptop-friendly). [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.55 → v0.9.62 highlights** (the Brazilian benchmark series): `load_bdsolos_csv()` ingests the full Embrapa BDsolos export (~9 000 perfis, 27 UFs, full morphology + Munsell + chemistry + surveyor's SiBCS); `read_febr_pedons()` wraps `febr::readFEBR` with auto-detection of the ~6 distinct Munsell column conventions across the 200 FEBR datasets that carry colour data (36 275 horizons); `benchmark_bdsolos_sibcs()` runs `classify_sibcs()` against ~9 000 surveyor-labelled profiles and computes per-Ordem recall (RJ smoke test: **34 % Ordem accuracy**, Argissolos 67.6 % recall); the SiBCS classifier replaces first-match-wins with a **thickness-weighted dominant-colour-in-B** rule for Argissolos / Latossolos / Nitossolos; `merge_brazilian_pedons()` deduplicates BDsolos × FEBR via `site$sisb_id` (RJ overlap: 590 / 722 BDsolos pedons match a FEBR sisb_id, 1 606 → 1 016 distinct after merge). **v0.9.27 USDA highlights** still apply: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark **+16.1 pp** v0.9.22 → v0.9.27 (Order = 56.7 %); KSSL+NASIS Great Group **+3.84 pp** via the v0.9.25 canonicaliser. Headline USDA benchmark (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %**. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](NEWS.md); roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](inst/cran-submission/HOW_TO_SUBMIT.md).</sub>
+<sub>**Status**: CRAN-ready, v0.9.66 (2026-05-06). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **3 868 passing / 0 failing / 21 expected skips**. **v0.9.66 highlights**: `benchmark_vlm_extraction()` Phase-1 harness (precision/recall/attr-match for horizons; IoU/value-acc/recall for site; CIE ΔE 2000 for Munsell); 4 bundled text fixtures + Munsell photo-fixture spec; baseline measured on local Gemma 4 8B = **100% horizons / ~83% site IoU / ~96% site value-accuracy**; `.onAttach()` CRAN-compliant local-VLM hint with opt-in auto-pull. **v0.9.65 highlights**: `setup_local_vlm()` one-call bootstrap of Ollama + Gemma 4 (`light`/`balanced`/`best` presets); `run_agent_app()` modern bslib Shiny UI with 8 tabs (foto / PDF / ficha de campo / espectro / tabela / classificar / trace / chat com pedometrista); `pedologist_system_prompt()` persona PT-BR / EN; default Ollama model lowered to `gemma4:e2b` (~1.5 GB, laptop-friendly). [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.55 → v0.9.62 highlights** (the Brazilian benchmark series): `load_bdsolos_csv()` ingests the full Embrapa BDsolos export (~9 000 perfis, 27 UFs, full morphology + Munsell + chemistry + surveyor's SiBCS); `read_febr_pedons()` wraps `febr::readFEBR` with auto-detection of the ~6 distinct Munsell column conventions across the 200 FEBR datasets that carry colour data (36 275 horizons); `benchmark_bdsolos_sibcs()` runs `classify_sibcs()` against ~9 000 surveyor-labelled profiles and computes per-Ordem recall (RJ smoke test: **34 % Ordem accuracy**, Argissolos 67.6 % recall); the SiBCS classifier replaces first-match-wins with a **thickness-weighted dominant-colour-in-B** rule for Argissolos / Latossolos / Nitossolos; `merge_brazilian_pedons()` deduplicates BDsolos × FEBR via `site$sisb_id` (RJ overlap: 590 / 722 BDsolos pedons match a FEBR sisb_id, 1 606 → 1 016 distinct after merge). **v0.9.27 USDA highlights** still apply: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark **+16.1 pp** v0.9.22 → v0.9.27 (Order = 56.7 %); KSSL+NASIS Great Group **+3.84 pp** via the v0.9.25 canonicaliser. Headline USDA benchmark (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %**. **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](NEWS.md); roadmap in [`ARCHITECTURE.md` §12](ARCHITECTURE.md#12-roadmap-de-implementação); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](inst/cran-submission/HOW_TO_SUBMIT.md).</sub>

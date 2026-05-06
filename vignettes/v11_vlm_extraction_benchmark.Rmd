@@ -1,0 +1,166 @@
+---
+title: "Phase 1 — VLM extraction benchmark"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Phase 1 — VLM extraction benchmark}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## Why measure first?
+
+Before deciding to **fine-tune** Gemma 4 with a LoRA adapter (Phase 3)
+or **inject few-shot demonstrations** into every call (Phase 2), we
+need to know how good the **vanilla local Gemma 4 + soilKey persona**
+already is. Phase 1 is exactly that measurement.
+
+`benchmark_vlm_extraction()` runs each VLM provider against a small
+fixture set covering three soilKey extraction tasks and reports a per-
+task quality score, plus an `ok / total` reliability ratio.
+
+| Task | Input | Metric (lower-better unless noted) |
+|------|-------|-------------------------------------|
+| `horizons` | Markdown / text profile description | precision + recall + per-attribute match (higher-better) |
+| `site`     | Field-sheet text | IoU + value-accuracy + recall (higher-better) |
+| `munsell`  | Profile photo (with Munsell card) | mean CIE ΔE 2000 (lower-better) |
+
+## Quick start
+
+```{r}
+library(soilKey)
+
+# Local Gemma 4 e2b (1.5 GB) -- assumes setup_local_vlm("light") was run.
+bench <- benchmark_vlm_extraction(
+  providers = list(
+    gemma_e2b = list(name = "ollama", model = "gemma4:e2b")
+  ),
+  tasks         = c("horizons", "site"),  # munsell needs photo fixtures
+  max_per_task  = NULL,                    # use every bundled fixture
+  verbose       = TRUE
+)
+
+bench$summary
+```
+
+Compare two locals + a cloud reference:
+
+```{r}
+bench <- benchmark_vlm_extraction(
+  providers = list(
+    gemma_e2b = list(name = "ollama", model = "gemma4:e2b"),
+    gemma_e4b = list(name = "ollama", model = "gemma4:e4b"),
+    claude    = list(name = "anthropic")
+  ),
+  tasks = c("horizons", "site")
+)
+bench$summary
+```
+
+## Bundled fixtures (v0.9.66)
+
+```
+inst/fixtures/vlm_extraction/
++-- horizons/
+|   +-- perfil_RJ_argissolo.txt
+|   +-- perfil_RJ_argissolo.golden.json
+|   +-- perfil_MG_latossolo.txt
+|   `-- perfil_MG_latossolo.golden.json
++-- site/
+|   +-- ficha_RJ_001.txt
+|   +-- ficha_RJ_001.golden.json
+|   +-- ficha_MG_002.txt
+|   `-- ficha_MG_002.golden.json
+`-- munsell/
+    `-- README.md          # see below for the photo-fixture format
+```
+
+Each task directory holds **paired** `(input, <id>.golden.json)`
+files. The bundled fixtures are deliberately small and synthetic:
+short, clean PT-BR profile descriptions with a known answer. Real
+benchmarking should add real BDsolos / FEBR cases (instructions
+below).
+
+## Adding fixtures from real BDsolos pedons
+
+`make_synthetic_horizons_fixture()` renders any `PedonRecord` back
+into a Markdown description and emits the structured horizons as the
+golden answer. The combination forms a valid `horizons` fixture:
+
+```{r}
+pedons <- load_bdsolos_csv("RJ.csv")
+ped    <- pedons[[1L]]
+
+make_synthetic_horizons_fixture(
+  ped,
+  fixture_id = "bdsolos_RJ_perfil_001",
+  out_dir    = system.file("fixtures", "vlm_extraction", "horizons",
+                            package = "soilKey")
+)
+
+# Re-run the benchmark with the new fixture included:
+benchmark_vlm_extraction(
+  providers    = list(gemma_e2b = list(name = "ollama", model = "gemma4:e2b")),
+  tasks        = "horizons"
+)
+```
+
+For Munsell-from-photo, add real images plus their hand-curated golden
+JSON to `inst/fixtures/vlm_extraction/munsell/` -- see the README in
+that directory for the schema and ΔE interpretation.
+
+## Baseline (v0.9.66, gemma4 8B, MacBook M1)
+
+Smoke run on the four bundled text fixtures:
+
+| Provider | Task | Precision / IoU | Recall / value-acc | Attr-match |
+|----------|------|-----------------|--------------------|------------|
+| `gemma4` (8B, local) | horizons (Latossolo MG) | 1.00 | 1.00 | 1.00 |
+| `gemma4` (8B, local) | horizons (Argissolo RJ) | 1.00 | 1.00 | 1.00 |
+| `gemma4` (8B, local) | site (Ficha MG)         | 0.79 | 1.00 | 0.79 |
+| `gemma4` (8B, local) | site (Ficha RJ)         | 0.87 | 0.92 | 0.87 |
+
+Reads:
+
+- **Horizons extraction is solved** for clean text profiles.
+  Precision = recall = 1.0; every numeric attribute (clay %, pH,
+  C-org) matched within 10 % tolerance.
+- **Site extraction is good but incomplete**: the model gets ~83 %
+  of fields and ~96 % of the matched fields agree on value -- but
+  fields mentioned only obliquely (`country: BR` inferred from
+  state) are missed by the smaller model.
+
+These numbers establish the **vanilla baseline**. Phase 2 and Phase 3
+should target the gaps:
+
+- **Phase 2 (few-shot)**: inject 2-3 demonstration pairs per call to
+  recover the missing site fields. ~2 days of human work; no GPU.
+- **Phase 3 (LoRA)**: train a Parameter-Efficient adapter on (input,
+  golden) pairs from BDsolos + FEBR. Needs ~1 000 labelled pairs and
+  ~6 h on a single H100. Only justified if Phase 2 plateaus.
+
+## Suppressing the .onAttach() local-VLM hint
+
+The `.onAttach()` hook prints a one-line hint suggesting
+`setup_local_vlm("light")` whenever Ollama is detected but
+`gemma4:e2b` is not yet pulled. Suppress with:
+
+```{r}
+options(soilKey.suggest_local_vlm = FALSE)
+```
+
+Or, opt into automatic background pull:
+
+```{r}
+options(soilKey.auto_setup_vlm = TRUE)
+# .. or via env var
+Sys.setenv(SOILKEY_AUTO_SETUP_VLM = "1")
+```
+
+When the auto-setup option is enabled, soilKey runs `ollama pull
+gemma4:e2b` in the background on attach. **CRAN-compliance:** the
+hook never modifies the system without an explicit user opt-in
+(option / env var).

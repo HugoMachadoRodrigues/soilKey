@@ -1,0 +1,11 @@
+FICHA DE DESCRICAO DE PERFIL DE SOLO
+
+Identificacao: PI-001
+Data: 2024-08-12
+Observador: H. Rodrigues
+Localizacao: Itaguai, RJ. Coord. -22.8654, -43.7811. Datum WGS84.
+Altitude: 25 m. Declividade: 4 %. Aspecto: NW.
+Drenagem: bem drenado.
+Material de origem: gnaisse alterado.
+Vegetacao primaria: Floresta Ombrofila Densa.
+Uso atual: pastagem.
