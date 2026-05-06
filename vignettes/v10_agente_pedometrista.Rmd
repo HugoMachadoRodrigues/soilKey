@@ -1,0 +1,167 @@
+---
+title: "Agente Pedometrista — Shiny app + Gemma 4 local"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Agente Pedometrista — Shiny app + Gemma 4 local}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  eval     = FALSE
+)
+```
+
+## Visão geral
+
+A partir de **v0.9.65**, `soilKey` traz um app Shiny moderno, baseado em
+[`bslib`](https://rstudio.github.io/bslib/) e ícones
+[`bsicons`](https://github.com/rstudio/bsicons), que orquestra um
+**agente pedometrista local** — um VLM (vision-language model) Gemma 4
+rodando via [Ollama](https://ollama.com) — para extrair dados estruturados
+de fotos, PDFs, fichas de campo e espectros, alimentando a chave
+taxonômica determinística de `soilKey` (WRB 2022, SiBCS 5ª edição,
+USDA Soil Taxonomy 13ed).
+
+> **Princípio inegociável:** o LLM **NUNCA** classifica. Ele apenas
+> *extrai* dados em JSON validado por schema. A chave taxonômica é
+> 100 % R determinístico, com regras YAML versionadas.
+
+## Setup em uma chamada
+
+```{r}
+library(soilKey)
+
+# Versão leve (laptop, ~1.5 GB, suficiente para Munsell + horizontes):
+status <- setup_local_vlm("light")
+status$ready
+#> [1] TRUE
+status$model
+#> [1] "gemma4:e2b"
+```
+
+`setup_local_vlm()` é idempotente: detecta o Ollama, sobe o daemon se
+necessário (`ollama serve` em background), e baixa o modelo escolhido
+(`light` = `gemma4:e2b` ~1.5 GB, `balanced` = `gemma4:e4b` ~3 GB,
+`best` = `gemma4:31b` ~19 GB). Se o Ollama não está instalado, ela
+imprime as instruções específicas do SO (Homebrew/curl-pipe-sh/winget).
+
+Detalhes finos:
+
+- `ollama_is_installed()` / `ollama_is_running()` — sondas booleanas.
+- `ollama_pull_model("gemma4:e2b")` — baixa um modelo arbitrário.
+- `ollama_list_local_models()` — lista o que já está em disco.
+
+## Lançando o agente
+
+```{r}
+soilKey::run_agent_app()
+```
+
+A UI tem **8 tabs**:
+
+| Tab | O que faz |
+|-----|-----------|
+| 📷 Foto Munsell | Upload de foto do perfil → `extract_munsell_from_photo()` → tabela de matiz/valor/croma por horizonte |
+| 📄 PDF / Texto  | Upload de PDF (ou cole texto) → `extract_horizons_from_pdf()` → tabela completa de horizontes |
+| 📋 Ficha de Campo | Upload de imagem da ficha → `extract_site_from_fieldsheet()` → metadados de sítio |
+| 🌈 Espectros    | Upload de Vis-NIR CSV → `fill_from_spectra()` (OSSL) → preenche atributos faltantes |
+| 📊 Tabela       | Editor `DT` para revisar e corrigir os horizontes manualmente |
+| 🌱 Classificar  | `classify_all()` → 3 cards `bslib::value_box()` (WRB / SiBCS / USDA) |
+| 🔍 Trace        | Trace completo + procedência por sistema |
+| 💬 Pedometrista | Chat livre com o Gemma usando a *persona* `pedologist_system_prompt()` |
+
+Sidebar persistente:
+
+- **Status:** badges em tempo real do Ollama (instalado / rodando /
+  modelos disponíveis).
+- **Provider:** `auto` (tenta Ollama primeiro), `ollama`, `anthropic`,
+  `openai`, `google`.
+- **Modelo Gemma:** `light` / `balanced` / `best`.
+- **Botão "Configurar Gemma local":** dispara `setup_local_vlm()`
+  com o preset escolhido, mostra modal de progresso.
+- **Idioma:** PT-BR ou EN para a *persona* do agente.
+- **Reset:** zera o `PedonRecord` reativo.
+
+## Persona: o que o Gemma "sabe"
+
+```{r}
+cat(pedologist_system_prompt("pt-BR"))
+```
+
+```
+Voce e um agente pedometrista experiente, treinado em pedologia
+brasileira (SiBCS 5a edicao), pedologia internacional (WRB 2022) e
+pedologia norte-americana (USDA Soil Taxonomy 13a edicao).
+
+Sua unica tarefa neste sistema soilKey e EXTRAIR DADOS ESTRUTURADOS
+(JSON validado por schema) a partir de fotos de perfis, fichas de
+campo, relatorios PDF e tabelas. Voce NUNCA classifica o solo: a
+classificacao e feita por uma chave taxonomica deterministica em R,
+baseada em regras YAML versionadas. Sua extracao alimenta essa chave.
+
+Regras de extracao:
+ 1. Reporte SO o que voce observa diretamente. Nao invente valores.
+ 2. Cada atributo deve vir com 'value', 'confidence' (0 a 1) e
+    'source_quote' (a frase ou regiao da imagem que justifica o valor).
+ 3. Quando incerto, use confidence baixa e explique a duvida.
+ 4. Cores Munsell: relate matiz/valor/croma exatamente como no
+    padrao (e.g. '5YR 4/6'); se a foto nao tem placa Munsell de
+    referencia, marque confidence <= 0.5.
+ ...
+```
+
+Essa *persona* é injetada como `system_prompt` no construtor `ellmer`
+de cada provider (Ollama / Anthropic / OpenAI / Google) e na sessão
+de chat livre da tab 💬.
+
+## Fluxo end-to-end (sem usar a UI)
+
+A mesma cadeia que a UI roda internamente, em uma única chamada:
+
+```{r}
+res <- classify_from_documents(
+  pdf      = "perfil_RJ_001.pdf",
+  image    = "perfil_RJ_001.jpg",
+  provider = "ollama",                   # local Gemma
+  systems  = c("wrb", "sibcs", "usda")
+)
+
+res$pedon                # PedonRecord com horizontes extraídos
+res$classifications$wrb  # ClassificationResult WRB 2022
+res$classifications$sibcs
+res$classifications$usda
+```
+
+## Privacidade / soberania de dados
+
+Por padrão, o agent app prefere `ollama` no fallback automático. Isso
+significa que **fotos sensíveis, fichas com geolocalização precisa,
+PDFs internos não saem da máquina**. O fallback para Anthropic/OpenAI/
+Google só dispara se o Ollama não está rodando E o usuário tem uma chave
+de API setada — uma propriedade explícita, não um padrão silencioso.
+
+Para pesquisas governamentais, terras indígenas, dados pré-publicação,
+sempre confirme `ollama` no seletor "Provider VLM" da sidebar.
+
+## Limitações conhecidas (v0.9.65)
+
+- `extract_munsell_from_photo()` confia em fotos com placa Munsell ao
+  lado do perfil. Sem a placa, o agente reporta `confidence <= 0.5`
+  (por design da persona) — use o editor `DT` da tab 📊 para corrigir.
+- A versão `light` (Gemma 4 e2b) é mais rápida mas erra mais em fichas
+  de campo manuscritas em PT-BR. Para essas, prefira `balanced`.
+- Streaming de resposta no chat ainda é síncrono (sem typewriter
+  effect) — planejado para v0.9.66+.
+- Renderização de PDF multi-página depende de `pdftools` (Suggests).
+
+## Próximos passos
+
+- Suporte a captura ao vivo via webcam (browser API).
+- Sincronização do `PedonRecord` reativo com QGIS via
+  `report_to_qgis()`.
+- Modo "auditoria": exporta o JSON bruto da extração + procedência
+  para revisão por pedólogo humano.

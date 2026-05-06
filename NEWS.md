@@ -1,3 +1,76 @@
+# soilKey 0.9.65 (2026-05-06)
+
+The "Agente Pedometrista" release. A modern bslib-themed Shiny UI
+that orchestrates the v0.9.64 local Gemma 4 stack for end-to-end
+soil profile classification: photo + PDF + field-sheet image +
+Vis-NIR spectrum -> deterministic taxonomic key under WRB 2022,
+SiBCS 5a edicao and USDA Soil Taxonomy 13ed -- in one session.
+
+## What's shipped
+
+`inst/shiny/agent_app/app.R` (new) -- bslib `page_navbar()` UI
+with eight tabs:
+
+- **Foto Munsell** -- upload photo -> `extract_munsell_from_photo()`
+  -> DT preview of matiz / valor / croma per horizon.
+- **PDF / Texto** -- upload PDF or paste text ->
+  `extract_horizons_from_pdf()` -> DT horizons table.
+- **Ficha de Campo** -- upload image ->
+  `extract_site_from_fieldsheet()` -> site metadata block.
+- **Espectros** -- upload Vis-NIR CSV -> `fill_from_spectra()`
+  via OSSL local-band library -> fills missing soil properties.
+- **Tabela de horizontes** -- editable DT table for manual
+  correction of the reactive PedonRecord.
+- **Classificar** -- runs `classify_all()` -> 3
+  `bslib::value_box()` cards (WRB 2022 / SiBCS 5a / USDA Tax 13).
+- **Trace** -- per-system trace + provenance browser (radio toggle).
+- **Pergunte ao Pedometrista** -- free-form chat with the local
+  Gemma using `pedologist_system_prompt()` (ellmer chat session
+  preserved across messages).
+
+Persistent sidebar (320 px) with provider/model selector,
+real-time Ollama status badges (`installed` / `running` /
+`models`), "Configurar Gemma local" button (calls
+`setup_local_vlm()` with progress modal), language toggle
+(PT-BR / EN), and session reset.
+
+`R/run-agent-app.R` (new):
+
+- **`run_agent_app(port = NULL, launch.browser = TRUE, ...)`** --
+  launcher; soft-fails on missing Suggests (`shiny`, `bslib`,
+  `bsicons`, `DT`) with an actionable `install.packages()` hint.
+
+`vignettes/v10_agente_pedometrista.Rmd` (new) -- end-to-end
+walkthrough covering setup, persona, all 8 tabs, the
+`classify_from_documents()` programmatic equivalent, privacy /
+data sovereignty rationale, and known limitations.
+
+`README.md`:
+
+- Version badge 0.9.62 -> 0.9.65.
+- Tests-passing badge 3 760 -> 3 821.
+- New "What's new in v0.9.65 -- Agente Pedometrista" section above
+  the v0.9.62 Brazilian-benchmark section.
+- Status footer rewritten to lead with the agent app.
+
+`DESCRIPTION`:
+
+- Adds `bslib` and `bsicons` to Suggests (both pure-R ports of
+  Bootstrap 5 components and Bootstrap Icons).
+
+## Tests
+
+`tests/testthat/test-v0965-agent-app.R`: 4 tests verifying
+
+- `run_agent_app` exported and references all four required
+  Suggests in its dependency check.
+- `inst/shiny/agent_app/app.R` is syntactically parseable.
+- All eight `nav_panel()` titles are present in the source.
+- The persona helper (`pedologist_system_prompt`) is referenced.
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.64 (2026-05-06)
 
 The "local-VLM bootstrap" release. Adds one-call setup of Ollama +
