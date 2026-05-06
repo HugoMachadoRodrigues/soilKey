@@ -31,16 +31,22 @@ post_fn = ...)} for SmartSolos).}
 \value{
 A list with elements:
   \describe{
-    \item{\code{predictions}}{data.frame: \code{point_id,
-          predicted_ordem, reference_ordem, agree_ordem,
-          predicted_subordem, reference_subordem (when
-          parseable), reference_raw}.}
+    \item{\code{predictions}}{data.frame with columns:
+          point_id, predicted_ordem, reference_ordem, agree_ordem,
+          predicted_subordem, reference_subordem,
+          predicted_subordem_code, reference_subordem_code
+          (canonical SiBCS 2-3 letter codes from
+          .bdsolos_normalize_subordem()),
+          agree_subordem, predicted_gg, reference_gg,
+          reference_raw.}
     \item{\code{confusion}}{Ordem-level confusion table.}
     \item{\code{accuracy}}{Overall Ordem-level match fraction.}
+    \item{\code{accuracy_subordem}}{v0.9.61: subordem-level match
+          fraction over pedons with both predicted and reference
+          subordem codes resolvable.}
     \item{\code{per_ordem}}{data.frame: per-Ordem recall.}
     \item{\code{summary}}{n_total, n_in_scope, n_matched,
-          n_errors, n_unmapped (reference Ordem string we
-          cannot normalise to a SiBCS Ordem).}
+          n_errors, n_unmapped, n_in_scope_sub, n_matched_sub.}
   }
 }
 \description{

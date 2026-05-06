@@ -112,6 +112,108 @@
 }
 
 
+#' Map a SiBCS subordem name (any case / language form) to the canonical code
+#'
+#' v0.9.61 helper: BDsolos surveyors export Nivel 2 in ALL CAPS singular
+#' (e.g. \code{"ARGISSOLO VERMELHO"}); soilKey returns Title Case plural
+#' (e.g. \code{"Argissolos Vermelhos"}). To compute subordem-level
+#' agreement we collapse both to the canonical 2-3 letter SiBCS code
+#' (PV / PA / PVA / PBAC / PAC / LV / LA / LVA / LB / NV / NB / NX / TC /
+#' TX / CX / CHU / CH / CY / GM / GZ / GJ / GX / EK / EJ / ES / OJ / OO /
+#' OX / RL / RY / RQ / RR / MD / ME / MT / MX / SN / SX / FT / FF / FX /
+#' VC / VE / VX).
+#'
+#' @keywords internal
+.bdsolos_normalize_subordem <- function(s) {
+  if (is.null(s) || length(s) == 0L || is.na(s) || !nzchar(trimws(s))) {
+    return(NA_character_)
+  }
+  raw <- toupper(trimws(as.character(s)))
+  ascii <- chartr(
+    intToUtf8(c(0xc1, 0xc0, 0xc2, 0xc3, 0xc4, 0xc9, 0xc8, 0xca, 0xcb,
+                 0xcd, 0xcc, 0xce, 0xcf, 0xd3, 0xd2, 0xd4, 0xd5, 0xd6,
+                 0xda, 0xd9, 0xdb, 0xdc, 0xc7, 0xd1)),
+    "AAAAAEEEEIIIIOOOOOUUUUCN",
+    raw
+  )
+  # Strip trailing characters after 2nd word (third level descriptors etc.)
+  toks <- strsplit(ascii, "[ ,;]+")[[1L]]
+  if (length(toks) < 1L) return(NA_character_)
+  ord_word <- toks[1L]
+  sub_word <- if (length(toks) >= 2L) toks[2L] else ""
+  # Some BDsolos rows use compound names (BRUNO-ACINZENTADO,
+  # VERMELHO-AMARELO).
+  sub_word <- gsub("-", "", sub_word)
+  if (length(toks) >= 3L &&
+        sub_word %in% c("BRUNO", "VERMELHO") &&
+        toks[3L] %in% c("ACINZENTADO", "AMARELO", "ACINZ")) {
+    sub_word <- paste0(sub_word, toks[3L])
+  }
+  key <- paste0(ord_word, "_", sub_word)
+  map <- c(
+    # Argissolos (P)
+    "ARGISSOLO_BRUNOACINZENTADO" = "PBAC",
+    "ARGISSOLO_ACINZENTADO"      = "PAC",
+    "ARGISSOLO_AMARELO"          = "PA",
+    "ARGISSOLO_VERMELHO"         = "PV",
+    "ARGISSOLO_VERMELHOAMARELO"  = "PVA",
+    # Cambissolos (C)
+    "CAMBISSOLO_HISTICO"         = "CH",
+    "CAMBISSOLO_HUMICO"          = "CHU",
+    "CAMBISSOLO_FLUVICO"         = "CY",
+    "CAMBISSOLO_HAPLICO"         = "CX",
+    # Chernossolos (M)
+    "CHERNOSSOLO_RENDZICO"       = "MD",
+    "CHERNOSSOLO_EBANICO"        = "ME",
+    "CHERNOSSOLO_ARGILUVICO"     = "MT",
+    "CHERNOSSOLO_HAPLICO"        = "MX",
+    # Espodossolos (E)
+    "ESPODOSSOLO_HUMILUVICO"     = "EK",
+    "ESPODOSSOLO_FERRILUVICO"    = "EJ",
+    "ESPODOSSOLO_FERRIHUMILUVICO" = "ES",
+    # Gleissolos (G)
+    "GLEISSOLO_TIOMORFICO"       = "GJ",
+    "GLEISSOLO_SALICO"           = "GZ",
+    "GLEISSOLO_MELANICO"         = "GM",
+    "GLEISSOLO_HAPLICO"          = "GX",
+    # Latossolos (L)
+    "LATOSSOLO_BRUNO"            = "LB",
+    "LATOSSOLO_AMARELO"          = "LA",
+    "LATOSSOLO_VERMELHO"         = "LV",
+    "LATOSSOLO_VERMELHOAMARELO"  = "LVA",
+    # Luvissolos (T)
+    "LUVISSOLO_CROMICO"          = "TC",
+    "LUVISSOLO_HAPLICO"          = "TX",
+    # Neossolos (R)
+    "NEOSSOLO_LITOLICO"          = "RL",
+    "NEOSSOLO_FLUVICO"           = "RY",
+    "NEOSSOLO_QUARTZARENICO"     = "RQ",
+    "NEOSSOLO_REGOLITICO"        = "RR",
+    # Nitossolos (N)
+    "NITOSSOLO_BRUNO"            = "NB",
+    "NITOSSOLO_VERMELHO"         = "NV",
+    "NITOSSOLO_HAPLICO"          = "NX",
+    # Organossolos (O)
+    "ORGANOSSOLO_TIOMORFICO"     = "OJ",
+    "ORGANOSSOLO_FOLICO"         = "OO",
+    "ORGANOSSOLO_HAPLICO"        = "OX",
+    # Planossolos (S)
+    "PLANOSSOLO_NATRICO"         = "SN",
+    "PLANOSSOLO_HAPLICO"         = "SX",
+    # Plintossolos (F)
+    "PLINTOSSOLO_PETRICO"        = "FF",
+    "PLINTOSSOLO_ARGILUVICO"     = "FT",
+    "PLINTOSSOLO_HAPLICO"        = "FX",
+    # Vertissolos (V)
+    "VERTISSOLO_HIDROMORFICO"    = "VC",
+    "VERTISSOLO_EBANICO"         = "VE",
+    "VERTISSOLO_HAPLICO"         = "VX"
+  )
+  if (key %in% names(map)) return(unname(map[key]))
+  NA_character_
+}
+
+
 #' Run the BDsolos / SiBCS surveyor-reference benchmark
 #'
 #' Runs \code{\link{classify_sibcs}} on each pedon and tabulates
@@ -137,16 +239,22 @@
 #' @param verbose If \code{TRUE} (default), prints a summary line.
 #' @return A list with elements:
 #'   \describe{
-#'     \item{\code{predictions}}{data.frame: \code{point_id,
-#'           predicted_ordem, reference_ordem, agree_ordem,
-#'           predicted_subordem, reference_subordem (when
-#'           parseable), reference_raw}.}
+#'     \item{\code{predictions}}{data.frame with columns:
+#'           point_id, predicted_ordem, reference_ordem, agree_ordem,
+#'           predicted_subordem, reference_subordem,
+#'           predicted_subordem_code, reference_subordem_code
+#'           (canonical SiBCS 2-3 letter codes from
+#'           .bdsolos_normalize_subordem()),
+#'           agree_subordem, predicted_gg, reference_gg,
+#'           reference_raw.}
 #'     \item{\code{confusion}}{Ordem-level confusion table.}
 #'     \item{\code{accuracy}}{Overall Ordem-level match fraction.}
+#'     \item{\code{accuracy_subordem}}{v0.9.61: subordem-level match
+#'           fraction over pedons with both predicted and reference
+#'           subordem codes resolvable.}
 #'     \item{\code{per_ordem}}{data.frame: per-Ordem recall.}
 #'     \item{\code{summary}}{n_total, n_in_scope, n_matched,
-#'           n_errors, n_unmapped (reference Ordem string we
-#'           cannot normalise to a SiBCS Ordem).}
+#'           n_errors, n_unmapped, n_in_scope_sub, n_matched_sub.}
 #'   }
 #'
 #' @examples
@@ -229,6 +337,13 @@ benchmark_bdsolos_sibcs <- function(pedons,
                   character(1L))
   agree_ordem <- !is.na(predicted_ordem) & !is.na(reference_ordem) &
                   predicted_ordem == reference_ordem
+  # v0.9.61: Subordem-level agreement via canonical 2-3 letter SiBCS code.
+  predicted_sub_code <- vapply(predicted_subordem, .bdsolos_normalize_subordem,
+                                  character(1L))
+  reference_sub_code <- vapply(reference_subordem, .bdsolos_normalize_subordem,
+                                  character(1L))
+  agree_subordem <- !is.na(predicted_sub_code) & !is.na(reference_sub_code) &
+                       predicted_sub_code == reference_sub_code
   comparison <- data.frame(
     point_id           = ids,
     predicted_ordem    = predicted_ordem,
@@ -236,6 +351,9 @@ benchmark_bdsolos_sibcs <- function(pedons,
     agree_ordem        = agree_ordem,
     predicted_subordem = predicted_subordem,
     reference_subordem = reference_subordem,
+    predicted_subordem_code = predicted_sub_code,
+    reference_subordem_code = reference_sub_code,
+    agree_subordem     = agree_subordem,
     predicted_gg       = predicted_gg,
     reference_gg       = reference_gg,
     reference_raw      = reference_raw,
@@ -246,6 +364,15 @@ benchmark_bdsolos_sibcs <- function(pedons,
   n_in_scope <- sum(in_scope)
   n_matched  <- sum(comparison$agree_ordem)
   accuracy <- if (n_in_scope > 0L) n_matched / n_in_scope else NA_real_
+
+  # v0.9.61: subordem-level metrics (only over pedons with both codes).
+  in_scope_sub <- !is.na(comparison$predicted_subordem_code) &
+                     !is.na(comparison$reference_subordem_code)
+  n_in_scope_sub <- sum(in_scope_sub)
+  n_matched_sub  <- sum(comparison$agree_subordem)
+  accuracy_subordem <- if (n_in_scope_sub > 0L) {
+    n_matched_sub / n_in_scope_sub
+  } else NA_real_
 
   conf <- if (n_in_scope > 0L) {
     table(
@@ -284,13 +411,16 @@ benchmark_bdsolos_sibcs <- function(pedons,
     predictions = comparison,
     confusion   = conf,
     accuracy    = accuracy,
+    accuracy_subordem = accuracy_subordem,
     per_ordem   = per_ordem,
     summary = list(
-      n_total     = length(pedons),
-      n_in_scope  = n_in_scope,
-      n_matched   = n_matched,
-      n_errors    = length(errors),
-      n_unmapped  = n_unmapped
+      n_total          = length(pedons),
+      n_in_scope       = n_in_scope,
+      n_matched        = n_matched,
+      n_errors         = length(errors),
+      n_unmapped       = n_unmapped,
+      n_in_scope_sub   = n_in_scope_sub,
+      n_matched_sub    = n_matched_sub
     ),
     errors = errors
   )

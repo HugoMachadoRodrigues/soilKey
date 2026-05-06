@@ -97,13 +97,20 @@ test_that("benchmark_bdsolos_sibcs returns the documented schema", {
     .make_bdsolos_pedon_for_benchmark("L", "LATOSSOLO")
   )
   bench <- benchmark_bdsolos_sibcs(pedons, verbose = FALSE)
+  # v0.9.61: top-level adds accuracy_subordem; predictions adds the
+  # canonical-code subordem agreement triplet.
   expect_named(bench, c("predictions", "confusion", "accuracy",
-                          "per_ordem", "summary", "errors"))
+                          "accuracy_subordem", "per_ordem",
+                          "summary", "errors"))
   expect_s3_class(bench$predictions, "data.frame")
   expect_setequal(names(bench$predictions),
                     c("point_id", "predicted_ordem", "reference_ordem",
                       "agree_ordem", "predicted_subordem",
-                      "reference_subordem", "predicted_gg",
+                      "reference_subordem",
+                      "predicted_subordem_code",
+                      "reference_subordem_code",
+                      "agree_subordem",
+                      "predicted_gg",
                       "reference_gg", "reference_raw"))
 })
 

@@ -211,6 +211,18 @@ classify_sibcs <- function(pedon,
   sub_result <- run_sibcs_subordem(pedon, ordem$code, rules)
   subordem   <- sub_result$assigned
 
+  # v0.9.61: regra dominante-de-cor em B. O YAML usa first-match-wins,
+  # que captura a subordem pelo primeiro horizonte B que satisfaz o
+  # predicado de cor. Para Argissolos / Latossolos / Nitossolos, isso
+  # destorce perfis com cores mistas (e.g. Bt1 amarelo + Bt2 vermelho
+  # mais espesso -> deveria ser PV, mas vai PA). O post-processor
+  # abaixo recalcula a categoria de cor dominante por espessura
+  # cumulativa e, quando difere do first-match, troca a subordem.
+  color_override_info <- .apply_color_dominant_override(
+    subordem, pedon, ordem$code, rules
+  )
+  subordem <- color_override_info$subordem
+
   # v0.9.45: detectar fallback "cor a determinar" -- quando a subordem
   # atribuida e a catch-all de cor (PVA/LVA/NX/TX) E pelo menos um
   # predicado anterior falhou por ausencia de matiz Munsell em B, o
@@ -283,7 +295,8 @@ classify_sibcs <- function(pedon,
     subgrupo_assigned     = sg,
     familia               = familia_attrs,
     familia_label         = familia_lbl,
-    color_undetermined    = color_fallback
+    color_undetermined    = color_fallback,
+    color_dominant_override = color_override_info$override
   )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)
@@ -311,6 +324,9 @@ classify_sibcs <- function(pedon,
   }
   if (!is.null(color_fallback)) {
     warnings <- c(warnings, color_fallback$reason)
+  }
+  if (!is.null(color_override_info$override)) {
+    warnings <- c(warnings, color_override_info$override$reason)
   }
 
   ClassificationResult$new(

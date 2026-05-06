@@ -1,3 +1,90 @@
+# soilKey 0.9.61 (2026-05-04)
+
+The "thickness-weighted dominant-color-in-B" release.
+Replaces SiBCS subordem first-match-wins for color-driven Ordens
+(Argissolos / Latossolos / Nitossolos) with a deterministic
+thickness-weighted dominant-color rule.
+
+## What's shipped
+
+`R/sibcs-color-tuning.R` (new):
+
+- **`.classify_b_color(hue, value, chroma)`** internal: classifies
+  a single Munsell color into one of `VERMELHO` / `VERMELHO_AMARELO`
+  / `AMARELO` / `BRUNO_ACINZENTADO` / `ACINZENTADO` (`NA` when any
+  Munsell component is missing).
+
+- **`.dominant_b_color(pedon)`** internal: walks every B-like
+  horizon, classifies each via `.classify_b_color()`, sums
+  thickness per category, returns the dominant category. Ties
+  broken in canonical SiBCS order (BRUNO_ACINZ > ACINZ > AMARELO
+  > VERMELHO > V_AMARELO).
+
+- **`.dominant_b_color_subordem(pedon, ordem_code)`** internal:
+  ordem-aware mapping from dominant color category -> SiBCS
+  subordem code:
+    - P (Argissolos): PV / PA / PVA / PBAC / PAC
+    - L (Latossolos): LV / LA / LVA / LB   / LVA
+    - N (Nitossolos): NV / NX  / NX  / NB  / NX
+  Other Ordens return NA (no override).
+
+- **`.apply_color_dominant_override(subordem, pedon, ordem_code,
+  rules)`** internal post-processor: when the YAML key's
+  first-match-wins assignment differs from the dominant-color
+  rule, swaps the assigned subordem entry with the YAML block
+  matching the new code, and emits a `reason` string for the
+  classification trace.
+
+`R/key-sibcs.R`:
+
+- **`classify_sibcs()`** wires `.apply_color_dominant_override()`
+  between subordem assignment and the v0.9.45 "cor a determinar"
+  fallback detection. The override happens FIRST, so a profile
+  whose first-match was forced into the catch-all PVA/LVA/NX by
+  YAML order can still be correctly resolved when its dominant
+  color is an explicit subordem. The override evidence ends up in
+  `result$trace$color_dominant_override` and a warning is added
+  to `result$warnings` whenever it fires.
+
+`R/benchmark-bdsolos.R`:
+
+- **`.bdsolos_normalize_subordem(s)`** internal: maps SiBCS
+  subordem display names (BDsolos ALL-CAPS or soilKey Title-Case
+  plural) to canonical 2-3 letter codes (PV / PBAC / LVA / etc.).
+  Diacritic-aware. Handles compound names (BRUNO-ACINZENTADO,
+  VERMELHO-AMARELO).
+
+- **`benchmark_bdsolos_sibcs()`** now also reports subordem-level
+  metrics:
+    - `predictions$predicted_subordem_code` /
+      `reference_subordem_code` / `agree_subordem`
+    - `accuracy_subordem` (top-level)
+    - `summary$n_in_scope_sub` / `summary$n_matched_sub`
+
+## Smoke results (RJ benchmark, 100 pedons)
+
+- Pedons with subordem overridden by dominant-color rule: 9 / 100
+- Ordem accuracy unchanged (33%) -- override is a 2nd-level rule
+- Argissolo subordem accuracy now reportable (was 0% by name
+  comparison due to case mismatch; canonical-code comparison
+  fixes this).
+
+## Tests
+
+`tests/testthat/test-v0961-sibcs-color-tuning.R` adds 14 tests
+(37 expectations):
+
+- `.classify_b_color` mapping for all 5 categories + NA inputs
+- `.dominant_b_color` thickness-weighted dominant + NA fallback
+- `.dominant_b_color_subordem` for P/L Ordens + non-color Ordens
+- `.apply_color_dominant_override` flip + no-op + non-color Ordem
+  + missing-Munsell paths
+- `classify_sibcs()` end-to-end: override exposed in trace +
+  Cambissolos untouched
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.60 (2026-05-06)
 
 The "Brazilian SiBCS surveyor-reference benchmark" release.
