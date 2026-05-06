@@ -28,11 +28,14 @@ Defaults (as of v0.9.11):
   \item \code{openai = "gpt-4o"} -- text + vision.
   \item \code{google = "gemini-2.0-pro"} -- successor to 1.5
         with longer context + better multimodal grounding.
-  \item \code{ollama = "gemma4:e4b"} -- Gemma 4 edge
-        multimodal (text + image; audio also). For larger
-        contexts use \code{"gemma4:31b"}; for cloud-only
-        offload via Ollama, \code{"gemma4-cloud:31b"}. Pull the
-        desired size first with \code{ollama pull gemma4:e4b}.
+  \item \code{ollama = "gemma4:e2b"} -- v0.9.64 default. Gemma 4
+        edge 2B (~6.7 GB on disk; multimodal builds bundle a
+        vision encoder that adds ~5 GB to the bare parameter
+        weights), runs on a laptop CPU. Larger options:
+        \code{"gemma4:e4b"} (~8 GB, better accuracy on PT-BR field
+        sheets), \code{"gemma4:31b"} (~19 GB, frontier dense,
+        requires GPU). One-shot bootstrap:
+        \code{\link{setup_local_vlm}("light"|"balanced"|"best")}.
 }
 
 Users can override at any time:

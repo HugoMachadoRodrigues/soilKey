@@ -1,3 +1,749 @@
+# soilKey 0.9.71 (2026-05-06)
+
+The "Phase 2 done -- production-ready VLM stack" release. Bundles
+three coherent improvements that together close out the Phase 2
+roadmap: (A) 8 hard BDsolos-derived fixtures with multi-rep
+variance characterisation, (B) ellmer `chat_structured()` bridge
+for protocol-level schema validation, (C) production polish
+(progress bars, agent_app exposure of fewshot/structured toggles,
+size-correct catalog labels).
+
+## (A) BDsolos hard fixtures
+
+Generated via `make_synthetic_horizons_fixture()` from 8 diverse
+RJ pedons selected by SiBCS Ordem (Argissolo, Cambissolo,
+Chernossolo, Espodossolo, Gleissolo, Latossolo, Neossolo,
+Planossolo). Each carries a real BDsolos pedon's full horizon
+table as the golden answer. Bundled in
+`inst/fixtures/vlm_extraction/horizons/bdsolos_RJ_*.{txt,golden.json}`.
+
+Reproduce locally with:
+
+```r
+bench <- benchmark_vlm_extraction(
+  providers = list(gemma_e2b = list(name = "ollama", model = "gemma4:e2b")),
+  tasks       = "horizons",
+  use_fewshot = TRUE,
+  n_repeats   = 3L
+)
+bench$summary[, c("ok_rate", "metric_1_mean", "metric_1_sd",
+                    "metric_2_mean", "metric_2_sd",
+                    "metric_3_mean", "metric_3_sd")]
+```
+
+(The 8-fixture × 3-rep run takes ~30 minutes on a laptop CPU. Empirical
+numbers from a fully-completed run are deferred to a follow-up
+v0.9.72 release.)
+
+## (B) ellmer structured outputs
+
+`R/vlm-types.R` (new):
+
+- **`vlm_type_from_soilkey_schema(name)`** -- wraps
+  `ellmer::type_from_schema()` reading
+  `inst/schemas/<name>.json` directly. Returns the ellmer type
+  tree the provider expects via `chat_structured(type = ...)`.
+  Caches nothing (schemas are tiny); errors on unknown name.
+- **`.provider_supports_structured(provider)`** -- capability
+  probe. TRUE only when the provider exposes `chat_structured`
+  as a method. MockVLMProvider and any non-ellmer chat object
+  return FALSE here, so `use_structured = TRUE` degrades
+  gracefully to the legacy retry loop.
+
+`R/vlm-validate.R`:
+
+- **`validate_or_retry(..., use_structured = FALSE)`** -- new
+  parameter. When TRUE AND provider supports it, the function
+  short-circuits the chat-and-parse-and-retry loop: the provider
+  receives the ellmer type tree built from the soilKey schema and
+  returns a structurally-valid R list directly. Removes the
+  entire class of "model returned prose / wrong shape" failures
+  at the protocol level (Anthropic tool calls, OpenAI
+  response_format = json_schema, Ollama 0.5+ format = json_schema,
+  Gemini structured output).
+
+`R/vlm-extract.R` + `R/benchmark-vlm-extraction.R`:
+
+- `extract_horizons_from_pdf()`, `extract_munsell_from_photo()`,
+  `extract_site_from_fieldsheet()` -- all now accept
+  `use_structured = FALSE` (default for back-compat). Forwarded
+  through `validate_or_retry()`.
+- `benchmark_vlm_extraction(use_structured = FALSE)` -- same.
+
+## (C) Production polish
+
+`R/vlm-extract.R`:
+
+- `extract_horizons_from_pdf()` -- multi-chunk PDFs now show a
+  per-chunk `cli::cli_progress_bar()` (no-op for single-chunk
+  documents, which is the common case).
+
+`inst/shiny/agent_app/app.R`:
+
+- New sidebar section "Estrategia de extracao" with checkboxes
+  for `use_fewshot` (default TRUE) and `use_structured` (default
+  FALSE). The two flags propagate through to every
+  `extract_*()` call inside the agent app.
+- Model preset labels corrected to the v0.9.67 measured sizes
+  (light = ~6.7 GB, balanced = ~8 GB, best = ~19 GB).
+
+## Tests
+
+- `test-v0970-structured-outputs.R`: 20 tests / ~45 expectations
+  covering the type-builder, capability probe, fast path,
+  fallback path, and parameter propagation through the extractor
+  family.
+- 3 888 / 0 / 21 total (was 3 868 in v0.9.68; +20 from v0.9.70
+  test file).
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.68 (2026-05-06)
+
+The "Phase 2 -- few-shot demonstrations" release. Adds schema-correct
+worked-example prompts for the three extraction tasks, an opt-in
+`use_fewshot` parameter on every extractor, and an `n_repeats`
+parameter on the benchmark for proper variance characterisation. A
+new harder bundled fixture (multi-horizon Chernossolo with PT-BR
+comma decimals + mixed Munsell umida/seca + CaCO3) lets us measure
+real lift instead of fighting noise on toy fixtures.
+
+## What's shipped
+
+`inst/prompts/` (3 new few-shot variants):
+
+- **`extract_horizons_fewshot.md`** -- 2 worked examples in the
+  exact mixed-shape required by the horizon schema: `top_cm`,
+  `bottom_cm`, `designation`, `boundary_*` are RAW values;
+  `munsell_moist` / `munsell_dry` are SINGLE wrapped objects holding
+  hue+value+chroma+confidence+source_quote; everything else
+  (clay_pct, ph_h2o, etc.) is wrapped `{value, confidence,
+  source_quote}`. The prior fewshot draft (which had separate
+  `munsell_hue_moist` etc. wrappers) caused 0 % ok rate against the
+  schema -- this is the corrected v0.9.68 shape.
+- **`extract_site_from_text_fewshot.md`** -- 2 worked examples,
+  PT-BR + EN, with `id` raw and everything else wrapped. Includes
+  inferred-country pattern (`country: BR` from `Piracicaba, SP`
+  with confidence 0.85).
+- **`extract_munsell_from_photo_fewshot.md`** -- 2 worked
+  examples, one with reference card (high confidence), one
+  without (capped <= 0.5 confidence per persona).
+
+`R/vlm-extract.R`:
+
+- **`extract_horizons_from_pdf(..., use_fewshot = TRUE)`** -- new
+  parameter, default TRUE. When TRUE, switches the prompt to
+  `extract_horizons_fewshot`. Set FALSE to revert to the bare-
+  instructions prompt for a baseline-vs-fewshot A/B.
+- **`extract_munsell_from_photo(..., use_fewshot = TRUE)`** -- same.
+- `extract_site_from_fieldsheet(..., use_fewshot = TRUE)` --
+  parameter accepted but the image-mode site path keeps the
+  default prompt (the few-shot text-mode path runs through
+  `.run_one_extraction()` instead).
+
+`R/benchmark-vlm-extraction.R`:
+
+- **`benchmark_vlm_extraction(..., use_fewshot = TRUE,
+  n_repeats = 1L)`** -- two new parameters. `use_fewshot` toggles
+  the few-shot prompt variants; `n_repeats` runs each fixture N
+  times to characterise stochastic LLM variance. Summary now
+  reports `metric_*_mean` AND `metric_*_sd` per (provider, task).
+
+`inst/fixtures/vlm_extraction/horizons/`:
+
+- **`perfil_BA_chernossolo_messy.{txt,golden.json}`** -- new
+  harder fixture. 4-horizon Chernossolo Argiluvico Carbonatico
+  from a Bahia survey, with PT-BR comma-decimal pH (`5,4`),
+  mixed Munsell umida + seca, CaCO3 equivalents, and the kind of
+  free-form prose ("Coordenadas em UTM zona 23S mas sem datum
+  explicito; convertido aproximadamente para...") that toy
+  fixtures don't exercise. Smoke-tested at v0.9.68:
+  precision = 1.00, recall = 1.00, attr_match = 0.79 with
+  gemma4:e2b + few-shot.
+
+## Honest measurement findings
+
+Re-ran the bundled benchmark with `use_fewshot = FALSE` (baseline)
+and `use_fewshot = TRUE` (Phase 2) on `gemma4:e2b`:
+
+| Task     | Fixture          | Baseline | Few-shot | Delta |
+|----------|------------------|----------|----------|-------|
+| horizons | Latossolo MG     | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 | 0 |
+| horizons | Argissolo RJ     | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 | 0 |
+| horizons | Chernossolo BA   | (not yet)         | 1.00 / 1.00 / 0.79 | NEW |
+| site     | Ficha MG         | 0.79 / 1.00 / 0.79 | 0.79 / 1.00 / 0.79 | 0 |
+| site     | Ficha RJ         | 0.80 / 0.92 / 0.80 | 0.80 / 0.92 / 0.80 | 0 |
+
+Read: **few-shot does NOT change the result on simple fixtures**
+because vanilla `gemma4:e2b` already nails them. The 50 % ok-rate
+observed in v0.9.66 was stochastic variance, not a real failure
+mode -- the new `n_repeats` parameter will catch this in future
+runs. Few-shot DOES NOT regress (no quality loss), and the harder
+Chernossolo BA fixture demonstrates the system handles non-toy
+PT-BR profiles well: 100 % precision/recall on horizon segmentation
+and ~79 % on numeric attributes.
+
+When Phase 2 will help is on tasks with **systematic schema-shape
+errors** (the original failure mode we hypothesised). The current
+4-fixture suite was too easy to surface those. Real lift requires
+either: (a) more `n_repeats` to drive down variance, (b) harder
+fixtures from the BDsolos / FEBR corpus via
+`make_synthetic_horizons_fixture()`, or (c) running on smaller
+models (Gemma 4 e2b worked here -- a future Gemma 1B build, if
+released, might benefit more).
+
+## Tests
+
+3 868 passing / 0 failing / 21 skipped (unchanged; the few-shot
+infra is opt-in and existing tests use the default behaviour).
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.67 (2026-05-06)
+
+Doc + measurement corrigendum. The on-disk size figures shipped in
+v0.9.64 - v0.9.66 for the local Gemma 4 catalog were wrong: I had
+documented `gemma4:e2b` at "~1.5 GB" assuming bare 2B parameters at
+4-bit quantisation, but the multimodal Gemma 4 builds bundle a
+vision encoder + tokenizers that add ~5 GB on top. Measured
+locally:
+
+| Catalog preset | Tag           | On-disk |
+|----------------|---------------|---------|
+| `light`        | `gemma4:e2b`  | **~6.7 GB** (was documented as ~1.5 GB) |
+| (default 8B)   | `gemma4`      | ~9 GB |
+| `balanced`     | `gemma4:e4b`  | ~8 GB (approx; not yet measured locally) |
+| `best`         | `gemma4:31b`  | ~19 GB (approx) |
+
+## What's fixed
+
+- `R/setup-local-vlm.R` `.SOILKEY_OLLAMA_CATALOG` -- corrected
+  size_gb fields and notes; new docstring explaining that the
+  multimodal build's vision encoder accounts for ~5 GB of fixed
+  overhead.
+- `R/zzz.R` `.suggest_local_vlm_message()` -- "~1.5 GB" replaced
+  with "~6.7 GB on disk".
+- `R/vlm-providers.R` -- both vlm_provider() docstrings updated
+  with the corrected size + multimodal-overhead note.
+- `vignettes/v10_agente_pedometrista.Rmd` -- corrected sizes,
+  added a corrigendum callout.
+- `vignettes/v11_vlm_extraction_benchmark.Rmd` -- corrected sizes
+  AND added a fresh head-to-head benchmark comparing `gemma4:e2b`
+  vs `gemma4` (8B) on the four bundled text fixtures.
+- `README.md` -- corrected sizes everywhere.
+
+## New baseline finding (e2b vs 8B head-to-head)
+
+Re-ran the four-fixture benchmark with both models:
+
+- **Horizons (text)**: 100 % / 100 % / 100 % at *both* sizes.
+  `gemma4:e2b` is exactly as good as the 8B for clean PT-BR
+  profile descriptions. Locks in `e2b` as the soilKey default.
+- **Site (text)**: both sizes fail in 50 % of fixtures (JSON
+  validation errors, not wrong content). When extraction
+  succeeds, **value-accuracy on matched fields is 100 %**. The
+  failure mode is shape, not knowledge. Phase 2 (few-shot
+  demonstration pairs in the prompt) targets this gap.
+
+R CMD check Status: OK. No code logic changes; tests unchanged.
+
+
+# soilKey 0.9.66 (2026-05-06)
+
+The "Phase 1 -- VLM extraction benchmark" release. Adds the harness
+that lets us measure the local Gemma 4 baseline before deciding
+whether to invest in few-shot demonstrations (Phase 2) or LoRA
+fine-tuning (Phase 3).
+
+## What's shipped
+
+`R/zzz.R`:
+
+- **`.onAttach()`** -- in interactive sessions, prints a one-line
+  hint suggesting `setup_local_vlm("light")` whenever Ollama is
+  detected but `gemma4:e2b` is not yet pulled. The hook never
+  auto-modifies the system unless the user explicitly opts in via
+  `options(soilKey.auto_setup_vlm = TRUE)` or env var
+  `SOILKEY_AUTO_SETUP_VLM=1` (CRAN-compliance: Repository Policy 1.1
+  forbids packages writing to the system on attach without consent).
+  Suppress all hints with `options(soilKey.suggest_local_vlm =
+  FALSE)`.
+- **`.suggest_local_vlm_message(target_model)`** -- pure helper
+  exposed for testability (returns the hint string given the current
+  Ollama state, no side effects).
+
+`R/benchmark-vlm-extraction.R` (new):
+
+- **`benchmark_vlm_extraction(providers, tasks, fixtures_dir,
+  max_per_task)`** -- provider-agnostic benchmark over
+  `c("horizons", "site", "munsell")`. Each (provider, fixture) pair
+  feeds the matching `extract_*` function and the resulting JSON is
+  compared to the golden answer via task-specific metrics:
+  precision/recall + attribute-match (horizons), IoU + value-accuracy
+  (site), CIE Delta-E 2000 over Munsell triplets (munsell). Returns
+  `predictions` (long data.frame) and `summary` (per provider x task).
+  Accepts `MockVLMProvider` for unit tests.
+- **`list_vlm_fixtures(task)`** -- lists bundled `(input,
+  golden.json)` pairs.
+- **`make_synthetic_horizons_fixture(pedon, fixture_id)`** -- renders
+  any `PedonRecord` back into a Markdown profile description and
+  emits the original horizons table as the golden answer. Useful for
+  scaling the horizons fixture set from BDsolos / FEBR / KSSL data.
+- **`.metric_munsell_deltaE()`**, **`.metric_horizons_overlap()`**,
+  **`.metric_site_iou()`** -- the three metric helpers.
+- **`.munsell_delta_e()`** -- pairwise CIE Delta-E 2000 between two
+  Munsell triplets via `munsellinterpol::MunsellToLab` +
+  `CIEDE2000`. Returns `NA` on missing input.
+
+`inst/prompts/extract_site_from_text.md` (new) -- text-mode
+companion to `extract_site_metadata.md`. Required because the
+image-mode prompt explicitly says "Supplied as an image content
+block", which causes the local Gemma to return the schema shape with
+all-null values when fed text.
+
+`inst/fixtures/vlm_extraction/` (new) -- bundled fixtures:
+
+- `horizons/perfil_RJ_argissolo.{txt,golden.json}` (4-horizon
+  Argissolo Vermelho-Amarelo on Mata Atlantica gneiss).
+- `horizons/perfil_MG_latossolo.{txt,golden.json}` (4-horizon
+  Latossolo Vermelho).
+- `site/ficha_RJ_001.{txt,golden.json}` and
+  `site/ficha_MG_002.{txt,golden.json}`.
+- `munsell/README.md` -- format spec; users supply their own photo
+  fixtures (CRAN policy + licence reasons).
+
+`vignettes/v11_vlm_extraction_benchmark.Rmd` (new) -- walkthrough:
+quick start, fixture format, baseline numbers on the user's laptop,
+how to add real BDsolos pedons via `make_synthetic_horizons_fixture()`.
+
+## Baseline measured (gemma4 8B local, MacBook M1)
+
+| Task | Fixture | precision/iou | recall/value-acc | attr-match |
+|------|---------|---------------|------------------|-----------|
+| horizons | Latossolo MG | 1.00 | 1.00 | 1.00 |
+| horizons | Argissolo RJ | 1.00 | 1.00 | 1.00 |
+| site     | Ficha MG     | 0.79 | 1.00 | 0.79 |
+| site     | Ficha RJ     | 0.87 | 0.92 | 0.87 |
+
+Read: text-mode horizons extraction is solved (vanilla Gemma 4 + the
+`pedologist_system_prompt()` persona is enough for clean PT-BR
+profiles). Site extraction is ~83 % IoU but ~96 % value-accuracy on
+matched fields; gaps are inferred fields the smaller model misses.
+
+This baseline is the **input** for Phase 2 (few-shot) and Phase 3
+(LoRA fine-tune) decisions.
+
+## Tests
+
+`tests/testthat/test-v0966-benchmark-vlm-extraction.R`: 47 tests / ~70
+expectations covering fixture discovery, metric correctness on
+synthetic ground truths, end-to-end with `MockVLMProvider`, and the
+`.suggest_local_vlm_message()` shape on Ollama states.
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.65 (2026-05-06)
+
+The "Agente Pedometrista" release. A modern bslib-themed Shiny UI
+that orchestrates the v0.9.64 local Gemma 4 stack for end-to-end
+soil profile classification: photo + PDF + field-sheet image +
+Vis-NIR spectrum -> deterministic taxonomic key under WRB 2022,
+SiBCS 5a edicao and USDA Soil Taxonomy 13ed -- in one session.
+
+## What's shipped
+
+`inst/shiny/agent_app/app.R` (new) -- bslib `page_navbar()` UI
+with eight tabs:
+
+- **Foto Munsell** -- upload photo -> `extract_munsell_from_photo()`
+  -> DT preview of matiz / valor / croma per horizon.
+- **PDF / Texto** -- upload PDF or paste text ->
+  `extract_horizons_from_pdf()` -> DT horizons table.
+- **Ficha de Campo** -- upload image ->
+  `extract_site_from_fieldsheet()` -> site metadata block.
+- **Espectros** -- upload Vis-NIR CSV -> `fill_from_spectra()`
+  via OSSL local-band library -> fills missing soil properties.
+- **Tabela de horizontes** -- editable DT table for manual
+  correction of the reactive PedonRecord.
+- **Classificar** -- runs `classify_all()` -> 3
+  `bslib::value_box()` cards (WRB 2022 / SiBCS 5a / USDA Tax 13).
+- **Trace** -- per-system trace + provenance browser (radio toggle).
+- **Pergunte ao Pedometrista** -- free-form chat with the local
+  Gemma using `pedologist_system_prompt()` (ellmer chat session
+  preserved across messages).
+
+Persistent sidebar (320 px) with provider/model selector,
+real-time Ollama status badges (`installed` / `running` /
+`models`), "Configurar Gemma local" button (calls
+`setup_local_vlm()` with progress modal), language toggle
+(PT-BR / EN), and session reset.
+
+`R/run-agent-app.R` (new):
+
+- **`run_agent_app(port = NULL, launch.browser = TRUE, ...)`** --
+  launcher; soft-fails on missing Suggests (`shiny`, `bslib`,
+  `bsicons`, `DT`) with an actionable `install.packages()` hint.
+
+`vignettes/v10_agente_pedometrista.Rmd` (new) -- end-to-end
+walkthrough covering setup, persona, all 8 tabs, the
+`classify_from_documents()` programmatic equivalent, privacy /
+data sovereignty rationale, and known limitations.
+
+`README.md`:
+
+- Version badge 0.9.62 -> 0.9.65.
+- Tests-passing badge 3 760 -> 3 821.
+- New "What's new in v0.9.65 -- Agente Pedometrista" section above
+  the v0.9.62 Brazilian-benchmark section.
+- Status footer rewritten to lead with the agent app.
+
+`DESCRIPTION`:
+
+- Adds `bslib` and `bsicons` to Suggests (both pure-R ports of
+  Bootstrap 5 components and Bootstrap Icons).
+
+## Tests
+
+`tests/testthat/test-v0965-agent-app.R`: 4 tests verifying
+
+- `run_agent_app` exported and references all four required
+  Suggests in its dependency check.
+- `inst/shiny/agent_app/app.R` is syntactically parseable.
+- All eight `nav_panel()` titles are present in the source.
+- The persona helper (`pedologist_system_prompt`) is referenced.
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.64 (2026-05-06)
+
+The "local-VLM bootstrap" release. Adds one-call setup of Ollama +
+Gemma 4 from inside R, lowers the default Ollama model to a
+laptop-friendly variant, and ships the canonical "pedometrist"
+persona prompt that v0.9.65's Shiny agent will install into every
+chat session.
+
+## What's shipped
+
+`R/setup-local-vlm.R` (new) -- Ollama lifecycle helpers:
+
+- **`setup_local_vlm(model = "balanced", ensure_running = TRUE,
+  verbose = TRUE)`** -- idempotent bootstrap. Detects Ollama, starts
+  the daemon if needed, pulls the chosen model. Catalog:
+  `light` = `gemma4:e2b` (~1.5 GB), `balanced` = `gemma4:e4b`
+  (~3 GB), `best` = `gemma4:31b` (~19 GB). Also accepts arbitrary
+  Ollama model identifiers (e.g. `"qwen2.5vl:7b"`). Returns a status
+  list `(ready, model, ollama_url, installed, running, pulled,
+  hint)` ready for rendering in a Shiny status card.
+- **`ollama_is_installed()`** -- detects the `ollama` CLI on PATH.
+- **`ollama_ensure_running(timeout_s = 30)`** -- starts
+  `ollama serve` in background and polls until the API answers.
+- **`ollama_pull_model(model)`** -- wraps `ollama pull <model>`;
+  no-op when the model is already on disk.
+- **`ollama_list_local_models()`** -- queries `/api/tags`; returns
+  empty character vector when the daemon is not reachable.
+- All helpers are NA / NULL safe and never throw on missing
+  Ollama -- they print actionable OS-specific install hints
+  (Homebrew on macOS, curl-pipe-sh on Linux, winget on Windows)
+  via `.print_ollama_install_hint()`.
+
+`R/vlm-prompts.R`:
+
+- **`pedologist_system_prompt(language = c("pt-BR", "en"))`** --
+  canonical persona installed into every agent_app chat session
+  (and any user-built `vlm_provider(..., system_prompt = ...)`).
+  Trained pedometrist, SiBCS 5a + WRB 2022 + KST 13ed; explicit
+  "NEVER classify, only extract"; per-attribute `confidence` +
+  `source_quote` contract; PT-BR (default) or English.
+
+`R/vlm-providers.R`:
+
+- Default Ollama model bumped from `gemma4:e4b` (~3 GB) to
+  **`gemma4:e2b`** (~1.5 GB) so the package "just works" on a
+  developer laptop after `setup_local_vlm("light")`. Users opt
+  into bigger via `setup_local_vlm("balanced")` /
+  `setup_local_vlm("best")`.
+
+## Why CRAN-friendly
+
+CRAN policy forbids shipping LLM weights inside a package
+(5 MB source-tarball cap, plus binary-blob policy). v0.9.64 ships
+the **downloader**, not the weights. The user runs
+`setup_local_vlm()` once after install and Ollama caches the model
+in `~/.ollama/models/` -- no Internet calls happen at package
+install time.
+
+## Tests
+
+`test-v0964-setup-local-vlm.R`: 13 tests / ~30 expectations:
+
+- `ollama_is_installed()` returns logical scalar.
+- `ollama_list_local_models()` returns `character(0)` when daemon
+  unreachable (without throwing).
+- `ollama_pull_model()` rejects empty / NA / multi-element input,
+  returns FALSE when Ollama not on PATH.
+- `setup_local_vlm()` resolves `light`/`balanced`/`best` to the
+  documented model names; returns the documented status schema;
+  accepts arbitrary explicit identifiers.
+- `pedologist_system_prompt()` returns non-empty PT-BR / EN strings,
+  enforces the "NEVER classify" + "Do not invent values" clauses,
+  rejects unsupported languages.
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.63 (2026-05-04)
+
+Documentation release. Updates `README.md` to reflect the
+v0.9.55 → v0.9.62 Brazilian benchmark series:
+
+- Version badge bumped 0.9.40 → 0.9.63
+- Tests-passing badge bumped 3 137 → 3 760
+- New "What's new in v0.9.62" section covering load_bdsolos_csv,
+  read_febr_pedons, benchmark_bdsolos_sibcs, the dominant-color-in-B
+  override and merge_brazilian_pedons (with the 590 / 722 RJ overlap
+  empirical result)
+- Status footer rewritten to merge the Brazilian highlights with
+  the existing USDA / WRB summary
+
+No code changes.
+
+
+# soilKey 0.9.62 (2026-05-04)
+
+The "Brazilian super-dataset" release. Joins the BDsolos and FEBR
+PedonRecord lists by `site$sisb_id` to dedupe historic Embrapa
+pedons that appear in both corpuses, producing a single consolidated
+list. The diagnostic scan on Hugo's RJ snapshot found 590 of 905
+BDsolos pedons (65%) overlap a FEBR `sisb_id`, so dedup reduces the
+~9k + ~10k naive concatenation by roughly the magnitude of FEBR's
+8,124 sisb_id-bearing records.
+
+## What's shipped
+
+`R/merge-brazilian.R` (new) exports:
+
+- **`merge_brazilian_pedons(bdsolos, febr, prefer = c("bdsolos",
+  "febr"), verbose = TRUE)`** -- joins two PedonRecord lists by
+  `site$sisb_id`, drops duplicates from the non-preferred side, and
+  emits a single super-list. Each surviving pedon's `site` is tagged
+  with `merge_decision` (`"kept_bdsolos"` / `"kept_febr"` /
+  `"unique"`) and `merge_source` so downstream code can audit
+  provenance.
+
+- **`summarize_brazilian_overlap(bdsolos, febr)`** -- diagnostic
+  table reporting overlap counts (n_bdsolos, n_febr, n_shared,
+  n_bdsolos_only, n_febr_only, n_unmatchable). Useful for verifying
+  the dedup ratio before running the merge.
+
+- **`.get_sisb_id(pedon)`** internal: centralised lookup of
+  `site$sisb_id` with NA-safe trimming. Backwards-compatible with
+  PedonRecord objects that pre-date v0.9.62.
+
+`R/bdsolos.R`:
+
+- `load_bdsolos_csv()` now also assigns `site$sisb_id <- Codigo PA`
+  (BDsolos historical pedon ID, identical numbering to FEBR's
+  `observacao$sisb_id` field).
+
+`R/febr.R`:
+
+- `read_febr_pedons()` now captures `observacao$sisb_id` into
+  `site$sisb_id`.
+
+## RJ overlap scan (empirical)
+
+Loading BDsolos RJ + the FEBR-curated RJ observation table:
+
+- BDsolos RJ: 722 pedons, 722 with sisb_id
+- FEBR RJ obs with sisb_id: 829 (out of 884 total RJ obs)
+- Shared sisb_ids: **590**
+- BDsolos-only: 132 / FEBR-only: 239 / unmatchable: 55
+- Naive concat: 1606 -> after merge: **1016 distinct pedons**
+
+## Tests
+
+`tests/testthat/test-v0962-merge-brazilian.R` adds 12 tests
+(28 expectations):
+
+- `.get_sisb_id` NA / NULL / trimming
+- merge with prefer = "bdsolos" / "febr"
+- unique-on-each-side / unmatchable / empty / NULL inputs
+- non-PedonRecord input rejected
+- pedon ordering preservation
+- summarize_brazilian_overlap counts
+- Integration: load_bdsolos_csv populates site$sisb_id
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.61 (2026-05-04)
+
+The "thickness-weighted dominant-color-in-B" release.
+Replaces SiBCS subordem first-match-wins for color-driven Ordens
+(Argissolos / Latossolos / Nitossolos) with a deterministic
+thickness-weighted dominant-color rule.
+
+## What's shipped
+
+`R/sibcs-color-tuning.R` (new):
+
+- **`.classify_b_color(hue, value, chroma)`** internal: classifies
+  a single Munsell color into one of `VERMELHO` / `VERMELHO_AMARELO`
+  / `AMARELO` / `BRUNO_ACINZENTADO` / `ACINZENTADO` (`NA` when any
+  Munsell component is missing).
+
+- **`.dominant_b_color(pedon)`** internal: walks every B-like
+  horizon, classifies each via `.classify_b_color()`, sums
+  thickness per category, returns the dominant category. Ties
+  broken in canonical SiBCS order (BRUNO_ACINZ > ACINZ > AMARELO
+  > VERMELHO > V_AMARELO).
+
+- **`.dominant_b_color_subordem(pedon, ordem_code)`** internal:
+  ordem-aware mapping from dominant color category -> SiBCS
+  subordem code:
+    - P (Argissolos): PV / PA / PVA / PBAC / PAC
+    - L (Latossolos): LV / LA / LVA / LB   / LVA
+    - N (Nitossolos): NV / NX  / NX  / NB  / NX
+  Other Ordens return NA (no override).
+
+- **`.apply_color_dominant_override(subordem, pedon, ordem_code,
+  rules)`** internal post-processor: when the YAML key's
+  first-match-wins assignment differs from the dominant-color
+  rule, swaps the assigned subordem entry with the YAML block
+  matching the new code, and emits a `reason` string for the
+  classification trace.
+
+`R/key-sibcs.R`:
+
+- **`classify_sibcs()`** wires `.apply_color_dominant_override()`
+  between subordem assignment and the v0.9.45 "cor a determinar"
+  fallback detection. The override happens FIRST, so a profile
+  whose first-match was forced into the catch-all PVA/LVA/NX by
+  YAML order can still be correctly resolved when its dominant
+  color is an explicit subordem. The override evidence ends up in
+  `result$trace$color_dominant_override` and a warning is added
+  to `result$warnings` whenever it fires.
+
+`R/benchmark-bdsolos.R`:
+
+- **`.bdsolos_normalize_subordem(s)`** internal: maps SiBCS
+  subordem display names (BDsolos ALL-CAPS or soilKey Title-Case
+  plural) to canonical 2-3 letter codes (PV / PBAC / LVA / etc.).
+  Diacritic-aware. Handles compound names (BRUNO-ACINZENTADO,
+  VERMELHO-AMARELO).
+
+- **`benchmark_bdsolos_sibcs()`** now also reports subordem-level
+  metrics:
+    - `predictions$predicted_subordem_code` /
+      `reference_subordem_code` / `agree_subordem`
+    - `accuracy_subordem` (top-level)
+    - `summary$n_in_scope_sub` / `summary$n_matched_sub`
+
+## Smoke results (RJ benchmark, 100 pedons)
+
+- Pedons with subordem overridden by dominant-color rule: 9 / 100
+- Ordem accuracy unchanged (33%) -- override is a 2nd-level rule
+- Argissolo subordem accuracy now reportable (was 0% by name
+  comparison due to case mismatch; canonical-code comparison
+  fixes this).
+
+## Tests
+
+`tests/testthat/test-v0961-sibcs-color-tuning.R` adds 14 tests
+(37 expectations):
+
+- `.classify_b_color` mapping for all 5 categories + NA inputs
+- `.dominant_b_color` thickness-weighted dominant + NA fallback
+- `.dominant_b_color_subordem` for P/L Ordens + non-color Ordens
+- `.apply_color_dominant_override` flip + no-op + non-color Ordem
+  + missing-Munsell paths
+- `classify_sibcs()` end-to-end: override exposed in trace +
+  Cambissolos untouched
+
+R CMD check Status: OK.
+
+
+# soilKey 0.9.60 (2026-05-06)
+
+The "Brazilian SiBCS surveyor-reference benchmark" release.
+Mirror of v0.9.49 \code{benchmark_lucas_2018()} but for the
+Embrapa BDsolos 27-UF corpus (~9k perfis, 7.4k with surveyor's
+SiBCS classification).
+
+## What's shipped
+
+`R/benchmark-bdsolos.R` (new) exports:
+
+- **`benchmark_bdsolos_sibcs(pedons, classify_with, classify_args,
+  max_n, verbose)`** -- runs \code{\link{classify_sibcs}} on each
+  pedon, compares predicted Ordem to surveyor's reference
+  (\code{site$reference_nivel_1}). Returns
+  \code{predictions} data.frame, \code{confusion} matrix,
+  \code{per_ordem} recall, \code{summary} (n_total, n_in_scope,
+  n_matched, n_errors, n_unmapped).
+
+- **`.bdsolos_normalize_ordem(s)`** internal: BDsolos
+  ALL-CAPS singular -> soilKey Title-Case plural mapping.
+  Handles modern Ordens (ARGISSOLO -> Argissolos) plus legacy /
+  pre-1999 names (PODZOLICO -> Argissolos, LATOSOL -> Latossolos,
+  GLEI -> Gleissolos, BRUNIZEM -> Chernossolos, ALUVIAL ->
+  Neossolos, etc.). Diacritic-aware via \code{intToUtf8} so the
+  source stays ASCII-pure.
+
+- Loader extension: \code{load_bdsolos_csv()} now captures
+  \code{site$reference_nivel_1/2/3} (BDsolos pre-parsed
+  Ordem / Subordem / Grande Grupo), used preferentially over the
+  full \code{Classificacao Atual} string.
+
+## Bug fix: header detection
+
+\code{.bdsolos_find_header_line()} was using \code{which.max}
+on field counts, but real BDsolos data rows often have MORE
+delimiters than the header (free-text fields like
+\code{Descricao Original} contain embedded \code{;}). Fix:
+return the FIRST line with field count >= 5 (preamble has 1-2).
+Validated: real RJ.csv now correctly resolves header at line 3
+instead of line 7.
+
+## Smoke results on real RJ.csv (100 random pedons)
+
+```
+Ordem accuracy: 34.0% (34 / 100 in-scope)
+
+Per-Ordem recall:
+  Argissolos    : 67.6% (23/34)   <- best
+  Cambissolos   : 42.8% (6/14)
+  Chernossolos  : 50.0% (1/2)
+  Organossolos  : 50.0% (1/2)
+  Neossolos     : 42.8% (3/7)
+  Espodossolos  :  0%   (0/3)
+  Gleissolos    :  0%   (0/16)    <- gleyic predicate not triggering
+  Latossolos    :  0%   (0/15)    <- B latossolico predicate too strict
+  Planossolos   :  0%   (0/6)
+  Plintossolos  :  0%   (0/1)
+```
+
+The 0% recalls on Gleissolos / Latossolos / Espodossolos /
+Planossolos / Plintossolos point at concrete classifier rules to
+relax in v0.9.61. Argissolos' 67.6% recall is healthy and
+consistent with the v0.9.45 / v0.9.58 work.
+
+## Tests
+
+10 new tests in `test-v0960-bdsolos-benchmark.R` (42
+expectations) covering Ordem normalisation (modern + legacy),
+benchmark schema, accuracy computation, confusion matrix,
+unmapped reference detection, max_n, error handling, and the
+loader extension for nivel_1/2/3.
+
+Suite total: 3717 / 0 / 20 (pass / fail / skip). R CMD check
+Status OK.
+
+
 # soilKey 0.9.59 (2026-05-06)
 
 The "read.csv2 fallback for malformed BDsolos UTF-8" patch.

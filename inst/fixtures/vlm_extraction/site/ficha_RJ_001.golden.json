@@ -1,0 +1,19 @@
+{
+  "site": {
+    "id": "PI-001",
+    "date": "2024-08-12",
+    "observer": "H. Rodrigues",
+    "country": "BR",
+    "state": "RJ",
+    "municipality": "Itaguai",
+    "lat": -22.8654,
+    "lon": -43.7811,
+    "elevation_m": 25,
+    "slope_pct": 4,
+    "aspect_deg": null,
+    "drainage_class": "bem drenado",
+    "parent_material": "gnaisse alterado",
+    "vegetation": "Floresta Ombrofila Densa",
+    "land_use": "pastagem"
+  }
+}

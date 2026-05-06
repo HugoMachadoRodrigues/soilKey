@@ -6,7 +6,7 @@
 \title{Site-level columns (BDsolos full export). Mapped at the site, not
 horizon, level.}
 \format{
-An object of class \code{list} of length 21.
+An object of class \code{list} of length 24.
 }
 \usage{
 .BDSOLOS_SITE_PATTERNS

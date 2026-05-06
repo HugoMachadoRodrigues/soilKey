@@ -42,19 +42,25 @@ constructor. \code{ellmer} must be installed.
 \section{Local-first option}{
 
 Passing \code{name = "ollama"} runs every extraction locally via
-an Ollama server (default \code{gemma4:e4b}, Gemma 4 edge with
-multimodal text+image+audio support). No data leaves the
-machine, which is the recommended setting for sensitive field
-descriptions (e.g. governmental surveys, indigenous land studies)
-where institutional independence and data sovereignty matter.
-Pull the model first:
+an Ollama server (default \code{gemma4:e2b}, Gemma 4 edge 2B,
+multimodal text+image, ~6.7 GB on disk -- the multimodal build
+bundles the vision encoder, which adds ~5 GB to the bare
+parameter weights). No data leaves the machine, which is the
+recommended setting for sensitive field descriptions (e.g.
+governmental surveys, indigenous land studies) where institutional
+independence and data sovereignty matter.
+
+One-shot setup (v0.9.64+):
 \preformatted{
-  ollama pull gemma4:e4b      # ~3 GB edge variant (default)
-  ollama pull gemma4:31b      # frontier dense variant
-  ollama pull gemma3:27b      # earlier generation, still solid
+  setup_local_vlm()              # "balanced" -> gemma4:e4b, ~3 GB
+  setup_local_vlm("light")       # gemma4:e2b, ~1.5 GB (laptop OK)
+  setup_local_vlm("best")        # gemma4:31b, ~19 GB (workstation)
 }
-Then start an Ollama server (\code{ollama serve}) and the chat
-object returned here will dispatch over HTTP locally.
+or manually:
+\preformatted{
+  ollama pull gemma4:e2b
+  ollama serve
+}
 }
 
 \examples{

@@ -1,0 +1,19 @@
+# Perfil de Latossolo Vermelho
+
+Local: Lavras, MG. Perfil n. P-203.
+
+## A (0 a 12 cm)
+Cor Munsell umida: 2.5YR 3/4. Argila 55 %, silte 15 %, areia 30 %.
+pH em agua: 5.1. Carbono organico: 2.10 %.
+
+## AB (12 a 35 cm)
+Cor Munsell umida: 2.5YR 3/6. Argila 58 %, silte 13 %, areia 29 %.
+pH em agua: 4.9. Carbono organico: 1.20 %.
+
+## Bw1 (35 a 90 cm)
+Cor Munsell umida: 2.5YR 4/6. Argila 62 %, silte 10 %, areia 28 %.
+pH em agua: 4.7. Carbono organico: 0.50 %.
+
+## Bw2 (90 a 200 cm)
+Cor Munsell umida: 10R 4/6. Argila 65 %, silte 8 %, areia 27 %.
+pH em agua: 4.7. Carbono organico: 0.30 %.

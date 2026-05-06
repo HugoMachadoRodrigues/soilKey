@@ -1,0 +1,11 @@
+FICHA DE CAMPO
+
+Perfil: P-203
+Data: 2024-09-03
+Observador: A. Santos
+Local: Lavras, MG. Coord. -21.2459, -44.9941 (WGS84).
+Altitude: 920 m. Declividade: 8 %.
+Drenagem: bem drenado.
+Material de origem: gnaisse-granitico do Embasamento Cristalino.
+Vegetacao: Cerrado stricto sensu.
+Uso: cafeicultura.

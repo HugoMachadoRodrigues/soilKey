@@ -1,0 +1,68 @@
+# Descricao do perfil
+
+Local: RJ, Rio de Janeiro.
+Identificacao: 12688.
+
+## Horizonte A1 (0 a 5 cm)
+
+Cor Munsell umida: 10YR 4/2.
+Argila 2.5 %.
+Silte 10.7 %.
+Areia 86.8 %.
+pH em agua: 5.1.
+Carbono organico: 0.44 %.
+
+## Horizonte A2 (5 a 25 cm)
+
+Cor Munsell umida: 10YR 4/2.
+Argila 3.5 %.
+Silte 12.2 %.
+Areia 84.3 %.
+pH em agua: 4.8.
+Carbono organico: 0.33 %.
+
+## Horizonte E1 (25 a 65 cm)
+
+Cor Munsell umida: 10YR 4/4.
+Argila 6.3 %.
+Silte 8.7 %.
+Areia 85 %.
+pH em agua: 4.9.
+Carbono organico: 0.13 %.
+
+## Horizonte E2 (65 a 75 cm)
+
+Cor Munsell umida: 10YR 6/4.
+Argila 4.2 %.
+Silte 10.6 %.
+Areia 85.2 %.
+pH em agua: 4.9.
+Carbono organico: 0.08 %.
+
+## Horizonte BA (75 a 95 cm)
+
+Cor Munsell umida: 10YR 5/2.
+Argila 14.6 %.
+Silte 10.1 %.
+Areia 75.3 %.
+pH em agua: 4.6.
+Carbono organico: 0.14 %.
+
+## Horizonte 2Btg (95 a 160 cm)
+
+Cor Munsell umida: N 6/NA.
+Argila 55.3 %.
+Silte 7.4 %.
+Areia 37.3 %.
+pH em agua: 4.9.
+Carbono organico: 0.24 %.
+
+## Horizonte 2Cg (160 a 180 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 53.1 %.
+Silte 13.1 %.
+Areia 33.8 %.
+pH em agua: 5.1.
+Carbono organico: 0.15 %.
+

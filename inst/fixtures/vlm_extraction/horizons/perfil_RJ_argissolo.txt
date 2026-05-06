@@ -1,0 +1,27 @@
+# Descricao do perfil
+
+Local: Itaguai, RJ. Identificacao: PI-001 (Argissolo Vermelho-Amarelo).
+
+## Horizonte A (0 a 18 cm)
+
+Cor Munsell umida: 7.5YR 4/3.
+Argila 22 %, silte 30 %, areia 48 %.
+pH em agua: 5.4. Carbono organico: 1.20 %.
+
+## Horizonte AB (18 a 38 cm)
+
+Cor Munsell umida: 7.5YR 4/4.
+Argila 28 %, silte 28 %, areia 44 %.
+pH em agua: 5.2. Carbono organico: 0.65 %.
+
+## Horizonte Bt1 (38 a 78 cm)
+
+Cor Munsell umida: 5YR 4/6.
+Argila 42 %, silte 22 %, areia 36 %.
+pH em agua: 5.0. Carbono organico: 0.30 %.
+
+## Horizonte Bt2 (78 a 140 cm)
+
+Cor Munsell umida: 5YR 4/6.
+Argila 45 %, silte 20 %, areia 35 %.
+pH em agua: 5.0. Carbono organico: 0.20 %.

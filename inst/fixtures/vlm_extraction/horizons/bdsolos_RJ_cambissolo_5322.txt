@@ -1,0 +1,41 @@
+# Descricao do perfil
+
+Local: RJ, São Fidélis.
+Identificacao: 5322.
+
+## Horizonte 2Bif (10 a 40 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 49 %.
+Silte 11 %.
+Areia 40 %.
+pH em agua: 5.2.
+Carbono organico: 0.48 %.
+
+## Horizonte 2C (40 a 70 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 43 %.
+Silte 13 %.
+Areia 44 %.
+pH em agua: 4.8.
+Carbono organico: 0.29 %.
+
+## Horizonte 3C (70 a 90 cm)
+
+Cor Munsell umida: 5Y 6/2.
+Argila 35 %.
+Silte 18 %.
+Areia 47 %.
+pH em agua: 4.9.
+Carbono organico: 0.21 %.
+
+## Horizonte A (NA a 10 cm)
+
+Cor Munsell umida: 10YR 3/2.
+Argila 30 %.
+Silte 16 %.
+Areia 54 %.
+pH em agua: 5.3.
+Carbono organico: 1.84 %.
+

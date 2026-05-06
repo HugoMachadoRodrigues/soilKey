@@ -1,0 +1,54 @@
+# Descricao do perfil
+
+Local: RJ, Campos dos Goytacazes.
+Identificacao: 11972.
+
+## Horizonte Ap1 (0 a 20 cm)
+
+Cor Munsell umida: 5YR 2/2.
+Argila 42 %.
+Silte 18 %.
+Areia 40 %.
+pH em agua: 8.0.
+Carbono organico: 1.40 %.
+
+## Horizonte A12 (20 a 42 cm)
+
+Cor Munsell umida: 5YR 2/1.
+Argila 43 %.
+Silte 18 %.
+Areia 39 %.
+pH em agua: 7.9.
+Carbono organico: 1.91 %.
+
+## Horizonte C1ca (42 a 70 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 22 %.
+Silte 55 %.
+Areia 23 %.
+pH em agua: 7.8.
+Carbono organico: 0.60 %.
+
+## Horizonte C2ca (70 a 125 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 12 %.
+Silte 57 %.
+Areia 31 %.
+pH em agua: 8.3.
+Carbono organico: 0.13 %.
+
+## Horizonte C3ca (125 a 160 cm)
+
+Cor Munsell umida:  NA/NA.
+Argila 7 %.
+Silte 46 %.
+Areia 47 %.
+pH em agua: 8.2.
+Carbono organico: 0.11 %.
+
+## Horizonte C4 (180 a 210 cm)
+
+Cor Munsell umida:  NA/NA.
+
