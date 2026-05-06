@@ -226,6 +226,40 @@ test_that("download_bdsolos errors clearly when chromote is missing", {
 })
 
 
+# ---- v0.9.56 timeout-resilience documentation -------------------------
+
+.read_bdsolos_source <- function() {
+  candidates <- c(
+    file.path("R", "bdsolos.R"),
+    file.path("..", "..", "R", "bdsolos.R"),
+    file.path("..", "..", "..", "R", "bdsolos.R")
+  )
+  for (p in candidates) {
+    if (file.exists(p)) return(paste(readLines(p, warn = FALSE), collapse = "\n"))
+  }
+  # Inside an installed package, R/ source is compiled away -- inspect
+  # the function body via deparse() instead.
+  fn <- get("download_bdsolos", envir = asNamespace("soilKey"))
+  paste(deparse(fn, width.cutoff = 500L), collapse = "\n")
+}
+
+test_that("download_bdsolos source uses setTimeout-deferred realizaBusca", {
+  # Regression sentinel for the v0.9.55 freeze bug: the synchronous
+  # realizaBusca() invocation timed out chromote on the slow Embrapa
+  # server. v0.9.56 deferred the call via setTimeout(...) so the JS
+  # frame returns immediately and chromote stays responsive.
+  txt <- .read_bdsolos_source()
+  # (?s) lets `.` match newlines, since the deferred call spans 3 lines.
+  expect_match(txt, "(?s)setTimeout.*realizaBusca", perl = TRUE)
+})
+
+
+test_that("download_bdsolos sets CHROMOTE_TIMEOUT for resilience", {
+  txt <- .read_bdsolos_source()
+  expect_match(txt, "CHROMOTE_TIMEOUT", fixed = TRUE)
+})
+
+
 # ---- Live network test (opt-in) ---------------------------------------
 
 test_that("download_bdsolos hits BDsolos when SOILKEY_NETWORK_TESTS is set", {

@@ -473,6 +473,12 @@ download_bdsolos <- function(out_path,
     chromote_session <- chromote::ChromoteSession$new()
     on.exit(try(chromote_session$close(), silent = TRUE), add = TRUE)
   }
+  # Bump per-CDP-command timeout for resilience against the slow
+  # Embrapa server. chromote's default is ~5s for Runtime.evaluate;
+  # individual evals here are quick (the heavy work is deferred via
+  # setTimeout) but the term-acceptance redirect / SPA bootstrap can
+  # block briefly.
+  Sys.setenv(CHROMOTE_TIMEOUT = as.character(max(60L, as.integer(timeout_seconds))))
 
   url <- "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html"
   chromote_session$Page$navigate(url)
@@ -541,31 +547,73 @@ download_bdsolos <- function(out_path,
     Sys.sleep(3)
   }
 
-  # Submit Etapa 2 -> server-side query
-  if (isTRUE(verbose)) cli::cli_alert_info("Submitting Etapa 2 (server-side query, may take minutes)...")
-  .bdsolos_eval(chromote_session, "
-    if (typeof realizaBusca === 'function') realizaBusca();
-  ")
+  # Submit Etapa 2 -> server-side query.
+  # realizaBusca() fires a synchronous-ish AJAX that can take minutes
+  # on the Embrapa server. chromote's default Runtime.evaluate timeout
+  # (~5-10s) cannot wait that long, so we DEFER the call via
+  # setTimeout(0) -- the JS frame returns immediately, the AJAX runs
+  # in the background, and we then poll the DOM for Etapa 3 from R.
+  if (isTRUE(verbose)) {
+    cli::cli_alert_info("Submitting Etapa 2 (server-side query, may take minutes)...")
+  }
+  tryCatch(
+    .bdsolos_eval(chromote_session, "
+      setTimeout(function() {
+        if (typeof realizaBusca === 'function') realizaBusca();
+      }, 0);
+      'fired';
+    "),
+    error = function(e) {
+      # If the eval itself times out, the AJAX is likely still running
+      # in the background -- continue to the polling loop.
+      if (isTRUE(verbose)) {
+        cli::cli_alert_warning(sprintf(
+          "Eval reported timeout (%s); will poll DOM for Etapa 3 anyway.",
+          conditionMessage(e)
+        ))
+      }
+      invisible(NULL)
+    }
+  )
 
-  # Wait for Etapa 3 to materialise
+  # Wait for Etapa 3 to materialise. Each polling probe is a tiny eval
+  # so it should never trip the chromote timeout.
+  parsed <- list(has_e3 = FALSE, has_csv_radio = FALSE)
   start <- Sys.time()
+  poll_count <- 0L
   while (as.numeric(difftime(Sys.time(), start, units = "secs")) < timeout_seconds) {
     Sys.sleep(5)
-    state <- .bdsolos_eval(chromote_session, "
-      JSON.stringify({
-        has_e3: document.body.innerText.indexOf('ETAPA 3') >= 0 ||
-                document.body.innerText.indexOf('Etapa 3') >= 0,
-        has_csv_radio: document.querySelectorAll('input[type=radio][value=csv]').length > 0
-      });
-    ")
-    parsed <- tryCatch(jsonlite::fromJSON(state %||% "{}"),
-                        error = function(e) list())
+    poll_count <- poll_count + 1L
+    state <- tryCatch(
+      .bdsolos_eval(chromote_session, "
+        JSON.stringify({
+          has_e3: document.body.innerText.indexOf('ETAPA 3') >= 0 ||
+                  document.body.innerText.indexOf('Etapa 3') >= 0,
+          has_csv_radio: document.querySelectorAll('input[type=radio][value=csv]').length > 0,
+          loading: /aguarde|carregando|processando/i.test(document.body.innerText)
+        });
+      "),
+      error = function(e) NULL
+    )
+    if (is.null(state)) next
+    parsed <- tryCatch(jsonlite::fromJSON(state),
+                        error = function(e) list(has_e3 = FALSE,
+                                                  has_csv_radio = FALSE))
+    if (isTRUE(verbose) && poll_count %% 6L == 0L) {
+      cli::cli_alert_info(sprintf(
+        "  ... polling Etapa 3 (%ds elapsed, has_e3 = %s, loading = %s)",
+        round(as.numeric(difftime(Sys.time(), start, units = "secs"))),
+        isTRUE(parsed$has_e3),
+        isTRUE(parsed$loading)
+      ))
+    }
     if (isTRUE(parsed$has_e3) && isTRUE(parsed$has_csv_radio)) break
   }
   if (!(isTRUE(parsed$has_e3) && isTRUE(parsed$has_csv_radio))) {
     stop("download_bdsolos(): server query timed out after ",
-         timeout_seconds, "s. Try a smaller filter (filter_uf = ...) or ",
-         "increase timeout_seconds.")
+         timeout_seconds, "s polling for Etapa 3. ",
+         "Try a smaller filter (filter_uf = '...') or increase ",
+         "timeout_seconds. The Embrapa server is often slow under load.")
   }
 
   # Step 3: select all results, choose CSV radio, submit
