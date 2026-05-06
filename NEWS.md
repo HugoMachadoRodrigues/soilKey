@@ -1,3 +1,139 @@
+# soilKey 0.9.57 (2026-05-06)
+
+The "FEBR loader -- Brazilian profiles with Munsell" release.
+Wires soilKey to the **Free Brazilian Repository for Open Soil
+Data (FEBR)** maintained by UFSM (Alessandro Samuel-Rosa). FEBR
+is the canonical R-side path to ~36,000 Brazilian soil horizons
+with Munsell colors -- the gap that BDsolos was meant to fill but
+that Hugo's existing FEBR exports (Songchao, superconjunto)
+didn't include.
+
+## Diagnostic finding (May 2026 scan)
+
+A live scan of all 249 FEBR datasets via \code{febr::readFEBR}
+confirmed:
+
+- **200 / 249 (80.3%) of FEBR datasets carry Munsell colors**
+- **36,275 horizons** with non-NA Munsell hue across the catalog
+- ctb0032 alone has **10,577 horizons with Munsell**
+- ctb0562-ctb0700+ series ships pre-parsed
+  matiz / valor / croma in separate columns
+
+The earlier conclusion that "FEBR doesn't have Munsell" was based
+on Hugo's two specific FEBR exports (Songchao / superconjunto)
+that genuinely lack morphology. Other FEBR datasets do carry it.
+
+## What's shipped
+
+`R/febr.R` exports two functions plus internal helpers:
+
+- **`read_febr_pedons(dataset_codes, febr_repo, min_munsell_coverage,
+  verbose)`** -- wraps \code{febr::readFEBR} and adapts the
+  returned \code{camada} (layer) + \code{observacao} tables to the
+  soilKey schema. Auto-detects the ~6 distinct Munsell column
+  conventions used across FEBR datasets, parses PT-BR Munsell
+  strings (\code{"2,5YR 3/6"} -> hue \code{"2.5YR"}, value 3,
+  chroma 6), and returns a list of \code{PedonRecord}.
+
+- **`febr_index_munsell(min_coverage, refresh, verbose)`** --
+  curated index of FEBR datasets that have Munsell columns
+  populated. Backed by a precomputed cache in \code{R/sysdata.rda}
+  (\code{.FEBR_MUNSELL_INDEX}, 200 rows from the May-2026 scan).
+  \code{refresh = TRUE} re-scans live (slow, ~15 min).
+
+- **`.parse_febr_munsell()` / `.parse_febr_munsell_vec()`** --
+  PT-BR-aware Munsell string parser handling comma decimals.
+
+- **`.detect_febr_munsell_columns()`** -- discovers Munsell-related
+  columns across the FEBR conventions:
+  \code{cor_munsell_umida}, \code{cor_cod_munsell_umida}, 
+  \code{cor_cod_munsell_umida_1}, \code{cor_cod_munsell_umida_i},
+  \code{cor_munsell_umida_matiz / valor / croma},
+  \code{cor_munsell_umida_nome},
+  \code{cor_matriz_umido_munsell} (canonical).
+
+- **`.FEBR_TO_HORIZON_MAP`** -- regex table mapping FEBR layer
+  variable codes (camada_nome, profund_sup/inf, ph_h2o, carbono,
+  argila/silte/areia, ca_troc, ctc, etc.) to soilKey horizon
+  columns.
+
+## Why this matters
+
+Combined with the v0.9.55 BDsolos helpers, soilKey now offers
+**three independent paths to Brazilian profiles with Munsell**:
+
+1. **`read_febr_pedons("ctb0032")`** -- the largest source
+   (~10k horizons), HTTP-only via the febr package
+   (CRAN-stable, no headless browser).
+
+2. **`download_bdsolos(filter_uf = "RJ")`** -- via headless
+   Chrome (chromote, v0.9.55+v0.9.56), works for BDsolos-only
+   profiles not aggregated into FEBR.
+
+3. **`load_bdsolos_csv(path)`** -- consumes a manually-downloaded
+   BDsolos CSV.
+
+For the v0.9.45 Argissolo "cor a determinar" fallback, FEBR is
+the most practical fix: 200 datasets with Munsell, no JS UI to
+fight, no chromote dependency, just \code{remotes::install_github
+("febr-team/febr-package")} + a few function calls.
+
+## Tests
+
+12 new tests in `test-v0957-febr.R` (54 expectations), all run
+unconditionally without network access:
+
+- Munsell parser handles canonical PT-BR strings + fractional
+  value/croma + garbage / empty input + vectorisation.
+- Column detector picks pre-parsed columns over string columns
+  when both present; falls back to ctb0005 / ctb0019 / ctb0032
+  variants.
+- Layer column mapper recognises canonical FEBR camada codes.
+- Bundled \code{.FEBR_MUNSELL_INDEX} has the expected shape
+  (200 rows, ctb0032 at the top with 10,577 horizons).
+- \code{febr_index_munsell} filters by coverage + sorts
+  descending.
+- \code{read_febr_pedons} errors clearly when febr is missing
+  (path skipped when febr is installed).
+- Live network test gated on \code{SOILKEY_NETWORK_TESTS}.
+
+Suite total: 3644 / 0 / 20 (pass / fail / skip). R CMD check
+Status OK.
+
+## Smoke test on real FEBR data
+
+```r
+library(soilKey)
+pedons <- read_febr_pedons("ctb0039")
+#> ctb0039: 8 perfis (Munsell em 8), 35 horizons total.
+
+p <- pedons[[1]]
+p$horizons[1:3, .(designation, top_cm, bottom_cm,
+                   munsell_hue_moist, munsell_value_moist,
+                   munsell_chroma_moist, clay_pct)]
+#>   designation top_cm bottom_cm munsell_hue_moist munsell_value_moist
+#> 1:          AP      0         6             2.5YR                   3
+#> 2:           A      6        45             2.5YR                   3
+#> 3:         Bw1     45       100             2.5YR                   3
+#>   munsell_chroma_moist clay_pct
+#> 1:                    3    37.30
+#> 2:                    3    48.35
+#> 3:                    4    68.30
+```
+
+Note the PT-BR comma decimal in the original FEBR data
+(\code{"2,5YR"}) was correctly normalised to \code{"2.5YR"} for
+soilKey schema compatibility.
+
+## DESCRIPTION
+
+`febr` added to Suggests (gated via `requireNamespace()`).
+Install with
+\code{remotes::install_github("febr-team/febr-package")} since
+the CRAN binary lags the GitHub repo (last CRAN release v1.1.0
+of 2020-03 doesn't have \code{readFEBR} or \code{morphology}).
+
+
 # soilKey 0.9.56 (2026-05-06)
 
 The "download_bdsolos timeout fix" patch. v0.9.55 shipped
@@ -2860,7 +2996,7 @@ for the full breakdown.
 
 ## New code
 
-* **`load_febr_pedons(path, head, require_classification, verbose)`**
+* **`read_febr_pedons(path, head, require_classification, verbose)`**
   -- loads the Embrapa FEBR `febr-superconjunto.txt` semicolon-CSV
   format with comma-decimal numeric fields and UTF-8 PT-BR
   classification strings. Groups one row per (camada, horizon) into
