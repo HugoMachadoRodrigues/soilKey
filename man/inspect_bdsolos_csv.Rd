@@ -4,7 +4,7 @@
 \alias{inspect_bdsolos_csv}
 \title{Diagnostic inspection of a BDsolos CSV before loading}
 \usage{
-inspect_bdsolos_csv(path, sep = ",")
+inspect_bdsolos_csv(path, sep = NULL)
 }
 \arguments{
 \item{path}{Path to the CSV downloaded from BDsolos.}

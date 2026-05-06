@@ -260,6 +260,128 @@ test_that("download_bdsolos sets CHROMOTE_TIMEOUT for resilience", {
 })
 
 
+# ---- v0.9.58 fixes -----------------------------------------------------
+
+test_that(".bdsolos_find_header_line skips preamble and returns header row", {
+  tf <- tempfile(fileext = ".csv")
+  writeLines(c(
+    "Dados obtidos a partir do BDSOLOS, esclarecimentos em: http://...",
+    "",
+    paste0(strrep("col;", 50), "col50")
+  ), tf)
+  on.exit(unlink(tf), add = TRUE)
+  expect_equal(soilKey:::.bdsolos_find_header_line(tf), 3L)
+})
+
+
+test_that(".bdsolos_detect_sep returns ; for semicolon-delimited BDsolos", {
+  tf <- tempfile(fileext = ".csv")
+  writeLines(c("preamble",
+                 "",
+                 paste0(strrep("col;", 50), "col50")), tf)
+  on.exit(unlink(tf), add = TRUE)
+  expect_equal(soilKey:::.bdsolos_detect_sep(tf, header_line = 3L), ";")
+})
+
+
+test_that(".bdsolos_dms_to_decimal converts graus/min/seg/hemisferio", {
+  expect_equal(soilKey:::.bdsolos_dms_to_decimal(22, 51, 30, "S"),
+                -(22 + 51 / 60 + 30 / 3600))
+  expect_equal(soilKey:::.bdsolos_dms_to_decimal(43, 12, 0, "W"),
+                -(43 + 12 / 60))
+  expect_equal(soilKey:::.bdsolos_dms_to_decimal(40, 0, 0, "N"), 40)
+  expect_true(is.na(soilKey:::.bdsolos_dms_to_decimal(NA, 0, 0, "S")))
+})
+
+
+test_that("load_bdsolos_csv handles BDsolos full schema (preamble + ; + 222 cols)", {
+  tf <- tempfile(fileext = ".csv")
+  hdr <- paste(c(
+    "Codigo PA", "Simbolo Horizonte",
+    "Profundidade Superior", "Profundidade Inferior",
+    "Cor da Amostra Umida - Matiz",
+    "Cor da Amostra Umida - Valor",
+    "Cor da Amostra Umida - Croma",
+    "Composicao Granulometrica da terra fina - Argila (g/Kg)",
+    "Composicao Granulometrica da terra fina - Silte (g/Kg)",
+    "Composicao Granulometrica da terra fina - Areia Total (g/Kg)",
+    "pH - H2O", "Carbono organico",
+    "Classificacao Atual", "UF", "Municipio",
+    "Latitude Graus", "Latitude Minutos",
+    "Latitude Segundos", "Latitude Hemisferio"
+  ), collapse = ";")
+  rows <- c(
+    paste(c("100", "A1",  "0",  "15", "10YR", "4", "3",
+              "180", "300", "520", "5.5", "15",
+              "ARGISSOLO VERMELHO Distrofico", "RJ", "Itaguai",
+              "22", "51", "30", "S"), collapse = ";"),
+    paste(c("100", "Bt1", "15", "60", "5YR",  "4", "6",
+              "450", "200", "350", "5.0", "3",
+              "ARGISSOLO VERMELHO Distrofico", "RJ", "Itaguai",
+              "22", "51", "30", "S"), collapse = ";"),
+    paste(c("101", "A",   "0",  "20", "10YR", "3", "3",
+              "200", "300", "500", "5.8", "20",
+              "LATOSSOLO AMARELO", "RJ", "Resende",
+              "22", "30", "0", "S"), collapse = ";")
+  )
+  writeLines(c(
+    "Dados obtidos a partir do BDSOLOS, esclarecimentos em: http://...",
+    "",
+    hdr,
+    rows
+  ), tf)
+  on.exit(unlink(tf), add = TRUE)
+
+  pedons <- load_bdsolos_csv(tf, verbose = FALSE)
+  expect_length(pedons, 2L)   # 2 unique IDs (100 and 101)
+  p1 <- pedons[[1L]]
+  expect_equal(p1$site$id, "100")
+  expect_equal(p1$site$state, "RJ")
+  expect_equal(p1$site$municipality, "Itaguai")
+  expect_match(p1$site$reference_sibcs, "ARGISSOLO VERMELHO")
+  # DMS -> decimal: 22 51' 30" S -> -22.858333
+  expect_equal(p1$site$lat, -(22 + 51 / 60 + 30 / 3600), tolerance = 1e-6)
+  # 2 horizons grouped under id=100
+  expect_equal(nrow(p1$horizons), 2L)
+  expect_equal(p1$horizons$designation, c("A1", "Bt1"))
+  expect_equal(p1$horizons$top_cm,    c(0,  15))
+  expect_equal(p1$horizons$bottom_cm, c(15, 60))
+  expect_equal(p1$horizons$munsell_hue_moist,    c("10YR", "5YR"))
+  expect_equal(p1$horizons$munsell_value_moist,  c(4, 4))
+  expect_equal(p1$horizons$munsell_chroma_moist, c(3, 6))
+  # Texture g/kg -> %: 180 -> 18, 450 -> 45
+  expect_equal(p1$horizons$clay_pct, c(18, 45))
+  expect_equal(p1$horizons$silt_pct, c(30, 20))
+  expect_equal(p1$horizons$sand_pct, c(52, 35))
+  # OC g/kg -> %: 15 -> 1.5
+  expect_equal(p1$horizons$oc_pct, c(1.5, 0.3))
+})
+
+
+test_that("load_bdsolos_csv does not include NA-id rows in any pedon (regression v0.9.58)", {
+  # Bug: prior to v0.9.58, `d[ids == rid, ]` included NA-id rows
+  # because == returns NA which data.table treats as TRUE-fill.
+  # Sentinel: synthetic CSV with one NA-id row mixed in.
+  tf <- tempfile(fileext = ".csv")
+  hdr <- paste(c(
+    "Codigo PA", "Simbolo Horizonte",
+    "Profundidade Superior", "Profundidade Inferior",
+    "pH - H2O"
+  ), collapse = ";")
+  rows <- c(
+    paste(c("100", "A",  "0",  "20", "5.5"), collapse = ";"),
+    paste(c("100", "Bt", "20", "60", "5.0"), collapse = ";"),
+    paste(c("",    "A",  "0",  "15", "4.0"), collapse = ";")  # NA id
+  )
+  writeLines(c("preamble", "", hdr, rows), tf)
+  on.exit(unlink(tf), add = TRUE)
+  pedons <- load_bdsolos_csv(tf, verbose = FALSE)
+  expect_length(pedons, 1L)   # only 1 pedon -- the NA-id row is dropped
+  expect_equal(pedons[[1L]]$site$id, "100")
+  expect_equal(nrow(pedons[[1L]]$horizons), 2L)
+})
+
+
 # ---- Live network test (opt-in) ---------------------------------------
 
 test_that("download_bdsolos hits BDsolos when SOILKEY_NETWORK_TESTS is set", {
