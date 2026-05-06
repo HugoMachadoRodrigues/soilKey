@@ -1,3 +1,80 @@
+# soilKey 0.9.64 (2026-05-06)
+
+The "local-VLM bootstrap" release. Adds one-call setup of Ollama +
+Gemma 4 from inside R, lowers the default Ollama model to a
+laptop-friendly variant, and ships the canonical "pedometrist"
+persona prompt that v0.9.65's Shiny agent will install into every
+chat session.
+
+## What's shipped
+
+`R/setup-local-vlm.R` (new) -- Ollama lifecycle helpers:
+
+- **`setup_local_vlm(model = "balanced", ensure_running = TRUE,
+  verbose = TRUE)`** -- idempotent bootstrap. Detects Ollama, starts
+  the daemon if needed, pulls the chosen model. Catalog:
+  `light` = `gemma4:e2b` (~1.5 GB), `balanced` = `gemma4:e4b`
+  (~3 GB), `best` = `gemma4:31b` (~19 GB). Also accepts arbitrary
+  Ollama model identifiers (e.g. `"qwen2.5vl:7b"`). Returns a status
+  list `(ready, model, ollama_url, installed, running, pulled,
+  hint)` ready for rendering in a Shiny status card.
+- **`ollama_is_installed()`** -- detects the `ollama` CLI on PATH.
+- **`ollama_ensure_running(timeout_s = 30)`** -- starts
+  `ollama serve` in background and polls until the API answers.
+- **`ollama_pull_model(model)`** -- wraps `ollama pull <model>`;
+  no-op when the model is already on disk.
+- **`ollama_list_local_models()`** -- queries `/api/tags`; returns
+  empty character vector when the daemon is not reachable.
+- All helpers are NA / NULL safe and never throw on missing
+  Ollama -- they print actionable OS-specific install hints
+  (Homebrew on macOS, curl-pipe-sh on Linux, winget on Windows)
+  via `.print_ollama_install_hint()`.
+
+`R/vlm-prompts.R`:
+
+- **`pedologist_system_prompt(language = c("pt-BR", "en"))`** --
+  canonical persona installed into every agent_app chat session
+  (and any user-built `vlm_provider(..., system_prompt = ...)`).
+  Trained pedometrist, SiBCS 5a + WRB 2022 + KST 13ed; explicit
+  "NEVER classify, only extract"; per-attribute `confidence` +
+  `source_quote` contract; PT-BR (default) or English.
+
+`R/vlm-providers.R`:
+
+- Default Ollama model bumped from `gemma4:e4b` (~3 GB) to
+  **`gemma4:e2b`** (~1.5 GB) so the package "just works" on a
+  developer laptop after `setup_local_vlm("light")`. Users opt
+  into bigger via `setup_local_vlm("balanced")` /
+  `setup_local_vlm("best")`.
+
+## Why CRAN-friendly
+
+CRAN policy forbids shipping LLM weights inside a package
+(5 MB source-tarball cap, plus binary-blob policy). v0.9.64 ships
+the **downloader**, not the weights. The user runs
+`setup_local_vlm()` once after install and Ollama caches the model
+in `~/.ollama/models/` -- no Internet calls happen at package
+install time.
+
+## Tests
+
+`test-v0964-setup-local-vlm.R`: 13 tests / ~30 expectations:
+
+- `ollama_is_installed()` returns logical scalar.
+- `ollama_list_local_models()` returns `character(0)` when daemon
+  unreachable (without throwing).
+- `ollama_pull_model()` rejects empty / NA / multi-element input,
+  returns FALSE when Ollama not on PATH.
+- `setup_local_vlm()` resolves `light`/`balanced`/`best` to the
+  documented model names; returns the documented status schema;
+  accepts arbitrary explicit identifiers.
+- `pedologist_system_prompt()` returns non-empty PT-BR / EN strings,
+  enforces the "NEVER classify" + "Do not invent values" clauses,
+  rejects unsupported languages.
+
+R CMD check Status: OK.
+
+
 # soilKey 0.9.63 (2026-05-04)
 
 Documentation release. Updates `README.md` to reflect the
