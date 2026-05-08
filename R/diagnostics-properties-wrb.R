@@ -106,8 +106,21 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
 #'        in aqp engine; \code{NULL} picks a default per engine).
 #' @param engine One of \code{"soilkey"} (default; strict 90\\%
 #'        cfvo threshold) or \code{"aqp"} (LUCAS-friendly relaxed
-#'        50\\% cfvo OR thin-topsoil-ending-by-25cm path). \code{NULL}
-#'        reads \code{getOption("soilKey.diagnostic_engine")}.
+#'        50\\% cfvo path \emph{plus} a thin-topsoil-with-rock path
+#'        requiring positive evidence of rock contact -- v0.9.66
+#'        tightening). The thin-topsoil path fires only when a
+#'        horizon ending within \code{max_depth} also satisfies
+#'        \emph{at least one} of: (a) designation contains "R"
+#'        (e.g.\ AR, BR, Cr, R, Rk), (b)
+#'        \code{coarse_fragments_pct >= 30} (gravelly), or
+#'        (c) a deeper horizon is R/Cr-designated. Users with a
+#'        strong external prior (e.g.\ a parent-material survey
+#'        that documents rock < 25 cm but did not record it in
+#'        the horizon table) can opt back into the original
+#'        v0.9.65 loose behaviour with
+#'        \code{options(soilKey.leptic_assume_rock_below = TRUE)}.
+#'        \code{NULL} (the default) reads
+#'        \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 5, Leptosols.
 #' @export
@@ -142,18 +155,46 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
                           h, min_pct    = min_coarse_pct,
                           max_top_cm = max_depth)
   )
-  # v0.9.65 engine="aqp" path: any near-surface horizon ending shallow.
-  # Many LUCAS Leptosols have a single ~15-20 cm topsoil over an R
-  # contact NOT in the loaded data. We accept the topsoil itself as
-  # leptic when its bottom is <= 25 cm AND its lower neighbour is
-  # missing or designated C/Cr.
+  # v0.9.65 engine="aqp" path: shallow topsoil with positive evidence
+  # of rock contact (v0.9.66 tightening). The original v0.9.65
+  # implementation accepted ANY horizon ending <= 25 cm as leptic,
+  # which over-fired on LUCAS topsoil-only data (29/30 pedons collapsed
+  # onto Leptosols regardless of true class). v0.9.66 adds a gate:
+  # the shallow horizon must show positive evidence of rock,
+  # operationalised as
+  #   (a) designation contains R (e.g., AR, BR, Cr, R, Rk), OR
+  #   (b) coarse_fragments_pct >= 30 (gravelly / very gravelly), OR
+  #   (c) a deeper horizon designated R / Cr is present in the profile.
+  # If the user has strong external priors (a parent material survey
+  # that documents rock < 25 cm), they can opt back into the loose
+  # behaviour with options(soilKey.leptic_assume_rock_below = TRUE).
   if (engine == "aqp") {
-    shallow_layers <- which(!is.na(h$bottom_cm) & h$bottom_cm <= max_depth)
+    assume_rock <- isTRUE(getOption("soilKey.leptic_assume_rock_below",
+                                      default = FALSE))
+    cfvo <- if (!is.null(h$coarse_fragments_pct)) h$coarse_fragments_pct
+            else rep(NA_real_, nrow(h))
+    desig <- if (!is.null(h$designation)) as.character(h$designation)
+              else rep(NA_character_, nrow(h))
+    has_R_in_designation <- !is.na(desig) & grepl("R", desig)
+    has_high_cfvo        <- !is.na(cfvo) & cfvo >= 30
+    has_R_below          <- any(!is.na(desig) &
+                                  grepl("^R$|^Cr|^R[a-z]", desig))
+    rock_evidence_per_row <- has_R_in_designation | has_high_cfvo |
+                                rep(has_R_below, nrow(h))
+    if (isTRUE(assume_rock)) rock_evidence_per_row[] <- TRUE
+    shallow_layers <- which(
+      !is.na(h$bottom_cm) & h$bottom_cm <= max_depth &
+        rock_evidence_per_row
+    )
     paths$thin_topsoil <- list(
-      shallow_topsoil = list(
+      shallow_topsoil_with_rock = list(
         passed = length(shallow_layers) > 0L,
         layers = shallow_layers,
-        details = list(max_depth = max_depth)
+        details = list(max_depth = max_depth,
+                          rock_R_designation = any(has_R_in_designation),
+                          rock_high_cfvo     = any(has_high_cfvo),
+                          rock_R_below       = has_R_below,
+                          assume_rock_option = assume_rock)
       )
     )
   }

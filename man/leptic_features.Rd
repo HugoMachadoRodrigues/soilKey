@@ -18,8 +18,21 @@ in aqp engine; \code{NULL} picks a default per engine).}
 
 \item{engine}{One of \code{"soilkey"} (default; strict 90\\%
 cfvo threshold) or \code{"aqp"} (LUCAS-friendly relaxed
-50\\% cfvo OR thin-topsoil-ending-by-25cm path). \code{NULL}
-reads \code{getOption("soilKey.diagnostic_engine")}.}
+50\\% cfvo path \emph{plus} a thin-topsoil-with-rock path
+requiring positive evidence of rock contact -- v0.9.66
+tightening). The thin-topsoil path fires only when a
+horizon ending within \code{max_depth} also satisfies
+\emph{at least one} of: (a) designation contains "R"
+(e.g.\ AR, BR, Cr, R, Rk), (b)
+\code{coarse_fragments_pct >= 30} (gravelly), or
+(c) a deeper horizon is R/Cr-designated. Users with a
+strong external prior (e.g.\ a parent-material survey
+that documents rock < 25 cm but did not record it in
+the horizon table) can opt back into the original
+v0.9.65 loose behaviour with
+\code{options(soilKey.leptic_assume_rock_below = TRUE)}.
+\code{NULL} (the default) reads
+\code{getOption("soilKey.diagnostic_engine")}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
