@@ -161,11 +161,14 @@ load_febr_pedons <- function(path,
 #'         Amarelo, Podzolico Vermelho-Escuro, etc.)
 #'   \item \code{Gleis}      (44 perfis em RJ) -> \code{Gleissolos}
 #'         (Gleis Humico, Gleis Pouco Humico colapsaram em Gleissolos)
-#'   \item \code{Aluviais}   (13 perfis em RJ) -> \code{Neossolos Fluvicos}
+#'   \item \code{Aluviais}   (13 perfis em RJ) -> \code{Neossolos}
 #'         (Solos Aluviais foram reclassificados para Neossolos
-#'         Fluvicos, embora o nome legado sobreviva nos exports
-#'         antigos; a normalisacao aqui retorna a Ordem moderna
-#'         (Neossolos), nao o sub-grupo)
+#'         Fluvicos no SiBCS 5a edicao, mas a normalisacao aqui
+#'         emite apenas a Ordem moderna \code{Neossolos} -- a
+#'         Subordem \code{Neossolos Fluvicos} nao eh recuperavel
+#'         do label legado antigo \code{ALUVIAIS} (a granularidade
+#'         de Subordem se perde). Para benchmark Order-level isso e
+#'         suficiente; para Subordem o legado nao se mapeia.)
 #'   \item \code{Solos}      -> \code{NA}
 #'         ("Solos Halomorficos", "Solos Hidromorficos", e fragmentos
 #'         de label do UI antigo do BDsolos onde a Ordem nao foi

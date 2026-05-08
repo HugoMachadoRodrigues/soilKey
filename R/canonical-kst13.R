@@ -38,6 +38,49 @@
 }
 
 
+#' Package-level cache for the parsed KST 13ed JSON files
+#'
+#' v0.9.65 (Copilot review #5): \code{kst13_criteria()} previously
+#' parsed the full ~3.1 MB criteria JSON on every call. Looping over
+#' a few hundred codes was crippling. This cache loads each JSON
+#' once per session.
+#'
+#' Kept in a private environment so package-internal code can reach
+#' the cached objects via \code{.KST13_CACHE$<filename>} but external
+#' callers must go through \code{\link{kst13_codes}} /
+#' \code{\link{kst13_criteria}}.
+#'
+#' @keywords internal
+.KST13_CACHE <- new.env(parent = emptyenv())
+
+
+#' Read + cache a KST13 JSON file
+#' @keywords internal
+.kst13_load_cached <- function(filename) {
+  if (!exists(filename, envir = .KST13_CACHE, inherits = FALSE)) {
+    if (!requireNamespace("jsonlite", quietly = TRUE)) {
+      stop(".kst13_load_cached(): the 'jsonlite' package is required.",
+           call. = FALSE)
+    }
+    parsed <- jsonlite::fromJSON(.kst13_path(filename))
+    assign(filename, parsed, envir = .KST13_CACHE)
+  }
+  get(filename, envir = .KST13_CACHE, inherits = FALSE)
+}
+
+
+#' Clear the in-memory KST13 cache
+#'
+#' Useful when the vendored JSON files are updated mid-session.
+#' Frees ~3.1 MB.
+#' @export
+clear_kst13_cache <- function() {
+  rm(list = ls(envir = .KST13_CACHE, all.names = TRUE),
+     envir = .KST13_CACHE)
+  invisible(NULL)
+}
+
+
 #' Load the canonical KST 13ed code -> taxon-name lookup table
 #'
 #' Returns the 3,153-row data.frame from
@@ -57,11 +100,7 @@
 #' @seealso \code{\link{kst13_criteria}}, \code{\link{kst13_canonical}}.
 #' @export
 kst13_codes <- function() {
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("kst13_codes(): the 'jsonlite' package is required.",
-         call. = FALSE)
-  }
-  jsonlite::fromJSON(.kst13_path("2022_KST_codes.json"))
+  .kst13_load_cached("2022_KST_codes.json")
 }
 
 
@@ -84,15 +123,13 @@ kst13_codes <- function() {
 #' @seealso \code{\link{kst13_codes}}, \code{\link{kst13_canonical}}.
 #' @export
 kst13_criteria <- function(code) {
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("kst13_criteria(): the 'jsonlite' package is required.",
-         call. = FALSE)
-  }
   if (length(code) != 1L || !is.character(code) || !nzchar(code)) {
     stop("kst13_criteria(): `code` must be a single non-empty string.",
          call. = FALSE)
   }
-  blob <- jsonlite::fromJSON(.kst13_path("2022_KST_criteria_EN.json"))
+  # v0.9.65 (Copilot review #5): cached so loop callers don't re-parse
+  # the 3.1 MB JSON on every invocation.
+  blob <- .kst13_load_cached("2022_KST_criteria_EN.json")
   if (!(code %in% names(blob))) return(NULL)
   blob[[code]]$content
 }

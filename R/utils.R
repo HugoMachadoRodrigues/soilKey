@@ -124,7 +124,24 @@ horizon_column_spec <- function() {
     sand_feldspar_pct             = "numeric",   # SiBCS Cap 18 p 286: % volume de feldspatos (>= 15% -> Familia "feldspatica")
     sand_mineralogy               = "character", # SiBCS Cap 18 p 286 fallback: 'micacea' / 'anfibolitica' / 'feldspatica' / 'quartzosa' / NA (atalho qualitativo)
     # ---- v0.7.14.D additions: SiBCS Cap 18 Organossolos -----------------
-    woody_fragments_pct           = "numeric"    # SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos)
+    woody_fragments_pct           = "numeric",   # SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos)
+    # ---- v0.9.65 additions: Tier-3 schema fields for WRB SQ qualifiers ---
+    # These unlock the v0.9.64 Tier-3 stub functions that previously
+    # returned NA-passed because the schema lacked the required field.
+    surface_crust_type            = "character", # WRB Ch 5 (Biocrustic / Pelocrustic / Evapocrustic / Puffic): biological / clay / evaporite / puffed crust morphology
+    bioturbation_density          = "character", # WRB Ch 5 (Arenicolic / Isopteric): faunal burrow density (none / few / common / many) -- proxy for invertebrate-driven mixing
+    cordic_horizon                = "logical",   # WRB Ch 5 (Cordic): presence of cordic horizon (cemented but not duripan/petrocalcic)
+    microrelief_form              = "character", # WRB Ch 5 (Dorsic / Gilgaic): microrelief form (gilgai / dorsal-ridge / hummocky / smooth)
+    weathering_stage              = "character", # WRB Ch 5 (Saprolithic / Naramic / Lapiadic): weathering stage of parent material (fresh / moderately weathered / saprolite / completely weathered)
+    salt_crust_pattern            = "character", # WRB Ch 5 (Naramic): salt crust morphology (efflorescent / crusty / hardpan)
+    contamination_type            = "character", # WRB Ch 5 (Immissic): pollution / contamination class (heavy_metals / hydrocarbons / atmospheric_immission / NA)
+    stratification_pattern        = "character", # WRB Ch 5 (Litholinic / Raptic): stratification description (continuous / interrupted / lithologic_break / NA)
+    aeolian_morphology            = "character", # WRB Ch 5 (Nechic): aeolian / loess deposition pattern (loess / dune / sandsheet / NA)
+    mottle_morphology             = "character", # WRB Ch 5 (Mochipic): mottle pattern qualitative (mochi / banded / patchy / NA)
+    surface_puff_layer            = "logical",   # WRB Ch 5 (Kalaic / Puffic): seasonal puffed surface layer (TRUE / FALSE / NA)
+    thixotropic_index             = "numeric",   # WRB Ch 5 (Thixotropic): thixotropic-behaviour index (0-100) from slurry test
+    saprolite_pct                 = "numeric",   # WRB Ch 5 (Saprolithic): % by volume of in-situ weathered saprolite material
+    water_regime_pattern          = "character"  # WRB Ch 5 (Uterquic): bidirectional / single / aquic regime classification
   )
 }
 

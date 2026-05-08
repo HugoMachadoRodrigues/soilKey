@@ -1024,7 +1024,16 @@ test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
     redox_known <- !is.na(redox_val)
     hue_known   <- !is.na(hue) && !is.na(chroma)
     if (!redox_known && !hue_known) {
-      missing <- c(missing, "redoximorphic_features_pct", "munsell_hue_moist")
+      # Append only the fields that are actually NA on this layer, so
+      # the user can see whether redox / hue / chroma are the missing
+      # piece. Per Copilot review v0.9.65: prior code flagged only
+      # redox + hue, hiding the case "hue present but chroma missing".
+      if (!redox_known)
+        missing <- c(missing, "redoximorphic_features_pct")
+      if (is.na(hue))
+        missing <- c(missing, "munsell_hue_moist")
+      if (is.na(chroma))
+        missing <- c(missing, "munsell_chroma_moist")
       next
     }
     redox_pass <- redox_known && redox_val >= min_redox_pct

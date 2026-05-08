@@ -215,7 +215,14 @@ test_that("qual_laxic: loose dry consistence at surface", {
 
 # ---- 3. Tier-3 stubs (NA with missing field listed) ------------------
 
-test_that("Tier-3 stubs return NA with non-empty missing field", {
+test_that("Tier-3 stubs return NA-or-FALSE with WRB reference", {
+  # v0.9.65 update: with the Tier-3 schema fields wired, a stub may
+  # legitimately return FALSE when one of its checked fields IS
+  # populated but doesn't match (e.g. qual_litholinic checks both
+  # stratification_pattern AND designation; on a minimal pedon with
+  # designation = c("A", "B") -- non-rock -- it returns FALSE rather
+  # than NA, because designation is not "missing"). The test relaxes
+  # to accept any well-formed DiagnosticResult on a sparse pedon.
   for (fn in list(qual_archaic, qual_arenicolic, qual_biocrustic,
                     qual_bryic, qual_cordic, qual_dorsic,
                     qual_escalic, qual_evapocrustic, qual_immissic,
@@ -226,8 +233,11 @@ test_that("Tier-3 stubs return NA with non-empty missing field", {
                     qual_thixotropic, qual_uterquic)) {
     res <- fn(.pedon_minimal())
     expect_s3_class(res, "DiagnosticResult")
-    expect_true(is.na(res$passed))
-    expect_true(length(res$missing) > 0L)
+    # Either NA (no relevant data at all) OR FALSE (some data
+    # present but doesn't match) -- both are acceptable on a
+    # sparse pedon. The behavior we forbid is passed=TRUE without
+    # the relevant field populated.
+    expect_true(is.na(res$passed) || identical(res$passed, FALSE))
     expect_match(res$reference, "WRB")
   }
 })

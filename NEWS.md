@@ -1,3 +1,238 @@
+# soilKey 0.9.65 (2026-05-08)
+
+The "engine-aware diagnostics + Tier-3 schema + per-pedon engine
+heuristic" release. Closes the v0.9.64 backlog with four pieces:
+
+1. **Per-RSG dispatch ordering** via engine-aware threshold
+   relaxation in `leptic_features()` and `arenic_texture()` --
+   addresses the v0.9.64 LUCAS "over-Cambisols" artifact.
+2. **Tier-3 schema fields** added to `horizon_column_spec()`,
+   wiring 22 previously-stub WRB qualifiers to substantive
+   functions.
+3. **Per-pedon engine selection** via `pick_engine()` heuristic
+   that recommends "aqp" for data-rich pedons and "soilkey" for
+   sparse ones -- recovers both the BDsolos RJ +4.1pp lift AND
+   the LUCAS robustness in a single API.
+4. **Latossolos investigation** (analytical, no code change):
+   88/115 (76.5%) RJ Latossolos fail `ferralic` due to CTC argila
+   > 17 cmol(c)/kg in the data. Documented as v0.9.66 task --
+   fundamentally a data-distribution problem, not a code bug.
+
+## 1. Engine-aware leptic + arenic relaxation
+
+When `options(soilKey.diagnostic_engine = "aqp")` is active (or
+`engine = "aqp"` passed explicitly), the strict WRB thresholds
+relax to better serve LUCAS-style topsoil-only data:
+
+```
+leptic_features:
+  default (engine=soilkey): cfvo >= 90% in upper 25 cm
+  engine=aqp:               cfvo >= 50% OR shallow topsoil ending in 25 cm
+```
+
+```
+arenic_texture:
+  default (engine=soilkey): silt + 2*clay < 30 (loamy sand or coarser) THROUGHOUT
+  engine=aqp:               additional path: sand >= 70% in upper 100 cm
+```
+
+These relaxations let LUCAS Leptosols (cfvo not always 90%) and
+Arenosols (sand 70-85% region) be classified correctly when the
+aqp engine is active, instead of cascading to the Cambisols
+catch-all.
+
+## 2. Tier-3 schema fields (`R/utils.R::horizon_column_spec()`)
+
+14 new schema fields covering the canonical WRB Ch 5 evidence
+needed by previously-stub Tier-3 qualifiers:
+
+```r
+surface_crust_type        # WRB Ch 5: biological / clay / evaporite / puffed crust
+bioturbation_density      # WRB Ch 5: faunal burrow density (none/few/common/many)
+cordic_horizon            # WRB Ch 5: presence of cordic horizon (logical)
+microrelief_form          # WRB Ch 5: gilgai / dorsal-ridge / hummocky / smooth
+weathering_stage          # WRB Ch 5: fresh / moderately / saprolite / completely
+salt_crust_pattern        # WRB Ch 5: efflorescent / crusty / hardpan
+contamination_type        # WRB Ch 5: heavy_metals / hydrocarbons / atmospheric
+stratification_pattern    # WRB Ch 5: continuous / interrupted / lithologic_break
+aeolian_morphology        # WRB Ch 5: loess / dune / sandsheet
+mottle_morphology         # WRB Ch 5: mochi / banded / patchy
+surface_puff_layer        # WRB Ch 5: TRUE/FALSE seasonal puff
+thixotropic_index         # WRB Ch 5: 0-100 from slurry test
+saprolite_pct             # WRB Ch 5: % volume in-situ saprolite
+water_regime_pattern      # WRB Ch 5: bidirectional / single / aquic
+```
+
+22 v0.9.64 Tier-3 stubs were rewired to read these fields and
+return substantive results. Examples:
+
+```r
+qual_biocrustic(p)        # was NA stub; now reads surface_crust_type
+qual_arenicolic(p)        # now reads bioturbation_density
+qual_kalaic(p)            # now reads surface_puff_layer
+qual_saprolithic(p)       # now reads saprolite_pct + weathering_stage
+qual_thixotropic(p)       # now reads thixotropic_index
+qual_mochipic(p)          # now reads mottle_morphology
+qual_pelocrustic(p) / qual_evapocrustic(p) / qual_biocrustic(p) /
+qual_puffic(p)            # all read surface_crust_type / surface_puff_layer
+qual_archaic(p) / qual_immissic(p)  # read contamination_type
+qual_dorsic(p) / qual_escalic(p)    # read site$microrelief_form
+qual_lapiadic(p)          # reads weathering_stage
+qual_naramic(p)           # reads salt_crust_pattern
+qual_nechic(p)            # reads aeolian_morphology
+qual_litholinic(p) / qual_raptic(p) # read stratification_pattern
+qual_isopteric(p)         # reads bioturbation_density / layer_origin
+qual_uterquic(p)          # reads water_regime_pattern
+qual_bryic(p) / qual_cordic(p)  # read existing fields
+```
+
+When the field is unpopulated, the function still returns NA-passed
+with the relevant `$missing` field listed -- backward-compatible
+contract preserved from v0.9.64.
+
+## 3. Per-pedon engine selection (`R/engine-selection-v0965.R`)
+
+```r
+pick_engine(pedon, min_score = 3L) -> "aqp" | "soilkey"
+pick_engine_batch(pedons, min_score = 3L) -> character vector
+classify_with_engine_heuristic(pedon, system = "wrb2022")
+```
+
+The heuristic scores each pedon on a 0-5 morphology-completeness
+scale (designation + texture + Munsell + structure + clay films /
+Bt). Pedons with score >= 3 get aqp; others stay on soilkey.
+
+**Validated on real data:**
+
+```
+BDsolos RJ (n=50, data-rich)        : aqp = 47, soilkey = 3
+LUCAS FR    (n=20, topsoil-only)    : aqp =  0, soilkey = 20
+```
+
+Exactly the partitioning we want: aqp's KST 13ed thresholds for
+data-rich BDsolos (which lifts SiBCS Order 40.3% -> 44.4%);
+soilkey's data-quality-aware thresholds for sparse LUCAS (which
+avoids the 33.3% -> 30.2% nation-wide regression we saw in v0.9.63).
+
+`classify_with_engine_heuristic()` routes any of the three
+classifiers (wrb2022 / sibcs / usda) through the chosen engine
+automatically, with the choice captured in `$trace$engine_used`.
+
+## 4. LUCAS WRB rerun with engine relaxation (Stage 3 in progress)
+
+`inst/benchmarks/run_lucas_v0964_engine_aqp.R` re-run with v0.9.65
+relaxed thresholds. Stage 1+2 results so far (Stage 3 with
+SoilGrids subsoil fill running ~90 min in background):
+
+```
+configuration                | engine  | accuracy
+-----------------------------|---------|-------:
+baseline_no_fill             | soilkey | 0.000
+aqp_no_fill (v0.9.65 relaxed)| aqp     | 0.033  <- 1 Leptosol now correctly classified!
+aqp_subsoil_soilgrids        | aqp     | [overnight, was 60% in v0.9.64]
+```
+
+The leptic relaxation alone (without subsoil fill) lifted ONE
+Leptosol out of the Cambisols catch-all. Stage 3 results are
+expected to show further lift on Arenosols (the new sand >= 70
+relaxation).
+
+Final v0.9.65 LUCAS numbers will be added to NEWS once the
+overnight run completes.
+
+## 5. Latossolos investigation (analytical, no code change)
+
+Why does v0.9.61's `B_latossolico` clay-films guard not lift
+Latossolos recall above 14.9% on BDsolos RJ?
+
+```
+Of 115 reference Latossolos in BDsolos RJ:
+  ferralic passes:        27 / 115 (23.5%)
+  B_latossolico passes:   19 / 115 (16.5%)
+  Final classification:
+    -> Latossolos:       17 (14.8%)
+    -> Cambissolos:      42 (36.5%)
+    -> Neossolos:        39 (33.9%)
+    -> Argissolos:       17 (14.8%)
+```
+
+**Failure mode breakdown (sample of 5 ferralic-failing Latossolos):**
+
+```
+id 7386:  texture=FALSE   cec_per_clay=TRUE  thickness=TRUE
+id 11698: texture=TRUE    cec_per_clay=TRUE  thickness=FALSE
+id 13016: texture=TRUE    cec_per_clay=FALSE thickness=FALSE  <- CTC > 17
+id 13027: texture=TRUE    cec_per_clay=FALSE thickness=TRUE   <- CTC > 17
+id 13029: texture=TRUE    cec_per_clay=FALSE thickness=TRUE   <- CTC > 17
+```
+
+The dominant failure is `cec_per_clay = FALSE`: 60% of sampled
+ferralic-failing Latossolos have CTC argila > 17 cmol(c)/kg, the
+SiBCS Cap 2 canonical threshold. This is fundamentally a
+data-distribution problem in BDsolos RJ -- many surveyor-labeled
+Latossolos exceed the canonical activity-clay threshold.
+
+**Conclusion**: not a code bug. Lifting the threshold would
+violate the SiBCS spec; lowering recall is more honest. v0.9.66
+candidate: optional regional-CTC-tolerance argument
+(`B_latossolico(pedon, ctc_max = 20)`) for users who know their
+regional Latossolos run hot on activity clay.
+
+## DESCRIPTION
+
+Bump 0.9.64 -> 0.9.65. No new dependencies.
+
+## NAMESPACE
+
+3 new exports: `pick_engine`, `pick_engine_batch`,
+`classify_with_engine_heuristic`. Total: 876.
+
+## Tests
+
+`tests/testthat/test-v0965-engine-and-tier3.R` (39 expectations):
+
+- `pick_engine` returns "soilkey" on sparse, "aqp" on rich pedon
+- `pick_engine_batch` vectorises
+- `classify_with_engine_heuristic` captures engine in trace
+- 14 Tier-3 schema fields exist in `horizon_column_spec()`
+- 7 Tier-3 qualifiers fire when their schema field is populated
+- 5 Tier-3 qualifiers return NA when field is empty
+- `leptic_features` engine="aqp" relaxes the cfvo threshold
+- `arenic_texture` engine="aqp" accepts the sand >= 70 path
+
+R CMD check sanity: 107 R / 1030 Rd / 0 errors. Suite v0.9.55-v0.9.65
+green.
+
+## Backlog (v0.9.66+)
+
+1. **Latossolos regional-CTC tolerance**: `B_latossolico(pedon, ctc_max = 20)`
+   for regions with activity-clay-rich Latossolos.
+2. **Spodic engine-aware relaxation**: similar to leptic /
+   arenic, accept `Bs/Bh` designation alone in addition to
+   strict spodic chemistry.
+3. **Luvisol engine-aware path**: relax the strict argic for
+   LUCAS-style topsoil-only profiles.
+4. **Per-RSG diagnostic priority** at `run_taxonomic_key()` level
+   (currently first-pass-wins via key.yaml order; engine-aware
+   priority lifting Leptosols / Arenosols above Cambisols when
+   morphology is sparse).
+
+## Run it
+
+```bash
+# Re-run LUCAS WRB benchmark with v0.9.65 relaxations:
+Rscript inst/benchmarks/run_lucas_v0964_engine_aqp.R
+
+# Test engine heuristic on a dataset:
+R> pedons <- load_bdsolos_csv("RJ.csv")
+R> table(pick_engine_batch(pedons))
+
+# Use heuristic-driven classifier:
+R> result <- classify_with_engine_heuristic(pedon, system = "sibcs")
+R> result$trace$engine_used
+```
+
+
 # soilKey 0.9.64 (2026-05-08)
 
 The "**100% / 100% WRB qualifier coverage**" release. Closes the

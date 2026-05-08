@@ -53,9 +53,23 @@ canonical_reference <- function(name = c("WRB_4th_2022",
   name <- match.arg(name)
   if (isTRUE(prefer_pkg) &&
         requireNamespace("SoilTaxonomy", quietly = TRUE)) {
+    # v0.9.65 (Copilot review #4): wrap the SoilTaxonomy data() call
+    # in tryCatch and verify the dataset materialises in the env. If
+    # the installed SoilTaxonomy version drops or renames the dataset,
+    # we silently fall through to the vendored copy below instead of
+    # erroring out.
     e <- new.env(parent = emptyenv())
-    utils::data(list = name, package = "SoilTaxonomy", envir = e)
-    return(get(name, envir = e))
+    pkg_loaded <- tryCatch({
+      utils::data(list = name, package = "SoilTaxonomy", envir = e)
+      exists(name, envir = e, inherits = FALSE)
+    }, error = function(err) {
+      warning(sprintf(
+        "canonical_reference(): SoilTaxonomy::%s lookup failed (%s); ",
+        name, conditionMessage(err)),
+        "falling back to vendored copy.", call. = FALSE)
+      FALSE
+    })
+    if (isTRUE(pkg_loaded)) return(get(name, envir = e))
   }
   rda_path <- system.file("extdata", "canonical",
                             paste0(name, ".rda"),

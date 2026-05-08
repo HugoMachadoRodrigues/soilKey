@@ -866,194 +866,580 @@ qual_laxic <- function(pedon) {
 }
 
 
-# --- Tier-3 stubs (function exists but requires schema we don't have yet) ---
+# --- v0.9.65: Tier-3 qualifiers wired to actual schema fields --------------
+#
+# v0.9.64 had these as `.q_stub_na()` placeholders. v0.9.65 adds the
+# corresponding schema fields to `horizon_column_spec()` and wires the
+# qualifiers to read them. Each is now a substantive function (still
+# returns NA when the field is unpopulated).
+
 
 #' Archaic supplementary qualifier (ah): archeological context
 #'
 #' WRB 2022 Ch 5: "Soil developed in or affected by ancient cultural
-#' material (>1000 yr old)." Tier-3: requires archeological-context
-#' site field not yet in soilKey schema.
+#' material (>1000 yr old)." Detects via \code{contamination_type}
+#' matching "archaeological" or site-level cultural-period field.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_archaic <- .q_stub_na("Archaic",
-                              c("archeological_context",
-                                "site$cultural_period"),
-                              "WRB (2022) Ch 5, Archaic")
+qual_archaic <- function(pedon) {
+  cont <- pedon$horizons$contamination_type
+  cult <- pedon$site$cultural_period %||% NA_character_
+  if (all(is.na(cont)) && is.na(cult)) {
+    return(DiagnosticResult$new(
+      name = "Archaic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no contamination_type / cultural_period"),
+      missing = c("contamination_type", "site$cultural_period"),
+      reference = "WRB (2022) Ch 5, Archaic"))
+  }
+  hits <- !is.na(cont) & grepl("(?i)archae|archaic|ancient",
+                                   cont, perl = TRUE)
+  has_text <- !is.na(cult) && nzchar(cult)
+  passed <- any(hits, na.rm = TRUE) || has_text
+  DiagnosticResult$new(
+    name = "Archaic", passed = passed,
+    layers = if (any(hits, na.rm = TRUE)) which(hits) else integer(0),
+    evidence = list(cultural_period = cult),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Archaic")
+}
 
 
 #' Arenicolic supplementary qualifier (an): faunal sand burrows
-#' Tier-3: requires bioturbation / burrow-density site field.
+#'
+#' WRB 2022 Ch 5: "Containing layers with extensive sand-grade
+#' bioturbation (faunal burrows from earthworms / ants / termites)."
+#' Implementation: \code{bioturbation_density} \\>= "common".
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_arenicolic <- .q_stub_na("Arenicolic",
-                                  c("bioturbation_density",
-                                    "burrow_density"),
-                                  "WRB (2022) Ch 5, Arenicolic")
+qual_arenicolic <- function(pedon) {
+  h <- pedon$horizons
+  bd <- h$bioturbation_density %||% rep(NA_character_, nrow(h))
+  if (all(is.na(bd))) {
+    return(DiagnosticResult$new(
+      name = "Arenicolic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no bioturbation_density data"),
+      missing = "bioturbation_density",
+      reference = "WRB (2022) Ch 5, Arenicolic"))
+  }
+  hits <- !is.na(bd) & grepl("(?i)common|many|abundant",
+                                  bd, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  passed <- length(qualifying) > 0L
+  DiagnosticResult$new(
+    name = "Arenicolic", passed = passed, layers = qualifying,
+    evidence = list(threshold = "common+"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Arenicolic")
+}
 
 
 #' Biocrustic supplementary qualifier (bk): biological soil crust
-#' Tier-3: requires surface-crust morphology field.
+#'
+#' WRB 2022 Ch 5: "Surface biological crust (cyanobacteria, algae,
+#' lichens, mosses)." Implementation: \code{surface_crust_type} matching
+#' biological pattern in upper 5 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_biocrustic <- .q_stub_na("Biocrustic",
-                                  c("surface_crust_type"),
-                                  "WRB (2022) Ch 5, Biocrustic")
+qual_biocrustic <- function(pedon) {
+  h <- pedon$horizons
+  sc <- h$surface_crust_type %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sc))) {
+    return(DiagnosticResult$new(
+      name = "Biocrustic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no surface_crust_type"),
+      missing = "surface_crust_type",
+      reference = "WRB (2022) Ch 5, Biocrustic"))
+  }
+  pat <- "(?i)biocrust|biolog|cyano|algae|lichen|moss"
+  hits <- !is.na(sc) & grepl(pat, sc, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 5)
+  passed <- length(qualifying) > 0L
+  DiagnosticResult$new(
+    name = "Biocrustic", passed = passed, layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Biocrustic")
+}
 
 
-#' Bryic supplementary qualifier (by): bryophyte cover
-#' Tier-3: requires vegetation-cover composition field.
+#' Bryic supplementary qualifier (by): bryophyte cover at surface
+#'
+#' WRB 2022 Ch 5: "Predominant bryophyte (moss / liverwort) ground
+#' cover." Implementation: \code{layer_origin} matches moss / lichen
+#' pattern OR \code{vegetation_cover} site field >= 50.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_bryic <- .q_stub_na("Bryic",
-                            c("vegetation_cover", "site$bryophyte_pct"),
-                            "WRB (2022) Ch 5, Bryic")
+qual_bryic <- function(pedon) {
+  h <- pedon$horizons
+  origin <- h$layer_origin %||% rep(NA_character_, nrow(h))
+  cover <- pedon$site$vegetation_cover %||% NA_character_
+  pat <- "(?i)moss|musgo|sphagnum|liverwort|lichen"
+  hits <- !is.na(origin) & grepl(pat, origin, perl = TRUE)
+  has_cover <- !is.na(cover) && grepl(pat, tolower(cover), perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 10)
+  passed <- length(qualifying) > 0L || has_cover
+  if (length(qualifying) == 0L && !has_cover &&
+        all(is.na(origin)) && is.na(cover)) {
+    return(DiagnosticResult$new(
+      name = "Bryic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no layer_origin / vegetation_cover"),
+      missing = c("layer_origin", "site$vegetation_cover"),
+      reference = "WRB (2022) Ch 5, Bryic"))
+  }
+  DiagnosticResult$new(
+    name = "Bryic", passed = passed, layers = qualifying,
+    evidence = list(pattern = pat, vegetation_cover = cover),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Bryic")
+}
 
 
 #' Cordic supplementary qualifier (cd): cordic horizon
-#' Tier-3: requires "cordic horizon" diagnostic not yet in soilKey.
+#'
+#' WRB 2022 Ch 5: "Cemented horizon NOT meeting duripan / petrocalcic /
+#' petrogypsic criteria but slacks moderately in water." Detection via
+#' \code{cordic_horizon} TRUE/FALSE schema flag.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_cordic <- .q_stub_na("Cordic",
-                            c("cordic_horizon"),
-                            "WRB (2022) Ch 5, Cordic")
+qual_cordic <- function(pedon) {
+  h <- pedon$horizons
+  cf <- h$cordic_horizon %||% rep(NA, nrow(h))
+  if (all(is.na(cf))) {
+    return(DiagnosticResult$new(
+      name = "Cordic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no cordic_horizon flag"),
+      missing = "cordic_horizon",
+      reference = "WRB (2022) Ch 5, Cordic"))
+  }
+  qualifying <- which(!is.na(cf) & cf & h$top_cm < 100)
+  passed <- length(qualifying) > 0L
+  DiagnosticResult$new(
+    name = "Cordic", passed = passed, layers = qualifying,
+    evidence = list(),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Cordic")
+}
 
 
-#' Dorsic supplementary qualifier (do): dorsal/ridged surface morphology
+#' Dorsic supplementary qualifier (do): dorsal-ridge microrelief
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_dorsic <- .q_stub_na("Dorsic",
-                            c("microrelief_form", "site$dorsal_morphology"),
-                            "WRB (2022) Ch 5, Dorsic")
+qual_dorsic <- function(pedon) {
+  mr <- pedon$site$microrelief_form %||% NA_character_
+  if (is.na(mr)) {
+    return(DiagnosticResult$new(
+      name = "Dorsic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no microrelief_form site field"),
+      missing = "site$microrelief_form",
+      reference = "WRB (2022) Ch 5, Dorsic"))
+  }
+  passed <- grepl("(?i)dorsal|ridge|cumulus|hummock", mr, perl = TRUE)
+  DiagnosticResult$new(
+    name = "Dorsic", passed = passed, layers = integer(0),
+    evidence = list(microrelief_form = mr),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Dorsic")
+}
 
 
-#' Escalic supplementary qualifier (es): terraced/stepped morphology
+#' Escalic supplementary qualifier (es): terraced / stepped morphology
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_escalic <- .q_stub_na("Escalic",
-                              c("site$terrace_form"),
-                              "WRB (2022) Ch 5, Escalic")
+qual_escalic <- function(pedon) {
+  mr <- pedon$site$microrelief_form %||% NA_character_
+  if (is.na(mr)) {
+    return(DiagnosticResult$new(
+      name = "Escalic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no microrelief_form site field"),
+      missing = "site$microrelief_form",
+      reference = "WRB (2022) Ch 5, Escalic"))
+  }
+  passed <- grepl("(?i)terrac|escal|step|degraus", mr, perl = TRUE)
+  DiagnosticResult$new(
+    name = "Escalic", passed = passed, layers = integer(0),
+    evidence = list(microrelief_form = mr),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Escalic")
+}
 
 
-#' Evapocrustic supplementary qualifier (ev): evaporite crust at surface
+#' Evapocrustic supplementary qualifier (ev): evaporite surface crust
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_evapocrustic <- .q_stub_na("Evapocrustic",
-                                    c("surface_crust_type"),
-                                    "WRB (2022) Ch 5, Evapocrustic")
+qual_evapocrustic <- function(pedon) {
+  h <- pedon$horizons
+  sc <- h$surface_crust_type %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sc))) {
+    return(DiagnosticResult$new(
+      name = "Evapocrustic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no surface_crust_type"),
+      missing = "surface_crust_type",
+      reference = "WRB (2022) Ch 5, Evapocrustic"))
+  }
+  pat <- "(?i)evapor|salt.crust|gypsum.crust|halite|crusty"
+  hits <- !is.na(sc) & grepl(pat, sc, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 5)
+  DiagnosticResult$new(
+    name = "Evapocrustic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Evapocrustic")
+}
 
 
-#' Immissic supplementary qualifier (im): atmospheric immission contamination
+#' Immissic supplementary qualifier (im): atmospheric immission
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_immissic <- .q_stub_na("Immissic",
-                                c("contamination_type",
-                                  "site$pollution_history"),
-                                "WRB (2022) Ch 5, Immissic")
+qual_immissic <- function(pedon) {
+  h <- pedon$horizons
+  ct <- h$contamination_type %||% rep(NA_character_, nrow(h))
+  if (all(is.na(ct))) {
+    return(DiagnosticResult$new(
+      name = "Immissic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no contamination_type"),
+      missing = "contamination_type",
+      reference = "WRB (2022) Ch 5, Immissic"))
+  }
+  pat <- "(?i)immission|atmospheric|heavy.metal|imissao"
+  hits <- !is.na(ct) & grepl(pat, ct, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Immissic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Immissic")
+}
 
 
 #' Isopteric supplementary qualifier (ip): termite / ant biogenesis
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_isopteric <- .q_stub_na("Isopteric",
-                                c("termite_activity", "isopter_density"),
-                                "WRB (2022) Ch 5, Isopteric")
+qual_isopteric <- function(pedon) {
+  h <- pedon$horizons
+  bd <- h$bioturbation_density %||% rep(NA_character_, nrow(h))
+  origin <- h$layer_origin %||% rep(NA_character_, nrow(h))
+  if (all(is.na(bd)) && all(is.na(origin))) {
+    return(DiagnosticResult$new(
+      name = "Isopteric", passed = NA, layers = integer(0),
+      evidence = list(reason = "no bioturbation_density / layer_origin"),
+      missing = c("bioturbation_density", "layer_origin"),
+      reference = "WRB (2022) Ch 5, Isopteric"))
+  }
+  pat <- "(?i)termit|ant.mound|formig|cupim|isopter"
+  hits <- (!is.na(bd) & grepl(pat, bd, perl = TRUE)) |
+          (!is.na(origin) & grepl(pat, origin, perl = TRUE))
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Isopteric", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Isopteric")
+}
 
 
-#' Kalaic supplementary qualifier (ka): dry-season puff layer
+#' Kalaic supplementary qualifier (ka): dry-season puffed surface layer
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_kalaic <- .q_stub_na("Kalaic",
-                              c("surface_puff_layer"),
-                              "WRB (2022) Ch 5, Kalaic")
+qual_kalaic <- function(pedon) {
+  h <- pedon$horizons
+  pf <- h$surface_puff_layer %||% rep(NA, nrow(h))
+  if (all(is.na(pf))) {
+    return(DiagnosticResult$new(
+      name = "Kalaic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no surface_puff_layer flag"),
+      missing = "surface_puff_layer",
+      reference = "WRB (2022) Ch 5, Kalaic"))
+  }
+  qualifying <- which(!is.na(pf) & pf & h$top_cm < 5)
+  DiagnosticResult$new(
+    name = "Kalaic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Kalaic")
+}
 
 
-#' Lapiadic supplementary qualifier (lp): karren/lapies bedrock features
+#' Lapiadic supplementary qualifier (lp): karren / lapies bedrock features
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_lapiadic <- .q_stub_na("Lapiadic",
-                                c("bedrock_morphology"),
-                                "WRB (2022) Ch 5, Lapiadic")
+qual_lapiadic <- function(pedon) {
+  h <- pedon$horizons
+  ws <- h$weathering_stage %||% rep(NA_character_, nrow(h))
+  if (all(is.na(ws))) {
+    return(DiagnosticResult$new(
+      name = "Lapiadic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no weathering_stage"),
+      missing = "weathering_stage",
+      reference = "WRB (2022) Ch 5, Lapiadic"))
+  }
+  pat <- "(?i)karren|lapies|lapiad|grike"
+  hits <- !is.na(ws) & grepl(pat, ws, perl = TRUE)
+  qualifying <- which(hits)
+  DiagnosticResult$new(
+    name = "Lapiadic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Lapiadic")
+}
 
 
-#' Litholinic supplementary qualifier (ll): stratification on rock
+#' Litholinic supplementary qualifier (ll): stratified soil on rock
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_litholinic <- .q_stub_na("Litholinic",
-                                  c("stratification_pattern",
-                                    "rock_substrate_form"),
-                                  "WRB (2022) Ch 5, Litholinic"  )
+qual_litholinic <- function(pedon) {
+  h <- pedon$horizons
+  sp <- h$stratification_pattern %||% rep(NA_character_, nrow(h))
+  desg <- h$designation %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sp)) && all(is.na(desg))) {
+    return(DiagnosticResult$new(
+      name = "Litholinic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no stratification_pattern / designation"),
+      missing = c("stratification_pattern", "designation"),
+      reference = "WRB (2022) Ch 5, Litholinic"))
+  }
+  pat_sp <- "(?i)stratif|layer|interrupt"
+  pat_dg <- "(?i)^R|^Cr"
+  hits <- (!is.na(sp) & grepl(pat_sp, sp, perl = TRUE)) |
+          (!is.na(desg) & grepl(pat_dg, desg, perl = TRUE))
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Litholinic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern_strat = pat_sp,
+                      pattern_desg = pat_dg),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Litholinic")
+}
 
 
 #' Mochipic supplementary qualifier (mp): mottled mochi-like pattern
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_mochipic <- .q_stub_na("Mochipic",
-                                c("mottle_morphology"),
-                                "WRB (2022) Ch 5, Mochipic")
+qual_mochipic <- function(pedon) {
+  h <- pedon$horizons
+  mm <- h$mottle_morphology %||% rep(NA_character_, nrow(h))
+  if (all(is.na(mm))) {
+    return(DiagnosticResult$new(
+      name = "Mochipic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no mottle_morphology"),
+      missing = "mottle_morphology",
+      reference = "WRB (2022) Ch 5, Mochipic"))
+  }
+  hits <- !is.na(mm) & grepl("(?i)mochi|banded|patchy",
+                                  mm, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Mochipic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = "mochi|banded|patchy"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Mochipic")
+}
 
 
-#' Naramic supplementary qualifier (na): salt crust patterns
+#' Naramic supplementary qualifier (na): salt-crust morphology
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_naramic <- .q_stub_na("Naramic",
-                              c("salt_crust_pattern"),
-                              "WRB (2022) Ch 5, Naramic")
+qual_naramic <- function(pedon) {
+  h <- pedon$horizons
+  sc <- h$salt_crust_pattern %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sc))) {
+    return(DiagnosticResult$new(
+      name = "Naramic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no salt_crust_pattern"),
+      missing = "salt_crust_pattern",
+      reference = "WRB (2022) Ch 5, Naramic"))
+  }
+  hits <- !is.na(sc) & grepl("(?i)effloresc|crusty|hardpan|salt.crust",
+                                  sc, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Naramic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = "salt-crust morphology"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Naramic")
+}
 
 
-#' Nechic supplementary qualifier (ne): aeolian deposit / loess pattern
+#' Nechic supplementary qualifier (ne): aeolian / loess deposit pattern
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_nechic <- .q_stub_na("Nechic",
-                              c("aeolian_morphology", "loess_indicator"),
-                              "WRB (2022) Ch 5, Nechic")
+qual_nechic <- function(pedon) {
+  h <- pedon$horizons
+  ae <- h$aeolian_morphology %||% rep(NA_character_, nrow(h))
+  if (all(is.na(ae))) {
+    return(DiagnosticResult$new(
+      name = "Nechic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no aeolian_morphology"),
+      missing = "aeolian_morphology",
+      reference = "WRB (2022) Ch 5, Nechic"))
+  }
+  hits <- !is.na(ae) & grepl("(?i)loess|dune|aeolian|sandsheet",
+                                  ae, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Nechic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = "loess|dune|aeolian|sandsheet"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Nechic")
+}
 
 
 #' Pelocrustic supplementary qualifier (pc): clayey surface crust
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_pelocrustic <- .q_stub_na("Pelocrustic",
-                                  c("surface_crust_type"),
-                                  "WRB (2022) Ch 5, Pelocrustic")
+qual_pelocrustic <- function(pedon) {
+  h <- pedon$horizons
+  sc <- h$surface_crust_type %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sc))) {
+    return(DiagnosticResult$new(
+      name = "Pelocrustic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no surface_crust_type"),
+      missing = "surface_crust_type",
+      reference = "WRB (2022) Ch 5, Pelocrustic"))
+  }
+  hits <- !is.na(sc) & grepl("(?i)pelo|clay|clayey",
+                                  sc, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 5)
+  DiagnosticResult$new(
+    name = "Pelocrustic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = "pelo|clay|clayey"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Pelocrustic")
+}
 
 
 #' Puffic supplementary qualifier (pf): puffed surface
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_puffic <- .q_stub_na("Puffic",
-                              c("surface_puff_layer"),
-                              "WRB (2022) Ch 5, Puffic")
+qual_puffic <- function(pedon) {
+  h <- pedon$horizons
+  pf <- h$surface_puff_layer %||% rep(NA, nrow(h))
+  if (all(is.na(pf))) {
+    return(DiagnosticResult$new(
+      name = "Puffic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no surface_puff_layer flag"),
+      missing = "surface_puff_layer",
+      reference = "WRB (2022) Ch 5, Puffic"))
+  }
+  qualifying <- which(!is.na(pf) & pf & h$top_cm < 5)
+  DiagnosticResult$new(
+    name = "Puffic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Puffic")
+}
 
 
 #' Raptic supplementary qualifier (rp): stratification break
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_raptic <- .q_stub_na("Raptic",
-                              c("stratification_break"),
-                              "WRB (2022) Ch 5, Raptic")
+qual_raptic <- function(pedon) {
+  h <- pedon$horizons
+  sp <- h$stratification_pattern %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sp))) {
+    return(DiagnosticResult$new(
+      name = "Raptic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no stratification_pattern"),
+      missing = "stratification_pattern",
+      reference = "WRB (2022) Ch 5, Raptic"))
+  }
+  pat <- "(?i)break|interrupt|raptic|discont"
+  hits <- !is.na(sp) & grepl(pat, sp, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Raptic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Raptic")
+}
 
 
 #' Saprolithic supplementary qualifier (sp): saprolite parent material
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_saprolithic <- .q_stub_na("Saprolithic",
-                                    c("saprolite_pct", "weathering_stage"),
-                                    "WRB (2022) Ch 5, Saprolithic")
+qual_saprolithic <- function(pedon) {
+  h <- pedon$horizons
+  sp <- h$saprolite_pct %||% rep(NA_real_, nrow(h))
+  ws <- h$weathering_stage %||% rep(NA_character_, nrow(h))
+  if (all(is.na(sp)) && all(is.na(ws))) {
+    return(DiagnosticResult$new(
+      name = "Saprolithic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no saprolite_pct / weathering_stage"),
+      missing = c("saprolite_pct", "weathering_stage"),
+      reference = "WRB (2022) Ch 5, Saprolithic"))
+  }
+  hits_pct <- !is.na(sp) & sp >= 50
+  hits_ws  <- !is.na(ws) & grepl("(?i)saprolit|weathered|saprolite",
+                                       ws, perl = TRUE)
+  qualifying <- which((hits_pct | hits_ws) & h$top_cm < 200)
+  DiagnosticResult$new(
+    name = "Saprolithic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(threshold_saprolite_pct = 50,
+                      pattern_ws = "saprolit|weathered"),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Saprolithic")
+}
 
 
 #' Thixotropic supplementary qualifier (tx): thixotropic behavior
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_thixotropic <- .q_stub_na("Thixotropic",
-                                    c("thixotropic_index", "slurry_test"),
-                                    "WRB (2022) Ch 5, Thixotropic")
+qual_thixotropic <- function(pedon) {
+  h <- pedon$horizons
+  ti <- h$thixotropic_index %||% rep(NA_real_, nrow(h))
+  if (all(is.na(ti))) {
+    return(DiagnosticResult$new(
+      name = "Thixotropic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no thixotropic_index"),
+      missing = "thixotropic_index",
+      reference = "WRB (2022) Ch 5, Thixotropic"))
+  }
+  qualifying <- which(!is.na(ti) & ti >= 50 & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Thixotropic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(threshold_thixotropic_index = 50),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Thixotropic")
+}
 
 
 #' Uterquic supplementary qualifier (uq): bidirectional water regime
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
-qual_uterquic <- .q_stub_na("Uterquic",
-                                c("water_regime_pattern"),
-                                "WRB (2022) Ch 5, Uterquic")
+qual_uterquic <- function(pedon) {
+  h <- pedon$horizons
+  wr <- h$water_regime_pattern %||% rep(NA_character_, nrow(h))
+  if (all(is.na(wr))) {
+    return(DiagnosticResult$new(
+      name = "Uterquic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no water_regime_pattern"),
+      missing = "water_regime_pattern",
+      reference = "WRB (2022) Ch 5, Uterquic"))
+  }
+  pat <- "(?i)bidirec|uterquic|fluctuat"
+  hits <- !is.na(wr) & grepl(pat, wr, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100)
+  DiagnosticResult$new(
+    name = "Uterquic", passed = length(qualifying) > 0L,
+    layers = qualifying,
+    evidence = list(pattern = pat),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Uterquic")
+}
 
 
 # Bonus Endo- variants (qual_endocalcic / qual_endogypsic /
