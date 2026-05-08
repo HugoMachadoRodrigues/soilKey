@@ -4,14 +4,28 @@
 \alias{B_latossolico}
 \title{Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)}
 \usage{
-B_latossolico(pedon, min_thickness = 50, max_cec_per_clay = 17, ...)
+B_latossolico(
+  pedon,
+  min_thickness = 50,
+  max_cec_per_clay = NULL,
+  engine = NULL,
+  ...
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 
-\item{max_cec_per_clay}{Numeric threshold or option (see Details).}
+\item{max_cec_per_clay}{Numeric threshold or option (see Details).
+Defaults to \code{NULL} (engine-aware): 17 in soilkey engine
+(the SiBCS-loose threshold, slightly more permissive than
+strict WRB ferralic 16) or 20 in aqp engine (v0.9.68 regional
+tolerance for Embrapa lab methodology offset).}
+
+\item{engine}{One of \code{"soilkey"} (default) or \code{"aqp"};
+\code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
+Forwarded to \code{\link{ferralic}}.}
 
 \item{...}{Reserved for future arguments.}
 }
