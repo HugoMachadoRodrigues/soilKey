@@ -232,7 +232,41 @@ R> result <- classify_with_engine_heuristic(pedon, system = "sibcs")
 R> result$trace$engine_used
 ```
 
-## 5. CI / docs hygiene (post-PR review)
+## 5. LUCAS WRB rerun (overnight Stage 3)
+
+Re-ran `inst/benchmarks/run_lucas_v0964_engine_aqp.R` over the
+same 30-pedon FR/PL/IT panel under three configurations:
+
+```
+configuration                  | engine  | accuracy
+baseline_soilkey_no_fill       | soilkey |    0.000  (30 -> Regosols)
+aqp_no_fill                    | aqp     |    0.033  (1/30 Leptosols)
+aqp_subsoil_soilgrids          | aqp     |    0.033  (same)
+```
+
+The aqp engine successfully predicts the single in-set Leptosol
+profile (which the soilkey engine misses; baseline = 0%). But the
+aqp leptic relaxation is currently too aggressive: 29/30 pedons
+collapse onto Leptosols regardless of true class. **This negates
+the v0.9.64 +60pp lift on the broader EU-LUCAS benchmark.**
+
+Root cause: `leptic_features()` engine="aqp" path lowers the
+coarse-fragment threshold to 50% AND adds a "thin topsoil ending
+in upper 25 cm" path. On topsoil-only LUCAS data, the second
+path passes for every pedon (since LUCAS only ships 0-20 cm),
+forcing Leptosols ahead of every other RSG.
+
+**Fix scheduled for v0.9.66**: tighten the thin-topsoil path so
+it requires evidence of contact with rock (e.g., increasing
+coarse fragments toward the bottom horizon, or
+`!is.na(parent_material) & grepl("rock|stone", parent_material)`).
+Alternatively: gate the thin-topsoil rule behind an opt-in flag.
+
+The raw report is preserved at
+`inst/benchmarks/reports/lucas_v0964_engine_aqp_2026-05-08.txt`
+so the v0.9.66 fix can be measured against this baseline.
+
+## 6. CI / docs hygiene (post-PR review)
 
 Follow-up commit for PR #17 -- pure CI / docs work, no functional
 changes:
