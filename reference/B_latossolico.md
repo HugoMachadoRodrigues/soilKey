@@ -24,7 +24,13 @@ SiO2/Al2O3 lab-data nao no schema).
 ## Usage
 
 ``` r
-B_latossolico(pedon, min_thickness = 50, max_cec_per_clay = 17, ...)
+B_latossolico(
+  pedon,
+  min_thickness = 50,
+  max_cec_per_clay = NULL,
+  engine = NULL,
+  ...
+)
 ```
 
 ## Arguments
@@ -40,7 +46,17 @@ B_latossolico(pedon, min_thickness = 50, max_cec_per_clay = 17, ...)
 
 - max_cec_per_clay:
 
-  Numeric threshold or option (see Details).
+  Numeric threshold or option (see Details). Defaults to `NULL`
+  (engine-aware): 17 in soilkey engine (the SiBCS-loose threshold,
+  slightly more permissive than strict WRB ferralic 16) or 20 in aqp
+  engine (v0.9.68 regional tolerance for Embrapa lab methodology
+  offset).
+
+- engine:
+
+  One of `"soilkey"` (default) or `"aqp"`; `NULL` reads
+  `getOption("soilKey.diagnostic_engine")`. Forwarded to
+  [`ferralic`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md).
 
 - ...:
 
