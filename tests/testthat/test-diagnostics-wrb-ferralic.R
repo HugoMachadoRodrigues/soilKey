@@ -61,7 +61,9 @@ test_that("texture predicate at the loamy sand / sandy loam boundary", {
 
 test_that("ferralic evidence includes the three v0.3.1 sub-tests", {
   # v0.3.1: ECEC/clay test removed (not in WRB 2022 Ch 3.1.10)
+  # v0.9.67: evidence also carries `engine` + `max_cec_used` markers
   pr <- make_ferralsol_canonical()
   res <- ferralic(pr)
-  expect_named(res$evidence, c("texture", "cec_per_clay", "thickness"))
+  expect_true(all(c("texture", "cec_per_clay", "thickness") %in%
+                    names(res$evidence)))
 })

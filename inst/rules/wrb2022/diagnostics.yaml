@@ -41,7 +41,12 @@ diagnostics:
         type: numeric
         default: 16
         units: "cmol_c per kg clay"
-        description: "Maximum CEC (1M NH4OAc, pH 7) per kg clay."
+        description: "Maximum CEC (1M NH4OAc, pH 7) per kg clay (16 in soilkey engine, 20 in aqp engine; v0.9.67)."
+      engine:
+        type: character
+        default: "soilkey"
+        choices: ["soilkey", "aqp"]
+        description: "v0.9.67: 'soilkey' = strict 16; 'aqp' = regional tolerance 20 (BDsolos / SOTERLAC Latossolos compatibility)."
       max_ecec:
         type: numeric
         default: 12
