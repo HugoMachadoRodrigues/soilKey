@@ -1,3 +1,77 @@
+# soilKey 0.9.66 (2026-05-08)
+
+The "**Leptosols regression fix**" release. Closes the v0.9.65
+known-regression flagged in the post-PR LUCAS Stage 3 rerun: under
+`engine = "aqp"`, the new "thin-topsoil" path in `leptic_features()`
+fired for any horizon ending within 25 cm of the surface, which
+collapsed 29/30 LUCAS topsoil-only pedons onto Leptosols regardless
+of true class.
+
+## 1. Root cause
+
+The v0.9.65 implementation accepted a horizon as "leptic candidate"
+based purely on geometry (`bottom_cm <= max_depth`). For LUCAS pedons
+that ship as a single 0-20 cm "Ap" horizon, this rule passes
+unconditionally -- the absence of deeper data was misread as evidence
+of rock contact.
+
+## 2. Fix
+
+`leptic_features(engine = "aqp")` now requires **positive evidence
+of rock contact** on at least one of three signals:
+
+1. The shallow horizon's designation contains the letter "R"
+   (e.g.\ `AR`, `BR`, `Cr`, `R`, `Rk`).
+2. The shallow horizon's `coarse_fragments_pct >= 30`
+   (gravelly / very gravelly).
+3. A deeper horizon in the same profile is R/Cr-designated.
+
+If none of these is present, the thin-topsoil path does not fire
+-- the pedon falls through to the WRB key's intended fallback
+(usually Regosols, the WRB Ch 5 catch-all for "no diagnostic
+horizons identified").
+
+Users with a strong external prior (e.g.\ a parent-material survey
+that documents rock < 25 cm but did not record it in the horizon
+table) can opt back into the v0.9.65 loose behaviour:
+
+```r
+options(soilKey.leptic_assume_rock_below = TRUE)
+```
+
+## 3. Empirical effect
+
+| Dataset (n = 30 FR/PL/IT)        | Leptosol predictions | True positives |
+|----------------------------------|---------------------:|---------------:|
+| v0.9.65 aqp_no_fill (loose)      |  30 / 30             | 1 / 30 (3.3%)  |
+| **v0.9.66 aqp_no_fill (strict)** |  **0 / 30**          | 0 / 30 (0.0%)  |
+
+The 3.3% v0.9.65 number was misleading: 30/30 predicted as Leptosols,
+of which only 1 was correct -- classification by accident, not by
+evidence. The v0.9.66 0% result is the honest WRB-correct answer:
+without subsoil data, we cannot confidently classify topsoil-only
+pedons as Leptosols, and the WRB key's "Regosols" fallback is the
+right output.
+
+Full-profile data (BDsolos, FEBR, KSSL/NASIS) is unaffected: those
+datasets ship with multiple horizons and either explicit R/Cr
+designations or measured `coarse_fragments_pct`.
+
+## 4. New regression tests
+
+`tests/testthat/test-v0966-leptic-rock-evidence.R` (8 tests, 11
+expectations):
+
+- LUCAS-like topsoil-only pedon does NOT pass leptic.
+- LUCAS-like with subsoil also does NOT pass.
+- R-designated topsoil DOES pass.
+- High-cfvo topsoil DOES pass.
+- Opt-in option restores v0.9.65 loose behaviour.
+- Traditional R/Cr-designation path still works.
+- soilkey engine (default) is unaffected.
+- Evidence trace records which rule fired.
+
+
 # soilKey 0.9.65 (2026-05-08)
 
 The "engine-aware diagnostics + Tier-3 schema + per-pedon engine
