@@ -1,3 +1,61 @@
+# soilKey 0.9.67 (2026-05-08)
+
+The "**Latossolos regional CTC tolerance**" release. Closes the
+v0.9.66 backlog item flagged from the BDsolos RJ benchmark: 88/115
+(76.5%) of Brazilian Latossolos profiles failed the strict WRB
+ferralic horizon definition (CEC <= 16 cmol_c/kg clay) because
+Embrapa lab methodology (Mehlich + Ca/Mg/K/Al sum) routinely reads
+17-20 cmol on profiles that are unambiguously Latossolos by every
+other criterion.
+
+## Fix
+
+`ferralic()` now accepts an `engine` parameter:
+
+- `engine = "soilkey"` (default) -- strict WRB 2022 16-cmol gate.
+- `engine = "aqp"` -- regional tolerance of 20 cmol_c/kg clay.
+
+The threshold can also be overridden directly via
+`options(soilKey.ferralic_max_cec = 24)` (or any numeric value),
+which beats both the engine default and the explicit `max_cec` arg.
+
+## Why 20 (not 24, not 18)?
+
+20 is a conservative shift: it covers the BDsolos RJ borderline
+zone (CEC/clay 17-19 was the bulk of the failed Latossolos) without
+opening the door to true Inceptisols / Argisols / Cambisols (which
+typically read CEC/clay > 24). The Embrapa Manual de Metodos
+(Donagema et al. 2011 \S 3.4) notes a methodological offset of
+~2-4 cmol vs the canonical 1M NH4OAc pH 7 protocol; 20 covers
+the upper tail of that offset.
+
+## Empirical justification (BDsolos RJ subset)
+
+The v0.9.62 benchmark report `inst/benchmarks/reports/bdsolos_rj_*.txt`
+showed CEC/clay distribution on labelled-Latossolos profiles
+clustering at 17-22 cmol -- well above the strict 16-cmol gate
+but well below the 24-30 zone that Argissolos populate.
+
+Targeting the 20-cmol gate via `engine = "aqp"` is expected to
+recover most of the 76.5% Latossolos miss rate without breaking
+strict WRB 2022 fidelity (which remains the soilkey-engine default
+behaviour). A v0.9.68+ benchmark rerun on BDsolos RJ will quantify
+the lift.
+
+## Regression test
+
+`tests/testthat/test-v0967-ferralic-regional-tolerance.R` (8 tests,
+12 expectations) covers:
+
+- Borderline Latossolo (CEC/clay ~18) fails on soilkey, passes on aqp.
+- Pedon with CEC/clay > 20 fails even under aqp (no over-permissive).
+- `options(soilKey.ferralic_max_cec)` overrides the engine default.
+- Explicit `max_cec` arg overrides both.
+- Evidence trace records `engine` + `max_cec_used`.
+- Low-CEC profile (true Ferralsol) passes on both engines.
+- `engine = NULL` reads `getOption("soilKey.diagnostic_engine")`.
+
+
 # soilKey 0.9.66 (2026-05-08)
 
 The "**Leptosols regression fix**" release. Closes the v0.9.65
