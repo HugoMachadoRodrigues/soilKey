@@ -15,7 +15,7 @@
 # ============================================================================
 
 
-#' Horizonte hístico (SiBCS Cap 2, p 49-50)
+#' Horizonte histico (SiBCS Cap 2, p 49-50)
 #'
 #' Horizonte O ou H de coloracao preta/cinza muito escura/brunada,
 #' \\>= 80 g/kg (8\%) C organico, com:
@@ -285,7 +285,7 @@ horizonte_A_antropico <- function(pedon) {
 
 
 #' Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-#' simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.
+#' simples/macica + OC < 6 g/kg; OR espessura < 5 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_fraco <- function(pedon) {
@@ -464,7 +464,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
     cf <- cf[!is.na(cf) & nzchar(cf)]
     if (length(cf) == 0L) return(FALSE)
     norm <- tolower(trimws(cf))
-    norm <- gsub("[ÁÀÂÃáàâã]", "a", norm)
+    norm <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", norm)
     # "abundante", "comum", "common", "abundant" all count as STRONG
     # B-textural signature; "pouca", "fraca", "few", "weak" do not.
     any(grepl("\\babunda|\\bcomu|\\bcommon|\\babundan", norm))
@@ -573,7 +573,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' argila (B/A \\<= 1.5), estrutura em blocos sub/angulares ou
 #' prismatica grau moderado/forte, cerosidade no minimo comum +
 #' moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +
-#' carater alumínico.
+#' carater aluminico.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param min_clay_pct Numeric threshold or option (see Details).

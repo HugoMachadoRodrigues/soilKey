@@ -127,12 +127,10 @@
 #' Mapping (per Embrapa / SiBCS field-description manual):
 #' \tabular{lll}{
 #'   Ordinal     \tab Percent range \tab Midpoint used \cr
-#'   pouco       \tab \\< 2\\%        \tab 1 \cr
-#'   comum       \tab 2-20\\%        \tab 10 \cr
-#'   abundante   \tab \\> 20\\%       \tab 30 \cr
-#'   ausente / "" / NA \tab 0\\%   \tab NA (returns NA, not 0, so the
-#'                                          gleyic test treats it as
-#'                                          missing rather than absent)
+#'   pouco       \tab less than 2 pct     \tab 1 \cr
+#'   comum       \tab 2 to 20 pct         \tab 10 \cr
+#'   abundante   \tab more than 20 pct    \tab 30 \cr
+#'   ausente / empty / NA \tab 0 pct      \tab NA (missing) \cr
 #' }
 #'
 #' @param x Character vector of mottle-quantity ordinal labels.
@@ -142,11 +140,11 @@
 .bdsolos_mosqueado_to_pct <- function(x) {
   if (length(x) == 0L) return(numeric(0))
   s <- tolower(trimws(as.character(x)))
-  s <- gsub("[ÁÀÂÃáàâã]", "a", s)
-  s <- gsub("[ÉÊéê]", "e", s)
-  s <- gsub("[Íí]", "i", s)
-  s <- gsub("[ÓÔÕóôõ]", "o", s)
-  s <- gsub("[Úú]", "u", s)
+  s <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", s)
+  s <- gsub("[\u00C9\u00CA\u00E9\u00EA]", "e", s)
+  s <- gsub("[\u00CD\u00ED]", "i", s)
+  s <- gsub("[\u00D3\u00D4\u00D5\u00F3\u00F4\u00F5]", "o", s)
+  s <- gsub("[\u00DA\u00FA]", "u", s)
   out <- rep(NA_real_, length(s))
   out[grepl("\\babunda", s)] <- 30
   out[grepl("\\bcomu",   s) & is.na(out)] <- 10

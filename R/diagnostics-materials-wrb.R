@@ -100,6 +100,11 @@ histic_horizon <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) of layers to be tested
 #'        (default 100, per WRB 2022).
+#' @param engine One of \code{"soilkey"} (default; strict WRB sand
+#'        threshold via \code{\link{test_coarse_texture_throughout}})
+#'        or \code{"aqp"} (LUCAS-friendly fallback: passes when sand
+#'        >= 70\\% across the upper \code{max_top_cm}). \code{NULL}
+#'        reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details

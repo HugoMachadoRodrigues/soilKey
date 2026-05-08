@@ -3,24 +3,20 @@
 \docType{data}
 \name{.SIBCS_LEGACY_ORDER_MAP}
 \alias{.SIBCS_LEGACY_ORDER_MAP}
-\title{Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case}
+\title{Pre-2018 SiBCS Order names -> SiBCS 5a edicao plural Title Case map}
 \format{
 An object of class \code{character} of length 4.
 }
 \usage{
 .SIBCS_LEGACY_ORDER_MAP
 }
-\arguments{
-\item{x}{Character vector of FEBR SiBCS names.}
-
-\item{level}{One of \code{"order"} (default; matches Latossolos /
-Argissolos / etc.) or \code{"subordem"} (Latossolos Vermelhos
-/ Argissolos Vermelho-Amarelos / etc.).}
+\description{
+Internal lookup applied by \code{normalise_febr_sibcs()} when
+\code{level = "order"}. BDsolos exports collected before the SiBCS
+5a edicao (2018) carry historical Order names that the modern
+classifier does not emit.
 }
-\value{
-Character vector of normalised soilKey-format names.
-Pre-2018 SiBCS Order names -> SiBCS 5a edicao plural Title Case
-
+\details{
 BDsolos exports collected before the SiBCS 5a edicao (2018) carry
 historical Order names that the modern classifier does not emit.
 The most common cases observed on RJ.csv (722 perfis):
@@ -50,17 +46,5 @@ Aplicado em \code{normalise_febr_sibcs(level = "order")} apos a
 pluralisacao normal. Para subordem o legacy mapping ainda nao e
 aplicado (ver TODO no v0.9.61: estender para Subordem com
 "Podzolico Vermelho-Amarelo" -> "Argissolos Vermelho-Amarelos").
-}
-\description{
-FEBR ships SiBCS names in ALL-CAPS Portuguese ("LATOSSOLO VERMELHO",
-"NEOSSOLO LITOLICO", etc.) at the 2nd-level subordem granularity.
-soilKey's \code{classify_sibcs()} returns Title Case plural
-subordens ("Latossolos Vermelhos", "Neossolos Litolicos"). This
-helper extracts the first word, plurals it, and Title-Cases it,
-so the two can be matched at \code{level = "order"}.
-}
-\details{
-For \code{level = "order"} the comparison drops the second-level
-qualifier entirely and matches on the Ordem (e.g. "Latossolos").
 }
 \keyword{internal}

@@ -162,7 +162,7 @@ qual_nudiargic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_nudinatric <- function(pedon) {
-  nat <- tryCatch(natric(pedon), error = function(e) NULL)
+  nat <- tryCatch(natric_horizon(pedon), error = function(e) NULL)
   if (is.null(nat)) {
     return(DiagnosticResult$new(
       name = "Nudinatric", passed = NA, layers = integer(0),

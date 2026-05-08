@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostics-horizons-sibcs.R
 \name{horizonte_histico}
 \alias{horizonte_histico}
-\title{Horizonte hístico (SiBCS Cap 2, p 49-50)}
+\title{Horizonte histico (SiBCS Cap 2, p 49-50)}
 \usage{
 horizonte_histico(pedon, min_oc_g_kg = 80)
 }

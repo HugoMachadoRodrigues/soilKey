@@ -102,7 +102,12 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
 #' @param max_depth Maximum depth (cm) at which continuous rock or
 #'        rock-dominated material must appear (default 25).
 #' @param min_coarse_pct Minimum coarse-fragment percent for the
-#'        coarse-fragments path (default 90).
+#'        coarse-fragments path (default 90 in soilkey engine, 50
+#'        in aqp engine; \code{NULL} picks a default per engine).
+#' @param engine One of \code{"soilkey"} (default; strict 90\\%
+#'        cfvo threshold) or \code{"aqp"} (LUCAS-friendly relaxed
+#'        50\\% cfvo OR thin-topsoil-ending-by-25cm path). \code{NULL}
+#'        reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 5, Leptosols.
 #' @export

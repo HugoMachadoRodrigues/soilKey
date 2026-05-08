@@ -132,24 +132,12 @@ load_febr_pedons <- function(path,
 }
 
 
-#' Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case
+#' Pre-2018 SiBCS Order names -> SiBCS 5a edicao plural Title Case map
 #'
-#' FEBR ships SiBCS names in ALL-CAPS Portuguese ("LATOSSOLO VERMELHO",
-#' "NEOSSOLO LITOLICO", etc.) at the 2nd-level subordem granularity.
-#' soilKey's \code{classify_sibcs()} returns Title Case plural
-#' subordens ("Latossolos Vermelhos", "Neossolos Litolicos"). This
-#' helper extracts the first word, plurals it, and Title-Cases it,
-#' so the two can be matched at \code{level = "order"}.
-#'
-#' For \code{level = "order"} the comparison drops the second-level
-#' qualifier entirely and matches on the Ordem (e.g. "Latossolos").
-#'
-#' @param x Character vector of FEBR SiBCS names.
-#' @param level One of \code{"order"} (default; matches Latossolos /
-#'        Argissolos / etc.) or \code{"subordem"} (Latossolos Vermelhos
-#'        / Argissolos Vermelho-Amarelos / etc.).
-#' @return Character vector of normalised soilKey-format names.
-#' Pre-2018 SiBCS Order names -> SiBCS 5a edicao plural Title Case
+#' Internal lookup applied by \code{normalise_febr_sibcs()} when
+#' \code{level = "order"}. BDsolos exports collected before the SiBCS
+#' 5a edicao (2018) carry historical Order names that the modern
+#' classifier does not emit.
 #'
 #' BDsolos exports collected before the SiBCS 5a edicao (2018) carry
 #' historical Order names that the modern classifier does not emit.
