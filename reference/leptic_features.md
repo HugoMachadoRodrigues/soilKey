@@ -41,8 +41,16 @@ leptic_features(pedon, max_depth = 25, min_coarse_pct = NULL, engine = NULL)
 - engine:
 
   One of `"soilkey"` (default; strict 90\\ cfvo threshold) or `"aqp"`
-  (LUCAS-friendly relaxed 50\\ reads
-  `getOption("soilKey.diagnostic_engine")`.
+  (LUCAS-friendly relaxed 50\\ requiring positive evidence of rock
+  contact – v0.9.66 tightening). The thin-topsoil path fires only when a
+  horizon ending within `max_depth` also satisfies *at least one*
+  of: (a) designation contains "R" (e.g.\\ AR, BR, Cr, R, Rk), (b)
+  `coarse_fragments_pct >= 30` (gravelly), or (c) a deeper horizon is
+  R/Cr-designated. Users with a strong external prior (e.g.\\ a
+  parent-material survey that documents rock \< 25 cm but did not record
+  it in the horizon table) can opt back into the original v0.9.65 loose
+  behaviour with `options(soilKey.leptic_assume_rock_below = TRUE)`.
+  `NULL` (the default) reads `getOption("soilKey.diagnostic_engine")`.
 
 ## Value
 
