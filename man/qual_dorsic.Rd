@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_dorsic}
 \alias{qual_dorsic}
-\title{Dorsic supplementary qualifier (do): dorsal/ridged surface morphology}
+\title{Dorsic supplementary qualifier (do): dorsal-ridge microrelief}
 \usage{
 qual_dorsic(pedon)
 }
@@ -10,5 +10,5 @@ qual_dorsic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Dorsic supplementary qualifier (do): dorsal/ridged surface morphology
+Dorsic supplementary qualifier (do): dorsal-ridge microrelief
 }

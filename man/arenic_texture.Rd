@@ -4,7 +4,7 @@
 \alias{arenic_texture}
 \title{Arenic texture (WRB 2022)}
 \usage{
-arenic_texture(pedon, max_top_cm = 100)
+arenic_texture(pedon, max_top_cm = 100, engine = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}

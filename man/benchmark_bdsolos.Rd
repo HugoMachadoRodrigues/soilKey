@@ -31,18 +31,18 @@ pedon.}
 }
 \value{
 A list with elements:
-\itemize{
-  \item \code{per_system} -- named list (one entry per requested
-        system) of \code{list(accuracy, n_compared, n_correct,
-        n_errors, confusion, per_class)} (or
-        \code{list(accuracy = NA_real_, message)} when no
-        reference labels were present).
-  \item \code{coverage} -- named list of
-        \code{list(n_with_ref, n_total, pct)} per system.
-  \item \code{config} -- named list capturing
-        \code{n_pedons, systems, sibcs_level, soilKey_version,
-        timestamp}.
-}
+  \itemize{
+    \item \code{per_system} -- named list (one entry per requested
+          system) of \code{list(accuracy, n_compared, n_correct,
+          n_errors, confusion, per_class)} (or
+          \code{list(accuracy = NA_real_, message)} when no
+          reference labels were present).
+    \item \code{coverage} -- named list of
+          \code{list(n_with_ref, n_total, pct)} per system.
+    \item \code{config} -- named list capturing
+          \code{n_pedons, systems, sibcs_level, soilKey_version,
+          timestamp}.
+  }
 }
 \description{
 Runs \code{\link{classify_wrb2022}}, \code{\link{classify_sibcs}}, and
@@ -56,9 +56,9 @@ recall, and a confusion matrix.
 \section{Reference label coverage}{
 
 
-BDsolos densely populates \code{reference_sibcs} (~82\% nation-wide as
+BDsolos densely populates \code{reference_sibcs} (~82% nation-wide as
 of the v0.9.59 audit) but sparsely populates \code{reference_wrb} and
-\code{reference_st} (UF-dependent; ~5\% on RJ, higher in some other
+\code{reference_st} (UF-dependent; ~5% on RJ, higher in some other
 states). The function always reports the per-system label coverage
 (\code{$coverage}) so the caller can judge how representative each
 accuracy figure is.
@@ -78,8 +78,8 @@ WRB and USDA comparisons are at the Reference Soil Group / Order
 level: \code{normalise_febr_wrb()} strips qualifier parens and
 pluralises the bare RSG (\code{"Xanthic Ferralsol"} ->
 \code{"Ferralsols"}); \code{normalise_febr_usda()} maps the suffix of
-the last subgroup token to the USDA Order (\code{"Typic Haplorthox"}
--> \code{"Oxisols"}).
+the last subgroup token to the USDA Order (\code{"Typic
+Haplorthox"} -> \code{"Oxisols"}).
 }
 
 \section{Errors and missing-label handling}{
@@ -96,14 +96,16 @@ Classifier errors are caught per-pedon and recorded in
 
 \examples{
 \dontrun{
-peds  <- load_bdsolos_csv("RJ.csv")
+# Single UF -- typical SiBCS-dense slice
+peds <- load_bdsolos_csv("RJ.csv")
 bench <- benchmark_bdsolos(peds, systems = c("sibcs", "wrb2022", "usda"))
 bench$coverage      # how many pedons had each reference label
 bench$per_system$sibcs$accuracy
 bench$per_system$sibcs$confusion
 
+# Subordem level
 bench2 <- benchmark_bdsolos(peds, systems = "sibcs",
-                              sibcs_level = "subordem")
+                               sibcs_level = "subordem")
 }
 }
 \seealso{

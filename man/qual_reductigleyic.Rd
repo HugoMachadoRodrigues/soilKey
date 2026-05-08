@@ -11,5 +11,5 @@ qual_reductigleyic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Gleysols): "Gleyic dominated by reduction
-(gleyic-hue layers occupying \\>= 50% of the upper 50 cm)."
+(gleyic-hue layers occupying \\>= 50\% of the upper 50 cm)."
 }

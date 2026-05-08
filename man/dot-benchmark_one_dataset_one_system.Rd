@@ -4,7 +4,14 @@
 \alias{.benchmark_one_dataset_one_system}
 \title{Single (dataset, system) benchmark call dispatched by name}
 \usage{
-.benchmark_one_dataset_one_system(ds, sys, paths, max_n, verbose)
+.benchmark_one_dataset_one_system(
+  ds,
+  sys,
+  paths,
+  max_n,
+  harmonize = FALSE,
+  verbose = TRUE
+)
 }
 \description{
 Single (dataset, system) benchmark call dispatched by name

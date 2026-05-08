@@ -10,6 +10,6 @@ qual_muusic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5 (Histosols): "Containing >= 75% by volume rubbed
+WRB 2022 Ch 5 (Histosols): "Containing >= 75\% by volume rubbed
 fibres in organic material >= 40 cm thick within 100 cm."
 }

@@ -4,7 +4,7 @@
 \alias{qual_mineralic}
 \title{Mineralic supplementary qualifier (mn): predominantly mineral
 WRB 2022 Ch 5: "Predominantly mineral material in upper 100 cm
-(oc_pct < 12% averaged over depth)."}
+(oc_pct < 12\% averaged over depth)."}
 \usage{
 qual_mineralic(pedon)
 }
@@ -14,5 +14,5 @@ qual_mineralic(pedon)
 \description{
 Mineralic supplementary qualifier (mn): predominantly mineral
 WRB 2022 Ch 5: "Predominantly mineral material in upper 100 cm
-(oc_pct < 12% averaged over depth)."
+(oc_pct < 12\% averaged over depth)."
 }

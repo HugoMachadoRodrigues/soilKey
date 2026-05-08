@@ -11,7 +11,7 @@ qual_ferritic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing layers with
->= 18% Fe2O3 (or 12.6% Fe) in fine earth, averaged over upper
+>= 18\% Fe2O3 (or 12.6\% Fe) in fine earth, averaged over upper
 100 cm or to a contact / petroplinthic / pisoplinthic / R."
 }
 \details{

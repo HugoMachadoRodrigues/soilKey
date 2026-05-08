@@ -14,5 +14,5 @@ WRB 2022 Ch 5 (Technosols): "Containing isolated bodies of
 technic hard material (concrete blocks, asphalt slabs, brick
 walls) but NOT covering the full surface." Detection via
 \code{artefacts_urbic_pct} or \code{artefacts_industrial_pct}
-between 5 and 50%.
+between 5 and 50\%.
 }

@@ -3,7 +3,7 @@
 \name{qual_inclinic}
 \alias{qual_inclinic}
 \title{Inclinic supplementary qualifier (in): tilted / inclined position
-WRB 2022 Ch 5: site has a slope >= 10% (relevo declivoso).
+WRB 2022 Ch 5: site has a slope >= 10\% (relevo declivoso).
 Implementation: site$slope_pct (when populated) >= 10 OR
 parent_material / forma_relevo flagging steep terrain.}
 \usage{
@@ -14,7 +14,7 @@ qual_inclinic(pedon)
 }
 \description{
 Inclinic supplementary qualifier (in): tilted / inclined position
-WRB 2022 Ch 5: site has a slope >= 10% (relevo declivoso).
+WRB 2022 Ch 5: site has a slope >= 10\% (relevo declivoso).
 Implementation: site$slope_pct (when populated) >= 10 OR
 parent_material / forma_relevo flagging steep terrain.
 }

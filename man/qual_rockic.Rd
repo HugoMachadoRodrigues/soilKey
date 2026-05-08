@@ -11,7 +11,7 @@ qual_rockic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Histosols): "Having a continuous rock or rock-like
-material starting <= 25 cm from the soil surface AND >= 50% by
+material starting <= 25 cm from the soil surface AND >= 50\% by
 volume coarse fragments in the upper 50 cm." Reuses
 \code{\link{leptic_features}} (max_depth = 25) AND coarse-frag check.
 }

@@ -281,7 +281,7 @@ qual_neocambic <- function(pedon) {
 #' Petrosalic qualifier (ptso): cemented salic horizon
 #'
 #' WRB 2022 Ch 5 (Solonchaks): "Salic horizon cemented by salts in
-#' >= 90% of the layer volume (forms a hard slab)." Composite:
+#' >= 90\% of the layer volume (forms a hard slab)." Composite:
 #' salic + extreme dry consistence (cemented).
 #'
 #' Audit list typo "etrosalic" -> Petrosalic; this function carries
@@ -380,8 +380,8 @@ qual_endothyric <- function(pedon) {
 
 # --- Tier-2 substantive ----------------------------------------------------
 
-#' Hyperorganic supplementary qualifier (hyo): SOC >= 18% (peat-like)
-#' WRB 2022 Ch 5: "Containing organic carbon >= 18% by mass in any
+#' Hyperorganic supplementary qualifier (hyo): SOC >= 18\% (peat-like)
+#' WRB 2022 Ch 5: "Containing organic carbon >= 18\% by mass in any
 #' layer >= 10 cm thick." A stronger version of `Carbonic`.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
@@ -409,7 +409,7 @@ qual_hyperorganic <- function(pedon) {
 
 #' Mineralic supplementary qualifier (mn): predominantly mineral
 #' WRB 2022 Ch 5: "Predominantly mineral material in upper 100 cm
-#' (oc_pct < 12% averaged over depth)."
+#' (oc_pct < 12\% averaged over depth)."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_mineralic <- function(pedon) {
@@ -560,8 +560,8 @@ qual_differentic <- function(pedon) {
 
 #' Capillaric supplementary qualifier (cp): capillary rise zone
 #' WRB 2022 Ch 5: "Capillary rise from a shallow water table to within
-#' 50 cm of the soil surface; flagged via redox concentrations (>=2%) +
-#' fine texture (clay+silt > 50%)."
+#' 50 cm of the soil surface; flagged via redox concentrations (>=2\%) +
+#' fine texture (clay+silt > 50\%)."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_capillaric <- function(pedon) {
@@ -592,7 +592,7 @@ qual_capillaric <- function(pedon) {
 
 #' Protospodic supplementary qualifier (psp): early-stage spodic
 #' WRB 2022 Ch 5: "Spodic-like horizon meeting weakened criteria
-#' (Al+Fe oxalate < 0.5% but pyrophosphate > 0.05%)." Lacking
+#' (Al+Fe oxalate < 0.5\% but pyrophosphate > 0.05\%)." Lacking
 #' pyrophosphate field; we proxy via spodic candidate horizons that
 #' fail strict spodic.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -661,7 +661,7 @@ qual_protoargic <- function(pedon) {
 
 #' Protoandic supplementary qualifier (pan): early-stage andic
 #' WRB 2022 Ch 5: "Andic-like properties below the strict threshold
-#' (oxalate Al+Fe 0.4-2.0%)."
+#' (oxalate Al+Fe 0.4-2.0\%)."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_protoandic <- function(pedon) {
@@ -801,7 +801,7 @@ qual_gelistagnic <- function(pedon) {
 
 #' Mahic supplementary qualifier (mh): manure-derived dark surface
 #' WRB 2022 Ch 5: "Topsoil enriched by long-term manure / compost
-#' application; oc_pct >= 4%, base_saturation_pct >= 50%, and
+#' application; oc_pct >= 4\%, base_saturation_pct >= 50\%, and
 #' p_mehlich >= 100 mg/kg."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export

@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_litholinic}
 \alias{qual_litholinic}
-\title{Litholinic supplementary qualifier (ll): stratification on rock}
+\title{Litholinic supplementary qualifier (ll): stratified soil on rock}
 \usage{
 qual_litholinic(pedon)
 }
@@ -10,5 +10,5 @@ qual_litholinic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Litholinic supplementary qualifier (ll): stratification on rock
+Litholinic supplementary qualifier (ll): stratified soil on rock
 }

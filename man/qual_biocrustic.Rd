@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_biocrustic}
 \alias{qual_biocrustic}
-\title{Biocrustic supplementary qualifier (bk): biological soil crust
-Tier-3: requires surface-crust morphology field.}
+\title{Biocrustic supplementary qualifier (bk): biological soil crust}
 \usage{
 qual_biocrustic(pedon)
 }
@@ -11,6 +10,7 @@ qual_biocrustic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Biocrustic supplementary qualifier (bk): biological soil crust
-Tier-3: requires surface-crust morphology field.
+WRB 2022 Ch 5: "Surface biological crust (cyanobacteria, algae,
+lichens, mosses)." Implementation: \code{surface_crust_type} matching
+biological pattern in upper 5 cm.
 }

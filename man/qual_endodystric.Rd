@@ -10,5 +10,5 @@ qual_endodystric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5: "Distric (BS < 50%) at >= 50 cm depth."
+WRB 2022 Ch 5: "Distric (BS < 50\%) at >= 50 cm depth."
 }

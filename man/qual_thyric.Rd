@@ -10,9 +10,9 @@ qual_thyric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5 (Leptosols / Technosols): "Containing >= 20% by
+WRB 2022 Ch 5 (Leptosols / Technosols): "Containing >= 20\% by
 volume technic hard material with organic origin (waste organic
 refuse, peat-like industrial residues) in upper 100 cm."
 Implementation: \code{artefacts_industrial_pct} populated AND
-organic-rich (oc_pct >= 5%).
+organic-rich (oc_pct >= 5\%).
 }

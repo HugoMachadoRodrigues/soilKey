@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_gibbsic}
 \alias{qual_gibbsic}
-\title{Gibbsic qualifier (gi): high gibbsite (>= 25%) in fine earth}
+\title{Gibbsic qualifier (gi): high gibbsite (>= 25\%) in fine earth}
 \usage{
 qual_gibbsic(pedon)
 }
@@ -11,14 +11,14 @@ qual_gibbsic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Plinthosols / Ferralsols): "Containing layers with
->= 25% gibbsite by mass averaged over a depth of 100 cm".
+>= 25\% gibbsite by mass averaged over a depth of 100 cm".
 }
 \details{
 soilKey schema does not currently carry direct gibbsite percent.
-The closest proxy is \code{al_ox_pct} (oxalate-extractable Al, %),
+The closest proxy is \code{al_ox_pct} (oxalate-extractable Al, \%),
 but gibbsite is poorly extracted by oxalate. The sulfuric attack
 \code{al2o3_sulfuric_pct} captures crystalline Al-oxides (gibbsite
 + boehmite + diaspore + Al-substitution in goethite). This
-implementation uses Al2O3 by sulfuric attack >= 25% as a proxy
+implementation uses Al2O3 by sulfuric attack >= 25\% as a proxy
 (slight over-estimate, since not all crystalline Al is gibbsite).
 }

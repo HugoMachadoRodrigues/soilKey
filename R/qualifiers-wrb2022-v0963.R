@@ -77,10 +77,10 @@
 # ============================================================================
 
 
-#' Coarsic qualifier (cr): >= 70% coarse fragments by volume in upper 100 cm
+#' Coarsic qualifier (cr): >= 70\% coarse fragments by volume in upper 100 cm
 #'
 #' WRB 2022 Ch 5: "Containing layers (in total >= 30 cm thick) with >=
-#' 70% by volume coarse fragments and/or technic hard material averaged
+#' 70\% by volume coarse fragments and/or technic hard material averaged
 #' over a depth of 100 cm from the soil surface."
 #'
 #' Applies to: HISTOSOLS, TECHNOSOLS, CRYOSOLS, LEPTOSOLS, PODZOLS,
@@ -153,17 +153,17 @@ qual_fractic <- function(pedon) {
 }
 
 
-#' Gibbsic qualifier (gi): high gibbsite (>= 25%) in fine earth
+#' Gibbsic qualifier (gi): high gibbsite (>= 25\%) in fine earth
 #'
 #' WRB 2022 Ch 5 (Plinthosols / Ferralsols): "Containing layers with
-#' >= 25% gibbsite by mass averaged over a depth of 100 cm".
+#' >= 25\% gibbsite by mass averaged over a depth of 100 cm".
 #'
 #' soilKey schema does not currently carry direct gibbsite percent.
-#' The closest proxy is \code{al_ox_pct} (oxalate-extractable Al, %),
+#' The closest proxy is \code{al_ox_pct} (oxalate-extractable Al, \%),
 #' but gibbsite is poorly extracted by oxalate. The sulfuric attack
 #' \code{al2o3_sulfuric_pct} captures crystalline Al-oxides (gibbsite
 #' + boehmite + diaspore + Al-substitution in goethite). This
-#' implementation uses Al2O3 by sulfuric attack >= 25% as a proxy
+#' implementation uses Al2O3 by sulfuric attack >= 25\% as a proxy
 #' (slight over-estimate, since not all crystalline Al is gibbsite).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -198,7 +198,7 @@ qual_gibbsic <- function(pedon) {
 #' Ferritic qualifier (fr): high free-Fe in fine earth
 #'
 #' WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing layers with
-#' >= 18% Fe2O3 (or 12.6% Fe) in fine earth, averaged over upper
+#' >= 18\% Fe2O3 (or 12.6\% Fe) in fine earth, averaged over upper
 #' 100 cm or to a contact / petroplinthic / pisoplinthic / R."
 #'
 #' Implementation: weighted mean of \code{fe_dcb_pct} (DCB-extractable
@@ -283,9 +283,9 @@ qual_greyzemic <- function(pedon) {
 }
 
 
-#' Profundihumic qualifier (ph): SOC >= 1.4% to depth >= 100 cm
+#' Profundihumic qualifier (ph): SOC >= 1.4\% to depth >= 100 cm
 #'
-#' WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing >= 1.4% organic
+#' WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing >= 1.4\% organic
 #' carbon (by weight, excluding live fine roots) as a weighted average
 #' from the soil surface down to 100 cm."
 #'
@@ -317,10 +317,10 @@ qual_profundihumic <- function(pedon) {
 }
 
 
-#' Wapnic qualifier (wp): soft, moist limnic material >= 80% CaCO3
+#' Wapnic qualifier (wp): soft, moist limnic material >= 80\% CaCO3
 #'
 #' WRB 2022 Ch 5 (Calcisols / Gleysols / Cryosols): "Having soft,
-#' moist limnic material that contains >= 80% by mass CaCO3
+#' moist limnic material that contains >= 80\% by mass CaCO3
 #' equivalent within 100 cm of the soil surface."
 #'
 #' Implementation: \code{caco3_pct} >= 80 in any layer with top <= 100.
@@ -353,7 +353,7 @@ qual_wapnic <- function(pedon) {
 
 #' Mawic qualifier (mw): moss-fibre-dominant peat
 #'
-#' WRB 2022 Ch 5 (Histosols): "Containing >= 40% by volume moss
+#' WRB 2022 Ch 5 (Histosols): "Containing >= 40\% by volume moss
 #' fibres in organic material >= 40 cm thick within 100 cm."
 #'
 #' Implementation: any horizon with \code{fiber_content_unrubbed_pct}
@@ -390,7 +390,7 @@ qual_mawic <- function(pedon) {
 
 #' Muusic qualifier (mu): high-fibre peat (non-moss-specific)
 #'
-#' WRB 2022 Ch 5 (Histosols): "Containing >= 75% by volume rubbed
+#' WRB 2022 Ch 5 (Histosols): "Containing >= 75\% by volume rubbed
 #' fibres in organic material >= 40 cm thick within 100 cm."
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -420,7 +420,7 @@ qual_muusic <- function(pedon) {
 #' Murshic qualifier (mr): partly drained organic with strong decomposition
 #'
 #' WRB 2022 Ch 5 (Histosols): "Drained organic soils with sapric
-#' decomposition (rubbed fibres < 17%) and von Post >= 7 in upper 50
+#' decomposition (rubbed fibres < 17\%) and von Post >= 7 in upper 50
 #' cm." Proxy via low rubbed fibre + von Post (when present).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -457,7 +457,7 @@ qual_murshic <- function(pedon) {
 #' Rockic qualifier (rk): rock-dominated organic horizon
 #'
 #' WRB 2022 Ch 5 (Histosols): "Having a continuous rock or rock-like
-#' material starting <= 25 cm from the soil surface AND >= 50% by
+#' material starting <= 25 cm from the soil surface AND >= 50\% by
 #' volume coarse fragments in the upper 50 cm." Reuses
 #' \code{\link{leptic_features}} (max_depth = 25) AND coarse-frag check.
 #'
@@ -484,11 +484,11 @@ qual_rockic <- function(pedon) {
 
 #' Thyric qualifier (ty): organic technic material in upper 100 cm
 #'
-#' WRB 2022 Ch 5 (Leptosols / Technosols): "Containing >= 20% by
+#' WRB 2022 Ch 5 (Leptosols / Technosols): "Containing >= 20\% by
 #' volume technic hard material with organic origin (waste organic
 #' refuse, peat-like industrial residues) in upper 100 cm."
 #' Implementation: \code{artefacts_industrial_pct} populated AND
-#' organic-rich (oc_pct >= 5%).
+#' organic-rich (oc_pct >= 5\%).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
@@ -747,7 +747,7 @@ qual_reductaquic <- function(pedon) {
 #' Reductigleyic qualifier (rg): gleyic + reductive
 #'
 #' WRB 2022 Ch 5 (Gleysols): "Gleyic dominated by reduction
-#' (gleyic-hue layers occupying \\>= 50% of the upper 50 cm)."
+#' (gleyic-hue layers occupying \\>= 50\% of the upper 50 cm)."
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
@@ -853,7 +853,7 @@ qual_relocatic <- function(pedon) {
 #' technic hard material (concrete blocks, asphalt slabs, brick
 #' walls) but NOT covering the full surface." Detection via
 #' \code{artefacts_urbic_pct} or \code{artefacts_industrial_pct}
-#' between 5 and 50%.
+#' between 5 and 50\%.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
@@ -901,7 +901,7 @@ qual_isolatic <- function(pedon) {
 
 #' Endodystric supplementary qualifier (eds): dystric only at depth
 #'
-#' WRB 2022 Ch 5: "Distric (BS < 50%) at >= 50 cm depth."
+#' WRB 2022 Ch 5: "Distric (BS < 50\%) at >= 50 cm depth."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_endodystric <- function(pedon) {
@@ -912,7 +912,7 @@ qual_endodystric <- function(pedon) {
 
 #' Epidystric supplementary qualifier (epd): dystric only in upper 50 cm
 #'
-#' WRB 2022 Ch 5: "Dystric (BS < 50%) in upper 50 cm and eutric below."
+#' WRB 2022 Ch 5: "Dystric (BS < 50\%) in upper 50 cm and eutric below."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_epidystric <- function(pedon) {
@@ -1005,9 +1005,9 @@ qual_endothionic <- function(pedon) {
 }
 
 
-#' Hypernatric supplementary qualifier (hyna): very high Na (>= 70% ESP)
+#' Hypernatric supplementary qualifier (hyna): very high Na (>= 70\% ESP)
 #'
-#' WRB 2022 Ch 5: "Sodic with exchangeable sodium percentage >= 70%."
+#' WRB 2022 Ch 5: "Sodic with exchangeable sodium percentage >= 70\%."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_hypernatric <- function(pedon) {
@@ -1035,7 +1035,7 @@ qual_hypernatric <- function(pedon) {
 
 
 #' Sulfatic supplementary qualifier (su): high sulfate content
-#' WRB 2022 Ch 5: "Containing >= 25% gypsum or >= 5% sulfate by mass."
+#' WRB 2022 Ch 5: "Containing >= 25\% gypsum or >= 5\% sulfate by mass."
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_sulfatic <- function(pedon) {
@@ -1061,7 +1061,7 @@ qual_sulfatic <- function(pedon) {
 }
 
 
-#' Carbonic supplementary qualifier (cb): high SOC content (>= 6%)
+#' Carbonic supplementary qualifier (cb): high SOC content (>= 6\%)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_carbonic <- function(pedon) {
@@ -1086,7 +1086,7 @@ qual_carbonic <- function(pedon) {
 }
 
 
-#' Carbonatic supplementary qualifier (cn): >= 50% carbonates
+#' Carbonatic supplementary qualifier (cn): >= 50\% carbonates
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 qual_carbonatic <- function(pedon) {
@@ -1179,7 +1179,7 @@ qual_pyric <- function(pedon) {
 
 
 #' Lignic supplementary qualifier (lg): wood content in organic horizon
-#' WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25% by
+#' WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25\% by
 #' volume or weight) in organic material."
 #' Implementation: \code{woody_fragments_pct} or layer_origin matching wood.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -1258,7 +1258,7 @@ qual_cohesic <- function(pedon) {
 
 
 #' Inclinic supplementary qualifier (in): tilted / inclined position
-#' WRB 2022 Ch 5: site has a slope >= 10% (relevo declivoso).
+#' WRB 2022 Ch 5: site has a slope >= 10\% (relevo declivoso).
 #' Implementation: site$slope_pct (when populated) >= 10 OR
 #' parent_material / forma_relevo flagging steep terrain.
 #' @param pedon A \code{\link{PedonRecord}}.

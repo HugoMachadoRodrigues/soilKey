@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_arenicolic}
 \alias{qual_arenicolic}
-\title{Arenicolic supplementary qualifier (an): faunal sand burrows
-Tier-3: requires bioturbation / burrow-density site field.}
+\title{Arenicolic supplementary qualifier (an): faunal sand burrows}
 \usage{
 qual_arenicolic(pedon)
 }
@@ -11,6 +10,7 @@ qual_arenicolic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Arenicolic supplementary qualifier (an): faunal sand burrows
-Tier-3: requires bioturbation / burrow-density site field.
+WRB 2022 Ch 5: "Containing layers with extensive sand-grade
+bioturbation (faunal burrows from earthworms / ants / termites)."
+Implementation: \code{bioturbation_density} \\>= "common".
 }

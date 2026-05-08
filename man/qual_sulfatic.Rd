@@ -3,7 +3,7 @@
 \name{qual_sulfatic}
 \alias{qual_sulfatic}
 \title{Sulfatic supplementary qualifier (su): high sulfate content
-WRB 2022 Ch 5: "Containing >= 25% gypsum or >= 5% sulfate by mass."}
+WRB 2022 Ch 5: "Containing >= 25\% gypsum or >= 5\% sulfate by mass."}
 \usage{
 qual_sulfatic(pedon)
 }
@@ -12,5 +12,5 @@ qual_sulfatic(pedon)
 }
 \description{
 Sulfatic supplementary qualifier (su): high sulfate content
-WRB 2022 Ch 5: "Containing >= 25% gypsum or >= 5% sulfate by mass."
+WRB 2022 Ch 5: "Containing >= 25\% gypsum or >= 5\% sulfate by mass."
 }

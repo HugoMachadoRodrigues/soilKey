@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_cordic}
 \alias{qual_cordic}
-\title{Cordic supplementary qualifier (cd): cordic horizon
-Tier-3: requires "cordic horizon" diagnostic not yet in soilKey.}
+\title{Cordic supplementary qualifier (cd): cordic horizon}
 \usage{
 qual_cordic(pedon)
 }
@@ -11,6 +10,7 @@ qual_cordic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Cordic supplementary qualifier (cd): cordic horizon
-Tier-3: requires "cordic horizon" diagnostic not yet in soilKey.
+WRB 2022 Ch 5: "Cemented horizon NOT meeting duripan / petrocalcic /
+petrogypsic criteria but slacks moderately in water." Detection via
+\code{cordic_horizon} TRUE/FALSE schema flag.
 }

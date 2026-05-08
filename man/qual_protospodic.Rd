@@ -4,7 +4,7 @@
 \alias{qual_protospodic}
 \title{Protospodic supplementary qualifier (psp): early-stage spodic
 WRB 2022 Ch 5: "Spodic-like horizon meeting weakened criteria
-(Al+Fe oxalate < 0.5% but pyrophosphate > 0.05%)." Lacking
+(Al+Fe oxalate < 0.5\% but pyrophosphate > 0.05\%)." Lacking
 pyrophosphate field; we proxy via spodic candidate horizons that
 fail strict spodic.}
 \usage{
@@ -16,7 +16,7 @@ qual_protospodic(pedon)
 \description{
 Protospodic supplementary qualifier (psp): early-stage spodic
 WRB 2022 Ch 5: "Spodic-like horizon meeting weakened criteria
-(Al+Fe oxalate < 0.5% but pyrophosphate > 0.05%)." Lacking
+(Al+Fe oxalate < 0.5\% but pyrophosphate > 0.05\%)." Lacking
 pyrophosphate field; we proxy via spodic candidate horizons that
 fail strict spodic.
 }

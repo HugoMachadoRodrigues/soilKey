@@ -4,8 +4,8 @@
 \alias{qual_capillaric}
 \title{Capillaric supplementary qualifier (cp): capillary rise zone
 WRB 2022 Ch 5: "Capillary rise from a shallow water table to within
-50 cm of the soil surface; flagged via redox concentrations (>=2%) +
-fine texture (clay+silt > 50%)."}
+50 cm of the soil surface; flagged via redox concentrations (>=2\%) +
+fine texture (clay+silt > 50\%)."}
 \usage{
 qual_capillaric(pedon)
 }
@@ -15,6 +15,6 @@ qual_capillaric(pedon)
 \description{
 Capillaric supplementary qualifier (cp): capillary rise zone
 WRB 2022 Ch 5: "Capillary rise from a shallow water table to within
-50 cm of the soil surface; flagged via redox concentrations (>=2%) +
-fine texture (clay+silt > 50%)."
+50 cm of the soil surface; flagged via redox concentrations (>=2\%) +
+fine texture (clay+silt > 50\%)."
 }

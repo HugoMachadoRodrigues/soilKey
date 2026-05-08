@@ -10,7 +10,7 @@ qual_mawic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5 (Histosols): "Containing >= 40% by volume moss
+WRB 2022 Ch 5 (Histosols): "Containing >= 40\% by volume moss
 fibres in organic material >= 40 cm thick within 100 cm."
 }
 \details{

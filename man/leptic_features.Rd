@@ -4,7 +4,7 @@
 \alias{leptic_features}
 \title{Leptic features (WRB 2022)}
 \usage{
-leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
+leptic_features(pedon, max_depth = 25, min_coarse_pct = NULL, engine = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}

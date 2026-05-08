@@ -10,5 +10,5 @@ qual_epidystric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5: "Dystric (BS < 50%) in upper 50 cm and eutric below."
+WRB 2022 Ch 5: "Dystric (BS < 50\%) in upper 50 cm and eutric below."
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_escalic}
 \alias{qual_escalic}
-\title{Escalic supplementary qualifier (es): terraced/stepped morphology}
+\title{Escalic supplementary qualifier (es): terraced / stepped morphology}
 \usage{
 qual_escalic(pedon)
 }
@@ -10,5 +10,5 @@ qual_escalic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Escalic supplementary qualifier (es): terraced/stepped morphology
+Escalic supplementary qualifier (es): terraced / stepped morphology
 }

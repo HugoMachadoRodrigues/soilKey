@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_bryic}
 \alias{qual_bryic}
-\title{Bryic supplementary qualifier (by): bryophyte cover
-Tier-3: requires vegetation-cover composition field.}
+\title{Bryic supplementary qualifier (by): bryophyte cover at surface}
 \usage{
 qual_bryic(pedon)
 }
@@ -11,6 +10,7 @@ qual_bryic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Bryic supplementary qualifier (by): bryophyte cover
-Tier-3: requires vegetation-cover composition field.
+WRB 2022 Ch 5: "Predominant bryophyte (moss / liverwort) ground
+cover." Implementation: \code{layer_origin} matches moss / lichen
+pattern OR \code{vegetation_cover} site field >= 50.
 }

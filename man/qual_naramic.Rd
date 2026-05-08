@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_naramic}
 \alias{qual_naramic}
-\title{Naramic supplementary qualifier (na): salt crust patterns}
+\title{Naramic supplementary qualifier (na): salt-crust morphology}
 \usage{
 qual_naramic(pedon)
 }
@@ -10,5 +10,5 @@ qual_naramic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Naramic supplementary qualifier (na): salt crust patterns
+Naramic supplementary qualifier (na): salt-crust morphology
 }

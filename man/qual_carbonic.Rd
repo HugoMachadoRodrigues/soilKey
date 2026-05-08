@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_carbonic}
 \alias{qual_carbonic}
-\title{Carbonic supplementary qualifier (cb): high SOC content (>= 6%)}
+\title{Carbonic supplementary qualifier (cb): high SOC content (>= 6\%)}
 \usage{
 qual_carbonic(pedon)
 }
@@ -10,5 +10,5 @@ qual_carbonic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Carbonic supplementary qualifier (cb): high SOC content (>= 6%)
+Carbonic supplementary qualifier (cb): high SOC content (>= 6\%)
 }

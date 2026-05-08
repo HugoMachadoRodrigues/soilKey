@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_wapnic}
 \alias{qual_wapnic}
-\title{Wapnic qualifier (wp): soft, moist limnic material >= 80% CaCO3}
+\title{Wapnic qualifier (wp): soft, moist limnic material >= 80\% CaCO3}
 \usage{
 qual_wapnic(pedon)
 }
@@ -11,7 +11,7 @@ qual_wapnic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Calcisols / Gleysols / Cryosols): "Having soft,
-moist limnic material that contains >= 80% by mass CaCO3
+moist limnic material that contains >= 80\% by mass CaCO3
 equivalent within 100 cm of the soil surface."
 }
 \details{

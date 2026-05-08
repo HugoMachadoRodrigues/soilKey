@@ -3,7 +3,7 @@
 \name{qual_lignic}
 \alias{qual_lignic}
 \title{Lignic supplementary qualifier (lg): wood content in organic horizon
-WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25% by
+WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25\% by
 volume or weight) in organic material."
 Implementation: \code{woody_fragments_pct} or layer_origin matching wood.}
 \usage{
@@ -14,7 +14,7 @@ qual_lignic(pedon)
 }
 \description{
 Lignic supplementary qualifier (lg): wood content in organic horizon
-WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25% by
+WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25\% by
 volume or weight) in organic material."
 Implementation: \code{woody_fragments_pct} or layer_origin matching wood.
 }

@@ -190,6 +190,20 @@ load_febr_pedons <- function(path,
 )
 
 
+#' Canonicalise FEBR SiBCS names to match soilKey rule outputs.
+#'
+#' FEBR ships SiBCS labels in mixed legacy/modern form
+#' (\code{"Podzolicos"} for old name of Argissolos, singular vs plural,
+#' Portuguese accents). This helper folds them to the form produced by
+#' \code{run_sibcs_key()} so that benchmark accuracies can be computed
+#' without false negatives.
+#'
+#' @param x Character vector of FEBR SiBCS names.
+#' @param level One of \code{"order"} (default) or \code{"subordem"}.
+#' @return Character vector of normalised SiBCS names; \code{NA} for
+#'   labels that are out-of-scope for the comparison
+#'   (e.g.\ legacy \code{"Solos"} category).
+#' @seealso \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
 #' @export
 normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
   level <- match.arg(level)

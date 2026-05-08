@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_hypernatric}
 \alias{qual_hypernatric}
-\title{Hypernatric supplementary qualifier (hyna): very high Na (>= 70% ESP)}
+\title{Hypernatric supplementary qualifier (hyna): very high Na (>= 70\% ESP)}
 \usage{
 qual_hypernatric(pedon)
 }
@@ -10,5 +10,5 @@ qual_hypernatric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5: "Sodic with exchangeable sodium percentage >= 70%."
+WRB 2022 Ch 5: "Sodic with exchangeable sodium percentage >= 70\%."
 }

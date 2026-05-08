@@ -10,6 +10,7 @@ benchmark_unified(
   paths = NULL,
   max_n_per_dataset = NULL,
   engine = c("soilkey", "aqp", "both"),
+  harmonize = FALSE,
   verbose = TRUE
 )
 }
@@ -34,7 +35,20 @@ sample size (useful for development / debugging).
 \code{NULL} (default) classifies every available pedon.}
 
 \item{engine}{Currently forwarded to Phase-1 aqp wiring. One of
-\code{"soilkey"} (default), \code{"aqp"}, \code{"both"}.}
+\code{"soilkey"} (default), \code{"aqp"}, \code{"both"}.
+When \code{"aqp"}, sets \code{options(soilKey.diagnostic_engine
+= "aqp")} for the duration of the benchmark, which routes
+\code{argic()} / \code{cambic()} through the canonical
+\code{aqp::getArgillicBounds} / \code{getCambicBounds}.}
+
+\item{harmonize}{If \code{TRUE} (default \code{FALSE}), applies
+\code{\link{harmonize_to_gsm}} to each dataset's pedons before
+classification, putting all chemistry/texture on the GSM
+depth grid (0-5 / 5-15 / 15-30 / 30-60 / 60-100 / 100-200 cm).
+Required for cross-dataset pooling integrity (Phase 2.3) but
+slow (~1-2 min for 1k pedons) and may degrade per-dataset
+accuracy slightly because the splined depths are
+approximations.}
 
 \item{verbose}{If \code{TRUE} (default), emits cli progress.}
 }

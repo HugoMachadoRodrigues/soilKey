@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_lapiadic}
 \alias{qual_lapiadic}
-\title{Lapiadic supplementary qualifier (lp): karren/lapies bedrock features}
+\title{Lapiadic supplementary qualifier (lp): karren / lapies bedrock features}
 \usage{
 qual_lapiadic(pedon)
 }
@@ -10,5 +10,5 @@ qual_lapiadic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Lapiadic supplementary qualifier (lp): karren/lapies bedrock features
+Lapiadic supplementary qualifier (lp): karren / lapies bedrock features
 }

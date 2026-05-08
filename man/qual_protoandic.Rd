@@ -4,7 +4,7 @@
 \alias{qual_protoandic}
 \title{Protoandic supplementary qualifier (pan): early-stage andic
 WRB 2022 Ch 5: "Andic-like properties below the strict threshold
-(oxalate Al+Fe 0.4-2.0%)."}
+(oxalate Al+Fe 0.4-2.0\%)."}
 \usage{
 qual_protoandic(pedon)
 }
@@ -14,5 +14,5 @@ qual_protoandic(pedon)
 \description{
 Protoandic supplementary qualifier (pan): early-stage andic
 WRB 2022 Ch 5: "Andic-like properties below the strict threshold
-(oxalate Al+Fe 0.4-2.0%)."
+(oxalate Al+Fe 0.4-2.0\%)."
 }

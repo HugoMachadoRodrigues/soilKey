@@ -11,7 +11,7 @@ qual_petrosalic(pedon)
 }
 \description{
 WRB 2022 Ch 5 (Solonchaks): "Salic horizon cemented by salts in
->= 90% of the layer volume (forms a hard slab)." Composite:
+>= 90\% of the layer volume (forms a hard slab)." Composite:
 salic + extreme dry consistence (cemented).
 }
 \details{

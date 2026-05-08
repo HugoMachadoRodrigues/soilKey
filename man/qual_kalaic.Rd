@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_kalaic}
 \alias{qual_kalaic}
-\title{Kalaic supplementary qualifier (ka): dry-season puff layer}
+\title{Kalaic supplementary qualifier (ka): dry-season puffed surface layer}
 \usage{
 qual_kalaic(pedon)
 }
@@ -10,5 +10,5 @@ qual_kalaic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Kalaic supplementary qualifier (ka): dry-season puff layer
+Kalaic supplementary qualifier (ka): dry-season puffed surface layer
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_immissic}
 \alias{qual_immissic}
-\title{Immissic supplementary qualifier (im): atmospheric immission contamination}
+\title{Immissic supplementary qualifier (im): atmospheric immission}
 \usage{
 qual_immissic(pedon)
 }
@@ -10,5 +10,5 @@ qual_immissic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Immissic supplementary qualifier (im): atmospheric immission contamination
+Immissic supplementary qualifier (im): atmospheric immission
 }

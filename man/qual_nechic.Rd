@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_nechic}
 \alias{qual_nechic}
-\title{Nechic supplementary qualifier (ne): aeolian deposit / loess pattern}
+\title{Nechic supplementary qualifier (ne): aeolian / loess deposit pattern}
 \usage{
 qual_nechic(pedon)
 }
@@ -10,5 +10,5 @@ qual_nechic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Nechic supplementary qualifier (ne): aeolian deposit / loess pattern
+Nechic supplementary qualifier (ne): aeolian / loess deposit pattern
 }

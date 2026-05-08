@@ -232,6 +232,36 @@ R> result <- classify_with_engine_heuristic(pedon, system = "sibcs")
 R> result$trace$engine_used
 ```
 
+## 5. CI / docs hygiene (post-PR review)
+
+Follow-up commit for PR #17 -- pure CI / docs work, no functional
+changes:
+
+- `_pkgdown.yml`: registered 43 previously-undocumented topics
+  across 10 new sections (Engine selection, Canonical references,
+  SmartSolos, BDsolos, FEBR, LUCAS, Unified benchmark, OSSL spectra,
+  Spatial lookups, GSM helpers).
+- `tests/testthat/test-v0951-docker-ci.R`,
+  `tests/testthat/test-v0952-vignette-pt.R`: `.find_repo_root()` now
+  requires source-only markers (`Dockerfile`, `vignettes/`) so the
+  helper does not match the *installed* package directory under
+  R CMD check (resolves 12 phantom failures).
+- `inst/schemas/pedon-schema.json`: regenerated to include the 14
+  Tier-3 horizon fields (resolves
+  `test-v0943-json-schema.R:43` mismatch).
+- `R/spectra-neighbours.R`: `.reduce_for_neighbours()` now aligns
+  column names between library and query matrices, suppresses the
+  `pc_selection` deprecation warning, and falls back to PCA when
+  resemble 3.0.0's stricter `predict.ortho_projection()` rejects
+  newdata (resolves 3 spectra-neighbours errors).
+- `R/qualifiers-wrb2022-v0963.R`,
+  `R/qualifiers-wrb2022-v0964.R`: 37 unescaped `%` characters
+  escaped as `\%` in roxygen titles/descriptions (resolves
+  ~50 R CMD check Rd-parser warnings on 11 qualifier man pages).
+- `R/benchmark-febr-loader.R`: `normalise_febr_sibcs()` got a
+  proper roxygen header (was exported but undocumented; pkgdown
+  refused to build because the topic name resolved to no Rd file).
+
 
 # soilKey 0.9.64 (2026-05-08)
 

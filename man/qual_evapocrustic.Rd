@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0964.R
 \name{qual_evapocrustic}
 \alias{qual_evapocrustic}
-\title{Evapocrustic supplementary qualifier (ev): evaporite crust at surface}
+\title{Evapocrustic supplementary qualifier (ev): evaporite surface crust}
 \usage{
 qual_evapocrustic(pedon)
 }
@@ -10,5 +10,5 @@ qual_evapocrustic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Evapocrustic supplementary qualifier (ev): evaporite crust at surface
+Evapocrustic supplementary qualifier (ev): evaporite surface crust
 }

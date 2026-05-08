@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_carbonatic}
 \alias{qual_carbonatic}
-\title{Carbonatic supplementary qualifier (cn): >= 50% carbonates}
+\title{Carbonatic supplementary qualifier (cn): >= 50\% carbonates}
 \usage{
 qual_carbonatic(pedon)
 }
@@ -10,5 +10,5 @@ qual_carbonatic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Carbonatic supplementary qualifier (cn): >= 50% carbonates
+Carbonatic supplementary qualifier (cn): >= 50\% carbonates
 }

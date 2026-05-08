@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_coarsic}
 \alias{qual_coarsic}
-\title{Coarsic qualifier (cr): >= 70% coarse fragments by volume in upper 100 cm}
+\title{Coarsic qualifier (cr): >= 70\% coarse fragments by volume in upper 100 cm}
 \usage{
 qual_coarsic(pedon)
 }
@@ -11,7 +11,7 @@ qual_coarsic(pedon)
 }
 \description{
 WRB 2022 Ch 5: "Containing layers (in total >= 30 cm thick) with >=
-70% by volume coarse fragments and/or technic hard material averaged
+70\% by volume coarse fragments and/or technic hard material averaged
 over a depth of 100 cm from the soil surface."
 }
 \details{

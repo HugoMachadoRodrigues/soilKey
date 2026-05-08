@@ -11,6 +11,6 @@ qual_archaic(pedon)
 }
 \description{
 WRB 2022 Ch 5: "Soil developed in or affected by ancient cultural
-material (>1000 yr old)." Tier-3: requires archeological-context
-site field not yet in soilKey schema.
+material (>1000 yr old)." Detects via \code{contamination_type}
+matching "archaeological" or site-level cultural-period field.
 }

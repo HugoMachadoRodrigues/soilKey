@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_profundihumic}
 \alias{qual_profundihumic}
-\title{Profundihumic qualifier (ph): SOC >= 1.4% to depth >= 100 cm}
+\title{Profundihumic qualifier (ph): SOC >= 1.4\% to depth >= 100 cm}
 \usage{
 qual_profundihumic(pedon)
 }
@@ -10,7 +10,7 @@ qual_profundihumic(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing >= 1.4% organic
+WRB 2022 Ch 5 (Nitisols / Ferralsols): "Containing >= 1.4\% organic
 carbon (by weight, excluding live fine roots) as a weighted average
 from the soil surface down to 100 cm."
 }
