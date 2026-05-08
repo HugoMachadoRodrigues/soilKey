@@ -498,11 +498,52 @@ test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
 
 #' Ferralic texture: sandy loam or finer (same predicate as argic)
 #'
+#' @section v0.9.70 morphological fallback (opt-in):
+#' Many BDsolos / SOTERLAC profiles do not record \code{clay_pct},
+#' \code{silt_pct}, \code{sand_pct} on the deep B horizon -- only on
+#' the topsoil. The strict texture test then returns \code{NA}, and
+#' \code{ferralic()} cascades to NA, blocking Latossolos detection.
+#'
+#' With \code{options(soilKey.ferralic_texture_morphological_fallback = TRUE)}
+#' \code{test_ferralic_texture()} accepts a layer as ferralic-textured
+#' when the canonical numeric test is NA \emph{and} the layer
+#' satisfies \emph{both}:
+#'   \enumerate{
+#'     \item designation matches \code{Bw|Bo|Boi} (deeply weathered
+#'           B-horizon morphology), and
+#'     \item \code{top_cm > 20} (subsoil, not topsoil).
+#'   }
+#' This is a conservative morphological inference: a Bw / Bo
+#' designation in a subsoil context strongly implies tropical
+#' deep-weathering, which in turn implies sandy-loam-or-finer
+#' texture in 95\\%+ of Brazilian Latossolos. Default is
+#' \code{FALSE} (canonical WRB behaviour preserved).
+#'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
 #' @export
 test_ferralic_texture <- function(h, candidate_layers = NULL) {
-  test_texture_argic(h, candidate_layers = candidate_layers)
+  res <- test_texture_argic(h, candidate_layers = candidate_layers)
+  if (!is.na(res$passed)) return(res)
+  morph_fallback <- isTRUE(getOption(
+    "soilKey.ferralic_texture_morphological_fallback", default = FALSE))
+  if (!morph_fallback) return(res)
+  cl <- .candidate_layers(h, candidate_layers)
+  if (length(cl) == 0L) return(res)
+  desig <- if (!is.null(h$designation)) as.character(h$designation)
+            else rep(NA_character_, length(cl))
+  topcm <- if (!is.null(h$top_cm)) h$top_cm else rep(NA_real_, length(cl))
+  morph_ok <- !is.na(desig[cl]) & grepl("^Bw|^Bo|^Boi", desig[cl]) &
+                !is.na(topcm[cl]) & topcm[cl] > 20
+  passing <- cl[morph_ok]
+  if (length(passing) == 0L) return(res)
+  .subtest_result(
+    passed  = TRUE,
+    layers  = passing,
+    missing = res$missing,
+    details = list(source = "morphological_fallback",
+                     note   = "v0.9.70: texture NA but Bw/Bo subsoil designation accepted")
+  )
 }
 
 
