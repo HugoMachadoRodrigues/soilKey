@@ -1,0 +1,102 @@
+BDsolos RJ ferralic regional-tolerance validation -- v0.9.67
+Date           : 2026-05-08
+soilKey version: 0.9.67
+Pedons         : 722 (RJ.csv)
+
+=== Per-engine SiBCS Order accuracy ===
+engine                         | elapsed_s | accuracy  | n_compared
+---------------------------------------------------------------------------
+soilkey (baseline strict 16)   |      22.0 |     0.403 | 710
+aqp (regional 20)              |      87.7 |     0.444 | 710
+
+=== Latossolos recall change ===
+Latossolos row missing in per_class_recall.
+
+=== aqp engine confusion ===
+                       predicted
+reference               Argissolos Cambissolos Chernossolos Espodossolos
+  <unmapped>                     0           0            0            0
+  Areias                         1           0            0            0
+  Argissolos                   178           1            0            0
+  Aterros                        0           0            9            0
+  Brunizens                      0           0            0            0
+  Bruno-naos                     1           0            0            0
+  Brunos                         1           0            0            0
+  Cambissolos                    3          21            0            0
+  Chernossolos                   0           0            2            0
+  Espodossolos                   0           0            0            3
+  Gleissolos                     0           0            1            0
+  Latossolo-amarelos             0           0            0            0
+  Latossolos                     5          48            0            0
+  Luvissolos                     0           0            0            0
+  Neo0ssolos                     0           0            0            0
+  Neossolos                      0           0            0            0
+  Nitossolos                     4           0            0            0
+  Organossolos                   0           0            0            0
+  Planossolos                   18           0            0            0
+  Plintossolos                   1           0            0            0
+  Podzois                        0           0            0            0
+  Podzolcios                     0           0            0            0
+  Rendzinas                      0           0            0            0
+  Solonchak-sodico*s             0           0            0            0
+  Solonetz-solodizado*s          0           0            0            0
+  Solonetz-solodizados           0           0            0            0
+  Vertissolos                    0           0            0            0
+                       predicted
+reference               Gleissolos Latossolos Luvissolos Neossolos Organossolos
+  <unmapped>                     0          0          0         9            1
+  Areias                         0          0          0         2            0
+  Argissolos                     4          9          1        44            0
+  Aterros                        0          0          1        14            0
+  Brunizens                      0          0          0         1            0
+  Bruno-naos                     0          0          0         0            0
+  Brunos                         0          0          0         0            0
+  Cambissolos                    4          1          0        61            0
+  Chernossolos                   0          0          0         2            0
+  Espodossolos                   3          0          0         4            0
+  Gleissolos                    33          0          0        63            1
+  Latossolo-amarelos             0          0          0         1            0
+  Latossolos                     0         17          0        44            0
+  Luvissolos                     0          0          3         0            0
+  Neo0ssolos                     0          0          0         1            0
+  Neossolos                      0          1          0        56            0
+  Nitossolos                     0          0          0         0            0
+  Organossolos                   1          0          0         3            1
+  Planossolos                    2          4          0        11            0
+  Plintossolos                   0          0          0         3            0
+  Podzois                        0          0          0         4            0
+  Podzolcios                     0          0          0         1            0
+  Rendzinas                      0          0          0         1            0
+  Solonchak-sodico*s             1          0          0         0            0
+  Solonetz-solodizado*s          0          0          0         1            0
+  Solonetz-solodizados           2          0          0         1            0
+  Vertissolos                    1          0          0         0            0
+                       predicted
+reference               Planossolos
+  <unmapped>                      0
+  Areias                          0
+  Argissolos                      3
+  Aterros                         0
+  Brunizens                       0
+  Bruno-naos                      0
+  Brunos                          1
+  Cambissolos                     0
+  Chernossolos                    0
+  Espodossolos                    0
+  Gleissolos                      0
+  Latossolo-amarelos              0
+  Latossolos                      0
+  Luvissolos                      0
+  Neo0ssolos                      0
+  Neossolos                       0
+  Nitossolos                      0
+  Organossolos                    0
+  Planossolos                     1
+  Plintossolos                    0
+  Podzois                         0
+  Podzolcios                      0
+  Rendzinas                       0
+  Solonchak-sodico*s              0
+  Solonetz-solodizado*s           0
+  Solonetz-solodizados            0
+  Vertissolos                     0

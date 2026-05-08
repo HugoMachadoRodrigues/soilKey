@@ -1,3 +1,60 @@
+# soilKey 0.9.68 (2026-05-08)
+
+The "**B_latossolico engine propagation + BDsolos RJ honest report**"
+release. Two pieces:
+
+## 1. B_latossolico now propagates the engine option
+
+In v0.9.67 `ferralic()` became engine-aware (16 cmol soilkey / 20 cmol
+aqp), but the SiBCS `B_latossolico()` diagnostic hard-coded
+`max_cec_per_clay = 17` and never forwarded the engine option. So
+`options(soilKey.diagnostic_engine = "aqp")` did not actually reach
+Latossolos detection.
+
+v0.9.68 fixes this:
+
+- `B_latossolico(max_cec_per_clay = NULL, engine = NULL)` defaults to
+  17 (soilkey) or 20 (aqp).
+- The engine arg is forwarded to `ferralic()`.
+- Old explicit `max_cec_per_clay = 17` callers keep working.
+
+## 2. BDsolos RJ empirical report (honest finding)
+
+Re-running the v0.9.61 BDsolos RJ (n=722) benchmark with the new
+plumbing:
+
+| engine                       | accuracy | Latossolos correct |
+|------------------------------|---------:|-------------------:|
+| soilkey (strict 16)          | 0.403    | 17 / 114 (14.9%)   |
+| **aqp (regional 20)**        | **0.444**| **17 / 114 (14.9%)** |
+
+The +4.1pp **overall** accuracy lift on aqp is real and reproducible,
+but **Latossolos recall does not change**: the bottleneck for the
+remaining 97 BDsolos RJ Latossolos is *not* the CEC/clay threshold.
+Likely candidates (deferred to v0.9.69+):
+
+- 50-cm minimum thickness (B_latossolico requires Bw >= 50 cm; many
+  RJ profiles are sampled to 80-100 cm with the Bw spanning < 50 cm).
+- NA `cec_cmol` or `clay_pct` on the B horizon (test silently fails
+  when either is missing).
+- Argic exclusion fired by clay films "comum" annotations.
+
+The +4.1pp lift comes from the v0.9.63 `cambic_aqp` engine correctly
+classifying ~12 Argissolos that the strict soilkey path misclassified
+(Argissolos -> Cambissolos / Neossolos in the aqp run).
+
+The reproducer is now committed at
+`inst/benchmarks/run_bdsolos_v0967_ferralic_validation.R`; the
+report at `inst/benchmarks/reports/bdsolos_v0967_RJ_2026-05-08.txt`.
+
+## 3. Regression test
+
+`tests/testthat/test-v0968-b-latossolico-engine.R` (7 tests, 11
+expectations) covers the engine arg, option-propagation, NULL
+defaulting, and backward compatibility with the explicit
+`max_cec_per_clay = 17` form.
+
+
 # soilKey 0.9.67 (2026-05-08)
 
 The "**Latossolos regional CTC tolerance**" release. Closes the

@@ -416,12 +416,25 @@ B_textural <- function(pedon, ...) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param max_cec_per_clay Numeric threshold or option (see Details).
+#'   Defaults to \code{NULL} (engine-aware): 17 in soilkey engine
+#'   (the SiBCS-loose threshold, slightly more permissive than
+#'   strict WRB ferralic 16) or 20 in aqp engine (v0.9.68 regional
+#'   tolerance for Embrapa lab methodology offset).
+#' @param engine One of \code{"soilkey"} (default) or \code{"aqp"};
+#'   \code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
+#'   Forwarded to \code{\link{ferralic}}.
 #' @param ... Reserved for future arguments.
 #' @export
 B_latossolico <- function(pedon, min_thickness = 50,
-                              max_cec_per_clay = 17, ...) {
+                              max_cec_per_clay = NULL,
+                              engine = NULL, ...) {
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  if (is.null(max_cec_per_clay))
+    max_cec_per_clay <- if (engine == "aqp") 20 else 17
   fer <- ferralic(pedon, min_thickness = min_thickness,
-                    max_cec = max_cec_per_clay, ...)
+                    max_cec = max_cec_per_clay, engine = engine, ...)
   if (!isTRUE(fer$passed)) {
     fer$name      <- "B_latossolico"
     fer$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59"
