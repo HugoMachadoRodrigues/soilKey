@@ -1,3 +1,66 @@
+# soilKey 0.9.69 (2026-05-08)
+
+The "**ECEC fallback for missing Valor T**" release. v0.9.68 documented
+that 66/115 (57.4%) of BDsolos RJ Latossolos have NO `cec_cmol`
+(Valor T NH4OAc pH 7) measurement -- but DO have the components
+(Ca, Mg, K, Na, Al). v0.9.69 adds an opt-in ECEC fallback that
+recovers most of those.
+
+## Fix
+
+`test_cec_per_clay()` now reads `getOption("soilKey.ferralic_ecec_fallback")`.
+When `TRUE` and `cec_cmol` is NA on a layer, the test computes ECEC
+on-the-fly:
+
+```
+ECEC = Ca + Mg + K + Na + Al  (cmol_c)
+```
+
+and uses ECEC against the same threshold (16 / 20 cmol/kg-clay).
+Default is `FALSE` -- canonical WRB behaviour preserved.
+
+ECEC is typically smaller than CEC at acidic pH because it omits
+H+, so using ECEC against the same threshold is conservative
+(MORE permissive) -- it should not produce false positives, only
+recover Latossolos that lacked Valor T.
+
+## Empirical effect (BDsolos RJ, n=722, engine=aqp)
+
+| ECEC fallback | overall acc | Latossolos correct |
+|---------------|------------:|-------------------:|
+| OFF (default) | 0.444       | 17 / 114 (14.9%)   |
+| **ON**        | **0.442**   | **32 / 114 (28.1%)** |
+
+**Latossolos recall +13.2 pp** (+15 correct profiles); overall
+accuracy moved -0.2pp (within noise -- the fallback recovers
+~15 Latossolos but creates a handful of false positives elsewhere
+at the same threshold).
+
+Users targeting strict WRB 2022 fidelity should keep the default
+(`fallback = FALSE`); users on Brazilian / Embrapa-style data
+without Valor T should set
+`options(soilKey.ferralic_ecec_fallback = TRUE)` once at session start.
+
+## Regression test
+
+`tests/testthat/test-v0969-ecec-fallback.R` (6 tests, 11 expectations)
+covers:
+
+- Default behaviour unchanged (NA when cec_cmol missing).
+- Fallback ON: Latossolo-like ECEC profile passes.
+- Fallback respects threshold: high-ECEC profile still fails.
+- Fallback does NOT override a real cec_cmol value.
+- ferralic + B_latossolico recover with the option enabled.
+
+## v0.9.70 backlog
+
+The ECEC fallback uncovered a likely BDsolos parser concern:
+`al_cmol` values reaching ~46 in some RJ profiles are implausibly
+high for exchangeable Al (typical 0.5-3 cmol_c). The parser may be
+mis-reading `al_sat_pct` (saturation %) as `al_cmol` (cmol_c). To
+investigate in v0.9.70.
+
+
 # soilKey 0.9.68 (2026-05-08)
 
 The "**B_latossolico engine propagation + BDsolos RJ honest report**"

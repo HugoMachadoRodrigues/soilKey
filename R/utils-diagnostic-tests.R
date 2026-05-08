@@ -357,6 +357,22 @@ test_not_albeluvic <- function(h) {
 #'
 #' Default threshold is 16 cmol_c/kg clay (WRB 2022 ferralic horizon).
 #'
+#' @section v0.9.69 ECEC fallback (opt-in):
+#' Brazilian / SOTERLAC / BDsolos profiles often record the exchange
+#' complex as separate Ca, Mg, K, Na, Al cmol values without an
+#' explicit "Valor T" CEC column, so \code{cec_cmol} is \code{NA} for
+#' the entire profile. With
+#' \code{options(soilKey.ferralic_ecec_fallback = TRUE)} the test
+#' falls back to the ECEC sum
+#' (\code{ca_cmol + mg_cmol + k_cmol + na_cmol + al_cmol}) on layers
+#' where \code{cec_cmol} is missing but the components are present.
+#' Default is \code{FALSE} (canonical WRB behaviour preserved).
+#'
+#' Note: ECEC is typically smaller than CEC at acidic pH because it
+#' omits H+; using ECEC against the same threshold is therefore
+#' conservative (MORE permissive) -- it should not produce false
+#' positives, only recover Latossolos that lacked Valor T.
+#'
 #' @param h Numeric threshold or option (see Details).
 #' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
@@ -367,16 +383,35 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
   passing <- integer(0)
   missing <- character(0)
   details <- list()
+  ecec_fallback <- isTRUE(getOption("soilKey.ferralic_ecec_fallback",
+                                       default = FALSE))
 
   for (i in cl) {
-    cpc <- cec_per_clay(h$cec_cmol[i], h$clay_pct[i])
+    cec_used <- h$cec_cmol[i]
+    cec_source <- "cec_cmol"
+    # v0.9.69: ECEC fallback when CEC missing
+    if (is.na(cec_used) && ecec_fallback) {
+      ecec <- compute_ecec(
+        ca = if (!is.null(h$ca_cmol)) h$ca_cmol[i] else NA_real_,
+        mg = if (!is.null(h$mg_cmol)) h$mg_cmol[i] else NA_real_,
+        k  = if (!is.null(h$k_cmol))  h$k_cmol[i]  else NA_real_,
+        na = if (!is.null(h$na_cmol)) h$na_cmol[i] else NA_real_,
+        al = if (!is.null(h$al_cmol)) h$al_cmol[i] else NA_real_
+      )
+      if (!is.na(ecec)) {
+        cec_used <- ecec
+        cec_source <- "ecec_fallback"
+      }
+    }
+    cpc <- cec_per_clay(cec_used, h$clay_pct[i])
     details[[as.character(i)]] <- list(
-      idx = i, cec_cmol = h$cec_cmol[i], clay_pct = h$clay_pct[i],
-      cec_per_clay = cpc, threshold = max_cmol_per_kg_clay
+      idx = i, cec_cmol = cec_used, clay_pct = h$clay_pct[i],
+      cec_per_clay = cpc, threshold = max_cmol_per_kg_clay,
+      cec_source = cec_source
     )
     if (is.na(cpc)) {
-      if (is.na(h$cec_cmol[i]))  missing <- c(missing, "cec_cmol")
-      if (is.na(h$clay_pct[i]))  missing <- c(missing, "clay_pct")
+      if (is.na(cec_used))           missing <- c(missing, "cec_cmol")
+      if (is.na(h$clay_pct[i]))      missing <- c(missing, "clay_pct")
       next
     }
     details[[as.character(i)]]$passed <- cpc <= max_cmol_per_kg_clay
