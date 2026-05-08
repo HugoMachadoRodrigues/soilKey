@@ -1,0 +1,30 @@
+Engine A/B comparison: soilKey vs aqp -- v0.9.62
+Date           : 2026-05-08
+soilKey version: 0.9.62
+Pedons         : 722 (BDsolos RJ.csv)
+
+=== argic ===
+  n              : 722
+  errors         : 0
+  soilkey passes : 370  (51.2%)
+  aqp     passes : 263  (36.4%)
+  agree          : 541  (74.9%)
+  disagree (sk only): 144
+  disagree (aqp only): 37
+
+=== cambic ===
+  n              : 722
+  errors         : 0
+  soilkey passes : 0  (0.0%)
+  aqp     passes : 293  (40.6%)
+  agree          : 429  (59.4%)
+  disagree (sk only): 0
+  disagree (aqp only): 293
+
+Interpretation:
+- 'agree' rate >> 80% -> engines are roughly interchangeable.
+- aqp passes >> soilkey passes -> aqp is more permissive (KST 13ed thresholds).
+- aqp passes << soilkey passes -> aqp is stricter (require_t = FALSE may help).
+
+Next step: integrate the engine that better predicts the SiBCS
+Argissolos vs Latossolos boundary on this dataset.

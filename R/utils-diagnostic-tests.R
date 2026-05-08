@@ -965,39 +965,85 @@ test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
 }
 
 
+#' Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic features)
+#'
+#' Hues consistent with Fe reduction (gleyic / reductimorphic). Used by
+#' \code{\link{test_gleyic_features}} as a secondary evidence path when
+#' \code{redoximorphic_features_pct} is not reported (e.g. BDsolos
+#' perfis where the surveyor recorded Munsell colors but not mottle
+#' percent). Per WRB 2022 Ch 3.1.13: hues N (neutral), 10Y, 5GY, 10GY,
+#' 5G, 10G, 5BG, 10BG, 5B, 10B (any value, chroma <= 2 inferred).
+#'
+#' @keywords internal
+.GLEYIC_HUE_REGEX <- paste0(
+  "^(",
+  "N|N\\s*[0-9]|",                # neutral (achromatic)
+  "10Y|5GY|10GY|5G|10G|",         # green / yellow-green
+  "5BG|10BG|5B|10B|",             # blue / blue-green
+  "10PB|5PB",                     # transitional purple-blue (rare but seen)
+  ")(\\s|$)"
+)
+
+
 #' Test for gleyic redoximorphic features within top 50 cm
 #'
-#' v0.2 implementation: requires \code{redoximorphic_features_pct} to be
-#' reported and >= \code{min_redox_pct} (default 5\%) within
-#' \code{max_top_cm} (default 50). The Munsell-color proxy
-#' (chroma <= 2, value >= 4) is too inclusive for albic / bleached
-#' horizons and is therefore not used as a primary criterion in v0.2;
-#' v0.3 will distinguish reductimorphic from albic via additional
-#' indicators. If \code{redoximorphic_features_pct} is missing for all
-#' candidate layers, returns NA.
+#' Two evidence paths (any qualifies):
+#' \enumerate{
+#'   \item \strong{Mottle percent} (primary): explicit
+#'         \code{redoximorphic_features_pct} >= \code{min_redox_pct}
+#'         (default 5\\%) within \code{max_top_cm} (default 50). This
+#'         is the v0.2 path.
+#'   \item \strong{Gleyic Munsell hue} (v0.9.61, secondary): the
+#'         horizon Munsell hue matches gleyic patterns (N / 5GY / 10G /
+#'         5BG / 10B etc.) AND chroma <= 2. Used when mottle percent
+#'         is not reported. Common in BDsolos exports where
+#'         surveyors fill matiz/valor/croma but leave mottle quantity
+#'         empty.
+#' }
+#' Either path qualifies. If neither is determinable for any candidate
+#' layer (mottle pct AND hue both NA), returns NA. If both are
+#' determinable but neither passes, returns FALSE.
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param min_redox_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @param max_chroma Numeric threshold; gleyic-hue path requires
+#'        \code{munsell_chroma_moist <= max_chroma} (default 2).
 #' @export
 test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
-                                   candidate_layers = NULL) {
+                                   candidate_layers = NULL,
+                                   max_chroma = 2) {
   cl <- .candidate_layers(h, candidate_layers)
   cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] <= max_top_cm]
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
-    val <- h$redoximorphic_features_pct[i]
-    if (is.na(val)) {
-      missing <- c(missing, "redoximorphic_features_pct")
+    redox_val <- h$redoximorphic_features_pct[i]
+    hue       <- h$munsell_hue_moist[i]
+    chroma    <- h$munsell_chroma_moist[i]
+    redox_known <- !is.na(redox_val)
+    hue_known   <- !is.na(hue) && !is.na(chroma)
+    if (!redox_known && !hue_known) {
+      missing <- c(missing, "redoximorphic_features_pct", "munsell_hue_moist")
       next
     }
+    redox_pass <- redox_known && redox_val >= min_redox_pct
+    hue_pass   <- hue_known &&
+                    grepl(.GLEYIC_HUE_REGEX, trimws(hue), perl = TRUE) &&
+                    chroma <= max_chroma
+    layer_pass <- isTRUE(redox_pass) || isTRUE(hue_pass)
     details[[as.character(i)]] <- list(
-      idx = i, redoximorphic_features_pct = val,
-      threshold = min_redox_pct, top_cm = h$top_cm[i],
-      passed = val >= min_redox_pct
+      idx = i,
+      redoximorphic_features_pct = redox_val,
+      munsell_hue_moist = hue,
+      munsell_chroma_moist = chroma,
+      threshold = min_redox_pct, max_chroma = max_chroma,
+      top_cm = h$top_cm[i],
+      redox_pass = isTRUE(redox_pass),
+      hue_pass = isTRUE(hue_pass),
+      passed = layer_pass
     )
-    if (val >= min_redox_pct) passing <- c(passing, i)
+    if (layer_pass) passing <- c(passing, i)
   }
   evaluated <- length(details)
   passed <- if (length(passing) > 0L) TRUE

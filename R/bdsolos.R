@@ -105,8 +105,58 @@
   fe_dcb_pct        = "(cdb_ferro|ataque_sulfurico_fe2o3|fe2o3|ferro_dcb|fe_dcb)",
   fe_ox_pct         = "(oxalato_de_amonio_ferro)",
   al_ox_pct         = "(oxalato_de_amonio_aluminio)",
-  si_ox_pct         = "(oxalato_de_amonio_silica)"
+  si_ox_pct         = "(oxalato_de_amonio_silica)",
+  # ---- v0.9.61: redoximorphic mottles (Mosqueado - Quantidade)
+  # BDsolos export ordinal "pouco / comum / abundante" -> percent via
+  # .bdsolos_mosqueado_to_pct(). Used by gleyic_properties / glei_horizon
+  # to fire Gleissolos diagnostics on perfis hidromorficos.
+  mottles_quantity_ord = "(mosqueado_quantidade|qtd_mosqueado|mosq_qtd)"
 )
+
+
+#' Convert BDsolos mottle-quantity ordinal class to percent
+#'
+#' BDsolos exports the "Mosqueado - Quantidade" field as an ordinal
+#' Portuguese class (pouco/comum/abundante in singular OR plural,
+#' with various accent / casing variants). The soilKey schema uses
+#' \code{redoximorphic_features_pct} (numeric volume %). This helper
+#' maps the ordinal to a representative midpoint percent so that the
+#' \code{\link{gleyic_properties}} diagnostic can fire on field-described
+#' mottles.
+#'
+#' Mapping (per Embrapa / SiBCS field-description manual):
+#' \tabular{lll}{
+#'   Ordinal     \tab Percent range \tab Midpoint used \cr
+#'   pouco       \tab \\< 2\\%        \tab 1 \cr
+#'   comum       \tab 2-20\\%        \tab 10 \cr
+#'   abundante   \tab \\> 20\\%       \tab 30 \cr
+#'   ausente / "" / NA \tab 0\\%   \tab NA (returns NA, not 0, so the
+#'                                          gleyic test treats it as
+#'                                          missing rather than absent)
+#' }
+#'
+#' @param x Character vector of mottle-quantity ordinal labels.
+#' @return Numeric vector of representative percent values (NA for
+#'         empty / unknown labels).
+#' @keywords internal
+.bdsolos_mosqueado_to_pct <- function(x) {
+  if (length(x) == 0L) return(numeric(0))
+  s <- tolower(trimws(as.character(x)))
+  s <- gsub("[ÁÀÂÃáàâã]", "a", s)
+  s <- gsub("[ÉÊéê]", "e", s)
+  s <- gsub("[Íí]", "i", s)
+  s <- gsub("[ÓÔÕóôõ]", "o", s)
+  s <- gsub("[Úú]", "u", s)
+  out <- rep(NA_real_, length(s))
+  out[grepl("\\babunda", s)] <- 30
+  out[grepl("\\bcomu",   s) & is.na(out)] <- 10
+  out[grepl("\\bpouc",   s) & is.na(out)] <-  1
+  # Ausente / vazio / NA -> NA (NOT 0): a missing observation is not
+  # the same as a confirmed-absent observation. The gleyic test
+  # interprets NA as "no information" and falls through to the next
+  # gleyic-evidence path (Munsell hue, v0.9.61).
+  out
+}
 
 
 #' Site-level columns (BDsolos full export). Mapped at the site, not
@@ -202,23 +252,43 @@
 #'
 #' @keywords internal
 .bdsolos_find_header_line <- function(path, n_probe = 10L) {
+  # v0.9.60: quote-aware field counting per physical line. The earlier
+  # strsplit(fixed = TRUE) implementation counted separators blindly,
+  # so embedded ";" in quoted descriptions (e.g. "Klaus Peter
+  # Wittern; Elias Pedroso ..." in BDsolos surveyor fields, or
+  # geology remarks containing ";") inflated data-row counts above
+  # the true 268-field header, and which.max() returned the FIRST
+  # data row as the "header". The result was 0% taxon / 0% Munsell on
+  # the real Embrapa export (e.g. RJ.csv), even though v0.9.58 claimed
+  # the opposite from a synthetic fixture.
+  #
+  # We use scan(text = ..., sep = ..., quote = "\"") per readLines()
+  # entry rather than utils::count.fields(), because count.fields
+  # silently drops blank lines, breaking the 1:1 line-number mapping
+  # the loader needs to skip the BDsolos preamble (line 1 = comment,
+  # line 2 = blank, line 3 = real header).
   lines <- readLines(path, n = n_probe, encoding = "UTF-8", warn = FALSE)
   if (length(lines) == 0L) return(1L)
-  # The header is the first line with the maximum number of fields
-  # (separator-agnostic: tries comma + semicolon + tab and picks the
-  # most-populous line). Real BDsolos has ~222 fields on the header
-  # row; minimal synthetic tests may have only ~5. Either way the
-  # header has more fields than the preamble (1-2 fields).
-  field_counts <- vapply(lines, function(s) {
+  count_one <- function(s, sep) {
     if (!nzchar(s)) return(0L)
-    n_semi  <- length(strsplit(s, ";",  fixed = TRUE)[[1L]])
-    n_comma <- length(strsplit(s, ",",  fixed = TRUE)[[1L]])
-    n_tab   <- length(strsplit(s, "\t", fixed = TRUE)[[1L]])
-    max(n_semi, n_comma, n_tab)
+    tryCatch(
+      length(scan(text = s, sep = sep, quote = "\"", what = "character",
+                    quiet = TRUE, comment.char = "")),
+      error   = function(e) 0L,
+      warning = function(w) 0L
+    )
+  }
+  best_per_sep <- vapply(c(";", ",", "\t"), function(sep) {
+    cnts <- vapply(lines, count_one, integer(1L), sep = sep)
+    max(c(0L, cnts))
   }, integer(1L))
-  best <- unname(which.max(field_counts))
-  if (length(best) == 0L || field_counts[best] < 2L) return(1L)
-  as.integer(best)
+  if (max(best_per_sep) < 2L) return(1L)
+  sep <- c(";", ",", "\t")[which.max(best_per_sep)]
+  cnts <- vapply(lines, count_one, integer(1L), sep = sep)
+  target <- max(cnts)
+  hit <- which(cnts == target)
+  if (length(hit) == 0L) return(1L)
+  as.integer(hit[1L])
 }
 
 
@@ -546,6 +616,15 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
   for (raw in names(sk_map)) {
     sk <- sk_map[[raw]]
     val <- rows[[raw]]
+    # v0.9.61: BDsolos "Mosqueado - Quantidade" is an ordinal class
+    # (pouco / comum / abundante). Map to representative percent and
+    # write to the schema column `redoximorphic_features_pct` so that
+    # `gleyic_properties` / `glei_horizon` can fire on hidromorficos.
+    if (identical(sk, "mottles_quantity_ord")) {
+      hz_list[["redoximorphic_features_pct"]] <-
+        .bdsolos_mosqueado_to_pct(val)
+      next
+    }
     type_target <- spec[[sk]] %||% "character"
     if (type_target == "numeric") {
       val <- suppressWarnings(as.numeric(val))

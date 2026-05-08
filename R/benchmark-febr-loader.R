@@ -149,6 +149,44 @@ load_febr_pedons <- function(path,
 #'        Argissolos / etc.) or \code{"subordem"} (Latossolos Vermelhos
 #'        / Argissolos Vermelho-Amarelos / etc.).
 #' @return Character vector of normalised soilKey-format names.
+#' Pre-2018 SiBCS Order names -> SiBCS 5a edicao plural Title Case
+#'
+#' BDsolos exports collected before the SiBCS 5a edicao (2018) carry
+#' historical Order names that the modern classifier does not emit.
+#' The most common cases observed on RJ.csv (722 perfis):
+#'
+#' \itemize{
+#'   \item \code{Podzolicos} (54 perfis em RJ) -> \code{Argissolos}
+#'         (post-2018 a Order Argissolos absorveu o Podzolico Vermelho-
+#'         Amarelo, Podzolico Vermelho-Escuro, etc.)
+#'   \item \code{Gleis}      (44 perfis em RJ) -> \code{Gleissolos}
+#'         (Gleis Humico, Gleis Pouco Humico colapsaram em Gleissolos)
+#'   \item \code{Aluviais}   (13 perfis em RJ) -> \code{Neossolos Fluvicos}
+#'         (Solos Aluviais foram reclassificados para Neossolos
+#'         Fluvicos, embora o nome legado sobreviva nos exports
+#'         antigos; a normalisacao aqui retorna a Ordem moderna
+#'         (Neossolos), nao o sub-grupo)
+#'   \item \code{Solos}      -> \code{NA}
+#'         ("Solos Halomorficos", "Solos Hidromorficos", e fragmentos
+#'         de label do UI antigo do BDsolos onde a Ordem nao foi
+#'         registrada). NA aqui significa "fora de scope para a
+#'         comparacao".
+#' }
+#'
+#' Aplicado em \code{normalise_febr_sibcs(level = "order")} apos a
+#' pluralisacao normal. Para subordem o legacy mapping ainda nao e
+#' aplicado (ver TODO no v0.9.61: estender para Subordem com
+#' "Podzolico Vermelho-Amarelo" -> "Argissolos Vermelho-Amarelos").
+#'
+#' @keywords internal
+.SIBCS_LEGACY_ORDER_MAP <- c(
+  "Podzolicos" = "Argissolos",
+  "Gleis"      = "Gleissolos",
+  "Aluviais"   = "Neossolos",
+  "Solos"      = NA_character_
+)
+
+
 #' @export
 normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
   level <- match.arg(level)
@@ -177,16 +215,31 @@ normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
             tolower(substr(word, 2, nchar(word))))
   }
 
+  # v0.9.60: legacy -> modern Order map. Applied AFTER the normal
+  # pluralise + title pipeline so the comparison key matches what
+  # `classify_sibcs()$rsg_or_order` emits today.
+  apply_legacy_map <- function(ordem_titled) {
+    if (is.na(ordem_titled)) return(NA_character_)
+    if (ordem_titled %in% names(.SIBCS_LEGACY_ORDER_MAP))
+      return(unname(.SIBCS_LEGACY_ORDER_MAP[ordem_titled]))
+    ordem_titled
+  }
+
   out <- character(length(s))
   for (i in seq_along(s)) {
     if (is.na(s[i])) { out[i] <- NA_character_; next }
     parts <- strsplit(s[i], "\\s+", fixed = FALSE)[[1]]
     ordem <- pluralise(parts[1])
+    ordem_t <- title(ordem)
+    ordem_t <- apply_legacy_map(ordem_t)
+    # If the Order itself is out-of-scope (legacy map -> NA, e.g.
+    # "SOLOS HALOMORFICOS"), the entire output is NA, not "NA <sub>".
+    if (is.na(ordem_t)) { out[i] <- NA_character_; next }
     if (level == "order" || length(parts) < 2L) {
-      out[i] <- title(ordem)
+      out[i] <- ordem_t
     } else {
       sub <- pluralise(parts[2])
-      out[i] <- paste(title(ordem), title(sub))
+      out[i] <- paste(ordem_t, title(sub))
     }
   }
   out

@@ -1,0 +1,77 @@
+BDsolos v0.9.60 focused benchmark (RJ only)
+Date           : 2026-05-06
+soilKey version: 0.9.60
+Pedons loaded  : 722
+Coverage       : sibcs=720  wrb=5  usda=14  coords=561  munsell=722
+Benchmark time : 30.2s
+
+=== Per-system result ===
+  wrb2022 | label_cov=  0.7% (5/722)  acc= 0.200  n_compared=5  n_correct=1  errors=0  msg=NA
+  sibcs   | label_cov= 99.7% (720/722)  acc= 0.358  n_compared=710  n_correct=254  errors=0  msg=NA
+  usda    | label_cov=  1.9% (14/722)  acc= 0.333  n_compared=12  n_correct=4  errors=0  msg=NA
+
+=== SiBCS Order confusion (top-12 reference orders) ===
+              predicted
+reference      Argissolos Latossolos Cambissolos Neossolos Planossolos
+  Argissolos          174          0           1        61           3
+  Latossolos           24          9          43        38           0
+  Gleissolos           34          0           0        53           0
+  Cambissolos          17          4          16        52           0
+  Neossolos            10          1           0        46           0
+  Planossolos          24          0           0         9           1
+  Aterros               0          0           0        15           0
+  <unmapped>            2          0           0         7           0
+  Espodossolos          0          0           0         7           0
+  Organossolos          1          0           0         3           0
+  Chernossolos          1          0           0         2           0
+  Nitossolos            4          0           0         0           0
+              predicted
+reference      Espodossolos Organossolos Chernossolos
+  Argissolos              0            0            0
+  Latossolos              0            0            0
+  Gleissolos              0            1            9
+  Cambissolos             0            0            0
+  Neossolos               0            0            0
+  Planossolos             0            0            0
+  Aterros                 0            0            9
+  <unmapped>              0            1            0
+  Espodossolos            3            0            0
+  Organossolos            0            1            0
+  Chernossolos            0            0            1
+  Nitossolos              0            0            0
+
+=== SiBCS per-class recall ===
+    reference n_ref n_correct     recall
+   Argissolos   240       174 0.72500000
+   Latossolos   114         9 0.07894737
+   Gleissolos    98         0 0.00000000
+  Cambissolos    90        16 0.17777778
+    Neossolos    57        46 0.80701754
+  Planossolos    36         1 0.02777778
+      Aterros    24         0 0.00000000
+   <unmapped>    10         0 0.00000000
+ Espodossolos    10         3 0.30000000
+ Organossolos     5         1 0.20000000
+ Chernossolos     4         1 0.25000000
+   Nitossolos     4         0 0.00000000
+ Plintossolos     4         0 0.00000000
+      Podzois     4         0 0.00000000
+       Areias     3         0 0.00000000
+
+=== WRB confusion ===
+                  predicted
+reference          Arenosols Ferralsols Regosols Umbrisols
+  Arenosols                1          0        0         0
+  Argilosa/média.s         0          0        1         0
+  Ferralsol.s              0          1        0         0
+  Gleysols                 0          0        1         0
+  Podzols                  0          0        0         1
+
+=== USDA confusion ===
+            predicted
+reference    Alfisols Aridisols Entisols Mollisols Oxisols Ultisols
+  <unmapped>        1         0        0         0       1        0
+  Alfisols          0         0        1         0       1        0
+  Entisols          0         0        2         1       0        0
+  Spodosols         0         0        1         0       0        0
+  Ultisols          2         1        0         0       1        2

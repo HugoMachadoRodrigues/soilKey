@@ -1,0 +1,80 @@
+BDsolos v0.9.61 27-UF benchmark (subprocess workaround)
+Date            : 2026-05-07
+soilKey version : 0.9.56
+Wall-clock total: 596.3 s
+UFs successful  : 27 / 27
+
+Per-UF SiBCS Order:
+ uf    n n_compared n_correct        acc load_s bench_s
+ AC  113        113        46 0.40707965    1.0    33.9
+ AL  106        106        35 0.33018868    0.8     4.9
+ AM  766        749       291 0.38851802    5.7    64.2
+ AP  139        138        42 0.30434783    1.1     6.2
+ BA 1133        381        36 0.09448819    8.5    12.8
+ CE  151        151        73 0.48344371    1.2     9.1
+ DF  154        141        28 0.19858156    1.3     7.1
+ ES  124        116        54 0.46551724    0.9     5.2
+ GO  573        201         9 0.04477612    4.3    36.1
+ MA  253        243        82 0.33744856    1.6     9.5
+ MG  958        887       299 0.33709132    6.1    39.0
+ MS  155        154        86 0.55844156    1.2    16.1
+ MT  271        260       106 0.40769231    2.1    49.5
+ PA  622        596       211 0.35402685    4.6    30.1
+ PB   99         86        24 0.27906977    0.9     6.9
+ PE  163        161        59 0.36645963    1.2     9.8
+ PI  369        251        69 0.27490040    2.3    14.4
+ PR  372        352        91 0.25852273    2.6    31.9
+ RJ  722        710       286 0.40281690    4.4    33.6
+ RN  108        107        50 0.46728972    0.9     8.6
+ RO  117        116        54 0.46551724    0.9    23.9
+ RR  222        219        93 0.42465753    1.4     9.8
+ RS  630        184        10 0.05434783    4.5    10.0
+ SC  180        177        60 0.33898305    1.2     6.7
+ SE  216        214        72 0.33644860    1.5     7.8
+ SP  229        226        78 0.34513274    1.5    11.7
+ TO   50         47        13 0.27659574    0.5     6.5
+
+Totals (sum of UFs):
+  perfis loaded       : 8995
+  perfis with sibcs ref: 7326
+
+=== Pooled per-system accuracy (nation-wide) ===
+  wrb2022 | label_cov=2.3% (203/8995)  acc= 0.005  n_compared=202  n_correct=1
+  sibcs   | label_cov=81.4% (7326/8995)  acc= 0.333  n_compared=7086  n_correct=2357
+  usda    | label_cov=8.6% (772/8995)  acc= 0.455  n_compared=22  n_correct=10
+
+=== Pooled SiBCS confusion (top-15 reference orders) ===
+              predicted
+reference      Argissolos Latossolos Cambissolos Neossolos Gleissolos
+  Argissolos          973        307           8       532         80
+  Latossolos          249        687         215       724         19
+  Cambissolos          68         54         111       296         41
+  Neossolos            66         25           3       394         23
+  Gleissolos           59          6           8       131         98
+  Plintossolos        103         29           4        66         41
+  <unmapped>           25         14           1       162         28
+  Nitossolos           59         40           2        86          1
+  Planossolos          52          2           0        59         35
+  Latosois             14         82           0        37          1
+  Areias               14          9           2       105          1
+  Terras               26         21           3        69          0
+  Luvissolos           21          2           0        13         15
+  Espodossolos          1          1           4        38          3
+  Chernossolos          1          0           0        34          5
+              predicted
+reference      Planossolos Luvissolos Espodossolos Chernossolos
+  Argissolos            17         82            0            4
+  Latossolos             0          0            0            0
+  Cambissolos            0         14            0            3
+  Neossolos              0         11            0            1
+  Gleissolos             0          2            0            3
+  Plintossolos          16          3            0            2
+  <unmapped>             0          2            0            1
+  Nitossolos             0          2            0            1
+  Planossolos           31         12            0            0
+  Latosois               0          0            0            0
+  Areias                 0          0            0            0
+  Terras                 0         11            0            0
+  Luvissolos             2         30            0            1
+  Espodossolos           0          0           15            0
+  Chernossolos           1          6            0           12
