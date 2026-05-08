@@ -11,7 +11,13 @@ Retisol path).
 ## Usage
 
 ``` r
-argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
+argic(
+  pedon,
+  min_thickness = 7.5,
+  system = c("wrb2022", "usda"),
+  engine = NULL,
+  require_t = NULL
+)
 ```
 
 ## Arguments
@@ -32,6 +38,27 @@ argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
   (looser). See
   [`test_clay_increase_argic`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.md)
   for the table.
+
+- engine:
+
+  v0.9.63+. One of `"soilkey"` (the hand-coded path, default for
+  back-compat) or `"aqp"` (canonical NRCS dispatch via
+  [`aqp::getArgillicBounds`](https://ncss-tech.github.io/aqp/reference/getArgillicBounds.html)).
+  When `NULL` (the new default) the function reads
+  `getOption("soilKey.diagnostic_engine", "soilkey")` so a global
+  `options(soilKey.diagnostic_engine = "aqp")` flips every `argic()`
+  call without modifying call sites. See
+  [`argic_aqp`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aqp.md).
+
+- require_t:
+
+  v0.9.63+. Forwarded to
+  [`aqp::getArgillicBounds`](https://ncss-tech.github.io/aqp/reference/getArgillicBounds.html)
+  when `engine = "aqp"`: `TRUE` requires a "t" suffix in the horizon
+  designation (the strict KST 13ed text); `FALSE` accepts argic by
+  clay-increase alone (more permissive on data-sparse profiles). `NULL`
+  (default) auto-picks: `TRUE` for `system = "usda"`, `FALSE` for
+  `system = "wrb2022"`. Ignored when `engine = "soilkey"`.
 
 ## Value
 

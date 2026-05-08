@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -83,12 +84,12 @@
 <img src="logo.png" class="logo" alt=""><h1 id="soilkey-">soilKey <a class="anchor" aria-label="anchor" href="#soilkey-"></a>
 </h1>
 </div>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.27-FF6B35?style=flat-square" alt="v0.9.27"></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.40-FF6B35?style=flat-square" alt="v0.9.40"></p>
 <blockquote>
 <p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).</strong> All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
 </blockquote>
 <!-- Status & coverage badges -->
-<p><a href="LICENSE.html"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT"></a> <a href="https://CRAN.R-project.org/package=soilKey" class="external-link"><img src="https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square" alt="CRAN status"></a> <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg" alt="DOI"></a> <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="tests/"><img src="https://img.shields.io/badge/tests-2908%20passing-brightgreen.svg?style=flat-square" alt="tests"></a> <a href="https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main" class="external-link"><img src="https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg" alt="Codecov test coverage"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square" alt="WRB 2022"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square" alt="SiBCS 5"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders%20%C2%B7%201288%20SGs-blue.svg?style=flat-square" alt="USDA ST 13"></a> <br><!-- Author / social badges --><a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a> <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a> <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-Hugo--Rodrigues--12-00CCBB.svg?style=flat-square&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a></p>
+<p><a href="LICENSE.html"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT"></a> <a href="https://CRAN.R-project.org/package=soilKey" class="external-link"><img src="https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square" alt="CRAN status"></a> <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg" alt="DOI"></a> <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="tests/"><img src="https://img.shields.io/badge/tests-3137%20passing-brightgreen.svg?style=flat-square" alt="tests"></a> <a href="https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main" class="external-link"><img src="https://img.shields.io/badge/coverage-80.5%25-brightgreen.svg?style=flat-square" alt="coverage"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square" alt="WRB 2022"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square" alt="SiBCS 5"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders%20%C2%B7%201288%20SGs-blue.svg?style=flat-square" alt="USDA ST 13"></a> <br><!-- Author / social badges --><a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a> <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a> <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-Hugo--Rodrigues--12-00CCBB.svg?style=flat-square&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a></p>
 <hr>
 <div class="section level2">
 <h2 id="id_-the-headline-result">✦ The headline result<a class="anchor" aria-label="anchor" href="#id_-the-headline-result"></a>
@@ -1116,6 +1117,13 @@ Made with ❤️ by <a href="https://orcid.org/0000-0002-8070-8126" class="exter
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>

@@ -13,7 +13,7 @@ diagnostic horizon. It is the diagnostic of Cambisols."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@ diagnostic horizon. It is the diagnostic of Cambisols."><meta property="og:image
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="../articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="../articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -64,7 +65,7 @@ diagnostic horizon. It is the diagnostic of Cambisols.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cambic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">15</span>, min_top_cm <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cambic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">15</span>, min_top_cm <span class="op">=</span> <span class="fl">5</span>, engine <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,7 +81,24 @@ diagnostic horizon. It is the diagnostic of Cambisols.</p>
 
 
 <dt id="arg-min-top-cm">min_top_cm<a class="anchor" aria-label="anchor" href="#arg-min-top-cm"></a></dt>
-<dd><p>Numeric threshold or option (see Details).</p></dd>
+<dd><p>Minimum top depth (cm) for a horizon to be
+considered cambic-eligible (default 5). Anchors the
+candidate set to subsurface layers.</p></dd>
+
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>v0.9.63+. One of <code>"soilkey"</code> (hand-coded path,
+default for back-compat) or <code>"aqp"</code> (canonical NRCS
+dispatch via <code><a href="https://ncss-tech.github.io/aqp/reference/getCambicBounds.html" class="external-link">aqp::getCambicBounds</a></code>). When <code>NULL</code>
+(the new default) the function reads
+<code>getOption("soilKey.diagnostic_engine", "soilkey")</code>,
+so a global <code>options(soilKey.diagnostic_engine = "aqp")</code>
+flips every <code>cambic()</code> call without modifying call
+sites. The aqp engine fired 40.6<!-- % of BDsolos RJ perfis vs -->
+soilkey 0<!-- % in the v0.9.62 A/B benchmark -- and lifted the -->
+v0.9.50 LUCAS WRB benchmark from 0<!-- % to 60% (Cambisols recall -->
+100<!-- %) when combined with subsoil-fill SoilGrids. See -->
+<code><a href="cambic_aqp.html">cambic_aqp</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

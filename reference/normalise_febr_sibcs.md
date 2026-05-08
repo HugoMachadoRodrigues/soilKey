@@ -1,12 +1,10 @@
-# Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case
+# Canonicalise FEBR SiBCS names to match soilKey rule outputs.
 
-FEBR ships SiBCS names in ALL-CAPS Portuguese ("LATOSSOLO VERMELHO",
-"NEOSSOLO LITOLICO", etc.) at the 2nd-level subordem granularity.
-soilKey's
-[`classify_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
-returns Title Case plural subordens ("Latossolos Vermelhos", "Neossolos
-Litolicos"). This helper extracts the first word, plurals it, and
-Title-Cases it, so the two can be matched at `level = "order"`.
+FEBR ships SiBCS labels in mixed legacy/modern form (`"Podzolicos"` for
+old name of Argissolos, singular vs plural, Portuguese accents). This
+helper folds them to the form produced by
+[`run_sibcs_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_key.md)
+so that benchmark accuracies can be computed without false negatives.
 
 ## Usage
 
@@ -22,15 +20,14 @@ normalise_febr_sibcs(x, level = c("order", "subordem"))
 
 - level:
 
-  One of `"order"` (default; matches Latossolos / Argissolos / etc.) or
-  `"subordem"` (Latossolos Vermelhos / Argissolos Vermelho-Amarelos /
-  etc.).
+  One of `"order"` (default) or `"subordem"`.
 
 ## Value
 
-Character vector of normalised soilKey-format names.
+Character vector of normalised SiBCS names; `NA` for labels that are
+out-of-scope for the comparison (e.g.\\ legacy `"Solos"` category).
 
-## Details
+## See also
 
-For `level = "order"` the comparison drops the second-level qualifier
-entirely and matches on the Ordem (e.g. "Latossolos").
+[`normalise_febr_wrb`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md),
+[`normalise_febr_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)

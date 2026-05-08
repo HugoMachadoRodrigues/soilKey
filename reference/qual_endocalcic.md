@@ -9,6 +9,8 @@ start at \>= 50 cm (deep, subsoil) rather than within the upper 50 cm.
 
 ``` r
 qual_endocalcic(pedon)
+
+qual_endocalcic(pedon)
 ```
 
 ## Arguments

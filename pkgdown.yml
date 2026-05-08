@@ -2,6 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
+  v01_getting_started_pt: v01_getting_started_pt.html
   v01_getting_started: v01_getting_started.html
   v02_classify_wrb_end_to_end: v02_classify_wrb_end_to_end.html
   v03_cross_system_correlation: v03_cross_system_correlation.html
@@ -10,7 +11,8 @@ articles:
   v06_wosis_benchmark: v06_wosis_benchmark.html
   v07_end_to_end_pipeline: v07_end_to_end_pipeline.html
   v08_kssl_nasis_multilevel: v08_kssl_nasis_multilevel.html
-last_built: 2026-05-04T02:00Z
+  v09_perfil_embrapa_pt: v09_perfil_embrapa_pt.html
+last_built: 2026-05-08T20:46Z
 urls:
   reference: https://hugomachadorodrigues.github.io/soilKey/reference
   article: https://hugomachadorodrigues.github.io/soilKey/articles

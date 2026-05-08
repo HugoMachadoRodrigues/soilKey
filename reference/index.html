@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,6 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="../articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="../articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -912,10 +913,24 @@
 
         <dt>
 
+          <code><a href="qual_activic.html">qual_activic()</a></code>
+
+        </dt>
+        <dd>Activic supplementary qualifier (av): active aluminium &gt;= 5 cmol/kg WRB 2022 Ch 5: "KCl-extractable Al (<code>al_kcl_cmol</code>) &gt;= 5 cmol(c)/kg in any layer in upper 100 cm." Proxy via existing <code>al_cmol</code> (exchangeable Al) when al_kcl_cmol absent.</dd>
+
+        <dt>
+
           <code><a href="qual_albic.html">qual_albic()</a></code>
 
         </dt>
         <dd>Albic qualifier (ab): albic horizon &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_alcalic.html">qual_alcalic()</a></code>
+
+        </dt>
+        <dd>Alcalic supplementary qualifier (ac): pH (H2O) &gt;= 9.0 WRB 2022 Ch 5: "Strongly alkaline reaction (pH H2O &gt;= 9 in any layer within 100 cm of the soil surface)."</dd>
 
         <dt>
 
@@ -940,6 +955,13 @@
 
         <dt>
 
+          <code><a href="qual_anofluvic.html">qual_anofluvic()</a></code>
+
+        </dt>
+        <dd>Anofluvic qualifier (af): fluvic material only at depth &gt;= 50 cm</dd>
+
+        <dt>
+
           <code><a href="qual_anthraquic.html">qual_anthraquic()</a></code>
 
         </dt>
@@ -954,10 +976,31 @@
 
         <dt>
 
+          <code><a href="qual_anthromollic.html">qual_anthromollic()</a></code>
+
+        </dt>
+        <dd>Anthromollic qualifier (am): anthric horizon overlying spodic</dd>
+
+        <dt>
+
+          <code><a href="qual_archaic.html">qual_archaic()</a></code>
+
+        </dt>
+        <dd>Archaic supplementary qualifier (ah): archeological context</dd>
+
+        <dt>
+
           <code><a href="qual_arenic.html">qual_arenic()</a></code>
 
         </dt>
         <dd>Arenic qualifier (ar): texture sand or loamy sand &gt;= 30 cm in &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_arenicolic.html">qual_arenicolic()</a></code>
+
+        </dt>
+        <dd>Arenicolic supplementary qualifier (an): faunal sand burrows</dd>
 
         <dt>
 
@@ -968,10 +1011,31 @@
 
         <dt>
 
+          <code><a href="qual_bathyspodic.html">qual_bathyspodic()</a></code>
+
+        </dt>
+        <dd>Bathyspodic supplementary qualifier (bs): spodic at 100-200 cm depth</dd>
+
+        <dt>
+
+          <code><a href="qual_biocrustic.html">qual_biocrustic()</a></code>
+
+        </dt>
+        <dd>Biocrustic supplementary qualifier (bk): biological soil crust</dd>
+
+        <dt>
+
           <code><a href="qual_brunic.html">qual_brunic()</a></code>
 
         </dt>
         <dd>Brunic qualifier (br): <em>incipient-only</em> subsurface alteration – cambic horizon within the upper 100 cm AND no argic, spodic, ferralic, or nitic horizon present. Used by WRB 2022 Ch 4 for Arenosols that have begun to develop a weak Bw without crossing into Cambisol / Acrisol / Lixisol / Ferralsol territory; in those RSGs the cambic alone is the gating diagnostic and Brunic would be redundant.</dd>
+
+        <dt>
+
+          <code><a href="qual_bryic.html">qual_bryic()</a></code>
+
+        </dt>
+        <dd>Bryic supplementary qualifier (by): bryophyte cover at surface</dd>
 
         <dt>
 
@@ -996,6 +1060,13 @@
 
         <dt>
 
+          <code><a href="qual_capillaric.html">qual_capillaric()</a></code>
+
+        </dt>
+        <dd>Capillaric supplementary qualifier (cp): capillary rise zone WRB 2022 Ch 5: "Capillary rise from a shallow water table to within 50 cm of the soil surface; flagged via redox concentrations (&gt;=2%) + fine texture (clay+silt &gt; 50%)."</dd>
+
+        <dt>
+
           <code><a href="qual_carbic.html">qual_carbic()</a></code>
 
         </dt>
@@ -1003,10 +1074,31 @@
 
         <dt>
 
+          <code><a href="qual_carbonatic.html">qual_carbonatic()</a></code>
+
+        </dt>
+        <dd>Carbonatic supplementary qualifier (cn): &gt;= 50% carbonates</dd>
+
+        <dt>
+
+          <code><a href="qual_carbonic.html">qual_carbonic()</a></code>
+
+        </dt>
+        <dd>Carbonic supplementary qualifier (cb): high SOC content (&gt;= 6%)</dd>
+
+        <dt>
+
           <code><a href="qual_chernic.html">qual_chernic()</a></code>
 
         </dt>
         <dd>Chernic qualifier (ch): chernic horizon (intensely worm-mixed mollic-like) within 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_chloridic.html">qual_chloridic()</a></code>
+
+        </dt>
+        <dd>Chloridic supplementary qualifier (cl): high chloride WRB 2022 Ch 5: "Containing &gt;= 4 cmol(c)/kg chloride OR EC &gt;= 8 dS/m within 100 cm." Proxy via electrical conductivity field (<code>ec_ds_m</code>) when chloride is unavailable.</dd>
 
         <dt>
 
@@ -1021,6 +1113,34 @@
 
         </dt>
         <dd>Clayic qualifier (ce): clay &gt;= 60% texture for a layer &gt;= 30 cm in the upper 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_coarsic.html">qual_coarsic()</a></code>
+
+        </dt>
+        <dd>Coarsic qualifier (cr): &gt;= 70% coarse fragments by volume in upper 100 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_cohesic.html">qual_cohesic()</a></code>
+
+        </dt>
+        <dd>Cohesic supplementary qualifier (co): cohesive horizon (extra-firm dry) WRB 2022 Ch 5: "Containing layers with extreme dry consistence AND moist consistence very firm." Implementation: matches via <code>consistence_dry</code> ("extremely hard") OR <code>consistence_moist</code> ("very firm"), within 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_columnic.html">qual_columnic()</a></code>
+
+        </dt>
+        <dd>Columnic supplementary qualifier (cm): columnar / prismatic structure WRB 2022 Ch 5: "Columnar or strong prismatic structure (associated with natric horizons)."</dd>
+
+        <dt>
+
+          <code><a href="qual_cordic.html">qual_cordic()</a></code>
+
+        </dt>
+        <dd>Cordic supplementary qualifier (cd): cordic horizon</dd>
 
         <dt>
 
@@ -1052,10 +1172,24 @@
 
         <dt>
 
+          <code><a href="qual_differentic.html">qual_differentic()</a></code>
+
+        </dt>
+        <dd>Differentic supplementary qualifier (df): contrasting layers WRB 2022 Ch 5: "Strong differences (texture, mineralogy, color) between adjacent layers without abrupt textural transition (mild clay-increase 1.2-1.4x ratio)."</dd>
+
+        <dt>
+
           <code><a href="qual_dolomitic.html">qual_dolomitic()</a></code>
 
         </dt>
         <dd>Dolomitic qualifier (do): dolomitic material in upper 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_dorsic.html">qual_dorsic()</a></code>
+
+        </dt>
+        <dd>Dorsic supplementary qualifier (do): dorsal-ridge microrelief</dd>
 
         <dt>
 
@@ -1087,10 +1221,59 @@
 
         <dt>
 
+          <code><a href="qual_endic.html">qual_endic()</a></code>
+
+        </dt>
+        <dd>Endic supplementary qualifier (ec): generic "in deep horizon" marker</dd>
+
+        <dt>
+
+          <code><a href="qual_endoabruptic.html">qual_endoabruptic()</a></code>
+
+        </dt>
+        <dd>Endoabruptic supplementary qualifier (eea): abrupt textural change deep</dd>
+
+        <dt>
+
+          <code><a href="qual_endocalcaric.html">qual_endocalcaric()</a></code>
+
+        </dt>
+        <dd>Endocalcaric qualifier (cae): calcaric only at depth &gt;= 50 cm</dd>
+
+        <dt>
+
           <code><a href="qual_endocalcic.html">qual_endocalcic()</a></code>
 
         </dt>
         <dd>Endocalcic qualifier (cam): calcic horizon between 50 and 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_endodolomitic.html">qual_endodolomitic()</a></code>
+
+        </dt>
+        <dd>Endodolomitic qualifier (dme): dolomitic only at depth &gt;= 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_endoduric.html">qual_endoduric()</a></code>
+
+        </dt>
+        <dd>Endoduric supplementary qualifier: duric horizon at depth &gt;= 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_endodystric.html">qual_endodystric()</a></code>
+
+        </dt>
+        <dd>Endodystric supplementary qualifier (eds): dystric only at depth</dd>
+
+        <dt>
+
+          <code><a href="qual_endoeutric.html">qual_endoeutric()</a></code>
+
+        </dt>
+        <dd>Endoeutric supplementary qualifier (eee): eutric only at depth</dd>
 
         <dt>
 
@@ -1101,10 +1284,73 @@
 
         <dt>
 
+          <code><a href="qual_endogypsic.html">qual_endogypsic()</a></code>
+
+        </dt>
+        <dd>Endogypsic supplementary qualifier: gypsic horizon at depth &gt;= 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_endoleptic.html">qual_endoleptic()</a></code>
+
+        </dt>
+        <dd>Endoleptic supplementary qualifier (lle): rock contact 50-100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_endostagnic.html">qual_endostagnic()</a></code>
 
         </dt>
         <dd>Endostagnic qualifier (ens): stagnic conditions between 50 and 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_endothionic.html">qual_endothionic()</a></code>
+
+        </dt>
+        <dd>Endothionic supplementary qualifier (etn): thionic at depth &gt;= 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_endothyric.html">qual_endothyric()</a></code>
+
+        </dt>
+        <dd>Endothyric supplementary qualifier (etc): thyric only at depth &gt;= 50</dd>
+
+        <dt>
+
+          <code><a href="qual_entic.html">qual_entic()</a></code>
+
+        </dt>
+        <dd>Entic qualifier (et): albic horizon AND NOT spodic</dd>
+
+        <dt>
+
+          <code><a href="qual_epic.html">qual_epic()</a></code>
+
+        </dt>
+        <dd>Epic supplementary qualifier (ep): generic "in shallow horizon"</dd>
+
+        <dt>
+
+          <code><a href="qual_epidystric.html">qual_epidystric()</a></code>
+
+        </dt>
+        <dd>Epidystric supplementary qualifier (epd): dystric only in upper 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_epieutric.html">qual_epieutric()</a></code>
+
+        </dt>
+        <dd>Epieutric supplementary qualifier (eee): eutric only in upper 50 cm</dd>
+
+        <dt>
+
+          <code><a href="qual_escalic.html">qual_escalic()</a></code>
+
+        </dt>
+        <dd>Escalic supplementary qualifier (es): terraced / stepped morphology</dd>
 
         <dt>
 
@@ -1122,6 +1368,13 @@
 
         <dt>
 
+          <code><a href="qual_evapocrustic.html">qual_evapocrustic()</a></code>
+
+        </dt>
+        <dd>Evapocrustic supplementary qualifier (ev): evaporite surface crust</dd>
+
+        <dt>
+
           <code><a href="qual_ferralic.html">qual_ferralic()</a></code>
 
         </dt>
@@ -1133,6 +1386,13 @@
 
         </dt>
         <dd>Ferric qualifier (fr): ferric horizon &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_ferritic.html">qual_ferritic()</a></code>
+
+        </dt>
+        <dd>Ferritic qualifier (fr): high free-Fe in fine earth</dd>
 
         <dt>
 
@@ -1164,6 +1424,13 @@
 
         <dt>
 
+          <code><a href="qual_fractic.html">qual_fractic()</a></code>
+
+        </dt>
+        <dd>Fractic qualifier (fc): fractures (cracks) within 100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_garbic.html">qual_garbic()</a></code>
 
         </dt>
@@ -1171,10 +1438,45 @@
 
         <dt>
 
+          <code><a href="qual_gelic.html">qual_gelic()</a></code>
+
+        </dt>
+        <dd>Gelic supplementary qualifier (gl): permafrost or strong frost activity WRB 2022 Ch 5: "Permafrost within 200 cm of the soil surface OR gelic materials." Modifier of cryic_conditions for non-Cryosols.</dd>
+
+        <dt>
+
+          <code><a href="qual_gelistagnic.html">qual_gelistagnic()</a></code>
+
+        </dt>
+        <dd>Gelistagnic supplementary qualifier (gst): stagnic in cold conditions WRB 2022 Ch 5: "Stagnic features (perched water) in cryic regime." Compose: stagnic_pattern + cryic_conditions.</dd>
+
+        <dt>
+
+          <code><a href="qual_geoabruptic.html">qual_geoabruptic()</a></code>
+
+        </dt>
+        <dd>Geoabruptic supplementary qualifier (ga): abrupt change at lithological boundary WRB 2022 Ch 5: "Abrupt textural / mineralogical change at a lithological discontinuity (e.g., 2C horizon below B)." Implementation: designation pattern containing "2C" or "3C" (numeric prefix indicates lithologic discontinuity).</dd>
+
+        <dt>
+
           <code><a href="qual_geric.html">qual_geric()</a></code>
 
         </dt>
         <dd>Geric qualifier (gr): in some layer at &lt;= 100 cm, the effective exchange complex (sum of bases + 1 N KCl Al-exchangeable) does not exceed 1.5 cmol+/kg fine earth, OR the soil shows net positive charge (delta pH = pH_KCl - pH_H2O &gt; 0). The "or" path makes Geric / Posic overlap by design (per WRB Ch 5).</dd>
+
+        <dt>
+
+          <code><a href="qual_gibbsic.html">qual_gibbsic()</a></code>
+
+        </dt>
+        <dd>Gibbsic qualifier (gi): high gibbsite (&gt;= 25%) in fine earth</dd>
+
+        <dt>
+
+          <code><a href="qual_gilgaic.html">qual_gilgaic()</a></code>
+
+        </dt>
+        <dd>Gilgaic supplementary qualifier (gi): gilgai microrelief WRB 2022 Ch 5: "Gilgai microrelief (associated with vertic shrinking/swelling soils)." Site-level field detection.</dd>
 
         <dt>
 
@@ -1196,6 +1498,13 @@
 
         </dt>
         <dd>Glossic qualifier (gs): mollic horizon penetrated by albeluvic tongues (glossae). Diagnostic of Glossic Chernozems / Phaeozems on the steppe / forest-steppe transition.</dd>
+
+        <dt>
+
+          <code><a href="qual_greyzemic.html">qual_greyzemic()</a></code>
+
+        </dt>
+        <dd>Greyzemic qualifier (gz): mollic / umbric overlain by albic-like layer</dd>
 
         <dt>
 
@@ -1269,6 +1578,13 @@
 
         <dt>
 
+          <code><a href="qual_hydrophobic.html">qual_hydrophobic()</a></code>
+
+        </dt>
+        <dd>Hydrophobic supplementary qualifier (hf): water-repellent surface</dd>
+
+        <dt>
+
           <code><a href="qual_hyperalbic.html">qual_hyperalbic()</a></code>
 
         </dt>
@@ -1315,6 +1631,20 @@
 
         </dt>
         <dd>Hypergypsic qualifier (yg): gypsic horizon AND gypsum &gt;= 60% in some gypsic layer.</dd>
+
+        <dt>
+
+          <code><a href="qual_hypernatric.html">qual_hypernatric()</a></code>
+
+        </dt>
+        <dd>Hypernatric supplementary qualifier (hyna): very high Na (&gt;= 70% ESP)</dd>
+
+        <dt>
+
+          <code><a href="qual_hyperorganic.html">qual_hyperorganic()</a></code>
+
+        </dt>
+        <dd>Hyperorganic supplementary qualifier (hyo): SOC &gt;= 18% (peat-like) WRB 2022 Ch 5: "Containing organic carbon &gt;= 18% by mass in any layer &gt;= 10 cm thick." A stronger version of `Carbonic`.</dd>
 
         <dt>
 
@@ -1374,10 +1704,45 @@
 
         <dt>
 
+          <code><a href="qual_immissic.html">qual_immissic()</a></code>
+
+        </dt>
+        <dd>Immissic supplementary qualifier (im): atmospheric immission</dd>
+
+        <dt>
+
+          <code><a href="qual_inclinic.html">qual_inclinic()</a></code>
+
+        </dt>
+        <dd>Inclinic supplementary qualifier (in): tilted / inclined position WRB 2022 Ch 5: site has a slope &gt;= 10% (relevo declivoso). Implementation: site$slope_pct (when populated) &gt;= 10 OR parent_material / forma_relevo flagging steep terrain.</dd>
+
+        <dt>
+
           <code><a href="qual_irragric.html">qual_irragric()</a></code>
 
         </dt>
         <dd>Irragric qualifier (ir): irragric horizon (irrigation-deposited surface).</dd>
+
+        <dt>
+
+          <code><a href="qual_isolatic.html">qual_isolatic()</a></code>
+
+        </dt>
+        <dd>Isolatic qualifier (il): isolated technic material</dd>
+
+        <dt>
+
+          <code><a href="qual_isopteric.html">qual_isopteric()</a></code>
+
+        </dt>
+        <dd>Isopteric supplementary qualifier (ip): termite / ant biogenesis</dd>
+
+        <dt>
+
+          <code><a href="qual_kalaic.html">qual_kalaic()</a></code>
+
+        </dt>
+        <dd>Kalaic supplementary qualifier (ka): dry-season puffed surface layer</dd>
 
         <dt>
 
@@ -1388,10 +1753,31 @@
 
         <dt>
 
+          <code><a href="qual_lapiadic.html">qual_lapiadic()</a></code>
+
+        </dt>
+        <dd>Lapiadic supplementary qualifier (lp): karren / lapies bedrock features</dd>
+
+        <dt>
+
+          <code><a href="qual_laxic.html">qual_laxic()</a></code>
+
+        </dt>
+        <dd>Laxic supplementary qualifier (lx): loose / non-cohesive surface WRB 2022 Ch 5: "Surface horizon with loose dry consistence and single-grain or massive structure."</dd>
+
+        <dt>
+
           <code><a href="qual_leptic.html">qual_leptic()</a></code>
 
         </dt>
         <dd>Leptic qualifier (le): continuous rock &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_lignic.html">qual_lignic()</a></code>
+
+        </dt>
+        <dd>Lignic supplementary qualifier (lg): wood content in organic horizon WRB 2022 Ch 5: "Containing recognisable wood remains (&gt;= 25% by volume or weight) in organic material." Implementation: <code>woody_fragments_pct</code> or layer_origin matching wood.</dd>
 
         <dt>
 
@@ -1413,6 +1799,13 @@
 
         </dt>
         <dd>Lithic qualifier (lt): continuous rock starting within 10 cm. Tighter depth gate than Leptic (which is &lt;= 100 cm) and Nudilithic (== 0 cm).</dd>
+
+        <dt>
+
+          <code><a href="qual_litholinic.html">qual_litholinic()</a></code>
+
+        </dt>
+        <dd>Litholinic supplementary qualifier (ll): stratified soil on rock</dd>
 
         <dt>
 
@@ -1444,6 +1837,20 @@
 
         <dt>
 
+          <code><a href="qual_mahic.html">qual_mahic()</a></code>
+
+        </dt>
+        <dd>Mahic supplementary qualifier (mh): manure-derived dark surface WRB 2022 Ch 5: "Topsoil enriched by long-term manure / compost application; oc_pct &gt;= 4%, base_saturation_pct &gt;= 50%, and p_mehlich &gt;= 100 mg/kg."</dd>
+
+        <dt>
+
+          <code><a href="qual_mawic.html">qual_mawic()</a></code>
+
+        </dt>
+        <dd>Mawic qualifier (mw): moss-fibre-dominant peat</dd>
+
+        <dt>
+
           <code><a href="qual_mazic.html">qual_mazic()</a></code>
 
         </dt>
@@ -1455,6 +1862,20 @@
 
         </dt>
         <dd>Melanic qualifier (me): andic + dark high-OC surface horizon. v0.9.1: thickness &gt;= 30 cm within upper 50 cm, OC weighted &gt;= 6%, Munsell value &lt;= 2 and chroma &lt;= 2 (moist). Melanic Index &gt;= 1.7 (the canonical UV-OD ratio) is deferred to v0.9.2.</dd>
+
+        <dt>
+
+          <code><a href="qual_mineralic.html">qual_mineralic()</a></code>
+
+        </dt>
+        <dd>Mineralic supplementary qualifier (mn): predominantly mineral WRB 2022 Ch 5: "Predominantly mineral material in upper 100 cm (oc_pct &lt; 12% averaged over depth)."</dd>
+
+        <dt>
+
+          <code><a href="qual_mochipic.html">qual_mochipic()</a></code>
+
+        </dt>
+        <dd>Mochipic supplementary qualifier (mp): mottled mochi-like pattern</dd>
 
         <dt>
 
@@ -1472,10 +1893,52 @@
 
         <dt>
 
+          <code><a href="qual_murshic.html">qual_murshic()</a></code>
+
+        </dt>
+        <dd>Murshic qualifier (mr): partly drained organic with strong decomposition</dd>
+
+        <dt>
+
+          <code><a href="qual_muusic.html">qual_muusic()</a></code>
+
+        </dt>
+        <dd>Muusic qualifier (mu): high-fibre peat (non-moss-specific)</dd>
+
+        <dt>
+
+          <code><a href="qual_naramic.html">qual_naramic()</a></code>
+
+        </dt>
+        <dd>Naramic supplementary qualifier (na): salt-crust morphology</dd>
+
+        <dt>
+
           <code><a href="qual_natric.html">qual_natric()</a></code>
 
         </dt>
         <dd>Natric qualifier (na): natric horizon &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_nechic.html">qual_nechic()</a></code>
+
+        </dt>
+        <dd>Nechic supplementary qualifier (ne): aeolian / loess deposit pattern</dd>
+
+        <dt>
+
+          <code><a href="qual_neobrunic.html">qual_neobrunic()</a></code>
+
+        </dt>
+        <dd>Neobrunic qualifier (nb): "young" cambic-like horizon</dd>
+
+        <dt>
+
+          <code><a href="qual_neocambic.html">qual_neocambic()</a></code>
+
+        </dt>
+        <dd>Neocambic qualifier (nc): "young" cambic horizon with weak development</dd>
 
         <dt>
 
@@ -1486,10 +1949,24 @@
 
         <dt>
 
+          <code><a href="qual_nudiargic.html">qual_nudiargic()</a></code>
+
+        </dt>
+        <dd>Nudiargic qualifier (nu): argic horizon at the surface</dd>
+
+        <dt>
+
           <code><a href="qual_nudilithic.html">qual_nudilithic()</a></code>
 
         </dt>
         <dd>Nudilithic qualifier (nt): continuous rock at the soil surface (top_cm == 0).</dd>
+
+        <dt>
+
+          <code><a href="qual_nudinatric.html">qual_nudinatric()</a></code>
+
+        </dt>
+        <dd>Nudinatric qualifier (nn): natric horizon at the surface</dd>
 
         <dt>
 
@@ -1521,10 +1998,31 @@
 
         <dt>
 
+          <code><a href="qual_orthofluvic.html">qual_orthofluvic()</a></code>
+
+        </dt>
+        <dd>Orthofluvic qualifier (of): fluvic material 50-100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_ortsteinic.html">qual_ortsteinic()</a></code>
 
         </dt>
         <dd>Ortsteinic qualifier (os): cemented spodic horizon. v0.9.1: spodic horizon + cementation_class strongly OR indurated.</dd>
+
+        <dt>
+
+          <code><a href="qual_oxyaquic.html">qual_oxyaquic()</a></code>
+
+        </dt>
+        <dd>Oxyaquic qualifier (oa): saturation regime without reduction</dd>
+
+        <dt>
+
+          <code><a href="qual_oxygleyic.html">qual_oxygleyic()</a></code>
+
+        </dt>
+        <dd>Oxygleyic qualifier (og): gleyic regime with predominant oxidation</dd>
 
         <dt>
 
@@ -1535,10 +2033,24 @@
 
         <dt>
 
+          <code><a href="qual_pantofluvic.html">qual_pantofluvic()</a></code>
+
+        </dt>
+        <dd>Pantofluvic qualifier (pf): fluvic material throughout 0-100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_pellic.html">qual_pellic()</a></code>
 
         </dt>
         <dd>Pellic qualifier (pe): in the upper 30 cm, Munsell value &lt;= 4 moist AND chroma &lt;= 2 moist. Diagnostic of "black" (dark) Vertisols.</dd>
+
+        <dt>
+
+          <code><a href="qual_pelocrustic.html">qual_pelocrustic()</a></code>
+
+        </dt>
+        <dd>Pelocrustic supplementary qualifier (pc): clayey surface crust</dd>
 
         <dt>
 
@@ -1574,6 +2086,13 @@
 
         </dt>
         <dd>Petroplinthic qualifier (pp): petroplinthic horizon &lt;= 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_petrosalic.html">qual_petrosalic()</a></code>
+
+        </dt>
+        <dd>Petrosalic qualifier (ptso): cemented salic horizon</dd>
 
         <dt>
 
@@ -1626,10 +2145,31 @@
 
         <dt>
 
+          <code><a href="qual_profundihumic.html">qual_profundihumic()</a></code>
+
+        </dt>
+        <dd>Profundihumic qualifier (ph): SOC &gt;= 1.4% to depth &gt;= 100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_protic.html">qual_protic()</a></code>
 
         </dt>
         <dd>Protic qualifier (pr): Arenosol (or Regosol) with NO incipient subsurface horizon – i.e. an A-over-C profile where no cambic, no argic, no spodic, no ferralic, no nitic horizon is present in the upper 100 cm. v0.9.1 implements as the conjunction of the "no B horizon" diagnostics.</dd>
+
+        <dt>
+
+          <code><a href="qual_protoandic.html">qual_protoandic()</a></code>
+
+        </dt>
+        <dd>Protoandic supplementary qualifier (pan): early-stage andic WRB 2022 Ch 5: "Andic-like properties below the strict threshold (oxalate Al+Fe 0.4-2.0%)."</dd>
+
+        <dt>
+
+          <code><a href="qual_protoargic.html">qual_protoargic()</a></code>
+
+        </dt>
+        <dd>Protoargic supplementary qualifier (pra): early-stage argic WRB 2022 Ch 5: "Clay increase 2-6 percentage points (below the canonical argic threshold)."</dd>
 
         <dt>
 
@@ -1647,6 +2187,13 @@
 
         <dt>
 
+          <code><a href="qual_protospodic.html">qual_protospodic()</a></code>
+
+        </dt>
+        <dd>Protospodic supplementary qualifier (psp): early-stage spodic WRB 2022 Ch 5: "Spodic-like horizon meeting weakened criteria (Al+Fe oxalate &lt; 0.5% but pyrophosphate &gt; 0.05%)." Lacking pyrophosphate field; we proxy via spodic candidate horizons that fail strict spodic.</dd>
+
+        <dt>
+
           <code><a href="qual_protovertic.html">qual_protovertic()</a></code>
 
         </dt>
@@ -1654,10 +2201,52 @@
 
         <dt>
 
+          <code><a href="qual_puffic.html">qual_puffic()</a></code>
+
+        </dt>
+        <dd>Puffic supplementary qualifier (pf): puffed surface</dd>
+
+        <dt>
+
+          <code><a href="qual_pyric.html">qual_pyric()</a></code>
+
+        </dt>
+        <dd>Pyric supplementary qualifier (py): fire-affected horizon WRB 2022 Ch 5: "Containing layers with charcoal / soot / fire-baked material (visual or chemical evidence)." Implementation: <code>layer_origin</code> or designation matching fire-related text.</dd>
+
+        <dt>
+
+          <code><a href="qual_raptic.html">qual_raptic()</a></code>
+
+        </dt>
+        <dd>Raptic supplementary qualifier (rp): stratification break</dd>
+
+        <dt>
+
+          <code><a href="qual_reductaquic.html">qual_reductaquic()</a></code>
+
+        </dt>
+        <dd>Reductaquic qualifier (ra): aquic + reductive at depth</dd>
+
+        <dt>
+
           <code><a href="qual_reductic.html">qual_reductic()</a></code>
 
         </dt>
         <dd>Reductic qualifier (rd): permanently reducing conditions caused by anthropogenic gas / liquid emissions (typical of Technosols on landfills). v0.9.1: reducing_conditions + Technic context.</dd>
+
+        <dt>
+
+          <code><a href="qual_reductigleyic.html">qual_reductigleyic()</a></code>
+
+        </dt>
+        <dd>Reductigleyic qualifier (rg): gleyic + reductive</dd>
+
+        <dt>
+
+          <code><a href="qual_relocatic.html">qual_relocatic()</a></code>
+
+        </dt>
+        <dd>Relocatic qualifier (rl): relocated material (Arenosols / Regosols)</dd>
 
         <dt>
 
@@ -1689,6 +2278,13 @@
 
         <dt>
 
+          <code><a href="qual_rockic.html">qual_rockic()</a></code>
+
+        </dt>
+        <dd>Rockic qualifier (rk): rock-dominated organic horizon</dd>
+
+        <dt>
+
           <code><a href="qual_rubic.html">qual_rubic()</a></code>
 
         </dt>
@@ -1714,6 +2310,13 @@
 
         </dt>
         <dd>Sapric qualifier (sa): organic material whose dominant decomposition class in the upper 100 cm is sapric (rubbed fiber &lt; 1/6). v0.9.1: thickness-weighted dominance via Oa designation.</dd>
+
+        <dt>
+
+          <code><a href="qual_saprolithic.html">qual_saprolithic()</a></code>
+
+        </dt>
+        <dd>Saprolithic supplementary qualifier (sp): saprolite parent material</dd>
 
         <dt>
 
@@ -1759,6 +2362,13 @@
 
         <dt>
 
+          <code><a href="qual_someric.html">qual_someric()</a></code>
+
+        </dt>
+        <dd>Someric qualifier (sm): anthric epipedon over chernic / mollic</dd>
+
+        <dt>
+
           <code><a href="qual_spodic.html">qual_spodic()</a></code>
 
         </dt>
@@ -1784,6 +2394,13 @@
 
         </dt>
         <dd>Subaquatic qualifier (sq): permanently under water. v0.9.1: site$drainage_class == "subaquatic" or "submerged".</dd>
+
+        <dt>
+
+          <code><a href="qual_sulfatic.html">qual_sulfatic()</a></code>
+
+        </dt>
+        <dd>Sulfatic supplementary qualifier (su): high sulfate content WRB 2022 Ch 5: "Containing &gt;= 25% gypsum or &gt;= 5% sulfate by mass."</dd>
 
         <dt>
 
@@ -1829,6 +2446,20 @@
 
         <dt>
 
+          <code><a href="qual_thixotropic.html">qual_thixotropic()</a></code>
+
+        </dt>
+        <dd>Thixotropic supplementary qualifier (tx): thixotropic behavior</dd>
+
+        <dt>
+
+          <code><a href="qual_thyric.html">qual_thyric()</a></code>
+
+        </dt>
+        <dd>Thyric qualifier (ty): organic technic material in upper 100 cm</dd>
+
+        <dt>
+
           <code><a href="qual_tidalic.html">qual_tidalic()</a></code>
 
         </dt>
@@ -1836,10 +2467,24 @@
 
         <dt>
 
+          <code><a href="qual_tonguic.html">qual_tonguic()</a></code>
+
+        </dt>
+        <dd>Tonguic qualifier (tg): tongues of A horizon penetrating into B</dd>
+
+        <dt>
+
           <code><a href="qual_toxic.html">qual_toxic()</a></code>
 
         </dt>
         <dd>Toxic qualifier (tx): toxic concentration of organic or inorganic constituents.</dd>
+
+        <dt>
+
+          <code><a href="qual_transportic.html">qual_transportic()</a></code>
+
+        </dt>
+        <dd>Transportic qualifier (tr): transported material (Technosols / Regosols)</dd>
 
         <dt>
 
@@ -1861,6 +2506,13 @@
 
         </dt>
         <dd>Urbic qualifier (ub): &gt;= 20% urbic artefacts (rubble, refuse) in the upper 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_uterquic.html">qual_uterquic()</a></code>
+
+        </dt>
+        <dd>Uterquic supplementary qualifier (uq): bidirectional water regime</dd>
 
         <dt>
 
@@ -1889,6 +2541,13 @@
 
         </dt>
         <dd>Vitric qualifier (vi): vitric properties &gt;= 30 cm within 100 cm.</dd>
+
+        <dt>
+
+          <code><a href="qual_wapnic.html">qual_wapnic()</a></code>
+
+        </dt>
+        <dd>Wapnic qualifier (wp): soft, moist limnic material &gt;= 80% CaCO3</dd>
 
         <dt>
 
@@ -2263,7 +2922,7 @@
           <code><a href="horizonte_A_fraco.html">horizonte_A_fraco()</a></code>
 
         </dt>
-        <dd>Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao simples/maciça + OC &lt; 6 g/kg; OR espessura &lt; 5 cm.</dd>
+        <dd>Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao simples/macica + OC &lt; 6 g/kg; OR espessura &lt; 5 cm.</dd>
 
         <dt>
 
@@ -2319,7 +2978,7 @@
           <code><a href="horizonte_histico.html">horizonte_histico()</a></code>
 
         </dt>
-        <dd>Horizonte hístico (SiBCS Cap 2, p 49-50)</dd>
+        <dd>Horizonte histico (SiBCS Cap 2, p 49-50)</dd>
 
         <dt>
 
@@ -4444,7 +5103,7 @@
           <code><a href="normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code>
 
         </dt>
-        <dd>Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case</dd>
+        <dd>Canonicalise FEBR SiBCS names to match soilKey rule outputs.</dd>
 
         <dt>
 
@@ -5208,6 +5867,13 @@
 
         <dt>
 
+          <code><a href="load_bdsolos_csv.html">load_bdsolos_csv()</a></code>
+
+        </dt>
+        <dd>Load a BDsolos CSV export as a list of PedonRecord objects</dd>
+
+        <dt>
+
           <code><a href="load_embrapa_pedons.html">load_embrapa_pedons()</a></code>
 
         </dt>
@@ -5250,6 +5916,13 @@
 
         <dt>
 
+          <code><a href="load_lucas_soil_2018.html">load_lucas_soil_2018()</a></code>
+
+        </dt>
+        <dd>Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord objects</dd>
+
+        <dt>
+
           <code><a href="load_rules.html">load_rules()</a></code>
 
         </dt>
@@ -5264,10 +5937,24 @@
 
         <dt>
 
+          <code><a href="save_ossl_models.html">save_ossl_models()</a></code> <code><a href="save_ossl_models.html">load_ossl_models()</a></code>
+
+        </dt>
+        <dd>Save / load trained OSSL-backed PLSR models</dd>
+
+        <dt>
+
           <code><a href="format_wrb_name.html">format_wrb_name()</a></code>
 
         </dt>
         <dd>Format a WRB 2022 soil name with qualifiers</dd>
+
+        <dt>
+
+          <code><a href="validate_pedon_json.html">validate_pedon_json()</a></code>
+
+        </dt>
+        <dd>Validate a PedonRecord against the JSON schema</dd>
 
         <dt>
 
@@ -5886,6 +6573,397 @@
 
         </dt>
         <dd>Tephric material (WRB 2022 Ch 3.3.19): \&gt;= 30% volcanic glass in 0.02-2 mm fraction AND no andic / vitric properties.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="engine-selection-and-dispatch-v-">Engine selection and dispatch (v0.9.65)<a class="anchor" aria-label="anchor" href="#engine-selection-and-dispatch-v-"></a></h2>
+
+      <div class="section-desc"><p>Per-pedon engine-selection heuristic, engine-aware dispatch (soilKey vs aqp), and side-by-side comparators.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="pick_engine.html">pick_engine()</a></code>
+
+        </dt>
+        <dd>Choose the best diagnostic engine for a single pedon</dd>
+
+        <dt>
+
+          <code><a href="pick_engine_batch.html">pick_engine_batch()</a></code>
+
+        </dt>
+        <dd>Per-pedon batch engine recommendation</dd>
+
+        <dt>
+
+          <code><a href="classify_with_engine_heuristic.html">classify_with_engine_heuristic()</a></code>
+
+        </dt>
+        <dd>Classify a pedon with the engine chosen by `pick_engine()`</dd>
+
+        <dt>
+
+          <code><a href="compare_engines.html">compare_engines()</a></code>
+
+        </dt>
+        <dd>Side-by-side comparison of soilKey vs aqp diagnostic engines</dd>
+
+        <dt>
+
+          <code><a href="argic_aqp.html">argic_aqp()</a></code>
+
+        </dt>
+        <dd>Argic / argillic horizon via aqp::getArgillicBounds()</dd>
+
+        <dt>
+
+          <code><a href="cambic_aqp.html">cambic_aqp()</a></code>
+
+        </dt>
+        <dd>Cambic horizon via aqp::getCambicBounds()</dd>
+      </dl></div><div class="section level2">
+      <h2 id="canonical-references-v-v-">Canonical references (v0.9.62 – v0.9.65)<a class="anchor" aria-label="anchor" href="#canonical-references-v-v-"></a></h2>
+
+      <div class="section-desc"><p>Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared lookup helpers for pkg vs vendored data sources.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="canonical_reference.html">canonical_reference()</a></code>
+
+        </dt>
+        <dd>Load a canonical reference dataset from soilKey or SoilTaxonomy</dd>
+
+        <dt>
+
+          <code><a href="wrb2022_canonical.html">wrb2022_canonical()</a></code>
+
+        </dt>
+        <dd>WRB 2022 canonical reference (parsed IUSS Working Group WRB 2022)</dd>
+
+        <dt>
+
+          <code><a href="kst13_canonical.html">kst13_canonical()</a></code>
+
+        </dt>
+        <dd>Keys to Soil Taxonomy 13th edition canonical reference</dd>
+
+        <dt>
+
+          <code><a href="kst13_codes.html">kst13_codes()</a></code>
+
+        </dt>
+        <dd>Load the canonical KST 13ed code -&gt; taxon-name lookup table</dd>
+
+        <dt>
+
+          <code><a href="kst13_criteria.html">kst13_criteria()</a></code>
+
+        </dt>
+        <dd>Load the canonical KST 13ed criteria for a single taxon code</dd>
+
+        <dt>
+
+          <code><a href="st_features_canonical.html">st_features_canonical()</a></code>
+
+        </dt>
+        <dd>USDA Soil Taxonomy diagnostic features canonical table</dd>
+
+        <dt>
+
+          <code><a href="clear_kst13_cache.html">clear_kst13_cache()</a></code>
+
+        </dt>
+        <dd>Clear the in-memory KST13 cache</dd>
+      </dl></div><div class="section level2">
+      <h2 id="smartsolos-embrapa-agroapi-integration-v-">SmartSolos / Embrapa AgroAPI integration (v0.9.54)<a class="anchor" aria-label="anchor" href="#smartsolos-embrapa-agroapi-integration-v-"></a></h2>
+
+      <div class="section-desc"><p>Cross-validation against Embrapa’s PROLOG SiBCS classifier.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="classify_via_smartsolos_api.html">classify_via_smartsolos_api()</a></code>
+
+        </dt>
+        <dd>Classify a PedonRecord via Embrapa's SmartSolosExpert REST API</dd>
+
+        <dt>
+
+          <code><a href="compare_smartsolos.html">compare_smartsolos()</a></code>
+
+        </dt>
+        <dd>Cross-validate the local SiBCS classifier against the SmartSolosExpert API</dd>
+      </dl></div><div class="section level2">
+      <h2 id="bdsolos-loader-and-benchmarks-v-v-">BDsolos loader and benchmarks (v0.9.55 – v0.9.60)<a class="anchor" aria-label="anchor" href="#bdsolos-loader-and-benchmarks-v-v-"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="benchmark_bdsolos.html">benchmark_bdsolos()</a></code>
+
+        </dt>
+        <dd>Benchmark soilKey classifiers against BDsolos national reference labels</dd>
+
+        <dt>
+
+          <code><a href="download_bdsolos.html">download_bdsolos()</a></code>
+
+        </dt>
+        <dd>Download the BDsolos consulta-publica CSV (experimental, requires chromote)</dd>
+
+        <dt>
+
+          <code><a href="inspect_bdsolos_csv.html">inspect_bdsolos_csv()</a></code>
+
+        </dt>
+        <dd>Diagnostic inspection of a BDsolos CSV before loading</dd>
+      </dl></div><div class="section level2">
+      <h2 id="febr-loader-v-">FEBR loader (v0.9.57)<a class="anchor" aria-label="anchor" href="#febr-loader-v-"></a></h2>
+
+      <div class="section-desc"><p>UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="read_febr_pedons.html">read_febr_pedons()</a></code>
+
+        </dt>
+        <dd>Load FEBR datasets as a list of PedonRecord objects</dd>
+
+        <dt>
+
+          <code><a href="febr_index_munsell.html">febr_index_munsell()</a></code>
+
+        </dt>
+        <dd>Curated index of FEBR datasets that carry Munsell colors</dd>
+      </dl></div><div class="section level2">
+      <h2 id="lucas-soil-v-v-">LUCAS Soil 2018 (v0.9.49 – v0.9.50)<a class="anchor" aria-label="anchor" href="#lucas-soil-v-v-"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="benchmark_lucas_2018.html">benchmark_lucas_2018()</a></code>
+
+        </dt>
+        <dd>Run the LUCAS Soil 2018 / ESDB WRB benchmark</dd>
+
+        <dt>
+
+          <code><a href="attach_lucas_spectra.html">attach_lucas_spectra()</a></code>
+
+        </dt>
+        <dd>Attach LUCAS 2018 Vis-NIR spectra to a list of PedonRecord objects</dd>
+      </dl></div><div class="section level2">
+      <h2 id="unified-benchmark-and-robustness-v-">Unified benchmark and robustness (v0.9.61)<a class="anchor" aria-label="anchor" href="#unified-benchmark-and-robustness-v-"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="benchmark_unified.html">benchmark_unified()</a></code>
+
+        </dt>
+        <dd>Unified cross-dataset benchmark across SiBCS / WRB / USDA</dd>
+
+        <dt>
+
+          <code><a href="benchmark_performance.html">benchmark_performance()</a></code>
+
+        </dt>
+        <dd>Run the soilKey performance benchmark</dd>
+
+        <dt>
+
+          <code><a href="batch_robustness.html">batch_robustness()</a></code>
+
+        </dt>
+        <dd>Batch robustness across many pedons</dd>
+
+        <dt>
+
+          <code><a href="classification_robustness.html">classification_robustness()</a></code>
+
+        </dt>
+        <dd>Robustness of classification under input perturbation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="ossl-spectra-pls-training-and-prediction">OSSL spectra: PLS training and prediction<a class="anchor" aria-label="anchor" href="#ossl-spectra-pls-training-and-prediction"></a></h2>
+
+      <div class="section-desc"><p>Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict lab properties / Munsell / XYZ / generic targets.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="train_pls_from_ossl.html">train_pls_from_ossl()</a></code>
+
+        </dt>
+        <dd>Train pre-trained PLSR models from an OSSL library</dd>
+
+        <dt>
+
+          <code><a href="predict_from_spectra.html">predict_from_spectra()</a></code>
+
+        </dt>
+        <dd>Predict soil properties from spectra</dd>
+
+        <dt>
+
+          <code><a href="predict_lab_from_spectra.html">predict_lab_from_spectra()</a></code>
+
+        </dt>
+        <dd>Predict CIE Lab from Vis-NIR reflectance spectra</dd>
+
+        <dt>
+
+          <code><a href="predict_munsell_from_spectra.html">predict_munsell_from_spectra()</a></code>
+
+        </dt>
+        <dd>Predict Munsell hue / value / chroma from Vis-NIR reflectance spectra</dd>
+
+        <dt>
+
+          <code><a href="predict_xyz_from_spectra.html">predict_xyz_from_spectra()</a></code>
+
+        </dt>
+        <dd>Predict CIE XYZ tristimulus values from Vis-NIR reflectance spectra</dd>
+
+        <dt>
+
+          <code><a href="predict.soilKey_pls_model.html">predict(<i>&lt;soilKey_pls_model&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Predict from a soilKey_pls_model</dd>
+
+        <dt>
+
+          <code><a href="print.soilKey_pls_model.html">print(<i>&lt;soilKey_pls_model&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print method for soilKey_pls_model</dd>
+
+        <dt>
+
+          <code><a href="fill_munsell_from_spectra.html">fill_munsell_from_spectra()</a></code>
+
+        </dt>
+        <dd>Fill missing Munsell colors on a PedonRecord from Vis-NIR spectra</dd>
+      </dl></div><div class="section level2">
+      <h2 id="spatial-database-lookups">Spatial / database lookups<a class="anchor" aria-label="anchor" href="#spatial-database-lookups"></a></h2>
+
+      <div class="section-desc"><p>ESDB attributes, SoilGrids and MapBiomas-Solos pulls.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="available_esdb_attributes.html">available_esdb_attributes()</a></code>
+
+        </dt>
+        <dd>List ESDB Raster Library attributes available at a given root</dd>
+
+        <dt>
+
+          <code><a href="lookup_esdb.html">lookup_esdb()</a></code>
+
+        </dt>
+        <dd>Look up an ESDB raster value at WGS84 coordinates</dd>
+
+        <dt>
+
+          <code><a href="lookup_soilgrids.html">lookup_soilgrids()</a></code>
+
+        </dt>
+        <dd>Look up a SoilGrids 250m soil property at WGS84 coordinates</dd>
+
+        <dt>
+
+          <code><a href="lookup_mapbiomas_solos.html">lookup_mapbiomas_solos()</a></code>
+
+        </dt>
+        <dd>Look up a MapBiomas Solos raster value at WGS84 coordinates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="globalsoilmap-depth-harmonisation-and-aqp-helpers">GlobalSoilMap depth harmonisation and aqp helpers<a class="anchor" aria-label="anchor" href="#globalsoilmap-depth-harmonisation-and-aqp-helpers"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="GSM_DEPTHS.html">GSM_DEPTHS</a></code>
+
+        </dt>
+        <dd>Default GlobalSoilMap depth intervals (cm)</dd>
+
+        <dt>
+
+          <code><a href="harmonize_to_gsm.html">harmonize_to_gsm()</a></code>
+
+        </dt>
+        <dd>Harmonise pedons to GlobalSoilMap depth intervals</dd>
+
+        <dt>
+
+          <code><a href="pedon_to_spc.html">pedon_to_spc()</a></code>
+
+        </dt>
+        <dd>Convert a soilKey PedonRecord to an aqp SoilProfileCollection</dd>
+
+        <dt>
+
+          <code><a href="pedon_json_schema.html">pedon_json_schema()</a></code>
+
+        </dt>
+        <dd>JSON Schema for a soilKey PedonRecord</dd>
+
+        <dt>
+
+          <code><a href="texture_class_from_pct.html">texture_class_from_pct()</a></code>
+
+        </dt>
+        <dd>NRCS texture-class shorthand from clay / silt / sand percent</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

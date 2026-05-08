@@ -19,7 +19,7 @@ Retisol path)."><meta property="og:image" content="https://hugomachadorodrigues.
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,6 +30,7 @@ Retisol path)."><meta property="og:image" content="https://hugomachadorodrigues.
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="../articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="../articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -73,7 +74,13 @@ Retisol path).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">argic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">7.5</span>, system <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrb2022"</span>, <span class="st">"usda"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">argic</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  min_thickness <span class="op">=</span> <span class="fl">7.5</span>,</span>
+<span>  system <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrb2022"</span>, <span class="st">"usda"</span><span class="op">)</span>,</span>
+<span>  engine <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  require_t <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -93,6 +100,28 @@ Retisol path).</p>
 Selects the clay-increase threshold set: WRB uses
 6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
 See <code><a href="test_clay_increase_argic.html">test_clay_increase_argic</a></code> for the table.</p></dd>
+
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>v0.9.63+. One of <code>"soilkey"</code> (the hand-coded
+path, default for back-compat) or <code>"aqp"</code> (canonical
+NRCS dispatch via <code><a href="https://ncss-tech.github.io/aqp/reference/getArgillicBounds.html" class="external-link">aqp::getArgillicBounds</a></code>). When
+<code>NULL</code> (the new default) the function reads
+<code>getOption("soilKey.diagnostic_engine", "soilkey")</code>
+so a global <code>options(soilKey.diagnostic_engine = "aqp")</code>
+flips every <code>argic()</code> call without modifying call
+sites. See <code><a href="argic_aqp.html">argic_aqp</a></code>.</p></dd>
+
+
+<dt id="arg-require-t">require_t<a class="anchor" aria-label="anchor" href="#arg-require-t"></a></dt>
+<dd><p>v0.9.63+. Forwarded to <code><a href="https://ncss-tech.github.io/aqp/reference/getArgillicBounds.html" class="external-link">aqp::getArgillicBounds</a></code>
+when <code>engine = "aqp"</code>: <code>TRUE</code> requires a "t"
+suffix in the horizon designation (the strict KST 13ed
+text); <code>FALSE</code> accepts argic by clay-increase alone
+(more permissive on data-sparse profiles). <code>NULL</code>
+(default) auto-picks: <code>TRUE</code> for <code>system =
+"usda"</code>, <code>FALSE</code> for <code>system = "wrb2022"</code>.
+Ignored when <code>engine = "soilkey"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

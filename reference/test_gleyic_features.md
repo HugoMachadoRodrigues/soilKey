@@ -1,12 +1,19 @@
 # Test for gleyic redoximorphic features within top 50 cm
 
-v0.2 implementation: requires `redoximorphic_features_pct` to be
-reported and \>= `min_redox_pct` (default 5%) within `max_top_cm`
-(default 50). The Munsell-color proxy (chroma \<= 2, value \>= 4) is too
-inclusive for albic / bleached horizons and is therefore not used as a
-primary criterion in v0.2; v0.3 will distinguish reductimorphic from
-albic via additional indicators. If `redoximorphic_features_pct` is
-missing for all candidate layers, returns NA.
+Two evidence paths (any qualifies):
+
+1.  **Mottle percent** (primary): explicit `redoximorphic_features_pct`
+    \>= `min_redox_pct` (default 5\\ is the v0.2 path.
+
+2.  **Gleyic Munsell hue** (v0.9.61, secondary): the horizon Munsell hue
+    matches gleyic patterns (N / 5GY / 10G / 5BG / 10B etc.) AND chroma
+    \<= 2. Used when mottle percent is not reported. Common in BDsolos
+    exports where surveyors fill matiz/valor/croma but leave mottle
+    quantity empty.
+
+Either path qualifies. If neither is determinable for any candidate
+layer (mottle pct AND hue both NA), returns NA. If both are determinable
+but neither passes, returns FALSE.
 
 ## Usage
 
@@ -15,7 +22,8 @@ test_gleyic_features(
   h,
   max_top_cm = 50,
   min_redox_pct = 5,
-  candidate_layers = NULL
+  candidate_layers = NULL,
+  max_chroma = 2
 )
 ```
 
@@ -36,3 +44,8 @@ test_gleyic_features(
 - candidate_layers:
 
   Numeric threshold or option (see Details).
+
+- max_chroma:
+
+  Numeric threshold; gleyic-hue path requires
+  `munsell_chroma_moist <= max_chroma` (default 2).

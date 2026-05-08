@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.27](https://img.shields.io/badge/version-0.9.27-FF6B35?style=flat-square)
+![v0.9.40](https://img.shields.io/badge/version-0.9.40-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA
 > Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All
@@ -17,9 +17,8 @@ MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
-[![tests](https://img.shields.io/badge/tests-2908%20passing-brightgreen.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/tests/)
-[![Codecov test
-coverage](https://codecov.io/gh/HugoMachadoRodrigues/soilKey/branch/main/graph/badge.svg)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
+[![tests](https://img.shields.io/badge/tests-3137%20passing-brightgreen.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/tests/)
+[![coverage](https://img.shields.io/badge/coverage-80.5%25-brightgreen.svg?style=flat-square)](https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main)
 [![WRB
 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#id_-coverage)
 [![SiBCS
@@ -1318,8 +1317,21 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   complex (Ca + Mg + K + Na exch + 1 N KCl Al-exch \<= 2 cmol+/kg fine
   earth) in some layer of the andic part within 100 cm.
 
+- [`qual_activic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_activic.md)
+  :
+
+  Activic supplementary qualifier (av): active aluminium \>= 5 cmol/kg
+  WRB 2022 Ch 5: "KCl-extractable Al (`al_kcl_cmol`) \>= 5 cmol(c)/kg in
+  any layer in upper 100 cm." Proxy via existing `al_cmol` (exchangeable
+  Al) when al_kcl_cmol absent.
+
 - [`qual_albic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_albic.md)
   : Albic qualifier (ab): albic horizon \<= 100 cm.
+
+- [`qual_alcalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_alcalic.md)
+  : Alcalic supplementary qualifier (ac): pH (H2O) \>= 9.0 WRB 2022 Ch
+  5: "Strongly alkaline reaction (pH H2O \>= 9 in any layer within 100
+  cm of the soil surface)."
 
 - [`qual_alic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_alic.md)
   : Alic qualifier (al): argic + high CEC + high Al saturation.
@@ -1333,6 +1345,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   v0.9 simplification: passes if andic_properties or vitric_properties
   passes within 100 cm.
 
+- [`qual_anofluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_anofluvic.md)
+  : Anofluvic qualifier (af): fluvic material only at depth \>= 50 cm
+
 - [`qual_anthraquic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_anthraquic.md)
   : Anthraquic qualifier (aq): anthraquic horizon (puddled-rice
   surface).
@@ -1340,9 +1355,18 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_anthric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_anthric.md)
   : Anthric qualifier (ak): anthric properties.
 
+- [`qual_anthromollic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_anthromollic.md)
+  : Anthromollic qualifier (am): anthric horizon overlying spodic
+
+- [`qual_archaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_archaic.md)
+  : Archaic supplementary qualifier (ah): archeological context
+
 - [`qual_arenic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_arenic.md)
   : Arenic qualifier (ar): texture sand or loamy sand \>= 30 cm in \<=
   100 cm.
+
+- [`qual_arenicolic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_arenicolic.md)
+  : Arenicolic supplementary qualifier (an): faunal sand burrows
 
 - [`qual_aric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_aric.md)
   :
@@ -1350,6 +1374,12 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   Aric qualifier (ar): mineral surface horizon homogenised by ploughing
   – designation pattern `Ap`, `Apk`, `Apc`, etc., starting within the
   upper 30 cm.
+
+- [`qual_bathyspodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_bathyspodic.md)
+  : Bathyspodic supplementary qualifier (bs): spodic at 100-200 cm depth
+
+- [`qual_biocrustic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_biocrustic.md)
+  : Biocrustic supplementary qualifier (bk): biological soil crust
 
 - [`qual_brunic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_brunic.md)
   :
@@ -1361,6 +1391,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   Lixisol / Ferralsol territory; in those RSGs the cambic alone is the
   gating diagnostic and Brunic would be redundant.
 
+- [`qual_bryic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_bryic.md)
+  : Bryic supplementary qualifier (by): bryophyte cover at surface
+
 - [`qual_calcaric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_calcaric.md)
   : Calcaric qualifier (cl): calcaric material \>= 25 cm in upper 100
   cm.
@@ -1371,14 +1404,34 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_cambic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_cambic.md)
   : Cambic qualifier (cm): cambic horizon \<= 50 cm.
 
+- [`qual_capillaric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_capillaric.md)
+  : Capillaric supplementary qualifier (cp): capillary rise zone WRB
+  2022 Ch 5: "Capillary rise from a shallow water table to within 50 cm
+  of the soil surface; flagged via redox concentrations (\>=2%) + fine
+  texture (clay+silt \> 50%)."
+
 - [`qual_carbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_carbic.md)
   : Carbic qualifier (cb): spodic horizon dominated by humus
   illuviation. v0.9.1: spodic + OC \>= 6% in some spodic layer (the WRB
   threshold for Carbic / "humus-Podzol" expression).
 
+- [`qual_carbonatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_carbonatic.md)
+  : Carbonatic supplementary qualifier (cn): \>= 50% carbonates
+
+- [`qual_carbonic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_carbonic.md)
+  : Carbonic supplementary qualifier (cb): high SOC content (\>= 6%)
+
 - [`qual_chernic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_chernic.md)
   : Chernic qualifier (ch): chernic horizon (intensely worm-mixed
   mollic-like) within 100 cm.
+
+- [`qual_chloridic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_chloridic.md)
+  :
+
+  Chloridic supplementary qualifier (cl): high chloride WRB 2022 Ch 5:
+  "Containing \>= 4 cmol(c)/kg chloride OR EC \>= 8 dS/m within 100 cm."
+  Proxy via electrical conductivity field (`ec_ds_m`) when chloride is
+  unavailable.
 
 - [`qual_chromic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_chromic.md)
   : Chromic qualifier (cr): hue redder than 7.5YR + chroma \> 4 (in
@@ -1387,6 +1440,27 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_clayic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_clayic.md)
   : Clayic qualifier (ce): clay \>= 60% texture for a layer \>= 30 cm in
   the upper 100 cm.
+
+- [`qual_coarsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_coarsic.md)
+  : Coarsic qualifier (cr): \>= 70% coarse fragments by volume in upper
+  100 cm
+
+- [`qual_cohesic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_cohesic.md)
+  :
+
+  Cohesic supplementary qualifier (co): cohesive horizon (extra-firm
+  dry) WRB 2022 Ch 5: "Containing layers with extreme dry consistence
+  AND moist consistence very firm." Implementation: matches via
+  `consistence_dry` ("extremely hard") OR `consistence_moist` ("very
+  firm"), within 100 cm.
+
+- [`qual_columnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_columnic.md)
+  : Columnic supplementary qualifier (cm): columnar / prismatic
+  structure WRB 2022 Ch 5: "Columnar or strong prismatic structure
+  (associated with natric horizons)."
+
+- [`qual_cordic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_cordic.md)
+  : Cordic supplementary qualifier (cd): cordic horizon
 
 - [`qual_cryic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_cryic.md)
   : Cryic qualifier (cy): cryic horizon \<= 100 cm.
@@ -1413,8 +1487,17 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Densic qualifier (dn): bulk density \>= 1.8 g/cm3 in some root-
   restricting layer within 100 cm.
 
+- [`qual_differentic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_differentic.md)
+  : Differentic supplementary qualifier (df): contrasting layers WRB
+  2022 Ch 5: "Strong differences (texture, mineralogy, color) between
+  adjacent layers without abrupt textural transition (mild clay-increase
+  1.2-1.4x ratio)."
+
 - [`qual_dolomitic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_dolomitic.md)
   : Dolomitic qualifier (do): dolomitic material in upper 100 cm.
+
+- [`qual_dorsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_dorsic.md)
+  : Dorsic supplementary qualifier (do): dorsal-ridge microrelief
 
 - [`qual_drainic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_drainic.md)
   :
@@ -1437,15 +1520,68 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   starting within 5 cm of the surface. v0.9.1: technic_hard_material
   with top depth \<= 5 cm.
 
+- [`qual_endic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endic.md)
+  : Endic supplementary qualifier (ec): generic "in deep horizon" marker
+
+- [`qual_endoabruptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endoabruptic.md)
+  : Endoabruptic supplementary qualifier (eea): abrupt textural change
+  deep
+
+- [`qual_endocalcaric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endocalcaric.md)
+  : Endocalcaric qualifier (cae): calcaric only at depth \>= 50 cm
+
 - [`qual_endocalcic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endocalcic.md)
   : Endocalcic qualifier (cam): calcic horizon between 50 and 100 cm.
+
+- [`qual_endodolomitic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endodolomitic.md)
+  : Endodolomitic qualifier (dme): dolomitic only at depth \>= 50 cm
+
+- [`qual_endoduric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endoduric.md)
+  : Endoduric supplementary qualifier: duric horizon at depth \>= 50 cm
+
+- [`qual_endodystric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endodystric.md)
+  : Endodystric supplementary qualifier (eds): dystric only at depth
+
+- [`qual_endoeutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endoeutric.md)
+  : Endoeutric supplementary qualifier (eee): eutric only at depth
 
 - [`qual_endogleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogleyic.md)
   : Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.
 
+- [`qual_endogypsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogypsic.md)
+  : Endogypsic supplementary qualifier: gypsic horizon at depth \>= 50
+  cm
+
+- [`qual_endoleptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endoleptic.md)
+  : Endoleptic supplementary qualifier (lle): rock contact 50-100 cm
+
 - [`qual_endostagnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endostagnic.md)
   : Endostagnic qualifier (ens): stagnic conditions between 50 and 100
   cm.
+
+- [`qual_endothionic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endothionic.md)
+  : Endothionic supplementary qualifier (etn): thionic at depth \>= 50
+  cm
+
+- [`qual_endothyric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endothyric.md)
+  : Endothyric supplementary qualifier (etc): thyric only at depth \>=
+  50
+
+- [`qual_entic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_entic.md)
+  : Entic qualifier (et): albic horizon AND NOT spodic
+
+- [`qual_epic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_epic.md)
+  : Epic supplementary qualifier (ep): generic "in shallow horizon"
+
+- [`qual_epidystric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_epidystric.md)
+  : Epidystric supplementary qualifier (epd): dystric only in upper 50
+  cm
+
+- [`qual_epieutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_epieutric.md)
+  : Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+
+- [`qual_escalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_escalic.md)
+  : Escalic supplementary qualifier (es): terraced / stepped morphology
 
 - [`qual_eutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutric.md)
   : Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50%
@@ -1455,11 +1591,17 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Eutrosilic qualifier (es): silandic + base saturation \>= 50% in
   some layer of the silandic part within 100 cm.
 
+- [`qual_evapocrustic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_evapocrustic.md)
+  : Evapocrustic supplementary qualifier (ev): evaporite surface crust
+
 - [`qual_ferralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ferralic.md)
   : Ferralic qualifier (fl): ferralic horizon \<= 150 cm.
 
 - [`qual_ferric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ferric.md)
   : Ferric qualifier (fr): ferric horizon \<= 100 cm.
+
+- [`qual_ferritic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ferritic.md)
+  : Ferritic qualifier (fr): high free-Fe in fine earth
 
 - [`qual_fibric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fibric.md)
   : Fibric qualifier (fi): organic material whose dominant decomposition
@@ -1477,6 +1619,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Folic qualifier (fo): folic horizon at the soil surface. v0.9
   delegates to histic_horizon with surface-only filter.
 
+- [`qual_fractic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fractic.md)
+  : Fractic qualifier (fc): fractures (cracks) within 100 cm
+
 - [`qual_garbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_garbic.md)
   :
 
@@ -1485,12 +1630,37 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   (`Cgarb|garb|landfill|refuse`). Hard schema column
   `artefacts_garbic_pct` scheduled for v0.9.2.
 
+- [`qual_gelic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_gelic.md)
+  : Gelic supplementary qualifier (gl): permafrost or strong frost
+  activity WRB 2022 Ch 5: "Permafrost within 200 cm of the soil surface
+  OR gelic materials." Modifier of cryic_conditions for non-Cryosols.
+
+- [`qual_gelistagnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_gelistagnic.md)
+  : Gelistagnic supplementary qualifier (gst): stagnic in cold
+  conditions WRB 2022 Ch 5: "Stagnic features (perched water) in cryic
+  regime." Compose: stagnic_pattern + cryic_conditions.
+
+- [`qual_geoabruptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_geoabruptic.md)
+  : Geoabruptic supplementary qualifier (ga): abrupt change at
+  lithological boundary WRB 2022 Ch 5: "Abrupt textural / mineralogical
+  change at a lithological discontinuity (e.g., 2C horizon below B)."
+  Implementation: designation pattern containing "2C" or "3C" (numeric
+  prefix indicates lithologic discontinuity).
+
 - [`qual_geric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_geric.md)
   : Geric qualifier (gr): in some layer at \<= 100 cm, the effective
   exchange complex (sum of bases + 1 N KCl Al-exchangeable) does not
   exceed 1.5 cmol+/kg fine earth, OR the soil shows net positive charge
   (delta pH = pH_KCl - pH_H2O \> 0). The "or" path makes Geric / Posic
   overlap by design (per WRB Ch 5).
+
+- [`qual_gibbsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_gibbsic.md)
+  : Gibbsic qualifier (gi): high gibbsite (\>= 25%) in fine earth
+
+- [`qual_gilgaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_gilgaic.md)
+  : Gilgaic supplementary qualifier (gi): gilgai microrelief WRB 2022 Ch
+  5: "Gilgai microrelief (associated with vertic shrinking/swelling
+  soils)." Site-level field detection.
 
 - [`qual_glacic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_glacic.md)
   :
@@ -1507,6 +1677,10 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Glossic qualifier (gs): mollic horizon penetrated by albeluvic
   tongues (glossae). Diagnostic of Glossic Chernozems / Phaeozems on the
   steppe / forest-steppe transition.
+
+- [`qual_greyzemic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_greyzemic.md)
+  : Greyzemic qualifier (gz): mollic / umbric overlain by albic-like
+  layer
 
 - [`qual_grumic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_grumic.md)
   : Grumic qualifier (gr): strong fine granular surface horizon
@@ -1552,6 +1726,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   "potentially over-permissive" via the `notes` field when the value
   falls in the 70-100% band.
 
+- [`qual_hydrophobic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hydrophobic.md)
+  : Hydrophobic supplementary qualifier (hf): water-repellent surface
+
 - [`qual_hyperalbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hyperalbic.md)
   :
 
@@ -1586,6 +1763,15 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_hypergypsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hypergypsic.md)
   : Hypergypsic qualifier (yg): gypsic horizon AND gypsum \>= 60% in
   some gypsic layer.
+
+- [`qual_hypernatric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hypernatric.md)
+  : Hypernatric supplementary qualifier (hyna): very high Na (\>= 70%
+  ESP)
+
+- [`qual_hyperorganic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hyperorganic.md)
+  : Hyperorganic supplementary qualifier (hyo): SOC \>= 18% (peat-like)
+  WRB 2022 Ch 5: "Containing organic carbon \>= 18% by mass in any layer
+  \>= 10 cm thick." A stronger version of \`Carbonic\`.
 
 - [`qual_hypersalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hypersalic.md)
   : Hypersalic qualifier (yz): EC (1:5 H2O extract) \>= 30 dS/m in some
@@ -1626,9 +1812,27 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Hyposodic qualifier (jo): ESP \>= 6% AND \< 15% in some layer within
   100 cm. Marginal sodicity tag.
 
+- [`qual_immissic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_immissic.md)
+  : Immissic supplementary qualifier (im): atmospheric immission
+
+- [`qual_inclinic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_inclinic.md)
+  : Inclinic supplementary qualifier (in): tilted / inclined position
+  WRB 2022 Ch 5: site has a slope \>= 10% (relevo declivoso).
+  Implementation: site\$slope_pct (when populated) \>= 10 OR
+  parent_material / forma_relevo flagging steep terrain.
+
 - [`qual_irragric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_irragric.md)
   : Irragric qualifier (ir): irragric horizon (irrigation-deposited
   surface).
+
+- [`qual_isolatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_isolatic.md)
+  : Isolatic qualifier (il): isolated technic material
+
+- [`qual_isopteric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_isopteric.md)
+  : Isopteric supplementary qualifier (ip): termite / ant biogenesis
+
+- [`qual_kalaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_kalaic.md)
+  : Kalaic supplementary qualifier (ka): dry-season puffed surface layer
 
 - [`qual_lamellic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_lamellic.md)
   :
@@ -1638,8 +1842,25 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   designation pattern `lamell` / `E&Bt` / `&Bt` / `Bt(t)?\d?lam` in any
   subsurface layer.
 
+- [`qual_lapiadic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_lapiadic.md)
+  : Lapiadic supplementary qualifier (lp): karren / lapies bedrock
+  features
+
+- [`qual_laxic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_laxic.md)
+  : Laxic supplementary qualifier (lx): loose / non-cohesive surface WRB
+  2022 Ch 5: "Surface horizon with loose dry consistence and
+  single-grain or massive structure."
+
 - [`qual_leptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_leptic.md)
   : Leptic qualifier (le): continuous rock \<= 100 cm.
+
+- [`qual_lignic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_lignic.md)
+  :
+
+  Lignic supplementary qualifier (lg): wood content in organic horizon
+  WRB 2022 Ch 5: "Containing recognisable wood remains (\>= 25% by
+  volume or weight) in organic material." Implementation:
+  `woody_fragments_pct` or layer_origin matching wood.
 
 - [`qual_limnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_limnic.md)
   : Limnic qualifier (lm): limnic material (lacustrine / marine
@@ -1656,6 +1877,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   Tighter depth gate than Leptic (which is \<= 100 cm) and Nudilithic
   (== 0 cm).
 
+- [`qual_litholinic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_litholinic.md)
+  : Litholinic supplementary qualifier (ll): stratified soil on rock
+
 - [`qual_lixic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_lixic.md)
   : Lixic qualifier (lx): argic + low CEC, low Al.
 
@@ -1669,6 +1893,15 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_magnesic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_magnesic.md)
   : Magnesic qualifier (mg): exchangeable Ca/Mg \< 1 in upper 100 cm.
 
+- [`qual_mahic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mahic.md)
+  : Mahic supplementary qualifier (mh): manure-derived dark surface WRB
+  2022 Ch 5: "Topsoil enriched by long-term manure / compost
+  application; oc_pct \>= 4%, base_saturation_pct \>= 50%, and p_mehlich
+  \>= 100 mg/kg."
+
+- [`qual_mawic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mawic.md)
+  : Mawic qualifier (mw): moss-fibre-dominant peat
+
 - [`qual_mazic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mazic.md)
   : Mazic qualifier (mz): structureless / massive surface horizon
   (Vertisol). Diagnostic of slaked, crusted Vertisol surfaces.
@@ -1679,21 +1912,55 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   Munsell value \<= 2 and chroma \<= 2 (moist). Melanic Index \>= 1.7
   (the canonical UV-OD ratio) is deferred to v0.9.2.
 
+- [`qual_mineralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mineralic.md)
+  : Mineralic supplementary qualifier (mn): predominantly mineral WRB
+  2022 Ch 5: "Predominantly mineral material in upper 100 cm (oc_pct \<
+  12% averaged over depth)."
+
+- [`qual_mochipic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mochipic.md)
+  : Mochipic supplementary qualifier (mp): mottled mochi-like pattern
+
 - [`qual_mollic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mollic.md)
   : Mollic qualifier (mo): mollic horizon.
 
 - [`qual_mulmic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_mulmic.md)
   : Mulmic qualifier (ml): mulmic material in upper 100 cm.
 
+- [`qual_murshic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_murshic.md)
+  : Murshic qualifier (mr): partly drained organic with strong
+  decomposition
+
+- [`qual_muusic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_muusic.md)
+  : Muusic qualifier (mu): high-fibre peat (non-moss-specific)
+
+- [`qual_naramic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_naramic.md)
+  : Naramic supplementary qualifier (na): salt-crust morphology
+
 - [`qual_natric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_natric.md)
   : Natric qualifier (na): natric horizon \<= 100 cm.
+
+- [`qual_nechic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_nechic.md)
+  : Nechic supplementary qualifier (ne): aeolian / loess deposit pattern
+
+- [`qual_neobrunic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_neobrunic.md)
+  : Neobrunic qualifier (nb): "young" cambic-like horizon
+
+- [`qual_neocambic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_neocambic.md)
+  : Neocambic qualifier (nc): "young" cambic horizon with weak
+  development
 
 - [`qual_nitic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_nitic.md)
   : Nitic qualifier (ni): nitic horizon \<= 100 cm.
 
+- [`qual_nudiargic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_nudiargic.md)
+  : Nudiargic qualifier (nu): argic horizon at the surface
+
 - [`qual_nudilithic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_nudilithic.md)
   : Nudilithic qualifier (nt): continuous rock at the soil surface
   (top_cm == 0).
+
+- [`qual_nudinatric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_nudinatric.md)
+  : Nudinatric qualifier (nn): natric horizon at the surface
 
 - [`qual_ochric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ochric.md)
   : Ochric qualifier (oh): SOC \>= 0.2% upper 10 cm + no mollic/umbric.
@@ -1709,16 +1976,31 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Ornithic qualifier (oc): ornithogenic material (bird-influenced
   topsoil) in the upper 50 cm.
 
+- [`qual_orthofluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_orthofluvic.md)
+  : Orthofluvic qualifier (of): fluvic material 50-100 cm
+
 - [`qual_ortsteinic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ortsteinic.md)
   : Ortsteinic qualifier (os): cemented spodic horizon. v0.9.1: spodic
   horizon + cementation_class strongly OR indurated.
 
+- [`qual_oxyaquic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_oxyaquic.md)
+  : Oxyaquic qualifier (oa): saturation regime without reduction
+
+- [`qual_oxygleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_oxygleyic.md)
+  : Oxygleyic qualifier (og): gleyic regime with predominant oxidation
+
 - [`qual_pachic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pachic.md)
   : Pachic qualifier (pc): mollic OR umbric horizon \>= 50 cm thick.
+
+- [`qual_pantofluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pantofluvic.md)
+  : Pantofluvic qualifier (pf): fluvic material throughout 0-100 cm
 
 - [`qual_pellic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pellic.md)
   : Pellic qualifier (pe): in the upper 30 cm, Munsell value \<= 4 moist
   AND chroma \<= 2 moist. Diagnostic of "black" (dark) Vertisols.
+
+- [`qual_pelocrustic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pelocrustic.md)
+  : Pelocrustic supplementary qualifier (pc): clayey surface crust
 
 - [`qual_petric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_petric.md)
   : Petric qualifier (pt): any petro-cemented horizon (petrocalcic /
@@ -1735,6 +2017,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 
 - [`qual_petroplinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_petroplinthic.md)
   : Petroplinthic qualifier (pp): petroplinthic horizon \<= 100 cm.
+
+- [`qual_petrosalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_petrosalic.md)
+  : Petrosalic qualifier (ptso): cemented salic horizon
 
 - [`qual_pisoplinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pisoplinthic.md)
   : Pisoplinthic qualifier (px): pisoplinthic horizon within 100 cm.
@@ -1767,12 +2052,25 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   decrease, down to or below 150 cm. v0.9.3.B: requires `argic` to pass
   AND at least one argic layer with `bottom_cm >= 150`.
 
+- [`qual_profundihumic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_profundihumic.md)
+  : Profundihumic qualifier (ph): SOC \>= 1.4% to depth \>= 100 cm
+
 - [`qual_protic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protic.md)
   : Protic qualifier (pr): Arenosol (or Regosol) with NO incipient
   subsurface horizon – i.e. an A-over-C profile where no cambic, no
   argic, no spodic, no ferralic, no nitic horizon is present in the
   upper 100 cm. v0.9.1 implements as the conjunction of the "no B
   horizon" diagnostics.
+
+- [`qual_protoandic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protoandic.md)
+  : Protoandic supplementary qualifier (pan): early-stage andic WRB 2022
+  Ch 5: "Andic-like properties below the strict threshold (oxalate Al+Fe
+  0.4-2.0%)."
+
+- [`qual_protoargic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protoargic.md)
+  : Protoargic supplementary qualifier (pra): early-stage argic WRB 2022
+  Ch 5: "Clay increase 2-6 percentage points (below the canonical argic
+  threshold)."
 
 - [`qual_protocalcic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protocalcic.md)
   :
@@ -1787,6 +2085,12 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   Protogypsic qualifier (qg): protogypsic properties (incipient gypsum
   accumulation) within the upper 100 cm. Wraps `protogypsic_properties`.
 
+- [`qual_protospodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protospodic.md)
+  : Protospodic supplementary qualifier (psp): early-stage spodic WRB
+  2022 Ch 5: "Spodic-like horizon meeting weakened criteria (Al+Fe
+  oxalate \< 0.5% but pyrophosphate \> 0.05%)." Lacking pyrophosphate
+  field; we proxy via spodic candidate horizons that fail strict spodic.
+
 - [`qual_protovertic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_protovertic.md)
   :
 
@@ -1796,10 +2100,33 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   `protovertic` and is mutually exclusive with the strict Vertic
   qualifier.
 
+- [`qual_puffic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_puffic.md)
+  : Puffic supplementary qualifier (pf): puffed surface
+
+- [`qual_pyric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pyric.md)
+  :
+
+  Pyric supplementary qualifier (py): fire-affected horizon WRB 2022 Ch
+  5: "Containing layers with charcoal / soot / fire-baked material
+  (visual or chemical evidence)." Implementation: `layer_origin` or
+  designation matching fire-related text.
+
+- [`qual_raptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_raptic.md)
+  : Raptic supplementary qualifier (rp): stratification break
+
+- [`qual_reductaquic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_reductaquic.md)
+  : Reductaquic qualifier (ra): aquic + reductive at depth
+
 - [`qual_reductic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_reductic.md)
   : Reductic qualifier (rd): permanently reducing conditions caused by
   anthropogenic gas / liquid emissions (typical of Technosols on
   landfills). v0.9.1: reducing_conditions + Technic context.
+
+- [`qual_reductigleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_reductigleyic.md)
+  : Reductigleyic qualifier (rg): gleyic + reductive
+
+- [`qual_relocatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_relocatic.md)
+  : Relocatic qualifier (rl): relocated material (Arenosols / Regosols)
 
 - [`qual_rendzic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rendzic.md)
   : Rendzic qualifier (rz): mollic horizon directly over calcaric
@@ -1815,6 +2142,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_rhodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rhodic.md)
   : Rhodic qualifier (ro): hue redder than 5YR + value \< 4 + dry no
   more than 1 unit higher than moist (in upper subsoil 25-150 cm).
+
+- [`qual_rockic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rockic.md)
+  : Rockic qualifier (rk): rock-dominated organic horizon
 
 - [`qual_rubic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_rubic.md)
   : Rubic qualifier (rb): red Munsell hue \\\le\\ 5YR AND chroma \\\ge\\
@@ -1835,6 +2165,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Sapric qualifier (sa): organic material whose dominant decomposition
   class in the upper 100 cm is sapric (rubbed fiber \< 1/6). v0.9.1:
   thickness-weighted dominance via Oa designation.
+
+- [`qual_saprolithic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_saprolithic.md)
+  : Saprolithic supplementary qualifier (sp): saprolite parent material
 
 - [`qual_silandic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_silandic.md)
   : Silandic qualifier (sn): andic properties + Si-dominant active
@@ -1861,6 +2194,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   spodic or ferralic criteria from being Sombric – those have specific
   qualifiers of their own. v0.9.1 enforces both exclusions.
 
+- [`qual_someric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_someric.md)
+  : Someric qualifier (sm): anthric epipedon over chernic / mollic
+
 - [`qual_spodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_spodic.md)
   : Spodic qualifier (sd): spodic horizon \<= 200 cm.
 
@@ -1879,6 +2215,10 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_subaquatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_subaquatic.md)
   : Subaquatic qualifier (sq): permanently under water. v0.9.1:
   site\$drainage_class == "subaquatic" or "submerged".
+
+- [`qual_sulfatic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_sulfatic.md)
+  : Sulfatic supplementary qualifier (su): high sulfate content WRB 2022
+  Ch 5: "Containing \>= 25% gypsum or \>= 5% sulfate by mass."
 
 - [`qual_sulfidic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_sulfidic.md)
   : Sulfidic qualifier (sf): hyper- OR hyposulfidic material in upper
@@ -1901,13 +2241,26 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_thionic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_thionic.md)
   : Thionic qualifier (tn): thionic horizon within 100 cm.
 
+- [`qual_thixotropic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_thixotropic.md)
+  : Thixotropic supplementary qualifier (tx): thixotropic behavior
+
+- [`qual_thyric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_thyric.md)
+  : Thyric qualifier (ty): organic technic material in upper 100 cm
+
 - [`qual_tidalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_tidalic.md)
   : Tidalic qualifier (td): subject to tidal flooding. v0.9.1:
   site\$drainage_class contains "tidal".
 
+- [`qual_tonguic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_tonguic.md)
+  : Tonguic qualifier (tg): tongues of A horizon penetrating into B
+
 - [`qual_toxic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_toxic.md)
   : Toxic qualifier (tx): toxic concentration of organic or inorganic
   constituents.
+
+- [`qual_transportic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_transportic.md)
+  : Transportic qualifier (tr): transported material (Technosols /
+  Regosols)
 
 - [`qual_turbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.md)
   :
@@ -1922,6 +2275,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_urbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_urbic.md)
   : Urbic qualifier (ub): \>= 20% urbic artefacts (rubble, refuse) in
   the upper 100 cm.
+
+- [`qual_uterquic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_uterquic.md)
+  : Uterquic supplementary qualifier (uq): bidirectional water regime
 
 - [`qual_vermic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_vermic.md)
   :
@@ -1939,6 +2295,9 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 
 - [`qual_vitric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_vitric.md)
   : Vitric qualifier (vi): vitric properties \>= 30 cm within 100 cm.
+
+- [`qual_wapnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_wapnic.md)
+  : Wapnic qualifier (wp): soft, moist limnic material \>= 80% CaCO3
 
 - [`qual_xanthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_xanthic.md)
   : Xanthic qualifier (xa): ferralic + hue 7.5YR or yellower + value \>=
@@ -2104,7 +2463,7 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
   : Horizonte A chernozemico (SiBCS Cap 2, p 50-51)
 - [`horizonte_A_fraco()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_fraco.md)
   : Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-  simples/maciça + OC \< 6 g/kg; OR espessura \< 5 cm.
+  simples/macica + OC \< 6 g/kg; OR espessura \< 5 cm.
 - [`horizonte_A_humico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_humico.md)
   : Horizonte A humico (SiBCS Cap 2, p 51-52)
 - [`horizonte_A_moderado()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_moderado.md)
@@ -2122,7 +2481,7 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`horizonte_glei()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_glei.md)
   : Horizonte glei (SiBCS Cap 2, p 69-71; v0.7)
 - [`horizonte_histico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_histico.md)
-  : Horizonte hístico (SiBCS Cap 2, p 49-50)
+  : Horizonte histico (SiBCS Cap 2, p 49-50)
 - [`horizonte_litoplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_litoplintico.md)
   : Horizonte litoplintico (SiBCS Cap 2, p 69; v0.7)
 - [`horizonte_petrocalcico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_petrocalcico.md)
@@ -3092,7 +3451,7 @@ label-normalisation helpers (v0.9.16).
 - [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
   : Load the Embrapa FEBR superconjunto into a list of PedonRecords
 - [`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
-  : Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case
+  : Canonicalise FEBR SiBCS names to match soilKey rule outputs.
 - [`normalise_febr_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md)
   : Normalise FEBR WRB taxon strings to RSG-only
 - [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
@@ -3383,6 +3742,9 @@ plus auxiliaries) used in the test suite.
 - [`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
   : Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
 
+- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+  : Load a BDsolos CSV export as a list of PedonRecord objects
+
 - [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
   : Load Embrapa dadosolos pedons with reference SiBCS classification
 
@@ -3402,14 +3764,25 @@ plus auxiliaries) used in the test suite.
 - [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
   : Load EU-LUCAS / ESDB pedons with reference WRB classification
 
+- [`load_lucas_soil_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_soil_2018.md)
+  : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
+  objects
+
 - [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
   : Load a soilKey rule set (YAML)
 
 - [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
   : Load the bundled WoSIS South-America sample
 
+- [`save_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
+  [`load_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
+  : Save / load trained OSSL-backed PLSR models
+
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
+
+- [`validate_pedon_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_pedon_json.md)
+  : Validate a PedonRecord against the JSON schema
 
 - [`fibric_predominant_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_predominant_usda.md)
   : Fibric_predominant_usda: Fibrists Suborder qualifier
@@ -3703,12 +4076,149 @@ plus auxiliaries) used in the test suite.
   : Tephric material (WRB 2022 Ch 3.3.19): \\= 30% volcanic glass in
   0.02-2 mm fraction AND no andic / vitric properties.
 
+## Engine selection and dispatch (v0.9.65)
+
+Per-pedon engine-selection heuristic, engine-aware dispatch (soilKey vs
+aqp), and side-by-side comparators.
+
+- [`pick_engine()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine.md)
+  : Choose the best diagnostic engine for a single pedon
+- [`pick_engine_batch()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine_batch.md)
+  : Per-pedon batch engine recommendation
+- [`classify_with_engine_heuristic()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_engine_heuristic.md)
+  : Classify a pedon with the engine chosen by \`pick_engine()\`
+- [`compare_engines()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_engines.md)
+  : Side-by-side comparison of soilKey vs aqp diagnostic engines
+- [`argic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aqp.md)
+  : Argic / argillic horizon via aqp::getArgillicBounds()
+- [`cambic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambic_aqp.md)
+  : Cambic horizon via aqp::getCambicBounds()
+
+## Canonical references (v0.9.62 – v0.9.65)
+
+Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared lookup
+helpers for pkg vs vendored data sources.
+
+- [`canonical_reference()`](https://hugomachadorodrigues.github.io/soilKey/reference/canonical_reference.md)
+  : Load a canonical reference dataset from soilKey or SoilTaxonomy
+- [`wrb2022_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md)
+  : WRB 2022 canonical reference (parsed IUSS Working Group WRB 2022)
+- [`kst13_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_canonical.md)
+  : Keys to Soil Taxonomy 13th edition canonical reference
+- [`kst13_codes()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.md)
+  : Load the canonical KST 13ed code -\> taxon-name lookup table
+- [`kst13_criteria()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_criteria.md)
+  : Load the canonical KST 13ed criteria for a single taxon code
+- [`st_features_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/st_features_canonical.md)
+  : USDA Soil Taxonomy diagnostic features canonical table
+- [`clear_kst13_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_kst13_cache.md)
+  : Clear the in-memory KST13 cache
+
+## SmartSolos / Embrapa AgroAPI integration (v0.9.54)
+
+Cross-validation against Embrapa’s PROLOG SiBCS classifier.
+
+- [`classify_via_smartsolos_api()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.md)
+  : Classify a PedonRecord via Embrapa's SmartSolosExpert REST API
+- [`compare_smartsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_smartsolos.md)
+  : Cross-validate the local SiBCS classifier against the
+  SmartSolosExpert API
+
+## BDsolos loader and benchmarks (v0.9.55 – v0.9.60)
+
+- [`benchmark_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)
+  : Benchmark soilKey classifiers against BDsolos national reference
+  labels
+- [`download_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.md)
+  : Download the BDsolos consulta-publica CSV (experimental, requires
+  chromote)
+- [`inspect_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.md)
+  : Diagnostic inspection of a BDsolos CSV before loading
+
+## FEBR loader (v0.9.57)
+
+UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).
+
+- [`read_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.md)
+  : Load FEBR datasets as a list of PedonRecord objects
+- [`febr_index_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.md)
+  : Curated index of FEBR datasets that carry Munsell colors
+
+## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
+
+- [`benchmark_lucas_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.md)
+  : Run the LUCAS Soil 2018 / ESDB WRB benchmark
+- [`attach_lucas_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/attach_lucas_spectra.md)
+  : Attach LUCAS 2018 Vis-NIR spectra to a list of PedonRecord objects
+
+## Unified benchmark and robustness (v0.9.61)
+
+- [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
+  : Unified cross-dataset benchmark across SiBCS / WRB / USDA
+- [`benchmark_performance()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.md)
+  : Run the soilKey performance benchmark
+- [`batch_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.md)
+  : Batch robustness across many pedons
+- [`classification_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.md)
+  : Robustness of classification under input perturbation
+
+## OSSL spectra: PLS training and prediction
+
+Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict lab
+properties / Munsell / XYZ / generic targets.
+
+- [`train_pls_from_ossl()`](https://hugomachadorodrigues.github.io/soilKey/reference/train_pls_from_ossl.md)
+  : Train pre-trained PLSR models from an OSSL library
+- [`predict_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_from_spectra.md)
+  : Predict soil properties from spectra
+- [`predict_lab_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_lab_from_spectra.md)
+  : Predict CIE Lab from Vis-NIR reflectance spectra
+- [`predict_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_munsell_from_spectra.md)
+  : Predict Munsell hue / value / chroma from Vis-NIR reflectance
+  spectra
+- [`predict_xyz_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_xyz_from_spectra.md)
+  : Predict CIE XYZ tristimulus values from Vis-NIR reflectance spectra
+- [`predict(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/predict.soilKey_pls_model.md)
+  : Predict from a soilKey_pls_model
+- [`print(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.soilKey_pls_model.md)
+  : Print method for soilKey_pls_model
+- [`fill_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.md)
+  : Fill missing Munsell colors on a PedonRecord from Vis-NIR spectra
+
+## Spatial / database lookups
+
+ESDB attributes, SoilGrids and MapBiomas-Solos pulls.
+
+- [`available_esdb_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/available_esdb_attributes.md)
+  : List ESDB Raster Library attributes available at a given root
+- [`lookup_esdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_esdb.md)
+  : Look up an ESDB raster value at WGS84 coordinates
+- [`lookup_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_soilgrids.md)
+  : Look up a SoilGrids 250m soil property at WGS84 coordinates
+- [`lookup_mapbiomas_solos()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_mapbiomas_solos.md)
+  : Look up a MapBiomas Solos raster value at WGS84 coordinates
+
+## GlobalSoilMap depth harmonisation and aqp helpers
+
+- [`GSM_DEPTHS`](https://hugomachadorodrigues.github.io/soilKey/reference/GSM_DEPTHS.md)
+  : Default GlobalSoilMap depth intervals (cm)
+- [`harmonize_to_gsm()`](https://hugomachadorodrigues.github.io/soilKey/reference/harmonize_to_gsm.md)
+  : Harmonise pedons to GlobalSoilMap depth intervals
+- [`pedon_to_spc()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_to_spc.md)
+  : Convert a soilKey PedonRecord to an aqp SoilProfileCollection
+- [`pedon_json_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_json_schema.md)
+  : JSON Schema for a soilKey PedonRecord
+- [`texture_class_from_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/texture_class_from_pct.md)
+  : NRCS texture-class shorthand from clay / silt / sand percent
+
 # Articles
 
 ### Vignettes
 
 - [Getting started with
   soilKey](https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started.md):
+- [Começando com soilKey
+  (PT-BR)](https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.md):
 - [End-to-end WRB 2022 classification with Ch 6
   names](https://hugomachadorodrigues.github.io/soilKey/articles/v02_classify_wrb_end_to_end.md):
 - [Cross-system classification: WRB 2022, SiBCS 5, USDA Soil
@@ -3723,3 +4233,5 @@ plus auxiliaries) used in the test suite.
   export](https://hugomachadorodrigues.github.io/soilKey/articles/v07_end_to_end_pipeline.md):
 - [KSSL + NASIS: multi-level USDA Soil Taxonomy
   benchmark](https://hugomachadorodrigues.github.io/soilKey/articles/v08_kssl_nasis_multilevel.md):
+- [Um perfil real do A ao Z (estilo Embrapa, em
+  portugues)](https://hugomachadorodrigues.github.io/soilKey/articles/v09_perfil_embrapa_pt.md):

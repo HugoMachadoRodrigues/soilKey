@@ -1,4 +1,4 @@
-# Horizonte hístico (SiBCS Cap 2, p 49-50)
+# Horizonte histico (SiBCS Cap 2, p 49-50)
 
 Horizonte O ou H de coloracao preta/cinza muito escura/brunada, \\= 80
 g/kg (8%) C organico, com:

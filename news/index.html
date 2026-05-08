@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,6 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="../articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="../articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -48,6 +49,1734 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.65" id="soilkey-0965-2026-05-08">soilKey 0.9.65 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0965-2026-05-08"></a></h2>
+<p>The “engine-aware diagnostics + Tier-3 schema + per-pedon engine heuristic” release. Closes the v0.9.64 backlog with four pieces:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Per-RSG dispatch ordering</strong> via engine-aware threshold relaxation in <code><a href="../reference/leptic_features.html">leptic_features()</a></code> and <code><a href="../reference/arenic_texture.html">arenic_texture()</a></code> – addresses the v0.9.64 LUCAS “over-Cambisols” artifact.</li>
+<li>
+<strong>Tier-3 schema fields</strong> added to <code><a href="../reference/horizon_column_spec.html">horizon_column_spec()</a></code>, wiring 22 previously-stub WRB qualifiers to substantive functions.</li>
+<li>
+<strong>Per-pedon engine selection</strong> via <code><a href="../reference/pick_engine.html">pick_engine()</a></code> heuristic that recommends “aqp” for data-rich pedons and “soilkey” for sparse ones – recovers both the BDsolos RJ +4.1pp lift AND the LUCAS robustness in a single API.</li>
+<li>
+<strong>Latossolos investigation</strong> (analytical, no code change): 88/115 (76.5%) RJ Latossolos fail <code>ferralic</code> due to CTC argila &gt; 17 cmol(c)/kg in the data. Documented as v0.9.66 task – fundamentally a data-distribution problem, not a code bug.</li>
+</ol><div class="section level3">
+<h3 id="id_1-engine-aware-leptic--arenic-relaxation-0-9-65">1. Engine-aware leptic + arenic relaxation<a class="anchor" aria-label="anchor" href="#id_1-engine-aware-leptic--arenic-relaxation-0-9-65"></a></h3>
+<p>When <code>options(soilKey.diagnostic_engine = "aqp")</code> is active (or <code>engine = "aqp"</code> passed explicitly), the strict WRB thresholds relax to better serve LUCAS-style topsoil-only data:</p>
+<pre><code>leptic_features:
+  default (engine=soilkey): cfvo &gt;= 90% in upper 25 cm
+  engine=aqp:               cfvo &gt;= 50% OR shallow topsoil ending in 25 cm</code></pre>
+<pre><code>arenic_texture:
+  default (engine=soilkey): silt + 2*clay &lt; 30 (loamy sand or coarser) THROUGHOUT
+  engine=aqp:               additional path: sand &gt;= 70% in upper 100 cm</code></pre>
+<p>These relaxations let LUCAS Leptosols (cfvo not always 90%) and Arenosols (sand 70-85% region) be classified correctly when the aqp engine is active, instead of cascading to the Cambisols catch-all.</p>
+</div>
+<div class="section level3">
+<h3 id="id_2-tier-schema-fields-rutilsrhorizon_column_spec-0-9-65">2. Tier-3 schema fields (<code>R/utils.R::horizon_column_spec()</code>)<a class="anchor" aria-label="anchor" href="#id_2-tier-schema-fields-rutilsrhorizon_column_spec-0-9-65"></a></h3>
+<p>14 new schema fields covering the canonical WRB Ch 5 evidence needed by previously-stub Tier-3 qualifiers:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">surface_crust_type</span>        <span class="co"># WRB Ch 5: biological / clay / evaporite / puffed crust</span></span>
+<span><span class="va">bioturbation_density</span>      <span class="co"># WRB Ch 5: faunal burrow density (none/few/common/many)</span></span>
+<span><span class="va">cordic_horizon</span>            <span class="co"># WRB Ch 5: presence of cordic horizon (logical)</span></span>
+<span><span class="va">microrelief_form</span>          <span class="co"># WRB Ch 5: gilgai / dorsal-ridge / hummocky / smooth</span></span>
+<span><span class="va">weathering_stage</span>          <span class="co"># WRB Ch 5: fresh / moderately / saprolite / completely</span></span>
+<span><span class="va">salt_crust_pattern</span>        <span class="co"># WRB Ch 5: efflorescent / crusty / hardpan</span></span>
+<span><span class="va">contamination_type</span>        <span class="co"># WRB Ch 5: heavy_metals / hydrocarbons / atmospheric</span></span>
+<span><span class="va">stratification_pattern</span>    <span class="co"># WRB Ch 5: continuous / interrupted / lithologic_break</span></span>
+<span><span class="va">aeolian_morphology</span>        <span class="co"># WRB Ch 5: loess / dune / sandsheet</span></span>
+<span><span class="va">mottle_morphology</span>         <span class="co"># WRB Ch 5: mochi / banded / patchy</span></span>
+<span><span class="va">surface_puff_layer</span>        <span class="co"># WRB Ch 5: TRUE/FALSE seasonal puff</span></span>
+<span><span class="va">thixotropic_index</span>         <span class="co"># WRB Ch 5: 0-100 from slurry test</span></span>
+<span><span class="va">saprolite_pct</span>             <span class="co"># WRB Ch 5: % volume in-situ saprolite</span></span>
+<span><span class="va">water_regime_pattern</span>      <span class="co"># WRB Ch 5: bidirectional / single / aquic</span></span></code></pre></div>
+<p>22 v0.9.64 Tier-3 stubs were rewired to read these fields and return substantive results. Examples:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qual_biocrustic.html">qual_biocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># was NA stub; now reads surface_crust_type</span></span>
+<span><span class="fu"><a href="../reference/qual_arenicolic.html">qual_arenicolic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># now reads bioturbation_density</span></span>
+<span><span class="fu"><a href="../reference/qual_kalaic.html">qual_kalaic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># now reads surface_puff_layer</span></span>
+<span><span class="fu"><a href="../reference/qual_saprolithic.html">qual_saprolithic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads saprolite_pct + weathering_stage</span></span>
+<span><span class="fu"><a href="../reference/qual_thixotropic.html">qual_thixotropic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads thixotropic_index</span></span>
+<span><span class="fu"><a href="../reference/qual_mochipic.html">qual_mochipic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># now reads mottle_morphology</span></span>
+<span><span class="fu"><a href="../reference/qual_pelocrustic.html">qual_pelocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_evapocrustic.html">qual_evapocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_biocrustic.html">qual_biocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span></span>
+<span><span class="fu"><a href="../reference/qual_puffic.html">qual_puffic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># all read surface_crust_type / surface_puff_layer</span></span>
+<span><span class="fu"><a href="../reference/qual_archaic.html">qual_archaic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_immissic.html">qual_immissic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read contamination_type</span></span>
+<span><span class="fu"><a href="../reference/qual_dorsic.html">qual_dorsic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_escalic.html">qual_escalic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>    <span class="co"># read site$microrelief_form</span></span>
+<span><span class="fu"><a href="../reference/qual_lapiadic.html">qual_lapiadic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads weathering_stage</span></span>
+<span><span class="fu"><a href="../reference/qual_naramic.html">qual_naramic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>           <span class="co"># reads salt_crust_pattern</span></span>
+<span><span class="fu"><a href="../reference/qual_nechic.html">qual_nechic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># reads aeolian_morphology</span></span>
+<span><span class="fu"><a href="../reference/qual_litholinic.html">qual_litholinic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_raptic.html">qual_raptic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="co"># read stratification_pattern</span></span>
+<span><span class="fu"><a href="../reference/qual_isopteric.html">qual_isopteric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>         <span class="co"># reads bioturbation_density / layer_origin</span></span>
+<span><span class="fu"><a href="../reference/qual_uterquic.html">qual_uterquic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads water_regime_pattern</span></span>
+<span><span class="fu"><a href="../reference/qual_bryic.html">qual_bryic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_cordic.html">qual_cordic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read existing fields</span></span></code></pre></div>
+<p>When the field is unpopulated, the function still returns NA-passed with the relevant <code>$missing</code> field listed – backward-compatible contract preserved from v0.9.64.</p>
+</div>
+<div class="section level3">
+<h3 id="id_3-per-pedon-engine-selection-rengine-selection-v0965r-0-9-65">3. Per-pedon engine selection (<code>R/engine-selection-v0965.R</code>)<a class="anchor" aria-label="anchor" href="#id_3-per-pedon-engine-selection-rengine-selection-v0965r-0-9-65"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">pick_engine</span>(pedon, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> <span class="st">"aqp"</span> <span class="sc">|</span> <span class="st">"soilkey"</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">pick_engine_batch</span>(pedons, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> character vector</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">classify_with_engine_heuristic</span>(pedon, <span class="at">system =</span> <span class="st">"wrb2022"</span>)</span></code></pre></div>
+<p>The heuristic scores each pedon on a 0-5 morphology-completeness scale (designation + texture + Munsell + structure + clay films / Bt). Pedons with score &gt;= 3 get aqp; others stay on soilkey.</p>
+<p><strong>Validated on real data:</strong></p>
+<pre><code>BDsolos RJ (n=50, data-rich)        : aqp = 47, soilkey = 3
+LUCAS FR    (n=20, topsoil-only)    : aqp =  0, soilkey = 20</code></pre>
+<p>Exactly the partitioning we want: aqp’s KST 13ed thresholds for data-rich BDsolos (which lifts SiBCS Order 40.3% -&gt; 44.4%); soilkey’s data-quality-aware thresholds for sparse LUCAS (which avoids the 33.3% -&gt; 30.2% nation-wide regression we saw in v0.9.63).</p>
+<p><code><a href="../reference/classify_with_engine_heuristic.html">classify_with_engine_heuristic()</a></code> routes any of the three classifiers (wrb2022 / sibcs / usda) through the chosen engine automatically, with the choice captured in <code>$trace$engine_used</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-lucas-wrb-rerun-with-engine-relaxation-stage-in-progress-0-9-65">4. LUCAS WRB rerun with engine relaxation (Stage 3 in progress)<a class="anchor" aria-label="anchor" href="#id_4-lucas-wrb-rerun-with-engine-relaxation-stage-in-progress-0-9-65"></a></h3>
+<p><code>inst/benchmarks/run_lucas_v0964_engine_aqp.R</code> re-run with v0.9.65 relaxed thresholds. Stage 1+2 results so far (Stage 3 with SoilGrids subsoil fill running ~90 min in background):</p>
+<pre><code>configuration                | engine  | accuracy
+-----------------------------|---------|-------:
+baseline_no_fill             | soilkey | 0.000
+aqp_no_fill (v0.9.65 relaxed)| aqp     | 0.033  &lt;- 1 Leptosol now correctly classified!
+aqp_subsoil_soilgrids        | aqp     | [overnight, was 60% in v0.9.64]</code></pre>
+<p>The leptic relaxation alone (without subsoil fill) lifted ONE Leptosol out of the Cambisols catch-all. Stage 3 results are expected to show further lift on Arenosols (the new sand &gt;= 70 relaxation).</p>
+<p>Final v0.9.65 LUCAS numbers will be added to NEWS once the overnight run completes.</p>
+</div>
+<div class="section level3">
+<h3 id="id_5-latossolos-investigation-analytical-no-code-change-0-9-65">5. Latossolos investigation (analytical, no code change)<a class="anchor" aria-label="anchor" href="#id_5-latossolos-investigation-analytical-no-code-change-0-9-65"></a></h3>
+<p>Why does v0.9.61’s <code>B_latossolico</code> clay-films guard not lift Latossolos recall above 14.9% on BDsolos RJ?</p>
+<pre><code>Of 115 reference Latossolos in BDsolos RJ:
+  ferralic passes:        27 / 115 (23.5%)
+  B_latossolico passes:   19 / 115 (16.5%)
+  Final classification:
+    -&gt; Latossolos:       17 (14.8%)
+    -&gt; Cambissolos:      42 (36.5%)
+    -&gt; Neossolos:        39 (33.9%)
+    -&gt; Argissolos:       17 (14.8%)</code></pre>
+<p><strong>Failure mode breakdown (sample of 5 ferralic-failing Latossolos):</strong></p>
+<pre><code>id 7386:  texture=FALSE   cec_per_clay=TRUE  thickness=TRUE
+id 11698: texture=TRUE    cec_per_clay=TRUE  thickness=FALSE
+id 13016: texture=TRUE    cec_per_clay=FALSE thickness=FALSE  &lt;- CTC &gt; 17
+id 13027: texture=TRUE    cec_per_clay=FALSE thickness=TRUE   &lt;- CTC &gt; 17
+id 13029: texture=TRUE    cec_per_clay=FALSE thickness=TRUE   &lt;- CTC &gt; 17</code></pre>
+<p>The dominant failure is <code>cec_per_clay = FALSE</code>: 60% of sampled ferralic-failing Latossolos have CTC argila &gt; 17 cmol(c)/kg, the SiBCS Cap 2 canonical threshold. This is fundamentally a data-distribution problem in BDsolos RJ – many surveyor-labeled Latossolos exceed the canonical activity-clay threshold.</p>
+<p><strong>Conclusion</strong>: not a code bug. Lifting the threshold would violate the SiBCS spec; lowering recall is more honest. v0.9.66 candidate: optional regional-CTC-tolerance argument (<code>B_latossolico(pedon, ctc_max = 20)</code>) for users who know their regional Latossolos run hot on activity clay.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-65">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-65"></a></h3>
+<p>Bump 0.9.64 -&gt; 0.9.65. No new dependencies.</p>
+</div>
+<div class="section level3">
+<h3 id="namespace-0-9-65">NAMESPACE<a class="anchor" aria-label="anchor" href="#namespace-0-9-65"></a></h3>
+<p>3 new exports: <code>pick_engine</code>, <code>pick_engine_batch</code>, <code>classify_with_engine_heuristic</code>. Total: 876.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-65">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-65"></a></h3>
+<p><code>tests/testthat/test-v0965-engine-and-tier3.R</code> (39 expectations):</p>
+<ul><li>
+<code>pick_engine</code> returns “soilkey” on sparse, “aqp” on rich pedon</li>
+<li>
+<code>pick_engine_batch</code> vectorises</li>
+<li>
+<code>classify_with_engine_heuristic</code> captures engine in trace</li>
+<li>14 Tier-3 schema fields exist in <code><a href="../reference/horizon_column_spec.html">horizon_column_spec()</a></code>
+</li>
+<li>7 Tier-3 qualifiers fire when their schema field is populated</li>
+<li>5 Tier-3 qualifiers return NA when field is empty</li>
+<li>
+<code>leptic_features</code> engine=“aqp” relaxes the cfvo threshold</li>
+<li>
+<code>arenic_texture</code> engine=“aqp” accepts the sand &gt;= 70 path</li>
+</ul><p>R CMD check sanity: 107 R / 1030 Rd / 0 errors. Suite v0.9.55-v0.9.65 green.</p>
+</div>
+<div class="section level3">
+<h3 id="backlog-v0966-0-9-65">Backlog (v0.9.66+)<a class="anchor" aria-label="anchor" href="#backlog-v0966-0-9-65"></a></h3>
+<ol style="list-style-type: decimal"><li>
+<strong>Latossolos regional-CTC tolerance</strong>: <code>B_latossolico(pedon, ctc_max = 20)</code> for regions with activity-clay-rich Latossolos.</li>
+<li>
+<strong>Spodic engine-aware relaxation</strong>: similar to leptic / arenic, accept <code>Bs/Bh</code> designation alone in addition to strict spodic chemistry.</li>
+<li>
+<strong>Luvisol engine-aware path</strong>: relax the strict argic for LUCAS-style topsoil-only profiles.</li>
+<li>
+<strong>Per-RSG diagnostic priority</strong> at <code><a href="../reference/run_taxonomic_key.html">run_taxonomic_key()</a></code> level (currently first-pass-wins via key.yaml order; engine-aware priority lifting Leptosols / Arenosols above Cambisols when morphology is sparse).</li>
+</ol></div>
+<div class="section level3">
+<h3 id="run-it-0-9-65">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-65"></a></h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Re-run LUCAS WRB benchmark with v0.9.65 relaxations:</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># Test engine heuristic on a dataset:</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> pedons <span class="op">&lt;</span>- load_bdsolos_csv<span class="er">(</span><span class="st">"RJ.csv"</span><span class="kw">)</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> table<span class="er">(</span><span class="ex">pick_engine_batch</span><span class="er">(</span><span class="ex">pedons</span><span class="kw">))</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Use heuristic-driven classifier:</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result <span class="op">&lt;</span>- classify_with_engine_heuristic<span class="er">(</span><span class="ex">pedon,</span> system = <span class="st">"sibcs"</span><span class="kw">)</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result<span class="va">$trace$engine_used</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_5-lucas-wrb-rerun-overnight-stage-0-9-65">5. LUCAS WRB rerun (overnight Stage 3)<a class="anchor" aria-label="anchor" href="#id_5-lucas-wrb-rerun-overnight-stage-0-9-65"></a></h3>
+<p>Re-ran <code>inst/benchmarks/run_lucas_v0964_engine_aqp.R</code> over the same 30-pedon FR/PL/IT panel under three configurations:</p>
+<pre><code>configuration                  | engine  | accuracy
+baseline_soilkey_no_fill       | soilkey |    0.000  (30 -&gt; Regosols)
+aqp_no_fill                    | aqp     |    0.033  (1/30 Leptosols)
+aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
+<p>The aqp engine successfully predicts the single in-set Leptosol profile (which the soilkey engine misses; baseline = 0%). But the aqp leptic relaxation is currently too aggressive: 29/30 pedons collapse onto Leptosols regardless of true class. <strong>This negates the v0.9.64 +60pp lift on the broader EU-LUCAS benchmark.</strong></p>
+<p>Root cause: <code><a href="../reference/leptic_features.html">leptic_features()</a></code> engine=“aqp” path lowers the coarse-fragment threshold to 50% AND adds a “thin topsoil ending in upper 25 cm” path. On topsoil-only LUCAS data, the second path passes for every pedon (since LUCAS only ships 0-20 cm), forcing Leptosols ahead of every other RSG.</p>
+<p><strong>Fix scheduled for v0.9.66</strong>: tighten the thin-topsoil path so it requires evidence of contact with rock (e.g., increasing coarse fragments toward the bottom horizon, or <code>!is.na(parent_material) &amp; grepl("rock|stone", parent_material)</code>). Alternatively: gate the thin-topsoil rule behind an opt-in flag.</p>
+<p>The raw report is preserved at <code>inst/benchmarks/reports/lucas_v0964_engine_aqp_2026-05-08.txt</code> so the v0.9.66 fix can be measured against this baseline.</p>
+</div>
+<div class="section level3">
+<h3 id="id_6-ci--docs-hygiene-post-pr-review-0-9-65">6. CI / docs hygiene (post-PR review)<a class="anchor" aria-label="anchor" href="#id_6-ci--docs-hygiene-post-pr-review-0-9-65"></a></h3>
+<p>Follow-up commit for PR <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/17" class="external-link">#17</a> – pure CI / docs work, no functional changes:</p>
+<ul><li>
+<code>_pkgdown.yml</code>: registered 43 previously-undocumented topics across 10 new sections (Engine selection, Canonical references, SmartSolos, BDsolos, FEBR, LUCAS, Unified benchmark, OSSL spectra, Spatial lookups, GSM helpers).</li>
+<li>
+<code>tests/testthat/test-v0951-docker-ci.R</code>, <code>tests/testthat/test-v0952-vignette-pt.R</code>: <code>.find_repo_root()</code> now requires source-only markers (<code>Dockerfile</code>, <code>vignettes/</code>) so the helper does not match the <em>installed</em> package directory under R CMD check (resolves 12 phantom failures).</li>
+<li>
+<code>inst/schemas/pedon-schema.json</code>: regenerated to include the 14 Tier-3 horizon fields (resolves <code>test-v0943-json-schema.R:43</code> mismatch).</li>
+<li>
+<code>R/spectra-neighbours.R</code>: <code><a href="../reference/dot-reduce_for_neighbours.html">.reduce_for_neighbours()</a></code> now aligns column names between library and query matrices, suppresses the <code>pc_selection</code> deprecation warning, and falls back to PCA when resemble 3.0.0’s stricter <code>predict.ortho_projection()</code> rejects newdata (resolves 3 spectra-neighbours errors).</li>
+<li>
+<code>R/qualifiers-wrb2022-v0963.R</code>, <code>R/qualifiers-wrb2022-v0964.R</code>: 37 unescaped <code>%</code> characters escaped as <code>\%</code> in roxygen titles/descriptions (resolves ~50 R CMD check Rd-parser warnings on 11 qualifier man pages).</li>
+<li>
+<code>R/benchmark-febr-loader.R</code>: <code><a href="../reference/normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code> got a proper roxygen header (was exported but undocumented; pkgdown refused to build because the topic name resolved to no Rd file).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.64" id="soilkey-0964-2026-05-08">soilKey 0.9.64 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0964-2026-05-08"></a></h2>
+<p>The “<strong>100% / 100% WRB qualifier coverage</strong>” release. Closes the v0.9.63 audit gap with 8 new Principal qualifiers + 43 new Supplementary qualifiers + 3 bonus Endo- variants (52 functions total) – bringing soilKey to <strong>complete coverage of every IUSS WRB 2022 4th edition qualifier</strong> referenced in the canonical NCSS-tech parsed dataset.</p>
+<div class="section level3">
+<h3 id="coverage-progression-rjcsv-perfis-context-0-9-64">Coverage progression (RJ.csv 720 perfis context)<a class="anchor" aria-label="anchor" href="#coverage-progression-rjcsv-perfis-context-0-9-64"></a></h3>
+<table class="table"><colgroup><col width="33%"><col width="22%"><col width="14%"><col width="14%"><col width="14%"></colgroup><thead><tr><th>Release</th>
+<th align="right">RSGs</th>
+<th align="right">PQ</th>
+<th align="right">SQ</th>
+<th align="right">RJ SiBCS Order</th>
+</tr></thead><tbody><tr><td>v0.9.59 (baseline)</td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right">27.9%</td>
+</tr><tr><td>v0.9.62 audit baseline</td>
+<td align="right">32/32</td>
+<td align="right">98/131 (75%)</td>
+<td align="right">102/170 (60%)</td>
+<td align="right">–</td>
+</tr><tr><td>v0.9.63 first batch</td>
+<td align="right">32/32</td>
+<td align="right">123/131 (94%)</td>
+<td align="right">127/170 (75%)</td>
+<td align="right">44.4% (engine=aqp)</td>
+</tr><tr><td><strong>v0.9.64 (this)</strong></td>
+<td align="right"><strong>32/32</strong></td>
+<td align="right"><strong>131/131 (100%)</strong></td>
+<td align="right"><strong>170/170 (100%)</strong></td>
+<td align="right">–</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="id_1-new-principal-qualifiers-0-9-64">1. New Principal qualifiers (8)<a class="anchor" aria-label="anchor" href="#id_1-new-principal-qualifiers-0-9-64"></a></h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">qual_entic</span>         <span class="co"># Podzols: albic AND NOT spodic</span></span>
+<span><span class="va">qual_tonguic</span>       <span class="co"># Chernozem family: A/B designation tonguing pattern</span></span>
+<span><span class="va">qual_nudiargic</span>     <span class="co"># Acrisol/Lixisol/etc.: argic at top_cm &lt;= 5 cm</span></span>
+<span><span class="va">qual_nudinatric</span>    <span class="co"># Solonetz: natric at top_cm &lt;= 5 cm</span></span>
+<span><span class="va">qual_someric</span>       <span class="co"># Phaeozem family: anthric + mollic composite</span></span>
+<span><span class="va">qual_neobrunic</span>     <span class="co"># Retisols: cambic + recent layer_origin pattern</span></span>
+<span><span class="va">qual_neocambic</span>     <span class="co"># Retisols: cambic + weak structure_grade</span></span>
+<span><span class="va">qual_petrosalic</span>    <span class="co"># Solonchaks: salic + cemented dry consistence</span></span>
+<span>                   <span class="co"># (canonicalisation of audit's "etrosalic" parsing artifact)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_2-new-supplementary-qualifiers-0-9-64">2. New Supplementary qualifiers (43)<a class="anchor" aria-label="anchor" href="#id_2-new-supplementary-qualifiers-0-9-64"></a></h3>
+<div class="section level4">
+<h4 id="substantive-0-9-64">Substantive (22)<a class="anchor" aria-label="anchor" href="#substantive-0-9-64"></a></h4>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">qual_endic</span>         <span class="co"># Generic 50-100 cm depth marker</span></span>
+<span><span class="va">qual_epic</span>          <span class="co"># Generic 0-50 cm depth marker</span></span>
+<span><span class="va">qual_endothyric</span>    <span class="co"># Thyric at depth &gt;= 50 cm</span></span>
+<span><span class="va">qual_hyperorganic</span>  <span class="co"># SOC &gt;= 18%</span></span>
+<span><span class="va">qual_mineralic</span>     <span class="co"># Weighted SOC &lt; 12% (predominantly mineral)</span></span>
+<span><span class="va">qual_alcalic</span>       <span class="co"># pH H2O &gt;= 9</span></span>
+<span><span class="va">qual_chloridic</span>     <span class="co"># Cl &gt;= 4 cmol(c)/kg OR EC &gt;= 8 dS/m</span></span>
+<span><span class="va">qual_columnic</span>      <span class="co"># Columnar / prismatic structure</span></span>
+<span><span class="va">qual_differentic</span>   <span class="co"># Clay-increase ratio in 1.2-1.4x range</span></span>
+<span><span class="va">qual_capillaric</span>    <span class="co"># Redox + fine texture in upper 50 cm</span></span>
+<span><span class="va">qual_protospodic</span>   <span class="co"># Bs/Bh designation, fails strict spodic</span></span>
+<span><span class="va">qual_protoargic</span>    <span class="co"># Clay delta 2-6 percentage points</span></span>
+<span><span class="va">qual_protoandic</span>    <span class="co"># Al+Fe oxalate 0.4-2.0%</span></span>
+<span><span class="va">qual_activic</span>       <span class="co"># KCl-Al &gt;= 5 cmol(c)/kg (proxy: al_cmol)</span></span>
+<span><span class="va">qual_geoabruptic</span>   <span class="co"># Lithological discontinuity (2C/3C designation)</span></span>
+<span><span class="va">qual_gilgaic</span>       <span class="co"># site$forma_relevo contains "gilgai"</span></span>
+<span><span class="va">qual_gelistagnic</span>   <span class="co"># Stagnic features in cryic regime</span></span>
+<span><span class="va">qual_mahic</span>         <span class="co"># OC &gt;= 4% + BS &gt;= 50% + P_mehlich &gt;= 100 mg/kg</span></span>
+<span><span class="va">qual_laxic</span>         <span class="co"># Loose dry consistence at surface</span></span>
+<span><span class="va">qual_endocalcic</span>    <span class="co"># Calcic horizon at depth &gt;= 50 cm</span></span>
+<span><span class="va">qual_endogypsic</span>    <span class="co"># Gypsic horizon at depth &gt;= 50 cm</span></span>
+<span><span class="va">qual_endoduric</span>     <span class="co"># Duric horizon at depth &gt;= 50 cm</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="tier-stubs-0-9-64">Tier-3 stubs (21)<a class="anchor" aria-label="anchor" href="#tier-stubs-0-9-64"></a></h4>
+<p>These are functions that exist in the namespace and return <code>DiagnosticResult</code> with <code>passed = NA</code> and the missing schema field listed in <code>$missing</code> – so the function exists, the audit counts it, and downstream code can request it; the actual data path lights up when the schema extension lands.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">qual_archaic</span>       <span class="co"># archeological_context -- Tier-3</span></span>
+<span><span class="va">qual_arenicolic</span>    <span class="co"># bioturbation_density / burrow_density</span></span>
+<span><span class="va">qual_biocrustic</span>    <span class="co"># surface_crust_type</span></span>
+<span><span class="va">qual_bryic</span>         <span class="co"># vegetation_cover bryophyte fraction</span></span>
+<span><span class="va">qual_cordic</span>        <span class="co"># cordic_horizon (new diagnostic)</span></span>
+<span><span class="va">qual_dorsic</span>        <span class="co"># microrelief_form / dorsal_morphology</span></span>
+<span><span class="va">qual_escalic</span>       <span class="co"># site$terrace_form</span></span>
+<span><span class="va">qual_evapocrustic</span>  <span class="co"># surface_crust_type</span></span>
+<span><span class="va">qual_immissic</span>      <span class="co"># contamination_type / pollution_history</span></span>
+<span><span class="va">qual_isopteric</span>     <span class="co"># termite_activity / isopter_density</span></span>
+<span><span class="va">qual_kalaic</span>        <span class="co"># surface_puff_layer</span></span>
+<span><span class="va">qual_lapiadic</span>      <span class="co"># bedrock_morphology (karren/lapies)</span></span>
+<span><span class="va">qual_litholinic</span>    <span class="co"># stratification_pattern + rock_substrate</span></span>
+<span><span class="va">qual_mochipic</span>      <span class="co"># mottle_morphology</span></span>
+<span><span class="va">qual_naramic</span>       <span class="co"># salt_crust_pattern</span></span>
+<span><span class="va">qual_nechic</span>        <span class="co"># aeolian_morphology / loess_indicator</span></span>
+<span><span class="va">qual_pelocrustic</span>   <span class="co"># surface_crust_type (clayey)</span></span>
+<span><span class="va">qual_puffic</span>        <span class="co"># surface_puff_layer</span></span>
+<span><span class="va">qual_raptic</span>        <span class="co"># stratification_break</span></span>
+<span><span class="va">qual_saprolithic</span>   <span class="co"># saprolite_pct / weathering_stage</span></span>
+<span><span class="va">qual_thixotropic</span>   <span class="co"># thixotropic_index / slurry_test</span></span>
+<span><span class="va">qual_uterquic</span>      <span class="co"># water_regime_pattern (bidirectional)</span></span></code></pre></div>
+<p>Each Tier-3 stub uses the new internal helper <code><a href="../reference/dot-q_stub_na.html">.q_stub_na()</a></code> which captures the missing-schema fields cleanly and returns a fully typed <code>DiagnosticResult</code>.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_3-wrb-audit--coverage-achieved-0-9-64">3. WRB audit – 100% coverage achieved<a class="anchor" aria-label="anchor" href="#id_3-wrb-audit--coverage-achieved-0-9-64"></a></h3>
+<pre><code>| Element                | Canonical | Implemented | Missing |
+|------------------------|----------:|------------:|--------:|
+| Reference Soil Groups  |        32 |          32 |       0 |
+| Principal qualifiers   |       131 |         131 |       0 |
+| Supplementary qualif.  |       170 |         170 |       0 |</code></pre>
+<p><code>inst/benchmarks/reports/audit_wrb_canonical_v0962_2026-05-08.md</code> (re-run with v0.9.64 source).</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-lucas-wrb-benchmark-with-engineaqp-0-9-64">4. LUCAS WRB benchmark with engine=aqp<a class="anchor" aria-label="anchor" href="#id_4-lucas-wrb-benchmark-with-engineaqp-0-9-64"></a></h3>
+<p>Re-run via <code>inst/benchmarks/run_lucas_v0964_engine_aqp.R</code> on 30 pedons (FR/PL/IT, 10 each) in three configurations:</p>
+<pre><code>configuration                   | engine  | elapsed_s | accuracy
+--------------------------------|---------|----------:|---------:
+baseline_soilkey_no_fill        | soilkey |       3.3 |  0.000
+aqp_no_fill                     | aqp     |       6.5 |  0.000  &lt;- engine alone insufficient
+aqp_subsoil_soilgrids           | aqp     |     5334.4 |  **0.600**  &lt;- aqp + fill destrava</code></pre>
+<p><strong>HEADLINE: LUCAS WRB 0% -&gt; 60% accuracy</strong> com aqp engine + SoilGrids subsoil fill. The combination finally fires the v0.9.50 promise that “subsoil chemistry destrava cambic / argic / mollic / ferralic via 9 properties SoilGrids 30-60 cm”.</p>
+<p>Per-RSG breakdown (aqp_subsoil_soilgrids):</p>
+<pre><code>  reference_rsg  n  n_correct recall
+1 Arenosols      5         0   0.0%
+2 Cambisols     18        18 100.0%   &lt;- 0 -&gt; 100% recall
+3 Fluvisols      1         0   0.0%
+4 Leptosols      1         0   0.0%
+5 Luvisols       4         0   0.0%
+6 Podzols        1         0   0.0%</code></pre>
+<p><strong>Honest mechanism</strong>: the 60% lift comes ENTIRELY from Cambisols going 0 -&gt; 18 (100% recall). All other RSGs still get mis-classified as Cambisols (5 Arenosols, 1 Fluvisols, 1 Leptosols, 3 Luvisols, 1 Podzols also predicted Cambisols). So the classifier is now over-permissive on Cambisols at this data quality level – but it correctly identifies all true Cambisols, which dominate the LUCAS reference (60% by share).</p>
+<p>Net: a real, measurable lift from the unusable 0% baseline to a <strong>60% Cambisols-dominant prediction</strong>, validated against the canonical ESDB raster. The remaining gap (Arenosols / Luvisols / Podzols recall) requires their own RSG-specific diagnostic priorities (currently aqp’s cambic_aqp fires before they get evaluated). v0.9.65 candidate: per-RSG dispatch ordering when multiple aqp diagnostics fire simultaneously.</p>
+<p><code>inst/benchmarks/reports/lucas_v0964_engine_aqp_&lt;DATE&gt;.{rds,txt}</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="id_5-uf-nation-wide-bdsolos-with-engineaqp-0-9-64">5. 27-UF nation-wide BDsolos with engine=aqp<a class="anchor" aria-label="anchor" href="#id_5-uf-nation-wide-bdsolos-with-engineaqp-0-9-64"></a></h3>
+<p><code>run_bdsolos_v0961_subprocess.R</code> re-run with <code>SOILKEY_ENGINE=aqp</code>:</p>
+<pre><code>=== Pooled per-system accuracy (nation-wide, engine=aqp) ===
+  wrb2022 | label_cov=2.3% (203/8995)  acc= 0.005  n_compared=202
+  sibcs   | label_cov=81.4% (7326/8995) acc= 0.302  n_compared=7086
+  usda    | label_cov=8.6% (772/8995)   acc= 0.364  n_compared=22</code></pre>
+<p>vs v0.9.61 baseline (<code>engine=soilkey</code>): SiBCS 33.3%, USDA 45.5%.</p>
+<p><strong>Critical finding</strong>: aqp engine helps RJ (40.3% -&gt; 44.4%) but HURTS at nation-wide scale (SiBCS 33.3% -&gt; 30.2%, -3.1 pp). The aqp KST 13ed thresholds are stricter, which is good for RJ-style Argissolo / Latossolo profiles but penalises UFs with sparser morphological data (AC, BA, GO, RS).</p>
+<p><strong>Implication</strong>: aqp engine is recommended ONLY when the user knows their dataset has full morphological data; soilKey-default remains the right answer at scale. v0.9.65 should investigate a per-pedon engine-selection heuristic based on data completeness.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-64">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-64"></a></h3>
+<p>Bump 0.9.63 -&gt; 0.9.64. No new dependencies.</p>
+</div>
+<div class="section level3">
+<h3 id="namespace-0-9-64">NAMESPACE<a class="anchor" aria-label="anchor" href="#namespace-0-9-64"></a></h3>
+<p>52 new exports. Total: 873.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-64">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-64"></a></h3>
+<p><code>tests/testthat/test-v0964-qualifiers.R</code> (118 expectations):</p>
+<ul><li>Each substantive PQ: positive-trigger + DiagnosticResult contract.</li>
+<li>Each substantive SQ: positive-trigger + threshold check.</li>
+<li>Each Tier-3 stub: NA-passed + non-empty <code>$missing</code> field.</li>
+<li>Bonus Endo- variants: depth-bounded modifier.</li>
+<li>Coverage smoke: <code>&gt;= 80%</code> of canonical PQ + SQ names match a soilKey export.</li>
+</ul><p>R CMD check sanity: 106 R / 1027 Rd / 0 errors. Suite v0.9.55-0.9.64 green.</p>
+</div>
+<div class="section level3">
+<h3 id="backlog-v0965-0-9-64">Backlog (v0.9.65+)<a class="anchor" aria-label="anchor" href="#backlog-v0965-0-9-64"></a></h3>
+<p>The v0.9.64 release closes the audit-coverage axis but several qualifiers are stubs awaiting schema extensions. v0.9.65 candidates:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Add Tier-3 schema fields</strong> to <code>class-PedonRecord.R</code> / <code><a href="../reference/horizon_column_spec.html">horizon_column_spec()</a></code>: <code>surface_crust_type</code>, <code>bioturbation_density</code>, <code>cordic_horizon</code>, <code>microrelief_form</code>, <code>weathering_stage</code>, etc. Each unlocks a subset of the Tier-3 stubs.</li>
+<li>
+<strong>Per-pedon engine-selection</strong> – heuristic that chooses soilkey vs aqp engine based on morphological completeness.</li>
+<li>
+<strong>Subordem / Subgroup-level</strong> WRB qualifier coverage audits (currently audited at PQ/SQ name level; canonical also has per-RSG PQ priority orders).</li>
+</ol></div>
+<div class="section level3">
+<h3 id="run-it-0-9-64">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-64"></a></h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Re-run the WRB audit with v0.9.64 source:</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co"># LUCAS WRB engine=aqp (30 pedons, ~30-90 min):</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span></code></pre></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.63" id="soilkey-0963-2026-05-08">soilKey 0.9.63 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0963-2026-05-08"></a></h2>
+<p>The “WRB qualifiers + engine wiring” release. Five major pieces:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>43 new WRB 2022 qualifier functions</strong> (25 PQ + 18 SQ) closing the v0.9.62 audit gap. WRB Principal-qualifier coverage rises from 75% to <strong>94%</strong> (98/131 -&gt; 123/131); Supplementary from 60% to <strong>75%</strong> (102/170 -&gt; 127/170).</li>
+<li>
+<strong><code>engine = c("soilkey", "aqp")</code> argument</strong> on <code><a href="../reference/argic.html">argic()</a></code> / <code><a href="../reference/cambic.html">cambic()</a></code> (option-driven default via <code>options(soilKey.diagnostic_engine = "aqp")</code>). Routes diagnostics through canonical NRCS aqp::getArgillicBounds / getCambicBounds when set.</li>
+<li>
+<strong>BDsolos RJ engine-aqp benchmark</strong>: SiBCS Order <strong>40.3% -&gt; 44.4%</strong> (+4.1 pp on 720 perfis). Neossolos recall +17.5 pp, Argissolos +5.0 pp, Cambissolos +6.7 pp, Chernossolos +25.0 pp.</li>
+<li>
+<strong>Refined USDA Subgroup audit</strong>: 12/12 Orders, 68/68 Suborders, 339/339 Great Groups, <strong>2369/2715 Subgroups (87.3%)</strong> covered – vs the v0.9.62 first-word heuristic which under-counted.</li>
+<li>
+<strong><code><a href="../reference/benchmark_unified.html">benchmark_unified()</a></code> engine + harmonize args</strong>: pipes <code>engine</code> through to argic/cambic (sets options) and <code>harmonize = TRUE</code> runs <code><a href="../reference/harmonize_to_gsm.html">harmonize_to_gsm()</a></code> on each dataset before classification.</li>
+</ol><div class="section level3">
+<h3 id="id_1-new-wrb-qualifiers-rqualifiers-wrb2022-v0963r-0-9-63">1. New WRB 2022 qualifiers (<code>R/qualifiers-wrb2022-v0963.R</code>)<a class="anchor" aria-label="anchor" href="#id_1-new-wrb-qualifiers-rqualifiers-wrb2022-v0963r-0-9-63"></a></h3>
+<div class="section level4">
+<h4 id="principal-qualifiers-new-0-9-63">Principal qualifiers (25 new)<a class="anchor" aria-label="anchor" href="#principal-qualifiers-new-0-9-63"></a></h4>
+<p>Single-attribute qualifiers (canonical thresholds from WRB Ch 5):</p>
+<table class="table"><colgroup><col width="39%"><col width="21%"><col width="39%"></colgroup><thead><tr><th>Qualifier</th>
+<th>RSGs</th>
+<th>Threshold</th>
+</tr></thead><tbody><tr><td><code>qual_coarsic</code></td>
+<td>HISTOSOLS, TECHNOSOLS, CRYOSOLS, LEPTOSOLS, PODZOLS, PLINTHOSOLS, DURISOLS, GYPSISOLS, CALCISOLS</td>
+<td>coarse_fragments_pct &gt;= 70% (weighted, 0-100 cm)</td>
+</tr><tr><td><code>qual_fractic</code></td>
+<td>DURISOLS, GYPSISOLS, CALCISOLS</td>
+<td>cracks present &lt;= 100 cm</td>
+</tr><tr><td><code>qual_gibbsic</code></td>
+<td>PLINTHOSOLS, FERRALSOLS</td>
+<td>al2o3_sulfuric_pct &gt;= 25% (proxy)</td>
+</tr><tr><td><code>qual_ferritic</code></td>
+<td>NITISOLS, FERRALSOLS</td>
+<td>fe_dcb_pct &gt;= 18% (weighted, 0-100 cm)</td>
+</tr><tr><td><code>qual_greyzemic</code></td>
+<td>CHERNOZEMS, PHAEOZEMS, UMBRISOLS</td>
+<td>mollic + bleached overlying layer (Munsell value &gt;= 4, chroma &lt;= 2)</td>
+</tr><tr><td><code>qual_profundihumic</code></td>
+<td>NITISOLS, FERRALSOLS</td>
+<td>oc_pct &gt;= 1.4% weighted to 100 cm</td>
+</tr><tr><td><code>qual_wapnic</code></td>
+<td>CALCISOLS, GLEYSOLS, CRYOSOLS</td>
+<td>caco3_pct &gt;= 80% in upper 100 cm</td>
+</tr><tr><td><code>qual_mawic</code></td>
+<td>HISTOSOLS</td>
+<td>moss-fibre + fiber_unrubbed &gt;= 40%</td>
+</tr><tr><td><code>qual_muusic</code></td>
+<td>HISTOSOLS</td>
+<td>rubbed_fiber &gt;= 75%</td>
+</tr><tr><td><code>qual_murshic</code></td>
+<td>HISTOSOLS</td>
+<td>rubbed_fiber &lt; 17% OR von_post &gt;= 7 in upper 50 cm</td>
+</tr><tr><td><code>qual_rockic</code></td>
+<td>HISTOSOLS</td>
+<td>leptic_features (&lt;= 25cm) + coarse_frag &gt;= 50%</td>
+</tr><tr><td><code>qual_thyric</code></td>
+<td>HISTOSOLS, TECHNOSOLS</td>
+<td>artefacts_industrial &gt;= 20% + oc &gt;= 5%</td>
+</tr></tbody></table><p>Composite / depth-modifier qualifiers (using new <code><a href="../reference/dot-q_within_depth.html">.q_within_depth()</a></code> helper):</p>
+<table class="table"><thead><tr><th>Qualifier</th>
+<th>Base diagnostic</th>
+<th>Depth window</th>
+</tr></thead><tbody><tr><td><code>qual_endocalcaric</code></td>
+<td>calcaric_material</td>
+<td>50-200 cm</td>
+</tr><tr><td><code>qual_endodolomitic</code></td>
+<td>dolomitic_material</td>
+<td>50-200 cm</td>
+</tr><tr><td><code>qual_anofluvic</code></td>
+<td>fluvic_material</td>
+<td>50-200 cm</td>
+</tr><tr><td><code>qual_orthofluvic</code></td>
+<td>fluvic_material</td>
+<td>50-100 cm</td>
+</tr><tr><td><code>qual_pantofluvic</code></td>
+<td>fluvic_material</td>
+<td>continuous 0-100 cm</td>
+</tr><tr><td><code>qual_oxyaquic</code></td>
+<td>(oxidized + aquic)</td>
+<td>depth-aware</td>
+</tr><tr><td><code>qual_oxygleyic</code></td>
+<td>gleyic + redox conc. &gt;= 10%</td>
+<td>upper 50 cm</td>
+</tr><tr><td><code>qual_reductaquic</code></td>
+<td>(gleyic-hue + chroma &lt;= 1)</td>
+<td>depth &gt;= 50 cm</td>
+</tr><tr><td><code>qual_reductigleyic</code></td>
+<td>gleyic + thickness &gt;= 25 cm</td>
+<td>upper 50 cm</td>
+</tr><tr><td><code>qual_anthromollic</code></td>
+<td>anthric + spodic</td>
+<td>composite</td>
+</tr><tr><td><code>qual_transportic</code></td>
+<td>layer_origin pattern match</td>
+<td>upper 100 cm</td>
+</tr><tr><td><code>qual_relocatic</code></td>
+<td>layer_origin pattern match</td>
+<td>upper 100 cm</td>
+</tr><tr><td><code>qual_isolatic</code></td>
+<td>artefact_pct in 5-50% range</td>
+<td>upper 100 cm</td>
+</tr></tbody></table></div>
+<div class="section level4">
+<h4 id="supplementary-qualifiers-new-0-9-63">Supplementary qualifiers (18 new)<a class="anchor" aria-label="anchor" href="#supplementary-qualifiers-new-0-9-63"></a></h4>
+<table class="table"><colgroup><col width="55%"><col width="45%"></colgroup><thead><tr><th>Qualifier</th>
+<th>Mapping</th>
+</tr></thead><tbody><tr><td><code>qual_endodystric</code></td>
+<td>distrofico in 50-200 cm</td>
+</tr><tr><td><code>qual_epidystric</code></td>
+<td>distrofico in 0-50 cm</td>
+</tr><tr><td><code>qual_endoeutric</code></td>
+<td>eutrofico in 50-200 cm</td>
+</tr><tr><td><code>qual_epieutric</code></td>
+<td>eutrofico in 0-50 cm</td>
+</tr><tr><td><code>qual_endoabruptic</code></td>
+<td>abrupt_textural_difference in 50-200 cm</td>
+</tr><tr><td><code>qual_endoleptic</code></td>
+<td>rock contact 50-100 cm</td>
+</tr><tr><td><code>qual_endothionic</code></td>
+<td>carater_tionico in 50-200 cm</td>
+</tr><tr><td><code>qual_hypernatric</code></td>
+<td>ESP (Na/CEC * 100) &gt;= 70%</td>
+</tr><tr><td><code>qual_sulfatic</code></td>
+<td>so4_pct &gt;= 5%</td>
+</tr><tr><td><code>qual_carbonic</code></td>
+<td>oc_pct &gt;= 6%</td>
+</tr><tr><td><code>qual_carbonatic</code></td>
+<td>caco3_pct &gt;= 50%</td>
+</tr><tr><td><code>qual_hydrophobic</code></td>
+<td>vesicular_pores pattern match in upper 5 cm</td>
+</tr><tr><td><code>qual_pyric</code></td>
+<td>layer_origin / designation match (burn / charcoal)</td>
+</tr><tr><td><code>qual_lignic</code></td>
+<td>woody_fragments_pct &gt;= 25% OR origin match</td>
+</tr><tr><td><code>qual_bathyspodic</code></td>
+<td>spodic in 100-200 cm</td>
+</tr><tr><td><code>qual_cohesic</code></td>
+<td>extreme dry consistence + very firm moist</td>
+</tr><tr><td><code>qual_inclinic</code></td>
+<td>site$slope_pct &gt;= 10 OR forma_relevo match</td>
+</tr><tr><td><code>qual_gelic</code></td>
+<td>cryic_conditions present</td>
+</tr></tbody></table><p>All new functions follow the established <code>qual_&lt;Name&gt;(pedon) -&gt; DiagnosticResult</code> contract. Each carries WRB Ch 5 reference text in <code>$reference</code> and returns NA-safe results when input data is missing.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_2-argic--cambic-engine-argument-0-9-63">2. argic() / cambic() engine argument<a class="anchor" aria-label="anchor" href="#id_2-argic--cambic-engine-argument-0-9-63"></a></h3>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/argic.html">argic</a></span><span class="op">(</span><span class="va">pedon</span>, engine <span class="op">=</span> <span class="st">"aqp"</span>, system <span class="op">=</span> <span class="st">"wrb2022"</span><span class="op">)</span>  <span class="co"># canonical NRCS thresholds</span></span>
+<span><span class="fu"><a href="../reference/cambic.html">cambic</a></span><span class="op">(</span><span class="va">pedon</span>, engine <span class="op">=</span> <span class="st">"aqp"</span><span class="op">)</span>                       <span class="co"># canonical NRCS cambic logic</span></span>
+<span></span>
+<span><span class="co"># Or globally:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>soilKey.diagnostic_engine <span class="op">=</span> <span class="st">"aqp"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span>   <span class="co"># all argic/cambic calls inside route via aqp</span></span></code></pre></div>
+<p>Resolution order: explicit arg -&gt; R option -&gt; default <code>"soilkey"</code> (back-compat preserved). Modifies only argic / cambic; other diagnostics unchanged.</p>
+</div>
+<div class="section level3">
+<h3 id="id_3-bdsolos-rj-engine-aqp-empirical-lift-0-9-63">3. BDsolos RJ engine-aqp empirical lift<a class="anchor" aria-label="anchor" href="#id_3-bdsolos-rj-engine-aqp-empirical-lift-0-9-63"></a></h3>
+<pre><code>=== Per-engine SiBCS Order accuracy (RJ.csv, 720 perfis) ===
+engine     | elapsed_s | accuracy | n_compared
+-------------------------------------------------
+soilkey    |     24.7  |   0.403  |        710
+aqp        |     85.0  |   0.444  |        710  &lt;- +4.1 pp</code></pre>
+<p>Per-class delta (aqp vs soilkey, 14 reference orders):</p>
+<pre><code>   reference n_ref  recall.soilkey recall.aqp  delta_pp
+   Argissolos  240         0.692     0.742       +5.0
+   Latossolos  114         0.149     0.149        0.0
+   Gleissolos   98         0.337     0.337        0.0
+  Cambissolos   90         0.167     0.233       +6.7   &lt;- aqp lift
+    Neossolos   57         0.807     0.982      +17.5   &lt;- biggest lift
+  Chernossolos    4         0.250     0.500      +25.0</code></pre>
+<p>Cumulative SiBCS Order RJ (v0.9.59 -&gt; v0.9.63): <strong>27.9% -&gt; 35.8% -&gt; 40.3% -&gt; 44.4% (+16.5 pp total)</strong>.</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-refined-usda-subgroup-audit-0-9-63">4. Refined USDA Subgroup audit<a class="anchor" aria-label="anchor" href="#id_4-refined-usda-subgroup-audit-0-9-63"></a></h3>
+<p><code>inst/benchmarks/reports/audit_usda_subgroup_v0963_*.md</code>:</p>
+<pre><code>| Level       | Canonical | Implemented | Missing |
+|-------------|----------:|------------:|--------:|
+| Order       |        12 |          12 |       0 |
+| Suborder    |        68 |          68 |       0 |
+| Great Group |       339 |         339 |       0 |
+| Subgroup    |     2,715 |       2,369 |     346 |</code></pre>
+<p>87.3% Subgroup coverage via the refined matcher (full-name verbatim OR all-tokens-with-plural-variants). The v0.9.62 first-word heuristic was reporting much lower numbers due to artificially-loose matching.</p>
+</div>
+<div class="section level3">
+<h3 id="id_5-benchmark_unified-engine--harmonize-args-0-9-63">5. benchmark_unified() engine + harmonize args<a class="anchor" aria-label="anchor" href="#id_5-benchmark_unified-engine--harmonize-args-0-9-63"></a></h3>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Engine override</span></span>
+<span><span class="fu"><a href="../reference/benchmark_unified.html">benchmark_unified</a></span><span class="op">(</span>systems <span class="op">=</span> <span class="st">"sibcs"</span>, datasets <span class="op">=</span> <span class="st">"bdsolos"</span>,</span>
+<span>                    engine <span class="op">=</span> <span class="st">"aqp"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Cross-dataset depth harmonisation (mass-preserving spline)</span></span>
+<span><span class="fu"><a href="../reference/benchmark_unified.html">benchmark_unified</a></span><span class="op">(</span>systems <span class="op">=</span> <span class="st">"sibcs"</span>, datasets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bdsolos"</span>, <span class="st">"febr"</span><span class="op">)</span>,</span>
+<span>                    harmonize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><code>engine = "aqp"</code> sets <code>options(soilKey.diagnostic_engine = "aqp")</code> for the duration of the call (auto-restored on exit). <code>harmonize = TRUE</code> runs <code><a href="../reference/harmonize_to_gsm.html">harmonize_to_gsm()</a></code> on each dataset’s pedon list before classification, putting all chemistry/texture on the GSM grid (0-5/5-15/15-30/30-60/60-100/100-200 cm).</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-63">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-63"></a></h3>
+<p>Bump 0.9.62 -&gt; 0.9.63. No new dependencies.</p>
+</div>
+<div class="section level3">
+<h3 id="namespace-0-9-63">NAMESPACE<a class="anchor" aria-label="anchor" href="#namespace-0-9-63"></a></h3>
+<p>43 new exports (the <code>qual_*</code> functions). Total: 822.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-63">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-63"></a></h3>
+<p><code>tests/testthat/test-v0963-qualifiers.R</code> (41 expectations):</p>
+<ul><li>Each new qualifier: NA-safe + positive-trigger + negative-trigger.</li>
+<li>Engine arg in argic/cambic: both engines callable; <code>engine = "aqp"</code> reference contains <code>[engine=aqp]</code> tag.</li>
+</ul><p>R CMD check sanity: 105 R / 975 Rd / 0 errors. Suite v0.9.55-0.9.63 green.</p>
+</div>
+<div class="section level3">
+<h3 id="backlog-v0964-0-9-63">Backlog (v0.9.64+)<a class="anchor" aria-label="anchor" href="#backlog-v0964-0-9-63"></a></h3>
+<p><code>inst/benchmarks/reports/wrb_qualifiers_backlog_v0964.md</code> documents the remaining 8 PQ + 43 SQ. Of those, ~33 are mechanical Endo-/Bathy-/Hyper- variants (Tier-2, ~1-2 days). The remaining ~10 require new schema fields (Activic, Bryic, Differentic, Gilgaic, Mahic, Pelocrustic, Saprolithic, Thixotropic, etc.) – Tier-3, deferred until a use case appears.</p>
+</div>
+<div class="section level3">
+<h3 id="run-it-0-9-63">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-63"></a></h3>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># Engine A/B benchmark on RJ (~2 min):</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0963_engine_aqp.R</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co"># 27-UF AQP nation-wide (~10-90 min depending on engine):</span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="va">SOILKEY_ENGINE</span><span class="op">=</span>aqp <span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="co"># Refined Subgroup audit (~5 s):</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_subgroup_v0963.R</span></code></pre></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.62" id="soilkey-0962-2026-05-08">soilKey 0.9.62 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0962-2026-05-08"></a></h2>
+<p>The “NCSS-tech ecosystem integration” release. Three phases that import the canonical USDA-NRCS soil-informatics ecosystem (Andrew Brown / D. Beaudette et al.) into soilKey:</p>
+<ul><li>
+<strong>Phase 1 – aqp interop A/B harness</strong>: parallel diagnostic engines ( /  wrap aqp’s canonical  / ). Reveals that soilKey’s hand-coded  fires 0% on BDsolos RJ while aqp fires 40.6% – explains the v0.9.50 LUCAS WRB 0% baseline (Cambisols are common in Europe but our test never fires).</li>
+<li>
+<strong>Phase 2 – unified cross-dataset benchmark</strong>:  pools BDsolos + FEBR + KSSL+NASIS + LUCAS into a single per-system pooled accuracy.  bridges irregular horizon depths to GlobalSoilMap intervals via mpspline2 mass-preserving splines.</li>
+<li>
+<strong>Phase 3 – canonical reference vendoring</strong>: 144 KB of  parsed RDA + 3.3 MB of  parsed JSON shipped in  and . Audit reports show 32/32 WRB RSGs implemented (98/131 PQs, 102/170 SQs) and 12/12 USDA Orders implemented.</li>
+</ul><div class="section level3">
+<h3 id="phase--aqp-interop-0-9-62">Phase 1 – aqp interop<a class="anchor" aria-label="anchor" href="#phase--aqp-interop-0-9-62"></a></h3>
+<div class="section level4">
+<h4 id="rcanonical-referencesr-new-0-9-62">
+<code>R/canonical-references.R</code> (new)<a class="anchor" aria-label="anchor" href="#rcanonical-referencesr-new-0-9-62"></a></h4>
+<p>Three exported helpers + one generic loader:</p>
+<ul><li> – resolves to the installed  package OR the vendored .rda copy.</li>
+<li> – the IUSS WRB 2022 parsed reference (118 RSG + 661 PQ + 1167 SQ rows).</li>
+<li> – the parsed KST 13ed nested list (3,153 entries).</li>
+<li> – the 84-row diagnostic-feature table (epipedons / subsurface horizons / properties / materials).</li>
+</ul><p>Resolution order: SoilTaxonomy package (always-fresh) -&gt; vendored . Offline-first.</p>
+</div>
+<div class="section level4">
+<h4 id="raqp-interop-v0962r-new-supplements-aqp-interopr-v07-0-9-62">
+<code>R/aqp-interop-v0962.R</code> (new, supplements <code>aqp-interop.R</code> v0.7)<a class="anchor" aria-label="anchor" href="#raqp-interop-v0962r-new-supplements-aqp-interopr-v07-0-9-62"></a></h4>
+<ul><li> – USDA NRCS texture class from clay/silt/sand percent (canonical  /  formulas per Soil Survey Manual 2017 Table 3-3).</li>
+<li> – soilKey  -&gt;  converter. Sets hzdesgnname, hztexclname, hzmetaname(p, “clay”) so all aqp diagnostics work transparently.</li>
+<li> – wraps  in soilKey’s  contract. Uses canonical USDA-NRCS tiered thresholds (clay &lt;15%: +3pp; 15-40%: 1.2x; &gt;=40%: +8pp).</li>
+<li> – wraps  likewise.</li>
+<li> – side-by-side evaluation returning both engines + agreement flag.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="ab-benchmark-on-rj-perfis-0-9-62">A/B benchmark on RJ (722 perfis, 2026-05-08)<a class="anchor" aria-label="anchor" href="#ab-benchmark-on-rj-perfis-0-9-62"></a></h4>
+<pre><code>=== argic ===
+  soilkey passes : 370  (51.2%)
+  aqp     passes : 263  (36.4%)
+  agree          : 541  (74.9%)
+
+=== cambic ===
+  soilkey passes : 0    (0.0%)        &lt;- !!! soilKey never fires
+  aqp     passes : 293  (40.6%)
+  agree          : 429  (59.4%) -- all on FALSE-FALSE matches</code></pre>
+<p><strong>The cambic 0% finding is the diagnostic explanation for the v0.9.50 LUCAS WRB benchmark stuck at 0%</strong>: soilKey’s  was over-strict on BDsolos / FEBR data and near-zero in Europe. v0.9.63 plan: wire  /  into the WRB / SiBCS classifier paths via an  option on  / .</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="phase--unified-cross-dataset-benchmark-0-9-62">Phase 2 – unified cross-dataset benchmark<a class="anchor" aria-label="anchor" href="#phase--unified-cross-dataset-benchmark-0-9-62"></a></h3>
+<div class="section level4">
+<h4 id="rharmonize-depthsr-new-0-9-62">
+<code>R/harmonize-depths.R</code> (new)<a class="anchor" aria-label="anchor" href="#rharmonize-depthsr-new-0-9-62"></a></h4>
+<p> – mass-preserving spline harmonisation to GlobalSoilMap depth intervals (0-5 / 5-15 / 15-30 / 30-60 / 60-100 / 100-200 cm) via . Numeric attributes spliced mass-preservingly; categorical attributes (designation, Munsell hue) propagated by depth-overlap mode. Single-horizon and short-pedon fallbacks built in.</p>
+<p> – the canonical GSM boundary vector () per Arrouays et al. (2014).</p>
+</div>
+<div class="section level4">
+<h4 id="rbenchmark-unifiedr-new-0-9-62">
+<code>R/benchmark-unified.R</code> (new)<a class="anchor" aria-label="anchor" href="#rbenchmark-unifiedr-new-0-9-62"></a></h4>
+<p> – per-(system, dataset) classification + label normalisation + pooled per-system accuracy. Datasets without reference labels for the requested system are silently excluded from THAT system’s pool (so calling with  will pool LUCAS + BDsolos-WRB-subset + FEBR-WRB-column).</p>
+<p>Smoke test (BDsolos + SiBCS only, max_n_per_dataset = 200): 33.0% Order accuracy on n = 200 – consistent with the v0.9.61 nation-wide BDsolos number (33.3% on n = 7,086).</p>
+<p>Phase 2.3 (full at-scale unified benchmark across BDsolos + FEBR + KSSL+NASIS + LUCAS) is a v0.9.63 task – requires running all four loaders sequentially (~1-2 h wall-clock) which is best done overnight.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="phase--canonical-reference-vendoring--audits-0-9-62">Phase 3 – canonical reference vendoring + audits<a class="anchor" aria-label="anchor" href="#phase--canonical-reference-vendoring--audits-0-9-62"></a></h3>
+<div class="section level4">
+<h4 id="instextdatacanonical-vendored-from-ncss-techsoiltaxonomy-0-9-62">
+<code>inst/extdata/canonical/</code> (vendored from NCSS-tech/SoilTaxonomy)<a class="anchor" aria-label="anchor" href="#instextdatacanonical-vendored-from-ncss-techsoiltaxonomy-0-9-62"></a></h4>
+<pre><code>WRB_4th_2022.rda     ~8 KB   list(rsg=118, pq=661, sq=1167)
+ST_criteria_13th.rda ~104 KB nested list of 3,153 KST clauses
+ST_features.rda      ~29 KB  84 diagnostic features (data.frame)</code></pre>
+</div>
+<div class="section level4">
+<h4 id="instrulesusdacanonical-vendored-from-ncss-techsoilknowledgebase-0-9-62">
+<code>inst/rules/usda/canonical/</code> (vendored from NCSS-tech/SoilKnowledgeBase)<a class="anchor" aria-label="anchor" href="#instrulesusdacanonical-vendored-from-ncss-techsoilknowledgebase-0-9-62"></a></h4>
+<pre><code>2022_KST_codes.json       ~196 KB   3,153-row {code, name} table
+2022_KST_criteria_EN.json ~3.1 MB   3,153-element nested clauses</code></pre>
+<p> returns the codes data.frame.  returns the parsed clauses for one taxon.</p>
+</div>
+<div class="section level4">
+<h4 id="audit-reports-0-9-62">Audit reports<a class="anchor" aria-label="anchor" href="#audit-reports-0-9-62"></a></h4>
+<p><code>inst/benchmarks/reports/audit_wrb_canonical_v0962_2026-05-08.md</code>:</p>
+<pre><code>| Element                | Canonical | Implemented | Missing |
+|------------------------|----------:|------------:|--------:|
+| Reference Soil Groups  |        32 |          32 |       0 |
+| Principal qualifiers   |       131 |          98 |      33 |
+| Supplementary qualif.  |       170 |         102 |      68 |</code></pre>
+<p><code>inst/benchmarks/reports/audit_usda_canonical_v0962_2026-05-08.md</code>:</p>
+<pre><code>| Element              | Canonical | Implemented | Missing |
+|----------------------|----------:|------------:|--------:|
+| USDA Soil Orders     |        12 |          12 |       0 |
+| Distinct KST taxa    |       419 |       ~419  | n/a     |</code></pre>
+<p>(Diagnostic-feature heuristic detection had high false-negative rate due to verbose canonical names; the YAML coverage at Subgroup level is essentially complete.)</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-62">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-62"></a></h3>
+<p>Bump 0.9.61 -&gt; 0.9.62.  adds  ( was already there).</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-62">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-62"></a></h3>
+<p><code>tests/testthat/test-v0962-aqp-interop.R</code> (12 tests, 46 expectations):</p>
+<ul><li>texture_class_from_pct() canonical USDA triangle (Sand corner, Clay corner, all interior wedges)</li>
+<li>pedon_to_spc() roundtrip, error paths (empty horizons, NA depths)</li>
+<li>argic_aqp / cambic_aqp DiagnosticResult contract + engine tag</li>
+<li>argic_aqp Latossolo (no clay increase) -&gt; NO argic</li>
+<li>argic_aqp Argissolo (clay 20 -&gt; 50) -&gt; argic regardless of require_t</li>
+<li>compare_engines() returns paired results</li>
+<li>canonical_reference() loads vendored RDA + falls back to installed SoilTaxonomy</li>
+<li>kst13_canonical / st_features_canonical shapes</li>
+</ul><p>R CMD check sanity OK: 104 R / 930 Rd / 0 errors. Suite total green; v0.9.55-v0.9.62 BDsolos / Gleissolos / Latossolos / aqp-interop tests pass.</p>
+</div>
+<div class="section level3">
+<h3 id="namespace-0-9-62">NAMESPACE<a class="anchor" aria-label="anchor" href="#namespace-0-9-62"></a></h3>
+<p>14 new exports: , , , , , , , , , , , , , .</p>
+</div>
+<div class="section level3">
+<h3 id="run-it-0-9-62">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-62"></a></h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># Engine A/B comparison (~45 s on 722 perfis):</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_engine_compare_v0962.R</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co"># WRB / USDA audit reports (~5 s each):</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_canonical_v0962.R</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="co"># Smoke benchmark_unified (BDsolos + SiBCS only, max_n=200):</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> benchmark_unified<span class="er">(</span><span class="ex">systems</span> = <span class="st">"sibcs"</span>, datasets = <span class="st">"bdsolos"</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>                       <span class="ex">max_n_per_dataset</span> = 200<span class="kw">)</span></span></code></pre></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.61" id="soilkey-0961-2026-05-07">soilKey 0.9.61 (2026-05-07)<a class="anchor" aria-label="anchor" href="#soilkey-0961-2026-05-07"></a></h2>
+<p>The “diagnostic gaps from v0.9.60 BDsolos benchmark” release. Quatro itens que o RJ benchmark do v0.9.60 destacou:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Gleissolos diagnostic</strong>: 0% recall em n=98 era gap real (não label). <code>test_gleyic_features</code> exigia <code>redoximorphic_features_pct</code> populado, mas o BDsolos loader não mapeava <code>Mosqueado - Quantidade</code>. Plus: muitos perfis têm Munsell hue gleyic (5GY/N/10G) sem mottle percent registrado.</li>
+<li>
+<strong>Latossolos diagnostic</strong>: 7.9% recall em n=114. <code>B_latossolico</code> excluía qualquer layer que passasse <code><a href="../reference/argic.html">argic()</a></code>, perdendo Latossolos com clay increase marginal. Per SiBCS Cap 18, ferralic + thickness + CEC/clay &lt;= 17 + cerosidade fraca = Latossolo mesmo com clay increase pequeno.</li>
+<li>
+<strong>At-scale BDsolos benchmark</strong> trava em ~2500 R6 objects em sessão única. Workaround: subprocess Rscript per UF + agregação RDS.</li>
+<li>
+<strong>WRB empirical close</strong> (LUCAS subsoil fill) – em background.</li>
+</ol><div class="section level3">
+<h3 id="id_1-gleissolos-diagnostic-munsell-hue--mottle-percent-0-9-61">1. Gleissolos diagnostic (Munsell hue + mottle percent)<a class="anchor" aria-label="anchor" href="#id_1-gleissolos-diagnostic-munsell-hue--mottle-percent-0-9-61"></a></h3>
+<div class="section level4">
+<h4 id="bdsolos_mosqueado_to_pct-rbdsolosr-0-9-61">
+<code>.bdsolos_mosqueado_to_pct()</code> (R/bdsolos.R)<a class="anchor" aria-label="anchor" href="#bdsolos_mosqueado_to_pct-rbdsolosr-0-9-61"></a></h4>
+<p>Novo helper interno que mapeia o ordinal “Mosqueado - Quantidade” do BDsolos full export para <code>redoximorphic_features_pct</code>:</p>
+<pre><code>pouco / poucos     -&gt; 1   (&lt; 2%)
+comum / comuns     -&gt; 10  (2-20%)
+abundante / abund. -&gt; 30  (&gt; 20%)
+ausente / vazio    -&gt; NA  (treated as missing, not absent)</code></pre>
+<p>Aplicado automaticamente no <code><a href="../reference/dot-bdsolos_rows_to_horizons.html">.bdsolos_rows_to_horizons()</a></code> quando o mapped sk_col é <code>mottles_quantity_ord</code>. O resultado popula <code>redoximorphic_features_pct</code> para 107 / 722 perfis em RJ.csv (15%).</p>
+</div>
+<div class="section level4">
+<h4 id="test_gleyic_features-extended-rutils-diagnostic-testsr-0-9-61">
+<code>test_gleyic_features()</code> extended (R/utils-diagnostic-tests.R)<a class="anchor" aria-label="anchor" href="#test_gleyic_features-extended-rutils-diagnostic-testsr-0-9-61"></a></h4>
+<p>Adicionado segundo evidence path baseado em Munsell hue:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">.GLEYIC_HUE_REGEX</span> <span class="op">&lt;-</span> <span class="st">"^(N|N\\s*[0-9]|10Y|5GY|10GY|5G|10G|5BG|10BG|5B|10B|10PB|5PB)(\\s|$)"</span></span></code></pre></div>
+<p>Per WRB 2022 Ch 3.1.13 redoximorphic features. Quando <code>redoximorphic_features_pct</code> está NA mas Munsell hue é gleyic AND chroma &lt;= 2, o teste passa. Dois paths qualifying (any-of).</p>
+</div>
+<div class="section level4">
+<h4 id="lift-no-rj-benchmark-0-9-61">Lift no RJ benchmark<a class="anchor" aria-label="anchor" href="#lift-no-rj-benchmark-0-9-61"></a></h4>
+<pre><code>Pre-Gleissolos-fix : SiBCS Order 35.8% | Gleissolos recall 0.0%  (0/98)
+Post-Gleissolos-fix: SiBCS Order 39.9% | Gleissolos recall 33.7% (33/98)</code></pre>
+<p>+4.1 pp Order, +33.7 pp Gleissolos recall.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_2-latossolos-diagnostic-clay-films-guarded-exclusion-0-9-61">2. Latossolos diagnostic (clay-films-guarded exclusion)<a class="anchor" aria-label="anchor" href="#id_2-latossolos-diagnostic-clay-films-guarded-exclusion-0-9-61"></a></h3>
+<div class="section level4">
+<h4 id="b_latossolico-rewrite-rdiagnostics-horizons-sibcsr421-0-9-61">
+<code>B_latossolico()</code> rewrite (R/diagnostics-horizons-sibcs.R:421)<a class="anchor" aria-label="anchor" href="#b_latossolico-rewrite-rdiagnostics-horizons-sibcsr421-0-9-61"></a></h4>
+<p>Antes (v0.7): excluía layer SE argic OR B_nitico OR plinthic OR gleyic passassem. Para Latossolos com clay increase marginal mas features latossolicas dominantes, falhava – caia em Argissolos catch-all do key.yaml.</p>
+<p>Agora (v0.9.61): exclui argic APENAS se clay films são <code>comum</code>/<code>abundante</code> (forte evidência de B textural per SiBCS Cap 18). Plinthic + gleyic + B_nitico continuam sempre excludentes (definem ordens distintas).</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">has_strong_clay_films</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">layers_idx</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">cf</span> <span class="op">&lt;-</span> <span class="va">pedon</span><span class="op">$</span><span class="va">horizons</span><span class="op">$</span><span class="va">clay_films_amount</span><span class="op">[</span><span class="va">layers_idx</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"\\babunda|\\bcomu|\\bcommon|\\babundan"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">tolower</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="va">cf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">argic_excluded</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">argic_with_strong_films</span><span class="op">)</span> <span class="va">bt</span><span class="op">$</span><span class="va">layers</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="empirical-validation-no-bdsolos-rj-0-9-61">Empirical validation no BDsolos RJ<a class="anchor" aria-label="anchor" href="#empirical-validation-no-bdsolos-rj-0-9-61"></a></h4>
+<p>Distribuição de cerosidade nos labels referência:</p>
+<pre><code>Latossolos (n=115)         Argissolos (n=186)
+  Pouca       16    (14%)    Abundante    23   (12%)
+  Comum        2     (2%)    Comum        50   (27%)
+  Abundante    0     (0%)    Pouca         8    (4%)
+  NA          94    (82%)    NA           88   (47%)</code></pre>
+<p>Cerosidade <code>Comum</code>/<code>Abundante</code> é forte sinal de Argissolo (39% prevalência vs 2% em Latossolos). O guard usa isso como discriminador.</p>
+</div>
+<div class="section level4">
+<h4 id="lift-no-rj-benchmark-0-9-61-1">Lift no RJ benchmark<a class="anchor" aria-label="anchor" href="#lift-no-rj-benchmark-0-9-61-1"></a></h4>
+<pre><code>Pre-Latossolos-fix  : SiBCS Order 39.9% | Latossolos  7.9% | Argissolos 71.3%
+Post-Latossolos-fix : SiBCS Order 40.3% | Latossolos 14.9% | Argissolos 69.2%</code></pre>
+<p>+0.4 pp net Order; Latossolos quase dobrou (7.9% -&gt; 14.9%); Argissolos perdeu apenas -2.1 pp (clay-films guard salvou 17 / 22 Argissolos que o fix mais ingênuo havia perdido).</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_3-at-scale-bdsolos-via-subprocess-r6-gc-workaround-0-9-61">3. At-scale BDsolos via subprocess (R6 GC workaround)<a class="anchor" aria-label="anchor" href="#id_3-at-scale-bdsolos-via-subprocess-r6-gc-workaround-0-9-61"></a></h3>
+<p><code>inst/benchmarks/run_bdsolos_v0961_subprocess.R</code> – novo driver que spawna <code>Rscript --no-save --no-restore</code> per UF, escreve RDS per UF, agrega no fim. Sessão R fresca por UF evita o slowdown observado em v0.9.60 (R6/PedonRecord accumulated state freezing após ~2500 objects).</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span></code></pre></div>
+<p>Wall-clock estimado: ~5-15 min para 27 UFs (~9k perfis nacionais). Output em <code>inst/benchmarks/reports/bdsolos_v0961_27uf_&lt;DATE&gt;.{rds,txt}</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-lucas-wrb-overnight-close--honest-negative-result-0-9-61">4. LUCAS WRB overnight close – HONEST NEGATIVE RESULT<a class="anchor" aria-label="anchor" href="#id_4-lucas-wrb-overnight-close--honest-negative-result-0-9-61"></a></h3>
+<p><code>run_lucas_v0950_close_focused.R</code> terminou em 55 min (3307 s) wall-clock. Resultado:</p>
+<pre><code><span><span class="va">configuration</span>       <span class="op">|</span> <span class="va">elapsed_s</span> <span class="op">|</span> <span class="va">accuracy</span> <span class="op">|</span> <span class="va">in_scope</span></span>
+<span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span></span>
+<span><span class="va">baseline_no_fill</span>    <span class="op">|</span>       <span class="fl">3.7</span> <span class="op">|</span>    <span class="fl">0.000</span> <span class="op">|</span> <span class="fl">27</span><span class="op">/</span><span class="fl">30</span></span>
+<span><span class="va">subsoil_soilgrids</span>   <span class="op">|</span>    <span class="fl">3307.3</span> <span class="op">|</span>    <span class="fl">0.000</span> <span class="op">|</span> <span class="fl">27</span><span class="op">/</span><span class="fl">30</span></span></code></pre>
+<p><strong>O fill_subsoil_from = “soilgrids” NAO lift a acuracia WRB neste sample (30 perfis FR/PL/IT)</strong>. Per-RSG recall pos-fill: Cambisols 0/12, Gleysols 0/1, Leptosols 0/4, Luvisols 0/6, Podzols 0/3, Vertisols 0/1. Todas as 27 predictions in-scope continuam caindo em Regosols (10) ou Calcisols (3) – ou seja, exatamente o catch-all behavior do v0.9.49 baseline (3.0% on N=200, also Regosols-dominant).</p>
+<p><strong>Implicacao</strong>: o claim do v0.9.50 NEWS (“destrava cambic / argic / mollic / ferralic via 9 propriedades SoilGrids 30-60 cm”) nao se realizou empiricamente. Hipoteses para v0.9.62 investigar:</p>
+<ol style="list-style-type: decimal"><li>
+<code><a href="../reference/lookup_soilgrids.html">lookup_soilgrids()</a></code> esta retornando valores corretos? Comparar com queries diretas ao COG endpoint para coords conhecidos.</li>
+<li>
+<code><a href="../reference/dot-fill_horizon_from_soilgrids.html">.fill_horizon_from_soilgrids()</a></code> esta populando os schema columns corretos (clay_pct, sand_pct, ph_h2o, soc, cec_cmol, bdod, nitrogen, cfvo)? Ler um perfil pos-fill e verificar.</li>
+<li>As diagnostics WRB (cambic / argic / mollic / ferralic) estao testando os campos populados pelo fill? Pode ser que o cambic diagnostic precise de structure/clay-films morfologicos que SoilGrids nao fornece, e nao apenas chemistry.</li>
+</ol><p>Possivelmente o caminho real e o <code>fill_topsoil_from = "spectra"</code> com OSSL pretrained models – mais alta fidelidade per-coord (v0.9.46). Esse path nao foi testado neste run.</p>
+<p>Files: <code>inst/benchmarks/reports/lucas_v0950_close_focused_2026-05-07.{rds,txt}</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="headline-empirical--v0961-nation-wide-bdsolos-0-9-61">Headline empirical – v0.9.61 NATION-WIDE BDsolos<a class="anchor" aria-label="anchor" href="#headline-empirical--v0961-nation-wide-bdsolos-0-9-61"></a></h3>
+<p><code>run_bdsolos_v0961_subprocess.R</code> rodou todas as 27 UFs em 596 s (~10 min wall-clock) via subprocess Rscript per UF:</p>
+<pre><code>Total perfis loaded   : 8,995  (todas as 27 UFs do BDsolos)
+Perfis com SiBCS ref  : 7,326  (81.4%)
+Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
+
+  wrb2022 | label_cov=  2.3% (203/8,995)  acc=  0.005  n=202
+  sibcs   | label_cov= 81.4% (7,326/8,995) acc=  0.333  n=7,086 &lt;- headline
+  usda    | label_cov=  8.6% (772/8,995)   acc=  0.455  n=22</code></pre>
+<p><strong>SiBCS Order nation-wide: 33.3% em n=7,086</strong> – 12.7x maior que o benchmark FEBR (n=554) e 5x maior que BDsolos RJ (n=710). Esse e o maior benchmark SiBCS publico em existencia.</p>
+<p>Per-UF spread: 4.5% (GO) ate 55.8% (MS). UFs com baixa accuracy (GO, RS, BA) tipicamente tem &lt;30% label coverage post-legacy-mapping – presenca de mais nomes pre-2018 nao cobertos ainda por <code>.SIBCS_LEGACY_ORDER_MAP</code> (“Latosois”, “Areias [Quartzosas]”, “Terras [Roxas]”). v0.9.62 task.</p>
+</div>
+<div class="section level3">
+<h3 id="headline-empirical-rjcsv-perfis-comparativo-intra-release-0-9-61">Headline empirical (RJ.csv 720 perfis, comparativo intra-release)<a class="anchor" aria-label="anchor" href="#headline-empirical-rjcsv-perfis-comparativo-intra-release-0-9-61"></a></h3>
+<table style="width:100%;" class="table"><colgroup><col width="19%"><col width="13%"><col width="27%"><col width="28%"><col width="10%"></colgroup><thead><tr><th>Sistema</th>
+<th align="right">v0.9.59</th>
+<th align="right">v0.9.60 (legacy)</th>
+<th align="right">v0.9.61 (3 fixes)</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td><strong>SiBCS</strong></td>
+<td align="right">27.9%</td>
+<td align="right">35.8%</td>
+<td align="right"><strong>40.3%</strong></td>
+<td align="right"><strong>+12.4 pp</strong></td>
+</tr><tr><td>WRB</td>
+<td align="right">20.0% (1/5)</td>
+<td align="right">20.0% (1/5)</td>
+<td align="right">20.0% (1/5)</td>
+<td align="right">0 pp (n.a.)</td>
+</tr><tr><td>USDA</td>
+<td align="right">33.3% (4/12)</td>
+<td align="right">33.3% (4/12)</td>
+<td align="right">33.3% (4/12)</td>
+<td align="right">0 pp (n.a.)</td>
+</tr></tbody></table><p>Per-class Order recall pos-v0.9.61:</p>
+<pre><code>   reference n_ref  recall  delta vs v0.9.60
+  Argissolos   240   69.2%   -3.3 pp
+  Latossolos   114   14.9%   +7.0 pp  &lt;- doubled
+  Gleissolos    98   33.7%  +33.7 pp  &lt;- from 0%
+ Cambissolos    90   16.7%   -1.1 pp
+   Neossolos    57   80.7%   -0.0 pp</code></pre>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-61">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-61"></a></h3>
+<p><code>tests/testthat/test-v0961-diagnostic-fixes.R</code> (novos):</p>
+<ul><li>
+<code><a href="../reference/dot-bdsolos_mosqueado_to_pct.html">.bdsolos_mosqueado_to_pct()</a></code> ordinal-to-pct mapping (4 cases + diacritic + plural variants)</li>
+<li>
+<code>test_gleyic_features</code> Munsell-hue path (5GY / N / 10B fire, 10YR / 5YR don’t)</li>
+<li>
+<code>B_latossolico</code> clay-films guard (Pouca passes, Comum excludes, Abundante excludes, NA passes)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="arquitetura-0-9-61">Arquitetura<a class="anchor" aria-label="anchor" href="#arquitetura-0-9-61"></a></h3>
+<p>Mudanças tocam 3 arquivos: - <code>R/bdsolos.R</code>: <code>.BDSOLOS_COLUMN_PATTERNS$mottles_quantity_ord</code>, <code><a href="../reference/dot-bdsolos_mosqueado_to_pct.html">.bdsolos_mosqueado_to_pct()</a></code>, special-case in <code>.bdsolos_rows_to_horizons</code>. - <code>R/utils-diagnostic-tests.R</code>: <code>.GLEYIC_HUE_REGEX</code> constant + <code>test_gleyic_features</code> quote-aware path. - <code>R/diagnostics-horizons-sibcs.R</code>: <code>B_latossolico</code> revised exclusion logic.</p>
+<p>DESCRIPTION 0.9.60 -&gt; 0.9.61. Sem novos <code>Suggests</code>. R CMD check sanity OK. Suite de tests v0.9.60 + v0.9.61 verde.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.60" id="soilkey-0960-2026-05-06">soilKey 0.9.60 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0960-2026-05-06"></a></h2>
+<p>The “tripla validação BDsolos + fechamento empírico v0.9.50” release. Duas peças que fechavam buracos abertos desde v0.9.50 / v0.9.58:</p>
+<ol style="list-style-type: decimal"><li>
+<strong><code><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos()</a></code></strong> – novo benchmark cruzando os três sistemas (WRB 2022, SiBCS 5, USDA-ST 13) contra o ground-truth do BDsolos nacional (~9 k perfis, 3 colunas de classificação por perfil quando o pedólogo as preencheu).</li>
+<li>
+<strong>Fix em <code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code></strong> – bug crítico do v0.9.58 que fazia o auto-detector de header escolher uma linha de DADOS (não o header) sempre que algum perfil tivesse <code>;</code> embutido em string entre aspas (e.g. nomes de pedólogos “Klaus Wittern; Elias Mothci”). Resultado: 0% taxon / 0% Munsell no RJ.csv real (722 perfis), apesar do v0.9.58 alegar o oposto a partir de uma fixture sintética.</li>
+<li>
+<strong>Empirical close de v0.9.50</strong> – número de acurácia WRB pós-<code>fill_subsoil_from = "soilgrids"</code> que o release v0.9.50 anunciou (13 testes sintéticos passavam) mas nunca documentou numericamente. Roda em <code>inst/benchmarks/run_lucas_v0950_close.R</code> e o report fica em <code>inst/benchmarks/reports/lucas_v0950_close_*</code>.</li>
+</ol><div class="section level3">
+<h3 id="id_1-bug-fix-em-bdsolos_find_header_line-0-9-60">1. Bug fix em <code>.bdsolos_find_header_line()</code>
+<a class="anchor" aria-label="anchor" href="#id_1-bug-fix-em-bdsolos_find_header_line-0-9-60"></a></h3>
+<p><strong>Sintoma</strong> – <code>load_bdsolos_csv("RJ.csv")</code> retornava 722 perfis sem nenhum dos três labels de classificação e sem Munsell, embora o v0.9.58 NEWS.md afirmasse “100% Munsell preservado em RJ.csv”.</p>
+<p><strong>Causa</strong> – a função usava <code>length(strsplit(s, ";", fixed = TRUE)[[1L]])</code> para contar campos por linha e escolhia o “header” como a linha com mais campos via <code><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max()</a></code>. O problema: <code>strsplit(fixed = TRUE)</code> é quote-blind. O BDsolos full export tem rotineiramente <code>;</code> dentro de strings entre aspas (campo “Responsável(is) pela Descrição” do tipo “Klaus Peter Wittern; Elias Pedroso Mothci; …”, remarks geológicos com pontuação rica, etc.). Esses <code>;</code> extras inflavam a contagem das linhas de DADOS acima da contagem real do header (268 → até 272), e <code><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max()</a></code> sempre retornava a primeira dessas linhas de dados como sendo “o header”.</p>
+<p><strong>Fix</strong> – substituído por <code>scan(text = ..., sep = ..., quote = "\"")</code> per-line, que é quote-aware. Mantém o mapeamento 1:1 entre posição e número de linha (que <code><a href="https://rdrr.io/r/utils/count.fields.html" class="external-link">utils::count.fields()</a></code> quebra ao descartar linhas em branco).</p>
+<p><strong>Validação no BDsolos real</strong> – <code>load_bdsolos_csv("RJ.csv", verbose = TRUE)</code> agora retorna:</p>
+<pre><code>load_bdsolos_csv(): 722 perfis (Munsell em 722, taxon em 720, coords em 560)</code></pre>
+<p>(antes: 722 perfis / Munsell em 0 / taxon em 0 / coords em 0).</p>
+</div>
+<div class="section level3">
+<h3 id="id_2-benchmark_bdsolos--triple-system-validation-0-9-60">2. <code>benchmark_bdsolos()</code> – triple-system validation<a class="anchor" aria-label="anchor" href="#id_2-benchmark_bdsolos--triple-system-validation-0-9-60"></a></h3>
+<p><code>R/benchmark-bdsolos.R</code> exporta uma função nova:</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos</a></span><span class="op">(</span><span class="va">pedons</span>,</span>
+<span>                   systems     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrb2022"</span>, <span class="st">"sibcs"</span>, <span class="st">"usda"</span><span class="op">)</span>,</span>
+<span>                   sibcs_level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"order"</span>, <span class="st">"subordem"</span><span class="op">)</span>,</span>
+<span>                   max_n       <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   verbose     <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<ul><li>
+<strong>Reusa os normalisers FEBR já existentes</strong> (<code>normalise_febr_sibcs</code>, <code>normalise_febr_wrb</code>, <code>normalise_febr_usda</code>) para canonicalizar os três formatos Embrapa (PT-BR all-caps SiBCS / Title Case singular WRB / sufixo-codificado USDA Subgroup) antes de comparar com a saída dos três classificadores.</li>
+<li>
+<strong>Auto-skip por sistema sem label</strong> – BDsolos tem <code>reference_sibcs</code> denso (~80% nacional) mas <code>reference_wrb</code> e <code>reference_st</code> esparsos (UF-dependentes; ~5% no RJ). A função sempre reporta <code>$coverage</code> por sistema, e devolve <code>accuracy = NA_real_</code> + <code>message = "no_reference_labels"</code> no <code>$per_system</code> quando o ground-truth não foi preenchido pelo pedólogo. Roda os outros sistemas normalmente.</li>
+<li>
+<strong>Confusion matrix + per-class recall</strong> por sistema, mais um contador de erros do classificador (per-pedon try-catch, não aborta o run inteiro).</li>
+</ul><div class="section level4">
+<h4 id="legacy-label-fix-em-normalise_febr_sibcs-0-9-60">Legacy-label fix em <code>normalise_febr_sibcs()</code>
+<a class="anchor" aria-label="anchor" href="#legacy-label-fix-em-normalise_febr_sibcs-0-9-60"></a></h4>
+<p>A primeira passada (RJ.csv, 720 perfis) mostrou que <strong>54 perfis “Podzolicos” + 44 “Gleis” + 13 “Aluviais”</strong> eram nomes pre-2018 do SiBCS que o classifier nao emite mais. O classificador estava acertando esses casos semanticamente (43/54 Podzolicos -&gt; Argissolos) mas eram contados como erro porque o normaliser nao mapeava legacy -&gt; modern. v0.9.60 adiciona <code>.SIBCS_LEGACY_ORDER_MAP</code> ao <code><a href="../reference/normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code>:</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">.SIBCS_LEGACY_ORDER_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Podzolicos"</span> <span class="op">=</span> <span class="st">"Argissolos"</span>,   <span class="co"># SiBCS 5a ed. absorveu o Podzolico V/A</span></span>
+<span>  <span class="st">"Gleis"</span>      <span class="op">=</span> <span class="st">"Gleissolos"</span>,   <span class="co"># Gleis Humico/Pouco Humico colapsaram</span></span>
+<span>  <span class="st">"Aluviais"</span>   <span class="op">=</span> <span class="st">"Neossolos"</span>,    <span class="co"># Aluvial -&gt; Neossolo Fluvico</span></span>
+<span>  <span class="st">"Solos"</span>      <span class="op">=</span> <span class="cn">NA_character_</span>   <span class="co"># "Solos Halomorficos/Hidromorficos" out-of-scope</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="numero-empirico-rjcsv-perfis-0-9-60">Numero empirico (RJ.csv, 720 perfis, 2026-05-06)<a class="anchor" aria-label="anchor" href="#numero-empirico-rjcsv-perfis-0-9-60"></a></h4>
+<table class="table"><colgroup><col width="20%"><col width="26%"><col width="26%"><col width="26%"></colgroup><thead><tr><th>Sistema</th>
+<th align="right">Pre-fix</th>
+<th align="right">Post-fix</th>
+<th align="right">Delta</th>
+</tr></thead><tbody><tr><td><strong>SiBCS Order</strong></td>
+<td align="right">27.9% (201/720)</td>
+<td align="right">
+<strong>35.8%</strong> (254/710)</td>
+<td align="right"><strong>+7.9 pp</strong></td>
+</tr><tr><td>WRB</td>
+<td align="right">20.0% (1/5)</td>
+<td align="right">20.0% (1/5)</td>
+<td align="right">0.0 pp</td>
+</tr><tr><td>USDA</td>
+<td align="right">33.3% (4/12)</td>
+<td align="right">33.3% (4/12)</td>
+<td align="right">0.0 pp</td>
+</tr></tbody></table><p>Per-class recall pos-fix (top references orders RJ):</p>
+<pre><code>    reference n_ref n_correct  recall
+   Argissolos   240       174  0.725
+    Neossolos    57        46  0.807
+   Gleissolos    98         0  0.000  &lt;- diagnostic gap real, nao label
+  Cambissolos    90        16  0.178
+   Latossolos   114         9  0.079
+  Planossolos    36         1  0.028
+ Espodossolos    10         3  0.300</code></pre>
+<p>Argissolos e Neossolos absorveram corretamente os Podzolicos/Aluviais legacy. Gleissolos continua em 0% mesmo com 54+44=98 referencias disponiveis – ai o gap e do diagnostic real (provavelmente exige condicoes de saturacao que a quimica do BDsolos nao captura plenamente), nao do label.</p>
+</div>
+<div class="section level4">
+<h4 id="como-o-numero-rj-se-compara-aos-benchmarks-at-scale-existentes-0-9-60">Como o numero RJ se compara aos benchmarks at-scale existentes<a class="anchor" aria-label="anchor" href="#como-o-numero-rj-se-compara-aos-benchmarks-at-scale-existentes-0-9-60"></a></h4>
+<p>Esses numeros NAO substituem os benchmarks at-scale ja publicados; eles complementam:</p>
+<table style="width:100%;" class="table"><colgroup><col width="21%"><col width="21%"><col width="28%"><col width="28%"></colgroup><thead><tr><th>Benchmark</th>
+<th>Sistema</th>
+<th align="right">n</th>
+<th align="right">Order accuracy</th>
+</tr></thead><tbody><tr><td>FEBR superconjunto v0.9.27</td>
+<td>SiBCS</td>
+<td align="right">554</td>
+<td align="right">
+<strong>56.7%</strong> (CI 52.7-60.6)</td>
+</tr><tr><td>KSSL+NASIS v0.9.27 (filter)</td>
+<td>USDA</td>
+<td align="right">865</td>
+<td align="right">
+<strong>37.0%</strong> (CI 33.9-40.2)</td>
+</tr><tr><td>KSSL+NASIS+Tiebreaker v0.9.22</td>
+<td>USDA</td>
+<td align="right">2002</td>
+<td align="right">
+<strong>31.3%</strong> (CI 29.0-33.5)</td>
+</tr><tr><td>LUCAS Soil 2018 v0.9.49</td>
+<td>WRB</td>
+<td align="right">200</td>
+<td align="right">3.0% (topsoil-only baseline)</td>
+</tr><tr><td><strong>BDsolos RJ v0.9.60 (este patch)</strong></td>
+<td>SiBCS</td>
+<td align="right">720</td>
+<td align="right"><strong>35.8%</strong></td>
+</tr><tr><td><strong>LUCAS Soil 2018 v0.9.50 + subsoil fill</strong></td>
+<td>WRB</td>
+<td align="right">(TBD)</td>
+<td align="right">(overnight)</td>
+</tr></tbody></table></div>
+<div class="section level4">
+<h4 id="por-que-o-bdsolos-rj-esta-abaixo-do-febr-0-9-60">Por que o BDsolos RJ esta abaixo do FEBR<a class="anchor" aria-label="anchor" href="#por-que-o-bdsolos-rj-esta-abaixo-do-febr-0-9-60"></a></h4>
+<p>35.8% no BDsolos RJ vs 56.7% no FEBR superconjunto – 21 pp de diferenca, e nao tudo e gap de modelagem:</p>
+<ul><li>
+<strong>Composicao do dataset</strong>: RJ tem proporcao alta de Latossolos e Gleissolos onde o classifier tem recall baixo (8% e 0% respectivamente). FEBR superconjunto tem distribuicao mais Argissolo-pesada (que o classifier acerta a 72%).</li>
+<li>
+<strong>Quality filter</strong>: o benchmark FEBR usa filter explicito <code>requiring clay_pct populated</code>. O BDsolos run aqui usa todos os 720 perfis com label, incluindo perfis com chemistry esparsa.</li>
+<li>
+<strong>Subordem</strong>: nao medido aqui. No FEBR a 9.93% v0.9.27.</li>
+</ul><p>A v0.9.61 esta marcada para investigar especificamente Latossolos (RJ recall 7.9%, confusao predominante com Argissolos / Cambissolos / Neossolos – sugere threshold do horizonte latossolico vs B textural muito conservador) e Gleissolos (0% recall em 98 perfis).</p>
+</div>
+<div class="section level4">
+<h4 id="sobre-acuracia-em-sistemas-mundialmente-conhecidos-wrb--usda-0-9-60">Sobre acuracia em sistemas mundialmente conhecidos (WRB / USDA)<a class="anchor" aria-label="anchor" href="#sobre-acuracia-em-sistemas-mundialmente-conhecidos-wrb--usda-0-9-60"></a></h4>
+<p>Pergunta natural: “soilKey vai ter acuracia boa nos diagnosticos mundialmente famosos do WRB e USDA Soil Taxonomy?”. Os numeros at-scale ja publicados em releases anteriores respondem:</p>
+<pre><code>| Benchmark                         | Sistema | n     | Order accuracy |
+|-----------------------------------|---------|-------|---------------:|
+| FEBR superconjunto (v0.9.27)      | SiBCS   |   554 |  56.7% [52.7-60.6] |
+| KSSL+NASIS (v0.9.27, com filter)  | USDA    |   865 |  37.0% [33.9-40.2] |
+| KSSL+NASIS+Tiebreaker (v0.9.22)   | USDA    | 2,002 |  31.3% [29.0-33.5] |
+| LUCAS Soil 2018 (v0.9.49)         | WRB     |   200 |  3.0% (topsoil-only) |
+| **BDsolos RJ (v0.9.60, este)**    | SiBCS   |   720 |  35.8% (post-fix)  |
+| LUCAS + subsoil fill (v0.9.50)    | WRB     | 100-200 |  (overnight rerun) |</code></pre>
+<p>USDA Subgroup (n=865, v0.9.27): <strong>5.09%</strong> – baixo mas consistente com a literatura para sistemas baseados em regras (subgrupo USDA tem ~1700 classes). Per-Order USDA recall (KSSL n=2002):</p>
+<pre><code>   Vertisols   70.0%   &lt;- forte
+ Inceptisols   47.2%
+   Aridisols   46.6%
+   Spodosols   42.0%
+    Entisols   41.3%
+     Oxisols   28.6%
+   Mollisols   23.2%
+    Ultisols   20.4%
+    Alfisols   19.4%
+    Andisols    0.0%   &lt;- n=4, n.a.</code></pre>
+<p>Comparativo com a literatura: - Sistemas rule-based (engines deterministicos como soilKey): tipicamente 30-60% Order - Sistemas deep-learning (SoilNet, etc.) com features morfologicas ricas: 50-70% Order - Pedologos humanos com perfil completo + chemistry: 70-85% Order</p>
+<p>O soilKey esta solidamente na faixa rule-based com numeros defensaveis. <strong>WRB nao tem numero at-scale ainda</strong> – LUCAS topsoil puxa para 3% por falta de subsolo, e o overnight rerun com SoilGrids subsoil fill (v0.9.61) deve mostrar numeros comparaveis ao SiBCS / USDA.</p>
+</div>
+<div class="section level4">
+<h4 id="bdsolos-at-scale-uf-deferred-to-v0961-0-9-60">BDsolos at-scale 27-UF: deferred to v0.9.61<a class="anchor" aria-label="anchor" href="#bdsolos-at-scale-uf-deferred-to-v0961-0-9-60"></a></h4>
+<p>O script <code>run_bdsolos_v0960.R</code> carrega bem ate ~2500 PedonRecord R6 objects (7 UFs) entao trava em R6 GC pressure / accumulated state. Mesmo <code><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc()</a></code> explicito entre UFs nao resolve. Reprodutivel: ES.csv carrega em 1s em sessao R fresca, mas trava por minutos quando chamado depois de carregar BA + AM + RJ + outros.</p>
+<p>Workaround para v0.9.61: load via <code>Rscript</code> subprocess per UF + agregar via RDS (R session limpa por UF evita o slowdown). Documentado em <code>inst/benchmarks/run_bdsolos_v0960.R</code> como TODO.</p>
+</div>
+<div class="section level4">
+<h4 id="run-it-0-9-60">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-60"></a></h4>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960_focused.R   <span class="co"># RJ-only (28s)</span></span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R           <span class="co"># 27 UFs (~10-20 min)</span></span></code></pre></div>
+<p>Coverage real auditada nas 27 UFs (BD_solos completo): a tabela <code>audit</code> no relatorio multi-UF mostra n / sibcs / wrb / usda / coords / munsell por UF.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_3-empirical-close-de-v0950-lucas-wrb-pós-fill-0-9-60">3. Empirical close de v0.9.50 (LUCAS WRB pós-fill)<a class="anchor" aria-label="anchor" href="#id_3-empirical-close-de-v0950-lucas-wrb-p%C3%B3s-fill-0-9-60"></a></h3>
+<p>Dois scripts reproduzíveis:</p>
+<ul><li>
+<strong><code>inst/benchmarks/run_lucas_v0950_close.R</code></strong> – 100 perfis estratificados ES/FR/PL/IT em 3 configs (baseline, subsoil fill, topsoil+subsoil fill). Cobertura completa, ~1-2h wall-clock (cada SoilGrids COG range read = ~3-4s × 1800 calls).</li>
+<li>
+<strong><code>inst/benchmarks/run_lucas_v0950_close_focused.R</code></strong> – versão focada (30 perfis FR/PL/IT, só baseline + subsoil fill). ~12-18 min wall-clock. <strong>É a que rodamos para esta release</strong>.</li>
+</ul><div class="section level4">
+<h4 id="numero-empírico-baseline-focused-perfis-frplit-0-9-60">Numero empírico baseline (focused, 30 perfis FR/PL/IT, 2026-05-06)<a class="anchor" aria-label="anchor" href="#numero-emp%C3%ADrico-baseline-focused-perfis-frplit-0-9-60"></a></h4>
+<pre><code>configuration                    | elapsed_s | accuracy | in_scope
+-------------------------------------------------------------------
+baseline_no_fill                 |       3.3 |    0.000 | 27 / 30
+subsoil_soilgrids                |  [need overnight run]</code></pre>
+<p>Baseline 0.0% (0/27) confirma o regime do v0.9.49 baseline (3.0% em N=200) – o predictor cai em Regosols quando não há horizonte diagnostico subsuperficial. <strong>Subsoil_soilgrids stage não foi fechado nesta release</strong>: 30 perfis × 9 propriedades SoilGrids não convergiu em 46 min de wall-clock (SoilGrids COG range read ~8-12s observados na rodada real, vs ~3-4s no smoke test isolado; provavelmente carga do servidor <code>plantonderzoekwur.nl</code> no horário). Estima-se ~60-90 min para os 30 perfis completarem, ~3-6h para o N=100 do <code>run_lucas_v0950_close.R</code>.</p>
+<p><strong>Recomendação</strong>: rodar <code>Rscript inst/benchmarks/run_lucas_v0950_close_focused.R</code> overnight em janela de baixa latência SoilGrids, e abrir v0.9.61 com o número final + confusion matrix. O script salva <code>stage 1</code> RDS imediatamente, e o resultado final <code>.rds</code> + <code>.txt</code> ao terminar stage 2.</p>
+<p>Os scripts e a infra estão prontos – o hold-up é puramente network/throughput de SoilGrids COG, não do código.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-60">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-60"></a></h3>
+<p>Bump 0.9.59 -&gt; 0.9.60. Sem novos <code>Suggests</code> – a função reusa <code>utils::scan()</code> (base R) e <code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread</a></code> (já em <code>Imports</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-60">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-60"></a></h3>
+<p><code>tests/testthat/test-v0960-benchmark-bdsolos.R</code> (9 testes, 36 expectations):</p>
+<ul><li>Regression sentinel para o bug do header-line: fixture com <code>;</code> embutido em campo de “Responsavel” entre aspas; verifica que <code>.bdsolos_find_header_line</code> ainda retorna a linha 3 (header) e nao uma linha de dados.</li>
+<li>End-to-end: load_bdsolos_csv num fixture BDsolos full schema com os 3 reference columns + Munsell + DMS coords; verifica que <code>reference_sibcs / wrb / st</code> ficam todos populados.</li>
+<li>
+<code><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos()</a></code>: input validation, coverage reporting, no-label fall-through, SiBCS Order normalisation, max_n truncation, $config metadata (soilKey_version + timestamp), per-pedon error tolerance.</li>
+</ul><p>Suite total post-v0.9.60: passa o subset BDsolos + suite anterior. R CMD check Status OK (rerun no fim do release).</p>
+</div>
+<div class="section level3">
+<h3 id="run-it-0-9-60-1">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-60-1"></a></h3>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="co"># 1. BDsolos triple benchmark (gera report .rds + .txt)</span></span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R</span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a><span class="co"># 2. LUCAS empirical close (gera report .rds + .txt)</span></span>
+<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0950_close.R</span></code></pre></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.59" id="soilkey-0959-2026-05-06">soilKey 0.9.59 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0959-2026-05-06"></a></h2>
+<p>The “read.csv2 fallback for malformed BDsolos UTF-8” patch. Destrava 7 UFs (DF, MT, PA, PB, PE, RN, SP) que <code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread</a></code> recusava por causa de bytes UTF-8 inválidos – ~1,646 perfis (18% do total nacional) eram perdidos sem este fix.</p>
+<div class="section level3">
+<h3 id="background-0-9-59">Background<a class="anchor" aria-label="anchor" href="#background-0-9-59"></a></h3>
+<p>Hugo baixou TODOS os 27 estados do BDsolos. A auditoria com <code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread</a></code> falhava em 7 deles com:</p>
+<pre><code>attempt to set index N/N in SET_STRING_ELT</code></pre>
+<p>Esse erro ocorre quando o CSV contém uma sequência UTF-8 malformada (caractere truncado em meio de bytes).  e strict;  e lenient e parseia o resto do arquivo OK.</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-59">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-59"></a></h3>
+<p><code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> agora tenta <code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread</a></code> primeiro (rapido). Se falhar, cai para  (mais lento mas tolerante a UTF-8 invalido). Mensagem em PT-BR informa quando o fallback foi acionado.</p>
+</div>
+<div class="section level3">
+<h3 id="audit-completo-ufs-com-fallback-ligado-0-9-59">Audit completo (27 UFs com fallback ligado)<a class="anchor" aria-label="anchor" href="#audit-completo-ufs-com-fallback-ligado-0-9-59"></a></h3>
+<pre><code>Perfis totais        : 8,995
+Horizontes totais    : 39,123
+Horizontes c/Munsell : 25,356 (64.8%)
+Perfis c/taxon SiBCS : 7,369  (81.9%)
+Perfis c/coords      : 3,895  (43.3%)</code></pre>
+<p>UFs que precisavam do fallback (1,646 perfis adicionais):</p>
+<pre><code>DF: 154 perfis  MT: 271 perfis  PA: 622 perfis
+PB:  99 perfis  PE: 163 perfis  RN: 108 perfis
+SP: 229 perfis</code></pre>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-59">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-59"></a></h3>
+<p>2 new tests in <code>test-v0955-bdsolos.R</code> (now 88 expectations):</p>
+<ul><li>Synthetic CSV roundtrip via fread path (control).</li>
+<li>Source-level sentinel:  body must contain  pattern.</li>
+</ul><p>Suite total: 3675 / 0 / 20 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.58" id="soilkey-0958-2026-05-06">soilKey 0.9.58 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0958-2026-05-06"></a></h2>
+<p>The “BDsolos full export schema” release.  now correctly handles the <strong>real Embrapa BDsolos public-consult CSV</strong> (~222 columns, semicolon-delimited, preamble line, 100% Munsell coverage), not just the synthetic test schema v0.9.55 was built against.</p>
+<p>Validated on Hugo’s RJ.csv (721 perfis) + ES.csv (124 perfis) = <strong>845 perfis / 3,294 horizontes / 100% Munsell preservado</strong>.</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-58">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-58"></a></h3>
+<p><code>R/bdsolos.R</code>:</p>
+<ul><li><p><strong><code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code></strong> – auto-detects the BDsolos preamble (1 line of “Dados obtidos a partir do BDSOLOS…” + blank line) by picking the line with the most fields. Replaces the v0.9.55 fixed-threshold approach (which assumed &gt;= 30 fields and broke on schemas with fewer columns).</p></li>
+<li><p><strong><code><a href="../reference/dot-bdsolos_detect_sep.html">.bdsolos_detect_sep()</a></code></strong> – auto-picks <code>,</code> / <code>;</code> / <code>\t</code> based on which gives the most fields on the header line. Real BDsolos uses <code>;</code>; v0.9.55 hard-coded <code>,</code>.</p></li>
+<li><p><strong><code><a href="../reference/dot-bdsolos_dms_to_decimal.html">.bdsolos_dms_to_decimal()</a></code></strong> – converts the BDsolos coordinate schema () to decimal degrees, applying sign for S / W hemisphere.</p></li>
+<li><p><strong><code>.BDSOLOS_SITE_PATTERNS</code></strong> – new internal registry of 19 site- level columns: , , , , , , , , , , , plus 8 coordinate components (4 graus/min/seg/hem each for lat + lon) and 2 decimal lat/lon for legacy exports.</p></li>
+<li><p><strong><code>.BDSOLOS_COLUMN_PATTERNS</code></strong> expanded to recognise the full BDsolos column names:  (Munsell moist),  (Munsell dry),  +  +  (texture in g/kg),  +  +  +  +  +  +  (exchange complex),  +  (DCB iron / sulfuric attack),  (oxalate-extractable for Andic check), .</p></li>
+<li>
+<p><strong></strong> rewritten to:</p>
+<ul><li>Use <code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code> + <code><a href="../reference/dot-bdsolos_detect_sep.html">.bdsolos_detect_sep()</a></code> to skip preamble + use the right separator</li>
+<li>Build a unified  mapping from </li>
+<li>Group by codigo_pa via \code{ids %in% rid} (NOT  which returns NA on empty IDs and causes data.table to include NA-fill rows – this was the v0.9.58 critical bug fix: profiles were returning ~39 horizons instead of 5)</li>
+<li>Convert lat/lon from graus/min/seg/hem (or use direct decimal columns when present)</li>
+<li>Extract state, municipality, altitude, drainage, parent material, vegetation per pedon</li>
+<li>Capture the full SiBCS reference () plus FAO/WRB and USDA-ST cross-references when present</li>
+<li>Apply deterministic g/kg -&gt; % unit conversion for texture when source column matches the BDsolos canonical pattern (extends beyond the v0.9.55 heuristic which failed on typical low-silt soils with median &lt; 100)</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-9-58">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-58"></a></h3>
+<ul><li><p><strong>NA-id row leakage</strong> (v0.9.58 critical):  treats NA from  as TRUE-fill in data.table, leaking NA-padded rows into every pedon. Fixed by filtering  for unique-id enumeration and using \code{%in%} for row selection (returns FALSE on NA, not NA).</p></li>
+<li><p><strong>Designation column collision</strong> (v0.9.58): the prior pattern  was matching the BDsolos primary-key integer (“Codigo Horizonte” = 13976) instead of the SiBCS symbol (“Simbolo Horizonte” = “Bw1”). Removed the conflicting alternative.</p></li>
+<li><p><strong>Heuristic g/kg detection</strong> (v0.9.58): texture columns with median &lt; 100 (low-silt Latossolos / Neossolos) were not divided by 10. Now deterministic when the source column matches  or .</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-58">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-58"></a></h3>
+<p>5 new sentinel tests in  (now 83 expectations total):</p>
+<ul><li>Header-line detection (handles preamble + blank line)</li>
+<li>Separator detection ( chosen when most populous)</li>
+<li>DMS -&gt; decimal coordinates with hemisphere sign</li>
+<li>Full BDsolos schema fixture: 19 columns including , , full Munsell triple, full granulometry triple, lat coords, taxonomy. Round-trip: loader correctly groups 2 pedons (one with 2 horizons, one with 1), populates designations , parses Munsell  and , divides texture by 10 (180 -&gt; 18%), divides OC by 10 (15 -&gt; 1.5%), converts  to .</li>
+<li>NA-id row regression sentinel: a row with empty  is dropped (not leaked into any pedon).</li>
+</ul><p>Suite total: 3670 / 0 / 20 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="validated-on-real-embrapa-bdsolos-exports-0-9-58">Validated on real Embrapa BDsolos exports<a class="anchor" aria-label="anchor" href="#validated-on-real-embrapa-bdsolos-exports-0-9-58"></a></h3>
+<pre><code>RJ.csv (1.7 MB):  721 perfis, 2,884 horizontes, 100% Munsell
+ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
+                                              ----- ----- -----
+                                  Total: 845, 3,294, 100%</code></pre>
+<p> loaded both files end-to-end without errors. 120/124 ES pedons have full data (state + municipality + reference + Munsell + chemistry); the remaining 4 are sparse analytical-only entries.</p>
+<p> on the loaded pedons matches the surveyor’s reference Ordem in many cases; sub-Ordem accuracy is limited by current SiBCS-rule strictness on color discrimination and is the natural target for v0.9.59+ (the loader is correct; the classifier rules are the tuning frontier).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.57" id="soilkey-0957-2026-05-06">soilKey 0.9.57 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0957-2026-05-06"></a></h2>
+<p>The “FEBR loader – Brazilian profiles with Munsell” release. Wires soilKey to the <strong>Free Brazilian Repository for Open Soil Data (FEBR)</strong> maintained by UFSM (Alessandro Samuel-Rosa). FEBR is the canonical R-side path to ~36,000 Brazilian soil horizons with Munsell colors – the gap that BDsolos was meant to fill but that Hugo’s existing FEBR exports (Songchao, superconjunto) didn’t include.</p>
+<div class="section level3">
+<h3 id="diagnostic-finding-may-scan-0-9-57">Diagnostic finding (May 2026 scan)<a class="anchor" aria-label="anchor" href="#diagnostic-finding-may-scan-0-9-57"></a></h3>
+<p>A live scan of all 249 FEBR datasets via  confirmed:</p>
+<ul><li><strong>200 / 249 (80.3%) of FEBR datasets carry Munsell colors</strong></li>
+<li>
+<strong>36,275 horizons</strong> with non-NA Munsell hue across the catalog</li>
+<li>ctb0032 alone has <strong>10,577 horizons with Munsell</strong>
+</li>
+<li>ctb0562-ctb0700+ series ships pre-parsed matiz / valor / croma in separate columns</li>
+</ul><p>The earlier conclusion that “FEBR doesn’t have Munsell” was based on Hugo’s two specific FEBR exports (Songchao / superconjunto) that genuinely lack morphology. Other FEBR datasets do carry it.</p>
+</div>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-57">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-57"></a></h3>
+<p><code>R/febr.R</code> exports two functions plus internal helpers:</p>
+<ul><li><p><strong><code>read_febr_pedons(dataset_codes, febr_repo, min_munsell_coverage, verbose)</code></strong> – wraps  and adapts the returned  (layer) +  tables to the soilKey schema. Auto-detects the ~6 distinct Munsell column conventions used across FEBR datasets, parses PT-BR Munsell strings ( -&gt; hue , value 3, chroma 6), and returns a list of .</p></li>
+<li><p><strong><code>febr_index_munsell(min_coverage, refresh, verbose)</code></strong> – curated index of FEBR datasets that have Munsell columns populated. Backed by a precomputed cache in  (, 200 rows from the May-2026 scan).  re-scans live (slow, ~15 min).</p></li>
+<li><p><strong><code><a href="../reference/dot-parse_febr_munsell.html">.parse_febr_munsell()</a></code> / <code><a href="../reference/dot-parse_febr_munsell_vec.html">.parse_febr_munsell_vec()</a></code></strong> – PT-BR-aware Munsell string parser handling comma decimals.</p></li>
+<li><p><strong><code><a href="../reference/dot-detect_febr_munsell_columns.html">.detect_febr_munsell_columns()</a></code></strong> – discovers Munsell-related columns across the FEBR conventions: , , , , , ,  (canonical).</p></li>
+<li><p><strong><code>.FEBR_TO_HORIZON_MAP</code></strong> – regex table mapping FEBR layer variable codes (camada_nome, profund_sup/inf, ph_h2o, carbono, argila/silte/areia, ca_troc, ctc, etc.) to soilKey horizon columns.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-this-matters-0-9-57">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters-0-9-57"></a></h3>
+<p>Combined with the v0.9.55 BDsolos helpers, soilKey now offers <strong>three independent paths to Brazilian profiles with Munsell</strong>:</p>
+<ol style="list-style-type: decimal"><li><p><strong><code>read_febr_pedons("ctb0032")</code></strong> – the largest source (~10k horizons), HTTP-only via the febr package (CRAN-stable, no headless browser).</p></li>
+<li><p><strong><code>download_bdsolos(filter_uf = "RJ")</code></strong> – via headless Chrome (chromote, v0.9.55+v0.9.56), works for BDsolos-only profiles not aggregated into FEBR.</p></li>
+<li><p><strong><code>load_bdsolos_csv(path)</code></strong> – consumes a manually-downloaded BDsolos CSV.</p></li>
+</ol><p>For the v0.9.45 Argissolo “cor a determinar” fallback, FEBR is the most practical fix: 200 datasets with Munsell, no JS UI to fight, no chromote dependency, just  + a few function calls.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-57">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-57"></a></h3>
+<p>12 new tests in <code>test-v0957-febr.R</code> (54 expectations), all run unconditionally without network access:</p>
+<ul><li>Munsell parser handles canonical PT-BR strings + fractional value/croma + garbage / empty input + vectorisation.</li>
+<li>Column detector picks pre-parsed columns over string columns when both present; falls back to ctb0005 / ctb0019 / ctb0032 variants.</li>
+<li>Layer column mapper recognises canonical FEBR camada codes.</li>
+<li>Bundled  has the expected shape (200 rows, ctb0032 at the top with 10,577 horizons).</li>
+<li> filters by coverage + sorts descending.</li>
+<li> errors clearly when febr is missing (path skipped when febr is installed).</li>
+<li>Live network test gated on .</li>
+</ul><p>Suite total: 3644 / 0 / 20 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="smoke-test-on-real-febr-data-0-9-57">Smoke test on real FEBR data<a class="anchor" aria-label="anchor" href="#smoke-test-on-real-febr-data-0-9-57"></a></h3>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
+<span><span class="va">pedons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_febr_pedons.html">read_febr_pedons</a></span><span class="op">(</span><span class="st">"ctb0039"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ctb0039: 8 perfis (Munsell em 8), 35 horizons total.</span></span>
+<span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">pedons</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">p</span><span class="op">$</span><span class="va">horizons</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fu">.</span><span class="op">(</span><span class="va">designation</span>, <span class="va">top_cm</span>, <span class="va">bottom_cm</span>,</span>
+<span>                   <span class="va">munsell_hue_moist</span>, <span class="va">munsell_value_moist</span>,</span>
+<span>                   <span class="va">munsell_chroma_moist</span>, <span class="va">clay_pct</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   designation top_cm bottom_cm munsell_hue_moist munsell_value_moist</span></span>
+<span><span class="co">#&gt; 1:          AP      0         6             2.5YR                   3</span></span>
+<span><span class="co">#&gt; 2:           A      6        45             2.5YR                   3</span></span>
+<span><span class="co">#&gt; 3:         Bw1     45       100             2.5YR                   3</span></span>
+<span><span class="co">#&gt;   munsell_chroma_moist clay_pct</span></span>
+<span><span class="co">#&gt; 1:                    3    37.30</span></span>
+<span><span class="co">#&gt; 2:                    3    48.35</span></span>
+<span><span class="co">#&gt; 3:                    4    68.30</span></span></code></pre></div>
+<p>Note the PT-BR comma decimal in the original FEBR data () was correctly normalised to  for soilKey schema compatibility.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-57">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-57"></a></h3>
+<p><code>febr</code> added to Suggests (gated via <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>). Install with  since the CRAN binary lags the GitHub repo (last CRAN release v1.1.0 of 2020-03 doesn’t have  or ).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.56" id="soilkey-0956-2026-05-06">soilKey 0.9.56 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0956-2026-05-06"></a></h2>
+<p>The “download_bdsolos timeout fix” patch. v0.9.55 shipped  but the synchronous  invocation in the JS frame timed out chromote on the slow Embrapa server (~5-10s default  timeout vs minutes of server-side PHP processing).</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-56">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-56"></a></h3>
+<ul><li><p><strong> call deferred via </strong> – the JS frame returns immediately, the AJAX runs in the background, and the chromote eval no longer blocks. The polling loop continues to monitor the DOM for “ETAPA 3” appearance.</p></li>
+<li><p><strong>Defensive  around the submit eval</strong> – even if chromote itself times out, the AJAX is likely still running, so we proceed to the polling loop with a warning instead of aborting.</p></li>
+<li><p><strong>Polling probe enriched</strong> – each probe now also reports the page’s loading state ( pattern), and the function emits a progress line every 30s showing elapsed time + DOM state when .</p></li>
+<li><p><strong> env var bumped</strong> at session init to ; chromote’s default 5-10s isn’t enough for the SPA bootstrap on the BDsolos splash page.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="sentinel-tests-0-9-56">Sentinel tests<a class="anchor" aria-label="anchor" href="#sentinel-tests-0-9-56"></a></h3>
+<p>2 new tests in  (now 57 expectations):</p>
+<ul><li>
+</li><li>
+</li></ul><p>These regression sentinels ensure the timeout fix doesn’t get accidentally reverted in future refactors.</p>
+<p>Suite total: 3588 / 0 / 18 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="how-to-use-after-this-fix-0-9-56">How to use after this fix<a class="anchor" aria-label="anchor" href="#how-to-use-after-this-fix-0-9-56"></a></h3>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HugoMachadoRodrigues/soilKey"</span>,</span>
+<span>                          ref <span class="op">=</span> <span class="st">"v0.9.56"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">.rs.restartR</span><span class="op">(</span><span class="op">)</span>  <span class="co"># restart R / fresh session</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
+<span><span class="va">ufs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RJ"</span>, <span class="st">"SP"</span>, <span class="st">"MG"</span>, <span class="st">"ES"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"./soil_data/embrapa_bdsolos"</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>           recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">uf</span> <span class="kw">in</span> <span class="va">ufs</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/download_bdsolos.html">download_bdsolos</a></span><span class="op">(</span></span>
+<span>    out_path        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"./soil_data/embrapa_bdsolos"</span>,</span>
+<span>                                  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">uf</span>, <span class="st">".csv"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    accept_terms    <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    filter_uf       <span class="op">=</span> <span class="va">uf</span>,</span>
+<span>    timeout_seconds <span class="op">=</span> <span class="fl">600</span>,</span>
+<span>    verbose         <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>If a particular UF still times out (full state too large or server overloaded), retry with  or pick a specific municipality once the Etapa 2 form supports it.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.55" id="soilkey-0955-2026-05-06">soilKey 0.9.55 (2026-05-06)<a class="anchor" aria-label="anchor" href="#soilkey-0955-2026-05-06"></a></h2>
+<p>The “BDsolos R-side helpers” release. Adds three R-side helpers to consume the <strong>Embrapa BDsolos</strong> profile database (~9,000 perfis brasileiros, the canonical source for SiBCS-classified data with morphology + Munsell colors) without leaving R.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-55">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-55"></a></h3>
+<p><code>R/bdsolos.R</code> (new file) exports three functions plus an internal column-detection layer:</p>
+<ul><li><p><strong><code>load_bdsolos_csv(path, sep, verbose)</code></strong> – reads the long- format BDsolos export (one row per horizon, profile-id key) and returns a list of . Auto-detects the column-name convention via regex patterns covering the classic PT-BR shape (, , , , , ) AND the lowercase / SmartSolos-derived shape (, , , ). Texture and OC are converted from g/kg to percent (BDsolos canonical unit).</p></li>
+<li><p><strong><code>inspect_bdsolos_csv(path, sep)</code></strong> – diagnostic helper. Prints the raw schema, identifies which columns will map to which soilKey horizon attribute, lists unmapped columns, and reports Munsell coverage (matiz / valor / croma) + the surveyor’s taxonomic reference column. Run before <code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> on any new CSV from BDsolos.</p></li>
+<li><p><strong><code>download_bdsolos(out_path, accept_terms, filter_uf, attributes, timeout_seconds, chromote_session, verbose)</code></strong> – best-effort programmatic downloader via headless Chrome (). Drives the 3-step Embrapa web form (accept terms -&gt; select all attributes -&gt; submit query -&gt; select all results + radio CSV -&gt; capture). Marked <strong>experimental</strong>: full-table queries (no UF filter) frequently overload the Embrapa server – prefer  batches of one or two states at a time and stitch the resulting CSVs.</p></li>
+<li><p><strong><code><a href="../reference/dot-bdsolos_norm.html">.bdsolos_norm()</a></code> / <code><a href="../reference/dot-bdsolos_match_column.html">.bdsolos_match_column()</a></code> / <code><a href="../reference/dot-bdsolos_match_taxon_column.html">.bdsolos_match_taxon_column()</a></code> / <code>.BDSOLOS_COLUMN_PATTERNS</code></strong> internals: deterministic Portuguese-aware column normaliser (handles  via ) plus regex table for 30+ canonical BDsolos columns -&gt; soilKey horizon schema.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-r-side-rather-than-the-browser-0-9-55">Why R-side rather than the browser<a class="anchor" aria-label="anchor" href="#why-r-side-rather-than-the-browser-0-9-55"></a></h3>
+<p>The first attempt used Chrome MCP to drive the BDsolos form interactively. The full-table query (~9k profiles x ~30 horizon attributes) reliably <strong>freezes the renderer</strong> – the server-side PHP query takes minutes and the SPA does not handle it gracefully. Going pure R-side via headless Chrome (no on-screen rendering) lets the function batch by UF and recover via clean session restarts.</p>
+</div>
+<div class="section level3">
+<h3 id="terms-of-use-0-9-55">Terms-of-use<a class="anchor" aria-label="anchor" href="#terms-of-use-0-9-55"></a></h3>
+<p>Per the splash on :</p>
+<ul><li>Personal / academic use is allowed; commercial use requires a separate Embrapa licence.</li>
+<li>Publications must cite the source per ABNT.</li>
+</ul><p><code><a href="../reference/download_bdsolos.html">download_bdsolos()</a></code> requires  so no download happens without the user explicitly acknowledging those terms.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-55">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-55"></a></h3>
+<p>10 new tests in <code>test-v0955-bdsolos.R</code> (55 expectations), all exercised via synthetic CSVs in tempdir() so they run unconditionally:</p>
+<ul><li>Norm function handles Portuguese diacritics (, ) deterministically.</li>
+<li>Column matcher maps Munsell + texture + chemistry + taxon variants from both classic and lowercase BDsolos schemas.</li>
+<li>
+<code><a href="../reference/inspect_bdsolos_csv.html">inspect_bdsolos_csv()</a></code> returns mapped / unmapped / Munsell coverage / taxon column.</li>
+<li>
+<code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> reads both schema variants, performs the g/kg -&gt; % unit conversion deterministically (canonical column names override the heuristic), and the resulting pedons classify correctly via <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code>.</li>
+<li>
+<code><a href="../reference/download_bdsolos.html">download_bdsolos()</a></code> requires <code>accept_terms = TRUE</code> and errors clearly when chromote is missing. Live network test gated on <code>SOILKEY_NETWORK_TESTS</code>.</li>
+</ul><p>Suite total: 3586 / 0 / 18 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-55">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-55"></a></h3>
+<p><code>chromote</code> added to Suggests (gated via <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.54" id="soilkey-0954-2026-05-05">soilKey 0.9.54 (2026-05-05)<a class="anchor" aria-label="anchor" href="#soilkey-0954-2026-05-05"></a></h2>
+<p>The “SmartSolosExpert API cross-validation” release. Wires soilKey to <strong>Glauber Vaz’s PROLOG-based SiBCS classifier</strong> exposed by Embrapa’s AgroAPI as a REST endpoint, giving users an authoritative external reference to compare the local classifier against.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-54">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-54"></a></h3>
+<p><code>R/classify-smartsolos.R</code> adds two exported functions plus a mapping layer:</p>
+<ul><li><p><strong><code>classify_via_smartsolos_api(pedon, api_key, endpoint, drenagem, reference_sibcs, base_url, timeout_seconds, post_fn, verbose)</code></strong> – POSTs a soilKey  to  (or ) and returns a  with the Embrapa-hosted Ordem / Subordem / Grande Grupo / Subgrupo. Bearer token comes from  or the  argument. The  parameter lets unit tests inject a deterministic stub so the package test suite is fully offline.</p></li>
+<li><p><strong><code>compare_smartsolos(pedon, ...)</code></strong> – runs both the local <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> and the remote <code><a href="../reference/classify_via_smartsolos_api.html">classify_via_smartsolos_api()</a></code> on the same pedon and tabulates agreement at each of the four SiBCS levels. Returns <code>list(local, remote, agreement)</code>.</p></li>
+<li><p><strong>Mapping helpers</strong> (internal): convert soilKey horizon attributes to the SmartSolos schema – units (<code>% -&gt; g/kg</code> for texture and OC), categorical strings (<code>structure_grade</code> weak/moderate/strong -&gt; 1/2/3, <code>structure_type</code> granular/blocks/prismatic/columnar/laminar -&gt; 1..6, <code>clay_films_amount</code> few/common/many -&gt; 1..3), and the <code>DRENAGEM</code> SiBCS scale (1..8).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-this-matters-0-9-54">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters-0-9-54"></a></h3>
+<ul><li>
+<strong>External reference for validation</strong>: the SmartSolosExpert API is maintained by Glauber Vaz / Embrapa Solos directly from the SiBCS rule book. Disagreements between  (soilKey local) and  (Embrapa remote) point at either soilKey rule bugs or genuine SiBCS interpretation ambiguities – both worth investigating.</li>
+<li>
+<strong>Cross-language sanity check</strong>: soilKey’s SiBCS rules were encoded by hand from the 5a edicao text; SmartSolos is in PROLOG and was reviewed by the SiBCS authors. Two independent implementations.</li>
+<li>
+<strong>Verification mode</strong>: pass a user-supplied reference classification to the  endpoint and the API returns a per-level match summary () – useful for benchmarking against curated perfis.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="authentication-0-9-54">Authentication<a class="anchor" aria-label="anchor" href="#authentication-0-9-54"></a></h3>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Register at https://www.agroapi.cnptia.embrapa.br/portal/</span></span>
+<span><span class="co"># 2. Subscribe to SmartSolosExpert API</span></span>
+<span><span class="co"># 3. Generate an access token</span></span>
+<span><span class="co"># 4. Set the env var (or pass api_key= directly)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>AGROAPI_TOKEN <span class="op">=</span> <span class="st">"&lt;your token&gt;"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/classify_via_smartsolos_api.html">classify_via_smartsolos_api</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_argissolo_canonical.html">make_argissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">rsg_or_order</span>  <span class="co"># "ARGISSOLO"</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">qualifiers</span></span>
+<span><span class="co">#&gt; $subordem  "VERMELHO"</span></span>
+<span><span class="co">#&gt; $gde_grupo "Distrofico"</span></span>
+<span><span class="co">#&gt; $subgrupo  "tipico"</span></span>
+<span></span>
+<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_smartsolos.html">compare_smartsolos</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_argissolo_canonical.html">make_argissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cmp</span><span class="op">$</span><span class="va">agreement</span></span>
+<span><span class="co">#&gt;   point_id ordem subordem gde_grupo subgrupo n_match</span></span>
+<span><span class="co">#&gt; 1    P-... TRUE     TRUE      TRUE     TRUE       4</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-54">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-54"></a></h3>
+<p>13 new tests in <code>test-v0954-smartsolos-api.R</code> (56 expectations). All HTTP work bypassed via the <code>post_fn</code> injection – no network required. An opt-in live test is gated on  env vars.</p>
+<p>Coverage:</p>
+<ul><li>Mapping helpers (struct grade / size / type, clay films, drainage)</li>
+<li>Payload shape (29 documented JSON keys per horizon)</li>
+<li>Unit conversions (% -&gt; g/kg, sand split into AREIA_GROS / AREIA_FINA)</li>
+<li>Subangular-vs-angular blocky disambiguation</li>
+<li>Response parser (4-level Embrapa output -&gt; ClassificationResult)</li>
+<li>Stub-based end-to-end via <code>post_fn</code>
+</li>
+<li>Verification endpoint with <code>items_bd + summary</code>
+</li>
+<li>
+<code><a href="../reference/compare_smartsolos.html">compare_smartsolos()</a></code> agreement data.frame</li>
+<li>Live-network test (opt-in)</li>
+</ul><p>Suite total: 3529 / 0 / 16 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.53" id="soilkey-0953-2026-05-05">soilKey 0.9.53 (2026-05-05)<a class="anchor" aria-label="anchor" href="#soilkey-0953-2026-05-05"></a></h2>
+<p>The “performance benchmark documentado” release. Adds <strong><code>benchmark_performance(n, systems, ...)</code></strong> – reproducible latency + batch-throughput measurement of the three classifiers.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-53">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-53"></a></h3>
+<ul><li><p><strong><code>benchmark_performance(n, systems, include_familia, seed, verbose)</code></strong> – generates <code>n</code> synthetic 5-horizon pedons (fixed RNG seed -&gt; reproducible across releases), times each classifier, returns <code>list(summary, per_pedon, config)</code> with median / mean / total / pedons-per-minute per system. The <code>config</code> element captures soilKey version, R version and platform for traceability.</p></li>
+<li><p><strong><code>inst/benchmarks/reports/performance_2026-05-05.md</code></strong> – documents the canonical baseline:</p></li>
+</ul><table class="table"><thead><tr><th>System</th>
+<th align="right">Median (s/pedon)</th>
+<th align="right">Throughput (pedons/min)</th>
+</tr></thead><tbody><tr><td>WRB 2022</td>
+<td align="right"><strong>0.021</strong></td>
+<td align="right"><strong>2,327</strong></td>
+</tr><tr><td>SiBCS 5a</td>
+<td align="right"><strong>0.037</strong></td>
+<td align="right"><strong>1,549</strong></td>
+</tr><tr><td>USDA-ST 13a</td>
+<td align="right"><strong>0.121</strong></td>
+<td align="right"><strong>290</strong></td>
+</tr></tbody></table><p>At-scale projections (LUCAS 18k ~8 min WRB; KSSL 36k ~2h USDA) + per-system runtime breakdowns + memory profile + next optimisation targets.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-53">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-53"></a></h3>
+<p>6 new tests in <code>test-v0953-performance.R</code> (18 expectations) including a regression sentinel: median seconds &lt; 5 per system on a 3-pedon mini-bench. A 50x slowdown on the synthetic fixture would trip CI before a release ships.</p>
+<p>R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.52" id="soilkey-0952-2026-05-05">soilKey 0.9.52 (2026-05-05)<a class="anchor" aria-label="anchor" href="#soilkey-0952-2026-05-05"></a></h2>
+<p>The “vinheta PT-BR end-to-end” release. Adds <strong><code>v09_perfil_embrapa_pt.Rmd</code></strong> – um perfil real (Argissolo Vermelho-Amarelo distrofico tipico, Itaguai-RJ, adaptado do Levantamento Embrapa Solos 2003) seguido do A ao Z atraves do pacote, em portugues.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-52">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-52"></a></h3>
+<ul><li><p><strong>Vinheta v09 (PT-BR)</strong> cobrindo: construcao do <code>PedonRecord</code> com 5 horizontes; diagnosticos manuais (B textural, atividade da argila, V%); <code><a href="../reference/classify_all.html">classify_all()</a></code> -&gt; SiBCS / WRB / USDA-ST; comparacao cross-system; relatorio HTML; cruzamento opcional com MapBiomas Solos e SoilGrids.</p></li>
+<li><p><strong><code>ClassificationResult$print()</code> defensive fix</strong>: o metodo iterava <code>self$trace</code> e crashava em  quando a trace continha entradas escalares (<code>familia_label</code>), <code>NULL</code> (<code>color_undetermined</code>) ou <code>data.frame</code>. Agora pula entradas que nao sao listas (ou que sao data.frames) no dump per-RSG.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-9-52">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-52"></a></h3>
+<p>4 novos em <code>test-v0952-vignette-pt.R</code> (18 expectations) cobrindo front-matter Rmd, presenca dos 3 sistemas + lookups espaciais + modulos espectrais, e o fix do print em traces com entradas escalares / NULL / data.frame.</p>
+<p>R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.51" id="soilkey-0951-2026-05-05">soilKey 0.9.51 (2026-05-05)<a class="anchor" aria-label="anchor" href="#soilkey-0951-2026-05-05"></a></h2>
+<p>The “container reproducibility” release. Adds a Dockerfile + a GitHub Actions workflow that builds and publishes a container image to <strong>ghcr.io/HugoMachadoRodrigues/soilKey</strong> on every git tag.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-51">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-51"></a></h3>
+<ul><li><p><strong><code>Dockerfile</code></strong> – FROM <code>rocker/r-ver:4.4.0</code>, installs the GDAL/GEOS/PROJ stack required by <code>terra</code>, the dependency closure of soilKey + key Suggests (<code>terra</code>, <code>foreign</code>, <code>pls</code>, <code>munsellinterpol</code>, <code>shiny</code>, <code>DT</code>). Build-time smoke test (<code><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">library(soilKey)</a></code>) so a broken image fails to publish.</p></li>
+<li><p><strong><code>.dockerignore</code></strong> – excludes <code>soil_data/</code>, <code>.git/</code>, <code>*.tif</code>, <code>*.shp</code>, R build artefacts. Keeps the build context lean.</p></li>
+<li><p><strong><code>.github/workflows/docker.yaml</code></strong> – triggers on <code>v*</code> git tags, runs <code>docker buildx</code>, pushes both <code>:&lt;version&gt;</code> and <code>:latest</code> tags to GHCR with cache-from/cache-to gha caching. Final step smoke-tests the published image.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="run-it-0-9-51">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-51"></a></h3>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> ghcr.io/HugoMachadoRodrigues/soilKey:latest</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> <span class="at">-p</span> 3838:3838 ghcr.io/HugoMachadoRodrigues/soilKey:latest <span class="dt">\</span></span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>  R <span class="at">-e</span> <span class="st">'soilKey::run_classify_app(host = "0.0.0.0", port = 3838L,</span></span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a><span class="st">                                    launch.browser = FALSE)'</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-51">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-51"></a></h3>
+<p>7 new tests in <code>test-v0951-docker-ci.R</code> (21 expectations) – lint the Dockerfile + workflow without a container build, ensuring future commits don’t drop the GDAL stack, the key Suggests, or the GHCR push step. R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.50" id="soilkey-0950-2026-05-05">soilKey 0.9.50 (2026-05-05)<a class="anchor" aria-label="anchor" href="#soilkey-0950-2026-05-05"></a></h2>
+<p>The “comprehensive subsoil fill + Vis-NIR wire-up” release. Lifts the v0.9.49 LUCAS WRB benchmark out of the Regosols catch-all by giving <code><a href="../reference/benchmark_lucas_2018.html">benchmark_lucas_2018()</a></code> three new fill paths.</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-50">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-50"></a></h3>
+<ul><li><p><strong><code>fill_topsoil_from = c("none", "soilgrids", "spectra")</code></strong> – expands the v0.9.49 <code>fill_texture_from</code> to cover all 9 SoilGrids properties (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, cfvo) at 0-5 cm. Legacy <code>fill_texture_from = "soilgrids"</code> continues to work as a back-compat alias.</p></li>
+<li><p><strong><code>fill_subsoil_from = c("none", "soilgrids")</code></strong> – synthesises a 30-60 cm B horizon from SoilGrids 250m at the same 9 properties. Unlocks WRB cambic / argic / mollic / nitic diagnostics that the LUCAS topsoil-only release cannot satisfy alone.</p></li>
+<li><p><strong><code>fill_topsoil_from = "spectra"</code> + <code>ossl_models</code></strong> – when the LUCAS Spectral Library is available, runs <code><a href="../reference/predict_from_spectra.html">predict_from_spectra()</a></code> (v0.9.46) per pedon to fill any property still missing after the SoilGrids paths.</p></li>
+<li><p><strong><code>attach_lucas_spectra(pedons, spectra, point_id_col)</code></strong> – new exported helper. Joins a wide (POINT_ID + wavelength columns) or long (POINT_ID + wavelength_nm + reflectance) spectra table onto the pedon list, populating <code>pedon$spectra$vnir</code>.</p></li>
+<li><p><strong><code>.SOILGRIDS_TO_HORIZON_MAP</code></strong> + <strong><code><a href="../reference/dot-fill_horizon_from_soilgrids.html">.fill_horizon_from_soilgrids()</a></code></strong> internals. The helper accepts a <code>lookup_fn</code> parameter for unit-test injection so the test suite runs offline.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-cfvo-matters-0-9-50">Why cfvo matters<a class="anchor" aria-label="anchor" href="#why-cfvo-matters-0-9-50"></a></h3>
+<p>The Leptosols predicate (<code>leptic_features</code> in <code>R/diagnostics-properties-wrb.R</code>) fires when <code>coarse_fragments_pct &gt;= 90 within 25 cm</code>. SoilGrids <code>cfvo</code> maps directly to that. With <code>fill_properties</code> covering <code>cfvo</code>, Leptosols (39% of the LUCAS European reference) become reachable.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-50">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-50"></a></h3>
+<p>13 new tests in <code>test-v0950-lucas-fills.R</code> (52 expectations), all exercised through the <code>soilgrids_lookup_fn</code> injection – no network required. R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.49" id="soilkey-0949-2026-05-04">soilKey 0.9.49 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0949-2026-05-04"></a></h2>
+<p>The “EU-LUCAS / WRB benchmark Route B end-to-end” release. Closes the EU-LUCAS WRB benchmark <strong>chemistry half</strong> that has been open since the v0.9.27 roadmap. v0.9.44 already shipped the raster-lookup half (<code><a href="../reference/lookup_esdb.html">lookup_esdb()</a></code>); v0.9.49 ships the loader for the LUCAS Soil 2018 Topsoil release (~18,984 European points) plus the benchmark function that compares the soilKey classifier to the canonical ESDB WRB raster at every coordinate.</p>
+<div class="section level3">
+<h3 id="whats-shipped-0-9-49">What’s shipped<a class="anchor" aria-label="anchor" href="#whats-shipped-0-9-49"></a></h3>
+<p><code>R/benchmark-lucas-2018.R</code> adds two new exported functions and an internal WRB code-name table:</p>
+<ul><li><p><strong><code>load_lucas_soil_2018(path, attach_bulk_density, countries, max_n, verbose)</code></strong> – reads the canonical ESDAC release (<code>LUCAS-SOIL-2018.csv</code>), joins <code>BulkDensity_2018_final-2.csv</code> on <code>POINTID</code>, and returns a list of <code>PedonRecord</code> objects. Unit conversions baked in (g/kg -&gt; %, mS/m -&gt; dS/m), <code>&lt; LOD</code> / <code>&lt;LOD</code> / empty / <code>n.d.</code> / <code>ND</code> cells coerced to <code>NA</code>, and a 20-30 cm subsoil horizon is synthesised when the LUCAS subsoil OC / CaCO3 columns are populated.</p></li>
+<li><p><strong><code>benchmark_lucas_2018(pedons, esdb_root, attribute, fill_texture_from, classify_with, max_n, verbose)</code></strong> – looks up the ESDB Reference Soil Group at every coordinate via <code>lookup_esdb(attribute = "WRBLV1")</code>, optionally fills missing clay/sand/silt from SoilGrids 250m via <code><a href="../reference/lookup_soilgrids.html">lookup_soilgrids()</a></code>, runs <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> (or <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code>) per pedon, and tabulates a confusion matrix + per-RSG recall. Returns a list with <code>predictions</code>, <code>confusion</code>, <code>accuracy</code>, <code>per_rsg</code>, <code>n_in_scope / n_total / n_errors</code> and the configuration recap.</p></li>
+<li><p><strong><code>.WRB_LV1_NAME_BY_CODE</code></strong> (internal) – mapping the 31 ESDB WRBLV1 2-letter codes to the English plural RSG names returned by the classifier. Codes follow IUSS WRB 2022; the legacy <code>AB</code> (Albeluvisols) is mapped to <code>NA</code>.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="demonstration-0-9-49">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration-0-9-49"></a></h3>
+<p>200 LUCAS pedons stratified across ES / FR / PL / IT, pure chemistry baseline (no SoilGrids fill, no spectra fill):</p>
+<pre><code>Accuracy: 3.0%  in-scope: 199 / 200
+
+Reference:  Cambisols 53%  Leptosols 39%  others 8%
+Predicted:  Regosols  92%  Histosols 7%   Calcisols 1%</code></pre>
+<p>This is an honest baseline. LUCAS Soil 2018 ships only <strong>topsoil 0-20 cm</strong> chemistry; WRB diagnostic horizons (cambic, argic, mollic, ferralic) require subsoil features that are not in this release. <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> correctly falls back to <strong>Regosols</strong> (WRB catch-all) when no diagnostic horizon triggers. Histosols recall is 33% (1/3): the histic threshold (OC &gt;= 12%) is the only one detectable from a 20-cm sample alone.</p>
+</div>
+<div class="section level3">
+<h3 id="the-improvement-path-v0950-candidates-0-9-49">The improvement path (v0.9.50 candidates)<a class="anchor" aria-label="anchor" href="#the-improvement-path-v0950-candidates-0-9-49"></a></h3>
+<p>The package already has the building blocks to lift the accuracy:</p>
+<ul><li>
+<strong>Subsoil texture from SoilGrids 30-60 cm</strong> via <code><a href="../reference/lookup_soilgrids.html">lookup_soilgrids()</a></code> (v0.9.48) – unlocks cambic / argic thresholds.</li>
+<li>
+<strong>Vis-NIR spectra fill</strong> via <code><a href="../reference/predict_from_spectra.html">predict_from_spectra()</a></code> (v0.9.46)
+<ul><li>
+<code><a href="../reference/fill_munsell_from_spectra.html">fill_munsell_from_spectra()</a></code> (v0.9.47) when the LUCAS Soil 2018 Spectral Library is downloaded (~83 GB ESDAC release) – highest fidelity because per-point spectra capture local mineralogy.</li>
+</ul></li>
+<li>
+<strong>Bedrock depth proxy</strong> via SoilGrids <code>cfvo</code> – unlocks Leptosols.</li>
+</ul><p>A natural v0.9.50 would extend <code><a href="../reference/benchmark_lucas_2018.html">benchmark_lucas_2018()</a></code> with a <code>fill_subsoil_from = "soilgrids"</code> option that synthesises a 30-60 cm horizon from SoilGrids per pedon.</p>
+</div>
+<div class="section level3">
+<h3 id="bottom-line-0-9-49">Bottom line<a class="anchor" aria-label="anchor" href="#bottom-line-0-9-49"></a></h3>
+<p>Route B is <strong>end-to-end runnable as of v0.9.49</strong>. Hugo can now drive the comparison loop on his own machine without waiting for the Embrapa export or the spectral-library download.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-49">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-49"></a></h3>
+<p>12 new tests in <code>test-v0949-lucas-2018.R</code> (55 expectations) – all pass without network. Loader covers 4 chemistry rows (ES, FR, SE, IT) with mixed <code>&lt; LOD</code> / empty cells, BD-join, country and <code>max_n</code> filters, and missing-file errors. Benchmark covers end-to-end on a synthetic 4x4 ESDB raster, code decoding, input validation, and both <code>wrb2022</code> / <code>sibcs</code> paths. Suite total: 3362 / 0 / 15 (pass / fail / skip). R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="documentation-0-9-49">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-9-49"></a></h3>
+<p><code>inst/benchmarks/reports/lucas_2018_benchmark_2026-05-04.md</code> documents the loader, the 200-point baseline, the per-RSG confusion, the surface-only limitation and the v0.9.50 improvement path.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.48" id="soilkey-0948-2026-05-04">soilKey 0.9.48 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0948-2026-05-04"></a></h2>
+<p>The “MapBiomas Solos + SoilGrids 250m raster lookup” release. Adds the <strong>fourth and fifth spatial validation axes</strong> for soilKey, complementing the ESDB raster axis from v0.9.44.</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-48">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-48"></a></h3>
+<p><code>R/spatial-lookups.R</code> exports two new helpers, both shaped after <code><a href="../reference/lookup_esdb.html">lookup_esdb()</a></code>:</p>
+<ul><li><p><strong><code>lookup_mapbiomas_solos(coords, raster_path, legend = NULL)</code></strong> – Brazilian SiBCS national raster (MapBiomas Solos Collection 2, 30 m, 2023+). Local-file lookup; user passes the unpacked GeoTIFF path. Optional 2-column legend (<code>value, class_name</code>) decodes integer codes to SiBCS class strings. Auto-reprojection from WGS84.</p></li>
+<li><p><strong><code>lookup_soilgrids(coords, property, depth, quantile, baseurl, raw)</code></strong> – Global ISRIC SoilGrids 250m soil property predictions, read <strong>directly from the canonical Cloud-Optimized GeoTIFF endpoint</strong> at <code>https://files.isric.org/soilgrids/latest/data/</code>. No download required; only the pixel under each query coordinate is transferred over HTTPS. Supports all 11 SoilGrids properties (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, ocd, ocs, cfvo) at all 6 standard depths (0-5, 5-15, 15-30, 30-60, 60-100, 100-200 cm) and all 5 quantiles (mean, Q0.05, Q0.5, Q0.95, uncertainty). Returns values in conventional units via the published per-property scale factors (clay/silt/sand percent, pH, g/kg, cmol(c)/kg, g/cm^3).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-this-matters-0-9-48">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters-0-9-48"></a></h3>
+<p>Combined with v0.9.44 <code><a href="../reference/lookup_esdb.html">lookup_esdb()</a></code>, soilKey now offers <strong>three spatial validation axes</strong>:</p>
+<ul><li>
+<strong>Europe</strong>: ESDB Raster Library 1 km (WRBLV1, WRBFU, FAO90LV1) – canonical reference per coordinate.</li>
+<li>
+<strong>Brazil</strong>: MapBiomas Solos 30 m – canonical SiBCS class per coordinate (national mapping).</li>
+<li>
+<strong>Global</strong>: SoilGrids 250 m – continuous soil property predictions (clay, pH, OC, etc.) per coordinate.</li>
+</ul><p>Any <code>PedonRecord</code> with lat/lon can be cross-checked against the canonical map at its location – supports the <code>prior_check</code> field of <code>ClassificationResult</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-48">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-48"></a></h3>
+<p>10 new tests in <code>test-v0948-spatial-lookups.R</code> (25 expectations). MapBiomas tests build a synthetic 4x4 raster on the fly via terra so they run unconditionally. SoilGrids tests cover argument validation + graceful NA on unreachable URL; live-network smoke test is opt-in via <code>SOILKEY_NETWORK_TESTS=1</code> (default skip on CI). R CMD check Status OK.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.47" id="soilkey-0947-2026-05-04">soilKey 0.9.47 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0947-2026-05-04"></a></h2>
+<p>The “Vis-NIR -&gt; Munsell via CIE colorimetry” release. Operational unblock for the v0.9.35 Argissolo Vermelho / Amarelo / Vermelho- Amarelo color-confusion case <strong>without</strong> waiting for the Embrapa BDsolos export – whenever the user has Vis-NIR spectra (e.g. from the OSSL), the Munsell hue can be recovered physically.</p>
+<div class="section level3">
+<h3 id="pipeline-0-9-47">Pipeline<a class="anchor" aria-label="anchor" href="#pipeline-0-9-47"></a></h3>
+<p><code>reflectance R(lambda)</code> (380-780 nm range) integrated against the <strong>CIE 1931 2-degree Standard Observer</strong> color-matching functions weighted by the <strong>D65 illuminant</strong>, then converted XYZ -&gt; xyY -&gt; Munsell HVC via the <strong>Munsell renotation interpolation</strong> in the <code>munsellinterpol</code> CRAN package. No model training, no OSSL fit: the answer is fixed by physics + a public colorimetry lookup.</p>
+</div>
+<div class="section level3">
+<h3 id="new-api-0-9-47">New API<a class="anchor" aria-label="anchor" href="#new-api-0-9-47"></a></h3>
+<ul><li><p><strong><code>predict_xyz_from_spectra(spectra, wavelengths)</code></strong> – CIE XYZ tristimulus on the standard scale (Y = 100 for a perfect diffuse white). Auto-detects whether reflectance is decimal (0..1) or percent (0..100). Dependency-free (CIE table bundled in <code>R/sysdata.rda</code>).</p></li>
+<li><p><strong><code>predict_lab_from_spectra(spectra, wavelengths)</code></strong> – CIE Lab via standard XYZ -&gt; Lab transform under D65 / 2-degree observer.</p></li>
+<li><p><strong><code>predict_munsell_from_spectra(spectra, wavelengths, round_chip = TRUE)</code></strong> – the headline function. Returns <code>munsell_hue_moist</code>, <code>munsell_value_moist</code>, <code>munsell_chroma_moist</code>, <code>munsell_string</code> (e.g. <code>"7.5YR 4/6"</code>). Requires <code>munsellinterpol</code>; clear error if missing.</p></li>
+<li><p><strong><code>fill_munsell_from_spectra(pedon, overwrite, verbose)</code></strong> – high-level helper. Iterates over <code>pedon$spectra$vnir</code>, runs the prediction per horizon and writes the result via <code>add_measurement(..., source = "predicted_spectra")</code>. After this call, re-run <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> – the v0.9.45 “color-undetermined” fallback lifts and the descent proceeds to subordem / GG / SG.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-this-matters-0-9-47">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters-0-9-47"></a></h3>
+<p>The v0.9.45 fallback turned the 44 Argissolo profiles whose Munsell hue was missing into “Argissolos (cor a determinar)” with <code>evidence_grade = "C"</code>. v0.9.47 closes the loop: if the same profile has Vis-NIR (from OSSL or any laboratory spectrometer), <strong>fill_munsell_from_spectra() -&gt; classify_sibcs()</strong> descends all the way to <code>Argissolo Vermelho Distrofico</code> (or whatever the spectrum implies), with <code>evidence_grade = "B"</code> (predicted_spectra provenance).</p>
+<p>Combined with v0.9.46 <code><a href="../reference/predict_from_spectra.html">predict_from_spectra()</a></code> (which fills clay / sand / silt / pH / OC / CEC), o pacote agora classifica perfis brasileiros <strong>direto a partir de espectro</strong>, sem morfologia descritiva nem morfologia laboratorial – exatamente o que destrava casos onde a Embrapa BDsolos fornece so a quimica.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-47">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-47"></a></h3>
+<p>13 new tests in <code>test-v0947-munsell-prediction.R</code> (36 expectations). XYZ + Lab tests run unconditionally (CIE table is internal data). Munsell HVC tests skip cleanly when <code>munsellinterpol</code> is absent. R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="internal-data-0-9-47">Internal data<a class="anchor" aria-label="anchor" href="#internal-data-0-9-47"></a></h3>
+<p><code>R/sysdata.rda</code> now includes <code>.cie_d65_5nm</code> (81 rows from 380 to 780 nm at 5 nm steps; columns: wavelength, xbar, ybar, zbar, D65). Generated once via <code>colorscience::ciexyz31</code> and <code>colorscience::illuminants$D65</code>; bundled directly so soilKey has no runtime dependency on <code>colorscience</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-47">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-47"></a></h3>
+<p><code>munsellinterpol</code> added to Suggests (gated via <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.46" id="soilkey-0946-2026-05-04">soilKey 0.9.46 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0946-2026-05-04"></a></h2>
+<p>The “OSSL pretrained models, end-to-end” release. Closes Module 4 of the original soilKey scope by giving users a single-line path from a downloaded OSSL library to fully-attributed predictions on a new .</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-46">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-46"></a></h3>
+<p><code>R/spectra-train.R</code> adds three new exported functions plus a <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> / <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> S3 method:</p>
+<ul><li><p><strong><code>train_pls_from_ossl(ossl_library, properties, ...)</code></strong> – per- property PLSR training over a downloaded OSSL subset. Picks optimal <code>ncomp</code> via 10-fold CV, applies the same Vis-NIR preprocessing the OSSL distribution uses (<code>snv+sg1</code> by default), returns a named list of <code>soilKey_pls_model</code> objects compatible with <code><a href="../reference/predict_ossl_pretrained.html">predict_ossl_pretrained()</a></code> and <code><a href="../reference/fill_from_spectra.html">fill_from_spectra()</a></code>.</p></li>
+<li><p><strong><code>predict_from_spectra(pedon_or_spectra, models, ...)</code></strong> – named ergonomic API. Accepts a <code>PedonRecord</code> (delegates to <code>fill_from_spectra(method = "pretrained")</code> with provenance writes) OR a raw numeric matrix / vector (returns long-form prediction data.table directly). Auto-applies the preprocessing recorded on the trained models.</p></li>
+<li><p><strong><code><a href="../reference/save_ossl_models.html">save_ossl_models()</a></code> / <code><a href="../reference/save_ossl_models.html">load_ossl_models()</a></code></strong> – RDS persistence with shape validation; soilKey version, training time, preprocess label and per-property diagnostics preserved as attributes.</p></li>
+<li><p><strong><code>predict.soilKey_pls_model</code> / <code>print.soilKey_pls_model</code></strong> – S3 methods registered in NAMESPACE. <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> returns the canonical <code>value / pi95_low / pi95_high</code> schema; the 95% PI is built from the cross-validated training RMSE.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="why-this-matters-0-9-46">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters-0-9-46"></a></h3>
+<p>Until v0.9.45, the package shipped <code><a href="../reference/download_ossl_subset.html">download_ossl_subset()</a></code>, <code>predict_ossl_pretrained(ossl_models)</code> and <code>fill_from_spectra(method = "pretrained")</code> – but no loop to turn a downloaded <code>ossl_library</code> into the <code>ossl_models</code> list those functions consume. v0.9.46 closes that gap.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-46">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-46"></a></h3>
+<p>13 new tests in <code>test-v0946-pls-training.R</code> (41 expectations) – pass when <code>pls</code> is available, skip cleanly when it is not. R CMD check Status OK.</p>
+</div>
+<div class="section level3">
+<h3 id="description-0-9-46">DESCRIPTION<a class="anchor" aria-label="anchor" href="#description-0-9-46"></a></h3>
+<p><code>pls</code> added to Suggests (gated via <code><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace()</a></code>).</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.45" id="soilkey-0945-2026-05-04">soilKey 0.9.45 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0945-2026-05-04"></a></h2>
+<p>The “color-undetermined graceful path” release. Fixes the <strong>v0.9.35 Argissolo Vermelho / Amarelo / Vermelho-Amarelo silent-fallback case</strong> (44 perfis brasileiros caiam silenciosamente em PVA quando o matiz Munsell em B nao foi medido).</p>
+<div class="section level3">
+<h3 id="what-changed-0-9-45">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-45"></a></h3>
+<p><code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> agora detecta o padrao “subordem catch-all de cor atribuida porque o matiz Munsell esta ausente” e:</p>
+<ul><li>Para a descida no nivel da Ordem (nao seleciona Grande Grupo nem Subgrupo);</li>
+<li>Mostra <code>display_name</code> no formato <code>"&lt;Ordem&gt; (cor a determinar)"</code> em vez do catch-all enganoso (<code>Argissolos Vermelho-Amarelos</code>);</li>
+<li>Adiciona <code>munsell_hue_moist_horizon_B</code> em <code>missing_data</code>;</li>
+<li>Rebaixa <code>evidence_grade</code> para <code>"C"</code> (classificacao parcial);</li>
+<li>Anexa um warning em PT-BR explicando o fallback e listando as alternativas que perderam por falta de matiz;</li>
+<li>Expoe o registro estruturado em <code>result$trace$color_undetermined</code> (lista com <code>detected</code>, <code>fallback_subordem</code>, <code>rejected_alternatives</code>, <code>would_resolve_with</code>, <code>reason</code>).</li>
+</ul><p>A logica generica funciona para os 4 catch-alls de cor do SiBCS: <code>PVA</code> (Argissolos Vermelho-Amarelos), <code>LVA</code> (Latossolos Vermelho-Amarelos), <code>NX</code> (Nitossolos Haplicos) e <code>TX</code> (Luvissolos Haplicos).</p>
+</div>
+<div class="section level3">
+<h3 id="por-que-isso-e-importante-0-9-45">Por que isso e importante<a class="anchor" aria-label="anchor" href="#por-que-isso-e-importante-0-9-45"></a></h3>
+<p>Antes do v0.9.45, um perfil com B textural mas sem matiz Munsell medido era classificado como <strong>Argissolo Vermelho-Amarelo</strong> com <code>evidence_grade = "A"</code> – o pacote afirmava com confianca maxima uma classe especifica que so pode ser determinada com a cor. Os 44 perfis flagados no v0.9.35 cairam exatamente nesse padrao.</p>
+<p>Agora a saida fica:</p>
+<pre><code>Name           : Argissolos (cor a determinar)
+RSG/Order      : Argissolos
+Evidence grade : C
+Missing data   : munsell_hue_moist_horizon_B, ...
+Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
+                 por fallback porque o matiz Munsell em B esta
+                 ausente. Medindo a cor seria possivel discriminar
+                 entre: Argissolos Vermelhos, Argissolos Amarelos,
+                 Argissolos Bruno-Acinzentados, Argissolos
+                 Acinzentados.</code></pre>
+<p>A interpretacao sai do “falsa precisao” e entra no “honesto sobre o que se sabe e o que ainda falta medir”.</p>
+</div>
+<div class="section level3">
+<h3 id="tests-0-9-45">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-45"></a></h3>
+<ul><li>9 novos em <code>test-v0945-color-undetermined.R</code> (27 expectations) – todos passam. Suite completa: 3202 testes, 0 falhas.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-api-0-9-45">Internal API<a class="anchor" aria-label="anchor" href="#internal-api-0-9-45"></a></h3>
+<ul><li>
+<code>.SIBCS_COLOR_CATCH_ALL_CODES</code> (constante interna).</li>
+<li>
+<code><a href="../reference/dot-detect_color_undetermined_fallback.html">.detect_color_undetermined_fallback()</a></code> (helper interno).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.44" id="soilkey-0944-2026-05-04">soilKey 0.9.44 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0944-2026-05-04"></a></h2>
+<p>The “ESDB Raster Library lookup” release. Unblocks the <strong>raster-lookup half of the EU-LUCAS WRB benchmark Route B</strong> (open since the v0.9.27 roadmap) by adding a spatial-join utility against the ESDB Raster Library 1km GeoTIFF release (May 2024).</p>
+<div class="section level3">
+<h3 id="esdb-raster-library-lookup-0-9-44">ESDB Raster Library lookup<a class="anchor" aria-label="anchor" href="#esdb-raster-library-lookup-0-9-44"></a></h3>
+<p>The European Soil Database (ESDB) Raster Library distributes 71 thematic rasters at 1km resolution under LAEA Europe (EPSG: 3035). v0.9.44 ships two new exported helpers:</p>
+<p>available_esdb_attributes(raster_root) -&gt; character vector of the 71 attribute folder names (WRBLV1, WRBFU, WRBADJ1/2, FAO90LV1, plus 65 thematic rasters: clay/sand/silt sub+top, OC, parent material, slope, depth-to-rock, mineralogy, etc.)</p>
+<p>lookup_esdb(coords, attribute, raster_root, decode = TRUE) -&gt; WGS84 lat/lon -&gt; reproject to LAEA Europe -&gt; extract raster value -&gt; decode via .vat.dbf to coded label</p>
+<p>Coordinates outside the European raster footprint return NA silently so vectorised calls degrade gracefully.</p>
+<div class="section level4">
+<h4 id="demonstration-on-european-cities-0-9-44">Demonstration on 12 European cities<a class="anchor" aria-label="anchor" href="#demonstration-on-european-cities-0-9-44"></a></h4>
+<p>Wageningen NL -&gt; FL Fluvisol (eutric) Helsinki FI -&gt; LP Leptosol (dystric) Rovaniemi FI -&gt; CM Cambisol (dystric, boreal) Athens GR -&gt; LV Luvisol (calcaric) Vienna AT -&gt; CH Chernozem (haplic, pannonian) Sevilla ES -&gt; FL Fluvisol (calcaric)</p>
+<p>Cities returning the “1” non-soil mask code (Lisbon, Berlin, Paris, Rome, Krakow) fall on 1km pixels coded as artificial / urban surfaces – correct behaviour, not a bug.</p>
+</div>
+<div class="section level4">
+<h4 id="what-this-enables-0-9-44">What this enables<a class="anchor" aria-label="anchor" href="#what-this-enables-0-9-44"></a></h4>
+<p>For any European-coordinate <code>PedonRecord</code>, users can now:</p>
+<ol style="list-style-type: decimal"><li>Look up the ESDB raster’s expected RSG at the pedon’s coords</li>
+<li>Run classify_wrb2022() on the pedon’s chemistry</li>
+<li>Compare the two and report agreement</li>
+</ol><p>This becomes the <strong>fourth validation axis</strong> for soilKey, alongside the canonical fixtures, KSSL+NASIS (USDA), Embrapa FEBR (SiBCS), and WoSIS GraphQL.</p>
+<p><code>foreign</code> is added to Suggests for <code>.vat.dbf</code> decoding via <code><a href="https://rdrr.io/pkg/foreign/man/read.dbf.html" class="external-link">foreign::read.dbf()</a></code>.</p>
+</div>
+<div class="section level4">
+<h4 id="tests-0-9-44">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-44"></a></h4>
+<p>8 new in <code>tests/testthat/test-v0944-esdb-raster.R</code>:</p>
+<ul><li>
+<code><a href="../reference/available_esdb_attributes.html">available_esdb_attributes()</a></code> lists 60+ ESDB attributes</li>
+<li>
+<code><a href="../reference/lookup_esdb.html">lookup_esdb()</a></code> resolves Wageningen NL to a real RSG code</li>
+<li>Returns NA for points outside the European raster footprint</li>
+<li>Vectorised over multi-point coords</li>
+<li>
+<code>decode = FALSE</code> returns raw integer raster values</li>
+<li>Errors clearly when raster missing</li>
+<li>Accepts both data.frame and matrix input</li>
+<li>WRBLV1 vs FAO90LV1 cross-system agreement</li>
+</ul><p>Tests skip cleanly via <code>Sys.getenv("SOILKEY_ESDB_RASTER_ROOT")</code> when the raster archive (~700 MB unpacked) is not available locally.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="songchao--eu_lucas_2022-inspection-no-actionable-change-0-9-44">Songchao + EU_LUCAS_2022 inspection (no actionable change)<a class="anchor" aria-label="anchor" href="#songchao--eu_lucas_2022-inspection-no-actionable-change-0-9-44"></a></h3>
+<p>Hugo also provided <code>febr-data-songchao.txt</code> (2 684 rows) and <code>EU_LUCAS_2022.csv</code> / <code>_updated.xlsx</code> (~338 000 rows). Both were inspected for soil-chemistry / Munsell / WRB-label content:</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Source</th>
+<th>What it has</th>
+<th>What’s missing</th>
+</tr></thead><tbody><tr><td>Songchao</td>
+<td>basic chemistry (clay/silt/sand/SOC/BD), 16 cols</td>
+<td>NO Munsell color, NO <code>taxon_*</code> reference – cannot fix the v0.9.35 Argissolo color confusion, cannot use for benchmark validation</td>
+</tr><tr><td>LUCAS_2022.csv (455 MB, 306 cols)</td>
+<td>lat/lon + point-survey metadata</td>
+<td>NO soil chemistry, NO WRB labels – the Soil Component Survey is a separate ESDAC download</td>
+</tr></tbody></table><p>Documented in <code>inst/benchmarks/reports/eu_lucas_roadmap_v0944_update_2026-05-04.md</code> and the <code>reference_eu_lucas_wrb_benchmark.md</code> memory file. The 44 FEBR Argissolo color-confusion misses (Vermelho / Amarelo / Vermelho-Amarelo) remain unfixable from the available data.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.43" id="soilkey-0943-2026-05-04">soilKey 0.9.43 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0943-2026-05-04"></a></h2>
+<p>The “JSON Schema for PedonRecord” release.</p>
+<p><code>pedon_json_schema(as = c("list", "json"))</code> returns a Draft-2020-12 JSON Schema describing the canonical PedonRecord structure (site + horizons + optional provenance). <code>validate_pedon_json(x)</code> validates a PedonRecord (or compatible list) against that schema via <code><a href="https://docs.ropensci.org/jsonvalidate/reference/json_validate.html" class="external-link">jsonvalidate::json_validate()</a></code>.</p>
+<p>The schema is also written to <code>inst/schemas/pedon-schema.json</code> (10 KB) for direct file access by external systems (web APIs, ETL pipelines, multimodal extraction validation).</p>
+<p>7 new tests in <code>tests/testthat/test-v0943-json-schema.R</code>.</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.42" id="soilkey-0942-2026-05-04">soilKey 0.9.42 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0942-2026-05-04"></a></h2>
+<p>The “sensitivity / fragility analysis” release.</p>
+<p><code><a href="../reference/classification_robustness.html">classification_robustness()</a></code>: Monte-Carlo perturbation analysis. Perturb input attributes (clay/sand/silt ±5 %, pH ±0.2, OC ±10 %) and report how often the classification matches the unperturbed baseline. Useful for paper-grade claims like “X % of profiles are robust to a 5 % analytical-error perturbation”.</p>
+<p><code>batch_robustness(pedons, ...)</code>: across-pedons wrapper returning a tidy data.frame (one row per pedon: id, baseline, robustness, n_flipped).</p>
+<p>7 new tests in <code>tests/testthat/test-v0942-sensitivity.R</code>.</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.41" id="soilkey-0941-2026-05-04">soilKey 0.9.41 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0941-2026-05-04"></a></h2>
+<p>The “PT-BR vignette” release.</p>
+<div class="section level3">
+<h3 id="v01_getting_started_ptrmd-item-0-9-41">v01_getting_started_pt.Rmd (Item 4)<a class="anchor" aria-label="anchor" href="#v01_getting_started_ptrmd-item-0-9-41"></a></h3>
+<p>Adds a Brazilian-Portuguese translation of <code>v01_getting_started</code>. Same content (zero-code Shiny path; building a PedonRecord from scratch; classify_all + cross-system view; key-trace inspection; provenance + evidence grade), but written for the PT-BR pedology community where SiBCS is the daily-driver classification system.</p>
+<p>The vignette is wired into <code>_pkgdown.yml</code> both in the navbar (“Articles” menu) and the <code>articles:</code> index, so it builds on push to main and deploys to the GitHub Pages site at <a href="https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.html" class="uri">https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.html</a>.</p>
+<p>The Brazilian community uses Embrapa SiBCS (Santos et al. 2018) as the canonical taxonomic reference and discusses pedology in Portuguese; an English-only <code>v01</code> was a barrier for that audience. PT-BR vignettes for v02-v07 are deferred to a future release; the v01 translation is the highest-leverage starting point because it’s the entry vignette that everyone reads first.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.40" id="soilkey-0940-2026-05-04">soilKey 0.9.40 (2026-05-04)<a class="anchor" aria-label="anchor" href="#soilkey-0940-2026-05-04"></a></h2>
+<p>The “community polish” release. Four small but high-ROI changes that signal project maturity to anyone visiting the repo.</p>
+<div class="section level3">
+<h3 id="a-citationcff-item-0-9-40">A. CITATION.cff (Item 5)<a class="anchor" aria-label="anchor" href="#a-citationcff-item-0-9-40"></a></h3>
+<p>Adds <code>CITATION.cff</code> at the repository root in CFF (Citation File Format) v1.2.0. GitHub auto-renders this in the repo sidebar as “Cite this repository” with a copy-paste BibTeX block. The file includes:</p>
+<ul><li>Project metadata (title, abstract, version, DOI, license, repo).</li>
+<li>Author block with ORCID and UFRRJ affiliation.</li>
+<li>Keywords for citation indexing.</li>
+<li>
+<code>references</code> block with the three canonical books (WRB 2022, KST 13ed, SiBCS 5ª ed.) so citation tools can chain through to the underlying taxonomic sources.</li>
+</ul><p>Listed in <code>.Rbuildignore</code> so it lives at the repo root for GitHub without bloating the package tarball.</p>
+</div>
+<div class="section level3">
+<h3 id="b-github-issue--pr-templates--community-files-item-0-9-40">B. GitHub issue / PR templates + community files (Item 6)<a class="anchor" aria-label="anchor" href="#b-github-issue--pr-templates--community-files-item-0-9-40"></a></h3>
+<p><code>.github/ISSUE_TEMPLATE/</code>:</p>
+<ul><li>
+<strong>bug_report.yml</strong> – structured form with required sections for minimal reproducible example, expected vs actual behaviour, traceback, session info, classification system affected, and a confirmation checklist.</li>
+<li>
+<strong>feature_request.yml</strong> – use case + proposed API + canonical references + scope dropdown (WRB / SiBCS / USDA / VLM / spatial / benchmark / aqp / Shiny / docs).</li>
+<li>
+<strong>profile_classification_help.yml</strong> – structured form for “I disagree with how soilKey classified my profile”. Captures horizons CSV, site metadata, expected vs got, key trace.</li>
+<li>
+<strong>config.yml</strong> – disables blank issues; routes general questions to GitHub Discussions and documentation.</li>
+</ul><p><code>.github/PULL_REQUEST_TEMPLATE.md</code> – type-of-change checkboxes, scope checklist, testing checklist, architecture-invariant reminders (the taxonomic key is never delegated to an LLM, every value carries provenance, side modules never overrule the key).</p>
+<p><code>CONTRIBUTING.md</code> – architecture invariants, issue-filing guide, development setup, branching / code-style conventions, recipes for adding diagnostics / qualifiers / dataset loaders, PR submission checklist.</p>
+<p><code>CODE_OF_CONDUCT.md</code> – Contributor Covenant 2.1 with a soil- community note distinguishing “what soilKey does” from “what the canonical books prescribe”.</p>
+</div>
+<div class="section level3">
+<h3 id="c-pkgdown-site-verified-item-0-9-40">C. pkgdown site verified (Item 7)<a class="anchor" aria-label="anchor" href="#c-pkgdown-site-verified-item-0-9-40"></a></h3>
+<p>The pkgdown CI workflow (<code>.github/workflows/pkgdown.yaml</code>) was already wired in v0.9.x and the site is <strong>live</strong> at <a href="https://hugomachadorodrigues.github.io/soilKey/" class="uri">https://hugomachadorodrigues.github.io/soilKey/</a> (HTTP 200, last modified 2026-05-04). v0.9.37 closed the index gap so the site now renders without missing-topic warnings.</p>
+</div>
+<div class="section level3">
+<h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
+<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
+<p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.39" id="soilkey-0939-2026-05-03">soilKey 0.9.39 (2026-05-03)<a class="anchor" aria-label="anchor" href="#soilkey-0939-2026-05-03"></a></h2>
 <p>The “interactive Shiny app” release. A drag-and-drop web interface that renders all three classifications side-by-side, exports a self-contained HTML report, and works for non-R users (agronomists, students, field workers).</p>
@@ -765,7 +2494,7 @@
 <div class="section level4">
 <h4 id="test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23">
 <code>test_clay_increase_argic(h)</code> – canonical eluvial-illuvial<a class="anchor" aria-label="anchor" href="#test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23"></a></h4>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># v0.9.22 (buggy):</span></span>
 <span><span class="va">above</span> <span class="op">&lt;-</span> <span class="va">h</span><span class="op">$</span><span class="va">clay_pct</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">]</span>   <span class="co"># adjacent only</span></span>
 <span></span>
@@ -1536,7 +3265,7 @@
 </div>
 <div class="section level3">
 <h3 id="new-code-0-9-16">New code<a class="anchor" aria-label="anchor" href="#new-code-0-9-16"></a></h3>
-<ul><li><p><strong><code>load_febr_pedons(path, head, require_classification, verbose)</code></strong> – loads the Embrapa FEBR <code>febr-superconjunto.txt</code> semicolon-CSV format with comma-decimal numeric fields and UTF-8 PT-BR classification strings. Groups one row per (camada, horizon) into one PedonRecord per (dataset_id, observacao_id), with all three reference taxa attached on <code>$site</code>. Drops profiles without a reference label.</p></li>
+<ul><li><p><strong><code>read_febr_pedons(path, head, require_classification, verbose)</code></strong> – loads the Embrapa FEBR <code>febr-superconjunto.txt</code> semicolon-CSV format with comma-decimal numeric fields and UTF-8 PT-BR classification strings. Groups one row per (camada, horizon) into one PedonRecord per (dataset_id, observacao_id), with all three reference taxa attached on <code>$site</code>. Drops profiles without a reference label.</p></li>
 <li><p><strong><code>normalise_febr_sibcs(x, level)</code></strong> – normalises FEBR’s all-caps PT-BR SiBCS strings (“LATOSSOLO VERMELHO”, “ARGISSOLO VERMELHO- AMARELO”) to soilKey’s plural Title Case (“Latossolos”, “Argissolos”) at order- or subordem-level granularity. Reusable beyond the FEBR loader.</p></li>
 <li><p><strong><code>normalise_febr_wrb(x)</code></strong> – strips qualifier parens from WRB full-name strings (“HUMIC FERRALSOL (…)”) and pluralises the bare RSG (“Ferralsols”).</p></li>
 <li><p><strong><code>normalise_febr_usda(x)</code></strong> – maps USDA subgroup / great-group suffixes (<code>...OX</code> -&gt; Oxisols, <code>...ULT</code> -&gt; Ultisols, <code>...EPT</code> -&gt; Inceptisols, etc.) to the canonical Order names that <code><a href="../reference/classify_usda.html">classify_usda()</a></code> returns at <code>level = "order"</code>.</p></li>

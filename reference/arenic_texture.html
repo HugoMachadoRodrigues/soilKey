@@ -11,7 +11,7 @@ Diagnostic of Arenosols."><meta property="og:image" content="https://hugomachado
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@ Diagnostic of Arenosols."><meta property="og:image" content="https://hugomachado
       <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/v01_getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/v01_getting_started_pt.html">Começando com soilKey (PT-BR)</a></li>
     <li><a class="dropdown-item" href="../articles/v02_classify_wrb_end_to_end.html">WRB 2022 end-to-end</a></li>
     <li><a class="dropdown-item" href="../articles/v03_cross_system_correlation.html">Cross-system correspondence</a></li>
     <li><a class="dropdown-item" href="../articles/v04_vlm_extraction.html">VLM extraction (Module 2)</a></li>
@@ -61,7 +62,7 @@ Diagnostic of Arenosols.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">arenic_texture</span><span class="op">(</span><span class="va">pedon</span>, max_top_cm <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">arenic_texture</span><span class="op">(</span><span class="va">pedon</span>, max_top_cm <span class="op">=</span> <span class="fl">100</span>, engine <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +76,14 @@ Diagnostic of Arenosols.</p>
 <dt id="arg-max-top-cm">max_top_cm<a class="anchor" aria-label="anchor" href="#arg-max-top-cm"></a></dt>
 <dd><p>Maximum top depth (cm) of layers to be tested
 (default 100, per WRB 2022).</p></dd>
+
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>One of <code>"soilkey"</code> (default; strict WRB sand
+threshold via <code><a href="test_coarse_texture_throughout.html">test_coarse_texture_throughout</a></code>)
+or <code>"aqp"</code> (LUCAS-friendly fallback: passes when sand
+&gt;= 70\<!-- % across the upper \code{max_top_cm}). \code{NULL} -->
+reads <code>getOption("soilKey.diagnostic_engine")</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

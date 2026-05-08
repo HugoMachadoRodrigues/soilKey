@@ -8,7 +8,7 @@ is the diagnostic of Cambisols.
 ## Usage
 
 ``` r
-cambic(pedon, min_thickness = 15, min_top_cm = 5)
+cambic(pedon, min_thickness = 15, min_top_cm = 5, engine = NULL)
 ```
 
 ## Arguments
@@ -24,7 +24,20 @@ cambic(pedon, min_thickness = 15, min_top_cm = 5)
 
 - min_top_cm:
 
-  Numeric threshold or option (see Details).
+  Minimum top depth (cm) for a horizon to be considered cambic-eligible
+  (default 5). Anchors the candidate set to subsurface layers.
+
+- engine:
+
+  v0.9.63+. One of `"soilkey"` (hand-coded path, default for
+  back-compat) or `"aqp"` (canonical NRCS dispatch via
+  [`aqp::getCambicBounds`](https://ncss-tech.github.io/aqp/reference/getCambicBounds.html)).
+  When `NULL` (the new default) the function reads
+  `getOption("soilKey.diagnostic_engine", "soilkey")`, so a global
+  `options(soilKey.diagnostic_engine = "aqp")` flips every `cambic()`
+  call without modifying call sites. The aqp engine fired 40.6 soilkey 0
+  v0.9.50 LUCAS WRB benchmark from 0 100
+  [`cambic_aqp`](https://hugomachadorodrigues.github.io/soilKey/reference/cambic_aqp.md).
 
 ## Value
 

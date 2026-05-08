@@ -17,7 +17,7 @@ Either path qualifies.
 ## Usage
 
 ``` r
-leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
+leptic_features(pedon, max_depth = 25, min_coarse_pct = NULL, engine = NULL)
 ```
 
 ## Arguments
@@ -35,7 +35,14 @@ leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
 - min_coarse_pct:
 
   Minimum coarse-fragment percent for the coarse-fragments path (default
-  90).
+  90 in soilkey engine, 50 in aqp engine; `NULL` picks a default per
+  engine).
+
+- engine:
+
+  One of `"soilkey"` (default; strict 90\\ cfvo threshold) or `"aqp"`
+  (LUCAS-friendly relaxed 50\\ reads
+  `getOption("soilKey.diagnostic_engine")`.
 
 ## Value
 

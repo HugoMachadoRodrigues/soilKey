@@ -1,7 +1,7 @@
-# Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao simples/maciça + OC \< 6 g/kg; OR espessura \< 5 cm.
+# Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao simples/macica + OC \< 6 g/kg; OR espessura \< 5 cm.
 
 Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-simples/maciça + OC \< 6 g/kg; OR espessura \< 5 cm.
+simples/macica + OC \< 6 g/kg; OR espessura \< 5 cm.
 
 ## Usage
 

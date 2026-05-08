@@ -4,7 +4,7 @@ Subsuperficial nao hidromorfico, textura argilosa/muito argilosa (clay
 \\= 35% desde a superficie), com pequeno incremento de argila (B/A \\=
 1.5), estrutura em blocos sub/angulares ou prismatica grau
 moderado/forte, cerosidade no minimo comum + moderada, espessura \\= 30
-cm. Argila ativ baixa OR ativ alta + carater alumínico.
+cm. Argila ativ baixa OR ativ alta + carater aluminico.
 
 ## Usage
 

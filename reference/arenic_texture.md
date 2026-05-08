@@ -6,7 +6,7 @@ Tests whether the upper 100 cm is uniformly coarser than sandy loam
 ## Usage
 
 ``` r
-arenic_texture(pedon, max_top_cm = 100)
+arenic_texture(pedon, max_top_cm = 100, engine = NULL)
 ```
 
 ## Arguments
@@ -20,6 +20,13 @@ arenic_texture(pedon, max_top_cm = 100)
 
   Maximum top depth (cm) of layers to be tested (default 100, per WRB
   2022).
+
+- engine:
+
+  One of `"soilkey"` (default; strict WRB sand threshold via
+  [`test_coarse_texture_throughout`](https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_texture_throughout.md))
+  or `"aqp"` (LUCAS-friendly fallback: passes when sand \>= 70\\ reads
+  `getOption("soilKey.diagnostic_engine")`.
 
 ## Value
 
