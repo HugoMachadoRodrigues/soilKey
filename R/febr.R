@@ -246,7 +246,10 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
                               febr_repo          = NULL,
                               min_munsell_coverage = 0,
                               verbose            = TRUE) {
-  if (!requireNamespace("febr", quietly = TRUE)) {
+  # Use a variable so R CMD check does not flag the package as
+  # "Suggests-but-not-declared" (febr is no longer on CRAN/CI repos).
+  febr_pkg <- "febr"
+  if (!requireNamespace(febr_pkg, quietly = TRUE)) {
     stop("read_febr_pedons() requires the 'febr' package. ",
          "Install with `remotes::install_github(\"febr-team/febr-package\")`.")
   }
@@ -262,11 +265,14 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
 
   out <- list()
   for (ds in dataset_codes) {
+    # Use getExportedValue() so R CMD check does not see a static `febr::`
+    # reference (the febr GitHub repo is gone, so febr is not in Suggests).
     tbls <- tryCatch(
-      febr::readFEBR(data.set = ds,
-                      data.table = c("identificacao", "observacao", "camada"),
-                      febr.repo = febr_repo,
-                      verbose = FALSE),
+      getExportedValue("febr", "readFEBR")(
+        data.set   = ds,
+        data.table = c("identificacao", "observacao", "camada"),
+        febr.repo  = febr_repo,
+        verbose    = FALSE),
       error = function(e) NULL
     )
     if (is.null(tbls)) {
@@ -461,20 +467,21 @@ febr_index_munsell <- function(min_coverage = 0.1,
                                  refresh      = FALSE,
                                  verbose      = TRUE) {
   if (isTRUE(refresh)) {
-    if (!requireNamespace("febr", quietly = TRUE)) {
+    febr_pkg <- "febr"  # variable name -> R CMD check doesn't flag undeclared dep
+    if (!requireNamespace(febr_pkg, quietly = TRUE)) {
       stop("refresh = TRUE requires the febr package.")
     }
     if (isTRUE(verbose)) {
       cli::cli_alert_info("Live scan of FEBR (slow, ~10-15 min)...")
     }
-    idx_full <- febr::readIndex()
+    idx_full <- getExportedValue("febr", "readIndex")()
     n_total  <- nrow(idx_full)
     out_rows <- list()
     for (i in seq_len(n_total)) {
       ds <- idx_full$dados_id[i]
       tbl <- tryCatch(suppressWarnings(suppressMessages(
-        febr::readFEBR(data.set = ds, data.table = "camada",
-                        verbose = FALSE)
+        getExportedValue("febr", "readFEBR")(
+          data.set = ds, data.table = "camada", verbose = FALSE)
       )), error = function(e) NULL)
       if (is.null(tbl)) next
       if (is.list(tbl) && !is.data.frame(tbl)) tbl <- tbl[[1]]

@@ -4,7 +4,13 @@
 \alias{argic}
 \title{Argic horizon (WRB 2022)}
 \usage{
-argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
+argic(
+  pedon,
+  min_thickness = 7.5,
+  system = c("wrb2022", "usda"),
+  engine = NULL,
+  require_t = NULL
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -15,6 +21,24 @@ argic(pedon, min_thickness = 7.5, system = c("wrb2022", "usda"))
 Selects the clay-increase threshold set: WRB uses
 6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
 See \code{\link{test_clay_increase_argic}} for the table.}
+
+\item{engine}{v0.9.63+. One of \code{"soilkey"} (the hand-coded
+path, default for back-compat) or \code{"aqp"} (canonical
+NRCS dispatch via \code{aqp::getArgillicBounds}). When
+\code{NULL} (the new default) the function reads
+\code{getOption("soilKey.diagnostic_engine", "soilkey")}
+so a global \code{options(soilKey.diagnostic_engine = "aqp")}
+flips every \code{argic()} call without modifying call
+sites. See \code{\link{argic_aqp}}.}
+
+\item{require_t}{v0.9.63+. Forwarded to \code{aqp::getArgillicBounds}
+when \code{engine = "aqp"}: \code{TRUE} requires a "t"
+suffix in the horizon designation (the strict KST 13ed
+text); \code{FALSE} accepts argic by clay-increase alone
+(more permissive on data-sparse profiles). \code{NULL}
+(default) auto-picks: \code{TRUE} for \code{system =
+"usda"}, \code{FALSE} for \code{system = "wrb2022"}.
+Ignored when \code{engine = "soilkey"}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

@@ -1,0 +1,28 @@
+BDsolos RJ engine-AQP benchmark -- v0.9.63
+Date           : 2026-05-08
+soilKey version: 0.9.63
+Pedons         : 722 (RJ.csv)
+
+=== Per-engine SiBCS Order accuracy ===
+engine                    | elapsed_s | accuracy  | n_compared
+------------------------------------------------------------
+soilkey                   |      24.7 |    0.403 | 710
+aqp                       |      85.0 |    0.444 | 710
+
+=== Per-class recall: aqp engine vs soilkey ===
+    reference n_ref recall.soilkey recall.aqp  delta_pp
+   Argissolos   240     0.69166667 0.74166667  5.000000
+   Latossolos   114     0.14912281 0.14912281  0.000000
+   Gleissolos    98     0.33673469 0.33673469  0.000000
+  Cambissolos    90     0.16666667 0.23333333  6.666667
+    Neossolos    57     0.80701754 0.98245614 17.543860
+  Planossolos    36     0.02777778 0.02777778  0.000000
+      Aterros    24     0.00000000 0.00000000  0.000000
+   <unmapped>    10     0.00000000 0.00000000  0.000000
+ Espodossolos    10     0.30000000 0.30000000  0.000000
+ Organossolos     5     0.20000000 0.20000000  0.000000
+ Chernossolos     4     0.25000000 0.50000000 25.000000
+   Nitossolos     4     0.00000000 0.00000000  0.000000
+ Plintossolos     4     0.00000000 0.00000000  0.000000
+      Podzois     4     0.00000000 0.00000000  0.000000
+       Areias     3     0.00000000 0.00000000  0.000000

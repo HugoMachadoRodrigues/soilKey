@@ -4,14 +4,29 @@
 \alias{cambic}
 \title{Cambic horizon (WRB 2022)}
 \usage{
-cambic(pedon, min_thickness = 15, min_top_cm = 5)
+cambic(pedon, min_thickness = 15, min_top_cm = 5, engine = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Minimum thickness in cm (default 15).}
 
-\item{min_top_cm}{Numeric threshold or option (see Details).}
+\item{min_top_cm}{Minimum top depth (cm) for a horizon to be
+considered cambic-eligible (default 5). Anchors the
+candidate set to subsurface layers.}
+
+\item{engine}{v0.9.63+. One of \code{"soilkey"} (hand-coded path,
+default for back-compat) or \code{"aqp"} (canonical NRCS
+dispatch via \code{aqp::getCambicBounds}). When \code{NULL}
+(the new default) the function reads
+\code{getOption("soilKey.diagnostic_engine", "soilkey")},
+so a global \code{options(soilKey.diagnostic_engine = "aqp")}
+flips every \code{cambic()} call without modifying call
+sites. The aqp engine fired 40.6% of BDsolos RJ perfis vs
+soilkey 0% in the v0.9.62 A/B benchmark -- and lifted the
+v0.9.50 LUCAS WRB benchmark from 0% to 60% (Cambisols recall
+100%) when combined with subsoil-fill SoilGrids. See
+\code{\link{cambic_aqp}}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

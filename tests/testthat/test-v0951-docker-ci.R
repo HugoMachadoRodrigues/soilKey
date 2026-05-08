@@ -9,8 +9,12 @@
 .find_repo_root <- function() {
   cands <- c(".", "..", "../..", "../../..")
   for (c in cands) {
+    # Require source-only markers (Dockerfile / .github / vignettes)
+    # so we don't accidentally match the *installed* package directory
+    # (which also has DESCRIPTION + NAMESPACE) when these tests run
+    # via R CMD check on an installed copy.
     if (file.exists(file.path(c, "DESCRIPTION")) &&
-          file.exists(file.path(c, "NAMESPACE"))) {
+          file.exists(file.path(c, "Dockerfile"))) {
       return(normalizePath(c))
     }
   }

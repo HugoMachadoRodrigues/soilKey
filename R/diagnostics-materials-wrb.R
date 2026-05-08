@@ -100,6 +100,11 @@ histic_horizon <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) of layers to be tested
 #'        (default 100, per WRB 2022).
+#' @param engine One of \code{"soilkey"} (default; strict WRB sand
+#'        threshold via \code{\link{test_coarse_texture_throughout}})
+#'        or \code{"aqp"} (LUCAS-friendly fallback: passes when sand
+#'        >= 70\\% across the upper \code{max_top_cm}). \code{NULL}
+#'        reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -111,22 +116,48 @@ histic_horizon <- function(pedon,
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 5, Arenosols.
 #' @export
-arenic_texture <- function(pedon, max_top_cm = 100) {
+arenic_texture <- function(pedon, max_top_cm = 100, engine = NULL) {
   h <- pedon$horizons
 
-  tests <- list()
-  tests$coarse_throughout <- test_coarse_texture_throughout(h,
-                                                              max_top_cm = max_top_cm)
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
 
-  agg <- aggregate_subtests(tests)
+  tests <- list()
+  tests$coarse_throughout <- test_coarse_texture_throughout(
+    h, max_top_cm = max_top_cm)
+
+  # v0.9.65 engine="aqp" relaxation: also accept "sand >= 70% in
+  # upper 100 cm" as an Arenosol marker, even if silt+2*clay >= 30.
+  # This catches LUCAS Arenosols whose topsoil is just above the
+  # strict silt+2*clay < 30 cut-off but is unmistakably sandy.
+  if (engine == "aqp") {
+    sand <- h$sand_pct
+    upper <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
+    sand_70 <- !is.na(sand[upper]) & sand[upper] >= 70
+    tests$sandy_relaxed_aqp <- list(
+      passed = any(sand_70, na.rm = TRUE),
+      layers = upper[which(sand_70)],
+      details = list(threshold_sand_pct = 70)
+    )
+  }
+
+  agg <- aggregate_alternatives(list(tests))
+  # aggregate_alternatives expects a list of lists; passes if any
+  # sub-test passes. Restructure: each tests$* is a single subtest.
+  passed <- any(vapply(tests, function(t) isTRUE(t$passed), logical(1L)))
+  layers <- unique(unlist(lapply(tests, function(t) t$layers)))
 
   DiagnosticResult$new(
     name      = "arenic_texture",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Arenosols"
+    passed    = passed,
+    layers    = layers,
+    evidence  = c(tests, list(engine = engine)),
+    missing   = unique(unlist(lapply(tests,
+                                          function(t) t$missing %||% character(0)))),
+    reference = paste("IUSS Working Group WRB (2022), Chapter 5,",
+                        "Arenosols",
+                        if (engine == "aqp") "[engine=aqp relaxed]" else "")
   )
 }
 

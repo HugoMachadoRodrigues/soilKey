@@ -31,6 +31,22 @@
 #'        Selects the clay-increase threshold set: WRB uses
 #'        6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
 #'        See \code{\link{test_clay_increase_argic}} for the table.
+#' @param engine v0.9.63+. One of \code{"soilkey"} (the hand-coded
+#'        path, default for back-compat) or \code{"aqp"} (canonical
+#'        NRCS dispatch via \code{aqp::getArgillicBounds}). When
+#'        \code{NULL} (the new default) the function reads
+#'        \code{getOption("soilKey.diagnostic_engine", "soilkey")}
+#'        so a global \code{options(soilKey.diagnostic_engine = "aqp")}
+#'        flips every \code{argic()} call without modifying call
+#'        sites. See \code{\link{argic_aqp}}.
+#' @param require_t v0.9.63+. Forwarded to \code{aqp::getArgillicBounds}
+#'        when \code{engine = "aqp"}: \code{TRUE} requires a "t"
+#'        suffix in the horizon designation (the strict KST 13ed
+#'        text); \code{FALSE} accepts argic by clay-increase alone
+#'        (more permissive on data-sparse profiles). \code{NULL}
+#'        (default) auto-picks: \code{TRUE} for \code{system =
+#'        "usda"}, \code{FALSE} for \code{system = "wrb2022"}.
+#'        Ignored when \code{engine = "soilkey"}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -57,8 +73,33 @@
 #'
 #' @export
 argic <- function(pedon, min_thickness = 7.5,
-                    system = c("wrb2022", "usda")) {
+                    system = c("wrb2022", "usda"),
+                    engine = NULL,
+                    require_t = NULL) {
   system <- match.arg(system)
+  # v0.9.63: engine resolution order:
+  #   1. explicit `engine` argument
+  #   2. R option soilKey.diagnostic_engine (e.g. "aqp")
+  #   3. default "soilkey" (back-compat)
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  # v0.9.63: optional dispatch to aqp::getArgillicBounds() via
+  # `argic_aqp()`. Default `engine = "soilkey"` preserves the
+  # historical hand-coded behavior (WRB 6/1.4/20 thresholds) for
+  # back-compatibility. `engine = "aqp"` uses the canonical NRCS
+  # KST 13ed tiered thresholds (clay <15%: +3pp; 15-40%: 1.2x;
+  # >=40%: +8pp) -- recommended for benchmarks against KSSL+NASIS
+  # / FEBR / BDsolos because the v0.9.62 RJ A/B showed it is
+  # ~15 pp stricter on argic, which better aligns with the SiBCS
+  # Latossolo / Argissolo / Cambissolo boundary.
+  if (engine == "aqp") {
+    rt <- require_t %||% (system == "usda")
+    res <- argic_aqp(pedon, require_t = rt)
+    res$reference <- sprintf("%s [engine=aqp, system=%s]",
+                                 res$reference, system)
+    return(res)
+  }
   h <- pedon$horizons
 
   tests <- list()
@@ -365,9 +406,39 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' carbonate removal), are scheduled for v0.3.
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
-#' @param min_top_cm Numeric threshold or option (see Details).
+#' @param min_top_cm Minimum top depth (cm) for a horizon to be
+#'        considered cambic-eligible (default 5). Anchors the
+#'        candidate set to subsurface layers.
+#' @param engine v0.9.63+. One of \code{"soilkey"} (hand-coded path,
+#'        default for back-compat) or \code{"aqp"} (canonical NRCS
+#'        dispatch via \code{aqp::getCambicBounds}). When \code{NULL}
+#'        (the new default) the function reads
+#'        \code{getOption("soilKey.diagnostic_engine", "soilkey")},
+#'        so a global \code{options(soilKey.diagnostic_engine = "aqp")}
+#'        flips every \code{cambic()} call without modifying call
+#'        sites. The aqp engine fired 40.6% of BDsolos RJ perfis vs
+#'        soilkey 0% in the v0.9.62 A/B benchmark -- and lifted the
+#'        v0.9.50 LUCAS WRB benchmark from 0% to 60% (Cambisols recall
+#'        100%) when combined with subsoil-fill SoilGrids. See
+#'        \code{\link{cambic_aqp}}.
 #' @export
-cambic <- function(pedon, min_thickness = 15, min_top_cm = 5) {
+cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
+                     engine = NULL) {
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  # v0.9.63: optional dispatch to aqp::getCambicBounds() via
+  # `cambic_aqp()`. The v0.9.62 RJ A/B showed soilkey's cambic
+  # passes 0% of BDsolos perfis vs aqp's 40.6% -- a critical gap
+  # that explains the v0.9.50 LUCAS WRB 0% baseline (Cambisols
+  # never fire). For users who want the canonical KST 13ed cambic
+  # behavior, set `engine = "aqp"`. Default kept "soilkey" for
+  # back-compat with existing classify_*() flows.
+  if (engine == "aqp") {
+    res <- cambic_aqp(pedon)
+    res$reference <- paste(res$reference, "[engine=aqp]")
+    return(res)
+  }
   h <- pedon$horizons
 
   arg_res <- argic(pedon)

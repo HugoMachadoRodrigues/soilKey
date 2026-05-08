@@ -411,6 +411,95 @@ reference:
       - technic_hard_material
       - tephric_material
 
+  - title: "Engine selection and dispatch (v0.9.65)"
+    desc: >
+      Per-pedon engine-selection heuristic, engine-aware dispatch
+      (soilKey vs aqp), and side-by-side comparators.
+    contents:
+      - pick_engine
+      - pick_engine_batch
+      - classify_with_engine_heuristic
+      - compare_engines
+      - argic_aqp
+      - cambic_aqp
+
+  - title: "Canonical references (v0.9.62 -- v0.9.65)"
+    desc: >
+      Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared
+      lookup helpers for pkg vs vendored data sources.
+    contents:
+      - canonical_reference
+      - wrb2022_canonical
+      - kst13_canonical
+      - kst13_codes
+      - kst13_criteria
+      - st_features_canonical
+      - clear_kst13_cache
+
+  - title: "SmartSolos / Embrapa AgroAPI integration (v0.9.54)"
+    desc: >
+      Cross-validation against Embrapa's PROLOG SiBCS classifier.
+    contents:
+      - classify_via_smartsolos_api
+      - compare_smartsolos
+
+  - title: "BDsolos loader and benchmarks (v0.9.55 -- v0.9.60)"
+    contents:
+      - benchmark_bdsolos
+      - download_bdsolos
+      - inspect_bdsolos_csv
+
+  - title: "FEBR loader (v0.9.57)"
+    desc: >
+      UFSM Free Brazilian Repository readers (~249 datasets,
+      ~36k horizons).
+    contents:
+      - read_febr_pedons
+      - febr_index_munsell
+
+  - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
+    contents:
+      - benchmark_lucas_2018
+      - attach_lucas_spectra
+
+  - title: "Unified benchmark and robustness (v0.9.61)"
+    contents:
+      - benchmark_unified
+      - benchmark_performance
+      - batch_robustness
+      - classification_robustness
+
+  - title: "OSSL spectra: PLS training and prediction"
+    desc: >
+      Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict
+      lab properties / Munsell / XYZ / generic targets.
+    contents:
+      - train_pls_from_ossl
+      - predict_from_spectra
+      - predict_lab_from_spectra
+      - predict_munsell_from_spectra
+      - predict_xyz_from_spectra
+      - predict.soilKey_pls_model
+      - print.soilKey_pls_model
+      - fill_munsell_from_spectra
+
+  - title: "Spatial / database lookups"
+    desc: >
+      ESDB attributes, SoilGrids and MapBiomas-Solos pulls.
+    contents:
+      - available_esdb_attributes
+      - lookup_esdb
+      - lookup_soilgrids
+      - lookup_mapbiomas_solos
+
+  - title: "GlobalSoilMap depth harmonisation and aqp helpers"
+    contents:
+      - GSM_DEPTHS
+      - harmonize_to_gsm
+      - pedon_to_spc
+      - pedon_json_schema
+      - texture_class_from_pct
+
 articles:
   - title: "Vignettes"
     navbar: ~
@@ -424,6 +513,7 @@ articles:
       - v06_wosis_benchmark
       - v07_end_to_end_pipeline
       - v08_kssl_nasis_multilevel
+      - v09_perfil_embrapa_pt
 
 news:
   releases:

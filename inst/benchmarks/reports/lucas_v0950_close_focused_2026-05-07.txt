@@ -1,0 +1,25 @@
+LUCAS WRB benchmark -- v0.9.50 empirical close (focused, 30 pedons)
+Date: 2026-05-07
+Pedons: 30 (stratified FR/PL/IT, 10 each)
+ESDB attribute: WRBLV1
+Classifier: classify_wrb2022()
+
+configuration                    | elapsed_s  | accuracy  | in_scope
+------------------------------------------------------------------------
+baseline_no_fill                 |        3.7 |    0.000 | 27 / 30
+subsoil_soilgrids                |     3307.3 |    0.000 | 27 / 30
+
+Per-RSG recall (subsoil_soilgrids):
+  reference_rsg  n n_correct recall
+1     Cambisols 12         0      0
+2      Gleysols  1         0      0
+3     Leptosols  4         0      0
+4      Luvisols  6         0      0
+5       Podzols  3         0      0
+6     Vertisols  1         0      0
+
+Confusion (subsoil_soilgrids):
+           Reference
+Predicted   Cambisols Gleysols Leptosols Luvisols Podzols Vertisols
+  Calcisols         2        1         1        0       0         0
+  Regosols         10        0         3        6       3         1

@@ -2,29 +2,27 @@
 % Please edit documentation in R/benchmark-febr-loader.R
 \name{normalise_febr_sibcs}
 \alias{normalise_febr_sibcs}
-\title{Normalise a FEBR SiBCS taxon string to soilKey's plural Title Case}
+\title{Canonicalise FEBR SiBCS names to match soilKey rule outputs.}
 \usage{
 normalise_febr_sibcs(x, level = c("order", "subordem"))
 }
 \arguments{
 \item{x}{Character vector of FEBR SiBCS names.}
 
-\item{level}{One of \code{"order"} (default; matches Latossolos /
-Argissolos / etc.) or \code{"subordem"} (Latossolos Vermelhos
-/ Argissolos Vermelho-Amarelos / etc.).}
+\item{level}{One of \code{"order"} (default) or \code{"subordem"}.}
 }
 \value{
-Character vector of normalised soilKey-format names.
+Character vector of normalised SiBCS names; \code{NA} for
+  labels that are out-of-scope for the comparison
+  (e.g.\ legacy \code{"Solos"} category).
 }
 \description{
-FEBR ships SiBCS names in ALL-CAPS Portuguese ("LATOSSOLO VERMELHO",
-"NEOSSOLO LITOLICO", etc.) at the 2nd-level subordem granularity.
-soilKey's \code{classify_sibcs()} returns Title Case plural
-subordens ("Latossolos Vermelhos", "Neossolos Litolicos"). This
-helper extracts the first word, plurals it, and Title-Cases it,
-so the two can be matched at \code{level = "order"}.
+FEBR ships SiBCS labels in mixed legacy/modern form
+(\code{"Podzolicos"} for old name of Argissolos, singular vs plural,
+Portuguese accents). This helper folds them to the form produced by
+\code{run_sibcs_key()} so that benchmark accuracies can be computed
+without false negatives.
 }
-\details{
-For \code{level = "order"} the comparison drops the second-level
-qualifier entirely and matches on the Ordem (e.g. "Latossolos").
+\seealso{
+\code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
 }

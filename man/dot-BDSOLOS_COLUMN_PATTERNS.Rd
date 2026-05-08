@@ -5,7 +5,7 @@
 \alias{.BDSOLOS_COLUMN_PATTERNS}
 \title{Canonical mapping from BDsolos column-name variants to soilKey schema}
 \format{
-An object of class \code{list} of length 40.
+An object of class \code{list} of length 41.
 }
 \usage{
 .BDSOLOS_COLUMN_PATTERNS

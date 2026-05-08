@@ -15,7 +15,7 @@
 # ============================================================================
 
 
-#' Horizonte hístico (SiBCS Cap 2, p 49-50)
+#' Horizonte histico (SiBCS Cap 2, p 49-50)
 #'
 #' Horizonte O ou H de coloracao preta/cinza muito escura/brunada,
 #' \\>= 80 g/kg (8\%) C organico, com:
@@ -285,7 +285,7 @@ horizonte_A_antropico <- function(pedon) {
 
 
 #' Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-#' simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.
+#' simples/macica + OC < 6 g/kg; OR espessura < 5 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @export
 horizonte_A_fraco <- function(pedon) {
@@ -427,37 +427,78 @@ B_latossolico <- function(pedon, min_thickness = 50,
     fer$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59"
     return(fer)
   }
-  # SiBCS strict: B latossolico nao apresenta caracteristicas de glei,
-  # B textural, B nitico e plintico. Quando coincide com qualquer
-  # destes (que tenham PASSADO), eles tem precedencia diagnostica.
-  bt <- argic(pedon)
-  bn <- B_nitico(pedon)
+  # v0.9.61 -- precedencia revisada conforme SiBCS Cap 18.
+  #
+  # Antes (v0.7): excluia layers que tambem passassem argic / B_nitico
+  # / plintico / gleyic. Para Latossolos com B horizon que casualmente
+  # tinha clay increase marginal (~6 pp ou >= 1.4x), o argic test
+  # passava e B_latossolico falhava -- caindo na pedra Argissolos
+  # catch-all do key.yaml. Resultado empirico: 24 / 114 Latossolos do
+  # BDsolos RJ.csv re-classificados erroneamente como Argissolos
+  # (v0.9.60 RJ benchmark, 2026-05-06).
+  #
+  # SiBCS Cap 18 e explicito: um Latossolo pode ter B textural fraco
+  # (gradacional, clay films pouca / fraca) -- desde que as features
+  # latossolicas dominem (CTC argila <= 17 cmolc/kg, ferralic, thickness
+  # >= 50). Nesse caso a precedencia eh do B latossolico, NAO do B
+  # textural. Argic forte (clay films comuns + sharp clay increase) eh
+  # outra historia, mas o teste argic atual nao distingue forca, so
+  # threshold-pass.
+  #
+  # Plintico e gleyic continuam excludentes (sao diagnostic horizons
+  # que definem ordens distintas -- Plintossolos e Gleissolos -- e a
+  # ordem do key.yaml ja os coloca antes de Latossolos). B nitico
+  # idem (Nitossolos).
   pl <- plinthic(pedon)
   gl <- gleyic_properties(pedon)
-  # Apenas excluir layers de diagnosticos que efetivamente passaram.
+  bn <- B_nitico(pedon)
+  bt <- argic(pedon)
+  # v0.9.61 -- argic exclui APENAS quando ha clay-films comuns/
+  # abundantes em layers do B horizon. Per SiBCS Cap 18: cerosidade
+  # "ausente / pouca / fraca" = Latossolo; "comum / abundante" =
+  # Argissolo. Ferralic + CTC<=17 + thickness>=50 + cerosidade fraca
+  # = Latossolo mesmo com clay increase marginal.
+  has_strong_clay_films <- function(layers_idx) {
+    if (length(layers_idx) == 0L) return(FALSE)
+    cf <- pedon$horizons$clay_films_amount[layers_idx]
+    cf <- cf[!is.na(cf) & nzchar(cf)]
+    if (length(cf) == 0L) return(FALSE)
+    norm <- tolower(trimws(cf))
+    norm <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", norm)
+    # "abundante", "comum", "common", "abundant" all count as STRONG
+    # B-textural signature; "pouca", "fraca", "few", "weak" do not.
+    any(grepl("\\babunda|\\bcomu|\\bcommon|\\babundan", norm))
+  }
+  argic_with_strong_films <- isTRUE(bt$passed) &&
+                                 has_strong_clay_films(bt$layers)
   pass_layers <- function(d) if (isTRUE(d$passed)) d$layers
                               else integer(0)
+  argic_excluded <- if (argic_with_strong_films) bt$layers else integer(0)
   excluded_layers <- unique(c(
-    pass_layers(bt), pass_layers(bn),
-    pass_layers(pl), pass_layers(gl)
+    pass_layers(pl), pass_layers(gl), pass_layers(bn),
+    argic_excluded
   ))
   layers_remaining <- setdiff(fer$layers, excluded_layers)
   passed <- length(layers_remaining) > 0L &&
-              !isTRUE(bt$passed) && !isTRUE(bn$passed) &&
-              !isTRUE(pl$passed) && !isTRUE(gl$passed)
+              !isTRUE(pl$passed) && !isTRUE(gl$passed) &&
+              !isTRUE(bn$passed) &&
+              !argic_with_strong_films
   DiagnosticResult$new(
     name = "B_latossolico",
     passed = passed,
     layers = layers_remaining,
     evidence = list(
-      ferralic       = fer,
-      excluded_by    = list(B_textural = bt, B_nitico = bn,
-                              plintico = pl, gleyic = gl)
+      ferralic        = fer,
+      argic_concurrent = bt,                # v0.9.61: NOT excluding
+      excluded_by     = list(plintico = pl, gleyic = gl, B_nitico = bn)
     ),
     missing = fer$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59",
-    notes = paste0("v0.7: thickness >= 50 + CTC <= 17 + ",
-                     "exclusao de B textural/nitico/plintico/glei")
+    notes = paste0("v0.9.61: precedencia revisada -- argic concurrent ",
+                     "NO LONGER exclui (per SiBCS Cap 18 latossolic ",
+                     "features dominam quando ferralic + CTC<=17 + ",
+                     "thickness>=50). plintic + gleyic + nitic ainda ",
+                     "excluem (definem ordens distintas).")
   )
 }
 
@@ -532,7 +573,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' argila (B/A \\<= 1.5), estrutura em blocos sub/angulares ou
 #' prismatica grau moderado/forte, cerosidade no minimo comum +
 #' moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +
-#' carater alumínico.
+#' carater aluminico.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param min_clay_pct Numeric threshold or option (see Details).

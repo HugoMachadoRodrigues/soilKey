@@ -29,5 +29,5 @@ Subsuperficial nao hidromorfico, textura argilosa/muito argilosa
 argila (B/A \\<= 1.5), estrutura em blocos sub/angulares ou
 prismatica grau moderado/forte, cerosidade no minimo comum +
 moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +
-carater alumínico.
+carater aluminico.
 }

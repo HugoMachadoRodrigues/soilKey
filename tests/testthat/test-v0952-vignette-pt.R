@@ -6,8 +6,11 @@
 .find_repo_root <- function() {
   cands <- c(".", "..", "../..", "../../..")
   for (c in cands) {
+    # Require the vignettes/ directory: it only exists in the source
+    # tree, not in the installed package layout, so this prevents
+    # false matches when the test runs via R CMD check.
     if (file.exists(file.path(c, "DESCRIPTION")) &&
-          file.exists(file.path(c, "NAMESPACE"))) {
+          dir.exists(file.path(c, "vignettes"))) {
       return(normalizePath(c))
     }
   }

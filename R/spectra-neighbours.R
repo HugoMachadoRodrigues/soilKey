@@ -252,16 +252,31 @@ classify_by_spectral_neighbours <- function(spectrum,
   if (use_pls && is.character(y_label)) {
     # PLS needs a numeric response; encode classes as 1..K.
     y_num <- as.integer(as.factor(y_label))
+    # Ensure X_lib and X_query share the same column names (resemble
+    # 3.0.0 requires matching variable names in newdata for predict()).
+    if (is.null(colnames(X_lib))) colnames(X_lib) <- paste0("V", seq_len(ncol(X_lib)))
+    if (!identical(colnames(X_query), colnames(X_lib))) {
+      if (ncol(X_query) == ncol(X_lib)) {
+        colnames(X_query) <- colnames(X_lib)
+      }
+    }
     fit <- tryCatch(
-      resemble::ortho_projection(Xr = X_lib, Yr = y_num,
-                                   method = "pls", pc_selection =
-                                     list(method = "manual", value = 8L)),
+      suppressWarnings(  # silence pc_selection deprecation in resemble >= 3.0
+        resemble::ortho_projection(Xr = X_lib, Yr = y_num,
+                                     method = "pls", pc_selection =
+                                       list(method = "manual", value = 8L))
+      ),
       error = function(e) NULL
     )
     if (!is.null(fit)) {
-      scores_lib   <- fit$scores
-      scores_query <- predict(fit, X_query)
-      return(list(lib = scores_lib, query = as.numeric(scores_query)))
+      scores_query <- tryCatch(
+        predict(fit, X_query),
+        error = function(e) NULL
+      )
+      if (!is.null(scores_query)) {
+        scores_lib <- fit$scores
+        return(list(lib = scores_lib, query = as.numeric(scores_query)))
+      }
     }
   }
   # Fallback: PCA on the joint matrix.

@@ -3,7 +3,7 @@
 \name{horizonte_A_fraco}
 \alias{horizonte_A_fraco}
 \title{Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.}
+simples/macica + OC < 6 g/kg; OR espessura < 5 cm.}
 \usage{
 horizonte_A_fraco(pedon)
 }
@@ -12,5 +12,5 @@ horizonte_A_fraco(pedon)
 }
 \description{
 Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-simples/maciça + OC < 6 g/kg; OR espessura < 5 cm.
+simples/macica + OC < 6 g/kg; OR espessura < 5 cm.
 }

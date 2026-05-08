@@ -341,6 +341,48 @@
           },
           "woody_fragments_pct": {
             "type": ["number", "null"]
+          },
+          "surface_crust_type": {
+            "type": ["string", "null"]
+          },
+          "bioturbation_density": {
+            "type": ["string", "null"]
+          },
+          "cordic_horizon": {
+            "type": ["boolean", "null"]
+          },
+          "microrelief_form": {
+            "type": ["string", "null"]
+          },
+          "weathering_stage": {
+            "type": ["string", "null"]
+          },
+          "salt_crust_pattern": {
+            "type": ["string", "null"]
+          },
+          "contamination_type": {
+            "type": ["string", "null"]
+          },
+          "stratification_pattern": {
+            "type": ["string", "null"]
+          },
+          "aeolian_morphology": {
+            "type": ["string", "null"]
+          },
+          "mottle_morphology": {
+            "type": ["string", "null"]
+          },
+          "surface_puff_layer": {
+            "type": ["boolean", "null"]
+          },
+          "thixotropic_index": {
+            "type": ["number", "null"]
+          },
+          "saprolite_pct": {
+            "type": ["number", "null"]
+          },
+          "water_regime_pattern": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

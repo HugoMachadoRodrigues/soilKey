@@ -4,7 +4,7 @@
 \alias{leptic_features}
 \title{Leptic features (WRB 2022)}
 \usage{
-leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
+leptic_features(pedon, max_depth = 25, min_coarse_pct = NULL, engine = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -13,7 +13,13 @@ leptic_features(pedon, max_depth = 25, min_coarse_pct = 90)
 rock-dominated material must appear (default 25).}
 
 \item{min_coarse_pct}{Minimum coarse-fragment percent for the
-coarse-fragments path (default 90).}
+coarse-fragments path (default 90 in soilkey engine, 50
+in aqp engine; \code{NULL} picks a default per engine).}
+
+\item{engine}{One of \code{"soilkey"} (default; strict 90\\%
+cfvo threshold) or \code{"aqp"} (LUCAS-friendly relaxed
+50\\% cfvo OR thin-topsoil-ending-by-25cm path). \code{NULL}
+reads \code{getOption("soilKey.diagnostic_engine")}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.

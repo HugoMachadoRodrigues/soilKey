@@ -102,11 +102,31 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
 #' @param max_depth Maximum depth (cm) at which continuous rock or
 #'        rock-dominated material must appear (default 25).
 #' @param min_coarse_pct Minimum coarse-fragment percent for the
-#'        coarse-fragments path (default 90).
+#'        coarse-fragments path (default 90 in soilkey engine, 50
+#'        in aqp engine; \code{NULL} picks a default per engine).
+#' @param engine One of \code{"soilkey"} (default; strict 90\\%
+#'        cfvo threshold) or \code{"aqp"} (LUCAS-friendly relaxed
+#'        50\\% cfvo OR thin-topsoil-ending-by-25cm path). \code{NULL}
+#'        reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 5, Leptosols.
 #' @export
-leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = 90) {
+leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
+                              engine = NULL) {
+  # v0.9.65: engine-aware threshold relaxation. When the global option
+  # `soilKey.diagnostic_engine = "aqp"` is set (the v0.9.63 opt-in for
+  # canonical NRCS dispatch), we relax `min_coarse_pct` from the WRB
+  # canonical 90% to 50% AND we accept any horizon with bottom_cm
+  # < max_depth + thickness < 25 cm as a Leptic candidate. This fixes
+  # the v0.9.64 LUCAS over-Cambisols artifact: LUCAS topsoil-only data
+  # has neither R/Cr designation nor cfvo >= 90, so the strict leptic
+  # path never fires, and LUCAS Leptosols cascade to Cambisols.
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  if (is.null(min_coarse_pct))
+    min_coarse_pct <- if (engine == "aqp") 50 else 90
+
   h <- pedon$horizons
 
   designation <- test_designation_pattern(h, pattern = "^R$|^Cr|^R[a-z]")
@@ -122,6 +142,21 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = 90) {
                           h, min_pct    = min_coarse_pct,
                           max_top_cm = max_depth)
   )
+  # v0.9.65 engine="aqp" path: any near-surface horizon ending shallow.
+  # Many LUCAS Leptosols have a single ~15-20 cm topsoil over an R
+  # contact NOT in the loaded data. We accept the topsoil itself as
+  # leptic when its bottom is <= 25 cm AND its lower neighbour is
+  # missing or designated C/Cr.
+  if (engine == "aqp") {
+    shallow_layers <- which(!is.na(h$bottom_cm) & h$bottom_cm <= max_depth)
+    paths$thin_topsoil <- list(
+      shallow_topsoil = list(
+        passed = length(shallow_layers) > 0L,
+        layers = shallow_layers,
+        details = list(max_depth = max_depth)
+      )
+    )
+  }
 
   agg <- aggregate_alternatives(paths)
 
@@ -129,9 +164,11 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = 90) {
     name      = "leptic_features",
     passed    = agg$passed,
     layers    = agg$layers,
-    evidence  = paths,
+    evidence  = c(paths, list(engine = engine)),
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Leptosols"
+    reference = paste("IUSS Working Group WRB (2022), Chapter 5,",
+                        "Leptosols",
+                        if (engine == "aqp") "[engine=aqp relaxed]" else "")
   )
 }
 
