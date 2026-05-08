@@ -15,7 +15,7 @@ the Ferralsol RSG.'><meta property="og:image" content="https://hugomachadorodrig
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.66</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.67</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ the Ferralsol RSG.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferralic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_cec <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferralic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_cec <span class="op">=</span> <span class="cn">NULL</span>, engine <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,7 +84,22 @@ the Ferralsol RSG.</p>
 
 
 <dt id="arg-max-cec">max_cec<a class="anchor" aria-label="anchor" href="#arg-max-cec"></a></dt>
-<dd><p>Maximum CEC (1M NH4OAc, pH 7) per kg clay (default 16).</p></dd>
+<dd><p>Maximum CEC (1M NH4OAc, pH 7) per kg clay
+(default <code>NULL</code> = 16 in soilkey engine, 20 in aqp
+engine; see <code>engine</code>).</p></dd>
+
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>One of <code>"soilkey"</code> (default; strict 16
+cmol_c/kg-clay threshold per WRB 2022) or <code>"aqp"</code>
+(relaxed 20 cmol_c/kg-clay – a regional tolerance that
+accommodates Brazilian / SOTERLAC Latossolos data, where
+Embrapa-style Mehlich/Ca+Mg+K+Al sum often reads ~17-20
+on profiles that the canonical NRCS / WRB definition would
+accept as ferralic). <code>NULL</code> reads
+<code>getOption("soilKey.diagnostic_engine")</code>. The numeric
+threshold can also be overridden directly via
+<code>options(soilKey.ferralic_max_cec = ...)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -95,16 +110,23 @@ the Ferralsol RSG.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sub-tests called:</p><ul><li><p><code><a href="test_ferralic_texture.html">test_ferralic_texture</a></code> – texture sandy loam or
         finer.</p></li>
-<li><p><code><a href="test_cec_per_clay.html">test_cec_per_clay</a></code> – CEC / clay &lt;= 16
-        cmol_c/kg clay.</p></li>
+<li><p><code><a href="test_cec_per_clay.html">test_cec_per_clay</a></code> – CEC / clay &lt;= 16 (or 20
+        under <code>engine = "aqp"</code>) cmol_c/kg clay.</p></li>
 <li><p><code><a href="test_ferralic_thickness.html">test_ferralic_thickness</a></code> – thickness &gt;= 30 cm.</p></li>
 </ul><p>v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
 "ECEC &lt;= 12 cmol_c/kg clay" gate was removed because it is not in the
-canonical text – only CEC (1M NH4OAc, pH 7) &lt;= 16 is required. The
-weatherable-mineral test (&lt;= 10% by volume), water-dispersible-clay
-test, and stratification / rock-structure exclusions remain deferred
-(they need mineralogical data outside the canonical horizon schema)
-and are refinements rather than gates.</p>
+canonical text – only CEC (1M NH4OAc, pH 7) &lt;= 16 is required.</p>
+<p>v0.9.67 regional tolerance: BDsolos RJ benchmark (n=722 perfis)
+showed 88/115 Latossolos failing the strict 16-cmol gate because
+Embrapa lab methodology often reads CEC at 17-20 on profiles that
+are unambiguously Latossolos by every other criterion. The
+<code>engine = "aqp"</code> threshold of 20 closes that gap without
+redefining the WRB threshold itself; users targeting strict
+WRB 2022 fidelity should keep <code>engine = "soilkey"</code>.</p>
+<p>The weatherable-mineral test (&lt;= 10% by volume),
+water-dispersible-clay test, and stratification / rock-structure
+exclusions remain deferred (they need mineralogical data outside
+the canonical horizon schema) and are refinements rather than gates.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

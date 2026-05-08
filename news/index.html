@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.66</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.67</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,41 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.67" id="soilkey-0967-2026-05-08">soilKey 0.9.67 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0967-2026-05-08"></a></h2>
+<p>The “<strong>Latossolos regional CTC tolerance</strong>” release. Closes the v0.9.66 backlog item flagged from the BDsolos RJ benchmark: 88/115 (76.5%) of Brazilian Latossolos profiles failed the strict WRB ferralic horizon definition (CEC &lt;= 16 cmol_c/kg clay) because Embrapa lab methodology (Mehlich + Ca/Mg/K/Al sum) routinely reads 17-20 cmol on profiles that are unambiguously Latossolos by every other criterion.</p>
+<div class="section level3">
+<h3 id="fix-0-9-67">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-67"></a></h3>
+<p><code><a href="../reference/ferralic.html">ferralic()</a></code> now accepts an <code>engine</code> parameter:</p>
+<ul><li>
+<code>engine = "soilkey"</code> (default) – strict WRB 2022 16-cmol gate.</li>
+<li>
+<code>engine = "aqp"</code> – regional tolerance of 20 cmol_c/kg clay.</li>
+</ul><p>The threshold can also be overridden directly via <code>options(soilKey.ferralic_max_cec = 24)</code> (or any numeric value), which beats both the engine default and the explicit <code>max_cec</code> arg.</p>
+</div>
+<div class="section level3">
+<h3 id="why-not-not-0-9-67">Why 20 (not 24, not 18)?<a class="anchor" aria-label="anchor" href="#why-not-not-0-9-67"></a></h3>
+<p>20 is a conservative shift: it covers the BDsolos RJ borderline zone (CEC/clay 17-19 was the bulk of the failed Latossolos) without opening the door to true Inceptisols / Argisols / Cambisols (which typically read CEC/clay &gt; 24). The Embrapa Manual de Metodos (Donagema et al. 2011 3.4) notes a methodological offset of ~2-4 cmol vs the canonical 1M NH4OAc pH 7 protocol; 20 covers the upper tail of that offset.</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-justification-bdsolos-rj-subset-0-9-67">Empirical justification (BDsolos RJ subset)<a class="anchor" aria-label="anchor" href="#empirical-justification-bdsolos-rj-subset-0-9-67"></a></h3>
+<p>The v0.9.62 benchmark report <code>inst/benchmarks/reports/bdsolos_rj_*.txt</code> showed CEC/clay distribution on labelled-Latossolos profiles clustering at 17-22 cmol – well above the strict 16-cmol gate but well below the 24-30 zone that Argissolos populate.</p>
+<p>Targeting the 20-cmol gate via <code>engine = "aqp"</code> is expected to recover most of the 76.5% Latossolos miss rate without breaking strict WRB 2022 fidelity (which remains the soilkey-engine default behaviour). A v0.9.68+ benchmark rerun on BDsolos RJ will quantify the lift.</p>
+</div>
+<div class="section level3">
+<h3 id="regression-test-0-9-67">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-67"></a></h3>
+<p><code>tests/testthat/test-v0967-ferralic-regional-tolerance.R</code> (8 tests, 12 expectations) covers:</p>
+<ul><li>Borderline Latossolo (CEC/clay ~18) fails on soilkey, passes on aqp.</li>
+<li>Pedon with CEC/clay &gt; 20 fails even under aqp (no over-permissive).</li>
+<li>
+<code>options(soilKey.ferralic_max_cec)</code> overrides the engine default.</li>
+<li>Explicit <code>max_cec</code> arg overrides both.</li>
+<li>Evidence trace records <code>engine</code> + <code>max_cec_used</code>.</li>
+<li>Low-CEC profile (true Ferralsol) passes on both engines.</li>
+<li>
+<code>engine = NULL</code> reads <code>getOption("soilKey.diagnostic_engine")</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.66" id="soilkey-0966-2026-05-08">soilKey 0.9.66 (2026-05-08)<a class="anchor" aria-label="anchor" href="#soilkey-0966-2026-05-08"></a></h2>
 <p>The “<strong>Leptosols regression fix</strong>” release. Closes the v0.9.65 known-regression flagged in the post-PR LUCAS Stage 3 rerun: under <code>engine = "aqp"</code>, the new “thin-topsoil” path in <code><a href="../reference/leptic_features.html">leptic_features()</a></code> fired for any horizon ending within 25 cm of the surface, which collapsed 29/30 LUCAS topsoil-only pedons onto Leptosols regardless of true class.</p>

@@ -1538,8 +1538,8 @@ res_wrb$trace
 #> [PASS] thickness
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p.
 #> 44)
-#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic
-#> definition
+#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic.
+#> v0.9.67 engine=soilkey threshold = 16 cmol_c/kg clay.
 #> 
 #> 
 #> $NT$evidence[[1]]$reference
@@ -1593,8 +1593,8 @@ res_wrb$trace
 #> [PASS] thickness
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p.
 #> 44)
-#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic
-#> definition
+#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic.
+#> v0.9.67 engine=soilkey threshold = 16 cmol_c/kg clay.
 #> 
 #> $FR$evidence[[1]]$evidence$argic
 #> 
