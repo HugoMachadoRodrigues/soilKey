@@ -1,3 +1,146 @@
+# soilKey 0.9.72 (2026-05-09)
+
+The "**designation-suffix morphological inference**" release. Closes
+the v0.9.71 backlog: 3 logic gaps were exposed by the Redape
+gold-standard benchmark (Gleissolos 0/8, Plintossolos 0/3,
+Vertissolos 0/2). All three Brazilian field-described Order signals
+encode their diagnostic via lowercase modifier letters in the
+horizon designation (\code{g}, \code{f}, \code{v}) without
+recording the corresponding numeric inputs. v0.9.72 adds three
+opt-in inference paths that read those signals directly from the
+designation, gated per-rule by separate options.
+
+## 1. Three new opt-in inference paths
+
+### a) Gleyic g-suffix (\code{gleyic_properties})
+
+\code{options(soilKey.gleyic_designation_inference = TRUE)}
+
+Accepts a layer as gleyic when the canonical
+\code{redoximorphic_features_pct} test is NA AND the designation
+matches \code{[A-Z][a-z0-9]*g} (e.g.\ \code{Cg}, \code{Cgn},
+\code{Apg}, \code{2Cgnz}, \code{11C1g}) AND
+\code{munsell_chroma_moist <= 2} (when recorded).
+
+### b) Plinthic f-suffix (\code{plinthic})
+
+\code{options(soilKey.plinthic_designation_inference = TRUE)}
+
+Accepts a layer as plinthic when \code{plinthite_pct} is NA AND
+the designation matches \code{[A-Z][a-z0-9]*f} (e.g.\ \code{Btf},
+\code{2Btf}, \code{Cf}, \code{Btf1}) AND the f-suffixed layers
+sum to at least \code{min_thickness}.
+
+### c) Vertic v-suffix (\code{vertic_horizon})
+
+\code{options(soilKey.vertic_designation_inference = TRUE)}
+
+Accepts a layer as vertic when slickensides + cracks AND COLE
+paths fail or are NA, AND the designation matches
+\code{[A-Z][a-z0-9]*v} (e.g.\ \code{Bv}, \code{Bvk1}, \code{Cv},
+\code{Cvz}) AND \code{clay_pct >= min_clay} (default 30%).
+
+All three paths are **conservative**: they fire only when the
+canonical numeric tests are absent or fail, never overriding
+explicit measurements.
+
+## 2. Empirical effect on Redape (n = 94)
+
+| RSG | OFF | ON | delta |
+|------|----:|---:|------:|
+| Gleissolos | 0/8 | **8/8** | **+8** |
+| Plintossolos | 0/3 | **3/3** | **+3** |
+| Vertissolos | 0/2 | **2/2** | **+2** |
+| Luvissolos | 2/6 | 1/6 | -1 (intergrade) |
+| Planossolos | 3/7 | 2/7 | -1 (intergrade) |
+| **net** | | | **+11** |
+
+```
+Order-level accuracy: 45.7% -> 57.4% (+11.7pp)
+```
+
+The 2 regressions are SiBCS intergrade cases:
+\itemize{
+  \item \code{GeoTab_RN_038}: PLANOSSOLO HAPLICO Eutrofico
+        \emph{vertissolico}: has \code{Btv} designation in one of
+        three subsoil layers. Canonical SiBCS classifies it as
+        Planossolo (planic dominates). The v-suffix path correctly
+        identifies vertic features but the SiBCS key sends it to
+        Vertissolos.
+  \item \code{GeoTab_RN_043}: LUVISSOLO CROMICO Palico tipico:
+        has \code{Btfn1, Btfn2} (argillic + plinthic + natric).
+        Canonical SiBCS prefers Luvissolo because cromic + natric
+        dominate. The f-suffix path picks up plinthite and SiBCS
+        sends it to Plintossolos.
+}
+
+These are documented edge cases. Net +13 / -2 = +11 correct.
+Users targeting strict canonical SiBCS for intergrade-rich
+datasets should leave the options OFF.
+
+## 3. Empirical effect on BDsolos RJ (n = 722, ALL fallbacks ON)
+
+The full v0.9.69-v0.9.72 fallback stack:
+
+```r
+options(soilKey.diagnostic_engine                       = "aqp",
+        soilKey.ferralic_ecec_fallback                  = TRUE,
+        soilKey.ferralic_texture_morphological_fallback = TRUE,
+        soilKey.gleyic_designation_inference            = TRUE,
+        soilKey.plinthic_designation_inference          = TRUE,
+        soilKey.vertic_designation_inference            = TRUE)
+```
+
+raises Order-level accuracy on BDsolos RJ:
+
+| configuration | accuracy | Gleissolos |
+|---------------|---------:|-----------:|
+| v0.9.65 baseline | 0.403 | (small) |
+| aqp + ECEC + tex-morph (v0.9.70) | 0.444 | 33.7% (33/98) |
+| **+ designation inferences (v0.9.72)** | **0.500** | **77.6% (76/98!)** |
+
+**+9.7pp net on BDsolos RJ**, with **+76 Gleissolos correctly
+classified** (vs ~33 before).
+
+Default behaviour (no opt-ins) is **bit-for-bit identical** to
+v0.9.71: 40.3% on BDsolos RJ baseline.
+
+## 4. Recommended Brazilian / SOTERLAC recipe
+
+```r
+# Once at session start, for Brazilian field-described profiles:
+options(soilKey.diagnostic_engine                       = "aqp",
+        soilKey.ferralic_ecec_fallback                  = TRUE,
+        soilKey.ferralic_texture_morphological_fallback = TRUE,
+        soilKey.gleyic_designation_inference            = TRUE,
+        soilKey.plinthic_designation_inference          = TRUE,
+        soilKey.vertic_designation_inference            = TRUE)
+```
+
+This pipeline is now competitive on Brazilian classification at
+the Order level; refinement at Subordem / Grande Grupo / Subgrupo
+remains v0.9.73+ work.
+
+## 5. Regression test
+
+\code{tests/testthat/test-v0972-designation-suffix-inference.R}
+(15 tests, 19 expectations) covers each path's positive cases,
+opt-in semantics, threshold-edge rejection, the
+\code{11C1g}-with-digit-prefix edge, and cross-rule isolation
+(plinthic profile must NOT also pass gleyic/vertic).
+
+## 6. v0.9.73+ deferred
+
+\itemize{
+  \item Subordem / Grande Grupo / Subgrupo level accuracy.
+  \item Argic strong-films exclusion review (BDsolos backlog).
+  \item LUCAS WRB Stage 3 rerun on full v0.9.66+0.9.67+0.9.72 stack.
+  \item Spodic engine-aware relaxation.
+  \item Per-RSG dispatch ordering at \code{run_taxonomic_key} level.
+  \item Planossolos low-recall investigation (1/36 on BDsolos RJ).
+}
+
+
 # soilKey 0.9.71 (2026-05-09)
 
 The "**Embrapa Redape integration -- gold-standard curated benchmark**"

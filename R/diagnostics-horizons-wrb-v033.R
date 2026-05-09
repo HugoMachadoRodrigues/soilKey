@@ -218,6 +218,20 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' summed (\code{cole_value * thickness}) over the upper 100 cm
 #' \\>= 6 cm passes the diagnostic even when slickensides + cracks
 #' are not recorded (KST 13ed Ch 16 LE alternative, p 343).
+#'
+#' @section v0.9.72 designation morphological inference (opt-in):
+#' Field-described Brazilian Vertissolos profiles (e.g.\ the Embrapa
+#' Redape curated dataset) encode vertic morphology via a \code{v}
+#' master-letter modifier in the horizon designation (\code{Bv},
+#' \code{Bvk1}, \code{Cv}, \code{Cvz}) without recording
+#' \code{slickensides} class or \code{shrink_swell_cracks_cm} as
+#' numeric inputs. With
+#' \code{options(soilKey.vertic_designation_inference = TRUE)} the
+#' function accepts a layer as vertic when the canonical and COLE
+#' paths both fail or are NA AND the layer has \code{clay_pct >=
+#' min_clay} AND its designation matches a \code{v} master-letter
+#' modifier. Default is \code{FALSE}.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Numeric threshold or option (see Details).
 #' @param min_thickness Numeric threshold or option (see Details).
@@ -272,9 +286,58 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
     }
   }
 
-  passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed)
+  # v0.9.72 -- designation morphological inference (opt-in).
+  # Field-described Brazilian Vertissolos profiles (e.g. the Embrapa
+  # Redape curated dataset) encode vertic morphology via a 'v' master-
+  # letter modifier in the horizon designation (Bv, Bvk1, Cv, Cvz)
+  # without recording slickensides_class or shrink_swell_cracks_cm.
+  # This path passes when:
+  #   (1) canonical AND COLE paths both fail or are NA, AND
+  #   (2) at least one layer has clay >= min_clay AND its designation
+  #       matches a 'v' master-letter modifier ([A-Z][A-Za-z]*v).
+  designation_inference_enabled <- isTRUE(
+    getOption("soilKey.vertic_designation_inference", default = FALSE))
+  v_suffix_path <- list(passed = NA, layers = integer(0), source = "off")
+  inferred_layers <- integer(0)
+  if (designation_inference_enabled && !isTRUE(agg_canonical$passed) &&
+        !isTRUE(cole_path$passed)) {
+    desig <- if (!is.null(h$designation)) as.character(h$designation)
+              else rep(NA_character_, nrow(h))
+    has_v_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*v", desig)
+    clay_ok      <- !is.na(h$clay_pct) & h$clay_pct >= min_clay
+    inferred_mask <- has_v_suffix & clay_ok
+    inferred_layers <- which(inferred_mask)
+    if (length(inferred_layers) > 0L) {
+      # Apply thickness on the contiguous chunk of v-suffixed layers
+      thk <- pmax(h$bottom_cm[inferred_layers] - h$top_cm[inferred_layers], 0,
+                    na.rm = TRUE)
+      if (sum(thk, na.rm = TRUE) >= min_thickness) {
+        v_suffix_path <- list(
+          passed = TRUE, layers = inferred_layers,
+          source = "designation_v_suffix",
+          details = list(matched_designations = desig[inferred_mask],
+                            total_thickness_cm   = sum(thk, na.rm = TRUE),
+                            min_thickness        = min_thickness,
+                            min_clay             = min_clay)
+        )
+      } else {
+        v_suffix_path <- list(
+          passed = FALSE, layers = inferred_layers,
+          source = "designation_v_suffix_thin",
+          details = list(matched_designations = desig[inferred_mask],
+                            total_thickness_cm   = sum(thk, na.rm = TRUE),
+                            min_thickness        = min_thickness)
+        )
+        inferred_layers <- integer(0)
+      }
+    }
+  }
+
+  passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed) ||
+              isTRUE(v_suffix_path$passed)
   layers <- if (isTRUE(agg_canonical$passed)) agg_canonical$layers
             else if (isTRUE(cole_path$passed)) cole_path$layers
+            else if (isTRUE(v_suffix_path$passed)) v_suffix_path$layers
             else integer(0)
   missing <- unique(c(agg_canonical$missing,
                        if (length(cole_path) == 0L) "cole_value"))
@@ -287,9 +350,13 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
                            (length(cole_path) > 0L && is.na(cole_path$passed))) NA
                 else FALSE,
     layers   = layers,
-    evidence = c(tests, list(cole_le_path = cole_path)),
+    evidence = c(tests, list(cole_le_path = cole_path,
+                                designation_inference = v_suffix_path)),
     missing  = missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon; KST 13ed Ch 16 LE alternative"
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon;",
+                       "KST 13ed Ch 16 LE alternative",
+                       if (length(inferred_layers) > 0L)
+                         "[v0.9.72 designation-suffix inference]" else "")
   )
 }
 

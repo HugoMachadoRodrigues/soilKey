@@ -40,7 +40,39 @@ v0.2 deliberately does NOT use the Munsell-based shortcut (chroma <=
 bleached horizons of Podzols just as well as truly reduced gleyic
 horizons. v0.3 will add reductimorphic / oxidimorphic feature
 discrimination once we model field-described mottle properties.
+v0.9.72 adds the designation-suffix path (opt-in).
 }
+\section{v0.9.72 designation morphological inference (opt-in)}{
+
+Field-described Brazilian Gleissolos profiles (e.g.\ the Embrapa
+Redape curated dataset) routinely encode gleyic properties via the
+designation suffix \code{g} (e.g.\ \code{Cg}, \code{Cg1}, \code{Cgn},
+\code{Apg}) plus low-chroma Munsell colours (chroma \\<= 2), without
+recording \code{redoximorphic_features_pct} as a numeric percent.
+The strict canonical test then returns \code{NA} on every horizon
+and Gleissolos cascade to other Orders.
+
+With \code{options(soilKey.gleyic_designation_inference = TRUE)} the
+function accepts a layer as gleyic when:
+\enumerate{
+  \item the canonical \code{redoximorphic_features_pct} test is
+        \code{NA} for that layer, AND
+  \item the designation matches \code{[A-Z]+g[0-9a-z]?} (a horizon
+        name with a \code{g} suffix in the master letter sequence,
+        e.g.\ \code{Cg}, \code{Bg2}, \code{Apg}, \code{Cgn}), AND
+  \item the layer has \code{munsell_chroma_moist <= 2} (low-chroma
+        reduced colour) when Munsell is recorded; if Munsell is
+        missing on the layer the suffix alone is sufficient
+        (designation suffix is the most direct signal of pedologist
+        field judgment).
+}
+
+This is conservative: the suffix \code{g} is a master-letter
+modifier in the FAO/Embrapa horizon nomenclature that explicitly
+means "gleyic-affected" -- the curator already made the call.
+Default is \code{FALSE} (canonical behaviour preserved).
+}
+
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
 }

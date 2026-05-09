@@ -19,6 +19,35 @@
 #' Gleyic properties are diagnostic for Gleysols and qualify many other
 #' RSGs (Endogleyic, Epigleyic qualifiers).
 #'
+#' @section v0.9.72 designation morphological inference (opt-in):
+#' Field-described Brazilian Gleissolos profiles (e.g.\ the Embrapa
+#' Redape curated dataset) routinely encode gleyic properties via the
+#' designation suffix \code{g} (e.g.\ \code{Cg}, \code{Cg1}, \code{Cgn},
+#' \code{Apg}) plus low-chroma Munsell colours (chroma \\<= 2), without
+#' recording \code{redoximorphic_features_pct} as a numeric percent.
+#' The strict canonical test then returns \code{NA} on every horizon
+#' and Gleissolos cascade to other Orders.
+#'
+#' With \code{options(soilKey.gleyic_designation_inference = TRUE)} the
+#' function accepts a layer as gleyic when:
+#' \enumerate{
+#'   \item the canonical \code{redoximorphic_features_pct} test is
+#'         \code{NA} for that layer, AND
+#'   \item the designation matches \code{[A-Z]+g[0-9a-z]?} (a horizon
+#'         name with a \code{g} suffix in the master letter sequence,
+#'         e.g.\ \code{Cg}, \code{Bg2}, \code{Apg}, \code{Cgn}), AND
+#'   \item the layer has \code{munsell_chroma_moist <= 2} (low-chroma
+#'         reduced colour) when Munsell is recorded; if Munsell is
+#'         missing on the layer the suffix alone is sufficient
+#'         (designation suffix is the most direct signal of pedologist
+#'         field judgment).
+#' }
+#'
+#' This is conservative: the suffix \code{g} is a master-letter
+#' modifier in the FAO/Embrapa horizon nomenclature that explicitly
+#' means "gleyic-affected" -- the curator already made the call.
+#' Default is \code{FALSE} (canonical behaviour preserved).
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) of a candidate layer
 #'        (default 50, per WRB 2022).
@@ -35,6 +64,7 @@
 #' bleached horizons of Podzols just as well as truly reduced gleyic
 #' horizons. v0.3 will add reductimorphic / oxidimorphic feature
 #' discrimination once we model field-described mottle properties.
+#' v0.9.72 adds the designation-suffix path (opt-in).
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
 #' @param stagnic_decay_factor Numeric threshold or option (see Details).
@@ -63,12 +93,47 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
   stagnic_pat <- isTRUE(tests$stagnic_pattern$passed)
   any_na      <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
 
+  # v0.9.72 -- designation-suffix morphological inference
+  designation_inference_enabled <- isTRUE(
+    getOption("soilKey.gleyic_designation_inference", default = FALSE))
+  inferred_layers <- integer(0)
+  inference_path  <- list(passed = NA, layers = integer(0), source = "off")
+  if (designation_inference_enabled && !features_ok) {
+    desig <- if (!is.null(h$designation)) as.character(h$designation)
+              else rep(NA_character_, nrow(h))
+    chroma <- if (!is.null(h$munsell_chroma_moist)) h$munsell_chroma_moist
+              else rep(NA_real_, nrow(h))
+    topcm  <- if (!is.null(h$top_cm)) h$top_cm else rep(NA_real_, nrow(h))
+    # Match a "g" master-letter modifier: uppercase, then optional
+    # lowercase modifiers OR sequence digits (e.g. C1, C2), then 'g'.
+    # Catches Cg, Cg1, Cgn, Apg, 2Cgnz, 3Cgjz, 11C1g, Cgnz1, Cnz1g.
+    has_g_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*g", desig)
+    in_window    <- !is.na(topcm) & topcm <= max_top_cm
+    chroma_ok    <- is.na(chroma) | chroma <= 2
+    inferred_mask <- has_g_suffix & in_window & chroma_ok
+    inferred_layers <- which(inferred_mask)
+    inference_path <- list(
+      passed = length(inferred_layers) > 0L,
+      layers = inferred_layers,
+      source = "designation_g_suffix",
+      details = list(matched_designations = desig[inferred_mask],
+                       max_top_cm           = max_top_cm)
+    )
+  }
+  tests$designation_inference <- inference_path
+
   passed <- if (features_ok && !stagnic_pat) TRUE
+            else if (length(inferred_layers) > 0L && !stagnic_pat) TRUE
             else if (any_na && !features_ok) NA
             else FALSE
 
-  layers <- if (isTRUE(passed)) tests$gleyic_features$layers else integer(0)
-  missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
+  layers <- if (features_ok && !stagnic_pat)
+              tests$gleyic_features$layers
+            else if (length(inferred_layers) > 0L && !stagnic_pat)
+              inferred_layers
+            else integer(0)
+  missing <- unique(unlist(lapply(tests[c("gleyic_features", "stagnic_pattern")],
+                                    function(t) t$missing %||% character(0))))
   if (is.null(missing)) missing <- character(0)
 
   DiagnosticResult$new(
@@ -77,7 +142,9 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
     layers    = layers,
     evidence  = tests,
     missing   = missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Gleyic properties"
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Gleyic properties",
+                       if (length(inferred_layers) > 0L)
+                         "[v0.9.72 designation-suffix inference]" else "")
   )
 }
 
