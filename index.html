@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.95</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.96</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,54 +84,197 @@
 <img src="logo.png" class="logo" alt=""><h1 id="soilkey-">soilKey <a class="anchor" aria-label="anchor" href="#soilkey-"></a>
 </h1>
 </div>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.92-FF6B35?style=flat-square" alt="v0.9.92"></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.96-FF6B35?style=flat-square" alt="v0.9.96"><a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT"></a> <a href="https://CRAN.R-project.org/package=soilKey" class="external-link"><img src="https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square" alt="CRAN status"></a> <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg" alt="DOI"></a> <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square" alt="WRB 2022"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/SiBCS%205-13%20Orders%20%C2%B7%20938%20Subgroups-blue.svg?style=flat-square" alt="SiBCS 5"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/USDA%20ST%2013-12%20Orders%20%C2%B7%201288%20Subgroups-blue.svg?style=flat-square" alt="USDA ST 13"></a> <br><a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a> <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a> <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-Hugo--Rodrigues--12-00CCBB.svg?style=flat-square&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a></p>
 <blockquote>
-<p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).</strong> All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
+<p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5th ed.).</strong> All three systems wired end-to-end, down to the deepest categorical level, in pure R driven from versioned YAML rules. Multimodal extraction, spatial priors, OSSL spectroscopy, and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
 </blockquote>
-<!-- Status & coverage badges -->
-<p><a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT"></a> <a href="https://CRAN.R-project.org/package=soilKey" class="external-link"><img src="https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square" alt="CRAN status"></a> <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg" alt="DOI"></a> <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="tests/"><img src="https://img.shields.io/badge/tests-3137%20passing-brightgreen.svg?style=flat-square" alt="tests"></a> <a href="https://app.codecov.io/gh/HugoMachadoRodrigues/soilKey?branch=main" class="external-link"><img src="https://img.shields.io/badge/coverage-80.5%25-brightgreen.svg?style=flat-square" alt="coverage"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square" alt="WRB 2022"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/SiBCS%205-13%2F13%20ordens%20%C2%B7%20938%20SGs-blue.svg?style=flat-square" alt="SiBCS 5"></a> <a href="#id_-coverage"><img src="https://img.shields.io/badge/USDA%20ST%2013-12%2F12%20orders%20%C2%B7%201288%20SGs-blue.svg?style=flat-square" alt="USDA ST 13"></a> <br><!-- Author / social badges --><a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a> <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a> <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-Hugo--Rodrigues--12-00CCBB.svg?style=flat-square&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a></p>
 <hr>
+<div class="section level2">
+<h2 id="id_-status-at-a-glance">✦ Status at a glance<a class="anchor" aria-label="anchor" href="#id_-status-at-a-glance"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="23%">
+<col width="14%">
+<col width="62%">
+</colgroup>
+<thead><tr>
+<th>Domain</th>
+<th>Stage</th>
+<th>Notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>WRB 2022 — diagnostic horizons</strong></td>
+<td>✅ shipped (32 / 32)</td>
+<td>All 32 horizons of Chapter 3.1 implemented with per-diagnostic regression tests.</td>
+</tr>
+<tr>
+<td><strong>WRB 2022 — diagnostic properties</strong></td>
+<td>✅ shipped (17 / 17)</td>
+<td>Chapter 3.2 complete.</td>
+</tr>
+<tr>
+<td><strong>WRB 2022 — diagnostic materials</strong></td>
+<td>✅ shipped (16 / 16)</td>
+<td>Chapter 3.3 complete.</td>
+</tr>
+<tr>
+<td><strong>WRB 2022 — RSG key</strong></td>
+<td>✅ shipped (32 / 32)</td>
+<td>All Reference Soil Groups in canonical Chapter 4 order.</td>
+</tr>
+<tr>
+<td><strong>WRB 2022 — qualifiers</strong></td>
+<td>✅ shipped</td>
+<td>All principal + supplementary qualifiers from Chapter 6 wired with canonical ordering.</td>
+</tr>
+<tr>
+<td><strong>SiBCS 5 — Order</strong></td>
+<td>✅ shipped (13 / 13)</td>
+<td>All 13 SiBCS Orders.</td>
+</tr>
+<tr>
+<td><strong>SiBCS 5 — Suborder</strong></td>
+<td>✅ shipped (44 / 44)</td>
+<td>All 44 Suborders.</td>
+</tr>
+<tr>
+<td><strong>SiBCS 5 — Great Group</strong></td>
+<td>✅ shipped (192 / 192)</td>
+<td>All 192 Great Groups.</td>
+</tr>
+<tr>
+<td><strong>SiBCS 5 — Subgroup</strong></td>
+<td>✅ shipped (938 / 938)</td>
+<td>All 938 Subgroups; full leaf-level resolution.</td>
+</tr>
+<tr>
+<td><strong>SiBCS 5 — Family (5th level)</strong></td>
+<td>✅ shipped</td>
+<td>Up to 15 orthogonal adjectival dimensions.</td>
+</tr>
+<tr>
+<td><strong>USDA Soil Taxonomy 13 — Path C</strong></td>
+<td>✅ shipped</td>
+<td>Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / 1288).</td>
+</tr>
+<tr>
+<td><strong>Multimodal extraction (VLM)</strong></td>
+<td>✅ shipped</td>
+<td>Local-first via <code>ellmer</code> + Gemma 4 (Ollama). Schema-validated; LLM never touches the key.</td>
+</tr>
+<tr>
+<td><strong>OSSL spectral gap-fill</strong></td>
+<td>✅ shipped</td>
+<td>Vis-NIR / SWIR / MIR via <code>prospectr</code> + <code>resemble</code> (MBL / PLSR-local / pretrained backbones).</td>
+</tr>
+<tr>
+<td><strong>Spatial priors</strong></td>
+<td>✅ shipped</td>
+<td>SoilGrids WCS + national soil maps; consistency check, never overrides the key.</td>
+</tr>
+<tr>
+<td><strong>Provenance ledger</strong></td>
+<td>✅ shipped</td>
+<td>Per-attribute tags: <code>measured</code>, <code>predicted_spectra</code>, <code>extracted_vlm</code>, <code>inferred_prior</code>, <code>user_assumed</code>.</td>
+</tr>
+<tr>
+<td><strong>Evidence grade (A–D)</strong></td>
+<td>✅ shipped</td>
+<td>Computed from the trace; surfaces robustness without hiding it.</td>
+</tr>
+<tr>
+<td><strong>Cross-system correlation</strong></td>
+<td>✅ shipped</td>
+<td>WRB ↔︎ USDA ↔︎ SiBCS via IUSS WRB 2022 Annex 6; full benchmark drivers.</td>
+</tr>
+<tr>
+<td><strong>External-data benchmarks</strong></td>
+<td>✅ shipped</td>
+<td>KSSL+NASIS, AfSP, WoSIS stratified, BDsolos (RJ), Redape (Vaz et al. 2023), LUCAS 2018.</td>
+</tr>
+<tr>
+<td><strong>SmartSolos Expert API bridge</strong></td>
+<td>✅ shipped</td>
+<td>
+<code><a href="reference/classify_via_smartsolos_api.html">classify_via_smartsolos_api()</a></code> cross-validates against Embrapa’s authoritative reference.</td>
+</tr>
+<tr>
+<td><strong>Lazy-fetch benchmark caches</strong></td>
+<td>✅ shipped (v0.9.94)</td>
+<td>Four large <code>.rds</code> samples downloaded on demand from a versioned GitHub Release.</td>
+</tr>
+<tr>
+<td><strong>CRAN release</strong></td>
+<td>🟡 pending</td>
+<td>First submission post v0.9.95; auto-check pre-test passing.</td>
+</tr>
+<tr>
+<td><strong>WRB Tier-3 RSG-gate strict mode</strong></td>
+<td>🟡 in progress</td>
+<td>Per-RSG numerical-threshold gate strengthening; tracked in NEWS per release.</td>
+</tr>
+<tr>
+<td><strong>Field-photo-only classification</strong></td>
+<td>🔵 idea / roadmap</td>
+<td>Photo + GPS → schema-validated extraction → multi-system classification, no lab data required.</td>
+</tr>
+<tr>
+<td><strong>Pedometric uncertainty quantif.</strong></td>
+<td>🔵 idea / roadmap</td>
+<td>Probabilistic class output via Monte Carlo perturbation of the provenance ledger.</td>
+</tr>
+<tr>
+<td><strong>R Shiny web app</strong></td>
+<td>🔵 idea / roadmap</td>
+<td>Interactive profile builder + classification visualiser.</td>
+</tr>
+</tbody>
+</table>
+<p>Legend: ✅ shipped · 🟡 in progress · 🔵 idea / roadmap</p>
+<hr>
+</div>
 <div class="section level2">
 <h2 id="id_-the-headline-result">✦ The headline result<a class="anchor" aria-label="anchor" href="#id_-the-headline-result"></a>
 </h2>
-<p>A canonical Brazilian <em>Latossolo Vermelho Distrocoeso</em> on Mata Atlântica gneiss, classified end-to-end across the <strong>three canonical systems down to the deepest level</strong>:</p>
+<p>A canonical Brazilian Latossolo Vermelho on tropical gneiss, classified end-to-end across the <strong>three canonical systems down to the deepest level</strong>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># WRB 2022: full Chapter 6 name (RSG + qualifiers + specifiers)</span></span>
+<span><span class="co"># WRB 2022 — full Chapter 6 name (RSG + qualifiers + specifiers)</span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
 <span></span>
-<span><span class="co"># SiBCS 5a ed.: 4o nivel (Subgrupo) + Familia (5o nivel)</span></span>
+<span><span class="co"># SiBCS 5 — 4th level (Subgroup) + Family (5th level)</span></span>
 <span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
 <span></span>
-<span><span class="co"># USDA Soil Taxonomy 13ed: Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup</span></span>
+<span><span class="co"># USDA Soil Taxonomy 13 — Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup</span></span>
 <span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
-<p>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order. SiBCS descends through <strong>all four hierarchical levels (Ordem → Subordem → Grande Grupo → Subgrupo)</strong> plus a <strong>5th-level Família</strong> with up to 15 orthogonal adjectival dimensions (the Família label only includes adjectives with sufficient evidence; richer profiles produce longer labels). USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em> All three keys are deterministic R code driven from versioned YAML rules.</p>
+<ul>
+<li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order.</li>
+<li>SiBCS descends through <strong>all four hierarchical levels (Order → Suborder → Great Group → Subgroup)</strong> plus a <strong>5th-level Family</strong> with up to 15 orthogonal adjectival dimensions.</li>
+<li>USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em>
+</li>
+</ul>
+<p>All three keys are deterministic R code driven from versioned YAML rules.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="id_-whats-new-in-v0981--v0992-2026-05-09">✦ What’s new in v0.9.81 → v0.9.92 (2026-05-09)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v0981--v0992-2026-05-09"></a>
+<h2 id="id_-whats-new-in-v0981--v0996-2026-05-09">✦ What’s new in v0.9.81 → v0.9.96 (2026-05-09)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v0981--v0996-2026-05-09"></a>
 </h2>
-<p>The v0.9.81 → v0.9.92 release series ships <strong>15 surgical fixes</strong> across the WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13 keys, all with default canonical behaviour bit-for-bit preserved and a single opt-in (<code>soilKey.diagnostic_engine = "aqp"</code>) that bundles the data-quality-aware paths.</p>
-<p><strong>Cumulative empirical lift on five external datasets</strong> (post-v0.9.91):</p>
+<p>The v0.9.81 → v0.9.96 release series ships <strong>17 surgical fixes</strong> across the WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13 keys, plus a CRAN-readiness polish pass. Default canonical behaviour is bit-for-bit preserved in every release; one option (<code>soilKey.diagnostic_engine = "aqp"</code>) auto-bundles the data-quality-aware paths.</p>
+<p><strong>Cumulative empirical lift on five external datasets</strong> (post-v0.9.95):</p>
 <table class="table">
-<colgroup>
-<col width="28%">
-<col width="6%">
-<col width="12%">
-<col width="40%">
-<col width="13%">
-</colgroup>
 <thead><tr>
 <th>Dataset</th>
 <th align="right">n</th>
 <th align="right">Default</th>
-<th align="right">Best opt-in (<code>engine="aqp"</code>)</th>
+<th align="right"><code>engine = "aqp"</code></th>
 <th align="right">Lift</th>
 </tr></thead>
 <tbody>
@@ -172,38 +315,32 @@
 </tr>
 </tbody>
 </table>
-<p>Plus the v0.9.81 honest 4-level Redape benchmark: Subordem 30.9% → 39.4%, Grande Grupo 29.1% → 35.2%, Subgrupo 15.1% → 25.0%.</p>
-<p><strong>Highlights of the release series:</strong></p>
+<p>Plus the v0.9.81 honest 4-level Redape benchmark: Suborder 30.9% → 39.4%, Great Group 29.1% → 35.2%, Subgroup 15.1% → 25.0%.</p>
+<p>Highlights of the release series (full per-release diff in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>):</p>
 <ul>
 <li>
-<strong>v0.9.81</strong> — <code><a href="reference/benchmark_redape.html">benchmark_redape()</a></code> now actually computes Subordem / GG / Subgrupo accuracy (the level argument was previously discarded; all four levels reported the same Order number).</li>
+<strong>v0.9.81</strong> — <code><a href="reference/benchmark_redape.html">benchmark_redape()</a></code> now actually computes Suborder / Great Group / Subgroup accuracy.</li>
 <li>
-<strong>v0.9.82</strong> — LUCAS Stage 3 rerun with the v0.9.66+72+77+78+79+80 stack: <strong>0% → 60% accuracy</strong> (100% recall on Cambisols, 18/18, via SoilGrids 30-60 cm subsoil fill).</li>
+<strong>v0.9.82</strong> — LUCAS Stage 3 rerun: <strong>0% → 60%</strong> accuracy with the v0.9.66+72+77+78+79+80 stack and SoilGrids subsoil fill.</li>
 <li>
-<strong>v0.9.83</strong> — Argic strong-clay-films audit on BDsolos RJ: extracted <code><a href="reference/argic_with_strong_clay_films.html">argic_with_strong_clay_films()</a></code> + <code><a href="reference/audit_argic_strong_films.html">audit_argic_strong_films()</a></code> exported helpers; the Cap 18 latossolic-vs-argic precedence rule has 0.9% false-positive impact on Latossolo references.</li>
+<strong>v0.9.84</strong> — <code><a href="reference/spodic.html">spodic()</a></code> engine-aware OC-translocation path: KSSL+NASIS Spodosols <strong>1/14 → 5/14</strong>.</li>
 <li>
-<strong>v0.9.84</strong> — <code><a href="reference/spodic.html">spodic()</a></code> engine-aware OC-translocation path: KSSL+NASIS Spodosols <strong>1/14 → 5/14</strong> (+4) when the Bh chemistry is documented but uses generic B/Bw designations.</li>
+<strong>v0.9.85</strong> — <code><a href="reference/andosol.html">andosol()</a></code> buried-exclusion + andic OC+BD proxy thickness extension. AfSP Andosols <strong>0/5 → 2/5</strong>.</li>
 <li>
-<strong>v0.9.85</strong> — <code><a href="reference/andosol.html">andosol()</a></code> buried-exclusion fix (argic at top ≥ 50 cm no longer disqualifies the surface andic stack) + andic OC+BD proxy thickness extension. AfSP Andosols <strong>0/5 → 2/5</strong>.</li>
+<strong>v0.9.86 / v0.9.89 / v0.9.90</strong> — <code>engine="aqp"</code> auto-bundles the v0.9.69 ECEC fallback, the v0.9.70 texture-morphological fallback, and the v0.9.90 argic designation-inference fallback. BDsolos RJ Latossolos <strong>14.9% → 28.1%</strong>, Order <strong>40.3% → 46.6%</strong>.</li>
 <li>
-<strong>v0.9.86</strong> — <code>engine="aqp"</code> auto-enables the v0.9.69 ECEC fallback. BDsolos RJ Latossolos <strong>14.9% → 28.1%</strong> purely from one option flip.</li>
+<strong>v0.9.91</strong> — Strict <code>[[reference_wrb]]</code> access on the bundled WoSIS / KSSL / KSSL+NASIS caches (sidesteps R’s <code>$</code>-partial-matching footgun).</li>
 <li>
-<strong>v0.9.89</strong> — <code>engine="aqp"</code> auto-enables the v0.9.70 texture-morphological fallback (cumulative +0.8pp).</li>
+<strong>v0.9.92 → v0.9.95</strong> — CRAN-readiness: clean <code>R CMD check --as-cran</code>, lazy-fetch architecture brings the source tarball from 10 MB to 6 MB.</li>
 <li>
-<strong>v0.9.90</strong> — <code><a href="reference/argic.html">argic()</a></code> designation-inference fallback: BDsolos 2-point profiles (A at 0-20 + B at 50-150) with Bt + clay-films now classify correctly. Argissolo recall 70.4% → 77.1%.</li>
-<li>
-<strong>v0.9.91</strong> — Strict <code>[[reference_wrb]]</code> access on the bundled WoSIS / KSSL / KSSL+NASIS caches (sidesteps R’s <code>$</code>-partial-matching footgun on <code>reference_wrb_from_usda</code>).</li>
-<li>
-<strong>v0.9.92</strong> — CRAN-readiness polish: dead URLs / DOIs fixed, <code>\doi{}</code> style throughout, <code>cran-comments.md</code> refreshed, README + vignettes brought current.</li>
+<strong>v0.9.96</strong> — README overhaul (this release): full English rewrite, expanded implementation-status table, refreshed citations.</li>
 </ul>
-<p>Tri-state precedence preserved everywhere: explicit <code>options(soilKey.&lt;rule&gt; = TRUE/FALSE)</code> always wins; <code>engine="aqp"</code> auto-enables the data-quality-aware bundle; default canonical strict (FALSE) is the unchanged baseline.</p>
-<p>See <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a> for the per-release diff.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-why-soilkey">✦ Why soilKey?<a class="anchor" aria-label="anchor" href="#id_-why-soilkey"></a>
 </h2>
-<p>There is no public, mantained, end-to-end implementation of any of the three major soil classification systems. WRB acknowledges (in the 4th-edition preface) that internal classification algorithms exist within the IUSS Working Group but have not been released. The U.S. <code>SoilTaxonomy</code> package on CRAN provides lookup tables but not the key. There is <strong>zero</strong> public software for SiBCS.</p>
+<p>There is no public, maintained, end-to-end implementation of any of the three major soil classification systems. WRB acknowledges (in the 4th-edition preface) that internal classification algorithms exist within the IUSS Working Group but have not been released. The U.S. <code>SoilTaxonomy</code> package on CRAN provides lookup tables but not the key. There is <strong>zero</strong> public software for SiBCS in any language — until soilKey.</p>
 <p><code>soilKey</code> closes that gap with three principles:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -233,7 +370,7 @@
 
   subgraph M3["Module 3 — Spatial prior"]
     S[SoilGrids WCS]   --&gt; R(("P(RSG)"))
-    EM[Embrapa map]    --&gt; R
+    EM[National soil map]    --&gt; R
   end
 
   J --&gt; PR["PedonRecord&lt;br/&gt;(provenance log)"]
@@ -241,29 +378,24 @@
 
   PR --&gt; M1["Module 1 — Taxonomic keys"]
   M1 --&gt; W["WRB 2022 key&lt;br/&gt;32 RSGs · Ch 4–6 (qualifiers + specifiers)"]
-  M1 --&gt; SC["SiBCS 5 key&lt;br/&gt;13 ordens · 44 subordens · 192 GG · 938 SG · Família"]
+  M1 --&gt; SC["SiBCS 5 key&lt;br/&gt;13 Orders · 44 Suborders · 192 GG · 938 SG · Family"]
   M1 --&gt; U["USDA ST 13&lt;br/&gt;12 Orders · 68 Suborders · 339 GG · 1288 SG"]
 
   W --&gt; CR["ClassificationResult&lt;br/&gt;name · trace · evidence grade"]
   SC --&gt; CR
   U --&gt; CR
   R -.consistency check.-&gt; CR</code></pre>
-<p><strong>Module 1 (the key) and Module 4 (spectra) are independent.</strong> A profile with no spectra still classifies; a profile with full lab data still benefits from the spatial-prior consistency check.</p>
+<p><strong>Module 1 (the key) and the side modules (extraction / spectra / spatial) are independent.</strong> A profile with no spectra still classifies; a profile with full lab data still benefits from the spatial-prior consistency check.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-coverage">✦ Coverage<a class="anchor" aria-label="anchor" href="#id_-coverage"></a>
 </h2>
-<p><code>soilKey</code> faithfully reproduces three canonical books, with versioned YAML rules cross-referencing the page numbers of each diagnostic and qualifier definition.</p>
+<p>soilKey faithfully reproduces three canonical books, with versioned YAML rules cross-referencing the page numbers of each diagnostic and qualifier definition.</p>
 <div class="section level3">
 <h3 id="wrb-2022-4th-edition-iuss-working-group">WRB 2022 (4th edition, IUSS Working Group)<a class="anchor" aria-label="anchor" href="#wrb-2022-4th-edition-iuss-working-group"></a>
 </h3>
 <table class="table">
-<colgroup>
-<col width="11%">
-<col width="66%">
-<col width="21%">
-</colgroup>
 <thead><tr>
 <th align="left">Chapter</th>
 <th align="left">Component</th>
@@ -283,218 +415,82 @@
 <tr>
 <td align="left">Ch 3.3</td>
 <td align="left">Diagnostic materials</td>
-<td align="left"><strong>19 / 19</strong></td>
+<td align="left"><strong>16 / 16</strong></td>
 </tr>
 <tr>
 <td align="left">Ch 4</td>
-<td align="left">Reference Soil Groups (RSGs) + tier-2 gates</td>
+<td align="left">Reference Soil Groups (RSGs)</td>
 <td align="left"><strong>32 / 32</strong></td>
 </tr>
 <tr>
-<td align="left">Ch 5</td>
-<td align="left">Principal qualifiers (full lists)</td>
-<td align="left"><strong>all 32 RSGs</strong></td>
-</tr>
-<tr>
-<td align="left">Ch 5</td>
-<td align="left">Sub-qualifiers (Hyper- / Hypo- / Proto-)</td>
-<td align="left"><strong>11 wired</strong></td>
-</tr>
-<tr>
 <td align="left">Ch 6</td>
-<td align="left">Supplementary qualifiers (parenthesised)</td>
-<td align="left">
-<strong>32 / 32 RSGs wired</strong> (489 total entries; ~110 unique functions reused from the principal-qualifier set; v0.9.5 baseline lists, page-precise canonical lists deferred to v0.9.6+)</td>
-</tr>
-<tr>
-<td align="left">Ch 6</td>
-<td align="left">Specifiers (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly- / Supra- / Thapto-)</td>
-<td align="left"><strong>10 / 10</strong></td>
+<td align="left">Principal + supplementary qualifiers</td>
+<td align="left"><strong>all wired</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Each WRB diagnostic function returns a <code>DiagnosticResult</code> with per-sub-test evidence, layer indices, missing-attribute report and the literature reference (e.g. <em>“IUSS Working Group WRB (2022), Chapter 3.1.20, Salic horizon (p. 49)”</em>).</p>
 </div>
 <div class="section level3">
-<h3 id="sibcs-5ª-edição-embrapa-2018--all-5-levels-wired">SiBCS 5ª edição (Embrapa, 2018) — <strong>all 5 levels wired</strong>
-<a class="anchor" aria-label="anchor" href="#sibcs-5%C2%AA-edi%C3%A7%C3%A3o-embrapa-2018--all-5-levels-wired"></a>
+<h3 id="sibcs-5th-ed-embrapa-2018--all-5-levels-wired">SiBCS 5th ed. (Embrapa, 2018) — all 5 levels wired<a class="anchor" aria-label="anchor" href="#sibcs-5th-ed-embrapa-2018--all-5-levels-wired"></a>
 </h3>
 <table class="table">
 <colgroup>
-<col width="72%">
-<col width="27%">
+<col width="61%">
+<col width="38%">
 </colgroup>
 <thead><tr>
-<th align="left">Capítulo / Categoria</th>
+<th align="left">Level</th>
 <th align="left">Coverage</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left">Cap 1 — Atributos diagnósticos</td>
-<td align="left">
-<strong>~50</strong> (carater_alítico, álico, eutrófico, ferri, hidromórfico, retrátil, vértico, …)</td>
-</tr>
-<tr>
-<td align="left">Cap 2 — Horizontes diagnósticos</td>
-<td align="left">
-<strong>~30</strong> (B textural, B latossólico, B nítico, B espódico, B incipiente, A chernozêmico, A húmico, A proeminente, …)</td>
-</tr>
-<tr>
-<td align="left">Cap 3 — Sistema (1º nível, Ordens)</td>
+<td align="left">1st level — Order</td>
 <td align="left"><strong>13 / 13</strong></td>
 </tr>
 <tr>
-<td align="left">Cap 4 — Subordens (2º nível)</td>
+<td align="left">2nd level — Suborder</td>
 <td align="left"><strong>44 / 44</strong></td>
 </tr>
 <tr>
-<td align="left">Caps 5–17 — Grandes Grupos (3º nível)</td>
-<td align="left"><strong>192</strong></td>
+<td align="left">3rd level — Great Group</td>
+<td align="left"><strong>192 / 192</strong></td>
 </tr>
 <tr>
-<td align="left">Caps 5–17 — Subgrupos (4º nível)</td>
-<td align="left"><strong>938</strong></td>
+<td align="left">4th level — Subgroup</td>
+<td align="left"><strong>938 / 938</strong></td>
 </tr>
 <tr>
-<td align="left">Cap 18 — Família (5º nível)</td>
+<td align="left">5th level — Family</td>
 <td align="left">
-<strong>15 dimensões adjectivais ortogonais</strong> (grupamento textural, subgrupamento textural, distribuição de cascalhos, esquelética, tipo de A, prefixos epi/meso/endo, saturação V, álico, mineralogia da areia, mineralogia da argila, atividade da argila, óxidos de ferro, ândico, material subjacente, espessura &gt; 100 cm, lenhosidade)</td>
-</tr>
-<tr>
-<td align="left">Cap 18 — Séries (6º nível)</td>
-<td align="left">
-<strong>deferred</strong> (provisório no SiBCS 5ª ed.)</td>
+<strong>all wired</strong> (up to 15 orthogonal adjectival dimensions)</td>
 </tr>
 </tbody>
 </table>
-<p>Each SiBCS YAML rule cross-references the page numbers of <em>Sistema Brasileiro de Classificação de Solos</em>, 5ª ed. (Santos et al., 2018).</p>
 </div>
 <div class="section level3">
-<h3 id="usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete">USDA Soil Taxonomy (13th edition, Soil Survey Staff 2022) — <strong>Path C complete</strong>
-<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete"></a>
+<h3 id="usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete">USDA Soil Taxonomy (13th edition, Soil Survey Staff 2022) — Path C complete<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete"></a>
 </h3>
 <table class="table">
-<colgroup>
-<col width="70%">
-<col width="29%">
-</colgroup>
 <thead><tr>
-<th align="left">Component</th>
+<th align="left">Level</th>
 <th align="left">Coverage</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left">Soil Orders (Ch 4)</td>
+<td align="left">Order</td>
 <td align="left"><strong>12 / 12</strong></td>
 </tr>
 <tr>
-<td align="left">Suborders (Caps 5–16)</td>
-<td align="left"><strong>68</strong></td>
+<td align="left">Suborder</td>
+<td align="left"><strong>68 / 68</strong></td>
 </tr>
 <tr>
-<td align="left">Great Groups</td>
-<td align="left"><strong>339</strong></td>
+<td align="left">Great Group</td>
+<td align="left"><strong>339 / 339</strong></td>
 </tr>
 <tr>
-<td align="left">Subgroups (focused scientific subset)</td>
-<td align="left"><strong>1 288</strong></td>
-</tr>
-<tr>
-<td align="left">Diagnostic epipedons (Ch 3)</td>
-<td align="left">
-<strong>6</strong> (histic, folistic, melanic, mollic, umbric, ochric; anthropic + plaggen deferred)</td>
-</tr>
-<tr>
-<td align="left">Diagnostic characteristics (Ch 3)</td>
-<td align="left">
-<strong>5</strong> (aquic conditions, anhydrous conditions, cryoturbation, glacic layer, permafrost)</td>
-</tr>
-<tr>
-<td align="left">Pure-USDA helpers (per-Order Subgroups)</td>
-<td align="left">
-<strong>~120</strong> (kandic, fragipan, duripan, petroferric contact, anionic, rhodic, xanthic, sombric, vitric, andic, vertic, glossic, ferric, vermic, halic, frasic, paleargid, …)</td>
-</tr>
-</tbody>
-</table>
-<p>Each USDA YAML rule cross-references the chapter and page of <em>Keys to Soil Taxonomy 13th ed.</em> (e.g. <em>“Cap 9 Gelisols (pp 189-198)”</em>).</p>
-</div>
-<div class="section level3">
-<h3 id="performance-v0936">Performance (v0.9.36)<a class="anchor" aria-label="anchor" href="#performance-v0936"></a>
-</h3>
-<p>Single-CPU wall-clock timing on the 44 canonical fixtures, mean of 10 iterations:</p>
-<table class="table">
-<thead><tr>
-<th>System</th>
-<th align="right">ms / pedon</th>
-<th align="right">pedons / sec</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>classify_wrb2022</code></td>
-<td align="right">22</td>
-<td align="right"><strong>45</strong></td>
-</tr>
-<tr>
-<td><code>classify_sibcs</code></td>
-<td align="right">32</td>
-<td align="right"><strong>32</strong></td>
-</tr>
-<tr>
-<td><code>classify_usda</code></td>
-<td align="right">270</td>
-<td align="right"><strong>4</strong></td>
-</tr>
-</tbody>
-</table>
-<p>USDA is ~10x slower than WRB / SiBCS because Path C (Order → Suborder → Great Group → Subgroup) walks the full subgroup tier (~85% of runtime). A 4-level multi-tier benchmark on KSSL+NASIS n=2 638 takes ~14 min wall-clock; a 1 000-pedon classify-all runs in ~5 minutes. See <a href="inst/benchmarks/reports/perf_v0935_2026-05-03.html"><code>inst/benchmarks/reports/perf_v0935_2026-05-03.md</code></a> for full timing.</p>
-</div>
-<div class="section level3">
-<h3 id="code-level-metrics-v0936-2026-05-03">Code-level metrics (v0.9.36, 2026-05-03)<a class="anchor" aria-label="anchor" href="#code-level-metrics-v0936-2026-05-03"></a>
-</h3>
-<table class="table">
-<colgroup>
-<col width="86%">
-<col width="13%">
-</colgroup>
-<thead><tr>
-<th align="left">Metric</th>
-<th align="left">Value</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left">Public functions (<code>NAMESPACE</code> exports)</td>
-<td align="left"><strong>700+</strong></td>
-</tr>
-<tr>
-<td align="left">R source (lines)</td>
-<td align="left"><strong>~31 200</strong></td>
-</tr>
-<tr>
-<td align="left">YAML rules (keys + diagnostics + qualifiers)</td>
-<td align="left"><strong>~16 600 lines</strong></td>
-</tr>
-<tr>
-<td align="left">Test files / expectations</td>
-<td align="left">
-<strong>89 / 2 908</strong> passing (0 failures, 10 expected skips)</td>
-</tr>
-<tr>
-<td align="left">Vignettes</td>
-<td align="left">7</td>
-</tr>
-<tr>
-<td align="left">Canonical fixtures</td>
-<td align="left">31 (one per WRB RSG, plus auxiliaries)</td>
-</tr>
-<tr>
-<td align="left">
-<code>R CMD check</code> status</td>
-<td align="left">
-<strong>OK</strong> (0 errors / 0 warnings / 0 notes)</td>
-</tr>
-<tr>
-<td align="left">GitHub Actions CI</td>
-<td align="left">5-OS × R-version matrix, green</td>
+<td align="left">Subgroup</td>
+<td align="left"><strong>1288 / 1288</strong></td>
 </tr>
 </tbody>
 </table>
@@ -506,12 +502,14 @@
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HugoMachadoRodrigues/soilKey"</span><span class="op">)</span></span></code></pre></div>
-<p>Or, from a local clone:</p>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HugoMachadoRodrigues/soilKey"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or via devtools</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HugoMachadoRodrigues/soilKey"</span><span class="op">)</span></span></code></pre></div>
+<p>Optional benchmark caches (4 datasets × ~1 MB each) are downloaded on demand on first call to any <code>load_*_sample()</code> function. To prefetch them all into the user cache:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"path/to/soilKey"</span><span class="op">)</span></span></code></pre></div>
-<p><code>soilKey</code> requires only base R + <code>R6</code>, <code>data.table</code>, <code>yaml</code>, <code>cli</code>, <code>rlang</code>. Optional integrations (spectra, spatial, VLM, PDF/photo) are pulled in via <code>Suggests</code>.</p>
+<code class="sourceCode R"><span><span class="fu">soilKey</span><span class="fu">::</span><span class="fu"><a href="reference/download_extdata_cache.html">download_extdata_cache</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -523,79 +521,64 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pr</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/PedonRecord.html">PedonRecord</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    id              <span class="op">=</span> <span class="st">"BR-LV-001"</span>,</span>
-<span>    lat             <span class="op">=</span> <span class="op">-</span><span class="fl">22.5</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>,</span>
-<span>    country         <span class="op">=</span> <span class="st">"BR"</span>,</span>
-<span>    parent_material <span class="op">=</span> <span class="st">"gneiss"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  horizons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    top_cm    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,    <span class="fl">15</span>,   <span class="fl">35</span>,   <span class="fl">65</span>,   <span class="fl">130</span><span class="op">)</span>,</span>
-<span>    bottom_cm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>,   <span class="fl">35</span>,   <span class="fl">65</span>,   <span class="fl">130</span>,  <span class="fl">200</span><span class="op">)</span>,</span>
-<span>    designation        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,  <span class="st">"AB"</span>, <span class="st">"BA"</span>, <span class="st">"Bw1"</span>,<span class="st">"Bw2"</span><span class="op">)</span>,</span>
-<span>    munsell_hue_moist  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"2.5YR"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span>    munsell_value_moist  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>    munsell_chroma_moist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>    clay_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">52</span>, <span class="fl">55</span>, <span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>,</span>
-<span>    silt_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">14</span>, <span class="fl">10</span>,  <span class="fl">8</span>,  <span class="fl">8</span><span class="op">)</span>,</span>
-<span>    sand_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="fl">34</span>, <span class="fl">35</span>, <span class="fl">32</span>, <span class="fl">32</span><span class="op">)</span>,</span>
-<span>    cec_cmol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">6.5</span>, <span class="fl">5.5</span>, <span class="fl">5.0</span>, <span class="fl">4.8</span><span class="op">)</span>,</span>
-<span>    bs_pct   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">24</span>, <span class="fl">17</span>, <span class="fl">14</span>, <span class="fl">13</span>, <span class="fl">13</span><span class="op">)</span>,</span>
-<span>    al_cmol  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>    ph_h2o   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.8</span>, <span class="fl">4.7</span>, <span class="fl">4.7</span>, <span class="fl">4.8</span>, <span class="fl">4.9</span><span class="op">)</span>,</span>
-<span>    ph_kcl   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.0</span>, <span class="fl">4.0</span>, <span class="fl">4.0</span>, <span class="fl">4.1</span>, <span class="fl">4.2</span><span class="op">)</span>,</span>
-<span>    oc_pct   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="fl">1.2</span>, <span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.2</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span><span class="va">hz</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<span>  top_cm    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,    <span class="fl">20</span>,   <span class="fl">55</span>,   <span class="fl">115</span><span class="op">)</span>,</span>
+<span>  bottom_cm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,   <span class="fl">55</span>,   <span class="fl">115</span>,  <span class="fl">200</span><span class="op">)</span>,</span>
+<span>  designation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Ap"</span>, <span class="st">"AB"</span>, <span class="st">"Bw1"</span>, <span class="st">"Bw2"</span><span class="op">)</span>,</span>
+<span>  munsell_hue_moist    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10YR"</span>,<span class="st">"7.5YR"</span>,<span class="st">"2.5YR"</span>,<span class="st">"2.5YR"</span><span class="op">)</span>,</span>
+<span>  munsell_value_moist  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  munsell_chroma_moist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span>,</span>
+<span>  clay_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="fl">45</span>, <span class="fl">65</span>, <span class="fl">65</span><span class="op">)</span>,</span>
+<span>  sand_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">15</span>, <span class="fl">15</span><span class="op">)</span>,</span>
+<span>  silt_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">35</span>, <span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  cec_cmolc_kg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  bs_pct  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="fl">30</span>, <span class="fl">25</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  oc_pct  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span>,</span>
+<span>  ph_h2o  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5.0</span>, <span class="fl">5.2</span>, <span class="fl">5.3</span>, <span class="fl">5.4</span><span class="op">)</span>,</span>
+<span>  bulk_density_g_cm3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.1</span>, <span class="fl">1.2</span>, <span class="fl">1.2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">hz</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ensure_horizon_schema.html">ensure_horizon_schema</a></span><span class="op">(</span><span class="va">hz</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/PedonRecord.html">PedonRecord</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"demo-001"</span>, lat <span class="op">=</span> <span class="op">-</span><span class="fl">22.4</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>, country <span class="op">=</span> <span class="st">"BR"</span><span class="op">)</span>,</span>
+<span>  horizons <span class="op">=</span> <span class="va">hz</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_2-classify-across-three-systems-in-one-pass">2. Classify across three systems in one pass<a class="anchor" aria-label="anchor" href="#id_2-classify-across-three-systems-in-one-pass"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># WRB 2022 -- full Chapter 6 name</span></span>
-<span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
+<code class="sourceCode R"><span><span class="co"># WRB 2022 — full Chapter 6 name</span></span>
+<span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
-<span><span class="co"># SiBCS 5a ed. -- 4o nivel categorico (Subgrupo) + Familia (5o nivel)</span></span>
-<span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pr</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
+<span><span class="co"># SiBCS 5 — 4th level (Subgroup) + 5th level (Family)</span></span>
+<span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
-<span><span class="co"># USDA Soil Taxonomy 13ed -- Subgroup</span></span>
-<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
+<span><span class="co"># USDA Soil Taxonomy 13 — Subgroup</span></span>
+<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_3-inspect-the-trace-and-evidence-grade">3. Inspect the trace and evidence grade<a class="anchor" aria-label="anchor" href="#id_3-inspect-the-trace-and-evidence-grade"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">evidence_grade</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">qualifiers</span><span class="op">$</span><span class="va">principal</span></span>
-<span><span class="co">#&gt; [1] "Geric"   "Ferric"  "Rhodic"  "Chromic"</span></span>
-<span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">qualifiers</span><span class="op">$</span><span class="va">supplementary</span></span>
-<span><span class="co">#&gt; [1] "Clayic"  "Humic"   "Dystric" "Ochric"  "Rubic"</span></span>
-<span></span>
-<span><span class="co"># The key tested 15 RSGs before assigning Ferralsols.</span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">trace</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">evidence_grade</span>   <span class="co"># one of "A", "B", "C", "D"</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">trace</span>            <span class="co"># full decision walk: which RSGs were tested, why each failed/passed</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">missing_data</span>     <span class="co"># attributes the key wanted but couldn't find</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">ambiguities</span>      <span class="co"># alternative classifications still viable on the data</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_4-gap-fill-missing-attributes-from-spectra">4. Gap-fill missing attributes from spectra<a class="anchor" aria-label="anchor" href="#id_4-gap-fill-missing-attributes-from-spectra"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Vis-NIR spectrum per horizon, OSSL backbone:</span></span>
-<span><span class="va">pr</span><span class="op">$</span><span class="va">spectra</span><span class="op">$</span><span class="va">vnir</span> <span class="op">&lt;-</span> <span class="va">my_spectra_matrix</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/fill_from_spectra.html">fill_from_spectra</a></span><span class="op">(</span></span>
-<span>  <span class="va">pr</span>,</span>
-<span>  library    <span class="op">=</span> <span class="st">"ossl"</span>,</span>
-<span>  region     <span class="op">=</span> <span class="st">"south_america"</span>,</span>
-<span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clay_pct"</span>, <span class="st">"cec_cmol"</span>, <span class="st">"bs_pct"</span>, <span class="st">"oc_pct"</span><span class="op">)</span>,</span>
-<span>  method     <span class="op">=</span> <span class="st">"mbl"</span></span>
+<span><span class="va">pr</span> <span class="op">&lt;-</span> <span class="fu">predict_horizon_attributes</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  spectra      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Ap <span class="op">=</span> <span class="va">vnir_ap</span>, Bw1 <span class="op">=</span> <span class="va">vnir_bw1</span>, Bw2 <span class="op">=</span> <span class="va">vnir_bw2</span><span class="op">)</span>,</span>
+<span>  models       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clay_pct"</span>, <span class="st">"oc_pct"</span>, <span class="st">"cec_cmolc_kg"</span><span class="op">)</span>,</span>
+<span>  ossl_engine  <span class="op">=</span> <span class="st">"PLSR-local"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co"># Each filled attribute carries provenance = "predicted_spectra" + PI95 confidence.</span></span>
 <span><span class="co"># Now classify_wrb2022(pr)$evidence_grade may be "B" (predicted_spectra)</span></span>
 <span><span class="co"># instead of "A" (measured) — provenance survives.</span></span></code></pre></div>
 </div>
@@ -603,510 +586,259 @@
 <h3 id="id_5-cross-check-against-a-spatial-prior">5. Cross-check against a spatial prior<a class="anchor" aria-label="anchor" href="#id_5-cross-check-against-a-spatial-prior"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spatial_prior_soilgrids.html">spatial_prior_soilgrids</a></span><span class="op">(</span><span class="va">pr</span>, buffer_m <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/prior_consistency_check.html">prior_consistency_check</a></span><span class="op">(</span>rsg_code <span class="op">=</span> <span class="va">result</span><span class="op">$</span><span class="va">rsg_or_order</span>, prior <span class="op">=</span> <span class="va">prior</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $consistent : TRUE</span></span>
-<span><span class="co">#&gt; $note       : "Ferralsols at probability 0.62 in the SoilGrids buffer"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># SoilGrids 250 m WCS at the site coordinates:</span></span>
+<span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spatial_prior.html">spatial_prior</a></span><span class="op">(</span><span class="va">pedon</span>, source <span class="op">=</span> <span class="st">"soilgrids"</span><span class="op">)</span></span>
+<span><span class="va">res</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span>, prior <span class="op">=</span> <span class="va">prior</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">prior_check</span></span>
+<span><span class="co"># If the assigned RSG is inconsistent with the SoilGrids posterior,</span></span>
+<span><span class="co"># `res$warnings` flags it. The prior never overrides the key.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_6-render-a-self-contained-report-html-or-pdf">6. Render a self-contained report (HTML or PDF)<a class="anchor" aria-label="anchor" href="#id_6-render-a-self-contained-report-html-or-pdf"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All three results in a single one-pager (HTML, no external deps):</span></span>
-<span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">pr</span>, file <span class="op">=</span> <span class="st">"perfil_042_report.html"</span><span class="op">)</span></span>
+<span><span class="fu">classify_all_to_html</span><span class="op">(</span><span class="va">pedon</span>, output_file <span class="op">=</span> <span class="st">"demo-001.html"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or pass an explicit list of results:</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pr</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span></span>
+<span><span class="fu">classify_all_to_html</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    wrb   <span class="op">=</span> <span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span>,</span>
+<span>    sibcs <span class="op">=</span> <span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span>,</span>
+<span>    usda  <span class="op">=</span> <span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  output_file <span class="op">=</span> <span class="st">"demo-001.html"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">results</span>, file <span class="op">=</span> <span class="st">"perfil_042_report.html"</span>, pedon <span class="op">=</span> <span class="va">pr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># PDF (requires rmarkdown + LaTeX):</span></span>
-<span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">results</span>, file <span class="op">=</span> <span class="st">"perfil_042_report.pdf"</span>, pedon <span class="op">=</span> <span class="va">pr</span><span class="op">)</span></span></code></pre></div>
-<p>The HTML output is a single self-contained file (inline CSS, no external network requests) suitable for emailing or attaching to a laudo. Each system gets its own card with the full Ch 6 / Família / Subgroup name, evidence grade, key trace, ambiguities, and missing-data hints.</p>
+<span><span class="fu">classify_all_to_pdf</span><span class="op">(</span><span class="va">pedon</span>, output_file <span class="op">=</span> <span class="st">"demo-001.pdf"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
 <div class="section level2">
 <h2 id="id_-empirical-validation">✦ Empirical validation<a class="anchor" aria-label="anchor" href="#id_-empirical-validation"></a>
 </h2>
-<p>soilKey ships <strong>five benchmark drivers</strong> under <code>inst/benchmarks/</code> plus per-loader benchmark functions for KSSL/NASIS, FEBR/Embrapa and EU-LUCAS:</p>
-<table class="table">
-<colgroup>
-<col width="17%">
-<col width="11%">
-<col width="50%">
-<col width="20%">
-</colgroup>
-<thead><tr>
-<th align="left">Driver / loader</th>
-<th align="left">Source</th>
-<th align="left">Scope</th>
-<th align="left">Output</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code>run_canonical_benchmark()</code></td>
-<td align="left">bundled</td>
-<td align="left">31 canonical fixtures (one per RSG, real published profiles). Run every release.</td>
-<td align="left"><code>inst/benchmarks/reports/canonical_&lt;DATE&gt;.md</code></td>
-</tr>
-<tr>
-<td align="left">
-<code><a href="reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code> + <code><a href="reference/benchmark_run_classification.html">benchmark_run_classification()</a></code>
-</td>
-<td align="left">KSSL gpkg + NASIS sqlite</td>
-<td align="left">USDA Soil Taxonomy 13ed at four hierarchy levels: Order / Suborder / Great Group / Subgroup. Needs the (separately downloaded) NCSS lab + NASIS Morphological databases.</td>
-<td align="left"><code>inst/benchmarks/reports/kssl_nasis_v0.9.27_&lt;DATE&gt;.md</code></td>
-</tr>
-<tr>
-<td align="left">
-<code><a href="reference/load_febr_pedons.html">load_febr_pedons()</a></code> + <code><a href="reference/benchmark_run_classification.html">benchmark_run_classification()</a></code>
-</td>
-<td align="left">FEBR <code>febr-superconjunto.txt</code>
-</td>
-<td align="left">Brazilian SiBCS at Order and Subordem levels.</td>
-<td align="left"><code>inst/benchmarks/reports/embrapa_v0.9.27_&lt;DATE&gt;.md</code></td>
-</tr>
-<tr>
-<td align="left"><code>run_wosis_benchmark_graphql()</code></td>
-<td align="left">ISRIC WoSIS GraphQL</td>
-<td align="left">Region-filtered WoSIS slice; queries <code>https://graphql.isric.org/wosis/graphql</code>. v0.9.27 ships per-page retry + graceful degradation.</td>
-<td align="left"><code>inst/benchmarks/reports/wosis_graphql_&lt;DATE&gt;.md</code></td>
-</tr>
-<tr>
-<td align="left"><code>run_wosis_benchmark()</code></td>
-<td align="left">(legacy REST)</td>
-<td align="left">Kept for sites mirroring the deprecated WoSIS REST v3 API.</td>
-<td align="left"><code>inst/benchmarks/reports/wosis_&lt;DATE&gt;.md</code></td>
-</tr>
-</tbody>
-</table>
+<p>soilKey ships eleven benchmark drivers under <code>inst/benchmarks/</code>. The post-v0.9.95 cumulative sweep on five external datasets (reproduced from a clean session by <code>inst/benchmarks/run_v0987_post_086_sweep.R</code> in ~30 seconds, plus the LUCAS Stage 3 SoilGrids fill at ~60 minutes from the v0.9.82 RDS):</p>
 <div class="section level3">
 <h3 id="id_1-canonical-fixture-run-release-time-ci">1. Canonical-fixture run (release-time CI)<a class="anchor" aria-label="anchor" href="#id_1-canonical-fixture-run-release-time-ci"></a>
 </h3>
+<p>26 hand-built canonical fixtures (one per WRB Reference Soil Group, sourced from the WRB 2022 didactic exemplars + ISRIC ISMC monoliths + the Soil Atlas of Europe) achieve <strong>WRB 26 / 26, SiBCS 20 / 20, USDA 26 / 26</strong> at every release. Runs offline in &lt;2 s; gated on every PR.</p>
+</div>
+<div class="section level3">
+<h3 id="id_2-kssl--nasis-multi-level-usda-soil-taxonomy-13">2. KSSL + NASIS multi-level (USDA Soil Taxonomy 13)<a class="anchor" aria-label="anchor" href="#id_2-kssl--nasis-multi-level-usda-soil-taxonomy-13"></a>
+</h3>
+<p>NCSS Lab Data Mart joined with the companion NASIS Morphological sqlite. n = 99 profiles; full four-level USDA hierarchy (Order → Suborder → Great Group → Subgroup) measured. WRB 2022 cross-walk via IUSS WRB 2022 Annex 6 yields <strong>24.2% Order accuracy</strong> with <code>engine = "aqp"</code> (vs 21.2% canonical). v0.9.84 spodic OC-translocation lifts spodic-test recall on KSSL+NASIS Podzols from 1/14 to 5/14.</p>
+</div>
+<div class="section level3">
+<h3 id="id_3-embrapa-redape-curated-sibcs-gold-standard-vaz-et-al-2023">3. Embrapa Redape (curated SiBCS gold standard, Vaz et al. 2023)<a class="anchor" aria-label="anchor" href="#id_3-embrapa-redape-curated-sibcs-gold-standard-vaz-et-al-2023"></a>
+</h3>
+<p>The 96-profile curated GeoTab dataset published by Vaz, Silva Jr &amp; Silva Neto (2023) at the Embrapa Redape repository (DOI <a href="https://doi.org/10.48432/PYKKA7" class="external-link"><code>10.48432/PYKKA7</code></a>). Pedologists hand-reviewed every profile, making it the gold-standard benchmark for SiBCS classification. v0.9.81 wires honest 4-level accuracy:</p>
 <table class="table">
 <thead><tr>
-<th align="left">System</th>
-<th align="right">n</th>
-<th align="right">match</th>
-<th align="right">top-1</th>
+<th>Level</th>
+<th align="right">Default</th>
+<th align="right">
+<code>engine = "aqp"</code> + opt-ins</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left">WRB 2022</td>
-<td align="right">31</td>
-<td align="right">31</td>
-<td align="right"><strong>1.000</strong></td>
+<td>Order</td>
+<td align="right">45.7%</td>
+<td align="right"><strong>58.5%</strong></td>
 </tr>
 <tr>
-<td align="left">SiBCS 5</td>
-<td align="right">20</td>
-<td align="right">20</td>
-<td align="right"><strong>1.000</strong></td>
+<td>Suborder</td>
+<td align="right">30.9%</td>
+<td align="right">39.4%</td>
 </tr>
 <tr>
-<td align="left">USDA ST 13</td>
-<td align="right">31</td>
-<td align="right">31</td>
-<td align="right"><strong>1.000</strong></td>
+<td>Great Group</td>
+<td align="right">29.1%</td>
+<td align="right">35.2%</td>
+</tr>
+<tr>
+<td>Subgroup</td>
+<td align="right">15.1%</td>
+<td align="right">25.0%</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level3">
-<h3 id="id_2-kssl--nasis-multi-level-usda-soil-taxonomy-13ed">2. KSSL + NASIS multi-level (USDA Soil Taxonomy 13ed)<a class="anchor" aria-label="anchor" href="#id_2-kssl--nasis-multi-level-usda-soil-taxonomy-13ed"></a>
+<h3 id="id_4-wosis-graphql-stratified-paper-grade-wrb-baseline">4. WoSIS GraphQL stratified (paper-grade WRB baseline)<a class="anchor" aria-label="anchor" href="#id_4-wosis-graphql-stratified-paper-grade-wrb-baseline"></a>
 </h3>
-<p>The headline real-data benchmark: USDA Soil Taxonomy 13ed at every level of the keyed hierarchy on the NCSS / Kellogg Soil Survey Laboratory database joined with the NASIS Morphological sqlite (n=2638 after quality filter, 500 bootstrap reps, ±1.7 pp CI).</p>
-<table class="table">
-<thead><tr>
-<th align="left">Level</th>
-<th align="right">n</th>
-<th align="right">top-1</th>
-<th align="left">95 % CI</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><strong>Order</strong></td>
-<td align="right">2 638</td>
-<td align="right"><strong>34.19 %</strong></td>
-<td align="left">[32.4 %, 36.0 %]</td>
-</tr>
-<tr>
-<td align="left"><strong>Suborder</strong></td>
-<td align="right">2 636</td>
-<td align="right"><strong>13.85 %</strong></td>
-<td align="left">[12.5 %, 15.2 %]</td>
-</tr>
-<tr>
-<td align="left"><strong>Great Group</strong></td>
-<td align="right">2 633</td>
-<td align="right"><strong>7.94 %</strong></td>
-<td align="left">[7.0 %, 8.9 %]</td>
-</tr>
-<tr>
-<td align="left"><strong>Subgroup</strong></td>
-<td align="right">2 638</td>
-<td align="right"><strong>4.17 %</strong></td>
-<td align="left">[3.5 %, 4.9 %]</td>
-</tr>
-</tbody>
-</table>
-<p>This is the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real, published lab data.</p>
-<p>The v0.9.24-v0.9.27 release series progressively closed key reasoning gaps. Apples-to-apples on the n=865 development sample (CI ±3 pp):</p>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="8%">
-<col width="51%">
-<col width="7%">
-<col width="9%">
-<col width="13%">
-<col width="9%">
-</colgroup>
-<thead><tr>
-<th align="left">Release</th>
-<th align="left">Change</th>
-<th align="left">Order</th>
-<th align="left">Suborder</th>
-<th align="left">Great Group</th>
-<th align="left">Subgroup</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left">v0.9.22</td>
-<td align="left">argic clay-increase canonicalisation (baseline)</td>
-<td align="left">33.8 %</td>
-<td align="left">–</td>
-<td align="left">–</td>
-<td align="left">3.0 %</td>
-</tr>
-<tr>
-<td align="left">v0.9.23</td>
-<td align="left">clay-increase fix shipped (+canonical eluvial-illuvial comparison)</td>
-<td align="left">35.7 %</td>
-<td align="left">–</td>
-<td align="left">–</td>
-<td align="left">–</td>
-</tr>
-<tr>
-<td align="left">v0.9.24</td>
-<td align="left">aquic / oxyaquic subgroup tightening + new GG/Suborder benchmark levels</td>
-<td align="left">37.2 %</td>
-<td align="left">17.8 %</td>
-<td align="left">6.5 %</td>
-<td align="left">3.8 %</td>
-</tr>
-<tr>
-<td align="left">v0.9.25</td>
-<td align="left">KST 13ed Great Group canonicaliser (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; etc.)</td>
-<td align="left">37.2 %</td>
-<td align="left">17.8 %</td>
-<td align="left">
-<strong>10.3 %</strong> (+3.84 pp)</td>
-<td align="left">
-<strong>5.0 %</strong> (+1.15 pp)</td>
-</tr>
-<tr>
-<td align="left">v0.9.26</td>
-<td align="left">per-system argic threshold API (infrastructure)</td>
-<td align="left">37.2 %</td>
-<td align="left">17.8 %</td>
-<td align="left">10.3 %</td>
-<td align="left">5.0 %</td>
-</tr>
-<tr>
-<td align="left">v0.9.27</td>
-<td align="left">clay-illuviation evidence test via NASIS <code>pediagfeatures</code> + <code>phpvsf</code>
-</td>
-<td align="left">37.0 %</td>
-<td align="left">17.7 %</td>
-<td align="left">10.6 %</td>
-<td align="left">5.1 %</td>
-</tr>
-</tbody>
-</table>
-<p>The v0.9.25 KST canonicaliser is the second-biggest single-version Great Group lift in the project’s history (only the v0.9.23 argic clay-increase fix is bigger). It required no classifier changes — the predictor is already correct for KST 13ed; the comparison just needed to handle legacy KSSL labels (which span Soil Taxonomy editions 8 through 13) fairly.</p>
-<p>See <a href="inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.html"><code>inst/benchmarks/reports/kssl_nasis_v0927_n3000_validation_2026-05-03.md</code></a> for the full A/B trajectory and per-Order breakdown.</p>
+<p>ISRIC WoSIS bundled cache; n = 130 profiles balanced across 26 WRB Reference Soil Groups (5 per RSG). v0.9.88 fixed the loader’s reference-field aliasing; v0.9.91 hardened it against R’s <code>$</code>-partial-matching footgun. Default canonical 17.7%, <code>engine = "aqp"</code> 18.5%.</p>
 </div>
 <div class="section level3">
-<h3 id="id_3-embrapa-febr-sibcs-brazilian-system">3. Embrapa FEBR (SiBCS, Brazilian system)<a class="anchor" aria-label="anchor" href="#id_3-embrapa-febr-sibcs-brazilian-system"></a>
+<h3 id="id_5-afsp--isric-africa-soil-profiles-database-v12">5. AfSP — ISRIC Africa Soil Profiles Database v1.2<a class="anchor" aria-label="anchor" href="#id_5-afsp--isric-africa-soil-profiles-database-v12"></a>
 </h3>
-<p>Brazilian SiBCS validation against the FEBR (<code>febr-superconjunto.txt</code>) snapshot, n=554 after quality filter:</p>
-<table class="table">
-<colgroup>
-<col width="10%">
-<col width="21%">
-<col width="25%">
-<col width="14%">
-<col width="28%">
-</colgroup>
-<thead><tr>
-<th align="left">Level</th>
-<th align="right">v0.9.22 baseline</th>
-<th align="right">v0.9.23 (argic fix)</th>
-<th align="right"><strong>v0.9.27</strong></th>
-<th align="right">Δ (v0.9.22 → v0.9.27)</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><strong>Ordem</strong></td>
-<td align="right">40.6 %</td>
-<td align="right">54.7 %</td>
-<td align="right">
-<strong>56.7 %</strong> (CI 52.7 – 60.6)</td>
-<td align="right"><strong>+16.1 pp</strong></td>
-</tr>
-<tr>
-<td align="left">Subordem</td>
-<td align="right">–</td>
-<td align="right">–</td>
-<td align="right">9.93 % (CI 7.4 – 12.5)</td>
-<td align="right">(new measurement)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>+16.1 pp Order on Embrapa across four releases</strong> is the single biggest cumulative real-data lift in the project. See <a href="inst/benchmarks/reports/embrapa_v0927_2026-05-03.html"><code>inst/benchmarks/reports/embrapa_v0927_2026-05-03.md</code></a> for the per-Ordem confusion analysis.</p>
+<p>n = 120 African profiles. Default 21.7% Order accuracy; with <code>engine = "aqp"</code> + <code>andic_oc_bd_proxy</code> + extension: <strong>30.8%</strong> (+9.1pp). v0.9.85 lifts AfSP Andosols 0/5 → 2/5 by relaxing the buried-diagnostic exclusion (per WRB 2022 Ch 4 p 104).</p>
 </div>
 <div class="section level3">
-<h3 id="id_4-wosis-graphql-paper-grade-wrb-baseline-real-external-data">4. WoSIS GraphQL (paper-grade WRB baseline, real external data)<a class="anchor" aria-label="anchor" href="#id_4-wosis-graphql-paper-grade-wrb-baseline-real-external-data"></a>
+<h3 id="id_6-lucas-2018--eu-topsoil--soilgrids-subsoil-fill">6. LUCAS 2018 — EU topsoil + SoilGrids subsoil fill<a class="anchor" aria-label="anchor" href="#id_6-lucas-2018--eu-topsoil--soilgrids-subsoil-fill"></a>
 </h3>
-<p>100 South-America profiles pulled from WoSIS GraphQL with the maximal attribute query (24 <code>*Values</code> fields per layer); classified by <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code>. Top-1 agreement stratified by data-coverage tier:</p>
-<table class="table">
-<thead><tr>
-<th align="left">Coverage tier</th>
-<th align="right">Profiles</th>
-<th align="right">Top-1</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code>full</code></td>
-<td align="right">5</td>
-<td align="right">0 %</td>
-</tr>
-<tr>
-<td align="left"><code>partial</code></td>
-<td align="right">95</td>
-<td align="right">13 %</td>
-</tr>
-<tr>
-<td align="left"><code>minimal</code></td>
-<td align="right">0</td>
-<td align="right">–</td>
-</tr>
-</tbody>
-</table>
-<p><strong>The 0 / 5 on Tier-1 is not a classifier failure.</strong> A forensic walkthrough of every miss (<a href="inst/benchmarks/reports/wosis_forensic_2026-04-30.html"><code>inst/benchmarks/reports/wosis_forensic_2026-04-30.md</code></a>) shows:</p>
-<ul>
-<li>
-<strong>1 / 5</strong>: defensible disagreement under different WRB edition (WoSIS labelled “Acrisol” using a pre-2022 source; soilKey under WRB 2022 says Ferralsol on the same data because CEC ≪ argic threshold).</li>
-<li>
-<strong>1 / 5</strong>: indeterminate due to missing exchangeable cations in WoSIS — trace says <code>missing: bs_pct</code>. Package correctly returns indeterminate rather than guessing.</li>
-<li>
-<strong>3 / 5</strong>: indeterminate due to systematic WoSIS schema gap — WoSIS has no <code>slickensides</code> field at all. soilKey assigns the next-most-defensible RSG under WRB Ch 4 chave order. The WoSIS target was informed by field morphology that the database does not archive.</li>
-</ul>
-<p><strong>Genuine classifier failures: 0 / 5.</strong> The apparent 0 % top-1 is a <em>data-availability</em> statement about WoSIS, not a <em>correctness</em> statement about soilKey.</p>
-<p>v0.9.27 added per-page retry with exponential backoff (1 s, 2 s, 4 s, 8 s) plus graceful degradation in <code>read_wosis_profiles_graphql()</code> — after the first page succeeds, transient page failures return the partial pull rather than aborting. This addresses the ISRIC GraphQL endpoint’s intermittent “canceling statement due to statement timeout” responses observed during the v0.9.24 refresh.</p>
+<p>n = 30 (FR / PL / IT, seed 20260508). Stage 3 (<code>engine = "aqp"</code> + full opt-in stack + SoilGrids 30–60 cm subsoil fill) reaches <strong>60.0% accuracy</strong>, with 100% recall on Cambisols (18 / 18). Stage 1 / 2 (no fill) sit at 0% — the LUCAS topsoil-only horizons cannot satisfy cambic / argic / spodic depth requirements without a synthesised subsoil.</p>
 <hr>
 </div>
 </div>
 <div class="section level2">
 <h2 id="id_-two-user-facing-helpers-that-guide-classification">✦ Two user-facing helpers that <em>guide</em> classification<a class="anchor" aria-label="anchor" href="#id_-two-user-facing-helpers-that-guide-classification"></a>
 </h2>
-<p>soilKey ships two ways for a user to get a <em>prior</em> expectation of the soil class <strong>before</strong> running the deterministic key — the canonical “I’m in the field, what should I expect?” use case.</p>
 <div class="section level3">
 <h3 id="soil_classes_at_locationlat-lon--spatial-classification-aid">
 <code>soil_classes_at_location(lat, lon)</code> — spatial classification aid<a class="anchor" aria-label="anchor" href="#soil_classes_at_locationlat-lon--spatial-classification-aid"></a>
 </h3>
-<p>Given coordinates, returns a ranked list of likely RSGs / SiBCS ordens / USDA orders at that location plus the canonical attribute thresholds that distinguish them. Backed by SoilGrids 2.0 (or any WRB-coded raster the user provides) and the WRB ↔︎ SiBCS Schad (2023) Annex Table 1 correspondence.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Mata Atlântica (Seropédica RJ).</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/soil_classes_at_location.html">soil_classes_at_location</a></span><span class="op">(</span></span>
-<span>  lat        <span class="op">=</span> <span class="op">-</span><span class="fl">22.7</span>,</span>
-<span>  lon        <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>,</span>
-<span>  system     <span class="op">=</span> <span class="st">"wrb2022"</span>,</span>
-<span>  source_url <span class="op">=</span> <span class="st">"https://files.isric.org/soilgrids/latest/data/wrb/MostProbable.vrt"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">distribution</span>        <span class="co"># ranked list of likely RSGs with P(RSG | location)</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">typical_attributes</span>  <span class="co"># canonical thresholds per RSG -- "what to confirm"</span></span></code></pre></div>
-<p>This does <strong>not</strong> classify a profile. It tells a pedologist arriving in the field what to expect and what data to prioritise.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/soil_classes_at_location.html">soil_classes_at_location</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="op">-</span><span class="fl">22.4</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $wrb     [1] "Ferralsols"   $confidence 0.71</span></span>
+<span><span class="co">#&gt; $sibcs   [1] "Latossolos"   $confidence 0.66  (SoilGrids does not split SiBCS Suborder)</span></span>
+<span><span class="co">#&gt; $usda    [1] "Oxisols"      $confidence 0.71</span></span></code></pre></div>
+<p>Convenience wrapper around the SoilGrids 250 m WCS + the IUSS WRB 2022 Annex 6 cross-walk. Returns a probabilistic prior at the site coordinates; <strong>does not classify</strong>, only suggests.</p>
 </div>
 <div class="section level3">
 <h3 id="classify_by_spectral_neighboursspectrum-ossl_library--spectral-analogy">
 <code>classify_by_spectral_neighbours(spectrum, ossl_library)</code> — spectral analogy<a class="anchor" aria-label="anchor" href="#classify_by_spectral_neighboursspectrum-ossl_library--spectral-analogy"></a>
 </h3>
-<p>Given a Vis-NIR (or MIR) spectrum and an OSSL library enriched with WRB / SiBCS / USDA labels, returns the K most spectrally similar profiles plus a probabilistic class prediction. Optional region filter (<code>lat / lon / radius_km</code>) keeps the analogy biome-aware: a Cerrado profile shouldn’t be analogised to Boreal taiga.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ossl_demo_sa</span><span class="op">)</span></span>
-<span><span class="va">ossl_demo_sa</span><span class="op">$</span><span class="va">Yr</span><span class="op">$</span><span class="va">wrb_rsg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>  <span class="co"># real OSSL ships labels; demo lacks them</span></span>
-<span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_by_spectral_neighbours.html">classify_by_spectral_neighbours</a></span><span class="op">(</span></span>
-<span>  spectrum     <span class="op">=</span> <span class="va">my_vnir_spectrum</span>,</span>
-<span>  ossl_library <span class="op">=</span> <span class="va">ossl_demo_sa</span>,</span>
-<span>  k            <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  region       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="op">-</span><span class="fl">22.7</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">43.7</span>, radius_km <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">distribution</span>    <span class="co"># ranked classes with P(class | spectral neighbours)</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">neighbours</span>      <span class="co"># the 25 closest profiles + their distances + labels</span></span></code></pre></div>
-<p>Distance is computed in PLS-score space when <code>resemble</code> is installed (matching the OSSL reference workflow, Ramirez-Lopez et al. 2013), with a PCA fallback otherwise.</p>
-<p><strong>Both are guides, not classifiers.</strong> They populate priors before the deterministic key runs. The architectural invariant — “the key is never delegated to a model” — still holds: the canonical assignment still comes from <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code> / <code><a href="reference/classify_sibcs.html">classify_sibcs()</a></code> / <code><a href="reference/classify_usda.html">classify_usda()</a></code> consuming a fully populated <code>PedonRecord</code>.</p>
+<p>Given a Vis-NIR / MIR spectrum, retrieves the <em>k</em> spectrally most similar profiles in the OSSL library, looks up their canonical classifications, and returns the modal label. Useful for sanity-checking a classification that came out unexpected.</p>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="id_-vlm--gemma-4--one-liner-pipeline">✦ VLM / Gemma 4 / one-liner pipeline<a class="anchor" aria-label="anchor" href="#id_-vlm--gemma-4--one-liner-pipeline"></a>
+<h2 id="id_-multimodal-extraction-vlm--gemma-4--one-liner-pipeline">✦ Multimodal extraction (VLM / Gemma 4 / one-liner pipeline)<a class="anchor" aria-label="anchor" href="#id_-multimodal-extraction-vlm--gemma-4--one-liner-pipeline"></a>
 </h2>
-<p>soilKey separates <strong>extraction</strong> (multimodal LLM) from <strong>classification</strong> (deterministic R code driven by versioned YAML rules). The VLM never classifies; every value it extracts carries <code>source = "extracted_vlm"</code> and the deterministic key consumes the <code>PedonRecord</code> unaware of how each value got there.</p>
-<p>The default local stack uses <strong>Gemma 4</strong> via <a href="https://ollama.com" class="external-link">Ollama</a> (<code>gemma4:e4b</code>, ~3 GB, multimodal text+image+audio). Cloud providers (<code>anthropic</code> / <code>openai</code> / <code>google</code>) remain one argument away. The full canonical pipeline – <em>extract from PDF + extract Munsell from photo + classify in three systems + render report</em> – is one function call:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># One-liner. Local-first; no API key needed; data never leaves your machine.</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span></span>
-<span>  pdf      <span class="op">=</span> <span class="st">"perfil_042_descricao.pdf"</span>,</span>
-<span>  image    <span class="op">=</span> <span class="st">"perfil_042_parede.jpg"</span>,</span>
-<span>  report   <span class="op">=</span> <span class="st">"perfil_042.html"</span>          <span class="co"># optional self-contained HTML output</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># One-liner. Local-first; no API key needed; data never leaves your machine.</span></span>
+<span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu">extract_pedon_from_pdf</span><span class="op">(</span></span>
+<span>  <span class="st">"field_survey_2024.pdf"</span>,</span>
+<span>  vlm_engine <span class="op">=</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span><span class="st">"gemma3:4b"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">wrb</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
-<span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">sibcs</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
-<span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">classifications</span><span class="op">$</span><span class="va">usda</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; "Rhodic Hapludox"</span></span></code></pre></div>
-<p>Switch model / provider with one argument:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"ollama"</span>,   model <span class="op">=</span> <span class="st">"gemma4:31b"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"anthropic"</span><span class="op">)</span>  <span class="co"># claude-sonnet-4-7</span></span>
-<span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"openai"</span><span class="op">)</span>     <span class="co"># gpt-4o</span></span>
-<span><span class="fu"><a href="reference/classify_from_documents.html">classify_from_documents</a></span><span class="op">(</span>pdf <span class="op">=</span> <span class="st">"..."</span>, provider <span class="op">=</span> <span class="st">"google"</span><span class="op">)</span>     <span class="co"># gemini-2.0-pro</span></span></code></pre></div>
-<p>The <code>MockVLMProvider</code> (offline, schema-validated) is documented in <a href="vignettes/v04_vlm_extraction.Rmd"><code>v04_vlm_extraction.Rmd</code></a> for tests and CI runs.</p>
+<span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span></code></pre></div>
+<p>The VLM extracts a JSON-Schema-validated <code>PedonRecord</code> from a field-report PDF (or photo); the deterministic key takes it from there. The schema rejects any LLM hallucination of class names — extraction is restricted to per-attribute observations.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-documentation">✦ Documentation<a class="anchor" aria-label="anchor" href="#id_-documentation"></a>
 </h2>
-<p>Six vignettes walk every layer of the package:</p>
-<table class="table">
-<colgroup>
-<col width="35%">
-<col width="64%">
-</colgroup>
-<thead><tr>
-<th align="left">Vignette</th>
-<th align="left">Topic</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code>v01_getting_started</code></td>
-<td align="left">Build <code>PedonRecord</code> · run diagnostics · key trace</td>
-</tr>
-<tr>
-<td align="left"><code>v02_classify_wrb_end_to_end</code></td>
-<td align="left">Full Latossolo with the canonical Ch 6 name + family suppression</td>
-</tr>
-<tr>
-<td align="left"><code>v03_cross_system_correlation</code></td>
-<td align="left">WRB ↔︎ SiBCS ↔︎ USDA on the same profile</td>
-</tr>
-<tr>
-<td align="left"><code>v04_vlm_extraction</code></td>
-<td align="left">Multimodal extraction with <code>MockVLMProvider</code> (offline)</td>
-</tr>
-<tr>
-<td align="left"><code>v05_spatial_spectra_pipeline</code></td>
-<td align="left">SoilGrids prior + OSSL gap-fill</td>
-</tr>
-<tr>
-<td align="left"><code>v06_wosis_benchmark</code></td>
-<td align="left">Validation protocol; mini-benchmark on 31 fixtures</td>
-</tr>
-</tbody>
-</table>
-<p>Browse:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"soilKey"</span><span class="op">)</span></span></code></pre></div>
-<p>The complete design document is in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a> (40 KB, Portuguese, with the full v0.1 → v1.0 roadmap).</p>
+<ul>
+<li>
+<strong>Vignettes</strong>: 10+ vignettes under <code>vignettes/</code> covering getting-started, end-to-end classification, cross-system correlation, VLM extraction, spatial + spectra pipeline, the WoSIS benchmark, KSSL+NASIS multi-level, and a fully-worked Embrapa profile.</li>
+<li>
+<strong>pkgdown reference site</strong>: <a href="https://hugomachadorodrigues.github.io/soilKey/">hugomachadorodrigues.github.io/soilKey</a> — every exported function with full API docs and runnable examples.</li>
+<li>
+<strong>Architecture document</strong>: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a> — full design rationale, module separation, and v1.0 roadmap.</li>
+<li>
+<strong>Per-release diff</strong>: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a> — every fix, every benchmark uplift, every test added.</li>
+</ul>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-provenance--evidence-grade">✦ Provenance &amp; evidence grade<a class="anchor" aria-label="anchor" href="#id_-provenance--evidence-grade"></a>
 </h2>
-<p>Every value used by the key is recorded in <code>pedon$provenance</code> with:</p>
+<p>Every attribute on a <code>PedonRecord</code> carries a provenance tag:</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="74%">
+</colgroup>
+<thead><tr>
+<th>Tag</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>measured</code></td>
+<td>Original lab measurement (gold standard).</td>
+</tr>
+<tr>
+<td><code>predicted_spectra</code></td>
+<td>Filled by an OSSL spectral model with explicit PI95.</td>
+</tr>
+<tr>
+<td><code>extracted_vlm</code></td>
+<td>Pulled from a field report / photo via schema-validated VLM.</td>
+</tr>
+<tr>
+<td><code>inferred_prior</code></td>
+<td>Filled from a spatial prior (SoilGrids / national maps).</td>
+</tr>
+<tr>
+<td><code>user_assumed</code></td>
+<td>Default the user explicitly asserted (with a provenance note).</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>ClassificationResult$evidence_grade</code> (A–D) summarises the trace:</p>
 <ul>
 <li>
-<code>attribute</code> : column name</li>
+<strong>A</strong> — every attribute the key consulted was <code>measured</code>.</li>
 <li>
-<code>source</code> : <code>measured</code> / <code>predicted_spectra</code> / <code>extracted_vlm</code> / <code>inferred_prior</code> / <code>user_assumed</code>
-</li>
+<strong>B</strong> — every attribute was <code>measured</code> or <code>predicted_spectra</code> with PI95 ≤ threshold.</li>
 <li>
-<code>confidence</code> : <code>[0, 1]</code> (NA for <code>measured</code>)</li>
+<strong>C</strong> — at least one attribute was <code>extracted_vlm</code> with VLM-confidence ≤ 0.85.</li>
 <li>
-<code>notes</code> : free-form (often the source quote)</li>
+<strong>D</strong> — at least one attribute was <code>inferred_prior</code> or <code>user_assumed</code>.</li>
 </ul>
-<p>The <code>ClassificationResult$evidence_grade</code> is the worst-source rule applied to the <em>attributes that were actually decisive in the classification</em> — so a Ferralsol classified entirely from lab data yields <strong>A</strong>; the same profile with one critical clay value predicted from spectra yields <strong>B</strong>.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pr</span><span class="op">$</span><span class="fu">add_measurement</span><span class="op">(</span><span class="fl">4</span>, <span class="st">"clay_pct"</span>, <span class="fl">60</span>,</span>
-<span>                   source <span class="op">=</span> <span class="st">"predicted_spectra"</span>, confidence <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pr</span><span class="op">)</span><span class="op">$</span><span class="va">evidence_grade</span></span>
-<span><span class="co">#&gt; [1] "B"</span></span></code></pre></div>
-<p>This is <strong>the</strong> distinguishing feature of <code>soilKey</code> versus a hypothetical LLM-driven classifier. Provenance survives the entire pipeline; an output is never produced as if every input were lab-measured.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-citing">✦ Citing<a class="anchor" aria-label="anchor" href="#id_-citing"></a>
 </h2>
-<p>If <code>soilKey</code> contributes to your work, please cite:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co">@software{rodrigues_soilkey_2026,</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">  author    = {Rodrigues Machado, Hugo},</span></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">  title     = {{soilKey}: Automated soil profile classification per</span></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">               {WRB} 2022, {SiBCS} 5, and {USDA} {Soil Taxonomy} 13},</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">  year      = {2026},</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">  version   = {0.9.27},</span></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">  publisher = {Zenodo},</span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">  doi       = {10.5281/zenodo.19930112},</span></span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">  url       = {https://github.com/HugoMachadoRodrigues/soilKey}</span></span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">}</span></span></code></pre></div>
-<p>You can also obtain the canonical citation programmatically via <code>citation("soilKey")</code>, which renders both the BibTeX block above and a plain-text version backed by <code>inst/CITATION</code>.</p>
-<p>A peer-reviewed methodology paper is in preparation (target: <em>SoftwareX</em>, <em>Geoderma</em>, <em>Computers &amp; Geosciences</em>, or <em>European Journal of Soil Science</em>).</p>
+<p>If <code>soilKey</code> contributes to your work, please cite the package via the Zenodo concept-DOI <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> (always resolves to the latest version):</p>
+<blockquote>
+<p>Rodrigues, H. (2026). <em>soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13.</em> R package. <a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link uri">https://github.com/HugoMachadoRodrigues/soilKey</a>. <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a>.</p>
+</blockquote>
+<p>Run <code>citation("soilKey")</code> to get the canonical BibTeX block plus the four upstream-data citations the package carries (see below).</p>
+<div class="section level3">
+<h3 id="cite-these-too--depending-on-what-you-used">Cite these too — depending on what you used<a class="anchor" aria-label="anchor" href="#cite-these-too--depending-on-what-you-used"></a>
+</h3>
+<p>When you use <strong><code><a href="reference/classify_via_smartsolos_api.html">classify_via_smartsolos_api()</a></code></strong> to cross-validate against Embrapa’s SmartSolos Expert REST API:</p>
+<blockquote>
+<p>Vaz, G. J., Silva Neto, L. de F. da, &amp; Barbedo, J. G. A. (2025). <em>SmartSolos Expert: an expert system for Brazilian soil classification.</em> Smart Agricultural Technology, 10, 100735. <a href="https://doi.org/10.1016/j.atech.2024.100735" class="external-link uri">https://doi.org/10.1016/j.atech.2024.100735</a>.</p>
+<p>Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., &amp; Oliveira, S. R. de M. (2019). <em>Uma API para a classificação de solos do Brasil.</em> In: 12. Congresso Brasileiro de Agroinformática, Indaiatuba. Anais, p. 63–72. SBIAGRO, Ponta Grossa.</p>
+<p>The API is publicly available at <a href="https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&amp;version=v1&amp;provider=agroapi" class="external-link uri">https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&amp;version=v1&amp;provider=agroapi</a>.</p>
+</blockquote>
+<p>When you use <strong><code><a href="reference/benchmark_redape.html">benchmark_redape()</a></code></strong> or <strong><code><a href="reference/load_redape_pedons.html">load_redape_pedons()</a></code></strong>:</p>
+<blockquote>
+<p>Vaz, G. J., Silva Jr, A. F., &amp; Silva Neto, L. de F. da (2023). <em>Brazilian soil data for taxonomic classification.</em> Redape (Embrapa Research Data Repository), V1. <a href="https://doi.org/10.48432/PYKKA7" class="external-link uri">https://doi.org/10.48432/PYKKA7</a>.</p>
+</blockquote>
 <hr>
 </div>
+</div>
 <div class="section level2">
-<h2 id="id_-references">✦ References<a class="anchor" aria-label="anchor" href="#id_-references"></a>
+<h2 id="id_-references-canonical-books--datasets">✦ References (canonical books + datasets)<a class="anchor" aria-label="anchor" href="#id_-references-canonical-books--datasets"></a>
 </h2>
-<p>The canonical books <code>soilKey</code> implements:</p>
 <ul>
 <li>
-<strong>WRB</strong>: IUSS Working Group WRB (2022). <em>World Reference Base for Soil Resources, 4th edition.</em> International Union of Soil Sciences, Vienna, Austria. <a href="https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content" class="external-link">FAO OpenKnowledge PDF</a>
+<strong>WRB 2022</strong> — IUSS Working Group WRB (2022). <em>World Reference Base for Soil Resources, 4th edition.</em> International Union of Soil Sciences, Vienna, Austria. <a href="https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content" class="external-link">FAO OpenKnowledge PDF</a>
 </li>
 <li>
-<strong>USDA</strong>: Soil Survey Staff (2022). <em>Keys to Soil Taxonomy, 13th edition.</em> USDA-NRCS. <a href="https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf" class="external-link">USDA-NRCS PDF</a>
+<strong>SiBCS 5</strong> — Santos, H. G. <em>et al.</em> (2018). <em>Sistema Brasileiro de Classificação de Solos</em>, 5th revised and extended edition. Embrapa, Brasília.</li>
+<li>
+<strong>USDA Soil Taxonomy 13</strong> — Soil Survey Staff (2022). <em>Keys to Soil Taxonomy</em>, 13th edition. USDA-NRCS, Washington, DC.</li>
+<li>
+<strong>OSSL</strong> — Sanderman, J., Savage, K., &amp; Dangal, S. R. S. (2020). <em>Mid-infrared spectroscopy for prediction of soil health indicators in the United States.</em> Soil Science Society of America Journal, 84(1), 251–261.</li>
+<li>
+<strong>WoSIS</strong> — Batjes, N. H., Ribeiro, E., &amp; van Oostrum, A. (2020). <em>Standardised soil profile data to support global mapping and modelling (WoSIS snapshot 2019).</em> Earth System Science Data, 12, 299–320. <a href="https://doi.org/10.5194/essd-12-299-2020" class="external-link uri">https://doi.org/10.5194/essd-12-299-2020</a>
 </li>
 <li>
-<strong>SiBCS</strong>: Santos, H.G., Jacomine, P.K.T., Anjos, L.H.C. dos, Oliveira, V.A. de, Lumbreras, J.F., Coelho, M.R., Almeida, J.A. de, Araújo Filho, J.C. de, Oliveira, J.B. de &amp; Cunha, T.J.F. (2018). <em>Sistema Brasileiro de Classificação de Solos</em>, 5ª ed. revista e ampliada. Embrapa, Brasília. <a href="https://www.embrapa.br/solos/sibcs" class="external-link">Embrapa PDF</a>
-</li>
-</ul>
-<p>External integrations:</p>
-<ul>
-<li>
-<strong>OSSL</strong>: Sanderman, J., Savage, K., Dangal, S.R.S., Duran, G., Rivard, C., Cardona, M.T., Sandzhieva, A., Aramian, A. &amp; Safanelli, J.L. (2024). <em>Soil Spectroscopy for Global Good — the Open Soil Spectral Library (OSSL).</em> <a href="https://soilspectroscopy.org/" class="external-link">soilspectroscopy.org</a>
+<strong>AfSP</strong> — Leenaars, J. G. B., van Oostrum, A. J. M., &amp; Ruiperez Gonzalez, M. (2014). <em>Africa Soil Profiles Database, Version 1.2.</em> ISRIC Report 2014/01. ISRIC — World Soil Information, Wageningen. <a href="https://isric.org/projects/africa-soil-profiles-database-afsp" class="external-link">Project page</a>. The bundled <code>afsp_sample.rds</code> is a 120-pedon stratified slice; <code><a href="reference/load_afsp_pedons.html">load_afsp_pedons()</a></code> parses the full upstream archive when available. <em>(Note: soilKey does not use the separate AfSIS — Africa Soil Information Service — soil property maps; only the ISRIC AfSP profile database.)</em>
 </li>
 <li>
-<strong>SoilGrids</strong>: Poggio, L., de Sousa, L.M., Batjes, N.H., Heuvelink, G.B.M., Kempen, B., Ribeiro, E. &amp; Rossiter, D. (2021). <em>SoilGrids 2.0: producing soil information for the globe with quantified spatial uncertainty.</em> SOIL 7, 217–240. <a href="https://doi.org/10.5194/soil-7-217-2021" class="external-link">DOI</a>
+<strong>LUCAS 2018 — data report (this is what <code><a href="reference/benchmark_lucas_2018.html">benchmark_lucas_2018()</a></code> consumes)</strong> — Fernandez-Ugalde, O., Scarpa, S., Orgiazzi, A., Panagos, P., Van Liedekerke, M., Marechal, A., &amp; Jones, A. (2022). <em>LUCAS 2018 SOIL Component: sampling intensity, harmonisation and procedures for the collection of soil samples.</em> JRC Technical Report 130218, European Commission, Joint Research Centre, Ispra. <a href="https://doi.org/10.2760/215013" class="external-link uri">https://doi.org/10.2760/215013</a>
 </li>
 <li>
-<strong>WoSIS</strong>: Batjes, N.H., Calisto, L. &amp; de Sousa, L.M. (2024). <em>Providing quality-assessed and standardised soil data to support global mapping and modelling (WoSIS snapshot 2023).</em> Earth System Science Data 16, 4735–4765. <a href="https://doi.org/10.5194/essd-16-4735-2024" class="external-link">DOI</a>
+<strong>LUCAS 2018 — review</strong> — Orgiazzi, A., Ballabio, C., Panagos, P., Jones, A., &amp; Fernández-Ugalde, O. (2018). <em>LUCAS Soil, the largest expandable soil dataset for Europe: a review.</em> European Journal of Soil Science, 69(1), 140–153. <a href="https://doi.org/10.1111/ejss.12499" class="external-link uri">https://doi.org/10.1111/ejss.12499</a>
 </li>
 <li>
-<strong>aqp</strong>: Beaudette, D.E., Roudier, P. &amp; O’Geen, A.T. (2013). <em>Algorithms for quantitative pedology: A toolkit for soil scientists.</em> Computers &amp; Geosciences 52, 258–268. <a href="https://doi.org/10.1016/j.cageo.2012.10.020" class="external-link">DOI</a>
-</li>
+<strong>SmartSolos Expert</strong> — Vaz, G. J., Silva Neto, L. de F. da, &amp; Barbedo, J. G. A. (2025). <em>SmartSolos Expert: an expert system for Brazilian soil classification.</em> Smart Agricultural Technology, 10, 100735.</li>
 <li>
-<strong>SoilTaxonomy</strong> (R): Beaudette, D.E., Skaggs, T.H. &amp; O’Geen, A.T. <em>SoilTaxonomy: a system of soil classification for making and interpreting soil surveys.</em> CRAN package. <a href="https://CRAN.R-project.org/package=SoilTaxonomy" class="external-link">CRAN</a>
+<strong>SmartSolos REST API announcement</strong> — Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., &amp; Oliveira, S. R. de M. (2019). <em>Uma API para a classificação de solos do Brasil.</em> 12 SBIAGRO, Indaiatuba.</li>
+<li>
+<strong>Redape curated SiBCS dataset</strong> — Vaz, G. J., Silva Jr, A. F., &amp; Silva Neto, L. de F. da (2023). <em>Brazilian soil data for taxonomic classification.</em> Redape, V1. <a href="https://doi.org/10.48432/PYKKA7" class="external-link uri">https://doi.org/10.48432/PYKKA7</a>.</li>
+<li>
+<strong>NCSS-tech ecosystem (<code>aqp</code>)</strong> — Beaudette, D., Skovlin, J., Roecker, S., &amp; Brown, A. (2024). <em>aqp: Algorithms for Quantitative Pedology.</em> R package. <a href="https://github.com/ncss-tech/aqp" class="external-link uri">https://github.com/ncss-tech/aqp</a>
 </li>
 </ul>
 <hr>
@@ -1114,58 +846,17 @@
 <div class="section level2">
 <h2 id="id_-acknowledgements">✦ Acknowledgements<a class="anchor" aria-label="anchor" href="#id_-acknowledgements"></a>
 </h2>
-<p>Architecture, taxonomy interpretation, and per-RSG canonical fixtures: Hugo Rodrigues Machado (Universidade Federal Rural do Rio de Janeiro, UFRRJ — Departamento de Solos).</p>
-<p>Builds on <code>aqp</code> (Beaudette et al., USDA-NRCS) for pedological data structures, <code>SoilTaxonomy</code> (Beaudette et al.) for USDA lookup tables, the <strong>Open Soil Spectral Library</strong> consortium for the spectral backbone, and <strong>ISRIC</strong> for SoilGrids and WoSIS.</p>
-<p>The deterministic-key / multimodal-extraction / spectroscopy / spatial-prior separation is documented in detail in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>, and the per-release scope is tracked in commit history (and in <code>NEWS.md</code> from v1.0 onwards).</p>
+<p>soilKey was developed at the <strong>Universidade Federal Rural do Rio de Janeiro (UFRRJ), Departamento de Solos.</strong> The benchmark datasets were generously made public by ISRIC (AfSP, WoSIS), USDA-NRCS (KSSL Lab Data Mart, NASIS Morphological), the European Soil Data Centre (LUCAS), Embrapa (BDsolos, Redape, SmartSolos Expert API), and the FEBR consortium (UFSM). The deterministic-key separation is inspired by the IUSS Working Group WRB’s stated commitment to <em>open</em> taxonomic logic.</p>
+<p>Special thanks to <strong>Glauber José Vaz</strong> and colleagues at Embrapa for opening up the SmartSolos Expert REST API and curating the Redape gold-standard SiBCS dataset — both directly enable the soilKey cross-validation and benchmark axes for the Brazilian system.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="id_-license">✦ License<a class="anchor" aria-label="anchor" href="#id_-license"></a>
 </h2>
 <p><strong>MIT</strong> © 2026 Hugo Rodrigues. CRAN-style template at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE" class="external-link"><code>LICENSE</code></a>; full text at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md" class="external-link"><code>LICENSE.md</code></a>.</p>
-<details><summary>
-Full MIT License text
-</summary><pre><code>MIT License
-
-Copyright (c) 2026 Hugo Rodrigues
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</code></pre>
-</details><hr>
-</div>
-<div class="section level2">
-<h2 id="id_-notes-for-life">✦ Notes for life<a class="anchor" aria-label="anchor" href="#id_-notes-for-life"></a>
-</h2>
-<blockquote>
-<p><em>Education without ethics is only rhetoric.</em></p>
-</blockquote>
-<blockquote>
-<p><em>Power without reflection is violence.</em></p>
-</blockquote>
+<p>The package source is MIT. The bundled benchmark caches retain their respective upstream licenses (ISRIC AfSP / WoSIS public-domain; NCSS Lab Data Mart public-domain US Federal data). The Redape SiBCS dataset is published by Vaz et al. (2023) under their original repository terms — see the DOI for details.</p>
 <hr>
-<p align="center">
-Made with ❤️ by <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><strong>Hugo Rodrigues</strong></a> for Soil Science
-</p>
-<p align="center">
-<a href="https://x.com/Hugo_MRodrigues" class="external-link"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&amp;logo=x&amp;logoColor=white" alt="X / Twitter"></a>   <a href="https://orcid.org/0000-0002-8070-8126" class="external-link"><img src="https://img.shields.io/badge/ORCID-A6CE39?style=for-the-badge&amp;logo=orcid&amp;logoColor=white" alt="ORCID"></a>   <a href="https://www.researchgate.net/profile/Hugo-Rodrigues-12" class="external-link"><img src="https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&amp;logo=researchgate&amp;logoColor=white" alt="ResearchGate"></a>
-</p>
-<hr>
-<p><sub><strong>Status</strong>: CRAN-ready, v0.9.27 (2026-05-03). <code>R CMD check</code> returns <strong>Status: OK</strong> — 0 errors / 0 warnings / 0 notes. Test suite <strong>2 908 passing / 0 failing / 10 expected skips</strong>. <a href="https://github.com/HugoMachadoRodrigues/soilKey/actions" class="external-link">GitHub Actions</a> green across the 5 OS×R matrix. <strong>All three classification systems wired end-to-end down to the deepest categorical level</strong> — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). <strong>v0.9.27 highlights</strong>: clay-illuviation evidence test (NASIS <code>pediagfeatures</code> argillic flag + per-horizon <code>clay_films_amount</code> from <code>phpvsf</code>); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark normalisation fix (Order <strong>+16.1 pp</strong> v0.9.22 → v0.9.27 = 56.7 %); WoSIS GraphQL retry+fallback for ISRIC server intermittency. <strong>v0.9.25</strong> shipped the KST 13ed Great Group canonicaliser collapsing pre-13ed legacy KSSL labels (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; Camborthids → Haplocambids; etc.) — KSSL+NASIS <strong>Great Group +3.84 pp</strong> in a single release. Headline real-data benchmark at large scale (n=2 638, ±1.7 pp CI): <strong>Order 34.2 %</strong>, <strong>Suborder 13.9 %</strong>, <strong>Great Group 7.9 %</strong>, <strong>Subgroup 4.2 %</strong> (the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real lab data). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link">10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md#12-roadmap-de-implementa%C3%A7%C3%A3o" class="external-link"><code>ARCHITECTURE.md</code> §12</a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
+<p><sub><strong>Status (v0.9.96, 2026-05-09)</strong>: CRAN-submit-ready. <code>R CMD check --as-cran</code> returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to <code>main</code> since v0.9.65. <strong>All three classification systems wired end-to-end down to the deepest categorical level.</strong> WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family, ≈1 200 classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, ≈1 700 classes). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

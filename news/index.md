@@ -1,5 +1,44 @@
 # Changelog
 
+## soilKey 0.9.96 (2026-05-09)
+
+The “**README full English rewrite + SmartSolos / Vaz citation pass**”
+release. Pure docs / no R code change. Brings the package documentation
+to a CRAN-submission-ready, fully internationalised, clearly
+status-tagged state.
+
+### README overhaul
+
+### External-dataset citation pass
+
+In addition to the SmartSolos / Vaz et al. citations (next section),
+v0.9.96 explicitly cites the canonical sources of every external dataset
+consumes:
+
+now renders 7 BibTeX entries: the package + 3 Vaz et al. works
+(SmartSolos journal, SmartSolos conference, Redape data) + AfSP + LUCAS
+data report + LUCAS review.
+
+### SmartSolos Expert / Vaz et al. citation pass
+
+soilKey’s bridge wraps Embrapa’s authoritative SmartSolos Expert REST
+API (Vaz et al. 2025) so users can cross-validate the local SiBCS
+classifier against the same PROLOG implementation that backs the
+AgroAPI. and consume the Redape curated GeoTab dataset (Vaz et al. 2023,
+DOI ) – 96 profiles hand-reviewed by pedologists, the gold-standard
+benchmark for the Brazilian system.
+
+Three citations have been added everywhere they’re discoverable:
+
+The SmartSolos Expert API URL () is now in both and the README.
+
+### Removed from README
+
+### CRAN-readiness
+
+: still 0 ERRORs / 0 WARNINGs / 2 trivial NOTEs (new submission + HTML
+tidy local-env). README refresh does not affect the check status.
+
 ## soilKey 0.9.95 (2026-05-09)
 
 The “**post-lazy-fetch sweep + CITATION.cff bump**” release. Verifies
