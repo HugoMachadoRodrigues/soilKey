@@ -1,3 +1,64 @@
+# soilKey 0.9.80 (2026-05-09)
+
+The "**andic OC+BD proxy**" release. v0.9.79 AfSP showed Andosol
+0/5 because oxalate Al/Fe and phosphate retention are 0\\% available
+in the dataset. v0.9.80 adds an opt-in proxy that uses high SOC +
+low bulk density as a coarse-data substitute -- the same volcanic-
+ash genetic signature that the canonical Al-Fe path detects.
+
+## Fix
+
+\code{andic_properties()} now reads
+\code{getOption("soilKey.andic_oc_bd_proxy", FALSE)}. When TRUE
+and the canonical Al-Fe and phosphate-retention paths fail, the
+proxy fires when:
+
+\enumerate{
+  \item \code{oc_pct >= 4} AND \code{bulk_density_g_cm3 <= 0.9}
+        (both measured), OR
+  \item \code{oc_pct >= 5} AND BD missing (high OC alone implies
+        Al-humus complexation typical of volcanic ash genesis).
+}
+
+Default is FALSE -- canonical behaviour preserved.
+
+## Empirical effect
+
+### AfSP (n=120)
+
+```
+andic_properties test on Andosol references: 0/5 -> 3/5
+classify -> Andosol: 0/5 -> 1/5
+Order accuracy: 30.0% (no change at default; +0.x with proxy on)
+```
+
+The 4 of 5 Andosol pedons that pass `andic_properties()` but don't
+classify as Andosol cascade to other RSGs (Phaeozem/Cambisol via
+mollic/cambic priorities) -- the WRB key sends them via earlier
+diagnostics. v0.9.81 will refine the per-RSG dispatch ordering
+for Andosols.
+
+## The complete benchmark suite (default behaviour unchanged)
+
+| System | Dataset | n | Accuracy |
+|--------|---------|---|---------:|
+| SiBCS  | Redape  | 94 | **57.4\\%** |
+| SiBCS  | BDsolos RJ | 722 | 50.0\\% |
+| WRB    | AfSP | 120 | 30.0\\% |
+| WRB    | KSSL+NASIS | 99 | 26.3\\% |
+| WRB    | KSSL only | 199 | 20.1\\% |
+| WRB    | WoSIS strat | 130 | 16.2\\% |
+| WRB    | LUCAS | 18984 | 3.3\\% |
+
+## Regression test
+
+\code{tests/testthat/test-v0980-andic-proxy.R} (7 tests, 7
+expectations): canonical path unchanged; proxy fires only when
+opt-in + high OC + low BD; rejects low-OC or high-BD profiles;
+high-OC+missing-BD path fires; canonical wins when oxalate present;
+evidence trace records the source.
+
+
 # soilKey 0.9.79 (2026-05-09)
 
 The "**Mollisol vs Vertisol intergrade resolution**" release. v0.9.78
