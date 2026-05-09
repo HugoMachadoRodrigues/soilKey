@@ -457,6 +457,16 @@ reference:
       - read_febr_pedons
       - febr_index_munsell
 
+  - title: "Redape curated GeoTab dataset (v0.9.71)"
+    desc: >
+      Embrapa Redape repository (DOI 10.48432/PYKKA7) -- 96 hand-
+      reviewed Brazilian soil profiles, suitable as a gold-standard
+      benchmark for SiBCS classification.
+    contents:
+      - download_redape_dataset
+      - load_redape_pedons
+      - benchmark_redape
+
   - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
     contents:
       - benchmark_lucas_2018
