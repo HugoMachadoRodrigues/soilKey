@@ -1,3 +1,89 @@
+# soilKey 0.9.87 (2026-05-09)
+
+The "**post v0.9.81-86 cumulative benchmark sweep**" release.
+Pure docs / no code change. Refreshes the canonical benchmark suite
+table in NEWS to reflect the cumulative empirical state after the
+six v0.9.81-v0.9.86 fixes have all landed on \code{main}. Adds an
+\code{inst/benchmarks/run_v0987_post_086_sweep.R} script that
+reproduces every number in this NEWS entry from a clean session.
+
+## Cumulative benchmark snapshot (v0.9.87, 2026-05-09)
+
+### SiBCS Order on BDsolos RJ (n = 722; n_in_scope = 710)
+
+| configuration                                      | Order accuracy | Latossolo recall |
+|----------------------------------------------------|---------------:|-----------------:|
+| default canonical (engine = "soilkey", no opt-ins) |        40.3\\%  |       14.9\\%      |
+| **engine = "aqp" (auto-fallback)**                 |     **44.4\\%** |    **28.1\\%**     |
+
+### SiBCS Redape (n = 94, all 4 levels)
+
+| Level        | Default canonical | engine = "aqp" + opt-ins |
+|--------------|------------------:|-------------------------:|
+| Order        |             45.7\\% |                **58.5\\%** |
+| Subordem     |             30.9\\% |                  39.4\\%   |
+| Grande Grupo |             29.1\\% |                  35.2\\%   |
+| Subgrupo     |             15.1\\% |                  25.0\\%   |
+
+The "engine + opt-ins" configuration uses
+\code{soilKey.diagnostic_engine = "aqp"} +
+\code{soilKey.gleyic_designation_inference = TRUE} +
+\code{soilKey.ferralic_texture_morphological_fallback = TRUE}.
+The v0.9.86 ECEC fallback is auto-enabled by engine="aqp".
+
+### WRB on KSSL+NASIS (n = 99)
+
+| configuration                                        | WRB Order accuracy |
+|------------------------------------------------------|-------------------:|
+| default canonical                                    |             21.2\\% |
+| engine = "aqp"                                       |             24.2\\% |
+| engine = "aqp" + v0.9.84 spodic + v0.9.85 andic     |             24.2\\% |
+
+(v0.9.84 spodic OC-translocation lifts spodic-test recall from 1/14
+to 5/14 Podzol references but the cascade puts those into the same
+ambiguity bucket; the WRB Order accuracy moves at the +3pp engine=aqp
+margin.)
+
+### WRB on AfSP (n = 120)
+
+| configuration                                                         | WRB Order accuracy |
+|-----------------------------------------------------------------------|-------------------:|
+| default canonical                                                     |             21.7\\% |
+| **engine = "aqp" + andic_oc_bd_proxy + extend + gleyic inference**     |          **30.8\\%** |
+
+The +9.1pp lift is driven by v0.9.85 (Andisol RSG-gate buried-exclusion + proxy thickness extension) and v0.9.72 gleyic-suffix inference.
+
+### LUCAS WRB Stage 3 (n = 30, FR/PL/IT, seed 20260508)
+
+(Reproduced from the v0.9.82 RDS at
+\code{inst/benchmarks/reports/lucas_v0982_full_stack_2026-05-09.rds}.)
+
+| Stage                                                      | accuracy |
+|------------------------------------------------------------|---------:|
+| Stage 1 (baseline soilkey, no fill)                        |     0.0\\% |
+| Stage 2 (full opt-in stack, no fill)                       |     0.0\\% |
+| **Stage 3 (full opt-in stack + SoilGrids subsoil fill)**    |  **60.0\\%** |
+
+100\\% recall on Cambisols (18 / 18) under Stage 3.
+
+## Reproducibility
+
+\code{inst/benchmarks/run_v0987_post_086_sweep.R} reproduces every
+non-Stage-3 number above in ~30 s of wall clock from a clean
+\code{pkgload::load_all(".")} session. Stage 3 needs the v0.9.82
+SoilGrids round-trip (~60 min, separate script).
+
+## NEWS table summary
+
+| Dataset             | n   | Default | Best opt-in config | Lift |
+|---------------------|----:|--------:|-------------------:|-----:|
+| SiBCS BDsolos RJ    | 722 |  40.3\\% |             44.4\\% |  +4.1pp |
+| SiBCS Redape Order  |  94 |  45.7\\% |             58.5\\% | +12.8pp |
+| WRB KSSL+NASIS      |  99 |  21.2\\% |             24.2\\% |  +3.0pp |
+| WRB AfSP            | 120 |  21.7\\% |             30.8\\% |  +9.1pp |
+| WRB LUCAS Stage 3   |  30 |   0.0\\% |             60.0\\% | +60.0pp |
+
+
 # soilKey 0.9.86 (2026-05-09)
 
 The "**ferralic engine=aqp auto-enables ECEC fallback**" release.
