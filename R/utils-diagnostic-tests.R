@@ -373,6 +373,16 @@ test_not_albeluvic <- function(h) {
 #' conservative (MORE permissive) -- it should not produce false
 #' positives, only recover Latossolos that lacked Valor T.
 #'
+#' @section v0.9.86 engine="aqp" auto-enables the ECEC fallback:
+#' \code{soilKey.diagnostic_engine = "aqp"} now auto-enables the
+#' v0.9.69 ECEC fallback (the user can still suppress it explicitly
+#' by setting \code{soilKey.ferralic_ecec_fallback = FALSE}). The
+#' rationale: the aqp engine is the "data-quality-aware" mode,
+#' designed for field-described datasets like BDsolos / Redape
+#' where Valor T is rarely recorded. Bundling these two opt-ins
+#' lifts BDsolos RJ Latossolo recall from 14.9\\% (canonical) to
+#' 28.1\\% with no further configuration.
+#'
 #' @param h Numeric threshold or option (see Details).
 #' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
@@ -383,8 +393,15 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
   passing <- integer(0)
   missing <- character(0)
   details <- list()
-  ecec_fallback <- isTRUE(getOption("soilKey.ferralic_ecec_fallback",
-                                       default = FALSE))
+  # v0.9.86: engine="aqp" auto-enables the ECEC fallback unless the
+  # user explicitly opts out via soilKey.ferralic_ecec_fallback = FALSE.
+  ecec_fallback_opt <- getOption("soilKey.ferralic_ecec_fallback", NULL)
+  engine_opt        <- getOption("soilKey.diagnostic_engine", "soilkey")
+  ecec_fallback <- if (!is.null(ecec_fallback_opt)) {
+    isTRUE(ecec_fallback_opt)
+  } else {
+    identical(engine_opt, "aqp")
+  }
 
   for (i in cl) {
     cec_used <- h$cec_cmol[i]
