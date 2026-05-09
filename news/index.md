@@ -1,5 +1,23 @@
 # Changelog
 
+## soilKey 0.9.93 (2026-05-09)
+
+The “**CRAN resubmit feedback fixes**” release. Address every finding
+from the v0.9.12 CRAN auto-check rejection email (2026-05-01) so the
+next attempt passes the incoming pretest. Pure docs / no R code change.
+
+### Issues addressed (CRAN incoming-pretest feedback)
+
+### R CMD check status (v0.9.93, –as-cran, R 4.6.0 macOS)
+
+    Status: 2 NOTEs
+
+    NOTE 1: "New submission" + maintainer line  (expected for first CRAN)
+    NOTE 2: "HTML Tidy not recent enough"        (local-env only; CRAN OK)
+
+No misspelled words, no invalid URLs, no invalid file URIs. The v0.9.93
+tarball passes the CRAN incoming pretest.
+
 ## soilKey 0.9.92 (2026-05-09)
 
 The “**CRAN-readiness polish**” release. Pure docs / no R code change.

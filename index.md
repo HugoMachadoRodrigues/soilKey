@@ -12,7 +12,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?sty
 > to a language model.
 
 [![License:
-MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://hugomachadorodrigues.github.io/soilKey/LICENSE.md)
+MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
@@ -137,7 +137,8 @@ Tri-state precedence preserved everywhere: explicit
 auto-enables the data-quality-aware bundle; default canonical strict
 (FALSE) is the unchanged baseline.
 
-See [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md)
+See
+[`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md)
 for the per-release diff.
 
 ------------------------------------------------------------------------
@@ -708,7 +709,7 @@ browseVignettes("soilKey")
 ```
 
 The complete design document is in
-[`ARCHITECTURE.md`](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.md)
+[`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md)
 (40 KB, Portuguese, with the full v0.1 → v1.0 roadmap).
 
 ------------------------------------------------------------------------
@@ -830,7 +831,7 @@ and **ISRIC** for SoilGrids and WoSIS.
 
 The deterministic-key / multimodal-extraction / spectroscopy /
 spatial-prior separation is documented in detail in
-[`ARCHITECTURE.md`](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.md),
+[`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md),
 and the per-release scope is tracked in commit history (and in `NEWS.md`
 from v1.0 onwards).
 
@@ -839,9 +840,9 @@ from v1.0 onwards).
 ## ✦ License
 
 **MIT** © 2026 Hugo Rodrigues. CRAN-style template at
-[`LICENSE`](https://hugomachadorodrigues.github.io/soilKey/LICENSE);
+[`LICENSE`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE);
 full text at
-[`LICENSE.md`](https://hugomachadorodrigues.github.io/soilKey/LICENSE.md).
+[`LICENSE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md).
 
 Full MIT License text
 
@@ -889,4 +890,4 @@ Twitter](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoCo
 
 ------------------------------------------------------------------------
 
-_(**Status**: CRAN-ready, v0.9.27 (2026-05-03). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **2 908 passing / 0 failing / 10 expected skips**. [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.27 highlights**: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount` from `phpvsf`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark normalisation fix (Order **+16.1 pp** v0.9.22 → v0.9.27 = 56.7 %); WoSIS GraphQL retry+fallback for ISRIC server intermittency. **v0.9.25** shipped the KST 13ed Great Group canonicaliser collapsing pre-13ed legacy KSSL labels (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; Camborthids → Haplocambids; etc.) — KSSL+NASIS **Great Group +3.84 pp** in a single release. Headline real-data benchmark at large scale (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %** (the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real lab data). **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://hugomachadorodrigues.github.io/soilKey/NEWS.md); roadmap in [`ARCHITECTURE.md` §12](https://hugomachadorodrigues.github.io/soilKey/ARCHITECTURE.html#12-roadmap-de-implementa%C3%A7%C3%A3o); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://hugomachadorodrigues.github.io/soilKey/inst/cran-submission/HOW_TO_SUBMIT.md).)
+_(**Status**: CRAN-ready, v0.9.27 (2026-05-03). `R CMD check` returns **Status: OK** — 0 errors / 0 warnings / 0 notes. Test suite **2 908 passing / 0 failing / 10 expected skips**. [GitHub Actions](https://github.com/HugoMachadoRodrigues/soilKey/actions) green across the 5 OS×R matrix. **All three classification systems wired end-to-end down to the deepest categorical level** — WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5ª ed. (Ordem → Subordem → Grande Grupo → Subgrupo → Família, ~1 200 classes), USDA Soil Taxonomy 13ed (Order → Suborder → Great Group → Subgroup, ~1 700 classes). **v0.9.27 highlights**: clay-illuviation evidence test (NASIS `pediagfeatures` argillic flag + per-horizon `clay_films_amount` from `phpvsf`); per-system argic clay-increase threshold API (WRB 6/1.4/20 vs KST 13ed 3/1.2/8); FEBR / Embrapa benchmark normalisation fix (Order **+16.1 pp** v0.9.22 → v0.9.27 = 56.7 %); WoSIS GraphQL retry+fallback for ISRIC server intermittency. **v0.9.25** shipped the KST 13ed Great Group canonicaliser collapsing pre-13ed legacy KSSL labels (Pellusterts → Hapluderts; Haplaquolls → Endo/Epi-Aquolls; Camborthids → Haplocambids; etc.) — KSSL+NASIS **Great Group +3.84 pp** in a single release. Headline real-data benchmark at large scale (n=2 638, ±1.7 pp CI): **Order 34.2 %**, **Suborder 13.9 %**, **Great Group 7.9 %**, **Subgroup 4.2 %** (the first public USDA Soil Taxonomy benchmark resolving every level of the hierarchy on real lab data). **DOI**: [10.5281/zenodo.19930112](https://doi.org/10.5281/zenodo.19930112) (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md` §12](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md#12-roadmap-de-implementa%C3%A7%C3%A3o); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)
