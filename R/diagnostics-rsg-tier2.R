@@ -48,17 +48,28 @@ vertisol <- function(pedon) {
   cracks <- test_shrink_swell_cracks(h, min_width_cm = 0.5)
   cracks_start_at_surface <- length(cracks$layers) > 0L &&
                               any(h$top_cm[cracks$layers] <= 20, na.rm = TRUE)
+
+  # v0.9.77 -- when vertic_horizon fired via the v0.9.72 v-suffix
+  # designation inference OR the v0.9.76 chroma+clay inference, the
+  # cracks-at-surface gate is allowed to be missing because the
+  # inference paths themselves require strong morphological evidence
+  # (B subsoil + high clay + low chroma + designation marker).
+  inferred_path_fired <- isTRUE(vh$evidence$designation_inference$passed) ||
+                            isTRUE(vh$evidence$chroma_clay_inference$passed)
+  cracks_gate <- isTRUE(cracks_start_at_surface) || isTRUE(inferred_path_fired)
+
   passed <- isTRUE(vh$passed) && isTRUE(clay_throughout) &&
-              isTRUE(cracks_start_at_surface)
+              isTRUE(cracks_gate)
   DiagnosticResult$new(
     name = "vertisol",
     passed = passed,
     layers = vh$layers,
     evidence = list(
-      vertic_horizon            = vh,
-      clay_above_30_throughout = clay_throughout,
-      cracks_at_surface        = cracks_start_at_surface,
-      cracks                   = cracks
+      vertic_horizon                = vh,
+      clay_above_30_throughout      = clay_throughout,
+      cracks_at_surface             = cracks_start_at_surface,
+      cracks                        = cracks,
+      morphological_inference_fired = inferred_path_fired
     ),
     missing  = vh$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
