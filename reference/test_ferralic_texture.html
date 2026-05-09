@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,26 @@
 <dd><p>Numeric threshold or option (see Details).</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="v-morphological-fallback-opt-in-">v0.9.70 morphological fallback (opt-in)<a class="anchor" aria-label="anchor" href="#v-morphological-fallback-opt-in-"></a></h2>
+
+
+<p>Many BDsolos / SOTERLAC profiles do not record <code>clay_pct</code>,
+<code>silt_pct</code>, <code>sand_pct</code> on the deep B horizon – only on
+the topsoil. The strict texture test then returns <code>NA</code>, and
+<code><a href="ferralic.html">ferralic()</a></code> cascades to NA, blocking Latossolos detection.</p>
+<p>With <code>options(soilKey.ferralic_texture_morphological_fallback = TRUE)</code>
+<code>test_ferralic_texture()</code> accepts a layer as ferralic-textured
+when the canonical numeric test is NA <em>and</em> the layer
+satisfies <em>both</em>:</p><ol><li><p>designation matches <code>Bw|Bo|Boi</code> (deeply weathered
+          B-horizon morphology), and</p></li>
+<li><p><code>top_cm &gt; 20</code> (subsoil, not topsoil).</p></li>
+</ol><p>This is a conservative morphological inference: a Bw / Bo
+designation in a subsoil context strongly implies tropical
+deep-weathering, which in turn implies sandy-loam-or-finer
+texture in 95\<!-- %+ of Brazilian Latossolos. Default is -->
+<code>FALSE</code> (canonical WRB behaviour preserved).</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
