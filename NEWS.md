@@ -1,3 +1,57 @@
+# soilKey 0.9.91 (2026-05-09)
+
+The "**KSSL reference_wrb alias + WoSIS partial-matching hardening**"
+release (item D of the post-autonomous-loop stack). Adds
+\code{load_kssl_sample()} and \code{load_kssl_nasis_sample()} the
+same canonical-field aliasing v0.9.88 introduced for WoSIS, AND
+hardens both alias paths to use strict \code{[[]]} access
+(sidestepping R's $-partial-matching footgun).
+
+## Why
+
+The bundled KSSL caches store the WRB Reference Soil Group label
+in \code{site[["reference_wrb_from_usda"]]} (the v0.9.74 USDA->WRB
+cross-walk slot), NOT in the canonical
+\code{site[["reference_wrb"]]} field. R's \code{$} partial-matching
+was silently masking this: \code{p$site$reference_wrb} resolves to
+\code{p$site$reference_wrb_from_usda} via prefix matching, so
+generic benchmark loops appeared to work. But strict
+\code{p$site[["reference_wrb"]]} returned \code{NULL} on every
+KSSL pedon -- brittle (any future \code{reference_wrb_*} sibling
+makes partial matching ambiguous) and a footgun for downstream
+strict-access tooling.
+
+## Fix
+
+\code{load_kssl_sample()} and \code{load_kssl_nasis_sample()} now
+post-process every pedon to set \code{site[["reference_wrb"]] <-
+site[["reference_wrb_from_usda"]]} (only when the canonical field
+is currently NULL). The original \code{reference_wrb_from_usda}
+slot is unchanged.
+
+\code{load_wosis_stratified_sample()} (v0.9.88) is hardened to use
+strict \code{[[]]} access in the same alias logic. A new internal
+helper \code{.kssl_alias_reference_wrb()} centralises the logic
+and is shared between the KSSL and KSSL+NASIS loaders.
+
+## Coverage after v0.9.91
+
+| loader                                | strict reference_wrb populated |
+|---------------------------------------|------------------------------:|
+| \code{load_kssl_sample()}              |                       99 / 99 |
+| \code{load_kssl_nasis_sample()}        |                       99 / 99 |
+| \code{load_wosis_stratified_sample()}  |                     130 / 130 |
+| \code{load_afsp_sample()}              |                     120 / 120 (already canonical) |
+
+## Regression test
+
+\code{tests/testthat/test-v0991-kssl-reference-alias.R} (5 tests,
+15 expectations): both KSSL loaders populate \code{reference_wrb}
+via strict access on every pedon; KSSL alias mirrors
+\code{reference_wrb_from_usda} verbatim; WoSIS hardened alias
+still works; default-canonical WRB benchmark on KSSL+NASIS
+reaches > 15 correct.
+
 # soilKey 0.9.90 (2026-05-09)
 
 The "**argic designation-inference fallback**" release (item C of
@@ -65,6 +119,7 @@ engine="aqp" auto-fires; inference rejects NA films and topsoil Bt;
 explicit FALSE override; BDsolos RJ regression guard
 (Argissolo >= 180, Order acc >= 0.46).
 
+
 # soilKey 0.9.89 (2026-05-09)
 
 The "**ferralic texture morphological fallback bundled into engine=aqp**"
@@ -127,6 +182,7 @@ texture data are now recovered).
 auto-enables fallback; explicit FALSE override suppresses; explicit
 TRUE works without engine; BDsolos RJ regression guard
 (engine=aqp Lat >= 33).
+
 
 
 # soilKey 0.9.88 (2026-05-09)

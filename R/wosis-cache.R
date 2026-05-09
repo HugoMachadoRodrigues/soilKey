@@ -141,10 +141,16 @@ load_wosis_stratified_sample <- function() {
   # already reads it directly.
   if (is.list(s) && !is.null(s$pedons)) {
     s$pedons <- lapply(s$pedons, function(p) {
-      if (inherits(p, "PedonRecord") &&
-            is.null(p$site$reference_wrb) &&
-            !is.null(p$site$wosis_rsg)) {
-        p$site$reference_wrb <- p$site$wosis_rsg
+      if (!inherits(p, "PedonRecord")) return(p)
+      # Strict access via [[]] to bypass R's partial-matching footgun
+      # (v0.9.91: $reference_wrb otherwise resolves to other reference_*
+      # fields via partial matching, masking the canonical-field gap).
+      has_canonical <- !is.null(p$site[["reference_wrb"]]) &&
+                         !is.na(p$site[["reference_wrb"]])
+      has_wosis     <- !is.null(p$site[["wosis_rsg"]]) &&
+                         !is.na(p$site[["wosis_rsg"]])
+      if (!has_canonical && has_wosis) {
+        p$site[["reference_wrb"]] <- p$site[["wosis_rsg"]]
       }
       p
     })
@@ -206,7 +212,42 @@ load_kssl_sample <- function() {
   }
   if (!nzchar(path) || !file.exists(path))
     stop("Bundled KSSL sample not found at inst/extdata/kssl_sample.rds.")
-  readRDS(path)
+  s <- readRDS(path)
+  # v0.9.91: alias `reference_wrb_from_usda` -> `reference_wrb` on every
+  # pedon so generic benchmark loops that call `p$site$reference_wrb`
+  # (the canonical field used by WoSIS / AfSP / Redape pedons after
+  # v0.9.88) work off-the-shelf on KSSL too. The original
+  # `reference_wrb_from_usda` slot is preserved for back-compat.
+  s$pedons <- .kssl_alias_reference_wrb(s$pedons)
+  s
+}
+
+
+#' Alias `reference_wrb_from_usda` -> `reference_wrb` on KSSL pedons
+#'
+#' Internal helper used by both \code{load_kssl_sample()} and
+#' \code{load_kssl_nasis_sample()} since v0.9.91 to populate the
+#' canonical \code{reference_wrb} field from the KSSL-specific
+#' \code{reference_wrb_from_usda} cross-walk slot. Only sets the
+#' field when it is currently NULL, so explicit annotations are
+#' preserved.
+#' @keywords internal
+.kssl_alias_reference_wrb <- function(pedons) {
+  if (!is.list(pedons) || length(pedons) == 0L) return(pedons)
+  lapply(pedons, function(p) {
+    if (!inherits(p, "PedonRecord")) return(p)
+    # Strict access via [[]] to bypass R's partial-matching footgun
+    # ($reference_wrb otherwise resolves to reference_wrb_from_usda
+    # via partial matching, masking the missing canonical field).
+    has_canonical <- !is.null(p$site[["reference_wrb"]]) &&
+                       !is.na(p$site[["reference_wrb"]])
+    has_xwalk     <- !is.null(p$site[["reference_wrb_from_usda"]]) &&
+                       !is.na(p$site[["reference_wrb_from_usda"]])
+    if (!has_canonical && has_xwalk) {
+      p$site[["reference_wrb"]] <- p$site[["reference_wrb_from_usda"]]
+    }
+    p
+  })
 }
 
 
@@ -278,5 +319,8 @@ load_kssl_nasis_sample <- function() {
   if (!nzchar(path) || !file.exists(path))
     stop("Bundled KSSL+NASIS sample not found at ",
           "inst/extdata/kssl_nasis_sample.rds.")
-  readRDS(path)
+  s <- readRDS(path)
+  # v0.9.91: same reference_wrb aliasing as load_kssl_sample().
+  s$pedons <- .kssl_alias_reference_wrb(s$pedons)
+  s
 }
