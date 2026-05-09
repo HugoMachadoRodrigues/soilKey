@@ -1,3 +1,70 @@
+# soilKey 0.9.90 (2026-05-09)
+
+The "**argic designation-inference fallback**" release (item C of
+the post-autonomous-loop v0.9.86+ stack). Adds a new opt-in
+\code{soilKey.argic_designation_inference} bundled into engine="aqp"
+that accepts subsoil \code{Bt}-designated layers with clay-films
+qualifiers as argic by morphology when the canonical numeric
+clay-increase test fails. Default canonical behaviour is bit-for-bit
+preserved.
+
+## Why
+
+The post-v0.9.89 audit on BDsolos RJ shows 34 of 186 Argissolo
+references cascade to Neossolos because they have only 2 sample
+points (a topsoil A at 0-20 cm and a deep B at 50-150 cm). The
+strict argic clay-increase test requires the increase to occur
+within a 30 cm vertical window, but in BDsolos these 2-point
+profiles span 30+ cm with no intermediate samples. The surveyor
+already labelled the deep horizon "Bt" and recorded clay films,
+so the morphological evidence for argic IS there; the numeric
+test simply cannot resolve it.
+
+## Fix
+
+\code{argic()} now grows a designation-inference fallback that
+fires when:
+
+\itemize{
+  \item The canonical numeric clay-increase test failed, AND
+  \item designation matches \code{^Bt}, AND
+  \item \code{clay_films_amount} has a non-empty qualifier, AND
+  \item \code{top_cm > 25} (subsoil context, not topsoil).
+}
+
+The fallback is gated by \code{soilKey.argic_designation_inference}
+with the same tri-state precedence as v0.9.86 / v0.9.89:
+
+\enumerate{
+  \item Explicit option wins.
+  \item Else \code{soilKey.diagnostic_engine = "aqp"} auto-enables.
+  \item Else canonical strict (FALSE).
+}
+
+Wired into BOTH the \code{engine="soilkey"} path AND the
+\code{engine="aqp"} (\code{argic_aqp()}) path.
+
+## Empirical effect on BDsolos RJ (n = 722)
+
+| configuration                                  | Order  | Argissolo recall   | Latossolo recall   |
+|------------------------------------------------|------:|-------------------:|-------------------:|
+| default canonical                              | 40.3\\% | 69.2\\% (166/240)    | 14.9\\% (17/114)     |
+| v0.9.89: engine=aqp                            | 44.4\\% | 70.4\\% (169/240)    | 28.1\\% (32/114)     |
+| **v0.9.90: engine=aqp**                         | **46.6\\%** | **77.1\\% (185/240)**  | **28.1\\% (32/114)**   |
+| engine=aqp + argic_designation_inference=FALSE | 44.4\\% | 70.4\\% (169/240)    | 28.1\\% (32/114)     |
+
+**Cumulative lift** over canonical baseline (Order +6.3pp, Argissolo
++7.9pp, Latossolo +13.2pp), now driven purely by
+\code{soilKey.diagnostic_engine = "aqp"}.
+
+## Regression test
+
+\code{tests/testthat/test-v0990-argic-designation-inference.R}
+(6 tests, 7 expectations): default canonical no inference;
+engine="aqp" auto-fires; inference rejects NA films and topsoil Bt;
+explicit FALSE override; BDsolos RJ regression guard
+(Argissolo >= 180, Order acc >= 0.46).
+
 # soilKey 0.9.89 (2026-05-09)
 
 The "**ferralic texture morphological fallback bundled into engine=aqp**"
