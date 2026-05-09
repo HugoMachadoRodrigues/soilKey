@@ -22,7 +22,9 @@ from \code{\link{load_redape_pedons}}).}
 \value{
 A list with \code{accuracy}, \code{n_compared},
   \code{confusion}, \code{per_class_recall}, and the per-pedon
-  \code{predictions} table.
+  \code{predictions} table. \code{predictions} now also includes
+  columns \code{ref_norm} and \code{pred_norm} -- the canonical
+  comparison keys -- for downstream auditing.
 }
 \description{
 Runs \code{\link{classify_sibcs}} on each pedon and compares against
@@ -30,3 +32,14 @@ the curator-validated reference label (Order / Suborder / Great
 Group / Subgroup). Returns per-level accuracy and the confusion
 matrix at the requested granularity.
 }
+\section{v0.9.81 level-aware comparison}{
+
+Earlier versions accepted the \code{level} argument but always used
+\code{rsg_or_order} for the prediction and the order field for the
+reference, so all four levels reported identical accuracy. v0.9.81
+reads the level-specific slots from \code{res$trace} (subordem,
+grande_grupo, subgrupo) and concatenates the matching reference
+fields, applying SiBCS-aware Portuguese pluralisation so the
+comparison key matches the predictor's plural Title Case form.
+}
+
