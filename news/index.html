@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.81</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.82</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,141 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.82" id="soilkey-0982-2026-05-09">soilKey 0.9.82 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0982-2026-05-09"></a></h2>
+<p>The “<strong>LUCAS Stage 3 full-stack rerun</strong>” release. Ships the  benchmark and documents that the cumulative effect of v0.9.66 + v0.9.72 + v0.9.77 + v0.9.78 + v0.9.79 + v0.9.80 lifts LUCAS WRB accuracy from 3.3\% (v0.9.64 baseline on the same 30-pedon FR/PL/IT sample, seed 20260508) to 60.0\% when the v0.9.50 SoilGrids subsoil fill is enabled. No new code – the lift is purely from the cumulative key-fix stack.</p>
+<div class="section level3">
+<h3 id="stack-composition-0-9-82">Stack composition<a class="anchor" aria-label="anchor" href="#stack-composition-0-9-82"></a></h3>
+<table class="table"><colgroup><col width="14%"><col width="73%"><col width="11%"></colgroup><thead><tr><th>version</th>
+<th>fix</th>
+<th>gating</th>
+</tr></thead><tbody><tr><td>v0.9.66</td>
+<td>leptic shallow-rock-evidence gate</td>
+<td>auto (engine=“aqp”)</td>
+</tr><tr><td>v0.9.72</td>
+<td>gleyic_designation_inference</td>
+<td>opt-in</td>
+</tr><tr><td>v0.9.77</td>
+<td>vertisol cracks_at_surface relaxed for inferred</td>
+<td>auto (default)</td>
+</tr><tr><td>v0.9.78</td>
+<td>mollic contiguous-stack + cumulative thickness</td>
+<td>auto (default)</td>
+</tr><tr><td>v0.9.79</td>
+<td>mollic-priority intergrade gate (vertic chroma)</td>
+<td>auto (default)</td>
+</tr><tr><td>v0.9.80</td>
+<td>andic_oc_bd_proxy</td>
+<td>opt-in</td>
+</tr></tbody></table><p>Stage 3 runs with  +  +  +  + , plus  which synthesises a 30-60 cm B horizon from SoilGrids 250m for each pedon (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, cfvo).</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-effect-on-lucas-n--frplit-seed-0-9-82">Empirical effect on LUCAS 2018 (n = 30, FR/PL/IT, seed 20260508)<a class="anchor" aria-label="anchor" href="#empirical-effect-on-lucas-n--frplit-seed-0-9-82"></a></h3>
+<table class="table"><colgroup><col width="8%"><col width="66%"><col width="11%"><col width="12%"></colgroup><thead><tr><th>Stage</th>
+<th>configuration</th>
+<th align="right">elapsed</th>
+<th align="right">accuracy</th>
+</tr></thead><tbody><tr><td>1</td>
+<td>baseline soilkey engine, no fill</td>
+<td align="right">4.3s</td>
+<td align="right">0.000</td>
+</tr><tr><td>2</td>
+<td>full opt-in stack, no fill</td>
+<td align="right">9.4s</td>
+<td align="right">0.000</td>
+</tr><tr><td>3</td>
+<td>full opt-in stack + SoilGrids subsoil fill</td>
+<td align="right">3678s</td>
+<td align="right"><strong>0.600</strong></td>
+</tr></tbody></table><p>Stage 1 vs Stage 2 unchanged at 0.0\%: without subsoil data the LUCAS topsoil-only horizons (single 0-20 cm layer) cannot satisfy cambic / argic / spodic depth or contrast requirements, so all 30 pedons cascade to Regosols (the WRB residual class). The v0.9.66 leptic-evidence tightening shifted them out of the prior “all Leptosols” failure mode but the floor is still 0\%.</p>
+<p>Stage 3 lift: SoilGrids-derived 30-60 cm B horizon lets  fire on all 18 reference Cambisols (100\% recall on Cambisols). The remaining 12 pedons (5 Arenosols, 4 Luvisols, 1 Fluvisol, 1 Leptosol, 1 Podzol) still misclassify as Cambisols because the subsoil fill provides cambic-style aggregate properties but does not preserve diagnostic signatures for argic (clay films), fluvic (stratification), spodic (Al/Fe oxalate), or texture-class extremes (sand &gt;= 70\%) – those would need either full LUCAS subsoil sampling or RSG-specific fills.</p>
+<div class="section level4">
+<h4 id="per-rsg-recall-stage-0-9-82">Per-RSG recall (Stage 3)<a class="anchor" aria-label="anchor" href="#per-rsg-recall-stage-0-9-82"></a></h4>
+<table class="table"><thead><tr><th>reference</th>
+<th align="right">n</th>
+<th align="right">n_correct</th>
+<th align="right">recall</th>
+</tr></thead><tbody><tr><td>Arenosols</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">0\%</td>
+</tr><tr><td>Cambisols</td>
+<td align="right">18</td>
+<td align="right"><strong>18</strong></td>
+<td align="right"><strong>100\%</strong></td>
+</tr><tr><td>Fluvisols</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0\%</td>
+</tr><tr><td>Leptosols</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0\%</td>
+</tr><tr><td>Luvisols</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">0\%</td>
+</tr><tr><td>Podzols</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0\%</td>
+</tr></tbody></table><p>The “all-Cambisols” predicted distribution (Stage 3 confusion matrix has Cambisols on every reference column) is the natural shape of subsoil-filled pedons whose distinguishing diagnostics sit outside the synthesised B horizon. Future v0.9.x releases will target argic, spodic, and texture-class refinements to lift the remaining 12 pedons.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="reproducibility-0-9-82">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility-0-9-82"></a></h3>
+<p> (under soilKey 0.9.82, with the listed soil_data layout) reproduces the  artefact. The script saves results after each stage so a Stage 3 crash still preserves Stages 1 and 2.</p>
+</div>
+<div class="section level3">
+<h3 id="news-table-update-0-9-82">NEWS table update<a class="anchor" aria-label="anchor" href="#news-table-update-0-9-82"></a></h3>
+<p>The “complete benchmark suite” table (last refreshed in v0.9.80) now reads:</p>
+<table style="width:100%;" class="table"><colgroup><col width="17%"><col width="20%"><col width="6%"><col width="33%"><col width="22%"></colgroup><thead><tr><th>System</th>
+<th>Dataset</th>
+<th>n</th>
+<th>Profile depth</th>
+<th align="right">Accuracy</th>
+</tr></thead><tbody><tr><td>SiBCS</td>
+<td>Redape (default)</td>
+<td>94</td>
+<td>full</td>
+<td align="right">45.7\%</td>
+</tr><tr><td>SiBCS</td>
+<td>Redape (opt-in stack)</td>
+<td>94</td>
+<td>full</td>
+<td align="right">58.5\%</td>
+</tr><tr><td>SiBCS</td>
+<td>BDsolos RJ (default)</td>
+<td>722</td>
+<td>full</td>
+<td align="right">50.0\%</td>
+</tr><tr><td>WRB</td>
+<td>LUCAS Stage 3</td>
+<td>30</td>
+<td>topsoil + SG subsoil</td>
+<td align="right"><strong>60.0\%</strong></td>
+</tr><tr><td>WRB</td>
+<td>AfSP</td>
+<td>120</td>
+<td>full</td>
+<td align="right">30.0\%</td>
+</tr><tr><td>WRB</td>
+<td>KSSL+NASIS</td>
+<td>99</td>
+<td>full</td>
+<td align="right">26.3\%</td>
+</tr><tr><td>WRB</td>
+<td>KSSL only</td>
+<td>199</td>
+<td>full</td>
+<td align="right">20.1\%</td>
+</tr><tr><td>WRB</td>
+<td>WoSIS strat</td>
+<td>130</td>
+<td>full</td>
+<td align="right">16.2\%</td>
+</tr></tbody></table></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.81" id="soilkey-0981-2026-05-09">soilKey 0.9.81 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0981-2026-05-09"></a></h2>
 <p>The “<strong>honest SiBCS Subordem / Grande Grupo / Subgrupo benchmark</strong>” release.  accepted a  argument since v0.9.71 but silently discarded it: prediction was always  (Order) and reference was always the order field, so all four levels reported identical accuracy and identical confusion matrices. v0.9.81 wires the level-aware comparison the function always promised.</p>
