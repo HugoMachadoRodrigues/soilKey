@@ -1,3 +1,68 @@
+# soilKey 0.9.70 (2026-05-08)
+
+The "**texture morphological fallback**" release. Continues the
+v0.9.69 empirical investigation: of the 19 BDsolos RJ Latossolos
+that v0.9.69 could not recover, ~all of them fail because
+\code{clay_pct} / \code{silt_pct} / \code{sand_pct} are NA on the
+deep B horizon (only the topsoil has texture data).
+
+## Fix
+
+`test_ferralic_texture()` reads the new opt-in option
+\code{soilKey.ferralic_texture_morphological_fallback}. When TRUE,
+and the canonical numeric texture test returns NA, the test accepts
+layers that satisfy BOTH:
+
+1. designation matches \code{Bw|Bo|Boi} (deeply weathered B
+   morphology), AND
+2. \code{top_cm > 20} (subsoil context, not topsoil).
+
+A Bw / Bo designation in a subsoil context strongly implies tropical
+deep-weathering, which in turn implies sandy-loam-or-finer texture in
+~95% of Brazilian Latossolos. Default is FALSE -- canonical WRB
+behaviour preserved. The fallback is conservative: it does NOT fire
+on (a) Bt / Bs / Bg designations, (b) topsoil-only Bw, or (c) when
+real numeric texture data is present (real data wins).
+
+## Empirical effect (BDsolos RJ, n=722, engine=aqp)
+
+Latossolos progression with the fallback ladder:
+
+| configuration                     | Latossolos correct | overall acc |
+|-----------------------------------|-------------------:|------------:|
+| baseline (no fallbacks)           | 17 / 114 (14.9%)   | 0.444       |
+| +ECEC fallback (v0.9.69)          | 32 / 114 (28.1%)   | 0.442       |
+| **+texture-morph (v0.9.70)**      | **33 / 114 (28.9%)** | **0.444** |
+
+Marginal lift (+1 Latossolo) but the fallback is conservative and
+overall accuracy is unaffected. Recommended for users running on
+SOTERLAC-style profiles where deep B-horizon analytical data is
+incomplete.
+
+## Combined recipe for Brazilian / SOTERLAC datasets
+
+```r
+options(
+  soilKey.diagnostic_engine                       = "aqp",
+  soilKey.ferralic_ecec_fallback                  = TRUE,
+  soilKey.ferralic_texture_morphological_fallback = TRUE
+)
+```
+
+## Regression test
+
+`tests/testthat/test-v0970-ferralic-texture-morph.R` (7 tests, 8
+expectations) covers:
+
+- Default OFF leaves canonical behaviour unchanged.
+- Fallback ON recovers Bw subsoil with NA texture.
+- Fallback rejects topsoil-only Bw (top_cm <= 20).
+- Fallback rejects non-Bw designations (Bt, etc.).
+- Fallback does NOT override real numeric texture (sandy soils
+  still fail correctly).
+- Integration: ferralic recovers Bw-only Latossolo when fallback ON.
+
+
 # soilKey 0.9.69 (2026-05-08)
 
 The "**ECEC fallback for missing Valor T**" release. v0.9.68 documented
