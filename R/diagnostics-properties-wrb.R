@@ -326,6 +326,16 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
 #' @param max_bd_proxy Maximum bulk density g/cm^3 for the v0.9.80
 #'        OC+BD proxy path (default 0.9). Only consulted when the
 #'        proxy is enabled.
+#' @section v0.9.85 proxy contiguous-layer extension (opt-in):
+#' When \code{options(soilKey.andic_oc_bd_proxy_extend = TRUE)}
+#' (only meaningful with \code{soilKey.andic_oc_bd_proxy = TRUE}),
+#' iteratively extend the proxy layers to include contiguous deeper
+#' layers whose \code{oc_pct >= min_oc_proxy / 2} AND whose
+#' \code{bulk_density_g_cm3} is missing OR
+#' \code{<= max_bd_proxy + 0.15}. The extension stops at the first
+#' horizon failing either constraint, so a ferralic / argic subsoil
+#' cannot accidentally inflate the andic thickness. Default is
+#' \code{FALSE} -- canonical proxy behaviour preserved.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 3, Andic
 #'   properties.
@@ -380,11 +390,52 @@ andic_properties <- function(pedon,
     inferred <- which((high_oc & low_bd) |
                           (very_high_oc & bd_missing))
     if (length(inferred) > 0L) {
+      # v0.9.85 -- proxy contiguous-layer extension (opt-in).
+      # When the v0.9.80 proxy fires on a surface horizon, AfSP /
+      # SOTER Andosol references like KE SOTER_182/4-75 (Ah 0-25 cm
+      # OC=4.7 BD=0.8 -> proxy fires; AB 25-50 cm OC=2.7 BD=1.0 ->
+      # below v0.9.80 thresholds) lose the AB layer from the andic
+      # thickness even though the AB clearly belongs to the same
+      # andic-affected mantle.
+      #
+      # When `soilKey.andic_oc_bd_proxy_extend = TRUE` (opt-in,
+      # default FALSE -- only meaningful with the v0.9.80 proxy
+      # enabled), iteratively extend `inferred` to include
+      # contiguous deeper layers whose OC stays >= min_oc_proxy / 2
+      # AND whose BD is either missing OR <= max_bd_proxy + 0.15
+      # (additive slack -- BD = 1.0 still counts when the surface
+      # threshold is 0.9, but BD = 1.3 [a typical mineral subsoil]
+      # does not). The extension stops at the first horizon failing
+      # either constraint, so a ferralic / argic subsoil cannot
+      # accidentally inflate the andic thickness.
+      extend_enabled <- isTRUE(getOption("soilKey.andic_oc_bd_proxy_extend",
+                                           default = FALSE))
+      extended_layers <- integer(0)
+      if (extend_enabled) {
+        oc_min_extend <- min_oc_proxy / 2
+        bd_max_extend <- max_bd_proxy + 0.15
+        # Extend below the lowest currently-firing layer through
+        # contiguous deeper horizons that still satisfy the looser
+        # extension thresholds.
+        stop_at <- max(inferred)
+        for (j in seq(stop_at + 1L, nrow(h))) {
+          if (j > nrow(h)) break
+          oc_ok <- !is.na(oc[j]) && oc[j] >= oc_min_extend
+          bd_ok <- is.na(bd[j]) || (!is.na(bd[j]) &&
+                                       bd[j] <= bd_max_extend)
+          if (!isTRUE(oc_ok) || !isTRUE(bd_ok)) break
+          extended_layers <- c(extended_layers, j)
+        }
+      }
       proxy_path <- list(
-        passed = TRUE, layers = inferred,
-        source = "high_oc_low_bd",
+        passed = TRUE,
+        layers = c(inferred, extended_layers),
+        source = if (length(extended_layers) > 0L)
+                   "high_oc_low_bd_extended" else "high_oc_low_bd",
         details = list(min_oc = min_oc_proxy, max_bd = max_bd_proxy,
-                          matched_layers = inferred)
+                          matched_layers = inferred,
+                          extended_layers = extended_layers,
+                          extend_enabled  = extend_enabled)
       )
     }
   }

@@ -90,11 +90,29 @@ vertisol <- function(pedon) {
 #' \\>= 30 cm starting in the upper 25 cm AND (3) the negative-list
 #' exclusions on argic / ferralic / plinthic / spodic.
 #'
+#' @section v0.9.85 buried-exclusion fix:
+#' WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /
+#' ferralic / petroplinthic / pisoplinthic / plinthic / spodic) as
+#' "<= 100 cm \emph{unless buried below 50 cm}". The earlier
+#' implementation excluded an Andosol whenever any of those
+#' diagnostics passed anywhere in the profile, including on layers
+#' starting deeper than 50 cm -- which mis-fires on AfSP Andosol
+#' references like \code{CM W3_0047}, where an argic layer at
+#' 56-72 cm wrongly excluded the andic surface stack. v0.9.85
+#' restricts the exclusion check to layers starting <= 50 cm:
+#' a buried argic / ferralic / plinthic / spodic at deeper levels no
+#' longer disqualifies the surface andic stack from Andosol.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @param buried_below_cm Numeric: layers of the exclusion
+#'        diagnostics whose top_cm \\>= this depth are treated as
+#'        buried and do NOT exclude the Andosol (default 50, per WRB
+#'        2022 Ch 4 p 104).
 #' @export
-andosol <- function(pedon, min_thickness = 30, max_top_cm = 25) {
+andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
+                       buried_below_cm = 50) {
   ap <- andic_properties(pedon)
   vp <- vitric_properties(pedon)
   ap_layers <- ap$layers %||% integer(0)
@@ -119,15 +137,28 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25) {
     sum(h$bottom_cm[starts_ok] - h$top_cm[starts_ok], na.rm = TRUE)
   thickness_ok <- combined_thickness >= min_thickness
 
-  # Exclusion list.
+  # v0.9.85: exclusion-list refinement. The diagnostic is only
+  # disqualifying if it ALSO has at least one layer starting in
+  # the upper `buried_below_cm` (default 50 cm). When all of its
+  # passing layers lie deeper than 50 cm the diagnostic is
+  # treated as "buried" and does NOT exclude the Andosol, per
+  # WRB 2022 Ch 4 p 104.
   exclusions <- list(
     argic        = argic(pedon),
     ferralic     = ferralic(pedon),
     plinthic     = plinthic(pedon),
     spodic       = spodic(pedon)
   )
-  any_excl <- any(vapply(exclusions, function(d)
-                              isTRUE(d$passed), logical(1)))
+  exclusion_buried <- vapply(exclusions, function(d) {
+    if (!isTRUE(d$passed) || length(d$layers) == 0L) return(FALSE)
+    tops <- h$top_cm[d$layers]
+    if (all(is.na(tops))) return(FALSE)
+    # Buried: every passing layer starts >= buried_below_cm.
+    all(!is.na(tops) & tops >= buried_below_cm)
+  }, logical(1))
+  exclusion_active <- vapply(exclusions, function(d) isTRUE(d$passed),
+                                logical(1)) & !exclusion_buried
+  any_excl <- any(exclusion_active)
   passed <- isTRUE(thickness_ok) && !any_excl
   DiagnosticResult$new(
     name = "andosol",
@@ -137,7 +168,9 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25) {
       andic                = ap,
       vitric               = vp,
       combined_thickness_cm = combined_thickness,
-      exclusion_failed     = exclusions
+      exclusion_failed     = exclusions,
+      exclusion_buried     = as.list(exclusion_buried),
+      exclusion_active     = as.list(exclusion_active)
     ),
     missing  = unique(c(ap$missing, vp$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
