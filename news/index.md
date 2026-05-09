@@ -1,5 +1,57 @@
 # Changelog
 
+## soilKey 0.9.95 (2026-05-09)
+
+The “**post-lazy-fetch sweep + CITATION.cff bump**” release. Verifies
+that the v0.9.94 lazy-fetch architecture did not regress any empirical
+numbers, and brings the CITATION.cff version / date-released stamps
+current with the v0.9.95 release. Pure artefact / no R code change.
+
+### Sweep verification (post-v0.9.94)
+
+on the v0.9.94 stack reproduces the v0.9.87 numbers to the pedon, with
+two improvements driven by v0.9.89 / v0.9.90 already accounted for in
+their own NEWS entries:
+
+| Dataset | n | v0.9.87 default | v0.9.95 default | v0.9.87 best | v0.9.95 best |
+|----|---:|---:|---:|---:|---:|
+| SiBCS BDsolos RJ | 722 | 40.3\\ | 40.3\\ | 44.4\\ | **46.8\\** |
+| SiBCS BDsolos RJ Lat | 114 | 14.9\\ | 14.9\\ | 28.1\\ | **28.9\\** |
+| SiBCS Redape Order | 94 | 45.7\\ | 45.7\\ | 58.5\\ | 58.5\\ |
+| WRB KSSL+NASIS | 99 | 21.2\\ | 21.2\\ | 24.2\\ | 24.2\\ |
+| WRB AfSP | 120 | 21.7\\ | 21.7\\ | 30.8\\ | 30.8\\ |
+| WRB WoSIS strat | 130 | 0\\/17.7\\ | 17.7\\ | 0\\/19.2\\ | 18.5\\ |
+
+The BDsolos RJ numbers move 44.4\\-\>46.8\\ (Order) and 28.1\\-\>28.9\\
+(Latossolo) because the v0.9.89 texture-morph fallback (PR
+[\#42](https://github.com/HugoMachadoRodrigues/soilKey/issues/42)) and
+the v0.9.90 argic designation-inference fallback (PR
+[\#43](https://github.com/HugoMachadoRodrigues/soilKey/issues/43))
+auto-fire under ; both were already documented in their respective
+releases.
+
+### Sweep script bug fix
+
+The v0.9.87 sweep script read RDS files directly via for KSSL+NASIS and
+WoSIS, bypassing the v0.9.88 / v0.9.91 alias logic embedded in the
+loaders. v0.9.95 routes both through and so the alias fires and WoSIS
+reports its honest 17.7\\ / 18.5\\ accuracy instead of the misleading 0
+/ 0 in_scope.
+
+The pre-fix WoSIS line printed in the v0.9.94 NEWS as “0 / 0” was an
+artefact of this sweep-script bypass and not a real regression; the
+v0.9.91 loader has always returned 130 / 130 pedons with populated .
+
+### CITATION.cff refresh
+
+stamp bumped 0.9.39 -\> 0.9.95 and bumped to today. GitHub’s citation
+parser will render the new version on the repo home page.
+
+### Artefact
+
+captures the v0.9.95 sweep output for cran-comments + downstream
+reproducibility audits.
+
 ## soilKey 0.9.94 (2026-05-09)
 
 The “**lazy-fetch architecture for the four large benchmark caches**”
