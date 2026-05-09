@@ -34,3 +34,15 @@ conservative (MORE permissive) -- it should not produce false
 positives, only recover Latossolos that lacked Valor T.
 }
 
+\section{v0.9.86 engine="aqp" auto-enables the ECEC fallback}{
+
+\code{soilKey.diagnostic_engine = "aqp"} now auto-enables the
+v0.9.69 ECEC fallback (the user can still suppress it explicitly
+by setting \code{soilKey.ferralic_ecec_fallback = FALSE}). The
+rationale: the aqp engine is the "data-quality-aware" mode,
+designed for field-described datasets like BDsolos / Redape
+where Valor T is rarely recorded. Bundling these two opt-ins
+lifts BDsolos RJ Latossolo recall from 14.9\\% (canonical) to
+28.1\\% with no further configuration.
+}
+
