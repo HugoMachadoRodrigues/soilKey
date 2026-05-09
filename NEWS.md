@@ -1,3 +1,85 @@
+# soilKey 0.9.81 (2026-05-09)
+
+The "**honest SiBCS Subordem / Grande Grupo / Subgrupo benchmark**"
+release. \code{benchmark_redape()} accepted a \code{level} argument
+since v0.9.71 but silently discarded it: prediction was always
+\code{res$rsg_or_order} (Order) and reference was always the order
+field, so all four levels reported identical accuracy and identical
+confusion matrices. v0.9.81 wires the level-aware comparison the
+function always promised.
+
+## Fix
+
+\code{benchmark_redape(pedons, level)} now reads the level-specific
+slot from \code{res$trace}:
+
+\itemize{
+  \item \code{level = "order"}      -> \code{res$rsg_or_order}
+  \item \code{level = "subordem"}   -> \code{res$trace$subordem_assigned$name}
+  \item \code{level = "gde_grupo"}  -> \code{res$trace$grande_grupo_assigned$name}
+  \item \code{level = "subgrupo"}   -> \code{res$trace$subgrupo_assigned$name}
+}
+
+The reference is composed by concatenating the matching Redape
+fields (\code{reference_sibcs_order}, \code{_subordem}, \code{_gg},
+\code{_subgrupo}) and applying SiBCS-aware Portuguese pluralisation
+plus accent-stripping so the comparison key matches the predictor's
+plural Title Case form (e.g.\\ "ARGISSOLO AMARELO Distr\\u00f3fico
+abr\\u00faptico" -> "argissolos amarelos distroficos abrupticos",
+which equals the canonicalised
+"Argissolos Amarelos Distroficos abrupticos" prediction).
+
+The \code{predictions} data.frame returned by the benchmark now
+includes \code{ref_norm} and \code{pred_norm} columns, the canonical
+comparison keys, for downstream auditing.
+
+## Empirical effect on Redape (n = 94 pedons; Vaz et al. 2023)
+
+### Default (canonical only)
+
+| Level       |  Accuracy | n_compared |
+|-------------|----------:|-----------:|
+| Order       |    45.7\\% |      94    |
+| Subordem    |    30.9\\% |      94    |
+| Grande Grupo|    29.1\\% |      86    |
+| Subgrupo    |    15.1\\% |      86    |
+
+### With v0.9.61+72+65 opt-in stack (aqp engine + gleyic-suffix inference + ferralic ECEC and texture fallbacks)
+
+| Level       |  Accuracy | n_compared |
+|-------------|----------:|-----------:|
+| Order       |    58.5\\% |      94    |
+| Subordem    |    39.4\\% |      94    |
+| Grande Grupo|    35.2\\% |      88    |
+| Subgrupo    |    25.0\\% |      88    |
+
+These are the FIRST honest measurements at the three deeper levels.
+Order accuracy is preserved bit-for-bit (45.7\\% default / 58.5\\%
+with opt-ins) -- the v0.9.81 fix only adds depth, never moves the
+Order baseline.
+
+## NEWS table correction
+
+The v0.9.80 release table reported "SiBCS Redape 94 = **57.4\\%**".
+That number came from an interim snapshot during the v0.9.65 -> v0.9.74
+work and never tracked a reproducible benchmark configuration. The
+two reproducible values are 45.7\\% (\code{benchmark_redape(peds)})
+and 58.5\\% (\code{benchmark_redape(peds)} inside
+\code{withr::with_options(list(soilKey.diagnostic_engine = "aqp",
+soilKey.gleyic_designation_inference = TRUE,
+soilKey.ferralic_ecec_fallback = TRUE,
+soilKey.ferralic_texture_morphological_fallback = TRUE))}).
+
+## Regression test
+
+\code{tests/testthat/test-v0981-sibcs-subordem.R} (8 tests, 35
+expectations): accent stripping, Portuguese pluralisation rules,
+canonical-label round trips, level-deep reference composition, NA
+propagation on incomplete references, Order accuracy preserved
+bit-for-bit, deeper levels strictly lower accuracy than Order, and
+the new \code{ref_norm}/\code{pred_norm} columns are exposed.
+
+
 # soilKey 0.9.80 (2026-05-09)
 
 The "**andic OC+BD proxy**" release. v0.9.79 AfSP showed Andosol

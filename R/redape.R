@@ -315,12 +315,137 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 }
 
 
+# =============================================================================
+# v0.9.81 -- benchmark_redape() now actually computes Subordem / Grande
+# Grupo / Subgrupo accuracy. The previous implementation accepted the
+# `level` argument but discarded it: pred was ALWAYS res$rsg_or_order
+# (Order) and ref was ALWAYS the order field, so all four levels
+# returned identical accuracy and identical confusion matrices.
+#
+# The classifier already computes deeper levels in res$trace -- the
+# benchmark just was not reading them. v0.9.81 wires:
+#   * level="subordem"  -> res$trace$subordem_assigned$name
+#   * level="gde_grupo" -> res$trace$grande_grupo_assigned$name
+#   * level="subgrupo"  -> res$trace$subgrupo_assigned$name
+# and builds the comparison key from the matching reference fields.
+# =============================================================================
+
+
+#' Strip Portuguese accents and lowercase / collapse whitespace
+#'
+#' Internal helper used by the Redape benchmark to canonicalise SiBCS
+#' labels before string comparison. Maps accented Latin letters to
+#' their ASCII equivalents (\code{A}-acute, \code{O}-tilde,
+#' \code{C}-cedilla, etc., for all five Portuguese vowel classes).
+#'
+#' @keywords internal
+.redape_strip_accents <- function(s) {
+  if (is.null(s)) return(NA_character_)
+  s <- as.character(s)[1L]
+  if (is.na(s) || !nzchar(s)) return(NA_character_)
+  s <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", s)
+  s <- gsub("[\u00C9\u00CA\u00E9\u00EA]",                              "e", s)
+  s <- gsub("[\u00CD\u00ED]",                                            "i", s)
+  s <- gsub("[\u00D3\u00D4\u00D5\u00F3\u00F4\u00F5]",                "o", s)
+  s <- gsub("[\u00DA\u00FA]",                                            "u", s)
+  s <- gsub("[\u00C7\u00E7]",                                            "c", s)
+  tolower(gsub("\\s+", " ", trimws(s)))
+}
+
+
+#' Pluralise a single Portuguese token using SiBCS conventions
+#'
+#' Rules:
+#' \itemize{
+#'   \item Tokens of <= 2 chars are kept as-is (abbreviations like
+#'         "tb"/"ta" used in SiBCS Cambissolo activity modifiers).
+#'   \item Tokens already ending in "s" are kept as-is.
+#'   \item Otherwise: append "s" (covers all -o, -ico, -oso, -eo, -io
+#'         endings present in SiBCS Order, Subordem, GG, and Subgrupo
+#'         modifiers; -al / -el / -ol words don't appear in the
+#'         SiBCS taxonomy at these levels).
+#' }
+#' @keywords internal
+.redape_pluralise_pt <- function(w) {
+  if (is.na(w) || !nzchar(w)) return(w)
+  if (nchar(w) <= 2L) return(w)
+  if (substr(w, nchar(w), nchar(w)) == "s") return(w)
+  paste0(w, "s")
+}
+
+
+#' Normalise a Portuguese SiBCS label to a plural-canonical comparison key
+#' @keywords internal
+.redape_canonical_label <- function(s, pluralise = TRUE) {
+  s <- .redape_strip_accents(s)
+  if (is.na(s) || !nzchar(s)) return(NA_character_)
+  if (!isTRUE(pluralise)) return(s)
+  toks <- strsplit(s, " ", fixed = TRUE)[[1L]]
+  toks <- vapply(toks, .redape_pluralise_pt, character(1L))
+  paste(toks, collapse = " ")
+}
+
+
+#' Compose the canonical reference label for a given SiBCS level
+#'
+#' Concatenates the relevant Redape reference fields (singular Portuguese
+#' nominal phrase) and applies plural-canonical normalisation so the
+#' result is comparable to the soilKey predicted label
+#' (e.g.\ "Argissolos Amarelos Distroficos abrupticos").
+#' @keywords internal
+.redape_compose_ref <- function(pedon, level) {
+  s <- pedon$site
+  parts <- switch(level,
+    order     = s$reference_sibcs_order,
+    subordem  = c(s$reference_sibcs_order, s$reference_sibcs_subordem),
+    gde_grupo = c(s$reference_sibcs_order, s$reference_sibcs_subordem,
+                    s$reference_sibcs_gg),
+    subgrupo  = c(s$reference_sibcs_order, s$reference_sibcs_subordem,
+                    s$reference_sibcs_gg,  s$reference_sibcs_subgrupo))
+  if (is.null(parts) || length(parts) == 0L) return(NA_character_)
+  parts <- vapply(parts,
+                    function(x) if (is.null(x)) NA_character_
+                                else trimws(as.character(x)[1L]),
+                    character(1L))
+  if (any(is.na(parts) | !nzchar(parts))) return(NA_character_)
+  combined <- paste(parts, collapse = " ")
+  .redape_canonical_label(combined, pluralise = TRUE)
+}
+
+
+#' Extract the predicted label at a given SiBCS level from a classify_sibcs() result
+#'
+#' @details The returned label is a \code{ClassificationResult} field
+#'   for the requested level (Order / Subordem / Grande Grupo / Subgrupo).
+#' @keywords internal
+.redape_extract_pred <- function(res, level) {
+  if (is.null(res)) return(NA_character_)
+  raw <- switch(level,
+    order     = res$rsg_or_order,
+    subordem  = res$trace$subordem_assigned$name,
+    gde_grupo = res$trace$grande_grupo_assigned$name,
+    subgrupo  = res$trace$subgrupo_assigned$name)
+  if (is.null(raw) || (is.na(raw) %||% FALSE) || !nzchar(raw %||% ""))
+    return(NA_character_)
+  .redape_canonical_label(raw, pluralise = FALSE)
+}
+
+
 #' Benchmark soilKey SiBCS predictions against the Redape gold standard
 #'
 #' Runs \code{\link{classify_sibcs}} on each pedon and compares against
 #' the curator-validated reference label (Order / Suborder / Great
 #' Group / Subgroup). Returns per-level accuracy and the confusion
 #' matrix at the requested granularity.
+#'
+#' @section v0.9.81 level-aware comparison:
+#' Earlier versions accepted the \code{level} argument but always used
+#' \code{rsg_or_order} for the prediction and the order field for the
+#' reference, so all four levels reported identical accuracy. v0.9.81
+#' reads the level-specific slots from \code{res$trace} (subordem,
+#' grande_grupo, subgrupo) and concatenates the matching reference
+#' fields, applying SiBCS-aware Portuguese pluralisation so the
+#' comparison key matches the predictor's plural Title Case form.
 #'
 #' @param pedons List of \code{\link{PedonRecord}} objects (typically
 #'        from \code{\link{load_redape_pedons}}).
@@ -330,7 +455,9 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 #'
 #' @return A list with \code{accuracy}, \code{n_compared},
 #'   \code{confusion}, \code{per_class_recall}, and the per-pedon
-#'   \code{predictions} table.
+#'   \code{predictions} table. \code{predictions} now also includes
+#'   columns \code{ref_norm} and \code{pred_norm} -- the canonical
+#'   comparison keys -- for downstream auditing.
 #'
 #' @export
 benchmark_redape <- function(pedons, level = c("order", "subordem",
@@ -342,42 +469,50 @@ benchmark_redape <- function(pedons, level = c("order", "subordem",
     cat(sprintf("[redape] benchmarking %d pedons at level=%s\n",
                  length(pedons), level))
 
-  # Reference field per level
-  ref_field <- switch(level,
-    order     = "reference_sibcs_order",
-    subordem  = "reference_sibcs_subordem",
-    gde_grupo = "reference_sibcs_gg",
-    subgrupo  = "reference_sibcs_subgrupo")
-
-  results <- vector("list", length(pedons))
+  rows <- vector("list", length(pedons))
   for (i in seq_along(pedons)) {
     pr <- pedons[[i]]
-    ref <- pr$site[[ref_field]]
-    pred_obj <- tryCatch(classify_sibcs(pr, on_missing = "silent"),
-                          error = function(e) NULL)
-    pred <- if (!is.null(pred_obj)) pred_obj$rsg_or_order else NA_character_
-    results[[i]] <- list(
-      id   = pr$site$id,
-      ref  = ref,
-      pred = pred
+    res <- tryCatch(classify_sibcs(pr, on_missing = "silent"),
+                     error = function(e) NULL)
+    ref_norm  <- .redape_compose_ref(pr,  level)
+    pred_norm <- .redape_extract_pred(res, level)
+    raw_pred  <- if (!is.null(res)) {
+      switch(level,
+        order     = res$rsg_or_order,
+        subordem  = res$trace$subordem_assigned$name,
+        gde_grupo = res$trace$grande_grupo_assigned$name,
+        subgrupo  = res$trace$subgrupo_assigned$name) %||% NA_character_
+    } else NA_character_
+    raw_ref <- switch(level,
+      order     = pr$site$reference_sibcs_order,
+      subordem  = paste(pr$site$reference_sibcs_order,
+                          pr$site$reference_sibcs_subordem),
+      gde_grupo = paste(pr$site$reference_sibcs_order,
+                          pr$site$reference_sibcs_subordem,
+                          pr$site$reference_sibcs_gg),
+      subgrupo  = paste(pr$site$reference_sibcs_order,
+                          pr$site$reference_sibcs_subordem,
+                          pr$site$reference_sibcs_gg,
+                          pr$site$reference_sibcs_subgrupo)) %||% NA_character_
+    rows[[i]] <- data.frame(
+      id        = pr$site$id %||% NA_character_,
+      ref       = trimws(raw_ref),
+      pred      = trimws(raw_pred %||% NA_character_),
+      ref_norm  = ref_norm  %||% NA_character_,
+      pred_norm = pred_norm %||% NA_character_,
+      stringsAsFactors = FALSE
     )
   }
-  pred_df <- do.call(rbind, lapply(results, function(r)
-    data.frame(id = r$id %||% NA_character_,
-                ref = r$ref %||% NA_character_,
-                pred = r$pred %||% NA_character_,
-                stringsAsFactors = FALSE)))
+  pred_df <- do.call(rbind, rows)
 
-  # Normalise reference to soilKey-style plural Title Case
-  ref_norm <- normalise_febr_sibcs(pred_df$ref, level = "order")
-  in_scope <- !is.na(ref_norm) & nzchar(ref_norm) &
-                !is.na(pred_df$pred) & nzchar(pred_df$pred)
+  in_scope <- !is.na(pred_df$ref_norm) & nzchar(pred_df$ref_norm) &
+                !is.na(pred_df$pred_norm) & nzchar(pred_df$pred_norm)
   n_compared <- sum(in_scope)
-  n_correct  <- sum(in_scope & ref_norm == pred_df$pred)
+  n_correct  <- sum(in_scope & pred_df$ref_norm == pred_df$pred_norm)
   acc <- if (n_compared > 0L) n_correct / n_compared else NA_real_
 
-  conf <- table(reference = ref_norm[in_scope],
-                  predicted = pred_df$pred[in_scope])
+  conf <- table(reference = pred_df$ref_norm[in_scope],
+                  predicted = pred_df$pred_norm[in_scope])
   per_class <- data.frame(
     reference_rsg = rownames(conf),
     n             = rowSums(conf),
