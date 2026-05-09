@@ -1,5 +1,80 @@
 # Changelog
 
+## soilKey 0.9.75 (2026-05-09)
+
+The “**KSSL + NASIS morphological enrichment**” release. Closes the
+v0.9.74 backlog item: KSSL lab tables ship texture + chemistry but lack
+the morphological evidence (Munsell colours, structure, clay films,
+slickensides) that several WRB diagnostic horizons need. The companion
+NASIS Morphological sqlite has all of that, and (already in soilKey
+since v0.7) joins them by . v0.9.75 wires that join into the benchmark
+pipeline + bundles a 99-pedon enriched sample.
+
+### 1. New API surface
+
+– bundled 99-pedon snapshot () joined with NASIS_Morphological_09142021,
+pre-annotated with derived WRB labels via .
+
+### 2. Field availability lift (NASIS join effect, % of horizons populated)
+
+| Field                | KSSL-only |      KSSL + NASIS |
+|----------------------|----------:|------------------:|
+| munsell_hue_moist    |        0% |         **89.6%** |
+| munsell_value_moist  |        0% |         **89.6%** |
+| munsell_chroma_moist |        0% |         **89.6%** |
+| munsell_hue_dry      |        0% |         **65.2%** |
+| structure_grade      |        0% |         **53.8%** |
+| structure_size       |        0% |         **54.9%** |
+| structure_type       |        0% |         **79.2%** |
+| clay_films_amount    |        0% |              8.2% |
+| slickensides         |        0% |              1.7% |
+| cracks\_\*           |        0% | 0% (not in NASIS) |
+
+### 3. Empirical benchmark (n = 199, KSSL head = 200 + NASIS join)
+
+| Configuration              |              Top-1 |
+|----------------------------|-------------------:|
+| baseline (no opt-ins)      | 38/199 (**19.1%**) |
+| +aqp engine                |     41/199 (20.6%) |
+| +aqp + ECEC + tex-morph    |     41/199 (20.6%) |
+| **+full v0.9.69-72 stack** | **41/199 (20.6%)** |
+
+**+3.5pp baseline lift** vs v0.9.74 KSSL-only (15.6% -\> 19.1%). The
+NASIS-enriched baseline already incorporates the morphological evidence
+that v0.9.72 designation-suffix paths approximate – so the marginal gain
+on top of the full stack is small (+0.5pp).
+
+Per-RSG deltas vs v0.9.74:
+
+### 4. Why the lift is modest
+
+The 0% baseline NASIS recorded:
+
+The honest interpretation: v0.9.75 establishes the morphological
+baseline (NASIS join) but uncovers the next constraint –
+**Subordem-level diagnostic logic** (kastanic vs mollic chroma
+boundaries, ESP \> 15 for sodic, slickensides for vertic) needs v0.9.76+
+refinement.
+
+### 5. The complete benchmark suite after v0.9.75
+
+| System | Dataset          | n     | Profile depth | Munsell?        |  Accuracy |
+|--------|------------------|-------|---------------|-----------------|----------:|
+| SiBCS  | Redape (curated) | 94    | full          | yes             | **57.4%** |
+| SiBCS  | BDsolos RJ       | 722   | full          | partial         |     50.0% |
+| WRB    | **KSSL + NASIS** | 199   | full          | **yes (89.6%)** | **20.6%** |
+| WRB    | KSSL (lab-only)  | 199   | full          | no              |     20.1% |
+| WRB    | WoSIS stratified | 130   | full          | no              |     16.2% |
+| WRB    | LUCAS            | 18984 | topsoil-only  | no              |      3.3% |
+
+KSSL + NASIS is now soilKey’s **richest WRB benchmark** by both
+attribute coverage AND accuracy. The next attainable lift is
+Subordem-level diagnostic refinement (v0.9.76+).
+
+### 6. Reproducer + tests
+
+### 7. v0.9.76+ deferred
+
 ## soilKey 0.9.74 (2026-05-09)
 
 The “**USDA Soil Taxonomy \<-\> WRB cross-walk + KSSL benchmark**”

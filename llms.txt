@@ -3758,6 +3758,10 @@ plus auxiliaries) used in the test suite.
 - [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
   : Load the Embrapa FEBR superconjunto into a list of PedonRecords
 
+- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
+  : Load the bundled KSSL + NASIS morphological-enriched sample
+  (v0.9.75)
+
 - [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
   : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
   classification
@@ -4197,6 +4201,16 @@ benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56% vs WoSIS-stratified ~30%).
   truth
 - [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
   : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
+
+## KSSL + NASIS morphological-enriched sample (v0.9.75)
+
+Joins KSSL lab gpkg with NASIS Morphological sqlite – adds Munsell
+colours, structure, clay films, slickensides (Munsell 0% -\> 89.6% vs
+lab-only).
+
+- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
+  : Load the bundled KSSL + NASIS morphological-enriched sample
+  (v0.9.75)
 
 ## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
 

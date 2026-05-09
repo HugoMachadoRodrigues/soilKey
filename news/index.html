@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.74</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.75</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,124 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.75" id="soilkey-0975-2026-05-09">soilKey 0.9.75 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0975-2026-05-09"></a></h2>
+<p>The “<strong>KSSL + NASIS morphological enrichment</strong>” release. Closes the v0.9.74 backlog item: KSSL lab tables ship texture + chemistry but lack the morphological evidence (Munsell colours, structure, clay films, slickensides) that several WRB diagnostic horizons need. The companion NASIS Morphological sqlite has all of that, and  (already in soilKey since v0.7) joins them by . v0.9.75 wires that join into the benchmark pipeline + bundles a 99-pedon enriched sample.</p>
+<div class="section level3">
+<h3 id="id_1-new-api-surface-0-9-75">1. New API surface<a class="anchor" aria-label="anchor" href="#id_1-new-api-surface-0-9-75"></a></h3>
+<p> – bundled 99-pedon snapshot () joined with NASIS_Morphological_09142021, pre-annotated with derived WRB labels via .</p>
+</div>
+<div class="section level3">
+<h3 id="id_2-field-availability-lift-nasis-join-effect--of-horizons-populated-0-9-75">2. Field availability lift (NASIS join effect, % of horizons populated)<a class="anchor" aria-label="anchor" href="#id_2-field-availability-lift-nasis-join-effect--of-horizons-populated-0-9-75"></a></h3>
+<table class="table"><thead><tr><th>Field</th>
+<th align="right">KSSL-only</th>
+<th align="right">KSSL + NASIS</th>
+</tr></thead><tbody><tr><td>munsell_hue_moist</td>
+<td align="right">0%</td>
+<td align="right"><strong>89.6%</strong></td>
+</tr><tr><td>munsell_value_moist</td>
+<td align="right">0%</td>
+<td align="right"><strong>89.6%</strong></td>
+</tr><tr><td>munsell_chroma_moist</td>
+<td align="right">0%</td>
+<td align="right"><strong>89.6%</strong></td>
+</tr><tr><td>munsell_hue_dry</td>
+<td align="right">0%</td>
+<td align="right"><strong>65.2%</strong></td>
+</tr><tr><td>structure_grade</td>
+<td align="right">0%</td>
+<td align="right"><strong>53.8%</strong></td>
+</tr><tr><td>structure_size</td>
+<td align="right">0%</td>
+<td align="right"><strong>54.9%</strong></td>
+</tr><tr><td>structure_type</td>
+<td align="right">0%</td>
+<td align="right"><strong>79.2%</strong></td>
+</tr><tr><td>clay_films_amount</td>
+<td align="right">0%</td>
+<td align="right">8.2%</td>
+</tr><tr><td>slickensides</td>
+<td align="right">0%</td>
+<td align="right">1.7%</td>
+</tr><tr><td>cracks_*</td>
+<td align="right">0%</td>
+<td align="right">0% (not in NASIS)</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="id_3-empirical-benchmark-n--kssl-head---nasis-join-0-9-75">3. Empirical benchmark (n = 199, KSSL head = 200 + NASIS join)<a class="anchor" aria-label="anchor" href="#id_3-empirical-benchmark-n--kssl-head---nasis-join-0-9-75"></a></h3>
+<table class="table"><thead><tr><th>Configuration</th>
+<th align="right">Top-1</th>
+</tr></thead><tbody><tr><td>baseline (no opt-ins)</td>
+<td align="right">38/199 (<strong>19.1%</strong>)</td>
+</tr><tr><td>+aqp engine</td>
+<td align="right">41/199 (20.6%)</td>
+</tr><tr><td>+aqp + ECEC + tex-morph</td>
+<td align="right">41/199 (20.6%)</td>
+</tr><tr><td><strong>+full v0.9.69-72 stack</strong></td>
+<td align="right"><strong>41/199 (20.6%)</strong></td>
+</tr></tbody></table><p><strong>+3.5pp baseline lift</strong> vs v0.9.74 KSSL-only (15.6% -&gt; 19.1%). The NASIS-enriched baseline already incorporates the morphological evidence that v0.9.72 designation-suffix paths approximate – so the marginal gain on top of the full stack is small (+0.5pp).</p>
+<p>Per-RSG deltas vs v0.9.74: </p>
+</div>
+<div class="section level3">
+<h3 id="id_4-why-the-lift-is-modest-0-9-75">4. Why the lift is modest<a class="anchor" aria-label="anchor" href="#id_4-why-the-lift-is-modest-0-9-75"></a></h3>
+<p>The 0% baseline NASIS recorded: </p>
+<p>The honest interpretation: v0.9.75 establishes the morphological baseline (NASIS join) but uncovers the next constraint – <strong>Subordem-level diagnostic logic</strong> (kastanic vs mollic chroma boundaries, ESP &gt; 15 for sodic, slickensides for vertic) needs v0.9.76+ refinement.</p>
+</div>
+<div class="section level3">
+<h3 id="id_5-the-complete-benchmark-suite-after-v0975-0-9-75">5. The complete benchmark suite after v0.9.75<a class="anchor" aria-label="anchor" href="#id_5-the-complete-benchmark-suite-after-v0975-0-9-75"></a></h3>
+<table class="table"><thead><tr><th>System</th>
+<th>Dataset</th>
+<th>n</th>
+<th>Profile depth</th>
+<th>Munsell?</th>
+<th align="right">Accuracy</th>
+</tr></thead><tbody><tr><td>SiBCS</td>
+<td>Redape (curated)</td>
+<td>94</td>
+<td>full</td>
+<td>yes</td>
+<td align="right"><strong>57.4%</strong></td>
+</tr><tr><td>SiBCS</td>
+<td>BDsolos RJ</td>
+<td>722</td>
+<td>full</td>
+<td>partial</td>
+<td align="right">50.0%</td>
+</tr><tr><td>WRB</td>
+<td><strong>KSSL + NASIS</strong></td>
+<td>199</td>
+<td>full</td>
+<td><strong>yes (89.6%)</strong></td>
+<td align="right"><strong>20.6%</strong></td>
+</tr><tr><td>WRB</td>
+<td>KSSL (lab-only)</td>
+<td>199</td>
+<td>full</td>
+<td>no</td>
+<td align="right">20.1%</td>
+</tr><tr><td>WRB</td>
+<td>WoSIS stratified</td>
+<td>130</td>
+<td>full</td>
+<td>no</td>
+<td align="right">16.2%</td>
+</tr><tr><td>WRB</td>
+<td>LUCAS</td>
+<td>18984</td>
+<td>topsoil-only</td>
+<td>no</td>
+<td align="right">3.3%</td>
+</tr></tbody></table><p>KSSL + NASIS is now soilKey’s <strong>richest WRB benchmark</strong> by both attribute coverage AND accuracy. The next attainable lift is Subordem-level diagnostic refinement (v0.9.76+).</p>
+</div>
+<div class="section level3">
+<h3 id="id_6-reproducer--tests-0-9-75">6. Reproducer + tests<a class="anchor" aria-label="anchor" href="#id_6-reproducer--tests-0-9-75"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="id_7-v0976-deferred-0-9-75">7. v0.9.76+ deferred<a class="anchor" aria-label="anchor" href="#id_7-v0976-deferred-0-9-75"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.74" id="soilkey-0974-2026-05-09">soilKey 0.9.74 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0974-2026-05-09"></a></h2>
 <p>The “<strong>USDA Soil Taxonomy &lt;-&gt; WRB cross-walk + KSSL benchmark</strong>” release. Closes the v0.9.73 backlog and the user’s strategic question: WoSIS has profile depth but limited analytical attributes (17% ceiling); KSSL/NCSS has rich lab data but only USDA Soil Taxonomy labels. v0.9.74 bridges the two by adding a published USDA -&gt; WRB cross-walk (IUSS WRB 2022 Annex 6) so the same KSSL/NCSS pedons can be benchmarked against derived WRB ground truth.</p>
