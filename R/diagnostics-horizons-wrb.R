@@ -814,6 +814,30 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' spodic horizon is an illuvial horizon with active Al + Fe oxalate-
 #' extractable material plus organic matter; diagnostic of Podzols.
 #'
+#' @section v0.9.84 engine="aqp" relaxation:
+#' KSSL+NASIS Spodosols routinely use generic "B1" / "B2" / "Bw"
+#' designations rather than the specific Bh / Bs / Bhs that the
+#' v0.9.19 morphological-inference path requires. Of 14 KSSL+NASIS
+#' Podzol references, only 1 / 14 passes spodic via the v0.9.19
+#' path; 7 / 14 have BOTH an E-designated albic-eligible horizon
+#' above AND an OC peak in a B horizon below (the canonical Podzol
+#' illuviation signature) but use generic B / Bw designations and so
+#' fail strict morph.
+#'
+#' When \code{engine = "aqp"} (read from
+#' \code{getOption("soilKey.diagnostic_engine", "soilkey")} when
+#' \code{engine} is \code{NULL}) AND Al / Fe oxalate is unmeasured
+#' AND the v0.9.19 strict path did not fire, accept any
+#' \code{B*} designation below an \code{E*}-designated horizon when:
+#' \itemize{
+#'   \item \code{ph_h2o <= max_ph} in the B horizon, AND
+#'   \item \code{oc_pct >= min_oc_in_b} in the B horizon, AND
+#'   \item OC in the B is greater than the maximum OC in any
+#'         horizon above (the translocation signature).
+#' }
+#' Default \code{engine} is \code{"soilkey"} -- canonical behaviour
+#' bit-for-bit preserved.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 2.5).
 #' @param min_alfe Minimum (Al_ox + 0.5 * Fe_ox) percent (default 0.5).
@@ -821,6 +845,11 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' @param min_oc_in_b Minimum OC \% in the candidate Bh / Bs layer
 #'        for the v0.9.19 morphological inference path when Al / Fe
 #'        oxalate are missing (default 0.5).
+#' @param engine One of \code{"soilkey"} (default; strict v0.9.19
+#'        morphological path requires Bh / Bs / Bhs designation +
+#'        albic E above) or \code{"aqp"} (relaxed v0.9.84 path: any
+#'        B* below E* with OC translocation peak). When
+#'        \code{NULL}, reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -843,7 +872,10 @@ spodic <- function(pedon,
                      min_thickness = 2.5,
                      min_alfe      = 0.5,
                      max_ph        = 5.9,
-                     min_oc_in_b   = 0.5) {
+                     min_oc_in_b   = 0.5,
+                     engine        = NULL) {
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
   h <- pedon$horizons
 
   tests <- list()
@@ -922,6 +954,90 @@ spodic <- function(pedon,
             details = list(source = "morphological_inference"))
         }
       }
+    }
+  }
+
+  # v0.9.84: engine-aware relaxation. KSSL+NASIS Spodosols routinely
+  # use generic "B1" / "B2" / "Bw" designations rather than the
+  # specific Bh / Bs / Bhs that the v0.9.19 morphological path
+  # requires. Of 14 KSSL+NASIS Podzol references, only 1 passes
+  # spodic via the v0.9.19 path; 7 / 14 have BOTH an E-designated
+  # albic-eligible horizon above AND an OC peak in a B horizon
+  # below (the canonical Podzol illuviation signature) but use
+  # generic B / Bw designations and so fail the strict morph path.
+  #
+  # When engine = "aqp" AND Al/Fe oxalate is unmeasured AND the
+  # v0.9.19 strict morph path did not fire, accept any B* designation
+  # below an E*-designated horizon when:
+  #   * pH <= max_ph in the B horizon, AND
+  #   * OC in the B >= min_oc_in_b, AND
+  #   * OC in the B > max(OC) in any horizon above (the
+  #     translocation signature).
+  #
+  # This is gated by engine = "aqp" so the canonical soilkey path
+  # is preserved bit-for-bit when the option is unset.
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  v0984_relax_fired <- FALSE
+  if (engine == "aqp" &&
+        (is.na(tests$alfe_oxalate$passed) ||
+           (isFALSE(tests$alfe_oxalate$passed) &&
+              length(tests$alfe_oxalate$layers) == 0L)) &&
+        !any(!is.na(h$al_ox_pct)) && !any(!is.na(h$fe_ox_pct))) {
+    desg_chr <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+    is_E   <- !is.na(desg_chr) & grepl("^E", desg_chr)
+    is_B   <- !is.na(desg_chr) & grepl("^B", desg_chr)
+    relax_layers <- integer(0)
+    for (j in which(is_B)) {
+      above <- seq_len(j - 1L)
+      if (!any(is_E[above])) next
+      oc_in_b <- h$oc_pct[j]
+      if (is.na(oc_in_b) || oc_in_b < min_oc_in_b) next
+      oc_above <- h$oc_pct[above]
+      if (all(is.na(oc_above))) next
+      max_oc_above <- max(oc_above, na.rm = TRUE)
+      if (!(oc_in_b > max_oc_above)) next
+      # pH check: prefer measured pH <= max_ph; when pH is NA at the
+      # candidate Bh, accept the path only if the OC translocation is
+      # strong enough to be unambiguous (oc_in_b >= 1.5 * max_oc_above).
+      # This catches the KSSL+NASIS Spodosols whose Bh chemistry is
+      # documented but whose pH was never measured at the illuvial
+      # horizon (5 of 7 OC-peak Podzols on the v0.9.84 audit).
+      ph_b <- h$ph_h2o[j]
+      ph_ok <- if (!is.na(ph_b)) {
+        ph_b <= max_ph
+      } else {
+        oc_in_b >= 1.5 * max_oc_above
+      }
+      if (!isTRUE(ph_ok)) next
+      relax_layers <- c(relax_layers, j)
+    }
+    if (length(relax_layers) > 0L) {
+      v0984_relax_fired <- TRUE
+      tests$alfe_oxalate <- list(
+        passed  = TRUE,
+        layers  = relax_layers,
+        missing = c("al_ox_pct", "fe_ox_pct"),
+        details = list(source = "engine_aqp_oc_translocation",
+                          note   = paste0("v0.9.84: engine=aqp relaxed -- ",
+                                           "any B* designation under E* with ",
+                                           "OC peak (B > max(above)) + ",
+                                           "(pH <= ", max_ph, " OR ",
+                                           "OC ratio >= 1.5x) + ",
+                                           "OC in B >= ", min_oc_in_b)),
+        notes   = NA_character_
+      )
+      # When v0.9.84 fires we ALREADY checked the pH-or-OC-ratio gate
+      # in the loop above, so synthesise a passing pH subtest result
+      # rather than re-running test_ph_below(): the latter returns NA
+      # when ph_h2o is unmeasured at the candidate layer, which would
+      # block the aggregate even though the v0.9.84 OC-ratio path
+      # already accepted the absence of pH.
+      tests$ph <- .subtest_result(
+        passed = TRUE, layers = relax_layers,
+        details = list(source = "engine_aqp_oc_translocation_or_ph"))
+      tests$illuvial_signature <- .subtest_result(
+        passed = TRUE, layers = relax_layers,
+        details = list(source = "engine_aqp_oc_translocation"))
     }
   }
 
