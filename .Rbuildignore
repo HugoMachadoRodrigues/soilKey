@@ -32,3 +32,8 @@
 ^\.dockerignore$
 ^Dockerfile$
 ^soil_data$
+^data-raw$
+^inst/extdata/afsp_sample\.rds$
+^inst/extdata/kssl_sample\.rds$
+^inst/extdata/kssl_nasis_sample\.rds$
+^inst/extdata/wosis_stratified_sample\.rds$

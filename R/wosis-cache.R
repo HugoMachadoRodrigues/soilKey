@@ -123,16 +123,8 @@ load_wosis_sample <- function() {
 #'
 #' @export
 load_wosis_stratified_sample <- function() {
-  path <- system.file("extdata", "wosis_stratified_sample.rds",
-                        package = "soilKey")
-  if (!nzchar(path) || !file.exists(path)) {
-    dev_path <- file.path("inst", "extdata", "wosis_stratified_sample.rds")
-    if (file.exists(dev_path)) path <- dev_path
-  }
-  if (!nzchar(path) || !file.exists(path))
-    stop("Bundled WoSIS stratified sample not found at ",
-          "inst/extdata/wosis_stratified_sample.rds.")
-  s <- readRDS(path)
+  # v0.9.94: routed through the lazy-fetch helper.
+  s <- .lazy_fetch_readRDS("wosis_stratified_sample")
   # v0.9.88: alias `wosis_rsg` -> `reference_wrb` on every pedon so
   # generic benchmark loops that call `p$site$reference_wrb` (the
   # canonical field used by KSSL / AfSP / Redape pedons) work
@@ -205,14 +197,8 @@ load_wosis_stratified_sample <- function() {
 #'
 #' @export
 load_kssl_sample <- function() {
-  path <- system.file("extdata", "kssl_sample.rds", package = "soilKey")
-  if (!nzchar(path) || !file.exists(path)) {
-    dev_path <- file.path("inst", "extdata", "kssl_sample.rds")
-    if (file.exists(dev_path)) path <- dev_path
-  }
-  if (!nzchar(path) || !file.exists(path))
-    stop("Bundled KSSL sample not found at inst/extdata/kssl_sample.rds.")
-  s <- readRDS(path)
+  # v0.9.94: routed through the lazy-fetch helper.
+  s <- .lazy_fetch_readRDS("kssl_sample")
   # v0.9.91: alias `reference_wrb_from_usda` -> `reference_wrb` on every
   # pedon so generic benchmark loops that call `p$site$reference_wrb`
   # (the canonical field used by WoSIS / AfSP / Redape pedons after
@@ -311,15 +297,8 @@ load_kssl_sample <- function() {
 #'
 #' @export
 load_kssl_nasis_sample <- function() {
-  path <- system.file("extdata", "kssl_nasis_sample.rds", package = "soilKey")
-  if (!nzchar(path) || !file.exists(path)) {
-    dev_path <- file.path("inst", "extdata", "kssl_nasis_sample.rds")
-    if (file.exists(dev_path)) path <- dev_path
-  }
-  if (!nzchar(path) || !file.exists(path))
-    stop("Bundled KSSL+NASIS sample not found at ",
-          "inst/extdata/kssl_nasis_sample.rds.")
-  s <- readRDS(path)
+  # v0.9.94: routed through the lazy-fetch helper.
+  s <- .lazy_fetch_readRDS("kssl_nasis_sample")
   # v0.9.91: same reference_wrb aliasing as load_kssl_sample().
   s$pedons <- .kssl_alias_reference_wrb(s$pedons)
   s

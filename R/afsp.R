@@ -267,14 +267,12 @@ load_afsp_pedons <- function(afsp_dir,
 #'
 #' @export
 load_afsp_sample <- function() {
-  path <- system.file("extdata", "afsp_sample.rds", package = "soilKey")
-  if (!nzchar(path) || !file.exists(path)) {
-    dev_path <- file.path("inst", "extdata", "afsp_sample.rds")
-    if (file.exists(dev_path)) path <- dev_path
-  }
-  if (!nzchar(path) || !file.exists(path))
-    stop("Bundled AfSP sample not found at inst/extdata/afsp_sample.rds.")
-  readRDS(path)
+  # v0.9.94: routed through the lazy-fetch helper. The .rds is no
+  # longer bundled in CRAN releases; the helper looks in
+  # `inst/extdata/` (back-compat for developer checkouts), then in
+  # the user cache at `tools::R_user_dir("soilKey", "data")`,
+  # then offers an on-demand download from GitHub Release.
+  .lazy_fetch_readRDS("afsp_sample")
 }
 
 
