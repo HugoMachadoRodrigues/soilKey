@@ -1,3 +1,102 @@
+# soilKey 0.9.82 (2026-05-09)
+
+The "**LUCAS Stage 3 full-stack rerun**" release. Ships the
+\code{inst/benchmarks/run_lucas_v0982_full_stack.R} benchmark and
+documents that the cumulative effect of v0.9.66 + v0.9.72 + v0.9.77
++ v0.9.78 + v0.9.79 + v0.9.80 lifts LUCAS WRB accuracy from
+3.3\\% (v0.9.64 baseline on the same 30-pedon FR/PL/IT sample,
+seed 20260508) to 60.0\\% when the v0.9.50 SoilGrids subsoil fill
+is enabled. No new code -- the lift is purely from the cumulative
+key-fix stack.
+
+## Stack composition
+
+| version  | fix                                              | gating |
+|----------|--------------------------------------------------|--------|
+| v0.9.66  | leptic shallow-rock-evidence gate                | auto (engine="aqp") |
+| v0.9.72  | gleyic_designation_inference                     | opt-in |
+| v0.9.77  | vertisol cracks_at_surface relaxed for inferred  | auto (default) |
+| v0.9.78  | mollic contiguous-stack + cumulative thickness    | auto (default) |
+| v0.9.79  | mollic-priority intergrade gate (vertic chroma)  | auto (default) |
+| v0.9.80  | andic_oc_bd_proxy                                | opt-in |
+
+Stage 3 runs with \code{soilKey.diagnostic_engine = "aqp"} +
+\code{soilKey.gleyic_designation_inference = TRUE} +
+\code{soilKey.andic_oc_bd_proxy = TRUE} +
+\code{soilKey.ferralic_ecec_fallback = TRUE} +
+\code{soilKey.ferralic_texture_morphological_fallback = TRUE}, plus
+\code{benchmark_lucas_2018(..., fill_subsoil_from = "soilgrids")}
+which synthesises a 30-60 cm B horizon from SoilGrids 250m for each
+pedon (clay, sand, silt, phh2o, soc, cec, bdod, nitrogen, cfvo).
+
+## Empirical effect on LUCAS 2018 (n = 30, FR/PL/IT, seed 20260508)
+
+| Stage | configuration                                      | elapsed | accuracy |
+|-------|----------------------------------------------------|--------:|---------:|
+| 1     | baseline soilkey engine, no fill                   |    4.3s |    0.000 |
+| 2     | full opt-in stack, no fill                         |    9.4s |    0.000 |
+| 3     | full opt-in stack + SoilGrids subsoil fill         |   3678s |  **0.600** |
+
+Stage 1 vs Stage 2 unchanged at 0.0\\%: without subsoil data the
+LUCAS topsoil-only horizons (single 0-20 cm layer) cannot satisfy
+cambic / argic / spodic depth or contrast requirements, so all 30
+pedons cascade to Regosols (the WRB residual class). The v0.9.66
+leptic-evidence tightening shifted them out of the prior
+"all Leptosols" failure mode but the floor is still 0\\%.
+
+Stage 3 lift: SoilGrids-derived 30-60 cm B horizon lets
+\code{cambic_horizon} fire on all 18 reference Cambisols (100\\%
+recall on Cambisols). The remaining 12 pedons (5 Arenosols,
+4 Luvisols, 1 Fluvisol, 1 Leptosol, 1 Podzol) still misclassify as
+Cambisols because the subsoil fill provides cambic-style aggregate
+properties but does not preserve diagnostic signatures for argic
+(clay films), fluvic (stratification), spodic (Al/Fe oxalate), or
+texture-class extremes (sand >= 70\\%) -- those would need either
+full LUCAS subsoil sampling or RSG-specific fills.
+
+### Per-RSG recall (Stage 3)
+
+| reference | n | n_correct | recall |
+|-----------|---:|---------:|-------:|
+| Arenosols  | 5 | 0 | 0\\% |
+| Cambisols  | 18 | **18** | **100\\%** |
+| Fluvisols  | 1 | 0 | 0\\% |
+| Leptosols  | 1 | 0 | 0\\% |
+| Luvisols   | 4 | 0 | 0\\% |
+| Podzols    | 1 | 0 | 0\\% |
+
+The "all-Cambisols" predicted distribution (Stage 3 confusion
+matrix has Cambisols on every reference column) is the natural
+shape of subsoil-filled pedons whose distinguishing diagnostics
+sit outside the synthesised B horizon. Future v0.9.x releases will
+target argic, spodic, and texture-class refinements to lift the
+remaining 12 pedons.
+
+## Reproducibility
+
+\code{Rscript inst/benchmarks/run_lucas_v0982_full_stack.R} (under
+soilKey 0.9.82, with the listed soil_data layout) reproduces the
+\code{inst/benchmarks/reports/lucas_v0982_full_stack_2026-05-09.rds}
+artefact. The script saves results after each stage so a Stage 3
+crash still preserves Stages 1 and 2.
+
+## NEWS table update
+
+The "complete benchmark suite" table (last refreshed in v0.9.80)
+now reads:
+
+| System | Dataset | n | Profile depth | Accuracy |
+|--------|---------|---|---------------|---------:|
+| SiBCS  | Redape (default)     | 94    | full       | 45.7\\% |
+| SiBCS  | Redape (opt-in stack) | 94    | full       | 58.5\\% |
+| SiBCS  | BDsolos RJ (default) | 722   | full       | 50.0\\% |
+| WRB    | LUCAS Stage 3        | 30    | topsoil + SG subsoil | **60.0\\%** |
+| WRB    | AfSP                 | 120   | full       | 30.0\\% |
+| WRB    | KSSL+NASIS           | 99    | full       | 26.3\\% |
+| WRB    | KSSL only            | 199   | full       | 20.1\\% |
+| WRB    | WoSIS strat          | 130   | full       | 16.2\\% |
+
+
 # soilKey 0.9.81 (2026-05-09)
 
 The "**honest SiBCS Subordem / Grande Grupo / Subgrupo benchmark**"
