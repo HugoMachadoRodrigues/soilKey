@@ -3304,6 +3304,17 @@ retention rate).
 - [`audit_argic_strong_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/audit_argic_strong_films.md)
   : Audit the strong-clay-films exclusion across a list of pedons
 
+## Lazy-fetch benchmark caches (v0.9.94)
+
+The four large benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
+stratified, ~1 MB each) are no longer bundled in the CRAN source
+tarball. They are downloaded on demand from a versioned GitHub Release
+into the user cache (~/Library/Application Support/…/soilKey/data on
+macOS) on first call.
+
+- [`download_extdata_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_extdata_cache.md)
+  : Download one or more soilKey lazy-fetch caches from GitHub Release
+
 ## FEBR loader (v0.9.57)
 
 UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).

@@ -225,6 +225,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SIBCS_LEGACY_ORDER_MAP.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SMARTSOLOS_DRAINAGE_SCALE.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILGRIDS_TO_HORIZON_MAP.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILKEY_LAZY_FETCH_CACHES.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILKEY_LAZY_FETCH_RELEASE.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-WRB_LV1_NAME_BY_CODE.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_parse_munsell.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_to_pedon.html</loc></url>
@@ -272,6 +274,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-kssl_alias_reference_wrb.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-kst13_load_cached.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-kst13_path.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_local_path.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_readRDS.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_url.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-lucas_numeric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-make_synth_perf_pedon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-merge_confusion.html</loc></url>
@@ -327,6 +332,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_usda_modal_order.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-write_pedon_schema_to_disk.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_extdata_cache.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_redape_dataset.html</loc></url>

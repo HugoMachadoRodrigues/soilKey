@@ -1,5 +1,53 @@
 # Changelog
 
+## soilKey 0.9.94 (2026-05-09)
+
+The “**lazy-fetch architecture for the four large benchmark caches**”
+release. Brings the source tarball from 10 MB (v0.9.93) to **5.9 MB**
+(under the CRAN soft 5 MB ceiling) by moving the four benchmark caches
+(AfSP, KSSL, KSSL+NASIS, WoSIS stratified, ~1 MB each) out of the source
+tarball and into a versioned GitHub Release downloaded on demand.
+
+### Architecture
+
+### User experience
+
+In an interactive session, the first call to e.g. on a fresh CRAN
+install prompts:
+
+    soilKey: the 'afsp_sample' cache is not present in your install.
+    It will be downloaded (~1 MB) from GitHub Release v0.9.94-data into
+      ~/Library/Application Support/org.R-project.R/R/soilKey/data
+    Proceed? [Y/n]
+
+Once downloaded, the file lives in the user cache and is available to
+every subsequent R session for that user.
+
+### Tarball size
+
+A on the v0.9.94 tarball confirms none of the four files ship in the
+source tarball – only their documentation pages.
+
+### Maintainer release checklist
+
+documents:
+
+### R CMD check status (v0.9.94, –as-cran, R 4.6.0 macOS)
+
+    Status: 2 NOTEs
+
+    NOTE 1: "New submission" + maintainer line  (expected for first CRAN)
+    NOTE 2: "HTML Tidy not recent enough"        (local-env only; CRAN OK)
+
+Both NOTEs are non-blocking. The v0.9.94 tarball is now small enough to
+comfortably fit within CRAN’s 5 MB recommendation.
+
+### Regression test
+
+(6 tests, 26 expectations): cache enumeration; URL builder; local-path
+resolution (bundled / cache); error on unknown cache name; loaders
+return non-empty pedons in dev checkout; validates its argument.
+
 ## soilKey 0.9.93 (2026-05-09)
 
 The “**CRAN resubmit feedback fixes**” release. Address every finding
