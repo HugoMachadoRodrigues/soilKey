@@ -1,3 +1,132 @@
+# soilKey 0.9.71 (2026-05-09)
+
+The "**Embrapa Redape integration -- gold-standard curated benchmark**"
+release. Adds full support for Vaz, Silva Jr & Silva Neto (2023)
+"Brazilian soil data for taxonomic classification" published at the
+Embrapa Redape repository (DOI \code{10.48432/PYKKA7}). Every profile
+in this dataset was hand-reviewed by experienced pedologists, so it
+serves as the first true gold-standard benchmark for soilKey
+classification on Brazilian profiles.
+
+## 1. New API surface
+
+\itemize{
+  \item \code{download_redape_dataset(dest_dir, dataset_doi, ...)} --
+        enumerates the Dataverse dataset and downloads all 96
+        per-profile JSON files. Skips cached files.
+  \item \code{load_redape_pedons(json_dir, max_n, verbose)} -- parses
+        the GeoTab JSON format, dedupes by \code{ID_PONTO}, skips
+        state-aggregate \code{*_all.json} files, and returns a list
+        of soilKey \code{PedonRecord} objects with the curated
+        SiBCS reference labels (Order / Subordem / GG / Subgrupo)
+        attached at the site level.
+  \item \code{benchmark_redape(pedons, level, ...)} -- runs
+        \code{classify_sibcs} on each pedon and reports per-class
+        accuracy + confusion matrix.
+}
+
+## 2. Empirical baseline (n = 94 unique profiles)
+
+First-ever benchmark of soilKey against the curated Redape dataset:
+
+```
+Order-level accuracy = 45.7%
+```
+
+Per-class recall:
+
+| RSG (SiBCS Order) |   n | correct | recall  |
+|-------------------|----:|--------:|--------:|
+| Espodossolos      |   3 |       3 | 100.0%  |
+| Organossolos      |   1 |       1 | 100.0%  |
+| Neossolos         |  13 |      11 |  84.6%  |
+| Latossolos        |  11 |       9 |  81.8%  |
+| Cambissolos       |  11 |       6 |  54.5%  |
+| Planossolos       |   7 |       3 |  42.9%  |
+| Luvissolos        |   6 |       2 |  33.3%  |
+| Argissolos        |  25 |       8 |  32.0%  |
+| Chernossolos      |   2 |       0 |   0.0%  |
+| Gleissolos        |   8 |       0 |   0.0%  |
+| Plintossolos      |   3 |       0 |   0.0%  |
+| Vertissolos       |   2 |       0 |   0.0%  |
+| Nitossolos        |   1 |       0 |   0.0%  |
+
+The numbers above use **default soilkey strict engine, no fallback
+options enabled** -- they're the bare floor for the package on clean
+Brazilian data. They contrast sharply with BDsolos-RJ (n=722,
+~14.9% Latossolos recall) and validate that the v0.9.65-v0.9.70 fixes
+are working as intended -- the BDsolos data quality was the
+bottleneck, not soilKey itself.
+
+The curated nature of Redape exposes per-class gaps that need
+v0.9.72+ work, especially:
+
+\itemize{
+  \item **Gleissolos (0/8)** -- the curated profiles use designation
+        suffix \code{Cg / Bg / g} and low-chroma Munsell colors
+        (chroma \\<= 2) as gleyic indicators rather than measured
+        \code{redoximorphic_features_pct}. \code{gleyic_properties()}
+        currently doesn't read those signals.
+  \item **Plintossolos (0/3)** -- the loader maps the boolean flags
+        \code{PETROPLINTICO} / \code{LITOPLINTICO} to
+        \code{plinthite_pct = 30}, but \code{plinthic()} doesn't
+        accept that as a passing input.
+  \item **Vertissolos (0/2)** -- the curated profiles ship
+        \code{RETRATIL = TRUE} but \code{vertic_horizon()} requires
+        explicit slickensides / cracks data which the JSON doesn't
+        record.
+}
+
+These are deferred to v0.9.72.
+
+## 3. Updated SmartSolos references
+
+\code{classify_via_smartsolos_api()} \\@references block now cites
+the canonical 2025 paper:
+
+\itemize{
+  \item Vaz, G. J., Silva Neto, L. de F. da, Barbedo, J. G. A.
+        (2025). SmartSolos Expert: an expert system for Brazilian
+        soil classification. \emph{Smart Agricultural Technology},
+        10, 100735. \doi{10.1016/j.atech.2024.100735}.
+  \item Vaz, G. J. et al. (2019). Uma API para a classificacao
+        de solos do Brasil. SBIAGRO 2019.
+  \item Vaz, G. J. et al. (2023). Brazilian soil data for taxonomic
+        classification (Redape, V1). \doi{10.48432/PYKKA7}.
+}
+
+## 4. Regression test
+
+\code{tests/testthat/test-v0971-redape.R} (7 tests, 22 expectations)
+covers:
+
+\itemize{
+  \item Tolerance of the published JSON's stray-trailing-brace.
+  \item Unit conversions (g/kg -> percent for texture / OC).
+  \item CEC = S + H + Al direct computation (no fallback needed).
+  \item PedonRecord construction with curator metadata preserved.
+  \item Loader skips \code{*_all.json} state aggregates.
+  \item Loader dedupes by \code{ID_PONTO} across files.
+  \item End-to-end \code{benchmark_redape()} run on a fixture.
+}
+
+## 5. v0.9.72+ deferred items
+
+\itemize{
+  \item Gleissolos: extend \code{gleyic_properties()} to read
+        \code{Cg / Bg / g} designation suffix + low-chroma Munsell.
+  \item Plintossolos: wire \code{PETROPLINTICO} / \code{LITOPLINTICO}
+        into \code{plinthic()} input properly.
+  \item Vertissolos: accept \code{RETRATIL} + \code{COESO} as proxies
+        for missing slickensides / cracks.
+  \item Argic strong-films exclusion review (BDsolos backlog item).
+  \item BDsolos nation-wide rerun with \code{engine=aqp + ECEC + tex-morph}.
+  \item LUCAS WRB Stage 3 rerun on v0.9.66 + v0.9.67.
+  \item Spodic engine-aware relaxation.
+  \item Per-RSG dispatch ordering at \code{run_taxonomic_key} level.
+}
+
+
 # soilKey 0.9.70 (2026-05-08)
 
 The "**texture morphological fallback**" release. Continues the
