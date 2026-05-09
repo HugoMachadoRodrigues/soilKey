@@ -542,8 +542,18 @@ test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
 test_ferralic_texture <- function(h, candidate_layers = NULL) {
   res <- test_texture_argic(h, candidate_layers = candidate_layers)
   if (!is.na(res$passed)) return(res)
-  morph_fallback <- isTRUE(getOption(
-    "soilKey.ferralic_texture_morphological_fallback", default = FALSE))
+  # v0.9.89: engine="aqp" auto-enables the texture-morphological
+  # fallback (same tri-state precedence as v0.9.86 ECEC fallback).
+  # The user can still suppress it via explicit
+  # `soilKey.ferralic_texture_morphological_fallback = FALSE`.
+  morph_fallback_opt <- getOption(
+    "soilKey.ferralic_texture_morphological_fallback", NULL)
+  engine_opt <- getOption("soilKey.diagnostic_engine", "soilkey")
+  morph_fallback <- if (!is.null(morph_fallback_opt)) {
+    isTRUE(morph_fallback_opt)
+  } else {
+    identical(engine_opt, "aqp")
+  }
   if (!morph_fallback) return(res)
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L) return(res)

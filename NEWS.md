@@ -1,3 +1,67 @@
+# soilKey 0.9.89 (2026-05-09)
+
+The "**ferralic texture morphological fallback bundled into engine=aqp**"
+release. Companion to v0.9.86: extends the auto-bundling pattern
+to the v0.9.70 \code{soilKey.ferralic_texture_morphological_fallback}
+opt-in, so the engine="aqp" data-quality-aware mode now picks up
+BOTH the ECEC fallback (v0.9.86) AND the texture-morph fallback
+(v0.9.89) automatically. Default canonical behaviour is bit-for-bit
+preserved.
+
+## Why
+
+The post-v0.9.86 sub-test breakdown on BDsolos RJ Latossolos shows
+that of the 64 ferralic-failing references, 19 fail because the
+\code{clay_pct / sand_pct / silt_pct} fields are NA on the deep
+B horizon (BDsolos surveyors recorded texture only on the topsoil
+A horizon). The v0.9.70
+\code{ferralic_texture_morphological_fallback} accepts a Bw / Bo
+subsoil designation as morphological evidence of sandy-loam-or-finer
+texture, but that opt-in had to be set manually -- users on
+engine="aqp" already knew they were in data-quality-aware mode.
+
+## Fix
+
+\code{test_ferralic_texture()} reads the two options in priority order:
+
+\itemize{
+  \item If \code{soilKey.ferralic_texture_morphological_fallback} is
+        explicitly set (TRUE or FALSE), use that.
+  \item Otherwise, if \code{soilKey.diagnostic_engine} is "aqp",
+        auto-enable the texture morphological fallback (TRUE).
+  \item Otherwise (default), keep the canonical strict behaviour
+        (FALSE).
+}
+
+Same tri-state precedence as v0.9.86. The user's ability to
+override the bundle is preserved.
+
+## Empirical effect on BDsolos RJ (n = 722, 114 Latossolo refs)
+
+| configuration                                          | Latossolo recall |
+|--------------------------------------------------------|----------------:|
+| default canonical (engine=soilkey, no opt-ins)         |  17 / 114 (14.9\\%) |
+| v0.9.86: engine=aqp (auto ECEC fallback)               |  32 / 114 (28.1\\%) |
+| **v0.9.89: engine=aqp (auto ECEC + texture fallback)**  | **33 / 114 (28.9\\%)** |
+| engine=aqp + explicit texture_fallback=FALSE            |  32 / 114 (28.1\\%) |
+
+The 14.9\\% -> 28.9\\% lift over the canonical baseline (+14.0pp)
+now comes purely from setting \code{soilKey.diagnostic_engine = "aqp"};
+no further configuration required.
+
+Argissolo confusion drops 17 -> 4 (the BDsolos surveyor-labelled
+Latossolos that had previously cascaded to Argissolo via marginal
+texture data are now recovered).
+
+## Regression test
+
+\code{tests/testthat/test-v0989-texture-engine-fallback.R} (5 tests,
+7 expectations): default canonical leaves fallback OFF; engine=aqp
+auto-enables fallback; explicit FALSE override suppresses; explicit
+TRUE works without engine; BDsolos RJ regression guard
+(engine=aqp Lat >= 33).
+
+
 # soilKey 0.9.88 (2026-05-09)
 
 The "**WoSIS stratified reference_wrb alias**" release. Bug fix:
