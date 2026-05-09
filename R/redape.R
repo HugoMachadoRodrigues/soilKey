@@ -46,7 +46,7 @@
 #' @return Character vector of paths to the downloaded files.
 #' @references Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da
 #'   (2023). Brazilian soil data for taxonomic classification. Redape, V1.
-#'   \url{https://doi.org/10.48432/PYKKA7}.
+#'   \doi{10.48432/PYKKA7}.
 #'
 #' @export
 download_redape_dataset <- function(dest_dir,
@@ -267,7 +267,7 @@ download_redape_dataset <- function(dest_dir,
 #' @section Reference:
 #'   Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023).
 #'   Brazilian soil data for taxonomic classification. Redape, V1.
-#'   \url{https://doi.org/10.48432/PYKKA7}.
+#'   \doi{10.48432/PYKKA7}.
 #'
 #' @seealso \code{\link{download_redape_dataset}},
 #'   \code{\link{benchmark_redape}}.

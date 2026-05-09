@@ -40,9 +40,11 @@ Please use the issue templates at
 - 🌱 **Soil profile classification help** -- you classified a real
   profile and disagree with the result; we'll trace why.
 
-For general "how do I use soilKey for X" questions, please start a
-[GitHub Discussion](https://github.com/HugoMachadoRodrigues/soilKey/discussions)
-rather than opening an issue.
+For general "how do I use soilKey for X" questions, please open an
+issue using the "🌱 Soil profile classification help" template; we
+trace your real profile through the key with you. The
+[pkgdown reference site](https://hugomachadorodrigues.github.io/soilKey/)
+also indexes every diagnostic / RSG-gate function with examples.
 
 
 ## Development workflow
@@ -126,6 +128,6 @@ be specific, and assume good faith.
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/HugoMachadoRodrigues/soilKey/discussions)
-or email Hugo Rodrigues at
+Open a GitHub issue with the "🌱 Soil profile classification help"
+template, or email Hugo Rodrigues at
 <rodrigues.machado.hugo@gmail.com>.

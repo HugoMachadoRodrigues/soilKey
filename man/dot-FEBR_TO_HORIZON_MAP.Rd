@@ -12,11 +12,12 @@ An object of class \code{list} of length 25.
 }
 \description{
 The FEBR \code{camada} (layer) table uses standardised variable
-codes documented at
-\url{https://www.pedometria.org/febr/dictionary/}. This internal
-table records the regex patterns that map the most useful FEBR
-codes onto the soilKey horizon schema. Multi-method codes (e.g.
-clay determined by hydrometer vs sieve) are collapsed onto the
-single soilKey column.
+codes documented in the FEBR data dictionary (see
+\url{https://www.pedometria.org/febr/} for the project home;
+the dictionary path moved during 2024 -- the codes themselves
+are stable). This internal table records the regex patterns that
+map the most useful FEBR codes onto the soilKey horizon schema.
+Multi-method codes (e.g.\\ clay determined by hydrometer vs
+sieve) are collapsed onto the single soilKey column.
 }
 \keyword{internal}

@@ -3,7 +3,7 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.40](https://img.shields.io/badge/version-0.9.40-FF6B35?style=flat-square)
+![v0.9.92](https://img.shields.io/badge/version-0.9.92-FF6B35?style=flat-square)
 
 > **Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).** All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.
 
@@ -51,16 +51,38 @@ WRB delivers the **complete Chapter 6 name** — four principal qualifiers + fiv
 
 ---
 
-## ✦ What's new in v0.9.27 (2026-05-03)
+## ✦ What's new in v0.9.81 → v0.9.92 (2026-05-09)
 
-The v0.9.24 → v0.9.27 release series progressively closed key reasoning gaps in USDA Soil Taxonomy 13ed and validated the gains against three real-data benchmarks (KSSL+NASIS, FEBR/Embrapa, WoSIS):
+The v0.9.81 → v0.9.92 release series ships **15 surgical fixes** across the WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13 keys, all with default canonical behaviour bit-for-bit preserved and a single opt-in (`soilKey.diagnostic_engine = "aqp"`) that bundles the data-quality-aware paths.
 
-- **v0.9.24** — Path C subgroup tightening (`aquic_conditions_usda` + `oxyaquic_subgroup_usda`): both predicates now require **dual evidence** (reduction AND redoximorphic indicator) instead of single-trigger disjunctive OR, which was producing false-positive Aquic / Oxyaquic subgroup predictions on Typic-reference profiles. New benchmark levels added: `level = "great_group"` and `level = "suborder"` for `benchmark_run_classification()`, completing the four-level USDA hierarchy.
-- **v0.9.25** — **KST 13ed Great Group canonicaliser** ([`canonicalise_kst13ed_gg()`](R/benchmark-kssl-gpkg.R)): a many-to-one map collapsing both pre-KST 13ed obsolete Great Group names AND modern split children to a shared canonical key. Pellusterts ↔ Hapluderts; Haplaquolls ↔ Endo/Epi-Aquolls; Camborthids ↔ Haplocambids; Vitrandepts ↔ Vitrudands; Dystrochrepts ↔ Dystrudepts; Medisaprists ↔ Haplosaprists. KSSL's `samp_taxgrtgroup` mixes labels from Soil Taxonomy editions 8 through 13; this fix delivered **+3.84 pp Great Group** on KSSL+NASIS without any classifier change.
-- **v0.9.26** — Per-system argic clay-increase threshold API: `test_clay_increase_argic(h, system = c("wrb2022", "usda"))` and `argic(pedon, system = ...)` now route to either the stricter WRB 2022 thresholds (6 pp / 1.4× / 20 pp) or the looser KST 13ed thresholds (3 pp / 1.2× / 8 pp). Default remains WRB for back-compat.
-- **v0.9.27** — Clay-illuviation evidence test ([`argillic_clay_films_test()`](R/diagnostics-horizons-usda.R)) reads two complementary NASIS-derived slots: (1) `pediagfeatures.featkind` argillic-horizon entries (~13 500 in the 2021 NASIS snapshot), (2) per-horizon `clay_films_amount` derived from `phpvsf`. `argillic_usda()` now uses a **two-tier strategy**: KST 13ed thresholds when clay-films evidence is present, WRB 2022 thresholds (proxy) when not. Plus an Embrapa FEBR benchmark fix (label normalisation) yielding **+16.1 pp Order** v0.9.22 → v0.9.27, and WoSIS GraphQL retry+fallback for ISRIC server intermittency.
+**Cumulative empirical lift on five external datasets** (post-v0.9.91):
 
-The full A/B trajectory across releases is in `inst/benchmarks/reports/`. See [`NEWS.md`](NEWS.md) for the per-release diff.
+| Dataset             | n   | Default | Best opt-in (`engine="aqp"`) | Lift     |
+|---------------------|----:|--------:|-----------------------------:|---------:|
+| SiBCS BDsolos RJ    | 722 | 40.3%   | **46.6%**                    |  +6.3pp  |
+| SiBCS Redape Order  |  94 | 45.7%   | **58.5%**                    | +12.8pp  |
+| WRB KSSL+NASIS      |  99 | 21.2%   | 24.2%                        |  +3.0pp  |
+| WRB AfSP            | 120 | 21.7%   | **30.8%**                    |  +9.1pp  |
+| WRB LUCAS Stage 3   |  30 |  0.0%   | **60.0%**                    | +60.0pp  |
+
+Plus the v0.9.81 honest 4-level Redape benchmark: Subordem 30.9% → 39.4%, Grande Grupo 29.1% → 35.2%, Subgrupo 15.1% → 25.0%.
+
+**Highlights of the release series:**
+
+- **v0.9.81** — `benchmark_redape()` now actually computes Subordem / GG / Subgrupo accuracy (the level argument was previously discarded; all four levels reported the same Order number).
+- **v0.9.82** — LUCAS Stage 3 rerun with the v0.9.66+72+77+78+79+80 stack: **0% → 60% accuracy** (100% recall on Cambisols, 18/18, via SoilGrids 30-60 cm subsoil fill).
+- **v0.9.83** — Argic strong-clay-films audit on BDsolos RJ: extracted `argic_with_strong_clay_films()` + `audit_argic_strong_films()` exported helpers; the Cap 18 latossolic-vs-argic precedence rule has 0.9% false-positive impact on Latossolo references.
+- **v0.9.84** — `spodic()` engine-aware OC-translocation path: KSSL+NASIS Spodosols **1/14 → 5/14** (+4) when the Bh chemistry is documented but uses generic B/Bw designations.
+- **v0.9.85** — `andosol()` buried-exclusion fix (argic at top ≥ 50 cm no longer disqualifies the surface andic stack) + andic OC+BD proxy thickness extension. AfSP Andosols **0/5 → 2/5**.
+- **v0.9.86** — `engine="aqp"` auto-enables the v0.9.69 ECEC fallback. BDsolos RJ Latossolos **14.9% → 28.1%** purely from one option flip.
+- **v0.9.89** — `engine="aqp"` auto-enables the v0.9.70 texture-morphological fallback (cumulative +0.8pp).
+- **v0.9.90** — `argic()` designation-inference fallback: BDsolos 2-point profiles (A at 0-20 + B at 50-150) with Bt + clay-films now classify correctly. Argissolo recall 70.4% → 77.1%.
+- **v0.9.91** — Strict `[[reference_wrb]]` access on the bundled WoSIS / KSSL / KSSL+NASIS caches (sidesteps R's `$`-partial-matching footgun on `reference_wrb_from_usda`).
+- **v0.9.92** — CRAN-readiness polish: dead URLs / DOIs fixed, `\doi{}` style throughout, `cran-comments.md` refreshed, README + vignettes brought current.
+
+Tri-state precedence preserved everywhere: explicit `options(soilKey.<rule> = TRUE/FALSE)` always wins; `engine="aqp"` auto-enables the data-quality-aware bundle; default canonical strict (FALSE) is the unchanged baseline.
+
+See [`NEWS.md`](NEWS.md) for the per-release diff.
 
 ---
 
