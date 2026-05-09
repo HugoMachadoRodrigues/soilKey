@@ -18,7 +18,7 @@ authors:
     email: "rodrigues.machado.hugo@gmail.com"
     affiliation: "Universidade Federal Rural do Rio de Janeiro (UFRRJ), Departamento de Solos"
     orcid: "https://orcid.org/0000-0002-8070-8126"
-version: "0.9.95"
+version: "0.9.96"
 date-released: "2026-05-09"
 doi: "10.5281/zenodo.19930112"
 license: "MIT"
@@ -50,7 +50,7 @@ preferred-citation:
       given-names: "Hugo"
       email: "rodrigues.machado.hugo@gmail.com"
       orcid: "https://orcid.org/0000-0002-8070-8126"
-  version: "0.9.95"
+  version: "0.9.96"
   year: 2026
   doi: "10.5281/zenodo.19930112"
   url: "https://github.com/HugoMachadoRodrigues/soilKey"
@@ -74,7 +74,7 @@ references:
       city: "Washington, DC"
     url: "https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf"
   - type: book
-    title: "Sistema Brasileiro de Classificação de Solos, 5ª edição revista e ampliada"
+    title: "Brazilian Soil Classification System (SiBCS), 5th revised and extended edition"
     authors:
       - family-names: "Santos"
         given-names: "H. G."
@@ -90,7 +90,7 @@ references:
         given-names: "M. R."
       - family-names: "Almeida"
         given-names: "J. A. de"
-      - family-names: "Araújo Filho"
+      - family-names: "Araujo Filho"
         given-names: "J. C. de"
       - family-names: "Oliveira"
         given-names: "J. B. de"
@@ -99,4 +99,140 @@ references:
     year: 2018
     publisher:
       name: "Embrapa"
-      city: "Brasília"
+      city: "Brasilia"
+  - type: article
+    title: "SmartSolos Expert: an expert system for Brazilian soil classification"
+    authors:
+      - family-names: "Vaz"
+        given-names: "G. J."
+      - family-names: "Silva Neto"
+        given-names: "L. de F. da"
+      - family-names: "Barbedo"
+        given-names: "J. G. A."
+    journal: "Smart Agricultural Technology"
+    volume: 10
+    start: 100735
+    year: 2025
+    month: 3
+    doi: "10.1016/j.atech.2024.100735"
+    notes: >
+      The SmartSolos Expert REST API at agroapi.cnptia.embrapa.br is
+      wrapped by classify_via_smartsolos_api() so soilKey users can
+      cross-validate the local SiBCS classifier against the
+      authoritative Embrapa-hosted reference. Cite this article when
+      using the cross-validation workflow.
+    url: "https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi"
+  - type: conference-paper
+    title: "Uma API para a classificacao de solos do Brasil"
+    authors:
+      - family-names: "Vaz"
+        given-names: "G. J."
+      - family-names: "Silva Neto"
+        given-names: "L. de F. da"
+      - family-names: "Lima"
+        given-names: "R. N."
+      - family-names: "Oliveira"
+        given-names: "S. R. de M."
+    collection-title: "Anais do 12 Congresso Brasileiro de Agroinformatica"
+    conference:
+      name: "12 SBIAGRO Brazilian Conference on Agro-Informatics"
+      city: "Indaiatuba"
+    year: 2019
+    start: 63
+    end: 72
+    publisher:
+      name: "SBIAGRO"
+      city: "Ponta Grossa"
+    notes: >
+      The original announcement paper for the SmartSolos Expert
+      REST API. Cite this together with the 2025 journal article
+      when using soilKey's classify_via_smartsolos_api() bridge.
+  - type: data
+    title: "Brazilian soil data for taxonomic classification"
+    authors:
+      - family-names: "Vaz"
+        given-names: "G. J."
+      - family-names: "Silva Jr"
+        given-names: "A. F."
+      - family-names: "Silva Neto"
+        given-names: "L. de F. da"
+    year: 2023
+    version: "V1"
+    publisher:
+      name: "Redape (Embrapa Research Data Repository)"
+    doi: "10.48432/PYKKA7"
+    notes: >
+      The 96-profile curated GeoTab dataset bundled with soilKey via
+      load_redape_pedons() and benchmark_redape(). Pedologists
+      hand-reviewed every profile, making the dataset a gold-standard
+      benchmark for classify_sibcs() and classify_via_smartsolos_api().
+      Cite this DOI when reporting Redape benchmark numbers.
+  - type: report
+    title: "Africa Soil Profiles Database, Version 1.2"
+    authors:
+      - family-names: "Leenaars"
+        given-names: "J. G. B."
+      - family-names: "van Oostrum"
+        given-names: "A. J. M."
+      - family-names: "Ruiperez Gonzalez"
+        given-names: "M."
+    year: 2014
+    institution:
+      name: "ISRIC -- World Soil Information"
+      city: "Wageningen"
+    number: "ISRIC Report 2014/01"
+    url: "https://isric.org/projects/africa-soil-profiles-database-afsp"
+    notes: >
+      The Africa Soil Profiles (AfSP) database consumed by
+      benchmark_afsp() and load_afsp_pedons(). The bundled cache
+      ships ~120 stratified pedons. Note: AfSP is from ISRIC and is
+      DISTINCT from AfSIS (Africa Soil Information Service); soilKey
+      uses only AfSP, not AfSIS.
+  - type: report
+    title: "LUCAS 2018 SOIL Component: sampling intensity, harmonisation and procedures for the collection of soil samples"
+    authors:
+      - family-names: "Fernandez-Ugalde"
+        given-names: "O."
+      - family-names: "Scarpa"
+        given-names: "S."
+      - family-names: "Orgiazzi"
+        given-names: "A."
+      - family-names: "Panagos"
+        given-names: "P."
+      - family-names: "Van Liedekerke"
+        given-names: "M."
+      - family-names: "Marechal"
+        given-names: "A."
+      - family-names: "Jones"
+        given-names: "A."
+    year: 2022
+    institution:
+      name: "European Commission, Joint Research Centre"
+      city: "Ispra"
+    number: "JRC Technical Report 130218"
+    doi: "10.2760/215013"
+    notes: >
+      The canonical data report for the LUCAS-SOIL-2018 dataset
+      consumed by benchmark_lucas_2018() and load_lucas_pedons().
+      Cite this when reporting LUCAS-based numbers; the Orgiazzi
+      et al. 2018 EJSS paper is the dataset's review companion.
+  - type: article
+    title: "LUCAS Soil, the largest expandable soil dataset for Europe: a review"
+    authors:
+      - family-names: "Orgiazzi"
+        given-names: "A."
+      - family-names: "Ballabio"
+        given-names: "C."
+      - family-names: "Panagos"
+        given-names: "P."
+      - family-names: "Jones"
+        given-names: "A."
+      - family-names: "Fernandez-Ugalde"
+        given-names: "O."
+    journal: "European Journal of Soil Science"
+    volume: 69
+    issue: 1
+    start: 140
+    end: 153
+    year: 2018
+    doi: "10.1111/ejss.12499"

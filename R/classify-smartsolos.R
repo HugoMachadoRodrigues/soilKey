@@ -1,12 +1,15 @@
 # =============================================================================
-# v0.9.54 -- SmartSolosExpert REST API client (cross-validation eixo).
+# v0.9.54 -- SmartSolos Expert REST API client (cross-validation axis).
 #
-# Glauber Vaz's PROLOG implementation of the SiBCS classifier is exposed
-# by Embrapa's AgroAPI as a REST endpoint. This module wraps it so soilKey
-# users can cross-validate the local classifier against an authoritative
-# Embrapa-hosted reference.
+# Glauber Vaz's PROLOG implementation of the Brazilian SiBCS classifier
+# is exposed by Embrapa's AgroAPI as a REST endpoint. This module wraps
+# it so soilKey users can cross-validate the local classifier against
+# an authoritative Embrapa-hosted reference.
 #
-# Endpoint (Swagger):
+# API home (registration + Swagger):
+#   https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi
+#
+# Endpoints:
 #   POST  https://api.cnptia.embrapa.br/smartsolos/expert/v1/classification
 #   POST  https://api.cnptia.embrapa.br/smartsolos/expert/v1/verification
 #
@@ -14,6 +17,20 @@
 #   Authorization: Bearer <token>
 #   Token comes from registration at agroapi.cnptia.embrapa.br
 #   Set via env var AGROAPI_TOKEN (or argument api_key=).
+#
+# Citation (please cite both when using SmartSolos cross-validation):
+#   * Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025).
+#     SmartSolos Expert: an expert system for Brazilian soil classification.
+#     Smart Agricultural Technology, 10, 100735.
+#   * Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira,
+#     S. R. de M. (2019). Uma API para a classificacao de solos do Brasil.
+#     In: 12. Congresso Brasileiro de Agroinformatica, Indaiatuba.
+#     Anais, p. 63-72. SBIAGRO, Ponta Grossa.
+#
+# Curated profile dataset (used by inst/benchmarks/run_redape.R):
+#   * Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023).
+#     Brazilian soil data for taxonomic classification. Redape, V1.
+#     DOI: 10.48432/PYKKA7.
 # =============================================================================
 
 

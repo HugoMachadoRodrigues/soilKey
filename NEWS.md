@@ -1,3 +1,114 @@
+# soilKey 0.9.96 (2026-05-09)
+
+The "**README full English rewrite + SmartSolos / Vaz citation pass**"
+release. Pure docs / no R code change. Brings the package
+documentation to a CRAN-submission-ready, fully internationalised,
+clearly status-tagged state.
+
+## README overhaul
+
+\itemize{
+  \item All Portuguese prose translated to English. Class names from
+        SiBCS / WRB / USDA appear as canonical taxonomic labels
+        (deliberate; they are the published nomenclature) but every
+        explanatory sentence is in English.
+  \item New "Status at a glance" table at the top of the README
+        with explicit \emph{shipped / in progress / idea-roadmap}
+        markers for every domain (WRB / SiBCS / USDA hierarchies,
+        side modules, and tooling). Lets readers see what's in v0.9.96
+        without scrolling through changelogs.
+  \item "What's new" section refreshed to summarise the v0.9.81 ->
+        v0.9.96 release series with the post-v0.9.95 cumulative
+        empirical lift table.
+  \item References section expanded to enumerate every benchmark
+        dataset's canonical citation (WRB book, SiBCS book, KST 13ed,
+        OSSL paper, WoSIS paper, AfSP report, LUCAS paper, NCSS-tech
+        \code{aqp}, plus the new SmartSolos / Redape citations).
+  \item "Citing" section explicitly documents which upstream works
+        to cite when using the package's specific entry points
+        (\code{classify_via_smartsolos_api}, \code{benchmark_redape},
+        \code{load_redape_pedons}).
+}
+
+## External-dataset citation pass
+
+In addition to the SmartSolos / Vaz et al. citations (next section),
+v0.9.96 explicitly cites the canonical sources of every external
+dataset \code{soilKey} consumes:
+
+\itemize{
+  \item \strong{AfSP (Africa Soil Profiles Database, ISRIC)} --
+        Leenaars, van Oostrum & Ruiperez Gonzalez (2014). Now in
+        \code{inst/CITATION}, \code{CITATION.cff} \code{references:},
+        and the README References list with an explicit note that
+        soilKey uses AfSP and \emph{not} the separate AfSIS (Africa
+        Soil Information Service) project.
+  \item \strong{LUCAS-SOIL-2018 (EU JRC)} -- both the data report
+        (Fernandez-Ugalde et al. 2022, JRC TR 130218,
+        \code{doi:10.2760/215013}) AND the review paper
+        (Orgiazzi et al. 2018, EJSS 69(1):140-153,
+        \code{doi:10.1111/ejss.12499}). Previous releases cited
+        only the review.
+  \item Existing citations refreshed: SoilGrids, WoSIS, OSSL,
+        KSSL, NCSS-tech \code{aqp}, IUSS WRB 2022, KST 13ed,
+        SiBCS 5 (translated title for the international README).
+}
+
+\code{citation("soilKey")} now renders 7 BibTeX entries: the package
++ 3 Vaz et al. works (SmartSolos journal, SmartSolos conference,
+Redape data) + AfSP + LUCAS data report + LUCAS review.
+
+## SmartSolos Expert / Vaz et al. citation pass
+
+soilKey's \code{classify_via_smartsolos_api()} bridge wraps Embrapa's
+authoritative SmartSolos Expert REST API (Vaz et al. 2025) so users
+can cross-validate the local SiBCS classifier against the same
+PROLOG implementation that backs the AgroAPI. \code{benchmark_redape}
+and \code{load_redape_pedons} consume the Redape curated GeoTab
+dataset (Vaz et al. 2023, DOI \code{10.48432/PYKKA7}) -- 96 profiles
+hand-reviewed by pedologists, the gold-standard benchmark for the
+Brazilian system.
+
+Three citations have been added everywhere they're discoverable:
+
+\itemize{
+  \item \code{R/classify-smartsolos.R} top-of-file comment block.
+  \item \code{R/classify-smartsolos.R} \code{@references} block on
+        \code{classify_via_smartsolos_api()}.
+  \item \code{inst/CITATION} -- now exposes 4 BibTeX entries:
+        the soilKey package itself + the three Vaz et al. works.
+        \code{citation("soilKey")} renders all four.
+  \item \code{CITATION.cff} -- now lists the three Vaz et al.
+        works under \code{references:} so GitHub's citation parser
+        and Zenodo's metadata indexers pick them up.
+  \item \code{README.md} "Citing" section explicitly documents
+        which Vaz et al. work to cite for which entry point.
+}
+
+The SmartSolos Expert API URL
+(\url{https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi})
+is now in both \code{classify-smartsolos.R} and the README.
+
+## Removed from README
+
+\itemize{
+  \item Stale version mentions (v0.9.27, v0.9.36, v0.9.40, etc.).
+  \item Portuguese prose ("descobre", "ã"-bearing words in body
+        text, "FEBR" sub-section descriptions in PT).
+  \item "Code-level metrics (v0.9.36)" stats block (let the
+        pkgdown reference site be the canonical source for
+        function counts; in-README counts age fast).
+  \item References to a "Notes for life" footer that doesn't
+        belong in a CRAN-grade README.
+}
+
+## CRAN-readiness
+
+\code{R CMD check --as-cran}: still 0 ERRORs / 0 WARNINGs / 2 trivial
+NOTEs (new submission + HTML tidy local-env). README refresh does
+not affect the check status.
+
+
 # soilKey 0.9.95 (2026-05-09)
 
 The "**post-lazy-fetch sweep + CITATION.cff bump**" release.
