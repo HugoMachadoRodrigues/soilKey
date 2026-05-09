@@ -322,7 +322,25 @@
 #' }
 #' @seealso \code{\link{classify_sibcs}} for the local PROLOG-free
 #'          classifier; \code{\link{compare_smartsolos}} for a
-#'          side-by-side comparison helper.
+#'          side-by-side comparison helper;
+#'          \code{\link{benchmark_redape}} for the gold-standard
+#'          curated dataset published by the same authors.
+#'
+#' @references
+#' Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025).
+#' SmartSolos Expert: an expert system for Brazilian soil
+#' classification. \emph{Smart Agricultural Technology}, 10, 100735.
+#' \doi{10.1016/j.atech.2024.100735}.
+#'
+#' Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira,
+#' S. R. de M. (2019). Uma API para a classificacao de solos do
+#' Brasil. In \emph{Anais do 12 Congresso Brasileiro de
+#' Agroinformatica} (SBIAGRO 2019), pp. 63-72. Ponta Grossa.
+#'
+#' Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023).
+#' Brazilian soil data for taxonomic classification. \emph{Redape},
+#' V1. \doi{10.48432/PYKKA7}.
+#'
 #' @export
 classify_via_smartsolos_api <- function(pedon,
                                           api_key         = Sys.getenv("AGROAPI_TOKEN"),
