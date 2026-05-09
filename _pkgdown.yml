@@ -460,6 +460,16 @@ reference:
       - argic_with_strong_clay_films
       - audit_argic_strong_films
 
+  - title: "Lazy-fetch benchmark caches (v0.9.94)"
+    desc: >
+      The four large benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
+      stratified, ~1 MB each) are no longer bundled in the CRAN
+      source tarball. They are downloaded on demand from a versioned
+      GitHub Release into the user cache (~/Library/Application
+      Support/.../soilKey/data on macOS) on first call.
+    contents:
+      - download_extdata_cache
+
   - title: "FEBR loader (v0.9.57)"
     desc: >
       UFSM Free Brazilian Repository readers (~249 datasets,

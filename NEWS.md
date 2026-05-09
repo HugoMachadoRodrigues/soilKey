@@ -1,3 +1,93 @@
+# soilKey 0.9.94 (2026-05-09)
+
+The "**lazy-fetch architecture for the four large benchmark
+caches**" release. Brings the source tarball from 10 MB
+(v0.9.93) to **5.9 MB** (under the CRAN soft 5 MB ceiling) by
+moving the four benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
+stratified, ~1 MB each) out of the source tarball and into a
+versioned GitHub Release downloaded on demand.
+
+## Architecture
+
+\itemize{
+  \item The four \code{.rds} cache files remain in
+        \code{inst/extdata/} on the dev branch (so
+        \code{pkgload::load_all()} resolves them via
+        \code{system.file()} during local development).
+  \item Four new \code{.Rbuildignore} patterns exclude those
+        files from the CRAN source tarball.
+  \item A new internal helper \code{R/extdata-lazy-fetch.R}
+        provides 3-step resolution for every load: bundled ->
+        user cache (\code{tools::R_user_dir("soilKey", "data")})
+        -> on-demand download from GitHub Release.
+  \item Each existing loader (\code{load_afsp_sample()},
+        \code{load_kssl_sample()}, \code{load_kssl_nasis_sample()},
+        \code{load_wosis_stratified_sample()}) was rewritten to
+        use the new helper. The loader API is unchanged.
+  \item A new exported helper \code{download_extdata_cache(which,
+        release, overwrite, verbose)} eagerly populates the user
+        cache without prompting. \code{which = "all"} (default)
+        downloads every lazy-fetch cache.
+}
+
+## User experience
+
+In an interactive session, the first call to e.g.
+\code{load_afsp_sample()} on a fresh CRAN install prompts:
+
+```
+soilKey: the 'afsp_sample' cache is not present in your install.
+It will be downloaded (~1 MB) from GitHub Release v0.9.94-data into
+  ~/Library/Application Support/org.R-project.R/R/soilKey/data
+Proceed? [Y/n]
+```
+
+Once downloaded, the file lives in the user cache and is available
+to every subsequent R session for that user.
+
+## Tarball size
+
+\itemize{
+  \item v0.9.93: \strong{10.0 MB} source tarball (4 caches included).
+  \item v0.9.94: \strong{5.9 MB} source tarball (4 caches excluded).
+}
+
+A \code{tar tzf} on the v0.9.94 tarball confirms none of the four
+\code{*_sample.rds} files ship in the source tarball -- only their
+\code{.Rd} documentation pages.
+
+## Maintainer release checklist
+
+\code{inst/cran-submission/PUBLISH_LAZY_FETCH_RELEASE.md} documents:
+
+\itemize{
+  \item How to create the GitHub Release attachment with all 4 .rds files.
+  \item How to refresh one cache via \code{gh release upload --clobber}.
+  \item How to bump the release tag if the cache schema changes.
+  \item How to verify on a clean R install before announcing.
+}
+
+## R CMD check status (v0.9.94, --as-cran, R 4.6.0 macOS)
+
+```
+Status: 2 NOTEs
+
+NOTE 1: "New submission" + maintainer line  (expected for first CRAN)
+NOTE 2: "HTML Tidy not recent enough"        (local-env only; CRAN OK)
+```
+
+Both NOTEs are non-blocking. The v0.9.94 tarball is now small
+enough to comfortably fit within CRAN's 5 MB recommendation.
+
+## Regression test
+
+\code{tests/testthat/test-v0994-lazy-fetch.R} (6 tests, 26
+expectations): cache enumeration; URL builder; local-path
+resolution (bundled / cache); error on unknown cache name; loaders
+return non-empty pedons in dev checkout; \code{download_extdata_cache()}
+validates its \code{which} argument.
+
+
 # soilKey 0.9.93 (2026-05-09)
 
 The "**CRAN resubmit feedback fixes**" release. Address every
