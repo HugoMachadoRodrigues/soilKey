@@ -3777,6 +3777,9 @@ plus auxiliaries) used in the test suite.
 - [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
   : Load the bundled WoSIS South-America sample
 
+- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
+  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
+
 - [`save_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
   [`load_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
   : Save / load trained OSSL-backed PLSR models
@@ -4159,6 +4162,15 @@ classification.
   : Load curated soil profiles from the Embrapa Redape GeoTab dataset
 - [`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
   : Benchmark soilKey SiBCS predictions against the Redape gold standard
+
+## WoSIS stratified WRB benchmark (v0.9.73)
+
+ISRIC WoSIS bundled cache, 130 profiles balanced across 26 WRB Reference
+Soil Groups (5 per RSG). The first WRB benchmark with profile depth
+(analog of Redape but for WRB), pulled via RSG-filtered GraphQL queries.
+
+- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
+  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
 
 ## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
 
