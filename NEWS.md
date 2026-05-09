@@ -1,3 +1,121 @@
+# soilKey 0.9.75 (2026-05-09)
+
+The "**KSSL + NASIS morphological enrichment**" release. Closes the
+v0.9.74 backlog item: KSSL lab tables ship texture + chemistry but
+lack the morphological evidence (Munsell colours, structure, clay
+films, slickensides) that several WRB diagnostic horizons need.
+The companion NASIS Morphological sqlite has all of that, and
+\code{load_kssl_pedons_with_nasis()} (already in soilKey since
+v0.7) joins them by \code{peiid}. v0.9.75 wires that join into the
+benchmark pipeline + bundles a 99-pedon enriched sample.
+
+## 1. New API surface
+
+\code{load_kssl_nasis_sample()} -- bundled 99-pedon snapshot
+(\code{head = 100}) joined with NASIS_Morphological_09142021,
+pre-annotated with derived WRB labels via \code{usda_to_wrb_rsg()}.
+
+## 2. Field availability lift (NASIS join effect, % of horizons populated)
+
+| Field | KSSL-only | KSSL + NASIS |
+|-------|----------:|-------------:|
+| munsell_hue_moist     | 0% | **89.6%** |
+| munsell_value_moist   | 0% | **89.6%** |
+| munsell_chroma_moist  | 0% | **89.6%** |
+| munsell_hue_dry       | 0% | **65.2%** |
+| structure_grade       | 0% | **53.8%** |
+| structure_size        | 0% | **54.9%** |
+| structure_type        | 0% | **79.2%** |
+| clay_films_amount     | 0% | 8.2% |
+| slickensides          | 0% | 1.7% |
+| cracks_*              | 0% | 0% (not in NASIS) |
+
+## 3. Empirical benchmark (n = 199, KSSL head = 200 + NASIS join)
+
+| Configuration | Top-1 |
+|---------------|------:|
+| baseline (no opt-ins) | 38/199 (**19.1%**) |
+| +aqp engine | 41/199 (20.6%) |
+| +aqp + ECEC + tex-morph | 41/199 (20.6%) |
+| **+full v0.9.69-72 stack** | **41/199 (20.6%)** |
+
+**+3.5pp baseline lift** vs v0.9.74 KSSL-only (15.6% -> 19.1%).
+The NASIS-enriched baseline already incorporates the morphological
+evidence that v0.9.72 designation-suffix paths approximate -- so
+the marginal gain on top of the full stack is small (+0.5pp).
+
+Per-RSG deltas vs v0.9.74:
+\itemize{
+  \item Phaeozem: 1/33 -> 2/33 (+1, Munsell-driven mollic detection)
+  \item Podzol:   0/15 -> 1/15 (+1)
+  \item Calcisol/Cambisol: unchanged (already maxed)
+  \item Solonetz / Vertisol / Kastanozem: still 0 (need Na/ESP /
+        slickensides+cracks / mollic+chroma -- NASIS records
+        slickensides at 1.7\\% and Vertisol cracks at 0\\%)
+}
+
+## 4. Why the lift is modest
+
+The 0% baseline NASIS recorded:
+\itemize{
+  \item Vertisols: NASIS slickensides 1.7\\%, cracks 0\\% -- lower
+        than the v0.9.72 v-suffix designation inference would catch
+        if the designation was preserved. KSSL designations are
+        STRIPPED to A/B/Bt/C, so v-suffix can't fire either.
+  \item Solonetz: NASIS doesn't preserve ESP / Na exchangeable
+        fraction (we have na_cmol from KSSL but not %).
+  \item Kastanozems: NASIS Munsell is mostly TOPSOIL and may not
+        reach the chroma/value bounds for full mollic / kastanic
+        differentiation.
+}
+
+The honest interpretation: v0.9.75 establishes the morphological
+baseline (NASIS join) but uncovers the next constraint --
+**Subordem-level diagnostic logic** (kastanic vs mollic chroma
+boundaries, ESP > 15 for sodic, slickensides for vertic) needs
+v0.9.76+ refinement.
+
+## 5. The complete benchmark suite after v0.9.75
+
+| System | Dataset | n | Profile depth | Munsell? | Accuracy |
+|--------|---------|---|---------------|----------|---------:|
+| SiBCS  | Redape (curated) | 94 | full | yes | **57.4%** |
+| SiBCS  | BDsolos RJ | 722 | full | partial | 50.0% |
+| WRB    | **KSSL + NASIS** | 199 | full | **yes (89.6%)** | **20.6%** |
+| WRB    | KSSL (lab-only) | 199 | full | no | 20.1% |
+| WRB    | WoSIS stratified | 130 | full | no | 16.2% |
+| WRB    | LUCAS | 18984 | topsoil-only | no | 3.3% |
+
+KSSL + NASIS is now soilKey's **richest WRB benchmark** by both
+attribute coverage AND accuracy. The next attainable lift is
+Subordem-level diagnostic refinement (v0.9.76+).
+
+## 6. Reproducer + tests
+
+\itemize{
+  \item Reproducer: \code{inst/benchmarks/run_kssl_nasis_v0975_wrb.R}
+  \item Bundled cache: \code{inst/extdata/kssl_nasis_sample.rds} (1 MB)
+  \item Regression test: \code{tests/testthat/test-v0975-kssl-nasis.R}
+        (5 tests, 20+ expectations) covers loader, Munsell field
+        availability, structure_grade/type, classify_wrb2022 runs
+        clean, end-to-end benchmark.
+}
+
+## 7. v0.9.76+ deferred
+
+\itemize{
+  \item Subordem-level WRB qualifier refinement (kastanic vs
+        mollic chroma boundary, sodic ESP > 15 from na_cmol /
+        cec_cmol, vertic chroma + clay >= 30).
+  \item Subordem / Grande Grupo SiBCS benchmark on Redape (v0.9.71
+        only did Order).
+  \item LUCAS WRB Stage 3 rerun on full v0.9.66+0.9.72 stack.
+  \item Argic strong-films exclusion review.
+  \item Spodic engine-aware relaxation.
+  \item Per-RSG dispatch ordering at \code{run_taxonomic_key} level.
+}
+
+
 # soilKey 0.9.74 (2026-05-09)
 
 The "**USDA Soil Taxonomy <-> WRB cross-walk + KSSL benchmark**"

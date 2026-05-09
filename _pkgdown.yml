@@ -488,6 +488,14 @@ reference:
       - benchmark_wrb_vs_usda
       - load_kssl_sample
 
+  - title: "KSSL + NASIS morphological-enriched sample (v0.9.75)"
+    desc: >
+      Joins KSSL lab gpkg with NASIS Morphological sqlite -- adds
+      Munsell colours, structure, clay films, slickensides
+      (Munsell 0% -> 89.6% vs lab-only).
+    contents:
+      - load_kssl_nasis_sample
+
   - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
     contents:
       - benchmark_lucas_2018
