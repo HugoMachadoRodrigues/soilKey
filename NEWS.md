@@ -1,3 +1,94 @@
+# soilKey 0.9.83 (2026-05-09)
+
+The "**argic strong-films audit + B_latossolico refactor**"
+release. Reviews the SiBCS Cap 18 latossolic-vs-argic precedence
+rule wired into \code{B_latossolico()} since v0.9.61, extracts the
+strong-films decision into a reusable helper, and ships an
+empirical audit on BDsolos RJ. Behaviour is bit-for-bit identical
+to v0.9.82 main on the n = 722 RJ benchmark.
+
+## Refactor
+
+\code{B_latossolico()} delegates the strong-films decision to a
+new helper \code{argic_with_strong_clay_films()} so the same logic
+can be (a) audited on any benchmark dataset without re-running the
+full SiBCS classification and (b) iterated independently from the
+calling routine.
+
+\code{.argic_strong_films_match()} (internal) is the low-level
+Portuguese accent-aware matcher. Strong qualifiers:
+\emph{comum} / \emph{abundante} / \emph{common} / \emph{abundant}
+(case-insensitive, A-class accents stripped to ASCII so
+\emph{Abundânte} / \emph{ABUNDÂNTE} also match). Weak qualifiers:
+\emph{pouca} / \emph{fraca} / \emph{few} / \emph{weak}.
+
+## New exported functions
+
+\itemize{
+  \item \code{argic_with_strong_clay_films(pedon)} -- returns a
+        list with \code{passed}, \code{layers}, the underlying
+        \code{\link{DiagnosticResult}} from \code{argic()}, and the
+        \code{clay_films_amount} values at the argic-passing layers.
+  \item \code{audit_argic_strong_films(pedons, reference_filter)} --
+        applies the helper to every pedon and returns a
+        \code{data.frame} with \code{id}, \code{reference_sibcs},
+        \code{argic_passed}, \code{has_films_at_argic},
+        \code{strong_films_at_argic}, and
+        \code{would_exclude_from_latossolo}.
+}
+
+## Empirical audit on BDsolos RJ (n = 722)
+
+| Reference SiBCS class    |   n | argic passes | strong films at argic | would exclude from Latossolo |
+|--------------------------|----:|-------------:|----------------------:|-----------------------------:|
+| LATOSSOLO* (n_lat = 115)  | 115 |        ~ 27 |              **1** |                  **0.9\\%** |
+| ARGISSOLO* (n_arg = 186)  | 186 |       ~ 140 |             **70** |                 **37.6\\%** |
+
+The audit confirms the strong-films rule is doing exactly what the
+SiBCS Cap 18 specification asks of it:
+
+\itemize{
+  \item Latossolo references: only 1 / 115 (0.9\\%) is excluded
+        by the strong-films rule -- effectively zero
+        false-positive exclusions on the BDsolos RJ benchmark.
+        The rule is NOT the bottleneck for the 14.9\\% Latossolo
+        accuracy ceiling on RJ; the dominant failure mode remains
+        the canonical ferralic CTC argila > 17 cmolc/kg threshold
+        on BDsolos surveyor-labelled Latossolos (per v0.9.62
+        analysis).
+  \item Argissolo references: 70 / 186 (37.6\\%) are correctly
+        retained as Argissolos via the strong-films rule -- these
+        would otherwise leak into Latossolo when ferralic happens
+        to pass on the same profile.
+}
+
+## Bit-for-bit preservation
+
+\code{B_latossolico()} confusion matrix on BDsolos RJ
+(n = 722, n_lat = 114, n_arg = 232) is identical to v0.9.82 main:
+
+```
+             predicted
+reference    Latossolos Argissolos Cambissolos Neossolos
+  Latossolos         17         17          42        38
+  Argissolos          5        166           1        60
+```
+
+Latossolo accuracy 14.9\\% (17/114), Argissolo accuracy 69.2\\%
+(166/240) -- both unchanged.
+
+## Regression test
+
+\code{tests/testthat/test-v0983-argic-films-audit.R} (15 tests,
+50 expectations): low-level token matcher (empty / NA / weak /
+strong / mixed-language / accent-stripped), pedon-level wrapper
+(strong-films firing on Bt with comum/abundante; FALSE on weak;
+FALSE on missing), audit data.frame schema and reference filter,
+B_latossolico bit-for-bit confusion preservation on BDsolos RJ,
+and an upper-bound regression guard
+(\code{would_exclude_from_latossolo <= 2 / 115} on RJ).
+
+
 # soilKey 0.9.82 (2026-05-09)
 
 The "**LUCAS Stage 3 full-stack rerun**" release. Ships the

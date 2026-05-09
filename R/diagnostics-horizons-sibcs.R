@@ -471,22 +471,18 @@ B_latossolico <- function(pedon, min_thickness = 50,
   # "ausente / pouca / fraca" = Latossolo; "comum / abundante" =
   # Argissolo. Ferralic + CTC<=17 + thickness>=50 + cerosidade fraca
   # = Latossolo mesmo com clay increase marginal.
-  has_strong_clay_films <- function(layers_idx) {
-    if (length(layers_idx) == 0L) return(FALSE)
-    cf <- pedon$horizons$clay_films_amount[layers_idx]
-    cf <- cf[!is.na(cf) & nzchar(cf)]
-    if (length(cf) == 0L) return(FALSE)
-    norm <- tolower(trimws(cf))
-    norm <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", norm)
-    # "abundante", "comum", "common", "abundant" all count as STRONG
-    # B-textural signature; "pouca", "fraca", "few", "weak" do not.
-    any(grepl("\\babunda|\\bcomu|\\bcommon|\\babundan", norm))
-  }
-  argic_with_strong_films <- isTRUE(bt$passed) &&
-                                 has_strong_clay_films(bt$layers)
+  #
+  # v0.9.83: the strong-clay-films decision is delegated to
+  # argic_with_strong_clay_films() so the same rule can be audited
+  # with audit_argic_strong_films(). Behaviour is bit-for-bit
+  # identical: bt is the same DiagnosticResult, the films are pulled
+  # from the same bt$layers, and the strong-qualifier match is the
+  # same Portuguese-aware regex.
+  argic_films <- argic_with_strong_clay_films(pedon)
+  argic_with_strong_films <- isTRUE(argic_films$passed)
   pass_layers <- function(d) if (isTRUE(d$passed)) d$layers
                               else integer(0)
-  argic_excluded <- if (argic_with_strong_films) bt$layers else integer(0)
+  argic_excluded <- argic_films$layers
   excluded_layers <- unique(c(
     pass_layers(pl), pass_layers(gl), pass_layers(bn),
     argic_excluded
