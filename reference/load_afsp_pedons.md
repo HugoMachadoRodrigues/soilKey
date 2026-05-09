@@ -55,5 +55,5 @@ objects.
 
 Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
 (2014). Africa Soil Profiles Database, Version 1.2. ISRIC Report
-2014/01. ISRIC – World Soil Information, Wageningen.
-[doi:10.17027/isric-wdcsoils.20140101](https://doi.org/10.17027/isric-wdcsoils.20140101)
+2014/01. ISRIC – World Soil Information, Wageningen. Project page:
+<https://isric.org/projects/africa-soil-profiles-database-afsp>.

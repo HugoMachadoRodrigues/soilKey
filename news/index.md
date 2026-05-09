@@ -1,5 +1,24 @@
 # Changelog
 
+## soilKey 0.9.92 (2026-05-09)
+
+The “**CRAN-readiness polish**” release. Pure docs / no R code change.
+Brings the package to a clean state (0 ERRORs, 0 WARNINGs, 2 NOTEs both
+expected for a first submission) and refreshes the README +
+cran-comments.md with the cumulative v0.9.81 -\> v0.9.91 empirical
+numbers.
+
+### CRAN-blocking issues resolved
+
+### R CMD check status (v0.9.92, –as-cran, R 4.6.0 macOS)
+
+    Status: 2 NOTEs
+
+    NOTE 1: "New submission" + maintainer line  (expected for first CRAN submission)
+    NOTE 2: "HTML Tidy not recent enough"        (local-env only; CRAN servers have current tidy)
+
+All 10+ vignettes build cleanly. PDF manual builds cleanly.
+
 ## soilKey 0.9.91 (2026-05-09)
 
 The “**KSSL reference_wrb alias + WoSIS partial-matching hardening**”

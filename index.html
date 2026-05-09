@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.91</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.92</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
 <img src="logo.png" class="logo" alt=""><h1 id="soilkey-">soilKey <a class="anchor" aria-label="anchor" href="#soilkey-"></a>
 </h1>
 </div>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.40-FF6B35?style=flat-square" alt="v0.9.40"></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square" alt="Lifecycle: experimental"></a> <img src="https://img.shields.io/badge/version-0.9.92-FF6B35?style=flat-square" alt="v0.9.92"></p>
 <blockquote>
 <p><strong>Automated soil profile classification under WRB 2022 (4th ed.), USDA Soil Taxonomy (13th ed.), and the Brazilian SiBCS (5ª edição).</strong> All three systems wired end-to-end down to the deepest categorical level. Multimodal extraction, spatial priors, OSSL spectroscopy and explicit per-attribute provenance — without ever delegating the taxonomic key to a language model.</p>
 </blockquote>
@@ -115,20 +115,89 @@
 <hr>
 </div>
 <div class="section level2">
-<h2 id="id_-whats-new-in-v0927-2026-05-03">✦ What’s new in v0.9.27 (2026-05-03)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v0927-2026-05-03"></a>
+<h2 id="id_-whats-new-in-v0981--v0992-2026-05-09">✦ What’s new in v0.9.81 → v0.9.92 (2026-05-09)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v0981--v0992-2026-05-09"></a>
 </h2>
-<p>The v0.9.24 → v0.9.27 release series progressively closed key reasoning gaps in USDA Soil Taxonomy 13ed and validated the gains against three real-data benchmarks (KSSL+NASIS, FEBR/Embrapa, WoSIS):</p>
+<p>The v0.9.81 → v0.9.92 release series ships <strong>15 surgical fixes</strong> across the WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13 keys, all with default canonical behaviour bit-for-bit preserved and a single opt-in (<code>soilKey.diagnostic_engine = "aqp"</code>) that bundles the data-quality-aware paths.</p>
+<p><strong>Cumulative empirical lift on five external datasets</strong> (post-v0.9.91):</p>
+<table class="table">
+<colgroup>
+<col width="28%">
+<col width="6%">
+<col width="12%">
+<col width="40%">
+<col width="13%">
+</colgroup>
+<thead><tr>
+<th>Dataset</th>
+<th align="right">n</th>
+<th align="right">Default</th>
+<th align="right">Best opt-in (<code>engine="aqp"</code>)</th>
+<th align="right">Lift</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>SiBCS BDsolos RJ</td>
+<td align="right">722</td>
+<td align="right">40.3%</td>
+<td align="right"><strong>46.6%</strong></td>
+<td align="right">+6.3pp</td>
+</tr>
+<tr>
+<td>SiBCS Redape Order</td>
+<td align="right">94</td>
+<td align="right">45.7%</td>
+<td align="right"><strong>58.5%</strong></td>
+<td align="right">+12.8pp</td>
+</tr>
+<tr>
+<td>WRB KSSL+NASIS</td>
+<td align="right">99</td>
+<td align="right">21.2%</td>
+<td align="right">24.2%</td>
+<td align="right">+3.0pp</td>
+</tr>
+<tr>
+<td>WRB AfSP</td>
+<td align="right">120</td>
+<td align="right">21.7%</td>
+<td align="right"><strong>30.8%</strong></td>
+<td align="right">+9.1pp</td>
+</tr>
+<tr>
+<td>WRB LUCAS Stage 3</td>
+<td align="right">30</td>
+<td align="right">0.0%</td>
+<td align="right"><strong>60.0%</strong></td>
+<td align="right">+60.0pp</td>
+</tr>
+</tbody>
+</table>
+<p>Plus the v0.9.81 honest 4-level Redape benchmark: Subordem 30.9% → 39.4%, Grande Grupo 29.1% → 35.2%, Subgrupo 15.1% → 25.0%.</p>
+<p><strong>Highlights of the release series:</strong></p>
 <ul>
 <li>
-<strong>v0.9.24</strong> — Path C subgroup tightening (<code>aquic_conditions_usda</code> + <code>oxyaquic_subgroup_usda</code>): both predicates now require <strong>dual evidence</strong> (reduction AND redoximorphic indicator) instead of single-trigger disjunctive OR, which was producing false-positive Aquic / Oxyaquic subgroup predictions on Typic-reference profiles. New benchmark levels added: <code>level = "great_group"</code> and <code>level = "suborder"</code> for <code><a href="reference/benchmark_run_classification.html">benchmark_run_classification()</a></code>, completing the four-level USDA hierarchy.</li>
+<strong>v0.9.81</strong> — <code><a href="reference/benchmark_redape.html">benchmark_redape()</a></code> now actually computes Subordem / GG / Subgrupo accuracy (the level argument was previously discarded; all four levels reported the same Order number).</li>
 <li>
-<strong>v0.9.25</strong> — <strong>KST 13ed Great Group canonicaliser</strong> (<a href="R/benchmark-kssl-gpkg.R"><code>canonicalise_kst13ed_gg()</code></a>): a many-to-one map collapsing both pre-KST 13ed obsolete Great Group names AND modern split children to a shared canonical key. Pellusterts ↔︎ Hapluderts; Haplaquolls ↔︎ Endo/Epi-Aquolls; Camborthids ↔︎ Haplocambids; Vitrandepts ↔︎ Vitrudands; Dystrochrepts ↔︎ Dystrudepts; Medisaprists ↔︎ Haplosaprists. KSSL’s <code>samp_taxgrtgroup</code> mixes labels from Soil Taxonomy editions 8 through 13; this fix delivered <strong>+3.84 pp Great Group</strong> on KSSL+NASIS without any classifier change.</li>
+<strong>v0.9.82</strong> — LUCAS Stage 3 rerun with the v0.9.66+72+77+78+79+80 stack: <strong>0% → 60% accuracy</strong> (100% recall on Cambisols, 18/18, via SoilGrids 30-60 cm subsoil fill).</li>
 <li>
-<strong>v0.9.26</strong> — Per-system argic clay-increase threshold API: <code>test_clay_increase_argic(h, system = c("wrb2022", "usda"))</code> and <code>argic(pedon, system = ...)</code> now route to either the stricter WRB 2022 thresholds (6 pp / 1.4× / 20 pp) or the looser KST 13ed thresholds (3 pp / 1.2× / 8 pp). Default remains WRB for back-compat.</li>
+<strong>v0.9.83</strong> — Argic strong-clay-films audit on BDsolos RJ: extracted <code><a href="reference/argic_with_strong_clay_films.html">argic_with_strong_clay_films()</a></code> + <code><a href="reference/audit_argic_strong_films.html">audit_argic_strong_films()</a></code> exported helpers; the Cap 18 latossolic-vs-argic precedence rule has 0.9% false-positive impact on Latossolo references.</li>
 <li>
-<strong>v0.9.27</strong> — Clay-illuviation evidence test (<a href="R/diagnostics-horizons-usda.R"><code>argillic_clay_films_test()</code></a>) reads two complementary NASIS-derived slots: (1) <code>pediagfeatures.featkind</code> argillic-horizon entries (~13 500 in the 2021 NASIS snapshot), (2) per-horizon <code>clay_films_amount</code> derived from <code>phpvsf</code>. <code><a href="reference/argillic_usda.html">argillic_usda()</a></code> now uses a <strong>two-tier strategy</strong>: KST 13ed thresholds when clay-films evidence is present, WRB 2022 thresholds (proxy) when not. Plus an Embrapa FEBR benchmark fix (label normalisation) yielding <strong>+16.1 pp Order</strong> v0.9.22 → v0.9.27, and WoSIS GraphQL retry+fallback for ISRIC server intermittency.</li>
+<strong>v0.9.84</strong> — <code><a href="reference/spodic.html">spodic()</a></code> engine-aware OC-translocation path: KSSL+NASIS Spodosols <strong>1/14 → 5/14</strong> (+4) when the Bh chemistry is documented but uses generic B/Bw designations.</li>
+<li>
+<strong>v0.9.85</strong> — <code><a href="reference/andosol.html">andosol()</a></code> buried-exclusion fix (argic at top ≥ 50 cm no longer disqualifies the surface andic stack) + andic OC+BD proxy thickness extension. AfSP Andosols <strong>0/5 → 2/5</strong>.</li>
+<li>
+<strong>v0.9.86</strong> — <code>engine="aqp"</code> auto-enables the v0.9.69 ECEC fallback. BDsolos RJ Latossolos <strong>14.9% → 28.1%</strong> purely from one option flip.</li>
+<li>
+<strong>v0.9.89</strong> — <code>engine="aqp"</code> auto-enables the v0.9.70 texture-morphological fallback (cumulative +0.8pp).</li>
+<li>
+<strong>v0.9.90</strong> — <code><a href="reference/argic.html">argic()</a></code> designation-inference fallback: BDsolos 2-point profiles (A at 0-20 + B at 50-150) with Bt + clay-films now classify correctly. Argissolo recall 70.4% → 77.1%.</li>
+<li>
+<strong>v0.9.91</strong> — Strict <code>[[reference_wrb]]</code> access on the bundled WoSIS / KSSL / KSSL+NASIS caches (sidesteps R’s <code>$</code>-partial-matching footgun on <code>reference_wrb_from_usda</code>).</li>
+<li>
+<strong>v0.9.92</strong> — CRAN-readiness polish: dead URLs / DOIs fixed, <code>\doi{}</code> style throughout, <code>cran-comments.md</code> refreshed, README + vignettes brought current.</li>
 </ul>
-<p>The full A/B trajectory across releases is in <code>inst/benchmarks/reports/</code>. See <a href="NEWS.html"><code>NEWS.md</code></a> for the per-release diff.</p>
+<p>Tri-state precedence preserved everywhere: explicit <code>options(soilKey.&lt;rule&gt; = TRUE/FALSE)</code> always wins; <code>engine="aqp"</code> auto-enables the data-quality-aware bundle; default canonical strict (FALSE) is the unchanged baseline.</p>
+<p>See <a href="NEWS.html"><code>NEWS.md</code></a> for the per-release diff.</p>
 <hr>
 </div>
 <div class="section level2">

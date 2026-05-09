@@ -1729,8 +1729,9 @@ contra dados reais.
   “🌱 Soil profile classification help” — colamos juntos o trace da
   chave e identificamos exatamente onde soilKey divergiu da sua
   expectativa.
-- **Perguntas gerais**: [GitHub
-  Discussions](https://github.com/HugoMachadoRodrigues/soilKey/discussions).
+- **Perguntas gerais**: abra uma issue com o template “🌱 Soil profile
+  classification help” ou veja a [documentação
+  completa](https://hugomachadorodrigues.github.io/soilKey/).
 
 ## Referências canônicas
 

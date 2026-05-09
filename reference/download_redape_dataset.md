@@ -48,4 +48,4 @@ Character vector of paths to the downloaded files.
 
 Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023). Brazilian
 soil data for taxonomic classification. Redape, V1.
-<https://doi.org/10.48432/PYKKA7>.
+[doi:10.48432/PYKKA7](https://doi.org/10.48432/PYKKA7) .
