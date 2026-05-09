@@ -13,7 +13,7 @@ Plinthosols."><meta property="og:image" content="https://hugomachadorodrigues.gi
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.71</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.72</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,6 +98,23 @@ Fe-rich mottles as alternative criterion – not yet wired. The
 "irreversibly hardens" criterion is conceptual and requires field
 observation; v0.2 takes <code>plinthite_pct</code> as already representing
 true plinthite (as opposed to soft mottles).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-designation-morphological-inference-opt-in-">v0.9.72 designation morphological inference (opt-in)<a class="anchor" aria-label="anchor" href="#v-designation-morphological-inference-opt-in-"></a></h2>
+
+
+<p>Field-described Brazilian Plintossolos profiles (e.g.\ the Embrapa
+Redape curated dataset) routinely encode plinthite via the
+designation suffix <code>f</code> in the master letter sequence (e.g.\
+<code>Btf</code>, <code>2Btf</code>, <code>Cf</code>) – the curator's direct
+assertion that plinthite is present – without recording
+<code>plinthite_pct</code> as a numeric volume percent.</p>
+<p>With <code>options(soilKey.plinthic_designation_inference = TRUE)</code> the
+function accepts a layer as plinthic when:</p><ol><li><p>the canonical <code>plinthite_pct</code> test is <code>NA</code> for
+        that layer, AND</p></li>
+<li><p>the designation matches <code>[A-Z]+[A-Za-z]*f[0-9]?</code>
+        (a <code>f</code> master-letter modifier in any sub-position).</p></li>
+</ol><p>Default is <code>FALSE</code> (canonical behaviour preserved).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

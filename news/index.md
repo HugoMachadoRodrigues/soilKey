@@ -1,5 +1,110 @@
 # Changelog
 
+## soilKey 0.9.72 (2026-05-09)
+
+The “**designation-suffix morphological inference**” release. Closes the
+v0.9.71 backlog: 3 logic gaps were exposed by the Redape gold-standard
+benchmark (Gleissolos 0/8, Plintossolos 0/3, Vertissolos 0/2). All three
+Brazilian field-described Order signals encode their diagnostic via
+lowercase modifier letters in the horizon designation (, , ) without
+recording the corresponding numeric inputs. v0.9.72 adds three opt-in
+inference paths that read those signals directly from the designation,
+gated per-rule by separate options.
+
+### 1. Three new opt-in inference paths
+
+#### a) Gleyic g-suffix ()
+
+Accepts a layer as gleyic when the canonical test is NA AND the
+designation matches (e.g. , , , , ) AND (when recorded).
+
+#### b) Plinthic f-suffix ()
+
+Accepts a layer as plinthic when is NA AND the designation matches
+(e.g. , , , ) AND the f-suffixed layers sum to at least .
+
+#### c) Vertic v-suffix ()
+
+Accepts a layer as vertic when slickensides + cracks AND COLE paths fail
+or are NA, AND the designation matches (e.g. , , , ) AND (default 30%).
+
+All three paths are **conservative**: they fire only when the canonical
+numeric tests are absent or fail, never overriding explicit
+measurements.
+
+### 2. Empirical effect on Redape (n = 94)
+
+| RSG          | OFF |      ON |           delta |
+|--------------|----:|--------:|----------------:|
+| Gleissolos   | 0/8 | **8/8** |          **+8** |
+| Plintossolos | 0/3 | **3/3** |          **+3** |
+| Vertissolos  | 0/2 | **2/2** |          **+2** |
+| Luvissolos   | 2/6 |     1/6 | -1 (intergrade) |
+| Planossolos  | 3/7 |     2/7 | -1 (intergrade) |
+| **net**      |     |         |         **+11** |
+
+    Order-level accuracy: 45.7% -> 57.4% (+11.7pp)
+
+The 2 regressions are SiBCS intergrade cases:
+
+These are documented edge cases. Net +13 / -2 = +11 correct. Users
+targeting strict canonical SiBCS for intergrade-rich datasets should
+leave the options OFF.
+
+### 3. Empirical effect on BDsolos RJ (n = 722, ALL fallbacks ON)
+
+The full v0.9.69-v0.9.72 fallback stack:
+
+``` r
+
+options(soilKey.diagnostic_engine                       = "aqp",
+        soilKey.ferralic_ecec_fallback                  = TRUE,
+        soilKey.ferralic_texture_morphological_fallback = TRUE,
+        soilKey.gleyic_designation_inference            = TRUE,
+        soilKey.plinthic_designation_inference          = TRUE,
+        soilKey.vertic_designation_inference            = TRUE)
+```
+
+raises Order-level accuracy on BDsolos RJ:
+
+| configuration                          |  accuracy |         Gleissolos |
+|----------------------------------------|----------:|-------------------:|
+| v0.9.65 baseline                       |     0.403 |            (small) |
+| aqp + ECEC + tex-morph (v0.9.70)       |     0.444 |      33.7% (33/98) |
+| **+ designation inferences (v0.9.72)** | **0.500** | **77.6% (76/98!)** |
+
+**+9.7pp net on BDsolos RJ**, with **+76 Gleissolos correctly
+classified** (vs ~33 before).
+
+Default behaviour (no opt-ins) is **bit-for-bit identical** to v0.9.71:
+40.3% on BDsolos RJ baseline.
+
+### 4. Recommended Brazilian / SOTERLAC recipe
+
+``` r
+
+# Once at session start, for Brazilian field-described profiles:
+options(soilKey.diagnostic_engine                       = "aqp",
+        soilKey.ferralic_ecec_fallback                  = TRUE,
+        soilKey.ferralic_texture_morphological_fallback = TRUE,
+        soilKey.gleyic_designation_inference            = TRUE,
+        soilKey.plinthic_designation_inference          = TRUE,
+        soilKey.vertic_designation_inference            = TRUE)
+```
+
+This pipeline is now competitive on Brazilian classification at the
+Order level; refinement at Subordem / Grande Grupo / Subgrupo remains
+v0.9.73+ work.
+
+### 5. Regression test
+
+(15 tests, 19 expectations) covers each path’s positive cases, opt-in
+semantics, threshold-edge rejection, the -with-digit-prefix edge, and
+cross-rule isolation (plinthic profile must NOT also pass
+gleyic/vertic).
+
+### 6. v0.9.73+ deferred
+
 ## soilKey 0.9.71 (2026-05-09)
 
 The “**Embrapa Redape integration – gold-standard curated benchmark**”

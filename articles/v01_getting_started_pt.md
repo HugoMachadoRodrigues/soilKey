@@ -966,6 +966,7 @@ res_wrb$trace
 #> [fail] cracks
 #> [fail] thickness
 #> [ NA ] cole_le_path
+#> [ NA ] designation_inference
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon; KST 13ed
 #> Ch 16 LE alternative
 #> 
@@ -1110,6 +1111,7 @@ res_wrb$trace
 #> Sub-tests:
 #> [fail] gleyic_features
 #> [ NA ] stagnic_pattern
+#> [ NA ] designation_inference
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Gleyic properties
 #> 
 #> $GL$evidence[[1]]$evidence$reducing_conditions
@@ -1380,9 +1382,20 @@ res_wrb$trace
 #> [1] NA
 #> 
 #> 
+#> $PT$evidence[[1]]$evidence$designation_inference
+#> $PT$evidence[[1]]$evidence$designation_inference$passed
+#> [1] NA
+#> 
+#> $PT$evidence[[1]]$evidence$designation_inference$layers
+#> integer(0)
+#> 
+#> $PT$evidence[[1]]$evidence$designation_inference$source
+#> [1] "off"
+#> 
+#> 
 #> 
 #> $PT$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon"
+#> [1] "IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon "
 #> 
 #> $PT$evidence[[1]]$notes
 #> [1] NA

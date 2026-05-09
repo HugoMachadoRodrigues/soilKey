@@ -46,6 +46,24 @@ Fe-rich mottles as alternative criterion – not yet wired. The
 observation; v0.2 takes `plinthite_pct` as already representing true
 plinthite (as opposed to soft mottles).
 
+## v0.9.72 designation morphological inference (opt-in)
+
+Field-described Brazilian Plintossolos profiles (e.g.\\ the Embrapa
+Redape curated dataset) routinely encode plinthite via the designation
+suffix `f` in the master letter sequence (e.g.\\ `Btf`, `2Btf`, `Cf`) –
+the curator's direct assertion that plinthite is present – without
+recording `plinthite_pct` as a numeric volume percent.
+
+With `options(soilKey.plinthic_designation_inference = TRUE)` the
+function accepts a layer as plinthic when:
+
+1.  the canonical `plinthite_pct` test is `NA` for that layer, AND
+
+2.  the designation matches `[A-Z]+[A-Za-z]*f[0-9]?` (a `f`
+    master-letter modifier in any sub-position).
+
+Default is `FALSE` (canonical behaviour preserved).
+
 ## References
 
 IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.

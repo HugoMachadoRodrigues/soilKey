@@ -19,7 +19,7 @@ are not recorded (KST 13ed Ch 16 LE alternative, p 343).'><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.71</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.72</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,6 +109,22 @@ are not recorded (KST 13ed Ch 16 LE alternative, p 343).</p>
 (default 100).</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="v-designation-morphological-inference-opt-in-">v0.9.72 designation morphological inference (opt-in)<a class="anchor" aria-label="anchor" href="#v-designation-morphological-inference-opt-in-"></a></h2>
+
+
+<p>Field-described Brazilian Vertissolos profiles (e.g.\ the Embrapa
+Redape curated dataset) encode vertic morphology via a <code>v</code>
+master-letter modifier in the horizon designation (<code>Bv</code>,
+<code>Bvk1</code>, <code>Cv</code>, <code>Cvz</code>) without recording
+<code>slickensides</code> class or <code>shrink_swell_cracks_cm</code> as
+numeric inputs. With
+<code>options(soilKey.vertic_designation_inference = TRUE)</code> the
+function accepts a layer as vertic when the canonical and COLE
+paths both fail or are NA AND the layer has <code>clay_pct &gt;=
+min_clay</code> AND its designation matches a <code>v</code> master-letter
+modifier. Default is <code>FALSE</code>.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

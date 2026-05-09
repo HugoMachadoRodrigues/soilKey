@@ -52,7 +52,37 @@ v0.2 deliberately does NOT use the Munsell-based shortcut (chroma \<=
 2 + value \>= 4) as a primary criterion: that pattern fits albic /
 bleached horizons of Podzols just as well as truly reduced gleyic
 horizons. v0.3 will add reductimorphic / oxidimorphic feature
-discrimination once we model field-described mottle properties.
+discrimination once we model field-described mottle properties. v0.9.72
+adds the designation-suffix path (opt-in).
+
+## v0.9.72 designation morphological inference (opt-in)
+
+Field-described Brazilian Gleissolos profiles (e.g.\\ the Embrapa Redape
+curated dataset) routinely encode gleyic properties via the designation
+suffix `g` (e.g.\\ `Cg`, `Cg1`, `Cgn`, `Apg`) plus low-chroma Munsell
+colours (chroma \\= 2), without recording `redoximorphic_features_pct`
+as a numeric percent. The strict canonical test then returns `NA` on
+every horizon and Gleissolos cascade to other Orders.
+
+With `options(soilKey.gleyic_designation_inference = TRUE)` the function
+accepts a layer as gleyic when:
+
+1.  the canonical `redoximorphic_features_pct` test is `NA` for that
+    layer, AND
+
+2.  the designation matches `[A-Z]+g[0-9a-z]?` (a horizon name with a
+    `g` suffix in the master letter sequence, e.g.\\ `Cg`, `Bg2`, `Apg`,
+    `Cgn`), AND
+
+3.  the layer has `munsell_chroma_moist <= 2` (low-chroma reduced
+    colour) when Munsell is recorded; if Munsell is missing on the layer
+    the suffix alone is sufficient (designation suffix is the most
+    direct signal of pedologist field judgment).
+
+This is conservative: the suffix `g` is a master-letter modifier in the
+FAO/Embrapa horizon nomenclature that explicitly means "gleyic-affected"
+– the curator already made the call. Default is `FALSE` (canonical
+behaviour preserved).
 
 ## References
 

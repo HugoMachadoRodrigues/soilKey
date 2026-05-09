@@ -43,3 +43,14 @@ vertic_horizon(
 - le_max_depth_cm:
 
   Depth window (cm) for the COLE-based path (default 100).
+
+## v0.9.72 designation morphological inference (opt-in)
+
+Field-described Brazilian Vertissolos profiles (e.g.\\ the Embrapa
+Redape curated dataset) encode vertic morphology via a `v` master-letter
+modifier in the horizon designation (`Bv`, `Bvk1`, `Cv`, `Cvz`) without
+recording `slickensides` class or `shrink_swell_cracks_cm` as numeric
+inputs. With `options(soilKey.vertic_designation_inference = TRUE)` the
+function accepts a layer as vertic when the canonical and COLE paths
+both fail or are NA AND the layer has `clay_pct >= min_clay` AND its
+designation matches a `v` master-letter modifier. Default is `FALSE`.
