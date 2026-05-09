@@ -167,3 +167,72 @@ references:
       hand-reviewed every profile, making the dataset a gold-standard
       benchmark for classify_sibcs() and classify_via_smartsolos_api().
       Cite this DOI when reporting Redape benchmark numbers.
+  - type: report
+    title: "Africa Soil Profiles Database, Version 1.2"
+    authors:
+      - family-names: "Leenaars"
+        given-names: "J. G. B."
+      - family-names: "van Oostrum"
+        given-names: "A. J. M."
+      - family-names: "Ruiperez Gonzalez"
+        given-names: "M."
+    year: 2014
+    institution:
+      name: "ISRIC -- World Soil Information"
+      city: "Wageningen"
+    number: "ISRIC Report 2014/01"
+    url: "https://isric.org/projects/africa-soil-profiles-database-afsp"
+    notes: >
+      The Africa Soil Profiles (AfSP) database consumed by
+      benchmark_afsp() and load_afsp_pedons(). The bundled cache
+      ships ~120 stratified pedons. Note: AfSP is from ISRIC and is
+      DISTINCT from AfSIS (Africa Soil Information Service); soilKey
+      uses only AfSP, not AfSIS.
+  - type: report
+    title: "LUCAS 2018 SOIL Component: sampling intensity, harmonisation and procedures for the collection of soil samples"
+    authors:
+      - family-names: "Fernandez-Ugalde"
+        given-names: "O."
+      - family-names: "Scarpa"
+        given-names: "S."
+      - family-names: "Orgiazzi"
+        given-names: "A."
+      - family-names: "Panagos"
+        given-names: "P."
+      - family-names: "Van Liedekerke"
+        given-names: "M."
+      - family-names: "Marechal"
+        given-names: "A."
+      - family-names: "Jones"
+        given-names: "A."
+    year: 2022
+    institution:
+      name: "European Commission, Joint Research Centre"
+      city: "Ispra"
+    number: "JRC Technical Report 130218"
+    doi: "10.2760/215013"
+    notes: >
+      The canonical data report for the LUCAS-SOIL-2018 dataset
+      consumed by benchmark_lucas_2018() and load_lucas_pedons().
+      Cite this when reporting LUCAS-based numbers; the Orgiazzi
+      et al. 2018 EJSS paper is the dataset's review companion.
+  - type: article
+    title: "LUCAS Soil, the largest expandable soil dataset for Europe: a review"
+    authors:
+      - family-names: "Orgiazzi"
+        given-names: "A."
+      - family-names: "Ballabio"
+        given-names: "C."
+      - family-names: "Panagos"
+        given-names: "P."
+      - family-names: "Jones"
+        given-names: "A."
+      - family-names: "Fernandez-Ugalde"
+        given-names: "O."
+    journal: "European Journal of Soil Science"
+    volume: 69
+    issue: 1
+    start: 140
+    end: 153
+    year: 2018
+    doi: "10.1111/ejss.12499"

@@ -30,6 +30,34 @@ clearly status-tagged state.
         \code{load_redape_pedons}).
 }
 
+## External-dataset citation pass
+
+In addition to the SmartSolos / Vaz et al. citations (next section),
+v0.9.96 explicitly cites the canonical sources of every external
+dataset \code{soilKey} consumes:
+
+\itemize{
+  \item \strong{AfSP (Africa Soil Profiles Database, ISRIC)} --
+        Leenaars, van Oostrum & Ruiperez Gonzalez (2014). Now in
+        \code{inst/CITATION}, \code{CITATION.cff} \code{references:},
+        and the README References list with an explicit note that
+        soilKey uses AfSP and \emph{not} the separate AfSIS (Africa
+        Soil Information Service) project.
+  \item \strong{LUCAS-SOIL-2018 (EU JRC)} -- both the data report
+        (Fernandez-Ugalde et al. 2022, JRC TR 130218,
+        \code{doi:10.2760/215013}) AND the review paper
+        (Orgiazzi et al. 2018, EJSS 69(1):140-153,
+        \code{doi:10.1111/ejss.12499}). Previous releases cited
+        only the review.
+  \item Existing citations refreshed: SoilGrids, WoSIS, OSSL,
+        KSSL, NCSS-tech \code{aqp}, IUSS WRB 2022, KST 13ed,
+        SiBCS 5 (translated title for the international README).
+}
+
+\code{citation("soilKey")} now renders 7 BibTeX entries: the package
++ 3 Vaz et al. works (SmartSolos journal, SmartSolos conference,
+Redape data) + AfSP + LUCAS data report + LUCAS review.
+
 ## SmartSolos Expert / Vaz et al. citation pass
 
 soilKey's \code{classify_via_smartsolos_api()} bridge wraps Embrapa's
