@@ -496,6 +496,19 @@ reference:
     contents:
       - load_kssl_nasis_sample
 
+  - title: "Africa Soil Profiles (AfSP) WRB benchmark (v0.9.77)"
+    desc: >
+      ISRIC AfSP v1.2 (Leenaars et al. 2014) -- 18,533 georeferenced
+      African profiles, ~7000 with WRB 2006 RSG. Loader + bundled
+      120-pedon stratified sample (5 per RSG x 24 RSGs). Achieves
+      28% Order accuracy with strong Cambisol/Histosol (100%) and
+      Ferralsol/Solonetz (80%) recall.
+    contents:
+      - load_afsp_pedons
+      - load_afsp_sample
+      - benchmark_afsp
+      - wrb06_code_to_rsg
+
   - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
     contents:
       - benchmark_lucas_2018

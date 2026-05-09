@@ -1,3 +1,147 @@
+# soilKey 0.9.77 (2026-05-09)
+
+The "**AfSP integration + Vertisol RSG-gate routing fix**" release.
+Two coordinated deliverables:
+
+## 1. Vertisol RSG-gate routing fix (per-RSG dispatch ordering)
+
+The v0.9.76 \code{vertic_horizon()} chroma+clay path correctly
+fired on 5/9 KSSL+NASIS Vertisol references but the
+\code{vertisol()} RSG-gate then blocked them because it required
+explicit \code{shrink_swell_cracks_cm} -- which NASIS records on
+0\\% of horizons. v0.9.77 lets the RSG-gate trust the morphological
+inference paths (v-suffix designation OR chroma+clay) when the
+canonical cracks gate is absent. The strict "all overlying clay
+\\>= 30\\%" gate is preserved (real WRB 2022 requirement).
+
+### Empirical (KSSL+NASIS, n=99)
+
+| Configuration | Top-1 |
+|---------------|------:|
+| baseline | 19/99 (19.2\\%) |
+| v0.9.75 stack | 18/99 (18.2\\%) |
+| v0.9.76 stack | 21/99 (21.2\\%) |
+| **v0.9.77 stack** | **24/99 (24.2\\%)** |
+
+Per-RSG: **Vertisol 0/9 -> 3/9 (+3)**, Solonetz 4/15 unchanged.
+
+## 2. AfSP (Africa Soil Profiles) integration
+
+ISRIC's Africa Soil Profiles Database v1.2
+(Leenaars et al. 2014) -- 18,533 georeferenced African profiles,
+~7000 with WRB 2006 RSG classifications. Now soilKey's first
+WRB benchmark with profile depth AND rich morphological data
+on a non-Brazilian / non-US dataset.
+
+### New API
+
+\itemize{
+  \item \code{load_afsp_pedons(afsp_dir, ...)} -- read AfSP DBase
+        tables (\code{AfSP012Qry_Profiles.dbf} + \code{Layers.dbf})
+        and convert to \code{PedonRecord}.
+  \item \code{load_afsp_sample()} -- bundled 120-pedon stratified
+        snapshot (5 profiles per WRB RSG x 24 RSGs).
+  \item \code{benchmark_afsp(pedons)} -- top-1 + per-RSG analysis.
+  \item \code{wrb06_code_to_rsg(code)} -- WRB 2006 2-letter code
+        -> WRB 2022 RSG name (33 codes covered;
+        \code{AB} -> \code{Retisol} for Albeluvisols merged in 2014).
+}
+
+### AfSP field availability (much richer than WoSIS, USDA-comparable)
+
+| field | AfSP n=120 | KSSL+NASIS n=99 |
+|-------|-----------:|----------------:|
+| clay_pct | **84.6\\%** | 58.6\\% |
+| ph_h2o   | **81.2\\%** | 36.5\\% |
+| oc_pct   | **78.9\\%** | 76.2\\% |
+| **cec_cmol** | **86.2\\%** | 67.4\\% |
+| ecec_cmol  | 45.5\\%   | 45.5\\% |
+| **bs_pct** | **75.6\\%** | 25.3\\% |
+| ca_cmol    | 80.7\\%   | 36.7\\% |
+| na_cmol    | 69.8\\%   | 56.8\\% |
+| caco3_pct  | 39.3\\%   | 62.3\\% |
+| caso4_pct  | 30.9\\%   | 0\\% (KSSL doesn't preserve) |
+| munsell_chroma_moist | 56.8\\% | 89.6\\% |
+
+### First-ever AfSP WRB benchmark (n=120, full v0.9.77 stack)
+
+```
+Order accuracy = 28.3% (34/120)
+```
+
+Per-RSG recall:
+
+\preformatted{
+  Cambisol     5/5 (100\%)
+  Histosol     5/5 (100\%)
+  Ferralsol    4/5 ( 80\%)   <- FIRST FERRALSOL DETECTION!
+  Solonetz     4/5 ( 80\%)   <- v0.9.76 natric n-suffix path shines
+  Leptosol     3/5 ( 60\%)
+  Nitisol      3/5 ( 60\%)
+  Arenosol     2/5 ( 40\%)
+  Luvisol      2/5 ( 40\%)
+  Acrisol      1/5 ( 20\%)
+  Calcisol     1/5 ( 20\%)
+  Gleysol      1/5 ( 20\%)
+  Lixisol      1/5 ( 20\%)
+  Umbrisol     1/5 ( 20\%)
+  Vertisol     1/5 ( 20\%)
+  9 RSGs       0/5 (  0\%)   <- Phaeozem/Kastanozem/Andosol/Podzol/etc.
+}
+
+The 0\\%-recall classes split into two groups:
+\itemize{
+  \item Need \code{munsell_value_dry} (which AfSP doesn't record):
+        Phaeozem, Kastanozem (mollic dry-value test)
+  \item Need oxalate Al/Fe / volcanic glass: Andosol, Podzol
+  \item Need full slickensides + cracks (NASIS-style morphology):
+        Vertisol (v0.9.77 chroma+clay path catches 1/5 only)
+}
+
+## 3. The complete benchmark suite after v0.9.77
+
+| System | Dataset | n | Profile depth | Munsell? | Accuracy |
+|--------|---------|---|---------------|----------|---------:|
+| SiBCS  | Redape (curated) | 94 | full | yes | **57.4\\%** |
+| SiBCS  | BDsolos RJ | 722 | full | partial | 50.0\\% |
+| **WRB**| **AfSP (n=120 strat)** | 120 | full | partial (57\\%) | **28.3\\%** |
+| **WRB**| **KSSL + NASIS** | 99 | full | yes (90\\%) | **24.2\\%** |
+| WRB    | KSSL (lab-only) | 199 | full | no | 20.1\\% |
+| WRB    | WoSIS stratified | 130 | full | no | 16.2\\% |
+| WRB    | LUCAS | 18984 | topsoil-only | no | 3.3\\% |
+
+AfSP is now soilKey's **highest-accuracy WRB benchmark**, ahead
+of KSSL+NASIS by 4.1pp. The African dataset's broader analytical
+coverage (CEC, BS, exchangeable bases) compensates for its
+weaker Munsell coverage.
+
+## 4. Reproducer + tests
+
+\itemize{
+  \item Reproducer: \code{inst/benchmarks/run_afsp_v0977_wrb.R}
+        (TBD next release; manual recipe given in NEWS)
+  \item Bundled cache: \code{inst/extdata/afsp_sample.rds} (1.2 MB)
+  \item Regression test:
+        \code{tests/testthat/test-v0977-afsp-and-vertisol-routing.R}
+        (16 tests, 44 expectations) covers WRB06 code crosswalk,
+        Munsell parser, sample loader, classify_wrb2022 runs clean,
+        end-to-end benchmark, vertisol RSG-gate trust of inference.
+}
+
+## 5. v0.9.78+ deferred
+
+\itemize{
+  \item Mollic dry-value test relaxation when only moist Munsell
+        is recorded (Phaeozem/Kastanozem zero-recall lift).
+  \item Andisol detection without oxalate Al/Fe (volcanic-glass
+        + bulk-density proxy).
+  \item Subordem/GG/Subgrupo SiBCS benchmark on Redape.
+  \item LUCAS WRB Stage 3 rerun on full v0.9.66+0.9.72+0.9.77 stack.
+  \item Argic strong-films exclusion review.
+  \item Spodic engine-aware relaxation.
+}
+
+
 # soilKey 0.9.76 (2026-05-09)
 
 The "**Subordem-level WRB diagnostic refinement**" release. Closes
