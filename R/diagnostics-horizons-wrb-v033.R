@@ -333,11 +333,60 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
     }
   }
 
+  # v0.9.76 -- high-clay + low-chroma + carbonate path (opt-in).
+  # Field-described USDA Aquerts / Torrerts profiles (KSSL/NASIS)
+  # often have very high clay (50-70%) and low Munsell chroma (<= 2)
+  # throughout, plus carbonate accumulation (Bk* designation), but
+  # neither v-suffix nor recorded slickensides because the lab/NASIS
+  # tables don't preserve the field-observed shrink-swell features.
+  # This path corroborates vertic morphology from these proxies.
+  chroma_clay_path <- list(passed = NA, layers = integer(0), source = "off")
+  chroma_inferred <- integer(0)
+  chroma_clay_enabled <- isTRUE(
+    getOption("soilKey.vertic_chroma_clay_inference", default = FALSE))
+  if (chroma_clay_enabled && !isTRUE(agg_canonical$passed) &&
+        !isTRUE(cole_path$passed) && !isTRUE(v_suffix_path$passed)) {
+    chroma <- if (!is.null(h$munsell_chroma_moist)) h$munsell_chroma_moist
+              else rep(NA_real_, nrow(h))
+    desig <- if (!is.null(h$designation)) as.character(h$designation)
+              else rep(NA_character_, nrow(h))
+    high_clay_mask <- !is.na(h$clay_pct) & h$clay_pct >= 50  # very high clay
+    low_chroma_mask <- !is.na(chroma) & chroma <= 2
+    # Subsoil B horizon (with k for carbonate or g for gleyic)
+    subsoil_B <- !is.na(desig) & grepl("^[0-9]?B", desig) &
+                   !is.na(h$top_cm) & h$top_cm >= 20
+    chroma_inferred_mask <- high_clay_mask & low_chroma_mask & subsoil_B
+    chroma_inferred <- which(chroma_inferred_mask)
+    if (length(chroma_inferred) > 0L) {
+      thk <- pmax(h$bottom_cm[chroma_inferred] - h$top_cm[chroma_inferred],
+                    0, na.rm = TRUE)
+      if (sum(thk, na.rm = TRUE) >= min_thickness) {
+        chroma_clay_path <- list(
+          passed = TRUE, layers = chroma_inferred,
+          source = "high_clay_low_chroma_subsoil",
+          details = list(min_clay_in_path = 50,
+                            max_chroma       = 2,
+                            total_thickness_cm = sum(thk, na.rm = TRUE),
+                            matched_designations = desig[chroma_inferred_mask])
+        )
+      } else {
+        chroma_clay_path <- list(
+          passed = FALSE, layers = chroma_inferred,
+          source = "high_clay_low_chroma_thin",
+          details = list(total_thickness_cm = sum(thk, na.rm = TRUE),
+                            min_thickness      = min_thickness)
+        )
+        chroma_inferred <- integer(0)
+      }
+    }
+  }
+
   passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed) ||
-              isTRUE(v_suffix_path$passed)
+              isTRUE(v_suffix_path$passed) || isTRUE(chroma_clay_path$passed)
   layers <- if (isTRUE(agg_canonical$passed)) agg_canonical$layers
             else if (isTRUE(cole_path$passed)) cole_path$layers
             else if (isTRUE(v_suffix_path$passed)) v_suffix_path$layers
+            else if (isTRUE(chroma_clay_path$passed)) chroma_clay_path$layers
             else integer(0)
   missing <- unique(c(agg_canonical$missing,
                        if (length(cole_path) == 0L) "cole_value"))
@@ -351,12 +400,13 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
                 else FALSE,
     layers   = layers,
     evidence = c(tests, list(cole_le_path = cole_path,
-                                designation_inference = v_suffix_path)),
+                                designation_inference = v_suffix_path,
+                                chroma_clay_inference = chroma_clay_path)),
     missing  = missing,
     reference = paste("IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon;",
                        "KST 13ed Ch 16 LE alternative",
-                       if (length(inferred_layers) > 0L)
-                         "[v0.9.72 designation-suffix inference]" else "")
+                       if (length(inferred_layers) > 0L || length(chroma_inferred) > 0L)
+                         "[v0.9.72/76 morphological inference]" else "")
   )
 }
 

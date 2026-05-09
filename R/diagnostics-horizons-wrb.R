@@ -939,14 +939,72 @@ duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 #' sodium accumulation (ESP >= 15\%) within at least one argic layer.
 #' Diagnostic of Solonetz.
 #'
+#' @section v0.9.76 designation + ESP-only inference (opt-in):
+#' Field-described Solonetz profiles in NCSS / KSSL data routinely
+#' reach the natric ESP threshold (computed from
+#' \code{na_cmol / cec_cmol}) without satisfying the strict
+#' \code{argic()} clay-increase test, because surveyors record
+#' \code{Btk}-suffix designations (carbonates dominate the horizon
+#' designation choice) rather than \code{Btn}/\code{Bn} or
+#' \code{clay_pct} is missing.
+#'
+#' With \code{options(soilKey.natric_designation_inference = TRUE)} the
+#' function accepts a layer as natric when the canonical argic test
+#' returns NA or FALSE AND \emph{either}:
+#' \enumerate{
+#'   \item the designation matches \code{[A-Z][a-z0-9]*n} (an \code{n}
+#'         master-letter modifier in the horizon name -- e.g.\
+#'         \code{Btn}, \code{Btnz}, \code{Bn}, the curator's direct
+#'         assertion that natric features are present), OR
+#'   \item ESP >= \code{min_esp} on a B-prefixed subsoil layer
+#'         (\code{top_cm > 20}) AND the layer's pH(H2O) >= 7
+#'         (alkaline -- typical of true natric, excludes acidic Bt
+#'         horizons that happen to read high Na from sea-spray).
+#' }
+#'
+#' Default is \code{FALSE} (canonical behaviour preserved).
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_esp Minimum ESP \% (default 15).
+#' @param min_pH_h2o Minimum pH(H2O) for the ESP-only path
+#'        (default 7.0; alkaline gate to exclude false-positive
+#'        acidic Bt horizons).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 3, Natric horizon.
 #' @export
-natric_horizon <- function(pedon, min_esp = 15) {
+natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
   arg <- argic(pedon)
-  if (!isTRUE(arg$passed)) {
+  designation_inference_enabled <- isTRUE(
+    getOption("soilKey.natric_designation_inference", default = FALSE))
+
+  # ---- canonical path: argic + ESP >= min_esp on argic layers ----
+  if (isTRUE(arg$passed)) {
+    h <- pedon$horizons
+    layers <- arg$layers
+    tests <- list(argic = arg)
+    tests$esp_high <- test_esp_above(h, min_pct = min_esp,
+                                        candidate_layers = layers)
+    layers_passing <- Reduce(intersect, list(arg$layers, tests$esp_high$layers))
+    missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
+    if (is.null(missing)) missing <- character(0)
+    any_test_na <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
+    passed <- if (length(layers_passing) > 0L) TRUE
+              else if (any_test_na && length(missing) > 0L) NA
+              else FALSE
+    if (isTRUE(passed) || !designation_inference_enabled) {
+      return(DiagnosticResult$new(
+        name      = "natric_horizon",
+        passed    = passed,
+        layers    = layers_passing,
+        evidence  = tests,
+        missing   = missing,
+        reference = "IUSS Working Group WRB (2022), Chapter 3, Natric horizon"
+      ))
+    }
+  }
+
+  # ---- v0.9.76 opt-in inference path -------------------------------
+  if (!designation_inference_enabled) {
     return(DiagnosticResult$new(
       name      = "natric_horizon",
       passed    = if (is.na(arg$passed)) NA else FALSE,
@@ -957,30 +1015,44 @@ natric_horizon <- function(pedon, min_esp = 15) {
       notes     = "Profile lacks an argic horizon -- natric inapplicable"
     ))
   }
-
   h <- pedon$horizons
-  layers <- arg$layers
+  desig <- if (!is.null(h$designation)) as.character(h$designation)
+            else rep(NA_character_, nrow(h))
+  esp <- vapply(seq_len(nrow(h)),
+                  function(i) compute_esp(h$na_cmol[i], h$cec_cmol[i]),
+                  numeric(1))
+  ph  <- if (!is.null(h$ph_h2o)) h$ph_h2o else rep(NA_real_, nrow(h))
+  topcm <- if (!is.null(h$top_cm)) h$top_cm else rep(NA_real_, nrow(h))
 
-  tests <- list(argic = arg)
-  tests$esp_high <- test_esp_above(h, min_pct = min_esp,
-                                      candidate_layers = layers)
+  # Path 1: 'n' master-letter modifier in designation
+  has_n_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*n($|[a-z]|[0-9])", desig)
+  # Path 2: high ESP in alkaline subsoil B horizon
+  is_subsoil_B <- !is.na(desig) & grepl("^[0-9]?B", desig) &
+                    !is.na(topcm) & topcm > 20
+  high_esp <- !is.na(esp) & esp >= min_esp
+  alkaline <- !is.na(ph) & ph >= min_pH_h2o
+  esp_alkaline_path <- is_subsoil_B & high_esp & alkaline
 
-  layer_lists <- list(arg$layers, tests$esp_high$layers)
-  layers_passing <- Reduce(intersect, layer_lists)
-  missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
-  if (is.null(missing)) missing <- character(0)
-  any_test_na <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
-  passed <- if (length(layers_passing) > 0L) TRUE
-            else if (any_test_na && length(missing) > 0L) NA
-            else FALSE
+  inferred_layers <- which(has_n_suffix | esp_alkaline_path)
 
+  inference_evidence <- list(
+    n_suffix_match     = which(has_n_suffix),
+    esp_alkaline_match = which(esp_alkaline_path),
+    esp_per_layer      = esp,
+    ph_per_layer       = ph,
+    threshold_esp      = min_esp,
+    threshold_pH       = min_pH_h2o
+  )
+
+  passed_final <- length(inferred_layers) > 0L
   DiagnosticResult$new(
     name      = "natric_horizon",
-    passed    = passed,
-    layers    = layers_passing,
-    evidence  = tests,
-    missing   = missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Natric horizon"
+    passed    = passed_final,
+    layers    = inferred_layers,
+    evidence  = list(argic = arg, designation_inference = inference_evidence),
+    missing   = character(0),
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Natric horizon",
+                       "[v0.9.76 designation + ESP inference]")
   )
 }
 
