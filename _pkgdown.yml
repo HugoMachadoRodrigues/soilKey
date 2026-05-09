@@ -449,6 +449,17 @@ reference:
       - download_bdsolos
       - inspect_bdsolos_csv
 
+  - title: "Argic strong-films audit (v0.9.83)"
+    desc: >
+      Empirical audit of the SiBCS Cap 18 latossolic-vs-argic
+      precedence rule. Extracts the strong-clay-films decision into
+      a reusable helper so the rule can be validated on any
+      benchmark dataset (BDsolos RJ: 0.9% Latossolo false-positive
+      exclusion rate, 37.6% Argissolo correct retention rate).
+    contents:
+      - argic_with_strong_clay_films
+      - audit_argic_strong_films
+
   - title: "FEBR loader (v0.9.57)"
     desc: >
       UFSM Free Brazilian Repository readers (~249 datasets,
