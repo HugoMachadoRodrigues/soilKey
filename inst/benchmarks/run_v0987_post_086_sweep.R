@@ -57,10 +57,10 @@ if (dir.exists(RED_DIR)) {
 }
 
 cat("\n---- 3. KSSL+NASIS (n=99) ----\n")
-fp <- system.file("extdata", "kssl_nasis_sample.rds", package = "soilKey")
-if (!nzchar(fp)) fp <- "inst/extdata/kssl_nasis_sample.rds"
-if (file.exists(fp)) {
-  s <- readRDS(fp)
+# v0.9.91+: must use load_kssl_nasis_sample() so the
+# reference_wrb_from_usda -> reference_wrb alias is applied.
+s <- tryCatch(load_kssl_nasis_sample(), error = function(e) NULL)
+if (!is.null(s)) {
   peds_ks <- s$pedons %||% s
   cat(sprintf("Loaded %d KSSL+NASIS pedons.\n\n", length(peds_ks)))
   for (label in c("default", "engine=aqp", "engine=aqp + andic_proxy + spodic_engine_aware")) {
@@ -125,10 +125,12 @@ if (file.exists(fp)) {
 }
 
 cat("\n---- 5. WoSIS stratified (n=130) ----\n")
-fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
-if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
-if (file.exists(fp)) {
-  s <- readRDS(fp)
+# v0.9.91+: must use load_wosis_stratified_sample() so the
+# wosis_rsg -> reference_wrb alias is applied. Reading the RDS
+# directly bypasses the alias and benchmark loops report 0/0
+# because reference_wrb is NULL on every pedon.
+s <- tryCatch(load_wosis_stratified_sample(), error = function(e) NULL)
+if (!is.null(s)) {
   peds_w <- s$pedons %||% s
   cat(sprintf("Loaded %d WoSIS stratified pedons.\n\n", length(peds_w)))
   for (label in c("default", "engine=aqp + opt-ins")) {

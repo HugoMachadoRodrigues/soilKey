@@ -1,0 +1,46 @@
+==============================================================
+v0.9.87 cumulative benchmark sweep (post v0.9.86 stack)
+==============================================================
+
+---- 1. BDsolos RJ (n=722 with 114 Lat / 232 Arg / 90 Cam / 270 Neo) ----
+Loaded 722 BDsolos RJ pedons.
+
+  [default canonical] SiBCS Order accuracy = 40.3% (286 / 710 in_scope)
+    Latossolo recall: 17 / 114 (14.9%)
+  [engine=aqp] SiBCS Order accuracy = 46.8% (332 / 710 in_scope)
+    Latossolo recall: 33 / 114 (28.9%)
+
+---- 2. Redape (94 SiBCS, 4 levels) ----
+Loaded 94 Redape pedons.
+
+  [default canonical]
+    level=order     acc= 45.7% (43 / 94)
+    level=subordem  acc= 30.9% (29 / 94)
+    level=gde_grupo acc= 29.1% (25 / 86)
+    level=subgrupo  acc= 15.1% (13 / 86)
+  [engine=aqp + opt-ins]
+    level=order     acc= 58.5% (55 / 94)
+    level=subordem  acc= 39.4% (37 / 94)
+    level=gde_grupo acc= 35.2% (31 / 88)
+    level=subgrupo  acc= 25.0% (22 / 88)
+
+---- 3. KSSL+NASIS (n=99) ----
+Loaded 99 KSSL+NASIS pedons.
+
+  [default                                           ] WRB acc = 21.2% (21 / 99)
+  [engine=aqp                                        ] WRB acc = 24.2% (24 / 99)
+  [engine=aqp + andic_proxy + spodic_engine_aware    ] WRB acc = 24.2% (24 / 99)
+
+---- 4. AfSP (n=120) ----
+Loaded 120 AfSP pedons.
+
+  [default                                           ] WRB acc = 21.7% (26 / 120)
+  [engine=aqp + andic_proxy + extend                 ] WRB acc = 30.8% (37 / 120)
+
+---- 5. WoSIS stratified (n=130) ----
+Loaded 130 WoSIS stratified pedons.
+
+  [default                       ] WRB acc = 17.7% (23 / 130)
+  [engine=aqp + opt-ins          ] WRB acc = 18.5% (24 / 130)
+
+[v0.9.87 sweep] DONE
