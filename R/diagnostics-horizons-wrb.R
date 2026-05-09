@@ -98,6 +98,41 @@ argic <- function(pedon, min_thickness = 7.5,
     res <- argic_aqp(pedon, require_t = rt)
     res$reference <- sprintf("%s [engine=aqp, system=%s]",
                                  res$reference, system)
+    # v0.9.90: apply the designation-inference fallback when the
+    # canonical aqp test failed AND engine="aqp" implies the user
+    # accepts data-quality-aware morphology paths.
+    if (!isTRUE(res$passed)) {
+      designation_inference_opt <- getOption(
+        "soilKey.argic_designation_inference", NULL)
+      use_inference <- if (!is.null(designation_inference_opt)) {
+        isTRUE(designation_inference_opt)
+      } else {
+        TRUE
+      }
+      if (use_inference) {
+        h <- pedon$horizons
+        desg_chr <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+        films    <- as.character(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+        has_bt    <- !is.na(desg_chr) & grepl("^Bt", desg_chr)
+        has_films <- !is.na(films)    & nzchar(trimws(films))
+        deep      <- !is.na(h$top_cm) & h$top_cm > 25
+        inferred_layers <- which(has_bt & has_films & deep)
+        if (length(inferred_layers) > 0L) {
+          ev <- res$evidence %||% list()
+          ev$designation_inference <- list(
+            passed = TRUE, layers = inferred_layers,
+            details = list(source = "engine_aqp_bt_with_films",
+                              note   = paste0("v0.9.90: aqp argic test failed but ",
+                                               "Bt designation + clay films + ",
+                                               "subsoil depth accepted as argic ",
+                                               "morphology"))
+          )
+          res$evidence <- ev
+          res$passed <- TRUE
+          res$layers <- inferred_layers
+        }
+      }
+    }
     return(res)
   }
   h <- pedon$horizons
@@ -122,10 +157,55 @@ argic <- function(pedon, min_thickness = 7.5,
     exclusions  = "not_albeluvic"
   )
 
+  # v0.9.90 -- Designation-inference fallback (opt-in, auto-on under
+  # engine="aqp"). BDsolos / SOTERLAC profiles routinely report only 2
+  # depth samples (a topsoil A and a deep B at, say, 50-150 cm) so the
+  # numeric clay-increase test undercounts the actual A->B clay gradient.
+  # Surveyors who already labelled the deep B as "Bt*" and recorded
+  # ANY clay films qualifier are signalling argic by morphology even
+  # when the 2-point clay difference falls below the canonical
+  # thresholds. Accept those layers as argic when:
+  #   * canonical clay-increase failed at this layer, AND
+  #   * designation matches "Bt" prefix, AND
+  #   * clay_films_amount has a non-empty qualifier, AND
+  #   * top_cm > 25 (subsoil context, not topsoil).
+  designation_inference_opt <- getOption(
+    "soilKey.argic_designation_inference", NULL)
+  designation_inference <- if (!is.null(designation_inference_opt)) {
+    isTRUE(designation_inference_opt)
+  } else {
+    identical(getOption("soilKey.diagnostic_engine", "soilkey"), "aqp")
+  }
+  inferred_layers <- integer(0)
+  if (designation_inference && !isTRUE(agg$passed)) {
+    desg_chr <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+    films    <- as.character(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+    has_bt    <- !is.na(desg_chr) & grepl("^Bt", desg_chr)
+    has_films <- !is.na(films)    & nzchar(trimws(films))
+    deep      <- !is.na(h$top_cm) & h$top_cm > 25
+    inferred_layers <- which(has_bt & has_films & deep)
+    if (length(inferred_layers) > 0L) {
+      tests$designation_inference <- list(
+        passed = TRUE, layers = inferred_layers,
+        details = list(source = "engine_aqp_bt_with_films",
+                          note   = paste0("v0.9.90: clay-increase test failed but ",
+                                           "Bt designation + clay films + subsoil ",
+                                           "depth accepted as argic morphology"))
+      )
+    }
+  }
+  if (length(inferred_layers) > 0L) {
+    final_layers <- union(agg$layers, inferred_layers)
+    final_passed <- TRUE
+  } else {
+    final_layers <- agg$layers
+    final_passed <- agg$passed
+  }
+
   DiagnosticResult$new(
     name      = "argic",
-    passed    = agg$passed,
-    layers    = agg$layers,
+    passed    = final_passed,
+    layers    = final_layers,
     evidence  = tests,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Argic horizon",
