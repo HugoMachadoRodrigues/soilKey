@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.87</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.88</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,29 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.88" id="soilkey-0988-2026-05-09">soilKey 0.9.88 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0988-2026-05-09"></a></h2>
+<p>The “<strong>WoSIS stratified reference_wrb alias</strong>” release. Bug fix: the v0.9.87 cumulative sweep reported  in_scope on WoSIS stratified because the bundled cache stores the WRB Reference Soil Group label in , NOT in  (the canonical field used by KSSL / AfSP / Redape pedons). v0.9.88 adds a one-line alias inside  so generic benchmark loops that read  now work off-the-shelf on WoSIS too.</p>
+<div class="section level3">
+<h3 id="fix-0-9-88">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-88"></a></h3>
+<p> now post-processes its result to populate  from  on every pedon (only when  is , so explicit annotations are preserved). The original  slot is kept unchanged for back-compat with code that already reads it directly.</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-effect-on-wosis-stratified-n--0-9-88">Empirical effect on WoSIS stratified (n = 130)<a class="anchor" aria-label="anchor" href="#empirical-effect-on-wosis-stratified-n--0-9-88"></a></h3>
+<p>Before v0.9.88, generic WRB benchmark loops returned 0 / 0 because  was  on every pedon – the benchmark code skipped them all in the “in scope” filter.</p>
+<table class="table"><colgroup><col width="75%"><col width="24%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">WRB Order accuracy</th>
+</tr></thead><tbody><tr><td>default canonical (engine = “soilkey”, no opt-ins)</td>
+<td align="right">17.7\% (23 / 130)</td>
+</tr><tr><td>engine = “aqp” + andic_proxy + extend + gleyic inference</td>
+<td align="right">19.2\% (25 / 130)</td>
+</tr></tbody></table><p>This is the FIRST honest WRB benchmark number on WoSIS stratified in the package’s history; the n = 130 stratified sample (5 pedons across 26 RSGs) is now usable from  loops without any custom field-mapping code.</p>
+</div>
+<div class="section level3">
+<h3 id="regression-test-0-9-88">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-88"></a></h3>
+<p> (4 tests, 9 expectations): every loaded pedon has non-NA ;  mirrors  verbatim; existing  is not overwritten by the alias logic; default canonical WRB accuracy on the bundled sample is strictly &gt; 10 correct (regression guard at the 17.7\% / 23 hit baseline).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.87" id="soilkey-0987-2026-05-09">soilKey 0.9.87 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0987-2026-05-09"></a></h2>
 <p>The “<strong>post v0.9.81-86 cumulative benchmark sweep</strong>” release. Pure docs / no code change. Refreshes the canonical benchmark suite table in NEWS to reflect the cumulative empirical state after the six v0.9.81-v0.9.86 fixes have all landed on . Adds an  script that reproduces every number in this NEWS entry from a clean session.</p>

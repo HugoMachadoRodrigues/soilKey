@@ -1,5 +1,42 @@
 # Changelog
 
+## soilKey 0.9.88 (2026-05-09)
+
+The “**WoSIS stratified reference_wrb alias**” release. Bug fix: the
+v0.9.87 cumulative sweep reported in_scope on WoSIS stratified because
+the bundled cache stores the WRB Reference Soil Group label in , NOT in
+(the canonical field used by KSSL / AfSP / Redape pedons). v0.9.88 adds
+a one-line alias inside so generic benchmark loops that read now work
+off-the-shelf on WoSIS too.
+
+### Fix
+
+now post-processes its result to populate from on every pedon (only when
+is , so explicit annotations are preserved). The original slot is kept
+unchanged for back-compat with code that already reads it directly.
+
+### Empirical effect on WoSIS stratified (n = 130)
+
+Before v0.9.88, generic WRB benchmark loops returned 0 / 0 because was
+on every pedon – the benchmark code skipped them all in the “in scope”
+filter.
+
+| configuration | WRB Order accuracy |
+|----|---:|
+| default canonical (engine = “soilkey”, no opt-ins) | 17.7\\ (23 / 130) |
+| engine = “aqp” + andic_proxy + extend + gleyic inference | 19.2\\ (25 / 130) |
+
+This is the FIRST honest WRB benchmark number on WoSIS stratified in the
+package’s history; the n = 130 stratified sample (5 pedons across 26
+RSGs) is now usable from loops without any custom field-mapping code.
+
+### Regression test
+
+(4 tests, 9 expectations): every loaded pedon has non-NA ; mirrors
+verbatim; existing is not overwritten by the alias logic; default
+canonical WRB accuracy on the bundled sample is strictly \> 10 correct
+(regression guard at the 17.7\\ / 23 hit baseline).
+
 ## soilKey 0.9.87 (2026-05-09)
 
 The “**post v0.9.81-86 cumulative benchmark sweep**” release. Pure docs
