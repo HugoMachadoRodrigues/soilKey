@@ -1,3 +1,128 @@
+# soilKey 0.9.73 (2026-05-09)
+
+The "**WoSIS stratified WRB benchmark**" release. Closes the gap
+identified by the user during the v0.9.72 cycle: until now soilKey
+had a curated Brazilian SiBCS gold standard (Redape, n=94) but no
+analogous global WRB benchmark with profile depth -- LUCAS only
+ships topsoil 0-20 cm samples. WoSIS (ISRIC) was the obvious
+candidate but the unfiltered live GraphQL endpoint times out for
+pulls larger than ~50 profiles, and the bundled SA snapshot
+(\code{load_wosis_sample()}) has analytical-data ceiling
+(texture + pH + OC only).
+
+## 1. Stratified RSG-balanced cache
+
+\code{load_wosis_stratified_sample()} returns a new bundled
+130-profile cache pulled 2026-05-09: **5 profiles per WRB RSG x
+26 RSGs** (Acrisol, Andosol, Arenosol, Calcisol, Cambisol,
+Chernozem, Cryosol, Ferralsol, Fluvisol, Gleysol, Gypsisol,
+Histosol, Kastanozem, Leptosol, Luvisol, Nitisol, Phaeozem,
+Planosol, Plinthosol, Podzol, Regosol, Solonchak, Solonetz,
+Stagnosol, Umbrisol, Vertisol).
+
+Strategy: RSG-filtered queries (\code{wrb_rsg = "<one>"},
+\code{n_max = 5}) ARE tractable on the live GraphQL endpoint;
+the standard unfiltered \code{continent = "South America"} bulk
+pull is what hits the server-side statement timeout. Pulling per
+RSG also gives stratified rather than continent-skewed coverage,
+plus richer analytical attributes:
+
+| field | SA snapshot (n=40) | stratified (n=130) |
+|------|-------------------:|-------------------:|
+| clay\\_pct | 100% | 89% |
+| ph\\_h2o  | 100% | 90% |
+| oc\\_pct  |  97% | 80% |
+| **cec\\_cmol** | 0% | **26%** |
+| **ecec\\_cmol** | 0% | **37%** |
+| **bs\\_pct**  | 0% | **14%** |
+| **caco3\\_pct** | 7% | **26%** |
+| coarse\\_fragments\\_pct | (n/a) | **87%** |
+
+## 2. First-ever WRB benchmark with profile depth
+
+| Configuration | Top-1 |
+|---------------|------:|
+| baseline (no opt-ins) | 22/130 (16.9%) |
+| +aqp engine | 21/130 (16.2%) |
+| +aqp + ECEC + tex-morph (v0.9.69-70) | 21/130 (16.2%) |
+| +full v0.9.69-72 stack (g/f/v inferences) | 21/130 (16.2%) |
+
+Per-RSG recall (full v0.9.72 stack, n=5 each):
+
+\preformatted{
+  Histosol     5/5 (100\%)
+  Leptosol     4/5 ( 80\%)   <- v0.9.66 leptic gate lift (+3)
+  Arenosol     4/5 ( 80\%)
+  Cambisol     3/5 ( 60\%)
+  Calcisol     2/5 ( 40\%)
+  Regosol      2/5 ( 40\%)
+  Acrisol      1/5 ( 20\%)
+  18 RSGs      0/5 (  0\%)   <- WoSIS data ceiling
+}
+
+## 3. Honest interpretation: WoSIS data ceiling
+
+The 17% accuracy ceiling is **not a soilKey logic failure** -- it's
+a fundamental limit of what WoSIS exposes:
+
+- **Vertisols** need slickensides + cracks + COLE -- WoSIS records
+  none. Even the v0.9.72 v-suffix designation inference cannot
+  fire because WoSIS designations are stripped to A/B/Bt/C
+  without lowercase modifiers.
+- **Plinthosols** need plinthite\\_pct -- not in WoSIS. Same
+  designation issue blocks v0.9.72 f-suffix path.
+- **Gleysols** need redoximorphic\\_features\\_pct or g-suffix --
+  neither in WoSIS.
+- **Solonetz** need ESP > 15 -- WoSIS has CEC for 26% but \\code{na\\_cmol}
+  for 0%.
+- **Phaeozem / Kastanozem / Chernozem** need mollic colour test
+  (Munsell value/chroma) -- WoSIS records 0% Munsell.
+- **Podzols** need spodic Al/Fe oxalate -- not in WoSIS.
+- **Andosols** need Al + Fe oxalate, P retention, bulk density --
+  P retention 1%, BD 2% in WoSIS.
+- **Luvisols** need argic + BS > 50% -- BS only 14% available.
+
+The four well-handled RSGs (**Histosol 100%, Leptosol 80%,
+Arenosol 80%, Cambisol 60%**) are exactly those where WoSIS data
+suffices: OC for Histosol, coarse-fragments + designation for
+Leptosol (lifted by v0.9.66!), texture for Arenosol, fall-through
+for Cambisol.
+
+## 4. Why this matters
+
+The user's strategic question during v0.9.72 was: do we have a
+WRB benchmark with profile depth equivalent to Redape for SiBCS?
+**Now yes** -- WoSIS stratified sample + KSSL/NASIS (already
+integrated in v08) cover it. The catch is the data ceiling: WoSIS
+is a global breadth dataset, not a deep-attribute one.
+
+## 5. Reproducer
+
+\code{inst/benchmarks/run_wosis_v0973_stratified.R} reproduces the
+ladder; \code{inst/benchmarks/reports/wosis_v0973_stratified_2026-05-08.md}
+captures the per-RSG numbers.
+
+## 6. Regression test
+
+\code{tests/testthat/test-v0973-wosis-stratified.R} (4 tests, 12
+expectations): asserts the cache loads, has 130 pedons in 26 RSGs
+with 5 each, exposes richer analytical fields than the SA snapshot,
+and \code{classify\\_wrb2022()} runs without error on every pedon.
+
+## 7. v0.9.74+ deferred
+
+\itemize{
+  \item KSSL/NASIS-driven WRB benchmark with full lab data
+        (already integrated in v08, needs WRB-cross-walk).
+  \item LUCAS WRB Stage 3 rerun on full v0.9.66+0.9.72 stack.
+  \item Subordem / Grande Grupo SiBCS benchmark on Redape (v0.9.71
+        only did Order).
+  \item Argic strong-films exclusion review.
+  \item Spodic engine-aware relaxation.
+  \item Per-RSG dispatch ordering at \code{run_taxonomic_key} level.
+}
+
+
 # soilKey 0.9.72 (2026-05-09)
 
 The "**designation-suffix morphological inference**" release. Closes
