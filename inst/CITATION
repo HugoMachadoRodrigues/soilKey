@@ -29,3 +29,71 @@ bibentry(
     sep = ""
   )
 )
+
+
+# ---- SmartSolos Expert API + Vaz et al. curated Redape dataset ----
+# When using classify_via_smartsolos_api() or benchmark_redape(),
+# please ALSO cite the underlying Embrapa work by Glauber J. Vaz
+# and colleagues:
+
+bibentry(
+  bibtype  = "Article",
+  title    = "SmartSolos Expert: an expert system for Brazilian soil classification",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("L. de F. da", "Silva Neto"),
+    person("Jayme", "G. A. Barbedo")
+  ),
+  journal  = "Smart Agricultural Technology",
+  year     = 2025,
+  volume   = 10,
+  pages    = "100735",
+  doi      = "10.1016/j.atech.2024.100735",
+  url      = "https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025). ",
+    "SmartSolos Expert: an expert system for Brazilian soil ",
+    "classification. Smart Agricultural Technology, 10, 100735. ",
+    "doi:10.1016/j.atech.2024.100735"
+  )
+)
+
+bibentry(
+  bibtype  = "InProceedings",
+  title    = "Uma API para a classificacao de solos do Brasil",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("L. de F. da", "Silva Neto"),
+    person("R. N.", "Lima"),
+    person("S. R. de M.", "Oliveira")
+  ),
+  booktitle = "Anais do 12 Congresso Brasileiro de Agroinformatica (SBIAGRO 2019)",
+  year     = 2019,
+  pages    = "63--72",
+  address  = "Indaiatuba, SP, Brazil",
+  publisher = "SBIAGRO",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira, ",
+    "S. R. de M. (2019). Uma API para a classificacao de solos do ",
+    "Brasil. In: 12 Congresso Brasileiro de Agroinformatica, ",
+    "Indaiatuba. Anais, p. 63-72. SBIAGRO, Ponta Grossa."
+  )
+)
+
+bibentry(
+  bibtype  = "Misc",
+  title    = "Brazilian soil data for taxonomic classification",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("A. F.", "Silva Jr"),
+    person("L. de F. da", "Silva Neto")
+  ),
+  year     = 2023,
+  doi      = "10.48432/PYKKA7",
+  note     = "Redape (Embrapa Research Data Repository), V1",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023). ",
+    "Brazilian soil data for taxonomic classification. Redape, V1. ",
+    "doi:10.48432/PYKKA7"
+  )
+)
