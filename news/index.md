@@ -1,5 +1,58 @@
 # Changelog
 
+## soilKey 0.9.83 (2026-05-09)
+
+The “**argic strong-films audit + B_latossolico refactor**” release.
+Reviews the SiBCS Cap 18 latossolic-vs-argic precedence rule wired into
+since v0.9.61, extracts the strong-films decision into a reusable
+helper, and ships an empirical audit on BDsolos RJ. Behaviour is
+bit-for-bit identical to v0.9.82 main on the n = 722 RJ benchmark.
+
+### Refactor
+
+delegates the strong-films decision to a new helper so the same logic
+can be (a) audited on any benchmark dataset without re-running the full
+SiBCS classification and (b) iterated independently from the calling
+routine.
+
+(internal) is the low-level Portuguese accent-aware matcher. Strong
+qualifiers: / / / (case-insensitive, A-class accents stripped to ASCII
+so / also match). Weak qualifiers: / / / .
+
+### New exported functions
+
+### Empirical audit on BDsolos RJ (n = 722)
+
+| Reference SiBCS class | n | argic passes | strong films at argic | would exclude from Latossolo |
+|----|---:|---:|---:|---:|
+| LATOSSOLO\* (n_lat = 115) | 115 | ~ 27 | **1** | **0.9\\** |
+| ARGISSOLO\* (n_arg = 186) | 186 | ~ 140 | **70** | **37.6\\** |
+
+The audit confirms the strong-films rule is doing exactly what the SiBCS
+Cap 18 specification asks of it:
+
+### Bit-for-bit preservation
+
+confusion matrix on BDsolos RJ (n = 722, n_lat = 114, n_arg = 232) is
+identical to v0.9.82 main:
+
+                 predicted
+    reference    Latossolos Argissolos Cambissolos Neossolos
+      Latossolos         17         17          42        38
+      Argissolos          5        166           1        60
+
+Latossolo accuracy 14.9\\ (17/114), Argissolo accuracy 69.2\\ (166/240)
+– both unchanged.
+
+### Regression test
+
+(15 tests, 50 expectations): low-level token matcher (empty / NA / weak
+/ strong / mixed-language / accent-stripped), pedon-level wrapper
+(strong-films firing on Bt with comum/abundante; FALSE on weak; FALSE on
+missing), audit data.frame schema and reference filter, B_latossolico
+bit-for-bit confusion preservation on BDsolos RJ, and an upper-bound
+regression guard ( on RJ).
+
 ## soilKey 0.9.82 (2026-05-09)
 
 The “**LUCAS Stage 3 full-stack rerun**” release. Ships the benchmark

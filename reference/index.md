@@ -3291,6 +3291,19 @@ Cross-validation against Embrapa’s PROLOG SiBCS classifier.
 - [`inspect_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.md)
   : Diagnostic inspection of a BDsolos CSV before loading
 
+## Argic strong-films audit (v0.9.83)
+
+Empirical audit of the SiBCS Cap 18 latossolic-vs-argic precedence rule.
+Extracts the strong-clay-films decision into a reusable helper so the
+rule can be validated on any benchmark dataset (BDsolos RJ: 0.9%
+Latossolo false-positive exclusion rate, 37.6% Argissolo correct
+retention rate).
+
+- [`argic_with_strong_clay_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_with_strong_clay_films.md)
+  : Test whether a pedon's argic horizon has strong clay films
+- [`audit_argic_strong_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/audit_argic_strong_films.md)
+  : Audit the strong-clay-films exclusion across a list of pedons
+
 ## FEBR loader (v0.9.57)
 
 UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).
