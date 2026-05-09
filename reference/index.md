@@ -2898,6 +2898,9 @@ plus auxiliaries) used in the test suite.
   : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
   objects
 
+- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
+  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
+
 - [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
   : Load a soilKey rule set (YAML)
 
@@ -3273,6 +3276,19 @@ UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).
   : Load FEBR datasets as a list of PedonRecord objects
 - [`febr_index_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.md)
   : Curated index of FEBR datasets that carry Munsell colors
+
+## Redape curated GeoTab dataset (v0.9.71)
+
+Embrapa Redape repository (DOI 10.48432/PYKKA7) – 96 hand- reviewed
+Brazilian soil profiles, suitable as a gold-standard benchmark for SiBCS
+classification.
+
+- [`download_redape_dataset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_redape_dataset.md)
+  : Download the curated Redape GeoTab dataset (Vaz et al 2023)
+- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
+  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
+- [`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
+  : Benchmark soilKey SiBCS predictions against the Redape gold standard
 
 ## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
 

@@ -105,6 +105,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.html</loc></url>
@@ -214,6 +215,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-FEBR_TO_HORIZON_MAP.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-GLEYIC_HUE_REGEX.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-KST13_CACHE.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-REDAPE_API_BASE.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-REDAPE_GEOTAB_DOI.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SIBCS_LEGACY_ORDER_MAP.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SMARTSOLOS_DRAINAGE_SCALE.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILGRIDS_TO_HORIZON_MAP.html</loc></url>
@@ -276,6 +279,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_weighted_mean.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_horizon_to_soilkey.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_item_to_pedon.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_read_json.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_classification_block.html</loc></url>
@@ -308,6 +314,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/download_redape_dataset.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duric_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/duripa.html</loc></url>
@@ -472,6 +479,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_soil_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_schema.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.html</loc></url>

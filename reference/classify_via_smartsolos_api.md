@@ -92,12 +92,31 @@ Authentication: register a free AgroAPI account at
 SmartSolosExpert API and generate an access token. Pass it via the
 `AGROAPI_TOKEN` environment variable or the `api_key` argument.
 
+## References
+
+Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025).
+SmartSolos Expert: an expert system for Brazilian soil classification.
+*Smart Agricultural Technology*, 10, 100735.
+[doi:10.1016/j.atech.2024.100735](https://doi.org/10.1016/j.atech.2024.100735)
+.
+
+Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira, S. R. de
+M. (2019). Uma API para a classificacao de solos do Brasil. In *Anais do
+12 Congresso Brasileiro de Agroinformatica* (SBIAGRO 2019), pp. 63-72.
+Ponta Grossa.
+
+Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023). Brazilian
+soil data for taxonomic classification. *Redape*, V1.
+[doi:10.48432/PYKKA7](https://doi.org/10.48432/PYKKA7) .
+
 ## See also
 
 [`classify_sibcs`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
 for the local PROLOG-free classifier;
 [`compare_smartsolos`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_smartsolos.md)
-for a side-by-side comparison helper.
+for a side-by-side comparison helper;
+[`benchmark_redape`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
+for the gold-standard curated dataset published by the same authors.
 
 ## Examples
 

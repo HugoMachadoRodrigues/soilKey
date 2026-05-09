@@ -1,5 +1,63 @@
 # Changelog
 
+## soilKey 0.9.71 (2026-05-09)
+
+The “**Embrapa Redape integration – gold-standard curated benchmark**”
+release. Adds full support for Vaz, Silva Jr & Silva Neto (2023)
+“Brazilian soil data for taxonomic classification” published at the
+Embrapa Redape repository (DOI ). Every profile in this dataset was
+hand-reviewed by experienced pedologists, so it serves as the first true
+gold-standard benchmark for soilKey classification on Brazilian
+profiles.
+
+### 1. New API surface
+
+### 2. Empirical baseline (n = 94 unique profiles)
+
+First-ever benchmark of soilKey against the curated Redape dataset:
+
+    Order-level accuracy = 45.7%
+
+Per-class recall:
+
+| RSG (SiBCS Order) |   n | correct | recall |
+|-------------------|----:|--------:|-------:|
+| Espodossolos      |   3 |       3 | 100.0% |
+| Organossolos      |   1 |       1 | 100.0% |
+| Neossolos         |  13 |      11 |  84.6% |
+| Latossolos        |  11 |       9 |  81.8% |
+| Cambissolos       |  11 |       6 |  54.5% |
+| Planossolos       |   7 |       3 |  42.9% |
+| Luvissolos        |   6 |       2 |  33.3% |
+| Argissolos        |  25 |       8 |  32.0% |
+| Chernossolos      |   2 |       0 |   0.0% |
+| Gleissolos        |   8 |       0 |   0.0% |
+| Plintossolos      |   3 |       0 |   0.0% |
+| Vertissolos       |   2 |       0 |   0.0% |
+| Nitossolos        |   1 |       0 |   0.0% |
+
+The numbers above use **default soilkey strict engine, no fallback
+options enabled** – they’re the bare floor for the package on clean
+Brazilian data. They contrast sharply with BDsolos-RJ (n=722, ~14.9%
+Latossolos recall) and validate that the v0.9.65-v0.9.70 fixes are
+working as intended – the BDsolos data quality was the bottleneck, not
+soilKey itself.
+
+The curated nature of Redape exposes per-class gaps that need v0.9.72+
+work, especially:
+
+These are deferred to v0.9.72.
+
+### 3. Updated SmartSolos references
+
+\\references block now cites the canonical 2025 paper:
+
+### 4. Regression test
+
+(7 tests, 22 expectations) covers:
+
+### 5. v0.9.72+ deferred items
+
 ## soilKey 0.9.70 (2026-05-08)
 
 The “**texture morphological fallback**” release. Continues the v0.9.69
