@@ -13,7 +13,7 @@ matrix at the requested granularity."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.80</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.81</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,21 @@ from <code><a href="load_redape_pedons.html">load_redape_pedons</a></code>).</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with <code>accuracy</code>, <code>n_compared</code>,
   <code>confusion</code>, <code>per_class_recall</code>, and the per-pedon
-  <code>predictions</code> table.</p>
+  <code>predictions</code> table. <code>predictions</code> now also includes
+  columns <code>ref_norm</code> and <code>pred_norm</code> – the canonical
+  comparison keys – for downstream auditing.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-level-aware-comparison">v0.9.81 level-aware comparison<a class="anchor" aria-label="anchor" href="#v-level-aware-comparison"></a></h2>
+
+
+<p>Earlier versions accepted the <code>level</code> argument but always used
+<code>rsg_or_order</code> for the prediction and the order field for the
+reference, so all four levels reported identical accuracy. v0.9.81
+reads the level-specific slots from <code>res$trace</code> (subordem,
+grande_grupo, subgrupo) and concatenates the matching reference
+fields, applying SiBCS-aware Portuguese pluralisation so the
+comparison key matches the predictor's plural Title Case form.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

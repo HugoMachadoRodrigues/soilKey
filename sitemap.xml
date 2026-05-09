@@ -285,9 +285,14 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_weighted_mean.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_canonical_label.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_compose_ref.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_extract_pred.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_horizon_to_soilkey.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_item_to_pedon.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_pluralise_pt.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_read_json.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_strip_accents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_classification_block.html</loc></url>

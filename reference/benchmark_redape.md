@@ -37,4 +37,16 @@ benchmark_redape(
 ## Value
 
 A list with `accuracy`, `n_compared`, `confusion`, `per_class_recall`,
-and the per-pedon `predictions` table.
+and the per-pedon `predictions` table. `predictions` now also includes
+columns `ref_norm` and `pred_norm` – the canonical comparison keys – for
+downstream auditing.
+
+## v0.9.81 level-aware comparison
+
+Earlier versions accepted the `level` argument but always used
+`rsg_or_order` for the prediction and the order field for the reference,
+so all four levels reported identical accuracy. v0.9.81 reads the
+level-specific slots from `res$trace` (subordem, grande_grupo, subgrupo)
+and concatenates the matching reference fields, applying SiBCS-aware
+Portuguese pluralisation so the comparison key matches the predictor's
+plural Title Case form.
