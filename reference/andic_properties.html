@@ -29,7 +29,7 @@ on (andic OR vitric) at the RSG-gate level (andosol)."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.79</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.80</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,14 @@ on (andic OR vitric) at the RSG-gate level (<code><a href="andosol.html">andosol
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andic_properties</span><span class="op">(</span><span class="va">pedon</span>, min_alfe <span class="op">=</span> <span class="fl">2</span>, max_bd <span class="op">=</span> <span class="fl">0.9</span>, min_p_retention <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andic_properties</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  min_alfe <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  max_bd <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  min_p_retention <span class="op">=</span> <span class="fl">70</span>,</span>
+<span>  min_oc_proxy <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  max_bd_proxy <span class="op">=</span> <span class="fl">0.9</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -113,10 +120,39 @@ path (default 2.0).</p></dd>
 <dd><p>Minimum phosphate retention % for the P
 path (default 70).</p></dd>
 
+
+<dt id="arg-min-oc-proxy">min_oc_proxy<a class="anchor" aria-label="anchor" href="#arg-min-oc-proxy"></a></dt>
+<dd><p>Minimum SOC % for the v0.9.80 OC+BD proxy
+path (default 4.0). Only consulted when the proxy is
+enabled via <code>options(soilKey.andic_oc_bd_proxy = TRUE)</code>.</p></dd>
+
+
+<dt id="arg-max-bd-proxy">max_bd_proxy<a class="anchor" aria-label="anchor" href="#arg-max-bd-proxy"></a></dt>
+<dd><p>Maximum bulk density g/cm^3 for the v0.9.80
+OC+BD proxy path (default 0.9). Only consulted when the
+proxy is enabled.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-oc-bd-proxy-opt-in-">v0.9.80 OC + BD proxy (opt-in)<a class="anchor" aria-label="anchor" href="#v-oc-bd-proxy-opt-in-"></a></h2>
+
+
+<p>Field-described volcanic-ash soils (e.g.\ AfSP, KSSL/NASIS, SOTER)
+routinely lack oxalate Al/Fe and phosphate retention measurements,
+so the canonical paths return <code>NA</code> and Andosols cascade to
+other RSGs. The genetic signature is still detectable from coarser
+data: very high SOC (&gt;= 4-5%) plus low bulk density
+(&lt;= 0.9 g/cm^3) typical of allophanic / Al-humus complexation.</p>
+<p>With <code>options(soilKey.andic_oc_bd_proxy = TRUE)</code> the function
+adds a third path that fires when both canonical paths fail and the
+surface horizon shows <code>oc_pct &gt;= min_oc_proxy</code> AND
+<code>bulk_density_g_cm3 &lt;= max_bd_proxy</code> (or OC alone &gt;= 5% when
+BD is missing). Default is <code>FALSE</code> (canonical behaviour
+preserved).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -19,7 +19,14 @@ diagnostic; Andosols key on (andic OR vitric) at the RSG-gate level
 ## Usage
 
 ``` r
-andic_properties(pedon, min_alfe = 2, max_bd = 0.9, min_p_retention = 70)
+andic_properties(
+  pedon,
+  min_alfe = 2,
+  max_bd = 0.9,
+  min_p_retention = 70,
+  min_oc_proxy = 4,
+  max_bd_proxy = 0.9
+)
 ```
 
 ## Arguments
@@ -41,10 +48,36 @@ andic_properties(pedon, min_alfe = 2, max_bd = 0.9, min_p_retention = 70)
 
   Minimum phosphate retention % for the P path (default 70).
 
+- min_oc_proxy:
+
+  Minimum SOC % for the v0.9.80 OC+BD proxy path (default 4.0). Only
+  consulted when the proxy is enabled via
+  `options(soilKey.andic_oc_bd_proxy = TRUE)`.
+
+- max_bd_proxy:
+
+  Maximum bulk density g/cm^3 for the v0.9.80 OC+BD proxy path (default
+  0.9). Only consulted when the proxy is enabled.
+
 ## Value
 
 A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md).
+
+## v0.9.80 OC + BD proxy (opt-in)
+
+Field-described volcanic-ash soils (e.g.\\ AfSP, KSSL/NASIS, SOTER)
+routinely lack oxalate Al/Fe and phosphate retention measurements, so
+the canonical paths return `NA` and Andosols cascade to other RSGs. The
+genetic signature is still detectable from coarser data: very high SOC
+(\>= 4-5%) plus low bulk density (\<= 0.9 g/cm^3) typical of allophanic
+/ Al-humus complexation.
+
+With `options(soilKey.andic_oc_bd_proxy = TRUE)` the function adds a
+third path that fires when both canonical paths fail and the surface
+horizon shows `oc_pct >= min_oc_proxy` AND
+`bulk_density_g_cm3 <= max_bd_proxy` (or OC alone \>= 5% when BD is
+missing). Default is `FALSE` (canonical behaviour preserved).
 
 ## References
 

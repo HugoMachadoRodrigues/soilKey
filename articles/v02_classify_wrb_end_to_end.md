@@ -96,8 +96,6 @@ res
 #> - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C
 #> - VR: Indeterminate -- missing 1 attribute(s): slickensides
 #> - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m
-#> - AN: Indeterminate -- missing 4 attribute(s): al_ox_pct, fe_ox_pct,
-#> phosphate_retention_pct, volcanic_glass_pct
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
@@ -122,7 +120,7 @@ res
 #> 7. VR Vertisols -- NA (1 attrs missing)
 #> 8. SC Solonchaks -- NA (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
-#> 10. AN Andosols -- NA (4 attrs missing)
+#> 10. AN Andosols -- failed (4 attrs missing)
 #> 11. PZ Podzols -- NA (2 attrs missing)
 #> 12. PT Plinthosols -- NA (1 attrs missing)
 #> 13. PL Planosols -- failed

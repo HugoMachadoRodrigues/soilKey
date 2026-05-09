@@ -1156,7 +1156,7 @@ res_wrb$trace
 #> [1] "Andosols"
 #> 
 #> $AN$passed
-#> [1] NA
+#> [1] FALSE
 #> 
 #> $AN$evidence
 #> $AN$evidence[[1]]
@@ -1164,7 +1164,7 @@ res_wrb$trace
 #> [1] "andosol"
 #> 
 #> $AN$evidence[[1]]$passed
-#> [1] NA
+#> [1] FALSE
 #> 
 #> $AN$evidence[[1]]$layers
 #> integer(0)
@@ -1177,9 +1177,10 @@ res_wrb$trace
 #> $AN$evidence[[1]]$evidence$andic
 #> 
 #> ── DiagnosticResult: andic_properties
-#> Status: NA (insufficient data)
+#> Status: failed
 #> Missing attributes (3): al_ox_pct, fe_ox_pct, phosphate_retention_pct
 #> Sub-tests:
+#> [ NA ] oc_bd_proxy
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Andic properties
 #> 
 #> $AN$evidence[[1]]$evidence$vitric
