@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.86</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.87</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,116 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.87" id="soilkey-0987-2026-05-09">soilKey 0.9.87 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0987-2026-05-09"></a></h2>
+<p>The “<strong>post v0.9.81-86 cumulative benchmark sweep</strong>” release. Pure docs / no code change. Refreshes the canonical benchmark suite table in NEWS to reflect the cumulative empirical state after the six v0.9.81-v0.9.86 fixes have all landed on . Adds an  script that reproduces every number in this NEWS entry from a clean session.</p>
+<div class="section level3">
+<h3 id="cumulative-benchmark-snapshot-v0987-0-9-87">Cumulative benchmark snapshot (v0.9.87, 2026-05-09)<a class="anchor" aria-label="anchor" href="#cumulative-benchmark-snapshot-v0987-0-9-87"></a></h3>
+<div class="section level4">
+<h4 id="sibcs-order-on-bdsolos-rj-n--n_in_scope--0-9-87">SiBCS Order on BDsolos RJ (n = 722; n_in_scope = 710)<a class="anchor" aria-label="anchor" href="#sibcs-order-on-bdsolos-rj-n--n_in_scope--0-9-87"></a></h4>
+<table class="table"><colgroup><col width="60%"><col width="18%"><col width="20%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">Order accuracy</th>
+<th align="right">Latossolo recall</th>
+</tr></thead><tbody><tr><td>default canonical (engine = “soilkey”, no opt-ins)</td>
+<td align="right">40.3\%</td>
+<td align="right">14.9\%</td>
+</tr><tr><td><strong>engine = “aqp” (auto-fallback)</strong></td>
+<td align="right"><strong>44.4\%</strong></td>
+<td align="right"><strong>28.1\%</strong></td>
+</tr></tbody></table></div>
+<div class="section level4">
+<h4 id="sibcs-redape-n--all-levels-0-9-87">SiBCS Redape (n = 94, all 4 levels)<a class="anchor" aria-label="anchor" href="#sibcs-redape-n--all-levels-0-9-87"></a></h4>
+<table class="table"><thead><tr><th>Level</th>
+<th align="right">Default canonical</th>
+<th align="right">engine = “aqp” + opt-ins</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td align="right">45.7\%</td>
+<td align="right"><strong>58.5\%</strong></td>
+</tr><tr><td>Subordem</td>
+<td align="right">30.9\%</td>
+<td align="right">39.4\%</td>
+</tr><tr><td>Grande Grupo</td>
+<td align="right">29.1\%</td>
+<td align="right">35.2\%</td>
+</tr><tr><td>Subgrupo</td>
+<td align="right">15.1\%</td>
+<td align="right">25.0\%</td>
+</tr></tbody></table><p>The “engine + opt-ins” configuration uses  +  + . The v0.9.86 ECEC fallback is auto-enabled by engine=“aqp”.</p>
+</div>
+<div class="section level4">
+<h4 id="wrb-on-ksslnasis-n--0-9-87">WRB on KSSL+NASIS (n = 99)<a class="anchor" aria-label="anchor" href="#wrb-on-ksslnasis-n--0-9-87"></a></h4>
+<table class="table"><colgroup><col width="72%"><col width="27%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">WRB Order accuracy</th>
+</tr></thead><tbody><tr><td>default canonical</td>
+<td align="right">21.2\%</td>
+</tr><tr><td>engine = “aqp”</td>
+<td align="right">24.2\%</td>
+</tr><tr><td>engine = “aqp” + v0.9.84 spodic + v0.9.85 andic</td>
+<td align="right">24.2\%</td>
+</tr></tbody></table><p>(v0.9.84 spodic OC-translocation lifts spodic-test recall from 1/14 to 5/14 Podzol references but the cascade puts those into the same ambiguity bucket; the WRB Order accuracy moves at the +3pp engine=aqp margin.)</p>
+</div>
+<div class="section level4">
+<h4 id="wrb-on-afsp-n--0-9-87">WRB on AfSP (n = 120)<a class="anchor" aria-label="anchor" href="#wrb-on-afsp-n--0-9-87"></a></h4>
+<table class="table"><colgroup><col width="78%"><col width="21%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">WRB Order accuracy</th>
+</tr></thead><tbody><tr><td>default canonical</td>
+<td align="right">21.7\%</td>
+</tr><tr><td><strong>engine = “aqp” + andic_oc_bd_proxy + extend + gleyic inference</strong></td>
+<td align="right"><strong>30.8\%</strong></td>
+</tr></tbody></table><p>The +9.1pp lift is driven by v0.9.85 (Andisol RSG-gate buried-exclusion + proxy thickness extension) and v0.9.72 gleyic-suffix inference.</p>
+</div>
+<div class="section level4">
+<h4 id="lucas-wrb-stage-n--frplit-seed-0-9-87">LUCAS WRB Stage 3 (n = 30, FR/PL/IT, seed 20260508)<a class="anchor" aria-label="anchor" href="#lucas-wrb-stage-n--frplit-seed-0-9-87"></a></h4>
+<p>(Reproduced from the v0.9.82 RDS at .)</p>
+<table class="table"><colgroup><col width="85%"><col width="14%"></colgroup><thead><tr><th>Stage</th>
+<th align="right">accuracy</th>
+</tr></thead><tbody><tr><td>Stage 1 (baseline soilkey, no fill)</td>
+<td align="right">0.0\%</td>
+</tr><tr><td>Stage 2 (full opt-in stack, no fill)</td>
+<td align="right">0.0\%</td>
+</tr><tr><td><strong>Stage 3 (full opt-in stack + SoilGrids subsoil fill)</strong></td>
+<td align="right"><strong>60.0\%</strong></td>
+</tr></tbody></table><p>100\% recall on Cambisols (18 / 18) under Stage 3.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="reproducibility-0-9-87">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility-0-9-87"></a></h3>
+<p> reproduces every non-Stage-3 number above in ~30 s of wall clock from a clean  session. Stage 3 needs the v0.9.82 SoilGrids round-trip (~60 min, separate script).</p>
+</div>
+<div class="section level3">
+<h3 id="news-table-summary-0-9-87">NEWS table summary<a class="anchor" aria-label="anchor" href="#news-table-summary-0-9-87"></a></h3>
+<table class="table"><thead><tr><th>Dataset</th>
+<th align="right">n</th>
+<th align="right">Default</th>
+<th align="right">Best opt-in config</th>
+<th align="right">Lift</th>
+</tr></thead><tbody><tr><td>SiBCS BDsolos RJ</td>
+<td align="right">722</td>
+<td align="right">40.3\%</td>
+<td align="right">44.4\%</td>
+<td align="right">+4.1pp</td>
+</tr><tr><td>SiBCS Redape Order</td>
+<td align="right">94</td>
+<td align="right">45.7\%</td>
+<td align="right">58.5\%</td>
+<td align="right">+12.8pp</td>
+</tr><tr><td>WRB KSSL+NASIS</td>
+<td align="right">99</td>
+<td align="right">21.2\%</td>
+<td align="right">24.2\%</td>
+<td align="right">+3.0pp</td>
+</tr><tr><td>WRB AfSP</td>
+<td align="right">120</td>
+<td align="right">21.7\%</td>
+<td align="right">30.8\%</td>
+<td align="right">+9.1pp</td>
+</tr><tr><td>WRB LUCAS Stage 3</td>
+<td align="right">30</td>
+<td align="right">0.0\%</td>
+<td align="right">60.0\%</td>
+<td align="right">+60.0pp</td>
+</tr></tbody></table></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.86" id="soilkey-0986-2026-05-09">soilKey 0.9.86 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0986-2026-05-09"></a></h2>
 <p>The “<strong>ferralic engine=aqp auto-enables ECEC fallback</strong>” release. A one-line behaviour bridge that ties the v0.9.69  opt-in to the  family of “data-quality- aware” diagnostics. Default canonical behaviour is bit-for-bit preserved (the auto-enablement only fires when the user has already opted into engine=“aqp”).</p>
