@@ -1,0 +1,56 @@
+LUCAS WRB benchmark -- v0.9.82 full stack rerun
+Date: 2026-05-09
+soilKey: 0.9.82
+Pedons: 30 (FR/PL/IT, 10 each)
+ESDB attribute: WRBLV1
+
+configuration                            | elapsed_s | accuracy  | in_scope
+--------------------------------------------------------------------------------
+stage1_baseline_soilkey                  |       4.3 |    0.000 | 30 / 30
+stage2_aqp_full_stack_no_fill            |       9.4 |    0.000 | 30 / 30
+stage3_aqp_full_stack_subsoil_soilgrids  |    3678.3 |    0.600 | 30 / 30
+
+=== Per-RSG recall (baseline) ===
+  reference_rsg  n n_correct recall
+1     Arenosols  5         0      0
+2     Cambisols 18         0      0
+3     Fluvisols  1         0      0
+4     Leptosols  1         0      0
+5      Luvisols  4         0      0
+6       Podzols  1         0      0
+
+=== Confusion (baseline) ===
+           Reference
+Predicted   Arenosols Cambisols Fluvisols Leptosols Luvisols Podzols
+  Histosols         0         0         0         0        1       0
+  Regosols          5        18         1         1        3       1
+
+=== Per-RSG recall (aqp_no_fill) ===
+  reference_rsg  n n_correct recall
+1     Arenosols  5         0      0
+2     Cambisols 18         0      0
+3     Fluvisols  1         0      0
+4     Leptosols  1         0      0
+5      Luvisols  4         0      0
+6       Podzols  1         0      0
+
+=== Confusion (aqp_no_fill) ===
+           Reference
+Predicted   Arenosols Cambisols Fluvisols Leptosols Luvisols Podzols
+  Histosols         0         0         0         0        1       0
+  Regosols          5        18         1         1        3       1
+
+=== Per-RSG recall (stage3) ===
+  reference_rsg  n n_correct recall
+1     Arenosols  5         0      0
+2     Cambisols 18        18      1
+3     Fluvisols  1         0      0
+4     Leptosols  1         0      0
+5      Luvisols  4         0      0
+6       Podzols  1         0      0
+
+=== Confusion (stage3) ===
+           Reference
+Predicted   Arenosols Cambisols Fluvisols Leptosols Luvisols Podzols
+  Cambisols         5        18         1         1        3       1
+  Histosols         0         0         0         0        1       0
