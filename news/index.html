@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.83</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.84</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,36 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.84" id="soilkey-0984-2026-05-09">soilKey 0.9.84 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0984-2026-05-09"></a></h2>
+<p>The “<strong>spodic engine-aware OC-translocation path</strong>” release.  grows an  parameter; when set to  (or via ) it accepts any  designation under an -designated horizon when the OC translocation peak is documented, even if the canonical Bh / Bs / Bhs designation is absent. Default behaviour is bit-for-bit preserved.</p>
+<div class="section level3">
+<h3 id="motivation-0-9-84">Motivation<a class="anchor" aria-label="anchor" href="#motivation-0-9-84"></a></h3>
+<p>KSSL+NASIS Spodosol references routinely use generic “B1” / “B2” / “Bw” designations rather than the specific Bh / Bs / Bhs that the v0.9.19 morphological-inference path requires. Of 14 KSSL+NASIS Podzol references, only 1 / 14 passes  via the v0.9.19 path; 7 / 14 have BOTH an E-designated albic-eligible horizon above AND an OC peak in a B horizon below (the canonical Podzol illuviation signature) but use generic B / Bw designations and so fail the strict morph path.</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-84">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-84"></a></h3>
+<p> grows two new behaviours:</p>
+<p>The pH-or-OC-ratio gate handles the KSSL+NASIS sub-population where the Bh chemistry is documented but pH was never measured at the illuvial horizon: 5 / 7 OC-peak Podzols on the v0.9.84 audit.</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-effect-on-ksslnasis-podzols-n--0-9-84">Empirical effect on KSSL+NASIS Podzols (n = 14)<a class="anchor" aria-label="anchor" href="#empirical-effect-on-ksslnasis-podzols-n--0-9-84"></a></h3>
+<table class="table"><thead><tr><th>configuration</th>
+<th align="right">spodic recall</th>
+<th align="right">classify_wrb2022 -&gt; Podzols</th>
+</tr></thead><tbody><tr><td>default (soilkey)</td>
+<td align="right">1 / 14</td>
+<td align="right">1 / 14</td>
+</tr><tr><td>engine = “aqp”</td>
+<td align="right"><strong>5 / 14</strong></td>
+<td align="right"><strong>5 / 14</strong></td>
+</tr></tbody></table><p>Lift: +4 Spodosols correctly recalled (3.6\% absolute lift on the 99-pedon KSSL+NASIS WRB benchmark). Default behaviour is bit-for-bit preserved.</p>
+</div>
+<div class="section level3">
+<h3 id="regression-test-0-9-84">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-84"></a></h3>
+<p> (10 tests, 13 expectations): default engine-soilkey unchanged on generic-B profiles; engine=aqp accepts B* under E* with OC peak; pH-NA fallback via OC ratio; rejection on edge cases (OC ratio &lt; 1.5x, no E above, no OC peak, Al/Fe measured); option-based engine selection; KSSL+NASIS regression guard ( and ).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.83" id="soilkey-0983-2026-05-09">soilKey 0.9.83 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0983-2026-05-09"></a></h2>
 <p>The “<strong>argic strong-films audit + B_latossolico refactor</strong>” release. Reviews the SiBCS Cap 18 latossolic-vs-argic precedence rule wired into  since v0.9.61, extracts the strong-films decision into a reusable helper, and ships an empirical audit on BDsolos RJ. Behaviour is bit-for-bit identical to v0.9.82 main on the n = 722 RJ benchmark.</p>

@@ -11,7 +11,7 @@ extractable material plus organic matter; diagnostic of Podzols."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.83</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.84</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,8 @@ extractable material plus organic matter; diagnostic of Podzols.</p>
 <span>  min_thickness <span class="op">=</span> <span class="fl">2.5</span>,</span>
 <span>  min_alfe <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  max_ph <span class="op">=</span> <span class="fl">5.9</span>,</span>
-<span>  min_oc_in_b <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  min_oc_in_b <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  engine <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,6 +97,14 @@ extractable material plus organic matter; diagnostic of Podzols.</p>
 for the v0.9.19 morphological inference path when Al / Fe
 oxalate are missing (default 0.5).</p></dd>
 
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>One of <code>"soilkey"</code> (default; strict v0.9.19
+morphological path requires Bh / Bs / Bhs designation +
+albic E above) or <code>"aqp"</code> (relaxed v0.9.84 path: any
+B* below E* with OC translocation peak). When
+<code>NULL</code>, reads <code>getOption("soilKey.diagnostic_engine")</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -111,6 +120,29 @@ oxalate are missing (default 0.5).</p></dd>
 chroma &lt;= 5, or specific dark colors) is not enforced. The
 (Al_ox + Fe_ox)/clay &gt;= 0.05 alternative ratio test is not yet wired.
 Both deferred to v0.3.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-engine-aqp-relaxation">v0.9.84 engine="aqp" relaxation<a class="anchor" aria-label="anchor" href="#v-engine-aqp-relaxation"></a></h2>
+
+
+<p>KSSL+NASIS Spodosols routinely use generic "B1" / "B2" / "Bw"
+designations rather than the specific Bh / Bs / Bhs that the
+v0.9.19 morphological-inference path requires. Of 14 KSSL+NASIS
+Podzol references, only 1 / 14 passes spodic via the v0.9.19
+path; 7 / 14 have BOTH an E-designated albic-eligible horizon
+above AND an OC peak in a B horizon below (the canonical Podzol
+illuviation signature) but use generic B / Bw designations and so
+fail strict morph.</p>
+<p>When <code>engine = "aqp"</code> (read from
+<code>getOption("soilKey.diagnostic_engine", "soilkey")</code> when
+<code>engine</code> is <code>NULL</code>) AND Al / Fe oxalate is unmeasured
+AND the v0.9.19 strict path did not fire, accept any
+<code>B*</code> designation below an <code>E*</code>-designated horizon when:</p><ul><li><p><code>ph_h2o &lt;= max_ph</code> in the B horizon, AND</p></li>
+<li><p><code>oc_pct &gt;= min_oc_in_b</code> in the B horizon, AND</p></li>
+<li><p>OC in the B is greater than the maximum OC in any
+        horizon above (the translocation signature).</p></li>
+</ul><p>Default <code>engine</code> is <code>"soilkey"</code> – canonical behaviour
+bit-for-bit preserved.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
