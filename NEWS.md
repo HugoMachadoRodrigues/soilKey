@@ -1,3 +1,74 @@
+# soilKey 0.9.84 (2026-05-09)
+
+The "**spodic engine-aware OC-translocation path**" release.
+\code{spodic()} grows an \code{engine} parameter; when set to
+\code{"aqp"} (or via \code{options(soilKey.diagnostic_engine =
+"aqp")}) it accepts any \code{B*} designation under an
+\code{E*}-designated horizon when the OC translocation peak is
+documented, even if the canonical Bh / Bs / Bhs designation is
+absent. Default behaviour is bit-for-bit preserved.
+
+## Motivation
+
+KSSL+NASIS Spodosol references routinely use generic "B1" / "B2" /
+"Bw" designations rather than the specific Bh / Bs / Bhs that the
+v0.9.19 morphological-inference path requires. Of 14 KSSL+NASIS
+Podzol references, only 1 / 14 passes \code{spodic()} via the
+v0.9.19 path; 7 / 14 have BOTH an E-designated albic-eligible
+horizon above AND an OC peak in a B horizon below (the canonical
+Podzol illuviation signature) but use generic B / Bw designations
+and so fail the strict morph path.
+
+## Fix
+
+\code{spodic()} grows two new behaviours:
+
+\enumerate{
+  \item New \code{engine} parameter (\code{"soilkey"} default,
+        \code{"aqp"} alternative) that reads
+        \code{getOption("soilKey.diagnostic_engine", "soilkey")}
+        when the argument is \code{NULL}.
+  \item When \code{engine = "aqp"} AND Al/Fe oxalate is unmeasured
+        AND the v0.9.19 strict morph path did not fire, accept any
+        \code{B*} designation below an \code{E*}-designated horizon
+        when:
+        \itemize{
+          \item \code{ph_h2o <= max_ph} in the B horizon, OR
+                (when pH is NA) \code{oc_pct >= 1.5 *
+                max(oc_pct above)} -- the strong-translocation
+                signature, AND
+          \item \code{oc_pct >= min_oc_in_b} in the B horizon, AND
+          \item OC in the B is greater than the maximum OC in any
+                horizon above (the translocation peak).
+        }
+}
+
+The pH-or-OC-ratio gate handles the KSSL+NASIS sub-population
+where the Bh chemistry is documented but pH was never measured at
+the illuvial horizon: 5 / 7 OC-peak Podzols on the v0.9.84 audit.
+
+## Empirical effect on KSSL+NASIS Podzols (n = 14)
+
+| configuration       | spodic recall | classify_wrb2022 -> Podzols |
+|---------------------|--------------:|----------------------------:|
+| default (soilkey)   |     1 / 14    |                  1 / 14    |
+| engine = "aqp"      |   **5 / 14**  |                **5 / 14**  |
+
+Lift: +4 Spodosols correctly recalled (3.6\\% absolute lift on the
+99-pedon KSSL+NASIS WRB benchmark). Default behaviour is bit-for-bit
+preserved.
+
+## Regression test
+
+\code{tests/testthat/test-v0984-spodic-engine-aware.R} (10 tests,
+13 expectations): default engine-soilkey unchanged on generic-B
+profiles; engine=aqp accepts B* under E* with OC peak; pH-NA
+fallback via OC ratio; rejection on edge cases (OC ratio <
+1.5x, no E above, no OC peak, Al/Fe measured); option-based
+engine selection; KSSL+NASIS regression guard
+(\code{n_aqp >= 4} and \code{n_aqp >= n_can + 3}).
+
+
 # soilKey 0.9.83 (2026-05-09)
 
 The "**argic strong-films audit + B_latossolico refactor**"

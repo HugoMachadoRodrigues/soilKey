@@ -9,7 +9,8 @@ spodic(
   min_thickness = 2.5,
   min_alfe = 0.5,
   max_ph = 5.9,
-  min_oc_in_b = 0.5
+  min_oc_in_b = 0.5,
+  engine = NULL
 )
 }
 \arguments{
@@ -24,6 +25,12 @@ spodic(
 \item{min_oc_in_b}{Minimum OC \% in the candidate Bh / Bs layer
 for the v0.9.19 morphological inference path when Al / Fe
 oxalate are missing (default 0.5).}
+
+\item{engine}{One of \code{"soilkey"} (default; strict v0.9.19
+morphological path requires Bh / Bs / Bhs designation +
+albic E above) or \code{"aqp"} (relaxed v0.9.84 path: any
+B* below E* with OC translocation peak). When
+\code{NULL}, reads \code{getOption("soilKey.diagnostic_engine")}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -47,6 +54,32 @@ chroma <= 5, or specific dark colors) is not enforced. The
 (Al_ox + Fe_ox)/clay >= 0.05 alternative ratio test is not yet wired.
 Both deferred to v0.3.
 }
+\section{v0.9.84 engine="aqp" relaxation}{
+
+KSSL+NASIS Spodosols routinely use generic "B1" / "B2" / "Bw"
+designations rather than the specific Bh / Bs / Bhs that the
+v0.9.19 morphological-inference path requires. Of 14 KSSL+NASIS
+Podzol references, only 1 / 14 passes spodic via the v0.9.19
+path; 7 / 14 have BOTH an E-designated albic-eligible horizon
+above AND an OC peak in a B horizon below (the canonical Podzol
+illuviation signature) but use generic B / Bw designations and so
+fail strict morph.
+
+When \code{engine = "aqp"} (read from
+\code{getOption("soilKey.diagnostic_engine", "soilkey")} when
+\code{engine} is \code{NULL}) AND Al / Fe oxalate is unmeasured
+AND the v0.9.19 strict path did not fire, accept any
+\code{B*} designation below an \code{E*}-designated horizon when:
+\itemize{
+  \item \code{ph_h2o <= max_ph} in the B horizon, AND
+  \item \code{oc_pct >= min_oc_in_b} in the B horizon, AND
+  \item OC in the B is greater than the maximum OC in any
+        horizon above (the translocation signature).
+}
+Default \code{engine} is \code{"soilkey"} -- canonical behaviour
+bit-for-bit preserved.
+}
+
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Spodic horizon.
 }
