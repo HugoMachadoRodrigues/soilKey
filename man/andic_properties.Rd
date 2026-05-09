@@ -24,6 +24,14 @@ path (default 2.0).}
 
 \item{min_p_retention}{Minimum phosphate retention \% for the P
 path (default 70).}
+
+\item{min_oc_proxy}{Minimum SOC \% for the v0.9.80 OC+BD proxy
+path (default 4.0). Only consulted when the proxy is
+enabled via \code{options(soilKey.andic_oc_bd_proxy = TRUE)}.}
+
+\item{max_bd_proxy}{Maximum bulk density g/cm^3 for the v0.9.80
+OC+BD proxy path (default 0.9). Only consulted when the
+proxy is enabled.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -44,6 +52,23 @@ Either path qualifies. The volcanic-glass criterion is the
 separate \code{\link{vitric_properties}} diagnostic; Andosols key
 on (andic OR vitric) at the RSG-gate level (\code{\link{andosol}}).
 }
+\section{v0.9.80 OC + BD proxy (opt-in)}{
+
+Field-described volcanic-ash soils (e.g.\ AfSP, KSSL/NASIS, SOTER)
+routinely lack oxalate Al/Fe and phosphate retention measurements,
+so the canonical paths return \code{NA} and Andosols cascade to
+other RSGs. The genetic signature is still detectable from coarser
+data: very high SOC (>= 4-5\%) plus low bulk density
+(<= 0.9 g/cm^3) typical of allophanic / Al-humus complexation.
+
+With \code{options(soilKey.andic_oc_bd_proxy = TRUE)} the function
+adds a third path that fires when both canonical paths fail and the
+surface horizon shows \code{oc_pct >= min_oc_proxy} AND
+\code{bulk_density_g_cm3 <= max_bd_proxy} (or OC alone >= 5\% when
+BD is missing). Default is \code{FALSE} (canonical behaviour
+preserved).
+}
+
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Andic
   properties.
