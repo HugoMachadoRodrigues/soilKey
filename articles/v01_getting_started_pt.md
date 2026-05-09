@@ -967,6 +967,7 @@ res_wrb$trace
 #> [fail] thickness
 #> [ NA ] cole_le_path
 #> [ NA ] designation_inference
+#> [ NA ] chroma_clay_inference
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon; KST 13ed
 #> Ch 16 LE alternative
 #> 

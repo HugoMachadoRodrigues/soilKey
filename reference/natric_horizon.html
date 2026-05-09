@@ -11,7 +11,7 @@ Diagnostic of Solonetz."><meta property="og:image" content="https://hugomachador
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.76</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ Diagnostic of Solonetz.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">natric_horizon</span><span class="op">(</span><span class="va">pedon</span>, min_esp <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">natric_horizon</span><span class="op">(</span><span class="va">pedon</span>, min_esp <span class="op">=</span> <span class="fl">15</span>, min_pH_h2o <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,10 +76,39 @@ Diagnostic of Solonetz.</p>
 <dt id="arg-min-esp">min_esp<a class="anchor" aria-label="anchor" href="#arg-min-esp"></a></dt>
 <dd><p>Minimum ESP % (default 15).</p></dd>
 
+
+<dt id="arg-min-ph-h-o">min_pH_h2o<a class="anchor" aria-label="anchor" href="#arg-min-ph-h-o"></a></dt>
+<dd><p>Minimum pH(H2O) for the ESP-only path
+(default 7.0; alkaline gate to exclude false-positive
+acidic Bt horizons).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-designation-esp-only-inference-opt-in-">v0.9.76 designation + ESP-only inference (opt-in)<a class="anchor" aria-label="anchor" href="#v-designation-esp-only-inference-opt-in-"></a></h2>
+
+
+<p>Field-described Solonetz profiles in NCSS / KSSL data routinely
+reach the natric ESP threshold (computed from
+<code>na_cmol / cec_cmol</code>) without satisfying the strict
+<code><a href="argic.html">argic()</a></code> clay-increase test, because surveyors record
+<code>Btk</code>-suffix designations (carbonates dominate the horizon
+designation choice) rather than <code>Btn</code>/<code>Bn</code> or
+<code>clay_pct</code> is missing.</p>
+<p>With <code>options(soilKey.natric_designation_inference = TRUE)</code> the
+function accepts a layer as natric when the canonical argic test
+returns NA or FALSE AND <em>either</em>:</p><ol><li><p>the designation matches <code>[A-Z][a-z0-9]*n</code> (an <code>n</code>
+        master-letter modifier in the horizon name – e.g.\
+        <code>Btn</code>, <code>Btnz</code>, <code>Bn</code>, the curator's direct
+        assertion that natric features are present), OR</p></li>
+<li><p>ESP &gt;= <code>min_esp</code> on a B-prefixed subsoil layer
+        (<code>top_cm &gt; 20</code>) AND the layer's pH(H2O) &gt;= 7
+        (alkaline – typical of true natric, excludes acidic Bt
+        horizons that happen to read high Na from sea-spray).</p></li>
+</ol><p>Default is <code>FALSE</code> (canonical behaviour preserved).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

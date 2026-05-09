@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.76</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,75 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.76" id="soilkey-0976-2026-05-09">soilKey 0.9.76 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0976-2026-05-09"></a></h2>
+<p>The “<strong>Subordem-level WRB diagnostic refinement</strong>” release. Closes v0.9.75 backlog: KSSL+NASIS sample showed Solonetz, Vertisol, and Kastanozem all at 0\% recall despite having relevant subset (na_cmol, cec_cmol, ph_h2o, clay_pct, Munsell chroma) populated. v0.9.76 adds two opt-in inference paths:</p>
+<div class="section level3">
+<h3 id="id_1-natric_horizon-n-suffix--esp-only-path-solonetz-0-9-76">1. natric_horizon n-suffix + ESP-only path (Solonetz)<a class="anchor" aria-label="anchor" href="#id_1-natric_horizon-n-suffix--esp-only-path-solonetz-0-9-76"></a></h3>
+<p>When the canonical  clay-increase test fails (typically because  is missing in NCSS lab tables),  now accepts a layer as natric when EITHER:</p>
+</div>
+<div class="section level3">
+<h3 id="id_2-vertic_horizon-high-clay--low-chroma-path-vertisol-0-9-76">2. vertic_horizon high-clay + low-chroma path (Vertisol)<a class="anchor" aria-label="anchor" href="#id_2-vertic_horizon-high-clay--low-chroma-path-vertisol-0-9-76"></a></h3>
+<p>When the canonical (slickensides + cracks), COLE, and v-suffix designation paths all fail, accepts a layer as vertic when:</p>
+</div>
+<div class="section level3">
+<h3 id="id_3-empirical-effect-on-ksslnasis-n--0-9-76">3. Empirical effect on KSSL+NASIS (n = 99)<a class="anchor" aria-label="anchor" href="#id_3-empirical-effect-on-ksslnasis-n--0-9-76"></a></h3>
+<table class="table"><thead><tr><th>Configuration</th>
+<th align="right">Top-1</th>
+</tr></thead><tbody><tr><td>baseline (no opt-ins)</td>
+<td align="right">19/99 (19.2\%)</td>
+</tr><tr><td>v0.9.75 stack</td>
+<td align="right">18/99 (18.2\%)</td>
+</tr><tr><td><strong>v0.9.76 stack (+ natric n + vertic chroma)</strong></td>
+<td align="right"><strong>21/99 (21.2\%)</strong></td>
+</tr></tbody></table><p>Per-RSG deltas (v0.9.75 -&gt; v0.9.76):</p>
+<p>Vertisol path is empirically passing  on 5/9 reference Vertisols (Aquerts) but the WRB key sends them to Calcisol (because of the Bk* designations). v0.9.77 will investigate the per-RSG dispatch ordering at  level.</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-field-availability-stays-the-same-as-v0975-0-9-76">4. Field availability stays the same as v0.9.75<a class="anchor" aria-label="anchor" href="#id_4-field-availability-stays-the-same-as-v0975-0-9-76"></a></h3>
+<p>The new paths use , , , , , and  – all populated on the KSSL+NASIS sample.</p>
+</div>
+<div class="section level3">
+<h3 id="id_5-the-complete-benchmark-suite-after-v0976-0-9-76">5. The complete benchmark suite after v0.9.76<a class="anchor" aria-label="anchor" href="#id_5-the-complete-benchmark-suite-after-v0976-0-9-76"></a></h3>
+<table class="table"><thead><tr><th>System</th>
+<th>Dataset</th>
+<th>n</th>
+<th align="right">Accuracy</th>
+</tr></thead><tbody><tr><td>SiBCS</td>
+<td>Redape (curated)</td>
+<td>94</td>
+<td align="right"><strong>57.4\%</strong></td>
+</tr><tr><td>SiBCS</td>
+<td>BDsolos RJ</td>
+<td>722</td>
+<td align="right">50.0\%</td>
+</tr><tr><td><strong>WRB</strong></td>
+<td><strong>KSSL + NASIS</strong></td>
+<td><strong>99</strong></td>
+<td align="right"><strong>21.2\%</strong></td>
+</tr><tr><td>WRB</td>
+<td>KSSL (lab-only)</td>
+<td>199</td>
+<td align="right">20.1\%</td>
+</tr><tr><td>WRB</td>
+<td>WoSIS stratified</td>
+<td>130</td>
+<td align="right">16.2\%</td>
+</tr><tr><td>WRB</td>
+<td>LUCAS</td>
+<td>18984</td>
+<td align="right">3.3\%</td>
+</tr></tbody></table><p>KSSL + NASIS continues to be soilKey’s richest WRB benchmark. The +3.0pp lift in v0.9.76 is bounded by the WRB key’s RSG ordering – vertic chroma+clay fires correctly but gets diverted.</p>
+</div>
+<div class="section level3">
+<h3 id="id_6-regression-test-0-9-76">6. Regression test<a class="anchor" aria-label="anchor" href="#id_6-regression-test-0-9-76"></a></h3>
+<p> (10 tests, 11 expectations): default behaviour preserved, opt-in fires on correct evidence, ESP-only path requires alkaline pH, chroma+clay path requires both high clay AND low chroma AND subsoil B, evidence trace records which path fired.</p>
+</div>
+<div class="section level3">
+<h3 id="id_7-v0977-deferred-0-9-76">7. v0.9.77+ deferred<a class="anchor" aria-label="anchor" href="#id_7-v0977-deferred-0-9-76"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.75" id="soilkey-0975-2026-05-09">soilKey 0.9.75 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0975-2026-05-09"></a></h2>
 <p>The “<strong>KSSL + NASIS morphological enrichment</strong>” release. Closes the v0.9.74 backlog item: KSSL lab tables ship texture + chemistry but lack the morphological evidence (Munsell colours, structure, clay films, slickensides) that several WRB diagnostic horizons need. The companion NASIS Morphological sqlite has all of that, and  (already in soilKey since v0.7) joins them by . v0.9.75 wires that join into the benchmark pipeline + bundles a 99-pedon enriched sample.</p>
