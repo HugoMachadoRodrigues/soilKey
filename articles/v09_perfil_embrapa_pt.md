@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x559da6c42f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558ccdfe4f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -197,14 +197,15 @@ print(res$wrb)
 #> Rubic, Chromic)
 #> RSG/Order: Acrisols
 #> Qualifiers: Ferralic, Cutanic, Loamic, Dystric, Ochric, Profondic, Rhodic,
-#> Rubic, Chromic, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, TRUE, FALSE,
-#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
-#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
-#> volcanic_glass_pct, FALSE, slickensides, TRUE, FALSE, FALSE,
-#> coarse_fragments_pct, FALSE, FALSE, p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg,
-#> FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, coarse_fragments_pct, TRUE
+#> Rubic, Chromic, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, top_cm,
+#> bottom_cm, FALSE, FALSE, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct,
+#> FALSE, plinthite_pct, TRUE, FALSE, redoximorphic_features_pct, FALSE,
+#> redoximorphic_features_pct, FALSE, al_ox_pct, fe_ox_pct,
+#> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
+#> slickensides, TRUE, FALSE, FALSE, coarse_fragments_pct, FALSE, FALSE,
+#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, TRUE,
+#> FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,
+#> coarse_fragments_pct, TRUE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -228,7 +229,8 @@ print(res$wrb)
 #> p_mehlich3_mg_kg, artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
 #> permafrost_temp_C, coarse_fragments_pct, slickensides, ec_dS_m,
 #> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
-#> volcanic_glass_pct, plinthite_pct, duripan_pct, caso4_pct, caco3_pct
+#> volcanic_glass_pct, plinthite_pct, top_cm, bottom_cm, duripan_pct, caso4_pct,
+#> caco3_pct
 #> 
 #> ── Key trace
 #> (25 RSGs tested before assignment)
@@ -248,9 +250,9 @@ print(res$wrb)
 #> 14. ST Stagnosols -- NA (1 attrs missing)
 #> 15. NT Nitisols -- failed
 #> 16. FR Ferralsols -- failed
-#> 17. CH Chernozems -- failed
-#> 18. KS Kastanozems -- failed
-#> 19. PH Phaeozems -- failed
+#> 17. CH Chernozems -- failed (2 attrs missing)
+#> 18. KS Kastanozems -- failed (2 attrs missing)
+#> 19. PH Phaeozems -- failed (2 attrs missing)
 #> 20. UM Umbrisols -- failed
 #> 21. DU Durisols -- NA (1 attrs missing)
 #> 22. GY Gypsisols -- NA (1 attrs missing)

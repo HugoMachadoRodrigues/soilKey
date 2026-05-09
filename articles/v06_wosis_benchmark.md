@@ -399,7 +399,7 @@ knitr::kable(
 | FR  | FR      | Geric            |
 | CH  | CH      | Vermic           |
 | KS  | KS      | Hypocalcic       |
-| PH  | PH      | Cambic           |
+| PH  | PH      | Pachic           |
 | UM  | UM      | Cambic           |
 | DU  | DU      | Duric            |
 | GY  | GY      | Gypsic           |

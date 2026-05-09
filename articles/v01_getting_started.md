@@ -248,7 +248,7 @@ classify_wrb2022(ferralsol)
 #> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
 #> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
 #> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
-#> plinthite_pct, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
+#> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
 #> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
 #> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
 #> FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,

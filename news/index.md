@@ -1,5 +1,76 @@
 # Changelog
 
+## soilKey 0.9.78 (2026-05-09)
+
+The “**mollic horizon stack fix**” release. v0.9.77 AfSP benchmark
+showed Phaeozem at 0/5 and Kastanozem at 0/5 despite Munsell moist data
+being 56.8\\ available. Diagnosis: was using two stale assumptions that
+excluded contiguous A2/AB layers from the candidate set:
+
+1.  **Surface gate too tight**: (default 5 cm) excluded A12 (10-27 cm)
+    layers that ARE part of the mollic horizon as a single morphological
+    unit. The KE Phaeozem fixture (A11 0-10 + A12 10-27, 27 cm of
+    mollic-passing material) was failing because only A11 entered the
+    candidate pool (10 cm \< 20 cm threshold).
+
+2.  **Per-layer thickness**: checked each layer individually against ,
+    but mollic needs the SUMMED thickness of the contiguous stack to
+    reach 20 cm. A11 (10 cm) + A12 (17 cm) = 27 cm cumulative -\> valid
+    mollic, but neither layer is individually \>= 20 cm.
+
+### Fix
+
+now:
+
+1.  Builds the candidate set as the **contiguous stack of mollic-
+    colour-passing layers anchored at the surface** – starting at the
+    topmost layer () and extending downward while each next layer (a)
+    starts where the previous ends and (b) passes the mollic colour
+    test.
+2.  Computes **cumulative thickness** of the candidate stack directly
+    (replaces the per-layer thickness test).
+3.  Preserves the NA-on-insufficient-evidence semantics: when the
+    surface layer has NA Munsell + NA OC + NA BS, returns NA rather than
+    firing the inference path (which would default-pass via OC-inference
+    and yield spurious TRUE).
+
+### Empirical effect
+
+#### AfSP (n=120)
+
+    Order accuracy: 28.3% -> 29.2% (+0.9pp)
+    mollic test on Phaeozem references: 2/5 -> 5/5
+    mollic test on Kastanozem references: 0/5 -> 5/5
+
+Per-RSG classify:
+
+#### KSSL+NASIS (n=99)
+
+Unchanged at 24.2\\ – mollic was already passing on these profiles via
+the (looser) original logic; the v0.9.78 fix is about UNBLOCKING
+profiles that were being missed, not about adding profiles that already
+passed.
+
+### The complete benchmark suite after v0.9.78
+
+| System  | Dataset     | n     |            Accuracy |
+|---------|-------------|-------|--------------------:|
+| SiBCS   | Redape      | 94    |          **57.4\\** |
+| SiBCS   | BDsolos RJ  | 722   |              50.0\\ |
+| **WRB** | **AfSP**    | 120   | **29.2\\** (+0.9pp) |
+| WRB     | KSSL+NASIS  | 99    |              24.2\\ |
+| WRB     | KSSL only   | 199   |              20.1\\ |
+| WRB     | WoSIS strat | 130   |              16.2\\ |
+| WRB     | LUCAS       | 18984 |               3.3\\ |
+
+### Regression test
+
+(5 tests, 6 expectations) covers the contiguous stack accumulation, the
+“surface fails, no mollic” edge, the rounding-tolerant contiguity check,
+and the KE Phaeozem fixture replica.
+
+### v0.9.79+ deferred
+
 ## soilKey 0.9.77 (2026-05-09)
 
 The “**AfSP integration + Vertisol RSG-gate routing fix**” release. Two

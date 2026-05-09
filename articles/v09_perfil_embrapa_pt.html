@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.77</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.78</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,7 +157,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x559da6c42f20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x558ccdfe4f20&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -279,14 +279,15 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; Rubic, Chromic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Acrisols</span></span>
 <span><span class="co">#&gt; Qualifiers: Ferralic, Cutanic, Loamic, Dystric, Ochric, Profondic, Rhodic,</span></span>
-<span><span class="co">#&gt; Rubic, Chromic, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, TRUE, FALSE,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,</span></span>
-<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct, FALSE, slickensides, TRUE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; coarse_fragments_pct, FALSE, FALSE, p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg,</span></span>
-<span><span class="co">#&gt; FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, coarse_fragments_pct, TRUE</span></span>
+<span><span class="co">#&gt; Rubic, Chromic, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, top_cm,</span></span>
+<span><span class="co">#&gt; bottom_cm, FALSE, FALSE, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct,</span></span>
+<span><span class="co">#&gt; FALSE, plinthite_pct, TRUE, FALSE, redoximorphic_features_pct, FALSE,</span></span>
+<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, al_ox_pct, fe_ox_pct,</span></span>
+<span><span class="co">#&gt; phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,</span></span>
+<span><span class="co">#&gt; slickensides, TRUE, FALSE, FALSE, coarse_fragments_pct, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, TRUE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,</span></span>
+<span><span class="co">#&gt; coarse_fragments_pct, TRUE</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
@@ -310,7 +311,8 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; p_mehlich3_mg_kg, artefacts_pct, geomembrane_present, technic_hardmaterial_pct,</span></span>
 <span><span class="co">#&gt; permafrost_temp_C, coarse_fragments_pct, slickensides, ec_dS_m,</span></span>
 <span><span class="co">#&gt; redoximorphic_features_pct, al_ox_pct, fe_ox_pct, phosphate_retention_pct,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct, plinthite_pct, duripan_pct, caso4_pct, caco3_pct</span></span>
+<span><span class="co">#&gt; volcanic_glass_pct, plinthite_pct, top_cm, bottom_cm, duripan_pct, caso4_pct,</span></span>
+<span><span class="co">#&gt; caco3_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (25 RSGs tested before assignment)</span></span>
@@ -330,9 +332,9 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; 14. ST Stagnosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 15. NT Nitisols -- failed</span></span>
 <span><span class="co">#&gt; 16. FR Ferralsols -- failed</span></span>
-<span><span class="co">#&gt; 17. CH Chernozems -- failed</span></span>
-<span><span class="co">#&gt; 18. KS Kastanozems -- failed</span></span>
-<span><span class="co">#&gt; 19. PH Phaeozems -- failed</span></span>
+<span><span class="co">#&gt; 17. CH Chernozems -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 18. KS Kastanozems -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 19. PH Phaeozems -- failed (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 20. UM Umbrisols -- failed</span></span>
 <span><span class="co">#&gt; 21. DU Durisols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 22. GY Gypsisols -- NA (1 attrs missing)</span></span>
