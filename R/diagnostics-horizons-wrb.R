@@ -282,20 +282,128 @@ mollic <- function(pedon,
                      surface_top_cm = 5) {
   h <- pedon$horizons
 
-  candidate_layers <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+  # v0.9.78 -- mollic candidate-layer logic.
+  #
+  # WRB 2022 Ch 3: the mollic horizon is the diagnostic SURFACE horizon
+  # AND must be at least 20 cm thick. Previously soilKey gated the
+  # candidate set with `top_cm <= surface_top_cm` (default 5 cm), which
+  # excluded contiguous A12 / AB layers that DO belong to the mollic
+  # horizon as a single morphological unit. The KE W3_0289 Phaeozem
+  # has A11 (0-10) + A12 (10-27): 27 cm of mollic-passing material, but
+  # only A11 entered the candidate pool, so thickness 10 < 20 -> fail.
+  #
+  # The fix: candidate_layers is the CONTIGUOUS stack of layers from
+  # the surface where each layer passes the mollic color test. This
+  # matches WRB's "contiguous from surface" definition.
+
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(
+      name = "mollic", passed = NA, layers = integer(0),
+      evidence = list(), missing = character(0),
+      reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon"
+    ))
+  }
+
+  # v0.9.78: when the surface layer has insufficient evidence
+  # (NA Munsell value/chroma AND NA OC AND NA BS), we CANNOT
+  # determine whether the surface is mollic. Return NA rather
+  # than firing the contiguous-stack inference (which permissively
+  # default-passes such layers via OC-inference and would yield
+  # spurious TRUE on profiles whose surface morphology is unknown).
+  surf_idx <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+  if (length(surf_idx) > 0L) {
+    si <- surf_idx[1]
+    surf_all_na <- is.na(h$munsell_value_moist[si]) &&
+                      is.na(h$munsell_chroma_moist[si]) &&
+                      is.na(h$oc_pct[si]) &&
+                      is.na(h$bs_pct %||% rep(NA_real_, nrow(h)))[si]
+    if (isTRUE(surf_all_na)) {
+      return(DiagnosticResult$new(
+        name = "mollic",
+        passed = NA,
+        layers = integer(0),
+        evidence = list(surface_attributes_all_na = TRUE),
+        missing = c("munsell_value_moist", "munsell_chroma_moist",
+                     "oc_pct", "bs_pct"),
+        reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon"
+      ))
+    }
+  }
+
+  # Order by top_cm to compute the contiguous stack
+  ord <- order(h$top_cm, na.last = TRUE)
+  # Quick mollic-color check on every layer
+  cl_all <- seq_len(nrow(h))
+  color_check <- test_mollic_color(h, candidate_layers = cl_all)
+  passing_color <- color_check$layers
+  # Find the surface-anchored contiguous stack: starts with a layer
+  # whose top_cm <= surface_top_cm, then extends downward while each
+  # next layer (a) starts where the previous ends and (b) passes color.
+  candidate_layers <- integer(0)
+  for (i in ord) {
+    if (length(candidate_layers) == 0L) {
+      # First layer must be surface-anchored AND pass color
+      if (!is.na(h$top_cm[i]) && h$top_cm[i] <= surface_top_cm &&
+            i %in% passing_color) {
+        candidate_layers <- c(candidate_layers, i)
+      } else if (!is.na(h$top_cm[i]) && h$top_cm[i] <= surface_top_cm) {
+        # surface layer fails color -> can't be mollic
+        break
+      }
+    } else {
+      # Subsequent layer must contiguous AND pass color
+      last <- candidate_layers[length(candidate_layers)]
+      gap <- h$top_cm[i] - h$bottom_cm[last]
+      if (!is.na(gap) && abs(gap) <= 1 && i %in% passing_color) {
+        candidate_layers <- c(candidate_layers, i)
+      } else {
+        break
+      }
+    }
+  }
 
   tests <- list()
-  tests$color           <- test_mollic_color(h,
-                                                candidate_layers = candidate_layers)
+  tests$color           <- color_check
   tests$organic_carbon  <- test_mollic_organic_carbon(h,
                                                         min_pct = min_oc,
                                                         candidate_layers = candidate_layers)
   tests$base_saturation <- test_mollic_base_saturation(h,
                                                          min_pct = min_bs,
                                                          candidate_layers = candidate_layers)
-  tests$thickness       <- test_mollic_thickness(h,
-                                                    min_cm = min_thickness,
-                                                    candidate_layers = candidate_layers)
+  # v0.9.78: cumulative thickness check on the contiguous stack
+  # (test_minimum_thickness checks each layer individually against
+  # min_cm, but mollic requires the SUMMED thickness of the
+  # contiguous stack to reach 20 cm -- a single A11 layer of 10 cm
+  # plus A12 of 17 cm = 27 cm cumulative, valid mollic).
+  if (length(candidate_layers) > 0L) {
+    thk <- sum(pmax(h$bottom_cm[candidate_layers] -
+                          h$top_cm[candidate_layers], 0, na.rm = TRUE),
+                 na.rm = TRUE)
+    tests$thickness <- list(
+      passed  = thk >= min_thickness,
+      layers  = if (thk >= min_thickness) candidate_layers else integer(0),
+      missing = character(0),
+      details = list(cumulative_cm = thk, threshold = min_thickness,
+                       layers       = candidate_layers)
+    )
+  } else {
+    # No surface-anchored stack found. Distinguish between (a) NA
+    # input (surface Munsell/OC/BS missing -> NA) vs (b) genuine
+    # FAIL (surface fails colour with measured values -> FALSE).
+    surface_idx <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+    has_na_surface <- length(surface_idx) > 0L && any(
+      is.na(h$munsell_value_moist[surface_idx]) |
+        is.na(h$munsell_chroma_moist[surface_idx])
+    )
+    tests$thickness <- list(
+      passed = if (has_na_surface) NA else FALSE,
+      layers = integer(0),
+      missing = if (has_na_surface)
+                  c("munsell_value_moist", "munsell_chroma_moist")
+                else c("top_cm", "bottom_cm"),
+      details = list(cumulative_cm = 0, threshold = min_thickness)
+    )
+  }
   tests$structure       <- test_mollic_structure(h,
                                                     candidate_layers = candidate_layers)
 
@@ -309,7 +417,7 @@ mollic <- function(pedon,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon",
     notes     = if (length(candidate_layers) == 0L) {
-                   "No surface-related candidate layers (top_cm <= 5)"
+                   "No surface-anchored contiguous mollic stack found"
                  } else NA_character_
   )
 }
