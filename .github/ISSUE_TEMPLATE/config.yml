@@ -4,5 +4,5 @@ contact_links:
     url: https://hugomachadorodrigues.github.io/soilKey/
     about: Read the package documentation, vignettes, and reference index
   - name: 💬 Soil-classification question (not a bug)
-    url: https://github.com/HugoMachadoRodrigues/soilKey/discussions
-    about: General questions about soil classification, taxonomic rules, or how to use soilKey
+    url: https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.html
+    about: General how-to questions -- start with the getting-started vignette; if the answer isn't there, open an issue with the "Soil profile classification help" template.

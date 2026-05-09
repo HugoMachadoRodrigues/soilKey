@@ -40,7 +40,7 @@ The dataset is unique in two ways:
 
   Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023).
   Brazilian soil data for taxonomic classification. Redape, V1.
-  \url{https://doi.org/10.48432/PYKKA7}.
+  \doi{10.48432/PYKKA7}.
 }
 
 \seealso{

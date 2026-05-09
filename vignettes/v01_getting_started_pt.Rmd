@@ -188,7 +188,7 @@ Para a comunidade brasileira: o caminho mais natural é começar aqui (`v01_gett
 - **Bugs reproduzíveis**: abra uma [issue no GitHub](https://github.com/HugoMachadoRodrigues/soilKey/issues/new?template=bug_report.yml) usando o template "🐛 Bug report".
 - **Pedido de feature** (novo diagnóstico, qualifier, loader): use o template "💡 Feature request".
 - **Discordância sobre classificação de um perfil real**: use o template "🌱 Soil profile classification help" — colamos juntos o trace da chave e identificamos exatamente onde soilKey divergiu da sua expectativa.
-- **Perguntas gerais**: [GitHub Discussions](https://github.com/HugoMachadoRodrigues/soilKey/discussions).
+- **Perguntas gerais**: abra uma issue com o template "🌱 Soil profile classification help" ou veja a [documentação completa](https://hugomachadorodrigues.github.io/soilKey/).
 
 # Referências canônicas
 
