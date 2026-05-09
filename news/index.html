@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.84</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.85</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,36 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.85" id="soilkey-0985-2026-05-09">soilKey 0.9.85 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0985-2026-05-09"></a></h2>
+<p>The “<strong>Andosol RSG-gate buried-exclusion + proxy thickness extension</strong>” release. Two surgical fixes that address the v0.9.80 NEWS observation – “v0.9.81 will refine the per-RSG dispatch ordering for Andosols” – now in their proper home. Default behaviour bit-for-bit preserved.</p>
+<div class="section level3">
+<h3 id="fix--buried-exclusion-auto-default-0-9-85">Fix 1:  buried-exclusion (auto, default)<a class="anchor" aria-label="anchor" href="#fix--buried-exclusion-auto-default-0-9-85"></a></h3>
+<p>WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic / ferralic / petroplinthic / pisoplinthic / plinthic / spodic) as “&lt;= 100 cm ”. The earlier implementation excluded an Andosol whenever any of those diagnostics passed anywhere in the profile. This mis-fired on AfSP Andosol references like , where an argic-eligible 2BA at 56-72 cm wrongly excluded the andic 0-30 cm surface stack.</p>
+<p> now restricts the exclusion check to layers whose top_cm &lt;  (default 50 cm). When all of an exclusion’s passing layers lie deeper than that, the diagnostic is treated as buried and does NOT exclude the Andosol. The existing  list still records the raw diagnostic results; v0.9.85 adds  and  to expose the filtering.</p>
+</div>
+<div class="section level3">
+<h3 id="fix--ocbd-proxy-extension-opt-in-0-9-85">Fix 2:  OC+BD proxy extension (opt-in)<a class="anchor" aria-label="anchor" href="#fix--ocbd-proxy-extension-opt-in-0-9-85"></a></h3>
+<p>The v0.9.80 OC+BD proxy fires on individual horizons that meet the strict thresholds (OC &gt;= 4 + BD &lt;= 0.9, or OC &gt;= 5 with BD missing). On AfSP / SOTER Andosol references like  ( 0-25 cm OC=4.7 BD=0.8 -&gt; proxy fires;  25-50 cm OC=2.7 BD=1.0 -&gt; below v0.9.80 thresholds), the AB layer is lost from the andic thickness even though it clearly belongs to the same andic-affected mantle.</p>
+<p>With  (only meaningful when the v0.9.80 proxy is enabled), iteratively extend the proxy layers to include contiguous deeper layers whose  The extension stops at the first horizon failing either constraint, so a ferralic / argic subsoil cannot accidentally inflate the andic thickness. Default is  – canonical behaviour preserved.</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-effect-on-afsp-andosol-references-n--0-9-85">Empirical effect on AfSP Andosol references (n = 5)<a class="anchor" aria-label="anchor" href="#empirical-effect-on-afsp-andosol-references-n--0-9-85"></a></h3>
+<table class="table"><colgroup><col width="70%"><col width="29%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">classify -&gt; Andosols</th>
+</tr></thead><tbody><tr><td>default (no opt-ins)</td>
+<td align="right">0 / 5</td>
+</tr><tr><td>v0.9.80 proxy ON</td>
+<td align="right">1 / 5</td>
+</tr><tr><td>v0.9.80 proxy + v0.9.85 extend ON</td>
+<td align="right"><strong>2 / 5</strong></td>
+</tr></tbody></table><p>The remaining 3 / 5 AfSP Andosol references (KE wasp_39, RW wasp_2, ET 28978_M9) need either richer surface OC (proxy doesn’t fire) or finer-resolution shallow horizons (combined &lt; 30 cm even with extension). Those will be addressed in subsequent v0.9.x releases.</p>
+</div>
+<div class="section level3">
+<h3 id="regression-test-0-9-85">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-85"></a></h3>
+<p> (8 tests, 21 expectations): buried argic (top &gt;= 50 cm) does not exclude; shallow argic (top &lt; 50 cm) still excludes; extension OFF by default; extension on contiguous OC&gt;=2 + BD&lt;=1.05 (or NA); extension stops at high-BD subsoil; extension stops at OC drop;  default behaviour preserved without opt-ins; AfSP regression guard (, ).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.84" id="soilkey-0984-2026-05-09">soilKey 0.9.84 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0984-2026-05-09"></a></h2>
 <p>The “<strong>spodic engine-aware OC-translocation path</strong>” release.  grows an  parameter; when set to  (or via ) it accepts any  designation under an -designated horizon when the OC translocation peak is documented, even if the canonical Bh / Bs / Bhs designation is absent. Default behaviour is bit-for-bit preserved.</p>

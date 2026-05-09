@@ -17,7 +17,7 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&amp;lt;= 100 cm
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.84</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.85</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&lt;= 100 cm
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andosol</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_top_cm <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andosol</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_top_cm <span class="op">=</span> <span class="fl">25</span>, buried_below_cm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -89,12 +89,35 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&lt;= 100 cm
 <dt id="arg-max-top-cm">max_top_cm<a class="anchor" aria-label="anchor" href="#arg-max-top-cm"></a></dt>
 <dd><p>Numeric threshold or option (see Details).</p></dd>
 
+
+<dt id="arg-buried-below-cm">buried_below_cm<a class="anchor" aria-label="anchor" href="#arg-buried-below-cm"></a></dt>
+<dd><p>Numeric: layers of the exclusion
+diagnostics whose top_cm \&gt;= this depth are treated as
+buried and do NOT exclude the Andosol (default 50, per WRB
+2022 Ch 4 p 104).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness
 \&gt;= 30 cm starting in the upper 25 cm AND (3) the negative-list
 exclusions on argic / ferralic / plinthic / spodic.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-buried-exclusion-fix">v0.9.85 buried-exclusion fix<a class="anchor" aria-label="anchor" href="#v-buried-exclusion-fix"></a></h2>
+
+
+<p>WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /
+ferralic / petroplinthic / pisoplinthic / plinthic / spodic) as
+"&lt;= 100 cm <em>unless buried below 50 cm</em>". The earlier
+implementation excluded an Andosol whenever any of those
+diagnostics passed anywhere in the profile, including on layers
+starting deeper than 50 cm – which mis-fires on AfSP Andosol
+references like <code>CM W3_0047</code>, where an argic layer at
+56-72 cm wrongly excluded the andic surface stack. v0.9.85
+restricts the exclusion check to layers starting &lt;= 50 cm:
+a buried argic / ferralic / plinthic / spodic at deeper levels no
+longer disqualifies the surface andic stack from Andosol.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

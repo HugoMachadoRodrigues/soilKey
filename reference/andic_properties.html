@@ -29,7 +29,7 @@ on (andic OR vitric) at the RSG-gate level (andosol)."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.84</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.85</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,6 +153,20 @@ surface horizon shows <code>oc_pct &gt;= min_oc_proxy</code> AND
 <code>bulk_density_g_cm3 &lt;= max_bd_proxy</code> (or OC alone &gt;= 5% when
 BD is missing). Default is <code>FALSE</code> (canonical behaviour
 preserved).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-proxy-contiguous-layer-extension-opt-in-">v0.9.85 proxy contiguous-layer extension (opt-in)<a class="anchor" aria-label="anchor" href="#v-proxy-contiguous-layer-extension-opt-in-"></a></h2>
+
+
+<p>When <code>options(soilKey.andic_oc_bd_proxy_extend = TRUE)</code>
+(only meaningful with <code>soilKey.andic_oc_bd_proxy = TRUE</code>),
+iteratively extend the proxy layers to include contiguous deeper
+layers whose <code>oc_pct &gt;= min_oc_proxy / 2</code> AND whose
+<code>bulk_density_g_cm3</code> is missing OR
+<code>&lt;= max_bd_proxy + 0.15</code>. The extension stops at the first
+horizon failing either constraint, so a ferralic / argic subsoil
+cannot accidentally inflate the andic thickness. Default is
+<code>FALSE</code> – canonical proxy behaviour preserved.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

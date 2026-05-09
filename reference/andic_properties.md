@@ -79,6 +79,17 @@ horizon shows `oc_pct >= min_oc_proxy` AND
 `bulk_density_g_cm3 <= max_bd_proxy` (or OC alone \>= 5% when BD is
 missing). Default is `FALSE` (canonical behaviour preserved).
 
+## v0.9.85 proxy contiguous-layer extension (opt-in)
+
+When `options(soilKey.andic_oc_bd_proxy_extend = TRUE)` (only meaningful
+with `soilKey.andic_oc_bd_proxy = TRUE`), iteratively extend the proxy
+layers to include contiguous deeper layers whose
+`oc_pct >= min_oc_proxy / 2` AND whose `bulk_density_g_cm3` is missing
+OR `<= max_bd_proxy + 0.15`. The extension stops at the first horizon
+failing either constraint, so a ferralic / argic subsoil cannot
+accidentally inflate the andic thickness. Default is `FALSE` – canonical
+proxy behaviour preserved.
+
 ## References
 
 IUSS Working Group WRB (2022), Chapter 3, Andic properties.

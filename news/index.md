@@ -1,5 +1,63 @@
 # Changelog
 
+## soilKey 0.9.85 (2026-05-09)
+
+The “**Andosol RSG-gate buried-exclusion + proxy thickness extension**”
+release. Two surgical fixes that address the v0.9.80 NEWS observation –
+“v0.9.81 will refine the per-RSG dispatch ordering for Andosols” – now
+in their proper home. Default behaviour bit-for-bit preserved.
+
+### Fix 1: buried-exclusion (auto, default)
+
+WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /
+ferralic / petroplinthic / pisoplinthic / plinthic / spodic) as “\<= 100
+cm ”. The earlier implementation excluded an Andosol whenever any of
+those diagnostics passed anywhere in the profile. This mis-fired on AfSP
+Andosol references like , where an argic-eligible 2BA at 56-72 cm
+wrongly excluded the andic 0-30 cm surface stack.
+
+now restricts the exclusion check to layers whose top_cm \< (default 50
+cm). When all of an exclusion’s passing layers lie deeper than that, the
+diagnostic is treated as buried and does NOT exclude the Andosol. The
+existing list still records the raw diagnostic results; v0.9.85 adds and
+to expose the filtering.
+
+### Fix 2: OC+BD proxy extension (opt-in)
+
+The v0.9.80 OC+BD proxy fires on individual horizons that meet the
+strict thresholds (OC \>= 4 + BD \<= 0.9, or OC \>= 5 with BD missing).
+On AfSP / SOTER Andosol references like ( 0-25 cm OC=4.7 BD=0.8 -\>
+proxy fires; 25-50 cm OC=2.7 BD=1.0 -\> below v0.9.80 thresholds), the
+AB layer is lost from the andic thickness even though it clearly belongs
+to the same andic-affected mantle.
+
+With (only meaningful when the v0.9.80 proxy is enabled), iteratively
+extend the proxy layers to include contiguous deeper layers whose The
+extension stops at the first horizon failing either constraint, so a
+ferralic / argic subsoil cannot accidentally inflate the andic
+thickness. Default is – canonical behaviour preserved.
+
+### Empirical effect on AfSP Andosol references (n = 5)
+
+| configuration                     | classify -\> Andosols |
+|-----------------------------------|----------------------:|
+| default (no opt-ins)              |                 0 / 5 |
+| v0.9.80 proxy ON                  |                 1 / 5 |
+| v0.9.80 proxy + v0.9.85 extend ON |             **2 / 5** |
+
+The remaining 3 / 5 AfSP Andosol references (KE wasp_39, RW wasp_2, ET
+28978_M9) need either richer surface OC (proxy doesn’t fire) or
+finer-resolution shallow horizons (combined \< 30 cm even with
+extension). Those will be addressed in subsequent v0.9.x releases.
+
+### Regression test
+
+(8 tests, 21 expectations): buried argic (top \>= 50 cm) does not
+exclude; shallow argic (top \< 50 cm) still excludes; extension OFF by
+default; extension on contiguous OC\>=2 + BD\<=1.05 (or NA); extension
+stops at high-BD subsoil; extension stops at OC drop; default behaviour
+preserved without opt-ins; AfSP regression guard (, ).
+
 ## soilKey 0.9.84 (2026-05-09)
 
 The “**spodic engine-aware OC-translocation path**” release. grows an
