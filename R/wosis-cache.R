@@ -132,7 +132,24 @@ load_wosis_stratified_sample <- function() {
   if (!nzchar(path) || !file.exists(path))
     stop("Bundled WoSIS stratified sample not found at ",
           "inst/extdata/wosis_stratified_sample.rds.")
-  readRDS(path)
+  s <- readRDS(path)
+  # v0.9.88: alias `wosis_rsg` -> `reference_wrb` on every pedon so
+  # generic benchmark loops that call `p$site$reference_wrb` (the
+  # canonical field used by KSSL / AfSP / Redape pedons) work
+  # off-the-shelf on the WoSIS bundled cache. The original
+  # `wosis_rsg` slot is preserved for back-compat with code that
+  # already reads it directly.
+  if (is.list(s) && !is.null(s$pedons)) {
+    s$pedons <- lapply(s$pedons, function(p) {
+      if (inherits(p, "PedonRecord") &&
+            is.null(p$site$reference_wrb) &&
+            !is.null(p$site$wosis_rsg)) {
+        p$site$reference_wrb <- p$site$wosis_rsg
+      }
+      p
+    })
+  }
+  s
 }
 
 
