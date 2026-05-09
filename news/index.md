@@ -1,5 +1,85 @@
 # Changelog
 
+## soilKey 0.9.77 (2026-05-09)
+
+The “**AfSP integration + Vertisol RSG-gate routing fix**” release. Two
+coordinated deliverables:
+
+### 1. Vertisol RSG-gate routing fix (per-RSG dispatch ordering)
+
+The v0.9.76 chroma+clay path correctly fired on 5/9 KSSL+NASIS Vertisol
+references but the RSG-gate then blocked them because it required
+explicit – which NASIS records on 0\\ of horizons. v0.9.77 lets the
+RSG-gate trust the morphological inference paths (v-suffix designation
+OR chroma+clay) when the canonical cracks gate is absent. The strict
+“all overlying clay \\= 30\\” gate is preserved (real WRB 2022
+requirement).
+
+#### Empirical (KSSL+NASIS, n=99)
+
+| Configuration     |              Top-1 |
+|-------------------|-------------------:|
+| baseline          |     19/99 (19.2\\) |
+| v0.9.75 stack     |     18/99 (18.2\\) |
+| v0.9.76 stack     |     21/99 (21.2\\) |
+| **v0.9.77 stack** | **24/99 (24.2\\)** |
+
+Per-RSG: **Vertisol 0/9 -\> 3/9 (+3)**, Solonetz 4/15 unchanged.
+
+### 2. AfSP (Africa Soil Profiles) integration
+
+ISRIC’s Africa Soil Profiles Database v1.2 (Leenaars et al. 2014) –
+18,533 georeferenced African profiles, ~7000 with WRB 2006 RSG
+classifications. Now soilKey’s first WRB benchmark with profile depth
+AND rich morphological data on a non-Brazilian / non-US dataset.
+
+#### New API
+
+#### AfSP field availability (much richer than WoSIS, USDA-comparable)
+
+| field                | AfSP n=120 |             KSSL+NASIS n=99 |
+|----------------------|-----------:|----------------------------:|
+| clay_pct             | **84.6\\** |                      58.6\\ |
+| ph_h2o               | **81.2\\** |                      36.5\\ |
+| oc_pct               | **78.9\\** |                      76.2\\ |
+| **cec_cmol**         | **86.2\\** |                      67.4\\ |
+| ecec_cmol            |     45.5\\ |                      45.5\\ |
+| **bs_pct**           | **75.6\\** |                      25.3\\ |
+| ca_cmol              |     80.7\\ |                      36.7\\ |
+| na_cmol              |     69.8\\ |                      56.8\\ |
+| caco3_pct            |     39.3\\ |                      62.3\\ |
+| caso4_pct            |     30.9\\ | 0\\ (KSSL doesn’t preserve) |
+| munsell_chroma_moist |     56.8\\ |                      89.6\\ |
+
+#### First-ever AfSP WRB benchmark (n=120, full v0.9.77 stack)
+
+    Order accuracy = 28.3% (34/120)
+
+Per-RSG recall:
+
+The 0\\-recall classes split into two groups:
+
+### 3. The complete benchmark suite after v0.9.77
+
+| System  | Dataset                | n     | Profile depth | Munsell?       |   Accuracy |
+|---------|------------------------|-------|---------------|----------------|-----------:|
+| SiBCS   | Redape (curated)       | 94    | full          | yes            | **57.4\\** |
+| SiBCS   | BDsolos RJ             | 722   | full          | partial        |     50.0\\ |
+| **WRB** | **AfSP (n=120 strat)** | 120   | full          | partial (57\\) | **28.3\\** |
+| **WRB** | **KSSL + NASIS**       | 99    | full          | yes (90\\)     | **24.2\\** |
+| WRB     | KSSL (lab-only)        | 199   | full          | no             |     20.1\\ |
+| WRB     | WoSIS stratified       | 130   | full          | no             |     16.2\\ |
+| WRB     | LUCAS                  | 18984 | topsoil-only  | no             |      3.3\\ |
+
+AfSP is now soilKey’s **highest-accuracy WRB benchmark**, ahead of
+KSSL+NASIS by 4.1pp. The African dataset’s broader analytical coverage
+(CEC, BS, exchangeable bases) compensates for its weaker Munsell
+coverage.
+
+### 4. Reproducer + tests
+
+### 5. v0.9.78+ deferred
+
 ## soilKey 0.9.76 (2026-05-09)
 
 The “**Subordem-level WRB diagnostic refinement**” release. Closes

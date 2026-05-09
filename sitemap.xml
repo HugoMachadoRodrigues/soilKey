@@ -103,6 +103,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/available_esdb_attributes.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.html</loc></url>
@@ -223,6 +224,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SMARTSOLOS_DRAINAGE_SCALE.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILGRIDS_TO_HORIZON_MAP.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-WRB_LV1_NAME_BY_CODE.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_parse_munsell.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_to_pedon.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_unna.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-apply_nasis_tiebreaker.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_aggregate.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_negative.html</loc></url>
@@ -472,6 +476,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lithic_contact_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lithic_discontinuity.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/lixisol.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.html</loc></url>
@@ -1068,6 +1074,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wassent_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wassist_qualifying_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wrb06_code_to_rsg.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/xanthic_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/yermic_properties.html</loc></url>

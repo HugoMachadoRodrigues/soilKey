@@ -2879,6 +2879,12 @@ plus auxiliaries) used in the test suite.
 - [`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
   : Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
 
+- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
+
+- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
+  : Load the bundled AfSP stratified sample (v0.9.77)
+
 - [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
   : Load a BDsolos CSV export as a list of PedonRecord objects
 
@@ -3341,6 +3347,22 @@ lab-only).
 - [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
   : Load the bundled KSSL + NASIS morphological-enriched sample
   (v0.9.75)
+
+## Africa Soil Profiles (AfSP) WRB benchmark (v0.9.77)
+
+ISRIC AfSP v1.2 (Leenaars et al. 2014) – 18,533 georeferenced African
+profiles, ~7000 with WRB 2006 RSG. Loader + bundled 120-pedon stratified
+sample (5 per RSG x 24 RSGs). Achieves 28% Order accuracy with strong
+Cambisol/Histosol (100%) and Ferralsol/Solonetz (80%) recall.
+
+- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
+- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
+  : Load the bundled AfSP stratified sample (v0.9.77)
+- [`benchmark_afsp()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.md)
+  : Benchmark soilKey WRB predictions against AfSP ground truth
+- [`wrb06_code_to_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb06_code_to_rsg.md)
+  : WRB 2006 RSG code -\> 2022 RSG name
 
 ## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.76</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.77</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,141 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.77" id="soilkey-0977-2026-05-09">soilKey 0.9.77 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0977-2026-05-09"></a></h2>
+<p>The “<strong>AfSP integration + Vertisol RSG-gate routing fix</strong>” release. Two coordinated deliverables:</p>
+<div class="section level3">
+<h3 id="id_1-vertisol-rsg-gate-routing-fix-per-rsg-dispatch-ordering-0-9-77">1. Vertisol RSG-gate routing fix (per-RSG dispatch ordering)<a class="anchor" aria-label="anchor" href="#id_1-vertisol-rsg-gate-routing-fix-per-rsg-dispatch-ordering-0-9-77"></a></h3>
+<p>The v0.9.76  chroma+clay path correctly fired on 5/9 KSSL+NASIS Vertisol references but the  RSG-gate then blocked them because it required explicit  – which NASIS records on 0\% of horizons. v0.9.77 lets the RSG-gate trust the morphological inference paths (v-suffix designation OR chroma+clay) when the canonical cracks gate is absent. The strict “all overlying clay \&gt;= 30\%” gate is preserved (real WRB 2022 requirement).</p>
+<div class="section level4">
+<h4 id="empirical-ksslnasis-n99-0-9-77">Empirical (KSSL+NASIS, n=99)<a class="anchor" aria-label="anchor" href="#empirical-ksslnasis-n99-0-9-77"></a></h4>
+<table class="table"><thead><tr><th>Configuration</th>
+<th align="right">Top-1</th>
+</tr></thead><tbody><tr><td>baseline</td>
+<td align="right">19/99 (19.2\%)</td>
+</tr><tr><td>v0.9.75 stack</td>
+<td align="right">18/99 (18.2\%)</td>
+</tr><tr><td>v0.9.76 stack</td>
+<td align="right">21/99 (21.2\%)</td>
+</tr><tr><td><strong>v0.9.77 stack</strong></td>
+<td align="right"><strong>24/99 (24.2\%)</strong></td>
+</tr></tbody></table><p>Per-RSG: <strong>Vertisol 0/9 -&gt; 3/9 (+3)</strong>, Solonetz 4/15 unchanged.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_2-afsp-africa-soil-profiles-integration-0-9-77">2. AfSP (Africa Soil Profiles) integration<a class="anchor" aria-label="anchor" href="#id_2-afsp-africa-soil-profiles-integration-0-9-77"></a></h3>
+<p>ISRIC’s Africa Soil Profiles Database v1.2 (Leenaars et al. 2014) – 18,533 georeferenced African profiles, ~7000 with WRB 2006 RSG classifications. Now soilKey’s first WRB benchmark with profile depth AND rich morphological data on a non-Brazilian / non-US dataset.</p>
+<div class="section level4">
+<h4 id="new-api-0-9-77">New API<a class="anchor" aria-label="anchor" href="#new-api-0-9-77"></a></h4>
+
+</div>
+<div class="section level4">
+<h4 id="afsp-field-availability-much-richer-than-wosis-usda-comparable-0-9-77">AfSP field availability (much richer than WoSIS, USDA-comparable)<a class="anchor" aria-label="anchor" href="#afsp-field-availability-much-richer-than-wosis-usda-comparable-0-9-77"></a></h4>
+<table class="table"><thead><tr><th>field</th>
+<th align="right">AfSP n=120</th>
+<th align="right">KSSL+NASIS n=99</th>
+</tr></thead><tbody><tr><td>clay_pct</td>
+<td align="right"><strong>84.6\%</strong></td>
+<td align="right">58.6\%</td>
+</tr><tr><td>ph_h2o</td>
+<td align="right"><strong>81.2\%</strong></td>
+<td align="right">36.5\%</td>
+</tr><tr><td>oc_pct</td>
+<td align="right"><strong>78.9\%</strong></td>
+<td align="right">76.2\%</td>
+</tr><tr><td><strong>cec_cmol</strong></td>
+<td align="right"><strong>86.2\%</strong></td>
+<td align="right">67.4\%</td>
+</tr><tr><td>ecec_cmol</td>
+<td align="right">45.5\%</td>
+<td align="right">45.5\%</td>
+</tr><tr><td><strong>bs_pct</strong></td>
+<td align="right"><strong>75.6\%</strong></td>
+<td align="right">25.3\%</td>
+</tr><tr><td>ca_cmol</td>
+<td align="right">80.7\%</td>
+<td align="right">36.7\%</td>
+</tr><tr><td>na_cmol</td>
+<td align="right">69.8\%</td>
+<td align="right">56.8\%</td>
+</tr><tr><td>caco3_pct</td>
+<td align="right">39.3\%</td>
+<td align="right">62.3\%</td>
+</tr><tr><td>caso4_pct</td>
+<td align="right">30.9\%</td>
+<td align="right">0\% (KSSL doesn’t preserve)</td>
+</tr><tr><td>munsell_chroma_moist</td>
+<td align="right">56.8\%</td>
+<td align="right">89.6\%</td>
+</tr></tbody></table></div>
+<div class="section level4">
+<h4 id="first-ever-afsp-wrb-benchmark-n120-full-v0977-stack-0-9-77">First-ever AfSP WRB benchmark (n=120, full v0.9.77 stack)<a class="anchor" aria-label="anchor" href="#first-ever-afsp-wrb-benchmark-n120-full-v0977-stack-0-9-77"></a></h4>
+<pre><code>Order accuracy = 28.3% (34/120)</code></pre>
+<p>Per-RSG recall:</p>
+<p>The 0\%-recall classes split into two groups: </p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_3-the-complete-benchmark-suite-after-v0977-0-9-77">3. The complete benchmark suite after v0.9.77<a class="anchor" aria-label="anchor" href="#id_3-the-complete-benchmark-suite-after-v0977-0-9-77"></a></h3>
+<table class="table"><colgroup><col width="14%"><col width="16%"><col width="5%"><col width="27%"><col width="18%"><col width="18%"></colgroup><thead><tr><th>System</th>
+<th>Dataset</th>
+<th>n</th>
+<th>Profile depth</th>
+<th>Munsell?</th>
+<th align="right">Accuracy</th>
+</tr></thead><tbody><tr><td>SiBCS</td>
+<td>Redape (curated)</td>
+<td>94</td>
+<td>full</td>
+<td>yes</td>
+<td align="right"><strong>57.4\%</strong></td>
+</tr><tr><td>SiBCS</td>
+<td>BDsolos RJ</td>
+<td>722</td>
+<td>full</td>
+<td>partial</td>
+<td align="right">50.0\%</td>
+</tr><tr><td><strong>WRB</strong></td>
+<td><strong>AfSP (n=120 strat)</strong></td>
+<td>120</td>
+<td>full</td>
+<td>partial (57\%)</td>
+<td align="right"><strong>28.3\%</strong></td>
+</tr><tr><td><strong>WRB</strong></td>
+<td><strong>KSSL + NASIS</strong></td>
+<td>99</td>
+<td>full</td>
+<td>yes (90\%)</td>
+<td align="right"><strong>24.2\%</strong></td>
+</tr><tr><td>WRB</td>
+<td>KSSL (lab-only)</td>
+<td>199</td>
+<td>full</td>
+<td>no</td>
+<td align="right">20.1\%</td>
+</tr><tr><td>WRB</td>
+<td>WoSIS stratified</td>
+<td>130</td>
+<td>full</td>
+<td>no</td>
+<td align="right">16.2\%</td>
+</tr><tr><td>WRB</td>
+<td>LUCAS</td>
+<td>18984</td>
+<td>topsoil-only</td>
+<td>no</td>
+<td align="right">3.3\%</td>
+</tr></tbody></table><p>AfSP is now soilKey’s <strong>highest-accuracy WRB benchmark</strong>, ahead of KSSL+NASIS by 4.1pp. The African dataset’s broader analytical coverage (CEC, BS, exchangeable bases) compensates for its weaker Munsell coverage.</p>
+</div>
+<div class="section level3">
+<h3 id="id_4-reproducer--tests-0-9-77">4. Reproducer + tests<a class="anchor" aria-label="anchor" href="#id_4-reproducer--tests-0-9-77"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="id_5-v0978-deferred-0-9-77">5. v0.9.78+ deferred<a class="anchor" aria-label="anchor" href="#id_5-v0978-deferred-0-9-77"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.76" id="soilkey-0976-2026-05-09">soilKey 0.9.76 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0976-2026-05-09"></a></h2>
 <p>The “<strong>Subordem-level WRB diagnostic refinement</strong>” release. Closes v0.9.75 backlog: KSSL+NASIS sample showed Solonetz, Vertisol, and Kastanozem all at 0\% recall despite having relevant subset (na_cmol, cec_cmol, ph_h2o, clay_pct, Munsell chroma) populated. v0.9.76 adds two opt-in inference paths:</p>
@@ -499,7 +634,7 @@
 <div class="section level3">
 <h3 id="id_3-empirical-effect-on-bdsolos-rj-n--all-fallbacks-on-0-9-72">3. Empirical effect on BDsolos RJ (n = 722, ALL fallbacks ON)<a class="anchor" aria-label="anchor" href="#id_3-empirical-effect-on-bdsolos-rj-n--all-fallbacks-on-0-9-72"></a></h3>
 <p>The full v0.9.69-v0.9.72 fallback stack:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>soilKey.diagnostic_engine                       <span class="op">=</span> <span class="st">"aqp"</span>,</span>
 <span>        soilKey.ferralic_ecec_fallback                  <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>        soilKey.ferralic_texture_morphological_fallback <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -524,7 +659,7 @@
 </div>
 <div class="section level3">
 <h3 id="id_4-recommended-brazilian--soterlac-recipe-0-9-72">4. Recommended Brazilian / SOTERLAC recipe<a class="anchor" aria-label="anchor" href="#id_4-recommended-brazilian--soterlac-recipe-0-9-72"></a></h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Once at session start, for Brazilian field-described profiles:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>soilKey.diagnostic_engine                       <span class="op">=</span> <span class="st">"aqp"</span>,</span>
 <span>        soilKey.ferralic_ecec_fallback                  <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -657,7 +792,7 @@
 </div>
 <div class="section level3">
 <h3 id="combined-recipe-for-brazilian--soterlac-datasets-0-9-70">Combined recipe for Brazilian / SOTERLAC datasets<a class="anchor" aria-label="anchor" href="#combined-recipe-for-brazilian--soterlac-datasets-0-9-70"></a></h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
 <span>  soilKey.diagnostic_engine                       <span class="op">=</span> <span class="st">"aqp"</span>,</span>
 <span>  soilKey.ferralic_ecec_fallback                  <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -799,7 +934,7 @@
 <li>A deeper horizon in the same profile is R/Cr-designated.</li>
 </ol><p>If none of these is present, the thin-topsoil path does not fire – the pedon falls through to the WRB key’s intended fallback (usually Regosols, the WRB Ch 5 catch-all for “no diagnostic horizons identified”).</p>
 <p>Users with a strong external prior (e.g. a parent-material survey that documents rock &lt; 25 cm but did not record it in the horizon table) can opt back into the v0.9.65 loose behaviour:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>soilKey.leptic_assume_rock_below <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -854,7 +989,7 @@
 <div class="section level3">
 <h3 id="id_2-tier-schema-fields-rutilsrhorizon_column_spec-0-9-65">2. Tier-3 schema fields (<code>R/utils.R::horizon_column_spec()</code>)<a class="anchor" aria-label="anchor" href="#id_2-tier-schema-fields-rutilsrhorizon_column_spec-0-9-65"></a></h3>
 <p>14 new schema fields covering the canonical WRB Ch 5 evidence needed by previously-stub Tier-3 qualifiers:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">surface_crust_type</span>        <span class="co"># WRB Ch 5: biological / clay / evaporite / puffed crust</span></span>
 <span><span class="va">bioturbation_density</span>      <span class="co"># WRB Ch 5: faunal burrow density (none/few/common/many)</span></span>
 <span><span class="va">cordic_horizon</span>            <span class="co"># WRB Ch 5: presence of cordic horizon (logical)</span></span>
@@ -870,7 +1005,7 @@
 <span><span class="va">saprolite_pct</span>             <span class="co"># WRB Ch 5: % volume in-situ saprolite</span></span>
 <span><span class="va">water_regime_pattern</span>      <span class="co"># WRB Ch 5: bidirectional / single / aquic</span></span></code></pre></div>
 <p>22 v0.9.64 Tier-3 stubs were rewired to read these fields and return substantive results. Examples:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/qual_biocrustic.html">qual_biocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># was NA stub; now reads surface_crust_type</span></span>
 <span><span class="fu"><a href="../reference/qual_arenicolic.html">qual_arenicolic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># now reads bioturbation_density</span></span>
 <span><span class="fu"><a href="../reference/qual_kalaic.html">qual_kalaic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># now reads surface_puff_layer</span></span>
@@ -892,9 +1027,9 @@
 </div>
 <div class="section level3">
 <h3 id="id_3-per-pedon-engine-selection-rengine-selection-v0965r-0-9-65">3. Per-pedon engine selection (<code>R/engine-selection-v0965.R</code>)<a class="anchor" aria-label="anchor" href="#id_3-per-pedon-engine-selection-rengine-selection-v0965r-0-9-65"></a></h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">pick_engine</span>(pedon, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> <span class="st">"aqp"</span> <span class="sc">|</span> <span class="st">"soilkey"</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">pick_engine_batch</span>(pedons, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> character vector</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">classify_with_engine_heuristic</span>(pedon, <span class="at">system =</span> <span class="st">"wrb2022"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">pick_engine</span>(pedon, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> <span class="st">"aqp"</span> <span class="sc">|</span> <span class="st">"soilkey"</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">pick_engine_batch</span>(pedons, <span class="at">min_score =</span> <span class="dv">3</span><span class="dt">L</span>) <span class="ot">-&gt;</span> character vector</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">classify_with_engine_heuristic</span>(pedon, <span class="at">system =</span> <span class="st">"wrb2022"</span>)</span></code></pre></div>
 <p>The heuristic scores each pedon on a 0-5 morphology-completeness scale (designation + texture + Munsell + structure + clay films / Bt). Pedons with score &gt;= 3 get aqp; others stay on soilkey.</p>
 <p><strong>Validated on real data:</strong></p>
 <pre><code>BDsolos RJ (n=50, data-rich)        : aqp = 47, soilkey = 3
@@ -973,16 +1108,16 @@ id 13029: texture=TRUE    cec_per_clay=FALSE thickness=TRUE   &lt;- CTC &gt; 17<
 </ol></div>
 <div class="section level3">
 <h3 id="run-it-0-9-65">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-65"></a></h3>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Re-run LUCAS WRB benchmark with v0.9.65 relaxations:</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co"># Test engine heuristic on a dataset:</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> pedons <span class="op">&lt;</span>- load_bdsolos_csv<span class="er">(</span><span class="st">"RJ.csv"</span><span class="kw">)</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> table<span class="er">(</span><span class="ex">pick_engine_batch</span><span class="er">(</span><span class="ex">pedons</span><span class="kw">))</span></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co"># Use heuristic-driven classifier:</span></span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result <span class="op">&lt;</span>- classify_with_engine_heuristic<span class="er">(</span><span class="ex">pedon,</span> system = <span class="st">"sibcs"</span><span class="kw">)</span></span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result<span class="va">$trace$engine_used</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Re-run LUCAS WRB benchmark with v0.9.65 relaxations:</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># Test engine heuristic on a dataset:</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> pedons <span class="op">&lt;</span>- load_bdsolos_csv<span class="er">(</span><span class="st">"RJ.csv"</span><span class="kw">)</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> table<span class="er">(</span><span class="ex">pick_engine_batch</span><span class="er">(</span><span class="ex">pedons</span><span class="kw">))</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co"># Use heuristic-driven classifier:</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result <span class="op">&lt;</span>- classify_with_engine_heuristic<span class="er">(</span><span class="ex">pedon,</span> system = <span class="st">"sibcs"</span><span class="kw">)</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> result<span class="va">$trace$engine_used</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_5-lucas-wrb-rerun-overnight-stage-0-9-65">5. LUCAS WRB rerun (overnight Stage 3)<a class="anchor" aria-label="anchor" href="#id_5-lucas-wrb-rerun-overnight-stage-0-9-65"></a></h3>
@@ -1046,7 +1181,7 @@ aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="id_1-new-principal-qualifiers-0-9-64">1. New Principal qualifiers (8)<a class="anchor" aria-label="anchor" href="#id_1-new-principal-qualifiers-0-9-64"></a></h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qual_entic</span>         <span class="co"># Podzols: albic AND NOT spodic</span></span>
 <span><span class="va">qual_tonguic</span>       <span class="co"># Chernozem family: A/B designation tonguing pattern</span></span>
 <span><span class="va">qual_nudiargic</span>     <span class="co"># Acrisol/Lixisol/etc.: argic at top_cm &lt;= 5 cm</span></span>
@@ -1061,7 +1196,7 @@ aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
 <h3 id="id_2-new-supplementary-qualifiers-0-9-64">2. New Supplementary qualifiers (43)<a class="anchor" aria-label="anchor" href="#id_2-new-supplementary-qualifiers-0-9-64"></a></h3>
 <div class="section level4">
 <h4 id="substantive-0-9-64">Substantive (22)<a class="anchor" aria-label="anchor" href="#substantive-0-9-64"></a></h4>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qual_endic</span>         <span class="co"># Generic 50-100 cm depth marker</span></span>
 <span><span class="va">qual_epic</span>          <span class="co"># Generic 0-50 cm depth marker</span></span>
 <span><span class="va">qual_endothyric</span>    <span class="co"># Thyric at depth &gt;= 50 cm</span></span>
@@ -1088,7 +1223,7 @@ aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
 <div class="section level4">
 <h4 id="tier-stubs-0-9-64">Tier-3 stubs (21)<a class="anchor" aria-label="anchor" href="#tier-stubs-0-9-64"></a></h4>
 <p>These are functions that exist in the namespace and return <code>DiagnosticResult</code> with <code>passed = NA</code> and the missing schema field listed in <code>$missing</code> – so the function exists, the audit counts it, and downstream code can request it; the actual data path lights up when the schema extension lands.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qual_archaic</span>       <span class="co"># archeological_context -- Tier-3</span></span>
 <span><span class="va">qual_arenicolic</span>    <span class="co"># bioturbation_density / burrow_density</span></span>
 <span><span class="va">qual_biocrustic</span>    <span class="co"># surface_crust_type</span></span>
@@ -1185,11 +1320,11 @@ aqp_subsoil_soilgrids           | aqp     |     5334.4 |  **0.600**  &lt;- aqp +
 </ol></div>
 <div class="section level3">
 <h3 id="run-it-0-9-64">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-64"></a></h3>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Re-run the WRB audit with v0.9.64 source:</span></span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co"># LUCAS WRB engine=aqp (30 pedons, ~30-90 min):</span></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Re-run the WRB audit with v0.9.64 source:</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="co"># LUCAS WRB engine=aqp (30 pedons, ~30-90 min):</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0964_engine_aqp.R</span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
@@ -1338,7 +1473,7 @@ aqp_subsoil_soilgrids           | aqp     |     5334.4 |  **0.600**  &lt;- aqp +
 </div>
 <div class="section level3">
 <h3 id="id_2-argic--cambic-engine-argument-0-9-63">2. argic() / cambic() engine argument<a class="anchor" aria-label="anchor" href="#id_2-argic--cambic-engine-argument-0-9-63"></a></h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/argic.html">argic</a></span><span class="op">(</span><span class="va">pedon</span>, engine <span class="op">=</span> <span class="st">"aqp"</span>, system <span class="op">=</span> <span class="st">"wrb2022"</span><span class="op">)</span>  <span class="co"># canonical NRCS thresholds</span></span>
 <span><span class="fu"><a href="../reference/cambic.html">cambic</a></span><span class="op">(</span><span class="va">pedon</span>, engine <span class="op">=</span> <span class="st">"aqp"</span><span class="op">)</span>                       <span class="co"># canonical NRCS cambic logic</span></span>
 <span></span>
@@ -1377,7 +1512,7 @@ aqp        |     85.0  |   0.444  |        710  &lt;- +4.1 pp</code></pre>
 </div>
 <div class="section level3">
 <h3 id="id_5-benchmark_unified-engine--harmonize-args-0-9-63">5. benchmark_unified() engine + harmonize args<a class="anchor" aria-label="anchor" href="#id_5-benchmark_unified-engine--harmonize-args-0-9-63"></a></h3>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Engine override</span></span>
 <span><span class="fu"><a href="../reference/benchmark_unified.html">benchmark_unified</a></span><span class="op">(</span>systems <span class="op">=</span> <span class="st">"sibcs"</span>, datasets <span class="op">=</span> <span class="st">"bdsolos"</span>,</span>
 <span>                    engine <span class="op">=</span> <span class="st">"aqp"</span><span class="op">)</span></span>
@@ -1408,14 +1543,14 @@ aqp        |     85.0  |   0.444  |        710  &lt;- +4.1 pp</code></pre>
 </div>
 <div class="section level3">
 <h3 id="run-it-0-9-63">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-63"></a></h3>
-<div class="sourceCode" id="cb32"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># Engine A/B benchmark on RJ (~2 min):</span></span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0963_engine_aqp.R</span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co"># 27-UF AQP nation-wide (~10-90 min depending on engine):</span></span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="va">SOILKEY_ENGINE</span><span class="op">=</span>aqp <span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a></span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="co"># Refined Subgroup audit (~5 s):</span></span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_subgroup_v0963.R</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># Engine A/B benchmark on RJ (~2 min):</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0963_engine_aqp.R</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="co"># 27-UF AQP nation-wide (~10-90 min depending on engine):</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="va">SOILKEY_ENGINE</span><span class="op">=</span>aqp <span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a><span class="co"># Refined Subgroup audit (~5 s):</span></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_subgroup_v0963.R</span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
@@ -1533,16 +1668,16 @@ ST_features.rda      ~29 KB  84 diagnostic features (data.frame)</code></pre>
 </div>
 <div class="section level3">
 <h3 id="run-it-0-9-62">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-62"></a></h3>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># Engine A/B comparison (~45 s on 722 perfis):</span></span>
-<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_engine_compare_v0962.R</span>
-<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a></span>
-<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a><span class="co"># WRB / USDA audit reports (~5 s each):</span></span>
-<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
-<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_canonical_v0962.R</span>
-<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a></span>
-<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a><span class="co"># Smoke benchmark_unified (BDsolos + SiBCS only, max_n=200):</span></span>
-<span id="cb38-9"><a href="#cb38-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> benchmark_unified<span class="er">(</span><span class="ex">systems</span> = <span class="st">"sibcs"</span>, datasets = <span class="st">"bdsolos"</span>,</span>
-<span id="cb38-10"><a href="#cb38-10" tabindex="-1"></a>                       <span class="ex">max_n_per_dataset</span> = 200<span class="kw">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="co"># Engine A/B comparison (~45 s on 722 perfis):</span></span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_engine_compare_v0962.R</span>
+<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a><span class="co"># WRB / USDA audit reports (~5 s each):</span></span>
+<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_wrb_canonical_v0962.R</span>
+<span id="cb39-6"><a href="#cb39-6" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/audit_usda_canonical_v0962.R</span>
+<span id="cb39-7"><a href="#cb39-7" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" tabindex="-1"></a><span class="co"># Smoke benchmark_unified (BDsolos + SiBCS only, max_n=200):</span></span>
+<span id="cb39-9"><a href="#cb39-9" tabindex="-1"></a><span class="ex">R</span><span class="op">&gt;</span> benchmark_unified<span class="er">(</span><span class="ex">systems</span> = <span class="st">"sibcs"</span>, datasets = <span class="st">"bdsolos"</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" tabindex="-1"></a>                       <span class="ex">max_n_per_dataset</span> = 200<span class="kw">)</span></span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
@@ -1572,7 +1707,7 @@ ausente / vazio    -&gt; NA  (treated as missing, not absent)</code></pre>
 <h4 id="test_gleyic_features-extended-rutils-diagnostic-testsr-0-9-61">
 <code>test_gleyic_features()</code> extended (R/utils-diagnostic-tests.R)<a class="anchor" aria-label="anchor" href="#test_gleyic_features-extended-rutils-diagnostic-testsr-0-9-61"></a></h4>
 <p>Adicionado segundo evidence path baseado em Munsell hue:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.GLEYIC_HUE_REGEX</span> <span class="op">&lt;-</span> <span class="st">"^(N|N\\s*[0-9]|10Y|5GY|10GY|5G|10G|5BG|10BG|5B|10B|10PB|5PB)(\\s|$)"</span></span></code></pre></div>
 <p>Per WRB 2022 Ch 3.1.13 redoximorphic features. Quando <code>redoximorphic_features_pct</code> está NA mas Munsell hue é gleyic AND chroma &lt;= 2, o teste passa. Dois paths qualifying (any-of).</p>
 </div>
@@ -1590,7 +1725,7 @@ Post-Gleissolos-fix: SiBCS Order 39.9% | Gleissolos recall 33.7% (33/98)</code><
 <code>B_latossolico()</code> rewrite (R/diagnostics-horizons-sibcs.R:421)<a class="anchor" aria-label="anchor" href="#b_latossolico-rewrite-rdiagnostics-horizons-sibcsr421-0-9-61"></a></h4>
 <p>Antes (v0.7): excluía layer SE argic OR B_nitico OR plinthic OR gleyic passassem. Para Latossolos com clay increase marginal mas features latossolicas dominantes, falhava – caia em Argissolos catch-all do key.yaml.</p>
 <p>Agora (v0.9.61): exclui argic APENAS se clay films são <code>comum</code>/<code>abundante</code> (forte evidência de B textural per SiBCS Cap 18). Plinthic + gleyic + B_nitico continuam sempre excludentes (definem ordens distintas).</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has_strong_clay_films</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">layers_idx</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">cf</span> <span class="op">&lt;-</span> <span class="va">pedon</span><span class="op">$</span><span class="va">horizons</span><span class="op">$</span><span class="va">clay_films_amount</span><span class="op">[</span><span class="va">layers_idx</span><span class="op">]</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"\\babunda|\\bcomu|\\bcommon|\\babundan"</span>,</span>
@@ -1618,7 +1753,7 @@ Post-Latossolos-fix : SiBCS Order 40.3% | Latossolos 14.9% | Argissolos 69.2%</c
 <div class="section level3">
 <h3 id="id_3-at-scale-bdsolos-via-subprocess-r6-gc-workaround-0-9-61">3. At-scale BDsolos via subprocess (R6 GC workaround)<a class="anchor" aria-label="anchor" href="#id_3-at-scale-bdsolos-via-subprocess-r6-gc-workaround-0-9-61"></a></h3>
 <p><code>inst/benchmarks/run_bdsolos_v0961_subprocess.R</code> – novo driver que spawna <code>Rscript --no-save --no-restore</code> per UF, escreve RDS per UF, agrega no fim. Sessão R fresca por UF evita o slowdown observado em v0.9.60 (R6/PedonRecord accumulated state freezing após ~2500 objects).</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0961_subprocess.R</span></code></pre></div>
 <p>Wall-clock estimado: ~5-15 min para 27 UFs (~9k perfis nacionais). Output em <code>inst/benchmarks/reports/bdsolos_v0961_27uf_&lt;DATE&gt;.{rds,txt}</code>.</p>
 </div>
 <div class="section level3">
@@ -1719,7 +1854,7 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 <div class="section level3">
 <h3 id="id_2-benchmark_bdsolos--triple-system-validation-0-9-60">2. <code>benchmark_bdsolos()</code> – triple-system validation<a class="anchor" aria-label="anchor" href="#id_2-benchmark_bdsolos--triple-system-validation-0-9-60"></a></h3>
 <p><code>R/benchmark-bdsolos.R</code> exporta uma função nova:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos</a></span><span class="op">(</span><span class="va">pedons</span>,</span>
 <span>                   systems     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrb2022"</span>, <span class="st">"sibcs"</span>, <span class="st">"usda"</span><span class="op">)</span>,</span>
 <span>                   sibcs_level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"order"</span>, <span class="st">"subordem"</span><span class="op">)</span>,</span>
@@ -1735,7 +1870,7 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 <h4 id="legacy-label-fix-em-normalise_febr_sibcs-0-9-60">Legacy-label fix em <code>normalise_febr_sibcs()</code>
 <a class="anchor" aria-label="anchor" href="#legacy-label-fix-em-normalise_febr_sibcs-0-9-60"></a></h4>
 <p>A primeira passada (RJ.csv, 720 perfis) mostrou que <strong>54 perfis “Podzolicos” + 44 “Gleis” + 13 “Aluviais”</strong> eram nomes pre-2018 do SiBCS que o classifier nao emite mais. O classificador estava acertando esses casos semanticamente (43/54 Podzolicos -&gt; Argissolos) mas eram contados como erro porque o normaliser nao mapeava legacy -&gt; modern. v0.9.60 adiciona <code>.SIBCS_LEGACY_ORDER_MAP</code> ao <code><a href="../reference/normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code>:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.SIBCS_LEGACY_ORDER_MAP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Podzolicos"</span> <span class="op">=</span> <span class="st">"Argissolos"</span>,   <span class="co"># SiBCS 5a ed. absorveu o Podzolico V/A</span></span>
 <span>  <span class="st">"Gleis"</span>      <span class="op">=</span> <span class="st">"Gleissolos"</span>,   <span class="co"># Gleis Humico/Pouco Humico colapsaram</span></span>
@@ -1851,8 +1986,8 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 </div>
 <div class="section level4">
 <h4 id="run-it-0-9-60">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-60"></a></h4>
-<div class="sourceCode" id="cb55"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960_focused.R   <span class="co"># RJ-only (28s)</span></span>
-<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R           <span class="co"># 27 UFs (~10-20 min)</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960_focused.R   <span class="co"># RJ-only (28s)</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R           <span class="co"># 27 UFs (~10-20 min)</span></span></code></pre></div>
 <p>Coverage real auditada nas 27 UFs (BD_solos completo): a tabela <code>audit</code> no relatorio multi-UF mostra n / sibcs / wrb / usda / coords / munsell por UF.</p>
 </div>
 </div>
@@ -1889,11 +2024,11 @@ subsoil_soilgrids                |  [need overnight run]</code></pre>
 </div>
 <div class="section level3">
 <h3 id="run-it-0-9-60-1">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-60-1"></a></h3>
-<div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="co"># 1. BDsolos triple benchmark (gera report .rds + .txt)</span></span>
-<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R</span>
-<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a></span>
-<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a><span class="co"># 2. LUCAS empirical close (gera report .rds + .txt)</span></span>
-<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0950_close.R</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="co"># 1. BDsolos triple benchmark (gera report .rds + .txt)</span></span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_bdsolos_v0960.R</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a><span class="co"># 2. LUCAS empirical close (gera report .rds + .txt)</span></span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a><span class="ex">Rscript</span> inst/benchmarks/run_lucas_v0950_close.R</span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
@@ -2023,7 +2158,7 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 </div>
 <div class="section level3">
 <h3 id="smoke-test-on-real-febr-data-0-9-57">Smoke test on real FEBR data<a class="anchor" aria-label="anchor" href="#smoke-test-on-real-febr-data-0-9-57"></a></h3>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HugoMachadoRodrigues/soilKey" class="external-link">soilKey</a></span><span class="op">)</span></span>
 <span><span class="va">pedons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_febr_pedons.html">read_febr_pedons</a></span><span class="op">(</span><span class="st">"ctb0039"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ctb0039: 8 perfis (Munsell em 8), 35 horizons total.</span></span>
@@ -2067,7 +2202,7 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 </div>
 <div class="section level3">
 <h3 id="how-to-use-after-this-fix-0-9-56">How to use after this fix<a class="anchor" aria-label="anchor" href="#how-to-use-after-this-fix-0-9-56"></a></h3>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HugoMachadoRodrigues/soilKey"</span>,</span>
 <span>                          ref <span class="op">=</span> <span class="st">"v0.9.56"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">.rs.restartR</span><span class="op">(</span><span class="op">)</span>  <span class="co"># restart R / fresh session</span></span>
@@ -2150,7 +2285,7 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 </ul></div>
 <div class="section level3">
 <h3 id="authentication-0-9-54">Authentication<a class="anchor" aria-label="anchor" href="#authentication-0-9-54"></a></h3>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Register at https://www.agroapi.cnptia.embrapa.br/portal/</span></span>
 <span><span class="co"># 2. Subscribe to SmartSolosExpert API</span></span>
 <span><span class="co"># 3. Generate an access token</span></span>
@@ -2240,10 +2375,10 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 </ul></div>
 <div class="section level3">
 <h3 id="run-it-0-9-51">Run it<a class="anchor" aria-label="anchor" href="#run-it-0-9-51"></a></h3>
-<div class="sourceCode" id="cb65"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> ghcr.io/HugoMachadoRodrigues/soilKey:latest</span>
-<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> <span class="at">-p</span> 3838:3838 ghcr.io/HugoMachadoRodrigues/soilKey:latest <span class="dt">\</span></span>
-<span id="cb65-3"><a href="#cb65-3" tabindex="-1"></a>  R <span class="at">-e</span> <span class="st">'soilKey::run_classify_app(host = "0.0.0.0", port = 3838L,</span></span>
-<span id="cb65-4"><a href="#cb65-4" tabindex="-1"></a><span class="st">                                    launch.browser = FALSE)'</span></span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> ghcr.io/HugoMachadoRodrigues/soilKey:latest</span>
+<span id="cb66-2"><a href="#cb66-2" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> <span class="at">-p</span> 3838:3838 ghcr.io/HugoMachadoRodrigues/soilKey:latest <span class="dt">\</span></span>
+<span id="cb66-3"><a href="#cb66-3" tabindex="-1"></a>  R <span class="at">-e</span> <span class="st">'soilKey::run_classify_app(host = "0.0.0.0", port = 3838L,</span></span>
+<span id="cb66-4"><a href="#cb66-4" tabindex="-1"></a><span class="st">                                    launch.browser = FALSE)'</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="tests-0-9-51">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-51"></a></h3>
@@ -3274,7 +3409,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <div class="section level4">
 <h4 id="test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23">
 <code>test_clay_increase_argic(h)</code> – canonical eluvial-illuvial<a class="anchor" aria-label="anchor" href="#test_clay_increase_argich--canonical-eluvial-illuvial-0-9-23"></a></h4>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># v0.9.22 (buggy):</span></span>
 <span><span class="va">above</span> <span class="op">&lt;-</span> <span class="va">h</span><span class="op">$</span><span class="va">clay_pct</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">]</span>   <span class="co"># adjacent only</span></span>
 <span></span>
