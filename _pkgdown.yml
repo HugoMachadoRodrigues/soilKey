@@ -476,6 +476,18 @@ reference:
     contents:
       - load_wosis_stratified_sample
 
+  - title: "USDA Soil Taxonomy <-> WRB cross-walk (v0.9.74)"
+    desc: >
+      KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6
+      USDA Order/Suborder -> WRB RSG correlation. Provides the
+      richest WRB benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56%
+      vs WoSIS-stratified ~30%).
+    contents:
+      - usda_to_wrb_rsg
+      - annotate_wrb_from_usda
+      - benchmark_wrb_vs_usda
+      - load_kssl_sample
+
   - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
     contents:
       - benchmark_lucas_2018

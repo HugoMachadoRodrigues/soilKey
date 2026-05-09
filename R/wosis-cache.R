@@ -134,3 +134,60 @@ load_wosis_stratified_sample <- function() {
           "inst/extdata/wosis_stratified_sample.rds.")
   readRDS(path)
 }
+
+
+#' Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
+#'
+#' Returns a 100-profile snapshot from the NCSS Lab Data Mart
+#' (KSSL gpkg, \code{head = 100}) pre-annotated with derived WRB
+#' Reference Soil Group via \code{\link{usda_to_wrb_rsg}}.
+#'
+#' This is the bundled offline counterpart to
+#' \code{\link{load_kssl_pedons_gpkg}} -- use this for tests and
+#' demos when the 5.5 GB gpkg is not available locally.
+#'
+#' Each pedon has BOTH:
+#' \itemize{
+#'   \item \code{site$reference_usda} (Order, Suborder, Greatgroup,
+#'         Subgroup) -- the canonical KSSL classification.
+#'   \item \code{site$reference_wrb_from_usda} -- the derived WRB
+#'         RSG via the IUSS WRB 2022 Annex 6 cross-walk.
+#' }
+#'
+#' First-ever KSSL WRB benchmark (soilKey v0.9.74, full v0.9.69-72
+#' fallback stack):
+#' \itemize{
+#'   \item Top-1 accuracy: 20.1\\% (n = 199, head = 200)
+#'   \item Calcisol 69\\%, Cambisol 73\\% -- well-handled
+#'   \item Phaeozem / Kastanozem / Solonetz 0\\% -- need Munsell + ESP
+#'         data not in KSSL lab tables (in companion NASIS).
+#' }
+#'
+#' @return A list with \code{pedons}, \code{pulled_on}, \code{source},
+#'   \code{cross_walk}.
+#'
+#' @section Reference:
+#' Beaudette, D., Skovlin, J., Roecker, S., Brown, A. (2024). aqp:
+#' Algorithms for Quantitative Pedology. R package version 2.x.
+#' \url{https://github.com/ncss-tech/aqp}.
+#'
+#' @examples
+#' \dontrun{
+#' s <- load_kssl_sample()
+#' length(s$pedons)
+#' #> 100
+#' table(vapply(s$pedons, function(p) p$site$reference_wrb_from_usda,
+#'              character(1)))
+#' }
+#'
+#' @export
+load_kssl_sample <- function() {
+  path <- system.file("extdata", "kssl_sample.rds", package = "soilKey")
+  if (!nzchar(path) || !file.exists(path)) {
+    dev_path <- file.path("inst", "extdata", "kssl_sample.rds")
+    if (file.exists(dev_path)) path <- dev_path
+  }
+  if (!nzchar(path) || !file.exists(path))
+    stop("Bundled KSSL sample not found at inst/extdata/kssl_sample.rds.")
+  readRDS(path)
+}
