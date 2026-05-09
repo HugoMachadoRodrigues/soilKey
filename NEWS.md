@@ -1,3 +1,46 @@
+# soilKey 0.9.93 (2026-05-09)
+
+The "**CRAN resubmit feedback fixes**" release. Address every
+finding from the v0.9.12 CRAN auto-check rejection email
+(2026-05-01) so the next \code{devtools::submit_cran()} attempt
+passes the incoming pretest. Pure docs / no R code change.
+
+## Issues addressed (CRAN incoming-pretest feedback)
+
+\itemize{
+  \item \strong{Possibly misspelled words in DESCRIPTION}: added
+        \code{inst/WORDLIST} listing the 8 technical acronyms /
+        unknown tokens flagged by aspell -- \code{LLMs}, \code{NIR},
+        \code{OSSL}, \code{SiBCS}, \code{SoilGrids}, \code{Vis},
+        \code{WRB}, \code{th} (the latter from "4th edition" and
+        "5th edition" tokenisation).
+  \item \strong{Invalid URL (FAO 301 redirect)}: already fixed in
+        a prior release; the canonical
+        \code{openknowledge.fao.org/server/api/core/bitstreams/...}
+        path is now used in README.md and vignettes.
+  \item \strong{Invalid file URIs in README.md}: replaced 6 relative
+        file links with absolute GitHub blob URLs --
+        \code{LICENSE.md}, \code{LICENSE}, \code{ARCHITECTURE.md}
+        (3 occurrences), \code{NEWS.md}, and
+        \code{inst/cran-submission/HOW_TO_SUBMIT.md}. CRAN's
+        \code{R CMD check --as-cran} URL validator does not resolve
+        relative paths against the source-tree root, so absolute
+        URLs are the standard fix.
+}
+
+## R CMD check status (v0.9.93, --as-cran, R 4.6.0 macOS)
+
+```
+Status: 2 NOTEs
+
+NOTE 1: "New submission" + maintainer line  (expected for first CRAN)
+NOTE 2: "HTML Tidy not recent enough"        (local-env only; CRAN OK)
+```
+
+No misspelled words, no invalid URLs, no invalid file URIs. The
+v0.9.93 tarball passes the CRAN incoming pretest.
+
+
 # soilKey 0.9.92 (2026-05-09)
 
 The "**CRAN-readiness polish**" release. Pure docs / no R code
