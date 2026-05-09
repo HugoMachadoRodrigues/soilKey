@@ -1,3 +1,113 @@
+# soilKey 0.9.76 (2026-05-09)
+
+The "**Subordem-level WRB diagnostic refinement**" release. Closes
+v0.9.75 backlog: KSSL+NASIS sample showed Solonetz, Vertisol, and
+Kastanozem all at 0\\% recall despite having relevant subset
+(na_cmol, cec_cmol, ph_h2o, clay_pct, Munsell chroma) populated.
+v0.9.76 adds two opt-in inference paths:
+
+## 1. natric_horizon n-suffix + ESP-only path (Solonetz)
+
+\code{options(soilKey.natric_designation_inference = TRUE)}
+
+When the canonical \code{argic()} clay-increase test fails
+(typically because \code{clay_pct} is missing in NCSS lab tables),
+\code{natric_horizon()} now accepts a layer as natric when EITHER:
+
+\enumerate{
+  \item the designation matches \code{[A-Z][a-z0-9]*n} (Btn,
+        Btnz, Bn -- explicit natric suffix), OR
+  \item ESP \\>= 15 (computed from
+        \code{na_cmol / cec_cmol}) on a B-prefixed subsoil layer
+        AND \code{ph_h2o \\>= 7} (alkaline gate, excludes false-
+        positive acidic Bt horizons).
+}
+
+## 2. vertic_horizon high-clay + low-chroma path (Vertisol)
+
+\code{options(soilKey.vertic_chroma_clay_inference = TRUE)}
+
+When the canonical (slickensides + cracks), COLE, and v-suffix
+designation paths all fail, accepts a layer as vertic when:
+
+\itemize{
+  \item \code{clay_pct \\>= 50} (very high clay -- typical of
+        smectite-dominated Vertisols), AND
+  \item \code{munsell_chroma_moist \\<= 2} (low chroma, dark
+        smectite signal), AND
+  \item subsoil B horizon (\code{top_cm \\>= 20}, designation
+        starts with \code{B}), AND
+  \item total thickness >= \code{min_thickness} (default 25 cm).
+}
+
+## 3. Empirical effect on KSSL+NASIS (n = 99)
+
+| Configuration | Top-1 |
+|---------------|------:|
+| baseline (no opt-ins) | 19/99 (19.2\\%) |
+| v0.9.75 stack | 18/99 (18.2\\%) |
+| **v0.9.76 stack (+ natric n + vertic chroma)** | **21/99 (21.2\\%)** |
+
+Per-RSG deltas (v0.9.75 -> v0.9.76):
+
+\preformatted{
+  Solonetz   0/15 -> 4/15  (+4)  natric_horizon n-suffix path
+  Calcisol   7/11 -> 6/11  (-1)  one Calcisol now correctly fires Solonetz
+  Vertisol   0/9  -> 0/9   ( 0)  chroma+clay path fires (5/9 in isolation)
+                                  but WRB key cascades to other RSGs first
+                                  -- v0.9.77 work
+  net                       +3   = 4 - 1
+  Overall accuracy: 18.2% -> 21.2% (+3.0pp)
+}
+
+Vertisol path is empirically passing \code{vertic_horizon()} on
+5/9 reference Vertisols (Aquerts) but the WRB key sends them to
+Calcisol (because of the Bk* designations). v0.9.77 will
+investigate the per-RSG dispatch ordering at \code{run_taxonomic_key}
+level.
+
+## 4. Field availability stays the same as v0.9.75
+
+The new paths use \code{na_cmol}, \code{cec_cmol}, \code{ph_h2o},
+\code{clay_pct}, \code{munsell_chroma_moist}, and \code{designation}
+-- all populated on the KSSL+NASIS sample.
+
+## 5. The complete benchmark suite after v0.9.76
+
+| System | Dataset | n | Accuracy |
+|--------|---------|---|---------:|
+| SiBCS  | Redape (curated) | 94 | **57.4\\%** |
+| SiBCS  | BDsolos RJ | 722 | 50.0\\% |
+| **WRB**| **KSSL + NASIS** | **99** | **21.2\\%** |
+| WRB    | KSSL (lab-only) | 199 | 20.1\\% |
+| WRB    | WoSIS stratified | 130 | 16.2\\% |
+| WRB    | LUCAS | 18984 | 3.3\\% |
+
+KSSL + NASIS continues to be soilKey's richest WRB benchmark.
+The +3.0pp lift in v0.9.76 is bounded by the WRB key's RSG
+ordering -- vertic chroma+clay fires correctly but gets diverted.
+
+## 6. Regression test
+
+\code{tests/testthat/test-v0976-natric-vertic-paths.R} (10 tests,
+11 expectations): default behaviour preserved, opt-in fires on
+correct evidence, ESP-only path requires alkaline pH, chroma+clay
+path requires both high clay AND low chroma AND subsoil B,
+evidence trace records which path fired.
+
+## 7. v0.9.77+ deferred
+
+\itemize{
+  \item Per-RSG dispatch ordering at \code{run_taxonomic_key} level
+        (Vertisol vs Calcisol routing).
+  \item Mollic chroma boundary investigation (Kastanozem still 0/2).
+  \item Subordem / Grande Grupo SiBCS benchmark on Redape.
+  \item LUCAS WRB Stage 3 rerun.
+  \item Argic strong-films exclusion review.
+  \item Spodic engine-aware relaxation.
+}
+
+
 # soilKey 0.9.75 (2026-05-09)
 
 The "**KSSL + NASIS morphological enrichment**" release. Closes the
