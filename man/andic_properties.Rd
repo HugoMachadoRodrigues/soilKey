@@ -4,7 +4,14 @@
 \alias{andic_properties}
 \title{Andic properties (WRB 2022)}
 \usage{
-andic_properties(pedon, min_alfe = 2, max_bd = 0.9, min_p_retention = 70)
+andic_properties(
+  pedon,
+  min_alfe = 2,
+  max_bd = 0.9,
+  min_p_retention = 70,
+  min_oc_proxy = 4,
+  max_bd_proxy = 0.9
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}

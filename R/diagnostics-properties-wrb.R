@@ -312,7 +312,9 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
 andic_properties <- function(pedon,
                                 min_alfe         = 2.0,
                                 max_bd           = 0.9,
-                                min_p_retention  = 70) {
+                                min_p_retention  = 70,
+                                min_oc_proxy     = 4.0,
+                                max_bd_proxy     = 0.9) {
   h <- pedon$horizons
 
   alfe_test <- test_andic_alfe(h, min_pct = min_alfe)
@@ -328,15 +330,60 @@ andic_properties <- function(pedon,
     p_retention = test_phosphate_retention_above(h, min_pct = min_p_retention)
   )
 
-  agg <- aggregate_alternatives(paths)
+  # v0.9.80 -- High-OC + low-BD proxy (opt-in).
+  # Field-described volcanic-ash soils (KSSL/AfSP/SOTER) routinely have
+  # oxalate Al/Fe and phosphate retention NOT measured. The signature
+  # of andic-property genesis IS still detectable from coarser data:
+  # very high SOC (>= 5%) on the surface horizon AND low bulk density
+  # (<= 0.9 g/cm3) -- the same low-BD threshold the canonical Al-Fe
+  # path uses. This proxy is conservative: 5% OC requires either a
+  # melanic/hyperhumic surface OR a thick organic accumulation typical
+  # of allophanic / Al-humus complexation in volcanic ash.
+  proxy_enabled <- isTRUE(getOption("soilKey.andic_oc_bd_proxy",
+                                       default = FALSE))
+  proxy_path <- list(passed = NA, layers = integer(0), source = "off")
+  if (proxy_enabled && !isTRUE(alfe_test$passed) &&
+        !isTRUE(paths$phosphate_retention$p_retention$passed)) {
+    oc <- if (!is.null(h$oc_pct)) h$oc_pct else rep(NA_real_, nrow(h))
+    bd <- if (!is.null(h$bulk_density_g_cm3)) h$bulk_density_g_cm3
+          else rep(NA_real_, nrow(h))
+    # Two sub-paths within the proxy:
+    #   (a) OC >= min_oc_proxy AND BD <= max_bd_proxy (both measured)
+    #   (b) OC >= min_oc_proxy + 1 AND BD missing (high OC alone, when
+    #       BD wasn't measured; the high OC requires Al-humus complex
+    #       formation typical of volcanic ash genesis).
+    high_oc <- !is.na(oc) & oc >= min_oc_proxy
+    very_high_oc <- !is.na(oc) & oc >= (min_oc_proxy + 1)
+    low_bd <- !is.na(bd) & bd <= max_bd_proxy
+    bd_missing <- is.na(bd)
+    inferred <- which((high_oc & low_bd) |
+                          (very_high_oc & bd_missing))
+    if (length(inferred) > 0L) {
+      proxy_path <- list(
+        passed = TRUE, layers = inferred,
+        source = "high_oc_low_bd",
+        details = list(min_oc = min_oc_proxy, max_bd = max_bd_proxy,
+                          matched_layers = inferred)
+      )
+    }
+  }
+  paths$oc_bd_proxy <- proxy_path
+
+  agg <- aggregate_alternatives(paths[c("alfe_lowbd", "phosphate_retention")])
+  inferred_passed <- isTRUE(proxy_path$passed)
+  passed <- isTRUE(agg$passed) || isTRUE(inferred_passed)
+  layers <- if (isTRUE(agg$passed)) agg$layers
+            else if (isTRUE(inferred_passed)) proxy_path$layers
+            else integer(0)
 
   DiagnosticResult$new(
     name      = "andic_properties",
-    passed    = agg$passed,
-    layers    = agg$layers,
+    passed    = passed,
+    layers    = layers,
     evidence  = paths,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Andic properties"
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Andic properties",
+                       if (inferred_passed) "[v0.9.80 OC+BD proxy]" else "")
   )
 }
 
