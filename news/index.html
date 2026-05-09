@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.90</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.91</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,36 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.91" id="soilkey-0991-2026-05-09">soilKey 0.9.91 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0991-2026-05-09"></a></h2>
+<p>The “<strong>KSSL reference_wrb alias + WoSIS partial-matching hardening</strong>” release (item D of the post-autonomous-loop stack). Adds  and  the same canonical-field aliasing v0.9.88 introduced for WoSIS, AND hardens both alias paths to use strict  access (sidestepping R’s $-partial-matching footgun).</p>
+<div class="section level3">
+<h3 id="why-0-9-91">Why<a class="anchor" aria-label="anchor" href="#why-0-9-91"></a></h3>
+<p>The bundled KSSL caches store the WRB Reference Soil Group label in  (the v0.9.74 USDA-&gt;WRB cross-walk slot), NOT in the canonical  field. R’s  partial-matching was silently masking this:  resolves to  via prefix matching, so generic benchmark loops appeared to work. But strict  returned  on every KSSL pedon – brittle (any future  sibling makes partial matching ambiguous) and a footgun for downstream strict-access tooling.</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-91">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-91"></a></h3>
+<p> and  now post-process every pedon to set  (only when the canonical field is currently NULL). The original  slot is unchanged.</p>
+<p> (v0.9.88) is hardened to use strict  access in the same alias logic. A new internal helper  centralises the logic and is shared between the KSSL and KSSL+NASIS loaders.</p>
+</div>
+<div class="section level3">
+<h3 id="coverage-after-v0991-0-9-91">Coverage after v0.9.91<a class="anchor" aria-label="anchor" href="#coverage-after-v0991-0-9-91"></a></h3>
+<table class="table"><colgroup><col width="55%"><col width="44%"></colgroup><thead><tr><th>loader</th>
+<th align="right">strict reference_wrb populated</th>
+</tr></thead><tbody><tr><td></td>
+<td align="right">99 / 99</td>
+</tr><tr><td></td>
+<td align="right">99 / 99</td>
+</tr><tr><td></td>
+<td align="right">130 / 130</td>
+</tr><tr><td></td>
+<td align="right">120 / 120 (already canonical)</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="regression-test-0-9-91">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-91"></a></h3>
+<p> (5 tests, 15 expectations): both KSSL loaders populate  via strict access on every pedon; KSSL alias mirrors  verbatim; WoSIS hardened alias still works; default-canonical WRB benchmark on KSSL+NASIS reaches &gt; 15 correct.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.90" id="soilkey-0990-2026-05-09">soilKey 0.9.90 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0990-2026-05-09"></a></h2>
 <p>The “<strong>argic designation-inference fallback</strong>” release (item C of the post-autonomous-loop v0.9.86+ stack). Adds a new opt-in  bundled into engine=“aqp” that accepts subsoil -designated layers with clay-films qualifiers as argic by morphology when the canonical numeric clay-increase test fails. Default canonical behaviour is bit-for-bit preserved.</p>

@@ -1,5 +1,47 @@
 # Changelog
 
+## soilKey 0.9.91 (2026-05-09)
+
+The “**KSSL reference_wrb alias + WoSIS partial-matching hardening**”
+release (item D of the post-autonomous-loop stack). Adds and the same
+canonical-field aliasing v0.9.88 introduced for WoSIS, AND hardens both
+alias paths to use strict access (sidestepping R’s \$-partial-matching
+footgun).
+
+### Why
+
+The bundled KSSL caches store the WRB Reference Soil Group label in (the
+v0.9.74 USDA-\>WRB cross-walk slot), NOT in the canonical field. R’s
+partial-matching was silently masking this: resolves to via prefix
+matching, so generic benchmark loops appeared to work. But strict
+returned on every KSSL pedon – brittle (any future sibling makes partial
+matching ambiguous) and a footgun for downstream strict-access tooling.
+
+### Fix
+
+and now post-process every pedon to set (only when the canonical field
+is currently NULL). The original slot is unchanged.
+
+(v0.9.88) is hardened to use strict access in the same alias logic. A
+new internal helper centralises the logic and is shared between the KSSL
+and KSSL+NASIS loaders.
+
+### Coverage after v0.9.91
+
+| loader | strict reference_wrb populated |
+|--------|-------------------------------:|
+|        |                        99 / 99 |
+|        |                        99 / 99 |
+|        |                      130 / 130 |
+|        |  120 / 120 (already canonical) |
+
+### Regression test
+
+(5 tests, 15 expectations): both KSSL loaders populate via strict access
+on every pedon; KSSL alias mirrors verbatim; WoSIS hardened alias still
+works; default-canonical WRB benchmark on KSSL+NASIS reaches \> 15
+correct.
+
 ## soilKey 0.9.90 (2026-05-09)
 
 The “**argic designation-inference fallback**” release (item C of the
