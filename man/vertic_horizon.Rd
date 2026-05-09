@@ -34,3 +34,18 @@ summed (\code{cole_value * thickness}) over the upper 100 cm
 \\>= 6 cm passes the diagnostic even when slickensides + cracks
 are not recorded (KST 13ed Ch 16 LE alternative, p 343).
 }
+\section{v0.9.72 designation morphological inference (opt-in)}{
+
+Field-described Brazilian Vertissolos profiles (e.g.\ the Embrapa
+Redape curated dataset) encode vertic morphology via a \code{v}
+master-letter modifier in the horizon designation (\code{Bv},
+\code{Bvk1}, \code{Cv}, \code{Cvz}) without recording
+\code{slickensides} class or \code{shrink_swell_cracks_cm} as
+numeric inputs. With
+\code{options(soilKey.vertic_designation_inference = TRUE)} the
+function accepts a layer as vertic when the canonical and COLE
+paths both fail or are NA AND the layer has \code{clay_pct >=
+min_clay} AND its designation matches a \code{v} master-letter
+modifier. Default is \code{FALSE}.
+}
+

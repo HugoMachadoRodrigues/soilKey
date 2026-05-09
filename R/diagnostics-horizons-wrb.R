@@ -606,6 +606,25 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #' observation; v0.2 takes \code{plinthite_pct} as already representing
 #' true plinthite (as opposed to soft mottles).
 #'
+#' @section v0.9.72 designation morphological inference (opt-in):
+#' Field-described Brazilian Plintossolos profiles (e.g.\ the Embrapa
+#' Redape curated dataset) routinely encode plinthite via the
+#' designation suffix \code{f} in the master letter sequence (e.g.\
+#' \code{Btf}, \code{2Btf}, \code{Cf}) -- the curator's direct
+#' assertion that plinthite is present -- without recording
+#' \code{plinthite_pct} as a numeric volume percent.
+#'
+#' With \code{options(soilKey.plinthic_designation_inference = TRUE)} the
+#' function accepts a layer as plinthic when:
+#' \enumerate{
+#'   \item the canonical \code{plinthite_pct} test is \code{NA} for
+#'         that layer, AND
+#'   \item the designation matches \code{[A-Z]+[A-Za-z]*f[0-9]?}
+#'         (a \code{f} master-letter modifier in any sub-position).
+#' }
+#'
+#' Default is \code{FALSE} (canonical behaviour preserved).
+#'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.
 #' @export
 plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
@@ -620,13 +639,63 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 
   agg <- aggregate_subtests(tests)
 
+  # v0.9.72 -- designation-suffix morphological inference
+  designation_inference_enabled <- isTRUE(
+    getOption("soilKey.plinthic_designation_inference", default = FALSE))
+  inferred_layers <- integer(0)
+  inference_path  <- list(passed = NA, layers = integer(0), source = "off")
+  if (designation_inference_enabled && !isTRUE(agg$passed)) {
+    desig <- if (!is.null(h$designation)) as.character(h$designation)
+              else rep(NA_character_, nrow(h))
+    # 'f' master-letter modifier: matches uppercase + (zero or more
+    # lowercase modifier letters or sequence digits) + 'f' anywhere
+    # in that chunk. Catches Btf, 2Btf, Cf, Btf1, Apf, Cfn, Btff,
+    # B1f. Standalone-modifier letters like t, w, s come BEFORE f
+    # in the canonical Brazilian / FAO sequence.
+    has_f_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*f", desig)
+    inferred_layers <- which(has_f_suffix)
+    if (length(inferred_layers) > 0L) {
+      # Apply thickness check on inferred layers
+      thk <- pmax(h$bottom_cm[inferred_layers] - h$top_cm[inferred_layers], 0,
+                    na.rm = TRUE)
+      if (sum(thk, na.rm = TRUE) >= min_thickness) {
+        inference_path <- list(
+          passed = TRUE, layers = inferred_layers,
+          source = "designation_f_suffix",
+          details = list(matched_designations = desig[has_f_suffix],
+                            total_thickness_cm   = sum(thk, na.rm = TRUE),
+                            min_thickness        = min_thickness)
+        )
+      } else {
+        inference_path <- list(
+          passed = FALSE, layers = inferred_layers,
+          source = "designation_f_suffix_thin",
+          details = list(matched_designations = desig[has_f_suffix],
+                            total_thickness_cm   = sum(thk, na.rm = TRUE),
+                            min_thickness        = min_thickness)
+        )
+        inferred_layers <- integer(0)
+      }
+    }
+  }
+  tests$designation_inference <- inference_path
+
+  final_passed <- if (isTRUE(agg$passed)) TRUE
+                    else if (length(inferred_layers) > 0L) TRUE
+                    else agg$passed  # NA or FALSE
+  final_layers <- if (isTRUE(agg$passed)) agg$layers
+                    else if (length(inferred_layers) > 0L) inferred_layers
+                    else integer(0)
+
   DiagnosticResult$new(
     name      = "plinthic",
-    passed    = agg$passed,
-    layers    = agg$layers,
+    passed    = final_passed,
+    layers    = final_layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon"
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon",
+                       if (length(inferred_layers) > 0L)
+                         "[v0.9.72 designation-suffix inference]" else "")
   )
 }
 
