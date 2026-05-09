@@ -2789,6 +2789,9 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
 - [`anionic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/anionic_subgroup_usda.md)
   : Anionic Subgroup helper (Oxisols)
 
+- [`annotate_wrb_from_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.md)
+  : Annotate KSSL/NASIS pedons with a derived WRB Reference Soil Group
+
 - [`aqualf_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aqualf_qualifying_usda.md)
   : Aqualf Suborder qualifier (aquic conditions in argillic Alfisol).
 
@@ -2855,6 +2858,10 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
   subsurface diagnostic. v0.8 simplification: detected via aridity
   proxies (low EC OR salic OR caracter combinations) + non-mollic
   surface + low OC (no organic accumulation).
+
+- [`benchmark_wrb_vs_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.md)
+  : Benchmark soilKey WRB predictions against a USDA-derived ground
+  truth
 
 - [`calcic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.md)
   : Calcic horizon (USDA, delegates to WRB calcic).
@@ -3761,6 +3768,9 @@ plus auxiliaries) used in the test suite.
 - [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
   : Load KSSL pedons enriched with NASIS morphology
 
+- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
+  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
+
 - [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
   : Load EU-LUCAS / ESDB pedons with reference WRB classification
 
@@ -4171,6 +4181,22 @@ Soil Groups (5 per RSG). The first WRB benchmark with profile depth
 
 - [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
   : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
+
+## USDA Soil Taxonomy \<-\> WRB cross-walk (v0.9.74)
+
+KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6 USDA
+Order/Suborder -\> WRB RSG correlation. Provides the richest WRB
+benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56% vs WoSIS-stratified ~30%).
+
+- [`usda_to_wrb_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/usda_to_wrb_rsg.md)
+  : USDA Soil Taxonomy \<-\> WRB Reference Soil Group correlation table
+- [`annotate_wrb_from_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.md)
+  : Annotate KSSL/NASIS pedons with a derived WRB Reference Soil Group
+- [`benchmark_wrb_vs_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.md)
+  : Benchmark soilKey WRB predictions against a USDA-derived ground
+  truth
+- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
+  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
 
 ## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
 

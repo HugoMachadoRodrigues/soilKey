@@ -61,6 +61,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/andosol.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/anhydrous_conditions_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/anionic_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/anthraquic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/anthric_horizons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/apply_horizons_extraction.html</loc></url>
@@ -108,6 +109,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.html</loc></url>
@@ -476,6 +478,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_soil_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.html</loc></url>
@@ -1038,6 +1041,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/umbric_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/umbric_subgroup_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/unpack_vlm_attr.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/usda_to_wrb_rsg.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/utm_crs_for_point.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/valid_provenance_sources.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/validate_against_schema.html</loc></url>

@@ -1,5 +1,90 @@
 # Changelog
 
+## soilKey 0.9.74 (2026-05-09)
+
+The “**USDA Soil Taxonomy \<-\> WRB cross-walk + KSSL benchmark**”
+release. Closes the v0.9.73 backlog and the user’s strategic question:
+WoSIS has profile depth but limited analytical attributes (17% ceiling);
+KSSL/NCSS has rich lab data but only USDA Soil Taxonomy labels. v0.9.74
+bridges the two by adding a published USDA -\> WRB cross-walk (IUSS WRB
+2022 Annex 6) so the same KSSL/NCSS pedons can be benchmarked against
+derived WRB ground truth.
+
+### 1. New API surface
+
+### 2. The cross-walk
+
+Based on IUSS Working Group WRB (2022) “World Reference Base for Soil
+Resources” 4th edition, Annex 6. Order-level defaults:
+
+Suborder refinements include: Aridisols/Salids -\> Solonchak,
+Aridisols/Calcids -\> Calcisol, Aridisols/Gypsids -\> Gypsisol,
+Aridisols/Argids -\> Solonetz, Mollisols/Ustolls -\> Kastanozem,
+Mollisols/Rendolls -\> Leptosol, Entisols/Psamments -\> Arenosol,
+Entisols/Fluvents -\> Fluvisol, Inceptisols/Aquepts -\> Gleysol, plus
+30+ more.
+
+### 3. Empirical benchmark on KSSL (n = 199, head = 200)
+
+| Configuration              |              Top-1 |
+|----------------------------|-------------------:|
+| baseline (no opt-ins)      |     31/199 (15.6%) |
+| +aqp engine                |     39/199 (19.6%) |
+| +aqp + ECEC + tex-morph    |     39/199 (19.6%) |
+| **+full v0.9.69-72 stack** | **40/199 (20.1%)** |
+
+The aqp engine alone (cambic_aqp + argic_aqp) lifts +4.0pp on KSSL
+because the data is rich enough for those tests to fire (unlike WoSIS
+where they don’t). Per-RSG breakdown (full stack):
+
+20.1% beats WoSIS’s 16.2% by 4pp – KSSL is meaningfully richer. The data
+ceiling is now bounded by Munsell colour absence (Mollisols need mollic
+colour test) and oxalate Al/Fe absence (Andisols / Spodosols / Podzols).
+
+### 4. KSSL field availability vs WoSIS
+
+| field                | WoSIS strat | KSSL head=200 |
+|----------------------|------------:|--------------:|
+| clay_pct             |         89% |           60% |
+| ph_h2o               |         90% |           37% |
+| oc_pct               |         80% |           76% |
+| **cec_cmol**         |         26% |       **65%** |
+| **ca_cmol**          |         n/a |       **40%** |
+| **mg_cmol**          |         n/a |       **51%** |
+| **k_cmol**           |         n/a |       **56%** |
+| **na_cmol**          |         n/a |       **56%** |
+| **bs_pct**           |         14% |       **25%** |
+| caco3_pct            |         26% |       **55%** |
+| cole_value           |         n/a |       **12%** |
+| al_ox_pct, fe_ox_pct |         n/a |            0% |
+| munsell\_\*          |          0% |            0% |
+| slickensides         |          0% |            0% |
+
+Lab attributes are richer in KSSL; morphological attributes (Munsell,
+slickensides) are absent in BOTH because they live in the companion
+NASIS database (). already exists in soilKey for that join, deferred to
+v0.9.75 for the full benchmark.
+
+### 5. The complete benchmark suite
+
+After v0.9.74, soilKey ships these benchmark pairs:
+
+| System | Curated             | Profile depth | Bundled?        |  Accuracy |
+|--------|---------------------|---------------|-----------------|----------:|
+| SiBCS  | Redape (n=94)       | full          | yes             | **57.4%** |
+| SiBCS  | BDsolos RJ (n=722)  | full          | n/a             |     50.0% |
+| WRB    | WoSIS strat (n=130) | full          | yes             |     16.2% |
+| WRB    | **KSSL (n=199)**    | **full**      | **yes (n=100)** | **20.1%** |
+| WRB    | LUCAS (n=18984)     | topsoil-only  | n/a             |      3.3% |
+
+KSSL is now the **richest WRB benchmark** for soilKey – and the
+cross-walk machinery means the same approach can be applied to any
+USDA-classified dataset (NASIS, SCAN, regional surveys).
+
+### 6. Reproducer + test
+
+### 7. v0.9.75+ deferred
+
 ## soilKey 0.9.73 (2026-05-09)
 
 The “**WoSIS stratified WRB benchmark**” release. Closes the gap
