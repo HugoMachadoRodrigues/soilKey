@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.85</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.86</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,6 +92,19 @@ Default is <code>FALSE</code> (canonical WRB behaviour preserved).</p>
 omits H+; using ECEC against the same threshold is therefore
 conservative (MORE permissive) – it should not produce false
 positives, only recover Latossolos that lacked Valor T.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-engine-aqp-auto-enables-the-ecec-fallback">v0.9.86 engine="aqp" auto-enables the ECEC fallback<a class="anchor" aria-label="anchor" href="#v-engine-aqp-auto-enables-the-ecec-fallback"></a></h2>
+
+
+<p><code>soilKey.diagnostic_engine = "aqp"</code> now auto-enables the
+v0.9.69 ECEC fallback (the user can still suppress it explicitly
+by setting <code>soilKey.ferralic_ecec_fallback = FALSE</code>). The
+rationale: the aqp engine is the "data-quality-aware" mode,
+designed for field-described datasets like BDsolos / Redape
+where Valor T is rarely recorded. Bundling these two opt-ins
+lifts BDsolos RJ Latossolo recall from 14.9\<!-- % (canonical) to -->
+28.1\<!-- % with no further configuration. --></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

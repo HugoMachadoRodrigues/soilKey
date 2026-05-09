@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.85</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.86</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,38 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.86" id="soilkey-0986-2026-05-09">soilKey 0.9.86 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0986-2026-05-09"></a></h2>
+<p>The “<strong>ferralic engine=aqp auto-enables ECEC fallback</strong>” release. A one-line behaviour bridge that ties the v0.9.69  opt-in to the  family of “data-quality- aware” diagnostics. Default canonical behaviour is bit-for-bit preserved (the auto-enablement only fires when the user has already opted into engine=“aqp”).</p>
+<div class="section level3">
+<h3 id="motivation-0-9-86">Motivation<a class="anchor" aria-label="anchor" href="#motivation-0-9-86"></a></h3>
+<p>Brazilian / SOTERLAC / BDsolos profiles often lack the explicit “Valor T” CEC column; they record the exchange complex as separate Ca / Mg / K / Na / Al cmol values. v0.9.69 added the  option so the  test can fall back to the ECEC sum on layers where  is missing. But the option had to be set manually – users who turned on  for the v0.9.65 NCSS-aware diagnostics still got  on every Latossolo whose Valor T was missing.</p>
+<p>The audit on BDsolos RJ (n = 115 Latossolo references) shows the ECEC fallback alone lifts  recall from 27 to 51 profiles (+24, almost doubles). After cascading through the SiBCS key the lift in classified-as-Latossolo is from 17 / 114 = 14.9\% to 32 / 114 = <strong>28.1\%</strong> (+13.2pp).</p>
+</div>
+<div class="section level3">
+<h3 id="fix-0-9-86">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-86"></a></h3>
+<p> reads the two options in priority order:</p>
+<p>The tri-state precedence preserves the original strict default, the v0.9.69 explicit-opt-in path, the v0.9.86 auto-bundled path, AND the user’s ability to override the bundle by explicitly disabling the fallback while keeping the aqp engine.</p>
+</div>
+<div class="section level3">
+<h3 id="empirical-effect-on-bdsolos-rj-n--latossolo-refs-0-9-86">Empirical effect on BDsolos RJ (n = 722, 114 Latossolo refs)<a class="anchor" aria-label="anchor" href="#empirical-effect-on-bdsolos-rj-n--latossolo-refs-0-9-86"></a></h3>
+<table class="table"><colgroup><col width="75%"><col width="24%"></colgroup><thead><tr><th>configuration</th>
+<th align="right">Latossolo recall</th>
+</tr></thead><tbody><tr><td>default canonical (engine=soilkey, no opt-ins)</td>
+<td align="right">17 / 114 (14.9\%)</td>
+</tr><tr><td>engine=aqp + explicit ferralic_ecec_fallback=FALSE</td>
+<td align="right">17 / 114 (14.9\%)</td>
+</tr><tr><td><strong>engine=aqp (auto-fallback in v0.9.86)</strong></td>
+<td align="right"><strong>32 / 114 (28.1\%)</strong></td>
+</tr><tr><td>explicit ferralic_ecec_fallback=TRUE</td>
+<td align="right">32 / 114 (28.1\%)</td>
+</tr></tbody></table><p>Argissolo confusion drops from 17 to 15, Cambissolo confusion drops from 42 to 29 – the lift is genuinely Latossolic recall, not Latossolo over-firing on Argissolo / Cambissolo references.</p>
+</div>
+<div class="section level3">
+<h3 id="regression-test-0-9-86">Regression test<a class="anchor" aria-label="anchor" href="#regression-test-0-9-86"></a></h3>
+<p>(5 tests, 7 expectations): default canonical leaves fallback OFF; engine=aqp auto-enables fallback; explicit FALSE override suppresses; explicit TRUE works without engine; BDsolos RJ regression guard (default Lat = 17, engine=aqp Lat &gt;= 30 and strictly greater than default).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.85" id="soilkey-0985-2026-05-09">soilKey 0.9.85 (2026-05-09)<a class="anchor" aria-label="anchor" href="#soilkey-0985-2026-05-09"></a></h2>
 <p>The “<strong>Andosol RSG-gate buried-exclusion + proxy thickness extension</strong>” release. Two surgical fixes that address the v0.9.80 NEWS observation – “v0.9.81 will refine the per-RSG dispatch ordering for Andosols” – now in their proper home. Default behaviour bit-for-bit preserved.</p>

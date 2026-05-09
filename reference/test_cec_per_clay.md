@@ -36,3 +36,12 @@ Note: ECEC is typically smaller than CEC at acidic pH because it omits
 H+; using ECEC against the same threshold is therefore conservative
 (MORE permissive) – it should not produce false positives, only recover
 Latossolos that lacked Valor T.
+
+## v0.9.86 engine="aqp" auto-enables the ECEC fallback
+
+`soilKey.diagnostic_engine = "aqp"` now auto-enables the v0.9.69 ECEC
+fallback (the user can still suppress it explicitly by setting
+`soilKey.ferralic_ecec_fallback = FALSE`). The rationale: the aqp engine
+is the "data-quality-aware" mode, designed for field-described datasets
+like BDsolos / Redape where Valor T is rarely recorded. Bundling these
+two opt-ins lifts BDsolos RJ Latossolo recall from 14.9\\ 28.1\\

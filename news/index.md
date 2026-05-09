@@ -1,5 +1,57 @@
 # Changelog
 
+## soilKey 0.9.86 (2026-05-09)
+
+The “**ferralic engine=aqp auto-enables ECEC fallback**” release. A
+one-line behaviour bridge that ties the v0.9.69 opt-in to the family of
+“data-quality- aware” diagnostics. Default canonical behaviour is
+bit-for-bit preserved (the auto-enablement only fires when the user has
+already opted into engine=“aqp”).
+
+### Motivation
+
+Brazilian / SOTERLAC / BDsolos profiles often lack the explicit “Valor
+T” CEC column; they record the exchange complex as separate Ca / Mg / K
+/ Na / Al cmol values. v0.9.69 added the option so the test can fall
+back to the ECEC sum on layers where is missing. But the option had to
+be set manually – users who turned on for the v0.9.65 NCSS-aware
+diagnostics still got on every Latossolo whose Valor T was missing.
+
+The audit on BDsolos RJ (n = 115 Latossolo references) shows the ECEC
+fallback alone lifts recall from 27 to 51 profiles (+24, almost
+doubles). After cascading through the SiBCS key the lift in
+classified-as-Latossolo is from 17 / 114 = 14.9\\ to 32 / 114 =
+**28.1\\** (+13.2pp).
+
+### Fix
+
+reads the two options in priority order:
+
+The tri-state precedence preserves the original strict default, the
+v0.9.69 explicit-opt-in path, the v0.9.86 auto-bundled path, AND the
+user’s ability to override the bundle by explicitly disabling the
+fallback while keeping the aqp engine.
+
+### Empirical effect on BDsolos RJ (n = 722, 114 Latossolo refs)
+
+| configuration                                      |      Latossolo recall |
+|----------------------------------------------------|----------------------:|
+| default canonical (engine=soilkey, no opt-ins)     |     17 / 114 (14.9\\) |
+| engine=aqp + explicit ferralic_ecec_fallback=FALSE |     17 / 114 (14.9\\) |
+| **engine=aqp (auto-fallback in v0.9.86)**          | **32 / 114 (28.1\\)** |
+| explicit ferralic_ecec_fallback=TRUE               |     32 / 114 (28.1\\) |
+
+Argissolo confusion drops from 17 to 15, Cambissolo confusion drops from
+42 to 29 – the lift is genuinely Latossolic recall, not Latossolo
+over-firing on Argissolo / Cambissolo references.
+
+### Regression test
+
+(5 tests, 7 expectations): default canonical leaves fallback OFF;
+engine=aqp auto-enables fallback; explicit FALSE override suppresses;
+explicit TRUE works without engine; BDsolos RJ regression guard (default
+Lat = 17, engine=aqp Lat \>= 30 and strictly greater than default).
+
 ## soilKey 0.9.85 (2026-05-09)
 
 The “**Andosol RSG-gate buried-exclusion + proxy thickness extension**”
