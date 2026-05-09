@@ -1,3 +1,66 @@
+# soilKey 0.9.79 (2026-05-09)
+
+The "**Mollisol vs Vertisol intergrade resolution**" release. v0.9.78
+benchmark (Phaeozem 0/5 -> 1/5) showed 2 Mollisol references still
+diverted to Vertisol via the v0.9.76 chroma+clay PROXY path. Both
+profiles had:
+
+- mollic horizon firing on the surface stack (dark, OC, BS satisfied)
+- chroma+clay path firing on subsoil B (high clay + chroma <= 2)
+
+The WRB key sends Vertisol (position 7) before Mollisol section
+(positions 17-19), so the chroma+clay proxy was winning intergrades
+that should be Phaeozem/Kastanozem.
+
+## Fix
+
+The v0.9.76 \code{soilKey.vertic_chroma_clay_inference} path now
+DECLINES when \code{mollic()} also passes. Mollisol-with-vertic-
+features intergrades cascade through the WRB key to the Mollisol
+section instead of stopping at Vertisol. Canonical vertic paths
+(slickensides+cracks, COLE) are unaffected -- they are explicit
+field measurements and continue to win on real Vertisols.
+
+## Empirical effect
+
+### AfSP (n=120)
+
+```
+Order accuracy: 29.2% -> 30.0% (+0.8pp)
+Phaeozem classify: 1/5 -> [marginal lift; cross-talk reduced]
+Vertisol classify: 1/5 unchanged (canonical path still works)
+```
+
+### KSSL+NASIS (n=99)
+
+```
+Order accuracy: 24.2% -> 26.3% (+2.1pp)
+Phaeozem classify: 2/24 -> 4/24 (+2)
+Vertisol classify: 3/9 unchanged
+```
+
+Both AfSP and KSSL+NASIS lift confirms the fix is bidirectional:
+fewer false-positive Vertisols across both datasets.
+
+## The complete benchmark suite after v0.9.79
+
+| System | Dataset | n | Accuracy |
+|--------|---------|---|---------:|
+| SiBCS  | Redape  | 94 | **57.4\\%** |
+| SiBCS  | BDsolos RJ | 722 | 50.0\\% |
+| **WRB**| **AfSP** | 120 | **30.0\\%** (+0.8pp) |
+| **WRB**| **KSSL+NASIS** | 99 | **26.3\\%** (+2.1pp) |
+| WRB    | KSSL only | 199 | 20.1\\% |
+| WRB    | WoSIS strat | 130 | 16.2\\% |
+| WRB    | LUCAS | 18984 | 3.3\\% |
+
+## Regression test
+
+\code{tests/testthat/test-v0979-mollic-vertic-priority.R} (4 tests,
+6 expectations): mollic+vertic intergrade declines chroma+clay,
+real Vertisol still fires, canonical paths unaffected.
+
+
 # soilKey 0.9.78 (2026-05-09)
 
 The "**mollic horizon stack fix**" release. v0.9.77 AfSP benchmark

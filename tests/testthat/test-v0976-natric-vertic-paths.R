@@ -39,7 +39,9 @@
     munsell_hue_moist    = c("10YR","10YR","10YR","10YR"),
     munsell_value_moist  = c(3, 3, 4, 4),
     munsell_chroma_moist = chromas,
-    cec_cmol = c(40, 42, 44, 45), oc_pct = c(2, 0.8, 0.3, 0.2),
+    cec_cmol = c(40, 42, 44, 45),
+    bs_pct = c(45, 40, 35, 35),       # < 50: prevent mollic firing (v0.9.79)
+    oc_pct = c(0.4, 0.3, 0.2, 0.1),   # < 0.6: prevent mollic firing
     ph_h2o = c(7, 7.2, 7.5, 7.8)
   )
   hz <- ensure_horizon_schema(hz)

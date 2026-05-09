@@ -344,8 +344,22 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
   chroma_inferred <- integer(0)
   chroma_clay_enabled <- isTRUE(
     getOption("soilKey.vertic_chroma_clay_inference", default = FALSE))
+  # v0.9.79: mollic-priority intergrade resolution. The chroma+clay
+  # PROXY path (v0.9.76 morphological inference) commonly fires on
+  # Mollisol Phaeozems / Kastanozems whose surface stack qualifies as
+  # mollic AND whose subsoil happens to have high clay + low chroma
+  # (typical of dark, well-drained Mollisols). Per WRB 2022 the
+  # vertic horizon requires shrink-swell evidence that the chroma+clay
+  # proxy alone does not confirm, so when mollic also fires we
+  # decline the chroma+clay path and let the WRB key cascade through
+  # to the Mollisol section. Canonical (slickensides+cracks) and
+  # COLE paths are unaffected -- they win on real Vertisols.
+  mollic_competing <- if (chroma_clay_enabled) {
+    isTRUE(tryCatch(mollic(pedon)$passed, error = function(e) NULL))
+  } else FALSE
   if (chroma_clay_enabled && !isTRUE(agg_canonical$passed) &&
-        !isTRUE(cole_path$passed) && !isTRUE(v_suffix_path$passed)) {
+        !isTRUE(cole_path$passed) && !isTRUE(v_suffix_path$passed) &&
+        !isTRUE(mollic_competing)) {
     chroma <- if (!is.null(h$munsell_chroma_moist)) h$munsell_chroma_moist
               else rep(NA_real_, nrow(h))
     desig <- if (!is.null(h$designation)) as.character(h$designation)
