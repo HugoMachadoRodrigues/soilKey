@@ -4,10 +4,14 @@
 \alias{vertisol}
 \title{Vertisol RSG gate (WRB 2022 Ch 4, p 101)}
 \usage{
-vertisol(pedon)
+vertisol(pedon, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} applies the Tier-3 strengthened threshold.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -26,3 +30,10 @@ clay, and (3) shrink-swell cracks that start within the upper 20 cm.
 test_shrink_swell_cracks test that already requires an explicit
 \code{cracks_width_cm} value.
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the overlying-clay threshold is raised from
+30\% to 35\%, tightening the gate against marginally clayey profiles
+that satisfy the vertic horizon but sit close to the Vertisol cut-off.
+}
+

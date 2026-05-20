@@ -4,10 +4,14 @@
 \alias{gleysol}
 \title{Gleysol RSG gate (WRB 2022 Ch 4, p 103)}
 \usage{
-gleysol(pedon)
+gleysol(pedon, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} tightens path 1 and disables path 3.}
 }
 \description{
 WRB-canonical (multi-path):
@@ -26,3 +30,11 @@ v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
 (W / saturated marker). Path 2 is deferred (requires a depth-of-
 saturation column that's not standard).
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the path-1 gleyic+reducing layer must start
+within the upper 25 cm (instead of 40 cm), and the path-3
+designation-only fallback (a \dQuote{W} / aquic marker) is disabled:
+strict mode requires measured gleyic and reducing evidence.
+}
+
