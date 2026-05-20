@@ -24,10 +24,20 @@
 #' test_shrink_swell_cracks test that already requires an explicit
 #' \code{cracks_width_cm} value.
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the overlying-clay threshold is raised from
+#' 30\% to 35\%, tightening the gate against marginally clayey profiles
+#' that satisfy the vertic horizon but sit close to the Vertisol cut-off.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} applies the Tier-3 strengthened threshold.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @export
-vertisol <- function(pedon) {
+vertisol <- function(pedon, strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  min_clay <- if (strict) 35L else 30L
   vh <- vertic_horizon(pedon)
   if (!isTRUE(vh$passed)) {
     return(DiagnosticResult$new(
@@ -44,7 +54,8 @@ vertisol <- function(pedon) {
   vertic_top <- min(h$top_cm[vh$layers], na.rm = TRUE)
   # All layers strictly above the vertic horizon must have >= 30% clay.
   above <- which(!is.na(h$top_cm) & h$bottom_cm <= vertic_top)
-  clay_throughout <- all(!is.na(h$clay_pct[above]) & h$clay_pct[above] >= 30)
+  clay_throughout <- all(!is.na(h$clay_pct[above]) &
+                           h$clay_pct[above] >= min_clay)
   cracks <- test_shrink_swell_cracks(h, min_width_cm = 0.5)
   cracks_start_at_surface <- length(cracks$layers) > 0L &&
                               any(h$top_cm[cracks$layers] <= 20, na.rm = TRUE)
@@ -67,6 +78,8 @@ vertisol <- function(pedon) {
     evidence = list(
       vertic_horizon                = vh,
       clay_above_30_throughout      = clay_throughout,
+      clay_threshold_pct            = min_clay,
+      strict_mode                   = strict,
       cracks_at_surface             = cracks_start_at_surface,
       cracks                        = cracks,
       morphological_inference_fired = inferred_path_fired
@@ -103,6 +116,11 @@ vertisol <- function(pedon) {
 #' a buried argic / ferralic / plinthic / spodic at deeper levels no
 #' longer disqualifies the surface andic stack from Andosol.
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the v0.9.85 buried-exclusion tolerance is
+#' switched off: \emph{any} argic / ferralic / plinthic / spodic horizon
+#' anywhere in the profile excludes the Andosol, regardless of depth.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
@@ -110,9 +128,14 @@ vertisol <- function(pedon) {
 #'        diagnostics whose top_cm \\>= this depth are treated as
 #'        buried and do NOT exclude the Andosol (default 50, per WRB
 #'        2022 Ch 4 p 104).
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} disables the buried-exclusion tolerance.
 #' @export
 andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
-                       buried_below_cm = 50) {
+                       buried_below_cm = 50, strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  if (strict) buried_below_cm <- Inf
   ap <- andic_properties(pedon)
   vp <- vitric_properties(pedon)
   ap_layers <- ap$layers %||% integer(0)
@@ -168,6 +191,7 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
       andic                = ap,
       vitric               = vp,
       combined_thickness_cm = combined_thickness,
+      strict_mode          = strict,
       exclusion_failed     = exclusions,
       exclusion_buried     = as.list(exclusion_buried),
       exclusion_active     = as.list(exclusion_active)
@@ -196,25 +220,37 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #' (W / saturated marker). Path 2 is deferred (requires a depth-of-
 #' saturation column that's not standard).
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the path-1 gleyic+reducing layer must start
+#' within the upper 25 cm (instead of 40 cm), and the path-3
+#' designation-only fallback (a \dQuote{W} / aquic marker) is disabled:
+#' strict mode requires measured gleyic and reducing evidence.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} tightens path 1 and disables path 3.
 #' @export
-gleysol <- function(pedon) {
+gleysol <- function(pedon, strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  path1_max_top <- if (strict) 25 else 40
   gp <- gleyic_properties(pedon)
   rc <- reducing_conditions(pedon)
   h <- pedon$horizons
   shared <- intersect(gp$layers %||% integer(0),
                        rc$layers %||% integer(0))
-  # Path 1: any qualifying layer >= 25 cm thick starting <= 40 cm.
+  # Path 1: any qualifying layer >= 25 cm thick starting <= path1_max_top.
   path1_layers <- shared[
-    !is.na(h$top_cm[shared]) & h$top_cm[shared] <= 40 &
+    !is.na(h$top_cm[shared]) & h$top_cm[shared] <= path1_max_top &
     !is.na(h$bottom_cm[shared]) &
     (h$bottom_cm[shared] - h$top_cm[shared]) >= 25
   ]
   path1_ok <- length(path1_layers) > 0L
   # Path 3: permanent saturation -- detect via designation 'W' or
-  # rock_origin == 'fluviatile' on a layer starting <= 40 cm.
+  # rock_origin == 'fluviatile' on a layer starting <= 40 cm. Disabled
+  # in strict mode (designation-only evidence is not accepted).
   shallow <- which(!is.na(h$top_cm) & h$top_cm <= 40)
-  path3_ok <- length(shallow) > 0L &&
+  path3_ok <- !strict && length(shallow) > 0L &&
                 any(grepl("^W|aquic|saturated",
                             h$designation[shallow] %||% rep(NA, length(shallow)),
                             ignore.case = TRUE))
@@ -228,7 +264,8 @@ gleysol <- function(pedon) {
       reducing_conditions   = rc,
       path1_layers          = path1_layers,
       path1_ok              = path1_ok,
-      path3_ok              = path3_ok
+      path3_ok              = path3_ok,
+      strict_mode           = strict
     ),
     missing  = unique(c(gp$missing, rc$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Gleysols (p. 103)"
@@ -246,9 +283,20 @@ gleysol <- function(pedon) {
 #' relaxed to "the layer immediately above or below the abrupt textural
 #' difference satisfies stagnic + reducing".
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the \code{planic_features} fallback path is
+#' disabled. Strict mode requires the canonical evidence -- an abrupt
+#' textural difference \emph{plus} measured stagnic and reducing
+#' conditions in the bracketing layer -- and will not accept the
+#' simpler clay-doubling proxy on its own.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} disables the planic-features fallback.
 #' @export
-planosol <- function(pedon) {
+planosol <- function(pedon, strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   atd <- abrupt_textural_difference(pedon)
   if (!isTRUE(atd$passed)) {
     return(DiagnosticResult$new(
@@ -276,7 +324,8 @@ planosol <- function(pedon) {
   # v0.2 simpler diagnostic) which already combines clay-doubling +
   # abrupt boundary; allow it as a backup.
   pf <- planic_features(pedon)
-  passed <- length(ok_layers) > 0L || isTRUE(pf$passed)
+  fallback_ok <- !strict && isTRUE(pf$passed)
+  passed <- length(ok_layers) > 0L || isTRUE(fallback_ok)
   layers_out <- if (length(ok_layers) > 0L) ok_layers else (pf$layers %||% integer(0))
   DiagnosticResult$new(
     name = "planosol",
@@ -286,7 +335,9 @@ planosol <- function(pedon) {
       abrupt_textural_difference = atd,
       stagnic_properties         = sp,
       reducing_conditions        = rc,
-      planic_features_fallback   = pf
+      planic_features_fallback   = pf,
+      fallback_used              = isTRUE(fallback_ok) && length(ok_layers) == 0L,
+      strict_mode                = strict
     ),
     missing  = unique(c(atd$missing, sp$missing, rc$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
@@ -308,16 +359,28 @@ planosol <- function(pedon) {
 #' \code{ph_kcl} and \code{ph_h2o}; the WDC check uses
 #' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema).
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' When an argic horizon sits above the ferralic, the default gate
+#' keeps the profile as a Ferralsol if \emph{any one} of the three
+#' exception paths (WDC \\< 10\%, DeltapH \\>= 0, SOC \\>= 1.4\%) holds.
+#' With \code{strict = TRUE} the gate requires \emph{at least two} of
+#' the three -- a single weak indicator no longer rescues a profile
+#' with a translocated-clay argic from being keyed out of Ferralsols.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} requires two of the three argic exception paths.
 #' @export
-ferralsol <- function(pedon) {
+ferralsol <- function(pedon, strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   fr <- ferralic(pedon)
   if (!isTRUE(fr$passed)) {
     return(DiagnosticResult$new(
       name = "ferralsol",
       passed = if (is.na(fr$passed)) NA else FALSE,
       layers = integer(0),
-      evidence = list(ferralic = fr),
+      evidence = list(ferralic = fr, strict_mode = strict),
       missing = fr$missing %||% character(0),
       reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)",
       notes = "Failed/NA because ferralic horizon test did not pass"
@@ -329,7 +392,7 @@ ferralsol <- function(pedon) {
     return(DiagnosticResult$new(
       name = "ferralsol", passed = TRUE,
       layers = fr$layers,
-      evidence = list(ferralic = fr, argic = ar),
+      evidence = list(ferralic = fr, argic = ar, strict_mode = strict),
       missing = fr$missing,
       reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
     ))
@@ -344,7 +407,8 @@ ferralsol <- function(pedon) {
       name = "ferralsol", passed = TRUE,
       layers = fr$layers,
       evidence = list(ferralic = fr, argic = ar,
-                       argic_above_ferralic = "none"),
+                       argic_above_ferralic = "none",
+                       strict_mode = strict),
       missing = fr$missing,
       reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
     ))
@@ -364,7 +428,9 @@ ferralsol <- function(pedon) {
   # Path 3: SOC >= 1.4%.
   paths$oc_ge_1.4 <- any(!is.na(h$oc_pct[upper_30]) &
                             h$oc_pct[upper_30] >= 1.4)
-  exception_met <- any(unlist(paths))
+  n_paths <- sum(unlist(paths))
+  min_paths <- if (strict) 2L else 1L
+  exception_met <- n_paths >= min_paths
   passed <- exception_met
   DiagnosticResult$new(
     name = "ferralsol",
@@ -375,6 +441,9 @@ ferralsol <- function(pedon) {
       argic                 = ar,
       argic_above_ferralic  = arg_layers,
       exception_paths       = paths,
+      exception_paths_met   = n_paths,
+      exception_paths_required = min_paths,
+      strict_mode           = strict,
       exception_met         = exception_met
     ),
     missing  = fr$missing,
@@ -401,11 +470,22 @@ ferralsol <- function(pedon) {
 #' less-strict variant; \code{chernozem_strict()} is what the v0.3.4
 #' key.yaml uses for the CH RSG.
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the base-saturation floor above the
+#' carbonate-bearing layer is raised from 50\% to 80\%, in line with
+#' the very high base status expected of a textbook Chernozem.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_bs Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} raises the base-saturation floor to 80\%.
 #' @export
-chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50) {
+chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
+                             strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  if (strict) min_bs <- max(min_bs, 80)
   ch <- chernic(pedon)
   if (!isTRUE(ch$passed)) {
     return(DiagnosticResult$new(
@@ -441,7 +521,9 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50) {
       chernic                = ch,
       protocalcic_properties = pc,
       calcic                 = cal,
-      bs_throughout_ok       = bs_ok
+      bs_throughout_ok       = bs_ok,
+      bs_threshold_pct       = min_bs,
+      strict_mode            = strict
     ),
     missing  = ch$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Chernozems (p. 111)"
@@ -455,11 +537,22 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50) {
 #' horizon (no chernic gate) and starting \\<= 70 cm of mineral soil
 #' surface.
 #'
+#' @section Tier-3 strict mode (v0.9.98):
+#' With \code{strict = TRUE} the base-saturation floor above the
+#' carbonate-bearing layer is raised from 50\% to 75\%. The 70 cm
+#' carbonate-depth window is left unchanged.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_bs Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
+#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+#'        \code{TRUE} raises the base-saturation floor to 75\%.
 #' @export
-kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70) {
+kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70,
+                              strict = NULL) {
+  if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  if (strict) min_bs <- max(min_bs, 75)
   m <- mollic(pedon)
   if (!isTRUE(m$passed)) {
     return(DiagnosticResult$new(
@@ -499,7 +592,9 @@ kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70) {
       mollic                  = m,
       protocalcic_properties  = pc,
       calcic                  = cal,
-      bs_throughout_ok        = bs_ok
+      bs_throughout_ok        = bs_ok,
+      bs_threshold_pct        = min_bs,
+      strict_mode             = strict
     ),
     missing  = m$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Kastanozems (p. 112)"

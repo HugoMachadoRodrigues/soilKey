@@ -4,7 +4,13 @@
 \alias{andosol}
 \title{Andosol RSG gate (WRB 2022 Ch 4, p 104)}
 \usage{
-andosol(pedon, min_thickness = 30, max_top_cm = 25, buried_below_cm = 50)
+andosol(
+  pedon,
+  min_thickness = 30,
+  max_top_cm = 25,
+  buried_below_cm = 50,
+  strict = NULL
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -17,6 +23,10 @@ andosol(pedon, min_thickness = 30, max_top_cm = 25, buried_below_cm = 50)
 diagnostics whose top_cm \\>= this depth are treated as
 buried and do NOT exclude the Andosol (default 50, per WRB
 2022 Ch 4 p 104).}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} disables the buried-exclusion tolerance.}
 }
 \description{
 WRB-canonical: layer(s) with \emph{andic} OR \emph{vitric}
@@ -44,5 +54,12 @@ references like \code{CM W3_0047}, where an argic layer at
 restricts the exclusion check to layers starting <= 50 cm:
 a buried argic / ferralic / plinthic / spodic at deeper levels no
 longer disqualifies the surface andic stack from Andosol.
+}
+
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the v0.9.85 buried-exclusion tolerance is
+switched off: \emph{any} argic / ferralic / plinthic / spodic horizon
+anywhere in the profile excludes the Andosol, regardless of depth.
 }
 

@@ -4,10 +4,14 @@
 \alias{ferralsol}
 \title{Ferralsol RSG gate (WRB 2022 Ch 4, p 110)}
 \usage{
-ferralsol(pedon)
+ferralsol(pedon, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} requires two of the three argic exception paths.}
 }
 \description{
 WRB-canonical: ferralic horizon \\<= 150 cm AND no argic horizon
@@ -22,3 +26,13 @@ v0.3.4 enforces all three exception paths. The DeltapH check uses
 \code{ph_kcl} and \code{ph_h2o}; the WDC check uses
 \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema).
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+When an argic horizon sits above the ferralic, the default gate
+keeps the profile as a Ferralsol if \emph{any one} of the three
+exception paths (WDC \\< 10\%, DeltapH \\>= 0, SOC \\>= 1.4\%) holds.
+With \code{strict = TRUE} the gate requires \emph{at least two} of
+the three -- a single weak indicator no longer rescues a profile
+with a translocated-clay argic from being keyed out of Ferralsols.
+}
+

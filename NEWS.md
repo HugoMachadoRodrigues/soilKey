@@ -1,3 +1,56 @@
+# soilKey 0.9.98 (2026-05-19)
+
+The "**WRB Tier-3 strict mode**" release. Second of the four
+sequential roadmap releases. Turns the README "in progress" item
+\emph{WRB Tier-3 RSG-gate strict mode} into a shipped, opt-in feature.
+
+## New: per-RSG strict-mode gates
+
+Seven Tier-2 RSG gates gain a \code{strict} argument. With
+\code{strict = FALSE} (the default) every gate behaves exactly as in
+v0.9.97 -- full backward compatibility. With \code{strict = TRUE} a
+per-RSG numerical threshold is strengthened toward the canonical
+WRB 2022 Chapter 4 intent:
+
+\itemize{
+  \item \strong{Vertisols} -- overlying-clay floor raised 30\% ->
+        35\%.
+  \item \strong{Andosols} -- the v0.9.85 buried-exclusion tolerance
+        is switched off: any argic / ferralic / plinthic / spodic
+        horizon excludes, regardless of depth.
+  \item \strong{Gleysols} -- the path-1 gleyic+reducing layer must
+        start within 25 cm (was 40 cm); the designation-only path-3
+        fallback is disabled.
+  \item \strong{Planosols} -- the \code{planic_features} fallback
+        path is disabled; the canonical abrupt-textural-difference +
+        stagnic + reducing evidence is required.
+  \item \strong{Ferralsols} -- when an argic horizon sits above the
+        ferralic, the argic exception now needs \emph{two} of the
+        three paths (WDC \\< 10\%, DeltapH \\>= 0, SOC \\>= 1.4\%),
+        not just one.
+  \item \strong{Chernozems} -- base-saturation floor raised 50\% ->
+        80\%.
+  \item \strong{Kastanozems} -- base-saturation floor raised 50\% ->
+        75\%.
+}
+
+All 31 canonical WRB fixtures classify identically under both modes;
+strict mode only changes genuinely borderline profiles.
+
+## User-facing changes
+
+\itemize{
+  \item \code{classify_wrb2022()} gains a \code{strict} argument.
+        When non-\code{NULL} it forces the \code{soilKey.rsg_strict}
+        option for the duration of the call (restored on exit), so
+        the YAML-dispatched RSG gates pick it up.
+  \item New package option \code{soilKey.rsg_strict} (default
+        \code{FALSE}). The Shiny Pro app's Settings tab toggles it.
+  \item Each RSG gate now records \code{strict_mode} (and the
+        effective threshold) in its \code{DiagnosticResult}
+        evidence, so the key trace is self-documenting.
+}
+
 # soilKey 0.9.97 (2026-05-19)
 
 The "**Shiny Pro app**" release. First of four sequential feature

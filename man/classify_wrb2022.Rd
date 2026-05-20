@@ -9,7 +9,8 @@ classify_wrb2022(
   prior = NULL,
   prior_threshold = 0.01,
   on_missing = c("warn", "silent", "error"),
-  rules = NULL
+  rules = NULL,
+  strict = NULL
 )
 }
 \arguments{
@@ -31,6 +32,16 @@ an "inconsistent" warning (default 0.01).}
 attributes.}
 
 \item{rules}{Optional pre-loaded rule set.}
+
+\item{strict}{Logical or \code{NULL}. Controls WRB Tier-3 strict
+mode for the per-RSG numerical gates (Vertisols, Andosols,
+Gleysols, Planosols, Ferralsols, Chernozems, Kastanozems).
+When \code{NULL} (default) the gates follow
+\code{getOption("soilKey.rsg_strict", FALSE)}. Passing
+\code{TRUE} or \code{FALSE} forces strict mode on or off for
+the duration of this call; see the individual RSG-gate help
+pages (e.g. \code{\link{ferralsol}}) for the strengthened
+thresholds.}
 }
 \value{
 A \code{\link{ClassificationResult}}.
