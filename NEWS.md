@@ -1,3 +1,62 @@
+# soilKey 0.9.99 (2026-05-19)
+
+The "**Field-photo-only classification**" release. Third of the four
+sequential roadmap releases. Turns the README "idea / roadmap" item
+\emph{Field-photo-only classification} into a shipped pipeline:
+photo + GPS -> schema-validated extraction -> multi-system
+classification, with no laboratory data required.
+
+## New: classify_from_photos()
+
+\code{classify_from_photos()} assembles a \code{PedonRecord} entirely
+from vision-language extraction of field photographs and classifies it
+under all three systems.
+
+\itemize{
+  \item Profile photographs are sent to a VLM for Munsell-colour
+        extraction per horizon (\code{extract_munsell_from_photo()});
+        an optional field-sheet image supplies site metadata.
+  \item Missing horizon attributes are back-filled from a SoilGrids
+        depth prior (see below).
+  \item WRB 2022 / SiBCS 5 / USDA ST 13 keys run on the assembled
+        pedon. The taxonomic key is never delegated to the model.
+  \item The result carries a low evidence grade by construction
+        (\code{D} VLM-extracted, \code{C} prior-inferred), so a
+        photo-only screening estimate is never mistaken for a
+        described-and-sampled profile.
+  \item \code{provider} is required -- a real classification is never
+        produced from canned data by accident.
+}
+
+## New: apply_soilgrids_depth_prior()
+
+The depth-resolved companion to \code{spatial_prior_soilgrids()}.
+For each horizon it interpolates the value at the mid-depth from the
+six standard SoilGrids 2.0 depth slices (0-5 ... 100-200 cm) and
+records the fill as an \code{inferred_prior} provenance entry. The
+live fetch uses the ISRIC SoilGrids REST API; offline callers (and
+the test suite) pass \code{depth_profiles} directly.
+
+## New: compute_per_attribute_evidence_grade()
+
+Resolves the evidence grade of every \code{(horizon, attribute)} cell
+(A measured, B spectra-predicted, C prior-inferred, D VLM-extracted,
+E user-assumed), picking the most authoritative source per cell. This
+underpins the photo-only pipeline and the v0.9.100 provenance-weighted
+uncertainty MC.
+
+## User-facing changes
+
+\itemize{
+  \item Evidence grade \strong{E} (user-assumed) is split out from
+        D. \code{compute_evidence_grade()} now returns E when a
+        \code{user_assumed} value is present; \code{ClassificationResult}
+        documents the five-grade scale.
+  \item New exports: \code{classify_from_photos},
+        \code{apply_soilgrids_depth_prior},
+        \code{compute_per_attribute_evidence_grade}.
+}
+
 # soilKey 0.9.98 (2026-05-19)
 
 The "**WRB Tier-3 strict mode**" release. Second of the four

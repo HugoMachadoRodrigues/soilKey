@@ -51,6 +51,8 @@ navbar:
           href: "articles/v08_kssl_nasis_multilevel.html"
         - text: "Shiny Pro app"
           href: "articles/v10_shiny_pro.html"
+        - text: "Field-photo-only classification"
+          href: "articles/v11_photo_only.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
@@ -83,8 +85,11 @@ reference:
       - classify_usda
       - classify_all
       - classify_from_documents
+      - classify_from_photos
       - classify_by_spectral_neighbours
       - soil_classes_at_location
+      - apply_soilgrids_depth_prior
+      - compute_per_attribute_evidence_grade
 
   - title: "Interoperability"
     desc: >
@@ -590,6 +595,7 @@ articles:
       - v08_kssl_nasis_multilevel
       - v09_perfil_embrapa_pt
       - v10_shiny_pro
+      - v11_photo_only
 
 news:
   releases:
