@@ -4,7 +4,7 @@
 \alias{chernozem_strict}
 \title{Chernozem RSG gate (strengthened, WRB 2022 Ch 4, p 111)}
 \usage{
-chernozem_strict(pedon, min_bs = 50, max_top_cm = 50)
+chernozem_strict(pedon, min_bs = 50, max_top_cm = 50, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -12,6 +12,10 @@ chernozem_strict(pedon, min_bs = 50, max_top_cm = 50)
 \item{min_bs}{Numeric threshold or option (see Details).}
 
 \item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} raises the base-saturation floor to 80\%.}
 }
 \description{
 WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
@@ -29,3 +33,10 @@ Note: the v0.2 \code{chernozem()} diagnostic remains available as a
 less-strict variant; \code{chernozem_strict()} is what the v0.3.4
 key.yaml uses for the CH RSG.
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the base-saturation floor above the
+carbonate-bearing layer is raised from 50\% to 80\%, in line with
+the very high base status expected of a textbook Chernozem.
+}
+

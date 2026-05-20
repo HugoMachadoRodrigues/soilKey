@@ -4,10 +4,14 @@
 \alias{planosol}
 \title{Planosol RSG gate (WRB 2022 Ch 4, p 107)}
 \usage{
-planosol(pedon)
+planosol(pedon, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} disables the planic-features fallback.}
 }
 \description{
 WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
@@ -19,3 +23,12 @@ v0.3.4 enforces all three components. The 5-cm-window restriction is
 relaxed to "the layer immediately above or below the abrupt textural
 difference satisfies stagnic + reducing".
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the \code{planic_features} fallback path is
+disabled. Strict mode requires the canonical evidence -- an abrupt
+textural difference \emph{plus} measured stagnic and reducing
+conditions in the bracketing layer -- and will not accept the
+simpler clay-doubling proxy on its own.
+}
+

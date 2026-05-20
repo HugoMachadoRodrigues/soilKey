@@ -60,15 +60,34 @@ run_wrb_key <- function(pedon, rules = NULL) {
 #'        \code{"error"}. Behaviour when the trace reports missing
 #'        attributes.
 #' @param rules Optional pre-loaded rule set.
+#' @param strict Logical or \code{NULL}. Controls WRB Tier-3 strict
+#'        mode for the per-RSG numerical gates (Vertisols, Andosols,
+#'        Gleysols, Planosols, Ferralsols, Chernozems, Kastanozems).
+#'        When \code{NULL} (default) the gates follow
+#'        \code{getOption("soilKey.rsg_strict", FALSE)}. Passing
+#'        \code{TRUE} or \code{FALSE} forces strict mode on or off for
+#'        the duration of this call; see the individual RSG-gate help
+#'        pages (e.g. \code{\link{ferralsol}}) for the strengthened
+#'        thresholds.
 #' @return A \code{\link{ClassificationResult}}.
 #' @export
 classify_wrb2022 <- function(pedon,
                                prior           = NULL,
                                prior_threshold = 0.01,
                                on_missing      = c("warn", "silent", "error"),
-                               rules           = NULL) {
+                               rules           = NULL,
+                               strict          = NULL) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("wrb2022")
+
+  # Tier-3 strict mode: when the caller passes an explicit value, force
+  # the package option for the duration of this call so the YAML-
+  # dispatched RSG gates pick it up, then restore it on exit.
+  if (!is.null(strict)) {
+    old_strict <- getOption("soilKey.rsg_strict")
+    options(soilKey.rsg_strict = isTRUE(strict))
+    on.exit(options(soilKey.rsg_strict = old_strict), add = TRUE)
+  }
 
   # Pre-compute the implemented diagnostics so we can report which ones
   # passed even when the corresponding RSG test path is not yet wired up.

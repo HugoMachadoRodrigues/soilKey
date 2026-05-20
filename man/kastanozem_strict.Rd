@@ -4,7 +4,7 @@
 \alias{kastanozem_strict}
 \title{Kastanozem RSG gate (strengthened, WRB 2022 Ch 4, p 112)}
 \usage{
-kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70)
+kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -12,9 +12,20 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70)
 \item{min_bs}{Numeric threshold or option (see Details).}
 
 \item{max_top_cm}{Numeric threshold or option (see Details).}
+
+\item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
+resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
+\code{TRUE} raises the base-saturation floor to 75\%.}
 }
 \description{
 Same structure as \code{\link{chernozem_strict}} but using the mollic
 horizon (no chernic gate) and starting \\<= 70 cm of mineral soil
 surface.
 }
+\section{Tier-3 strict mode (v0.9.98)}{
+
+With \code{strict = TRUE} the base-saturation floor above the
+carbonate-bearing layer is raised from 50\% to 75\%. The 70 cm
+carbonate-depth window is left unchanged.
+}
+
