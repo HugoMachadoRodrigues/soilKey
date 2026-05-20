@@ -4,9 +4,16 @@
 \alias{run_classify_app}
 \title{Launch the soilKey interactive classification Shiny app}
 \usage{
-run_classify_app(port = NULL, launch.browser = TRUE, ...)
+run_classify_app(
+  ui = c("pro", "classic"),
+  port = NULL,
+  launch.browser = TRUE,
+  ...
+)
 }
 \arguments{
+\item{ui}{One of \code{"pro"} (default) or \code{"classic"}. See above.}
+
 \item{port}{Port for the local server. Default lets Shiny choose.}
 
 \item{launch.browser}{Whether to open the app in the default
@@ -18,17 +25,29 @@ browser (default \code{TRUE}).}
 Invisibly the value returned by \code{shiny::runApp()}.
 }
 \description{
-Drag-and-drop a CSV (one row per horizon) and get all three
-classifications side-by-side, with a downloadable HTML report.
-Designed for non-R users (agronomists, students, field workers).
+Opens a local Shiny app that drives the soilKey pipeline from a browser --
+no R code required. Two interfaces are available:
 }
 \details{
-Requires the optional packages \code{shiny} and \code{DT} (both
-listed in Suggests). The function raises a clear error if either
-is missing.
+\describe{
+  \item{\code{"pro"} (default)}{A professional multi-tab app: build a pedon
+    from a canonical fixture, a CSV upload, or an interactive horizon
+    editor; classify under WRB 2022 / SiBCS 5 / USDA ST 13 with the full
+    key trace; run VLM photo extraction, OSSL spectral gap-fill, the
+    SoilGrids spatial prior, and a Monte-Carlo robustness analysis; and
+    download a cross-system HTML or PDF report. Needs the optional
+    packages \pkg{bslib}, \pkg{shinyWidgets} and \pkg{plotly}.}
+  \item{\code{"classic"}}{The original single-page uploader (v0.9.39):
+    drag-and-drop a CSV and get the three classifications side-by-side.
+    Needs only \pkg{shiny} and \pkg{DT}.}
+}
+
+All optional packages are listed in \code{Suggests}; the function raises a
+clear, copy-pasteable error if any are missing.
 }
 \examples{
 \dontrun{
-run_classify_app()
+run_classify_app()                 # professional multi-tab app
+run_classify_app(ui = "classic")   # legacy single-page uploader
 }
 }
