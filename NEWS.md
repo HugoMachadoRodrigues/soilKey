@@ -1,3 +1,54 @@
+# soilKey 0.9.100 (2026-05-19)
+
+The "**Provenance-weighted uncertainty**" release. Last of the four
+sequential roadmap releases. Turns the README "idea / roadmap" item
+\emph{Pedometric uncertainty quantification} into a shipped feature:
+a probabilistic class output from a Monte-Carlo perturbation of the
+provenance ledger.
+
+## New: classify_with_uncertainty()
+
+Where \code{classification_robustness()} (v0.9.42) answers "does the
+class hold?" with one percentage, \code{classify_with_uncertainty()}
+returns the full posterior distribution over classes -- and weights
+the Monte-Carlo noise by provenance.
+
+\itemize{
+  \item Each \code{(horizon, attribute)} cell is perturbed by an
+        amount scaled to its evidence grade: an A-grade measurement
+        wobbles by ~3\%, an E-grade assumption by ~30\%. A profile
+        resting on VLM-extracted or assumed values is therefore
+        correctly reported as more uncertain than one resting on
+        laboratory measurements.
+  \item Returns a \code{soilkey_uncertainty} object: the posterior
+        \code{P(class)} (named, summing to 1), the modal class, the
+        Shannon entropy, and a leave-one-attribute-out sensitivity
+        ranking that identifies which measurement would most sharpen
+        the result.
+  \item pH and Munsell columns receive additive perturbations;
+        everything else multiplicative. Geometry (\code{top_cm} /
+        \code{bottom_cm}) is never perturbed.
+}
+
+## New: get_perturbation_scale()
+
+Exposes the per-grade Monte-Carlo magnitudes (A through E) so the
+weighting is inspectable and overridable via the \code{scales}
+argument of \code{classify_with_uncertainty()}.
+
+## User-facing changes
+
+\itemize{
+  \item \code{classification_robustness()} gains a
+        \code{provenance_aware} argument. \code{FALSE} (default) is
+        byte-identical to v0.9.42; \code{TRUE} switches to the
+        grade-scaled perturbation.
+  \item The Shiny Pro app's Uncertainty tab now renders the posterior
+        distribution, entropy and attribute sensitivity.
+  \item New exports: \code{classify_with_uncertainty},
+        \code{get_perturbation_scale}.
+}
+
 # soilKey 0.9.99 (2026-05-19)
 
 The "**Field-photo-only classification**" release. Third of the four

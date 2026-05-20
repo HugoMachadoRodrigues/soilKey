@@ -10,6 +10,7 @@ classification_robustness(
   level = c("order", "name"),
   n = 50L,
   perturbations = NULL,
+  provenance_aware = FALSE,
   seed = 42L
 )
 }
@@ -25,7 +26,16 @@ or \code{"name"} (compare full classification name).}
 
 \item{perturbations}{Named list. Each name is a horizon column;
 each element is a function taking the original value and
-returning a perturbed value. NA-tolerant.}
+returning a perturbed value. NA-tolerant. Ignored when
+\code{provenance_aware = TRUE}.}
+
+\item{provenance_aware}{If \code{FALSE} (default) every cell is
+perturbed by the fixed \code{perturbations} panel -- the exact
+v0.9.42 behaviour. If \code{TRUE}, each \code{(horizon,
+attribute)} cell is perturbed by an amount scaled to its
+provenance evidence grade, and \code{perturbations} is
+ignored. See \code{\link{classify_with_uncertainty}} for the
+full provenance-weighted posterior.}
 
 \item{seed}{Random seed for reproducibility.}
 }
