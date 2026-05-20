@@ -35,7 +35,15 @@
 #' @param n Number of Monte-Carlo perturbed runs (default 50).
 #' @param perturbations Named list. Each name is a horizon column;
 #'        each element is a function taking the original value and
-#'        returning a perturbed value. NA-tolerant.
+#'        returning a perturbed value. NA-tolerant. Ignored when
+#'        \code{provenance_aware = TRUE}.
+#' @param provenance_aware If \code{FALSE} (default) every cell is
+#'        perturbed by the fixed \code{perturbations} panel -- the exact
+#'        v0.9.42 behaviour. If \code{TRUE}, each \code{(horizon,
+#'        attribute)} cell is perturbed by an amount scaled to its
+#'        provenance evidence grade, and \code{perturbations} is
+#'        ignored. See \code{\link{classify_with_uncertainty}} for the
+#'        full provenance-weighted posterior.
 #' @param seed Random seed for reproducibility.
 #' @return A list with elements \code{baseline} (the unperturbed
 #'         classification name), \code{n} (number of MC runs),
@@ -56,6 +64,7 @@ classification_robustness <- function(pedon,
                                          level  = c("order", "name"),
                                          n      = 50L,
                                          perturbations = NULL,
+                                         provenance_aware = FALSE,
                                          seed   = 42L) {
   system <- match.arg(system)
   level  <- match.arg(level)
@@ -82,11 +91,19 @@ classification_robustness <- function(pedon,
                     else                   baseline_cls$name
   if (is.null(baseline_value)) baseline_value <- NA_character_
 
-  # Monte-Carlo perturbed runs.
+  # Monte-Carlo perturbed runs. In provenance-aware mode the noise on
+  # each cell is scaled to its evidence grade; otherwise the fixed
+  # `perturbations` panel is used (the v0.9.42 path).
+  grade_lookup <- if (isTRUE(provenance_aware)) .build_grade_lookup(pedon)
+                  else NULL
   set.seed(seed)
   results <- character(n)
   for (i in seq_len(n)) {
-    p_perturbed <- .perturb_pedon(pedon, perturbations)
+    p_perturbed <- if (isTRUE(provenance_aware)) {
+      .perturb_pedon_provenance(pedon, grade_lookup)
+    } else {
+      .perturb_pedon(pedon, perturbations)
+    }
     cls <- tryCatch(classify_fn(p_perturbed), error = function(e) NULL)
     results[i] <- if (is.null(cls)) NA_character_
                   else if (level == "order") cls$rsg_or_order %||% NA_character_

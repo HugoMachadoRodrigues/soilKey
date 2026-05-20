@@ -53,6 +53,8 @@ navbar:
           href: "articles/v10_shiny_pro.html"
         - text: "Field-photo-only classification"
           href: "articles/v11_photo_only.html"
+        - text: "Provenance-weighted uncertainty"
+          href: "articles/v12_uncertainty.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
@@ -548,6 +550,8 @@ reference:
       - benchmark_performance
       - batch_robustness
       - classification_robustness
+      - classify_with_uncertainty
+      - get_perturbation_scale
 
   - title: "OSSL spectra: PLS training and prediction"
     desc: >
@@ -596,6 +600,7 @@ articles:
       - v09_perfil_embrapa_pt
       - v10_shiny_pro
       - v11_photo_only
+      - v12_uncertainty
 
 news:
   releases:
