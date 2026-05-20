@@ -1,3 +1,62 @@
+# soilKey 0.9.97 (2026-05-19)
+
+The "**Shiny Pro app**" release. First of four sequential feature
+releases (v0.9.97 -> v0.9.100) that turn the README roadmap items into
+shipped functionality. This release delivers a professional,
+multi-tab graphical front-end to the full soilKey pipeline.
+
+## New: professional Shiny app
+
+A complete rewrite of the interactive app, shipped alongside (not
+replacing) the original. Launch it with \code{run_classify_app()}.
+
+\itemize{
+  \item \strong{Eight-tab layout} built on \pkg{bslib} (Bootstrap 5):
+        \emph{Pedon}, \emph{Classify}, \emph{Photo}, \emph{Spectra},
+        \emph{Spatial}, \emph{Uncertainty}, \emph{Report} and
+        \emph{Settings}.
+  \item \strong{Pedon builder} -- seed a profile from any of the 44
+        canonical fixtures, a CSV upload, or a blank template, then
+        edit any horizon cell in place (\pkg{DT} editable table). A
+        \pkg{plotly} depth-profile plot updates live.
+  \item \strong{Classify} -- runs WRB 2022 / SiBCS 5 / USDA ST 13
+        side-by-side with the full deterministic key trace, the
+        close-call ambiguities, and the measurements that would
+        refine the result.
+  \item \strong{Photo} -- drives the VLM extraction pipeline
+        (\code{extract_munsell_from_photo()},
+        \code{extract_site_from_fieldsheet()}). Defaults to the
+        offline \code{MockVLMProvider}; a live \pkg{ellmer} chat can
+        be supplied via \code{options(soilKey.vlm_chat=)}.
+  \item \strong{Spectra} -- attach a Vis-NIR matrix and gap-fill
+        horizon attributes against OSSL (\code{fill_from_spectra()}).
+  \item \strong{Spatial} -- query the SoilGrids spatial prior
+        (\code{spatial_prior_soilgrids()}) and visualise the RSG
+        probability distribution.
+  \item \strong{Uncertainty} -- Monte-Carlo robustness analysis
+        (\code{classification_robustness()}); v0.9.100 will upgrade
+        this tab to the provenance-weighted posterior.
+  \item \strong{Report} -- download a self-contained cross-system
+        HTML or PDF report, with automatic HTML fallback when LaTeX
+        is unavailable.
+  \item \strong{Settings} -- switch the diagnostic engine
+        (soilKey / aqp), toggle WRB Tier-3 strict mode, and set the
+        missing-data policy; the choices propagate to every tab.
+}
+
+## User-facing changes
+
+\itemize{
+  \item \code{run_classify_app()} gains a \code{ui} argument. The
+        default \code{ui = "pro"} launches the new app;
+        \code{ui = "classic"} launches the original single-page
+        uploader (v0.9.39 layout), which is unchanged.
+  \item New \code{Suggests}: \pkg{bslib}, \pkg{shinyWidgets},
+        \pkg{plotly}, \pkg{htmltools}. The \code{classic} app still
+        needs only \pkg{shiny} and \pkg{DT}. \code{run_classify_app()}
+        raises a clear, copy-pasteable error if a package is missing.
+}
+
 # soilKey 0.9.96 (2026-05-09)
 
 The "**README full English rewrite + SmartSolos / Vaz citation pass**"

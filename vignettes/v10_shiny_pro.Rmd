@@ -1,0 +1,142 @@
+---
+title: "The soilKey Pro Shiny app"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The soilKey Pro Shiny app}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  eval     = FALSE
+)
+```
+
+`soilKey` ships an interactive Shiny app that drives the whole pipeline from a
+browser -- no R code required. It is meant for agronomists, students and field
+workers who want to classify a profile, inspect the deterministic key trace,
+and download a report without scripting.
+
+# Launching the app
+
+```{r launch}
+library(soilKey)
+
+# The professional multi-tab app (default).
+run_classify_app()
+
+# Equivalent, explicit:
+run_classify_app(ui = "pro")
+
+# The original single-page CSV uploader (v0.9.39 layout):
+run_classify_app(ui = "classic")
+```
+
+The `pro` interface needs the optional packages **bslib**, **shinyWidgets**
+and **plotly** in addition to **shiny** and **DT**. If any are missing,
+`run_classify_app()` stops with a copy-pasteable `install.packages()` line.
+The `classic` interface needs only **shiny** and **DT**.
+
+```{r deps}
+install.packages(c("shiny", "DT", "bslib", "shinyWidgets", "plotly"))
+```
+
+# The eight tabs
+
+## Pedon
+
+Seed a profile three ways:
+
+* **Fixture** -- pick one of the 44 canonical profiles (31 WRB reference soil
+  groups + 13 SiBCS ordens). These are the same fixtures the test suite uses,
+  so they are guaranteed to classify cleanly.
+* **Upload CSV** -- one row per horizon. Columns are matched against the
+  canonical horizon schema; unknown columns are kept, missing ones are filled
+  with `NA`. A starter CSV is available from the sidebar.
+* **Blank** -- start from an empty template and build the profile by hand.
+
+Every horizon cell is editable in place -- click a cell, type, press Enter.
+The depth-profile plot on the right updates live; switch the plotted attribute
+with the dropdown. When the table looks right, fill in the site metadata
+(ID, latitude, longitude, country, parent material) and press
+**Build / update pedon**.
+
+## Classify
+
+Runs WRB 2022, SiBCS 5 and USDA Soil Taxonomy 13 side-by-side. Each result
+card shows the full classification name, the bare RSG / order, the principal
+and supplementary qualifiers, and the provenance-aware evidence grade.
+
+The **Decision detail** panel exposes:
+
+* **Key trace** -- every RSG tested, in key order, with pass / fail /
+  indeterminate status. Failed and passed rows are colour-coded.
+* **Ambiguities** -- RSGs that nearly satisfied; useful hints for follow-up
+  measurement.
+* **Missing data** -- attributes whose measurement would refine or resolve
+  the result.
+
+## Photo
+
+Drives the vision-language extraction pipeline. A profile photograph yields
+Munsell colour per horizon; a field-sheet image yields site metadata. The
+taxonomic key is **never** delegated to a model -- extraction only fills the
+`PedonRecord`.
+
+The default **Demo (mock)** provider returns a canned, schema-valid response
+so the pipeline runs offline with no API key. To use a live model, configure
+an [ellmer](https://ellmer.tidyverse.org/) chat object before launching:
+
+```{r vlm}
+options(soilKey.vlm_chat = ellmer::chat_anthropic())
+run_classify_app()
+```
+
+## Spectra
+
+Attach a Vis-NIR spectrum (one row per horizon, one column per wavelength) and
+gap-fill missing horizon attributes against the Open Soil Spectral Library.
+Filled values enter the provenance ledger tagged `predicted_spectra`. The
+first gap-fill downloads an OSSL cache, which needs network access.
+
+## Spatial
+
+Queries a SoilGrids "MostProbable WRB" raster around the profile coordinates
+and reports the spatial distribution of reference soil groups -- a prior to
+sanity-check the deterministic classification against. Point the **Raster
+path or URL** field at a SoilGrids GeoTIFF, or set a local raster for demos:
+
+```{r raster}
+options(soilKey.test_raster = "/path/to/a/wrb_raster.tif")
+```
+
+## Uncertainty
+
+A Monte-Carlo robustness analysis: each run perturbs texture, pH and organic
+carbon within typical analytical error, then re-classifies. The robustness
+percentage tells you how often the class holds; the bar chart shows which
+alternative classes the profile flipped to. (From v0.9.100 this tab upgrades
+to a provenance-weighted posterior distribution.)
+
+## Report
+
+Downloads a self-contained cross-system report (WRB / SiBCS / USDA plus the
+horizon table and provenance log) as HTML or PDF. PDF needs a working LaTeX
+install; if it is missing, the app falls back to HTML and tells you.
+
+## Settings
+
+Sets the diagnostic engine (`soilKey` strict thresholds vs. `aqp` regional
+tolerance), the WRB Tier-3 strict-mode toggle, and the missing-data policy.
+These choices propagate to every classification run in the app.
+
+# Notes
+
+* The app is fully local and deterministic. The taxonomic key is canonical
+  YAML + R; only the optional Photo tab can call an external model, and only
+  when you explicitly configure a live provider.
+* The `classic` app is unchanged and remains available for the simplest
+  CSV-in, results-out workflow.
