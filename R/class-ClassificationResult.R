@@ -23,8 +23,10 @@
 #'                       hints for follow-up measurements.
 #' @field missing_data   Character vector. Attributes whose measurement
 #'                       would refine or resolve the result.
-#' @field evidence_grade Character. \code{"A"}, \code{"B"}, \code{"C"},
-#'                       \code{"D"}, or \code{NA_character_}.
+#' @field evidence_grade Character. \code{"A"} (measured), \code{"B"}
+#'                       (spectra-predicted), \code{"C"} (prior-inferred),
+#'                       \code{"D"} (VLM-extracted), \code{"E"}
+#'                       (user-assumed), or \code{NA_character_}.
 #' @field prior_check    List or NULL. Result of the spatial-prior sanity
 #'                       check (consistent / inconsistent / not run).
 #' @field warnings       Character vector. Free-form warnings.

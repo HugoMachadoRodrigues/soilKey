@@ -10,9 +10,16 @@ compute_evidence_grade(pedon, trace)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-v0.1 rule: A if every recorded provenance is \code{"measured"}, B if
+Returns the weakest grade present across the pedon's provenance
+ledger: A if every recorded provenance is \code{"measured"}, B if
 any \code{"predicted_spectra"}, C if any \code{"inferred_prior"}, D
-if any \code{"extracted_vlm"} or \code{"user_assumed"}. If no
+if any \code{"extracted_vlm"}, E if any \code{"user_assumed"}. If no
 provenance is recorded, defaults to A (assume measured).
+}
+\details{
+Grade E was split out from D in v0.9.99 so that a wholly assumed
+value is distinguishable from a VLM-extracted one; see
+\code{\link{compute_per_attribute_evidence_grade}} for the
+cell-by-cell breakdown.
 }
 \keyword{internal}
