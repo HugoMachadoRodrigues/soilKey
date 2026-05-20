@@ -49,6 +49,8 @@ navbar:
           href: "articles/v07_end_to_end_pipeline.html"
         - text: "KSSL+NASIS multi-level USDA benchmark"
           href: "articles/v08_kssl_nasis_multilevel.html"
+        - text: "Shiny Pro app"
+          href: "articles/v10_shiny_pro.html"
     github:
       icon: fa-github
       href: https://github.com/HugoMachadoRodrigues/soilKey
@@ -587,6 +589,7 @@ articles:
       - v07_end_to_end_pipeline
       - v08_kssl_nasis_multilevel
       - v09_perfil_embrapa_pt
+      - v10_shiny_pro
 
 news:
   releases:
