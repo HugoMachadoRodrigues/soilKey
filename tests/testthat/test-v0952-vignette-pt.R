@@ -59,6 +59,16 @@ test_that("Vinheta v09 parses sem erros de sintaxe Rmd", {
 # ---- ClassificationResult$print: defensive when trace has non-list entries ----
 
 test_that("ClassificationResult$print does not error on scalar/NULL trace entries", {
+  # cli routes output via getOption("cli.default_handler") if set, else
+  # via R's message() / message-condition path. Local interactive sessions
+  # (RStudio, knitr) sometimes install a default handler that re-routes
+  # messages away from both stderr and the condition system, which made
+  # the original capture.output(type = "message") + nested capture.output()
+  # pattern silently return empty locally while passing on CI. Forcing
+  # the default handler off restores the standard message-condition path
+  # so testthat::capture_messages() (withCallingHandlers-based) sees it.
+  withr::local_options(cli.default_handler = NULL, cli.num_colors = 1L)
+
   res <- ClassificationResult$new(
     system = "WRB 2022",
     name   = "Cambisols",
@@ -74,17 +84,12 @@ test_that("ClassificationResult$print does not error on scalar/NULL trace entrie
     evidence_grade = "A"
   )
   # Should not error
-  expect_no_error(invisible(capture.output(print(res), type = "message")))
-  # cli writes to message stream; capture both
-  out <- capture.output({
-    capture.output(print(res), type = "message")
-  })
-  msg <- capture.output(print(res), type = "message")
-  combined <- c(out, msg)
+  expect_no_error(invisible(testthat::capture_messages(print(res))))
+  combined <- paste(testthat::capture_messages(print(res)), collapse = "\n")
   # Scalar/NULL/data.frame entries are skipped in the per-RSG dump,
   # but CM and AC (proper trace entries) must appear.
-  expect_true(any(grepl("AC", combined)))
-  expect_true(any(grepl("CM", combined)))
+  expect_true(grepl("AC", combined))
+  expect_true(grepl("CM", combined))
 })
 
 
