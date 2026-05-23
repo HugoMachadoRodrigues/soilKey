@@ -20,9 +20,11 @@ test_that("per-attribute grade reflects each cell's provenance source", {
   p$add_measurement(3, "ph_h2o",  4.9, "predicted_spectra",
                     confidence = 0.8, overwrite = TRUE)
   g <- compute_per_attribute_evidence_grade(p)
-  expect_equal(g[horizon_idx == 1 & attribute == "clay_pct"]$grade, "D")
-  expect_equal(g[horizon_idx == 2 & attribute == "cec_cmol"]$grade, "C")
-  expect_equal(g[horizon_idx == 3 & attribute == "ph_h2o"]$grade,   "B")
+  # Use base-R subsetting so the assertion works without data.table NSE
+  # being available in the test scope.
+  expect_equal(g$grade[g$horizon_idx == 1 & g$attribute == "clay_pct"], "D")
+  expect_equal(g$grade[g$horizon_idx == 2 & g$attribute == "cec_cmol"], "C")
+  expect_equal(g$grade[g$horizon_idx == 3 & g$attribute == "ph_h2o"],   "B")
 })
 
 test_that("the most authoritative source wins a multiply-sourced cell", {
@@ -33,7 +35,7 @@ test_that("the most authoritative source wins a multiply-sourced cell", {
   p$add_measurement(1, "clay_pct", 50, "measured",
                     confidence = 1, overwrite = TRUE)
   g <- compute_per_attribute_evidence_grade(p)
-  expect_equal(g[horizon_idx == 1 & attribute == "clay_pct"]$grade, "A")
+  expect_equal(g$grade[g$horizon_idx == 1 & g$attribute == "clay_pct"], "A")
 })
 
 test_that("compute_evidence_grade returns E for a user-assumed value", {

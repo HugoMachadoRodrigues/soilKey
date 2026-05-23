@@ -10,6 +10,12 @@
   invisible(NULL)
 }
 
+# Bare names that appear inside data.table NSE expressions (e.g.
+# setorder(.SD, -importance) or .SD[horizon_idx == i & attribute == a]).
+# Declared here so R CMD check's static analysis does not flag them as
+# "no visible binding for global variable".
+utils::globalVariables(c("horizon_idx", "attribute", "importance"))
+
 
 #' Auto-detect PROJ_LIB and GDAL_DATA directories
 #'
