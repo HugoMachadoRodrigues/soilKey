@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.96](https://img.shields.io/badge/version-0.9.96-FF6B35?style=flat-square)[![License:
+![v0.9.100](https://img.shields.io/badge/version-0.9.100-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -48,18 +48,18 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **OSSL spectral gap-fill** | ✅ shipped | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones). |
 | **Spatial priors** | ✅ shipped | SoilGrids WCS + national soil maps; consistency check, never overrides the key. |
 | **Provenance ledger** | ✅ shipped | Per-attribute tags: `measured`, `predicted_spectra`, `extracted_vlm`, `inferred_prior`, `user_assumed`. |
-| **Evidence grade (A–D)** | ✅ shipped | Computed from the trace; surfaces robustness without hiding it. |
+| **Evidence grade (A–E)** | ✅ shipped | Computed from the trace; surfaces robustness without hiding it. Five-grade scale since v0.9.99. |
 | **Cross-system correlation** | ✅ shipped | WRB ↔︎ USDA ↔︎ SiBCS via IUSS WRB 2022 Annex 6; full benchmark drivers. |
 | **External-data benchmarks** | ✅ shipped | KSSL+NASIS, AfSP, WoSIS stratified, BDsolos (RJ), Redape (Vaz et al. 2023), LUCAS 2018. |
 | **SmartSolos Expert API bridge** | ✅ shipped | [`classify_via_smartsolos_api()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.md) cross-validates against Embrapa’s authoritative reference. |
 | **Lazy-fetch benchmark caches** | ✅ shipped (v0.9.94) | Four large `.rds` samples downloaded on demand from a versioned GitHub Release. |
-| **CRAN release** | 🟡 pending | First submission post v0.9.95; auto-check pre-test passing. |
-| **WRB Tier-3 RSG-gate strict mode** | 🟡 in progress | Per-RSG numerical-threshold gate strengthening; tracked in NEWS per release. |
-| **Field-photo-only classification** | 🔵 idea / roadmap | Photo + GPS → schema-validated extraction → multi-system classification, no lab data required. |
-| **Pedometric uncertainty quantif.** | 🔵 idea / roadmap | Probabilistic class output via Monte Carlo perturbation of the provenance ledger. |
-| **R Shiny web app** | 🔵 idea / roadmap | Interactive profile builder + classification visualiser. |
+| **CRAN release** | 🟡 in queue | v0.9.96 submitted to CRAN on 2026-05-19; auto-check pre-test passing. |
+| **R Shiny web app** | ✅ shipped (v0.9.97) | [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md) — eight-tab `bslib` interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, MC uncertainty, HTML/PDF report. |
+| **WRB Tier-3 RSG-gate strict mode** | ✅ shipped (v0.9.98) | `classify_wrb2022(strict = TRUE)` strengthens seven RSG gates (Vertisol clay 30→35 %, Chernozem BS 50→80 %, etc.); backward-compatible. |
+| **Field-photo-only classification** | ✅ shipped (v0.9.99) | [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md) — photo + GPS → VLM Munsell + SoilGrids depth prior → multi-system classification; evidence grade D / C, never A. |
+| **Pedometric uncertainty quantif.** | ✅ shipped (v0.9.100) | [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md) — provenance-weighted Monte-Carlo posterior over classes; per-grade perturbation magnitudes (A ±3 % … E ±30 %), attribute sensitivity ranking. |
 
-Legend: ✅ shipped · 🟡 in progress · 🔵 idea / roadmap
+Legend: ✅ shipped · 🟡 in queue · 🔵 idea / roadmap
 
 ------------------------------------------------------------------------
 
@@ -100,6 +100,54 @@ All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.97 → v0.9.100 (2026-05-19)
+
+Four sequential roadmap releases that turn every previously pending
+README item into shipped functionality.
+
+- **v0.9.97 — Professional Shiny app.**
+  [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  launches an eight-tab `bslib` interface: interactive pedon builder (44
+  canonical fixtures, editable horizon table, live `plotly` depth
+  profile), tri-system classification with the full key trace, VLM photo
+  extraction, OSSL spectral gap-fill, SoilGrids spatial prior,
+  Monte-Carlo uncertainty, and a downloadable HTML / PDF report.
+  `run_classify_app(ui = "classic")` keeps the v0.9.39 single-page
+  uploader available.
+- **v0.9.98 — WRB Tier-3 strict mode.**
+  `classify_wrb2022(strict = TRUE)` strengthens seven Tier-2 RSG gates
+  (Vertisols / Andosols / Gleysols / Planosols / Ferralsols / Chernozems
+  / Kastanozems) toward the canonical WRB 2022 Chapter 4 intent —
+  e.g. the Vertisol overlying-clay floor rises 30 → 35 %, the Chernozem
+  base-saturation floor 50 → 80 %. `strict = FALSE` (the default) is
+  byte-identical to v0.9.97; every canonical fixture classifies the same
+  under both modes.
+- **v0.9.99 — Field-photo-only classification.**
+  [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md)
+  assembles a PedonRecord entirely from VLM extraction of field
+  photographs (Munsell colour per horizon + optional site metadata),
+  back-fills missing attributes from a SoilGrids depth prior, and runs
+  all three keys. Companion exports
+  [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
+  (depth-resolved companion to
+  [`spatial_prior_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior_soilgrids.md))
+  and
+  [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
+  (per-cell A–E breakdown). Evidence grade **E** (user-assumed) was
+  split out from D so a wholly assumed value is distinguishable from a
+  VLM-extracted one.
+- **v0.9.100 — Provenance-weighted uncertainty.**
+  [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md)
+  returns a probabilistic class distribution from a Monte-Carlo
+  perturbation of the provenance ledger — each `(horizon, attribute)`
+  cell is perturbed by an amount scaled to its evidence grade (A
+  measured ±3 %, B spectra ±7 %, C prior ±10 %, D VLM ±17 %, E assumed
+  ±30 %). The result is a `soilkey_uncertainty` object: posterior
+  `P(class)`, Shannon entropy, and a leave-one-attribute-out sensitivity
+  ranking that answers “what should I measure next?”.
+  `classification_robustness(provenance_aware = TRUE)` exposes the same
+  weighting on the v0.9.42 API.
 
 ## ✦ What’s new in v0.9.81 → v0.9.96 (2026-05-09)
 
