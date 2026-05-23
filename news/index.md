@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.97 (2026-05-19)
+
+CRAN release: 2026-05-19
+
+The “**Shiny Pro app**” release. First of four sequential feature
+releases (v0.9.97 -\> v0.9.100) that turn the README roadmap items into
+shipped functionality. This release delivers a professional, multi-tab
+graphical front-end to the full soilKey pipeline.
+
+### New: professional Shiny app
+
+A complete rewrite of the interactive app, shipped alongside (not
+replacing) the original. Launch it with .
+
+### User-facing changes
+
 ## soilKey 0.9.96 (2026-05-09)
 
 The “**README full English rewrite + SmartSolos / Vaz citation pass**”
@@ -4501,10 +4517,8 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran
-[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
-locally against the v0.9.39 source tree. Result: **80.5 % statement
-coverage**.
+Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
+Result: **80.5 % statement coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

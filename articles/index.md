@@ -22,3 +22,5 @@
   benchmark](https://hugomachadorodrigues.github.io/soilKey/articles/v08_kssl_nasis_multilevel.md):
 - [Um perfil real do A ao Z (estilo Embrapa, em
   portugues)](https://hugomachadorodrigues.github.io/soilKey/articles/v09_perfil_embrapa_pt.md):
+- [The soilKey Pro Shiny
+  app](https://hugomachadorodrigues.github.io/soilKey/articles/v10_shiny_pro.md):
