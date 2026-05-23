@@ -8,7 +8,7 @@ mineral soil surface.
 ## Usage
 
 ``` r
-kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70)
+kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
 ```
 
 ## Arguments
@@ -25,3 +25,15 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70)
 - max_top_cm:
 
   Numeric threshold or option (see Details).
+
+- strict:
+
+  Logical or `NULL`. When `NULL` (default) it resolves via
+  `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` raises the
+  base-saturation floor to 75%.
+
+## Tier-3 strict mode (v0.9.98)
+
+With `strict = TRUE` the base-saturation floor above the
+carbonate-bearing layer is raised from 50% to 75%. The 70 cm
+carbonate-depth window is left unchanged.

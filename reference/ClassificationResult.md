@@ -51,7 +51,9 @@ biogeographical or prior-based warnings.
 
 - `evidence_grade`:
 
-  Character. `"A"`, `"B"`, `"C"`, `"D"`, or `NA_character_`.
+  Character. `"A"` (measured), `"B"` (spectra-predicted), `"C"`
+  (prior-inferred), `"D"` (VLM-extracted), `"E"` (user-assumed), or
+  `NA_character_`.
 
 - `prior_check`:
 

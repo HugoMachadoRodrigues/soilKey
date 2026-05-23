@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.97</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,8 @@
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
     <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v10_shiny_pro.html">Shiny Pro app</a></li>
+    <li><a class="dropdown-item" href="../articles/v11_photo_only.html">Field-photo-only classification</a></li>
+    <li><a class="dropdown-item" href="../articles/v12_uncertainty.html">Provenance-weighted uncertainty</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -161,6 +163,13 @@
 
         <dt>
 
+          <code><a href="classify_from_photos.html">classify_from_photos()</a></code>
+
+        </dt>
+        <dd>Classify a soil profile from field photographs alone</dd>
+
+        <dt>
+
           <code><a href="classify_by_spectral_neighbours.html">classify_by_spectral_neighbours()</a></code>
 
         </dt>
@@ -172,6 +181,20 @@
 
         </dt>
         <dd>Likely soil classes at a geographic location (spatial classification aid)</dd>
+
+        <dt>
+
+          <code><a href="apply_soilgrids_depth_prior.html">apply_soilgrids_depth_prior()</a></code>
+
+        </dt>
+        <dd>Fill missing horizon attributes from a SoilGrids depth prior</dd>
+
+        <dt>
+
+          <code><a href="compute_per_attribute_evidence_grade.html">compute_per_attribute_evidence_grade()</a></code>
+
+        </dt>
+        <dd>Per-attribute provenance-aware evidence grade</dd>
       </dl></div><div class="section level2">
       <h2 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a></h2>
 
@@ -5868,6 +5891,13 @@
 
         <dt>
 
+          <code><a href="compute_per_attribute_evidence_grade.html">compute_per_attribute_evidence_grade()</a></code>
+
+        </dt>
+        <dd>Per-attribute provenance-aware evidence grade</dd>
+
+        <dt>
+
           <code><a href="contato_litico.html">contato_litico()</a></code>
 
         </dt>
@@ -5998,6 +6028,13 @@
 
         </dt>
         <dd>Save / load trained OSSL-backed PLSR models</dd>
+
+        <dt>
+
+          <code><a href="apply_soilgrids_depth_prior.html">apply_soilgrids_depth_prior()</a></code>
+
+        </dt>
+        <dd>Fill missing horizon attributes from a SoilGrids depth prior</dd>
 
         <dt>
 
@@ -7050,6 +7087,20 @@
 
         </dt>
         <dd>Robustness of classification under input perturbation</dd>
+
+        <dt>
+
+          <code><a href="classify_with_uncertainty.html">classify_with_uncertainty()</a></code>
+
+        </dt>
+        <dd>Posterior distribution over classification outcomes</dd>
+
+        <dt>
+
+          <code><a href="get_perturbation_scale.html">get_perturbation_scale()</a></code>
+
+        </dt>
+        <dd>Monte-Carlo perturbation scale for an evidence grade</dd>
       </dl></div><div class="section level2">
       <h2 id="ossl-spectra-pls-training-and-prediction">OSSL spectra: PLS training and prediction<a class="anchor" aria-label="anchor" href="#ossl-spectra-pls-training-and-prediction"></a></h2>
 

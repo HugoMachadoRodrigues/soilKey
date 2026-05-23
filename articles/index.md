@@ -24,3 +24,7 @@
   portugues)](https://hugomachadorodrigues.github.io/soilKey/articles/v09_perfil_embrapa_pt.md):
 - [The soilKey Pro Shiny
   app](https://hugomachadorodrigues.github.io/soilKey/articles/v10_shiny_pro.md):
+- [Field-photo-only
+  classification](https://hugomachadorodrigues.github.io/soilKey/articles/v11_photo_only.md):
+- [Provenance-weighted classification
+  uncertainty](https://hugomachadorodrigues.github.io/soilKey/articles/v12_uncertainty.md):

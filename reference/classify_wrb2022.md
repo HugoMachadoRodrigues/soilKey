@@ -15,7 +15,8 @@ classify_wrb2022(
   prior = NULL,
   prior_threshold = 0.01,
   on_missing = c("warn", "silent", "error"),
-  rules = NULL
+  rules = NULL,
+  strict = NULL
 )
 ```
 
@@ -49,6 +50,17 @@ classify_wrb2022(
 - rules:
 
   Optional pre-loaded rule set.
+
+- strict:
+
+  Logical or `NULL`. Controls WRB Tier-3 strict mode for the per-RSG
+  numerical gates (Vertisols, Andosols, Gleysols, Planosols, Ferralsols,
+  Chernozems, Kastanozems). When `NULL` (default) the gates follow
+  `getOption("soilKey.rsg_strict", FALSE)`. Passing `TRUE` or `FALSE`
+  forces strict mode on or off for the duration of this call; see the
+  individual RSG-gate help pages (e.g.
+  [`ferralsol`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.md))
+  for the strengthened thresholds.
 
 ## Value
 

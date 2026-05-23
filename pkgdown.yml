@@ -13,7 +13,9 @@ articles:
   v08_kssl_nasis_multilevel: v08_kssl_nasis_multilevel.html
   v09_perfil_embrapa_pt: v09_perfil_embrapa_pt.html
   v10_shiny_pro: v10_shiny_pro.html
-last_built: 2026-05-23T17:05Z
+  v11_photo_only: v11_photo_only.html
+  v12_uncertainty: v12_uncertainty.html
+last_built: 2026-05-23T17:31Z
 urls:
   reference: https://hugomachadorodrigues.github.io/soilKey/reference
   article: https://hugomachadorodrigues.github.io/soilKey/articles

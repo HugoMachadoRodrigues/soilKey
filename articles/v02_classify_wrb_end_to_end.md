@@ -336,6 +336,33 @@ ambiguities, missing data, the horizons table, and the per-source
 provenance summary. `ClassificationResult$report(file)` is the
 R6-method-style equivalent and delegates to the same code.
 
+## 7. Tier-3 strict mode for borderline pedons
+
+By default the per-RSG numerical gates apply soilKey’s regionally
+calibrated thresholds. For pedons that sit close to an RSG boundary,
+[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
+accepts a `strict` argument that strengthens seven Tier-3 gates toward
+the canonical WRB 2022 Chapter 4 intent (e.g. the Vertisol
+overlying-clay floor rises from 30 % to 35 %, the Chernozem
+base-saturation floor from 50 % to 80 %).
+
+``` r
+
+# A profile with 32 % clay above a vertic horizon: a Vertisol under the
+# default gate, but below the 35 % strict floor.
+classify_wrb2022(pr, strict = FALSE)$rsg_or_order  # default
+classify_wrb2022(pr, strict = TRUE)$rsg_or_order   # Tier-3 strict
+```
+
+`strict = FALSE` (the default) is fully backward compatible – every
+canonical fixture classifies identically with and without it. Strict
+mode only changes genuinely borderline profiles, which makes it a useful
+sensitivity probe: if a classification is stable across both modes, the
+assignment is robust. The toggle can also be set globally with
+`options(soilKey.rsg_strict = TRUE)` (this is what the Shiny Pro app’s
+Settings tab does), and each RSG gate records the effective threshold in
+its `DiagnosticResult` evidence.
+
 ## Summary
 
     #> WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)

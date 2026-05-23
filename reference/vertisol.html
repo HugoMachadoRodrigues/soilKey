@@ -15,7 +15,7 @@ horizon."><meta property="og:image" content="https://hugomachadorodrigues.github
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.97</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,8 @@ horizon."><meta property="og:image" content="https://hugomachadorodrigues.github
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
     <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v10_shiny_pro.html">Shiny Pro app</a></li>
+    <li><a class="dropdown-item" href="../articles/v11_photo_only.html">Field-photo-only classification</a></li>
+    <li><a class="dropdown-item" href="../articles/v12_uncertainty.html">Provenance-weighted uncertainty</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -69,7 +71,7 @@ horizon.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vertisol</span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vertisol</span><span class="op">(</span><span class="va">pedon</span>, strict <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,6 +80,12 @@ horizon.</p>
 
 <dl><dt id="arg-pedon">pedon<a class="anchor" aria-label="anchor" href="#arg-pedon"></a></dt>
 <dd><p>A <code><a href="PedonRecord.html">PedonRecord</a></code>.</p></dd>
+
+
+<dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
+<dd><p>Logical or <code>NULL</code>. When <code>NULL</code> (default) it
+resolves via <code>getOption("soilKey.rsg_strict", FALSE)</code>.
+<code>TRUE</code> applies the Tier-3 strengthened threshold.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,6 +99,14 @@ clay, and (3) shrink-swell cracks that start within the upper 20 cm.
 "Cracks extending to the vertic horizon" is enforced indirectly by the
 test_shrink_swell_cracks test that already requires an explicit
 <code>cracks_width_cm</code> value.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="tier-strict-mode-v-">Tier-3 strict mode (v0.9.98)<a class="anchor" aria-label="anchor" href="#tier-strict-mode-v-"></a></h2>
+
+
+<p>With <code>strict = TRUE</code> the overlying-clay threshold is raised from
+30% to 35%, tightening the gate against marginally clayey profiles
+that satisfy the vertic horizon but sit close to the Vertisol cut-off.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

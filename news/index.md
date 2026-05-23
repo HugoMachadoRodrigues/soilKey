@@ -1,5 +1,72 @@
 # Changelog
 
+## soilKey 0.9.100 (2026-05-19)
+
+The “**Provenance-weighted uncertainty**” release. Last of the four
+sequential roadmap releases. Turns the README “idea / roadmap” item into
+a shipped feature: a probabilistic class output from a Monte-Carlo
+perturbation of the provenance ledger.
+
+### New: classify_with_uncertainty()
+
+Where (v0.9.42) answers “does the class hold?” with one percentage,
+returns the full posterior distribution over classes – and weights the
+Monte-Carlo noise by provenance.
+
+### New: get_perturbation_scale()
+
+Exposes the per-grade Monte-Carlo magnitudes (A through E) so the
+weighting is inspectable and overridable via the argument of .
+
+### User-facing changes
+
+## soilKey 0.9.99 (2026-05-19)
+
+The “**Field-photo-only classification**” release. Third of the four
+sequential roadmap releases. Turns the README “idea / roadmap” item into
+a shipped pipeline: photo + GPS -\> schema-validated extraction -\>
+multi-system classification, with no laboratory data required.
+
+### New: classify_from_photos()
+
+assembles a entirely from vision-language extraction of field
+photographs and classifies it under all three systems.
+
+### New: apply_soilgrids_depth_prior()
+
+The depth-resolved companion to . For each horizon it interpolates the
+value at the mid-depth from the six standard SoilGrids 2.0 depth slices
+(0-5 … 100-200 cm) and records the fill as an provenance entry. The live
+fetch uses the ISRIC SoilGrids REST API; offline callers (and the test
+suite) pass directly.
+
+### New: compute_per_attribute_evidence_grade()
+
+Resolves the evidence grade of every cell (A measured, B
+spectra-predicted, C prior-inferred, D VLM-extracted, E user-assumed),
+picking the most authoritative source per cell. This underpins the
+photo-only pipeline and the v0.9.100 provenance-weighted uncertainty MC.
+
+### User-facing changes
+
+## soilKey 0.9.98 (2026-05-19)
+
+The “**WRB Tier-3 strict mode**” release. Second of the four sequential
+roadmap releases. Turns the README “in progress” item into a shipped,
+opt-in feature.
+
+### New: per-RSG strict-mode gates
+
+Seven Tier-2 RSG gates gain a argument. With (the default) every gate
+behaves exactly as in v0.9.97 – full backward compatibility. With a
+per-RSG numerical threshold is strengthened toward the canonical WRB
+2022 Chapter 4 intent:
+
+All 31 canonical WRB fixtures classify identically under both modes;
+strict mode only changes genuinely borderline profiles.
+
+### User-facing changes
+
 ## soilKey 0.9.97 (2026-05-19)
 
 CRAN release: 2026-05-19
@@ -4517,8 +4584,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

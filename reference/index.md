@@ -39,11 +39,17 @@ the evidence grade.
   : Classify a pedon across all three taxonomic systems
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
+- [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md)
+  : Classify a soil profile from field photographs alone
 - [`classify_by_spectral_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.md)
   : Classify a soil by spectral similarity to OSSL reference profiles
 - [`soil_classes_at_location()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_classes_at_location.md)
   : Likely soil classes at a geographic location (spatial classification
   aid)
+- [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
+  : Fill missing horizon attributes from a SoilGrids depth prior
+- [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
+  : Per-attribute provenance-aware evidence grade
 
 ## Interoperability
 
@@ -2870,6 +2876,9 @@ plus auxiliaries) used in the test suite.
 - [`compute_kr()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_kr.md)
   : Kr (silica:sesquioxidos molar) – SiBCS Cap 1, p 32
 
+- [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
+  : Per-attribute provenance-aware evidence grade
+
 - [`contato_litico()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico.md)
   :
 
@@ -2933,6 +2942,9 @@ plus auxiliaries) used in the test suite.
 - [`save_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
   [`load_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
   : Save / load trained OSSL-backed PLSR models
+
+- [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
+  : Fill missing horizon attributes from a SoilGrids depth prior
 
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
@@ -3405,6 +3417,10 @@ Cambisol/Histosol (100%) and Ferralsol/Solonetz (80%) recall.
   : Batch robustness across many pedons
 - [`classification_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.md)
   : Robustness of classification under input perturbation
+- [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md)
+  : Posterior distribution over classification outcomes
+- [`get_perturbation_scale()`](https://hugomachadorodrigues.github.io/soilKey/reference/get_perturbation_scale.md)
+  : Monte-Carlo perturbation scale for an evidence grade
 
 ## OSSL spectra: PLS training and prediction
 

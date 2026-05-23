@@ -1132,6 +1132,9 @@ res_wrb$trace
 #> $GL$evidence[[1]]$evidence$path3_ok
 #> [1] FALSE
 #> 
+#> $GL$evidence[[1]]$evidence$strict_mode
+#> [1] FALSE
+#> 
 #> 
 #> $GL$evidence[[1]]$reference
 #> [1] "IUSS Working Group WRB (2022), Chapter 4, Gleysols (p. 103)"
@@ -1622,6 +1625,9 @@ res_wrb$trace
 #> [PASS] not_albeluvic
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon
 #> Notes: No layer satisfied the clay-increase precondition
+#> 
+#> $FR$evidence[[1]]$evidence$strict_mode
+#> [1] FALSE
 #> 
 #> 
 #> $FR$evidence[[1]]$reference

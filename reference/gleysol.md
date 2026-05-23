@@ -19,7 +19,7 @@ column that's not standard).
 ## Usage
 
 ``` r
-gleysol(pedon)
+gleysol(pedon, strict = NULL)
 ```
 
 ## Arguments
@@ -28,3 +28,16 @@ gleysol(pedon)
 
   A
   [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
+
+- strict:
+
+  Logical or `NULL`. When `NULL` (default) it resolves via
+  `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` tightens path 1 and
+  disables path 3.
+
+## Tier-3 strict mode (v0.9.98)
+
+With `strict = TRUE` the path-1 gleyic+reducing layer must start within
+the upper 25 cm (instead of 40 cm), and the path-3 designation-only
+fallback (a “W” / aquic marker) is disabled: strict mode requires
+measured gleyic and reducing evidence.

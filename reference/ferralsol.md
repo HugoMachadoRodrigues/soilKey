@@ -17,7 +17,7 @@ v0.3.4 enforces all three exception paths. The DeltapH check uses
 ## Usage
 
 ``` r
-ferralsol(pedon)
+ferralsol(pedon, strict = NULL)
 ```
 
 ## Arguments
@@ -26,3 +26,18 @@ ferralsol(pedon)
 
   A
   [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
+
+- strict:
+
+  Logical or `NULL`. When `NULL` (default) it resolves via
+  `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` requires two of the
+  three argic exception paths.
+
+## Tier-3 strict mode (v0.9.98)
+
+When an argic horizon sits above the ferralic, the default gate keeps
+the profile as a Ferralsol if *any one* of the three exception paths
+(WDC \\ 10%, DeltapH \\= 0, SOC \\= 1.4%) holds. With `strict = TRUE`
+the gate requires *at least two* of the three – a single weak indicator
+no longer rescues a profile with a translocated-clay argic from being
+keyed out of Ferralsols.

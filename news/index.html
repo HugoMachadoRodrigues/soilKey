@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.97</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,8 @@
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
     <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v10_shiny_pro.html">Shiny Pro app</a></li>
+    <li><a class="dropdown-item" href="../articles/v11_photo_only.html">Field-photo-only classification</a></li>
+    <li><a class="dropdown-item" href="../articles/v12_uncertainty.html">Provenance-weighted uncertainty</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
@@ -50,6 +52,55 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.100" id="soilkey-09100-2026-05-19">soilKey 0.9.100 (2026-05-19)<a class="anchor" aria-label="anchor" href="#soilkey-09100-2026-05-19"></a></h2>
+<p>The “<strong>Provenance-weighted uncertainty</strong>” release. Last of the four sequential roadmap releases. Turns the README “idea / roadmap” item  into a shipped feature: a probabilistic class output from a Monte-Carlo perturbation of the provenance ledger.</p>
+<div class="section level3">
+<h3 id="new-classify_with_uncertainty-0-9-100">New: classify_with_uncertainty()<a class="anchor" aria-label="anchor" href="#new-classify_with_uncertainty-0-9-100"></a></h3>
+<p>Where  (v0.9.42) answers “does the class hold?” with one percentage,  returns the full posterior distribution over classes – and weights the Monte-Carlo noise by provenance.</p>
+</div>
+<div class="section level3">
+<h3 id="new-get_perturbation_scale-0-9-100">New: get_perturbation_scale()<a class="anchor" aria-label="anchor" href="#new-get_perturbation_scale-0-9-100"></a></h3>
+<p>Exposes the per-grade Monte-Carlo magnitudes (A through E) so the weighting is inspectable and overridable via the  argument of .</p>
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-100">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-100"></a></h3>
+
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.99" id="soilkey-0999-2026-05-19">soilKey 0.9.99 (2026-05-19)<a class="anchor" aria-label="anchor" href="#soilkey-0999-2026-05-19"></a></h2>
+<p>The “<strong>Field-photo-only classification</strong>” release. Third of the four sequential roadmap releases. Turns the README “idea / roadmap” item  into a shipped pipeline: photo + GPS -&gt; schema-validated extraction -&gt; multi-system classification, with no laboratory data required.</p>
+<div class="section level3">
+<h3 id="new-classify_from_photos-0-9-99">New: classify_from_photos()<a class="anchor" aria-label="anchor" href="#new-classify_from_photos-0-9-99"></a></h3>
+<p> assembles a  entirely from vision-language extraction of field photographs and classifies it under all three systems.</p>
+</div>
+<div class="section level3">
+<h3 id="new-apply_soilgrids_depth_prior-0-9-99">New: apply_soilgrids_depth_prior()<a class="anchor" aria-label="anchor" href="#new-apply_soilgrids_depth_prior-0-9-99"></a></h3>
+<p>The depth-resolved companion to . For each horizon it interpolates the value at the mid-depth from the six standard SoilGrids 2.0 depth slices (0-5 … 100-200 cm) and records the fill as an  provenance entry. The live fetch uses the ISRIC SoilGrids REST API; offline callers (and the test suite) pass  directly.</p>
+</div>
+<div class="section level3">
+<h3 id="new-compute_per_attribute_evidence_grade-0-9-99">New: compute_per_attribute_evidence_grade()<a class="anchor" aria-label="anchor" href="#new-compute_per_attribute_evidence_grade-0-9-99"></a></h3>
+<p>Resolves the evidence grade of every  cell (A measured, B spectra-predicted, C prior-inferred, D VLM-extracted, E user-assumed), picking the most authoritative source per cell. This underpins the photo-only pipeline and the v0.9.100 provenance-weighted uncertainty MC.</p>
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-99">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-99"></a></h3>
+
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.98" id="soilkey-0998-2026-05-19">soilKey 0.9.98 (2026-05-19)<a class="anchor" aria-label="anchor" href="#soilkey-0998-2026-05-19"></a></h2>
+<p>The “<strong>WRB Tier-3 strict mode</strong>” release. Second of the four sequential roadmap releases. Turns the README “in progress” item  into a shipped, opt-in feature.</p>
+<div class="section level3">
+<h3 id="new-per-rsg-strict-mode-gates-0-9-98">New: per-RSG strict-mode gates<a class="anchor" aria-label="anchor" href="#new-per-rsg-strict-mode-gates-0-9-98"></a></h3>
+<p>Seven Tier-2 RSG gates gain a  argument. With  (the default) every gate behaves exactly as in v0.9.97 – full backward compatibility. With  a per-RSG numerical threshold is strengthened toward the canonical WRB 2022 Chapter 4 intent:</p>
+<p>All 31 canonical WRB fixtures classify identically under both modes; strict mode only changes genuinely borderline profiles.</p>
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-98">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-98"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.97" id="soilkey-0997-2026-05-19">soilKey 0.9.97 (2026-05-19)<a class="anchor" aria-label="anchor" href="#soilkey-0997-2026-05-19"></a></h2><p class="text-muted">CRAN release: 2026-05-19</p>
 <p>The “<strong>Shiny Pro app</strong>” release. First of four sequential feature releases (v0.9.97 -&gt; v0.9.100) that turn the README roadmap items into shipped functionality. This release delivers a professional, multi-tab graphical front-end to the full soilKey pipeline.</p>
@@ -3624,7 +3675,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>

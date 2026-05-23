@@ -17,7 +17,7 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&amp;lt;= 100 cm
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.97</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,8 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&amp;lt;= 100 cm
     <li><a class="dropdown-item" href="../articles/v07_end_to_end_pipeline.html">End-to-end pipeline</a></li>
     <li><a class="dropdown-item" href="../articles/v08_kssl_nasis_multilevel.html">KSSL+NASIS multi-level USDA benchmark</a></li>
     <li><a class="dropdown-item" href="../articles/v10_shiny_pro.html">Shiny Pro app</a></li>
+    <li><a class="dropdown-item" href="../articles/v11_photo_only.html">Field-photo-only classification</a></li>
+    <li><a class="dropdown-item" href="../articles/v12_uncertainty.html">Provenance-weighted uncertainty</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
@@ -72,7 +74,13 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&lt;= 100 cm
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andosol</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_top_cm <span class="op">=</span> <span class="fl">25</span>, buried_below_cm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andosol</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  min_thickness <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  max_top_cm <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  buried_below_cm <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  strict <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -97,6 +105,12 @@ diagnostics whose top_cm \&gt;= this depth are treated as
 buried and do NOT exclude the Andosol (default 50, per WRB
 2022 Ch 4 p 104).</p></dd>
 
+
+<dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
+<dd><p>Logical or <code>NULL</code>. When <code>NULL</code> (default) it
+resolves via <code>getOption("soilKey.rsg_strict", FALSE)</code>.
+<code>TRUE</code> disables the buried-exclusion tolerance.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -119,6 +133,14 @@ references like <code>CM W3_0047</code>, where an argic layer at
 restricts the exclusion check to layers starting &lt;= 50 cm:
 a buried argic / ferralic / plinthic / spodic at deeper levels no
 longer disqualifies the surface andic stack from Andosol.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="tier-strict-mode-v-">Tier-3 strict mode (v0.9.98)<a class="anchor" aria-label="anchor" href="#tier-strict-mode-v-"></a></h2>
+
+
+<p>With <code>strict = TRUE</code> the v0.9.85 buried-exclusion tolerance is
+switched off: <em>any</em> argic / ferralic / plinthic / spodic horizon
+anywhere in the profile excludes the Andosol, regardless of depth.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

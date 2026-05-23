@@ -16,6 +16,7 @@ classification_robustness(
   level = c("order", "name"),
   n = 50L,
   perturbations = NULL,
+  provenance_aware = FALSE,
   seed = 42L
 )
 ```
@@ -44,7 +45,16 @@ classification_robustness(
 
   Named list. Each name is a horizon column; each element is a function
   taking the original value and returning a perturbed value.
-  NA-tolerant.
+  NA-tolerant. Ignored when `provenance_aware = TRUE`.
+
+- provenance_aware:
+
+  If `FALSE` (default) every cell is perturbed by the fixed
+  `perturbations` panel – the exact v0.9.42 behaviour. If `TRUE`, each
+  `(horizon, attribute)` cell is perturbed by an amount scaled to its
+  provenance evidence grade, and `perturbations` is ignored. See
+  [`classify_with_uncertainty`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md)
+  for the full provenance-weighted posterior.
 
 - seed:
 

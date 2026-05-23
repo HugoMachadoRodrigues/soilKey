@@ -9,7 +9,13 @@ argic, ferralic, petroplinthic, pisoplinthic, plinthic or spodic horizon
 ## Usage
 
 ``` r
-andosol(pedon, min_thickness = 30, max_top_cm = 25, buried_below_cm = 50)
+andosol(
+  pedon,
+  min_thickness = 30,
+  max_top_cm = 25,
+  buried_below_cm = 50,
+  strict = NULL
+)
 ```
 
 ## Arguments
@@ -33,6 +39,12 @@ andosol(pedon, min_thickness = 30, max_top_cm = 25, buried_below_cm = 50)
   depth are treated as buried and do NOT exclude the Andosol (default
   50, per WRB 2022 Ch 4 p 104).
 
+- strict:
+
+  Logical or `NULL`. When `NULL` (default) it resolves via
+  `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` disables the
+  buried-exclusion tolerance.
+
 ## Details
 
 v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness \\= 30 cm
@@ -51,3 +63,9 @@ layer at 56-72 cm wrongly excluded the andic surface stack. v0.9.85
 restricts the exclusion check to layers starting \<= 50 cm: a buried
 argic / ferralic / plinthic / spodic at deeper levels no longer
 disqualifies the surface andic stack from Andosol.
+
+## Tier-3 strict mode (v0.9.98)
+
+With `strict = TRUE` the v0.9.85 buried-exclusion tolerance is switched
+off: *any* argic / ferralic / plinthic / spodic horizon anywhere in the
+profile excludes the Andosol, regardless of depth.
