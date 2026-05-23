@@ -1,110 +1,110 @@
-# cran-comments.md -- soilKey 0.9.92
+# cran-comments.md -- soilKey 0.9.100
 
 ## Submission summary
 
-This is the first CRAN submission of soilKey, an R package providing
-deterministic classification keys for the World Reference Base for
-Soil Resources 2022 (4th edition), the Brazilian System of Soil
-Classification (SiBCS, 5th edition), and USDA Soil Taxonomy (13th
-edition).
+This is the next maintenance update to soilKey, following the v0.9.96
+submission on 2026-05-19. The v0.9.97 -> v0.9.100 release series ships
+the four roadmap features that v0.9.96's README listed as pending --
+all backward-compatible and tracked in NEWS per release.
 
-The taxonomic key is implemented in pure R driven by versioned YAML
-rules and has zero non-trivial dependencies (R6, data.table, yaml,
-cli, rlang). Optional integrations (multimodal extraction via
-ellmer; spatial priors via terra/sf; OSSL spectroscopy via
-prospectr/resemble; aqp-canonical NRCS diagnostics via aqp +
-SoilTaxonomy + mpspline2) are pulled in via Suggests.
+The taxonomic key remains pure R driven by versioned YAML rules with
+zero non-trivial dependencies (R6, data.table, yaml, cli, rlang).
+
+> Submit this update AFTER v0.9.96 has been processed by CRAN; do not
+> stack submissions in the queue.
+
+## What's new since v0.9.96
+
+* **v0.9.97 -- Professional Shiny app** (`run_classify_app(ui="pro")`).
+  Eight-tab `bslib` interface exposing the full pipeline. The legacy
+  single-page app remains available via `ui="classic"`. New Suggests:
+  bslib, shinyWidgets, plotly, htmltools -- all conditionally required
+  with a clear install message.
+* **v0.9.98 -- WRB Tier-3 RSG-gate strict mode**. `classify_wrb2022(strict=TRUE)`
+  tightens seven Tier-2 RSG gates toward the WRB 2022 Ch 4 intent.
+  Default `strict=FALSE` is byte-identical to v0.9.96; all 31 canonical
+  fixtures classify the same under both modes.
+* **v0.9.99 -- Field-photo-only classification**. `classify_from_photos()`,
+  `apply_soilgrids_depth_prior()`, `compute_per_attribute_evidence_grade()`.
+  Evidence grade E (user-assumed) split out from D.
+* **v0.9.100 -- Provenance-weighted uncertainty MC**.
+  `classify_with_uncertainty()` returns the posterior over classes,
+  perturbation magnitudes scaled by provenance grade. Existing
+  `classification_robustness()` gains an opt-in `provenance_aware`
+  argument; `FALSE` (default) is byte-identical to v0.9.42.
+
+No exported function from v0.9.96 changed signature in a non-additive
+way. Every new argument has a safe default.
 
 ## Test environments
 
-- macOS 26.4.1 / R 4.6.0 (local).
+- macOS Tahoe 26.5 / R 4.6.0 (local, where this submission was built).
 - ubuntu-latest / R-release / R-devel / R-oldrel-1 (GitHub Actions
   via `.github/workflows/R-CMD-check.yaml`).
 - macos-latest / R-release (GitHub Actions).
 - windows-latest / R-release (GitHub Actions).
 - pkgdown / test-coverage (separate workflows on every PR).
 
-All seven matrix runs return clean on every PR merged to `main`
-since v0.9.65 (≈30 PRs at time of submission). The CI run for the
-release tag is linked from the GitHub Actions tab.
+All CI matrix runs green on every commit merged to `main` since
+v0.9.65; the CI run for this release tag is linked from the GitHub
+Actions tab.
 
-## R CMD check --as-cran results (v0.9.92, 2026-05-09)
+## R CMD check --as-cran results (v0.9.100, 2026-05-23)
 
 - **0 ERRORs**
 - **0 WARNINGs**
-- **1 NOTE** -- "New submission" + maintainer line. Expected for a
-  first submission.
+- **2 NOTEs** (both environmental, not package defects):
 
-The previous 4 sub-issues flagged by `--as-cran` in the v0.9.91
-audit (2 invalid URLs, 1 invalid AfSP DOI, 5 raw `https://doi.org/`
-URLs that should use `\doi{}`) are all resolved in v0.9.92.
+  1. *"Days since last update: 4"* -- the DESCRIPTION Date is 4 days
+     before the local build date; expected since this update follows
+     the v0.9.96 submission closely. The Date will be refreshed at
+     submission time.
+  2. *"Skipping checking HTML validation: 'tidy' doesn't look like
+     recent enough HTML Tidy."* -- macOS' bundled `tidy` is older than
+     the one CRAN uses; this NOTE does not appear on the CRAN check
+     servers.
+
+All ~4,710 tests pass (~7 min under `R CMD check`), including the
+new test files `test-v0997-shiny-pro-app.R`, `test-v0998-tier3-strict.R`,
+`test-v0999-photo-only.R` and `test-v0100-uncertainty.R`. Tests that
+need optional Suggests (magick, jsonvalidate, pdftools, ellmer) use
+`skip_if_not_installed()`.
 
 ## Reverse dependencies
 
-There are no reverse dependencies (this is the first submission).
+There are no reverse dependencies.
 
 ## Tarball size
 
-Source tarball is ~10 MB. The package ships seven offline-usable
-benchmark caches under `inst/extdata/`:
+Source tarball is ~6.3 MB (up from ~5.9 MB at v0.9.96), the small
+increment is the new Shiny app (`inst/shiny/classify_app_pro/`),
+three new R source files, four new vignettes, and the new test
+files + extra man pages. The lazy-fetch architecture (v0.9.94) is
+unchanged: four large benchmark caches are still pulled on demand
+from a versioned GitHub Release, not bundled in the tarball.
 
-- 26 canonical-fixture pedons (one per WRB Reference Soil Group)
-- AfSP Africa sample (n = 120, 1.2 MB)
-- WoSIS stratified sample (n = 130, 1.3 MB)
-- KSSL/NCSS sample (n = 99, 1.0 MB)
-- KSSL+NASIS morphological sample (n = 99, 1.1 MB)
+## Suggests-only dependencies
 
-Each cache is the smallest reproducible slice of the upstream
-dataset (ISRIC AfSP / WoSIS, NCSS Lab Data Mart) that exercises a
-distinct WRB Reference Soil Group. Together they enable every
-example, every vignette, every test, and every benchmark to run
-offline and CRAN-friendly.
+New in v0.9.97: bslib, shinyWidgets, plotly, htmltools. All are
+already on CRAN, all are used only inside `run_classify_app(ui="pro")`,
+and `run_classify_app()` raises a copy-pasteable
+`install.packages(...)` error if any are missing. The classic app
+(`ui="classic"`) still needs only shiny + DT.
 
-We considered moving the caches to a Suggests-pulled data-only
-package but the caches are integral to `\examples{}` and the test
-suite; splitting would create a circular dependency.
+## Why these features matter scientifically
 
-## Why this matters scientifically
-
-soilKey closes three documented gaps in pedological tooling:
-
-1. **No public, maintained implementation of the WRB 2022 key.** The
-   IUSS Working Group's 4th-edition preface acknowledges that
-   internal classification algorithms exist but have not been
-   released. The CRAN package `SoilTaxonomy` (Beaudette et al.)
-   provides USDA lookup tables, not the key.
-
-2. **No public software for the Brazilian SiBCS** (Embrapa, 2018)
-   anywhere -- not in R, not in Python, not in QGIS. soilKey is the
-   first.
-
-3. **No tool that integrates multimodal extraction, spectral
-   prediction, and a deterministic key in a single provenance-aware
-   pipeline.** soilKey enforces this separation as an architectural
-   invariant: the taxonomic key is never delegated to a language
-   model; vision-language models are restricted to schema-validated
-   extraction.
-
-## Validation
-
-The package ships eleven benchmark drivers under `inst/benchmarks/`,
-of which the canonical and offline ones run in <30 s without a
-network. Empirical accuracy on five external datasets (post-v0.9.91):
-
-| Dataset           | n   | Default | Best opt-in (`engine="aqp"`) |
-|-------------------|----:|--------:|-----------------------------:|
-| SiBCS BDsolos RJ  | 722 | 40.3%   | **46.6%**  (Argissolo +7.9pp, Latossolo +13.2pp) |
-| SiBCS Redape Order|  94 | 45.7%   | **58.5%**  (also Subordem 39.4%, GG 35.2%, Subgrupo 25.0%) |
-| WRB KSSL+NASIS    |  99 | 21.2%   | 24.2%                         |
-| WRB AfSP          | 120 | 21.7%   | **30.8%**                      |
-| WRB LUCAS Stage 3 |  30 |  0.0%   | **60.0%**  (Cambisols 18/18 = 100% recall via SoilGrids subsoil fill) |
-
-`engine="aqp"` activates the v0.9.65+ NCSS-canonical diagnostics
-and auto-bundles the v0.9.69 ECEC fallback (v0.9.86), the v0.9.70
-texture-morphological fallback (v0.9.89), and the v0.9.90 argic
-designation-inference fallback. Default canonical behaviour is
-bit-for-bit preserved -- every opt-in is reversible via explicit
-`options(soilKey.<rule> = FALSE)`.
+* **Photo-only classification** answers a field-realistic question
+  (what is this soil given only a phone photo and a GPS fix?) and is
+  honest about uncertainty -- the evidence grade is never A on a
+  photo-only profile.
+* **Provenance-weighted uncertainty** propagates the per-cell
+  measurement quality into a posterior over classes, not just a
+  robustness percentage. The leave-one-attribute-out sensitivity
+  ranking is a direct, defensible answer to "what should I measure
+  next?".
+* **WRB Tier-3 strict mode** lets a user opt into the canonical Ch 4
+  thresholds when the v0.9.96 regionally-tuned defaults are too
+  permissive for their pedons.
 
 ## Citation
 
