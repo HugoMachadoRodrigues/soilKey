@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.104</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -3638,9 +3638,9 @@
         </dt>
         <dd>Classifica um perfil no 5o nivel categorico do SiBCS (Familia)</dd>
       </dl></div><div class="section level2">
-      <h2 id="usda-soil-taxonomy-ed-path-c-order-subgroup-">USDA Soil Taxonomy 13ed – Path C (Order -&gt; Subgroup)<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-ed-path-c-order-subgroup-"></a></h2>
+      <h2 id="usda-soil-taxonomy-ed-path-c-order-subgroup-family">USDA Soil Taxonomy 13ed – Path C (Order -&gt; Subgroup) + Family<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-ed-path-c-order-subgroup-family"></a></h2>
 
-      <div class="section-desc"><p>Per-Order subgroup dispatchers; triggered by <code>classify_usda(pedon)</code>.</p></div>
+      <div class="section-desc"><p>Per-Order subgroup dispatchers, plus the 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth). Triggered by <code>classify_usda(pedon, include_family = TRUE)</code>.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -4031,6 +4031,55 @@
 
         </dt>
         <dd>Eutric Subgroup helper (Andisols) Pass when base_saturation (sum-of-cations) &gt;= 50% in some part.</dd>
+
+        <dt>
+
+          <code><a href="family_cec_activity_usda.html">family_cec_activity_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: cation-exchange activity class (KST Ch. 17)</dd>
+
+        <dt>
+
+          <code><a href="family_depth_class_usda.html">family_depth_class_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: soil depth class for shallow soils (KST Ch. 17)</dd>
+
+        <dt>
+
+          <code><a href="family_label_usda.html">family_label_usda()</a></code>
+
+        </dt>
+        <dd>Assemble the USDA family label from family attributes</dd>
+
+        <dt>
+
+          <code><a href="family_mineralogy_usda.html">family_mineralogy_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: mineralogy class (KST Ch. 17)</dd>
+
+        <dt>
+
+          <code><a href="family_particle_size_usda.html">family_particle_size_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: particle-size class (KST Ch. 17)</dd>
+
+        <dt>
+
+          <code><a href="family_reaction_usda.html">family_reaction_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: reaction class (KST Ch. 17)</dd>
+
+        <dt>
+
+          <code><a href="family_temperature_regime_usda.html">family_temperature_regime_usda()</a></code>
+
+        </dt>
+        <dd>USDA family: soil temperature regime (KST Ch. 16)</dd>
 
         <dt>
 
@@ -4878,6 +4927,13 @@
 
         </dt>
         <dd>Xanthic Subgroup helper (Oxisols) Pass when 50%+ colors have hue &gt;= 7.5YR AND value &gt;= 6 in B horizons.</dd>
+
+        <dt>
+
+          <code><a href="classify_usda_family.html">classify_usda_family()</a></code>
+
+        </dt>
+        <dd>Classify the USDA family (5th level) of a pedon</dd>
       </dl></div><div class="section level2">
       <h2 id="module-vlm-extraction">Module 2 – VLM extraction<a class="anchor" aria-label="anchor" href="#module-vlm-extraction"></a></h2>
 

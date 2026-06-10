@@ -1,5 +1,28 @@
 # Changelog
 
+## soilKey 0.9.104 (2026-06-10)
+
+The “**USDA family (5th level)**” release. Deepens USDA Soil Taxonomy
+classification from the Subgroup (4th category) to the (5th), so all
+three systems now reach their deepest formal level (WRB: full qualifier
+name; SiBCS: Familia; USDA: family).
+
+### New: USDA family modifiers
+
+The USDA family is a multi-label set of class modifiers PREPENDED to the
+subgroup name, e.g. . Like the SiBCS , it is computed (not keyed): each
+dimension is orthogonal and derived from quantitative attributes.
+
+### Soil temperature regime
+
+uses when supplied. Otherwise (with ) it estimates the mean annual soil
+temperature from latitude and elevation and assigns
+frigid/mesic/thermic/hyperthermic with an prefix in the low-seasonality
+tropics; inferred values set and record the missing site field, keeping
+provenance honest.
+
+### User-facing changes
+
 ## soilKey 0.9.103 (2026-06-10)
 
 The “**Gridded prediction**” release. Phase 3 (final) of the mapping
@@ -4638,8 +4661,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

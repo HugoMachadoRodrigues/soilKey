@@ -1853,9 +1853,11 @@ atividade da argila, óxidos, ândico, …).
 - [`classify_sibcs_familia()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.md)
   : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
 
-## USDA Soil Taxonomy 13ed – Path C (Order -\> Subgroup)
+## USDA Soil Taxonomy 13ed – Path C (Order -\> Subgroup) + Family
 
-Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
+Per-Order subgroup dispatchers, plus the 5th-level family modifiers
+(particle-size, mineralogy, CEC-activity, reaction, temperature, depth).
+Triggered by `classify_usda(pedon, include_family = TRUE)`.
 
 - [`acric_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/acric_andisol_usda.md)
   : Acric Subgroup helper (Andisols Acrudoxic / Acraquoxic / Acrustoxic
@@ -2052,6 +2054,27 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
 - [`eutric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_subgroup_usda.md)
   : Eutric Subgroup helper (Andisols) Pass when base_saturation
   (sum-of-cations) \>= 50% in some part.
+
+- [`family_cec_activity_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_cec_activity_usda.md)
+  : USDA family: cation-exchange activity class (KST Ch. 17)
+
+- [`family_depth_class_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_depth_class_usda.md)
+  : USDA family: soil depth class for shallow soils (KST Ch. 17)
+
+- [`family_label_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_label_usda.md)
+  : Assemble the USDA family label from family attributes
+
+- [`family_mineralogy_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_mineralogy_usda.md)
+  : USDA family: mineralogy class (KST Ch. 17)
+
+- [`family_particle_size_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_particle_size_usda.md)
+  : USDA family: particle-size class (KST Ch. 17)
+
+- [`family_reaction_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_reaction_usda.md)
+  : USDA family: reaction class (KST Ch. 17)
+
+- [`family_temperature_regime_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md)
+  : USDA family: soil temperature regime (KST Ch. 16)
 
 - [`ferric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferric_subgroup_usda.md)
   : Ferric Subgroup helper (Ferrudalfs) Pass when iron-rich (fe_dcb_pct
@@ -2496,6 +2519,9 @@ Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`.
 - [`xanthic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/xanthic_subgroup_usda.md)
   : Xanthic Subgroup helper (Oxisols) Pass when 50%+ colors have hue \>=
   7.5YR AND value \>= 6 in B horizons.
+
+- [`classify_usda_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md)
+  : Classify the USDA family (5th level) of a pedon
 
 ## Module 2 – VLM extraction
 

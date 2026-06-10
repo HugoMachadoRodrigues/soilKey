@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.104</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1002,6 +1002,7 @@
 <p>Added to scope on 2026-04-25 at the user’s request. v0.2 delivers the structural scaffold: - <code>inst/rules/usda/key.yaml</code> — 12 Orders in the canonical key order (GE, HI, SP, AD, OX, VE, AS, UT, MO, AF, IN, EN). Only Oxisols wired in v0.2 via <code><a href="reference/oxic_usda.html">oxic_usda()</a></code> (delegating to WRB ferralic). - <code>R/key-usda.R</code> — <code><a href="reference/classify_usda.html">classify_usda()</a></code>, <code><a href="reference/run_usda_key.html">run_usda_key()</a></code>. - <code>R/diagnostics-horizons-usda.R</code> — <code><a href="reference/oxic_usda.html">oxic_usda()</a></code> and <code><a href="reference/argillic_usda.html">argillic_usda()</a></code> as delegations to WRB ferralic / argic in v0.2 (the central criteria coincide; edge differences scheduled for v0.8).</p>
 <p>v0.8 will implement: mollic_usda, umbric_usda, ochric, kandic, spodic_usda, cambic_usda, calcic_usda, gypsic_usda, duripan, fragipan, placic, albic, petrocalcic, petrogypsic, gelic conditions, USDA organic materials, USDA andic properties, USDA vertic features, aridic moisture regime, argillic_low_bs, argillic_high_bs.</p>
 <p>Positioning: USDA Soil Taxonomy has no public maintained implementation of the key; the <code>SoilTaxonomy</code> package on CRAN covers lookup tables. soilKey + Module 5 will be the first public implementation of the USDA key.</p>
+<p><strong>Family level (5th category) — shipped v0.9.104.</strong> <code>R/familia-usda.R</code> adds the USDA family as a multi-label set of class modifiers prepended to the subgroup name (e.g. <em>“fine, kaolinitic, isohyperthermic Rhodic Hapludox”</em>), mirroring the SiBCS <code>familia</code> (code, not a key). Six orthogonal dimensions — particle-size, mineralogy (reusing <code>compute_ki</code>/<code>compute_kr</code>), CEC-activity, reaction, soil temperature regime, depth — each a <code>FamilyAttribute</code> with evidence + missing fields. The temperature regime reads <code>site$soil_temperature_regime</code> or infers it from latitude/elevation (flagged inferred). Exposed via <code>classify_usda(include_family = TRUE)</code> / <code>classify_all(include_family = TRUE)</code> and a Pro-app toggle; default off (output unchanged). All three systems now reach their deepest formal level. The 6th category (series) needs the external NRCS series database and stays out of scope.</p>
 </div>
 <div class="section level3">
 <h3 id="module-6--sibcs-5ª-edição-v07">Module 6 — SiBCS 5ª edição (v0.7)<a class="anchor" aria-label="anchor" href="#module-6--sibcs-5%C2%AA-edi%C3%A7%C3%A3o-v07"></a></h3>

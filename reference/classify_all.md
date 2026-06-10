@@ -18,6 +18,7 @@ classify_all(
   systems = "all",
   on_missing = c("warn", "silent", "error"),
   include_familia = TRUE,
+  include_family = FALSE,
   ...
 )
 ```
@@ -44,6 +45,13 @@ classify_all(
   Forwarded to
   [`classify_sibcs`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
   (default `TRUE`). Has no effect on the other systems.
+
+- include_family:
+
+  Forwarded to
+  [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  (default `FALSE`) to derive the USDA 5th-level family. No effect on
+  the other systems.
 
 - ...:
 

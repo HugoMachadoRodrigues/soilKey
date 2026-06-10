@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.104</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,22 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.104" id="soilkey-09104-2026-06-10">soilKey 0.9.104 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09104-2026-06-10"></a></h2>
+<p>The “<strong>USDA family (5th level)</strong>” release. Deepens USDA Soil Taxonomy classification from the Subgroup (4th category) to the  (5th), so all three systems now reach their deepest formal level (WRB: full qualifier name; SiBCS: Familia; USDA: family).</p>
+<div class="section level3">
+<h3 id="new-usda-family-modifiers-0-9-104">New: USDA family modifiers<a class="anchor" aria-label="anchor" href="#new-usda-family-modifiers-0-9-104"></a></h3>
+<p>The USDA family is a multi-label set of class modifiers PREPENDED to the subgroup name, e.g. . Like the SiBCS , it is computed (not keyed): each dimension is orthogonal and derived from quantitative attributes.</p>
+</div>
+<div class="section level3">
+<h3 id="soil-temperature-regime-0-9-104">Soil temperature regime<a class="anchor" aria-label="anchor" href="#soil-temperature-regime-0-9-104"></a></h3>
+<p> uses  when supplied. Otherwise (with ) it estimates the mean annual soil temperature from latitude and elevation and assigns frigid/mesic/thermic/hyperthermic with an  prefix in the low-seasonality tropics; inferred values set  and record the missing site field, keeping provenance honest.</p>
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-104">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-104"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.103" id="soilkey-09103-2026-06-10">soilKey 0.9.103 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09103-2026-06-10"></a></h2>
 <p>The “<strong>Gridded prediction</strong>” release. Phase 3 (final) of the mapping roadmap: produce a raster soil-class map over an area of interest. The Map tab gains a third sub-tab, , offering three selectable methods – all reduced to one common shape (a categorical  raster rendered with ).</p>
@@ -3706,7 +3722,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>

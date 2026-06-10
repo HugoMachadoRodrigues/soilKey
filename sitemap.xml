@@ -194,6 +194,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_engine_heuristic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.html</loc></url>
@@ -383,6 +384,13 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_saturacao_bases.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_subgrupamento_textural.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/familia_tipo_horizonte_superficial.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_cec_activity_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_depth_class_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_label_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_mineralogy_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_particle_size_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_reaction_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.html</loc></url>

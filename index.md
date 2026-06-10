@@ -44,6 +44,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **SiBCS 5 — Subgroup** | ✅ shipped (938 / 938) | All 938 Subgroups; full leaf-level resolution. |
 | **SiBCS 5 — Family (5th level)** | ✅ shipped | Up to 15 orthogonal adjectival dimensions. |
 | **USDA Soil Taxonomy 13 — Path C** | ✅ shipped | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / 1288). |
+| **USDA Soil Taxonomy 13 — Family** | ✅ shipped (v0.9.104) | 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via `classify_usda(include_family = TRUE)`. Series (6th) needs the NRCS database — out of scope. |
 | **Multimodal extraction (VLM)** | ✅ shipped | Local-first via `ellmer` + Gemma 4 (Ollama). Schema-validated; LLM never touches the key. |
 | **OSSL spectral gap-fill** | ✅ shipped | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones). |
 | **Spatial priors** | ✅ shipped | SoilGrids WCS + national soil maps; consistency check, never overrides the key. |
@@ -86,9 +87,9 @@ classify_wrb2022(pedon)$name
 classify_sibcs(pedon, include_familia = TRUE)$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
 
-# USDA Soil Taxonomy 13 — Order -> Suborder -> Great Group -> Subgroup
-classify_usda(pedon)$name
-#> [1] "Rhodic Hapludox"
+# USDA Soil Taxonomy 13 — Order -> Suborder -> Great Group -> Subgroup -> Family
+classify_usda(pedon, include_family = TRUE)$name
+#> [1] "fine, kaolinitic, isohyperthermic Rhodic Hapludox"
 ```
 
 - WRB delivers the **complete Chapter 6 name** — four principal
@@ -97,12 +98,31 @@ classify_usda(pedon)$name
   Suborder → Great Group → Subgroup)** plus a **5th-level Family** with
   up to 15 orthogonal adjectival dimensions.
 - USDA Soil Taxonomy walks the **complete Path C** (Order → Suborder →
-  Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.*
+  Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.*, plus the
+  **5th-level family** modifiers (`include_family = TRUE`).
 
 All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.104 (2026-06-10)
+
+- **v0.9.104 — USDA family (5th level).** USDA Soil Taxonomy now reaches
+  its deepest formal category:
+  `classify_usda(pedon, include_family = TRUE)` prepends the family
+  modifiers to the subgroup, e.g. *“fine, kaolinitic, isohyperthermic
+  Rhodic Hapludox”*. Like the SiBCS `familia`, the family is **computed,
+  not keyed** — six orthogonal dimensions (particle-size, mineralogy via
+  `compute_ki`/`compute_kr`, CEC-activity, reaction, temperature regime,
+  depth), each a `FamilyAttribute` carrying its evidence and missing
+  fields. The soil temperature regime uses
+  `site$soil_temperature_regime` when present, else infers it from
+  latitude/elevation (flagged as inferred).
+  `classify_all(include_family = TRUE)` and a Settings toggle in the Pro
+  app expose it. The default (`include_family = FALSE`) is
+  byte-identical to before. All three systems now classify to their
+  deepest formal level.
 
 ## ✦ What’s new in v0.9.101 → v0.9.103 (2026-06-10)
 

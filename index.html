@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.104</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,6 +163,11 @@
 <td>Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / 1288).</td>
 </tr>
 <tr>
+<td><strong>USDA Soil Taxonomy 13 — Family</strong></td>
+<td>✅ shipped (v0.9.104)</td>
+<td>5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via <code>classify_usda(include_family = TRUE)</code>. Series (6th) needs the NRCS database — out of scope.</td>
+</tr>
+<tr>
 <td><strong>Multimodal extraction (VLM)</strong></td>
 <td>✅ shipped</td>
 <td>Local-first via <code>ellmer</code> + Gemma 4 (Ollama). Schema-validated; LLM never touches the key.</td>
@@ -274,17 +279,24 @@
 <span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
 <span></span>
-<span><span class="co"># USDA Soil Taxonomy 13 — Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup</span></span>
-<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
+<span><span class="co"># USDA Soil Taxonomy 13 — Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup -&gt; Family</span></span>
+<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span>, include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "fine, kaolinitic, isohyperthermic Rhodic Hapludox"</span></span></code></pre></div>
 <ul>
 <li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order.</li>
 <li>SiBCS descends through <strong>all four hierarchical levels (Order → Suborder → Great Group → Subgroup)</strong> plus a <strong>5th-level Family</strong> with up to 15 orthogonal adjectival dimensions.</li>
-<li>USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em>
-</li>
+<li>USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em>, plus the <strong>5th-level family</strong> modifiers (<code>include_family = TRUE</code>).</li>
 </ul>
 <p>All three keys are deterministic R code driven from versioned YAML rules.</p>
 <hr>
+</div>
+<div class="section level2">
+<h2 id="id_-whats-new-in-v09104-2026-06-10">✦ What’s new in v0.9.104 (2026-06-10)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v09104-2026-06-10"></a>
+</h2>
+<ul>
+<li>
+<strong>v0.9.104 — USDA family (5th level).</strong> USDA Soil Taxonomy now reaches its deepest formal category: <code>classify_usda(pedon, include_family = TRUE)</code> prepends the family modifiers to the subgroup, e.g. <em>“fine, kaolinitic, isohyperthermic Rhodic Hapludox”</em>. Like the SiBCS <code>familia</code>, the family is <strong>computed, not keyed</strong> — six orthogonal dimensions (particle-size, mineralogy via <code>compute_ki</code>/<code>compute_kr</code>, CEC-activity, reaction, temperature regime, depth), each a <code>FamilyAttribute</code> carrying its evidence and missing fields. The soil temperature regime uses <code>site$soil_temperature_regime</code> when present, else infers it from latitude/elevation (flagged as inferred). <code>classify_all(include_family = TRUE)</code> and a Settings toggle in the Pro app expose it. The default (<code>include_family = FALSE</code>) is byte-identical to before. All three systems now classify to their deepest formal level.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="id_-whats-new-in-v09101--v09103-2026-06-10">✦ What’s new in v0.9.101 → v0.9.103 (2026-06-10)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v09101--v09103-2026-06-10"></a>
