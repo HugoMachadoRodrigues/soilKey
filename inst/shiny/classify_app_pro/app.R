@@ -11,6 +11,8 @@
 #                 the machine unless a live provider is configured).
 #   * Spectra  -- gap-fill horizon attributes from a Vis-NIR spectrum (OSSL).
 #   * Spatial  -- SoilGrids spatial prior at the profile coordinates.
+#   * Map      -- interactive leaflet map: click to place a point and query
+#                 the SoilGrids class prior at that location.
 #   * Uncertainty -- Monte-Carlo robustness of the classification.
 #   * Report   -- download a self-contained HTML or PDF cross-system report.
 #   * Settings -- diagnostic engine, Tier-3 strict mode, missing-data policy.
@@ -34,7 +36,7 @@
   }
   invisible(TRUE)
 }
-.pro_require(c("shiny", "bslib", "DT", "plotly", "shinyWidgets"))
+.pro_require(c("shiny", "bslib", "DT", "plotly", "shinyWidgets", "leaflet"))
 
 library(shiny)
 library(soilKey)
@@ -53,6 +55,7 @@ ui <- bslib::page_navbar(
   bslib::nav_panel("Photo",       icon = icon("camera"),       photo_ui("photo")),
   bslib::nav_panel("Spectra",     icon = icon("wave-square"),  spectra_ui("spectra")),
   bslib::nav_panel("Spatial",     icon = icon("location-dot"), spatial_ui("spatial")),
+  bslib::nav_panel("Map",         icon = icon("map-location-dot"), map_ui("map")),
   bslib::nav_panel("Uncertainty", icon = icon("dice"),         uncertainty_ui("uncertainty")),
   bslib::nav_panel("Report",      icon = icon("file-arrow-down"), report_ui("report")),
   bslib::nav_spacer(),
@@ -88,6 +91,7 @@ server <- function(input, output, session) {
   photo_server("photo",            rv)
   spectra_server("spectra",        rv)
   spatial_server("spatial",        rv, settings)
+  map_server("map",                rv, settings)
   uncertainty_server("uncertainty", rv, settings)
   report_server("report",          rv, settings)
 }

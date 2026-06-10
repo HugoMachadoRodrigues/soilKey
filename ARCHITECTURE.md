@@ -961,6 +961,14 @@ The package fills three identifiable gaps in the literature:
 
 The methodological paper can position `soilKey` as open infrastructure for digital pedology, complementary to the SoilGrids mapping work (which classifies from *covariates* at pixel scale) — while `soilKey` classifies from *profile data* at pedon scale, using the canonical key. These are distinct and complementary inferences.
 
+### 14.1 Mapping roadmap (Shiny "Map" tab)
+
+The Pro Shiny app's **Map** tab (shipped v0.9.101) operationalises this positioning incrementally, in three phases. The guiding principle is that soilKey maps *from described profiles outward*, never substituting for pixel-scale covariate models:
+
+1. **Phase 1 — point prior (shipped, v0.9.101).** A `leaflet` map where the user clicks a coordinate and reads the SoilGrids class prior there via `soil_classes_at_location()`. Pure spatial *reading*; the deterministic key is not invoked. Coordinate state is shared with the Spatial tab through `pedon$site$lat/lon`.
+2. **Phase 2 — batch multi-profile (planned).** Upload a point set (CSV / GeoPackage of described profiles), build one `PedonRecord` per point (model: `load_bdsolos_csv()` and the iteration in `benchmark_unified()`), run `classify_all()` per profile, and plot the results as markers coloured by class with a per-point key-trace popup and a GeoPackage export. This is the genuine *pedon-scale soil map*: every mapped class is backed by a described, classified profile.
+3. **Phase 3 — gridded prediction (exploratory).** Interpolate/extrapolate the Phase-2 point classifications across an area, or sample SoilGrids covariates on a grid. This crosses into pixel-scale territory and is therefore framed as *complementary to*, not a replacement for, SoilGrids — consistent with §14 above.
+
 ---
 
 ## 15. Immediate next steps

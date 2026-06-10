@@ -1,3 +1,47 @@
+# soilKey 0.9.101 (2026-06-10)
+
+The "**Interactive map**" release. Opens the mapping roadmap by giving
+the professional Shiny app its first cartographic surface: a
+\pkg{leaflet} map where the user clicks to place a point and queries the
+SoilGrids class prior at that location. No change to the taxonomic key
+-- this is spatial *reading*, not classification.
+
+## New: "Map" tab in the Pro Shiny app
+
+A ninth tab joins \code{run_classify_app(ui = "pro")}, sitting between
+\emph{Spatial} and \emph{Uncertainty}.
+
+\itemize{
+  \item An interactive \pkg{leaflet} map (OpenStreetMap / Esri imagery /
+        CartoDB / OpenTopoMap basemaps). Click anywhere to drop the
+        query point and draw its buffer.
+  \item "Query prior here" runs \code{soil_classes_at_location()} at the
+        active coordinate and renders the ranked class distribution
+        (WRB 2022 / USDA ST 13 / SiBCS 5) plus the canonical
+        typical-attribute table. The deterministic key is never invoked
+        from this tab.
+  \item The tab is useful \emph{with or without} a built pedon: when a
+        pedon exists, a map click rewrites \code{pedon$site$lat/lon} so
+        the \emph{Spatial} tab stays in sync; otherwise the clicked
+        coordinate is held locally.
+}
+
+This is \strong{Phase 1} of the three-phase mapping roadmap. Phase 2
+(batch multi-profile classification from an uploaded point set, plotted
+by class) and Phase 3 (gridded prediction) are tracked in
+\file{ARCHITECTURE.md} and are not part of this release.
+
+## User-facing changes
+
+\itemize{
+  \item New \code{Suggests} dependency: \pkg{leaflet}. The \code{"pro"}
+        app now lists it alongside \pkg{bslib} / \pkg{shinyWidgets} /
+        \pkg{plotly}; \code{run_classify_app(ui = "pro")} raises the
+        usual copy-pasteable install hint if it is absent.
+  \item No new package exports and no change to any classifier; the tab
+        reuses the existing \code{soil_classes_at_location()} engine.
+}
+
 # soilKey 0.9.100 (2026-05-19)
 
 The "**Provenance-weighted uncertainty**" release. Last of the four
