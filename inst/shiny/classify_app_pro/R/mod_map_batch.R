@@ -204,6 +204,13 @@ map_batch_server <- function(id, rv, settings) {
       })
     })
 
+    # Publish the classified points to shared state so the Grid-prediction
+    # tab's "Interpolate points" method can reuse them.
+    shiny::observeEvent(results(), {
+      res <- results()
+      if (!inherits(res, "error") && is.data.frame(res)) rv$batch_points <- res
+    })
+
     # ---- base map -----------------------------------------------------------
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() |>

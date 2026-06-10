@@ -1,3 +1,41 @@
+# soilKey 0.9.103 (2026-06-10)
+
+The "**Gridded prediction**" release. Phase 3 (final) of the mapping
+roadmap: produce a raster soil-class map over an area of interest. The
+Map tab gains a third sub-tab, \emph{Grid prediction}, offering three
+selectable methods -- all reduced to one common shape (a categorical
+\code{terra} raster rendered with \code{leaflet::addRasterImage()}).
+
+## New: "Grid prediction" sub-tab in the Map tab
+
+\itemize{
+  \item \strong{SoilGrids covariates + key} -- the differentiator. For
+        each cell of a regular grid, samples SoilGrids covariates
+        (clay / sand / silt / pH / SOC / CEC) at two depths via
+        \code{lookup_soilgrids()}, assembles a two-horizon pseudo-pedon
+        and runs the \emph{deterministic key}. Unlike the SoilGrids
+        MostProbable layer (which predicts the class by ML), this
+        applies the key to covariates. Needs network; morphological
+        diagnostics are unavailable from covariates, so the result
+        carries evidence grade C and leans to Cambisol / Regosol.
+  \item \strong{Interpolate points} -- nearest-neighbour (Voronoi) of
+        the \emph{Batch classify} points (or demo points) across the
+        grid. Offline; the genuine pedon-scale soil map.
+  \item \strong{SoilGrids overlay} -- samples the MostProbable WRB
+        raster on the grid and maps integers to RSG via
+        \code{soilgrids_wrb_lut()}. A lightweight ML reference to
+        compare against the key.
+}
+
+The area of interest is a bounding box (typed, or captured from the
+current map view) with a resolution slider (capped at 1600 cells to
+bound network + classification time). The result is summarised by class
+(cells + share) and exportable as a GeoTIFF via \code{terra::writeRaster()}.
+
+This completes the three-phase mapping roadmap (point prior, batch soil
+map, gridded prediction). No new package exports and no change to any
+classifier; the tab orchestrates existing spatial functions.
+
 # soilKey 0.9.102 (2026-06-10)
 
 The "**Batch soil map**" release. Phase 2 of the mapping roadmap: turn

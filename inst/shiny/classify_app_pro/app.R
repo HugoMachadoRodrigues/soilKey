@@ -60,8 +60,9 @@ ui <- bslib::page_navbar(
   bslib::nav_panel(
     "Map", icon = icon("map-location-dot"),
     bslib::navset_card_tab(
-      bslib::nav_panel("Point prior",    map_ui("map")),
-      bslib::nav_panel("Batch classify", map_batch_ui("map_batch"))
+      bslib::nav_panel("Point prior",     map_ui("map")),
+      bslib::nav_panel("Batch classify",  map_batch_ui("map_batch")),
+      bslib::nav_panel("Grid prediction", map_grid_ui("map_grid"))
     )
   ),
   bslib::nav_panel("Uncertainty", icon = icon("dice"),         uncertainty_ui("uncertainty")),
@@ -101,6 +102,7 @@ server <- function(input, output, session) {
   spatial_server("spatial",        rv, settings)
   map_server("map",                rv, settings)
   map_batch_server("map_batch",    rv, settings)
+  map_grid_server("map_grid",      rv, settings)
   uncertainty_server("uncertainty", rv, settings)
   report_server("report",          rv, settings)
 }
