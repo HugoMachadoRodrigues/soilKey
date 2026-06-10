@@ -1,3 +1,57 @@
+# soilKey 0.9.104 (2026-06-10)
+
+The "**USDA family (5th level)**" release. Deepens USDA Soil Taxonomy
+classification from the Subgroup (4th category) to the \strong{family}
+(5th), so all three systems now reach their deepest formal level (WRB:
+full qualifier name; SiBCS: Familia; USDA: family).
+
+## New: USDA family modifiers
+
+The USDA family is a multi-label set of class modifiers PREPENDED to the
+subgroup name, e.g. \emph{"fine, kaolinitic, isohyperthermic Rhodic
+Hapludox"}. Like the SiBCS \code{familia}, it is computed (not keyed):
+each dimension is orthogonal and derived from quantitative attributes.
+
+\itemize{
+  \item \code{classify_usda(pedon, include_family = TRUE)} derives and
+        prepends the family; the default (\code{FALSE}) is byte-identical
+        to earlier versions.
+  \item Six dimension functions (each returning a \code{FamilyAttribute}
+        with evidence + missing fields): \code{family_particle_size_usda},
+        \code{family_mineralogy_usda} (reusing \code{compute_ki} /
+        \code{compute_kr}), \code{family_cec_activity_usda},
+        \code{family_reaction_usda}, \code{family_temperature_regime_usda},
+        \code{family_depth_class_usda}.
+  \item \code{classify_usda_family()} runs the applicable dimensions and
+        \code{family_label_usda()} assembles the canonical-order label.
+  \item Thresholds follow \emph{Keys to Soil Taxonomy} 13th ed., Ch.
+        16--17. Where the schema lacks fine-sand granulometry, a documented
+        approximation by \code{sand_pct} is recorded in \code{$evidence}.
+}
+
+## Soil temperature regime
+
+\code{family_temperature_regime_usda()} uses
+\code{pedon$site$soil_temperature_regime} when supplied. Otherwise (with
+\code{infer_temperature = TRUE}) it estimates the mean annual soil
+temperature from latitude and elevation and assigns
+frigid/mesic/thermic/hyperthermic with an \code{iso-} prefix in the
+low-seasonality tropics; inferred values set \code{evidence$inferred =
+TRUE} and record the missing site field, keeping provenance honest.
+
+## User-facing changes
+
+\itemize{
+  \item \code{classify_all()} gains \code{include_family = FALSE},
+        forwarded to \code{classify_usda()}.
+  \item The Pro Shiny app's Settings tab gains a "Resolve USDA 5th level
+        (family)" toggle; the Classify tab then shows the full USDA name.
+  \item New exports: \code{classify_usda_family}, \code{family_label_usda},
+        and the six \code{family_*_usda} dimension functions.
+  \item The 6th USDA category (\emph{series}) remains out of scope --- it
+        requires the external NRCS series database.
+}
+
 # soilKey 0.9.103 (2026-06-10)
 
 The "**Gridded prediction**" release. Phase 3 (final) of the mapping

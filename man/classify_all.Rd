@@ -9,6 +9,7 @@ classify_all(
   systems = "all",
   on_missing = c("warn", "silent", "error"),
   include_familia = TRUE,
+  include_family = FALSE,
   ...
 )
 }
@@ -24,6 +25,10 @@ every system.}
 
 \item{include_familia}{Forwarded to \code{\link{classify_sibcs}} (default
 \code{TRUE}). Has no effect on the other systems.}
+
+\item{include_family}{Forwarded to \code{\link{classify_usda}} (default
+\code{FALSE}) to derive the USDA 5th-level family. No effect on the
+other systems.}
 
 \item{...}{Additional named arguments are silently ignored.}
 }

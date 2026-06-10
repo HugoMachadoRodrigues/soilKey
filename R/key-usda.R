@@ -71,8 +71,8 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 
 #' Classify a pedon under USDA Soil Taxonomy (13th edition)
 #'
-#' Walks the canonical 4-level USDA key (Order -> Suborder ->
-#' Great Group -> Subgroup) using YAML rule files at:
+#' Walks the canonical USDA key (Order -> Suborder -> Great Group ->
+#' Subgroup) using YAML rule files at:
 #' \itemize{
 #'   \item \code{inst/rules/usda/key.yaml}: Order key (12 entries)
 #'   \item \code{inst/rules/usda/suborders/<order>.yaml}
@@ -80,22 +80,35 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #'   \item \code{inst/rules/usda/subgroups/<order>.yaml}
 #' }
 #'
-#' Stops at the deepest level for which a YAML rule file is
-#' available (e.g. v0.8.x: Gelisols full Path C; other 11 Orders at
-#' Order level only).
+#' With \code{include_family = TRUE} it additionally derives the 5th
+#' category, the \strong{family} -- a set of class modifiers
+#' (particle-size, mineralogy, CEC-activity, reaction, temperature
+#' regime, depth) PREPENDED to the subgroup name, e.g. \emph{"fine,
+#' kaolinitic, isohyperthermic Rhodic Hapludox"}. See
+#' \code{\link{classify_usda_family}}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set.
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}.
+#' @param include_family If \code{TRUE}, derive and prepend the 5th-level
+#'        family modifiers. Default \code{FALSE} (output byte-identical to
+#'        earlier versions).
+#' @param infer_temperature When deriving the family, infer the soil
+#'        temperature regime from latitude/elevation if
+#'        \code{site$soil_temperature_regime} is absent (default
+#'        \code{TRUE}). See \code{\link{family_temperature_regime_usda}}.
 #' @return A \code{\link{ClassificationResult}} with deepest-level
-#'         taxon name. Each level's trace is in \code{$trace}.
+#'         taxon name. Each level's trace is in \code{$trace}; the family
+#'         attributes are in \code{$trace$family}.
 #' @references Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th
 #'   edition. USDA Natural Resources Conservation Service.
 #' @export
 classify_usda <- function(pedon,
                             rules      = NULL,
-                            on_missing = c("warn", "silent", "error")) {
+                            on_missing = c("warn", "silent", "error"),
+                            include_family = FALSE,
+                            infer_temperature = TRUE) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("usda")
 
@@ -136,6 +149,23 @@ classify_usda <- function(pedon,
                   else if (!is.null(suborder)) suborder$name
                   else                         order$name
 
+  # Level 5 (v0.9.104): family. Multi-label modifiers PREPENDED to the
+  # subgroup name, e.g. "fine, kaolinitic, isohyperthermic Rhodic Hapludox".
+  family_attrs <- NULL
+  family_lbl   <- NULL
+  if (isTRUE(include_family)) {
+    family_attrs <- tryCatch(
+      classify_usda_family(
+        pedon,
+        order_code        = order$code,
+        subgroup_code     = if (!is.null(sg)) sg$code else NULL,
+        infer_temperature = infer_temperature),
+      error = function(e) list())
+    family_lbl <- family_label_usda(family_attrs)
+    if (!is.null(family_lbl) && nzchar(family_lbl))
+      display_name <- paste(family_lbl, display_name)
+  }
+
   trace_combined <- list(
     orders                = key_result$trace,
     suborders             = sub_result$trace,
@@ -143,7 +173,9 @@ classify_usda <- function(pedon,
     great_groups          = gg_result$trace,
     great_group_assigned  = gg,
     subgroups             = sg_result$trace,
-    subgroup_assigned     = sg
+    subgroup_assigned     = sg,
+    family                = family_attrs,
+    family_label          = family_lbl
   )
 
   ambiguities  <- find_ambiguities(key_result$trace, current = order$code)
