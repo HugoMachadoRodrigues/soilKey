@@ -1,5 +1,59 @@
 # Changelog
 
+## soilKey 0.9.103 (2026-06-10)
+
+The “**Gridded prediction**” release. Phase 3 (final) of the mapping
+roadmap: produce a raster soil-class map over an area of interest. The
+Map tab gains a third sub-tab, , offering three selectable methods – all
+reduced to one common shape (a categorical raster rendered with ).
+
+### New: “Grid prediction” sub-tab in the Map tab
+
+The area of interest is a bounding box (typed, or captured from the
+current map view) with a resolution slider (capped at 1600 cells to
+bound network + classification time). The result is summarised by class
+(cells + share) and exportable as a GeoTIFF via .
+
+This completes the three-phase mapping roadmap (point prior, batch soil
+map, gridded prediction). No new package exports and no change to any
+classifier; the tab orchestrates existing spatial functions.
+
+## soilKey 0.9.102 (2026-06-10)
+
+The “**Batch soil map**” release. Phase 2 of the mapping roadmap: turn a
+set of described profiles into a classified point map. Where v0.9.101
+read a prior at one clicked point, this release classifies *many*
+profiles at once and plots each by its class – the genuine pedon-scale
+soil map, every point backed by a deterministic classification.
+
+### New: “Batch classify” sub-tab in the Map tab
+
+The Map tab now hosts two sub-tabs. is the v0.9.101 single-point map; is
+new.
+
+The CSV parser groups rows by profile id and reuses (which normalises
+each horizon table via the canonical schema); the taxonomic key is, as
+everywhere, deterministic R code. (gridded prediction) remains
+exploratory and is tracked in .
+
+## soilKey 0.9.101 (2026-06-10)
+
+The “**Interactive map**” release. Opens the mapping roadmap by giving
+the professional Shiny app its first cartographic surface: a map where
+the user clicks to place a point and queries the SoilGrids class prior
+at that location. No change to the taxonomic key – this is spatial
+*reading*, not classification.
+
+### New: “Map” tab in the Pro Shiny app
+
+A ninth tab joins , sitting between and .
+
+This is of the three-phase mapping roadmap. Phase 2 (batch multi-profile
+classification from an uploaded point set, plotted by class) and Phase 3
+(gridded prediction) are tracked in and are not part of this release.
+
+### User-facing changes
+
 ## soilKey 0.9.100 (2026-05-19)
 
 The “**Provenance-weighted uncertainty**” release. Last of the four
@@ -4584,10 +4638,8 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran
-[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
-locally against the v0.9.39 source tree. Result: **80.5 % statement
-coverage**.
+Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
+Result: **80.5 % statement coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,37 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.103" id="soilkey-09103-2026-06-10">soilKey 0.9.103 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09103-2026-06-10"></a></h2>
+<p>The “<strong>Gridded prediction</strong>” release. Phase 3 (final) of the mapping roadmap: produce a raster soil-class map over an area of interest. The Map tab gains a third sub-tab, , offering three selectable methods – all reduced to one common shape (a categorical  raster rendered with ).</p>
+<div class="section level3">
+<h3 id="new-grid-prediction-sub-tab-in-the-map-tab-0-9-103">New: “Grid prediction” sub-tab in the Map tab<a class="anchor" aria-label="anchor" href="#new-grid-prediction-sub-tab-in-the-map-tab-0-9-103"></a></h3>
+<p>The area of interest is a bounding box (typed, or captured from the current map view) with a resolution slider (capped at 1600 cells to bound network + classification time). The result is summarised by class (cells + share) and exportable as a GeoTIFF via .</p>
+<p>This completes the three-phase mapping roadmap (point prior, batch soil map, gridded prediction). No new package exports and no change to any classifier; the tab orchestrates existing spatial functions.</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.102" id="soilkey-09102-2026-06-10">soilKey 0.9.102 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09102-2026-06-10"></a></h2>
+<p>The “<strong>Batch soil map</strong>” release. Phase 2 of the mapping roadmap: turn a set of described profiles into a classified point map. Where v0.9.101 read a prior at one clicked point, this release classifies <em>many</em> profiles at once and plots each by its class – the genuine pedon-scale soil map, every point backed by a deterministic classification.</p>
+<div class="section level3">
+<h3 id="new-batch-classify-sub-tab-in-the-map-tab-0-9-102">New: “Batch classify” sub-tab in the Map tab<a class="anchor" aria-label="anchor" href="#new-batch-classify-sub-tab-in-the-map-tab-0-9-102"></a></h3>
+<p>The Map tab now hosts two sub-tabs.  is the v0.9.101 single-point map;  is new.</p>
+<p>The CSV parser groups rows by profile id and reuses  (which normalises each horizon table via the canonical schema); the taxonomic key is, as everywhere, deterministic R code.  (gridded prediction) remains exploratory and is tracked in .</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.101" id="soilkey-09101-2026-06-10">soilKey 0.9.101 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09101-2026-06-10"></a></h2>
+<p>The “<strong>Interactive map</strong>” release. Opens the mapping roadmap by giving the professional Shiny app its first cartographic surface: a  map where the user clicks to place a point and queries the SoilGrids class prior at that location. No change to the taxonomic key – this is spatial <em>reading</em>, not classification.</p>
+<div class="section level3">
+<h3 id="new-map-tab-in-the-pro-shiny-app-0-9-101">New: “Map” tab in the Pro Shiny app<a class="anchor" aria-label="anchor" href="#new-map-tab-in-the-pro-shiny-app-0-9-101"></a></h3>
+<p>A ninth tab joins , sitting between  and .</p>
+<p>This is  of the three-phase mapping roadmap. Phase 2 (batch multi-profile classification from an uploaded point set, plotted by class) and Phase 3 (gridded prediction) are tracked in  and are not part of this release.</p>
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-101">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-101"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.100" id="soilkey-09100-2026-05-19">soilKey 0.9.100 (2026-05-19)<a class="anchor" aria-label="anchor" href="#soilkey-09100-2026-05-19"></a></h2>
 <p>The “<strong>Provenance-weighted uncertainty</strong>” release. Last of the four sequential roadmap releases. Turns the README “idea / roadmap” item  into a shipped feature: a probabilistic class output from a Monte-Carlo perturbation of the provenance ledger.</p>
@@ -3675,7 +3706,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>

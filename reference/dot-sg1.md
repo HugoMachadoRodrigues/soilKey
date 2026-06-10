@@ -1,7 +1,7 @@
 # Savitzky-Golay 1st derivative
 
 Delegates to
-[`prospectr::savitzkyGolay`](https://rdrr.io/pkg/prospectr/man/savitzkyGolay.html)
+[`prospectr::savitzkyGolay`](https://l-ramirez-lopez.github.io/prospectr/reference/savitzkyGolay.html)
 when available (`m = 1`, polynomial `p`, window `w`). The native
 fallback uses the closed-form 5-point coefficients
 `(-2, -1, 0, 1, 2) / 10`, which is the SG solution for `w = 5`, `p = 2`,

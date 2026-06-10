@@ -45,10 +45,11 @@ Invisibly the value returned by
   A professional multi-tab app: build a pedon from a canonical fixture,
   a CSV upload, or an interactive horizon editor; classify under WRB
   2022 / SiBCS 5 / USDA ST 13 with the full key trace; run VLM photo
-  extraction, OSSL spectral gap-fill, the SoilGrids spatial prior, and a
-  Monte-Carlo robustness analysis; and download a cross-system HTML or
-  PDF report. Needs the optional packages bslib, shinyWidgets and
-  plotly.
+  extraction, OSSL spectral gap-fill, the SoilGrids spatial prior, an
+  interactive leaflet map that queries the class prior at a clicked
+  point, and a Monte-Carlo robustness analysis; and download a
+  cross-system HTML or PDF report. Needs the optional packages bslib,
+  shinyWidgets, plotly and leaflet.
 
 - `"classic"`:
 

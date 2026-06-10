@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -217,7 +217,7 @@
 <td><strong>R Shiny web app</strong></td>
 <td>✅ shipped (v0.9.97)</td>
 <td>
-<code><a href="reference/run_classify_app.html">run_classify_app()</a></code> — eight-tab <code>bslib</code> interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, MC uncertainty, HTML/PDF report.</td>
+<code><a href="reference/run_classify_app.html">run_classify_app()</a></code> — nine-tab <code>bslib</code> interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, interactive <code>leaflet</code> map, MC uncertainty, HTML/PDF report.</td>
 </tr>
 <tr>
 <td><strong>WRB Tier-3 RSG-gate strict mode</strong></td>
@@ -236,6 +236,21 @@
 <td>✅ shipped (v0.9.100)</td>
 <td>
 <code><a href="reference/classify_with_uncertainty.html">classify_with_uncertainty()</a></code> — provenance-weighted Monte-Carlo posterior over classes; per-grade perturbation magnitudes (A ±3 % … E ±30 %), attribute sensitivity ranking.</td>
+</tr>
+<tr>
+<td><strong>Interactive map tab</strong></td>
+<td>✅ shipped (v0.9.101)</td>
+<td>New “Map” tab in the Pro app: click a <code>leaflet</code> map to place a point and query the SoilGrids class prior there (<code><a href="reference/soil_classes_at_location.html">soil_classes_at_location()</a></code>); buffer + class distribution + typical attributes. Phase 1 of the mapping roadmap (point prior).</td>
+</tr>
+<tr>
+<td><strong>Batch soil map</strong></td>
+<td>✅ shipped (v0.9.102)</td>
+<td>“Batch classify” sub-tab: classify many profiles at once (demo fixtures or an uploaded long-format CSV) and map them by class (WRB / SiBCS / USDA), with a legend, per-point popups and GeoPackage export. Phase 2 of the mapping roadmap.</td>
+</tr>
+<tr>
+<td><strong>Gridded prediction (DSM)</strong></td>
+<td>✅ shipped (v0.9.103)</td>
+<td>“Grid prediction” sub-tab: a raster class map over a bbox via three methods — SoilGrids covariates run through the deterministic key, nearest-neighbour interpolation of classified points, or the SoilGrids MostProbable overlay — with a class summary and GeoTIFF export. Phase 3 completes the mapping roadmap.</td>
 </tr>
 </tbody>
 </table>
@@ -270,6 +285,19 @@
 </ul>
 <p>All three keys are deterministic R code driven from versioned YAML rules.</p>
 <hr>
+</div>
+<div class="section level2">
+<h2 id="id_-whats-new-in-v09101--v09103-2026-06-10">✦ What’s new in v0.9.101 → v0.9.103 (2026-06-10)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v09101--v09103-2026-06-10"></a>
+</h2>
+<p>The <strong>mapping roadmap</strong>, complete — the Pro Shiny app’s three cartographic surfaces.</p>
+<ul>
+<li>
+<strong>v0.9.101 — Interactive map tab.</strong> The Pro Shiny app gains a ninth tab, <strong>Map</strong>: an interactive <code>leaflet</code> surface where you click to place a point and query the SoilGrids class prior at that location via <code><a href="reference/soil_classes_at_location.html">soil_classes_at_location()</a></code>. The tab renders the queried buffer, the ranked class distribution (WRB 2022 / USDA ST 13 / SiBCS 5), and the canonical typical-attribute table — and it works with <em>or without</em> a built pedon (a map click and a built pedon’s coordinate stay in sync). This is <strong>Phase 1</strong> of the mapping roadmap. Adds <code>leaflet</code> to <code>Suggests</code>.</li>
+<li>
+<strong>v0.9.102 — Batch soil map.</strong> The Map tab gains a <strong>Batch classify</strong> sub-tab: classify <em>many</em> profiles at once and map them by class. Point sources are demo fixtures spread across Brazil (zero-data demo) or an uploaded long-format CSV (one row per horizon, grouped by id into one <code>PedonRecord</code> each). Every profile runs through <code><a href="reference/classify_all.html">classify_all()</a></code>; points are drawn on a <code>leaflet</code> map coloured by reference soil group / order with a legend and per-point popups, listed in a summary table, and exportable to a GeoPackage via <code>sf</code>. This is <strong>Phase 2</strong> — the genuine pedon-scale soil map, each point backed by a deterministic classification.</li>
+<li>
+<strong>v0.9.103 — Gridded prediction (DSM).</strong> The Map tab gains a <strong>Grid prediction</strong> sub-tab that produces a raster class map over a bounding box, via three selectable methods: (a) <strong>SoilGrids covariates + key</strong> — sample SoilGrids covariates per cell, build a pseudo-pedon and run the <em>deterministic key</em> (the differentiator: the SoilGrids MostProbable layer predicts the class by ML, this applies the key); (b) <strong>interpolate points</strong> — nearest-neighbour of the Phase-2 classified points; (c) <strong>SoilGrids overlay</strong> — the MostProbable WRB raster for comparison. Each result is summarised by class and exportable as a GeoTIFF (<code>terra</code>). This is <strong>Phase 3</strong> — completing the mapping roadmap. Per §14 of <code>ARCHITECTURE.md</code>, the covariate method is framed as <em>complementary to</em>, not a replacement for, pixel-scale DSM.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="id_-whats-new-in-v0997--v09100-2026-05-19">✦ What’s new in v0.9.97 → v0.9.100 (2026-05-19)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v0997--v09100-2026-05-19"></a>

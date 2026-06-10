@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.103</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1035,7 +1035,17 @@
 <strong>There is no package for SiBCS.</strong> Embrapa makes the book and QGIS styles available, but no inference library.</li>
 <li><strong>There is no tool that integrates multimodal extraction + spectral prediction + taxonomic key in a single traceable workflow.</strong></li>
 </ol><p>The methodological paper can position <code>soilKey</code> as open infrastructure for digital pedology, complementary to the SoilGrids mapping work (which classifies from <em>covariates</em> at pixel scale) — while <code>soilKey</code> classifies from <em>profile data</em> at pedon scale, using the canonical key. These are distinct and complementary inferences.</p>
-<hr></div>
+<div class="section level3">
+<h3 id="id_141-mapping-roadmap-shiny-map-tab">14.1 Mapping roadmap (Shiny “Map” tab)<a class="anchor" aria-label="anchor" href="#id_141-mapping-roadmap-shiny-map-tab"></a></h3>
+<p>The Pro Shiny app’s <strong>Map</strong> tab (shipped v0.9.101) operationalises this positioning incrementally, in three phases. The guiding principle is that soilKey maps <em>from described profiles outward</em>, never substituting for pixel-scale covariate models:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Phase 1 — point prior (shipped, v0.9.101).</strong> A <code>leaflet</code> map where the user clicks a coordinate and reads the SoilGrids class prior there via <code><a href="reference/soil_classes_at_location.html">soil_classes_at_location()</a></code>. Pure spatial <em>reading</em>; the deterministic key is not invoked. Coordinate state is shared with the Spatial tab through <code>pedon$site$lat/lon</code>.</li>
+<li>
+<strong>Phase 2 — batch multi-profile (shipped, v0.9.102).</strong> The Map tab’s <em>Batch classify</em> sub-tab builds one <code>PedonRecord</code> per point — from demo fixtures scattered across Brazil, or from an uploaded long-format CSV grouped by id (the parser reuses <code>PedonRecord$new()</code>, which normalises each horizon table via <code><a href="reference/ensure_horizon_schema.html">ensure_horizon_schema()</a></code>) — runs <code><a href="reference/classify_all.html">classify_all()</a></code> per profile, and plots the results as markers coloured by reference soil group / order, with a legend, per-point popups (all three class names + evidence grades) and a GeoPackage export (<code>sf</code>, same idiom as <code><a href="reference/report_to_qgis.html">report_to_qgis()</a></code>). This is the genuine <em>pedon-scale soil map</em>: every mapped class is backed by a described, classified profile.</li>
+<li>
+<strong>Phase 3 — gridded prediction (shipped, v0.9.103).</strong> The Map tab’s <em>Grid prediction</em> sub-tab produces a categorical class raster over a bounding box, via three selectable methods reduced to one common shape (a vector of class codes over the cell-centre coordinates of a regular <code>terra</code> grid → a categorical <code>SpatRaster</code> → <code><a href="https://rstudio.github.io/leaflet/reference/addRasterImage.html" class="external-link">leaflet::addRasterImage()</a></code>): (a) <strong>SoilGrids covariates + key</strong> — <code><a href="reference/lookup_soilgrids.html">lookup_soilgrids()</a></code> samples clay/sand/silt/pH/SOC/CEC at two depths per cell (one vectorised call per property covers the whole grid), a two-horizon pseudo-pedon is built and the <em>deterministic key</em> is run; (b) <strong>interpolate points</strong> — <code><a href="https://r-spatial.github.io/sf/reference/st_nearest_feature.html" class="external-link">sf::st_nearest_feature()</a></code> of the Phase-2 classified points to the grid; (c) <strong>SoilGrids overlay</strong> — the MostProbable WRB raster sampled on the grid via <code><a href="reference/soilgrids_wrb_lut.html">soilgrids_wrb_lut()</a></code>. Results export to GeoTIFF (<code><a href="https://rspatial.github.io/terra/reference/writeRaster.html" class="external-link">terra::writeRaster</a></code>). Method (a) crosses into pixel-scale territory and is therefore framed as <em>complementary to</em>, not a replacement for, SoilGrids — consistent with §14 above; it carries evidence grade C because morphological diagnostics are unavailable from covariates.</li>
+</ol><hr></div>
+</div>
 <div class="section level2">
 <h2 id="id_15-immediate-next-steps">15. Immediate next steps<a class="anchor" aria-label="anchor" href="#id_15-immediate-next-steps"></a></h2>
 <ol style="list-style-type: decimal"><li>

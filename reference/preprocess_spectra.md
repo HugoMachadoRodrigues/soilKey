@@ -56,9 +56,9 @@ Supported `method` values:
   pretrained models for Vis-NIR).
 
 If `prospectr` is available, we use
-[`prospectr::standardNormalVariate`](https://rdrr.io/pkg/prospectr/man/standardNormalVariate.html)
+[`prospectr::standardNormalVariate`](https://l-ramirez-lopez.github.io/prospectr/reference/standardNormalVariate.html)
 and
-[`prospectr::savitzkyGolay`](https://rdrr.io/pkg/prospectr/man/savitzkyGolay.html)
+[`prospectr::savitzkyGolay`](https://l-ramirez-lopez.github.io/prospectr/reference/savitzkyGolay.html)
 (Rcpp implementation, faster and supports arbitrary window/polynomial).
 The native fallback uses the classical 5-point first-derivative
 coefficients `(-2, -1, 0, 1, 2) / 10`, which is the closed-form
