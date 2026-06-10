@@ -260,10 +260,14 @@ reference:
       - matches("^familia_")
       - classify_sibcs_familia
 
-  - title: "USDA Soil Taxonomy 13ed -- Path C (Order -> Subgroup)"
-    desc: "Per-Order subgroup dispatchers; triggered by `classify_usda(pedon)`."
+  - title: "USDA Soil Taxonomy 13ed -- Path C (Order -> Subgroup) + Family"
+    desc: >
+      Per-Order subgroup dispatchers, plus the 5th-level family modifiers
+      (particle-size, mineralogy, CEC-activity, reaction, temperature, depth).
+      Triggered by `classify_usda(pedon, include_family = TRUE)`.
     contents:
       - matches("_usda$")
+      - classify_usda_family
 
   - title: "Module 2 -- VLM extraction"
     desc: >
