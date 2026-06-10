@@ -197,3 +197,86 @@
                           full_name, prefix, base_qname)
   )
 }
+
+
+# ---------------------------------------------------------------------------
+# v0.9.105 -- automatic depth-specifier attachment.
+#
+# WRB 2022 Ch 5 lets a depth specifier (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-)
+# be prefixed to a qualifier when its diagnostic feature is confined to a depth
+# band. The pieces above only fire when a name ARRIVES prefixed; the helpers
+# below COMPUTE the right specifier from the feature's actual layers so it can
+# be attached automatically (opt-in via classify_wrb2022(specifiers = TRUE)).
+# ---------------------------------------------------------------------------
+
+# Qualifiers that take a depth specifier: the subsurface feature/horizon
+# qualifiers (those whose qual_*() uses .q_presence). Epipedons and
+# surface-by-definition qualifiers (Mollic, Umbric, Chernic, Histic, Hortic,
+# Plaggic, Pretic, Terric, Anthric, Anthraquic, Hydragric, Irragric, Mulmic,
+# Ornithic, Takyric, Yermic) and the thermal Cryic are EXCLUDED -- their depth
+# is definitional, so a specifier (e.g. "Epimollic") would be invalid.
+.WRB_DEPTH_SPECIFIABLE <- c(
+  "Abruptic", "Albic", "Arenic", "Calcaric", "Calcic", "Cambic", "Dolomitic",
+  "Duric", "Ferralic", "Ferric", "Fluvic", "Gleyic", "Gypsic", "Gypsiric",
+  "Leptic", "Natric", "Nitic", "Petrocalcic", "Petroduric", "Petrogypsic",
+  "Petroplinthic", "Pisoplinthic", "Plinthic", "Protocalcic", "Protogypsic",
+  "Retic", "Salic", "Spodic", "Stagnic", "Tephric", "Thionic", "Vertic",
+  "Vitric")
+
+# Do the merged depth intervals cover [min .. max] with no gap?
+.wrb_layers_contiguous <- function(tops, bots) {
+  o <- order(tops)
+  t <- tops[o]; b <- bots[o]
+  cur_end <- b[1L]
+  for (i in seq_along(t)[-1L]) {
+    if (t[i] > cur_end) return(FALSE)   # a gap between this layer and the run
+    cur_end <- max(cur_end, b[i])
+  }
+  TRUE
+}
+
+# Compute the depth specifier prefix for a feature occupying `layers`.
+# Returns "" when no specifier is warranted (the canonical, within-100 cm
+# contiguous case, or when depth is indeterminate).
+.compute_depth_specifier <- function(pedon, layers) {
+  if (length(layers) == 0L) return("")
+  h    <- pedon$horizons
+  tops <- suppressWarnings(as.numeric(h$top_cm[layers]))
+  bots <- suppressWarnings(as.numeric(h$bottom_cm[layers]))
+  ok   <- !is.na(tops) & !is.na(bots) & bots > tops
+  tops <- tops[ok]; bots <- bots[ok]
+  if (!length(tops)) return("")
+  overlaps <- function(lo, hi) any(tops < hi & bots > lo)
+  in_epi   <- overlaps(0,   50)
+  in_endo  <- overlaps(50,  100)
+  in_bathy <- overlaps(100, Inf)
+  bands <- sum(in_epi, in_endo, in_bathy)
+  if (bands == 0L) return("")
+  if (in_epi && in_endo && in_bathy) {
+    # Panto- ("throughout") only when the feature truly spans the whole
+    # profile -- from the surface (top <= 5 cm) down past 100 cm with no
+    # gap. A broad subsurface feature that merely overlaps all three bands
+    # is the canonical (bare-name) case, not Panto.
+    return(if (min(tops) <= 5 && .wrb_layers_contiguous(tops, bots))
+             "Panto" else "")
+  }
+  if (bands == 1L)
+    return(if (in_epi) "Epi" else if (in_endo) "Endo" else "Bathy")
+  # exactly two bands
+  if (in_epi && in_endo)
+    return(if (.wrb_layers_contiguous(tops, bots)) "" else "Amphi")
+  if (in_endo && in_bathy) return("Kato")   # lower part only
+  if (in_epi && in_bathy)  return("Amphi")  # split with a mid gap
+  ""
+}
+
+# Attach depth specifiers to a set of matched qualifier names, using a
+# name -> layers map. Only names in .WRB_DEPTH_SPECIFIABLE are touched.
+.apply_depth_specifiers <- function(pedon, qnames, layers_map) {
+  vapply(qnames, function(qn) {
+    if (!(qn %in% .WRB_DEPTH_SPECIFIABLE)) return(qn)
+    sp <- .compute_depth_specifier(pedon, layers_map[[qn]] %||% integer(0))
+    if (!nzchar(sp)) return(qn)
+    paste0(sp, tolower(substring(qn, 1, 1)), substring(qn, 2))
+  }, character(1), USE.NAMES = FALSE)
+}

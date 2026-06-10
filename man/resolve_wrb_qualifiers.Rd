@@ -4,7 +4,7 @@
 \alias{resolve_wrb_qualifiers}
 \title{Resolve WRB 2022 qualifiers for a Reference Soil Group}
 \usage{
-resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL)
+resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL, specifiers = FALSE)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -13,6 +13,11 @@ resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL)
 
 \item{rules}{Optional pre-loaded rules list (saves I/O when many
 RSGs are tested).}
+
+\item{specifiers}{If \code{TRUE}, auto-attach WRB Ch 5 depth specifiers
+(Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored
+qualifiers based on the feature's actual depth. Default
+\code{FALSE} leaves names byte-identical to earlier versions.}
 }
 \value{
 A list with \code{principal} (character vector),

@@ -32,6 +32,14 @@ settings_ui <- function(id) {
         shiny::helpText(
           "Strengthens per-RSG numerical gates (e.g. Ferralsol CEC, Vertisol ",
           "clay). Borderline profiles may fall through to a different RSG."
+        ),
+        shinyWidgets::materialSwitch(
+          ns("specifiers"), "WRB depth specifiers",
+          value = FALSE, status = "primary"
+        ),
+        shiny::helpText(
+          "Auto-attach Epi-/Endo-/Bathy-/Amphi- to depth-anchored qualifiers ",
+          "from the feature's depth (e.g. Gleyic -> Endogleyic)."
         )
       )
     ),
@@ -83,7 +91,8 @@ settings_server <- function(id) {
         strict          = isTRUE(input$strict),
         on_missing      = input$on_missing %||% "silent",
         include_familia = isTRUE(input$include_familia),
-        include_family  = isTRUE(input$include_family)
+        include_family  = isTRUE(input$include_family),
+        specifiers      = isTRUE(input$specifiers)
       )
     })
   })
