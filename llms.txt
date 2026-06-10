@@ -93,7 +93,9 @@ classify_usda(pedon, include_family = TRUE)$name
 ```
 
 - WRB delivers the **complete Chapter 6 name** — four principal
-  qualifiers + five supplementary qualifiers in canonical order.
+  qualifiers + five supplementary qualifiers in canonical order, with
+  optional **depth specifiers** (Epi-/Endo-/Bathy-/…, via
+  `classify_wrb2022(specifiers = TRUE)`).
 - SiBCS descends through **all four hierarchical levels (Order →
   Suborder → Great Group → Subgroup)** plus a **5th-level Family** with
   up to 15 orthogonal adjectival dimensions.
@@ -105,6 +107,23 @@ All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.105 (2026-06-10)
+
+- **v0.9.105 — WRB depth specifiers.**
+  `classify_wrb2022(pedon, specifiers = TRUE)` auto-attaches the WRB
+  2022 Chapter 5 depth specifiers
+  (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored qualifiers,
+  computed from the diagnostic feature’s actual depth — e.g. a gleyic
+  feature confined to 50–100 cm becomes *Endogleyic*. The engine existed
+  since v0.9.2.B but only fired on already-prefixed names; this wires in
+  the automatic computation. Applied to subsurface qualifiers only
+  (epipedons like Mollic/Umbric are excluded — their depth is
+  definitional). Default `specifiers = FALSE` keeps the canonical names
+  **byte-identical** (verified across every canonical fixture). Exposed
+  on
+  [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
+  and via a Settings toggle in the Pro app.
 
 ## ✦ What’s new in v0.9.104 (2026-06-10)
 

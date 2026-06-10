@@ -1,5 +1,20 @@
 # Changelog
 
+## soilKey 0.9.105 (2026-06-10)
+
+The “**WRB depth specifiers**” release. Completes the WRB 2022 Chapter 5
+name: depth specifiers (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) are now
+auto-attached to depth-anchored qualifiers from the diagnostic feature’s
+actual depth.
+
+### New: classify_wrb2022(specifiers = TRUE)
+
+The specifier engine (/) has existed since v0.9.2.B but only fired on
+already-prefixed names. This release computes the specifier from the
+feature’s layers and attaches it.
+
+### User-facing changes
+
 ## soilKey 0.9.104 (2026-06-10)
 
 The “**USDA family (5th level)**” release. Deepens USDA Soil Taxonomy

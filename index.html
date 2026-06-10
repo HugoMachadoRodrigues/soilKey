@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.104</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.105</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -283,12 +283,20 @@
 <span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span>, include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "fine, kaolinitic, isohyperthermic Rhodic Hapludox"</span></span></code></pre></div>
 <ul>
-<li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order.</li>
+<li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order, with optional <strong>depth specifiers</strong> (Epi-/Endo-/Bathy-/…, via <code>classify_wrb2022(specifiers = TRUE)</code>).</li>
 <li>SiBCS descends through <strong>all four hierarchical levels (Order → Suborder → Great Group → Subgroup)</strong> plus a <strong>5th-level Family</strong> with up to 15 orthogonal adjectival dimensions.</li>
 <li>USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em>, plus the <strong>5th-level family</strong> modifiers (<code>include_family = TRUE</code>).</li>
 </ul>
 <p>All three keys are deterministic R code driven from versioned YAML rules.</p>
 <hr>
+</div>
+<div class="section level2">
+<h2 id="id_-whats-new-in-v09105-2026-06-10">✦ What’s new in v0.9.105 (2026-06-10)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v09105-2026-06-10"></a>
+</h2>
+<ul>
+<li>
+<strong>v0.9.105 — WRB depth specifiers.</strong> <code>classify_wrb2022(pedon, specifiers = TRUE)</code> auto-attaches the WRB 2022 Chapter 5 depth specifiers (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored qualifiers, computed from the diagnostic feature’s actual depth — e.g. a gleyic feature confined to 50–100 cm becomes <em>Endogleyic</em>. The engine existed since v0.9.2.B but only fired on already-prefixed names; this wires in the automatic computation. Applied to subsurface qualifiers only (epipedons like Mollic/Umbric are excluded — their depth is definitional). Default <code>specifiers = FALSE</code> keeps the canonical names <strong>byte-identical</strong> (verified across every canonical fixture). Exposed on <code><a href="reference/classify_all.html">classify_all()</a></code> and via a Settings toggle in the Pro app.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="id_-whats-new-in-v09104-2026-06-10">✦ What’s new in v0.9.104 (2026-06-10)<a class="anchor" aria-label="anchor" href="#id_-whats-new-in-v09104-2026-06-10"></a>

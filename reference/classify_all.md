@@ -19,6 +19,7 @@ classify_all(
   on_missing = c("warn", "silent", "error"),
   include_familia = TRUE,
   include_family = FALSE,
+  specifiers = FALSE,
   ...
 )
 ```
@@ -51,6 +52,13 @@ classify_all(
   Forwarded to
   [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
   (default `FALSE`) to derive the USDA 5th-level family. No effect on
+  the other systems.
+
+- specifiers:
+
+  Forwarded to
+  [`classify_wrb2022`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
+  (default `FALSE`) to auto-attach WRB depth specifiers. No effect on
   the other systems.
 
 - ...:

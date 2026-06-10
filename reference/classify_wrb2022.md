@@ -16,7 +16,8 @@ classify_wrb2022(
   prior_threshold = 0.01,
   on_missing = c("warn", "silent", "error"),
   rules = NULL,
-  strict = NULL
+  strict = NULL,
+  specifiers = FALSE
 )
 ```
 
@@ -61,6 +62,15 @@ classify_wrb2022(
   individual RSG-gate help pages (e.g.
   [`ferralsol`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.md))
   for the strengthened thresholds.
+
+- specifiers:
+
+  Logical. When `TRUE`, auto-attach WRB 2022 Ch 5 depth specifiers
+  (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored qualifiers
+  based on the diagnostic feature's actual depth – e.g. a gleyic feature
+  confined to 50–100 cm yields `Endogleyic` instead of `Gleyic`. Default
+  `FALSE` keeps the canonical names byte-identical. Surface / epipedon
+  qualifiers are excluded (their depth is definitional).
 
 ## Value
 

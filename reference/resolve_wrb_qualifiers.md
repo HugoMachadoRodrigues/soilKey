@@ -8,7 +8,7 @@ per-qualifier trace.
 ## Usage
 
 ``` r
-resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL)
+resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL, specifiers = FALSE)
 ```
 
 ## Arguments
@@ -25,6 +25,13 @@ resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL)
 - rules:
 
   Optional pre-loaded rules list (saves I/O when many RSGs are tested).
+
+- specifiers:
+
+  If `TRUE`, auto-attach WRB Ch 5 depth specifiers
+  (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored qualifiers
+  based on the feature's actual depth. Default `FALSE` leaves names
+  byte-identical to earlier versions.
 
 ## Value
 
