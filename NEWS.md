@@ -1,3 +1,40 @@
+# soilKey 0.9.102 (2026-06-10)
+
+The "**Batch soil map**" release. Phase 2 of the mapping roadmap: turn
+a set of described profiles into a classified point map. Where v0.9.101
+read a prior at one clicked point, this release classifies *many*
+profiles at once and plots each by its class -- the genuine
+pedon-scale soil map, every point backed by a deterministic
+classification.
+
+## New: "Batch classify" sub-tab in the Map tab
+
+The Map tab now hosts two sub-tabs. \emph{Point prior} is the v0.9.101
+single-point map; \emph{Batch classify} is new.
+
+\itemize{
+  \item Two point sources: \strong{Demo (fixtures)} spreads N canonical
+        fixtures across Brazil (so the tab is demonstrable with no
+        data), or \strong{Upload CSV} ingests a long-format table (one
+        row per horizon) with an id column, lat/lon and horizon
+        attributes.
+  \item Each profile becomes a \code{PedonRecord} and is classified
+        under all three systems with \code{classify_all()}. Points are
+        drawn on a \pkg{leaflet} map coloured by reference soil group /
+        order (selectable: WRB 2022 / SiBCS 5 / USDA ST 13), with a
+        legend and a per-point popup listing all three class names and
+        evidence grades.
+  \item A summary table lists every classified point, and
+        \strong{Export GeoPackage} writes the classified point set to a
+        \code{.gpkg} via \pkg{sf} (same idiom as \code{report_to_qgis()}).
+}
+
+The CSV parser groups rows by profile id and reuses
+\code{PedonRecord$new()} (which normalises each horizon table via the
+canonical schema); the taxonomic key is, as everywhere, deterministic
+R code. \strong{Phase 3} (gridded prediction) remains exploratory and
+is tracked in \file{ARCHITECTURE.md}.
+
 # soilKey 0.9.101 (2026-06-10)
 
 The "**Interactive map**" release. Opens the mapping roadmap by giving

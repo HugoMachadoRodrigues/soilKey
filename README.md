@@ -49,7 +49,8 @@
 | **WRB Tier-3 RSG-gate strict mode** | ✅ shipped (v0.9.98) | `classify_wrb2022(strict = TRUE)` strengthens seven RSG gates (Vertisol clay 30→35 %, Chernozem BS 50→80 %, etc.); backward-compatible.                                       |
 | **Field-photo-only classification** | ✅ shipped (v0.9.99) | `classify_from_photos()` — photo + GPS → VLM Munsell + SoilGrids depth prior → multi-system classification; evidence grade D / C, never A.                                    |
 | **Pedometric uncertainty quantif.** | ✅ shipped (v0.9.100) | `classify_with_uncertainty()` — provenance-weighted Monte-Carlo posterior over classes; per-grade perturbation magnitudes (A ±3 % … E ±30 %), attribute sensitivity ranking.  |
-| **Interactive map tab**             | ✅ shipped (v0.9.101) | New "Map" tab in the Pro app: click a `leaflet` map to place a point and query the SoilGrids class prior there (`soil_classes_at_location()`); buffer + class distribution + typical attributes. Phase 1 of the mapping roadmap (point prior; batch & gridded to follow). |
+| **Interactive map tab**             | ✅ shipped (v0.9.101) | New "Map" tab in the Pro app: click a `leaflet` map to place a point and query the SoilGrids class prior there (`soil_classes_at_location()`); buffer + class distribution + typical attributes. Phase 1 of the mapping roadmap (point prior). |
+| **Batch soil map**                  | ✅ shipped (v0.9.102) | "Batch classify" sub-tab: classify many profiles at once (demo fixtures or an uploaded long-format CSV) and map them by class (WRB / SiBCS / USDA), with a legend, per-point popups and GeoPackage export. Phase 2 of the mapping roadmap (gridded prediction to follow). |
 
 Legend: ✅ shipped · 🟡 in queue · 🔵 idea / roadmap
 
@@ -85,9 +86,12 @@ All three keys are deterministic R code driven from versioned YAML rules.
 
 ---
 
-## ✦ What's new in v0.9.101 (2026-06-10)
+## ✦ What's new in v0.9.101 → v0.9.102 (2026-06-10)
 
-* **v0.9.101 — Interactive map tab.** The Pro Shiny app gains a ninth tab, **Map**: an interactive `leaflet` surface where you click to place a point and query the SoilGrids class prior at that location via `soil_classes_at_location()`. The tab renders the queried buffer, the ranked class distribution (WRB 2022 / USDA ST 13 / SiBCS 5), and the canonical typical-attribute table — and it works with *or without* a built pedon (a map click and a built pedon's coordinate stay in sync). This is **Phase 1** of the mapping roadmap; batch multi-profile classification (Phase 2) and gridded prediction (Phase 3) follow. Adds `leaflet` to `Suggests`.
+Opening the **mapping roadmap** — the Pro Shiny app's first cartographic surfaces.
+
+* **v0.9.101 — Interactive map tab.** The Pro Shiny app gains a ninth tab, **Map**: an interactive `leaflet` surface where you click to place a point and query the SoilGrids class prior at that location via `soil_classes_at_location()`. The tab renders the queried buffer, the ranked class distribution (WRB 2022 / USDA ST 13 / SiBCS 5), and the canonical typical-attribute table — and it works with *or without* a built pedon (a map click and a built pedon's coordinate stay in sync). This is **Phase 1** of the mapping roadmap. Adds `leaflet` to `Suggests`.
+* **v0.9.102 — Batch soil map.** The Map tab gains a **Batch classify** sub-tab: classify *many* profiles at once and map them by class. Point sources are demo fixtures spread across Brazil (zero-data demo) or an uploaded long-format CSV (one row per horizon, grouped by id into one `PedonRecord` each). Every profile runs through `classify_all()`; points are drawn on a `leaflet` map coloured by reference soil group / order with a legend and per-point popups, listed in a summary table, and exportable to a GeoPackage via `sf`. This is **Phase 2** — the genuine pedon-scale soil map, each point backed by a deterministic classification. Phase 3 (gridded prediction) remains exploratory.
 
 ## ✦ What's new in v0.9.97 → v0.9.100 (2026-05-19)
 
