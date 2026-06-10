@@ -10,7 +10,8 @@ classify_wrb2022(
   prior_threshold = 0.01,
   on_missing = c("warn", "silent", "error"),
   rules = NULL,
-  strict = NULL
+  strict = NULL,
+  specifiers = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,14 @@ When \code{NULL} (default) the gates follow
 the duration of this call; see the individual RSG-gate help
 pages (e.g. \code{\link{ferralsol}}) for the strengthened
 thresholds.}
+
+\item{specifiers}{Logical. When \code{TRUE}, auto-attach WRB 2022
+Ch 5 depth specifiers (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-)
+to depth-anchored qualifiers based on the diagnostic feature's
+actual depth -- e.g. a gleyic feature confined to 50--100 cm
+yields \code{Endogleyic} instead of \code{Gleyic}. Default
+\code{FALSE} keeps the canonical names byte-identical. Surface
+/ epipedon qualifiers are excluded (their depth is definitional).}
 }
 \value{
 A \code{\link{ClassificationResult}}.

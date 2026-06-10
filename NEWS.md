@@ -1,3 +1,46 @@
+# soilKey 0.9.105 (2026-06-10)
+
+The "**WRB depth specifiers**" release. Completes the WRB 2022 Chapter 5
+name: depth specifiers (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) are now
+auto-attached to depth-anchored qualifiers from the diagnostic feature's
+actual depth.
+
+## New: classify_wrb2022(specifiers = TRUE)
+
+The specifier engine (\code{.detect_specifier}/\code{.apply_specifier})
+has existed since v0.9.2.B but only fired on already-prefixed names. This
+release computes the specifier from the feature's layers and attaches it.
+
+\itemize{
+  \item \code{classify_wrb2022(pedon, specifiers = TRUE)} prefixes the
+        right specifier: a gleyic feature confined to 50--100 cm yields
+        \code{Endogleyic} instead of \code{Gleyic}; 0--50 cm
+        \code{Epi-}; below 100 cm \code{Bathy-}; throughout
+        \code{Panto-}; a split feature \code{Amphi-}; the lower part
+        \code{Kato-}. A feature spanning 0--100 cm contiguously keeps the
+        bare name.
+  \item Applied to the depth-anchored (subsurface) qualifiers only.
+        Epipedon / surface-by-definition qualifiers (Mollic, Umbric,
+        Chernic, Histic, Takyric, ...) and the thermal Cryic are
+        excluded -- their depth is definitional, so a specifier would be
+        invalid.
+  \item Default \code{specifiers = FALSE} keeps the canonical names
+        \strong{byte-identical} (verified across all canonical fixtures).
+  \item \code{resolve_wrb_qualifiers()} gains the \code{specifiers}
+        argument; the specifier is applied AFTER sibling suppression, so
+        it never interferes with qualifier ordering or suppression.
+}
+
+## User-facing changes
+
+\itemize{
+  \item \code{classify_all()} gains \code{specifiers = FALSE}, forwarded
+        to \code{classify_wrb2022()}.
+  \item The Pro Shiny app's Settings tab gains a "WRB depth specifiers"
+        switch; the Classify tab then shows the prefixed WRB name.
+  \item No new exports; the computation lives in internal helpers.
+}
+
 # soilKey 0.9.104 (2026-06-10)
 
 The "**USDA family (5th level)**" release. Deepens USDA Soil Taxonomy

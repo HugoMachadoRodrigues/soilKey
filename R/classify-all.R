@@ -49,6 +49,9 @@
 #' @param include_family Forwarded to \code{\link{classify_usda}} (default
 #'        \code{FALSE}) to derive the USDA 5th-level family. No effect on the
 #'        other systems.
+#' @param specifiers Forwarded to \code{\link{classify_wrb2022}} (default
+#'        \code{FALSE}) to auto-attach WRB depth specifiers. No effect on the
+#'        other systems.
 #' @param ... Additional named arguments are silently ignored.
 #' @return A named list with elements:
 #'   \itemize{
@@ -83,6 +86,7 @@ classify_all <- function(pedon,
                             on_missing     = c("warn", "silent", "error"),
                             include_familia = TRUE,
                             include_family = FALSE,
+                            specifiers = FALSE,
                             ...) {
   on_missing <- match.arg(on_missing)
 
@@ -95,7 +99,8 @@ classify_all <- function(pedon,
 
   if ("wrb2022" %in% systems) {
     out$wrb <- tryCatch(
-      classify_wrb2022(pedon, on_missing = on_missing),
+      classify_wrb2022(pedon, on_missing = on_missing,
+                         specifiers = specifiers),
       error = function(e) {
         warning(sprintf("classify_wrb2022 failed: %s", conditionMessage(e)),
                   call. = FALSE)

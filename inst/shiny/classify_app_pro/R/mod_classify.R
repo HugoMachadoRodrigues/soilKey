@@ -49,7 +49,8 @@ classify_server <- function(id, rv, settings) {
           systems         = sys,
           on_missing      = cfg$on_missing,
           include_familia = cfg$include_familia,
-          include_family  = isTRUE(cfg$include_family)
+          include_family  = isTRUE(cfg$include_family),
+          specifiers      = isTRUE(cfg$specifiers)
         )
       })
     })

@@ -10,6 +10,7 @@ classify_all(
   on_missing = c("warn", "silent", "error"),
   include_familia = TRUE,
   include_family = FALSE,
+  specifiers = FALSE,
   ...
 )
 }
@@ -28,6 +29,10 @@ every system.}
 
 \item{include_family}{Forwarded to \code{\link{classify_usda}} (default
 \code{FALSE}) to derive the USDA 5th-level family. No effect on the
+other systems.}
+
+\item{specifiers}{Forwarded to \code{\link{classify_wrb2022}} (default
+\code{FALSE}) to auto-attach WRB depth specifiers. No effect on the
 other systems.}
 
 \item{...}{Additional named arguments are silently ignored.}

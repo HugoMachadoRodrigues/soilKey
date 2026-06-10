@@ -648,6 +648,7 @@ qual_haplic <- function(pedon) {
     }
     return(list(
       passed = res$passed,
+      layers = res$layers %||% integer(0),
       trace_entry = list(passed = res$passed,
                          missing = res$missing %||% character(0),
                          specifier = spec$prefix,
@@ -669,6 +670,7 @@ qual_haplic <- function(pedon) {
                                    note = "diagnostic threw error")))
   }
   list(passed = res$passed,
+       layers = res$layers %||% integer(0),
        trace_entry = list(passed = res$passed,
                           missing = res$missing %||% character(0)))
 }
@@ -684,11 +686,16 @@ qual_haplic <- function(pedon) {
 #' @param rsg_code Two-letter RSG code (e.g. \code{"FR"} for Ferralsols).
 #' @param rules Optional pre-loaded rules list (saves I/O when many
 #'        RSGs are tested).
+#' @param specifiers If \code{TRUE}, auto-attach WRB Ch 5 depth specifiers
+#'        (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored
+#'        qualifiers based on the feature's actual depth. Default
+#'        \code{FALSE} leaves names byte-identical to earlier versions.
 #' @return A list with \code{principal} (character vector),
 #'         \code{supplementary} (character vector), \code{trace}, and
 #'         \code{trace_supplementary}.
 #' @export
-resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
+resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
+                                   specifiers = FALSE) {
   rules <- rules %||% load_rules("wrb2022")
   qfile <- system.file("rules/wrb2022/qualifiers.yaml",
                           package = "soilKey")
@@ -710,16 +717,24 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   trace_supplementary <- list()
   matched_principal     <- character(0)
   matched_supplementary <- character(0)
+  layers_principal      <- list()   # qualifier name -> feature layers
+  layers_supplementary  <- list()
 
   for (qname in per_rsg$principal %||% character(0)) {
     ev <- .evaluate_qualifier(pedon, qname)
     trace_principal[[qname]] <- ev$trace_entry
-    if (isTRUE(ev$passed)) matched_principal <- c(matched_principal, qname)
+    if (isTRUE(ev$passed)) {
+      matched_principal <- c(matched_principal, qname)
+      layers_principal[[qname]] <- ev$layers %||% integer(0)
+    }
   }
   for (qname in per_rsg$supplementary %||% character(0)) {
     ev <- .evaluate_qualifier(pedon, qname)
     trace_supplementary[[qname]] <- ev$trace_entry
-    if (isTRUE(ev$passed)) matched_supplementary <- c(matched_supplementary, qname)
+    if (isTRUE(ev$passed)) {
+      matched_supplementary <- c(matched_supplementary, qname)
+      layers_supplementary[[qname]] <- ev$layers %||% integer(0)
+    }
   }
 
   matched_principal <- .suppress_qualifier_siblings(matched_principal)
@@ -728,6 +743,17 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL) {
   # (only the most-specific sibling survives) keeps parenthesised
   # tags concise.
   matched_supplementary <- .suppress_qualifier_siblings(matched_supplementary)
+
+  # v0.9.105: opt-in auto-attachment of WRB Ch 5 depth specifiers. Applied
+  # AFTER sibling suppression (which keys on bare family names) so it never
+  # interferes with it -- the specifier is just a prefix on the surviving
+  # name. specifiers = FALSE leaves the canonical names byte-identical.
+  if (isTRUE(specifiers)) {
+    matched_principal <-
+      .apply_depth_specifiers(pedon, matched_principal, layers_principal)
+    matched_supplementary <-
+      .apply_depth_specifiers(pedon, matched_supplementary, layers_supplementary)
+  }
 
   list(principal     = matched_principal,
        supplementary = matched_supplementary,
