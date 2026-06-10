@@ -1,3 +1,122 @@
+# soilKey 0.9.103 (2026-06-10)
+
+The "**Gridded prediction**" release. Phase 3 (final) of the mapping
+roadmap: produce a raster soil-class map over an area of interest. The
+Map tab gains a third sub-tab, \emph{Grid prediction}, offering three
+selectable methods -- all reduced to one common shape (a categorical
+\code{terra} raster rendered with \code{leaflet::addRasterImage()}).
+
+## New: "Grid prediction" sub-tab in the Map tab
+
+\itemize{
+  \item \strong{SoilGrids covariates + key} -- the differentiator. For
+        each cell of a regular grid, samples SoilGrids covariates
+        (clay / sand / silt / pH / SOC / CEC) at two depths via
+        \code{lookup_soilgrids()}, assembles a two-horizon pseudo-pedon
+        and runs the \emph{deterministic key}. Unlike the SoilGrids
+        MostProbable layer (which predicts the class by ML), this
+        applies the key to covariates. Needs network; morphological
+        diagnostics are unavailable from covariates, so the result
+        carries evidence grade C and leans to Cambisol / Regosol.
+  \item \strong{Interpolate points} -- nearest-neighbour (Voronoi) of
+        the \emph{Batch classify} points (or demo points) across the
+        grid. Offline; the genuine pedon-scale soil map.
+  \item \strong{SoilGrids overlay} -- samples the MostProbable WRB
+        raster on the grid and maps integers to RSG via
+        \code{soilgrids_wrb_lut()}. A lightweight ML reference to
+        compare against the key.
+}
+
+The area of interest is a bounding box (typed, or captured from the
+current map view) with a resolution slider (capped at 1600 cells to
+bound network + classification time). The result is summarised by class
+(cells + share) and exportable as a GeoTIFF via \code{terra::writeRaster()}.
+
+This completes the three-phase mapping roadmap (point prior, batch soil
+map, gridded prediction). No new package exports and no change to any
+classifier; the tab orchestrates existing spatial functions.
+
+# soilKey 0.9.102 (2026-06-10)
+
+The "**Batch soil map**" release. Phase 2 of the mapping roadmap: turn
+a set of described profiles into a classified point map. Where v0.9.101
+read a prior at one clicked point, this release classifies *many*
+profiles at once and plots each by its class -- the genuine
+pedon-scale soil map, every point backed by a deterministic
+classification.
+
+## New: "Batch classify" sub-tab in the Map tab
+
+The Map tab now hosts two sub-tabs. \emph{Point prior} is the v0.9.101
+single-point map; \emph{Batch classify} is new.
+
+\itemize{
+  \item Two point sources: \strong{Demo (fixtures)} spreads N canonical
+        fixtures across Brazil (so the tab is demonstrable with no
+        data), or \strong{Upload CSV} ingests a long-format table (one
+        row per horizon) with an id column, lat/lon and horizon
+        attributes.
+  \item Each profile becomes a \code{PedonRecord} and is classified
+        under all three systems with \code{classify_all()}. Points are
+        drawn on a \pkg{leaflet} map coloured by reference soil group /
+        order (selectable: WRB 2022 / SiBCS 5 / USDA ST 13), with a
+        legend and a per-point popup listing all three class names and
+        evidence grades.
+  \item A summary table lists every classified point, and
+        \strong{Export GeoPackage} writes the classified point set to a
+        \code{.gpkg} via \pkg{sf} (same idiom as \code{report_to_qgis()}).
+}
+
+The CSV parser groups rows by profile id and reuses
+\code{PedonRecord$new()} (which normalises each horizon table via the
+canonical schema); the taxonomic key is, as everywhere, deterministic
+R code. \strong{Phase 3} (gridded prediction) remains exploratory and
+is tracked in \file{ARCHITECTURE.md}.
+
+# soilKey 0.9.101 (2026-06-10)
+
+The "**Interactive map**" release. Opens the mapping roadmap by giving
+the professional Shiny app its first cartographic surface: a
+\pkg{leaflet} map where the user clicks to place a point and queries the
+SoilGrids class prior at that location. No change to the taxonomic key
+-- this is spatial *reading*, not classification.
+
+## New: "Map" tab in the Pro Shiny app
+
+A ninth tab joins \code{run_classify_app(ui = "pro")}, sitting between
+\emph{Spatial} and \emph{Uncertainty}.
+
+\itemize{
+  \item An interactive \pkg{leaflet} map (OpenStreetMap / Esri imagery /
+        CartoDB / OpenTopoMap basemaps). Click anywhere to drop the
+        query point and draw its buffer.
+  \item "Query prior here" runs \code{soil_classes_at_location()} at the
+        active coordinate and renders the ranked class distribution
+        (WRB 2022 / USDA ST 13 / SiBCS 5) plus the canonical
+        typical-attribute table. The deterministic key is never invoked
+        from this tab.
+  \item The tab is useful \emph{with or without} a built pedon: when a
+        pedon exists, a map click rewrites \code{pedon$site$lat/lon} so
+        the \emph{Spatial} tab stays in sync; otherwise the clicked
+        coordinate is held locally.
+}
+
+This is \strong{Phase 1} of the three-phase mapping roadmap. Phase 2
+(batch multi-profile classification from an uploaded point set, plotted
+by class) and Phase 3 (gridded prediction) are tracked in
+\file{ARCHITECTURE.md} and are not part of this release.
+
+## User-facing changes
+
+\itemize{
+  \item New \code{Suggests} dependency: \pkg{leaflet}. The \code{"pro"}
+        app now lists it alongside \pkg{bslib} / \pkg{shinyWidgets} /
+        \pkg{plotly}; \code{run_classify_app(ui = "pro")} raises the
+        usual copy-pasteable install hint if it is absent.
+  \item No new package exports and no change to any classifier; the tab
+        reuses the existing \code{soil_classes_at_location()} engine.
+}
+
 # soilKey 0.9.100 (2026-05-19)
 
 The "**Provenance-weighted uncertainty**" release. Last of the four

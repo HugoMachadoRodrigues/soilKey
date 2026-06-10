@@ -961,6 +961,14 @@ The package fills three identifiable gaps in the literature:
 
 The methodological paper can position `soilKey` as open infrastructure for digital pedology, complementary to the SoilGrids mapping work (which classifies from *covariates* at pixel scale) — while `soilKey` classifies from *profile data* at pedon scale, using the canonical key. These are distinct and complementary inferences.
 
+### 14.1 Mapping roadmap (Shiny "Map" tab)
+
+The Pro Shiny app's **Map** tab (shipped v0.9.101) operationalises this positioning incrementally, in three phases. The guiding principle is that soilKey maps *from described profiles outward*, never substituting for pixel-scale covariate models:
+
+1. **Phase 1 — point prior (shipped, v0.9.101).** A `leaflet` map where the user clicks a coordinate and reads the SoilGrids class prior there via `soil_classes_at_location()`. Pure spatial *reading*; the deterministic key is not invoked. Coordinate state is shared with the Spatial tab through `pedon$site$lat/lon`.
+2. **Phase 2 — batch multi-profile (shipped, v0.9.102).** The Map tab's *Batch classify* sub-tab builds one `PedonRecord` per point — from demo fixtures scattered across Brazil, or from an uploaded long-format CSV grouped by id (the parser reuses `PedonRecord$new()`, which normalises each horizon table via `ensure_horizon_schema()`) — runs `classify_all()` per profile, and plots the results as markers coloured by reference soil group / order, with a legend, per-point popups (all three class names + evidence grades) and a GeoPackage export (`sf`, same idiom as `report_to_qgis()`). This is the genuine *pedon-scale soil map*: every mapped class is backed by a described, classified profile.
+3. **Phase 3 — gridded prediction (shipped, v0.9.103).** The Map tab's *Grid prediction* sub-tab produces a categorical class raster over a bounding box, via three selectable methods reduced to one common shape (a vector of class codes over the cell-centre coordinates of a regular `terra` grid → a categorical `SpatRaster` → `leaflet::addRasterImage()`): (a) **SoilGrids covariates + key** — `lookup_soilgrids()` samples clay/sand/silt/pH/SOC/CEC at two depths per cell (one vectorised call per property covers the whole grid), a two-horizon pseudo-pedon is built and the *deterministic key* is run; (b) **interpolate points** — `sf::st_nearest_feature()` of the Phase-2 classified points to the grid; (c) **SoilGrids overlay** — the MostProbable WRB raster sampled on the grid via `soilgrids_wrb_lut()`. Results export to GeoTIFF (`terra::writeRaster`). Method (a) crosses into pixel-scale territory and is therefore framed as *complementary to*, not a replacement for, SoilGrids — consistent with §14 above; it carries evidence grade C because morphological diagnostics are unavailable from covariates.
+
 ---
 
 ## 15. Immediate next steps

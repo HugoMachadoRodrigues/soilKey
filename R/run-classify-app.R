@@ -15,9 +15,11 @@
 #'     from a canonical fixture, a CSV upload, or an interactive horizon
 #'     editor; classify under WRB 2022 / SiBCS 5 / USDA ST 13 with the full
 #'     key trace; run VLM photo extraction, OSSL spectral gap-fill, the
-#'     SoilGrids spatial prior, and a Monte-Carlo robustness analysis; and
-#'     download a cross-system HTML or PDF report. Needs the optional
-#'     packages \pkg{bslib}, \pkg{shinyWidgets} and \pkg{plotly}.}
+#'     SoilGrids spatial prior, an interactive \pkg{leaflet} map that queries
+#'     the class prior at a clicked point, and a Monte-Carlo robustness
+#'     analysis; and download a cross-system HTML or PDF report. Needs the
+#'     optional packages \pkg{bslib}, \pkg{shinyWidgets}, \pkg{plotly} and
+#'     \pkg{leaflet}.}
 #'   \item{\code{"classic"}}{The original single-page uploader (v0.9.39):
 #'     drag-and-drop a CSV and get the three classifications side-by-side.
 #'     Needs only \pkg{shiny} and \pkg{DT}.}
@@ -43,7 +45,7 @@ run_classify_app <- function(ui = c("pro", "classic"),
   ui <- match.arg(ui)
 
   needed <- if (ui == "pro")
-    c("shiny", "bslib", "DT", "plotly", "shinyWidgets")
+    c("shiny", "bslib", "DT", "plotly", "shinyWidgets", "leaflet")
   else
     c("shiny", "DT")
   missing_pkgs <- needed[!vapply(needed, requireNamespace,

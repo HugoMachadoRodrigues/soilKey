@@ -11,6 +11,10 @@
 #                 the machine unless a live provider is configured).
 #   * Spectra  -- gap-fill horizon attributes from a Vis-NIR spectrum (OSSL).
 #   * Spatial  -- SoilGrids spatial prior at the profile coordinates.
+#   * Map      -- interactive leaflet maps. "Point prior": click to place a
+#                 point and query the SoilGrids class prior there. "Batch
+#                 classify": classify many profiles at once and map them by
+#                 class (with GeoPackage export).
 #   * Uncertainty -- Monte-Carlo robustness of the classification.
 #   * Report   -- download a self-contained HTML or PDF cross-system report.
 #   * Settings -- diagnostic engine, Tier-3 strict mode, missing-data policy.
@@ -34,7 +38,7 @@
   }
   invisible(TRUE)
 }
-.pro_require(c("shiny", "bslib", "DT", "plotly", "shinyWidgets"))
+.pro_require(c("shiny", "bslib", "DT", "plotly", "shinyWidgets", "leaflet"))
 
 library(shiny)
 library(soilKey)
@@ -53,6 +57,14 @@ ui <- bslib::page_navbar(
   bslib::nav_panel("Photo",       icon = icon("camera"),       photo_ui("photo")),
   bslib::nav_panel("Spectra",     icon = icon("wave-square"),  spectra_ui("spectra")),
   bslib::nav_panel("Spatial",     icon = icon("location-dot"), spatial_ui("spatial")),
+  bslib::nav_panel(
+    "Map", icon = icon("map-location-dot"),
+    bslib::navset_card_tab(
+      bslib::nav_panel("Point prior",     map_ui("map")),
+      bslib::nav_panel("Batch classify",  map_batch_ui("map_batch")),
+      bslib::nav_panel("Grid prediction", map_grid_ui("map_grid"))
+    )
+  ),
   bslib::nav_panel("Uncertainty", icon = icon("dice"),         uncertainty_ui("uncertainty")),
   bslib::nav_panel("Report",      icon = icon("file-arrow-down"), report_ui("report")),
   bslib::nav_spacer(),
@@ -88,6 +100,9 @@ server <- function(input, output, session) {
   photo_server("photo",            rv)
   spectra_server("spectra",        rv)
   spatial_server("spatial",        rv, settings)
+  map_server("map",                rv, settings)
+  map_batch_server("map_batch",    rv, settings)
+  map_grid_server("map_grid",      rv, settings)
   uncertainty_server("uncertainty", rv, settings)
   report_server("report",          rv, settings)
 }

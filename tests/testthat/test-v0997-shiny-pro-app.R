@@ -27,13 +27,14 @@ test_that("every classify_app_pro source file parses without syntax errors", {
   }
 })
 
-test_that("classify_app_pro ships the eight expected modules", {
+test_that("classify_app_pro ships the eleven expected modules", {
   app_dir <- .pro_app_dir()
   mods <- list.files(file.path(app_dir, "R"), pattern = "^mod_.*\\.R$")
   expect_setequal(
     mods,
     c("mod_pedon.R", "mod_classify.R", "mod_photo.R", "mod_spectra.R",
-      "mod_spatial.R", "mod_uncertainty.R", "mod_report.R", "mod_settings.R")
+      "mod_spatial.R", "mod_map.R", "mod_map_batch.R", "mod_map_grid.R",
+      "mod_uncertainty.R", "mod_report.R", "mod_settings.R")
   )
 })
 
@@ -64,6 +65,7 @@ test_that("module UI builders produce valid Shiny tags", {
   skip_if_not_installed("shinyWidgets")
   skip_if_not_installed("DT")
   skip_if_not_installed("plotly")
+  skip_if_not_installed("leaflet")  # map_ui() calls leaflet::leafletOutput()
 
   app_dir <- .pro_app_dir()
   env <- new.env(parent = globalenv())
@@ -72,8 +74,8 @@ test_that("module UI builders produce valid Shiny tags", {
     sys.source(f, envir = env)
   }
   for (builder in c("pedon_ui", "classify_ui", "photo_ui", "spectra_ui",
-                    "spatial_ui", "uncertainty_ui", "report_ui",
-                    "settings_ui")) {
+                    "spatial_ui", "map_ui", "map_batch_ui", "map_grid_ui",
+                    "uncertainty_ui", "report_ui", "settings_ui")) {
     ui <- get(builder, envir = env)("t")
     expect_true(inherits(ui, "shiny.tag") || inherits(ui, "shiny.tag.list"))
   }
