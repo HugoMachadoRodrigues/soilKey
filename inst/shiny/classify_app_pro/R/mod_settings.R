@@ -51,6 +51,14 @@ settings_ui <- function(id) {
         shiny::checkboxInput(
           ns("include_familia"), "Resolve SiBCS 5th level (familia)",
           value = TRUE
+        ),
+        shiny::checkboxInput(
+          ns("include_family"), "Resolve USDA 5th level (family)",
+          value = FALSE
+        ),
+        shiny::helpText(
+          "USDA family prepends class modifiers (particle-size, mineralogy, ",
+          "CEC-activity, temperature regime, ...) to the subgroup name."
         )
       )
     )
@@ -74,7 +82,8 @@ settings_server <- function(id) {
         engine          = input$engine %||% "soilkey",
         strict          = isTRUE(input$strict),
         on_missing      = input$on_missing %||% "silent",
-        include_familia = isTRUE(input$include_familia)
+        include_familia = isTRUE(input$include_familia),
+        include_family  = isTRUE(input$include_family)
       )
     })
   })

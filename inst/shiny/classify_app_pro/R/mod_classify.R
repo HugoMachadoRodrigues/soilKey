@@ -48,7 +48,8 @@ classify_server <- function(id, rv, settings) {
           rv$pedon,
           systems         = sys,
           on_missing      = cfg$on_missing,
-          include_familia = cfg$include_familia
+          include_familia = cfg$include_familia,
+          include_family  = isTRUE(cfg$include_family)
         )
       })
     })

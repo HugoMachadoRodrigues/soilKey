@@ -4,7 +4,13 @@
 \alias{classify_usda}
 \title{Classify a pedon under USDA Soil Taxonomy (13th edition)}
 \usage{
-classify_usda(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
+classify_usda(
+  pedon,
+  rules = NULL,
+  on_missing = c("warn", "silent", "error"),
+  include_family = FALSE,
+  infer_temperature = TRUE
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -13,14 +19,24 @@ classify_usda(pedon, rules = NULL, on_missing = c("warn", "silent", "error"))
 
 \item{on_missing}{One of \code{"warn"} (default), \code{"silent"},
 \code{"error"}.}
+
+\item{include_family}{If \code{TRUE}, derive and prepend the 5th-level
+family modifiers. Default \code{FALSE} (output byte-identical to
+earlier versions).}
+
+\item{infer_temperature}{When deriving the family, infer the soil
+temperature regime from latitude/elevation if
+\code{site$soil_temperature_regime} is absent (default
+\code{TRUE}). See \code{\link{family_temperature_regime_usda}}.}
 }
 \value{
 A \code{\link{ClassificationResult}} with deepest-level
-        taxon name. Each level's trace is in \code{$trace}.
+        taxon name. Each level's trace is in \code{$trace}; the family
+        attributes are in \code{$trace$family}.
 }
 \description{
-Walks the canonical 4-level USDA key (Order -> Suborder ->
-Great Group -> Subgroup) using YAML rule files at:
+Walks the canonical USDA key (Order -> Suborder -> Great Group ->
+Subgroup) using YAML rule files at:
 \itemize{
   \item \code{inst/rules/usda/key.yaml}: Order key (12 entries)
   \item \code{inst/rules/usda/suborders/<order>.yaml}
@@ -29,9 +45,12 @@ Great Group -> Subgroup) using YAML rule files at:
 }
 }
 \details{
-Stops at the deepest level for which a YAML rule file is
-available (e.g. v0.8.x: Gelisols full Path C; other 11 Orders at
-Order level only).
+With \code{include_family = TRUE} it additionally derives the 5th
+category, the \strong{family} -- a set of class modifiers
+(particle-size, mineralogy, CEC-activity, reaction, temperature
+regime, depth) PREPENDED to the subgroup name, e.g. \emph{"fine,
+kaolinitic, isohyperthermic Rhodic Hapludox"}. See
+\code{\link{classify_usda_family}}.
 }
 \references{
 Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th

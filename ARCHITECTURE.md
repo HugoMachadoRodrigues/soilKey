@@ -926,6 +926,8 @@ v0.8 will implement: mollic_usda, umbric_usda, ochric, kandic, spodic_usda, camb
 
 Positioning: USDA Soil Taxonomy has no public maintained implementation of the key; the `SoilTaxonomy` package on CRAN covers lookup tables. soilKey + Module 5 will be the first public implementation of the USDA key.
 
+**Family level (5th category) — shipped v0.9.104.** `R/familia-usda.R` adds the USDA family as a multi-label set of class modifiers prepended to the subgroup name (e.g. *"fine, kaolinitic, isohyperthermic Rhodic Hapludox"*), mirroring the SiBCS `familia` (code, not a key). Six orthogonal dimensions — particle-size, mineralogy (reusing `compute_ki`/`compute_kr`), CEC-activity, reaction, soil temperature regime, depth — each a `FamilyAttribute` with evidence + missing fields. The temperature regime reads `site$soil_temperature_regime` or infers it from latitude/elevation (flagged inferred). Exposed via `classify_usda(include_family = TRUE)` / `classify_all(include_family = TRUE)` and a Pro-app toggle; default off (output unchanged). All three systems now reach their deepest formal level. The 6th category (series) needs the external NRCS series database and stays out of scope.
+
 ### Module 6 — SiBCS 5ª edição (v0.7)
 
 v0.2 delivers the structural scaffold:

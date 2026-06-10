@@ -46,6 +46,9 @@
 #'        \code{"error"}. Forwarded verbatim to each classifier.
 #' @param include_familia Forwarded to \code{\link{classify_sibcs}} (default
 #'        \code{TRUE}). Has no effect on the other systems.
+#' @param include_family Forwarded to \code{\link{classify_usda}} (default
+#'        \code{FALSE}) to derive the USDA 5th-level family. No effect on the
+#'        other systems.
 #' @param ... Additional named arguments are silently ignored.
 #' @return A named list with elements:
 #'   \itemize{
@@ -79,6 +82,7 @@ classify_all <- function(pedon,
                             systems        = "all",
                             on_missing     = c("warn", "silent", "error"),
                             include_familia = TRUE,
+                            include_family = FALSE,
                             ...) {
   on_missing <- match.arg(on_missing)
 
@@ -112,7 +116,8 @@ classify_all <- function(pedon,
   }
   if ("usda" %in% systems) {
     out$usda <- tryCatch(
-      classify_usda(pedon, on_missing = on_missing),
+      classify_usda(pedon, on_missing = on_missing,
+                      include_family = include_family),
       error = function(e) {
         warning(sprintf("classify_usda failed: %s", conditionMessage(e)),
                   call. = FALSE)
