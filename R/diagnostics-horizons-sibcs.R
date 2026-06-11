@@ -108,7 +108,24 @@ horizonte_A_chernozemico <- function(pedon,
                                         max_value_dry   = 5,
                                         min_thickness_cm = 18) {
   h <- pedon$horizons
-  candidates <- which(!is.na(h$top_cm) & h$top_cm <= 5)
+  # v0.9.107: the chernic A may be split across stacked A horizons (A1/A2/...);
+  # take the CONTIGUOUS run of A-master horizons from the surface so the
+  # thickness test aggregates the whole chernic A, not just the topmost slice.
+  ord <- order(h$top_cm, na.last = NA)
+  candidates <- integer(0); prev_bot <- 0
+  for (i in ord) {
+    if (is.na(h$top_cm[i])) next
+    is_A <- grepl("^[0-9]*A", h$designation[i] %||% "")
+    if (length(candidates) == 0L) {
+      if (h$top_cm[i] <= 5 && is_A) {
+        candidates <- i
+        prev_bot <- h$bottom_cm[i] %||% h$top_cm[i]
+      }
+    } else if (is_A && h$top_cm[i] <= prev_bot + 1) {
+      candidates <- c(candidates, i)
+      prev_bot <- h$bottom_cm[i] %||% prev_bot
+    } else break
+  }
   if (length(candidates) == 0L) {
     return(DiagnosticResult$new(
       name = "horizonte_A_chernozemico",

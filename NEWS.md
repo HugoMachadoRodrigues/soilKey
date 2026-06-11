@@ -1,3 +1,40 @@
+# soilKey 0.9.107 (2026-06-11)
+
+The "**SiBCS accuracy**" release. Guided by the v0.9.106 benchmark, a
+multi-agent root-cause pass found that five SiBCS orders scored zero
+recall on the Redape gold standard because the loader/gate dropped
+morphological signal that the source data actually carries. Recovering
+four of them lifts Redape order accuracy from \strong{43/94 (45.7\%) to
+56/94 (59.6\%)} -- \strong{+13 profiles} -- with the 44 canonical
+fixtures unchanged.
+
+## Recovered orders
+
+\itemize{
+  \item \strong{Gleissolos} (0 -> 8/8): the Redape loader now promotes the
+        \code{g} (gleyic) master-letter suffix (Cg, Cgnz) to the
+        redoximorphic signal -- the \code{REDOXICO} flag it relied on is a
+        stricter, different concept and is false on reduced glei matrices.
+  \item \strong{Plintossolos} (0 -> 3/3): the loader honours the \code{f}
+        (plintita) suffix (Btf), mirroring the existing petro/lito-plinthite
+        promotion.
+  \item \strong{Vertissolos} (0 -> 2/2): the loader promotes the \code{v}
+        (vertic) suffix (Bv, Cvz, Btv) to slickensides + cracks; a new
+        \strong{B-planico exclusion} in \code{vertissolo()} keeps a
+        \emph{Planossolo vertissolico} (abrupt textural change) from
+        flipping to Vertissolo.
+  \item \strong{Chernossolos} (0 -> 1/2): \code{horizonte_A_chernozemico()}
+        now aggregates the \emph{contiguous run of A horizons} from the
+        surface (A1/A2/...) instead of only the topmost slice, so the
+        thickness test sees the whole chernic A.
+}
+
+All loader fixes are scoped to the Redape ingestion path and never flip a
+global default, so the \code{*_designation_inference} guard tests and the
+canonical-fixture names stay byte-identical. (Nitossolos requires a
+GeoTab structure/cerosidade code legend that is not documented in the
+source; deferred.)
+
 # soilKey 0.9.106 (2026-06-11)
 
 The "**Reproducible benchmark suite**" release. Adds the pedologist-curated

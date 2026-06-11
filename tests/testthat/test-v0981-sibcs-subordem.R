@@ -98,9 +98,11 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   res <- suppressMessages(suppressWarnings(benchmark_redape(peds,
                                                             level = "order",
                                                             verbose = FALSE)))
-  # 45.7% +/- 1pp tolerance to allow harmless test drift
-  expect_gt(res$accuracy, 0.42)
-  expect_lt(res$accuracy, 0.49)
+  # v0.9.107: order accuracy lifted to 59.6% (56/94) by the SiBCS accuracy
+  # fixes (gleyic/plinthite/vertic suffix promotion + stacked chernic A).
+  # Pinned with a +/- tolerance to catch unintended drift.
+  expect_gt(res$accuracy, 0.56)
+  expect_lt(res$accuracy, 0.63)
   expect_equal(res$n_compared, 94L)
 })
 
