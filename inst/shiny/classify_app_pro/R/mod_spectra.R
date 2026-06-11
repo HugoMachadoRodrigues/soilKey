@@ -131,10 +131,24 @@ spectra_server <- function(id, rv) {
           bslib::card_body(shiny::verbatimTextOutput(ns("status")))
         ),
         bslib::card(
+          bslib::card_header("Attached Vis-NIR spectrum"),
+          bslib::card_body(plotly::plotlyOutput(ns("spectrum"), height = "300px"))
+        ),
+        bslib::card(
           bslib::card_header("Horizon attributes (post gap-fill)"),
           bslib::card_body(DT::DTOutput(ns("attr_table")))
         )
       )
+    })
+
+    # ---- the attached spectrum, one trace per horizon ---------------------
+    output$spectrum <- plotly::renderPlotly({
+      shiny::req(rv$pedon)
+      sp <- rv$pedon$spectra
+      mat <- if (!is.null(sp)) sp$vnir else NULL
+      desig <- if (!is.null(rv$pedon$horizons))
+        as.data.frame(rv$pedon$horizons)$designation else NULL
+      pro_spectrum_plot(mat, designations = desig)
     })
 
     output$status <- shiny::renderText({

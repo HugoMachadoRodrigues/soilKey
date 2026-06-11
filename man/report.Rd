@@ -10,6 +10,8 @@ report(
   format = c("auto", "html", "pdf"),
   pedon = NULL,
   title = NULL,
+  include_family = FALSE,
+  specifiers = FALSE,
   ...
 )
 }
@@ -28,6 +30,18 @@ given explicitly.}
 horizons table and provenance log are included.}
 
 \item{title}{Optional report title.}
+
+\item{include_family}{When \code{x} is a \code{PedonRecord} (so the
+three keys are run here), passes through to
+\code{\link{classify_usda}} to append the USDA family
+(5th category) to the subgroup. Default \code{FALSE} keeps
+the output byte-identical to earlier versions.}
+
+\item{specifiers}{When \code{x} is a \code{PedonRecord}, passes through
+to \code{\link{classify_wrb2022}} to attach WRB depth
+specifiers (Epi-/Endo-/...) to depth-anchored qualifiers.
+Default \code{FALSE}. Both flags are ignored when \code{x}
+is already a (list of) \code{ClassificationResult}.}
 
 \item{...}{Passed to method-specific renderers.}
 }

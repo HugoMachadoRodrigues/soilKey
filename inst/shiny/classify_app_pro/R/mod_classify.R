@@ -22,6 +22,18 @@ classify_ui <- function(id) {
                           icon = shiny::icon("play"),
                           class = "btn-primary w-100"),
       shiny::tags$hr(),
+      # The two deepest-level options live on the Settings tab, but they are
+      # surfaced here too so the user can discover and flip them without
+      # leaving Classify. Both switches two-way-sync with the shared rv, so
+      # they stay identical to the Settings tab's controls.
+      shiny::h6("Deepest level"),
+      shinyWidgets::materialSwitch(
+        ns("include_family"), "USDA family (5th level)",
+        value = FALSE, status = "primary"),
+      shinyWidgets::materialSwitch(
+        ns("specifiers"), "WRB depth specifiers",
+        value = FALSE, status = "primary"),
+      shiny::tags$hr(),
       shiny::helpText(
         "The taxonomic key is deterministic -- identical inputs always give ",
         "the same class. Engine and strict mode are set on the Settings tab."
@@ -34,6 +46,31 @@ classify_ui <- function(id) {
 
 classify_server <- function(id, rv, settings) {
   shiny::moduleServer(id, function(input, output, session) {
+
+    # ---- mirror the depth-level switches onto the shared rv -----------------
+    # Same guarded two-way sync as the Settings module: rv is the source of
+    # truth, the identical() guards keep the round-trip from looping. Flipping
+    # the switch here therefore also moves the matching Settings switch (and
+    # feeds settings(), which the classification below reads).
+    shiny::observeEvent(input$include_family, {
+      v <- isTRUE(input$include_family)
+      if (!identical(v, isTRUE(rv$include_family))) rv$include_family <- v
+    }, ignoreInit = TRUE)
+    shiny::observeEvent(rv$include_family, {
+      v <- isTRUE(rv$include_family)
+      if (!identical(v, isTRUE(input$include_family)))
+        shinyWidgets::updateMaterialSwitch(session, "include_family", value = v)
+    }, ignoreInit = TRUE)
+
+    shiny::observeEvent(input$specifiers, {
+      v <- isTRUE(input$specifiers)
+      if (!identical(v, isTRUE(rv$specifiers))) rv$specifiers <- v
+    }, ignoreInit = TRUE)
+    shiny::observeEvent(rv$specifiers, {
+      v <- isTRUE(rv$specifiers)
+      if (!identical(v, isTRUE(input$specifiers)))
+        shinyWidgets::updateMaterialSwitch(session, "specifiers", value = v)
+    }, ignoreInit = TRUE)
 
     results <- shiny::eventReactive(input$run, {
       shiny::req(rv$pedon)

@@ -83,9 +83,14 @@ pedon_ui <- function(id) {
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
                      shiny::strong("Horizons (click a cell to edit)"),
-                     shiny::actionButton(ns("add_row"), "Add row",
-                                         icon = shiny::icon("plus"),
-                                         class = "btn-sm btn-outline-secondary"))
+                     shiny::div(
+                       class = "d-flex gap-2",
+                       shiny::downloadButton(ns("download_hz"), "CSV",
+                                             icon = shiny::icon("download"),
+                                             class = "btn-sm btn-outline-secondary"),
+                       shiny::actionButton(ns("add_row"), "Add row",
+                                           icon = shiny::icon("plus"),
+                                           class = "btn-sm btn-outline-secondary")))
         ),
         bslib::card_body(DT::DTOutput(ns("hz_table")))
       ),
@@ -113,6 +118,38 @@ pedon_server <- function(id, rv) {
       filename = function() "soilKey_horizons_template.csv",
       content  = function(file) writeLines(.pedon_starter_csv, file)
     )
+
+    # Download the current horizon table as CSV (edit in a spreadsheet, archive,
+    # or re-upload later).
+    output$download_hz <- shiny::downloadHandler(
+      filename = function() sprintf("soilKey_horizons_%s.csv",
+                                    input$site_id %||% "pedon"),
+      content  = function(file) {
+        cur <- hz()
+        shiny::validate(shiny::need(!is.null(cur) && nrow(cur) > 0L,
+                                    "No horizons to download."))
+        utils::write.csv(cur, file, row.names = FALSE)
+      }
+    )
+
+    # ---- one-click example profile (bumped by the Help modal / ribbon) -----
+    # The canonical Ferralsol fixture is a complete PedonRecord; loading it
+    # populates the editor AND builds rv$pedon, so every tab is immediately
+    # usable -- the app's on-ramp for first-time users.
+    shiny::observeEvent(rv$example_request, {
+      p <- tryCatch(pro_load_fixture("make_ferralsol_canonical"),
+                    error = function(e) NULL)
+      if (is.null(p)) return(invisible())
+      hz(as.data.frame(p$horizons))
+      hz_reload(hz_reload() + 1L)
+      shiny::updateTextInput(session, "site_id", value = p$site$id %||% "ferralsol-demo")
+      shiny::updateNumericInput(session, "lat", value = p$site$lat %||% -22.5)
+      shiny::updateNumericInput(session, "lon", value = p$site$lon %||% -43.7)
+      rv$pedon <- p
+      shiny::showNotification(
+        "Loaded the example Ferralsol — press Classify to see all three systems.",
+        type = "message", duration = 6)
+    }, ignoreInit = TRUE)
 
     # ---- load horizons from the chosen source -----------------------------
     shiny::observeEvent(input$load, {
@@ -204,6 +241,21 @@ pedon_server <- function(id, rv) {
       if (is.null(df) || nrow(df) == 0L) {
         shiny::showNotification("Load or add at least one horizon first.",
                                 type = "warning")
+        return(invisible())
+      }
+      # Guard the coordinates before they reach the key: an out-of-range
+      # lat/lon would silently poison the SoilGrids prior and the inferred
+      # temperature regime. Blank is allowed (coords are optional).
+      lat <- suppressWarnings(as.numeric(input$lat))
+      lon <- suppressWarnings(as.numeric(input$lon))
+      if (!is.na(lat) && (lat < -90 || lat > 90)) {
+        shiny::showNotification(
+          "Latitude must be between -90 and 90.", type = "error")
+        return(invisible())
+      }
+      if (!is.na(lon) && (lon < -180 || lon > 180)) {
+        shiny::showNotification(
+          "Longitude must be between -180 and 180.", type = "error")
         return(invisible())
       }
       built <- tryCatch({

@@ -4,7 +4,15 @@
 \alias{report_pdf}
 \title{Render a soilKey classification report as PDF}
 \usage{
-report_pdf(x, file, pedon = NULL, title = NULL, ...)
+report_pdf(
+  x,
+  file,
+  pedon = NULL,
+  title = NULL,
+  include_family = FALSE,
+  specifiers = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{ClassificationResult}, list of results, or
@@ -15,6 +23,9 @@ report_pdf(x, file, pedon = NULL, title = NULL, ...)
 \item{pedon}{Optional \code{PedonRecord}.}
 
 \item{title}{Report title.}
+
+\item{include_family, specifiers}{Passed through to the keys when
+\code{x} is a \code{PedonRecord}; see \code{\link{report}}.}
 
 \item{...}{Passed to \code{rmarkdown::render()}.}
 }

@@ -1,0 +1,86 @@
+/* =========================================================================
+   soilKey Pro -- visual polish (v0.9.108)
+   A soil-science palette (browns/terracotta/moss) layered on the bslib theme,
+   plus card/navbar refinements, a pedon ribbon, and a soft busy-state spinner.
+   Colours are kept in sync with the bs_theme() primary/secondary in app.R.
+   ========================================================================= */
+
+:root {
+  --sk-brown:     #6B4423;   /* primary   -- topsoil */
+  --sk-terra:     #A0522D;   /* secondary -- subsoil / accent */
+  --sk-moss:      #4F772D;   /* success   -- vegetation */
+  --sk-sand:      #EFE6DA;   /* light background wash */
+  --sk-ink:       #2E2A26;   /* text */
+}
+
+/* ---- navbar wordmark ---------------------------------------------------- */
+.navbar.navbar-expand-md .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.navbar-brand .sk-mark { color: var(--sk-terra); }
+
+/* ---- the pedon ribbon (global status bar under the navbar) -------------- */
+.sk-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.45rem 1rem;
+  background: linear-gradient(90deg, var(--sk-sand), #fff);
+  border-bottom: 1px solid rgba(107, 68, 35, 0.18);
+  font-size: 0.875rem;
+}
+.sk-ribbon .sk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(107, 68, 35, 0.2);
+  white-space: nowrap;
+}
+.sk-ribbon .sk-chip .sk-key { color: var(--sk-brown); font-weight: 600; }
+.sk-ribbon .sk-built { color: var(--sk-moss); font-weight: 600; }
+.sk-ribbon .sk-empty { color: #9a8c7d; }
+
+/* ---- cards: a touch of warmth + lift ----------------------------------- */
+.card { border-color: rgba(107, 68, 35, 0.15); }
+.card > .card-header {
+  background: var(--sk-sand);
+  border-bottom: 1px solid rgba(107, 68, 35, 0.15);
+  font-weight: 600;
+  color: var(--sk-ink);
+}
+
+/* ---- primary action buttons feel tactile ------------------------------- */
+.btn-primary { transition: filter 0.12s ease, transform 0.12s ease; }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:active { transform: translateY(1px); }
+
+/* ---- evidence badges keep their semantic colours but rounder ----------- */
+.badge { border-radius: 999px; letter-spacing: 0.2px; }
+
+/* ---- soft busy state: dim + spinner over any recalculating output ------ */
+.recalculating, .shiny-output-error ~ .recalculating {
+  position: relative;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+.recalculating::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 28px; height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 3px solid rgba(107, 68, 35, 0.25);
+  border-top-color: var(--sk-terra);
+  border-radius: 50%;
+  animation: sk-spin 0.7s linear infinite;
+}
+@keyframes sk-spin { to { transform: rotate(360deg); } }
+
+/* ---- getting-started modal: a little breathing room -------------------- */
+.sk-steps { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.sk-steps li { margin-bottom: 0.3rem; }

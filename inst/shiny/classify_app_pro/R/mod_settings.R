@@ -73,7 +73,7 @@ settings_ui <- function(id) {
   )
 }
 
-settings_server <- function(id) {
+settings_server <- function(id, rv) {
   shiny::moduleServer(id, function(input, output, session) {
 
     # Push engine + strict mode into package options whenever they change.
@@ -85,14 +85,39 @@ settings_server <- function(id) {
       options(soilKey.rsg_strict = isTRUE(input$strict))
     }, ignoreInit = FALSE)
 
+    # ---- two-way sync of the depth-level toggles with the shared rv ---------
+    # rv is the single source of truth (the Classify tab mirrors the same two
+    # switches). The `identical()` guards make the round-trip idempotent, so
+    # updating the widget from rv never bounces back and writes rv again.
+    shiny::observeEvent(input$include_family, {
+      v <- isTRUE(input$include_family)
+      if (!identical(v, isTRUE(rv$include_family))) rv$include_family <- v
+    }, ignoreInit = TRUE)
+    shiny::observeEvent(rv$include_family, {
+      v <- isTRUE(rv$include_family)
+      if (!identical(v, isTRUE(input$include_family)))
+        shiny::updateCheckboxInput(session, "include_family", value = v)
+    }, ignoreInit = TRUE)
+
+    shiny::observeEvent(input$specifiers, {
+      v <- isTRUE(input$specifiers)
+      if (!identical(v, isTRUE(rv$specifiers))) rv$specifiers <- v
+    }, ignoreInit = TRUE)
+    shiny::observeEvent(rv$specifiers, {
+      v <- isTRUE(rv$specifiers)
+      if (!identical(v, isTRUE(input$specifiers)))
+        shinyWidgets::updateMaterialSwitch(session, "specifiers", value = v)
+    }, ignoreInit = TRUE)
+
     shiny::reactive({
       list(
         engine          = input$engine %||% "soilkey",
         strict          = isTRUE(input$strict),
         on_missing      = input$on_missing %||% "silent",
         include_familia = isTRUE(input$include_familia),
-        include_family  = isTRUE(input$include_family),
-        specifiers      = isTRUE(input$specifiers)
+        # Read the depth-level flags from rv so Settings and Classify agree.
+        include_family  = isTRUE(rv$include_family),
+        specifiers      = isTRUE(rv$specifiers)
       )
     })
   })

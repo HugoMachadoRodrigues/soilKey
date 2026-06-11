@@ -47,11 +47,25 @@ library(soilKey)
 # UI
 # ----------------------------------------------------------------------------
 
+# A soil-science palette layered on flatly (see www/soilkey.css for the rest).
+sk_theme <- bslib::bs_theme(
+  version = 5, bootswatch = "flatly",
+  primary = "#6B4423", secondary = "#A0522D", success = "#4F772D",
+  "navbar-bg" = "#6B4423"
+)
+
 ui <- bslib::page_navbar(
-  title  = "soilKey Pro",
+  title  = tags$span(class = "navbar-brand-inner",
+                     "soil", tags$span(class = "sk-mark", "Key"), " Pro"),
   id     = "main_nav",
-  theme  = bslib::bs_theme(version = 5, bootswatch = "flatly"),
+  theme  = sk_theme,
   fillable = TRUE,
+  # Stylesheet + the global pedon ribbon render above the tab content.
+  header = tagList(
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",
+                        href = "soilkey.css")),
+    uiOutput("pedon_ribbon")
+  ),
   bslib::nav_panel("Pedon",       icon = icon("layer-group"),  pedon_ui("pedon")),
   bslib::nav_panel("Classify",    icon = icon("sitemap"),      classify_ui("classify")),
   bslib::nav_panel("Photo",       icon = icon("camera"),       photo_ui("photo")),
@@ -69,6 +83,10 @@ ui <- bslib::page_navbar(
   bslib::nav_panel("Report",      icon = icon("file-arrow-down"), report_ui("report")),
   bslib::nav_spacer(),
   bslib::nav_panel("Settings",    icon = icon("gear"),         settings_ui("settings")),
+  bslib::nav_item(
+    actionLink("about", label = tagList(icon("circle-question"), "Help"),
+               class = "nav-link")
+  ),
   bslib::nav_item(
     tags$a(icon("book"), "Docs",
            href   = "https://hugomachadorodrigues.github.io/soilKey/",
@@ -90,10 +108,15 @@ server <- function(input, output, session) {
 
   # Shared, mutable application state. `pedon` is a PedonRecord (R6, reference
   # semantics) -- modules that enrich it MUST reassign rv$pedon afterwards so
-  # downstream reactives invalidate.
-  rv <- reactiveValues(pedon = NULL)
+  # downstream reactives invalidate. `example_request` is a counter the Help
+  # modal / ribbon bump to ask the Pedon tab to load the demo profile.
+  # `include_family` / `specifiers` are the two depth-level options: rv is their
+  # single source of truth, so the Settings switch and the Classify-sidebar
+  # switch stay in lock-step (each module two-way-syncs its widget to rv).
+  rv <- reactiveValues(pedon = NULL, example_request = 0L,
+                       include_family = FALSE, specifiers = FALSE)
 
-  settings <- settings_server("settings")
+  settings <- settings_server("settings", rv)
 
   pedon_server("pedon",            rv)
   classify_server("classify",      rv, settings)
@@ -105,6 +128,76 @@ server <- function(input, output, session) {
   map_grid_server("map_grid",      rv, settings)
   uncertainty_server("uncertainty", rv, settings)
   report_server("report",          rv, settings)
+
+  # ---- global pedon ribbon (persistent context across every tab) ----------
+  output$pedon_ribbon <- renderUI({
+    p <- rv$pedon
+    if (is.null(p)) {
+      return(tags$div(
+        class = "sk-ribbon",
+        tags$span(class = "sk-empty",
+                  icon("circle-info"), " No pedon yet."),
+        actionButton("ribbon_example", "Load example",
+                     icon = icon("flask"),
+                     class = "btn-sm btn-primary")))
+    }
+    lat <- p$site$lat %||% NA; lon <- p$site$lon %||% NA
+    coord <- if (!is.na(lat) && !is.na(lon))
+      sprintf("%.3f, %.3f", lat, lon) else "no coords"
+    tags$div(
+      class = "sk-ribbon",
+      tags$span(class = "sk-built", icon("circle-check"), " Pedon built"),
+      tags$span(class = "sk-chip",
+                tags$span(class = "sk-key", "ID"), p$site$id %||% "(unnamed)"),
+      tags$span(class = "sk-chip",
+                tags$span(class = "sk-key", "Horizons"), nrow(p$horizons)),
+      tags$span(class = "sk-chip",
+                tags$span(class = "sk-key", "Site"), coord))
+  })
+
+  # ---- one-click example: ask the Pedon tab to load the demo profile ------
+  load_example <- function() {
+    rv$example_request <- rv$example_request + 1L
+    bslib::nav_select("main_nav", "Pedon")
+  }
+  observeEvent(input$ribbon_example, load_example())
+
+  # ---- "Help / Getting started" modal -------------------------------------
+  observeEvent(input$about, {
+    showModal(modalDialog(
+      title = tagList(icon("seedling"), " Welcome to soilKey Pro"),
+      easyClose = TRUE, size = "l",
+      tags$p("Classify a soil profile under WRB 2022, SiBCS 5 and USDA Soil ",
+             "Taxonomy 13 -- the deterministic key is never delegated to a ",
+             "language model."),
+      tags$p(tags$strong("Workflow:")),
+      tags$ol(
+        class = "sk-steps",
+        tags$li(tags$strong("Pedon"), " -- build a profile from a fixture, a ",
+                "CSV, or by hand."),
+        tags$li(tags$strong("Classify"), " -- run all three systems with the ",
+                "full key trace."),
+        tags$li(tags$strong("Photo / Spectra / Spatial"), " -- enrich the ",
+                "pedon from images, Vis-NIR, or SoilGrids."),
+        tags$li(tags$strong("Map"), " -- point prior, batch soil map, or a ",
+                "gridded prediction."),
+        tags$li(tags$strong("Uncertainty / Report"), " -- robustness and a ",
+                "downloadable cross-system report.")
+      ),
+      tags$p(class = "text-muted small",
+             sprintf("soilKey %s",
+                     as.character(utils::packageVersion("soilKey")))),
+      footer = tagList(
+        modalButton("Close"),
+        actionButton("about_example", "Load example & classify",
+                     icon = icon("flask"), class = "btn-primary"))
+    ))
+  })
+  observeEvent(input$about_example, {
+    removeModal()
+    rv$example_request <- rv$example_request + 1L
+    bslib::nav_select("main_nav", "Classify")
+  })
 }
 
 shinyApp(ui = ui, server = server)

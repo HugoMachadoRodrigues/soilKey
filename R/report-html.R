@@ -57,6 +57,16 @@
 #' @param pedon Optional \code{PedonRecord}; when provided, its
 #'             horizons table and provenance log are included.
 #' @param title Optional report title.
+#' @param include_family When \code{x} is a \code{PedonRecord} (so the
+#'             three keys are run here), passes through to
+#'             \code{\link{classify_usda}} to append the USDA family
+#'             (5th category) to the subgroup. Default \code{FALSE} keeps
+#'             the output byte-identical to earlier versions.
+#' @param specifiers When \code{x} is a \code{PedonRecord}, passes through
+#'             to \code{\link{classify_wrb2022}} to attach WRB depth
+#'             specifiers (Epi-/Endo-/...) to depth-anchored qualifiers.
+#'             Default \code{FALSE}. Both flags are ignored when \code{x}
+#'             is already a (list of) \code{ClassificationResult}.
 #' @param ...  Passed to method-specific renderers.
 #' @return     The output path, invisibly.
 #' @export
@@ -65,6 +75,8 @@ report <- function(x,
                    format = c("auto", "html", "pdf"),
                    pedon  = NULL,
                    title  = NULL,
+                   include_family = FALSE,
+                   specifiers     = FALSE,
                    ...) {
   format <- match.arg(format)
   if (missing(file) || is.null(file) || !nzchar(file))
@@ -81,9 +93,13 @@ report <- function(x,
   }
   switch(format,
          "html" = report_html(x, file = file, pedon = pedon,
-                                title = title, ...),
+                                title = title,
+                                include_family = include_family,
+                                specifiers = specifiers, ...),
          "pdf"  = report_pdf( x, file = file, pedon = pedon,
-                                title = title, ...))
+                                title = title,
+                                include_family = include_family,
+                                specifiers = specifiers, ...))
 }
 
 
@@ -117,15 +133,17 @@ report <- function(x,
 #' Internal helper: .normalise_results
 
 #' @keywords internal
-.normalise_results <- function(x, pedon = NULL) {
+.normalise_results <- function(x, pedon = NULL,
+                                 include_family = FALSE, specifiers = FALSE) {
   if (inherits(x, "PedonRecord")) {
     if (is.null(pedon)) pedon <- x
     out <- list()
-    out$wrb   <- tryCatch(classify_wrb2022(pedon, on_missing = "silent"),
+    out$wrb   <- tryCatch(classify_wrb2022(pedon, on_missing = "silent",
+                                             specifiers = specifiers),
                             error = function(e) NULL)
     out$sibcs <- tryCatch(classify_sibcs(pedon, include_familia = TRUE),
                             error = function(e) NULL)
-    out$usda  <- tryCatch(classify_usda(pedon),
+    out$usda  <- tryCatch(classify_usda(pedon, include_family = include_family),
                             error = function(e) NULL)
     res <- Filter(Negate(is.null), out)
   } else if (inherits(x, "ClassificationResult")) {
@@ -435,6 +453,8 @@ report <- function(x,
 #' @param file   Output \code{.html} path.
 #' @param pedon  Optional \code{PedonRecord}.
 #' @param title  Report title.
+#' @param include_family,specifiers Passed through to the keys when
+#'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
 #' @param ...    Currently unused.
 #' @return       The output path, invisibly.
 #' @export
@@ -442,8 +462,12 @@ report_html <- function(x,
                         file,
                         pedon = NULL,
                         title = NULL,
+                        include_family = FALSE,
+                        specifiers = FALSE,
                         ...) {
-  norm <- .normalise_results(x, pedon = pedon)
+  norm <- .normalise_results(x, pedon = pedon,
+                             include_family = include_family,
+                             specifiers = specifiers)
   results <- norm$results
   pedon   <- norm$pedon
 

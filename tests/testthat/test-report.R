@@ -185,3 +185,56 @@ test_that("report_pdf() round-trips through rmarkdown when available", {
   expect_true(file.exists(out))
   expect_gt(file.info(out)$size, 1000)
 })
+
+
+# ---- report() depth-level passthrough (v0.9.108) ---------------------------
+# report(pedon, include_family=, specifiers=) forwards the two flags to the
+# keys it runs internally. The defaults (FALSE) must keep the output identical
+# to the historical behaviour, so the contract is "opt-in, byte-stable".
+
+# Drop the one line that legitimately varies between runs (the timestamp), so
+# the comparison is over content only.
+.report_content <- function(path) {
+  ln <- readLines(path, warn = FALSE)
+  ln[!grepl("Generated ", ln)]
+}
+
+test_that("report() default is byte-identical to classify_usda()/wrb() defaults", {
+  p   <- make_ferralsol_canonical()
+  out <- tempfile(fileext = ".html")
+  on.exit(unlink(out), add = TRUE)
+  report(p, file = out, pedon = p)              # defaults: family/specifiers off
+  body <- .report_content(out)
+  # The USDA line is the subgroup with no family modifiers prepended.
+  usda <- grep("USDA Soil Taxonomy", body, value = TRUE)
+  expect_true(any(grepl("Rhodic Hapludox", usda)))
+  expect_false(any(grepl("subactive|isothermic|, mixed,", usda)))
+})
+
+test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
+  p    <- make_ferralsol_canonical()
+  out0 <- tempfile(fileext = ".html")
+  out1 <- tempfile(fileext = ".html")
+  on.exit(unlink(c(out0, out1)), add = TRUE)
+  report(p, file = out0, pedon = p)
+  report(p, file = out1, pedon = p, include_family = TRUE)
+  b0 <- .report_content(out0)
+  b1 <- .report_content(out1)
+  # Default vs family-bearing must differ, and only the family version carries
+  # the particle-size / activity / temperature modifiers.
+  expect_false(identical(b0, b1))
+  usda1 <- grep("USDA Soil Taxonomy", b1, value = TRUE)
+  expect_true(any(grepl("fine, mixed, subactive, isothermic Rhodic Hapludox",
+                        usda1)))
+})
+
+test_that("report(specifiers=TRUE) is accepted and stays valid HTML", {
+  p   <- make_ferralsol_canonical()
+  out <- tempfile(fileext = ".html")
+  on.exit(unlink(out), add = TRUE)
+  # Smoke: the flag flows through to classify_wrb2022(specifiers=TRUE) without
+  # error and still produces a self-contained document.
+  expect_silent(report(p, file = out, pedon = p, specifiers = TRUE))
+  body <- paste(readLines(out, warn = FALSE), collapse = "\n")
+  expect_match(body, "</html>")
+})
