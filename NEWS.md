@@ -1,3 +1,56 @@
+# soilKey 0.9.106 (2026-06-11)
+
+The "**Reproducible benchmark suite**" release. Adds the pedologist-curated
+Redape dataset to the unified benchmark and a single, tolerant entry point
+that runs every available benchmark and writes a consolidated report. The
+classification engine is untouched -- this only measures it.
+
+## New: run_all_benchmarks()
+
+\code{run_all_benchmarks()} replaces the "source 22 \file{run_*.R} scripts
+by hand" workflow with one reproducible call.
+
+\itemize{
+  \item \strong{Auto-detects} which reference datasets are present locally
+        (BDsolos / FEBR / KSSL+NASIS / LUCAS+ESDB / Redape) and runs each via
+        \code{\link{benchmark_unified}}; absent datasets are skipped with a
+        note, never an error.
+  \item Always runs the offline \strong{canonical-fixture sanity row}
+        (coverage check) and adds the AfSP offline sample when present.
+  \item Returns a tidy \code{summary} (dataset x system x n x accuracy) and,
+        with \code{report_path=}, writes a consolidated Markdown report
+        listing accuracy by dataset/system and the zero-recall classes that
+        are the next improvement targets.
+}
+
+## New: Redape in benchmark_unified()
+
+\code{benchmark_unified(datasets = "redape")} now pools the Redape dataset
+(Vaz et al. 2023; ~96 pedologist-reviewed SiBCS profiles) -- the SiBCS
+gold standard -- alongside BDsolos / FEBR / KSSL / LUCAS. It reuses
+\code{\link{benchmark_redape}} and reports at the order level.
+
+## Fixes
+
+\itemize{
+  \item \code{benchmark_unified()} now loads the FEBR superconjunto with the
+        correct \code{load_febr_pedons()} (it was calling the BDsolos loader,
+        which errored on the FEBR format, so FEBR was silently dropped).
+  \item FEBR pedons are now drawn as a \strong{reproducible random sample}
+        (seed 42, RNG-state-preserving) before the \code{max_n} cap -- the
+        source file is ordered by class, so head-N sampling was badly biased
+        (it reported 0\% on an all-Planossolos slice).
+}
+
+## User-facing changes
+
+\itemize{
+  \item New export: \code{run_all_benchmarks}. Override the data root with
+        \code{options(soilKey.benchmark_root = "...")}.
+  \item A versioned suite report ships under
+        \file{inst/benchmarks/reports/}.
+}
+
 # soilKey 0.9.105 (2026-06-10)
 
 The "**WRB depth specifiers**" release. Completes the WRB 2022 Chapter 5
