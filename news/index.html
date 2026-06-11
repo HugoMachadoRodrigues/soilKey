@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.105</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.106</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,26 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.106" id="soilkey-09106-2026-06-11">soilKey 0.9.106 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09106-2026-06-11"></a></h2>
+<p>The “<strong>Reproducible benchmark suite</strong>” release. Adds the pedologist-curated Redape dataset to the unified benchmark and a single, tolerant entry point that runs every available benchmark and writes a consolidated report. The classification engine is untouched – this only measures it.</p>
+<div class="section level3">
+<h3 id="new-run_all_benchmarks-0-9-106">New: run_all_benchmarks()<a class="anchor" aria-label="anchor" href="#new-run_all_benchmarks-0-9-106"></a></h3>
+<p> replaces the “source 22  scripts by hand” workflow with one reproducible call.</p>
+</div>
+<div class="section level3">
+<h3 id="new-redape-in-benchmark_unified-0-9-106">New: Redape in benchmark_unified()<a class="anchor" aria-label="anchor" href="#new-redape-in-benchmark_unified-0-9-106"></a></h3>
+<p> now pools the Redape dataset (Vaz et al. 2023; ~96 pedologist-reviewed SiBCS profiles) – the SiBCS gold standard – alongside BDsolos / FEBR / KSSL / LUCAS. It reuses  and reports at the order level.</p>
+</div>
+<div class="section level3">
+<h3 id="fixes-0-9-106">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-9-106"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="user-facing-changes-0-9-106">User-facing changes<a class="anchor" aria-label="anchor" href="#user-facing-changes-0-9-106"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.105" id="soilkey-09105-2026-06-10">soilKey 0.9.105 (2026-06-10)<a class="anchor" aria-label="anchor" href="#soilkey-09105-2026-06-10"></a></h2>
 <p>The “<strong>WRB depth specifiers</strong>” release. Completes the WRB 2022 Chapter 5 name: depth specifiers (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) are now auto-attached to depth-anchored qualifiers from the diagnostic feature’s actual depth.</p>

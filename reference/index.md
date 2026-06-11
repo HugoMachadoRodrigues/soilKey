@@ -2724,6 +2724,9 @@ plus auxiliaries) used in the test suite.
 
 ## Helpers and miscellaneous
 
+- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
+  : Run the full soilKey benchmark suite and (optionally) write a report
+
 - [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
   : Launch the soilKey interactive classification Shiny app
 
@@ -3437,6 +3440,8 @@ Cambisol/Histosol (100%) and Ferralsol/Solonetz (80%) recall.
 
 - [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
   : Unified cross-dataset benchmark across SiBCS / WRB / USDA
+- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
+  : Run the full soilKey benchmark suite and (optionally) write a report
 - [`benchmark_performance()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.md)
   : Run the soilKey performance benchmark
 - [`batch_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.md)

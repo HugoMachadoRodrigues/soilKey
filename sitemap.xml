@@ -252,7 +252,10 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_mosqueado_to_pct.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_norm.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_rows_to_horizons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_available_datasets.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_default_paths.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_one_dataset_one_system.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_reproducible_sample.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_lucas_pedon_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_pedon_point_row.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_report_rmd.html</loc></url>
@@ -930,6 +933,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/rhodic_subgroup_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.html</loc></url>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.105</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.106</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.106</strong></td>
+<td>
+<strong>Reproducible benchmark suite.</strong> <code><a href="reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> auto-detects the locally-available reference datasets (BDsolos / FEBR / KSSL+NASIS / LUCAS+ESDB / Redape), runs each via <code><a href="reference/benchmark_unified.html">benchmark_unified()</a></code> (absent ones skipped, never an error), always runs the offline canonical sanity row, and writes a consolidated Markdown report (accuracy × dataset × system + zero-recall improvement targets). Redape (Vaz et al. 2023; ~96 curated SiBCS profiles, the gold standard) is wired into <code>benchmark_unified(datasets = "redape")</code>. <code><a href="reference/dot-benchmark_default_paths.html">.benchmark_default_paths()</a></code> centralises the data root (<code>options(soilKey.benchmark_root=)</code>). Additive – the engine is unchanged.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.105</strong></td>
 <td>

@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.105</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.106</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -201,6 +201,12 @@
 <td><strong>External-data benchmarks</strong></td>
 <td>✅ shipped</td>
 <td>KSSL+NASIS, AfSP, WoSIS stratified, BDsolos (RJ), Redape (Vaz et al. 2023), LUCAS 2018.</td>
+</tr>
+<tr>
+<td><strong>Reproducible benchmark suite</strong></td>
+<td>✅ shipped (v0.9.106)</td>
+<td>
+<code><a href="reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> — one call auto-detects local datasets, runs each (Redape now pooled into <code>benchmark_unified</code>), and writes a consolidated report. Latest (n≤200, order level): FEBR SiBCS 38%, BDsolos SiBCS 33%, Redape SiBCS 46%, KSSL USDA 40%, LUCAS WRB 0% (honest topsoil baseline).</td>
 </tr>
 <tr>
 <td><strong>SmartSolos Expert API bridge</strong></td>

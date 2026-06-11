@@ -1,5 +1,28 @@
 # Changelog
 
+## soilKey 0.9.106 (2026-06-11)
+
+The “**Reproducible benchmark suite**” release. Adds the
+pedologist-curated Redape dataset to the unified benchmark and a single,
+tolerant entry point that runs every available benchmark and writes a
+consolidated report. The classification engine is untouched – this only
+measures it.
+
+### New: run_all_benchmarks()
+
+replaces the “source 22 scripts by hand” workflow with one reproducible
+call.
+
+### New: Redape in benchmark_unified()
+
+now pools the Redape dataset (Vaz et al. 2023; ~96 pedologist-reviewed
+SiBCS profiles) – the SiBCS gold standard – alongside BDsolos / FEBR /
+KSSL / LUCAS. It reuses and reports at the order level.
+
+### Fixes
+
+### User-facing changes
+
 ## soilKey 0.9.105 (2026-06-10)
 
 The “**WRB depth specifiers**” release. Completes the WRB 2022 Chapter 5
