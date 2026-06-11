@@ -173,6 +173,38 @@ pro_profile_plot <- function(hz_df, attribute) {
     )
 }
 
+# Plot an attached Vis-NIR matrix: one reflectance trace per horizon, X =
+# wavelength (nm, parsed from the column names), Y = reflectance. The matrix is
+# horizons x wavelengths (the shape fill_from_spectra() expects). Returns a
+# plotly htmlwidget, with graceful placeholders when nothing is attached.
+pro_spectrum_plot <- function(mat, designations = NULL) {
+  if (is.null(mat) || !is.matrix(mat) || nrow(mat) == 0L || ncol(mat) == 0L) {
+    return(plotly::plotly_empty(type = "scatter", mode = "lines") |>
+             plotly::layout(title = list(
+               text = "Attach a Vis-NIR spectrum to see it here",
+               font = list(size = 13))))
+  }
+  # Column names are wavelengths; fall back to a 1..ncol index if unparseable.
+  wl <- suppressWarnings(as.numeric(gsub("[^0-9.]", "", colnames(mat))))
+  if (length(wl) != ncol(mat) || all(is.na(wl))) wl <- seq_len(ncol(mat))
+  labs <- if (!is.null(designations) && length(designations) == nrow(mat))
+    as.character(designations) else paste0("Horizon ", seq_len(nrow(mat)))
+
+  p <- plotly::plot_ly()
+  for (i in seq_len(nrow(mat))) {
+    p <- plotly::add_trace(
+      p, x = wl, y = as.numeric(mat[i, ]), type = "scatter", mode = "lines",
+      name = labs[i], hoverinfo = "name+x+y")
+  }
+  plotly::layout(
+    p,
+    xaxis  = list(title = "Wavelength (nm)"),
+    yaxis  = list(title = "Reflectance"),
+    legend = list(orientation = "h", y = -0.2),
+    margin = list(l = 60, r = 20, t = 20, b = 60)
+  )
+}
+
 # Standardised "no pedon yet" placeholder used across tabs.
 pro_no_pedon_msg <- function() {
   shiny::div(

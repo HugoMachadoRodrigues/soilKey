@@ -35,6 +35,8 @@
 #' @param file   Output \code{.pdf} path.
 #' @param pedon  Optional \code{PedonRecord}.
 #' @param title  Report title.
+#' @param include_family,specifiers Passed through to the keys when
+#'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
 #' @param ...    Passed to \code{rmarkdown::render()}.
 #' @return       The output path, invisibly.
 #' @export
@@ -42,12 +44,16 @@ report_pdf <- function(x,
                        file,
                        pedon = NULL,
                        title = NULL,
+                       include_family = FALSE,
+                       specifiers     = FALSE,
                        ...) {
   if (!requireNamespace("rmarkdown", quietly = TRUE))
     stop("Package 'rmarkdown' is required for PDF reports.\n",
          "  install.packages('rmarkdown')")
 
-  norm <- .normalise_results(x, pedon = pedon)
+  norm <- .normalise_results(x, pedon = pedon,
+                             include_family = include_family,
+                             specifiers = specifiers)
   results <- norm$results
   pedon   <- norm$pedon
 

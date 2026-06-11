@@ -1,3 +1,62 @@
+# soilKey 0.9.108 (2026-06-11)
+
+The "**Pro app polish**" release -- the third and final follow-up front
+(benchmarks -> accuracy -> app). The professional Shiny app
+(\code{run_classify_app(ui = "pro")}) gets a soil-science visual identity,
+an onboarding on-ramp, richer feedback, and a report that finally reflects
+the two deepest-level options. The classification engine is unchanged; the
+only package-level change is an **additive, backward-compatible** extension
+of \code{report()}.
+
+## App: look & feel
+
+\itemize{
+  \item A **soil palette** (topsoil brown \code{#6B4423}, subsoil terracotta
+        \code{#A0522D}, vegetation moss \code{#4F772D}) layered on \code{flatly}
+        via \code{bslib::bs_theme()}, plus a slim \code{www/soilkey.css}
+        (warmer cards, navbar wordmark, rounder badges, button micro-feedback,
+        and a soft CSS-only busy spinner over any recalculating output).
+}
+
+## App: intuitive + examples
+
+\itemize{
+  \item A global **pedon ribbon** under the navbar shows the active profile
+        (id, horizon count, coordinates, build status) on every tab, so
+        context never gets lost when switching tabs.
+  \item A **"Getting started" Help modal** explains the workflow and offers a
+        one-click **"Load example & classify"** -- it builds the canonical
+        Ferralsol through the real Pedon flow (so every tab is immediately
+        usable) and jumps to Classify.
+  \item The **Spectra** tab now plots the attached Vis-NIR spectrum (one
+        reflectance trace per horizon); the **Photo** tab previews the
+        uploaded image with the VLM extraction confidence as an evidence
+        badge.
+  \item **Input validation**: latitude/longitude are range-checked before a
+        pedon is built (the map and grid tabs already validated coordinates
+        and bounding boxes).
+  \item The **Pedon** tab gains a "Download horizons CSV" button; the
+        \strong{USDA family} and \strong{WRB depth-specifier} toggles are
+        surfaced directly in the Classify sidebar (two-way-synced with the
+        Settings tab through shared app state).
+}
+
+## Report reflects the settings
+
+\itemize{
+  \item \code{report()} (and \code{report_html()} / \code{report_pdf()}) gain
+        \code{include_family} and \code{specifiers} arguments, forwarded to
+        \code{classify_usda()} / \code{classify_wrb2022()} when a
+        \code{PedonRecord} is passed. Both default to \code{FALSE}, so the
+        output is **byte-identical** to earlier versions unless opted in
+        (covered by a regression test). The Pro-app Report tab passes the
+        live Settings values and previews a checklist of the active
+        depth-level options.
+}
+
+No new dependencies (the theme uses \code{bs_theme}, the spinner is pure CSS).
+
+
 # soilKey 0.9.107 (2026-06-11)
 
 The "**SiBCS accuracy**" release. Guided by the v0.9.106 benchmark, a

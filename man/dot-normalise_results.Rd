@@ -4,7 +4,7 @@
 \alias{.normalise_results}
 \title{Internal helper: .normalise_results}
 \usage{
-.normalise_results(x, pedon = NULL)
+.normalise_results(x, pedon = NULL, include_family = FALSE, specifiers = FALSE)
 }
 \description{
 Internal helper: .normalise_results

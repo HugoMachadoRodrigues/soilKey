@@ -39,6 +39,29 @@
   )
 }
 
+# Mean self-reported confidence of the Munsell colours the VLM extracted, read
+# from the provenance ledger (cols attribute / source / confidence). Only the
+# munsell_* rows tagged extracted_vlm count. Returns NA before any extraction.
+.photo_mean_confidence <- function(pedon) {
+  if (is.null(pedon) || is.null(pedon$provenance)) return(NA_real_)
+  pr <- as.data.frame(pedon$provenance)
+  if (!all(c("attribute", "source", "confidence") %in% names(pr)))
+    return(NA_real_)
+  keep <- grepl("^munsell_", pr$attribute) & pr$source == "extracted_vlm"
+  vals <- suppressWarnings(as.numeric(pr$confidence[keep]))
+  vals <- vals[is.finite(vals)]
+  if (!length(vals)) return(NA_real_)
+  mean(vals)
+}
+
+# Map a [0,1] confidence to the same A-E evidence ladder the badges use, so a
+# VLM extraction reads on the same scale as the rest of the app.
+.photo_confidence_grade <- function(conf) {
+  if (is.null(conf) || is.na(conf)) return(NA_character_)
+  if (conf >= 0.85) "A" else if (conf >= 0.70) "B" else
+    if (conf >= 0.55) "C" else if (conf >= 0.40) "D" else "E"
+}
+
 # Resolve the provider: a live ellmer chat from options, else a mock.
 .photo_provider <- function(mode, mock_responses) {
   if (identical(mode, "live")) {
@@ -181,6 +204,13 @@ photo_server <- function(id, rv) {
       bslib::layout_column_wrap(
         width = 1 / 2,
         bslib::card(
+          bslib::card_header("Profile photo"),
+          bslib::card_body(
+            shiny::uiOutput(ns("img_caption")),
+            shiny::imageOutput(ns("profile_preview"), height = "260px")
+          )
+        ),
+        bslib::card(
           bslib::card_header("Munsell colour in the pedon"),
           bslib::card_body(DT::DTOutput(ns("munsell_table")))
         ),
@@ -188,6 +218,56 @@ photo_server <- function(id, rv) {
           bslib::card_header("Extraction log"),
           bslib::card_body(shiny::verbatimTextOutput(ns("log")))
         )
+      )
+    })
+
+    # A small transparent PNG, written once via base graphics, shown before any
+    # upload (avoids a broken-image icon while keeping a valid <img> in place).
+    blank_png <- local({
+      path <- NULL
+      function() {
+        if (is.null(path)) {
+          path <<- tempfile(fileext = ".png")
+          grDevices::png(path, width = 1, height = 1, bg = "transparent")
+          graphics::par(mar = c(0, 0, 0, 0)); graphics::plot.new()
+          grDevices::dev.off()
+        }
+        path
+      }
+    })
+
+    # ---- uploaded profile-photo thumbnail ---------------------------------
+    # A small preview so the user can confirm the right image is queued before
+    # spending a (potentially paid) VLM call on it. deleteFile = FALSE: the
+    # path is Shiny's own upload temp file (owned by the fileInput) or our
+    # cached transparent placeholder -- neither should be deleted after serving.
+    output$profile_preview <- shiny::renderImage({
+      f <- input$profile_img
+      if (is.null(f)) {
+        return(list(src = blank_png(), contentType = "image/png",
+                    width = 1, height = 1, alt = "No photo uploaded yet."))
+      }
+      list(src = f$datapath,
+           contentType = f$type %||% "image/jpeg",
+           width = "100%", alt = "Uploaded soil profile photograph")
+    }, deleteFile = FALSE)
+
+    # Caption: filename + the mean extraction confidence as a coloured badge,
+    # once a Munsell extraction has populated the horizons.
+    output$img_caption <- shiny::renderUI({
+      f <- input$profile_img
+      if (is.null(f))
+        return(shiny::div(class = "small text-muted mb-2",
+                          "Upload a profile photo in the sidebar."))
+      conf <- .photo_mean_confidence(rv$pedon)
+      grade <- .photo_confidence_grade(conf)
+      shiny::div(
+        class = "small mb-2 d-flex justify-content-between align-items-center",
+        shiny::span(shiny::icon("image"), " ", f$name),
+        if (!is.na(conf)) shiny::span(
+          pro_grade_badge(grade),
+          shiny::tags$span(class = "text-muted ms-1",
+                           sprintf("%.0f%% conf.", 100 * conf)))
       )
     })
 
