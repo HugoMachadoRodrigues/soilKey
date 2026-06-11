@@ -191,9 +191,29 @@ download_redape_dataset <- function(dest_dir,
     al_cmol                 = al,
     p_mehlich3_mg_kg        = h$P_ASSIM %||% NA_real_,
     fe_dcb_pct              = h$TEOR_FE %||% NA_real_,
-    plinthite_pct           = if (isTRUE(h$PETROPLINTICO) || isTRUE(h$LITOPLINTICO))
+    # v0.9.107: also honour the 'f' (plintita) master-letter suffix (e.g. Btf,
+    # 2Btf) -- the curator's plinthite assertion -- when no petro/lito flag is
+    # set. Never overrides a higher measured value (the gate uses its own
+    # plinthite_pct thresholds downstream).
+    plinthite_pct           = if (isTRUE(h$PETROPLINTICO) || isTRUE(h$LITOPLINTICO) ||
+                                    grepl("[A-Z][a-z0-9]*f", h$SIMB_HORIZ %||% ""))
                                 30 else NA_real_,
-    redoximorphic_features_pct = if (isTRUE(h$REDOXICO)) 10 else NA_real_,
+    # v0.9.107: the 'g' (gleyic) master-letter suffix in SIMB_HORIZ is the
+    # curator's direct gleyic assertion; the GeoTab REDOXICO flag (mottling/
+    # concretions) is a stricter, different concept and is FALSE on the reduced
+    # Cg matrices. Promote the suffix too, mirroring the plinthite line above.
+    redoximorphic_features_pct = if (isTRUE(h$REDOXICO) ||
+                                       grepl("[A-Z][a-z0-9]*g",
+                                             h$SIMB_HORIZ %||% "")) 10 else NA_real_,
+    # v0.9.107: the 'v' (vertic) master-letter suffix (Bv, Bvk, Cvz, Btv) is
+    # the curator's vertic-morphology assertion; promote it to the canonical
+    # slickensides + cracks signal (the clay gate downstream still applies),
+    # so field-described Vertissolos are recovered without flipping any global
+    # default. Mirrors the g/f promotions above.
+    slickensides            = if (grepl("[A-Z][a-z0-9]*v", h$SIMB_HORIZ %||% ""))
+                                "common" else NA_character_,
+    cracks_width_cm         = if (grepl("[A-Z][a-z0-9]*v", h$SIMB_HORIZ %||% ""))
+                                1 else NA_real_,
     structure_grade         = NA_character_,  # numeric code -> categorical TBD
     structure_size          = NA_character_,
     structure_type          = NA_character_,

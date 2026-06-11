@@ -126,13 +126,19 @@ vertissolo <- function(pedon) {
                          any(!is.na(h$cementation_class[shallow_30]) &
                                 h$cementation_class[shallow_30] %in%
                                   c("strongly", "indurated"))
-  passed <- starts_in_100 && surface_clay_ok && !has_lithic_petric
+  # v0.9.107: a vertic profile with an abrupt textural change (B planico) is a
+  # Planossolo vertissolico, not a Vertissolo (Planossolos key in SiBCS Cap 4).
+  # V precedes S in the order cascade, so without this guard a `Btv` Planossolo
+  # would flip to Vertissolo once vertic morphology is inferred from the suffix.
+  no_b_planico <- !isTRUE(B_planico(pedon)$passed)
+  passed <- starts_in_100 && surface_clay_ok && !has_lithic_petric && no_b_planico
   DiagnosticResult$new(
     name = "vertissolo", passed = passed, layers = v$layers,
     evidence = list(
       vertico = v, vert_top_cm = vert_top,
       surface_clay_pct = surface_clay,
-      no_lithic_petric_in_30 = !has_lithic_petric
+      no_lithic_petric_in_30 = !has_lithic_petric,
+      no_b_planico = no_b_planico
     ),
     missing = v$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 112"
