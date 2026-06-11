@@ -19,7 +19,7 @@ rmarkdown)."><meta property="og:image" content="https://hugomachadorodrigues.git
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.107</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.108</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,8 @@ install (or one of the alternative engines accepted by
 <span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"html"</span>, <span class="st">"pdf"</span><span class="op">)</span>,</span>
 <span>  pedon <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include_family <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  specifiers <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -114,6 +116,22 @@ horizons table and provenance log are included.</p></dd>
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
 <dd><p>Optional report title.</p></dd>
+
+
+<dt id="arg-include-family">include_family<a class="anchor" aria-label="anchor" href="#arg-include-family"></a></dt>
+<dd><p>When <code>x</code> is a <code>PedonRecord</code> (so the
+three keys are run here), passes through to
+<code><a href="classify_usda.html">classify_usda</a></code> to append the USDA family
+(5th category) to the subgroup. Default <code>FALSE</code> keeps
+the output byte-identical to earlier versions.</p></dd>
+
+
+<dt id="arg-specifiers">specifiers<a class="anchor" aria-label="anchor" href="#arg-specifiers"></a></dt>
+<dd><p>When <code>x</code> is a <code>PedonRecord</code>, passes through
+to <code><a href="classify_wrb2022.html">classify_wrb2022</a></code> to attach WRB depth
+specifiers (Epi-/Endo-/...) to depth-anchored qualifiers.
+Default <code>FALSE</code>. Both flags are ignored when <code>x</code>
+is already a (list of) <code>ClassificationResult</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

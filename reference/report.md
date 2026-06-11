@@ -19,6 +19,8 @@ report(
   format = c("auto", "html", "pdf"),
   pedon = NULL,
   title = NULL,
+  include_family = FALSE,
+  specifiers = FALSE,
   ...
 )
 ```
@@ -47,6 +49,22 @@ report(
 - title:
 
   Optional report title.
+
+- include_family:
+
+  When `x` is a `PedonRecord` (so the three keys are run here), passes
+  through to
+  [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  to append the USDA family (5th category) to the subgroup. Default
+  `FALSE` keeps the output byte-identical to earlier versions.
+
+- specifiers:
+
+  When `x` is a `PedonRecord`, passes through to
+  [`classify_wrb2022`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
+  to attach WRB depth specifiers (Epi-/Endo-/...) to depth-anchored
+  qualifiers. Default `FALSE`. Both flags are ignored when `x` is
+  already a (list of) `ClassificationResult`.
 
 - ...:
 

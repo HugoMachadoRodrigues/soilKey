@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.100](https://img.shields.io/badge/version-0.9.100-FF6B35?style=flat-square)[![License:
+![v0.9.108](https://img.shields.io/badge/version-0.9.108-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -58,6 +58,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **Lazy-fetch benchmark caches** | ✅ shipped (v0.9.94) | Four large `.rds` samples downloaded on demand from a versioned GitHub Release. |
 | **CRAN release** | 🟡 in queue | v0.9.96 submitted to CRAN on 2026-05-19; auto-check pre-test passing. |
 | **R Shiny web app** | ✅ shipped (v0.9.97) | [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md) — nine-tab `bslib` interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, interactive `leaflet` map, MC uncertainty, HTML/PDF report. |
+| **Pro app polish** | ✅ shipped (v0.9.108) | Soil-palette theme + `www/soilkey.css`, a global pedon ribbon, a “Getting started” modal with a one-click **Load example & classify**, Vis-NIR spectrum + photo previews, lat/lon validation, USDA-family / WRB-specifier toggles in the Classify sidebar, and a [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md) that honours both depth-level options (additive, default-off). |
 | **WRB Tier-3 RSG-gate strict mode** | ✅ shipped (v0.9.98) | `classify_wrb2022(strict = TRUE)` strengthens seven RSG gates (Vertisol clay 30→35 %, Chernozem BS 50→80 %, etc.); backward-compatible. |
 | **Field-photo-only classification** | ✅ shipped (v0.9.99) | [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md) — photo + GPS → VLM Munsell + SoilGrids depth prior → multi-system classification; evidence grade D / C, never A. |
 | **Pedometric uncertainty quantif.** | ✅ shipped (v0.9.100) | [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md) — provenance-weighted Monte-Carlo posterior over classes; per-grade perturbation magnitudes (A ±3 % … E ±30 %), attribute sensitivity ranking. |
@@ -109,6 +110,30 @@ All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.108 (2026-06-11)
+
+- **v0.9.108 — Pro app polish.** The professional Shiny app
+  (`run_classify_app(ui = "pro")`) gets a thorough UX pass — the last of
+  the three follow-up fronts (benchmarks → accuracy → app). A
+  **soil-science theme** (topsoil-brown / terracotta / moss palette over
+  `flatly`, plus a slim `www/soilkey.css`) and a navbar wordmark give it
+  an identity; a global **pedon ribbon** keeps the active profile (id,
+  horizons, coordinates, build status) visible on every tab; a
+  **“Getting started” Help modal** offers a one-click **Load example &
+  classify** that builds the canonical Ferralsol through the real Pedon
+  flow and jumps straight to the results. The **Spectra** tab plots the
+  attached Vis-NIR spectrum (one trace per horizon) and the **Photo**
+  tab previews the uploaded image with the VLM confidence as an evidence
+  badge. Coordinates are **range-validated** before a pedon is built,
+  the **USDA-family** and **WRB-depth-specifier** toggles are surfaced
+  in the Classify sidebar (two-way-synced with Settings), and the
+  **Report** now honours both:
+  `report(pedon, include_family = TRUE, specifiers = TRUE)` forwards the
+  flags to the keys. The two new
+  [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+  arguments default to `FALSE`, so the output stays **byte-identical**
+  unless opted in. No new dependencies.
 
 ## ✦ What’s new in v0.9.105 (2026-06-10)
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.107</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.108</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.108</strong></td>
+<td>
+<strong>Pro app polish (front 3 of 3).</strong> A UX pass on <code>classify_app_pro/</code>: a soil-science <code>bs_theme()</code> palette + slim <code>www/soilkey.css</code> (warmer cards, navbar wordmark, CSS-only busy spinner); a global <strong>pedon ribbon</strong> (<code>page_navbar(header=)</code>, rendered from <code>rv$pedon</code>) and a <strong>“Getting started” modal</strong> with a one-click <strong>Load example &amp; classify</strong> that builds the canonical Ferralsol through the real Pedon flow (<code>rv$example_request</code> → <code>mod_pedon</code> observer). New visualisations: a Vis-NIR spectrum plot (<code>pro_spectrum_plot()</code>, one trace per horizon) in <strong>Spectra</strong> and an uploaded-photo preview + VLM-confidence badge in <strong>Photo</strong>. lat/lon range validation in <code>mod_pedon</code>; the <strong>USDA-family</strong> / <strong>WRB-specifier</strong> toggles surfaced in the Classify sidebar, two-way-synced with Settings through a shared-<code>rv</code> single source of truth. <strong>Package change (additive):</strong> <code><a href="reference/report.html">report()</a></code> / <code><a href="reference/report_html.html">report_html()</a></code> / <code><a href="reference/report_pdf.html">report_pdf()</a></code> gain <code>include_family</code> / <code>specifiers</code> (forwarded to <code><a href="reference/classify_usda.html">classify_usda()</a></code> / <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code> when a <code>PedonRecord</code> is passed); both default <code>FALSE</code> → report output byte-identical (regression test). No new dependencies.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.107</strong></td>
 <td>

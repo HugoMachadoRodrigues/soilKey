@@ -5,5 +5,5 @@ Internal helper: .normalise_results
 ## Usage
 
 ``` r
-.normalise_results(x, pedon = NULL)
+.normalise_results(x, pedon = NULL, include_family = FALSE, specifiers = FALSE)
 ```

@@ -1,5 +1,22 @@
 # Changelog
 
+## soilKey 0.9.108 (2026-06-11)
+
+The “**Pro app polish**” release – the third and final follow-up front
+(benchmarks -\> accuracy -\> app). The professional Shiny app () gets a
+soil-science visual identity, an onboarding on-ramp, richer feedback,
+and a report that finally reflects the two deepest-level options. The
+classification engine is unchanged; the only package-level change is an
+**additive, backward-compatible** extension of .
+
+### App: look & feel
+
+### App: intuitive + examples
+
+### Report reflects the settings
+
+No new dependencies (the theme uses , the spinner is pure CSS).
+
 ## soilKey 0.9.107 (2026-06-11)
 
 The “**SiBCS accuracy**” release. Guided by the v0.9.106 benchmark, a

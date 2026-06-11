@@ -12,7 +12,15 @@ and renders it via
 ## Usage
 
 ``` r
-report_pdf(x, file, pedon = NULL, title = NULL, ...)
+report_pdf(
+  x,
+  file,
+  pedon = NULL,
+  title = NULL,
+  include_family = FALSE,
+  specifiers = FALSE,
+  ...
+)
 ```
 
 ## Arguments
@@ -32,6 +40,11 @@ report_pdf(x, file, pedon = NULL, title = NULL, ...)
 - title:
 
   Report title.
+
+- include_family, specifiers:
+
+  Passed through to the keys when `x` is a `PedonRecord`; see
+  [`report`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md).
 
 - ...:
 
