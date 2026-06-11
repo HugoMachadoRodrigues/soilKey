@@ -136,37 +136,23 @@ benchmark_unified <- function(
                             c("wrb2022", "sibcs", "usda"),
                             several.ok = TRUE)
   if (length(datasets) == 1L && identical(datasets, "all"))
-    datasets <- c("bdsolos", "febr", "kssl", "lucas_esdb")
+    datasets <- c("bdsolos", "febr", "kssl", "lucas_esdb", "redape")
   datasets <- match.arg(datasets,
-                            c("bdsolos", "febr", "kssl", "lucas_esdb"),
+                            c("bdsolos", "febr", "kssl", "lucas_esdb",
+                              "redape"),
                             several.ok = TRUE)
   engine   <- match.arg(engine)
 
   # Default canonical paths if none supplied.
-  if (is.null(paths)) {
-    sd_root <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data"
-    paths <- list(
-      bdsolos    = file.path(sd_root, "embrapa_bdsolos", "BD_solos"),
-      febr       = file.path(sd_root, "embrapa_bdsolos",
-                                "febr-superconjunto.txt"),
-      kssl_gpkg  = file.path(sd_root, "KSSL", "ncss_labdata.gpkg"),
-      kssl_nasis = file.path(sd_root, "KSSL",
-                                "NASIS_Morphological_09142021.sqlite"),
-      lucas_csv  = file.path(sd_root, "eu_lucas",
-                                "LUCAS-SOIL-2018-data-report-readme-v2",
-                                "LUCAS-SOIL-2018-v2",
-                                "LUCAS-SOIL-2018.csv"),
-      esdb_root  = file.path(sd_root, "eu_lucas",
-                                "ESDB-Raster-Library-1k-GeoTIFF-20240507")
-    )
-  }
+  if (is.null(paths)) paths <- .benchmark_default_paths()
 
   # Mapping: which datasets have reference labels for which systems
   ds_has_ref <- list(
     bdsolos    = c(sibcs = TRUE,  wrb2022 = TRUE,  usda = TRUE),
     febr       = c(sibcs = TRUE,  wrb2022 = TRUE,  usda = TRUE),
     kssl       = c(sibcs = FALSE, wrb2022 = FALSE, usda = TRUE),
-    lucas_esdb = c(sibcs = FALSE, wrb2022 = TRUE,  usda = FALSE)
+    lucas_esdb = c(sibcs = FALSE, wrb2022 = TRUE,  usda = FALSE),
+    redape     = c(sibcs = TRUE,  wrb2022 = FALSE, usda = FALSE)
   )
 
   # v0.9.63: engine-driven option (auto-restored on exit)
@@ -247,6 +233,61 @@ benchmark_unified <- function(
 
 # --- internals -------------------------------------------------------
 
+#' Reproducible random row sample (seed 42), restoring the global RNG state
+#' so the benchmark never perturbs the caller's randomness.
+#' @keywords internal
+.benchmark_reproducible_sample <- function(n, size) {
+  old <- if (exists(".Random.seed", envir = .GlobalEnv))
+    get(".Random.seed", envir = .GlobalEnv) else NULL
+  set.seed(42L)
+  idx <- sort(sample.int(n, size))
+  if (!is.null(old)) assign(".Random.seed", old, envir = .GlobalEnv)
+  else if (exists(".Random.seed", envir = .GlobalEnv))
+    rm(".Random.seed", envir = .GlobalEnv)
+  idx
+}
+
+#' Default local paths for the reference benchmark datasets
+#'
+#' Override the root via \code{options(soilKey.benchmark_root = "...")}.
+#' @keywords internal
+.benchmark_default_paths <- function() {
+  sd_root <- getOption(
+    "soilKey.benchmark_root",
+    "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data")
+  list(
+    bdsolos    = file.path(sd_root, "embrapa_bdsolos", "BD_solos"),
+    febr       = file.path(sd_root, "embrapa_bdsolos",
+                              "febr-superconjunto.txt"),
+    kssl_gpkg  = file.path(sd_root, "KSSL", "ncss_labdata.gpkg"),
+    kssl_nasis = file.path(sd_root, "KSSL",
+                              "NASIS_Morphological_09142021.sqlite"),
+    lucas_csv  = file.path(sd_root, "eu_lucas",
+                              "LUCAS-SOIL-2018-data-report-readme-v2",
+                              "LUCAS-SOIL-2018-v2",
+                              "LUCAS-SOIL-2018.csv"),
+    esdb_root  = file.path(sd_root, "eu_lucas",
+                              "ESDB-Raster-Library-1k-GeoTIFF-20240507"),
+    redape     = file.path(sd_root, "redape_geotab")
+  )
+}
+
+#' Which datasets in `paths` actually have their files/dirs present?
+#' @keywords internal
+.benchmark_available_datasets <- function(paths) {
+  checks <- list(
+    bdsolos    = function() dir.exists(paths$bdsolos %||% ""),
+    febr       = function() file.exists(paths$febr %||% ""),
+    kssl       = function() file.exists(paths$kssl_gpkg %||% "") &&
+                              file.exists(paths$kssl_nasis %||% ""),
+    lucas_esdb = function() file.exists(paths$lucas_csv %||% "") &&
+                              dir.exists(paths$esdb_root %||% ""),
+    redape     = function() dir.exists(paths$redape %||% "")
+  )
+  names(Filter(function(f) isTRUE(tryCatch(f(), error = function(e) FALSE)),
+               checks))
+}
+
 #' Single (dataset, system) benchmark call dispatched by name
 #' @keywords internal
 .benchmark_one_dataset_one_system <- function(ds, sys, paths,
@@ -292,11 +333,17 @@ benchmark_unified <- function(
     )
   } else if (ds == "febr") {
     if (!file.exists(paths$febr)) return(NULL)
+    # febr-superconjunto.txt is FEBR-format, not BDsolos-format -- use the
+    # FEBR loader (the BDsolos loader needs an id_perfil column and fails).
+    # Load the full set, then take a REPRODUCIBLE RANDOM sample: the file is
+    # ordered by order (the first rows are all one class), so head-N would be
+    # badly biased.
     pedons <- tryCatch(
-      load_embrapa_pedons(paths$febr, verbose = FALSE),
+      load_febr_pedons(paths$febr, verbose = FALSE),
       error = function(e) NULL)
     if (is.null(pedons) || length(pedons) == 0L) return(NULL)
-    if (!is.null(max_n)) pedons <- pedons[seq_len(min(max_n, length(pedons)))]
+    if (!is.null(max_n) && length(pedons) > max_n)
+      pedons <- pedons[.benchmark_reproducible_sample(length(pedons), max_n)]
     pedons <- .maybe_harmonize(pedons)
     res <- benchmark_run_classification(pedons, system = sys,
                                             level = "order")
@@ -371,6 +418,29 @@ benchmark_unified <- function(
                         n_total = res$n_total %||% 0L,
                         pct = round(100 * (res$n_in_scope %||% 0L) /
                                           (res$n_total %||% 1L), 1))
+    )
+  } else if (ds == "redape") {
+    # Redape (Vaz et al. 2023): pedologist-curated SiBCS gold standard.
+    if (is.null(paths$redape) || !dir.exists(paths$redape)) return(NULL)
+    pedons <- tryCatch(
+      load_redape_pedons(paths$redape, max_n = max_n, verbose = FALSE),
+      error = function(e) NULL)
+    if (is.null(pedons) || length(pedons) == 0L) return(NULL)
+    pedons <- .maybe_harmonize(pedons)
+    res <- benchmark_redape(pedons, level = "order", verbose = FALSE)
+    n_cmp <- res$n_compared %||% 0L
+    list(
+      result = list(
+        accuracy   = res$accuracy %||% NA_real_,
+        n_compared = n_cmp,
+        n_correct  = round((res$accuracy %||% 0) * n_cmp),
+        confusion  = res$confusion,
+        per_class  = res$per_class_recall,
+        message    = NA_character_
+      ),
+      coverage = list(n_with_ref = n_cmp,
+                      n_total = length(pedons),
+                      pct = round(100 * n_cmp / max(1L, length(pedons)), 1))
     )
   }
 }

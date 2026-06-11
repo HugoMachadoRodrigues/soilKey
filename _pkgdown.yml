@@ -551,6 +551,7 @@ reference:
   - title: "Unified benchmark and robustness (v0.9.61)"
     contents:
       - benchmark_unified
+      - run_all_benchmarks
       - benchmark_performance
       - batch_robustness
       - classification_robustness
