@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.106</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.107</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -206,7 +206,12 @@
 <td><strong>Reproducible benchmark suite</strong></td>
 <td>✅ shipped (v0.9.106)</td>
 <td>
-<code><a href="reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> — one call auto-detects local datasets, runs each (Redape now pooled into <code>benchmark_unified</code>), and writes a consolidated report. Latest (n≤200, order level): FEBR SiBCS 38%, BDsolos SiBCS 33%, Redape SiBCS 46%, KSSL USDA 40%, LUCAS WRB 0% (honest topsoil baseline).</td>
+<code><a href="reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> — one call auto-detects local datasets, runs each (Redape now pooled into <code>benchmark_unified</code>), and writes a consolidated report. Latest (n≤200, order level): FEBR SiBCS 38%, BDsolos SiBCS 33%, KSSL USDA 40%, LUCAS WRB 0% (honest topsoil baseline).</td>
+</tr>
+<tr>
+<td><strong>SiBCS accuracy uplift</strong></td>
+<td>✅ shipped (v0.9.107)</td>
+<td>Benchmark-guided recovery of four zero-recall SiBCS orders on the Redape gold standard (Gleissolos/Plintossolos/Vertissolos to full recall, Chernossolos partial), via Redape-scoped morphology-suffix promotion + a stacked chernic-A fix. <strong>Redape order accuracy 45.7% → 59.6% (+13 profiles)</strong>; 44 canonical fixtures unchanged.</td>
 </tr>
 <tr>
 <td><strong>SmartSolos Expert API bridge</strong></td>

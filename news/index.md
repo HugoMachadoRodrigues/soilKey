@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.107 (2026-06-11)
+
+The “**SiBCS accuracy**” release. Guided by the v0.9.106 benchmark, a
+multi-agent root-cause pass found that five SiBCS orders scored zero
+recall on the Redape gold standard because the loader/gate dropped
+morphological signal that the source data actually carries. Recovering
+four of them lifts Redape order accuracy from – – with the 44 canonical
+fixtures unchanged.
+
+### Recovered orders
+
+All loader fixes are scoped to the Redape ingestion path and never flip
+a global default, so the guard tests and the canonical-fixture names
+stay byte-identical. (Nitossolos requires a GeoTab structure/cerosidade
+code legend that is not documented in the source; deferred.)
+
 ## soilKey 0.9.106 (2026-06-11)
 
 The “**Reproducible benchmark suite**” release. Adds the
