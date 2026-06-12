@@ -22,3 +22,10 @@ petrogypsic(pedon, min_thickness = 10, min_gypsum_pct = 5)
 - min_gypsum_pct:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

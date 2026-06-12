@@ -21,3 +21,10 @@ duripa(pedon, ...)
 - ...:
 
   Reserved for future arguments.
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

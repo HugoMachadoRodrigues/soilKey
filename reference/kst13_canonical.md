@@ -18,6 +18,11 @@ kst13_canonical(prefer_pkg = TRUE)
   the vendored copy. Set to `FALSE` to force the vendored copy (e.g. for
   reproducibility of a specific soilKey release).
 
+## Value
+
+The canonical *Keys to Soil Taxonomy* (13th ed.) criteria reference (a
+list / data.frame).
+
 ## Details
 
 Source: NCSS-tech `SoilTaxonomy` R package. Original: [USDA-NRCS (2022).

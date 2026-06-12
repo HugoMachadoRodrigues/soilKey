@@ -8,3 +8,10 @@ baixa. Catch-all final na chave – tipica do Brasil tropical.
 ``` r
 make_argissolo_canonical()
 ```
+
+## Value
+
+A
+[`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
+populated with the canonical horizons and site metadata for this
+reference profile.

@@ -27,3 +27,10 @@ thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
 - min_sulfidic_s:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

@@ -35,6 +35,13 @@ gleysol(pedon, strict = NULL)
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` tightens path 1 and
   disables path 3.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Tier-3 strict mode (v0.9.98)
 
 With `strict = TRUE` the path-1 gleyic+reducing layer must start within

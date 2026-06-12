@@ -44,3 +44,10 @@ sombric(
 - min_oc_increase:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

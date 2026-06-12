@@ -4,6 +4,10 @@ PedonRecord: structured representation of a single pedon
 
 PedonRecord: structured representation of a single pedon
 
+## Value
+
+An R6 object of class `PedonRecord`.
+
 ## Details
 
 The central data carrier in soilKey. A PedonRecord bundles everything we
@@ -293,3 +297,14 @@ The objects of this class are cloneable with this method.
 - `deep`:
 
   Whether to make a deep clone.
+
+## Examples
+
+``` r
+# The canonical fixtures return ready-built PedonRecords:
+pedon <- make_ferralsol_canonical()
+pedon$site$id
+#> [1] "FR-canonical-01"
+nrow(pedon$horizons)
+#> [1] 5
+```

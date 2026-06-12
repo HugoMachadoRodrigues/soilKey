@@ -33,6 +33,13 @@ ferralsol(pedon, strict = NULL)
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` requires two of the
   three argic exception paths.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Tier-3 strict mode (v0.9.98)
 
 When an argic horizon sits above the ferralic, the default gate keeps

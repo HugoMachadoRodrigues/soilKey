@@ -24,3 +24,10 @@ fragic(pedon, min_thickness = 15, min_bd = 1.65)
 - min_bd:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

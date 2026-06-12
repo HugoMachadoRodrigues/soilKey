@@ -54,3 +54,12 @@ cujo `name` eh o nome completo da classe atribuida no nivel mais
 profundo (Grande Grupo \> Subordem \> Ordem) e `rsg_or_order` eh o nome
 da ordem (e.g. "Organossolos"). Os codigos de cada nivel e o trace ficam
 em `$trace`.
+
+## Examples
+
+``` r
+pedon <- make_latossolo_canonical()
+res <- classify_sibcs(pedon)
+res$name
+#> [1] "Latossolos Vermelhos Distroficos tipicos"
+```

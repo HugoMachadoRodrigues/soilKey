@@ -28,3 +28,10 @@ pretic(pedon, min_thickness = 20, min_oc = 1.5, min_p_mehlich3 = 30)
 - min_p_mehlich3:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

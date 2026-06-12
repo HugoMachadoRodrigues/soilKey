@@ -9,7 +9,7 @@ PedonRecord: structured representation of a single pedon"><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.108</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.109</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,10 @@ PedonRecord: structured representation of a single pedon"><meta property="og:ima
     </div>
 
 
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An R6 object of class <code>PedonRecord</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The central data carrier in soilKey. A PedonRecord bundles everything we
@@ -356,6 +360,16 @@ alone. If <code>TRUE</code>, overwrite.</p></dd>
 
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The canonical fixtures return ready-built PedonRecords:</span></span></span>
+<span class="r-in"><span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pedon</span><span class="op">$</span><span class="va">site</span><span class="op">$</span><span class="va">id</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "FR-canonical-01"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">$</span><span class="va">horizons</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

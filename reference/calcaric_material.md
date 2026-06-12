@@ -19,3 +19,10 @@ calcaric_material(pedon, min_caco3_pct = 2)
 - min_caco3_pct:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

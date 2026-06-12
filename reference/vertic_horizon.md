@@ -44,6 +44,13 @@ vertic_horizon(
 
   Depth window (cm) for the COLE-based path (default 100).
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## v0.9.72 designation morphological inference (opt-in)
 
 Field-described Brazilian Vertissolos profiles (e.g.\\ the Embrapa

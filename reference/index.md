@@ -424,13 +424,2256 @@ Benchmark drivers and KSSL/NASIS label normalisers.
 - [`kastanozem_strict()`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem_strict.md)
   : Kastanozem RSG gate (strengthened, WRB 2022 Ch 4, p 112)
 
-## WRB 2022 – qualifiers and specifiers (Ch 4–6)
+## SiBCS 5ª ed. – horizontes B diagnósticos (Cap 2)
 
-Resolved by the rule-engine in canonical Ch 4 order; the sub-qualifier
-suppression machinery (Hyper- / Hypo- / Proto-) and the specifier prefix
-dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
-/ Supra- / Thapto-) run inside
-[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md).
+Os gates de horizonte B públicos. As demais gates da chave SiBCS
+(carater\_*, horizonte\_*, atributos, qualifiers WRB, e os dispatchers
+por Ordem) são o motor determinístico interno, despachado por
+[`classify_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
+/
+[`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md);
+veja a seção “Internal – motor taxonômico” no fim da referência.
+
+- [`B_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
+  : Horizonte B textural (SiBCS Cap 2, p 54-57; v0.7 strict)
+- [`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
+  : Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)
+- [`B_nitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_nitico.md)
+  : Horizonte B nitico (SiBCS Cap 2, p 61-62; v0.7)
+- [`B_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_espodico.md)
+  : Horizonte B espodico (SiBCS Cap 2, p 62-65; v0.7)
+- [`B_incipiente()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_incipiente.md)
+  : Horizonte B incipiente (SiBCS Cap 2, p 59-61; v0.7)
+- [`B_planico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_planico.md)
+  : Horizonte B planico (SiBCS Cap 2, p 65-66; v0.7)
+
+## SiBCS 5ª ed. – Família (5º nível, Cap 18)
+
+O 5º nível categórico (família), via
+`classify_sibcs(include_familia = TRUE)`.
+
+- [`classify_sibcs_familia()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.md)
+  : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
+
+## USDA Soil Taxonomy 13ed – Família (5º nível)
+
+Os modificadores de família (particle-size, mineralogy, CEC-activity,
+reaction, temperature, depth) via
+`classify_usda(pedon, include_family = TRUE)`. Os gates de Ordem -\>
+Subgrupo são internos (veja “Internal”).
+
+- [`classify_usda_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md)
+  : Classify the USDA family (5th level) of a pedon
+
+## Module 2 – VLM extraction
+
+Schema-validated multimodal extraction via `ellmer`. The VLM never
+classifies; every extracted value carries provenance = `extracted_vlm`.
+
+- [`vlm_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.md)
+  : Construct a VLM provider chat object
+- [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
+  : Mock VLM provider for testing
+- [`extract_horizons_from_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_horizons_from_pdf.md)
+  : Extract horizons from a soil description PDF
+- [`extract_munsell_from_photo()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_munsell_from_photo.md)
+  : Extract Munsell color from a profile photo
+- [`extract_site_from_fieldsheet()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_site_from_fieldsheet.md)
+  : Extract site metadata from a field-sheet image
+
+## Module 3 – Spatial prior
+
+SoilGrids + Embrapa raster. Used as a sanity-check; never overrides the
+deterministic key.
+
+- [`spatial_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior.md)
+  : Spatial prior over RSGs (or Orders) at a pedon's location
+- [`spatial_prior_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior_soilgrids.md)
+  : SoilGrids spatial prior
+- [`spatial_prior_embrapa()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior_embrapa.md)
+  : Embrapa national soil-class spatial prior (Brazil only)
+- [`prior_consistency_check()`](https://hugomachadorodrigues.github.io/soilKey/reference/prior_consistency_check.md)
+  : Check consistency between a deterministic RSG assignment and a
+  spatial prior
+
+## Module 4 – OSSL spectroscopy
+
+Vis-NIR / MIR gap-fill. Predicted attributes carry provenance =
+`predicted_spectra`, which downgrades the evidence grade from A to B.
+
+- [`preprocess_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/preprocess_spectra.md)
+  : Pre-process Vis-NIR or MIR spectra
+- [`predict_ossl_mbl()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_mbl.md)
+  : Memory-based learning prediction against the OSSL library
+- [`predict_ossl_plsr_local()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_plsr_local.md)
+  : Local PLSR prediction against the OSSL library
+- [`predict_ossl_pretrained()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_pretrained.md)
+  : Pre-trained OSSL prediction
+- [`fill_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_from_spectra.md)
+  : Fill missing soil attributes from spectra via OSSL
+- [`pi_to_confidence()`](https://hugomachadorodrigues.github.io/soilKey/reference/pi_to_confidence.md)
+  : Map a 95% prediction interval to a \[0, 1\] confidence score
+
+## Reporting
+
+Render a complete pedologist-facing report from one or more
+`ClassificationResult` objects.
+
+- [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+  : Render a soilKey classification report
+- [`report_html()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_html.md)
+  : Render a soilKey classification report as self-contained HTML
+- [`report_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_pdf.md)
+  : Render a soilKey classification report as PDF
+- [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
+  : Export a classification result + pedon to a QGIS GeoPackage
+
+## Layperson on-ramp
+
+Zero-code Shiny GUI plus auto-detect helpers that remove the friction
+non-coders hit on a fresh install.
+
+- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
+  : Launch the soilKey Shiny demo (one-screen GUI)
+- [`auto_set_proj_env()`](https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.md)
+  : Auto-detect PROJ_LIB and GDAL_DATA directories
+- [`vlm_pick_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.md)
+  : Pick the best available VLM provider
+- [`ollama_is_running()`](https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.md)
+  : Is the local Ollama HTTP API reachable?
+
+## Real-data benchmarks (v0.9.15+)
+
+Loaders for the three external validation sets soilKey is benchmarked
+against in the v1.0 methods paper, plus FEBR / BDsolos
+label-normalisation helpers (v0.9.16).
+
+- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
+  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
+  classification
+- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
+  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
+- [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
+  : Load KSSL pedons enriched with NASIS morphology
+- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
+  : Load EU-LUCAS / ESDB pedons with reference WRB classification
+- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
+  : Load Embrapa dadosolos pedons with reference SiBCS classification
+- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
+  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
+- [`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
+  : Canonicalise FEBR SiBCS names to match soilKey rule outputs.
+- [`normalise_febr_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md)
+  : Normalise FEBR WRB taxon strings to RSG-only
+- [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
+  : Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order
+- [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md)
+  : Run a benchmark across one of the loaded pedon lists
+
+## Canonical fixtures
+
+One-call constructors for the 31 canonical fixtures (one per WRB RSG,
+plus auxiliaries) used in the test suite.
+
+- [`make_acrisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_acrisol_canonical.md)
+  : Build the canonical Acrisol fixture
+- [`make_alisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_alisol_canonical.md)
+  : Build the canonical Alisol fixture
+- [`make_andosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_andosol_canonical.md)
+  : Build the canonical Andosol fixture
+- [`make_anthrosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_anthrosol_canonical.md)
+  : Build the canonical Anthrosol fixture
+- [`make_arenosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_arenosol_canonical.md)
+  : Build the canonical Arenosol fixture
+- [`make_argissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_argissolo_canonical.md)
+  : Perfil canonico de Argissolo (SiBCS 5a ed., Cap 5)
+- [`make_calcisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_calcisol_canonical.md)
+  : Build the canonical Calcisol fixture
+- [`make_cambisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cambisol_canonical.md)
+  : Build the canonical Cambisol fixture
+- [`make_cambissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cambissolo_canonical.md)
+  : Perfil canonico de Cambissolo (SiBCS 5a ed., Cap 6)
+- [`make_chernossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_chernossolo_canonical.md)
+  : Perfil canonico de Chernossolo (SiBCS 5a ed., Cap 7)
+- [`make_chernozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_chernozem_canonical.md)
+  : Build the canonical Chernozem fixture
+- [`make_cryosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cryosol_canonical.md)
+  : Build the canonical Cryosol fixture
+- [`make_durisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_durisol_canonical.md)
+  : Build the canonical Durisol fixture
+- [`make_espodossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_espodossolo_canonical.md)
+  : Perfil canonico de Espodossolo (SiBCS 5a ed., Cap 8)
+- [`make_ferralsol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ferralsol_canonical.md)
+  : Build the canonical Ferralsol fixture
+- [`make_fluvisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_fluvisol_canonical.md)
+  : Build the canonical Fluvisol fixture
+- [`make_gleissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gleissolo_canonical.md)
+  : Perfil canonico de Gleissolo (SiBCS 5a ed., Cap 9)
+- [`make_gleysol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gleysol_canonical.md)
+  : Build the canonical Gleysol fixture
+- [`make_gypsisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gypsisol_canonical.md)
+  : Build the canonical Gypsisol fixture
+- [`make_histosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_histosol_canonical.md)
+  : Build the canonical Histosol fixture
+- [`make_kastanozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_kastanozem_canonical.md)
+  : Build the canonical Kastanozem fixture
+- [`make_latossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_latossolo_canonical.md)
+  : Perfil canonico de Latossolo (SiBCS 5a ed., Cap 10)
+- [`make_leptosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_leptosol_canonical.md)
+  : Build the canonical Leptosol fixture
+- [`make_lixisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_lixisol_canonical.md)
+  : Build the canonical Lixisol fixture
+- [`make_luvisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_luvisol_canonical.md)
+  : Build the canonical Luvisol fixture
+- [`make_luvissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_luvissolo_canonical.md)
+  : Perfil canonico de Luvissolo (SiBCS 5a ed., Cap 11)
+- [`make_neossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_neossolo_canonical.md)
+  : Perfil canonico de Neossolo Litolico (SiBCS 5a ed., Cap 12)
+- [`make_nitisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitisol_canonical.md)
+  : Build the canonical Nitisol fixture
+- [`make_nitossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitossolo_canonical.md)
+  : Perfil canonico de Nitossolo Vermelho (SiBCS 5a ed., Cap 13)
+- [`make_organossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_organossolo_canonical.md)
+  : Perfil canonico de Organossolo (SiBCS 5a ed., Cap 14)
+- [`make_phaeozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_phaeozem_canonical.md)
+  : Build the canonical Phaeozem fixture
+- [`make_planosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_planosol_canonical.md)
+  : Build the canonical Planosol fixture
+- [`make_planossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_planossolo_canonical.md)
+  : Perfil canonico de Planossolo (SiBCS 5a ed., Cap 15)
+- [`make_plinthosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_plinthosol_canonical.md)
+  : Build the canonical Plinthosol fixture
+- [`make_plintossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_plintossolo_canonical.md)
+  : Perfil canonico de Plintossolo (SiBCS 5a ed., Cap 16)
+- [`make_podzol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_podzol_canonical.md)
+  : Build the canonical Podzol fixture
+- [`make_retisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_retisol_canonical.md)
+  : Build the canonical Retisol fixture
+- [`make_solonchak_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_solonchak_canonical.md)
+  : Build the canonical Solonchak fixture
+- [`make_solonetz_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_solonetz_canonical.md)
+  : Build the canonical Solonetz fixture
+- [`make_stagnosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_stagnosol_canonical.md)
+  : Build the canonical Stagnosol fixture
+- [`make_technosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_technosol_canonical.md)
+  : Build the canonical Technosol fixture
+- [`make_umbrisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_umbrisol_canonical.md)
+  : Build the canonical Umbrisol fixture
+- [`make_vertisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_vertisol_canonical.md)
+  : Build the canonical Vertisol fixture
+- [`make_vertissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_vertissolo_canonical.md)
+  : Perfil canonico de Vertissolo (SiBCS 5a ed., Cap 17)
+
+## Helpers and miscellaneous
+
+- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
+  : Run the full soilKey benchmark suite and (optionally) write a report
+
+- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
+  : Launch the soilKey interactive classification Shiny app
+
+- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
+  : Launch the soilKey Shiny demo (one-screen GUI)
+
+- [`run_sibcs_grande_grupo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.md)
+  : Resolve o grande grupo (3o nivel) de um pedon classificado em uma
+  subordem SiBCS
+
+- [`run_sibcs_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_key.md)
+  : Roda a chave SiBCS 5a edicao sobre um pedon
+
+- [`run_sibcs_subgrupo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_subgrupo.md)
+  : Resolve o subgrupo (4o nivel) de um pedon classificado em um Grande
+  Grupo SiBCS
+
+- [`run_sibcs_subordem()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_subordem.md)
+  : Resolve a subordem de um pedon ja classificado em uma ordem SiBCS
+
+- [`run_taxa_list()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_taxa_list.md)
+  : Iterate a flat taxa list and evaluate tests in canonical order
+
+- [`run_taxonomic_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_taxonomic_key.md)
+  : Run a taxonomic key (system-agnostic engine)
+
+- [`run_usda_great_group()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_great_group.md)
+  : Run the USDA Great Group key for a given Suborder
+
+- [`run_usda_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_key.md)
+  : Run the USDA Soil Taxonomy Order key over a pedon
+
+- [`run_usda_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_subgroup.md)
+  : Run the USDA Subgroup key for a given Great Group
+
+- [`run_usda_suborder()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_suborder.md)
+  : Run the USDA Suborder key for a given Order
+
+- [`run_wrb_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_wrb_key.md)
+  : Run the WRB 2022 key over a pedon
+
+- [`compute_ki()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_ki.md)
+  : Ki (silica:alumina molar) – SiBCS Cap 1, p 32
+
+- [`compute_kr()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_kr.md)
+  : Kr (silica:sesquioxidos molar) – SiBCS Cap 1, p 32
+
+- [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
+  : Per-attribute provenance-aware evidence grade
+
+- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
+
+- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
+  : Load the bundled AfSP stratified sample (v0.9.77)
+
+- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+  : Load a BDsolos CSV export as a list of PedonRecord objects
+
+- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
+  : Load Embrapa dadosolos pedons with reference SiBCS classification
+
+- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
+  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
+
+- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
+  : Load the bundled KSSL + NASIS morphological-enriched sample
+  (v0.9.75)
+
+- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
+  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
+  classification
+
+- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
+  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
+
+- [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
+  : Load KSSL pedons enriched with NASIS morphology
+
+- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
+  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
+
+- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
+  : Load EU-LUCAS / ESDB pedons with reference WRB classification
+
+- [`load_lucas_soil_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_soil_2018.md)
+  : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
+  objects
+
+- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
+  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
+
+- [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
+  : Load a soilKey rule set (YAML)
+
+- [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
+  : Load the bundled WoSIS South-America sample
+
+- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
+  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
+
+- [`save_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
+  [`load_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
+  : Save / load trained OSSL-backed PLSR models
+
+- [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
+  : Fill missing horizon attributes from a SoilGrids depth prior
+
+- [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
+  : Format a WRB 2022 soil name with qualifiers
+
+- [`validate_pedon_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_pedon_json.md)
+  : Validate a PedonRecord against the JSON schema
+
+- [`leptic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/leptic_features.md)
+  : Leptic features (WRB 2022)
+
+- [`planic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/planic_features.md)
+  : Planic features (WRB 2022)
+
+- [`technic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_features.md)
+  : Technic features (WRB 2022)
+
+- [`andic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_properties.md)
+  : Andic properties (WRB 2022)
+
+- [`gleyic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleyic_properties.md)
+  : Gleyic properties (WRB 2022)
+
+- [`protocalcic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/protocalcic_properties.md)
+  : Protocalcic properties (WRB 2022 Ch 3.2.8)
+
+- [`protogypsic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/protogypsic_properties.md)
+  : Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
+  \\= 1% but below the gypsic gate.
+
+- [`retic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.md)
+  : Retic properties (WRB 2022)
+
+- [`sideralic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/sideralic_properties.md)
+  : Sideralic properties (WRB 2022 Ch 3.2.13)
+
+- [`stagnic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/stagnic_properties.md)
+  : Stagnic properties (WRB 2022)
+
+- [`takyric_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/takyric_properties.md)
+  :
+
+  Takyric properties (WRB 2022 Ch 3.2.15) – per-pedon test wrapping
+  `test_takyric_surface`.
+
+- [`vertic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_properties.md)
+  : Vertic properties (WRB 2022)
+
+- [`vitric_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitric_properties.md)
+  : Vitric properties (WRB 2022 Ch 3.2.16)
+
+- [`yermic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/yermic_properties.md)
+  :
+
+  Yermic properties (WRB 2022 Ch 3.2.17) – per-pedon test wrapping
+  `test_yermic_surface`.
+
+- [`` `%||%` ``](https://hugomachadorodrigues.github.io/soilKey/reference/grapes-or-or-grapes.md)
+  : Default-value-for-NULL operator
+
+- [`arenic_texture()`](https://hugomachadorodrigues.github.io/soilKey/reference/arenic_texture.md)
+  : Arenic texture (WRB 2022)
+
+- [`cerosidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/cerosidade.md)
+  : Cerosidade quantitativa (SiBCS Cap 13, p 207; Cap 1)
+
+- [`combine_priors()`](https://hugomachadorodrigues.github.io/soilKey/reference/combine_priors.md)
+  : Combine multiple spatial priors via weighted geometric mean
+
+- [`cryic_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.md)
+  : Cryic conditions (WRB 2022)
+
+- [`distrofico()`](https://hugomachadorodrigues.github.io/soilKey/reference/distrofico.md)
+  : Solo distrofico (SiBCS Cap 1, p 30)
+
+- [`duripa()`](https://hugomachadorodrigues.github.io/soilKey/reference/duripa.md)
+  : Duripa (SiBCS Cap 2, p 74; v0.7)
+
+- [`eutrofico()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutrofico.md)
+  : Solo eutrofico (SiBCS Cap 1, p 30)
+
+- [`evaluate_rsg_tests()`](https://hugomachadorodrigues.github.io/soilKey/reference/evaluate_rsg_tests.md)
+  : Evaluate the test block of a single RSG
+
+- [`fibrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibrico.md)
+  : Material organico fibrico (SiBCS Cap 14)
+
+- [`fragipa()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragipa.md)
+  : Fragipa (SiBCS Cap 2, p 73-74; v0.7)
+
+- [`hemico()`](https://hugomachadorodrigues.github.io/soilKey/reference/hemico.md)
+  : Material organico hemico (SiBCS Cap 14)
+
+- [`prompt_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/prompt_path.md)
+  : Path to a packaged prompt template
+
+- [`schema_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/schema_path.md)
+  : Path to a packaged JSON schema file
+
+- [`default_model()`](https://hugomachadorodrigues.github.io/soilKey/reference/default_model.md)
+  : Default VLM model per provider
+
+- [`oxic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_usda.md)
+  : Oxic horizon (USDA Soil Taxonomy)
+
+- [`vertic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
+  : Vertic horizon (WRB 2022 Ch 3.1)
+
+- [`protovertic()`](https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.md)
+  : Protovertic horizon (WRB 2022 Ch 3.1)
+
+- [`panpaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/panpaic.md)
+  : Panpaic horizon (WRB 2022 Ch 3.1)
+
+- [`tsitelic()`](https://hugomachadorodrigues.github.io/soilKey/reference/tsitelic.md)
+  : Tsitelic horizon (WRB 2022 Ch 3.1)
+
+- [`limonic()`](https://hugomachadorodrigues.github.io/soilKey/reference/limonic.md)
+  : Limonic horizon (WRB 2022 Ch 3.1)
+
+- [`make_synthetic_pedon_with_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_synthetic_pedon_with_spectra.md)
+  : Build a synthetic PedonRecord with attached spectra (testing aid)
+
+- [`mudanca_textural_abrupta()`](https://hugomachadorodrigues.github.io/soilKey/reference/mudanca_textural_abrupta.md)
+  : Mudanca textural abrupta (SiBCS Cap 1, p 30-31)
+
+- [`ossl_library_template()`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_library_template.md)
+  : Canonical schema for an \`ossl_library\` object
+
+- [`clear_ossl_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_ossl_cache.md)
+  : Clear the soilKey OSSL cache
+
+- [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
+  : Download an OSSL subset and return an \`ossl_library\` artefact
+
+- [`download_ossl_subset_with_labels()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.md)
+  : Download an OSSL subset and attach WRB / SiBCS / USDA labels
+
+- [`familia_mineralogia_argila_geral()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.md)
+  : Familia: mineralogia da fracao argila (geral, nao-Latossolos)
+
+- [`ossl_demo_sa`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_demo_sa.md)
+  : Synthetic OSSL South America demo subset
+
+- [`planosol()`](https://hugomachadorodrigues.github.io/soilKey/reference/planosol.md)
+  : Planosol RSG gate (WRB 2022 Ch 4, p 107)
+
+- [`posterior_classify()`](https://hugomachadorodrigues.github.io/soilKey/reference/posterior_classify.md)
+  : Bayesian posterior classifier (optional)
+
+- [`resolve_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.md)
+  : Resolve WRB 2022 qualifiers for a Reference Soil Group
+
+- [`saprico()`](https://hugomachadorodrigues.github.io/soilKey/reference/saprico.md)
+  : Material organico saprico (SiBCS Cap 14)
+
+- [`soilgrids_usda_lut()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilgrids_usda_lut.md)
+  : SoilGrids -\> USDA Soil Order lookup table (placeholder)
+
+- [`soilgrids_wrb_lut()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilgrids_wrb_lut.md)
+  : SoilGrids -\> WRB code lookup table
+
+- [`subgrupo_planossolo_espessos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_planossolo_espessos.md)
+  : Subgrupo "espessos" de Planossolos (B planico profundo, \> 100 cm)
+
+- [`subgrupo_planossolo_mesicos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_planossolo_mesicos.md)
+  : Subgrupo "mesicos" de Planossolos (B planico topo em \[50, 100\] cm)
+
+- [`subgrupo_plintossolo_endico_concrecionario()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_endico_concrecionario.md)
+  : Subgrupo "endico" de Plintossolos Concrecionarios (topo de horizonte
+  concrecionario \>= 40 cm)
+
+- [`subgrupo_plintossolo_endico_litoplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_endico_litoplintico.md)
+  : Subgrupo "endico" de Plintossolos Litoplinticos (topo de horizonte
+  litoplintico \>= 40 cm)
+
+- [`subgrupo_plintossolo_espessos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_espessos.md)
+  : Subgrupo "espessos" de Plintossolos (horizonte plintico topo \> 100
+  cm)
+
+## RSG-level gates and other materials
+
+- [`ferralsol()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.md)
+  : Ferralsol RSG gate (WRB 2022 Ch 4, p 110)
+
+- [`gleysol()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleysol.md)
+  : Gleysol RSG gate (WRB 2022 Ch 4, p 103)
+
+- [`vertisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol.md)
+  : Vertisol RSG gate (WRB 2022 Ch 4, p 101)
+
+- [`acrisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/acrisol.md)
+  : Acrisol RSG diagnostic (WRB 2022)
+
+- [`alisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/alisol.md)
+  : Alisol RSG diagnostic (WRB 2022)
+
+- [`lixisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/lixisol.md)
+  : Lixisol RSG diagnostic (WRB 2022)
+
+- [`luvisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvisol.md)
+  : Luvisol RSG diagnostic (WRB 2022)
+
+- [`chernozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.md)
+  : Chernozem RSG diagnostic (WRB 2022)
+
+- [`chernozem_strict()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem_strict.md)
+  : Chernozem RSG gate (strengthened, WRB 2022 Ch 4, p 111)
+
+- [`kastanozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem.md)
+  : Kastanozem RSG diagnostic (WRB 2022)
+
+- [`kastanozem_strict()`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem_strict.md)
+  : Kastanozem RSG gate (strengthened, WRB 2022 Ch 4, p 112)
+
+- [`phaeozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/phaeozem.md)
+  : Phaeozem RSG diagnostic (WRB 2022)
+
+- [`andosol()`](https://hugomachadorodrigues.github.io/soilKey/reference/andosol.md)
+  : Andosol RSG gate (WRB 2022 Ch 4, p 104)
+
+- [`calcaric_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.md)
+  : Calcaric material (WRB 2022 Ch 3.3.3): \\= 2% CaCO3 throughout the
+  fine earth, primary carbonates from the parent material.
+
+- [`dolomitic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/dolomitic_material.md)
+  :
+
+  Dolomitic material (WRB 2022 Ch 3.3.5): \\= 2% Mg-rich carbonate,
+  CaCO3/MgCO3 \< 1.5. v0.3.3: detects via designation pattern
+  `kdo|do|magn` as proxy when ratio data missing.
+
+- [`hypersulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hypersulfidic_material.md)
+  : Hypersulfidic material (WRB 2022 Ch 3.3.8): \\= 0.01% inorganic
+  sulfidic S, pH \\= 4, capable of severe acidification on aerobic
+  incubation.
+
+- [`hyposulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hyposulfidic_material.md)
+  : Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
+  hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
+  of severe acidification). v0.3.3: returns sulfidic layers that don't
+  meet hypersulfidic.
+
+- [`solimovic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/solimovic_material.md)
+  :
+
+  Solimovic material (WRB 2022 Ch 3.3.17): hetero genous mass-movement
+  material on slopes / footslopes (formerly "colluvic"). v0.3.3: detects
+  via `rock_origin == "colluvial"` OR `layer_origin == "solimovic"`.
+
+- [`technic_hard_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_hard_material.md)
+  : Technic hard material (WRB 2022 Ch 3.3.18): consolidated human-made
+  material (asphalt, concrete, worked stones).
+
+- [`tephric_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/tephric_material.md)
+  : Tephric material (WRB 2022 Ch 3.3.19): \\= 30% volcanic glass in
+  0.02-2 mm fraction AND no andic / vitric properties.
+
+## Engine selection and dispatch (v0.9.65)
+
+Per-pedon engine-selection heuristic, engine-aware dispatch (soilKey vs
+aqp), and side-by-side comparators.
+
+- [`pick_engine()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine.md)
+  : Choose the best diagnostic engine for a single pedon
+- [`pick_engine_batch()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine_batch.md)
+  : Per-pedon batch engine recommendation
+- [`classify_with_engine_heuristic()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_engine_heuristic.md)
+  : Classify a pedon with the engine chosen by \`pick_engine()\`
+- [`compare_engines()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_engines.md)
+  : Side-by-side comparison of soilKey vs aqp diagnostic engines
+- [`argic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aqp.md)
+  : Argic / argillic horizon via aqp::getArgillicBounds()
+- [`cambic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambic_aqp.md)
+  : Cambic horizon via aqp::getCambicBounds()
+
+## Canonical references (v0.9.62 – v0.9.65)
+
+Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared lookup
+helpers for pkg vs vendored data sources.
+
+- [`canonical_reference()`](https://hugomachadorodrigues.github.io/soilKey/reference/canonical_reference.md)
+  : Load a canonical reference dataset from soilKey or SoilTaxonomy
+- [`wrb2022_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md)
+  : WRB 2022 canonical reference (parsed IUSS Working Group WRB 2022)
+- [`kst13_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_canonical.md)
+  : Keys to Soil Taxonomy 13th edition canonical reference
+- [`kst13_codes()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.md)
+  : Load the canonical KST 13ed code -\> taxon-name lookup table
+- [`kst13_criteria()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_criteria.md)
+  : Load the canonical KST 13ed criteria for a single taxon code
+- [`st_features_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/st_features_canonical.md)
+  : USDA Soil Taxonomy diagnostic features canonical table
+- [`clear_kst13_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_kst13_cache.md)
+  : Clear the in-memory KST13 cache
+
+## SmartSolos / Embrapa AgroAPI integration (v0.9.54)
+
+Cross-validation against Embrapa’s PROLOG SiBCS classifier.
+
+- [`classify_via_smartsolos_api()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.md)
+  : Classify a PedonRecord via Embrapa's SmartSolosExpert REST API
+- [`compare_smartsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_smartsolos.md)
+  : Cross-validate the local SiBCS classifier against the
+  SmartSolosExpert API
+
+## BDsolos loader and benchmarks (v0.9.55 – v0.9.60)
+
+- [`benchmark_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)
+  : Benchmark soilKey classifiers against BDsolos national reference
+  labels
+- [`download_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.md)
+  : Download the BDsolos consulta-publica CSV (experimental, requires
+  chromote)
+- [`inspect_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.md)
+  : Diagnostic inspection of a BDsolos CSV before loading
+
+## Argic strong-films audit (v0.9.83)
+
+Empirical audit of the SiBCS Cap 18 latossolic-vs-argic precedence rule.
+Extracts the strong-clay-films decision into a reusable helper so the
+rule can be validated on any benchmark dataset (BDsolos RJ: 0.9%
+Latossolo false-positive exclusion rate, 37.6% Argissolo correct
+retention rate).
+
+- [`argic_with_strong_clay_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_with_strong_clay_films.md)
+  : Test whether a pedon's argic horizon has strong clay films
+- [`audit_argic_strong_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/audit_argic_strong_films.md)
+  : Audit the strong-clay-films exclusion across a list of pedons
+
+## Lazy-fetch benchmark caches (v0.9.94)
+
+The four large benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
+stratified, ~1 MB each) are no longer bundled in the CRAN source
+tarball. They are downloaded on demand from a versioned GitHub Release
+into the user cache (~/Library/Application Support/…/soilKey/data on
+macOS) on first call.
+
+- [`download_extdata_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_extdata_cache.md)
+  : Download one or more soilKey lazy-fetch caches from GitHub Release
+
+## FEBR loader (v0.9.57)
+
+UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).
+
+- [`read_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.md)
+  : Load FEBR datasets as a list of PedonRecord objects
+- [`febr_index_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.md)
+  : Curated index of FEBR datasets that carry Munsell colors
+
+## Redape curated GeoTab dataset (v0.9.71)
+
+Embrapa Redape repository (DOI 10.48432/PYKKA7) – 96 hand- reviewed
+Brazilian soil profiles, suitable as a gold-standard benchmark for SiBCS
+classification.
+
+- [`download_redape_dataset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_redape_dataset.md)
+  : Download the curated Redape GeoTab dataset (Vaz et al 2023)
+- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
+  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
+- [`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
+  : Benchmark soilKey SiBCS predictions against the Redape gold standard
+
+## WoSIS stratified WRB benchmark (v0.9.73)
+
+ISRIC WoSIS bundled cache, 130 profiles balanced across 26 WRB Reference
+Soil Groups (5 per RSG). The first WRB benchmark with profile depth
+(analog of Redape but for WRB), pulled via RSG-filtered GraphQL queries.
+
+- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
+  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
+
+## USDA Soil Taxonomy \<-\> WRB cross-walk (v0.9.74)
+
+KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6 USDA
+Order/Suborder -\> WRB RSG correlation. Provides the richest WRB
+benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56% vs WoSIS-stratified ~30%).
+
+- [`usda_to_wrb_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/usda_to_wrb_rsg.md)
+  : USDA Soil Taxonomy \<-\> WRB Reference Soil Group correlation table
+- [`annotate_wrb_from_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.md)
+  : Annotate KSSL/NASIS pedons with a derived WRB Reference Soil Group
+- [`benchmark_wrb_vs_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.md)
+  : Benchmark soilKey WRB predictions against a USDA-derived ground
+  truth
+- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
+  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
+
+## KSSL + NASIS morphological-enriched sample (v0.9.75)
+
+Joins KSSL lab gpkg with NASIS Morphological sqlite – adds Munsell
+colours, structure, clay films, slickensides (Munsell 0% -\> 89.6% vs
+lab-only).
+
+- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
+  : Load the bundled KSSL + NASIS morphological-enriched sample
+  (v0.9.75)
+
+## Africa Soil Profiles (AfSP) WRB benchmark (v0.9.77)
+
+ISRIC AfSP v1.2 (Leenaars et al. 2014) – 18,533 georeferenced African
+profiles, ~7000 with WRB 2006 RSG. Loader + bundled 120-pedon stratified
+sample (5 per RSG x 24 RSGs). Achieves 28% Order accuracy with strong
+Cambisol/Histosol (100%) and Ferralsol/Solonetz (80%) recall.
+
+- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
+- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
+  : Load the bundled AfSP stratified sample (v0.9.77)
+- [`benchmark_afsp()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.md)
+  : Benchmark soilKey WRB predictions against AfSP ground truth
+- [`wrb06_code_to_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb06_code_to_rsg.md)
+  : WRB 2006 RSG code -\> 2022 RSG name
+
+## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
+
+- [`benchmark_lucas_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.md)
+  : Run the LUCAS Soil 2018 / ESDB WRB benchmark
+- [`attach_lucas_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/attach_lucas_spectra.md)
+  : Attach LUCAS 2018 Vis-NIR spectra to a list of PedonRecord objects
+
+## Unified benchmark and robustness (v0.9.61)
+
+- [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
+  : Unified cross-dataset benchmark across SiBCS / WRB / USDA
+- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
+  : Run the full soilKey benchmark suite and (optionally) write a report
+- [`benchmark_performance()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.md)
+  : Run the soilKey performance benchmark
+- [`batch_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.md)
+  : Batch robustness across many pedons
+- [`classification_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.md)
+  : Robustness of classification under input perturbation
+- [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md)
+  : Posterior distribution over classification outcomes
+- [`get_perturbation_scale()`](https://hugomachadorodrigues.github.io/soilKey/reference/get_perturbation_scale.md)
+  : Monte-Carlo perturbation scale for an evidence grade
+
+## OSSL spectra: PLS training and prediction
+
+Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict lab
+properties / Munsell / XYZ / generic targets.
+
+- [`train_pls_from_ossl()`](https://hugomachadorodrigues.github.io/soilKey/reference/train_pls_from_ossl.md)
+  : Train pre-trained PLSR models from an OSSL library
+- [`predict_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_from_spectra.md)
+  : Predict soil properties from spectra
+- [`predict_lab_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_lab_from_spectra.md)
+  : Predict CIE Lab from Vis-NIR reflectance spectra
+- [`predict_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_munsell_from_spectra.md)
+  : Predict Munsell hue / value / chroma from Vis-NIR reflectance
+  spectra
+- [`predict_xyz_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_xyz_from_spectra.md)
+  : Predict CIE XYZ tristimulus values from Vis-NIR reflectance spectra
+- [`predict(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/predict.soilKey_pls_model.md)
+  : Predict from a soilKey_pls_model
+- [`print(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.soilKey_pls_model.md)
+  : Print method for soilKey_pls_model
+- [`fill_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.md)
+  : Fill missing Munsell colors on a PedonRecord from Vis-NIR spectra
+
+## Spatial / database lookups
+
+ESDB attributes, SoilGrids and MapBiomas-Solos pulls.
+
+- [`available_esdb_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/available_esdb_attributes.md)
+  : List ESDB Raster Library attributes available at a given root
+- [`lookup_esdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_esdb.md)
+  : Look up an ESDB raster value at WGS84 coordinates
+- [`lookup_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_soilgrids.md)
+  : Look up a SoilGrids 250m soil property at WGS84 coordinates
+- [`lookup_mapbiomas_solos()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_mapbiomas_solos.md)
+  : Look up a MapBiomas Solos raster value at WGS84 coordinates
+
+## GlobalSoilMap depth harmonisation and aqp helpers
+
+- [`GSM_DEPTHS`](https://hugomachadorodrigues.github.io/soilKey/reference/GSM_DEPTHS.md)
+  : Default GlobalSoilMap depth intervals (cm)
+- [`harmonize_to_gsm()`](https://hugomachadorodrigues.github.io/soilKey/reference/harmonize_to_gsm.md)
+  : Harmonise pedons to GlobalSoilMap depth intervals
+- [`pedon_to_spc()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_to_spc.md)
+  : Convert a soilKey PedonRecord to an aqp SoilProfileCollection
+- [`pedon_json_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_json_schema.md)
+  : JSON Schema for a soilKey PedonRecord
+- [`texture_class_from_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/texture_class_from_pct.md)
+  : NRCS texture-class shorthand from clay / silt / sand percent
+
+## Internal – motor taxonômico
+
+Os preditores atômicos do motor determinístico – qualifiers WRB
+(`qual_*`), gates de Subgrupo/Grande-Grupo USDA (`*_usda`), atributos e
+horizontes diagnósticos SiBCS (`carater_*`, `horizonte_*`), e os
+dispatchers por Ordem. Continuam exportados e chamáveis, mas são
+despachados por nome pela chave (`classify_*`); não fazem parte da API
+pública curada.
+
+- [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
+  : Mock VLM provider for testing
+
+- [`acric_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/acric_andisol_usda.md)
+  : Acric Subgroup helper (Andisols Acrudoxic / Acraquoxic / Acrustoxic
+  / etc.)
+
+- [`acric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/acric_oxisol_usda.md)
+  : Acric Oxisol Suborder helper (Acroperox/Acrudox/Acrustox/Acraquox)
+  Pass when oxic or kandic horizon has ECEC \< 1.5 cmol/kg clay AND pH
+  (KCl) \>= 5.0.
+
+- [`aeric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aeric_oxisol_usda.md)
+  : Aeric Subgroup (for Oxisols Aquox) – chroma-3 below epipedon Already
+  defined for Aquods; here we add Oxisol-specific variant (any 10+ cm
+  horizon below A with chroma \>= 3 in 50%+ peds).
+
+- [`aeric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aeric_subgroup_usda.md)
+  : Aeric Subgroup helper (Aquods) Pass when ochric epipedon is present
+  (vs. histic/umbric/etc).
+
+- [`aggregate_alternatives()`](https://hugomachadorodrigues.github.io/soilKey/reference/aggregate_alternatives.md)
+  : Aggregate alternative-path subtests with OR semantics
+
+- [`aggregate_subtests()`](https://hugomachadorodrigues.github.io/soilKey/reference/aggregate_subtests.md)
+  : Aggregate sub-test results into a passed/missing summary
+
+- [`al_rich_spodic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/al_rich_spodic_usda.md)
+  : Aluminum-rich spodic helper (Alaquods, Alorthods, KST Ch 14)
+
+- [`albaquult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albaquult_qualifying_usda.md)
+  : Albic-over-argillic qualifying (Albaquults) Pass when albic horizon
+  overlies an argillic horizon directly.
+
+- [`albic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albic_horizon_usda.md)
+  : Albic horizon (USDA, KST 13ed Ch 3)
+
+- [`albic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albic_subgroup_usda.md)
+  : Albic Subgroup helper (Albaquultic / Albaquic)
+
+- [`alboll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alboll_qualifying_usda.md)
+  : Albolls qualifier: mollic + albic + argillic.
+
+- [`alfic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfic_subgroup_usda.md)
+  : Alfic Subgroup helper (Spodosols): argillic or kandic with BS \>=
+  35%
+
+- [`alfisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfisol_qualifying_usda.md)
+  : Alfisol Order qualifier Pass when argillic OR kandic horizon
+  present + BS \>= 35% in some part.
+
+- [`alfisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfisol_usda.md)
+  : Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base
+  saturation \>= 35% at the implicit reference depth.
+
+- [`alic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alic_andisol_usda.md)
+  : Alic Subgroup helper (Andisols) Pass when al_kcl_cmol \> 2.0 in a
+  10+ cm layer between 25 and 50 cm.
+
+- [`andic_soil_properties_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_soil_properties_usda.md)
+  : Andic soil properties (USDA, KST 13ed Ch 3, p 32)
+
+- [`andic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_subgroup_usda.md)
+  : Andic Subgroup helper (USDA, KST 13ed)
+
+- [`andisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andisol_qualifying_usda.md)
+  : Andisol Order qualifier (USDA, KST 13ed Ch 3, p 7)
+
+- [`andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andisol_usda.md)
+  : Andisols (USDA Cap 6): andic soil properties \>= 60% of thickness.
+
+- [`anhydrous_conditions_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/anhydrous_conditions_usda.md)
+  : Anhydrous conditions (USDA Soil Taxonomy, 13th edition)
+
+- [`anionic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/anionic_subgroup_usda.md)
+  : Anionic Subgroup helper (Oxisols)
+
+- [`apply_horizons_extraction()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_horizons_extraction.md)
+  : Apply a parsed horizons-extraction result to a pedon
+
+- [`apply_site_extraction()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_site_extraction.md)
+  : Apply a parsed site-extraction result to a pedon
+
+- [`aqualf_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aqualf_qualifying_usda.md)
+  : Aqualf Suborder qualifier (aquic conditions in argillic Alfisol).
+
+- [`aquand_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquand_qualifying_usda.md)
+  : Aquands Suborder qualifier (Cap 6, p 117) Pass when histic OR aquic
+  conditions in 40-50 cm with redox features. Simplified: histic OR
+  aquic_conditions(max_top=50).
+
+- [`aquandic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquandic_subgroup_usda.md)
+  : Aquandic Subgroup helper (Spodosols / others) Aquic + Andic.
+
+- [`aquent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquent_qualifying_usda.md)
+  : Aquent Suborder qualifier (Entisol with aquic conditions \<50 cm).
+
+- [`aquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquept_qualifying_usda.md)
+  : Aquept Suborder qualifier
+
+- [`aquert_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquert_qualifying_usda.md)
+  : Aquerts qualifier (Vertisols with aquic conditions) Pass when
+  aquic_conditions within 50 cm.
+
+- [`aquic_conditions_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquic_conditions_usda.md)
+  : Aquic conditions (USDA Soil Taxonomy, 13th edition)
+
+- [`aquic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquic_subgroup_usda.md)
+  : Aquic Subgroup helper (within 100 cm of mineral soil surface)
+
+- [`aquoll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquoll_qualifying_usda.md)
+  : Aquolls qualifier (aquic conditions in mollic).
+
+- [`aquult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquult_qualifying_usda.md)
+  : Aquult Suborder qualifier Pass when aquic_conditions within 50 cm.
+
+- [`arenic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/arenic_subgroup_usda.md)
+  : Arenic / Grossarenic Subgroup helper (Spodosols)
+
+- [`argic_aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aridisol_usda.md)
+  : Argic Aridisol helper – argillic-or-kandic in Argids/Cryids/etc.
+
+- [`argic_mollisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_mollisol_usda.md)
+  : Argic Mollisol Suborder helper – delegates argillic_within_usda.
+
+- [`argic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_subgroup_usda.md)
+  : Argic Subgroup helper (Endoaquods/Fragiaquods): argillic or kandic.
+  Synonym of ultic at this level. Re-exported for naming clarity.
+
+- [`argillic_or_kandic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_or_kandic_usda.md)
+  : Argillic-or-Kandic helper (USDA, used in Spodosols Subgroups)
+
+- [`argillic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_usda.md)
+  : Argillic horizon (USDA Soil Taxonomy)
+
+- [`argillic_within_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_within_usda.md)
+  : Argillic horizon helper (USDA, KST 13ed Ch 3)
+
+- [`argissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo.md)
+  : Argissolos (SiBCS Cap 4, p 114; conceito Cap 3, p 86-88)
+
+- [`argissolo_acinzentado()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_acinzentado.md)
+  : Argissolos Acinzentados (SiBCS Cap 5)
+
+- [`argissolo_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_amarelo.md)
+  : Argissolos Amarelos (SiBCS Cap 5)
+
+- [`argissolo_bruno_acinzentado()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_bruno_acinzentado.md)
+  : Argissolos Bruno-Acinzentados (SiBCS Cap 5)
+
+- [`argissolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_vermelho.md)
+  : Argissolos Vermelhos (SiBCS Cap 5)
+
+- [`argissolo_vermelho_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_vermelho_amarelo.md)
+  : Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
+
+- [`aridisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_qualifying_usda.md)
+  : Aridisol Order qualifier (USDA, KST 13ed, Ch 2) Pass when the soil
+  has aridic SMR AND any one of: argillic, natric, kandic, calcic,
+  petrocalcic, gypsic, petrogypsic, salic, duripan, cambic, sulfuric
+  horizon. Also requires no other prior order match.
+
+- [`aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_usda.md)
+  : Aridisols (USDA Cap 7): aridic moisture regime + ochric/anthropic +
+  subsurface diagnostic. v0.8 simplification: detected via aridity
+  proxies (low EC OR salic OR caracter combinations) + non-mollic
+  surface + low OC (no organic accumulation).
+
+- [`as_chat_text()`](https://hugomachadorodrigues.github.io/soilKey/reference/as_chat_text.md)
+  : Coerce a chat response to a single character scalar
+
+- [`atividade_argila_alta()`](https://hugomachadorodrigues.github.io/soilKey/reference/atividade_argila_alta.md)
+  : Atividade da fracao argila (SiBCS Cap 1, p 30)
+
+- [`calcic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.md)
+  : Calcic horizon (USDA, delegates to WRB calcic).
+
+- [`calcic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_subgroup_usda.md)
+  :
+
+  Calcic Subgroup helper – delegates to calcic_horizon_usda within
+  `max_top_cm`.
+
+- [`cambissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo.md)
+  : Cambissolos (SiBCS Cap 4, p 113; conceito Cap 3, p 88-89)
+
+- [`cambissolo_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_fluvico.md)
+  : Cambissolos Fluvicos (Cap 6): carater fluvico.
+
+- [`cambissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_haplico.md)
+  : Cambissolos Haplicos (catch-all).
+
+- [`cambissolo_histico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_histico.md)
+  : Cambissolos Histicos (Cap 6): horizonte histico sem espessura para
+  Organossolo.
+
+- [`cambissolo_humico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_humico.md)
+  : Cambissolos Humicos (Cap 6): horizonte A humico.
+
+- [`carater_acrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_acrico.md)
+  : Carater acrico (SiBCS Cap 1, p 31)
+
+- [`carater_alitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_alitico.md)
+  : Carater alitico (SiBCS Cap 1, p 32)
+
+- [`carater_arenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_arenico.md)
+  : Carater arenico (SiBCS Cap 5)
+
+- [`carater_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_argiluvico.md)
+  : Carater argiluvico (SiBCS Cap 1; Cap 6)
+
+- [`carater_cambissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_cambissolico.md)
+  : Carater cambissolico (SiBCS Cap 14)
+
+- [`carater_cambissolico_arg()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_cambissolico_arg.md)
+  : Carater cambissolico (Argissolos – Cap 5)
+
+- [`carater_carbonatico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_carbonatico.md)
+  : Carater carbonatico (SiBCS Cap 1, p 33)
+
+- [`carater_chernossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_chernossolico.md)
+  : Carater chernossolico (SiBCS Cap 5; A chernozemico + Ta alta)
+
+- [`carater_coeso()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_coeso.md)
+  : Carater coeso (SiBCS Cap 1, pp 32-33)
+
+- [`carater_durico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_durico.md)
+  : Carater durico (SiBCS Cap 1)
+
+- [`carater_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_ebanico.md)
+  : Carater ebanico (SiBCS Cap 1; Cap 7 e Cap 17)
+
+- [`carater_espessarenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espessarenico.md)
+  : Carater espessarenico (SiBCS Cap 5)
+
+- [`carater_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espodico.md)
+  : Carater espodico (SiBCS Cap 1, p 35; Cap 8)
+
+- [`carater_espodico_profundo()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espodico_profundo.md)
+  : Carater B espodico profundo (SiBCS Cap 8)
+
+- [`carater_eutrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_eutrico.md)
+  : Carater eutrico (SiBCS Cap 1, p 35)
+
+- [`carater_ferrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_ferrico.md)
+  : Carater ferrico (SiBCS Cap 1, p 35; Cap 5 e Cap 10)
+
+- [`carater_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_fluvico.md)
+  : Carater fluvico (SiBCS Cap 1, p 35-36): camadas estratificadas +
+  distribuicao irregular de C organico. Reuso de fluvic_material (WRB).
+
+- [`carater_gleissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_gleissolico.md)
+  : Carater gleissolico (SiBCS Cap 5; horizonte_glei em posicao
+  nao-Gleissolo)
+
+- [`carater_hidromorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_hidromorfico.md)
+  : Carater hidromorfico (SiBCS Cap 8)
+
+- [`carater_hipocarbonatico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_hipocarbonatico.md)
+  : Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150
+  g/kg.
+
+- [`carater_humico_espesso()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_humico_espesso.md)
+  : Carater espesso-humico (SiBCS Cap 5, p 119)
+
+- [`carater_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_latossolico.md)
+  : Carater latossolico (SiBCS Cap 5)
+
+- [`carater_leptico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_leptico.md)
+  : Carater leptico (SiBCS Cap 5; contato litico em 50-100 cm)
+
+- [`carater_leptofragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_leptofragmentario.md)
+  : Carater leptofragmentario (SiBCS Cap 5; Cr / fragmentary 50-100 cm)
+
+- [`carater_luvissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_luvissolico.md)
+  : Carater luvissolico (SiBCS Cap 5; Ta + S alta)
+
+- [`carater_nitossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_nitossolico.md)
+  : Carater nitossolico (SiBCS Cap 5)
+
+- [`carater_palico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_palico.md)
+  : Carater palico (SiBCS Cap 11)
+
+- [`carater_perferrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_perferrico.md)
+  : Carater perferrico (SiBCS Cap 1; Cap 6 CX Perferricos)
+
+- [`carater_petroplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_petroplintico.md)
+  : Carater petroplintico (SiBCS Cap 5)
+
+- [`carater_placico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_placico.md)
+  : Carater placico (SiBCS Cap 5; horizonte placico cementado por Fe/Mn)
+
+- [`carater_planossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_planossolico.md)
+  : Carater planossolico (SiBCS Cap 5)
+
+- [`carater_plintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_plintico.md)
+  : Carater plintico (SiBCS Cap 1, p 36): plintita \>= 5% em quantidade
+  insuficiente para horizonte plintico.
+
+- [`carater_psamitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_psamitico.md)
+  : Carater psamitico (SiBCS Cap 10)
+
+- [`carater_redoxico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_redoxico.md)
+  :
+
+  Carater redoxico (SiBCS Cap 1, p 36-37): feicoes redoximorficas em
+  quantidade pelo menos comum, dentro da secao de controle.
+  `epirredoxico` se dentro de 50 cm; `endorredoxico` se 50-150 cm.
+
+- [`carater_retratil()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_retratil.md)
+  : Carater retratil (SiBCS Cap 1, p 33)
+
+- [`carater_rubrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_rubrico.md)
+  : Carater rubrico (SiBCS Cap 1; Cap 10 Latossolos Brunos)
+
+- [`carater_salico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_salico.md)
+  : Carater salico (SiBCS Cap 1, p 38): CE \>= 7 dS/m em alguma epoca.
+
+- [`carater_salino()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_salino.md)
+  : Carater salino (SiBCS Cap 1, p 39): 4 \<= CE \< 7 dS/m.
+
+- [`carater_saprolitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_saprolitico.md)
+  : Carater saprolitico (SiBCS Cap 5)
+
+- [`carater_sodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_sodico.md)
+  : Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) \>=
+  15%.
+
+- [`carater_solodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_solodico.md)
+  : Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e \< 15%.
+
+- [`carater_sombrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_sombrico.md)
+  : Carater sombrico (SiBCS Cap 1; Cap 5 PV)
+
+- [`carater_terrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_terrico.md)
+  : Carater terrico (SiBCS Cap 14)
+
+- [`carater_tionico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_tionico.md)
+  : Carater tionico (SiBCS Cap 9; Cap 1 thionic-related)
+
+- [`carater_vertissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_vertissolico.md)
+  : Carater vertissolico (SiBCS Cap 6)
+
+- [`cec_per_clay()`](https://hugomachadorodrigues.github.io/soilKey/reference/cec_per_clay.md)
+  : CEC per kg clay (cmol_c)
+
+- [`chernossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo.md)
+  : Chernossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 89-90)
+
+- [`chernossolo_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_argiluvico.md)
+  : Chernossolos Argiluvicos (Cap 7): B textural abaixo do A
+  chernozemico.
+
+- [`chernossolo_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_ebanico.md)
+  : Chernossolos Ebanicos (Cap 7): caracter ebanico em B. v0.7.1:
+  detecta via Munsell em B - hue 7.5YR ou mais amarelo: V\<4 + C\<3
+  umido; OR hue mais vermelho 7.5YR: preto/cinza muito escuro.
+
+- [`chernossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_haplico.md)
+  : Chernossolos Haplicos (catch-all).
+
+- [`chernossolo_rendzico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_rendzico.md)
+  : Chernossolos Rendzicos (Cap 7): A chernozemico +
+  (calcico/petrocalcico OR carater carbonatico).
+
+- [`collect_missing_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/collect_missing_attributes.md)
+  : Collect distinct missing soil attributes from the trace
+
+- [`compute_al_saturation()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_al_saturation.md)
+  : Compute aluminium saturation (%) from exchangeable bases and Al
+
+- [`compute_ecec()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_ecec.md)
+  : Effective CEC from sum of bases plus exchangeable Al
+
+- [`compute_esp()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_esp.md)
+  : Compute exchangeable sodium percentage (ESP)
+
+- [`compute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_evidence_grade.md)
+  : Compute the provenance-aware evidence grade
+
+- [`compute_v01_classification_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_v01_classification_name.md)
+  : Compose the v0.1 classification name with disambiguation hints
+
+- [`contato_litico()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico.md)
+  :
+
+  Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de
+  `continuous_rock` via designacao R / Cr.
+
+- [`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
+  : Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
+
+- [`cryoturbation_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryoturbation_usda.md)
+  : Cryoturbation (USDA Soil Taxonomy, 13th edition)
+
+- [`cumulic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/cumulic_subgroup_usda.md)
+  : Cumulic Subgroup helper (Mollorthels / Umbrorthels)
+
+- [`default_model()`](https://hugomachadorodrigues.github.io/soilKey/reference/default_model.md)
+  : Default VLM model per provider
+
+- [`densiaquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/densiaquept_qualifying_usda.md)
+  : Densiaquept qualifying (densic contact within 100 cm)
+
+- [`.BDSOLOS_COLUMN_PATTERNS`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-BDSOLOS_COLUMN_PATTERNS.md)
+  : Canonical mapping from BDsolos column-name variants to soilKey
+  schema
+
+- [`.BDSOLOS_SITE_PATTERNS`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-BDSOLOS_SITE_PATTERNS.md)
+  : Site-level columns (BDsolos full export). Mapped at the site, not
+  horizon, level.
+
+- [`.FEBR_TO_HORIZON_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-FEBR_TO_HORIZON_MAP.md)
+  : Map FEBR layer-table columns to soilKey horizon attributes
+
+- [`.GLEYIC_HUE_REGEX`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-GLEYIC_HUE_REGEX.md)
+  : Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic
+  features)
+
+- [`.KST13_CACHE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-KST13_CACHE.md)
+  : Package-level cache for the parsed KST 13ed JSON files
+
+- [`.REDAPE_API_BASE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-REDAPE_API_BASE.md)
+  : Embrapa Redape Dataverse API endpoint
+
+- [`.REDAPE_GEOTAB_DOI`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-REDAPE_GEOTAB_DOI.md)
+  : Default DOI for the Vaz et al. 2023 curated GeoTab dataset
+
+- [`.SIBCS_LEGACY_ORDER_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SIBCS_LEGACY_ORDER_MAP.md)
+  : Pre-2018 SiBCS Order names -\> SiBCS 5a edicao plural Title Case map
+
+- [`.SMARTSOLOS_DRAINAGE_SCALE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SMARTSOLOS_DRAINAGE_SCALE.md)
+  : SmartSolos drainage class scale (DRENAGEM, 1-8)
+
+- [`.SOILGRIDS_TO_HORIZON_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILGRIDS_TO_HORIZON_MAP.md)
+  : Mapping of SoilGrids 250m property names to soilKey horizon columns
+
+- [`.SOILKEY_LAZY_FETCH_CACHES`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILKEY_LAZY_FETCH_CACHES.md)
+  : Caches managed by the v0.9.94 lazy-fetch system
+
+- [`.SOILKEY_LAZY_FETCH_RELEASE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILKEY_LAZY_FETCH_RELEASE.md)
+  : Versioned GitHub Release tag where the lazy-fetch caches are pinned
+
+- [`.WRB_LV1_NAME_BY_CODE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-WRB_LV1_NAME_BY_CODE.md)
+  : WRB Reference Soil Group code-to-name table
+
+- [`.afsp_parse_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_parse_munsell.md)
+  : Parse AfSP Munsell colour string (e.g. "10YR 4/3") into
+  hue/value/chroma
+
+- [`.afsp_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_to_pedon.md)
+  : Build a soilKey PedonRecord from AfSP Profiles + Layers rows
+
+- [`.afsp_unna()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-afsp_unna.md)
+  : Convert AfSP NoData sentinel (-9999) to NA
+
+- [`.apply_nasis_tiebreaker()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-apply_nasis_tiebreaker.md)
+  : Apply the NASIS surveyor tie-breaker to a DiagnosticResult
+
+- [`.argic_derived_aggregate()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_aggregate.md)
+  : Internal helper: .argic_derived_aggregate
+
+- [`.argic_derived_negative()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_derived_negative.md)
+  : Internal helper: .argic_derived_negative
+
+- [`.argic_strong_films_match()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-argic_strong_films_match.md)
+  : Detect strong clay-film qualifier strings (Portuguese / English)
+
+- [`.bdsolos_detect_sep()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_detect_sep.md)
+  : Auto-detect the BDsolos field separator (\`,\`, \`;\`, or tab)
+
+- [`.bdsolos_dms_to_decimal()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_dms_to_decimal.md)
+  : Convert BDsolos coords (graus / minutos / segundos / hemisferio) to
+  decimal
+
+- [`.bdsolos_eval()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_eval.md)
+  : Evaluate JS in a chromote session, returning a string result
+
+- [`.bdsolos_find_header_line()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_find_header_line.md)
+  : Detect the line where the BDsolos CSV header starts
+
+- [`.bdsolos_match_column()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_match_column.md)
+  : Guess the soilKey horizon column for a BDsolos column name
+
+- [`.bdsolos_match_taxon_column()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_match_taxon_column.md)
+  : Discover taxonomic column (the surveyor's SiBCS classification)
+
+- [`.bdsolos_mosqueado_to_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_mosqueado_to_pct.md)
+  : Convert BDsolos mottle-quantity ordinal class to percent
+
+- [`.bdsolos_norm()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_norm.md)
+  : Strip Latin-1 diacritics + lowercase for fuzzy matching
+
+- [`.bdsolos_rows_to_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_rows_to_horizons.md)
+  : Convert a subset of BDsolos rows (one perfil) to a soilKey horizons
+  table
+
+- [`.benchmark_available_datasets()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_available_datasets.md)
+  : Which datasets in \`paths\` actually have their files/dirs present?
+
+- [`.benchmark_default_paths()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_default_paths.md)
+  : Default local paths for the reference benchmark datasets
+
+- [`.benchmark_one_dataset_one_system()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_one_dataset_one_system.md)
+  : Single (dataset, system) benchmark call dispatched by name
+
+- [`.benchmark_reproducible_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_reproducible_sample.md)
+  : Reproducible random row sample (seed 42), restoring the global RNG
+  state so the benchmark never perturbs the caller's randomness.
+
+- [`.build_lucas_pedon_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_lucas_pedon_2018.md)
+  : Build a single PedonRecord from one LUCAS chemistry row + optional
+  BD row
+
+- [`.build_pedon_point_row()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_pedon_point_row.md)
+  : Build a single-row tibble describing the profile + classifications
+  for the GPKG \`pedon_point\` layer.
+
+- [`.build_report_rmd()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-build_report_rmd.md)
+  : Internal helper: .build_report_rmd
+
+- [`.candidate_layers()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-candidate_layers.md)
+  : Internal helper: .candidate_layers
+
+- [`.check_predict_inputs()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-check_predict_inputs.md)
+  : Validate inputs to a prediction backend
+
+- [`.classify_decomposition()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-classify_decomposition.md)
+  : Classifica grau de decomposicao por camada: saprico / hemico /
+  fibrico
+
+- [`.col_at()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-col_at.md)
+  : Robust per-layer column accessor.
+
+- [`.detect_color_undetermined_fallback()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.md)
+  : Detecta fallback "cor a determinar" no nivel de subordem SiBCS
+
+- [`.detect_febr_munsell_columns()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_febr_munsell_columns.md)
+  : Discover Munsell-related columns in a FEBR layer table
+
+- [`.escape_latex()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-escape_latex.md)
+  : Internal helper: .escape_latex
+
+- [`.febr_match_layer_columns()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-febr_match_layer_columns.md)
+  : Map FEBR layer-table columns to soilKey horizon column names
+
+- [`.febr_pedon_from_rows()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-febr_pedon_from_rows.md)
+  : Build a single PedonRecord from FEBR rows
+
+- [`.febr_rows_to_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-febr_rows_to_horizons.md)
+  : Build a soilKey horizons table from a subset of FEBR camada rows
+
+- [`.fill_horizon_from_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-fill_horizon_from_soilgrids.md)
+  : Fill a horizon (or synthesise a new one) from SoilGrids 250m
+
+- [`.grade_class()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-grade_class.md)
+  : Grade -\> CSS class
+
+- [`.harmonize_numeric_attrs()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-harmonize_numeric_attrs.md)
+  : Numeric attributes via mass-preserving spline
+
+- [`.harmonize_single_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-harmonize_single_horizon.md)
+  : Single-horizon fallback: replicate values across overlapping GSM
+  intervals
+
+- [`.has_nasis_feature()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-has_nasis_feature.md)
+  : Has the field surveyor identified this diagnostic in NASIS?
+
+- [`.haversine_km()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-haversine_km.md)
+  : Great-circle distance (km) between (lat1, lon1) and the elementwise
+  (lat2, lon2) vectors.
+
+- [`.html_classification_card()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_classification_card.md)
+  : Render the per-result card (one per classification system).
+
+- [`.html_escape()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_escape.md)
+  : Internal helper: .html_escape
+
+- [`.html_head()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_head.md)
+  : Render the head section with embedded CSS.
+
+- [`.html_horizons_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_horizons_table.md)
+  : Render the horizons table from a PedonRecord.
+
+- [`.html_provenance_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_provenance_table.md)
+  : Render a provenance summary from a PedonRecord.
+
+- [`.html_site_header()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_site_header.md)
+  : Render site metadata header.
+
+- [`.html_summary_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-html_summary_table.md)
+  : Render the cross-system summary table when multiple results are
+  provided.
+
+- [`.kssl_alias_reference_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-kssl_alias_reference_wrb.md)
+  : Alias \`reference_wrb_from_usda\` -\> \`reference_wrb\` on KSSL
+  pedons
+
+- [`.kst13_load_cached()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-kst13_load_cached.md)
+  : Read + cache a KST13 JSON file
+
+- [`.kst13_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-kst13_path.md)
+  : Resolve the path to a vendored canonical KST 13th JSON file
+
+- [`.lazy_fetch_local_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_local_path.md)
+  : Resolve the local path of a v0.9.94 lazy-fetch cache file
+
+- [`.lazy_fetch_readRDS()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_readRDS.md)
+  : Read a lazy-fetch cache, downloading on first call if needed
+
+- [`.lazy_fetch_url()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-lazy_fetch_url.md)
+  : Build the GitHub Release download URL for a lazy-fetch cache
+
+- [`.lucas_numeric()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-lucas_numeric.md)
+  : Coerce a LUCAS character cell to numeric, treating "\< LOD" / "" as
+  NA
+
+- [`.make_synth_perf_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-make_synth_perf_pedon.md)
+  : Synthesise a small but realistic 5-horizon pedon for benchmarking
+
+- [`.merge_confusion()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-merge_confusion.md)
+  : Merge two confusion matrices (table objects), padding union of
+  labels
+
+- [`.modal_by_overlap()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-modal_by_overlap.md)
+  : Modal categorical value by depth-overlap fraction
+
+- [`.mollic_derived_aggregate()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-mollic_derived_aggregate.md)
+  : Internal helper: .mollic_derived_aggregate
+
+- [`.mollic_derived_negative()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-mollic_derived_negative.md)
+  : Internal helper: .mollic_derived_negative
+
+- [`.normalise_results()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-normalise_results.md)
+  : Internal helper: .normalise_results
+
+- [`.ossl_property_ranges()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-ossl_property_ranges.md)
+  : Plausibility ranges for OSSL-backed soil property predictions
+
+- [`.parse_febr_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-parse_febr_munsell.md)
+  : Parse a single Brazilian-style Munsell color string into
+  hue/value/chroma
+
+- [`.parse_febr_munsell_vec()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-parse_febr_munsell_vec.md)
+  : Vectorised Munsell-string parser
+
+- [`.per_class_from_confusion()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-per_class_from_confusion.md)
+  : Per-class recall data.frame from a confusion matrix
+
+- [`.predict_ossl_mbl_resemble()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_ossl_mbl_resemble.md)
+  : MBL via resemble::mbl
+
+- [`.predict_synthetic()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-predict_synthetic.md)
+  : Deterministic synthetic prediction (fallback)
+
+- [`.q_stub_na()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_stub_na.md)
+  : Stub-NA qualifier that exists in NAMESPACE but reports missing data
+
+- [`.q_weighted_mean()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_weighted_mean.md)
+  : Volume-weighted mean of a horizon attribute over a depth window
+
+- [`.q_within_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.md)
+  : Test "X within depth d cm" given an existing diagnostic
+
+- [`.query_nearest_wosis_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.md)
+  : Query WoSIS GraphQL for the nearest WRB-labeled profile.
+
+- [`.redape_canonical_label()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_canonical_label.md)
+  : Normalise a Portuguese SiBCS label to a plural-canonical comparison
+  key
+
+- [`.redape_compose_ref()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_compose_ref.md)
+  : Compose the canonical reference label for a given SiBCS level
+
+- [`.redape_extract_pred()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_extract_pred.md)
+  : Extract the predicted label at a given SiBCS level from a
+  classify_sibcs() result
+
+- [`.redape_horizon_to_soilkey()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_horizon_to_soilkey.md)
+  : Convert one Redape GeoTab horizon record to a soilKey horizon row
+
+- [`.redape_item_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_item_to_pedon.md)
+  : Convert one Redape GeoTab item to a soilKey PedonRecord
+
+- [`.redape_pluralise_pt()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_pluralise_pt.md)
+  : Pluralise a single Portuguese token using SiBCS conventions
+
+- [`.redape_read_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_read_json.md)
+  : Read a single Redape GeoTab JSON file
+
+- [`.redape_strip_accents()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_strip_accents.md)
+  : Strip Portuguese accents and lowercase / collapse whitespace
+
+- [`.reduce_for_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.md)
+  : Reduce X (library + query) to a small score space.
+
+- [`.resolve_region()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.md)
+  : Resolve the regional subset code for an OSSL query
+
+- [`.rmd_classification_block()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_classification_block.md)
+  : Internal helper: .rmd_classification_block
+
+- [`.rmd_header()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_header.md)
+  : Internal helper: .rmd_header
+
+- [`.rmd_horizons_block()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_horizons_block.md)
+  : Internal helper: .rmd_horizons_block
+
+- [`.rmd_site_block()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_site_block.md)
+  : Internal helper: .rmd_site_block
+
+- [`.rmd_summary_block()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rmd_summary_block.md)
+  : Internal helper: .rmd_summary_block
+
+- [`.rsg_name_for_system()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-rsg_name_for_system.md)
+  : Map an RSG code to a human-readable class name in the requested
+  classification system.
+
+- [`.seed_from_matrix()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-seed_from_matrix.md)
+  : Hash-derived seed from a numeric matrix
+
+- [`.sg1()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sg1.md)
+  : Savitzky-Golay 1st derivative
+
+- [`.sg_coefficients()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sg_coefficients.md)
+  : Compute Savitzky-Golay coefficients for a derivative
+
+- [`.smartsolos_clay_films_amt()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_clay_films_amt.md)
+  :
+
+  Map `clay_films_amount` (few/common/many) to SmartSolos
+  `CEROSIDADE_QUANTIDADE` (1..3).
+
+- [`.smartsolos_clay_films_strength()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_clay_films_strength.md)
+  :
+
+  Map `clay_films_strength` to SmartSolos `CEROSIDADE_GRAU` (1..3).
+
+- [`.smartsolos_pedon_to_payload()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_pedon_to_payload.md)
+  : Convert one PedonRecord to the SmartSolosExpert request payload
+
+- [`.smartsolos_response_to_result()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_response_to_result.md)
+  : Convert a SmartSolosExpert response to a soilKey
+  ClassificationResult
+
+- [`.smartsolos_struct_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_struct_grade.md)
+  :
+
+  Map a soilKey `structure_grade` string to the SmartSolos integer
+  (`ESTRUTURA_GRAU`: 1=fraca, 2=moderada, 3=forte).
+
+- [`.smartsolos_struct_size()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_struct_size.md)
+  :
+
+  Map `structure_size` (very fine .. very coarse) to SmartSolos
+  `ESTRUTURA_TAMANHO` (1..5).
+
+- [`.smartsolos_struct_type()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-smartsolos_struct_type.md)
+  :
+
+  Map `structure_type` to SmartSolos `ESTRUTURA_TIPO` (1..6).
+
+- [`.snv()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-snv.md)
+  : Standard Normal Variate transform
+
+- [`.soilgrids_scale()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-soilgrids_scale.md)
+  : Canonical SoilGrids 250m unit-conversion factor per property
+
+- [`.soilkey_version()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-soilkey_version.md)
+  : Look up the package version, falling back gracefully when soilKey is
+  not installed (e.g. during interactive development with
+  \`sys.source()\`).
+
+- [`.subtest_result()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-subtest_result.md)
+  : Internal helper: .subtest_result
+
+- [`.three_valued_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-three_valued_all.md)
+  : Three-valued ALL across a logical vector, NA-aware
+
+- [`.typical_attribute_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-typical_attribute_table.md)
+  : Canonical attribute ranges per class, used as the "what-to-confirm"
+  appendix.
+
+- [`.wrb_canonical_plural()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_canonical_plural.md)
+  : Normalize a WRB RSG name to its plural canonical form so lookups
+  work whether the source supplied "Ferralsol" or "Ferralsols".
+
+- [`.wrb_to_sibcs_distribution()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_sibcs_distribution.md)
+  : Translate a WRB-RSG probability distribution to SiBCS-Ordem
+  probabilities via Schad (2023) Annex Table 1 / SiBCS 5ª ed. Annex A.
+  Many-to-many: a single WRB RSG may map to multiple SiBCS ordens (we
+  split the probability evenly).
+
+- [`.wrb_to_sibcs_modal_ordem()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_sibcs_modal_ordem.md)
+  : Modal SiBCS Ordem for a WRB RSG (1:1 picked by Schad 2023). Accepts
+  either the singular ("Ferralsol") or plural ("Ferralsols") form –
+  WoSIS, the WRB book, and OSSL all use slightly different conventions.
+
+- [`.wrb_to_usda_modal_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_to_usda_modal_order.md)
+  : Modal USDA Order for a WRB RSG (Schad 2023 Annex Table 1). Accepts
+  either the singular ("Ferralsol") or plural ("Ferralsols") form.
+
+- [`.write_pedon_schema_to_disk()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-write_pedon_schema_to_disk.md)
+  : Internal helper: write the schema to inst/schemas/pedon-schema.json
+  Called by data-raw / build scripts only – not exported.
+
+- [`duric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/duric_subgroup_usda.md)
+  : Duric Subgroup helper (USDA Spodosols)
+
+- [`duripan_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/duripan_usda.md)
+  : Duripan (USDA, KST 13ed Ch 3, pp 36-37)
+
+- [`dystric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/dystric_subgroup_usda.md)
+  : Dystric Subgroup helper (Vertisols Dystr\*) Pass when BS (NH4OAc) \<
+  50% in some part of the upper 100 cm.
+
+- [`ecec_per_clay()`](https://hugomachadorodrigues.github.io/soilKey/reference/ecec_per_clay.md)
+  : ECEC per kg clay (cmol_c)
+
+- [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
+  : Coerce a horizons-like data.frame to the canonical schema
+
+- [`entic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/entic_subgroup_usda.md)
+  : Entic Subgroup helper (Spodosols)
+
+- [`entisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/entisol_usda.md)
+  : Entisols (USDA Cap 8): catch-all for soils that don't match any
+  other Order. Always passes.
+
+- [`episaturation_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/episaturation_usda.md)
+  : Episaturation helper (USDA, KST 13ed Ch 3, p 41) Pass when aquic
+  conditions PLUS perched water (saturation type "episaturation").
+
+- [`espodossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo.md)
+  : Espodossolos (SiBCS Cap 4, p 112; conceito Cap 3, p 90-91)
+
+- [`espodossolo_ferri_humiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_ferri_humiluvico.md)
+  : Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
+  catch-all dos espodossolos.
+
+- [`espodossolo_ferriluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_ferriluvico.md)
+  : Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al,
+  baixo OC iluvial).
+
+- [`espodossolo_humiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_humiluvico.md)
+  : Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
+  pouco/sem Fe).
+
+- [`eutric_inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_inceptisol_usda.md)
+  : Eutric Inceptisol Suborder helper (Eutrudepts) Pass when BS (NH4OAc)
+  \>= 60% in some part of upper 75 cm.
+
+- [`eutric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_oxisol_usda.md)
+  : Eutric Oxisol Suborder helper (Eutroperox/Eutrudox/etc.) Pass when
+  BS (NH4OAc) \>= 35% in all layers within 125 cm.
+
+- [`eutric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_subgroup_usda.md)
+  : Eutric Subgroup helper (Andisols) Pass when base_saturation
+  (sum-of-cations) \>= 50% in some part.
+
+- [`familia_andico()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_andico.md)
+  : Familia: propriedades andicas (Cap 1, p 42-43)
+
+- [`familia_atividade_argila()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_atividade_argila.md)
+  : Familia: subgrupamento de atividade da fracao argila (Cap 18, p 287)
+
+- [`familia_constituicao_esqueletica()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_constituicao_esqueletica.md)
+  : Familia: constituicao esqueletica (Cap 1, p 48)
+
+- [`familia_distribuicao_cascalhos()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_distribuicao_cascalhos.md)
+  : Familia: distribuicao de cascalhos no perfil (Cap 1, p 47-48)
+
+- [`familia_grupamento_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_grupamento_textural.md)
+  : Familia: grupamento textural (Cap 1, p 46)
+
+- [`familia_label()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_label.md)
+  :
+
+  Constroi label textual de Familia a partir de `classify_sibcs_familia`
+
+- [`familia_mineralogia_areia()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_areia.md)
+  : Familia: mineralogia da fracao areia (Cap 18, p 286)
+
+- [`familia_mineralogia_argila_latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.md)
+  : Familia: mineralogia da fracao argila para Latossolos (Cap 18, p
+  286-287)
+
+- [`familia_organossolo_espessura()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_espessura.md)
+  : Familia: espessura \> 100 cm de material organico em Organossolos
+  (Cap 18, p 287)
+
+- [`familia_organossolo_lenhosidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_lenhosidade.md)
+  : Familia: lenhosidade em Organossolos (Cap 18, p 288)
+
+- [`familia_organossolo_material_subjacente()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_material_subjacente.md)
+  : Familia: material subjacente em Organossolos (Cap 18, p 287)
+
+- [`familia_oxidos_ferro()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_oxidos_ferro.md)
+  : Familia: teor de oxidos de ferro (Cap 1, p 42)
+
+- [`familia_prefixo_profundidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_prefixo_profundidade.md)
+  : Familia: prefixo de profundidade epi-/meso-/endo- (Cap 18, p
+  284-285)
+
+- [`familia_saturacao_aluminio()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_saturacao_aluminio.md)
+  : Familia: saturacao por aluminio – "alico" (Cap 18, p 285)
+
+- [`familia_saturacao_bases()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_saturacao_bases.md)
+  : Familia: saturacao por bases (Cap 18, p 285)
+
+- [`familia_subgrupamento_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_subgrupamento_textural.md)
+  : Familia: subgrupamento textural (Cap 18, p 283; em validacao)
+
+- [`familia_tipo_horizonte_superficial()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_tipo_horizonte_superficial.md)
+  : Familia: tipo de horizonte diagnostico superficial (Cap 2)
+
+- [`family_cec_activity_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_cec_activity_usda.md)
+  : USDA family: cation-exchange activity class (KST Ch. 17)
+
+- [`family_depth_class_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_depth_class_usda.md)
+  : USDA family: soil depth class for shallow soils (KST Ch. 17)
+
+- [`family_label_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_label_usda.md)
+  : Assemble the USDA family label from family attributes
+
+- [`family_mineralogy_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_mineralogy_usda.md)
+  : USDA family: mineralogy class (KST Ch. 17)
+
+- [`family_particle_size_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_particle_size_usda.md)
+  : USDA family: particle-size class (KST Ch. 17)
+
+- [`family_reaction_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_reaction_usda.md)
+  : USDA family: reaction class (KST Ch. 17)
+
+- [`family_temperature_regime_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md)
+  : USDA family: soil temperature regime (KST Ch. 16)
+
+- [`ferric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferric_subgroup_usda.md)
+  : Ferric Subgroup helper (Ferrudalfs) Pass when iron-rich (fe_dcb_pct
+  \>= 4%) horizon present in B.
+
+- [`fibric_predominant_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_predominant_usda.md)
+  : Fibric_predominant_usda: Fibrists Suborder qualifier
+
+- [`fibric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_subgroup_usda.md)
+  : Fibric Subgroup helper (Haplohemists / Haplowassists /
+  Sulfiwassists) Pass when fibric layers cumulative thickness \>= 25 cm
+  in control section below surface tier.
+
+- [`find_ambiguities()`](https://hugomachadorodrigues.github.io/soilKey/reference/find_ambiguities.md)
+  : Collect ambiguous RSG candidates from the trace
+
+- [`find_or_append_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/find_or_append_horizon.md)
+  : Find or create a horizon row matching the given (top, bottom)
+
+- [`fluvaquentic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluvaquentic_usda.md)
+  : Fluvaquentic Subgroup helper (irregular OC decrease + aquic)
+
+- [`fluvent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluvent_qualifying_usda.md)
+  : Fluvent Suborder qualifier (irregular OC decrease in 25-125 cm, OR
+  layered alluvial designation).
+
+- [`fluventic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluventic_usda.md)
+  : Fluventic Subgroup helper (irregular OC decrease, NO aquic req.)
+
+- [`fmt_num()`](https://hugomachadorodrigues.github.io/soilKey/reference/fmt_num.md)
+  : Format a numeric value with suffix, returning "NA" for NA/NULL
+
+- [`folist_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folist_qualifying_usda.md)
+  : Folists Suborder qualifier (KST 13ed, Ch 10, p 200)
+
+- [`folistic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folistic_epipedon_usda.md)
+  : Folistic epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`folistic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folistic_subgroup_usda.md)
+  : Folistic Subgroup helper (folistic_epipedon present)
+
+- [`fragipan_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragipan_usda.md)
+  : Fragipan (USDA, KST 13ed Ch 3, p 38)
+
+- [`frasic_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/frasic_qualifying_usda.md)
+  : Frasiwassists Subgroup helper (Wassists)
+
+- [`fulvic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fulvic_andisol_usda.md)
+  : Fulvic Andisols: similar to melanic but with melanic_index \> 1.70
+  (more humic acid). v0.8: detected via OC \>= 6 in cumulative 30 cm but
+  WITHOUT melanic_epipedon (since melanic requires index \<= 1.70).
+
+- [`gelisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gelisol_usda.md)
+  : Gelisols (USDA Cap 9): gelic conditions / permafrost.
+
+- [`glacic_layer_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/glacic_layer_usda.md)
+  : Glacic layer (USDA Soil Taxonomy, 13th edition)
+
+- [`gleissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo.md)
+  : Gleissolos (SiBCS Cap 4, p 112-113; conceito Cap 3, p 91-93)
+
+- [`gleissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_haplico.md)
+  : Gleissolos Haplicos (catch-all).
+
+- [`gleissolo_melanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_melanico.md)
+  : Gleissolos Melanicos (Cap 9): horizonte hístico \< 40 cm OR A
+  humico, proeminente, chernozemico.
+
+- [`gleissolo_salico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_salico.md)
+  : Gleissolos Salicos (Cap 9): caracter salico em \< 100 cm.
+
+- [`gleissolo_tiomorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_tiomorfico.md)
+  : Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
+  sulfurico em \< 100 cm.
+
+- [`glossic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/glossic_subgroup_usda.md)
+  : Glossic Subgroup helper (Glossaqualfs, Glossocryalfs, Glossudalfs)
+  Pass when interfingering of albic materials into argillic horizon is
+  detected. v0.8 proxy: albic + argillic + lateral chroma \<= 2 on
+  argillic boundary.
+
+- [`grossarenic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/grossarenic_subgroup_usda.md)
+  : Grossarenic Subgroup helper: sandy throughout, spodic \>= 125 cm.
+
+- [`gypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gypsic_horizon_usda.md)
+  : Gypsic horizon (USDA, delegates to WRB gypsic).
+
+- [`gypsic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gypsic_subgroup_usda.md)
+  : Gypsic Subgroup helper – delegates to gypsic_horizon_usda.
+
+- [`halaquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/halaquept_qualifying_usda.md)
+  : Halic helper for Halaquepts Pass when EC \>= 8 dS/m within 100 cm.
+
+- [`halic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/halic_subgroup_usda.md)
+  : Halic Subgroup helper (Haplosaprists)
+
+- [`hemic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hemic_subgroup_usda.md)
+  : Hemic Subgroup helper
+
+- [`histel_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histel_qualifying_usda.md)
+  : Histels Suborder qualifier (USDA, KST 13ed)
+
+- [`histic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histic_epipedon_usda.md)
+  : Histic epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`histic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histic_subgroup_usda.md)
+  : Histic Subgroup helper (in Spodosols, Aquods) Pass when
+  histic_epipedon_usda passes.
+
+- [`histosol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histosol_qualifying_usda.md)
+  : Histosols Order qualifier (USDA, KST 13ed, Ch 2, p 7)
+
+- [`histosol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histosol_usda.md)
+  : Histosols (USDA Cap 10): organic materials \>= 40 cm in 0-100.
+  Refined v0.8.4 – now uses histosol_qualifying_usda (40 cm threshold)
+  instead of WRB histic_horizon (10 cm).
+
+- [`horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md)
+  : Canonical horizon column specification
+
+- [`horizon_simple_attr_map()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_simple_attr_map.md)
+  : Mapping from VLM-schema field names to PedonRecord horizon columns
+
+- [`horizonte_A_antropico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_antropico.md)
+  : Horizonte A antropico (SiBCS) (SiBCS Cap 2, p 53)
+
+- [`horizonte_A_chernozemico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_chernozemico.md)
+  : Horizonte A chernozemico (SiBCS Cap 2, p 50-51)
+
+- [`horizonte_A_fraco()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_fraco.md)
+  : Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
+  simples/macica + OC \< 6 g/kg; OR espessura \< 5 cm.
+
+- [`horizonte_A_humico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_humico.md)
+  : Horizonte A humico (SiBCS Cap 2, p 51-52)
+
+- [`horizonte_A_moderado()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_moderado.md)
+  : Horizonte A moderado (SiBCS Cap 2, p 53-54): catch-all. Returns TRUE
+  quando o solo tem horizonte superficial mas nao se enquadra nas demais
+  classes diagnosticas superficiais.
+
+- [`horizonte_A_proeminente()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_proeminente.md)
+  : Horizonte A proeminente (SiBCS Cap 2, p 52-53)
+
+- [`horizonte_E_albico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_E_albico.md)
+  : Horizonte E albico (SiBCS Cap 2, p 66-67; v0.7)
+
+- [`horizonte_calcico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_calcico.md)
+  : Horizonte calcico (SiBCS Cap 2, p 71-72; v0.7)
+
+- [`horizonte_concrecionario()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_concrecionario.md)
+  : Horizonte concrecionario (SiBCS Cap 2, p 68-69; v0.7)
+
+- [`horizonte_glei()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_glei.md)
+  : Horizonte glei (SiBCS Cap 2, p 69-71; v0.7)
+
+- [`horizonte_histico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_histico.md)
+  : Horizonte histico (SiBCS Cap 2, p 49-50)
+
+- [`horizonte_litoplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_litoplintico.md)
+  : Horizonte litoplintico (SiBCS Cap 2, p 69; v0.7)
+
+- [`horizonte_petrocalcico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_petrocalcico.md)
+  : Horizonte petrocalcico (SiBCS Cap 2, p 72; v0.7)
+
+- [`horizonte_plintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_plintico.md)
+  : Horizonte plintico (SiBCS Cap 2, p 67-68; v0.7)
+
+- [`horizonte_sulfurico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_sulfurico.md)
+  : Horizonte sulfurico (SiBCS Cap 2, p 72-73; v0.7)
+
+- [`horizonte_vertico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_vertico.md)
+  : Horizonte vertico (SiBCS Cap 2, p 73; v0.7)
+
+- [`humic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_andisol_usda.md)
+  : Humic Andisols Subgroup helper Pass when mollic OR umbric epipedon
+  present.
+
+- [`humic_inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_inceptisol_usda.md)
+  : Humic Inceptisol Suborder helper (Hum\*) Pass when umbric or mollic
+  epipedon present + thick (\>= 25 cm).
+
+- [`humic_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_oxisol_usda.md)
+  : Humic-Oxisol Subgroup helper Pass when cumulative organic carbon
+  mass is \>= 16 kg/m2 between surface and 100 cm (computed as SUM(OC%
+  \* bulk_density \* dz)). v0.8 proxy: uses default bulk_density 1.0
+  g/cm3 if unavailable.
+
+- [`humic_spodic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_spodic_usda.md)
+  : Humic-spodic Suborder/GG check (\>= 6% OC in 10+ cm of spodic)
+
+- [`humic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_subgroup_usda.md)
+  : Humic Subgroup helper (Humic Duricryods / Humic Placocryods) Pass
+  when spodic horizon has \>= 6% OC in 10+ cm.
+
+- [`humilluvic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humilluvic_subgroup_usda.md)
+  : Humilluvic Subgroup helper (Luvihemists)
+
+- [`humult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humult_qualifying_usda.md)
+  : Humult Suborder qualifier (Ultisols with thick humus accumulation)
+  Pass when 0.9% OC weighted average in 0-15 cm AND/OR organic carbon
+  mass \>= 12 kg/m2 in 0-100 cm (proxy via humic_oxisol_usda with lower
+  threshold).
+
+- [`hydraquent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydraquent_qualifying_usda.md)
+  : Hydric Aquent helper (Hydraquents) Pass when surface 0-50 has high
+  water content (n value high). v0.8 proxy: water_content_1500kpa \>=
+  80% in surface.
+
+- [`hydric_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydric_andisol_usda.md)
+  : Hydric (Andisols): 1500 kPa water retention \>= 70% on undried
+  samples throughout a 35+ cm layer within 100 cm.
+
+- [`hydric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydric_subgroup_usda.md)
+  : Hydric Subgroup helper (Histosols Cryofibrists / Sphagnofibrists /
+  etc.)
+
+- [`inceptisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/inceptisol_qualifying_usda.md)
+  : Inceptisol Order qualifier Pass when a cambic horizon is present (no
+  argillic, no spodic, no mollic, etc. – enforced by prior order
+  exclusion).
+
+- [`inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/inceptisol_usda.md)
+  : Inceptisols (USDA Cap 11): cambic horizon (or several alternative
+  subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
+  sodium-affected sub).
+
+- [`is_loamy_sand_or_finer()`](https://hugomachadorodrigues.github.io/soilKey/reference/is_loamy_sand_or_finer.md)
+  : Texture predicate: "loamy sand or finer"
+
+- [`is_sandy_loam_or_finer()`](https://hugomachadorodrigues.github.io/soilKey/reference/is_sandy_loam_or_finer.md)
+  : Texture predicate: "sandy loam or finer"
+
+- [`kandic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kandic_horizon_usda.md)
+  : Kandic horizon (USDA, KST 13ed Ch 3, p 45)
+
+- [`kandic_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kandic_oxisol_usda.md)
+  : Kandic Suborder helper for Oxisols (Kandiperox/Kandiudox/Kandiustox)
+  Delegates to kandic_horizon_usda.
+
+- [`kanhapl_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kanhapl_qualifying_usda.md)
+  : Kanhapl qualifying helper (Kanhapludults / Kanhaplustults / etc.)
+  Pass when kandic horizon present BUT NOT meeting Pale criteria (i.e.
+  younger / less developed kandic).
+
+- [`lamellic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/lamellic_subgroup_usda.md)
+  : Lamellic Subgroup helper (Spodosols Haplorthods)
+
+- [`latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo.md)
+  : Latossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 93-94)
+
+- [`latossolo_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_amarelo.md)
+  : Latossolos Amarelos (Cap 10): matiz \\= 7.5YR (mais amarelo).
+
+- [`latossolo_bruno()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_bruno.md)
+  : Latossolos Brunos (Cap 10): matiz \\= 7.5YR + valor \\= 4 + croma
+  \\= 5 (cores brunadas) OR caracter retratil.
+
+- [`latossolo_ki_kr()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_ki_kr.md)
+  : Ki/Kr para Latossolos (SiBCS Cap 10, p 173-176)
+
+- [`latossolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_vermelho.md)
+  : Latossolos Vermelhos (Cap 10): matiz \\= 2.5YR (mais vermelho).
+
+- [`latossolo_vermelho_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_vermelho_amarelo.md)
+  : Latossolos Vermelho-Amarelos (catch-all).
+
+- [`limnic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/limnic_usda.md)
+  : Limnic Subgroup helper (Histels)
+
+- [`lithic_contact_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/lithic_contact_usda.md)
+  : Lithic contact within X cm of the surface (USDA Subgroup helper)
+
+- [`load_prompt()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_prompt.md)
+  : Load and render a packaged prompt template
+
+- [`load_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_schema.md)
+  : Load a packaged JSON schema as a string
+
+- [`luvissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo.md)
+  : Luvissolos (SiBCS Cap 4, p 113; conceito Cap 3, p 95-96)
+
+- [`luvissolo_cromico()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo_cromico.md)
+  : Luvissolos Cromicos (Cap 11): caracter cromico (cores fortes em B).
+  Aplicado pela presenca de Munsell vermelho-amarelado em B com cromas
+  altos.
+
+- [`luvissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo_haplico.md)
+  : Luvissolos Haplicos (catch-all).
+
+- [`make_empty_provenance()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_provenance.md)
+  : Empty provenance table
+
+- [`melanic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/melanic_andisol_usda.md)
+  : Melanic Andisols: melanic_epipedon present.
+
+- [`melanic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/melanic_epipedon_usda.md)
+  : Melanic epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`mollic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollic_epipedon_usda.md)
+  : Mollic epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`mollisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollisol_qualifying_usda.md)
+  : Mollisol Order qualifier (USDA, KST 13ed, Ch 12) Pass when
+  mollic_epipedon AND BS (NH4OAc) \>= 50% in upper 100 cm.
+
+- [`mollisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollisol_usda.md)
+  : Mollisols (USDA Cap 12): mollic epipedon + base saturation \>= 50%.
+
+- [`natric_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_horizon_usda.md)
+  : Natric horizon helper (USDA, KST 13ed Ch 3)
+
+- [`natric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_subgroup_usda.md)
+  : Natric Subgroup helper for Natraquerts.
+
+- [`neossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo.md)
+  : Neossolos (SiBCS Cap 4, p 111-112; conceito Cap 3, p 96-97)
+
+- [`neossolo_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_fluvico.md)
+  : Neossolos Fluvicos (Cap 12): caracter fluvico em \< 150 cm.
+
+- [`neossolo_litolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_litolico.md)
+  : Neossolos Litolicos (Cap 12): contato litico ou litico fragmentario
+  \\= 50 cm.
+
+- [`neossolo_quartzarenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_quartzarenico.md)
+  : Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
+  todos os horizontes ate 150 cm + 95% quartzo.
+
+- [`neossolo_regolitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_regolitico.md)
+  : Neossolos Regoliticos (catch-all dos Neossolos).
+
+- [`nitossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo.md)
+  : Nitossolos (SiBCS Cap 4, p 114; conceito Cap 3, p 97-98)
+
+- [`nitossolo_bruno()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_bruno.md)
+  : Nitossolos Brunos (Cap 13): matiz \\= 7.5YR + valor \<= 4 + croma
+  \<= 5.
+
+- [`nitossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_haplico.md)
+  : Nitossolos Haplicos (catch-all).
+
+- [`nitossolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_vermelho.md)
+  : Nitossolos Vermelhos (Cap 13): matiz \\= 2.5YR.
+
+- [`nitric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitric_subgroup_usda.md)
+  : Nitric Subgroup helper (Anhyturbels / Anhyorthels)
+
+- [`normalize_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalize_prior.md)
+  : Validate / normalise a prior data.table
+
+- [`ochric_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.md)
+  : Ochric epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`organossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo.md)
+  : Organossolos (SiBCS Cap 4, chave do 1o nivel; conceito Cap 3, p
+  99-101)
+
+- [`organossolo_folico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_folico.md)
+  : Organossolos Folicos (Cap 14): horizonte O histico (drenado).
+  Detectado via designation pattern \\^O\\.
+
+- [`organossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_haplico.md)
+  : Organossolos Haplicos (catch-all).
+
+- [`organossolo_tiomorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_tiomorfico.md)
+  : Organossolos Tiomorficos (Cap 14): materiais sulfidricos OR
+  horizonte sulfurico em \< 100 cm.
+
+- [`oxic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_horizon_usda.md)
+  :
+
+  Oxic horizon (USDA, KST 13ed, Ch 3) Delegates to WRB `ferralic`.
+
+- [`oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxisol_usda.md)
+  : Oxisol (USDA Cap 13): oxic horizon, excluding profiles with an
+  argillic horizon overlying the oxic.
+
+- [`oxyaquic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxyaquic_subgroup_usda.md)
+  : Oxyaquic Subgroup helper (Spodosols, Mollisols, etc.)
+
+- [`pachic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pachic_subgroup_usda.md)
+  : Pachic Subgroup helper (Andisols, Mollisols) Pass when mollic OR
+  umbric epipedon is \>= 50 cm thick.
+
+- [`pale_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pale_qualifying_usda.md)
+  : Pale qualifying helper (Paleudults / Paleustults / Palexerults /
+  Palehumults / Paleaquults)
+
+- [`paleargid_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/paleargid_qualifying_usda.md)
+  : Paleargid qualifying helper Pass when argillic horizon has
+  continuous clay films AND clay \>\> 35% in upper 10 cm (proxy for old,
+  well-developed argillic). v0.8 proxy: argillic + clay_pct \>= 35 in
+  upper 30 cm.
+
+- [`permafrost_within_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/permafrost_within_usda.md)
+  : Permafrost (USDA Soil Taxonomy, 13th edition)
+
+- [`petrocalcic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrocalcic_subgroup_usda.md)
+  : Petrocalcic Subgroup helper (Aridisols Petrocalcids) Cemented calcic
+  horizon with cementation_class \>= "strongly".
+
+- [`petroferric_contact_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petroferric_contact_usda.md)
+  : Petroferric contact helper (USDA, KST 13ed Ch 3, p 48)
+
+- [`petrogypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrogypsic_horizon_usda.md)
+  : Petrogypsic horizon helper (USDA)
+
+- [`petrogypsic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrogypsic_subgroup_usda.md)
+  : Petrogypsic Subgroup helper – delegate to petrogypsic_horizon_usda
+
+- [`petronodic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petronodic_subgroup_usda.md)
+  : Petronodic Subgroup helper (Aridisols) Pass when 5%+ rock fragments
+  cemented by carbonates within 100 cm. v0.8 proxy: caco3_pct \>= 15 AND
+  coarse_fragments_pct \>= 5.
+
+- [`placic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/placic_horizon_usda.md)
+  : Placic horizon (USDA, KST 13ed Ch 3, pp 47-48)
+
+- [`planossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo.md)
+  : Planossolos (SiBCS Cap 4, p 112; conceito Cap 3, p 101-102)
+
+- [`planossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo_haplico.md)
+  : Planossolos Haplicos (catch-all).
+
+- [`planossolo_natrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo_natrico.md)
+  : Planossolos Natricos (Cap 15): caracter sodico em \\ 100 cm.
+
+- [`plinth_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinth_subgroup_usda.md)
+  : Plinth qualifying helper (Plinth\*ults) Pass when plinthite \>= 5%
+  in 50%+ of layers within 150 cm.
+
+- [`plinthaquox_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthaquox_qualifying_usda.md)
+  : Plinthaquox qualifying helper (Aquox: continuous plinthite phase)
+  Pass when plinthite \>= 50% in some 10+ cm layer (continuous phase
+  proxy).
+
+- [`plinthic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthic_subgroup_usda.md)
+  : Plinthic Subgroup helper (Oxisols) Pass when plinthite \>= 5% in any
+  horizon within 125 cm.
+
+- [`plintossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo.md)
+  : Plintossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 102-104)
+
+- [`plintossolo_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_argiluvico.md)
+  : Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural
+  OR carater argiluvico.
+
+- [`plintossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_haplico.md)
+  : Plintossolos Haplicos (catch-all).
+
+- [`plintossolo_petrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_petrico.md)
+  : Plintossolos Petricos (Cap 16): horizonte concrecionario OR
+  litoplintico (sem horizonte plintico precedendo).
+
+- [`prompt_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/prompt_path.md)
+  : Path to a packaged prompt template
+
+- [`provenance_authority()`](https://hugomachadorodrigues.github.io/soilKey/reference/provenance_authority.md)
+  : Authority order for provenance sources
+
+- [`psamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/psamment_qualifying_usda.md)
+  : Psamment Suborder qualifier (sandy texture: clay + 2\*silt \< 30 AND
+  no clay films / argillic).
+
+- [`psammentic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/psammentic_subgroup_usda.md)
+  : Psammentic Subgroup helper (Aquorthels)
 
 - [`qual_abruptic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_abruptic.md)
   : Abruptic qualifier (ap): abrupt textural difference within 100 cm.
@@ -1442,908 +3685,6 @@ dispatch (Ano- / Epi- / Endo- / Bathy- / Panto- / Kato- / Amphi- / Poly-
 - [`qual_yermic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_yermic.md)
   : Yermic qualifier (ye): yermic properties in upper 50 cm.
 
-## SiBCS 5ª ed. – atributos diagnósticos (Cap 1)
-
-- [`carater_acrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_acrico.md)
-  : Carater acrico (SiBCS Cap 1, p 31)
-
-- [`carater_alitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_alitico.md)
-  : Carater alitico (SiBCS Cap 1, p 32)
-
-- [`carater_arenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_arenico.md)
-  : Carater arenico (SiBCS Cap 5)
-
-- [`carater_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_argiluvico.md)
-  : Carater argiluvico (SiBCS Cap 1; Cap 6)
-
-- [`carater_cambissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_cambissolico.md)
-  : Carater cambissolico (SiBCS Cap 14)
-
-- [`carater_cambissolico_arg()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_cambissolico_arg.md)
-  : Carater cambissolico (Argissolos – Cap 5)
-
-- [`carater_carbonatico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_carbonatico.md)
-  : Carater carbonatico (SiBCS Cap 1, p 33)
-
-- [`carater_chernossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_chernossolico.md)
-  : Carater chernossolico (SiBCS Cap 5; A chernozemico + Ta alta)
-
-- [`carater_coeso()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_coeso.md)
-  : Carater coeso (SiBCS Cap 1, pp 32-33)
-
-- [`carater_durico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_durico.md)
-  : Carater durico (SiBCS Cap 1)
-
-- [`carater_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_ebanico.md)
-  : Carater ebanico (SiBCS Cap 1; Cap 7 e Cap 17)
-
-- [`carater_espessarenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espessarenico.md)
-  : Carater espessarenico (SiBCS Cap 5)
-
-- [`carater_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espodico.md)
-  : Carater espodico (SiBCS Cap 1, p 35; Cap 8)
-
-- [`carater_espodico_profundo()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_espodico_profundo.md)
-  : Carater B espodico profundo (SiBCS Cap 8)
-
-- [`carater_eutrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_eutrico.md)
-  : Carater eutrico (SiBCS Cap 1, p 35)
-
-- [`carater_ferrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_ferrico.md)
-  : Carater ferrico (SiBCS Cap 1, p 35; Cap 5 e Cap 10)
-
-- [`carater_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_fluvico.md)
-  : Carater fluvico (SiBCS Cap 1, p 35-36): camadas estratificadas +
-  distribuicao irregular de C organico. Reuso de fluvic_material (WRB).
-
-- [`carater_gleissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_gleissolico.md)
-  : Carater gleissolico (SiBCS Cap 5; horizonte_glei em posicao
-  nao-Gleissolo)
-
-- [`carater_hidromorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_hidromorfico.md)
-  : Carater hidromorfico (SiBCS Cap 8)
-
-- [`carater_hipocarbonatico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_hipocarbonatico.md)
-  : Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150
-  g/kg.
-
-- [`carater_humico_espesso()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_humico_espesso.md)
-  : Carater espesso-humico (SiBCS Cap 5, p 119)
-
-- [`carater_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_latossolico.md)
-  : Carater latossolico (SiBCS Cap 5)
-
-- [`carater_leptico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_leptico.md)
-  : Carater leptico (SiBCS Cap 5; contato litico em 50-100 cm)
-
-- [`carater_leptofragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_leptofragmentario.md)
-  : Carater leptofragmentario (SiBCS Cap 5; Cr / fragmentary 50-100 cm)
-
-- [`carater_luvissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_luvissolico.md)
-  : Carater luvissolico (SiBCS Cap 5; Ta + S alta)
-
-- [`carater_nitossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_nitossolico.md)
-  : Carater nitossolico (SiBCS Cap 5)
-
-- [`carater_palico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_palico.md)
-  : Carater palico (SiBCS Cap 11)
-
-- [`carater_perferrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_perferrico.md)
-  : Carater perferrico (SiBCS Cap 1; Cap 6 CX Perferricos)
-
-- [`carater_petroplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_petroplintico.md)
-  : Carater petroplintico (SiBCS Cap 5)
-
-- [`carater_placico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_placico.md)
-  : Carater placico (SiBCS Cap 5; horizonte placico cementado por Fe/Mn)
-
-- [`carater_planossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_planossolico.md)
-  : Carater planossolico (SiBCS Cap 5)
-
-- [`carater_plintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_plintico.md)
-  : Carater plintico (SiBCS Cap 1, p 36): plintita \>= 5% em quantidade
-  insuficiente para horizonte plintico.
-
-- [`carater_psamitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_psamitico.md)
-  : Carater psamitico (SiBCS Cap 10)
-
-- [`carater_redoxico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_redoxico.md)
-  :
-
-  Carater redoxico (SiBCS Cap 1, p 36-37): feicoes redoximorficas em
-  quantidade pelo menos comum, dentro da secao de controle.
-  `epirredoxico` se dentro de 50 cm; `endorredoxico` se 50-150 cm.
-
-- [`carater_retratil()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_retratil.md)
-  : Carater retratil (SiBCS Cap 1, p 33)
-
-- [`carater_rubrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_rubrico.md)
-  : Carater rubrico (SiBCS Cap 1; Cap 10 Latossolos Brunos)
-
-- [`carater_salico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_salico.md)
-  : Carater salico (SiBCS Cap 1, p 38): CE \>= 7 dS/m em alguma epoca.
-
-- [`carater_salino()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_salino.md)
-  : Carater salino (SiBCS Cap 1, p 39): 4 \<= CE \< 7 dS/m.
-
-- [`carater_saprolitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_saprolitico.md)
-  : Carater saprolitico (SiBCS Cap 5)
-
-- [`carater_sodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_sodico.md)
-  : Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) \>=
-  15%.
-
-- [`carater_solodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_solodico.md)
-  : Carater solodico (SiBCS Cap 1, p 39): PST entre 6% e \< 15%.
-
-- [`carater_sombrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_sombrico.md)
-  : Carater sombrico (SiBCS Cap 1; Cap 5 PV)
-
-- [`carater_terrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_terrico.md)
-  : Carater terrico (SiBCS Cap 14)
-
-- [`carater_tionico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_tionico.md)
-  : Carater tionico (SiBCS Cap 9; Cap 1 thionic-related)
-
-- [`carater_vertissolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/carater_vertissolico.md)
-  : Carater vertissolico (SiBCS Cap 6)
-
-- [`atividade_argila_alta()`](https://hugomachadorodrigues.github.io/soilKey/reference/atividade_argila_alta.md)
-  : Atividade da fracao argila (SiBCS Cap 1, p 30)
-
-## SiBCS 5ª ed. – horizontes diagnósticos (Cap 2)
-
-- [`horizonte_A_antropico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_antropico.md)
-  : Horizonte A antropico (SiBCS) (SiBCS Cap 2, p 53)
-- [`horizonte_A_chernozemico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_chernozemico.md)
-  : Horizonte A chernozemico (SiBCS Cap 2, p 50-51)
-- [`horizonte_A_fraco()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_fraco.md)
-  : Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
-  simples/macica + OC \< 6 g/kg; OR espessura \< 5 cm.
-- [`horizonte_A_humico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_humico.md)
-  : Horizonte A humico (SiBCS Cap 2, p 51-52)
-- [`horizonte_A_moderado()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_moderado.md)
-  : Horizonte A moderado (SiBCS Cap 2, p 53-54): catch-all. Returns TRUE
-  quando o solo tem horizonte superficial mas nao se enquadra nas demais
-  classes diagnosticas superficiais.
-- [`horizonte_A_proeminente()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_A_proeminente.md)
-  : Horizonte A proeminente (SiBCS Cap 2, p 52-53)
-- [`horizonte_E_albico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_E_albico.md)
-  : Horizonte E albico (SiBCS Cap 2, p 66-67; v0.7)
-- [`horizonte_calcico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_calcico.md)
-  : Horizonte calcico (SiBCS Cap 2, p 71-72; v0.7)
-- [`horizonte_concrecionario()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_concrecionario.md)
-  : Horizonte concrecionario (SiBCS Cap 2, p 68-69; v0.7)
-- [`horizonte_glei()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_glei.md)
-  : Horizonte glei (SiBCS Cap 2, p 69-71; v0.7)
-- [`horizonte_histico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_histico.md)
-  : Horizonte histico (SiBCS Cap 2, p 49-50)
-- [`horizonte_litoplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_litoplintico.md)
-  : Horizonte litoplintico (SiBCS Cap 2, p 69; v0.7)
-- [`horizonte_petrocalcico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_petrocalcico.md)
-  : Horizonte petrocalcico (SiBCS Cap 2, p 72; v0.7)
-- [`horizonte_plintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_plintico.md)
-  : Horizonte plintico (SiBCS Cap 2, p 67-68; v0.7)
-- [`horizonte_sulfurico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_sulfurico.md)
-  : Horizonte sulfurico (SiBCS Cap 2, p 72-73; v0.7)
-- [`horizonte_vertico()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_vertico.md)
-  : Horizonte vertico (SiBCS Cap 2, p 73; v0.7)
-- [`B_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
-  : Horizonte B textural (SiBCS Cap 2, p 54-57; v0.7 strict)
-- [`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
-  : Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)
-- [`B_nitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_nitico.md)
-  : Horizonte B nitico (SiBCS Cap 2, p 61-62; v0.7)
-- [`B_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_espodico.md)
-  : Horizonte B espodico (SiBCS Cap 2, p 62-65; v0.7)
-- [`B_incipiente()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_incipiente.md)
-  : Horizonte B incipiente (SiBCS Cap 2, p 59-61; v0.7)
-- [`B_planico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_planico.md)
-  : Horizonte B planico (SiBCS Cap 2, p 65-66; v0.7)
-
-## SiBCS 5ª ed. – chave (1º–4º níveis, Caps 3–17)
-
-Per-Ordem dispatchers walk Subordem -\> Grande Grupo -\> Subgrupo.
-Triggered by `classify_sibcs(pedon)`.
-
-- [`argissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo.md)
-  : Argissolos (SiBCS Cap 4, p 114; conceito Cap 3, p 86-88)
-- [`argissolo_acinzentado()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_acinzentado.md)
-  : Argissolos Acinzentados (SiBCS Cap 5)
-- [`argissolo_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_amarelo.md)
-  : Argissolos Amarelos (SiBCS Cap 5)
-- [`argissolo_bruno_acinzentado()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_bruno_acinzentado.md)
-  : Argissolos Bruno-Acinzentados (SiBCS Cap 5)
-- [`argissolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_vermelho.md)
-  : Argissolos Vermelhos (SiBCS Cap 5)
-- [`argissolo_vermelho_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/argissolo_vermelho_amarelo.md)
-  : Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
-- [`cambissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo.md)
-  : Cambissolos (SiBCS Cap 4, p 113; conceito Cap 3, p 88-89)
-- [`cambissolo_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_fluvico.md)
-  : Cambissolos Fluvicos (Cap 6): carater fluvico.
-- [`cambissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_haplico.md)
-  : Cambissolos Haplicos (catch-all).
-- [`cambissolo_histico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_histico.md)
-  : Cambissolos Histicos (Cap 6): horizonte histico sem espessura para
-  Organossolo.
-- [`cambissolo_humico()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambissolo_humico.md)
-  : Cambissolos Humicos (Cap 6): horizonte A humico.
-- [`chernossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo.md)
-  : Chernossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 89-90)
-- [`chernossolo_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_argiluvico.md)
-  : Chernossolos Argiluvicos (Cap 7): B textural abaixo do A
-  chernozemico.
-- [`chernossolo_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_ebanico.md)
-  : Chernossolos Ebanicos (Cap 7): caracter ebanico em B. v0.7.1:
-  detecta via Munsell em B - hue 7.5YR ou mais amarelo: V\<4 + C\<3
-  umido; OR hue mais vermelho 7.5YR: preto/cinza muito escuro.
-- [`chernossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_haplico.md)
-  : Chernossolos Haplicos (catch-all).
-- [`chernossolo_rendzico()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernossolo_rendzico.md)
-  : Chernossolos Rendzicos (Cap 7): A chernozemico +
-  (calcico/petrocalcico OR carater carbonatico).
-- [`espodossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo.md)
-  : Espodossolos (SiBCS Cap 4, p 112; conceito Cap 3, p 90-91)
-- [`espodossolo_ferri_humiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_ferri_humiluvico.md)
-  : Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
-  catch-all dos espodossolos.
-- [`espodossolo_ferriluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_ferriluvico.md)
-  : Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al,
-  baixo OC iluvial).
-- [`espodossolo_humiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/espodossolo_humiluvico.md)
-  : Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
-  pouco/sem Fe).
-- [`gleissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo.md)
-  : Gleissolos (SiBCS Cap 4, p 112-113; conceito Cap 3, p 91-93)
-- [`gleissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_haplico.md)
-  : Gleissolos Haplicos (catch-all).
-- [`gleissolo_melanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_melanico.md)
-  : Gleissolos Melanicos (Cap 9): horizonte hístico \< 40 cm OR A
-  humico, proeminente, chernozemico.
-- [`gleissolo_salico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_salico.md)
-  : Gleissolos Salicos (Cap 9): caracter salico em \< 100 cm.
-- [`gleissolo_tiomorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleissolo_tiomorfico.md)
-  : Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
-  sulfurico em \< 100 cm.
-- [`latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo.md)
-  : Latossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 93-94)
-- [`latossolo_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_amarelo.md)
-  : Latossolos Amarelos (Cap 10): matiz \\= 7.5YR (mais amarelo).
-- [`latossolo_bruno()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_bruno.md)
-  : Latossolos Brunos (Cap 10): matiz \\= 7.5YR + valor \\= 4 + croma
-  \\= 5 (cores brunadas) OR caracter retratil.
-- [`latossolo_ki_kr()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_ki_kr.md)
-  : Ki/Kr para Latossolos (SiBCS Cap 10, p 173-176)
-- [`latossolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_vermelho.md)
-  : Latossolos Vermelhos (Cap 10): matiz \\= 2.5YR (mais vermelho).
-- [`latossolo_vermelho_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_vermelho_amarelo.md)
-  : Latossolos Vermelho-Amarelos (catch-all).
-- [`luvissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo.md)
-  : Luvissolos (SiBCS Cap 4, p 113; conceito Cap 3, p 95-96)
-- [`luvissolo_cromico()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo_cromico.md)
-  : Luvissolos Cromicos (Cap 11): caracter cromico (cores fortes em B).
-  Aplicado pela presenca de Munsell vermelho-amarelado em B com cromas
-  altos.
-- [`luvissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvissolo_haplico.md)
-  : Luvissolos Haplicos (catch-all).
-- [`neossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo.md)
-  : Neossolos (SiBCS Cap 4, p 111-112; conceito Cap 3, p 96-97)
-- [`neossolo_fluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_fluvico.md)
-  : Neossolos Fluvicos (Cap 12): caracter fluvico em \< 150 cm.
-- [`neossolo_litolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_litolico.md)
-  : Neossolos Litolicos (Cap 12): contato litico ou litico fragmentario
-  \\= 50 cm.
-- [`neossolo_quartzarenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_quartzarenico.md)
-  : Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
-  todos os horizontes ate 150 cm + 95% quartzo.
-- [`neossolo_regolitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_regolitico.md)
-  : Neossolos Regoliticos (catch-all dos Neossolos).
-- [`nitossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo.md)
-  : Nitossolos (SiBCS Cap 4, p 114; conceito Cap 3, p 97-98)
-- [`nitossolo_bruno()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_bruno.md)
-  : Nitossolos Brunos (Cap 13): matiz \\= 7.5YR + valor \<= 4 + croma
-  \<= 5.
-- [`nitossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_haplico.md)
-  : Nitossolos Haplicos (catch-all).
-- [`nitossolo_vermelho()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitossolo_vermelho.md)
-  : Nitossolos Vermelhos (Cap 13): matiz \\= 2.5YR.
-- [`organossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo.md)
-  : Organossolos (SiBCS Cap 4, chave do 1o nivel; conceito Cap 3, p
-  99-101)
-- [`organossolo_folico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_folico.md)
-  : Organossolos Folicos (Cap 14): horizonte O histico (drenado).
-  Detectado via designation pattern \\^O\\.
-- [`organossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_haplico.md)
-  : Organossolos Haplicos (catch-all).
-- [`organossolo_tiomorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/organossolo_tiomorfico.md)
-  : Organossolos Tiomorficos (Cap 14): materiais sulfidricos OR
-  horizonte sulfurico em \< 100 cm.
-- [`planossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo.md)
-  : Planossolos (SiBCS Cap 4, p 112; conceito Cap 3, p 101-102)
-- [`planossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo_haplico.md)
-  : Planossolos Haplicos (catch-all).
-- [`planossolo_natrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/planossolo_natrico.md)
-  : Planossolos Natricos (Cap 15): caracter sodico em \\ 100 cm.
-- [`plintossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo.md)
-  : Plintossolos (SiBCS Cap 4, p 113; conceito Cap 3, p 102-104)
-- [`plintossolo_argiluvico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_argiluvico.md)
-  : Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural
-  OR carater argiluvico.
-- [`plintossolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_haplico.md)
-  : Plintossolos Haplicos (catch-all).
-- [`plintossolo_petrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/plintossolo_petrico.md)
-  : Plintossolos Petricos (Cap 16): horizonte concrecionario OR
-  litoplintico (sem horizonte plintico precedendo).
-- [`vertissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo.md)
-  : Vertissolos (SiBCS Cap 4, p 112; conceito Cap 3, p 105-106)
-- [`vertissolo_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_ebanico.md)
-  : Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
-  dominantes).
-- [`vertissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_haplico.md)
-  : Vertissolos Haplicos (catch-all).
-- [`vertissolo_hidromorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_hidromorfico.md)
-  : Vertissolos Hidromorficos (Cap 17): horizonte glei OR caracter
-  redoxico.
-
-## SiBCS 5ª ed. – Família (5º nível, Cap 18)
-
-15 dimensões adjectivais ortogonais (grupamento textural, mineralogia,
-atividade da argila, óxidos, ândico, …).
-
-- [`familia_andico()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_andico.md)
-  : Familia: propriedades andicas (Cap 1, p 42-43)
-
-- [`familia_atividade_argila()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_atividade_argila.md)
-  : Familia: subgrupamento de atividade da fracao argila (Cap 18, p 287)
-
-- [`familia_constituicao_esqueletica()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_constituicao_esqueletica.md)
-  : Familia: constituicao esqueletica (Cap 1, p 48)
-
-- [`familia_distribuicao_cascalhos()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_distribuicao_cascalhos.md)
-  : Familia: distribuicao de cascalhos no perfil (Cap 1, p 47-48)
-
-- [`familia_grupamento_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_grupamento_textural.md)
-  : Familia: grupamento textural (Cap 1, p 46)
-
-- [`familia_label()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_label.md)
-  :
-
-  Constroi label textual de Familia a partir de `classify_sibcs_familia`
-
-- [`familia_mineralogia_areia()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_areia.md)
-  : Familia: mineralogia da fracao areia (Cap 18, p 286)
-
-- [`familia_mineralogia_argila_geral()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.md)
-  : Familia: mineralogia da fracao argila (geral, nao-Latossolos)
-
-- [`familia_mineralogia_argila_latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.md)
-  : Familia: mineralogia da fracao argila para Latossolos (Cap 18, p
-  286-287)
-
-- [`familia_organossolo_espessura()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_espessura.md)
-  : Familia: espessura \> 100 cm de material organico em Organossolos
-  (Cap 18, p 287)
-
-- [`familia_organossolo_lenhosidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_lenhosidade.md)
-  : Familia: lenhosidade em Organossolos (Cap 18, p 288)
-
-- [`familia_organossolo_material_subjacente()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_organossolo_material_subjacente.md)
-  : Familia: material subjacente em Organossolos (Cap 18, p 287)
-
-- [`familia_oxidos_ferro()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_oxidos_ferro.md)
-  : Familia: teor de oxidos de ferro (Cap 1, p 42)
-
-- [`familia_prefixo_profundidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_prefixo_profundidade.md)
-  : Familia: prefixo de profundidade epi-/meso-/endo- (Cap 18, p
-  284-285)
-
-- [`familia_saturacao_aluminio()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_saturacao_aluminio.md)
-  : Familia: saturacao por aluminio – "alico" (Cap 18, p 285)
-
-- [`familia_saturacao_bases()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_saturacao_bases.md)
-  : Familia: saturacao por bases (Cap 18, p 285)
-
-- [`familia_subgrupamento_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_subgrupamento_textural.md)
-  : Familia: subgrupamento textural (Cap 18, p 283; em validacao)
-
-- [`familia_tipo_horizonte_superficial()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_tipo_horizonte_superficial.md)
-  : Familia: tipo de horizonte diagnostico superficial (Cap 2)
-
-- [`classify_sibcs_familia()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.md)
-  : Classifica um perfil no 5o nivel categorico do SiBCS (Familia)
-
-## USDA Soil Taxonomy 13ed – Path C (Order -\> Subgroup) + Family
-
-Per-Order subgroup dispatchers, plus the 5th-level family modifiers
-(particle-size, mineralogy, CEC-activity, reaction, temperature, depth).
-Triggered by `classify_usda(pedon, include_family = TRUE)`.
-
-- [`acric_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/acric_andisol_usda.md)
-  : Acric Subgroup helper (Andisols Acrudoxic / Acraquoxic / Acrustoxic
-  / etc.)
-
-- [`acric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/acric_oxisol_usda.md)
-  : Acric Oxisol Suborder helper (Acroperox/Acrudox/Acrustox/Acraquox)
-  Pass when oxic or kandic horizon has ECEC \< 1.5 cmol/kg clay AND pH
-  (KCl) \>= 5.0.
-
-- [`aeric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aeric_oxisol_usda.md)
-  : Aeric Subgroup (for Oxisols Aquox) – chroma-3 below epipedon Already
-  defined for Aquods; here we add Oxisol-specific variant (any 10+ cm
-  horizon below A with chroma \>= 3 in 50%+ peds).
-
-- [`aeric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aeric_subgroup_usda.md)
-  : Aeric Subgroup helper (Aquods) Pass when ochric epipedon is present
-  (vs. histic/umbric/etc).
-
-- [`al_rich_spodic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/al_rich_spodic_usda.md)
-  : Aluminum-rich spodic helper (Alaquods, Alorthods, KST Ch 14)
-
-- [`albaquult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albaquult_qualifying_usda.md)
-  : Albic-over-argillic qualifying (Albaquults) Pass when albic horizon
-  overlies an argillic horizon directly.
-
-- [`albic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albic_horizon_usda.md)
-  : Albic horizon (USDA, KST 13ed Ch 3)
-
-- [`albic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albic_subgroup_usda.md)
-  : Albic Subgroup helper (Albaquultic / Albaquic)
-
-- [`alboll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alboll_qualifying_usda.md)
-  : Albolls qualifier: mollic + albic + argillic.
-
-- [`alfic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfic_subgroup_usda.md)
-  : Alfic Subgroup helper (Spodosols): argillic or kandic with BS \>=
-  35%
-
-- [`alfisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfisol_qualifying_usda.md)
-  : Alfisol Order qualifier Pass when argillic OR kandic horizon
-  present + BS \>= 35% in some part.
-
-- [`alfisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alfisol_usda.md)
-  : Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base
-  saturation \>= 35% at the implicit reference depth.
-
-- [`alic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/alic_andisol_usda.md)
-  : Alic Subgroup helper (Andisols) Pass when al_kcl_cmol \> 2.0 in a
-  10+ cm layer between 25 and 50 cm.
-
-- [`andic_soil_properties_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_soil_properties_usda.md)
-  : Andic soil properties (USDA, KST 13ed Ch 3, p 32)
-
-- [`andic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_subgroup_usda.md)
-  : Andic Subgroup helper (USDA, KST 13ed)
-
-- [`andisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andisol_qualifying_usda.md)
-  : Andisol Order qualifier (USDA, KST 13ed Ch 3, p 7)
-
-- [`andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/andisol_usda.md)
-  : Andisols (USDA Cap 6): andic soil properties \>= 60% of thickness.
-
-- [`anhydrous_conditions_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/anhydrous_conditions_usda.md)
-  : Anhydrous conditions (USDA Soil Taxonomy, 13th edition)
-
-- [`anionic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/anionic_subgroup_usda.md)
-  : Anionic Subgroup helper (Oxisols)
-
-- [`annotate_wrb_from_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.md)
-  : Annotate KSSL/NASIS pedons with a derived WRB Reference Soil Group
-
-- [`aqualf_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aqualf_qualifying_usda.md)
-  : Aqualf Suborder qualifier (aquic conditions in argillic Alfisol).
-
-- [`aquand_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquand_qualifying_usda.md)
-  : Aquands Suborder qualifier (Cap 6, p 117) Pass when histic OR aquic
-  conditions in 40-50 cm with redox features. Simplified: histic OR
-  aquic_conditions(max_top=50).
-
-- [`aquandic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquandic_subgroup_usda.md)
-  : Aquandic Subgroup helper (Spodosols / others) Aquic + Andic.
-
-- [`aquent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquent_qualifying_usda.md)
-  : Aquent Suborder qualifier (Entisol with aquic conditions \<50 cm).
-
-- [`aquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquept_qualifying_usda.md)
-  : Aquept Suborder qualifier
-
-- [`aquert_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquert_qualifying_usda.md)
-  : Aquerts qualifier (Vertisols with aquic conditions) Pass when
-  aquic_conditions within 50 cm.
-
-- [`aquic_conditions_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquic_conditions_usda.md)
-  : Aquic conditions (USDA Soil Taxonomy, 13th edition)
-
-- [`aquic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquic_subgroup_usda.md)
-  : Aquic Subgroup helper (within 100 cm of mineral soil surface)
-
-- [`aquoll_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquoll_qualifying_usda.md)
-  : Aquolls qualifier (aquic conditions in mollic).
-
-- [`aquult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aquult_qualifying_usda.md)
-  : Aquult Suborder qualifier Pass when aquic_conditions within 50 cm.
-
-- [`arenic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/arenic_subgroup_usda.md)
-  : Arenic / Grossarenic Subgroup helper (Spodosols)
-
-- [`argic_aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aridisol_usda.md)
-  : Argic Aridisol helper – argillic-or-kandic in Argids/Cryids/etc.
-
-- [`argic_mollisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_mollisol_usda.md)
-  : Argic Mollisol Suborder helper – delegates argillic_within_usda.
-
-- [`argic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_subgroup_usda.md)
-  : Argic Subgroup helper (Endoaquods/Fragiaquods): argillic or kandic.
-  Synonym of ultic at this level. Re-exported for naming clarity.
-
-- [`argillic_or_kandic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_or_kandic_usda.md)
-  : Argillic-or-Kandic helper (USDA, used in Spodosols Subgroups)
-
-- [`argillic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_usda.md)
-  : Argillic horizon (USDA Soil Taxonomy)
-
-- [`argillic_within_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/argillic_within_usda.md)
-  : Argillic horizon helper (USDA, KST 13ed Ch 3)
-
-- [`aridisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_qualifying_usda.md)
-  : Aridisol Order qualifier (USDA, KST 13ed, Ch 2) Pass when the soil
-  has aridic SMR AND any one of: argillic, natric, kandic, calcic,
-  petrocalcic, gypsic, petrogypsic, salic, duripan, cambic, sulfuric
-  horizon. Also requires no other prior order match.
-
-- [`aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/aridisol_usda.md)
-  : Aridisols (USDA Cap 7): aridic moisture regime + ochric/anthropic +
-  subsurface diagnostic. v0.8 simplification: detected via aridity
-  proxies (low EC OR salic OR caracter combinations) + non-mollic
-  surface + low OC (no organic accumulation).
-
-- [`benchmark_wrb_vs_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.md)
-  : Benchmark soilKey WRB predictions against a USDA-derived ground
-  truth
-
-- [`calcic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.md)
-  : Calcic horizon (USDA, delegates to WRB calcic).
-
-- [`calcic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_subgroup_usda.md)
-  :
-
-  Calcic Subgroup helper – delegates to calcic_horizon_usda within
-  `max_top_cm`.
-
-- [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
-  : Classify a pedon under USDA Soil Taxonomy (13th edition)
-
-- [`cryoturbation_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryoturbation_usda.md)
-  : Cryoturbation (USDA Soil Taxonomy, 13th edition)
-
-- [`cumulic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/cumulic_subgroup_usda.md)
-  : Cumulic Subgroup helper (Mollorthels / Umbrorthels)
-
-- [`densiaquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/densiaquept_qualifying_usda.md)
-  : Densiaquept qualifying (densic contact within 100 cm)
-
-- [`duric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/duric_subgroup_usda.md)
-  : Duric Subgroup helper (USDA Spodosols)
-
-- [`duripan_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/duripan_usda.md)
-  : Duripan (USDA, KST 13ed Ch 3, pp 36-37)
-
-- [`dystric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/dystric_subgroup_usda.md)
-  : Dystric Subgroup helper (Vertisols Dystr\*) Pass when BS (NH4OAc) \<
-  50% in some part of the upper 100 cm.
-
-- [`entic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/entic_subgroup_usda.md)
-  : Entic Subgroup helper (Spodosols)
-
-- [`entisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/entisol_usda.md)
-  : Entisols (USDA Cap 8): catch-all for soils that don't match any
-  other Order. Always passes.
-
-- [`episaturation_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/episaturation_usda.md)
-  : Episaturation helper (USDA, KST 13ed Ch 3, p 41) Pass when aquic
-  conditions PLUS perched water (saturation type "episaturation").
-
-- [`eutric_inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_inceptisol_usda.md)
-  : Eutric Inceptisol Suborder helper (Eutrudepts) Pass when BS (NH4OAc)
-  \>= 60% in some part of upper 75 cm.
-
-- [`eutric_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_oxisol_usda.md)
-  : Eutric Oxisol Suborder helper (Eutroperox/Eutrudox/etc.) Pass when
-  BS (NH4OAc) \>= 35% in all layers within 125 cm.
-
-- [`eutric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutric_subgroup_usda.md)
-  : Eutric Subgroup helper (Andisols) Pass when base_saturation
-  (sum-of-cations) \>= 50% in some part.
-
-- [`family_cec_activity_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_cec_activity_usda.md)
-  : USDA family: cation-exchange activity class (KST Ch. 17)
-
-- [`family_depth_class_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_depth_class_usda.md)
-  : USDA family: soil depth class for shallow soils (KST Ch. 17)
-
-- [`family_label_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_label_usda.md)
-  : Assemble the USDA family label from family attributes
-
-- [`family_mineralogy_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_mineralogy_usda.md)
-  : USDA family: mineralogy class (KST Ch. 17)
-
-- [`family_particle_size_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_particle_size_usda.md)
-  : USDA family: particle-size class (KST Ch. 17)
-
-- [`family_reaction_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_reaction_usda.md)
-  : USDA family: reaction class (KST Ch. 17)
-
-- [`family_temperature_regime_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md)
-  : USDA family: soil temperature regime (KST Ch. 16)
-
-- [`ferric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferric_subgroup_usda.md)
-  : Ferric Subgroup helper (Ferrudalfs) Pass when iron-rich (fe_dcb_pct
-  \>= 4%) horizon present in B.
-
-- [`fibric_predominant_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_predominant_usda.md)
-  : Fibric_predominant_usda: Fibrists Suborder qualifier
-
-- [`fibric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_subgroup_usda.md)
-  : Fibric Subgroup helper (Haplohemists / Haplowassists /
-  Sulfiwassists) Pass when fibric layers cumulative thickness \>= 25 cm
-  in control section below surface tier.
-
-- [`fluvaquentic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluvaquentic_usda.md)
-  : Fluvaquentic Subgroup helper (irregular OC decrease + aquic)
-
-- [`fluvent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluvent_qualifying_usda.md)
-  : Fluvent Suborder qualifier (irregular OC decrease in 25-125 cm, OR
-  layered alluvial designation).
-
-- [`fluventic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fluventic_usda.md)
-  : Fluventic Subgroup helper (irregular OC decrease, NO aquic req.)
-
-- [`folist_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folist_qualifying_usda.md)
-  : Folists Suborder qualifier (KST 13ed, Ch 10, p 200)
-
-- [`folistic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folistic_epipedon_usda.md)
-  : Folistic epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`folistic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/folistic_subgroup_usda.md)
-  : Folistic Subgroup helper (folistic_epipedon present)
-
-- [`fragipan_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragipan_usda.md)
-  : Fragipan (USDA, KST 13ed Ch 3, p 38)
-
-- [`frasic_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/frasic_qualifying_usda.md)
-  : Frasiwassists Subgroup helper (Wassists)
-
-- [`fulvic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fulvic_andisol_usda.md)
-  : Fulvic Andisols: similar to melanic but with melanic_index \> 1.70
-  (more humic acid). v0.8: detected via OC \>= 6 in cumulative 30 cm but
-  WITHOUT melanic_epipedon (since melanic requires index \<= 1.70).
-
-- [`gelisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gelisol_usda.md)
-  : Gelisols (USDA Cap 9): gelic conditions / permafrost.
-
-- [`glacic_layer_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/glacic_layer_usda.md)
-  : Glacic layer (USDA Soil Taxonomy, 13th edition)
-
-- [`glossic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/glossic_subgroup_usda.md)
-  : Glossic Subgroup helper (Glossaqualfs, Glossocryalfs, Glossudalfs)
-  Pass when interfingering of albic materials into argillic horizon is
-  detected. v0.8 proxy: albic + argillic + lateral chroma \<= 2 on
-  argillic boundary.
-
-- [`grossarenic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/grossarenic_subgroup_usda.md)
-  : Grossarenic Subgroup helper: sandy throughout, spodic \>= 125 cm.
-
-- [`gypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gypsic_horizon_usda.md)
-  : Gypsic horizon (USDA, delegates to WRB gypsic).
-
-- [`gypsic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gypsic_subgroup_usda.md)
-  : Gypsic Subgroup helper – delegates to gypsic_horizon_usda.
-
-- [`halaquept_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/halaquept_qualifying_usda.md)
-  : Halic helper for Halaquepts Pass when EC \>= 8 dS/m within 100 cm.
-
-- [`halic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/halic_subgroup_usda.md)
-  : Halic Subgroup helper (Haplosaprists)
-
-- [`hemic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hemic_subgroup_usda.md)
-  : Hemic Subgroup helper
-
-- [`histel_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histel_qualifying_usda.md)
-  : Histels Suborder qualifier (USDA, KST 13ed)
-
-- [`histic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histic_epipedon_usda.md)
-  : Histic epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`histic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histic_subgroup_usda.md)
-  : Histic Subgroup helper (in Spodosols, Aquods) Pass when
-  histic_epipedon_usda passes.
-
-- [`histosol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histosol_qualifying_usda.md)
-  : Histosols Order qualifier (USDA, KST 13ed, Ch 2, p 7)
-
-- [`histosol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/histosol_usda.md)
-  : Histosols (USDA Cap 10): organic materials \>= 40 cm in 0-100.
-  Refined v0.8.4 – now uses histosol_qualifying_usda (40 cm threshold)
-  instead of WRB histic_horizon (10 cm).
-
-- [`humic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_andisol_usda.md)
-  : Humic Andisols Subgroup helper Pass when mollic OR umbric epipedon
-  present.
-
-- [`humic_inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_inceptisol_usda.md)
-  : Humic Inceptisol Suborder helper (Hum\*) Pass when umbric or mollic
-  epipedon present + thick (\>= 25 cm).
-
-- [`humic_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_oxisol_usda.md)
-  : Humic-Oxisol Subgroup helper Pass when cumulative organic carbon
-  mass is \>= 16 kg/m2 between surface and 100 cm (computed as SUM(OC%
-  \* bulk_density \* dz)). v0.8 proxy: uses default bulk_density 1.0
-  g/cm3 if unavailable.
-
-- [`humic_spodic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_spodic_usda.md)
-  : Humic-spodic Suborder/GG check (\>= 6% OC in 10+ cm of spodic)
-
-- [`humic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_subgroup_usda.md)
-  : Humic Subgroup helper (Humic Duricryods / Humic Placocryods) Pass
-  when spodic horizon has \>= 6% OC in 10+ cm.
-
-- [`humilluvic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humilluvic_subgroup_usda.md)
-  : Humilluvic Subgroup helper (Luvihemists)
-
-- [`humult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humult_qualifying_usda.md)
-  : Humult Suborder qualifier (Ultisols with thick humus accumulation)
-  Pass when 0.9% OC weighted average in 0-15 cm AND/OR organic carbon
-  mass \>= 12 kg/m2 in 0-100 cm (proxy via humic_oxisol_usda with lower
-  threshold).
-
-- [`hydraquent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydraquent_qualifying_usda.md)
-  : Hydric Aquent helper (Hydraquents) Pass when surface 0-50 has high
-  water content (n value high). v0.8 proxy: water_content_1500kpa \>=
-  80% in surface.
-
-- [`hydric_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydric_andisol_usda.md)
-  : Hydric (Andisols): 1500 kPa water retention \>= 70% on undried
-  samples throughout a 35+ cm layer within 100 cm.
-
-- [`hydric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydric_subgroup_usda.md)
-  : Hydric Subgroup helper (Histosols Cryofibrists / Sphagnofibrists /
-  etc.)
-
-- [`inceptisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/inceptisol_qualifying_usda.md)
-  : Inceptisol Order qualifier Pass when a cambic horizon is present (no
-  argillic, no spodic, no mollic, etc. – enforced by prior order
-  exclusion).
-
-- [`inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/inceptisol_usda.md)
-  : Inceptisols (USDA Cap 11): cambic horizon (or several alternative
-  subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
-  sodium-affected sub).
-
-- [`kandic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kandic_horizon_usda.md)
-  : Kandic horizon (USDA, KST 13ed Ch 3, p 45)
-
-- [`kandic_oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kandic_oxisol_usda.md)
-  : Kandic Suborder helper for Oxisols (Kandiperox/Kandiudox/Kandiustox)
-  Delegates to kandic_horizon_usda.
-
-- [`kanhapl_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kanhapl_qualifying_usda.md)
-  : Kanhapl qualifying helper (Kanhapludults / Kanhaplustults / etc.)
-  Pass when kandic horizon present BUT NOT meeting Pale criteria (i.e.
-  younger / less developed kandic).
-
-- [`lamellic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/lamellic_subgroup_usda.md)
-  : Lamellic Subgroup helper (Spodosols Haplorthods)
-
-- [`limnic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/limnic_usda.md)
-  : Limnic Subgroup helper (Histels)
-
-- [`lithic_contact_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/lithic_contact_usda.md)
-  : Lithic contact within X cm of the surface (USDA Subgroup helper)
-
-- [`melanic_andisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/melanic_andisol_usda.md)
-  : Melanic Andisols: melanic_epipedon present.
-
-- [`melanic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/melanic_epipedon_usda.md)
-  : Melanic epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`mollic_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollic_epipedon_usda.md)
-  : Mollic epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`mollisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollisol_qualifying_usda.md)
-  : Mollisol Order qualifier (USDA, KST 13ed, Ch 12) Pass when
-  mollic_epipedon AND BS (NH4OAc) \>= 50% in upper 100 cm.
-
-- [`mollisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/mollisol_usda.md)
-  : Mollisols (USDA Cap 12): mollic epipedon + base saturation \>= 50%.
-
-- [`natric_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_horizon_usda.md)
-  : Natric horizon helper (USDA, KST 13ed Ch 3)
-
-- [`natric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_subgroup_usda.md)
-  : Natric Subgroup helper for Natraquerts.
-
-- [`nitric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitric_subgroup_usda.md)
-  : Nitric Subgroup helper (Anhyturbels / Anhyorthels)
-
-- [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
-  : Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order
-
-- [`ochric_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ochric_epipedon_usda.md)
-  : Ochric epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`oxic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_horizon_usda.md)
-  :
-
-  Oxic horizon (USDA, KST 13ed, Ch 3) Delegates to WRB `ferralic`.
-
-- [`oxic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_usda.md)
-  : Oxic horizon (USDA Soil Taxonomy)
-
-- [`oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxisol_usda.md)
-  : Oxisol (USDA Cap 13): oxic horizon, excluding profiles with an
-  argillic horizon overlying the oxic.
-
-- [`oxyaquic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxyaquic_subgroup_usda.md)
-  : Oxyaquic Subgroup helper (Spodosols, Mollisols, etc.)
-
-- [`pachic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pachic_subgroup_usda.md)
-  : Pachic Subgroup helper (Andisols, Mollisols) Pass when mollic OR
-  umbric epipedon is \>= 50 cm thick.
-
-- [`pale_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pale_qualifying_usda.md)
-  : Pale qualifying helper (Paleudults / Paleustults / Palexerults /
-  Palehumults / Paleaquults)
-
-- [`paleargid_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/paleargid_qualifying_usda.md)
-  : Paleargid qualifying helper Pass when argillic horizon has
-  continuous clay films AND clay \>\> 35% in upper 10 cm (proxy for old,
-  well-developed argillic). v0.8 proxy: argillic + clay_pct \>= 35 in
-  upper 30 cm.
-
-- [`permafrost_within_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/permafrost_within_usda.md)
-  : Permafrost (USDA Soil Taxonomy, 13th edition)
-
-- [`petrocalcic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrocalcic_subgroup_usda.md)
-  : Petrocalcic Subgroup helper (Aridisols Petrocalcids) Cemented calcic
-  horizon with cementation_class \>= "strongly".
-
-- [`petroferric_contact_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petroferric_contact_usda.md)
-  : Petroferric contact helper (USDA, KST 13ed Ch 3, p 48)
-
-- [`petrogypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrogypsic_horizon_usda.md)
-  : Petrogypsic horizon helper (USDA)
-
-- [`petrogypsic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrogypsic_subgroup_usda.md)
-  : Petrogypsic Subgroup helper – delegate to petrogypsic_horizon_usda
-
-- [`petronodic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petronodic_subgroup_usda.md)
-  : Petronodic Subgroup helper (Aridisols) Pass when 5%+ rock fragments
-  cemented by carbonates within 100 cm. v0.8 proxy: caco3_pct \>= 15 AND
-  coarse_fragments_pct \>= 5.
-
-- [`placic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/placic_horizon_usda.md)
-  : Placic horizon (USDA, KST 13ed Ch 3, pp 47-48)
-
-- [`plinth_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinth_subgroup_usda.md)
-  : Plinth qualifying helper (Plinth\*ults) Pass when plinthite \>= 5%
-  in 50%+ of layers within 150 cm.
-
-- [`plinthaquox_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthaquox_qualifying_usda.md)
-  : Plinthaquox qualifying helper (Aquox: continuous plinthite phase)
-  Pass when plinthite \>= 50% in some 10+ cm layer (continuous phase
-  proxy).
-
-- [`plinthic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthic_subgroup_usda.md)
-  : Plinthic Subgroup helper (Oxisols) Pass when plinthite \>= 5% in any
-  horizon within 125 cm.
-
-- [`psamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/psamment_qualifying_usda.md)
-  : Psamment Suborder qualifier (sandy texture: clay + 2\*silt \< 30 AND
-  no clay films / argillic).
-
-- [`psammentic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/psammentic_subgroup_usda.md)
-  : Psammentic Subgroup helper (Aquorthels)
-
 - [`quartzipsamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/quartzipsamment_qualifying_usda.md)
   : Quartzipsamment helper (Quartzipsamments: \>= 95% resistant
   minerals)
@@ -2353,9 +3694,15 @@ Triggered by `classify_usda(pedon, include_family = TRUE)`.
   Pass when CaCO3 \>= 40% in subsurface AND profile depth \< 100 cm to a
   contact.
 
+- [`resolve_assigned_rsg_code()`](https://hugomachadorodrigues.github.io/soilKey/reference/resolve_assigned_rsg_code.md)
+  : Resolve the assigned RSG code from a ClassificationResult
+
 - [`rhodic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/rhodic_subgroup_usda.md)
   : Rhodic Subgroup helper (Oxisols, Mollisols, etc.) Pass when 50%+
   colors have hue \<= 2.5YR AND value \<= 3 in B horizons 25-125 cm.
+
+- [`run_single_test()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_single_test.md)
+  : Resolve and run a single named diagnostic test
 
 - [`ruptic_histic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ruptic_histic_subgroup_usda.md)
   : Ruptic-Histic Subgroup helper
@@ -2377,6 +3724,9 @@ Triggered by `classify_usda(pedon, include_family = TRUE)`.
 - [`sapric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sapric_subgroup_usda.md)
   : Sapric Subgroup helper (Sphagnofibrists)
 
+- [`schema_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/schema_path.md)
+  : Path to a packaged JSON schema file
+
 - [`smr_aridic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/smr_aridic_usda.md)
   : Aridic soil moisture regime (USDA)
 
@@ -2395,11 +3745,19 @@ Triggered by `classify_usda(pedon, include_family = TRUE)`.
 - [`sodic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sodic_subgroup_usda.md)
   : Sodic Subgroup helper – delegate to natric_horizon (USDA)
 
+- [`soilKey`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
+  [`soilKey-package`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
+  : soilKey: Automated Soil Profile Classification per WRB 2022 and
+  SiBCS
+
 - [`soil_moisture_regime_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_moisture_regime_usda.md)
   : Soil moisture regime helper (USDA, KST 13ed Ch 3, pp 50-52)
 
 - [`soil_temperature_regime_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/soil_temperature_regime_usda.md)
   : Soil temperature regime helper (USDA, KST 13ed Ch 3, pp 53-58)
+
+- [`soilgrids_buffer_vect()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilgrids_buffer_vect.md)
+  : Build a metric-buffered SpatVector around a pedon's site
 
 - [`sombric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sombric_subgroup_usda.md)
   : Sombric Subgroup helper (Oxisols Sombri-) Pass when sombric horizon
@@ -2430,6 +3788,9 @@ Triggered by `classify_usda(pedon, include_family = TRUE)`.
 - [`str_gelic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/str_gelic_usda.md)
   : Gelic soil temperature regime (USDA)
 
+- [`strip_code_fence()`](https://hugomachadorodrigues.github.io/soilKey/reference/strip_code_fence.md)
+  : Strip surrounding code fences from a model response
+
 - [`sulfic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sulfic_subgroup_usda.md)
   : Sulfic Subgroup helper (Haplowassists) Pass when sulfidic materials
   within 100 cm.
@@ -2443,331 +3804,6 @@ Triggered by `classify_usda(pedon, include_family = TRUE)`.
 - [`terric_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/terric_usda.md)
   : Terric Subgroup helper (Histels)
 
-- [`thaptic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/thaptic_subgroup_usda.md)
-  : Thaptic Subgroup helper (Andisols) Pass when, between 25 and 100 cm,
-  a 10+ cm layer with OC \> 3.0% and mollic colors exists, underlying
-  lighter horizons.
-
-- [`thapto_humic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/thapto_humic_usda.md)
-  : Thapto-Humic Subgroup helper
-
-- [`turbic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/turbic_subgroup_usda.md)
-  : Turbic Subgroup helper (Gelods) Pass when gelic materials are
-  present within 200 cm. Implementation: cryoturbation + permafrost
-  within 200 cm.
-
-- [`ultic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultic_subgroup_usda.md)
-  : Ultic Subgroup helper: argillic or kandic (any BS).
-
-- [`ultisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultisol_qualifying_usda.md)
-  : Ultisol Order qualifier (USDA, KST 13ed, Ch 2) Pass when argillic OR
-  kandic horizon present + BS \< 35% in some part of the upper 200 cm.
-
-- [`ultisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultisol_usda.md)
-  : Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation \<
-  35%.
-
-- [`umbric_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/umbric_epipedon_usda.md)
-  : Umbric epipedon (USDA Soil Taxonomy, 13th edition)
-
-- [`umbric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/umbric_subgroup_usda.md)
-  : Umbric Subgroup helper (in Spodosols) Pass when umbric_epipedon_usda
-  passes.
-
-- [`vermic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vermic_subgroup_usda.md)
-  : Vermic Subgroup helper (Vermudolls / Vermustolls) Pass when
-  worm_holes_pct \>= 50% in some horizon (KST 13ed worm burrow
-  criterion).
-
-- [`vertic_aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_aridisol_usda.md)
-  : Vertic Aridisols helper – delegates to vertic_subgroup_usda
-
-- [`vertic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_subgroup_usda.md)
-  : Vertic Subgroup helper (USDA, KST 13ed)
-
-- [`vertisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol_qualifying_usda.md)
-  :
-
-  Vertisol Order qualifier (USDA, KST 13ed, Ch 2 / Ch 3 vertic horizon)
-  Pass when a vertic horizon (clay \>= 30, cracks, slickensides, LE) is
-  present. Delegates to WRB `vertic_horizon`.
-
-- [`vertisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol_usda.md)
-  : Vertisols (USDA Cap 16): slickensides + cracks. Delegates to
-  vertic_horizon.
-
-- [`vitrand_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrand_qualifying_usda.md)
-  : Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water
-  retention \< 15% (air-dried) and \< 30% (undried) throughout 60%+ of
-  the thickness. v0.8 proxy: uses water_content_1500kpa \< 15%.
-
-- [`vitrandic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrandic_subgroup_usda.md)
-  : Vitrandic Subgroup helper (USDA, KST 13ed)
-
-- [`vitric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitric_subgroup_usda.md)
-  : Vitric Subgroup helper (Andisols) Pass when volcanic_glass_pct \>=
-  30 in a 25+ cm layer within 100 cm.
-
-- [`wassent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/wassent_qualifying_usda.md)
-  : Wassent Suborder qualifier (subaqueous Entisol). Pass when
-  site\$water_table_cm_above_surface \> 0 (water column permanently
-  above the surface).
-
-- [`wassist_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/wassist_qualifying_usda.md)
-  : Wassists Suborder qualifier (KST 13ed, Ch 10, p 203)
-
-- [`xanthic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/xanthic_subgroup_usda.md)
-  : Xanthic Subgroup helper (Oxisols) Pass when 50%+ colors have hue \>=
-  7.5YR AND value \>= 6 in B horizons.
-
-- [`classify_usda_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md)
-  : Classify the USDA family (5th level) of a pedon
-
-## Module 2 – VLM extraction
-
-Schema-validated multimodal extraction via `ellmer`. The VLM never
-classifies; every extracted value carries provenance = `extracted_vlm`.
-
-- [`vlm_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.md)
-  : Construct a VLM provider chat object
-- [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
-  : Mock VLM provider for testing
-- [`extract_horizons_from_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_horizons_from_pdf.md)
-  : Extract horizons from a soil description PDF
-- [`extract_munsell_from_photo()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_munsell_from_photo.md)
-  : Extract Munsell color from a profile photo
-- [`extract_site_from_fieldsheet()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_site_from_fieldsheet.md)
-  : Extract site metadata from a field-sheet image
-
-## Module 3 – Spatial prior
-
-SoilGrids + Embrapa raster. Used as a sanity-check; never overrides the
-deterministic key.
-
-- [`spatial_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior.md)
-  : Spatial prior over RSGs (or Orders) at a pedon's location
-- [`spatial_prior_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior_soilgrids.md)
-  : SoilGrids spatial prior
-- [`spatial_prior_embrapa()`](https://hugomachadorodrigues.github.io/soilKey/reference/spatial_prior_embrapa.md)
-  : Embrapa national soil-class spatial prior (Brazil only)
-- [`prior_consistency_check()`](https://hugomachadorodrigues.github.io/soilKey/reference/prior_consistency_check.md)
-  : Check consistency between a deterministic RSG assignment and a
-  spatial prior
-
-## Module 4 – OSSL spectroscopy
-
-Vis-NIR / MIR gap-fill. Predicted attributes carry provenance =
-`predicted_spectra`, which downgrades the evidence grade from A to B.
-
-- [`preprocess_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/preprocess_spectra.md)
-  : Pre-process Vis-NIR or MIR spectra
-- [`predict_ossl_mbl()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_mbl.md)
-  : Memory-based learning prediction against the OSSL library
-- [`predict_ossl_plsr_local()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_plsr_local.md)
-  : Local PLSR prediction against the OSSL library
-- [`predict_ossl_pretrained()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_pretrained.md)
-  : Pre-trained OSSL prediction
-- [`fill_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_from_spectra.md)
-  : Fill missing soil attributes from spectra via OSSL
-- [`pi_to_confidence()`](https://hugomachadorodrigues.github.io/soilKey/reference/pi_to_confidence.md)
-  : Map a 95% prediction interval to a \[0, 1\] confidence score
-
-## Reporting
-
-Render a complete pedologist-facing report from one or more
-`ClassificationResult` objects.
-
-- [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
-  : Render a soilKey classification report
-- [`report_html()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_html.md)
-  : Render a soilKey classification report as self-contained HTML
-- [`report_pdf()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_pdf.md)
-  : Render a soilKey classification report as PDF
-- [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
-  : Export a classification result + pedon to a QGIS GeoPackage
-
-## Layperson on-ramp
-
-Zero-code Shiny GUI plus auto-detect helpers that remove the friction
-non-coders hit on a fresh install.
-
-- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
-  : Launch the soilKey Shiny demo (one-screen GUI)
-- [`auto_set_proj_env()`](https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.md)
-  : Auto-detect PROJ_LIB and GDAL_DATA directories
-- [`vlm_pick_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.md)
-  : Pick the best available VLM provider
-- [`ollama_is_running()`](https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.md)
-  : Is the local Ollama HTTP API reachable?
-
-## Real-data benchmarks (v0.9.15+)
-
-Loaders for the three external validation sets soilKey is benchmarked
-against in the v1.0 methods paper, plus FEBR / BDsolos
-label-normalisation helpers (v0.9.16).
-
-- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
-  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
-  classification
-- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
-  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
-- [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
-  : Load KSSL pedons enriched with NASIS morphology
-- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
-  : Load EU-LUCAS / ESDB pedons with reference WRB classification
-- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
-  : Load Embrapa dadosolos pedons with reference SiBCS classification
-- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
-  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
-- [`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
-  : Canonicalise FEBR SiBCS names to match soilKey rule outputs.
-- [`normalise_febr_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md)
-  : Normalise FEBR WRB taxon strings to RSG-only
-- [`normalise_febr_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_usda.md)
-  : Normalise FEBR USDA taxon strings to USDA Soil Taxonomy Order
-- [`benchmark_run_classification()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.md)
-  : Run a benchmark across one of the loaded pedon lists
-
-## Canonical fixtures
-
-One-call constructors for the 31 canonical fixtures (one per WRB RSG,
-plus auxiliaries) used in the test suite.
-
-- [`make_acrisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_acrisol_canonical.md)
-  : Build the canonical Acrisol fixture
-- [`make_alisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_alisol_canonical.md)
-  : Build the canonical Alisol fixture
-- [`make_andosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_andosol_canonical.md)
-  : Build the canonical Andosol fixture
-- [`make_anthrosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_anthrosol_canonical.md)
-  : Build the canonical Anthrosol fixture
-- [`make_arenosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_arenosol_canonical.md)
-  : Build the canonical Arenosol fixture
-- [`make_argissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_argissolo_canonical.md)
-  : Perfil canonico de Argissolo (SiBCS 5a ed., Cap 5)
-- [`make_calcisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_calcisol_canonical.md)
-  : Build the canonical Calcisol fixture
-- [`make_cambisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cambisol_canonical.md)
-  : Build the canonical Cambisol fixture
-- [`make_cambissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cambissolo_canonical.md)
-  : Perfil canonico de Cambissolo (SiBCS 5a ed., Cap 6)
-- [`make_chernossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_chernossolo_canonical.md)
-  : Perfil canonico de Chernossolo (SiBCS 5a ed., Cap 7)
-- [`make_chernozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_chernozem_canonical.md)
-  : Build the canonical Chernozem fixture
-- [`make_cryosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cryosol_canonical.md)
-  : Build the canonical Cryosol fixture
-- [`make_durisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_durisol_canonical.md)
-  : Build the canonical Durisol fixture
-- [`make_espodossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_espodossolo_canonical.md)
-  : Perfil canonico de Espodossolo (SiBCS 5a ed., Cap 8)
-- [`make_ferralsol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ferralsol_canonical.md)
-  : Build the canonical Ferralsol fixture
-- [`make_fluvisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_fluvisol_canonical.md)
-  : Build the canonical Fluvisol fixture
-- [`make_gleissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gleissolo_canonical.md)
-  : Perfil canonico de Gleissolo (SiBCS 5a ed., Cap 9)
-- [`make_gleysol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gleysol_canonical.md)
-  : Build the canonical Gleysol fixture
-- [`make_gypsisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_gypsisol_canonical.md)
-  : Build the canonical Gypsisol fixture
-- [`make_histosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_histosol_canonical.md)
-  : Build the canonical Histosol fixture
-- [`make_kastanozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_kastanozem_canonical.md)
-  : Build the canonical Kastanozem fixture
-- [`make_latossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_latossolo_canonical.md)
-  : Perfil canonico de Latossolo (SiBCS 5a ed., Cap 10)
-- [`make_leptosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_leptosol_canonical.md)
-  : Build the canonical Leptosol fixture
-- [`make_lixisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_lixisol_canonical.md)
-  : Build the canonical Lixisol fixture
-- [`make_luvisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_luvisol_canonical.md)
-  : Build the canonical Luvisol fixture
-- [`make_luvissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_luvissolo_canonical.md)
-  : Perfil canonico de Luvissolo (SiBCS 5a ed., Cap 11)
-- [`make_neossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_neossolo_canonical.md)
-  : Perfil canonico de Neossolo Litolico (SiBCS 5a ed., Cap 12)
-- [`make_nitisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitisol_canonical.md)
-  : Build the canonical Nitisol fixture
-- [`make_nitossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitossolo_canonical.md)
-  : Perfil canonico de Nitossolo Vermelho (SiBCS 5a ed., Cap 13)
-- [`make_organossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_organossolo_canonical.md)
-  : Perfil canonico de Organossolo (SiBCS 5a ed., Cap 14)
-- [`make_phaeozem_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_phaeozem_canonical.md)
-  : Build the canonical Phaeozem fixture
-- [`make_planosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_planosol_canonical.md)
-  : Build the canonical Planosol fixture
-- [`make_planossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_planossolo_canonical.md)
-  : Perfil canonico de Planossolo (SiBCS 5a ed., Cap 15)
-- [`make_plinthosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_plinthosol_canonical.md)
-  : Build the canonical Plinthosol fixture
-- [`make_plintossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_plintossolo_canonical.md)
-  : Perfil canonico de Plintossolo (SiBCS 5a ed., Cap 16)
-- [`make_podzol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_podzol_canonical.md)
-  : Build the canonical Podzol fixture
-- [`make_retisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_retisol_canonical.md)
-  : Build the canonical Retisol fixture
-- [`make_solonchak_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_solonchak_canonical.md)
-  : Build the canonical Solonchak fixture
-- [`make_solonetz_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_solonetz_canonical.md)
-  : Build the canonical Solonetz fixture
-- [`make_stagnosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_stagnosol_canonical.md)
-  : Build the canonical Stagnosol fixture
-- [`make_technosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_technosol_canonical.md)
-  : Build the canonical Technosol fixture
-- [`make_umbrisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_umbrisol_canonical.md)
-  : Build the canonical Umbrisol fixture
-- [`make_vertisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_vertisol_canonical.md)
-  : Build the canonical Vertisol fixture
-- [`make_vertissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_vertissolo_canonical.md)
-  : Perfil canonico de Vertissolo (SiBCS 5a ed., Cap 17)
-
-## Helpers and miscellaneous
-
-- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
-  : Run the full soilKey benchmark suite and (optionally) write a report
-
-- [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)
-  : Launch the soilKey interactive classification Shiny app
-
-- [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
-  : Launch the soilKey Shiny demo (one-screen GUI)
-
-- [`run_sibcs_grande_grupo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_grande_grupo.md)
-  : Resolve o grande grupo (3o nivel) de um pedon classificado em uma
-  subordem SiBCS
-
-- [`run_sibcs_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_key.md)
-  : Roda a chave SiBCS 5a edicao sobre um pedon
-
-- [`run_sibcs_subgrupo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_subgrupo.md)
-  : Resolve o subgrupo (4o nivel) de um pedon classificado em um Grande
-  Grupo SiBCS
-
-- [`run_sibcs_subordem()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_sibcs_subordem.md)
-  : Resolve a subordem de um pedon ja classificado em uma ordem SiBCS
-
-- [`run_taxa_list()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_taxa_list.md)
-  : Iterate a flat taxa list and evaluate tests in canonical order
-
-- [`run_taxonomic_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_taxonomic_key.md)
-  : Run a taxonomic key (system-agnostic engine)
-
-- [`run_usda_great_group()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_great_group.md)
-  : Run the USDA Great Group key for a given Suborder
-
-- [`run_usda_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_key.md)
-  : Run the USDA Soil Taxonomy Order key over a pedon
-
-- [`run_usda_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_subgroup.md)
-  : Run the USDA Subgroup key for a given Great Group
-
-- [`run_usda_suborder()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_suborder.md)
-  : Run the USDA Suborder key for a given Order
-
-- [`run_wrb_key()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_wrb_key.md)
-  : Run the WRB 2022 key over a pedon
-
 - [`test_abrupt_textural_change()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_abrupt_textural_change.md)
   : Test for an abrupt textural change between adjacent horizons
 
@@ -2777,9 +3813,16 @@ plus auxiliaries) used in the test suite.
 - [`test_al_saturation_below()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_al_saturation_below.md)
   : Test that aluminium saturation is below a threshold
 
+- [`test_alfe_ox_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_alfe_ox_above.md)
+  : Test for the andic+vitric Al_ox + 1/2 Fe_ox sum
+
 - [`test_andic_alfe()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_andic_alfe.md)
   : Test the andic Al/Fe oxalate criterion: (al_ox + 0.5\*fe_ox) \>=
   2.0%
+
+- [`test_anthric_horizon_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_anthric_horizon_properties.md)
+  : Test for anthric / pretic / hortic / plaggic / terric / irragric
+  horizon properties (full diagnostic)
 
 - [`test_artefacts_concentration()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_artefacts_concentration.md)
   : Test that artefacts_pct \>= threshold within the upper max_top_cm
@@ -2808,14 +3851,26 @@ plus auxiliaries) used in the test suite.
 - [`test_cec_per_clay_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cec_per_clay_above.md)
   : Test that CEC per kg clay is at or above a threshold
 
+- [`test_cemented()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cemented.md)
+  : Test that a layer is at least moderately cemented
+
 - [`test_chernic_color()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_chernic_color.md)
   : Test for chroma \<= 2 (moist) within the upper part of the profile
+
+- [`test_claric_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_claric_munsell.md)
+  : Test for "claric" Munsell colour per layer (WRB 2022 Ch 3.3.4)
 
 - [`test_clay_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_above.md)
   : Test that clay_pct is at or above a threshold
 
+- [`test_clay_decreases_with_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_decreases_with_depth.md)
+  : Test that clay does NOT decrease abruptly with depth (nitic)
+
 - [`test_clay_increase_argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_increase_argic.md)
   : Test the argic / argillic clay-increase criterion
+
+- [`test_coarse_fragments_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_fragments_above.md)
+  : Test coarse-fragments percent above a threshold
 
 - [`test_coarse_texture_throughout()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_coarse_texture_throughout.md)
   : Test for coarse texture throughout the upper part of the profile
@@ -2850,6 +3905,9 @@ plus auxiliaries) used in the test suite.
   : Test for fluvic stratification: irregular OC pattern + texture
   variability across consecutive horizons
 
+- [`test_geomembrane_within_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_geomembrane_within_depth.md)
+  : Test for a continuous geomembrane within a depth window
+
 - [`test_gleyic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_gleyic_features.md)
   : Test for gleyic redoximorphic features within top 50 cm
 
@@ -2871,17 +3929,49 @@ plus auxiliaries) used in the test suite.
 - [`test_mollic_thickness()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_thickness.md)
   : Mollic thickness test (default \>= 20 cm in v0.1)
 
+- [`test_not_albeluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_not_albeluvic.md)
+  : Test for albeluvic glossic features that exclude argic (-\> Retisol
+  path)
+
+- [`test_numeric_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_numeric_above.md)
+  : Test that an arbitrary numeric column exceeds a threshold per layer
+
 - [`test_oc_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_oc_above.md)
   : Test that organic carbon is at or above a threshold
+
+- [`test_oc_cumulative_thickness()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_oc_cumulative_thickness.md)
+  : Test cumulative organic-carbon thickness within a depth window
+
+- [`test_pattern_match()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_pattern_match.md)
+  : Test that a character column matches a regex per layer
+
+- [`test_permafrost_temp_below()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_permafrost_temp_below.md)
+  : Test mean annual permafrost-zone temperature at or below threshold
 
 - [`test_ph_below()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ph_below.md)
   : Test that ph_h2o is at or below a threshold
 
+- [`test_phosphate_retention_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_phosphate_retention_above.md)
+  : Test phosphate retention above threshold
+
 - [`test_plinthite_concentration()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_plinthite_concentration.md)
   : Test for plinthite concentration above threshold (per layer)
 
+- [`test_polyhedral_or_nutty_structure()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_polyhedral_or_nutty_structure.md)
+  : Test for polyhedral / nutty structure type
+
+- [`test_reducing_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_reducing_conditions.md)
+  : Test for WRB 2022 reducing conditions (Ch 3.2.10) per layer
+
 - [`test_salic_product()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_salic_product.md)
   : Test the salic horizon EC \* thickness product (WRB 2022)
+
+- [`test_shiny_ped_surfaces()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_shiny_ped_surfaces.md)
+  : Test for shiny ped surfaces (informational only)
+
+- [`test_shrink_swell_cracks()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_shrink_swell_cracks.md)
+  : Test for shrink-swell cracks meeting the WRB 2022 Ch 3.2.12 width
+  (\>= 0.5 cm when soil is dry)
 
 - [`test_slickensides_present()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_slickensides_present.md)
   : Test for slickensides at or above a presence level
@@ -2893,611 +3983,130 @@ plus auxiliaries) used in the test suite.
 - [`test_stagnic_pattern()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_stagnic_pattern.md)
   : Test for stagnic redox features (perched water signature)
 
+- [`test_starts_within()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_starts_within.md)
+  : Test that a layer's top is at or below a target depth
+
+- [`test_takyric_surface()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_takyric_surface.md)
+  : Test for WRB 2022 Ch 3.2.15 takyric surface-crust signature
+
+- [`test_technic_hardmaterial_at_surface()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_technic_hardmaterial_at_surface.md)
+  : Test for technic hard material covering the surface
+
 - [`test_texture_argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_texture_argic.md)
   : Test sandy-loam-or-finer texture (used by argic, ferralic)
 
 - [`test_top_at_or_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_top_at_or_above.md)
   : Test that a candidate layer starts at or above a top_cm threshold
 
-- [`compute_ki()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_ki.md)
-  : Ki (silica:alumina molar) – SiBCS Cap 1, p 32
+- [`test_volcanic_glass_above()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_volcanic_glass_above.md)
+  : Test volcanic glass content above threshold
 
-- [`compute_kr()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_kr.md)
-  : Kr (silica:sesquioxidos molar) – SiBCS Cap 1, p 32
+- [`test_yermic_surface()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_yermic_surface.md)
+  : Test for WRB 2022 Ch 3.2.17 yermic surface signature
 
-- [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
-  : Per-attribute provenance-aware evidence grade
+- [`thaptic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/thaptic_subgroup_usda.md)
+  : Thaptic Subgroup helper (Andisols) Pass when, between 25 and 100 cm,
+  a 10+ cm layer with OC \> 3.0% and mollic colors exists, underlying
+  lighter horizons.
 
-- [`contato_litico()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico.md)
+- [`thapto_humic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/thapto_humic_usda.md)
+  : Thapto-Humic Subgroup helper
+
+- [`turbic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/turbic_subgroup_usda.md)
+  : Turbic Subgroup helper (Gelods) Pass when gelic materials are
+  present within 200 cm. Implementation: cryoturbation + permafrost
+  within 200 cm.
+
+- [`ultic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultic_subgroup_usda.md)
+  : Ultic Subgroup helper: argillic or kandic (any BS).
+
+- [`ultisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultisol_qualifying_usda.md)
+  : Ultisol Order qualifier (USDA, KST 13ed, Ch 2) Pass when argillic OR
+  kandic horizon present + BS \< 35% in some part of the upper 200 cm.
+
+- [`ultisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultisol_usda.md)
+  : Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation \<
+  35%.
+
+- [`umbric_epipedon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/umbric_epipedon_usda.md)
+  : Umbric epipedon (USDA Soil Taxonomy, 13th edition)
+
+- [`umbric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/umbric_subgroup_usda.md)
+  : Umbric Subgroup helper (in Spodosols) Pass when umbric_epipedon_usda
+  passes.
+
+- [`unpack_vlm_attr()`](https://hugomachadorodrigues.github.io/soilKey/reference/unpack_vlm_attr.md)
+  : Map a parsed VLM attribute object to a (value, confidence, quote)
+  triple
+
+- [`utm_crs_for_point()`](https://hugomachadorodrigues.github.io/soilKey/reference/utm_crs_for_point.md)
+  : UTM zone EPSG code for a lon/lat point
+
+- [`valid_provenance_sources()`](https://hugomachadorodrigues.github.io/soilKey/reference/valid_provenance_sources.md)
+  : Valid provenance source codes
+
+- [`validate_against_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_against_schema.md)
+  : Validate a JSON string against a packaged schema
+
+- [`validate_or_retry()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_or_retry.md)
+  : Call a provider, validate JSON output, retry on failure
+
+- [`vermic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vermic_subgroup_usda.md)
+  : Vermic Subgroup helper (Vermudolls / Vermustolls) Pass when
+  worm_holes_pct \>= 50% in some horizon (KST 13ed worm burrow
+  criterion).
+
+- [`vertic_aridisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_aridisol_usda.md)
+  : Vertic Aridisols helper – delegates to vertic_subgroup_usda
+
+- [`vertic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_subgroup_usda.md)
+  : Vertic Subgroup helper (USDA, KST 13ed)
+
+- [`vertisol_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol_qualifying_usda.md)
   :
 
-  Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de
-  `continuous_rock` via designacao R / Cr.
-
-- [`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
-  : Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
-
-- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
-  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
-
-- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
-  : Load the bundled AfSP stratified sample (v0.9.77)
-
-- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
-  : Load a BDsolos CSV export as a list of PedonRecord objects
-
-- [`load_embrapa_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_embrapa_pedons.md)
-  : Load Embrapa dadosolos pedons with reference SiBCS classification
-
-- [`load_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_febr_pedons.md)
-  : Load the Embrapa FEBR superconjunto into a list of PedonRecords
-
-- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
-  : Load the bundled KSSL + NASIS morphological-enriched sample
-  (v0.9.75)
-
-- [`load_kssl_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons.md)
-  : Load NCSS / KSSL pedons with reference USDA Soil Taxonomy
-  classification
-
-- [`load_kssl_pedons_gpkg()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_gpkg.md)
-  : Load KSSL / NCSS pedons from the ncss_labdata GeoPackage
-
-- [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
-  : Load KSSL pedons enriched with NASIS morphology
-
-- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
-  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
-
-- [`load_lucas_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_pedons.md)
-  : Load EU-LUCAS / ESDB pedons with reference WRB classification
-
-- [`load_lucas_soil_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_lucas_soil_2018.md)
-  : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
-  objects
-
-- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
-  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
-
-- [`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
-  : Load a soilKey rule set (YAML)
-
-- [`load_wosis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_sample.md)
-  : Load the bundled WoSIS South-America sample
-
-- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
-  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
-
-- [`save_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
-  [`load_ossl_models()`](https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.md)
-  : Save / load trained OSSL-backed PLSR models
-
-- [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
-  : Fill missing horizon attributes from a SoilGrids depth prior
-
-- [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
-  : Format a WRB 2022 soil name with qualifiers
-
-- [`validate_pedon_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_pedon_json.md)
-  : Validate a PedonRecord against the JSON schema
-
-- [`fibric_predominant_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibric_predominant_usda.md)
-  : Fibric_predominant_usda: Fibrists Suborder qualifier
-
-- [`sapric_predominant_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sapric_predominant_usda.md)
-  : Sapric_predominant_usda: Saprists Suborder qualifier Pass when
-  thickness of sapric \> thickness of fibric+hemic in 0-130 cm.
-
-- [`albic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/albic_horizon_usda.md)
-  : Albic horizon (USDA, KST 13ed Ch 3)
-
-- [`calcic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.md)
-  : Calcic horizon (USDA, delegates to WRB calcic).
-
-- [`gypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/gypsic_horizon_usda.md)
-  : Gypsic horizon (USDA, delegates to WRB gypsic).
-
-- [`kandic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/kandic_horizon_usda.md)
-  : Kandic horizon (USDA, KST 13ed Ch 3, p 45)
-
-- [`natric_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_horizon_usda.md)
-  : Natric horizon helper (USDA, KST 13ed Ch 3)
-
-- [`oxic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_horizon_usda.md)
-  :
-
-  Oxic horizon (USDA, KST 13ed, Ch 3) Delegates to WRB `ferralic`.
-
-- [`petrogypsic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/petrogypsic_horizon_usda.md)
-  : Petrogypsic horizon helper (USDA)
-
-- [`placic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/placic_horizon_usda.md)
-  : Placic horizon (USDA, KST 13ed Ch 3, pp 47-48)
-
-- [`salic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/salic_horizon_usda.md)
-  : Salic horizon (USDA, delegates to WRB salic).
-
-- [`spodic_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/spodic_horizon_usda.md)
-  : Spodosols Order qualifier (USDA, KST 13ed)
-
-- [`sulfuric_horizon_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/sulfuric_horizon_usda.md)
-  : Sulfuric horizon helper (USDA, KST 13ed Ch 3)
-
-- [`leptic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/leptic_features.md)
-  : Leptic features (WRB 2022)
-
-- [`planic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/planic_features.md)
-  : Planic features (WRB 2022)
-
-- [`technic_features()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_features.md)
-  : Technic features (WRB 2022)
-
-- [`andic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/andic_properties.md)
-  : Andic properties (WRB 2022)
-
-- [`gleyic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleyic_properties.md)
-  : Gleyic properties (WRB 2022)
-
-- [`protocalcic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/protocalcic_properties.md)
-  : Protocalcic properties (WRB 2022 Ch 3.2.8)
-
-- [`protogypsic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/protogypsic_properties.md)
-  : Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
-  \\= 1% but below the gypsic gate.
-
-- [`retic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.md)
-  : Retic properties (WRB 2022)
-
-- [`sideralic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/sideralic_properties.md)
-  : Sideralic properties (WRB 2022 Ch 3.2.13)
-
-- [`stagnic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/stagnic_properties.md)
-  : Stagnic properties (WRB 2022)
-
-- [`takyric_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/takyric_properties.md)
-  :
-
-  Takyric properties (WRB 2022 Ch 3.2.15) – per-pedon test wrapping
-  `test_takyric_surface`.
-
-- [`vertic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_properties.md)
-  : Vertic properties (WRB 2022)
-
-- [`vitric_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitric_properties.md)
-  : Vitric properties (WRB 2022 Ch 3.2.16)
-
-- [`yermic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/yermic_properties.md)
-  :
-
-  Yermic properties (WRB 2022 Ch 3.2.17) – per-pedon test wrapping
-  `test_yermic_surface`.
-
-- [`` `%||%` ``](https://hugomachadorodrigues.github.io/soilKey/reference/grapes-or-or-grapes.md)
-  : Default-value-for-NULL operator
-
-- [`arenic_texture()`](https://hugomachadorodrigues.github.io/soilKey/reference/arenic_texture.md)
-  : Arenic texture (WRB 2022)
-
-- [`cerosidade()`](https://hugomachadorodrigues.github.io/soilKey/reference/cerosidade.md)
-  : Cerosidade quantitativa (SiBCS Cap 13, p 207; Cap 1)
-
-- [`combine_priors()`](https://hugomachadorodrigues.github.io/soilKey/reference/combine_priors.md)
-  : Combine multiple spatial priors via weighted geometric mean
-
-- [`cryic_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.md)
-  : Cryic conditions (WRB 2022)
-
-- [`distrofico()`](https://hugomachadorodrigues.github.io/soilKey/reference/distrofico.md)
-  : Solo distrofico (SiBCS Cap 1, p 30)
-
-- [`duripa()`](https://hugomachadorodrigues.github.io/soilKey/reference/duripa.md)
-  : Duripa (SiBCS Cap 2, p 74; v0.7)
-
-- [`eutrofico()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutrofico.md)
-  : Solo eutrofico (SiBCS Cap 1, p 30)
-
-- [`evaluate_rsg_tests()`](https://hugomachadorodrigues.github.io/soilKey/reference/evaluate_rsg_tests.md)
-  : Evaluate the test block of a single RSG
-
-- [`fibrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibrico.md)
-  : Material organico fibrico (SiBCS Cap 14)
-
-- [`fragipa()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragipa.md)
-  : Fragipa (SiBCS Cap 2, p 73-74; v0.7)
-
-- [`hemico()`](https://hugomachadorodrigues.github.io/soilKey/reference/hemico.md)
-  : Material organico hemico (SiBCS Cap 14)
-
-- [`prompt_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/prompt_path.md)
-  : Path to a packaged prompt template
-
-- [`schema_path()`](https://hugomachadorodrigues.github.io/soilKey/reference/schema_path.md)
-  : Path to a packaged JSON schema file
-
-- [`default_model()`](https://hugomachadorodrigues.github.io/soilKey/reference/default_model.md)
-  : Default VLM model per provider
-
-- [`oxic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_usda.md)
-  : Oxic horizon (USDA Soil Taxonomy)
-
-- [`vertic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
-  : Vertic horizon (WRB 2022 Ch 3.1)
-
-- [`protovertic()`](https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.md)
-  : Protovertic horizon (WRB 2022 Ch 3.1)
-
-- [`panpaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/panpaic.md)
-  : Panpaic horizon (WRB 2022 Ch 3.1)
-
-- [`tsitelic()`](https://hugomachadorodrigues.github.io/soilKey/reference/tsitelic.md)
-  : Tsitelic horizon (WRB 2022 Ch 3.1)
-
-- [`limonic()`](https://hugomachadorodrigues.github.io/soilKey/reference/limonic.md)
-  : Limonic horizon (WRB 2022 Ch 3.1)
-
-- [`make_synthetic_pedon_with_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_synthetic_pedon_with_spectra.md)
-  : Build a synthetic PedonRecord with attached spectra (testing aid)
-
-- [`mudanca_textural_abrupta()`](https://hugomachadorodrigues.github.io/soilKey/reference/mudanca_textural_abrupta.md)
-  : Mudanca textural abrupta (SiBCS Cap 1, p 30-31)
-
-- [`ossl_library_template()`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_library_template.md)
-  : Canonical schema for an \`ossl_library\` object
-
-- [`clear_ossl_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_ossl_cache.md)
-  : Clear the soilKey OSSL cache
-
-- [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
-  : Download an OSSL subset and return an \`ossl_library\` artefact
-
-- [`download_ossl_subset_with_labels()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset_with_labels.md)
-  : Download an OSSL subset and attach WRB / SiBCS / USDA labels
-
-- [`familia_mineralogia_argila_geral()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_geral.md)
-  : Familia: mineralogia da fracao argila (geral, nao-Latossolos)
-
-- [`ossl_demo_sa`](https://hugomachadorodrigues.github.io/soilKey/reference/ossl_demo_sa.md)
-  : Synthetic OSSL South America demo subset
-
-- [`planosol()`](https://hugomachadorodrigues.github.io/soilKey/reference/planosol.md)
-  : Planosol RSG gate (WRB 2022 Ch 4, p 107)
-
-- [`posterior_classify()`](https://hugomachadorodrigues.github.io/soilKey/reference/posterior_classify.md)
-  : Bayesian posterior classifier (optional)
-
-- [`resolve_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.md)
-  : Resolve WRB 2022 qualifiers for a Reference Soil Group
-
-- [`saprico()`](https://hugomachadorodrigues.github.io/soilKey/reference/saprico.md)
-  : Material organico saprico (SiBCS Cap 14)
-
-- [`soilgrids_usda_lut()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilgrids_usda_lut.md)
-  : SoilGrids -\> USDA Soil Order lookup table (placeholder)
-
-- [`soilgrids_wrb_lut()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilgrids_wrb_lut.md)
-  : SoilGrids -\> WRB code lookup table
-
-- [`subgrupo_planossolo_espessos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_planossolo_espessos.md)
-  : Subgrupo "espessos" de Planossolos (B planico profundo, \> 100 cm)
-
-- [`subgrupo_planossolo_mesicos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_planossolo_mesicos.md)
-  : Subgrupo "mesicos" de Planossolos (B planico topo em \[50, 100\] cm)
-
-- [`subgrupo_plintossolo_endico_concrecionario()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_endico_concrecionario.md)
-  : Subgrupo "endico" de Plintossolos Concrecionarios (topo de horizonte
-  concrecionario \>= 40 cm)
-
-- [`subgrupo_plintossolo_endico_litoplintico()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_endico_litoplintico.md)
-  : Subgrupo "endico" de Plintossolos Litoplinticos (topo de horizonte
-  litoplintico \>= 40 cm)
-
-- [`subgrupo_plintossolo_espessos()`](https://hugomachadorodrigues.github.io/soilKey/reference/subgrupo_plintossolo_espessos.md)
-  : Subgrupo "espessos" de Plintossolos (horizonte plintico topo \> 100
-  cm)
-
-## RSG-level gates and other materials
-
-- [`ferralsol()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.md)
-  : Ferralsol RSG gate (WRB 2022 Ch 4, p 110)
-
-- [`gleysol()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleysol.md)
-  : Gleysol RSG gate (WRB 2022 Ch 4, p 103)
-
-- [`vertisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol.md)
-  : Vertisol RSG gate (WRB 2022 Ch 4, p 101)
-
-- [`acrisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/acrisol.md)
-  : Acrisol RSG diagnostic (WRB 2022)
-
-- [`alisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/alisol.md)
-  : Alisol RSG diagnostic (WRB 2022)
-
-- [`lixisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/lixisol.md)
-  : Lixisol RSG diagnostic (WRB 2022)
-
-- [`luvisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/luvisol.md)
-  : Luvisol RSG diagnostic (WRB 2022)
-
-- [`chernozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.md)
-  : Chernozem RSG diagnostic (WRB 2022)
-
-- [`chernozem_strict()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem_strict.md)
-  : Chernozem RSG gate (strengthened, WRB 2022 Ch 4, p 111)
-
-- [`kastanozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem.md)
-  : Kastanozem RSG diagnostic (WRB 2022)
-
-- [`kastanozem_strict()`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem_strict.md)
-  : Kastanozem RSG gate (strengthened, WRB 2022 Ch 4, p 112)
-
-- [`phaeozem()`](https://hugomachadorodrigues.github.io/soilKey/reference/phaeozem.md)
-  : Phaeozem RSG diagnostic (WRB 2022)
-
-- [`andosol()`](https://hugomachadorodrigues.github.io/soilKey/reference/andosol.md)
-  : Andosol RSG gate (WRB 2022 Ch 4, p 104)
-
-- [`calcaric_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.md)
-  : Calcaric material (WRB 2022 Ch 3.3.3): \\= 2% CaCO3 throughout the
-  fine earth, primary carbonates from the parent material.
-
-- [`dolomitic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/dolomitic_material.md)
-  :
-
-  Dolomitic material (WRB 2022 Ch 3.3.5): \\= 2% Mg-rich carbonate,
-  CaCO3/MgCO3 \< 1.5. v0.3.3: detects via designation pattern
-  `kdo|do|magn` as proxy when ratio data missing.
-
-- [`hypersulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hypersulfidic_material.md)
-  : Hypersulfidic material (WRB 2022 Ch 3.3.8): \\= 0.01% inorganic
-  sulfidic S, pH \\= 4, capable of severe acidification on aerobic
-  incubation.
-
-- [`hyposulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hyposulfidic_material.md)
-  : Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-  hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-  of severe acidification). v0.3.3: returns sulfidic layers that don't
-  meet hypersulfidic.
-
-- [`solimovic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/solimovic_material.md)
-  :
-
-  Solimovic material (WRB 2022 Ch 3.3.17): hetero genous mass-movement
-  material on slopes / footslopes (formerly "colluvic"). v0.3.3: detects
-  via `rock_origin == "colluvial"` OR `layer_origin == "solimovic"`.
-
-- [`technic_hard_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_hard_material.md)
-  : Technic hard material (WRB 2022 Ch 3.3.18): consolidated human-made
-  material (asphalt, concrete, worked stones).
-
-- [`tephric_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/tephric_material.md)
-  : Tephric material (WRB 2022 Ch 3.3.19): \\= 30% volcanic glass in
-  0.02-2 mm fraction AND no andic / vitric properties.
-
-## Engine selection and dispatch (v0.9.65)
-
-Per-pedon engine-selection heuristic, engine-aware dispatch (soilKey vs
-aqp), and side-by-side comparators.
-
-- [`pick_engine()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine.md)
-  : Choose the best diagnostic engine for a single pedon
-- [`pick_engine_batch()`](https://hugomachadorodrigues.github.io/soilKey/reference/pick_engine_batch.md)
-  : Per-pedon batch engine recommendation
-- [`classify_with_engine_heuristic()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_engine_heuristic.md)
-  : Classify a pedon with the engine chosen by \`pick_engine()\`
-- [`compare_engines()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_engines.md)
-  : Side-by-side comparison of soilKey vs aqp diagnostic engines
-- [`argic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_aqp.md)
-  : Argic / argillic horizon via aqp::getArgillicBounds()
-- [`cambic_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambic_aqp.md)
-  : Cambic horizon via aqp::getCambicBounds()
-
-## Canonical references (v0.9.62 – v0.9.65)
-
-Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared lookup
-helpers for pkg vs vendored data sources.
-
-- [`canonical_reference()`](https://hugomachadorodrigues.github.io/soilKey/reference/canonical_reference.md)
-  : Load a canonical reference dataset from soilKey or SoilTaxonomy
-- [`wrb2022_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md)
-  : WRB 2022 canonical reference (parsed IUSS Working Group WRB 2022)
-- [`kst13_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_canonical.md)
-  : Keys to Soil Taxonomy 13th edition canonical reference
-- [`kst13_codes()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.md)
-  : Load the canonical KST 13ed code -\> taxon-name lookup table
-- [`kst13_criteria()`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_criteria.md)
-  : Load the canonical KST 13ed criteria for a single taxon code
-- [`st_features_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/st_features_canonical.md)
-  : USDA Soil Taxonomy diagnostic features canonical table
-- [`clear_kst13_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_kst13_cache.md)
-  : Clear the in-memory KST13 cache
-
-## SmartSolos / Embrapa AgroAPI integration (v0.9.54)
-
-Cross-validation against Embrapa’s PROLOG SiBCS classifier.
-
-- [`classify_via_smartsolos_api()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.md)
-  : Classify a PedonRecord via Embrapa's SmartSolosExpert REST API
-- [`compare_smartsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/compare_smartsolos.md)
-  : Cross-validate the local SiBCS classifier against the
-  SmartSolosExpert API
-
-## BDsolos loader and benchmarks (v0.9.55 – v0.9.60)
-
-- [`benchmark_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)
-  : Benchmark soilKey classifiers against BDsolos national reference
-  labels
-- [`download_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.md)
-  : Download the BDsolos consulta-publica CSV (experimental, requires
-  chromote)
-- [`inspect_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.md)
-  : Diagnostic inspection of a BDsolos CSV before loading
-
-## Argic strong-films audit (v0.9.83)
-
-Empirical audit of the SiBCS Cap 18 latossolic-vs-argic precedence rule.
-Extracts the strong-clay-films decision into a reusable helper so the
-rule can be validated on any benchmark dataset (BDsolos RJ: 0.9%
-Latossolo false-positive exclusion rate, 37.6% Argissolo correct
-retention rate).
-
-- [`argic_with_strong_clay_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_with_strong_clay_films.md)
-  : Test whether a pedon's argic horizon has strong clay films
-- [`audit_argic_strong_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/audit_argic_strong_films.md)
-  : Audit the strong-clay-films exclusion across a list of pedons
-
-## Lazy-fetch benchmark caches (v0.9.94)
-
-The four large benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
-stratified, ~1 MB each) are no longer bundled in the CRAN source
-tarball. They are downloaded on demand from a versioned GitHub Release
-into the user cache (~/Library/Application Support/…/soilKey/data on
-macOS) on first call.
-
-- [`download_extdata_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_extdata_cache.md)
-  : Download one or more soilKey lazy-fetch caches from GitHub Release
-
-## FEBR loader (v0.9.57)
-
-UFSM Free Brazilian Repository readers (~249 datasets, ~36k horizons).
-
-- [`read_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.md)
-  : Load FEBR datasets as a list of PedonRecord objects
-- [`febr_index_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.md)
-  : Curated index of FEBR datasets that carry Munsell colors
-
-## Redape curated GeoTab dataset (v0.9.71)
-
-Embrapa Redape repository (DOI 10.48432/PYKKA7) – 96 hand- reviewed
-Brazilian soil profiles, suitable as a gold-standard benchmark for SiBCS
-classification.
-
-- [`download_redape_dataset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_redape_dataset.md)
-  : Download the curated Redape GeoTab dataset (Vaz et al 2023)
-- [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
-  : Load curated soil profiles from the Embrapa Redape GeoTab dataset
-- [`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
-  : Benchmark soilKey SiBCS predictions against the Redape gold standard
-
-## WoSIS stratified WRB benchmark (v0.9.73)
-
-ISRIC WoSIS bundled cache, 130 profiles balanced across 26 WRB Reference
-Soil Groups (5 per RSG). The first WRB benchmark with profile depth
-(analog of Redape but for WRB), pulled via RSG-filtered GraphQL queries.
-
-- [`load_wosis_stratified_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_wosis_stratified_sample.md)
-  : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
-
-## USDA Soil Taxonomy \<-\> WRB cross-walk (v0.9.74)
-
-KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6 USDA
-Order/Suborder -\> WRB RSG correlation. Provides the richest WRB
-benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56% vs WoSIS-stratified ~30%).
-
-- [`usda_to_wrb_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/usda_to_wrb_rsg.md)
-  : USDA Soil Taxonomy \<-\> WRB Reference Soil Group correlation table
-- [`annotate_wrb_from_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/annotate_wrb_from_usda.md)
-  : Annotate KSSL/NASIS pedons with a derived WRB Reference Soil Group
-- [`benchmark_wrb_vs_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.md)
-  : Benchmark soilKey WRB predictions against a USDA-derived ground
-  truth
-- [`load_kssl_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_sample.md)
-  : Load the bundled KSSL/NCSS lab-data sample (v0.9.74)
-
-## KSSL + NASIS morphological-enriched sample (v0.9.75)
-
-Joins KSSL lab gpkg with NASIS Morphological sqlite – adds Munsell
-colours, structure, clay films, slickensides (Munsell 0% -\> 89.6% vs
-lab-only).
-
-- [`load_kssl_nasis_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
-  : Load the bundled KSSL + NASIS morphological-enriched sample
-  (v0.9.75)
-
-## Africa Soil Profiles (AfSP) WRB benchmark (v0.9.77)
-
-ISRIC AfSP v1.2 (Leenaars et al. 2014) – 18,533 georeferenced African
-profiles, ~7000 with WRB 2006 RSG. Loader + bundled 120-pedon stratified
-sample (5 per RSG x 24 RSGs). Achieves 28% Order accuracy with strong
-Cambisol/Histosol (100%) and Ferralsol/Solonetz (80%) recall.
-
-- [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
-  : Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
-- [`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
-  : Load the bundled AfSP stratified sample (v0.9.77)
-- [`benchmark_afsp()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.md)
-  : Benchmark soilKey WRB predictions against AfSP ground truth
-- [`wrb06_code_to_rsg()`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb06_code_to_rsg.md)
-  : WRB 2006 RSG code -\> 2022 RSG name
-
-## LUCAS Soil 2018 (v0.9.49 – v0.9.50)
-
-- [`benchmark_lucas_2018()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.md)
-  : Run the LUCAS Soil 2018 / ESDB WRB benchmark
-- [`attach_lucas_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/attach_lucas_spectra.md)
-  : Attach LUCAS 2018 Vis-NIR spectra to a list of PedonRecord objects
-
-## Unified benchmark and robustness (v0.9.61)
-
-- [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
-  : Unified cross-dataset benchmark across SiBCS / WRB / USDA
-- [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
-  : Run the full soilKey benchmark suite and (optionally) write a report
-- [`benchmark_performance()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.md)
-  : Run the soilKey performance benchmark
-- [`batch_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.md)
-  : Batch robustness across many pedons
-- [`classification_robustness()`](https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.md)
-  : Robustness of classification under input perturbation
-- [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md)
-  : Posterior distribution over classification outcomes
-- [`get_perturbation_scale()`](https://hugomachadorodrigues.github.io/soilKey/reference/get_perturbation_scale.md)
-  : Monte-Carlo perturbation scale for an evidence grade
-
-## OSSL spectra: PLS training and prediction
-
-Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict lab
-properties / Munsell / XYZ / generic targets.
-
-- [`train_pls_from_ossl()`](https://hugomachadorodrigues.github.io/soilKey/reference/train_pls_from_ossl.md)
-  : Train pre-trained PLSR models from an OSSL library
-- [`predict_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_from_spectra.md)
-  : Predict soil properties from spectra
-- [`predict_lab_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_lab_from_spectra.md)
-  : Predict CIE Lab from Vis-NIR reflectance spectra
-- [`predict_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_munsell_from_spectra.md)
-  : Predict Munsell hue / value / chroma from Vis-NIR reflectance
-  spectra
-- [`predict_xyz_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_xyz_from_spectra.md)
-  : Predict CIE XYZ tristimulus values from Vis-NIR reflectance spectra
-- [`predict(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/predict.soilKey_pls_model.md)
-  : Predict from a soilKey_pls_model
-- [`print(`*`<soilKey_pls_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.soilKey_pls_model.md)
-  : Print method for soilKey_pls_model
-- [`fill_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.md)
-  : Fill missing Munsell colors on a PedonRecord from Vis-NIR spectra
-
-## Spatial / database lookups
-
-ESDB attributes, SoilGrids and MapBiomas-Solos pulls.
-
-- [`available_esdb_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/available_esdb_attributes.md)
-  : List ESDB Raster Library attributes available at a given root
-- [`lookup_esdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_esdb.md)
-  : Look up an ESDB raster value at WGS84 coordinates
-- [`lookup_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_soilgrids.md)
-  : Look up a SoilGrids 250m soil property at WGS84 coordinates
-- [`lookup_mapbiomas_solos()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_mapbiomas_solos.md)
-  : Look up a MapBiomas Solos raster value at WGS84 coordinates
-
-## GlobalSoilMap depth harmonisation and aqp helpers
-
-- [`GSM_DEPTHS`](https://hugomachadorodrigues.github.io/soilKey/reference/GSM_DEPTHS.md)
-  : Default GlobalSoilMap depth intervals (cm)
-- [`harmonize_to_gsm()`](https://hugomachadorodrigues.github.io/soilKey/reference/harmonize_to_gsm.md)
-  : Harmonise pedons to GlobalSoilMap depth intervals
-- [`pedon_to_spc()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_to_spc.md)
-  : Convert a soilKey PedonRecord to an aqp SoilProfileCollection
-- [`pedon_json_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedon_json_schema.md)
-  : JSON Schema for a soilKey PedonRecord
-- [`texture_class_from_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/texture_class_from_pct.md)
-  : NRCS texture-class shorthand from clay / silt / sand percent
+  Vertisol Order qualifier (USDA, KST 13ed, Ch 2 / Ch 3 vertic horizon)
+  Pass when a vertic horizon (clay \>= 30, cracks, slickensides, LE) is
+  present. Delegates to WRB `vertic_horizon`.
+
+- [`vertisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertisol_usda.md)
+  : Vertisols (USDA Cap 16): slickensides + cracks. Delegates to
+  vertic_horizon.
+
+- [`vertissolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo.md)
+  : Vertissolos (SiBCS Cap 4, p 112; conceito Cap 3, p 105-106)
+
+- [`vertissolo_ebanico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_ebanico.md)
+  : Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
+  dominantes).
+
+- [`vertissolo_haplico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_haplico.md)
+  : Vertissolos Haplicos (catch-all).
+
+- [`vertissolo_hidromorfico()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertissolo_hidromorfico.md)
+  : Vertissolos Hidromorficos (Cap 17): horizonte glei OR caracter
+  redoxico.
+
+- [`vitrand_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrand_qualifying_usda.md)
+  : Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water
+  retention \< 15% (air-dried) and \< 30% (undried) throughout 60%+ of
+  the thickness. v0.8 proxy: uses water_content_1500kpa \< 15%.
+
+- [`vitrandic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrandic_subgroup_usda.md)
+  : Vitrandic Subgroup helper (USDA, KST 13ed)
+
+- [`vitric_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitric_subgroup_usda.md)
+  : Vitric Subgroup helper (Andisols) Pass when volcanic_glass_pct \>=
+  30 in a 25+ cm layer within 100 cm.
+
+- [`wassent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/wassent_qualifying_usda.md)
+  : Wassent Suborder qualifier (subaqueous Entisol). Pass when
+  site\$water_table_cm_above_surface \> 0 (water column permanently
+  above the surface).
+
+- [`wassist_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/wassist_qualifying_usda.md)
+  : Wassists Suborder qualifier (KST 13ed, Ch 10, p 203)
+
+- [`xanthic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/xanthic_subgroup_usda.md)
+  : Xanthic Subgroup helper (Oxisols) Pass when 50%+ colors have hue \>=
+  7.5YR AND value \>= 6 in B horizons.

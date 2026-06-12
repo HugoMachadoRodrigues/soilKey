@@ -33,6 +33,13 @@ chernozem_strict(pedon, min_bs = 50, max_top_cm = 50, strict = NULL)
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` raises the
   base-saturation floor to 80%.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Details
 
 v0.3.4 strengthens the previous v0.2 chernozem (which only required

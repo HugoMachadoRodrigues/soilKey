@@ -19,3 +19,10 @@ shrink_swell_cracks(pedon, min_width_cm = 0.5)
 - min_width_cm:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

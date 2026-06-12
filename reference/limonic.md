@@ -27,6 +27,13 @@ limonic(pedon, min_thickness = 5, min_redox_pct = 5)
 
   Numeric threshold or option (see Details).
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Details
 
 v0.3.5 detection: redoximorphic_features_pct \\= 5 AND designation

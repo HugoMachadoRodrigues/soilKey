@@ -23,3 +23,10 @@ anthraquic(pedon, min_thickness = 20, max_top_cm = 50)
 - max_top_cm:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

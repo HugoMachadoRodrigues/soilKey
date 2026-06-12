@@ -1,8 +1,8 @@
 # soilKey
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.108](https://img.shields.io/badge/version-0.9.108-FF6B35?style=flat-square)[![License:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
+![v0.9.109](https://img.shields.io/badge/version-0.9.109-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -110,6 +110,23 @@ All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ What’s new in v0.9.109 (2026-06-11)
+
+- **v0.9.109 — CRAN release hardening.** A readiness audit found a full
+  `R CMD check` was clean only because CI didn’t pass `--as-cran`; under
+  `--as-cran`, 545 exported topics lacked a `\value` section (a likely
+  CRAN rejection). The ~600 atomic taxonomic-engine predicates
+  (`qual_*`, `*_usda` gates, `carater_*` / `horizonte_*`) are now
+  `@keywords internal` — still exported and callable, but out of the
+  public reference index, trimming the documented API from ~910 to ~195
+  topics; the remaining ~85 public topics gained `\value`. The package
+  now passes `R CMD check --as-cran` with **0 errors / 0 warnings**.
+  Runnable `\examples` were added to the entry points, CI now runs
+  `--as-cran` +
+  [`pkgdown::check_pkgdown()`](https://pkgdown.r-lib.org/reference/check_pkgdown.html),
+  and the release metadata (cran-comments, CITATION.cff, lifecycle →
+  *maturing*) was refreshed. **No user-visible behaviour changed.**
 
 ## ✦ What’s new in v0.9.108 (2026-06-11)
 

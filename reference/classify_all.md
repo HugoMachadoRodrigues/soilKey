@@ -119,16 +119,18 @@ any side-channel state.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 pr <- make_ferralsol_canonical()
 all_three <- classify_all(pr)
 all_three$summary
-#>                              wrb                                       sibcs
-#> 1 Geric Ferric Rhodic Chromic ... Latossolos Vermelhos Distroficos tipicos...
-#>             usda
-#> 1 Rhodic Hapludox
+#>                                                                             wrb
+#> 1 Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)
+#>                                                          sibcs            usda
+#> 1 Latossolos Vermelhos Distroficos tipicos, argilosa, moderado Rhodic Hapludox
 
 # WRB + USDA only (skip SiBCS):
 classify_all(pr, systems = c("wrb2022", "usda"))$summary
-} # }
+#>                                                                             wrb
+#> 1 Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)
+#>   sibcs            usda
+#> 1  <NA> Rhodic Hapludox
 ```

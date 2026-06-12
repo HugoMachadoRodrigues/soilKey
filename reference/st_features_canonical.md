@@ -20,3 +20,8 @@ st_features_canonical(prefer_pkg = TRUE)
   If `TRUE` (default), prefer the installed SoilTaxonomy package over
   the vendored copy. Set to `FALSE` to force the vendored copy (e.g. for
   reproducibility of a specific soilKey release).
+
+## Value
+
+The canonical Soil Taxonomy diagnostic-features reference (a list /
+data.frame).

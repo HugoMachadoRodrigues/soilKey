@@ -27,6 +27,13 @@ protovertic(pedon, min_clay = 30, min_thickness = 15)
 
   Numeric threshold or option (see Details).
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Details
 
 v0.3.5 detection: clay \\= 30% AND any positive vertic evidence

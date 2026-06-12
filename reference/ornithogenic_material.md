@@ -19,3 +19,10 @@ ornithogenic_material(pedon, min_p_mehlich3 = 750)
 - min_p_mehlich3:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

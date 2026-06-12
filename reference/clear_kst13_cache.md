@@ -8,3 +8,8 @@ MB.
 ``` r
 clear_kst13_cache()
 ```
+
+## Value
+
+`NULL`, invisibly. Called for its side effect of emptying the KST
+13th-edition lookup cache.

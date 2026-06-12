@@ -45,6 +45,13 @@ andosol(
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` disables the
   buried-exclusion tolerance.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Details
 
 v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness \\= 30 cm

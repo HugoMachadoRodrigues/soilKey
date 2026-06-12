@@ -1,5 +1,18 @@
 # Changelog
 
+## soilKey 0.9.109 (2026-06-11)
+
+The “**CRAN release hardening**” release. A readiness audit found that a
+full was clean only because CI did not pass ; under , 545 exported
+function topics were missing a section – a near-certain CRAN rejection.
+This release fixes that and tightens release hygiene. (the engine is
+documentation-only here; the deterministic key dispatches its predicates
+by name exactly as before).
+
+### Public API right-sized
+
+### Documentation & release hygiene
+
 ## soilKey 0.9.108 (2026-06-11)
 
 The “**Pro app polish**” release – the third and final follow-up front

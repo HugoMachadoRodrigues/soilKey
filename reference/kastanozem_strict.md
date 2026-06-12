@@ -32,6 +32,13 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` raises the
   base-saturation floor to 75%.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Tier-3 strict mode (v0.9.98)
 
 With `strict = TRUE` the base-saturation floor above the

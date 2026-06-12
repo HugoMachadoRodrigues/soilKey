@@ -34,3 +34,10 @@ Kr (molar) = (% SiO2 / 60.08) / (% Al2O3 / 101.96 + % Fe2O3 / 159.69)
 ## References
 
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 32.
+
+## Examples
+
+``` r
+compute_kr(sio2_pct = 18, al2o3_pct = 20, fe2o3_pct = 12)
+#> [1] 1.104311
+```

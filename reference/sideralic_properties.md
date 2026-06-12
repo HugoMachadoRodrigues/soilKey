@@ -24,3 +24,10 @@ sideralic_properties(pedon, max_cec_per_clay = 24, max_bulk_cec = 2)
 - max_bulk_cec:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

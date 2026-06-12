@@ -7,3 +7,10 @@ Solo raso sobre rocha continua dura. Sem horizonte B diagnostico.
 ``` r
 make_neossolo_canonical()
 ```
+
+## Value
+
+A
+[`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
+populated with the canonical horizons and site metadata for this
+reference profile.

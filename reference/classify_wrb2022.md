@@ -76,3 +76,12 @@ classify_wrb2022(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md).
+
+## Examples
+
+``` r
+pedon <- make_ferralsol_canonical()
+res <- classify_wrb2022(pedon)
+res$name
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+```

@@ -80,10 +80,13 @@ modal class), `entropy` (Shannon entropy of the posterior, natural log),
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 p <- make_ferralsol_canonical()
-u <- classify_with_uncertainty(p, n = 100, system = "wrb2022")
+u <- classify_with_uncertainty(p, n = 50, system = "wrb2022")
 u$posterior   # P(RSG = x)
+#> Ferralsols 
+#>          1 
 u$entropy     # near 0 for a robust profile
-} # }
+#> [1] 0
+# }
 ```

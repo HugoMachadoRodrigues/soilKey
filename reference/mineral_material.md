@@ -24,3 +24,10 @@ mineral_material(pedon, max_oc = 20, max_organotechnic = 35)
 - max_organotechnic:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

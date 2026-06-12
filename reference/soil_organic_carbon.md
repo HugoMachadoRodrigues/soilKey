@@ -24,3 +24,10 @@ soil_organic_carbon(pedon, min_oc = 0.1, max_artefacts = 35)
 - max_artefacts:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

@@ -23,6 +23,13 @@ planosol(pedon, strict = NULL)
   `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` disables the
   planic-features fallback.
 
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
+
 ## Details
 
 v0.3.4 enforces all three components. The 5-cm-window restriction is

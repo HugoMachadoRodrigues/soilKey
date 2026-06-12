@@ -70,3 +70,15 @@ Hapludox"*. See
 
 Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th edition. USDA
 Natural Resources Conservation Service.
+
+## Examples
+
+``` r
+pedon <- make_ferralsol_canonical()
+res <- classify_usda(pedon)
+res$name
+#> [1] "Rhodic Hapludox"
+# include the 5th (family) level:
+classify_usda(pedon, include_family = TRUE)$name
+#> [1] "fine, mixed, subactive, isothermic Rhodic Hapludox"
+```

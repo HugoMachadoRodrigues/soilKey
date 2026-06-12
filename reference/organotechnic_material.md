@@ -23,3 +23,10 @@ organotechnic_material(pedon, min_artefacts = 35, max_oc = 20)
 - max_oc:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.

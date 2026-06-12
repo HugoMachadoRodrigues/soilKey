@@ -24,3 +24,10 @@ protocalcic_properties(pedon, min_caco3_pct = 0.5, max_caco3_pct = 15)
 - max_caco3_pct:
 
   Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
