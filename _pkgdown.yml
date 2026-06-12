@@ -426,6 +426,7 @@ reference:
       - kst13_criteria
       - st_features_canonical
       - clear_kst13_cache
+      - coverage_report
 
   - title: "SmartSolos / Embrapa AgroAPI integration (v0.9.54)"
     desc: >

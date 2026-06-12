@@ -1,0 +1,1016 @@
+# Coverage report -- usda subgroup
+
+Measured by NAME against the canonical reference set. 1921 of 2715 canonical subgroups are registered (**70.8%**); 794 missing.
+
+## By group
+
+| group | canonical | covered | missing | pct |
+|---|---:|---:|---:|---:|
+| Gelisols | 129 | 129 | 0 | 100.0% |
+| Histosols | 75 | 75 | 0 | 100.0% |
+| Spodosols | 121 | 121 | 0 | 100.0% |
+| Andisols | 218 | 183 | 35 | 83.9% |
+| Ultisols | 215 | 158 | 57 | 73.5% |
+| Oxisols | 213 | 146 | 67 | 68.5% |
+| Inceptisols | 349 | 238 | 111 | 68.2% |
+| Mollisols | 376 | 256 | 120 | 68.1% |
+| Alfisols | 352 | 238 | 114 | 67.6% |
+| Entisols | 239 | 156 | 83 | 65.3% |
+| Vertisols | 158 | 98 | 60 | 62.0% |
+| Aridisols | 270 | 123 | 147 | 45.6% |
+
+## Missing (794)
+
+- Abruptic Argiaquolls
+- Abruptic Argicryolls
+- Abruptic Argiduridic Durixerolls
+- Abruptic Argidurids
+- Abruptic Argiudolls
+- Abruptic Durixeralfs
+- Abruptic Haplic Durixeralfs
+- Abruptic Natrudolls
+- Abruptic Palecryolls
+- Abruptic Xeric Argidurids
+- Acrustoxic Kandiustults
+- Acrustoxic Kanhaplustults
+- Aeric Albaqualfs
+- Aeric Calciaquerts
+- Aeric Calciaquolls
+- Aeric Chromic Vertic Epiaqualfs
+- Aeric Cryaquepts
+- Aeric Duraquerts
+- Aeric Endoaquerts
+- Aeric Epiaquerts
+- Aeric Fluviwassents
+- Aeric Fragic Endoaqualfs
+- Aeric Fragic Epiaqualfs
+- Aeric Fragic Epiaquults
+- Aeric Fragic Glossaqualfs
+- Aeric Frasiwassents
+- Aeric Glossaqualfs
+- Aeric Halaquepts
+- Aeric Haplowassents
+- Aeric Humaquepts
+- Aeric Humic Cryaquepts
+- Aeric Psammowassents
+- Aeric Sulfiwassents
+- Aeric Umbric Endoaqualfs
+- Aeric Umbric Epiaqualfs
+- Aeric Umbric Kandiaqualfs
+- Aeric Umbric Kanhaplaquults
+- Aeric Vertic Albaqualfs
+- Aeric Vertic Epiaqualfs
+- Albaquic Hapludalfs
+- Albaquic Paleudalfs
+- Albaquultic Hapludalfs
+- Albic Glossic Natraqualfs
+- Albic Natraqualfs
+- Alfic Argicryolls
+- Alfic Argiudolls
+- Alfic Argiustolls
+- Alfic Argixerolls
+- Alfic Haploxerands
+- Alfic Hapludands
+- Alfic Haplustands
+- Alfic Humic Haploxerands
+- Alfic Humic Vitrixerands
+- Alfic Lithic Argiustolls
+- Alfic Udivitrands
+- Alfic Vertic Argiudolls
+- Alfic Vitricryands
+- Alfic Vitrixerands
+- Andic Ombroaquic Kandihumults
+- Anhydritic Aquisalids
+- Anhydritic Haplosalids
+- Anthraltic Sodic Xerorthents
+- Anthraltic Torriorthents
+- Anthraltic Xerorthents
+- Anthraquic Eutrudepts
+- Anthraquic Hapludalfs
+- Anthraquic Hapludands
+- Anthraquic Haplustepts
+- Anthraquic Haplustolls
+- Anthraquic Melanudands
+- Anthraquic Paleudalfs
+- Anthraquic Paleudults
+- Anthraquic Ustifluvents
+- Anthraquic Ustorthents
+- Anthrodensic Dystrudepts
+- Anthrodensic Haplustepts
+- Anthrodensic Sodic Udorthents
+- Anthrodensic Udorthents
+- Anthrodensic Ustorthents
+- Anthropic Haplocambids
+- Anthropic Kandihumults
+- Anthropic Kanhaplohumults
+- Anthropic Petrocalcic Calciudolls
+- Anthropic Torrifluvents
+- Anthropic Udorthents
+- Anthroportic Dystrudepts
+- Anthroportic Haplustepts
+- Anthroportic Udorthents
+- Anthroportic Ustorthents
+- Aqueptic Haplustox
+- Aquertic Argiudolls
+- Aquertic Argiustolls
+- Aquertic Chromic Hapludalfs
+- Aquertic Eutrudepts
+- Aquertic Glossudalfs
+- Aquertic Hapludalfs
+- Aquertic Hapludolls
+- Aquertic Haplustalfs
+- Aquertic Haplustolls
+- Aquertic Natrustalfs
+- Aquertic Paleustalfs
+- Aquertic Udifluvents
+- Aquertic Ustifluvents
+- Aquic Durinodic Haplocalcids
+- Aquic Durinodic Xeropsamments
+- Aquic Dystric Eutrudepts
+- Aquic Humic Dystrudepts
+- Aquic Natrargidic Natridurids
+- Aquicambidic Haplodurids
+- Aquodic Quartzipsamments
+- Aquollic Hapludalfs
+- Aquultic Argixerolls
+- Aquultic Haploxeralfs
+- Aquultic Haploxerolls
+- Aquultic Hapludalfs
+- Aquultic Haplustalfs
+- Arenic Plinthaquic Kandiudults
+- Arenic Plinthaquic Paleudults
+- Arenic Ustic Calciargids
+- Arenic Ustic Haplargids
+- Arenic Ustic Paleargids
+- Argiaquic Argialbolls
+- Argiaquic Xeric Argialbolls
+- Argic Petrocalcids
+- Argidic Argidurids
+- Argidic Durixerolls
+- Argiduridic Argixerolls
+- Argiduridic Durixerolls
+- Argiduridic Durustolls
+- Aridic Glossic Natrustalfs
+- Aridic Leptic Haplusterts
+- Aridic Leptic Natrustalfs
+- Aridic Leptic Natrustolls
+- Calciargidic Argixerolls
+- Calcic Haplotorrands
+- Calcic Haploxeralfs
+- Calcic Haploxerands
+- Calcic Haplustalfs
+- Calcic Haplustands
+- Calcic Palexeralfs
+- Calcic Rhodoxeralfs
+- Calcic Udic Haplustalfs
+- Calcic Udic Haplustepts
+- Calcic Ustivitrands
+- Calcic Vitritorrands
+- Calcidic Argiustolls
+- Calcidic Haploxerolls
+- Calcidic Haplustalfs
+- Calcidic Paleustalfs
+- Calcidic Paleustolls
+- Cambidic Durixerolls
+- Cambidic Haplodurids
+- Chromic Calcitorrerts
+- Chromic Calciusterts
+- Chromic Calcixererts
+- Chromic Duraquerts
+- Chromic Durixererts
+- Chromic Dystraquerts
+- Chromic Dystruderts
+- Chromic Dystrusterts
+- Chromic Endoaquerts
+- Chromic Epiaquerts
+- Chromic Gypsitorrerts
+- Chromic Gypsiusterts
+- Chromic Haplocryerts
+- Chromic Haplotorrerts
+- Chromic Haploxererts
+- Chromic Hapluderts
+- Chromic Haplusterts
+- Chromic Salaquerts
+- Chromic Salitorrerts
+- Chromic Salusterts
+- Chromic Udic Haplusterts
+- Chromic Vertic Albaqualfs
+- Chromic Vertic Endoaqualfs
+- Chromic Vertic Epiaqualfs
+- Chromic Vertic Hapludalfs
+- Cumulic Vertic Endoaquolls
+- Cumulic Vertic Epiaquolls
+- Duric Xeric Haplocalcids
+- Duric Xeric Petroargids
+- Duric Xeric Petrocryids
+- Duric Xeric Torrifluvents
+- Duridic Haploxerolls
+- Durinodic Aquicambids
+- Durinodic Calciargids
+- Durinodic Gypsiargids
+- Durinodic Haplargids
+- Durinodic Haplocalcids
+- Durinodic Haplocambids
+- Durinodic Natrargids
+- Durinodic Paleargids
+- Durinodic Ustorthents
+- Durinodic Xeric Aquicambids
+- Durinodic Xeric Calciargids
+- Durinodic Xeric Haplargids
+- Durinodic Xeric Haplocalcids
+- Durinodic Xeric Haplocambids
+- Durinodic Xeric Natrargids
+- Durinodic Xeric Paleargids
+- Durinodic Xerofluvents
+- Durinodic Xeropsamments
+- Durinodic Xerorthents
+- Dystric Eutrudepts
+- Dystric Fluventic Eutrudepts
+- Dystric Haplustands
+- Dystric Haplustepts
+- Dystric Vitric Haplustands
+- Dystric Xeropsamments
+- Dystric Xerorthents
+- Entic Udic Haplusterts
+- Eutric Acrudox
+- Eutric Acrustox
+- Eutric Duricryands
+- Eutric Durudands
+- Eutric Dystrocryepts
+- Eutric Fulvicryands
+- Eutric Fulvudands
+- Eutric Glossocryalfs
+- Eutric Haplocryalfs
+- Eutric Hapludands
+- Eutric Humicryepts
+- Eutric Humigelepts
+- Eutric Humudepts
+- Eutric Hydrudands
+- Eutric Lithic Fulvudands
+- Eutric Melanudands
+- Eutric Oxyaquic Duricryands
+- Eutric Pachic Fulvicryands
+- Eutric Pachic Fulvudands
+- Eutric Thaptic Hapludands
+- Fluic Frasiwassents
+- Fluvaquentic Vertic Endoaquolls
+- Fluvaquentic Vertic Epiaquolls
+- Fluventic Aquicambids
+- Fluventic Calciudolls
+- Fluventic Dystrocryepts
+- Fluventic Dystrogelepts
+- Fluventic Dystroxerepts
+- Fluventic Dystrudepts
+- Fluventic Dystrustepts
+- Fluventic Endoaquepts
+- Fluventic Eutrudepts
+- Fluventic Haplocambids
+- Fluventic Haplocryepts
+- Fluventic Haplocryolls
+- Fluventic Haplogelepts
+- Fluventic Haplogelolls
+- Fluventic Haploxerepts
+- Fluventic Hapludolls
+- Fluventic Haplustepts
+- Fluventic Humic Dystroxerepts
+- Fluventic Humic Dystrudepts
+- Fluventic Humicryepts
+- Fluventic Humigelepts
+- Fluventic Humixerepts
+- Fluventic Humudepts
+- Fluventic Psammaquents
+- Fluventic Psammowassents
+- Fluventic Sulfaquents
+- Fluventic Sulfiwassents
+- Fragiaquic Dystroxerepts
+- Fragiaquic Dystrudepts
+- Fragiaquic Eutrudepts
+- Fragiaquic Glossudalfs
+- Fragiaquic Haploxeralfs
+- Fragiaquic Hapludalfs
+- Fragiaquic Hapludults
+- Fragiaquic Kanhapludults
+- Fragiaquic Paleudalfs
+- Fragiaquic Paleudults
+- Fragiaquic Palexeralfs
+- Glossaquic Fragiudults
+- Glossaquic Hapludalfs
+- Glossaquic Natrudalfs
+- Glossaquic Paleudalfs
+- Glossic Fragiudults
+- Glossic Hapludalfs
+- Glossic Natraqualfs
+- Glossic Natraquolls
+- Glossic Natrargids
+- Glossic Natrudolls
+- Glossic Natrustolls
+- Glossic Paleudalfs
+- Glossic Ustic Natrargids
+- Glossic Vertic Natrudolls
+- Glossic Vertic Natrustolls
+- Grossic Hydrowassents
+- Gypsic Calciustepts
+- Gypsic Calciustolls
+- Gypsic Haploxerepts
+- Gypsic Haplustepts
+- Gypsic Haplusterts
+- Haplargidic Natrustalfs
+- Haplic Haploxerollic Durixerolls
+- Haplic Palexerollic Durixerolls
+- Haplic Ustic Natrargids
+- Haplocalcidic Haplustepts
+- Haploduridic Durixerolls
+- Haploduridic Durustolls
+- Haploduridic Torripsamments
+- Haploplaggic Udipsamments
+- Haploxeralfic Argidurids
+- Haploxeralfic Natrargids
+- Haploxerandic Dystrocryepts
+- Haploxerandic Haplocryepts
+- Haploxerandic Humicryepts
+- Haploxerollic Durixerolls
+- Haplustandic Haplocryepts
+- Histic-Haplic Sulfaquents
+- Humaqueptic Endoaquents
+- Humaqueptic Epiaquents
+- Humaqueptic Fluvaquents
+- Humaqueptic Psammaquents
+- Humic Acrudox
+- Humic Cryaquepts
+- Humic Densiaquepts
+- Humic Densiudepts
+- Humic Durustands
+- Humic Dystroxerepts
+- Humic Dystrustepts
+- Humic Endoaquepts
+- Humic Epiaquepts
+- Humic Eutrudepts
+- Humic Eutrudox
+- Humic Fluic Frasiwassents
+- Humic Fragiaqualfs
+- Humic Fragiaquepts
+- Humic Fragiudepts
+- Humic Fragixerepts
+- Humic Frasiwassents
+- Humic Gelaquepts
+- Humic Haploxerepts
+- Humic Inceptic Eutroperox
+- Humic Inceptic Eutrudox
+- Humic Inceptic Eutrustox
+- Humic Kandiperox
+- Humic Kandiudox
+- Humic Kandiustox
+- Humic Lithic Dystroxerepts
+- Humic Lithic Dystrudepts
+- Humic Lithic Eutrudepts
+- Humic Lithic Haploxerepts
+- Humic Psammentic Dystrudepts
+- Humic Rhodic Acroperox
+- Humic Rhodic Acrudox
+- Humic Rhodic Acrustox
+- Humic Rhodic Eutroperox
+- Humic Rhodic Eutrudox
+- Humic Rhodic Eutrustox
+- Humic Rhodic Haploperox
+- Humic Rhodic Hapludox
+- Humic Rhodic Haplustox
+- Humic Rhodic Kandiperox
+- Humic Rhodic Kandiudox
+- Humic Rhodic Kandiustox
+- Humic Sombriperox
+- Humic Sombriudox
+- Humic Sombriustox
+- Humic Xanthic Acroperox
+- Humic Xanthic Acrudox
+- Humic Xanthic Acrustox
+- Humic Xanthic Eutroperox
+- Humic Xanthic Eutrudox
+- Humic Xanthic Eutrustox
+- Humic Xanthic Haploperox
+- Humic Xanthic Hapludox
+- Humic Xanthic Haplustox
+- Humic Xanthic Kandiperox
+- Humic Xanthic Kandiudox
+- Humic Xanthic Kandiustox
+- Humic Xeric Vitricryands
+- Hydraquentic Humaquepts
+- Hydraquentic Sulfaquepts
+- Inceptic Eutroperox
+- Inceptic Eutrudox
+- Inceptic Eutrustox
+- Inceptic Fragixeralfs
+- Inceptic Haplocryalfs
+- Inceptic Haploxeralfs
+- Inceptic Hapludox
+- Inceptic Hapludults
+- Inceptic Haplustalfs
+- Inceptic Haplustox
+- Inceptic Haprendolls
+- Inceptic Rhodoxeralfs
+- Kandic Albaquults
+- Kandic Paleustalfs
+- Kandic Plinthaquults
+- Kandiudalfic Eutroperox
+- Kandiudalfic Eutrudox
+- Kandiustalfic Eutrustox
+- Kanhaplic Haplustalfs
+- Kanhaplic Haplustults
+- Kanhaplic Rhodustalfs
+- Lamellic Ustic Quartzipsamments
+- Leptic Calcitorrerts
+- Leptic Calciusterts
+- Leptic Calcixererts
+- Leptic Dystraquerts
+- Leptic Dystruderts
+- Leptic Dystrusterts
+- Leptic Endoaquerts
+- Leptic Epiaquerts
+- Leptic Gypsiusterts
+- Leptic Haplogypsids
+- Leptic Haplotorrerts
+- Leptic Haploxererts
+- Leptic Hapluderts
+- Leptic Haplusterts
+- Leptic Natralbolls
+- Leptic Natrudolls
+- Leptic Natrustalfs
+- Leptic Natrustolls
+- Leptic Salaquerts
+- Leptic Salitorrerts
+- Leptic Salusterts
+- Leptic Torrertic Natrustalfs
+- Leptic Torrertic Natrustolls
+- Leptic Udic Haplusterts
+- Leptic Vertic Natrudolls
+- Leptic Vertic Natrustolls
+- Lithic Ruptic-Entic Haplargids
+- Lithic Ruptic-Inceptic Haploxeralfs
+- Lithic Ruptic-Inceptic Haploxerults
+- Lithic Ustic Haplargids
+- Lithic Ustic Haplocalcids
+- Lithic Ustic Haplocambids
+- Lithic Ustic Natrargids
+- Lithic Ustic Torriorthents
+- Lithic Xeric Haplargids
+- Lithic Xeric Haplocalcids
+- Lithic Xeric Haplocambids
+- Lithic Xeric Natrargids
+- Lithic Xeric Torriorthents
+- Lithic-Ruptic-Entic Hapludults
+- Natrargidic Natridurids
+- Natrixeralfic Natridurids
+- Ombroaquic Haplustults
+- Ombroaquic Kandihumults
+- Ombroaquic Kandiudults
+- Ombroaquic Kanhaplohumults
+- Ombroaquic Kanhapludults
+- Ombroaquic Kanhaplustults
+- Oxic Argiudolls
+- Oxic Dystrudepts
+- Oxic Dystrustepts
+- Oxic Hapludands
+- Oxic Haplustands
+- Oxic Haplustepts
+- Oxic Haplustolls
+- Oxic Humudepts
+- Oxic Humustepts
+- Oxyaquic Vertic Argiudolls
+- Oxyaquic Vertic Glossudalfs
+- Oxyaquic Vertic Hapludalfs
+- Oxyaquic Vertic Haplustalfs
+- Oxyaquic Vertic Paleustalfs
+- Pachic Udertic Argiustolls
+- Pachic Udertic Haplustolls
+- Pachic Vertic Argiudolls
+- Pachic Vertic Argiustolls
+- Pachic Vertic Hapludolls
+- Pachic Vertic Haplustolls
+- Paleargidic Durixerolls
+- Palexerollic Durixerolls
+- Petrocalcidic Palexerolls
+- Petrogypsic Ustic Petroargids
+- Petronodic Ustic Calciargids
+- Petronodic Ustic Haplargids
+- Petronodic Ustic Haplocalcids
+- Petronodic Ustic Haplocambids
+- Petronodic Ustic Paleargids
+- Petronodic Xeric Calciargids
+- Petronodic Xeric Haplocalcids
+- Petronodic Xeric Haplocambids
+- Plinthaquic Eutroperox
+- Plinthaquic Eutrudox
+- Plinthaquic Eutrustox
+- Plinthaquic Fragiudults
+- Plinthaquic Haploperox
+- Plinthaquic Hapludox
+- Plinthaquic Haplustox
+- Plinthaquic Kandiperox
+- Plinthaquic Kandiudalfs
+- Plinthaquic Kandiudox
+- Plinthaquic Kandiudults
+- Plinthaquic Kandiustox
+- Plinthaquic Kanhapludults
+- Plinthaquic Paleudalfs
+- Plinthaquic Paleudults
+- Plinthic Petraquepts
+- Plinthic Quartzipsamments
+- Psammentic Argiudolls
+- Psammentic Frasiwassents
+- Psammentic Haplocryalfs
+- Psammentic Haploxeralfs
+- Psammentic Haploxerults
+- Psammentic Hapludalfs
+- Psammentic Hapludults
+- Psammentic Haplustalfs
+- Psammentic Humudepts
+- Psammentic Paleudalfs
+- Psammentic Paleudults
+- Psammentic Paleustalfs
+- Psammentic Palexeralfs
+- Psammentic Rhodudults
+- Psammentic Rhodustults
+- Rendollic Eutrudepts
+- Ruptic-Alfic Dystrudepts
+- Ruptic-Alfic Eutrudepts
+- Ruptic-Lithic Haplustolls
+- Ruptic-Ultic Dystrudepts
+- Salidic Calciustolls
+- Salidic Haplustolls
+- Salidic Natrustalfs
+- Salidic Sulfaquepts
+- Sodic Endoaquents
+- Sodic Hydraquents
+- Sodic Psammaquents
+- Sodic Ustic Haplocalcids
+- Sodic Ustic Haplocambids
+- Sodic Xeric Haplocalcids
+- Sodic Xeric Haplocambids
+- Sombric Kandiudults
+- Spodic Dystrocryepts
+- Spodic Dystrudepts
+- Spodic Humicryepts
+- Spodic Paleudults
+- Sulfaqueptic Dystraquerts
+- Thapto-Histic Cryaquolls
+- Thapto-Histic Endoaquolls
+- Thapto-Histic Epiaquolls
+- Thapto-Histic Fluvaquents
+- Thapto-Histic Fluviwassents
+- Thapto-Histic Frasiwassents
+- Thapto-Histic Hydraquents
+- Thapto-Histic Hydrowassents
+- Thapto-Histic Psammaquents
+- Thapto-Histic Sulfaquents
+- Thapto-Histic Sulfiwassents
+- Torrertic Argiustolls
+- Torrertic Argixerolls
+- Torrertic Calciustepts
+- Torrertic Calciustolls
+- Torrertic Dystrustepts
+- Torrertic Haploxerolls
+- Torrertic Haplustalfs
+- Torrertic Haplustepts
+- Torrertic Haplustolls
+- Torrertic Natrustalfs
+- Torrertic Natrustolls
+- Torrertic Paleustolls
+- Torrertic Ustifluvents
+- Torrertic Ustorthents
+- Torrifluventic Haploxerolls
+- Torrifluventic Haplustepts
+- Torrifluventic Haplustolls
+- Torriorthentic Haploxerolls
+- Torriorthentic Haplustolls
+- Torripsammentic Haploxerolls
+- Torroxic Haplustolls
+- Udandic Kandiustults
+- Udandic Kanhaplustults
+- Udertic Argiustolls
+- Udertic Calciustolls
+- Udertic Haplustalfs
+- Udertic Haplustepts
+- Udertic Haplustolls
+- Udertic Paleustalfs
+- Udertic Paleustolls
+- Udic Argiustolls
+- Udic Calciustepts
+- Udic Calciusterts
+- Udic Calciustolls
+- Udic Durixererts
+- Udic Dystrusterts
+- Udic Gypsiusterts
+- Udic Haploxererts
+- Udic Haplustalfs
+- Udic Haplustepts
+- Udic Haplusterts
+- Udic Kandiustalfs
+- Udic Kandiustults
+- Udic Kanhaplustalfs
+- Udic Kanhaplustults
+- Udic Paleustalfs
+- Udic Paleustolls
+- Udic Rhodustalfs
+- Udic Ustifluvents
+- Udic Ustorthents
+- Udifluventic Haplustepts
+- Udollic Albaqualfs
+- Udollic Endoaqualfs
+- Udollic Epiaqualfs
+- Udoxic Quartzipsamments
+- Umbric Xeric Glossocryalfs
+- Umbric Xeric Haplocryalfs
+- Ustalfic Petrocalcids
+- Ustandic Kandihumults
+- Ustandic Kanhaplohumults
+- Ustertic Calciargids
+- Ustertic Haplargids
+- Ustertic Haplocambids
+- Ustertic Natrargids
+- Ustertic Torrifluvents
+- Ustertic Torriorthents
+- Ustic Aquicambids
+- Ustic Argicryids
+- Ustic Argicryolls
+- Ustic Argidurids
+- Ustic Argigypsids
+- Ustic Calciargids
+- Ustic Calcicryepts
+- Ustic Calcicryids
+- Ustic Calcicryolls
+- Ustic Calcigypsids
+- Ustic Duraquerts
+- Ustic Dystraquerts
+- Ustic Dystrocryepts
+- Ustic Endoaquerts
+- Ustic Epiaquerts
+- Ustic Glossocryalfs
+- Ustic Gypsiargids
+- Ustic Haplargids
+- Ustic Haplocalcids
+- Ustic Haplocambids
+- Ustic Haplocryalfs
+- Ustic Haplocryepts
+- Ustic Haplocryids
+- Ustic Haplocryolls
+- Ustic Haplodurids
+- Ustic Haplogypsids
+- Ustic Haplohumults
+- Ustic Kandihumults
+- Ustic Kanhaplohumults
+- Ustic Natrargids
+- Ustic Natrigypsids
+- Ustic Paleargids
+- Ustic Palecryalfs
+- Ustic Palecryolls
+- Ustic Palehumults
+- Ustic Petroargids
+- Ustic Petrocalcids
+- Ustic Petrocambids
+- Ustic Petrocryids
+- Ustic Petrogypsids
+- Ustic Quartzipsamments
+- Ustic Salaquerts
+- Ustic Torrifluvents
+- Ustic Torriorthents
+- Ustic Torripsamments
+- Ustifluventic Haplocambids
+- Ustivitrandic Haplocryepts
+- Ustollic Glossocryalfs
+- Ustollic Haplocryalfs
+- Ustoxic Quartzipsamments
+- Vermic Calcixerolls
+- Vermic Fragiaqualfs
+- Vermic Hapludolls
+- Vermic Natraqualfs
+- Vermic Udorthents
+- Vermic Ustorthents
+- Vertic Albaquults
+- Vertic Argigypsids
+- Vertic Calciudolls
+- Vertic Calciustepts
+- Vertic Calciustolls
+- Vertic Calcixerepts
+- Vertic Calcixerolls
+- Vertic Cryaquepts
+- Vertic Dystrudepts
+- Vertic Dystrustepts
+- Vertic Epiaquults
+- Vertic Glossocryalfs
+- Vertic Glossudalfs
+- Vertic Haplocalcids
+- Vertic Haplocryalfs
+- Vertic Haploxerepts
+- Vertic Hapludalfs
+- Vertic Hapludults
+- Vertic Haplustepts
+- Vertic Haprendolls
+- Vertic Humudepts
+- Vertic Natrigypsids
+- Vertic Paleaquults
+- Vertic Paleudults
+- Vertic Rhodoxeralfs
+- Vertic Udifluvents
+- Vertic Ustifluvents
+- Vertic Xerofluvents
+- Vitritorrandic Argiustolls
+- Vitritorrandic Argixerolls
+- Vitritorrandic Durixerolls
+- Vitritorrandic Haploxerolls
+- Vitritorrandic Haplustolls
+- Vitritorrandic Ustorthents
+- Vitrixerandic Aquicambids
+- Vitrixerandic Argicryids
+- Vitrixerandic Argidurids
+- Vitrixerandic Argigypsids
+- Vitrixerandic Calciargids
+- Vitrixerandic Calcicryids
+- Vitrixerandic Calcigypsids
+- Vitrixerandic Dystrocryepts
+- Vitrixerandic Gypsiargids
+- Vitrixerandic Gypsicryids
+- Vitrixerandic Haplargids
+- Vitrixerandic Haplocalcids
+- Vitrixerandic Haplocambids
+- Vitrixerandic Haplocryepts
+- Vitrixerandic Haplocryids
+- Vitrixerandic Haplodurids
+- Vitrixerandic Haplogypsids
+- Vitrixerandic Humicryepts
+- Vitrixerandic Natrargids
+- Vitrixerandic Natridurids
+- Vitrixerandic Natrigypsids
+- Vitrixerandic Paleargids
+- Vitrixerandic Petrocambids
+- Vitrixerandic Petrogypsids
+- Vitrixerandic Torrifluvents
+- Xanthic Acroperox
+- Xanthic Acrudox
+- Xanthic Acrustox
+- Xanthic Eutroperox
+- Xanthic Eutrudox
+- Xanthic Eutrustox
+- Xanthic Haploperox
+- Xanthic Hapludox
+- Xanthic Haplustox
+- Xanthic Kandiperox
+- Xanthic Kandiudox
+- Xanthic Kandiustox
+- Xeralfic Petrocalcids
+- Xereptic Haplodurids
+- Xereptic Petrocryids
+- Xerertic Argialbolls
+- Xerertic Calciargids
+- Xerertic Haplargids
+- Xerertic Haplocambids
+- Xerertic Natrargids
+- Xerertic Torriorthents
+- Xeric Aquicambids
+- Xeric Argialbolls
+- Xeric Argicryids
+- Xeric Argicryolls
+- Xeric Argidurids
+- Xeric Argigypsids
+- Xeric Calciargids
+- Xeric Calcicryepts
+- Xeric Calcicryids
+- Xeric Calcicryolls
+- Xeric Calcigypsids
+- Xeric Duraquerts
+- Xeric Dystrocryepts
+- Xeric Endoaquerts
+- Xeric Epiaquerts
+- Xeric Glossocryalfs
+- Xeric Gypsiargids
+- Xeric Haplargids
+- Xeric Haplocalcids
+- Xeric Haplocambids
+- Xeric Haplocryalfs
+- Xeric Haplocryands
+- Xeric Haplocryepts
+- Xeric Haplocryids
+- Xeric Haplocryolls
+- Xeric Haplodurids
+- Xeric Haplogypsids
+- Xeric Haplohumults
+- Xeric Humicryepts
+- Xeric Kandihumults
+- Xeric Kanhaplohumults
+- Xeric Natrargids
+- Xeric Natridurids
+- Xeric Natrigypsids
+- Xeric Paleargids
+- Xeric Palecryalfs
+- Xeric Palecryolls
+- Xeric Palehumults
+- Xeric Petroargids
+- Xeric Petrocalcids
+- Xeric Petrocambids
+- Xeric Petrocryids
+- Xeric Petrogypsids
+- Xeric Quartzipsamments
+- Xeric Torrifluvents
+- Xeric Torriorthents
+- Xeric Torripsamments
+- Xeric Vitricryands
+- Xerofluventic Haplocambids
+- Xerollic Glossocryalfs
+- Xerollic Haplocryalfs
+
+## Registered but non-canonical (196)
+
+- acrudoxic hydrocryands
+- aeric duraqualfs
+- aeric plinthaqualfs
+- aeric plinthaquults
+- aeric psammaquents
+- aeric umbraquults
+- aeric vermaqualfs
+- aeric vermaquepts
+- andic cryaquepts
+- andic hapludults
+- andic udorthents
+- aquic argialbolls
+- aquic calciusterts
+- aquic calcixererts
+- aquic duritorrands
+- aquic durustalfs
+- aquic durustepts
+- aquic fulvicryands
+- aquic gypsiusterts
+- aquic haplocambids
+- aquic haplocryerts
+- aquic haplocryids
+- aquic haplotorrands
+- aquic haplotorrerts
+- aquic haplusterts
+- aquic haprendolls
+- aquic humicryerts
+- aquic humustepts
+- aquic natralbolls
+- aquic natricryolls
+- aquic natrudolls
+- aquic paleustults
+- aquic plinthohumults
+- aquic plinthoxeralfs
+- aquic plinthudults
+- aquic plinthustalfs
+- aquic plinthustults
+- aquic rhodustults
+- argic durixerolls
+- argic durustolls
+- calcic duraquerts
+- calcic endoaquerts
+- calcic endoaquolls
+- calcic epiaquerts
+- calcic haplargids
+- calcic haplogypsids
+- calcic haplotorrerts
+- calcic hapluderts
+- calcic haplustolls
+- calcic natraquerts
+- calcic natrigypsids
+- fluventic haplowassents
+- halic sulfaquents
+- halic sulfaquepts
+- halic sulfaquerts
+- halic sulfudepts
+- histic cryaquents
+- histic gelaquents
+- humic duricryands
+- humic dystraquerts
+- humic epiaquands
+- humic haplocryands
+- humic hapludands
+- humic haplustults
+- humic rhodudults
+- humic vitraquands
+- lithic argiaquolls
+- lithic cryaqualfs
+- lithic cryaquents
+- lithic cryaquolls
+- lithic duricryands
+- lithic duritorrands
+- lithic durudands
+- lithic durustands
+- lithic dystruderts
+- lithic endoaqualfs
+- lithic endoaquults
+- lithic epiaqualfs
+- lithic epiaquands
+- lithic epiaquents
+- lithic epiaquepts
+- lithic epiaquolls
+- lithic epiaquults
+- lithic gelaquands
+- lithic gelorthents
+- lithic haplocryerts
+- lithic haplodurids
+- lithic humaquepts
+- lithic kandihumults
+- lithic kandiudults
+- lithic kandiustalfs
+- lithic kandiustults
+- lithic kanhaplaquults
+- lithic melanoxerands
+- lithic paleudults
+- lithic paleustalfs
+- lithic paleustolls
+- lithic paleustults
+- lithic palexerolls
+- lithic palexerults
+- lithic petraquepts
+- lithic petrocalcids
+- lithic petrocambids
+- lithic petrocryids
+- lithic plinthaqualfs
+- lithic plinthaquults
+- lithic plinthohumults
+- lithic plinthudults
+- lithic plinthustalfs
+- lithic plinthustults
+- lithic rhodudalfs
+- lithic sombrihumults
+- lithic sulfaquepts
+- lithic umbraquults
+- mollic fragiaqualfs
+- mollic fraglossudalfs
+- mollic glossudalfs
+- mollic hapludalfs
+- mollic haplustalfs
+- mollic rhodoxeralfs
+- mollic rhodudalfs
+- mollic rhodustalfs
+- pachic argialbolls
+- pachic argiaquolls
+- pachic hydrudands
+- pachic melanocryands
+- pachic ustivitrands
+- pachic vermudolls
+- petrocalcic calciargids
+- petrocalcic calcicryepts
+- petrocalcic calcicryids
+- petrocalcic calciudolls
+- petrocalcic calcixerolls
+- petrocalcic haplocalcids
+- petrocalcic natrargids
+- petrocalcic paleargids
+- petrogypsic gypsiargids
+- petrogypsic gypsicryids
+- plinthic albaquults
+- plinthic epiaquults
+- plinthic paleustults
+- salic calciaquerts
+- salic calcitorrerts
+- salic calciusterts
+- salic endoaquerts
+- salic epiaquerts
+- salic gypsitorrerts
+- salic gypsiusterts
+- salic natraquerts
+- salic natraquolls
+- sodic calciaquerts
+- sodic calciargids
+- sodic calcigypsids
+- sodic calcitorrerts
+- sodic calcixererts
+- sodic duraquerts
+- sodic gypsiargids
+- sodic gypsicryids
+- sodic gypsitorrerts
+- sodic halaquepts
+- sodic petroargids
+- sodic petrogypsids
+- sodic salaquerts
+- sodic salicryids
+- sodic salitorrerts
+- sodic sulfaquerts
+- spodic hapludands
+- spodic udivitrands
+- sulfic aquisalids
+- sulfic frasiwassents
+- sulfic salaquerts
+- sulfic salusterts
+- typic haploxerolls
+- typic hapludalfs
+- typic haplustolls
+- umbric albaquults
+- umbric endoaquults
+- umbric plinthaquults
+- vertic aquicambids
+- vertic calciaquolls
+- vertic cryaqualfs
+- vertic duraqualfs
+- vertic duricryolls
+- vertic durustalfs
+- vertic durustolls
+- vertic glossaqualfs
+- vertic haplodurids
+- vertic natralbolls
+- vertic natricryolls
+- vertic palecryalfs
+- vertic palecryolls
+- vertic petroargids
+- vertic petrocalcids
+- vertic petrocambids
+- vertic petrocryids
+- vitric haploxerands

@@ -19,6 +19,16 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FAAD"
+      name: "Salic Sulfaquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FAAE"
+      name: "Sulfic Sulfaquerts"
+      tests:
+        all_of:
+          - sulfic_subgroup_usda: {}
     - code: "FAAC"
       name: "Typic Sulfaquerts"
       tests:
@@ -35,6 +45,16 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FABD"
+      name: "Aridic Salaquerts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FABE"
+      name: "Entic Salaquerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FABC"
       name: "Typic Salaquerts"
       tests:
@@ -51,6 +71,11 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "FACD"
+      name: "Aridic Duraquerts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
     - code: "FACC"
       name: "Typic Duraquerts"
       tests:
@@ -99,6 +124,16 @@ subgroups:
       tests:
         all_of:
           - humic_andisol_usda: {}
+    - code: "FAFD"
+      name: "Aridic Dystraquerts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FAFE"
+      name: "Entic Dystraquerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FAFC"
       name: "Typic Dystraquerts"
       tests:
@@ -120,6 +155,21 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "FAGE"
+      name: "Halic Epiaquerts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FAGF"
+      name: "Aridic Epiaquerts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FAGG"
+      name: "Entic Epiaquerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FAGD"
       name: "Typic Epiaquerts"
       tests:
@@ -141,6 +191,21 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "FAHE"
+      name: "Halic Endoaquerts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FAHF"
+      name: "Aridic Endoaquerts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FAHG"
+      name: "Entic Endoaquerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FAHD"
       name: "Typic Endoaquerts"
       tests:
@@ -154,6 +219,11 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "FBAC"
+      name: "Sodic Humicryerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
     - code: "FBAB"
       name: "Typic Humicryerts"
       tests:
@@ -170,6 +240,11 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FBBD"
+      name: "Sodic Haplocryerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
     - code: "FBBC"
       name: "Typic Haplocryerts"
       tests:
@@ -188,6 +263,21 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FCAD"
+      name: "Halic Durixererts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FCAE"
+      name: "Aridic Durixererts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FCAF"
+      name: "Haplic Durixererts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
     - code: "FCAC"
       name: "Typic Durixererts"
       tests:
@@ -204,6 +294,26 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FCBD"
+      name: "Lithic Calcixererts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FCBE"
+      name: "Petrocalcic Calcixererts"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "FCBF"
+      name: "Aridic Calcixererts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FCBG"
+      name: "Entic Calcixererts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FCBC"
       name: "Typic Calcixererts"
       tests:
@@ -225,6 +335,21 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FCCE"
+      name: "Halic Haploxererts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FCCF"
+      name: "Aridic Haploxererts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FCCG"
+      name: "Entic Haploxererts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FCCD"
       name: "Typic Haploxererts"
       tests:
@@ -238,6 +363,16 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FDAC"
+      name: "Aquic Salitorrerts"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "FDAD"
+      name: "Entic Salitorrerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FDAB"
       name: "Typic Salitorrerts"
       tests:
@@ -270,6 +405,16 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
+    - code: "FDCD"
+      name: "Petrocalcic Calcitorrerts"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "FDCE"
+      name: "Entic Calcitorrerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FDCC"
       name: "Typic Calcitorrerts"
       tests:
@@ -291,6 +436,16 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "FDDE"
+      name: "Halic Haplotorrerts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FDDF"
+      name: "Entic Haplotorrerts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FDDD"
       name: "Typic Haplotorrerts"
       tests:
@@ -309,6 +464,16 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEAD"
+      name: "Aridic Dystrusterts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FEAE"
+      name: "Entic Dystrusterts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FEAC"
       name: "Typic Dystrusterts"
       tests:
@@ -325,6 +490,26 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "FEBD"
+      name: "Lithic Salusterts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEBE"
+      name: "Sodic Salusterts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FEBF"
+      name: "Aridic Salusterts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FEBG"
+      name: "Entic Salusterts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FEBC"
       name: "Typic Salusterts"
       tests:
@@ -341,6 +526,31 @@ subgroups:
       tests:
         all_of:
           - salic_subgroup_usda: {}
+    - code: "FECD"
+      name: "Lithic Gypsiusterts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FECE"
+      name: "Halic Gypsiusterts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FECF"
+      name: "Sodic Gypsiusterts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FECG"
+      name: "Aridic Gypsiusterts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FECH"
+      name: "Entic Gypsiusterts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FECC"
       name: "Typic Gypsiusterts"
       tests:
@@ -362,6 +572,31 @@ subgroups:
       tests:
         all_of:
           - salic_subgroup_usda: {}
+    - code: "FEDE"
+      name: "Lithic Calciusterts"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEDF"
+      name: "Halic Calciusterts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FEDG"
+      name: "Petrocalcic Calciusterts"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "FEDH"
+      name: "Aridic Calciusterts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FEDI"
+      name: "Entic Calciusterts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FEDD"
       name: "Typic Calciusterts"
       tests:
@@ -388,6 +623,26 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FEEF"
+      name: "Halic Haplusterts"
+      tests:
+        all_of:
+          - halic_subgroup_usda: {}
+    - code: "FEEG"
+      name: "Petrocalcic Haplusterts"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "FEEH"
+      name: "Aridic Haplusterts"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "FEEI"
+      name: "Entic Haplusterts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FEEE"
       name: "Typic Haplusterts"
       tests:
@@ -406,6 +661,16 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FFAD"
+      name: "Oxyaquic Dystruderts"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "FFAE"
+      name: "Entic Dystruderts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FFAC"
       name: "Typic Dystruderts"
       tests:
@@ -427,6 +692,16 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "FFBE"
+      name: "Oxyaquic Hapluderts"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "FFBF"
+      name: "Entic Hapluderts"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "FFBD"
       name: "Typic Hapluderts"
       tests:

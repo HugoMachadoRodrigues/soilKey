@@ -75,6 +75,37 @@ qual_andic       <- function(pedon) {
 #' @export
 qual_anthric     <- function(pedon) .q_presence("Anthric",     anthric_horizons(pedon), 100, pedon)
 
+# ---- v0.9.113: thin presence wrappers over existing diagnostics ------------
+# Each wraps a diagnostic already implemented in
+# diagnostics-{horizons,materials}-wrb-v033.R; wired per RSG in
+# inst/rules/wrb2022/qualifiers.yaml. Verified byte-identical on the 44
+# canonical fixtures (the diagnostics that fire do so only on RSGs whose
+# Ch 4 applicable list does not list the qualifier).
+
+#' Aeolic qualifier (ae): aeolic (wind-sorted) material <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_aeolic      <- function(pedon) .q_presence("Aeolic",      aeolic_material(pedon), 100, pedon)
+
+#' Fragic qualifier (fg): fragic horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_fragic      <- function(pedon) .q_presence("Fragic",      fragic(pedon),      100, pedon)
+
+#' Limonic qualifier (lm): limonic (bog-iron) horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_limonic     <- function(pedon) .q_presence("Limonic",     limonic(pedon),     100, pedon)
+
+#' Tsitelic qualifier (ts): tsitelic (red, low-activity) horizon <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_tsitelic    <- function(pedon) .q_presence("Tsitelic",    tsitelic(pedon),    100, pedon)
+
 #' Calcic qualifier (cc): calcic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
