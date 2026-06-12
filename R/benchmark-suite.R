@@ -189,7 +189,11 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
 
 # AfSP offline sample, classified under WRB.
 .suite_run_afsp <- function(max_n, verbose) {
-  peds <- tryCatch(load_afsp_sample(), error = function(e) NULL)
+  # load_afsp_sample() returns the wrapper list(pedons, pulled_on, ...);
+  # unwrap to the bare pedon list so the length-guard and max_n slice
+  # operate on the 120 pedons, not the 4 wrapper elements (which would
+  # otherwise slice/feed atomic members into benchmark_afsp and crash).
+  peds <- .afsp_as_pedons(tryCatch(load_afsp_sample(), error = function(e) NULL))
   if (is.null(peds) || !length(peds)) return(NULL)
   if (!is.null(max_n)) peds <- peds[seq_len(min(max_n, length(peds)))]
   res <- tryCatch(benchmark_afsp(peds, verbose = FALSE), error = function(e) NULL)

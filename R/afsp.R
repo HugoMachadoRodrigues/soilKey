@@ -249,16 +249,21 @@ load_afsp_pedons <- function(afsp_dir,
 
 #' Load the bundled AfSP stratified sample (v0.9.77)
 #'
-#' Returns a 130-profile snapshot from AfSP v1.2 stratified by WRB
-#' RSG (5 profiles per RSG x 26 RSGs), pre-built so users can run
+#' Returns a 120-profile snapshot from AfSP v1.2 stratified by WRB
+#' RSG (5 profiles per RSG x 24 RSGs), pre-built so users can run
 #' the African WRB benchmark offline without the 35 MB ZIP download.
 #'
 #' This is the African analogue of
 #' \code{\link{load_wosis_stratified_sample}} (global WoSIS) and
 #' \code{\link{load_kssl_nasis_sample}} (US KSSL+NASIS).
 #'
-#' @return A list with \code{pedons}, \code{pulled_on}, \code{source},
-#'   \code{filter}.
+#' Like its siblings, this returns a \strong{wrapper} list -- the pedons
+#' are in the \code{$pedons} slot. Pass \code{$pedons} to per-pedon loops,
+#' or hand the whole wrapper to \code{\link{benchmark_afsp}}, which unwraps
+#' it for you.
+#'
+#' @return A list with \code{pedons} (120 \code{\link{PedonRecord}}s),
+#'   \code{pulled_on}, \code{source}, \code{filter}.
 #'
 #' @section Reference:
 #' Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
@@ -276,27 +281,50 @@ load_afsp_sample <- function() {
 }
 
 
+#' Coerce an AfSP sample to a bare list of PedonRecords
+#'
+#' \code{\link{load_afsp_sample}} returns a wrapper
+#' \code{list(pedons, pulled_on, source, filter)} (mirroring
+#' \code{\link{load_wosis_stratified_sample}} /
+#' \code{\link{load_kssl_sample}}), but the benchmark + suite loops iterate
+#' pedons. This unwraps the \code{$pedons} slot when handed the wrapper and
+#' otherwise passes a bare pedon list through unchanged, so callers can feed
+#' either form. Without it, iterating the 4-element wrapper hits
+#' \code{$site} on atomic elements (\code{pulled_on}, \code{source}) and
+#' throws "$ operator is invalid for atomic vectors".
+#' @keywords internal
+.afsp_as_pedons <- function(x) {
+  if (is.list(x) && !is.null(x$pedons) && is.list(x$pedons)) x$pedons else x
+}
+
+
 #' Benchmark soilKey WRB predictions against AfSP ground truth
 #'
-#' @param pedons List of \code{\link{PedonRecord}} from
-#'        \code{\link{load_afsp_pedons}} or \code{\link{load_afsp_sample}}.
+#' @param pedons A list of \code{\link{PedonRecord}} (e.g.\ from
+#'        \code{\link{load_afsp_pedons}}), or the wrapper returned by
+#'        \code{\link{load_afsp_sample}} (its \code{$pedons} slot is
+#'        unwrapped automatically).
 #' @param verbose Print progress.
 #'
 #' @return List with \code{accuracy}, \code{n_compared}, \code{confusion},
 #'   \code{per_class_recall}.
 #' @export
 benchmark_afsp <- function(pedons, verbose = TRUE) {
+  pedons <- .afsp_as_pedons(pedons)
   if (length(pedons) == 0L) stop("Empty pedon list.")
   if (isTRUE(verbose))
     cat(sprintf("[afsp] benchmarking %d pedons\n", length(pedons)))
 
   preds <- vapply(pedons, function(pr) {
+    if (!inherits(pr, "PedonRecord")) return(NA_character_)
     res <- tryCatch(classify_wrb2022(pr, on_missing = "silent"),
                      error = function(e) NULL)
     if (is.null(res)) NA_character_ else sub("s$", "", res$rsg_or_order)
   }, character(1))
-  refs <- vapply(pedons, function(p) p$site$reference_wrb %||% NA_character_,
-                  character(1))
+  refs <- vapply(pedons, function(p) {
+    if (!inherits(p, "PedonRecord")) return(NA_character_)
+    p$site$reference_wrb %||% NA_character_
+  }, character(1))
 
   in_scope <- !is.na(refs) & !is.na(preds)
   n_correct <- sum(in_scope & refs == preds)
