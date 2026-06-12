@@ -189,6 +189,35 @@ luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
                                                   max_pct = max_al_sat,
                                                   candidate_layers = layers)
 
+  # v0.9.111: graceful Al-saturation fallback. A confirmed argic horizon with
+  # high-activity clay (CEC >= 24) but NO Al-saturation measurement is a Luvisol
+  # by default -- the Alisol is the special high-Al case that requires POSITIVE
+  # al_sat >= 50 evidence. Without this, an undeterminable eutric/alic split
+  # leaves al_sat_low = NA, the gate returns NA, and the profile drops to the
+  # Regosol catch-all -- but an argic horizon is never a Regosol. Fires only on
+  # is.na() (unmeasured): a measured Luvisol (al_sat < 50) already passes and a
+  # measured Alisol (al_sat >= 50) gives FALSE, so neither is overridden. The
+  # promoted layers must equal what the aggregate re-intersects with, and
+  # al_sat_pct stays in $missing so it still surfaces in $missing_data.
+  # The B-horizon guard rejects a known false-positive: argic's clay-increase
+  # test can fire on a STRATIFIED (sedimentary) clay jump between a Fluvisol's C
+  # layers. A genuine argic horizon is an illuvial B (Bt); a clay increase into
+  # a C layer is depositional, not pedogenic. Only default to Luvisol when the
+  # promoted, CEC-high argic layer is a B master horizon -- this keeps the
+  # Fluvisol (its argic sits on a C) keyed to Fluvisols, not Luvisol.
+  if (isTRUE(tests$cec_high$passed) && is.na(tests$al_sat_low$passed)) {
+    promoted <- intersect(arg$layers, tests$cec_high$layers)
+    desig    <- as.character(pedon$horizons$designation)[promoted]
+    promoted <- promoted[grepl("B", desig)]
+    if (length(promoted) > 0L) {
+      tests$al_sat_low$passed  <- TRUE
+      tests$al_sat_low$layers  <- promoted
+      tests$al_sat_low$details <- c(tests$al_sat_low$details %||% list(),
+        list(al_sat_low_default =
+          "no Al-saturation measured; high-activity argic defaults to Luvisol"))
+    }
+  }
+
   agg <- .argic_derived_aggregate(tests,
                                     layer_keys = c("cec_high", "al_sat_low"))
 

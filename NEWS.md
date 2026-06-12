@@ -1,3 +1,44 @@
+# soilKey 0.9.112 (2026-06-11)
+
+The "**an argic horizon is never a Regosol**" release (accuracy front B2,
+engine). The honest B1 benchmark exposed a correctness bug in the WRB key:
+a profile with a CONFIRMED argic (clay-illuvial B) horizon could drop to the
+Regosol catch-all -- the gate for soils with NO diagnostic subsurface horizon
+-- purely because the eutric/alic split (base saturation / Al-saturation) was
+unmeasured, leaving the Luvisol gate at \code{NA}.
+
+## The fix (surgical, in the key)
+
+\itemize{
+  \item \code{luvisol()} (R/diagnostics-rsg-argic-derived.R) gains a graceful
+        Al-saturation default, mirroring the Acrisol BS-fallback: when
+        \code{argic()} passes, the clay is high-activity (CEC/clay >= 24), and
+        Al-saturation is \strong{unmeasured} on a \strong{B master horizon},
+        the profile defaults to \strong{Luvisol} (the generic high-activity
+        argic RSG; Alisol is the high-Al special case that requires positive
+        Al-sat >= 50 evidence). It fires only on \code{is.na()}, so a measured
+        Luvisol (Al-sat < 50) or Alisol (Al-sat >= 50) is never overridden, and
+        a B-horizon guard keeps it off a Fluvisol's stratified C-layer clay
+        jump (a sedimentary, not pedogenic, increase). \code{al_sat_pct} stays
+        in the result's \code{missing_data}, and Alisol surfaces as an
+        ambiguity, so the assumption is transparent.
+}
+
+## Impact
+
+\itemize{
+  \item Measured on the FEBR WRB benchmark: \strong{+9 Luvisols recovered
+        (Regosol -> Luvisol), 0 regressions} (17.8\% -> 21.9\% order accuracy).
+        All \strong{44 canonical fixtures classify byte-identically} (the
+        fallback only fires on missing data, which the fixtures never have).
+  \item Scope note from the B1 measurement: the dominant FEBR-WRB ceiling is
+        \emph{missing data} (most argic-RSG reference pedons carry no measured
+        clay at all), which no key change can address -- so this is a targeted
+        correctness fix, not the broad "discriminator" the earlier audit
+        imagined.
+}
+
+
 # soilKey 0.9.110 (2026-06-11)
 
 The "**benchmark methodology**" release (front B1 of the accuracy work). A
