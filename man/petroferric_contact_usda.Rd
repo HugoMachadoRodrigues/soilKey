@@ -19,3 +19,4 @@ Ironstone-like layer with >50\% Fe oxides, indurated. v0.8 proxy:
 \code{cementation_class} in \{strongly, indurated\} AND
 \code{plinthite_pct >= 50} (Fe-rich) AND \code{coarse_fragments_pct >= 50}.
 }
+\keyword{internal}

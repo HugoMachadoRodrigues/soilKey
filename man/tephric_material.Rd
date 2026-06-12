@@ -12,6 +12,9 @@ tephric_material(pedon, min_glass = 30)
 
 \item{min_glass}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Tephric material (WRB 2022 Ch 3.3.19): \\>= 30\% volcanic glass in
 0.02-2 mm fraction AND no andic / vitric properties.

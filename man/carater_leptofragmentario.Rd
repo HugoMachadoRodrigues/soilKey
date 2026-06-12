@@ -24,3 +24,4 @@ Argissolos (Cap 5: PA, PV, PVA).
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, pp 127, 132.
 }
+\keyword{internal}

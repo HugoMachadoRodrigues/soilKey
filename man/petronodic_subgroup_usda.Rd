@@ -18,3 +18,4 @@ Petronodic Subgroup helper (Aridisols)
 Pass when 5\%+ rock fragments cemented by carbonates within 100 cm.
 v0.8 proxy: caco3_pct >= 15 AND coarse_fragments_pct >= 5.
 }
+\keyword{internal}

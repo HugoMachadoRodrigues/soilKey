@@ -12,3 +12,4 @@ aquept_qualifying_usda(pedon)
 \description{
 Aquept Suborder qualifier
 }
+\keyword{internal}

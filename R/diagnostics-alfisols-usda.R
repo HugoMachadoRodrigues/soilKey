@@ -11,6 +11,7 @@
 #' Alfisol Order qualifier
 #' Pass when argillic OR kandic horizon present + BS >= 35\% in some part.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 alfisol_qualifying_usda <- function(pedon) {
   ar <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
@@ -41,6 +42,7 @@ alfisol_qualifying_usda <- function(pedon) {
 
 #' Aqualf Suborder qualifier (aquic conditions in argillic Alfisol).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aqualf_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -54,6 +56,7 @@ aqualf_qualifying_usda <- function(pedon) {
 #' is detected. v0.8 proxy: albic + argillic + lateral chroma <= 2
 #' on argillic boundary.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 glossic_subgroup_usda <- function(pedon) {
   al <- albic(pedon)
@@ -79,6 +82,7 @@ glossic_subgroup_usda <- function(pedon) {
 #' Ferric Subgroup helper (Ferrudalfs)
 #' Pass when iron-rich (fe_dcb_pct >= 4\%) horizon present in B.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 ferric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons

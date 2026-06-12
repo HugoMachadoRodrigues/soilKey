@@ -15,6 +15,9 @@ pisoplinthic(pedon, min_thickness = 15, min_plinthite_pct = 15)
 
 \item{min_plinthite_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
 designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%

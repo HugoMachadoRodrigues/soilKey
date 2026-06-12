@@ -14,3 +14,4 @@ salic_horizon_usda(pedon, max_top_cm = 100)
 \description{
 Salic horizon (USDA, delegates to WRB salic).
 }
+\keyword{internal}

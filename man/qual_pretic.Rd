@@ -12,3 +12,4 @@ qual_pretic(pedon)
 \description{
 Pretic qualifier (pt): pretic (pre-Columbian Amerindian dark earth) horizon.
 }
+\keyword{internal}

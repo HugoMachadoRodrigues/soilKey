@@ -28,3 +28,4 @@ a proxy. A more specific Sphagnum-fraction column is deferred.
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 9, p 190.
 }
+\keyword{internal}

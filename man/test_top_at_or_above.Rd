@@ -17,3 +17,4 @@ test_top_at_or_above(h, max_top_cm = 0, candidate_layers = NULL)
 Used to require surface contact (default top_cm <= 0, i.e., layer
 must reach the surface) or near-surface presence.
 }
+\keyword{internal}

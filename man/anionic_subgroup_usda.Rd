@@ -17,3 +17,4 @@ Pass when delta pH (KCl - water) is 0 or net positive in a 18+ cm
 layer within 125 cm. Indicates exchange complex dominated by
 positive-charge minerals (Fe/Al oxides).
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ qual_mollic(pedon)
 \description{
 Mollic qualifier (mo): mollic horizon.
 }
+\keyword{internal}

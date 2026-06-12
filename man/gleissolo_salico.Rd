@@ -12,3 +12,4 @@ gleissolo_salico(pedon)
 \description{
 Gleissolos Salicos (Cap 9): caracter salico em < 100 cm.
 }
+\keyword{internal}

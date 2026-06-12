@@ -13,6 +13,9 @@ hydragric(pedon, min_thickness = 20)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Hydragric horizon (WRB 2022): subsoil hydric horizon under anthraquic.
 v0.3.3 detects via designation pattern \code{Bg|Brg} immediately below

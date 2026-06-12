@@ -16,6 +16,7 @@
 #' nos 80 cm superficiais, OR \\>= 60 cm se \\>= 75\% volume tecido
 #' vegetal.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 organossolo <- function(pedon) {
   res <- horizonte_histico(pedon)
@@ -37,6 +38,7 @@ organossolo <- function(pedon) {
 #' imediatamente abaixo de A, (d) A chernozemico conjugado com
 #' carbonatico ou cálcico.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 neossolo <- function(pedon) {
   # v0.9.10: when `carater_fluvico` is TRUE, the apparent B-textural
@@ -104,6 +106,7 @@ neossolo <- function(pedon) {
 #' superficiais + fendas verticais + ausencia de contato litico /
 #' petrocalcico / duripa nos 30 cm + COLE \\>= 0.06.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 vertissolo <- function(pedon) {
   v <- horizonte_vertico(pedon)
@@ -154,6 +157,7 @@ vertissolo <- function(pedon) {
 #' dentro de 200 cm (ou 400 cm se A+E ou histico+E ultrapassam 200).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 espodossolo <- function(pedon, max_top_cm = 200) {
   res <- B_espodico(pedon)
@@ -185,6 +189,7 @@ espodossolo <- function(pedon, max_top_cm = 200) {
 #' Horizonte B planico nao coincidente com plintico (sem carater
 #' sodico), imediatamente abaixo de A ou E.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 planossolo <- function(pedon) {
   bp <- B_planico(pedon)
@@ -222,6 +227,7 @@ planossolo <- function(pedon) {
 #' Organossolo), sem horizonte plintico/concrecionario/litoplintico
 #' dentro de 200 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 gleissolo <- function(pedon) {
   g <- horizonte_glei(pedon)
@@ -267,6 +273,7 @@ gleissolo <- function(pedon) {
 #' (exceto histico), dentro de 200 cm (ou 300 se A > 150 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 latossolo <- function(pedon, max_top_cm = 200) {
   res <- B_latossolico(pedon)
@@ -301,6 +308,7 @@ latossolo <- function(pedon, max_top_cm = 200) {
 #' (c) Calcico OR carater carbonatico no A, seguido de contato
 #'     litico / fragmentario.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 chernossolo <- function(pedon) {
   ch <- horizonte_A_chernozemico(pedon)
@@ -348,6 +356,7 @@ chernossolo <- function(pedon) {
 #' com plintita/petroplintita (se presente) que NAO satisfaca aos
 #' requisitos para Plintossolos.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 cambissolo <- function(pedon) {
   bi <- B_incipiente(pedon)
@@ -386,6 +395,7 @@ cambissolo <- function(pedon) {
 #' dentro de 200 cm precedido de glei OR A/E OR horizonte com cores
 #' palidas / variegadas / mosqueados.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 plintossolo <- function(pedon) {
   pl <- horizonte_plintico(pedon)
@@ -437,6 +447,7 @@ plintossolo <- function(pedon) {
 #' alta (V \\>= 50\%) na maior parte dos primeiros 100 cm do B
 #' (incl. BA), abaixo de A ou E.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 luvissolo <- function(pedon) {
   bt <- B_textural(pedon)
@@ -468,6 +479,7 @@ luvissolo <- function(pedon) {
 #' do A, com argila ativ baixa OR ativ alta + carater alumínico, na
 #' maior parte dos primeiros 100 cm do B (incl. BA).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 nitossolo <- function(pedon) {
   bn <- B_nitico(pedon)
@@ -504,6 +516,7 @@ nitossolo <- function(pedon) {
 #' textural + (argila ativ baixa OR ativ alta + V baixa OR carater
 #' alumínico).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 argissolo <- function(pedon) {
   bt <- B_textural(pedon)

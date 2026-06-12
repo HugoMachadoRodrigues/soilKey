@@ -15,3 +15,4 @@ Plaggic-like) surface horizon directly over spodic / albic /
 diagnostic horizon." Combines \code{\link{anthric_horizons}} +
 overlying-spodic check.
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ alic_andisol_usda(pedon)
 Alic Subgroup helper (Andisols)
 Pass when al_kcl_cmol > 2.0 in a 10+ cm layer between 25 and 50 cm.
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ Pass when there is a "layer of water" within the control section.
 Detected via designation containing "W" (water layer) or
 \code{layer_origin == "water"}.
 }
+\keyword{internal}

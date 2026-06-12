@@ -6,6 +6,9 @@
 \usage{
 make_argissolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 B textural com gradiente significativo, argila ativ baixa ou
 alta + V baixa. Catch-all final na chave -- tipica do Brasil

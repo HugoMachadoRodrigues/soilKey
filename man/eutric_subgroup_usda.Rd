@@ -14,3 +14,4 @@ eutric_subgroup_usda(pedon)
 Eutric Subgroup helper (Andisols)
 Pass when base_saturation (sum-of-cations) >= 50\% in some part.
 }
+\keyword{internal}

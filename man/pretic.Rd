@@ -17,6 +17,9 @@ pretic(pedon, min_thickness = 20, min_oc = 1.5, min_p_mehlich3 = 30)
 
 \item{min_p_mehlich3}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Pretic horizon (WRB 2022): "Amazonian Dark Earth" (terra preta de
 indio) horizon -- thick anthropogenic surface with high P, SOC, and

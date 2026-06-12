@@ -16,3 +16,4 @@ walls) but NOT covering the full surface." Detection via
 \code{artefacts_urbic_pct} or \code{artefacts_industrial_pct}
 between 5 and 50\%.
 }
+\keyword{internal}

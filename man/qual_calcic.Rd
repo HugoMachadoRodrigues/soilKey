@@ -12,3 +12,4 @@ qual_calcic(pedon)
 \description{
 Calcic qualifier (cc): calcic horizon <= 100 cm.
 }
+\keyword{internal}

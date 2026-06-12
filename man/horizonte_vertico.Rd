@@ -17,3 +17,4 @@ criterios essencialmente identicos: clay \\>= 30\%, slickensides,
 fendas \\>= 1 cm, espessura \\>= 20 cm. v0.7 SiBCS additional gate:
 COLE \\>= 0.06 (proxy via shrink-swell).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ argic_subgroup_usda(pedon)
 Argic Subgroup helper (Endoaquods/Fragiaquods): argillic or kandic.
 Synonym of ultic at this level. Re-exported for naming clarity.
 }
+\keyword{internal}

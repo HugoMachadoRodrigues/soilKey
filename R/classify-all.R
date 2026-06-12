@@ -68,18 +68,12 @@
 #' @seealso \code{\link{classify_wrb2022}}, \code{\link{classify_sibcs}},
 #'   \code{\link{classify_usda}}.
 #' @examples
-#' \dontrun{
 #' pr <- make_ferralsol_canonical()
 #' all_three <- classify_all(pr)
 #' all_three$summary
-#' #>                              wrb                                       sibcs
-#' #> 1 Geric Ferric Rhodic Chromic ... Latossolos Vermelhos Distroficos tipicos...
-#' #>             usda
-#' #> 1 Rhodic Hapludox
 #'
 #' # WRB + USDA only (skip SiBCS):
 #' classify_all(pr, systems = c("wrb2022", "usda"))$summary
-#' }
 #' @export
 classify_all <- function(pedon,
                             systems        = "all",

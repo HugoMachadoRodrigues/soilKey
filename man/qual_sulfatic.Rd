@@ -14,3 +14,4 @@ qual_sulfatic(pedon)
 Sulfatic supplementary qualifier (su): high sulfate content
 WRB 2022 Ch 5: "Containing >= 25\% gypsum or >= 5\% sulfate by mass."
 }
+\keyword{internal}

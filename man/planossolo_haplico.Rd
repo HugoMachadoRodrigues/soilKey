@@ -12,3 +12,4 @@ planossolo_haplico(pedon)
 \description{
 Planossolos Haplicos (catch-all).
 }
+\keyword{internal}

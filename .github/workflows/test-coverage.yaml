@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      SOILKEY_SKIP_NETWORK: "true"
-      SOILKEY_SKIP_BENCHMARK: "true"
 
     steps:
       - uses: actions/checkout@v4

@@ -13,6 +13,7 @@
 #' Pass when a vertic horizon (clay >= 30, cracks, slickensides, LE)
 #' is present. Delegates to WRB \code{vertic_horizon}.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 vertisol_qualifying_usda <- function(pedon) {
   res <- vertic_horizon(pedon)
@@ -26,6 +27,7 @@ vertisol_qualifying_usda <- function(pedon) {
 #' Aquerts qualifier (Vertisols with aquic conditions)
 #' Pass when aquic_conditions within 50 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aquert_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -40,6 +42,7 @@ aquert_qualifying_usda <- function(pedon) {
 #' Wraps salic_horizon_usda. Used for Salaquerts/Salitorrerts/etc.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 salic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   res <- salic_horizon_usda(pedon, max_top_cm = max_top_cm)
@@ -52,6 +55,7 @@ salic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 
 #' Natric Subgroup helper for Natraquerts.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 natric_subgroup_usda <- function(pedon) {
   res <- natric_horizon(pedon)
@@ -66,6 +70,7 @@ natric_subgroup_usda <- function(pedon) {
 #' \code{max_top_cm}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 calcic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   res <- calcic_horizon_usda(pedon, max_top_cm = max_top_cm)
@@ -79,6 +84,7 @@ calcic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #' Gypsic Subgroup helper -- delegates to gypsic_horizon_usda.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 gypsic_subgroup_usda <- function(pedon, max_top_cm = 100) {
   res <- gypsic_horizon_usda(pedon, max_top_cm = max_top_cm)
@@ -92,6 +98,7 @@ gypsic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #' Dystric Subgroup helper (Vertisols Dystr*)
 #' Pass when BS (NH4OAc) < 50\% in some part of the upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 dystric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons

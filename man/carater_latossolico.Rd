@@ -31,3 +31,4 @@ das camadas com B textural (i.e., latossolico ocorre abaixo).
 Embrapa (2018), SiBCS 5a ed., Cap 5 (Argissolos),
             pp 121-138.
 }
+\keyword{internal}

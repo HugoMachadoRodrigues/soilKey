@@ -13,6 +13,9 @@ protovertic(pedon, min_clay = 30, min_thickness = 15)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 A weakly developed vertic horizon -- the swelling/shrinking
 machinery is present but does not reach the full vertic intensity

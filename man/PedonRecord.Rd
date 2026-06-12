@@ -3,6 +3,9 @@
 \name{PedonRecord}
 \alias{PedonRecord}
 \title{PedonRecord: structured representation of a single pedon}
+\value{
+An R6 object of class \code{PedonRecord}.
+}
 \description{
 PedonRecord: structured representation of a single pedon
 
@@ -22,6 +25,12 @@ All diagnostic functions (\code{\link{argic}}, \code{\link{ferralic}},
 provenance log is what allows the final
 \code{\link{ClassificationResult}} to assign a meaningful evidence
 grade.
+}
+\examples{
+# The canonical fixtures return ready-built PedonRecords:
+pedon <- make_ferralsol_canonical()
+pedon$site$id
+nrow(pedon$horizons)
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

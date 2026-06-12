@@ -12,3 +12,4 @@ qual_endoleptic(pedon)
 \description{
 Endoleptic supplementary qualifier (lle): rock contact 50-100 cm
 }
+\keyword{internal}

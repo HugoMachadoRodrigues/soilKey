@@ -17,3 +17,4 @@ equivalent within 100 cm of the soil surface."
 \details{
 Implementation: \code{caco3_pct} >= 80 in any layer with top <= 100.
 }
+\keyword{internal}

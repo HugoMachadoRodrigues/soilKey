@@ -14,3 +14,4 @@ Antropic surface formed by long human use; \\>= 20 cm + P Mehlich-1
 \\>= 30 mg/kg + evidencias antropogenicas. Reuso de \code{\link{hortic}}
 (WRB) com criterios SiBCS-specific.
 }
+\keyword{internal}

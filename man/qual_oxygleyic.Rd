@@ -14,3 +14,4 @@ WRB 2022 Ch 5 (Gleysols): "Gleyic properties dominated by oxidation
 (redox concentrations >> reductive depletions)." Heuristic: gleyic
 fires AND redoximorphic_features_pct >= 10 in upper 50 cm.
 }
+\keyword{internal}

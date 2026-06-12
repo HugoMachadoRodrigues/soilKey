@@ -12,3 +12,4 @@ qual_abruptic(pedon)
 \description{
 Abruptic qualifier (ap): abrupt textural difference within 100 cm.
 }
+\keyword{internal}

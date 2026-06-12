@@ -64,3 +64,9 @@ directly with a list of three results
 (\code{list(classify_wrb2022(p), classify_sibcs(p), classify_usda(p))})
 to get a cross-system one-pager.
 }
+\examples{
+pedon <- make_ferralsol_canonical()
+out <- file.path(tempdir(), "soilkey_report.html")
+report(pedon, file = out, pedon = pedon)
+file.exists(out)
+}

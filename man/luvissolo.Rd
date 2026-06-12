@@ -14,3 +14,4 @@ Horizonte B textural com argila ativ alta E saturacao por bases
 alta (V \\>= 50\%) na maior parte dos primeiros 100 cm do B
 (incl. BA), abaixo de A ou E.
 }
+\keyword{internal}

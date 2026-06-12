@@ -12,3 +12,4 @@ qual_pisoplinthic(pedon)
 \description{
 Pisoplinthic qualifier (px): pisoplinthic horizon within 100 cm.
 }
+\keyword{internal}

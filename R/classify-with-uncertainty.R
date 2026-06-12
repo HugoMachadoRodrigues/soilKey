@@ -46,9 +46,9 @@
 #'          \code{\link{get_perturbation_scale}},
 #'          \code{\link{compute_per_attribute_evidence_grade}}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' p <- make_ferralsol_canonical()
-#' u <- classify_with_uncertainty(p, n = 100, system = "wrb2022")
+#' u <- classify_with_uncertainty(p, n = 50, system = "wrb2022")
 #' u$posterior   # P(RSG = x)
 #' u$entropy     # near 0 for a robust profile
 #' }

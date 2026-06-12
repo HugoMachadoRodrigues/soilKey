@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.
 }
+\keyword{internal}

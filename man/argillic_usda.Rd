@@ -25,3 +25,4 @@ v0.8 will enforce against the \code{clay_films_amount} column.
 Soil Survey Staff (2014), Keys to Soil Taxonomy,
   Ch. 3 -- argillic horizon.
 }
+\keyword{internal}

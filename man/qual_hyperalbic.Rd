@@ -20,3 +20,4 @@ giant Podzols of tropical white-sand systems and the deepest
 Stagnosol / Planosol profiles). Non-contiguous albic layers
 separated by an illuvial Bs / Bt do NOT count toward the threshold.
 }
+\keyword{internal}

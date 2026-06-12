@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Cryic soil temperature regime (USDA)
 }
+\keyword{internal}

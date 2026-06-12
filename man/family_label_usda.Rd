@@ -18,3 +18,4 @@ Joins the non-NULL \code{value}s with ", " in canonical USDA order
 (particle-size, mineralogy, CEC-activity, reaction, temperature, depth).
 The string is meant to be PREPENDED to the subgroup name.
 }
+\keyword{internal}

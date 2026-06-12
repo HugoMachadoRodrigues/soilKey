@@ -12,3 +12,4 @@ qual_anthraquic(pedon)
 \description{
 Anthraquic qualifier (aq): anthraquic horizon (puddled-rice surface).
 }
+\keyword{internal}

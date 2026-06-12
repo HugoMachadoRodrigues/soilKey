@@ -14,3 +14,4 @@ albaquult_qualifying_usda(pedon)
 Albic-over-argillic qualifying (Albaquults)
 Pass when albic horizon overlies an argillic horizon directly.
 }
+\keyword{internal}

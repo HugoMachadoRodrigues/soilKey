@@ -14,3 +14,4 @@ calcic_horizon_usda(pedon, max_top_cm = 100)
 \description{
 Calcic horizon (USDA, delegates to WRB calcic).
 }
+\keyword{internal}

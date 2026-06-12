@@ -14,3 +14,4 @@ gypsic_horizon_usda(pedon, max_top_cm = 100)
 \description{
 Gypsic horizon (USDA, delegates to WRB gypsic).
 }
+\keyword{internal}

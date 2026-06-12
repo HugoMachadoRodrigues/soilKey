@@ -21,3 +21,4 @@ Pass when sulfidic materials (soft, dark, sulfide-rich) are
 present within \code{max_top_cm}. Proxy: sulfidic_s_pct >= 0.75
 AND in a layer >= 15 cm thick.
 }
+\keyword{internal}

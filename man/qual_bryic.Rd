@@ -14,3 +14,4 @@ WRB 2022 Ch 5: "Predominant bryophyte (moss / liverwort) ground
 cover." Implementation: \code{layer_origin} matches moss / lichen
 pattern OR \code{vegetation_cover} site field >= 50.
 }
+\keyword{internal}

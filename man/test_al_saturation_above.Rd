@@ -18,3 +18,4 @@ Default 50\% (Alisol RSG criterion). Uses \code{al_sat_pct} when
 reported; otherwise falls back to
 \code{al_cmol / (ca+mg+k+na+al)_cmol * 100}.
 }
+\keyword{internal}

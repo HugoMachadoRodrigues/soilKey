@@ -18,3 +18,4 @@ WRB 2022 Ch 5: "Strong differences (texture, mineralogy, color)
 between adjacent layers without abrupt textural transition (mild
 clay-increase 1.2-1.4x ratio)."
 }
+\keyword{internal}

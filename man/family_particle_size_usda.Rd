@@ -22,3 +22,4 @@ fragmental / *-skeletal (>= 35 percent rock fragments) / sandy / clayey
 \references{
 Soil Survey Staff (2022), Keys to Soil Taxonomy 13th ed., Ch. 17.
 }
+\keyword{internal}

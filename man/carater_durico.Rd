@@ -36,3 +36,4 @@ Acinzentados (Cap 5 PAC) e Latossolos com caracter durico
 Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 (Argissolos
             Acinzentados Distrocoesos abrupticos duricos), p 120.
 }
+\keyword{internal}

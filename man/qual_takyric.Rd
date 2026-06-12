@@ -12,3 +12,4 @@ qual_takyric(pedon)
 \description{
 Takyric qualifier (ty): takyric properties in upper 50 cm.
 }
+\keyword{internal}

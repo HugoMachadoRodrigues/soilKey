@@ -17,3 +17,4 @@ test_duripan_concentration(h, min_pct = 10, candidate_layers = NULL)
 Default 10\% per WRB 2022 Ch 3.1.7 (Duric horizon, p. 41).
 v0.3.1 reduced default from 15\% to 10\% to match the canonical text.
 }
+\keyword{internal}

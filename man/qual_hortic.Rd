@@ -12,3 +12,4 @@ qual_hortic(pedon)
 \description{
 Hortic qualifier (ht): hortic horizon (long-cultivated dark surface).
 }
+\keyword{internal}

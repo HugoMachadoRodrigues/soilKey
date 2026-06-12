@@ -12,3 +12,4 @@ argissolo_vermelho_amarelo(pedon)
 \description{
 Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
 }
+\keyword{internal}

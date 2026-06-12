@@ -12,3 +12,4 @@ qual_puffic(pedon)
 \description{
 Puffic supplementary qualifier (pf): puffed surface
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ qual_stagnic(pedon)
 \description{
 Stagnic qualifier (st): stagnic properties <= 75 cm.
 }
+\keyword{internal}

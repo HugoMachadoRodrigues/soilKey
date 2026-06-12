@@ -16,3 +16,4 @@ Turbic qualifier (tb): cryoturbation features within 100 cm. v0.9.1
 proxy: cryic conditions + designation pattern (\code{turb|jj|cryot})
 OR slickensides "common"/"many" in a cryic profile.
 }
+\keyword{internal}

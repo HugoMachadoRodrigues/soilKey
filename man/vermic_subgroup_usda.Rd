@@ -16,3 +16,4 @@ Vermic Subgroup helper (Vermudolls / Vermustolls)
 Pass when worm_holes_pct >= 50\% in some horizon (KST 13ed worm
 burrow criterion).
 }
+\keyword{internal}

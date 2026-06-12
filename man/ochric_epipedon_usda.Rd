@@ -34,3 +34,4 @@ profile has at least one surface A horizon.
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, p 17.
 }
+\keyword{internal}

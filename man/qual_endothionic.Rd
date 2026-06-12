@@ -12,3 +12,4 @@ qual_endothionic(pedon)
 \description{
 Endothionic supplementary qualifier (etn): thionic at depth >= 50 cm
 }
+\keyword{internal}

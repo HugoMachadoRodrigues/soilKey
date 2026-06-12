@@ -14,3 +14,4 @@ plintossolo_argiluvico(pedon)
 Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural OR
 carater argiluvico.
 }
+\keyword{internal}

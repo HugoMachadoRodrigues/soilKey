@@ -128,6 +128,7 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
 #'   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
 #'   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
+#' @keywords internal
 #' @export
 test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
   system <- match.arg(system)
@@ -246,6 +247,7 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
 #' @param min_cm Minimum thickness in cm.
 #' @param candidate_layers Integer vector of horizon indices to test.
 #'                         If NULL, all layers are tested.
+#' @keywords internal
 #' @export
 test_minimum_thickness <- function(h, min_cm = 7.5, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -289,6 +291,7 @@ test_minimum_thickness <- function(h, min_cm = 7.5, candidate_layers = NULL) {
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_texture_argic <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -386,6 +389,7 @@ test_not_albeluvic <- function(h) {
 #' @param h Numeric threshold or option (see Details).
 #' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
                                 candidate_layers = NULL) {
@@ -457,6 +461,7 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
 #' @param h Numeric threshold or option (see Details).
 #' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_ecec_per_clay <- function(h, max_cmol_per_kg_clay = 12,
                                  candidate_layers = NULL) {
@@ -507,6 +512,7 @@ test_ecec_per_clay <- function(h, max_cmol_per_kg_clay = 12,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_cm Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
   test_minimum_thickness(h, min_cm = min_cm,
@@ -538,6 +544,7 @@ test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_ferralic_texture <- function(h, candidate_layers = NULL) {
   res <- test_texture_argic(h, candidate_layers = candidate_layers)
@@ -590,6 +597,7 @@ test_ferralic_texture <- function(h, candidate_layers = NULL) {
 #' @param allow_oc_inference If \code{TRUE} (default), accept OC \\>=
 #'        1.5 \% in a surface A horizon as evidence of dark colour
 #'        when both moist and dry Munsell are missing.
+#' @keywords internal
 #' @export
 test_mollic_color <- function(h,
                                 max_value_moist  = 3,
@@ -696,6 +704,7 @@ test_mollic_color <- function(h,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_mollic_organic_carbon <- function(h, min_pct = 0.6,
                                          candidate_layers = NULL) {
@@ -737,6 +746,7 @@ test_mollic_organic_carbon <- function(h, min_pct = 0.6,
 #' @param allow_inference If \code{TRUE} (default), fall back to
 #'        sum-of-cations / CEC arithmetic OR \code{al_sat_pct < 20}
 #'        OR \code{ph_h2o >= 5.8} when \code{bs_pct} is missing.
+#' @keywords internal
 #' @export
 test_mollic_base_saturation <- function(h, min_pct = 50,
                                           candidate_layers = NULL,
@@ -838,6 +848,7 @@ test_mollic_base_saturation <- function(h, min_pct = 50,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_cm Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_mollic_thickness <- function(h, min_cm = 20, candidate_layers = NULL) {
   test_minimum_thickness(h, min_cm = min_cm,
@@ -852,6 +863,7 @@ test_mollic_thickness <- function(h, min_cm = 20, candidate_layers = NULL) {
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_mollic_structure <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -904,6 +916,7 @@ test_mollic_structure <- function(h, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_caco3_concentration <- function(h, min_pct = 15,
                                        candidate_layers = NULL) {
@@ -938,6 +951,7 @@ test_caco3_concentration <- function(h, min_pct = 15,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_caso4_concentration <- function(h, min_pct = 5,
                                        candidate_layers = NULL) {
@@ -972,6 +986,7 @@ test_caso4_concentration <- function(h, min_pct = 5,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_plinthite_concentration <- function(h, min_pct = 15,
                                            candidate_layers = NULL) {
@@ -1006,6 +1021,7 @@ test_plinthite_concentration <- function(h, min_pct = 15,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_spodic_aluminum_iron <- function(h, min_pct = 0.5,
                                         candidate_layers = NULL) {
@@ -1043,6 +1059,7 @@ test_spodic_aluminum_iron <- function(h, min_pct = 0.5,
 #' @param h Numeric threshold or option (see Details).
 #' @param max_ph Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1113,6 +1130,7 @@ test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
 #' @param candidate_layers Numeric threshold or option (see Details).
 #' @param max_chroma Numeric threshold; gleyic-hue path requires
 #'        \code{munsell_chroma_moist <= max_chroma} (default 2).
+#' @keywords internal
 #' @export
 test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
                                    candidate_layers = NULL,
@@ -1173,6 +1191,7 @@ test_gleyic_features <- function(h, max_top_cm = 50, min_redox_pct = 5,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_clay_above <- function(h, min_pct = 30, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1207,6 +1226,7 @@ test_clay_above <- function(h, min_pct = 30, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param levels Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_slickensides_present <- function(h,
                                         levels = c("common", "many",
@@ -1253,6 +1273,7 @@ test_slickensides_present <- function(h,
 #' @param alkaline_min_pH Required pH(H2O) for the alkaline path
 #'        (default 8.5; only used when \code{alkaline_min_dS_m} is set).
 #' @param candidate_layers Optional layer index restriction.
+#' @keywords internal
 #' @export
 test_ec_concentration <- function(h, min_dS_m = 15,
                                     alkaline_min_dS_m = NA_real_,
@@ -1321,6 +1342,7 @@ test_ec_concentration <- function(h, min_dS_m = 15,
 #'        \code{test_ec_concentration(...)\\$details}.
 #' @param candidate_layers Layer index restriction (typically the layers
 #'        that already passed the primary EC gate).
+#' @keywords internal
 #' @export
 test_salic_product <- function(h, min_product = 450,
                                 alkaline_min_product = 240,
@@ -1387,6 +1409,7 @@ compute_al_saturation <- function(ca, mg, k, na, al) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
                                        candidate_layers = NULL) {
@@ -1423,6 +1446,7 @@ test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_bs_above <- function(h, min_pct = 50, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1455,6 +1479,7 @@ test_bs_above <- function(h, min_pct = 50, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param max_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_bs_below <- function(h, max_pct = 50, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1489,6 +1514,7 @@ test_bs_below <- function(h, max_pct = 50, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_al_saturation_above <- function(h, min_pct = 50,
                                        candidate_layers = NULL) {
@@ -1529,6 +1555,7 @@ test_al_saturation_above <- function(h, min_pct = 50,
 #' @param h Numeric threshold or option (see Details).
 #' @param max_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_al_saturation_below <- function(h, max_pct = 50,
                                        candidate_layers = NULL) {
@@ -1571,6 +1598,7 @@ test_al_saturation_below <- function(h, max_pct = 50,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_carbonates_present <- function(h, min_pct = 0.01,
                                       candidate_layers = NULL) {
@@ -1606,6 +1634,7 @@ test_carbonates_present <- function(h, min_pct = 0.01,
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param max_chroma Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
                                   candidate_layers = NULL) {
@@ -1642,6 +1671,7 @@ test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1675,6 +1705,7 @@ test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_top_at_or_above <- function(h, max_top_cm = 0,
                                     candidate_layers = NULL) {
@@ -1711,6 +1742,7 @@ test_top_at_or_above <- function(h, max_top_cm = 0,
 #' @param pattern A regex (case-insensitive).
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_designation_pattern <- function(h, pattern,
                                        candidate_layers = NULL) {
@@ -1747,6 +1779,7 @@ test_designation_pattern <- function(h, pattern,
 #' @param h Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_coarse_texture_throughout <- function(h, max_top_cm = 100,
                                               candidate_layers = NULL) {
@@ -1798,6 +1831,7 @@ test_coarse_texture_throughout <- function(h, max_top_cm = 100,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_andic_alfe <- function(h, min_pct = 2.0, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -1833,6 +1867,7 @@ test_andic_alfe <- function(h, min_pct = 2.0, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param max_g_cm3 Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
                                        candidate_layers = NULL) {
@@ -1867,6 +1902,7 @@ test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
                                             candidate_layers = NULL) {
@@ -1902,6 +1938,7 @@ test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_duripan_concentration <- function(h, min_pct = 10,
                                           candidate_layers = NULL) {
@@ -1939,6 +1976,7 @@ test_duripan_concentration <- function(h, min_pct = 10,
 #' @param h Numeric threshold or option (see Details).
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param min_clay_swing Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_fluvic_stratification <- function(h, max_top_cm = 100,
                                           min_clay_swing = 8) {
@@ -2011,6 +2049,7 @@ compute_esp <- function(na_cmol, cec_cmol) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_esp_above <- function(h, min_pct = 15, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -2045,6 +2084,7 @@ test_esp_above <- function(h, min_pct = 15, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_fe_dcb_above <- function(h, min_pct = 4, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -2079,6 +2119,7 @@ test_fe_dcb_above <- function(h, min_pct = 4, candidate_layers = NULL) {
 #' @param h Numeric threshold or option (see Details).
 #' @param min_ratio Numeric threshold or option (see Details).
 #' @param require_abrupt_boundary Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_abrupt_textural_change <- function(h, min_ratio = 2.0,
                                           require_abrupt_boundary = TRUE) {
@@ -2135,6 +2176,7 @@ test_abrupt_textural_change <- function(h, min_ratio = 2.0,
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @param min_redox_pct Numeric threshold or option (see Details).
 #' @param decay_factor Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 test_stagnic_pattern <- function(h, max_top_cm = 100, min_redox_pct = 5,
                                     decay_factor = 3) {

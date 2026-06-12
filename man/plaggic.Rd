@@ -24,6 +24,9 @@ plaggic(
 
 \item{min_p_mehlich3}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 v0.9.2.C tightening: the v0.3.3 implementation accepted ANY thick,
 low-BD, OC-rich A horizon, which over-fired across natural mollic /

@@ -15,3 +15,4 @@ horizonte_sulfurico(pedon, ...)
 Reuso de \code{\link{thionic}} (WRB v0.3.3): pH \\<= 3.5 + sulfidic
 material + espessura \\>= 15 cm.
 }
+\keyword{internal}

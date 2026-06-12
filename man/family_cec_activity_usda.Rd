@@ -21,3 +21,4 @@ semiactive (0.24--0.40), subactive (< 0.24). Skipped for clay < 10 percent.
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 17.
 }
+\keyword{internal}

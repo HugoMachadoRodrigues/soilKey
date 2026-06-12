@@ -12,3 +12,4 @@ qual_endogypsic(pedon)
 \description{
 Endogypsic supplementary qualifier: gypsic horizon at depth >= 50 cm
 }
+\keyword{internal}

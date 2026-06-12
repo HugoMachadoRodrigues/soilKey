@@ -22,3 +22,4 @@ Default accepted levels are \code{c("common", "many", "continuous")}
 (vertic features, WRB 2022). The \code{slickensides} column accepts
 \code{c("absent", "few", "common", "many", "continuous")}.
 }
+\keyword{internal}

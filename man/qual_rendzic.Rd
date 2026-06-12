@@ -16,3 +16,4 @@ Rendzic qualifier (rz): mollic horizon directly over calcaric material
 (or limestone), shallow. Defined as Mollic + (Calcaric OR continuous
 rock with carbonate parent material).
 }
+\keyword{internal}

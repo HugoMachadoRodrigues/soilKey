@@ -13,3 +13,4 @@ argissolo_amarelo(pedon)
 Matiz \\>= 7.5YR (mais amarelo) na maior parte do B, sem ser
 Acinzentado (croma \\>= 4).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ qual_hyperartefactic(pedon)
 Hyperartefactic qualifier (yr): >= 80\% artefacts (any type) in the
 upper 100 cm.
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ Reductic qualifier (rd): permanently reducing conditions caused by
 anthropogenic gas / liquid emissions (typical of Technosols on
 landfills). v0.9.1: reducing_conditions + Technic context.
 }
+\keyword{internal}

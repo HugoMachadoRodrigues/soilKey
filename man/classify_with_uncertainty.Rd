@@ -56,9 +56,9 @@ close the profile sits to a key boundary, but how trustworthy the
 inputs that placed it there actually are.
 }
 \examples{
-\dontrun{
+\donttest{
 p <- make_ferralsol_canonical()
-u <- classify_with_uncertainty(p, n = 100, system = "wrb2022")
+u <- classify_with_uncertainty(p, n = 50, system = "wrb2022")
 u$posterior   # P(RSG = x)
 u$entropy     # near 0 for a robust profile
 }

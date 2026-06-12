@@ -17,3 +17,4 @@ Implementation: textual flag in \code{vesicular_pores} (BDsolos:
 "hidrofóbico", "water repellent") OR a \code{water_repellence}
 field if the loader supplies it.
 }
+\keyword{internal}

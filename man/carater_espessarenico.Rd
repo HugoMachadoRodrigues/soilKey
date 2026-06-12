@@ -31,3 +31,4 @@ boundary em [100, 200] cm. Variante "espessa" do
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, pp 130-131.
 }
+\keyword{internal}

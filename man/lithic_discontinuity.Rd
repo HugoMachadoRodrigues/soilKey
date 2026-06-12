@@ -9,6 +9,9 @@ lithic_discontinuity(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Significant abrupt change in parent material between two layers.
 v0.3.3 simplified: detects via large discontinuity in

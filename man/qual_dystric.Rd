@@ -14,3 +14,4 @@ qual_dystric(pedon)
 Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
 50\% from 20 to 100 cm in mineral material.
 }
+\keyword{internal}

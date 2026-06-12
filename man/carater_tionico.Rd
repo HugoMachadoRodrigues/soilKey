@@ -26,3 +26,4 @@ tionicos de Gleissolos (Cap 9 GZsd, GMtal, GMtd, GXte) -- variante
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 9, pp 180-191.
 }
+\keyword{internal}

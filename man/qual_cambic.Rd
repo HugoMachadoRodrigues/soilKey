@@ -12,3 +12,4 @@ qual_cambic(pedon)
 \description{
 Cambic qualifier (cm): cambic horizon <= 50 cm.
 }
+\keyword{internal}

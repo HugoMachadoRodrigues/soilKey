@@ -14,3 +14,4 @@ qual_grumic(pedon)
 Grumic qualifier (gr): strong fine granular surface horizon
 (self-mulching Vertisol).
 }
+\keyword{internal}

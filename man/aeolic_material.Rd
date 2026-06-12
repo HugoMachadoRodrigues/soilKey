@@ -9,6 +9,9 @@ aeolic_material(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Wind-deposited material in the upper 20 cm: rounded matt-surfaced sand
 grains OR aeroturbation features, AND < 1\% SOC in the upper 10 cm.

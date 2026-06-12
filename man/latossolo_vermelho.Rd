@@ -12,3 +12,4 @@ latossolo_vermelho(pedon)
 \description{
 Latossolos Vermelhos (Cap 10): matiz \\<= 2.5YR (mais vermelho).
 }
+\keyword{internal}

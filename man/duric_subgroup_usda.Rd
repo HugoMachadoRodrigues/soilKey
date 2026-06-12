@@ -19,3 +19,4 @@ Pass when a pedogenically cemented horizon (extremely weakly
 coherent or stronger) is present in 90\%+ of the pedon within
 100 cm. v0.8 proxy: any horizon with cementation_class >= "weakly".
 }
+\keyword{internal}

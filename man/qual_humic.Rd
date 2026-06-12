@@ -12,3 +12,4 @@ qual_humic(pedon)
 \description{
 Humic qualifier (hu): >= 1\% SOC in upper 50 cm (weighted average).
 }
+\keyword{internal}

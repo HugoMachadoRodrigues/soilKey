@@ -17,3 +17,4 @@ Pass when an albic horizon (light-colored, eluvial; chroma <= 2,
 value >= 4) >= 1 cm thick is present. Delegates to WRB albic
 diagnostic.
 }
+\keyword{internal}

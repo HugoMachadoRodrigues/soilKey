@@ -16,3 +16,4 @@ petrocalcic_subgroup_usda(pedon, max_top_cm = 100)
 Petrocalcic Subgroup helper (Aridisols Petrocalcids)
 Cemented calcic horizon with cementation_class >= "strongly".
 }
+\keyword{internal}

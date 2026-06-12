@@ -16,3 +16,4 @@ test_ferralic_thickness(h, min_cm = 30, candidate_layers = NULL)
 \description{
 Wraps \code{\link{test_minimum_thickness}}.
 }
+\keyword{internal}

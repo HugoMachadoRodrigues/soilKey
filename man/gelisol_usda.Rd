@@ -13,3 +13,4 @@ gelisol_usda(pedon)
 Order-level gate: cryic_conditions diagnostic from WRB delegated +
 optional permafrost_temp_C if available.
 }
+\keyword{internal}

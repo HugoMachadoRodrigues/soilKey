@@ -14,3 +14,4 @@ alfisol_qualifying_usda(pedon)
 Alfisol Order qualifier
 Pass when argillic OR kandic horizon present + BS >= 35\% in some part.
 }
+\keyword{internal}

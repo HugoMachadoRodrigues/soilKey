@@ -220,24 +220,14 @@ reference:
       - chernozem_strict
       - kastanozem_strict
 
-  - title: "WRB 2022 -- qualifiers and specifiers (Ch 4--6)"
+  - title: "SiBCS 5ª ed. -- horizontes B diagnósticos (Cap 2)"
     desc: >
-      Resolved by the rule-engine in canonical Ch 4 order; the
-      sub-qualifier suppression machinery (Hyper- / Hypo- / Proto-)
-      and the specifier prefix dispatch (Ano- / Epi- / Endo- /
-      Bathy- / Panto- / Kato- / Amphi- / Poly- / Supra- / Thapto-)
-      run inside `classify_wrb2022()`.
+      Os gates de horizonte B públicos. As demais gates da chave SiBCS
+      (carater_*, horizonte_*, atributos, qualifiers WRB, e os
+      dispatchers por Ordem) são o motor determinístico interno,
+      despachado por `classify_sibcs()` / `classify_wrb2022()`; veja a
+      seção "Internal -- motor taxonômico" no fim da referência.
     contents:
-      - matches("^qual_")
-
-  - title: "SiBCS 5ª ed. -- atributos diagnósticos (Cap 1)"
-    contents:
-      - matches("^carater_")
-      - matches("^atividade_")
-
-  - title: "SiBCS 5ª ed. -- horizontes diagnósticos (Cap 2)"
-    contents:
-      - matches("^horizonte_")
       - B_textural
       - B_latossolico
       - B_nitico
@@ -245,28 +235,20 @@ reference:
       - B_incipiente
       - B_planico
 
-  - title: "SiBCS 5ª ed. -- chave (1º--4º níveis, Caps 3--17)"
-    desc: >
-      Per-Ordem dispatchers walk Subordem -> Grande Grupo ->
-      Subgrupo. Triggered by `classify_sibcs(pedon)`.
-    contents:
-      - matches("^(latossolo|argissolo|cambissolo|chernossolo|espodossolo|gleissolo|luvissolo|neossolo|nitossolo|organossolo|planossolo|plintossolo|vertissolo)")
-
   - title: "SiBCS 5ª ed. -- Família (5º nível, Cap 18)"
     desc: >
-      15 dimensões adjectivais ortogonais (grupamento textural,
-      mineralogia, atividade da argila, óxidos, ândico, ...).
+      O 5º nível categórico (família), via
+      `classify_sibcs(include_familia = TRUE)`.
     contents:
-      - matches("^familia_")
       - classify_sibcs_familia
 
-  - title: "USDA Soil Taxonomy 13ed -- Path C (Order -> Subgroup) + Family"
+  - title: "USDA Soil Taxonomy 13ed -- Família (5º nível)"
     desc: >
-      Per-Order subgroup dispatchers, plus the 5th-level family modifiers
-      (particle-size, mineralogy, CEC-activity, reaction, temperature, depth).
-      Triggered by `classify_usda(pedon, include_family = TRUE)`.
+      Os modificadores de família (particle-size, mineralogy, CEC-activity,
+      reaction, temperature, depth) via
+      `classify_usda(pedon, include_family = TRUE)`. Os gates de
+      Ordem -> Subgrupo são internos (veja "Internal").
     contents:
-      - matches("_usda$")
       - classify_usda_family
 
   - title: "Module 2 -- VLM extraction"
@@ -347,17 +329,13 @@ reference:
   - title: "Helpers and miscellaneous"
     contents:
       - matches("^run_")
-      - matches("^test_")
       - matches("^compute_")
-      - matches("^contato_")
       - matches("^load_")
       - matches("^apply_")
       - matches("^format_")
       - matches("^validate_")
       - matches("^strip_")
       - matches("^as_chat_")
-      - matches("_predominant_usda$")
-      - matches("_horizon_usda$")
       - matches("_features$")
       - matches("_properties$")
       - "%||%"
@@ -588,6 +566,17 @@ reference:
       - pedon_to_spc
       - pedon_json_schema
       - texture_class_from_pct
+
+  - title: "Internal -- motor taxonômico"
+    desc: >
+      Os preditores atômicos do motor determinístico -- qualifiers WRB
+      (`qual_*`), gates de Subgrupo/Grande-Grupo USDA (`*_usda`), atributos
+      e horizontes diagnósticos SiBCS (`carater_*`, `horizonte_*`), e os
+      dispatchers por Ordem. Continuam exportados e chamáveis, mas são
+      despachados por nome pela chave (`classify_*`); não fazem parte da
+      API pública curada.
+    contents:
+      - has_keyword("internal")
 
 articles:
   - title: "Vignettes"

@@ -23,3 +23,4 @@ test_artefacts_concentration(
 \description{
 Default 20\% by volume (Technosols criterion, WRB 2022).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ qual_eutrosilic(pedon)
 Eutrosilic qualifier (es): silandic + base saturation >= 50\% in some
 layer of the silandic part within 100 cm.
 }
+\keyword{internal}

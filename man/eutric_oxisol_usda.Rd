@@ -14,3 +14,4 @@ eutric_oxisol_usda(pedon)
 Eutric Oxisol Suborder helper (Eutroperox/Eutrudox/etc.)
 Pass when BS (NH4OAc) >= 35\% in all layers within 125 cm.
 }
+\keyword{internal}

@@ -13,6 +13,9 @@ limonic(pedon, min_thickness = 5, min_redox_pct = 5)
 
 \item{min_redox_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 From Greek \emph{leimon} = meadow. A subaqueous / wet-meadow horizon
 showing accumulation of secondary Fe/Mn (oxi)hydroxides from

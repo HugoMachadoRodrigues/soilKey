@@ -17,3 +17,4 @@ test_bs_above(h, min_pct = 50, candidate_layers = NULL)
 Default 50\% (Lixisol / Luvisol RSG criterion). Reads
 \code{bs_pct} directly.
 }
+\keyword{internal}

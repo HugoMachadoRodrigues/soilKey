@@ -12,3 +12,4 @@ qual_luvic(pedon)
 \description{
 Luvic qualifier (lv): argic + high CEC, low Al saturation.
 }
+\keyword{internal}

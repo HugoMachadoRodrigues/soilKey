@@ -28,3 +28,4 @@ filtra layers para top em [\code{min_depth_cm}, \code{max_depth_cm}].
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, pp 127, 132.
 }
+\keyword{internal}

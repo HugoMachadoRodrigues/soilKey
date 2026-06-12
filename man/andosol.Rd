@@ -28,6 +28,9 @@ buried and do NOT exclude the Andosol (default 50, per WRB
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} disables the buried-exclusion tolerance.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 WRB-canonical: layer(s) with \emph{andic} OR \emph{vitric}
 properties, combined thickness \\>= 30 cm within 100 cm starting

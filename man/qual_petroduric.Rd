@@ -12,3 +12,4 @@ qual_petroduric(pedon)
 \description{
 Petroduric qualifier (pd): petroduric horizon <= 100 cm.
 }
+\keyword{internal}

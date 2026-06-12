@@ -15,3 +15,4 @@ subjacente a A/E ou H histico (com espessura insuficiente para
 Organossolo), sem horizonte plintico/concrecionario/litoplintico
 dentro de 200 cm.
 }
+\keyword{internal}

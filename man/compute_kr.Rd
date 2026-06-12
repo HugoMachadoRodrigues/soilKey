@@ -25,6 +25,9 @@ molares 60.08 (SiO2), 101.96 (Al2O3) e 159.69 (Fe2O3):
 Kr (molar) = (\% SiO2 / 60.08) /
                (\% Al2O3 / 101.96 + \% Fe2O3 / 159.69)
 }
+\examples{
+compute_kr(sio2_pct = 18, al2o3_pct = 20, fe2o3_pct = 12)
+}
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 32.
 }

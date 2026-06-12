@@ -12,3 +12,4 @@ qual_hydragric(pedon)
 \description{
 Hydragric qualifier (hg): hydragric horizon (puddled-rice subsurface).
 }
+\keyword{internal}

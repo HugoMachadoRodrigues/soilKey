@@ -15,3 +15,4 @@ Solos pouco evoluidos: SEM horizonte B diagnostico + ausencia de:
 imediatamente abaixo de A, (d) A chernozemico conjugado com
 carbonatico ou cálcico.
 }
+\keyword{internal}

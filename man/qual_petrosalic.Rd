@@ -18,3 +18,4 @@ salic + extreme dry consistence (cemented).
 Audit list typo "etrosalic" -> Petrosalic; this function carries
 the canonical name.
 }
+\keyword{internal}

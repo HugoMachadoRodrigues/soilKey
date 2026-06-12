@@ -16,3 +16,4 @@ eutric_inceptisol_usda(pedon, min_bs = 60)
 Eutric Inceptisol Suborder helper (Eutrudepts)
 Pass when BS (NH4OAc) >= 60\% in some part of upper 75 cm.
 }
+\keyword{internal}

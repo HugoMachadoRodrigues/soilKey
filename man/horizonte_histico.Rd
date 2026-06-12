@@ -21,3 +21,4 @@ Horizonte O ou H de coloracao preta/cinza muito escura/brunada,
         camada com \\>= 90\% material > 2 mm.
 }
 }
+\keyword{internal}

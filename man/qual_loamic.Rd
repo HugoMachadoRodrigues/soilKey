@@ -12,3 +12,4 @@ qual_loamic(pedon)
 \description{
 Loamic qualifier (lo): loam-class texture >= 30 cm in the upper 100 cm.
 }
+\keyword{internal}

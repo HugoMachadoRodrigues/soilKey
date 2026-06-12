@@ -6,6 +6,9 @@
 \usage{
 make_luvissolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo com B textural argila Ta + V alta. Tipico do semiarido com
 rocha basica.

@@ -20,6 +20,9 @@ vitric_properties(
 
 \item{min_p_retention}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Volcanic glass \\>= 5\% in 0.02-2 mm fraction, Al_ox + 1/2 Fe_ox \\>=
 0.4\%, phosphate retention \\>= 25\%.

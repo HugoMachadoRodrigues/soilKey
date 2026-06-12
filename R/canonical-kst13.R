@@ -73,6 +73,7 @@
 #'
 #' Useful when the vendored JSON files are updated mid-session.
 #' Frees ~3.1 MB.
+#' @return \code{NULL}, invisibly. Called for its side effect of emptying the KST 13th-edition lookup cache.
 #' @export
 clear_kst13_cache <- function() {
   rm(list = ls(envir = .KST13_CACHE, all.names = TRUE),

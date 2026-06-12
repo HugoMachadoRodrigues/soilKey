@@ -14,3 +14,4 @@ qual_technic(pedon)
 Technic qualifier (tc): >= 20\% artefacts in upper 100 cm OR equivalent
 geomembrane / technic-hard cover.
 }
+\keyword{internal}

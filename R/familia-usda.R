@@ -29,6 +29,7 @@
 #' @param min_cm,max_cm Control-section depth window (cm).
 #' @return A \code{\link{FamilyAttribute}} (\code{value} is the class or NULL).
 #' @references Soil Survey Staff (2022), Keys to Soil Taxonomy 13th ed., Ch. 17.
+#' @keywords internal
 #' @export
 family_particle_size_usda <- function(pedon, min_cm = 25, max_cm = 100) {
   h    <- pedon$horizons
@@ -82,6 +83,7 @@ family_particle_size_usda <- function(pedon, min_cm = 25, max_cm = 100) {
 #' @param min_cm,max_cm Control-section depth window (cm).
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
+#' @keywords internal
 #' @export
 family_mineralogy_usda <- function(pedon, min_cm = 25, max_cm = 100) {
   h    <- pedon$horizons
@@ -130,6 +132,7 @@ family_mineralogy_usda <- function(pedon, min_cm = 25, max_cm = 100) {
 #' @param min_cm,max_cm Control-section depth window (cm).
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
+#' @keywords internal
 #' @export
 family_cec_activity_usda <- function(pedon, min_cm = 25, max_cm = 100) {
   h    <- pedon$horizons
@@ -171,6 +174,7 @@ family_cec_activity_usda <- function(pedon, min_cm = 25, max_cm = 100) {
 #' @param min_cm,max_cm Control-section depth window (cm).
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
+#' @keywords internal
 #' @export
 family_reaction_usda <- function(pedon, min_cm = 25, max_cm = 100) {
   h     <- pedon$horizons
@@ -198,6 +202,7 @@ family_reaction_usda <- function(pedon, min_cm = 25, max_cm = 100) {
 #' @param infer Infer from lat/elevation when the site field is absent.
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 16.
+#' @keywords internal
 #' @export
 family_temperature_regime_usda <- function(pedon, infer = TRUE) {
   ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 16"
@@ -243,6 +248,7 @@ family_temperature_regime_usda <- function(pedon, infer = TRUE) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
+#' @keywords internal
 #' @export
 family_depth_class_usda <- function(pedon) {
   h   <- pedon$horizons
@@ -321,6 +327,7 @@ classify_usda_family <- function(pedon, order_code = NULL,
 #' @param family Named list of \code{\link{FamilyAttribute}}, the return of
 #'        \code{\link{classify_usda_family}}.
 #' @return Single string (possibly empty).
+#' @keywords internal
 #' @export
 family_label_usda <- function(family) {
   order <- c("particle_size", "mineralogy", "cec_activity", "reaction",

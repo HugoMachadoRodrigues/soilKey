@@ -12,3 +12,4 @@ qual_solimovic(pedon)
 \description{
 Solimovic qualifier (sv): solimovic material (mass-movement deposits).
 }
+\keyword{internal}

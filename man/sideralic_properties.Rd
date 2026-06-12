@@ -13,6 +13,9 @@ sideralic_properties(pedon, max_cec_per_clay = 24, max_bulk_cec = 2)
 
 \item{max_bulk_cec}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Mineral material with low CEC: clay >= 8\% AND CEC/clay < 24, OR
 bulk CEC < 2 cmol_c/kg soil. Plus evidence of soil formation

@@ -42,3 +42,4 @@ Classes (em g kg-1; referidas a media ponderada da secao de controle):
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 18, p. 283.
 }
+\keyword{internal}

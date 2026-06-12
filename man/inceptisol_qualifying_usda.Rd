@@ -16,3 +16,4 @@ Inceptisol Order qualifier
 Pass when a cambic horizon is present (no argillic, no spodic,
 no mollic, etc. -- enforced by prior order exclusion).
 }
+\keyword{internal}

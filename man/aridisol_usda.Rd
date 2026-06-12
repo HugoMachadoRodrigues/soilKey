@@ -18,3 +18,4 @@ subsurface diagnostic. v0.8 simplification: detected via aridity
 proxies (low EC OR salic OR caracter combinations) + non-mollic
 surface + low OC (no organic accumulation).
 }
+\keyword{internal}

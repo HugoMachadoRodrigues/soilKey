@@ -12,3 +12,4 @@ qual_petrogypsic(pedon)
 \description{
 Petrogypsic qualifier (pg): petrogypsic horizon <= 100 cm.
 }
+\keyword{internal}

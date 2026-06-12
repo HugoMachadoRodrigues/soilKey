@@ -23,3 +23,4 @@ indirect criteria before failing:
 The fallback only fires when the direct measurement is missing, so
 lab-grade profiles always use the canonical KST 13ed gate.
 }
+\keyword{internal}

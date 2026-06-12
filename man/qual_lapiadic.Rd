@@ -12,3 +12,4 @@ qual_lapiadic(pedon)
 \description{
 Lapiadic supplementary qualifier (lp): karren / lapies bedrock features
 }
+\keyword{internal}

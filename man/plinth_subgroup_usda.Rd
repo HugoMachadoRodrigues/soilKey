@@ -16,3 +16,4 @@ plinth_subgroup_usda(pedon, max_top_cm = 150)
 Plinth qualifying helper (Plinth*ults)
 Pass when plinthite >= 5\% in 50\%+ of layers within 150 cm.
 }
+\keyword{internal}

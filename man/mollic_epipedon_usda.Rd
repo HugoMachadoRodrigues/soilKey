@@ -52,3 +52,4 @@ Implementation notes (v0.8.x):
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-17.
 }
+\keyword{internal}

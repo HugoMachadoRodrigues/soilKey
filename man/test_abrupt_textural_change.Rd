@@ -21,3 +21,4 @@ clay-doubling test plus an optional \code{boundary_distinctness}
 check (must be \code{"abrupt"} or \code{"very abrupt"} on the upper
 horizon).
 }
+\keyword{internal}

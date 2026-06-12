@@ -16,3 +16,4 @@ Glacic qualifier (gc): >= 75\% ice by volume within 100 cm. v0.9.1
 proxy: cryic conditions + designation pattern (\code{ice|gel|glac}).
 Schema column \code{ice_pct} scheduled for v0.9.2.
 }
+\keyword{internal}

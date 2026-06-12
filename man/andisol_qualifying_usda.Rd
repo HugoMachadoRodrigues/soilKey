@@ -26,3 +26,4 @@ andic_soil_properties is >= 0.6 * (depth from surface to 60 cm).
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 6, p 117.
 }
+\keyword{internal}

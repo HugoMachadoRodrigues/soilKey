@@ -12,3 +12,4 @@ qual_carbonatic(pedon)
 \description{
 Carbonatic supplementary qualifier (cn): >= 50\% carbonates
 }
+\keyword{internal}

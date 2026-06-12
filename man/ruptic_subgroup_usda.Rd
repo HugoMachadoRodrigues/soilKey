@@ -17,3 +17,4 @@ Pass when more than 40\% (volume) organic soil materials from
 surface to 50 cm in 75\% or LESS of the pedon. v0.8 also
 deferred -- requires multi-pedon data.
 }
+\keyword{internal}

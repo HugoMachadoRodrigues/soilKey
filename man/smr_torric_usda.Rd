@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Torric soil moisture regime (USDA)
 }
+\keyword{internal}

@@ -32,3 +32,4 @@ Nao aplicavel a solos de classe textural areia ou areia franca
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
 }
+\keyword{internal}

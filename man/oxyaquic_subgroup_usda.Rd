@@ -24,3 +24,4 @@ within 100 cm of the mineral soil surface for either or both:
 v0.8 proxy: pass when redoximorphic features OR low chroma in any
 layer within 100 cm (subset of full aquic conditions).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ aquert_qualifying_usda(pedon)
 Aquerts qualifier (Vertisols with aquic conditions)
 Pass when aquic_conditions within 50 cm.
 }
+\keyword{internal}

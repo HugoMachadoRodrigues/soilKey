@@ -12,3 +12,4 @@ qual_petroplinthic(pedon)
 \description{
 Petroplinthic qualifier (pp): petroplinthic horizon <= 100 cm.
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ test_spodic_aluminum_iron(h, min_pct = 0.5, candidate_layers = NULL)
 Default 0.5\% (WRB 2022 Chapter 3, Spodic horizon). Used by
 \code{\link{spodic}}.
 }
+\keyword{internal}

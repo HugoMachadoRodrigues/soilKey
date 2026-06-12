@@ -14,3 +14,4 @@ WRB 2022 Ch 5: generic "Endo-X" prefix marker for any qualifier
 that takes a depth window 50-100 cm. Without a base diagnostic it
 returns NA; in practice it is composed with another qualifier.
 }
+\keyword{internal}

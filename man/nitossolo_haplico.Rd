@@ -12,3 +12,4 @@ nitossolo_haplico(pedon)
 \description{
 Nitossolos Haplicos (catch-all).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ plintossolo_petrico(pedon)
 Plintossolos Petricos (Cap 16): horizonte concrecionario OR
 litoplintico (sem horizonte plintico precedendo).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ qual_densic(pedon)
 Densic qualifier (dn): bulk density >= 1.8 g/cm3 in some root-
 restricting layer within 100 cm.
 }
+\keyword{internal}

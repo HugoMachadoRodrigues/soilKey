@@ -14,3 +14,4 @@ qual_terric(pedon)
 Terric qualifier (te): terric horizon (anthropogenic added mineral
 material on top of cultivated land).
 }
+\keyword{internal}

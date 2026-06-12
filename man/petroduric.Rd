@@ -13,6 +13,9 @@ petroduric(pedon, min_thickness = 10, min_duripan_pct = 10)
 
 \item{min_duripan_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Petroduric horizon (WRB 2022): cemented duric.
 }

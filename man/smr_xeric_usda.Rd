@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Xeric soil moisture regime (USDA)
 }
+\keyword{internal}

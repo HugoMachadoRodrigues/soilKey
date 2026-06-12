@@ -31,3 +31,4 @@ max_clay_pct.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 10 LA, p 203.
 }
+\keyword{internal}

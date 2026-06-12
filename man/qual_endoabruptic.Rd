@@ -12,3 +12,4 @@ qual_endoabruptic(pedon)
 \description{
 Endoabruptic supplementary qualifier (eea): abrupt textural change deep
 }
+\keyword{internal}

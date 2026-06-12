@@ -18,3 +18,4 @@ contato_litico(pedon, max_depth_cm = NULL)
 Contato litico (SiBCS Cap 1, p 40): rocha continua dura. Reuso de
 \code{\link{continuous_rock}} via designacao R / Cr.
 }
+\keyword{internal}

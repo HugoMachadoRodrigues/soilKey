@@ -12,3 +12,4 @@ qual_epic(pedon)
 \description{
 Epic supplementary qualifier (ep): generic "in shallow horizon"
 }
+\keyword{internal}

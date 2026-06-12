@@ -33,3 +33,4 @@ informacao de mineralogia da argila pelo menos semiquantitativa.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287.
 }
+\keyword{internal}

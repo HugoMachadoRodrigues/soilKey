@@ -12,6 +12,9 @@ SoilTaxonomy package over the vendored copy. Set to
 \code{FALSE} to force the vendored copy (e.g. for
 reproducibility of a specific soilKey release).}
 }
+\value{
+The canonical WRB 2022 reference data (a list / data.frame of RSG and qualifier criteria), as vendored or sourced from the \pkg{SoilTaxonomy} package.
+}
 \description{
 Convenience wrapper for \code{canonical_reference("WRB_4th_2022")}.
 Returns a 3-element list:

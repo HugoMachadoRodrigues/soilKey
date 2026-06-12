@@ -14,3 +14,4 @@ oxic_horizon_usda(pedon)
 Oxic horizon (USDA, KST 13ed, Ch 3)
 Delegates to WRB \code{ferralic}.
 }
+\keyword{internal}

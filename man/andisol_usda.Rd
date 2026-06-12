@@ -12,3 +12,4 @@ andisol_usda(pedon)
 \description{
 Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
 }
+\keyword{internal}

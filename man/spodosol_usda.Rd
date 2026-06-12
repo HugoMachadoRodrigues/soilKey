@@ -12,3 +12,4 @@ spodosol_usda(pedon)
 \description{
 Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
 }
+\keyword{internal}

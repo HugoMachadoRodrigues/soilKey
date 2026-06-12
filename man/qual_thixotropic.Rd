@@ -12,3 +12,4 @@ qual_thixotropic(pedon)
 \description{
 Thixotropic supplementary qualifier (tx): thixotropic behavior
 }
+\keyword{internal}

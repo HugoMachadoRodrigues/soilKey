@@ -12,3 +12,4 @@ qual_pachic(pedon)
 \description{
 Pachic qualifier (pc): mollic OR umbric horizon >= 50 cm thick.
 }
+\keyword{internal}

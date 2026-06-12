@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Endostagnic qualifier (ens): stagnic conditions between 50 and 100 cm.
 }
+\keyword{internal}

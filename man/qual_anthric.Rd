@@ -12,3 +12,4 @@ qual_anthric(pedon)
 \description{
 Anthric qualifier (ak): anthric properties.
 }
+\keyword{internal}

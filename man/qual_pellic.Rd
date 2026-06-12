@@ -14,3 +14,4 @@ qual_pellic(pedon)
 Pellic qualifier (pe): in the upper 30 cm, Munsell value <= 4 moist
 AND chroma <= 2 moist. Diagnostic of "black" (dark) Vertisols.
 }
+\keyword{internal}

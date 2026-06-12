@@ -12,3 +12,4 @@ qual_skeletic(pedon)
 \description{
 Skeletic qualifier (sk): coarse fragments >= 40\% averaged over 100 cm.
 }
+\keyword{internal}

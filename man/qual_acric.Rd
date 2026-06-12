@@ -14,3 +14,4 @@ qual_acric(pedon)
 Acric qualifier (ac): argic horizon + low CEC + high Al.
 v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ qual_ferralic(pedon)
 \description{
 Ferralic qualifier (fl): ferralic horizon <= 150 cm.
 }
+\keyword{internal}

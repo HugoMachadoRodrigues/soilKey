@@ -14,3 +14,4 @@ qual_hyperalic(pedon)
 Hyperalic qualifier (yl): argic horizon with Al saturation >= 50\% in
 some layer of the argic part within 100 cm. Stronger version of Alic.
 }
+\keyword{internal}

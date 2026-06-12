@@ -22,3 +22,4 @@ Pass when sulfidic_s_pct present in any horizon within
 OR sulfidic materials AND certain mottle colors; this v0.8 uses
 sulfidic_s_pct >= 0.75 as proxy).
 }
+\keyword{internal}

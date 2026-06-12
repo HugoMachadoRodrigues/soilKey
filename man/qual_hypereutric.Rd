@@ -14,3 +14,4 @@ qual_hypereutric(pedon)
 Hypereutric qualifier (ye): base saturation >= 80\% throughout the
 upper 100 cm. Stronger than Eutric (BS >= 50\%).
 }
+\keyword{internal}

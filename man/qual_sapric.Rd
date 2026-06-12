@@ -16,3 +16,4 @@ Sapric qualifier (sa): organic material whose dominant decomposition
 class in the upper 100 cm is sapric (rubbed fiber < 1/6).
 v0.9.1: thickness-weighted dominance via Oa designation.
 }
+\keyword{internal}

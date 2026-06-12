@@ -12,3 +12,4 @@ qual_dolomitic(pedon)
 \description{
 Dolomitic qualifier (do): dolomitic material in upper 100 cm.
 }
+\keyword{internal}

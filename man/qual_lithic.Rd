@@ -14,3 +14,4 @@ qual_lithic(pedon)
 Lithic qualifier (lt): continuous rock starting within 10 cm. Tighter
 depth gate than Leptic (which is <= 100 cm) and Nudilithic (== 0 cm).
 }
+\keyword{internal}

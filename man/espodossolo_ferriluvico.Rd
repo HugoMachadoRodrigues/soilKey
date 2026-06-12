@@ -14,3 +14,4 @@ espodossolo_ferriluvico(pedon)
 Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al, baixo
 OC iluvial).
 }
+\keyword{internal}

@@ -33,3 +33,4 @@ Moist value <= 3 AND moist chroma <= 3 AND dry value <= 5. If
 \code{munsell_value_dry} is missing, uses the conservative substitute
 \code{munsell_value_moist + 1}.
 }
+\keyword{internal}

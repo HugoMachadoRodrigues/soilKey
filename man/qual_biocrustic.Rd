@@ -14,3 +14,4 @@ WRB 2022 Ch 5: "Surface biological crust (cyanobacteria, algae,
 lichens, mosses)." Implementation: \code{surface_crust_type} matching
 biological pattern in upper 5 cm.
 }
+\keyword{internal}

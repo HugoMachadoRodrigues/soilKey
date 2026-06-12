@@ -6,6 +6,9 @@
 \usage{
 make_planossolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo com horizonte E sobrejacente a B planico (mudanca textural
 abrupta + cores neutras + cromas baixos).

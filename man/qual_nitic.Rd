@@ -12,3 +12,4 @@ qual_nitic(pedon)
 \description{
 Nitic qualifier (ni): nitic horizon <= 100 cm.
 }
+\keyword{internal}

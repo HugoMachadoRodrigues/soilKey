@@ -12,3 +12,4 @@ qual_spodic(pedon)
 \description{
 Spodic qualifier (sd): spodic horizon <= 200 cm.
 }
+\keyword{internal}

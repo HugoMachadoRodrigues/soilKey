@@ -14,3 +14,4 @@ vertisol_usda(pedon)
 Vertisols (USDA Cap 16): slickensides + cracks.
 Delegates to vertic_horizon.
 }
+\keyword{internal}

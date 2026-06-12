@@ -17,3 +17,4 @@ A \code{\link{DiagnosticResult}}.
 Sulfic Subgroup helper (Haplowassists)
 Pass when sulfidic materials within 100 cm.
 }
+\keyword{internal}

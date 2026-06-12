@@ -12,3 +12,4 @@ qual_organotechnic(pedon)
 \description{
 Organotechnic qualifier (ot): organotechnic material in upper 100 cm.
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ refuse, peat-like industrial residues) in upper 100 cm."
 Implementation: \code{artefacts_industrial_pct} populated AND
 organic-rich (oc_pct >= 5\%).
 }
+\keyword{internal}

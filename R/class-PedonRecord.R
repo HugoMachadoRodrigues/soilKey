@@ -31,6 +31,12 @@
 #'                   \code{attribute}, \code{source}, \code{confidence},
 #'                   \code{notes}.
 #'
+#' @return An R6 object of class \code{PedonRecord}.
+#' @examples
+#' # The canonical fixtures return ready-built PedonRecords:
+#' pedon <- make_ferralsol_canonical()
+#' pedon$site$id
+#' nrow(pedon$horizons)
 #' @export
 PedonRecord <- R6::R6Class("PedonRecord",
   public = list(

@@ -12,3 +12,4 @@ cambissolo_histico(pedon)
 \description{
 Cambissolos Histicos (Cap 6): horizonte histico sem espessura para Organossolo.
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ carater_salico(pedon, min_ec = 7, max_depth_cm = NULL)
 \description{
 Carater salico (SiBCS Cap 1, p 38): CE >= 7 dS/m em alguma epoca.
 }
+\keyword{internal}

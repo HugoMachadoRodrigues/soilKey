@@ -20,3 +20,4 @@ conductivity (>= 16 dS/m, equivalent to Salic) OR specific contamination
 fields (heavy metals, hydrocarbons) which the soilKey schema does not
 yet model. v0.9.33 v0 implementation uses pH <= 3.5 OR EC >= 16 dS/m.
 }
+\keyword{internal}

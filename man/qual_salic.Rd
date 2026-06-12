@@ -12,3 +12,4 @@ qual_salic(pedon)
 \description{
 Salic qualifier (sz): salic horizon <= 100 cm.
 }
+\keyword{internal}

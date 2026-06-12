@@ -14,3 +14,4 @@ gleissolo_melanico(pedon)
 Gleissolos Melanicos (Cap 9): horizonte hístico < 40 cm OR A humico,
 proeminente, chernozemico.
 }
+\keyword{internal}

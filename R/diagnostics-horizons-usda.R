@@ -60,6 +60,7 @@ oxic_usda <- function(pedon, ...) {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2014), Keys to Soil Taxonomy,
 #'   Ch. 3 -- argillic horizon.
+#' @keywords internal
 #' @export
 argillic_usda <- function(pedon, ...) {
   # v0.9.27: KST 13ed Ch 3 (p 4) argillic = clay increase + clay

@@ -20,3 +20,4 @@ than Rhodic (which requires \eqn{\le} 2.5YR + value < 4); useful
 as a supplementary tag for tropical soils with reddish colours
 that don't reach the Rhodic threshold.
 }
+\keyword{internal}

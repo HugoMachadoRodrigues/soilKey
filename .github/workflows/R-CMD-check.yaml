@@ -29,9 +29,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      # Skip benchmark + heavy network-dependent tests on CI.
-      SOILKEY_SKIP_NETWORK: "true"
-      SOILKEY_SKIP_BENCHMARK: "true"
+      # Network/benchmark tests are opt-IN via SOILKEY_NETWORK_TESTS (left
+      # unset here), so they skip on CI by default -- no skip flag needed.
 
     steps:
       - uses: actions/checkout@v4
@@ -81,4 +80,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          # Explicitly run the CRAN incoming checks so any --as-cran NOTE
+          # (e.g. a missing \value) is caught in CI, not only at submission.
+          args: 'c("--no-manual", "--as-cran")'
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'

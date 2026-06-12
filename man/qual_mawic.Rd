@@ -19,3 +19,4 @@ Implementation: any horizon with \code{fiber_content_unrubbed_pct}
 back to \code{histic_horizon} OK + fibre threshold (the moss-
 specific test is over-permissive without explicit moss flag).
 }
+\keyword{internal}

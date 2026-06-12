@@ -28,3 +28,4 @@ Fe/Mn confirmada. Refinamento planejado para v0.8.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, p 125.
 }
+\keyword{internal}

@@ -19,3 +19,4 @@ Implementation: weighted mean of \code{fe_dcb_pct} (DCB-extractable
 Fe2O3, the canonical Fe-pool for Ferralic / Nitic chemistry) over
 the upper 100 cm.
 }
+\keyword{internal}

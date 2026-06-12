@@ -14,3 +14,4 @@ qual_chernic(pedon)
 Chernic qualifier (ch): chernic horizon (intensely worm-mixed mollic-like)
 within 100 cm.
 }
+\keyword{internal}

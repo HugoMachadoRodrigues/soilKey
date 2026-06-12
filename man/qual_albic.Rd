@@ -12,3 +12,4 @@ qual_albic(pedon)
 \description{
 Albic qualifier (ab): albic horizon <= 100 cm.
 }
+\keyword{internal}

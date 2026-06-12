@@ -28,3 +28,4 @@ Implementation: tests cracks_width_cm >= 0.5 AND cracks_depth_cm
 >= 30 AND slickensides present, OR sum(thickness * cole_value)
 >= 6 cm.
 }
+\keyword{internal}

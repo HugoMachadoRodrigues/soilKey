@@ -18,3 +18,4 @@ Default predicate: \code{silt + 2 * clay < 15} (loamy sand or
 coarser) in EVERY layer that intersects the upper
 \code{max_top_cm} (default 100). Diagnostic for Arenosols.
 }
+\keyword{internal}

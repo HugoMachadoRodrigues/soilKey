@@ -22,3 +22,4 @@ Calcic; the difference is the depth band -- Endocalcic requires
 the calcic horizon to start at >= 50 cm (deep, subsoil) rather
 than within the upper 50 cm.
 }
+\keyword{internal}

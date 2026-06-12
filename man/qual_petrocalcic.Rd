@@ -12,3 +12,4 @@ qual_petrocalcic(pedon)
 \description{
 Petrocalcic qualifier (pc): petrocalcic horizon <= 100 cm.
 }
+\keyword{internal}

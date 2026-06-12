@@ -14,3 +14,4 @@ kandic_oxisol_usda(pedon)
 Kandic Suborder helper for Oxisols (Kandiperox/Kandiudox/Kandiustox)
 Delegates to kandic_horizon_usda.
 }
+\keyword{internal}

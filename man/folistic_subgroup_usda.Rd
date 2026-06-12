@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Folistic Subgroup helper (folistic_epipedon present)
 }
+\keyword{internal}

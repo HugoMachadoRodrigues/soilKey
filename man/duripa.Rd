@@ -11,6 +11,9 @@ duripa(pedon, ...)
 
 \item{...}{Reserved for future arguments.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Reuso de \code{\link{duric_horizon}} (WRB Ch 3.1): subsuperficial
 cimentado por silica, continuo ou em \\>= 50\% volume.

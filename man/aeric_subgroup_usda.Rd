@@ -14,3 +14,4 @@ aeric_subgroup_usda(pedon)
 Aeric Subgroup helper (Aquods)
 Pass when ochric epipedon is present (vs. histic/umbric/etc).
 }
+\keyword{internal}

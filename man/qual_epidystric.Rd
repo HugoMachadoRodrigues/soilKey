@@ -12,3 +12,4 @@ qual_epidystric(pedon)
 \description{
 WRB 2022 Ch 5: "Dystric (BS < 50\%) in upper 50 cm and eutric below."
 }
+\keyword{internal}

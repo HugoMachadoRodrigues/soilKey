@@ -16,3 +16,4 @@ calcic_subgroup_usda(pedon, max_top_cm = 100)
 Calcic Subgroup helper -- delegates to calcic_horizon_usda within
 \code{max_top_cm}.
 }
+\keyword{internal}

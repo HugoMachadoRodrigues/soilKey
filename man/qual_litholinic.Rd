@@ -12,3 +12,4 @@ qual_litholinic(pedon)
 \description{
 Litholinic supplementary qualifier (ll): stratified soil on rock
 }
+\keyword{internal}

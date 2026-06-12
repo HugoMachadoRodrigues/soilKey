@@ -17,3 +17,4 @@ test_plinthite_concentration(h, min_pct = 15, candidate_layers = NULL)
 Default 15\% by volume (plinthic horizon, WRB 2022 Chapter 3). Used
 by \code{\link{plinthic}}.
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ Vertisol Order qualifier (USDA, KST 13ed, Ch 2 / Ch 3 vertic horizon)
 Pass when a vertic horizon (clay >= 30, cracks, slickensides, LE)
 is present. Delegates to WRB \code{vertic_horizon}.
 }
+\keyword{internal}

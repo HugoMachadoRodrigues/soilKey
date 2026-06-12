@@ -29,6 +29,9 @@ Forwarded to \code{\link{ferralic}}.}
 
 \item{...}{Reserved for future arguments.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Adicionalmente a \code{\link{ferralic}} (WRB), o B latossolico
 SiBCS exige:

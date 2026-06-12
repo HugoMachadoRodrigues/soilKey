@@ -12,3 +12,4 @@ ultic_subgroup_usda(pedon)
 \description{
 Ultic Subgroup helper: argillic or kandic (any BS).
 }
+\keyword{internal}

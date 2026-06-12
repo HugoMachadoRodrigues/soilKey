@@ -12,3 +12,4 @@ qual_mulmic(pedon)
 \description{
 Mulmic qualifier (ml): mulmic material in upper 100 cm.
 }
+\keyword{internal}

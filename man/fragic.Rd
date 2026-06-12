@@ -15,6 +15,9 @@ fragic(pedon, min_thickness = 15, min_bd = 1.65)
 
 \item{min_bd}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Fragic horizon (WRB 2022): a high-bulk-density horizon with restricted
 rooting. v0.3.3: detects via bulk_density_g_cm3 >= 1.65 AND structure

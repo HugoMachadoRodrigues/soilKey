@@ -31,3 +31,4 @@ Em pedons sem H/O ou A acima do B incipiente, o teste falha
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 14, pp 247-248.
 }
+\keyword{internal}

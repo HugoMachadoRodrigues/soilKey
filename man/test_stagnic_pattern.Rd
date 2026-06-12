@@ -23,3 +23,4 @@ shallow value). The decay condition is what separates perched water
 (sits above an impermeable layer; deeper soil is not saturated)
 from groundwater-driven gleying (saturation continues with depth).
 }
+\keyword{internal}

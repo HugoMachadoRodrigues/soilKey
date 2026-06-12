@@ -17,6 +17,9 @@ hortic(pedon, min_thickness = 20, min_oc = 1, min_p_mehlich3 = 100)
 
 \item{min_p_mehlich3}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Hortic horizon (WRB 2022): garden / kitchen-midden topsoil. Diagnostic
 criteria: thickness \\>= 20 cm, dark colour (mollic-like), high P

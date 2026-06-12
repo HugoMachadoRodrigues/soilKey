@@ -14,3 +14,4 @@ chernossolo_rendzico(pedon)
 Chernossolos Rendzicos (Cap 7): A chernozemico + (calcico/petrocalcico
 OR carater carbonatico).
 }
+\keyword{internal}

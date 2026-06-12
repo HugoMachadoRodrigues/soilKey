@@ -16,3 +16,4 @@ test_oc_above(h, min_pct = 12, candidate_layers = NULL)
 \description{
 Default 12\% (histic horizon, WRB 2022 Chapter 3).
 }
+\keyword{internal}

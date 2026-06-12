@@ -14,3 +14,4 @@ mollisol_qualifying_usda(pedon)
 Mollisol Order qualifier (USDA, KST 13ed, Ch 12)
 Pass when mollic_epipedon AND BS (NH4OAc) >= 50\% in upper 100 cm.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ sodic_subgroup_usda(pedon)
 \description{
 Sodic Subgroup helper -- delegate to natric_horizon (USDA)
 }
+\keyword{internal}

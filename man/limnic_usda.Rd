@@ -29,3 +29,4 @@ for limnic) OR \code{layer_origin == "lacustrine"}.
 Soil Survey Staff (2022), KST 13ed, Ch. 3, p 45;
   Ch. 9 Hemistels / Sapristels.
 }
+\keyword{internal}

@@ -13,3 +13,4 @@ qual_nudinatric(pedon)
 WRB 2022 Ch 5 (Solonetz): same logic as Nudiargic but for the
 natric horizon (high ESP + columnar / prismatic structure).
 }
+\keyword{internal}

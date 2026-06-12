@@ -13,6 +13,9 @@ terric(pedon, min_thickness = 20)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Terric horizon (WRB 2022): topsoil thickened by long-term application
 of mineral material (sediment / sand additions). v0.3.3: thickness >=

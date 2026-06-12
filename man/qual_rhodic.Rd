@@ -14,3 +14,4 @@ qual_rhodic(pedon)
 Rhodic qualifier (ro): hue redder than 5YR + value < 4 + dry no
 more than 1 unit higher than moist (in upper subsoil 25-150 cm).
 }
+\keyword{internal}

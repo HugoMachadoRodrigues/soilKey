@@ -20,3 +20,4 @@ upper 100 cm exist, AND (b) clay_pct varies by >= 8 percentage
 points across consecutive layers (indicating depositional
 alternation), AND (c) OC does not decrease monotonically with depth.
 }
+\keyword{internal}

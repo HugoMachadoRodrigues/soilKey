@@ -12,3 +12,4 @@ qual_uterquic(pedon)
 \description{
 Uterquic supplementary qualifier (uq): bidirectional water regime
 }
+\keyword{internal}

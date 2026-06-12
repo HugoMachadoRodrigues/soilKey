@@ -16,3 +16,4 @@ Rendolls qualifier: shallow soil over carbonate parent material.
 Pass when CaCO3 >= 40\% in subsurface AND profile depth < 100 cm
 to a contact.
 }
+\keyword{internal}

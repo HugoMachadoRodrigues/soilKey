@@ -18,3 +18,4 @@ Al + Fe accumulation (Al_ox + 0.5 * Fe_ox >= 1.5\%) -- twice the
 minimum spodic threshold per WRB Ch 3.1. v0.9.1 also requires
 p-retention >= 85\% in the same layers when available.
 }
+\keyword{internal}

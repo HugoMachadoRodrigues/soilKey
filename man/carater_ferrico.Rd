@@ -43,3 +43,4 @@ planejado para v0.7.5.
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 35; Cap 5
             (Argissolos Eutroferricos, p 118); Cap 10 (Latossolos).
 }
+\keyword{internal}

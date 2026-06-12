@@ -22,3 +22,4 @@ em quantidade pelo menos comum, dentro da secao de controle.
 \code{epirredoxico} se dentro de 50 cm; \code{endorredoxico} se
 50-150 cm.
 }
+\keyword{internal}

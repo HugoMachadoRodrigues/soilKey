@@ -27,3 +27,4 @@ retrateis (Cap 6), Vertissolos (Cap 17) e Argissolos retrateis
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 33.
 }
+\keyword{internal}

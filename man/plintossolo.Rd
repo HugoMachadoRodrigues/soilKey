@@ -15,3 +15,4 @@ OR litoplintico, OR concrecionario, iniciando dentro de 40 cm OR
 dentro de 200 cm precedido de glei OR A/E OR horizonte com cores
 palidas / variegadas / mosqueados.
 }
+\keyword{internal}

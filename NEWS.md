@@ -1,3 +1,48 @@
+# soilKey 0.9.109 (2026-06-11)
+
+The "**CRAN release hardening**" release. A readiness audit found that a full
+\code{R CMD check} was clean only because CI did not pass \code{--as-cran}; under
+\code{--as-cran}, 545 exported function topics were missing a \code{\\value}
+section -- a near-certain CRAN rejection. This release fixes that and tightens
+release hygiene. \strong{No user-visible behaviour changed} (the engine is
+documentation-only here; the deterministic key dispatches its predicates by name
+exactly as before).
+
+## Public API right-sized
+
+\itemize{
+  \item ~600 atomic taxonomic-engine predicates -- WRB qualifiers
+        (\code{qual_*}), USDA subgroup / great-group gates (\code{*_usda}),
+        SiBCS attribute / horizon gates (\code{carater_*}, \code{horizonte_*}),
+        and the per-Order dispatchers -- are now marked \code{@keywords
+        internal}. They \strong{remain exported and callable}
+        (\code{soilKey::qual_ferralic()} and \code{?qual_ferralic} still work)
+        but leave the public reference index, trimming the documented public
+        API from ~910 to ~195 topics. They are collected under an
+        "Internal -- motor taxonomico" section on the pkgdown site.
+  \item The remaining ~85 genuinely public topics that lacked one (WRB Ch 3
+        diagnostics, RSG gates, the SiBCS canonical fixtures, the reference
+        accessors) gained a \code{\\value} section. The package now passes
+        \code{R CMD check --as-cran} with \strong{0 errors / 0 warnings}.
+}
+
+## Documentation & release hygiene
+
+\itemize{
+  \item Runnable \code{\\examples} (offline, on canonical fixtures) added to
+        the main entry points -- \code{classify_wrb2022/sibcs/usda},
+        \code{classify_all}, \code{report}, \code{PedonRecord},
+        \code{compute_ki/compute_kr}; \code{classify_with_uncertainty} moved to
+        \code{\\donttest}. Network / VLM examples stay \code{\\dontrun}.
+  \item CI now runs \code{R CMD check --as-cran} explicitly and gates the
+        pkgdown reference with \code{pkgdown::check_pkgdown()}; dead
+        \code{SOILKEY_SKIP_*} workflow env vars removed.
+  \item \code{LazyDataCompression: xz} declared; \code{cran-comments.md} and
+        \code{CITATION.cff} refreshed to 0.9.109; lifecycle promoted to
+        \emph{maturing}.
+}
+
+
 # soilKey 0.9.108 (2026-06-11)
 
 The "**Pro app polish**" release -- the third and final follow-up front

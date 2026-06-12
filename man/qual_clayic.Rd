@@ -14,3 +14,4 @@ qual_clayic(pedon)
 Clayic qualifier (ce): clay >= 60\% texture for a layer >= 30 cm in
 the upper 100 cm.
 }
+\keyword{internal}

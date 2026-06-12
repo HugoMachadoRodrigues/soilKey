@@ -11,6 +11,9 @@ dolomitic_material(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Dolomitic material (WRB 2022 Ch 3.3.5): \\>= 2\% Mg-rich carbonate,
 CaCO3/MgCO3 < 1.5. v0.3.3: detects via designation pattern

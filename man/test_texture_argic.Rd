@@ -14,3 +14,4 @@ test_texture_argic(h, candidate_layers = NULL)
 \description{
 Test sandy-loam-or-finer texture (used by argic, ferralic)
 }
+\keyword{internal}

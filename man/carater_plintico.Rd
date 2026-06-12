@@ -18,3 +18,4 @@ carater_plintico(pedon, min_plinthite_pct = 5, max_plinthite_pct = 15)
 Carater plintico (SiBCS Cap 1, p 36): plintita >= 5\% em quantidade
 insuficiente para horizonte plintico.
 }
+\keyword{internal}

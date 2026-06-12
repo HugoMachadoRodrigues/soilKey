@@ -23,6 +23,7 @@
 #' ploughing -- designation pattern \code{Ap}, \code{Apk},
 #' \code{Apc}, etc., starting within the upper 30 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 qual_aric <- function(pedon) {
   h <- pedon$horizons
@@ -51,6 +52,7 @@ qual_aric <- function(pedon) {
 #' uppermost mineral horizon's designation matches \code{^[AC]u?\\d?}
 #' (cumulic-style suffix).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 qual_cumulic <- function(pedon) {
   h <- pedon$horizons
@@ -91,6 +93,7 @@ qual_cumulic <- function(pedon) {
 #' v0.9.3.B: requires \code{argic} to pass AND at least one argic
 #' layer with \code{bottom_cm >= 150}.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 qual_profondic <- function(pedon) {
   arg <- argic(pedon)
@@ -119,6 +122,7 @@ qual_profondic <- function(pedon) {
 #' as a supplementary tag for tropical soils with reddish colours
 #' that don't reach the Rhodic threshold.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 qual_rubic <- function(pedon) {
   h <- pedon$horizons
@@ -149,6 +153,7 @@ qual_rubic <- function(pedon) {
 #' v0.9.3.B proxy: designation pattern \code{lamell} / \code{E&Bt} /
 #' \code{&Bt} / \code{Bt(t)?\\d?lam} in any subsurface layer.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 qual_lamellic <- function(pedon) {
   h <- pedon$horizons

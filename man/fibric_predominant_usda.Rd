@@ -12,3 +12,4 @@ fibric_predominant_usda(pedon)
 \description{
 Fibric_predominant_usda: Fibrists Suborder qualifier
 }
+\keyword{internal}

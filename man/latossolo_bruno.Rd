@@ -14,3 +14,4 @@ latossolo_bruno(pedon)
 Latossolos Brunos (Cap 10): matiz \\>= 7.5YR + valor \\<= 4 + croma
 \\<= 5 (cores brunadas) OR caracter retratil.
 }
+\keyword{internal}

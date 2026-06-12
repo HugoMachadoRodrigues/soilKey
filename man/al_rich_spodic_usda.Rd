@@ -16,3 +16,4 @@ A \code{\link{DiagnosticResult}}.
 Pass when the spodic horizon has < 0.10\% Fe (oxalate) in 75\%+
 of layers, OR Al >= 3 * Fe in 75\%+ of layers (Alaquods only).
 }
+\keyword{internal}

@@ -35,3 +35,4 @@ Aplicavel para Cambissolos Histicos e Organossolos Folicos
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43;
             Cap 18, p 287.
 }
+\keyword{internal}

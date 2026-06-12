@@ -16,3 +16,4 @@ Glossic qualifier (gs): mollic horizon penetrated by albeluvic
 tongues (glossae). Diagnostic of Glossic Chernozems / Phaeozems on
 the steppe / forest-steppe transition.
 }
+\keyword{internal}

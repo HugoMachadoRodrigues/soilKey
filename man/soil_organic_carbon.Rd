@@ -15,6 +15,9 @@ soil_organic_carbon(pedon, min_oc = 0.1, max_artefacts = 35)
 
 \item{max_artefacts}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Soil organic carbon (WRB 2022 Ch 3.3.16): organic C that does NOT
 belong to artefacts. v0.3.3: any layer with oc_pct >= 0.1 and

@@ -12,3 +12,4 @@ qual_lixic(pedon)
 \description{
 Lixic qualifier (lx): argic + low CEC, low Al.
 }
+\keyword{internal}

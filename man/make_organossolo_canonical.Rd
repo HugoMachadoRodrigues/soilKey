@@ -6,6 +6,9 @@
 \usage{
 make_organossolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo organico saturado, com horizonte H histico >= 60 cm e SOC
 alto. Tipico de varzea / brejo.

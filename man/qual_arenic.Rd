@@ -12,3 +12,4 @@ qual_arenic(pedon)
 \description{
 Arenic qualifier (ar): texture sand or loamy sand >= 30 cm in <= 100 cm.
 }
+\keyword{internal}

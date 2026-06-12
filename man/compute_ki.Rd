@@ -23,6 +23,9 @@ Massas molares: 60.08 (SiO2), 101.96 (Al2O3):
 Ki (molar) = (\% SiO2 / 60.08) / (\% Al2O3 / 101.96)
              \eqn{\approx} 1.6973 \eqn{\times} (\% SiO2 / \% Al2O3)
 }
+\examples{
+compute_ki(sio2_pct = 18, al2o3_pct = 20)  # ~1.53, abaixo do limite latossolico
+}
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 32; Embrapa Manual
             de Metodos de Analise de Solo (3a ed., 2017).

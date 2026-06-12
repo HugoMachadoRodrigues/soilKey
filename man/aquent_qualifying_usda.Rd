@@ -12,3 +12,4 @@ aquent_qualifying_usda(pedon)
 \description{
 Aquent Suborder qualifier (Entisol with aquic conditions <50 cm).
 }
+\keyword{internal}

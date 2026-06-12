@@ -20,3 +20,4 @@ upper 50 cm. Used for sub-aerially exposed acid-sulfate soils
 only; v0.9.2 adds the cross-check against \code{thionic} / sulfidic
 material to disambiguate from naturally acidic Histosols.
 }
+\keyword{internal}

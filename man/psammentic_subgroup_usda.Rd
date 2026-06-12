@@ -17,3 +17,4 @@ Pass when, in particle-size control section: < 35\% rock
 fragments AND texture class loamy fine sand or coarser in all
 layers.
 }
+\keyword{internal}

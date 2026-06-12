@@ -17,3 +17,4 @@ A \code{\link{DiagnosticResult}}.
 Sapric_predominant_usda: Saprists Suborder qualifier
 Pass when thickness of sapric > thickness of fibric+hemic in 0-130 cm.
 }
+\keyword{internal}

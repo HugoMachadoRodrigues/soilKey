@@ -12,3 +12,4 @@ qual_ochric(pedon)
 \description{
 Ochric qualifier (oh): SOC >= 0.2\% upper 10 cm + no mollic/umbric.
 }
+\keyword{internal}

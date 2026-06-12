@@ -12,3 +12,4 @@ qual_gypsic(pedon)
 \description{
 Gypsic qualifier (gy): gypsic horizon <= 100 cm.
 }
+\keyword{internal}

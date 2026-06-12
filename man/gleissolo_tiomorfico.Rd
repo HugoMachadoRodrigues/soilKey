@@ -14,3 +14,4 @@ gleissolo_tiomorfico(pedon)
 Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
 sulfurico em < 100 cm.
 }
+\keyword{internal}

@@ -44,3 +44,4 @@ Precipitation criterion is deferred to v0.9 (climatic data).
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, p 33.
 }
+\keyword{internal}

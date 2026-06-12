@@ -42,3 +42,4 @@ Either path qualifies. If neither is determinable for any candidate
 layer (mottle pct AND hue both NA), returns NA. If both are
 determinable but neither passes, returns FALSE.
 }
+\keyword{internal}

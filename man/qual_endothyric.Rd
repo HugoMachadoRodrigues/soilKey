@@ -12,3 +12,4 @@ qual_endothyric(pedon)
 \description{
 Endothyric supplementary qualifier (etc): thyric only at depth >= 50
 }
+\keyword{internal}

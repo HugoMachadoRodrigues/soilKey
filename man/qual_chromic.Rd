@@ -14,3 +14,4 @@ qual_chromic(pedon)
 Chromic qualifier (cr): hue redder than 7.5YR + chroma > 4 (in upper
 subsoil 25-150 cm).
 }
+\keyword{internal}

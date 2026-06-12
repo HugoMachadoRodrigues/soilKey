@@ -18,3 +18,4 @@ WRB 2022 Ch 5: "Containing >= 4 cmol(c)/kg chloride OR EC >= 8
 dS/m within 100 cm." Proxy via electrical conductivity field
 (\code{ec_ds_m}) when chloride is unavailable.
 }
+\keyword{internal}

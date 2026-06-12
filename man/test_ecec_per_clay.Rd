@@ -18,3 +18,4 @@ Default threshold is 12 cmol_c/kg clay (WRB 2022 ferralic horizon). If
 \code{ecec_cmol} is missing, computes ECEC from \code{ca_cmol +
 mg_cmol + k_cmol + na_cmol + al_cmol} when those are available.
 }
+\keyword{internal}

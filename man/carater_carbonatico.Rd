@@ -20,3 +20,4 @@ SiBCS Cap 14 Subgrupos usam \code{max_depth_cm = 150}.}
 segregacao (incl. nodulos, concrecoes). Excludente: nao satisfaz
 aos requisitos de horizonte calcico.
 }
+\keyword{internal}

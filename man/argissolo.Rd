@@ -15,3 +15,4 @@ Luvissolos / Nitossolos terem sido excluidos. v0.7 enforce: B
 textural + (argila ativ baixa OR ativ alta + V baixa OR carater
 alumínico).
 }
+\keyword{internal}

@@ -24,3 +24,4 @@ Pass when:
 Slope is taken from \code{site$slope_pct} when available; if NA,
 assumed to satisfy (TRUE).
 }
+\keyword{internal}

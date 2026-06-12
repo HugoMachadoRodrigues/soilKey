@@ -18,3 +18,4 @@ Plinthaquox qualifying helper (Aquox: continuous plinthite phase)
 Pass when plinthite >= 50\% in some 10+ cm layer (continuous phase
 proxy).
 }
+\keyword{internal}

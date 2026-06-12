@@ -14,3 +14,4 @@ WRB 2022 Ch 5: "Soil developed in or affected by ancient cultural
 material (>1000 yr old)." Detects via \code{contamination_type}
 matching "archaeological" or site-level cultural-period field.
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ umbric_subgroup_usda(pedon)
 Umbric Subgroup helper (in Spodosols)
 Pass when umbric_epipedon_usda passes.
 }
+\keyword{internal}

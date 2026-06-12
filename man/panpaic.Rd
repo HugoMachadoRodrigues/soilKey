@@ -9,6 +9,9 @@ panpaic(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 From Quechua \emph{p'anpay} = "to bury". A buried diagnostic horizon
 (any horizon whose original surface was subsequently overlain by

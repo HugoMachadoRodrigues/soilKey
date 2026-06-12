@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Fluventic Subgroup helper (irregular OC decrease, NO aquic req.)
 }
+\keyword{internal}

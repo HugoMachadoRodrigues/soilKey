@@ -21,3 +21,4 @@ Implementation: presence of mollic OR umbric (we have
 bleached layer (\code{munsell_value_moist >= 4} and
 \code{munsell_chroma_moist <= 2}, thickness <= 10 cm).
 }
+\keyword{internal}

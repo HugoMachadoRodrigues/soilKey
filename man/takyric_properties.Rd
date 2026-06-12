@@ -10,6 +10,9 @@ takyric_properties(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
 \code{\link{test_takyric_surface}}.

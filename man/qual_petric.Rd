@@ -14,3 +14,4 @@ qual_petric(pedon)
 Petric qualifier (pt): any petro-cemented horizon (petrocalcic /
 petroduric / petrogypsic / petroplinthic) within 100 cm.
 }
+\keyword{internal}

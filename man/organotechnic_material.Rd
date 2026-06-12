@@ -15,6 +15,9 @@ organotechnic_material(pedon, min_artefacts = 35, max_oc = 20)
 
 \item{max_oc}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Organotechnic material (WRB 2022 Ch 3.3.14): \\>= 35\% volume of
 artefacts that themselves contain \\>= 20\% organic C. Soil itself

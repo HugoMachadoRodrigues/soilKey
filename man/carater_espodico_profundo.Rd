@@ -29,3 +29,4 @@ Implementacao: chama \code{\link{carater_espodico}} e filtra por
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 8, pp 165-168.
 }
+\keyword{internal}

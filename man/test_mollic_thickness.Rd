@@ -20,3 +20,4 @@ threshold is the predominant case for non-shallow soils. Cumulative
 thickness across multiple contiguous mollic-qualifying horizons is a
 v0.2 refinement.
 }
+\keyword{internal}

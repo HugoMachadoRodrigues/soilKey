@@ -17,3 +17,4 @@ test_andic_alfe(h, min_pct = 2, candidate_layers = NULL)
 Distinct from spodic (which uses 0.5\%); the andic threshold is
 four times higher per WRB 2022 Chapter 3.
 }
+\keyword{internal}

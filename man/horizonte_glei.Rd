@@ -17,3 +17,4 @@ azuladas / esverdeadas devido a reducao de Fe; espessura \\>= 15 cm.
 Reuso de \code{\link{gleyic_properties}} (WRB) com nomenclatura
 SiBCS.
 }
+\keyword{internal}

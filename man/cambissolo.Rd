@@ -14,3 +14,4 @@ Horizonte B incipiente imediatamente abaixo de A ou histico < 40 cm,
 com plintita/petroplintita (se presente) que NAO satisfaca aos
 requisitos para Plintossolos.
 }
+\keyword{internal}

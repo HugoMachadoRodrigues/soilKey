@@ -19,3 +19,4 @@ carater_salino(pedon, min_ec = 4, max_ec = 7, max_depth_cm = NULL)
 \description{
 Carater salino (SiBCS Cap 1, p 39): 4 <= CE < 7 dS/m.
 }
+\keyword{internal}

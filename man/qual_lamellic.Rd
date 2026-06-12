@@ -18,3 +18,4 @@ lamellae, typical of sandy Luvisols / Alisols / Acrisols.
 v0.9.3.B proxy: designation pattern \code{lamell} / \code{E&Bt} /
 \code{&Bt} / \code{Bt(t)?\\d?lam} in any subsurface layer.
 }
+\keyword{internal}

@@ -17,6 +17,9 @@ chernozem_strict(pedon, min_bs = 50, max_top_cm = 50, strict = NULL)
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} raises the base-saturation floor to 80\%.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 lower limit of the mollic horizon and (if a petrocalcic horizon is

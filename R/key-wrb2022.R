@@ -77,6 +77,10 @@ run_wrb_key <- function(pedon, rules = NULL) {
 #'        \code{FALSE} keeps the canonical names byte-identical. Surface
 #'        / epipedon qualifiers are excluded (their depth is definitional).
 #' @return A \code{\link{ClassificationResult}}.
+#' @examples
+#' pedon <- make_ferralsol_canonical()
+#' res <- classify_wrb2022(pedon)
+#' res$name
 #' @export
 classify_wrb2022 <- function(pedon,
                                prior           = NULL,

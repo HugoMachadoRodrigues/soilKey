@@ -12,3 +12,4 @@ qual_kalaic(pedon)
 \description{
 Kalaic supplementary qualifier (ka): dry-season puffed surface layer
 }
+\keyword{internal}

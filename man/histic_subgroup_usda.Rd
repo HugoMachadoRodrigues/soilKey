@@ -14,3 +14,4 @@ histic_subgroup_usda(pedon)
 Histic Subgroup helper (in Spodosols, Aquods)
 Pass when histic_epipedon_usda passes.
 }
+\keyword{internal}

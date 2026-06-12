@@ -20,3 +20,4 @@ A \code{\link{DiagnosticResult}}.
 Pass when EC >= 30 dS/m through a 30+ cm layer for 6+ months
 (KST 13ed, Ch 10). v0.8 proxy: any layer with ec_dS_m >= 30.
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ Implementation: designation pattern \code{^A.*\\+|A/B|B/A} OR
 de horizonte subjacente - Topografia") matching irregular /
 tongued patterns.
 }
+\keyword{internal}

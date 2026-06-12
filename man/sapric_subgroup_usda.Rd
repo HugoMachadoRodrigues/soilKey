@@ -14,3 +14,4 @@ sapric_subgroup_usda(pedon, max_top_cm = 130)
 \description{
 Sapric Subgroup helper (Sphagnofibrists)
 }
+\keyword{internal}

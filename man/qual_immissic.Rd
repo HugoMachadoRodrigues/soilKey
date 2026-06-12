@@ -12,3 +12,4 @@ qual_immissic(pedon)
 \description{
 Immissic supplementary qualifier (im): atmospheric immission
 }
+\keyword{internal}

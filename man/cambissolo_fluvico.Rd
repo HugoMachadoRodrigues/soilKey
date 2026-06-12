@@ -12,3 +12,4 @@ cambissolo_fluvico(pedon)
 \description{
 Cambissolos Fluvicos (Cap 6): carater fluvico.
 }
+\keyword{internal}

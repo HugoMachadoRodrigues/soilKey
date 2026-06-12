@@ -18,3 +18,4 @@ WRB 2022 Ch 5: "Containing recognisable wood remains (>= 25\% by
 volume or weight) in organic material."
 Implementation: \code{woody_fragments_pct} or layer_origin matching wood.
 }
+\keyword{internal}

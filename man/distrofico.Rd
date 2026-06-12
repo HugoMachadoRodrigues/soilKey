@@ -11,6 +11,9 @@ distrofico(pedon, max_v = 50)
 
 \item{max_v}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Negacao operacional de \code{\link{eutrofico}}: V < 50\% no
 horizonte diagnostico subsuperficial.

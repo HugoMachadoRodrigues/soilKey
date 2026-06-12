@@ -6,6 +6,9 @@
 \usage{
 make_nitossolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo argiloso (>= 35\% argila desde superficie) com B nitico
 (estrutura forte em blocos + cerosidade), gradiente textural

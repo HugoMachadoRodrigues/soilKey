@@ -16,3 +16,4 @@ Laxic supplementary qualifier (lx): loose / non-cohesive surface
 WRB 2022 Ch 5: "Surface horizon with loose dry consistence and
 single-grain or massive structure."
 }
+\keyword{internal}

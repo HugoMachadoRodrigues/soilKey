@@ -14,3 +14,4 @@ qual_vermic(pedon)
 Vermic qualifier (vm): >= 50\% bioturbation by worm casts / krotovinas
 in the upper 100 cm. v0.9.1: \code{worm_holes_pct >= 50}.
 }
+\keyword{internal}

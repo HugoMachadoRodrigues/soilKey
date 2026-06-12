@@ -12,3 +12,4 @@ argissolo_vermelho(pedon)
 \description{
 Matiz \\<= 2.5YR (mais vermelho) na maior parte do B.
 }
+\keyword{internal}

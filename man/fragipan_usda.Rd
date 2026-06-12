@@ -31,3 +31,4 @@ v0.9.31 adds the NASIS path so fragipan can be detected on KSSL+
 NASIS pedons (closing the Fragiudults / Fragiudalfs / Fragiaqualfs
 confusion documented in the v0.9.25 Great Group analysis).
 }
+\keyword{internal}

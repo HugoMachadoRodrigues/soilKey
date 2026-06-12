@@ -12,3 +12,4 @@ qual_tephric(pedon)
 \description{
 Tephric qualifier (tf): tephric material >= 30 cm in upper 100 cm.
 }
+\keyword{internal}

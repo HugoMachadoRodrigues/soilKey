@@ -30,3 +30,4 @@ definiu a ordem como Cambissolo.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 6, p 153.
 }
+\keyword{internal}

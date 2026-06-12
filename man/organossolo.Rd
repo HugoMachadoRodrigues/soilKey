@@ -15,3 +15,4 @@ espessura: \\>= 20 cm sobre rocha, \\>= 40 cm continuo OR cumulativo
 nos 80 cm superficiais, OR \\>= 60 cm se \\>= 75\% volume tecido
 vegetal.
 }
+\keyword{internal}
