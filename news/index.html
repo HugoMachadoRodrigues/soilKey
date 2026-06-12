@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.109</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.110</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,22 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.110" id="soilkey-09110-2026-06-11">soilKey 0.9.110 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09110-2026-06-11"></a></h2>
+<p>The “<strong>benchmark methodology</strong>” release (front B1 of the accuracy work). A readiness audit found the benchmark numbers were not yet defensible: a sampling bug starved sparsely-labelled systems, the reports gave only point accuracy, and there was no baseline to read accuracy against. This release makes the measurement honest and paper-ready.  – every edit is in the benchmark harness; canonical fixtures are byte-identical. (The accuracy-raising engine work – the argic/ferralic/nitic discriminator – is a separate follow-up, “B2”.)</p>
+<div class="section level3">
+<h3 id="sampling-fix-filter-then-cap-0-9-110">Sampling fix (filter-then-cap)<a class="anchor" aria-label="anchor" href="#sampling-fix-filter-then-cap-0-9-110"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="imbalance-aware-metrics--bootstrap-cis-0-9-110">Imbalance-aware metrics + bootstrap CIs<a class="anchor" aria-label="anchor" href="#imbalance-aware-metrics--bootstrap-cis-0-9-110"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="honest-reporting-0-9-110">Honest reporting<a class="anchor" aria-label="anchor" href="#honest-reporting-0-9-110"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.109" id="soilkey-09109-2026-06-11">soilKey 0.9.109 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09109-2026-06-11"></a></h2>
 <p>The “<strong>CRAN release hardening</strong>” release. A readiness audit found that a full  was clean only because CI did not pass ; under , 545 exported function topics were missing a  section – a near-certain CRAN rejection. This release fixes that and tightens release hygiene.  (the engine is documentation-only here; the deterministic key dispatches its predicates by name exactly as before).</p>

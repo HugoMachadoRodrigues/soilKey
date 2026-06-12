@@ -1,5 +1,22 @@
 # Changelog
 
+## soilKey 0.9.110 (2026-06-11)
+
+The “**benchmark methodology**” release (front B1 of the accuracy work).
+A readiness audit found the benchmark numbers were not yet defensible: a
+sampling bug starved sparsely-labelled systems, the reports gave only
+point accuracy, and there was no baseline to read accuracy against. This
+release makes the measurement honest and paper-ready. – every edit is in
+the benchmark harness; canonical fixtures are byte-identical. (The
+accuracy-raising engine work – the argic/ferralic/nitic discriminator –
+is a separate follow-up, “B2”.)
+
+### Sampling fix (filter-then-cap)
+
+### Imbalance-aware metrics + bootstrap CIs
+
+### Honest reporting
+
 ## soilKey 0.9.109 (2026-06-11)
 
 The “**CRAN release hardening**” release. A readiness audit found that a

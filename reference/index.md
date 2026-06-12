@@ -1771,11 +1771,40 @@ pública curada.
 - [`.benchmark_available_datasets()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_available_datasets.md)
   : Which datasets in \`paths\` actually have their files/dirs present?
 
+- [`.benchmark_bootstrap_metrics()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_bootstrap_metrics.md)
+  : Reproducible bootstrap 95% CIs for the headline metrics
+
 - [`.benchmark_default_paths()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_default_paths.md)
   : Default local paths for the reference benchmark datasets
 
+- [`.benchmark_filter_then_cap()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_filter_then_cap.md)
+  : Filter a pedon list to those carrying \`sys\`'s reference label,
+  THEN cap at \`max_n\` via the reproducible (seed-42) sample. The order
+  matters: capping before filtering (the pre-v0.9.110 bug) starves
+  sparsely-labelled systems – e.g. only a handful of FEBR pedons carry a
+  USDA label, so a head/random cap over the whole set left FEBR-USDA at
+  n=3 despite hundreds of labelled rows.
+
+- [`.benchmark_has_reference()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_has_reference.md)
+  : Does a pedon carry a usable reference label for \`sys\`?
+
+- [`.benchmark_metrics_from_confusion()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_metrics_from_confusion.md)
+  : Comprehensive classification metrics from a pooled confusion matrix
+
+- [`.benchmark_normalise_febr_ref()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_normalise_febr_ref.md)
+  : Canonicalise FEBR WRB/USDA reference labels to the order/RSG
+  comparison level (no-op for SiBCS, which
+  \`benchmark_run_classification\` canonicalises itself).
+  \`normalise_febr_wrb\`/\`\_usda\` are idempotent on already-reduced
+  WRB names but return NA on an already-order USDA string, so apply only
+  to the raw reference field, only once, only for FEBR.
+
 - [`.benchmark_one_dataset_one_system()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_one_dataset_one_system.md)
   : Single (dataset, system) benchmark call dispatched by name
+
+- [`.benchmark_ref_field()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_ref_field.md)
+  : Site field that carries a system's reference label (mirrors the
+  \`ref_field\` switch in \`benchmark_run_classification\`).
 
 - [`.benchmark_reproducible_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-benchmark_reproducible_sample.md)
   : Reproducible random row sample (seed 42), restoring the global RNG
