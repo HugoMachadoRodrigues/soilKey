@@ -1070,6 +1070,8 @@ helpers for pkg vs vendored data sources.
   : USDA Soil Taxonomy diagnostic features canonical table
 - [`clear_kst13_cache()`](https://hugomachadorodrigues.github.io/soilKey/reference/clear_kst13_cache.md)
   : Clear the in-memory KST13 cache
+- [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md)
+  : Honest taxonomic-completeness report
 
 ## SmartSolos / Embrapa AgroAPI integration (v0.9.54)
 
@@ -1833,6 +1835,20 @@ pública curada.
 
 - [`.col_at()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-col_at.md)
   : Robust per-layer column accessor.
+
+- [`.coverage_markdown()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_markdown.md)
+  : Render a coverage result as Markdown.
+
+- [`.coverage_registered_usda_subgroups()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_subgroups.md)
+  : Subgroup full-names registered in the USDA subgroup rule base.
+
+- [`.coverage_usda_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_subgroup.md)
+  : USDA subgroup coverage (registered vs canonical KST 13th edition).
+
+- [`.coverage_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_wrb_qualifiers.md)
+  :
+
+  WRB 2022 qualifier coverage (registered `qual_*` vs canonical).
 
 - [`.detect_color_undetermined_fallback()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.md)
   : Detecta fallback "cor a determinar" no nivel de subordem SiBCS
@@ -2733,6 +2749,9 @@ pública curada.
   any layer in upper 100 cm." Proxy via existing `al_cmol` (exchangeable
   Al) when al_kcl_cmol absent.
 
+- [`qual_aeolic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_aeolic.md)
+  : Aeolic qualifier (ae): aeolic (wind-sorted) material \<= 100 cm.
+
 - [`qual_albic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_albic.md)
   : Albic qualifier (ab): albic horizon \<= 100 cm.
 
@@ -3030,6 +3049,9 @@ pública curada.
 - [`qual_fractic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fractic.md)
   : Fractic qualifier (fc): fractures (cracks) within 100 cm
 
+- [`qual_fragic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_fragic.md)
+  : Fragic qualifier (fg): fragic horizon \<= 100 cm.
+
 - [`qual_garbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_garbic.md)
   :
 
@@ -3273,6 +3295,9 @@ pública curada.
 - [`qual_limnic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_limnic.md)
   : Limnic qualifier (lm): limnic material (lacustrine / marine
   subaquatic deposits) anywhere in the profile.
+
+- [`qual_limonic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_limonic.md)
+  : Limonic qualifier (lm): limonic (bog-iron) horizon \<= 100 cm.
 
 - [`qual_linic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_linic.md)
   :
@@ -3669,6 +3694,10 @@ pública curada.
 - [`qual_transportic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_transportic.md)
   : Transportic qualifier (tr): transported material (Technosols /
   Regosols)
+
+- [`qual_tsitelic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_tsitelic.md)
+  : Tsitelic qualifier (ts): tsitelic (red, low-activity) horizon \<=
+  100 cm.
 
 - [`qual_turbic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.md)
   :

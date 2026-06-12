@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.112</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.113</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,34 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.113" id="soilkey-09113-2026-06-12">soilKey 0.9.113 (2026-06-12)<a class="anchor" aria-label="anchor" href="#soilkey-09113-2026-06-12"></a></h2>
+<p>The “<strong>USDA subgroup completeness, honestly measured</strong>” release (taxonomic completeness front C). Adds 829 missing Soil Taxonomy 13th-edition subgroups to the deterministic key, raising measured subgroup coverage from 40.2 % to 70.8 %, and ships  – an auditable, by-name diff of registered-vs-canonical taxa that replaces hand-maintained coverage claims. The engine, the 44 canonical fixtures’ great groups, and the WRB / SiBCS keys are untouched; the only outputs that change are four canonical fixtures that gain a  subgroup of the  great group.</p>
+<div class="section level3">
+<h3 id="honest-measurement--0-9-113">Honest measurement: <a class="anchor" aria-label="anchor" href="#honest-measurement--0-9-113"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="usda-subgroup-completeness-subgroups-----0-9-113">USDA subgroup completeness (+829 subgroups, 40.2 % -&gt; 70.8 %)<a class="anchor" aria-label="anchor" href="#usda-subgroup-completeness-subgroups-----0-9-113"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="kssl-subgroup-safety-gate-n--0-9-113">KSSL subgroup safety gate (n = 2895)<a class="anchor" aria-label="anchor" href="#kssl-subgroup-safety-gate-n--0-9-113"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="four-canonical-fixtures-gain-a-more-specific-subgroup-0-9-113">Four canonical fixtures gain a more specific subgroup<a class="anchor" aria-label="anchor" href="#four-canonical-fixtures-gain-a-more-specific-subgroup-0-9-113"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="four-new-wrb-qualifiers-byte-identical-0-9-113">Four new WRB 2022 qualifiers (byte-identical)<a class="anchor" aria-label="anchor" href="#four-new-wrb-qualifiers-byte-identical-0-9-113"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="deferred-to-phase-0-9-113">Deferred to Phase-2<a class="anchor" aria-label="anchor" href="#deferred-to-phase-0-9-113"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.112" id="soilkey-09112-2026-06-11">soilKey 0.9.112 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09112-2026-06-11"></a></h2>
 <p>The “<strong>an argic horizon is never a Regosol</strong>” release (accuracy front B2, engine). The honest B1 benchmark exposed a correctness bug in the WRB key: a profile with a CONFIRMED argic (clay-illuvial B) horizon could drop to the Regosol catch-all – the gate for soils with NO diagnostic subsurface horizon – purely because the eutric/alic split (base saturation / Al-saturation) was unmeasured, leaving the Luvisol gate at .</p>

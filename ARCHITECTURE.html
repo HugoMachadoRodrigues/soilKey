@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.112</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.113</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.113</strong></td>
+<td>
+<strong>USDA subgroup completeness + honest coverage (taxonomic front C).</strong> New exported <code>coverage_report(system)</code> measures registered-vs-canonical taxa <strong>by name</strong> (<code><a href="reference/kst13_codes.html">kst13_codes()</a></code> / <code><a href="reference/wrb2022_canonical.html">wrb2022_canonical()</a></code>), replacing hand-maintained coverage claims; by-name is required because soilKey’s internal great-group codes diverge from the Soil Taxonomy codes for 34 great groups (Hydrudands/Melanudands swapped, Entisol Fluvent/Psamment blocks swapped, …). A verified modifier→predicate map (49 global + 15 order-dependent, every predicate confirmed) drives a generator that inserts <strong>+829</strong> missing canonical subgroups via <strong>append-before-default</strong> (new specifics sit before each <code>Typic</code>; <code>run_taxa_list</code>’s first-match + last-fallback makes this provably unable to change any profile that already matched a specific subgroup — only Typic fall-throughs can refine; existing hand-tuned entries preserved byte-for-byte, great group invariant). <strong>USDA subgroup coverage 40.2% → 70.8% (1092 → 1921 of 2715).</strong> A KSSL n=2895 before/after gate excluded four loose intergrade proxies (<code>alfic</code>/<code>fluventic</code>/<code>psammentic</code>/<code>vertic</code>) that turned previously-correct Typics into wrong specifics; <code>thaptic</code>/<code>rhodic</code>/<code>petronodic</code>/<code>umbric</code> passed with 0 regressions. Four canonical fixtures gain a more-specific same-great-group subgroup (andosol→Thaptic Hydrudands, argissolo→Rhodic Kandiudults, calcisol→Petronodic Haplocalcids, planossolo→Umbric Albaqualfs); the other 40 byte-identical. Plus 4 new WRB qualifiers (<code>qual_aeolic</code>/<code>fragic</code>/<code>limonic</code>/<code>tsitelic</code>, wired per RSG; qualifier coverage 225→229 of 234) — <strong>0 WRB fixture change</strong>. Phase-2: moisture regimes, aeric/humic, the 4 excluded intergrades, Claric/Panpaic/Sideralic.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.112</strong></td>
 <td>

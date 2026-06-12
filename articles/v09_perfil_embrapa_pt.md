@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55734ad1cf20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x563f43256f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -203,9 +203,9 @@ print(res$wrb)
 #> redoximorphic_features_pct, FALSE, al_ox_pct, fe_ox_pct,
 #> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
 #> slickensides, TRUE, FALSE, FALSE, coarse_fragments_pct, FALSE, FALSE,
-#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, TRUE,
-#> FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,
-#> coarse_fragments_pct, TRUE
+#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
+#> TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE,
+#> FALSE, coarse_fragments_pct, TRUE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -271,7 +271,7 @@ print(res$usda)
 #> 
 #> ── ClassificationResult (USDA Soil Taxonomy) ──
 #> 
-#> Name: Typic Kandiudults
+#> Name: Rhodic Kandiudults
 #> RSG/Order: Ultisols
 #> Evidence grade: A
 #> 
@@ -287,7 +287,7 @@ print(res$usda)
 #> 4. ??  -- NA
 #> 5. HCC Kandiudults -- NA
 #> 6. ??  -- NA
-#> 7. HCCD Typic Kandiudults -- NA
+#> 7. HCCP Rhodic Kandiudults -- NA
 ```
 
 USDA-ST devolve a ordem (ate o nivel atualmente disponivel): **Ultisol**
@@ -311,7 +311,7 @@ data.frame(
 #>                                                                                  Classe
 #> 1                    Argissolos Vermelhos Distroficos tipicos, argilosa, moderado, Tmob
 #> 2 Ferralic Cutanic Acrisol (Loamic, Dystric, Ochric, Profondic, Rhodic, Rubic, Chromic)
-#> 3                                                                     Typic Kandiudults
+#> 3                                                                    Rhodic Kandiudults
 #>   EvidGrade
 #> 1         A
 #> 2         A

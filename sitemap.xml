@@ -216,6 +216,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/continuous_rock.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cryoturbation_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cumulic_subgroup_usda.html</loc></url>
@@ -269,6 +270,10 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-check_predict_inputs.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-classify_decomposition.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-col_at.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_markdown.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_subgroups.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_subgroup.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_febr_munsell_columns.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-escape_latex.html</loc></url>
@@ -692,6 +697,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_acric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_acroxic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_activic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_aeolic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_albic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_alcalic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_alic.html</loc></url>
@@ -765,6 +771,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_fluvic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_folic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_fractic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_fragic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_garbic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_gelic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_gelistagnic.html</loc></url>
@@ -816,6 +823,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_leptic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_lignic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_limnic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_limonic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_linic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_lithic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_litholinic.html</loc></url>
@@ -916,6 +924,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_tonguic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_toxic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_transportic.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_tsitelic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_turbic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_umbric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_urbic.html</loc></url>

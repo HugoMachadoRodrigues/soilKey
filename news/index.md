@@ -1,5 +1,29 @@
 # Changelog
 
+## soilKey 0.9.113 (2026-06-12)
+
+The “**USDA subgroup completeness, honestly measured**” release
+(taxonomic completeness front C). Adds 829 missing Soil Taxonomy
+13th-edition subgroups to the deterministic key, raising measured
+subgroup coverage from 40.2 % to 70.8 %, and ships – an auditable,
+by-name diff of registered-vs-canonical taxa that replaces
+hand-maintained coverage claims. The engine, the 44 canonical fixtures’
+great groups, and the WRB / SiBCS keys are untouched; the only outputs
+that change are four canonical fixtures that gain a subgroup of the
+great group.
+
+### Honest measurement:
+
+### USDA subgroup completeness (+829 subgroups, 40.2 % -\> 70.8 %)
+
+### KSSL subgroup safety gate (n = 2895)
+
+### Four canonical fixtures gain a more specific subgroup
+
+### Four new WRB 2022 qualifiers (byte-identical)
+
+### Deferred to Phase-2
+
 ## soilKey 0.9.112 (2026-06-11)
 
 The “**an argic horizon is never a Regosol**” release (accuracy front
