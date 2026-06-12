@@ -147,6 +147,11 @@ subgroups:
       tests:
         all_of:
           - petroferric_contact_usda: {}
+    - code: "ECAC"
+      name: "Lithic Sombriustox"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 125 }
     - code: "ECAB"
       name: "Typic Sombriustox"
       tests:
@@ -188,6 +193,24 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "ECBI"
+      name: "Aquic Petroferric Acrustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "ECBJ"
+      name: "Aquic Lithic Acrustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "ECBK"
+      name: "Anionic Aquic Acrustox"
+      tests:
+        all_of:
+          - anionic_subgroup_usda: {}
+          - aquic_subgroup_usda: {}
     - code: "ECBH"
       name: "Typic Acrustox"
       tests:
@@ -219,6 +242,23 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "ECCG"
+      name: "Aquic Petroferric Eutrustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "ECCH"
+      name: "Aquic Lithic Eutrustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "ECCI"
+      name: "Plinthic Eutrustox"
+      tests:
+        all_of:
+          - plinthic_subgroup_usda: {}
     - code: "ECCF"
       name: "Typic Eutrustox"
       tests:
@@ -245,6 +285,23 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "ECDF"
+      name: "Aquic Petroferric Kandiustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "ECDG"
+      name: "Petroferric Kandiustox"
+      tests:
+        all_of:
+          - petroferric_contact_usda: {}
+    - code: "ECDH"
+      name: "Aquic Lithic Kandiustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
     - code: "ECDE"
       name: "Typic Kandiustox"
       tests:
@@ -281,6 +338,23 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "ECEH"
+      name: "Aquic Petroferric Haplustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "ECEI"
+      name: "Aquic Lithic Haplustox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "ECEJ"
+      name: "Oxyaquic Haplustox"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
     - code: "ECEG"
       name: "Typic Haplustox"
       tests:
@@ -294,6 +368,11 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EDAC"
+      name: "Petroferric Sombriperox"
+      tests:
+        all_of:
+          - petroferric_contact_usda: {}
     - code: "EDAB"
       name: "Typic Sombriperox"
       tests:
@@ -335,6 +414,18 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EDBI"
+      name: "Aquic Petroferric Acroperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EDBJ"
+      name: "Aquic Lithic Acroperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
     - code: "EDBH"
       name: "Typic Acroperox"
       tests:
@@ -361,6 +452,28 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
+    - code: "EDCF"
+      name: "Aquic Petroferric Eutroperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EDCG"
+      name: "Aquic Lithic Eutroperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EDCH"
+      name: "Plinthic Eutroperox"
+      tests:
+        all_of:
+          - plinthic_subgroup_usda: {}
+    - code: "EDCI"
+      name: "Rhodic Eutroperox"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "EDCE"
       name: "Typic Eutroperox"
       tests:
@@ -382,6 +495,33 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EDDE"
+      name: "Aquic Petroferric Kandiperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EDDF"
+      name: "Petroferric Kandiperox"
+      tests:
+        all_of:
+          - petroferric_contact_usda: {}
+    - code: "EDDG"
+      name: "Aquic Lithic Kandiperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EDDH"
+      name: "Aquic Kandiperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "EDDI"
+      name: "Andic Kandiperox"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "EDDD"
       name: "Typic Kandiperox"
       tests:
@@ -413,6 +553,28 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EDEG"
+      name: "Aquic Petroferric Haploperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EDEH"
+      name: "Aquic Lithic Haploperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EDEI"
+      name: "Aquic Haploperox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "EDEJ"
+      name: "Andic Haploperox"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "EDEF"
       name: "Typic Haploperox"
       tests:
@@ -426,6 +588,11 @@ subgroups:
       tests:
         all_of:
           - petroferric_contact_usda: {}
+    - code: "EEAC"
+      name: "Lithic Sombriudox"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 125 }
     - code: "EEAB"
       name: "Typic Sombriudox"
       tests:
@@ -462,6 +629,24 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EEBH"
+      name: "Aquic Petroferric Acrudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EEBI"
+      name: "Aquic Lithic Acrudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EEBJ"
+      name: "Anionic Aquic Acrudox"
+      tests:
+        all_of:
+          - anionic_subgroup_usda: {}
+          - aquic_subgroup_usda: {}
     - code: "EEBG"
       name: "Typic Acrudox"
       tests:
@@ -488,6 +673,23 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EECF"
+      name: "Aquic Petroferric Eutrudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EECG"
+      name: "Aquic Lithic Eutrudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EECH"
+      name: "Plinthic Eutrudox"
+      tests:
+        all_of:
+          - plinthic_subgroup_usda: {}
     - code: "EECE"
       name: "Typic Eutrudox"
       tests:
@@ -514,6 +716,28 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EEDF"
+      name: "Aquic Petroferric Kandiudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EEDG"
+      name: "Petroferric Kandiudox"
+      tests:
+        all_of:
+          - petroferric_contact_usda: {}
+    - code: "EEDH"
+      name: "Aquic Lithic Kandiudox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EEDI"
+      name: "Andic Kandiudox"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "EEDE"
       name: "Typic Kandiudox"
       tests:
@@ -550,6 +774,23 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EEEH"
+      name: "Aquic Petroferric Hapludox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - petroferric_contact_usda: {}
+    - code: "EEEI"
+      name: "Aquic Lithic Hapludox"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EEEJ"
+      name: "Andic Hapludox"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "EEEG"
       name: "Typic Hapludox"
       tests:

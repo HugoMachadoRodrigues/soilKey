@@ -40,6 +40,11 @@ subgroups:
       tests:
         all_of:
           - umbric_subgroup_usda: {}
+    - code: "HABD"
+      name: "Plinthic Fragiaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
     - code: "HABC"
       name: "Typic Fragiaquults"
       tests:
@@ -82,6 +87,33 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HADE"
+      name: "Acraquoxic Kandiaquults"
+      tests:
+        all_of:
+          - acric_andisol_usda: {}
+    - code: "HADF"
+      name: "Arenic Plinthic Kandiaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HADG"
+      name: "Arenic Umbric Kandiaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - umbric_subgroup_usda: {}
+    - code: "HADH"
+      name: "Arenic Kandiaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HADI"
+      name: "Grossarenic Kandiaquults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "HADD"
       name: "Typic Kandiaquults"
       tests:
@@ -98,6 +130,21 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAED"
+      name: "Aquandic Kanhaplaquults"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "HAEE"
+      name: "Plinthic Kanhaplaquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HAEF"
+      name: "Umbric Kanhaplaquults"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
     - code: "HAEC"
       name: "Typic Kanhaplaquults"
       tests:
@@ -119,6 +166,28 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HAFE"
+      name: "Arenic Plinthic Paleaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HAFF"
+      name: "Arenic Umbric Paleaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - umbric_subgroup_usda: {}
+    - code: "HAFG"
+      name: "Arenic Paleaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HAFH"
+      name: "Grossarenic Paleaquults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "HAFD"
       name: "Typic Paleaquults"
       tests:
@@ -135,6 +204,11 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "HAGD"
+      name: "Plinthic Umbraquults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
     - code: "HAGC"
       name: "Typic Umbraquults"
       tests:
@@ -156,6 +230,21 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HAHE"
+      name: "Arenic Epiaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HAHF"
+      name: "Grossarenic Epiaquults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+    - code: "HAHG"
+      name: "Fragic Epiaquults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
     - code: "HAHD"
       name: "Typic Epiaquults"
       tests:
@@ -177,6 +266,16 @@ subgroups:
       tests:
         all_of:
           - umbric_subgroup_usda: {}
+    - code: "HAIE"
+      name: "Arenic Endoaquults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HAIF"
+      name: "Grossarenic Endoaquults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "HAID"
       name: "Typic Endoaquults"
       tests:
@@ -227,6 +326,11 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HBCE"
+      name: "Andic Kandihumults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "HBCD"
       name: "Typic Kandihumults"
       tests:
@@ -243,6 +347,11 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "HBDD"
+      name: "Andic Kanhaplohumults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "HBDC"
       name: "Typic Kanhaplohumults"
       tests:
@@ -259,6 +368,21 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HBED"
+      name: "Aquandic Palehumults"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "HBEE"
+      name: "Andic Palehumults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HBEF"
+      name: "Oxyaquic Palehumults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
     - code: "HBEC"
       name: "Typic Palehumults"
       tests:
@@ -280,6 +404,21 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "HBFE"
+      name: "Aquandic Haplohumults"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "HBFF"
+      name: "Plinthic Haplohumults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HBFG"
+      name: "Oxyaquic Haplohumults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
     - code: "HBFD"
       name: "Typic Haplohumults"
       tests:
@@ -314,6 +453,16 @@ subgroups:
       tests:
         all_of:
           - humic_andisol_usda: {}
+    - code: "HCBD"
+      name: "Arenic Fragiudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HCBE"
+      name: "Plinthic Fragiudults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
     - code: "HCBC"
       name: "Typic Fragiudults"
       tests:
@@ -335,6 +484,71 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HCCE"
+      name: "Aquic Arenic Kandiudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "HCCF"
+      name: "Arenic Plinthic Kandiudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCCG"
+      name: "Arenic Rhodic Kandiudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - rhodic_subgroup_usda: {}
+    - code: "HCCH"
+      name: "Arenic Kandiudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HCCI"
+      name: "Grossarenic Plinthic Kandiudults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCCJ"
+      name: "Grossarenic Kandiudults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+    - code: "HCCK"
+      name: "Acrudoxic Plinthic Kandiudults"
+      tests:
+        all_of:
+          - acric_andisol_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCCL"
+      name: "Acrudoxic Kandiudults"
+      tests:
+        all_of:
+          - acric_andisol_usda: {}
+    - code: "HCCM"
+      name: "Aquandic Kandiudults"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "HCCN"
+      name: "Andic Kandiudults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HCCO"
+      name: "Oxyaquic Kandiudults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "HCCP"
+      name: "Rhodic Kandiudults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "HCCD"
       name: "Typic Kandiudults"
       tests:
@@ -351,6 +565,47 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "HCDD"
+      name: "Arenic Plinthic Kanhapludults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCDE"
+      name: "Arenic Kanhapludults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HCDF"
+      name: "Acrudoxic Kanhapludults"
+      tests:
+        all_of:
+          - acric_andisol_usda: {}
+    - code: "HCDG"
+      name: "Andic Kanhapludults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HCDH"
+      name: "Oxyaquic Kanhapludults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "HCDI"
+      name: "Plinthic Kanhapludults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HCDJ"
+      name: "Fragic Kanhapludults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "HCDK"
+      name: "Rhodic Kanhapludults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "HCDC"
       name: "Typic Kanhapludults"
       tests:
@@ -372,6 +627,60 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HCEE"
+      name: "Aquic Arenic Paleudults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "HCEF"
+      name: "Oxyaquic Paleudults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "HCEG"
+      name: "Lamellic Paleudults"
+      tests:
+        all_of:
+          - lamellic_subgroup_usda: {}
+    - code: "HCEH"
+      name: "Arenic Plinthic Paleudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCEI"
+      name: "Grossarenic Plinthic Paleudults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HCEJ"
+      name: "Arenic Rhodic Paleudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - rhodic_subgroup_usda: {}
+    - code: "HCEK"
+      name: "Arenic Paleudults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HCEL"
+      name: "Grossarenic Paleudults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+    - code: "HCEM"
+      name: "Fragic Paleudults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "HCEN"
+      name: "Rhodic Paleudults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "HCED"
       name: "Typic Paleudults"
       tests:
@@ -414,6 +723,37 @@ subgroups:
       tests:
         all_of:
           - humic_andisol_usda: {}
+    - code: "HCGF"
+      name: "Aquic Arenic Hapludults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "HCGG"
+      name: "Fragic Hapludults"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "HCGH"
+      name: "Oxyaquic Hapludults"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "HCGI"
+      name: "Lamellic Hapludults"
+      tests:
+        all_of:
+          - lamellic_subgroup_usda: {}
+    - code: "HCGJ"
+      name: "Arenic Hapludults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HCGK"
+      name: "Grossarenic Hapludults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "HCGE"
       name: "Typic Hapludults"
       tests:
@@ -429,6 +769,11 @@ subgroups:
           - lithic_contact_usda: { max_top_cm: 50 }
     - code: "HDAB"
       name: "Aquic Plinthustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDAD"
+      name: "Haplic Plinthustults"
       tests:
         all_of:
           - aquic_subgroup_usda: {}
@@ -448,6 +793,37 @@ subgroups:
       tests:
         all_of:
           - plinth_subgroup_usda: {}
+    - code: "HDBD"
+      name: "Aquic Kandiustults"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "HDBE"
+      name: "Arenic Plinthic Kandiustults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - plinth_subgroup_usda: {}
+    - code: "HDBF"
+      name: "Arenic Kandiustults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HDBG"
+      name: "Andic Kandiustults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HDBH"
+      name: "Aridic Kandiustults"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "HDBI"
+      name: "Rhodic Kandiustults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "HDBC"
       name: "Typic Kandiustults"
       tests:
@@ -464,6 +840,31 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "HDCD"
+      name: "Arenic Kanhaplustults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HDCE"
+      name: "Andic Kanhaplustults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "HDCF"
+      name: "Plinthic Kanhaplustults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "HDCG"
+      name: "Aridic Kanhaplustults"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "HDCH"
+      name: "Rhodic Kanhaplustults"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
     - code: "HDCC"
       name: "Typic Kanhaplustults"
       tests:
@@ -522,6 +923,21 @@ subgroups:
       tests:
         all_of:
           - humic_andisol_usda: {}
+    - code: "HDFE"
+      name: "Petroferric Haplustults"
+      tests:
+        all_of:
+          - petroferric_contact_usda: {}
+    - code: "HDFF"
+      name: "Arenic Haplustults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HDFG"
+      name: "Plinthic Haplustults"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
     - code: "HDFD"
       name: "Typic Haplustults"
       tests:
@@ -540,6 +956,16 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "HEAD"
+      name: "Aquandic Palexerults"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "HEAE"
+      name: "Andic Palexerults"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
     - code: "HEAC"
       name: "Typic Palexerults"
       tests:
@@ -561,6 +987,21 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "HEBE"
+      name: "Lamellic Haploxerults"
+      tests:
+        all_of:
+          - lamellic_subgroup_usda: {}
+    - code: "HEBF"
+      name: "Arenic Haploxerults"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "HEBG"
+      name: "Grossarenic Haploxerults"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "HEBD"
       name: "Typic Haploxerults"
       tests:

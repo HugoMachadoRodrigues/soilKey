@@ -35,6 +35,16 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GABD"
+      name: "Duric Petrocryids"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "GABE"
+      name: "Petrogypsic Petrocryids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
     - code: "GABC"
       name: "Typic Petrocryids"
       tests:
@@ -51,6 +61,16 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GACD"
+      name: "Calcic Gypsicryids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GACE"
+      name: "Vitrandic Gypsicryids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GACC"
       name: "Typic Gypsicryids"
       tests:
@@ -67,6 +87,16 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GADD"
+      name: "Natric Argicryids"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
+    - code: "GADE"
+      name: "Vitrandic Argicryids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GADC"
       name: "Typic Argicryids"
       tests:
@@ -83,6 +113,11 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GAED"
+      name: "Vitrandic Calcicryids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GAEC"
       name: "Typic Calcicryids"
       tests:
@@ -104,6 +139,11 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GAFE"
+      name: "Vitrandic Haplocryids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GAFD"
       name: "Typic Haplocryids"
       tests:
@@ -122,6 +162,11 @@ subgroups:
       tests:
         all_of:
           - gypsic_subgroup_usda: {}
+    - code: "GBAD"
+      name: "Calcic Aquisalids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "GBAC"
       name: "Typic Aquisalids"
       tests:
@@ -138,6 +183,16 @@ subgroups:
       tests:
         all_of:
           - gypsic_subgroup_usda: {}
+    - code: "GBBD"
+      name: "Duric Haplosalids"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "GBBE"
+      name: "Petrogypsic Haplosalids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
     - code: "GBBC"
       name: "Typic Haplosalids"
       tests:
@@ -156,6 +211,11 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GCAD"
+      name: "Vitrandic Natridurids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GCAC"
       name: "Typic Natridurids"
       tests:
@@ -172,6 +232,11 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GCBD"
+      name: "Vitrandic Argidurids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GCBC"
       name: "Typic Argidurids"
       tests:
@@ -193,6 +258,11 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GCCE"
+      name: "Vitrandic Haplodurids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GCCD"
       name: "Typic Haplodurids"
       tests:
@@ -211,6 +281,16 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GDAD"
+      name: "Petrocalcic Petrogypsids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GDAE"
+      name: "Vitrandic Petrogypsids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GDAC"
       name: "Typic Petrogypsids"
       tests:
@@ -227,6 +307,16 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "GDBD"
+      name: "Lithic Natrigypsids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDBE"
+      name: "Vitrandic Natrigypsids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GDBC"
       name: "Typic Natrigypsids"
       tests:
@@ -243,6 +333,16 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "GDCD"
+      name: "Lithic Argigypsids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDCE"
+      name: "Vitrandic Argigypsids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GDCC"
       name: "Typic Argigypsids"
       tests:
@@ -259,6 +359,16 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GDDD"
+      name: "Petronodic Calcigypsids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GDDE"
+      name: "Vitrandic Calcigypsids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GDDC"
       name: "Typic Calcigypsids"
       tests:
@@ -280,6 +390,16 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GDEE"
+      name: "Petronodic Haplogypsids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GDEF"
+      name: "Vitrandic Haplogypsids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GDED"
       name: "Typic Haplogypsids"
       tests:
@@ -298,6 +418,21 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GEAD"
+      name: "Petrogypsic Petroargids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
+    - code: "GEAE"
+      name: "Duric Petroargids"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "GEAF"
+      name: "Natric Petroargids"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
     - code: "GEAC"
       name: "Typic Petroargids"
       tests:
@@ -319,6 +454,26 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GEBE"
+      name: "Lithic Natrargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GEBF"
+      name: "Petronodic Natrargids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GEBG"
+      name: "Haplic Natrargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GEBH"
+      name: "Vitrandic Natrargids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GEBD"
       name: "Typic Natrargids"
       tests:
@@ -335,6 +490,31 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GECD"
+      name: "Aquic Paleargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GECE"
+      name: "Arenic Paleargids"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "GECF"
+      name: "Calcic Paleargids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GECG"
+      name: "Petronodic Paleargids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GECH"
+      name: "Vitrandic Paleargids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GECC"
       name: "Typic Paleargids"
       tests:
@@ -351,6 +531,16 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GEDD"
+      name: "Aquic Gypsiargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GEDE"
+      name: "Vitrandic Gypsiargids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GEDC"
       name: "Typic Gypsiargids"
       tests:
@@ -372,6 +562,31 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GEEE"
+      name: "Lithic Calciargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GEEF"
+      name: "Aquic Calciargids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GEEG"
+      name: "Arenic Calciargids"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "GEEH"
+      name: "Petronodic Calciargids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GEEI"
+      name: "Vitrandic Calciargids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GEED"
       name: "Typic Calciargids"
       tests:
@@ -398,6 +613,21 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "GEFF"
+      name: "Arenic Haplargids"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "GEFG"
+      name: "Petronodic Haplargids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GEFH"
+      name: "Vitrandic Haplargids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GEFE"
       name: "Typic Haplargids"
       tests:
@@ -416,6 +646,27 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GFAD"
+      name: "Aquic Petrocalcids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GFAE"
+      name: "Natric Petrocalcids"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
+    - code: "GFAF"
+      name: "Calcic Lithic Petrocalcids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GFAG"
+      name: "Calcic Petrocalcids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "GFAC"
       name: "Typic Petrocalcids"
       tests:
@@ -437,6 +688,26 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "GFBE"
+      name: "Duric Haplocalcids"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "GFBF"
+      name: "Petronodic Haplocalcids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GFBG"
+      name: "Sodic Haplocalcids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GFBH"
+      name: "Vitrandic Haplocalcids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GFBD"
       name: "Typic Haplocalcids"
       tests:
@@ -455,6 +726,21 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GGAD"
+      name: "Petronodic Aquicambids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GGAE"
+      name: "Vitrandic Aquicambids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "GGAF"
+      name: "Thapto-Humic Aquicambids"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
     - code: "GGAC"
       name: "Typic Aquicambids"
       tests:
@@ -471,6 +757,16 @@ subgroups:
       tests:
         all_of:
           - vertic_aridisol_usda: {}
+    - code: "GGBD"
+      name: "Sodic Petrocambids"
+      tests:
+        all_of:
+          - sodic_subgroup_usda: {}
+    - code: "GGBE"
+      name: "Vitrandic Petrocambids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "GGBC"
       name: "Typic Petrocambids"
       tests:
@@ -497,6 +793,21 @@ subgroups:
       tests:
         all_of:
           - sodic_subgroup_usda: {}
+    - code: "GGCF"
+      name: "Petronodic Haplocambids"
+      tests:
+        all_of:
+          - petronodic_subgroup_usda: {}
+    - code: "GGCG"
+      name: "Vitrandic Haplocambids"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "GGCH"
+      name: "Thapto-Humic Haplocambids"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
     - code: "GGCE"
       name: "Typic Haplocambids"
       tests:

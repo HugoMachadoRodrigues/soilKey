@@ -1,3 +1,102 @@
+# soilKey 0.9.113 (2026-06-12)
+
+The "**USDA subgroup completeness, honestly measured**" release (taxonomic
+completeness front C). Adds 829 missing Soil Taxonomy 13th-edition subgroups to
+the deterministic key, raising measured subgroup coverage from 40.2 % to
+70.8 %, and ships \code{coverage_report()} -- an auditable, by-name diff of
+registered-vs-canonical taxa that replaces hand-maintained coverage claims. The
+engine, the 44 canonical fixtures' great groups, and the WRB / SiBCS keys are
+untouched; the only outputs that change are four canonical fixtures that gain a
+\strong{more specific} subgroup of the \strong{same} great group.
+
+## Honest measurement: \code{coverage_report()}
+
+\itemize{
+  \item New exported \code{coverage_report(system)} for
+        \code{"usda_subgroup"} and \code{"wrb_qualifiers"}. It compares by
+        \strong{name} (never by code) against the canonical sets from
+        \code{kst13_codes()} and \code{wrb2022_canonical()}, returning per-order
+        / per-qualifier-group coverage plus the exact list of missing taxa, and
+        optionally writes a Markdown report. By-name is load-bearing:
+        soilKey's internal great-group codes \strong{diverge} from the Soil
+        Taxonomy codes for 34 great groups (e.g. Hydrudands and Melanudands are
+        swapped; the Entisol Fluvent / Psamment blocks are swapped), so a
+        code-set diff would be meaningless.
+  \item Reports written to \code{inst/benchmarks/reports/coverage_*_v09113.md}.
+}
+
+## USDA subgroup completeness (+829 subgroups, 40.2 % -> 70.8 %)
+
+\itemize{
+  \item A verified modifier-to-predicate map (49 unambiguous global modifiers +
+        15 order-dependent ones, every predicate confirmed to exist) drives a
+        generator that inserts each missing canonical subgroup whose modifiers
+        all resolve. Multi-word intergrade names (Aqualfic, Fragiaquic, ...) and
+        modifiers with no sound predicate are \strong{deliberately skipped}, not
+        guessed.
+  \item Insertion is \strong{append-before-default}: new specifics go after all
+        existing specifics and immediately before the \code{Typic} default.
+        Because \code{run_taxa_list} is first-match with a last-entry fallback,
+        this \strong{cannot} change any profile that already matched a specific
+        subgroup -- only profiles that were falling through to \code{Typic} can
+        gain a refinement. Existing hand-tuned entries are preserved
+        byte-for-byte; the great group is invariant.
+  \item Gelisols, Histosols and Spodosols were already complete and stay at
+        100 %; Andisols reach 83.9 %, Aridisols (many modifiers still without a
+        sound predicate) remain lowest at 45.6 %.
+}
+
+## KSSL subgroup safety gate (n = 2895)
+
+\itemize{
+  \item Every candidate addition was validated on 2895 real KSSL+NASIS pedons
+        carrying a reference subgroup, classified before and after, per profile.
+        The strict rule: any predicate that turns a \strong{previously-correct
+        Typic} into a \strong{wrong} specific subgroup is excluded.
+  \item Four loose intergrade proxies -- \code{alfic}, \code{fluventic},
+        \code{psammentic}, \code{vertic} -- each caused such flips (4 / 2 / 2 /
+        1) and fired heavily without ever matching the reference; all four are
+        \strong{excluded} from Phase-1 (existing entries that use them are
+        retained -- only new additions are skipped). \code{thaptic},
+        \code{rhodic}, \code{petronodic} and \code{umbric} passed with zero
+        regressions and are kept.
+}
+
+## Four canonical fixtures gain a more specific subgroup
+
+\itemize{
+  \item \code{make_andosol_canonical}: Typic -> \strong{Thaptic} Hydrudands
+        (buried dark, organic-rich horizon at depth).
+  \item \code{make_argissolo_canonical}: Typic -> \strong{Rhodic} Kandiudults
+        (red Munsell hue in the subsoil -- the Argissolo Vermelho).
+  \item \code{make_calcisol_canonical}: Typic -> \strong{Petronodic}
+        Haplocalcids (carbonate nodules).
+  \item \code{make_planossolo_canonical}: Typic -> \strong{Umbric} Albaqualfs
+        (dark, low-base-saturation epipedon).
+  \item Each fires on genuine multi-condition evidence and is the same great
+        group as before; all 40 other USDA fixtures are byte-identical.
+}
+
+## Four new WRB 2022 qualifiers (byte-identical)
+
+\itemize{
+  \item \code{qual_aeolic}, \code{qual_fragic}, \code{qual_limonic} and
+        \code{qual_tsitelic} wrap diagnostics that already existed and are wired
+        per RSG in \code{inst/rules/wrb2022/qualifiers.yaml} (qualifier coverage
+        225 -> 229 of 234). \strong{Verified: zero change} across the 44
+        canonical WRB fixtures.
+}
+
+## Deferred to Phase-2
+
+\itemize{
+  \item Moisture-regime subgroup modifiers (xeric / ustic / udic), the
+        over-firing \code{aeric} / \code{humic} and the four excluded
+        intergrades (pending sounder predicates), and the
+        Claric / Panpaic / Sideralic qualifiers (which move fixtures and need
+        pedological review).
+}
+
 # soilKey 0.9.112 (2026-06-11)
 
 The "**an argic horizon is never a Regosol**" release (accuracy front B2,

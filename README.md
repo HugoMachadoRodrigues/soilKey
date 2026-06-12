@@ -3,14 +3,14 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.109](https://img.shields.io/badge/version-0.9.109-FF6B35?style=flat-square)
+![v0.9.113](https://img.shields.io/badge/version-0.9.113-FF6B35?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)
 [![SiBCS 5](https://img.shields.io/badge/SiBCS%205-13%20Orders%20%C2%B7%20938%20Subgroups-blue.svg?style=flat-square)](#-coverage)
-[![USDA ST 13](https://img.shields.io/badge/USDA%20ST%2013-12%20Orders%20%C2%B7%201288%20Subgroups-blue.svg?style=flat-square)](#-coverage)
+[![USDA ST 13](https://img.shields.io/badge/USDA%20ST%2013-12%20Orders%20%C2%B7%201921%2F2715%20Subgroups-blue.svg?style=flat-square)](#-coverage)
 <br/>
 [![X / Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=flat-square&logo=x&logoColor=white)](https://x.com/Hugo_MRodrigues)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--8070--8126-A6CE39.svg?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0000-0002-8070-8126)
@@ -28,13 +28,13 @@
 | **WRB 2022 — diagnostic properties**| ✅ shipped (17 / 17) | Chapter 3.2 complete.                                                                              |
 | **WRB 2022 — diagnostic materials** | ✅ shipped (16 / 16) | Chapter 3.3 complete.                                                                              |
 | **WRB 2022 — RSG key**              | ✅ shipped (32 / 32) | All Reference Soil Groups in canonical Chapter 4 order.                                            |
-| **WRB 2022 — qualifiers**           | ✅ shipped           | All principal + supplementary qualifiers from Chapter 6 wired with canonical ordering.            |
+| **WRB 2022 — qualifiers**           | ✅ shipped (229/234) | 229 of 234 canonical principal + supplementary qualifiers wired with canonical ordering (97.9%; by-name `coverage_report("wrb_qualifiers")`). |
 | **SiBCS 5 — Order**                 | ✅ shipped (13 / 13) | All 13 SiBCS Orders.                                                                               |
 | **SiBCS 5 — Suborder**              | ✅ shipped (44 / 44) | All 44 Suborders.                                                                                  |
 | **SiBCS 5 — Great Group**           | ✅ shipped (192 / 192)| All 192 Great Groups.                                                                              |
 | **SiBCS 5 — Subgroup**              | ✅ shipped (938 / 938)| All 938 Subgroups; full leaf-level resolution.                                                     |
 | **SiBCS 5 — Family (5th level)**    | ✅ shipped           | Up to 15 orthogonal adjectival dimensions.                                                         |
-| **USDA Soil Taxonomy 13 — Path C**  | ✅ shipped           | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / 1288).                                  |
+| **USDA Soil Taxonomy 13 — Path C**  | ✅ shipped (v0.9.113) | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / **1921 of 2715** canonical subgroups, 70.8% — by-name `coverage_report()`; +829 in v0.9.113). |
 | **USDA Soil Taxonomy 13 — Family**  | ✅ shipped (v0.9.104) | 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via `classify_usda(include_family = TRUE)`. Series (6th) needs the NRCS database — out of scope. |
 | **Multimodal extraction (VLM)**     | ✅ shipped           | Local-first via `ellmer` + Gemma 4 (Ollama). Schema-validated; LLM never touches the key.          |
 | **OSSL spectral gap-fill**          | ✅ shipped           | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones).      |
@@ -548,4 +548,4 @@ The package source is MIT. The bundled benchmark caches retain their respective 
 
 ---
 
-<sub>**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + qualifiers + supplementary + specifiers), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family, ≈1 200 classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, ≈1 700 classes). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).</sub>
+<sub>**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers, 97.9%), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family, ≈1 200 classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 1 921 of 2 715 canonical subgroups = 70.8%; run `coverage_report()` for the live by-name diff). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).</sub>

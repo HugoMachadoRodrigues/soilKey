@@ -42,6 +42,11 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IABE"
+      name: "Aquandic Argialbolls"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
     - code: "IABD"
       name: "Typic Argialbolls"
       tests:
@@ -65,6 +70,31 @@ subgroups:
       tests:
         all_of:
           - cumulic_subgroup_usda: {}
+    - code: "IBAE"
+      name: "Histic Cryaquolls"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "IBAF"
+      name: "Aquandic Cryaquolls"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "IBAG"
+      name: "Argic Cryaquolls"
+      tests:
+        all_of:
+          - argic_mollisol_usda: {}
+    - code: "IBAH"
+      name: "Calcic Cryaquolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IBAI"
+      name: "Thapto-Humic Cryaquolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
     - code: "IBAD"
       name: "Typic Cryaquolls"
       tests:
@@ -81,6 +111,11 @@ subgroups:
       tests:
         all_of:
           - argic_mollisol_usda: {}
+    - code: "IBBD"
+      name: "Natric Duraquolls"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
     - code: "IBBC"
       name: "Typic Duraquolls"
       tests:
@@ -97,6 +132,11 @@ subgroups:
       tests:
         all_of:
           - salic_subgroup_usda: {}
+    - code: "IBCD"
+      name: "Petrocalcic Natraquolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
     - code: "IBCC"
       name: "Typic Natraquolls"
       tests:
@@ -134,6 +174,16 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IBEE"
+      name: "Arenic Argiaquolls"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "IBEF"
+      name: "Grossarenic Argiaquolls"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
     - code: "IBED"
       name: "Typic Argiaquolls"
       tests:
@@ -155,6 +205,31 @@ subgroups:
       tests:
         all_of:
           - cumulic_subgroup_usda: {}
+    - code: "IBFE"
+      name: "Histic Epiaquolls"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "IBFF"
+      name: "Aquandic Epiaquolls"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "IBFG"
+      name: "Duric Epiaquolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "IBFH"
+      name: "Thapto-Humic Epiaquolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IBFI"
+      name: "Fluvaquentic Epiaquolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
     - code: "IBFD"
       name: "Typic Epiaquolls"
       tests:
@@ -181,6 +256,31 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "IBGF"
+      name: "Histic Endoaquolls"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "IBGG"
+      name: "Aquandic Endoaquolls"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "IBGH"
+      name: "Duric Endoaquolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "IBGI"
+      name: "Thapto-Humic Endoaquolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IBGJ"
+      name: "Fluvaquentic Endoaquolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
     - code: "IBGE"
       name: "Typic Endoaquolls"
       tests:
@@ -210,6 +310,11 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "ICBD"
+      name: "Entic Haprendolls"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "ICBC"
       name: "Typic Haprendolls"
       tests:
@@ -223,6 +328,36 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IDAC"
+      name: "Andic Haplogelolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IDAD"
+      name: "Aquic Haplogelolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IDAE"
+      name: "Oxyaquic Haplogelolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IDAF"
+      name: "Turbic Haplogelolls"
+      tests:
+        all_of:
+          - turbic_subgroup_usda: {}
+    - code: "IDAG"
+      name: "Cumulic Haplogelolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IDAH"
+      name: "Pachic Haplogelolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
     - code: "IDAB"
       name: "Typic Haplogelolls"
       tests:
@@ -241,6 +376,11 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IEAD"
+      name: "Calcic Duricryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IEAC"
       name: "Typic Duricryolls"
       tests:
@@ -273,6 +413,16 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IECD"
+      name: "Aquic Palecryolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IECE"
+      name: "Oxyaquic Palecryolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
     - code: "IECC"
       name: "Typic Palecryolls"
       tests:
@@ -294,6 +444,37 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IEDE"
+      name: "Andic Argicryolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IEDF"
+      name: "Vitrandic Argicryolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IEDG"
+      name: "Aquic Argicryolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IEDH"
+      name: "Oxyaquic Argicryolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IEDI"
+      name: "Calcic Pachic Argicryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IEDJ"
+      name: "Calcic Argicryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IEDD"
       name: "Typic Argicryolls"
       tests:
@@ -310,6 +491,16 @@ subgroups:
       tests:
         all_of:
           - petrocalcic_subgroup_usda: {}
+    - code: "IEED"
+      name: "Vitrandic Calcicryolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IEEE"
+      name: "Pachic Calcicryolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
     - code: "IEEC"
       name: "Typic Calcicryolls"
       tests:
@@ -336,6 +527,53 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IEFF"
+      name: "Andic Haplocryolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IEFG"
+      name: "Vitrandic Haplocryolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IEFH"
+      name: "Aquic Cumulic Haplocryolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - cumulic_subgroup_usda: {}
+    - code: "IEFI"
+      name: "Cumulic Haplocryolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IEFJ"
+      name: "Thapto-Humic Haplocryolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IEFK"
+      name: "Fluvaquentic Haplocryolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "IEFL"
+      name: "Oxyaquic Haplocryolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IEFM"
+      name: "Calcic Pachic Haplocryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IEFN"
+      name: "Calcic Haplocryolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IEFE"
       name: "Typic Haplocryolls"
       tests:
@@ -354,6 +592,21 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IFAD"
+      name: "Vitrandic Durixerolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IFAE"
+      name: "Aquic Durixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFAF"
+      name: "Haplic Durixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
     - code: "IFAC"
       name: "Typic Durixerolls"
       tests:
@@ -370,6 +623,22 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IFBD"
+      name: "Aquic Duric Natrixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - duric_subgroup_usda: {}
+    - code: "IFBE"
+      name: "Aridic Natrixerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IFBF"
+      name: "Duric Natrixerolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
     - code: "IFBC"
       name: "Typic Natrixerolls"
       tests:
@@ -391,6 +660,41 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IFCE"
+      name: "Vitrandic Palexerolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IFCF"
+      name: "Aquic Palexerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFCG"
+      name: "Duric Palexerolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "IFCH"
+      name: "Aridic Palexerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IFCI"
+      name: "Petrocalcic Palexerolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IFCJ"
+      name: "Ultic Palexerolls"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "IFCK"
+      name: "Haplic Palexerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
     - code: "IFCD"
       name: "Typic Palexerolls"
       tests:
@@ -412,6 +716,32 @@ subgroups:
       tests:
         all_of:
           - smr_aridic_usda: {}
+    - code: "IFDE"
+      name: "Aridic Lithic Calcixerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFDF"
+      name: "Aquic Calcixerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IFDG"
+      name: "Oxyaquic Calcixerolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IFDH"
+      name: "Pachic Calcixerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+    - code: "IFDI"
+      name: "Vitrandic Calcixerolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
     - code: "IFDD"
       name: "Typic Calcixerolls"
       tests:
@@ -438,6 +768,65 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IFEF"
+      name: "Aridic Lithic Argixerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFEG"
+      name: "Lithic Ultic Argixerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - ultic_subgroup_usda: {}
+    - code: "IFEH"
+      name: "Andic Argixerolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IFEI"
+      name: "Vitrandic Argixerolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IFEJ"
+      name: "Oxyaquic Argixerolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IFEK"
+      name: "Calcic Pachic Argixerolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IFEL"
+      name: "Pachic Ultic Argixerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+          - ultic_subgroup_usda: {}
+    - code: "IFEM"
+      name: "Duric Argixerolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "IFEN"
+      name: "Aridic Argixerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IFEO"
+      name: "Calcic Argixerolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IFEP"
+      name: "Ultic Argixerolls"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
     - code: "IFEE"
       name: "Typic Argixerolls"
       tests:
@@ -464,6 +853,83 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IFFF"
+      name: "Aridic Lithic Haploxerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IFFG"
+      name: "Lithic Ultic Haploxerolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - ultic_subgroup_usda: {}
+    - code: "IFFH"
+      name: "Andic Haploxerolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IFFI"
+      name: "Vitrandic Haploxerolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IFFJ"
+      name: "Aquic Cumulic Haploxerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - cumulic_subgroup_usda: {}
+    - code: "IFFK"
+      name: "Cumulic Ultic Haploxerolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+          - ultic_subgroup_usda: {}
+    - code: "IFFL"
+      name: "Cumulic Haploxerolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IFFM"
+      name: "Thapto-Humic Haploxerolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IFFN"
+      name: "Fluvaquentic Haploxerolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "IFFO"
+      name: "Aquic Duric Haploxerolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - duric_subgroup_usda: {}
+    - code: "IFFP"
+      name: "Oxyaquic Haploxerolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IFFQ"
+      name: "Calcic Pachic Haploxerolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IFFR"
+      name: "Pachic Ultic Haploxerolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
+          - ultic_subgroup_usda: {}
+    - code: "IFFS"
+      name: "Aridic Haploxerolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
     - code: "IFFE"
       name: "Typic Haploxerolls"
       tests:
@@ -482,6 +948,21 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IGAD"
+      name: "Natric Durustolls"
+      tests:
+        all_of:
+          - natric_horizon_usda: {}
+    - code: "IGAE"
+      name: "Entic Durustolls"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "IGAF"
+      name: "Haplic Durustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
     - code: "IGAC"
       name: "Typic Durustolls"
       tests:
@@ -498,6 +979,16 @@ subgroups:
       tests:
         all_of:
           - vertic_subgroup_usda: {}
+    - code: "IGBD"
+      name: "Aridic Natrustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IGBE"
+      name: "Duric Natrustolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
     - code: "IGBC"
       name: "Typic Natrustolls"
       tests:
@@ -519,6 +1010,27 @@ subgroups:
       tests:
         all_of:
           - smr_aridic_usda: {}
+    - code: "IGCE"
+      name: "Lithic Petrocalcic Calciustolls"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - petrocalcic_subgroup_usda: {}
+    - code: "IGCF"
+      name: "Aquic Calciustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGCG"
+      name: "Oxyaquic Calciustolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IGCH"
+      name: "Pachic Calciustolls"
+      tests:
+        all_of:
+          - pachic_subgroup_usda: {}
     - code: "IGCD"
       name: "Typic Calciustolls"
       tests:
@@ -545,6 +1057,26 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "IGDF"
+      name: "Aquic Paleustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGDG"
+      name: "Petrocalcic Paleustolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IGDH"
+      name: "Aridic Paleustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IGDI"
+      name: "Entic Paleustolls"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "IGDE"
       name: "Typic Paleustolls"
       tests:
@@ -571,6 +1103,37 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IGEF"
+      name: "Aridic Lithic Argiustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGEG"
+      name: "Andic Argiustolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IGEH"
+      name: "Vitrandic Argiustolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IGEI"
+      name: "Oxyaquic Argiustolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IGEJ"
+      name: "Aridic Argiustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "IGEK"
+      name: "Duric Argiustolls"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
     - code: "IGEE"
       name: "Typic Argiustolls"
       tests:
@@ -587,6 +1150,16 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IGFD"
+      name: "Aquic Vermustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IGFE"
+      name: "Entic Vermustolls"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "IGFC"
       name: "Typic Vermustolls"
       tests:
@@ -618,6 +1191,53 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - code: "IGGG"
+      name: "Aridic Lithic Haplustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "IGGH"
+      name: "Andic Haplustolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IGGI"
+      name: "Vitrandic Haplustolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IGGJ"
+      name: "Aquic Cumulic Haplustolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - cumulic_subgroup_usda: {}
+    - code: "IGGK"
+      name: "Cumulic Haplustolls"
+      tests:
+        all_of:
+          - cumulic_subgroup_usda: {}
+    - code: "IGGL"
+      name: "Thapto-Humic Haplustolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IGGM"
+      name: "Fluvaquentic Haplustolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "IGGN"
+      name: "Oxyaquic Haplustolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IGGO"
+      name: "Aridic Haplustolls"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
     - code: "IGGF"
       name: "Typic Haplustolls"
       tests:
@@ -636,6 +1256,16 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "IHAD"
+      name: "Petrocalcic Natrudolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IHAE"
+      name: "Calcic Natrudolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IHAC"
       name: "Typic Natrudolls"
       tests:
@@ -652,6 +1282,16 @@ subgroups:
       tests:
         all_of:
           - petrocalcic_subgroup_usda: {}
+    - code: "IHBD"
+      name: "Aquic Calciudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "IHBE"
+      name: "Thapto-Humic Calciudolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
     - code: "IHBC"
       name: "Typic Calciudolls"
       tests:
@@ -673,6 +1313,22 @@ subgroups:
       tests:
         all_of:
           - aquic_subgroup_usda: {}
+    - code: "IHCE"
+      name: "Aquic Pachic Paleudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IHCF"
+      name: "Oxyaquic Paleudolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IHCG"
+      name: "Calcic Paleudolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IHCD"
       name: "Typic Paleudolls"
       tests:
@@ -699,6 +1355,47 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IHDF"
+      name: "Petrocalcic Argiudolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IHDG"
+      name: "Andic Argiudolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IHDH"
+      name: "Vitrandic Argiudolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IHDI"
+      name: "Aquic Pachic Argiudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IHDJ"
+      name: "Oxyaquic Argiudolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IHDK"
+      name: "Lamellic Argiudolls"
+      tests:
+        all_of:
+          - lamellic_subgroup_usda: {}
+    - code: "IHDL"
+      name: "Arenic Argiudolls"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "IHDM"
+      name: "Calcic Argiudolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
     - code: "IHDE"
       name: "Typic Argiudolls"
       tests:
@@ -715,6 +1412,11 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - code: "IHED"
+      name: "Haplic Vermudolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
     - code: "IHEC"
       name: "Typic Vermudolls"
       tests:
@@ -746,6 +1448,58 @@ subgroups:
       tests:
         all_of:
           - cumulic_subgroup_usda: {}
+    - code: "IHFG"
+      name: "Petrocalcic Hapludolls"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "IHFH"
+      name: "Andic Hapludolls"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "IHFI"
+      name: "Vitrandic Hapludolls"
+      tests:
+        all_of:
+          - vitrandic_subgroup_usda: {}
+    - code: "IHFJ"
+      name: "Aquic Cumulic Hapludolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - cumulic_subgroup_usda: {}
+    - code: "IHFK"
+      name: "Thapto-Humic Hapludolls"
+      tests:
+        all_of:
+          - thapto_humic_usda: {}
+    - code: "IHFL"
+      name: "Fluvaquentic Hapludolls"
+      tests:
+        all_of:
+          - fluvaquentic_usda: {}
+    - code: "IHFM"
+      name: "Aquic Pachic Hapludolls"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - pachic_subgroup_usda: {}
+    - code: "IHFN"
+      name: "Oxyaquic Hapludolls"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "IHFO"
+      name: "Calcic Hapludolls"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "IHFP"
+      name: "Entic Hapludolls"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
     - code: "IHFF"
       name: "Typic Hapludolls"
       tests:
