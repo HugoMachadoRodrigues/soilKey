@@ -7,8 +7,10 @@
 benchmark_afsp(pedons, verbose = TRUE)
 }
 \arguments{
-\item{pedons}{List of \code{\link{PedonRecord}} from
-\code{\link{load_afsp_pedons}} or \code{\link{load_afsp_sample}}.}
+\item{pedons}{A list of \code{\link{PedonRecord}} (e.g.\ from
+\code{\link{load_afsp_pedons}}), or the wrapper returned by
+\code{\link{load_afsp_sample}} (its \code{$pedons} slot is
+unwrapped automatically).}
 
 \item{verbose}{Print progress.}
 }

@@ -28,8 +28,15 @@ test_that("auto-detection skips absent datasets without error", {
                 lucas_csv = empty, esdb_root = empty, redape = empty)
   res <- expect_no_error(suppressWarnings(
     run_all_benchmarks(datasets = "auto", paths = paths, verbose = FALSE)))
-  # only the canonical row survives (external datasets skipped, no error)
-  expect_true(all(res$summary$dataset == "canonical"))
+  # Every external (network/path-gated) dataset is skipped, leaving only the
+  # offline rows: the canonical sanity row always, plus the bundled AfSP sample
+  # when its .rds is present (v0.9.111 -- previously dropped by the harness bug).
+  external <- c("bdsolos", "febr", "kssl", "lucas_esdb", "redape")
+  expect_false(any(res$summary$dataset %in% external))
+  expect_true("canonical" %in% res$summary$dataset)
+  if (nzchar(system.file("extdata", "afsp_sample.rds", package = "soilKey")) ||
+      file.exists(file.path("inst", "extdata", "afsp_sample.rds")))
+    expect_true("afsp_sample" %in% res$summary$dataset)
 })
 
 

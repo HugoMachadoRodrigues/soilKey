@@ -1,3 +1,41 @@
+# soilKey 0.9.111 (2026-06-12)
+
+A benchmark-harness bug fix split out of the v0.9.110 methodology work (B1):
+the offline **AfSP (Africa Soil Profiles) WRB benchmark** was silently dropped
+from the consolidated report. \strong{The classification engine is unchanged}
+-- every edit is in the AfSP loader/benchmark and the suite wiring.
+
+## AfSP offline WRB benchmark restored
+
+\itemize{
+  \item \code{load_afsp_sample()} returns a \strong{wrapper}
+        \code{list(pedons, pulled_on, source, filter)} (mirroring
+        \code{load_wosis_stratified_sample()} / \code{load_kssl_sample()}), but
+        the suite fed that 4-element wrapper straight into
+        \code{benchmark_afsp()} instead of its \code{$pedons} slot. The
+        benchmark then iterated the wrapper and hit \code{$site} on the atomic
+        members (\code{pulled_on}, \code{source}) -- \emph{"$ operator is
+        invalid for atomic vectors"} -- which \code{.suite_run_afsp()}'s
+        \code{tryCatch} swallowed to \code{NULL}, so AfSP never appeared in
+        \code{run_all_benchmarks()}.
+  \item New internal \code{.afsp_as_pedons()} unwraps the \code{$pedons} slot
+        when handed the wrapper and passes a bare pedon list through unchanged.
+        \code{benchmark_afsp()} now calls it (so it accepts \strong{either}
+        form) and skips any non-\code{PedonRecord} member instead of erroring;
+        \code{.suite_run_afsp()} unwraps before its length-guard and
+        \code{max_n} slice.
+  \item Result: \code{run_all_benchmarks()} surfaces a real
+        \strong{afsp_sample/wrb2022} row -- a second independent \strong{offline}
+        WRB benchmark (Africa, RSG level, n = 120 across 24 RSGs) alongside
+        \strong{FEBR} -- with the full v0.9.110 metric set (balanced accuracy,
+        macro-F1, kappa, NIR, bootstrap CI).
+  \item The bundled \code{inst/extdata/afsp_sample.rds} was \strong{not} a stub:
+        it already held the full stratified 5 x 24 = 120-pedon sample. The
+        \code{load_afsp_sample()} docs are corrected from the never-shipped
+        "130 / 26 RSGs" to the actual 120 / 24, and clarify the wrapper return.
+}
+
+
 # soilKey 0.9.110 (2026-06-11)
 
 The "**benchmark methodology**" release (front B1 of the accuracy work). A

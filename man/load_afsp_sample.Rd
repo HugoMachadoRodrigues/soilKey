@@ -7,18 +7,23 @@
 load_afsp_sample()
 }
 \value{
-A list with \code{pedons}, \code{pulled_on}, \code{source},
-  \code{filter}.
+A list with \code{pedons} (120 \code{\link{PedonRecord}}s),
+  \code{pulled_on}, \code{source}, \code{filter}.
 }
 \description{
-Returns a 130-profile snapshot from AfSP v1.2 stratified by WRB
-RSG (5 profiles per RSG x 26 RSGs), pre-built so users can run
+Returns a 120-profile snapshot from AfSP v1.2 stratified by WRB
+RSG (5 profiles per RSG x 24 RSGs), pre-built so users can run
 the African WRB benchmark offline without the 35 MB ZIP download.
 }
 \details{
 This is the African analogue of
 \code{\link{load_wosis_stratified_sample}} (global WoSIS) and
 \code{\link{load_kssl_nasis_sample}} (US KSSL+NASIS).
+
+Like its siblings, this returns a \strong{wrapper} list -- the pedons
+are in the \code{$pedons} slot. Pass \code{$pedons} to per-pedon loops,
+or hand the whole wrapper to \code{\link{benchmark_afsp}}, which unwraps
+it for you.
 }
 \section{Reference}{
 
