@@ -1,3 +1,58 @@
+# soilKey 0.9.110 (2026-06-11)
+
+The "**benchmark methodology**" release (front B1 of the accuracy work). A
+readiness audit found the benchmark numbers were not yet defensible: a sampling
+bug starved sparsely-labelled systems, the reports gave only point accuracy, and
+there was no baseline to read accuracy against. This release makes the
+measurement honest and paper-ready. \strong{The classification engine is
+unchanged} -- every edit is in the benchmark harness; canonical fixtures are
+byte-identical. (The accuracy-raising engine work -- the argic/ferralic/nitic
+discriminator -- is a separate follow-up, "B2".)
+
+## Sampling fix (filter-then-cap)
+
+\itemize{
+  \item The per-(dataset, system) dispatch now \strong{filters each dataset to
+        the pedons carrying the requested system's reference label BEFORE}
+        applying the \code{max_n} cap. Previously the cap was taken first, so a
+        sparsely-labelled system was sampled from the wrong pool -- e.g.
+        FEBR-USDA collapsed to n=3 though hundreds of profiles carry a USDA
+        label. FEBR now also loads with \code{require_classification = "any"} so
+        its WRB and USDA labels are not masked by the SiBCS-only default.
+        Applied to the FEBR and BDsolos branches; reuses the seed-42,
+        RNG-state-preserving \code{.benchmark_reproducible_sample}.
+}
+
+## Imbalance-aware metrics + bootstrap CIs
+
+\itemize{
+  \item A pooled confusion matrix now yields \strong{balanced accuracy,
+        macro-F1, Cohen's kappa, per-class precision/recall/F1}, and a
+        \strong{no-information-rate (NIR) majority-class baseline} -- the figure
+        an accuracy must beat to be meaningful. Point accuracy carries a
+        \strong{reproducible bootstrap 95\% CI} (seed 42). These attach to
+        \code{benchmark_unified()}'s pooled output and to every report row
+        (existing fields are unchanged).
+}
+
+## Honest reporting
+
+\itemize{
+  \item The consolidated report (\code{run_all_benchmarks()}) gains the new
+        metric columns and flags rows with \strong{n < 30} as indicative-only.
+  \item The \strong{LUCAS WRB} row is labelled a topsoil-only \strong{lower
+        bound} (LUCAS ships 0--20 cm chemistry); the honest WRB-at-scale number
+        is the morphologically-complete offline \strong{FEBR} row, now
+        un-starved by the sampling fix and -- critically -- with its raw WRB
+        reference labels (\code{"HAPLIC ACRISOL (...)"}) reduced to the RSG
+        comparison level via \code{normalise_febr_wrb()} (likewise
+        \code{normalise_febr_usda()} for USDA); without this they never matched
+        the predicted RSG and scored a spurious 0\%. The opt-in network
+        subsoil-fill path (\code{benchmark_lucas_2018(fill_subsoil_from =
+        "soilgrids")}) is documented in a report footnote rather than run.
+}
+
+
 # soilKey 0.9.109 (2026-06-11)
 
 The "**CRAN release hardening**" release. A readiness audit found that a full

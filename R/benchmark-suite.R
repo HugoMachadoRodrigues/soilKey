@@ -84,10 +84,8 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
         for (tag in names(raw$per_system_per_dataset)) {
           r  <- raw$per_system_per_dataset[[tag]]
           ds <- sub("/.*$", "", tag); sy <- sub("^.*/", "", tag)
-          rows[[tag]] <- data.frame(
-            dataset = ds, system = sy,
-            n_compared = r$n_compared %||% 0L,
-            accuracy = r$accuracy %||% NA_real_, stringsAsFactors = FALSE)
+          rows[[tag]] <- .suite_row(ds, sy, r$n_compared, r$accuracy,
+                                    confusion = r$confusion)
         }
       }
     }
@@ -135,6 +133,40 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
 
 # ---- internals -------------------------------------------------------------
 
+# Build one summary row with the full v0.9.110 metric set. Every row (unified,
+# AfSP, canonical) goes through this so the rbind'd summary has identical
+# columns. Metrics derive from the row's own confusion matrix (NA when absent,
+# e.g. the canonical coverage row). The flag annotates rows the reader must not
+# over-interpret: a tiny n, or the LUCAS topsoil-only lower bound.
+.suite_row <- function(dataset, system, n_compared, accuracy,
+                       confusion = NULL) {
+  m  <- if (is.null(confusion)) NULL
+        else .benchmark_metrics_from_confusion(confusion)
+  ci <- if (is.null(confusion)) NULL
+        else .benchmark_bootstrap_metrics(confusion)
+  n_compared <- as.integer(n_compared %||% 0L)
+  # When a confusion matrix is present, take accuracy FROM it so the point
+  # estimate and the bootstrap CI are always internally consistent (they are
+  # the same number in real data anyway); else fall back to the passed value.
+  accuracy <- if (!is.null(m) && !is.na(m$accuracy)) m$accuracy
+              else accuracy %||% NA_real_
+  flag <- if (identical(dataset, "lucas_esdb")) "lower-bound (topsoil-only)"
+          else if (n_compared > 0L && n_compared < 30L) "n<30 -- indicative only"
+          else ""
+  data.frame(
+    dataset      = dataset, system = system,
+    n_compared   = n_compared,
+    accuracy     = accuracy,
+    acc_lo       = if (is.null(ci)) NA_real_ else ci$accuracy[1],
+    acc_hi       = if (is.null(ci)) NA_real_ else ci$accuracy[2],
+    balanced_acc = if (is.null(m)) NA_real_ else m$balanced_accuracy,
+    macro_f1     = if (is.null(m)) NA_real_ else m$macro_f1,
+    kappa        = if (is.null(m)) NA_real_ else m$kappa,
+    nir          = if (is.null(m)) NA_real_ else m$nir,
+    flag         = flag,
+    stringsAsFactors = FALSE)
+}
+
 # Classify every canonical fixture under all three systems; the row reports
 # the share that classify to a non-NA name (a coverage sanity check ~ 100%).
 .suite_canonical_row <- function() {
@@ -151,10 +183,8 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
       if (!is.null(res[[nm]]) && !is.na(res[[nm]]$name %||% NA)) n_ok <- n_ok + 1L
     }
   }
-  data.frame(dataset = "canonical", system = "all",
-             n_compared = n_tot,
-             accuracy = if (n_tot > 0L) n_ok / n_tot else NA_real_,
-             stringsAsFactors = FALSE)
+  .suite_row("canonical", "all", n_tot,
+             if (n_tot > 0L) n_ok / n_tot else NA_real_, confusion = NULL)
 }
 
 # AfSP offline sample, classified under WRB.
@@ -164,9 +194,11 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
   if (!is.null(max_n)) peds <- peds[seq_len(min(max_n, length(peds)))]
   res <- tryCatch(benchmark_afsp(peds, verbose = FALSE), error = function(e) NULL)
   if (is.null(res)) return(NULL)
-  data.frame(dataset = "afsp_sample", system = "wrb2022",
-             n_compared = res$n_compared %||% res$n_in_scope %||% 0L,
-             accuracy = res$accuracy %||% NA_real_, stringsAsFactors = FALSE)
+  # AfSP carries its own confusion matrix -> gets the full metric set, making it
+  # a second independent OFFLINE WRB benchmark (Africa, RSG level) alongside FEBR.
+  .suite_row("afsp_sample", "wrb2022",
+             res$n_compared %||% res$n_in_scope %||% 0L,
+             res$accuracy %||% NA_real_, confusion = res$confusion)
 }
 
 # Zero-recall classes per (dataset, system) from the pooled confusion data.
@@ -188,7 +220,18 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
 
 # Render the consolidated Markdown report.
 .suite_report_md <- function(summary, weak, config) {
-  pct <- function(x) if (is.na(x)) "n/a" else sprintf("%.1f%%", 100 * x)
+  pct  <- function(x) if (is.null(x) || is.na(x)) "n/a"
+                      else sprintf("%.1f%%", 100 * x)
+  has  <- function(col) col %in% names(summary)
+  cell <- function(i, col) if (has(col)) summary[[col]][i] else NA_real_
+  acc_ci <- function(i) {
+    a <- pct(cell(i, "accuracy"))
+    lo <- cell(i, "acc_lo"); hi <- cell(i, "acc_hi")
+    if (is.na(lo) || is.na(hi)) a
+    else sprintf("%s (%s-%s)", a, pct(lo), pct(hi))
+  }
+  flagcell <- function(i) { f <- cell(i, "flag"); if (is.na(f)) "" else f }
+
   lines <- c(
     sprintf("# soilKey benchmark suite -- v%s", config$soilKey_version),
     "",
@@ -197,12 +240,19 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
     "",
     "## Accuracy by dataset x system",
     "",
-    "| Dataset | System | n | Accuracy |",
-    "|---------|--------|--:|---------:|")
+    paste("Headline metric for imbalanced classes is **balanced accuracy /",
+          "macro-F1**, read against the **NIR** (no-information-rate)",
+          "majority-class baseline. Point accuracy carries a bootstrap 95% CI."),
+    "",
+    "| Dataset | System | n | Accuracy [95% CI] | Bal. acc | Macro-F1 | Kappa | NIR | Flag |",
+    "|---------|--------|--:|-------------------|---------:|---------:|------:|----:|------|")
   for (i in seq_len(nrow(summary))) {
-    lines <- c(lines, sprintf("| %s | %s | %d | %s |",
-                              summary$dataset[i], summary$system[i],
-                              summary$n_compared[i], pct(summary$accuracy[i])))
+    lines <- c(lines, sprintf(
+      "| %s | %s | %d | %s | %s | %s | %s | %s | %s |",
+      summary$dataset[i], summary$system[i], summary$n_compared[i],
+      acc_ci(i), pct(cell(i, "balanced_acc")), pct(cell(i, "macro_f1")),
+      if (is.na(cell(i, "kappa"))) "n/a" else sprintf("%.2f", cell(i, "kappa")),
+      pct(cell(i, "nir")), flagcell(i)))
   }
   if (length(weak)) {
     lines <- c(lines, "", "## Zero-recall classes (improvement targets)", "")
@@ -210,9 +260,20 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
       lines <- c(lines, sprintf("- **%s**: %s", tag,
                                 paste(weak[[tag]], collapse = ", ")))
   }
-  lines <- c(lines, "",
-             "_The canonical row is an offline fixture sanity check (coverage,",
-             "not field accuracy). External-dataset rows reflect the local data",
-             "snapshot and `max_n` cap._")
+  lines <- c(lines, "", "## Notes", "",
+    paste("- The **canonical** row is an offline fixture sanity check",
+          "(coverage, not field accuracy); it has no confusion matrix, so its",
+          "per-class metrics are blank."),
+    paste("- Rows flagged **n<30** are statistically indicative only.",
+          "External-dataset rows reflect the local data snapshot and `max_n`."),
+    paste("- **lucas_esdb/wrb2022** is a topsoil-only **lower bound** (LUCAS",
+          "ships 0-20 cm chemistry only); the honest WRB-at-scale number is the",
+          "morphologically-complete **FEBR** row. For a LUCAS estimate with a",
+          "synthetic subsoil, run the opt-in (network, ~1 h):",
+          "`benchmark_lucas_2018(pedons, fill_subsoil_from = \"soilgrids\")`."),
+    paste("- **kssl/usda** uses a head-N (not random) sample of the gpkg;",
+          "**bdsolos** accumulates leading (state-clustered) CSVs until the",
+          "label cap is met. Both are documented samples, not full random",
+          "draws."))
   lines
 }
