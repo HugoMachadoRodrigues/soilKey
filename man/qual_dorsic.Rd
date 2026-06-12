@@ -12,3 +12,4 @@ qual_dorsic(pedon)
 \description{
 Dorsic supplementary qualifier (do): dorsal-ridge microrelief
 }
+\keyword{internal}

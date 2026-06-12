@@ -12,3 +12,4 @@ neossolo_regolitico(pedon)
 \description{
 Neossolos Regoliticos (catch-all dos Neossolos).
 }
+\keyword{internal}

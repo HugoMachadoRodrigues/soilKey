@@ -14,3 +14,4 @@ qual_mazic(pedon)
 Mazic qualifier (mz): structureless / massive surface horizon
 (Vertisol). Diagnostic of slaked, crusted Vertisol surfaces.
 }
+\keyword{internal}

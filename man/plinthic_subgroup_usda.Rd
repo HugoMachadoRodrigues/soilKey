@@ -16,3 +16,4 @@ plinthic_subgroup_usda(pedon, max_top_cm = 125)
 Plinthic Subgroup helper (Oxisols)
 Pass when plinthite >= 5\% in any horizon within 125 cm.
 }
+\keyword{internal}

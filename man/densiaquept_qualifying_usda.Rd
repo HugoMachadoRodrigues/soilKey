@@ -12,3 +12,4 @@ densiaquept_qualifying_usda(pedon)
 \description{
 Densiaquept qualifying (densic contact within 100 cm)
 }
+\keyword{internal}

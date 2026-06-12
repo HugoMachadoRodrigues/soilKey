@@ -12,3 +12,4 @@ qual_irragric(pedon)
 \description{
 Irragric qualifier (ir): irragric horizon (irrigation-deposited surface).
 }
+\keyword{internal}

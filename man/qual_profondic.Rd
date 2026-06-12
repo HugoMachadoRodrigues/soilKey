@@ -18,3 +18,4 @@ clay decrease, down to or below 150 cm.
 v0.9.3.B: requires \code{argic} to pass AND at least one argic
 layer with \code{bottom_cm >= 150}.
 }
+\keyword{internal}

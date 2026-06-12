@@ -25,3 +25,4 @@ the low-seasonality tropics (|lat| < 23). Inferred values set
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 16.
 }
+\keyword{internal}

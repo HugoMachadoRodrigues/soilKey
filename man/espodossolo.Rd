@@ -15,3 +15,4 @@ espodossolo(pedon, max_top_cm = 200)
 Horizonte B espodico imediatamente abaixo de horizontes E ou A,
 dentro de 200 cm (ou 400 cm se A+E ou histico+E ultrapassam 200).
 }
+\keyword{internal}

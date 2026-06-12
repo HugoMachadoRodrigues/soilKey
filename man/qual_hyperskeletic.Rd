@@ -14,3 +14,4 @@ qual_hyperskeletic(pedon)
 Hyperskeletic qualifier (hk): coarse fragments >= 90\% throughout the
 upper 100 cm.
 }
+\keyword{internal}

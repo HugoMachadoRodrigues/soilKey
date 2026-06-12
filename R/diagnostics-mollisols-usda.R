@@ -11,6 +11,7 @@
 #' Mollisol Order qualifier (USDA, KST 13ed, Ch 12)
 #' Pass when mollic_epipedon AND BS (NH4OAc) >= 50\% in upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 mollisol_qualifying_usda <- function(pedon) {
   mo <- mollic_epipedon_usda(pedon)
@@ -41,6 +42,7 @@ mollisol_qualifying_usda <- function(pedon) {
 
 #' Albolls qualifier: mollic + albic + argillic.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 alboll_qualifying_usda <- function(pedon) {
   al <- albic(pedon)
@@ -59,6 +61,7 @@ alboll_qualifying_usda <- function(pedon) {
 
 #' Aquolls qualifier (aquic conditions in mollic).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aquoll_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -71,6 +74,7 @@ aquoll_qualifying_usda <- function(pedon) {
 #' Pass when CaCO3 >= 40\% in subsurface AND profile depth < 100 cm
 #' to a contact.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 rendoll_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -95,6 +99,7 @@ rendoll_qualifying_usda <- function(pedon) {
 #' Pass when worm_holes_pct >= 50\% in some horizon (KST 13ed worm
 #' burrow criterion).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 vermic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -113,6 +118,7 @@ vermic_subgroup_usda <- function(pedon) {
 
 #' Argic Mollisol Suborder helper -- delegates argillic_within_usda.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 argic_mollisol_usda <- function(pedon) {
   res <- argillic_within_usda(pedon, max_top_cm = 200)

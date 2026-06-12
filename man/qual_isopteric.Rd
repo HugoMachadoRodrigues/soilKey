@@ -12,3 +12,4 @@ qual_isopteric(pedon)
 \description{
 Isopteric supplementary qualifier (ip): termite / ant biogenesis
 }
+\keyword{internal}

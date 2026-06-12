@@ -12,3 +12,4 @@ qual_bathyspodic(pedon)
 \description{
 Bathyspodic supplementary qualifier (bs): spodic at 100-200 cm depth
 }
+\keyword{internal}

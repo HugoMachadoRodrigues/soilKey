@@ -11,6 +11,9 @@ limnic_material(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Limnic material (WRB 2022 Ch 3.3.10): subaquatic deposits (coprogenous
 earth, diatomaceous earth, marl, gyttja). v0.3.3: detects via

@@ -12,6 +12,9 @@ calcaric_material(pedon, min_caco3_pct = 2)
 
 \item{min_caco3_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\% CaCO3 throughout the
 fine earth, primary carbonates from the parent material.

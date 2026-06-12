@@ -11,6 +11,7 @@
 #' Pass when a cambic horizon is present (no argillic, no spodic,
 #' no mollic, etc. -- enforced by prior order exclusion).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 inceptisol_qualifying_usda <- function(pedon) {
   cb <- cambic(pedon)
@@ -27,6 +28,7 @@ inceptisol_qualifying_usda <- function(pedon) {
 
 #' Aquept Suborder qualifier
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aquept_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -38,6 +40,7 @@ aquept_qualifying_usda <- function(pedon) {
 #' Halic helper for Halaquepts
 #' Pass when EC >= 8 dS/m within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 halaquept_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -57,6 +60,7 @@ halaquept_qualifying_usda <- function(pedon) {
 
 #' Densiaquept qualifying (densic contact within 100 cm)
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 densiaquept_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -78,6 +82,7 @@ densiaquept_qualifying_usda <- function(pedon) {
 #' Pass when BS (NH4OAc) >= 60\% in some part of upper 75 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_bs Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 eutric_inceptisol_usda <- function(pedon, min_bs = 60) {
   h <- pedon$horizons
@@ -98,6 +103,7 @@ eutric_inceptisol_usda <- function(pedon, min_bs = 60) {
 #' Humic Inceptisol Suborder helper (Hum*)
 #' Pass when umbric or mollic epipedon present + thick (>= 25 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 humic_inceptisol_usda <- function(pedon) {
   mo <- mollic_epipedon_usda(pedon)

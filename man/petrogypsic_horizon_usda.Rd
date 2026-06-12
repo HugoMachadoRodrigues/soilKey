@@ -19,3 +19,4 @@ Pass when a horizon has \code{cementation_class} in
 \{strongly, indurated\} AND \code{caso4_pct >= 5} within
 \code{max_top_cm}.
 }
+\keyword{internal}

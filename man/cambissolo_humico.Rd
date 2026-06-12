@@ -12,3 +12,4 @@ cambissolo_humico(pedon)
 \description{
 Cambissolos Humicos (Cap 6): horizonte A humico.
 }
+\keyword{internal}

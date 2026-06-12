@@ -11,6 +11,9 @@ B_incipiente(pedon, min_thickness = 10)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Subsuperficial sob A/Ap/AB com alteracao fisica e quimica
 incipiente, NAO satisfazendo a B textural / latossolico / nitico /

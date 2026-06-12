@@ -12,3 +12,4 @@ mollisol_usda(pedon)
 \description{
 Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
 }
+\keyword{internal}

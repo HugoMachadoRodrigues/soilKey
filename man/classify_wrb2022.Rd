@@ -63,3 +63,8 @@ reporting, runs the key, and assembles a
 missing-data hints, evidence grade, and (in future) prior sanity
 check.
 }
+\examples{
+pedon <- make_ferralsol_canonical()
+res <- classify_wrb2022(pedon)
+res$name
+}

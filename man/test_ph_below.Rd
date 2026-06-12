@@ -16,3 +16,4 @@ test_ph_below(h, max_ph = 5.9, candidate_layers = NULL)
 \description{
 Default 5.9 (Spodic horizon supplementary criterion, WRB 2022).
 }
+\keyword{internal}

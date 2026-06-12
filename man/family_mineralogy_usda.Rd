@@ -23,3 +23,4 @@ CEC/clay activity) -> kaolinitic (Ki <= 2.2) -> siliceous (quartzose sand)
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 17.
 }
+\keyword{internal}

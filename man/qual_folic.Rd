@@ -14,3 +14,4 @@ qual_folic(pedon)
 Folic qualifier (fo): folic horizon at the soil surface. v0.9
 delegates to histic_horizon with surface-only filter.
 }
+\keyword{internal}

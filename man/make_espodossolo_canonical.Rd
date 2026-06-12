@@ -6,6 +6,9 @@
 \usage{
 make_espodossolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Reusa fixture WRB Podzol -- B espodico imediatamente abaixo de E.
 }

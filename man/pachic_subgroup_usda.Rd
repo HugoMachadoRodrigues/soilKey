@@ -14,3 +14,4 @@ pachic_subgroup_usda(pedon)
 Pachic Subgroup helper (Andisols, Mollisols)
 Pass when mollic OR umbric epipedon is >= 50 cm thick.
 }
+\keyword{internal}

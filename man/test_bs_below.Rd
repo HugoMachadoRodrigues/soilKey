@@ -16,3 +16,4 @@ test_bs_below(h, max_pct = 50, candidate_layers = NULL)
 \description{
 Default 50\% (Acrisol RSG criterion). Reads \code{bs_pct}.
 }
+\keyword{internal}

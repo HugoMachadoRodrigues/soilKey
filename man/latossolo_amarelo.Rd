@@ -12,3 +12,4 @@ latossolo_amarelo(pedon)
 \description{
 Latossolos Amarelos (Cap 10): matiz \\>= 7.5YR (mais amarelo).
 }
+\keyword{internal}

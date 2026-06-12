@@ -20,3 +20,4 @@ the input water carries dissolved bases). Practical proxy:
 Histosol Order with pH_h2o > 4.5 (above the Ombric ceiling) in the
 upper 100 cm OR carbonates / calcium-rich evidence present.
 }
+\keyword{internal}

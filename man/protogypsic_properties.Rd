@@ -14,6 +14,9 @@ protogypsic_properties(pedon, min_caso4_pct = 1, max_caso4_pct = 5)
 
 \item{max_caso4_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Protogypsic properties (WRB 2022 Ch 3.2.9): visible secondary gypsum
 \\>= 1\% but below the gypsic gate.

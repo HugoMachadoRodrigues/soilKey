@@ -12,6 +12,9 @@ shrink_swell_cracks(pedon, min_width_cm = 0.5)
 
 \item{min_width_cm}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Shrink-swell cracks (WRB 2022 Ch 3.2.12) -- per-pedon test wrapping
 \code{\link{test_shrink_swell_cracks}}.

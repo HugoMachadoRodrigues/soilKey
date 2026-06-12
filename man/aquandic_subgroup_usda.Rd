@@ -14,3 +14,4 @@ aquandic_subgroup_usda(pedon)
 Aquandic Subgroup helper (Spodosols / others)
 Aquic + Andic.
 }
+\keyword{internal}

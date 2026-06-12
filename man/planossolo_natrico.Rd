@@ -12,3 +12,4 @@ planossolo_natrico(pedon)
 \description{
 Planossolos Natricos (Cap 15): caracter sodico em \\< 100 cm.
 }
+\keyword{internal}

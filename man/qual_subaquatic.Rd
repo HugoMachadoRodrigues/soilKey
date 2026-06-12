@@ -14,3 +14,4 @@ qual_subaquatic(pedon)
 Subaquatic qualifier (sq): permanently under water. v0.9.1:
 site$drainage_class == "subaquatic" or "submerged".
 }
+\keyword{internal}

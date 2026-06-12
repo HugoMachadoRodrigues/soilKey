@@ -14,3 +14,4 @@ qual_linic(pedon)
 Linic qualifier (li): continuous artificial geomembrane within 100 cm.
 v0.9.1 proxy: designation pattern (\code{linic|geomemb|liner}).
 }
+\keyword{internal}

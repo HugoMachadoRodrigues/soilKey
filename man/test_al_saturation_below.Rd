@@ -18,3 +18,4 @@ Default 50\% (Luvisol RSG criterion). Uses \code{al_sat_pct} when
 reported; otherwise falls back to computation from exchangeable
 bases and Al.
 }
+\keyword{internal}

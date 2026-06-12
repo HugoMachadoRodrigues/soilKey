@@ -14,3 +14,4 @@ vertissolo_ebanico(pedon)
 Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
 dominantes).
 }
+\keyword{internal}

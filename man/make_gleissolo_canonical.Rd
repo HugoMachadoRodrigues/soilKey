@@ -6,6 +6,9 @@
 \usage{
 make_gleissolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Reusa fixture WRB Gleysol -- horizonte glei dentro de 50 cm.
 }

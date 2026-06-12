@@ -25,3 +25,4 @@ rubricos de Latossolos Brunos (Cap 10 LB).
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 10 LB, p 199-200.
 }
+\keyword{internal}

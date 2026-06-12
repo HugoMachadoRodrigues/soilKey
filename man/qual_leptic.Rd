@@ -12,3 +12,4 @@ qual_leptic(pedon)
 \description{
 Leptic qualifier (le): continuous rock <= 100 cm.
 }
+\keyword{internal}

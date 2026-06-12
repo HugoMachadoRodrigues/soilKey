@@ -14,3 +14,4 @@ entisol_usda(pedon)
 Entisols (USDA Cap 8): catch-all for soils that don't match any
 other Order. Always passes.
 }
+\keyword{internal}

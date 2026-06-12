@@ -42,3 +42,8 @@ Organossolos primeiro). Quando a subordem ainda nao tem bloco de
 Grandes Grupos, ou quando nenhum Grande Grupo passa (e nao ha
 catch-all default), a classificacao para no 2o nivel.
 }
+\examples{
+pedon <- make_latossolo_canonical()
+res <- classify_sibcs(pedon)
+res$name
+}

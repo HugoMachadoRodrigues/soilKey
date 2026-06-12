@@ -14,3 +14,4 @@ psamment_qualifying_usda(pedon)
 Psamment Suborder qualifier (sandy texture: clay + 2*silt < 30
 AND no clay films / argillic).
 }
+\keyword{internal}

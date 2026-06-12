@@ -16,3 +16,4 @@ Kanhapl qualifying helper (Kanhapludults / Kanhaplustults / etc.)
 Pass when kandic horizon present BUT NOT meeting Pale criteria
 (i.e. younger / less developed kandic).
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ alfisol_usda(pedon)
 Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
 >= 35\% at the implicit reference depth.
 }
+\keyword{internal}

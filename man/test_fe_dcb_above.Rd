@@ -17,3 +17,4 @@ test_fe_dcb_above(h, min_pct = 4, candidate_layers = NULL)
 Default 4\% (an indicator of strong red colour and Fe-richness; used
 as a v0.3 simplified marker for nitic horizon's typical Fe content).
 }
+\keyword{internal}

@@ -6,6 +6,9 @@
 \usage{
 make_neossolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo raso sobre rocha continua dura. Sem horizonte B diagnostico.
 }

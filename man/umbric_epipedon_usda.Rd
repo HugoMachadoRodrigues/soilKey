@@ -35,3 +35,4 @@ KST 13ed required characteristics (Ch. 3, pp 18-20):
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 18-20.
 }
+\keyword{internal}

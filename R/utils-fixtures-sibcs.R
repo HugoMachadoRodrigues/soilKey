@@ -25,6 +25,7 @@
 #'
 #' Solo organico saturado, com horizonte H histico >= 60 cm e SOC
 #' alto. Tipico de varzea / brejo.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_organossolo_canonical <- function() {
   hz <- data.table::data.table(
@@ -55,6 +56,7 @@ make_organossolo_canonical <- function() {
 #' Perfil canonico de Neossolo Litolico (SiBCS 5a ed., Cap 12)
 #'
 #' Solo raso sobre rocha continua dura. Sem horizonte B diagnostico.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_neossolo_canonical <- function() {
   hz <- data.table::data.table(
@@ -84,6 +86,7 @@ make_neossolo_canonical <- function() {
 #' Solo argiloso (>= 30\% argila desde superficie) com horizonte vertico
 #' (slickensides + fendas + clay alto) iniciando dentro de 100 cm.
 #' Reusa structure / fixture do WRB Vertisol.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_vertissolo_canonical <- function() {
   pr <- make_vertisol_canonical()
@@ -98,6 +101,7 @@ make_vertissolo_canonical <- function() {
 #' Perfil canonico de Espodossolo (SiBCS 5a ed., Cap 8)
 #'
 #' Reusa fixture WRB Podzol -- B espodico imediatamente abaixo de E.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_espodossolo_canonical <- function() {
   pr <- make_podzol_canonical()
@@ -113,6 +117,7 @@ make_espodossolo_canonical <- function() {
 #'
 #' Solo com horizonte E sobrejacente a B planico (mudanca textural
 #' abrupta + cores neutras + cromas baixos).
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_planossolo_canonical <- function() {
   hz <- data.table::data.table(
@@ -146,6 +151,7 @@ make_planossolo_canonical <- function() {
 #' Perfil canonico de Gleissolo (SiBCS 5a ed., Cap 9)
 #'
 #' Reusa fixture WRB Gleysol -- horizonte glei dentro de 50 cm.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_gleissolo_canonical <- function() {
   pr <- make_gleysol_canonical()
@@ -161,6 +167,7 @@ make_gleissolo_canonical <- function() {
 #'
 #' Reusa fixture WRB Ferralsol -- B latossolico imediatamente abaixo
 #' de A, sem horizonte argilico acima.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_latossolo_canonical <- function() {
   pr <- make_ferralsol_canonical()
@@ -177,6 +184,7 @@ make_latossolo_canonical <- function() {
 #' Reusa fixture WRB Chernozem -- A chernozemico + Bk com argila Ta +
 #' V alta. SiBCS strictos exigem (a) Bi/Bt + Ta + V alta, OR (b)
 #' calcico/petrocalcico/carbonatico + A chernozemico.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_chernossolo_canonical <- function() {
   pr <- make_chernozem_canonical()
@@ -196,6 +204,7 @@ make_chernossolo_canonical <- function() {
 #'
 #' Reusa fixture WRB Cambisol -- B incipiente sem ser plintico,
 #' vertico, planico, etc.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_cambissolo_canonical <- function() {
   pr <- make_cambisol_canonical()
@@ -211,6 +220,7 @@ make_cambissolo_canonical <- function() {
 #'
 #' Reusa fixture WRB Plinthosol -- horizonte plintico iniciando
 #' dentro de 40 cm.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_plintossolo_canonical <- function() {
   pr <- make_plinthosol_canonical()
@@ -226,6 +236,7 @@ make_plintossolo_canonical <- function() {
 #'
 #' Solo com B textural argila Ta + V alta. Tipico do semiarido com
 #' rocha basica.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_luvissolo_canonical <- function() {
   hz <- data.table::data.table(
@@ -268,6 +279,7 @@ make_luvissolo_canonical <- function() {
 #' Solo argiloso (>= 35\% argila desde superficie) com B nitico
 #' (estrutura forte em blocos + cerosidade), gradiente textural
 #' baixo (B/A <= 1.5).
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_nitossolo_canonical <- function() {
   hz <- data.table::data.table(
@@ -304,6 +316,7 @@ make_nitossolo_canonical <- function() {
 #' B textural com gradiente significativo, argila ativ baixa ou
 #' alta + V baixa. Catch-all final na chave -- tipica do Brasil
 #' tropical.
+#' @return A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
 #' @export
 make_argissolo_canonical <- function() {
   hz <- data.table::data.table(

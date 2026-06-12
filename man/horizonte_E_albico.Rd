@@ -14,3 +14,4 @@ horizonte_E_albico(pedon, ...)
 \description{
 Reuso de \code{\link{albic}} (WRB Ch 3.1) com criterios identicos.
 }
+\keyword{internal}

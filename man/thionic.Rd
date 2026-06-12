@@ -16,6 +16,9 @@ thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
 
 \item{min_sulfidic_s}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Thionic horizon (WRB 2022): post-oxidation acid sulfate horizon.
 Requires sulfidic_s_pct >= 0.01 AND pH(H2O) <= 4.

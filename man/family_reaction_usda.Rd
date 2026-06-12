@@ -22,3 +22,4 @@ families and are not emitted by default).
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 17.
 }
+\keyword{internal}

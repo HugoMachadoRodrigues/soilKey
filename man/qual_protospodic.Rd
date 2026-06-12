@@ -20,3 +20,4 @@ WRB 2022 Ch 5: "Spodic-like horizon meeting weakened criteria
 pyrophosphate field; we proxy via spodic candidate horizons that
 fail strict spodic.
 }
+\keyword{internal}

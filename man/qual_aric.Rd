@@ -16,3 +16,4 @@ Aric qualifier (ar): mineral surface horizon homogenised by
 ploughing -- designation pattern \code{Ap}, \code{Apk},
 \code{Apc}, etc., starting within the upper 30 cm.
 }
+\keyword{internal}

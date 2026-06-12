@@ -14,3 +14,4 @@ WRB 2022 Ch 5: "Cemented horizon NOT meeting duripan / petrocalcic /
 petrogypsic criteria but slacks moderately in water." Detection via
 \code{cordic_horizon} TRUE/FALSE schema flag.
 }
+\keyword{internal}

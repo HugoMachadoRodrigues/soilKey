@@ -16,3 +16,4 @@ Episaturation helper (USDA, KST 13ed Ch 3, p 41)
 Pass when aquic conditions PLUS perched water (saturation type
 "episaturation").
 }
+\keyword{internal}

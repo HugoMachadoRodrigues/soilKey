@@ -14,3 +14,4 @@ xanthic_subgroup_usda(pedon)
 Xanthic Subgroup helper (Oxisols)
 Pass when 50\%+ colors have hue >= 7.5YR AND value >= 6 in B horizons.
 }
+\keyword{internal}

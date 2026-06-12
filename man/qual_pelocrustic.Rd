@@ -12,3 +12,4 @@ qual_pelocrustic(pedon)
 \description{
 Pelocrustic supplementary qualifier (pc): clayey surface crust
 }
+\keyword{internal}

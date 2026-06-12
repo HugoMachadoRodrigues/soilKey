@@ -9,6 +9,9 @@ abrupt_textural_difference(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Sharp clay-content increase between two superimposed mineral layers
 meeting all of:

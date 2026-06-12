@@ -12,3 +12,4 @@ qual_evapocrustic(pedon)
 \description{
 Evapocrustic supplementary qualifier (ev): evaporite surface crust
 }
+\keyword{internal}

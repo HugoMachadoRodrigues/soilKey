@@ -12,3 +12,4 @@ qual_natric(pedon)
 \description{
 Natric qualifier (na): natric horizon <= 100 cm.
 }
+\keyword{internal}

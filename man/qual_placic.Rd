@@ -18,3 +18,4 @@ typically inside or just above a spodic horizon. v0.9.1: a layer
 with cementation_class strongly or indurated AND thickness <= 2.5 cm,
 anywhere in the upper 100 cm.
 }
+\keyword{internal}

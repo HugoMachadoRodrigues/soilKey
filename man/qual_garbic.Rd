@@ -18,3 +18,4 @@ refuse) in the upper 100 cm. v0.9.1 proxy: designation pattern
 (\code{Cgarb|garb|landfill|refuse}). Hard schema column
 \code{artefacts_garbic_pct} scheduled for v0.9.2.
 }
+\keyword{internal}

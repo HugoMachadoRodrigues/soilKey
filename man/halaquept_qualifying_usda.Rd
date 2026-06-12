@@ -14,3 +14,4 @@ halaquept_qualifying_usda(pedon)
 Halic helper for Halaquepts
 Pass when EC >= 8 dS/m within 100 cm.
 }
+\keyword{internal}

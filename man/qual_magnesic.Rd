@@ -12,3 +12,4 @@ qual_magnesic(pedon)
 \description{
 Magnesic qualifier (mg): exchangeable Ca/Mg < 1 in upper 100 cm.
 }
+\keyword{internal}

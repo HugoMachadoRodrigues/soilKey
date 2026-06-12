@@ -20,3 +20,4 @@ fine earth, WRB 2022). v0.9.1 accepts the air-dried equivalent
 "potentially over-permissive" via the \code{notes} field when the
 value falls in the 70-100\% band.
 }
+\keyword{internal}

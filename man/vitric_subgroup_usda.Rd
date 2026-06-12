@@ -14,3 +14,4 @@ vitric_subgroup_usda(pedon)
 Vitric Subgroup helper (Andisols)
 Pass when volcanic_glass_pct >= 30 in a 25+ cm layer within 100 cm.
 }
+\keyword{internal}

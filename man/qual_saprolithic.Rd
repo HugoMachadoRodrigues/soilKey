@@ -12,3 +12,4 @@ qual_saprolithic(pedon)
 \description{
 Saprolithic supplementary qualifier (sp): saprolite parent material
 }
+\keyword{internal}

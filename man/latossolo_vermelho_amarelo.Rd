@@ -12,3 +12,4 @@ latossolo_vermelho_amarelo(pedon)
 \description{
 Latossolos Vermelho-Amarelos (catch-all).
 }
+\keyword{internal}

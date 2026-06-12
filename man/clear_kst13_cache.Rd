@@ -6,6 +6,9 @@
 \usage{
 clear_kst13_cache()
 }
+\value{
+\code{NULL}, invisibly. Called for its side effect of emptying the KST 13th-edition lookup cache.
+}
 \description{
 Useful when the vendored JSON files are updated mid-session.
 Frees ~3.1 MB.

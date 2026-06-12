@@ -14,3 +14,4 @@ fluvent_qualifying_usda(pedon)
 Fluvent Suborder qualifier (irregular OC decrease in 25-125 cm,
 OR layered alluvial designation).
 }
+\keyword{internal}

@@ -35,3 +35,4 @@ do gate de iluviacao quantitativa; sinais de iluviacao Fe/Al
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 35; Cap 8
             (Espodossolos), pp 156-160.
 }
+\keyword{internal}

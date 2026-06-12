@@ -27,3 +27,4 @@ from monthly precipitation+ETP).
 Recognized targets (KST 13ed Ch 3): "aquic", "aridic", "torric",
 "udic", "perudic", "ustic", "xeric".
 }
+\keyword{internal}

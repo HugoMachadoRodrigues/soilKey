@@ -19,3 +19,4 @@ Useful for diagnostics that key on field-described features
 for cryic / frozen, hortic / irragric / plaggic / pretic / terric
 for anthric).
 }
+\keyword{internal}

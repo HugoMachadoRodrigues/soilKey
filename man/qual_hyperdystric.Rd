@@ -16,3 +16,4 @@ Hyperdystric qualifier (yd): base saturation < 5\% throughout the
 upper 100 cm (mineral soil layers only). Stronger than Dystric (BS
 < 50\%).
 }
+\keyword{internal}

@@ -6,6 +6,9 @@
 \usage{
 make_cambissolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Reusa fixture WRB Cambisol -- B incipiente sem ser plintico,
 vertico, planico, etc.

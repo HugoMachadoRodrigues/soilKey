@@ -10,6 +10,9 @@ technic_hard_material(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Technic hard material (WRB 2022 Ch 3.3.18): consolidated human-made
 material (asphalt, concrete, worked stones).

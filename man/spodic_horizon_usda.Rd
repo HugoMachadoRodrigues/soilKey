@@ -20,3 +20,4 @@ diagnostic.
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 64-67.
 }
+\keyword{internal}

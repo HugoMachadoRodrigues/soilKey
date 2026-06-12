@@ -15,3 +15,4 @@ diagnostic now that the anthropic-evidence gate (P / artefacts /
 Apl-family designation) lives inside the diagnostic itself. The
 v0.9.1 qualifier-side gate is therefore retired.
 }
+\keyword{internal}

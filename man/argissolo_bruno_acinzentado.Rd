@@ -14,3 +14,4 @@ Argissolos com horizonte B textural, com matiz \\>= 5YR e cor escura
 (valor \\<= 4 + croma \\<= 4 umidos) na maior parte do B (inclusive
 BA).
 }
+\keyword{internal}

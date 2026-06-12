@@ -14,3 +14,4 @@ hemic_subgroup_usda(pedon, max_top_cm = 130)
 \description{
 Hemic Subgroup helper
 }
+\keyword{internal}

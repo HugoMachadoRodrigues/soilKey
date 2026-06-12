@@ -16,3 +16,4 @@ Protoandic supplementary qualifier (pan): early-stage andic
 WRB 2022 Ch 5: "Andic-like properties below the strict threshold
 (oxalate Al+Fe 0.4-2.0\%)."
 }
+\keyword{internal}

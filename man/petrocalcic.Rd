@@ -13,6 +13,9 @@ petrocalcic(pedon, min_thickness = 10, min_caco3_pct = 15)
 
 \item{min_caco3_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 A continuously cemented variant of the calcic horizon. Same chemistry
 (CaCO3 \\>= 15\%) plus moderate-or-greater cementation in at least

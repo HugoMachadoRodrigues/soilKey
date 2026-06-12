@@ -16,3 +16,4 @@ Columnic supplementary qualifier (cm): columnar / prismatic structure
 WRB 2022 Ch 5: "Columnar or strong prismatic structure
 (associated with natric horizons)."
 }
+\keyword{internal}

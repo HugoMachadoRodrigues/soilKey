@@ -12,3 +12,4 @@ qual_plinthic(pedon)
 \description{
 Plinthic qualifier (pl): plinthic horizon <= 100 cm.
 }
+\keyword{internal}

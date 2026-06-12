@@ -14,3 +14,4 @@ nitossolo(pedon)
 do A, com argila ativ baixa OR ativ alta + carater alumínico, na
 maior parte dos primeiros 100 cm do B (incl. BA).
 }
+\keyword{internal}

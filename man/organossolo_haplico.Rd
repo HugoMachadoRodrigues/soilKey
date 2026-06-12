@@ -12,3 +12,4 @@ organossolo_haplico(pedon)
 \description{
 Organossolos Haplicos (catch-all).
 }
+\keyword{internal}

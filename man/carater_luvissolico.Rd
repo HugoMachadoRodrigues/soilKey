@@ -34,3 +34,4 @@ Note: o threshold de Ta para "luvissolico" e 20 (vs 27 para
 Embrapa (2018), SiBCS 5a ed., Cap 5, p 134; Cap 11
             (Luvissolos).
 }
+\keyword{internal}

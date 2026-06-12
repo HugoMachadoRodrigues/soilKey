@@ -19,3 +19,4 @@ Silica-cemented horizon, very strongly resistant. Detected via
 \code{cementation_class == "indurated"} AND \code{duripan_pct
 >= 50}.
 }
+\keyword{internal}

@@ -23,6 +23,9 @@ B_nitico(
 
 \item{min_cerosidade}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Subsuperficial nao hidromorfico, textura argilosa/muito argilosa
 (clay \\>= 35\% desde a superficie), com pequeno incremento de

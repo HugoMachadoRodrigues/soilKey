@@ -14,3 +14,4 @@ humic_inceptisol_usda(pedon)
 Humic Inceptisol Suborder helper (Hum*)
 Pass when umbric or mollic epipedon present + thick (>= 25 cm).
 }
+\keyword{internal}

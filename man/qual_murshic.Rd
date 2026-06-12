@@ -14,3 +14,4 @@ WRB 2022 Ch 5 (Histosols): "Drained organic soils with sapric
 decomposition (rubbed fibres < 17\%) and von Post >= 7 in upper 50
 cm." Proxy via low rubbed fibre + von Post (when present).
 }
+\keyword{internal}

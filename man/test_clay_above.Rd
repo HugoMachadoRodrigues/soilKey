@@ -16,3 +16,4 @@ test_clay_above(h, min_pct = 30, candidate_layers = NULL)
 \description{
 Default 30\% (vertic features minimum, WRB 2022 Chapter 3).
 }
+\keyword{internal}

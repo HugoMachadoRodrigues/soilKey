@@ -17,3 +17,4 @@ test_caso4_concentration(h, min_pct = 5, candidate_layers = NULL)
 Default 5\% (gypsic horizon, WRB 2022 Chapter 3). Used by
 \code{\link{gypsic}}.
 }
+\keyword{internal}

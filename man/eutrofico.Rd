@@ -11,6 +11,9 @@ eutrofico(pedon, min_v = 50)
 
 \item{min_v}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Returns TRUE se a saturacao por bases (V\%) >= 50\% no horizonte
 diagnostico subsuperficial (B ou C). 65\% para A chernozemico.

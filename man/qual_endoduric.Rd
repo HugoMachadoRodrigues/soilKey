@@ -12,3 +12,4 @@ qual_endoduric(pedon)
 \description{
 Endoduric supplementary qualifier: duric horizon at depth >= 50 cm
 }
+\keyword{internal}

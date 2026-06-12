@@ -12,3 +12,4 @@ qual_escalic(pedon)
 \description{
 Escalic supplementary qualifier (es): terraced / stepped morphology
 }
+\keyword{internal}

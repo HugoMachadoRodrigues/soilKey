@@ -12,6 +12,9 @@ SoilTaxonomy package over the vendored copy. Set to
 \code{FALSE} to force the vendored copy (e.g. for
 reproducibility of a specific soilKey release).}
 }
+\value{
+The canonical Soil Taxonomy diagnostic-features reference (a list / data.frame).
+}
 \description{
 Convenience wrapper for \code{canonical_reference("ST_features")}.
 Returns an 84-row data.frame with one row per diagnostic feature

@@ -13,6 +13,9 @@ planosol(pedon, strict = NULL)
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} disables the planic-features fallback.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
 directly above or below the abrupt textural difference, stagnic

@@ -12,3 +12,4 @@ qual_cryic(pedon)
 \description{
 Cryic qualifier (cy): cryic horizon <= 100 cm.
 }
+\keyword{internal}

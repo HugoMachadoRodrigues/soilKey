@@ -12,3 +12,4 @@ argic_mollisol_usda(pedon)
 \description{
 Argic Mollisol Suborder helper -- delegates argillic_within_usda.
 }
+\keyword{internal}

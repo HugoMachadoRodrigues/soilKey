@@ -12,3 +12,4 @@ nitossolo_vermelho(pedon)
 \description{
 Nitossolos Vermelhos (Cap 13): matiz \\<= 2.5YR.
 }
+\keyword{internal}

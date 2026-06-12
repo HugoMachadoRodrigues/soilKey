@@ -11,6 +11,9 @@ tsitelic(pedon, min_thickness = 10)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 From Georgian \emph{tsiteli} = red. A red colour-defined horizon
 formed on weathered basalt or similar Fe-rich parent material in

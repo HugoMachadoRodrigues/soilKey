@@ -29,6 +29,9 @@ sombric(
 
 \item{min_oc_increase}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Sombric horizon (WRB 2022): subsurface accumulation of humus that
 qualified neither as spodic nor as a true mollic-like horizon

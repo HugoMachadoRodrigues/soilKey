@@ -12,3 +12,4 @@ qual_thionic(pedon)
 \description{
 Thionic qualifier (tn): thionic horizon within 100 cm.
 }
+\keyword{internal}

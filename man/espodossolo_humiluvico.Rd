@@ -14,3 +14,4 @@ espodossolo_humiluvico(pedon)
 Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
 pouco/sem Fe).
 }
+\keyword{internal}

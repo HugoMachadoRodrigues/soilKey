@@ -16,3 +16,4 @@ usam \code{max_depth_cm = 50}.}
 \description{
 Contato litico fragmentario (SiBCS Cap 1, p 40): rocha fragmentada.
 }
+\keyword{internal}

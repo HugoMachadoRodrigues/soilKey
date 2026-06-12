@@ -12,3 +12,4 @@ qual_sodic(pedon)
 \description{
 Sodic qualifier (so): ESP >= 6\% (incl. SAR-derived).
 }
+\keyword{internal}

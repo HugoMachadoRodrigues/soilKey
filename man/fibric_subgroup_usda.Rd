@@ -18,3 +18,4 @@ Fibric Subgroup helper (Haplohemists / Haplowassists / Sulfiwassists)
 Pass when fibric layers cumulative thickness >= 25 cm in control
 section below surface tier.
 }
+\keyword{internal}

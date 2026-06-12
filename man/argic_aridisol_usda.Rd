@@ -12,3 +12,4 @@ argic_aridisol_usda(pedon)
 \description{
 Argic Aridisol helper -- argillic-or-kandic in Argids/Cryids/etc.
 }
+\keyword{internal}

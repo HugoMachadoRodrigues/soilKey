@@ -12,3 +12,4 @@ qual_endoeutric(pedon)
 \description{
 Endoeutric supplementary qualifier (eee): eutric only at depth
 }
+\keyword{internal}

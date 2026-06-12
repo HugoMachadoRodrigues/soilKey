@@ -16,3 +16,4 @@ Gilgaic supplementary qualifier (gi): gilgai microrelief
 WRB 2022 Ch 5: "Gilgai microrelief (associated with vertic
 shrinking/swelling soils)." Site-level field detection.
 }
+\keyword{internal}

@@ -39,3 +39,4 @@ Criterios canonicos:
 Embrapa (2018), SiBCS 5a ed., Cap 1, pp 32-33;
             Cap 5 (Argissolos), pp 117-119.
 }
+\keyword{internal}

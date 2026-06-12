@@ -18,3 +18,4 @@ change in thickness fourfold or more within a pedon. v0.8
 approximation: returns FALSE -- requires multi-pedon transect data
 not in the single-pedon schema. Refinement deferred.
 }
+\keyword{internal}

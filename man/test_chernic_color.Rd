@@ -19,3 +19,4 @@ test_chernic_color(h, max_top_cm = 20, max_chroma = 2, candidate_layers = NULL)
 Default upper boundary is 20 cm (Chernozem criterion: dark colour in
 the upper 20 cm of the mollic horizon).
 }
+\keyword{internal}

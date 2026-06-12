@@ -14,3 +14,4 @@ dystric_subgroup_usda(pedon)
 Dystric Subgroup helper (Vertisols Dystr*)
 Pass when BS (NH4OAc) < 50\% in some part of the upper 100 cm.
 }
+\keyword{internal}

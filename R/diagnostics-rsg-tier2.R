@@ -131,6 +131,7 @@ vertisol <- function(pedon, strict = NULL) {
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} disables the buried-exclusion tolerance.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
                        buried_below_cm = 50, strict = NULL) {
@@ -230,6 +231,7 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} tightens path 1 and disables path 3.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 gleysol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
@@ -294,6 +296,7 @@ gleysol <- function(pedon, strict = NULL) {
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} disables the planic-features fallback.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 planosol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
@@ -371,6 +374,7 @@ planosol <- function(pedon, strict = NULL) {
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} requires two of the three argic exception paths.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 ferralsol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
@@ -481,6 +485,7 @@ ferralsol <- function(pedon, strict = NULL) {
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 80\%.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
                              strict = NULL) {
@@ -548,6 +553,7 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 75\%.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70,
                               strict = NULL) {

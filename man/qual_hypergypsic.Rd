@@ -14,3 +14,4 @@ qual_hypergypsic(pedon)
 Hypergypsic qualifier (yg): gypsic horizon AND gypsum >= 60\% in
 some gypsic layer.
 }
+\keyword{internal}

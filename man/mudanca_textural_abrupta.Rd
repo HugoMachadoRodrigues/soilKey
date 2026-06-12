@@ -9,6 +9,9 @@ mudanca_textural_abrupta(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Aumento consideravel de argila em pequena distancia vertical
 (\\<= 7.5 cm) na transicao A/E -> B:

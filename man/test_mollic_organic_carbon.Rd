@@ -16,3 +16,4 @@ test_mollic_organic_carbon(h, min_pct = 0.6, candidate_layers = NULL)
 \description{
 Mollic organic-carbon test (WRB 2022, default >= 0.6\%)
 }
+\keyword{internal}

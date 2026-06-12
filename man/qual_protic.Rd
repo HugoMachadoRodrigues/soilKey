@@ -20,3 +20,4 @@ argic, no spodic, no ferralic, no nitic horizon is present in the
 upper 100 cm. v0.9.1 implements as the conjunction of the "no B
 horizon" diagnostics.
 }
+\keyword{internal}

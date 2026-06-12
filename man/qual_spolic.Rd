@@ -18,3 +18,4 @@ industrial-process slag) in the upper 100 cm. v0.9.1 proxy: designation
 pattern (\code{Cspol|spoil|slag|mine}) or \code{rock_origin == "spoil"}.
 Hard schema column \code{artefacts_spolic_pct} scheduled for v0.9.2.
 }
+\keyword{internal}

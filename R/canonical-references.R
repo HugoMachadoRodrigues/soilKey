@@ -110,6 +110,7 @@ canonical_reference <- function(name = c("WRB_4th_2022",
 #' Resources}, 4th edition.
 #'
 #' @inheritParams canonical_reference
+#' @return The canonical WRB 2022 reference data (a list / data.frame of RSG and qualifier criteria), as vendored or sourced from the \pkg{SoilTaxonomy} package.
 #' @export
 wrb2022_canonical <- function(prefer_pkg = TRUE) {
   canonical_reference("WRB_4th_2022", prefer_pkg = prefer_pkg)
@@ -126,6 +127,7 @@ wrb2022_canonical <- function(prefer_pkg = TRUE) {
 #' \href{https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf}{USDA-NRCS (2022). \emph{Keys to Soil Taxonomy}, 13th edition.}
 #'
 #' @inheritParams canonical_reference
+#' @return The canonical \emph{Keys to Soil Taxonomy} (13th ed.) criteria reference (a list / data.frame).
 #' @export
 kst13_canonical <- function(prefer_pkg = TRUE) {
   canonical_reference("ST_criteria_13th", prefer_pkg = prefer_pkg)
@@ -142,6 +144,7 @@ kst13_canonical <- function(prefer_pkg = TRUE) {
 #' parsed criteria text per feature.
 #'
 #' @inheritParams canonical_reference
+#' @return The canonical Soil Taxonomy diagnostic-features reference (a list / data.frame).
 #' @export
 st_features_canonical <- function(prefer_pkg = TRUE) {
   canonical_reference("ST_features", prefer_pkg = prefer_pkg)

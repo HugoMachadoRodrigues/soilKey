@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Gelic soil temperature regime (USDA)
 }
+\keyword{internal}

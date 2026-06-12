@@ -12,3 +12,4 @@ grossarenic_subgroup_usda(pedon)
 \description{
 Grossarenic Subgroup helper: sandy throughout, spodic >= 125 cm.
 }
+\keyword{internal}

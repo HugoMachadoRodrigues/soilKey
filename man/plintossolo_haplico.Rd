@@ -12,3 +12,4 @@ plintossolo_haplico(pedon)
 \description{
 Plintossolos Haplicos (catch-all).
 }
+\keyword{internal}

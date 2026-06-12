@@ -30,3 +30,4 @@ sodico em B + cores neutras.
 Embrapa (2018), SiBCS 5a ed., Cap 5; Cap 1, p 36;
             Cap 15 (Planossolos).
 }
+\keyword{internal}

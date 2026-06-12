@@ -18,3 +18,4 @@ Default 24 cmol_c/kg clay -- WRB 2022 boundary that distinguishes
 "low-activity-clay" RSGs (Acrisols, Lixisols) from "high-activity-
 clay" RSGs (Alisols, Luvisols).
 }
+\keyword{internal}

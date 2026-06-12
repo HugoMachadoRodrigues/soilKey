@@ -29,3 +29,4 @@ Implementation simplified to: any horizon with
 (al_ox_pct + 0.5 * fe_ox_pct) >= 0.25 with an overlying layer
 having <= half that value.
 }
+\keyword{internal}

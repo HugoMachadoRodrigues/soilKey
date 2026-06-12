@@ -12,3 +12,4 @@ humic_spodic_usda(pedon)
 \description{
 Humic-spodic Suborder/GG check (>= 6\% OC in 10+ cm of spodic)
 }
+\keyword{internal}

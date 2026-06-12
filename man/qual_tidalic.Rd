@@ -14,3 +14,4 @@ qual_tidalic(pedon)
 Tidalic qualifier (td): subject to tidal flooding. v0.9.1:
 site$drainage_class contains "tidal".
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ Spodic-Andisols Subgroup helper
 Pass when albic horizon overlies a cambic OR spodic horizon,
 OR when a spodic horizon is present in 50\%+ of the pedon.
 }
+\keyword{internal}

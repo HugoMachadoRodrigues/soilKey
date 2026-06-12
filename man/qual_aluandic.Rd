@@ -14,3 +14,4 @@ qual_aluandic(pedon)
 Aluandic qualifier (aa): andic properties + Al-dominant active
 component (Al / (Al + 0.5 Si) >= 0.5 in mass).
 }
+\keyword{internal}

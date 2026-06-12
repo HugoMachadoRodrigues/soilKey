@@ -20,3 +20,4 @@ site$drainage_class or site$land_use carries an explicit
 Natural drainage classes (e.g. "very poorly drained", "well drained")
 do NOT trigger Drainic on their own.
 }
+\keyword{internal}

@@ -27,6 +27,7 @@
 #' }
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_oc_g_kg Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   h <- pedon$horizons
@@ -99,6 +100,7 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
 #' @param max_chroma_moist Numeric threshold or option (see Details).
 #' @param max_value_dry Numeric threshold or option (see Details).
 #' @param min_thickness_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_A_chernozemico <- function(pedon,
                                         min_oc_g_kg = 6,
@@ -184,6 +186,7 @@ horizonte_A_chernozemico <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_v_pct_max Numeric threshold or option (see Details).
 #' @param min_thickness_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
                                   min_thickness_cm = 18) {
@@ -255,6 +258,7 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
 #'
 #' Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\%**.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 horizonte_A_proeminente <- function(pedon) {
   ch <- horizonte_A_chernozemico(pedon, min_v_pct = 0)  # bypass V check
@@ -288,6 +292,7 @@ horizonte_A_proeminente <- function(pedon) {
 #' \\>= 30 mg/kg + evidencias antropogenicas. Reuso de \code{\link{hortic}}
 #' (WRB) com criterios SiBCS-specific.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 horizonte_A_antropico <- function(pedon) {
   res <- hortic(pedon, min_thickness = 20, min_oc = 0.6,
@@ -304,6 +309,7 @@ horizonte_A_antropico <- function(pedon) {
 #' Horizonte A fraco (SiBCS Cap 2, p 53): cor clara + estrutura grao
 #' simples/macica + OC < 6 g/kg; OR espessura < 5 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 horizonte_A_fraco <- function(pedon) {
   h <- pedon$horizons
@@ -359,6 +365,7 @@ horizonte_A_fraco <- function(pedon) {
 #' Returns TRUE quando o solo tem horizonte superficial mas nao se
 #' enquadra nas demais classes diagnosticas superficiais.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 horizonte_A_moderado <- function(pedon) {
   others <- list(
@@ -403,6 +410,7 @@ horizonte_A_moderado <- function(pedon) {
 #' estruturas (criterio i.1 / i.2 / i.3); lamelas \\>= 15 cm combinadas.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_textural <- function(pedon, ...) {
   res <- argic(pedon, ...)
@@ -441,6 +449,7 @@ B_textural <- function(pedon, ...) {
 #'   \code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
 #'   Forwarded to \code{\link{ferralic}}.
 #' @param ... Reserved for future arguments.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_latossolico <- function(pedon, min_thickness = 50,
                               max_cec_per_clay = NULL,
@@ -545,6 +554,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
 #' }
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_incipiente <- function(pedon, min_thickness = 10) {
   h <- pedon$horizons
@@ -605,6 +615,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' @param min_clay_pct Numeric threshold or option (see Details).
 #' @param max_b_a_ratio Numeric threshold or option (see Details).
 #' @param min_cerosidade Numeric threshold or option (see Details).
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                         max_b_a_ratio = 1.5,
@@ -689,6 +700,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
 #' identicos.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_espodico <- function(pedon, ...) {
   res <- spodic(pedon, ...)
@@ -703,6 +715,7 @@ B_espodico <- function(pedon, ...) {
 #' Tipo especial de B textural com mudanca textural abrupta +
 #' permeabilidade lenta + cores neutras/escurecidas + cromas baixos.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_planico <- function(pedon) {
   h <- pedon$horizons
@@ -734,6 +747,7 @@ B_planico <- function(pedon) {
 #' Reuso de \code{\link{albic}} (WRB Ch 3.1) com criterios identicos.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @keywords internal
 #' @export
 horizonte_E_albico <- function(pedon, ...) {
   res <- albic(pedon, ...)
@@ -751,6 +765,7 @@ horizonte_E_albico <- function(pedon, ...) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_plinthite_pct Numeric threshold or option (see Details).
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
                                   min_thickness = 15) {
@@ -769,6 +784,7 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_petroplinthite_pct Numeric threshold or option (see Details).
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
                                         min_thickness = 30) {
@@ -797,6 +813,7 @@ horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
 #' \code{\link{petroplinthic}} (WRB), espessura \\>= 10 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_litoplintico <- function(pedon, min_thickness = 10) {
   res <- petroplinthic(pedon, min_thickness = min_thickness)
@@ -814,6 +831,7 @@ horizonte_litoplintico <- function(pedon, min_thickness = 10) {
 #' SiBCS.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 horizonte_glei <- function(pedon, min_thickness = 15) {
   gl <- gleyic_properties(pedon)
@@ -845,6 +863,7 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
 #' espessura \\>= 15 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @keywords internal
 #' @export
 horizonte_calcico <- function(pedon, ...) {
   res <- calcic(pedon, ...)
@@ -859,6 +878,7 @@ horizonte_calcico <- function(pedon, ...) {
 #' Reuso de \code{\link{petrocalcic}} (WRB v0.3.3).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @keywords internal
 #' @export
 horizonte_petrocalcico <- function(pedon, ...) {
   res <- petrocalcic(pedon, ...)
@@ -874,6 +894,7 @@ horizonte_petrocalcico <- function(pedon, ...) {
 #' material + espessura \\>= 15 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @keywords internal
 #' @export
 horizonte_sulfurico <- function(pedon, ...) {
   res <- thionic(pedon, max_pH = 3.5, ...)
@@ -891,6 +912,7 @@ horizonte_sulfurico <- function(pedon, ...) {
 #' COLE \\>= 0.06 (proxy via shrink-swell).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @keywords internal
 #' @export
 horizonte_vertico <- function(pedon, ...) {
   res <- vertic_horizon(pedon, min_thickness = 20, ...)
@@ -907,6 +929,7 @@ horizonte_vertico <- function(pedon, ...) {
 #' quebradicidade.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 fragipa <- function(pedon, ...) {
   res <- fragic(pedon, ...)
@@ -922,6 +945,7 @@ fragipa <- function(pedon, ...) {
 #' cimentado por silica, continuo ou em \\>= 50\% volume.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 duripa <- function(pedon, ...) {
   res <- duric_horizon(pedon, ...)

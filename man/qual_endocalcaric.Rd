@@ -14,3 +14,4 @@ WRB 2022 Ch 5 (Umbrisols / Retisols): "Calcaric material starting
 >= 50 cm from the soil surface." Modifier of
 \code{\link{calcaric_material}}.
 }
+\keyword{internal}

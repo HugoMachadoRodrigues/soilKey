@@ -14,3 +14,4 @@ qual_hypersodic(pedon)
 Hypersodic qualifier (yo): ESP >= 50\% in some layer within 100 cm.
 Stronger than Sodic (default ESP >= 6\%).
 }
+\keyword{internal}

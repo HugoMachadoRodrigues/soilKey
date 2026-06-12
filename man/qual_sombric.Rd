@@ -18,3 +18,4 @@ depth) within 200 cm. WRB excludes layers that simultaneously meet
 spodic or ferralic criteria from being Sombric -- those have
 specific qualifiers of their own. v0.9.1 enforces both exclusions.
 }
+\keyword{internal}

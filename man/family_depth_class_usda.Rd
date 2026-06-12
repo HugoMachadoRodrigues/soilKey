@@ -20,3 +20,4 @@ designations (R / Cr / Cd / m suffix) and emits "very-shallow" (< 25 cm) or
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 17.
 }
+\keyword{internal}

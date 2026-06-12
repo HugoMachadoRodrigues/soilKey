@@ -17,3 +17,4 @@ A chernozemico seguido de:
 (c) Calcico OR carater carbonatico no A, seguido de contato
     litico / fragmentario.
 }
+\keyword{internal}

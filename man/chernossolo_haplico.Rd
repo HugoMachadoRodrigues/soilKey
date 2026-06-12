@@ -12,3 +12,4 @@ chernossolo_haplico(pedon)
 \description{
 Chernossolos Haplicos (catch-all).
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ Pass when 1500 kPa water retention < 15\% (air-dried) and
 < 30\% (undried) throughout 60\%+ of the thickness. v0.8 proxy:
 uses water_content_1500kpa < 15\%.
 }
+\keyword{internal}

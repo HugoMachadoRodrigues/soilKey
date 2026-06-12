@@ -12,3 +12,4 @@ qual_endodystric(pedon)
 \description{
 WRB 2022 Ch 5: "Distric (BS < 50\%) at >= 50 cm depth."
 }
+\keyword{internal}

@@ -27,3 +27,4 @@ KST 13ed, Ch 9 various.
 Implementation simplified to the volcanic-glass branch:
 volcanic_glass_pct >= 5 AND (Al + 0.5 * Fe) * 60 + volcanic_glass_pct >= 30.
 }
+\keyword{internal}

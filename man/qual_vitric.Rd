@@ -12,3 +12,4 @@ qual_vitric(pedon)
 \description{
 Vitric qualifier (vi): vitric properties >= 30 cm within 100 cm.
 }
+\keyword{internal}

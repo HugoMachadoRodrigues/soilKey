@@ -18,3 +18,4 @@ Default threshold is 0.01\% -- effectively "any measurable secondary
 carbonate". Used to distinguish Phaeozems (no carbonates within 100
 cm) from Chernozems and Kastanozems.
 }
+\keyword{internal}

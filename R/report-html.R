@@ -69,6 +69,11 @@
 #'             is already a (list of) \code{ClassificationResult}.
 #' @param ...  Passed to method-specific renderers.
 #' @return     The output path, invisibly.
+#' @examples
+#' pedon <- make_ferralsol_canonical()
+#' out <- file.path(tempdir(), "soilkey_report.html")
+#' report(pedon, file = out, pedon = pedon)
+#' file.exists(out)
 #' @export
 report <- function(x,
                    file,

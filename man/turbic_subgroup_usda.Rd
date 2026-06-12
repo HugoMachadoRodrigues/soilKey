@@ -16,3 +16,4 @@ Turbic Subgroup helper (Gelods)
 Pass when gelic materials are present within 200 cm.
 Implementation: cryoturbation + permafrost within 200 cm.
 }
+\keyword{internal}

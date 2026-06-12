@@ -12,3 +12,4 @@ qual_nudilithic(pedon)
 \description{
 Nudilithic qualifier (nt): continuous rock at the soil surface (top_cm == 0).
 }
+\keyword{internal}

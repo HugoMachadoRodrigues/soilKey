@@ -12,3 +12,4 @@ vertissolo_haplico(pedon)
 \description{
 Vertissolos Haplicos (catch-all).
 }
+\keyword{internal}

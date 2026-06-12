@@ -17,3 +17,4 @@ depth_to_water_table indicator (when available). For BDsolos /
 FEBR (no permafrost / aquic conditions tracked), checks
 redoximorphic features WITHOUT gleyic-hue reduction.
 }
+\keyword{internal}

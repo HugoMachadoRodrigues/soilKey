@@ -15,3 +15,4 @@ latossolo(pedon, max_top_cm = 200)
 Horizonte B latossolico imediatamente abaixo de qualquer tipo de A
 (exceto histico), dentro de 200 cm (ou 300 se A > 150 cm).
 }
+\keyword{internal}

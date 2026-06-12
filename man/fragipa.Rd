@@ -11,6 +11,9 @@ fragipa(pedon, ...)
 
 \item{...}{Reserved for future arguments.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Reuso de \code{\link{fragic}} (WRB v0.3.3): horizonte
 subsuperficial endurecido quando seco, baixa MO, BD elevada,

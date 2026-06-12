@@ -20,3 +20,4 @@ A \code{\link{DiagnosticResult}}.
 Pass when EITHER an argillic OR a kandic horizon is present
 within \code{max_top_cm}.
 }
+\keyword{internal}

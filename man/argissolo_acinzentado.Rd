@@ -13,3 +13,4 @@ argissolo_acinzentado(pedon)
 Matiz \\>= 7.5YR, valor \\>= 5, croma \\< 4 (cores mais cinzentas /
 palidas), na maior parte do B (inclusive BA).
 }
+\keyword{internal}

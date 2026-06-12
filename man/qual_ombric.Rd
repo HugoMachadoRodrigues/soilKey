@@ -20,3 +20,4 @@ acidic and unbuffered) and low base saturation. Practical proxy:
 Histosol Order with weighted-mean pH_h2o <= 4.5 in the upper 100 cm
 AND no carbonates (calcaric / calcium-rich evidence absent).
 }
+\keyword{internal}

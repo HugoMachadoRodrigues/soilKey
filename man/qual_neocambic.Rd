@@ -14,3 +14,4 @@ WRB 2022 Ch 5 (Retisols): "Cambic horizon with structure_grade
 \"weak\" only (early-stage pedogenesis)." Composite: cambic + weak
 structure.
 }
+\keyword{internal}

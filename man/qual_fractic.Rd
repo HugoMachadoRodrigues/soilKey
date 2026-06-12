@@ -18,3 +18,4 @@ or calcic horizon that has cracked / fractured).
 Implementation: positive \code{cracks_width_cm} or
 \code{cracks_depth_cm} on any layer with top <= 100 cm.
 }
+\keyword{internal}

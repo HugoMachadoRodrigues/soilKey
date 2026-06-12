@@ -17,3 +17,4 @@ carater_sodico(pedon, min_pst = 15, max_depth_cm = NULL)
 \description{
 Carater sodico (SiBCS Cap 1, p 39): saturacao por sodio (PST) >= 15\%.
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ carater_eutrico(pedon, min_pH = 5.7, min_s = 2)
 Distinto de "eutrofico": exige pH(H2O) >= 5.7 conjugado com
 S (soma de bases) >= 2.0 cmolc/kg solo dentro da secao de controle.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ natric_subgroup_usda(pedon)
 \description{
 Natric Subgroup helper for Natraquerts.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ qual_nechic(pedon)
 \description{
 Nechic supplementary qualifier (ne): aeolian / loess deposit pattern
 }
+\keyword{internal}

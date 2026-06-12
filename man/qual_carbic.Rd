@@ -16,3 +16,4 @@ Carbic qualifier (cb): spodic horizon dominated by humus illuviation.
 v0.9.1: spodic + OC >= 6\% in some spodic layer (the WRB threshold for
 Carbic / "humus-Podzol" expression).
 }
+\keyword{internal}

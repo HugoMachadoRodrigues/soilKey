@@ -14,3 +14,4 @@ horizonte_petrocalcico(pedon, ...)
 \description{
 Reuso de \code{\link{petrocalcic}} (WRB v0.3.3).
 }
+\keyword{internal}

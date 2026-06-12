@@ -35,3 +35,4 @@ Implementacao v0.7.4 (aproximacao):
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, pp 129-131; Cap 13.
 }
+\keyword{internal}

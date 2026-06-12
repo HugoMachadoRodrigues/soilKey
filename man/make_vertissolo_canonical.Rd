@@ -6,6 +6,9 @@
 \usage{
 make_vertissolo_canonical()
 }
+\value{
+A \code{\link{PedonRecord}} populated with the canonical horizons and site metadata for this reference profile.
+}
 \description{
 Solo argiloso (>= 30\% argila desde superficie) com horizonte vertico
 (slickensides + fendas + clay alto) iniciando dentro de 100 cm.

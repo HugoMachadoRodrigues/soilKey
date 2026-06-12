@@ -38,3 +38,4 @@ This still excludes Loamy Psamments and Sandy-Loamy Psamments
 80 %; it captures the mineralogical signal indirectly via the
 near-pure-sand texture.
 }
+\keyword{internal}

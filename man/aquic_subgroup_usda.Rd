@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Aquic Subgroup helper (within 100 cm of mineral soil surface)
 }
+\keyword{internal}

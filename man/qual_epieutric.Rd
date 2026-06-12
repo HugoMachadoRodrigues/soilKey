@@ -12,3 +12,4 @@ qual_epieutric(pedon)
 \description{
 Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
 }
+\keyword{internal}

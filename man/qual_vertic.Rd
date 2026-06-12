@@ -12,3 +12,4 @@ qual_vertic(pedon)
 \description{
 Vertic qualifier (vr): vertic horizon <= 100 cm.
 }
+\keyword{internal}

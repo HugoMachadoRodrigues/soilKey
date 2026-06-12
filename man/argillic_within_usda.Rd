@@ -19,3 +19,4 @@ Wrapper around argillic_usda that simply re-exports the
 DiagnosticResult with a max-depth check (default 100 cm for
 Argiorthels Subgroup keys).
 }
+\keyword{internal}

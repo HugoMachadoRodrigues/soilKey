@@ -103,6 +103,12 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #'         attributes are in \code{$trace$family}.
 #' @references Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th
 #'   edition. USDA Natural Resources Conservation Service.
+#' @examples
+#' pedon <- make_ferralsol_canonical()
+#' res <- classify_usda(pedon)
+#' res$name
+#' # include the 5th (family) level:
+#' classify_usda(pedon, include_family = TRUE)$name
 #' @export
 classify_usda <- function(pedon,
                             rules      = NULL,

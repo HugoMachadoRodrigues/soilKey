@@ -14,6 +14,7 @@
 #' Oxic horizon (USDA, KST 13ed, Ch 3)
 #' Delegates to WRB \code{ferralic}.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 oxic_horizon_usda <- function(pedon) {
   res <- oxic_usda(pedon)  # already exists, delegates to ferralic
@@ -31,6 +32,7 @@ oxic_horizon_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 125.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 petroferric_contact_usda <- function(pedon, max_top_cm = 125) {
   h <- pedon$horizons
@@ -61,6 +63,7 @@ petroferric_contact_usda <- function(pedon, max_top_cm = 125) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 anionic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -95,6 +98,7 @@ anionic_subgroup_usda <- function(pedon) {
 #' Pass when 50\%+ colors have hue <= 2.5YR AND value <= 3 in
 #' B horizons 25-125 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 rhodic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -118,6 +122,7 @@ rhodic_subgroup_usda <- function(pedon) {
 #' Xanthic Subgroup helper (Oxisols)
 #' Pass when 50\%+ colors have hue >= 7.5YR AND value >= 6 in B horizons.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 xanthic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -143,6 +148,7 @@ xanthic_subgroup_usda <- function(pedon) {
 #' present. v0.8: detects via 'sombric' designation OR a B horizon
 #' with V<=4 + V<=4 + chroma<=2 + OC>1 in 50-150 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 sombric_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
@@ -167,6 +173,7 @@ sombric_subgroup_usda <- function(pedon) {
 #' surface and 100 cm (computed as SUM(OC\% * bulk_density * dz)).
 #' v0.8 proxy: uses default bulk_density 1.0 g/cm3 if unavailable.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 humic_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -205,6 +212,7 @@ humic_oxisol_usda <- function(pedon) {
 #' Pass when plinthite >= 5\% in any horizon within 125 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 plinthic_subgroup_usda <- function(pedon, max_top_cm = 125) {
   h <- pedon$horizons
@@ -226,6 +234,7 @@ plinthic_subgroup_usda <- function(pedon, max_top_cm = 125) {
 #' Already defined for Aquods; here we add Oxisol-specific variant
 #' (any 10+ cm horizon below A with chroma >= 3 in 50\%+ peds).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aeric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -250,6 +259,7 @@ aeric_oxisol_usda <- function(pedon) {
 #' Pass when oxic or kandic horizon has ECEC < 1.5 cmol/kg clay AND
 #' pH (KCl) >= 5.0.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 acric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -280,6 +290,7 @@ acric_oxisol_usda <- function(pedon) {
 #' Kandic Suborder helper for Oxisols (Kandiperox/Kandiudox/Kandiustox)
 #' Delegates to kandic_horizon_usda.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 kandic_oxisol_usda <- function(pedon) {
   res <- kandic_horizon_usda(pedon)
@@ -291,6 +302,7 @@ kandic_oxisol_usda <- function(pedon) {
 #' Eutric Oxisol Suborder helper (Eutroperox/Eutrudox/etc.)
 #' Pass when BS (NH4OAc) >= 35\% in all layers within 125 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 eutric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -312,6 +324,7 @@ eutric_oxisol_usda <- function(pedon) {
 #' proxy).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 plinthaquox_qualifying_usda <- function(pedon, max_top_cm = 125) {
   h <- pedon$horizons

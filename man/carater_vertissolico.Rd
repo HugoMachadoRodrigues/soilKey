@@ -33,3 +33,4 @@ Vertissolo).
 Embrapa (2018), SiBCS 5a ed., Cap 6, pp 146-153;
             Cap 17 (Vertissolos).
 }
+\keyword{internal}

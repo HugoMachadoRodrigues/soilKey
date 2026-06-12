@@ -12,6 +12,9 @@ SoilTaxonomy package over the vendored copy. Set to
 \code{FALSE} to force the vendored copy (e.g. for
 reproducibility of a specific soilKey release).}
 }
+\value{
+The canonical \emph{Keys to Soil Taxonomy} (13th ed.) criteria reference (a list / data.frame).
+}
 \description{
 Convenience wrapper for \code{canonical_reference("ST_criteria_13th")}.
 Returns a nested list of 3,153 parsed Keys-to-Soil-Taxonomy clauses

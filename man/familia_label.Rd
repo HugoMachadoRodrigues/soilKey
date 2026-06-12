@@ -21,3 +21,4 @@ utilizadas para identificacao do 5o nivel categorico devem ser
 acrescentadas apos a designacao do 4o nivel categorico e separadas
 desta e entre si por virgula".
 }
+\keyword{internal}

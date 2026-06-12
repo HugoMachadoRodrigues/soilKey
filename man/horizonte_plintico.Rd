@@ -18,3 +18,4 @@ Plintita \\>= 15\% volume, espessura \\>= 15 cm. Tem precedencia
 sobre B textural, latossolico, nitico, B incipiente, planico (sem
 carater sodico), e glei. Reuso de \code{\link{plinthic}} (WRB).
 }
+\keyword{internal}

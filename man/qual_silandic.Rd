@@ -14,3 +14,4 @@ qual_silandic(pedon)
 Silandic qualifier (sn): andic properties + Si-dominant active
 component (Al / (Al + 0.5 Si) < 0.5 in mass; allophane-rich).
 }
+\keyword{internal}

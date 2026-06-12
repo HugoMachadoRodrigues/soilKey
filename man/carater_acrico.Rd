@@ -33,3 +33,4 @@ Criterios canonicos (todos verificados em horizontes B):
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 31; Cap 10
             (Latossolos), pp 173-176.
 }
+\keyword{internal}

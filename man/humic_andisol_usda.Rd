@@ -14,3 +14,4 @@ humic_andisol_usda(pedon)
 Humic Andisols Subgroup helper
 Pass when mollic OR umbric epipedon present.
 }
+\keyword{internal}

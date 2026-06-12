@@ -14,3 +14,4 @@ humic_subgroup_usda(pedon)
 Humic Subgroup helper (Humic Duricryods / Humic Placocryods)
 Pass when spodic horizon has >= 6\% OC in 10+ cm.
 }
+\keyword{internal}

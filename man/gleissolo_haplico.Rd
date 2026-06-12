@@ -12,3 +12,4 @@ gleissolo_haplico(pedon)
 \description{
 Gleissolos Haplicos (catch-all).
 }
+\keyword{internal}

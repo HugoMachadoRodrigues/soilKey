@@ -16,3 +16,4 @@ Andic qualifier (an): andic OR vitric properties combined >= 30 cm.
 v0.9 simplification: passes if andic_properties or vitric_properties
 passes within 100 cm.
 }
+\keyword{internal}

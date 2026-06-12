@@ -13,3 +13,4 @@ qual_pantofluvic(pedon)
 WRB 2022 Ch 5 (Fluvisols): "Fluvic material continuously from the
 soil surface to >= 100 cm depth."
 }
+\keyword{internal}

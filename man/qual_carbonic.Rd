@@ -12,3 +12,4 @@ qual_carbonic(pedon)
 \description{
 Carbonic supplementary qualifier (cb): high SOC content (>= 6\%)
 }
+\keyword{internal}

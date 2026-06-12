@@ -20,3 +20,4 @@ is fluvic / aeolic / solimovic at the top of the profile, OR the
 uppermost mineral horizon's designation matches \code{^[AC]u?\\d?}
 (cumulic-style suffix).
 }
+\keyword{internal}

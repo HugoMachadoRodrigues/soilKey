@@ -15,3 +15,4 @@ horizonte_litoplintico(pedon, min_thickness = 10)
 Petroplintita continua (ironstone). Reuso de
 \code{\link{petroplinthic}} (WRB), espessura \\>= 10 cm.
 }
+\keyword{internal}

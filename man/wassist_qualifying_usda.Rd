@@ -21,3 +21,4 @@ all years."  Diagnostic for the Wassists suborder.
 Implementation: pass when \code{site$water_table_cm_above_surface}
 is provided and >= 2 (positive = above surface).
 }
+\keyword{internal}

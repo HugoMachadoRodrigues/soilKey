@@ -12,3 +12,4 @@ cambissolo_haplico(pedon)
 \description{
 Cambissolos Haplicos (catch-all).
 }
+\keyword{internal}

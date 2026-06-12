@@ -27,3 +27,4 @@ Standard cuts:
 - "Arenic":      75-125 cm
 - "Grossarenic": 125+ cm (use min_spodic_top=125, max=Inf)
 }
+\keyword{internal}

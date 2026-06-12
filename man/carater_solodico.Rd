@@ -19,3 +19,4 @@ carater_solodico(pedon, min_pst = 6, max_pst = 15, max_depth_cm = NULL)
 \description{
 Carater solodico (SiBCS Cap 1, p 39): PST entre 6\% e < 15\%.
 }
+\keyword{internal}

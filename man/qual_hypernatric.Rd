@@ -12,3 +12,4 @@ qual_hypernatric(pedon)
 \description{
 WRB 2022 Ch 5: "Sodic with exchangeable sodium percentage >= 70\%."
 }
+\keyword{internal}

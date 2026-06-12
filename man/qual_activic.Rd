@@ -18,3 +18,4 @@ WRB 2022 Ch 5: "KCl-extractable Al (\code{al_kcl_cmol}) >= 5
 cmol(c)/kg in any layer in upper 100 cm." Proxy via existing
 \code{al_cmol} (exchangeable Al) when al_kcl_cmol absent.
 }
+\keyword{internal}

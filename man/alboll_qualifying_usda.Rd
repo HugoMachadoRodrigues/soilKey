@@ -12,3 +12,4 @@ alboll_qualifying_usda(pedon)
 \description{
 Albolls qualifier: mollic + albic + argillic.
 }
+\keyword{internal}

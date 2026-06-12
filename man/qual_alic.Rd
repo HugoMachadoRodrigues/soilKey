@@ -12,3 +12,4 @@ qual_alic(pedon)
 \description{
 Alic qualifier (al): argic + high CEC + high Al saturation.
 }
+\keyword{internal}

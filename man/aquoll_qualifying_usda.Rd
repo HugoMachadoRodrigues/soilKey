@@ -12,3 +12,4 @@ aquoll_qualifying_usda(pedon)
 \description{
 Aquolls qualifier (aquic conditions in mollic).
 }
+\keyword{internal}

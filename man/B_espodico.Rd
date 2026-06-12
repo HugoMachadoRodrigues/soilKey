@@ -11,6 +11,9 @@ B_espodico(pedon, ...)
 
 \item{...}{Reserved for future arguments.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Subsuperficial com acumulo iluvial de Al + Fe + materia organica;
 espessura \\>= 2.5 cm. Tipos: Bs, Bhs, Bh, ortstein. Reuso de

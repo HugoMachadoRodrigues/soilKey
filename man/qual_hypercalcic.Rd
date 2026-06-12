@@ -14,3 +14,4 @@ qual_hypercalcic(pedon)
 Hypercalcic qualifier (yc): calcic horizon AND CaCO3 >= 50\% in some
 calcic layer.
 }
+\keyword{internal}

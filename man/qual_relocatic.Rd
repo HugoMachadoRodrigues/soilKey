@@ -15,3 +15,4 @@ same site (cut-and-fill, terracing) covering >= 100 cm of the
 upper soil." Implementation parallels \code{\link{qual_transportic}}
 but matches \code{relocat|terraced|cut.fill}.
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ qual_limnic(pedon)
 Limnic qualifier (lm): limnic material (lacustrine / marine subaquatic
 deposits) anywhere in the profile.
 }
+\keyword{internal}

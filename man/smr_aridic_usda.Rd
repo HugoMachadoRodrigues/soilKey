@@ -15,3 +15,4 @@ A \code{\link{DiagnosticResult}}.
 \description{
 Aridic soil moisture regime (USDA)
 }
+\keyword{internal}

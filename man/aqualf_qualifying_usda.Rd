@@ -12,3 +12,4 @@ aqualf_qualifying_usda(pedon)
 \description{
 Aqualf Suborder qualifier (aquic conditions in argillic Alfisol).
 }
+\keyword{internal}

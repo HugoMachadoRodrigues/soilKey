@@ -20,3 +20,4 @@ shrink-swell signal is already present) within the upper 100 cm.
 Wraps \code{\link{protovertic}} and is mutually exclusive with the
 strict Vertic qualifier.
 }
+\keyword{internal}

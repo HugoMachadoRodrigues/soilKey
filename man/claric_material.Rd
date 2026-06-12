@@ -10,6 +10,9 @@ claric_material(pedon)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Claric material (WRB 2022 Ch 3.3.4): light-coloured fine earth with
 Munsell criteria.

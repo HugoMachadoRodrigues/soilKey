@@ -16,3 +16,4 @@ Protogypsic qualifier (qg): protogypsic properties (incipient
 gypsum accumulation) within the upper 100 cm. Wraps
 \code{\link{protogypsic_properties}}.
 }
+\keyword{internal}

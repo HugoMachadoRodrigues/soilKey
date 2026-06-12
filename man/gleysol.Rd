@@ -13,6 +13,9 @@ gleysol(pedon, strict = NULL)
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} tightens path 1 and disables path 3.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 WRB-canonical (multi-path):
 \enumerate{

@@ -12,3 +12,4 @@ qual_mochipic(pedon)
 \description{
 Mochipic supplementary qualifier (mp): mottled mochi-like pattern
 }
+\keyword{internal}

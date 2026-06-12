@@ -12,3 +12,4 @@ qual_duric(pedon)
 \description{
 Duric qualifier (du): duric horizon <= 100 cm.
 }
+\keyword{internal}

@@ -31,6 +31,7 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 2, pp 7-9.
+#' @keywords internal
 #' @export
 histosol_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
@@ -66,6 +67,7 @@ histosol_qualifying_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 wassist_qualifying_usda <- function(pedon) {
   wt <- pedon$site$water_table_cm_above_surface %||% NA_real_
@@ -91,6 +93,7 @@ wassist_qualifying_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 folist_qualifying_usda <- function(pedon) {
   aq <- aquic_conditions_usda(pedon, max_top_cm = 50)
@@ -120,6 +123,7 @@ folist_qualifying_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param target Character, one of the recognized regimes.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 soil_moisture_regime_usda <- function(pedon,
                                           target = c("aquic", "aridic",
@@ -164,6 +168,7 @@ soil_moisture_regime_usda <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param target Character, one of the recognized regimes.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 soil_temperature_regime_usda <- function(pedon,
                                               target = c("gelic", "cryic",
@@ -193,36 +198,42 @@ soil_temperature_regime_usda <- function(pedon,
 #' Cryic soil temperature regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 str_cryic_usda  <- function(pedon) soil_temperature_regime_usda(pedon, "cryic")
 
 #' Aridic soil moisture regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 smr_aridic_usda <- function(pedon) soil_moisture_regime_usda(pedon, "aridic")
 
 #' Torric soil moisture regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 smr_torric_usda <- function(pedon) soil_moisture_regime_usda(pedon, "torric")
 
 #' Ustic soil moisture regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 smr_ustic_usda  <- function(pedon) soil_moisture_regime_usda(pedon, "ustic")
 
 #' Xeric soil moisture regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 smr_xeric_usda  <- function(pedon) soil_moisture_regime_usda(pedon, "xeric")
 
 #' Udic soil moisture regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 smr_udic_usda   <- function(pedon) soil_moisture_regime_usda(pedon, "udic")
 
@@ -239,6 +250,7 @@ smr_udic_usda   <- function(pedon) soil_moisture_regime_usda(pedon, "udic")
 #' @param max_top_cm Default 100.
 #' @param min_thickness_cm Default 15.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 sulfidic_materials_usda <- function(pedon, max_top_cm = 100,
                                          min_thickness_cm = 15) {
@@ -266,6 +278,7 @@ sulfidic_materials_usda <- function(pedon, max_top_cm = 100,
 #' Pass when sulfidic materials within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 sulfic_subgroup_usda <- function(pedon) {
   res <- sulfidic_materials_usda(pedon, max_top_cm = 100)
@@ -285,6 +298,7 @@ sulfic_subgroup_usda <- function(pedon) {
 #' @param min_ec Default 30.
 #' @param min_thickness_cm Default 30.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 halic_subgroup_usda <- function(pedon, min_ec = 30,
                                      min_thickness_cm = 30) {
@@ -314,6 +328,7 @@ halic_subgroup_usda <- function(pedon, min_ec = 30,
 #' @param max_ec Default 0.6.
 #' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 frasic_qualifying_usda <- function(pedon, max_ec = 0.6,
                                         max_top_cm = 100) {
@@ -353,6 +368,7 @@ frasic_qualifying_usda <- function(pedon, max_ec = 0.6,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 130.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 hydric_subgroup_usda <- function(pedon, max_top_cm = 130) {
   h <- pedon$horizons
@@ -380,6 +396,7 @@ hydric_subgroup_usda <- function(pedon, max_top_cm = 130) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 humilluvic_subgroup_usda <- function(pedon) {
   DiagnosticResult$new(
@@ -408,6 +425,7 @@ humilluvic_subgroup_usda <- function(pedon) {
 #' Pass when thickness of sapric > thickness of fibric+hemic in 0-130 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
+#' @keywords internal
 #' @export
 sapric_predominant_usda <- function(pedon) {
   h <- pedon$horizons
@@ -433,6 +451,7 @@ sapric_predominant_usda <- function(pedon) {
 
 #' Fibric_predominant_usda: Fibrists Suborder qualifier
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 fibric_predominant_usda <- function(pedon) {
   h <- pedon$horizons
@@ -461,6 +480,7 @@ fibric_predominant_usda <- function(pedon) {
 #' section below surface tier.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 fibric_subgroup_usda <- function(pedon, max_top_cm = 130) {
   fi <- fibrico(pedon)
@@ -480,6 +500,7 @@ fibric_subgroup_usda <- function(pedon, max_top_cm = 130) {
 #' Hemic Subgroup helper
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 hemic_subgroup_usda <- function(pedon, max_top_cm = 130) {
   he <- hemico(pedon)
@@ -499,6 +520,7 @@ hemic_subgroup_usda <- function(pedon, max_top_cm = 130) {
 #' Sapric Subgroup helper (Sphagnofibrists)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
+#' @keywords internal
 #' @export
 sapric_subgroup_usda <- function(pedon, max_top_cm = 130) {
   sa <- saprico(pedon)

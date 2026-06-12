@@ -11,6 +11,9 @@ B_textural(pedon, ...)
 
 \item{...}{Reserved for future arguments.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Horizonte mineral subsuperficial com incremento de argila + cerosidade
 OR aumento gradativo, satisfazendo criterios de espessura e relacao

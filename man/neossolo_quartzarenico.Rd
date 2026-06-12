@@ -14,3 +14,4 @@ neossolo_quartzarenico(pedon)
 Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
 todos os horizontes ate 150 cm + 95\% quartzo.
 }
+\keyword{internal}

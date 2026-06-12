@@ -14,3 +14,4 @@ carater_fluvico(pedon)
 Carater fluvico (SiBCS Cap 1, p 35-36): camadas estratificadas +
 distribuicao irregular de C organico. Reuso de fluvic_material (WRB).
 }
+\keyword{internal}

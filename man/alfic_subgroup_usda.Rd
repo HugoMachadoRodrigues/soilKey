@@ -12,3 +12,4 @@ alfic_subgroup_usda(pedon)
 \description{
 Alfic Subgroup helper (Spodosols): argillic or kandic with BS >= 35\%
 }
+\keyword{internal}

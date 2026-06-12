@@ -20,3 +20,4 @@ Detected via designation containing 'm' (cemented) AND
 \code{cementation_class} in \{strongly, indurated\} AND thickness
 between 1 mm and 25 mm.
 }
+\keyword{internal}

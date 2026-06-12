@@ -23,3 +23,4 @@ excessivo" (do latim "pale").
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 11, p 214.
 }
+\keyword{internal}

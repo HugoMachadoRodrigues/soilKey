@@ -14,3 +14,4 @@ WRB 2022 Ch 5 (Acrisols / Lixisols / Alisols / Luvisols / Retisols):
 "Argic horizon starting <= 5 cm from the soil surface (no
 overlying eluvial / albic / mollic / umbric layer)."
 }
+\keyword{internal}

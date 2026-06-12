@@ -34,3 +34,4 @@ AND (2) ha camada com \code{oc_pct} >= \code{min_oc_pct} cuja
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5 (Argissolos), p 119.
 }
+\keyword{internal}

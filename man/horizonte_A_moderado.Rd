@@ -16,3 +16,4 @@ Horizonte A moderado (SiBCS Cap 2, p 53-54): catch-all.
 Returns TRUE quando o solo tem horizonte superficial mas nao se
 enquadra nas demais classes diagnosticas superficiais.
 }
+\keyword{internal}

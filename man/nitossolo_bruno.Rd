@@ -12,3 +12,4 @@ nitossolo_bruno(pedon)
 \description{
 Nitossolos Brunos (Cap 13): matiz \\>= 7.5YR + valor <= 4 + croma <= 5.
 }
+\keyword{internal}

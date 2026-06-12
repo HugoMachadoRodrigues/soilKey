@@ -20,3 +20,4 @@ lithological discontinuity (e.g., 2C horizon below B)."
 Implementation: designation pattern containing "2C" or "3C"
 (numeric prefix indicates lithologic discontinuity).
 }
+\keyword{internal}

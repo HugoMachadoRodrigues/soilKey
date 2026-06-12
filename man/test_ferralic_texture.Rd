@@ -37,3 +37,4 @@ texture in 95\\%+ of Brazilian Latossolos. Default is
 \code{FALSE} (canonical WRB behaviour preserved).
 }
 
+\keyword{internal}

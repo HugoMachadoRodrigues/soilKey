@@ -25,6 +25,9 @@ vertic_horizon(
 \item{le_max_depth_cm}{Depth window (cm) for the COLE-based path
 (default 100).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Stricter than the vertic *properties*: the vertic *horizon* requires
 \\>= 30\% clay throughout, slickensides at \\>= "common" level, AND

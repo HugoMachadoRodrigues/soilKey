@@ -16,3 +16,4 @@ Rhodic Subgroup helper (Oxisols, Mollisols, etc.)
 Pass when 50\%+ colors have hue <= 2.5YR AND value <= 3 in
 B horizons 25-125 cm.
 }
+\keyword{internal}

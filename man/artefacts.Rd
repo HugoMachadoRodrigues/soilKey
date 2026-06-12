@@ -11,6 +11,9 @@ artefacts(pedon, min_pct = 1)
 
 \item{min_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Per the canonical definition: human-made / human-altered / human-
 excavated material. v0.3.3 returns the layers where

@@ -16,3 +16,4 @@ Protocalcic qualifier (qc): protocalcic properties (incipient
 carbonate accumulation) within the upper 100 cm. Wraps
 \code{\link{protocalcic_properties}}.
 }
+\keyword{internal}

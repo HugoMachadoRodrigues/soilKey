@@ -37,3 +37,4 @@ Implementation detects buried horizons via designation containing
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 9 various.
 }
+\keyword{internal}

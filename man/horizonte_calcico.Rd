@@ -16,3 +16,4 @@ Reuso direto de \code{\link{calcic}} (WRB Ch 3.1.5) -- criterios
 identicos: 150 g/kg CaCO3 + 50 g/kg a mais que sub-jacente +
 espessura \\>= 15 cm.
 }
+\keyword{internal}

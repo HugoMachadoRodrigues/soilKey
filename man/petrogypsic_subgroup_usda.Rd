@@ -14,3 +14,4 @@ petrogypsic_subgroup_usda(pedon, max_top_cm = 100)
 \description{
 Petrogypsic Subgroup helper -- delegate to petrogypsic_horizon_usda
 }
+\keyword{internal}

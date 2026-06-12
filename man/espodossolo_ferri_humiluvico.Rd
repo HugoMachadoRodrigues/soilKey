@@ -14,3 +14,4 @@ espodossolo_ferri_humiluvico(pedon)
 Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
 catch-all dos espodossolos.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ melanic_andisol_usda(pedon)
 \description{
 Melanic Andisols: melanic_epipedon present.
 }
+\keyword{internal}

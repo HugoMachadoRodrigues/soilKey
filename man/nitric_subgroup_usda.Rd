@@ -17,3 +17,4 @@ Pass when a horizon >= 15 cm thick has nitrate concentration
 >= 118 mmol(-)/L AND (thickness * concentration) >= 3500.
 (Nitrate is not in the schema; v0.8 returns NA with missing flag.)
 }
+\keyword{internal}

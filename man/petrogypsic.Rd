@@ -13,6 +13,9 @@ petrogypsic(pedon, min_thickness = 10, min_gypsum_pct = 5)
 
 \item{min_gypsum_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Petrogypsic horizon (WRB 2022): cemented gypsic.
 }

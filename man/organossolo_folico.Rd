@@ -14,3 +14,4 @@ organossolo_folico(pedon)
 Organossolos Folicos (Cap 14): horizonte O histico (drenado).
 Detectado via designation pattern \"^O\".
 }
+\keyword{internal}

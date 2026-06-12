@@ -44,3 +44,4 @@ IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 }
+\keyword{internal}

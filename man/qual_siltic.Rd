@@ -14,3 +14,4 @@ qual_siltic(pedon)
 Siltic qualifier (sl): silt or silt-loam texture >= 30 cm in the upper
 100 cm.
 }
+\keyword{internal}

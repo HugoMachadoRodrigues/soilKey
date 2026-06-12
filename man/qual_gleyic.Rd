@@ -14,3 +14,4 @@ qual_gleyic(pedon)
 Gleyic qualifier (gl): gleyic properties throughout a layer >= 25 cm
 starting <= 75 cm + reducing conditions.
 }
+\keyword{internal}

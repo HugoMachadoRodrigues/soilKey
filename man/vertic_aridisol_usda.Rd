@@ -12,3 +12,4 @@ vertic_aridisol_usda(pedon)
 \description{
 Vertic Aridisols helper -- delegates to vertic_subgroup_usda
 }
+\keyword{internal}

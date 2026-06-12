@@ -77,6 +77,7 @@
 #' Order-level gate: cryic_conditions diagnostic from WRB delegated +
 #' optional permafrost_temp_C if available.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 gelisol_usda <- function(pedon) {
   h <- pedon$horizons
@@ -100,6 +101,7 @@ gelisol_usda <- function(pedon) {
 #' Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
 #' threshold) instead of WRB histic_horizon (10 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 histosol_usda <- function(pedon) {
   hi <- histosol_qualifying_usda(pedon)
@@ -125,6 +127,7 @@ histosol_usda <- function(pedon) {
 
 #' Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 spodosol_usda <- function(pedon) {
   sp <- spodic(pedon)
@@ -148,6 +151,7 @@ spodosol_usda <- function(pedon) {
 
 #' Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 andisol_usda <- function(pedon) {
   # Refined v0.8.6: uses andisol_qualifying_usda which enforces the
@@ -191,6 +195,7 @@ andisol_usda <- function(pedon) {
 #' v0.9.16 benchmark.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 oxisol_usda <- function(pedon) {
   ox <- oxic_usda(pedon)
@@ -233,6 +238,7 @@ oxisol_usda <- function(pedon) {
 #' Vertisols (USDA Cap 16): slickensides + cracks.
 #' Delegates to vertic_horizon.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 vertisol_usda <- function(pedon) {
   vh <- vertic_horizon(pedon)
@@ -264,6 +270,7 @@ vertisol_usda <- function(pedon) {
 #' proxies (low EC OR salic OR caracter combinations) + non-mollic
 #' surface + low OC (no organic accumulation).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 aridisol_usda <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
@@ -305,6 +312,7 @@ aridisol_usda <- function(pedon) {
 #' lab-grade profiles always use the canonical KST 13ed gate.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 ultisol_usda <- function(pedon) {
   ar <- argic(pedon)
@@ -341,6 +349,7 @@ ultisol_usda <- function(pedon) {
 
 #' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 mollisol_usda <- function(pedon) {
   # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
@@ -383,6 +392,7 @@ mollisol_usda <- function(pedon) {
 #' Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
 #' >= 35\% at the implicit reference depth.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 alfisol_usda <- function(pedon) {
   ar <- argillic_usda(pedon)
@@ -422,6 +432,7 @@ alfisol_usda <- function(pedon) {
 #' subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
 #' sodium-affected sub).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 inceptisol_usda <- function(pedon) {
   cb <- cambic(pedon)
@@ -457,6 +468,7 @@ inceptisol_usda <- function(pedon) {
 #' Entisols (USDA Cap 8): catch-all for soils that don't match any
 #' other Order. Always passes.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
 #' @export
 entisol_usda <- function(pedon) {
   DiagnosticResult$new(

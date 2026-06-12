@@ -12,3 +12,4 @@ qual_retic(pedon)
 \description{
 Retic qualifier (rt): retic properties <= 100 cm.
 }
+\keyword{internal}

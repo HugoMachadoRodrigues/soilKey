@@ -13,6 +13,9 @@ irragric(pedon, min_thickness = 20)
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Irragric horizon (WRB 2022): topsoil thickened by irrigation deposits.
 v0.3.3: thickness >= 20 cm + sediment-derived structure proxied via

@@ -14,3 +14,4 @@ aquult_qualifying_usda(pedon)
 Aquult Suborder qualifier
 Pass when aquic_conditions within 50 cm.
 }
+\keyword{internal}

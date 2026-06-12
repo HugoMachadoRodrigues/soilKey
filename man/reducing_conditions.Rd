@@ -12,6 +12,9 @@ reducing_conditions(pedon, min_redox_pct = 5)
 
 \item{min_redox_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
 \code{\link{test_reducing_conditions}}.

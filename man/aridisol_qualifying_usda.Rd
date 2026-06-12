@@ -18,3 +18,4 @@ Pass when the soil has aridic SMR AND any one of: argillic, natric,
 kandic, calcic, petrocalcic, gypsic, petrogypsic, salic, duripan,
 cambic, sulfuric horizon. Also requires no other prior order match.
 }
+\keyword{internal}

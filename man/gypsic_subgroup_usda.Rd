@@ -14,3 +14,4 @@ gypsic_subgroup_usda(pedon, max_top_cm = 100)
 \description{
 Gypsic Subgroup helper -- delegates to gypsic_horizon_usda.
 }
+\keyword{internal}

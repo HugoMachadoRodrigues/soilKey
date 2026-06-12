@@ -18,3 +18,4 @@ Horizonte A com cor moderadamente escura (value/chroma <= 4),
 V < 65\%, e C organico total >= 60 + 0.1 * argila_media (g/kg).
 Espessura \\>= a do A chernozemico.
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ qual_sulfidic(pedon)
 Sulfidic qualifier (sf): hyper- OR hyposulfidic material in upper 100 cm
 (the WRB Sulfidic qualifier covers either acidification class).
 }
+\keyword{internal}

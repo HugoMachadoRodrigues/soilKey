@@ -18,3 +18,4 @@ WRB 2022 Ch 5: "Containing layers with charcoal / soot / fire-baked
 material (visual or chemical evidence)."
 Implementation: \code{layer_origin} or designation matching fire-related text.
 }
+\keyword{internal}

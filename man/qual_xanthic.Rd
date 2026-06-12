@@ -14,3 +14,4 @@ qual_xanthic(pedon)
 Xanthic qualifier (xa): ferralic + hue 7.5YR or yellower + value >=
 4 + chroma >= 5.
 }
+\keyword{internal}

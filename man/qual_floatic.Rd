@@ -18,3 +18,4 @@ bulk density (< 0.1 g/cm3 dry, OR < 0.4 g/cm3 in fully saturated state)
 that floats on water. Practical proxy: oc_pct >= 12 (Histic threshold)
 AND bulk_density_g_cm3 <= 0.4 in any layer of the upper 100 cm.
 }
+\keyword{internal}

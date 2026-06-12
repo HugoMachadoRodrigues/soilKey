@@ -20,3 +20,4 @@ exceed 1.5 cmol+/kg fine earth, OR the soil shows net positive charge
 (delta pH = pH_KCl - pH_H2O > 0). The "or" path makes Geric / Posic
 overlap by design (per WRB Ch 5).
 }
+\keyword{internal}

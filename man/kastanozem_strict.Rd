@@ -17,6 +17,9 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} raises the base-saturation floor to 75\%.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Same structure as \code{\link{chernozem_strict}} but using the mollic
 horizon (no chernic gate) and starting \\<= 70 cm of mineral soil

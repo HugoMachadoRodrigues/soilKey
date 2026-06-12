@@ -12,3 +12,4 @@ luvissolo_haplico(pedon)
 \description{
 Luvissolos Haplicos (catch-all).
 }
+\keyword{internal}

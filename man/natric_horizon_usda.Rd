@@ -16,3 +16,4 @@ A \code{\link{DiagnosticResult}}.
 Pass when natric_horizon (WRB natric: argillic + ESP > 15) is
 present.
 }
+\keyword{internal}

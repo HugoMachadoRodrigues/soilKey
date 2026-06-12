@@ -34,3 +34,4 @@ Horizonte mineral superficial relativamente espesso, escuro, com
 alta saturacao por bases (V \\>= 65\%), OC \\>= 6 g/kg, estrutura
 desenvolvida e espessura conforme criterio.
 }
+\keyword{internal}

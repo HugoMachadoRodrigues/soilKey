@@ -47,3 +47,4 @@ Implementacao v0.7.4 (aproximacao):
 Embrapa (2018), SiBCS 5a ed., Cap 1; Cap 5 PV 4.2.6,
             p 130 (Lunardi Neto, 2012, perfil PVa).
 }
+\keyword{internal}

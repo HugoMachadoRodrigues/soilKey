@@ -195,6 +195,10 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #'         (Grande Grupo > Subordem > Ordem) e \code{rsg_or_order} eh
 #'         o nome da ordem (e.g. "Organossolos"). Os codigos de cada
 #'         nivel e o trace ficam em \code{$trace}.
+#' @examples
+#' pedon <- make_latossolo_canonical()
+#' res <- classify_sibcs(pedon)
+#' res$name
 #' @export
 classify_sibcs <- function(pedon,
                              rules      = NULL,

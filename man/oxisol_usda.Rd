@@ -22,3 +22,4 @@ v0.8 implementation lacked this exclusion and was responsible for
 misclassifying 144 Embrapa FEBR Ultisols as Oxisols in the
 v0.9.16 benchmark.
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ Pass when an argillic horizon has either:
 }
 v0.8 proxy: clay_pct >= 35\% in upper argillic.
 }
+\keyword{internal}

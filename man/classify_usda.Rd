@@ -52,6 +52,13 @@ regime, depth) PREPENDED to the subgroup name, e.g. \emph{"fine,
 kaolinitic, isohyperthermic Rhodic Hapludox"}. See
 \code{\link{classify_usda_family}}.
 }
+\examples{
+pedon <- make_ferralsol_canonical()
+res <- classify_usda(pedon)
+res$name
+# include the 5th (family) level:
+classify_usda(pedon, include_family = TRUE)$name
+}
 \references{
 Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th
   edition. USDA Natural Resources Conservation Service.

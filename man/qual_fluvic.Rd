@@ -12,3 +12,4 @@ qual_fluvic(pedon)
 \description{
 Fluvic qualifier (fv): fluvic material >= 25 cm thick starting <= 75 cm.
 }
+\keyword{internal}

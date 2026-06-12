@@ -18,3 +18,4 @@ present below the spodic horizon. v0.8: detected via designation
 containing "&" (lamella notation in KST) OR multiple thin
 clay-bumps in clay_pct.
 }
+\keyword{internal}

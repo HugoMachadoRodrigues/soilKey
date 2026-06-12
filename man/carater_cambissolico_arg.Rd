@@ -34,3 +34,4 @@ futura. Documentado como limitacao conhecida.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, p 126.
 }
+\keyword{internal}

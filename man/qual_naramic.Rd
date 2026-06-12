@@ -12,3 +12,4 @@ qual_naramic(pedon)
 \description{
 Naramic supplementary qualifier (na): salt-crust morphology
 }
+\keyword{internal}

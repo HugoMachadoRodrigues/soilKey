@@ -18,3 +18,4 @@ Pass when interfingering of albic materials into argillic horizon
 is detected. v0.8 proxy: albic + argillic + lateral chroma <= 2
 on argillic boundary.
 }
+\keyword{internal}

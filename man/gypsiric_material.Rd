@@ -14,6 +14,9 @@ gypsiric_material(pedon, min_caso4_pct = 5)
 
 \item{min_caso4_pct}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Gypsiric material (WRB 2022 Ch 3.3.7): \\>= 5\% gypsum that is
 primary (not secondary). Without a "secondary fraction" schema column,

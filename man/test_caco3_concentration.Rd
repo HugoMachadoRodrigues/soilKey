@@ -17,3 +17,4 @@ test_caco3_concentration(h, min_pct = 15, candidate_layers = NULL)
 Default 15\% (calcic horizon, WRB 2022 Chapter 3). Used by
 \code{\link{calcic}}.
 }
+\keyword{internal}

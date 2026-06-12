@@ -16,3 +16,4 @@ Acric Oxisol Suborder helper (Acroperox/Acrudox/Acrustox/Acraquox)
 Pass when oxic or kandic horizon has ECEC < 1.5 cmol/kg clay AND
 pH (KCl) >= 5.0.
 }
+\keyword{internal}

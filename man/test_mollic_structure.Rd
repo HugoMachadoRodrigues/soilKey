@@ -16,3 +16,4 @@ Excludes horizons that are simultaneously massive AND very hard when
 dry. v0.1 implementation reads \code{structure_grade} and
 \code{consistence_moist} as text and looks for the keyword pair.
 }
+\keyword{internal}

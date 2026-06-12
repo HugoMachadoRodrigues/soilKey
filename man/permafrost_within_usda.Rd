@@ -33,3 +33,4 @@ occurs within \code{max_top_cm} of the surface.
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 3, p 47.
 }
+\keyword{internal}

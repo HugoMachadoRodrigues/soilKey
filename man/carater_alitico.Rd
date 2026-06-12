@@ -20,3 +20,4 @@ Critérios canônicos: Al(extr) >= 4 cmolc/kg solo, saturacao por
 aluminio [100 * Al / (S + Al)] >= 50\%, e saturacao por bases V < 50\%.
 Avaliado no horizonte B (ou C, na ausencia de B).
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ Gelistagnic supplementary qualifier (gst): stagnic in cold conditions
 WRB 2022 Ch 5: "Stagnic features (perched water) in cryic regime."
 Compose: stagnic_pattern + cryic_conditions.
 }
+\keyword{internal}

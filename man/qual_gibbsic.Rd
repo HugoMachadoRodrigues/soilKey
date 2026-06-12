@@ -22,3 +22,4 @@ but gibbsite is poorly extracted by oxalate. The sulfuric attack
 implementation uses Al2O3 by sulfuric attack >= 25\% as a proxy
 (slight over-estimate, since not all crystalline Al is gibbsite).
 }
+\keyword{internal}

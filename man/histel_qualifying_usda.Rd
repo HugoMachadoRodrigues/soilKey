@@ -27,3 +27,4 @@ KST 13ed, Ch 9, p 189 (item AA in Key to Suborders).
 \references{
 Soil Survey Staff (2022), KST 13ed, Ch. 9, p 189.
 }
+\keyword{internal}

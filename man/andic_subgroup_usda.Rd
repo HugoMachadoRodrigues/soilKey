@@ -21,3 +21,4 @@ Pass when, throughout one or more horizons with total thickness
 }
 KST 13ed, p 117 (Andisols core, applies to subgroup criteria too).
 }
+\keyword{internal}

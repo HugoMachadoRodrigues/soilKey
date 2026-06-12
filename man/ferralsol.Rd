@@ -13,6 +13,9 @@ ferralsol(pedon, strict = NULL)
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 \code{TRUE} requires two of the three argic exception paths.}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 WRB-canonical: ferralic horizon \\<= 150 cm AND no argic horizon
 starting above (or at the upper limit of) the ferralic, UNLESS the

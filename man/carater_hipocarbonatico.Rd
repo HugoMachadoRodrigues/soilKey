@@ -17,3 +17,4 @@ de Organossolos Haplicos Sapricos usam
 \description{
 Carater hipocarbonatico (SiBCS Cap 1, p 33): CaCO3 entre 50 e 150 g/kg.
 }
+\keyword{internal}

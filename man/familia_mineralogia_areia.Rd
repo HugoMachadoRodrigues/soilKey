@@ -37,3 +37,4 @@ Plintossolos e Vertissolos.
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 18, p 286.
 }
+\keyword{internal}

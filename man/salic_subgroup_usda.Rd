@@ -16,3 +16,4 @@ salic_subgroup_usda(pedon, max_top_cm = 100)
 Salic Subgroup helper
 Wraps salic_horizon_usda. Used for Salaquerts/Salitorrerts/etc.
 }
+\keyword{internal}

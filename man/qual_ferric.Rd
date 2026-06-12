@@ -12,3 +12,4 @@ qual_ferric(pedon)
 \description{
 Ferric qualifier (fr): ferric horizon <= 100 cm.
 }
+\keyword{internal}

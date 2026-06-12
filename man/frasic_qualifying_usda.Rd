@@ -20,3 +20,4 @@ A \code{\link{DiagnosticResult}}.
 Pass when ec_dS_m < 0.6 (1:5 soil:water) in all horizons within
 100 cm. KST 13ed, Ch 10, p 203.
 }
+\keyword{internal}

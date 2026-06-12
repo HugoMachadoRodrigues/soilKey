@@ -15,8 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      SOILKEY_SKIP_NETWORK: "true"
-      SOILKEY_SKIP_BENCHMARK: "true"
     permissions:
       contents: write
     steps:
@@ -42,6 +40,10 @@ jobs:
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
+
+      - name: Check pkgdown reference is complete
+        run: pkgdown::check_pkgdown()
+        shell: Rscript {0}
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)

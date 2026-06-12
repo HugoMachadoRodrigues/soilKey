@@ -24,3 +24,4 @@ into Cambisol / Acrisol / Lixisol / Ferralsol territory; in those
 RSGs the cambic alone is the gating diagnostic and Brunic would be
 redundant.
 }
+\keyword{internal}

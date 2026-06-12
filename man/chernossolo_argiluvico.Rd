@@ -12,3 +12,4 @@ chernossolo_argiluvico(pedon)
 \description{
 Chernossolos Argiluvicos (Cap 7): B textural abaixo do A chernozemico.
 }
+\keyword{internal}

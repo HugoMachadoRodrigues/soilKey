@@ -14,3 +14,4 @@ ferric_subgroup_usda(pedon)
 Ferric Subgroup helper (Ferrudalfs)
 Pass when iron-rich (fe_dcb_pct >= 4\%) horizon present in B.
 }
+\keyword{internal}

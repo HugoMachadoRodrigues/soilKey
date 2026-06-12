@@ -12,3 +12,4 @@ horizonte_A_proeminente(pedon)
 \description{
 Como A chernozemico (cor escura, OC >= 6 g/kg) **mas com V < 65\%**.
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ qual_calcaric(pedon)
 \description{
 Calcaric qualifier (cl): calcaric material >= 25 cm in upper 100 cm.
 }
+\keyword{internal}

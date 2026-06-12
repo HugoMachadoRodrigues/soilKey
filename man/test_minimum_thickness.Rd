@@ -18,3 +18,4 @@ If NULL, all layers are tested.}
 For each candidate layer, checks \code{bottom_cm - top_cm >= min_cm}.
 Used by argic (default 7.5), ferralic (30), mollic (20), and others.
 }
+\keyword{internal}

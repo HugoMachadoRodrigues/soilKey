@@ -12,3 +12,4 @@ qual_yermic(pedon)
 \description{
 Yermic qualifier (ye): yermic properties in upper 50 cm.
 }
+\keyword{internal}

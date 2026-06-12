@@ -20,3 +20,4 @@ AND moist consistence very firm." Implementation: matches via
 \code{consistence_dry} ("extremely hard") OR
 \code{consistence_moist} ("very firm"), within 100 cm.
 }
+\keyword{internal}

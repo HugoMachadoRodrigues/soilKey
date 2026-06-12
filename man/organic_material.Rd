@@ -12,6 +12,9 @@ organic_material(pedon, min_oc = 20)
 
 \item{min_oc}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Organic material (WRB 2022 Ch 3.3.13): \\>= 20\% SOC + recognisability
 criteria. v0.3.3: SOC threshold only.

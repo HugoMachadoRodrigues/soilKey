@@ -28,3 +28,4 @@ Implementacao: requer (a) designation pattern \code{Cr}/\code{Crf}
 \references{
 Embrapa (2018), SiBCS 5a ed., Cap 5, pp 122, 132.
 }
+\keyword{internal}

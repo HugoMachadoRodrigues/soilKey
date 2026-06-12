@@ -12,3 +12,4 @@ neossolo_fluvico(pedon)
 \description{
 Neossolos Fluvicos (Cap 12): caracter fluvico em < 150 cm.
 }
+\keyword{internal}

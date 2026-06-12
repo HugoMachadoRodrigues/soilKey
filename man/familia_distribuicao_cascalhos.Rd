@@ -33,3 +33,4 @@ Aplica-se a TODAS as classes que apresentam cascalho > 80 g/kg
 Embrapa (2018), SiBCS 5a ed., Cap 1, p 47-48; Cap 18,
             p 284.
 }
+\keyword{internal}

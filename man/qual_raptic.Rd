@@ -12,3 +12,4 @@ qual_raptic(pedon)
 \description{
 Raptic supplementary qualifier (rp): stratification break
 }
+\keyword{internal}

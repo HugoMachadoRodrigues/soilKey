@@ -21,3 +21,4 @@ PLINTHOSOLS, DURISOLS, GYPSISOLS, CALCISOLS.
 Implementation: weighted mean of \code{coarse_fragments_pct} over
 the upper 100 cm; passes if \\>= 70 (or NA if no measurements).
 }
+\keyword{internal}

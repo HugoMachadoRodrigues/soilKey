@@ -26,3 +26,4 @@ Gleissolo). Discrimina os Subgrupos gleissolicos de Argissolos
 Embrapa (2018), SiBCS 5a ed., Cap 5, p 126; Cap 9
             (Gleissolos).
 }
+\keyword{internal}

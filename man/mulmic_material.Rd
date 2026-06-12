@@ -15,6 +15,9 @@ mulmic_material(pedon, min_oc = 8, max_chroma = 2)
 
 \item{max_chroma}{Numeric threshold or option (see Details).}
 }
+\value{
+A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+}
 \description{
 Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed from
 organic material; \\>= 8\% SOC, with low BD, structural / chroma

@@ -21,3 +21,4 @@ horizonte_concrecionario(
 \\>= 50\% volume material grosso (predominio petroplintita) numa
 matriz, espessura \\>= 30 cm. Designation Ac/Ec/Bc/Cc.
 }
+\keyword{internal}

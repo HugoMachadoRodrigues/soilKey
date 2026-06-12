@@ -12,3 +12,4 @@ qual_histic(pedon)
 \description{
 Histic qualifier (hi): histic horizon at or near the surface.
 }
+\keyword{internal}

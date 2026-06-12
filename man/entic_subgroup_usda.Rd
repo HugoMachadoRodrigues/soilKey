@@ -20,3 +20,4 @@ Pass when the spodic horizon is "weakly developed":
   \item Spodic horizon < 10 cm thick.
 }
 }
+\keyword{internal}
