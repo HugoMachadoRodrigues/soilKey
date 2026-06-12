@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.110</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.112</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.112" id="soilkey-09112-2026-06-11">soilKey 0.9.112 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09112-2026-06-11"></a></h2>
+<p>The “<strong>an argic horizon is never a Regosol</strong>” release (accuracy front B2, engine). The honest B1 benchmark exposed a correctness bug in the WRB key: a profile with a CONFIRMED argic (clay-illuvial B) horizon could drop to the Regosol catch-all – the gate for soils with NO diagnostic subsurface horizon – purely because the eutric/alic split (base saturation / Al-saturation) was unmeasured, leaving the Luvisol gate at .</p>
+<div class="section level3">
+<h3 id="the-fix-surgical-in-the-key-0-9-112">The fix (surgical, in the key)<a class="anchor" aria-label="anchor" href="#the-fix-surgical-in-the-key-0-9-112"></a></h3>
+
+</div>
+<div class="section level3">
+<h3 id="impact-0-9-112">Impact<a class="anchor" aria-label="anchor" href="#impact-0-9-112"></a></h3>
+
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.110" id="soilkey-09110-2026-06-11">soilKey 0.9.110 (2026-06-11)<a class="anchor" aria-label="anchor" href="#soilkey-09110-2026-06-11"></a></h2>
 <p>The “<strong>benchmark methodology</strong>” release (front B1 of the accuracy work). A readiness audit found the benchmark numbers were not yet defensible: a sampling bug starved sparsely-labelled systems, the reports gave only point accuracy, and there was no baseline to read accuracy against. This release makes the measurement honest and paper-ready.  – every edit is in the benchmark harness; canonical fixtures are byte-identical. (The accuracy-raising engine work – the argic/ferralic/nitic discriminator – is a separate follow-up, “B2”.)</p>

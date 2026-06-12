@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.110</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.112</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.112</strong></td>
+<td>
+<strong>“An argic horizon is never a Regosol” (accuracy front B2, engine).</strong> Honest B1 benchmark exposed a key correctness bug: a profile with a confirmed argic (clay-illuvial B) horizon dropped to the Regosol catch-all when the eutric/alic split (BS/Al-sat) was unmeasured (<code><a href="reference/luvisol.html">luvisol()</a></code> returned NA → key skips → Regosol). Fix in <code><a href="reference/luvisol.html">luvisol()</a></code> (R/diagnostics-rsg-argic-derived.R): a graceful Al-sat default mirroring the Acrisol BS-fallback — when <code><a href="reference/argic.html">argic()</a></code> passes, CEC/clay≥24, and Al-sat is unmeasured on a <strong>B master horizon</strong>, default to Luvisol (the generic high-activity argic; Alisol needs positive Al-sat≥50). Fires only on <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> (a measured Luvisol/Alisol is never overridden); B-horizon guard excludes a Fluvisol’s stratified C-layer clay jump; <code>al_sat_pct</code> stays in <code>missing_data</code> so the assumption is transparent. <strong>FEBR-WRB +9 Luvisols (Regosol→Luvisol), 0 regressions (17.8→21.9%); all 44 canonical fixtures byte-identical.</strong> Scope note: the dominant FEBR-WRB ceiling is missing data (most argic-RSG pedons lack measured clay), not the discriminator the audit imagined — so this is a targeted correctness fix.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.110</strong></td>
 <td>

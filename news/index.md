@@ -1,5 +1,19 @@
 # Changelog
 
+## soilKey 0.9.112 (2026-06-11)
+
+The “**an argic horizon is never a Regosol**” release (accuracy front
+B2, engine). The honest B1 benchmark exposed a correctness bug in the
+WRB key: a profile with a CONFIRMED argic (clay-illuvial B) horizon
+could drop to the Regosol catch-all – the gate for soils with NO
+diagnostic subsurface horizon – purely because the eutric/alic split
+(base saturation / Al-saturation) was unmeasured, leaving the Luvisol
+gate at .
+
+### The fix (surgical, in the key)
+
+### Impact
+
 ## soilKey 0.9.110 (2026-06-11)
 
 The “**benchmark methodology**” release (front B1 of the accuracy work).
