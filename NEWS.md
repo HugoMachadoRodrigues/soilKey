@@ -1,3 +1,33 @@
+# soilKey 0.9.115 (2026-06-13)
+
+The "**accessible + responsive Pro app**" release (app-maturity front D, part 2
+of 4). Markup/CSS only -- no logic, no dependency, no behaviour change.
+
+## Accessibility
+
+\itemize{
+  \item The document \code{lang} now follows the chosen interface language
+        (\code{en}/\code{pt}) via \code{page_navbar(lang=)}, so screen readers
+        use the right pronunciation rules.
+  \item The navbar language selector gains \code{role="group"} and a
+        translated \code{aria-label}; transient \code{showNotification()}
+        toasts are announced through an \code{aria-live="polite"} /
+        \code{role="status"} region.
+  \item Ribbon text colours darkened to clear WCAG AA 4.5:1 contrast
+        (\code{.sk-empty}, \code{.sk-built}); the busy spinner and button
+        transitions honour \code{prefers-reduced-motion}.
+}
+
+## Responsive layout
+
+\itemize{
+  \item New \code{@media} breakpoints (768px / 480px) in \code{soilkey.css}:
+        sidebars and result cards stack, tall maps/plots cap to the viewport
+        height, the pedon ribbon reflows to a single column, and padding
+        tightens -- the app is usable down to a ~375px phone. No HTML
+        restructuring; the deterministic engine and all keys are untouched.
+}
+
 # soilKey 0.9.114 (2026-06-12)
 
 The "**bilingual Pro app**" release (app-maturity front D, part 1 of 4). The
