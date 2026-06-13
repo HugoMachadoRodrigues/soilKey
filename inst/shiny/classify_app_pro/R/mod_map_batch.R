@@ -61,15 +61,15 @@
   lon_col <- .batch_pick_col(nms, c("lon", "lng", "longitude", "lon_decimal",
                                     "x"))
   if (is.na(id_col))
-    stop("No profile-id column found (expected one of: profile_id, id, perfil).")
+    stop(i18n("mbatch.err_no_id"))
   if (is.na(lat_col) || is.na(lon_col))
-    stop("No lat/lon columns found (expected lat/latitude and lon/longitude).")
+    stop(i18n("mbatch.err_no_latlon"))
 
   # Horizon attribute columns = everything that is part of the canonical spec.
   spec_cols <- names(soilKey:::horizon_column_spec())
   hz_cols   <- intersect(nms, spec_cols)
   if (!all(c("top_cm", "bottom_cm") %in% hz_cols))
-    stop("Horizon rows need at least top_cm and bottom_cm columns.")
+    stop(i18n("mbatch.err_no_depth"))
 
   ids  <- as.character(df[[id_col]])
   uids <- unique(ids[!is.na(ids) & nzchar(ids)])
@@ -126,46 +126,46 @@ map_batch_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5("Batch classify & map"),
+      shiny::h5(i18n("mbatch.title")),
       shinyWidgets::radioGroupButtons(
-        ns("source"), "Point source",
-        choices = c("Demo (fixtures)" = "demo", "Upload CSV" = "upload"),
+        ns("source"),
+        i18n("mbatch.point_source"),
+        choices = stats::setNames(
+          c("demo", "upload"),
+          c(i18n("mbatch.source_demo"), i18n("mbatch.source_upload"))),
         selected = "demo", justified = TRUE, size = "sm"),
       shiny::conditionalPanel(
         sprintf("input['%s'] == 'demo'", ns("source")),
-        shiny::numericInput(ns("n_demo"), "Number of demo points", 12,
+        shiny::numericInput(ns("n_demo"), i18n("mbatch.n_demo"), 12,
                             min = 1, max = 60, step = 1)),
       shiny::conditionalPanel(
         sprintf("input['%s'] == 'upload'", ns("source")),
-        shiny::fileInput(ns("csv"), "Long-format CSV", accept = ".csv"),
+        shiny::fileInput(ns("csv"), i18n("mbatch.long_csv"), accept = ".csv"),
         shiny::helpText(
-          "One row per horizon. Columns: an id (profile_id / id), ",
-          "lat & lon, top_cm, bottom_cm, plus any horizon attributes ",
-          "(designation, clay_pct, ph_h2o, ...).")),
-      shiny::selectInput(ns("system"), "Colour by system",
+          i18n("mbatch.csv_help"))),
+      shiny::selectInput(ns("system"), i18n("mbatch.colour_by_system"),
                          choices = c("WRB 2022"  = "wrb",
                                      "SiBCS 5"    = "sibcs",
                                      "USDA ST 13" = "usda"),
                          selected = "wrb"),
-      shiny::actionButton(ns("run"), "Classify & map",
+      shiny::actionButton(ns("run"), i18n("mbatch.run"),
                           icon = shiny::icon("layer-group"),
                           class = "btn-primary w-100"),
-      shiny::downloadButton(ns("export"), "Export GeoPackage",
+      shiny::downloadButton(ns("export"), i18n("mbatch.export"),
                             class = "btn-outline-secondary w-100 mt-2"),
-      shiny::helpText("Each point is a described profile, classified by the ",
-                      "deterministic key. GeoPackage export needs 'sf'.")
+      shiny::helpText(i18n("mbatch.deterministic_help"))
     ),
     bslib::layout_column_wrap(
       width = 1, heights_equal = "row",
       bslib::card(
-        bslib::card_header("Soil map"),
+        bslib::card_header(i18n("mbatch.soil_map")),
         bslib::card_body(padding = 0,
                          leaflet::leafletOutput(ns("map"), height = "440px"))
       ),
       bslib::card(
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
-                     shiny::strong("Classified points"),
+                     shiny::strong(i18n("mbatch.classified_points")),
                      shiny::uiOutput(ns("count"), inline = TRUE))),
         bslib::card_body(DT::DTOutput(ns("table")))
       )
@@ -184,11 +184,11 @@ map_batch_server <- function(id, rv, settings) {
     results <- shiny::eventReactive(input$run, {
       on_missing <- tryCatch(settings()$on_missing, error = function(e) NULL)
       on_missing <- on_missing %||% "silent"
-      shiny::withProgress(message = "Classifying profiles...", value = 0, {
+      shiny::withProgress(message = i18n("mbatch.classifying"), value = 0, {
         pedons <- tryCatch({
           if (identical(input$source, "upload")) {
             f <- input$csv
-            if (is.null(f)) return(simpleError("Upload a CSV first."))
+            if (is.null(f)) return(simpleError(i18n("mbatch.upload_first")))
             .batch_parse_csv(utils::read.csv(f$datapath,
                                              stringsAsFactors = FALSE))
           } else {
@@ -255,7 +255,7 @@ map_batch_server <- function(id, rv, settings) {
       res <- results()
       if (inherits(res, "error") || is.null(res)) return(NULL)
       shiny::tags$span(class = "badge bg-secondary",
-                       sprintf("%d points", nrow(res)))
+                       i18n("mbatch.n_points", nrow(res)))
     })
 
     output$table <- DT::renderDT({
@@ -264,10 +264,13 @@ map_batch_server <- function(id, rv, settings) {
       shiny::validate(shiny::need(!inherits(res, "error"),
                                   if (inherits(res, "error"))
                                     conditionMessage(res) else "n/a"))
-      shiny::validate(shiny::need(nrow(res) > 0L, "No classifiable points."))
+      shiny::validate(shiny::need(nrow(res) > 0L,
+                                  i18n("mbatch.no_classifiable")))
       show <- res[, c("id", "lat", "lon", "wrb_name", "sibcs_name",
                       "usda_name"), drop = FALSE]
-      names(show) <- c("ID", "Lat", "Lon", "WRB 2022", "SiBCS 5", "USDA ST 13")
+      names(show) <- c(i18n("mbatch.col_id"), i18n("mbatch.col_lat"),
+                       i18n("mbatch.col_lon"), "WRB 2022", "SiBCS 5",
+                       "USDA ST 13")
       DT::datatable(show, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
@@ -278,9 +281,9 @@ map_batch_server <- function(id, rv, settings) {
       content = function(file) {
         res <- results()
         if (inherits(res, "error") || is.null(res) || nrow(res) == 0L)
-          stop("Nothing to export -- classify a point set first.")
+          stop(i18n("mbatch.nothing_to_export"))
         if (!requireNamespace("sf", quietly = TRUE))
-          stop("Package 'sf' is required for GeoPackage export.")
+          stop(i18n("mbatch.sf_required"))
         pts <- sf::st_as_sf(res, coords = c("lon", "lat"),
                             crs = 4326, remove = FALSE)
         sf::st_write(pts, file, layer = "soil_points",

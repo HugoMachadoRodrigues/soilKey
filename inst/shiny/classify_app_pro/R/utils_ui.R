@@ -79,11 +79,11 @@ pro_grade_badge <- function(grade) {
   pal <- c(A = "#198754", B = "#0d6efd", C = "#fd7e14",
            D = "#dc3545", E = "#6c757d")
   col <- if (!is.na(grade) && grade %in% names(pal)) pal[[grade]] else "#6c757d"
-  lab <- if (is.na(grade)) "n/a" else grade
+  lab <- if (is.na(grade)) i18n("ui.na") else grade
   shiny::tags$span(
     class = "badge",
     style = sprintf("background-color:%s;font-size:0.85rem;", col),
-    paste("Evidence", lab)
+    paste(i18n("ui.evidence"), lab)
   )
 }
 
@@ -92,11 +92,11 @@ pro_grade_badge <- function(grade) {
 # A bslib card summarising one ClassificationResult.
 pro_result_card <- function(res, system_label) {
   if (is.null(res) || inherits(res, "error")) {
-    msg <- if (inherits(res, "error")) conditionMessage(res) else "not run"
+    msg <- if (inherits(res, "error")) conditionMessage(res) else i18n("ui.not_run")
     return(bslib::card(
       bslib::card_header(system_label),
       bslib::card_body(shiny::tags$em(class = "text-danger",
-                                      paste("No result --", msg)))
+                                      paste(i18n("ui.no_result"), msg)))
     ))
   }
   princ <- res$qualifiers$principal %||% character(0)
@@ -110,17 +110,17 @@ pro_result_card <- function(res, system_label) {
       )
     ),
     bslib::card_body(
-      shiny::tags$h5(res$name %||% "(unnamed)"),
+      shiny::tags$h5(res$name %||% i18n("ui.unnamed")),
       shiny::tags$dl(
         class = "row mb-0 small",
-        shiny::tags$dt(class = "col-5", "RSG / Order"),
-        shiny::tags$dd(class = "col-7", res$rsg_or_order %||% "n/a"),
+        shiny::tags$dt(class = "col-5", i18n("ui.rsg_order")),
+        shiny::tags$dd(class = "col-7", res$rsg_or_order %||% i18n("ui.na")),
         if (length(princ)) shiny::tagList(
-          shiny::tags$dt(class = "col-5", "Principal qualifiers"),
+          shiny::tags$dt(class = "col-5", i18n("ui.principal_qualifiers")),
           shiny::tags$dd(class = "col-7", paste(princ, collapse = ", "))
         ),
         if (length(supp)) shiny::tagList(
-          shiny::tags$dt(class = "col-5", "Supplementary"),
+          shiny::tags$dt(class = "col-5", i18n("ui.supplementary")),
           shiny::tags$dd(class = "col-7", paste(supp, collapse = ", "))
         )
       )
@@ -134,13 +134,13 @@ pro_result_card <- function(res, system_label) {
 pro_profile_plot <- function(hz_df, attribute) {
   if (is.null(hz_df) || nrow(hz_df) == 0L) {
     return(plotly::plotly_empty(type = "scatter", mode = "markers") |>
-             plotly::layout(title = list(text = "Add at least one horizon",
+             plotly::layout(title = list(text = i18n("ui.add_one_horizon"),
                                          font = list(size = 13))))
   }
   needed <- c("top_cm", "bottom_cm")
   if (!all(needed %in% names(hz_df))) {
     return(plotly::plotly_empty(type = "scatter", mode = "markers") |>
-             plotly::layout(title = list(text = "Horizons need top_cm / bottom_cm",
+             plotly::layout(title = list(text = i18n("ui.horizons_need_topbot"),
                                          font = list(size = 13))))
   }
   top <- suppressWarnings(as.numeric(hz_df$top_cm))
@@ -152,7 +152,7 @@ pro_profile_plot <- function(hz_df, attribute) {
   if (!attribute %in% names(hz_df)) {
     return(plotly::plotly_empty(type = "scatter", mode = "markers") |>
              plotly::layout(title = list(
-               text = paste0("Column '", attribute, "' not present"),
+               text = i18n("ui.column_not_present", attribute),
                font = list(size = 13))))
   }
   val <- suppressWarnings(as.numeric(hz_df[[attribute]]))
@@ -168,7 +168,7 @@ pro_profile_plot <- function(hz_df, attribute) {
   ) |>
     plotly::layout(
       xaxis = list(title = attribute),
-      yaxis = list(title = "Depth (cm)", autorange = "reversed", zeroline = FALSE),
+      yaxis = list(title = i18n("ui.depth_cm"), autorange = "reversed", zeroline = FALSE),
       margin = list(l = 60, r = 20, t = 30, b = 50)
     )
 }
@@ -181,14 +181,14 @@ pro_spectrum_plot <- function(mat, designations = NULL) {
   if (is.null(mat) || !is.matrix(mat) || nrow(mat) == 0L || ncol(mat) == 0L) {
     return(plotly::plotly_empty(type = "scatter", mode = "lines") |>
              plotly::layout(title = list(
-               text = "Attach a Vis-NIR spectrum to see it here",
+               text = i18n("ui.attach_spectrum"),
                font = list(size = 13))))
   }
   # Column names are wavelengths; fall back to a 1..ncol index if unparseable.
   wl <- suppressWarnings(as.numeric(gsub("[^0-9.]", "", colnames(mat))))
   if (length(wl) != ncol(mat) || all(is.na(wl))) wl <- seq_len(ncol(mat))
   labs <- if (!is.null(designations) && length(designations) == nrow(mat))
-    as.character(designations) else paste0("Horizon ", seq_len(nrow(mat)))
+    as.character(designations) else paste0(i18n("ui.horizon_prefix"), seq_len(nrow(mat)))
 
   p <- plotly::plot_ly()
   for (i in seq_len(nrow(mat))) {
@@ -198,8 +198,8 @@ pro_spectrum_plot <- function(mat, designations = NULL) {
   }
   plotly::layout(
     p,
-    xaxis  = list(title = "Wavelength (nm)"),
-    yaxis  = list(title = "Reflectance"),
+    xaxis  = list(title = i18n("ui.wavelength_nm")),
+    yaxis  = list(title = i18n("ui.reflectance")),
     legend = list(orientation = "h", y = -0.2),
     margin = list(l = 60, r = 20, t = 20, b = 60)
   )
@@ -210,6 +210,6 @@ pro_no_pedon_msg <- function() {
   shiny::div(
     class = "text-muted p-4 text-center",
     shiny::icon("circle-info"), " ",
-    "Build a pedon on the ", shiny::strong("Pedon"), " tab first."
+    i18n("ui.build_pedon_on"), shiny::strong(i18n("ui.pedon_tab")), i18n("ui.tab_first")
   )
 }

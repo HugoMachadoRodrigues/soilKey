@@ -1,3 +1,38 @@
+# soilKey 0.9.114 (2026-06-12)
+
+The "**bilingual Pro app**" release (app-maturity front D, part 1 of 4). The
+professional Shiny app (`run_classify_app()`) gains a full Brazilian-Portuguese
+interface alongside English -- a long-standing gap given the SiBCS / Brazilian
+audience -- with **zero new dependencies** and **no change to default
+behaviour**.
+
+## Internationalisation (i18n)
+
+\itemize{
+  \item A dependency-free translation layer: a catalogue of \strong{352} UI
+        strings in \code{inst/i18n/translations.yaml} (an \code{en} and a
+        \code{pt} section keyed by the same semantic keys) and a small
+        \code{i18n()} helper in the app
+        (\code{inst/shiny/classify_app_pro/R/i18n.R}). Every user-facing string
+        across the 12 app modules now flows through \code{i18n()}.
+  \item A \strong{EN / PT selector} in the navbar flips the language live (it
+        sets the \code{soilKey.app_lang} option and reloads, so the
+        per-session UI rebuilds in the chosen language).
+        \code{run_classify_app(lang = "pt")} launches straight into Portuguese.
+  \item The English catalogue holds the pre-i18n strings \strong{verbatim} and
+        English is the default, so the app renders \strong{byte-identically} to
+        before -- the existing \code{testServer} / UI-builder tests pass
+        unchanged. Taxonomic nomenclature (WRB / SiBCS / USDA names, RSG /
+        order / great-group / subgroup names) and data column headers are left
+        untranslated by design.
+  \item Engine, diagnostics, rules and the classification keys are
+        \strong{untouched}; this is an app + packaged-data change only.
+}
+
+This is the first of four focused app-maturity PRs (front D). Still to come:
+accessibility + responsive layout, horizon-geometry validation in the Pedon
+builder, and retiring the legacy single-page app + a bilingual \code{report()}.
+
 # soilKey 0.9.113 (2026-06-12)
 
 The "**USDA subgroup completeness, honestly measured**" release (taxonomic

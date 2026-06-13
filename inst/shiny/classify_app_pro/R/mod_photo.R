@@ -67,9 +67,7 @@
   if (identical(mode, "live")) {
     live <- getOption("soilKey.vlm_chat", default = NULL)
     if (is.null(live)) {
-      stop("Live mode needs a configured ellmer chat. In R, run e.g. ",
-           "options(soilKey.vlm_chat = ellmer::chat_anthropic()) before ",
-           "launching the app.", call. = FALSE)
+      stop(i18n("photo.live_needs_chat"), call. = FALSE)
     }
     return(live)
   }
@@ -81,28 +79,30 @@ photo_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 320,
-      shiny::h5("1. Provider"),
+      shiny::h5(i18n("photo.step1_provider")),
       shinyWidgets::radioGroupButtons(
         ns("provider"), NULL,
-        choices = c("Demo (mock)" = "mock", "Live (ellmer)" = "live"),
+        choices = stats::setNames(
+          c("mock", "live"),
+          c(i18n("photo.provider_demo"), i18n("photo.provider_live"))
+        ),
         selected = "mock", justified = TRUE, size = "sm"
       ),
       shiny::helpText(
-        "Demo returns a canned, schema-valid response so the pipeline runs ",
-        "offline. Live needs options(soilKey.vlm_chat = <ellmer chat>)."
+        i18n("photo.provider_help")
       ),
       shiny::tags$hr(),
-      shiny::h5("2. Profile photo -> Munsell"),
-      shiny::fileInput(ns("profile_img"), "Profile photograph",
+      shiny::h5(i18n("photo.step2_munsell")),
+      shiny::fileInput(ns("profile_img"), i18n("photo.profile_photograph"),
                        accept = c(".jpg", ".jpeg", ".png")),
-      shiny::actionButton(ns("run_munsell"), "Extract Munsell colour",
+      shiny::actionButton(ns("run_munsell"), i18n("photo.extract_munsell"),
                           icon = shiny::icon("eye-dropper"),
                           class = "btn-primary w-100"),
       shiny::tags$hr(),
-      shiny::h5("3. Field sheet -> site"),
-      shiny::fileInput(ns("sheet_img"), "Field-sheet image",
+      shiny::h5(i18n("photo.step3_site")),
+      shiny::fileInput(ns("sheet_img"), i18n("photo.field_sheet_image"),
                        accept = c(".jpg", ".jpeg", ".png")),
-      shiny::actionButton(ns("run_site"), "Extract site metadata",
+      shiny::actionButton(ns("run_site"), i18n("photo.extract_site"),
                           icon = shiny::icon("map-pin"),
                           class = "btn-secondary w-100")
     ),
@@ -119,12 +119,12 @@ photo_server <- function(id, rv) {
     # ---- Munsell extraction ----------------------------------------------
     shiny::observeEvent(input$run_munsell, {
       if (is.null(rv$pedon)) {
-        shiny::showNotification("Build a pedon first.", type = "warning")
+        shiny::showNotification(i18n("photo.build_pedon_first"), type = "warning")
         return(invisible())
       }
       f <- input$profile_img
       if (is.null(f)) {
-        shiny::showNotification("Choose a profile photo first.",
+        shiny::showNotification(i18n("photo.choose_profile_photo_first"),
                                 type = "warning")
         return(invisible())
       }
@@ -137,36 +137,35 @@ photo_server <- function(id, rv) {
                                 type = "error", duration = 10)
         return(invisible())
       }
-      shiny::withProgress(message = "Extracting Munsell colour...", value = 0.5, {
+      shiny::withProgress(message = i18n("photo.extracting_munsell"), value = 0.5, {
         res <- tryCatch(
           soilKey::extract_munsell_from_photo(rv$pedon, f$datapath, provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {
         shiny::showNotification(
-          paste("Extraction failed:", conditionMessage(res)),
+          i18n("photo.extraction_failed", conditionMessage(res)),
           type = "error", duration = 10)
         return(invisible())
       }
       rv$pedon <- rv$pedon                 # bump reactive (R6 mutated in place)
       ex <- attr(res, "vlm_extraction")
-      add_log(sprintf("[%s] Munsell extraction: %d field(s) added across %d ",
-                      format(Sys.time(), "%H:%M:%S"),
-                      ex$fields_added %||% 0L, ex$attempts %||% 1L),
-              "attempt(s).")
-      shiny::showNotification("Munsell colour merged into the pedon.",
+      add_log(i18n("photo.log_munsell_extraction",
+                   format(Sys.time(), "%H:%M:%S"),
+                   ex$fields_added %||% 0L, ex$attempts %||% 1L))
+      shiny::showNotification(i18n("photo.munsell_merged"),
                               type = "message")
     })
 
     # ---- site extraction --------------------------------------------------
     shiny::observeEvent(input$run_site, {
       if (is.null(rv$pedon)) {
-        shiny::showNotification("Build a pedon first.", type = "warning")
+        shiny::showNotification(i18n("photo.build_pedon_first"), type = "warning")
         return(invisible())
       }
       f <- input$sheet_img
       if (is.null(f)) {
-        shiny::showNotification("Choose a field-sheet image first.",
+        shiny::showNotification(i18n("photo.choose_field_sheet_first"),
                                 type = "warning")
         return(invisible())
       }
@@ -179,21 +178,21 @@ photo_server <- function(id, rv) {
                                 type = "error", duration = 10)
         return(invisible())
       }
-      shiny::withProgress(message = "Extracting site metadata...", value = 0.5, {
+      shiny::withProgress(message = i18n("photo.extracting_site"), value = 0.5, {
         res <- tryCatch(
           soilKey::extract_site_from_fieldsheet(rv$pedon, f$datapath, provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {
         shiny::showNotification(
-          paste("Extraction failed:", conditionMessage(res)),
+          i18n("photo.extraction_failed", conditionMessage(res)),
           type = "error", duration = 10)
         return(invisible())
       }
       rv$pedon <- rv$pedon
-      add_log(sprintf("[%s] Site metadata extraction complete.",
-                      format(Sys.time(), "%H:%M:%S")))
-      shiny::showNotification("Site metadata merged into the pedon.",
+      add_log(i18n("photo.log_site_extraction",
+                   format(Sys.time(), "%H:%M:%S")))
+      shiny::showNotification(i18n("photo.site_merged"),
                               type = "message")
     })
 
@@ -204,18 +203,18 @@ photo_server <- function(id, rv) {
       bslib::layout_column_wrap(
         width = 1 / 2,
         bslib::card(
-          bslib::card_header("Profile photo"),
+          bslib::card_header(i18n("photo.card_profile_photo")),
           bslib::card_body(
             shiny::uiOutput(ns("img_caption")),
             shiny::imageOutput(ns("profile_preview"), height = "260px")
           )
         ),
         bslib::card(
-          bslib::card_header("Munsell colour in the pedon"),
+          bslib::card_header(i18n("photo.card_munsell_in_pedon")),
           bslib::card_body(DT::DTOutput(ns("munsell_table")))
         ),
         bslib::card(
-          bslib::card_header("Extraction log"),
+          bslib::card_header(i18n("photo.card_extraction_log")),
           bslib::card_body(shiny::verbatimTextOutput(ns("log")))
         )
       )
@@ -245,11 +244,11 @@ photo_server <- function(id, rv) {
       f <- input$profile_img
       if (is.null(f)) {
         return(list(src = blank_png(), contentType = "image/png",
-                    width = 1, height = 1, alt = "No photo uploaded yet."))
+                    width = 1, height = 1, alt = i18n("photo.alt_no_photo")))
       }
       list(src = f$datapath,
            contentType = f$type %||% "image/jpeg",
-           width = "100%", alt = "Uploaded soil profile photograph")
+           width = "100%", alt = i18n("photo.alt_uploaded_photo"))
     }, deleteFile = FALSE)
 
     # Caption: filename + the mean extraction confidence as a coloured badge,
@@ -258,7 +257,7 @@ photo_server <- function(id, rv) {
       f <- input$profile_img
       if (is.null(f))
         return(shiny::div(class = "small text-muted mb-2",
-                          "Upload a profile photo in the sidebar."))
+                          i18n("photo.upload_in_sidebar")))
       conf <- .photo_mean_confidence(rv$pedon)
       grade <- .photo_confidence_grade(conf)
       shiny::div(
@@ -267,7 +266,7 @@ photo_server <- function(id, rv) {
         if (!is.na(conf)) shiny::span(
           pro_grade_badge(grade),
           shiny::tags$span(class = "text-muted ms-1",
-                           sprintf("%.0f%% conf.", 100 * conf)))
+                           i18n("photo.pct_conf", 100 * conf)))
       )
     })
 
@@ -278,8 +277,10 @@ photo_server <- function(id, rv) {
                           "munsell_hue_moist", "munsell_value_moist",
                           "munsell_chroma_moist"), names(h))
       if (length(cols) == 0L) {
-        return(DT::datatable(data.frame(Note = "No horizons"),
-                             rownames = FALSE, options = list(dom = "t")))
+        return(DT::datatable(
+          stats::setNames(data.frame(i18n("photo.no_horizons")),
+                          i18n("photo.note_col")),
+          rownames = FALSE, options = list(dom = "t")))
       }
       DT::datatable(h[, cols, drop = FALSE], rownames = FALSE,
                     options = list(dom = "tp", pageLength = 10))
@@ -287,7 +288,7 @@ photo_server <- function(id, rv) {
 
     output$log <- shiny::renderText({
       lg <- log_msg()
-      if (length(lg) == 0L) "(no extraction run yet)"
+      if (length(lg) == 0L) i18n("photo.no_extraction_yet")
       else paste(lg, collapse = "\n")
     })
   })

@@ -11,22 +11,21 @@ spatial_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5("SoilGrids prior"),
+      shiny::h5(i18n("spatial.title")),
       shiny::uiOutput(ns("coords")),
-      shiny::textInput(ns("source_url"), "Raster path or URL",
-                       placeholder = "GeoTIFF / COG, or leave blank for test raster"),
+      shiny::textInput(ns("source_url"), i18n("spatial.raster_path_label"),
+                       placeholder = i18n("spatial.raster_path_placeholder")),
       shiny::helpText(
-        "Point at a SoilGrids WRB raster (files.isric.org/soilgrids). ",
-        "If blank, the option soilKey.test_raster is used (handy for demos)."
+        i18n("spatial.raster_help")
       ),
-      shiny::numericInput(ns("buffer"), "Buffer radius (m)", 250,
+      shiny::numericInput(ns("buffer"), i18n("spatial.buffer_label"), 250,
                           min = 100, max = 5000, step = 50),
-      shiny::numericInput(ns("topn"), "Keep top N classes", 10,
+      shiny::numericInput(ns("topn"), i18n("spatial.topn_label"), 10,
                           min = 1, max = 30, step = 1),
-      shiny::actionButton(ns("run"), "Query spatial prior",
+      shiny::actionButton(ns("run"), i18n("spatial.run"),
                           icon = shiny::icon("satellite"),
                           class = "btn-primary w-100"),
-      shiny::helpText("Requires the 'terra' package.")
+      shiny::helpText(i18n("spatial.requires_terra"))
     ),
     shiny::uiOutput(ns("body"))
   )
@@ -38,11 +37,11 @@ spatial_server <- function(id, rv, settings) {
     prior <- shiny::eventReactive(input$run, {
       shiny::req(rv$pedon)
       if (!requireNamespace("terra", quietly = TRUE)) {
-        return(simpleError("Package 'terra' is not installed."))
+        return(simpleError(i18n("spatial.terra_not_installed")))
       }
       src <- input$source_url
       src <- if (is.null(src) || !nzchar(trimws(src))) NULL else trimws(src)
-      shiny::withProgress(message = "Querying SoilGrids...", value = 0.5, {
+      shiny::withProgress(message = i18n("spatial.querying"), value = 0.5, {
         tryCatch(
           soilKey::spatial_prior_soilgrids(
             rv$pedon,
@@ -56,12 +55,12 @@ spatial_server <- function(id, rv, settings) {
 
     output$coords <- shiny::renderUI({
       if (is.null(rv$pedon)) {
-        return(shiny::div(class = "small text-muted", "No pedon yet."))
+        return(shiny::div(class = "small text-muted", i18n("spatial.no_pedon_yet")))
       }
       lat <- rv$pedon$site$lat %||% NA
       lon <- rv$pedon$site$lon %||% NA
       shiny::div(class = "small mb-2",
-                 shiny::strong("Coordinates: "),
+                 shiny::strong(i18n("spatial.coordinates")),
                  sprintf("%s, %s", format(lat), format(lon)))
     })
 
@@ -72,28 +71,28 @@ spatial_server <- function(id, rv, settings) {
       if (is.null(p)) {
         return(shiny::div(class = "text-muted p-4 text-center",
                           shiny::icon("satellite"),
-                          " Press 'Query spatial prior' to run."))
+                          i18n("spatial.press_to_run")))
       }
       if (inherits(p, "error")) {
         return(bslib::card(
-          bslib::card_header("Spatial prior unavailable"),
+          bslib::card_header(i18n("spatial.unavailable_header")),
           bslib::card_body(
             shiny::tags$p(class = "text-danger", conditionMessage(p)),
             shiny::helpText(
-              "Provide a raster path/URL, or set ",
+              i18n("spatial.provide_raster_pre"),
               shiny::tags$code("options(soilKey.test_raster = '...')"),
-              " before launching the app.")
+              i18n("spatial.provide_raster_post"))
           )
         ))
       }
       bslib::layout_column_wrap(
         width = 1 / 2,
         bslib::card(
-          bslib::card_header("RSG probabilities"),
+          bslib::card_header(i18n("spatial.rsg_probabilities")),
           bslib::card_body(DT::DTOutput(ns("table")))
         ),
         bslib::card(
-          bslib::card_header("Distribution"),
+          bslib::card_header(i18n("spatial.distribution")),
           bslib::card_body(plotly::plotlyOutput(ns("plot"), height = "320px"))
         )
       )
@@ -102,7 +101,7 @@ spatial_server <- function(id, rv, settings) {
     output$table <- DT::renderDT({
       p <- prior()
       shiny::req(p)
-      shiny::validate(shiny::need(!inherits(p, "error"), "n/a"))
+      shiny::validate(shiny::need(!inherits(p, "error"), i18n("spatial.na")))
       DT::datatable(as.data.frame(p), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 12)) |>
         DT::formatPercentage("probability", 1)
@@ -111,7 +110,7 @@ spatial_server <- function(id, rv, settings) {
     output$plot <- plotly::renderPlotly({
       p <- prior()
       shiny::req(p)
-      shiny::validate(shiny::need(!inherits(p, "error"), "n/a"))
+      shiny::validate(shiny::need(!inherits(p, "error"), i18n("spatial.na")))
       df <- as.data.frame(p)
       df <- df[order(-df$probability), , drop = FALSE]
       plotly::plot_ly(
@@ -120,7 +119,7 @@ spatial_server <- function(id, rv, settings) {
         marker = list(color = "#41ab5d")
       ) |>
         plotly::layout(
-          xaxis = list(title = "Probability", tickformat = ".0%"),
+          xaxis = list(title = i18n("spatial.probability"), tickformat = ".0%"),
           yaxis = list(title = ""),
           margin = list(l = 80, t = 20, b = 40)
         )

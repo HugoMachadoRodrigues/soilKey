@@ -69,7 +69,7 @@
       v <- suppressWarnings(as.numeric(sampler(coords, pn, depths[[dn]])))
       samp[[pn]][[dn]] <- v * cmap[[pn]]$scale
       i <- i + 1L
-      if (is.function(bump)) bump(i / total * 0.5, "sampling SoilGrids")
+      if (is.function(bump)) bump(i / total * 0.5, i18n("mgrid.progress_sampling"))
     }
   }
   classify_fun <- switch(system,
@@ -98,7 +98,7 @@
                       error = function(e) NULL)
       if (!is.null(res)) out[k] <- as.character(res$rsg_or_order %||% NA)
     }
-    if (is.function(bump)) bump(0.5 + (k / ncell) * 0.5, "classifying cells")
+    if (is.function(bump)) bump(0.5 + (k / ncell) * 0.5, i18n("mgrid.progress_classifying"))
   }
   out
 }
@@ -124,7 +124,7 @@
   if (is.null(src) || !nzchar(src))
     src <- getOption("soilKey.test_raster", default = NULL)
   if (is.null(src) || !nzchar(src))
-    stop("No SoilGrids raster source. Provide a WRB raster URL/path, or set options(soilKey.test_raster = '...').")
+    stop(i18n("mgrid.err_no_raster_source"))
   r   <- terra::rast(src)
   pts <- terra::vect(coords, type = "points", crs = "EPSG:4326")
   pp  <- terra::project(pts, terra::crs(r))
@@ -150,50 +150,52 @@ map_grid_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 340,
-      shiny::h5("Grid prediction"),
+      shiny::h5(i18n("mgrid.grid_prediction")),
       shinyWidgets::radioGroupButtons(
-        ns("method"), "Method",
-        choices = c("SoilGrids + key" = "covariates",
-                    "Interpolate pts" = "interpolate",
-                    "SoilGrids overlay" = "overlay"),
+        ns("method"), i18n("mgrid.method"),
+        choices = stats::setNames(
+          c("covariates", "interpolate", "overlay"),
+          c(i18n("mgrid.method_covariates"),
+            i18n("mgrid.method_interpolate"),
+            i18n("mgrid.method_overlay"))),
         selected = "overlay", direction = "vertical", size = "sm"),
-      shiny::selectInput(ns("system"), "Classification system",
+      shiny::selectInput(ns("system"), i18n("mgrid.classification_system"),
                          choices = c("WRB 2022"  = "wrb2022",
                                      "SiBCS 5"    = "sibcs",
                                      "USDA ST 13" = "usda"),
                          selected = "wrb2022"),
-      shiny::div(class = "small text-muted mb-1", "Area of interest (bbox)"),
+      shiny::div(class = "small text-muted mb-1", i18n("mgrid.area_of_interest")),
       shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lat_max"), "Lat max", -5, step = 1)),
-        shiny::column(6, shiny::numericInput(ns("lat_min"), "Lat min", -30, step = 1))),
+        shiny::column(6, shiny::numericInput(ns("lat_max"), i18n("mgrid.lat_max"), -5, step = 1)),
+        shiny::column(6, shiny::numericInput(ns("lat_min"), i18n("mgrid.lat_min"), -30, step = 1))),
       shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lon_min"), "Lon min", -60, step = 1)),
-        shiny::column(6, shiny::numericInput(ns("lon_max"), "Lon max", -40, step = 1))),
-      shiny::actionButton(ns("use_view"), "Use current map view",
+        shiny::column(6, shiny::numericInput(ns("lon_min"), i18n("mgrid.lon_min"), -60, step = 1)),
+        shiny::column(6, shiny::numericInput(ns("lon_max"), i18n("mgrid.lon_max"), -40, step = 1))),
+      shiny::actionButton(ns("use_view"), i18n("mgrid.use_current_view"),
                           icon = shiny::icon("crop"),
                           class = "btn-outline-secondary btn-sm w-100 mb-2"),
-      shiny::sliderInput(ns("res"), "Grid cells per side", min = 8, max = 40,
+      shiny::sliderInput(ns("res"), i18n("mgrid.cells_per_side"), min = 8, max = 40,
                          value = 24, step = 1),
       shiny::uiOutput(ns("ncell_note")),
       shiny::conditionalPanel(
         sprintf("input['%s'] != 'interpolate'", ns("method")),
-        shiny::textInput(ns("source_url"), "SoilGrids raster (path/URL)",
-                         placeholder = "blank = test raster / overlay source")),
-      shiny::actionButton(ns("run"), "Predict grid",
+        shiny::textInput(ns("source_url"), i18n("mgrid.soilgrids_raster"),
+                         placeholder = i18n("mgrid.raster_placeholder"))),
+      shiny::actionButton(ns("run"), i18n("mgrid.predict_grid"),
                           icon = shiny::icon("table-cells"),
                           class = "btn-primary w-100"),
-      shiny::downloadButton(ns("export"), "Export GeoTIFF",
+      shiny::downloadButton(ns("export"), i18n("mgrid.export_geotiff"),
                             class = "btn-outline-secondary w-100 mt-2"),
       shiny::uiOutput(ns("method_help"))
     ),
     bslib::layout_column_wrap(
       width = 1, heights_equal = "row",
       bslib::card(
-        bslib::card_header("Predicted class raster"),
+        bslib::card_header(i18n("mgrid.predicted_class_raster")),
         bslib::card_body(padding = 0,
                          leaflet::leafletOutput(ns("map"), height = "460px"))),
       bslib::card(
-        bslib::card_header("Class summary"),
+        bslib::card_header(i18n("mgrid.class_summary")),
         bslib::card_body(DT::DTOutput(ns("summary"))))
     )
   )
@@ -222,16 +224,16 @@ map_grid_server <- function(id, rv, settings) {
       nc <- n_cells()
       cls <- if (nc > .GRID_MAX_CELLS) "text-danger" else "text-muted"
       msg <- if (nc > .GRID_MAX_CELLS)
-        sprintf("%d cells -- capped to %d.", nc, .GRID_MAX_CELLS)
-      else sprintf("%d cells.", nc)
+        i18n("mgrid.cells_capped", nc, .GRID_MAX_CELLS)
+      else i18n("mgrid.cells_count", nc)
       shiny::div(class = paste("small mb-2", cls), msg)
     })
 
     output$method_help <- shiny::renderUI({
       txt <- switch(input$method %||% "overlay",
-        covariates = "Builds a pseudo-pedon per cell from SoilGrids covariates and runs the key. Needs network; morphological diagnostics are unavailable, so evidence grade is C.",
-        interpolate = "Nearest-neighbour of the Batch-classify points (or demo points). Offline; quality follows point density.",
-        overlay = "Samples the SoilGrids MostProbable WRB raster -- ML prediction, shown for comparison with the key.")
+        covariates = i18n("mgrid.help_covariates"),
+        interpolate = i18n("mgrid.help_interpolate"),
+        overlay = i18n("mgrid.help_overlay"))
       shiny::helpText(txt)
     })
 
@@ -239,16 +241,16 @@ map_grid_server <- function(id, rv, settings) {
     grid_result <- shiny::eventReactive(input$run, {
       bb <- bbox()
       if (!all(vapply(bb, function(x) is.numeric(x) && is.finite(x), logical(1))))
-        return(simpleError("Set a valid bounding box."))
+        return(simpleError(i18n("mgrid.err_invalid_bbox")))
       if (bb$lon_min >= bb$lon_max || bb$lat_min >= bb$lat_max)
-        return(simpleError("Bounding box is empty (min must be < max)."))
+        return(simpleError(i18n("mgrid.err_empty_bbox")))
       if (!requireNamespace("terra", quietly = TRUE))
-        return(simpleError("Package 'terra' is not installed."))
+        return(simpleError(i18n("mgrid.err_no_terra")))
       res_n <- min(40L, as.integer(input$res %||% 24L))
       src <- input$source_url
       src <- if (is.null(src) || !nzchar(trimws(src))) NULL else trimws(src)
 
-      shiny::withProgress(message = "Predicting grid...", value = 0, {
+      shiny::withProgress(message = i18n("mgrid.predicting_grid"), value = 0, {
         tryCatch({
           g <- .grid_make(bb, res_n)
           codes <- switch(input$method %||% "overlay",
@@ -270,7 +272,7 @@ map_grid_server <- function(id, rv, settings) {
             overlay = .grid_overlay(g$coords, source_url = src))
           rr <- .grid_to_raster(g$raster, codes)
           if (is.null(rr)) return(simpleError(
-            "No classes produced. For SoilGrids methods, check the area is on land / the raster source; for interpolation, classify some points first."))
+            i18n("mgrid.err_no_classes")))
           rr
         }, error = function(e) e)
       })
@@ -298,7 +300,7 @@ map_grid_server <- function(id, rv, settings) {
                                 method = "ngb", project = TRUE) |>
         leaflet::addLegend(position = "bottomright",
                            colors = pal(rr$lut$id), labels = rr$lut$class,
-                           title = "Class", opacity = 0.9) |>
+                           title = i18n("mgrid.legend_class"), opacity = 0.9) |>
         leaflet::fitBounds(lng1 = bb$lon_min, lat1 = bb$lat_min,
                            lng2 = bb$lon_max, lat2 = bb$lat_max)
     })
@@ -309,7 +311,7 @@ map_grid_server <- function(id, rv, settings) {
       shiny::req(rr)
       shiny::validate(shiny::need(!inherits(rr, "error"),
                                   if (inherits(rr, "error"))
-                                    conditionMessage(rr) else "n/a"))
+                                    conditionMessage(rr) else i18n("mgrid.na")))
       v   <- terra::values(rr$raster)[, 1]
       tab <- as.data.frame(table(v), stringsAsFactors = FALSE)
       names(tab) <- c("id", "cells")
@@ -320,6 +322,9 @@ map_grid_server <- function(id, rv, settings) {
       show <- tab[order(-tab$cells), c("class", "cells", "share")]
       names(show) <- c("Class", "Cells", "Share")
       DT::datatable(show, rownames = FALSE,
+                    colnames = c(i18n("mgrid.col_class"),
+                                 i18n("mgrid.col_cells"),
+                                 i18n("mgrid.col_share")),
                     options = list(dom = "tp", pageLength = 10)) |>
         DT::formatPercentage("Share", 1)
     })
@@ -330,7 +335,7 @@ map_grid_server <- function(id, rv, settings) {
       content = function(file) {
         rr <- grid_result()
         if (inherits(rr, "error") || is.null(rr))
-          stop("Nothing to export -- predict a grid first.")
+          stop(i18n("mgrid.err_nothing_to_export"))
         r <- rr$raster
         levels(r) <- rr$lut          # write the class labels into the GeoTIFF
         terra::writeRaster(r, file, overwrite = TRUE)
