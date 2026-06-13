@@ -28,9 +28,12 @@ test_that("coverage_report(wrb_qualifiers) counts only genuine implementations",
   # the 4 added qualifiers are genuinely implemented, so none remain missing
   expect_false(any(c("Aeolic", "Fragic", "Limonic", "Tsitelic") %in% cov$missing))
   expect_gt(cov$overall$pct, 95)
-  # inert stubs are reported separately and excluded from the covered count
-  expect_true(all(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
-  expect_true(all(cov$stubs %in% cov$missing))     # a stub is not "covered"
+  # v0.9.122: Fibric/Hemic/Sapric delegate to a real helper (.qual_decomp); the
+  # detector follows one level of delegation, so they are covered, not stubs.
+  expect_false(any(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
+  expect_length(cov$stubs, 0L)
+  expect_equal(cov$overall$covered_n, 229L)
+  expect_true(all(cov$stubs %in% cov$missing))     # (vacuously true: no stubs)
   expect_equal(cov$overall$covered_n + cov$overall$missing_n, cov$overall$canonical_n)
   # specifier-derived qualifiers (Endo-/Epi-/...) count as covered
   expect_gt(cov$overall$specifier_derived_n, 0L)
