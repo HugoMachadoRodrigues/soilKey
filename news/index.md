@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.121 (2026-06-13)
+
+The “**USDA colour & contact subgroups**” release (taxonomic
+completeness, front E4). Adds **+57** canonical USDA subgroups gated on
+colour and shallow contact – every one grounded directly in the KST
+13th-edition differentia (`ST_criteria_13th`), not paraphrased.
+
 ## soilKey 0.9.120 (2026-06-13)
 
 The “**within-pedon gap-fill**” release (Track 2, missing-data

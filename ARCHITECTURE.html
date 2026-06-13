@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.121</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.121</strong></td>
+<td>
+<strong>USDA colour &amp; contact subgroups (taxonomic completeness, front E4).</strong> +57 canonical USDA subgroups, each grounded directly in the KST 13th-edition differentia (<code>ST_criteria_13th</code>), not paraphrased. <strong>Subgroup coverage 70.8% → 72.9% (1921 → 1978 of 2715):</strong> +20 chromic (Vertisols), +12 xanthic (Oxisols), +9 calcic (Alfisols/Andisols), +16 leptic (Vertisols). Two new predicates written to the exact criteria: <code><a href="reference/chromic_subgroup_usda.html">chromic_subgroup_usda()</a></code> is the Vertisol value/chroma “not-dark” test (within 30 cm: moist value ≥4, dry value ≥6, or moist chroma ≥3 — <strong>not</strong> WRB’s red-hue <code>chromic</code>; Aquerts drop the chroma clause via <code>use_chroma=FALSE</code>); <code><a href="reference/leptic_vertic_usda.html">leptic_vertic_usda()</a></code> is the USDA shallow densic/lithic/paralithic contact within 100 cm (<strong>not</strong> WRB’s coarse-fragment leptic). <code>xanthic_subgroup_usda</code>/<code>calcic_subgroup_usda</code> reused, calcic with the per-subgroup depth window (100/125/150 cm). Same front-C generator discipline: <strong>append-before-default</strong> (first-match engine provably can’t change any profile that already matched a specific subgroup), existing YAML <strong>byte-for-byte</strong> (269 insertions / 0 deletions), great-group invariant. <strong>KSSL n=2895 gate: 0 worsened</strong> (83 changed, all neutral) → all 57 kept, none excluded (cleaner than v0.9.113’s 4 exclusions, because the predicates are canonical-criteria-exact). Of 44 fixtures, <strong>2 refine</strong> Typic→Chromic Hapluderts (Vertisol fixtures, validated: upper-30cm chroma 4 / value 4 meet the criterion); other 42 byte-identical. <strong>Honestly scoped:</strong> deferred 5 <code>Leptic</code> subgroups whose differentia is gypsic-≤18cm (Haplogypsids) or soluble-salts-≤40cm (4 Natr-) — a distinct concept — plus the 49 multi-modifier intergrades (need compound predicates). +14 unit tests; gate report <code>inst/benchmarks/reports/kssl_subgroup_gate_v09121.md</code>.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.120</strong></td>
 <td>

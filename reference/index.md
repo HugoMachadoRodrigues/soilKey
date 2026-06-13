@@ -1646,6 +1646,9 @@ pública curada.
   : Chernossolos Rendzicos (Cap 7): A chernozemico +
   (calcico/petrocalcico OR carater carbonatico).
 
+- [`chromic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/chromic_subgroup_usda.md)
+  : Chromic Subgroup helper (Vertisols, KST 13ed Ch 16)
+
 - [`collect_missing_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/collect_missing_attributes.md)
   : Collect distinct missing soil attributes from the trace
 
@@ -2549,6 +2552,9 @@ pública curada.
 
 - [`latossolo_vermelho_amarelo()`](https://hugomachadorodrigues.github.io/soilKey/reference/latossolo_vermelho_amarelo.md)
   : Latossolos Vermelho-Amarelos (catch-all).
+
+- [`leptic_vertic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/leptic_vertic_usda.md)
+  : Leptic Subgroup helper (Vertisols, KST 13ed Ch 16)
 
 - [`limnic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/limnic_usda.md)
   : Limnic Subgroup helper (Histels)
