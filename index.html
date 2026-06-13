@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,6 +176,12 @@
 <td><strong>OSSL spectral gap-fill</strong></td>
 <td>✅ shipped</td>
 <td>Vis-NIR / SWIR / MIR via <code>prospectr</code> + <code>resemble</code> (MBL / PLSR-local / pretrained backbones).</td>
+</tr>
+<tr>
+<td><strong>Within-pedon gap-fill</strong></td>
+<td>✅ shipped (v0.9.120)</td>
+<td>
+<code><a href="reference/gapfill_within_pedon.html">gapfill_within_pedon()</a></code> / <code>classify_*(gapfill = TRUE)</code>: interpolates <em>interior</em> missing horizon values from the profile’s own measured layers (never extrapolates). Opt-in, byte-identical when off, tagged <code>inferred_prior</code> (grade C).</td>
 </tr>
 <tr>
 <td><strong>Spatial priors</strong></td>

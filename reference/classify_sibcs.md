@@ -17,7 +17,8 @@ classify_sibcs(
   pedon,
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
-  include_familia = FALSE
+  include_familia = FALSE,
+  gapfill = FALSE
 )
 ```
 
@@ -45,6 +46,18 @@ classify_sibcs(
   lista de
   [`FamilyAttribute`](https://hugomachadorodrigues.github.io/soilKey/reference/FamilyAttribute.md)s
   em `$trace$familia`.
+
+- gapfill:
+
+  Preenchimento opcional de lacunas por interpolacao intra-perfil,
+  default `FALSE` (no-op; classificacao byte-identica). `TRUE` preenche
+  celulas `NA` interiores dos atributos continuos por profundidade; um
+  vetor de caracteres restringe aos atributos citados; uma lista nomeada
+  e repassada a
+  [`gapfill_within_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md).
+  Celulas preenchidas recebem proveniencia `inferred_prior`, baixando o
+  grau de evidencia para `"C"`. Opera sobre copia profunda – o pedon do
+  chamador nunca e modificado.
 
 ## Value
 

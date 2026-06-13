@@ -17,7 +17,8 @@ classify_wrb2022(
   on_missing = c("warn", "silent", "error"),
   rules = NULL,
   strict = NULL,
-  specifiers = FALSE
+  specifiers = FALSE,
+  gapfill = FALSE
 )
 ```
 
@@ -71,6 +72,18 @@ classify_wrb2022(
   confined to 50–100 cm yields `Endogleyic` instead of `Gleyic`. Default
   `FALSE` keeps the canonical names byte-identical. Surface / epipedon
   qualifiers are excluded (their depth is definitional).
+
+- gapfill:
+
+  Opt-in within-pedon depth gap-fill, default `FALSE` (no-op,
+  classification stays byte-identical). `TRUE` fills interior `NA` cells
+  of the continuous depth-trending attributes by linear interpolation
+  from the profile's own measured horizons; a character vector restricts
+  it to those attributes; a named list is passed to
+  [`gapfill_within_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md).
+  Filled cells carry `inferred_prior` provenance, so the evidence grade
+  drops to `"C"`. Runs on a deep copy – the caller's pedon is never
+  mutated.
 
 ## Value
 

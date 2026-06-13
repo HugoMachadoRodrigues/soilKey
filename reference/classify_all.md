@@ -20,6 +20,7 @@ classify_all(
   include_familia = TRUE,
   include_family = FALSE,
   specifiers = FALSE,
+  gapfill = FALSE,
   ...
 )
 ```
@@ -60,6 +61,14 @@ classify_all(
   [`classify_wrb2022`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
   (default `FALSE`) to auto-attach WRB depth specifiers. No effect on
   the other systems.
+
+- gapfill:
+
+  Forwarded to all three classifiers (default `FALSE` =\>
+  byte-identical). Opt-in within-pedon depth gap-fill; see
+  [`gapfill_within_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md).
+  Applied independently per system on a deep copy, so the caller's pedon
+  is never mutated.
 
 - ...:
 

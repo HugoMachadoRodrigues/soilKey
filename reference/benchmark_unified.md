@@ -14,6 +14,7 @@ benchmark_unified(
   max_n_per_dataset = NULL,
   engine = c("soilkey", "aqp", "both"),
   harmonize = FALSE,
+  gapfill = FALSE,
   verbose = TRUE
 )
 ```
@@ -68,6 +69,19 @@ benchmark_unified(
   (Phase 2.3) but slow (~1-2 min for 1k pedons) and may degrade
   per-dataset accuracy slightly because the splined depths are
   approximations.
+
+- gapfill:
+
+  If not `FALSE` (the default), applies
+  [`gapfill_within_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md)
+  to each dataset's pedons before classification, filling interior `NA`
+  cells of the continuous depth-trending attributes by within-pedon
+  linear interpolation. Accepts the same values as the `gapfill`
+  argument of
+  [`classify_all`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
+  (`TRUE`, a character vector of attributes, or a named list). Lets you
+  measure the ON/OFF accuracy lift of gap-fill reproducibly through the
+  harness.
 
 - verbose:
 

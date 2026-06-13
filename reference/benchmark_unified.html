@@ -11,7 +11,7 @@ single nation-/world-wide accuracy estimate."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@ single nation-/world-wide accuracy estimate.</p>
 <span>  max_n_per_dataset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  engine <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"soilkey"</span>, <span class="st">"aqp"</span>, <span class="st">"both"</span><span class="op">)</span>,</span>
 <span>  harmonize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -125,6 +126,17 @@ Required for cross-dataset pooling integrity (Phase 2.3) but
 slow (~1-2 min for 1k pedons) and may degrade per-dataset
 accuracy slightly because the splined depths are
 approximations.</p></dd>
+
+
+<dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
+<dd><p>If not <code>FALSE</code> (the default), applies
+<code><a href="gapfill_within_pedon.html">gapfill_within_pedon</a></code> to each dataset's pedons before
+classification, filling interior <code>NA</code> cells of the continuous
+depth-trending attributes by within-pedon linear interpolation.
+Accepts the same values as the <code>gapfill</code> argument of
+<code><a href="classify_all.html">classify_all</a></code> (<code>TRUE</code>, a character vector of
+attributes, or a named list). Lets you measure the ON/OFF accuracy
+lift of gap-fill reproducibly through the harness.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

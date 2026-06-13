@@ -50,6 +50,9 @@ the evidence grade.
   aid)
 - [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
   : Fill missing horizon attributes from a SoilGrids depth prior
+- [`gapfill_within_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md)
+  : Fill interior missing horizon attributes by within-pedon depth
+  interpolation
 - [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
   : Per-attribute provenance-aware evidence grade
 

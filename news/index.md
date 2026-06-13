@@ -1,5 +1,17 @@
 # Changelog
 
+## soilKey 0.9.120 (2026-06-13)
+
+The “**within-pedon gap-fill**” release (Track 2, missing-data
+recovery). The honest ceiling on external accuracy is *missing data*,
+not the keys: most argic-RSG reference profiles report clay in only a
+subset of horizons, so the clay-increase test (and the Acrisol / Lixisol
+/ Alisol / Luvisol discrimination that hangs on it) stalls on an
+artefact of incomplete reporting. This release adds an opt-in lever to
+recover those *interior* gaps from each profile’s own measured layers –
+and, in the same breath, an honest measurement of when that helps and
+when it does not.
+
 ## soilKey 0.9.119 (2026-06-13)
 
 The “**honest coverage v2**” release (Track 1, part 2). Makes the

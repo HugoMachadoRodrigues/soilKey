@@ -21,7 +21,7 @@ catch-all default), a classificacao para no 2o nivel."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,8 @@ catch-all default), a classificacao para no 2o nivel.</p>
 <span>  <span class="va">pedon</span>,</span>
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
-<span>  include_familia <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  include_familia <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,6 +112,18 @@ adiciona o 5o nivel categorico (Familia) via
 <code><a href="classify_sibcs_familia.html">classify_sibcs_familia</a></code>. O label textual da
 Familia aparece em <code>$trace$familia_label</code>, e a lista
 de <code><a href="FamilyAttribute.html">FamilyAttribute</a></code>s em <code>$trace$familia</code>.</p></dd>
+
+
+<dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
+<dd><p>Preenchimento opcional de lacunas por interpolacao
+intra-perfil, default <code>FALSE</code> (no-op; classificacao
+byte-identica). <code>TRUE</code> preenche celulas <code>NA</code> interiores
+dos atributos continuos por profundidade; um vetor de caracteres
+restringe aos atributos citados; uma lista nomeada e repassada a
+<code><a href="gapfill_within_pedon.html">gapfill_within_pedon</a></code>. Celulas preenchidas recebem
+proveniencia <code>inferred_prior</code>, baixando o grau de evidencia
+para <code>"C"</code>. Opera sobre copia profunda – o pedon do chamador
+nunca e modificado.</p></dd>
 
 </dl></div>
     <div class="section level2">

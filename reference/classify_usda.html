@@ -21,7 +21,7 @@ inst/rules/usda/subgroups/&amp;lt;order&amp;gt;.yaml
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,8 @@ Subgroup) using YAML rule files at:</p><ul><li><p><code>inst/rules/usda/key.yaml
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
 <span>  include_family <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  infer_temperature <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  infer_temperature <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,6 +115,17 @@ earlier versions).</p></dd>
 temperature regime from latitude/elevation if
 <code>site$soil_temperature_regime</code> is absent (default
 <code>TRUE</code>). See <code><a href="family_temperature_regime_usda.html">family_temperature_regime_usda</a></code>.</p></dd>
+
+
+<dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
+<dd><p>Opt-in within-pedon depth gap-fill, default <code>FALSE</code>
+(no-op, classification stays byte-identical). <code>TRUE</code> fills
+interior <code>NA</code> cells of the continuous depth-trending attributes
+by linear interpolation from the profile's own measured horizons; a
+character vector restricts it to those attributes; a named list is
+passed to <code><a href="gapfill_within_pedon.html">gapfill_within_pedon</a></code>. Filled cells carry
+<code>inferred_prior</code> provenance, so the evidence grade drops to
+<code>"C"</code>. Runs on a deep copy – the caller's pedon is never mutated.</p></dd>
 
 </dl></div>
     <div class="section level2">

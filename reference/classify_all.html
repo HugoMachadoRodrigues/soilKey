@@ -13,7 +13,7 @@ per system (plus a summary table that's handy for reports)."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@ per system (plus a <code>summary</code> table that's handy for reports).</p>
 <span>  include_familia <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  include_family <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  specifiers <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -113,6 +114,13 @@ other systems.</p></dd>
 <dd><p>Forwarded to <code><a href="classify_wrb2022.html">classify_wrb2022</a></code> (default
 <code>FALSE</code>) to auto-attach WRB depth specifiers. No effect on the
 other systems.</p></dd>
+
+
+<dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
+<dd><p>Forwarded to all three classifiers (default <code>FALSE</code> =&gt;
+byte-identical). Opt-in within-pedon depth gap-fill; see
+<code><a href="gapfill_within_pedon.html">gapfill_within_pedon</a></code>. Applied independently per system
+on a deep copy, so the caller's pedon is never mutated.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

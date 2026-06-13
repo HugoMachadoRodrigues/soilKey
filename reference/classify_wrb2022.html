@@ -17,7 +17,7 @@ check."><meta property="og:image" content="https://hugomachadorodrigues.github.i
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.120</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,8 @@ check.</p>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  strict <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  specifiers <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  specifiers <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -138,6 +139,17 @@ actual depth – e.g. a gleyic feature confined to 50–100 cm
 yields <code>Endogleyic</code> instead of <code>Gleyic</code>. Default
 <code>FALSE</code> keeps the canonical names byte-identical. Surface
 / epipedon qualifiers are excluded (their depth is definitional).</p></dd>
+
+
+<dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
+<dd><p>Opt-in within-pedon depth gap-fill, default <code>FALSE</code>
+(no-op, classification stays byte-identical). <code>TRUE</code> fills
+interior <code>NA</code> cells of the continuous depth-trending attributes
+by linear interpolation from the profile's own measured horizons; a
+character vector restricts it to those attributes; a named list is
+passed to <code><a href="gapfill_within_pedon.html">gapfill_within_pedon</a></code>. Filled cells carry
+<code>inferred_prior</code> provenance, so the evidence grade drops to
+<code>"C"</code>. Runs on a deep copy – the caller's pedon is never mutated.</p></dd>
 
 </dl></div>
     <div class="section level2">

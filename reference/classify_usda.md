@@ -19,7 +19,8 @@ classify_usda(
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
   include_family = FALSE,
-  infer_temperature = TRUE
+  infer_temperature = TRUE,
+  gapfill = FALSE
 )
 ```
 
@@ -49,6 +50,18 @@ classify_usda(
   latitude/elevation if `site$soil_temperature_regime` is absent
   (default `TRUE`). See
   [`family_temperature_regime_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md).
+
+- gapfill:
+
+  Opt-in within-pedon depth gap-fill, default `FALSE` (no-op,
+  classification stays byte-identical). `TRUE` fills interior `NA` cells
+  of the continuous depth-trending attributes by linear interpolation
+  from the profile's own measured horizons; a character vector restricts
+  it to those attributes; a named list is passed to
+  [`gapfill_within_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md).
+  Filled cells carry `inferred_prior` provenance, so the evidence grade
+  drops to `"C"`. Runs on a deep copy – the caller's pedon is never
+  mutated.
 
 ## Value
 
