@@ -90,7 +90,9 @@ test_that("canonical Vertisol fixture keys to Chromic Hapluderts", {
 
 test_that("USDA subgroup coverage reflects the +57 colour subgroups", {
   cov <- coverage_report("usda_subgroup")
-  expect_equal(cov$overall$covered_n, 1978L)
+  # >= rather than == so later fronts that add subgroups don't break this test
+  # (the exact current total is pinned in test-usda-intergrade-subgroups.R).
+  expect_gte(cov$overall$covered_n, 1978L)
   # every generated colour subgroup is now registered
   gen <- c("Chromic Haplusterts", "Leptic Haplusterts", "Xanthic Hapludox",
            "Calcic Haploxeralfs", "Calcic Haplotorrands")

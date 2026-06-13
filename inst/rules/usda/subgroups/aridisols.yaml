@@ -400,6 +400,11 @@ subgroups:
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
+    - code: "GDEB"
+      name: "Leptic Haplogypsids"
+      tests:
+        all_of:
+          - gypsic_horizon_usda: { max_top_cm: 18 }
     - code: "GDED"
       name: "Typic Haplogypsids"
       tests:
