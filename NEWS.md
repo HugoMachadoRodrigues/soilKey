@@ -1,3 +1,33 @@
+# soilKey 0.9.119 (2026-06-13)
+
+The "**honest coverage v2**" release (Track 1, part 2). Makes the package's
+completeness claims auditable at \strong{every} level and corrects two
+over-stated numbers.
+
+\itemize{
+  \item \code{coverage_report()} now covers \code{"usda_great_group"} (339/339,
+        100\%), \code{"usda_suborder"} (68/68, 100\%) and \code{"sibcs"} (honest
+        registered class counts -- 13 / 44 / 192 / 938 -- with the caveat that
+        there is no external canonical SiBCS 5 list to diff against), alongside
+        the existing \code{"usda_subgroup"} and \code{"wrb_qualifiers"}.
+  \item \strong{WRB qualifier coverage is now measured honestly.} A qualifier
+        counts as covered only if its \code{qual_*} function is a genuine
+        implementation, not an unconditional \code{passed = NA} stub. The
+        headline is \strong{226 of 234} deliverable -- 214 implemented + 12
+        \emph{specifier-derived} (Epi-/Endo-/Bathy-... forms produced by the
+        specifier engine from their base qualifier) -- with the 3 inert stubs
+        (Fibric, Hemic, Sapric) reported in \code{$stubs} and the 5
+        function-less, schema-blocked names (Claric, Panpaic, Sideralic,
+        Novic, ...) in \code{$missing}. (The earlier \dQuote{229/234} counted
+        function existence, including stubs.)
+  \item Honest correction: an audit had suggested \emph{~90 inert WRB
+        qualifiers}; direct measurement shows only \strong{3} genuine
+        implementation gaps -- WRB qualifier coverage is essentially complete.
+}
+
+No engine, diagnostics, rule or key changes; the 44 canonical fixtures are
+byte-identical.
+
 # soilKey 0.9.118 (2026-06-13)
 
 The "**engineering robustness**" release (Track 1 of the post-roadmap plan,

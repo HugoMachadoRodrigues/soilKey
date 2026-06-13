@@ -21,13 +21,35 @@ test_that("coverage_report(usda_subgroup) measures by name against KST 13ed", {
   expect_true(all(done$pct == 100))
 })
 
-test_that("coverage_report(wrb_qualifiers) counts qual_* functions", {
+test_that("coverage_report(wrb_qualifiers) counts only genuine implementations", {
   cov <- coverage_report("wrb_qualifiers")
   expect_equal(cov$overall$system, "wrb2022")
   expect_equal(cov$overall$level, "qualifier")
-  # the 4 newly-added qualifiers are now registered, so none remain missing
+  # the 4 added qualifiers are genuinely implemented, so none remain missing
   expect_false(any(c("Aeolic", "Fragic", "Limonic", "Tsitelic") %in% cov$missing))
-  expect_gt(cov$overall$pct, 96)
+  expect_gt(cov$overall$pct, 95)
+  # inert stubs are reported separately and excluded from the covered count
+  expect_true(all(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
+  expect_true(all(cov$stubs %in% cov$missing))     # a stub is not "covered"
+  expect_equal(cov$overall$covered_n + cov$overall$missing_n, cov$overall$canonical_n)
+  # specifier-derived qualifiers (Endo-/Epi-/...) count as covered
+  expect_gt(cov$overall$specifier_derived_n, 0L)
+})
+
+test_that("coverage_report extends to USDA great-group / suborder levels", {
+  gg <- coverage_report("usda_great_group")
+  expect_equal(gg$overall$level, "great_group")
+  expect_equal(gg$overall$pct, 100)               # all 339 great groups registered
+  so <- coverage_report("usda_suborder")
+  expect_equal(so$overall$pct, 100)               # all 68 suborders registered
+})
+
+test_that("coverage_report(sibcs) honestly reports registered counts (no canonical)", {
+  s <- coverage_report("sibcs")
+  expect_equal(s$overall$system, "sibcs")
+  expect_true(is.na(s$overall$pct))               # no external canonical to diff
+  expect_gt(s$overall$registered_n, 100L)
+  expect_true("subgroup" %in% s$by_group$group)
 })
 
 test_that("the 4 new qualifiers wrap their diagnostics and gate on depth", {
