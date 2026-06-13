@@ -1,3 +1,43 @@
+# soilKey 0.9.123 (2026-06-13)
+
+The "**criteria-verified intergrade subgroups**" release (front E4b). Adds **+25**
+USDA intergrade subgroups -- the safe, exactly-correct slice of the multi-modifier
+colour set -- by reusing existing predicates whose match to the KST 13th-edition
+differentia (`ST_criteria_13th`) was verified one subgroup at a time.
+
+\itemize{
+  \item \strong{USDA subgroup coverage 72.9\% -> 73.8\%} (1978 -> 2003 of 2715):
+        12 \emph{Humic Rhodic} + 12 \emph{Humic Xanthic} Oxisols (multi-predicate
+        \code{all_of} of \code{humic_oxisol_usda} \[>= 16 kg/m2 OC in 100 cm\]
+        plus \code{rhodic_subgroup_usda} / \code{xanthic_subgroup_usda}), and
+        \emph{Leptic Haplogypsids} (\code{gypsic_horizon_usda} within 18 cm).
+        \strong{No new predicates} -- every modifier maps to an existing
+        predicate that matches its criterion clause exactly.
+  \item \strong{Reading the canonical criteria caught a real trap.} The
+        investigation's uniform "Leptic -> leptic_vertic_usda" map is \emph{wrong}
+        for the Natr- great groups: there "Leptic" means \dQuote{visible crystals
+        of gypsum / soluble salts within 40 cm}, not a contact. And the Alfisol
+        "Chromic" is chroma >= 4 within 18 cm (after mixing), not the Vertisol
+        chroma >= 3 within 30 cm. Both were therefore \strong{excluded} rather
+        than wired to a mismatched predicate.
+  \item Same generator discipline: \strong{append-before-default} (149 insertions
+        / 0 deletions, existing YAML byte-for-byte, great group invariant);
+        \strong{KSSL n=2895 gate: 0 worsened} (and 0 changed -- KSSL is a
+        continental-US sample with almost no Oxisols/Gypsids, so the gate is a
+        safety floor, not a strong test here; safety rests on the criteria-exact
+        predicates + append-before-default). Of 44 fixtures, \strong{1} refines
+        \code{Typic -> Leptic Haplogypsids} (the Gypsisol fixture, validated: its
+        gypsic horizon begins at 15 cm, within the 18 cm window); the other 43
+        byte-identical.
+  \item \strong{Honestly deferred} (out of safe reach without new schema or
+        climate data): the salts-based \emph{Leptic} Natr- subgroups (need a
+        visible-salt-crystal morphology field soilKey does not carry -- an EC
+        proxy would be incorrect); the soil-moisture-regime intergrades
+        (Aridic / Udic / Torrertic); the Alfisol Chromic-Vertic intergrades
+        (need a distinct chroma >= 4 / 18 cm predicate); and Anthropic / Aquertic
+        (compound predicates).
+}
+
 # soilKey 0.9.122 (2026-06-13)
 
 The "**honest decomposition qualifiers**" release. A premise-check (the recurring
