@@ -271,7 +271,11 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-classify_decomposition.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-col_at.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_markdown.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_sibcs_level.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_level.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_subgroups.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_sibcs.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_named_level.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_subgroup.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_wrb_qualifiers.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.html</loc></url>
@@ -315,6 +319,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_stub_na.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_weighted_mean.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-qualifier_is_implemented.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_canonical_label.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/dot-redape_compose_ref.html</loc></url>

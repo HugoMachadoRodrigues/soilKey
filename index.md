@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.118](https://img.shields.io/badge/version-0.9.118-FF6B35?style=flat-square)[![License:
+![v0.9.119](https://img.shields.io/badge/version-0.9.119-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -37,7 +37,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **WRB 2022 — diagnostic properties** | ✅ shipped (17 / 17) | Chapter 3.2 complete. |
 | **WRB 2022 — diagnostic materials** | ✅ shipped (16 / 16) | Chapter 3.3 complete. |
 | **WRB 2022 — RSG key** | ✅ shipped (32 / 32) | All Reference Soil Groups in canonical Chapter 4 order. |
-| **WRB 2022 — qualifiers** | ✅ shipped (229/234) | 229 of 234 canonical principal + supplementary qualifiers wired with canonical ordering (97.9%; by-name `coverage_report("wrb_qualifiers")`). |
+| **WRB 2022 — qualifiers** | ✅ shipped (226/234) | 226 of 234 canonical qualifiers deliverable (214 implemented + 12 specifier-derived); 8 honest gaps (3 implementable — Fibric/Hemic/Sapric — + 5 schema-blocked: Claric/Panpaic/Sideralic/Novic). `coverage_report("wrb_qualifiers")` counts genuine implementations only (not inert stubs). |
 | **SiBCS 5 — Order** | ✅ shipped (13 / 13) | All 13 SiBCS Orders. |
 | **SiBCS 5 — Suborder** | ✅ shipped (44 / 44) | All 44 Suborders. |
 | **SiBCS 5 — Great Group** | ✅ shipped (192 / 192) | All 192 Great Groups. |
@@ -852,4 +852,4 @@ see the DOI for details.
 
 ------------------------------------------------------------------------
 
-_(**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers, 97.9%), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family, ≈1 200 classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 1 921 of 2 715 canonical subgroups = 70.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)
+_(**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 226 of 234 canonical qualifiers deliverable, 8 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 1 921 of 2 715 subgroups = 70.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)

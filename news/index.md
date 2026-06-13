@@ -1,5 +1,14 @@
 # Changelog
 
+## soilKey 0.9.119 (2026-06-13)
+
+The “**honest coverage v2**” release (Track 1, part 2). Makes the
+package’s completeness claims auditable at level and corrects two
+over-stated numbers.
+
+No engine, diagnostics, rule or key changes; the 44 canonical fixtures
+are byte-identical.
+
 ## soilKey 0.9.118 (2026-06-13)
 
 The “**engineering robustness**” release (Track 1 of the post-roadmap

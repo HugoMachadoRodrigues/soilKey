@@ -1844,8 +1844,26 @@ pública curada.
 - [`.coverage_markdown()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_markdown.md)
   : Render a coverage result as Markdown.
 
+- [`.coverage_registered_sibcs_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_sibcs_level.md)
+  : Distinct leaf names registered at a SiBCS level (from the merged
+  rule base).
+
+- [`.coverage_registered_usda_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_level.md)
+  : Names registered under a USDA level YAML directory (great-groups /
+  suborders).
+
 - [`.coverage_registered_usda_subgroups()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_subgroups.md)
   : Subgroup full-names registered in the USDA subgroup rule base.
+
+- [`.coverage_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_sibcs.md)
+  : SiBCS 5 registered class counts. There is no external canonical
+  code-set to diff against (unlike KST 13ed for USDA), so this honestly
+  reports the registered class counts per level with that caveat – not a
+  percentage.
+
+- [`.coverage_usda_named_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_named_level.md)
+  : USDA coverage at the great-group / suborder level (by NAME vs KST
+  13ed).
 
 - [`.coverage_usda_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_subgroup.md)
   : USDA subgroup coverage (registered vs canonical KST 13th edition).
@@ -1853,7 +1871,8 @@ pública curada.
 - [`.coverage_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_wrb_qualifiers.md)
   :
 
-  WRB 2022 qualifier coverage (registered `qual_*` vs canonical).
+  WRB 2022 qualifier coverage (canonical vs genuinely-implemented
+  `qual_*`).
 
 - [`.detect_color_undetermined_fallback()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.md)
   : Detecta fallback "cor a determinar" no nivel de subordem SiBCS
@@ -1984,6 +2003,13 @@ pública curada.
 
 - [`.q_within_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.md)
   : Test "X within depth d cm" given an existing diagnostic
+
+- [`.qualifier_is_implemented()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-qualifier_is_implemented.md)
+  :
+
+  Is a `qual_*` function a genuine implementation (not an unconditional
+  `passed = NA` stub)? A real qualifier either delegates to
+  `.q_presence()` or assigns `passed` from a computation.
 
 - [`.query_nearest_wosis_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.md)
   : Query WoSIS GraphQL for the nearest WRB-labeled profile.

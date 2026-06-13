@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.118</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.119</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -4173,10 +4173,38 @@
 
         <dt>
 
+          <code><a href="dot-coverage_registered_sibcs_level.html">.coverage_registered_sibcs_level()</a></code>
+
+        </dt>
+        <dd>Distinct leaf names registered at a SiBCS level (from the merged rule base).</dd>
+
+        <dt>
+
+          <code><a href="dot-coverage_registered_usda_level.html">.coverage_registered_usda_level()</a></code>
+
+        </dt>
+        <dd>Names registered under a USDA level YAML directory (great-groups / suborders).</dd>
+
+        <dt>
+
           <code><a href="dot-coverage_registered_usda_subgroups.html">.coverage_registered_usda_subgroups()</a></code>
 
         </dt>
         <dd>Subgroup full-names registered in the USDA subgroup rule base.</dd>
+
+        <dt>
+
+          <code><a href="dot-coverage_sibcs.html">.coverage_sibcs()</a></code>
+
+        </dt>
+        <dd>SiBCS 5 registered class counts. There is no external canonical code-set to diff against (unlike KST 13ed for USDA), so this honestly reports the registered class counts per level with that caveat – not a percentage.</dd>
+
+        <dt>
+
+          <code><a href="dot-coverage_usda_named_level.html">.coverage_usda_named_level()</a></code>
+
+        </dt>
+        <dd>USDA coverage at the great-group / suborder level (by NAME vs KST 13ed).</dd>
 
         <dt>
 
@@ -4190,7 +4218,7 @@
           <code><a href="dot-coverage_wrb_qualifiers.html">.coverage_wrb_qualifiers()</a></code>
 
         </dt>
-        <dd>WRB 2022 qualifier coverage (registered <code>qual_*</code> vs canonical).</dd>
+        <dd>WRB 2022 qualifier coverage (canonical vs genuinely-implemented <code>qual_*</code>).</dd>
 
         <dt>
 
@@ -4478,6 +4506,13 @@
 
         </dt>
         <dd>Test "X within depth d cm" given an existing diagnostic</dd>
+
+        <dt>
+
+          <code><a href="dot-qualifier_is_implemented.html">.qualifier_is_implemented()</a></code>
+
+        </dt>
+        <dd>Is a <code>qual_*</code> function a genuine implementation (not an unconditional <code>passed = NA</code> stub)? A real qualifier either delegates to <code>.q_presence()</code> or assigns <code>passed</code> from a computation.</dd>
 
         <dt>
 

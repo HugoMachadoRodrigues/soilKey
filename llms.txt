@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.118](https://img.shields.io/badge/version-0.9.118-FF6B35?style=flat-square)[![License:
+![v0.9.119](https://img.shields.io/badge/version-0.9.119-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -37,7 +37,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **WRB 2022 — diagnostic properties** | ✅ shipped (17 / 17) | Chapter 3.2 complete. |
 | **WRB 2022 — diagnostic materials** | ✅ shipped (16 / 16) | Chapter 3.3 complete. |
 | **WRB 2022 — RSG key** | ✅ shipped (32 / 32) | All Reference Soil Groups in canonical Chapter 4 order. |
-| **WRB 2022 — qualifiers** | ✅ shipped (229/234) | 229 of 234 canonical principal + supplementary qualifiers wired with canonical ordering (97.9%; by-name `coverage_report("wrb_qualifiers")`). |
+| **WRB 2022 — qualifiers** | ✅ shipped (226/234) | 226 of 234 canonical qualifiers deliverable (214 implemented + 12 specifier-derived); 8 honest gaps (3 implementable — Fibric/Hemic/Sapric — + 5 schema-blocked: Claric/Panpaic/Sideralic/Novic). `coverage_report("wrb_qualifiers")` counts genuine implementations only (not inert stubs). |
 | **SiBCS 5 — Order** | ✅ shipped (13 / 13) | All 13 SiBCS Orders. |
 | **SiBCS 5 — Suborder** | ✅ shipped (44 / 44) | All 44 Suborders. |
 | **SiBCS 5 — Great Group** | ✅ shipped (192 / 192) | All 192 Great Groups. |
@@ -852,7 +852,7 @@ see the DOI for details.
 
 ------------------------------------------------------------------------
 
-_(**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers, 97.9%), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family, ≈1 200 classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 1 921 of 2 715 canonical subgroups = 70.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)
+_(**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 226 of 234 canonical qualifiers deliverable, 8 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 1 921 of 2 715 subgroups = 70.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)
 
 # Package index
 
@@ -2700,8 +2700,26 @@ pública curada.
 - [`.coverage_markdown()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_markdown.md)
   : Render a coverage result as Markdown.
 
+- [`.coverage_registered_sibcs_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_sibcs_level.md)
+  : Distinct leaf names registered at a SiBCS level (from the merged
+  rule base).
+
+- [`.coverage_registered_usda_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_level.md)
+  : Names registered under a USDA level YAML directory (great-groups /
+  suborders).
+
 - [`.coverage_registered_usda_subgroups()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_registered_usda_subgroups.md)
   : Subgroup full-names registered in the USDA subgroup rule base.
+
+- [`.coverage_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_sibcs.md)
+  : SiBCS 5 registered class counts. There is no external canonical
+  code-set to diff against (unlike KST 13ed for USDA), so this honestly
+  reports the registered class counts per level with that caveat – not a
+  percentage.
+
+- [`.coverage_usda_named_level()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_named_level.md)
+  : USDA coverage at the great-group / suborder level (by NAME vs KST
+  13ed).
 
 - [`.coverage_usda_subgroup()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_usda_subgroup.md)
   : USDA subgroup coverage (registered vs canonical KST 13th edition).
@@ -2709,7 +2727,8 @@ pública curada.
 - [`.coverage_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-coverage_wrb_qualifiers.md)
   :
 
-  WRB 2022 qualifier coverage (registered `qual_*` vs canonical).
+  WRB 2022 qualifier coverage (canonical vs genuinely-implemented
+  `qual_*`).
 
 - [`.detect_color_undetermined_fallback()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.md)
   : Detecta fallback "cor a determinar" no nivel de subordem SiBCS
@@ -2840,6 +2859,13 @@ pública curada.
 
 - [`.q_within_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.md)
   : Test "X within depth d cm" given an existing diagnostic
+
+- [`.qualifier_is_implemented()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-qualifier_is_implemented.md)
+  :
+
+  Is a `qual_*` function a genuine implementation (not an unconditional
+  `passed = NA` stub)? A real qualifier either delegates to
+  `.q_presence()` or assigns `passed` from a computation.
 
 - [`.query_nearest_wosis_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.md)
   : Query WoSIS GraphQL for the nearest WRB-labeled profile.

@@ -13,7 +13,8 @@ qualifier set from
 
 ``` r
 coverage_report(
-  system = c("usda_subgroup", "wrb_qualifiers"),
+  system = c("usda_subgroup", "usda_great_group", "usda_suborder", "wrb_qualifiers",
+    "sibcs"),
   write = FALSE,
   report_dir = NULL
 )
@@ -23,8 +24,17 @@ coverage_report(
 
 - system:
 
-  Which axis to measure: `"usda_subgroup"` (default) or
-  `"wrb_qualifiers"`.
+  Which axis to measure. USDA taxon levels against the Soil Taxonomy
+  13th-edition code set
+  ([`kst13_codes`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.md)):
+  `"usda_subgroup"` (default), `"usda_great_group"`, `"usda_suborder"`.
+  WRB 2022 qualifiers against
+  [`wrb2022_canonical`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md):
+  `"wrb_qualifiers"` – here "covered" means the `qual_*` function exists
+  *and* is a genuine implementation (not an unconditional `passed = NA`
+  stub), and the inert ones are returned in `$stubs`. `"sibcs"` has no
+  external canonical class list, so it honestly reports registered class
+  counts per level only (no percentage).
 
 - write:
 
@@ -41,8 +51,9 @@ coverage_report(
 Invisibly, a list with `$overall` (one-row data frame: `system`,
 `level`, `canonical_n`, `registered_n`, `covered_n`, `missing_n`,
 `pct`), `$by_group` (per order, or per principal/supplementary),
-`$missing` (canonical names not registered) and `$extra` (registered
-names absent from the canonical set). A compact summary is printed as a
+`$missing` (canonical names not registered), `$extra` (registered names
+absent from the canonical set), and – for `"wrb_qualifiers"` – `$stubs`
+(functions that exist but are inert). A compact summary is printed as a
 side effect.
 
 ## Examples
