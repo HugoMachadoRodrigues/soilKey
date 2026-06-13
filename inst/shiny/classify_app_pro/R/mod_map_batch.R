@@ -66,7 +66,7 @@
     stop(i18n("mbatch.err_no_latlon"))
 
   # Horizon attribute columns = everything that is part of the canonical spec.
-  spec_cols <- names(soilKey:::horizon_column_spec())
+  spec_cols <- names(soilKey::horizon_column_spec())
   hz_cols   <- intersect(nms, spec_cols)
   if (!all(c("top_cm", "bottom_cm") %in% hz_cols))
     stop(i18n("mbatch.err_no_depth"))

@@ -15,4 +15,7 @@ Returns the schema for the \code{horizons} \code{data.table} carried by a
 their R type (\code{"numeric"} or \code{"character"}). Adding a new
 attribute means editing this single function.
 }
-\keyword{internal}
+\examples{
+spec <- horizon_column_spec()
+head(names(spec))
+}

@@ -208,7 +208,7 @@ pedon_server <- function(id, rv) {
       )
       if (is.null(df)) return(invisible())
       # Keep only columns soilKey understands, in canonical order.
-      spec  <- names(soilKey:::horizon_column_spec())
+      spec  <- names(soilKey::horizon_column_spec())
       keep  <- intersect(spec, names(df))
       extra <- setdiff(names(df), spec)
       df    <- df[, c(keep, extra), drop = FALSE]
@@ -319,7 +319,7 @@ pedon_server <- function(id, rv) {
         return(invisible())
       }
       built <- tryCatch({
-        h_dt <- soilKey:::ensure_horizon_schema(data.table::as.data.table(df))
+        h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(df))
         soilKey::PedonRecord$new(
           site = list(
             id              = input$site_id %||% "pedon",

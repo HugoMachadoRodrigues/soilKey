@@ -1,3 +1,35 @@
+# soilKey 0.9.118 (2026-06-13)
+
+The "**engineering robustness**" release (Track 1 of the post-roadmap plan,
+part 1). Hardens the package without changing any classification behaviour.
+
+\itemize{
+  \item \code{horizon_column_spec()} and \code{ensure_horizon_schema()} are now
+        \strong{exported}. They were foundational schema helpers reached from
+        the Pro app via \code{soilKey:::} (the same internal-namespace smell
+        that retired the legacy app); the three \code{:::} call sites now use
+        the public API, and users can coerce/validate a horizon table before
+        building a \code{\link{PedonRecord}}.
+  \item New internal rule-base integrity check: \code{.validate_rules(system)}
+        confirms that every predicate referenced in a system's YAML rules
+        exists as a function. A new test runs it for WRB / SiBCS / USDA (31 /
+        111 / 153 predicates, 0 missing), so a typo'd predicate name in a rule
+        -- which the engine would otherwise degrade to a silent \code{NA} at
+        classification time -- now fails the test suite.
+  \item \code{shiny::testServer} coverage for the eight Pro-app modules that
+        were previously parse-tested only (pedon, classify, photo, spectra,
+        spatial, uncertainty, report, settings).
+  \item Investigated but deliberately left as-is (honest non-changes): the
+        \pkg{febr} loader stays out of \code{Suggests} because \pkg{febr} is
+        GitHub-only (not on CRAN) -- the \code{getExportedValue()} +
+        \code{requireNamespace()} pattern is correct, and a Suggests entry
+        would fail \code{R CMD check}; and the rule engine already returns a
+        graceful \code{NA} (not an error) for a missing predicate.
+}
+
+No engine, diagnostics, rules or key changes; the 44 canonical fixtures are
+byte-identical.
+
 # soilKey 0.9.117 (2026-06-13)
 
 The "**retire the legacy app + bilingual report**" release (app-maturity front

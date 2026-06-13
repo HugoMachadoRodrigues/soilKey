@@ -19,7 +19,10 @@
 #' attribute means editing this single function.
 #'
 #' @return Named list of column types in canonical order.
-#' @keywords internal
+#' @examples
+#' spec <- horizon_column_spec()
+#' head(names(spec))
+#' @export
 horizon_column_spec <- function() {
   list(
     # ---- geometry & boundaries ----
@@ -175,8 +178,12 @@ make_empty_horizons <- function(n = 0L) {
 #' end. Coerces character values to numeric where the schema requires it.
 #'
 #' @param h Input data.frame or data.table.
-#' @return A \code{data.table}.
-#' @keywords internal
+#' @return A \code{data.table} with the canonical horizon columns present, in
+#'   canonical order, with extra columns preserved at the end.
+#' @examples
+#' h <- ensure_horizon_schema(data.frame(top_cm = 0, bottom_cm = 20))
+#' "designation" %in% names(h)
+#' @export
 ensure_horizon_schema <- function(h) {
   if (is.null(h)) return(make_empty_horizons(0L))
   if (!data.table::is.data.table(h)) h <- data.table::as.data.table(h)
