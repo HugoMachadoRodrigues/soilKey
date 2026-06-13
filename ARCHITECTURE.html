@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.122</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.123</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.123</strong></td>
+<td>
+<strong>Criteria-verified USDA intergrade subgroups (front E4b).</strong> +25 multi-modifier intergrade subgroups — the safe, exactly-correct slice — reusing existing predicates whose match to the KST 13ed differentia (<code>ST_criteria_13th</code>) was verified per subgroup. <strong>Subgroup coverage 72.9% → 73.8% (1978 → 2003 of 2715):</strong> 12 Humic Rhodic + 12 Humic Xanthic Oxisols (multi-predicate <code>all_of</code> of <code>humic_oxisol_usda</code> [≥16 kg/m² OC in 100 cm] + <code>rhodic_subgroup_usda</code>/<code>xanthic_subgroup_usda</code>) and Leptic Haplogypsids (<code>gypsic_horizon_usda</code> within 18 cm). <strong>No new predicates.</strong> <strong>Reading the canonical criteria caught a real trap:</strong> the investigation’s uniform “Leptic→leptic_vertic_usda” map is <em>wrong</em> for Natr- groups (there “Leptic” = visible gypsum/soluble-salt crystals within 40 cm, not a contact), and the Alfisol “Chromic” is chroma ≥4 within 18 cm (after mixing), not the Vertisol chroma ≥3 within 30 cm — both excluded rather than wired to a mismatched predicate. Append-before-default (149 insertions / 0 deletions, byte-for-byte, great-group invariant); <strong>KSSL n=2895 gate: 0 worsened</strong> (0 changed — KSSL barely contains Oxisols/Gypsids, so the gate is a safety floor not a strong test here; safety rests on the criteria-exact predicates + append-before-default). Of 44 fixtures, <strong>1 refines</strong> Typic→Leptic Haplogypsids (Gypsisol fixture, validated: gypsic horizon begins at 15 cm, within the 18 cm window); other 43 byte-identical. <strong>Honestly deferred:</strong> salts-based Leptic Natr- (need a visible-salt-crystal field; EC proxy would be wrong), SMR intergrades (Aridic/Udic/Torrertic — need climate), Alfisol Chromic-Vertic (need a distinct chroma≥4/18 cm predicate), Anthropic/Aquertic (compound). +10 unit tests.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.122</strong></td>
 <td>

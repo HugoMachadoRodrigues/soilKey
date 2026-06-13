@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.123 (2026-06-13)
+
+The “**criteria-verified intergrade subgroups**” release (front E4b).
+Adds **+25** USDA intergrade subgroups – the safe, exactly-correct slice
+of the multi-modifier colour set – by reusing existing predicates whose
+match to the KST 13th-edition differentia (`ST_criteria_13th`) was
+verified one subgroup at a time.
+
 ## soilKey 0.9.122 (2026-06-13)
 
 The “**honest decomposition qualifiers**” release. A premise-check (the

@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55bd3a8d7f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x560e7e65af20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
