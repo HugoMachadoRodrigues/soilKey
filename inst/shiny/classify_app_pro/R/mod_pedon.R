@@ -94,7 +94,9 @@ pedon_ui <- function(id) {
                                            icon = shiny::icon("plus"),
                                            class = "btn-sm btn-outline-secondary")))
         ),
-        bslib::card_body(DT::DTOutput(ns("hz_table")))
+        bslib::card_body(
+          DT::DTOutput(ns("hz_table")),
+          shiny::uiOutput(ns("geom_status")))
       ),
       bslib::card(
         bslib::card_header(
@@ -108,6 +110,25 @@ pedon_ui <- function(id) {
       )
     )
   )
+}
+
+# Turn validate_horizon_geometry() details into localized lines for the Pedon
+# builder (the package function returns English; the app renders pt/en).
+.pedon_geom_lines <- function(geom) {
+  d <- geom$details; err <- character(0); warn <- character(0)
+  jn <- function(x) paste(x, collapse = ", ")
+  if (!is.null(d$missing_depth))  err  <- c(err,  i18n("pedon.geom_missing_depth", jn(d$missing_depth)))
+  if (!is.null(d$negative_depth)) err  <- c(err,  i18n("pedon.geom_negative",      jn(d$negative_depth)))
+  if (!is.null(d$inverted))       err  <- c(err,  i18n("pedon.geom_inverted",      jn(d$inverted)))
+  if (!is.null(d$overlap))        err  <- c(err,  i18n("pedon.geom_overlap",       jn(d$overlap)))
+  if (!is.null(d$gap))            warn <- c(warn, i18n("pedon.geom_gap",           jn(d$gap)))
+  if (!is.null(d$surface_gap))    warn <- c(warn, i18n("pedon.geom_surface_gap",   d$surface_gap))
+  if (isTRUE(d$non_monotonic))    warn <- c(warn, i18n("pedon.geom_non_monotonic"))
+  if (!is.null(d$duplicate_designation))
+    warn <- c(warn, i18n("pedon.geom_duplicate", jn(d$duplicate_designation)))
+  # structural errors (no columns / empty) carry no details -> fall back
+  if (length(err) == 0L && length(geom$errors) > 0L) err <- geom$errors
+  list(errors = err, warnings = warn)
 }
 
 pedon_server <- function(id, rv) {
@@ -237,6 +258,27 @@ pedon_server <- function(id, rv) {
       pro_profile_plot(hz(), input$plot_attr %||% "clay_pct")
     })
 
+    # ---- live horizon-geometry feedback under the table -------------------
+    # Reacts to every cell edit so problems (overlaps, gaps, inverted depths)
+    # surface immediately, in the chosen language. AA-contrast colours.
+    output$geom_status <- shiny::renderUI({
+      df <- hz()
+      if (is.null(df) || nrow(df) == 0L) return(NULL)
+      lines <- .pedon_geom_lines(validate_horizon_geometry(df))
+      if (length(lines$errors) == 0L && length(lines$warnings) == 0L) {
+        return(shiny::div(class = "small mt-2", style = "color:#3f6024;",
+                          shiny::icon("circle-check"), " ", i18n("pedon.geom_ok")))
+      }
+      shiny::tagList(
+        lapply(lines$errors, function(m)
+          shiny::div(class = "small mt-1", style = "color:#b02a37;",
+                     shiny::icon("triangle-exclamation"), " ", m)),
+        lapply(lines$warnings, function(m)
+          shiny::div(class = "small mt-1", style = "color:#7a5b00;",
+                     shiny::icon("circle-exclamation"), " ", m))
+      )
+    })
+
     # ---- build the PedonRecord -------------------------------------------
     shiny::observeEvent(input$build, {
       df <- hz()
@@ -244,6 +286,22 @@ pedon_server <- function(id, rv) {
         shiny::showNotification(i18n("pedon.load_add_horizon_first"),
                                 type = "warning")
         return(invisible())
+      }
+      # Guard the horizon geometry before it reaches the key: overlaps, inverted
+      # or missing depths would build a nonsensical profile. Errors block;
+      # warnings (gaps, surface offset, ...) are surfaced but allowed.
+      geom <- validate_horizon_geometry(df)
+      glines <- .pedon_geom_lines(geom)
+      if (!geom$valid) {
+        shiny::showNotification(
+          i18n("pedon.geom_errors_block", paste(glines$errors, collapse = " ")),
+          type = "error", duration = 8)
+        return(invisible())
+      }
+      if (length(glines$warnings)) {
+        shiny::showNotification(
+          i18n("pedon.geom_warnings", paste(glines$warnings, collapse = " ")),
+          type = "warning", duration = 6)
       }
       # Guard the coordinates before they reach the key: an out-of-range
       # lat/lon would silently poison the SoilGrids prior and the inferred
