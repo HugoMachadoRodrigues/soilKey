@@ -42,8 +42,11 @@
   white-space: nowrap;
 }
 .sk-ribbon .sk-chip .sk-key { color: var(--sk-brown); font-weight: 600; }
-.sk-ribbon .sk-built { color: var(--sk-moss); font-weight: 600; }
-.sk-ribbon .sk-empty { color: #9a8c7d; }
+/* v0.9.115 a11y: darker green / grey so ribbon text clears WCAG AA 4.5:1
+   contrast on the sand/white ribbon (was --sk-moss #4F772D ~4.1:1 and
+   #9a8c7d ~3.0:1 on white). */
+.sk-ribbon .sk-built { color: #3f6024; font-weight: 600; }
+.sk-ribbon .sk-empty { color: #6f6256; }
 
 /* ---- cards: a touch of warmth + lift ----------------------------------- */
 .card { border-color: rgba(107, 68, 35, 0.15); }
@@ -84,3 +87,40 @@
 /* ---- getting-started modal: a little breathing room -------------------- */
 .sk-steps { margin: 0.5rem 0 0; padding-left: 1.1rem; }
 .sk-steps li { margin-bottom: 0.3rem; }
+
+/* ---- v0.9.115 a11y: respect reduced-motion ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .recalculating::after { animation: none; }
+  .btn-primary { transition: none; }
+  .btn-primary:active { transform: none; }
+}
+
+/* a screen-reader-only utility (mirrors Bootstrap's .visually-hidden, in
+   case the bslib build omits it) */
+.sk-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* ---- v0.9.115 responsive: usable down to a phone (~375px) -------------- */
+@media (max-width: 768px) {
+  /* tall fixed-height visualisations shrink to the viewport */
+  .leaflet-container,
+  .plotly.html-widget,
+  .shiny-plot-output > img,
+  .shiny-image-output > img { max-height: 48vh !important; height: auto !important; }
+  /* tighter cards + ribbon */
+  .card > .card-body { padding: 0.75rem; }
+  .sk-ribbon { gap: 0.5rem; padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+  /* result cards stack instead of squeezing three-up */
+  .bslib-column-wrap { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .leaflet-container,
+  .plotly.html-widget { max-height: 40vh !important; }
+  .sk-ribbon { flex-direction: column; align-items: flex-start; }
+  .navbar-brand-inner { font-size: 1rem; }
+}

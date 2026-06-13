@@ -65,10 +65,22 @@ ui <- function(request) {
     id     = "main_nav",
     theme  = sk_theme,
     fillable = TRUE,
+    # a11y: the document language follows the chosen interface language so
+    # screen readers use the right pronunciation rules.
+    lang   = .sk_app_lang(),
     # Stylesheet + the global pedon ribbon render above the tab content.
     header = tagList(
-      tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                          href = "soilkey.css")),
+      tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "soilkey.css"),
+        # a11y: announce transient showNotification() toasts to screen readers
+        # (the panel is created on demand, so tag it once it appears).
+        tags$script(htmltools::HTML(
+          "document.addEventListener('DOMContentLoaded',function(){",
+          "new MutationObserver(function(){",
+          "var p=document.getElementById('shiny-notification-panel');",
+          "if(p&&!p.getAttribute('aria-live')){p.setAttribute('aria-live','polite');p.setAttribute('role','status');}",
+          "}).observe(document.body,{childList:true,subtree:true});});"))
+      ),
       uiOutput("pedon_ribbon")
     ),
     bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon")),
@@ -89,10 +101,12 @@ ui <- function(request) {
     bslib::nav_spacer(),
     bslib::nav_panel(i18n("nav.settings"),    icon = icon("gear"),         settings_ui("settings")),
     bslib::nav_item(
-      shinyWidgets::radioGroupButtons(
-        "app_lang_sel", label = NULL,
-        choices  = c("EN" = "en", "PT" = "pt"),
-        selected = .sk_app_lang(), size = "sm")
+      htmltools::tagAppendAttributes(
+        shinyWidgets::radioGroupButtons(
+          "app_lang_sel", label = NULL,
+          choices  = c("EN" = "en", "PT" = "pt"),
+          selected = .sk_app_lang(), size = "sm"),
+        role = "group", "aria-label" = i18n("a11y.language"))
     ),
     bslib::nav_item(
       actionLink("about", label = tagList(icon("circle-question"), i18n("nav.help")),

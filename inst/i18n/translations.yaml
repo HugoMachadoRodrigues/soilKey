@@ -4,6 +4,7 @@
 # Generated; review pt for pedological accuracy.
 
 en:
+  "a11y.language": "Interface language"
   "app.brand_suffix": " Pro"
   "app.footer": "soilKey %s -- deterministic keys; the taxonomic key is never delegated to a language model."
   "nav.pedon": "Pedon"
@@ -358,6 +359,7 @@ en:
   "ui.tab_first": " tab first."
 
 pt:
+  "a11y.language": "Idioma da interface"
   "app.brand_suffix": " Pro"
   "app.footer": "soilKey %s -- chaves determinísticas; a chave taxonômica nunca é delegada a um modelo de linguagem."
   "nav.pedon": "Perfil"
