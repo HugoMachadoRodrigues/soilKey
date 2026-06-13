@@ -10,11 +10,15 @@ ensure_horizon_schema(h)
 \item{h}{Input data.frame or data.table.}
 }
 \value{
-A \code{data.table}.
+A \code{data.table} with the canonical horizon columns present, in
+  canonical order, with extra columns preserved at the end.
 }
 \description{
 Adds any missing canonical columns as NAs of the right type and reorders
 canonical columns first. Extra user-supplied columns are preserved at the
 end. Coerces character values to numeric where the schema requires it.
 }
-\keyword{internal}
+\examples{
+h <- ensure_horizon_schema(data.frame(top_cm = 0, bottom_cm = 20))
+"designation" \%in\% names(h)
+}
