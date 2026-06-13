@@ -13,11 +13,13 @@ run_classify_app(
 )
 }
 \arguments{
-\item{ui}{One of \code{"pro"} (default) or \code{"classic"}. See above.}
+\item{ui}{Kept for back-compatibility. \code{"pro"} (default) launches the
+professional multi-tab app. \code{"classic"} -- the original single-page
+uploader -- was \strong{retired in v0.9.117}; passing it now emits a
+deprecation warning and launches the Pro app instead.}
 
-\item{lang}{Initial interface language for the \code{"pro"} app: \code{"en"}
-(default) or \code{"pt"} (Brazilian Portuguese). Can also be switched
-live from the app's navbar. Ignored by the \code{"classic"} app.}
+\item{lang}{Initial interface language: \code{"en"} (default) or \code{"pt"}
+(Brazilian Portuguese). Can also be switched live from the app's navbar.}
 
 \item{port}{Port for the local server. Default lets Shiny choose.}
 
@@ -30,32 +32,23 @@ browser (default \code{TRUE}).}
 Invisibly the value returned by \code{shiny::runApp()}.
 }
 \description{
-Opens a local Shiny app that drives the soilKey pipeline from a browser --
-no R code required. Two interfaces are available:
+Opens a local Shiny app ("Pro") that drives the soilKey pipeline from a
+browser -- no R code required: build a pedon from a canonical fixture, a CSV
+upload, or an interactive horizon editor; classify under WRB 2022 / SiBCS 5 /
+USDA ST 13 with the full key trace; run VLM photo extraction, OSSL spectral
+gap-fill, the SoilGrids spatial prior, an interactive \pkg{leaflet} map that
+queries the class prior at a clicked point, and a Monte-Carlo robustness
+analysis; and download a cross-system HTML or PDF report. The interface is
+bilingual (English / Portuguese; see \code{lang}).
 }
 \details{
-\describe{
-  \item{\code{"pro"} (default)}{A professional multi-tab app: build a pedon
-    from a canonical fixture, a CSV upload, or an interactive horizon
-    editor; classify under WRB 2022 / SiBCS 5 / USDA ST 13 with the full
-    key trace; run VLM photo extraction, OSSL spectral gap-fill, the
-    SoilGrids spatial prior, an interactive \pkg{leaflet} map that queries
-    the class prior at a clicked point, and a Monte-Carlo robustness
-    analysis; and download a cross-system HTML or PDF report. Needs the
-    optional packages \pkg{bslib}, \pkg{shinyWidgets}, \pkg{plotly} and
-    \pkg{leaflet}.}
-  \item{\code{"classic"}}{The original single-page uploader (v0.9.39):
-    drag-and-drop a CSV and get the three classifications side-by-side.
-    Needs only \pkg{shiny} and \pkg{DT}.}
-}
-
-All optional packages are listed in \code{Suggests}; the function raises a
-clear, copy-pasteable error if any are missing.
+Needs the optional packages \pkg{bslib}, \pkg{shinyWidgets}, \pkg{plotly}
+and \pkg{leaflet} (all in \code{Suggests}); the function raises a clear,
+copy-pasteable error if any are missing.
 }
 \examples{
 \dontrun{
-run_classify_app()                  # professional multi-tab app (English)
-run_classify_app(lang = "pt")       # interface em portugues
-run_classify_app(ui = "classic")    # legacy single-page uploader
+run_classify_app()              # professional multi-tab app (English)
+run_classify_app(lang = "pt")   # interface em portugues
 }
 }

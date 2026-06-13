@@ -11,6 +11,7 @@ report_html(
   title = NULL,
   include_family = FALSE,
   specifiers = FALSE,
+  lang = c("en", "pt"),
   ...
 )
 }
@@ -26,6 +27,9 @@ report_html(
 
 \item{include_family, specifiers}{Passed through to the keys when
 \code{x} is a \code{PedonRecord}; see \code{\link{report}}.}
+
+\item{lang}{Report language; \code{"en"} (default) or \code{"pt"}
+(Brazilian Portuguese).}
 
 \item{...}{Currently unused.}
 }

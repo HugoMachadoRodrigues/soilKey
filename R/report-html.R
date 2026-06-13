@@ -67,6 +67,8 @@
 #'             specifiers (Epi-/Endo-/...) to depth-anchored qualifiers.
 #'             Default \code{FALSE}. Both flags are ignored when \code{x}
 #'             is already a (list of) \code{ClassificationResult}.
+#' @param lang Report language; \code{"en"} (default) or \code{"pt"}
+#'             (Brazilian Portuguese).
 #' @param ...  Passed to method-specific renderers.
 #' @return     The output path, invisibly.
 #' @examples
@@ -82,8 +84,10 @@ report <- function(x,
                    title  = NULL,
                    include_family = FALSE,
                    specifiers     = FALSE,
+                   lang   = c("en", "pt"),
                    ...) {
   format <- match.arg(format)
+  lang   <- match.arg(lang)
   if (missing(file) || is.null(file) || !nzchar(file))
     stop("`file` is required and must be a non-empty path.")
   if (format == "auto") {
@@ -100,11 +104,11 @@ report <- function(x,
          "html" = report_html(x, file = file, pedon = pedon,
                                 title = title,
                                 include_family = include_family,
-                                specifiers = specifiers, ...),
+                                specifiers = specifiers, lang = lang, ...),
          "pdf"  = report_pdf( x, file = file, pedon = pedon,
                                 title = title,
                                 include_family = include_family,
-                                specifiers = specifiers, ...))
+                                specifiers = specifiers, lang = lang, ...))
 }
 
 
@@ -239,7 +243,8 @@ report <- function(x,
   )
 
   trace_rows <- if (length(res$trace) == 0) {
-    "<tr><td colspan=\"4\" class=\"muted\">(no trace)</td></tr>"
+    sprintf("<tr><td colspan=\"4\" class=\"muted\">%s</td></tr>",
+            .report_msg("report.no_trace"))
   } else {
     paste0(vapply(seq_along(res$trace), function(i) {
       t <- res$trace[[i]]
@@ -253,9 +258,9 @@ report <- function(x,
                   missing = character(0))
       }
       passed <- t$passed
-      sym <- if (isTRUE(passed))      'class="passed">PASSED'
-             else if (isFALSE(passed)) 'class="failed">failed'
-             else                      'class="indeterminate">indeterminate'
+      sym <- if (isTRUE(passed))      paste0('class="passed">', .report_msg("report.trace_passed"))
+             else if (isFALSE(passed)) paste0('class="failed">', .report_msg("report.trace_failed"))
+             else                      paste0('class="indeterminate">', .report_msg("report.trace_indeterminate"))
       sprintf(
         '<tr><td>%d</td><td><code>%s</code></td><td>%s</td><td><span %s</span>%s</td></tr>',
         i,
@@ -263,7 +268,7 @@ report <- function(x,
         .html_escape(t$name %||% ""),
         sym,
         if (!isTRUE(passed) && length(t$missing %||% character()) > 0)
-          sprintf(' <span class="muted">(%d attrs missing)</span>',
+          sprintf(.report_msg("report.attrs_missing"),
                     length(t$missing))
         else "")
     }, character(1)), collapse = "\n")
@@ -273,7 +278,7 @@ report <- function(x,
     ""
   } else {
     paste0(
-      "<h3>Ambiguities</h3><ul>",
+      sprintf("<h3>%s</h3><ul>", .report_msg("report.ambiguities")),
       paste(vapply(res$ambiguities, function(a)
         sprintf('<li><b>%s</b>: %s</li>',
                   .html_escape(a$rsg_code %||% "?"),
@@ -286,7 +291,7 @@ report <- function(x,
   missing_html <- if (length(res$missing_data %||% character()) == 0) {
     ""
   } else {
-    sprintf("<h3>Missing data that would refine the result</h3><p>%s</p>",
+    sprintf(.report_msg("report.missing_data"),
               paste(.html_escape(res$missing_data), collapse = ", "))
   }
 
@@ -294,7 +299,7 @@ report <- function(x,
     ""
   } else {
     paste0(
-      "<h3>Warnings</h3><ul>",
+      sprintf("<h3>%s</h3><ul>", .report_msg("report.warnings")),
       paste(vapply(res$warnings, function(w)
         sprintf("<li>%s</li>", .html_escape(w)),
         character(1)), collapse = "\n"),
@@ -305,14 +310,14 @@ report <- function(x,
   prior_html <- if (is.null(res$prior_check)) {
     ""
   } else {
-    sprintf("<p class=\"muted\">Spatial-prior check: <b>%s</b></p>",
+    sprintf(.report_msg("report.spatial_prior_check"),
               .html_escape(res$prior_check$status %||% "not run"))
   }
 
   paste0(
     '<div class="system-card">\n',
     sprintf('<div class="name">%s</div>\n', .html_escape(res$name %||% "(unnamed)")),
-    sprintf('<div class="muted">System: %s &middot; RSG/Order: <code>%s</code> &middot; Evidence grade: <span class="%s">%s</span></div>\n',
+    sprintf(.report_msg("report.card_meta"),
               .html_escape(res$system %||% "?"),
               .html_escape(res$rsg_or_order %||% "?"),
               .grade_class(res$evidence_grade),
@@ -320,8 +325,8 @@ report <- function(x,
     if (length(qual_html) > 0)
       sprintf('<div class="qualifiers">%s</div>\n', paste(qual_html, collapse = "")),
     prior_html,
-    '<h3>Key trace</h3>\n',
-    sprintf('<table class="trace"><thead><tr><th>#</th><th>Code</th><th>Name</th><th>Result</th></tr></thead><tbody>%s</tbody></table>\n',
+    sprintf('<h3>%s</h3>\n', .report_msg("report.key_trace")),
+    sprintf(.report_msg("report.trace_table"),
               trace_rows),
     ambig_html,
     missing_html,
@@ -363,7 +368,7 @@ report <- function(x,
   }, character(1))
 
   paste0(
-    "<h2>Horizons</h2>\n",
+    sprintf("<h2>%s</h2>\n", .report_msg("report.horizons")),
     sprintf("<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table>\n",
               header,
               paste(rows, collapse = "\n"))
@@ -386,8 +391,8 @@ report <- function(x,
               by_source$Freq[i])
   }, character(1))
   paste0(
-    "<h2>Provenance summary</h2>\n",
-    sprintf("<table><thead><tr><th>Source</th><th>n</th></tr></thead><tbody>%s</tbody></table>\n",
+    sprintf("<h2>%s</h2>\n", .report_msg("report.provenance_summary")),
+    sprintf(.report_msg("report.provenance_table"),
               paste(rows, collapse = "\n"))
   )
 }
@@ -407,9 +412,8 @@ report <- function(x,
     )
   }, character(1))
   paste0(
-    "<h2>Cross-system summary</h2>\n",
-    paste0("<table><thead><tr><th>System</th><th>Name</th>",
-             "<th>Grade</th></tr></thead>",
+    sprintf("<h2>%s</h2>\n", .report_msg("report.cross_system_summary")),
+    paste0(.report_msg("report.summary_table_head"),
              sprintf("<tbody>%s</tbody></table>\n",
                        paste(rows, collapse = "\n")))
   )
@@ -422,21 +426,21 @@ report <- function(x,
   if (is.null(pedon) || is.null(pedon$site)) return("")
   s <- pedon$site
   bits <- list()
-  if (!is.null(s$id))               bits[["ID"]]    <- s$id
+  if (!is.null(s$id))               bits[[.report_msg("report.site_id")]]    <- s$id
   if (!is.null(s$lat) && !is.null(s$lon))
-    bits[["Coords"]] <- sprintf("%.4f, %.4f", s$lat, s$lon)
-  if (!is.null(s$country))          bits[["Country"]] <- s$country
-  if (!is.null(s$parent_material))  bits[["Parent material"]] <- s$parent_material
-  if (!is.null(s$elevation_m))      bits[["Elevation (m)"]] <- s$elevation_m
-  if (!is.null(s$slope_pct))        bits[["Slope (%)"]]    <- s$slope_pct
-  if (!is.null(s$date))             bits[["Date"]]         <- s$date
+    bits[[.report_msg("report.site_coords")]] <- sprintf("%.4f, %.4f", s$lat, s$lon)
+  if (!is.null(s$country))          bits[[.report_msg("report.site_country")]] <- s$country
+  if (!is.null(s$parent_material))  bits[[.report_msg("report.site_parent_material")]] <- s$parent_material
+  if (!is.null(s$elevation_m))      bits[[.report_msg("report.site_elevation")]] <- s$elevation_m
+  if (!is.null(s$slope_pct))        bits[[.report_msg("report.site_slope")]]    <- s$slope_pct
+  if (!is.null(s$date))             bits[[.report_msg("report.site_date")]]         <- s$date
   if (length(bits) == 0) return("")
   rows <- vapply(seq_along(bits), function(i)
     sprintf("<tr><th>%s</th><td>%s</td></tr>",
               .html_escape(names(bits)[i]),
               .html_escape(bits[[i]])),
     character(1))
-  paste0("<h2>Site</h2>\n",
+  paste0(sprintf("<h2>%s</h2>\n", .report_msg("report.site")),
            "<table><tbody>",
            paste(rows, collapse = "\n"),
            "</tbody></table>\n")
@@ -460,6 +464,8 @@ report <- function(x,
 #' @param title  Report title.
 #' @param include_family,specifiers Passed through to the keys when
 #'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
+#' @param lang   Report language; \code{"en"} (default) or \code{"pt"}
+#'               (Brazilian Portuguese).
 #' @param ...    Currently unused.
 #' @return       The output path, invisibly.
 #' @export
@@ -469,7 +475,12 @@ report_html <- function(x,
                         title = NULL,
                         include_family = FALSE,
                         specifiers = FALSE,
+                        lang = c("en", "pt"),
                         ...) {
+  lang <- match.arg(lang)
+  old_lang <- getOption("soilKey.report_lang")
+  options(soilKey.report_lang = lang)
+  on.exit(options(soilKey.report_lang = old_lang), add = TRUE)
   norm <- .normalise_results(x, pedon = pedon,
                              include_family = include_family,
                              specifiers = specifiers)
@@ -485,20 +496,18 @@ report_html <- function(x,
   body <- paste0(
     .html_head(title),
     sprintf("<h1>%s</h1>\n", .html_escape(title)),
-    sprintf("<p class=\"muted\">Generated %s by soilKey v%s</p>\n",
+    sprintf(.report_msg("report.generated_by"),
               format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
               .soilkey_version()),
     .html_site_header(pedon),
     .html_summary_table(results),
-    "<h2>Classification results</h2>\n",
+    sprintf("<h2>%s</h2>\n", .report_msg("report.classification_results")),
     paste(vapply(results, .html_classification_card, character(1)),
             collapse = "\n"),
     .html_horizons_table(pedon),
     .html_provenance_table(pedon),
     "<footer>\n",
-    "Report rendered by <a href=\"https://github.com/HugoMachadoRodrigues/soilKey\">soilKey</a>. ",
-    "The taxonomic key was executed deterministically from versioned YAML rules; ",
-    "no language model was used in the classification step.\n",
+    .report_msg("report.footer"),
     "</footer>\n",
     "</body></html>\n"
   )

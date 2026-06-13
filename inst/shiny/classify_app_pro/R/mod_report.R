@@ -59,7 +59,7 @@ report_server <- function(id, rv, settings) {
           soilKey::report(rv$pedon, file = file, format = "html",
                           pedon = rv$pedon, title = input$title,
                           include_family = cf$include_family,
-                          specifiers = cf$specifiers)
+                          specifiers = cf$specifiers, lang = .sk_app_lang())
         })
       }
     )
@@ -72,7 +72,7 @@ report_server <- function(id, rv, settings) {
           soilKey::report(rv$pedon, file = tmp, format = "pdf",
                           pedon = rv$pedon, title = input$title,
                           include_family = cf$include_family,
-                          specifiers = cf$specifiers)
+                          specifiers = cf$specifiers, lang = .sk_app_lang())
           "pdf"
         }, error = function(e) "html")
         ext <- if (identical(out, "pdf")) "pdf" else "html"
@@ -86,7 +86,7 @@ report_server <- function(id, rv, settings) {
             soilKey::report(rv$pedon, file = file, format = "pdf",
                             pedon = rv$pedon, title = input$title,
                             include_family = cf$include_family,
-                            specifiers = cf$specifiers)
+                            specifiers = cf$specifiers, lang = .sk_app_lang())
             TRUE
           }, error = function(e) FALSE)
           if (!ok) {
@@ -96,7 +96,7 @@ report_server <- function(id, rv, settings) {
             soilKey::report(rv$pedon, file = file, format = "html",
                             pedon = rv$pedon, title = input$title,
                             include_family = cf$include_family,
-                            specifiers = cf$specifiers)
+                            specifiers = cf$specifiers, lang = .sk_app_lang())
           }
         })
       }

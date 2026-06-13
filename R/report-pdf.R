@@ -37,6 +37,8 @@
 #' @param title  Report title.
 #' @param include_family,specifiers Passed through to the keys when
 #'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
+#' @param lang   Report language, \code{"en"} (default) or \code{"pt"}
+#'               (Brazilian Portuguese).
 #' @param ...    Passed to \code{rmarkdown::render()}.
 #' @return       The output path, invisibly.
 #' @export
@@ -46,7 +48,12 @@ report_pdf <- function(x,
                        title = NULL,
                        include_family = FALSE,
                        specifiers     = FALSE,
+                       lang = c("en", "pt"),
                        ...) {
+  lang <- match.arg(lang)
+  old_lang <- getOption("soilKey.report_lang")
+  options(soilKey.report_lang = lang)
+  on.exit(options(soilKey.report_lang = old_lang), add = TRUE)
   if (!requireNamespace("rmarkdown", quietly = TRUE))
     stop("Package 'rmarkdown' is required for PDF reports.\n",
          "  install.packages('rmarkdown')")
@@ -150,13 +157,13 @@ report_pdf <- function(x,
   qual_suppl     <- res$qualifiers$supplementary %||% character()
 
   trace_lines <- if (length(res$trace) == 0) {
-    "_(no trace)_"
+    paste0("_", .report_msg("report.no_trace"), "_")
   } else {
     paste(vapply(seq_along(res$trace), function(i) {
       t <- res$trace[[i]]
-      sym <- if (isTRUE(t$passed))      "**PASSED**"
-             else if (isFALSE(t$passed)) "failed"
-             else                        "indeterminate"
+      sym <- if (isTRUE(t$passed))      paste0("**", .report_msg("report.trace_passed"), "**")
+             else if (isFALSE(t$passed)) .report_msg("report.trace_failed")
+             else                        .report_msg("report.trace_indeterminate")
       sprintf("%2d. `%-3s` %-20s -- %s%s",
                 i,
                 t$code %||% "?",
@@ -164,7 +171,7 @@ report_pdf <- function(x,
                 sym,
                 if (!isTRUE(t$passed) &&
                        length(t$missing %||% character()) > 0)
-                  sprintf(" (%d attrs missing)",
+                  sprintf(.report_msg("report.attrs_missing_pdf"),
                             length(t$missing))
                 else "")
     }, character(1)), collapse = "  \n")
@@ -173,19 +180,19 @@ report_pdf <- function(x,
   paste0(
     "## ", res$system %||% "?", "\n\n",
     "**", res$name %||% "(unnamed)", "**\n\n",
-    "* RSG/Order: `", res$rsg_or_order %||% "?", "`\n",
-    "* Evidence grade: **", res$evidence_grade %||% "NA", "**\n",
+    sprintf("* %s: `", .report_msg("report.rsg_or_order")), res$rsg_or_order %||% "?", "`\n",
+    sprintf("* %s: **", .report_msg("report.evidence_grade")), res$evidence_grade %||% "NA", "**\n",
     if (length(qual_principal) > 0)
-      paste0("* Principal qualifiers: ",
+      paste0(sprintf("* %s: ", .report_msg("report.principal_qualifiers")),
                paste(qual_principal, collapse = ", "), "\n"),
     if (length(qual_suppl) > 0)
-      paste0("* Supplementary qualifiers: ",
+      paste0(sprintf("* %s: ", .report_msg("report.supplementary_qualifiers")),
                paste(qual_suppl, collapse = ", "), "\n"),
-    "\n### Key trace\n\n",
+    sprintf("\n### %s\n\n", .report_msg("report.key_trace")),
     trace_lines,
     "\n\n",
     if (length(res$ambiguities) > 0)
-      paste0("### Ambiguities\n\n",
+      paste0(sprintf("### %s\n\n", .report_msg("report.ambiguities")),
                paste(vapply(res$ambiguities, function(a)
                  sprintf("- **%s**: %s",
                            a$rsg_code %||% "?",
@@ -194,12 +201,12 @@ report_pdf <- function(x,
                "\n\n")
       else "",
     if (length(res$missing_data %||% character()) > 0)
-      paste0("### Missing data that would refine the result\n\n",
+      paste0(sprintf("### %s\n\n", .report_msg("report.missing_data_heading")),
                paste(res$missing_data, collapse = ", "),
                "\n\n")
       else "",
     if (length(res$warnings %||% character()) > 0)
-      paste0("### Warnings\n\n",
+      paste0(sprintf("### %s\n\n", .report_msg("report.warnings")),
                paste(vapply(res$warnings, function(w)
                  sprintf("- %s", w),
                  character(1)), collapse = "\n"),
@@ -219,8 +226,11 @@ report_pdf <- function(x,
               r$evidence_grade  %||% "NA"),
     character(1))
   paste0(
-    "## Cross-system summary\n\n",
-    "| System | Name | Grade |\n",
+    sprintf("## %s\n\n", .report_msg("report.cross_system_summary")),
+    sprintf("| %s | %s | %s |\n",
+              .report_msg("report.system"),
+              .report_msg("report.name"),
+              .report_msg("report.grade")),
     "|---|---|---|\n",
     paste(rows, collapse = "\n"),
     "\n\n"
@@ -246,7 +256,7 @@ report_pdf <- function(x,
   h <- as.data.frame(pedon$horizons)[, cols, drop = FALSE]
 
   paste0(
-    "## Horizons\n\n",
+    sprintf("## %s\n\n", .report_msg("report.horizons")),
     "```{r horizons}\n",
     "knitr::kable(",
     paste(deparse(h), collapse = ""),
@@ -262,21 +272,23 @@ report_pdf <- function(x,
   if (is.null(pedon) || is.null(pedon$site)) return("")
   s <- pedon$site
   bits <- list()
-  if (!is.null(s$id))              bits[["ID"]]              <- s$id
+  if (!is.null(s$id))              bits[[.report_msg("report.site_id")]]    <- s$id
   if (!is.null(s$lat) && !is.null(s$lon))
-    bits[["Coords"]] <- sprintf("%.4f, %.4f", s$lat, s$lon)
-  if (!is.null(s$country))         bits[["Country"]]         <- s$country
-  if (!is.null(s$parent_material)) bits[["Parent material"]] <- s$parent_material
-  if (!is.null(s$elevation_m))     bits[["Elevation (m)"]]   <- s$elevation_m
-  if (!is.null(s$slope_pct))       bits[["Slope (%)"]]       <- s$slope_pct
-  if (!is.null(s$date))            bits[["Date"]]            <- s$date
+    bits[[.report_msg("report.coords")]] <- sprintf("%.4f, %.4f", s$lat, s$lon)
+  if (!is.null(s$country))         bits[[.report_msg("report.country")]]         <- s$country
+  if (!is.null(s$parent_material)) bits[[.report_msg("report.parent_material")]] <- s$parent_material
+  if (!is.null(s$elevation_m))     bits[[.report_msg("report.elevation_m")]]     <- s$elevation_m
+  if (!is.null(s$slope_pct))       bits[[.report_msg("report.slope_pct")]]       <- s$slope_pct
+  if (!is.null(s$date))            bits[[.report_msg("report.date")]]            <- s$date
   if (length(bits) == 0) return("")
   rows <- vapply(seq_along(bits), function(i)
     sprintf("| %s | %s |", names(bits)[i], bits[[i]]),
     character(1))
   paste0(
-    "## Site\n\n",
-    "| Field | Value |\n",
+    sprintf("## %s\n\n", .report_msg("report.site")),
+    sprintf("| %s | %s |\n",
+              .report_msg("report.field"),
+              .report_msg("report.value")),
     "|---|---|\n",
     paste(rows, collapse = "\n"),
     "\n\n"
@@ -288,12 +300,12 @@ report_pdf <- function(x,
 .build_report_rmd <- function(results, pedon, title) {
   paste0(
     .rmd_header(title),
-    sprintf("_Generated %s by soilKey v%s. The taxonomic key was executed deterministically from versioned YAML rules; no language model was used in the classification step._\n\n",
+    sprintf(.report_msg("report.pdf_footer"),
               format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
               .soilkey_version()),
     .rmd_site_block(pedon),
     .rmd_summary_block(results),
-    "# Classification results\n\n",
+    sprintf("# %s\n\n", .report_msg("report.classification_results")),
     paste(vapply(results, .rmd_classification_block, character(1)),
             collapse = "\n"),
     .rmd_horizons_block(pedon)
