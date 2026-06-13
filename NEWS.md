@@ -1,3 +1,48 @@
+# soilKey 0.9.121 (2026-06-13)
+
+The "**USDA colour & contact subgroups**" release (taxonomic completeness,
+front E4). Adds **+57** canonical USDA subgroups gated on colour and shallow
+contact -- every one grounded directly in the KST 13th-edition differentia
+(`ST_criteria_13th`), not paraphrased.
+
+\itemize{
+  \item \strong{USDA subgroup coverage 70.8\% -> 72.9\%} (1921 -> 1978 of
+        2715): +20 \emph{chromic} (Vertisols), +12 \emph{xanthic} (Oxisols),
+        +9 \emph{calcic} (Alfisols/Andisols), +16 \emph{leptic} (Vertisols).
+  \item Two new predicates, written to the exact canonical criteria. The
+        Vertisol \code{chromic_subgroup_usda()} is the value/chroma
+        \dQuote{not dark} test (within 30 cm: moist value >= 4, dry value >= 6,
+        or moist chroma >= 3), \strong{not} the red-hue \code{chromic} of WRB;
+        the Aquerts great groups drop the chroma clause
+        (\code{use_chroma = FALSE}). \code{leptic_vertic_usda()} is the USDA
+        shallow densic/lithic/paralithic contact within 100 cm, distinct from
+        the WRB coarse-fragment \emph{leptic}. \code{xanthic_subgroup_usda()}
+        and \code{calcic_subgroup_usda()} are reused, the latter with the
+        per-subgroup depth window (100 / 125 / 150 cm).
+  \item Same disciplined generator as front C: \strong{append-before-default}
+        (each new entry inserted before its \code{Typic} catch-all) so the
+        first-match engine provably cannot change any profile that already
+        matched a specific subgroup -- only \code{Typic} fall-throughs can
+        refine. Existing YAML entries are preserved \strong{byte-for-byte} (269
+        insertions, 0 deletions), great group invariant.
+  \item \strong{KSSL n=2895 before/after gate: 0 worsened} (no modifier turns a
+        previously-correct \code{Typic} into a wrong specific; 83 changed, all
+        neutral) -- so all 57 are kept, none excluded. See
+        \code{inst/benchmarks/reports/kssl_subgroup_gate_v09121.md}.
+  \item Of the 44 canonical fixtures, \strong{2} refine
+        \code{Typic Hapluderts -> Chromic Hapluderts} (the Vertisol fixtures,
+        validated: their upper-30 cm colours meet the Chromic criterion); the
+        other 42 are byte-identical.
+  \item \strong{Honestly scoped.} 5 \code{Leptic} subgroups whose differentia
+        is a shallow gypsic horizon (\code{Leptic Haplogypsids}) or visible
+        soluble-salt crystals (\code{Leptic Natralbolls/Natrudolls/Natrustolls/
+        Natrustalfs}) are \emph{deferred} -- they are a different concept than a
+        contact, and shipping a single \code{leptic} predicate for them would be
+        wrong. The 49 multi-modifier intergrade colour subgroups (e.g.
+        \emph{Aquertic Chromic Hapludalfs}) are likewise deferred (they need
+        compound predicates).
+}
+
 # soilKey 0.9.120 (2026-06-13)
 
 The "**within-pedon gap-fill**" release (Track 2, missing-data recovery). The
