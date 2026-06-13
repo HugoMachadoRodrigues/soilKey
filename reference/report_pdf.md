@@ -19,6 +19,7 @@ report_pdf(
   title = NULL,
   include_family = FALSE,
   specifiers = FALSE,
+  lang = c("en", "pt"),
   ...
 )
 ```
@@ -45,6 +46,10 @@ report_pdf(
 
   Passed through to the keys when `x` is a `PedonRecord`; see
   [`report`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md).
+
+- lang:
+
+  Report language, `"en"` (default) or `"pt"` (Brazilian Portuguese).
 
 - ...:
 

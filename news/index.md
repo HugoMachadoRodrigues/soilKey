@@ -1,5 +1,20 @@
 # Changelog
 
+## soilKey 0.9.117 (2026-06-13)
+
+The “**retire the legacy app + bilingual report**” release (app-maturity
+front D, part 4 of 4 – front D complete).
+
+### Legacy single-page app retired
+
+### Bilingual reports
+
+With this, app-maturity front D is complete: bilingual UI (v0.9.114),
+accessibility + responsive layout (v0.9.115), horizon-geometry
+validation (v0.9.116), and now the legacy retirement + bilingual
+reports. The engine, diagnostics, rules and classification keys were
+untouched throughout.
+
 ## soilKey 0.9.116 (2026-06-13)
 
 The “**horizon-geometry validation**” release (app-maturity front D,

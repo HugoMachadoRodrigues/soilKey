@@ -1,7 +1,13 @@
 # Launch the soilKey interactive classification Shiny app
 
-Opens a local Shiny app that drives the soilKey pipeline from a browser
-– no R code required. Two interfaces are available:
+Opens a local Shiny app ("Pro") that drives the soilKey pipeline from a
+browser – no R code required: build a pedon from a canonical fixture, a
+CSV upload, or an interactive horizon editor; classify under WRB 2022 /
+SiBCS 5 / USDA ST 13 with the full key trace; run VLM photo extraction,
+OSSL spectral gap-fill, the SoilGrids spatial prior, an interactive
+leaflet map that queries the class prior at a clicked point, and a
+Monte-Carlo robustness analysis; and download a cross-system HTML or PDF
+report. The interface is bilingual (English / Portuguese; see `lang`).
 
 ## Usage
 
@@ -19,13 +25,15 @@ run_classify_app(
 
 - ui:
 
-  One of `"pro"` (default) or `"classic"`. See above.
+  Kept for back-compatibility. `"pro"` (default) launches the
+  professional multi-tab app. `"classic"` – the original single-page
+  uploader – was **retired in v0.9.117**; passing it now emits a
+  deprecation warning and launches the Pro app instead.
 
 - lang:
 
-  Initial interface language for the `"pro"` app: `"en"` (default) or
-  `"pt"` (Brazilian Portuguese). Can also be switched live from the
-  app's navbar. Ignored by the `"classic"` app.
+  Initial interface language: `"en"` (default) or `"pt"` (Brazilian
+  Portuguese). Can also be switched live from the app's navbar.
 
 - port:
 
@@ -47,31 +55,15 @@ Invisibly the value returned by
 
 ## Details
 
-- `"pro"` (default):
-
-  A professional multi-tab app: build a pedon from a canonical fixture,
-  a CSV upload, or an interactive horizon editor; classify under WRB
-  2022 / SiBCS 5 / USDA ST 13 with the full key trace; run VLM photo
-  extraction, OSSL spectral gap-fill, the SoilGrids spatial prior, an
-  interactive leaflet map that queries the class prior at a clicked
-  point, and a Monte-Carlo robustness analysis; and download a
-  cross-system HTML or PDF report. Needs the optional packages bslib,
-  shinyWidgets, plotly and leaflet.
-
-- `"classic"`:
-
-  The original single-page uploader (v0.9.39): drag-and-drop a CSV and
-  get the three classifications side-by-side. Needs only shiny and DT.
-
-All optional packages are listed in `Suggests`; the function raises a
-clear, copy-pasteable error if any are missing.
+Needs the optional packages bslib, shinyWidgets, plotly and leaflet (all
+in `Suggests`); the function raises a clear, copy-pasteable error if any
+are missing.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-run_classify_app()                  # professional multi-tab app (English)
-run_classify_app(lang = "pt")       # interface em portugues
-run_classify_app(ui = "classic")    # legacy single-page uploader
+run_classify_app()              # professional multi-tab app (English)
+run_classify_app(lang = "pt")   # interface em portugues
 } # }
 ```

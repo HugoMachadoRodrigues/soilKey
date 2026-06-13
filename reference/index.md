@@ -2017,6 +2017,9 @@ pública curada.
 - [`.reduce_for_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.md)
   : Reduce X (library + query) to a small score space.
 
+- [`.report_msg()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-report_msg.md)
+  : Look up a fixed report label in the current report language.
+
 - [`.resolve_region()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.md)
   : Resolve the regional subset code for an OSSL query
 

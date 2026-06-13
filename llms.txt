@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.116](https://img.shields.io/badge/version-0.9.116-FF6B35?style=flat-square)[![License:
+![v0.9.117](https://img.shields.io/badge/version-0.9.117-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -239,9 +239,11 @@ README item into shipped functionality.
   canonical fixtures, editable horizon table, live `plotly` depth
   profile), tri-system classification with the full key trace, VLM photo
   extraction, OSSL spectral gap-fill, SoilGrids spatial prior,
-  Monte-Carlo uncertainty, and a downloadable HTML / PDF report.
-  `run_classify_app(ui = "classic")` keeps the v0.9.39 single-page
-  uploader available.
+  Monte-Carlo uncertainty, and a downloadable HTML / PDF report. The
+  interface is bilingual (English / Portuguese) and the report follows
+  the chosen language. The legacy single-page “classic” uploader was
+  retired in v0.9.117 (`ui = "classic"` now warns and launches the Pro
+  app).
 - **v0.9.98 — WRB Tier-3 strict mode.**
   `classify_wrb2022(strict = TRUE)` strengthens seven Tier-2 RSG gates
   (Vertisols / Andosols / Gleysols / Planosols / Ferralsols / Chernozems
@@ -2870,6 +2872,9 @@ pública curada.
 
 - [`.reduce_for_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.md)
   : Reduce X (library + query) to a small score space.
+
+- [`.report_msg()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-report_msg.md)
+  : Look up a fixed report label in the current report language.
 
 - [`.resolve_region()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-resolve_region.md)
   : Resolve the regional subset code for an OSSL query

@@ -21,6 +21,7 @@ report(
   title = NULL,
   include_family = FALSE,
   specifiers = FALSE,
+  lang = c("en", "pt"),
   ...
 )
 ```
@@ -65,6 +66,10 @@ report(
   to attach WRB depth specifiers (Epi-/Endo-/...) to depth-anchored
   qualifiers. Default `FALSE`. Both flags are ignored when `x` is
   already a (list of) `ClassificationResult`.
+
+- lang:
+
+  Report language; `"en"` (default) or `"pt"` (Brazilian Portuguese).
 
 - ...:
 
