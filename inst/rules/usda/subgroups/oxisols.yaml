@@ -211,6 +211,11 @@ subgroups:
         all_of:
           - anionic_subgroup_usda: {}
           - aquic_subgroup_usda: {}
+    - code: "ECBN"
+      name: "Xanthic Acrustox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "ECBH"
       name: "Typic Acrustox"
       tests:
@@ -259,6 +264,11 @@ subgroups:
       tests:
         all_of:
           - plinthic_subgroup_usda: {}
+    - code: "ECCO"
+      name: "Xanthic Eutrustox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "ECCF"
       name: "Typic Eutrustox"
       tests:
@@ -302,6 +312,11 @@ subgroups:
         all_of:
           - aquic_subgroup_usda: {}
           - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "ECDL"
+      name: "Xanthic Kandiustox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "ECDE"
       name: "Typic Kandiustox"
       tests:
@@ -355,6 +370,11 @@ subgroups:
       tests:
         all_of:
           - oxyaquic_subgroup_usda: {}
+    - code: "ECEO"
+      name: "Xanthic Haplustox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "ECEG"
       name: "Typic Haplustox"
       tests:
@@ -426,6 +446,11 @@ subgroups:
         all_of:
           - aquic_subgroup_usda: {}
           - lithic_contact_usda: { max_top_cm: 125 }
+    - code: "EDBL"
+      name: "Xanthic Acroperox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EDBH"
       name: "Typic Acroperox"
       tests:
@@ -474,6 +499,11 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - code: "EDCO"
+      name: "Xanthic Eutroperox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EDCE"
       name: "Typic Eutroperox"
       tests:
@@ -522,6 +552,11 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "EDDM"
+      name: "Xanthic Kandiperox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EDDD"
       name: "Typic Kandiperox"
       tests:
@@ -575,6 +610,11 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "EDEM"
+      name: "Xanthic Haploperox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EDEF"
       name: "Typic Haploperox"
       tests:
@@ -647,6 +687,11 @@ subgroups:
         all_of:
           - anionic_subgroup_usda: {}
           - aquic_subgroup_usda: {}
+    - code: "EEBN"
+      name: "Xanthic Acrudox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EEBG"
       name: "Typic Acrudox"
       tests:
@@ -690,6 +735,11 @@ subgroups:
       tests:
         all_of:
           - plinthic_subgroup_usda: {}
+    - code: "EECO"
+      name: "Xanthic Eutrudox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EECE"
       name: "Typic Eutrudox"
       tests:
@@ -738,6 +788,11 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "EEDM"
+      name: "Xanthic Kandiudox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EEDE"
       name: "Typic Kandiudox"
       tests:
@@ -791,6 +846,11 @@ subgroups:
       tests:
         all_of:
           - andic_subgroup_usda: {}
+    - code: "EEEN"
+      name: "Xanthic Hapludox"
+      tests:
+        all_of:
+          - xanthic_subgroup_usda: {}
     - code: "EEEG"
       name: "Typic Hapludox"
       tests:

@@ -531,6 +531,11 @@ subgroups:
       tests:
         all_of:
           - duric_subgroup_usda: {}
+    - code: "DDBD"
+      name: "Calcic Vitritorrands"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 125 }
     - code: "DDBC"
       name: "Typic Vitritorrands"
       tests:
@@ -552,6 +557,11 @@ subgroups:
       tests:
         all_of:
           - duric_subgroup_usda: {}
+    - code: "DDCC"
+      name: "Calcic Haplotorrands"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 125 }
     - code: "DDCC"
       name: "Typic Haplotorrands"
       tests:
@@ -637,6 +647,11 @@ subgroups:
       tests:
         all_of:
           - ultic_subgroup_usda: {}
+    - code: "DECD"
+      name: "Calcic Haploxerands"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 125 }
     - code: "DECE"
       name: "Typic Haploxerands"
       tests:
@@ -670,6 +685,11 @@ subgroups:
       tests:
         all_of:
           - thaptic_subgroup_usda: {}
+    - code: "DFAD"
+      name: "Calcic Ustivitrands"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 125 }
     - code: "DFAD"
       name: "Typic Ustivitrands"
       tests:
@@ -775,6 +795,11 @@ subgroups:
       tests:
         all_of:
           - ultic_subgroup_usda: {}
+    - code: "DGBG"
+      name: "Calcic Haplustands"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: { max_top_cm: 125 }
     - code: "DGBE"
       name: "Typic Haplustands"
       tests:
