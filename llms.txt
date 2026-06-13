@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.114](https://img.shields.io/badge/version-0.9.114-FF6B35?style=flat-square)[![License:
+![v0.9.115](https://img.shields.io/badge/version-0.9.115-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -60,6 +60,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **R Shiny web app** | ✅ shipped (v0.9.97) | [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md) — nine-tab `bslib` interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, interactive `leaflet` map, MC uncertainty, HTML/PDF report. |
 | **Pro app polish** | ✅ shipped (v0.9.108) | Soil-palette theme + `www/soilkey.css`, a global pedon ribbon, a “Getting started” modal with a one-click **Load example & classify**, Vis-NIR spectrum + photo previews, lat/lon validation, USDA-family / WRB-specifier toggles in the Classify sidebar, and a [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md) that honours both depth-level options (additive, default-off). |
 | **Bilingual Pro app (i18n)** | ✅ shipped (v0.9.114) | English + Brazilian Portuguese, dependency-free: a 352-string catalogue (`inst/i18n/translations.yaml`) + an `i18n()` helper + a navbar EN/PT selector; `run_classify_app(lang = "pt")`. English is the default and holds the strings verbatim, so the app is byte-identical by default. |
+| **Accessible + responsive app** | ✅ shipped (v0.9.115) | Document `lang` follows the UI language, navbar selector `aria-label`, `aria-live` notifications, WCAG-AA contrast, `prefers-reduced-motion`; CSS breakpoints (768/480px) make the app usable down to a ~375px phone. Markup/CSS only. |
 | **WRB Tier-3 RSG-gate strict mode** | ✅ shipped (v0.9.98) | `classify_wrb2022(strict = TRUE)` strengthens seven RSG gates (Vertisol clay 30→35 %, Chernozem BS 50→80 %, etc.); backward-compatible. |
 | **Field-photo-only classification** | ✅ shipped (v0.9.99) | [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md) — photo + GPS → VLM Munsell + SoilGrids depth prior → multi-system classification; evidence grade D / C, never A. |
 | **Pedometric uncertainty quantif.** | ✅ shipped (v0.9.100) | [`classify_with_uncertainty()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_with_uncertainty.md) — provenance-weighted Monte-Carlo posterior over classes; per-grade perturbation magnitudes (A ±3 % … E ±30 %), attribute sensitivity ranking. |

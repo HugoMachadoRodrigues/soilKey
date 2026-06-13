@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.114</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.115</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.115</strong></td>
+<td>
+<strong>Accessible + responsive Pro app (app-maturity front D, 2/4).</strong> Markup/CSS only; no logic, no dependency, no behaviour change. a11y: document <code>lang</code> follows the UI language (<code>page_navbar(lang=)</code>); navbar selector gets <code>role="group"</code> + translated <code>aria-label</code>; <code>showNotification()</code> toasts announced via an <code>aria-live="polite"</code>/<code>role="status"</code> region (MutationObserver tags the on-demand panel); ribbon text contrast raised to WCAG AA 4.5:1 (<code>.sk-empty</code>/<code>.sk-built</code>); spinner + button transitions honour <code>prefers-reduced-motion</code>. Responsive: <code>@media</code> 768/480px in <code>www/soilkey.css</code> stack sidebars/result cards, cap maps/plots to viewport height, reflow the ribbon, tighten padding — usable to ~375px. Verified by visual smoke (desktop + mobile) + the existing suite.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.114</strong></td>
 <td>

@@ -1,5 +1,15 @@
 # Changelog
 
+## soilKey 0.9.115 (2026-06-13)
+
+The “**accessible + responsive Pro app**” release (app-maturity front D,
+part 2 of 4). Markup/CSS only – no logic, no dependency, no behaviour
+change.
+
+### Accessibility
+
+### Responsive layout
+
 ## soilKey 0.9.114 (2026-06-12)
 
 The “**bilingual Pro app**” release (app-maturity front D, part 1 of 4).
