@@ -8,6 +8,7 @@ Opens a local Shiny app that drives the soilKey pipeline from a browser
 ``` r
 run_classify_app(
   ui = c("pro", "classic"),
+  lang = c("en", "pt"),
   port = NULL,
   launch.browser = TRUE,
   ...
@@ -19,6 +20,12 @@ run_classify_app(
 - ui:
 
   One of `"pro"` (default) or `"classic"`. See above.
+
+- lang:
+
+  Initial interface language for the `"pro"` app: `"en"` (default) or
+  `"pt"` (Brazilian Portuguese). Can also be switched live from the
+  app's navbar. Ignored by the `"classic"` app.
 
 - port:
 
@@ -63,7 +70,8 @@ clear, copy-pasteable error if any are missing.
 
 ``` r
 if (FALSE) { # \dontrun{
-run_classify_app()                 # professional multi-tab app
-run_classify_app(ui = "classic")   # legacy single-page uploader
+run_classify_app()                  # professional multi-tab app (English)
+run_classify_app(lang = "pt")       # interface em portugues
+run_classify_app(ui = "classic")    # legacy single-page uploader
 } # }
 ```

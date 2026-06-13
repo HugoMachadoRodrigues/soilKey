@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.114 (2026-06-12)
+
+The “**bilingual Pro app**” release (app-maturity front D, part 1 of 4).
+The professional Shiny app
+([`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md))
+gains a full Brazilian-Portuguese interface alongside English – a
+long-standing gap given the SiBCS / Brazilian audience – with **zero new
+dependencies** and **no change to default behaviour**.
+
+### Internationalisation (i18n)
+
+This is the first of four focused app-maturity PRs (front D). Still to
+come: accessibility + responsive layout, horizon-geometry validation in
+the Pedon builder, and retiring the legacy single-page app + a bilingual
+.
+
 ## soilKey 0.9.113 (2026-06-12)
 
 The “**USDA subgroup completeness, honestly measured**” release
