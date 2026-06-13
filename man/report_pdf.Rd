@@ -11,6 +11,7 @@ report_pdf(
   title = NULL,
   include_family = FALSE,
   specifiers = FALSE,
+  lang = c("en", "pt"),
   ...
 )
 }
@@ -26,6 +27,9 @@ report_pdf(
 
 \item{include_family, specifiers}{Passed through to the keys when
 \code{x} is a \code{PedonRecord}; see \code{\link{report}}.}
+
+\item{lang}{Report language, \code{"en"} (default) or \code{"pt"}
+(Brazilian Portuguese).}
 
 \item{...}{Passed to \code{rmarkdown::render()}.}
 }

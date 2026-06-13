@@ -38,14 +38,6 @@ test_that("classify_app_pro ships the eleven expected modules", {
   )
 })
 
-test_that("the legacy classic app still ships unchanged", {
-  d <- system.file("shiny", "classify_app", package = "soilKey")
-  if (!nzchar(d) || !dir.exists(d))
-    d <- file.path("inst", "shiny", "classify_app")
-  expect_true(dir.exists(d))
-  expect_true(file.exists(file.path(d, "app.R")))
-})
-
 test_that("run_classify_app rejects an unknown ui value", {
   expect_error(run_classify_app(ui = "bogus"), "arg")
 })

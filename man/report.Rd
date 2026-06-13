@@ -12,6 +12,7 @@ report(
   title = NULL,
   include_family = FALSE,
   specifiers = FALSE,
+  lang = c("en", "pt"),
   ...
 )
 }
@@ -42,6 +43,9 @@ to \code{\link{classify_wrb2022}} to attach WRB depth
 specifiers (Epi-/Endo-/...) to depth-anchored qualifiers.
 Default \code{FALSE}. Both flags are ignored when \code{x}
 is already a (list of) \code{ClassificationResult}.}
+
+\item{lang}{Report language; \code{"en"} (default) or \code{"pt"}
+(Brazilian Portuguese).}
 
 \item{...}{Passed to method-specific renderers.}
 }

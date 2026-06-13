@@ -1,3 +1,39 @@
+# soilKey 0.9.117 (2026-06-13)
+
+The "**retire the legacy app + bilingual report**" release (app-maturity front
+D, part 4 of 4 -- front D complete).
+
+## Legacy single-page app retired
+
+\itemize{
+  \item The original \code{"classic"} single-page uploader (frozen since
+        v0.9.39, no test coverage, superseded by the eleven-tab Pro app) is
+        removed. \code{run_classify_app(ui = "classic")} still works for
+        back-compatibility: it emits a deprecation warning and launches the Pro
+        app instead. One interface to maintain, less CRAN surface.
+}
+
+## Bilingual reports
+
+\itemize{
+  \item \code{report()}, \code{report_html()} and \code{report_pdf()} gain a
+        \code{lang} argument (\code{"en"} default, \code{"pt"} for Brazilian
+        Portuguese). The fixed report labels (section titles, table headers,
+        the footer) now come from a small \code{.report_msg()} catalogue; the
+        classification content, taxonomic nomenclature and horizon column
+        headers are data and stay untranslated.
+  \item The English catalogue holds the pre-i18n labels \strong{verbatim} and
+        \code{"en"} is the default, so a default-language report is
+        \strong{byte-identical} to before (verified against a v0.9.116
+        reference). The Pro app's Report tab renders in the app's current
+        language automatically.
+}
+
+With this, app-maturity front D is complete: bilingual UI (v0.9.114),
+accessibility + responsive layout (v0.9.115), horizon-geometry validation
+(v0.9.116), and now the legacy retirement + bilingual reports. The engine,
+diagnostics, rules and classification keys were untouched throughout.
+
 # soilKey 0.9.116 (2026-06-13)
 
 The "**horizon-geometry validation**" release (app-maturity front D, part 3 of
