@@ -1,3 +1,57 @@
+# soilKey 0.9.120 (2026-06-13)
+
+The "**within-pedon gap-fill**" release (Track 2, missing-data recovery). The
+honest ceiling on external accuracy is *missing data*, not the keys: most
+argic-RSG reference profiles report clay in only a subset of horizons, so the
+clay-increase test (and the Acrisol / Lixisol / Alisol / Luvisol
+discrimination that hangs on it) stalls on an artefact of incomplete reporting.
+This release adds an opt-in lever to recover those *interior* gaps from each
+profile's own measured layers -- and, in the same breath, an honest measurement
+of when that helps and when it does not.
+
+\itemize{
+  \item New \code{gapfill_within_pedon()} fills interior \code{NA} cells of the
+        continuous depth-trending attributes (clay/silt/sand, pH, organic
+        carbon, CEC/ECEC, base/aluminium saturation, bulk density) by linear
+        interpolation from the horizons where each attribute is *measured*. It
+        is the within-pedon companion to \code{apply_soilgrids_depth_prior()}
+        (external SoilGrids profile) and shares its depth-interpolation core.
+  \item \strong{Two honesty guards.} (1) \emph{Interpolation only} -- a cell is
+        filled only when its mid-depth lies strictly between the shallowest and
+        deepest measured layer; values above the top or below the bottom
+        measured horizon are left \code{NA} (no extrapolation). (2)
+        \emph{Authority order} -- fills are written with \code{inferred_prior}
+        provenance through \code{PedonRecord$add_measurement()}, so they never
+        displace a measured/spectra/VLM value and the evidence grade honestly
+        drops to \code{"C"}.
+  \item New opt-in \code{gapfill} argument on \code{classify_wrb2022()},
+        \code{classify_sibcs()}, \code{classify_usda()} and
+        \code{classify_all()} -- default \code{FALSE} keeps every
+        classification \strong{byte-identical}. When enabled it runs on a deep
+        copy, so the caller's pedon is never mutated. Accepts \code{TRUE}, a
+        character vector of attributes, or a named list of
+        \code{gapfill_within_pedon()} arguments.
+  \item \code{benchmark_unified(gapfill = ...)} threads the same lever through
+        the harness so the ON/OFF accuracy delta is measurable reproducibly.
+  \item \strong{Measured ON/OFF on KSSL (n=2895, USDA labels)} -- and reported
+        honestly. Gap-fill touches \strong{297 pedons (10.3\%)}, filling 1598
+        interior cells (mean 5.4 each); it changes the deepest USDA name for 26.
+        On the eligible subset its accuracy delta is \strong{neutral-to-slightly
+        negative}: order 114 -> 108 (\strong{-6}), great group 26 -> 27
+        (+1), subgroup 19 -> 19 (0; among the changed: 1 gain, 1 loss, 24
+        wrong -> wrong). KSSL's USDA labels are noisy (subgroup baseline
+        ~3\%) and an interpolated clay value can re-route the order diagnostic,
+        so on this dataset gap-fill is \strong{not} an automatic win. It is a
+        missing-data \emph{recovery} tool, not a guaranteed accuracy gain --
+        which is exactly why it ships \strong{opt-in and off by default}.
+  \item Honest ceiling (documented): within-pedon interpolation only helps
+        \emph{partially}-measured profiles; profiles with an attribute missing
+        in *every* horizon still need an external prior (SoilGrids / taxon PTF),
+        and topsoil-only datasets cannot be interpolated at depth. Its design
+        target is the partial-missing argic-discrimination case (the FEBR-WRB
+        B2 scenario), not KSSL order accuracy.
+}
+
 # soilKey 0.9.119 (2026-06-13)
 
 The "**honest coverage v2**" release (Track 1, part 2). Makes the package's

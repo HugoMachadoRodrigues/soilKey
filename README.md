@@ -38,6 +38,7 @@
 | **USDA Soil Taxonomy 13 — Family**  | ✅ shipped (v0.9.104) | 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via `classify_usda(include_family = TRUE)`. Series (6th) needs the NRCS database — out of scope. |
 | **Multimodal extraction (VLM)**     | ✅ shipped           | Local-first via `ellmer` + Gemma 4 (Ollama). Schema-validated; LLM never touches the key.          |
 | **OSSL spectral gap-fill**          | ✅ shipped           | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones).      |
+| **Within-pedon gap-fill**           | ✅ shipped (v0.9.120) | `gapfill_within_pedon()` / `classify_*(gapfill = TRUE)`: interpolates *interior* missing horizon values from the profile's own measured layers (never extrapolates). Opt-in, byte-identical when off, tagged `inferred_prior` (grade C). |
 | **Spatial priors**                  | ✅ shipped           | SoilGrids WCS + national soil maps; consistency check, never overrides the key.                    |
 | **Provenance ledger**               | ✅ shipped           | Per-attribute tags: `measured`, `predicted_spectra`, `extracted_vlm`, `inferred_prior`, `user_assumed`. |
 | **Evidence grade (A–E)**            | ✅ shipped           | Computed from the trace; surfaces robustness without hiding it. Five-grade scale since v0.9.99.    |

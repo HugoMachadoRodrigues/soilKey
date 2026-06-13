@@ -98,6 +98,14 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #'        temperature regime from latitude/elevation if
 #'        \code{site$soil_temperature_regime} is absent (default
 #'        \code{TRUE}). See \code{\link{family_temperature_regime_usda}}.
+#' @param gapfill Opt-in within-pedon depth gap-fill, default \code{FALSE}
+#'        (no-op, classification stays byte-identical). \code{TRUE} fills
+#'        interior \code{NA} cells of the continuous depth-trending attributes
+#'        by linear interpolation from the profile's own measured horizons; a
+#'        character vector restricts it to those attributes; a named list is
+#'        passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
+#'        \code{inferred_prior} provenance, so the evidence grade drops to
+#'        \code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.
 #' @return A \code{\link{ClassificationResult}} with deepest-level
 #'         taxon name. Each level's trace is in \code{$trace}; the family
 #'         attributes are in \code{$trace$family}.
@@ -114,9 +122,14 @@ classify_usda <- function(pedon,
                             rules      = NULL,
                             on_missing = c("warn", "silent", "error"),
                             include_family = FALSE,
-                            infer_temperature = TRUE) {
+                            infer_temperature = TRUE,
+                            gapfill    = FALSE) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("usda")
+
+  # Opt-in within-pedon gap-fill (default off => byte-identical). Deep copy,
+  # so the caller's pedon is never mutated.
+  pedon <- .classify_apply_gapfill(pedon, gapfill)
 
   # Level 1: Order
   key_result <- run_usda_key(pedon, rules)

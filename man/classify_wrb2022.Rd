@@ -11,7 +11,8 @@ classify_wrb2022(
   on_missing = c("warn", "silent", "error"),
   rules = NULL,
   strict = NULL,
-  specifiers = FALSE
+  specifiers = FALSE,
+  gapfill = FALSE
 )
 }
 \arguments{
@@ -51,6 +52,15 @@ actual depth -- e.g. a gleyic feature confined to 50--100 cm
 yields \code{Endogleyic} instead of \code{Gleyic}. Default
 \code{FALSE} keeps the canonical names byte-identical. Surface
 / epipedon qualifiers are excluded (their depth is definitional).}
+
+\item{gapfill}{Opt-in within-pedon depth gap-fill, default \code{FALSE}
+(no-op, classification stays byte-identical). \code{TRUE} fills
+interior \code{NA} cells of the continuous depth-trending attributes
+by linear interpolation from the profile's own measured horizons; a
+character vector restricts it to those attributes; a named list is
+passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
+\code{inferred_prior} provenance, so the evidence grade drops to
+\code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.}
 }
 \value{
 A \code{\link{ClassificationResult}}.

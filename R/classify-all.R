@@ -52,6 +52,10 @@
 #' @param specifiers Forwarded to \code{\link{classify_wrb2022}} (default
 #'        \code{FALSE}) to auto-attach WRB depth specifiers. No effect on the
 #'        other systems.
+#' @param gapfill Forwarded to all three classifiers (default \code{FALSE} =>
+#'        byte-identical). Opt-in within-pedon depth gap-fill; see
+#'        \code{\link{gapfill_within_pedon}}. Applied independently per system
+#'        on a deep copy, so the caller's pedon is never mutated.
 #' @param ... Additional named arguments are silently ignored.
 #' @return A named list with elements:
 #'   \itemize{
@@ -81,6 +85,7 @@ classify_all <- function(pedon,
                             include_familia = TRUE,
                             include_family = FALSE,
                             specifiers = FALSE,
+                            gapfill    = FALSE,
                             ...) {
   on_missing <- match.arg(on_missing)
 
@@ -94,7 +99,7 @@ classify_all <- function(pedon,
   if ("wrb2022" %in% systems) {
     out$wrb <- tryCatch(
       classify_wrb2022(pedon, on_missing = on_missing,
-                         specifiers = specifiers),
+                         specifiers = specifiers, gapfill = gapfill),
       error = function(e) {
         warning(sprintf("classify_wrb2022 failed: %s", conditionMessage(e)),
                   call. = FALSE)
@@ -105,7 +110,7 @@ classify_all <- function(pedon,
   if ("sibcs" %in% systems) {
     out$sibcs <- tryCatch(
       classify_sibcs(pedon, on_missing = on_missing,
-                       include_familia = include_familia),
+                       include_familia = include_familia, gapfill = gapfill),
       error = function(e) {
         warning(sprintf("classify_sibcs failed: %s", conditionMessage(e)),
                   call. = FALSE)
@@ -116,7 +121,7 @@ classify_all <- function(pedon,
   if ("usda" %in% systems) {
     out$usda <- tryCatch(
       classify_usda(pedon, on_missing = on_missing,
-                      include_family = include_family),
+                      include_family = include_family, gapfill = gapfill),
       error = function(e) {
         warning(sprintf("classify_usda failed: %s", conditionMessage(e)),
                   call. = FALSE)

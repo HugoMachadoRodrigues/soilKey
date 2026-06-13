@@ -103,6 +103,14 @@
 #'        slow (~1-2 min for 1k pedons) and may degrade per-dataset
 #'        accuracy slightly because the splined depths are
 #'        approximations.
+#' @param gapfill If not \code{FALSE} (the default), applies
+#'        \code{\link{gapfill_within_pedon}} to each dataset's pedons before
+#'        classification, filling interior \code{NA} cells of the continuous
+#'        depth-trending attributes by within-pedon linear interpolation.
+#'        Accepts the same values as the \code{gapfill} argument of
+#'        \code{\link{classify_all}} (\code{TRUE}, a character vector of
+#'        attributes, or a named list). Lets you measure the ON/OFF accuracy
+#'        lift of gap-fill reproducibly through the harness.
 #' @param verbose If \code{TRUE} (default), emits cli progress.
 #' @return A list with elements:
 #'   \itemize{
@@ -127,6 +135,7 @@ benchmark_unified <- function(
     max_n_per_dataset = NULL,
     engine   = c("soilkey", "aqp", "both"),
     harmonize = FALSE,
+    gapfill  = FALSE,
     verbose  = TRUE) {
 
   # Multi-arg matching: allow "all" + named subsets.
@@ -175,7 +184,7 @@ benchmark_unified <- function(
         .benchmark_one_dataset_one_system(
           ds = ds, sys = sys, paths = paths,
           max_n = max_n_per_dataset,
-          harmonize = harmonize, verbose = verbose),
+          harmonize = harmonize, gapfill = gapfill, verbose = verbose),
         error = function(e) {
           cli::cli_alert_warning(sprintf(
             "benchmark_unified: %s FAILED: %s", tag,
@@ -354,6 +363,7 @@ benchmark_unified <- function(
 .benchmark_one_dataset_one_system <- function(ds, sys, paths,
                                                   max_n,
                                                   harmonize = FALSE,
+                                                  gapfill = FALSE,
                                                   verbose = TRUE) {
   # v0.9.63: optional harmonisation hook BEFORE classification
   .maybe_harmonize <- function(pedons) {
@@ -368,6 +378,25 @@ benchmark_unified <- function(
       cli::cli_alert_info(sprintf(
         "harmonize_to_gsm: %d pedons (%s)", length(pedons), ds))
     harmonize_to_gsm(pedons, verbose = FALSE)
+  }
+  # v0.9.120: optional within-pedon gap-fill hook BEFORE classification.
+  # Composed inside each .maybe_harmonize() call site so the ON/OFF accuracy
+  # of gapfill is reproducible through the package's own harness.
+  .maybe_gapfill <- function(pedons) {
+    if (isFALSE(gapfill) || is.null(gapfill)) return(pedons)
+    if (isTRUE(verbose))
+      cli::cli_alert_info(sprintf(
+        "gapfill_within_pedon: %d pedons (%s)", length(pedons), ds))
+    lapply(pedons, function(p) {
+      if (!inherits(p, "PedonRecord")) return(p)
+      tryCatch({
+        if (isTRUE(gapfill))            gapfill_within_pedon(p)
+        else if (is.character(gapfill)) gapfill_within_pedon(p, attrs = gapfill)
+        else if (is.list(gapfill))
+          do.call(gapfill_within_pedon, c(list(pedon = p), gapfill))
+        p
+      }, error = function(e) p)
+    })
   }
   if (ds == "bdsolos") {
     csvs <- list.files(paths$bdsolos, pattern = "\\.csv$",
@@ -391,7 +420,7 @@ benchmark_unified <- function(
     if (length(pedons) == 0L) return(NULL)
     pedons <- .benchmark_filter_then_cap(pedons, sys, max_n)
     if (length(pedons) == 0L) return(NULL)
-    pedons <- .maybe_harmonize(pedons)
+    pedons <- .maybe_harmonize(.maybe_gapfill(pedons))
     res <- benchmark_bdsolos(pedons, systems = sys,
                                 sibcs_level = "order",
                                 verbose = FALSE)
@@ -421,7 +450,7 @@ benchmark_unified <- function(
     # without this. (SiBCS is canonicalised inside benchmark_run_classification;
     # the WRB/USDA path there assumes the reference is already in order form.)
     pedons <- .benchmark_normalise_febr_ref(pedons, sys)
-    pedons <- .maybe_harmonize(pedons)
+    pedons <- .maybe_harmonize(.maybe_gapfill(pedons))
     res <- benchmark_run_classification(pedons, system = sys,
                                             level = "order")
     cov <- list(n_with_ref = res$n_evaluated %||% length(pedons),
@@ -454,7 +483,7 @@ benchmark_unified <- function(
                                      verbose = FALSE),
       error = function(e) NULL)
     if (is.null(pedons) || length(pedons) == 0L) return(NULL)
-    pedons <- .maybe_harmonize(pedons)
+    pedons <- .maybe_harmonize(.maybe_gapfill(pedons))
     res <- benchmark_run_classification(pedons, system = sys,
                                             level = "order")
     cov <- list(n_with_ref = res$n_evaluated %||% length(pedons),
@@ -485,7 +514,7 @@ benchmark_unified <- function(
                               verbose = FALSE),
       error = function(e) NULL)
     if (is.null(pedons) || length(pedons) == 0L) return(NULL)
-    pedons <- .maybe_harmonize(pedons)
+    pedons <- .maybe_harmonize(.maybe_gapfill(pedons))
     res <- benchmark_lucas_2018(pedons, esdb_root = paths$esdb_root,
                                    classify_with = "wrb2022",
                                    max_n = max_n, verbose = FALSE)
@@ -513,7 +542,7 @@ benchmark_unified <- function(
       load_redape_pedons(paths$redape, max_n = max_n, verbose = FALSE),
       error = function(e) NULL)
     if (is.null(pedons) || length(pedons) == 0L) return(NULL)
-    pedons <- .maybe_harmonize(pedons)
+    pedons <- .maybe_harmonize(.maybe_gapfill(pedons))
     res <- benchmark_redape(pedons, level = "order", verbose = FALSE)
     n_cmp <- res$n_compared %||% 0L
     list(

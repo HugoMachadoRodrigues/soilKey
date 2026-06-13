@@ -190,6 +190,15 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #'        \code{\link{classify_sibcs_familia}}. O label textual da
 #'        Familia aparece em \code{$trace$familia_label}, e a lista
 #'        de \code{\link{FamilyAttribute}}s em \code{$trace$familia}.
+#' @param gapfill Preenchimento opcional de lacunas por interpolacao
+#'        intra-perfil, default \code{FALSE} (no-op; classificacao
+#'        byte-identica). \code{TRUE} preenche celulas \code{NA} interiores
+#'        dos atributos continuos por profundidade; um vetor de caracteres
+#'        restringe aos atributos citados; uma lista nomeada e repassada a
+#'        \code{\link{gapfill_within_pedon}}. Celulas preenchidas recebem
+#'        proveniencia \code{inferred_prior}, baixando o grau de evidencia
+#'        para \code{"C"}. Opera sobre copia profunda -- o pedon do chamador
+#'        nunca e modificado.
 #' @return Um \code{\link{ClassificationResult}} cujo \code{name} eh o
 #'         nome completo da classe atribuida no nivel mais profundo
 #'         (Grande Grupo > Subordem > Ordem) e \code{rsg_or_order} eh
@@ -203,9 +212,14 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 classify_sibcs <- function(pedon,
                              rules      = NULL,
                              on_missing = c("warn", "silent", "error"),
-                             include_familia = FALSE) {
+                             include_familia = FALSE,
+                             gapfill    = FALSE) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("sibcs5")
+
+  # Opt-in within-pedon gap-fill (default off => byte-identical). Deep copy,
+  # so the caller's pedon is never mutated.
+  pedon <- .classify_apply_gapfill(pedon, gapfill)
 
   # Nivel 1: ordem
   key_result <- run_sibcs_key(pedon, rules)

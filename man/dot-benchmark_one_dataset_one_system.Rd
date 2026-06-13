@@ -10,6 +10,7 @@
   paths,
   max_n,
   harmonize = FALSE,
+  gapfill = FALSE,
   verbose = TRUE
 )
 }
