@@ -625,6 +625,29 @@ qual_thionic <- function(pedon) .q_presence("Thionic", thionic(pedon), 100, pedo
   classes[grepl("^Oa\\b|^Oa[a-z]?$|sapric", d, ignore.case = TRUE)] <- "sapric"
   classes[grepl("^Oe\\b|^Oe[a-z]?$|hemic",  d, ignore.case = TRUE)] <- "hemic"
   classes[grepl("^Oi\\b|^Oi[a-z]?$|fibric", d, ignore.case = TRUE)] <- "fibric"
+
+  # v0.9.122: for organic layers the O-subscript proxy left unclassified, fall
+  # back to MEASURED decomposition -- the von Post humification index, else the
+  # rubbed-fibre content -- using the thresholds declared in
+  # horizon_column_spec() (von Post H1-H4 fibric / H5-H6 hemic / H7-H10 sapric;
+  # rubbed fibre >= 40% fibric / 17-40% hemic / < 17% sapric). Additive only: a
+  # layer the designation already classified is never overridden, so a profile
+  # keyed via O-subscripts stays byte-identical.
+  na_idx <- which(is.na(classes))
+  if (length(na_idx) > 0L) {
+    vp <- h$von_post_index[oi][na_idx]
+    fb <- h$fiber_content_rubbed_pct[oi][na_idx]
+    cls <- rep(NA_character_, length(na_idx))
+    cls[!is.na(vp) & vp <= 4L]            <- "fibric"
+    cls[!is.na(vp) & vp >= 5L & vp <= 6L] <- "hemic"
+    cls[!is.na(vp) & vp >= 7L]            <- "sapric"
+    need <- is.na(cls)
+    cls[need & !is.na(fb) & fb >= 40]           <- "fibric"
+    cls[need & !is.na(fb) & fb >= 17 & fb < 40] <- "hemic"
+    cls[need & !is.na(fb) & fb < 17]            <- "sapric"
+    classes[na_idx] <- cls
+  }
+
   if (all(is.na(classes)))
     return(list(class = NA_character_, layers = integer(0),
                 organic = om))

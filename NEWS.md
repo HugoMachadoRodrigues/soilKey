@@ -1,3 +1,37 @@
+# soilKey 0.9.122 (2026-06-13)
+
+The "**honest decomposition qualifiers**" release. A premise-check (the recurring
+discipline of this project) found that the three "WRB qualifier stubs" the
+roadmap planned to implement -- \emph{Fibric}, \emph{Hemic}, \emph{Sapric} --
+were \strong{already implemented}: each delegates to \code{.qual_decomp()}, which
+keys the dominant organic-decomposition class. What was actually wrong was the
+\emph{measurement}, plus a missed data path.
+
+\itemize{
+  \item \strong{\code{coverage_report("wrb_qualifiers")} now counts delegations
+        honestly: 226 -> 229 of 234.} The stub-detector
+        (\code{.qualifier_is_implemented}) inspected only a qualifier's one-line
+        body, so a real delegation like
+        \code{qual_fibric <- function(pedon) .qual_decomp(pedon, "fibric",
+        "Fibric")} was false-flagged as an inert stub. It now follows one level
+        of delegation (any helper called with \code{pedon}) before deciding;
+        Fibric/Hemic/Sapric are correctly counted, and the spurious "3 inert
+        stubs" message is gone. The remaining 5 gaps are all genuinely
+        schema-blocked (Claric / Panpaic / Sideralic / Novic / "etrosalic").
+  \item \strong{\code{.decomp_class()} now uses measured decomposition data.}
+        For an organic layer the Oi/Oe/Oa designation proxy leaves unclassified,
+        it falls back to the von Post humification index, else the rubbed-fibre
+        content, using the thresholds already declared in
+        \code{horizon_column_spec()} (von Post H1-H4 fibric / H5-H6 hemic /
+        H7-H10 sapric; rubbed fibre >= 40\% fibric / 17-40\% hemic / < 17\%
+        sapric). \strong{Additive only} -- a layer the designation already
+        classified is never overridden -- so every profile keyed via
+        O-subscripts (including all 44 canonical fixtures, none of which carry
+        measured decomposition data) stays \strong{byte-identical}. The benefit
+        is real-world peats that report a von Post index or fibre content but no
+        O-subscript designation.
+}
+
 # soilKey 0.9.121 (2026-06-13)
 
 The "**USDA colour & contact subgroups**" release (taxonomic completeness,

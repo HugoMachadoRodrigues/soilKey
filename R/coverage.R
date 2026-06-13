@@ -62,15 +62,38 @@
 }
 
 #' Is a \code{qual_*} function a genuine implementation (not an unconditional
-#' \code{passed = NA} stub)? A real qualifier either delegates to
-#' \code{.q_presence()} or assigns \code{passed} from a computation.
+#' \code{passed = NA} stub)? A real qualifier either calls \code{.q_presence()},
+#' assigns \code{passed} from a computation, or \strong{delegates} to a helper
+#' that does -- e.g. \code{qual_fibric <- function(pedon) .qual_decomp(pedon,
+#' "fibric", "Fibric")}. The earlier detector inspected only the one-line body
+#' and so false-flagged such delegations as stubs; this follows one level of
+#' delegation (any helper called with \code{pedon}) before deciding.
 #' @keywords internal
 .qualifier_is_implemented <- function(name) {
   fn_name <- paste0("qual_", tolower(name))
-  if (!exists(fn_name, where = asNamespace("soilKey"))) return(NA)  # no function
-  b <- paste(deparse(body(get(fn_name, asNamespace("soilKey")))), collapse = " ")
-  isTRUE(grepl("\\.q_presence", b) ||
-         grepl("passed\\s*(<-|=)\\s*(?!NA[,)[:space:]])", b, perl = TRUE))
+  ns <- asNamespace("soilKey")
+  if (!exists(fn_name, where = ns)) return(NA)  # no function
+
+  .body_is_real <- function(fn) {
+    b <- paste(deparse(body(get(fn, ns))), collapse = " ")
+    grepl("\\.q_presence", b) ||
+      grepl("passed\\s*(<-|=)\\s*(?!NA[,)[:space:]])", b, perl = TRUE)
+  }
+  if (.body_is_real(fn_name)) return(TRUE)
+
+  # Follow delegation to the decomposition helper `.qual_decomp(pedon, ...)`,
+  # which keys the dominant organic-decomposition class and assigns `passed`
+  # internally -- the backing of qual_fibric/hemic/sapric. This is the one
+  # delegation a real qualifier uses that the one-line-body check misses; it is
+  # named explicitly (rather than chasing every callee) so the Epi-/Endo-/...
+  # specifier forms, which delegate to their base `qual_*`, keep flowing through
+  # the dedicated specifier_derived path in .coverage_wrb_qualifiers.
+  b <- paste(deparse(body(get(fn_name, ns))), collapse = " ")
+  if (grepl("\\.qual_decomp\\s*\\(\\s*pedon", b) &&
+        exists(".qual_decomp", where = ns, mode = "function") &&
+        .body_is_real(".qual_decomp"))
+    return(TRUE)
+  FALSE
 }
 
 #' WRB 2022 qualifier coverage (canonical vs genuinely-implemented \code{qual_*}).
