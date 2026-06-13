@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.121</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.122</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,8 +129,8 @@
 </tr>
 <tr>
 <td><strong>WRB 2022 — qualifiers</strong></td>
-<td>✅ shipped (226/234)</td>
-<td>226 of 234 canonical qualifiers deliverable (214 implemented + 12 specifier-derived); 8 honest gaps (3 implementable — Fibric/Hemic/Sapric — + 5 schema-blocked: Claric/Panpaic/Sideralic/Novic). <code>coverage_report("wrb_qualifiers")</code> counts genuine implementations only (not inert stubs).</td>
+<td>✅ shipped (229/234)</td>
+<td>229 of 234 canonical qualifiers deliverable (217 implemented + 12 specifier-derived); 5 honest gaps, all schema-blocked (Claric/Panpaic/Sideralic/Novic/“etrosalic”). <code>coverage_report("wrb_qualifiers")</code> counts genuine implementations only, following one level of delegation (Fibric/Hemic/Sapric delegate to a real decomposition helper).</td>
 </tr>
 <tr>
 <td><strong>SiBCS 5 — Order</strong></td>
@@ -975,7 +975,7 @@
 <p><strong>MIT</strong> © 2026 Hugo Rodrigues. CRAN-style template at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE" class="external-link"><code>LICENSE</code></a>; full text at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md" class="external-link"><code>LICENSE.md</code></a>.</p>
 <p>The package source is MIT. The bundled benchmark caches retain their respective upstream licenses (ISRIC AfSP / WoSIS public-domain; NCSS Lab Data Mart public-domain US Federal data). The Redape SiBCS dataset is published by Vaz et al. (2023) under their original repository terms — see the DOI for details.</p>
 <hr>
-<p><sub><strong>Status (v0.9.96, 2026-05-09)</strong>: CRAN-submit-ready. <code>R CMD check --as-cran</code> returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to <code>main</code> since v0.9.65. <strong>All three classification systems wired end-to-end down to the deepest categorical level.</strong> WRB 2022 (32 RSGs + 226 of 234 canonical qualifiers deliverable, 8 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 1 978 of 2 715 subgroups = 72.9%; run <code><a href="reference/coverage_report.html">coverage_report()</a></code> for the live by-name diff at every level). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
+<p><sub><strong>Status (v0.9.96, 2026-05-09)</strong>: CRAN-submit-ready. <code>R CMD check --as-cran</code> returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to <code>main</code> since v0.9.65. <strong>All three classification systems wired end-to-end down to the deepest categorical level.</strong> WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers deliverable, 5 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 1 978 of 2 715 subgroups = 72.9%; run <code><a href="reference/coverage_report.html">coverage_report()</a></code> for the live by-name diff at every level). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

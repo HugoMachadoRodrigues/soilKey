@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.122 (2026-06-13)
+
+The “**honest decomposition qualifiers**” release. A premise-check (the
+recurring discipline of this project) found that the three “WRB
+qualifier stubs” the roadmap planned to implement – , , – were : each
+delegates to , which keys the dominant organic-decomposition class. What
+was actually wrong was the , plus a missed data path.
+
 ## soilKey 0.9.121 (2026-06-13)
 
 The “**USDA colour & contact subgroups**” release (taxonomic

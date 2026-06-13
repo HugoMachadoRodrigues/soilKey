@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.121</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.122</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.122</strong></td>
+<td>
+<strong>Honest decomposition qualifiers (front E3 — premise-corrected).</strong> A premise-check found the three “WRB qualifier stubs” the roadmap planned (Fibric/Hemic/Sapric) were <strong>already implemented</strong> — each delegates to <code>.qual_decomp()</code>, which keys the dominant organic-decomposition class. The real issues were measurement + a missed data path. (1) <strong><code>coverage_report("wrb_qualifiers")</code> 226 → 229/234:</strong> the stub-detector <code><a href="reference/dot-qualifier_is_implemented.html">.qualifier_is_implemented()</a></code> inspected only a qualifier’s one-line body, so a real delegation (<code>qual_fibric &lt;- function(pedon) .qual_decomp(...)</code>) was false-flagged as an inert stub. It now follows one level of delegation (any helper called with <code>pedon</code>); the spurious “3 inert stubs” message is gone; the remaining 5 gaps are all genuinely schema-blocked (Claric/Panpaic/Sideralic/Novic/“etrosalic”). (2) <strong><code>.decomp_class()</code> now uses measured decomposition:</strong> for an organic layer the Oi/Oe/Oa designation proxy leaves unclassified, it falls back to the von Post index, else rubbed-fibre content, using the <code><a href="reference/horizon_column_spec.html">horizon_column_spec()</a></code>-declared thresholds (von Post H1-4 fibric / H5-6 hemic / H7-10 sapric; rubbed fibre ≥40% / 17-40% / &lt;17%). <strong>Additive only</strong> — designation keeps priority — so all 44 fixtures (none carry measured decomposition data) stay <strong>byte-identical</strong>; the benefit is real-world peats reporting a von Post index or fibre content but no O-subscript. +16 unit tests. No new exports; engine/keys untouched.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.121</strong></td>
 <td>
