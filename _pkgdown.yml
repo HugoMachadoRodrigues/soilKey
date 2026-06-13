@@ -74,6 +74,7 @@ reference:
       - horizon_column_spec
       - make_empty_horizons
       - ensure_horizon_schema
+      - validate_horizon_geometry
 
   - title: "Classification entry points"
     desc: >

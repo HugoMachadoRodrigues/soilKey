@@ -4,6 +4,17 @@
 # Generated; review pt for pedological accuracy.
 
 en:
+  "pedon.geom_missing_depth": "Missing or non-numeric depth in row(s) %s."
+  "pedon.geom_negative": "Negative depth in row(s) %s."
+  "pedon.geom_inverted": "Top ≥ bottom (inverted or zero thickness) in row(s) %s."
+  "pedon.geom_overlap": "Overlapping horizons at row(s) %s."
+  "pedon.geom_gap": "Gap between horizons before row(s) %s."
+  "pedon.geom_surface_gap": "Shallowest horizon starts at %g cm, not the surface."
+  "pedon.geom_non_monotonic": "Horizons are not in increasing-depth order."
+  "pedon.geom_duplicate": "Duplicate designation(s): %s."
+  "pedon.geom_ok": "Horizon geometry looks good."
+  "pedon.geom_errors_block": "Fix the horizon geometry before building: %s"
+  "pedon.geom_warnings": "Horizon geometry: %s"
   "a11y.language": "Interface language"
   "app.brand_suffix": " Pro"
   "app.footer": "soilKey %s -- deterministic keys; the taxonomic key is never delegated to a language model."
@@ -359,6 +370,17 @@ en:
   "ui.tab_first": " tab first."
 
 pt:
+  "pedon.geom_missing_depth": "Profundidade ausente ou não numérica na(s) linha(s) %s."
+  "pedon.geom_negative": "Profundidade negativa na(s) linha(s) %s."
+  "pedon.geom_inverted": "Topo ≥ base (invertido ou espessura zero) na(s) linha(s) %s."
+  "pedon.geom_overlap": "Horizontes sobrepostos na(s) linha(s) %s."
+  "pedon.geom_gap": "Lacuna entre horizontes antes da(s) linha(s) %s."
+  "pedon.geom_surface_gap": "O horizonte mais raso começa em %g cm, não na superfície."
+  "pedon.geom_non_monotonic": "Os horizontes não estão em ordem crescente de profundidade."
+  "pedon.geom_duplicate": "Designação(ões) duplicada(s): %s."
+  "pedon.geom_ok": "Geometria dos horizontes OK."
+  "pedon.geom_errors_block": "Corrija a geometria dos horizontes antes de construir: %s"
+  "pedon.geom_warnings": "Geometria dos horizontes: %s"
   "a11y.language": "Idioma da interface"
   "app.brand_suffix": " Pro"
   "app.footer": "soilKey %s -- chaves determinísticas; a chave taxonômica nunca é delegada a um modelo de linguagem."

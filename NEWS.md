@@ -1,3 +1,38 @@
+# soilKey 0.9.116 (2026-06-13)
+
+The "**horizon-geometry validation**" release (app-maturity front D, part 3 of
+4). The Pedon builder now catches malformed depth geometry before a profile is
+classified.
+
+## New: \code{validate_horizon_geometry()}
+
+\itemize{
+  \item A pure, exported helper that checks a horizon table's depth geometry
+        and returns \code{list(valid, errors, warnings, details)}. Errors (a
+        sane classification is impossible): missing / non-numeric depths,
+        negative depths, \code{top_cm >= bottom_cm} (inverted or zero
+        thickness), overlapping horizons. Warnings (allowed, but flagged): the
+        shallowest horizon not starting at the surface, gaps between horizons,
+        out-of-order entry, duplicate designations.
+  \item It works on a plain data frame, so it complements
+        \code{PedonRecord$validate()} (which additionally checks chemistry) and
+        can validate an untrusted CSV before a record is built.
+}
+
+## Pro app integration
+
+\itemize{
+  \item The Pedon builder shows \strong{live}, localised geometry feedback
+        under the horizon table as cells are edited, and \strong{blocks}
+        \emph{Build} on errors (warnings are surfaced but allowed). Messages
+        are composed from the structured \code{details} so they appear in the
+        chosen language (English / Portuguese); the feedback colours meet
+        WCAG AA contrast.
+}
+
+Engine, diagnostics, rules and the classification keys are untouched;
+\code{PedonRecord$validate()} is unchanged.
+
 # soilKey 0.9.115 (2026-06-13)
 
 The "**accessible + responsive Pro app**" release (app-maturity front D, part 2
