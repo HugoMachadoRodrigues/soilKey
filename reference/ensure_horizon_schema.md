@@ -19,4 +19,13 @@ ensure_horizon_schema(h)
 
 ## Value
 
-A `data.table`.
+A `data.table` with the canonical horizon columns present, in canonical
+order, with extra columns preserved at the end.
+
+## Examples
+
+``` r
+h <- ensure_horizon_schema(data.frame(top_cm = 0, bottom_cm = 20))
+"designation" %in% names(h)
+#> [1] TRUE
+```

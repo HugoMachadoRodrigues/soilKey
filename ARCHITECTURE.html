@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.117</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.118</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.118</strong></td>
+<td>
+<strong>Engineering robustness (post-roadmap Track 1, part 1).</strong> No classification change. <code><a href="reference/horizon_column_spec.html">horizon_column_spec()</a></code> + <code><a href="reference/ensure_horizon_schema.html">ensure_horizon_schema()</a></code> exported (were reached from the Pro app via <code>soilKey:::</code> — the smell that retired the legacy app; the 3 <code>:::</code> sites now use the public API). New <code>.validate_rules(system)</code> integrity check + test: every predicate referenced in the WRB/SiBCS/USDA YAML rules must exist as a function (31/111/153 predicates, 0 missing) — a typo’d predicate (silent <code>NA</code> at runtime) now fails the suite. <code><a href="https://rdrr.io/pkg/shiny/man/testServer.html" class="external-link">shiny::testServer</a></code> coverage added for the 8 previously parse-only Pro modules. Honest non-changes (empirically refuted audit premises): <code>febr</code> stays out of Suggests (GitHub-only, not on CRAN → a Suggests entry would break <code>R CMD check</code>); the engine already returns graceful <code>NA</code> (not an error) for a missing predicate. 44 fixtures byte-identical.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.117</strong></td>
 <td>

@@ -2143,9 +2143,6 @@ pública curada.
 - [`ecec_per_clay()`](https://hugomachadorodrigues.github.io/soilKey/reference/ecec_per_clay.md)
   : ECEC per kg clay (cmol_c)
 
-- [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
-  : Coerce a horizons-like data.frame to the canonical schema
-
 - [`entic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/entic_subgroup_usda.md)
   : Entic Subgroup helper (Spodosols)
 
@@ -2376,9 +2373,6 @@ pública curada.
   : Histosols (USDA Cap 10): organic materials \>= 40 cm in 0-100.
   Refined v0.8.4 – now uses histosol_qualifying_usda (40 cm threshold)
   instead of WRB histic_horizon (10 cm).
-
-- [`horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md)
-  : Canonical horizon column specification
 
 - [`horizon_simple_attr_map()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_simple_attr_map.md)
   : Mapping from VLM-schema field names to PedonRecord horizon columns

@@ -1,5 +1,14 @@
 # Changelog
 
+## soilKey 0.9.118 (2026-06-13)
+
+The “**engineering robustness**” release (Track 1 of the post-roadmap
+plan, part 1). Hardens the package without changing any classification
+behaviour.
+
+No engine, diagnostics, rules or key changes; the 44 canonical fixtures
+are byte-identical.
+
 ## soilKey 0.9.117 (2026-06-13)
 
 The “**retire the legacy app + bilingual report**” release (app-maturity

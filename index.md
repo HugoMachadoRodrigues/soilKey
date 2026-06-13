@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.117](https://img.shields.io/badge/version-0.9.117-FF6B35?style=flat-square)[![License:
+![v0.9.118](https://img.shields.io/badge/version-0.9.118-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
