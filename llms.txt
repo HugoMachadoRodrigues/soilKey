@@ -2,7 +2,7 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.115](https://img.shields.io/badge/version-0.9.115-FF6B35?style=flat-square)[![License:
+![v0.9.116](https://img.shields.io/badge/version-0.9.116-FF6B35?style=flat-square)[![License:
 MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
 status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
@@ -873,6 +873,8 @@ every key-trace lives on one of these objects.
   : Build an empty horizons data.table with the canonical schema
 - [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
   : Coerce a horizons-like data.frame to the canonical schema
+- [`validate_horizon_geometry()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_horizon_geometry.md)
+  : Validate horizon depth geometry
 
 ## Classification entry points
 
@@ -1633,6 +1635,9 @@ plus auxiliaries) used in the test suite.
 
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
+
+- [`validate_horizon_geometry()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_horizon_geometry.md)
+  : Validate horizon depth geometry
 
 - [`validate_pedon_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_pedon_json.md)
   : Validate a PedonRecord against the JSON schema

@@ -19,6 +19,8 @@ every key-trace lives on one of these objects.
   : Build an empty horizons data.table with the canonical schema
 - [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
   : Coerce a horizons-like data.frame to the canonical schema
+- [`validate_horizon_geometry()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_horizon_geometry.md)
+  : Validate horizon depth geometry
 
 ## Classification entry points
 
@@ -779,6 +781,9 @@ plus auxiliaries) used in the test suite.
 
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
+
+- [`validate_horizon_geometry()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_horizon_geometry.md)
+  : Validate horizon depth geometry
 
 - [`validate_pedon_json()`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_pedon_json.md)
   : Validate a PedonRecord against the JSON schema

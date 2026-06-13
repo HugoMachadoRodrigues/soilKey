@@ -1,5 +1,18 @@
 # Changelog
 
+## soilKey 0.9.116 (2026-06-13)
+
+The “**horizon-geometry validation**” release (app-maturity front D,
+part 3 of 4). The Pedon builder now catches malformed depth geometry
+before a profile is classified.
+
+### New:
+
+### Pro app integration
+
+Engine, diagnostics, rules and the classification keys are untouched; is
+unchanged.
+
 ## soilKey 0.9.115 (2026-06-13)
 
 The “**accessible + responsive Pro app**” release (app-maturity front D,
