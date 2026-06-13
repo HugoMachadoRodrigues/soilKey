@@ -12,21 +12,20 @@ report_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 300,
-      shiny::h5("Cross-system report"),
-      shiny::textInput(ns("title"), "Report title", "soilKey classification"),
+      shiny::h5(i18n("report.title")),
+      shiny::textInput(ns("title"), i18n("report.report_title_label"), "soilKey classification"),
       shiny::helpText(
-        "The report runs all three keys on the current pedon and embeds the ",
-        "horizon table and provenance log."
+        i18n("report.help_runs_all_keys")
       ),
       shiny::tags$hr(),
-      shiny::downloadButton(ns("html"), "Download HTML",
+      shiny::downloadButton(ns("html"), i18n("report.download_html"),
                             icon = shiny::icon("file-code"),
                             class = "btn-primary w-100"),
       shiny::tags$br(), shiny::tags$br(),
-      shiny::downloadButton(ns("pdf"), "Download PDF",
+      shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
                             icon = shiny::icon("file-pdf"),
                             class = "btn-secondary w-100"),
-      shiny::helpText("PDF needs LaTeX; falls back to HTML if unavailable.")
+      shiny::helpText(i18n("report.pdf_needs_latex"))
     ),
     shiny::uiOutput(ns("body"))
   )
@@ -56,7 +55,7 @@ report_server <- function(id, rv, settings) {
       content  = function(file) {
         shiny::req(rv$pedon)
         cf <- cfg()
-        shiny::withProgress(message = "Rendering HTML report...", value = 0.5, {
+        shiny::withProgress(message = i18n("report.rendering_html"), value = 0.5, {
           soilKey::report(rv$pedon, file = file, format = "html",
                           pedon = rv$pedon, title = input$title,
                           include_family = cf$include_family,
@@ -82,7 +81,7 @@ report_server <- function(id, rv, settings) {
       content = function(file) {
         shiny::req(rv$pedon)
         cf <- cfg()
-        shiny::withProgress(message = "Rendering PDF report...", value = 0.5, {
+        shiny::withProgress(message = i18n("report.rendering_pdf"), value = 0.5, {
           ok <- tryCatch({
             soilKey::report(rv$pedon, file = file, format = "pdf",
                             pedon = rv$pedon, title = input$title,
@@ -92,7 +91,7 @@ report_server <- function(id, rv, settings) {
           }, error = function(e) FALSE)
           if (!ok) {
             shiny::showNotification(
-              "PDF rendering failed (LaTeX missing?) -- wrote HTML instead.",
+              i18n("report.pdf_failed_fallback"),
               type = "warning", duration = 8)
             soilKey::report(rv$pedon, file = file, format = "html",
                             pedon = rv$pedon, title = input$title,
@@ -107,19 +106,19 @@ report_server <- function(id, rv, settings) {
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
       bslib::card(
-        bslib::card_header("Report preview"),
+        bslib::card_header(i18n("report.preview")),
         bslib::card_body(
-          shiny::p("The downloadable report bundles:"),
+          shiny::p(i18n("report.bundles_intro")),
           shiny::tags$ul(
-            shiny::tags$li("WRB 2022, SiBCS 5 and USDA ST 13 results"),
-            shiny::tags$li("Per-system key trace and evidence grade"),
-            shiny::tags$li("The horizon table and provenance log")
+            shiny::tags$li(i18n("report.bundle_results")),
+            shiny::tags$li(i18n("report.bundle_trace")),
+            shiny::tags$li(i18n("report.bundle_table_log"))
           ),
           # A live checklist of the depth-level options the report will honour,
           # mirroring the Settings tab -- so the user knows what they will get
           # before clicking download.
           shiny::p(class = "mt-2 mb-1",
-                   shiny::strong("Active depth-level options:")),
+                   shiny::strong(i18n("report.active_depth_options"))),
           shiny::uiOutput(ns("opts")),
           shiny::verbatimTextOutput(ns("summary"))
         )
@@ -134,23 +133,23 @@ report_server <- function(id, rv, settings) {
           shiny::icon("circle-check", class = "text-success")
         else
           shiny::icon("circle", class = "text-muted")
-        state <- if (isTRUE(on)) "on" else "off"
+        state <- if (isTRUE(on)) i18n("report.state_on") else i18n("report.state_off")
         shiny::div(class = "small mb-1", icon, " ", label,
                    shiny::tags$span(class = "text-muted", sprintf(" (%s)", state)))
       }
       shiny::tagList(
         opt_row(cf$include_family,
-                "USDA family (5th level) prepended to the subgroup"),
+                i18n("report.opt_family")),
         opt_row(cf$specifiers,
-                "WRB depth specifiers on depth-anchored qualifiers")
+                i18n("report.opt_specifiers"))
       )
     })
 
     output$summary <- shiny::renderPrint({
       shiny::req(rv$pedon)
-      cat("Pedon:", rv$pedon$site$id %||% "(unnamed)", "\n")
-      cat("Horizons:", nrow(rv$pedon$horizons), "\n")
-      cat("Provenance rows:",
+      cat(i18n("report.summary_pedon"), rv$pedon$site$id %||% i18n("report.unnamed"), "\n")
+      cat(i18n("report.summary_horizons"), nrow(rv$pedon$horizons), "\n")
+      cat(i18n("report.summary_provenance_rows"),
           if (is.null(rv$pedon$provenance)) 0L else nrow(rv$pedon$provenance),
           "\n")
     })

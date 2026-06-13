@@ -6,6 +6,7 @@
 \usage{
 run_classify_app(
   ui = c("pro", "classic"),
+  lang = c("en", "pt"),
   port = NULL,
   launch.browser = TRUE,
   ...
@@ -13,6 +14,10 @@ run_classify_app(
 }
 \arguments{
 \item{ui}{One of \code{"pro"} (default) or \code{"classic"}. See above.}
+
+\item{lang}{Initial interface language for the \code{"pro"} app: \code{"en"}
+(default) or \code{"pt"} (Brazilian Portuguese). Can also be switched
+live from the app's navbar. Ignored by the \code{"classic"} app.}
 
 \item{port}{Port for the local server. Default lets Shiny choose.}
 
@@ -49,7 +54,8 @@ clear, copy-pasteable error if any are missing.
 }
 \examples{
 \dontrun{
-run_classify_app()                 # professional multi-tab app
-run_classify_app(ui = "classic")   # legacy single-page uploader
+run_classify_app()                  # professional multi-tab app (English)
+run_classify_app(lang = "pt")       # interface em portugues
+run_classify_app(ui = "classic")    # legacy single-page uploader
 }
 }

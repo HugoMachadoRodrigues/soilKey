@@ -12,35 +12,35 @@ spectra_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 320,
-      shiny::h5("1. Attach a spectrum"),
-      shiny::fileInput(ns("vnir_csv"), "Vis-NIR CSV (row = horizon)",
+      shiny::h5(i18n("spectra.step1_attach")),
+      shiny::fileInput(ns("vnir_csv"), i18n("spectra.vnir_csv_label"),
                        accept = c(".csv")),
       shiny::helpText(
-        "One row per horizon, one column per wavelength. Row count must ",
-        "match the number of horizons in the pedon."
+        i18n("spectra.help_one_row")
       ),
-      shiny::actionButton(ns("attach"), "Attach to pedon",
+      shiny::actionButton(ns("attach"), i18n("spectra.attach_to_pedon"),
                           icon = shiny::icon("paperclip"),
                           class = "btn-secondary w-100"),
       shiny::tags$hr(),
-      shiny::h5("2. Gap-fill options"),
-      shiny::selectInput(ns("method"), "Prediction method",
-                         choices = c("Memory-based learning" = "mbl",
-                                     "Local PLSR" = "plsr_local",
-                                     "Pre-trained PLSR" = "pretrained"),
+      shiny::h5(i18n("spectra.step2_gapfill")),
+      shiny::selectInput(ns("method"), i18n("spectra.prediction_method"),
+                         choices = stats::setNames(
+                           c("mbl", "plsr_local", "pretrained"),
+                           c(i18n("spectra.method_mbl"),
+                             i18n("spectra.method_plsr_local"),
+                             i18n("spectra.method_pretrained"))),
                          selected = "mbl"),
-      shiny::selectInput(ns("region"), "OSSL region",
+      shiny::selectInput(ns("region"), i18n("spectra.ossl_region"),
                          choices = c("global", "south_america",
                                      "north_america", "europe", "africa"),
                          selected = "global"),
-      shiny::checkboxInput(ns("overwrite"), "Overwrite existing values",
+      shiny::checkboxInput(ns("overwrite"), i18n("spectra.overwrite_existing"),
                            value = FALSE),
-      shiny::actionButton(ns("fill"), "Gap-fill from spectra",
+      shiny::actionButton(ns("fill"), i18n("spectra.gapfill_from_spectra"),
                           icon = shiny::icon("wand-magic-sparkles"),
                           class = "btn-primary w-100"),
       shiny::helpText(
-        "First use downloads an OSSL cache; this can take a minute and ",
-        "needs network access."
+        i18n("spectra.help_first_use")
       )
     ),
     shiny::uiOutput(ns("body"))
@@ -53,12 +53,12 @@ spectra_server <- function(id, rv) {
     # ---- attach an uploaded spectrum -------------------------------------
     shiny::observeEvent(input$attach, {
       if (is.null(rv$pedon)) {
-        shiny::showNotification("Build a pedon first.", type = "warning")
+        shiny::showNotification(i18n("spectra.build_pedon_first"), type = "warning")
         return(invisible())
       }
       f <- input$vnir_csv
       if (is.null(f)) {
-        shiny::showNotification("Choose a Vis-NIR CSV first.", type = "warning")
+        shiny::showNotification(i18n("spectra.choose_vnir_csv_first"), type = "warning")
         return(invisible())
       }
       mat <- tryCatch({
@@ -68,37 +68,36 @@ spectra_server <- function(id, rv) {
       }, error = function(e) e)
       if (inherits(mat, "error")) {
         shiny::showNotification(
-          paste("Could not read spectrum:", conditionMessage(mat)),
+          i18n("spectra.could_not_read", conditionMessage(mat)),
           type = "error")
         return(invisible())
       }
       nh <- nrow(rv$pedon$horizons)
       if (nrow(mat) != nh) {
         shiny::showNotification(
-          sprintf("Spectrum has %d rows but the pedon has %d horizons.",
-                  nrow(mat), nh),
+          i18n("spectra.row_count_mismatch", nrow(mat), nh),
           type = "error", duration = 8)
         return(invisible())
       }
       rv$pedon$spectra <- list(vnir = mat)
       rv$pedon <- rv$pedon
       shiny::showNotification(
-        sprintf("Attached a %d x %d Vis-NIR matrix.", nrow(mat), ncol(mat)),
+        i18n("spectra.attached_matrix", nrow(mat), ncol(mat)),
         type = "message")
     })
 
     # ---- gap-fill ---------------------------------------------------------
     shiny::observeEvent(input$fill, {
       if (is.null(rv$pedon)) {
-        shiny::showNotification("Build a pedon first.", type = "warning")
+        shiny::showNotification(i18n("spectra.build_pedon_first"), type = "warning")
         return(invisible())
       }
       if (is.null(rv$pedon$spectra) || is.null(rv$pedon$spectra$vnir)) {
-        shiny::showNotification("Attach a Vis-NIR spectrum first.",
+        shiny::showNotification(i18n("spectra.attach_spectrum_first"),
                                 type = "warning")
         return(invisible())
       }
-      shiny::withProgress(message = "Predicting from spectra...", value = 0.4, {
+      shiny::withProgress(message = i18n("spectra.predicting_progress"), value = 0.4, {
         res <- tryCatch(
           soilKey::fill_from_spectra(
             rv$pedon,
@@ -111,12 +110,12 @@ spectra_server <- function(id, rv) {
       })
       if (inherits(res, "error")) {
         shiny::showNotification(
-          paste("Gap-fill failed:", conditionMessage(res)),
+          i18n("spectra.gapfill_failed", conditionMessage(res)),
           type = "error", duration = 12)
         return(invisible())
       }
       rv$pedon <- rv$pedon
-      shiny::showNotification("Horizon attributes gap-filled from spectra.",
+      shiny::showNotification(i18n("spectra.gapfill_done"),
                               type = "message")
     })
 
@@ -127,15 +126,15 @@ spectra_server <- function(id, rv) {
       bslib::layout_column_wrap(
         width = 1,
         bslib::card(
-          bslib::card_header("Spectrum status"),
+          bslib::card_header(i18n("spectra.card_status")),
           bslib::card_body(shiny::verbatimTextOutput(ns("status")))
         ),
         bslib::card(
-          bslib::card_header("Attached Vis-NIR spectrum"),
+          bslib::card_header(i18n("spectra.card_attached_spectrum")),
           bslib::card_body(plotly::plotlyOutput(ns("spectrum"), height = "300px"))
         ),
         bslib::card(
-          bslib::card_header("Horizon attributes (post gap-fill)"),
+          bslib::card_header(i18n("spectra.card_attributes")),
           bslib::card_body(DT::DTOutput(ns("attr_table")))
         )
       )
@@ -155,11 +154,10 @@ spectra_server <- function(id, rv) {
       shiny::req(rv$pedon)
       sp <- rv$pedon$spectra
       if (is.null(sp) || is.null(sp$vnir)) {
-        "No spectrum attached. Upload a Vis-NIR CSV and press 'Attach'."
+        i18n("spectra.status_none")
       } else {
         m <- sp$vnir
-        sprintf("Vis-NIR matrix attached: %d horizon row(s) x %d wavelength(s).",
-                nrow(m), ncol(m))
+        i18n("spectra.status_attached", nrow(m), ncol(m))
       }
     })
 

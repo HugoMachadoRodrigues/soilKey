@@ -1,5 +1,5 @@
 # =============================================================================
-# soilKey Pro -- professional multi-tab Shiny app (v0.9.97).
+# soilKey Pro -- professional multi-tab Shiny app (v0.9.97; i18n v0.9.114).
 #
 # A complete graphical front-end to the soilKey pipeline:
 #   * Pedon    -- build a profile from a canonical fixture, a CSV upload, or
@@ -19,12 +19,15 @@
 #   * Report   -- download a self-contained HTML or PDF cross-system report.
 #   * Settings -- diagnostic engine, Tier-3 strict mode, missing-data policy.
 #
-# Helper modules live in the R/ sub-directory and are auto-sourced by Shiny.
+# The interface is bilingual (English / Portuguese). UI strings come from the
+# i18n() helper (R/i18n.R, catalogue in inst/i18n/translations.yaml); the
+# navbar EN/PT selector flips the `soilKey.app_lang` option and reloads. The UI
+# is a per-session function so it rebuilds in the chosen language. Helper
+# modules live in the R/ sub-directory and are auto-sourced by Shiny.
 #
 # Launch with:
-#   soilKey::run_classify_app(ui = "pro")
-# or directly:
-#   shiny::runApp(system.file("shiny", "classify_app_pro", package = "soilKey"))
+#   soilKey::run_classify_app(ui = "pro")             # English (default)
+#   soilKey::run_classify_app(ui = "pro", lang = "pt") # Portuguese
 # =============================================================================
 
 # ---- dependency soft-fail ---------------------------------------------------
@@ -44,7 +47,7 @@ library(shiny)
 library(soilKey)
 
 # ----------------------------------------------------------------------------
-# UI
+# UI -- a per-session function so i18n() picks up the current language.
 # ----------------------------------------------------------------------------
 
 # A soil-science palette layered on flatly (see www/soilkey.css for the rest).
@@ -54,57 +57,73 @@ sk_theme <- bslib::bs_theme(
   "navbar-bg" = "#6B4423"
 )
 
-ui <- bslib::page_navbar(
-  title  = tags$span(class = "navbar-brand-inner",
-                     "soil", tags$span(class = "sk-mark", "Key"), " Pro"),
-  id     = "main_nav",
-  theme  = sk_theme,
-  fillable = TRUE,
-  # Stylesheet + the global pedon ribbon render above the tab content.
-  header = tagList(
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                        href = "soilkey.css")),
-    uiOutput("pedon_ribbon")
-  ),
-  bslib::nav_panel("Pedon",       icon = icon("layer-group"),  pedon_ui("pedon")),
-  bslib::nav_panel("Classify",    icon = icon("sitemap"),      classify_ui("classify")),
-  bslib::nav_panel("Photo",       icon = icon("camera"),       photo_ui("photo")),
-  bslib::nav_panel("Spectra",     icon = icon("wave-square"),  spectra_ui("spectra")),
-  bslib::nav_panel("Spatial",     icon = icon("location-dot"), spatial_ui("spatial")),
-  bslib::nav_panel(
-    "Map", icon = icon("map-location-dot"),
-    bslib::navset_card_tab(
-      bslib::nav_panel("Point prior",     map_ui("map")),
-      bslib::nav_panel("Batch classify",  map_batch_ui("map_batch")),
-      bslib::nav_panel("Grid prediction", map_grid_ui("map_grid"))
+ui <- function(request) {
+  bslib::page_navbar(
+    title  = tags$span(class = "navbar-brand-inner",
+                       "soil", tags$span(class = "sk-mark", "Key"),
+                       i18n("app.brand_suffix")),
+    id     = "main_nav",
+    theme  = sk_theme,
+    fillable = TRUE,
+    # Stylesheet + the global pedon ribbon render above the tab content.
+    header = tagList(
+      tags$head(tags$link(rel = "stylesheet", type = "text/css",
+                          href = "soilkey.css")),
+      uiOutput("pedon_ribbon")
+    ),
+    bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon")),
+    bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
+    bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo")),
+    bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
+    bslib::nav_panel(i18n("nav.spatial"),  icon = icon("location-dot"), spatial_ui("spatial")),
+    bslib::nav_panel(
+      i18n("nav.map"), icon = icon("map-location-dot"),
+      bslib::navset_card_tab(
+        bslib::nav_panel(i18n("map.tab_point"), map_ui("map")),
+        bslib::nav_panel(i18n("map.tab_batch"), map_batch_ui("map_batch")),
+        bslib::nav_panel(i18n("map.tab_grid"),  map_grid_ui("map_grid"))
+      )
+    ),
+    bslib::nav_panel(i18n("nav.uncertainty"), icon = icon("dice"),         uncertainty_ui("uncertainty")),
+    bslib::nav_panel(i18n("nav.report"),      icon = icon("file-arrow-down"), report_ui("report")),
+    bslib::nav_spacer(),
+    bslib::nav_panel(i18n("nav.settings"),    icon = icon("gear"),         settings_ui("settings")),
+    bslib::nav_item(
+      shinyWidgets::radioGroupButtons(
+        "app_lang_sel", label = NULL,
+        choices  = c("EN" = "en", "PT" = "pt"),
+        selected = .sk_app_lang(), size = "sm")
+    ),
+    bslib::nav_item(
+      actionLink("about", label = tagList(icon("circle-question"), i18n("nav.help")),
+                 class = "nav-link")
+    ),
+    bslib::nav_item(
+      tags$a(icon("book"), i18n("nav.docs"),
+             href   = "https://hugomachadorodrigues.github.io/soilKey/",
+             target = "_blank")
+    ),
+    footer = tags$div(
+      class = "text-muted small px-3 py-2",
+      i18n("app.footer", as.character(utils::packageVersion("soilKey")))
     )
-  ),
-  bslib::nav_panel("Uncertainty", icon = icon("dice"),         uncertainty_ui("uncertainty")),
-  bslib::nav_panel("Report",      icon = icon("file-arrow-down"), report_ui("report")),
-  bslib::nav_spacer(),
-  bslib::nav_panel("Settings",    icon = icon("gear"),         settings_ui("settings")),
-  bslib::nav_item(
-    actionLink("about", label = tagList(icon("circle-question"), "Help"),
-               class = "nav-link")
-  ),
-  bslib::nav_item(
-    tags$a(icon("book"), "Docs",
-           href   = "https://hugomachadorodrigues.github.io/soilKey/",
-           target = "_blank")
-  ),
-  footer = tags$div(
-    class = "text-muted small px-3 py-2",
-    sprintf("soilKey %s -- deterministic keys; the taxonomic key is never ",
-            as.character(utils::packageVersion("soilKey"))),
-    "delegated to a language model."
   )
-)
+}
 
 # ----------------------------------------------------------------------------
 # Server
 # ----------------------------------------------------------------------------
 
 server <- function(input, output, session) {
+
+  # ---- language selector: flip the option + reload so ui() rebuilds --------
+  observeEvent(input$app_lang_sel, {
+    sel <- input$app_lang_sel
+    if (!is.null(sel) && sel %in% c("en", "pt") && !identical(sel, .sk_app_lang())) {
+      options(soilKey.app_lang = sel)
+      session$reload()
+    }
+  }, ignoreInit = TRUE)
 
   # Shared, mutable application state. `pedon` is a PedonRecord (R6, reference
   # semantics) -- modules that enrich it MUST reassign rv$pedon afterwards so
@@ -136,23 +155,23 @@ server <- function(input, output, session) {
       return(tags$div(
         class = "sk-ribbon",
         tags$span(class = "sk-empty",
-                  icon("circle-info"), " No pedon yet."),
-        actionButton("ribbon_example", "Load example",
+                  icon("circle-info"), paste0(" ", i18n("ribbon.no_pedon"))),
+        actionButton("ribbon_example", i18n("ribbon.load_example"),
                      icon = icon("flask"),
                      class = "btn-sm btn-primary")))
     }
     lat <- p$site$lat %||% NA; lon <- p$site$lon %||% NA
     coord <- if (!is.na(lat) && !is.na(lon))
-      sprintf("%.3f, %.3f", lat, lon) else "no coords"
+      sprintf("%.3f, %.3f", lat, lon) else i18n("ribbon.no_coords")
     tags$div(
       class = "sk-ribbon",
-      tags$span(class = "sk-built", icon("circle-check"), " Pedon built"),
+      tags$span(class = "sk-built", icon("circle-check"), paste0(" ", i18n("ribbon.built"))),
       tags$span(class = "sk-chip",
-                tags$span(class = "sk-key", "ID"), p$site$id %||% "(unnamed)"),
+                tags$span(class = "sk-key", i18n("ribbon.id")), p$site$id %||% i18n("ribbon.unnamed")),
       tags$span(class = "sk-chip",
-                tags$span(class = "sk-key", "Horizons"), nrow(p$horizons)),
+                tags$span(class = "sk-key", i18n("ribbon.horizons")), nrow(p$horizons)),
       tags$span(class = "sk-chip",
-                tags$span(class = "sk-key", "Site"), coord))
+                tags$span(class = "sk-key", i18n("ribbon.site")), coord))
   })
 
   # ---- one-click example: ask the Pedon tab to load the demo profile ------
@@ -165,31 +184,24 @@ server <- function(input, output, session) {
   # ---- "Help / Getting started" modal -------------------------------------
   observeEvent(input$about, {
     showModal(modalDialog(
-      title = tagList(icon("seedling"), " Welcome to soilKey Pro"),
+      title = tagList(icon("seedling"), paste0(" ", i18n("help.title"))),
       easyClose = TRUE, size = "l",
-      tags$p("Classify a soil profile under WRB 2022, SiBCS 5 and USDA Soil ",
-             "Taxonomy 13 -- the deterministic key is never delegated to a ",
-             "language model."),
-      tags$p(tags$strong("Workflow:")),
+      tags$p(i18n("help.intro")),
+      tags$p(tags$strong(i18n("help.workflow"))),
       tags$ol(
         class = "sk-steps",
-        tags$li(tags$strong("Pedon"), " -- build a profile from a fixture, a ",
-                "CSV, or by hand."),
-        tags$li(tags$strong("Classify"), " -- run all three systems with the ",
-                "full key trace."),
-        tags$li(tags$strong("Photo / Spectra / Spatial"), " -- enrich the ",
-                "pedon from images, Vis-NIR, or SoilGrids."),
-        tags$li(tags$strong("Map"), " -- point prior, batch soil map, or a ",
-                "gridded prediction."),
-        tags$li(tags$strong("Uncertainty / Report"), " -- robustness and a ",
-                "downloadable cross-system report.")
+        tags$li(tags$strong(i18n("nav.pedon")), i18n("help.step_pedon")),
+        tags$li(tags$strong(i18n("nav.classify")), i18n("help.step_classify")),
+        tags$li(tags$strong(i18n("help.step_enrich_b")), i18n("help.step_enrich")),
+        tags$li(tags$strong(i18n("nav.map")), i18n("help.step_map")),
+        tags$li(tags$strong(i18n("help.step_robust_b")), i18n("help.step_robust"))
       ),
       tags$p(class = "text-muted small",
              sprintf("soilKey %s",
                      as.character(utils::packageVersion("soilKey")))),
       footer = tagList(
-        modalButton("Close"),
-        actionButton("about_example", "Load example & classify",
+        modalButton(i18n("help.close")),
+        actionButton("about_example", i18n("help.load_classify"),
                      icon = icon("flask"), class = "btn-primary"))
     ))
   })

@@ -40,37 +40,36 @@ map_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5("Map & spatial prior"),
+      shiny::h5(i18n("mpoint.sidebar_title")),
       shiny::uiOutput(ns("coords")),
-      shiny::selectInput(ns("basemap"), "Base map",
+      shiny::selectInput(ns("basemap"), i18n("mpoint.base_map"),
                          choices = .map_basemaps(), selected = "OpenStreetMap"),
-      shiny::selectInput(ns("system"), "Classification system",
+      shiny::selectInput(ns("system"), i18n("mpoint.classification_system"),
                          choices = c("WRB 2022"     = "wrb2022",
                                      "USDA ST 13"    = "usda",
                                      "SiBCS 5"       = "sibcs"),
                          selected = "wrb2022"),
-      shiny::textInput(ns("source_url"), "SoilGrids raster (path or URL)",
-                       placeholder = "GeoTIFF / COG, or blank for test raster"),
+      shiny::textInput(ns("source_url"), i18n("mpoint.soilgrids_raster"),
+                       placeholder = i18n("mpoint.raster_placeholder")),
       shiny::helpText(
-        "Point at a SoilGrids WRB raster (files.isric.org/soilgrids). ",
-        "If blank, the option soilKey.test_raster is used (handy for demos)."
+        i18n("mpoint.raster_help")
       ),
-      shiny::numericInput(ns("buffer"), "Buffer radius (m)", 1000,
+      shiny::numericInput(ns("buffer"), i18n("mpoint.buffer_radius"), 1000,
                           min = 100, max = 20000, step = 100),
-      shiny::numericInput(ns("topn"), "Keep top N classes", 5,
+      shiny::numericInput(ns("topn"), i18n("mpoint.keep_top_n"), 5,
                           min = 1, max = 30, step = 1),
-      shiny::actionButton(ns("run"), "Query prior here",
+      shiny::actionButton(ns("run"), i18n("mpoint.query_prior"),
                           icon = shiny::icon("satellite"),
                           class = "btn-primary w-100"),
       shiny::helpText(
         shiny::icon("hand-pointer"),
-        " Click the map to place the point. Requires 'leaflet' and 'terra'."
+        i18n("mpoint.click_to_place")
       )
     ),
     bslib::layout_column_wrap(
       width = 1, heights_equal = "row",
       bslib::card(
-        bslib::card_header("Location"),
+        bslib::card_header(i18n("mpoint.location")),
         bslib::card_body(
           padding = 0,
           leaflet::leafletOutput(ns("map"), height = "460px")
@@ -79,11 +78,11 @@ map_ui <- function(id) {
       bslib::layout_column_wrap(
         width = 1 / 2,
         bslib::card(
-          bslib::card_header("Class distribution at point"),
+          bslib::card_header(i18n("mpoint.class_distribution")),
           bslib::card_body(DT::DTOutput(ns("dist_table")))
         ),
         bslib::card(
-          bslib::card_header("Typical attributes"),
+          bslib::card_header(i18n("mpoint.typical_attributes")),
           bslib::card_body(DT::DTOutput(ns("attrs_table")))
         )
       )
@@ -168,27 +167,27 @@ map_server <- function(id, rv, settings) {
       cc <- coords_r()
       if (is.null(cc)) {
         return(shiny::div(class = "small text-muted mb-2",
-                          "No point yet -- click the map to place one."))
+                          i18n("mpoint.no_point_yet")))
       }
       shiny::div(
         class = "small mb-2",
-        shiny::strong("Point: "),
+        shiny::strong(i18n("mpoint.point_label")),
         sprintf("%.5f, %.5f", cc$lat, cc$lon),
         shiny::tags$span(class = "text-muted",
                          sprintf(" (%s)", if (cc$src == "pedon")
-                           "from pedon" else "map click"))
+                           i18n("mpoint.from_pedon") else i18n("mpoint.map_click")))
       )
     })
 
     # ---- run the prior at the active coordinate ----------------------------
     prior <- shiny::eventReactive(input$run, {
       cc <- coords_r()
-      if (is.null(cc)) return(simpleError("Place a point on the map first."))
+      if (is.null(cc)) return(simpleError(i18n("mpoint.place_point_first")))
       if (!requireNamespace("terra", quietly = TRUE))
-        return(simpleError("Package 'terra' is not installed."))
+        return(simpleError(i18n("mpoint.terra_not_installed")))
       src <- input$source_url
       src <- if (is.null(src) || !nzchar(trimws(src))) NULL else trimws(src)
-      shiny::withProgress(message = "Querying SoilGrids prior...", value = 0.5, {
+      shiny::withProgress(message = i18n("mpoint.querying_prior"), value = 0.5, {
         tryCatch(
           soilKey::soil_classes_at_location(
             lat        = cc$lat,
@@ -212,12 +211,12 @@ map_server <- function(id, rv, settings) {
       if (inherits(p, "error") || is.null(cc)) return()
       dist <- as.data.frame(p$distribution)
       popup <- if (nrow(dist) == 0L) {
-        "No SoilGrids pixels here. Set a raster source."
+        i18n("mpoint.no_pixels_here")
       } else {
         top <- dist[1, ]
-        sprintf("<b>%s</b><br/>%s (%.0f%%)<br/><span style='color:#666'>buffer %g m</span>",
-                input$system, top$rsg_name %||% top$rsg_code,
-                100 * top$probability, input$buffer)
+        i18n("mpoint.popup_top_class",
+             input$system, top$rsg_name %||% top$rsg_code,
+             100 * top$probability, input$buffer)
       }
       proxy |>
         leaflet::addCircles(
@@ -232,30 +231,30 @@ map_server <- function(id, rv, settings) {
       shiny::req(p)
       shiny::validate(
         shiny::need(!inherits(p, "error"),
-                    if (inherits(p, "error")) conditionMessage(p) else "n/a"))
+                    if (inherits(p, "error")) conditionMessage(p) else i18n("mpoint.na")))
       df <- as.data.frame(p$distribution)
       shiny::validate(shiny::need(
         nrow(df) > 0L,
-        "No SoilGrids pixels in the buffer. Provide a raster path/URL, or set options(soilKey.test_raster = '...')."))
+        i18n("mpoint.no_pixels_buffer")))
       # Reorder by name (source order is rsg_code, probability, rsg_name) and
       # give friendly headers, then format the percentage by its final name.
       cols <- intersect(c("rsg_code", "rsg_name", "probability"), names(df))
       df <- df[, cols, drop = FALSE]
-      names(df) <- c(rsg_code = "Code", rsg_name = "Class",
-                     probability = "Probability")[cols]
+      names(df) <- c(rsg_code = i18n("mpoint.col_code"), rsg_name = i18n("mpoint.col_class"),
+                     probability = i18n("mpoint.col_probability"))[cols]
       DT::datatable(df, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8)) |>
-        DT::formatPercentage("Probability", 1)
+        DT::formatPercentage(i18n("mpoint.col_probability"), 1)
     })
 
     # ---- typical-attribute table -------------------------------------------
     output$attrs_table <- DT::renderDT({
       p <- prior()
       shiny::req(p)
-      shiny::validate(shiny::need(!inherits(p, "error"), "n/a"))
+      shiny::validate(shiny::need(!inherits(p, "error"), i18n("mpoint.na")))
       df <- as.data.frame(p$typical_attributes)
       shiny::validate(shiny::need(
-        nrow(df) > 0L, "Query a point with a configured raster to see typical attributes."))
+        nrow(df) > 0L, i18n("mpoint.query_for_attrs")))
       DT::datatable(df, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })

@@ -32,17 +32,19 @@ pedon_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 340,
-      shiny::h5("1. Seed the profile"),
+      shiny::h5(i18n("pedon.seed_profile")),
       shinyWidgets::radioGroupButtons(
         ns("source"), NULL,
-        choices = c("Fixture" = "fixture", "Upload CSV" = "upload",
-                    "Blank" = "blank"),
+        choices = stats::setNames(
+          c("fixture", "upload", "blank"),
+          c(i18n("pedon.source_fixture"), i18n("pedon.source_upload"),
+            i18n("pedon.source_blank"))),
         selected = "fixture", justified = TRUE, size = "sm"
       ),
       shiny::conditionalPanel(
         sprintf("input['%s'] == 'fixture'", ns("source")),
         shinyWidgets::pickerInput(
-          ns("fixture"), "Canonical profile",
+          ns("fixture"), i18n("pedon.canonical_profile"),
           choices  = pro_fixture_catalog(),
           selected = "make_ferralsol_canonical",
           options  = list(`live-search` = TRUE)
@@ -50,28 +52,28 @@ pedon_ui <- function(id) {
       ),
       shiny::conditionalPanel(
         sprintf("input['%s'] == 'upload'", ns("source")),
-        shiny::fileInput(ns("csv"), "Horizons CSV / TSV",
+        shiny::fileInput(ns("csv"), i18n("pedon.horizons_csv_tsv"),
                          accept = c(".csv", ".tsv", ".txt")),
-        shiny::downloadLink(ns("template"), "Download a starter CSV")
+        shiny::downloadLink(ns("template"), i18n("pedon.download_starter_csv"))
       ),
-      shiny::actionButton(ns("load"), "Load horizons",
+      shiny::actionButton(ns("load"), i18n("pedon.load_horizons"),
                           icon = shiny::icon("upload"),
                           class = "btn-secondary w-100"),
       shiny::tags$hr(),
-      shiny::h5("2. Site metadata"),
-      shiny::textInput(ns("site_id"), "Profile ID", "demo-pedon-01"),
+      shiny::h5(i18n("pedon.site_metadata")),
+      shiny::textInput(ns("site_id"), i18n("pedon.profile_id"), "demo-pedon-01"),
       shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lat"), "Latitude", -22.5,
+        shiny::column(6, shiny::numericInput(ns("lat"), i18n("pedon.latitude"), -22.5,
                                              step = 0.01)),
-        shiny::column(6, shiny::numericInput(ns("lon"), "Longitude", -43.7,
+        shiny::column(6, shiny::numericInput(ns("lon"), i18n("pedon.longitude"), -43.7,
                                              step = 0.01))
       ),
       shiny::fluidRow(
-        shiny::column(6, shiny::textInput(ns("country"), "Country (ISO-2)", "BR")),
-        shiny::column(6, shiny::textInput(ns("pm"), "Parent material", "gneiss"))
+        shiny::column(6, shiny::textInput(ns("country"), i18n("pedon.country_iso2"), "BR")),
+        shiny::column(6, shiny::textInput(ns("pm"), i18n("pedon.parent_material"), "gneiss"))
       ),
       shiny::tags$hr(),
-      shiny::actionButton(ns("build"), "Build / update pedon",
+      shiny::actionButton(ns("build"), i18n("pedon.build_update_pedon"),
                           icon = shiny::icon("hammer"),
                           class = "btn-primary w-100"),
       shiny::uiOutput(ns("status"))
@@ -82,13 +84,13 @@ pedon_ui <- function(id) {
       bslib::card(
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
-                     shiny::strong("Horizons (click a cell to edit)"),
+                     shiny::strong(i18n("pedon.horizons_click_edit")),
                      shiny::div(
                        class = "d-flex gap-2",
-                       shiny::downloadButton(ns("download_hz"), "CSV",
+                       shiny::downloadButton(ns("download_hz"), i18n("pedon.csv"),
                                              icon = shiny::icon("download"),
                                              class = "btn-sm btn-outline-secondary"),
-                       shiny::actionButton(ns("add_row"), "Add row",
+                       shiny::actionButton(ns("add_row"), i18n("pedon.add_row"),
                                            icon = shiny::icon("plus"),
                                            class = "btn-sm btn-outline-secondary")))
         ),
@@ -97,7 +99,7 @@ pedon_ui <- function(id) {
       bslib::card(
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
-                     shiny::strong("Depth profile"),
+                     shiny::strong(i18n("pedon.depth_profile")),
                      shiny::selectInput(ns("plot_attr"), NULL,
                                         choices = pro_numeric_attrs(),
                                         selected = "clay_pct", width = "180px"))
@@ -127,7 +129,7 @@ pedon_server <- function(id, rv) {
       content  = function(file) {
         cur <- hz()
         shiny::validate(shiny::need(!is.null(cur) && nrow(cur) > 0L,
-                                    "No horizons to download."))
+                                    i18n("pedon.no_horizons_download")))
         utils::write.csv(cur, file, row.names = FALSE)
       }
     )
@@ -147,7 +149,7 @@ pedon_server <- function(id, rv) {
       shiny::updateNumericInput(session, "lon", value = p$site$lon %||% -43.7)
       rv$pedon <- p
       shiny::showNotification(
-        "Loaded the example Ferralsol — press Classify to see all three systems.",
+        i18n("pedon.loaded_example_ferralsol"),
         type = "message", duration = 6)
     }, ignoreInit = TRUE)
 
@@ -159,7 +161,7 @@ pedon_server <- function(id, rv) {
           p <- tryCatch(pro_load_fixture(input$fixture),
                         error = function(e) NULL)
           if (is.null(p)) {
-            shiny::showNotification("Could not load that fixture.",
+            shiny::showNotification(i18n("pedon.could_not_load_fixture"),
                                     type = "error")
             return(invisible())
           }
@@ -168,7 +170,7 @@ pedon_server <- function(id, rv) {
         upload = {
           f <- input$csv
           if (is.null(f)) {
-            shiny::showNotification("Choose a CSV first.", type = "warning")
+            shiny::showNotification(i18n("pedon.choose_csv_first"), type = "warning")
             return(invisible())
           }
           sep <- if (grepl("\\.tsv$", f$name, ignore.case = TRUE)) "\t" else ","
@@ -176,7 +178,7 @@ pedon_server <- function(id, rv) {
                                    stringsAsFactors = FALSE),
                    error = function(e) {
                      shiny::showNotification(
-                       paste("CSV parse failed:", conditionMessage(e)),
+                       i18n("pedon.csv_parse_failed", conditionMessage(e)),
                        type = "error")
                      NULL
                    })
@@ -192,7 +194,7 @@ pedon_server <- function(id, rv) {
       hz(df)
       hz_reload(hz_reload() + 1L)
       shiny::showNotification(
-        sprintf("Loaded %d horizon(s).", nrow(df)), type = "message")
+        i18n("pedon.loaded_n", nrow(df)), type = "message")
     })
 
     shiny::observeEvent(input$add_row, {
@@ -239,7 +241,7 @@ pedon_server <- function(id, rv) {
     shiny::observeEvent(input$build, {
       df <- hz()
       if (is.null(df) || nrow(df) == 0L) {
-        shiny::showNotification("Load or add at least one horizon first.",
+        shiny::showNotification(i18n("pedon.load_add_horizon_first"),
                                 type = "warning")
         return(invisible())
       }
@@ -250,12 +252,12 @@ pedon_server <- function(id, rv) {
       lon <- suppressWarnings(as.numeric(input$lon))
       if (!is.na(lat) && (lat < -90 || lat > 90)) {
         shiny::showNotification(
-          "Latitude must be between -90 and 90.", type = "error")
+          i18n("pedon.latitude_range"), type = "error")
         return(invisible())
       }
       if (!is.na(lon) && (lon < -180 || lon > 180)) {
         shiny::showNotification(
-          "Longitude must be between -180 and 180.", type = "error")
+          i18n("pedon.longitude_range"), type = "error")
         return(invisible())
       }
       built <- tryCatch({
@@ -274,25 +276,25 @@ pedon_server <- function(id, rv) {
 
       if (inherits(built, "error")) {
         shiny::showNotification(
-          paste("Could not build pedon:", conditionMessage(built)),
+          i18n("pedon.could_not_build_pedon", conditionMessage(built)),
           type = "error", duration = 8)
         return(invisible())
       }
       rv$pedon <- built
-      shiny::showNotification("Pedon built -- ready to classify.",
+      shiny::showNotification(i18n("pedon.pedon_built_ready"),
                               type = "message")
     })
 
     output$status <- shiny::renderUI({
       if (is.null(rv$pedon)) {
         shiny::div(class = "text-muted small mt-2",
-                   shiny::icon("circle-info"), " No pedon built yet.")
+                   shiny::icon("circle-info"), i18n("pedon.no_pedon_yet"))
       } else {
         shiny::div(class = "text-success small mt-2",
                    shiny::icon("circle-check"), " ",
-                   sprintf("Pedon '%s' ready (%d horizons).",
-                           rv$pedon$site$id %||% "pedon",
-                           nrow(rv$pedon$horizons)))
+                   i18n("pedon.pedon_ready",
+                        rv$pedon$site$id %||% "pedon",
+                        nrow(rv$pedon$horizons)))
       }
     })
   })

@@ -29,6 +29,9 @@
 #' clear, copy-pasteable error if any are missing.
 #'
 #' @param ui One of \code{"pro"} (default) or \code{"classic"}. See above.
+#' @param lang Initial interface language for the \code{"pro"} app: \code{"en"}
+#'        (default) or \code{"pt"} (Brazilian Portuguese). Can also be switched
+#'        live from the app's navbar. Ignored by the \code{"classic"} app.
 #' @param port Port for the local server. Default lets Shiny choose.
 #' @param launch.browser Whether to open the app in the default
 #'        browser (default \code{TRUE}).
@@ -36,13 +39,21 @@
 #' @return Invisibly the value returned by \code{shiny::runApp()}.
 #' @examples
 #' \dontrun{
-#' run_classify_app()                 # professional multi-tab app
-#' run_classify_app(ui = "classic")   # legacy single-page uploader
+#' run_classify_app()                  # professional multi-tab app (English)
+#' run_classify_app(lang = "pt")       # interface em portugues
+#' run_classify_app(ui = "classic")    # legacy single-page uploader
 #' }
 #' @export
 run_classify_app <- function(ui = c("pro", "classic"),
+                             lang = c("en", "pt"),
                              port = NULL, launch.browser = TRUE, ...) {
-  ui <- match.arg(ui)
+  ui   <- match.arg(ui)
+  lang <- match.arg(lang)
+  # The pro app reads getOption("soilKey.app_lang") when it builds its UI; set
+  # it for this launch and restore the previous value once the app closes.
+  old_lang <- getOption("soilKey.app_lang")
+  options(soilKey.app_lang = lang)
+  on.exit(options(soilKey.app_lang = old_lang), add = TRUE)
 
   needed <- if (ui == "pro")
     c("shiny", "bslib", "DT", "plotly", "shinyWidgets", "leaflet")

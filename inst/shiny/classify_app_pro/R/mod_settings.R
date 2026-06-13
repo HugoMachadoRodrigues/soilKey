@@ -12,61 +12,64 @@ settings_ui <- function(id) {
   bslib::layout_column_wrap(
     width = 1 / 2,
     bslib::card(
-      bslib::card_header("Diagnostic engine"),
+      bslib::card_header(i18n("settings.diagnostic_engine")),
       bslib::card_body(
         shinyWidgets::radioGroupButtons(
-          ns("engine"), "Threshold engine",
-          choices = c("soilKey (strict WRB)" = "soilkey",
-                      "aqp (regional tolerance)" = "aqp"),
+          ns("engine"), i18n("settings.threshold_engine"),
+          choices = stats::setNames(
+            c("soilkey", "aqp"),
+            c(i18n("settings.engine_soilkey"),
+              i18n("settings.engine_aqp"))
+          ),
           selected = "soilkey", justified = TRUE
         ),
         shiny::helpText(
-          "soilKey applies canonical WRB 2022 thresholds; aqp relaxes a few ",
-          "horizon thresholds to match KSSL / regional lab methodology."
+          i18n("settings.engine_help")
         ),
         shiny::tags$hr(),
         shinyWidgets::materialSwitch(
-          ns("strict"), "WRB Tier-3 strict mode",
+          ns("strict"), i18n("settings.strict_mode"),
           value = FALSE, status = "danger"
         ),
         shiny::helpText(
-          "Strengthens per-RSG numerical gates (e.g. Ferralsol CEC, Vertisol ",
-          "clay). Borderline profiles may fall through to a different RSG."
+          i18n("settings.strict_help")
         ),
         shinyWidgets::materialSwitch(
-          ns("specifiers"), "WRB depth specifiers",
+          ns("specifiers"), i18n("settings.specifiers"),
           value = FALSE, status = "primary"
         ),
         shiny::helpText(
-          "Auto-attach Epi-/Endo-/Bathy-/Amphi- to depth-anchored qualifiers ",
-          "from the feature's depth (e.g. Gleyic -> Endogleyic)."
+          i18n("settings.specifiers_help")
         )
       )
     ),
     bslib::card(
-      bslib::card_header("Missing-data policy"),
+      bslib::card_header(i18n("settings.missing_data_policy")),
       bslib::card_body(
         shinyWidgets::radioGroupButtons(
-          ns("on_missing"), "When an attribute the key needs is absent",
-          choices = c("Warn" = "warn", "Silent" = "silent", "Error" = "error"),
+          ns("on_missing"), i18n("settings.on_missing_label"),
+          choices = stats::setNames(
+            c("warn", "silent", "error"),
+            c(i18n("settings.on_missing_warn"),
+              i18n("settings.on_missing_silent"),
+              i18n("settings.on_missing_error"))
+          ),
           selected = "silent", justified = TRUE
         ),
         shiny::helpText(
-          "Silent is recommended in the app -- missing attributes surface in ",
-          "the Classify tab as 'measurements that would refine the result'."
+          i18n("settings.on_missing_help")
         ),
         shiny::tags$hr(),
         shiny::checkboxInput(
-          ns("include_familia"), "Resolve SiBCS 5th level (familia)",
+          ns("include_familia"), i18n("settings.include_familia"),
           value = TRUE
         ),
         shiny::checkboxInput(
-          ns("include_family"), "Resolve USDA 5th level (family)",
+          ns("include_family"), i18n("settings.include_family"),
           value = FALSE
         ),
         shiny::helpText(
-          "USDA family prepends class modifiers (particle-size, mineralogy, ",
-          "CEC-activity, temperature regime, ...) to the subgroup name."
+          i18n("settings.family_help")
         )
       )
     )
