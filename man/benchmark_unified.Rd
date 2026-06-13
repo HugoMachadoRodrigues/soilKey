@@ -11,6 +11,7 @@ benchmark_unified(
   max_n_per_dataset = NULL,
   engine = c("soilkey", "aqp", "both"),
   harmonize = FALSE,
+  gapfill = FALSE,
   verbose = TRUE
 )
 }
@@ -49,6 +50,15 @@ Required for cross-dataset pooling integrity (Phase 2.3) but
 slow (~1-2 min for 1k pedons) and may degrade per-dataset
 accuracy slightly because the splined depths are
 approximations.}
+
+\item{gapfill}{If not \code{FALSE} (the default), applies
+\code{\link{gapfill_within_pedon}} to each dataset's pedons before
+classification, filling interior \code{NA} cells of the continuous
+depth-trending attributes by within-pedon linear interpolation.
+Accepts the same values as the \code{gapfill} argument of
+\code{\link{classify_all}} (\code{TRUE}, a character vector of
+attributes, or a named list). Lets you measure the ON/OFF accuracy
+lift of gap-fill reproducibly through the harness.}
 
 \item{verbose}{If \code{TRUE} (default), emits cli progress.}
 }

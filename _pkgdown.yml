@@ -92,6 +92,7 @@ reference:
       - classify_by_spectral_neighbours
       - soil_classes_at_location
       - apply_soilgrids_depth_prior
+      - gapfill_within_pedon
       - compute_per_attribute_evidence_grade
 
   - title: "Interoperability"

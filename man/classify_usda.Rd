@@ -9,7 +9,8 @@ classify_usda(
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
   include_family = FALSE,
-  infer_temperature = TRUE
+  infer_temperature = TRUE,
+  gapfill = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,15 @@ earlier versions).}
 temperature regime from latitude/elevation if
 \code{site$soil_temperature_regime} is absent (default
 \code{TRUE}). See \code{\link{family_temperature_regime_usda}}.}
+
+\item{gapfill}{Opt-in within-pedon depth gap-fill, default \code{FALSE}
+(no-op, classification stays byte-identical). \code{TRUE} fills
+interior \code{NA} cells of the continuous depth-trending attributes
+by linear interpolation from the profile's own measured horizons; a
+character vector restricts it to those attributes; a named list is
+passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
+\code{inferred_prior} provenance, so the evidence grade drops to
+\code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.}
 }
 \value{
 A \code{\link{ClassificationResult}} with deepest-level

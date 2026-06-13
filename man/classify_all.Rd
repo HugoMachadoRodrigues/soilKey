@@ -11,6 +11,7 @@ classify_all(
   include_familia = TRUE,
   include_family = FALSE,
   specifiers = FALSE,
+  gapfill = FALSE,
   ...
 )
 }
@@ -34,6 +35,11 @@ other systems.}
 \item{specifiers}{Forwarded to \code{\link{classify_wrb2022}} (default
 \code{FALSE}) to auto-attach WRB depth specifiers. No effect on the
 other systems.}
+
+\item{gapfill}{Forwarded to all three classifiers (default \code{FALSE} =>
+byte-identical). Opt-in within-pedon depth gap-fill; see
+\code{\link{gapfill_within_pedon}}. Applied independently per system
+on a deep copy, so the caller's pedon is never mutated.}
 
 \item{...}{Additional named arguments are silently ignored.}
 }

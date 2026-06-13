@@ -76,6 +76,14 @@ run_wrb_key <- function(pedon, rules = NULL) {
 #'        yields \code{Endogleyic} instead of \code{Gleyic}. Default
 #'        \code{FALSE} keeps the canonical names byte-identical. Surface
 #'        / epipedon qualifiers are excluded (their depth is definitional).
+#' @param gapfill Opt-in within-pedon depth gap-fill, default \code{FALSE}
+#'        (no-op, classification stays byte-identical). \code{TRUE} fills
+#'        interior \code{NA} cells of the continuous depth-trending attributes
+#'        by linear interpolation from the profile's own measured horizons; a
+#'        character vector restricts it to those attributes; a named list is
+#'        passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
+#'        \code{inferred_prior} provenance, so the evidence grade drops to
+#'        \code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.
 #' @return A \code{\link{ClassificationResult}}.
 #' @examples
 #' pedon <- make_ferralsol_canonical()
@@ -88,9 +96,15 @@ classify_wrb2022 <- function(pedon,
                                on_missing      = c("warn", "silent", "error"),
                                rules           = NULL,
                                strict          = NULL,
-                               specifiers      = FALSE) {
+                               specifiers      = FALSE,
+                               gapfill         = FALSE) {
   on_missing <- match.arg(on_missing)
   rules      <- rules %||% load_rules("wrb2022")
+
+  # Opt-in within-pedon gap-fill (default off => byte-identical). Operates on a
+  # deep copy, so the caller's pedon is never mutated; interpolated cells carry
+  # "inferred_prior" provenance and drop the evidence grade to "C".
+  pedon <- .classify_apply_gapfill(pedon, gapfill)
 
   # Tier-3 strict mode: when the caller passes an explicit value, force
   # the package option for the duration of this call so the YAML-
