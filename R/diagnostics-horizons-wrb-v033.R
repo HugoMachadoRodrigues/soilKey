@@ -737,7 +737,9 @@ irragric <- function(pedon, min_thickness = 20) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 plaggic <- function(pedon, min_thickness = 20, max_bd = 1.5,
-                       min_oc = 0.6, min_p_mehlich3 = 50) {
+                       min_oc = 0.6, min_p_mehlich3 = 100) {
+  # WRB 2022 Ch 3.1.29 criterion 2b: >= 100 mg/kg P (Mehlich-3) in the upper
+  # 20 cm (corrected from 50).
   h <- pedon$horizons
   tests <- list()
   tests$oc          <- test_oc_above(h, min_pct = min_oc)

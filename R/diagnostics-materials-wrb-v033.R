@@ -401,10 +401,13 @@ ornithogenic_material <- function(pedon, min_p_mehlich3 = 750) {
                                    threshold = min_p_mehlich3)
   tests$designation <- test_pattern_match(h, "designation",
                                               "ornit|bird|guano")
-  if (isTRUE(tests$p$passed) || isTRUE(tests$designation$passed)) {
-    layers <- union(tests$p$layers, tests$designation$layers)
-    passed <- TRUE
-  } else if (is.na(tests$p$passed) && is.na(tests$designation$passed)) {
+  # WRB 2022 Ch 3.3.15: ornithogenic material requires BOTH (1) remnants of
+  # birds / bird activity AND (2) >= 750 mg/kg Mehlich-3 P -- not either/or.
+  # (Corrected from a union to an intersection of the two conditions.)
+  if (isTRUE(tests$p$passed) && isTRUE(tests$designation$passed)) {
+    layers <- intersect(tests$p$layers, tests$designation$layers)
+    passed <- length(layers) > 0L
+  } else if (is.na(tests$p$passed) || is.na(tests$designation$passed)) {
     layers <- integer(0); passed <- NA
   } else {
     layers <- integer(0); passed <- FALSE
