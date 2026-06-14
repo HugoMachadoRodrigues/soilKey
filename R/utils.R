@@ -144,7 +144,15 @@ horizon_column_spec <- function() {
     surface_puff_layer            = "logical",   # WRB Ch 5 (Kalaic / Puffic): seasonal puffed surface layer (TRUE / FALSE / NA)
     thixotropic_index             = "numeric",   # WRB Ch 5 (Thixotropic): thixotropic-behaviour index (0-100) from slurry test
     saprolite_pct                 = "numeric",   # WRB Ch 5 (Saprolithic): % by volume of in-situ weathered saprolite material
-    water_regime_pattern          = "character"  # WRB Ch 5 (Uterquic): bidirectional / single / aquic regime classification
+    water_regime_pattern          = "character", # WRB Ch 5 (Uterquic): bidirectional / single / aquic regime classification
+    # ---- v0.9.128 additions: fields that unlock schema-blocked predicates ---
+    # Each refines a predicate that previously used an air-dried-only / proxy
+    # criterion; used only when present (absent => existing behaviour, so all
+    # fixtures stay byte-identical).
+    water_content_1500kpa_undried = "numeric",   # 1500 kPa water retention on UNDRIED samples; Vitrands/Vitrandic need < 30% undried beside < 15% air-dried (KST 13ed Ch 6)
+    particles_002_2mm_pct         = "numeric",   # % of the FINE-EARTH fraction in the 0.02-2.0 mm size class; Vitrandic subgroup crit 2 needs >= 30% (KST 13ed Ch 9)
+    cracks_top_cm                 = "numeric",   # depth (cm) of the UPPER boundary of shrink-swell cracks; Vertic subgroup needs cracks within 125 cm (KST 13ed)
+    incubation_ph                 = "numeric"    # pH after the WRB 8-week aerobic incubation test; hypersulfidic drops < 4, hyposulfidic stays >= 4 (WRB 2022 Ch 3.3.8/3.3.9)
   )
 }
 

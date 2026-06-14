@@ -383,6 +383,18 @@
           },
           "water_regime_pattern": {
             "type": ["string", "null"]
+          },
+          "water_content_1500kpa_undried": {
+            "type": ["number", "null"]
+          },
+          "particles_002_2mm_pct": {
+            "type": ["number", "null"]
+          },
+          "cracks_top_cm": {
+            "type": ["number", "null"]
+          },
+          "incubation_ph": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false
