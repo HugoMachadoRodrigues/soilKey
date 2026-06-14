@@ -1,3 +1,37 @@
+# soilKey 0.9.125 (2026-06-13)
+
+The "**WRB predicate audit, Phase 2**" release. A review of the 79 WRB
+diagnostic-horizon/property/material predicates against WRB 2022 (4th ed). Unlike
+the USDA audit (where `ST_criteria_13th` is machine-verifiable), WRB has no such
+ground truth in the package -- so every workflow flag was checked against the
+\strong{authoritative WRB 2022 PDF}, which proved decisive.
+
+\itemize{
+  \item \strong{The PDF cross-check refuted 4 agent flags and found 1 bug the
+        agents missed.} Refuted: \code{tephric_material} (>= 30\% glass is
+        correct, not 5\%); \code{histic_horizon} (WRB 3.1.15 has \emph{no}
+        depth-from-surface criterion -- the "30 cm" is the USDA epipedon rule);
+        \code{plaggic} depth (3.1.29 is a surface horizon with no top-depth
+        limit); \code{shrink_swell_cracks} (>= 0.5 cm is correct).
+  \item \strong{2 confirmed bugs fixed} (each grounded in the verbatim WRB 2022
+        text; gate = 44 fixtures byte-identical + full suite):
+        \itemize{
+          \item \code{ornithogenic_material}: WRB 3.3.15 requires \strong{both}
+                bird-activity evidence \strong{and} >= 750 mg/kg Mehlich-3 P --
+                corrected from OR to AND.
+          \item \code{plaggic}: Mehlich-3 P threshold 50 -> \strong{100} mg/kg
+                (3.1.29 criterion 2b) -- a bug the static review missed.
+        }
+  \item \strong{Deferred (verified):} \code{sideralic_properties} criterion 2
+        (needs the cambic soil-formation-evidence check factored out);
+        \code{hypersulfidic}/\code{hyposulfidic} (schema-blocked -- no 8-week
+        incubation-result field).
+  \item KSSL (USDA-labelled) is blind to WRB diagnostic changes, so it is not
+        used as the gate here. Report:
+        \code{inst/benchmarks/reports/wrb_predicate_audit_v09125.md}.
+        +4 unit tests; no new exports.
+}
+
 # soilKey 0.9.124 (2026-06-13)
 
 The "**USDA predicate correctness audit, Phase 1**" release. A systematic review
