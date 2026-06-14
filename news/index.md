@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.124 (2026-06-13)
+
+The “**USDA predicate correctness audit, Phase 1**” release. A
+systematic review of the **102 USDA core diagnostic predicates** against
+their verbatim KST 13th-edition criteria
+([`SoilTaxonomy::ST_criteria_13th`](https://rdrr.io/pkg/SoilTaxonomy/man/ST_criteria_13th.html);
+KST Ch. 3), each flagged divergence then to refute false positives.
+
 ## soilKey 0.9.123 (2026-06-13)
 
 The “**criteria-verified intergrade subgroups**” release (front E4b).

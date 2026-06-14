@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.123</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.124</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.124</strong></td>
+<td>
+<strong>USDA predicate correctness audit, Phase 1.</strong> Systematic review of the <strong>102 USDA core diagnostic predicates</strong> vs their verbatim KST 13ed criteria (<code>ST_criteria_13th</code>; Ch. 3) via a fan-out Workflow — review then <strong>adversarial verify</strong> (skeptic refutes false positives). Outcome: 58 correct / 17 defensible / 8 missing-data-only / 1 cannot-verify / 18 flagged → <strong>8 confirmed, 10 refuted</strong> (the refuted include the alleged <code>mollisol_qualifying</code> NA-bug and <code>humic_oxisol</code> 16 kg/m² claim — correctly left alone). <strong>4 fixed</strong> (all stricter, KSSL n=2895 gate 0-changed/0-worsened): <code>rendoll_qualifying_usda</code> lithic contact 100→<strong>50 cm</strong>; <code>hydraquent_qualifying_usda</code> window 0-50→<strong>20-50 cm</strong> + <strong>clay ≥8%</strong> + <strong>all</strong>-layers; <code>aeric_oxisol_usda</code> chroma-3 layer must be <strong>below the epipedon</strong> (exclude A<em>/O</em>); <code>duric_subgroup_usda</code> cemented in <strong>≥90% of pedon</strong> (was any layer). <strong>4 deferred honestly:</strong> 3 schema-limited (<code>vertic</code> needs crack position; <code>vitrand</code> needs air-dried/undried split; <code>vitrandic</code> needs 0.02-2 mm particle-size) + <code>humult_qualifying_usda</code> criterion (1) written-but-held because the <strong>integration gate surfaced a NEW bug</strong> the static review missed — <code>argillic_within_usda</code> includes a transitional B with NO clay increase (KSSL 1828: E 16.6→B 15.8), so its top is too shallow; humult crit-1 waits for that fix. 44 fixtures byte-identical; +9 tests; report <code>inst/benchmarks/reports/usda_predicate_audit_v09124.md</code>. Phases 2 (WRB 236 cores) + 3 (SiBCS) pending.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.123</strong></td>
 <td>
