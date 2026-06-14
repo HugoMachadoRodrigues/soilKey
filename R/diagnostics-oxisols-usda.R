@@ -238,7 +238,12 @@ plinthic_subgroup_usda <- function(pedon, max_top_cm = 125) {
 #' @export
 aeric_oxisol_usda <- function(pedon) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm > 0 & h$top_cm < 100)
+  # KST 13ed Ch. 13: the chroma-3 horizon must lie DIRECTLY BELOW an epipedon
+  # (10+ cm thick). Exclude surface epipedon horizons (A*/O* designations) so a
+  # high-chroma A/AB layer cannot satisfy the test from within the epipedon.
+  d <- h$designation
+  is_epi <- !is.na(d) & grepl("^A|^O", d)
+  cand <- which(!is.na(h$top_cm) & h$top_cm > 0 & h$top_cm < 100 & !is_epi)
   chr <- h$munsell_chroma_moist[cand]
   passing <- cand[!is.na(chr) & chr >= 3]
   thk <- if (length(passing) > 0L)

@@ -1,3 +1,45 @@
+# soilKey 0.9.124 (2026-06-13)
+
+The "**USDA predicate correctness audit, Phase 1**" release. A systematic review
+of the **102 USDA core diagnostic predicates** against their verbatim KST
+13th-edition criteria (`SoilTaxonomy::ST_criteria_13th`; KST Ch. 3), each flagged
+divergence then \strong{adversarially verified} to refute false positives.
+
+\itemize{
+  \item \strong{Outcome:} 58 correct, 17 defensible simplifications, 8
+        missing-data-only, 1 cannot-verify, 18 flagged -- of which adversarial
+        verification \strong{confirmed 8} and refuted 10 (e.g. the alleged
+        \code{mollisol_qualifying_usda} NA-logic bug and the \code{humic_oxisol}
+        16 kg/m2 "non-canonical" claim were correctly left untouched).
+  \item \strong{4 confirmed bugs fixed} (each stricter -- removing false
+        positives -- with a KSSL n=2895 before/after gate showing \strong{0
+        changed, 0 worsened}):
+        \itemize{
+          \item \code{rendoll_qualifying_usda}: lithic/paralithic contact within
+                \strong{50 cm} (was 100 cm).
+          \item \code{hydraquent_qualifying_usda}: the \strong{20-50 cm} window
+                with \strong{clay >= 8\%} in \strong{all} horizons (was 0-50 cm,
+                any layer, no clay condition).
+          \item \code{aeric_oxisol_usda}: the chroma-3 horizon must be
+                \strong{directly below the epipedon} (A*/O* horizons are now
+                excluded; was any layer below 1 cm).
+          \item \code{duric_subgroup_usda}: cemented in \strong{>= 90\% of the
+                pedon} (was any single cemented layer).
+        }
+  \item \strong{4 confirmed bugs deferred, honestly.} Three are schema-limited
+        (fixing them with the data we have would be guessing):
+        \code{vertic_subgroup_usda} (needs a crack-position field),
+        \code{vitrand_qualifying_usda} (needs separate air-dried/undried water),
+        \code{vitrandic_subgroup_usda} (needs a 0.02-2 mm particle-size field).
+        The fourth, \code{humult_qualifying_usda} criterion (1), is written but
+        held: the gate showed it inherits a top-detection error from
+        \code{argillic_within_usda} -- a \emph{new} bug the integration gate
+        caught that the static review missed -- so it waits until that predicate
+        is corrected.
+  \item Full report: \code{inst/benchmarks/reports/usda_predicate_audit_v09124.md}.
+        +9 unit tests; 44 fixtures byte-identical; no new exports.
+}
+
 # soilKey 0.9.123 (2026-06-13)
 
 The "**criteria-verified intergrade subgroups**" release (front E4b). Adds **+25**

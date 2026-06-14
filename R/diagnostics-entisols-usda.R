@@ -181,15 +181,24 @@ quartzipsamment_qualifying_usda <- function(pedon) {
 #' @export
 hydraquent_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 50)
+  # KST 13ed Ch. 8 (p. 168): in ALL horizons between 20 and 50 cm, BOTH an
+  # n value > 0.7 (proxied here by water_content_1500kpa >= 80%) AND 8% or
+  # more clay in the fine-earth fraction. (Corrected: window is 20-50 cm not
+  # 0-50; the clay condition was missing; the logic is "all", not "any".)
+  cand <- which(!is.na(h$top_cm) & h$top_cm >= 20 & h$top_cm < 50)
   wr <- h$water_content_1500kpa[cand]
-  miss <- if (all(is.na(wr))) "water_content_1500kpa" else character(0)
-  passing <- cand[!is.na(wr) & wr >= 80]
-  passed <- length(passing) > 0L
+  cl <- h$clay_pct[cand]
+  miss <- character(0)
+  if (length(cand) == 0L || all(is.na(wr))) miss <- c(miss, "water_content_1500kpa")
+  if (length(cand) == 0L || all(is.na(cl))) miss <- c(miss, "clay_pct")
+  each_ok <- (!is.na(wr) & wr >= 80) & (!is.na(cl) & cl >= 8)
+  passed  <- length(cand) > 0L && all(each_ok)
   DiagnosticResult$new(
-    name = "hydraquent_qualifying_usda", passed = passed, layers = passing,
-    evidence = list(threshold_pct = 80),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8"
+    name = "hydraquent_qualifying_usda", passed = passed,
+    layers = cand[each_ok],
+    evidence = list(n_value_proxy_pct = 80, min_clay_pct = 8,
+                    depth_window = "20-50 cm", n_layers = length(cand)),
+    missing = unique(miss),
+    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 8, p 168"
   )
 }

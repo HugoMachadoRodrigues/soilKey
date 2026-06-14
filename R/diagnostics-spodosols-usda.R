@@ -200,11 +200,20 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
   cem <- h$cementation_class[cand]
   miss <- if (all(is.na(cem))) "cementation_class" else character(0)
   cemented <- c("weakly", "moderately", "strongly", "indurated")
-  passing <- cand[!is.na(cem) & tolower(cem) %in% cemented]
-  passed <- length(passing) > 0L
+  is_cem  <- !is.na(cem) & tolower(cem) %in% cemented
+  passing <- cand[is_cem]
+  # KST 13ed Ch. 14: in 90% or more of each pedon, a (pedogenically) cemented
+  # horizon within max_top_cm. Corrected from "any single cemented layer" to a
+  # cumulative-thickness >= 90% test (clipping layers to the depth window).
+  clip <- function(idx) sum(pmax(pmin(h$bottom_cm[idx], max_top_cm) -
+                                   pmax(h$top_cm[idx], 0), 0), na.rm = TRUE)
+  thk_cem   <- clip(passing)
+  thk_total <- clip(cand)
+  passed    <- thk_total > 0 && thk_cem >= 0.90 * thk_total
   DiagnosticResult$new(
     name = "duric_subgroup_usda", passed = passed, layers = passing,
-    evidence = list(max_top_cm = max_top_cm),
+    evidence = list(max_top_cm = max_top_cm, cemented_cm = thk_cem,
+                    total_cm = thk_total),
     missing = miss,
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
   )
