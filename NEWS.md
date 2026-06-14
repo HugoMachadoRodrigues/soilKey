@@ -1,3 +1,37 @@
+# soilKey 0.9.128 (2026-06-14)
+
+The "**schema-blocked predicates unlocked**" release (predicate-correctness
+backlog, Fix C). Four new horizon-schema fields let five predicates enforce
+their verbatim criteria instead of an air-dried-only / proxy approximation.
+Every refinement follows one rule: **enforced only when the field is present;
+absent => prior behaviour**, so all existing data classifies identically.
+
+\itemize{
+  \item \strong{New schema fields} (in \code{horizon_column_spec()} and the
+        derived \code{inst/schemas/pedon-schema.json}):
+        \code{water_content_1500kpa_undried}, \code{particles_002_2mm_pct},
+        \code{cracks_top_cm}, \code{incubation_ph}.
+  \item \code{vitrand_qualifying_usda}: now requires 1500 kPa water retention
+        < 15\% air-dried \strong{and} < 30\% undried (KST 13ed Ch 6); the
+        undried branch fires only where measured.
+  \item \code{vitrandic_subgroup_usda}: branch 2 now also requires the
+        fine-earth fraction to be \eqn{\ge} 30\% in the 0.02-2.0 mm size class
+        (KST 13ed Ch 9), beside \eqn{\ge} 5\% glass.
+  \item \code{vertic_subgroup_usda}: the crack branch now honours the
+        "cracks within 125 cm of the surface" depth limit via
+        \code{cracks_top_cm}.
+  \item \strong{\code{hyposulfidic_material} is reachable again.} Without the
+        incubation test, hypersulfidic = (S + pH) and hyposulfidic =
+        (S + pH) AND NOT(S + pH) = always empty. With \code{incubation_ph}, a
+        sulfidic + pH>=4 layer that stays \eqn{\ge} 4 on aerobic incubation is
+        hyposulfidic (WRB 3.3.9); one that drops < 4 is hypersulfidic
+        (WRB 3.3.8). Absent => the layer is reported as potential hypersulfidic,
+        as before.
+  \item Gate: 44 canonical fixtures byte-identical; KSSL n=2895 before/after
+        \strong{0 changed} (the fields are absent in that data); +16 unit tests;
+        full suite 5604 pass / 0 fail; \code{R CMD check --as-cran} unchanged.
+}
+
 # soilKey 0.9.127 (2026-06-14)
 
 The "**sideralic criterion 2**" release (predicate-correctness backlog, Fix B).

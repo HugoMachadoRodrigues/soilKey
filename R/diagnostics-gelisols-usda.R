@@ -479,9 +479,13 @@ vitrandic_subgroup_usda <- function(pedon) {
     fe <- h$fe_ox_pct[i]
     vg <- h$volcanic_glass_pct[i]
     cf <- h$coarse_fragments_pct[i]
+    p002 <- .col_at(h, "particles_002_2mm_pct", i)
     if (is.na(vg)) miss <- c(miss, "volcanic_glass_pct")
     branch_a <- !is.na(cf) && cf > 35  # cinders/pumice branch (proxy)
-    branch_b <- !is.na(vg) && vg >= 5
+    # branch 2: >= 5% glass in 0.02-2 mm AND fine earth >= 30% in 0.02-2 mm.
+    # The fine-earth size requirement is enforced only when measured
+    # (particles_002_2mm_pct); absent => prior behaviour (v0.9.128).
+    branch_b <- !is.na(vg) && vg >= 5 && (is.na(p002) || p002 >= 30)
     score <- if (!is.na(al) && !is.na(fe) && !is.na(vg))
                (al + 0.5 * fe) * 60 + vg
              else NA_real_
@@ -529,11 +533,17 @@ vitrandic_subgroup_usda <- function(pedon) {
 vertic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
   miss <- character(0)
-  # Branch 1: cracks
+  # Branch 1: cracks >= 5 mm wide through >= 30 cm thickness, WITHIN 125 cm of
+  # the surface, plus slickensides / wedge-shaped peds. The "within 125 cm"
+  # depth is enforced per layer only when cracks_top_cm is measured; absent =>
+  # prior behaviour (v0.9.128).
   cw <- h$cracks_width_cm
   cd <- h$cracks_depth_cm
   ss <- h$slickensides
-  cracks_ok <- any(!is.na(cw) & cw >= 0.5 & !is.na(cd) & cd >= 30) &&
+  ct_col <- h[["cracks_top_cm"]]
+  ct <- if (is.null(ct_col)) rep(NA_real_, nrow(h)) else ct_col
+  cracks_ok <- any(!is.na(cw) & cw >= 0.5 & !is.na(cd) & cd >= 30 &
+                     (is.na(ct) | ct < 125)) &&
                  any(!is.na(ss) & tolower(ss) %in%
                        c("few", "common", "many", "continuous"))
   # Branch 2: LE >= 6

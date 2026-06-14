@@ -2,10 +2,14 @@
 % Please edit documentation in R/diagnostics-materials-wrb-v033.R
 \name{hyposulfidic_material}
 \alias{hyposulfidic_material}
-\title{Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-of severe acidification). v0.3.3: returns sulfidic layers that don't
-meet hypersulfidic.}
+\title{Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S and
+field pH as hypersulfidic but does NOT consist of hypersulfidic (criterion 3
+-- does not acidify to pH < 4 on aerobic incubation, usually self-neutralised
+by carbonate). Reachable from v0.9.128: when \code{incubation_ph} is measured,
+a sulfidic + pH>=4 layer that stays >= 4 on incubation is the set-complement
+of \code{\link{hypersulfidic_material}} and is reported here. Without an
+incubation pH the two cannot be told apart, so this returns empty (the layer
+is reported as potential hypersulfidic instead).}
 \usage{
 hyposulfidic_material(pedon, min_s_pct = 0.01, min_pH = 4)
 }
@@ -20,8 +24,12 @@ hyposulfidic_material(pedon, min_s_pct = 0.01, min_pH = 4)
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-of severe acidification). v0.3.3: returns sulfidic layers that don't
-meet hypersulfidic.
+Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S and
+field pH as hypersulfidic but does NOT consist of hypersulfidic (criterion 3
+-- does not acidify to pH < 4 on aerobic incubation, usually self-neutralised
+by carbonate). Reachable from v0.9.128: when \code{incubation_ph} is measured,
+a sulfidic + pH>=4 layer that stays >= 4 on incubation is the set-complement
+of \code{\link{hypersulfidic_material}} and is reported here. Without an
+incubation pH the two cannot be told apart, so this returns empty (the layer
+is reported as potential hypersulfidic instead).
 }

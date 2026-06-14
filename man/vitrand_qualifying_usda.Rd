@@ -3,9 +3,11 @@
 \name{vitrand_qualifying_usda}
 \alias{vitrand_qualifying_usda}
 \title{Vitrands qualifier (Cap 6, pp 117-118)
-Pass when 1500 kPa water retention < 15\% (air-dried) and
-< 30\% (undried) throughout 60\%+ of the thickness. v0.8 proxy:
-uses water_content_1500kpa < 15\%.}
+Pass when 1500 kPa water retention < 15\% (air-dried) AND < 30\% (undried)
+throughout 60\%+ of the thickness. The undried branch (KST 13ed crit) is
+enforced only on layers that carry \code{water_content_1500kpa_undried};
+where that column is absent the air-dried branch alone is used, so existing
+data classifies identically (v0.9.128).}
 \usage{
 vitrand_qualifying_usda(pedon, max_top_cm = 60)
 }
@@ -16,8 +18,10 @@ vitrand_qualifying_usda(pedon, max_top_cm = 60)
 }
 \description{
 Vitrands qualifier (Cap 6, pp 117-118)
-Pass when 1500 kPa water retention < 15\% (air-dried) and
-< 30\% (undried) throughout 60\%+ of the thickness. v0.8 proxy:
-uses water_content_1500kpa < 15\%.
+Pass when 1500 kPa water retention < 15\% (air-dried) AND < 30\% (undried)
+throughout 60\%+ of the thickness. The undried branch (KST 13ed crit) is
+enforced only on layers that carry \code{water_content_1500kpa_undried};
+where that column is absent the air-dried branch alone is used, so existing
+data classifies identically (v0.9.128).
 }
 \keyword{internal}

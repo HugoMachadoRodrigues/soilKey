@@ -146,9 +146,11 @@ aquand_qualifying_usda <- function(pedon) {
 # ---- Vitrand Suborder qualifier -------------------------------------
 
 #' Vitrands qualifier (Cap 6, pp 117-118)
-#' Pass when 1500 kPa water retention < 15\% (air-dried) and
-#' < 30\% (undried) throughout 60\%+ of the thickness. v0.8 proxy:
-#' uses water_content_1500kpa < 15\%.
+#' Pass when 1500 kPa water retention < 15\% (air-dried) AND < 30\% (undried)
+#' throughout 60\%+ of the thickness. The undried branch (KST 13ed crit) is
+#' enforced only on layers that carry \code{water_content_1500kpa_undried};
+#' where that column is absent the air-dried branch alone is used, so existing
+#' data classifies identically (v0.9.128).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @keywords internal
@@ -157,8 +159,12 @@ vitrand_qualifying_usda <- function(pedon, max_top_cm = 60) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
   wr <- h$water_content_1500kpa[cand]
+  wru_col <- h[["water_content_1500kpa_undried"]]
+  wru <- if (is.null(wru_col)) rep(NA_real_, length(cand)) else wru_col[cand]
   miss <- if (all(is.na(wr))) "water_content_1500kpa" else character(0)
-  passing <- cand[!is.na(wr) & wr < 15]
+  # air-dried < 15 AND (undried < 30 when measured; not disqualifying if absent)
+  undried_ok <- is.na(wru) | wru < 30
+  passing <- cand[!is.na(wr) & wr < 15 & undried_ok]
   thk_pass <- if (length(passing) > 0L)
                 sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
                       na.rm = TRUE)

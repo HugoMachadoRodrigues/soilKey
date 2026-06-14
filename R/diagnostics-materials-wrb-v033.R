@@ -183,25 +183,42 @@ hypersulfidic_material <- function(pedon, min_s_pct = 0.01,
     details = list()
   )
   shared <- intersect(tests$sulfidic$layers, tests$pH$layers)
-  passed <- if (length(shared) > 0L) TRUE
+  # Criterion 3 (WRB 3.3.8): aerobic incubation drops pH < 4. When the
+  # incubation pH is measured, a layer that stays >= 4 does NOT acidify and is
+  # therefore NOT hypersulfidic (it is hyposulfidic). Absent => prior
+  # behaviour, where every sulfidic + pH>=4 layer is reported as a candidate
+  # ("potential" -- the incubation test is the only way to confirm). v0.9.128.
+  inc_col <- h[["incubation_ph"]]
+  inc <- if (is.null(inc_col)) rep(NA_real_, nrow(h)) else inc_col
+  acidifies <- is.na(inc[shared]) | inc[shared] < 4
+  hyper_layers <- shared[acidifies]
+  excluded_non_acid <- length(shared) > length(hyper_layers)
+  passed <- if (length(hyper_layers) > 0L) TRUE
+            else if (excluded_non_acid) FALSE
             else if (is.na(tests$sulfidic$passed) ||
                      is.na(tests$pH$passed)) NA
             else FALSE
   DiagnosticResult$new(
     name = "hypersulfidic_material",
-    passed = passed, layers = shared,
+    passed = passed, layers = hyper_layers,
     evidence = tests,
     missing = unique(c(tests$sulfidic$missing, tests$pH$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 3.3.8",
-    notes = "v0.3.3: 8-week incubation acidification test deferred"
+    notes = if (is.null(inc_col))
+              "v0.9.128: incubation pH absent -> potential (criterion 3 unconfirmed)"
+            else "v0.9.128: criterion 3 evaluated from incubation_ph"
   )
 }
 
 
-#' Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-#' hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-#' of severe acidification). v0.3.3: returns sulfidic layers that don't
-#' meet hypersulfidic.
+#' Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S and
+#' field pH as hypersulfidic but does NOT consist of hypersulfidic (criterion 3
+#' -- does not acidify to pH < 4 on aerobic incubation, usually self-neutralised
+#' by carbonate). Reachable from v0.9.128: when \code{incubation_ph} is measured,
+#' a sulfidic + pH>=4 layer that stays >= 4 on incubation is the set-complement
+#' of \code{\link{hypersulfidic_material}} and is reported here. Without an
+#' incubation pH the two cannot be told apart, so this returns empty (the layer
+#' is reported as potential hypersulfidic instead).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_s_pct Numeric threshold or option (see Details).
 #' @param min_pH Numeric threshold or option (see Details).
