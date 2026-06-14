@@ -1,8 +1,11 @@
-# Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water retention \< 15% (air-dried) and \< 30% (undried) throughout 60%+ of the thickness. v0.8 proxy: uses water_content_1500kpa \< 15%.
+# Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water retention \< 15% (air-dried) AND \< 30% (undried) throughout 60%+ of the thickness. The undried branch (KST 13ed crit) is enforced only on layers that carry `water_content_1500kpa_undried`; where that column is absent the air-dried branch alone is used, so existing data classifies identically (v0.9.128).
 
 Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water
-retention \< 15% (air-dried) and \< 30% (undried) throughout 60%+ of the
-thickness. v0.8 proxy: uses water_content_1500kpa \< 15%.
+retention \< 15% (air-dried) AND \< 30% (undried) throughout 60%+ of the
+thickness. The undried branch (KST 13ed crit) is enforced only on layers
+that carry `water_content_1500kpa_undried`; where that column is absent
+the air-dried branch alone is used, so existing data classifies
+identically (v0.9.128).
 
 ## Usage
 

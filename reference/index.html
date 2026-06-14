@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.127</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.128</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -761,7 +761,7 @@
           <code><a href="hyposulfidic_material.html">hyposulfidic_material()</a></code>
 
         </dt>
-        <dd>Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable of severe acidification). v0.3.3: returns sulfidic layers that don't meet hypersulfidic.</dd>
+        <dd>Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S and field pH as hypersulfidic but does NOT consist of hypersulfidic (criterion 3 – does not acidify to pH &lt; 4 on aerobic incubation, usually self-neutralised by carbonate). Reachable from v0.9.128: when <code>incubation_ph</code> is measured, a sulfidic + pH&gt;=4 layer that stays &gt;= 4 on incubation is the set-complement of <code>hypersulfidic_material</code> and is reported here. Without an incubation pH the two cannot be told apart, so this returns empty (the layer is reported as potential hypersulfidic instead).</dd>
 
         <dt>
 
@@ -2376,7 +2376,7 @@
           <code><a href="hyposulfidic_material.html">hyposulfidic_material()</a></code>
 
         </dt>
-        <dd>Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable of severe acidification). v0.3.3: returns sulfidic layers that don't meet hypersulfidic.</dd>
+        <dd>Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S and field pH as hypersulfidic but does NOT consist of hypersulfidic (criterion 3 – does not acidify to pH &lt; 4 on aerobic incubation, usually self-neutralised by carbonate). Reachable from v0.9.128: when <code>incubation_ph</code> is measured, a sulfidic + pH&gt;=4 layer that stays &gt;= 4 on incubation is the set-complement of <code>hypersulfidic_material</code> and is reported here. Without an incubation pH the two cannot be told apart, so this returns empty (the layer is reported as potential hypersulfidic instead).</dd>
 
         <dt>
 
@@ -8579,7 +8579,7 @@
           <code><a href="vitrand_qualifying_usda.html">vitrand_qualifying_usda()</a></code>
 
         </dt>
-        <dd>Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water retention &lt; 15% (air-dried) and &lt; 30% (undried) throughout 60%+ of the thickness. v0.8 proxy: uses water_content_1500kpa &lt; 15%.</dd>
+        <dd>Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water retention &lt; 15% (air-dried) AND &lt; 30% (undried) throughout 60%+ of the thickness. The undried branch (KST 13ed crit) is enforced only on layers that carry <code>water_content_1500kpa_undried</code>; where that column is absent the air-dried branch alone is used, so existing data classifies identically (v0.9.128).</dd>
 
         <dt>
 

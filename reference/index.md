@@ -350,10 +350,17 @@ Benchmark drivers and KSSL/NASIS label normalisers.
   incubation.
 
 - [`hyposulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hyposulfidic_material.md)
-  : Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-  hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-  of severe acidification). v0.3.3: returns sulfidic layers that don't
-  meet hypersulfidic.
+  :
+
+  Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S
+  and field pH as hypersulfidic but does NOT consist of hypersulfidic
+  (criterion 3 – does not acidify to pH \< 4 on aerobic incubation,
+  usually self-neutralised by carbonate). Reachable from v0.9.128: when
+  `incubation_ph` is measured, a sulfidic + pH\>=4 layer that stays \>=
+  4 on incubation is the set-complement of `hypersulfidic_material` and
+  is reported here. Without an incubation pH the two cannot be told
+  apart, so this returns empty (the layer is reported as potential
+  hypersulfidic instead).
 
 - [`limnic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/limnic_material.md)
   :
@@ -1021,10 +1028,17 @@ plus auxiliaries) used in the test suite.
   incubation.
 
 - [`hyposulfidic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/hyposulfidic_material.md)
-  : Hyposulfidic material (WRB 2022 Ch 3.3.9): same S and pH as
-  hypersulfidic but does NOT consist of hypersulfidic (i.e. not capable
-  of severe acidification). v0.3.3: returns sulfidic layers that don't
-  meet hypersulfidic.
+  :
+
+  Hyposulfidic material (WRB 2022 Ch 3.3.9): same inorganic sulfidic S
+  and field pH as hypersulfidic but does NOT consist of hypersulfidic
+  (criterion 3 – does not acidify to pH \< 4 on aerobic incubation,
+  usually self-neutralised by carbonate). Reachable from v0.9.128: when
+  `incubation_ph` is measured, a sulfidic + pH\>=4 layer that stays \>=
+  4 on incubation is the set-complement of `hypersulfidic_material` and
+  is reported here. Without an incubation pH the two cannot be told
+  apart, so this returns empty (the layer is reported as potential
+  hypersulfidic instead).
 
 - [`solimovic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/solimovic_material.md)
   :
@@ -4192,9 +4206,14 @@ pública curada.
   redoxico.
 
 - [`vitrand_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrand_qualifying_usda.md)
-  : Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water
-  retention \< 15% (air-dried) and \< 30% (undried) throughout 60%+ of
-  the thickness. v0.8 proxy: uses water_content_1500kpa \< 15%.
+  :
+
+  Vitrands qualifier (Cap 6, pp 117-118) Pass when 1500 kPa water
+  retention \< 15% (air-dried) AND \< 30% (undried) throughout 60%+ of
+  the thickness. The undried branch (KST 13ed crit) is enforced only on
+  layers that carry `water_content_1500kpa_undried`; where that column
+  is absent the air-dried branch alone is used, so existing data
+  classifies identically (v0.9.128).
 
 - [`vitrandic_subgroup_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/vitrandic_subgroup_usda.md)
   : Vitrandic Subgroup helper (USDA, KST 13ed)

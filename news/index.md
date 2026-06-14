@@ -1,5 +1,14 @@
 # Changelog
 
+## soilKey 0.9.128 (2026-06-14)
+
+The “**schema-blocked predicates unlocked**” release
+(predicate-correctness backlog, Fix C). Four new horizon-schema fields
+let five predicates enforce their verbatim criteria instead of an
+air-dried-only / proxy approximation. Every refinement follows one rule:
+**enforced only when the field is present; absent =\> prior behaviour**,
+so all existing data classifies identically.
+
 ## soilKey 0.9.127 (2026-06-14)
 
 The “**sideralic criterion 2**” release (predicate-correctness backlog,
