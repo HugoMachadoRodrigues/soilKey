@@ -17,7 +17,16 @@ sideralic_properties(pedon, max_cec_per_clay = 24, max_bulk_cec = 2)
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Mineral material with low CEC: clay >= 8\% AND CEC/clay < 24, OR
-bulk CEC < 2 cmol_c/kg soil. Plus evidence of soil formation
-(cambic-style criterion 3).
+Mineral material with a relatively low CEC. WRB 2022 (3.2.13) requires
+BOTH:
+\enumerate{
+  \item one or both of: clay >= 8\% AND CEC/clay < 24 cmol_c/kg clay; OR
+        bulk CEC < 2 cmol_c/kg soil;
+  \item evidence of soil formation as defined in criterion 3 of the cambic
+        horizon (\code{\link{test_cambic_soil_formation}}).
+}
+Both must be met by the SAME layer. Criterion 2 was added in v0.9.127
+(previously only criterion 1 was enforced); where the soil-formation
+evidence cannot be assessed (no Munsell/clay/Fe/carbonate adjacency data)
+the result is \code{NA} rather than a false positive.
 }

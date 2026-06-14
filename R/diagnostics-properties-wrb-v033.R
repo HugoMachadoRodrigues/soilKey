@@ -311,9 +311,18 @@ shrink_swell_cracks <- function(pedon, min_width_cm = 0.5) {
 
 #' Sideralic properties (WRB 2022 Ch 3.2.13)
 #'
-#' Mineral material with low CEC: clay >= 8\% AND CEC/clay < 24, OR
-#' bulk CEC < 2 cmol_c/kg soil. Plus evidence of soil formation
-#' (cambic-style criterion 3).
+#' Mineral material with a relatively low CEC. WRB 2022 (3.2.13) requires
+#' BOTH:
+#' \enumerate{
+#'   \item one or both of: clay >= 8\% AND CEC/clay < 24 cmol_c/kg clay; OR
+#'         bulk CEC < 2 cmol_c/kg soil;
+#'   \item evidence of soil formation as defined in criterion 3 of the cambic
+#'         horizon (\code{\link{test_cambic_soil_formation}}).
+#' }
+#' Both must be met by the SAME layer. Criterion 2 was added in v0.9.127
+#' (previously only criterion 1 was enforced); where the soil-formation
+#' evidence cannot be assessed (no Munsell/clay/Fe/carbonate adjacency data)
+#' the result is \code{NA} rather than a false positive.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_cec_per_clay Numeric threshold or option (see Details).
 #' @param max_bulk_cec Numeric threshold or option (see Details).
@@ -343,17 +352,29 @@ sideralic_properties <- function(pedon, max_cec_per_clay = 24,
              else FALSE,
     layers = bulk, missing = missing, details = details
   )
-  shared <- union(tests$cec_per_clay$layers, tests$bulk_cec_alt$layers)
+  # Criterion 1: low-CEC layers (either path).
+  crit1 <- union(tests$cec_per_clay$layers, tests$bulk_cec_alt$layers)
+  crit1_na <- is.na(tests$cec_per_clay$passed) ||
+                is.na(tests$bulk_cec_alt$passed)
+
+  # Criterion 2: evidence of soil formation (cambic criterion 3) on the
+  # SAME layers. Only assessed where criterion 1 holds.
+  tests$soil_formation <- test_cambic_soil_formation(h,
+                                                       candidate_layers = crit1)
+  shared <- intersect(crit1, tests$soil_formation$layers)
+
   passed <- if (length(shared) > 0L) TRUE
-            else if (is.na(tests$cec_per_clay$passed) ||
-                     is.na(tests$bulk_cec_alt$passed)) NA
+            else if (length(crit1) == 0L) {
+              if (crit1_na) NA else FALSE
+            } else if (is.na(tests$soil_formation$passed)) NA
             else FALSE
   DiagnosticResult$new(
     name = "sideralic_properties",
     passed = passed, layers = shared,
     evidence = tests,
     missing = unique(c(tests$cec_per_clay$missing,
-                         tests$bulk_cec_alt$missing)),
+                         tests$bulk_cec_alt$missing,
+                         tests$soil_formation$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 3.2.13"
   )
 }
