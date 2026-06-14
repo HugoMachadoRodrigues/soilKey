@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.127 (2026-06-14)
+
+The “**sideralic criterion 2**” release (predicate-correctness backlog,
+Fix B). `sideralic_properties` (WRB 2022 Ch 3.2.13) now enforces
+**both** required criteria, not just the low-CEC one. Criterion 2 —
+“evidence of soil formation as defined in criterion 3 of the cambic
+horizon” — is implemented and required on the same layer as criterion 1.
+
 ## soilKey 0.9.126 (2026-06-14)
 
 The “**Humult criterion 1 restored**” release (predicate-correctness

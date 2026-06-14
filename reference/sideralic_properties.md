@@ -1,8 +1,19 @@
 # Sideralic properties (WRB 2022 Ch 3.2.13)
 
-Mineral material with low CEC: clay \>= 8% AND CEC/clay \< 24, OR bulk
-CEC \< 2 cmol_c/kg soil. Plus evidence of soil formation (cambic-style
-criterion 3).
+Mineral material with a relatively low CEC. WRB 2022 (3.2.13) requires
+BOTH:
+
+1.  one or both of: clay \>= 8% AND CEC/clay \< 24 cmol_c/kg clay; OR
+    bulk CEC \< 2 cmol_c/kg soil;
+
+2.  evidence of soil formation as defined in criterion 3 of the cambic
+    horizon
+    ([`test_cambic_soil_formation`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cambic_soil_formation.md)).
+
+Both must be met by the SAME layer. Criterion 2 was added in v0.9.127
+(previously only criterion 1 was enforced); where the soil-formation
+evidence cannot be assessed (no Munsell/clay/Fe/carbonate adjacency
+data) the result is `NA` rather than a false positive.
 
 ## Usage
 

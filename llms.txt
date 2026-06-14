@@ -2836,6 +2836,9 @@ pública curada.
 - [`.mollic_derived_negative()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-mollic_derived_negative.md)
   : Internal helper: .mollic_derived_negative
 
+- [`.munsell_hue_units()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-munsell_hue_units.md)
+  : Munsell hue as a continuous position on the red-to-yellow scale.
+
 - [`.normalise_results()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-normalise_results.md)
   : Internal helper: .normalise_results
 
@@ -4792,6 +4795,10 @@ pública curada.
 
 - [`test_caco3_concentration()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_caco3_concentration.md)
   : Test for CaCO3 concentration above threshold (per layer)
+
+- [`test_cambic_soil_formation()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cambic_soil_formation.md)
+  : Test cambic-horizon criterion 3 (evidence of soil formation), WRB
+  2022 Ch 3.1.5.
 
 - [`test_carbonates_present()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_carbonates_present.md)
   : Test for any layer with caco3_pct above a (low) threshold
