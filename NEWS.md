@@ -1,3 +1,37 @@
+# soilKey 0.9.127 (2026-06-14)
+
+The "**sideralic criterion 2**" release (predicate-correctness backlog, Fix B).
+`sideralic_properties` (WRB 2022 Ch 3.2.13) now enforces **both** required
+criteria, not just the low-CEC one. Criterion 2 — "evidence of soil formation as
+defined in criterion 3 of the cambic horizon" — is implemented and required on
+the same layer as criterion 1.
+
+\itemize{
+  \item \strong{New reusable helper \code{test_cambic_soil_formation()}}
+        implements WRB cambic-horizon criterion 3 faithfully against the
+        authoritative 2022 PDF: pedogenic contrast vs adjacent layers — hue /
+        chroma / clay increase vs the underlying layer (3.a), hue / value /
+        chroma vs an overlying mineral layer \eqn{\ge} 5 cm thick (3.b),
+        carbonate removal (3.c), and the Fe-ox/Fe-dith + reddish-chroma path
+        (3.d). A companion \code{.munsell_hue_units()} places Munsell hues on a
+        continuous 2.5-unit red-to-yellow scale so "\eqn{\ge} 2.5 units
+        redder/yellower" is exact.
+  \item \strong{Honest missing-data semantics:} where the soil-formation
+        evidence cannot be assessed (no Munsell / clay / Fe / carbonate
+        adjacency data), \code{sideralic_properties} returns \code{NA} rather
+        than a false positive. Previously only criterion 1 was enforced, so the
+        property over-fired on low-CEC parent material with no pedogenic
+        development.
+  \item Documented simplifications (no schema support): the \eqn{\ge} 90\%
+        exposed-area Munsell qualifier is taken as met by the recorded colour;
+        gypsum removal in 3.c is omitted (no gypsum column); lithic
+        discontinuities use the leading-integer designation convention.
+  \item \code{sideralic_properties} is not wired into any classification key, so
+        all 44 canonical fixtures are byte-identical and no classification
+        changes; the change is purely additive correctness. +14 unit tests;
+        full suite 5590 pass / 0 fail; \code{R CMD check --as-cran} unchanged.
+}
+
 # soilKey 0.9.126 (2026-06-14)
 
 The "**Humult criterion 1 restored**" release (predicate-correctness backlog,
