@@ -931,40 +931,39 @@ qual_isolatic <- function(pedon) {
 #' @keywords internal
 #' @export
 qual_endodystric <- function(pedon) {
-  base <- distrofico(pedon)
-  .q_within_depth("Endodystric", base, pedon, 50, 200)
+  # WRB 2022 Dystric (exch. Al > bases) evaluated only in the lower part
+  # (50-100 cm); the WRB Al-vs-bases criterion, not SiBCS base saturation.
+  .wrb_base_status_result(pedon, "Endodystric", "dystric", 50, 100)
 }
 
 
-#' Epidystric supplementary qualifier (epd): dystric only in upper 50 cm
+#' Epidystric supplementary qualifier (epd): dystric only in the upper part
 #'
-#' WRB 2022 Ch 5: "Dystric (BS < 50\%) in upper 50 cm and eutric below."
+#' WRB 2022 Ch 5: exchangeable Al > bases in 20-50 cm (Dystric restricted to
+#' the upper part).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_epidystric <- function(pedon) {
-  base <- distrofico(pedon)
-  .q_within_depth("Epidystric", base, pedon, 0, 50)
+  .wrb_base_status_result(pedon, "Epidystric", "dystric", 20, 50)
 }
 
 
-#' Endoeutric supplementary qualifier (eee): eutric only at depth
+#' Endoeutric supplementary qualifier (eee): eutric only at depth (50-100 cm)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_endoeutric <- function(pedon) {
-  base <- eutrofico(pedon)
-  .q_within_depth("Endoeutric", base, pedon, 50, 200)
+  .wrb_base_status_result(pedon, "Endoeutric", "eutric", 50, 100)
 }
 
 
-#' Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+#' Epieutric supplementary qualifier (eee): eutric only in the upper part
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_epieutric <- function(pedon) {
-  base <- eutrofico(pedon)
-  .q_within_depth("Epieutric", base, pedon, 0, 50)
+  .wrb_base_status_result(pedon, "Epieutric", "eutric", 20, 50)
 }
 
 

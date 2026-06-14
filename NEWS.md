@@ -1,3 +1,43 @@
+# soilKey 0.9.129 (2026-06-14)
+
+The "**WRB 2022 base status**" release (qualifier-correctness audit, Fix D
+part 1). The base-status qualifiers **Dystric / Eutric / Hyperdystric /
+Hypereutric** (and the Epi-/Endo- variants) are redefined from the obsolete
+WRB 2014 base-saturation criterion to the **WRB 2022 exchangeable-Al-vs-bases**
+criterion (Ch 5, p131-133), verified verbatim against the authoritative PDF.
+
+\itemize{
+  \item \strong{The criterion changed, not just a threshold.} WRB 2022 keys
+        Dystric/Eutric on \emph{exchangeable Al vs exchangeable bases}
+        (Al-saturation), NOT base saturation: Dystric = Al > bases in half or
+        more of 20-100 cm; Eutric = bases \eqn{\ge} Al in the major part;
+        Hyperdystric = Al > bases throughout AND Al > 4x bases (Al-sat > 80\%)
+        in the major part; Hypereutric = the base-dominated mirror (Al-sat
+        \eqn{\le} 20\%). Mineral layers use \code{al_sat_pct} or \code{al_cmol}
+        vs the base cations; organic layers use the Histosol pH branch.
+  \item \strong{Strict, by design (user decision): no base-saturation
+        fallback.} Where no exchangeable-Al datum is present the result is
+        \code{NA}, not a guess from \code{bs_pct}.
+  \item \strong{Showcase:} the canonical variable-charge Ferralsol now keys as
+        \emph{Eutric}, not Dystric -- its base saturation is low (24\%, against
+        the pH7 CEC) but on the effective exchange (ECEC ~2.6) the bases exceed
+        Al. This is exactly the case the 2014->2022 redefinition was made for.
+        The canonical Cambisol (bases \eqn{\gg} 4x Al throughout) now keys as
+        the more-specific \emph{Hypereutric}.
+  \item New internal helpers \code{.wrb_acidity_fracs} /
+        \code{.wrb_base_status_result} / \code{.wrb_hyper_status_result}; the
+        \code{coverage_report()} stub-detector learns the new delegation (the
+        E3 pattern), keeping qualifier coverage at 229/234. SiBCS
+        \code{distrofico}/\code{eutrofico} (base-saturation, correct for SiBCS)
+        are untouched.
+  \item Gate: full suite 5621 pass / 0 fail; +21 unit tests; the affected unit
+        tests and the CM/FR canonical-fixture expectations updated to the
+        WRB 2022 results (validated as more-correct). KSSL is USDA-labelled
+        (WRB-blind) and the FEBR-WRB benchmark is not locally re-runnable
+        (upstream FEBR repo retired), so validation rests on the verbatim PDF +
+        the canonical fixtures, as for the Phase 2 WRB diagnostic fixes.
+}
+
 # soilKey 0.9.128 (2026-06-14)
 
 The "**schema-blocked predicates unlocked**" release (predicate-correctness

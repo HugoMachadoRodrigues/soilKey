@@ -138,16 +138,21 @@ test_that("Cumulic fires on a fluvic / cumulic surface marker", {
 # ---- End-to-end canonical Ferralsol with parenthesised supplementary ------
 
 test_that("FR canonical name carries supplementary tags in WRB Ch 6 form", {
+  # This variable-charge Ferralsol is the showcase of the WRB 2014->2022
+  # base-status redefinition: base SATURATION is low (24%, against the pH7 CEC
+  # of 8.0), but on the EFFECTIVE exchange (ECEC ~2.6) the bases (1.9) exceed
+  # exchangeable Al (0.7). WRB 2022 keys base status on Al-vs-bases, so the
+  # soil is Eutric -- not Dystric (the old base-saturation answer).
   cls <- classify_wrb2022(make_ferralsol_canonical(), on_missing = "silent")
   expect_match(cls$name, "^Geric Ferric Rhodic Chromic Ferralsol \\(")
   expect_match(cls$name, "Clayic")
   expect_match(cls$name, "Humic")
-  expect_match(cls$name, "Dystric")
+  expect_match(cls$name, "Eutric")
 
   # The supplementary list is exposed on the ClassificationResult.
-  expect_true("Clayic"  %in% cls$qualifiers$supplementary)
-  expect_true("Humic"   %in% cls$qualifiers$supplementary)
-  expect_true("Dystric" %in% cls$qualifiers$supplementary)
+  expect_true("Clayic" %in% cls$qualifiers$supplementary)
+  expect_true("Humic"  %in% cls$qualifiers$supplementary)
+  expect_true("Eutric" %in% cls$qualifiers$supplementary)
 })
 
 test_that("AC / LX / LV / NT canonical names carry parenthesised supplementary", {
