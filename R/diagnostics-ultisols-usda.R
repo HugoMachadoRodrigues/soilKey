@@ -73,6 +73,14 @@ humult_qualifying_usda <- function(pedon) {
     dz <- pmax(bot - top, 0)
     oc_mass <- oc_mass + (oc / 100) * bd * dz * 10
   }
+  # KST 13ed (Humults) qualifies via EITHER criterion: (2) >= 12 kg/m2 OC in
+  # 0-100 cm (implemented here), OR (1) >= 0.9% weighted-average OC in the upper
+  # 15 cm of the argillic/kandic horizon. Criterion (1) is intentionally NOT
+  # wired yet: a KSSL n=2895 before/after gate showed it inherits a
+  # top-detection error from argillic_within_usda (which can include a
+  # transitional B horizon that has NO clay increase, e.g. E clay 16.6 -> B clay
+  # 15.8), inflating the upper-15-cm window. Criterion (1) waits until
+  # argillic_within_usda's top is corrected. See the predicate-audit backlog.
   passed <- oc_mass >= 12
   DiagnosticResult$new(
     name = "humult_qualifying_usda", passed = passed,

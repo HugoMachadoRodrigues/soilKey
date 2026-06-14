@@ -82,7 +82,9 @@ rendoll_qualifying_usda <- function(pedon) {
   cas <- h$caco3_pct[cand]
   miss <- if (all(is.na(cas))) "caco3_pct" else character(0)
   has_carbonate <- any(!is.na(cas) & cas >= 40)
-  has_lithic <- isTRUE(lithic_contact_usda(pedon, max_top_cm = 100)$passed)
+  # KST 13ed Ch. 12: Rendolls have a lithic or paralithic contact WITHIN 50 cm
+  # of the mineral soil surface (corrected from 100 cm).
+  has_lithic <- isTRUE(lithic_contact_usda(pedon, max_top_cm = 50)$passed)
   passed <- has_carbonate && has_lithic
   DiagnosticResult$new(
     name = "rendoll_qualifying_usda", passed = passed,
