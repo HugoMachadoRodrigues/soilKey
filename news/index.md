@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.126 (2026-06-14)
+
+The “**Humult criterion 1 restored**” release (predicate-correctness
+backlog, Fix A). `humult_qualifying_usda` now implements **both**
+branches of KST 13ed key HB, not just the organic-carbon-mass branch:
+criterion 1 (\>= 0.9% organic carbon, weighted average, in the upper 15
+cm of the argillic or kandic horizon) is re-enabled.
+
 ## soilKey 0.9.125 (2026-06-13)
 
 The “**WRB predicate audit, Phase 2**” release. A review of the 79 WRB

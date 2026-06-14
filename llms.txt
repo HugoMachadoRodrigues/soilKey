@@ -3348,9 +3348,6 @@ pública curada.
 
 - [`humult_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humult_qualifying_usda.md)
   : Humult Suborder qualifier (Ultisols with thick humus accumulation)
-  Pass when 0.9% OC weighted average in 0-15 cm AND/OR organic carbon
-  mass \>= 12 kg/m2 in 0-100 cm (proxy via humic_oxisol_usda with lower
-  threshold).
 
 - [`hydraquent_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydraquent_qualifying_usda.md)
   : Hydric Aquent helper (Hydraquents) Pass when surface 0-50 has high
