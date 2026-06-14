@@ -1,3 +1,33 @@
+# soilKey 0.9.126 (2026-06-14)
+
+The "**Humult criterion 1 restored**" release (predicate-correctness backlog,
+Fix A). `humult_qualifying_usda` now implements **both** branches of KST 13ed
+key HB, not just the organic-carbon-mass branch: criterion 1 (>= 0.9% organic
+carbon, weighted average, in the upper 15 cm of the argillic or kandic horizon)
+is re-enabled.
+
+\itemize{
+  \item \strong{The 15 cm window is anchored at the \emph{illuvial onset}}, not
+        at the diagnostic's reported top: the shallowest argic/kandic layer
+        whose clay exceeds the horizon directly above it. This is what made
+        criterion 1 safe to ship. An earlier attempt inherited a top-detection
+        artifact from \code{argillic_within_usda} -- \code{argic()}'s deliberate
+        "min-above" heuristic (v0.9.23, added to catch gradual FEBR Hapludalfs)
+        can include a transitional B that has \emph{no} clay increase relative
+        to the horizon above it, which inflated the OC window with low-carbon
+        subsoil and produced a false-positive Humult. Anchoring at the onset
+        moves the window onto the true Bt and removes the artifact without
+        touching the high-risk \code{argic()} core.
+  \item \strong{KSSL n=2895 before/after gate: 0 worsened at subgroup level.}
+        Exactly one pedon changes suborder, and it is \emph{book-correct}: a
+        profile with 1.06\% OC (weighted average) across 10--25 cm of its
+        argillic genuinely satisfies criterion 1. The previously-deferred
+        false-positive (a profile whose only "increase" was the artifact B)
+        now correctly stays out of Humults (onset OC 0.33\% < 0.9\%).
+  \item Gate: all 44 canonical fixtures byte-identical; full suite green
+        (5590 pass / 0 fail); \code{R CMD check --as-cran} unchanged.
+}
+
 # soilKey 0.9.125 (2026-06-13)
 
 The "**WRB predicate audit, Phase 2**" release. A review of the 79 WRB
