@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.124</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.125</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -965,6 +965,10 @@
 </tr><tr><td><strong>v0.9.3.A</strong></td>
 <td>
 <strong>Remaining specifiers (Kato/Amphi/Poly/Supra/Thapto) + supplementary engine</strong>. Refactor of <code>.wrb_specifiers</code> to support two <code>kind</code>s – <code>depth</code> (simple depth band; reuses the v0.9.2.B path) and <code>filter</code> (custom function). Helpers: <code>.kato_filter</code> (top_cm &gt;= 50), <code>.amphi_filter</code> (Epi AND Endo), <code>.poly_filter</code> (&gt;= 2 disjoint runs), <code>.supra_filter</code> (above a barrier: continuous_rock / petric / technic_hard), <code>.thapto_filter</code> (designation ending in <code>b</code>). Engine: <code>resolve_wrb_qualifiers</code> now also processes the <code>supplementary:</code> slot of the YAML, returning <code>principal</code> + <code>supplementary</code> with families suppressed in both. <code>classify_wrb2022</code> renders the full WRB Ch 6 name with parenthesised tags. Tests: +66 expectations.</td>
+<td><strong>shipped</strong></td>
+</tr><tr><td><strong>v0.9.125</strong></td>
+<td>
+<strong>WRB predicate audit, Phase 2 — PDF-verified.</strong> Reviewed the <strong>79 WRB diagnostic-horizon/property/material cores</strong> (RSG drivers) vs WRB 2022 (4th ed). Key methodological finding: the adversarial-verify pattern that made the USDA audit reliable <strong>degrades without machine-readable ground truth</strong> — WRB has no <code>ST_criteria_13th</code> equivalent, so the workflow produced <strong>4 false positives</strong>. Every flag was cross-checked against the <strong>authoritative WRB 2022 PDF</strong> (maintainer-provided), which <strong>refuted 4</strong> (<code>tephric</code> ≥30% glass is correct not 5%; <code>histic</code> has NO depth-from-surface criterion — the “30 cm” is the USDA epipedon rule; <code>plaggic</code> depth — surface horizon, no top-depth limit; <code>shrink_swell</code> ≥0.5 cm correct) and <strong>found 1 bug the agents missed</strong> (<code>plaggic</code> Mehlich-3 P 50→<strong>100</strong> mg/kg, 3.1.29 crit 2b). <strong>2 fixed:</strong> <code>ornithogenic_material</code> OR→<strong>AND</strong> (3.3.15 needs bird evidence AND P≥750); <code>plaggic</code> P 50→100. <strong>Deferred (verified):</strong> <code>sideralic_properties</code> crit 2 (cambic evidence — needs refactor); <code>hyper</code>/<code>hyposulfidic</code> (schema-blocked — no 8-week-incubation field). Gate = 44 fixtures byte-identical + suite (KSSL is USDA-labelled, blind to WRB). +4 tests; report <code>inst/benchmarks/reports/wrb_predicate_audit_v09125.md</code>.</td>
 <td><strong>shipped</strong></td>
 </tr><tr><td><strong>v0.9.124</strong></td>
 <td>

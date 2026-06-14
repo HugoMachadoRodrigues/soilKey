@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.125 (2026-06-13)
+
+The “**WRB predicate audit, Phase 2**” release. A review of the 79 WRB
+diagnostic-horizon/property/material predicates against WRB 2022 (4th
+ed). Unlike the USDA audit (where `ST_criteria_13th` is
+machine-verifiable), WRB has no such ground truth in the package – so
+every workflow flag was checked against the , which proved decisive.
+
 ## soilKey 0.9.124 (2026-06-13)
 
 The “**USDA predicate correctness audit, Phase 1**” release. A

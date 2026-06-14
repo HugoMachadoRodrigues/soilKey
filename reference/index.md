@@ -2014,8 +2014,13 @@ pública curada.
   :
 
   Is a `qual_*` function a genuine implementation (not an unconditional
-  `passed = NA` stub)? A real qualifier either delegates to
-  `.q_presence()` or assigns `passed` from a computation.
+  `passed = NA` stub)? A real qualifier either calls `.q_presence()`,
+  assigns `passed` from a computation, or **delegates** to a helper that
+  does – e.g.
+  `qual_fibric <- function(pedon) .qual_decomp(pedon, "fibric", "Fibric")`.
+  The earlier detector inspected only the one-line body and so
+  false-flagged such delegations as stubs; this follows one level of
+  delegation (any helper called with `pedon`) before deciding.
 
 - [`.query_nearest_wosis_wrb()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.md)
   : Query WoSIS GraphQL for the nearest WRB-labeled profile.

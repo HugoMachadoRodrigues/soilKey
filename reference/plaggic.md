@@ -27,7 +27,7 @@ plaggic(
   min_thickness = 20,
   max_bd = 1.5,
   min_oc = 0.6,
-  min_p_mehlich3 = 50
+  min_p_mehlich3 = 100
 )
 ```
 

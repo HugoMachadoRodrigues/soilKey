@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.124</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.125</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -4526,7 +4526,7 @@
           <code><a href="dot-qualifier_is_implemented.html">.qualifier_is_implemented()</a></code>
 
         </dt>
-        <dd>Is a <code>qual_*</code> function a genuine implementation (not an unconditional <code>passed = NA</code> stub)? A real qualifier either delegates to <code>.q_presence()</code> or assigns <code>passed</code> from a computation.</dd>
+        <dd>Is a <code>qual_*</code> function a genuine implementation (not an unconditional <code>passed = NA</code> stub)? A real qualifier either calls <code>.q_presence()</code>, assigns <code>passed</code> from a computation, or <strong>delegates</strong> to a helper that does – e.g. <code>qual_fibric &lt;- function(pedon) .qual_decomp(pedon, "fibric", "Fibric")</code>. The earlier detector inspected only the one-line body and so false-flagged such delegations as stubs; this follows one level of delegation (any helper called with <code>pedon</code>) before deciding.</dd>
 
         <dt>
 
