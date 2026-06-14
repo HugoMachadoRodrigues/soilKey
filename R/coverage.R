@@ -93,6 +93,12 @@
         exists(".qual_decomp", where = ns, mode = "function") &&
         .body_is_real(".qual_decomp"))
     return(TRUE)
+  # The WRB 2022 base-saturation family (Dystric/Eutric/Hyperdystric/
+  # Hypereutric, v0.9.129) delegates to .wrb_base_status_result /
+  # .wrb_hyper_status_result, which assign `passed` from the exchangeable
+  # Al-vs-bases computation. Named explicitly, like .qual_decomp above.
+  if (grepl("\\.wrb_(base|hyper)_status_result\\s*\\(\\s*pedon", b))
+    return(TRUE)
   FALSE
 }
 

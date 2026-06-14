@@ -349,53 +349,28 @@ qual_posic <- function(pedon) {
 
 # ---------- BASE-SATURATION EXTREMES ----------------------------------------
 
-#' Hyperdystric qualifier (yd): base saturation < 5\% throughout the
-#' upper 100 cm (mineral soil layers only). Stronger than Dystric (BS
-#' < 50\%).
+#' Hyperdystric qualifier (yd), WRB 2022 Ch 5.
+#'
+#' Exchangeable Al > exchangeable bases THROUGHOUT 20-100 cm AND, in the major
+#' part, exch. Al > 4 times the bases (Al-saturation > 80\%). Stronger than
+#' Dystric. Strict exchangeable-Al criterion; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_hyperdystric <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 20 & h$top_cm <= 100)
-  if (length(layers) == 0L)
-    return(DiagnosticResult$new(name = "Hyperdystric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "bs_pct",
-            reference = "WRB (2022) Ch 5, Hyperdystric"))
-  bs <- h$bs_pct[layers]
-  passed <- length(bs) > 0L && all(!is.na(bs) & bs < 5)
-  DiagnosticResult$new(
-    name = "Hyperdystric", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(bs_pct = bs),
-    missing = if (any(is.na(bs))) "bs_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Hyperdystric"
-  )
+  .wrb_hyper_status_result(pedon, "Hyperdystric", "dystric", 20, 100)
 }
 
-#' Hypereutric qualifier (ye): base saturation >= 80\% throughout the
-#' upper 100 cm. Stronger than Eutric (BS >= 50\%).
+#' Hypereutric qualifier (ye), WRB 2022 Ch 5.
+#'
+#' Exchangeable bases >= exchangeable Al THROUGHOUT 20-100 cm AND, in the major
+#' part, bases >= 4 times Al (Al-saturation <= 20\%). Stronger than Eutric.
+#' Strict; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_hypereutric <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 20 & h$top_cm <= 100)
-  if (length(layers) == 0L)
-    return(DiagnosticResult$new(name = "Hypereutric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "bs_pct",
-            reference = "WRB (2022) Ch 5, Hypereutric"))
-  bs <- h$bs_pct[layers]
-  passed <- length(bs) > 0L && all(!is.na(bs) & bs >= 80)
-  DiagnosticResult$new(
-    name = "Hypereutric", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(bs_pct = bs),
-    missing = if (any(is.na(bs))) "bs_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Hypereutric"
-  )
+  .wrb_hyper_status_result(pedon, "Hypereutric", "eutric", 20, 100)
 }
 
 #' Hyperalic qualifier (yl): argic horizon with Al saturation >= 50\% in

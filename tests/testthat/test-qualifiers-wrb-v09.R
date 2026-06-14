@@ -96,10 +96,12 @@ test_that("qual_humic catches OC >= 1% in upper 50 cm", {
   expect_true(isTRUE(qual_humic(pr)$passed))
 })
 
-test_that("qual_dystric catches BS < 50% throughout 20-100 cm", {
+test_that("qual_dystric: exch. Al > bases in >= half of 20-100 cm (WRB 2022)", {
+  # WRB 2022 uses exchangeable Al vs bases, NOT base saturation. Al-saturation
+  # > 50% (Al > bases) in half or more of the 20-100 cm mineral material.
   hz <- data.table::data.table(
     top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
-    bs_pct = c(60, 30, 25),  # surface high but subsurface low
+    al_sat_pct = c(20, 60, 70),  # subsurface Al-dominated
     clay_pct = c(20, 25, 25), silt_pct = c(40, 35, 35),
     sand_pct = c(40, 40, 40)
   )
@@ -109,12 +111,18 @@ test_that("qual_dystric catches BS < 50% throughout 20-100 cm", {
     horizons = ensure_horizon_schema(hz)
   )
   expect_true(isTRUE(qual_dystric(pr)$passed))
+  # strict: base saturation alone (no Al datum) is NOT a fallback -> NA
+  hz2 <- data.table::data.table(top_cm = c(0, 25, 70),
+    bottom_cm = c(25, 70, 150), bs_pct = c(60, 30, 25))
+  pr2 <- PedonRecord$new(site = list(id = "DY2"),
+    horizons = ensure_horizon_schema(hz2))
+  expect_true(is.na(qual_dystric(pr2)$passed))
 })
 
-test_that("qual_eutric catches BS >= 50% throughout 20-100 cm", {
+test_that("qual_eutric: exch. bases >= Al in the major part of 20-100 cm (WRB 2022)", {
   hz <- data.table::data.table(
     top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
-    bs_pct = c(40, 75, 80),
+    al_sat_pct = c(60, 20, 15),  # subsurface base-dominated
     clay_pct = c(20, 25, 25), silt_pct = c(40, 35, 35),
     sand_pct = c(40, 40, 40)
   )

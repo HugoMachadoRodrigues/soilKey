@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_epieutric}
 \alias{qual_epieutric}
-\title{Epieutric supplementary qualifier (eee): eutric only in upper 50 cm}
+\title{Epieutric supplementary qualifier (eee): eutric only in the upper part}
 \usage{
 qual_epieutric(pedon)
 }
@@ -10,6 +10,6 @@ qual_epieutric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+Epieutric supplementary qualifier (eee): eutric only in the upper part
 }
 \keyword{internal}

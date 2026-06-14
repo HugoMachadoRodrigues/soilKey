@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_eutric}
 \alias{qual_eutric}
-\title{Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
-throughout 20-100 cm.}
+\title{Eutric qualifier (eu), WRB 2022 Ch 5.}
 \usage{
 qual_eutric(pedon)
 }
@@ -11,7 +10,9 @@ qual_eutric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
-throughout 20-100 cm.
+Exchangeable bases (Ca+Mg+K+Na) \eqn{\ge} exchangeable Al in the major part
+of the combined thickness of mineral layers between 20 and 100 cm (organic
+layers use the Histosol pH_water \eqn{\ge} 5.5 branch). Strict: no
+base-saturation fallback.
 }
 \keyword{internal}

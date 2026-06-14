@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_endoeutric}
 \alias{qual_endoeutric}
-\title{Endoeutric supplementary qualifier (eee): eutric only at depth}
+\title{Endoeutric supplementary qualifier (eee): eutric only at depth (50-100 cm)}
 \usage{
 qual_endoeutric(pedon)
 }
@@ -10,6 +10,6 @@ qual_endoeutric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Endoeutric supplementary qualifier (eee): eutric only at depth
+Endoeutric supplementary qualifier (eee): eutric only at depth (50-100 cm)
 }
 \keyword{internal}

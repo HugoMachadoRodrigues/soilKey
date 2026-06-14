@@ -125,14 +125,18 @@ test_that("LV canonical fixture resolves with Cutanic", {
   expect_match(cls$name, "Cutanic")
 })
 
-test_that("CM canonical fixture resolves to a Eutric Cambisol", {
+test_that("CM canonical fixture resolves to a Hypereutric Cambisol (WRB 2022)", {
+  # Under the WRB 2022 exchangeable-Al criterion the fixture (al_cmol ~0.1 vs
+  # bases ~10.5, al_sat ~1%) is base-dominated by far more than 4x throughout,
+  # i.e. Hypereutric -- a stricter, more-specific form than the old BS>=50
+  # Eutric. The deeper bs<80 meant the old BS test could only see Eutric.
   pr  <- make_cambisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CM")
-  expect_true("Eutric" %in% res$principal)
+  expect_true("Hypereutric" %in% res$principal)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Cambisols")
-  expect_match(cls$name, "Eutric Cambisol")
+  expect_match(cls$name, "Hypereutric Cambisol")
 })
 
 test_that("AR canonical fixture resolves with Protic (no B horizon)", {

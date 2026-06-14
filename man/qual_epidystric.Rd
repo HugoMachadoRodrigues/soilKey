@@ -2,7 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v0963.R
 \name{qual_epidystric}
 \alias{qual_epidystric}
-\title{Epidystric supplementary qualifier (epd): dystric only in upper 50 cm}
+\title{Epidystric supplementary qualifier (epd): dystric only in the upper part}
 \usage{
 qual_epidystric(pedon)
 }
@@ -10,6 +10,7 @@ qual_epidystric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-WRB 2022 Ch 5: "Dystric (BS < 50\%) in upper 50 cm and eutric below."
+WRB 2022 Ch 5: exchangeable Al > bases in 20-50 cm (Dystric restricted to
+the upper part).
 }
 \keyword{internal}

@@ -2,9 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022-v091c.R
 \name{qual_hyperdystric}
 \alias{qual_hyperdystric}
-\title{Hyperdystric qualifier (yd): base saturation < 5\% throughout the
-upper 100 cm (mineral soil layers only). Stronger than Dystric (BS
-< 50\%).}
+\title{Hyperdystric qualifier (yd), WRB 2022 Ch 5.}
 \usage{
 qual_hyperdystric(pedon)
 }
@@ -12,8 +10,8 @@ qual_hyperdystric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Hyperdystric qualifier (yd): base saturation < 5\% throughout the
-upper 100 cm (mineral soil layers only). Stronger than Dystric (BS
-< 50\%).
+Exchangeable Al > exchangeable bases THROUGHOUT 20-100 cm AND, in the major
+part, exch. Al > 4 times the bases (Al-saturation > 80\%). Stronger than
+Dystric. Strict exchangeable-Al criterion; no base-saturation fallback.
 }
 \keyword{internal}

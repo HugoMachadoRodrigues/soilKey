@@ -2,8 +2,7 @@
 % Please edit documentation in R/qualifiers-wrb2022.R
 \name{qual_dystric}
 \alias{qual_dystric}
-\title{Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-50\% from 20 to 100 cm in mineral material.}
+\title{Dystric qualifier (dy), WRB 2022 Ch 5.}
 \usage{
 qual_dystric(pedon)
 }
@@ -11,7 +10,9 @@ qual_dystric(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-50\% from 20 to 100 cm in mineral material.
+Exchangeable Al \eqn{>} exchangeable bases (Ca+Mg+K+Na) in half or more of
+the combined thickness of mineral layers between 20 and 100 cm (organic
+layers use the Histosol pH_water < 5.5 branch). Uses \code{al_sat_pct} or
+\code{al_cmol} vs the base cations; no base-saturation fallback (strict).
 }
 \keyword{internal}

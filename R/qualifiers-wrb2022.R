@@ -336,48 +336,165 @@ qual_luvic <- function(pedon) {
     missing = lv$missing, reference = "WRB (2022) Ch 5, Luvic")
 }
 
-#' Dystric qualifier (dy): low base saturation throughout. v0.9: BS <
-#' 50\% from 20 to 100 cm in mineral material.
+#' WRB 2022 exchangeable-acidity status over a depth window.
+#'
+#' WRB 2022 (Ch 5) defines Dystric/Eutric (and the Hyper-/Ortho- variants) by
+#' \strong{exchangeable Al vs exchangeable bases}, NOT by base saturation:
+#' a layer is "dystric-side" when exch. Al \eqn{>} \code{factor} times exch.
+#' (Ca+Mg+K+Na), and "eutric-side" when exch. bases \eqn{\ge} \code{factor}
+#' times exch. Al (\code{factor = 1} for Dystric/Eutric, \code{4} for the Hyper-
+#' variants). Mineral layers use \code{al_sat_pct} (primary) or \code{al_cmol}
+#' against the summed base cations; organic layers (\code{oc_pct >= 20}) use the
+#' WRB Histosol pH branch (pH_water cutoffs 5.5, or 4.5/6.5 when \code{factor >=
+#' 4}). Per the user's "strict" policy there is NO base-saturation fallback: a
+#' layer with neither Al datum nor (for organic layers) pH is undeterminable and
+#' counts as NA thickness.
+#'
+#' Returns thickness-weighted fractions of the candidate layers (those
+#' overlapping \code{[dmin, dmax]}) that are dystric-side / eutric-side / NA,
+#' plus the qualifying layer indices.
+#' @keywords internal
+.wrb_acidity_fracs <- function(pedon, dmin = 20, dmax = 100, factor = 1) {
+  h <- pedon$horizons
+  empty <- list(dystric = 0, eutric = 0, mid = 0, na = 1, layers_d = integer(0),
+                layers_e = integer(0), total = 0)
+  if (is.null(h) || nrow(h) == 0L) return(empty)
+  ov_top <- pmax(h$top_cm, dmin)
+  ov_bot <- pmin(h$bottom_cm, dmax)
+  thk <- pmax(ov_bot - ov_top, 0)
+  cand <- which(!is.na(thk) & thk > 0)
+  if (length(cand) == 0L) return(empty)
+  total <- sum(thk[cand])
+  d_thk <- 0; e_thk <- 0; mid_thk <- 0; na_thk <- 0
+  layers_d <- integer(0); layers_e <- integer(0)
+  for (i in cand) {
+    oc <- h$oc_pct[i]
+    # status: TRUE=strong dystric-side, FALSE=strong eutric-side,
+    #         "mid"=data present but neither (only for factor>1), NA=data absent.
+    status <- NA
+    if (!is.na(oc) && oc >= 20) {
+      # organic material -> WRB Histosol pH branch
+      ph <- h$ph_h2o[i]
+      d_cut <- if (factor >= 4) 4.5 else 5.5
+      e_cut <- if (factor >= 4) 6.5 else 5.5
+      if (!is.na(ph)) {
+        if (ph < d_cut) status <- TRUE
+        else if (ph >= e_cut) status <- FALSE
+        else status <- "mid"
+      }
+    } else {
+      # mineral material -> exchangeable Al vs bases
+      alc <- h$al_cmol[i]
+      bcmol <- c(h$ca_cmol[i], h$mg_cmol[i], h$k_cmol[i], h$na_cmol[i])
+      als <- h$al_sat_pct[i]
+      if (!is.na(alc) && any(!is.na(bcmol))) {
+        b <- sum(bcmol, na.rm = TRUE)
+        if (alc > factor * b) status <- TRUE
+        else if (b >= factor * alc) status <- FALSE
+        else status <- "mid"
+      } else if (!is.na(als)) {
+        d_thr <- 100 * factor / (factor + 1)  # al_sat > this <=> Al > factor*bases
+        e_thr <- 100 / (factor + 1)           # al_sat <= this <=> bases >= factor*Al
+        if (als > d_thr) status <- TRUE
+        else if (als <= e_thr) status <- FALSE
+        else status <- "mid"
+      }
+    }
+    if (isTRUE(status)) { d_thk <- d_thk + thk[i]; layers_d <- c(layers_d, i) }
+    else if (isFALSE(status)) { e_thk <- e_thk + thk[i]; layers_e <- c(layers_e, i) }
+    else if (identical(status, "mid")) mid_thk <- mid_thk + thk[i]
+    else na_thk <- na_thk + thk[i]
+  }
+  list(dystric = d_thk / total, eutric = e_thk / total, mid = mid_thk / total,
+       na = na_thk / total, layers_d = layers_d, layers_e = layers_e,
+       total = total)
+}
+
+# Build the Dystric/Eutric result for a depth window from the fractions.
+# side = "dystric" (Al-dom in >= half) or "eutric" (base-dom in > half).
+.wrb_base_status_result <- function(pedon, name, side, dmin = 20, dmax = 100) {
+  f <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 1)
+  miss <- c("al_sat_pct", "al_cmol")
+  if (f$total == 0)
+    return(DiagnosticResult$new(name = name, passed = NA, layers = integer(0),
+      evidence = list(reason = "no layers in depth window"),
+      missing = "top_cm", reference = paste0("WRB (2022) Ch 5, ", name)))
+  if (side == "dystric") {
+    passed <- if (f$dystric >= 0.5) TRUE
+              else if (f$dystric + f$na < 0.5) FALSE else NA
+    layers <- f$layers_d
+  } else {
+    passed <- if (f$eutric > 0.5) TRUE
+              else if (f$eutric + f$na <= 0.5) FALSE else NA
+    layers <- f$layers_e
+  }
+  DiagnosticResult$new(name = name, passed = passed,
+    layers = if (isTRUE(passed)) layers else integer(0),
+    evidence = list(dystric_frac = f$dystric, eutric_frac = f$eutric,
+                    na_frac = f$na),
+    missing = if (is.na(passed)) miss else character(0),
+    reference = paste0("WRB (2022) Ch 5, ", name))
+}
+
+# Build a Hyper- result: factor-1 dominance THROUGHOUT + factor-4 in major part.
+.wrb_hyper_status_result <- function(pedon, name, side, dmin = 20, dmax = 100) {
+  f1 <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 1)
+  f4 <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 4)
+  miss <- c("al_sat_pct", "al_cmol")
+  if (f1$total == 0)
+    return(DiagnosticResult$new(name = name, passed = NA, layers = integer(0),
+      evidence = list(reason = "no layers in depth window"),
+      missing = "top_cm", reference = paste0("WRB (2022) Ch 5, ", name)))
+  if (side == "dystric") {
+    through <- f1$dystric            # 1 means all layers dystric-side
+    other   <- f1$eutric
+    major4  <- f4$dystric
+    na4     <- f4$na
+    layers  <- f1$layers_d
+  } else {
+    through <- f1$eutric
+    other   <- f1$dystric
+    major4  <- f4$eutric
+    na4     <- f4$na
+    layers  <- f1$layers_e
+  }
+  passed <- if (other > 0) FALSE                         # a contrary layer
+            else if (f1$na > 0) NA                       # cannot confirm "throughout"
+            else if (major4 > 0.5) TRUE                  # throughout + strong major part
+            else if (major4 + na4 <= 0.5) FALSE
+            else NA
+  DiagnosticResult$new(name = name, passed = passed,
+    layers = if (isTRUE(passed)) layers else integer(0),
+    evidence = list(through_frac = through, contrary_frac = other,
+                    strong_major_frac = major4),
+    missing = if (is.na(passed)) miss else character(0),
+    reference = paste0("WRB (2022) Ch 5, ", name))
+}
+
+#' Dystric qualifier (dy), WRB 2022 Ch 5.
+#'
+#' Exchangeable Al \eqn{>} exchangeable bases (Ca+Mg+K+Na) in half or more of
+#' the combined thickness of mineral layers between 20 and 100 cm (organic
+#' layers use the Histosol pH_water < 5.5 branch). Uses \code{al_sat_pct} or
+#' \code{al_cmol} vs the base cations; no base-saturation fallback (strict).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_dystric <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 20 & h$top_cm <= 100)
-  if (length(layers) == 0L)
-    return(DiagnosticResult$new(name = "Dystric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "top_cm",
-            reference = "WRB (2022) Ch 5, Dystric"))
-  bs <- h$bs_pct[layers]
-  passed <- length(bs) > 0L && all(!is.na(bs) & bs < 50)
-  DiagnosticResult$new(name = "Dystric", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(bs_values = bs),
-    missing = if (any(is.na(bs))) "bs_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Dystric")
+  .wrb_base_status_result(pedon, "Dystric", "dystric", 20, 100)
 }
 
-#' Eutric qualifier (eu): high base saturation. v0.9: BS >= 50\%
-#' throughout 20-100 cm.
+#' Eutric qualifier (eu), WRB 2022 Ch 5.
+#'
+#' Exchangeable bases (Ca+Mg+K+Na) \eqn{\ge} exchangeable Al in the major part
+#' of the combined thickness of mineral layers between 20 and 100 cm (organic
+#' layers use the Histosol pH_water \eqn{\ge} 5.5 branch). Strict: no
+#' base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_eutric <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 20 & h$top_cm <= 100)
-  if (length(layers) == 0L)
-    return(DiagnosticResult$new(name = "Eutric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "top_cm",
-            reference = "WRB (2022) Ch 5, Eutric"))
-  bs <- h$bs_pct[layers]
-  passed <- length(bs) > 0L && all(!is.na(bs) & bs >= 50)
-  DiagnosticResult$new(name = "Eutric", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(bs_values = bs),
-    missing = if (any(is.na(bs))) "bs_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Eutric")
+  .wrb_base_status_result(pedon, "Eutric", "eutric", 20, 100)
 }
 
 #' Magnesic qualifier (mg): exchangeable Ca/Mg < 1 in upper 100 cm.

@@ -229,10 +229,12 @@ test_that("Vetic requires CEC/clay <= 6 cmol+/kg clay", {
   expect_false(isTRUE(qual_vetic(pr2)$passed))
 })
 
-test_that("Hyperdystric requires BS < 5% throughout 20-100 cm", {
+test_that("Hyperdystric: Al > bases throughout + Al > 4x bases in major part (WRB 2022)", {
+  # WRB 2022: exch. Al > bases THROUGHOUT 20-100 cm AND, in the major part,
+  # Al > 4 x bases (Al-saturation > 80%). Al-saturation, not base saturation.
   hz <- data.table::data.table(
     top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
-    bs_pct = c(15, 3, 2),
+    al_sat_pct = c(60, 85, 90),  # >50 throughout, >80 in the lower (major) part
     clay_pct = c(20, 25, 25), silt_pct = c(40, 35, 35), sand_pct = c(40, 40, 40)
   )
   pr <- PedonRecord$new(
@@ -242,8 +244,8 @@ test_that("Hyperdystric requires BS < 5% throughout 20-100 cm", {
   )
   expect_true(isTRUE(qual_hyperdystric(pr)$passed))
 
-  # If any 20-100 layer has BS >= 5, fails.
-  hz$bs_pct <- c(15, 8, 2)
+  # If any 20-100 layer is base-dominated (al_sat <= 50), "throughout" fails.
+  hz$al_sat_pct <- c(60, 30, 90)
   pr2 <- PedonRecord$new(
     site = list(id = "HD2", lat = 0, lon = 0, country = "TEST",
                   parent_material = "deeply weathered"),
@@ -252,10 +254,10 @@ test_that("Hyperdystric requires BS < 5% throughout 20-100 cm", {
   expect_false(isTRUE(qual_hyperdystric(pr2)$passed))
 })
 
-test_that("Hypereutric requires BS >= 80% throughout 20-100 cm", {
+test_that("Hypereutric: bases >= Al throughout + bases >= 4x Al in major part (WRB 2022)", {
   hz <- data.table::data.table(
     top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
-    bs_pct = c(60, 90, 95),
+    al_sat_pct = c(40, 10, 5),  # <=50 throughout, <=20 in the lower (major) part
     clay_pct = c(20, 25, 25), silt_pct = c(40, 35, 35), sand_pct = c(40, 40, 40)
   )
   pr <- PedonRecord$new(
