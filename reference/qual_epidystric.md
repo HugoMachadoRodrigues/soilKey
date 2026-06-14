@@ -1,6 +1,7 @@
-# Epidystric supplementary qualifier (epd): dystric only in upper 50 cm
+# Epidystric supplementary qualifier (epd): dystric only in the upper part
 
-WRB 2022 Ch 5: "Dystric (BS \< 50%) in upper 50 cm and eutric below."
+WRB 2022 Ch 5: exchangeable Al \> bases in 20-50 cm (Dystric restricted
+to the upper part).
 
 ## Usage
 

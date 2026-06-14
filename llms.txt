@@ -3018,6 +3018,9 @@ pública curada.
   : Canonical attribute ranges per class, used as the "what-to-confirm"
   appendix.
 
+- [`.wrb_acidity_fracs()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_acidity_fracs.md)
+  : WRB 2022 exchangeable-acidity status over a depth window.
+
 - [`.wrb_canonical_plural()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-wrb_canonical_plural.md)
   : Normalize a WRB RSG name to its plural canonical form so lookups
   work whether the source supplied "Ferralsol" or "Ferralsols".
@@ -3852,8 +3855,7 @@ pública curada.
   : Duric qualifier (du): duric horizon \<= 100 cm.
 
 - [`qual_dystric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_dystric.md)
-  : Dystric qualifier (dy): low base saturation throughout. v0.9: BS \<
-  50% from 20 to 100 cm in mineral material.
+  : Dystric qualifier (dy), WRB 2022 Ch 5.
 
 - [`qual_ekranic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_ekranic.md)
   : Ekranic qualifier (ek): impervious cover (asphalt, concrete)
@@ -3884,6 +3886,7 @@ pública curada.
 
 - [`qual_endoeutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endoeutric.md)
   : Endoeutric supplementary qualifier (eee): eutric only at depth
+  (50-100 cm)
 
 - [`qual_endogleyic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_endogleyic.md)
   : Endogleyic qualifier (eng): gleyic conditions between 50 and 100 cm.
@@ -3914,18 +3917,18 @@ pública curada.
   : Epic supplementary qualifier (ep): generic "in shallow horizon"
 
 - [`qual_epidystric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_epidystric.md)
-  : Epidystric supplementary qualifier (epd): dystric only in upper 50
-  cm
+  : Epidystric supplementary qualifier (epd): dystric only in the upper
+  part
 
 - [`qual_epieutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_epieutric.md)
-  : Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+  : Epieutric supplementary qualifier (eee): eutric only in the upper
+  part
 
 - [`qual_escalic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_escalic.md)
   : Escalic supplementary qualifier (es): terraced / stepped morphology
 
 - [`qual_eutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutric.md)
-  : Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50%
-  throughout 20-100 cm.
+  : Eutric qualifier (eu), WRB 2022 Ch 5.
 
 - [`qual_eutrosilic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_eutrosilic.md)
   : Eutrosilic qualifier (es): silandic + base saturation \>= 50% in
@@ -4095,13 +4098,10 @@ pública curada.
   calcic layer.
 
 - [`qual_hyperdystric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hyperdystric.md)
-  : Hyperdystric qualifier (yd): base saturation \< 5% throughout the
-  upper 100 cm (mineral soil layers only). Stronger than Dystric (BS \<
-  50%).
+  : Hyperdystric qualifier (yd), WRB 2022 Ch 5.
 
 - [`qual_hypereutric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hypereutric.md)
-  : Hypereutric qualifier (ye): base saturation \>= 80% throughout the
-  upper 100 cm. Stronger than Eutric (BS \>= 50%).
+  : Hypereutric qualifier (ye), WRB 2022 Ch 5.
 
 - [`qual_hypergypsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_hypergypsic.md)
   : Hypergypsic qualifier (yg): gypsic horizon AND gypsum \>= 60% in

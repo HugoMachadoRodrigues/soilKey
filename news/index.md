@@ -1,5 +1,14 @@
 # Changelog
 
+## soilKey 0.9.129 (2026-06-14)
+
+The “**WRB 2022 base status**” release (qualifier-correctness audit, Fix
+D part 1). The base-status qualifiers **Dystric / Eutric / Hyperdystric
+/ Hypereutric** (and the Epi-/Endo- variants) are redefined from the
+obsolete WRB 2014 base-saturation criterion to the **WRB 2022
+exchangeable-Al-vs-bases** criterion (Ch 5, p131-133), verified verbatim
+against the authoritative PDF.
+
 ## soilKey 0.9.128 (2026-06-14)
 
 The “**schema-blocked predicates unlocked**” release

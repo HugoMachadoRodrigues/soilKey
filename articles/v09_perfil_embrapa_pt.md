@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55b530728f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x56325ee41f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -193,10 +193,10 @@ print(res$wrb)
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Ferralic Cutanic Acrisol (Loamic, Dystric, Ochric, Profondic, Rhodic,
+#> Name: Ferralic Cutanic Acrisol (Loamic, Eutric, Ochric, Profondic, Rhodic,
 #> Rubic, Chromic)
 #> RSG/Order: Acrisols
-#> Qualifiers: Ferralic, Cutanic, Loamic, Dystric, Ochric, Profondic, Rhodic,
+#> Qualifiers: Ferralic, Cutanic, Loamic, Eutric, Ochric, Profondic, Rhodic,
 #> Rubic, Chromic, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, top_cm,
 #> bottom_cm, FALSE, FALSE, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct,
 #> FALSE, plinthite_pct, TRUE, FALSE, redoximorphic_features_pct, FALSE,
@@ -204,7 +204,7 @@ print(res$wrb)
 #> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
 #> slickensides, TRUE, FALSE, FALSE, coarse_fragments_pct, FALSE, FALSE,
 #> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE,
+#> TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE,
 #> FALSE, coarse_fragments_pct, TRUE
 #> Evidence grade: A
 #> 
@@ -308,10 +308,10 @@ data.frame(
 #> 1    SiBCS 5a
 #> 2    WRB 2022
 #> 3 USDA-ST 13a
-#>                                                                                  Classe
-#> 1                    Argissolos Vermelhos Distroficos tipicos, argilosa, moderado, Tmob
-#> 2 Ferralic Cutanic Acrisol (Loamic, Dystric, Ochric, Profondic, Rhodic, Rubic, Chromic)
-#> 3                                                                    Rhodic Kandiudults
+#>                                                                                 Classe
+#> 1                   Argissolos Vermelhos Distroficos tipicos, argilosa, moderado, Tmob
+#> 2 Ferralic Cutanic Acrisol (Loamic, Eutric, Ochric, Profondic, Rhodic, Rubic, Chromic)
+#> 3                                                                   Rhodic Kandiudults
 #>   EvidGrade
 #> 1         A
 #> 2         A

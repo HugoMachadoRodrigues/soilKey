@@ -1,7 +1,8 @@
-# Hypereutric qualifier (ye): base saturation \>= 80% throughout the upper 100 cm. Stronger than Eutric (BS \>= 50%).
+# Hypereutric qualifier (ye), WRB 2022 Ch 5.
 
-Hypereutric qualifier (ye): base saturation \>= 80% throughout the upper
-100 cm. Stronger than Eutric (BS \>= 50%).
+Exchangeable bases \>= exchangeable Al THROUGHOUT 20-100 cm AND, in the
+major part, bases \>= 4 times Al (Al-saturation \<= 20%). Stronger than
+Eutric. Strict; no base-saturation fallback.
 
 ## Usage
 

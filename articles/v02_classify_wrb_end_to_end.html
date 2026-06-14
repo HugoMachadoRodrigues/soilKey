@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.128</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.129</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -251,17 +251,17 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric,</span></span>
+<span><span class="co">#&gt; Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric,</span></span>
 <span><span class="co">#&gt; Rubic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
-<span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,</span></span>
+<span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Eutric, Ochric,</span></span>
 <span><span class="co">#&gt; Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
 <span><span class="co">#&gt; al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,</span></span>
 <span><span class="co">#&gt; volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,</span></span>
 <span><span class="co">#&gt; plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,</span></span>
 <span><span class="co">#&gt; redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,</span></span>
 <span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
 <span><span class="co">#&gt; TRUE, FALSE</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -381,18 +381,18 @@ information that is not strong enough to be a principal but still
 informative.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
-<span><span class="co">#&gt; [1] "Clayic"  "Humic"   "Dystric" "Ochric"  "Rubic"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Clayic" "Humic"  "Eutric" "Ochric" "Rubic"</span></span></code></pre></div>
 <p>What each tag captures for this Ferralsol:</p>
 <pre><code><span><span class="co">#&gt;   Qualifier</span></span>
 <span><span class="co">#&gt; 1    Clayic</span></span>
 <span><span class="co">#&gt; 2     Humic</span></span>
-<span><span class="co">#&gt; 3   Dystric</span></span>
+<span><span class="co">#&gt; 3    Eutric</span></span>
 <span><span class="co">#&gt; 4    Ochric</span></span>
 <span><span class="co">#&gt; 5     Rubic</span></span>
 <span><span class="co">#&gt;                                                                                                Why</span></span>
 <span><span class="co">#&gt; 1 Clay &gt;= 60 % over a layer thicker than 30 cm in the upper 100 cm; Bw1 has clay = 60% over 65 cm.</span></span>
 <span><span class="co">#&gt; 2                                 Weighted OC &gt;= 1 % in the upper 50 cm; weighted OC ~ 1.1 % here.</span></span>
-<span><span class="co">#&gt; 3                       BS &lt; 50 % throughout 20-100 cm; BS = 13-24 % across all four upper layers.</span></span>
+<span><span class="co">#&gt; 3                                                                                             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 4                      OC &gt;= 0.2 % in upper 10 cm + no mollic + no umbric; surface has OC = 2.0 %.</span></span>
 <span><span class="co">#&gt; 5         Hue &lt;= 5YR + chroma &gt;= 4 in upper 100 cm (less strict than Rhodic). 2.5YR / 6 satisfies.</span></span></code></pre>
 </div>
@@ -407,7 +407,7 @@ the canonical form:</p>
 <span>  principal     <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">principal</span>,</span>
 <span>  supplementary <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
 <p>This is exactly the string returned by
 <code>classify_wrb2022()$name</code>.</p>
 </div>
@@ -517,10 +517,10 @@ evidence.</p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)</span></span>
+<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
 <span><span class="co">#&gt; Assigned RSG  : Ferralsols</span></span>
 <span><span class="co">#&gt; Principal     : Geric, Ferric, Rhodic, Chromic</span></span>
-<span><span class="co">#&gt; Supplementary : Clayic, Humic, Dystric, Ochric, Rubic</span></span>
+<span><span class="co">#&gt; Supplementary : Clayic, Humic, Eutric, Ochric, Rubic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span></code></pre>
 <p>The <code>v03_cross_system_correlation</code> vignette runs the same
 profile through the Brazilian SiBCS and the USDA Soil Taxonomy keys and

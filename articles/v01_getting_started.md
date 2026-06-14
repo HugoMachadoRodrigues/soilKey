@@ -37,7 +37,7 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
 classify_wrb2022(pedon, on_missing = "silent")$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 classify_sibcs(pedon)$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos"
 classify_usda(pedon, on_missing = "silent")$name
@@ -241,17 +241,17 @@ classify_wrb2022(ferralsol)
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric,
+#> Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric,
 #> Rubic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,
+#> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Eutric, Ochric,
 #> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
 #> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
 #> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
 #> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
 #> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
 #> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
 #> TRUE, FALSE
 #> Evidence grade: A
 #> 

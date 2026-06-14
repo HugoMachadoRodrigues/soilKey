@@ -76,17 +76,17 @@ res
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric,
+#> Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric,
 #> Rubic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Dystric, Ochric,
+#> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Eutric, Ochric,
 #> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
 #> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
 #> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
 #> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
 #> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
 #> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
 #> TRUE, FALSE
 #> Evidence grade: A
 #> 
@@ -210,7 +210,7 @@ informative.
 ``` r
 
 qres$supplementary
-#> [1] "Clayic"  "Humic"   "Dystric" "Ochric"  "Rubic"
+#> [1] "Clayic" "Humic"  "Eutric" "Ochric" "Rubic"
 ```
 
 What each tag captures for this Ferralsol:
@@ -218,13 +218,13 @@ What each tag captures for this Ferralsol:
     #>   Qualifier
     #> 1    Clayic
     #> 2     Humic
-    #> 3   Dystric
+    #> 3    Eutric
     #> 4    Ochric
     #> 5     Rubic
     #>                                                                                                Why
     #> 1 Clay >= 60 % over a layer thicker than 30 cm in the upper 100 cm; Bw1 has clay = 60% over 65 cm.
     #> 2                                 Weighted OC >= 1 % in the upper 50 cm; weighted OC ~ 1.1 % here.
-    #> 3                       BS < 50 % throughout 20-100 cm; BS = 13-24 % across all four upper layers.
+    #> 3                                                                                             <NA>
     #> 4                      OC >= 0.2 % in upper 10 cm + no mollic + no umbric; surface has OC = 2.0 %.
     #> 5         Hue <= 5YR + chroma >= 4 in upper 100 cm (less strict than Rhodic). 2.5YR / 6 satisfies.
 
@@ -240,7 +240,7 @@ format_wrb_name(
   principal     = qres$principal,
   supplementary = qres$supplementary
 )
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 ```
 
 This is exactly the string returned by `classify_wrb2022()$name`.
@@ -365,10 +365,10 @@ its `DiagnosticResult` evidence.
 
 ## Summary
 
-    #> WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)
+    #> WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
     #> Assigned RSG  : Ferralsols
     #> Principal     : Geric, Ferric, Rhodic, Chromic
-    #> Supplementary : Clayic, Humic, Dystric, Ochric, Rubic
+    #> Supplementary : Clayic, Humic, Eutric, Ochric, Rubic
     #> Evidence grade: A
 
 The `v03_cross_system_correlation` vignette runs the same profile

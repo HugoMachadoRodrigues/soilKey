@@ -1,6 +1,6 @@
-# Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+# Epieutric supplementary qualifier (eee): eutric only in the upper part
 
-Epieutric supplementary qualifier (eee): eutric only in upper 50 cm
+Epieutric supplementary qualifier (eee): eutric only in the upper part
 
 ## Usage
 

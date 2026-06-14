@@ -1,7 +1,9 @@
-# Hyperdystric qualifier (yd): base saturation \< 5% throughout the upper 100 cm (mineral soil layers only). Stronger than Dystric (BS \< 50%).
+# Hyperdystric qualifier (yd), WRB 2022 Ch 5.
 
-Hyperdystric qualifier (yd): base saturation \< 5% throughout the upper
-100 cm (mineral soil layers only). Stronger than Dystric (BS \< 50%).
+Exchangeable Al \> exchangeable bases THROUGHOUT 20-100 cm AND, in the
+major part, exch. Al \> 4 times the bases (Al-saturation \> 80%).
+Stronger than Dystric. Strict exchangeable-Al criterion; no
+base-saturation fallback.
 
 ## Usage
 

@@ -255,7 +255,7 @@ res_filled$rsg_or_order
 res_filled$evidence_grade
 #> [1] "B"
 res_filled$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 ```
 
 The evidence grade ladder for the same profile across the three

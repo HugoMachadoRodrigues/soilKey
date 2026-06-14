@@ -1,7 +1,9 @@
-# Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50% throughout 20-100 cm.
+# Eutric qualifier (eu), WRB 2022 Ch 5.
 
-Eutric qualifier (eu): high base saturation. v0.9: BS \>= 50% throughout
-20-100 cm.
+Exchangeable bases (Ca+Mg+K+Na) \\\ge\\ exchangeable Al in the major
+part of the combined thickness of mineral layers between 20 and 100 cm
+(organic layers use the Histosol pH_water \\\ge\\ 5.5 branch). Strict:
+no base-saturation fallback.
 
 ## Usage
 

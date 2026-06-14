@@ -1,6 +1,7 @@
-# Endoeutric supplementary qualifier (eee): eutric only at depth
+# Endoeutric supplementary qualifier (eee): eutric only at depth (50-100 cm)
 
-Endoeutric supplementary qualifier (eee): eutric only at depth
+Endoeutric supplementary qualifier (eee): eutric only at depth (50-100
+cm)
 
 ## Usage
 

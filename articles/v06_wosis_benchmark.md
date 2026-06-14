@@ -406,10 +406,10 @@ knitr::kable(
 | CL  | CL      | Calcic           |
 | RT  | RT      | Albic            |
 | AC  | AC      | Albic            |
-| LX  | LX      | Albic            |
+| LX  | LX      | Hypereutric      |
 | AL  | AL      | Hyperalic        |
-| LV  | LV      | Albic            |
-| CM  | CM      | Eutric           |
+| LV  | LV      | Hypereutric      |
+| CM  | CM      | Hypereutric      |
 | AR  | AR      | Protic           |
 | FL  | FL      | Haplic           |
 
