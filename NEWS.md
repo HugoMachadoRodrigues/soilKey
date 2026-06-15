@@ -1,3 +1,43 @@
+# soilKey 0.9.136 (2026-06-15)
+
+The "**SiBCS diagnostic-horizon audit**" release (Phase 3, slice 2 -- the
+surface A horizons, after the atributos slice in v0.9.134). Four divergences
+from the verbatim Embrapa (2018) Cap 2 definitions were confirmed against the
+manual and fixed; one workflow-flagged "bug" was refuted by the verbatim text.
+Every fix is *refine-when-present* -- pedons lacking the relevant field stay
+byte-identical, so the FEBR/Redape/BDsolos SiBCS benchmarks are unchanged.
+
+\itemize{
+  \item \strong{A humico now enforces its colour gate.} Cap 2 p.51 opens the
+        definition with "valor e croma (cor do solo umido) iguais ou inferiores
+        a 4". The code checked the CO inequation, V \eqn{<} 65\% and thickness
+        but never colour -- a light-coloured A meeting only the carbon test
+        could pass. A sub-horizon with a recorded value/chroma (moist)
+        \eqn{>} 4 now disqualifies; absent colour leaves the result unchanged.
+  \item \strong{A chernozemico structure must be moderate or strong.} Cap 2
+        p.50 (a) requires "grau de desenvolvimento predominantemente moderado
+        ou forte"; the prior test merely excluded massive/grain/loose, so a
+        \emph{weak} grade wrongly passed.
+  \item \strong{A chernozemico thickness is now conditional on solum depth.}
+        Cap 2 p.51 (e): \eqn{\ge} 10 cm directly over a lithic contact;
+        \eqn{\ge} 18 cm \emph{and} \eqn{>} 1/3 of the solum (A+B) if the solum
+        \eqn{<} 75 cm; \eqn{\ge} 25 cm if the solum \eqn{\ge} 75 cm. The prior
+        flat 18 cm over-fired on deep solums and under-fired thin A over rock.
+  \item \strong{A antropico requires human artefacts.} Cap 2 p.53 makes
+        ceramic/lithic/bone/shell/charcoal artefacts "de presenca obrigatoria";
+        the \code{hortic}-based wrapper omitted that gate. When
+        \code{artefacts_pct} is recorded and zero, the horizon can no longer
+        key as antropico. (The \eqn{\ge} 20 cm "e" P \eqn{\ge} 30 mg/kg pair is
+        a verbatim AND, which \code{hortic} already enforced -- the workflow's
+        "inverted AND/OR" claim was refuted by the manual.)
+  \item \strong{Deferred, documented honestly:} the \code{B_textural}
+        relacao-textural ratio keyed on A-horizon clay (Cap 2 p.56 item h:
+        \eqn{>} 1.50 if A \eqn{>} 400 g/kg; \eqn{>} 1.70 if 150-400; \eqn{>}
+        1.80 if \eqn{<} 150 g/kg) remains delegated to the WRB \code{argic}
+        clay-increase. Re-wiring the most load-bearing SiBCS diagnostic (it
+        governs the dominant Argissolo/Latossolo split) is its own gated slice.
+}
+
 # soilKey 0.9.135 (2026-06-15)
 
 The "**fluvic-material proxy fix**" release. Tightening the fluvic-material

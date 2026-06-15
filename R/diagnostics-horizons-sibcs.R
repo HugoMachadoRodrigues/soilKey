@@ -153,9 +153,13 @@ horizonte_A_chernozemico <- function(pedon,
     color_ok <- (is.na(vm) || vm <= max_value_moist) &&
                   (is.na(cm) || cm <= max_chroma_moist) &&
                   (is.na(vd) || vd <= max_value_dry)
+    # v0.9.136: SiBCS Cap 2 p.50 (criterion a) requires structure of grade
+    # "predominantemente moderado ou forte". The prior test only excluded
+    # massive/grain/loose, so a WEAK grade wrongly passed. refine-when-present:
+    # a RECORDED grade must read moderate/strong; absent grade (NA) leaves the
+    # result byte-identical to the pre-v0.9.136 behaviour.
     struct_ok <- is.na(grade) ||
-                   !grepl("massive|grain|loose", grade,
-                            ignore.case = TRUE)
+                   grepl("moder|strong|forte", grade, ignore.case = TRUE)
     layer_pass <- oc_g_kg >= min_oc_g_kg && v >= min_v_pct &&
                     color_ok && struct_ok
     details[[as.character(i)]] <- list(
@@ -167,11 +171,48 @@ horizonte_A_chernozemico <- function(pedon,
   thickness <- if (length(passing) > 0L)
                  sum(h$bottom_cm[passing] - h$top_cm[passing], na.rm = TRUE)
                else 0
-  passed <- length(passing) > 0L && thickness >= min_thickness_cm
+  # v0.9.136: SiBCS Cap 2 p.51 (criterion e) makes the minimum thickness
+  # conditional on solum depth and lithic contact, not a flat 18 cm:
+  #   - >= 10 cm if the A sits directly over a lithic / lithic-fragmentary
+  #     contact (no B horizon);
+  #   - >= 18 cm AND > 1/3 of the solum (A+B), when the solum < 75 cm;
+  #   - >= 25 cm, when the solum >= 75 cm.
+  # min_thickness_cm (default 18) is retained as the fallback used only when
+  # the solum depth cannot be established (no designation / bottom data).
+  desig_all <- h$designation %||% rep(NA_character_, nrow(h))
+  is_B    <- !is.na(desig_all) & grepl("^[0-9]*B", desig_all)
+  is_rock <- !is.na(desig_all) & grepl("^[0-9]*(R|Cr|Cd)", desig_all)
+  a_bottom <- if (length(passing) > 0L)
+                suppressWarnings(max(h$bottom_cm[passing], na.rm = TRUE))
+              else NA_real_
+  if (any(is_B)) {
+    solum_cm <- suppressWarnings(max(h$bottom_cm[is_B], na.rm = TRUE))
+  } else {
+    nonrock <- which(!is_rock & !is.na(h$bottom_cm))
+    solum_cm <- if (length(nonrock))
+                  suppressWarnings(max(h$bottom_cm[nonrock], na.rm = TRUE))
+                else NA_real_
+  }
+  over_rock <- !any(is_B) && any(is_rock & !is.na(h$top_cm) &
+                                   !is.na(a_bottom) &
+                                   h$top_cm <= a_bottom + 1)
+  if (length(passing) == 0L) {
+    thick_ok <- FALSE
+  } else if (over_rock) {
+    thick_ok <- thickness >= 10
+  } else if (is.finite(solum_cm) && solum_cm >= 75) {
+    thick_ok <- thickness >= 25
+  } else if (is.finite(solum_cm)) {
+    thick_ok <- thickness >= 18 && thickness > solum_cm / 3
+  } else {
+    thick_ok <- thickness >= min_thickness_cm
+  }
+  passed <- length(passing) > 0L && thick_ok
   DiagnosticResult$new(
     name = "horizonte_A_chernozemico",
     passed = passed, layers = passing,
-    evidence = list(layers = details, thickness_cm = thickness),
+    evidence = list(layers = details, thickness_cm = thickness,
+                     solum_cm = solum_cm, over_rock = over_rock),
     missing = unique(missing),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 50-51"
   )
@@ -235,9 +276,18 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
   bs_vals <- h$bs_pct[a_layers]
   v_max <- if (any(!is.na(bs_vals))) max(bs_vals, na.rm = TRUE) else NA_real_
   thickness_cm <- thickness_dm * 10
+  # v0.9.136: SiBCS Cap 2 p.51 opens the A humico definition with "valor e
+  # croma (cor do solo umido) iguais ou inferiores a 4". The prior code never
+  # checked colour, so an A meeting only the CO inequation could pass even if
+  # light-coloured. refine-when-present: an A sub-horizon carrying a RECORDED
+  # value/chroma (moist) > 4 disqualifies; absent colour (all NA) leaves the
+  # result byte-identical to the pre-v0.9.136 behaviour.
+  vm_a <- h$munsell_value_moist[a_layers]
+  cm_a <- h$munsell_chroma_moist[a_layers]
+  color_ok <- all(is.na(vm_a) | vm_a <= 4) && all(is.na(cm_a) | cm_a <= 4)
   passed <- !is.na(threshold) && oc_total >= threshold &&
               !is.na(v_max) && v_max < min_v_pct_max &&
-              thickness_cm >= min_thickness_cm
+              thickness_cm >= min_thickness_cm && color_ok
   DiagnosticResult$new(
     name = "horizonte_A_humico",
     passed = passed, layers = a_layers,
@@ -246,6 +296,7 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
       oc_total_g_dm_kg = oc_total,
       threshold = threshold,
       bs_pct_max = v_max,
+      color_ok = color_ok,
       thickness_cm = thickness_cm
     ),
     missing = character(0),
@@ -297,9 +348,30 @@ horizonte_A_proeminente <- function(pedon) {
 horizonte_A_antropico <- function(pedon) {
   res <- hortic(pedon, min_thickness = 20, min_oc = 0.6,
                   min_p_mehlich3 = 30)
+  # SiBCS Cap 2 p.53: the espessura >= 20 cm "e" P-Mehlich1 >= 30 mg/kg
+  # requirements are an AND (verbatim connector "e"), which hortic already
+  # enforces -- so no logic change there. But the manual ALSO makes the
+  # presence of human artefacts (ceramica / litico / ossos / conchas /
+  # carvao-cinzas) "de presenca OBRIGATORIA". The prior wrapper omitted that
+  # gate, so any P-rich thick surface keyed as antropico without artefacts.
+  # v0.9.136 refine-when-present: when artefacts_pct is RECORDED and absent
+  # (all zero) in the diagnostic layers, the horizon cannot be antropico;
+  # when the column is absent / NA we cannot disprove it and defer to hortic
+  # (byte-identical on data lacking the field, e.g. every benchmark pedon).
+  h <- pedon$horizons
+  art <- h[["artefacts_pct"]]
+  has_art_data <- !is.null(art) && any(!is.na(art))
+  if (has_art_data) {
+    lyr <- if (length(res$layers)) res$layers else which(!is.na(art))
+    artefacts_present <- any(!is.na(art[lyr]) & art[lyr] > 0)
+    passed <- if (!artefacts_present) FALSE else res$passed
+  } else {
+    passed <- res$passed
+  }
   DiagnosticResult$new(
-    name = "horizonte_A_antropico", passed = res$passed,
-    layers = res$layers, evidence = list(hortic = res),
+    name = "horizonte_A_antropico", passed = passed,
+    layers = res$layers,
+    evidence = list(hortic = res, artefacts_recorded = has_art_data),
     missing = res$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 53"
   )
