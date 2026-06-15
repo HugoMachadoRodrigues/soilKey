@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.130</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.131</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -251,18 +251,17 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric,</span></span>
-<span><span class="co">#&gt; Rubic)</span></span>
+<span><span class="co">#&gt; Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
-<span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Eutric, Ochric,</span></span>
-<span><span class="co">#&gt; Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,</span></span>
+<span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,</span></span>
+<span><span class="co">#&gt; fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,</span></span>
 <span><span class="co">#&gt; volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,</span></span>
-<span><span class="co">#&gt; plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
-<span><span class="co">#&gt; TRUE, FALSE</span></span>
+<span><span class="co">#&gt; plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE,</span></span>
+<span><span class="co">#&gt; FALSE, TRUE, FALSE</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
@@ -331,19 +330,17 @@ tests each against the pedon.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qres</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resolve_wrb_qualifiers.html">resolve_wrb_qualifiers</a></span><span class="op">(</span><span class="va">pr</span>, <span class="st">"FR"</span><span class="op">)</span></span>
 <span><span class="va">qres</span><span class="op">$</span><span class="va">principal</span></span>
-<span><span class="co">#&gt; [1] "Geric"   "Ferric"  "Rhodic"  "Chromic"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric"  "Ferric" "Rhodic"</span></span></code></pre></div>
 <p>The four principals that pass the Ferralsol fixture, in canonical Ch
 4 order:</p>
 <pre><code><span><span class="co">#&gt;   Qualifier</span></span>
 <span><span class="co">#&gt; 1     Geric</span></span>
 <span><span class="co">#&gt; 2    Ferric</span></span>
 <span><span class="co">#&gt; 3    Rhodic</span></span>
-<span><span class="co">#&gt; 4   Chromic</span></span>
 <span><span class="co">#&gt;                                                                                                                                               Why</span></span>
 <span><span class="co">#&gt; 1 ECEC = sum of bases + Al_KCl &lt;= 1.5 cmol+/kg fine earth in some layer of the upper 100 cm. Layer 4 (Bw1, top = 65 cm) has ECEC = 1.18 cmol+/kg.</span></span>
 <span><span class="co">#&gt; 2                                                                         Iron-rich subsoil (Fe_dcb &gt;= 5%); fe_dcb_pct hits 8-9% in this fixture.</span></span>
-<span><span class="co">#&gt; 3                                   Hue 2.5YR moist, value &lt; 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).</span></span>
-<span><span class="co">#&gt; 4                                                              Hue redder than 7.5YR + chroma &gt; 4 in 25-150 cm subsoil. Bw1 chroma = 6 satisfies.</span></span></code></pre>
+<span><span class="co">#&gt; 3                                   Hue 2.5YR moist, value &lt; 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).</span></span></code></pre>
 <p>The <code>trace</code> slot keeps every Ch 4 principal that was
 tested, including those that failed. Useful for diagnostic
 debugging:</p>
@@ -407,7 +404,7 @@ the canonical form:</p>
 <span>  principal     <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">principal</span>,</span>
 <span>  supplementary <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
 <p>This is exactly the string returned by
 <code>classify_wrb2022()$name</code>.</p>
 </div>
@@ -517,9 +514,9 @@ evidence.</p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
+<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
 <span><span class="co">#&gt; Assigned RSG  : Ferralsols</span></span>
-<span><span class="co">#&gt; Principal     : Geric, Ferric, Rhodic, Chromic</span></span>
+<span><span class="co">#&gt; Principal     : Geric, Ferric, Rhodic</span></span>
 <span><span class="co">#&gt; Supplementary : Clayic, Humic, Eutric, Ochric, Rubic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span></code></pre>
 <p>The <code>v03_cross_system_correlation</code> vignette runs the same

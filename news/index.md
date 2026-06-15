@@ -1,5 +1,11 @@
 # Changelog
 
+## soilKey 0.9.131 (2026-06-14)
+
+The “**colour qualifiers**” release (qualifier-correctness audit, Fix D
+slice 3). Chromic, Rhodic and Xanthic completed against the verbatim WRB
+2022 PDF (Ch 5, p130 / p145 / p151).
+
 ## soilKey 0.9.130 (2026-06-14)
 
 The “**texture qualifiers**” release (qualifier-correctness audit, Fix D

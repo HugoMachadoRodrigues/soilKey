@@ -76,18 +76,17 @@ res
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric,
-#> Rubic)
+#> Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Ferric, Rhodic, Chromic, Clayic, Humic, Eutric, Ochric,
-#> Rubic, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
+#> Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,
+#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,
+#> fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
 #> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
-#> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
-#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
-#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
-#> TRUE, FALSE
+#> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE,
+#> FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
+#> FALSE, p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE,
+#> FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE,
+#> FALSE, TRUE, FALSE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -153,7 +152,7 @@ against the pedon.
 
 qres <- resolve_wrb_qualifiers(pr, "FR")
 qres$principal
-#> [1] "Geric"   "Ferric"  "Rhodic"  "Chromic"
+#> [1] "Geric"  "Ferric" "Rhodic"
 ```
 
 The four principals that pass the Ferralsol fixture, in canonical Ch 4
@@ -163,12 +162,10 @@ order:
     #> 1     Geric
     #> 2    Ferric
     #> 3    Rhodic
-    #> 4   Chromic
     #>                                                                                                                                               Why
     #> 1 ECEC = sum of bases + Al_KCl <= 1.5 cmol+/kg fine earth in some layer of the upper 100 cm. Layer 4 (Bw1, top = 65 cm) has ECEC = 1.18 cmol+/kg.
     #> 2                                                                         Iron-rich subsoil (Fe_dcb >= 5%); fe_dcb_pct hits 8-9% in this fixture.
     #> 3                                   Hue 2.5YR moist, value < 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).
-    #> 4                                                              Hue redder than 7.5YR + chroma > 4 in 25-150 cm subsoil. Bw1 chroma = 6 satisfies.
 
 The `trace` slot keeps every Ch 4 principal that was tested, including
 those that failed. Useful for diagnostic debugging:
@@ -240,7 +237,7 @@ format_wrb_name(
   principal     = qres$principal,
   supplementary = qres$supplementary
 )
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 ```
 
 This is exactly the string returned by `classify_wrb2022()$name`.
@@ -365,9 +362,9 @@ its `DiagnosticResult` evidence.
 
 ## Summary
 
-    #> WRB 2022 name : Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
+    #> WRB 2022 name : Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
     #> Assigned RSG  : Ferralsols
-    #> Principal     : Geric, Ferric, Rhodic, Chromic
+    #> Principal     : Geric, Ferric, Rhodic
     #> Supplementary : Clayic, Humic, Eutric, Ochric, Rubic
     #> Evidence grade: A
 

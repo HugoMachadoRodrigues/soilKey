@@ -183,7 +183,7 @@ cls_sibcs <- classify_sibcs(pedon, include_familia = TRUE)
 cls_usda  <- classify_usda(pedon)
 
 cls_wrb$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 cls_sibcs$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
 cls_usda$name

@@ -43,7 +43,7 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()   # Latossolo Vermelho canônico
 classify_wrb2022(pedon, on_missing = "silent")$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 classify_sibcs(pedon)$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos"
 classify_usda(pedon, on_missing = "silent")$name
