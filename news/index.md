@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.135 (2026-06-15)
+
+The “**fluvic-material proxy fix**” release. Tightening the
+fluvic-material stratification proxies turned out to be an accuracy win
+on real Brazilian data, and clarified why the verbatim SiBCS/WRB “OR”
+cannot yet be enabled.
+
 ## soilKey 0.9.134 (2026-06-15)
 
 The “**SiBCS attribute audit**” release (Phase 3, slice 1). With the
