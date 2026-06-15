@@ -98,11 +98,12 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   res <- suppressMessages(suppressWarnings(benchmark_redape(peds,
                                                             level = "order",
                                                             verbose = FALSE)))
-  # v0.9.107: order accuracy lifted to 59.6% (56/94) by the SiBCS accuracy
-  # fixes (gleyic/plinthite/vertic suffix promotion + stacked chernic A).
+  # v0.9.107: order accuracy 59.6% (56/94). v0.9.135: the fluvic-material proxy
+  # fix (reversal-based texture stratification) lifts it to 63.8% (60/94) by no
+  # longer mislabelling monotone-clay Argissolos as Neossolos Fluvicos.
   # Pinned with a +/- tolerance to catch unintended drift.
-  expect_gt(res$accuracy, 0.56)
-  expect_lt(res$accuracy, 0.63)
+  expect_gt(res$accuracy, 0.60)
+  expect_lt(res$accuracy, 0.66)
   expect_equal(res$n_compared, 94L)
 })
 

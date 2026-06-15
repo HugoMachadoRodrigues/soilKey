@@ -1997,11 +1997,42 @@ test_fluvic_stratification <- function(h, max_top_cm = 100,
                             missing = "clay_pct"))
   }
 
+  # Stratification (fluvic) = ERRATIC clay with depth -- a depositional
+  # peak/valley, NOT a monotonic pedogenic trend (e.g. an A->Bt clay increase is
+  # NOT stratification). Require an interior layer where the clay swing reverses
+  # direction, both adjacent swings >= min_clay_swing. The old
+  # `any(swings >= min_clay_swing)` fired on any single clay change, so under an
+  # OR it wrongly made every textural-B soil fluvic (v0.9.135).
   swings <- abs(diff(clays))
-  texture_alternates <- any(swings >= min_clay_swing)
+  d <- diff(clays)
+  texture_alternates <- FALSE
+  if (length(d) >= 2L) {
+    for (i in seq_len(length(d) - 1L)) {
+      if (abs(d[i]) >= min_clay_swing && abs(d[i + 1]) >= min_clay_swing &&
+            sign(d[i]) != 0 && sign(d[i + 1]) != 0 &&
+            sign(d[i]) != sign(d[i + 1])) {
+        texture_alternates <- TRUE; break
+      }
+    }
+  }
 
-  oc_irregular <- if (any(is.na(ocs))) NA
-                   else any(diff(ocs) > 0.1)   # any increase with depth
+  # "Irregular decrease of OC with depth" (fluvic) = a GENUINE erratic reversal,
+  # not pedogenic noise: a deeper layer whose OC exceeds an overlying layer by
+  # >= 0.2% absolute AND >= 1.25x relative (e.g. a buried organic-rich layer /
+  # sedimentary stratification). The old `any(diff > 0.1)` proxy fired on any
+  # tiny bump, which over-fired once OR-ed with texture (v0.9.135).
+  oc_irregular <- if (any(is.na(ocs))) NA else {
+    shallower <- ocs[-length(ocs)]; deeper <- ocs[-1]
+    rev <- deeper >= shallower + 0.2 & deeper >= 1.25 * shallower
+    # Exclude OC increases INTO a spodic illuvial horizon (Bh/Bs/Bhs): that is
+    # podzolization (pedogenic), not fluvic sedimentation -- the SiBCS criterion
+    # requires the irregular OC to be "nao relacionada a processos
+    # pedogeneticos". Without this, every Espodossolo's E->Bh OC jump would read
+    # as fluvic.
+    desig_deeper <- h$designation[cl][-1]
+    spodic_illuv <- !is.na(desig_deeper) & grepl("B[a-z]*[hs]", desig_deeper)
+    any(rev & !spodic_illuv)
+  }
 
   if (is.na(oc_irregular)) {
     # We can still flag based on texture alone, but mark missing
@@ -2015,11 +2046,13 @@ test_fluvic_stratification <- function(h, max_top_cm = 100,
     }
   }
 
-  # SiBCS/WRB fluvic material is verbatim an OR (stratified texture AND/OR
-  # irregular OC-with-depth). It is kept as AND here on purpose: the
-  # `oc_irregular` proxy (any +0.1% OC increase with depth) is too permissive to
-  # stand alone in an OR -- it over-fires fluvic across all three systems. The
-  # OR is deferred until oc_irregular is tightened to a genuine erratic pattern.
+  # SiBCS (carater fluvico, Cap 1 p35) and WRB fluvic material are verbatim an
+  # OR (stratified texture AND/OR irregular OC). Kept as AND for now: with the
+  # OR, an erratic-OC-only Chernozem keys as a Neossolo Fluvico because the
+  # package's SiBCS key reaches the Neossolos branch before the stronger orders
+  # for it -- a key-ordering issue to fix before the OR is safe. The tightened
+  # proxies (reversal-based texture; erratic, non-spodic OC) below still improve
+  # accuracy under AND (fewer false-fluvic Argissolos).
   passed <- texture_alternates && oc_irregular
   .subtest_result(
     passed  = passed,
