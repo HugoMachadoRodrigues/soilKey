@@ -244,21 +244,29 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #'        (default 6, per KST 13ed Ch 16).
 #' @param le_max_depth_cm Depth window (cm) for the COLE-based path
 #'        (default 100).
+#' @param min_crack_width_cm Minimum shrink-swell crack width (cm) for the
+#'        field-crack path. Defaults to 0.5 (WRB/USDA); the SiBCS
+#'        \code{\link{horizonte_vertico}} wrapper passes 1.0 per Embrapa
+#'        (2018) Cap 2 p.73.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
-                              min_le_cm = 6, le_max_depth_cm = 100) {
+                              min_le_cm = 6, le_max_depth_cm = 100,
+                              min_crack_width_cm = 0.5) {
   h <- pedon$horizons
 
   # Path 1 (canonical WRB 2022 + KST 13ed): clay >= min_clay +
-  # slickensides "common"+ + cracks >= 0.5 cm + thickness >= min_thickness.
+  # slickensides "common"+ + cracks >= min_crack_width_cm + thickness.
+  # min_crack_width_cm defaults to 0.5 (WRB/USDA); the SiBCS vertico wrapper
+  # (horizonte_vertico) passes 1.0, per Embrapa 2018 Cap 2 p.73 ("fendas ...
+  # com pelo menos 1 cm de largura").
   tests <- list()
   tests$clay         <- test_clay_above(h, min_pct = min_clay)
   tests$slickensides <- test_slickensides_present(h,
                                                      levels = c("common", "many",
                                                                 "continuous"),
                                                      candidate_layers = tests$clay$layers)
-  tests$cracks       <- test_shrink_swell_cracks(h, min_width_cm = 0.5,
+  tests$cracks       <- test_shrink_swell_cracks(h, min_width_cm = min_crack_width_cm,
                                                     candidate_layers = tests$slickensides$layers)
   shared <- intersect(tests$slickensides$layers, tests$cracks$layers)
   tests$thickness    <- test_minimum_thickness(h, min_cm = min_thickness,

@@ -1,3 +1,53 @@
+# soilKey 0.9.137 (2026-06-15)
+
+The "**SiBCS subsurface-B horizon audit**" release (Phase 3, slice 3 -- the
+subsurface B horizons, after the surface-A slice in v0.9.136). Seven divergences
+from the verbatim Embrapa (2018) Cap 2 (p.59-74) were confirmed against the
+manual and fixed; one workflow sub-claim was refuted. Refine-when-present
+throughout, so the FEBR/Redape/BDsolos SiBCS benchmarks are unchanged.
+
+\itemize{
+  \item \strong{B nitico structure and clay-skin GRADE.} Cap 2 p.62 (c) requires
+        structure of grade moderate/strong AND clay-skins (cerosidade) of
+        quantity \eqn{\ge} common \emph{and} grade moderate/strong. The code
+        tested only the structure type and the clay-skin quantity; a weak grade
+        now disqualifies (via \code{structure_grade} / \code{clay_films_strength}).
+  \item \strong{B nitico thickness exception.} Cap 2 p.62 (a): \eqn{\ge} 30 cm,
+        \emph{except} \eqn{\ge} 15 cm when a lithic / lithic-fragmentary contact
+        occurs within the first 50 cm.
+  \item \strong{B nitico ferric short-circuit removed.} Criterion (d) is strictly
+        low-activity clay OR (high-activity AND aluminic) -- there is no ferric
+        path. The earlier \code{fe_dcb_pct >= 8} short-circuit was a deviation;
+        it is removed (measured removal is benchmark-neutral -- ferric Nitossolos
+        are oxidic, hence low-activity, and already pass the low-activity path).
+  \item \strong{B incipiente exclusions completed.} Cap 2 p.60 (a) excludes
+        cementation/hardening (duripa, petrocalcico), fragipa, the plinthite of a
+        plintico, and distinct gleyic reduction. The prior list missed these
+        five, so a cemented Bkm or gleyed Bg could leak through the designation
+        gate; they are now excluded.
+  \item \strong{SiBCS vertico requires cracks \eqn{\ge} 1 cm.} Cap 2 p.73 specifies
+        cracks "com pelo menos 1 cm de largura"; \code{horizonte_vertico} now
+        passes \code{min_crack_width_cm = 1.0} to \code{vertic_horizon} (which
+        keeps its 0.5 cm default for WRB/USDA). The canonical SiBCS Vertissolo
+        fixture was widened to verbatim-valid cracks; the shared WRB/USDA fixture
+        is byte-identical.
+  \item \strong{Sulfurico gains the jarosite OR-path.} Cap 2 p.72-73 allows
+        jarosite (or sulfidic material below, or \eqn{\ge} 0.05\% soluble sulfate)
+        as alternatives to the sulfidic-material test that \code{thionic} encodes;
+        the jarosite path (\code{jarosite_present}) is now wired.
+  \item \strong{Refuted by the manual:} the workflow read \code{horizonte_sulfurico}'s
+        \code{sulfidic_s} threshold (0.01\%) as 5x below the SiBCS "0.05\%" -- but
+        the 0.05\% is for water-soluble \emph{sulfate}, a different analyte from
+        sulfidic \emph{sulfide}-S. No threshold change was made.
+  \item \strong{Deferred, documented honestly:} (1) \code{calcic} omits the
+        verbatim "\eqn{\ge} 50 g/kg more than the subjacent layer" clause -- but it
+        is a shared WRB/USDA/SiBCS core (Calcisols/Calcids), so it belongs in its
+        own KSSL-gated slice; (2) \code{B_planico} colour paths (b) variegated and
+        (c) mottled, plus the slow-permeability clause, are schema-blocked (no
+        mottle-colour / permeability fields); (3) \code{horizonte_E_albico}
+        delegates to the WRB albic the manual itself cites as its source.
+}
+
 # soilKey 0.9.136 (2026-06-15)
 
 The "**SiBCS diagnostic-horizon audit**" release (Phase 3, slice 2 -- the
