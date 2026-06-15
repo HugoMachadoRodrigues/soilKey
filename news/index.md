@@ -1,5 +1,15 @@
 # Changelog
 
+## soilKey 0.9.136 (2026-06-15)
+
+The “**SiBCS diagnostic-horizon audit**” release (Phase 3, slice 2 – the
+surface A horizons, after the atributos slice in v0.9.134). Four
+divergences from the verbatim Embrapa (2018) Cap 2 definitions were
+confirmed against the manual and fixed; one workflow-flagged “bug” was
+refuted by the verbatim text. Every fix is *refine-when-present* –
+pedons lacking the relevant field stay byte-identical, so the
+FEBR/Redape/BDsolos SiBCS benchmarks are unchanged.
+
 ## soilKey 0.9.135 (2026-06-15)
 
 The “**fluvic-material proxy fix**” release. Tightening the
