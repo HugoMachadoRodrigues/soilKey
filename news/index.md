@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.133 (2026-06-15)
+
+The “**schema-blocked qualifiers unlocked**” release (Fix D follow-up).
+Four new horizon-schema fields let the last schema-blocked WRB
+qualifiers enforce their verbatim WRB 2022 criteria, in the same
+refine-when-present / byte-identical- when-absent pattern as v0.9.128.
+
 ## soilKey 0.9.132 (2026-06-15)
 
 The “**qualifier audit, batch 1**” release (Fix D slice 4). A
