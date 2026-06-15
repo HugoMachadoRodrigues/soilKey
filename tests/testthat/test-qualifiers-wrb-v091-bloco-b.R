@@ -291,13 +291,16 @@ test_that("Acroxic requires andic + sum exch <= 2 cmol/kg", {
   expect_true(isTRUE(qual_acroxic(pr)$passed))
 })
 
-test_that("Eutrosilic requires silandic + BS >= 50%", {
+test_that("Eutrosilic requires silandic + sum of bases >= 15 cmol/kg (WRB 2022)", {
+  # WRB 2022 Ch 5: sum of exchangeable bases >= 15 cmol_c/kg fine earth -- NOT
+  # base saturation >= 50% (the v0.9 proxy).
   hz <- data.table::data.table(
     top_cm = c(0, 30), bottom_cm = c(30, 80),
     designation = c("Ah", "Bw"),
     al_ox_pct = c(2.0, 1.5), si_ox_pct = c(5.0, 4.0),
     fe_ox_pct = c(1.0, 0.8), phosphate_retention_pct = c(98, 96),
-    bs_pct = c(65, 70),
+    ca_cmol = c(12, 13), mg_cmol = c(3, 3), k_cmol = c(0.8, 0.8),
+    na_cmol = c(0.2, 0.2),
     bulk_density_g_cm3 = c(0.8, 0.9),
     clay_pct = c(20, 22), silt_pct = c(40, 38), sand_pct = c(40, 40)
   )
@@ -307,17 +310,17 @@ test_that("Eutrosilic requires silandic + BS >= 50%", {
     horizons = ensure_horizon_schema(hz)
   )
   expect_true(isTRUE(qual_silandic(pr)$passed))
-  expect_true(isTRUE(qual_eutrosilic(pr)$passed))
+  expect_true(isTRUE(qual_eutrosilic(pr)$passed))  # base sum ~16 >= 15
 
-  # Same fixture but low BS -> Silandic still fires, Eutrosilic does not.
-  hz$bs_pct <- c(20, 15)
+  # Same fixture but low bases -> Silandic still fires, Eutrosilic does not.
+  hz$ca_cmol <- c(3, 2.5); hz$mg_cmol <- c(1, 1)
   pr2 <- PedonRecord$new(
     site = list(id = "EU2", lat = 0, lon = 0, country = "TEST",
                   parent_material = "fertile tephra"),
     horizons = ensure_horizon_schema(hz)
   )
   expect_true(isTRUE(qual_silandic(pr2)$passed))
-  expect_false(isTRUE(qual_eutrosilic(pr2)$passed))
+  expect_false(isTRUE(qual_eutrosilic(pr2)$passed))  # base sum ~4 < 15
 })
 
 test_that("Plaggic anthropic-evidence gate: rejects mollic-only A horizons", {

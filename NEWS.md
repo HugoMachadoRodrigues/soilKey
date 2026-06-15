@@ -1,3 +1,38 @@
+# soilKey 0.9.132 (2026-06-15)
+
+The "**qualifier audit, batch 1**" release (Fix D slice 4). A multi-agent audit
+of ~120 WRB qualifier predicates against the verbatim WRB 2022 Ch 5 PDF (with an
+adversarial-refutation pass, and every flag re-confirmed by hand against the
+PDF) fixed 11 threshold / depth / criterion bugs:
+
+\itemize{
+  \item \strong{Geric}: now (exch. bases + exch. Al) < 6 cmol_c/kg \strong{clay}
+        (Hypergeric < 1.5) -- was <= 1.5 cmol_c/kg fine earth (the Hypergeric
+        number, un-normalised by clay), plus a spurious delta-pH (Posic) branch
+        that is removed.
+  \item \strong{Sodic}: now requires \eqn{\ge} 15\% (Na+Mg) \strong{and}
+        \eqn{\ge} 6\% Na on the exchange complex (the (Na+Mg) clause was missing).
+  \item \strong{Eutrosilic}: now a sum of exchangeable bases \eqn{\ge} 15
+        cmol_c/kg fine earth (was base saturation \eqn{\ge} 50\%).
+  \item \strong{Pellic}: Munsell value \eqn{\le} 3 (was \eqn{\le} 4).
+  \item \strong{Aceric}: pH \eqn{\ge} 3.5 and < 5 (the lower bound was missing).
+  \item \strong{Carbonic}: \eqn{\ge} 5\% OC (was 6\%) in a layer \eqn{\ge} 10 cm.
+  \item \strong{Columnic}: columnar structure only, not prismatic, in a
+        \eqn{\ge} 15 cm layer.
+  \item \strong{Magnesic}: the Ca/Mg < 1 layer must be \eqn{\ge} 30 cm thick.
+  \item \strong{Thixotropic}: within 50 cm (was 100 cm).
+  \item \strong{Hyperorganic}: organic material \eqn{\ge} 200 cm thick (was just
+        an organic layer in the upper 100 cm).
+  \item \strong{Placic}: Fe-cementation at least \emph{weakly} (was restricted
+        to strongly/indurated), thickness \eqn{\ge} 0.1 and < 2.5 cm.
+  \item Gate: full suite 5656 pass / 0 fail; +16 unit tests; two old-criterion
+        unit tests updated (Eutrosilic, Hyperorganic). Verbatim WRB 2022 PDF;
+        \code{R CMD check --as-cran} codoc OK. Deferred (proxy / schema-blocked /
+        unconfirmed): hyperskeletic, isopteric, mochipic, glacic, raptic,
+        hyposalic, hydric-undried, grumic, mazic-hardness, urbic/evapocrustic
+        thickness.
+}
+
 # soilKey 0.9.131 (2026-06-14)
 
 The "**colour qualifiers**" release (qualifier-correctness audit, Fix D

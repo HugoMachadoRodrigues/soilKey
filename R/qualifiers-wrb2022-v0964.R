@@ -408,11 +408,17 @@ qual_hyperorganic <- function(pedon) {
       reference = "WRB (2022) Ch 5, Hyperorganic"
     ))
   }
-  qualifying <- which(!is.na(oc) & oc >= 18 & h$top_cm < 100)
-  passed <- length(qualifying) > 0L
+  # WRB 2022 Ch 5 Hyperorganic: organic material >= 200 cm THICK (Histosols).
+  # The v0.9 code only checked for an organic layer in the upper 100 cm, which
+  # is just "organic", not the >= 200 cm Hyperorganic requirement.
+  org <- which(!is.na(oc) & oc >= 18)
+  thk <- if (length(org) > 0L)
+    sum(h$bottom_cm[org] - h$top_cm[org], na.rm = TRUE) else 0
+  passed <- thk >= 200
+  qualifying <- if (passed) org else integer(0)
   DiagnosticResult$new(
     name = "Hyperorganic", passed = passed, layers = qualifying,
-    evidence = list(threshold_oc_pct = 18),
+    evidence = list(threshold_oc_pct = 18, organic_thickness_cm = thk),
     missing = character(0),
     reference = "WRB (2022) Ch 5, Hyperorganic"
   )
@@ -516,10 +522,15 @@ qual_chloridic <- function(pedon) {
 qual_columnic <- function(pedon) {
   h <- pedon$horizons
   st <- h$structure_type %||% rep(NA_character_, nrow(h))
-  pat <- "(?i)columnar|column|prism"
-  hits <- !is.na(st) & grepl(pat, st, perl = TRUE)
-  qualifying <- which(hits & h$top_cm < 100)
-  passed <- length(qualifying) > 0L
+  # WRB 2022 Ch 5 Columnic: COLUMNAR structure (not prismatic), in a layer
+  # >= 15 cm thick starting <= 100 cm.
+  pat <- "(?i)columnar|column"
+  hits <- !is.na(st) & grepl(pat, st, perl = TRUE) &
+    !is.na(h$top_cm) & h$top_cm <= 100
+  thk <- if (any(hits))
+    sum(h$bottom_cm[hits] - h$top_cm[hits], na.rm = TRUE) else 0
+  qualifying <- which(hits)
+  passed <- thk >= 15
   if (all(is.na(st))) {
     return(DiagnosticResult$new(
       name = "Columnic", passed = NA, layers = integer(0),
@@ -1455,7 +1466,8 @@ qual_thixotropic <- function(pedon) {
       missing = "thixotropic_index",
       reference = "WRB (2022) Ch 5, Thixotropic"))
   }
-  qualifying <- which(!is.na(ti) & ti >= 50 & h$top_cm < 100)
+  # WRB 2022 Ch 5 Thixotropic: in some layer within 50 cm (was 100 cm).
+  qualifying <- which(!is.na(ti) & ti >= 50 & h$top_cm < 50)
   DiagnosticResult$new(
     name = "Thixotropic", passed = length(qualifying) > 0L,
     layers = qualifying,
