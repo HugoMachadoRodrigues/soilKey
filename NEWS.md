@@ -1,3 +1,35 @@
+# soilKey 0.9.135 (2026-06-15)
+
+The "**fluvic-material proxy fix**" release. Tightening the fluvic-material
+stratification proxies turned out to be an accuracy win on real Brazilian data,
+and clarified why the verbatim SiBCS/WRB "OR" cannot yet be enabled.
+
+\itemize{
+  \item \strong{Texture stratification now requires a genuine clay REVERSAL}
+        (a depositional peak/valley with swings \eqn{\ge} 8\%), not a single
+        clay change. A monotone A->Bt clay increase (a normal Argissolo) is a
+        pedogenic trend, NOT stratification -- the old proxy
+        (\code{any(swing >= 8)}) wrongly flagged it, mislabelling Argissolos as
+        Neossolos Fluvicos.
+  \item \strong{Irregular-OC now requires a genuine erratic reversal} (a deeper
+        layer exceeding an overlying one by \eqn{\ge} 0.2\% absolute and
+        \eqn{\ge} 1.25x relative) and \strong{excludes OC increases into a
+        spodic illuvial horizon} (Bh/Bs/Bhs) -- that is podzolization
+        (pedogenic), which the SiBCS criterion explicitly excludes.
+  \item \strong{Measured accuracy lift} on the BDsolos RJ benchmark: Argissolo
+        recall 166 -> 175 and Argissolo->Neossolo confusion 60 -> 50; Redape
+        SiBCS order accuracy 59.6\% -> 63.8\%. No regressions (Chernossolo and
+        Latossolo recall preserved).
+  \item \strong{The verbatim "AND/OR" stays AND for now}: enabling the OR makes
+        an erratic-OC-only Chernozem key as a Neossolo Fluvico, because the
+        SiBCS key reaches the Neossolos branch before the stronger orders for
+        it -- a key-ordering issue to fix before the OR is safe. The tightened
+        proxies already improve accuracy under AND.
+  \item Gate: full suite 5692 pass / 0 fail; +4 unit tests; two benchmark
+        regression-guards updated to the new (better) numbers.
+        \code{R CMD check --as-cran} codoc OK.
+}
+
 # soilKey 0.9.134 (2026-06-15)
 
 The "**SiBCS attribute audit**" release (Phase 3, slice 1). With the Embrapa
