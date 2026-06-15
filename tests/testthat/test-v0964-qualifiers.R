@@ -109,10 +109,18 @@ test_that("qual_epic returns layers in 0-50 cm window", {
 })
 
 
-test_that("qual_hyperorganic: oc_pct >= 18", {
-  p <- .pedon_minimal()
-  p$horizons$oc_pct <- c(20, 22)
-  expect_true(isTRUE(qual_hyperorganic(p)$passed))
+test_that("qual_hyperorganic: organic material >= 200 cm thick (WRB 2022)", {
+  # WRB 2022 Ch 5: Hyperorganic = organic material >= 200 cm THICK, not merely
+  # an organic layer in the upper 100 cm.
+  deep <- PedonRecord$new(horizons = ensure_horizon_schema(
+    data.table::data.table(top_cm = c(0, 100), bottom_cm = c(100, 220),
+                           oc_pct = c(30, 28))))
+  expect_true(isTRUE(qual_hyperorganic(deep)$passed))
+
+  shallow <- PedonRecord$new(horizons = ensure_horizon_schema(
+    data.table::data.table(top_cm = c(0, 30), bottom_cm = c(30, 80),
+                           oc_pct = c(30, 28))))  # only 80 cm organic
+  expect_false(isTRUE(qual_hyperorganic(shallow)$passed))
 })
 
 

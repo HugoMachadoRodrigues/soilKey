@@ -511,10 +511,15 @@ qual_magnesic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Magnesic"))
   ca <- h$ca_cmol[layers]; mg <- h$mg_cmol[layers]
   ratios <- ca / mg
-  passed <- any(!is.na(ratios) & ratios < 1)
+  # WRB 2022 Ch 5 Magnesic: exch. Ca/Mg < 1 in a layer >= 30 cm thick within
+  # 100 cm (the >= 30 cm combined thickness was missing).
+   qly <- layers[which(!is.na(ratios) & ratios < 1)]
+  thk <- if (length(qly) > 0L)
+    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
+  passed <- thk >= 30
   DiagnosticResult$new(name = "Magnesic", passed = passed,
-    layers = layers[which(!is.na(ratios) & ratios < 1)],
-    evidence = list(ca_mg_ratios = ratios),
+    layers = if (passed) qly else integer(0),
+    evidence = list(ca_mg_ratios = ratios, thickness_cm = thk),
     missing = if (any(is.na(ratios))) c("ca_cmol", "mg_cmol") else character(0),
     reference = "WRB (2022) Ch 5, Magnesic")
 }
@@ -531,16 +536,25 @@ qual_sodic <- function(pedon) {
             layers = integer(0), evidence = list(),
             missing = "top_cm",
             reference = "WRB (2022) Ch 5, Sodic"))
+  # WRB 2022 Ch 5 Sodic: >= 15% (Na+Mg) AND >= 6% Na on the exchange complex
+  # (the v0.9 code checked only the >= 6% Na clause).
   na_pct <- vapply(layers, function(i) {
     if (is.na(h$na_cmol[i]) || is.na(h$cec_cmol[i]) || h$cec_cmol[i] <= 0)
       NA_real_
     else h$na_cmol[i] / h$cec_cmol[i] * 100
   }, numeric(1))
-  passed <- any(!is.na(na_pct) & na_pct >= 6)
+  namg_pct <- vapply(layers, function(i) {
+    if (is.na(h$na_cmol[i]) || is.na(h$mg_cmol[i]) ||
+          is.na(h$cec_cmol[i]) || h$cec_cmol[i] <= 0) NA_real_
+    else (h$na_cmol[i] + h$mg_cmol[i]) / h$cec_cmol[i] * 100
+  }, numeric(1))
+  ok <- !is.na(na_pct) & na_pct >= 6 & !is.na(namg_pct) & namg_pct >= 15
+  passed <- any(ok)
   DiagnosticResult$new(name = "Sodic", passed = passed,
-    layers = layers[which(!is.na(na_pct) & na_pct >= 6)],
-    evidence = list(esp = na_pct),
-    missing = if (any(is.na(na_pct))) c("na_cmol", "cec_cmol") else character(0),
+    layers = layers[which(ok)],
+    evidence = list(esp = na_pct, na_mg_pct = namg_pct),
+    missing = if (any(is.na(na_pct)) || any(is.na(namg_pct)))
+                c("na_cmol", "mg_cmol", "cec_cmol") else character(0),
     reference = "WRB (2022) Ch 5, Sodic")
 }
 

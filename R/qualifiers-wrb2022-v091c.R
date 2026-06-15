@@ -140,8 +140,10 @@ qual_placic <- function(pedon) {
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
   ce <- h$cementation_class[layers]
   thk <- pmax(0, h$bottom_cm[layers] - h$top_cm[layers])
-  ok <- !is.na(ce) & ce %in% c("strongly", "indurated") &
-          !is.na(thk) & thk <= 2.5
+  # WRB 2022 Ch 5 Placic: layer >= 0.1 and < 2.5 cm thick, Fe-cemented at
+  # AT LEAST weakly (was restricted to strongly/indurated).
+  ok <- !is.na(ce) & ce %in% c("weakly", "moderately", "strongly", "indurated") &
+          !is.na(thk) & thk >= 0.1 & thk < 2.5
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Placic", passed = passed,
@@ -272,19 +274,20 @@ qual_geric <- function(pedon) {
   k  <- h$k_cmol[layers];  na <- h$na_cmol[layers]
   al <- h$al_kcl_cmol[layers]
   if (all(is.na(al))) al <- h$al_cmol[layers]
+  # WRB 2022 Ch 5 Geric: (sum of exch bases + exch Al) < 6 cmol_c per kg CLAY
+  # (Hypergeric is < 1.5). The v0.9 code used <= 1.5 cmol per kg fine earth and
+  # a spurious delta-pH (Posic) branch; both removed (v0.9.132).
+  clay <- h$clay_pct[layers]
   ecec <- ca + mg + k + na + ifelse(is.na(al), 0, al)
-  ok_ecec <- !is.na(ecec) & ecec <= 1.5
-  ph_h <- h$ph_h2o[layers]; ph_k <- h$ph_kcl[layers]
-  delta_ph <- ph_k - ph_h
-  ok_dph <- !is.na(delta_ph) & delta_ph > 0
-  ok <- ok_ecec | ok_dph
+  ecec_per_clay <- ecec / pmax(clay, 1) * 100
+  ok <- !is.na(ecec_per_clay) & !is.na(clay) & clay > 0 & ecec_per_clay < 6
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Geric", passed = passed,
     layers = layers[ok],
-    evidence = list(ecec_proxy = ecec, delta_ph = delta_ph),
-    missing = if (all(is.na(ecec)) && all(is.na(delta_ph)))
-                c("cec components", "ph_kcl", "ph_h2o") else character(0),
+    evidence = list(ecec_per_kg_clay = ecec_per_clay),
+    missing = if (all(is.na(ecec)) || all(is.na(clay)))
+                c("cec components", "clay_pct") else character(0),
     reference = "WRB (2022) Ch 5, Geric"
   )
 }

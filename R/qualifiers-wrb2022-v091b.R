@@ -58,7 +58,9 @@ qual_aceric <- function(pedon) {
             missing = "ph_h2o",
             reference = "WRB (2022) Ch 5, Aceric"))
   ph <- h$ph_h2o[layers]
-  ok <- !is.na(ph) & ph <= 5
+  # WRB 2022 Ch 5 Aceric: pH (1:1 water) >= 3.5 AND < 5 (was just <= 5);
+  # the jarosite-mineral requirement is schema-blocked (no mineral field).
+  ok <- !is.na(ph) & ph >= 3.5 & ph < 5
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Aceric", passed = passed,
@@ -156,7 +158,8 @@ qual_pellic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Pellic"))
   vals <- h$munsell_value_moist[layers]
   chrs <- h$munsell_chroma_moist[layers]
-  ok <- !is.na(vals) & !is.na(chrs) & vals <= 4 & chrs <= 2
+  # WRB 2022 Ch 5 Pellic: Munsell value <= 3 AND chroma <= 2 moist (was <= 4).
+  ok <- !is.na(vals) & !is.na(chrs) & vals <= 3 & chrs <= 2
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Pellic", passed = passed,
@@ -395,14 +398,21 @@ qual_eutrosilic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Eutrosilic"))
   h  <- pedon$horizons
   ly <- si$layers
-  bs <- h$bs_pct[ly]
-  ok <- !is.na(bs) & bs >= 50
+  # WRB 2022 Ch 5 Eutrosilic: andic-properties layer with a SUM of exchangeable
+  # bases (Ca+Mg+K+Na, by NH4OAc) >= 15 cmol_c/kg fine earth -- NOT base
+  # saturation >= 50% (the v0.9 proxy).
+  base_sum <- rowSums(cbind(h$ca_cmol[ly], h$mg_cmol[ly], h$k_cmol[ly],
+                            h$na_cmol[ly]), na.rm = TRUE)
+  any_base <- !is.na(h$ca_cmol[ly]) | !is.na(h$mg_cmol[ly]) |
+              !is.na(h$k_cmol[ly]) | !is.na(h$na_cmol[ly])
+  ok <- any_base & base_sum >= 15
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Eutrosilic", passed = passed,
     layers = ly[ok],
-    evidence = list(silandic = si, bs_pct = bs),
-    missing = if (all(is.na(bs))) "bs_pct" else character(0),
+    evidence = list(silandic = si, base_sum_cmol = base_sum),
+    missing = if (!any(any_base)) c("ca_cmol","mg_cmol","k_cmol","na_cmol")
+              else character(0),
     reference = "WRB (2022) Ch 5, Eutrosilic"
   )
 }

@@ -1109,7 +1109,10 @@ qual_carbonic <- function(pedon) {
       reference = "WRB (2022) Ch 5, Carbonic"
     ))
   }
-  qualifying <- which(!is.na(oc) & oc >= 6 & h$top_cm < 100)
+  # WRB 2022 Ch 5 Carbonic: layer >= 10 cm thick, <= 100 cm, with >= 5% organic
+  # carbon (was >= 6% and no thickness gate).
+  qualifying <- which(!is.na(oc) & oc >= 5 & h$top_cm < 100 &
+                        (h$bottom_cm - h$top_cm) >= 10)
   passed <- length(qualifying) > 0L
   DiagnosticResult$new(
     name = "Carbonic", passed = passed, layers = qualifying,
