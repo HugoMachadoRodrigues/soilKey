@@ -1,5 +1,14 @@
 # Changelog
 
+## soilKey 0.9.137 (2026-06-15)
+
+The “**SiBCS subsurface-B horizon audit**” release (Phase 3, slice 3 –
+the subsurface B horizons, after the surface-A slice in v0.9.136). Seven
+divergences from the verbatim Embrapa (2018) Cap 2 (p.59-74) were
+confirmed against the manual and fixed; one workflow sub-claim was
+refuted. Refine-when-present throughout, so the FEBR/Redape/BDsolos
+SiBCS benchmarks are unchanged.
+
 ## soilKey 0.9.136 (2026-06-15)
 
 The “**SiBCS diagnostic-horizon audit**” release (Phase 3, slice 2 – the

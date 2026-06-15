@@ -16,7 +16,8 @@ vertic_horizon(
   min_clay = 30,
   min_thickness = 25,
   min_le_cm = 6,
-  le_max_depth_cm = 100
+  le_max_depth_cm = 100,
+  min_crack_width_cm = 0.5
 )
 ```
 
@@ -43,6 +44,13 @@ vertic_horizon(
 - le_max_depth_cm:
 
   Depth window (cm) for the COLE-based path (default 100).
+
+- min_crack_width_cm:
+
+  Minimum shrink-swell crack width (cm) for the field-crack path.
+  Defaults to 0.5 (WRB/USDA); the SiBCS
+  [`horizonte_vertico`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_vertico.md)
+  wrapper passes 1.0 per Embrapa (2018) Cap 2 p.73.
 
 ## Value
 
