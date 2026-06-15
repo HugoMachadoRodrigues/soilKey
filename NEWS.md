@@ -1,3 +1,26 @@
+# soilKey 0.9.130 (2026-06-14)
+
+The "**texture qualifiers**" release (qualifier-correctness audit, Fix D
+slice 2). The five texture qualifiers were checked against the verbatim WRB
+2022 PDF (Ch 5).
+
+\itemize{
+  \item \strong{Clayic was a confirmed threshold bug, now fixed.} WRB 2022
+        defines Clayic as the texture classes \emph{clay, sandy clay or silty
+        clay} (clay \eqn{\ge} 40\%, or clay \eqn{\ge} 35\% with sand \eqn{\ge}
+        45\% for sandy clay) over \eqn{\ge} 30 cm within 100 cm. The code used a
+        \code{clay >= 60\%} proxy, which under-fired across the clay-class range
+        40-60\%. Now uses the proper texture-class test.
+  \item \strong{Arenic / Loamic / Siltic / Skeletic verified as acceptable.}
+        Arenic delegates to the (sand / loamy sand) texture diagnostic; Loamic
+        and Siltic are defensible texture-class proxies; Skeletic's \eqn{\ge}
+        40\% coarse-fragments threshold matches the PDF. No changes.
+  \item Gate: full suite 5642 pass / 0 fail; +5 unit tests; the canonical
+        fixtures are unaffected (their clay values fall outside the newly-added
+        40-60\% band at Clayic-eligible depths). Validation rests on the
+        verbatim PDF, as for the other WRB qualifier work.
+}
+
 # soilKey 0.9.129 (2026-06-14)
 
 The "**WRB 2022 base status**" release (qualifier-correctness audit, Fix D

@@ -642,15 +642,22 @@ qual_xanthic <- function(pedon) {
 #' @export
 qual_arenic <- function(pedon) .q_presence("Arenic", arenic_texture(pedon), 100, pedon)
 
-#' Clayic qualifier (ce): clay >= 60\% texture for a layer >= 30 cm in
-#' the upper 100 cm.
+#' Clayic qualifier (ce), WRB 2022 Ch 5.
+#'
+#' A texture class of \strong{clay, sandy clay or silty clay} in one or more
+#' layers with a combined thickness of >= 30 cm within 100 cm of the mineral
+#' soil surface. Those three classes correspond to clay >= 40\% (clay / silty
+#' clay) or clay >= 35\% with sand >= 45\% (sandy clay) -- NOT the v0.9 proxy of
+#' clay >= 60\%, which under-fired (fixed v0.9.130).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @keywords internal
 #' @export
 qual_clayic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100 &
-                    !is.na(h$clay_pct) & h$clay_pct >= 60)
+  clay <- h$clay_pct; sand <- h$sand_pct
+  is_clayey <- !is.na(clay) &
+    (clay >= 40 | (clay >= 35 & !is.na(sand) & sand >= 45))
+  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100 & is_clayey)
   thickness <- if (length(layers) > 0L)
     sum(h$bottom_cm[layers] - h$top_cm[layers], na.rm = TRUE) else 0
   passed <- thickness >= 30
