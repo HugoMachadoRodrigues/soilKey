@@ -1,3 +1,32 @@
+# soilKey 0.9.138 (2026-06-15)
+
+The "**B textural relacao-textural**" release. Implements the long-deferred
+verbatim Embrapa (2018) SiBCS Cap 2 p.56 item (h) -- the proportional B/A
+textural ratio keyed on A-horizon clay -- and folds it into `B_textural`.
+
+\itemize{
+  \item \strong{New \code{test_ratio_textural_sibcs()}} computes the item-(h)
+        ratio over the footnote-4 control section: A clay = thickness-weighted
+        mean of the A horizons; B clay = thickness-weighted mean of the B
+        horizons (excluding BC) over a window of 30 cm from the top of B if the
+        A is \eqn{<} 15 cm thick, or twice the A thickness if \eqn{\ge} 15 cm.
+        Thresholds: ratio \eqn{>} 1.50 if A clay \eqn{>} 400 g/kg; \eqn{>} 1.70
+        if 150-400 g/kg; \eqn{>} 1.80 if \eqn{<} 150 g/kg.
+  \item \strong{\code{B_textural} now UNIONs (h) with the WRB \code{argic}
+        clay-increase.} Measured finding: item (h) is almost entirely a
+        \emph{subset} of argic -- the two diverge only for very sandy A horizons
+        (clay \eqn{<} ~7.5\%), where the ratio test is a smaller absolute jump
+        than argic's +6 pp. The union can therefore only ADD a B-textural pass
+        for those sandy cases, never remove one.
+  \item \strong{Measured benchmark-neutral.} The premise that \code{B_textural}
+        under-fired by omitting (h) is largely \emph{refuted}: BDsolos RJ order
+        accuracy (0.4141, all major-order recalls), Redape order (63.8\%) and
+        Redape subgrupo (27.1\%) are byte-identical to v0.9.137 -- the sandy-A
+        profiles where (h) adds beyond argic do not occur in those datasets.
+        Items (f) E-horizon, (i) cerosidade and (j) lithologic discontinuity
+        remain delegated/deferred (cerosidade morphology is data-sparse).
+}
+
 # soilKey 0.9.137 (2026-06-15)
 
 The "**SiBCS subsurface-B horizon audit**" release (Phase 3, slice 3 -- the

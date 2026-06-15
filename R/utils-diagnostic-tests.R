@@ -238,6 +238,68 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
   )
 }
 
+
+#' SiBCS B textural relacao-textural (item h)
+#'
+#' Implements the verbatim Embrapa (2018) SiBCS Cap 2 p.56 item (h): the
+#' total-clay B/A textural ratio, keyed on the A-horizon clay content, computed
+#' over the footnote-4 control section. This is the SiBCS-specific PROPORTIONAL
+#' clay-increase test, distinct from (and mostly a subset of) the WRB
+#' \code{\link{argic}} absolute-increase rule -- it differs only for very sandy
+#' A horizons (clay < ~7.5\%), where the ratio test is a smaller absolute jump
+#' than argic's +6 pp.
+#'
+#' Control section (footnote 4): A clay = thickness-weighted mean of the A
+#' horizons; B clay = thickness-weighted mean of the B horizons (excluding BC)
+#' within a window from the top of B equal to 30 cm if the A is < 15 cm thick,
+#' or twice the A thickness if the A is \\>= 15 cm thick. Thresholds:
+#' ratio \\> 1.50 if A clay \\> 400 g/kg; \\> 1.70 if 150-400 g/kg; \\> 1.80 if
+#' \\< 150 g/kg.
+#'
+#' @param h A horizons \code{data.table} (\code{\link{ensure_horizon_schema}}).
+#' @return A subtest result list (\code{passed}, \code{layers}, \code{missing},
+#'   \code{details}).
+#' @keywords internal
+test_ratio_textural_sibcs <- function(h) {
+  desig <- h$designation
+  has_d <- !is.na(desig)
+  a_idx <- which(has_d & grepl("^[0-9]*A", desig))
+  b_idx <- which(has_d & grepl("^[0-9]*B", desig) &
+                   !grepl("BC", desig, ignore.case = TRUE))
+  if (length(a_idx) == 0L || length(b_idx) == 0L) {
+    return(.subtest_result(passed = FALSE,
+                           notes = "no A or B horizon for relacao textural"))
+  }
+  a_thk  <- h$bottom_cm[a_idx] - h$top_cm[a_idx]
+  a_clay <- h$clay_pct[a_idx]
+  if (all(is.na(a_clay))) return(.subtest_result(passed = FALSE, missing = "clay_pct"))
+  a_mean <- stats::weighted.mean(a_clay, a_thk, na.rm = TRUE)
+  a_thick_total <- sum(a_thk, na.rm = TRUE)
+  # B control section per footnote 4.
+  b_top  <- min(h$top_cm[b_idx], na.rm = TRUE)
+  window <- if (is.finite(a_thick_total) && a_thick_total >= 15) 2 * a_thick_total else 30
+  b_ctrl <- b_idx[!is.na(h$top_cm[b_idx]) & h$top_cm[b_idx] < b_top + window]
+  if (length(b_ctrl) == 0L) b_ctrl <- b_idx
+  b_clay <- h$clay_pct[b_ctrl]
+  if (all(is.na(b_clay))) return(.subtest_result(passed = FALSE, missing = "clay_pct"))
+  b_mean <- stats::weighted.mean(b_clay,
+                                 pmax(h$bottom_cm[b_ctrl] - h$top_cm[b_ctrl], 0),
+                                 na.rm = TRUE)
+  if (is.na(a_mean) || is.na(b_mean) || a_mean <= 0) {
+    return(.subtest_result(passed = FALSE, missing = "clay_pct"))
+  }
+  ratio <- b_mean / a_mean
+  thr <- if (a_mean > 40) 1.50 else if (a_mean >= 15) 1.70 else 1.80
+  passed <- ratio > thr
+  .subtest_result(
+    passed = passed,
+    layers = if (passed) b_ctrl else integer(0),
+    details = list(a_mean_clay = a_mean, b_mean_clay = b_mean, ratio = ratio,
+                    threshold = thr, a_thickness_cm = a_thick_total,
+                    control_window_cm = window)
+  )
+}
+
 #' Test minimum horizon thickness
 #'
 #' For each candidate layer, checks \code{bottom_cm - top_cm >= min_cm}.

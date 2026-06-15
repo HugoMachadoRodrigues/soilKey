@@ -486,10 +486,25 @@ horizonte_A_moderado <- function(pedon) {
 #' @export
 B_textural <- function(pedon, ...) {
   res <- argic(pedon, ...)
+  # v0.9.138: UNION the verbatim SiBCS Cap 2 p.56 item (h) relacao-textural
+  # ratio (test_ratio_textural_sibcs) with the WRB argic clay-increase. The two
+  # mostly coincide -- (h) is a subset of argic EXCEPT for very sandy A horizons
+  # (clay < ~7.5%), where the ratio (>1.80) is a smaller absolute jump than
+  # argic's +6 pp. The union therefore only ADDS sandy-A B-textural cases argic
+  # misses; it can never remove an argic pass. Other paths -- (f) E-horizon,
+  # (g) abrupt change, (i) cerosidade, (j) lithologic discontinuity -- remain
+  # delegated/deferred (cerosidade morphology is data-sparse).
+  h_ratio <- test_ratio_textural_sibcs(pedon$horizons)
+  if (isTRUE(h_ratio$passed)) {
+    res$layers <- union(res$layers %||% integer(0), h_ratio$layers)
+    res$passed <- length(res$layers) > 0L
+    res$evidence <- c(res$evidence %||% list(),
+                       list(relacao_textural_sibcs = h_ratio))
+  }
   res$name      <- "B_textural"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
-  res$notes     <- paste0("v0.7: clay-increase via WRB argic; ",
-                            "criterios de cerosidade e lamelas em v0.8")
+  res$notes     <- paste0("v0.9.138: clay-increase via WRB argic UNION SiBCS ",
+                            "relacao-textural (h); cerosidade (i)/lamelas em v0.8")
   res
 }
 
