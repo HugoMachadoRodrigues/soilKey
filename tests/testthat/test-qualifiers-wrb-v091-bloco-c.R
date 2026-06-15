@@ -112,13 +112,14 @@ test_that("NT canonical fixture resolves to a Luvic Ferric Chromic Nitisol", {
   expect_match(cls$name, "Nitisol")
 })
 
-test_that("FR canonical fixture resolves to a Geric Ferric Rhodic Chromic Ferralsol", {
+test_that("FR canonical fixture resolves to a Geric Ferric Rhodic Ferralsol", {
   pr  <- make_ferralsol_canonical()
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("Geric"   %in% res$principal)
   expect_true("Ferric"  %in% res$principal)
   expect_true("Rhodic"  %in% res$principal)
-  expect_true("Chromic" %in% res$principal)
+  # WRB 2022: Chromic does NOT apply when the soil meets Rhodic (v0.9.131).
+  expect_false("Chromic" %in% res$principal)
   # ECEC at layer 4 (Bw1, top=65) ~ 1.18 cmol+/kg < 1.5 -> Geric YES.
   # CEC/clay at layer 4 ~ 8.3 cmol+/kg clay > 6 -> Vetic NO.
   expect_false("Vetic" %in% res$principal)
@@ -126,7 +127,7 @@ test_that("FR canonical fixture resolves to a Geric Ferric Rhodic Chromic Ferral
   expect_false("Posic" %in% res$principal)
   # Spodic / ferralic exclusion -> Sombric NO on FR fixture.
   expect_false("Sombric" %in% res$principal)
-  # BS = 13-24% -> not Hyperdystric (< 5) and not Hypereutric (>= 80).
+  # exch. Al < bases (Al-sat 26-43%) -> neither Hyperdystric nor Hypereutric.
   expect_false("Hyperdystric" %in% res$principal)
   expect_false("Hypereutric" %in% res$principal)
 
