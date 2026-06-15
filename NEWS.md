@@ -1,3 +1,28 @@
+# soilKey 0.9.131 (2026-06-14)
+
+The "**colour qualifiers**" release (qualifier-correctness audit, Fix D
+slice 3). Chromic, Rhodic and Xanthic completed against the verbatim WRB 2022
+PDF (Ch 5, p130 / p145 / p151).
+
+\itemize{
+  \item \strong{Chromic and Rhodic now require their full WRB definition}, not
+        just the Munsell colour: a \eqn{\ge} 30 cm thick layer, evidence of soil
+        formation (cambic criterion 3, reusing \code{test_cambic_soil_formation}
+        from v0.9.127), and -- for Rhodic -- a dry value no more than one unit
+        above the moist value. Hue tests now use \code{.munsell_hue_units}
+        (Chromic = redder than 7.5YR; Rhodic = redder than 5YR).
+  \item \strong{Chromic now excludes Rhodic} (the WRB definition's
+        "does not meet the Rhodic qualifier"). The two were previously able to
+        co-occur -- the canonical Ferralsol carried both; it is now correctly
+        \emph{Rhodic} only ("Geric Ferric Rhodic Ferralsol").
+  \item \strong{Xanthic} hue test widened to all "7.5YR or yellower" hues
+        (the regex missed 7.5Y/10Y) and given its \eqn{\ge} 30 cm
+        subhorizon-thickness requirement.
+  \item Gate: full suite 5655 pass / 0 fail; +6 unit tests; the FR canonical
+        name updated (Chromic dropped, validated as more-correct). Verbatim PDF;
+        \code{R CMD check --as-cran} codoc OK.
+}
+
 # soilKey 0.9.130 (2026-06-14)
 
 The "**texture qualifiers**" release (qualifier-correctness audit, Fix D

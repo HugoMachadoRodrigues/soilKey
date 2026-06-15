@@ -144,7 +144,7 @@ test_that("FR canonical name carries supplementary tags in WRB Ch 6 form", {
   # exchangeable Al (0.7). WRB 2022 keys base status on Al-vs-bases, so the
   # soil is Eutric -- not Dystric (the old base-saturation answer).
   cls <- classify_wrb2022(make_ferralsol_canonical(), on_missing = "silent")
-  expect_match(cls$name, "^Geric Ferric Rhodic Chromic Ferralsol \\(")
+  expect_match(cls$name, "^Geric Ferric Rhodic Ferralsol \\(")
   expect_match(cls$name, "Clayic")
   expect_match(cls$name, "Humic")
   expect_match(cls$name, "Eutric")

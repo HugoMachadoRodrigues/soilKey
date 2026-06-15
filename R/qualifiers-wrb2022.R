@@ -553,26 +553,33 @@ qual_sodic <- function(pedon) {
 #' @keywords internal
 #' @export
 qual_rhodic <- function(pedon) {
+  # WRB 2022 Ch 5: a layer, >= 30 cm thick, between 25 and 150 cm, that shows
+  # evidence of soil formation (cambic criterion 3) and has hue redder than
+  # 5YR, value < 4 (moist) and a dry value not more than one unit higher than
+  # the moist value.
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
-  if (length(layers) == 0L)
+  cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
+  if (length(cand) == 0L)
     return(DiagnosticResult$new(name = "Rhodic", passed = FALSE,
             layers = integer(0), evidence = list(),
             missing = character(0),
             reference = "WRB (2022) Ch 5, Rhodic"))
-  hues <- h$munsell_hue_moist[layers]
-  vals <- h$munsell_value_moist[layers]
-  ok <- vapply(seq_along(layers), function(i) {
-    hu <- hues[i]; v <- vals[i]
-    if (is.na(hu) || is.na(v)) return(FALSE)
-    grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R)\\b", hu, ignore.case = TRUE) &&
-      v < 4
-  }, logical(1))
-  passed <- any(ok)
+  hu <- .munsell_hue_units(h$munsell_hue_moist[cand])  # < 12.5 == redder than 5YR
+  vm <- h$munsell_value_moist[cand]
+  vd <- h$munsell_value_dry[cand]
+  # value-dry clause applied only where dry colour is recorded (refine-present).
+  colour_ok <- !is.na(hu) & hu < 12.5 & !is.na(vm) & vm < 4 &
+    (is.na(vd) | vd <= vm + 1)
+  colour_layers <- cand[colour_ok]
+  sf <- test_cambic_soil_formation(h, candidate_layers = colour_layers)
+  qual_layers <- intersect(colour_layers, sf$layers)
+  thickness <- if (length(qual_layers) > 0L)
+    sum(h$bottom_cm[qual_layers] - h$top_cm[qual_layers], na.rm = TRUE) else 0
+  passed <- thickness >= 30
   DiagnosticResult$new(name = "Rhodic", passed = passed,
-    layers = layers[ok],
-    evidence = list(hues = hues, values = vals),
-    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    layers = if (passed) qual_layers else integer(0),
+    evidence = list(thickness_cm = thickness),
+    missing = if (all(is.na(hu))) "munsell_hue_moist" else character(0),
     reference = "WRB (2022) Ch 5, Rhodic")
 }
 
@@ -582,25 +589,30 @@ qual_rhodic <- function(pedon) {
 #' @keywords internal
 #' @export
 qual_chromic <- function(pedon) {
+  # WRB 2022 Ch 5: a layer, >= 30 cm thick, between 25 and 150 cm, that shows
+  # evidence of soil formation (cambic criterion 3) and has hue redder than
+  # 7.5YR and chroma > 4 (moist), and does NOT meet the Rhodic qualifier.
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
-  if (length(layers) == 0L)
+  cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
+  if (length(cand) == 0L)
     return(DiagnosticResult$new(name = "Chromic", passed = FALSE,
             layers = integer(0), evidence = list(),
             missing = character(0),
             reference = "WRB (2022) Ch 5, Chromic"))
-  hues <- h$munsell_hue_moist[layers]
-  chrs <- h$munsell_chroma_moist[layers]
-  ok <- vapply(seq_along(layers), function(i) {
-    hu <- hues[i]; c <- chrs[i]
-    if (is.na(hu) || is.na(c)) return(FALSE)
-    grepl("^(5YR|2\\.5YR|10R|7\\.5R|5R|2\\.5R)\\b", hu, ignore.case = TRUE) && c > 4
-  }, logical(1))
-  passed <- any(ok)
+  hu  <- .munsell_hue_units(h$munsell_hue_moist[cand])  # < 15 == redder than 7.5YR
+  chr <- h$munsell_chroma_moist[cand]
+  colour_ok <- !is.na(hu) & hu < 15 & !is.na(chr) & chr > 4
+  colour_layers <- cand[colour_ok]
+  sf <- test_cambic_soil_formation(h, candidate_layers = colour_layers)
+  qual_layers <- intersect(colour_layers, sf$layers)
+  thickness <- if (length(qual_layers) > 0L)
+    sum(h$bottom_cm[qual_layers] - h$top_cm[qual_layers], na.rm = TRUE) else 0
+  not_rhodic <- !isTRUE(qual_rhodic(pedon)$passed)
+  passed <- thickness >= 30 && not_rhodic
   DiagnosticResult$new(name = "Chromic", passed = passed,
-    layers = layers[ok],
-    evidence = list(hues = hues, chromas = chrs),
-    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    layers = if (passed) qual_layers else integer(0),
+    evidence = list(thickness_cm = thickness, not_rhodic = not_rhodic),
+    missing = if (all(is.na(hu))) "munsell_hue_moist" else character(0),
     reference = "WRB (2022) Ch 5, Chromic")
 }
 
@@ -610,6 +622,9 @@ qual_chromic <- function(pedon) {
 #' @keywords internal
 #' @export
 qual_xanthic <- function(pedon) {
+  # WRB 2022 Ch 5: a ferralic horizon with a subhorizon >= 30 cm thick (within
+  # 75 cm of the ferralic top) that has hue 7.5YR or yellower, value >= 4 and
+  # chroma >= 5 (moist).
   fr <- ferralic(pedon)
   if (!isTRUE(fr$passed))
     return(DiagnosticResult$new(name = "Xanthic", passed = FALSE,
@@ -617,19 +632,17 @@ qual_xanthic <- function(pedon) {
             missing = fr$missing, reference = "WRB (2022) Ch 5, Xanthic"))
   h <- pedon$horizons
   layers <- fr$layers
-  hues <- h$munsell_hue_moist[layers]
-  vals <- h$munsell_value_moist[layers]
-  chrs <- h$munsell_chroma_moist[layers]
-  ok <- vapply(seq_along(layers), function(i) {
-    hu <- hues[i]; v <- vals[i]; c <- chrs[i]
-    if (is.na(hu) || is.na(v) || is.na(c)) return(FALSE)
-    grepl("^(7\\.5YR|10YR|2\\.5Y|5Y)\\b", hu, ignore.case = TRUE) &&
-      v >= 4 && c >= 5
-  }, logical(1))
-  passed <- any(ok)
+  hu  <- .munsell_hue_units(h$munsell_hue_moist[layers])  # >= 15 == 7.5YR or yellower
+  v   <- h$munsell_value_moist[layers]
+  chr <- h$munsell_chroma_moist[layers]
+  ok <- !is.na(hu) & hu >= 15 & !is.na(v) & v >= 4 & !is.na(chr) & chr >= 5
+  qual_layers <- layers[ok]
+  thickness <- if (length(qual_layers) > 0L)
+    sum(h$bottom_cm[qual_layers] - h$top_cm[qual_layers], na.rm = TRUE) else 0
+  passed <- thickness >= 30
   DiagnosticResult$new(name = "Xanthic", passed = passed,
-    layers = layers[ok],
-    evidence = list(ferralic = fr, hues = hues),
+    layers = if (passed) qual_layers else integer(0),
+    evidence = list(ferralic = fr, thickness_cm = thickness),
     missing = fr$missing, reference = "WRB (2022) Ch 5, Xanthic")
 }
 
