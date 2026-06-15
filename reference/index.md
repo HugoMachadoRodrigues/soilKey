@@ -2924,8 +2924,7 @@ pública curada.
   upper subsoil 25-150 cm).
 
 - [`qual_clayic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_clayic.md)
-  : Clayic qualifier (ce): clay \>= 60% texture for a layer \>= 30 cm in
-  the upper 100 cm.
+  : Clayic qualifier (ce), WRB 2022 Ch 5.
 
 - [`qual_coarsic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_coarsic.md)
   : Coarsic qualifier (cr): \>= 70% coarse fragments by volume in upper
