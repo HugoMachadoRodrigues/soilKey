@@ -389,16 +389,25 @@ qual_glacic <- function(pedon) {
   h <- pedon$horizons
   layers <- intersect(cy$layers, .in_upper(pedon, 100))
   d <- h$designation[layers]
+  # WRB 2022 Ch 5 Glacic: layer >= 30 cm, <= 100 cm, with >= 75% ice by volume.
+  # Where ice_pct is measured, require >= 75%; otherwise the cryic +
+  # ice-designation proxy is used (v0.9.133, refine-when-present). >= 30 cm.
+  ice <- (h$ice_pct %||% rep(NA_real_, nrow(h)))[layers]
   proxy <- grepl("ice|^gel|glac|^Wf$", d, ignore.case = TRUE)
   proxy[is.na(proxy)] <- FALSE
-  passed <- any(proxy)
+  ok <- proxy & (is.na(ice) | ice >= 75)
+  qly <- layers[ok]
+  thk <- if (length(qly) > 0L)
+    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
+  passed <- thk >= 30
   DiagnosticResult$new(
     name = "Glacic", passed = passed,
-    layers = layers[proxy],
-    evidence = list(cryic = cy, designation = d),
+    layers = if (passed) qly else integer(0),
+    evidence = list(cryic = cy, designation = d, ice_pct = ice,
+                    thickness_cm = thk),
     missing = character(0),
     reference = "WRB (2022) Ch 5, Glacic",
-    notes = "v0.9.1: cryic + designation proxy; ice_pct column in v0.9.2"
+    notes = "v0.9.133: ice_pct >= 75% enforced where measured; else proxy"
   )
 }
 

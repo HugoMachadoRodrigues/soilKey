@@ -395,6 +395,18 @@
           },
           "incubation_ph": {
             "type": ["number", "null"]
+          },
+          "ice_pct": {
+            "type": ["number", "null"]
+          },
+          "water_saturation_days": {
+            "type": ["number", "null"]
+          },
+          "particles_630um_pct": {
+            "type": ["number", "null"]
+          },
+          "jarosite_present": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

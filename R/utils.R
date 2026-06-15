@@ -152,7 +152,13 @@ horizon_column_spec <- function() {
     water_content_1500kpa_undried = "numeric",   # 1500 kPa water retention on UNDRIED samples; Vitrands/Vitrandic need < 30% undried beside < 15% air-dried (KST 13ed Ch 6)
     particles_002_2mm_pct         = "numeric",   # % of the FINE-EARTH fraction in the 0.02-2.0 mm size class; Vitrandic subgroup crit 2 needs >= 30% (KST 13ed Ch 9)
     cracks_top_cm                 = "numeric",   # depth (cm) of the UPPER boundary of shrink-swell cracks; Vertic subgroup needs cracks within 125 cm (KST 13ed)
-    incubation_ph                 = "numeric"    # pH after the WRB 8-week aerobic incubation test; hypersulfidic drops < 4, hyposulfidic stays >= 4 (WRB 2022 Ch 3.3.8/3.3.9)
+    incubation_ph                 = "numeric",   # pH after the WRB 8-week aerobic incubation test; hypersulfidic drops < 4, hyposulfidic stays >= 4 (WRB 2022 Ch 3.3.8/3.3.9)
+    # ---- v0.9.133 additions: unlock the remaining schema-blocked WRB qualifiers
+    # (refine-when-present, byte-identical-when-absent, as in v0.9.128).
+    ice_pct                       = "numeric",   # volume % ice (related to whole soil); WRB 2022 Glacic needs >= 75% (Ch 5)
+    water_saturation_days         = "numeric",   # cumulative days/year water-saturated; WRB 2022 Mochipic needs >= 300 days (Ch 5)
+    particles_630um_pct           = "numeric",   # % particles >= 630 um; WRB 2022 Isopteric needs < 5% (Ch 5)
+    jarosite_present              = "logical"    # jarosite mineral present; WRB 2022 Aceric requires it beside pH 3.5-5 (Ch 5)
   )
 }
 

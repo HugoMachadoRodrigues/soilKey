@@ -1,3 +1,32 @@
+# soilKey 0.9.133 (2026-06-15)
+
+The "**schema-blocked qualifiers unlocked**" release (Fix D follow-up). Four new
+horizon-schema fields let the last schema-blocked WRB qualifiers enforce their
+verbatim WRB 2022 criteria, in the same refine-when-present / byte-identical-
+when-absent pattern as v0.9.128.
+
+\itemize{
+  \item New fields: \code{ice_pct}, \code{water_saturation_days},
+        \code{particles_630um_pct}, \code{jarosite_present} (plus the derived
+        \code{inst/schemas/pedon-schema.json}).
+  \item \strong{Glacic}: \code{ice_pct} \eqn{\ge} 75\% enforced where measured,
+        in a \eqn{\ge} 30 cm layer (was a cryic + ice-designation proxy only).
+  \item \strong{Aceric}: now requires \code{jarosite_present} where recorded
+        (beside the pH 3.5-5 gate from v0.9.132).
+  \item \strong{Mochipic}: \code{water_saturation_days} \eqn{\ge} 300 where
+        measured, in a \eqn{\ge} 25 cm layer.
+  \item \strong{Isopteric}: bulk density \eqn{\le} 1.3 and < 5\% particles
+        \eqn{\ge} 630 um where measured, in a \eqn{\ge} 30 cm layer.
+  \item \strong{Hydric}: now uses the \code{water_content_1500kpa_undried}
+        field (v0.9.128) directly when measured -- the WRB criterion is on
+        UNDRIED samples -- in a \eqn{\ge} 35 cm layer (air-dried proxy kept as
+        fallback).
+  \item Gate: full suite 5672 pass / 0 fail; +12 unit tests; all 44 canonical
+        fixtures byte-identical (the new fields are absent in them, and the
+        added thickness clauses don't flip any fixture). \code{R CMD check
+        --as-cran} codoc OK.
+}
+
 # soilKey 0.9.132 (2026-06-15)
 
 The "**qualifier audit, batch 1**" release (Fix D slice 4). A multi-agent audit

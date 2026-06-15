@@ -58,9 +58,11 @@ qual_aceric <- function(pedon) {
             missing = "ph_h2o",
             reference = "WRB (2022) Ch 5, Aceric"))
   ph <- h$ph_h2o[layers]
-  # WRB 2022 Ch 5 Aceric: pH (1:1 water) >= 3.5 AND < 5 (was just <= 5);
-  # the jarosite-mineral requirement is schema-blocked (no mineral field).
-  ok <- !is.na(ph) & ph >= 3.5 & ph < 5
+  # WRB 2022 Ch 5 Aceric: pH (1:1 water) >= 3.5 AND < 5, AND jarosite present.
+  # The jarosite clause is enforced where jarosite_present is recorded;
+  # otherwise the pH gate alone is used (v0.9.133, refine-when-present).
+  jar <- (h$jarosite_present %||% rep(NA, nrow(h)))[layers]
+  ok <- !is.na(ph) & ph >= 3.5 & ph < 5 & (is.na(jar) | jar)
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Aceric", passed = passed,
@@ -264,19 +266,27 @@ qual_hydric <- function(pedon) {
             reference = "WRB (2022) Ch 5, Hydric"))
   h  <- pedon$horizons
   ly <- intersect(ap$layers, .in_upper(pedon, 100))
-  w  <- h$water_content_1500kpa[ly]
+  # WRB 2022 Ch 5 Hydric: andic layer(s) combined >= 35 cm with water content
+  # >= 70% at 1500 kPa on UNDRIED samples. Where the undried measurement is
+  # present (v0.9.128 field) it is used directly; otherwise the air-dried
+  # proxy >= 70% is kept (v0.9.133). >= 35 cm combined thickness.
+  wu <- (h$water_content_1500kpa_undried %||% rep(NA_real_, nrow(h)))[ly]
+  wa <- h$water_content_1500kpa[ly]
+  w  <- ifelse(!is.na(wu), wu, wa)
   ok <- !is.na(w) & w >= 70
-  passed <- any(ok)
-  air_dried_band <- any(!is.na(w) & w >= 70 & w < 100)
+  qly <- ly[ok]
+  thk <- if (length(qly) > 0L)
+    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
+  passed <- thk >= 35
   DiagnosticResult$new(
     name = "Hydric", passed = passed,
-    layers = ly[ok],
-    evidence = list(andic = ap, water_content_1500kpa = w),
+    layers = if (passed) qly else integer(0),
+    evidence = list(andic = ap, water_1500kpa = w, thickness_cm = thk),
     missing = if (all(is.na(w))) "water_content_1500kpa" else character(0),
     reference = "WRB (2022) Ch 5, Hydric",
-    notes = if (passed && air_dried_band)
-              "v0.9.1: 70-100% accepted as air-dried equivalent of WRB's >=100% undried"
-            else NA_character_
+    notes = if (any(!is.na(wu)))
+              "v0.9.133: undried 1500 kPa water used where measured"
+            else "v0.9.1: air-dried 1500 kPa proxy (undried not measured)"
   )
 }
 

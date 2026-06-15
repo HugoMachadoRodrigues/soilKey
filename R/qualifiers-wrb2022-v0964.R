@@ -1179,11 +1179,21 @@ qual_isopteric <- function(pedon) {
   pat <- "(?i)termit|ant.mound|formig|cupim|isopter"
   hits <- (!is.na(bd) & grepl(pat, bd, perl = TRUE)) |
           (!is.na(origin) & grepl(pat, origin, perl = TRUE))
-  qualifying <- which(hits & h$top_cm < 100)
+  # WRB 2022 Ch 5 Isopteric: termite-remodelled layer at the surface, bulk
+  # density <= 1.3 kg/dm3 and < 5% particles >= 630 um. Both physical clauses
+  # are enforced where measured (v0.9.133); >= 30 cm thickness.
+  bdv  <- h$bulk_density_g_cm3 %||% rep(NA_real_, nrow(h))
+  p630 <- h$particles_630um_pct %||% rep(NA_real_, nrow(h))
+  ok   <- hits & !is.na(h$top_cm) & h$top_cm < 100 &
+            (is.na(bdv) | bdv <= 1.3) & (is.na(p630) | p630 < 5)
+  qly  <- which(ok)
+  thk  <- if (length(qly) > 0L)
+    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
+  qualifying <- if (thk >= 30) qly else integer(0)
   DiagnosticResult$new(
     name = "Isopteric", passed = length(qualifying) > 0L,
     layers = qualifying,
-    evidence = list(pattern = pat),
+    evidence = list(pattern = pat, thickness_cm = thk),
     missing = character(0),
     reference = "WRB (2022) Ch 5, Isopteric")
 }
@@ -1285,11 +1295,19 @@ qual_mochipic <- function(pedon) {
   }
   hits <- !is.na(mm) & grepl("(?i)mochi|banded|patchy",
                                   mm, perl = TRUE)
-  qualifying <- which(hits & h$top_cm < 100)
+  # WRB 2022 Ch 5 Mochipic: stagnic-properties layer >= 25 cm within 100 cm,
+  # water-saturated >= 300 cumulative days. Where water_saturation_days is
+  # measured, require >= 300; the >= 25 cm thickness is enforced (v0.9.133).
+  sat <- h$water_saturation_days %||% rep(NA_real_, nrow(h))
+  ok  <- hits & !is.na(h$top_cm) & h$top_cm < 100 & (is.na(sat) | sat >= 300)
+  qly <- which(ok)
+  thk <- if (length(qly) > 0L)
+    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
+  qualifying <- if (thk >= 25) qly else integer(0)
   DiagnosticResult$new(
     name = "Mochipic", passed = length(qualifying) > 0L,
     layers = qualifying,
-    evidence = list(pattern = "mochi|banded|patchy"),
+    evidence = list(pattern = "mochi|banded|patchy", thickness_cm = thk),
     missing = character(0),
     reference = "WRB (2022) Ch 5, Mochipic")
 }
