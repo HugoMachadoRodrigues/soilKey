@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.138 (2026-06-15)
+
+The “**B textural relacao-textural**” release. Implements the
+long-deferred verbatim Embrapa (2018) SiBCS Cap 2 p.56 item (h) – the
+proportional B/A textural ratio keyed on A-horizon clay – and folds it
+into `B_textural`.
+
 ## soilKey 0.9.137 (2026-06-15)
 
 The “**SiBCS subsurface-B horizon audit**” release (Phase 3, slice 3 –

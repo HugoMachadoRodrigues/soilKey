@@ -4077,6 +4077,9 @@ pública curada.
 - [`test_polyhedral_or_nutty_structure()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_polyhedral_or_nutty_structure.md)
   : Test for polyhedral / nutty structure type
 
+- [`test_ratio_textural_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ratio_textural_sibcs.md)
+  : SiBCS B textural relacao-textural (item h)
+
 - [`test_reducing_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_reducing_conditions.md)
   : Test for WRB 2022 reducing conditions (Ch 3.2.10) per layer
 
