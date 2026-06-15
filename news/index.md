@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.132 (2026-06-15)
+
+The “**qualifier audit, batch 1**” release (Fix D slice 4). A
+multi-agent audit of ~120 WRB qualifier predicates against the verbatim
+WRB 2022 Ch 5 PDF (with an adversarial-refutation pass, and every flag
+re-confirmed by hand against the PDF) fixed 11 threshold / depth /
+criterion bugs:
+
 ## soilKey 0.9.131 (2026-06-14)
 
 The “**colour qualifiers**” release (qualifier-correctness audit, Fix D
