@@ -173,7 +173,9 @@ carater_alitico <- function(pedon, min_al = 4, min_al_sat = 50, max_v = 50) {
     al_sat <- if (!is.na(s) && (s + al) > 0) 100 * al / (s + al) else NA_real_
     if (is.na(al_sat) && !is.na(h$al_sat_pct[i])) al_sat <- h$al_sat_pct[i]
     if (is.na(al_sat)) { missing <- c(missing, "al_sat_pct"); next }
-    layer_pass <- al >= min_al && al_sat >= min_al_sat && v < max_v
+    # SiBCS 2018 Cap 1 p32: Al >= 4 cmolc/kg solo E (Al-sat >= 50% E/OU V < 50%).
+    # The two saturation conditions are OR-ed (was AND -- too restrictive).
+    layer_pass <- al >= min_al && (al_sat >= min_al_sat || v < max_v)
     details[[as.character(i)]] <- list(
       idx = i, al_cmol = al, al_sat_pct = al_sat, bs_pct = v,
       threshold_al = min_al, threshold_al_sat = min_al_sat,
@@ -812,7 +814,11 @@ carater_acrico <- function(pedon,
     }
     delta_ph  <- pkcl - ph2o
     ecec_clay <- ecec * 100 / clay   # cmolc/kg argila
-    pass <- delta_ph >= min_delta_ph && ecec_clay <= max_ecec_clay
+    # SiBCS 2018 Cap 1 p31: (bases+Al) <= 1.5 cmolc/kg argila E (pH-KCl >= 5.0
+    # OU delta-pH >= 0). The pH-KCl >= 5.0 alternative was missing (code
+    # required delta-pH >= 0 only).
+    pass <- (pkcl >= 5.0 || delta_ph >= min_delta_ph) &&
+      ecec_clay <= max_ecec_clay
     details[[as.character(i)]] <- list(
       idx = i, ph_h2o = ph2o, ph_kcl = pkcl, delta_ph = delta_ph,
       ecec_cmol = ecec, clay_pct = clay, ecec_per_kg_clay = ecec_clay,
@@ -1510,6 +1516,19 @@ carater_argiluvico <- function(pedon, max_depth_cm = 150) {
     in_depth <- !is.na(h$top_cm[layers]) &
                   h$top_cm[layers] < max_depth_cm
     layers <- layers[in_depth]
+  }
+  # SiBCS 2018 Cap 1 p33: argiluvico also requires the B to have prismatic
+  # structure (any grade) OR blocky structure of at least moderate grade
+  # (B_textural already supplies the B/A >= 1.4 ratio). Enforced where
+  # structure is recorded; absent -> ratio alone (refine-when-present).
+  if (length(layers) > 0L) {
+    stype <- tolower(h$structure_type[layers] %||% NA_character_)
+    sgrade <- tolower(h$structure_grade[layers] %||% NA_character_)
+    prismatic <- !is.na(stype) & grepl("prism", stype)
+    blocky_mod <- !is.na(stype) & grepl("block|bloco", stype) &
+                    !is.na(sgrade) & sgrade %in% c("moderate", "strong")
+    struct_ok <- is.na(stype) | prismatic | blocky_mod
+    layers <- layers[struct_ok]
   }
   passed <- length(layers) > 0L
   DiagnosticResult$new(

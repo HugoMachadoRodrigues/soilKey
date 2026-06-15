@@ -2015,6 +2015,11 @@ test_fluvic_stratification <- function(h, max_top_cm = 100,
     }
   }
 
+  # SiBCS/WRB fluvic material is verbatim an OR (stratified texture AND/OR
+  # irregular OC-with-depth). It is kept as AND here on purpose: the
+  # `oc_irregular` proxy (any +0.1% OC increase with depth) is too permissive to
+  # stand alone in an OR -- it over-fires fluvic across all three systems. The
+  # OR is deferred until oc_irregular is tightened to a genuine erratic pattern.
   passed <- texture_alternates && oc_irregular
   .subtest_result(
     passed  = passed,
