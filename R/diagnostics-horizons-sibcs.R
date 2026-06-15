@@ -649,11 +649,28 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   esp  <- spodic(pedon)
   plan <- planic_features(pedon)
   ver  <- vertic_horizon(pedon)
+  # v0.9.137: SiBCS Cap 2 p.60 (a) -- B incipiente must ALSO NOT show
+  # cementation/hardening (duripa, petrocalcico), fragipa brittleness, the
+  # plinthite of a plintico, nor distinct gleyic reduction. The prior list
+  # missed these five, so a cemented Bkm (petrocalcico) or a gleyed Bg could
+  # leak through the ^B[wikvgnzj] designation gate (which admits k and g).
+  # Each test returns no layers when its evidence is absent, so the added
+  # exclusions are byte-identical on pedons lacking that evidence.
+  dur  <- duric_horizon(pedon)
+  pet  <- petrocalcic(pedon)
+  fra  <- fragic(pedon)
+  pli  <- plinthic(pedon)
+  gle  <- gleyic_properties(pedon)
   excluded <- unique(c(fer$layers %||% integer(0),
                         arg$layers %||% integer(0),
                         esp$layers %||% integer(0),
                         plan$layers %||% integer(0),
-                        ver$layers %||% integer(0)))
+                        ver$layers %||% integer(0),
+                        dur$layers %||% integer(0),
+                        pet$layers %||% integer(0),
+                        fra$layers %||% integer(0),
+                        pli$layers %||% integer(0),
+                        gle$layers %||% integer(0)))
   layers_ok <- setdiff(candidates, excluded)
   thick_test <- test_minimum_thickness(h, min_cm = min_thickness,
                                           candidate_layers = layers_ok)
@@ -666,7 +683,9 @@ B_incipiente <- function(pedon, min_thickness = 10) {
       thickness   = thick_test,
       excluded_by = list(ferralic = fer$layers, argic = arg$layers,
                            spodic = esp$layers, planic = plan$layers,
-                           vertic = ver$layers)
+                           vertic = ver$layers, duric = dur$layers,
+                           petrocalcic = pet$layers, fragic = fra$layers,
+                           plinthic = pli$layers, gleyic = gle$layers)
     ),
     missing = c(desg_match$missing, thick_test$missing),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 59-61"
@@ -718,32 +737,50 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # nitico structure descriptor in tropical Nitossolos (estrutura em
   # blocos sub-angulares evoluindo para "poliedrica") that the older
   # regex was missing.
-  struct_ok <- any(!is.na(h$structure_type[clay_ok]) &
-                     grepl(paste0("blocks|block|blocos|bloco|",
-                                    "prismatic|prismatica|",
-                                    "polyhedral|polyedric|poliedric"),
-                              h$structure_type[clay_ok], ignore.case = TRUE))
-  # Step 4: cerosidade (clay_films_amount) no minimo "comum" -- discriminante
-  # critico vs Latossolos (que tem no maximo "pouca e fraca")
-  cerosidade_ok <- any(!is.na(h$clay_films_amount[clay_ok]) &
-                           h$clay_films_amount[clay_ok] %in% min_cerosidade)
-  # Step 5: thickness
-  thk <- test_minimum_thickness(h, min_cm = min_thickness,
+  # v0.9.137: SiBCS Cap 2 p.62 (c) requires the structure GRADE to be moderate
+  # or strong (not merely the type in blocks/prismatic). refine-when-present:
+  # a RECORDED structure_grade must read moderate/strong; NA grade -> the layer
+  # is admitted as before (byte-identical).
+  type_match <- !is.na(h$structure_type[clay_ok]) &
+                  grepl(paste0("blocks|block|blocos|bloco|",
+                                 "prismatic|prismatica|",
+                                 "polyhedral|polyedric|poliedric"),
+                          h$structure_type[clay_ok], ignore.case = TRUE)
+  grade_ok   <- is.na(h$structure_grade[clay_ok]) |
+                  grepl("moder|strong|forte", h$structure_grade[clay_ok],
+                          ignore.case = TRUE)
+  struct_ok  <- any(type_match & grade_ok)
+  # Step 4: cerosidade. SiBCS Cap 2 p.62 (c): quantity >= "comum" AND GRADE
+  # >= moderate ("grau forte ou moderado") -- the critical discriminant vs
+  # Latossolos (which carry at most "pouca e fraca" clay-skins). The prior test
+  # checked only quantity; refine-when-present adds the grade gate via
+  # clay_films_strength (NA strength -> byte-identical).
+  ceros_amount  <- !is.na(h$clay_films_amount[clay_ok]) &
+                     h$clay_films_amount[clay_ok] %in% min_cerosidade
+  ceros_grade   <- is.na(h$clay_films_strength[clay_ok]) |
+                     grepl("moder|strong|forte", h$clay_films_strength[clay_ok],
+                             ignore.case = TRUE)
+  cerosidade_ok <- any(ceros_amount & ceros_grade)
+  # Step 5: thickness. SiBCS Cap 2 p.62 (a): >= 30 cm, EXCEPT >= 15 cm when a
+  # lithic / lithic-fragmentary contact occurs within the first 50 cm.
+  contact_shallow <- any(!is.na(h$designation) &
+                           grepl("^[0-9]*(R|Cr|Cd)", h$designation) &
+                           !is.na(h$top_cm) & h$top_cm <= 50)
+  eff_min_thick <- if (contact_shallow) 15 else min_thickness
+  thk <- test_minimum_thickness(h, min_cm = eff_min_thick,
                                    candidate_layers = clay_ok)
-  # Step 6: argila atividade baixa OR (alta + alitico) OR (alta +
-  # carater ferri). Per SiBCS Cap 2 p. 62, the canonical Nitossolos
-  # Vermelho Ferri / Eutroferrico carry high CTC clays *plus* a
-  # ferri-mineralogical signature (>= 8 % Fe-DCB or >= 18 % Fe2O3 in
-  # the clay fraction); without the ferric path, every Tropical Ta
-  # Nitossolo without aluminic character was being rejected by
-  # B_nitico (and falling through to Argissolos). v0.9.10 adds the
-  # ferri short-circuit using `fe_dcb_pct` on the candidate B layers.
+  # Step 6: argila atividade baixa OR (atividade alta + carater aluminico).
+  # v0.9.137: this is the VERBATIM SiBCS Cap 2 p.62 criterion (d) -- there is
+  # no "ferric / high-Fe" alternative path in the B nitico DEFINITION. The
+  # earlier v0.9.10 `ferri_ok` short-circuit (>= 8% Fe-DCB) was a deviation
+  # added on the premise that high-activity ferric Nitossolos were being lost
+  # to Argissolos; it is REMOVED here because (1) it is not in the verbatim
+  # definition and (2) measured removal is benchmark-neutral (BDsolos RJ
+  # confusion and Redape order accuracy both unchanged) -- ferric Nitossolos
+  # are oxidic, hence low-activity, and already pass via the low-activity path.
   ta_alta <- atividade_argila_alta(pedon)
   ali     <- carater_alitico(pedon)
-  fe_vals <- if ("fe_dcb_pct" %in% names(h)) h$fe_dcb_pct[clay_ok]
-             else NA_real_
-  ferri_ok <- any(!is.na(fe_vals) & fe_vals >= 8)
-  ativ_ok <- !isTRUE(ta_alta$passed) || isTRUE(ali$passed) || ferri_ok
+  ativ_ok <- !isTRUE(ta_alta$passed) || isTRUE(ali$passed)
   passed <- length(clay_ok) > 0L && ratio_ok && struct_ok &&
               cerosidade_ok && isTRUE(thk$passed) && ativ_ok
   DiagnosticResult$new(
@@ -970,6 +1007,31 @@ horizonte_petrocalcico <- function(pedon, ...) {
 #' @export
 horizonte_sulfurico <- function(pedon, ...) {
   res <- thionic(pedon, max_pH = 3.5, ...)
+  # SiBCS Cap 2 p.72-73: sulfurico = thickness >= 15 cm + pH(H2O 1:2.5) <= 3.5
+  # AND >= 1 of (a) jarosite, (b) sulfidic material immediately below,
+  # (c) >= 0.05% water-soluble sulfate. thionic encodes only the sulfidic-
+  # material path. v0.9.137 adds the JAROSITE OR-path (jarosite_present field,
+  # v0.9.133) -- refine-when-present, so a pedon with no jarosite datum keeps
+  # thionic's result unchanged. (The soluble-sulfate path stays schema-blocked:
+  # no soluble-sulfate column.)
+  h <- pedon$horizons
+  jar <- h[["jarosite_present"]]
+  if (!isTRUE(res$passed) && !is.null(jar) && any(jar %in% TRUE)) {
+    ph_low     <- test_ph_below(h, max_ph = 3.5)
+    jar_layers <- which(jar %in% TRUE)
+    cand       <- intersect(ph_low$layers, jar_layers)
+    if (length(cand)) {
+      thk <- test_minimum_thickness(h, min_cm = 15, candidate_layers = cand)
+      if (isTRUE(thk$passed)) {
+        return(DiagnosticResult$new(
+          name = "horizonte_sulfurico", passed = TRUE, layers = thk$layers,
+          evidence = list(thionic = res, jarosite_path = TRUE,
+                           ph = ph_low, thickness = thk),
+          missing = character(0),
+          reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 72-73"))
+      }
+    }
+  }
   res$name <- "horizonte_sulfurico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 72-73"
   res
@@ -987,7 +1049,11 @@ horizonte_sulfurico <- function(pedon, ...) {
 #' @keywords internal
 #' @export
 horizonte_vertico <- function(pedon, ...) {
-  res <- vertic_horizon(pedon, min_thickness = 20, ...)
+  # v0.9.137: SiBCS Cap 2 p.73 requires cracks ">= 1 cm" wide (vs the WRB/USDA
+  # 0.5 cm). Pass min_crack_width_cm = 1.0 so the SiBCS vertico is stricter on
+  # the field-crack path; the COLE and 'v'-designation paths are unaffected, so
+  # a Vertissolo recorded via COLE or a v-modifier designation still passes.
+  res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0, ...)
   res$name <- "horizonte_vertico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 73"
   res

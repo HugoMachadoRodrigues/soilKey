@@ -92,6 +92,15 @@ make_vertissolo_canonical <- function() {
   pr <- make_vertisol_canonical()
   pr$site$id <- "V-canonical-01"
   pr$site$country <- "BR"
+  # v0.9.137: SiBCS Cap 2 p.73 requires shrink-swell cracks ">= 1 cm" wide
+  # (vs the WRB/USDA 0.5 cm of the shared make_vertisol_canonical fixture).
+  # A textbook Vertissolo cracks well wider than 1 cm, so widen the slickensided
+  # diagnostic layers (Bss/BCss) to verbatim-valid widths -- this keeps the
+  # WRB/USDA fixture byte-identical while making the SiBCS reference profile a
+  # genuine SiBCS Vertissolo (cracks 1.5 / 1.2 cm >= the 1 cm SiBCS minimum).
+  ss <- which(!is.na(pr$horizons$slickensides) &
+                pr$horizons$slickensides %in% c("common", "many", "continuous"))
+  pr$horizons$cracks_width_cm[ss] <- pmax(pr$horizons$cracks_width_cm[ss], 1.2)
   pr
 }
 
