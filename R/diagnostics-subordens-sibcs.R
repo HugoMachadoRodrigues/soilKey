@@ -564,7 +564,11 @@ luvissolo_cromico <- function(pedon) {
     if (grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R|5YR)", hu,
                   ignore.case = TRUE)) v >= 3 && c >= 4
     else if (grepl("^(7\\.5YR|10YR)", hu, ignore.case = TRUE)) v >= 4 && c >= 4
-    else v >= 5 && c > 4
+    # SiBCS Cap 1 (c): only matiz mais amarelo que 10YR ate 5Y (2.5Y/5Y);
+    # the catch-all else previously applied (c) to ANY other hue, incl. hues
+    # yellower than 5Y.
+    else if (grepl("^(2\\.5Y|5Y)", hu, ignore.case = TRUE)) v >= 5 && c > 4
+    else FALSE
   }, hues, vals, chrs)
   passed <- any(ok, na.rm = TRUE)
   DiagnosticResult$new(

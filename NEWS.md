@@ -1,3 +1,37 @@
+# soilKey 0.9.134 (2026-06-15)
+
+The "**SiBCS attribute audit**" release (Phase 3, slice 1). With the Embrapa
+2018 manual (SiBCS 5th ed.) now in hand, a multi-agent audit checked the SiBCS
+*atributos diagnósticos* against the verbatim Cap 1 criteria (every flag
+re-confirmed by hand against the manual). Four confirmed bugs fixed:
+
+\itemize{
+  \item \strong{carater_acrico}: now (pH-KCl \eqn{\ge} 5.0 \strong{OR} ΔpH
+        \eqn{\ge} 0) AND (bases+Al) \eqn{\le} 1.5 cmol_c/kg clay -- the pH-KCl
+        \eqn{\ge} 5.0 alternative was missing (Cap 1 p31).
+  \item \strong{carater_alitico}: now Al \eqn{\ge} 4 cmol_c/kg AND
+        (Al-saturation \eqn{\ge} 50\% \strong{OR} V < 50\%) -- the two
+        saturation conditions were wrongly AND-ed (Cap 1 p32).
+  \item \strong{luvissolo_cromico}: criterion (c) (value \eqn{\ge} 5, chroma
+        > 4) is now restricted to hues 2.5Y-5Y; the catch-all \code{else}
+        previously applied it to any non-matching hue (Cap 1 p34).
+  \item \strong{carater_argiluvico}: now also requires the B to have prismatic
+        structure (any grade) OR blocky structure of at least moderate grade,
+        where structure is recorded (Cap 1 p33) -- previously the clay-ratio
+        (via B textural) alone.
+  \item \strong{Verified correct} (no change): atividade-argila Ta \eqn{\ge} 27,
+        eutrofico/distrofico, carbonatico/hipocarbonatico, sodico/solodico/
+        salico/salino, plintico/concrecionario/redoxico/planico, eutrico,
+        cromico hue branches, and mudanca-textural-abrupta (the manual's
+        "220->420" is the +200 g/kg rule, not a third case).
+  \item \strong{Deferred}: carater_fluvico / fluvic_material -- the SiBCS/WRB
+        criterion is verbatim an OR, but the package's \code{oc_irregular}
+        proxy (any +0.1\% OC bump with depth) over-fires under OR across all
+        three systems; kept as AND until that proxy is tightened.
+  \item Gate: full suite 5684 pass / 0 fail; +8 unit tests; all 44 canonical
+        fixtures byte-identical. \code{R CMD check --as-cran} codoc OK.
+}
+
 # soilKey 0.9.133 (2026-06-15)
 
 The "**schema-blocked qualifiers unlocked**" release (Fix D follow-up). Four new
