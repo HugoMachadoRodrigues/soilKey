@@ -1,5 +1,13 @@
 # Changelog
 
+## soilKey 0.9.134 (2026-06-15)
+
+The “**SiBCS attribute audit**” release (Phase 3, slice 1). With the
+Embrapa 2018 manual (SiBCS 5th ed.) now in hand, a multi-agent audit
+checked the SiBCS *atributos diagnósticos* against the verbatim Cap 1
+criteria (every flag re-confirmed by hand against the manual). Four
+confirmed bugs fixed:
+
 ## soilKey 0.9.133 (2026-06-15)
 
 The “**schema-blocked qualifiers unlocked**” release (Fix D follow-up).
