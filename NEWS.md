@@ -1,3 +1,33 @@
+# soilKey 0.9.139 (2026-06-15)
+
+The "**calcic secondary-carbonate enrichment**" release. Implements the verbatim
+calcic-horizon enrichment clause -- but, after a measured KSSL gate, scoped to
+SiBCS only.
+
+\itemize{
+  \item \strong{New \code{test_caco3_enrichment()}} encodes the measurable
+        enrichment criterion shared by all three systems: a candidate calcic
+        layer must have CaCO3-equiv \eqn{\ge} 5\% absolute (50 g/kg) more than an
+        underlying measured layer, unless an underlying layer is \eqn{\ge} 40\%
+        (marble/marl substrate exemption). A candidate with no underlying measured
+        layer is dropped (the criterion is inapplicable); absent CaCO3 leaves the
+        result unchanged.
+  \item \strong{\code{horizonte_calcico} (SiBCS) now enforces the +50 enrichment}
+        (Embrapa 2018 Cap 2 p.71), which -- unlike WRB/USDA -- has NO protocalcic
+        morphological alternative.
+  \item \strong{The shared \code{calcic()} core stays absolute-only
+        (byte-identical)} for its WRB/USDA consumers. WRB 2022 (3.1.4 crit 2) and
+        USDA KST allow protocalcic properties / by-volume secondary carbonates as
+        an OR-alternative to the +5\% enrichment -- a MORPHOLOGICAL observation the
+        schema cannot measure. A measured KSSL n=34,755 before/after test showed
+        that enforcing the caco3-only enrichment in the core drops 10 genuine
+        Aridisols (protocalcic calciargids/petrocalcids) to Entisols while fixing
+        20 false positives -- net +10 but NOT 0-worsened. So the core is unchanged
+        and the WRB/USDA enrichment is deferred pending a secondary-carbonate
+        morphology field (schema-blocked). See
+        \code{inst/benchmarks/reports/calcic_enrichment_v09139.md}.
+}
+
 # soilKey 0.9.138 (2026-06-15)
 
 The "**B textural relacao-textural**" release. Implements the long-deferred

@@ -538,6 +538,19 @@ calcic <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
 
   tests <- list()
   tests$caco3     <- test_caco3_concentration(h, min_pct = min_caco3_pct)
+  # NOTE (v0.9.139): the verbatim calcic criterion (WRB 2022 3.1.4 crit 2b /
+  # USDA KST) also requires a secondary-carbonate ENRICHMENT signature beyond the
+  # absolute >= 15%, but as ONE of TWO alternatives -- the other being
+  # protocalcic properties (WRB) / >= 5% by-volume identifiable secondary
+  # carbonates (USDA), a MORPHOLOGICAL observation absent from the schema. A
+  # measured KSSL n=34,755 before/after test showed that enforcing the
+  # caco3-only enrichment HERE drops 10 genuine Aridisols (calciargids /
+  # petrocalcids qualifying via the unmeasured protocalcic path) to Entisols
+  # while fixing 20 false-positive Aridisols -- net +10 but NOT 0-worsened. The
+  # shared core therefore stays absolute-only (byte-identical) for WRB/USDA; the
+  # enrichment (test_caco3_enrichment) is applied only by horizonte_calcico
+  # (SiBCS Cap 2 p.71, which requires the +50 with no protocalcic alternative).
+  # See inst/benchmarks/reports/calcic_enrichment_v09139.md.
   tests$thickness <- test_minimum_thickness(h,
                                               min_cm           = min_thickness,
                                               candidate_layers = tests$caco3$layers)
