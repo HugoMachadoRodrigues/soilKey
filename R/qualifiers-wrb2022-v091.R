@@ -232,14 +232,21 @@ qual_urbic <- function(pedon) {
   proxy <- grepl("^C?u(rb)?|urbic|rubble", h$designation[layers], ignore.case = TRUE)
   proxy[is.na(proxy)] <- FALSE
   ok <- (!is.na(ub) & ub >= 20) | proxy
-  passed <- any(ok)
+  ok_layers <- layers[ok]
+  # v0.9.142: WRB 2022 (Ch 5, p.150) Urbic requires the qualifying layer to be
+  # >= 20 cm thick (within 100 cm). Sum the thickness of the qualifying layers.
+  thick <- if (length(ok_layers))
+             sum(h$bottom_cm[ok_layers] - h$top_cm[ok_layers], na.rm = TRUE)
+           else 0
+  passed <- length(ok_layers) > 0L && thick >= 20
   DiagnosticResult$new(
     name = "Urbic", passed = passed,
-    layers = layers[ok],
-    evidence = list(artefacts_urbic_pct = ub, designation_proxy = proxy),
+    layers = if (passed) ok_layers else integer(0),
+    evidence = list(artefacts_urbic_pct = ub, designation_proxy = proxy,
+                    thickness_cm = thick),
     missing = if (all(is.na(ub))) "artefacts_urbic_pct" else character(0),
     reference = "WRB (2022) Ch 5, Urbic",
-    notes = "v0.9.1: designation-pattern fallback when artefacts_urbic_pct missing"
+    notes = "v0.9.142: + >= 20 cm thickness; designation fallback when artefacts_urbic_pct missing"
   )
 }
 

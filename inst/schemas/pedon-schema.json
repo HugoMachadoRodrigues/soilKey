@@ -192,6 +192,9 @@
           "caco3_pct": {
             "type": ["number", "null"]
           },
+          "secondary_carbonates_pct": {
+            "type": ["number", "null"]
+          },
           "caso4_pct": {
             "type": ["number", "null"]
           },

@@ -1,3 +1,29 @@
+# soilKey 0.9.142 (2026-06-16)
+
+The "**calcic morphology field + Raptic/Urbic clauses**" release -- unblocks three
+deferred clauses that needed a morphology field or thickness gate, refine-when-
+present (byte-identical until the data exists).
+
+\itemize{
+  \item \strong{New schema field \code{secondary_carbonates_pct}} (identifiable
+        secondary carbonates by volume) -- the morphological OR-path of the calcic
+        horizon (WRB 2022 3.1.4 protocalcic / USDA KST by-volume). pedon-schema.json
+        regenerated.
+  \item \strong{\code{calcic()} core now enforces the WRB/USDA enrichment} at the
+        criterion level: a \eqn{\ge} 15\% layer is dropped ONLY when both the
+        +5\%-vs-underlying CaCO3 test fails AND \code{secondary_carbonates_pct} is
+        recorded and \eqn{<} 5\% (both WRB crit 2b and 2a disproven). Absent
+        morphology -> indeterminate -> byte-identical (resolves the v0.9.139
+        tension where the caco3-only core dropped 10 protocalcic Aridisols).
+  \item \strong{SiBCS \code{horizonte_calcico}} gains the "expresso em volume"
+        alternative (\code{secondary_carbonates_pct} \eqn{\ge} 5\%).
+  \item \strong{Raptic (rp)} now excludes a discontinuity whose recorded
+        \code{layer_origin} is aeolic / fluvic / solimovic / tephric (WRB Ch 5
+        p.144).
+  \item \strong{Urbic (ub)} now requires a \eqn{\ge} 20 cm qualifying layer
+        (WRB Ch 5 p.150).
+}
+
 # soilKey 0.9.141 (2026-06-16)
 
 The "**Fix D residue**" release -- closes the WRB 2022 qualifier-audit backlog by
