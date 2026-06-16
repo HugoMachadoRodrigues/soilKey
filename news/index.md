@@ -1,5 +1,11 @@
 # Changelog
 
+## soilKey 0.9.139 (2026-06-15)
+
+The “**calcic secondary-carbonate enrichment**” release. Implements the
+verbatim calcic-horizon enrichment clause – but, after a measured KSSL
+gate, scoped to SiBCS only.
+
 ## soilKey 0.9.138 (2026-06-15)
 
 The “**B textural relacao-textural**” release. Implements the

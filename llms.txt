@@ -4809,6 +4809,9 @@ pública curada.
 - [`test_caco3_concentration()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_caco3_concentration.md)
   : Test for CaCO3 concentration above threshold (per layer)
 
+- [`test_caco3_enrichment()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_caco3_enrichment.md)
+  : Test secondary-carbonate enrichment for a calcic horizon
+
 - [`test_cambic_soil_formation()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cambic_soil_formation.md)
   : Test cambic-horizon criterion 3 (evidence of soil formation), WRB
   2022 Ch 3.1.5.

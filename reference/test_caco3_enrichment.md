@@ -1,0 +1,61 @@
+# Test secondary-carbonate enrichment for a calcic horizon
+
+The verbatim calcic-horizon criterion in all three systems requires,
+beyond the absolute CaCO3 threshold, an ENRICHMENT signature
+distinguishing a pedogenic calcic horizon from inherited calcareous
+parent material:
+
+- WRB 2022 (3.1.4, crit 2b): CaCO3-equiv \\= 5% (absolute) higher than
+  an underlying layer, with no lithic discontinuity between them (OR
+  protocalcic properties – a morphological alternative);
+
+- USDA KST: 5% (absolute) more than an underlying horizon (OR 5%
+  by-volume identifiable secondary carbonates);
+
+- SiBCS Cap 2 p.71: \\= 50 g/kg more than the subjacent layer.
+
+The morphological OR-alternatives (protocalcic / by-volume secondary
+carbonates) are not measurable from the schema, so this test encodes
+only the measurable +5% (absolute) enrichment vs an underlying layer,
+REFINE-WHEN- PRESENT: a candidate layer passes unless it can be
+DISPROVEN – i.e. it passes when (a) it is the deepest measured layer, or
+(b) an underlying layer is highly calcareous (\\= `substrate_pct`, the
+marble/marl substrate exemption), or (c) it has \\= `min_delta_pct` more
+CaCO3 than the minimum among the underlying measured layers. Only a
+candidate whose CaCO3 fails to exceed every deeper measured layer by
+`min_delta_pct` (uniform calcareous profile, no substrate exemption) is
+dropped.
+
+## Usage
+
+``` r
+test_caco3_enrichment(
+  h,
+  candidate_layers,
+  min_delta_pct = 5,
+  substrate_pct = 40
+)
+```
+
+## Arguments
+
+- h:
+
+  A horizons `data.table`.
+
+- candidate_layers:
+
+  Integer indices already meeting the absolute test.
+
+- min_delta_pct:
+
+  Required absolute CaCO3 increase vs an underlying layer (default 5,
+  i.e. 50 g/kg).
+
+- substrate_pct:
+
+  Highly-calcareous substrate exemption (default 40).
+
+## Value
+
+A subtest result list (`passed`, `layers`, `details`).
