@@ -1,3 +1,36 @@
+# soilKey 0.9.140 (2026-06-16)
+
+The "**external / closure gap-fill**" release. Extends gap-fill beyond the
+v0.9.120 within-pedon interpolation -- then measures it honestly.
+
+\itemize{
+  \item \strong{New \code{gapfill_derive_horizon()}} fills cells that are exact
+        DEFINITIONAL closures of other measured columns in the same horizon: the
+        texture third (clay/silt/sand), \code{ecec = sum(bases) + al},
+        \code{al_sat = 100 * al / ecec}, \code{bs = 100 * sum(bases) / cec}.
+        Writes \code{source = "inferred_prior"} (grade C; never displaces a
+        measured value).
+  \item \strong{The classifiers' \code{gapfill=} argument gains a method
+        dispatcher}: \code{gapfill = list(method = c("interp", "derive",
+        "soilgrids"), ...)}. This makes the existing
+        \code{apply_soilgrids_depth_prior()} external prior (the EU-LUCAS
+        0->60\% mechanism) reachable from \code{classify_*}/\code{benchmark_*}
+        for the first time. \code{gapfill = TRUE} / a character vector keep their
+        v0.9.120 interpolation meaning; \code{gapfill = FALSE} (default) stays
+        byte-identical.
+  \item \strong{Measured honestly = NEUTRAL on the local SiBCS benchmarks.} A
+        diagnostic showed the missing cells are whole-horizon (clay NA only when
+        sand+silt also NA; base saturation NA only when CEC+bases also NA), so
+        closures rarely add decision-relevant data. \code{derive} fills 851 cells
+        on Redape and 1,574 on BDsolos RJ, yet accuracy is flat (Redape order/GG/
+        subgrupo +0.0000; BDsolos order +0.0014 = +1 pedon) -- e.g. recovered
+        \code{al_sat} is redundant with the measured \code{V < 50} branch of
+        carater_alitico. Gap-fill stays a DATA-RECOVERY / opt-in facility, not an
+        accuracy lever on the available reference data; the one real lever
+        (SoilGrids-by-coordinate) is unmeasurable on Redape (0/94 coordinates).
+        See \code{inst/benchmarks/reports/gapfill_measurement_v09140.md}.
+}
+
 # soilKey 0.9.139 (2026-06-15)
 
 The "**calcic secondary-carbonate enrichment**" release. Implements the verbatim
