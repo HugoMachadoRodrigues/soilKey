@@ -70,6 +70,7 @@ horizon_column_spec <- function() {
     al_cmol                 = "numeric",
     # ---- carbonates / sulphates ----
     caco3_pct               = "numeric",
+    secondary_carbonates_pct = "numeric",  # v0.9.142: identifiable SECONDARY carbonates by volume (soft masses / pseudomycelia / pendents / nodules). The morphological OR-path of the calcic horizon: WRB 2022 3.1.4 protocalcic / USDA KST >= 5% by-volume secondary carbonates, beside the +5%-vs-underlying enrichment
     caso4_pct               = "numeric",
     # ---- iron / aluminum oxides ----
     fe_dcb_pct              = "numeric",

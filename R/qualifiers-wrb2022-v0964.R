@@ -1431,11 +1431,17 @@ qual_raptic <- function(pedon) {
   }
   pat <- "(?i)break|interrupt|raptic|discont"
   hits <- !is.na(sp) & grepl(pat, sp, perl = TRUE)
-  qualifying <- which(hits & h$top_cm < 100)
+  # v0.9.142: WRB 2022 (Ch 5, p.144) Raptic = a lithic discontinuity <= 100 cm
+  # that is NOT related to aeolic, fluvic, solimovic or tephric material. Exclude
+  # a layer whose recorded layer_origin is one of those (refine-when-present:
+  # absent layer_origin leaves the discontinuity counting, as before).
+  lo <- h$layer_origin %||% rep(NA_character_, nrow(h))
+  excl_origin <- !is.na(lo) & grepl("(?i)aeol|fluv|solimov|tephr", lo, perl = TRUE)
+  qualifying <- which(hits & h$top_cm < 100 & !excl_origin)
   DiagnosticResult$new(
     name = "Raptic", passed = length(qualifying) > 0L,
     layers = qualifying,
-    evidence = list(pattern = pat),
+    evidence = list(pattern = pat, excluded_by_origin = which(excl_origin)),
     missing = character(0),
     reference = "WRB (2022) Ch 5, Raptic")
 }

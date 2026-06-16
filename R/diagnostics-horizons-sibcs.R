@@ -1000,12 +1000,24 @@ horizonte_calcico <- function(pedon, ...) {
   # unmeasured protocalcic OR-path (see calcic_enrichment_v09139.md). Refine-
   # when-present: only drops a layer that can be disproven.
   if (isTRUE(res$passed)) {
-    enr <- test_caco3_enrichment(pedon$horizons, candidate_layers = res$layers)
-    if (!isTRUE(enr$passed)) {
+    hh  <- pedon$horizons
+    enr <- test_caco3_enrichment(hh, candidate_layers = res$layers)
+    # v0.9.142: the SiBCS "expresso em volume" alternative -- the +50 enrichment
+    # may instead be shown as >= 5% by-volume secondary carbonate (gravelly /
+    # concretionary / powdery). refine-when-present: absent -> byte-identical.
+    sc    <- hh[["secondary_carbonates_pct"]]
+    byvol <- if (!is.null(sc))
+               res$layers[!is.na(sc[res$layers]) & sc[res$layers] >= 5]
+             else integer(0)
+    keep <- union(enr$layers, byvol)
+    if (length(keep) == 0L) {
       res$passed <- FALSE
       res$layers <- integer(0)
+    } else {
+      res$layers <- keep
     }
-    res$evidence <- c(res$evidence %||% list(), list(enrichment = enr))
+    res$evidence <- c(res$evidence %||% list(),
+                       list(enrichment = enr, by_volume_layers = byvol))
   }
   res$name <- "horizonte_calcico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 71-72"

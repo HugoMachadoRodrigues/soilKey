@@ -57,5 +57,6 @@ test_that("test_caco3_concentration handles per-layer thresholds", {
 test_that("calcic evidence carries the named sub-tests", {
   pr <- make_calcisol_canonical()
   res <- calcic(pr)
-  expect_named(res$evidence, c("caco3", "thickness"))
+  # v0.9.142: the core carries the refine-when-present enrichment sub-test.
+  expect_named(res$evidence, c("caco3", "enrichment", "thickness"))
 })

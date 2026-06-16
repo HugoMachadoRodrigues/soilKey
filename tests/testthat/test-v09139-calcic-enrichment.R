@@ -16,13 +16,16 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 
 # ---- the shared calcic() core stays absolute-only (byte-identical) --------
 
-test_that("v0.9.139: calcic() core is UNCHANGED (no enrichment) for WRB/USDA", {
-  # a uniform calcareous profile is still calcic at the WRB/USDA core level
-  # (the protocalcic OR-path is assumed; not disproven without morphology).
+test_that("v0.9.139: calcic() core is byte-identical when morphology is absent", {
+  # a uniform calcareous profile is still calcic at the WRB/USDA core level: the
+  # protocalcic OR-path (secondary_carbonates_pct, v0.9.142) is indeterminate and
+  # so the enrichment criterion is not disproven (refine-when-present).
   uni <- mkh(data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
                         designation = c("A", "C1", "C2"), caco3_pct = c(20, 20, 20)))
   expect_true(isTRUE(calcic(prh(uni))$passed))
-  expect_named(calcic(make_calcisol_canonical())$evidence, c("caco3", "thickness"))
+  # v0.9.142: the core now carries the refine-when-present enrichment sub-test.
+  expect_named(calcic(make_calcisol_canonical())$evidence,
+               c("caco3", "enrichment", "thickness"))
 })
 
 
