@@ -1,3 +1,28 @@
+# soilKey 0.9.141 (2026-06-16)
+
+The "**Fix D residue**" release -- closes the WRB 2022 qualifier-audit backlog by
+resolving the 7 items deferred in v0.9.132, each re-read against the verbatim
+WRB 2022 Ch 5. Two are real bugs; the rest are documented.
+
+\itemize{
+  \item \strong{Mazic (mz, p.140)} now requires a rupture-resistance class of at
+        least HARD beside the massive structure (Vertisols). The prior test
+        checked only the massive structure and over-fired on a soft (slaked, not
+        hardsetting) surface. Refine-when-present (\code{rupture_resistance};
+        absent -> byte-identical, massive-only).
+  \item \strong{Grumic (gm, p.136)} now requires a STRONG grade (was admitting
+        "moderate") and accepts strong angular/subangular BLOCKY self-mulching
+        (was granular-only), with the \eqn{\le} 1 cm aggregate limit applied per
+        structure class (granular up to "medium" \eqn{\le} 1 cm; "medium" blocky
+        is 10-20 mm \eqn{>} 1 cm, so only very-fine/fine blocky qualifies).
+  \item \strong{Documented, not changed:} \emph{Hyposalic} and
+        \emph{Hyperskeletic} are not WRB 2022 qualifiers (the 2022 terms are
+        Protosalic EC \eqn{\ge} 4 and Skeletic \eqn{\ge} 40\%) -- kept as package
+        extensions; \emph{Raptic} (material-origin exclusion), \emph{Urbic}
+        (\eqn{\ge} 20 cm + artefact fraction) and \emph{Evapocrustic}
+        (\eqn{\le} 2 cm crust) remain schema/proxy-limited.
+}
+
 # soilKey 0.9.140 (2026-06-16)
 
 The "**external / closure gap-fill**" release. Extends gap-fill beyond the

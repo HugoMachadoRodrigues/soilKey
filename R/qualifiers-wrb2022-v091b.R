@@ -101,13 +101,24 @@ qual_mazic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Mazic"))
   grade <- h$structure_grade[sl]
   type  <- h$structure_type[sl]
-  ok <- (!is.na(grade) & grade %in% c("structureless", "massive")) |
-          (!is.na(type) & grepl("massive", type, ignore.case = TRUE))
+  massive <- (!is.na(grade) & grade %in% c("structureless", "massive")) |
+               (!is.na(type) & grepl("massive", type, ignore.case = TRUE))
+  # v0.9.141: WRB 2022 (Ch 5, p.140) Mazic = massive structure AND a rupture-
+  # resistance class of AT LEAST HARD in the upper 20 cm (Vertisols only). The
+  # prior test checked only the massive structure, so it over-fired on a soft
+  # massive surface. refine-when-present: a RECORDED rupture_resistance must read
+  # hard / very hard / extremely hard (NOT "slightly hard"); absent leaves the
+  # result byte-identical to the pre-v0.9.141 massive-only behaviour.
+  rupt <- if ("rupture_resistance" %in% names(h)) h$rupture_resistance[sl]
+          else rep(NA_character_, length(sl))
+  hard_ok <- is.na(rupt) | rupt %in% c("hard", "very hard", "extremely hard")
+  ok <- massive & hard_ok
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Mazic", passed = passed,
     layers = sl[ok],
-    evidence = list(structure_grade = grade, structure_type = type),
+    evidence = list(structure_grade = grade, structure_type = type,
+                    rupture_resistance = rupt),
     missing = if (all(is.na(grade)) && all(is.na(type)))
                 c("structure_grade", "structure_type") else character(0),
     reference = "WRB (2022) Ch 5, Mazic"
@@ -130,9 +141,20 @@ qual_grumic <- function(pedon) {
   grade <- h$structure_grade[sl]
   type  <- h$structure_type[sl]
   size  <- h$structure_size[sl]
-  ok <- !is.na(grade) & grade %in% c("strong", "moderate") &
-          !is.na(type)  & grepl("granular", type, ignore.case = TRUE) &
-          (is.na(size)  | size %in% c("very fine", "fine", "medium"))
+  # v0.9.141: WRB 2022 (Ch 5, p.136) Grumic = a >= 1 cm layer at the mineral soil
+  # surface with STRONG granular OR STRONG angular/subangular BLOCKY structure of
+  # aggregate size <= 1 cm (self-mulching; Vertisols only). The prior test (a)
+  # admitted a "moderate" grade -- the verbatim requires strong only -- and
+  # (b) required "granular", missing the strong-blocky self-mulching form.
+  # The <= 1 cm aggregate limit is structure-class-dependent: granular peds up to
+  # "medium" stay <= 1 cm, but "medium" blocky peds are 10-20 mm (> 1 cm), so for
+  # blocky only "very fine"/"fine" qualify.
+  is_gran   <- !is.na(type) & grepl("granular", type, ignore.case = TRUE)
+  is_blocky <- !is.na(type) & grepl("blocky",   type, ignore.case = TRUE)
+  size_ok <- is.na(size) |
+               (is_gran   & size %in% c("very fine", "fine", "medium")) |
+               (is_blocky & size %in% c("very fine", "fine"))
+  ok <- !is.na(grade) & grade %in% "strong" & (is_gran | is_blocky) & size_ok
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Grumic", passed = passed,
