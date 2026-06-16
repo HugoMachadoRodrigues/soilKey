@@ -991,6 +991,22 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
 #' @export
 horizonte_calcico <- function(pedon, ...) {
   res <- calcic(pedon, ...)
+  # v0.9.139: SiBCS Cap 2 p.71 requires the calcic horizon to carry >= 50 g/kg
+  # (5% absolute) MORE CaCO3 than the subjacent layer -- and, unlike WRB/USDA,
+  # SiBCS has NO protocalcic morphological alternative (the "expresso em volume"
+  # caveat is only a measurement method for gravelly secondary carbonate, still
+  # the same +50 enrichment). So the enrichment is enforced HERE (SiBCS-only),
+  # not in the shared calcic() core, whose WRB/USDA consumers rely on the
+  # unmeasured protocalcic OR-path (see calcic_enrichment_v09139.md). Refine-
+  # when-present: only drops a layer that can be disproven.
+  if (isTRUE(res$passed)) {
+    enr <- test_caco3_enrichment(pedon$horizons, candidate_layers = res$layers)
+    if (!isTRUE(enr$passed)) {
+      res$passed <- FALSE
+      res$layers <- integer(0)
+    }
+    res$evidence <- c(res$evidence %||% list(), list(enrichment = enr))
+  }
   res$name <- "horizonte_calcico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 71-72"
   res
