@@ -151,6 +151,111 @@ gapfill_within_pedon <- function(pedon,
   invisible(pedon)
 }
 
+# =============================================================================
+# v0.9.140 -- Definitional-closure gap-fill (in-horizon).
+#
+# A measured diagnostic on the local SiBCS benchmarks (Redape n=94, BDsolos RJ
+# n=722) showed the missing cells are WHOLE-HORIZON: clay is NA only when sand
+# AND silt are also NA, and base saturation is NA only when CEC and the
+# exchangeable bases are also NA -- so a within-horizon proxy is essentially
+# never available where it is needed (0 texture-closure-fillable, ~1
+# bs-closure-fillable in each dataset). The single non-trivial case is al_sat,
+# which Redape never reports (0%) yet is definitionally derivable from the
+# measured exchange complex (al + bases): see gapfill_measurement_v09140.md.
+#
+# gapfill_derive_horizon() fills the cells that follow by DEFINITION (closure)
+# from other measured columns in the SAME horizon -- not a statistical estimate:
+#   * the texture third (clay/silt/sand) when the other two are measured;
+#   * ecec   = sum(bases) + al;
+#   * al_sat = 100 * al / ecec;
+#   * bs     = 100 * sum(bases) / cec.
+# Each write goes through add_measurement(source = "inferred_prior") so it never
+# displaces a measured value and the evidence grade honestly drops to "C". This
+# is a DATA-RECOVERY tool: the same Redape benchmark measured the al_sat closure
+# as accuracy-NEUTRAL (carater_alitico already keys on the measured V<50 branch),
+# so it is off by default like the other gap-fill methods.
+# =============================================================================
+
+#' Fill horizon attributes derivable BY DEFINITION from the same horizon
+#'
+#' Recovers cells that are exact closures of other measured columns in the same
+#' horizon (not statistical estimates): the texture third (clay/silt/sand) when
+#' the other two are present and sum to \\< 100; effective CEC as
+#' \code{sum(bases) + al}; aluminium saturation as \code{100 * al / ecec}; and
+#' base saturation as \code{100 * sum(bases) / cec}. Every fill is written with
+#' \code{source = "inferred_prior"} so the \code{\link{PedonRecord}} authority
+#' order keeps it from displacing a measured value and the evidence grade drops
+#' to \code{"C"}. Companion to \code{\link{gapfill_within_pedon}} (depth
+#' interpolation) and \code{\link{apply_soilgrids_depth_prior}} (external prior);
+#' reachable via the \code{gapfill = list(method = "derive")} argument of the
+#' classifiers.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param overwrite If \code{FALSE} (default) only \code{NA} target cells are
+#'        filled.
+#' @return Invisibly, the mutated \code{pedon}; attribute
+#'         \code{"gapfill_derive_horizon"} records the count filled.
+#' @seealso \code{\link{gapfill_within_pedon}}, \code{\link{apply_soilgrids_depth_prior}}
+#' @export
+gapfill_derive_horizon <- function(pedon, overwrite = FALSE) {
+  if (!inherits(pedon, "PedonRecord")) rlang::abort("`pedon` must be a PedonRecord")
+  h <- pedon$horizons
+  if (is.null(h) || nrow(h) == 0L) {
+    attr(pedon, "gapfill_derive_horizon") <- list(n_filled = 0L)
+    return(invisible(pedon))
+  }
+  g  <- function(col) if (col %in% names(h)) h[[col]] else rep(NA_real_, nrow(h))
+  na <- function(x) is.na(x)
+  bases <- rowSums(cbind(g("ca_cmol"), g("mg_cmol"), g("k_cmol"), g("na_cmol")),
+                   na.rm = TRUE)
+  # bases is only trustworthy when at least Ca and Mg are measured.
+  bases_ok <- !na(g("ca_cmol")) & !na(g("mg_cmol"))
+  cla <- g("clay_pct"); sil <- g("silt_pct"); san <- g("sand_pct")
+  al  <- g("al_cmol");  cec <- g("cec_cmol"); ecec <- g("ecec_cmol")
+
+  fill <- function(col, idx, val, note) {
+    idx <- idx[!na(val[idx]) & is.finite(val[idx])]
+    for (i in idx) pedon$add_measurement(i, col, value = val[i],
+        source = "inferred_prior", confidence = 0.7,
+        notes = note, overwrite = overwrite)
+    length(idx)
+  }
+
+  n <- 0L
+  if (all(c("clay_pct","silt_pct","sand_pct") %in% names(h))) {
+    third <- function(target_col, target_vals, a, b) {
+      v   <- 100 - a - b
+      idx <- which((na(target_vals) | overwrite) & !na(a) & !na(b) &
+                     v >= 0 & v <= 100)
+      fill(target_col, idx, v, "texture closure (100 - other two)")
+    }
+    n <- n + third("clay_pct", cla, sil, san)
+    n <- n + third("silt_pct", sil, cla, san)
+    n <- n + third("sand_pct", san, cla, sil)
+  }
+  if ("ecec_cmol" %in% names(h)) {
+    v <- bases + al
+    idx <- which((na(ecec) | overwrite) & bases_ok & !na(al) & v >= 0)
+    n <- n + fill("ecec_cmol", idx, v, "ECEC closure (sum bases + Al)")
+    ecec <- g("ecec_cmol")
+  }
+  if ("al_sat_pct" %in% names(h)) {
+    denom <- ifelse(!na(ecec) & ecec > 0, ecec, al + bases)
+    v <- 100 * al / denom
+    idx <- which((na(g("al_sat_pct")) | overwrite) & !na(al) & bases_ok &
+                   !na(denom) & denom > 0 & v >= 0 & v <= 100)
+    n <- n + fill("al_sat_pct", idx, v, "Al-saturation closure (100 Al / ECEC)")
+  }
+  if ("bs_pct" %in% names(h)) {
+    v <- 100 * bases / cec
+    idx <- which((na(g("bs_pct")) | overwrite) & bases_ok & !na(cec) & cec > 0 &
+                   v >= 0 & v <= 100)
+    n <- n + fill("bs_pct", idx, v, "base-saturation closure (100 sum-bases / CEC)")
+  }
+  attr(pedon, "gapfill_derive_horizon") <- list(n_filled = n)
+  invisible(pedon)
+}
+
 # -----------------------------------------------------------------------------
 # Classifier hook.
 #
@@ -162,9 +267,14 @@ gapfill_within_pedon <- function(pedon,
 #   * FALSE / NULL  -> no-op, the original pedon is returned unchanged
 #                      (the default; classification stays byte-identical).
 #   * TRUE          -> gapfill_within_pedon() with default attributes.
-#   * character     -> gapfill_within_pedon(attrs = <character>).
-#   * list          -> do.call(gapfill_within_pedon, <list>) for full control
-#                      (e.g. list(attrs = "clay_pct", confidence = 0.5)).
+#   * character     -> gapfill_within_pedon(attrs = <character>) (back-compat).
+#   * list          -> if it carries a `method` key, dispatch to one or more of
+#                      "interp" (gapfill_within_pedon), "derive"
+#                      (gapfill_derive_horizon) or "soilgrids"
+#                      (apply_soilgrids_depth_prior), applied in the given order;
+#                      remaining list elements are passed to the method(s).
+#                      Without a `method` key it is do.call'd on
+#                      gapfill_within_pedon for back-compat.
 # -----------------------------------------------------------------------------
 .classify_apply_gapfill <- function(pedon, gapfill) {
   if (is.null(gapfill) || isFALSE(gapfill)) return(pedon)
@@ -182,11 +292,29 @@ gapfill_within_pedon <- function(pedon,
   } else if (is.character(gapfill)) {
     gapfill_within_pedon(p, attrs = gapfill)
   } else if (is.list(gapfill)) {
-    do.call(gapfill_within_pedon, c(list(pedon = p), gapfill))
+    if (!is.null(gapfill$method)) {
+      methods <- gapfill$method
+      args    <- gapfill[setdiff(names(gapfill), "method")]
+      for (m in methods) {
+        if (identical(m, "interp")) {
+          do.call(gapfill_within_pedon, c(list(pedon = p), args))
+        } else if (identical(m, "derive")) {
+          ow <- args[intersect(names(args), "overwrite")]
+          do.call(gapfill_derive_horizon, c(list(pedon = p), ow))
+        } else if (identical(m, "soilgrids")) {
+          do.call(apply_soilgrids_depth_prior, c(list(pedon = p), args))
+        } else {
+          rlang::abort(paste0("unknown gapfill method '", m,
+                              "'; use interp / derive / soilgrids"))
+        }
+      }
+    } else {
+      do.call(gapfill_within_pedon, c(list(pedon = p), gapfill))
+    }
   } else {
     rlang::abort(paste0("`gapfill` must be FALSE, TRUE, a character vector of ",
-                        "attribute names, or a named list of ",
-                        "gapfill_within_pedon() arguments"))
+                        "attribute names, or a named list (optionally with a ",
+                        "`method` of interp / derive / soilgrids)"))
   }
   p
 }
