@@ -1,9 +1,9 @@
-# cran-comments.md -- soilKey 0.9.150
+# cran-comments.md -- soilKey 0.9.151
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.150 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.151 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -64,13 +64,18 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.150)
+## R CMD check --as-cran results (v0.9.151)
+
+A full local build (with vignettes and manual) and `R CMD check --as-cran`:
 
 - **0 ERRORs**
 - **0 WARNINGs**
-- **1 NOTE**, the standard new-submission feasibility note (maintainer name; and,
-  in the local build with `--ignore-vignettes`, "VignetteBuilder field but no
-  prebuilt vignette index" -- absent once the vignettes are built at submission).
+- **1 NOTE**: *"checking HTML version of manual ... Skipping checking HTML
+  validation: 'tidy' doesn't look like recent enough HTML Tidy."* This is a
+  local-only artefact -- the macOS-bundled `tidy` is older than CRAN's -- and
+  does not appear on the CRAN check servers. "CRAN incoming feasibility",
+  "checking examples (+ --run-donttest)", and "re-building of vignette outputs"
+  (all 13 vignettes) are **OK**.
 
 All tests pass under `R CMD check` (`testthat.R`, ~500 s). Tests that need
 optional Suggests (magick, jsonvalidate, pdftools, ellmer, terra, sf, aqp,
