@@ -165,6 +165,7 @@ subgroups:
     - { code: "KDBA", name: "Aquic Fragixerepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "KDBB", name: "Andic Fragixerepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
     - { code: "KDBD", name: "Vitrandic Fragixerepts", tests: { all_of: [{vitrandic_subgroup_usda: {}}] } }
+    - { code: "KDBE", name: "Humic Fragixerepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KDBC", name: "Typic Fragixerepts", tests: { default: true } }
   "KDC":  # Humixerepts (3)
     - { code: "KDCA", name: "Lithic Humixerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -196,6 +197,8 @@ subgroups:
     - { code: "KDEI", name: "Oxyaquic Dystroxerepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KDEJ", name: "Fragic Dystroxerepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KDEK", name: "Fragiaquic Dystroxerepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
+    - { code: "KDEM", name: "Humic Lithic Dystroxerepts", tests: { all_of: [{humic_colour_usda: {}}, {lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDEL", name: "Humic Dystroxerepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KDED", name: "Typic Dystroxerepts", tests: { default: true } }
   "KDF":  # Haploxerepts (4)
     - { code: "KDFA", name: "Lithic Haploxerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -210,6 +213,8 @@ subgroups:
     - { code: "KDFK", name: "Thapto-Humic Haploxerepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KDFL", name: "Calcic Haploxerepts", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
     - { code: "KDFM", name: "Gypsic Haploxerepts", tests: { all_of: [{gypsic_subgroup_usda: {}}] } }
+    - { code: "KDFO", name: "Humic Lithic Haploxerepts", tests: { all_of: [{humic_colour_usda: {}}, {lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KDFN", name: "Humic Haploxerepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KDFD", name: "Typic Haploxerepts", tests: { default: true } }
 
   # ====== USTEPTS ======
@@ -239,6 +244,7 @@ subgroups:
     - { code: "KEDE", name: "Vitrandic Dystrustepts", tests: { all_of: [{vitrandic_subgroup_usda: {}}] } }
     - { code: "KEDF", name: "Thapto-Humic Dystrustepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KEDG", name: "Aridic Dystrustepts", tests: { all_of: [{smr_aridic_usda: {}}] } }
+    - { code: "KEDH", name: "Humic Dystrustepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KEDD", name: "Typic Dystrustepts", tests: { default: true } }
   "KEE":  # Haplustepts (5)
     - { code: "KEEA", name: "Lithic Haplustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -268,9 +274,11 @@ subgroups:
     - { code: "KFCA", name: "Aquic Fragiudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "KFCB", name: "Andic Fragiudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
     - { code: "KFCD", name: "Vitrandic Fragiudepts", tests: { all_of: [{vitrandic_subgroup_usda: {}}] } }
+    - { code: "KFCE", name: "Humic Fragiudepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KFCC", name: "Typic Fragiudepts", tests: { default: true } }
   "KFD":  # Densiudepts (2)
     - { code: "KFDA", name: "Aquic Densiudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "KFDC", name: "Humic Densiudepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KFDB", name: "Typic Densiudepts", tests: { default: true } }
   "KFE":  # Humudepts (4)
     - { code: "KFEA", name: "Lithic Humudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -299,6 +307,8 @@ subgroups:
     - { code: "KFFK", name: "Lamellic Eutrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "KFFL", name: "Arenic Eutrudepts", tests: { all_of: [{arenic_subgroup_usda: {}}] } }
     - { code: "KFFM", name: "Fragiaquic Eutrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
+    - { code: "KFFO", name: "Humic Lithic Eutrudepts", tests: { all_of: [{humic_colour_usda: {}}, {lithic_contact_usda: {max_top_cm: 50}}] } }
+    - { code: "KFFN", name: "Humic Eutrudepts", tests: { all_of: [{humic_colour_usda: {}}] } }
     - { code: "KFFE", name: "Typic Eutrudepts", tests: { default: true } }
   "KFG":  # Dystrudepts (5)
     - { code: "KFGA", name: "Lithic Dystrudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -315,4 +325,5 @@ subgroups:
     - { code: "KFGM", name: "Lamellic Dystrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "KFGN", name: "Spodic Dystrudepts", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
     - { code: "KFGN", name: "Fragiaquic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
+    - { code: "KFGO", name: "Humic Lithic Dystrudepts", tests: { all_of: [{humic_colour_usda: {}}, {lithic_contact_usda: {max_top_cm: 50}}] } }
     - { code: "KFGE", name: "Typic Dystrudepts", tests: { default: true } }
