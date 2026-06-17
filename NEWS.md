@@ -1,3 +1,29 @@
+# soilKey 0.9.143 (2026-06-16)
+
+The "**SiBCS keys verification + BDsolos coordinate-sign fix**" release.
+
+\itemize{
+  \item \strong{BDsolos coordinate-sign bug FIXED.} The CSV records the
+        hemisphere as a full word ("Sul" / "Oeste"), but the loader matched only
+        the letter (S/W/O), so every Brazilian coordinate was mirrored into the
+        N/E hemisphere (an RJ profile landed in the Red Sea). The deterministic
+        key ignores coordinates -- classification is byte-identical -- but
+        SoilGrids / spatial priors / mapping queried the wrong location.
+        \code{.bdsolos_dms_to_decimal} now negates for Sul / Oeste / West.
+        +9 unit tests.
+  \item \strong{SiBCS keys verified faithful} (no code change): Cambissolos
+        (Cap 6) confirmed against the verbatim -- 4 subordens, GGs 2/4/8/12 --
+        joining the Argissolos verification, plus an all-13-order structural
+        cross-check (44 subordens / 938 subgroups). The subgrupo accuracy ceiling
+        is data-limited, not key-limited.
+  \item \strong{SoilGrids gap-fill measured (honest = slightly negative).} With
+        coordinates corrected, SoilGrids depth-fill on 40 gap-bearing BDsolos
+        profiles moved order accuracy 25.0\% -> 22.5\% (-1 pedon). Unlike EU-LUCAS
+        (0->60\%, near-empty pedons), BDsolos profiles already carry the key data,
+        so filling residual gaps from a coarse 250 m grid perturbs more than it
+        helps. SoilGrids stays opt-in / off by default.
+}
+
 # soilKey 0.9.142 (2026-06-16)
 
 The "**calcic morphology field + Raptic/Urbic clauses**" release -- unblocks three

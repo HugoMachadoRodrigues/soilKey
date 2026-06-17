@@ -313,8 +313,15 @@
   if (is.na(m)) m <- 0
   if (is.na(s)) s <- 0
   dec <- g + m / 60 + s / 3600
+  # v0.9.143: the BDsolos CSV records the hemisphere as a FULL Portuguese word
+  # ("Sul" / "Oeste" / "Norte" / "Leste"), not the single letter the prior code
+  # matched (S/W/O) -- so the southern/western sign was never applied and every
+  # Brazilian coordinate was mirrored into the N/E hemisphere (a SoilGrids /
+  # spatial-prior bug; the deterministic key does not use coordinates). Negate
+  # for any hemisphere starting with S (Sul), O (Oeste) or W (West).
   hem <- toupper(trimws(as.character(hemisferio)))
-  if (length(hem) == 1L && nzchar(hem) && hem %in% c("S", "W", "O")) {
+  if (length(hem) >= 1L && !is.na(hem[1L]) && nzchar(hem[1L]) &&
+      grepl("^(S|W|O)", hem[1L])) {
     dec <- -dec
   }
   dec
