@@ -113,19 +113,32 @@ download_ossl_subset <- function(region      = c("global", "south_america",
       cli::cli_alert_info("Fetching OSSL subset for {.field region}={region} from {.url {url}}")
     tmp <- tempfile(fileext = ".rds")
     on.exit(unlink(tmp), add = TRUE)
-    res <- tryCatch(
-      utils::download.file(url, tmp, mode = "wb",
-                             quiet = !verbose),
-      error = function(e) {
-        stop(sprintf(
-          "Failed to download OSSL subset from %s.\n  %s\n",
-          url, conditionMessage(e)),
-          "  Set options(soilKey.ossl_endpoint = '<mirror url with %%s>') ",
-          "to point at a local mirror.",
-          call. = FALSE)
-      }
-    )
-    obj <- readRDS(tmp)
+    # Actionable failure when the endpoint is unreachable / has moved. The
+    # public OSSL mirror has changed before; a 404 returns an HTML body that
+    # readRDS cannot parse, so BOTH a download error AND an unparseable payload
+    # are treated as the same recoverable condition.
+    .ossl_fetch_fail <- function(detail) {
+      stop(sprintf(paste0(
+        "Could not obtain an OSSL subset from %s\n  %s\n",
+        "  The bundled OSSL endpoint may have moved. Options:\n",
+        "   - options(soilKey.ossl_endpoint = '<mirror url with %%s>') to point ",
+        "at a live mirror;\n",
+        "   - build a library from your own data with read_spectral_library();\n",
+        "   - for testing, use the bundled synthetic data(ossl_demo_sa)."),
+        url, detail), call. = FALSE)
+    }
+    status <- tryCatch(
+      suppressWarnings(utils::download.file(url, tmp, mode = "wb",
+                                            quiet = !verbose)),
+      error = function(e) .ossl_fetch_fail(conditionMessage(e)))
+    if (!identical(as.integer(status), 0L) || !file.exists(tmp) ||
+          isTRUE(file.info(tmp)$size == 0))
+      .ossl_fetch_fail(sprintf("download returned status %s.", status))
+    obj <- tryCatch(readRDS(tmp),
+                    error = function(e) .ossl_fetch_fail(
+                      paste0("the downloaded file is not a valid .rds ",
+                             "(likely an HTTP error page): ",
+                             conditionMessage(e))))
     file.copy(tmp, cache_file, overwrite = TRUE)
     if (verbose)
       cli::cli_alert_success("Cached at {.path {cache_file}}")
