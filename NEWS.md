@@ -1,3 +1,38 @@
+# soilKey 0.9.149 (2026-06-17)
+
+The "**Humic colour-value USDA predicate**" release -- writes the one predicate
+the v0.9.147 coverage slice was missing, unblocking 11 more subgroups.
+Completeness, not accuracy (default classification byte-identical).
+
+\itemize{
+  \item \strong{\code{humic_colour_usda()}} (new, internal/exported) implements
+        the verbatim KST-13 "Humic" Inceptisol intergrade differentia: a colour
+        value, moist, of 3 or less AND a colour value, dry, of 5 or less
+        throughout the upper 18 cm of the mineral soil. It reuses the schema's
+        \code{munsell_value_moist} / \code{munsell_value_dry} (the same fields
+        \code{mollic_epipedon_usda} reads). \strong{Conservative:} every
+        upper-18 cm layer must be dark in BOTH moist and dry value, with both
+        recorded -- a missing dry value cannot confirm the criterion -- so it
+        never over-fires on a dark surface alone.
+  \item \strong{+11 USDA subgroups} the v0.9.147 slice had to exclude for want of
+        this predicate: 7 single-modifier (Humic Densiudepts, Dystroxerepts,
+        Dystrustepts, Eutrudepts, Fragiudepts, Fragixerepts, Haploxerepts) and 4
+        \dQuote{Humic Lithic} compounds (\code{all_of} colour + lithic contact
+        within 50 cm). USDA subgroup coverage \strong{2038 -> 2049 / 2715
+        (75.5\%)}. Append-before-default + first-match (only refines a former
+        Typic).
+  \item The aquept Humic subgroups (Endo-/Epiaquepts) and all multi-modifier
+        Humic compounds (Aeric/Alfic/Aquic/Fluventic/Inceptic/Psammentic/Xeric)
+        remain excluded -- they need a base-saturation compound or additional
+        predicates.
+  \item Gate: 44 canonical fixtures byte-identical; KSSL+NASIS n=3860 = 0
+        worsened (the loaded KSSL has no \code{munsell_value_dry} in the upper
+        18 cm, so -- like the v0.9.123 Oxisol case -- the gate cannot exercise
+        this predicate; safety rests on the verbatim-exact criterion + the
+        conservative require-both-recorded design). \code{R CMD check --as-cran}
+        = 1 NOTE.
+}
+
 # soilKey 0.9.148 (2026-06-17)
 
 The "**spectral-dataset ingestion scaffolding**" release -- the on-ramp for the
