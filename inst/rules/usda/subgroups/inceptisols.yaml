@@ -24,9 +24,11 @@ subgroups:
     - { code: "KACC", name: "Typic Halaquepts", tests: { default: true } }
   "KAD":  # Fragiaquepts (2)
     - { code: "KADA", name: "Aeric Fragiaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KADC", name: "Humic Fragiaquepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
     - { code: "KADB", name: "Typic Fragiaquepts", tests: { default: true } }
   "KAE":  # Densiaquepts (2)
     - { code: "KAEA", name: "Aeric Densiaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
+    - { code: "KAEC", name: "Humic Densiaquepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
     - { code: "KAEB", name: "Typic Densiaquepts", tests: { default: true } }
   "KAF":  # Gelaquepts (3)
     - { code: "KAFA", name: "Lithic Gelaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -35,6 +37,7 @@ subgroups:
     - { code: "KAFE", name: "Thapto-Humic Gelaquepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KAFF", name: "Fluvaquentic Gelaquepts", tests: { all_of: [{fluvaquentic_usda: {}}] } }
     - { code: "KAFG", name: "Turbic Gelaquepts", tests: { all_of: [{turbic_subgroup_usda: {}}] } }
+    - { code: "KAFH", name: "Humic Gelaquepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
     - { code: "KAFC", name: "Typic Gelaquepts", tests: { default: true } }
   "KAG":  # Cryaquepts (4)
     - { code: "KAGA", name: "Lithic Cryaquepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -46,6 +49,7 @@ subgroups:
     - { code: "KAGH", name: "Aquandic Cryaquepts", tests: { all_of: [{aquandic_subgroup_usda: {}}] } }
     - { code: "KAGI", name: "Thapto-Humic Cryaquepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KAGJ", name: "Fluvaquentic Cryaquepts", tests: { all_of: [{fluvaquentic_usda: {}}] } }
+    - { code: "KAGK", name: "Humic Cryaquepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
     - { code: "KAGD", name: "Typic Cryaquepts", tests: { default: true } }
   "KAH":  # Vermaquepts (2)
     - { code: "KAHA", name: "Aeric Vermaquepts", tests: { all_of: [{aeric_subgroup_usda: {}}] } }
@@ -116,6 +120,7 @@ subgroups:
     - { code: "KCAH", name: "Aquic Humicryepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "KCAI", name: "Oxyaquic Humicryepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KCAJ", name: "Lamellic Humicryepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
+    - { code: "KCAK", name: "Spodic Humicryepts", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
     - { code: "KCAC", name: "Typic Humicryepts", tests: { default: true } }
   "KCB":  # Calcicryepts (3)
     - { code: "KCBA", name: "Lithic Calcicryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -133,6 +138,7 @@ subgroups:
     - { code: "KCCI", name: "Folistic Dystrocryepts", tests: { all_of: [{folistic_subgroup_usda: {}}] } }
     - { code: "KCCJ", name: "Oxyaquic Dystrocryepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KCCK", name: "Lamellic Dystrocryepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
+    - { code: "KCCL", name: "Spodic Dystrocryepts", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
     - { code: "KCCD", name: "Typic Dystrocryepts", tests: { default: true } }
   "KCD":  # Haplocryepts (4)
     - { code: "KCDA", name: "Lithic Haplocryepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -189,6 +195,7 @@ subgroups:
     - { code: "KDEH", name: "Fluvaquentic Dystroxerepts", tests: { all_of: [{fluvaquentic_usda: {}}] } }
     - { code: "KDEI", name: "Oxyaquic Dystroxerepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KDEJ", name: "Fragic Dystroxerepts", tests: { all_of: [{fragipan_usda: {}}] } }
+    - { code: "KDEK", name: "Fragiaquic Dystroxerepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "KDED", name: "Typic Dystroxerepts", tests: { default: true } }
   "KDF":  # Haploxerepts (4)
     - { code: "KDFA", name: "Lithic Haploxerepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -202,6 +209,7 @@ subgroups:
     - { code: "KDFJ", name: "Fragic Haploxerepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KDFK", name: "Thapto-Humic Haploxerepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KDFL", name: "Calcic Haploxerepts", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
+    - { code: "KDFM", name: "Gypsic Haploxerepts", tests: { all_of: [{gypsic_subgroup_usda: {}}] } }
     - { code: "KDFD", name: "Typic Haploxerepts", tests: { default: true } }
 
   # ====== USTEPTS ======
@@ -214,6 +222,7 @@ subgroups:
     - { code: "KEBD", name: "Lithic Petrocalcic Calciustepts", tests: { all_of: [{lithic_contact_usda: { max_top_cm: 50 }}, {petrocalcic_subgroup_usda: {}}] } }
     - { code: "KEBE", name: "Aquic Calciustepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "KEBF", name: "Aridic Calciustepts", tests: { all_of: [{smr_aridic_usda: {}}] } }
+    - { code: "KEBG", name: "Gypsic Calciustepts", tests: { all_of: [{gypsic_subgroup_usda: {}}] } }
     - { code: "KEBC", name: "Typic Calciustepts", tests: { default: true } }
   "KEC":  # Humustepts (3)
     - { code: "KECA", name: "Lithic Humustepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -242,6 +251,7 @@ subgroups:
     - { code: "KEEI", name: "Lamellic Haplustepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "KEEJ", name: "Thapto-Humic Haplustepts", tests: { all_of: [{thapto_humic_usda: {}}] } }
     - { code: "KEEK", name: "Aridic Haplustepts", tests: { all_of: [{smr_aridic_usda: {}}] } }
+    - { code: "KEEL", name: "Gypsic Haplustepts", tests: { all_of: [{gypsic_subgroup_usda: {}}] } }
     - { code: "KEEE", name: "Typic Haplustepts", tests: { default: true } }
 
   # ====== UDEPTS ======
@@ -288,6 +298,7 @@ subgroups:
     - { code: "KFFJ", name: "Fragic Eutrudepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KFFK", name: "Lamellic Eutrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "KFFL", name: "Arenic Eutrudepts", tests: { all_of: [{arenic_subgroup_usda: {}}] } }
+    - { code: "KFFM", name: "Fragiaquic Eutrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "KFFE", name: "Typic Eutrudepts", tests: { default: true } }
   "KFG":  # Dystrudepts (5)
     - { code: "KFGA", name: "Lithic Dystrudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -302,4 +313,6 @@ subgroups:
     - { code: "KFGK", name: "Oxyaquic Dystrudepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KFGL", name: "Fragic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KFGM", name: "Lamellic Dystrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
+    - { code: "KFGN", name: "Spodic Dystrudepts", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
+    - { code: "KFGN", name: "Fragiaquic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "KFGE", name: "Typic Dystrudepts", tests: { default: true } }

@@ -152,6 +152,7 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 125 }
+    - { code: "ECAD", name: "Humic Sombriustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "ECAB"
       name: "Typic Sombriustox"
       tests:
@@ -353,6 +354,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
+    - { code: "ECDJ", name: "Humic Kandiustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "ECDE"
       name: "Typic Kandiustox"
       tests:
@@ -441,6 +443,7 @@ subgroups:
       tests:
         all_of:
           - petroferric_contact_usda: {}
+    - { code: "EDAD", name: "Humic Sombriperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EDAB"
       name: "Typic Sombriperox"
       tests:
@@ -641,6 +644,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
+    - { code: "EDDK", name: "Humic Kandiperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EDDD"
       name: "Typic Kandiperox"
       tests:
@@ -729,6 +733,7 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 125 }
+    - { code: "EEAD", name: "Humic Sombriudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EEAB"
       name: "Typic Sombriudox"
       tests:
@@ -800,6 +805,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
+    - { code: "EEBL", name: "Humic Acrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EEBG"
       name: "Typic Acrudox"
       tests:
@@ -860,6 +866,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
+    - { code: "EECI", name: "Humic Eutrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EECE"
       name: "Typic Eutrudox"
       tests:
@@ -925,6 +932,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
+    - { code: "EEDK", name: "Humic Kandiudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EEDE"
       name: "Typic Kandiudox"
       tests:

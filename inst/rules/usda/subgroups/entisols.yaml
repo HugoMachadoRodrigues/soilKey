@@ -146,6 +146,7 @@ subgroups:
     - { code: "LDCD", name: "Aquic Quartzipsamments", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "LDCE", name: "Oxyaquic Quartzipsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "LDCF", name: "Lamellic Quartzipsamments", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
+    - { code: "LDCG", name: "Plinthic Quartzipsamments", tests: { all_of: [{plinthic_subgroup_usda: {max_top_cm: 100}}] } }
     - { code: "LDCC", name: "Typic Quartzipsamments", tests: { default: true } }
   "LDD":  # Ustipsamments (2)
     - { code: "LDDA", name: "Lithic Ustipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }

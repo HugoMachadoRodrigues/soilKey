@@ -803,6 +803,8 @@ subgroups:
       tests:
         all_of:
           - chromic_subgroup_usda: {}
+    - { code: "FEEJ", name: "Gypsic Haplusterts", tests: { all_of: [{gypsic_subgroup_usda: {max_top_cm: 150}}] } }
+    - { code: "FEEJ", name: "Aridic Leptic Haplusterts", tests: { all_of: [{smr_aridic_usda: {}}, {leptic_vertic_usda: {}}] } }
     - code: "FEEE"
       name: "Typic Haplusterts"
       tests:

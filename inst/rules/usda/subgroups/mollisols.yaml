@@ -1031,6 +1031,7 @@ subgroups:
       tests:
         all_of:
           - pachic_subgroup_usda: {}
+    - { code: "IGCI", name: "Gypsic Calciustolls", tests: { all_of: [{gypsic_subgroup_usda: {}}] } }
     - code: "IGCD"
       name: "Typic Calciustolls"
       tests:
