@@ -3788,6 +3788,9 @@ pública curada.
   : Chromic qualifier (cr): hue redder than 7.5YR + chroma \> 4 (in
   upper subsoil 25-150 cm).
 
+- [`qual_claric()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_claric.md)
+  : Claric qualifier (cl): claric (light-coloured) material \<= 100 cm.
+
 - [`qual_clayic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_clayic.md)
   : Clayic qualifier (ce), WRB 2022 Ch 5.
 
@@ -4345,6 +4348,10 @@ pública curada.
 - [`qual_pachic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pachic.md)
   : Pachic qualifier (pc): mollic OR umbric horizon \>= 50 cm thick.
 
+- [`qual_panpaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_panpaic.md)
+  : Panpaic qualifier (pp): a panpan (cemented/indurated pan) \<= 100
+  cm.
+
 - [`qual_pantofluvic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_pantofluvic.md)
   : Pantofluvic qualifier (pf): fluvic material throughout 0-100 cm
 
@@ -4521,6 +4528,9 @@ pública curada.
 
 - [`qual_saprolithic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_saprolithic.md)
   : Saprolithic supplementary qualifier (sp): saprolite parent material
+
+- [`qual_sideralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_sideralic.md)
+  : Sideralic qualifier (sl): sideralic properties \<= 100 cm.
 
 - [`qual_silandic()`](https://hugomachadorodrigues.github.io/soilKey/reference/qual_silandic.md)
   : Silandic qualifier (sn): andic properties + Si-dominant active

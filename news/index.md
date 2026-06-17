@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.145 (2026-06-17)
+
+The “**honest WRB qualifier coverage**” release – a zero-risk
+completeness pass identified by a roadmap gap audit. No classification
+behaviour changes (the 44 canonical fixtures are byte-identical); the
+deterministic keys are untouched.
+
 ## soilKey 0.9.144 (2026-06-16)
 
 The “**non-circular predicted-taxon gap-fill**” release – the first
