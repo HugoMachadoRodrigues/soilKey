@@ -1,9 +1,9 @@
-# cran-comments.md -- soilKey 0.9.144
+# cran-comments.md -- soilKey 0.9.150
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.144 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.150 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -44,6 +44,14 @@ non-trivial hard dependencies (R6, data.table, yaml, cli, rlang).
   `gapfill_by_predicted_taxon()`). All four are default off and tagged with a
   low-authority provenance so they affect the evidence grade. The taxonomic key
   itself is never delegated to a model.
+* **v0.9.145-150 -- honest coverage + spectral on-ramp.** WRB qualifier coverage
+  corrected to 233/234; a small SiBCS subgroup accuracy fix (Redape 27.1 ->
+  32.9%); USDA subgroup coverage 73.8 -> 75.5% via criteria-exact, KSSL-gated
+  additions; and a spectral-dataset ingestion path (`read_spectral_library()` /
+  `pedons_from_spectral_table()` / `benchmark_spectral_fill()` + a
+  `gapfill = "spectra"` method) so a Vis-NIR/MIR + lab-label dataset can drive
+  the OSSL prediction engine. The `download_ossl_subset()` endpoint now fails
+  gracefully with actionable guidance when the public mirror is unreachable.
 
 No exported function from v0.9.96 changed signature in a non-additive way; every
 new argument has a safe default.
@@ -56,7 +64,7 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.144)
+## R CMD check --as-cran results (v0.9.150)
 
 - **0 ERRORs**
 - **0 WARNINGs**

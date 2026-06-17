@@ -110,7 +110,8 @@ test_that("download_ossl_subset() errors helpfully when network fetch fails", {
       cache_dir = cache_dir,
       verbose   = FALSE
     ),
-    regexp = "Failed to download OSSL subset"
+    # v0.9.150: message reworded to point at the recovery paths
+    regexp = "Could not obtain an OSSL subset|read_spectral_library|ossl_endpoint"
   )
 })
 

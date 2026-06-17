@@ -1,3 +1,26 @@
+# soilKey 0.9.150 (2026-06-17)
+
+The "**robustness + app-test hardening**" release -- no classification change
+(default path byte-identical).
+
+\itemize{
+  \item \strong{\code{download_ossl_subset()} fails gracefully} when the public
+        OSSL endpoint is unreachable or has moved. Previously a 404 (whose HTML
+        body is not a valid \code{.rds}) crashed \code{readRDS} with a cryptic
+        error; the function now detects both a failed download AND an
+        unparseable payload and stops with actionable guidance -- set
+        \code{options(soilKey.ossl_endpoint=)} to a mirror, build a library from
+        your own data with \code{\link{read_spectral_library}}, or use the
+        bundled synthetic \code{ossl_demo_sa}.
+  \item \strong{\code{shiny::testServer} coverage for the three Map-tab modules}
+        (\code{map} / \code{map_batch} / \code{map_grid}), previously parse / UI /
+        helper-tested only -- completing the Pro-app server-test coverage begun
+        in v0.9.118. Exercises the coordinate-tracking, column-name and
+        bounding-box / cell-count reactives.
+  \item \code{cran-comments.md} refreshed to the current v0.9.96 -> v0.9.150
+        series.
+}
+
 # soilKey 0.9.149 (2026-06-17)
 
 The "**Humic colour-value USDA predicate**" release -- writes the one predicate
