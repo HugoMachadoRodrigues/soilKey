@@ -217,13 +217,13 @@ subgroups:
       tests:
         all_of:
           - xanthic_subgroup_usda: {}
-    - code: "ECBK"
+    - code: "ECBL"
       name: "Humic Xanthic Acrustox"
       tests:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "ECBJ"
+    - code: "ECBM"
       name: "Humic Rhodic Acrustox"
       tests:
         all_of:
@@ -348,7 +348,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "ECDH"
+    - code: "ECDK"
       name: "Humic Rhodic Kandiustox"
       tests:
         all_of:
@@ -502,7 +502,7 @@ subgroups:
       tests:
         all_of:
           - xanthic_subgroup_usda: {}
-    - code: "EDBI"
+    - code: "EDBK"
       name: "Humic Xanthic Acroperox"
       tests:
         all_of:
@@ -514,7 +514,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - rhodic_subgroup_usda: {}
-    - code: "EDBH"
+    - code: "EDBM"
       name: "Typic Acroperox"
       tests:
         default: true
@@ -638,7 +638,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "EDDI"
+    - code: "EDDL"
       name: "Humic Rhodic Kandiperox"
       tests:
         all_of:
@@ -703,13 +703,13 @@ subgroups:
       tests:
         all_of:
           - xanthic_subgroup_usda: {}
-    - code: "EDEJ"
+    - code: "EDEK"
       name: "Humic Xanthic Haploperox"
       tests:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "EDEI"
+    - code: "EDEL"
       name: "Humic Rhodic Haploperox"
       tests:
         all_of:
@@ -799,7 +799,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "EEBJ"
+    - code: "EEBM"
       name: "Humic Rhodic Acrudox"
       tests:
         all_of:
@@ -926,7 +926,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "EEDI"
+    - code: "EEDL"
       name: "Humic Rhodic Kandiudox"
       tests:
         all_of:
@@ -997,7 +997,7 @@ subgroups:
         all_of:
           - humic_oxisol_usda: {}
           - xanthic_subgroup_usda: {}
-    - code: "EEEJ"
+    - code: "EEEL"
       name: "Humic Rhodic Hapludox"
       tests:
         all_of:

@@ -204,7 +204,7 @@ subgroups:
     - { code: "JDEA", name: "Lithic Rhodoxeralfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
     - { code: "JDEB", name: "Mollic Rhodoxeralfs", tests: { all_of: [{mollic_epipedon_usda: {}}] } }
     - { code: "JDED", name: "Petrocalcic Rhodoxeralfs", tests: { all_of: [{petrocalcic_subgroup_usda: {}}] } }
-    - { code: "JDED", name: "Calcic Rhodoxeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
+    - { code: "JDEE", name: "Calcic Rhodoxeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
     - { code: "JDEC", name: "Typic Rhodoxeralfs", tests: { default: true } }
   "JDF":  # Palexeralfs (4)
     - { code: "JDFA", name: "Aquic Palexeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
@@ -221,7 +221,7 @@ subgroups:
     - { code: "JDFM", name: "Plinthic Palexeralfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
     - { code: "JDFN", name: "Ultic Palexeralfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
     - { code: "JDFO", name: "Haplic Palexeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
-    - { code: "JDFM", name: "Calcic Palexeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
+    - { code: "JDFQ", name: "Calcic Palexeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
     - { code: "JDFP", name: "Fragiaquic Palexeralfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JDFD", name: "Typic Palexeralfs", tests: { default: true } }
   "JDG":  # Haploxeralfs (5)

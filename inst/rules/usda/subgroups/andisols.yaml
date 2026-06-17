@@ -531,7 +531,7 @@ subgroups:
       tests:
         all_of:
           - duric_subgroup_usda: {}
-    - code: "DDBD"
+    - code: "DDBE"
       name: "Calcic Vitritorrands"
       tests:
         all_of:
@@ -562,7 +562,7 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DDCC"
+    - code: "DDCE"
       name: "Typic Haplotorrands"
       tests:
         default: true
@@ -647,7 +647,7 @@ subgroups:
       tests:
         all_of:
           - ultic_subgroup_usda: {}
-    - code: "DECD"
+    - code: "DECH"
       name: "Calcic Haploxerands"
       tests:
         all_of:
@@ -690,7 +690,7 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DFAD"
+    - code: "DFAG"
       name: "Typic Ustivitrands"
       tests:
         default: true
@@ -796,7 +796,7 @@ subgroups:
       tests:
         all_of:
           - ultic_subgroup_usda: {}
-    - code: "DGBG"
+    - code: "DGBI"
       name: "Calcic Haplustands"
       tests:
         all_of:

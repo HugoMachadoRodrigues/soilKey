@@ -324,6 +324,6 @@ subgroups:
     - { code: "KFGL", name: "Fragic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KFGM", name: "Lamellic Dystrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "KFGN", name: "Spodic Dystrudepts", tests: { all_of: [{spodic_subgroup_usda: {}}] } }
-    - { code: "KFGN", name: "Fragiaquic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
+    - { code: "KFGP", name: "Fragiaquic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "KFGO", name: "Humic Lithic Dystrudepts", tests: { all_of: [{humic_colour_usda: {}}, {lithic_contact_usda: {max_top_cm: 50}}] } }
     - { code: "KFGE", name: "Typic Dystrudepts", tests: { default: true } }
