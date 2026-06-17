@@ -672,6 +672,7 @@ subgroups:
       tests:
         all_of:
           - calcic_subgroup_usda: {}
+    - { code: "GFAH", name: "Argic Petrocalcids", tests: { all_of: [{argillic_within_usda: {max_top_cm: 100}}] } }
     - code: "GFAC"
       name: "Typic Petrocalcids"
       tests:

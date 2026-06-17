@@ -222,6 +222,7 @@ subgroups:
     - { code: "JDFN", name: "Ultic Palexeralfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
     - { code: "JDFO", name: "Haplic Palexeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "JDFM", name: "Calcic Palexeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
+    - { code: "JDFP", name: "Fragiaquic Palexeralfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JDFD", name: "Typic Palexeralfs", tests: { default: true } }
   "JDG":  # Haploxeralfs (5)
     - { code: "JDGA", name: "Lithic Haploxeralfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -238,6 +239,7 @@ subgroups:
     - { code: "JDGM", name: "Plinthic Haploxeralfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
     - { code: "JDGN", name: "Ultic Haploxeralfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
     - { code: "JDGP", name: "Calcic Haploxeralfs", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
+    - { code: "JDGO", name: "Fragiaquic Haploxeralfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JDGE", name: "Typic Haploxeralfs", tests: { default: true } }
 
   # ====== UDALFS ======
@@ -293,6 +295,7 @@ subgroups:
     - { code: "JEGM", name: "Grossarenic Paleudalfs", tests: { all_of: [{grossarenic_subgroup_usda: {}}] } }
     - { code: "JEGN", name: "Plinthic Paleudalfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
     - { code: "JEGO", name: "Rhodic Paleudalfs", tests: { all_of: [{rhodic_subgroup_usda: {}}] } }
+    - { code: "JEGP", name: "Fragiaquic Paleudalfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JEGD", name: "Typic Paleudalfs", tests: { default: true } }
   "JEH":  # Rhodudalfs (3)
     - { code: "JEHA", name: "Lithic Rhodudalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -310,6 +313,7 @@ subgroups:
     - { code: "JEIJ", name: "Fragic Glossudalfs", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "JEIK", name: "Arenic Glossudalfs", tests: { all_of: [{arenic_subgroup_usda: {}}] } }
     - { code: "JEIL", name: "Haplic Glossudalfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
+    - { code: "JEIM", name: "Fragiaquic Glossudalfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JEIC", name: "Typic Glossudalfs", tests: { default: true } }
   "JEJ":  # Hapludalfs (5)
     - { code: "JEJA", name: "Lithic Hapludalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -325,4 +329,5 @@ subgroups:
     - { code: "JEJL", name: "Fragic Hapludalfs", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "JEJM", name: "Lamellic Hapludalfs", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "JEJN", name: "Arenic Hapludalfs", tests: { all_of: [{arenic_subgroup_usda: {}}] } }
+    - { code: "JEJO", name: "Fragiaquic Hapludalfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JEJE", name: "Typic Hapludalfs", tests: { default: true } }

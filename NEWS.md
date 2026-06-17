@@ -1,3 +1,37 @@
+# soilKey 0.9.147 (2026-06-17)
+
+The "**USDA subgroup coverage +35**" release -- a criteria-exact completeness
+slice (NOT an accuracy change; the deterministic key is byte-identical on every
+already-classified pedon).
+
+\itemize{
+  \item \strong{USDA subgroup coverage 73.8\% -> 75.1\% (2003 -> 2038 / 2715).}
+        35 missing subgroups were registered, each one whose every modifier maps
+        to an \emph{already-existing} strict predicate, verified per-subgroup
+        against \code{ST_criteria_13th}: 13 Fragiaquic (\code{fragipan_usda} +
+        \code{aquic_subgroup_usda}), 13 Humic Oxisol/Inceptisol/Andisol
+        (\code{humic_oxisol_usda} / \code{humic_inceptisol_usda} /
+        \code{humic_andisol_usda}), 5 Gypsic (\code{gypsic_subgroup_usda}),
+        3 Spodic (\code{spodic_subgroup_usda}), Argic Petrocalcids
+        (\code{argillic_within_usda}, 100 cm), Aridic Leptic Haplusterts, and
+        Plinthic Quartzipsamments.
+  \item \strong{Append-before-default + first-match}: each new rule sits just
+        before its block's \code{Typic} default, so it can only ever refine a
+        former \code{Typic} -- never change an already-specific classification.
+  \item \strong{Gated.} KSSL+NASIS n=3860 before/after: \strong{0 worsened}
+        (only 1 pedon reaches a new subgroup at all -- the US sample barely
+        contains these Oxisol/intergrade subgroups, so safety rests on the
+        criteria-exact predicate mapping). 44 canonical fixtures byte-identical;
+        full suite green; \code{R CMD check --as-cran} = 1 NOTE.
+  \item \strong{Excluded (27, honest).} The remaining strict candidates were
+        \emph{not} registered: the \dQuote{Humic} Udept/Xerept intergrades whose
+        differentia is a dark-colour-value test with no predicate; the Natr-
+        great-group \dQuote{Leptic} (a soluble-salt criterion, not a contact);
+        \dQuote{Sodic} aquents and \dQuote{Plinthic} Petraquepts (same-word /
+        different-meaning traps). These need new predicates or schema, so they
+        stay out rather than be mis-mapped.
+}
+
 # soilKey 0.9.146 (2026-06-17)
 
 The "**argissólico relação-textural tightening**" release -- a small, principled

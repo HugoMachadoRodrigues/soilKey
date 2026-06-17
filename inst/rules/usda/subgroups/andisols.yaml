@@ -754,6 +754,7 @@ subgroups:
       tests:
         all_of:
           - thaptic_subgroup_usda: {}
+    - { code: "DGAE", name: "Humic Durustands", tests: { all_of: [{humic_andisol_usda: {}}] } }
     - code: "DGAC"
       name: "Typic Durustands"
       tests:

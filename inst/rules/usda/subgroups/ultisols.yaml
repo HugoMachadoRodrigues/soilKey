@@ -606,6 +606,7 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - { code: "HCDL", name: "Fragiaquic Kanhapludults", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - code: "HCDC"
       name: "Typic Kanhapludults"
       tests:
@@ -681,6 +682,7 @@ subgroups:
       tests:
         all_of:
           - rhodic_subgroup_usda: {}
+    - { code: "HCEO", name: "Fragiaquic Paleudults", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - code: "HCED"
       name: "Typic Paleudults"
       tests:
@@ -754,6 +756,7 @@ subgroups:
       tests:
         all_of:
           - grossarenic_subgroup_usda: {}
+    - { code: "HCGL", name: "Fragiaquic Hapludults", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - code: "HCGE"
       name: "Typic Hapludults"
       tests:
