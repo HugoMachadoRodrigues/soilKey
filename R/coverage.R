@@ -70,7 +70,14 @@
 #' delegation (any helper called with \code{pedon}) before deciding.
 #' @keywords internal
 .qualifier_is_implemented <- function(name) {
-  fn_name <- paste0("qual_", tolower(name))
+  key <- tolower(name)
+  # The vendored WRB_4th_2022 canonical table carries one upstream-corrupted
+  # name: "etrosalic" -- the leading P of "Petrosalic" was dropped at the source
+  # (ncss-tech/SoilTaxonomy). qual_petrosalic() is a complete implementation, so
+  # normalise the lookup key. Petrosalic is in no RSG applicable list, so this is
+  # purely a coverage-count correction with zero classification effect.
+  if (identical(key, "etrosalic")) key <- "petrosalic"
+  fn_name <- paste0("qual_", key)
   ns <- asNamespace("soilKey")
   if (!exists(fn_name, where = ns)) return(NA)  # no function
 

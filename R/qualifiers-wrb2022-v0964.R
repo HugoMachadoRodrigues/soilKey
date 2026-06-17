@@ -325,6 +325,38 @@ qual_petrosalic <- function(pedon) {
 }
 
 
+# ----------------------------------------------------------------------------
+# Thin presence-wrappers for three canonical qualifiers whose backing
+# diagnostic was already implemented but lacked a `qual_*` entry point
+# (v0.9.145). None of Sideralic / Panpaic / Claric appears in any RSG
+# applicable list, so these add no classification behaviour -- they make the
+# existing diagnostics callable as qualifiers and let coverage_report() count
+# them honestly. The remaining gap, Novic, is genuinely schema-blocked
+# (needs a deposition-age field).
+# ----------------------------------------------------------------------------
+
+#' Sideralic qualifier (sl): sideralic properties <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_sideralic <- function(pedon)
+  .q_presence("Sideralic", sideralic_properties(pedon), 100, pedon)
+
+#' Panpaic qualifier (pp): a panpan (cemented/indurated pan) <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_panpaic <- function(pedon)
+  .q_presence("Panpaic", panpaic(pedon), 100, pedon)
+
+#' Claric qualifier (cl): claric (light-coloured) material <= 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @keywords internal
+#' @export
+qual_claric <- function(pedon)
+  .q_presence("Claric", claric_material(pedon), 100, pedon)
+
+
 # ============================================================================
 # SUPPLEMENTARY QUALIFIERS (SQ) -- v0.9.64 final batch
 # ============================================================================

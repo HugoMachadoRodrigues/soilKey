@@ -32,7 +32,14 @@ test_that("coverage_report(wrb_qualifiers) counts only genuine implementations",
   # detector follows one level of delegation, so they are covered, not stubs.
   expect_false(any(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
   expect_length(cov$stubs, 0L)
-  expect_equal(cov$overall$covered_n, 229L)
+  # v0.9.145: +4 over the v0.9.122 baseline of 229. Petrosalic (vendored as the
+  # upstream-corrupted "etrosalic") is now normalised to its complete
+  # qual_petrosalic; Sideralic/Panpaic/Claric gained thin wrappers over their
+  # existing diagnostics. Only Novic remains (schema-blocked: deposition age).
+  expect_equal(cov$overall$covered_n, 233L)
+  expect_false(any(c("etrosalic", "Petrosalic", "Sideralic", "Panpaic",
+                     "Claric") %in% cov$missing))
+  expect_true("Novic" %in% cov$missing)
   expect_true(all(cov$stubs %in% cov$missing))     # (vacuously true: no stubs)
   expect_equal(cov$overall$covered_n + cov$overall$missing_n, cov$overall$canonical_n)
   # specifier-derived qualifiers (Endo-/Epi-/...) count as covered
