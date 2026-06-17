@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.151 (2026-06-17)
+
+The “**unique USDA subgroup codes**” release – a data-hygiene fix; no
+classification change (codes are internal ids, compared by name never by
+code, so the 44 canonical fixtures are byte-identical and coverage is
+unchanged at 2049/2715).
+
 ## soilKey 0.9.150 (2026-06-17)
 
 The “**robustness + app-test hardening**” release – no classification
