@@ -60,12 +60,12 @@ subgroups:
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FABE"
+    - code: "FABF"
       name: "Chromic Salaquerts"
       tests:
         all_of:
           - chromic_subgroup_usda: {}
-    - code: "FABC"
+    - code: "FABG"
       name: "Typic Salaquerts"
       tests:
         default: true
@@ -149,7 +149,7 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FAFE"
+    - code: "FAFF"
       name: "Leptic Dystraquerts"
       tests:
         all_of:
@@ -195,7 +195,7 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FAGG"
+    - code: "FAGH"
       name: "Leptic Epiaquerts"
       tests:
         all_of:
@@ -241,7 +241,7 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FAHG"
+    - code: "FAHH"
       name: "Leptic Endoaquerts"
       tests:
         all_of:
@@ -290,7 +290,7 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
-    - code: "FBBB"
+    - code: "FBBE"
       name: "Chromic Haplocryerts"
       tests:
         all_of:
@@ -369,12 +369,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FCBD"
+    - code: "FCBH"
       name: "Leptic Calcixererts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FCBF"
+    - code: "FCBI"
       name: "Chromic Calcixererts"
       tests:
         all_of:
@@ -415,7 +415,7 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FCCG"
+    - code: "FCCH"
       name: "Leptic Haploxererts"
       tests:
         all_of:
@@ -453,12 +453,12 @@ subgroups:
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FDAD"
+    - code: "FDAE"
       name: "Chromic Salitorrerts"
       tests:
         all_of:
           - chromic_subgroup_usda: {}
-    - code: "FDAB"
+    - code: "FDAF"
       name: "Typic Salitorrerts"
       tests:
         default: true
@@ -474,7 +474,7 @@ subgroups:
       tests:
         all_of:
           - natric_subgroup_usda: {}
-    - code: "FDBA"
+    - code: "FDBD"
       name: "Chromic Gypsitorrerts"
       tests:
         all_of:
@@ -505,12 +505,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FDCB"
+    - code: "FDCF"
       name: "Leptic Calcitorrerts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FDCD"
+    - code: "FDCG"
       name: "Chromic Calcitorrerts"
       tests:
         all_of:
@@ -546,12 +546,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FDDC"
+    - code: "FDDG"
       name: "Leptic Haplotorrerts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FDDE"
+    - code: "FDDH"
       name: "Chromic Haplotorrerts"
       tests:
         all_of:
@@ -584,7 +584,7 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FEAE"
+    - code: "FEAF"
       name: "Leptic Dystrusterts"
       tests:
         all_of:
@@ -630,12 +630,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FEBE"
+    - code: "FEBH"
       name: "Leptic Salusterts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FEBG"
+    - code: "FEBI"
       name: "Chromic Salusterts"
       tests:
         all_of:
@@ -681,12 +681,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FECF"
+    - code: "FECI"
       name: "Leptic Gypsiusterts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FECH"
+    - code: "FECJ"
       name: "Chromic Gypsiusterts"
       tests:
         all_of:
@@ -737,12 +737,12 @@ subgroups:
       tests:
         all_of:
           - entic_subgroup_usda: {}
-    - code: "FEDG"
+    - code: "FEDJ"
       name: "Leptic Calciusterts"
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FEDI"
+    - code: "FEDK"
       name: "Chromic Calciusterts"
       tests:
         all_of:
@@ -804,7 +804,7 @@ subgroups:
         all_of:
           - chromic_subgroup_usda: {}
     - { code: "FEEJ", name: "Gypsic Haplusterts", tests: { all_of: [{gypsic_subgroup_usda: {max_top_cm: 150}}] } }
-    - { code: "FEEJ", name: "Aridic Leptic Haplusterts", tests: { all_of: [{smr_aridic_usda: {}}, {leptic_vertic_usda: {}}] } }
+    - { code: "FEEK", name: "Aridic Leptic Haplusterts", tests: { all_of: [{smr_aridic_usda: {}}, {leptic_vertic_usda: {}}] } }
     - code: "FEEE"
       name: "Typic Haplusterts"
       tests:
@@ -838,12 +838,12 @@ subgroups:
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FFAE"
+    - code: "FFAF"
       name: "Chromic Dystruderts"
       tests:
         all_of:
           - chromic_subgroup_usda: {}
-    - code: "FFAC"
+    - code: "FFAG"
       name: "Typic Dystruderts"
       tests:
         default: true
@@ -879,12 +879,12 @@ subgroups:
       tests:
         all_of:
           - leptic_vertic_usda: {}
-    - code: "FFBF"
+    - code: "FFBG"
       name: "Chromic Hapluderts"
       tests:
         all_of:
           - chromic_subgroup_usda: {}
-    - code: "FFBD"
+    - code: "FFBH"
       name: "Typic Hapluderts"
       tests:
         default: true

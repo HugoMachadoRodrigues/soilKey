@@ -1,3 +1,24 @@
+# soilKey 0.9.151 (2026-06-17)
+
+The "**unique USDA subgroup codes**" release -- a data-hygiene fix; no
+classification change (codes are internal ids, compared by name never by code,
+so the 44 canonical fixtures are byte-identical and coverage is unchanged at
+2049/2715).
+
+\itemize{
+  \item \strong{De-duplicated 47 USDA subgroup \code{code} values} across five
+        order files (vertisols 28, oxisols 11, andisols 5, alfisols 2, aridisols
+        1, inceptisols 1 -- e.g. \code{KFGN} was shared by \emph{Spodic} and
+        \emph{Fragiaquic Dystrudepts}). The coverage-slice generators
+        (v0.9.113/121/123/147) minted codes without intra-batch reservation, so
+        siblings in the same great-group block could collide. Each duplicate's
+        later occurrence was re-minted to a fresh free suffix in the same block;
+        names and \code{tests:} are untouched, so classification and coverage are
+        unaffected.
+  \item \strong{Regression guard} (\code{test-v09151}): every subgroup
+        \code{code} must now be globally unique across the USDA rule base.
+}
+
 # soilKey 0.9.150 (2026-06-17)
 
 The "**robustness + app-test hardening**" release -- no classification change
