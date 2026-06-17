@@ -1,5 +1,11 @@
 # Changelog
 
+## soilKey 0.9.147 (2026-06-17)
+
+The “**USDA subgroup coverage +35**” release – a criteria-exact
+completeness slice (NOT an accuracy change; the deterministic key is
+byte-identical on every already-classified pedon).
+
 ## soilKey 0.9.146 (2026-06-17)
 
 The “**argissólico relação-textural tightening**” release – a small,
