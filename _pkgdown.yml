@@ -289,6 +289,9 @@ reference:
       - predict_ossl_plsr_local
       - predict_ossl_pretrained
       - fill_from_spectra
+      - read_spectral_library
+      - pedons_from_spectral_table
+      - benchmark_spectral_fill
       - pi_to_confidence
 
   - title: "Reporting"
