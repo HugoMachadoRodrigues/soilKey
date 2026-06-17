@@ -439,9 +439,17 @@ gapfill_by_predicted_taxon <- function(pedon, taxon_profiles,
           do.call(apply_soilgrids_depth_prior, c(list(pedon = p), args))
         } else if (identical(m, "taxon")) {
           do.call(gapfill_by_predicted_taxon, c(list(pedon = p), args))
+        } else if (identical(m, "spectra")) {
+          # `method` is consumed as the dispatcher key, so fill_from_spectra's
+          # own model choice is passed as `fill_method` (mbl/plsr_local/pretrained).
+          sargs <- args
+          if (!is.null(sargs$fill_method)) {
+            sargs$method <- sargs$fill_method; sargs$fill_method <- NULL
+          }
+          do.call(fill_from_spectra, c(list(pedon = p), sargs))
         } else {
           rlang::abort(paste0("unknown gapfill method '", m,
-                              "'; use interp / derive / soilgrids / taxon"))
+                              "'; use interp / derive / soilgrids / taxon / spectra"))
         }
       }
     } else {
@@ -450,7 +458,7 @@ gapfill_by_predicted_taxon <- function(pedon, taxon_profiles,
   } else {
     rlang::abort(paste0("`gapfill` must be FALSE, TRUE, a character vector of ",
                         "attribute names, or a named list (optionally with a ",
-                        "`method` of interp / derive / soilgrids / taxon)"))
+                        "`method` of interp / derive / soilgrids / taxon / spectra)"))
   }
   p
 }

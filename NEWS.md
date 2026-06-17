@@ -1,3 +1,42 @@
+# soilKey 0.9.148 (2026-06-17)
+
+The "**spectral-dataset ingestion scaffolding**" release -- the on-ramp for the
+one genuine accuracy lever that has been data-blocked: a real Vis-NIR / MIR +
+lab-label dataset (e.g. a Brazilian spectral library) driving the existing OSSL
+prediction + Munsell + neighbour engine. The engine was already present; this
+adds the reader/binder/benchmark glue so a real dataset works with no code
+change. Entirely opt-in -- the default classification path is byte-identical.
+
+\itemize{
+  \item \strong{\code{read_spectral_library()}} (new, exported) turns an
+        arbitrary reflectance + metadata pair (wide \emph{or} long; fraction or
+        percent; any instrument grid via \code{resample_to=}) into the canonical
+        \code{list(Xr, Yr, metadata)} object consumed by
+        \code{\link{fill_from_spectra}} and
+        \code{\link{classify_by_spectral_neighbours}}. Column names map to the
+        canonical attributes through a built-in alias table including
+        \strong{Portuguese headers} (\emph{argila}, \emph{silte}, \emph{areia},
+        \emph{carbono}, \emph{ctc}, ...), overridable via \code{property_map} /
+        \code{label_map}.
+  \item \strong{\code{pedons_from_spectral_table()}} (new, exported) groups a
+        table by profile and returns \code{\link{PedonRecord}}s with the scan in
+        \code{$spectra$vnir} and reference labels in \code{$site} -- the query
+        objects for spectral classification.
+  \item \strong{\code{benchmark_spectral_fill()}} (new, exported) -- the honest,
+        non-circular k-fold ON/OFF measurement of the accuracy lift the spectra
+        buy (calibrate on the train profiles; for held-out profiles, classify a
+        spectra-only pedon vs the same pedon after \code{fill_from_spectra}).
+        Returns \code{accuracy_off}, \code{accuracy_on}, \code{delta}.
+  \item \strong{New gap-fill method \code{"spectra"}}:
+        \code{gapfill = list(method = "spectra", ossl_library = <lib>,
+        fill_method = "mbl")} on any \code{classify_*}. Predicted attributes
+        carry \code{source = "predicted_spectra"} (grade B); the taxonomic key is
+        never delegated to the model.
+  \item Input contract documented in
+        \code{system.file("templates/spectral_library_format.md", package =
+        "soilKey")}.
+}
+
 # soilKey 0.9.147 (2026-06-17)
 
 The "**USDA subgroup coverage +35**" release -- a criteria-exact completeness
