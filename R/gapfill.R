@@ -256,6 +256,140 @@ gapfill_derive_horizon <- function(pedon, overwrite = FALSE) {
   invisible(pedon)
 }
 
+# =============================================================================
+# v0.9.144 -- Predicted-taxon gap-fill (non-circular external prior).
+#
+# The within-pedon interp / definitional-closure fills cannot touch the
+# WHOLE-HORIZON gaps of the reference datasets (clay NA only when sand+silt also
+# NA, etc.). An external prior keyed on the soil's CLASS can: build a mean depth
+# profile per taxon from a calibration set, then fill a test pedon's missing
+# cells from the profile of the taxon the deterministic key assigns it WITHOUT
+# fill. This is NON-CIRCULAR: the fill is keyed on the model's own provisional
+# prediction (not the reference label), and the profiles are calibrated on a
+# SEPARATE set (e.g. a train split). It is the class-prior companion to
+# apply_soilgrids_depth_prior() (coordinate prior) and shares the same six-slice
+# depth grid + .interp_depth_profile().
+# =============================================================================
+
+# Normalise an order/taxon label to a comparison key (lowercase, accent-free,
+# first word, de-pluralised) so a reference label and a predicted RSG match.
+.taxon_key <- function(label) {
+  if (is.null(label) || length(label) == 0L || is.na(label[1L])) return(NA_character_)
+  x <- tolower(trimws(as.character(label[1L])))
+  x <- iconv(x, to = "ASCII//TRANSLIT")
+  x <- strsplit(x, "[ ,;/]")[[1L]][1L]
+  sub("s$", "", x %||% "")
+}
+
+#' Build per-taxon mean depth profiles for predicted-taxon gap-fill
+#'
+#' For each taxon (the first word of the reference label at the requested level),
+#' averages each attribute across the calibration pedons into the six standard
+#' depth slices (0-5 ... 100-200 cm). The result feeds
+#' \code{\link{gapfill_by_predicted_taxon}}. Calibrate on a set DISJOINT from the
+#' pedons you will fill (e.g. a train split) to keep the fill non-circular.
+#'
+#' @param pedons A list of \code{\link{PedonRecord}} with a reference label.
+#' @param ref_field Site field holding the reference label (default
+#'        \code{"reference_sibcs"}; e.g. \code{"reference_usda"} / \code{"reference_wrb"}).
+#' @param attrs Attributes to profile (default the continuous gap-fill set).
+#' @return A named list \code{taxon -> attr -> numeric(6)} (NA where a taxon has
+#'         no measured value in a slice).
+#' @seealso \code{\link{gapfill_by_predicted_taxon}}
+#' @export
+build_taxon_profiles <- function(pedons, ref_field = "reference_sibcs",
+                                 attrs = NULL) {
+  if (is.null(attrs)) attrs <- .GAPFILL_DEFAULT_ATTRS
+  mids <- .SOILGRIDS_DEPTH_MIDS
+  flat <- list()                                   # "tax\001attr\001slice" -> values
+  taxa <- character(0); attrset <- character(0)
+  for (p in pedons) {
+    if (!inherits(p, "PedonRecord")) next
+    tax <- .taxon_key(p$site[[ref_field]] %||% NA_character_)
+    if (is.na(tax) || !nzchar(tax)) next
+    h <- p$horizons
+    if (is.null(h) || nrow(h) == 0L) next
+    midh <- (h$top_cm + h$bottom_cm) / 2
+    for (a in intersect(attrs, names(h))) {
+      v <- h[[a]]
+      if (!is.numeric(v)) next
+      for (i in seq_len(nrow(h))) {
+        if (is.na(v[i]) || is.na(midh[i])) next
+        k   <- which.min(abs(mids - midh[i]))
+        key <- paste(tax, a, k, sep = "\001")
+        flat[[key]] <- c(flat[[key]], v[i])
+        taxa <- union(taxa, tax); attrset <- union(attrset, a)
+      }
+    }
+  }
+  out <- list()
+  for (tax in taxa) {
+    byattr <- list()
+    for (a in attrset) {
+      prof <- vapply(seq_along(mids), function(k) {
+        x <- flat[[paste(tax, a, k, sep = "\001")]]
+        if (is.null(x) || !length(x)) NA_real_ else mean(x, na.rm = TRUE)
+      }, numeric(1))
+      if (!all(is.na(prof))) byattr[[a]] <- prof
+    }
+    out[[tax]] <- byattr
+  }
+  out
+}
+
+#' Fill missing horizon attributes from the predicted taxon's mean profile
+#'
+#' Classifies \code{pedon} with NO fill to get a provisional taxon, then fills
+#' its missing cells from \code{taxon_profiles[[<that taxon>]]} (built by
+#' \code{\link{build_taxon_profiles}}). Non-circular: the fill is keyed on the
+#' model's own prediction, not the reference. Each fill is written with
+#' \code{source = "inferred_prior"} (grade C). Reachable via
+#' \code{gapfill = list(method = "taxon", taxon_profiles = <...>)}.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param taxon_profiles Output of \code{\link{build_taxon_profiles}}.
+#' @param system One of \code{"sibcs"} (default), \code{"wrb2022"}, \code{"usda"}.
+#' @param attrs Attributes to fill (default: those present in the matched profile).
+#' @param confidence Provenance confidence (default 0.55, below a coordinate prior).
+#' @return Invisibly, the mutated \code{pedon}; attribute
+#'         \code{"gapfill_by_predicted_taxon"} records the taxon + cells filled.
+#' @seealso \code{\link{build_taxon_profiles}}, \code{\link{apply_soilgrids_depth_prior}}
+#' @export
+gapfill_by_predicted_taxon <- function(pedon, taxon_profiles,
+                                       system = c("sibcs", "wrb2022", "usda"),
+                                       attrs = NULL, confidence = 0.55) {
+  if (!inherits(pedon, "PedonRecord")) rlang::abort("`pedon` must be a PedonRecord")
+  system <- match.arg(system)
+  classer <- switch(system, sibcs = classify_sibcs,
+                    wrb2022 = classify_wrb2022, usda = classify_usda)
+  prov <- tryCatch(classer(pedon, on_missing = "silent")$rsg_or_order,
+                   error = function(e) NA_character_)
+  tax  <- .taxon_key(prov)
+  prof <- if (!is.na(tax)) taxon_profiles[[tax]] else NULL
+  n <- 0L
+  if (!is.null(prof)) {
+    h <- pedon$horizons
+    use <- intersect(if (is.null(attrs)) names(prof) else attrs, names(h))
+    for (a in use) {
+      pr <- prof[[a]]
+      if (is.null(pr) || all(is.na(pr))) next
+      for (i in seq_len(nrow(h))) {
+        if (!is.na(h[[a]][i])) next
+        mid <- (h$top_cm[i] + h$bottom_cm[i]) / 2
+        if (is.na(mid)) next
+        val <- .interp_depth_profile(mid, .SOILGRIDS_DEPTH_MIDS, pr)
+        if (is.na(val)) next
+        pedon$add_measurement(i, a, value = val, source = "inferred_prior",
+            confidence = confidence,
+            notes = sprintf("predicted-taxon prior (%s)", tax))
+        n <- n + 1L
+      }
+    }
+  }
+  attr(pedon, "gapfill_by_predicted_taxon") <- list(taxon = tax, n_filled = n)
+  invisible(pedon)
+}
+
 # -----------------------------------------------------------------------------
 # Classifier hook.
 #
@@ -303,9 +437,11 @@ gapfill_derive_horizon <- function(pedon, overwrite = FALSE) {
           do.call(gapfill_derive_horizon, c(list(pedon = p), ow))
         } else if (identical(m, "soilgrids")) {
           do.call(apply_soilgrids_depth_prior, c(list(pedon = p), args))
+        } else if (identical(m, "taxon")) {
+          do.call(gapfill_by_predicted_taxon, c(list(pedon = p), args))
         } else {
           rlang::abort(paste0("unknown gapfill method '", m,
-                              "'; use interp / derive / soilgrids"))
+                              "'; use interp / derive / soilgrids / taxon"))
         }
       }
     } else {
@@ -314,7 +450,7 @@ gapfill_derive_horizon <- function(pedon, overwrite = FALSE) {
   } else {
     rlang::abort(paste0("`gapfill` must be FALSE, TRUE, a character vector of ",
                         "attribute names, or a named list (optionally with a ",
-                        "`method` of interp / derive / soilgrids)"))
+                        "`method` of interp / derive / soilgrids / taxon)"))
   }
   p
 }

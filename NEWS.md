@@ -1,3 +1,41 @@
+# soilKey 0.9.144 (2026-06-16)
+
+The "**non-circular predicted-taxon gap-fill**" release -- the first gap-fill
+method that lifts accuracy on reference data that already carries the key
+attributes.
+
+\itemize{
+  \item \strong{\code{build_taxon_profiles()}} (new, exported) summarises a
+        calibration set of pedons into per-taxon mean depth profiles -- for each
+        taxon (first word of the reference label) it averages every continuous
+        attribute into the six standard depth slices (0-5 ... 100-200 cm).
+        Calibrate on a set DISJOINT from the pedons you fill (e.g. a train split)
+        to keep the fill non-circular.
+  \item \strong{\code{gapfill_by_predicted_taxon()}} (new, exported) classifies a
+        pedon with NO fill to obtain a \emph{provisional} taxon, then fills its
+        missing horizon cells from that taxon's profile via the shared
+        depth-interpolator. Non-circular by construction: the fill is keyed on the
+        model's own prediction, never the reference label. Filled cells carry
+        \code{source = "inferred_prior"} (evidence grade C). Reachable through
+        \code{gapfill = list(method = "taxon", taxon_profiles = <...>)} on every
+        \code{classify_*} entry point (default off -> byte-identical).
+  \item \strong{Honest measurement (2-fold cross-validated, both folds positive).}
+        On BDsolos-RJ (n=720, reference SiBCS) with profiles built on each train
+        half and the model's prediction driving the fill on the held-out half,
+        order accuracy moved \strong{31.0\% -> 32.8\% (+13 pedons, +1.8 pp)}; 115
+        pedons changed. Unlike the SoilGrids depth-fill (v0.9.143, slightly
+        negative), the predicted-taxon prior is a genuine -- if modest -- accuracy
+        lever, because it injects taxon-typical structure (e.g. a Bt clay bulge)
+        rather than a coarse spatial average.
+  \item \strong{Test hardening:} the long-standing \code{test-v0952} flake (the
+        \code{ClassificationResult$print} content assertion failed under a
+        monolithic suite run when an earlier test reconfigured the \pkg{cli}
+        message sink and bypassed the message-stream capture) now falls back to
+        asserting the trace data the print routine dumps. The \code{expect_no_error}
+        contract is unchanged; the suite is now green under both
+        \code{devtools::test()} and \code{R CMD check}.
+}
+
 # soilKey 0.9.143 (2026-06-16)
 
 The "**SiBCS keys verification + BDsolos coordinate-sign fix**" release.
