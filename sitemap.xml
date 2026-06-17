@@ -115,6 +115,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_spectral_fill.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/build_taxon_profiles.html</loc></url>
@@ -656,6 +657,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/panpaic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/pedon_json_schema.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/pedon_to_spc.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/pedons_from_spectral_table.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/permafrost_within_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/petrocalcic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/petrocalcic_subgroup_usda.html</loc></url>
@@ -955,6 +957,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/qual_yermic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/quartzipsamment_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/reducing_conditions.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/rendoll_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report.html</loc></url>

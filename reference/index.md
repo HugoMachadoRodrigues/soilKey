@@ -531,6 +531,13 @@ Vis-NIR / MIR gap-fill. Predicted attributes carry provenance =
   : Pre-trained OSSL prediction
 - [`fill_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_from_spectra.md)
   : Fill missing soil attributes from spectra via OSSL
+- [`read_spectral_library()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.md)
+  : Read a Vis-NIR / MIR reflectance + lab table into an OSSL-shaped
+  library
+- [`pedons_from_spectral_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/pedons_from_spectral_table.md)
+  : Build PedonRecords with attached Vis-NIR/MIR spectra from a table
+- [`benchmark_spectral_fill()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_spectral_fill.md)
+  : Benchmark the accuracy lift of spectral gap-fill (ON vs OFF), k-fold
 - [`pi_to_confidence()`](https://hugomachadorodrigues.github.io/soilKey/reference/pi_to_confidence.md)
   : Map a 95% prediction interval to a \[0, 1\] confidence score
 

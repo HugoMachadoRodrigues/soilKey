@@ -1,5 +1,15 @@
 # Changelog
 
+## soilKey 0.9.148 (2026-06-17)
+
+The “**spectral-dataset ingestion scaffolding**” release – the on-ramp
+for the one genuine accuracy lever that has been data-blocked: a real
+Vis-NIR / MIR + lab-label dataset (e.g. a Brazilian spectral library)
+driving the existing OSSL prediction + Munsell + neighbour engine. The
+engine was already present; this adds the reader/binder/benchmark glue
+so a real dataset works with no code change. Entirely opt-in – the
+default classification path is byte-identical.
+
 ## soilKey 0.9.147 (2026-06-17)
 
 The “**USDA subgroup coverage +35**” release – a criteria-exact
