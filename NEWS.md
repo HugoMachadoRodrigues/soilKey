@@ -1,3 +1,32 @@
+# soilKey 0.9.146 (2026-06-17)
+
+The "**argissólico relação-textural tightening**" release -- a small, principled
+SiBCS *accuracy* gain found by decomposing the Redape subgroup errors.
+
+\itemize{
+  \item \strong{\code{carater_argiluvico()} now requires the SiBCS \emph{relação
+        textural}} (Cap 1 item h: ratio > 1.5 / 1.7 / 1.8 by the A-horizon clay
+        band, via \code{test_ratio_textural_sibcs()}), not merely
+        \code{B_textural}'s looser argic clay-increase (>= 1.4). Enforced only
+        when clay is recorded (refine-when-present -> byte-identical without
+        clay). The looser test had been labelling the gradual latossolic clay
+        gradient (e.g. A 38\% -> B 59\%, ratio ~1.55 where the band needs > 1.7)
+        as the \emph{argissólico} subgroup in Latossolos that the reference calls
+        \emph{típico}.
+  \item \strong{Contained to subgroup level.} \code{carater_argiluvico} appears
+        only in \code{subgrupos/*.yaml}, never in order or great-group keys, so
+        order and great-group classification are byte-identical (Redape order
+        63.8\% and great-group 42.4\% unchanged; BDsolos-RJ order 30.97\%
+        unchanged). Only the \emph{subgroup} label can change.
+  \item \strong{Measured (Redape, the only dataset with SiBCS subgroup
+        references): subgroup accuracy 27.1\% -> 32.9\% (+5 pedons / +5.8 pp).}
+        A decomposition showed the 27\% ceiling is ~79\% upstream order/GG error
+        plus data-absent \emph{típico} defaults; this fixes the small genuinely
+        subgroup-level slice (over-firing \emph{argissólico}). One unit-test
+        fixture updated (a 1.67-ratio gradient that is not a SiBCS B textural ->
+        a genuine 2.3-ratio textural B).
+}
+
 # soilKey 0.9.145 (2026-06-17)
 
 The "**honest WRB qualifier coverage**" release -- a zero-risk completeness pass

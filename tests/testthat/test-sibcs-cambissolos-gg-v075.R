@@ -67,7 +67,11 @@ test_that("carater_argiluvico passes para B textural < 150 cm", {
     top_cm = c(0, 20, 60),
     bottom_cm = c(20, 60, 200),
     designation = c("A", "BA", "Bt"),
-    clay_pct = c(15, 25, 38),    # gradiente clay
+    # v0.9.146: carater_argiluvico now requires the SiBCS relacao textural
+    # (item h: >1.7 for an A in the 150-400 g/kg band), not just B_textural's
+    # looser argic ratio >=1.4. The old 15/25/38 (ratio 1.67) was a gradual
+    # gradient SiBCS does NOT call argiluvico; use a genuine textural B.
+    clay_pct = c(15, 35, 48),    # A 15% -> B 35% = ratio 2.3, a real B textural
     boundary_distinctness = c("clear", "clear", "gradual"),
     cec_cmol = c(8, 6, 6),
     bs_pct = c(40, 30, 30),

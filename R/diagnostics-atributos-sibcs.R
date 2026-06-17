@@ -1531,6 +1531,23 @@ carater_argiluvico <- function(pedon, max_depth_cm = 150) {
     layers <- layers[struct_ok]
   }
   passed <- length(layers) > 0L
+  # SiBCS Cap 1: o caráter argilúvico exige B TEXTURAL, que por sua vez exige a
+  # RELAÇÃO TEXTURAL (item h: > 1.5 / 1.7 / 1.8 conforme a argila do A).
+  # B_textural une o incremento argílico (ratio >= 1.4), MAIS permissivo que a
+  # relação textural; sem este gate o gradiente latossólico suave (ex. A 38% ->
+  # B 59%, ratio ~1.55 na faixa que exige > 1.7) era rotulado argissólico em
+  # Latossolos que a referência chama típico. Exigimos a relação textural
+  # QUANDO há dado de argila (refine-when-present -> byte-idêntico sem argila).
+  # Mudança restrita ao nível de SUBGRUPO (carater_argiluvico só aparece em
+  # subgrupos/*.yaml), logo ordem/grande-grupo ficam inalterados.
+  if (passed) {
+    rt <- test_ratio_textural_sibcs(h)
+    clay_present <- !("clay_pct" %in% (rt$missing %||% character(0)))
+    if (clay_present && !isTRUE(rt$passed)) {
+      passed <- FALSE
+      layers <- integer(0)
+    }
+  }
   DiagnosticResult$new(
     name = "carater_argiluvico", passed = passed, layers = layers,
     evidence = list(B_textural = bt, max_depth_cm = max_depth_cm),
