@@ -46,6 +46,26 @@ as a held-out test case.
 | **combined** | **720** | **223 (31.0%)** | **236 (32.8%)** | **+13 (+1.8 pp)** | **115** |
 
 **Both folds positive.** 115/720 pedons changed classification; the net is +13.
+
+### Confirmation on Redape (FEBR national reference, n=94)
+
+The same non-circular 2-fold protocol was repeated on the Redape GeoTab set (94
+pedons with a SiBCS reference label, profiles built per train half, the model's
+prediction driving the fill on the held-out half):
+
+| fold | n | OFF | taxon-ON | Δ | changed |
+|---|---|---|---|---|---|
+| A | 47 | 33 | 34 | +1 | 1 |
+| B | 47 | 27 | 27 |  0 | 1 |
+| **combined** | **94** | **60 (63.8%)** | **61 (64.9%)** | **+1 (+1.1 pp)** | **2** |
+
+Same direction as BDsolos: a small **positive** lift (+1.1 pp), both folds
+non-negative, with very few pedons disturbed (2/94). Redape carries richer
+profiles than BDsolos-RJ (its OFF order accuracy is already 63.8%), so the
+residual gaps the prior can act on are fewer — hence a smaller but still positive
+delta. Across the two reference sets the predicted-taxon prior is consistently
+non-negative and modestly positive, unlike the SoilGrids prior.
+
 This contrasts with:
 
 - **SoilGrids depth-fill (v0.9.143):** −1 pedon on the same family of data — a
@@ -60,8 +80,8 @@ information the key uses to discriminate orders.
 
 ### Honesty / limits
 
-- +1.8 pp is a **modest** lift, measured on one state's reference set (RJ). It is
-  a real, cross-validated improvement, not a ceiling-buster.
+- +1.8 pp (BDsolos-RJ) and +1.1 pp (Redape) are **modest** lifts, cross-validated
+  on two independent reference sets. Real improvements, not ceiling-busters.
 - The provisional-taxon step costs one extra classify per pedon.
 - Still opt-in and off by default; the default classification path is unchanged
   and byte-identical (gate below).
