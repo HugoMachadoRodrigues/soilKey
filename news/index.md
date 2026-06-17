@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.149 (2026-06-17)
+
+The “**Humic colour-value USDA predicate**” release – writes the one
+predicate the v0.9.147 coverage slice was missing, unblocking 11 more
+subgroups. Completeness, not accuracy (default classification
+byte-identical).
+
 ## soilKey 0.9.148 (2026-06-17)
 
 The “**spectral-dataset ingestion scaffolding**” release – the on-ramp

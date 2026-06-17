@@ -3361,6 +3361,10 @@ pública curada.
   : Humic Andisols Subgroup helper Pass when mollic OR umbric epipedon
   present.
 
+- [`humic_colour_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_colour_usda.md)
+  : Humic colour-value intergrade (KST 13ed) — Hum\* Inceptisol
+  subgroups
+
 - [`humic_inceptisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/humic_inceptisol_usda.md)
   : Humic Inceptisol Suborder helper (Hum\*) Pass when umbric or mollic
   epipedon present + thick (\>= 25 cm).

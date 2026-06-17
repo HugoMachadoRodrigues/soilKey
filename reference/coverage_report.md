@@ -63,7 +63,7 @@ cov <- coverage_report("usda_subgroup")
 #> 
 #> ── Coverage: usda subgroup ──
 #> 
-#> ℹ 2038 / 2715 canonical subgroups registered (75.1%); 677 missing.
+#> ℹ 2049 / 2715 canonical subgroups registered (75.5%); 666 missing.
 #>        group canonical_n covered_n missing_n   pct
 #>     Gelisols         129       129         0 100.0
 #>    Histosols          75        75         0 100.0
@@ -71,15 +71,15 @@ cov <- coverage_report("usda_subgroup")
 #>      Oxisols         213       190        23  89.2
 #>     Andisols         218       189        29  86.7
 #>    Vertisols         158       136        22  86.1
+#>  Inceptisols         349       262        87  75.1
 #>     Ultisols         215       161        54  74.9
-#>  Inceptisols         349       251        98  71.9
 #>     Alfisols         352       247       105  70.2
 #>    Mollisols         376       257       119  68.4
 #>     Entisols         239       157        82  65.7
 #>    Aridisols         270       125       145  46.3
 cov$overall
 #>   system    level canonical_n registered_n covered_n missing_n  pct
-#> 1   usda subgroup        2715         2234      2038       677 75.1
+#> 1   usda subgroup        2715         2245      2049       666 75.5
 head(cov$missing)
 #> [1] "Abruptic Argiaquolls"             "Abruptic Argicryolls"            
 #> [3] "Abruptic Argiduridic Durixerolls" "Abruptic Argidurids"             
