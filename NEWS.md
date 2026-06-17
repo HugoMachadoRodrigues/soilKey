@@ -1,3 +1,29 @@
+# soilKey 0.9.145 (2026-06-17)
+
+The "**honest WRB qualifier coverage**" release -- a zero-risk completeness pass
+identified by a roadmap gap audit. No classification behaviour changes (the 44
+canonical fixtures are byte-identical); the deterministic keys are untouched.
+
+\itemize{
+  \item \strong{\code{coverage_report("wrb_qualifiers")} under-count fixed.} The
+        vendored WRB 2022 canonical table carries one upstream-corrupted name,
+        \dQuote{etrosalic} (the leading \emph{P} of \dQuote{Petrosalic} was
+        dropped at the source). \code{qual_petrosalic()} is a complete, correct
+        implementation, but the coverage detector looked up \code{qual_etrosalic}
+        and reported Petrosalic as missing. The lookup key is now normalised, so
+        the headline rises 229 -> 230/234 with zero behaviour change (Petrosalic
+        is in no RSG applicable list).
+  \item \strong{Three thin qualifier wrappers} -- \code{qual_sideralic()},
+        \code{qual_panpaic()}, \code{qual_claric()} -- expose the already-complete
+        backing diagnostics (\code{sideralic_properties()}, \code{panpaic()},
+        \code{claric_material()}) as callable qualifiers and let the coverage
+        report count them. None appears in any RSG applicable list, so
+        classification is unchanged. WRB qualifier coverage is now
+        \strong{233/234 (99.6\%)}; the only remaining gap, \emph{Novic}, is
+        genuinely schema-blocked (it needs a deposition-age field that no dataset
+        records).
+}
+
 # soilKey 0.9.144 (2026-06-16)
 
 The "**non-circular predicted-taxon gap-fill**" release -- the first gap-fill

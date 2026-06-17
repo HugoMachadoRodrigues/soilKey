@@ -24,11 +24,14 @@ test_that("Fibric/Hemic/Sapric are counted as implemented (delegation)", {
 test_that("coverage_report('wrb_qualifiers') no longer flags them as stubs", {
   cov <- coverage_report("wrb_qualifiers")
   expect_false(any(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
-  expect_equal(cov$overall$covered_n, 229L)
+  expect_equal(cov$overall$covered_n, 233L)  # v0.9.145: +etrosalic +3 wrappers
 })
 
 test_that("a function that does not exist still returns NA (no over-count)", {
-  expect_true(is.na(soilKey:::.qualifier_is_implemented("Claric")))
+  # Novic is the lone remaining genuine gap (schema-blocked: deposition age),
+  # so it has no qual_ function and must read NA, not FALSE/TRUE. (Claric was the
+  # earlier example but gained a wrapper in v0.9.145.)
+  expect_true(is.na(soilKey:::.qualifier_is_implemented("Novic")))
 })
 
 # ---- .decomp_class measured-decomposition fallback -------------------------
