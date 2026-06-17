@@ -1,3 +1,45 @@
+# soilKey 0.9.147 (2026-06-17)
+
+The "**Humic = dark colour, not epipedon**" release -- a USDA predicate-
+correctness fix found by auditing the Inceptisol "Humic" subgroups against
+`SoilTaxonomy::ST_criteria_13th`.
+
+\itemize{
+  \item \strong{New \code{dark_color_value_usda()} predicate} for the KST 13ed
+        "Humic" subgroup colour differentia: a colour value, moist, of 3 or less
+        \emph{and} dry of 5 or less throughout the upper 18 cm of the mineral
+        soil. It is value-only (chroma irrelevant) and reuses the established
+        moist/dry colour correspondence and OC-darkness fallback. The
+        "unmixed, throughout" path is implemented; the "after mixing"
+        depth-weighted path is deferred.
+  \item \strong{\code{Humic Dystrudepts} (KFGD) re-pointed} from
+        \code{humic_inceptisol_usda} (a mollic-OR-umbric \emph{epipedon} test,
+        a semantic mismatch that under-matched dark colour-only soils) to
+        \code{dark_color_value_usda}. The audit confirmed the
+        udept/ustept/xerept "Humic" subgroups (Dystrudepts KFGY, Eutrudepts
+        KFFV, Dystrustepts KDDK, Dystroxerepts KEEN, Haploxerepts KEFP) are all
+        colour-value-defined, whereas the aquept ones stay epipedon-defined
+        (Fragiaquepts/Densiaquepts = histic/mollic/umbric; Gelaquepts/Cryaquepts
+        = mollic/umbric). Humic Dystrudepts is the only one registered in
+        soilKey today; the predicate is ready for the other four.
+  \item \strong{Ordering fixed.} \code{Humic Dystrudepts} now sits as the
+        residual subgroup immediately before \code{Typic} (its KST position),
+        not 4th, so the broader colour predicate cannot pre-empt the more
+        specific Andic / Aquandic / Vitrandic / Fluvaquentic / Oxyaquic / Fragic
+        / Lamellic intergrades.
+  \item \strong{Great-group keys untouched.} The \emph{Hum-} great groups
+        (Humudepts, Humustepts, Humixerepts, Humicryepts, Humigelepts,
+        Humaquepts) keep \code{humic_inceptisol_usda}, which is the correct
+        epipedon test there ("Other [suborder] that have an umbric or mollic
+        epipedon", per \code{ST_criteria_13th}).
+  \item \strong{Verified.} 44/44 canonical fixtures byte-identical (the two
+        Dystrudepts fixtures sit at colour value 4 and correctly stay
+        \emph{Typic}); full suite green; KSSL+NASIS before/after gate
+        \strong{0 worsened} (5 dark-surface pedons refine Typic -> Humic, all
+        already misfiled at the great-group level, so none flips correct ->
+        wrong). 18 new unit + end-to-end tests.
+}
+
 # soilKey 0.9.146 (2026-06-17)
 
 The "**argissólico relação-textural tightening**" release -- a small, principled

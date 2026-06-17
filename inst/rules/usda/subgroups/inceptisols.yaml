@@ -293,7 +293,6 @@ subgroups:
     - { code: "KFGA", name: "Lithic Dystrudepts", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
     - { code: "KFGB", name: "Andic Dystrudepts", tests: { all_of: [{andic_subgroup_usda: {}}] } }
     - { code: "KFGC", name: "Aquic Dystrudepts", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
-    - { code: "KFGD", name: "Humic Dystrudepts", tests: { all_of: [{humic_inceptisol_usda: {}}] } }
     - { code: "KFGF", name: "Aquandic Dystrudepts", tests: { all_of: [{aquandic_subgroup_usda: {}}] } }
     - { code: "KFGG", name: "Andic Oxyaquic Dystrudepts", tests: { all_of: [{andic_subgroup_usda: {}}, {oxyaquic_subgroup_usda: {}}] } }
     - { code: "KFGH", name: "Vitrandic Dystrudepts", tests: { all_of: [{vitrandic_subgroup_usda: {}}] } }
@@ -302,4 +301,8 @@ subgroups:
     - { code: "KFGK", name: "Oxyaquic Dystrudepts", tests: { all_of: [{oxyaquic_subgroup_usda: {}}] } }
     - { code: "KFGL", name: "Fragic Dystrudepts", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "KFGM", name: "Lamellic Dystrudepts", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
+    # Humic = pure dark colour-VALUE differentia (value moist <=3 AND dry <=5
+    # in the upper 18 cm), NOT the mollic/umbric epipedon. In KST 13ed it is
+    # the residual subgroup immediately before Typic, so it is ordered last.
+    - { code: "KFGD", name: "Humic Dystrudepts", tests: { all_of: [{dark_color_value_usda: {}}] } }
     - { code: "KFGE", name: "Typic Dystrudepts", tests: { default: true } }

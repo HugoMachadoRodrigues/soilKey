@@ -2,8 +2,7 @@
 % Please edit documentation in R/diagnostics-inceptisols-usda.R
 \name{humic_inceptisol_usda}
 \alias{humic_inceptisol_usda}
-\title{Humic Inceptisol Suborder helper (Hum*)
-Pass when umbric or mollic epipedon present + thick (>= 25 cm).}
+\title{Humic Inceptisol \emph{great-group} helper (Hum*)}
 \usage{
 humic_inceptisol_usda(pedon)
 }
@@ -11,7 +10,13 @@ humic_inceptisol_usda(pedon)
 \item{pedon}{A \code{\link{PedonRecord}}.}
 }
 \description{
-Humic Inceptisol Suborder helper (Hum*)
-Pass when umbric or mollic epipedon present + thick (>= 25 cm).
+Keys the \emph{Hum-} great groups of the Inceptisols (Humudepts
+KFE, Humustepts KEC, Humixerepts KDC, Humicryepts KCA, Humigelepts
+KBA, Humaquepts KAI): "Other [suborder] that have an umbric or
+mollic epipedon" (Humaquepts also admits histic / melanic). This is
+the correct, epipedon-based differentia at the great-group level
+and must not be confused with the \emph{Humic subgroup} modifier of
+the udept / ustept / xerept great groups, which is a pure
+dark-colour-VALUE test handled by \code{\link{dark_color_value_usda}}.
 }
 \keyword{internal}
