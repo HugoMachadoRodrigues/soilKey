@@ -1,5 +1,10 @@
 # Changelog
 
+## soilKey 0.9.150 (2026-06-17)
+
+The “**robustness + app-test hardening**” release – no classification
+change (default path byte-identical).
+
 ## soilKey 0.9.149 (2026-06-17)
 
 The “**Humic colour-value USDA predicate**” release – writes the one
