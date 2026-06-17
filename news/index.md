@@ -1,5 +1,34 @@
 # Changelog
 
+## soilKey 0.9.144 (2026-06-16)
+
+The “**non-circular predicted-taxon gap-fill**” release – the first
+gap-fill method that lifts accuracy on reference data that already
+carries the key attributes.
+
+## soilKey 0.9.143 (2026-06-16)
+
+The “**SiBCS keys verification + BDsolos coordinate-sign fix**” release.
+
+## soilKey 0.9.142 (2026-06-16)
+
+The “**calcic morphology field + Raptic/Urbic clauses**” release –
+unblocks three deferred clauses that needed a morphology field or
+thickness gate, refine-when- present (byte-identical until the data
+exists).
+
+## soilKey 0.9.141 (2026-06-16)
+
+The “**Fix D residue**” release – closes the WRB 2022 qualifier-audit
+backlog by resolving the 7 items deferred in v0.9.132, each re-read
+against the verbatim WRB 2022 Ch 5. Two are real bugs; the rest are
+documented.
+
+## soilKey 0.9.140 (2026-06-16)
+
+The “**external / closure gap-fill**” release. Extends gap-fill beyond
+the v0.9.120 within-pedon interpolation – then measures it honestly.
+
 ## soilKey 0.9.139 (2026-06-15)
 
 The “**calcic secondary-carbonate enrichment**” release. Implements the

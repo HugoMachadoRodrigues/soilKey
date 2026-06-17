@@ -117,6 +117,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/build_taxon_profiles.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcaric_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/calcic_horizon_usda.html</loc></url>
@@ -441,6 +442,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/frasic_qualifying_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fulvic_andisol_usda.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_by_predicted_taxon.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_derive_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/gelisol_usda.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/get_perturbation_scale.html</loc></url>

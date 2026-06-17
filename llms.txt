@@ -910,6 +910,14 @@ the evidence grade.
 - [`gapfill_within_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md)
   : Fill interior missing horizon attributes by within-pedon depth
   interpolation
+- [`gapfill_derive_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_derive_horizon.md)
+  : Fill horizon attributes derivable BY DEFINITION from the same
+  horizon
+- [`build_taxon_profiles()`](https://hugomachadorodrigues.github.io/soilKey/reference/build_taxon_profiles.md)
+  : Build per-taxon mean depth profiles for predicted-taxon gap-fill
+- [`gapfill_by_predicted_taxon()`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_by_predicted_taxon.md)
+  : Fill missing horizon attributes from the predicted taxon's mean
+  profile
 - [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
   : Per-attribute provenance-aware evidence grade
 
