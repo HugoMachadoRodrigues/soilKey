@@ -1,5 +1,11 @@
 # Changelog
 
+## soilKey 0.9.146 (2026-06-17)
+
+The “**argissólico relação-textural tightening**” release – a small,
+principled SiBCS *accuracy* gain found by decomposing the Redape
+subgroup errors.
+
 ## soilKey 0.9.145 (2026-06-17)
 
 The “**honest WRB qualifier coverage**” release – a zero-risk
