@@ -80,6 +80,7 @@ test_that("pedons_from_spectral_table attaches vnir + reference label", {
 })
 
 test_that("gapfill dispatcher routes method='spectra' and never mutates caller", {
+  skip_on_cran()        # drives the (version-fragile) OSSL model backend
   skip_if_not(exists("ossl_demo_sa"))
   data("ossl_demo_sa", package = "soilKey")
   ps  <- make_synthetic_pedon_with_spectra(n_horizons = 3L)
@@ -103,6 +104,7 @@ test_that("unknown gapfill method error lists spectra", {
 })
 
 test_that("benchmark_spectral_fill returns the ON/OFF structure", {
+  skip_on_cran()        # drives the (version-fragile) OSSL model backend
   tb <- mk_spectral_table(n = 18L)
   b  <- suppressWarnings(benchmark_spectral_fill(
     tb$refl, tb$meta, id_col = "id", system = "sibcs", folds = 3L,

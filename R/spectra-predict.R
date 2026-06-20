@@ -140,10 +140,23 @@ predict_ossl_mbl <- function(X,
                   requireNamespace("resemble", quietly = TRUE)
 
   if (use_resemble) {
-    out <- .predict_ossl_mbl_resemble(X, properties, k = k,
-                                        ossl_library = ossl_library, ...)
-    data.table::setattr(out, "backend", "resemble")
-    return(out[])
+    # The resemble backend is opt-in and version-fragile (e.g. resemble >= 2.0
+    # removed mbl()'s k / k_diss / k_range arguments). Any failure -- a changed
+    # API, an unusable library -- degrades to the deterministic synthetic
+    # predictor with a warning rather than aborting the classification.
+    out <- tryCatch(
+      .predict_ossl_mbl_resemble(X, properties, k = k,
+                                 ossl_library = ossl_library, ...),
+      error = function(e) {
+        rlang::warn(sprintf(
+          "resemble backend unavailable (%s); using the synthetic predictor.",
+          conditionMessage(e)))
+        NULL
+      })
+    if (!is.null(out)) {
+      data.table::setattr(out, "backend", "resemble")
+      return(out[])
+    }
   }
 
   out <- .predict_synthetic(X, properties, region = region, k = k,
@@ -180,11 +193,22 @@ predict_ossl_plsr_local <- function(X,
                   requireNamespace("resemble", quietly = TRUE)
 
   if (use_resemble) {
-    out <- .predict_ossl_mbl_resemble(X, properties, k = k,
-                                        ossl_library = ossl_library,
-                                        local_algorithm = "pls", ...)
-    data.table::setattr(out, "backend", "resemble")
-    return(out[])
+    # Same version-fragility guard as predict_ossl_mbl(): a resemble API change
+    # falls back to the synthetic predictor instead of aborting.
+    out <- tryCatch(
+      .predict_ossl_mbl_resemble(X, properties, k = k,
+                                 ossl_library = ossl_library,
+                                 local_algorithm = "pls", ...),
+      error = function(e) {
+        rlang::warn(sprintf(
+          "resemble backend unavailable (%s); using the synthetic predictor.",
+          conditionMessage(e)))
+        NULL
+      })
+    if (!is.null(out)) {
+      data.table::setattr(out, "backend", "resemble")
+      return(out[])
+    }
   }
 
   out <- .predict_synthetic(X, properties, region = region, k = k,
