@@ -1,5 +1,11 @@
 # Changelog
 
+## soilKey 0.9.152 (2026-06-20)
+
+The “**CRAN pre-test fixes**” release – addresses the issues raised by
+CRAN’s incoming checks on 0.9.151; no classification change (default
+path byte-identical).
+
 ## soilKey 0.9.151 (2026-06-17)
 
 The “**unique USDA subgroup codes**” release – a data-hygiene fix; no
