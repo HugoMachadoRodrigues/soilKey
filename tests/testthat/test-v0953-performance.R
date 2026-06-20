@@ -53,6 +53,11 @@ test_that("median classification time is sane (<= 5s/pedon on dev hardware)", {
   # This is a regression sentinel: if classify_* slows down 50x for
   # any reason on the synthetic fixture, this fails. Generous threshold
   # to keep CI green on slow runners.
+  #
+  # Skipped on CRAN: wall-clock assertions are unreliable on CRAN's shared /
+  # ATLAS-BLAS build machines (this test was the source of the released
+  # version's WARNING, timing out at ~9 s on the ATLAS check host).
+  skip_on_cran()
   bench <- benchmark_performance(n = 3L, verbose = FALSE)
   for (sys in c("wrb2022", "sibcs", "usda")) {
     row <- bench$summary[bench$summary$system == sys, ]

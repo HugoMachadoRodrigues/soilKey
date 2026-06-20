@@ -1,8 +1,8 @@
 Package: soilKey
 Type: Package
-Title: Automated Soil Profile Classification per WRB 2022, SiBCS 5 and USDA Soil Taxonomy 13
-Version: 0.9.151
-Date: 2026-06-17
+Title: Automated Soil Profile Classification per WRB 2022, 'SiBCS' 5 and USDA Soil Taxonomy 13
+Version: 0.9.152
+Date: 2026-06-20
 Authors@R:
     person("Hugo", "Rodrigues",
            email = "rodrigues.machado.hugo@gmail.com",
@@ -10,12 +10,12 @@ Authors@R:
            comment = c(ORCID = "0000-0002-8070-8126"))
 Description: Implements deterministic classification keys for the World
     Reference Base for Soil Resources 2022 (4th edition) and the Brazilian
-    System of Soil Classification (SiBCS, 5th edition). Provides a unified
+    System of Soil Classification ('SiBCS', 5th edition). Provides a unified
     profile representation with explicit per-attribute provenance, multimodal
     extraction from field reports and photos via vision-language models,
-    spatial priors from SoilGrids and national soil maps, and gap-filling of
+    spatial priors from 'SoilGrids' and national soil maps, and gap-filling of
     soil attributes from Vis-NIR or MIR spectra via the Open Soil Spectral
-    Library (OSSL). The taxonomic key itself is never delegated to a language
+    Library ('OSSL'). The taxonomic key itself is never delegated to a language
     model; LLMs are restricted to schema-validated extraction. Each
     classification result reports a key trace, a provenance-aware evidence
     grade, and ambiguities that further measurement would resolve.

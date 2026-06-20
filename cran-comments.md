@@ -1,9 +1,27 @@
-# cran-comments.md -- soilKey 0.9.151
+# cran-comments.md -- soilKey 0.9.152
+
+## Resubmission
+
+This is a resubmission. The 0.9.151 incoming pre-test reported 1 ERROR + 1 NOTE,
+now fixed:
+
+* **ERROR (checking tests):** a spectral test exercised `resemble::mbl()`, whose
+  `k` / `k_diss` / `k_range` arguments were removed in `resemble` >= 2.0.
+  `predict_ossl_mbl()` / `predict_ossl_plsr_local()` now fall back to the
+  deterministic synthetic predictor (with a warning) on any backend error
+  instead of aborting; the two dependency-fragile spectral-model tests are now
+  `skip_on_cran()`.
+* **NOTE (incoming feasibility):** the technical acronyms 'SiBCS', 'OSSL' and
+  'SoilGrids' are now single-quoted in DESCRIPTION.
+
+I also addressed the **WARNING on the currently released 0.9.96** (a wall-clock
+performance assertion that timed out on the ATLAS-BLAS check host): that
+timing-based test is now `skip_on_cran()`.
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.151 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.152 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -64,7 +82,7 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.151)
+## R CMD check --as-cran results (v0.9.152)
 
 A full local build (with vignettes and manual) and `R CMD check --as-cran`:
 

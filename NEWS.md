@@ -1,3 +1,27 @@
+# soilKey 0.9.152 (2026-06-20)
+
+The "**CRAN pre-test fixes**" release -- addresses the issues raised by CRAN's
+incoming checks on 0.9.151; no classification change (default path
+byte-identical).
+
+\itemize{
+  \item \strong{Spectral model backend made version-robust.}
+        \code{predict_ossl_mbl()} / \code{predict_ossl_plsr_local()} delegate to
+        \code{resemble::mbl()}, whose \code{k} / \code{k_diss} / \code{k_range}
+        arguments were removed in \pkg{resemble} >= 2.0. The call now falls back
+        to the deterministic synthetic predictor (with a warning) on any
+        backend error instead of aborting -- so \code{fill_from_spectra()} and
+        the spectral vignette stay robust across \pkg{resemble} versions. This
+        was the CRAN pre-test ERROR.
+  \item \strong{Dependency-fragile spectral-model tests} (the \code{"spectra"}
+        gap-fill dispatch and \code{benchmark_spectral_fill()}) and the
+        \strong{wall-clock performance sentinel} now \code{skip_on_cran()} --
+        the latter was the source of the released version's WARNING (it timed
+        out on the ATLAS-BLAS check host).
+  \item \strong{DESCRIPTION:} single-quoted the technical acronyms 'SiBCS',
+        'OSSL' and 'SoilGrids' (CRAN incoming-feasibility spelling NOTE).
+}
+
 # soilKey 0.9.151 (2026-06-17)
 
 The "**unique USDA subgroup codes**" release -- a data-hygiene fix; no
