@@ -25,7 +25,7 @@ Planosols qualifiers.
 \details{
 Sub-tests:
 \itemize{
-  \item \code{\link{test_claric_munsell}} -- Munsell criteria of claric
+  \item \code{test_claric_munsell} -- Munsell criteria of claric
         material (Ch 3.3.4).
 }
 Designation pattern \code{E} or \code{Eg} also serves as positive

@@ -20,7 +20,7 @@
 #'        \code{"site"}. Either with or without the \code{.json}
 #'        suffix.
 #' @return Absolute file path. Errors if the schema is not found.
-#' @keywords internal
+#' @noRd
 schema_path <- function(name) {
   if (!grepl("\\.json$", name)) name <- paste0(name, ".json")
   p <- system.file("schemas", name, package = "soilKey")
@@ -40,13 +40,13 @@ schema_path <- function(name) {
 #'
 #' Reads \code{inst/schemas/<name>.json} and returns its contents as a
 #' single character scalar. The JSON is not parsed -- callers either
-#' pass the string straight to \code{\link{validate_against_schema}}
+#' pass the string straight to \code{validate_against_schema}
 #' or substitute it into a prompt template via
-#' \code{\link{load_prompt}}.
+#' \code{load_prompt}.
 #'
 #' @param name Schema base name, e.g. \code{"horizon"}, \code{"site"}.
 #' @return Character scalar containing the schema JSON.
-#' @keywords internal
+#' @noRd
 load_schema <- function(name) {
   p <- schema_path(name)
   paste(readLines(p, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
@@ -63,7 +63,7 @@ load_schema <- function(name) {
 #' @param json_string A character scalar holding the JSON document to
 #'        validate (e.g. the raw string returned by a VLM call).
 #' @param schema_name Short schema name as accepted by
-#'        \code{\link{load_schema}}.
+#'        \code{load_schema}.
 #' @param engine Validation engine to use; passed through to
 #'        \code{jsonvalidate::json_validate}. Default
 #'        \code{"ajv"} supports draft-07.
@@ -73,7 +73,7 @@ load_schema <- function(name) {
 #'     \item \code{errors}: character vector of validation error
 #'           messages (empty if \code{valid}).
 #'   }
-#' @keywords internal
+#' @noRd
 validate_against_schema <- function(json_string,
                                      schema_name,
                                      engine = "ajv") {

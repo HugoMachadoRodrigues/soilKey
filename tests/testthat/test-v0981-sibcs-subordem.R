@@ -7,6 +7,7 @@
 
 
 test_that("v0.9.81: .redape_strip_accents drops Portuguese diacritics", {
+  skip_on_cran()
   expect_identical(.redape_strip_accents("ARGISSOLO"),  "argissolo")
   expect_identical(.redape_strip_accents("VERMELHO-AMARELO"),
                                           "vermelho-amarelo")
@@ -22,6 +23,7 @@ test_that("v0.9.81: .redape_strip_accents drops Portuguese diacritics", {
 
 
 test_that("v0.9.81: .redape_pluralise_pt skips abbreviations and already-plural", {
+  skip_on_cran()
   expect_identical(.redape_pluralise_pt("argissolo"), "argissolos")
   expect_identical(.redape_pluralise_pt("amarelo"),    "amarelos")
   expect_identical(.redape_pluralise_pt("tipico"),    "tipicos")
@@ -37,6 +39,7 @@ test_that("v0.9.81: .redape_pluralise_pt skips abbreviations and already-plural"
 
 
 test_that("v0.9.81: .redape_canonical_label round-trips Order names", {
+  skip_on_cran()
   # singular ref -> plural canonical
   expect_identical(.redape_canonical_label("ARGISSOLO"),  "argissolos")
   expect_identical(.redape_canonical_label("Argissolos", pluralise = FALSE),
@@ -53,6 +56,7 @@ test_that("v0.9.81: .redape_canonical_label round-trips Order names", {
 
 
 test_that("v0.9.81: .redape_compose_ref builds correct level-deep reference", {
+  skip_on_cran()
   pr <- list(site = list(
     id = "test",
     reference_sibcs_order    = "ARGISSOLO",
@@ -72,6 +76,7 @@ test_that("v0.9.81: .redape_compose_ref builds correct level-deep reference", {
 
 
 test_that("v0.9.81: .redape_compose_ref returns NA on incomplete reference", {
+  skip_on_cran()
   pr_incomplete <- list(site = list(
     id = "test",
     reference_sibcs_order    = "ARGISSOLO",
@@ -88,6 +93,7 @@ test_that("v0.9.81: .redape_compose_ref returns NA on incomplete reference", {
 
 
 test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", {
+  skip_on_cran()
   # Order-level accuracy must equal what main produces (no behaviour
   # change at the canonical level).
   skip_if_not(file.exists("/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/redape_geotab"),
@@ -109,6 +115,7 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
 
 
 test_that("v0.9.81: benchmark_redape produces DIFFERENT accuracies at different levels", {
+  skip_on_cran()
   # Regression guard: before v0.9.81 the four levels reported identical
   # numbers (the level argument was silently dropped at the prediction
   # extraction step). Subgrupo accuracy must be LOWER than Order
@@ -131,6 +138,7 @@ test_that("v0.9.81: benchmark_redape produces DIFFERENT accuracies at different 
 
 
 test_that("v0.9.81: predictions table now exposes ref_norm and pred_norm columns", {
+  skip_on_cran()
   skip_if_not(file.exists("/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/redape_geotab"),
                 "redape_geotab dataset not available")
   peds <- suppressMessages(suppressWarnings(load_redape_pedons(

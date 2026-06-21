@@ -157,7 +157,7 @@ harmonize_to_gsm <- function(pedons,
 # --- internal helpers -------------------------------------------------
 
 #' Single-horizon fallback: replicate values across overlapping GSM intervals
-#' @keywords internal
+#' @noRd
 .harmonize_single_horizon <- function(p, hz, depths) {
   if (nrow(hz) == 0L) return(NULL)
   intervals <- data.frame(top_cm    = depths[-length(depths)],
@@ -179,7 +179,7 @@ harmonize_to_gsm <- function(pedons,
 
 
 #' Numeric attributes via mass-preserving spline
-#' @keywords internal
+#' @noRd
 .harmonize_numeric_attrs <- function(hz, attributes, depths, lam) {
   intervals <- data.frame(top_cm    = depths[-length(depths)],
                             bottom_cm = depths[-1L])
@@ -225,7 +225,7 @@ harmonize_to_gsm <- function(pedons,
 
 
 #' Modal categorical value by depth-overlap fraction
-#' @keywords internal
+#' @noRd
 .modal_by_overlap <- function(values, top, bottom, depths) {
   intervals_top    <- depths[-length(depths)]
   intervals_bottom <- depths[-1L]

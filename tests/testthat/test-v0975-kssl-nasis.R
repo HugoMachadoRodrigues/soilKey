@@ -4,6 +4,7 @@
 
 
 test_that("v0.9.75: load_kssl_nasis_sample() returns enriched pedons", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "kssl_nasis_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -22,6 +23,7 @@ test_that("v0.9.75: load_kssl_nasis_sample() returns enriched pedons", {
 
 
 test_that("v0.9.75: KSSL+NASIS sample has Munsell colour data (lift from 0% to ~90%)", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "kssl_nasis_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -43,6 +45,7 @@ test_that("v0.9.75: KSSL+NASIS sample has Munsell colour data (lift from 0% to ~
 
 
 test_that("v0.9.75: KSSL+NASIS sample has structure_grade / type", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "kssl_nasis_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -62,6 +65,7 @@ test_that("v0.9.75: KSSL+NASIS sample has structure_grade / type", {
 
 
 test_that("v0.9.75: classify_wrb2022 runs without error on every NASIS-enriched pedon", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "kssl_nasis_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -79,6 +83,7 @@ test_that("v0.9.75: classify_wrb2022 runs without error on every NASIS-enriched 
 
 
 test_that("v0.9.75: benchmark_wrb_vs_usda runs end-to-end on NASIS-enriched sample", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "kssl_nasis_sample.rds"))
                           || nzchar(system.file("extdata",

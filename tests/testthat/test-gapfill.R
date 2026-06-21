@@ -13,6 +13,7 @@
 }
 
 test_that("gapfill_within_pedon interpolates an interior gap exactly", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   gapfill_within_pedon(p, attrs = "clay_pct")
   # H2 mid=30 sits between measured mids 10 (15%) and 50 (35%) -> 25%.
@@ -22,6 +23,7 @@ test_that("gapfill_within_pedon interpolates an interior gap exactly", {
 })
 
 test_that("gapfill never extrapolates beyond the measured range", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   gapfill_within_pedon(p, attrs = "clay_pct")
   # H5 mid=105 is below the deepest measured mid (75) -> stays NA.
@@ -29,6 +31,7 @@ test_that("gapfill never extrapolates beyond the measured range", {
 })
 
 test_that("gapfill fills multiple attributes independently", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   gapfill_within_pedon(p, attrs = c("clay_pct", "ph_h2o"))
   # ph_h2o H3 mid=50 between mids 30 (5.8) and 75 (6.4) -> linear.
@@ -40,6 +43,7 @@ test_that("gapfill fills multiple attributes independently", {
 })
 
 test_that("interpolated cells carry inferred_prior provenance => grade C", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   gapfill_within_pedon(p, attrs = "clay_pct")
   expect_true("inferred_prior" %in% p$provenance$source)
@@ -47,6 +51,7 @@ test_that("interpolated cells carry inferred_prior provenance => grade C", {
 })
 
 test_that("gapfill never overwrites a measured cell (authority order)", {
+  skip_on_cran()
   h <- data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 60),
                   clay_pct = c(10, 20, 30))
   p <- PedonRecord$new(horizons = h)
@@ -56,6 +61,7 @@ test_that("gapfill never overwrites a measured cell (authority order)", {
 })
 
 test_that("a single measured point cannot anchor an interpolation", {
+  skip_on_cran()
   h <- data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 60),
                   clay_pct = c(NA, 20, NA))
   p <- PedonRecord$new(horizons = h)
@@ -66,6 +72,7 @@ test_that("a single measured point cannot anchor an interpolation", {
 })
 
 test_that("classify(gapfill=FALSE) is identical to the default (byte-identical)", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   expect_identical(classify_usda(p, gapfill = FALSE),    classify_usda(p))
   expect_identical(classify_sibcs(p, gapfill = FALSE),   classify_sibcs(p))
@@ -73,6 +80,7 @@ test_that("classify(gapfill=FALSE) is identical to the default (byte-identical)"
 })
 
 test_that("classify(gapfill=TRUE) never mutates the caller's pedon", {
+  skip_on_cran()
   p <- .gf_partial_pedon()
   before_h    <- data.table::copy(p$horizons)
   before_prov <- data.table::copy(p$provenance)
@@ -85,6 +93,7 @@ test_that("classify(gapfill=TRUE) never mutates the caller's pedon", {
 })
 
 test_that("gapfill accepts character and list specifications", {
+  skip_on_cran()
   p1 <- .gf_partial_pedon()
   r_chr <- classify_usda(p1, gapfill = "clay_pct")
   p2 <- .gf_partial_pedon()
@@ -96,6 +105,7 @@ test_that("gapfill accepts character and list specifications", {
 })
 
 test_that("a pedon with no interior gaps is unaffected by gapfill", {
+  skip_on_cran()
   h <- data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 60),
                   clay_pct = c(10, 20, 30))
   p <- PedonRecord$new(horizons = h)

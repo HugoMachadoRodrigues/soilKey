@@ -25,7 +25,7 @@
 #' \code{validation_error_at}, that response is replaced with a
 #' deliberately malformed JSON string, allowing tests to exercise the
 #' retry-on-validation-failure path implemented in
-#' \code{\link{validate_or_retry}}.
+#' \code{validate_or_retry}.
 #'
 #' @section Example:
 #' \preformatted{

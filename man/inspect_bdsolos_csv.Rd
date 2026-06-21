@@ -18,7 +18,7 @@ Invisibly, a list with \code{mapped}, \code{unmapped},
 }
 \description{
 Reads the CSV header, attempts to map each column to the soilKey
-horizon schema via \code{\link{.bdsolos_match_column}}, and prints
+horizon schema via \code{.bdsolos_match_column}, and prints
 three sections:
 }
 \details{

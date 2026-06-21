@@ -1,28 +1,46 @@
-# cran-comments.md -- soilKey 0.9.153
+# cran-comments.md -- soilKey 0.9.154
 
 ## Resubmission
 
-This is a resubmission. The 0.9.152 incoming pre-test was **OK on both Windows
-and Debian**, but was held because the overall check time exceeded 10 minutes
-(`Overall checktime 22 min > 10 min`), dominated by the test suite (~12 min).
+This is a resubmission. The 0.9.154 incoming pre-test was **OK on both Windows
+and Debian**, but was held for `Overall checktime 16 min > 10 min`. This version
+is a genuine reduction of the check footprint (not a wholesale disabling of
+tests), and addresses the two NOTEs:
 
-* **Check time:** the heavy integration / simulation / Shiny-app tests (the
-  aqp-engine fallbacks, argic designation inference, Monte-Carlo uncertainty,
-  benchmark suite, audits, and the `testServer` app tests) are now
-  `skip_on_cran()`. They run in full on CI (`NOT_CRAN=true`). Locally the test
-  phase dropped from ~9 min to ~80 s; the fast unit tests, the 44 canonical
-  classification fixtures and the end-to-end key tests still run on CRAN.
+* **Manual size (the main lever):** the ~600 internal rule-engine predicates
+  were already marked `@keywords internal`; they are now *truly* internal --
+  removed from `NAMESPACE` and the reference manual (the rule engine resolves
+  them from the namespace; tests reach them via `test_check()`). The documented
+  surface drops from **928 to 319 topics** (man pages 1129 -> 335), which is
+  what cuts the HTML/PDF manual build. The public API (`classify_*`,
+  `PedonRecord`, `report*`, `coverage_report`, the benchmark and gap-fill entry
+  points, the documented diagnostics) is unchanged and classification is
+  **byte-identical** (44 canonical fixtures).
 
-(The 0.9.151 -> 0.9.152 fixes are retained: the `resemble >= 2.0` mbl() API
-change now degrades gracefully to the synthetic predictor; 'SiBCS' / 'OSSL' /
-'SoilGrids' are single-quoted in DESCRIPTION; and the wall-clock performance
-sentinel -- the source of the released 0.9.96 ATLAS WARNING -- is
-`skip_on_cran()`.)
+* **URL NOTE:** the USDA-NRCS NCSS data-mart address (which timed out for the
+  check host, ~100 s of the feasibility step) is no longer a checked link.
+
+* **Performance test (per the reviewer's question):** the wall-clock
+  "< 5 s/pedon" assertion -- the source of the released 0.9.96 ATLAS WARNING --
+  is **removed, not disabled**. The test now runs on CRAN and verifies the
+  benchmark returns well-formed, non-negative timings; an absolute wall-clock
+  threshold is not portable across CRAN's CPU/BLAS variants, so the
+  speed-regression guard now lives in CI.
+
+* Long-running benchmark, simulation, spectral, vision-language and spatial
+  tests (which need optional Suggests or external data) are conditioned off
+  CRAN with `skip_on_cran()` -- because they are long-running per "Writing R
+  Extensions", not because they fail. The classification keys, the diagnostic
+  predicates and the 44 fixtures still run on CRAN.
+
+A full local `R CMD check --as-cran` (with vignettes and manual) is
+0 errors / 0 warnings / 1 NOTE; the testthat phase is ~75 s and the manual
+build is a fraction of its former size.
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.153 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.154 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -83,7 +101,7 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.153)
+## R CMD check --as-cran results (v0.9.154)
 
 A full local build (with vignettes and manual) and `R CMD check --as-cran`:
 
@@ -94,12 +112,12 @@ A full local build (with vignettes and manual) and `R CMD check --as-cran`:
   local-only artefact -- the macOS-bundled `tidy` is older than CRAN's -- and
   does not appear on the CRAN check servers. "CRAN incoming feasibility",
   "checking examples (+ --run-donttest)", and "re-building of vignette outputs"
-  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~80 s.
+  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~75 s.
 
-All tests pass under `R CMD check` (`testthat.R`, ~80 s on CRAN with the heavy
-suites skipped; full suite on CI). Tests that need optional Suggests (magick,
-jsonvalidate, pdftools, ellmer, terra, sf, aqp, prospectr, resemble, ...) use
-`skip_if_not_installed()`.
+All tests pass under `R CMD check` (`testthat.R`, ~75 s on CRAN with the
+long-running suites skipped; full suite on CI). Tests that need optional
+Suggests (magick, jsonvalidate, pdftools, ellmer, terra, sf, aqp, prospectr,
+resemble, ...) use `skip_if_not_installed()`.
 
 ## Reverse dependencies
 

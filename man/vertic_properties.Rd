@@ -34,10 +34,10 @@ deep cracks. Diagnostic for Vertisols.
 \details{
 Sub-tests:
 \itemize{
-  \item \code{\link{test_clay_above}} -- clay >= 30\%
-  \item \code{\link{test_slickensides_present}} -- slickensides at
+  \item \code{test_clay_above} -- clay >= 30\%
+  \item \code{test_slickensides_present} -- slickensides at
         or above the "common" level
-  \item \code{\link{test_minimum_thickness}} -- combined vertic layer
+  \item \code{test_minimum_thickness} -- combined vertic layer
         thickness >= 25 cm (v0.3.1 added per WRB 2022)
 }
 

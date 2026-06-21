@@ -34,7 +34,7 @@
 #' @param pattern Regex pattern matched case-insensitively against
 #'        each featkind string.
 #' @return Logical scalar.
-#' @keywords internal
+#' @noRd
 .has_nasis_feature <- function(pedon, pattern) {
   feats <- pedon$site$nasis_diagnostic_features
   if (is.null(feats) || length(feats) == 0L) return(FALSE)
@@ -57,7 +57,7 @@
 #'        \code{pediagfeatures.featkind}.
 #' @param feature_label Short label for the provenance note.
 #' @return The (possibly modified) DiagnosticResult.
-#' @keywords internal
+#' @noRd
 .apply_nasis_tiebreaker <- function(result, pedon, pattern,
                                        feature_label) {
   if (!is.na(result$passed)) return(result)

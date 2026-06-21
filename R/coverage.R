@@ -15,7 +15,7 @@
 #' union of subgroup \code{name} fields (e.g. \code{"Typic Hapludands"}).
 #'
 #' @return Character vector of registered subgroup names (lower-cased, trimmed).
-#' @keywords internal
+#' @noRd
 .coverage_registered_usda_subgroups <- function() {
   dir <- system.file("rules", "usda", "subgroups", package = "soilKey")
   if (!nzchar(dir) || !dir.exists(dir)) return(character(0))
@@ -30,7 +30,7 @@
 }
 
 #' USDA subgroup coverage (registered vs canonical KST 13th edition).
-#' @keywords internal
+#' @noRd
 .coverage_usda_subgroup <- function() {
   codes <- kst13_codes()
   sg    <- codes[nchar(codes$code) == 4L, , drop = FALSE]
@@ -68,7 +68,7 @@
 #' "fibric", "Fibric")}. The earlier detector inspected only the one-line body
 #' and so false-flagged such delegations as stubs; this follows one level of
 #' delegation (any helper called with \code{pedon}) before deciding.
-#' @keywords internal
+#' @noRd
 .qualifier_is_implemented <- function(name) {
   key <- tolower(name)
   # The vendored WRB_4th_2022 canonical table carries one upstream-corrupted
@@ -117,7 +117,7 @@
 #' functions. (Specifier-prefixed forms such as \emph{Endogleyic} are derived
 #' by the specifier engine from their base qualifier and are not canonical
 #' qualifier names, so they never enter this count.)
-#' @keywords internal
+#' @noRd
 .coverage_wrb_qualifiers <- function() {
   wc <- wrb2022_canonical()
   pq <- as.character(wc$pq[[ncol(wc$pq)]])
@@ -165,7 +165,7 @@
 }
 
 #' Names registered under a USDA level YAML directory (great-groups / suborders).
-#' @keywords internal
+#' @noRd
 .coverage_registered_usda_level <- function(subdir, yaml_key) {
   dir <- system.file("rules", "usda", subdir, package = "soilKey")
   if (!nzchar(dir) || !dir.exists(dir)) return(character(0))
@@ -178,7 +178,7 @@
 }
 
 #' USDA coverage at the great-group / suborder level (by NAME vs KST 13ed).
-#' @keywords internal
+#' @noRd
 .coverage_usda_named_level <- function(code_len, subdir, yaml_key, level) {
   codes <- kst13_codes()
   lev   <- codes[nchar(codes$code) == code_len, , drop = FALSE]
@@ -205,7 +205,7 @@
 #' SiBCS 5 registered class counts. There is no external canonical code-set to
 #' diff against (unlike KST 13ed for USDA), so this honestly reports the
 #' registered class counts per level with that caveat -- not a percentage.
-#' @keywords internal
+#' @noRd
 .coverage_sibcs <- function() {
   levels <- c(order = "ordens", suborder = "subordens",
               great_group = "grandes_grupos", subgroup = "subgrupos")
@@ -223,7 +223,7 @@
 }
 
 #' Distinct leaf names registered at a SiBCS level (from the merged rule base).
-#' @keywords internal
+#' @noRd
 .coverage_registered_sibcs_level <- function(yaml_key) {
   block <- load_rules("sibcs5")[[yaml_key]]
   nms <- character(0)
@@ -315,7 +315,7 @@ coverage_report <- function(system = c("usda_subgroup", "usda_great_group",
 }
 
 #' Render a coverage result as Markdown.
-#' @keywords internal
+#' @noRd
 .coverage_markdown <- function(system, res) {
   o <- res$overall
   if (is.na(o$pct)) {           # registered-counts-only (e.g. SiBCS, no canonical)

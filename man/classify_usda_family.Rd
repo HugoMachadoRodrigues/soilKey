@@ -19,7 +19,7 @@ classify_usda_family(
 \item{subgroup_code}{Optional subgroup code (reserved for refinements).}
 
 \item{infer_temperature}{Passed to
-\code{\link{family_temperature_regime_usda}}.}
+\code{family_temperature_regime_usda}.}
 }
 \value{
 Named list of \code{\link{FamilyAttribute}} objects.
@@ -33,5 +33,5 @@ is orthogonal). Mirrors \code{\link{classify_sibcs_familia}}.
 Soil Survey Staff (2022), KST 13th ed., Ch. 16--17.
 }
 \seealso{
-\code{\link{family_label_usda}}, \code{\link{classify_usda}}.
+\code{family_label_usda}, \code{\link{classify_usda}}.
 }

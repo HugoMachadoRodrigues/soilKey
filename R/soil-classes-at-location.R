@@ -199,7 +199,7 @@ soil_classes_at_location <- function(lat,
 
 #' Map an RSG code to a human-readable class name in the requested
 #' classification system.
-#' @keywords internal
+#' @noRd
 .rsg_name_for_system <- function(code, system) {
   if (system == "wrb2022") {
     .wrb_rsg_full_names()[[code]] %||% code
@@ -210,7 +210,7 @@ soil_classes_at_location <- function(lat,
   }
 }
 
-#' @keywords internal
+#' @noRd
 .wrb_rsg_full_names <- function() {
   c(HS = "Histosols",  AT = "Anthrosols", TC = "Technosols",
     CR = "Cryosols",   LP = "Leptosols",  SN = "Solonetz",
@@ -225,7 +225,7 @@ soil_classes_at_location <- function(lat,
     FL = "Fluvisols",  RG = "Regosols")
 }
 
-#' @keywords internal
+#' @noRd
 .sibcs_ordem_full_names <- function() {
   c(O = "Organossolos",  R = "Neossolos",   V = "Vertissolos",
     E = "Espodossolos",  S = "Planossolos", G = "Gleissolos",
@@ -234,7 +234,7 @@ soil_classes_at_location <- function(lat,
     P = "Argissolos")
 }
 
-#' @keywords internal
+#' @noRd
 .usda_order_full_names <- function() {
   c(GE = "Gelisols",   HI = "Histosols",   SP = "Spodosols",
     AD = "Andisols",   OX = "Oxisols",     VE = "Vertisols",
@@ -248,7 +248,7 @@ soil_classes_at_location <- function(lat,
 #' Many-to-many: a single WRB RSG may map to multiple SiBCS ordens
 #' (we split the probability evenly).
 #'
-#' @keywords internal
+#' @noRd
 .wrb_to_sibcs_distribution <- function(dist) {
   map <- list(
     HS = "O", AT = c("P", "C"), TC = "C", CR = "C", LP = "R",
@@ -284,7 +284,7 @@ soil_classes_at_location <- function(lat,
 
 #' Canonical attribute ranges per class, used as the
 #' "what-to-confirm" appendix.
-#' @keywords internal
+#' @noRd
 .typical_attribute_table <- function(system, codes) {
   if (length(codes) == 0L)
     return(data.table::data.table(rsg_code = character(0),

@@ -7,6 +7,7 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 
 
 test_that("v0.9.140: texture closure fills the third fraction (100 - other two)", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 50),
                       clay_pct = c(NA, 40), silt_pct = c(30, 30), sand_pct = c(50, 30)))
   p <- prh(h); gapfill_derive_horizon(p)
@@ -15,6 +16,7 @@ test_that("v0.9.140: texture closure fills the third fraction (100 - other two)"
 })
 
 test_that("v0.9.140: al_sat / ecec / bs closures from the exchange complex", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 50),
                       ca_cmol = c(2, 1), mg_cmol = c(1, 0.5), k_cmol = c(0.2, 0.1),
                       na_cmol = c(0.1, 0.1), al_cmol = c(0.5, 3), cec_cmol = c(8, 10)))
@@ -28,6 +30,7 @@ test_that("v0.9.140: al_sat / ecec / bs closures from the exchange complex", {
 })
 
 test_that("v0.9.140: derive never overwrites a measured value (authority order)", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = 0, bottom_cm = 30, clay_pct = 25,
                       silt_pct = 30, sand_pct = 50))
   p <- prh(h); gapfill_derive_horizon(p)
@@ -35,6 +38,7 @@ test_that("v0.9.140: derive never overwrites a measured value (authority order)"
 })
 
 test_that("v0.9.140: derive requires Ca+Mg present (no bases-from-thin-air)", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = 0, bottom_cm = 30, al_cmol = 3, cec_cmol = 10))
   p <- prh(h); gapfill_derive_horizon(p)
   expect_true(is.na(p$horizons$al_sat_pct[1]))     # no Ca/Mg -> bases untrusted
@@ -45,6 +49,7 @@ test_that("v0.9.140: derive requires Ca+Mg present (no bases-from-thin-air)", {
 # ---- classifier dispatcher (interp / derive / soilgrids) ------------------
 
 test_that("v0.9.140: gapfill=FALSE is byte-identical (no fill, no mutation)", {
+  skip_on_cran()
   pr <- make_argissolo_canonical()
   base <- classify_sibcs(pr, on_missing = "silent")$rsg_or_order
   with <- classify_sibcs(pr, gapfill = FALSE, on_missing = "silent")$rsg_or_order
@@ -52,6 +57,7 @@ test_that("v0.9.140: gapfill=FALSE is byte-identical (no fill, no mutation)", {
 })
 
 test_that("v0.9.140: gapfill=list(method='derive') fills on a deep copy", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 50),
                       clay_pct = c(15, 40), al_cmol = c(0.5, 3),
                       ca_cmol = c(2, 1), mg_cmol = c(1, 0.5), cec_cmol = c(8, 10)))
@@ -62,6 +68,7 @@ test_that("v0.9.140: gapfill=list(method='derive') fills on a deep copy", {
 })
 
 test_that("v0.9.140: gapfill=list(method='soilgrids') is reachable offline", {
+  skip_on_cran()
   pr <- prh(mkh(data.frame(top_cm = 0, bottom_cm = 30, clay_pct = NA_real_)))
   q <- soilKey:::.classify_apply_gapfill(
     pr, list(method = "soilgrids", attrs = "clay_pct",
@@ -70,6 +77,7 @@ test_that("v0.9.140: gapfill=list(method='soilgrids') is reachable offline", {
 })
 
 test_that("v0.9.140: back-compat -- gapfill=TRUE and character still do interp", {
+  skip_on_cran()
   h <- mkh(data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 60),
                       clay_pct = c(15, NA, 35)))
   q1 <- soilKey:::.classify_apply_gapfill(prh(h), TRUE)
@@ -79,6 +87,7 @@ test_that("v0.9.140: back-compat -- gapfill=TRUE and character still do interp",
 })
 
 test_that("v0.9.140: an unknown method errors", {
+  skip_on_cran()
   expect_error(
     soilKey:::.classify_apply_gapfill(make_argissolo_canonical(), list(method = "bogus")),
     "unknown gapfill method")

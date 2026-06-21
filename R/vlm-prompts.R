@@ -11,7 +11,7 @@
 #'
 #' @param name Template base name, with or without \code{.md}.
 #' @return Absolute file path. Errors if not found.
-#' @keywords internal
+#' @noRd
 prompt_path <- function(name) {
   if (!grepl("\\.md$", name)) name <- paste0(name, ".md")
   p <- system.file("prompts", name, package = "soilKey")
@@ -42,7 +42,7 @@ prompt_path <- function(name) {
 #' @param vars Named list of substitution values. Each value is
 #'        coerced to character via \code{as.character}.
 #' @return Character scalar with the rendered prompt.
-#' @keywords internal
+#' @noRd
 load_prompt <- function(name, vars = list()) {
   p <- prompt_path(name)
   raw <- paste(readLines(p, warn = FALSE, encoding = "UTF-8"),

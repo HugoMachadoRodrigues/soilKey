@@ -50,7 +50,7 @@ wrb06_code_to_rsg <- function(code) {
 
 
 #' Convert AfSP NoData sentinel (-9999) to NA
-#' @keywords internal
+#' @noRd
 .afsp_unna <- function(x) {
   if (is.numeric(x)) {
     x[!is.na(x) & x == -9999] <- NA_real_
@@ -63,7 +63,7 @@ wrb06_code_to_rsg <- function(code) {
 
 
 #' Parse AfSP Munsell colour string (e.g. "10YR 4/3") into hue/value/chroma
-#' @keywords internal
+#' @noRd
 .afsp_parse_munsell <- function(s) {
   if (is.na(s) || !nzchar(s)) return(list(hue = NA_character_,
                                               value = NA_real_,
@@ -84,7 +84,7 @@ wrb06_code_to_rsg <- function(code) {
 
 
 #' Build a soilKey PedonRecord from AfSP Profiles + Layers rows
-#' @keywords internal
+#' @noRd
 .afsp_to_pedon <- function(profile_row, layer_rows) {
   # Map AfSP Layers fields -> soilKey horizon schema
   hz_list <- lapply(seq_len(nrow(layer_rows)), function(i) {

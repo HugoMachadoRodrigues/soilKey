@@ -244,7 +244,7 @@ classify_by_spectral_neighbours <- function(spectrum,
 
 
 #' Reduce X (library + query) to a small score space.
-#' @keywords internal
+#' @noRd
 .reduce_for_neighbours <- function(X_lib, X_query, y_label) {
   # Try resemble's PLS scores when available -- this matches the
   # OSSL reference workflow (Ramirez-Lopez et al., 2013).
@@ -291,7 +291,7 @@ classify_by_spectral_neighbours <- function(spectrum,
 
 #' Great-circle distance (km) between (lat1, lon1) and the elementwise
 #' (lat2, lon2) vectors.
-#' @keywords internal
+#' @noRd
 .haversine_km <- function(lat1, lon1, lat2, lon2) {
   R <- 6371.0
   to_rad <- pi / 180

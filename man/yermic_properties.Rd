@@ -3,7 +3,7 @@
 \name{yermic_properties}
 \alias{yermic_properties}
 \title{Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
-\code{\link{test_yermic_surface}}.}
+\code{test_yermic_surface}.}
 \usage{
 yermic_properties(pedon)
 }
@@ -15,5 +15,5 @@ A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, th
 }
 \description{
 Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
-\code{\link{test_yermic_surface}}.
+\code{test_yermic_surface}.
 }

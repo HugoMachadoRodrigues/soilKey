@@ -110,7 +110,7 @@ report_pdf <- function(x,
 #' Internal helper: .escape_latex
 
 
-#' @keywords internal
+#' @noRd
 .escape_latex <- function(x) {
   if (is.null(x)) return("")
   x <- as.character(x)
@@ -124,7 +124,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .rmd_header
 
-#' @keywords internal
+#' @noRd
 .rmd_header <- function(title) {
   paste0(
     "---\n",
@@ -151,7 +151,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .rmd_classification_block
 
-#' @keywords internal
+#' @noRd
 .rmd_classification_block <- function(res) {
   qual_principal <- res$qualifiers$principal     %||% character()
   qual_suppl     <- res$qualifiers$supplementary %||% character()
@@ -216,7 +216,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .rmd_summary_block
 
-#' @keywords internal
+#' @noRd
 .rmd_summary_block <- function(results) {
   if (length(results) < 2) return("")
   rows <- vapply(results, function(r)
@@ -238,7 +238,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .rmd_horizons_block
 
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 .rmd_horizons_block <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$horizons) ||
@@ -266,7 +266,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .rmd_site_block
 
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 .rmd_site_block <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$site)) return("")
@@ -296,7 +296,7 @@ report_pdf <- function(x,
 }
 #' Internal helper: .build_report_rmd
 
-#' @keywords internal
+#' @noRd
 .build_report_rmd <- function(results, pedon, title) {
   paste0(
     .rmd_header(title),

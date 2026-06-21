@@ -74,7 +74,7 @@
 # ---- Internal helpers ---------------------------------------------------
 
 #' Coerce a LUCAS character cell to numeric, treating "< LOD" / "" as NA
-#' @keywords internal
+#' @noRd
 .lucas_numeric <- function(x) {
   s <- trimws(as.character(x))
   s[s %in% c("", "< LOD", "<LOD", "NA", "n.d.", "ND")] <- NA_character_
@@ -83,7 +83,7 @@
 
 
 #' Build a single PedonRecord from one LUCAS chemistry row + optional BD row
-#' @keywords internal
+#' @noRd
 .build_lucas_pedon_2018 <- function(chem_row, bd_row = NULL) {
   # Unit conversions:
   #   OC, N, CaCO3, Ox_Al, Ox_Fe : g/kg     -> %        (* 0.1)
@@ -337,7 +337,7 @@ load_lucas_soil_2018 <- function(path,
 #' Test injection: pass \code{lookup_fn = function(...) value} to
 #' bypass the network when unit-testing.
 #'
-#' @keywords internal
+#' @noRd
 .fill_horizon_from_soilgrids <- function(pedon,
                                             horizon_idx,
                                             properties,

@@ -43,10 +43,10 @@ extractable material plus organic matter; diagnostic of Podzols.
 \details{
 Sub-tests:
 \itemize{
-  \item \code{\link{test_spodic_aluminum_iron}} -- (Al_ox +
+  \item \code{test_spodic_aluminum_iron} -- (Al_ox +
         0.5*Fe_ox) >= 0.5\%
-  \item \code{\link{test_ph_below}} -- ph_h2o <= 5.9
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 2.5 cm
+  \item \code{test_ph_below} -- ph_h2o <= 5.9
+  \item \code{test_minimum_thickness} -- thickness >= 2.5 cm
 }
 
 v0.2 limitations: the WRB color criterion (hue 5YR or yellower with

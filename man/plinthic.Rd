@@ -25,9 +25,9 @@ Plinthosols.
 \details{
 Sub-tests:
 \itemize{
-  \item \code{\link{test_plinthite_concentration}} -- plinthite
+  \item \code{test_plinthite_concentration} -- plinthite
         volume \% >= 15
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm
+  \item \code{test_minimum_thickness} -- thickness >= 15 cm
 }
 
 v0.2 limitations: WRB 2022 also accepts profiles with >= 40\% red

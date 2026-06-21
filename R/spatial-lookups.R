@@ -221,7 +221,7 @@ lookup_soilgrids <- function(coords,
 #'   \item ocs            -- 0.1 (hg/m^2 integer -> kg/m^2)
 #'   \item cfvo           -- 0.1 (cm^3/dm^3 integer -> percent vol)
 #' }
-#' @keywords internal
+#' @noRd
 .soilgrids_scale <- function(property) {
   switch(property,
     clay      = 0.1,

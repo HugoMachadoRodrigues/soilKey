@@ -23,7 +23,7 @@ BOTH:
   \item one or both of: clay >= 8\% AND CEC/clay < 24 cmol_c/kg clay; OR
         bulk CEC < 2 cmol_c/kg soil;
   \item evidence of soil formation as defined in criterion 3 of the cambic
-        horizon (\code{\link{test_cambic_soil_formation}}).
+        horizon (\code{test_cambic_soil_formation}).
 }
 Both must be met by the SAME layer. Criterion 2 was added in v0.9.127
 (previously only criterion 1 was enforced); where the soil-formation

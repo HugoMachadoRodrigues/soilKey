@@ -136,7 +136,7 @@
 #' @param x Character vector of mottle-quantity ordinal labels.
 #' @return Numeric vector of representative percent values (NA for
 #'         empty / unknown labels).
-#' @keywords internal
+#' @noRd
 .bdsolos_mosqueado_to_pct <- function(x) {
   if (length(x) == 0L) return(numeric(0))
   s <- tolower(trimws(as.character(x)))
@@ -193,7 +193,7 @@
 #' into spurious underscores. Pre-replace the common Portuguese
 #' diacritics by hand for deterministic output.
 #'
-#' @keywords internal
+#' @noRd
 .bdsolos_norm <- function(x) {
   s <- tolower(as.character(x))
   # Portuguese diacritic map (24 chars in / 24 chars out), written
@@ -225,7 +225,7 @@
 #'
 #' Returns the canonical soilKey column name, or \code{NA_character_}
 #' if no pattern matches.
-#' @keywords internal
+#' @noRd
 .bdsolos_match_column <- function(raw_name) {
   norm <- .bdsolos_norm(raw_name)
   if (!nzchar(norm)) return(NA_character_)
@@ -248,7 +248,7 @@
 #' fields). This walks the first N lines and returns the 1-based index
 #' of the header row.
 #'
-#' @keywords internal
+#' @noRd
 .bdsolos_find_header_line <- function(path, n_probe = 10L) {
   # v0.9.60: quote-aware field counting per physical line. The earlier
   # strsplit(fixed = TRUE) implementation counted separators blindly,
@@ -291,7 +291,7 @@
 
 
 #' Auto-detect the BDsolos field separator (`,`, `;`, or tab)
-#' @keywords internal
+#' @noRd
 .bdsolos_detect_sep <- function(path, header_line = 1L) {
   hdr <- readLines(path, n = header_line, encoding = "UTF-8")[header_line]
   candidates <- c(";" = ";", "," = ",", "\t" = "\t")
@@ -304,7 +304,7 @@
 
 #' Convert BDsolos coords (graus / minutos / segundos / hemisferio) to decimal
 #'
-#' @keywords internal
+#' @noRd
 .bdsolos_dms_to_decimal <- function(graus, minutos, segundos, hemisferio) {
   g <- suppressWarnings(as.numeric(graus))
   m <- suppressWarnings(as.numeric(minutos))
@@ -329,7 +329,7 @@
 
 
 #' Discover taxonomic column (the surveyor's SiBCS classification)
-#' @keywords internal
+#' @noRd
 .bdsolos_match_taxon_column <- function(raw_name) {
   norm <- .bdsolos_norm(raw_name)
   pat <- "(classificacao|taxon_sibcs|sibcs_class|nome_classe|^classe$|class_sibcs)"
@@ -343,7 +343,7 @@
 #' Diagnostic inspection of a BDsolos CSV before loading
 #'
 #' Reads the CSV header, attempts to map each column to the soilKey
-#' horizon schema via \code{\link{.bdsolos_match_column}}, and prints
+#' horizon schema via \code{.bdsolos_match_column}, and prints
 #' three sections:
 #'
 #' \itemize{
@@ -614,7 +614,7 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
 
 
 #' Convert a subset of BDsolos rows (one perfil) to a soilKey horizons table
-#' @keywords internal
+#' @noRd
 .bdsolos_rows_to_horizons <- function(rows, sk_map) {
   spec <- horizon_column_spec()
   hz_list <- list()
@@ -949,7 +949,7 @@ download_bdsolos <- function(out_path,
 
 
 #' Evaluate JS in a chromote session, returning a string result
-#' @keywords internal
+#' @noRd
 .bdsolos_eval <- function(chromote_session, js) {
   out <- chromote_session$Runtime$evaluate(js, returnByValue = TRUE)
   if (is.null(out$result)) return(NULL)

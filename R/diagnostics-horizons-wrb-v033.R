@@ -26,7 +26,7 @@
 #'
 #' @details Sub-tests:
 #' \itemize{
-#'   \item \code{\link{test_claric_munsell}} -- Munsell criteria of claric
+#'   \item \code{test_claric_munsell} -- Munsell criteria of claric
 #'         material (Ch 3.3.4).
 #' }
 #' Designation pattern \code{E} or \code{Eg} also serves as positive
@@ -246,7 +246,7 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #'        (default 100).
 #' @param min_crack_width_cm Minimum shrink-swell crack width (cm) for the
 #'        field-crack path. Defaults to 0.5 (WRB/USDA); the SiBCS
-#'        \code{\link{horizonte_vertico}} wrapper passes 1.0 per Embrapa
+#'        \code{horizonte_vertico} wrapper passes 1.0 per Embrapa
 #'        (2018) Cap 2 p.73.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export

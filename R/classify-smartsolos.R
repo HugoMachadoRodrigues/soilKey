@@ -58,7 +58,7 @@
 
 #' Map a soilKey \code{structure_grade} string to the SmartSolos integer
 #' (\code{ESTRUTURA_GRAU}: 1=fraca, 2=moderada, 3=forte).
-#' @keywords internal
+#' @noRd
 .smartsolos_struct_grade <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
@@ -73,7 +73,7 @@
 
 #' Map \code{structure_size} (very fine .. very coarse) to SmartSolos
 #' \code{ESTRUTURA_TAMANHO} (1..5).
-#' @keywords internal
+#' @noRd
 .smartsolos_struct_size <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
@@ -88,7 +88,7 @@
 
 
 #' Map \code{structure_type} to SmartSolos \code{ESTRUTURA_TIPO} (1..6).
-#' @keywords internal
+#' @noRd
 .smartsolos_struct_type <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
@@ -104,7 +104,7 @@
 
 #' Map \code{clay_films_amount} (few/common/many) to SmartSolos
 #' \code{CEROSIDADE_QUANTIDADE} (1..3).
-#' @keywords internal
+#' @noRd
 .smartsolos_clay_films_amt <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
@@ -117,7 +117,7 @@
 
 
 #' Map \code{clay_films_strength} to SmartSolos \code{CEROSIDADE_GRAU} (1..3).
-#' @keywords internal
+#' @noRd
 .smartsolos_clay_films_strength <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
@@ -145,7 +145,7 @@
 #'        reference SiBCS classification (\code{ordem, subordem,
 #'        gde_grupo, subgrupo}) for use with the
 #'        \code{/verification} endpoint.
-#' @keywords internal
+#' @noRd
 .smartsolos_pedon_to_payload <- function(pedon,
                                             drenagem = NULL,
                                             reference_sibcs = NULL) {
@@ -226,7 +226,7 @@
 
 
 #' Convert a SmartSolosExpert response to a soilKey ClassificationResult
-#' @keywords internal
+#' @noRd
 .smartsolos_response_to_result <- function(resp, pedon, endpoint) {
   if (!is.list(resp) || is.null(resp$items) || length(resp$items) == 0L) {
     stop(".smartsolos_response_to_result(): empty 'items' in response.")

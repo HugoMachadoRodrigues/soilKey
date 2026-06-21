@@ -248,7 +248,7 @@ evaluate_rsg_tests <- function(pedon, tests) {
 #' @return A list with \code{test_name}, \code{passed}, \code{layers},
 #'         \code{missing}, plus optional \code{evidence}, \code{reference},
 #'         \code{notes}.
-#' @keywords internal
+#' @noRd
 run_single_test <- function(pedon, test_spec) {
 
   if (!is.list(test_spec) || length(test_spec) == 0L ||

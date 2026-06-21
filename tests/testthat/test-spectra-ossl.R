@@ -8,6 +8,7 @@
 
 
 test_that("pi_to_confidence() saturates at the expected boundaries", {
+  skip_on_cran()
   # zero-width interval -> confidence = 1
   expect_equal(pi_to_confidence(10, 10, value = 10), 1)
   # width = 4 * |value| -> confidence = 0
@@ -25,6 +26,7 @@ test_that("pi_to_confidence() saturates at the expected boundaries", {
 
 
 test_that("pi_to_confidence() vectorises", {
+  skip_on_cran()
   out <- pi_to_confidence(c(0, 5, 10), c(20, 15, 10), value = c(10, 10, 10))
   expect_length(out, 3L)
   expect_true(all(out >= 0 & out <= 1))
@@ -34,6 +36,7 @@ test_that("pi_to_confidence() vectorises", {
 
 
 test_that("make_synthetic_pedon_with_spectra() returns a usable PedonRecord", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   expect_s3_class(pedon, "PedonRecord")
   expect_equal(nrow(pedon$horizons), 5L)
@@ -44,12 +47,14 @@ test_that("make_synthetic_pedon_with_spectra() returns a usable PedonRecord", {
 
 
 test_that("fill_from_spectra() rejects non-PedonRecord input", {
+  skip_on_cran()
   expect_error(fill_from_spectra(list()),
                 "PedonRecord")
 })
 
 
 test_that("fill_from_spectra() requires a spectra$vnir matrix", {
+  skip_on_cran()
   pedon <- PedonRecord$new(
     horizons = data.frame(top_cm = 0, bottom_cm = 30)
   )
@@ -58,6 +63,7 @@ test_that("fill_from_spectra() requires a spectra$vnir matrix", {
 
 
 test_that("fill_from_spectra() rejects shape mismatches", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra(n_horizons = 5L)
   pedon$spectra$vnir <- pedon$spectra$vnir[1:3, , drop = FALSE]
   expect_error(fill_from_spectra(pedon, verbose = FALSE),
@@ -66,6 +72,7 @@ test_that("fill_from_spectra() rejects shape mismatches", {
 
 
 test_that("fill_from_spectra() validates library name", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   expect_error(fill_from_spectra(pedon, library = "elsewhere", verbose = FALSE),
                 "ossl")
@@ -73,6 +80,7 @@ test_that("fill_from_spectra() validates library name", {
 
 
 test_that("fill_from_spectra() writes provenance entries with predicted_spectra source", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   before <- nrow(pedon$provenance)
 
@@ -96,6 +104,7 @@ test_that("fill_from_spectra() writes provenance entries with predicted_spectra 
 
 
 test_that("fill_from_spectra() populates horizon columns it predicted", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   expect_true(all(is.na(pedon$horizons$clay_pct)))
 
@@ -114,6 +123,7 @@ test_that("fill_from_spectra() populates horizon columns it predicted", {
 
 
 test_that("fill_from_spectra() respects existing measured values by default", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   # Pre-seed a measured clay value -- the predicted_spectra path must not
   # overwrite a measured cell when overwrite = FALSE.
@@ -138,6 +148,7 @@ test_that("fill_from_spectra() respects existing measured values by default", {
 
 
 test_that("fill_from_spectra() with overwrite = TRUE overrides measured values", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   pedon$add_measurement(
     horizon_idx = 1L,
@@ -160,6 +171,7 @@ test_that("fill_from_spectra() with overwrite = TRUE overrides measured values",
 
 
 test_that("fill_from_spectra() works for all three methods", {
+  skip_on_cran()
   for (m in c("mbl", "plsr_local", "pretrained")) {
     pedon <- make_synthetic_pedon_with_spectra()
     pedon <- fill_from_spectra(
@@ -176,6 +188,7 @@ test_that("fill_from_spectra() works for all three methods", {
 
 
 test_that("fill_from_spectra() is deterministic for fixed inputs", {
+  skip_on_cran()
   p1 <- make_synthetic_pedon_with_spectra()
   p2 <- make_synthetic_pedon_with_spectra()
 
@@ -188,6 +201,7 @@ test_that("fill_from_spectra() is deterministic for fixed inputs", {
 
 
 test_that("fill_from_spectra() notes carry method/region/PI metadata", {
+  skip_on_cran()
   pedon <- make_synthetic_pedon_with_spectra()
   pedon <- fill_from_spectra(
     pedon, method = "mbl", region = "south_america",

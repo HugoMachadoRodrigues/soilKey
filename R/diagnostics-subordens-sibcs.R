@@ -57,8 +57,7 @@
 #' (valor \\<= 4 + croma \\<= 4 umidos) na maior parte do B (inclusive
 #' BA).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argissolo_bruno_acinzentado <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -86,8 +85,7 @@ argissolo_bruno_acinzentado <- function(pedon) {
 #' Matiz \\>= 7.5YR, valor \\>= 5, croma \\< 4 (cores mais cinzentas /
 #' palidas), na maior parte do B (inclusive BA).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argissolo_acinzentado <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -115,8 +113,7 @@ argissolo_acinzentado <- function(pedon) {
 #' Matiz \\>= 7.5YR (mais amarelo) na maior parte do B, sem ser
 #' Acinzentado (croma \\>= 4).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argissolo_amarelo <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -140,8 +137,7 @@ argissolo_amarelo <- function(pedon) {
 #'
 #' Matiz \\<= 2.5YR (mais vermelho) na maior parte do B.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argissolo_vermelho <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -163,8 +159,7 @@ argissolo_vermelho <- function(pedon) {
 
 #' Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argissolo_vermelho_amarelo <- function(pedon) {
   DiagnosticResult$new(
     name = "argissolo_vermelho_amarelo", passed = TRUE,
@@ -182,8 +177,7 @@ argissolo_vermelho_amarelo <- function(pedon) {
 
 #' Cambissolos Histicos (Cap 6): horizonte histico sem espessura para Organossolo.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 cambissolo_histico <- function(pedon) {
   h <- horizonte_histico(pedon)
   passed <- isTRUE(h$passed) && !isTRUE(organossolo(pedon)$passed)
@@ -197,8 +191,7 @@ cambissolo_histico <- function(pedon) {
 
 #' Cambissolos Humicos (Cap 6): horizonte A humico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 cambissolo_humico <- function(pedon) {
   h <- horizonte_A_humico(pedon)
   DiagnosticResult$new(
@@ -211,8 +204,7 @@ cambissolo_humico <- function(pedon) {
 
 #' Cambissolos Fluvicos (Cap 6): carater fluvico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 cambissolo_fluvico <- function(pedon) {
   h <- carater_fluvico(pedon)
   DiagnosticResult$new(
@@ -225,8 +217,7 @@ cambissolo_fluvico <- function(pedon) {
 
 #' Cambissolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 cambissolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "cambissolo_haplico", passed = TRUE,
@@ -244,8 +235,7 @@ cambissolo_haplico <- function(pedon) {
 #' Chernossolos Rendzicos (Cap 7): A chernozemico + (calcico/petrocalcico
 #' OR carater carbonatico).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 chernossolo_rendzico <- function(pedon) {
   cal <- horizonte_calcico(pedon)
   pet <- horizonte_petrocalcico(pedon)
@@ -264,8 +254,7 @@ chernossolo_rendzico <- function(pedon) {
 #' v0.7.1: detecta via Munsell em B - hue 7.5YR ou mais amarelo: V<4 +
 #' C<3 umido; OR hue mais vermelho 7.5YR: preto/cinza muito escuro.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 chernossolo_ebanico <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -293,8 +282,7 @@ chernossolo_ebanico <- function(pedon) {
 
 #' Chernossolos Argiluvicos (Cap 7): B textural abaixo do A chernozemico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 chernossolo_argiluvico <- function(pedon) {
   bt <- B_textural(pedon)
   DiagnosticResult$new(
@@ -307,8 +295,7 @@ chernossolo_argiluvico <- function(pedon) {
 
 #' Chernossolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 chernossolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "chernossolo_haplico", passed = TRUE,
@@ -330,8 +317,7 @@ chernossolo_haplico <- function(pedon) {
 #' Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
 #' pouco/sem Fe).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 espodossolo_humiluvico <- function(pedon) {
   h <- pedon$horizons
   has_bh <- any(!is.na(h$designation) & grepl("^Bh\\b", h$designation))
@@ -350,8 +336,7 @@ espodossolo_humiluvico <- function(pedon) {
 #' Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al, baixo
 #' OC iluvial).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 espodossolo_ferriluvico <- function(pedon) {
   h <- pedon$horizons
   has_bs <- any(!is.na(h$designation) & grepl("^Bs\\b", h$designation))
@@ -369,8 +354,7 @@ espodossolo_ferriluvico <- function(pedon) {
 #' Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
 #' catch-all dos espodossolos.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 espodossolo_ferri_humiluvico <- function(pedon) {
   h <- pedon$horizons
   has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", h$designation))
@@ -395,8 +379,7 @@ espodossolo_ferri_humiluvico <- function(pedon) {
 #' Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
 #' sulfurico em < 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 gleissolo_tiomorfico <- function(pedon) {
   hs <- horizonte_sulfurico(pedon)
   passed <- isTRUE(hs$passed)
@@ -410,8 +393,7 @@ gleissolo_tiomorfico <- function(pedon) {
 
 #' Gleissolos Salicos (Cap 9): caracter salico em < 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 gleissolo_salico <- function(pedon) {
   cs <- carater_salico(pedon)
   DiagnosticResult$new(
@@ -425,8 +407,7 @@ gleissolo_salico <- function(pedon) {
 #' Gleissolos Melanicos (Cap 9): horizonte hístico < 40 cm OR A humico,
 #' proeminente, chernozemico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 gleissolo_melanico <- function(pedon) {
   h <- horizonte_histico(pedon)
   ah <- horizonte_A_humico(pedon)
@@ -446,8 +427,7 @@ gleissolo_melanico <- function(pedon) {
 
 #' Gleissolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 gleissolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "gleissolo_haplico", passed = TRUE,
@@ -465,8 +445,7 @@ gleissolo_haplico <- function(pedon) {
 #' Latossolos Brunos (Cap 10): matiz \\>= 7.5YR + valor \\<= 4 + croma
 #' \\<= 5 (cores brunadas) OR caracter retratil.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 latossolo_bruno <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -487,8 +466,7 @@ latossolo_bruno <- function(pedon) {
 
 #' Latossolos Amarelos (Cap 10): matiz \\>= 7.5YR (mais amarelo).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 latossolo_amarelo <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -506,8 +484,7 @@ latossolo_amarelo <- function(pedon) {
 
 #' Latossolos Vermelhos (Cap 10): matiz \\<= 2.5YR (mais vermelho).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 latossolo_vermelho <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -528,8 +505,7 @@ latossolo_vermelho <- function(pedon) {
 
 #' Latossolos Vermelho-Amarelos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 latossolo_vermelho_amarelo <- function(pedon) {
   DiagnosticResult$new(
     name = "latossolo_vermelho_amarelo", passed = TRUE,
@@ -548,8 +524,7 @@ latossolo_vermelho_amarelo <- function(pedon) {
 #' Aplicado pela presenca de Munsell vermelho-amarelado em B com cromas
 #' altos.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 luvissolo_cromico <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -582,8 +557,7 @@ luvissolo_cromico <- function(pedon) {
 
 #' Luvissolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 luvissolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "luvissolo_haplico", passed = TRUE,
@@ -629,8 +603,7 @@ luvissolo_haplico <- function(pedon) {
 #' shallow Regoliticos).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 neossolo_litolico <- function(pedon) {
   cl <- contato_litico(pedon)
   cf <- contato_litico_fragmentario(pedon)
@@ -681,8 +654,7 @@ neossolo_litolico <- function(pedon) {
 
 #' Neossolos Fluvicos (Cap 12): caracter fluvico em < 150 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 neossolo_fluvico <- function(pedon) {
   cf <- carater_fluvico(pedon)
   DiagnosticResult$new(
@@ -696,8 +668,7 @@ neossolo_fluvico <- function(pedon) {
 #' Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
 #' todos os horizontes ate 150 cm + 95\% quartzo.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 neossolo_quartzarenico <- function(pedon) {
   h <- pedon$horizons
   layers_in_150 <- which(h$top_cm <= 150)
@@ -732,8 +703,7 @@ neossolo_quartzarenico <- function(pedon) {
 
 #' Neossolos Regoliticos (catch-all dos Neossolos).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 neossolo_regolitico <- function(pedon) {
   DiagnosticResult$new(
     name = "neossolo_regolitico", passed = TRUE,
@@ -750,8 +720,7 @@ neossolo_regolitico <- function(pedon) {
 
 #' Nitossolos Brunos (Cap 13): matiz \\>= 7.5YR + valor <= 4 + croma <= 5.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 nitossolo_bruno <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -772,8 +741,7 @@ nitossolo_bruno <- function(pedon) {
 
 #' Nitossolos Vermelhos (Cap 13): matiz \\<= 2.5YR.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 nitossolo_vermelho <- function(pedon) {
   h <- pedon$horizons
   bl <- .b_layers(pedon)
@@ -794,8 +762,7 @@ nitossolo_vermelho <- function(pedon) {
 
 #' Nitossolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 nitossolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "nitossolo_haplico", passed = TRUE,
@@ -813,8 +780,7 @@ nitossolo_haplico <- function(pedon) {
 #' Organossolos Tiomorficos (Cap 14): materiais sulfidricos OR
 #' horizonte sulfurico em < 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 organossolo_tiomorfico <- function(pedon) {
   hs <- horizonte_sulfurico(pedon)
   DiagnosticResult$new(
@@ -828,8 +794,7 @@ organossolo_tiomorfico <- function(pedon) {
 #' Organossolos Folicos (Cap 14): horizonte O histico (drenado).
 #' Detectado via designation pattern \"^O\".
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 organossolo_folico <- function(pedon) {
   h <- pedon$horizons
   ok <- !is.na(h$designation) & grepl("^O[ahde]?", h$designation)
@@ -845,8 +810,7 @@ organossolo_folico <- function(pedon) {
 
 #' Organossolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 organossolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "organossolo_haplico", passed = TRUE,
@@ -863,8 +827,7 @@ organossolo_haplico <- function(pedon) {
 
 #' Planossolos Natricos (Cap 15): caracter sodico em \\< 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 planossolo_natrico <- function(pedon) {
   cs <- carater_sodico(pedon)
   DiagnosticResult$new(
@@ -877,8 +840,7 @@ planossolo_natrico <- function(pedon) {
 
 #' Planossolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 planossolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "planossolo_haplico", passed = TRUE,
@@ -896,8 +858,7 @@ planossolo_haplico <- function(pedon) {
 #' Plintossolos Petricos (Cap 16): horizonte concrecionario OR
 #' litoplintico (sem horizonte plintico precedendo).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 plintossolo_petrico <- function(pedon) {
   hc <- horizonte_concrecionario(pedon)
   hl <- horizonte_litoplintico(pedon)
@@ -919,8 +880,7 @@ plintossolo_petrico <- function(pedon) {
 #' Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural OR
 #' carater argiluvico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 plintossolo_argiluvico <- function(pedon) {
   hp <- horizonte_plintico(pedon)
   bt <- B_textural(pedon)
@@ -936,8 +896,7 @@ plintossolo_argiluvico <- function(pedon) {
 
 #' Plintossolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 plintossolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "plintossolo_haplico", passed = TRUE,
@@ -955,8 +914,7 @@ plintossolo_haplico <- function(pedon) {
 #' Vertissolos Hidromorficos (Cap 17): horizonte glei OR caracter
 #' redoxico.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 vertissolo_hidromorfico <- function(pedon) {
   hg <- horizonte_glei(pedon)
   cr <- carater_redoxico(pedon)
@@ -973,8 +931,7 @@ vertissolo_hidromorfico <- function(pedon) {
 #' Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
 #' dominantes).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 vertissolo_ebanico <- function(pedon) {
   # reuse the ebanico Munsell test from chernossolo_ebanico but layers
   # already vertic.
@@ -989,8 +946,7 @@ vertissolo_ebanico <- function(pedon) {
 
 #' Vertissolos Haplicos (catch-all).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 vertissolo_haplico <- function(pedon) {
   DiagnosticResult$new(
     name = "vertissolo_haplico", passed = TRUE,

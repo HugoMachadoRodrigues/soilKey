@@ -89,6 +89,7 @@ make_site_pedon <- function(lon = -43.7, lat = -22.5) {
 
 
 test_that("spatial_prior_soilgrids returns a normalized distribution", {
+  skip_on_cran()
   skip_if_no_terra()
   rst_path <- build_synthetic_raster()
   on.exit(unlink(rst_path), add = TRUE)
@@ -110,6 +111,7 @@ test_that("spatial_prior_soilgrids returns a normalized distribution", {
 
 
 test_that("spatial_prior_soilgrids respects the test_raster option", {
+  skip_on_cran()
   skip_if_no_terra()
   rst_path <- build_synthetic_raster()
   on.exit(unlink(rst_path), add = TRUE)
@@ -123,6 +125,7 @@ test_that("spatial_prior_soilgrids respects the test_raster option", {
 
 
 test_that("spatial_prior dispatcher routes to soilgrids backend", {
+  skip_on_cran()
   skip_if_no_terra()
   rst_path <- build_synthetic_raster()
   on.exit(unlink(rst_path), add = TRUE)
@@ -140,6 +143,7 @@ test_that("spatial_prior dispatcher routes to soilgrids backend", {
 
 
 test_that("spatial_prior aborts with a clear message on missing site", {
+  skip_on_cran()
   pr <- PedonRecord$new(site = list(id = "no-coords"))
   expect_error(spatial_prior(pr, source_url = "anything"),
                 "lat and lon")
@@ -147,6 +151,7 @@ test_that("spatial_prior aborts with a clear message on missing site", {
 
 
 test_that("spatial_prior_soilgrids errors when no source is supplied", {
+  skip_on_cran()
   skip_if_no_terra()
   withr::defer(options(soilKey.test_raster = NULL))
   options(soilKey.test_raster = NULL)
@@ -156,6 +161,7 @@ test_that("spatial_prior_soilgrids errors when no source is supplied", {
 
 
 test_that("utm_crs_for_point picks the right southern UTM zone", {
+  skip_on_cran()
   # -22.5 lat / -43.7 lon -> UTM zone 23 South -> 32723
   expect_equal(soilKey:::utm_crs_for_point(-43.7, -22.5), 32723L)
   # 47.0 lat / 8.5 lon  (Switzerland) -> zone 32 North -> 32632
@@ -164,6 +170,7 @@ test_that("utm_crs_for_point picks the right southern UTM zone", {
 
 
 test_that("soilgrids_wrb_lut covers all 32 RSGs", {
+  skip_on_cran()
   lut <- soilgrids_wrb_lut()
   expect_length(lut, 32L)
   expect_true("FR" %in% lut)

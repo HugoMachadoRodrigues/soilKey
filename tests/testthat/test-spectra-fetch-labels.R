@@ -28,6 +28,7 @@ make_fake_ossl_with_coords <- function(n = 12L,
 
 
 test_that("download_ossl_subset_with_labels() initialises label provenance columns", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-with-labels-init")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -59,6 +60,7 @@ test_that("download_ossl_subset_with_labels() initialises label provenance colum
 
 
 test_that("download_ossl_subset_with_labels() inherits WoSIS labels via the injected query_fn", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-with-labels-join")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -89,6 +91,7 @@ test_that("download_ossl_subset_with_labels() inherits WoSIS labels via the inje
 
 
 test_that("WRB -> SiBCS / USDA modal translation handles NA + unknown gracefully", {
+  skip_on_cran()
   expect_true(is.na(soilKey:::.wrb_to_sibcs_modal_ordem(NA)))
   expect_true(is.na(soilKey:::.wrb_to_sibcs_modal_ordem("NotARSG")))
   expect_equal(soilKey:::.wrb_to_sibcs_modal_ordem("Ferralsols"), "L")

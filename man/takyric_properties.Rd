@@ -3,7 +3,7 @@
 \name{takyric_properties}
 \alias{takyric_properties}
 \title{Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
-\code{\link{test_takyric_surface}}.}
+\code{test_takyric_surface}.}
 \usage{
 takyric_properties(pedon)
 }
@@ -15,5 +15,5 @@ A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, th
 }
 \description{
 Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
-\code{\link{test_takyric_surface}}.
+\code{test_takyric_surface}.
 }

@@ -13,7 +13,7 @@ arenic_texture(pedon, max_top_cm = 100, engine = NULL)
 (default 100, per WRB 2022).}
 
 \item{engine}{One of \code{"soilkey"} (default; strict WRB sand
-threshold via \code{\link{test_coarse_texture_throughout}})
+threshold via \code{test_coarse_texture_throughout})
 or \code{"aqp"} (LUCAS-friendly fallback: passes when sand
 >= 70\\% across the upper \code{max_top_cm}). \code{NULL}
 reads \code{getOption("soilKey.diagnostic_engine")}.}
@@ -27,7 +27,7 @@ loam (i.e., \code{silt + 2 * clay < 30} in every layer).
 Diagnostic of Arenosols.
 }
 \details{
-Sub-test: \code{\link{test_coarse_texture_throughout}}.
+Sub-test: \code{test_coarse_texture_throughout}.
 
 v0.3 limitations: WRB 2022 Arenosol also requires that no other
 diagnostic horizon (argic, ferralic, etc.) is present, but those

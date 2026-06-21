@@ -92,6 +92,7 @@ canned_site_json <- function() {
 # layer directly when we can't read PDFs.
 
 test_that("MockVLMProvider returns canned responses in order", {
+  skip_on_cran()
   mock <- MockVLMProvider$new(responses = list("first", "second"))
   expect_equal(mock$chat("p1"), "first")
   expect_equal(mock$chat("p2"), "second")
@@ -102,6 +103,7 @@ test_that("MockVLMProvider returns canned responses in order", {
 
 
 test_that("MockVLMProvider with validation_error_at returns bad JSON on that call", {
+  skip_on_cran()
   mock <- MockVLMProvider$new(
     responses           = list("OK1", "OK2", "OK3"),
     validation_error_at = 2L
@@ -120,6 +122,7 @@ test_that("MockVLMProvider with validation_error_at returns bad JSON on that cal
 
 
 test_that("MockVLMProvider errors when its queue is exhausted", {
+  skip_on_cran()
   mock <- MockVLMProvider$new(responses = list("only one"))
   mock$chat("p")
   expect_error(mock$chat("p"), "exhausted")
@@ -127,6 +130,7 @@ test_that("MockVLMProvider errors when its queue is exhausted", {
 
 
 test_that("validate_or_retry returns parsed JSON on first valid response", {
+  skip_on_cran()
   mock <- MockVLMProvider$new(responses = list(canned_horizons_json()))
   res <- soilKey:::validate_or_retry(
     provider    = mock,
@@ -141,6 +145,7 @@ test_that("validate_or_retry returns parsed JSON on first valid response", {
 
 
 test_that("validate_or_retry retries on schema-validation failure", {
+  skip_on_cran()
   mock <- MockVLMProvider$new(
     responses           = list(canned_horizons_json(), canned_horizons_json()),
     validation_error_at = 1L
@@ -158,6 +163,7 @@ test_that("validate_or_retry retries on schema-validation failure", {
 
 
 test_that("validate_or_retry aborts after exhausting retries", {
+  skip_on_cran()
   # Always-bad mock: every call returns malformed JSON.
   bad_provider <- list(
     chat = function(prompt, ...) "{ still not json"
@@ -175,6 +181,7 @@ test_that("validate_or_retry aborts after exhausting retries", {
 
 
 test_that("apply_horizons_extraction tags every value with extracted_vlm", {
+  skip_on_cran()
   pedon <- PedonRecord$new()
   parsed <- jsonlite::fromJSON(canned_horizons_json(), simplifyVector = FALSE)
   added  <- soilKey:::apply_horizons_extraction(pedon, parsed)
@@ -191,6 +198,7 @@ test_that("apply_horizons_extraction tags every value with extracted_vlm", {
 
 
 test_that("apply_horizons_extraction does NOT overwrite measured values", {
+  skip_on_cran()
   # Build a pedon with one existing measured horizon.
   pedon <- PedonRecord$new(
     horizons = data.frame(top_cm = 0, bottom_cm = 30)
@@ -221,6 +229,7 @@ test_that("apply_horizons_extraction does NOT overwrite measured values", {
 
 
 test_that("apply_horizons_extraction respects overwrite = TRUE", {
+  skip_on_cran()
   pedon <- PedonRecord$new(
     horizons = data.frame(top_cm = 0, bottom_cm = 30)
   )
@@ -235,6 +244,7 @@ test_that("apply_horizons_extraction respects overwrite = TRUE", {
 
 
 test_that("apply_horizons_extraction matches existing depth bands within tolerance", {
+  skip_on_cran()
   pedon <- PedonRecord$new(
     horizons = data.frame(top_cm = c(0, 30),
                             bottom_cm = c(30, 80))
@@ -250,6 +260,7 @@ test_that("apply_horizons_extraction matches existing depth bands within toleran
 
 
 test_that("apply_site_extraction fills empty site fields", {
+  skip_on_cran()
   pedon <- PedonRecord$new()
   parsed <- jsonlite::fromJSON(canned_site_json(), simplifyVector = FALSE)
   added  <- soilKey:::apply_site_extraction(pedon, parsed)
@@ -263,6 +274,7 @@ test_that("apply_site_extraction fills empty site fields", {
 
 
 test_that("apply_site_extraction preserves existing site fields", {
+  skip_on_cran()
   pedon <- PedonRecord$new(site = list(country = "PT",
                                           parent_material = "schist"))
   parsed <- jsonlite::fromJSON(canned_site_json(), simplifyVector = FALSE)
@@ -277,6 +289,7 @@ test_that("apply_site_extraction preserves existing site fields", {
 
 
 test_that("apply_site_extraction with overwrite = TRUE clobbers existing fields", {
+  skip_on_cran()
   pedon <- PedonRecord$new(site = list(country = "PT"))
   parsed <- jsonlite::fromJSON(canned_site_json(), simplifyVector = FALSE)
   soilKey:::apply_site_extraction(pedon, parsed, overwrite = TRUE)
@@ -285,6 +298,7 @@ test_that("apply_site_extraction with overwrite = TRUE clobbers existing fields"
 
 
 test_that("extract_horizons_from_pdf goes end-to-end with a mock provider", {
+  skip_on_cran()
   skip_if_not_installed("pdftools")
 
   # Build a minimal PDF on the fly for the test. pdftools::pdf_text
@@ -315,6 +329,7 @@ test_that("extract_horizons_from_pdf goes end-to-end with a mock provider", {
 
 
 test_that("extract_horizons_from_pdf retries when validation fails first", {
+  skip_on_cran()
   skip_if_not_installed("pdftools")
 
   tmp_pdf <- tempfile(fileext = ".pdf")
@@ -343,6 +358,7 @@ test_that("extract_horizons_from_pdf retries when validation fails first", {
 
 
 test_that("extract_horizons_from_pdf rejects non-PedonRecord input", {
+  skip_on_cran()
   expect_error(
     extract_horizons_from_pdf(pedon = list(), pdf_path = "x", provider = NULL),
     "must be a PedonRecord"
@@ -351,6 +367,7 @@ test_that("extract_horizons_from_pdf rejects non-PedonRecord input", {
 
 
 test_that("extract_horizons_from_pdf errors on missing file", {
+  skip_on_cran()
   expect_error(
     extract_horizons_from_pdf(
       pedon = PedonRecord$new(),
@@ -363,6 +380,7 @@ test_that("extract_horizons_from_pdf errors on missing file", {
 
 
 test_that("schema and prompt loaders find the packaged files", {
+  skip_on_cran()
   schema_text <- soilKey:::load_schema("horizon")
   expect_match(schema_text, "json-schema")
   expect_match(schema_text, "horizons")

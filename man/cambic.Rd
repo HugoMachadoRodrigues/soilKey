@@ -40,8 +40,8 @@ diagnostic horizon. It is the diagnostic of Cambisols.
 \details{
 v0.2 implementation tests three conditions:
 \itemize{
-  \item thickness >= 15 cm (\code{\link{test_minimum_thickness}})
-  \item texture sandy loam or finer (\code{\link{test_texture_argic}})
+  \item thickness >= 15 cm (\code{test_minimum_thickness})
+  \item texture sandy loam or finer (\code{test_texture_argic})
   \item NOT \code{\link{argic}} AND NOT \code{\link{ferralic}}
 }
 

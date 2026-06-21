@@ -20,7 +20,7 @@ extract_munsell_from_photo(
 \item{image_path}{Path to the image file (JPG / PNG).}
 
 \item{provider}{A chat provider from \code{\link{vlm_provider}} (or
-a \code{\link{MockVLMProvider}} for testing).}
+a \code{MockVLMProvider} for testing).}
 
 \item{max_retries}{Integer; how many times to re-prompt on
 validation failure. Default 3.}

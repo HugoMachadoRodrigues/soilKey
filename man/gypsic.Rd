@@ -24,8 +24,8 @@ diagnostic for Gypsisols.
 \details{
 Sub-tests called:
 \itemize{
-  \item \code{\link{test_caso4_concentration}} -- gypsum >= 5\%.
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+  \item \code{test_caso4_concentration} -- gypsum >= 5\%.
+  \item \code{test_minimum_thickness} -- thickness >= 15 cm.
 }
 
 v0.2 limitations: the WRB rule that gypsum content must exceed the

@@ -23,7 +23,7 @@ place AND returned invisibly.}
 \code{pdf_text} must be supplied.}
 
 \item{provider}{A chat provider from \code{\link{vlm_provider}} (or
-a \code{\link{MockVLMProvider}} for testing).}
+a \code{MockVLMProvider} for testing).}
 
 \item{max_retries}{Integer; how many times to re-prompt on
 validation failure. Default 3.}

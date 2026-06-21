@@ -19,7 +19,7 @@ This vignette describes the **multi-level USDA Soil Taxonomy 13ed benchmark** th
 
 # 1. The KSSL + NASIS join (load_kssl_pedons_with_nasis)
 
-The Kellogg Soil Survey Laboratory ([NCSS lab data, USDA-NRCS](https://ncsslabdatamart.sc.egov.usda.gov)) ships ~36 000 pedons with full analytical chemistry (clay, sand, silt, OC, pH, CEC, BS, ...) but minimal field morphology. The NASIS Morphological database (a separate sqlite distribution) carries the matching **field-survey morphology**: Munsell colors, structure grade / size / type, clay films (`phpvsf`), slickensides, and the **`pediagfeatures` diagnostic-features table** (~13 500 entries identifying argillic, mollic, cambic, spodic, fragipan, etc.).
+The Kellogg Soil Survey Laboratory (NCSS lab data, USDA-NRCS &mdash; the NCSS Lab Data Mart, `ncsslabdatamart.sc.egov.usda.gov`) ships ~36 000 pedons with full analytical chemistry (clay, sand, silt, OC, pH, CEC, BS, ...) but minimal field morphology. The NASIS Morphological database (a separate sqlite distribution) carries the matching **field-survey morphology**: Munsell colors, structure grade / size / type, clay films (`phpvsf`), slickensides, and the **`pediagfeatures` diagnostic-features table** (~13 500 entries identifying argillic, mollic, cambic, spodic, fragipan, etc.).
 
 `load_kssl_pedons_with_nasis()` joins the two by `peiid` and depth-overlap matching, returning one PedonRecord per profile with both lab and morphology populated:
 

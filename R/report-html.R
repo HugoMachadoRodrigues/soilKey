@@ -119,7 +119,7 @@ report <- function(x,
 #' is not installed (e.g. during interactive development with
 #' `sys.source()`).
 #'
-#' @keywords internal
+#' @noRd
 .soilkey_version <- function() {
   v <- tryCatch(utils::packageVersion("soilKey"),
                   error = function(e) NULL)
@@ -128,7 +128,7 @@ report <- function(x,
 #' Internal helper: .html_escape
 
 
-#' @keywords internal
+#' @noRd
 .html_escape <- function(x) {
   if (is.null(x)) return("")
   x <- as.character(x)
@@ -141,7 +141,7 @@ report <- function(x,
 }
 #' Internal helper: .normalise_results
 
-#' @keywords internal
+#' @noRd
 .normalise_results <- function(x, pedon = NULL,
                                  include_family = FALSE, specifiers = FALSE) {
   if (inherits(x, "PedonRecord")) {
@@ -169,7 +169,7 @@ report <- function(x,
 }
 
 #' Grade -> CSS class
-#' @keywords internal
+#' @noRd
 .grade_class <- function(g) {
   if (is.null(g) || is.na(g)) return("grade grade-na")
   switch(as.character(g),
@@ -181,7 +181,7 @@ report <- function(x,
 }
 
 #' Render the head section with embedded CSS.
-#' @keywords internal
+#' @noRd
 .html_head <- function(title) {
   paste0(
     '<!DOCTYPE html>\n',
@@ -226,7 +226,7 @@ report <- function(x,
 }
 
 #' Render the per-result card (one per classification system).
-#' @keywords internal
+#' @noRd
 .html_classification_card <- function(res) {
   qual_principal <- res$qualifiers$principal     %||% character()
   qual_suppl     <- res$qualifiers$supplementary %||% character()
@@ -336,7 +336,7 @@ report <- function(x,
 }
 
 #' Render the horizons table from a PedonRecord.
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 .html_horizons_table <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$horizons) || nrow(pedon$horizons) == 0) {
@@ -376,7 +376,7 @@ report <- function(x,
 }
 
 #' Render a provenance summary from a PedonRecord.
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 .html_provenance_table <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$provenance) ||
@@ -398,7 +398,7 @@ report <- function(x,
 }
 
 #' Render the cross-system summary table when multiple results are provided.
-#' @keywords internal
+#' @noRd
 .html_summary_table <- function(results) {
   if (length(results) < 2) return("")
   rows <- vapply(results, function(r) {
@@ -420,7 +420,7 @@ report <- function(x,
 }
 
 #' Render site metadata header.
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 .html_site_header <- function(pedon) {
   if (is.null(pedon) || is.null(pedon$site)) return("")

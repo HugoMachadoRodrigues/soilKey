@@ -173,7 +173,7 @@ report_to_qgis <- function(pedon,
 
 #' Build a single-row tibble describing the profile + classifications
 #' for the GPKG `pedon_point` layer.
-#' @keywords internal
+#' @noRd
 .build_pedon_point_row <- function(pedon, classifications, report_html) {
   s <- pedon$site %||% list()
   wrb   <- classifications$wrb

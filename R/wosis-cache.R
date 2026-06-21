@@ -217,7 +217,7 @@ load_kssl_sample <- function() {
 #' \code{reference_wrb_from_usda} cross-walk slot. Only sets the
 #' field when it is currently NULL, so explicit annotations are
 #' preserved.
-#' @keywords internal
+#' @noRd
 .kssl_alias_reference_wrb <- function(pedons) {
   if (!is.list(pedons) || length(pedons) == 0L) return(pedons)
   lapply(pedons, function(p) {

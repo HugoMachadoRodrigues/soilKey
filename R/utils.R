@@ -226,7 +226,7 @@ ensure_horizon_schema <- function(h) {
 
 #' Empty provenance table
 #'
-#' @keywords internal
+#' @noRd
 make_empty_provenance <- function() {
   data.table::data.table(
     horizon_idx = integer(),
@@ -239,7 +239,7 @@ make_empty_provenance <- function() {
 
 #' Format a numeric value with suffix, returning "NA" for NA/NULL
 #'
-#' @keywords internal
+#' @noRd
 fmt_num <- function(x, suffix = "", digits = 1) {
   if (is.null(x)) return("NA")
   if (length(x) == 1 && is.na(x)) return("NA")
@@ -248,7 +248,7 @@ fmt_num <- function(x, suffix = "", digits = 1) {
 
 #' Valid provenance source codes
 #'
-#' @keywords internal
+#' @noRd
 valid_provenance_sources <- function() {
   c("measured", "extracted_vlm", "predicted_spectra",
     "inferred_prior", "user_assumed")
@@ -260,7 +260,7 @@ valid_provenance_sources <- function() {
 #' multiple sources (e.g. measured beats predicted_spectra beats
 #' extracted_vlm beats inferred_prior beats user_assumed).
 #'
-#' @keywords internal
+#' @noRd
 provenance_authority <- function(source) {
   authority <- c(
     measured          = 5L,

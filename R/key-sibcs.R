@@ -131,7 +131,7 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #' fallback foi forçado pela ausencia de matiz, nao pelo conteudo
 #' do perfil. Retorna NULL se a situacao nao se aplica.
 #'
-#' @keywords internal
+#' @noRd
 .detect_color_undetermined_fallback <- function(sub_result, subordem) {
   if (is.null(subordem)) return(NULL)
   if (!isTRUE(subordem$code %in% .SIBCS_COLOR_CATCH_ALL_CODES)) return(NULL)

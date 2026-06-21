@@ -33,6 +33,6 @@ objects. The published USDA Soil Taxonomy classification (from the
 \details{
 KSSL is the de-facto standard for validating USDA Soil Taxonomy keys
 (~50k profiles, lab-grade analytical data, professional pedon
-descriptions). Get the export from
-\url{https://ncsslabdatamart.sc.egov.usda.gov/}.
+descriptions). Get the export from the USDA-NRCS NCSS Lab Data Mart
+(\code{ncsslabdatamart.sc.egov.usda.gov}).
 }

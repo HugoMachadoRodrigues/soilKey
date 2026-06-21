@@ -24,8 +24,8 @@ diagnostic for Calcisols and qualifying many other RSGs.
 \details{
 Sub-tests called:
 \itemize{
-  \item \code{\link{test_caco3_concentration}} -- CaCO3 >= 15\%.
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+  \item \code{test_caco3_concentration} -- CaCO3 >= 15\%.
+  \item \code{test_minimum_thickness} -- thickness >= 15 cm.
 }
 
 v0.2 limitations: the WRB criterion of "5\% absolute or relative more

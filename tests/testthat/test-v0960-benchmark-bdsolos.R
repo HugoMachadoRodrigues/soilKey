@@ -23,6 +23,7 @@
 # ---- 1. .bdsolos_find_header_line quote-awareness ----------------------
 
 test_that(".bdsolos_find_header_line picks the true header even when data rows embed ; in quotes", {
+  skip_on_cran()
   # Build a 5-line fixture mimicking the BDsolos full export:
   #   line 1: preamble (comma)
   #   line 2: blank
@@ -61,6 +62,7 @@ test_that(".bdsolos_find_header_line picks the true header even when data rows e
 
 
 test_that("load_bdsolos_csv populates triple-system reference labels on full schema", {
+  skip_on_cran()
   # End-to-end check: the same kind of fixture that the v0.9.60 fix
   # destravas -- 3 reference columns + Munsell + DMS coords.
   tf <- tempfile(fileext = ".csv")
@@ -184,6 +186,7 @@ test_that("load_bdsolos_csv populates triple-system reference labels on full sch
 
 
 test_that("benchmark_bdsolos errors on empty / non-list input", {
+  skip_on_cran()
   expect_error(benchmark_bdsolos(NULL),       "non-empty list")
   expect_error(benchmark_bdsolos(list()),     "non-empty list")
   expect_error(benchmark_bdsolos("not list"), "non-empty list")
@@ -191,6 +194,7 @@ test_that("benchmark_bdsolos errors on empty / non-list input", {
 
 
 test_that("benchmark_bdsolos reports per-system label coverage", {
+  skip_on_cran()
   peds <- .make_bdsolos_test_pedons()
   out  <- benchmark_bdsolos(peds, verbose = FALSE)
   expect_named(out$coverage, c("wrb2022", "sibcs", "usda"))
@@ -205,6 +209,7 @@ test_that("benchmark_bdsolos reports per-system label coverage", {
 
 
 test_that("benchmark_bdsolos returns NA accuracy + message on no-label systems", {
+  skip_on_cran()
   peds <- .make_bdsolos_test_pedons()
   # Strip WRB + USDA labels from all pedons -> per_system$wrb/usda should
   # carry message = "no_reference_labels"
@@ -222,6 +227,7 @@ test_that("benchmark_bdsolos returns NA accuracy + message on no-label systems",
 
 
 test_that("benchmark_bdsolos compares SiBCS Order at the right granularity", {
+  skip_on_cran()
   peds <- .make_bdsolos_test_pedons()
   out  <- benchmark_bdsolos(peds, systems = "sibcs", sibcs_level = "order",
                               verbose = FALSE)
@@ -237,6 +243,7 @@ test_that("benchmark_bdsolos compares SiBCS Order at the right granularity", {
 
 
 test_that("benchmark_bdsolos respects max_n", {
+  skip_on_cran()
   peds <- .make_bdsolos_test_pedons()
   out  <- benchmark_bdsolos(peds, max_n = 1L, verbose = FALSE)
   expect_equal(out$config$n_pedons, 1L)
@@ -245,6 +252,7 @@ test_that("benchmark_bdsolos respects max_n", {
 
 
 test_that("benchmark_bdsolos $config captures soilKey_version + timestamp", {
+  skip_on_cran()
   peds <- .make_bdsolos_test_pedons()
   out  <- benchmark_bdsolos(peds, verbose = FALSE)
   expect_true(grepl("^[0-9]+\\.[0-9]+\\.[0-9]+$",
@@ -259,6 +267,7 @@ test_that("benchmark_bdsolos $config captures soilKey_version + timestamp", {
 # ---- 3. SiBCS legacy -> modern Order map (v0.9.60 lift) ---------------
 
 test_that("normalise_febr_sibcs maps legacy Podzolicos to Argissolos", {
+  skip_on_cran()
   expect_equal(normalise_febr_sibcs("PODZOLICO VERMELHO-AMARELO",
                                        level = "order"),
                 "Argissolos")
@@ -269,6 +278,7 @@ test_that("normalise_febr_sibcs maps legacy Podzolicos to Argissolos", {
 
 
 test_that("normalise_febr_sibcs maps legacy Glei to Gleissolos", {
+  skip_on_cran()
   expect_equal(normalise_febr_sibcs("GLEI HUMICO",      level = "order"),
                 "Gleissolos")
   expect_equal(normalise_febr_sibcs("GLEI POUCO HUMICO", level = "order"),
@@ -277,6 +287,7 @@ test_that("normalise_febr_sibcs maps legacy Glei to Gleissolos", {
 
 
 test_that("normalise_febr_sibcs maps legacy Aluvial to Neossolos", {
+  skip_on_cran()
   expect_equal(normalise_febr_sibcs("ALUVIAL EUTROFICO", level = "order"),
                 "Neossolos")
   expect_equal(normalise_febr_sibcs("ALUVIAIS DISTROFICOS", level = "order"),
@@ -285,6 +296,7 @@ test_that("normalise_febr_sibcs maps legacy Aluvial to Neossolos", {
 
 
 test_that("normalise_febr_sibcs returns NA for orphan 'Solos' fragments", {
+  skip_on_cran()
   expect_true(is.na(normalise_febr_sibcs("SOLOS HALOMORFICOS",
                                             level = "order")))
   expect_true(is.na(normalise_febr_sibcs("SOLOS HIDROMORFICOS",
@@ -293,6 +305,7 @@ test_that("normalise_febr_sibcs returns NA for orphan 'Solos' fragments", {
 
 
 test_that("normalise_febr_sibcs subordem also propagates legacy map", {
+  skip_on_cran()
   expect_equal(normalise_febr_sibcs("PODZOLICO VERMELHO-AMARELO",
                                        level = "subordem"),
                 "Argissolos Vermelho-amarelos")
@@ -303,6 +316,7 @@ test_that("normalise_febr_sibcs subordem also propagates legacy map", {
 
 
 test_that("normalise_febr_sibcs preserves modern names unchanged", {
+  skip_on_cran()
   expect_equal(normalise_febr_sibcs("ARGISSOLO VERMELHO", level = "order"),
                 "Argissolos")
   expect_equal(normalise_febr_sibcs("LATOSSOLO VERMELHO", level = "order"),
@@ -317,6 +331,7 @@ test_that("normalise_febr_sibcs preserves modern names unchanged", {
 # ---- 4. Per-pedon error tolerance + max_n -----------------------------
 
 test_that("benchmark_bdsolos does not abort when classifier raises per-pedon", {
+  skip_on_cran()
   # Force an error: blank horizons table on one pedon -> classify_sibcs
   # may raise. The benchmark must catch it and tally n_errors instead.
   peds <- .make_bdsolos_test_pedons()

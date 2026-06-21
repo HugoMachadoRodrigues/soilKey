@@ -33,7 +33,7 @@ Classifica a mineralogia da argila para Argissolos, Cambissolos,
 Plintossolos, Luvissolos, Nitossolos, Vertissolos, Chernossolos,
 Planossolos, Gleissolos quando ha informacao quantitativa de
 atividade da argila e/ou Ki/Kr. Cobre as classes nao endereçadas
-por \code{\link{familia_mineralogia_argila_latossolo}}:
+por \code{familia_mineralogia_argila_latossolo}:
 \itemize{
   \item \code{esmectitica}: T_argila >= \code{ta_threshold} (default
         27 cmolc/kg argila), indicando dominancia de argilas 2:1

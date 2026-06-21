@@ -40,7 +40,7 @@
 
 
 #' Build the GitHub Release download URL for a lazy-fetch cache
-#' @keywords internal
+#' @noRd
 .lazy_fetch_url <- function(name, release = .SOILKEY_LAZY_FETCH_RELEASE) {
   sprintf(
     "https://github.com/HugoMachadoRodrigues/soilKey/releases/download/%s/%s.rds",
@@ -66,7 +66,7 @@
 #'        \code{.SOILKEY_LAZY_FETCH_CACHES}.
 #' @return Character path to a readable .rds file, or \code{NULL} if
 #'         the cache is not yet present locally.
-#' @keywords internal
+#' @noRd
 .lazy_fetch_local_path <- function(name) {
   stopifnot(name %in% .SOILKEY_LAZY_FETCH_CACHES)
   # 1. system.file() resolves the file in BOTH installed packages and
@@ -173,7 +173,7 @@ download_extdata_cache <- function(which     = "all",
 #' the three-step resolution (bundled / user-cache / on-demand
 #' download with interactive prompt).
 #'
-#' @keywords internal
+#' @noRd
 .lazy_fetch_readRDS <- function(name) {
   path <- .lazy_fetch_local_path(name)
   if (!is.null(path)) return(readRDS(path))

@@ -3,7 +3,7 @@
 \name{reducing_conditions}
 \alias{reducing_conditions}
 \title{Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
-\code{\link{test_reducing_conditions}}.}
+\code{test_reducing_conditions}.}
 \usage{
 reducing_conditions(pedon, min_redox_pct = 5)
 }
@@ -17,5 +17,5 @@ A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, th
 }
 \description{
 Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
-\code{\link{test_reducing_conditions}}.
+\code{test_reducing_conditions}.
 }

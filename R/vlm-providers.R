@@ -47,7 +47,7 @@
 #' @param name Provider name; one of \code{"anthropic"}, \code{"openai"},
 #'        \code{"google"}, \code{"ollama"}.
 #' @return Character scalar with the default model identifier.
-#' @keywords internal
+#' @noRd
 default_model <- function(name) {
   name <- match.arg(name, c("auto", "anthropic", "openai", "google", "ollama"))
   if (identical(name, "auto")) name <- vlm_pick_provider(verbose = FALSE)

@@ -89,7 +89,7 @@
 #' @param verbose Emit \code{cli} progress messages.
 #' @param query_fn Optional injection of the per-coordinate WoSIS
 #'        query function. Default uses
-#'        \code{\link{.query_nearest_wosis_wrb}}. Tests pass a stub
+#'        \code{.query_nearest_wosis_wrb}. Tests pass a stub
 #'        here to exercise the join logic without network.
 #' @param ... Forwarded to \code{\link{download_ossl_subset}}.
 #'
@@ -232,7 +232,7 @@ download_ossl_subset_with_labels <- function(region          = c("global",
 #' Returns \code{NULL} on transport failure; \code{NA} fields when
 #' the bbox has no labeled WoSIS profile.
 #'
-#' @keywords internal
+#' @noRd
 .query_nearest_wosis_wrb <- function(lat, lon,
                                        max_distance_km,
                                        endpoint =
@@ -292,7 +292,7 @@ download_ossl_subset_with_labels <- function(region          = c("global",
 
 #' Normalize a WRB RSG name to its plural canonical form so lookups
 #' work whether the source supplied "Ferralsol" or "Ferralsols".
-#' @keywords internal
+#' @noRd
 .wrb_canonical_plural <- function(rsg) {
   if (is.na(rsg)) return(NA_character_)
   out <- as.character(rsg)
@@ -308,7 +308,7 @@ download_ossl_subset_with_labels <- function(region          = c("global",
 #' form -- WoSIS, the WRB book, and OSSL all use slightly different
 #' conventions.
 #'
-#' @keywords internal
+#' @noRd
 .wrb_to_sibcs_modal_ordem <- function(rsg) {
   if (is.na(rsg)) return(NA_character_)
   modal <- c(
@@ -331,7 +331,7 @@ download_ossl_subset_with_labels <- function(region          = c("global",
 #' Accepts either the singular ("Ferralsol") or plural ("Ferralsols")
 #' form.
 #'
-#' @keywords internal
+#' @noRd
 .wrb_to_usda_modal_order <- function(rsg) {
   if (is.na(rsg)) return(NA_character_)
   modal <- c(

@@ -37,7 +37,7 @@
 #' This helper unpacks one such entry, returning \code{NULL} if the
 #' field is absent or null (so callers can skip it cleanly).
 #'
-#' @keywords internal
+#' @noRd
 unpack_vlm_attr <- function(x) {
   if (is.null(x)) return(NULL)
   if (!is.list(x)) return(NULL)
@@ -63,7 +63,7 @@ unpack_vlm_attr <- function(x) {
 #'         schema and return the new index.
 #' }
 #'
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 find_or_append_horizon <- function(pedon, top_cm, bottom_cm) {
   h <- pedon$horizons
@@ -99,7 +99,7 @@ find_or_append_horizon <- function(pedon, top_cm, bottom_cm) {
 #' the simple 1-to-1 mappings; complex ones are handled inline in the
 #' extraction body.
 #'
-#' @keywords internal
+#' @noRd
 horizon_simple_attr_map <- function() {
   c(
     coarse_fragments_pct = "coarse_fragments_pct",
@@ -144,7 +144,7 @@ horizon_simple_attr_map <- function() {
 #'
 #' Returns the count of provenance entries added.
 #'
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 apply_horizons_extraction <- function(pedon,
                                        parsed,
@@ -260,7 +260,7 @@ apply_horizons_extraction <- function(pedon,
 #' user-built site list is treated as authoritative; an empty / NULL
 #' field can be filled by the VLM.
 #'
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
   if (is.null(parsed$site)) return(0L)
@@ -332,7 +332,7 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
 #'        tests, unit tests without \code{pdftools}, and for
 #'        already-OCR'd field-sheet text.
 #' @param provider A chat provider from \code{\link{vlm_provider}} (or
-#'        a \code{\link{MockVLMProvider}} for testing).
+#'        a \code{MockVLMProvider} for testing).
 #' @param max_retries Integer; how many times to re-prompt on
 #'        validation failure. Default 3.
 #' @param overwrite If \code{TRUE}, lower-authority values are allowed

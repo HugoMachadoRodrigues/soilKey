@@ -39,13 +39,13 @@ formed under steppe or comparable vegetation.
 \details{
 Sub-tests called:
 \itemize{
-  \item \code{\link{test_mollic_color}} -- moist value <= 3, moist
+  \item \code{test_mollic_color} -- moist value <= 3, moist
         chroma <= 3, dry value <= 5.
-  \item \code{\link{test_mollic_organic_carbon}} -- SOC >= 0.6\%.
-  \item \code{\link{test_mollic_base_saturation}} -- BS (NH4OAc, pH 7)
+  \item \code{test_mollic_organic_carbon} -- SOC >= 0.6\%.
+  \item \code{test_mollic_base_saturation} -- BS (NH4OAc, pH 7)
         >= 50\%.
-  \item \code{\link{test_mollic_thickness}} -- horizon thickness >= 20 cm.
-  \item \code{\link{test_mollic_structure}} -- not simultaneously
+  \item \code{test_mollic_thickness} -- horizon thickness >= 20 cm.
+  \item \code{test_mollic_structure} -- not simultaneously
         massive AND very hard when dry.
 }
 

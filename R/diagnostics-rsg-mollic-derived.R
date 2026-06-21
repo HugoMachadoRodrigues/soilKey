@@ -165,7 +165,7 @@ phaeozem <- function(pedon) {
 # ----------------------------------------------------------- helpers ----
 #' Internal helper: .mollic_derived_negative
 
-#' @keywords internal
+#' @noRd
 .mollic_derived_negative <- function(name, mol_res, note) {
   DiagnosticResult$new(
     name      = name,
@@ -180,7 +180,7 @@ phaeozem <- function(pedon) {
 }
 #' Internal helper: .mollic_derived_aggregate
 
-#' @keywords internal
+#' @noRd
 .mollic_derived_aggregate <- function(tests, require_pass) {
   passed_vec <- vapply(tests[require_pass],
                         function(t) isTRUE(t$passed), logical(1))

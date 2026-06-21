@@ -35,7 +35,7 @@ Diagnostic of Umbrisols.
 }
 \details{
 Implementation reuses every mollic sub-test except the BS test,
-which is inverted via \code{\link{test_bs_below}}.
+which is inverted via \code{test_bs_below}.
 }
 \references{
 IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.

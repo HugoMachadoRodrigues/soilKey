@@ -26,8 +26,7 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 64-67.
-#' @keywords internal
-#' @export
+#' @noRd
 spodic_horizon_usda <- function(pedon) {
   res <- spodic(pedon)
   res$name <- "spodic_horizon_usda"
@@ -45,8 +44,7 @@ spodic_horizon_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 albic_horizon_usda <- function(pedon) {
   res <- albic(pedon)
   res$name <- "albic_horizon_usda"
@@ -66,8 +64,7 @@ albic_horizon_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 placic_horizon_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm &
@@ -113,8 +110,7 @@ placic_horizon_usda <- function(pedon, max_top_cm = 100) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 fragipan_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
@@ -159,8 +155,7 @@ fragipan_usda <- function(pedon, max_top_cm = 100) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 duripan_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
@@ -192,8 +187,7 @@ duripan_usda <- function(pedon, max_top_cm = 100) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
@@ -230,8 +224,7 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 kandic_horizon_usda <- function(pedon) {
   arg <- argic(pedon)
   if (!isTRUE(arg$passed)) {
@@ -276,8 +269,7 @@ kandic_horizon_usda <- function(pedon) {
 #' @param max_top_cm Default 200.
 #' @param min_bs Optional minimum BS for "Alfic" subgroups.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argillic_or_kandic_usda <- function(pedon, max_top_cm = 200,
                                          min_bs = NULL) {
   arg <- argillic_within_usda(pedon, max_top_cm = max_top_cm)
@@ -314,8 +306,7 @@ argillic_or_kandic_usda <- function(pedon, max_top_cm = 200,
 
 #' Alfic Subgroup helper (Spodosols): argillic or kandic with BS >= 35\%
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 alfic_subgroup_usda <- function(pedon) {
   res <- argillic_or_kandic_usda(pedon, max_top_cm = 200, min_bs = 35)
   res$name <- "alfic_subgroup_usda"
@@ -325,8 +316,7 @@ alfic_subgroup_usda <- function(pedon) {
 
 #' Ultic Subgroup helper: argillic or kandic (any BS).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 ultic_subgroup_usda <- function(pedon) {
   res <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
   res$name <- "ultic_subgroup_usda"
@@ -337,8 +327,7 @@ ultic_subgroup_usda <- function(pedon) {
 #' Argic Subgroup helper (Endoaquods/Fragiaquods): argillic or kandic.
 #' Synonym of ultic at this level. Re-exported for naming clarity.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 argic_subgroup_usda <- function(pedon) {
   res <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
   res$name <- "argic_subgroup_usda"
@@ -363,8 +352,7 @@ argic_subgroup_usda <- function(pedon) {
 #' @param min_spodic_top Default 75.
 #' @param max_spodic_top Default 125.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 arenic_subgroup_usda <- function(pedon,
                                       min_spodic_top = 75,
                                       max_spodic_top = 125) {
@@ -413,8 +401,7 @@ arenic_subgroup_usda <- function(pedon,
 
 #' Grossarenic Subgroup helper: sandy throughout, spodic >= 125 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 grossarenic_subgroup_usda <- function(pedon) {
   res <- arenic_subgroup_usda(pedon, min_spodic_top = 125,
                                   max_spodic_top = Inf)
@@ -436,8 +423,7 @@ grossarenic_subgroup_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 entic_subgroup_usda <- function(pedon) {
   sp <- spodic_horizon_usda(pedon)
   h <- pedon$horizons
@@ -474,8 +460,7 @@ entic_subgroup_usda <- function(pedon) {
 #' Aeric Subgroup helper (Aquods)
 #' Pass when ochric epipedon is present (vs. histic/umbric/etc).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 aeric_subgroup_usda <- function(pedon) {
   res <- ochric_epipedon_usda(pedon)
   res$name <- "aeric_subgroup_usda"
@@ -486,8 +471,7 @@ aeric_subgroup_usda <- function(pedon) {
 #' Histic Subgroup helper (in Spodosols, Aquods)
 #' Pass when histic_epipedon_usda passes.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 histic_subgroup_usda <- function(pedon) {
   res <- histic_epipedon_usda(pedon)
   res$name <- "histic_subgroup_usda"
@@ -498,8 +482,7 @@ histic_subgroup_usda <- function(pedon) {
 #' Umbric Subgroup helper (in Spodosols)
 #' Pass when umbric_epipedon_usda passes.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 umbric_subgroup_usda <- function(pedon) {
   res <- umbric_epipedon_usda(pedon)
   res$name <- "umbric_subgroup_usda"
@@ -523,8 +506,7 @@ umbric_subgroup_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 oxyaquic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
@@ -576,8 +558,7 @@ oxyaquic_subgroup_usda <- function(pedon) {
 #' Aquandic Subgroup helper (Spodosols / others)
 #' Aquic + Andic.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 aquandic_subgroup_usda <- function(pedon) {
   aq <- aquic_subgroup_usda(pedon)
   an <- andic_subgroup_usda(pedon)
@@ -599,8 +580,7 @@ aquandic_subgroup_usda <- function(pedon) {
 #' Pass when gelic materials are present within 200 cm.
 #' Implementation: cryoturbation + permafrost within 200 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 turbic_subgroup_usda <- function(pedon) {
   cr <- cryoturbation_usda(pedon)
   pf <- permafrost_within_usda(pedon, max_top_cm = 200)
@@ -620,8 +600,7 @@ turbic_subgroup_usda <- function(pedon) {
 #' Gelic soil temperature regime (USDA)
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 str_gelic_usda <- function(pedon) {
   pf <- permafrost_within_usda(pedon, max_top_cm = 100)
   res <- DiagnosticResult$new(
@@ -645,8 +624,7 @@ str_gelic_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 lamellic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
   des_lam <- which(!is.na(h$designation) &
@@ -682,8 +660,7 @@ lamellic_subgroup_usda <- function(pedon) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 al_rich_spodic_usda <- function(pedon) {
   sp <- spodic_horizon_usda(pedon)
   if (!isTRUE(sp$passed) || length(sp$layers) == 0L) {
@@ -720,8 +697,7 @@ al_rich_spodic_usda <- function(pedon) {
 
 #' Humic-spodic Suborder/GG check (>= 6\% OC in 10+ cm of spodic)
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 humic_spodic_usda <- function(pedon) {
   sp <- spodic_horizon_usda(pedon)
   if (!isTRUE(sp$passed) || length(sp$layers) == 0L) {
@@ -750,8 +726,7 @@ humic_spodic_usda <- function(pedon) {
 #' Humic Subgroup helper (Humic Duricryods / Humic Placocryods)
 #' Pass when spodic horizon has >= 6\% OC in 10+ cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 humic_subgroup_usda <- function(pedon) {
   res <- humic_spodic_usda(pedon)
   res$name <- "humic_subgroup_usda"
@@ -765,8 +740,7 @@ humic_subgroup_usda <- function(pedon) {
 #' Pass when aquic conditions PLUS perched water (saturation type
 #' "episaturation").
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 episaturation_usda <- function(pedon) {
   aq <- aquic_conditions_usda(pedon, max_top_cm = 200)
   passed <- isTRUE(aq$passed) &&

@@ -65,6 +65,7 @@
 # ---- Loader: basic ------------------------------------------------------
 
 test_that("load_lucas_soil_2018 reads chemistry + BD and builds PedonRecord list", {
+  skip_on_cran()
   dir <- .make_synth_lucas_dir()
   on.exit(unlink(dir, recursive = TRUE), add = TRUE)
   pedons <- load_lucas_soil_2018(dir, verbose = FALSE)
@@ -89,6 +90,7 @@ test_that("load_lucas_soil_2018 reads chemistry + BD and builds PedonRecord list
 
 
 test_that("load_lucas_soil_2018 builds a subsoil horizon when 20-30 cm chemistry is finite", {
+  skip_on_cran()
   dir <- .make_synth_lucas_dir()
   on.exit(unlink(dir, recursive = TRUE), add = TRUE)
   pedons <- load_lucas_soil_2018(dir, verbose = FALSE)
@@ -105,6 +107,7 @@ test_that("load_lucas_soil_2018 builds a subsoil horizon when 20-30 cm chemistry
 
 
 test_that("load_lucas_soil_2018 handles '< LOD' and empty cells as NA", {
+  skip_on_cran()
   dir <- .make_synth_lucas_dir()
   on.exit(unlink(dir, recursive = TRUE), add = TRUE)
   pedons <- load_lucas_soil_2018(dir, verbose = FALSE)
@@ -118,6 +121,7 @@ test_that("load_lucas_soil_2018 handles '< LOD' and empty cells as NA", {
 
 
 test_that("load_lucas_soil_2018 honours the 'countries' and 'max_n' filters", {
+  skip_on_cran()
   dir <- .make_synth_lucas_dir()
   on.exit(unlink(dir, recursive = TRUE), add = TRUE)
 
@@ -131,6 +135,7 @@ test_that("load_lucas_soil_2018 honours the 'countries' and 'max_n' filters", {
 
 
 test_that("load_lucas_soil_2018 errors when path does not contain LUCAS-SOIL-2018.csv", {
+  skip_on_cran()
   dir <- tempfile("empty_v0949_")
   dir.create(dir); on.exit(unlink(dir, recursive = TRUE), add = TRUE)
   expect_error(load_lucas_soil_2018(dir), "LUCAS-SOIL-2018.csv")
@@ -141,6 +146,7 @@ test_that("load_lucas_soil_2018 errors when path does not contain LUCAS-SOIL-201
 # ---- WRB code mapping --------------------------------------------------
 
 test_that(".WRB_LV1_NAME_BY_CODE covers the 30 active WRB 2022 RSGs", {
+  skip_on_cran()
   m <- soilKey:::.WRB_LV1_NAME_BY_CODE
   # 31 codes including the legacy 'AB' which is mapped to NA
   expect_equal(length(m), 31L)
@@ -156,6 +162,7 @@ test_that(".WRB_LV1_NAME_BY_CODE covers the 30 active WRB 2022 RSGs", {
 # ---- Internal helpers ---------------------------------------------------
 
 test_that(".lucas_numeric handles '< LOD' / '<LOD' / '' / 'n.d.' / 'ND' as NA", {
+  skip_on_cran()
   expect_true(is.na(soilKey:::.lucas_numeric("< LOD")))
   expect_true(is.na(soilKey:::.lucas_numeric("<LOD")))
   expect_true(is.na(soilKey:::.lucas_numeric("")))
@@ -203,6 +210,7 @@ test_that(".lucas_numeric handles '< LOD' / '<LOD' / '' / 'n.d.' / 'ND' as NA", 
 
 
 test_that("benchmark_lucas_2018 runs end-to-end on a tiny synthetic stack", {
+  skip_on_cran()
   testthat::skip_if_not_installed("terra")
   testthat::skip_if_not_installed("foreign")
   dir <- .make_synth_lucas_dir()
@@ -231,6 +239,7 @@ test_that("benchmark_lucas_2018 runs end-to-end on a tiny synthetic stack", {
 
 
 test_that("benchmark_lucas_2018 attaches reference_name when reference_code maps to a known RSG", {
+  skip_on_cran()
   testthat::skip_if_not_installed("terra")
   testthat::skip_if_not_installed("foreign")
   dir <- .make_synth_lucas_dir(); on.exit(unlink(dir, recursive = TRUE), add = TRUE)
@@ -254,6 +263,7 @@ test_that("benchmark_lucas_2018 attaches reference_name when reference_code maps
 
 
 test_that("benchmark_lucas_2018 errors on empty / non-PedonRecord input", {
+  skip_on_cran()
   expect_error(benchmark_lucas_2018(list(), esdb_root = "/tmp"),
                "non-empty list")
   expect_error(benchmark_lucas_2018(list(1, 2), esdb_root = "/tmp"),
@@ -262,6 +272,7 @@ test_that("benchmark_lucas_2018 errors on empty / non-PedonRecord input", {
 
 
 test_that("benchmark_lucas_2018 supports classify_with = 'sibcs'", {
+  skip_on_cran()
   testthat::skip_if_not_installed("terra")
   testthat::skip_if_not_installed("foreign")
   dir <- .make_synth_lucas_dir(); on.exit(unlink(dir, recursive = TRUE), add = TRUE)

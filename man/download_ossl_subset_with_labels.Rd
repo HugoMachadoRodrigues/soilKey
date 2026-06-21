@@ -46,7 +46,7 @@ queries; cap this when running interactive demos.}
 
 \item{query_fn}{Optional injection of the per-coordinate WoSIS
 query function. Default uses
-\code{\link{.query_nearest_wosis_wrb}}. Tests pass a stub
+\code{.query_nearest_wosis_wrb}. Tests pass a stub
 here to exercise the join logic without network.}
 
 \item{...}{Forwarded to \code{\link{download_ossl_subset}}.}

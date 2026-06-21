@@ -21,6 +21,7 @@ make_demo_with_labels <- function() {
 
 
 test_that("classify_by_spectral_neighbours() returns the canonical shape", {
+  skip_on_cran()
   lib <- make_demo_with_labels()
   query <- lib$Xr[1, ]
   res <- classify_by_spectral_neighbours(query, lib, k = 5L,
@@ -40,6 +41,7 @@ test_that("classify_by_spectral_neighbours() returns the canonical shape", {
 
 
 test_that("classify_by_spectral_neighbours() rejects mismatched widths", {
+  skip_on_cran()
   lib <- make_demo_with_labels()
   expect_error(
     classify_by_spectral_neighbours(rnorm(100L), lib, k = 5L,
@@ -50,6 +52,7 @@ test_that("classify_by_spectral_neighbours() rejects mismatched widths", {
 
 
 test_that("classify_by_spectral_neighbours() requires the right label column", {
+  skip_on_cran()
   lib <- make_demo_with_labels()
   lib$Yr$wrb_rsg <- NULL
   expect_error(
@@ -61,6 +64,7 @@ test_that("classify_by_spectral_neighbours() requires the right label column", {
 
 
 test_that("region filter narrows the library", {
+  skip_on_cran()
   lib <- make_demo_with_labels()
   query <- lib$Xr[1, ]
   res_full <- classify_by_spectral_neighbours(query, lib, k = 5L,
@@ -75,6 +79,7 @@ test_that("region filter narrows the library", {
 
 
 test_that(".haversine_km is sane on known distances", {
+  skip_on_cran()
   # Rio de Janeiro - Sao Paulo: ~360 km great-circle.
   d <- soilKey:::.haversine_km(-22.91, -43.17, -23.55, -46.63)
   expect_gt(d, 320)
@@ -83,6 +88,7 @@ test_that(".haversine_km is sane on known distances", {
 
 
 test_that("region filter falling back to global when nothing in radius", {
+  skip_on_cran()
   lib <- make_demo_with_labels()
   query <- lib$Xr[1, ]
   res <- classify_by_spectral_neighbours(

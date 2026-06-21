@@ -20,7 +20,7 @@ extract_site_from_fieldsheet(
 \item{image_path}{Path to the field-sheet image.}
 
 \item{provider}{A chat provider from \code{\link{vlm_provider}} (or
-a \code{\link{MockVLMProvider}} for testing).}
+a \code{MockVLMProvider} for testing).}
 
 \item{max_retries}{Integer; how many times to re-prompt on
 validation failure. Default 3.}

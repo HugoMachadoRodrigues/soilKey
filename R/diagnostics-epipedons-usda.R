@@ -108,8 +108,7 @@
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022). \emph{Keys to Soil Taxonomy},
 #'   13th edition, USDA-NRCS, Washington DC. Ch. 3, pp. 13-15.
-#' @keywords internal
-#' @export
+#' @noRd
 histic_epipedon_usda <- function(pedon,
                                     min_oc_pct       = 12,
                                     min_thickness_cm = 20,
@@ -182,8 +181,7 @@ histic_epipedon_usda <- function(pedon,
 #' @param min_thickness_cm Minimum thickness (default 15 cm).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 13-14.
-#' @keywords internal
-#' @export
+#' @noRd
 folistic_epipedon_usda <- function(pedon,
                                       min_oc_pct       = 12,
                                       min_thickness_cm = 15) {
@@ -263,8 +261,7 @@ folistic_epipedon_usda <- function(pedon,
 #' @param min_oc_pct Default 0.6 percent.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-17.
-#' @keywords internal
-#' @export
+#' @noRd
 mollic_epipedon_usda <- function(pedon,
                                     min_bs     = 50,
                                     min_oc_pct = 0.6) {
@@ -375,8 +372,7 @@ mollic_epipedon_usda <- function(pedon,
 #' @param min_oc_pct Minimum OC (default 0.6).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 18-20.
-#' @keywords internal
-#' @export
+#' @noRd
 umbric_epipedon_usda <- function(pedon,
                                     max_bs     = 50,
                                     min_oc_pct = 0.6) {
@@ -492,8 +488,7 @@ umbric_epipedon_usda <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-16.
-#' @keywords internal
-#' @export
+#' @noRd
 melanic_epipedon_usda <- function(pedon) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {
@@ -592,8 +587,7 @@ melanic_epipedon_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 17.
-#' @keywords internal
-#' @export
+#' @noRd
 ochric_epipedon_usda <- function(pedon) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {

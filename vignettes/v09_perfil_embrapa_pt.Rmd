@@ -113,7 +113,7 @@ cat("B_textural (SiBCS):", bt$passed,
     "  argic (WRB):",     arg$passed, "\n")
 
 # Atividade da argila (SiBCS Cap 5)
-ta <- soilKey::atividade_argila_alta(perfil)
+ta <- soilKey:::atividade_argila_alta(perfil)
 cat("atividade_argila_alta:", ta$passed, "\n")
 
 # Saturacao por bases (V%) -- distrofico se V < 50

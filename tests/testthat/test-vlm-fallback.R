@@ -5,12 +5,14 @@
 
 
 test_that("ollama_is_running() returns FALSE when probing a guaranteed-dead URL", {
+  skip_on_cran()
   expect_false(ollama_is_running(url = "http://127.0.0.1:1/api/tags",
                                     timeout_s = 0.3))
 })
 
 
 test_that("vlm_pick_provider() respects an env-key cascade when Ollama is down", {
+  skip_on_cran()
   withr::local_options(soilKey.ollama_url = "http://127.0.0.1:1/api/tags")
   withr::local_envvar(c(ANTHROPIC_API_KEY = "sk-test-anthropic",
                           OPENAI_API_KEY    = "",
@@ -30,6 +32,7 @@ test_that("vlm_pick_provider() respects an env-key cascade when Ollama is down",
 
 
 test_that("vlm_pick_provider() errors with actionable hints when nothing is reachable", {
+  skip_on_cran()
   withr::local_options(soilKey.ollama_url = "http://127.0.0.1:1/api/tags")
   withr::local_envvar(c(ANTHROPIC_API_KEY = "",
                           OPENAI_API_KEY    = "",
@@ -41,6 +44,7 @@ test_that("vlm_pick_provider() errors with actionable hints when nothing is reac
 
 
 test_that("default_model('auto') resolves via the picker", {
+  skip_on_cran()
   skip_if_not_installed("withr")
   withr::local_options(soilKey.ollama_url = "http://127.0.0.1:1/api/tags")
   withr::local_envvar(c(ANTHROPIC_API_KEY = "sk-test",
