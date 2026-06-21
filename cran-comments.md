@@ -2,7 +2,7 @@
 
 ## Resubmission
 
-This is a resubmission. The 0.9.155 pre-test was **OK on Debian and OK on
+This is a resubmission. The 0.9.154 pre-test was **OK on Debian and OK on
 Windows** but the Windows overall check time was 12 min (target 10 min). The
 Windows log showed where the remaining time went, and 0.9.155 trims it:
 
@@ -20,7 +20,7 @@ Windows log showed where the remaining time went, and 0.9.155 trims it:
   inflated the Windows test phase invisibly. They are now `skip_on_cran()` and
   run in full on CI.
 
-The 0.9.155 reductions are retained:
+The 0.9.154 reductions are retained:
 
 * The ~600 internal rule-engine predicates, already marked `@keywords internal`,
   are no longer exported and no longer documented (928 -> 319 topics; man pages
@@ -113,9 +113,9 @@ A full local build (with vignettes and manual) and `R CMD check --as-cran`:
   local-only artefact -- the macOS-bundled `tidy` is older than CRAN's -- and
   does not appear on the CRAN check servers. "CRAN incoming feasibility",
   "checking examples (+ --run-donttest)", and "re-building of vignette outputs"
-  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~75 s.
+  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~60 s.
 
-All tests pass under `R CMD check` (`testthat.R`, ~75 s on CRAN with the
+All tests pass under `R CMD check` (`testthat.R`, ~60 s on CRAN with the
 long-running suites skipped; full suite on CI). Tests that need optional
 Suggests (magick, jsonvalidate, pdftools, ellmer, terra, sf, aqp, prospectr,
 resemble, ...) use `skip_if_not_installed()`.
