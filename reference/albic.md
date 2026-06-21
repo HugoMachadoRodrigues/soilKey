@@ -33,8 +33,8 @@ A
 
 Sub-tests:
 
-- [`test_claric_munsell`](https://hugomachadorodrigues.github.io/soilKey/reference/test_claric_munsell.md)
-  – Munsell criteria of claric material (Ch 3.3.4).
+- `test_claric_munsell` – Munsell criteria of claric material (Ch
+  3.3.4).
 
 Designation pattern `E` or `Eg` also serves as positive evidence when
 Munsell columns are missing (proxy path).

@@ -10,9 +10,8 @@ never extrapolates. Each fill is written with
 `source = "inferred_prior"`, so the
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 authority order keeps it from displacing a measured, spectra-predicted
-or VLM-extracted value, and any downstream
-[`compute_evidence_grade`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_evidence_grade.md)
-call reports grade `"C"`.
+or VLM-extracted value, and any downstream `compute_evidence_grade` call
+reports grade `"C"`.
 
 ## Usage
 

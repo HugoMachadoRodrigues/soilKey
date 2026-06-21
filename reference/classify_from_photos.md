@@ -45,9 +45,9 @@ classify_from_photos(
 - provider:
 
   A vision-language provider: an ellmer chat object for live use, or a
-  [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
-  for testing and offline demos. Required – there is no default, so a
-  real classification is never produced from canned data by accident.
+  `MockVLMProvider` for testing and offline demos. Required – there is
+  no default, so a real classification is never produced from canned
+  data by accident.
 
 - systems:
 

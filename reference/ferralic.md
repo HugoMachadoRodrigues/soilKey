@@ -48,14 +48,12 @@ A
 
 Sub-tests called:
 
-- [`test_ferralic_texture`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ferralic_texture.md)
-  – texture sandy loam or finer.
+- `test_ferralic_texture` – texture sandy loam or finer.
 
-- [`test_cec_per_clay`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cec_per_clay.md)
-  – CEC / clay \<= 16 (or 20 under `engine = "aqp"`) cmol_c/kg clay.
+- `test_cec_per_clay` – CEC / clay \<= 16 (or 20 under `engine = "aqp"`)
+  cmol_c/kg clay.
 
-- [`test_ferralic_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ferralic_thickness.md)
-  – thickness \>= 30 cm.
+- `test_ferralic_thickness` – thickness \>= 30 cm.
 
 v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older "ECEC \<= 12
 cmol_c/kg clay" gate was removed because it is not in the canonical text

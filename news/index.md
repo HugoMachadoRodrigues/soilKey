@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.154 (2026-06-21)
+
+The “**lean check**” release: a real reduction of the CRAN check
+footprint (the 0.9.153 pre-test passed OK on Windows + Debian but the
+overall check time was still over 10 minutes). No classification
+behaviour changes – the 44 canonical fixtures are byte-identical.
+
 ## soilKey 0.9.153 (2026-06-20)
 
 The “**CRAN check-time reduction**” release. The 0.9.152 pre-test passed
@@ -2155,9 +2162,9 @@ horizon (only the topsoil has texture data).
 
 ### Fix
 
-[`test_ferralic_texture()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ferralic_texture.md)
-reads the new opt-in option . When TRUE, and the canonical numeric
-texture test returns NA, the test accepts layers that satisfy BOTH:
+`test_ferralic_texture()` reads the new opt-in option . When TRUE, and
+the canonical numeric texture test returns NA, the test accepts layers
+that satisfy BOTH:
 
 1.  designation matches (deeply weathered B morphology), AND
 2.  (subsoil context, not topsoil).
@@ -2217,8 +2224,8 @@ Al). v0.9.69 adds an opt-in ECEC fallback that recovers most of those.
 
 ### Fix
 
-[`test_cec_per_clay()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_cec_per_clay.md)
-now reads `getOption("soilKey.ferralic_ecec_fallback")`. When `TRUE` and
+`test_cec_per_clay()` now reads
+`getOption("soilKey.ferralic_ecec_fallback")`. When `TRUE` and
 `cec_cmol` is NA on a layer, the test computes ECEC on-the-fly:
 
     ECEC = Ca + Mg + K + Na + Al  (cmol_c)
@@ -2734,10 +2741,9 @@ CI / docs work, no functional changes:
   check (resolves 12 phantom failures).
 - `inst/schemas/pedon-schema.json`: regenerated to include the 14 Tier-3
   horizon fields (resolves `test-v0943-json-schema.R:43` mismatch).
-- `R/spectra-neighbours.R`:
-  [`.reduce_for_neighbours()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-reduce_for_neighbours.md)
-  now aligns column names between library and query matrices, suppresses
-  the `pc_selection` deprecation warning, and falls back to PCA when
+- `R/spectra-neighbours.R`: `.reduce_for_neighbours()` now aligns column
+  names between library and query matrices, suppresses the
+  `pc_selection` deprecation warning, and falls back to PCA when
   resemble 3.0.0’s stricter `predict.ortho_projection()` rejects newdata
   (resolves 3 spectra-neighbours errors).
 - `R/qualifiers-wrb2022-v0963.R`, `R/qualifiers-wrb2022-v0964.R`: 37
@@ -2845,10 +2851,9 @@ qual_thixotropic   # thixotropic_index / slurry_test
 qual_uterquic      # water_regime_pattern (bidirectional)
 ```
 
-Each Tier-3 stub uses the new internal helper
-[`.q_stub_na()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_stub_na.md)
-which captures the missing-schema fields cleanly and returns a fully
-typed `DiagnosticResult`.
+Each Tier-3 stub uses the new internal helper `.q_stub_na()` which
+captures the missing-schema fields cleanly and returns a fully typed
+`DiagnosticResult`.
 
 ### 3. WRB audit – 100% coverage achieved
 
@@ -3022,8 +3027,7 @@ Single-attribute qualifiers (canonical thresholds from WRB Ch 5):
 | `qual_rockic` | HISTOSOLS | leptic_features (\<= 25cm) + coarse_frag \>= 50% |
 | `qual_thyric` | HISTOSOLS, TECHNOSOLS | artefacts_industrial \>= 20% + oc \>= 5% |
 
-Composite / depth-modifier qualifiers (using new
-[`.q_within_depth()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-q_within_depth.md)
+Composite / depth-modifier qualifiers (using new `.q_within_depth()`
 helper):
 
 | Qualifier            | Base diagnostic              | Depth window        |
@@ -3384,9 +3388,8 @@ BDsolos full export para `redoximorphic_features_pct`:
     abundante / abund. -> 30  (> 20%)
     ausente / vazio    -> NA  (treated as missing, not absent)
 
-Aplicado automaticamente no
-[`.bdsolos_rows_to_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_rows_to_horizons.md)
-quando o mapped sk_col é `mottles_quantity_ord`. O resultado popula
+Aplicado automaticamente no `.bdsolos_rows_to_horizons()` quando o
+mapped sk_col é `mottles_quantity_ord`. O resultado popula
 `redoximorphic_features_pct` para 107 / 722 perfis em RJ.csv (15%).
 
 #### `test_gleyic_features()` extended (R/utils-diagnostic-tests.R)
@@ -3493,10 +3496,9 @@ realizou empiricamente. Hipoteses para v0.9.62 investigar:
 1.  [`lookup_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_soilgrids.md)
     esta retornando valores corretos? Comparar com queries diretas ao
     COG endpoint para coords conhecidos.
-2.  [`.fill_horizon_from_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-fill_horizon_from_soilgrids.md)
-    esta populando os schema columns corretos (clay_pct, sand_pct,
-    ph_h2o, soc, cec_cmol, bdod, nitrogen, cfvo)? Ler um perfil pos-fill
-    e verificar.
+2.  `.fill_horizon_from_soilgrids()` esta populando os schema columns
+    corretos (clay_pct, sand_pct, ph_h2o, soc, cec_cmol, bdod, nitrogen,
+    cfvo)? Ler um perfil pos-fill e verificar.
 3.  As diagnostics WRB (cambic / argic / mollic / ferralic) estao
     testando os campos populados pelo fill? Pode ser que o cambic
     diagnostic precise de structure/clay-films morfologicos que
@@ -3552,8 +3554,8 @@ Per-class Order recall pos-v0.9.61:
 
 `tests/testthat/test-v0961-diagnostic-fixes.R` (novos):
 
-- [`.bdsolos_mosqueado_to_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_mosqueado_to_pct.md)
-  ordinal-to-pct mapping (4 cases + diacritic + plural variants)
+- `.bdsolos_mosqueado_to_pct()` ordinal-to-pct mapping (4 cases +
+  diacritic + plural variants)
 - `test_gleyic_features` Munsell-hue path (5GY / N / 10B fire, 10YR /
   5YR don’t)
 - `B_latossolico` clay-films guard (Pouca passes, Comum excludes,
@@ -3563,12 +3565,11 @@ Per-class Order recall pos-v0.9.61:
 
 Mudanças tocam 3 arquivos: - `R/bdsolos.R`:
 `.BDSOLOS_COLUMN_PATTERNS$mottles_quantity_ord`,
-[`.bdsolos_mosqueado_to_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_mosqueado_to_pct.md),
-special-case in `.bdsolos_rows_to_horizons`. -
-`R/utils-diagnostic-tests.R`: `.GLEYIC_HUE_REGEX` constant +
-`test_gleyic_features` quote-aware path. -
-`R/diagnostics-horizons-sibcs.R`: `B_latossolico` revised exclusion
-logic.
+`.bdsolos_mosqueado_to_pct()`, special-case in
+`.bdsolos_rows_to_horizons`. - `R/utils-diagnostic-tests.R`:
+`.GLEYIC_HUE_REGEX` constant + `test_gleyic_features` quote-aware
+path. - `R/diagnostics-horizons-sibcs.R`: `B_latossolico` revised
+exclusion logic.
 
 DESCRIPTION 0.9.60 -\> 0.9.61. Sem novos `Suggests`. R CMD check sanity
 OK. Suite de tests v0.9.60 + v0.9.61 verde.
@@ -3583,14 +3584,12 @@ Duas peças que fechavam buracos abertos desde v0.9.50 / v0.9.58:
     USDA-ST 13) contra o ground-truth do BDsolos nacional (~9 k perfis,
     3 colunas de classificação por perfil quando o pedólogo as
     preencheu).
-2.  **Fix em
-    [`.bdsolos_find_header_line()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_find_header_line.md)**
-    – bug crítico do v0.9.58 que fazia o auto-detector de header
-    escolher uma linha de DADOS (não o header) sempre que algum perfil
-    tivesse `;` embutido em string entre aspas (e.g. nomes de pedólogos
-    “Klaus Wittern; Elias Mothci”). Resultado: 0% taxon / 0% Munsell no
-    RJ.csv real (722 perfis), apesar do v0.9.58 alegar o oposto a partir
-    de uma fixture sintética.
+2.  **Fix em `.bdsolos_find_header_line()`** – bug crítico do v0.9.58
+    que fazia o auto-detector de header escolher uma linha de DADOS (não
+    o header) sempre que algum perfil tivesse `;` embutido em string
+    entre aspas (e.g. nomes de pedólogos “Klaus Wittern; Elias Mothci”).
+    Resultado: 0% taxon / 0% Munsell no RJ.csv real (722 perfis), apesar
+    do v0.9.58 alegar o oposto a partir de uma fixture sintética.
 3.  **Empirical close de v0.9.50** – número de acurácia WRB
     pós-`fill_subsoil_from = "soilgrids"` que o release v0.9.50 anunciou
     (13 testes sintéticos passavam) mas nunca documentou numericamente.
@@ -3939,19 +3938,18 @@ perfis / 3,294 horizontes / 100% Munsell preservado**.
 
 `R/bdsolos.R`:
 
-- **[`.bdsolos_find_header_line()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_find_header_line.md)**
-  – auto-detects the BDsolos preamble (1 line of “Dados obtidos a partir
-  do BDSOLOS…” + blank line) by picking the line with the most fields.
-  Replaces the v0.9.55 fixed-threshold approach (which assumed \>= 30
-  fields and broke on schemas with fewer columns).
+- **`.bdsolos_find_header_line()`** – auto-detects the BDsolos preamble
+  (1 line of “Dados obtidos a partir do BDSOLOS…” + blank line) by
+  picking the line with the most fields. Replaces the v0.9.55
+  fixed-threshold approach (which assumed \>= 30 fields and broke on
+  schemas with fewer columns).
 
-- **[`.bdsolos_detect_sep()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_detect_sep.md)**
-  – auto-picks `,` / `;` / `\t` based on which gives the most fields on
-  the header line. Real BDsolos uses `;`; v0.9.55 hard-coded `,`.
+- **`.bdsolos_detect_sep()`** – auto-picks `,` / `;` / `\t` based on
+  which gives the most fields on the header line. Real BDsolos uses `;`;
+  v0.9.55 hard-coded `,`.
 
-- **[`.bdsolos_dms_to_decimal()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_dms_to_decimal.md)**
-  – converts the BDsolos coordinate schema () to decimal degrees,
-  applying sign for S / W hemisphere.
+- **`.bdsolos_dms_to_decimal()`** – converts the BDsolos coordinate
+  schema () to decimal degrees, applying sign for S / W hemisphere.
 
 - **`.BDSOLOS_SITE_PATTERNS`** – new internal registry of 19 site- level
   columns: , , , , , , , , , , , plus 8 coordinate components (4
@@ -3965,10 +3963,8 @@ perfis / 3,294 horizontes / 100% Munsell preservado**.
 
 -  rewritten to:
 
-  - Use
-    [`.bdsolos_find_header_line()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_find_header_line.md) +
-    [`.bdsolos_detect_sep()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_detect_sep.md)
-    to skip preamble + use the right separator
+  - Use `.bdsolos_find_header_line()` + `.bdsolos_detect_sep()` to skip
+    preamble + use the right separator
   - Build a unified mapping from
   - Group by codigo_pa via \code{ids %in% rid} (NOT which returns NA on
     empty IDs and causes data.table to include NA-fill rows – this was
@@ -4072,14 +4068,11 @@ genuinely lack morphology. Other FEBR datasets do carry it.
   a precomputed cache in (, 200 rows from the May-2026 scan). re-scans
   live (slow, ~15 min).
 
-- **[`.parse_febr_munsell()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-parse_febr_munsell.md)
-  /
-  [`.parse_febr_munsell_vec()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-parse_febr_munsell_vec.md)**
-  – PT-BR-aware Munsell string parser handling comma decimals.
+- **`.parse_febr_munsell()` / `.parse_febr_munsell_vec()`** –
+  PT-BR-aware Munsell string parser handling comma decimals.
 
-- **[`.detect_febr_munsell_columns()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_febr_munsell_columns.md)**
-  – discovers Munsell-related columns across the FEBR conventions: , , ,
-  , , , (canonical).
+- **`.detect_febr_munsell_columns()`** – discovers Munsell-related
+  columns across the FEBR conventions: , , , , , , (canonical).
 
 - **`.FEBR_TO_HORIZON_MAP`** – regex table mapping FEBR layer variable
   codes (camada_nome, profund_sup/inf, ph_h2o, carbono,
@@ -4255,14 +4248,11 @@ column-detection layer:
   overload the Embrapa server – prefer batches of one or two states at a
   time and stitch the resulting CSVs.
 
-- **[`.bdsolos_norm()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_norm.md)
-  /
-  [`.bdsolos_match_column()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_match_column.md)
-  /
-  [`.bdsolos_match_taxon_column()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_match_taxon_column.md)
-  / `.BDSOLOS_COLUMN_PATTERNS`** internals: deterministic
-  Portuguese-aware column normaliser (handles via ) plus regex table for
-  30+ canonical BDsolos columns -\> soilKey horizon schema.
+- **`.bdsolos_norm()` / `.bdsolos_match_column()` /
+  `.bdsolos_match_taxon_column()` / `.BDSOLOS_COLUMN_PATTERNS`**
+  internals: deterministic Portuguese-aware column normaliser (handles
+  via ) plus regex table for 30+ canonical BDsolos columns -\> soilKey
+  horizon schema.
 
 ### Why R-side rather than the browser
 
@@ -4539,8 +4529,7 @@ three new fill paths.
   (POINT_ID + wavelength_nm + reflectance) spectra table onto the pedon
   list, populating `pedon$spectra$vnir`.
 
-- **`.SOILGRIDS_TO_HORIZON_MAP`** +
-  **[`.fill_horizon_from_soilgrids()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-fill_horizon_from_soilgrids.md)**
+- **`.SOILGRIDS_TO_HORIZON_MAP`** + **`.fill_horizon_from_soilgrids()`**
   internals. The helper accepts a `lookup_fn` parameter for unit-test
   injection so the test suite runs offline.
 
@@ -4914,8 +4903,7 @@ se sabe e o que ainda falta medir”.
 ### Internal API
 
 - `.SIBCS_COLOR_CATCH_ALL_CODES` (constante interna).
-- [`.detect_color_undetermined_fallback()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-detect_color_undetermined_fallback.md)
-  (helper interno).
+- `.detect_color_undetermined_fallback()` (helper interno).
 
 ## soilKey 0.9.44 (2026-05-04)
 
@@ -5371,11 +5359,11 @@ heterogeneous-schema multi-profile pad-rbind.
 
 ### B. SiBCS Quartzarenico units bug fix (Item 4 from the v0.9.35 roadmap)
 
-[`neossolo_quartzarenico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_quartzarenico.md)
-used SiBCS Cap 1 textural-class thresholds in g/kg (sand \>= 700, clay
-\< 200) on PERCENT data (sand_pct, clay_pct in 0-100 range). The
-function never fired on properly-loaded FEBR data and routed all 9 FEBR
-Quartzarenicos to the catch-all “Regoliticos” subordem.
+`neossolo_quartzarenico()` used SiBCS Cap 1 textural-class thresholds in
+g/kg (sand \>= 700, clay \< 200) on PERCENT data (sand_pct, clay_pct in
+0-100 range). The function never fired on properly-loaded FEBR data and
+routed all 9 FEBR Quartzarenicos to the catch-all “Regoliticos”
+subordem.
 
 Fix: thresholds converted to %, sand \>= 70 %, clay \< 20 %. The
 docstring explicitly notes the SiBCS-vs-soilKey unit convention.
@@ -5520,13 +5508,13 @@ Fragiudalfs / Fragiaqualfs (rupture_resistance rarely in KSSL data).
 
 ### A. Quartzipsamment proxy broadened
 
-[`quartzipsamment_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/quartzipsamment_qualifying_usda.md):
-KST 13ed Ch 8 (p 357) defines Quartzipsamments as Psamments where \>= 95
-% of the 0.02-2.0 mm fraction is resistant minerals (mostly quartz). The
-pre-v0.9.31 proxy was clay \<= 5 % AND coarse_fragments \<= 5 %, which
-under- detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25
-confusion analysis showed 14 udipsamments / ustipsamments references
-should have been Quartzipsamments).
+`quartzipsamment_qualifying_usda()`: KST 13ed Ch 8 (p 357) defines
+Quartzipsamments as Psamments where \>= 95 % of the 0.02-2.0 mm fraction
+is resistant minerals (mostly quartz). The pre-v0.9.31 proxy was clay
+\<= 5 % AND coarse_fragments \<= 5 %, which under- detected: 0/14 KSSL
+Quartzipsamments were caught (the v0.9.25 confusion analysis showed 14
+udipsamments / ustipsamments references should have been
+Quartzipsamments).
 
 v0.9.31 broadens to:
 
@@ -5538,11 +5526,10 @@ At least 50 % of in-range layers must satisfy all three.
 
 ### B. Fragipan accepts NASIS pediagfeatures flag
 
-[`fragipan_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragipan_usda.md):
-KSSL gpkg rarely populates `rupture_resistance`, the canonical fragipan
-signal. The 2021 NASIS snapshot, however, ships ~13 500
-`pediagfeatures.featkind` entries, including “Fragipan” tags directly
-identified by the surveyor. v0.9.31 adds the NASIS path as an
+`fragipan_usda()`: KSSL gpkg rarely populates `rupture_resistance`, the
+canonical fragipan signal. The 2021 NASIS snapshot, however, ships ~13
+500 `pediagfeatures.featkind` entries, including “Fragipan” tags
+directly identified by the surveyor. v0.9.31 adds the NASIS path as an
 OR-evidence source:
 
 passed = (rupture_resistance \>= “firm” with thickness \>= 15 cm) OR
@@ -5567,15 +5554,14 @@ laser-focused at Great Group and below.
 
 The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs /
 Fraglossudalfs) were considered for this release but not shipped. The
-current
-[`pale_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pale_qualifying_usda.md)
-uses a clay \>= 35 % proxy that is structurally too strict (KST 13ed
-actually defines Pale- by “clay does not decrease 20 % within 150 cm of
-mineral surface”), but only 11 KSSL+NASIS misses are in this confusion
-bucket – lower priority than the 14 Quartzipsamment + Fragipan misses
-addressed here. Tightening Pale- requires careful design to avoid
-regression on Hapludalfs (which are far more common) and is left for a
-future release with better validation infrastructure.
+current `pale_qualifying_usda()` uses a clay \>= 35 % proxy that is
+structurally too strict (KST 13ed actually defines Pale- by “clay does
+not decrease 20 % within 150 cm of mineral surface”), but only 11
+KSSL+NASIS misses are in this confusion bucket – lower priority than the
+14 Quartzipsamment + Fragipan misses addressed here. Tightening Pale-
+requires careful design to avoid regression on Hapludalfs (which are far
+more common) and is left for a future release with better validation
+infrastructure.
 
 ### Tests
 
@@ -5668,22 +5654,17 @@ SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact
 within 50 cm. In the FEBR / BDsolos snapshot, surveyors document this
 implicitly by stopping the profile description at the rock boundary
 (median depth 17.5 cm, median 1 horizon) rather than entering a pseudo-R
-horizon. The pre-v0.9.29
-[`neossolo_litolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_litolico.md)
-required
-[`contato_litico()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico.md)
-OR
-[`contato_litico_fragmentario()`](https://hugomachadorodrigues.github.io/soilKey/reference/contato_litico_fragmentario.md)
-to return TRUE, and both rely on an explicit `^R$|^Cr|^Rk` designation
-that FEBR almost never carries (0.5 % of Litolicos in the snapshot).
+horizon. The pre-v0.9.29 `neossolo_litolico()` required
+`contato_litico()` OR `contato_litico_fragmentario()` to return TRUE,
+and both rely on an explicit `^R$|^Cr|^Rk` designation that FEBR almost
+never carries (0.5 % of Litolicos in the snapshot).
 
 Result: the classifier was routing **190 of 191 FEBR Litolicos** to the
 catch-all “Neossolos Regoliticos” subordem.
 
 ### Fix
 
-[`neossolo_litolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/neossolo_litolico.md)
-now adds an “implicit lithic contact” path:
+`neossolo_litolico()` now adds an “implicit lithic contact” path:
 
 Direct evidence (explicit R / Cr / Rk designation within 50 cm) is
 preserved as the canonical path.
@@ -6870,22 +6851,20 @@ gate. They are now correctly routed to Ultisols / Argissolos.
 
 ### Code changes
 
-- **[`oxisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxisol_usda.md)**
-  – adds the WRB-mirrored argillic-above-oxic exclusion. KST 13ed Ch 13
-  (p 295) requires that profiles whose argillic horizon’s upper boundary
-  lies above the oxic upper boundary do NOT classify as Oxisols. The
-  previous v0.8 gate had only the prior-Order exclusion list (Gelisol /
-  Histosol / Spodosol / Andisol).
+- **`oxisol_usda()`** – adds the WRB-mirrored argillic-above-oxic
+  exclusion. KST 13ed Ch 13 (p 295) requires that profiles whose
+  argillic horizon’s upper boundary lies above the oxic upper boundary
+  do NOT classify as Oxisols. The previous v0.8 gate had only the
+  prior-Order exclusion list (Gelisol / Histosol / Spodosol / Andisol).
 
-- **[`ultisol_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/ultisol_usda.md)**
-  – graceful BS-low fallback. When the measured `bs_pct` is missing in
-  all argillic layers, the gate now infers BS \< 35 from
-  `al_sat_pct >= 50` (mathematically forces BS \< 50 and BS \< 35 in
-  essentially all tropical soils with this profile) or `ph_h2o < 5.0`
-  (the empirical threshold below which fewer than 5 % of tropical B
-  horizons exceed BS 35). The fallback only fires when the direct
-  measurement is absent, so lab-grade profiles use the canonical KST
-  13ed gate. Same heuristic added internally to
+- **`ultisol_usda()`** – graceful BS-low fallback. When the measured
+  `bs_pct` is missing in all argillic layers, the gate now infers BS \<
+  35 from `al_sat_pct >= 50` (mathematically forces BS \< 50 and BS \<
+  35 in essentially all tropical soils with this profile) or
+  `ph_h2o < 5.0` (the empirical threshold below which fewer than 5 % of
+  tropical B horizons exceed BS 35). The fallback only fires when the
+  direct measurement is absent, so lab-grade profiles use the canonical
+  KST 13ed gate. Same heuristic added internally to
   [`acrisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/acrisol.md)
   (WRB) for the same reason.
 
@@ -6996,10 +6975,9 @@ evidence that the Gemma 4 / Ollama path works end-to-end.
 
 Each of the seven previously-simplified diagnostics now offers the WRB
 2022 alternative qualifying paths verbatim. OR-alternative aggregation
-via the new
-[`aggregate_alternatives()`](https://hugomachadorodrigues.github.io/soilKey/reference/aggregate_alternatives.md)
-helper. Each path’s evidence is fully recorded in
-`DiagnosticResult$evidence` so the trace stays inspectable.
+via the new `aggregate_alternatives()` helper. Each path’s evidence is
+fully recorded in `DiagnosticResult$evidence` so the trace stays
+inspectable.
 
 - `histic_horizon` – adds the cumulative path (\>= 40 cm of organic
   material within the upper 80 cm), catching folic / mossy Histosols on
@@ -7080,11 +7058,11 @@ helper. Each path’s evidence is fully recorded in
   – new function. Covers Argissolos, Cambissolos, Plintossolos,
   Vertissolos, Luvissolos, Nitossolos, Chernossolos, Planossolos,
   Gleissolos – everything the Latossolo-only
-  [`familia_mineralogia_argila_latossolo()`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.md)
-  did not address. Adds the four mineralogia da argila classes the
-  earlier function lacked: `esmectitica` (T_argila \>= 27), `oxidica`
-  (Kr \< 0.75), `caulinitica` (Ki, Kr \>= 0.75 with low T), and `mista`
-  (catch-all when no gate closes).
+  `familia_mineralogia_argila_latossolo()` did not address. Adds the
+  four mineralogia da argila classes the earlier function lacked:
+  `esmectitica` (T_argila \>= 27), `oxidica` (Kr \< 0.75), `caulinitica`
+  (Ki, Kr \>= 0.75 with low T), and `mista` (catch-all when no gate
+  closes).
 
 ### Real-data benchmark scaffolding
 
@@ -7469,9 +7447,8 @@ paper-grade WoSIS run pre-requisites.
   `runif`, `setNames`, `weighted.mean`), `utils` (`tail`), and `R6`
   (`R6Class`) imports it actually uses.
 - `R/diagnostics-horizons-wrb-v033.R::plaggic` calls
-  [`test_bulk_density_below()`](https://hugomachadorodrigues.github.io/soilKey/reference/test_bulk_density_below.md)
-  with the spelled-out argument name `max_g_cm3` instead of the
-  partial-match `max`.
+  `test_bulk_density_below()` with the spelled-out argument name
+  `max_g_cm3` instead of the partial-match `max`.
 - `tests/testthat/test-spatial-soilgrids.R` now skips when PROJ’s
   `proj.db` is unavailable on the local system (a cosmetic fix – CRAN’s
   check farm has it).

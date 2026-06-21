@@ -34,8 +34,7 @@ classify_usda_family(
 
 - infer_temperature:
 
-  Passed to
-  [`family_temperature_regime_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md).
+  Passed to `family_temperature_regime_usda`.
 
 ## Value
 
@@ -49,5 +48,5 @@ Soil Survey Staff (2022), KST 13th ed., Ch. 16–17.
 
 ## See also
 
-[`family_label_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/family_label_usda.md),
+`family_label_usda`,
 [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md).

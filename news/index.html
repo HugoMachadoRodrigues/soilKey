@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.153</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.154</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,10 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.154" id="soilkey-09154-2026-06-21">soilKey 0.9.154 (2026-06-21)<a class="anchor" aria-label="anchor" href="#soilkey-09154-2026-06-21"></a></h2>
+<p>The “<strong>lean check</strong>” release: a real reduction of the CRAN check footprint (the 0.9.153 pre-test passed OK on Windows + Debian but the overall check time was still over 10 minutes). No classification behaviour changes – the 44 canonical fixtures are byte-identical.</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.153" id="soilkey-09153-2026-06-20">soilKey 0.9.153 (2026-06-20)<a class="anchor" aria-label="anchor" href="#soilkey-09153-2026-06-20"></a></h2>
 <p>The “<strong>CRAN check-time reduction</strong>” release. The 0.9.152 pre-test passed (OK on Windows + Debian) but flagged the overall check time (&gt;10 min, dominated by the test suite). No code or classification change – this only moves slow tests off CRAN.</p>
@@ -2117,7 +2121,7 @@ mollic test on Kastanozem references: 0/5 -&gt; 5/5</code></pre>
 <p>The “<strong>texture morphological fallback</strong>” release. Continues the v0.9.69 empirical investigation: of the 19 BDsolos RJ Latossolos that v0.9.69 could not recover, ~all of them fail because  /  /  are NA on the deep B horizon (only the topsoil has texture data).</p>
 <div class="section level3">
 <h3 id="fix-0-9-70">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-70"></a></h3>
-<p><code><a href="../reference/test_ferralic_texture.html">test_ferralic_texture()</a></code> reads the new opt-in option . When TRUE, and the canonical numeric texture test returns NA, the test accepts layers that satisfy BOTH:</p>
+<p><code>test_ferralic_texture()</code> reads the new opt-in option . When TRUE, and the canonical numeric texture test returns NA, the test accepts layers that satisfy BOTH:</p>
 <ol style="list-style-type: decimal"><li>designation matches  (deeply weathered B morphology), AND</li>
 <li> (subsoil context, not topsoil).</li>
 </ol><p>A Bw / Bo designation in a subsoil context strongly implies tropical deep-weathering, which in turn implies sandy-loam-or-finer texture in ~95% of Brazilian Latossolos. Default is FALSE – canonical WRB behaviour preserved. The fallback is conservative: it does NOT fire on (a) Bt / Bs / Bg designations, (b) topsoil-only Bw, or (c) when real numeric texture data is present (real data wins).</p>
@@ -2164,7 +2168,7 @@ mollic test on Kastanozem references: 0/5 -&gt; 5/5</code></pre>
 <p>The “<strong>ECEC fallback for missing Valor T</strong>” release. v0.9.68 documented that 66/115 (57.4%) of BDsolos RJ Latossolos have NO <code>cec_cmol</code> (Valor T NH4OAc pH 7) measurement – but DO have the components (Ca, Mg, K, Na, Al). v0.9.69 adds an opt-in ECEC fallback that recovers most of those.</p>
 <div class="section level3">
 <h3 id="fix-0-9-69">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-69"></a></h3>
-<p><code><a href="../reference/test_cec_per_clay.html">test_cec_per_clay()</a></code> now reads <code>getOption("soilKey.ferralic_ecec_fallback")</code>. When <code>TRUE</code> and <code>cec_cmol</code> is NA on a layer, the test computes ECEC on-the-fly:</p>
+<p><code>test_cec_per_clay()</code> now reads <code>getOption("soilKey.ferralic_ecec_fallback")</code>. When <code>TRUE</code> and <code>cec_cmol</code> is NA on a layer, the test computes ECEC on-the-fly:</p>
 <pre><code><span><span class="va">ECEC</span> <span class="op">=</span> <span class="va">Ca</span> <span class="op">+</span> <span class="va">Mg</span> <span class="op">+</span> <span class="va">K</span> <span class="op">+</span> <span class="va">Na</span> <span class="op">+</span> <span class="fu">Al</span>  <span class="op">(</span><span class="va">cmol_c</span><span class="op">)</span></span></code></pre>
 <p>and uses ECEC against the same threshold (16 / 20 cmol/kg-clay). Default is <code>FALSE</code> – canonical WRB behaviour preserved.</p>
 <p>ECEC is typically smaller than CEC at acidic pH because it omits H+, so using ECEC against the same threshold is conservative (MORE permissive) – it should not produce false positives, only recover Latossolos that lacked Valor T.</p>
@@ -2355,23 +2359,23 @@ mollic test on Kastanozem references: 0/5 -&gt; 5/5</code></pre>
 <span><span class="va">water_regime_pattern</span>      <span class="co"># WRB Ch 5: bidirectional / single / aquic</span></span></code></pre></div>
 <p>22 v0.9.64 Tier-3 stubs were rewired to read these fields and return substantive results. Examples:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qual_biocrustic.html">qual_biocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># was NA stub; now reads surface_crust_type</span></span>
-<span><span class="fu"><a href="../reference/qual_arenicolic.html">qual_arenicolic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># now reads bioturbation_density</span></span>
-<span><span class="fu"><a href="../reference/qual_kalaic.html">qual_kalaic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># now reads surface_puff_layer</span></span>
-<span><span class="fu"><a href="../reference/qual_saprolithic.html">qual_saprolithic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads saprolite_pct + weathering_stage</span></span>
-<span><span class="fu"><a href="../reference/qual_thixotropic.html">qual_thixotropic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads thixotropic_index</span></span>
-<span><span class="fu"><a href="../reference/qual_mochipic.html">qual_mochipic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># now reads mottle_morphology</span></span>
-<span><span class="fu"><a href="../reference/qual_pelocrustic.html">qual_pelocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_evapocrustic.html">qual_evapocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_biocrustic.html">qual_biocrustic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span></span>
-<span><span class="fu"><a href="../reference/qual_puffic.html">qual_puffic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># all read surface_crust_type / surface_puff_layer</span></span>
-<span><span class="fu"><a href="../reference/qual_archaic.html">qual_archaic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_immissic.html">qual_immissic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read contamination_type</span></span>
-<span><span class="fu"><a href="../reference/qual_dorsic.html">qual_dorsic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_escalic.html">qual_escalic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>    <span class="co"># read site$microrelief_form</span></span>
-<span><span class="fu"><a href="../reference/qual_lapiadic.html">qual_lapiadic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads weathering_stage</span></span>
-<span><span class="fu"><a href="../reference/qual_naramic.html">qual_naramic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>           <span class="co"># reads salt_crust_pattern</span></span>
-<span><span class="fu"><a href="../reference/qual_nechic.html">qual_nechic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># reads aeolian_morphology</span></span>
-<span><span class="fu"><a href="../reference/qual_litholinic.html">qual_litholinic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_raptic.html">qual_raptic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="co"># read stratification_pattern</span></span>
-<span><span class="fu"><a href="../reference/qual_isopteric.html">qual_isopteric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>         <span class="co"># reads bioturbation_density / layer_origin</span></span>
-<span><span class="fu"><a href="../reference/qual_uterquic.html">qual_uterquic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads water_regime_pattern</span></span>
-<span><span class="fu"><a href="../reference/qual_bryic.html">qual_bryic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="../reference/qual_cordic.html">qual_cordic</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read existing fields</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">qual_biocrustic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># was NA stub; now reads surface_crust_type</span></span>
+<span><span class="fu">qual_arenicolic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>        <span class="co"># now reads bioturbation_density</span></span>
+<span><span class="fu">qual_kalaic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># now reads surface_puff_layer</span></span>
+<span><span class="fu">qual_saprolithic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads saprolite_pct + weathering_stage</span></span>
+<span><span class="fu">qual_thixotropic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>       <span class="co"># now reads thixotropic_index</span></span>
+<span><span class="fu">qual_mochipic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># now reads mottle_morphology</span></span>
+<span><span class="fu">qual_pelocrustic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_evapocrustic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_biocrustic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span></span>
+<span><span class="fu">qual_puffic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># all read surface_crust_type / surface_puff_layer</span></span>
+<span><span class="fu">qual_archaic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_immissic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read contamination_type</span></span>
+<span><span class="fu">qual_dorsic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_escalic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>    <span class="co"># read site$microrelief_form</span></span>
+<span><span class="fu">qual_lapiadic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads weathering_stage</span></span>
+<span><span class="fu">qual_naramic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>           <span class="co"># reads salt_crust_pattern</span></span>
+<span><span class="fu">qual_nechic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>            <span class="co"># reads aeolian_morphology</span></span>
+<span><span class="fu">qual_litholinic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_raptic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="co"># read stratification_pattern</span></span>
+<span><span class="fu">qual_isopteric</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>         <span class="co"># reads bioturbation_density / layer_origin</span></span>
+<span><span class="fu">qual_uterquic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>          <span class="co"># reads water_regime_pattern</span></span>
+<span><span class="fu">qual_bryic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fu">qual_cordic</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>  <span class="co"># read existing fields</span></span></code></pre></div>
 <p>When the field is unpopulated, the function still returns NA-passed with the relevant <code>$missing</code> field listed – backward-compatible contract preserved from v0.9.64.</p>
 </div>
 <div class="section level3">
@@ -2490,7 +2494,7 @@ aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
 <li>
 <code>inst/schemas/pedon-schema.json</code>: regenerated to include the 14 Tier-3 horizon fields (resolves <code>test-v0943-json-schema.R:43</code> mismatch).</li>
 <li>
-<code>R/spectra-neighbours.R</code>: <code><a href="../reference/dot-reduce_for_neighbours.html">.reduce_for_neighbours()</a></code> now aligns column names between library and query matrices, suppresses the <code>pc_selection</code> deprecation warning, and falls back to PCA when resemble 3.0.0’s stricter <code>predict.ortho_projection()</code> rejects newdata (resolves 3 spectra-neighbours errors).</li>
+<code>R/spectra-neighbours.R</code>: <code>.reduce_for_neighbours()</code> now aligns column names between library and query matrices, suppresses the <code>pc_selection</code> deprecation warning, and falls back to PCA when resemble 3.0.0’s stricter <code>predict.ortho_projection()</code> rejects newdata (resolves 3 spectra-neighbours errors).</li>
 <li>
 <code>R/qualifiers-wrb2022-v0963.R</code>, <code>R/qualifiers-wrb2022-v0964.R</code>: 37 unescaped <code>%</code> characters escaped as <code>\%</code> in roxygen titles/descriptions (resolves ~50 R CMD check Rd-parser warnings on 11 qualifier man pages).</li>
 <li>
@@ -2595,7 +2599,7 @@ aqp_subsoil_soilgrids          | aqp     |    0.033  (same)</code></pre>
 <span><span class="va">qual_saprolithic</span>   <span class="co"># saprolite_pct / weathering_stage</span></span>
 <span><span class="va">qual_thixotropic</span>   <span class="co"># thixotropic_index / slurry_test</span></span>
 <span><span class="va">qual_uterquic</span>      <span class="co"># water_regime_pattern (bidirectional)</span></span></code></pre></div>
-<p>Each Tier-3 stub uses the new internal helper <code><a href="../reference/dot-q_stub_na.html">.q_stub_na()</a></code> which captures the missing-schema fields cleanly and returns a fully typed <code>DiagnosticResult</code>.</p>
+<p>Each Tier-3 stub uses the new internal helper <code>.q_stub_na()</code> which captures the missing-schema fields cleanly and returns a fully typed <code>DiagnosticResult</code>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2733,7 +2737,7 @@ aqp_subsoil_soilgrids           | aqp     |     5334.4 |  **0.600**  &lt;- aqp +
 </tr><tr><td><code>qual_thyric</code></td>
 <td>HISTOSOLS, TECHNOSOLS</td>
 <td>artefacts_industrial &gt;= 20% + oc &gt;= 5%</td>
-</tr></tbody></table><p>Composite / depth-modifier qualifiers (using new <code><a href="../reference/dot-q_within_depth.html">.q_within_depth()</a></code> helper):</p>
+</tr></tbody></table><p>Composite / depth-modifier qualifiers (using new <code>.q_within_depth()</code> helper):</p>
 <table class="table"><thead><tr><th>Qualifier</th>
 <th>Base diagnostic</th>
 <th>Depth window</th>
@@ -3050,7 +3054,7 @@ ST_features.rda      ~29 KB  84 diagnostic features (data.frame)</code></pre>
 comum / comuns     -&gt; 10  (2-20%)
 abundante / abund. -&gt; 30  (&gt; 20%)
 ausente / vazio    -&gt; NA  (treated as missing, not absent)</code></pre>
-<p>Aplicado automaticamente no <code><a href="../reference/dot-bdsolos_rows_to_horizons.html">.bdsolos_rows_to_horizons()</a></code> quando o mapped sk_col é <code>mottles_quantity_ord</code>. O resultado popula <code>redoximorphic_features_pct</code> para 107 / 722 perfis em RJ.csv (15%).</p>
+<p>Aplicado automaticamente no <code>.bdsolos_rows_to_horizons()</code> quando o mapped sk_col é <code>mottles_quantity_ord</code>. O resultado popula <code>redoximorphic_features_pct</code> para 107 / 722 perfis em RJ.csv (15%).</p>
 </div>
 <div class="section level4">
 <h4 id="test_gleyic_features-extended-rutils-diagnostic-testsr-0-9-61">
@@ -3117,7 +3121,7 @@ Post-Latossolos-fix : SiBCS Order 40.3% | Latossolos 14.9% | Argissolos 69.2%</c
 <ol style="list-style-type: decimal"><li>
 <code><a href="../reference/lookup_soilgrids.html">lookup_soilgrids()</a></code> esta retornando valores corretos? Comparar com queries diretas ao COG endpoint para coords conhecidos.</li>
 <li>
-<code><a href="../reference/dot-fill_horizon_from_soilgrids.html">.fill_horizon_from_soilgrids()</a></code> esta populando os schema columns corretos (clay_pct, sand_pct, ph_h2o, soc, cec_cmol, bdod, nitrogen, cfvo)? Ler um perfil pos-fill e verificar.</li>
+<code>.fill_horizon_from_soilgrids()</code> esta populando os schema columns corretos (clay_pct, sand_pct, ph_h2o, soc, cec_cmol, bdod, nitrogen, cfvo)? Ler um perfil pos-fill e verificar.</li>
 <li>As diagnostics WRB (cambic / argic / mollic / ferralic) estao testando os campos populados pelo fill? Pode ser que o cambic diagnostic precise de structure/clay-films morfologicos que SoilGrids nao fornece, e nao apenas chemistry.</li>
 </ol><p>Possivelmente o caminho real e o <code>fill_topsoil_from = "spectra"</code> com OSSL pretrained models – mais alta fidelidade per-coord (v0.9.46). Esse path nao foi testado neste run.</p>
 <p>Files: <code>inst/benchmarks/reports/lucas_v0950_close_focused_2026-05-07.{rds,txt}</code>.</p>
@@ -3169,7 +3173,7 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 <h3 id="tests-0-9-61">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-61"></a></h3>
 <p><code>tests/testthat/test-v0961-diagnostic-fixes.R</code> (novos):</p>
 <ul><li>
-<code><a href="../reference/dot-bdsolos_mosqueado_to_pct.html">.bdsolos_mosqueado_to_pct()</a></code> ordinal-to-pct mapping (4 cases + diacritic + plural variants)</li>
+<code>.bdsolos_mosqueado_to_pct()</code> ordinal-to-pct mapping (4 cases + diacritic + plural variants)</li>
 <li>
 <code>test_gleyic_features</code> Munsell-hue path (5GY / N / 10B fire, 10YR / 5YR don’t)</li>
 <li>
@@ -3177,7 +3181,7 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 </ul></div>
 <div class="section level3">
 <h3 id="arquitetura-0-9-61">Arquitetura<a class="anchor" aria-label="anchor" href="#arquitetura-0-9-61"></a></h3>
-<p>Mudanças tocam 3 arquivos: - <code>R/bdsolos.R</code>: <code>.BDSOLOS_COLUMN_PATTERNS$mottles_quantity_ord</code>, <code><a href="../reference/dot-bdsolos_mosqueado_to_pct.html">.bdsolos_mosqueado_to_pct()</a></code>, special-case in <code>.bdsolos_rows_to_horizons</code>. - <code>R/utils-diagnostic-tests.R</code>: <code>.GLEYIC_HUE_REGEX</code> constant + <code>test_gleyic_features</code> quote-aware path. - <code>R/diagnostics-horizons-sibcs.R</code>: <code>B_latossolico</code> revised exclusion logic.</p>
+<p>Mudanças tocam 3 arquivos: - <code>R/bdsolos.R</code>: <code>.BDSOLOS_COLUMN_PATTERNS$mottles_quantity_ord</code>, <code>.bdsolos_mosqueado_to_pct()</code>, special-case in <code>.bdsolos_rows_to_horizons</code>. - <code>R/utils-diagnostic-tests.R</code>: <code>.GLEYIC_HUE_REGEX</code> constant + <code>test_gleyic_features</code> quote-aware path. - <code>R/diagnostics-horizons-sibcs.R</code>: <code>B_latossolico</code> revised exclusion logic.</p>
 <p>DESCRIPTION 0.9.60 -&gt; 0.9.61. Sem novos <code>Suggests</code>. R CMD check sanity OK. Suite de tests v0.9.60 + v0.9.61 verde.</p>
 </div>
 </div>
@@ -3187,7 +3191,7 @@ Perfis comparaveis    : 7,086  (apos legacy mapping + unmapped filter)
 <ol style="list-style-type: decimal"><li>
 <strong><code><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos()</a></code></strong> – novo benchmark cruzando os três sistemas (WRB 2022, SiBCS 5, USDA-ST 13) contra o ground-truth do BDsolos nacional (~9 k perfis, 3 colunas de classificação por perfil quando o pedólogo as preencheu).</li>
 <li>
-<strong>Fix em <code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code></strong> – bug crítico do v0.9.58 que fazia o auto-detector de header escolher uma linha de DADOS (não o header) sempre que algum perfil tivesse <code>;</code> embutido em string entre aspas (e.g. nomes de pedólogos “Klaus Wittern; Elias Mothci”). Resultado: 0% taxon / 0% Munsell no RJ.csv real (722 perfis), apesar do v0.9.58 alegar o oposto a partir de uma fixture sintética.</li>
+<strong>Fix em <code>.bdsolos_find_header_line()</code></strong> – bug crítico do v0.9.58 que fazia o auto-detector de header escolher uma linha de DADOS (não o header) sempre que algum perfil tivesse <code>;</code> embutido em string entre aspas (e.g. nomes de pedólogos “Klaus Wittern; Elias Mothci”). Resultado: 0% taxon / 0% Munsell no RJ.csv real (722 perfis), apesar do v0.9.58 alegar o oposto a partir de uma fixture sintética.</li>
 <li>
 <strong>Empirical close de v0.9.50</strong> – número de acurácia WRB pós-<code>fill_subsoil_from = "soilgrids"</code> que o release v0.9.50 anunciou (13 testes sintéticos passavam) mas nunca documentou numericamente. Roda em <code>inst/benchmarks/run_lucas_v0950_close.R</code> e o report fica em <code>inst/benchmarks/reports/lucas_v0950_close_*</code>.</li>
 </ol><div class="section level3">
@@ -3420,14 +3424,14 @@ SP: 229 perfis</code></pre>
 <div class="section level3">
 <h3 id="what-changed-0-9-58">What changed<a class="anchor" aria-label="anchor" href="#what-changed-0-9-58"></a></h3>
 <p><code>R/bdsolos.R</code>:</p>
-<ul><li><p><strong><code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code></strong> – auto-detects the BDsolos preamble (1 line of “Dados obtidos a partir do BDSOLOS…” + blank line) by picking the line with the most fields. Replaces the v0.9.55 fixed-threshold approach (which assumed &gt;= 30 fields and broke on schemas with fewer columns).</p></li>
-<li><p><strong><code><a href="../reference/dot-bdsolos_detect_sep.html">.bdsolos_detect_sep()</a></code></strong> – auto-picks <code>,</code> / <code>;</code> / <code>\t</code> based on which gives the most fields on the header line. Real BDsolos uses <code>;</code>; v0.9.55 hard-coded <code>,</code>.</p></li>
-<li><p><strong><code><a href="../reference/dot-bdsolos_dms_to_decimal.html">.bdsolos_dms_to_decimal()</a></code></strong> – converts the BDsolos coordinate schema () to decimal degrees, applying sign for S / W hemisphere.</p></li>
+<ul><li><p><strong><code>.bdsolos_find_header_line()</code></strong> – auto-detects the BDsolos preamble (1 line of “Dados obtidos a partir do BDSOLOS…” + blank line) by picking the line with the most fields. Replaces the v0.9.55 fixed-threshold approach (which assumed &gt;= 30 fields and broke on schemas with fewer columns).</p></li>
+<li><p><strong><code>.bdsolos_detect_sep()</code></strong> – auto-picks <code>,</code> / <code>;</code> / <code>\t</code> based on which gives the most fields on the header line. Real BDsolos uses <code>;</code>; v0.9.55 hard-coded <code>,</code>.</p></li>
+<li><p><strong><code>.bdsolos_dms_to_decimal()</code></strong> – converts the BDsolos coordinate schema () to decimal degrees, applying sign for S / W hemisphere.</p></li>
 <li><p><strong><code>.BDSOLOS_SITE_PATTERNS</code></strong> – new internal registry of 19 site- level columns: , , , , , , , , , , , plus 8 coordinate components (4 graus/min/seg/hem each for lat + lon) and 2 decimal lat/lon for legacy exports.</p></li>
 <li><p><strong><code>.BDSOLOS_COLUMN_PATTERNS</code></strong> expanded to recognise the full BDsolos column names:  (Munsell moist),  (Munsell dry),  +  +  (texture in g/kg),  +  +  +  +  +  +  (exchange complex),  +  (DCB iron / sulfuric attack),  (oxalate-extractable for Andic check), .</p></li>
 <li>
 <p><strong></strong> rewritten to:</p>
-<ul><li>Use <code><a href="../reference/dot-bdsolos_find_header_line.html">.bdsolos_find_header_line()</a></code> + <code><a href="../reference/dot-bdsolos_detect_sep.html">.bdsolos_detect_sep()</a></code> to skip preamble + use the right separator</li>
+<ul><li>Use <code>.bdsolos_find_header_line()</code> + <code>.bdsolos_detect_sep()</code> to skip preamble + use the right separator</li>
 <li>Build a unified  mapping from </li>
 <li>Group by codigo_pa via \code{ids %in% rid} (NOT  which returns NA on empty IDs and causes data.table to include NA-fill rows – this was the v0.9.58 critical bug fix: profiles were returning ~39 horizons instead of 5)</li>
 <li>Convert lat/lon from graus/min/seg/hem (or use direct decimal columns when present)</li>
@@ -3481,8 +3485,8 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 <p><code>R/febr.R</code> exports two functions plus internal helpers:</p>
 <ul><li><p><strong><code>read_febr_pedons(dataset_codes, febr_repo, min_munsell_coverage, verbose)</code></strong> – wraps  and adapts the returned  (layer) +  tables to the soilKey schema. Auto-detects the ~6 distinct Munsell column conventions used across FEBR datasets, parses PT-BR Munsell strings ( -&gt; hue , value 3, chroma 6), and returns a list of .</p></li>
 <li><p><strong><code>febr_index_munsell(min_coverage, refresh, verbose)</code></strong> – curated index of FEBR datasets that have Munsell columns populated. Backed by a precomputed cache in  (, 200 rows from the May-2026 scan).  re-scans live (slow, ~15 min).</p></li>
-<li><p><strong><code><a href="../reference/dot-parse_febr_munsell.html">.parse_febr_munsell()</a></code> / <code><a href="../reference/dot-parse_febr_munsell_vec.html">.parse_febr_munsell_vec()</a></code></strong> – PT-BR-aware Munsell string parser handling comma decimals.</p></li>
-<li><p><strong><code><a href="../reference/dot-detect_febr_munsell_columns.html">.detect_febr_munsell_columns()</a></code></strong> – discovers Munsell-related columns across the FEBR conventions: , , , , , ,  (canonical).</p></li>
+<li><p><strong><code>.parse_febr_munsell()</code> / <code>.parse_febr_munsell_vec()</code></strong> – PT-BR-aware Munsell string parser handling comma decimals.</p></li>
+<li><p><strong><code>.detect_febr_munsell_columns()</code></strong> – discovers Munsell-related columns across the FEBR conventions: , , , , , ,  (canonical).</p></li>
 <li><p><strong><code>.FEBR_TO_HORIZON_MAP</code></strong> – regex table mapping FEBR layer variable codes (camada_nome, profund_sup/inf, ph_h2o, carbono, argila/silte/areia, ca_troc, ctc, etc.) to soilKey horizon columns.</p></li>
 </ul></div>
 <div class="section level3">
@@ -3582,7 +3586,7 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 <ul><li><p><strong><code>load_bdsolos_csv(path, sep, verbose)</code></strong> – reads the long- format BDsolos export (one row per horizon, profile-id key) and returns a list of . Auto-detects the column-name convention via regex patterns covering the classic PT-BR shape (, , , , , ) AND the lowercase / SmartSolos-derived shape (, , , ). Texture and OC are converted from g/kg to percent (BDsolos canonical unit).</p></li>
 <li><p><strong><code>inspect_bdsolos_csv(path, sep)</code></strong> – diagnostic helper. Prints the raw schema, identifies which columns will map to which soilKey horizon attribute, lists unmapped columns, and reports Munsell coverage (matiz / valor / croma) + the surveyor’s taxonomic reference column. Run before <code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> on any new CSV from BDsolos.</p></li>
 <li><p><strong><code>download_bdsolos(out_path, accept_terms, filter_uf, attributes, timeout_seconds, chromote_session, verbose)</code></strong> – best-effort programmatic downloader via headless Chrome (). Drives the 3-step Embrapa web form (accept terms -&gt; select all attributes -&gt; submit query -&gt; select all results + radio CSV -&gt; capture). Marked <strong>experimental</strong>: full-table queries (no UF filter) frequently overload the Embrapa server – prefer  batches of one or two states at a time and stitch the resulting CSVs.</p></li>
-<li><p><strong><code><a href="../reference/dot-bdsolos_norm.html">.bdsolos_norm()</a></code> / <code><a href="../reference/dot-bdsolos_match_column.html">.bdsolos_match_column()</a></code> / <code><a href="../reference/dot-bdsolos_match_taxon_column.html">.bdsolos_match_taxon_column()</a></code> / <code>.BDSOLOS_COLUMN_PATTERNS</code></strong> internals: deterministic Portuguese-aware column normaliser (handles  via ) plus regex table for 30+ canonical BDsolos columns -&gt; soilKey horizon schema.</p></li>
+<li><p><strong><code>.bdsolos_norm()</code> / <code>.bdsolos_match_column()</code> / <code>.bdsolos_match_taxon_column()</code> / <code>.BDSOLOS_COLUMN_PATTERNS</code></strong> internals: deterministic Portuguese-aware column normaliser (handles  via ) plus regex table for 30+ canonical BDsolos columns -&gt; soilKey horizon schema.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="why-r-side-rather-than-the-browser-0-9-55">Why R-side rather than the browser<a class="anchor" aria-label="anchor" href="#why-r-side-rather-than-the-browser-0-9-55"></a></h3>
@@ -3743,7 +3747,7 @@ ES.csv (5.2 MB):  124 perfis,   410 horizontes, 100% Munsell
 <li><p><strong><code>fill_subsoil_from = c("none", "soilgrids")</code></strong> – synthesises a 30-60 cm B horizon from SoilGrids 250m at the same 9 properties. Unlocks WRB cambic / argic / mollic / nitic diagnostics that the LUCAS topsoil-only release cannot satisfy alone.</p></li>
 <li><p><strong><code>fill_topsoil_from = "spectra"</code> + <code>ossl_models</code></strong> – when the LUCAS Spectral Library is available, runs <code><a href="../reference/predict_from_spectra.html">predict_from_spectra()</a></code> (v0.9.46) per pedon to fill any property still missing after the SoilGrids paths.</p></li>
 <li><p><strong><code>attach_lucas_spectra(pedons, spectra, point_id_col)</code></strong> – new exported helper. Joins a wide (POINT_ID + wavelength columns) or long (POINT_ID + wavelength_nm + reflectance) spectra table onto the pedon list, populating <code>pedon$spectra$vnir</code>.</p></li>
-<li><p><strong><code>.SOILGRIDS_TO_HORIZON_MAP</code></strong> + <strong><code><a href="../reference/dot-fill_horizon_from_soilgrids.html">.fill_horizon_from_soilgrids()</a></code></strong> internals. The helper accepts a <code>lookup_fn</code> parameter for unit-test injection so the test suite runs offline.</p></li>
+<li><p><strong><code>.SOILGRIDS_TO_HORIZON_MAP</code></strong> + <strong><code>.fill_horizon_from_soilgrids()</code></strong> internals. The helper accepts a <code>lookup_fn</code> parameter for unit-test injection so the test suite runs offline.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="why-cfvo-matters-0-9-50">Why cfvo matters<a class="anchor" aria-label="anchor" href="#why-cfvo-matters-0-9-50"></a></h3>
@@ -3920,7 +3924,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <ul><li>
 <code>.SIBCS_COLOR_CATCH_ALL_CODES</code> (constante interna).</li>
 <li>
-<code><a href="../reference/dot-detect_color_undetermined_fallback.html">.detect_color_undetermined_fallback()</a></code> (helper interno).</li>
+<code>.detect_color_undetermined_fallback()</code> (helper interno).</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -4186,7 +4190,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="b-sibcs-quartzarenico-units-bug-fix-item-from-the-v0935-roadmap-0-9-35">B. SiBCS Quartzarenico units bug fix (Item 4 from the v0.9.35 roadmap)<a class="anchor" aria-label="anchor" href="#b-sibcs-quartzarenico-units-bug-fix-item-from-the-v0935-roadmap-0-9-35"></a></h3>
-<p><code><a href="../reference/neossolo_quartzarenico.html">neossolo_quartzarenico()</a></code> used SiBCS Cap 1 textural-class thresholds in g/kg (sand &gt;= 700, clay &lt; 200) on PERCENT data (sand_pct, clay_pct in 0-100 range). The function never fired on properly-loaded FEBR data and routed all 9 FEBR Quartzarenicos to the catch-all “Regoliticos” subordem.</p>
+<p><code>neossolo_quartzarenico()</code> used SiBCS Cap 1 textural-class thresholds in g/kg (sand &gt;= 700, clay &lt; 200) on PERCENT data (sand_pct, clay_pct in 0-100 range). The function never fired on properly-loaded FEBR data and routed all 9 FEBR Quartzarenicos to the catch-all “Regoliticos” subordem.</p>
 <p>Fix: thresholds converted to %, sand &gt;= 70 %, clay &lt; 20 %. The docstring explicitly notes the SiBCS-vs-soilKey unit convention.</p>
 </div>
 <div class="section level3">
@@ -4270,14 +4274,14 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <p>The “specialised Great Group tests” release. Two GG diagnostics that were under-detecting the v0.9.25-confusion-analysis targets: Quartzipsamments (mineralogy proxy too strict) and Fragiudults / Fragiudalfs / Fragiaqualfs (rupture_resistance rarely in KSSL data).</p>
 <div class="section level3">
 <h3 id="a-quartzipsamment-proxy-broadened-0-9-31">A. Quartzipsamment proxy broadened<a class="anchor" aria-label="anchor" href="#a-quartzipsamment-proxy-broadened-0-9-31"></a></h3>
-<p><code><a href="../reference/quartzipsamment_qualifying_usda.html">quartzipsamment_qualifying_usda()</a></code>: KST 13ed Ch 8 (p 357) defines Quartzipsamments as Psamments where &gt;= 95 % of the 0.02-2.0 mm fraction is resistant minerals (mostly quartz). The pre-v0.9.31 proxy was clay &lt;= 5 % AND coarse_fragments &lt;= 5 %, which under- detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25 confusion analysis showed 14 udipsamments / ustipsamments references should have been Quartzipsamments).</p>
+<p><code>quartzipsamment_qualifying_usda()</code>: KST 13ed Ch 8 (p 357) defines Quartzipsamments as Psamments where &gt;= 95 % of the 0.02-2.0 mm fraction is resistant minerals (mostly quartz). The pre-v0.9.31 proxy was clay &lt;= 5 % AND coarse_fragments &lt;= 5 %, which under- detected: 0/14 KSSL Quartzipsamments were caught (the v0.9.25 confusion analysis showed 14 udipsamments / ustipsamments references should have been Quartzipsamments).</p>
 <p>v0.9.31 broadens to:</p>
 <p>clay_pct &lt;= 10 % (loamy sand and finer sands qualify) sand_pct &gt;= 80 % (NEW: sand-dominated texture required) coarse_fragments &lt;= 15 (some CF tolerated)</p>
 <p>At least 50 % of in-range layers must satisfy all three.</p>
 </div>
 <div class="section level3">
 <h3 id="b-fragipan-accepts-nasis-pediagfeatures-flag-0-9-31">B. Fragipan accepts NASIS pediagfeatures flag<a class="anchor" aria-label="anchor" href="#b-fragipan-accepts-nasis-pediagfeatures-flag-0-9-31"></a></h3>
-<p><code><a href="../reference/fragipan_usda.html">fragipan_usda()</a></code>: KSSL gpkg rarely populates <code>rupture_resistance</code>, the canonical fragipan signal. The 2021 NASIS snapshot, however, ships ~13 500 <code>pediagfeatures.featkind</code> entries, including “Fragipan” tags directly identified by the surveyor. v0.9.31 adds the NASIS path as an OR-evidence source:</p>
+<p><code>fragipan_usda()</code>: KSSL gpkg rarely populates <code>rupture_resistance</code>, the canonical fragipan signal. The 2021 NASIS snapshot, however, ships ~13 500 <code>pediagfeatures.featkind</code> entries, including “Fragipan” tags directly identified by the surveyor. v0.9.31 adds the NASIS path as an OR-evidence source:</p>
 <p>passed = (rupture_resistance &gt;= “firm” with thickness &gt;= 15 cm) OR (NASIS pediagfeatures contains “Fragipan”)</p>
 <p>This closes the Fragiudults / Fragiudalfs / Fragiaqualfs / Fragixeralfs detection gap on KSSL+NASIS pedons.</p>
 </div>
@@ -4307,7 +4311,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="roadmap-deferred-to-follow-up-0-9-31">Roadmap deferred to follow-up<a class="anchor" aria-label="anchor" href="#roadmap-deferred-to-follow-up-0-9-31"></a></h3>
-<p>The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs / Fraglossudalfs) were considered for this release but not shipped. The current <code><a href="../reference/pale_qualifying_usda.html">pale_qualifying_usda()</a></code> uses a clay &gt;= 35 % proxy that is structurally too strict (KST 13ed actually defines Pale- by “clay does not decrease 20 % within 150 cm of mineral surface”), but only 11 KSSL+NASIS misses are in this confusion bucket – lower priority than the 14 Quartzipsamment + Fragipan misses addressed here. Tightening Pale- requires careful design to avoid regression on Hapludalfs (which are far more common) and is left for a future release with better validation infrastructure.</p>
+<p>The Pale-/Glossic Alfisol prefix tests (Paleudalfs / Glossudalfs / Fraglossudalfs) were considered for this release but not shipped. The current <code>pale_qualifying_usda()</code> uses a clay &gt;= 35 % proxy that is structurally too strict (KST 13ed actually defines Pale- by “clay does not decrease 20 % within 150 cm of mineral surface”), but only 11 KSSL+NASIS misses are in this confusion bucket – lower priority than the 14 Quartzipsamment + Fragipan misses addressed here. Tightening Pale- requires careful design to avoid regression on Hapludalfs (which are far more common) and is left for a future release with better validation infrastructure.</p>
 </div>
 <div class="section level3">
 <h3 id="tests-0-9-31">Tests<a class="anchor" aria-label="anchor" href="#tests-0-9-31"></a></h3>
@@ -4355,12 +4359,12 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <p>The “Neossolos Litolicos shallow-profile heuristic” release. Fixes a single classifier path that was sending ~190 of 191 FEBR Neossolos Litolicos to the catch-all “Regoliticos” subordem – the dominant single SiBCS Subordem error in the v0.9.27 confusion analysis.</p>
 <div class="section level3">
 <h3 id="root-cause-0-9-29">Root cause<a class="anchor" aria-label="anchor" href="#root-cause-0-9-29"></a></h3>
-<p>SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact within 50 cm. In the FEBR / BDsolos snapshot, surveyors document this implicitly by stopping the profile description at the rock boundary (median depth 17.5 cm, median 1 horizon) rather than entering a pseudo-R horizon. The pre-v0.9.29 <code><a href="../reference/neossolo_litolico.html">neossolo_litolico()</a></code> required <code><a href="../reference/contato_litico.html">contato_litico()</a></code> OR <code><a href="../reference/contato_litico_fragmentario.html">contato_litico_fragmentario()</a></code> to return TRUE, and both rely on an explicit <code>^R$|^Cr|^Rk</code> designation that FEBR almost never carries (0.5 % of Litolicos in the snapshot).</p>
+<p>SiBCS Cap 12 (p 219) defines Neossolos Litolicos by lithic contact within 50 cm. In the FEBR / BDsolos snapshot, surveyors document this implicitly by stopping the profile description at the rock boundary (median depth 17.5 cm, median 1 horizon) rather than entering a pseudo-R horizon. The pre-v0.9.29 <code>neossolo_litolico()</code> required <code>contato_litico()</code> OR <code>contato_litico_fragmentario()</code> to return TRUE, and both rely on an explicit <code>^R$|^Cr|^Rk</code> designation that FEBR almost never carries (0.5 % of Litolicos in the snapshot).</p>
 <p>Result: the classifier was routing <strong>190 of 191 FEBR Litolicos</strong> to the catch-all “Neossolos Regoliticos” subordem.</p>
 </div>
 <div class="section level3">
 <h3 id="fix-0-9-29">Fix<a class="anchor" aria-label="anchor" href="#fix-0-9-29"></a></h3>
-<p><code><a href="../reference/neossolo_litolico.html">neossolo_litolico()</a></code> now adds an “implicit lithic contact” path:</p>
+<p><code>neossolo_litolico()</code> now adds an “implicit lithic contact” path:</p>
 <p>Direct evidence (explicit R / Cr / Rk designation within 50 cm) is preserved as the canonical path.</p>
 </div>
 <div class="section level3">
@@ -5489,8 +5493,8 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="code-changes-0-9-17">Code changes<a class="anchor" aria-label="anchor" href="#code-changes-0-9-17"></a></h3>
-<ul><li><p><strong><code><a href="../reference/oxisol_usda.html">oxisol_usda()</a></code></strong> – adds the WRB-mirrored argillic-above-oxic exclusion. KST 13ed Ch 13 (p 295) requires that profiles whose argillic horizon’s upper boundary lies above the oxic upper boundary do NOT classify as Oxisols. The previous v0.8 gate had only the prior-Order exclusion list (Gelisol / Histosol / Spodosol / Andisol).</p></li>
-<li><p><strong><code><a href="../reference/ultisol_usda.html">ultisol_usda()</a></code></strong> – graceful BS-low fallback. When the measured <code>bs_pct</code> is missing in all argillic layers, the gate now infers BS &lt; 35 from <code>al_sat_pct &gt;= 50</code> (mathematically forces BS &lt; 50 and BS &lt; 35 in essentially all tropical soils with this profile) or <code>ph_h2o &lt; 5.0</code> (the empirical threshold below which fewer than 5 % of tropical B horizons exceed BS 35). The fallback only fires when the direct measurement is absent, so lab-grade profiles use the canonical KST 13ed gate. Same heuristic added internally to <code><a href="../reference/acrisol.html">acrisol()</a></code> (WRB) for the same reason.</p></li>
+<ul><li><p><strong><code>oxisol_usda()</code></strong> – adds the WRB-mirrored argillic-above-oxic exclusion. KST 13ed Ch 13 (p 295) requires that profiles whose argillic horizon’s upper boundary lies above the oxic upper boundary do NOT classify as Oxisols. The previous v0.8 gate had only the prior-Order exclusion list (Gelisol / Histosol / Spodosol / Andisol).</p></li>
+<li><p><strong><code>ultisol_usda()</code></strong> – graceful BS-low fallback. When the measured <code>bs_pct</code> is missing in all argillic layers, the gate now infers BS &lt; 35 from <code>al_sat_pct &gt;= 50</code> (mathematically forces BS &lt; 50 and BS &lt; 35 in essentially all tropical soils with this profile) or <code>ph_h2o &lt; 5.0</code> (the empirical threshold below which fewer than 5 % of tropical B horizons exceed BS 35). The fallback only fires when the direct measurement is absent, so lab-grade profiles use the canonical KST 13ed gate. Same heuristic added internally to <code><a href="../reference/acrisol.html">acrisol()</a></code> (WRB) for the same reason.</p></li>
 <li><p><strong><code>.bs_low_inferred(pedon, bs_threshold)</code></strong> – new internal helper consolidating the BS-low inference logic so both USDA and WRB gates use the same fallback chain.</p></li>
 </ul></div>
 <div class="section level3">
@@ -5545,7 +5549,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <p>The “robustness pass”: closes the seven v0.3 simplifications in the WRB 2022 key, adds a graceful VLM fallback, auto-detects PROJ / GDAL paths so the layperson on-ramp no longer requires environment variables, ships a one-screen Shiny demo, lays the groundwork for real-data benchmarks against KSSL / EU-LUCAS / Embrapa BDsolos, and captures empirical evidence that the Gemma 4 / Ollama path works end-to-end.</p>
 <div class="section level3">
 <h3 id="wrb--v03-simplifications-closed-0-9-15">WRB 2022 – v0.3 simplifications closed<a class="anchor" aria-label="anchor" href="#wrb--v03-simplifications-closed-0-9-15"></a></h3>
-<p>Each of the seven previously-simplified diagnostics now offers the WRB 2022 alternative qualifying paths verbatim. OR-alternative aggregation via the new <code><a href="../reference/aggregate_alternatives.html">aggregate_alternatives()</a></code> helper. Each path’s evidence is fully recorded in <code>DiagnosticResult$evidence</code> so the trace stays inspectable.</p>
+<p>Each of the seven previously-simplified diagnostics now offers the WRB 2022 alternative qualifying paths verbatim. OR-alternative aggregation via the new <code>aggregate_alternatives()</code> helper. Each path’s evidence is fully recorded in <code>DiagnosticResult$evidence</code> so the trace stays inspectable.</p>
 <ul><li>
 <code>histic_horizon</code> – adds the cumulative path (&gt;= 40 cm of organic material within the upper 80 cm), catching folic / mossy Histosols on slopes that the contiguous-10cm path misses.</li>
 <li>
@@ -5584,7 +5588,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <div class="section level3">
 <h3 id="sibcs-cap-mineralogia--general-orden-coverage-0-9-15">SiBCS Cap 18 mineralogia – general-orden coverage<a class="anchor" aria-label="anchor" href="#sibcs-cap-mineralogia--general-orden-coverage-0-9-15"></a></h3>
 <ul><li>
-<strong><code><a href="../reference/familia_mineralogia_argila_geral.html">familia_mineralogia_argila_geral()</a></code></strong> – new function. Covers Argissolos, Cambissolos, Plintossolos, Vertissolos, Luvissolos, Nitossolos, Chernossolos, Planossolos, Gleissolos – everything the Latossolo-only <code><a href="../reference/familia_mineralogia_argila_latossolo.html">familia_mineralogia_argila_latossolo()</a></code> did not address. Adds the four mineralogia da argila classes the earlier function lacked: <code>esmectitica</code> (T_argila &gt;= 27), <code>oxidica</code> (Kr &lt; 0.75), <code>caulinitica</code> (Ki, Kr &gt;= 0.75 with low T), and <code>mista</code> (catch-all when no gate closes).</li>
+<strong><code><a href="../reference/familia_mineralogia_argila_geral.html">familia_mineralogia_argila_geral()</a></code></strong> – new function. Covers Argissolos, Cambissolos, Plintossolos, Vertissolos, Luvissolos, Nitossolos, Chernossolos, Planossolos, Gleissolos – everything the Latossolo-only <code>familia_mineralogia_argila_latossolo()</code> did not address. Adds the four mineralogia da argila classes the earlier function lacked: <code>esmectitica</code> (T_argila &gt;= 27), <code>oxidica</code> (Kr &lt; 0.75), <code>caulinitica</code> (Ki, Kr &gt;= 0.75 with low T), and <code>mista</code> (catch-all when no gate closes).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="real-data-benchmark-scaffolding-0-9-15">Real-data benchmark scaffolding<a class="anchor" aria-label="anchor" href="#real-data-benchmark-scaffolding-0-9-15"></a></h3>
@@ -5765,7 +5769,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <li>
 <code>R/soilKey-package.R</code> now declares the <code>stats</code> (<code>predict</code>, <code>rnorm</code>, <code>runif</code>, <code>setNames</code>, <code>weighted.mean</code>), <code>utils</code> (<code>tail</code>), and <code>R6</code> (<code>R6Class</code>) imports it actually uses.</li>
 <li>
-<code>R/diagnostics-horizons-wrb-v033.R::plaggic</code> calls <code><a href="../reference/test_bulk_density_below.html">test_bulk_density_below()</a></code> with the spelled-out argument name <code>max_g_cm3</code> instead of the partial-match <code>max</code>.</li>
+<code>R/diagnostics-horizons-wrb-v033.R::plaggic</code> calls <code>test_bulk_density_below()</code> with the spelled-out argument name <code>max_g_cm3</code> instead of the partial-match <code>max</code>.</li>
 <li>
 <code>tests/testthat/test-spatial-soilgrids.R</code> now skips when PROJ’s <code>proj.db</code> is unavailable on the local system (a cosmetic fix – CRAN’s check farm has it).</li>
 <li>

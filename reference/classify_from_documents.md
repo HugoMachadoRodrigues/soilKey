@@ -54,7 +54,7 @@ classify_from_documents(
   Optional model identifier; passed through to
   [`vlm_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.md)
   when `provider` is a string. Defaults to the per-provider default from
-  [`default_model`](https://hugomachadorodrigues.github.io/soilKey/reference/default_model.md).
+  `default_model`.
 
 - systems:
 

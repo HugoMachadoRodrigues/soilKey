@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x56446cf5df20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x562d346d5f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -119,7 +119,7 @@ cat("B_textural (SiBCS):", bt$passed,
 #> B_textural (SiBCS): TRUE   argic (WRB): TRUE
 
 # Atividade da argila (SiBCS Cap 5)
-ta <- soilKey::atividade_argila_alta(perfil)
+ta <- soilKey:::atividade_argila_alta(perfil)
 cat("atividade_argila_alta:", ta$passed, "\n")
 #> atividade_argila_alta: FALSE
 

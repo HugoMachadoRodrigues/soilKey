@@ -1,7 +1,7 @@
-# Takyric properties (WRB 2022 Ch 3.2.15) – per-pedon test wrapping [`test_takyric_surface`](https://hugomachadorodrigues.github.io/soilKey/reference/test_takyric_surface.md).
+# Takyric properties (WRB 2022 Ch 3.2.15) – per-pedon test wrapping `test_takyric_surface`.
 
 Takyric properties (WRB 2022 Ch 3.2.15) – per-pedon test wrapping
-[`test_takyric_surface`](https://hugomachadorodrigues.github.io/soilKey/reference/test_takyric_surface.md).
+`test_takyric_surface`.
 
 ## Usage
 

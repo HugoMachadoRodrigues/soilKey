@@ -43,10 +43,8 @@ A
 
 ## Details
 
-Sub-test:
-[`test_gleyic_features`](https://hugomachadorodrigues.github.io/soilKey/reference/test_gleyic_features.md)
-– requires explicit `redoximorphic_features_pct` \>= 5% within the upper
-50 cm.
+Sub-test: `test_gleyic_features` – requires explicit
+`redoximorphic_features_pct` \>= 5% within the upper 50 cm.
 
 v0.2 deliberately does NOT use the Munsell-based shortcut (chroma \<=
 2 + value \>= 4) as a primary criterion: that pattern fits albic /

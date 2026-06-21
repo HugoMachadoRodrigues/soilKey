@@ -1,7 +1,7 @@
-# Shrink-swell cracks (WRB 2022 Ch 3.2.12) – per-pedon test wrapping [`test_shrink_swell_cracks`](https://hugomachadorodrigues.github.io/soilKey/reference/test_shrink_swell_cracks.md).
+# Shrink-swell cracks (WRB 2022 Ch 3.2.12) – per-pedon test wrapping `test_shrink_swell_cracks`.
 
 Shrink-swell cracks (WRB 2022 Ch 3.2.12) – per-pedon test wrapping
-[`test_shrink_swell_cracks`](https://hugomachadorodrigues.github.io/soilKey/reference/test_shrink_swell_cracks.md).
+`test_shrink_swell_cracks`.
 
 ## Usage
 

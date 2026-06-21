@@ -45,15 +45,13 @@ A
 
 Sub-tests:
 
-- [`test_clay_above`](https://hugomachadorodrigues.github.io/soilKey/reference/test_clay_above.md)
-  – clay \>= 30%
+- `test_clay_above` – clay \>= 30%
 
-- [`test_slickensides_present`](https://hugomachadorodrigues.github.io/soilKey/reference/test_slickensides_present.md)
-  – slickensides at or above the "common" level
+- `test_slickensides_present` – slickensides at or above the "common"
+  level
 
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – combined vertic layer thickness \>= 25 cm (v0.3.1 added per WRB
-  2022)
+- `test_minimum_thickness` – combined vertic layer thickness \>= 25 cm
+  (v0.3.1 added per WRB 2022)
 
 v0.3.1: thickness gate added. Limitations remaining: WRB also accepts
 deep cracks (\>= 1 cm wide extending from the surface to \>= 50 cm

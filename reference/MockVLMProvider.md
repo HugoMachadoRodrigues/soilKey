@@ -15,7 +15,7 @@ Each call to `$chat()` returns the next element of the `responses` list.
 If the call number matches `validation_error_at`, that response is
 replaced with a deliberately malformed JSON string, allowing tests to
 exercise the retry-on-validation-failure path implemented in
-[`validate_or_retry`](https://hugomachadorodrigues.github.io/soilKey/reference/validate_or_retry.md).
+`validate_or_retry`.
 
 ## Example
 

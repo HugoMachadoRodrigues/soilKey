@@ -53,20 +53,17 @@ A
 
 Sub-tests called:
 
-- [`test_mollic_color`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_color.md)
-  – moist value \<= 3, moist chroma \<= 3, dry value \<= 5.
+- `test_mollic_color` – moist value \<= 3, moist chroma \<= 3, dry value
+  \<= 5.
 
-- [`test_mollic_organic_carbon`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_organic_carbon.md)
-  – SOC \>= 0.6%.
+- `test_mollic_organic_carbon` – SOC \>= 0.6%.
 
-- [`test_mollic_base_saturation`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_base_saturation.md)
-  – BS (NH4OAc, pH 7) \>= 50%.
+- `test_mollic_base_saturation` – BS (NH4OAc, pH 7) \>= 50%.
 
-- [`test_mollic_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_thickness.md)
-  – horizon thickness \>= 20 cm.
+- `test_mollic_thickness` – horizon thickness \>= 20 cm.
 
-- [`test_mollic_structure`](https://hugomachadorodrigues.github.io/soilKey/reference/test_mollic_structure.md)
-  – not simultaneously massive AND very hard when dry.
+- `test_mollic_structure` – not simultaneously massive AND very hard
+  when dry.
 
 v0.1 limitations: cumulative thickness across contiguous mollic-
 qualifying horizons is not yet supported – this matters for profiles

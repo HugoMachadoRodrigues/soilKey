@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.153</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.154</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -794,13 +794,14 @@ same engine that backs <code><a href="../reference/classify_wrb2022.html">classi
 SiBCS literature. For example:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Atividade da fração argila (Ta vs Tb) per Cap 1, p 30</span></span>
-<span><span class="fu"><a href="../reference/atividade_argila_alta.html">atividade_argila_alta</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_luvissolo_canonical.html">make_luvissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span>   <span class="co"># TRUE  -&gt; Ta</span></span>
+<span><span class="co"># (the per-attribute predicates are internal engine helpers -&gt; soilKey:::)</span></span>
+<span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">atividade_argila_alta</span><span class="op">(</span><span class="fu"><a href="../reference/make_luvissolo_canonical.html">make_luvissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span>   <span class="co"># TRUE  -&gt; Ta</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="fu"><a href="../reference/atividade_argila_alta.html">atividade_argila_alta</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_nitossolo_canonical.html">make_nitossolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span>   <span class="co"># FALSE -&gt; Tb</span></span>
+<span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">atividade_argila_alta</span><span class="op">(</span><span class="fu"><a href="../reference/make_nitossolo_canonical.html">make_nitossolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span>   <span class="co"># FALSE -&gt; Tb</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span></span>
 <span><span class="co"># Caráter alítico (Cap 1, p 32): Al &gt;= 4 cmol_c/kg + sat Al &gt;= 50% + V &lt; 50%</span></span>
-<span><span class="fu"><a href="../reference/carater_alitico.html">carater_alitico</a></span><span class="op">(</span><span class="fu"><a href="../reference/make_argissolo_canonical.html">make_argissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
+<span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">carater_alitico</span><span class="op">(</span><span class="fu"><a href="../reference/make_argissolo_canonical.html">make_argissolo_canonical</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">passed</span></span>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 </div>
 <div class="section level2">

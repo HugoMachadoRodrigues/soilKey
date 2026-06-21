@@ -34,11 +34,9 @@ A
 
 Sub-tests called:
 
-- [`test_caso4_concentration`](https://hugomachadorodrigues.github.io/soilKey/reference/test_caso4_concentration.md)
-  – gypsum \>= 5%.
+- `test_caso4_concentration` – gypsum \>= 5%.
 
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – thickness \>= 15 cm.
+- `test_minimum_thickness` – thickness \>= 15 cm.
 
 v0.2 limitations: the WRB rule that gypsum content must exceed the
 underlying horizon by 1% (absolute) is not enforced. Petrogypsic

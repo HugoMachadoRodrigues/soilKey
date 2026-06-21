@@ -35,9 +35,7 @@ extract_munsell_from_photo(
 
   A chat provider from
   [`vlm_provider`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_provider.md)
-  (or a
-  [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
-  for testing).
+  (or a `MockVLMProvider` for testing).
 
 - max_retries:
 

@@ -64,9 +64,8 @@ download_ossl_subset_with_labels(
 - query_fn:
 
   Optional injection of the per-coordinate WoSIS query function. Default
-  uses
-  [`.query_nearest_wosis_wrb`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-query_nearest_wosis_wrb.md).
-  Tests pass a stub here to exercise the join logic without network.
+  uses `.query_nearest_wosis_wrb`. Tests pass a stub here to exercise
+  the join logic without network.
 
 - ...:
 

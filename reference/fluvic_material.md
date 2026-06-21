@@ -34,8 +34,7 @@ A
 
 ## Details
 
-Sub-test:
-[`test_fluvic_stratification`](https://hugomachadorodrigues.github.io/soilKey/reference/test_fluvic_stratification.md).
+Sub-test: `test_fluvic_stratification`.
 
 v0.3 limitations: WRB 2022 fluvic material also requires age (typically
 \<100 years for sediment freshness), which v0.3 does not check (no

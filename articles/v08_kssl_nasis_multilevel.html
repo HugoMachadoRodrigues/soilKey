@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.153</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.154</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,15 +100,16 @@ Great Group / Subgroup) on real, published lab data.</p>
 <div class="section level2">
 <h2 id="the-kssl-nasis-join-load_kssl_pedons_with_nasis">1. The KSSL + NASIS join (load_kssl_pedons_with_nasis)<a class="anchor" aria-label="anchor" href="#the-kssl-nasis-join-load_kssl_pedons_with_nasis"></a>
 </h2>
-<p>The Kellogg Soil Survey Laboratory (<a href="https://ncsslabdatamart.sc.egov.usda.gov" class="external-link">NCSS lab data,
-USDA-NRCS</a>) ships ~36 000 pedons with full analytical chemistry
-(clay, sand, silt, OC, pH, CEC, BS, …) but minimal field morphology. The
-NASIS Morphological database (a separate sqlite distribution) carries
-the matching <strong>field-survey morphology</strong>: Munsell colors,
-structure grade / size / type, clay films (<code>phpvsf</code>),
-slickensides, and the <strong><code>pediagfeatures</code>
-diagnostic-features table</strong> (~13 500 entries identifying
-argillic, mollic, cambic, spodic, fragipan, etc.).</p>
+<p>The Kellogg Soil Survey Laboratory (NCSS lab data, USDA-NRCS — the
+NCSS Lab Data Mart, <code>ncsslabdatamart.sc.egov.usda.gov</code>) ships
+~36 000 pedons with full analytical chemistry (clay, sand, silt, OC, pH,
+CEC, BS, …) but minimal field morphology. The NASIS Morphological
+database (a separate sqlite distribution) carries the matching
+<strong>field-survey morphology</strong>: Munsell colors, structure
+grade / size / type, clay films (<code>phpvsf</code>), slickensides, and
+the <strong><code>pediagfeatures</code> diagnostic-features
+table</strong> (~13 500 entries identifying argillic, mollic, cambic,
+spodic, fragipan, etc.).</p>
 <p><code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code> joins the two by
 <code>peiid</code> and depth-overlap matching, returning one PedonRecord
 per profile with both lab and morphology populated:</p>
@@ -463,7 +464,7 @@ confusion analysis identified the dominant remaining gaps:</p>
 <ul>
 <li>
 <strong>Pale- / Glossic Alfisol prefixes</strong> (~11 misses,
-deferred to v0.9.32+): current <code><a href="../reference/pale_qualifying_usda.html">pale_qualifying_usda()</a></code> proxy
+deferred to v0.9.32+): current <code>pale_qualifying_usda()</code> proxy
 is too strict (clay &gt;= 35 %); KST 13ed actually defines Pale- by
 clay-stability within 150 cm. Tightening here without regressing on
 Hapludalfs is delicate work.</li>

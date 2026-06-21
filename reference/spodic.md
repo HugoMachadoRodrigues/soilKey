@@ -58,14 +58,11 @@ A
 
 Sub-tests:
 
-- [`test_spodic_aluminum_iron`](https://hugomachadorodrigues.github.io/soilKey/reference/test_spodic_aluminum_iron.md)
-  – (Al_ox + 0.5\*Fe_ox) \>= 0.5%
+- `test_spodic_aluminum_iron` – (Al_ox + 0.5\*Fe_ox) \>= 0.5%
 
-- [`test_ph_below`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ph_below.md)
-  – ph_h2o \<= 5.9
+- `test_ph_below` – ph_h2o \<= 5.9
 
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – thickness \>= 2.5 cm
+- `test_minimum_thickness` – thickness \>= 2.5 cm
 
 v0.2 limitations: the WRB color criterion (hue 5YR or yellower with
 chroma \<= 5, or specific dark colors) is not enforced. The (Al_ox +

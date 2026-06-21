@@ -60,16 +60,13 @@ A
 
 Sub-tests called:
 
-- [`test_ec_concentration`](https://hugomachadorodrigues.github.io/soilKey/reference/test_ec_concentration.md)
-  – EC \\= 15 dS/m (primary) OR (EC \\= 8 dS/m AND pH(H2O) \\= 8.5)
-  (alkaline).
+- `test_ec_concentration` – EC \\= 15 dS/m (primary) OR (EC \\= 8 dS/m
+  AND pH(H2O) \\= 8.5) (alkaline).
 
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – thickness \\= 15 cm.
+- `test_minimum_thickness` – thickness \\= 15 cm.
 
-- [`test_salic_product`](https://hugomachadorodrigues.github.io/soilKey/reference/test_salic_product.md)
-  – EC \* thickness product \\= 450 (primary) or \\= 240 (alkaline) per
-  qualifying layer.
+- `test_salic_product` – EC \* thickness product \\= 450 (primary) or
+  \\= 240 (alkaline) per qualifying layer.
 
 v0.3.1: alkaline-path and product test added (WRB 2022 Ch 3.1.20, p.
 49). Earlier versions only enforced the primary EC + thickness gate.

@@ -4,7 +4,7 @@ Classifica a mineralogia da argila para Argissolos, Cambissolos,
 Plintossolos, Luvissolos, Nitossolos, Vertissolos, Chernossolos,
 Planossolos, Gleissolos quando ha informacao quantitativa de atividade
 da argila e/ou Ki/Kr. Cobre as classes nao endereçadas por
-[`familia_mineralogia_argila_latossolo`](https://hugomachadorodrigues.github.io/soilKey/reference/familia_mineralogia_argila_latossolo.md):
+`familia_mineralogia_argila_latossolo`:
 
 - `esmectitica`: T_argila \>= `ta_threshold` (default 27 cmolc/kg
   argila), indicando dominancia de argilas 2:1 expansivas (esmectita /

@@ -1,9 +1,7 @@
 # Diagnostic inspection of a BDsolos CSV before loading
 
 Reads the CSV header, attempts to map each column to the soilKey horizon
-schema via
-[`.bdsolos_match_column`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-bdsolos_match_column.md),
-and prints three sections:
+schema via `.bdsolos_match_column`, and prints three sections:
 
 ## Usage
 

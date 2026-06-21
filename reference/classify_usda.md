@@ -48,8 +48,7 @@ classify_usda(
 
   When deriving the family, infer the soil temperature regime from
   latitude/elevation if `site$soil_temperature_regime` is absent
-  (default `TRUE`). See
-  [`family_temperature_regime_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/family_temperature_regime_usda.md).
+  (default `TRUE`). See `family_temperature_regime_usda`.
 
 - gapfill:
 

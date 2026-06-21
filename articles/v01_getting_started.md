@@ -508,13 +508,14 @@ literature. For example:
 ``` r
 
 # Atividade da fração argila (Ta vs Tb) per Cap 1, p 30
-atividade_argila_alta(make_luvissolo_canonical())$passed   # TRUE  -> Ta
+# (the per-attribute predicates are internal engine helpers -> soilKey:::)
+soilKey:::atividade_argila_alta(make_luvissolo_canonical())$passed   # TRUE  -> Ta
 #> [1] TRUE
-atividade_argila_alta(make_nitossolo_canonical())$passed   # FALSE -> Tb
+soilKey:::atividade_argila_alta(make_nitossolo_canonical())$passed   # FALSE -> Tb
 #> [1] FALSE
 
 # Caráter alítico (Cap 1, p 32): Al >= 4 cmol_c/kg + sat Al >= 50% + V < 50%
-carater_alitico(make_argissolo_canonical())$passed
+soilKey:::carater_alitico(make_argissolo_canonical())$passed
 #> [1] NA
 ```
 

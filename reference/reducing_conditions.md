@@ -1,7 +1,7 @@
-# Reducing conditions (WRB 2022 Ch 3.2.10) – per-pedon test wrapping [`test_reducing_conditions`](https://hugomachadorodrigues.github.io/soilKey/reference/test_reducing_conditions.md).
+# Reducing conditions (WRB 2022 Ch 3.2.10) – per-pedon test wrapping `test_reducing_conditions`.
 
 Reducing conditions (WRB 2022 Ch 3.2.10) – per-pedon test wrapping
-[`test_reducing_conditions`](https://hugomachadorodrigues.github.io/soilKey/reference/test_reducing_conditions.md).
+`test_reducing_conditions`.
 
 ## Usage
 

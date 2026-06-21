@@ -47,8 +47,7 @@ A
 ## Details
 
 Implementation reuses every mollic sub-test except the BS test, which is
-inverted via
-[`test_bs_below`](https://hugomachadorodrigues.github.io/soilKey/reference/test_bs_below.md).
+inverted via `test_bs_below`.
 
 ## References
 

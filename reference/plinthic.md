@@ -34,11 +34,9 @@ A
 
 Sub-tests:
 
-- [`test_plinthite_concentration`](https://hugomachadorodrigues.github.io/soilKey/reference/test_plinthite_concentration.md)
-  – plinthite volume % \>= 15
+- `test_plinthite_concentration` – plinthite volume % \>= 15
 
-- [`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md)
-  – thickness \>= 15 cm
+- `test_minimum_thickness` – thickness \>= 15 cm
 
 v0.2 limitations: WRB 2022 also accepts profiles with \>= 40% red
 Fe-rich mottles as alternative criterion – not yet wired. The

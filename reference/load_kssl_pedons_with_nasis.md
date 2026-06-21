@@ -8,10 +8,8 @@ diagnostics
 ([`argic`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
 clay-films,
 [`vertic_horizon`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
-slickensides,
-[`mollic_epipedon_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/mollic_epipedon_usda.md)
-Munsell, etc.) to fire on KSSL profiles – the lab gpkg alone has none of
-those.
+slickensides, `mollic_epipedon_usda` Munsell, etc.) to fire on KSSL
+profiles – the lab gpkg alone has none of those.
 
 ## Usage
 

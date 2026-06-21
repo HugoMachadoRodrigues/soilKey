@@ -48,11 +48,9 @@ A
 
 v0.2 implementation tests three conditions:
 
-- thickness \>= 15 cm
-  ([`test_minimum_thickness`](https://hugomachadorodrigues.github.io/soilKey/reference/test_minimum_thickness.md))
+- thickness \>= 15 cm (`test_minimum_thickness`)
 
-- texture sandy loam or finer
-  ([`test_texture_argic`](https://hugomachadorodrigues.github.io/soilKey/reference/test_texture_argic.md))
+- texture sandy loam or finer (`test_texture_argic`)
 
 - NOT
   [`argic`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)

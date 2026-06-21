@@ -48,9 +48,8 @@ vertic_horizon(
 - min_crack_width_cm:
 
   Minimum shrink-swell crack width (cm) for the field-crack path.
-  Defaults to 0.5 (WRB/USDA); the SiBCS
-  [`horizonte_vertico`](https://hugomachadorodrigues.github.io/soilKey/reference/horizonte_vertico.md)
-  wrapper passes 1.0 per Embrapa (2018) Cap 2 p.73.
+  Defaults to 0.5 (WRB/USDA); the SiBCS `horizonte_vertico` wrapper
+  passes 1.0 per Embrapa (2018) Cap 2 p.73.
 
 ## Value
 

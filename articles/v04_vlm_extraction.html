@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.153</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.154</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,7 +124,7 @@ for horizon extraction is shipped at
 <code>inst/schemas/horizon.json</code>; the rendered prompt template
 lives at <code>inst/prompts/extract_horizons.md</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sch</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu"><a href="../reference/load_schema.html">load_schema</a></span><span class="op">(</span><span class="st">"horizon"</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">sch</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">load_schema</span><span class="op">(</span><span class="st">"horizon"</span><span class="op">)</span>,</span>
 <span>                            simplifyVector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sch</span><span class="op">$</span><span class="va">properties</span><span class="op">$</span><span class="va">horizons</span><span class="op">$</span><span class="va">items</span><span class="op">$</span><span class="va">properties</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 35</span></span>
@@ -172,7 +172,7 @@ synthetic Latossolo description:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mock</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/MockVLMProvider.html">MockVLMProvider</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>responses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">horizon_json</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">soilKey</span><span class="fu">:::</span><span class="fu"><a href="../reference/validate_or_retry.html">validate_or_retry</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">validate_or_retry</span><span class="op">(</span></span>
 <span>  provider    <span class="op">=</span> <span class="va">mock</span>,</span>
 <span>  prompt      <span class="op">=</span> <span class="st">"extract horizons from &lt;fake document&gt;"</span>,</span>
 <span>  schema      <span class="op">=</span> <span class="st">"horizon"</span>,</span>
@@ -196,7 +196,7 @@ test.</p>
 <div class="section level2">
 <h2 id="merging-extraction-into-a-pedonrecord">4. Merging extraction into a <code>PedonRecord</code><a class="anchor" aria-label="anchor" href="#merging-extraction-into-a-pedonrecord"></a>
 </h2>
-<p><code><a href="../reference/apply_horizons_extraction.html">apply_horizons_extraction()</a></code> consumes the parsed JSON and
+<p><code>apply_horizons_extraction()</code> consumes the parsed JSON and
 merges it into a <code>PedonRecord</code>, recording each value in the
 provenance log with <code>source = "extracted_vlm"</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -206,7 +206,7 @@ provenance log with <code>source = "extracted_vlm"</code>.</p>
 <span>  horizons <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>top_cm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, bottom_cm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">added</span> <span class="op">&lt;-</span> <span class="fu">soilKey</span><span class="fu">:::</span><span class="fu"><a href="../reference/apply_horizons_extraction.html">apply_horizons_extraction</a></span><span class="op">(</span><span class="va">pr</span>, <span class="va">res</span><span class="op">$</span><span class="va">data</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">added</span> <span class="op">&lt;-</span> <span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">apply_horizons_extraction</span><span class="op">(</span><span class="va">pr</span>, <span class="va">res</span><span class="op">$</span><span class="va">data</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Provenance entries added:"</span>, <span class="va">added</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Provenance entries added: 12</span></span>
 <span></span>

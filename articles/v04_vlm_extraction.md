@@ -113,9 +113,9 @@ see `tests/testthat/test-vlm-extract.R` for a worked retry-loop test.
 
 ## 4. Merging extraction into a `PedonRecord`
 
-[`apply_horizons_extraction()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_horizons_extraction.md)
-consumes the parsed JSON and merges it into a `PedonRecord`, recording
-each value in the provenance log with `source = "extracted_vlm"`.
+`apply_horizons_extraction()` consumes the parsed JSON and merges it
+into a `PedonRecord`, recording each value in the provenance log with
+`source = "extracted_vlm"`.
 
 ``` r
 

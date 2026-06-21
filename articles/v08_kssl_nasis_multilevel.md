@@ -9,10 +9,10 @@ published lab data.
 
 ## 1. The KSSL + NASIS join (load_kssl_pedons_with_nasis)
 
-The Kellogg Soil Survey Laboratory ([NCSS lab data,
-USDA-NRCS](https://ncsslabdatamart.sc.egov.usda.gov)) ships ~36 000
-pedons with full analytical chemistry (clay, sand, silt, OC, pH, CEC,
-BS, …) but minimal field morphology. The NASIS Morphological database (a
+The Kellogg Soil Survey Laboratory (NCSS lab data, USDA-NRCS — the NCSS
+Lab Data Mart, `ncsslabdatamart.sc.egov.usda.gov`) ships ~36 000 pedons
+with full analytical chemistry (clay, sand, silt, OC, pH, CEC, BS, …)
+but minimal field morphology. The NASIS Morphological database (a
 separate sqlite distribution) carries the matching **field-survey
 morphology**: Munsell colors, structure grade / size / type, clay films
 (`phpvsf`), slickensides, and the **`pediagfeatures` diagnostic-features
@@ -187,11 +187,10 @@ The 4.2 % Subgroup top-1 leaves substantial headroom. The v0.9.27
 confusion analysis identified the dominant remaining gaps:
 
 - **Pale- / Glossic Alfisol prefixes** (~11 misses, deferred to
-  v0.9.32+): current
-  [`pale_qualifying_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/pale_qualifying_usda.md)
-  proxy is too strict (clay \>= 35 %); KST 13ed actually defines Pale-
-  by clay-stability within 150 cm. Tightening here without regressing on
-  Hapludalfs is delicate work.
+  v0.9.32+): current `pale_qualifying_usda()` proxy is too strict (clay
+  \>= 35 %); KST 13ed actually defines Pale- by clay-stability within
+  150 cm. Tightening here without regressing on Hapludalfs is delicate
+  work.
 - **NASIS data sparsity** (~47 % of profiles lack any pediagfeatures /
   phpvsf record): roadmap candidate is field-survey morphology +
   soilKey’s pedometric proxies as a third evidence path.
