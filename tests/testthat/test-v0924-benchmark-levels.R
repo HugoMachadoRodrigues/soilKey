@@ -5,6 +5,7 @@
 # Maps Great Group -> Suborder by canonical KST 13ed Ch 4 suffix.
 
 test_that(".gg_to_suborder resolves canonical Mollisols Great Groups", {
+  skip_on_cran()
   expect_equal(soilKey:::.gg_to_suborder("hapludolls"),    "udolls")
   expect_equal(soilKey:::.gg_to_suborder("calciaquolls"),  "aquolls")
   expect_equal(soilKey:::.gg_to_suborder("haplocryolls"),  "cryolls")
@@ -12,12 +13,14 @@ test_that(".gg_to_suborder resolves canonical Mollisols Great Groups", {
 })
 
 test_that(".gg_to_suborder resolves canonical Alfisols Great Groups", {
+  skip_on_cran()
   expect_equal(soilKey:::.gg_to_suborder("hapludalfs"),    "udalfs")
   expect_equal(soilKey:::.gg_to_suborder("natraqualfs"),   "aqualfs")
   expect_equal(soilKey:::.gg_to_suborder("glossustalfs"),  "ustalfs")
 })
 
 test_that(".gg_to_suborder resolves Inceptisols + Entisols + Spodosols", {
+  skip_on_cran()
   expect_equal(soilKey:::.gg_to_suborder("dystrudepts"), "udepts")
   expect_equal(soilKey:::.gg_to_suborder("eutrudepts"),  "udepts")
   expect_equal(soilKey:::.gg_to_suborder("fluvaquents"), "aquents")
@@ -25,17 +28,20 @@ test_that(".gg_to_suborder resolves Inceptisols + Entisols + Spodosols", {
 })
 
 test_that(".gg_to_suborder is vectorised", {
+  skip_on_cran()
   res <- soilKey:::.gg_to_suborder(c("hapludalfs", "fluvaquents",
                                        "haplorthods", "haplustox"))
   expect_equal(res, c("udalfs", "aquents", "orthods", "ustox"))
 })
 
 test_that(".gg_to_suborder returns NA for unrecognised input", {
+  skip_on_cran()
   expect_true(is.na(soilKey:::.gg_to_suborder("nonexistentgroup")))
   expect_true(is.na(soilKey:::.gg_to_suborder(NA_character_)))
 })
 
 test_that(".gg_to_suborder handles empty input", {
+  skip_on_cran()
   expect_equal(soilKey:::.gg_to_suborder(character(0)), character(0))
 })
 
@@ -70,6 +76,7 @@ mk_synth_pedon_with_subgroup_ref <- function(id, ref_subgroup) {
 }
 
 test_that("benchmark_run_classification accepts level='great_group'", {
+  skip_on_cran()
   peds <- list(
     mk_synth_pedon_with_subgroup_ref("p1", "typic dystrudepts"),
     mk_synth_pedon_with_subgroup_ref("p2", "aquic eutrudepts")
@@ -85,6 +92,7 @@ test_that("benchmark_run_classification accepts level='great_group'", {
 })
 
 test_that("benchmark_run_classification accepts level='suborder'", {
+  skip_on_cran()
   peds <- list(
     mk_synth_pedon_with_subgroup_ref("p1", "typic dystrudepts"),
     mk_synth_pedon_with_subgroup_ref("p2", "aquic eutrudepts")
@@ -97,6 +105,7 @@ test_that("benchmark_run_classification accepts level='suborder'", {
 })
 
 test_that("benchmark_run_classification rejects invalid level", {
+  skip_on_cran()
   peds <- list(mk_synth_pedon_with_subgroup_ref("p1", "typic dystrudepts"))
   expect_error(
     benchmark_run_classification(peds, system = "usda", level = "bogus_level",

@@ -29,6 +29,7 @@
 }
 
 test_that("settings_server exposes a config reactive synced to rv", {
+  skip_on_cran()
   .pro_skip_unless_deps()
   # settings_server writes the diagnostic-engine / strict-mode package options
   # as a side effect; snapshot + restore them so the test never leaks into the
@@ -55,6 +56,7 @@ test_that("settings_server exposes a config reactive synced to rv", {
 })
 
 test_that("classify_server runs the three keys on a pedon", {
+  skip_on_cran()
   .pro_skip_unless_deps()
   env <- .pro_srv_env()
   classify_server <- get("classify_server", envir = env)
@@ -71,6 +73,7 @@ test_that("classify_server runs the three keys on a pedon", {
 })
 
 test_that("pedon_server loads a fixture and builds a PedonRecord", {
+  skip_on_cran()
   .pro_skip_unless_deps()
   env <- .pro_srv_env()
   pedon_server <- get("pedon_server", envir = env)
@@ -87,6 +90,7 @@ test_that("pedon_server loads a fixture and builds a PedonRecord", {
 })
 
 test_that("report_server's config reactive tracks settings", {
+  skip_on_cran()
   .pro_skip_unless_deps()
   env <- .pro_srv_env()
   report_server <- get("report_server", envir = env)
@@ -98,6 +102,7 @@ test_that("report_server's config reactive tracks settings", {
 })
 
 test_that("uncertainty / spatial / photo / spectra servers initialise without error", {
+  skip_on_cran()
   .pro_skip_unless_deps()
   env <- .pro_srv_env()
   rv <- shiny::reactiveValues(pedon = soilKey::make_ferralsol_canonical(),

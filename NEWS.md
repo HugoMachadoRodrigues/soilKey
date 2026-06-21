@@ -1,3 +1,21 @@
+# soilKey 0.9.153 (2026-06-20)
+
+The "**CRAN check-time reduction**" release. The 0.9.152 pre-test passed (OK on
+Windows + Debian) but flagged the overall check time (>10 min, dominated by the
+test suite). No code or classification change -- this only moves slow tests off
+CRAN.
+
+\itemize{
+  \item \strong{Heavy integration / simulation / app tests now}
+        \code{skip_on_cran()}: the aqp-engine fallbacks, argic designation
+        inference, the Monte-Carlo uncertainty suite, the benchmark suite, the
+        argic-films audit, the sensitivity / accuracy / edge-case suites, and
+        the Shiny-module \code{testServer} tests. They run in full on CI
+        (\code{NOT_CRAN=true}); on CRAN the test phase drops from ~9 min to
+        ~1.5 min. The fast unit tests, the 44 canonical fixtures and the
+        end-to-end key tests still run on CRAN.
+}
+
 # soilKey 0.9.152 (2026-06-20)
 
 The "**CRAN pre-test fixes**" release -- addresses the issues raised by CRAN's

@@ -34,6 +34,7 @@
 # ---- 1. Default canonical: morph fallback STAYS off ----------------------
 
 test_that("v0.9.89: default soilkey engine + no opt-in -> texture fallback OFF", {
+  skip_on_cran()
   pr <- .fix_no_texture_with_Bw()
   res <- test_ferralic_texture(pr$horizons)
   expect_true(is.na(res$passed))
@@ -43,6 +44,7 @@ test_that("v0.9.89: default soilkey engine + no opt-in -> texture fallback OFF",
 # ---- 2. v0.9.89 engine="aqp" auto-enables fallback -----------------------
 
 test_that("v0.9.89: engine=aqp auto-enables the texture morphological fallback", {
+  skip_on_cran()
   pr <- .fix_no_texture_with_Bw()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     res <- test_ferralic_texture(pr$horizons)
@@ -55,6 +57,7 @@ test_that("v0.9.89: engine=aqp auto-enables the texture morphological fallback",
 # ---- 3. User can suppress the fallback with explicit FALSE ---------------
 
 test_that("v0.9.89: explicit ferralic_texture_morphological_fallback=FALSE suppresses", {
+  skip_on_cran()
   pr <- .fix_no_texture_with_Bw()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp",
                             soilKey.ferralic_texture_morphological_fallback = FALSE), {
@@ -67,6 +70,7 @@ test_that("v0.9.89: explicit ferralic_texture_morphological_fallback=FALSE suppr
 # ---- 4. Explicit TRUE works without engine=aqp --------------------------
 
 test_that("v0.9.89: explicit ferralic_texture_morphological_fallback=TRUE works without engine", {
+  skip_on_cran()
   pr <- .fix_no_texture_with_Bw()
   withr::with_options(list(soilKey.ferralic_texture_morphological_fallback = TRUE), {
     res <- test_ferralic_texture(pr$horizons)
@@ -79,6 +83,7 @@ test_that("v0.9.89: explicit ferralic_texture_morphological_fallback=TRUE works 
 # ---- 5. BDsolos RJ regression: Latossolo recall lifts from 32 to 33 -----
 
 test_that("v0.9.89: BDsolos RJ Latossolo recall reaches 33 with engine=aqp", {
+  skip_on_cran()
   RJ <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/embrapa_bdsolos/BD_solos/RJ.csv"
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))

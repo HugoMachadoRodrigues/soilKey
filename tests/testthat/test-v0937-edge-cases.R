@@ -17,6 +17,7 @@ mk_h <- function(...) ensure_horizon_schema(data.table::data.table(...))
 # ---- empty / minimal horizons ---------------------------------------------
 
 test_that("classify_*  do not raise on a pedon with NO horizons", {
+  skip_on_cran()
   hz <- ensure_horizon_schema(data.table::data.table())
   p <- PedonRecord$new(
     site = list(id = "empty", lat = 0, lon = 0, country = "TEST"),
@@ -31,6 +32,7 @@ test_that("classify_*  do not raise on a pedon with NO horizons", {
 })
 
 test_that("classify_* return a result object on single-horizon pedon", {
+  skip_on_cran()
   p <- PedonRecord$new(
     site = list(id = "single", lat = 0, lon = 0, country = "TEST"),
     horizons = mk_h(top_cm = 0, bottom_cm = 30,
@@ -47,6 +49,7 @@ test_that("classify_* return a result object on single-horizon pedon", {
 })
 
 test_that("classify_* accept all-NA horizon rows without crashing", {
+  skip_on_cran()
   hz <- mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                designation = c(NA_character_, NA_character_),
                clay_pct = c(NA_real_, NA_real_),
@@ -66,6 +69,7 @@ test_that("classify_* accept all-NA horizon rows without crashing", {
 # ---- non-monotonic / reversed depths --------------------------------------
 
 test_that("classify_* survive horizons in reverse order (deepest first)", {
+  skip_on_cran()
   # The classifiers should be tolerant -- internal ordering by top_cm
   # OR an explicit precondition that flags + handles. Either way, no
   # crash.
@@ -86,6 +90,7 @@ test_that("classify_* survive horizons in reverse order (deepest first)", {
 })
 
 test_that("classify_* tolerate zero-thickness horizon", {
+  skip_on_cran()
   # Bug-bait: a row with top == bottom. Should not crash.
   hz <- mk_h(top_cm    = c(0, 30, 30),
                bottom_cm = c(30, 30, 60),
@@ -106,6 +111,7 @@ test_that("classify_* tolerate zero-thickness horizon", {
 # ---- impossible / extreme values ------------------------------------------
 
 test_that("classify_* tolerate impossibly deep profile", {
+  skip_on_cran()
   # 10 m profile -- shouldn't crash; just classify the upper part.
   hz <- mk_h(top_cm    = c(0, 30, 200, 500),
                bottom_cm = c(30, 200, 500, 1000),
@@ -126,6 +132,7 @@ test_that("classify_* tolerate impossibly deep profile", {
 # ---- non-ASCII / weird text ------------------------------------------------
 
 test_that("classify_* tolerate non-ASCII designations (UTF-8)", {
+  skip_on_cran()
   hz <- mk_h(top_cm    = c(0, 30),
                bottom_cm = c(30, 80),
                # Designation with PT-BR diacritics + arabic numeral
@@ -146,6 +153,7 @@ test_that("classify_* tolerate non-ASCII designations (UTF-8)", {
 # ---- duplicates -----------------------------------------------------------
 
 test_that("classify_* tolerate duplicate horizon designations", {
+  skip_on_cran()
   # Common in field surveys when sub-horizons get the same letter.
   hz <- mk_h(top_cm    = c(0, 15, 30),
                bottom_cm = c(15, 30, 60),
@@ -166,6 +174,7 @@ test_that("classify_* tolerate duplicate horizon designations", {
 # ---- missing site fields --------------------------------------------------
 
 test_that("classify_* survive a pedon with missing optional site fields", {
+  skip_on_cran()
   # No country, no parent_material, no lat/lon.
   p <- PedonRecord$new(
     site = list(id = "minimal-site"),
@@ -181,6 +190,7 @@ test_that("classify_* survive a pedon with missing optional site fields", {
 })
 
 test_that("classify_all on a broken pedon returns warning, not crash", {
+  skip_on_cran()
   hz <- ensure_horizon_schema(data.table::data.table())
   p <- PedonRecord$new(
     site = list(id = "broken"),

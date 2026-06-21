@@ -51,6 +51,7 @@
 
 
 test_that("mod_map_grid.R ships and parses", {
+  skip_on_cran()
   app_dir <- .mg_app_dir()
   expect_true(file.exists(file.path(app_dir, "R", "mod_map_grid.R")))
   expect_silent(parse(file.path(app_dir, "R", "mod_map_grid.R")))
@@ -58,6 +59,7 @@ test_that("mod_map_grid.R ships and parses", {
 
 
 test_that("map_grid_ui() builds a valid Shiny tag", {
+  skip_on_cran()
   skip_if_not_installed("shiny"); skip_if_not_installed("bslib")
   skip_if_not_installed("shinyWidgets"); skip_if_not_installed("DT")
   skip_if_not_installed("leaflet")
@@ -68,6 +70,7 @@ test_that("map_grid_ui() builds a valid Shiny tag", {
 
 
 test_that(".grid_make builds an n-by-n grid over the bbox", {
+  skip_on_cran()
   .mg_skip_if_no_proj()
   env <- .mg_source_modules()
   g <- get(".grid_make", envir = env)(.mg_bbox(), 6L)
@@ -80,6 +83,7 @@ test_that(".grid_make builds an n-by-n grid over the bbox", {
 
 
 test_that(".grid_classify_covariates classifies via an injectable sampler", {
+  skip_on_cran()
   .mg_skip_if_no_proj()
   env <- .mg_source_modules()
   grid_make <- get(".grid_make", envir = env)
@@ -99,6 +103,7 @@ test_that(".grid_classify_covariates classifies via an injectable sampler", {
 
 
 test_that(".grid_interpolate assigns each cell its nearest point's class", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   .mg_skip_if_no_proj()
   env <- .mg_source_modules()
@@ -119,6 +124,7 @@ test_that(".grid_interpolate assigns each cell its nearest point's class", {
 
 
 test_that(".grid_overlay maps SoilGrids integers to RSG codes", {
+  skip_on_cran()
   .mg_skip_if_no_proj()
   env <- .mg_source_modules()
   grid_make <- get(".grid_make", envir = env)
@@ -134,6 +140,7 @@ test_that(".grid_overlay maps SoilGrids integers to RSG codes", {
 
 
 test_that(".grid_to_raster reduces codes to a categorical raster + LUT", {
+  skip_on_cran()
   .mg_skip_if_no_proj()
   env <- .mg_source_modules()
   grid_make    <- get(".grid_make", envir = env)
@@ -147,6 +154,7 @@ test_that(".grid_to_raster reduces codes to a categorical raster + LUT", {
 
 
 test_that("map_grid_server renders an overlay raster over the test bbox", {
+  skip_on_cran()
   skip_if_not_installed("shiny"); skip_if_not_installed("bslib")
   skip_if_not_installed("DT"); skip_if_not_installed("leaflet")
   .mg_skip_if_no_proj()

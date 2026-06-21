@@ -56,6 +56,7 @@
 
 
 test_that("mod_map.R ships and parses", {
+  skip_on_cran()
   app_dir <- .map_app_dir()
   expect_true(file.exists(file.path(app_dir, "R", "mod_map.R")))
   expect_silent(parse(file.path(app_dir, "R", "mod_map.R")))
@@ -63,6 +64,7 @@ test_that("mod_map.R ships and parses", {
 
 
 test_that("map_ui() builds a valid Shiny tag", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("DT")
@@ -75,6 +77,7 @@ test_that("map_ui() builds a valid Shiny tag", {
 
 
 test_that("map_server queries the prior at the pedon coordinate (offline raster)", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("DT")
@@ -120,6 +123,7 @@ test_that("map_server queries the prior at the pedon coordinate (offline raster)
 
 
 test_that("map_server holds a clicked coordinate when no pedon is loaded", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("DT")

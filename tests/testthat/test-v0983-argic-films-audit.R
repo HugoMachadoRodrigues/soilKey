@@ -8,6 +8,7 @@
 # ---- .argic_strong_films_match (low-level token matcher) -----------------
 
 test_that("v0.9.83: .argic_strong_films_match returns FALSE for empty / NA-only", {
+  skip_on_cran()
   expect_false(.argic_strong_films_match(character(0)))
   expect_false(.argic_strong_films_match(NA_character_))
   expect_false(.argic_strong_films_match(c(NA_character_, NA_character_)))
@@ -16,6 +17,7 @@ test_that("v0.9.83: .argic_strong_films_match returns FALSE for empty / NA-only"
 
 
 test_that("v0.9.83: .argic_strong_films_match flags strong Portuguese qualifiers", {
+  skip_on_cran()
   expect_true(.argic_strong_films_match("comum"))
   expect_true(.argic_strong_films_match("Comum"))
   expect_true(.argic_strong_films_match("COMUM"))
@@ -28,6 +30,7 @@ test_that("v0.9.83: .argic_strong_films_match flags strong Portuguese qualifiers
 
 
 test_that("v0.9.83: .argic_strong_films_match flags strong English qualifiers", {
+  skip_on_cran()
   expect_true(.argic_strong_films_match("common"))
   expect_true(.argic_strong_films_match("Common"))
   expect_true(.argic_strong_films_match("abundant"))
@@ -36,6 +39,7 @@ test_that("v0.9.83: .argic_strong_films_match flags strong English qualifiers", 
 
 
 test_that("v0.9.83: .argic_strong_films_match REJECTS weak qualifiers", {
+  skip_on_cran()
   expect_false(.argic_strong_films_match("pouca"))
   expect_false(.argic_strong_films_match("fraca"))
   expect_false(.argic_strong_films_match("few"))
@@ -45,6 +49,7 @@ test_that("v0.9.83: .argic_strong_films_match REJECTS weak qualifiers", {
 
 
 test_that("v0.9.83: .argic_strong_films_match strips A-class Portuguese accents before matching", {
+  skip_on_cran()
   # The v0.9.61 strong-qualifier tokens (\\babunda, \\bcomu) are
   # A-class only; the helper strips A-acute / A-grave / A-circumflex /
   # A-tilde so surveyor-encoded "Abundânte" still matches "abundan".
@@ -91,6 +96,7 @@ test_that("v0.9.83: .argic_strong_films_match strips A-class Portuguese accents 
 
 
 test_that("v0.9.83: argic_with_strong_clay_films fires on Bt with comum/abundante films", {
+  skip_on_cran()
   pr <- .fix_with_films(c(NA_character_, NA_character_, "comum", "abundante"))
   res <- argic_with_strong_clay_films(pr)
   expect_true(isTRUE(res$passed))
@@ -101,6 +107,7 @@ test_that("v0.9.83: argic_with_strong_clay_films fires on Bt with comum/abundant
 
 
 test_that("v0.9.83: argic_with_strong_clay_films stays FALSE on weak films", {
+  skip_on_cran()
   pr <- .fix_with_films(c(NA_character_, NA_character_, "pouca", "fraca"))
   res <- argic_with_strong_clay_films(pr)
   expect_false(isTRUE(res$passed))
@@ -109,6 +116,7 @@ test_that("v0.9.83: argic_with_strong_clay_films stays FALSE on weak films", {
 
 
 test_that("v0.9.83: argic_with_strong_clay_films stays FALSE on missing films", {
+  skip_on_cran()
   pr <- .fix_with_films(c(NA_character_, NA_character_, NA_character_, NA_character_))
   res <- argic_with_strong_clay_films(pr)
   expect_false(isTRUE(res$passed))
@@ -119,6 +127,7 @@ test_that("v0.9.83: argic_with_strong_clay_films stays FALSE on missing films", 
 # ---- audit_argic_strong_films (data.frame audit) -------------------------
 
 test_that("v0.9.83: audit_argic_strong_films returns expected schema", {
+  skip_on_cran()
   pr <- .fix_with_films(c(NA_character_, NA_character_, "comum", "abundante"))
   pr$site$reference_sibcs <- "ARGISSOLO VERMELHO Distrofico tipico"
   audit <- audit_argic_strong_films(list(pr))
@@ -132,6 +141,7 @@ test_that("v0.9.83: audit_argic_strong_films returns expected schema", {
 
 
 test_that("v0.9.83: audit_argic_strong_films reference_filter selects subset", {
+  skip_on_cran()
   prL <- .fix_with_films(c(NA_character_, NA_character_, "pouca", "fraca"))
   prL$site$reference_sibcs <- "LATOSSOLO AMARELO Distrofico tipico"
   prA <- .fix_with_films(c(NA_character_, NA_character_, "comum", "abundante"))
@@ -149,6 +159,7 @@ test_that("v0.9.83: audit_argic_strong_films reference_filter selects subset", {
 
 
 test_that("v0.9.83: audit_argic_strong_films errors on empty input", {
+  skip_on_cran()
   expect_error(audit_argic_strong_films(list()), "non-empty list")
 })
 
@@ -159,6 +170,7 @@ test_that("v0.9.83: audit_argic_strong_films errors on empty input", {
 # bit-for-bit -- the v0.9.83 helper extraction never changes behaviour.
 
 test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-for-bit", {
+  skip_on_cran()
   RJ <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/embrapa_bdsolos/BD_solos/RJ.csv"
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
@@ -181,6 +193,7 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
 
 
 test_that("v0.9.83: BDsolos RJ audit -- minimal Latossolo false-positive exclusion", {
+  skip_on_cran()
   RJ <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/embrapa_bdsolos/BD_solos/RJ.csv"
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))

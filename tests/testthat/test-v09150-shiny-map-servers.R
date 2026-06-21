@@ -27,6 +27,7 @@
 }
 
 test_that("map_server: coords_r tracks the pedon coordinate", {
+  skip_on_cran()
   .map_skip_unless_deps()
   env <- .map_srv_env()
   map_server <- get("map_server", envir = env)
@@ -45,6 +46,7 @@ test_that("map_server: coords_r tracks the pedon coordinate", {
 })
 
 test_that("map_batch_server: column reactives + demo run populate rv$batch_points", {
+  skip_on_cran()
   .map_skip_unless_deps()
   env <- .map_srv_env()
   map_batch_server <- get("map_batch_server", envir = env)
@@ -63,6 +65,7 @@ test_that("map_batch_server: column reactives + demo run populate rv$batch_point
 })
 
 test_that("map_grid_server: bbox + n_cells reactives are correct", {
+  skip_on_cran()
   .map_skip_unless_deps()
   env <- .map_srv_env()
   map_grid_server <- get("map_grid_server", envir = env)
