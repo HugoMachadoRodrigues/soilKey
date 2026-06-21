@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.153 (2026-06-20)
+
+The “**CRAN check-time reduction**” release. The 0.9.152 pre-test passed
+(OK on Windows + Debian) but flagged the overall check time (\>10 min,
+dominated by the test suite). No code or classification change – this
+only moves slow tests off CRAN.
+
 ## soilKey 0.9.152 (2026-06-20)
 
 The “**CRAN pre-test fixes**” release – addresses the issues raised by
