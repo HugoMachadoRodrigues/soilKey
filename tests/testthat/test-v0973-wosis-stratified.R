@@ -4,6 +4,7 @@
 
 
 test_that("v0.9.73: load_wosis_stratified_sample() returns 130 pedons across 26 RSGs", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "wosis_stratified_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -23,6 +24,7 @@ test_that("v0.9.73: load_wosis_stratified_sample() returns 130 pedons across 26 
 
 
 test_that("v0.9.73: stratified pedons carry full PedonRecord structure", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "wosis_stratified_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -43,6 +45,7 @@ test_that("v0.9.73: stratified pedons carry full PedonRecord structure", {
 
 
 test_that("v0.9.73: stratified sample exposes richer analytical fields than SA snapshot", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "wosis_stratified_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -65,6 +68,7 @@ test_that("v0.9.73: stratified sample exposes richer analytical fields than SA s
 
 
 test_that("v0.9.73: classify_wrb2022() runs on every stratified pedon without error", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "wosis_stratified_sample.rds"))
                           || nzchar(system.file("extdata",

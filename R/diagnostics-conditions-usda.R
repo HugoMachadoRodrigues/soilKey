@@ -56,8 +56,7 @@
 #' @return A \code{\link{DiagnosticResult}} with
 #'         \code{evidence$saturation_type} = "endo" / "epi" / NA.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 41-44.
-#' @keywords internal
-#' @export
+#' @noRd
 aquic_conditions_usda <- function(pedon,
                                       max_top_cm    = 100,
                                       min_redox_pct = 5,
@@ -173,8 +172,7 @@ aquic_conditions_usda <- function(pedon,
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 33.
-#' @keywords internal
-#' @export
+#' @noRd
 anhydrous_conditions_usda <- function(pedon) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {
@@ -255,8 +253,7 @@ anhydrous_conditions_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 43.
-#' @keywords internal
-#' @export
+#' @noRd
 cryoturbation_usda <- function(pedon) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {
@@ -310,8 +307,7 @@ cryoturbation_usda <- function(pedon) {
 #' @param min_thickness_cm Minimum thickness (default 30 cm).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 45.
-#' @keywords internal
-#' @export
+#' @noRd
 glacic_layer_usda <- function(pedon,
                                   max_top_cm = 100,
                                   min_thickness_cm = 30) {
@@ -377,8 +373,7 @@ glacic_layer_usda <- function(pedon,
 #'        (default 100 cm -- Gelisols criterion at Order level).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 47.
-#' @keywords internal
-#' @export
+#' @noRd
 permafrost_within_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {

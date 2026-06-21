@@ -152,7 +152,7 @@ spatial_prior_soilgrids <- function(pedon,
 #' returned SpatVector is in lon/lat (EPSG:4326) so it can be passed
 #' to terra::extract regardless of the raster CRS.
 #'
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 soilgrids_buffer_vect <- function(pedon, buffer_m = 250) {
   lon <- pedon$site$lon
@@ -185,7 +185,7 @@ soilgrids_buffer_vect <- function(pedon, buffer_m = 250) {
 #' 32701..32760 southern) for a single coordinate. Used for metric
 #' buffering.
 #'
-#' @keywords internal
+#' @noRd
 utm_crs_for_point <- function(lon, lat) {
   zone <- floor((lon + 180) / 6) + 1
   zone <- max(1L, min(60L, as.integer(zone)))

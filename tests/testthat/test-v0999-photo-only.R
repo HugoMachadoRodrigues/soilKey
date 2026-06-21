@@ -5,6 +5,7 @@
 # ---- compute_per_attribute_evidence_grade ---------------------------------
 
 test_that("an all-measured pedon yields a zero-row grade table", {
+  skip_on_cran()
   g <- compute_per_attribute_evidence_grade(make_ferralsol_canonical())
   expect_s3_class(g, "data.table")
   expect_identical(names(g), c("horizon_idx", "attribute", "grade"))
@@ -12,6 +13,7 @@ test_that("an all-measured pedon yields a zero-row grade table", {
 })
 
 test_that("per-attribute grade reflects each cell's provenance source", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   p$add_measurement(1, "clay_pct", 51, "extracted_vlm",
                     confidence = 0.7, overwrite = TRUE)
@@ -28,6 +30,7 @@ test_that("per-attribute grade reflects each cell's provenance source", {
 })
 
 test_that("the most authoritative source wins a multiply-sourced cell", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   p$add_measurement(1, "clay_pct", 49, "inferred_prior",
                     confidence = 0.5, overwrite = TRUE)
@@ -39,6 +42,7 @@ test_that("the most authoritative source wins a multiply-sourced cell", {
 })
 
 test_that("compute_evidence_grade returns E for a user-assumed value", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   p$add_measurement(1, "clay_pct", 50, "user_assumed",
                     confidence = 0.2, overwrite = TRUE)
@@ -48,6 +52,7 @@ test_that("compute_evidence_grade returns E for a user-assumed value", {
 # ---- apply_soilgrids_depth_prior ------------------------------------------
 
 test_that("depth prior fills NA horizon attributes as inferred_prior", {
+  skip_on_cran()
   p <- make_cambisol_canonical()
   p$horizons$clay_pct <- NA_real_
   apply_soilgrids_depth_prior(
@@ -59,6 +64,7 @@ test_that("depth prior fills NA horizon attributes as inferred_prior", {
 })
 
 test_that("depth prior interpolates at the horizon mid-depth", {
+  skip_on_cran()
   p <- make_cambisol_canonical()
   # One horizon spanning 0-20 cm -> mid-depth 10 cm == the 5-15cm slice mid.
   p$horizons <- p$horizons[1, ]
@@ -72,6 +78,7 @@ test_that("depth prior interpolates at the horizon mid-depth", {
 })
 
 test_that("depth prior never overwrites a measured value by default", {
+  skip_on_cran()
   p <- make_cambisol_canonical()
   measured <- p$horizons$clay_pct
   apply_soilgrids_depth_prior(
@@ -81,6 +88,7 @@ test_that("depth prior never overwrites a measured value by default", {
 })
 
 test_that("depth prior skips gracefully when there are no coordinates", {
+  skip_on_cran()
   p <- make_cambisol_canonical()
   p$site$lat <- NULL; p$site$lon <- NULL
   expect_warning(apply_soilgrids_depth_prior(p, attrs = "clay_pct"),
@@ -90,10 +98,12 @@ test_that("depth prior skips gracefully when there are no coordinates", {
 # ---- classify_from_photos -------------------------------------------------
 
 test_that("classify_from_photos requires a provider", {
+  skip_on_cran()
   expect_error(classify_from_photos(images = "x.jpg"), "provider")
 })
 
 test_that("classify_from_photos reports an error for a missing image", {
+  skip_on_cran()
   res <- classify_from_photos(images = "does-not-exist.jpg",
                               provider = photo_mock(), soilgrids = FALSE)
   expect_true(!is.null(res$error))
@@ -101,6 +111,7 @@ test_that("classify_from_photos reports an error for a missing image", {
 })
 
 test_that("classify_from_photos builds and classifies a pedon from a photo", {
+  skip_on_cran()
   skip_if_not_installed("magick")
   skip_if_not_installed("jsonvalidate")
   img <- photo_test_image()
@@ -116,6 +127,7 @@ test_that("classify_from_photos builds and classifies a pedon from a photo", {
 })
 
 test_that("classify_from_photos back-fills attributes from a depth prior", {
+  skip_on_cran()
   skip_if_not_installed("magick")
   skip_if_not_installed("jsonvalidate")
   img <- photo_test_image()
@@ -130,6 +142,7 @@ test_that("classify_from_photos back-fills attributes from a depth prior", {
 })
 
 test_that("classify_from_photos returns a summary row per system", {
+  skip_on_cran()
   skip_if_not_installed("magick")
   skip_if_not_installed("jsonvalidate")
   img <- photo_test_image()

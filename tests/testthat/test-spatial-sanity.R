@@ -5,6 +5,7 @@
 
 
 test_that("prior_consistency_check returns 'consistent' above threshold", {
+  skip_on_cran()
   prior <- data.table::data.table(
     rsg_code    = c("FR", "AC", "RG"),
     probability = c(0.85, 0.10, 0.05)
@@ -18,6 +19,7 @@ test_that("prior_consistency_check returns 'consistent' above threshold", {
 
 
 test_that("prior_consistency_check fires warning when p < threshold", {
+  skip_on_cran()
   prior <- data.table::data.table(
     rsg_code    = c("FR", "AC", "CR"),
     probability = c(0.95, 0.04, 0.005)   # CR (Cryosol) ~0.5% in tropics
@@ -31,6 +33,7 @@ test_that("prior_consistency_check fires warning when p < threshold", {
 
 
 test_that("prior_consistency_check returns 'inconsistent' when RSG is absent", {
+  skip_on_cran()
   prior <- data.table::data.table(
     rsg_code    = c("FR", "AC"),
     probability = c(0.7, 0.3)
@@ -43,6 +46,7 @@ test_that("prior_consistency_check returns 'inconsistent' when RSG is absent", {
 
 
 test_that("prior_consistency_check returns 'no_data' on empty prior", {
+  skip_on_cran()
   empty <- data.table::data.table(
     rsg_code    = character(),
     probability = numeric()
@@ -54,6 +58,7 @@ test_that("prior_consistency_check returns 'no_data' on empty prior", {
 
 
 test_that("classify_wrb2022 wires the prior_check on the result", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   prior <- data.table::data.table(
     rsg_code    = c("FR", "AC", "RG"),
@@ -71,6 +76,7 @@ test_that("classify_wrb2022 wires the prior_check on the result", {
 
 
 test_that("classify_wrb2022 emits warning when prior is inconsistent", {
+  skip_on_cran()
   # Force a case where the deterministic key returns Ferralsols but
   # the prior says this is overwhelmingly Cryosol territory.
   pr <- make_ferralsol_canonical()
@@ -89,6 +95,7 @@ test_that("classify_wrb2022 emits warning when prior is inconsistent", {
 
 
 test_that("classify_wrb2022 leaves prior_check NULL when no prior given", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr)
   expect_null(res$prior_check)

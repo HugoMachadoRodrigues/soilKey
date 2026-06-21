@@ -4,6 +4,7 @@
 
 
 test_that("combine_priors with one prior returns it unchanged", {
+  skip_on_cran()
   p1 <- data.table::data.table(
     rsg_code    = c("FR", "AC", "RG"),
     probability = c(0.7,  0.2,  0.1)
@@ -17,6 +18,7 @@ test_that("combine_priors with one prior returns it unchanged", {
 
 
 test_that("combine_priors with equal weights pools two priors", {
+  skip_on_cran()
   p1 <- data.table::data.table(
     rsg_code    = c("FR", "AC"),
     probability = c(0.8,  0.2)
@@ -39,6 +41,7 @@ test_that("combine_priors with equal weights pools two priors", {
 
 
 test_that("combine_priors honours weights", {
+  skip_on_cran()
   p1 <- data.table::data.table(
     rsg_code    = c("FR", "AC"),
     probability = c(0.9, 0.1)
@@ -60,6 +63,7 @@ test_that("combine_priors honours weights", {
 
 
 test_that("combine_priors handles disjoint supports via epsilon", {
+  skip_on_cran()
   p1 <- data.table::data.table(
     rsg_code    = c("FR", "AC"),
     probability = c(0.7,  0.3)
@@ -77,6 +81,7 @@ test_that("combine_priors handles disjoint supports via epsilon", {
 
 
 test_that("combine_priors drops empty priors and returns an empty table when all are empty", {
+  skip_on_cran()
   empty <- data.table::data.table(
     rsg_code    = character(),
     probability = numeric()
@@ -89,6 +94,7 @@ test_that("combine_priors drops empty priors and returns an empty table when all
 
 
 test_that("normalize_prior renormalises and drops NAs", {
+  skip_on_cran()
   p <- data.table::data.table(
     rsg_code    = c("FR", "AC", NA),
     probability = c(2,    1,    5)
@@ -100,6 +106,7 @@ test_that("normalize_prior renormalises and drops NAs", {
 
 
 test_that("posterior_classify keeps the deterministic verdict but reports prior", {
+  skip_on_cran()
   # Build a synthetic ClassificationResult by faking a trace where FR
   # passed and several others failed.
   trace <- list(

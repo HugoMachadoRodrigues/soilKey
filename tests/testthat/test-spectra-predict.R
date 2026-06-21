@@ -22,6 +22,7 @@ make_synth_vnir <- function(n_horizons = 5L,
 
 
 test_that("predict_ossl_mbl() returns the canonical schema", {
+  skip_on_cran()
   X <- make_synth_vnir()
   out <- predict_ossl_mbl(
     X,
@@ -48,6 +49,7 @@ test_that("predict_ossl_mbl() returns the canonical schema", {
 
 
 test_that("predict_ossl_plsr_local() shares the schema with MBL", {
+  skip_on_cran()
   X <- make_synth_vnir()
   out <- predict_ossl_plsr_local(X,
                                    properties = c("cec_cmol", "bs_pct"),
@@ -61,6 +63,7 @@ test_that("predict_ossl_plsr_local() shares the schema with MBL", {
 
 
 test_that("predict_ossl_pretrained() reports NA n_neighbors", {
+  skip_on_cran()
   X <- make_synth_vnir()
   out <- predict_ossl_pretrained(X,
                                    properties = c("clay_pct", "fe_dcb_pct"),
@@ -71,6 +74,7 @@ test_that("predict_ossl_pretrained() reports NA n_neighbors", {
 
 
 test_that("synthetic predictions are deterministic and within plausible ranges", {
+  skip_on_cran()
   X <- make_synth_vnir()
   o1 <- predict_ossl_mbl(X, properties = c("clay_pct", "ph_h2o"), region = "global")
   o2 <- predict_ossl_mbl(X, properties = c("clay_pct", "ph_h2o"), region = "global")
@@ -89,6 +93,7 @@ test_that("synthetic predictions are deterministic and within plausible ranges",
 
 
 test_that("different spectra yield different synthetic predictions", {
+  skip_on_cran()
   X1 <- make_synth_vnir(seed = 1L)
   X2 <- make_synth_vnir(seed = 2L)
   o1 <- predict_ossl_mbl(X1, properties = "clay_pct", region = "global")
@@ -98,6 +103,7 @@ test_that("different spectra yield different synthetic predictions", {
 
 
 test_that("predict_ossl_*() rejects unknown property names", {
+  skip_on_cran()
   X <- make_synth_vnir()
   expect_error(predict_ossl_mbl(X, properties = "not_a_property"),
                 "unknown OSSL property")
@@ -109,6 +115,7 @@ test_that("predict_ossl_*() rejects unknown property names", {
 
 
 test_that("predict_ossl_*() rejects malformed X / properties", {
+  skip_on_cran()
   expect_error(predict_ossl_mbl(NULL, properties = "clay_pct"),
                 "matrix")
   expect_error(predict_ossl_mbl(make_synth_vnir(), properties = character(0)),
@@ -117,6 +124,7 @@ test_that("predict_ossl_*() rejects malformed X / properties", {
 
 
 test_that("region argument is validated", {
+  skip_on_cran()
   X <- make_synth_vnir()
   expect_error(predict_ossl_mbl(X, properties = "clay_pct",
                                   region = "atlantis"))
@@ -124,6 +132,7 @@ test_that("region argument is validated", {
 
 
 test_that("predict_ossl_pretrained() uses ossl_models when supplied", {
+  skip_on_cran()
   X <- make_synth_vnir(n_horizons = 3L)
 
   # Build a fake "model" with a predict() method that returns deterministic
@@ -157,6 +166,7 @@ test_that("predict_ossl_pretrained() uses ossl_models when supplied", {
 
 
 test_that("PI95 widths respond to region tweak (synthetic only)", {
+  skip_on_cran()
   # Synthetic implementation widens spread for non-global regions.
   X <- make_synth_vnir()
   o_global <- predict_ossl_mbl(X, properties = "clay_pct", region = "global")

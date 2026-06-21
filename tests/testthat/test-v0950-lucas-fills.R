@@ -47,6 +47,7 @@
 # ---- .SOILGRIDS_TO_HORIZON_MAP coverage ---------------------------------
 
 test_that(".SOILGRIDS_TO_HORIZON_MAP covers the 9 SoilGrids properties", {
+  skip_on_cran()
   m <- soilKey:::.SOILGRIDS_TO_HORIZON_MAP
   expect_setequal(names(m),
                     c("clay", "sand", "silt", "phh2o", "soc", "cec",
@@ -63,6 +64,7 @@ test_that(".SOILGRIDS_TO_HORIZON_MAP covers the 9 SoilGrids properties", {
 # ---- .fill_horizon_from_soilgrids: writes the horizon and applies scale ----
 
 test_that(".fill_horizon_from_soilgrids writes 9 properties to horizon 1", {
+  skip_on_cran()
   p <- .make_one_lucas_pedon()
   stub <- .stub_soilgrids(values_by_property = list(
     clay = 30, sand = 40, silt = 30, phh2o = 6.5, soc = 25,
@@ -89,6 +91,7 @@ test_that(".fill_horizon_from_soilgrids writes 9 properties to horizon 1", {
 
 
 test_that(".fill_horizon_from_soilgrids synthesises a subsoil horizon", {
+  skip_on_cran()
   p <- .make_one_lucas_pedon()
   expect_equal(nrow(p$horizons), 1L)
   stub <- .stub_soilgrids(values_by_property = list(
@@ -113,6 +116,7 @@ test_that(".fill_horizon_from_soilgrids synthesises a subsoil horizon", {
 
 
 test_that(".fill_horizon_from_soilgrids respects existing finite values", {
+  skip_on_cran()
   p <- .make_one_lucas_pedon()
   stub <- .stub_soilgrids(values_by_property = list(
     phh2o = 7.5,  # different from existing 6.3
@@ -129,6 +133,7 @@ test_that(".fill_horizon_from_soilgrids respects existing finite values", {
 
 
 test_that(".fill_horizon_from_soilgrids skips when coords are NA", {
+  skip_on_cran()
   p <- .make_one_lucas_pedon(lat = NA, lon = NA)
   stub <- .stub_soilgrids(values_by_property = list(clay = 30))
   written <- soilKey:::.fill_horizon_from_soilgrids(
@@ -168,6 +173,7 @@ test_that(".fill_horizon_from_soilgrids skips when coords are NA", {
 
 
 test_that("benchmark_lucas_2018 still accepts fill_texture_from = 'none'", {
+  skip_on_cran()
   .skip_if_no_terra(); .skip_if_no_foreign()
   esdb <- .make_synth_esdb_root_v0950()
   on.exit(unlink(esdb, recursive = TRUE), add = TRUE)
@@ -181,6 +187,7 @@ test_that("benchmark_lucas_2018 still accepts fill_texture_from = 'none'", {
 
 
 test_that("fill_texture_from = 'soilgrids' (legacy) maps to topsoil-only clay/sand/silt", {
+  skip_on_cran()
   .skip_if_no_terra(); .skip_if_no_foreign()
   esdb <- .make_synth_esdb_root_v0950()
   on.exit(unlink(esdb, recursive = TRUE), add = TRUE)
@@ -202,6 +209,7 @@ test_that("fill_texture_from = 'soilgrids' (legacy) maps to topsoil-only clay/sa
 # ---- New: subsoil fill synthesises a 30-60 cm horizon -----------------
 
 test_that("benchmark_lucas_2018 synthesises a subsoil horizon when fill_subsoil_from='soilgrids'", {
+  skip_on_cran()
   .skip_if_no_terra(); .skip_if_no_foreign()
   esdb <- .make_synth_esdb_root_v0950()
   on.exit(unlink(esdb, recursive = TRUE), add = TRUE)
@@ -230,6 +238,7 @@ test_that("benchmark_lucas_2018 synthesises a subsoil horizon when fill_subsoil_
 # ---- cfvo proxy lifts Leptosols ----------------------------------------
 
 test_that("cfvo >= 90 from SoilGrids unlocks Leptosols (leptic_features predicate)", {
+  skip_on_cran()
   .skip_if_no_terra(); .skip_if_no_foreign()
   esdb <- .make_synth_esdb_root_v0950()
   on.exit(unlink(esdb, recursive = TRUE), add = TRUE)
@@ -252,6 +261,7 @@ test_that("cfvo >= 90 from SoilGrids unlocks Leptosols (leptic_features predicat
 # ---- fill_topsoil_from = 'spectra' requires ossl_models -----------------
 
 test_that("benchmark_lucas_2018 errors when 'spectra' fill is requested without models", {
+  skip_on_cran()
   .skip_if_no_terra()
   pedons <- list(.make_one_lucas_pedon())
   expect_error(
@@ -266,6 +276,7 @@ test_that("benchmark_lucas_2018 errors when 'spectra' fill is requested without 
 # ---- attach_lucas_spectra: wide format ----------------------------------
 
 test_that("attach_lucas_spectra joins a wide spectra table by POINT_ID", {
+  skip_on_cran()
   pedons <- list(
     .make_one_lucas_pedon(id = "A1"),
     .make_one_lucas_pedon(id = "A2"),
@@ -289,6 +300,7 @@ test_that("attach_lucas_spectra joins a wide spectra table by POINT_ID", {
 # ---- attach_lucas_spectra: long format ---------------------------------
 
 test_that("attach_lucas_spectra joins a long spectra table by POINT_ID", {
+  skip_on_cran()
   pedons <- list(.make_one_lucas_pedon(id = "B1"))
   long <- data.frame(
     POINT_ID      = rep("B1", 5),
@@ -304,6 +316,7 @@ test_that("attach_lucas_spectra joins a long spectra table by POINT_ID", {
 
 
 test_that("attach_lucas_spectra errors on missing point_id column", {
+  skip_on_cran()
   pedons <- list(.make_one_lucas_pedon(id = "C1"))
   bad <- data.frame(`400` = 0.1, `500` = 0.2, check.names = FALSE)
   expect_error(attach_lucas_spectra(pedons, bad, point_id_col = "POINT_ID"),
@@ -314,6 +327,7 @@ test_that("attach_lucas_spectra errors on missing point_id column", {
 # ---- fill_properties validation ----------------------------------------
 
 test_that("benchmark_lucas_2018 rejects unknown fill_properties", {
+  skip_on_cran()
   .skip_if_no_terra(); .skip_if_no_foreign()
   esdb <- .make_synth_esdb_root_v0950()
   on.exit(unlink(esdb, recursive = TRUE), add = TRUE)

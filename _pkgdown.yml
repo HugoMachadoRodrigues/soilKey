@@ -358,9 +358,6 @@ reference:
       - fibrico
       - fragipa
       - hemico
-      - prompt_path
-      - schema_path
-      - default_model
       - oxic_usda
       - vertic_horizon
       - protovertic

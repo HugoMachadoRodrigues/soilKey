@@ -40,7 +40,7 @@
 #' @return Logical scalar: \code{TRUE} if any element matches a strong
 #'         qualifier; \code{FALSE} for empty input or weak-only
 #'         qualifiers.
-#' @keywords internal
+#' @noRd
 .argic_strong_films_match <- function(films_chr) {
   if (length(films_chr) == 0L) return(FALSE)
   films_chr <- films_chr[!is.na(films_chr) & nzchar(films_chr)]

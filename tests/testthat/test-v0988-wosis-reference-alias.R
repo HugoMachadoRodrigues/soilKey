@@ -7,6 +7,7 @@
 
 
 test_that("v0.9.88: load_wosis_stratified_sample populates reference_wrb on every pedon", {
+  skip_on_cran()
   fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
   skip_if_not(file.exists(fp), "wosis_stratified_sample.rds not bundled")
@@ -18,6 +19,7 @@ test_that("v0.9.88: load_wosis_stratified_sample populates reference_wrb on ever
 
 
 test_that("v0.9.88: reference_wrb mirrors wosis_rsg verbatim (back-compat preserved)", {
+  skip_on_cran()
   fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
   skip_if_not(file.exists(fp), "wosis_stratified_sample.rds not bundled")
@@ -29,6 +31,7 @@ test_that("v0.9.88: reference_wrb mirrors wosis_rsg verbatim (back-compat preser
 
 
 test_that("v0.9.88: existing reference_wrb is NOT overwritten if already present", {
+  skip_on_cran()
   fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
   skip_if_not(file.exists(fp), "wosis_stratified_sample.rds not bundled")
@@ -59,6 +62,7 @@ test_that("v0.9.88: existing reference_wrb is NOT overwritten if already present
 
 
 test_that("v0.9.88: WoSIS stratified default canonical WRB accuracy is non-zero", {
+  skip_on_cran()
   fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
   skip_if_not(file.exists(fp), "wosis_stratified_sample.rds not bundled")

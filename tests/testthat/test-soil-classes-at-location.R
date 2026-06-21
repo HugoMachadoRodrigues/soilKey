@@ -6,6 +6,7 @@
 
 
 test_that("soil_classes_at_location() rejects bad coordinates", {
+  skip_on_cran()
   expect_error(soil_classes_at_location(NA_real_, -43, verbose = FALSE),
                  "must be numeric")
   expect_error(soil_classes_at_location(91, 0, verbose = FALSE),
@@ -16,6 +17,7 @@ test_that("soil_classes_at_location() rejects bad coordinates", {
 
 
 test_that("soil_classes_at_location() returns empty result with a warning when no source given", {
+  skip_on_cran()
   skip_if_not_installed("terra")
   res <- soil_classes_at_location(lat = -22.7, lon = -43.7,
                                     verbose = FALSE)
@@ -29,6 +31,7 @@ test_that("soil_classes_at_location() returns empty result with a warning when n
 
 
 test_that("WRB -> SiBCS translation collapses RSGs to ordens", {
+  skip_on_cran()
   # Internal helper accessor (use ::: to reach unexported function).
   trans <- soilKey:::.wrb_to_sibcs_distribution
   dist <- data.table::data.table(
@@ -44,6 +47,7 @@ test_that("WRB -> SiBCS translation collapses RSGs to ordens", {
 
 
 test_that("typical_attribute_table populates a row per requested code", {
+  skip_on_cran()
   attrs <- soilKey:::.typical_attribute_table("wrb2022",
                                               c("FR", "AC", "VR"))
   expect_s3_class(attrs, "data.table")
@@ -52,6 +56,7 @@ test_that("typical_attribute_table populates a row per requested code", {
 
 
 test_that("typical_attribute_table is empty when no codes are passed", {
+  skip_on_cran()
   attrs <- soilKey:::.typical_attribute_table("wrb2022", character(0))
   expect_equal(nrow(attrs), 0L)
 })

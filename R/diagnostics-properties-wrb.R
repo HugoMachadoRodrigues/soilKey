@@ -56,7 +56,7 @@
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
-#' Sub-test: \code{\link{test_gleyic_features}} -- requires explicit
+#' Sub-test: \code{test_gleyic_features} -- requires explicit
 #' \code{redoximorphic_features_pct} >= 5\% within the upper 50 cm.
 #'
 #' v0.2 deliberately does NOT use the Munsell-based shortcut (chroma <=
@@ -699,10 +699,10 @@ anthric_horizons <- function(pedon,
 #' @details
 #' Sub-tests:
 #' \itemize{
-#'   \item \code{\link{test_clay_above}} -- clay >= 30\%
-#'   \item \code{\link{test_slickensides_present}} -- slickensides at
+#'   \item \code{test_clay_above} -- clay >= 30\%
+#'   \item \code{test_slickensides_present} -- slickensides at
 #'         or above the "common" level
-#'   \item \code{\link{test_minimum_thickness}} -- combined vertic layer
+#'   \item \code{test_minimum_thickness} -- combined vertic layer
 #'         thickness >= 25 cm (v0.3.1 added per WRB 2022)
 #' }
 #'

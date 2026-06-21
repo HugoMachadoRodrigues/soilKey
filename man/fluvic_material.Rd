@@ -25,7 +25,7 @@ irregular (non-monotone) organic carbon pattern with depth.
 Diagnostic of Fluvisols.
 }
 \details{
-Sub-test: \code{\link{test_fluvic_stratification}}.
+Sub-test: \code{test_fluvic_stratification}.
 
 v0.3 limitations: WRB 2022 fluvic material also requires age
 (typically <100 years for sediment freshness), which v0.3 does not

@@ -76,7 +76,7 @@ spatial_prior <- function(pedon,
 #' with canonical columns, drops NA codes, and renormalises so that
 #' probabilities sum to 1.
 #'
-#' @keywords internal
+#' @noRd
 normalize_prior <- function(prior) {
   if (!data.table::is.data.table(prior)) {
     prior <- data.table::as.data.table(prior)

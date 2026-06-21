@@ -32,7 +32,7 @@ Gleyic properties are diagnostic for Gleysols and qualify many other
 RSGs (Endogleyic, Epigleyic qualifiers).
 }
 \details{
-Sub-test: \code{\link{test_gleyic_features}} -- requires explicit
+Sub-test: \code{test_gleyic_features} -- requires explicit
 \code{redoximorphic_features_pct} >= 5\% within the upper 50 cm.
 
 v0.2 deliberately does NOT use the Munsell-based shortcut (chroma <=

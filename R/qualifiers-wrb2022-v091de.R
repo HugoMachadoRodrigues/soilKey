@@ -33,8 +33,7 @@
 #' "shiny" -- common Brazilian descriptor for nitic surfaces) in some
 #' argic layer.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_cutanic <- function(pedon) {
   arg <- argic(pedon)
   if (!isTRUE(arg$passed))
@@ -62,8 +61,7 @@ qual_cutanic <- function(pedon) {
 #' tongues (glossae). Diagnostic of Glossic Chernozems / Phaeozems on
 #' the steppe / forest-steppe transition.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_glossic <- function(pedon) {
   mo <- mollic(pedon)
   gl <- albeluvic_glossae(pedon)
@@ -87,8 +85,7 @@ qual_glossic <- function(pedon) {
 #' RSGs the cambic alone is the gating diagnostic and Brunic would be
 #' redundant.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_brunic <- function(pedon) {
   cm  <- cambic(pedon)
   if (!isTRUE(cm$passed))
@@ -121,8 +118,7 @@ qual_brunic <- function(pedon) {
 #' upper 100 cm. v0.9.1 implements as the conjunction of the "no B
 #' horizon" diagnostics.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_protic <- function(pedon) {
   cm <- cambic(pedon)
   arg <- argic(pedon)

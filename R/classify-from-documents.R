@@ -87,7 +87,7 @@
 #' @param model      Optional model identifier; passed through to
 #'                   \code{vlm_provider()} when \code{provider} is a
 #'                   string. Defaults to the per-provider default
-#'                   from \code{\link{default_model}}.
+#'                   from \code{default_model}.
 #' @param systems    Character vector listing which classification
 #'                   systems to run; subset of
 #'                   \code{c("wrb", "sibcs", "usda")}. Default: all

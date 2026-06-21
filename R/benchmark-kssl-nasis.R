@@ -39,7 +39,7 @@
 #' (Munsell, structure, clay films, slickensides, cracks). Required
 #' for the morphological-evidence diagnostics
 #' (\code{\link{argic}} clay-films, \code{\link{vertic_horizon}}
-#' slickensides, \code{\link{mollic_epipedon_usda}} Munsell, etc.) to
+#' slickensides, \code{mollic_epipedon_usda} Munsell, etc.) to
 #' fire on KSSL profiles -- the lab gpkg alone has none of those.
 #'
 #' @param gpkg Path to \code{ncss_labdata.gpkg}.

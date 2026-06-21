@@ -5,6 +5,7 @@
 # + first-match so they only ever refine a former Typic. KSSL-gated (0 worsened).
 
 test_that("v0.9.147: USDA subgroup coverage (running total 2049/2715, 75.5%)", {
+  skip_on_cran()
   cov <- coverage_report("usda_subgroup")
   expect_equal(cov$overall$covered_n, 2049L)   # 2003 + 35 (v0.9.147) + 11 (v0.9.149)
   expect_equal(cov$overall$canonical_n, 2715L)
@@ -12,6 +13,7 @@ test_that("v0.9.147: USDA subgroup coverage (running total 2049/2715, 75.5%)", {
 })
 
 test_that("v0.9.147: the 35 added subgroups are registered", {
+  skip_on_cran()
   reg <- soilKey:::.coverage_registered_usda_subgroups()
   added <- tolower(c(
     "Argic Petrocalcids", "Aridic Leptic Haplusterts",
@@ -32,5 +34,6 @@ test_that("v0.9.147: the 35 added subgroups are registered", {
 })
 
 test_that("v0.9.147: USDA rule base still loads cleanly with the additions", {
+  skip_on_cran()
   expect_silent(suppressMessages(load_rules("usda")))
 })

@@ -11,8 +11,7 @@
 #' Pass when a cambic horizon is present (no argillic, no spodic,
 #' no mollic, etc. -- enforced by prior order exclusion).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 inceptisol_qualifying_usda <- function(pedon) {
   cb <- cambic(pedon)
   res <- DiagnosticResult$new(
@@ -28,8 +27,7 @@ inceptisol_qualifying_usda <- function(pedon) {
 
 #' Aquept Suborder qualifier
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 aquept_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
   res$name <- "aquept_qualifying_usda"
@@ -40,8 +38,7 @@ aquept_qualifying_usda <- function(pedon) {
 #' Halic helper for Halaquepts
 #' Pass when EC >= 8 dS/m within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 halaquept_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
@@ -60,8 +57,7 @@ halaquept_qualifying_usda <- function(pedon) {
 
 #' Densiaquept qualifying (densic contact within 100 cm)
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 densiaquept_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100 &
@@ -82,8 +78,7 @@ densiaquept_qualifying_usda <- function(pedon) {
 #' Pass when BS (NH4OAc) >= 60\% in some part of upper 75 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_bs Numeric threshold or option (see Details).
-#' @keywords internal
-#' @export
+#' @noRd
 eutric_inceptisol_usda <- function(pedon, min_bs = 60) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 75)
@@ -103,8 +98,7 @@ eutric_inceptisol_usda <- function(pedon, min_bs = 60) {
 #' Humic Inceptisol Suborder helper (Hum*)
 #' Pass when umbric or mollic epipedon present + thick (>= 25 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 humic_inceptisol_usda <- function(pedon) {
   mo <- mollic_epipedon_usda(pedon)
   um <- umbric_epipedon_usda(pedon)
@@ -127,7 +121,7 @@ humic_inceptisol_usda <- function(pedon) {
 #' \code{max_value_dry} (5) or less (crushed and smoothed sample) throughout the
 #' upper \code{depth_cm} (18) cm of the mineral soil. This is the dark-coloured
 #' intergrade that does NOT reach an umbric / mollic epipedon (so the order has
-#' already keyed without one) — distinct from \code{\link{humic_inceptisol_usda}}
+#' already keyed without one) — distinct from \code{humic_inceptisol_usda}
 #' (the epipedon-based suborder helper). Conservative: requires BOTH the moist
 #' and dry value recorded for every layer overlapping the window (a missing dry
 #' value cannot confirm the criterion), so it never over-fires on a dark A alone.
@@ -136,8 +130,7 @@ humic_inceptisol_usda <- function(pedon) {
 #' @param max_value_moist,max_value_dry Colour-value ceilings (default 3 / 5).
 #' @param depth_cm Top-of-soil window in cm (default 18).
 #' @return A \code{\link{DiagnosticResult}}.
-#' @keywords internal
-#' @export
+#' @noRd
 humic_colour_usda <- function(pedon, max_value_moist = 3, max_value_dry = 5,
                               depth_cm = 18) {
   h <- pedon$horizons

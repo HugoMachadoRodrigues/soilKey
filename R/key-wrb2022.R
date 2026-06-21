@@ -223,7 +223,7 @@ classify_wrb2022 <- function(pedon,
 #' diagnostic still passed, the name reflects that the true RSG is
 #' identifiable in principle but not yet wired to the key.
 #'
-#' @keywords internal
+#' @noRd
 compute_v01_classification_name <- function(rsg, diags, is_default) {
 
   if (!is_default) {
@@ -266,7 +266,7 @@ compute_v01_classification_name <- function(rsg, diags, is_default) {
 #' \code{\link{compute_per_attribute_evidence_grade}} for the
 #' cell-by-cell breakdown.
 #'
-#' @keywords internal
+#' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 compute_evidence_grade <- function(pedon, trace) {
   prov <- pedon$provenance
@@ -287,7 +287,7 @@ compute_evidence_grade <- function(pedon, trace) {
 #' v0.1 rule: an entry is ambiguous if its result is NA and at least one
 #' attribute (not just a stubbed diagnostic) was reported missing.
 #'
-#' @keywords internal
+#' @noRd
 find_ambiguities <- function(trace, current, diags = NULL) {
   ambiguities <- list()
   for (entry in trace) {
@@ -318,7 +318,7 @@ find_ambiguities <- function(trace, current, diags = NULL) {
 #' tests; the user can already see those in the trace and the
 #' classification name.
 #'
-#' @keywords internal
+#' @noRd
 collect_missing_attributes <- function(trace) {
   all_missing <- unique(unlist(lapply(trace,
                                        function(e) e$missing %||% character(0))))

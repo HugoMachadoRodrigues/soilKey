@@ -68,6 +68,7 @@
 # ---- .bdsolos_norm sanity ----------------------------------------------
 
 test_that(".bdsolos_norm strips diacritics + lowercase + underscores", {
+  skip_on_cran()
   expect_equal(soilKey:::.bdsolos_norm("Cor Úmida MATIZ"), "cor_umida_matiz")
   expect_equal(soilKey:::.bdsolos_norm("PH em Água"), "ph_em_agua")
   expect_equal(soilKey:::.bdsolos_norm("classificação"), "classificacao")
@@ -78,6 +79,7 @@ test_that(".bdsolos_norm strips diacritics + lowercase + underscores", {
 # ---- .bdsolos_match_column maps PT-BR variants -------------------------
 
 test_that(".bdsolos_match_column maps Munsell variants", {
+  skip_on_cran()
   expect_equal(soilKey:::.bdsolos_match_column("matiz_umido"),
                 "munsell_hue_moist")
   expect_equal(soilKey:::.bdsolos_match_column("Cor Umida Valor"),
@@ -88,6 +90,7 @@ test_that(".bdsolos_match_column maps Munsell variants", {
 
 
 test_that(".bdsolos_match_column maps texture + chemistry", {
+  skip_on_cran()
   expect_equal(soilKey:::.bdsolos_match_column("argila"),       "clay_pct")
   expect_equal(soilKey:::.bdsolos_match_column("silte_total"),  "silt_pct")
   expect_equal(soilKey:::.bdsolos_match_column("ph_em_agua"),  "ph_h2o")
@@ -98,12 +101,14 @@ test_that(".bdsolos_match_column maps texture + chemistry", {
 
 
 test_that(".bdsolos_match_column returns NA on unknown columns", {
+  skip_on_cran()
   expect_true(is.na(soilKey:::.bdsolos_match_column("foo_bar")))
   expect_true(is.na(soilKey:::.bdsolos_match_column("")))
 })
 
 
 test_that(".bdsolos_match_taxon_column finds the SiBCS reference column", {
+  skip_on_cran()
   expect_equal(soilKey:::.bdsolos_match_taxon_column("classificacao"),
                 "taxon_sibcs")
   expect_equal(soilKey:::.bdsolos_match_taxon_column("taxon_sibcs"),
@@ -115,6 +120,7 @@ test_that(".bdsolos_match_taxon_column finds the SiBCS reference column", {
 # ---- inspect_bdsolos_csv -----------------------------------------------
 
 test_that("inspect_bdsolos_csv classifies columns as mapped/unmapped", {
+  skip_on_cran()
   s <- .make_synth_bdsolos_csv("classic")
   on.exit(unlink(s$dir, recursive = TRUE), add = TRUE)
   out <- inspect_bdsolos_csv(s$csv)
@@ -129,6 +135,7 @@ test_that("inspect_bdsolos_csv classifies columns as mapped/unmapped", {
 
 
 test_that("inspect_bdsolos_csv errors on missing file", {
+  skip_on_cran()
   expect_error(inspect_bdsolos_csv("/no/such/file.csv"), "not found")
 })
 
@@ -136,6 +143,7 @@ test_that("inspect_bdsolos_csv errors on missing file", {
 # ---- load_bdsolos_csv: classic schema ----------------------------------
 
 test_that("load_bdsolos_csv reads the classic PT-BR schema", {
+  skip_on_cran()
   s <- .make_synth_bdsolos_csv("classic")
   on.exit(unlink(s$dir, recursive = TRUE), add = TRUE)
   pedons <- load_bdsolos_csv(s$csv, verbose = FALSE)
@@ -170,6 +178,7 @@ test_that("load_bdsolos_csv reads the classic PT-BR schema", {
 
 
 test_that("load_bdsolos_csv handles the lowercase / abbreviated schema", {
+  skip_on_cran()
   s <- .make_synth_bdsolos_csv("lowercase")
   on.exit(unlink(s$dir, recursive = TRUE), add = TRUE)
   pedons <- load_bdsolos_csv(s$csv, verbose = FALSE)
@@ -184,6 +193,7 @@ test_that("load_bdsolos_csv handles the lowercase / abbreviated schema", {
 
 
 test_that("load_bdsolos_csv classifies the loaded perfil correctly", {
+  skip_on_cran()
   s <- .make_synth_bdsolos_csv("classic")
   on.exit(unlink(s$dir, recursive = TRUE), add = TRUE)
   pedons <- load_bdsolos_csv(s$csv, verbose = FALSE)
@@ -197,6 +207,7 @@ test_that("load_bdsolos_csv classifies the loaded perfil correctly", {
 
 
 test_that("load_bdsolos_csv errors on missing file + empty CSV", {
+  skip_on_cran()
   expect_error(load_bdsolos_csv("/no/such/file.csv"), "not found")
   empty <- tempfile(fileext = ".csv")
   writeLines("col1,col2", empty)
@@ -208,6 +219,7 @@ test_that("load_bdsolos_csv errors on missing file + empty CSV", {
 # ---- download_bdsolos --------------------------------------------------
 
 test_that("download_bdsolos requires accept_terms = TRUE", {
+  skip_on_cran()
   expect_error(
     download_bdsolos("/tmp/wont-be-written.csv", accept_terms = FALSE),
     "accept_terms"
@@ -216,6 +228,7 @@ test_that("download_bdsolos requires accept_terms = TRUE", {
 
 
 test_that("download_bdsolos errors clearly when chromote is missing", {
+  skip_on_cran()
   if (requireNamespace("chromote", quietly = TRUE)) {
     skip("chromote installed -- cannot exercise the missing-pkg path")
   }
@@ -244,6 +257,7 @@ test_that("download_bdsolos errors clearly when chromote is missing", {
 }
 
 test_that("download_bdsolos source uses setTimeout-deferred realizaBusca", {
+  skip_on_cran()
   # Regression sentinel for the v0.9.55 freeze bug: the synchronous
   # realizaBusca() invocation timed out chromote on the slow Embrapa
   # server. v0.9.56 deferred the call via setTimeout(...) so the JS
@@ -255,6 +269,7 @@ test_that("download_bdsolos source uses setTimeout-deferred realizaBusca", {
 
 
 test_that("download_bdsolos sets CHROMOTE_TIMEOUT for resilience", {
+  skip_on_cran()
   txt <- .read_bdsolos_source()
   expect_match(txt, "CHROMOTE_TIMEOUT", fixed = TRUE)
 })
@@ -263,6 +278,7 @@ test_that("download_bdsolos sets CHROMOTE_TIMEOUT for resilience", {
 # ---- v0.9.58 fixes -----------------------------------------------------
 
 test_that(".bdsolos_find_header_line skips preamble and returns header row", {
+  skip_on_cran()
   tf <- tempfile(fileext = ".csv")
   writeLines(c(
     "Dados obtidos a partir do BDSOLOS, esclarecimentos em: http://...",
@@ -275,6 +291,7 @@ test_that(".bdsolos_find_header_line skips preamble and returns header row", {
 
 
 test_that(".bdsolos_detect_sep returns ; for semicolon-delimited BDsolos", {
+  skip_on_cran()
   tf <- tempfile(fileext = ".csv")
   writeLines(c("preamble",
                  "",
@@ -285,6 +302,7 @@ test_that(".bdsolos_detect_sep returns ; for semicolon-delimited BDsolos", {
 
 
 test_that(".bdsolos_dms_to_decimal converts graus/min/seg/hemisferio", {
+  skip_on_cran()
   expect_equal(soilKey:::.bdsolos_dms_to_decimal(22, 51, 30, "S"),
                 -(22 + 51 / 60 + 30 / 3600))
   expect_equal(soilKey:::.bdsolos_dms_to_decimal(43, 12, 0, "W"),
@@ -295,6 +313,7 @@ test_that(".bdsolos_dms_to_decimal converts graus/min/seg/hemisferio", {
 
 
 test_that("load_bdsolos_csv handles BDsolos full schema (preamble + ; + 222 cols)", {
+  skip_on_cran()
   tf <- tempfile(fileext = ".csv")
   hdr <- paste(c(
     "Codigo PA", "Simbolo Horizonte",
@@ -359,6 +378,7 @@ test_that("load_bdsolos_csv handles BDsolos full schema (preamble + ; + 222 cols
 
 
 test_that("load_bdsolos_csv does not include NA-id rows in any pedon (regression v0.9.58)", {
+  skip_on_cran()
   # Bug: prior to v0.9.58, `d[ids == rid, ]` included NA-id rows
   # because == returns NA which data.table treats as TRUE-fill.
   # Sentinel: synthetic CSV with one NA-id row mixed in.
@@ -385,6 +405,7 @@ test_that("load_bdsolos_csv does not include NA-id rows in any pedon (regression
 # ---- v0.9.59 read.csv2 fallback ----------------------------------------
 
 test_that("load_bdsolos_csv falls back to read.csv2 when fread errors out", {
+  skip_on_cran()
   # Simulate a fread-malformed file: a row contains a literal embedded
   # newline / unbalanced quote that trips data.table::fread but is OK
   # for utils::read.csv2.
@@ -407,6 +428,7 @@ test_that("load_bdsolos_csv falls back to read.csv2 when fread errors out", {
 
 
 test_that("load_bdsolos_csv source carries the read.csv2 fallback", {
+  skip_on_cran()
   # Regression sentinel for the v0.9.59 fix that destrava DF/MT/PA/PB/
   # PE/RN/SP. Without this fallback, ~18% of BDsolos UF exports fail
   # to load (~1,646 perfis lost).
@@ -430,6 +452,7 @@ test_that("load_bdsolos_csv source carries the read.csv2 fallback", {
 # ---- Live network test (opt-in) ---------------------------------------
 
 test_that("download_bdsolos hits BDsolos when SOILKEY_NETWORK_TESTS is set", {
+  skip_on_cran()
   if (!nzchar(Sys.getenv("SOILKEY_NETWORK_TESTS"))) {
     skip("Live BDsolos test gated by SOILKEY_NETWORK_TESTS env var")
   }

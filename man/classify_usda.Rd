@@ -28,7 +28,7 @@ earlier versions).}
 \item{infer_temperature}{When deriving the family, infer the soil
 temperature regime from latitude/elevation if
 \code{site$soil_temperature_regime} is absent (default
-\code{TRUE}). See \code{\link{family_temperature_regime_usda}}.}
+\code{TRUE}). See \code{family_temperature_regime_usda}.}
 
 \item{gapfill}{Opt-in within-pedon depth gap-fill, default \code{FALSE}
 (no-op, classification stays byte-identical). \code{TRUE} fills

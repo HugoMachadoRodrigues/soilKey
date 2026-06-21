@@ -30,7 +30,7 @@
 #' @param system One of \code{"wrb2022"} (default) or \code{"usda"}.
 #'        Selects the clay-increase threshold set: WRB uses
 #'        6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
-#'        See \code{\link{test_clay_increase_argic}} for the table.
+#'        See \code{test_clay_increase_argic} for the table.
 #' @param engine v0.9.63+. One of \code{"soilkey"} (the hand-coded
 #'        path, default for back-compat) or \code{"aqp"} (canonical
 #'        NRCS dispatch via \code{aqp::getArgillicBounds}). When
@@ -53,11 +53,11 @@
 #' Sub-tests called (each a list with \code{passed}, \code{layers},
 #' \code{missing}, \code{details}, \code{notes}):
 #' \itemize{
-#'   \item \code{\link{test_clay_increase_argic}} -- the three-pronged
+#'   \item \code{test_clay_increase_argic} -- the three-pronged
 #'         WRB 2022 clay-increase rule.
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 7.5 cm
+#'   \item \code{test_minimum_thickness} -- thickness >= 7.5 cm
 #'         (configurable via \code{min_thickness}).
-#'   \item \code{\link{test_texture_argic}} -- texture of sandy loam or
+#'   \item \code{test_texture_argic} -- texture of sandy loam or
 #'         finer (\code{silt + 2 * clay >= 30}).
 #'   \item \code{test_not_albeluvic} -- excludes profiles with glossic
 #'         tongues (Retisol path).
@@ -244,11 +244,11 @@ argic <- function(pedon, min_thickness = 7.5,
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_ferralic_texture}} -- texture sandy loam or
+#'   \item \code{test_ferralic_texture} -- texture sandy loam or
 #'         finer.
-#'   \item \code{\link{test_cec_per_clay}} -- CEC / clay <= 16 (or 20
+#'   \item \code{test_cec_per_clay} -- CEC / clay <= 16 (or 20
 #'         under \code{engine = "aqp"}) cmol_c/kg clay.
-#'   \item \code{\link{test_ferralic_thickness}} -- thickness >= 30 cm.
+#'   \item \code{test_ferralic_thickness} -- thickness >= 30 cm.
 #' }
 #'
 #' v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
@@ -334,13 +334,13 @@ ferralic <- function(pedon,
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_mollic_color}} -- moist value <= 3, moist
+#'   \item \code{test_mollic_color} -- moist value <= 3, moist
 #'         chroma <= 3, dry value <= 5.
-#'   \item \code{\link{test_mollic_organic_carbon}} -- SOC >= 0.6\%.
-#'   \item \code{\link{test_mollic_base_saturation}} -- BS (NH4OAc, pH 7)
+#'   \item \code{test_mollic_organic_carbon} -- SOC >= 0.6\%.
+#'   \item \code{test_mollic_base_saturation} -- BS (NH4OAc, pH 7)
 #'         >= 50\%.
-#'   \item \code{\link{test_mollic_thickness}} -- horizon thickness >= 20 cm.
-#'   \item \code{\link{test_mollic_structure}} -- not simultaneously
+#'   \item \code{test_mollic_thickness} -- horizon thickness >= 20 cm.
+#'   \item \code{test_mollic_structure} -- not simultaneously
 #'         massive AND very hard when dry.
 #' }
 #'
@@ -517,8 +517,8 @@ mollic <- function(pedon,
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_caco3_concentration}} -- CaCO3 >= 15\%.
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#'   \item \code{test_caco3_concentration} -- CaCO3 >= 15\%.
+#'   \item \code{test_minimum_thickness} -- thickness >= 15 cm.
 #' }
 #'
 #' v0.2 limitations: the WRB criterion of "5\% absolute or relative more
@@ -596,8 +596,8 @@ calcic <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_caso4_concentration}} -- gypsum >= 5\%.
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm.
+#'   \item \code{test_caso4_concentration} -- gypsum >= 5\%.
+#'   \item \code{test_minimum_thickness} -- thickness >= 15 cm.
 #' }
 #'
 #' v0.2 limitations: the WRB rule that gypsum content must exceed the
@@ -645,8 +645,8 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' @details
 #' v0.2 implementation tests three conditions:
 #' \itemize{
-#'   \item thickness >= 15 cm (\code{\link{test_minimum_thickness}})
-#'   \item texture sandy loam or finer (\code{\link{test_texture_argic}})
+#'   \item thickness >= 15 cm (\code{test_minimum_thickness})
+#'   \item texture sandy loam or finer (\code{test_texture_argic})
 #'   \item NOT \code{\link{argic}} AND NOT \code{\link{ferralic}}
 #' }
 #'
@@ -810,9 +810,9 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #' @details
 #' Sub-tests:
 #' \itemize{
-#'   \item \code{\link{test_plinthite_concentration}} -- plinthite
+#'   \item \code{test_plinthite_concentration} -- plinthite
 #'         volume \% >= 15
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 15 cm
+#'   \item \code{test_minimum_thickness} -- thickness >= 15 cm
 #' }
 #'
 #' v0.2 limitations: WRB 2022 also accepts profiles with >= 40\% red
@@ -962,10 +962,10 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' @details
 #' Sub-tests:
 #' \itemize{
-#'   \item \code{\link{test_spodic_aluminum_iron}} -- (Al_ox +
+#'   \item \code{test_spodic_aluminum_iron} -- (Al_ox +
 #'         0.5*Fe_ox) >= 0.5\%
-#'   \item \code{\link{test_ph_below}} -- ph_h2o <= 5.9
-#'   \item \code{\link{test_minimum_thickness}} -- thickness >= 2.5 cm
+#'   \item \code{test_ph_below} -- ph_h2o <= 5.9
+#'   \item \code{test_minimum_thickness} -- thickness >= 2.5 cm
 #' }
 #'
 #' v0.2 limitations: the WRB color criterion (hue 5YR or yellower with
@@ -1176,7 +1176,7 @@ spodic <- function(pedon,
 #' Diagnostic of Umbrisols.
 #'
 #' Implementation reuses every mollic sub-test except the BS test,
-#' which is inverted via \code{\link{test_bs_below}}.
+#' which is inverted via \code{test_bs_below}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness (cm; default 20).
@@ -1576,11 +1576,11 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
 #' @details
 #' Sub-tests called:
 #' \itemize{
-#'   \item \code{\link{test_ec_concentration}} -- EC \\>= 15 dS/m
+#'   \item \code{test_ec_concentration} -- EC \\>= 15 dS/m
 #'         (primary) OR (EC \\>= 8 dS/m AND pH(H2O) \\>= 8.5)
 #'         (alkaline).
-#'   \item \code{\link{test_minimum_thickness}} -- thickness \\>= 15 cm.
-#'   \item \code{\link{test_salic_product}} -- EC * thickness product
+#'   \item \code{test_minimum_thickness} -- thickness \\>= 15 cm.
+#'   \item \code{test_salic_product} -- EC * thickness product
 #'         \\>= 450 (primary) or \\>= 240 (alkaline) per qualifying
 #'         layer.
 #' }

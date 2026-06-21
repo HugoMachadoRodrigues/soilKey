@@ -1,3 +1,33 @@
+# soilKey 0.9.154 (2026-06-21)
+
+The "**lean check**" release: a real reduction of the CRAN check footprint
+(the 0.9.153 pre-test passed OK on Windows + Debian but the overall check time
+was still over 10 minutes). No classification behaviour changes -- the 44
+canonical fixtures are byte-identical.
+
+\itemize{
+  \item \strong{The ~600 internal rule-engine predicates are no longer
+        exported.} They were already marked \code{@keywords internal}; they are
+        now truly internal (resolved from the namespace by the rule engine and
+        reachable from tests, but absent from \code{NAMESPACE} and the reference
+        manual). This shrinks the documented surface from 928 to 319 topics and
+        cuts the HTML/PDF manual build substantially. The public API
+        (\code{classify_*}, \code{PedonRecord}, \code{report*},
+        \code{coverage_report}, the benchmark and gap-fill entry points, the
+        documented diagnostics, ...) is unchanged.
+  \item \strong{Performance test fixed, not disabled.} The wall-clock
+        \dQuote{< 5 s/pedon} assertion (the source of the released 0.9.96
+        ATLAS-BLAS WARNING) is removed; the test now runs on CRAN and verifies
+        the benchmark returns well-formed, non-negative timings, leaving the
+        speed-regression guard to CI where the hardware is known.
+  \item \strong{URL NOTE fixed.} The USDA-NRCS NCSS data-mart address (which
+        timed out for the check host) is no longer a checked link.
+  \item Long-running benchmark, simulation, spectral, vision-language, spatial
+        and Shiny-app tests are conditioned off CRAN with \code{skip_on_cran()}
+        (they run in full on CI). The classification keys, diagnostic
+        predicates and 44 canonical fixtures still run on CRAN.
+}
+
 # soilKey 0.9.153 (2026-06-20)
 
 The "**CRAN check-time reduction**" release. The 0.9.152 pre-test passed (OK on

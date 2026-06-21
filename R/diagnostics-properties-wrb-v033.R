@@ -270,7 +270,7 @@ protogypsic_properties <- function(pedon, min_caso4_pct = 1.0,
 
 
 #' Reducing conditions (WRB 2022 Ch 3.2.10) -- per-pedon test wrapping
-#' \code{\link{test_reducing_conditions}}.
+#' \code{test_reducing_conditions}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_redox_pct Numeric threshold or option (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
@@ -290,7 +290,7 @@ reducing_conditions <- function(pedon, min_redox_pct = 5) {
 
 
 #' Shrink-swell cracks (WRB 2022 Ch 3.2.12) -- per-pedon test wrapping
-#' \code{\link{test_shrink_swell_cracks}}.
+#' \code{test_shrink_swell_cracks}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_width_cm Numeric threshold or option (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
@@ -317,7 +317,7 @@ shrink_swell_cracks <- function(pedon, min_width_cm = 0.5) {
 #'   \item one or both of: clay >= 8\% AND CEC/clay < 24 cmol_c/kg clay; OR
 #'         bulk CEC < 2 cmol_c/kg soil;
 #'   \item evidence of soil formation as defined in criterion 3 of the cambic
-#'         horizon (\code{\link{test_cambic_soil_formation}}).
+#'         horizon (\code{test_cambic_soil_formation}).
 #' }
 #' Both must be met by the SAME layer. Criterion 2 was added in v0.9.127
 #' (previously only criterion 1 was enforced); where the soil-formation
@@ -381,7 +381,7 @@ sideralic_properties <- function(pedon, max_cec_per_clay = 24,
 
 
 #' Takyric properties (WRB 2022 Ch 3.2.15) -- per-pedon test wrapping
-#' \code{\link{test_takyric_surface}}.
+#' \code{test_takyric_surface}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
@@ -432,7 +432,7 @@ vitric_properties <- function(pedon, min_glass_pct = 5,
 
 
 #' Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
-#' \code{\link{test_yermic_surface}}.
+#' \code{test_yermic_surface}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export

@@ -36,7 +36,7 @@
 #' @return A list with elements \code{passed}, \code{layers},
 #'         \code{missing}, and \code{passing_path} (the name of the
 #'         first path that passed, or \code{NA_character_}).
-#' @keywords internal
+#' @noRd
 aggregate_alternatives <- function(paths) {
   per_path <- lapply(paths, function(p) aggregate_subtests(p))
 
@@ -79,7 +79,7 @@ aggregate_alternatives <- function(paths) {
 #' no single contiguous layer reaches the standard 10 cm. Relevant for
 #' folic / mossy Histosols on slopes.
 #'
-#' @keywords internal
+#' @noRd
 test_oc_cumulative_thickness <- function(h,
                                             min_oc          = 12,
                                             min_thickness_cm = 40,
@@ -133,7 +133,7 @@ test_oc_cumulative_thickness <- function(h,
 #' \code{max_depth} of the surface. Used as an OR-alternative to the
 #' R / Cr designation pattern.
 #'
-#' @keywords internal
+#' @noRd
 test_coarse_fragments_above <- function(h,
                                            min_pct  = 90,
                                            max_top_cm = 25) {
@@ -171,7 +171,7 @@ test_coarse_fragments_above <- function(h,
 #' at or below \code{max_temp_C} (default 0 C). Used as an explicit
 #' OR-alternative to the designation-pattern path.
 #'
-#' @keywords internal
+#' @noRd
 test_permafrost_temp_below <- function(h,
                                           max_temp_C   = 0,
                                           max_top_cm   = 100) {
@@ -207,7 +207,7 @@ test_permafrost_temp_below <- function(h,
 #'
 #' WRB 2022 alternative for andic properties: P retention >= 70 \%.
 #'
-#' @keywords internal
+#' @noRd
 test_phosphate_retention_above <- function(h,
                                               min_pct           = 70,
                                               candidate_layers  = NULL) {
@@ -235,7 +235,7 @@ test_phosphate_retention_above <- function(h,
 #' WRB 2022 alternative for andic properties: glass content >= 30 \%
 #' in the 0.02--2 mm sand fraction.
 #'
-#' @keywords internal
+#' @noRd
 test_volcanic_glass_above <- function(h,
                                          min_pct           = 30,
                                          candidate_layers  = NULL) {
@@ -266,7 +266,7 @@ test_volcanic_glass_above <- function(h,
 #' \code{geomembrane_present == TRUE} within the upper
 #' \code{max_top_cm}.
 #'
-#' @keywords internal
+#' @noRd
 test_geomembrane_within_depth <- function(h, max_top_cm = 100) {
   if (is.null(h) || nrow(h) == 0L || !"geomembrane_present" %in% names(h))
     return(.subtest_result(passed = FALSE, layers = integer(0),
@@ -300,7 +300,7 @@ test_geomembrane_within_depth <- function(h, max_top_cm = 100) {
 #' (top_cm <= \code{max_top_cm}, default 5) with
 #' \code{technic_hardmaterial_pct >= min_pct} (default 95).
 #'
-#' @keywords internal
+#' @noRd
 test_technic_hardmaterial_at_surface <- function(h,
                                                     min_pct    = 95,
                                                     max_top_cm = 5) {
@@ -355,7 +355,7 @@ test_technic_hardmaterial_at_surface <- function(h,
 #'         elsewhere -- this test is no longer a hard veto.
 #' }
 #'
-#' @keywords internal
+#' @noRd
 test_polyhedral_or_nutty_structure <- function(h,
                                                   candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -393,7 +393,7 @@ test_polyhedral_or_nutty_structure <- function(h,
 #' consecutive layers within 50 cm depth. Returns NA when clay is
 #' missing in fewer than two candidate layers.
 #'
-#' @keywords internal
+#' @noRd
 test_clay_decreases_with_depth <- function(h,
                                               candidate_layers = NULL,
                                               max_drop_pct = 8,
@@ -431,7 +431,7 @@ test_clay_decreases_with_depth <- function(h,
 #' evidence either way) and \code{TRUE} when slickensides is present
 #' (taken as suggestive). The diagnostic does not fail on this test.
 #'
-#' @keywords internal
+#' @noRd
 test_shiny_ped_surfaces <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L)
@@ -463,7 +463,7 @@ test_shiny_ped_surfaces <- function(h, candidate_layers = NULL) {
 #' (\code{p_mehlich3_mg_kg} >= 50) AND minimum thickness 20 cm.
 #' Either path (designation OR property-based) qualifies.
 #'
-#' @keywords internal
+#' @noRd
 test_anthric_horizon_properties <- function(h, min_thickness_cm = 20,
                                                 min_p_mg_kg     = 50,
                                                 max_munsell_value = 4) {

@@ -19,7 +19,7 @@
 #' `test_numeric_above`, `test_pattern_match`, `test_shrink_swell_cracks`
 #' on fixtures whose schema predates v0.3.3 column extensions.
 #'
-#' @keywords internal
+#' @noRd
 .col_at <- function(h, column, i, default = NA) {
   v <- h[[column]]
   if (is.null(v)) return(default)
@@ -42,7 +42,7 @@
 #' @param threshold Minimum value (inclusive).
 #' @param candidate_layers Optional layer index restriction.
 #' @return Sub-test result list.
-#' @keywords internal
+#' @noRd
 test_numeric_above <- function(h, column, threshold,
                                   candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -72,7 +72,7 @@ test_numeric_above <- function(h, column, threshold,
 #' @param pattern Regex (case-insensitive).
 #' @param candidate_layers Optional restriction.
 #' @return Sub-test result.
-#' @keywords internal
+#' @noRd
 test_pattern_match <- function(h, column, pattern,
                                   candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -97,11 +97,11 @@ test_pattern_match <- function(h, column, pattern,
 
 #' Test that a layer's top is at or below a target depth
 #'
-#' Inverse of \code{\link{test_top_at_or_above}}: returns layers whose top
+#' Inverse of \code{test_top_at_or_above}: returns layers whose top
 #' is shallower than or equal to \code{max_top_cm}, i.e. that start within
 #' the upper part of the profile.
 #'
-#' @keywords internal
+#' @noRd
 test_starts_within <- function(h, max_top_cm,
                                  candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -135,7 +135,7 @@ test_starts_within <- function(h, max_top_cm,
 #' @param h Horizons table.
 #' @param min_class One of "weakly", "moderately", "strongly", "indurated".
 #' @param candidate_layers Optional restriction.
-#' @keywords internal
+#' @noRd
 test_cemented <- function(h, min_class = "moderately",
                             candidate_layers = NULL) {
   ladder <- c("none" = 0L, "weakly" = 1L, "moderately" = 2L,
@@ -185,7 +185,7 @@ test_cemented <- function(h, min_class = "moderately",
 #' Munsell is present); the uncoated-grain check is deferred (treated as
 #' satisfied when the colour passes).
 #'
-#' @keywords internal
+#' @noRd
 test_claric_munsell <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
@@ -239,7 +239,7 @@ test_claric_munsell <- function(h, candidate_layers = NULL) {
 #' designation pattern matching (\code{Bss}, \code{Css}, etc.) and
 #' \code{slickensides} >= "common" as proxy evidence.
 #'
-#' @keywords internal
+#' @noRd
 test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
                                         min_depth_cm = 0,
                                         candidate_layers = NULL) {
@@ -295,7 +295,7 @@ test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
 #'   \item methane (not in schema, deferred).
 #' }
 #'
-#' @keywords internal
+#' @noRd
 test_reducing_conditions <- function(h, min_redox_pct = 5,
                                         candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -341,7 +341,7 @@ test_reducing_conditions <- function(h, min_redox_pct = 5,
 #' Reuses \code{compute_alfe_ox()} (declared inline below to keep the file
 #' self-contained); pass thresholds for andic (>=2.0) or vitric (>=0.4).
 #'
-#' @keywords internal
+#' @noRd
 test_alfe_ox_above <- function(h, min_pct,
                                  candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
@@ -379,7 +379,7 @@ test_alfe_ox_above <- function(h, min_pct,
 #' (\code{varnish_pct} >= 10 OR \code{ventifact_pct} >= 10 OR
 #' \code{vesicular_pores} \%in\% c("common", "many")) on the surface
 #' layer (top_cm <= 5).
-#' @keywords internal
+#' @noRd
 test_yermic_surface <- function(h) {
   surface <- which(!is.na(h$top_cm) & h$top_cm <= 5)
   if (length(surface) == 0L) {
@@ -426,7 +426,7 @@ test_yermic_surface <- function(h) {
 #' plastic" when moist, EC < 4 dS/m OR >= 1 dS/m less than the layer
 #' below. v0.3.3 enforces texture + structure + cracks + EC.
 #'
-#' @keywords internal
+#' @noRd
 test_takyric_surface <- function(h) {
   surface <- which(!is.na(h$top_cm) & h$top_cm <= 5)
   if (length(surface) == 0L) {
@@ -483,7 +483,7 @@ test_takyric_surface <- function(h) {
 #' WRB 2022 cambic-horizon criterion 3.
 #'
 #' @param hue Character Munsell hue (single value or vector).
-#' @keywords internal
+#' @noRd
 .munsell_hue_units <- function(hue) {
   one <- function(x) {
     if (is.na(x)) return(NA_real_)
@@ -527,7 +527,7 @@ test_takyric_surface <- function(h) {
 #'
 #' @param h Horizons table.
 #' @param candidate_layers Optional integer layer indices to restrict to.
-#' @keywords internal
+#' @noRd
 test_cambic_soil_formation <- function(h, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   n  <- nrow(h)

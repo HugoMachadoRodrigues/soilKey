@@ -155,8 +155,7 @@ FamilyAttribute <- R6::R6Class("FamilyAttribute",
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p. 46-47;
 #'             Cap 18, p. 281.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
   h <- pedon$horizons
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
@@ -220,8 +219,7 @@ familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
 #'        200 cm).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p. 283.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
   h <- pedon$horizons
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
@@ -279,8 +277,7 @@ familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 47-48; Cap 18,
 #'             p 284.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
   h <- pedon$horizons
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
@@ -326,8 +323,7 @@ familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 48; Cap 18,
 #'             p 284.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_constituicao_esqueletica <- function(pedon, max_depth_cm = 200) {
   h <- pedon$horizons
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
@@ -371,8 +367,7 @@ familia_constituicao_esqueletica <- function(pedon, max_depth_cm = 200) {
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 2 (p 49-54);
 #'             Cap 18, p 284.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_tipo_horizonte_superficial <- function(pedon) {
   hi <- horizonte_histico(pedon)
   ch <- horizonte_A_chernozemico(pedon)
@@ -709,8 +704,7 @@ classify_sibcs_familia <- function(pedon,
 #' @param horizons \code{data.table} de horizontes do pedon.
 #' @return String "epi" / "meso" / "endo" ou NULL.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 284-285.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_prefixo_profundidade <- function(diag, horizons) {
   if (!isTRUE(diag$passed)) return(NULL)
   layers <- diag$layers %||% integer(0)
@@ -739,8 +733,7 @@ familia_prefixo_profundidade <- function(diag, horizons) {
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 31; Cap 18,
 #'             p 285.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_saturacao_bases <- function(pedon, max_depth_cm = 150,
                                        threshold = 50) {
   h <- pedon$horizons
@@ -787,8 +780,7 @@ familia_saturacao_bases <- function(pedon, max_depth_cm = 150,
 #'         \code{"epialico"} / \code{"mesoalico"} / \code{"endoalico"}
 #'         ou NULL.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 285.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_saturacao_aluminio <- function(pedon,
                                           min_al_sat = 50,
                                           min_al_cmol = 0.5) {
@@ -866,8 +858,7 @@ familia_saturacao_aluminio <- function(pedon,
 #' @param threshold Limiar de \% volume (default 15).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_mineralogia_areia <- function(pedon, max_depth_cm = 200,
                                           threshold = 15) {
   h <- pedon$horizons
@@ -942,8 +933,7 @@ familia_mineralogia_areia <- function(pedon, max_depth_cm = 200,
 #' @param max_depth_cm Profundidade da secao de controle (default 200).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 286-287.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_mineralogia_argila_latossolo <- function(pedon,
                                                     max_depth_cm = 200) {
   h <- pedon$horizons
@@ -990,7 +980,7 @@ familia_mineralogia_argila_latossolo <- function(pedon,
 #' Plintossolos, Luvissolos, Nitossolos, Vertissolos, Chernossolos,
 #' Planossolos, Gleissolos quando ha informacao quantitativa de
 #' atividade da argila e/ou Ki/Kr. Cobre as classes nao endereçadas
-#' por \code{\link{familia_mineralogia_argila_latossolo}}:
+#' por \code{familia_mineralogia_argila_latossolo}:
 #' \itemize{
 #'   \item \code{esmectitica}: T_argila >= \code{ta_threshold} (default
 #'         27 cmolc/kg argila), indicando dominancia de argilas 2:1
@@ -1091,8 +1081,7 @@ familia_mineralogia_argila_geral <- function(pedon,
 #' @param max_depth_cm Profundidade da secao de controle (default 150).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_atividade_argila <- function(pedon, max_depth_cm = 150) {
   h <- pedon$horizons
   cec <- .weighted_avg_in_depth(h, "cec_cmol",
@@ -1157,8 +1146,7 @@ familia_atividade_argila <- function(pedon, max_depth_cm = 150) {
 #' @param max_depth_cm Profundidade da secao de controle (default 150).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 42.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
   h <- pedon$horizons
   b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
@@ -1214,8 +1202,7 @@ familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
 #'         \code{"andico"} ou NULL.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, p 42-43;
 #'             Cap 18, p 287.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
                               min_aloxfeox = 2) {
   h <- pedon$horizons
@@ -1273,8 +1260,7 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
 #' @param max_depth_cm Profundidade da secao de controle (default 200).
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_organossolo_material_subjacente <- function(pedon,
                                                        max_depth_cm = 200) {
   h <- pedon$horizons
@@ -1349,8 +1335,7 @@ familia_organossolo_material_subjacente <- function(pedon,
 #' @param min_cm Default 100 cm.
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 287.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_organossolo_espessura <- function(pedon, min_cm = 100) {
   h <- pedon$horizons
   org <- .organic_layers(h)
@@ -1390,8 +1375,7 @@ familia_organossolo_espessura <- function(pedon, min_cm = 100) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p 288.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_organossolo_lenhosidade <- function(pedon) {
   h <- pedon$horizons
   org <- .organic_layers(h)
@@ -1439,8 +1423,7 @@ familia_organossolo_lenhosidade <- function(pedon) {
 #'        \code{\link{classify_sibcs_familia}}.
 #' @return String com adjetivos compostos separados por ", ", ou
 #'         vazia se nenhum adjetivo se aplica.
-#' @keywords internal
-#' @export
+#' @noRd
 familia_label <- function(familia) {
   vals <- vapply(familia, function(fa) fa$value %||% NA_character_,
                    character(1))

@@ -39,7 +39,7 @@ bottom measured layer are left \code{NA}: the function interpolates, it never
 extrapolates. Each fill is written with \code{source = "inferred_prior"}, so
 the \code{\link{PedonRecord}} authority order keeps it from displacing a
 measured, spectra-predicted or VLM-extracted value, and any downstream
-\code{\link{compute_evidence_grade}} call reports grade \code{"C"}.
+\code{compute_evidence_grade} call reports grade \code{"C"}.
 }
 \details{
 This is the within-pedon companion to

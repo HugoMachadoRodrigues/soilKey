@@ -37,7 +37,7 @@
 #' @param country Optional ISO-2 country code; passed through to the
 #'        constructed pedon's site metadata.
 #' @param provider A vision-language provider: an \pkg{ellmer} chat object
-#'        for live use, or a \code{\link{MockVLMProvider}} for testing and
+#'        for live use, or a \code{MockVLMProvider} for testing and
 #'        offline demos. Required -- there is no default, so a real
 #'        classification is never produced from canned data by accident.
 #' @param systems Character vector, any subset of \code{c("wrb", "sibcs",

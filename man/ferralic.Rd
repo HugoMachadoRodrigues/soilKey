@@ -39,11 +39,11 @@ the Ferralsol RSG.
 \details{
 Sub-tests called:
 \itemize{
-  \item \code{\link{test_ferralic_texture}} -- texture sandy loam or
+  \item \code{test_ferralic_texture} -- texture sandy loam or
         finer.
-  \item \code{\link{test_cec_per_clay}} -- CEC / clay <= 16 (or 20
+  \item \code{test_cec_per_clay} -- CEC / clay <= 16 (or 20
         under \code{engine = "aqp"}) cmol_c/kg clay.
-  \item \code{\link{test_ferralic_thickness}} -- thickness >= 30 cm.
+  \item \code{test_ferralic_thickness} -- thickness >= 30 cm.
 }
 
 v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older

@@ -12,10 +12,10 @@
 #'
 #' \code{ellmer} chat objects' \code{$chat()} method returns a
 #' character vector (possibly with class attributes for ANSI). The
-#' \code{\link{MockVLMProvider}} returns a plain string. This helper
+#' \code{MockVLMProvider} returns a plain string. This helper
 #' normalises both shapes.
 #'
-#' @keywords internal
+#' @noRd
 as_chat_text <- function(x) {
   if (is.character(x)) {
     paste(as.character(x), collapse = "")
@@ -33,7 +33,7 @@ as_chat_text <- function(x) {
 #' despite being told not to. This helper removes a single leading
 #' and trailing fence pair if present, leaving the inner content.
 #'
-#' @keywords internal
+#' @noRd
 strip_code_fence <- function(text) {
   text <- trimws(text)
   text <- sub("^```(?:json)?\\s*\\n?", "", text, perl = TRUE)
@@ -46,7 +46,7 @@ strip_code_fence <- function(text) {
 #'
 #' Sends \code{prompt} to \code{provider}, parses the response as
 #' JSON, and validates it against \code{schema} (a short schema name
-#' resolved via \code{\link{load_schema}}). If validation fails, the
+#' resolved via \code{load_schema}). If validation fails, the
 #' error message is appended to the prompt and the call is retried
 #' up to \code{max_retries} times.
 #'
@@ -58,7 +58,7 @@ strip_code_fence <- function(text) {
 #' here.
 #'
 #' @param provider An \code{ellmer} chat object (from
-#'        \code{\link{vlm_provider}}) or a \code{\link{MockVLMProvider}}
+#'        \code{\link{vlm_provider}}) or a \code{MockVLMProvider}
 #'        instance. Must expose a \code{$chat(prompt, ...)} method
 #'        returning text (or a character vector of length 1).
 #' @param prompt Character scalar with the initial prompt.
@@ -70,7 +70,7 @@ strip_code_fence <- function(text) {
 #'        the prompt for multimodal calls.
 #' @return A list with elements \code{data} (parsed R object),
 #'         \code{raw} (character scalar), \code{attempts} (integer).
-#' @keywords internal
+#' @noRd
 validate_or_retry <- function(provider,
                                 prompt,
                                 schema,

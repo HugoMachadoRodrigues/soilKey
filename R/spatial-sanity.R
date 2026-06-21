@@ -108,7 +108,7 @@ prior_consistency_check <- function(rsg_code, prior, threshold = 0.01) {
 #' \code{rsg_or_order} and returns its \code{code}. Used internally by
 #' \code{\link{classify_wrb2022}} to wire the prior check.
 #'
-#' @keywords internal
+#' @noRd
 resolve_assigned_rsg_code <- function(result) {
   trace <- result$trace
   if (length(trace) == 0L) return(NA_character_)

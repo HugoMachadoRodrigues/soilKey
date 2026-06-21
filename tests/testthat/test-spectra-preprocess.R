@@ -26,6 +26,7 @@ make_synth_vnir <- function(n_horizons = 5L,
 # --- core invariants ----------------------------------------------------------
 
 test_that("preprocess_spectra() rejects bad inputs", {
+  skip_on_cran()
   expect_error(preprocess_spectra(NULL),               "NULL")
   expect_error(preprocess_spectra(list(1, 2, 3)),       "numeric")
   X <- make_synth_vnir()
@@ -36,6 +37,7 @@ test_that("preprocess_spectra() rejects bad inputs", {
 
 
 test_that("snv() centres each row to zero mean and unit variance", {
+  skip_on_cran()
   X <- make_synth_vnir()
   Y <- preprocess_spectra(X, method = "snv")
   expect_equal(dim(Y), dim(X))
@@ -47,6 +49,7 @@ test_that("snv() centres each row to zero mean and unit variance", {
 
 
 test_that("snv() handles a constant row without producing NaN", {
+  skip_on_cran()
   X <- rbind(make_synth_vnir(2),
               matrix(0.5, nrow = 1, ncol = 2151))
   colnames(X) <- as.character(350:2500)
@@ -56,6 +59,7 @@ test_that("snv() handles a constant row without producing NaN", {
 
 
 test_that("sg1 trims the spectrum by w-1 columns and returns numeric matrix", {
+  skip_on_cran()
   X <- make_synth_vnir()
   Y <- preprocess_spectra(X, method = "sg1", w = 5L)
   expect_equal(nrow(Y), nrow(X))
@@ -65,6 +69,7 @@ test_that("sg1 trims the spectrum by w-1 columns and returns numeric matrix", {
 
 
 test_that("snv+sg1 chains the two transforms", {
+  skip_on_cran()
   X <- make_synth_vnir()
   Y_chain <- preprocess_spectra(X, method = "snv+sg1", w = 5L)
 
@@ -83,6 +88,7 @@ test_that("snv+sg1 chains the two transforms", {
 # coefficients and via the generic LS solver in .sg_coefficients().
 
 test_that("native SG coefficients match the textbook 5-pt 1st-derivative kernel", {
+  skip_on_cran()
   k_native <- soilKey:::.sg_coefficients(w = 5L, p = 2L, m = 1L)
   k_book   <- c(-2, -1, 0, 1, 2) / 10
   expect_equal(k_native, k_book, tolerance = 1e-12)
@@ -90,6 +96,7 @@ test_that("native SG coefficients match the textbook 5-pt 1st-derivative kernel"
 
 
 test_that("native SG path agrees with prospectr (when available)", {
+  skip_on_cran()
   skip_if_not_installed("prospectr")
   X <- make_synth_vnir()
 
@@ -116,6 +123,7 @@ test_that("native SG path agrees with prospectr (when available)", {
 # --- shape & dispatch ---------------------------------------------------------
 
 test_that("preprocess_spectra() defaults to 'snv+sg1'", {
+  skip_on_cran()
   X <- make_synth_vnir()
   Y_default <- preprocess_spectra(X)
   Y_explicit <- preprocess_spectra(X, method = "snv+sg1")
@@ -124,6 +132,7 @@ test_that("preprocess_spectra() defaults to 'snv+sg1'", {
 
 
 test_that("preprocess_spectra() accepts a vector by treating it as one row", {
+  skip_on_cran()
   X <- as.numeric(make_synth_vnir(1L)[1L, ])
   Y <- preprocess_spectra(X, method = "snv")
   expect_equal(nrow(Y), 1L)
@@ -132,6 +141,7 @@ test_that("preprocess_spectra() accepts a vector by treating it as one row", {
 
 
 test_that("preprocess_spectra() accepts a data.frame", {
+  skip_on_cran()
   X <- as.data.frame(make_synth_vnir())
   Y <- preprocess_spectra(X, method = "snv")
   expect_true(is.matrix(Y))

@@ -41,7 +41,7 @@
 #' Returns \code{c(hue = NA_character_, value = NA_real_, chroma =
 #' NA_real_)} when the input is empty / unparseable.
 #'
-#' @keywords internal
+#' @noRd
 .parse_febr_munsell <- function(s) {
   if (is.null(s) || length(s) == 0L || is.na(s) || !nzchar(trimws(s))) {
     return(list(hue = NA_character_, value = NA_real_, chroma = NA_real_))
@@ -70,7 +70,7 @@
 #'
 #' Returns a data.frame with columns hue / value / chroma, one row per
 #' input string.
-#' @keywords internal
+#' @noRd
 .parse_febr_munsell_vec <- function(x) {
   if (length(x) == 0L) {
     return(data.frame(hue = character(0), value = numeric(0),
@@ -115,7 +115,7 @@
 #'
 #' Same patterns apply for "seca" (dry).
 #'
-#' @keywords internal
+#' @noRd
 .detect_febr_munsell_columns <- function(cols) {
   pick <- function(patterns) {
     for (p in patterns) {
@@ -321,7 +321,7 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
 
 
 #' Map FEBR layer-table columns to soilKey horizon column names
-#' @keywords internal
+#' @noRd
 .febr_match_layer_columns <- function(cols) {
   out <- list()
   for (sk in names(.FEBR_TO_HORIZON_MAP)) {
@@ -334,7 +334,7 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
 
 
 #' Build a soilKey horizons table from a subset of FEBR camada rows
-#' @keywords internal
+#' @noRd
 .febr_rows_to_horizons <- function(rows, sk_map, mcols) {
   spec <- horizon_column_spec()
   hz <- list()
@@ -405,7 +405,7 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
 
 
 #' Build a single PedonRecord from FEBR rows
-#' @keywords internal
+#' @noRd
 .febr_pedon_from_rows <- function(oid, camada_rows, ob_row, ident, hz, ds) {
   taxon <- if (!is.null(ob_row)) {
     grep_cols <- grep("^taxon|sibcs|classifica",

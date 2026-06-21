@@ -136,7 +136,7 @@ benchmark_performance <- function(n = 100L,
 
 
 #' Synthesise a small but realistic 5-horizon pedon for benchmarking
-#' @keywords internal
+#' @noRd
 .make_synth_perf_pedon <- function(i) {
   rho <- runif(1L, 0.7, 1.5)
   hue <- sample(c("10R", "2.5YR", "5YR", "7.5YR", "10YR", "2.5Y"),

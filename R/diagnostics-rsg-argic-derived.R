@@ -235,7 +235,7 @@ luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
 # ----------------------------------------------------------- helpers ----
 #' Internal helper: .argic_derived_negative
 
-#' @keywords internal
+#' @noRd
 .argic_derived_negative <- function(name, arg_res, note) {
   DiagnosticResult$new(
     name      = name,
@@ -250,7 +250,7 @@ luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
 }
 #' Internal helper: .argic_derived_aggregate
 
-#' @keywords internal
+#' @noRd
 .argic_derived_aggregate <- function(tests, layer_keys) {
   # Layers passing = intersection of argic layers AND each chemistry test's layers
   layer_lists <- list(tests$argic$layers)

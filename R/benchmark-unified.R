@@ -250,7 +250,7 @@ benchmark_unified <- function(
 
 #' Reproducible random row sample (seed 42), restoring the global RNG state
 #' so the benchmark never perturbs the caller's randomness.
-#' @keywords internal
+#' @noRd
 .benchmark_reproducible_sample <- function(n, size) {
   old <- if (exists(".Random.seed", envir = .GlobalEnv))
     get(".Random.seed", envir = .GlobalEnv) else NULL
@@ -264,7 +264,7 @@ benchmark_unified <- function(
 
 #' Site field that carries a system's reference label (mirrors the
 #' `ref_field` switch in `benchmark_run_classification`).
-#' @keywords internal
+#' @noRd
 .benchmark_ref_field <- function(sys) {
   switch(sys,
          wrb2022 = "reference_wrb",
@@ -274,7 +274,7 @@ benchmark_unified <- function(
 }
 
 #' Does a pedon carry a usable reference label for `sys`?
-#' @keywords internal
+#' @noRd
 .benchmark_has_reference <- function(pedon, sys) {
   fld <- .benchmark_ref_field(sys)
   if (is.na(fld)) return(FALSE)
@@ -287,7 +287,7 @@ benchmark_unified <- function(
 #' before filtering (the pre-v0.9.110 bug) starves sparsely-labelled systems --
 #' e.g. only a handful of FEBR pedons carry a USDA label, so a head/random cap
 #' over the whole set left FEBR-USDA at n=3 despite hundreds of labelled rows.
-#' @keywords internal
+#' @noRd
 .benchmark_filter_then_cap <- function(pedons, sys, max_n) {
   keep   <- vapply(pedons, .benchmark_has_reference, logical(1L), sys = sys)
   pedons <- pedons[keep]
@@ -301,7 +301,7 @@ benchmark_unified <- function(
 #' itself). `normalise_febr_wrb`/`_usda` are idempotent on already-reduced WRB
 #' names but return NA on an already-order USDA string, so apply only to the
 #' raw reference field, only once, only for FEBR.
-#' @keywords internal
+#' @noRd
 .benchmark_normalise_febr_ref <- function(pedons, sys) {
   nf <- switch(sys,
                wrb2022 = normalise_febr_wrb,
@@ -320,7 +320,7 @@ benchmark_unified <- function(
 #' Default local paths for the reference benchmark datasets
 #'
 #' Override the root via \code{options(soilKey.benchmark_root = "...")}.
-#' @keywords internal
+#' @noRd
 .benchmark_default_paths <- function() {
   sd_root <- getOption(
     "soilKey.benchmark_root",
@@ -343,7 +343,7 @@ benchmark_unified <- function(
 }
 
 #' Which datasets in `paths` actually have their files/dirs present?
-#' @keywords internal
+#' @noRd
 .benchmark_available_datasets <- function(paths) {
   checks <- list(
     bdsolos    = function() dir.exists(paths$bdsolos %||% ""),
@@ -359,7 +359,7 @@ benchmark_unified <- function(
 }
 
 #' Single (dataset, system) benchmark call dispatched by name
-#' @keywords internal
+#' @noRd
 .benchmark_one_dataset_one_system <- function(ds, sys, paths,
                                                   max_n,
                                                   harmonize = FALSE,
@@ -563,7 +563,7 @@ benchmark_unified <- function(
 
 
 #' Merge two confusion matrices (table objects), padding union of labels
-#' @keywords internal
+#' @noRd
 .merge_confusion <- function(a, b) {
   if (is.null(a)) return(b)
   if (is.null(b)) return(a)
@@ -580,7 +580,7 @@ benchmark_unified <- function(
 
 
 #' Per-class recall data.frame from a confusion matrix
-#' @keywords internal
+#' @noRd
 .per_class_from_confusion <- function(cm) {
   if (is.null(cm)) return(NULL)
   ref_totals <- rowSums(cm)
@@ -611,7 +611,7 @@ benchmark_unified <- function(
 #' inflates nor deflates them). \code{nir} is the no-information rate (the
 #' accuracy of always predicting the majority \emph{reference} class) -- the
 #' baseline an accuracy figure must beat to be meaningful.
-#' @keywords internal
+#' @noRd
 .benchmark_metrics_from_confusion <- function(cm) {
   if (is.null(cm)) return(NULL)
   cm   <- as.matrix(cm)
@@ -658,7 +658,7 @@ benchmark_unified <- function(
 #' \code{.benchmark_reproducible_sample}, so the CI is reproducible and never
 #' perturbs the caller's randomness. Degenerate inputs (\code{< 2} items or
 #' \code{< 2} reference classes) return \code{c(NA, NA)} per metric.
-#' @keywords internal
+#' @noRd
 .benchmark_bootstrap_metrics <- function(cm, B = 1000L, seed = 42L) {
   na2 <- c(NA_real_, NA_real_)
   degenerate <- list(accuracy = na2, balanced_accuracy = na2,

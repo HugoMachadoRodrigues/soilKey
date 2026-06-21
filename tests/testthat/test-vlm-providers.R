@@ -1,4 +1,5 @@
 test_that("default_model returns sensible per-provider defaults", {
+  skip_on_cran()
   # v0.9.11: bumped Anthropic to 4-7 (vision-capable Claude Sonnet),
   # Google to 2.0 Pro, and Ollama to gemma4:e4b (Gemma 4 edge,
   # multimodal). OpenAI default remains gpt-4o.
@@ -9,10 +10,12 @@ test_that("default_model returns sensible per-provider defaults", {
 })
 
 test_that("default_model rejects unknown providers", {
+  skip_on_cran()
   expect_error(soilKey:::default_model("not-a-provider"), "should be one of")
 })
 
 test_that("vlm_provider errors clearly when ellmer is not installed", {
+  skip_on_cran()
   # Logic is correct (clarified for future readers): `skip_if(cond)` skips
   # when `cond` is TRUE; `requireNamespace("ellmer")` returns TRUE iff
   # ellmer is installed. So this skips when ellmer IS installed (because
@@ -31,6 +34,7 @@ test_that("vlm_provider errors clearly when ellmer is not installed", {
 })
 
 test_that("vlm_provider returns a chat object when ellmer is available", {
+  skip_on_cran()
   skip_if_not_installed("ellmer")
 
   # We do not actually want to instantiate an Anthropic client (it
@@ -41,6 +45,7 @@ test_that("vlm_provider returns a chat object when ellmer is available", {
 })
 
 test_that("vlm_provider validates name with match.arg", {
+  skip_on_cran()
   expect_error(
     suppressWarnings(vlm_provider("aws")),
     regexp = "should be one of"

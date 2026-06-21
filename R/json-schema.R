@@ -200,7 +200,7 @@ validate_pedon_json <- function(x) {
 
 #' Internal helper: write the schema to inst/schemas/pedon-schema.json
 #' Called by data-raw / build scripts only -- not exported.
-#' @keywords internal
+#' @noRd
 .write_pedon_schema_to_disk <- function(
     path = file.path("inst", "schemas", "pedon-schema.json")
 ) {

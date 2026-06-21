@@ -41,7 +41,7 @@ object (when you want full control over
 \item{model}{Optional model identifier; passed through to
 \code{vlm_provider()} when \code{provider} is a
 string. Defaults to the per-provider default
-from \code{\link{default_model}}.}
+from \code{default_model}.}
 
 \item{systems}{Character vector listing which classification
 systems to run; subset of

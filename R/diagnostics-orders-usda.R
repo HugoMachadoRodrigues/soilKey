@@ -77,8 +77,7 @@
 #' Order-level gate: cryic_conditions diagnostic from WRB delegated +
 #' optional permafrost_temp_C if available.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 gelisol_usda <- function(pedon) {
   h <- pedon$horizons
   cr <- cryic_conditions(pedon)
@@ -101,8 +100,7 @@ gelisol_usda <- function(pedon) {
 #' Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
 #' threshold) instead of WRB histic_horizon (10 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 histosol_usda <- function(pedon) {
   hi <- histosol_qualifying_usda(pedon)
   # v0.9.21: NASIS tie-breaker -- Histic / Folistic / Hemic / Sapric
@@ -127,8 +125,7 @@ histosol_usda <- function(pedon) {
 
 #' Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 spodosol_usda <- function(pedon) {
   sp <- spodic(pedon)
   # v0.9.21: NASIS tie-breaker -- "Spodic horizon" or "Spodic
@@ -151,8 +148,7 @@ spodosol_usda <- function(pedon) {
 
 #' Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 andisol_usda <- function(pedon) {
   # Refined v0.8.6: uses andisol_qualifying_usda which enforces the
   # 60% / 60 cm rule (KST 13ed, Ch 6 p 117) instead of just any
@@ -195,8 +191,7 @@ andisol_usda <- function(pedon) {
 #' v0.9.16 benchmark.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 oxisol_usda <- function(pedon) {
   ox <- oxic_usda(pedon)
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
@@ -238,8 +233,7 @@ oxisol_usda <- function(pedon) {
 #' Vertisols (USDA Cap 16): slickensides + cracks.
 #' Delegates to vertic_horizon.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 vertisol_usda <- function(pedon) {
   vh <- vertic_horizon(pedon)
   # v0.9.21: NASIS tie-breaker -- Slickensides surveyor
@@ -270,8 +264,7 @@ vertisol_usda <- function(pedon) {
 #' proxies (low EC OR salic OR caracter combinations) + non-mollic
 #' surface + low OC (no organic accumulation).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 aridisol_usda <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
   # aridic SMR + a diagnostic subsurface horizon (KST 13ed Ch 7
@@ -312,8 +305,7 @@ aridisol_usda <- function(pedon) {
 #' lab-grade profiles always use the canonical KST 13ed gate.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 ultisol_usda <- function(pedon) {
   ar <- argic(pedon)
   # v0.9.21: NASIS tie-breaker for argic when canonical gate is NA.
@@ -349,8 +341,7 @@ ultisol_usda <- function(pedon) {
 
 #' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 mollisol_usda <- function(pedon) {
   # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
   # scaffold leftover) to the USDA-native `mollic_epipedon_usda()`,
@@ -392,8 +383,7 @@ mollisol_usda <- function(pedon) {
 #' Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
 #' >= 35\% at the implicit reference depth.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 alfisol_usda <- function(pedon) {
   ar <- argillic_usda(pedon)
   # v0.9.21: NASIS tie-breaker -- argillic / kandic / natric horizon
@@ -432,8 +422,7 @@ alfisol_usda <- function(pedon) {
 #' subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
 #' sodium-affected sub).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 inceptisol_usda <- function(pedon) {
   cb <- cambic(pedon)
   # v0.9.21: NASIS tie-breaker -- cambic horizon surveyor
@@ -468,8 +457,7 @@ inceptisol_usda <- function(pedon) {
 #' Entisols (USDA Cap 8): catch-all for soils that don't match any
 #' other Order. Always passes.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 entisol_usda <- function(pedon) {
   DiagnosticResult$new(
     name = "entisol_usda", passed = TRUE,

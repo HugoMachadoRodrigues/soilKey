@@ -25,6 +25,7 @@ make_fake_ossl_artefact <- function(n = 30L, wavelengths = 350:2500) {
 
 
 test_that("download_ossl_subset() reads from cache when present", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -47,6 +48,7 @@ test_that("download_ossl_subset() reads from cache when present", {
 
 
 test_that("download_ossl_subset() restricts Yr to requested properties", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache-props")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -63,6 +65,7 @@ test_that("download_ossl_subset() restricts Yr to requested properties", {
 
 
 test_that("download_ossl_subset() errors when none of the properties match", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache-noprops")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -81,6 +84,7 @@ test_that("download_ossl_subset() errors when none of the properties match", {
 
 
 test_that("download_ossl_subset() interpolates Xr to requested wavelengths", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache-wl")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -99,6 +103,7 @@ test_that("download_ossl_subset() interpolates Xr to requested wavelengths", {
 
 
 test_that("download_ossl_subset() errors helpfully when network fetch fails", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache-nonet")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -117,6 +122,7 @@ test_that("download_ossl_subset() errors helpfully when network fetch fails", {
 
 
 test_that("clear_ossl_cache() removes the right files", {
+  skip_on_cran()
   cache_dir <- file.path(tempdir(), "ossl-cache-clear")
   dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
   on.exit(unlink(cache_dir, recursive = TRUE), add = TRUE)
@@ -139,6 +145,7 @@ test_that("clear_ossl_cache() removes the right files", {
 
 
 test_that("clear_ossl_cache() handles a non-existent dir gracefully", {
+  skip_on_cran()
   res <- clear_ossl_cache(cache_dir = file.path(tempdir(), "no-such-dir"),
                             verbose = FALSE)
   expect_equal(res, character(0))

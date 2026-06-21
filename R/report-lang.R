@@ -38,7 +38,7 @@
 #'
 #' Falls back to English, then to the key itself. \code{...} are passed to
 #' \code{sprintf} when present (for labels with placeholders).
-#' @keywords internal
+#' @noRd
 .report_msg <- function(key, ...) {
   lang <- .report_lang()
   cat  <- .report_catalog()

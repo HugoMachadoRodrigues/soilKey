@@ -44,11 +44,11 @@ for Solonchaks.
 \details{
 Sub-tests called:
 \itemize{
-  \item \code{\link{test_ec_concentration}} -- EC \\>= 15 dS/m
+  \item \code{test_ec_concentration} -- EC \\>= 15 dS/m
         (primary) OR (EC \\>= 8 dS/m AND pH(H2O) \\>= 8.5)
         (alkaline).
-  \item \code{\link{test_minimum_thickness}} -- thickness \\>= 15 cm.
-  \item \code{\link{test_salic_product}} -- EC * thickness product
+  \item \code{test_minimum_thickness} -- thickness \\>= 15 cm.
+  \item \code{test_salic_product} -- EC * thickness product
         \\>= 450 (primary) or \\>= 240 (alkaline) per qualifying
         layer.
 }

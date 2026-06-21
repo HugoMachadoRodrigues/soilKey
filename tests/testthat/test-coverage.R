@@ -3,6 +3,7 @@
 # (Aeolic / Fragic / Limonic / Tsitelic).
 
 test_that("coverage_report(usda_subgroup) measures by name against KST 13ed", {
+  skip_on_cran()
   cov <- coverage_report("usda_subgroup")
   expect_type(cov, "list")
   expect_named(cov, c("overall", "by_group", "missing", "extra"))
@@ -22,6 +23,7 @@ test_that("coverage_report(usda_subgroup) measures by name against KST 13ed", {
 })
 
 test_that("coverage_report(wrb_qualifiers) counts only genuine implementations", {
+  skip_on_cran()
   cov <- coverage_report("wrb_qualifiers")
   expect_equal(cov$overall$system, "wrb2022")
   expect_equal(cov$overall$level, "qualifier")
@@ -47,6 +49,7 @@ test_that("coverage_report(wrb_qualifiers) counts only genuine implementations",
 })
 
 test_that("coverage_report extends to USDA great-group / suborder levels", {
+  skip_on_cran()
   gg <- coverage_report("usda_great_group")
   expect_equal(gg$overall$level, "great_group")
   expect_equal(gg$overall$pct, 100)               # all 339 great groups registered
@@ -55,6 +58,7 @@ test_that("coverage_report extends to USDA great-group / suborder levels", {
 })
 
 test_that("coverage_report(sibcs) honestly reports registered counts (no canonical)", {
+  skip_on_cran()
   s <- coverage_report("sibcs")
   expect_equal(s$overall$system, "sibcs")
   expect_true(is.na(s$overall$pct))               # no external canonical to diff
@@ -63,6 +67,7 @@ test_that("coverage_report(sibcs) honestly reports registered counts (no canonic
 })
 
 test_that("the 4 new qualifiers wrap their diagnostics and gate on depth", {
+  skip_on_cran()
   for (q in c("qual_aeolic", "qual_fragic", "qual_limonic", "qual_tsitelic")) {
     expect_true(exists(q, where = asNamespace("soilKey")), info = q)
   }
@@ -74,6 +79,7 @@ test_that("the 4 new qualifiers wrap their diagnostics and gate on depth", {
 })
 
 test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
+  skip_on_cran()
   # Each is a Typic -> specific refinement that the KSSL n=2895 gate cleared
   # (0 was-correct -> now-wrong), firing on genuine multi-condition evidence.
   sg <- function(f) classify_usda(f(), on_missing = "silent")$name
@@ -84,6 +90,7 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
 })
 
 test_that("the generator never changes a fixture's great group", {
+  skip_on_cran()
   # append-before-default guarantees new specifics can only steal pedons that
   # were falling through to Typic; the great group is invariant. Check the 4
   # changed fixtures keep their GG (the trailing token of the subgroup name).
@@ -98,6 +105,7 @@ test_that("the generator never changes a fixture's great group", {
 })
 
 test_that("the 4 qualifiers are wired into qualifiers.yaml per WRB Ch.4", {
+  skip_on_cran()
   q <- yaml::read_yaml(system.file("rules", "wrb2022", "qualifiers.yaml",
                                    package = "soilKey"))$rsg_qualifiers
   # spot-check the canonical RSG memberships

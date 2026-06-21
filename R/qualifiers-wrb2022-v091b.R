@@ -22,20 +22,17 @@
 #' Chernic qualifier (ch): chernic horizon (intensely worm-mixed mollic-like)
 #' within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_chernic     <- function(pedon) .q_presence("Chernic",     chernic(pedon),     100, pedon)
 
 #' Pisoplinthic qualifier (px): pisoplinthic horizon within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_pisoplinthic <- function(pedon) .q_presence("Pisoplinthic", pisoplinthic(pedon), 100, pedon)
 
 #' Abruptic qualifier (ap): abrupt textural difference within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_abruptic    <- function(pedon) .q_presence("Abruptic",    abrupt_textural_difference(pedon), 100, pedon)
 
 
@@ -47,8 +44,7 @@ qual_abruptic    <- function(pedon) .q_presence("Abruptic",    abrupt_textural_d
 #' only; v0.9.2 adds the cross-check against \code{thionic} / sulfidic
 #' material to disambiguate from naturally acidic Histosols.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_aceric <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 50)
@@ -89,8 +85,7 @@ qual_aceric <- function(pedon) {
 #' Mazic qualifier (mz): structureless / massive surface horizon
 #' (Vertisol). Diagnostic of slaked, crusted Vertisol surfaces.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_mazic <- function(pedon) {
   h  <- pedon$horizons
   sl <- .surface_layer(pedon)
@@ -128,8 +123,7 @@ qual_mazic <- function(pedon) {
 #' Grumic qualifier (gr): strong fine granular surface horizon
 #' (self-mulching Vertisol).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_grumic <- function(pedon) {
   h  <- pedon$horizons
   sl <- .surface_layer(pedon)
@@ -170,8 +164,7 @@ qual_grumic <- function(pedon) {
 #' Pellic qualifier (pe): in the upper 30 cm, Munsell value <= 4 moist
 #' AND chroma <= 2 moist. Diagnostic of "black" (dark) Vertisols.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_pellic <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm < 30)
@@ -223,8 +216,7 @@ qual_pellic <- function(pedon) {
 #' Aluandic qualifier (aa): andic properties + Al-dominant active
 #' component (Al / (Al + 0.5 Si) >= 0.5 in mass).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_aluandic <- function(pedon) {
   d <- .al_si_dominance(pedon)
   if (!isTRUE(d$passed))
@@ -247,8 +239,7 @@ qual_aluandic <- function(pedon) {
 #' Silandic qualifier (sn): andic properties + Si-dominant active
 #' component (Al / (Al + 0.5 Si) < 0.5 in mass; allophane-rich).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_silandic <- function(pedon) {
   d <- .al_si_dominance(pedon)
   if (!isTRUE(d$passed))
@@ -277,8 +268,7 @@ qual_silandic <- function(pedon) {
 #' "potentially over-permissive" via the \code{notes} field when the
 #' value falls in the 70-100\% band.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hydric <- function(pedon) {
   ap <- andic_properties(pedon)
   if (!isTRUE(ap$passed))
@@ -317,8 +307,7 @@ qual_hydric <- function(pedon) {
 #' Munsell value <= 2 and chroma <= 2 (moist). Melanic Index >= 1.7
 #' (the canonical UV-OD ratio) is deferred to v0.9.2.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_melanic <- function(pedon) {
   ap <- andic_properties(pedon)
   if (!isTRUE(ap$passed))
@@ -354,8 +343,7 @@ qual_melanic <- function(pedon) {
 #' complex (Ca + Mg + K + Na exch + 1 N KCl Al-exch <= 2 cmol+/kg fine
 #' earth) in some layer of the andic part within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_acroxic <- function(pedon) {
   ap <- andic_properties(pedon)
   if (!isTRUE(ap$passed))
@@ -389,8 +377,7 @@ qual_acroxic <- function(pedon) {
 
 #' Pachic qualifier (pc): mollic OR umbric horizon >= 50 cm thick.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_pachic <- function(pedon) {
   mo <- mollic(pedon)
   um <- umbric_horizon(pedon)
@@ -419,8 +406,7 @@ qual_pachic <- function(pedon) {
 #' Eutrosilic qualifier (es): silandic + base saturation >= 50\% in some
 #' layer of the silandic part within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_eutrosilic <- function(pedon) {
   si <- qual_silandic(pedon)
   if (!isTRUE(si$passed))

@@ -9,6 +9,7 @@
 
 
 test_that("v0.9.91: load_kssl_sample populates reference_wrb (strict access)", {
+  skip_on_cran()
   fp <- system.file("extdata", "kssl_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/kssl_sample.rds"
   skip_if_not(file.exists(fp), "kssl_sample.rds not bundled")
@@ -22,6 +23,7 @@ test_that("v0.9.91: load_kssl_sample populates reference_wrb (strict access)", {
 
 
 test_that("v0.9.91: load_kssl_nasis_sample populates reference_wrb (strict access)", {
+  skip_on_cran()
   fp <- system.file("extdata", "kssl_nasis_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/kssl_nasis_sample.rds"
   skip_if_not(file.exists(fp), "kssl_nasis_sample.rds not bundled")
@@ -35,6 +37,7 @@ test_that("v0.9.91: load_kssl_nasis_sample populates reference_wrb (strict acces
 
 
 test_that("v0.9.91: KSSL reference_wrb mirrors reference_wrb_from_usda verbatim", {
+  skip_on_cran()
   fp <- system.file("extdata", "kssl_nasis_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/kssl_nasis_sample.rds"
   skip_if_not(file.exists(fp), "kssl_nasis_sample.rds not bundled")
@@ -47,6 +50,7 @@ test_that("v0.9.91: KSSL reference_wrb mirrors reference_wrb_from_usda verbatim"
 
 
 test_that("v0.9.91: WoSIS strict-access alias still works (v0.9.88 + v0.9.91 hardening)", {
+  skip_on_cran()
   fp <- system.file("extdata", "wosis_stratified_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/wosis_stratified_sample.rds"
   skip_if_not(file.exists(fp), "wosis_stratified_sample.rds not bundled")
@@ -64,6 +68,7 @@ test_that("v0.9.91: WoSIS strict-access alias still works (v0.9.88 + v0.9.91 har
 
 
 test_that("v0.9.91: KSSL+NASIS WRB benchmark non-zero with strict access", {
+  skip_on_cran()
   fp <- system.file("extdata", "kssl_nasis_sample.rds", package = "soilKey")
   if (!nzchar(fp)) fp <- "inst/extdata/kssl_nasis_sample.rds"
   skip_if_not(file.exists(fp), "kssl_nasis_sample.rds not bundled")

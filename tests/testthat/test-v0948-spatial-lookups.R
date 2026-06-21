@@ -50,6 +50,7 @@
 # ---- lookup_mapbiomas_solos: basic shape --------------------------------
 
 test_that("lookup_mapbiomas_solos returns the raw integer when legend is NULL", {
+  skip_on_cran()
   .skip_if_no_terra()
   s <- .make_synthetic_mapbiomas()
   if (is.null(s)) skip("terra unavailable")
@@ -62,6 +63,7 @@ test_that("lookup_mapbiomas_solos returns the raw integer when legend is NULL", 
 
 
 test_that("lookup_mapbiomas_solos decodes when legend is supplied", {
+  skip_on_cran()
   .skip_if_no_terra()
   s <- .make_synthetic_mapbiomas()
   if (is.null(s)) skip("terra unavailable")
@@ -74,6 +76,7 @@ test_that("lookup_mapbiomas_solos decodes when legend is supplied", {
 
 
 test_that("lookup_mapbiomas_solos vectorises over rows", {
+  skip_on_cran()
   .skip_if_no_terra()
   s <- .make_synthetic_mapbiomas()
   if (is.null(s)) skip("terra unavailable")
@@ -86,6 +89,7 @@ test_that("lookup_mapbiomas_solos vectorises over rows", {
 
 
 test_that("lookup_mapbiomas_solos errors when raster is missing", {
+  skip_on_cran()
   .skip_if_no_terra()
   expect_error(
     lookup_mapbiomas_solos(c(-45, -25), "/no/such/file.tif"),
@@ -95,6 +99,7 @@ test_that("lookup_mapbiomas_solos errors when raster is missing", {
 
 
 test_that("lookup_mapbiomas_solos errors on a malformed legend", {
+  skip_on_cran()
   .skip_if_no_terra()
   s <- .make_synthetic_mapbiomas()
   if (is.null(s)) skip("terra unavailable")
@@ -110,6 +115,7 @@ test_that("lookup_mapbiomas_solos errors on a malformed legend", {
 # ---- .soilgrids_scale: unit conversion factors --------------------------
 
 test_that(".soilgrids_scale returns canonical conversions", {
+  skip_on_cran()
   expect_equal(soilKey:::.soilgrids_scale("clay"),     0.1)
   expect_equal(soilKey:::.soilgrids_scale("phh2o"),    0.1)
   expect_equal(soilKey:::.soilgrids_scale("bdod"),     0.01)
@@ -121,6 +127,7 @@ test_that(".soilgrids_scale returns canonical conversions", {
 # ---- lookup_soilgrids: argument validation (no network) -----------------
 
 test_that("lookup_soilgrids rejects unknown property / depth / quantile", {
+  skip_on_cran()
   .skip_if_no_terra()
   expect_error(lookup_soilgrids(c(0, 0), property = "magnesium"))
   expect_error(lookup_soilgrids(c(0, 0), depth = "0-1cm"))
@@ -129,6 +136,7 @@ test_that("lookup_soilgrids rejects unknown property / depth / quantile", {
 
 
 test_that("lookup_soilgrids returns NA on unreachable URL", {
+  skip_on_cran()
   .skip_if_no_terra()
   out <- suppressWarnings(
     lookup_soilgrids(
@@ -147,6 +155,7 @@ test_that("lookup_soilgrids returns NA on unreachable URL", {
 # ---- lookup_soilgrids: live network smoke test (opt-in) -----------------
 
 test_that("lookup_soilgrids returns finite pH for a real Brazilian point", {
+  skip_on_cran()
   .skip_if_no_terra()
   .skip_if_no_network()
   out <- lookup_soilgrids(c(-43.0, -22.0),
@@ -163,6 +172,7 @@ test_that("lookup_soilgrids returns finite pH for a real Brazilian point", {
 # ---- .coerce_lonlat helper ----------------------------------------------
 
 test_that(".coerce_lonlat accepts vector / matrix / data.frame", {
+  skip_on_cran()
   m1 <- soilKey:::.coerce_lonlat(c(-43, -22))
   expect_equal(dim(m1), c(1L, 2L))
   m2 <- soilKey:::.coerce_lonlat(rbind(c(-43, -22), c(0, 0)))
@@ -173,6 +183,7 @@ test_that(".coerce_lonlat accepts vector / matrix / data.frame", {
 
 
 test_that(".coerce_lonlat rejects malformed input", {
+  skip_on_cran()
   expect_error(soilKey:::.coerce_lonlat(c(1, 2, 3)),
                 "length-2|2-col")
   expect_error(soilKey:::.coerce_lonlat(matrix(1:9, 3, 3)),

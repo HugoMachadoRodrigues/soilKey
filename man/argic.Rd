@@ -20,7 +20,7 @@ argic(
 \item{system}{One of \code{"wrb2022"} (default) or \code{"usda"}.
 Selects the clay-increase threshold set: WRB uses
 6/1.4/20 pp/ratio/pp; KST 13ed uses 3/1.2/8 (looser).
-See \code{\link{test_clay_increase_argic}} for the table.}
+See \code{test_clay_increase_argic} for the table.}
 
 \item{engine}{v0.9.63+. One of \code{"soilkey"} (the hand-coded
 path, default for back-compat) or \code{"aqp"} (canonical
@@ -56,11 +56,11 @@ Retisol path).
 Sub-tests called (each a list with \code{passed}, \code{layers},
 \code{missing}, \code{details}, \code{notes}):
 \itemize{
-  \item \code{\link{test_clay_increase_argic}} -- the three-pronged
+  \item \code{test_clay_increase_argic} -- the three-pronged
         WRB 2022 clay-increase rule.
-  \item \code{\link{test_minimum_thickness}} -- thickness >= 7.5 cm
+  \item \code{test_minimum_thickness} -- thickness >= 7.5 cm
         (configurable via \code{min_thickness}).
-  \item \code{\link{test_texture_argic}} -- texture of sandy loam or
+  \item \code{test_texture_argic} -- texture of sandy loam or
         finer (\code{silt + 2 * clay >= 30}).
   \item \code{test_not_albeluvic} -- excludes profiles with glossic
         tongues (Retisol path).

@@ -11,6 +11,7 @@
 
 
 test_that(".compute_depth_specifier maps a feature's bands to the right prefix", {
+  skip_on_cran()
   cds <- soilKey:::.compute_depth_specifier
   expect_equal(cds(.spc_pedon(0,   40),  1L), "Epi")
   expect_equal(cds(.spc_pedon(60,  95),  1L), "Endo")
@@ -29,6 +30,7 @@ test_that(".compute_depth_specifier maps a feature's bands to the right prefix",
 
 
 test_that(".apply_depth_specifiers renames only depth-specifiable qualifiers", {
+  skip_on_cran()
   apply_sp <- soilKey:::.apply_depth_specifiers
   pr <- .spc_pedon(c(0, 30, 60), c(30, 60, 95))
   # Gleyic feature in layer 3 (60-95 -> Endo); Rhodic is not depth-specifiable.
@@ -44,6 +46,7 @@ test_that(".apply_depth_specifiers renames only depth-specifiable qualifiers", {
 
 
 test_that("epipedon / surface qualifiers are excluded from specifiers", {
+  skip_on_cran()
   spc <- soilKey:::.WRB_DEPTH_SPECIFIABLE
   expect_true("Gleyic" %in% spc)
   expect_true("Calcic" %in% spc)
@@ -54,6 +57,7 @@ test_that("epipedon / surface qualifiers are excluded from specifiers", {
 
 
 test_that("resolve_wrb_qualifiers accepts specifiers and stays canonical by default", {
+  skip_on_cran()
   skip_if_not_installed("yaml")
   pr <- make_ferralsol_canonical()
   base <- resolve_wrb_qualifiers(pr, "FR")
@@ -69,6 +73,7 @@ test_that("resolve_wrb_qualifiers accepts specifiers and stays canonical by defa
 
 
 test_that("classify_wrb2022 default name is byte-identical across canonical fixtures", {
+  skip_on_cran()
   fx <- grep("^make_.*_canonical$", ls(asNamespace("soilKey")), value = TRUE)
   expect_gt(length(fx), 20L)
   for (f in fx) {

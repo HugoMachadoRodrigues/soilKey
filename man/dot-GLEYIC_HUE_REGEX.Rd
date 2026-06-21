@@ -12,7 +12,7 @@ An object of class \code{character} of length 1.
 }
 \description{
 Hues consistent with Fe reduction (gleyic / reductimorphic). Used by
-\code{\link{test_gleyic_features}} as a secondary evidence path when
+\code{test_gleyic_features} as a secondary evidence path when
 \code{redoximorphic_features_pct} is not reported (e.g. BDsolos
 perfis where the surveyor recorded Munsell colors but not mottle
 percent). Per WRB 2022 Ch 3.1.13: hues N (neutral), 10Y, 5GY, 10GY,

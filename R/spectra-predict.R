@@ -39,7 +39,7 @@
 #' Open Soil Spectral Library (OSSL) global summary statistics.
 #'
 #' @return Named list of \code{c(min, max)} numeric pairs.
-#' @keywords internal
+#' @noRd
 .ossl_property_ranges <- function() {
   list(
     clay_pct    = c(0,    90),
@@ -60,7 +60,7 @@
 #' Currently a thin pass-through; reserved for future remapping (e.g.
 #' "south_america" -> ISRIC region tag). Validates the spelling.
 #'
-#' @keywords internal
+#' @noRd
 .resolve_region <- function(region) {
   region <- match.arg(region, c("global", "south_america", "north_america",
                                   "europe", "africa"))
@@ -74,7 +74,7 @@
 #' numeric matrix so that synthetic predictions are reproducible per
 #' input spectrum without relying on global RNG state.
 #'
-#' @keywords internal
+#' @noRd
 .seed_from_matrix <- function(X) {
   v <- as.numeric(X)
   v <- v[is.finite(v)]
@@ -283,7 +283,7 @@ predict_ossl_pretrained <- function(X,
 
 #' Validate inputs to a prediction backend
 #'
-#' @keywords internal
+#' @noRd
 .check_predict_inputs <- function(X, properties) {
   if (is.null(X) || !is.numeric(X) || (!is.matrix(X) && !is.data.frame(X))) {
     rlang::abort("predict_ossl_*(): X must be a numeric matrix")
@@ -311,7 +311,7 @@ predict_ossl_pretrained <- function(X,
 #' schema. Only invoked when both \code{resemble} and a populated
 #' \code{ossl_library} are present.
 #'
-#' @keywords internal
+#' @noRd
 .predict_ossl_mbl_resemble <- function(X, properties, k, ossl_library, ...) {
   if (!is.list(ossl_library) ||
       !all(c("Xr", "Yr") %in% names(ossl_library))) {
@@ -361,7 +361,7 @@ predict_ossl_pretrained <- function(X,
 #' model -- it exists so that the v0.4 plumbing can be tested end-to-end
 #' without OSSL installed.
 #'
-#' @keywords internal
+#' @noRd
 .predict_synthetic <- function(X, properties, region, k, method_label) {
   ranges <- .ossl_property_ranges()
   n_h <- nrow(X)

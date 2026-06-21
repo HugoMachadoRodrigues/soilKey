@@ -3,6 +3,7 @@
 # readRDS error. Fully offline (a bogus file:// endpoint that cannot resolve).
 
 test_that("download_ossl_subset gives an actionable error on an unreachable endpoint", {
+  skip_on_cran()
   skip_if_not_installed("utils")
   cache <- withr::local_tempdir()
   withr::local_options(
@@ -17,6 +18,7 @@ test_that("download_ossl_subset gives an actionable error on an unreachable endp
 })
 
 test_that("download_ossl_subset rejects a non-.rds payload with the same guidance", {
+  skip_on_cran()
   skip_if_not_installed("utils")
   cache <- withr::local_tempdir()
   # an endpoint that resolves (region-templated) but serves a non-RDS body

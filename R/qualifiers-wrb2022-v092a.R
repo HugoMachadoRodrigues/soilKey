@@ -24,8 +24,7 @@
 #' layer within the upper 100 cm. Stronger than the Salic horizon
 #' (default >= 15 dS/m).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypersalic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -50,8 +49,7 @@ qual_hypersalic <- function(pedon) {
 #' dS/m in some layer within the upper 100 cm. Used for soils too
 #' weak to qualify as Solonchak but still carrying a salinity tag.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyposalic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -87,8 +85,7 @@ qual_hyposalic <- function(pedon) {
 #' Hypersodic qualifier (yo): ESP >= 50\% in some layer within 100 cm.
 #' Stronger than Sodic (default ESP >= 6\%).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypersodic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -112,8 +109,7 @@ qual_hypersodic <- function(pedon) {
 #' Hyposodic qualifier (jo): ESP >= 6\% AND < 15\% in some layer within
 #' 100 cm. Marginal sodicity tag.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyposodic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -140,8 +136,7 @@ qual_hyposodic <- function(pedon) {
 #' Hypercalcic qualifier (yc): calcic horizon AND CaCO3 >= 50\% in some
 #' calcic layer.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypercalcic <- function(pedon) {
   cc <- calcic(pedon)
   if (!isTRUE(cc$passed))
@@ -168,8 +163,7 @@ qual_hypercalcic <- function(pedon) {
 #' 15\% threshold). Marks the broad "carbonate-bearing" middle band
 #' that doesn't meet the Calcic horizon.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypocalcic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -194,8 +188,7 @@ qual_hypocalcic <- function(pedon) {
 #' carbonate accumulation) within the upper 100 cm. Wraps
 #' \code{\link{protocalcic_properties}}.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_protocalcic <- function(pedon) .q_presence("Protocalcic",
   protocalcic_properties(pedon), 100, pedon)
 
@@ -205,8 +198,7 @@ qual_protocalcic <- function(pedon) .q_presence("Protocalcic",
 #' Hypergypsic qualifier (yg): gypsic horizon AND gypsum >= 60\% in
 #' some gypsic layer.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypergypsic <- function(pedon) {
   gy <- gypsic(pedon)
   if (!isTRUE(gy$passed))
@@ -232,8 +224,7 @@ qual_hypergypsic <- function(pedon) {
 #' within 100 cm (below the gypsic-horizon threshold but above the
 #' protogypsic-properties bare-detection bar).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypogypsic <- function(pedon) {
   h <- pedon$horizons
   ly <- .in_upper(pedon, 100)
@@ -258,8 +249,7 @@ qual_hypogypsic <- function(pedon) {
 #' gypsum accumulation) within the upper 100 cm. Wraps
 #' \code{\link{protogypsic_properties}}.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_protogypsic <- function(pedon) .q_presence("Protogypsic",
   protogypsic_properties(pedon), 100, pedon)
 
@@ -272,8 +262,7 @@ qual_protogypsic <- function(pedon) .q_presence("Protogypsic",
 #' Wraps \code{\link{protovertic}} and is mutually exclusive with the
 #' strict Vertic qualifier.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_protovertic <- function(pedon) {
   pv <- protovertic(pedon)
   if (!isTRUE(pv$passed))

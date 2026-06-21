@@ -24,8 +24,7 @@
 #' minimum spodic threshold per WRB Ch 3.1. v0.9.1 also requires
 #' p-retention >= 85\% in the same layers when available.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyperspodic <- function(pedon) {
   sp <- spodic(pedon)
   if (!isTRUE(sp$passed))
@@ -53,8 +52,7 @@ qual_hyperspodic <- function(pedon) {
 #' v0.9.1: spodic + OC >= 6\% in some spodic layer (the WRB threshold for
 #' Carbic / "humus-Podzol" expression).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_carbic <- function(pedon) {
   sp <- spodic(pedon)
   if (!isTRUE(sp$passed))
@@ -79,8 +77,7 @@ qual_carbic <- function(pedon) {
 #' spodic + OC < 1\% AND active iron (Fe_ox) >= 0.5\% in the same spodic
 #' layer (humus-poor, Fe-rich ortstein / Bs).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_rustic <- function(pedon) {
   sp <- spodic(pedon)
   if (!isTRUE(sp$passed))
@@ -106,8 +103,7 @@ qual_rustic <- function(pedon) {
 #' Ortsteinic qualifier (os): cemented spodic horizon. v0.9.1:
 #' spodic horizon + cementation_class strongly OR indurated.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_ortsteinic <- function(pedon) {
   sp <- spodic(pedon)
   if (!isTRUE(sp$passed))
@@ -133,8 +129,7 @@ qual_ortsteinic <- function(pedon) {
 #' with cementation_class strongly or indurated AND thickness <= 2.5 cm,
 #' anywhere in the upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_placic <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
@@ -157,8 +152,7 @@ qual_placic <- function(pedon) {
 #' Densic qualifier (dn): bulk density >= 1.8 g/cm3 in some root-
 #' restricting layer within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_densic <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
@@ -188,8 +182,7 @@ qual_densic <- function(pedon) {
 #' Stagnosol / Planosol profiles). Non-contiguous albic layers
 #' separated by an illuvial Bs / Bt do NOT count toward the threshold.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyperalbic <- function(pedon) {
   ab <- albic(pedon)
   if (!isTRUE(ab$passed))
@@ -259,8 +252,7 @@ qual_hyperalbic <- function(pedon) {
 #' (delta pH = pH_KCl - pH_H2O > 0). The "or" path makes Geric / Posic
 #' overlap by design (per WRB Ch 5).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_geric <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
@@ -296,8 +288,7 @@ qual_geric <- function(pedon) {
 #' 6 cmol+/kg clay in some layer at <= 100 cm. Stronger than the
 #' ferralic-CEC threshold (<= 16 cmol+/kg clay).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_vetic <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
@@ -326,8 +317,7 @@ qual_vetic <- function(pedon) {
 #' in some layer at <= 100 cm. Diagnostic of the most weathered
 #' Ferralsols where free Fe / Al oxides dominate the surface charge.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_posic <- function(pedon) {
   h <- pedon$horizons
   layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
@@ -358,8 +348,7 @@ qual_posic <- function(pedon) {
 #' part, exch. Al > 4 times the bases (Al-saturation > 80\%). Stronger than
 #' Dystric. Strict exchangeable-Al criterion; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyperdystric <- function(pedon) {
   .wrb_hyper_status_result(pedon, "Hyperdystric", "dystric", 20, 100)
 }
@@ -370,8 +359,7 @@ qual_hyperdystric <- function(pedon) {
 #' part, bases >= 4 times Al (Al-saturation <= 20\%). Stronger than Eutric.
 #' Strict; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hypereutric <- function(pedon) {
   .wrb_hyper_status_result(pedon, "Hypereutric", "eutric", 20, 100)
 }
@@ -379,8 +367,7 @@ qual_hypereutric <- function(pedon) {
 #' Hyperalic qualifier (yl): argic horizon with Al saturation >= 50\% in
 #' some layer of the argic part within 100 cm. Stronger version of Alic.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_hyperalic <- function(pedon) {
   arg <- argic(pedon)
   if (!isTRUE(arg$passed))
@@ -410,8 +397,7 @@ qual_hyperalic <- function(pedon) {
 #' spodic or ferralic criteria from being Sombric -- those have
 #' specific qualifiers of their own. v0.9.1 enforces both exclusions.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 qual_sombric <- function(pedon) {
   so <- sombric(pedon)
   if (!isTRUE(so$passed))

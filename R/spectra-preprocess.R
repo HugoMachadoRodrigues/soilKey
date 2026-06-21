@@ -121,7 +121,7 @@ preprocess_spectra <- function(X,
 #' native vectorised implementation. Returns a matrix of the same shape
 #' as the input.
 #'
-#' @keywords internal
+#' @noRd
 .snv <- function(X) {
   if (requireNamespace("prospectr", quietly = TRUE)) {
     out <- prospectr::standardNormalVariate(X)
@@ -151,7 +151,7 @@ preprocess_spectra <- function(X,
 #' from each edge. For \code{w != 5} the native path falls back to a
 #' generic SG coefficient computation via least squares.
 #'
-#' @keywords internal
+#' @noRd
 .sg1 <- function(X, w = 5L, p = 2L) {
   if (requireNamespace("prospectr", quietly = TRUE)) {
     out <- prospectr::savitzkyGolay(X = X, m = 1L, p = p, w = w)
@@ -182,7 +182,7 @@ preprocess_spectra <- function(X,
 #' derivative order \code{m}. Used only when \code{prospectr} is
 #' unavailable.
 #'
-#' @keywords internal
+#' @noRd
 .sg_coefficients <- function(w, p, m) {
   if (w %% 2L == 0L || w < 3L) {
     rlang::abort("SG window must be odd and >= 3")

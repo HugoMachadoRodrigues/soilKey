@@ -28,6 +28,7 @@ mk_spectral_table <- function(n = 18L, by = 25L) {
 }
 
 test_that("read_spectral_library maps Portuguese headers + normalises percent", {
+  skip_on_cran()
   tb  <- mk_spectral_table()
   lib <- read_spectral_library(tb$refl, tb$meta, id_col = "id", verbose = FALSE)
   expect_true(all(c("Xr", "Yr", "metadata") %in% names(lib)))
@@ -43,6 +44,7 @@ test_that("read_spectral_library maps Portuguese headers + normalises percent", 
 })
 
 test_that("read_spectral_library accepts long format + explicit property_map", {
+  skip_on_cran()
   tb   <- mk_spectral_table(n = 6L)
   long <- do.call(rbind, lapply(seq_len(nrow(tb$refl)), function(i) {
     data.frame(id = tb$refl$id[i], wavelength_nm = tb$wl,
@@ -57,6 +59,7 @@ test_that("read_spectral_library accepts long format + explicit property_map", {
 })
 
 test_that("read_spectral_library can resample onto a target grid", {
+  skip_on_cran()
   tb  <- mk_spectral_table(by = 50L)
   lib <- read_spectral_library(tb$refl, tb$meta, id_col = "id",
                                resample_to = seq(400, 2400, by = 10),
@@ -66,6 +69,7 @@ test_that("read_spectral_library can resample onto a target grid", {
 })
 
 test_that("pedons_from_spectral_table attaches vnir + reference label", {
+  skip_on_cran()
   tb   <- mk_spectral_table()
   peds <- pedons_from_spectral_table(tb$refl, tb$meta, id_col = "id",
                                      verbose = FALSE)
@@ -95,6 +99,7 @@ test_that("gapfill dispatcher routes method='spectra' and never mutates caller",
 })
 
 test_that("unknown gapfill method error lists spectra", {
+  skip_on_cran()
   tgt <- PedonRecord$new(
     horizons = ensure_horizon_schema(data.table::data.table(
       top_cm = 0, bottom_cm = 20, designation = "A", clay_pct = 10)))

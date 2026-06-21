@@ -29,7 +29,7 @@ field sheet can also supply them through extraction.}
 constructed pedon's site metadata.}
 
 \item{provider}{A vision-language provider: an \pkg{ellmer} chat object
-for live use, or a \code{\link{MockVLMProvider}} for testing and
+for live use, or a \code{MockVLMProvider} for testing and
 offline demos. Required -- there is no default, so a real
 classification is never produced from canned data by accident.}
 

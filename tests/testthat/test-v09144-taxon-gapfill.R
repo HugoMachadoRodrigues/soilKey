@@ -11,6 +11,7 @@ mk_ped <- function(site, df) {
 }
 
 test_that(".taxon_key normalises labels to a comparable key", {
+  skip_on_cran()
   expect_identical(soilKey:::.taxon_key("ARGISSOLO VERMELHO Tb"), "argissolo")
   expect_identical(soilKey:::.taxon_key("Argissolos"), "argissolo")        # de-pluralised
   expect_identical(soilKey:::.taxon_key("LATOSSOLO AMARELO"), "latossolo")
@@ -20,6 +21,7 @@ test_that(".taxon_key normalises labels to a comparable key", {
 })
 
 test_that("build_taxon_profiles averages each attribute into 6 depth slices", {
+  skip_on_cran()
   p1 <- mk_ped(list(id = "a1", reference_sibcs = "ARGISSOLO VERMELHO"),
     data.frame(top_cm = c(0, 30), bottom_cm = c(30, 80),
                designation = c("A", "Bt"), clay_pct = c(18, 42)))
@@ -39,6 +41,7 @@ test_that("build_taxon_profiles averages each attribute into 6 depth slices", {
 })
 
 test_that("build_taxon_profiles skips pedons with no/blank reference label", {
+  skip_on_cran()
   p_ok  <- mk_ped(list(id = "x", reference_sibcs = "NEOSSOLO LITOLICO"),
     data.frame(top_cm = 0, bottom_cm = 20, designation = "A", clay_pct = 10))
   p_na  <- mk_ped(list(id = "y", reference_sibcs = NA_character_),
@@ -50,6 +53,7 @@ test_that("build_taxon_profiles skips pedons with no/blank reference label", {
 })
 
 test_that("gapfill_by_predicted_taxon fills missing cells from the predicted taxon", {
+  skip_on_cran()
   # calibration set -> profile with a Bt clay around 44 at depth
   cal <- list(
     mk_ped(list(reference_sibcs = "ARGISSOLO VERMELHO"),
@@ -87,6 +91,7 @@ test_that("gapfill_by_predicted_taxon fills missing cells from the predicted tax
 })
 
 test_that("gapfill_by_predicted_taxon is a no-op when the taxon is unknown", {
+  skip_on_cran()
   prof <- list(argissolo = list(clay_pct = c(NA, 20, NA, 44, NA, NA)))
   # a pedon that classifies to something not in the profile -> nothing filled
   tgt <- mk_ped(list(id = "u"),
@@ -100,6 +105,7 @@ test_that("gapfill_by_predicted_taxon is a no-op when the taxon is unknown", {
 })
 
 test_that(".classify_apply_gapfill routes method='taxon' and never mutates the caller", {
+  skip_on_cran()
   cal <- list(
     mk_ped(list(reference_sibcs = "ARGISSOLO VERMELHO"),
       data.frame(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 100),
@@ -116,6 +122,7 @@ test_that(".classify_apply_gapfill routes method='taxon' and never mutates the c
 })
 
 test_that("unknown gapfill method errors and lists taxon", {
+  skip_on_cran()
   tgt <- mk_ped(list(id = "t"),
     data.frame(top_cm = 0, bottom_cm = 20, designation = "A", clay_pct = 10))
   expect_error(

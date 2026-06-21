@@ -116,7 +116,7 @@ download_redape_dataset <- function(dest_dir,
 #'
 #' @param path Path to a JSON file.
 #' @return List of items (typically length 1).
-#' @keywords internal
+#' @noRd
 .redape_read_json <- function(path) {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop(".redape_read_json() requires 'jsonlite'.")
@@ -139,7 +139,7 @@ download_redape_dataset <- function(dest_dir,
 
 
 #' Convert one Redape GeoTab horizon record to a soilKey horizon row
-#' @keywords internal
+#' @noRd
 .redape_horizon_to_soilkey <- function(h) {
   # Texture: g/kg -> %
   argila_g    <- h$ARGILA   %||% NA_real_
@@ -224,7 +224,7 @@ download_redape_dataset <- function(dest_dir,
 
 
 #' Convert one Redape GeoTab item to a soilKey PedonRecord
-#' @keywords internal
+#' @noRd
 .redape_item_to_pedon <- function(item) {
   hz_rows <- lapply(item$HORIZONTES %||% list(),
                      .redape_horizon_to_soilkey)
@@ -358,7 +358,7 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 #' their ASCII equivalents (\code{A}-acute, \code{O}-tilde,
 #' \code{C}-cedilla, etc., for all five Portuguese vowel classes).
 #'
-#' @keywords internal
+#' @noRd
 .redape_strip_accents <- function(s) {
   if (is.null(s)) return(NA_character_)
   s <- as.character(s)[1L]
@@ -385,7 +385,7 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 #'         modifiers; -al / -el / -ol words don't appear in the
 #'         SiBCS taxonomy at these levels).
 #' }
-#' @keywords internal
+#' @noRd
 .redape_pluralise_pt <- function(w) {
   if (is.na(w) || !nzchar(w)) return(w)
   if (nchar(w) <= 2L) return(w)
@@ -395,7 +395,7 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 
 
 #' Normalise a Portuguese SiBCS label to a plural-canonical comparison key
-#' @keywords internal
+#' @noRd
 .redape_canonical_label <- function(s, pluralise = TRUE) {
   s <- .redape_strip_accents(s)
   if (is.na(s) || !nzchar(s)) return(NA_character_)
@@ -412,7 +412,7 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 #' nominal phrase) and applies plural-canonical normalisation so the
 #' result is comparable to the soilKey predicted label
 #' (e.g.\ "Argissolos Amarelos Distroficos abrupticos").
-#' @keywords internal
+#' @noRd
 .redape_compose_ref <- function(pedon, level) {
   s <- pedon$site
   parts <- switch(level,
@@ -437,7 +437,7 @@ load_redape_pedons <- function(json_dir, max_n = NULL, verbose = TRUE) {
 #'
 #' @details The returned label is a \code{ClassificationResult} field
 #'   for the requested level (Order / Subordem / Grande Grupo / Subgrupo).
-#' @keywords internal
+#' @noRd
 .redape_extract_pred <- function(res, level) {
   if (is.null(res)) return(NA_character_)
   raw <- switch(level,

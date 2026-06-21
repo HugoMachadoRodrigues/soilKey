@@ -47,6 +47,7 @@
 # ---- Mapping helpers ----------------------------------------------------
 
 test_that(".smartsolos_struct_grade maps PT/EN strings to 1..3", {
+  skip_on_cran()
   expect_equal(soilKey:::.smartsolos_struct_grade("weak"),     1L)
   expect_equal(soilKey:::.smartsolos_struct_grade("Fraca"),    1L)
   expect_equal(soilKey:::.smartsolos_struct_grade("moderate"), 2L)
@@ -57,6 +58,7 @@ test_that(".smartsolos_struct_grade maps PT/EN strings to 1..3", {
 
 
 test_that(".smartsolos_struct_type recognises subangular before angular", {
+  skip_on_cran()
   # 'subangular blocky' must match SUBANGULAR (3), not ANGULAR (2).
   expect_equal(soilKey:::.smartsolos_struct_type("subangular blocky"), 3L)
   expect_equal(soilKey:::.smartsolos_struct_type("angular blocky"),    2L)
@@ -68,6 +70,7 @@ test_that(".smartsolos_struct_type recognises subangular before angular", {
 
 
 test_that(".smartsolos_clay_films_amt + strength map few/common/many", {
+  skip_on_cran()
   expect_equal(soilKey:::.smartsolos_clay_films_amt("few"),       1L)
   expect_equal(soilKey:::.smartsolos_clay_films_amt("common"),    2L)
   expect_equal(soilKey:::.smartsolos_clay_films_amt("muitas"),    3L)
@@ -80,6 +83,7 @@ test_that(".smartsolos_clay_films_amt + strength map few/common/many", {
 # ---- Payload builder ----------------------------------------------------
 
 test_that(".smartsolos_pedon_to_payload produces the documented schema", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   pl <- soilKey:::.smartsolos_pedon_to_payload(p, drenagem = "bem drenado")
   expect_named(pl, "items")
@@ -104,6 +108,7 @@ test_that(".smartsolos_pedon_to_payload produces the documented schema", {
 
 
 test_that(".smartsolos_pedon_to_payload converts units (% -> g/kg) correctly", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   pl <- soilKey:::.smartsolos_pedon_to_payload(p)
   it <- pl$items[[1L]]
@@ -120,6 +125,7 @@ test_that(".smartsolos_pedon_to_payload converts units (% -> g/kg) correctly", {
 
 
 test_that(".smartsolos_pedon_to_payload accepts integer drenagem", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   pl <- soilKey:::.smartsolos_pedon_to_payload(p, drenagem = 7)
   expect_equal(pl$items[[1L]]$DRENAGEM, 7L)
@@ -127,6 +133,7 @@ test_that(".smartsolos_pedon_to_payload accepts integer drenagem", {
 
 
 test_that(".smartsolos_pedon_to_payload encodes subangular blocky correctly", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   pl <- soilKey:::.smartsolos_pedon_to_payload(p)
   hz3 <- pl$items[[1L]]$HORIZONTES[[3L]]
@@ -138,6 +145,7 @@ test_that(".smartsolos_pedon_to_payload encodes subangular blocky correctly", {
 # ---- Response parser ---------------------------------------------------
 
 test_that(".smartsolos_response_to_result builds a ClassificationResult", {
+  skip_on_cran()
   fake <- list(items = list(list(
     ID_PONTO  = "RJ-test",
     ORDEM     = "ARGISSOLO",
@@ -160,6 +168,7 @@ test_that(".smartsolos_response_to_result builds a ClassificationResult", {
 # ---- classify_via_smartsolos_api: stubbed ------------------------------
 
 test_that("classify_via_smartsolos_api routes through post_fn injection", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   captured_payload <- NULL
   stub <- function(payload) {
@@ -182,6 +191,7 @@ test_that("classify_via_smartsolos_api routes through post_fn injection", {
 
 
 test_that("classify_via_smartsolos_api errors without an API token (and no stub)", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   withr::local_envvar(AGROAPI_TOKEN = "")
   expect_error(
@@ -192,6 +202,7 @@ test_that("classify_via_smartsolos_api errors without an API token (and no stub)
 
 
 test_that("classify_via_smartsolos_api validates pedon", {
+  skip_on_cran()
   expect_error(classify_via_smartsolos_api(list()),
                 "PedonRecord")
 })
@@ -200,6 +211,7 @@ test_that("classify_via_smartsolos_api validates pedon", {
 # ---- Verification endpoint ---------------------------------------------
 
 test_that("classify_via_smartsolos_api supports endpoint='verification'", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   stub <- function(payload) {
     list(
@@ -238,6 +250,7 @@ test_that("classify_via_smartsolos_api supports endpoint='verification'", {
 # ---- compare_smartsolos -------------------------------------------------
 
 test_that("compare_smartsolos returns local + remote + agreement", {
+  skip_on_cran()
   p <- .make_argissolo_for_smartsolos()
   stub <- function(payload) {
     list(items = list(list(
@@ -264,6 +277,7 @@ test_that("compare_smartsolos returns local + remote + agreement", {
 # ---- Live network test (opt-in) ----------------------------------------
 
 test_that("classify_via_smartsolos_api hits the real endpoint when token is set", {
+  skip_on_cran()
   if (!nzchar(Sys.getenv("AGROAPI_TOKEN")) ||
         !nzchar(Sys.getenv("SOILKEY_NETWORK_TESTS"))) {
     skip("Live test gated by AGROAPI_TOKEN + SOILKEY_NETWORK_TESTS env vars")

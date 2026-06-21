@@ -13,8 +13,7 @@
 #' Pass when site$water_table_cm_above_surface > 0 (water column
 #' permanently above the surface).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 wassent_qualifying_usda <- function(pedon) {
   wt <- pedon$site$water_table_cm_above_surface %||% NA_real_
   passed <- !is.na(wt) && wt > 0
@@ -31,8 +30,7 @@ wassent_qualifying_usda <- function(pedon) {
 
 #' Aquent Suborder qualifier (Entisol with aquic conditions <50 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 aquent_qualifying_usda <- function(pedon) {
   res <- aquic_conditions_usda(pedon, max_top_cm = 50)
   res$name <- "aquent_qualifying_usda"
@@ -43,8 +41,7 @@ aquent_qualifying_usda <- function(pedon) {
 #' Fluvent Suborder qualifier (irregular OC decrease in 25-125 cm,
 #' OR layered alluvial designation).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 fluvent_qualifying_usda <- function(pedon) {
   res <- fluventic_usda(pedon)
   # Also accept layered alluvial designation pattern (proxy)
@@ -71,8 +68,7 @@ fluvent_qualifying_usda <- function(pedon) {
 #' Psamment Suborder qualifier (sandy texture: clay + 2*silt < 30
 #' AND no clay films / argillic).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 psamment_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
@@ -133,8 +129,7 @@ psamment_qualifying_usda <- function(pedon) {
 #' near-pure-sand texture.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 quartzipsamment_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
@@ -177,8 +172,7 @@ quartzipsamment_qualifying_usda <- function(pedon) {
 #' Pass when surface 0-50 has high water content (n value high).
 #' v0.8 proxy: water_content_1500kpa >= 80\% in surface.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @keywords internal
-#' @export
+#' @noRd
 hydraquent_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   # KST 13ed Ch. 8 (p. 168): in ALL horizons between 20 and 50 cm, BOTH an
