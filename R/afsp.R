@@ -169,7 +169,7 @@ wrb06_code_to_rsg <- function(code) {
 #'
 #' Reads the AfSP DBase tables shipped inside \code{AF-AfSP1.2.zip}
 #' (downloadable from
-#' \url{https://files.isric.org/public/afsp/AF-AfSP1.2.zip}) and
+#' \code{https://files.isric.org/public/afsp/AF-AfSP1.2.zip}) and
 #' converts each profile + its horizons to a soilKey
 #' \code{\link{PedonRecord}}. Filters to profiles with a populated
 #' WRB 2006 RSG code (i.e.\ classifiable; AfSP has ~7000 of these of
@@ -193,7 +193,7 @@ wrb06_code_to_rsg <- function(code) {
 #' (2014). Africa Soil Profiles Database, Version 1.2. ISRIC Report
 #' 2014/01. ISRIC -- World Soil Information, Wageningen.
 #' Project page:
-#' \url{https://isric.org/projects/africa-soil-profiles-database-afsp}.
+#' \code{https://isric.org/projects/africa-soil-profiles-database-afsp}.
 #'
 #' @export
 load_afsp_pedons <- function(afsp_dir,

@@ -27,7 +27,7 @@
 #'
 #' MapBiomas Solos (Project MapBiomas, Brazil) distributes a national
 #' raster of SiBCS classes at 30 m, downloadable from
-#' \url{https://mapbiomas.org/en/produtos}. This helper mirrors the
+#' \code{https://mapbiomas.org/en/produtos}. This helper mirrors the
 #' shape of \code{\link{lookup_esdb}} but is local-file only: pass
 #' the path of the unpacked GeoTIFF and the function reprojects the
 #' user's WGS84 lat/lon to the raster's native CRS, extracts the
@@ -111,7 +111,7 @@ lookup_mapbiomas_solos <- function(coords, raster_path, legend = NULL) {
 #'
 #' Reads ISRIC SoilGrids 250m (Hengl et al. 2017, 2021) directly
 #' from the ISRIC Cloud-Optimized GeoTIFF (COG) endpoint at
-#' \url{https://files.isric.org/soilgrids/latest/data/} -- no
+#' \code{https://files.isric.org/soilgrids/latest/data/} -- no
 #' download required, only the pixel under each query coordinate is
 #' transferred over HTTPS.
 #'

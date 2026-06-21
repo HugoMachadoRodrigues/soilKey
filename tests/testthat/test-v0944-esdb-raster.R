@@ -30,6 +30,7 @@ skip_if_no_esdb <- function() {
 
 
 test_that("available_esdb_attributes lists the expected ESDB attributes", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   attrs <- available_esdb_attributes(root)
   # The 2024-05-07 ESDB Raster Library release ships 71 attributes.
@@ -41,6 +42,7 @@ test_that("available_esdb_attributes lists the expected ESDB attributes", {
 })
 
 test_that("lookup_esdb resolves Wageningen NL to a real RSG code", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   # 5.66 E, 51.97 N -- NW Netherlands, fluvial-deltaic landscape.
   res <- lookup_esdb(c(5.66, 51.97), "WRBLV1", root)
@@ -51,6 +53,7 @@ test_that("lookup_esdb resolves Wageningen NL to a real RSG code", {
 })
 
 test_that("lookup_esdb returns NA for points outside the European raster", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   # Equator + Atlantic ocean -- well outside ESDB footprint.
   res <- lookup_esdb(c(0, 0), "WRBLV1", root)
@@ -58,6 +61,7 @@ test_that("lookup_esdb returns NA for points outside the European raster", {
 })
 
 test_that("lookup_esdb is vectorised over multiple points", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   coords <- rbind(c(5.66, 51.97),
                     c(24.94, 60.17),  # Helsinki, FI
@@ -68,6 +72,7 @@ test_that("lookup_esdb is vectorised over multiple points", {
 })
 
 test_that("lookup_esdb decode = FALSE returns raw integers", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   res <- lookup_esdb(c(5.66, 51.97), "WRBLV1", root, decode = FALSE)
   expect_type(res, "double")
@@ -75,12 +80,14 @@ test_that("lookup_esdb decode = FALSE returns raw integers", {
 })
 
 test_that("lookup_esdb errors clearly when raster missing", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   expect_error(lookup_esdb(c(5.66, 51.97), "BOGUS_ATTR", root),
                  "Raster not found")
 })
 
 test_that("lookup_esdb accepts data.frame input", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   df <- data.frame(lon = c(5.66, 24.94), lat = c(51.97, 60.17))
   res <- lookup_esdb(df, "WRBLV1", root)
@@ -91,6 +98,7 @@ test_that("lookup_esdb accepts data.frame input", {
 # ---- Cross-system: WRB raster vs FAO 1990 raster --------------------------
 
 test_that("WRBLV1 vs FAO90LV1 agree on broad classes for the same point", {
+  skip_on_cran()
   root <- skip_if_no_esdb()
   # Sample 5 European cities and check that both rasters resolve to
   # SOMETHING (we don't insist they agree on a single class, just that

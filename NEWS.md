@@ -1,3 +1,24 @@
+# soilKey 0.9.155 (2026-06-21)
+
+Final check-time trim (the 0.9.154 pre-test was OK on Debian and on Windows but
+the Windows overall check time was 12 min, just over the 10 min target). No
+classification change; 44 canonical fixtures byte-identical.
+
+\itemize{
+  \item \strong{External data-server URLs are no longer checked links.} The Rd
+        `\\url{}` entries (USDA, ISRIC, MapBiomas, ESDAC, Embrapa, FEBR, ...) and
+        the README/vignette links to those servers are now plain code spans.
+        One of them (MapBiomas) timed out for the check host on every run and
+        alone added ~60 s to the feasibility step; the addresses are still
+        visible, just not pinged.
+  \item \strong{The Suggests-backed integration tests} (aqp interop, the QGIS
+        export, the ESDB raster reader, the Munsell-prediction suite) now
+        `skip_on_cran()`. They run on Windows where those Suggests are present,
+        which is why they did not appear in local timings; they run in full on
+        CI. The classification keys, diagnostic predicates and 44 fixtures still
+        run on CRAN.
+}
+
 # soilKey 0.9.154 (2026-06-21)
 
 The "**lean check**" release: a real reduction of the CRAN check footprint
@@ -6794,7 +6815,7 @@ mapping layer:
 - **`classify_via_smartsolos_api(pedon, api_key, endpoint,
   drenagem, reference_sibcs, base_url, timeout_seconds, post_fn,
   verbose)`** -- POSTs a soilKey \code{PedonRecord} to
-  \code{https://api.cnptia.embrapa.br/smartsolos/expert/v1/classification}
+  \code{`https://api.cnptia.embrapa.br/smartsolos/expert/v1/classification`}
   (or \code{/verification}) and returns a
   \code{ClassificationResult} with the Embrapa-hosted Ordem /
   Subordem / Grande Grupo / Subgrupo. Bearer token comes from

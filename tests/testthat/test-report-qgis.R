@@ -4,6 +4,7 @@
 
 
 test_that("report_to_qgis() validates inputs", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   pedon <- make_ferralsol_canonical()
   expect_error(
@@ -29,6 +30,7 @@ test_that("report_to_qgis() validates inputs", {
 
 
 test_that("report_to_qgis() writes a multi-layer GeoPackage with the canonical pedon_point layer", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   pedon <- make_ferralsol_canonical()
   results <- list(
@@ -66,6 +68,7 @@ test_that("report_to_qgis() writes a multi-layer GeoPackage with the canonical p
 
 
 test_that("report_to_qgis() round-trips horizons_table with site_id + horizon_idx columns", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   pedon <- make_ferralsol_canonical()
   out <- tempfile(fileext = ".gpkg")
@@ -80,6 +83,7 @@ test_that("report_to_qgis() round-trips horizons_table with site_id + horizon_id
 
 
 test_that("report_to_qgis() refuses to overwrite when overwrite = FALSE", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   pedon <- make_ferralsol_canonical()
   out <- tempfile(fileext = ".gpkg")
@@ -93,6 +97,7 @@ test_that("report_to_qgis() refuses to overwrite when overwrite = FALSE", {
 
 
 test_that("report_to_qgis() warns and continues when the pedon has no coordinates", {
+  skip_on_cran()
   skip_if_not_installed("sf")
   pedon <- PedonRecord$new(
     site = list(id = "no-coords"),

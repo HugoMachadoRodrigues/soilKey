@@ -48,7 +48,7 @@ Numeric vector of length \code{nrow(coords)}. \code{NA}
 \description{
 Reads ISRIC SoilGrids 250m (Hengl et al. 2017, 2021) directly
 from the ISRIC Cloud-Optimized GeoTIFF (COG) endpoint at
-\url{https://files.isric.org/soilgrids/latest/data/} -- no
+\code{https://files.isric.org/soilgrids/latest/data/} -- no
 download required, only the pixel under each query coordinate is
 transferred over HTTPS.
 }

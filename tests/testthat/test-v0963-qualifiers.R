@@ -37,6 +37,7 @@
 # ---- 1. Coarsic ---------------------------------------------------
 
 test_that("qual_coarsic returns NA when no coarse_fragments_pct", {
+  skip_on_cran()
   res <- qual_coarsic(.minimal_pedon())
   expect_s3_class(res, "DiagnosticResult")
   expect_true(is.na(res$passed))
@@ -45,6 +46,7 @@ test_that("qual_coarsic returns NA when no coarse_fragments_pct", {
 
 
 test_that("qual_coarsic fires when coarse_fragments_pct >= 70", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$coarse_fragments_pct <- c(80, 75)
   expect_true(isTRUE(qual_coarsic(p)$passed))
@@ -52,6 +54,7 @@ test_that("qual_coarsic fires when coarse_fragments_pct >= 70", {
 
 
 test_that("qual_coarsic does not fire when CF below threshold", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$coarse_fragments_pct <- c(20, 30)
   expect_false(isTRUE(qual_coarsic(p)$passed))
@@ -61,6 +64,7 @@ test_that("qual_coarsic does not fire when CF below threshold", {
 # ---- 2. Fractic ---------------------------------------------------
 
 test_that("qual_fractic NA-safe + fires on cracks", {
+  skip_on_cran()
   expect_true(is.na(qual_fractic(.minimal_pedon())$passed))
   p <- .minimal_pedon()
   p$horizons$cracks_width_cm <- c(0, 2)
@@ -72,6 +76,7 @@ test_that("qual_fractic NA-safe + fires on cracks", {
 # ---- 3. Gibbsic ---------------------------------------------------
 
 test_that("qual_gibbsic uses al2o3_sulfuric_pct proxy at 25%", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$al2o3_sulfuric_pct <- c(28, 30)
   expect_true(isTRUE(qual_gibbsic(p)$passed))
@@ -83,6 +88,7 @@ test_that("qual_gibbsic uses al2o3_sulfuric_pct proxy at 25%", {
 # ---- 4. Ferritic --------------------------------------------------
 
 test_that("qual_ferritic fires on Fe2O3 >= 18%", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$fe_dcb_pct <- c(20, 25)
   expect_true(isTRUE(qual_ferritic(p)$passed))
@@ -94,6 +100,7 @@ test_that("qual_ferritic fires on Fe2O3 >= 18%", {
 # ---- 5. Profundihumic ---------------------------------------------
 
 test_that("qual_profundihumic requires SOC >= 1.4 weighted to 100 cm", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$oc_pct <- c(3.0, 2.0)
   expect_true(isTRUE(qual_profundihumic(p)$passed))
@@ -105,6 +112,7 @@ test_that("qual_profundihumic requires SOC >= 1.4 weighted to 100 cm", {
 # ---- 6. Wapnic ----------------------------------------------------
 
 test_that("qual_wapnic requires CaCO3 >= 80%", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$caco3_pct <- c(85, 90)
   expect_true(isTRUE(qual_wapnic(p)$passed))
@@ -116,6 +124,7 @@ test_that("qual_wapnic requires CaCO3 >= 80%", {
 # ---- 7-9. Mawic / Muusic / Murshic --------------------------------
 
 test_that("qual_mawic requires moss + fibre >= 40", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$fiber_content_unrubbed_pct <- c(50, 60)
   p$horizons$layer_origin <- c("musgo Sphagnum", "musgo Sphagnum")
@@ -126,6 +135,7 @@ test_that("qual_mawic requires moss + fibre >= 40", {
 
 
 test_that("qual_muusic requires rubbed fibre >= 75", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$fiber_content_rubbed_pct <- c(80, 85)
   expect_true(isTRUE(qual_muusic(p)$passed))
@@ -133,6 +143,7 @@ test_that("qual_muusic requires rubbed fibre >= 75", {
 
 
 test_that("qual_murshic uses low rubbed fibre OR von Post >= 7", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$fiber_content_rubbed_pct <- c(10, 8)   # < 17
   expect_true(isTRUE(qual_murshic(p)$passed))
@@ -145,12 +156,14 @@ test_that("qual_murshic uses low rubbed fibre OR von Post >= 7", {
 # ---- 10-13. Endo- / Pante- / Ortho- modifiers ----------------------
 
 test_that("qual_endocalcaric depth-bounded modifier", {
+  skip_on_cran()
   res <- qual_endocalcaric(.minimal_pedon())
   expect_s3_class(res, "DiagnosticResult")
 })
 
 
 test_that("qual_anofluvic / orthofluvic / pantofluvic don't error", {
+  skip_on_cran()
   for (fn in list(qual_anofluvic, qual_orthofluvic, qual_pantofluvic)) {
     res <- fn(.minimal_pedon())
     expect_s3_class(res, "DiagnosticResult")
@@ -161,6 +174,7 @@ test_that("qual_anofluvic / orthofluvic / pantofluvic don't error", {
 # ---- 14-15. Oxy/Reductaquic/gleyic ----------------------------------
 
 test_that("qual_oxyaquic fires on redox >= 5 with non-gleyic hue", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$redoximorphic_features_pct <- c(8, 10)
   # 10YR is NOT gleyic, so oxidized + redox -> oxyaquic
@@ -171,6 +185,7 @@ test_that("qual_oxyaquic fires on redox >= 5 with non-gleyic hue", {
 # ---- 16. Hypernatric -----------------------------------------------
 
 test_that("qual_hypernatric fires when ESP >= 70%", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$na_cmol  <- c(7, 5)
   p$horizons$cec_cmol <- c(10, 7)  # ESP = 70 / 71%
@@ -181,6 +196,7 @@ test_that("qual_hypernatric fires when ESP >= 70%", {
 # ---- 17. Carbonatic / Carbonic -------------------------------------
 
 test_that("qual_carbonatic on CaCO3 >= 50", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$caco3_pct <- c(60, 55)
   expect_true(isTRUE(qual_carbonatic(p)$passed))
@@ -188,6 +204,7 @@ test_that("qual_carbonatic on CaCO3 >= 50", {
 
 
 test_that("qual_carbonic on SOC >= 6", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$oc_pct <- c(8, 7)
   expect_true(isTRUE(qual_carbonic(p)$passed))
@@ -197,6 +214,7 @@ test_that("qual_carbonic on SOC >= 6", {
 # ---- 18. Transportic / Relocatic / Isolatic ------------------------
 
 test_that("qual_transportic matches origin pattern", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$layer_origin <- c("aterro antropico", "aterro antropico")
   expect_true(isTRUE(qual_transportic(p)$passed))
@@ -204,6 +222,7 @@ test_that("qual_transportic matches origin pattern", {
 
 
 test_that("qual_isolatic needs artefact pct between 5 and 50", {
+  skip_on_cran()
   p <- .minimal_pedon()
   p$horizons$artefacts_urbic_pct <- c(15, 30)
   expect_true(isTRUE(qual_isolatic(p)$passed))
@@ -215,6 +234,7 @@ test_that("qual_isolatic needs artefact pct between 5 and 50", {
 # ---- 19-22. SQ Endo/Epi-dystric/eutric -----------------------------
 
 test_that("qual_endodystric / qual_epidystric depth-bounded", {
+  skip_on_cran()
   expect_s3_class(qual_endodystric(.minimal_pedon()), "DiagnosticResult")
   expect_s3_class(qual_epidystric(.minimal_pedon()),  "DiagnosticResult")
   expect_s3_class(qual_endoeutric(.minimal_pedon()),  "DiagnosticResult")
@@ -225,6 +245,7 @@ test_that("qual_endodystric / qual_epidystric depth-bounded", {
 # ---- 23. argic + cambic engine arg ---------------------------------
 
 test_that("argic() supports engine = 'aqp' and 'soilkey'", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .minimal_pedon()
   r1 <- argic(p, engine = "soilkey")
@@ -237,6 +258,7 @@ test_that("argic() supports engine = 'aqp' and 'soilkey'", {
 
 
 test_that("cambic() supports engine = 'aqp' and 'soilkey'", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .minimal_pedon()
   r1 <- cambic(p, engine = "soilkey")

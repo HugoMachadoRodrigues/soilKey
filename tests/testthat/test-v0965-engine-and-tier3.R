@@ -28,6 +28,7 @@
 # ---- 1. pick_engine + pick_engine_batch -------------------------------
 
 test_that("pick_engine returns 'soilkey' on a sparse pedon", {
+  skip_on_cran()
   hz <- data.frame(
     designation = NA_character_, top_cm = 0L, bottom_cm = 30L,
     munsell_hue_moist = NA_character_, munsell_value_moist = NA_real_,
@@ -44,6 +45,7 @@ test_that("pick_engine returns 'soilkey' on a sparse pedon", {
 
 
 test_that("pick_engine returns 'aqp' on a data-rich pedon", {
+  skip_on_cran()
   hz <- data.frame(
     designation = c("A", "Bt"),
     top_cm = c(0, 30), bottom_cm = c(30, 100),
@@ -66,6 +68,7 @@ test_that("pick_engine returns 'aqp' on a data-rich pedon", {
 
 
 test_that("pick_engine_batch vectorises", {
+  skip_on_cran()
   ps <- list(.pedon_minimal_v0965(), .pedon_minimal_v0965())
   res <- pick_engine_batch(ps)
   expect_length(res, 2L)
@@ -74,6 +77,7 @@ test_that("pick_engine_batch vectorises", {
 
 
 test_that("pick_engine min_score adjusts threshold", {
+  skip_on_cran()
   p <- .pedon_minimal_v0965()
   expect_equal(pick_engine(p, min_score = 5L), "soilkey")
   expect_equal(pick_engine(p, min_score = 1L), "aqp")
@@ -83,6 +87,7 @@ test_that("pick_engine min_score adjusts threshold", {
 # ---- 2. classify_with_engine_heuristic --------------------------------
 
 test_that("classify_with_engine_heuristic captures engine in trace", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .pedon_minimal_v0965()
   res <- tryCatch(
@@ -99,6 +104,7 @@ test_that("classify_with_engine_heuristic captures engine in trace", {
 # ---- 3. Tier-3 schema fields populated -------------------------------
 
 test_that("Tier-3 schema fields exist in horizon_column_spec()", {
+  skip_on_cran()
   spec <- horizon_column_spec()
   for (f in c("surface_crust_type", "bioturbation_density",
                 "cordic_horizon", "microrelief_form",
@@ -114,6 +120,7 @@ test_that("Tier-3 schema fields exist in horizon_column_spec()", {
 
 
 test_that("Tier-3 qualifiers fire when their schema field is populated", {
+  skip_on_cran()
   p <- .pedon_minimal_v0965()
   p$horizons$surface_crust_type <- c("biocrust", NA_character_)
   expect_true(isTRUE(qual_biocrustic(p)$passed))
@@ -145,6 +152,7 @@ test_that("Tier-3 qualifiers fire when their schema field is populated", {
 
 
 test_that("Tier-3 qualifiers return NA when schema field is empty", {
+  skip_on_cran()
   p <- .pedon_minimal_v0965()
   expect_true(is.na(qual_biocrustic(p)$passed))
   expect_true(is.na(qual_arenicolic(p)$passed))
@@ -157,6 +165,7 @@ test_that("Tier-3 qualifiers return NA when schema field is empty", {
 # ---- 4. Engine-aware leptic + arenic relaxation ----------------------
 
 test_that("leptic_features engine='aqp' relaxes coarse_pct + accepts thin topsoil", {
+  skip_on_cran()
   hz <- data.frame(
     designation = c("A", "C"), top_cm = c(0, 20),
     bottom_cm = c(20, 25), munsell_hue_moist = c("10YR","10YR"),
@@ -177,6 +186,7 @@ test_that("leptic_features engine='aqp' relaxes coarse_pct + accepts thin topsoi
 
 
 test_that("arenic_texture engine='aqp' accepts sand >= 70 even if silt+2*clay >= 30", {
+  skip_on_cran()
   hz <- data.frame(
     designation = c("A", "C"), top_cm = c(0, 30), bottom_cm = c(30, 100),
     munsell_hue_moist = c("10YR","10YR"), munsell_value_moist = c(4,4),

@@ -34,7 +34,7 @@
 #' @param raster_path Required. Path to a local categorical raster
 #'        (GeoTIFF) of Embrapa SiBCS classes. There is no built-in
 #'        file in v0.5 -- download the polygon map from
-#'        \url{https://www.embrapa.br/solos/sibcs} and rasterise it.
+#'        \code{https://www.embrapa.br/solos/sibcs} and rasterise it.
 #' @param buffer_m Buffer radius in metres (default 3750, i.e.
 #'        ~15-cell neighbourhood at 250 m resolution).
 #' @param lut Optional named character vector mapping raster integer

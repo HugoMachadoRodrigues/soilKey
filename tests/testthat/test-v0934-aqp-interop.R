@@ -8,6 +8,7 @@ skip_if_no_aqp <- function() {
 # ---- as_aqp ---------------------------------------------------------------
 
 test_that("as_aqp converts a single PedonRecord to a 1-profile SPC", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   spc <- as_aqp(p)
@@ -18,6 +19,7 @@ test_that("as_aqp converts a single PedonRecord to a 1-profile SPC", {
 })
 
 test_that("as_aqp converts a list of PedonRecords to multi-profile SPC", {
+  skip_on_cran()
   skip_if_no_aqp()
   pedons <- list(make_ferralsol_canonical(),
                    make_luvisol_canonical(),
@@ -30,6 +32,7 @@ test_that("as_aqp converts a list of PedonRecords to multi-profile SPC", {
 })
 
 test_that("as_aqp renames soilKey horizon columns to aqp canonical", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   spc <- as_aqp(p)
@@ -46,6 +49,7 @@ test_that("as_aqp renames soilKey horizon columns to aqp canonical", {
 })
 
 test_that("as_aqp attaches site-level metadata", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   spc <- as_aqp(p)
@@ -61,6 +65,7 @@ test_that("as_aqp attaches site-level metadata", {
 # ---- from_aqp -------------------------------------------------------------
 
 test_that("from_aqp converts SPC back to a list of PedonRecord", {
+  skip_on_cran()
   skip_if_no_aqp()
   pedons <- list(make_ferralsol_canonical(), make_luvisol_canonical())
   spc <- as_aqp(pedons)
@@ -70,6 +75,7 @@ test_that("from_aqp converts SPC back to a list of PedonRecord", {
 })
 
 test_that("from_aqp renames aqp columns back to soilKey conventions", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   spc <- as_aqp(p)
@@ -87,6 +93,7 @@ test_that("from_aqp renames aqp columns back to soilKey conventions", {
 # ---- round-trip property --------------------------------------------------
 
 test_that("round-trip: from_aqp(as_aqp(pedon)) preserves horizon chemistry", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   spc <- as_aqp(p)
@@ -102,6 +109,7 @@ test_that("round-trip: from_aqp(as_aqp(pedon)) preserves horizon chemistry", {
 })
 
 test_that("round-trip preserves designation and depth columns", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_luvisol_canonical()
   spc <- as_aqp(p)
@@ -112,6 +120,7 @@ test_that("round-trip preserves designation and depth columns", {
 })
 
 test_that("round-trip preserves the site id", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_chernozem_canonical()
   spc <- as_aqp(p)
@@ -123,12 +132,14 @@ test_that("round-trip preserves the site id", {
 # ---- error handling -------------------------------------------------------
 
 test_that("as_aqp errors on non-PedonRecord input", {
+  skip_on_cran()
   skip_if_no_aqp()
   expect_error(as_aqp(42), "PedonRecord")
   expect_error(as_aqp(list(1, 2, 3)), "PedonRecord")
 })
 
 test_that("from_aqp errors on non-SPC input", {
+  skip_on_cran()
   skip_if_no_aqp()
   expect_error(from_aqp(data.frame(id = "a", top = 0, bottom = 10)),
                  "SoilProfileCollection")
@@ -139,6 +150,7 @@ test_that("from_aqp errors on non-SPC input", {
 # ---- classification works on round-tripped pedons --------------------------
 
 test_that("classify_wrb2022 returns same RSG before and after aqp round-trip", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   res_before <- classify_wrb2022(p, on_missing = "silent")
@@ -148,6 +160,7 @@ test_that("classify_wrb2022 returns same RSG before and after aqp round-trip", {
 })
 
 test_that("classify_usda returns same Order before and after aqp round-trip", {
+  skip_on_cran()
   skip_if_no_aqp()
   p <- make_ferralsol_canonical()
   res_before <- classify_usda(p, on_missing = "silent")
@@ -160,6 +173,7 @@ test_that("classify_usda returns same Order before and after aqp round-trip", {
 # ---- multi-profile heterogeneous schema -----------------------------------
 
 test_that("as_aqp pads missing columns across profiles with different schemas", {
+  skip_on_cran()
   skip_if_no_aqp()
   # Build two pedons with intentionally different horizon columns.
   hz1 <- ensure_horizon_schema(data.table::data.table(

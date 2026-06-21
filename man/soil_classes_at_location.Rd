@@ -54,7 +54,7 @@ confirm.
 
 For real use, point \code{source_url} at a regional SoilGrids
 "MostProbable WRB" GeoTIFF / COG (one of the cuts at
-\url{https://files.isric.org/soilgrids/latest/data/wrb/}). For
+\code{https://files.isric.org/soilgrids/latest/data/wrb/}). For
 tests, \code{options(soilKey.test_raster = "/tmp/syn.tif")} is
 honoured. When no source is given, the function emits a
 \code{cli_alert_warning()} and returns an empty result -- it does

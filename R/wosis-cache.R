@@ -184,7 +184,7 @@ load_wosis_stratified_sample <- function() {
 #' @section Reference:
 #' Beaudette, D., Skovlin, J., Roecker, S., Brown, A. (2024). aqp:
 #' Algorithms for Quantitative Pedology. R package version 2.x.
-#' \url{https://github.com/ncss-tech/aqp}.
+#' \code{https://github.com/ncss-tech/aqp}.
 #'
 #' @examples
 #' \dontrun{
@@ -281,7 +281,7 @@ load_kssl_sample <- function() {
 #' @section Reference:
 #' Beaudette, D., Skovlin, J., Roecker, S., Brown, A. (2024). aqp:
 #' Algorithms for Quantitative Pedology. R package version 2.x.
-#' \url{https://github.com/ncss-tech/aqp}.
+#' \code{https://github.com/ncss-tech/aqp}.
 #'
 #' @examples
 #' \dontrun{

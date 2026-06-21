@@ -46,7 +46,7 @@
 #' Synthetic; built by \code{data-raw/build_ossl_demo.R} with seed
 #' 20260430. The OSSL property ranges that drove the simulation
 #' come from Sanderman, J. \emph{et al.} (2024), \emph{Open Soil
-#' Spectral Library}, \url{https://soilspectroscopy.org/}.
+#' Spectral Library}, \code{https://soilspectroscopy.org/}.
 #'
 #' @examples
 #' data(ossl_demo_sa)
