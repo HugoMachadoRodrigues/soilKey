@@ -24,6 +24,7 @@
 
 
 test_that("mod_map_batch.R ships and parses", {
+  skip_on_cran()
   app_dir <- .mb_app_dir()
   expect_true(file.exists(file.path(app_dir, "R", "mod_map_batch.R")))
   expect_silent(parse(file.path(app_dir, "R", "mod_map_batch.R")))
@@ -31,6 +32,7 @@ test_that("mod_map_batch.R ships and parses", {
 
 
 test_that("map_batch_ui() builds a valid Shiny tag", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("shinyWidgets")
@@ -44,6 +46,7 @@ test_that("map_batch_ui() builds a valid Shiny tag", {
 
 
 test_that(".batch_parse_csv groups a long-format table into PedonRecords", {
+  skip_on_cran()
   env   <- .mb_source_modules()
   parse_csv <- get(".batch_parse_csv", envir = env)
 
@@ -69,6 +72,7 @@ test_that(".batch_parse_csv groups a long-format table into PedonRecords", {
 
 
 test_that(".batch_parse_csv errors clearly on a missing id / coords", {
+  skip_on_cran()
   env   <- .mb_source_modules()
   parse_csv <- get(".batch_parse_csv", envir = env)
   expect_error(parse_csv(data.frame(top_cm = 0, bottom_cm = 10)),
@@ -79,6 +83,7 @@ test_that(".batch_parse_csv errors clearly on a missing id / coords", {
 
 
 test_that(".batch_classify returns one mappable row per demo pedon", {
+  skip_on_cran()
   env <- .mb_source_modules()
   demo     <- get(".batch_demo_pedons", envir = env)
   classify <- get(".batch_classify", envir = env)
@@ -99,6 +104,7 @@ test_that(".batch_classify returns one mappable row per demo pedon", {
 
 
 test_that("map_batch_server classifies demo points and renders the table", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("DT")

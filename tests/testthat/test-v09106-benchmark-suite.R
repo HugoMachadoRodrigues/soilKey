@@ -3,6 +3,7 @@
 # offline and deterministic; external-dataset rows are skipped when absent.
 
 test_that("run_all_benchmarks canonical mode returns a 100% sanity row + report", {
+  skip_on_cran()
   tf <- tempfile(fileext = ".md")
   res <- run_all_benchmarks(datasets = "canonical", report_path = tf,
                             verbose = FALSE)
@@ -22,6 +23,7 @@ test_that("run_all_benchmarks canonical mode returns a 100% sanity row + report"
 
 
 test_that("auto-detection skips absent datasets without error", {
+  skip_on_cran()
   empty <- file.path(tempdir(), "no-such-benchmark-data")
   paths <- list(bdsolos = empty, febr = file.path(empty, "x.txt"),
                 kssl_gpkg = empty, kssl_nasis = empty,
@@ -34,6 +36,7 @@ test_that("auto-detection skips absent datasets without error", {
 
 
 test_that(".benchmark_reproducible_sample is deterministic and seed-safe", {
+  skip_on_cran()
   smp <- soilKey:::.benchmark_reproducible_sample
   a <- smp(1000L, 50L); b <- smp(1000L, 50L)
   expect_identical(a, b)            # reproducible across calls
@@ -48,6 +51,7 @@ test_that(".benchmark_reproducible_sample is deterministic and seed-safe", {
 
 
 test_that(".benchmark_available_datasets reports presence correctly", {
+  skip_on_cran()
   avail <- soilKey:::.benchmark_available_datasets
   none <- avail(list(bdsolos = "/nope", febr = "/nope/x", kssl_gpkg = "/nope",
                      kssl_nasis = "/nope", lucas_csv = "/nope",
@@ -57,6 +61,7 @@ test_that(".benchmark_available_datasets reports presence correctly", {
 
 
 test_that("Redape is wired into benchmark_unified (SiBCS)", {
+  skip_on_cran()
   redape_dir <- file.path(
     getOption("soilKey.benchmark_root",
               "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data"),

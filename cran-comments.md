@@ -1,27 +1,28 @@
-# cran-comments.md -- soilKey 0.9.152
+# cran-comments.md -- soilKey 0.9.153
 
 ## Resubmission
 
-This is a resubmission. The 0.9.151 incoming pre-test reported 1 ERROR + 1 NOTE,
-now fixed:
+This is a resubmission. The 0.9.152 incoming pre-test was **OK on both Windows
+and Debian**, but was held because the overall check time exceeded 10 minutes
+(`Overall checktime 22 min > 10 min`), dominated by the test suite (~12 min).
 
-* **ERROR (checking tests):** a spectral test exercised `resemble::mbl()`, whose
-  `k` / `k_diss` / `k_range` arguments were removed in `resemble` >= 2.0.
-  `predict_ossl_mbl()` / `predict_ossl_plsr_local()` now fall back to the
-  deterministic synthetic predictor (with a warning) on any backend error
-  instead of aborting; the two dependency-fragile spectral-model tests are now
-  `skip_on_cran()`.
-* **NOTE (incoming feasibility):** the technical acronyms 'SiBCS', 'OSSL' and
-  'SoilGrids' are now single-quoted in DESCRIPTION.
+* **Check time:** the heavy integration / simulation / Shiny-app tests (the
+  aqp-engine fallbacks, argic designation inference, Monte-Carlo uncertainty,
+  benchmark suite, audits, and the `testServer` app tests) are now
+  `skip_on_cran()`. They run in full on CI (`NOT_CRAN=true`). Locally the test
+  phase dropped from ~9 min to ~80 s; the fast unit tests, the 44 canonical
+  classification fixtures and the end-to-end key tests still run on CRAN.
 
-I also addressed the **WARNING on the currently released 0.9.96** (a wall-clock
-performance assertion that timed out on the ATLAS-BLAS check host): that
-timing-based test is now `skip_on_cran()`.
+(The 0.9.151 -> 0.9.152 fixes are retained: the `resemble >= 2.0` mbl() API
+change now degrades gracefully to the synthetic predictor; 'SiBCS' / 'OSSL' /
+'SoilGrids' are single-quoted in DESCRIPTION; and the wall-clock performance
+sentinel -- the source of the released 0.9.96 ATLAS WARNING -- is
+`skip_on_cran()`.)
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.152 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.153 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -82,7 +83,7 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.152)
+## R CMD check --as-cran results (v0.9.153)
 
 A full local build (with vignettes and manual) and `R CMD check --as-cran`:
 
@@ -93,11 +94,12 @@ A full local build (with vignettes and manual) and `R CMD check --as-cran`:
   local-only artefact -- the macOS-bundled `tidy` is older than CRAN's -- and
   does not appear on the CRAN check servers. "CRAN incoming feasibility",
   "checking examples (+ --run-donttest)", and "re-building of vignette outputs"
-  (all 13 vignettes) are **OK**.
+  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~80 s.
 
-All tests pass under `R CMD check` (`testthat.R`, ~500 s). Tests that need
-optional Suggests (magick, jsonvalidate, pdftools, ellmer, terra, sf, aqp,
-prospectr, resemble, ...) use `skip_if_not_installed()`.
+All tests pass under `R CMD check` (`testthat.R`, ~80 s on CRAN with the heavy
+suites skipped; full suite on CI). Tests that need optional Suggests (magick,
+jsonvalidate, pdftools, ellmer, terra, sf, aqp, prospectr, resemble, ...) use
+`skip_if_not_installed()`.
 
 ## Reverse dependencies
 

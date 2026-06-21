@@ -1,6 +1,7 @@
 # Tests for v0.9.42 sensitivity / fragility analysis.
 
 test_that("classification_robustness returns the expected list shape", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   res <- classification_robustness(p, system = "wrb2022", n = 10L,
                                        seed = 42)
@@ -11,6 +12,7 @@ test_that("classification_robustness returns the expected list shape", {
 })
 
 test_that("a stable canonical fixture has near-100% robustness on small perturbation", {
+  skip_on_cran()
   # Ferralsol canonical fixture is by design a strong example -- 5%
   # perturbation should rarely flip its classification.
   p <- make_ferralsol_canonical()
@@ -21,6 +23,7 @@ test_that("a stable canonical fixture has near-100% robustness on small perturba
 })
 
 test_that("classification_robustness respects the seed (deterministic)", {
+  skip_on_cran()
   p <- make_luvisol_canonical()
   res1 <- classification_robustness(p, system = "wrb2022", n = 20L, seed = 7L)
   res2 <- classification_robustness(p, system = "wrb2022", n = 20L, seed = 7L)
@@ -29,6 +32,7 @@ test_that("classification_robustness respects the seed (deterministic)", {
 })
 
 test_that("classification_robustness works with system='sibcs' and 'usda'", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   for (sys in c("sibcs", "usda")) {
     res <- classification_robustness(p, system = sys, n = 5L, seed = 1L)
@@ -38,6 +42,7 @@ test_that("classification_robustness works with system='sibcs' and 'usda'", {
 })
 
 test_that("classification_robustness level='name' is more sensitive than 'order'", {
+  skip_on_cran()
   # Full-name level catches qualifier flips that order-level doesn't see.
   p <- make_luvisol_canonical()
   res_order <- classification_robustness(p, system = "wrb2022",
@@ -50,6 +55,7 @@ test_that("classification_robustness level='name' is more sensitive than 'order'
 })
 
 test_that("custom perturbations override the default panel", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   # No-op perturbation -- result must always equal baseline.
   noop_perts <- list(
@@ -67,6 +73,7 @@ test_that("custom perturbations override the default panel", {
 # ---- batch_robustness ------------------------------------------------------
 
 test_that("batch_robustness returns one row per pedon", {
+  skip_on_cran()
   pedons <- list(make_ferralsol_canonical(),
                    make_luvisol_canonical(),
                    make_chernozem_canonical())

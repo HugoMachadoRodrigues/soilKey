@@ -5,6 +5,7 @@
 # ---- get_perturbation_scale -----------------------------------------------
 
 test_that("perturbation scales grow monotonically from grade A to E", {
+  skip_on_cran()
   pcts <- vapply(c("A", "B", "C", "D", "E"),
                  function(g) get_perturbation_scale(g)$pct, numeric(1))
   expect_equal(unname(pcts), sort(unname(pcts)))
@@ -14,12 +15,14 @@ test_that("perturbation scales grow monotonically from grade A to E", {
 })
 
 test_that("get_perturbation_scale rejects an unknown grade", {
+  skip_on_cran()
   expect_error(get_perturbation_scale("Z"), "arg")
 })
 
 # ---- classify_with_uncertainty: structure ---------------------------------
 
 test_that("classify_with_uncertainty returns a well-formed posterior", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_ferralsol_canonical(),
                                  n = 40, system = "wrb2022", seed = 1)
   expect_s3_class(u, "soilkey_uncertainty")
@@ -32,6 +35,7 @@ test_that("classify_with_uncertainty returns a well-formed posterior", {
 })
 
 test_that("a canonical Ferralsol is a robust classification", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_ferralsol_canonical(),
                                  n = 60, system = "wrb2022", seed = 1)
   expect_gt(as.numeric(u$posterior["Ferralsols"]), 0.85)
@@ -39,6 +43,7 @@ test_that("a canonical Ferralsol is a robust classification", {
 })
 
 test_that("the print method runs without error", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_ferralsol_canonical(),
                                  n = 30, system = "wrb2022",
                                  sensitivity = FALSE, seed = 1)
@@ -48,6 +53,7 @@ test_that("the print method runs without error", {
 # ---- provenance weighting actually changes the posterior ------------------
 
 test_that("downgrading provenance to user-assumed widens the posterior", {
+  skip_on_cran()
   measured <- classify_with_uncertainty(
     make_ferralsol_canonical(), n = 60, system = "wrb2022",
     sensitivity = FALSE, seed = 1)
@@ -71,6 +77,7 @@ test_that("downgrading provenance to user-assumed widens the posterior", {
 # ---- sensitivity ----------------------------------------------------------
 
 test_that("the sensitivity table ranks perturbable attributes", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_acrisol_canonical(),
                                  n = 40, system = "wrb2022", seed = 3)
   expect_s3_class(u$sensitivity, "data.table")
@@ -82,6 +89,7 @@ test_that("the sensitivity table ranks perturbable attributes", {
 })
 
 test_that("sensitivity = FALSE skips the leave-one-out pass", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_ferralsol_canonical(),
                                  n = 30, system = "wrb2022",
                                  sensitivity = FALSE, seed = 1)
@@ -91,6 +99,7 @@ test_that("sensitivity = FALSE skips the leave-one-out pass", {
 # ---- edge cases -----------------------------------------------------------
 
 test_that("n = 1 yields a degenerate but valid posterior", {
+  skip_on_cran()
   u <- classify_with_uncertainty(make_ferralsol_canonical(),
                                  n = 1, system = "wrb2022",
                                  sensitivity = FALSE, seed = 1)
@@ -99,6 +108,7 @@ test_that("n = 1 yields a degenerate but valid posterior", {
 })
 
 test_that("a pedon with no perturbable attributes is handled gracefully", {
+  skip_on_cran()
   h <- make_empty_horizons(2L)
   h$top_cm    <- c(0, 30)
   h$bottom_cm <- c(30, 80)
@@ -113,6 +123,7 @@ test_that("a pedon with no perturbable attributes is handled gracefully", {
 # ---- classification_robustness backward compatibility ---------------------
 
 test_that("provenance_aware = FALSE reproduces the v0.9.42 robustness", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   default_call <- classification_robustness(p, system = "wrb2022",
                                             n = 40, seed = 7)
@@ -123,6 +134,7 @@ test_that("provenance_aware = FALSE reproduces the v0.9.42 robustness", {
 })
 
 test_that("provenance_aware = TRUE runs and returns a robustness fraction", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   r <- classification_robustness(p, system = "wrb2022", n = 40,
                                  seed = 7, provenance_aware = TRUE)

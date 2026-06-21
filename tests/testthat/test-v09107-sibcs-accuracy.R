@@ -19,6 +19,7 @@
 
 
 test_that("the four recovered SiBCS orders reach full/near-full recall on Redape", {
+  skip_on_cran()
   skip_if_not(dir.exists(.acc_redape_dir()), "Redape data not present")
   rec <- .acc_recall()
   expect_equal(unname(rec["gleissolos"]), 1)     # g-suffix -> redoximorphic (8/8)
@@ -29,6 +30,7 @@ test_that("the four recovered SiBCS orders reach full/near-full recall on Redape
 
 
 test_that("overall Redape order accuracy improved past the pre-fix baseline (43)", {
+  skip_on_cran()
   skip_if_not(dir.exists(.acc_redape_dir()), "Redape data not present")
   peds <- load_redape_pedons(.acc_redape_dir(), verbose = FALSE)
   r <- benchmark_redape(peds, level = "order", verbose = FALSE)
@@ -37,6 +39,7 @@ test_that("overall Redape order accuracy improved past the pre-fix baseline (43)
 
 
 test_that("a Planossolo vertissolico (RN_038) stays Planossolos, not Vertissolos", {
+  skip_on_cran()
   skip_if_not(dir.exists(.acc_redape_dir()), "Redape data not present")
   peds <- load_redape_pedons(.acc_redape_dir(), verbose = FALSE)
   hit <- Filter(function(p) grepl("RN_038", p$site$id %||% ""), peds)
@@ -47,6 +50,7 @@ test_that("a Planossolo vertissolico (RN_038) stays Planossolos, not Vertissolos
 
 
 test_that("the vertic B-planico exclusion is wired into vertissolo()", {
+  skip_on_cran()
   # A synthetic vertic profile WITH an abrupt textural change (B planico) must
   # not pass vertissolo(); the same profile without it should.
   mk <- function(abrupt) {

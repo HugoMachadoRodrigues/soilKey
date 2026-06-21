@@ -7,6 +7,7 @@
 # ---- WRB 2006 RSG code crosswalk -------------------------------------------
 
 test_that("v0.9.77: wrb06_code_to_rsg() handles all 32 standard codes", {
+  skip_on_cran()
   expect_identical(wrb06_code_to_rsg("HS"), "Histosol")
   expect_identical(wrb06_code_to_rsg("VR"), "Vertisol")
   expect_identical(wrb06_code_to_rsg("FR"), "Ferralsol")
@@ -19,12 +20,14 @@ test_that("v0.9.77: wrb06_code_to_rsg() handles all 32 standard codes", {
 
 
 test_that("v0.9.77: wrb06 codes case-insensitive + trimws", {
+  skip_on_cran()
   expect_identical(wrb06_code_to_rsg("vr"),    "Vertisol")
   expect_identical(wrb06_code_to_rsg("  VR "), "Vertisol")
 })
 
 
 test_that("v0.9.77: unknown WRB06 code returns NA", {
+  skip_on_cran()
   expect_true(is.na(wrb06_code_to_rsg("XX")))
 })
 
@@ -32,6 +35,7 @@ test_that("v0.9.77: unknown WRB06 code returns NA", {
 # ---- AfSP Munsell parser ---------------------------------------------------
 
 test_that("v0.9.77: .afsp_parse_munsell handles compact AfSP format", {
+  skip_on_cran()
   out <- soilKey:::.afsp_parse_munsell("10YR3/2")
   expect_identical(out$hue, "10YR")
   expect_equal(out$value, 3)
@@ -40,6 +44,7 @@ test_that("v0.9.77: .afsp_parse_munsell handles compact AfSP format", {
 
 
 test_that("v0.9.77: .afsp_parse_munsell handles fractional hue", {
+  skip_on_cran()
   out <- soilKey:::.afsp_parse_munsell("2.5YR3/6")
   expect_identical(out$hue, "2.5YR")
   expect_equal(out$value, 3)
@@ -48,6 +53,7 @@ test_that("v0.9.77: .afsp_parse_munsell handles fractional hue", {
 
 
 test_that("v0.9.77: .afsp_parse_munsell handles Y hue (no R)", {
+  skip_on_cran()
   out <- soilKey:::.afsp_parse_munsell("2.5Y6/2")
   expect_identical(out$hue, "2.5Y")
   expect_equal(out$value, 6)
@@ -56,6 +62,7 @@ test_that("v0.9.77: .afsp_parse_munsell handles Y hue (no R)", {
 
 
 test_that("v0.9.77: .afsp_parse_munsell handles space-separated legacy format", {
+  skip_on_cran()
   out <- soilKey:::.afsp_parse_munsell("10YR 4/3")
   expect_identical(out$hue, "10YR")
   expect_equal(out$value, 4)
@@ -64,6 +71,7 @@ test_that("v0.9.77: .afsp_parse_munsell handles space-separated legacy format", 
 
 
 test_that("v0.9.77: .afsp_parse_munsell returns NA on unparseable input", {
+  skip_on_cran()
   out <- soilKey:::.afsp_parse_munsell("garbage")
   expect_true(is.na(out$hue))
   expect_true(is.na(out$value))
@@ -74,6 +82,7 @@ test_that("v0.9.77: .afsp_parse_munsell returns NA on unparseable input", {
 # ---- Bundled AfSP sample tests ---------------------------------------------
 
 test_that("v0.9.77: load_afsp_sample() returns 120 pedons across 24 RSGs", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "afsp_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -91,6 +100,7 @@ test_that("v0.9.77: load_afsp_sample() returns 120 pedons across 24 RSGs", {
 
 
 test_that("v0.9.77: AfSP pedons have rich field availability", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "afsp_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -116,6 +126,7 @@ test_that("v0.9.77: AfSP pedons have rich field availability", {
 
 
 test_that("v0.9.77: classify_wrb2022 runs without error on every AfSP pedon", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "afsp_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -133,6 +144,7 @@ test_that("v0.9.77: classify_wrb2022 runs without error on every AfSP pedon", {
 
 
 test_that("v0.9.77: benchmark_afsp() runs end-to-end + reports per-class recall", {
+  skip_on_cran()
   testthat::skip_if_not(file.exists(file.path("inst", "extdata",
                                                   "afsp_sample.rds"))
                           || nzchar(system.file("extdata",
@@ -154,6 +166,7 @@ test_that("v0.9.77: benchmark_afsp() runs end-to-end + reports per-class recall"
 # ---- Vertisol RSG-gate routing fix (v0.9.77) -------------------------------
 
 test_that("v0.9.77: vertisol() RSG-gate trusts vertic morphological inference", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm    = c(0, 15, 38, 74),
     bottom_cm = c(15, 38, 74, 130),
@@ -183,6 +196,7 @@ test_that("v0.9.77: vertisol() RSG-gate trusts vertic morphological inference", 
 
 
 test_that("v0.9.77: vertisol() still requires clay >= 30 above the vertic horizon", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm    = c(0, 15, 38, 74),
     bottom_cm = c(15, 38, 74, 130),

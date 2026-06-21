@@ -41,6 +41,7 @@
 # ---- 1. Default canonical: ECEC fallback STAYS off ----------------------
 
 test_that("v0.9.86: default soilkey engine + no opt-in -> ECEC fallback OFF", {
+  skip_on_cran()
   pr <- .fix_no_cec_with_components()
   res <- test_cec_per_clay(pr$horizons, max_cmol_per_kg_clay = 16)
   # Without ECEC fallback the test returns NA on layers with NA CEC.
@@ -51,6 +52,7 @@ test_that("v0.9.86: default soilkey engine + no opt-in -> ECEC fallback OFF", {
 # ---- 2. v0.9.86 engine="aqp" auto-enables fallback -----------------------
 
 test_that("v0.9.86: engine=aqp auto-enables the ECEC fallback", {
+  skip_on_cran()
   pr <- .fix_no_cec_with_components()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     res <- test_cec_per_clay(pr$horizons, max_cmol_per_kg_clay = 16)
@@ -63,6 +65,7 @@ test_that("v0.9.86: engine=aqp auto-enables the ECEC fallback", {
 # ---- 3. User can suppress the fallback with explicit FALSE ---------------
 
 test_that("v0.9.86: explicit ferralic_ecec_fallback=FALSE suppresses auto-fallback", {
+  skip_on_cran()
   pr <- .fix_no_cec_with_components()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp",
                             soilKey.ferralic_ecec_fallback = FALSE), {
@@ -76,6 +79,7 @@ test_that("v0.9.86: explicit ferralic_ecec_fallback=FALSE suppresses auto-fallba
 # ---- 4. Explicit ferralic_ecec_fallback=TRUE without engine still works --
 
 test_that("v0.9.86: explicit ferralic_ecec_fallback=TRUE works without engine=aqp", {
+  skip_on_cran()
   pr <- .fix_no_cec_with_components()
   withr::with_options(list(soilKey.ferralic_ecec_fallback = TRUE), {
     res <- test_cec_per_clay(pr$horizons, max_cmol_per_kg_clay = 16)
@@ -87,6 +91,7 @@ test_that("v0.9.86: explicit ferralic_ecec_fallback=TRUE works without engine=aq
 # ---- 5. BDsolos RJ regression: engine=aqp lifts Latossolo accuracy -------
 
 test_that("v0.9.86: BDsolos RJ Latossolo recall lifts from 17 to ~32 with engine=aqp", {
+  skip_on_cran()
   RJ <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/embrapa_bdsolos/BD_solos/RJ.csv"
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))

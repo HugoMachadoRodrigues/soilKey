@@ -55,6 +55,7 @@
 # ---- Default canonical: no inference -----------------------------------
 
 test_that("v0.9.90: default canonical does NOT fire designation inference", {
+  skip_on_cran()
   pr <- .fix_argissolo_2pt()
   res <- argic(pr)  # default engine="soilkey"
   # Whether canonical passes or fails, the inference path must not have
@@ -67,6 +68,7 @@ test_that("v0.9.90: default canonical does NOT fire designation inference", {
 # ---- engine="aqp" auto-fires inference when canonical fails ------------
 
 test_that("v0.9.90: engine=aqp accepts Bt + films + subsoil when aqp argic fails", {
+  skip_on_cran()
   pr <- .fix_argissolo_2pt()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     res <- argic(pr)
@@ -85,6 +87,7 @@ test_that("v0.9.90: engine=aqp accepts Bt + films + subsoil when aqp argic fails
 # ---- Inference REJECTS without clay films ------------------------------
 
 test_that("v0.9.90: inference does NOT fire when clay_films_amount is NA", {
+  skip_on_cran()
   pr <- .fix_argissolo_2pt_no_films()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp",
                             soilKey.argic_designation_inference = TRUE), {
@@ -106,6 +109,7 @@ test_that("v0.9.90: inference does NOT fire when clay_films_amount is NA", {
 # ---- Inference REJECTS topsoil Bt --------------------------------------
 
 test_that("v0.9.90: inference does NOT fire when Bt is at top_cm <= 25", {
+  skip_on_cran()
   pr <- .fix_argissolo_2pt_topsoil_b()
   withr::with_options(list(soilKey.diagnostic_engine = "aqp",
                             soilKey.argic_designation_inference = TRUE), {
@@ -124,6 +128,7 @@ test_that("v0.9.90: inference does NOT fire when Bt is at top_cm <= 25", {
 # ---- User can suppress with explicit FALSE ----------------------------
 
 test_that("v0.9.90: explicit argic_designation_inference=FALSE suppresses bundling", {
+  skip_on_cran()
   pr <- .fix_argissolo_2pt()
   res_aqp <- withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     argic(pr)
@@ -140,6 +145,7 @@ test_that("v0.9.90: explicit argic_designation_inference=FALSE suppresses bundli
 # ---- BDsolos RJ regression: Argissolo recall lifts -------------------
 
 test_that("v0.9.90: BDsolos RJ Argissolo recall lifts past 175 with engine=aqp", {
+  skip_on_cran()
   RJ <- "/Users/rodrigues.h/Library/CloudStorage/OneDrive-Personal/soilKey/soil_data/embrapa_bdsolos/BD_solos/RJ.csv"
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
