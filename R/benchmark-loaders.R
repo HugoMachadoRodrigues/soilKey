@@ -176,7 +176,7 @@ load_lucas_pedons <- function(lucas_csv, head = NULL, verbose = TRUE) {
 #' The dadosolos / BDsolos archive ships with ~5k profiles in PT-BR
 #' with full SiBCS classification, lab data, and horizon morphology --
 #' the primary validation set for Brazilian-context use. Available
-#' from \url{https://www.bdsolos.cnptia.embrapa.br/}.
+#' from \code{https://www.bdsolos.cnptia.embrapa.br/}.
 #'
 #' @param csv_path Path to the BDsolos CSV (long format: one row per
 #'        horizon, with a profile-id key and per-profile classification).

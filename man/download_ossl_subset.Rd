@@ -74,5 +74,5 @@ fallback would make benchmarks meaningless.
 Sanderman, J., Savage, K., Dangal, S.R.S., Duran, G., Rivard, C.,
 Cardona, M.T., Sandzhieva, A., Aramian, A. & Safanelli, J.L. (2024).
 Soil Spectroscopy for Global Good -- the Open Soil Spectral Library
-(OSSL). \url{https://soilspectroscopy.org/}.
+(OSSL). \code{https://soilspectroscopy.org/}.
 }

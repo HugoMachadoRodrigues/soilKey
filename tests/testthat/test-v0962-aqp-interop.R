@@ -14,6 +14,7 @@
 # ---- 1. texture_class_from_pct ---------------------------------------
 
 test_that("texture_class_from_pct returns canonical USDA classes", {
+  skip_on_cran()
   # Classic clay (heavy)
   expect_equal(texture_class_from_pct(60,  20, 20), "C")
   # Sandy clay loam (sandy texture, moderate clay)
@@ -33,6 +34,7 @@ test_that("texture_class_from_pct returns canonical USDA classes", {
 
 
 test_that("texture_class_from_pct is NA-safe and vectorised", {
+  skip_on_cran()
   expect_true(is.na(texture_class_from_pct(NA, 20, 60)))
   expect_true(is.na(texture_class_from_pct(20, NA, 60)))
   # (5, 5, 90): silt + 1.5*clay = 12.5 < 15 -> S
@@ -71,6 +73,7 @@ test_that("texture_class_from_pct is NA-safe and vectorised", {
 
 
 test_that("pedon_to_spc builds an aqp::SoilProfileCollection", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .make_simple_pedon()
   spc <- pedon_to_spc(p)
@@ -87,6 +90,7 @@ test_that("pedon_to_spc builds an aqp::SoilProfileCollection", {
 
 
 test_that("pedon_to_spc errors on missing horizons or depths", {
+  skip_on_cran()
   empty <- PedonRecord$new(
     site = list(id = "empty", country = "BR"),
     horizons = data.frame()
@@ -107,6 +111,7 @@ test_that("pedon_to_spc errors on missing horizons or depths", {
 # ---- 3. argic_aqp / cambic_aqp ---------------------------------------
 
 test_that("argic_aqp returns a DiagnosticResult with the engine tag", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .make_simple_pedon()
   res <- argic_aqp(p, require_t = FALSE)
@@ -120,6 +125,7 @@ test_that("argic_aqp returns a DiagnosticResult with the engine tag", {
 
 
 test_that("argic_aqp passes on a clear argic profile (clay 20 -> 50)", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .make_simple_pedon()
   # require_t = FALSE so we don't need the "t" suffix in the
@@ -130,6 +136,7 @@ test_that("argic_aqp passes on a clear argic profile (clay 20 -> 50)", {
 
 
 test_that("argic_aqp does not pass on a homogeneous Latossolo (no clay increase)", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   hz <- data.frame(
     designation = c("A", "Bw1", "Bw2"),
@@ -156,6 +163,7 @@ test_that("argic_aqp does not pass on a homogeneous Latossolo (no clay increase)
 
 
 test_that("cambic_aqp returns a DiagnosticResult", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .make_simple_pedon()
   res <- cambic_aqp(p)
@@ -166,6 +174,7 @@ test_that("cambic_aqp returns a DiagnosticResult", {
 
 
 test_that("cambic_aqp gracefully returns FALSE on sandy profile", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   hz <- data.frame(
     designation = c("A", "C"),
@@ -195,6 +204,7 @@ test_that("cambic_aqp gracefully returns FALSE on sandy profile", {
 # ---- 4. compare_engines + canonical references -----------------------
 
 test_that("compare_engines returns paired results for argic and cambic", {
+  skip_on_cran()
   testthat::skip_if_not_installed("aqp")
   p <- .make_simple_pedon()
   out <- compare_engines(p, "argic")
@@ -209,6 +219,7 @@ test_that("compare_engines returns paired results for argic and cambic", {
 
 
 test_that("canonical_reference loads WRB_4th_2022 with both backends", {
+  skip_on_cran()
   # Default: prefer SoilTaxonomy if installed
   if (requireNamespace("SoilTaxonomy", quietly = TRUE)) {
     out <- canonical_reference("WRB_4th_2022", prefer_pkg = TRUE)
@@ -223,6 +234,7 @@ test_that("canonical_reference loads WRB_4th_2022 with both backends", {
 
 
 test_that("kst13_canonical and st_features_canonical return expected shapes", {
+  skip_on_cran()
   kst <- kst13_canonical(prefer_pkg = FALSE)
   expect_type(kst, "list")
   expect_true(length(kst) > 100L)  # 3,153 nested entries

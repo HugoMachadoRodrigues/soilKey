@@ -52,7 +52,7 @@ on subsoil samples NASIS often lacks.
 
 Beaudette, D., Skovlin, J., Roecker, S., Brown, A. (2024). aqp:
 Algorithms for Quantitative Pedology. R package version 2.x.
-\url{https://github.com/ncss-tech/aqp}.
+\code{https://github.com/ncss-tech/aqp}.
 }
 
 \examples{

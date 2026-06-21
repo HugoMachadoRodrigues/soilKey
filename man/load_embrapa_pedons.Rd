@@ -27,5 +27,5 @@ objects with the SiBCS classification attached as
 The dadosolos / BDsolos archive ships with ~5k profiles in PT-BR
 with full SiBCS classification, lab data, and horizon morphology --
 the primary validation set for Brazilian-context use. Available
-from \url{https://www.bdsolos.cnptia.embrapa.br/}.
+from \code{https://www.bdsolos.cnptia.embrapa.br/}.
 }

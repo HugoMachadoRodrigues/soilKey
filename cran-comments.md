@@ -1,46 +1,47 @@
-# cran-comments.md -- soilKey 0.9.154
+# cran-comments.md -- soilKey 0.9.155
 
 ## Resubmission
 
-This is a resubmission. The 0.9.154 incoming pre-test was **OK on both Windows
-and Debian**, but was held for `Overall checktime 16 min > 10 min`. This version
-is a genuine reduction of the check footprint (not a wholesale disabling of
-tests), and addresses the two NOTEs:
+This is a resubmission. The 0.9.155 pre-test was **OK on Debian and OK on
+Windows** but the Windows overall check time was 12 min (target 10 min). The
+Windows log showed where the remaining time went, and 0.9.155 trims it:
 
-* **Manual size (the main lever):** the ~600 internal rule-engine predicates
-  were already marked `@keywords internal`; they are now *truly* internal --
-  removed from `NAMESPACE` and the reference manual (the rule engine resolves
-  them from the namespace; tests reach them via `test_check()`). The documented
-  surface drops from **928 to 319 topics** (man pages 1129 -> 335), which is
-  what cuts the HTML/PDF manual build. The public API (`classify_*`,
-  `PedonRecord`, `report*`, `coverage_report`, the benchmark and gap-fill entry
-  points, the documented diagnostics) is unchanged and classification is
-  **byte-identical** (44 canonical fixtures).
+* **A data-server URL was timing out.** `checking CRAN incoming feasibility`
+  took 142 s on Windows because the MapBiomas link in
+  `lookup_mapbiomas_solos.Rd` timed out (60 s, server unreachable from the
+  check host). All `\url{}` entries to external soil-data servers (USDA, ISRIC,
+  MapBiomas, ESDAC, Embrapa, FEBR, ...) -- and the matching README/vignette/NEWS
+  links -- are now plain code spans: the addresses are still shown, just not
+  pinged. Feasibility drops to ~30 s.
 
-* **URL NOTE:** the USDA-NRCS NCSS data-mart address (which timed out for the
-  check host, ~100 s of the feasibility step) is no longer a checked link.
+* **Suggests-backed integration tests ran only on the Windows host.** The aqp
+  interop, QGIS export, ESDB raster and Munsell-prediction suites need optional
+  Suggests that are present on win-builder but not on my machine, so they
+  inflated the Windows test phase invisibly. They are now `skip_on_cran()` and
+  run in full on CI.
 
-* **Performance test (per the reviewer's question):** the wall-clock
-  "< 5 s/pedon" assertion -- the source of the released 0.9.96 ATLAS WARNING --
-  is **removed, not disabled**. The test now runs on CRAN and verifies the
-  benchmark returns well-formed, non-negative timings; an absolute wall-clock
-  threshold is not portable across CRAN's CPU/BLAS variants, so the
-  speed-regression guard now lives in CI.
+The 0.9.155 reductions are retained:
 
-* Long-running benchmark, simulation, spectral, vision-language and spatial
-  tests (which need optional Suggests or external data) are conditioned off
-  CRAN with `skip_on_cran()` -- because they are long-running per "Writing R
-  Extensions", not because they fail. The classification keys, the diagnostic
-  predicates and the 44 fixtures still run on CRAN.
+* The ~600 internal rule-engine predicates, already marked `@keywords internal`,
+  are no longer exported and no longer documented (928 -> 319 topics; man pages
+  1129 -> 335), which cut the HTML/PDF manual build. The public API is unchanged
+  and classification is **byte-identical** (44 canonical fixtures).
+* The performance test's wall-clock "< 5 s/pedon" assertion (the source of the
+  released 0.9.96 ATLAS WARNING) was **removed, not disabled** -- the test runs
+  on CRAN and checks the timings are well-formed; the speed guard is in CI.
+* Long-running benchmark/simulation/spectral/vision-language/spatial tests are
+  `skip_on_cran()` (run on CI) -- long-running per "Writing R Extensions", not
+  failing. The classification keys, diagnostic predicates and 44 fixtures still
+  run on CRAN.
 
 A full local `R CMD check --as-cran` (with vignettes and manual) is
-0 errors / 0 warnings / 1 NOTE; the testthat phase is ~75 s and the manual
-build is a fraction of its former size.
+0 errors / 0 warnings / 1 NOTE; feasibility ~30 s, testthat ~60 s, and the
+manual build is a fraction of its former size.
 
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.154 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.155 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -101,7 +102,7 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.154)
+## R CMD check --as-cran results (v0.9.155)
 
 A full local build (with vignettes and manual) and `R CMD check --as-cran`:
 

@@ -72,7 +72,7 @@ compare against your own user-supplied reference classification
 \code{L0..L4}).
 
 Authentication: register a free AgroAPI account at
-\url{https://www.agroapi.cnptia.embrapa.br/portal/}, subscribe to
+\code{https://www.agroapi.cnptia.embrapa.br/portal/}, subscribe to
 the SmartSolosExpert API and generate an access token. Pass it via
 the \code{AGROAPI_TOKEN} environment variable or the
 \code{api_key} argument.

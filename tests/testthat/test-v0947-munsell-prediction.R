@@ -28,6 +28,7 @@
 # ---- predict_xyz_from_spectra basic shape -------------------------------
 
 test_that("predict_xyz_from_spectra returns X/Y/Z with right shape", {
+  skip_on_cran()
   s <- .flat_white_R()
   out <- predict_xyz_from_spectra(s$R, s$wl)
   expect_s3_class(out, "data.frame")
@@ -40,6 +41,7 @@ test_that("predict_xyz_from_spectra returns X/Y/Z with right shape", {
 # ---- White reflector should yield Y close to scaled white ---------------
 
 test_that("Flat white reflector yields Y proportional to the reflectance", {
+  skip_on_cran()
   s <- .flat_white_R(level = 1.0)
   out <- predict_xyz_from_spectra(s$R, s$wl)
   # Perfect diffuse white should have Y == 100 by definition; allow a
@@ -53,6 +55,7 @@ test_that("Flat white reflector yields Y proportional to the reflectance", {
 
 
 test_that("Half-reflectance gives half-Y", {
+  skip_on_cran()
   hi <- predict_xyz_from_spectra(.flat_white_R(level = 1.0)$R,
                                    .flat_white_R()$wl)
   lo <- predict_xyz_from_spectra(.flat_white_R(level = 0.5)$R,
@@ -64,6 +67,7 @@ test_that("Half-reflectance gives half-Y", {
 # ---- Vector input is accepted -------------------------------------------
 
 test_that("predict_xyz_from_spectra accepts a numeric vector", {
+  skip_on_cran()
   wl <- seq(380, 780, by = 5)
   R <- rep(0.5, length(wl))
   out <- predict_xyz_from_spectra(R, wl)
@@ -75,6 +79,7 @@ test_that("predict_xyz_from_spectra accepts a numeric vector", {
 # ---- Reflectance scale auto-detect (% vs decimal) -----------------------
 
 test_that("Reflectance in % (0..100) is auto-detected", {
+  skip_on_cran()
   wl <- seq(380, 780, by = 5)
   R_pct <- rep(50, length(wl))
   R_frac <- rep(0.5, length(wl))
@@ -87,6 +92,7 @@ test_that("Reflectance in % (0..100) is auto-detected", {
 # ---- Wavelength count must match -----------------------------------------
 
 test_that("Wavelength length must match ncol(spectra)", {
+  skip_on_cran()
   expect_error(
     predict_xyz_from_spectra(matrix(0.5, 1, 10), wavelengths = seq(380, 780, 5)),
     "length\\(wavelengths\\)"
@@ -97,6 +103,7 @@ test_that("Wavelength length must match ncol(spectra)", {
 # ---- predict_lab_from_spectra basic shape -------------------------------
 
 test_that("predict_lab_from_spectra returns L/a/b with right shape", {
+  skip_on_cran()
   s <- .flat_white_R()
   lab <- predict_lab_from_spectra(s$R, s$wl)
   expect_s3_class(lab, "data.frame")
@@ -106,6 +113,7 @@ test_that("predict_lab_from_spectra returns L/a/b with right shape", {
 
 
 test_that("White reflector has L close to 100, a~0, b~0", {
+  skip_on_cran()
   s <- .flat_white_R(level = 1.0)
   lab <- predict_lab_from_spectra(s$R, s$wl)
   expect_equal(lab$L, 100, tolerance = 0.5)
@@ -117,6 +125,7 @@ test_that("White reflector has L close to 100, a~0, b~0", {
 # ---- Spectral red has positive a* ---------------------------------------
 
 test_that("Red spectrum yields positive a* (red-green axis)", {
+  skip_on_cran()
   s <- .spectral_red()
   lab <- predict_lab_from_spectra(s$R, s$wl)
   expect_true(lab$a > 0)
@@ -124,6 +133,7 @@ test_that("Red spectrum yields positive a* (red-green axis)", {
 
 
 test_that("Blue spectrum yields negative b* (yellow-blue axis)", {
+  skip_on_cran()
   s <- .spectral_blue()
   lab <- predict_lab_from_spectra(s$R, s$wl)
   expect_true(lab$b < 0)
@@ -133,6 +143,7 @@ test_that("Blue spectrum yields negative b* (yellow-blue axis)", {
 # ---- Munsell prediction: skip if munsellinterpol unavailable ------------
 
 test_that("predict_munsell_from_spectra needs munsellinterpol", {
+  skip_on_cran()
   if (requireNamespace("munsellinterpol", quietly = TRUE)) {
     skip("munsellinterpol installed -- can't exercise the missing-pkg path")
   }
@@ -142,6 +153,7 @@ test_that("predict_munsell_from_spectra needs munsellinterpol", {
 
 
 test_that("predict_munsell_from_spectra returns the soilKey-named columns", {
+  skip_on_cran()
   skip_if_not_installed("munsellinterpol")
   s <- .flat_white_R(level = 0.5)
   out <- predict_munsell_from_spectra(s$R, s$wl)
@@ -157,6 +169,7 @@ test_that("predict_munsell_from_spectra returns the soilKey-named columns", {
 # ---- White reflector maps to a high Munsell value -----------------------
 
 test_that("Bright neutral spectrum maps to high Munsell value", {
+  skip_on_cran()
   skip_if_not_installed("munsellinterpol")
   s <- .flat_white_R(level = 0.85)
   out <- predict_munsell_from_spectra(s$R, s$wl)
@@ -170,6 +183,7 @@ test_that("Bright neutral spectrum maps to high Munsell value", {
 # ---- Red spectrum maps to a hue in the R / YR family --------------------
 
 test_that("Red-dominant spectrum predicts an R or YR hue", {
+  skip_on_cran()
   skip_if_not_installed("munsellinterpol")
   s <- .spectral_red()
   out <- predict_munsell_from_spectra(s$R, s$wl)
@@ -180,6 +194,7 @@ test_that("Red-dominant spectrum predicts an R or YR hue", {
 # ---- fill_munsell_from_spectra writes provenance ------------------------
 
 test_that("fill_munsell_from_spectra writes Munsell cells with provenance", {
+  skip_on_cran()
   skip_if_not_installed("munsellinterpol")
   wl <- seq(380, 2400, by = 10)
   pedon <- make_synthetic_pedon_with_spectra(n_horizons = 2L,
@@ -203,6 +218,7 @@ test_that("fill_munsell_from_spectra writes Munsell cells with provenance", {
 # ---- Sanity: the embedded CIE table has the right shape -----------------
 
 test_that("Embedded CIE 1931 / D65 table covers 380-780 nm at 5 nm steps", {
+  skip_on_cran()
   cie <- soilKey:::.cie_d65_5nm
   expect_equal(nrow(cie), 81L)
   expect_equal(min(cie$wavelength), 380)
