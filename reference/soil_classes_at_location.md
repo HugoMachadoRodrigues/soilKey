@@ -70,7 +70,7 @@ confirm.
 
 For real use, point `source_url` at a regional SoilGrids "MostProbable
 WRB" GeoTIFF / COG (one of the cuts at
-<https://files.isric.org/soilgrids/latest/data/wrb/>). For tests,
+`https://files.isric.org/soilgrids/latest/data/wrb/`). For tests,
 `options(soilKey.test_raster = "/tmp/syn.tif")` is honoured. When no
 source is given, the function emits a `cli_alert_warning()` and returns
 an empty result – it does **not** pretend to know.

@@ -88,7 +88,7 @@ against your own user-supplied reference classification (the API returns
 a per-level match `summary` with counters `L0..L4`).
 
 Authentication: register a free AgroAPI account at
-<https://www.agroapi.cnptia.embrapa.br/portal/>, subscribe to the
+`https://www.agroapi.cnptia.embrapa.br/portal/`, subscribe to the
 SmartSolosExpert API and generate an access token. Pass it via the
 `AGROAPI_TOKEN` environment variable or the `api_key` argument.
 

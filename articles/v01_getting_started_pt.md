@@ -1742,8 +1742,8 @@ contra dados reais.
 ## Referências canônicas
 
 - IUSS Working Group WRB (2022). *World Reference Base for Soil
-  Resources*, 4ª ed. International Union of Soil Sciences, Vienna.
-  [PDF](https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content)
+  Resources*, 4ª ed. International Union of Soil Sciences, Vienna. PDF
+  (`https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content`)
 - Soil Survey Staff (2022). *Keys to Soil Taxonomy*, 13ª ed. USDA-NRCS,
   Washington, DC.
 - Santos, H.G. *et al.* (2018). *Sistema Brasileiro de Classificação de

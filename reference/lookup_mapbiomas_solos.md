@@ -2,7 +2,7 @@
 
 MapBiomas Solos (Project MapBiomas, Brazil) distributes a national
 raster of SiBCS classes at 30 m, downloadable from
-<https://mapbiomas.org/en/produtos>. This helper mirrors the shape of
+`https://mapbiomas.org/en/produtos`. This helper mirrors the shape of
 [`lookup_esdb`](https://hugomachadorodrigues.github.io/soilKey/reference/lookup_esdb.md)
 but is local-file only: pass the path of the unpacked GeoTIFF and the
 function reprojects the user's WGS84 lat/lon to the raster's native CRS,

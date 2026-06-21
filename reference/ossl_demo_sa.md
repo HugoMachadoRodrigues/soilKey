@@ -40,7 +40,7 @@ A list with three elements:
 Synthetic; built by `data-raw/build_ossl_demo.R` with seed 20260430. The
 OSSL property ranges that drove the simulation come from Sanderman, J.
 *et al.* (2024), *Open Soil Spectral Library*,
-<https://soilspectroscopy.org/>.
+`https://soilspectroscopy.org/`.
 
 ## Details
 

@@ -43,7 +43,7 @@ stack):
 
 Beaudette, D., Skovlin, J., Roecker, S., Brown, A. (2024). aqp:
 Algorithms for Quantitative Pedology. R package version 2.x.
-<https://github.com/ncss-tech/aqp>.
+`https://github.com/ncss-tech/aqp`.
 
 ## Examples
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## soilKey 0.9.155 (2026-06-21)
+
+Final check-time trim (the 0.9.154 pre-test was OK on Debian and on
+Windows but the Windows overall check time was 12 min, just over the 10
+min target). No classification change; 44 canonical fixtures
+byte-identical.
+
 ## soilKey 0.9.154 (2026-06-21)
 
 The “**lean check**” release: a real reduction of the CRAN check

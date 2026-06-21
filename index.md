@@ -768,8 +768,8 @@ or
 
 - **WRB 2022** — IUSS Working Group WRB (2022). *World Reference Base
   for Soil Resources, 4th edition.* International Union of Soil
-  Sciences, Vienna, Austria. [FAO OpenKnowledge
-  PDF](https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content)
+  Sciences, Vienna, Austria. FAO OpenKnowledge PDF
+  (`https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content`)
 - **SiBCS 5** — Santos, H. G. *et al.* (2018). *Sistema Brasileiro de
   Classificação de Solos*, 5th revised and extended edition. Embrapa,
   Brasília.
@@ -786,9 +786,9 @@ or
 - **AfSP** — Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez
   Gonzalez, M. (2014). *Africa Soil Profiles Database, Version 1.2.*
   ISRIC Report 2014/01. ISRIC — World Soil Information, Wageningen.
-  [Project
-  page](https://isric.org/projects/africa-soil-profiles-database-afsp).
-  The bundled `afsp_sample.rds` is a 120-pedon stratified slice;
+  Project page
+  (`https://isric.org/projects/africa-soil-profiles-database-afsp`). The
+  bundled `afsp_sample.rds` is a 120-pedon stratified slice;
   [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
   parses the full upstream archive when available. *(Note: soilKey does
   not use the separate AfSIS — Africa Soil Information Service — soil

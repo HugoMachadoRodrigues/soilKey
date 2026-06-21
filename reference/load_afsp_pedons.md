@@ -1,7 +1,7 @@
 # Load Africa Soil Profiles (AfSP) v1.2 as PedonRecord objects
 
 Reads the AfSP DBase tables shipped inside `AF-AfSP1.2.zip`
-(downloadable from <https://files.isric.org/public/afsp/AF-AfSP1.2.zip>)
+(downloadable from `https://files.isric.org/public/afsp/AF-AfSP1.2.zip`)
 and converts each profile + its horizons to a soilKey
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
 Filters to profiles with a populated WRB 2006 RSG code (i.e.\\
@@ -56,4 +56,4 @@ objects.
 Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
 (2014). Africa Soil Profiles Database, Version 1.2. ISRIC Report
 2014/01. ISRIC – World Soil Information, Wageningen. Project page:
-<https://isric.org/projects/africa-soil-profiles-database-afsp>.
+`https://isric.org/projects/africa-soil-profiles-database-afsp`.

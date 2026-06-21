@@ -2,7 +2,7 @@
 
 Reads ISRIC SoilGrids 250m (Hengl et al. 2017, 2021) directly from the
 ISRIC Cloud-Optimized GeoTIFF (COG) endpoint at
-<https://files.isric.org/soilgrids/latest/data/> – no download required,
+`https://files.isric.org/soilgrids/latest/data/` – no download required,
 only the pixel under each query coordinate is transferred over HTTPS.
 
 ## Usage

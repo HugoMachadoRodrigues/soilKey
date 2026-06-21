@@ -3,7 +3,7 @@
 Reads the canonical European Soil Data Centre (ESDAC) release of LUCAS
 Soil 2018 Topsoil chemistry as published in the JRC report (ESDAC
 dataset
-<https://esdac.jrc.ec.europa.eu/content/lucas-2018-topsoil-data>). The
+`https://esdac.jrc.ec.europa.eu/content/lucas-2018-topsoil-data`). The
 release ships ~18,984 European topsoil samples at 0-20 cm with pH (H2O
 and CaCl2), EC, OC, CaCO3, P, N, K and oxalate-extractable Al / Fe; a
 separate `BulkDensity_2018_final-2.csv` carries bulk density at 0-10 /

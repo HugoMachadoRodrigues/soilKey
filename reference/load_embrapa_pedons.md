@@ -36,4 +36,4 @@ objects.
 The dadosolos / BDsolos archive ships with ~5k profiles in PT-BR with
 full SiBCS classification, lab data, and horizon morphology – the
 primary validation set for Brazilian-context use. Available from
-<https://www.bdsolos.cnptia.embrapa.br/>.
+`https://www.bdsolos.cnptia.embrapa.br/`.
