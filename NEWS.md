@@ -1,3 +1,26 @@
+# soilKey 0.9.158 (2026-06-30)
+
+Follow-up refinements to the v0.9.156 Munsell-from-spectra fix, on further
+suggestions from Glenn Davis (\pkg{munsellinterpol} author).
+
+\itemize{
+  \item \strong{Self-consistent white point.} \code{predict_munsell_from_spectra()}
+        now derives its D65 reference white from the \emph{same} bundled CIE
+        table that the colorimetry integrates against (the colour-matching
+        functions weighted by the table's D65 column, scaled to Y = 100) rather
+        than the textbook \code{c(95.047, 100, 108.883)}. A perfectly
+        constant-reflectance spectrum now maps to an \emph{exact} neutral
+        (Chroma 0), instead of leaving a ~0.0007 residual. (Only near-neutral
+        greys, Chroma ~ 1, can shift by one adjacent hue chip; chromatic colours
+        are unchanged.)
+  \item \strong{Vectorised conversion.} The Lab -> Munsell step (and the
+        soil-book rounding) is now a handful of matrix calls over all rows of
+        \code{spectra} at once instead of one call per spectrum -- about 2x
+        faster end-to-end, with the Munsell renotation no longer the bottleneck.
+  \item +13 tests (constant-reflectance neutrality at several levels;
+        batch-vs-row equivalence; NA handling).
+}
+
 # soilKey 0.9.157 (2026-06-30)
 
 The "**Humic Dystrudepts colour-value**" consistency fix.

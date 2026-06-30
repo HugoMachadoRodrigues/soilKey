@@ -135,7 +135,10 @@ predict_lab_from_spectra <- function(spectra, wavelengths) {
 #' chromatically adapts D65 -> C internally. Feeding D65 chromaticities
 #' straight to \code{xyYtoMunsell()} would bias every colour toward
 #' green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
-#' than 0); this routine avoids that.
+#' than 0); this routine avoids that. The D65 reference white is derived
+#' from the same bundled CIE table the colorimetry integrates against
+#' (so a constant-reflectance spectrum maps to an exact neutral), and
+#' the conversion is vectorised over all rows of \code{spectra} at once.
 #' \code{munsell_hue_moist}, \code{munsell_value_moist},
 #' \code{munsell_chroma_moist} ready to write into a
 #' \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
@@ -173,50 +176,78 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
          "predict_munsell_from_spectra(). Install with ",
          "`install.packages(\"munsellinterpol\")`.")
   }
-  white_D65 <- c(95.047, 100.000, 108.883)
+  # Self-consistent D65 white point: the CIE colour-matching functions weighted
+  # by the *same* table's D65 SPD that predict_xyz_from_spectra() integrates
+  # against, scaled to Y = 100. Using this rather than the textbook
+  # c(95.047, 100, 108.883) makes a constant-reflectance spectrum map to an exact
+  # neutral (Chroma 0), because the Lab reference white then matches the white
+  # the XYZ are implicitly relative to. (Suggested by G. Davis; his sketch
+  # omitted the D65 weighting, which would instead give the equal-energy white.)
+  cie <- .cie_d65_5nm
+  white_D65 <- colSums(cbind(cie$xbar, cie$ybar, cie$zbar) * cie$D65)
+  white_D65 <- 100 * white_D65 / white_D65[2L]
+
   xyz <- predict_xyz_from_spectra(spectra, wavelengths)
+  n   <- nrow(xyz)
   lab <- .cielab_from_xyz(xyz$X, xyz$Y, xyz$Z, white = white_D65)
 
-  na_row <- list(hue = NA_character_, V = NA_real_, C = NA_real_,
-                 ms = NA_character_)
-  rows <- lapply(seq_len(nrow(xyz)), function(i) {
-    if (!is.finite(xyz$Y[i]) || xyz$Y[i] <= 0) return(na_row)
-    Lab <- c(lab$L[i], lab$a[i], lab$b[i])
-    if (!all(is.finite(Lab))) return(na_row)
-    # Lab (D65) -> Munsell. LabToMunsell adapts D65 -> Illuminant C.
-    out <- tryCatch(munsellinterpol::LabToMunsell(Lab, white = white_D65),
-                    error = function(e) NULL)
-    if (is.null(out)) return(na_row)
-    H <- out[1L, "H"]; V <- out[1L, "V"]; C <- out[1L, "C"]
-    if (!all(is.finite(c(H, V, C)))) return(na_row)
+  hue <- rep(NA_character_, n); value <- rep(NA_real_, n)
+  chroma <- rep(NA_real_, n);   ms <- rep(NA_character_, n)
 
-    if (isTRUE(round_chip)) {
-      # Snap to the nearest chip in the *soil* Munsell book. roundHVC()
-      # returns the rounded chip as the `MunsellRounded` string (its HVC
-      # column keeps the precise value), so we read that and parse it
-      # back to numeric H/V/C. books= has no default, hence "soil".
-      rr <- tryCatch(munsellinterpol::roundHVC(c(H, V, C), books = "soil"),
+  # Evaluate only rows with a usable colour (positive Y, finite Lab). All the
+  # munsellinterpol conversions are vectorised over a matrix of rows, so the
+  # whole batch is a handful of calls rather than one-per-spectrum.
+  valid <- is.finite(xyz$Y) & xyz$Y > 0 &
+             is.finite(lab$L) & is.finite(lab$a) & is.finite(lab$b)
+  if (any(valid)) {
+    # One Lab -> Munsell call for every valid row. LabToMunsell() adapts
+    # D65 -> Illuminant C internally.
+    labm <- cbind(lab$L[valid], lab$a[valid], lab$b[valid])
+    hvc  <- tryCatch(munsellinterpol::LabToMunsell(labm, white = white_D65),
                      error = function(e) NULL)
-      mr <- if (!is.null(rr)) rr$MunsellRounded else NULL
-      if (!is.null(mr) && length(mr) == 1L && !is.na(mr) && nzchar(mr)) {
-        hue <- strsplit(trimws(mr), "\\s+")[[1L]][1L]
-        p   <- tryCatch(munsellinterpol::HVCfromMunsellName(mr),
-                        error = function(e) c(NA_real_, V, C))
-        return(list(hue = hue, V = p[2L], C = p[3L], ms = mr))
+    if (!is.null(hvc)) {
+      Hk <- hvc[, "H"]; Vk <- hvc[, "V"]; Ck <- hvc[, "C"]
+      fin <- is.finite(Hk) & is.finite(Vk) & is.finite(Ck)
+      idx <- which(valid)[fin]
+      if (length(idx) > 0L) {
+        Hk <- Hk[fin]; Vk <- Vk[fin]; Ck <- Ck[fin]
+        done <- FALSE
+        if (isTRUE(round_chip)) {
+          # Snap to the nearest *soil* Munsell book chip (one vectorised call).
+          # roundHVC() returns the chip as the `MunsellRounded` string; parse
+          # hue / value / chroma back out. books= has no default, hence "soil".
+          rr <- tryCatch(munsellinterpol::roundHVC(cbind(Hk, Vk, Ck),
+                                                     books = "soil"),
+                         error = function(e) NULL)
+          mr <- if (!is.null(rr)) as.character(rr$MunsellRounded) else NULL
+          if (!is.null(mr) && length(mr) == length(idx)) {
+            hue[idx]    <- sub("^[[:space:]]*([0-9.]*[A-Z]+|N).*", "\\1", mr)
+            value[idx]  <- as.numeric(sub(".* ([0-9.]+)/.*$", "\\1", mr))
+            cr <- sub(".*/([0-9.]*)$", "\\1", mr); cr[cr == ""] <- "0"
+            chroma[idx] <- as.numeric(cr)
+            ms[idx]     <- mr
+            done <- TRUE
+          }
+        }
+        if (!done) {
+          # Continuous notation (or round-chip fall-through if rounding failed).
+          hs <- tryCatch(munsellinterpol::HueStringFromNumber(Hk),
+                         error = function(e) rep(NA_character_, length(Hk)))
+          hue[idx]    <- hs
+          value[idx]  <- Vk
+          chroma[idx] <- Ck
+          ms[idx]     <- ifelse(is.na(hs), NA_character_,
+                                sprintf("%s %g/%g", hs, Vk, Ck))
+        }
       }
-      # rounding failed -> fall through to the continuous notation
     }
-    hue <- tryCatch(munsellinterpol::HueStringFromNumber(H),
-                    error = function(e) NA_character_)
-    ms  <- if (is.na(hue)) NA_character_ else sprintf("%s %g/%g", hue, V, C)
-    list(hue = hue, V = V, C = C, ms = ms)
-  })
+  }
 
   data.frame(
-    munsell_hue_moist    = vapply(rows, `[[`, character(1L), "hue"),
-    munsell_value_moist  = vapply(rows, `[[`, numeric(1L),   "V"),
-    munsell_chroma_moist = vapply(rows, `[[`, numeric(1L),   "C"),
-    munsell_string       = vapply(rows, `[[`, character(1L), "ms"),
+    munsell_hue_moist    = hue,
+    munsell_value_moist  = value,
+    munsell_chroma_moist = chroma,
+    munsell_string       = ms,
     X                    = xyz$X,
     Y                    = xyz$Y,
     Z                    = xyz$Z,
