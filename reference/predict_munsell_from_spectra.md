@@ -47,8 +47,12 @@ CIELAB (D65) -\>
 which chromatically adapts D65 -\> C internally. Feeding D65
 chromaticities straight to `xyYtoMunsell()` would bias every colour
 toward green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
-than 0); this routine avoids that. `munsell_hue_moist`,
-`munsell_value_moist`, `munsell_chroma_moist` ready to write into a
+than 0); this routine avoids that. The D65 reference white is derived
+from the same bundled CIE table the colorimetry integrates against (so a
+constant-reflectance spectrum maps to an exact neutral), and the
+conversion is vectorised over all rows of `spectra` at once.
+`munsell_hue_moist`, `munsell_value_moist`, `munsell_chroma_moist` ready
+to write into a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 via the pedon's `add_measurement` method (see also
 [`fill_munsell_from_spectra`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.md)).

@@ -13,7 +13,7 @@ Returns hue (e.g. "7.5YR"), value (0..10) and chroma
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.157</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.158</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,10 @@ XYZ -&gt; CIELAB (D65) -&gt; <code><a href="https://rdrr.io/pkg/munsellinterpol/
 chromatically adapts D65 -&gt; C internally. Feeding D65 chromaticities
 straight to <code>xyYtoMunsell()</code> would bias every colour toward
 green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
-than 0); this routine avoids that.
+than 0); this routine avoids that. The D65 reference white is derived
+from the same bundled CIE table the colorimetry integrates against
+(so a constant-reflectance spectrum maps to an exact neutral), and
+the conversion is vectorised over all rows of <code>spectra</code> at once.
 <code>munsell_hue_moist</code>, <code>munsell_value_moist</code>,
 <code>munsell_chroma_moist</code> ready to write into a
 <code><a href="PedonRecord.html">PedonRecord</a></code> via the pedon's <code>add_measurement</code>

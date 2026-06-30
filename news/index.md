@@ -1,5 +1,10 @@
 # Changelog
 
+## soilKey 0.9.158 (2026-06-30)
+
+Follow-up refinements to the v0.9.156 Munsell-from-spectra fix, on
+further suggestions from Glenn Davis ( author).
+
 ## soilKey 0.9.157 (2026-06-30)
 
 The “**Humic Dystrudepts colour-value**” consistency fix.
@@ -5128,8 +5133,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a
