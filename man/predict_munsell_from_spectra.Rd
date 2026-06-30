@@ -31,12 +31,20 @@ Combines \code{\link{predict_xyz_from_spectra}} with the Munsell
 renotation interpolation in \pkg{munsellinterpol} (CRAN, GPL).
 Returns hue (e.g. \code{"7.5YR"}), value (0..10) and chroma
 (0..20) per sample, plus the soilKey fields
+}
+\details{
+The Munsell renotation is defined under \emph{Illuminant C}, while
+the colorimetry here is computed under D65, so the conversion goes
+XYZ -> CIELAB (D65) -> \code{munsellinterpol::LabToMunsell()}, which
+chromatically adapts D65 -> C internally. Feeding D65 chromaticities
+straight to \code{xyYtoMunsell()} would bias every colour toward
+green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
+than 0); this routine avoids that.
 \code{munsell_hue_moist}, \code{munsell_value_moist},
 \code{munsell_chroma_moist} ready to write into a
 \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
 method (see also \code{\link{fill_munsell_from_spectra}}).
-}
-\details{
+
 This is the v0.9.47 unblock for the v0.9.35 Argissolo Vermelho /
 Amarelo / Vermelho-Amarelo color-confusion case: when a user has
 Vis-NIR spectra (which Embrapa's BDsolos / FEBR do not include
