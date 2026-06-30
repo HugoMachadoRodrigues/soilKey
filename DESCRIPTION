@@ -1,7 +1,7 @@
 Package: soilKey
 Type: Package
 Title: Automated Soil Profile Classification per WRB 2022, 'SiBCS' 5 and USDA Soil Taxonomy 13
-Version: 0.9.157
+Version: 0.9.158
 Date: 2026-06-30
 Authors@R:
     person("Hugo", "Rodrigues",
@@ -26,7 +26,6 @@ BugReports: https://github.com/HugoMachadoRodrigues/soilKey/issues
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
-RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1)
 Imports:
@@ -68,3 +67,4 @@ Suggests:
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
