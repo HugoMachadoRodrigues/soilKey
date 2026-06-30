@@ -1,3 +1,26 @@
+# soilKey 0.9.157 (2026-06-30)
+
+The "**Humic Dystrudepts colour-value**" consistency fix.
+
+\itemize{
+  \item \strong{\code{Humic Dystrudepts} (KFGD) re-pointed} from
+        \code{humic_inceptisol_usda} (the mollic/umbric \emph{epipedon} helper)
+        to the colour-value predicate \code{humic_colour_usda} -- matching its
+        sibling \code{Humic Eutrudepts} (KFFN, fixed in v0.9.149) and
+        \code{Humic Lithic Dystrudepts} (KFGO). The KST 13ed "Humic" differentia
+        of the udept/ustept/xerept great groups is a dark colour-VALUE test
+        (value moist <=3 AND dry <=5 throughout the upper 18 cm), not an
+        epipedon; Dystrudepts was the one Inceptisol "Humic" subgroup the
+        v0.9.149 pass missed.
+  \item \strong{Re-ordered} to the residual position immediately before
+        \code{Typic} (after the more specific \code{Humic Lithic}), so the
+        colour predicate no longer pre-empts the Andic / Aquandic / Vitrandic /
+        Fluvaquentic / Oxyaquic / Fragic / Lamellic intergrades -- making the
+        KFG (Dystrudepts) block structurally identical to KFF (Eutrudepts). 44
+        canonical fixtures byte-identical (the Dystrudepts fixtures sit at
+        colour value 4, so they correctly stay \emph{Typic}).
+}
+
 # soilKey 0.9.156 (2026-06-30)
 
 The "**Munsell-from-spectra colorimetry**" fix, reported by Glenn Davis (author
