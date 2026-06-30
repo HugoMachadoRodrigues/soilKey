@@ -8,16 +8,26 @@
 #   Y = k * sum( S(lambda) * R(lambda) * ybar(lambda) )
 #   Z = k * sum( S(lambda) * R(lambda) * zbar(lambda) )
 #   k = 100 / sum( S(lambda) * ybar(lambda) )       (so Y = 100 for white)
-#   x_chrom = X / (X+Y+Z),  y_chrom = Y / (X+Y+Z)
-#   Munsell HVC = munsellinterpol::xyYtoMunsell( c(x_chrom, y_chrom, Y) )
+#   XYZ --> CIELAB (D65 white)
+#   Munsell HVC = munsellinterpol::LabToMunsell( Lab, white = D65 )
+#
+# IMPORTANT (fixed v0.9.148, per G. Davis, munsellinterpol author): the
+# Munsell renotation is anchored to *Illuminant C* (Munsell 1943), not
+# D65. Our colorimetry is computed under D65, so a chromatic adaptation
+# D65 -> C is mandatory before interpolating Munsell -- without it every
+# sample picks up a slight green-yellow tint (a perfect neutral returns
+# Chroma ~ 0.65 instead of 0). We therefore go XYZ -> Lab (D65) and call
+# munsellinterpol::LabToMunsell(), which converts Lab -> XYZ and
+# chromatically adapts D65 -> C internally (via spacesXYZ), hiding the
+# messy details. We do NOT feed D65 xyY straight to xyYtoMunsell().
 #
 # CIE inputs are bundled as internal data .cie_d65_5nm (81 rows from
 # 380 to 780 nm, columns: wavelength, xbar, ybar, zbar, D65) so no
 # runtime dependency on colorscience or any other CMF/illuminant
 # package. Munsell interpolation is delegated to munsellinterpol
-# (CRAN, GPL) -- if absent, predict_xyz_from_spectra() and
-# predict_lab_from_spectra() still work, only the Munsell HVC step
-# is skipped with a clear error.
+# (CRAN, GPL; it Imports spacesXYZ, which performs the adaptation) -- if
+# absent, predict_xyz_from_spectra() and predict_lab_from_spectra() still
+# work, only the Munsell HVC step is skipped with a clear error.
 # =============================================================================
 
 
@@ -91,20 +101,24 @@ predict_xyz_from_spectra <- function(spectra, wavelengths) {
 #' @export
 predict_lab_from_spectra <- function(spectra, wavelengths) {
   xyz <- predict_xyz_from_spectra(spectra, wavelengths)
-  # D65 white reference (Y = 100)
-  Xn <- 95.047
-  Yn <- 100.000
-  Zn <- 108.883
+  .cielab_from_xyz(xyz$X, xyz$Y, xyz$Z)
+}
+
+
+# CIE 1976 L*a*b* from XYZ under a given white point (default D65, Y=100).
+# Vectorised over X/Y/Z. Verified identical to spacesXYZ::LabfromXYZ to
+# ~1e-14, so it is reused for the Munsell adaptation chain without adding
+# a direct spacesXYZ dependency.
+.cielab_from_xyz <- function(X, Y, Z, white = c(95.047, 100.000, 108.883)) {
   fxyz <- function(t) ifelse(t > (6 / 29) ^ 3,
                               t ^ (1 / 3),
                               t * (29 / 6) ^ 2 / 3 + 4 / 29)
-  fx <- fxyz(xyz$X / Xn)
-  fy <- fxyz(xyz$Y / Yn)
-  fz <- fxyz(xyz$Z / Zn)
-  L <- 116 * fy - 16
-  a <- 500 * (fx - fy)
-  b <- 200 * (fy - fz)
-  data.frame(L = L, a = a, b = b)
+  fx <- fxyz(X / white[1L])
+  fy <- fxyz(Y / white[2L])
+  fz <- fxyz(Z / white[3L])
+  data.frame(L = 116 * fy - 16,
+             a = 500 * (fx - fy),
+             b = 200 * (fy - fz))
 }
 
 
@@ -114,6 +128,14 @@ predict_lab_from_spectra <- function(spectra, wavelengths) {
 #' renotation interpolation in \pkg{munsellinterpol} (CRAN, GPL).
 #' Returns hue (e.g. \code{"7.5YR"}), value (0..10) and chroma
 #' (0..20) per sample, plus the soilKey fields
+#'
+#' The Munsell renotation is defined under \emph{Illuminant C}, while
+#' the colorimetry here is computed under D65, so the conversion goes
+#' XYZ -> CIELAB (D65) -> \code{munsellinterpol::LabToMunsell()}, which
+#' chromatically adapts D65 -> C internally. Feeding D65 chromaticities
+#' straight to \code{xyYtoMunsell()} would bias every colour toward
+#' green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
+#' than 0); this routine avoids that.
 #' \code{munsell_hue_moist}, \code{munsell_value_moist},
 #' \code{munsell_chroma_moist} ready to write into a
 #' \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
@@ -151,47 +173,50 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
          "predict_munsell_from_spectra(). Install with ",
          "`install.packages(\"munsellinterpol\")`.")
   }
+  white_D65 <- c(95.047, 100.000, 108.883)
   xyz <- predict_xyz_from_spectra(spectra, wavelengths)
-  hvc <- vapply(seq_len(nrow(xyz)), function(i) {
-    Xv <- xyz$X[i]; Yv <- xyz$Y[i]; Zv <- xyz$Z[i]
-    sumxyz <- Xv + Yv + Zv
-    if (!is.finite(sumxyz) || sumxyz <= 0) {
-      return(c(NA_real_, NA_real_, NA_real_))
-    }
-    xc <- Xv / sumxyz
-    yc <- Yv / sumxyz
-    out <- tryCatch(
-      munsellinterpol::xyYtoMunsell(c(xc, yc, Yv)),
-      error = function(e) NULL
-    )
-    if (is.null(out) || is.null(out$HVC) ||
-          !is.numeric(out$HVC) || length(out$HVC) < 3L) {
-      return(c(NA_real_, NA_real_, NA_real_))
-    }
-    H <- out$HVC[1L]; V <- out$HVC[2L]; C <- out$HVC[3L]
+  lab <- .cielab_from_xyz(xyz$X, xyz$Y, xyz$Z, white = white_D65)
+
+  na_row <- list(hue = NA_character_, V = NA_real_, C = NA_real_,
+                 ms = NA_character_)
+  rows <- lapply(seq_len(nrow(xyz)), function(i) {
+    if (!is.finite(xyz$Y[i]) || xyz$Y[i] <= 0) return(na_row)
+    Lab <- c(lab$L[i], lab$a[i], lab$b[i])
+    if (!all(is.finite(Lab))) return(na_row)
+    # Lab (D65) -> Munsell. LabToMunsell adapts D65 -> Illuminant C.
+    out <- tryCatch(munsellinterpol::LabToMunsell(Lab, white = white_D65),
+                    error = function(e) NULL)
+    if (is.null(out)) return(na_row)
+    H <- out[1L, "H"]; V <- out[1L, "V"]; C <- out[1L, "C"]
+    if (!all(is.finite(c(H, V, C)))) return(na_row)
+
     if (isTRUE(round_chip)) {
-      r <- tryCatch(munsellinterpol::roundHVC(c(H, V, C)),
-                     error = function(e) c(H, V, C))
-      H <- r[1L]; V <- r[2L]; C <- r[3L]
+      # Snap to the nearest chip in the *soil* Munsell book. roundHVC()
+      # returns the rounded chip as the `MunsellRounded` string (its HVC
+      # column keeps the precise value), so we read that and parse it
+      # back to numeric H/V/C. books= has no default, hence "soil".
+      rr <- tryCatch(munsellinterpol::roundHVC(c(H, V, C), books = "soil"),
+                     error = function(e) NULL)
+      mr <- if (!is.null(rr)) rr$MunsellRounded else NULL
+      if (!is.null(mr) && length(mr) == 1L && !is.na(mr) && nzchar(mr)) {
+        hue <- strsplit(trimws(mr), "\\s+")[[1L]][1L]
+        p   <- tryCatch(munsellinterpol::HVCfromMunsellName(mr),
+                        error = function(e) c(NA_real_, V, C))
+        return(list(hue = hue, V = p[2L], C = p[3L], ms = mr))
+      }
+      # rounding failed -> fall through to the continuous notation
     }
-    c(H, V, C)
-  }, FUN.VALUE = numeric(3L))
-  hvc <- t(hvc)
-  hue_strings <- vapply(hvc[, 1L], function(h) {
-    if (!is.finite(h)) return(NA_character_)
-    tryCatch(munsellinterpol::HueStringFromNumber(h),
-              error = function(e) NA_character_)
-  }, character(1L))
-  munsell_string <- mapply(function(hs, V, C) {
-    if (is.na(hs) || !is.finite(V) || !is.finite(C)) return(NA_character_)
-    sprintf("%s %g/%g", hs, V, C)
-  }, hue_strings, hvc[, 2L], hvc[, 3L])
+    hue <- tryCatch(munsellinterpol::HueStringFromNumber(H),
+                    error = function(e) NA_character_)
+    ms  <- if (is.na(hue)) NA_character_ else sprintf("%s %g/%g", hue, V, C)
+    list(hue = hue, V = V, C = C, ms = ms)
+  })
 
   data.frame(
-    munsell_hue_moist    = hue_strings,
-    munsell_value_moist  = hvc[, 2L],
-    munsell_chroma_moist = hvc[, 3L],
-    munsell_string       = munsell_string,
+    munsell_hue_moist    = vapply(rows, `[[`, character(1L), "hue"),
+    munsell_value_moist  = vapply(rows, `[[`, numeric(1L),   "V"),
+    munsell_chroma_moist = vapply(rows, `[[`, numeric(1L),   "C"),
+    munsell_string       = vapply(rows, `[[`, character(1L), "ms"),
     X                    = xyz$X,
     Y                    = xyz$Y,
     Z                    = xyz$Z,
@@ -264,7 +289,7 @@ fill_munsell_from_spectra <- function(pedon,
         value       = val,
         source      = "predicted_spectra",
         confidence  = 0.7,
-        notes       = sprintf("CIE-1931/D65 + munsellinterpol; XYZ=(%.2f, %.2f, %.2f)",
+        notes       = sprintf("CIE-1931/D65 -> Lab -> munsellinterpol (adapted to Illuminant C); XYZ=(%.2f, %.2f, %.2f)",
                                 preds$X[i], preds$Y[i], preds$Z[i]),
         overwrite   = overwrite
       )

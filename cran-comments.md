@@ -1,10 +1,24 @@
-# cran-comments.md -- soilKey 0.9.155
+# cran-comments.md -- soilKey 0.9.157
 
 ## Resubmission
 
-This is a resubmission. The 0.9.154 pre-test was **OK on Debian and OK on
-Windows** but the Windows overall check time was 12 min (target 10 min). The
-Windows log showed where the remaining time went, and 0.9.155 trims it:
+Two small, self-contained correctness fixes have landed on top of the 0.9.155
+check-time work (which is unchanged and carried forward, below):
+
+* **0.9.156 -- Munsell-from-spectra colorimetry.** Reported by Glenn Davis,
+  author of the CRAN packages 'munsellinterpol' and 'spacesXYZ' on which this
+  optional feature relies. The conversion was missing the mandatory
+  D65 -> Illuminant-C chromatic adaptation (the Munsell renotation is anchored to
+  Illuminant C), and `roundHVC()` was called without its required `books=`
+  argument. Both are fixed; only the opt-in `predict_munsell_from_spectra()` is
+  affected, and a constant-reflectance spectrum now correctly returns a neutral.
+* **0.9.157 -- one USDA subgroup predicate.** `Humic Dystrudepts` now uses the
+  colour-value differentia (matching its sibling `Humic Eutrudepts`); the 44
+  canonical fixtures are byte-identical.
+
+Neither affects check time. The 0.9.155 reductions remain the substance of this
+resubmission. The 0.9.154 pre-test was **OK on Debian and OK on Windows** but the
+Windows overall check time was 12 min (target 10 min); 0.9.155 trims it:
 
 * **A data-server URL was timing out.** `checking CRAN incoming feasibility`
   took 142 s on Windows because the MapBiomas link in
@@ -41,7 +55,7 @@ manual build is a fraction of its former size.
 ## Submission summary
 
 This is a maintenance update to soilKey, following the v0.9.96 submission on
-2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.155 series is
+2026-05-19 (currently on CRAN). The v0.9.97 -> v0.9.157 series is
 backward-compatible and tracked in NEWS per release. Every new feature is
 additive and **default off**, so a v0.9.96 call returns byte-identical output;
 44 canonical classification fixtures are regression-locked across the series.
@@ -90,6 +104,11 @@ non-trivial hard dependencies (R6, data.table, yaml, cli, rlang).
   `gapfill = "spectra"` method) so a Vis-NIR/MIR + lab-label dataset can drive
   the OSSL prediction engine. The `download_ossl_subset()` endpoint now fails
   gracefully with actionable guidance when the public mirror is unreachable.
+* **v0.9.156-157 -- correctness fixes.** A Munsell-from-spectra illuminant
+  adaptation (D65 -> Illuminant C) and a `roundHVC(books=)` fix, both reported by
+  the `munsellinterpol` author Glenn Davis; and one USDA Inceptisol "Humic"
+  subgroup re-pointed to its colour-value predicate. Both are correctness-only;
+  the 44 canonical fixtures are byte-identical.
 
 No exported function from v0.9.96 changed signature in a non-additive way; every
 new argument has a safe default.
@@ -102,18 +121,20 @@ new argument has a safe default.
 - macos-latest / R-release; windows-latest / R-release (GitHub Actions).
 - pkgdown (`pkgdown::check_pkgdown()`) and test-coverage (separate workflows).
 
-## R CMD check --as-cran results (v0.9.155)
+## R CMD check --as-cran results (v0.9.157)
 
-A full local build (with vignettes and manual) and `R CMD check --as-cran`:
+Multi-platform `R CMD check --as-cran` via GitHub Actions -- ubuntu
+R-release / R-devel / R-oldrel-1, macOS R-release, and Windows R-release -- is
+**Status: OK** on every platform (0 errors / 0 warnings / 0 notes; the CI build
+uses `--no-manual`). "CRAN incoming feasibility", "checking examples
+(+ --run-donttest)", and "re-building of vignette outputs" are **OK**; on CRAN
+the heavy tests skip, so the testthat phase is ~60 s.
 
-- **0 ERRORs**
-- **0 WARNINGs**
-- **1 NOTE**: *"checking HTML version of manual ... Skipping checking HTML
-  validation: 'tidy' doesn't look like recent enough HTML Tidy."* This is a
-  local-only artefact -- the macOS-bundled `tidy` is older than CRAN's -- and
-  does not appear on the CRAN check servers. "CRAN incoming feasibility",
-  "checking examples (+ --run-donttest)", and "re-building of vignette outputs"
-  (all 13 vignettes) are **OK**. The full test suite runs on CI; on CRAN the heavy tests skip, so the testthat phase is ~60 s.
+A full local build that additionally renders the HTML/PDF manual adds a single
+**local-only NOTE**: *"checking HTML version of manual ... Skipping checking HTML
+validation: 'tidy' doesn't look like recent enough HTML Tidy."* -- the
+macOS-bundled `tidy` is older than CRAN's, so this does not appear on the CRAN
+check servers (giving the expected 1 NOTE there).
 
 All tests pass under `R CMD check` (`testthat.R`, ~60 s on CRAN with the
 long-running suites skipped; full suite on CI). Tests that need optional

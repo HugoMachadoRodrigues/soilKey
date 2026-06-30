@@ -1,3 +1,57 @@
+# soilKey 0.9.157 (2026-06-30)
+
+The "**Humic Dystrudepts colour-value**" consistency fix.
+
+\itemize{
+  \item \strong{\code{Humic Dystrudepts} (KFGD) re-pointed} from
+        \code{humic_inceptisol_usda} (the mollic/umbric \emph{epipedon} helper)
+        to the colour-value predicate \code{humic_colour_usda} -- matching its
+        sibling \code{Humic Eutrudepts} (KFFN, fixed in v0.9.149) and
+        \code{Humic Lithic Dystrudepts} (KFGO). The KST 13ed "Humic" differentia
+        of the udept/ustept/xerept great groups is a dark colour-VALUE test
+        (value moist <=3 AND dry <=5 throughout the upper 18 cm), not an
+        epipedon; Dystrudepts was the one Inceptisol "Humic" subgroup the
+        v0.9.149 pass missed.
+  \item \strong{Re-ordered} to the residual position immediately before
+        \code{Typic} (after the more specific \code{Humic Lithic}), so the
+        colour predicate no longer pre-empts the Andic / Aquandic / Vitrandic /
+        Fluvaquentic / Oxyaquic / Fragic / Lamellic intergrades -- making the
+        KFG (Dystrudepts) block structurally identical to KFF (Eutrudepts). 44
+        canonical fixtures byte-identical (the Dystrudepts fixtures sit at
+        colour value 4, so they correctly stay \emph{Typic}).
+}
+
+# soilKey 0.9.156 (2026-06-30)
+
+The "**Munsell-from-spectra colorimetry**" fix, reported by Glenn Davis (author
+of the \pkg{munsellinterpol} and \pkg{spacesXYZ} packages). Both bugs were in
+\code{predict_munsell_from_spectra()}; \code{predict_xyz_from_spectra()} and
+\code{predict_lab_from_spectra()} were already correct.
+
+\itemize{
+  \item \strong{Illuminant adaptation (the substantive fix).} The Munsell
+        renotation is anchored to Illuminant C (Munsell 1943), but our
+        colorimetry is computed under D65. The previous code fed D65
+        chromaticities straight to \code{munsellinterpol::xyYtoMunsell()}
+        (which expects Illuminant C), so a chromatic adaptation D65 -> C was
+        missing and every colour picked up a slight green-yellow tint -- a
+        perfectly neutral (constant-reflectance) spectrum returned Chroma
+        ~ 0.65 instead of 0. We now convert XYZ -> CIELAB (D65) and call
+        \code{munsellinterpol::LabToMunsell()}, which adapts D65 -> C
+        internally (via \pkg{spacesXYZ}, a hard dependency of
+        \pkg{munsellinterpol}). An 18\% grey card now returns \code{N 5/} with
+        Chroma 0.
+  \item \strong{\code{roundHVC()} never rounded.} \code{round_chip = TRUE}
+        called \code{munsellinterpol::roundHVC(c(H, V, C))} without the
+        mandatory \code{books=} argument, so the call always errored and the
+        \code{tryCatch} silently returned the UNrounded HVC. Fixed with
+        \code{books = "soil"} and proper extraction of the rounded chip
+        (\code{MunsellRounded}, parsed back to numeric H/V/C). Chips now snap to
+        the soil Munsell book.
+  \item Internal: factored the CIELAB transform into \code{.cielab_from_xyz()}
+        (shared by \code{predict_lab_from_spectra()}, behaviour unchanged).
+}
+
 # soilKey 0.9.155 (2026-06-21)
 
 Final check-time trim (the 0.9.154 pre-test was OK on Debian and on Windows but
