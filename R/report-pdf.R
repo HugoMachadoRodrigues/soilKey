@@ -58,19 +58,48 @@ report_pdf <- function(x,
     stop("Package 'rmarkdown' is required for PDF reports.\n",
          "  install.packages('rmarkdown')")
 
-  norm <- .normalise_results(x, pedon = pedon,
-                             include_family = include_family,
-                             specifiers = specifiers)
-  results <- norm$results
-  pedon   <- norm$pedon
+  # LaTeX-safe image assets (absolute, forward-slashed, temp-copied).
+  latex_path <- function(p)
+    if (nzchar(p %||% "")) gsub("\\\\", "/", normalizePath(p, mustWork = FALSE)) else ""
+  logo_path <- ""
+  logo_src  <- system.file("shiny", "classify_app_pro", "www", "logo.png",
+                           package = "soilKey")
+  if (nzchar(logo_src) && file.exists(logo_src)) {
+    lt <- tempfile(fileext = ".png")
+    if (file.copy(logo_src, lt, overwrite = TRUE)) {
+      logo_path <- latex_path(lt); on.exit(unlink(lt), add = TRUE)
+    }
+  }
+  map_path <- ""
+  map_tmp  <- tempfile(fileext = ".png")
+  on.exit(unlink(map_tmp), add = TRUE)   # cleaned up AFTER render, not before
+  make_map <- function(pedons)
+    if (.report_map_png(pedons, map_tmp)) latex_path(map_tmp) else ""
 
-  if (is.null(title)) {
-    pedon_id <- if (!is.null(pedon) && !is.null(pedon$site$id))
-                  pedon$site$id else "soilKey report"
-    title <- paste0("soilKey -- ", pedon_id)
+  if (.report_multi_pedons(x)) {
+    if (is.null(title))
+      title <- sprintf(.report_msg("report.n_profiles_title"), length(x))
+    map_path <- make_map(x)
+    rmd <- .build_report_rmd_multi(x, title = title, logo_path = logo_path,
+                                   map_path = map_path,
+                                   include_family = include_family,
+                                   specifiers = specifiers)
+  } else {
+    norm <- .normalise_results(x, pedon = pedon,
+                               include_family = include_family,
+                               specifiers = specifiers)
+    results <- norm$results
+    pedon   <- norm$pedon
+    if (is.null(title)) {
+      pedon_id <- if (!is.null(pedon) && !is.null(pedon$site$id))
+                    pedon$site$id else "soilKey report"
+      title <- paste0("soilKey -- ", pedon_id)
+    }
+    map_path <- make_map(pedon)
+    rmd <- .build_report_rmd(results, pedon = pedon, title = title,
+                             logo_path = logo_path, map_path = map_path)
   }
 
-  rmd <- .build_report_rmd(results, pedon = pedon, title = title)
   tmp_rmd <- tempfile(fileext = ".Rmd")
   writeLines(rmd, tmp_rmd, useBytes = TRUE)
   on.exit(unlink(tmp_rmd), add = TRUE)
@@ -125,7 +154,30 @@ report_pdf <- function(x,
 #' Internal helper: .rmd_header
 
 #' @noRd
-.rmd_header <- function(title) {
+#' @param logo_path Optional PNG path placed in the running page header (so the
+#'   soilKey logo appears at the top of every page, including multi-profile
+#'   reports). LaTeX-safe (forward slashes, no spaces) paths only.
+.rmd_header <- function(title, logo_path = NULL) {
+  logo_inc <- if (!is.null(logo_path) && nzchar(logo_path)) paste0(
+    "  - \\usepackage{graphicx}\n",
+    "  - \\usepackage{fancyhdr}\n",
+    "  - \\pagestyle{fancy}\n",
+    "  - \\fancyhf{}\n",
+    "  - \\setlength{\\headheight}{24pt}\n",
+    "  - \\addtolength{\\topmargin}{-12pt}\n",
+    sprintf("  - \\fancyhead[L]{\\includegraphics[height=0.7cm]{%s}}\n",
+            logo_path),
+    "  - \\fancyhead[R]{\\small\\textbf{soilKey}}\n",
+    "  - \\fancyfoot[C]{\\small\\thepage}\n",
+    "  - \\renewcommand{\\headrulewidth}{0.4pt}\n",
+    # Redefine the 'plain' page style (used by the title page) so the logo
+    # header also appears on page 1.
+    sprintf(paste0("  - \\fancypagestyle{plain}{\\fancyhf{}",
+                   "\\fancyhead[L]{\\includegraphics[height=0.7cm]{%s}}",
+                   "\\fancyhead[R]{\\small\\textbf{soilKey}}",
+                   "\\fancyfoot[C]{\\small\\thepage}",
+                   "\\renewcommand{\\headrulewidth}{0.4pt}}\n"),
+            logo_path)) else ""
   paste0(
     "---\n",
     "title: \"", title, "\"\n",
@@ -143,6 +195,7 @@ report_pdf <- function(x,
     "  - \\usepackage{longtable}\n",
     "  - \\usepackage{booktabs}\n",
     "  - \\usepackage{xcolor}\n",
+    logo_inc,
     "---\n\n",
     "```{r setup, include=FALSE}\n",
     "knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)\n",
@@ -246,7 +299,9 @@ report_pdf <- function(x,
 
 #' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
-.rmd_horizons_block <- function(pedon) {
+#' @param label Knitr chunk label; must be unique across the document (a
+#'   multi-profile report renders one horizons block per profile).
+.rmd_horizons_block <- function(pedon, label = "horizons") {
   if (is.null(pedon) || is.null(pedon$horizons) ||
         nrow(pedon$horizons) == 0) {
     return("")
@@ -263,7 +318,7 @@ report_pdf <- function(x,
 
   paste0(
     sprintf("## %s\n\n", .report_msg("report.horizons")),
-    "```{r horizons}\n",
+    sprintf("```{r %s}\n", label),
     "knitr::kable(",
     paste(deparse(h), collapse = ""),
     ", booktabs = TRUE, format.args = list(big.mark = ''))\n",
@@ -303,17 +358,72 @@ report_pdf <- function(x,
 #' Internal helper: .build_report_rmd
 
 #' @noRd
-.build_report_rmd <- function(results, pedon, title) {
+.build_report_rmd <- function(results, pedon, title,
+                              logo_path = NULL, map_path = NULL) {
+  map_md <- if (!is.null(map_path) && nzchar(map_path))
+    sprintf("![%s](%s)\n\n", .report_msg("report.map_caption"), map_path)
+    else ""
   paste0(
-    .rmd_header(title),
+    .rmd_header(title, logo_path),
     sprintf(.report_msg("report.pdf_footer"),
               format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
               .soilkey_version()),
     .rmd_site_block(pedon),
+    map_md,
     .rmd_summary_block(results),
     sprintf("# %s\n\n", .report_msg("report.classification_results")),
     paste(vapply(results, .rmd_classification_block, character(1)),
             collapse = "\n"),
     .rmd_horizons_block(pedon)
   )
+}
+
+#' Multi-profile PDF: a first-page overview (map + summary table) then one page
+#' per profile, separated by \\newpage.
+#' @noRd
+.build_report_rmd_multi <- function(pedons, title, logo_path, map_path,
+                                    include_family, specifiers) {
+  per <- lapply(pedons, function(p)
+    .normalise_results(p, pedon = p, include_family = include_family,
+                       specifiers = specifiers)$results)
+  name_for <- function(res, sys) {
+    r <- Find(function(z) grepl(sys, tolower(z$system %||% ""), fixed = TRUE),
+              res)
+    if (is.null(r)) "--" else (r$name %||% "--")
+  }
+  ov_rows <- vapply(seq_along(pedons), function(i) {
+    p <- pedons[[i]]
+    coord <- if (!is.null(p$site$lat) && !is.null(p$site$lon))
+      sprintf("%.3f, %.3f", as.numeric(p$site$lat), as.numeric(p$site$lon))
+      else "--"
+    sprintf("| %s | %s | %s | %s | %s |",
+            p$site$id %||% sprintf("profile %d", i), coord,
+            name_for(per[[i]], "wrb"), name_for(per[[i]], "sibcs"),
+            name_for(per[[i]], "usda"))
+  }, character(1))
+  overview <- paste0(
+    if (!is.null(map_path) && nzchar(map_path))
+      sprintf("![%s](%s)\n\n", .report_msg("report.map_caption"), map_path)
+      else "",
+    sprintf("# %s\n\n", .report_msg("report.profiles_overview")),
+    "| Perfil | Coord | WRB 2022 | SiBCS 5 | USDA ST 13 |\n",
+    "|---|---|---|---|---|\n",
+    paste(ov_rows, collapse = "\n"), "\n\n")
+  pages <- vapply(seq_along(pedons), function(i) {
+    p <- pedons[[i]]
+    paste0(
+      "\\newpage\n\n",
+      sprintf("# %s\n\n", p$site$id %||% sprintf("profile %d", i)),
+      .rmd_site_block(p),
+      paste(vapply(per[[i]], .rmd_classification_block, character(1)),
+            collapse = "\n"),
+      .rmd_horizons_block(p, label = sprintf("hz_%d", i)))
+  }, character(1))
+  paste0(
+    .rmd_header(title, logo_path),
+    sprintf(.report_msg("report.pdf_footer"),
+              format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
+              .soilkey_version()),
+    overview,
+    paste(pages, collapse = "\n"))
 }

@@ -214,6 +214,12 @@ map_batch_ui <- function(id) {
             ns("export"), i18n("mbatch.export"),
             class = "btn-outline-secondary w-100 mt-2"),
           "Save the classified points as a GeoPackage (.gpkg) you can open in QGIS or ArcGIS."),
+        bslib::tooltip(
+          shiny::downloadButton(
+            ns("report"), i18n("mbatch.report"),
+            icon = shiny::icon("file-lines"),
+            class = "btn-outline-secondary w-100 mt-2"),
+          "Download a multi-profile HTML report: a map of all profiles on the first page, then one page per profile."),
         shiny::helpText(i18n("mbatch.deterministic_help"))
       )
     ),
@@ -251,6 +257,10 @@ map_batch_server <- function(id, rv, settings) {
     class_col <- shiny::reactive(paste0(input$system %||% "wrb", "_class"))
     name_col  <- shiny::reactive(paste0(input$system %||% "wrb", "_name"))
 
+    # The built PedonRecords behind the current point set, kept so the
+    # multi-profile report can be generated from them.
+    batch_pedons <- shiny::reactiveVal(NULL)
+
     # ---- build + classify the point set on demand ---------------------------
     results <- shiny::eventReactive(input$run, {
       on_missing <- tryCatch(settings()$on_missing, error = function(e) NULL)
@@ -270,6 +280,7 @@ map_batch_server <- function(id, rv, settings) {
           }
         }, error = function(e) e)
         if (inherits(pedons, "error")) return(pedons)
+        batch_pedons(pedons)          # keep for the multi-profile report
         n <- length(pedons)
         bump <- function(i, total)
           shiny::incProgress(1 / total,
@@ -353,6 +364,17 @@ map_batch_server <- function(id, rv, settings) {
     output$template <- shiny::downloadHandler(
       filename = function() "soilKey_batch_template.csv",
       content  = function(file) writeLines(.batch_starter_csv, file)
+    )
+
+    # ---- multi-profile HTML report ------------------------------------------
+    output$report <- shiny::downloadHandler(
+      filename = function() "soilkey_profiles_report.html",
+      content = function(file) {
+        peds <- batch_pedons()
+        if (is.null(peds) || length(peds) == 0L)
+          stop(i18n("mbatch.no_profiles_report"))
+        soilKey::report_html(peds, file = file)
+      }
     )
 
     # ---- GeoPackage export --------------------------------------------------

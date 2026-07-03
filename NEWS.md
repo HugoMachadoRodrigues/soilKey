@@ -1,3 +1,29 @@
+# soilKey 0.9.168 (2026-07-03)
+
+A richer, branded report (HTML and PDF), with a locator map and multi-profile
+pagination. No change to the classification engine.
+
+\itemize{
+  \item \strong{Branded header with the soilKey logo.} The HTML report opens
+        with the logo beside the title; the PDF carries the logo in a running
+        page header (every page, including page 1).
+  \item \strong{Locator map.} Both formats now embed a self-contained static map
+        of the profile location(s) -- a world coastline (via the optional
+        \pkg{maps} package) with the point(s) marked. The HTML report inlines it
+        as a base64 image, so it stays a single self-contained file with no
+        external requests.
+  \item \strong{Multi-profile reports.} \code{report()} / \code{report_html()} /
+        \code{report_pdf()} now accept a \emph{list of \code{PedonRecord}s}. The
+        first page shows a map of all profiles plus an overview table; each
+        profile then gets its own page (a page break in print / a new PDF page).
+        The Map tab's batch-classify view gains a "Download report (HTML)"
+        button that produces exactly this.
+  \item Reports force a white background, so they render correctly in dark-mode
+        browsers and email clients.
+  \item New optional dependencies (\code{Suggests}): \pkg{maps} (coastline) and
+        \pkg{base64enc} (image embedding); both degrade gracefully when absent.
+}
+
 # soilKey 0.9.167 (2026-07-02)
 
 One-click demos for the Photo and Spectra tabs, so both can be exercised with
