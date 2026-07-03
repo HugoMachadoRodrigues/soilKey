@@ -114,6 +114,24 @@ pedon_ui <- function(id) {
           "Check the horizon geometry and coordinates, then build the pedon used by every other tab."
         ),
         shiny::uiOutput(ns("status"))
+      ),
+      # ---- save / reopen the whole working session as one JSON file --------
+      sk_section(
+        i18n("pedon.save_open_session"),
+        icon = "floppy-disk",
+        desc = paste("Export the profile (site + horizons) to a JSON file, or",
+                     "reopen one to pick up exactly where you left off."),
+        bslib::tooltip(
+          shiny::downloadButton(
+            ns("save_session"), i18n("pedon.save_session"),
+            icon = shiny::icon("download"),
+            class = "btn-outline-secondary w-100"),
+          "Save the current site details and horizon table as a portable .json file."),
+        shiny::fileInput(
+          ns("session_file"),
+          sk_label(i18n("pedon.open_session"),
+                   "Load a .json session saved earlier; it repopulates every field and rebuilds the pedon."),
+          accept = ".json")
       )
     ),
     bslib::layout_column_wrap(
@@ -199,6 +217,104 @@ pedon_server <- function(id, rv) {
         utils::write.csv(cur, file, row.names = FALSE)
       }
     )
+
+    # ---- save / reopen the whole session as JSON --------------------------
+    # The file uses the canonical {site, horizons:[...]} shape so it is also
+    # accepted by soilKey::validate_pedon_json(). Saving captures the live
+    # editor state (site inputs + edited horizon table), so unsaved tweaks are
+    # preserved; reopening repopulates every field and rebuilds rv$pedon.
+    output$save_session <- shiny::downloadHandler(
+      filename = function()
+        sprintf("soilKey_session_%s.json", input$site_id %||% "pedon"),
+      content = function(file) {
+        if (!requireNamespace("jsonlite", quietly = TRUE))
+          stop("Package 'jsonlite' is required to save a session.")
+        df <- hz()
+        shiny::validate(shiny::need(!is.null(df) && nrow(df) > 0L,
+                                    i18n("pedon.no_horizons_download")))
+        horizon_rows <- lapply(seq_len(nrow(df)),
+                               function(i) as.list(df[i, , drop = FALSE]))
+        payload <- list(
+          site = list(
+            id              = input$site_id %||% "pedon",
+            lat             = suppressWarnings(as.numeric(input$lat)),
+            lon             = suppressWarnings(as.numeric(input$lon)),
+            country         = input$country %||% NA_character_,
+            parent_material = input$pm %||% NA_character_
+          ),
+          horizons = horizon_rows
+        )
+        jsonlite::write_json(payload, file, pretty = TRUE, auto_unbox = TRUE,
+                             null = "null", na = "null", digits = NA)
+      }
+    )
+
+    shiny::observeEvent(input$session_file, {
+      f <- input$session_file
+      if (is.null(f)) return(invisible())
+      if (!requireNamespace("jsonlite", quietly = TRUE)) {
+        shiny::showNotification(
+          i18n("pedon.session_load_failed", "package 'jsonlite' not available"),
+          type = "error", duration = 8)
+        return(invisible())
+      }
+      parsed <- tryCatch(
+        jsonlite::fromJSON(f$datapath, simplifyVector = TRUE,
+                           simplifyDataFrame = TRUE),
+        error = function(e) e)
+      if (inherits(parsed, "error") || is.null(parsed$horizons) ||
+          NROW(parsed$horizons) == 0L) {
+        msg <- if (inherits(parsed, "error")) conditionMessage(parsed)
+               else "no horizons found in file"
+        shiny::showNotification(i18n("pedon.session_load_failed", msg),
+                                type = "error", duration = 8)
+        return(invisible())
+      }
+      hzdf <- as.data.frame(parsed$horizons, stringsAsFactors = FALSE)
+      # Keep only columns soilKey understands, in canonical order.
+      spec  <- names(soilKey::horizon_column_spec())
+      keep  <- intersect(spec, names(hzdf))
+      extra <- setdiff(names(hzdf), spec)
+      hzdf  <- hzdf[, c(keep, extra), drop = FALSE]
+
+      site <- parsed$site %||% list()
+      shiny::updateTextInput(session, "site_id", value = site$id %||% "pedon")
+      if (!is.null(site$lat))
+        shiny::updateNumericInput(session, "lat",
+                                  value = suppressWarnings(as.numeric(site$lat)))
+      if (!is.null(site$lon))
+        shiny::updateNumericInput(session, "lon",
+                                  value = suppressWarnings(as.numeric(site$lon)))
+      shiny::updateTextInput(session, "country", value = site$country %||% "")
+      shiny::updateTextInput(session, "pm",
+                             value = site$parent_material %||% "")
+      hz(hzdf)
+      hz_reload(hz_reload() + 1L)
+
+      # Try to rebuild the pedon immediately so every tab is usable on reopen;
+      # if geometry is off, leave the editor populated and ask for a Build.
+      built <- tryCatch({
+        h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(hzdf))
+        soilKey::PedonRecord$new(
+          site = list(
+            id              = site$id %||% "pedon",
+            lat             = site$lat,
+            lon             = site$lon,
+            country         = site$country,
+            parent_material = site$parent_material),
+          horizons = h_dt)
+      }, error = function(e) NULL)
+      if (!is.null(built)) {
+        rv$pedon <- built
+        shiny::showNotification(
+          i18n("pedon.session_loaded_built", site$id %||% "pedon", nrow(hzdf)),
+          type = "message", duration = 6)
+      } else {
+        shiny::showNotification(
+          i18n("pedon.session_loaded", nrow(hzdf)),
+          type = "message", duration = 6)
+      }
+    })
 
     # ---- one-click example profile (bumped by the Help modal / ribbon) -----
     # The canonical Ferralsol fixture is a complete PedonRecord; loading it

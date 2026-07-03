@@ -1,3 +1,35 @@
+# soilKey 0.9.164 (2026-07-02)
+
+Four usability features for the Pro app (\code{run_classify_app()}), aimed at
+first-time and field users. No change to the classification engine.
+
+\itemize{
+  \item \strong{Complete a partial profile before classifying.} The Classify tab
+        gains a "Complete missing data" section: tick any of
+        \emph{interpolation within the profile}, \emph{SoilGrids at the
+        coordinates}, or \emph{attached Vis-NIR spectra} to fill blank
+        attributes before the key runs. Filling is applied to a copy of the
+        pedon (entered values are never overwritten) and is flagged as
+        predicted, so the evidence grade drops honestly. If gap-fill cannot run
+        (no internet for SoilGrids, no spectra), the tab classifies as-is
+        instead of erroring.
+  \item \strong{Save / open a working session.} The Pedon tab can export the
+        whole profile (site + horizon table) to a JSON file and reopen it later
+        to pick up exactly where you left off. The file uses the canonical
+        \code{\{site, horizons\}} shape, so it is also accepted by
+        \code{validate_pedon_json()}; reopening repopulates every field and
+        rebuilds the pedon.
+  \item \strong{Download-a-template on every upload.} The batch-classify upload
+        now offers a ready-made long-format template CSV (mirroring the Pedon
+        tab's starter file), and CSV read errors are reported with a clear
+        message instead of a raw parse fault.
+  \item \strong{Welcome tour on first open.} A dependency-free, four-step guided
+        tour introduces the workflow the first time the app is opened (gated by
+        the browser's \code{localStorage} so it shows once), and can be replayed
+        any time from the Help menu. The final step offers the two on-ramps:
+        load the example and classify, or start a blank profile.
+}
+
 # soilKey 0.9.163 (2026-06-30)
 
 \itemize{

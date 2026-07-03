@@ -166,6 +166,13 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-steps { margin: 0.5rem 0 0; padding-left: 1.1rem; }
 .sk-steps li { margin-bottom: 0.3rem; }
 
+/* ---- welcome tour: step progress dots ---------------------------------- */
+.sk-welcome-dots { display: flex; gap: 0.4rem; justify-content: center;
+  margin-top: 0.75rem; }
+.sk-welcome-dots .sk-dot { width: 8px; height: 8px; border-radius: 50%;
+  background: #d8ccbd; transition: background 0.2s, transform 0.2s; }
+.sk-welcome-dots .sk-dot-on { background: var(--sk-brown); transform: scale(1.25); }
+
 /* ---- a11y: reduced motion + screen-reader-only utility ----------------- */
 @media (prefers-reduced-motion: reduce) {
   .recalculating::after { animation: none; }

@@ -34,6 +34,26 @@ classify_ui <- function(id) {
         )
       ),
       shiny::tags$hr(),
+      # ---- Complete a partial profile before classifying ------------------
+      sk_section(
+        "Complete missing data",
+        icon = "wand-magic-sparkles",
+        desc = paste("Optional. Fill blank attributes so an incomplete profile",
+                     "can still be classified. Filled values are flagged as",
+                     "predicted, so the evidence grade drops honestly (A to B/C)."),
+        shiny::checkboxGroupInput(
+          ns("gapfill_methods"),
+          sk_label(
+            "Fill missing attributes from",
+            paste("Applied in order, to blank cells only, on a copy of the",
+                  "pedon -- your entered values are never overwritten.")),
+          choices = c(
+            "Interpolation within the profile"      = "interp",
+            "SoilGrids at the coordinates (online)" = "soilgrids",
+            "Attached Vis-NIR spectra"              = "spectra"),
+          selected = character(0))
+      ),
+      shiny::tags$hr(),
       # The two deepest-level options live on the Settings tab, but they are
       # surfaced here too so the user can discover and flip them without
       # leaving Classify. Both switches two-way-sync with the shared rv, so
@@ -103,15 +123,28 @@ classify_server <- function(id, rv, settings) {
         shiny::showNotification(i18n("classify.pick_one_system"), type = "warning")
         return(NULL)
       }
+      gf <- input$gapfill_methods
+      run_all <- function(gapfill_arg) soilKey::classify_all(
+        rv$pedon,
+        systems         = sys,
+        on_missing      = cfg$on_missing,
+        include_familia = cfg$include_familia,
+        include_family  = isTRUE(cfg$include_family),
+        specifiers      = isTRUE(cfg$specifiers),
+        gapfill         = gapfill_arg)
       shiny::withProgress(message = i18n("classify.classifying"), value = 0.5, {
-        soilKey::classify_all(
-          rv$pedon,
-          systems         = sys,
-          on_missing      = cfg$on_missing,
-          include_familia = cfg$include_familia,
-          include_family  = isTRUE(cfg$include_family),
-          specifiers      = isTRUE(cfg$specifiers)
-        )
+        if (length(gf) == 0L) return(run_all(FALSE))
+        # Gap-fill can fail (no internet for SoilGrids, no attached spectra):
+        # fall back to classifying as-is rather than erroring the whole tab.
+        tryCatch(
+          run_all(list(method = gf)),
+          error = function(e) {
+            shiny::showNotification(
+              sprintf("Gap-fill could not run (%s) - classified without it.",
+                      conditionMessage(e)),
+              type = "warning", duration = 8)
+            run_all(FALSE)
+          })
       })
     })
 
