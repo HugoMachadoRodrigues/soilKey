@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.170 (2026-07-03)
+
+Two small app fixes.
+
 ## soilKey 0.9.169 (2026-07-03)
 
 Documentation-site and badge fixes. No code change.
