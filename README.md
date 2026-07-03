@@ -3,9 +3,10 @@
 # soilKey <img src="man/figures/logo.png" align="right" height="160" alt="soilKey hex sticker — a key over a stratified soil profile, with a sapling emerging from the top and a decision-tree circuit on the right" />
 
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.119](https://img.shields.io/badge/version-0.9.119-FF6B35?style=flat-square)
+[![CRAN status](https://www.r-pkg.org/badges/version/soilKey)](https://CRAN.R-project.org/package=soilKey)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/soilKey)](https://CRAN.R-project.org/package=soilKey)
+[![dev version](https://img.shields.io/github/v/tag/HugoMachadoRodrigues/soilKey?style=flat-square&color=FF6B35&label=dev&sort=semver)](https://github.com/HugoMachadoRodrigues/soilKey/tags)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
-[![CRAN status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
 [![WRB 2022](https://img.shields.io/badge/WRB%202022-32%2F32%20RSGs-blue.svg?style=flat-square)](#-coverage)

@@ -1,3 +1,21 @@
+# soilKey 0.9.169 (2026-07-03)
+
+Documentation-site and badge fixes. No code change.
+
+\itemize{
+  \item \strong{Fixed the pkgdown docs deploy}, which had failed on every push
+        since v0.9.160 (leaving the published site stale at 0.9.159). Three
+        exported functions -- \code{classify_csv}, \code{read_pedon_csv} and
+        \code{key_trace_table} -- were missing from the \code{_pkgdown.yml}
+        reference index, so \code{pkgdown::check_pkgdown()} aborted the build.
+        They are now listed and the site rebuilds.
+  \item \strong{Live badges.} The README's hardcoded "CRAN: pending" badge (the
+        package has been on CRAN since v0.9.157) and the stale hardcoded version
+        badge were replaced with self-updating badges: the CRAN version and
+        download-count badges from r-pkg.org / cranlogs, and a dev-version badge
+        driven by the latest Git tag.
+}
+
 # soilKey 0.9.168 (2026-07-03)
 
 A richer, branded report (HTML and PDF), with a locator map and multi-profile

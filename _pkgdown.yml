@@ -87,6 +87,7 @@ reference:
       - classify_sibcs_familia
       - classify_usda
       - classify_all
+      - classify_csv
       - classify_from_documents
       - classify_from_photos
       - classify_by_spectral_neighbours
@@ -301,6 +302,7 @@ reference:
       - report_html
       - report_pdf
       - report_to_qgis
+      - key_trace_table
 
   - title: "Layperson on-ramp"
     desc: >
@@ -308,6 +310,7 @@ reference:
       friction non-coders hit on a fresh install.
     contents:
       - run_demo
+      - read_pedon_csv
       - auto_set_proj_env
       - vlm_pick_provider
       - ollama_is_running
