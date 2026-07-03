@@ -51,3 +51,22 @@ test_that("spectra_server attaches the demo spectrum on demand", {
                  nrow(rv$pedon$horizons))
   })
 })
+
+test_that("the demo spectrum sizes to the pedon's horizon count (v0.9.170)", {
+  # Regression for "Spectrum has 5 rows but the pedon has 7 horizons": the
+  # bundled demo is 5 rows, but a pedon can have any count (e.g. after a photo
+  # extraction appends horizons). .pro_demo_spectrum() recycles rows to match.
+  www <- .pro_app_www()
+  skip_if(www == "", "app not installed")
+  env <- new.env(parent = globalenv())
+  app_r <- system.file("shiny", "classify_app_pro", "R", package = "soilKey")
+  for (f in list.files(app_r, pattern = "\\.R$", full.names = TRUE))
+    sys.source(f, envir = env)
+  ds <- get(".pro_demo_spectrum", envir = env)
+  for (n in c(1L, 3L, 5L, 7L, 12L)) {
+    m <- ds(n)
+    expect_equal(nrow(m), n)
+    expect_gt(ncol(m), 100L)
+    expect_false(anyNA(m))
+  }
+})

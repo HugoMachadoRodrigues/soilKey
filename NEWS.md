@@ -1,3 +1,21 @@
+# soilKey 0.9.170 (2026-07-03)
+
+Two small app fixes.
+
+\itemize{
+  \item \strong{The demo spectrum now matches any pedon.} "Use the demo
+        spectrum" failed with \emph{"Spectrum has 5 rows but the pedon has N
+        horizons"} whenever the current pedon did not have exactly five horizons
+        (for example after a photo extraction added horizons). The demo is now
+        built to the current pedon's horizon count (recycling the bundled rows),
+        so it attaches whatever the profile looks like.
+  \item \strong{Acknowledgements: added the Redape curated dataset.} Credited
+        Glauber J. Vaz, Alberto F. Silva Jr and Luis de F. da Silva Neto (2023),
+        "Brazilian soil data for taxonomic classification" (Embrapa Redape) --
+        the ~96 hand-reviewed Brazilian profiles used to benchmark and calibrate
+        the classifiers.
+}
+
 # soilKey 0.9.169 (2026-07-03)
 
 Documentation-site and badge fixes. No code change.
