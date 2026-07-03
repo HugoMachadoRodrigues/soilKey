@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.172 (2026-07-03)
+
+Classify-tab clarity and a navbar contrast fix.
+
 ## soilKey 0.9.171 (2026-07-03)
 
 App polish and a fix to the gridded SoilGrids prediction.
