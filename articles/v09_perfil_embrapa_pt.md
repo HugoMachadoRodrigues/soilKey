@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55a22aa1cf20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x55b71a461f00>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -167,14 +167,49 @@ print(res$sibcs)
 #> 
 #> ── Key trace
 #> (10 RSGs tested before assignment)
-#> 1. ??  -- NA
-#> 2. ??  -- NA
-#> 3. PV Argissolos Vermelhos -- NA
-#> 4. ??  -- NA
-#> 5. PVd Argissolos Vermelhos Distroficos -- NA
-#> 6. ??  -- NA
-#> 7. PVdTp Argissolos Vermelhos Distroficos tipicos -- NA
-#> 8. ??  -- NA
+#> 1. O Organossolos -- failed
+#> 2. R Neossolos -- failed
+#> 3. V Vertissolos -- NA (1 attrs missing)
+#> 4. E Espodossolos -- NA (2 attrs missing)
+#> 5. S Planossolos -- failed
+#> 6. G Gleissolos -- NA (1 attrs missing)
+#> 7. L Latossolos -- failed
+#> 8. M Chernossolos -- failed
+#> 9. C Cambissolos -- failed
+#> 10. F Plintossolos -- NA (1 attrs missing)
+#> 11. T Luvissolos -- failed
+#> 12. N Nitossolos -- failed
+#> 13. P Argissolos -- PASSED
+#> 14. PBAC Argissolos Bruno-Acinzentados -- failed
+#> 15. PAC Argissolos Acinzentados -- failed
+#> 16. PA Argissolos Amarelos -- failed
+#> 17. PV Argissolos Vermelhos -- PASSED
+#> 18. PV Argissolos Vermelhos -- assigned
+#> 19. PVtal Argissolos Vermelhos Ta Aluminicos -- failed
+#> 20. PVal Argissolos Vermelhos Aluminicos -- failed
+#> 21. PVtd Argissolos Vermelhos Ta Distroficos -- failed
+#> 22. PVd Argissolos Vermelhos Distroficos -- PASSED
+#> 23. PVd Argissolos Vermelhos Distroficos -- assigned
+#> 24. PVdEs Argissolos Vermelhos Distroficos espessarenicos -- failed
+#> 25. PVdAr Argissolos Vermelhos Distroficos arenicos -- failed
+#> 26. PVdAbPl Argissolos Vermelhos Distroficos abrupticos plintossolicos --
+#> failed (1 attrs missing)
+#> 27. PVdAb Argissolos Vermelhos Distroficos abrupticos -- failed
+#> 28. PVdPl Argissolos Vermelhos Distroficos plintossolicos -- NA (1 attrs
+#> missing)
+#> 29. PVdPs Argissolos Vermelhos Distroficos planossolicos -- failed
+#> 30. PVdNi Argissolos Vermelhos Distroficos nitossolicos -- failed (1 attrs
+#> missing)
+#> 31. PVdLa Argissolos Vermelhos Distroficos latossolicos -- failed
+#> 32. PVdTp Argissolos Vermelhos Distroficos tipicos -- PASSED
+#> 33. PVdTp Argissolos Vermelhos Distroficos tipicos -- assigned
+#> 34. grupamento_textural argilosa -- info
+#> 35. distribuicao_cascalhos distribuicao_cascalhos -- info
+#> 36. constituicao_esqueletica constituicao_esqueletica -- info
+#> 37. tipo_horizonte_superficial moderado -- info
+#> 38. atividade_argila Tmob -- info
+#> 39. oxidos_ferro oxidos_ferro -- info
+#> 40. ??  argilosa, moderado, Tmob -- info
 ```
 
 A descida vai do nivel da Ordem (`Argissolos`) ate o Subgrupo, passando
@@ -281,13 +316,40 @@ print(res$usda)
 #> 
 #> ── Key trace
 #> (9 RSGs tested before assignment)
-#> 1. ??  -- NA
-#> 2. ??  -- NA
-#> 3. HC Udults -- NA
-#> 4. ??  -- NA
-#> 5. HCC Kandiudults -- NA
-#> 6. ??  -- NA
-#> 7. HCCP Rhodic Kandiudults -- NA
+#> 1. GE Gelisols -- failed (1 attrs missing)
+#> 2. HI Histosols -- failed (1 attrs missing)
+#> 3. SP Spodosols -- failed (2 attrs missing)
+#> 4. AD Andisols -- failed (3 attrs missing)
+#> 5. OX Oxisols -- failed
+#> 6. VE Vertisols -- failed (1 attrs missing)
+#> 7. AS Aridisols -- failed (1 attrs missing)
+#> 8. UT Ultisols -- PASSED
+#> 9. HA Aquults -- failed (1 attrs missing)
+#> 10. HB Humults -- failed
+#> 11. HD Ustults -- failed (1 attrs missing)
+#> 12. HE Xerults -- failed (1 attrs missing)
+#> 13. HC Udults -- PASSED
+#> 14. HC Udults -- assigned
+#> 15. HCA Plinthudults -- failed (1 attrs missing)
+#> 16. HCB Fragiudults -- failed (1 attrs missing)
+#> 17. HCC Kandiudults -- PASSED
+#> 18. HCC Kandiudults -- assigned
+#> 19. HCCA Lithic Kandiudults -- failed
+#> 20. HCCB Aquic Kandiudults -- failed (1 attrs missing)
+#> 21. HCCC Plinthic Kandiudults -- failed (1 attrs missing)
+#> 22. HCCE Aquic Arenic Kandiudults -- failed (3 attrs missing)
+#> 23. HCCF Arenic Plinthic Kandiudults -- failed (3 attrs missing)
+#> 24. HCCG Arenic Rhodic Kandiudults -- failed (2 attrs missing)
+#> 25. HCCH Arenic Kandiudults -- failed (2 attrs missing)
+#> 26. HCCI Grossarenic Plinthic Kandiudults -- failed (3 attrs missing)
+#> 27. HCCJ Grossarenic Kandiudults -- failed (2 attrs missing)
+#> 28. HCCK Acrudoxic Plinthic Kandiudults -- failed (2 attrs missing)
+#> 29. HCCL Acrudoxic Kandiudults -- failed (1 attrs missing)
+#> 30. HCCM Aquandic Kandiudults -- failed (3 attrs missing)
+#> 31. HCCN Andic Kandiudults -- failed (2 attrs missing)
+#> 32. HCCO Oxyaquic Kandiudults -- failed
+#> 33. HCCP Rhodic Kandiudults -- PASSED
+#> 34. HCCP Rhodic Kandiudults -- assigned
 ```
 
 USDA-ST devolve a ordem (ate o nivel atualmente disponivel): **Ultisol**

@@ -1,5 +1,48 @@
 # Changelog
 
+## soilKey 0.9.169 (2026-07-03)
+
+Documentation-site and badge fixes. No code change.
+
+## soilKey 0.9.168 (2026-07-03)
+
+A richer, branded report (HTML and PDF), with a locator map and
+multi-profile pagination. No change to the classification engine.
+
+## soilKey 0.9.167 (2026-07-02)
+
+One-click demos for the Photo and Spectra tabs, so both can be exercised
+with no user data. No change to the classification engine.
+
+## soilKey 0.9.166 (2026-07-02)
+
+Pro-app usability pass. No change to the classification engine.
+
+## soilKey 0.9.165 (2026-07-02)
+
+Bug fix for the decision-trace display, plus a small new helper.
+
+## soilKey 0.9.164 (2026-07-02)
+
+Four usability features for the Pro app (), aimed at first-time and
+field users. No change to the classification engine.
+
+## soilKey 0.9.163 (2026-06-30)
+
+## soilKey 0.9.162 (2026-06-30)
+
+A full professional redesign of the Pro app () so it is ready to share
+with the community. No change to the classification engine.
+
+## soilKey 0.9.161 (2026-06-30)
+
+Pro app () UX fixes.
+
+## soilKey 0.9.160 (2026-06-30)
+
+The “**one file, one line**” onboarding release - making the simplest
+path obvious so new users do not have to hand-build a .
+
 ## soilKey 0.9.159 (2026-06-30)
 
 ## soilKey 0.9.158 (2026-06-30)

@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.159</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.169</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -160,7 +160,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x55a22aa1cf20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x55b71a461f00&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -249,14 +249,49 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (10 RSGs tested before assignment)</span></span>
-<span><span class="co">#&gt; 1. ??  -- NA</span></span>
-<span><span class="co">#&gt; 2. ??  -- NA</span></span>
-<span><span class="co">#&gt; 3. PV Argissolos Vermelhos -- NA</span></span>
-<span><span class="co">#&gt; 4. ??  -- NA</span></span>
-<span><span class="co">#&gt; 5. PVd Argissolos Vermelhos Distroficos -- NA</span></span>
-<span><span class="co">#&gt; 6. ??  -- NA</span></span>
-<span><span class="co">#&gt; 7. PVdTp Argissolos Vermelhos Distroficos tipicos -- NA</span></span>
-<span><span class="co">#&gt; 8. ??  -- NA</span></span></code></pre></div>
+<span><span class="co">#&gt; 1. O Organossolos -- failed</span></span>
+<span><span class="co">#&gt; 2. R Neossolos -- failed</span></span>
+<span><span class="co">#&gt; 3. V Vertissolos -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 4. E Espodossolos -- NA (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 5. S Planossolos -- failed</span></span>
+<span><span class="co">#&gt; 6. G Gleissolos -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 7. L Latossolos -- failed</span></span>
+<span><span class="co">#&gt; 8. M Chernossolos -- failed</span></span>
+<span><span class="co">#&gt; 9. C Cambissolos -- failed</span></span>
+<span><span class="co">#&gt; 10. F Plintossolos -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 11. T Luvissolos -- failed</span></span>
+<span><span class="co">#&gt; 12. N Nitossolos -- failed</span></span>
+<span><span class="co">#&gt; 13. P Argissolos -- PASSED</span></span>
+<span><span class="co">#&gt; 14. PBAC Argissolos Bruno-Acinzentados -- failed</span></span>
+<span><span class="co">#&gt; 15. PAC Argissolos Acinzentados -- failed</span></span>
+<span><span class="co">#&gt; 16. PA Argissolos Amarelos -- failed</span></span>
+<span><span class="co">#&gt; 17. PV Argissolos Vermelhos -- PASSED</span></span>
+<span><span class="co">#&gt; 18. PV Argissolos Vermelhos -- assigned</span></span>
+<span><span class="co">#&gt; 19. PVtal Argissolos Vermelhos Ta Aluminicos -- failed</span></span>
+<span><span class="co">#&gt; 20. PVal Argissolos Vermelhos Aluminicos -- failed</span></span>
+<span><span class="co">#&gt; 21. PVtd Argissolos Vermelhos Ta Distroficos -- failed</span></span>
+<span><span class="co">#&gt; 22. PVd Argissolos Vermelhos Distroficos -- PASSED</span></span>
+<span><span class="co">#&gt; 23. PVd Argissolos Vermelhos Distroficos -- assigned</span></span>
+<span><span class="co">#&gt; 24. PVdEs Argissolos Vermelhos Distroficos espessarenicos -- failed</span></span>
+<span><span class="co">#&gt; 25. PVdAr Argissolos Vermelhos Distroficos arenicos -- failed</span></span>
+<span><span class="co">#&gt; 26. PVdAbPl Argissolos Vermelhos Distroficos abrupticos plintossolicos --</span></span>
+<span><span class="co">#&gt; failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 27. PVdAb Argissolos Vermelhos Distroficos abrupticos -- failed</span></span>
+<span><span class="co">#&gt; 28. PVdPl Argissolos Vermelhos Distroficos plintossolicos -- NA (1 attrs</span></span>
+<span><span class="co">#&gt; missing)</span></span>
+<span><span class="co">#&gt; 29. PVdPs Argissolos Vermelhos Distroficos planossolicos -- failed</span></span>
+<span><span class="co">#&gt; 30. PVdNi Argissolos Vermelhos Distroficos nitossolicos -- failed (1 attrs</span></span>
+<span><span class="co">#&gt; missing)</span></span>
+<span><span class="co">#&gt; 31. PVdLa Argissolos Vermelhos Distroficos latossolicos -- failed</span></span>
+<span><span class="co">#&gt; 32. PVdTp Argissolos Vermelhos Distroficos tipicos -- PASSED</span></span>
+<span><span class="co">#&gt; 33. PVdTp Argissolos Vermelhos Distroficos tipicos -- assigned</span></span>
+<span><span class="co">#&gt; 34. grupamento_textural argilosa -- info</span></span>
+<span><span class="co">#&gt; 35. distribuicao_cascalhos distribuicao_cascalhos -- info</span></span>
+<span><span class="co">#&gt; 36. constituicao_esqueletica constituicao_esqueletica -- info</span></span>
+<span><span class="co">#&gt; 37. tipo_horizonte_superficial moderado -- info</span></span>
+<span><span class="co">#&gt; 38. atividade_argila Tmob -- info</span></span>
+<span><span class="co">#&gt; 39. oxidos_ferro oxidos_ferro -- info</span></span>
+<span><span class="co">#&gt; 40. ??  argilosa, moderado, Tmob -- info</span></span></code></pre></div>
 <p>A descida vai do nivel da Ordem (<code>Argissolos</code>) ate o
 Subgrupo, passando pelos discriminantes:</p>
 <ul>
@@ -364,13 +399,40 @@ presenca de revestimentos argilosos).</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (9 RSGs tested before assignment)</span></span>
-<span><span class="co">#&gt; 1. ??  -- NA</span></span>
-<span><span class="co">#&gt; 2. ??  -- NA</span></span>
-<span><span class="co">#&gt; 3. HC Udults -- NA</span></span>
-<span><span class="co">#&gt; 4. ??  -- NA</span></span>
-<span><span class="co">#&gt; 5. HCC Kandiudults -- NA</span></span>
-<span><span class="co">#&gt; 6. ??  -- NA</span></span>
-<span><span class="co">#&gt; 7. HCCP Rhodic Kandiudults -- NA</span></span></code></pre></div>
+<span><span class="co">#&gt; 1. GE Gelisols -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 2. HI Histosols -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 3. SP Spodosols -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 4. AD Andisols -- failed (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 5. OX Oxisols -- failed</span></span>
+<span><span class="co">#&gt; 6. VE Vertisols -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 7. AS Aridisols -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 8. UT Ultisols -- PASSED</span></span>
+<span><span class="co">#&gt; 9. HA Aquults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 10. HB Humults -- failed</span></span>
+<span><span class="co">#&gt; 11. HD Ustults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 12. HE Xerults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 13. HC Udults -- PASSED</span></span>
+<span><span class="co">#&gt; 14. HC Udults -- assigned</span></span>
+<span><span class="co">#&gt; 15. HCA Plinthudults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 16. HCB Fragiudults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 17. HCC Kandiudults -- PASSED</span></span>
+<span><span class="co">#&gt; 18. HCC Kandiudults -- assigned</span></span>
+<span><span class="co">#&gt; 19. HCCA Lithic Kandiudults -- failed</span></span>
+<span><span class="co">#&gt; 20. HCCB Aquic Kandiudults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 21. HCCC Plinthic Kandiudults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 22. HCCE Aquic Arenic Kandiudults -- failed (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 23. HCCF Arenic Plinthic Kandiudults -- failed (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 24. HCCG Arenic Rhodic Kandiudults -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 25. HCCH Arenic Kandiudults -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 26. HCCI Grossarenic Plinthic Kandiudults -- failed (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 27. HCCJ Grossarenic Kandiudults -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 28. HCCK Acrudoxic Plinthic Kandiudults -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 29. HCCL Acrudoxic Kandiudults -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 30. HCCM Aquandic Kandiudults -- failed (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 31. HCCN Andic Kandiudults -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 32. HCCO Oxyaquic Kandiudults -- failed</span></span>
+<span><span class="co">#&gt; 33. HCCP Rhodic Kandiudults -- PASSED</span></span>
+<span><span class="co">#&gt; 34. HCCP Rhodic Kandiudults -- assigned</span></span></code></pre></div>
 <p>USDA-ST devolve a ordem (ate o nivel atualmente disponivel):
 <strong>Ultisol</strong> (B argilico + saturacao por bases baixa em todo
 o solum).</p>

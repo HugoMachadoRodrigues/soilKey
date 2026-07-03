@@ -83,6 +83,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.html</loc></url>
@@ -167,6 +168,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/irragric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem_strict.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kst13_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kst13_criteria.html</loc></url>
@@ -292,6 +294,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/protogypsic_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/reducing_conditions.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/report.html</loc></url>

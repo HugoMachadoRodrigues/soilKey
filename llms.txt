@@ -2,10 +2,14 @@
 
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg?style=flat-square)](https://lifecycle.r-lib.org/articles/stages.html)
-![v0.9.119](https://img.shields.io/badge/version-0.9.119-FF6B35?style=flat-square)[![License:
-MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![CRAN
-status](https://img.shields.io/badge/CRAN-pending-yellow.svg?style=flat-square)](https://CRAN.R-project.org/package=soilKey)
+status](https://www.r-pkg.org/badges/version/soilKey)](https://CRAN.R-project.org/package=soilKey)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/soilKey)](https://CRAN.R-project.org/package=soilKey)
+[![dev
+version](https://img.shields.io/github/v/tag/HugoMachadoRodrigues/soilKey?style=flat-square&color=FF6B35&label=dev&sort=semver)](https://github.com/HugoMachadoRodrigues/soilKey/tags)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19930112.svg)](https://doi.org/10.5281/zenodo.19930112)
 [![R-CMD-check](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HugoMachadoRodrigues/soilKey/actions/workflows/R-CMD-check.yaml)
 [![WRB
@@ -896,6 +900,9 @@ the evidence grade.
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
 - [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
   : Classify a pedon across all three taxonomic systems
+- [`classify_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.md)
+  : Classify a horizon spreadsheet in all three systems - one file, one
+  line
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
 - [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md)
@@ -1411,6 +1418,8 @@ Render a complete pedologist-facing report from one or more
   : Render a soilKey classification report as PDF
 - [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
   : Export a classification result + pedon to a QGIS GeoPackage
+- [`key_trace_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.md)
+  : Flatten a classification key trace into a tabular form
 
 ## Layperson on-ramp
 
@@ -1419,6 +1428,8 @@ non-coders hit on a fresh install.
 
 - [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
   : Launch the soilKey Shiny demo (one-screen GUI)
+- [`read_pedon_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.md)
+  : Read a horizon spreadsheet (CSV/TSV) into a PedonRecord
 - [`auto_set_proj_env()`](https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.md)
   : Auto-detect PROJ_LIB and GDAL_DATA directories
 - [`vlm_pick_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.md)

@@ -39,6 +39,9 @@ the evidence grade.
   : Classify a pedon under USDA Soil Taxonomy (13th edition)
 - [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
   : Classify a pedon across all three taxonomic systems
+- [`classify_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.md)
+  : Classify a horizon spreadsheet in all three systems - one file, one
+  line
 - [`classify_from_documents()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.md)
   : Build a fully-classified \`PedonRecord\` from documents in one call
 - [`classify_from_photos()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.md)
@@ -554,6 +557,8 @@ Render a complete pedologist-facing report from one or more
   : Render a soilKey classification report as PDF
 - [`report_to_qgis()`](https://hugomachadorodrigues.github.io/soilKey/reference/report_to_qgis.md)
   : Export a classification result + pedon to a QGIS GeoPackage
+- [`key_trace_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.md)
+  : Flatten a classification key trace into a tabular form
 
 ## Layperson on-ramp
 
@@ -562,6 +567,8 @@ non-coders hit on a fresh install.
 
 - [`run_demo()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_demo.md)
   : Launch the soilKey Shiny demo (one-screen GUI)
+- [`read_pedon_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.md)
+  : Read a horizon spreadsheet (CSV/TSV) into a PedonRecord
 - [`auto_set_proj_env()`](https://hugomachadorodrigues.github.io/soilKey/reference/auto_set_proj_env.md)
   : Auto-detect PROJ_LIB and GDAL_DATA directories
 - [`vlm_pick_provider()`](https://hugomachadorodrigues.github.io/soilKey/reference/vlm_pick_provider.md)
