@@ -1,11 +1,15 @@
 # Changelog
 
+## soilKey 0.9.159 (2026-06-30)
+
 ## soilKey 0.9.158 (2026-06-30)
 
 Follow-up refinements to the v0.9.156 Munsell-from-spectra fix, on
 further suggestions from Glenn Davis ( author).
 
 ## soilKey 0.9.157 (2026-06-30)
+
+CRAN release: 2026-06-30
 
 The “**Humic Dystrudepts colour-value**” consistency fix.
 
