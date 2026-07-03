@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.171 (2026-07-03)
+
+App polish and a fix to the gridded SoilGrids prediction.
+
 ## soilKey 0.9.170 (2026-07-03)
 
 Two small app fixes.
