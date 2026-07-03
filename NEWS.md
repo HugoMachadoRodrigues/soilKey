@@ -1,3 +1,26 @@
+# soilKey 0.9.172 (2026-07-03)
+
+Classify-tab clarity and a navbar contrast fix.
+
+\itemize{
+  \item \strong{Legible EN/PT selector.} The language toggle (and the new
+        light/dark toggle) were hard to see on the dark navbar; they now use a
+        high-contrast clay pill with light borders, in both themes.
+  \item \strong{You can tell when results are out of date.} A hint under the
+        Classify button says whether the shown results are current, or that a
+        setting changed and you need to press Classify again; a banner marks
+        stale results. The "Complete missing data" and "Deepest level" boxes now
+        say they apply the next time you press Classify.
+  \item \strong{Friendlier key-trace wording.} The decision-trace status column
+        (\emph{criteria}) now reads \dQuote{met} / \dQuote{not met} /
+        \dQuote{needs data} / \dQuote{assigned} instead of the alarming
+        \dQuote{pass} / \dQuote{fail}, and \dQuote{not met} (the normal case for
+        most candidate classes) is a neutral grey rather than red.
+  \item \strong{Clearer Ambiguities and Missing data.} Both now open with an
+        explanation; missing data is grouped by system with readable attribute
+        names (e.g. \code{al_ox_pct} shown as \dQuote{Al ox (\%)}).
+}
+
 # soilKey 0.9.171 (2026-07-03)
 
 App polish and a fix to the gridded SoilGrids prediction.

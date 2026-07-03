@@ -6,6 +6,21 @@
 # ambiguities, and the measurements that would refine the result.
 # =============================================================================
 
+# Turn a raw horizon/site attribute name into a readable label with its unit,
+# for the "Missing data" list (e.g. "clay_pct" -> "Clay (%)").
+.classify_pretty_attr <- function(x) {
+  y <- x
+  y <- gsub("_pct$",     " (%)",           y)
+  y <- gsub("_cmol$",    " (cmol_c/kg)",   y)
+  y <- gsub("_cmol_kg$", " (cmol_c/kg)",   y)
+  y <- gsub("_mg_kg$",   " (mg/kg)",       y)
+  y <- gsub("_g_cm3$",   " (g/cm3)",       y)
+  y <- gsub("_temp_C$",  " temperature (C)", y)
+  y <- gsub("_",         " ",              y)
+  substr(y, 1, 1) <- toupper(substr(y, 1, 1))
+  y
+}
+
 classify_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::layout_sidebar(
@@ -31,7 +46,10 @@ classify_ui <- function(id) {
                               icon = shiny::icon("play"),
                               class = "btn-primary w-100"),
           "Run the deterministic keys and show the WRB, SiBCS and USDA names with their decision traces."
-        )
+        ),
+        # Tells the user whether the shown results reflect the current settings,
+        # or whether an input changed and they must press Classify again.
+        shiny::uiOutput(ns("run_status"))
       ),
       shiny::tags$hr(),
       # ---- Complete a partial profile before classifying ------------------
@@ -51,7 +69,9 @@ classify_ui <- function(id) {
             "Interpolation within the profile"      = "interp",
             "SoilGrids at the coordinates (online)" = "soilgrids",
             "Attached Vis-NIR spectra"              = "spectra"),
-          selected = character(0))
+          selected = character(0)),
+        shiny::helpText(shiny::icon("arrow-up"), " ",
+                        i18n("classify.applies_on_run"))
       ),
       shiny::tags$hr(),
       # The two deepest-level options live on the Settings tab, but they are
@@ -75,7 +95,9 @@ classify_ui <- function(id) {
             i18n("classify.wrb_depth_specifiers"),
             "Append WRB depth specifiers (e.g. Epi-, Endo-) that record where a qualifier occurs in the profile."
           ),
-          value = FALSE, status = "primary")
+          value = FALSE, status = "primary"),
+        shiny::helpText(shiny::icon("arrow-up"), " ",
+                        i18n("classify.applies_on_run"))
       ),
       shiny::tags$hr(),
       shiny::helpText(
@@ -114,6 +136,21 @@ classify_server <- function(id, rv, settings) {
       if (!identical(v, isTRUE(input$specifiers)))
         shinyWidgets::updateMaterialSwitch(session, "specifiers", value = v)
     }, ignoreInit = TRUE)
+
+    # ---- "results current vs out of date" tracking --------------------------
+    # Changing the systems, gap-fill options, depth switches or the pedon after
+    # a run means the shown results no longer reflect the settings -> prompt the
+    # user to press Classify again. Reset to fresh on every run.
+    # has_run gates every read of results(): an eventReactive is in a "pending"
+    # state before its first event, and reading it there suspends the output
+    # (endless spinner). has_run only becomes TRUE once Classify is pressed.
+    has_run <- shiny::reactiveVal(FALSE)
+    stale   <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$run, { has_run(TRUE); stale(FALSE) })
+    shiny::observeEvent(
+      list(input$systems, input$gapfill_methods, input$include_family,
+           input$specifiers, rv$pedon),
+      { if (has_run()) stale(TRUE) }, ignoreInit = TRUE)
 
     results <- shiny::eventReactive(input$run, {
       shiny::req(rv$pedon)
@@ -157,15 +194,38 @@ classify_server <- function(id, rv, settings) {
       )
     })
 
+    # ---- run-state hint under the Classify button ---------------------------
+    output$run_status <- shiny::renderUI({
+      if (is.null(rv$pedon))
+        return(shiny::div(class = "small text-muted mt-2",
+                          shiny::icon("circle-info"), " ",
+                          i18n("classify.hint_need_pedon")))
+      if (!has_run())
+        return(shiny::div(class = "small text-muted mt-2",
+                          shiny::icon("hand-pointer"), " ",
+                          i18n("classify.hint_press")))
+      if (isTRUE(stale()))
+        return(shiny::div(class = "small mt-2",
+                          style = "color:#8a5a00;font-weight:600;",
+                          shiny::icon("triangle-exclamation"), " ",
+                          i18n("classify.hint_stale")))
+      shiny::div(class = "small mt-2", style = "color:#3f6024;",
+                 shiny::icon("circle-check"), " ", i18n("classify.hint_current"))
+    })
+
     output$body <- shiny::renderUI({
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
-      if (is.null(results())) {
+      if (!has_run() || is.null(results())) {
         return(shiny::div(class = "text-muted p-4 text-center",
                           shiny::icon("play"),
                           i18n("classify.press_classify")))
       }
       shiny::tagList(
+        if (isTRUE(stale())) shiny::div(
+          class = "alert alert-warning py-2 px-3 small mb-2 d-flex align-items-center gap-2",
+          shiny::icon("triangle-exclamation"),
+          shiny::span(i18n("classify.stale_banner"))),
         bslib::layout_column_wrap(
           width = 1 / 3,
           pro_result_card(results()$wrb,   "WRB 2022"),
@@ -176,6 +236,7 @@ classify_server <- function(id, rv, settings) {
           title = i18n("classify.decision_detail"),
           bslib::nav_panel(
             i18n("classify.key_trace"),
+            shiny::helpText(i18n("classify.trace_intro")),
             shiny::selectInput(ns("trace_sys"), i18n("classify.system"),
                                choices = c("WRB" = "wrb", "SiBCS" = "sibcs",
                                            "USDA" = "usda"),
@@ -188,8 +249,7 @@ classify_server <- function(id, rv, settings) {
           ),
           bslib::nav_panel(
             i18n("classify.missing_data"),
-            shiny::helpText(i18n("classify.measuring_refine")),
-            shiny::verbatimTextOutput(ns("missing"))
+            shiny::uiOutput(ns("missing"))
           )
         )
       )
@@ -235,11 +295,14 @@ classify_server <- function(id, rv, settings) {
                         i18n("classify.col_status"), i18n("classify.col_missing"))
       DT::datatable(disp, rownames = FALSE, colnames = colnames_loc,
                     options = list(pageLength = 15, dom = "tip")) |>
+        # "not met" is the NORMAL case (most candidate classes don't apply), so
+        # colour it neutral grey -- not alarming red. Only the assigned class and
+        # a met criterion are highlighted; "needs data" is a soft amber.
         DT::formatStyle(
           "status",
           backgroundColor = DT::styleEqual(
-            c(pass_lbl, fail_lbl, lbl[["selected"]]),
-            c("#d1e7dd", "#f8d7da", "#cfe2ff")))
+            c(pass_lbl, fail_lbl, lbl[["selected"]], lbl[["indeterminate"]]),
+            c("#d1e7dd", "#eef1f3", "#cfe2ff", "#fff3cd")))
     })
 
     output$ambiguities <- shiny::renderUI({
@@ -247,28 +310,45 @@ classify_server <- function(id, rv, settings) {
       shiny::req(res)
       amb <- res$wrb$ambiguities %||% list()
       if (length(amb) == 0L) {
-        return(shiny::div(class = "text-muted",
+        return(shiny::div(class = "text-muted p-2",
+                          shiny::icon("circle-check"), " ",
                           i18n("classify.no_close_calls")))
       }
-      shiny::tags$ul(lapply(amb, function(a) {
-        shiny::tags$li(
-          shiny::strong(a$name %||% a$code %||% "?"), i18n("classify.amb_sep"),
-          a$reason %||% a$note %||% i18n("classify.near_miss")
-        )
-      }))
+      shiny::tagList(
+        shiny::helpText(i18n("classify.amb_intro")),
+        shiny::tags$ul(class = "sk-amb-list", lapply(amb, function(a) {
+          shiny::tags$li(
+            shiny::strong(a$name %||% a$code %||% "?"),
+            i18n("classify.amb_sep"),
+            a$reason %||% a$note %||% i18n("classify.near_miss"))
+        }))
+      )
     })
 
-    output$missing <- shiny::renderText({
+    output$missing <- shiny::renderUI({
       res <- results()
       shiny::req(res)
-      miss <- character(0)
+      # Per-system so the user sees which measurement each key still wants.
+      blocks <- list()
       for (nm in c("wrb", "sibcs", "usda")) {
         r <- res[[nm]]
-        if (!is.null(r) && !inherits(r, "error"))
-          miss <- unique(c(miss, r$missing_data %||% character(0)))
+        if (is.null(r) || inherits(r, "error")) next
+        m <- sort(unique(r$missing_data %||% character(0)))
+        if (!length(m)) next
+        blocks[[length(blocks) + 1L]] <- shiny::div(
+          class = "mb-3",
+          shiny::tags$strong(c(wrb = "WRB 2022", sibcs = "SiBCS 5",
+                               usda = "USDA ST 13")[[nm]]),
+          shiny::tags$ul(class = "sk-missing-list", lapply(m, function(a)
+            shiny::tags$li(
+              .classify_pretty_attr(a),
+              shiny::tags$code(class = "ms-2", a)))))
       }
-      if (length(miss) == 0L) i18n("classify.no_missing_complete")
-      else paste(sort(miss), collapse = "\n")
+      if (length(blocks) == 0L)
+        return(shiny::div(class = "text-muted p-2",
+                          shiny::icon("circle-check"), " ",
+                          i18n("classify.no_missing_complete")))
+      shiny::tagList(shiny::helpText(i18n("classify.measuring_refine")), blocks)
     })
 
     # Expose results so the Report module can reuse them.

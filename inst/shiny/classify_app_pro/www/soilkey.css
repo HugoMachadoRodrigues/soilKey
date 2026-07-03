@@ -294,3 +294,25 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 [data-bs-theme="dark"] .sk-ack-note { background: #1f1912; border-color: var(--sk-line); }
 [data-bs-theme="dark"] .btn-primary { color: #17120d; }                      /* dark text on light-brown btn */
 [data-bs-theme="dark"] .btn-group .btn.active, [data-bs-theme="dark"] .radiobtn.active { color: #17120d; }
+
+/* ---- navbar language selector (EN/PT) + dark-mode toggle (v0.9.172) -------
+   The navbar is always the dark espresso colour (both themes), so these are
+   theme-independent: high-contrast light text/borders, a warm clay pill for the
+   selected language. Fixes the near-invisible EN/PT buttons. */
+.navbar .btn-group { border-radius: 0.45rem; overflow: hidden; }
+.navbar .btn-group .btn, .navbar .radiobtn {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  font-weight: 700; letter-spacing: 0.3px; padding: 0.12rem 0.6rem;
+}
+.navbar .btn-group .btn:hover, .navbar .radiobtn:hover {
+  background: rgba(255, 255, 255, 0.16); color: #fff;
+}
+.navbar .btn-group .btn.active, .navbar .radiobtn.active {
+  background: var(--sk-clay); color: var(--sk-espresso) !important;
+  border-color: var(--sk-clay);
+}
+/* the sun/moon dark-mode toggle: keep it visible on the espresso navbar */
+.navbar bslib-input-dark-mode { color: #fff; opacity: 0.9; margin-left: 0.25rem; }
+.navbar bslib-input-dark-mode:hover { opacity: 1; }
