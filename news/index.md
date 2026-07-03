@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.173 (2026-07-03)
+
+Spectra and Photo tab fixes.
+
 ## soilKey 0.9.172 (2026-07-03)
 
 Classify-tab clarity and a navbar contrast fix.
