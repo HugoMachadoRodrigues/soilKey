@@ -40,30 +40,70 @@ map_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5(i18n("mpoint.sidebar_title")),
-      shiny::uiOutput(ns("coords")),
-      shiny::selectInput(ns("basemap"), i18n("mpoint.base_map"),
-                         choices = .map_basemaps(), selected = "OpenStreetMap"),
-      shiny::selectInput(ns("system"), i18n("mpoint.classification_system"),
-                         choices = c("WRB 2022"     = "wrb2022",
-                                     "USDA ST 13"    = "usda",
-                                     "SiBCS 5"       = "sibcs"),
-                         selected = "wrb2022"),
-      shiny::textInput(ns("source_url"), i18n("mpoint.soilgrids_raster"),
-                       placeholder = i18n("mpoint.raster_placeholder")),
-      shiny::helpText(
-        i18n("mpoint.raster_help")
+
+      sk_section(
+        i18n("mpoint.sidebar_title"),
+        desc = "Click the map to drop a point, or load a pedon to reuse its coordinate.",
+        icon = "location-dot",
+        shiny::uiOutput(ns("coords")),
+        shiny::selectInput(
+          ns("basemap"),
+          sk_label(i18n("mpoint.base_map"),
+                   "Background tile layer for the map. Satellite helps you spot the exact field or landform."),
+          choices = .map_basemaps(), selected = "OpenStreetMap")
       ),
-      shiny::numericInput(ns("buffer"), i18n("mpoint.buffer_radius"), 1000,
-                          min = 100, max = 20000, step = 100),
-      shiny::numericInput(ns("topn"), i18n("mpoint.keep_top_n"), 5,
-                          min = 1, max = 30, step = 1),
-      shiny::actionButton(ns("run"), i18n("mpoint.query_prior"),
-                          icon = shiny::icon("satellite"),
-                          class = "btn-primary w-100"),
-      shiny::helpText(
-        shiny::icon("hand-pointer"),
-        i18n("mpoint.click_to_place")
+
+      sk_section(
+        i18n("mpoint.classification_system"),
+        desc = "Which soil taxonomy the class probabilities are reported in.",
+        icon = "sliders",
+        shiny::selectInput(
+          ns("system"),
+          sk_label(i18n("mpoint.classification_system"),
+                   "Taxonomy for the returned classes: WRB reference groups, USDA great groups, or SiBCS orders."),
+          choices = c("WRB 2022"     = "wrb2022",
+                      "USDA ST 13"    = "usda",
+                      "SiBCS 5"       = "sibcs"),
+          selected = "wrb2022")
+      ),
+
+      sk_section(
+        i18n("mpoint.soilgrids_raster"),
+        desc = "Where the class prior is read from and how much ground it covers.",
+        icon = "map-location-dot",
+        shiny::textInput(
+          ns("source_url"),
+          sk_label(i18n("mpoint.soilgrids_raster"),
+                   "Optional path or URL to a class raster. Leave blank to use the bundled SoilGrids prior."),
+          placeholder = i18n("mpoint.raster_placeholder")),
+        shiny::helpText(
+          i18n("mpoint.raster_help")
+        ),
+        shiny::numericInput(
+          ns("buffer"),
+          sk_label(i18n("mpoint.buffer_radius"),
+                   "Radius in metres of the neighbourhood sampled around the point. Larger averages over more pixels."),
+          1000, min = 100, max = 20000, step = 100),
+        shiny::numericInput(
+          ns("topn"),
+          sk_label(i18n("mpoint.keep_top_n"),
+                   "How many of the most probable classes to keep in the results table."),
+          5, min = 1, max = 30, step = 1)
+      ),
+
+      sk_section(
+        i18n("mpoint.query_prior"),
+        desc = "Sample the raster at the point and rank the classes found there.",
+        icon = "satellite",
+        bslib::tooltip(
+          shiny::actionButton(ns("run"), i18n("mpoint.query_prior"),
+                              icon = shiny::icon("satellite"),
+                              class = "btn-primary w-100"),
+          "Read the class prior at the current point and show its probability distribution."),
+        shiny::helpText(
+          shiny::icon("hand-pointer"),
+          i18n("mpoint.click_to_place")
+        )
       )
     ),
     bslib::layout_column_wrap(
@@ -79,11 +119,15 @@ map_ui <- function(id) {
         width = 1 / 2,
         bslib::card(
           bslib::card_header(i18n("mpoint.class_distribution")),
-          bslib::card_body(DT::DTOutput(ns("dist_table")))
+          bslib::card_body(
+            shiny::helpText("Soil classes ranked by their probability within the sampled neighbourhood."),
+            DT::DTOutput(ns("dist_table")))
         ),
         bslib::card(
           bslib::card_header(i18n("mpoint.typical_attributes")),
-          bslib::card_body(DT::DTOutput(ns("attrs_table")))
+          bslib::card_body(
+            shiny::helpText("Representative properties expected for the top class at this location."),
+            DT::DTOutput(ns("attrs_table")))
         )
       )
     )

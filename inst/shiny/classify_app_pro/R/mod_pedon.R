@@ -32,51 +32,89 @@ pedon_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 340,
-      shiny::h5(i18n("pedon.seed_profile")),
-      shinyWidgets::radioGroupButtons(
-        ns("source"), NULL,
-        choices = stats::setNames(
-          c("fixture", "upload", "blank"),
-          c(i18n("pedon.source_fixture"), i18n("pedon.source_upload"),
-            i18n("pedon.source_blank"))),
-        selected = "fixture", justified = TRUE, size = "sm"
-      ),
-      shiny::conditionalPanel(
-        sprintf("input['%s'] == 'fixture'", ns("source")),
-        shinyWidgets::pickerInput(
-          ns("fixture"), i18n("pedon.canonical_profile"),
-          choices  = pro_fixture_catalog(),
-          selected = "make_ferralsol_canonical",
-          options  = list(`live-search` = TRUE)
+      sk_section(
+        i18n("pedon.seed_profile"),
+        icon = "layer-group",
+        desc = "Start from a reference profile, your own CSV, or a blank sheet.",
+        shinyWidgets::radioGroupButtons(
+          ns("source"), NULL,
+          choices = stats::setNames(
+            c("fixture", "upload", "blank"),
+            c(i18n("pedon.source_fixture"), i18n("pedon.source_upload"),
+              i18n("pedon.source_blank"))),
+          selected = "fixture", justified = TRUE, size = "sm"
+        ),
+        shiny::conditionalPanel(
+          sprintf("input['%s'] == 'fixture'", ns("source")),
+          shinyWidgets::pickerInput(
+            ns("fixture"),
+            sk_label(i18n("pedon.canonical_profile"),
+                     "A curated, textbook profile you can load and edit as a starting point."),
+            choices  = pro_fixture_catalog(),
+            selected = "make_ferralsol_canonical",
+            options  = list(`live-search` = TRUE)
+          )
+        ),
+        shiny::conditionalPanel(
+          sprintf("input['%s'] == 'upload'", ns("source")),
+          shiny::fileInput(ns("csv"),
+                           sk_label(i18n("pedon.horizons_csv_tsv"),
+                                    "One row per horizon, with depth and lab columns. Download the starter file to see the expected layout."),
+                           accept = c(".csv", ".tsv", ".txt")),
+          shiny::downloadLink(ns("template"), i18n("pedon.download_starter_csv"))
+        ),
+        bslib::tooltip(
+          shiny::actionButton(ns("load"), i18n("pedon.load_horizons"),
+                              icon = shiny::icon("upload"),
+                              class = "btn-secondary w-100"),
+          "Load the chosen source into the editable horizon table below."
         )
       ),
-      shiny::conditionalPanel(
-        sprintf("input['%s'] == 'upload'", ns("source")),
-        shiny::fileInput(ns("csv"), i18n("pedon.horizons_csv_tsv"),
-                         accept = c(".csv", ".tsv", ".txt")),
-        shiny::downloadLink(ns("template"), i18n("pedon.download_starter_csv"))
+      sk_section(
+        i18n("pedon.site_metadata"),
+        icon = "location-dot",
+        desc = "Where the profile sits and what it formed on — used for regional priors.",
+        shiny::textInput(ns("site_id"),
+                         sk_label(i18n("pedon.profile_id"),
+                                  "A short label for this profile. It names your downloads and appears in the results."),
+                         "demo-pedon-01"),
+        shiny::fluidRow(
+          shiny::column(6, shiny::numericInput(
+            ns("lat"),
+            sk_label(i18n("pedon.latitude"),
+                     "Decimal degrees, from -90 to 90. Optional, but enables the SoilGrids and climate priors."),
+            -22.5, step = 0.01)),
+          shiny::column(6, shiny::numericInput(
+            ns("lon"),
+            sk_label(i18n("pedon.longitude"),
+                     "Decimal degrees, from -180 to 180. Negative is west. Optional but recommended."),
+            -43.7, step = 0.01))
+        ),
+        shiny::fluidRow(
+          shiny::column(6, shiny::textInput(
+            ns("country"),
+            sk_label(i18n("pedon.country_iso2"),
+                     "Two-letter ISO country code, e.g. BR for Brazil. Helps regional defaults."),
+            "BR")),
+          shiny::column(6, shiny::textInput(
+            ns("pm"),
+            sk_label(i18n("pedon.parent_material"),
+                     "The rock or deposit the soil formed on, e.g. gneiss, basalt, alluvium."),
+            "gneiss"))
+        )
       ),
-      shiny::actionButton(ns("load"), i18n("pedon.load_horizons"),
-                          icon = shiny::icon("upload"),
-                          class = "btn-secondary w-100"),
-      shiny::tags$hr(),
-      shiny::h5(i18n("pedon.site_metadata")),
-      shiny::textInput(ns("site_id"), i18n("pedon.profile_id"), "demo-pedon-01"),
-      shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lat"), i18n("pedon.latitude"), -22.5,
-                                             step = 0.01)),
-        shiny::column(6, shiny::numericInput(ns("lon"), i18n("pedon.longitude"), -43.7,
-                                             step = 0.01))
-      ),
-      shiny::fluidRow(
-        shiny::column(6, shiny::textInput(ns("country"), i18n("pedon.country_iso2"), "BR")),
-        shiny::column(6, shiny::textInput(ns("pm"), i18n("pedon.parent_material"), "gneiss"))
-      ),
-      shiny::tags$hr(),
-      shiny::actionButton(ns("build"), i18n("pedon.build_update_pedon"),
-                          icon = shiny::icon("hammer"),
-                          class = "btn-primary w-100"),
-      shiny::uiOutput(ns("status"))
+      sk_section(
+        i18n("pedon.build_update_pedon"),
+        icon = "hammer",
+        desc = "Assemble the profile so the other tabs can classify it.",
+        bslib::tooltip(
+          shiny::actionButton(ns("build"), i18n("pedon.build_update_pedon"),
+                              icon = shiny::icon("hammer"),
+                              class = "btn-primary w-100"),
+          "Check the horizon geometry and coordinates, then build the pedon used by every other tab."
+        ),
+        shiny::uiOutput(ns("status"))
+      )
     ),
     bslib::layout_column_wrap(
       width = 1,
@@ -87,14 +125,19 @@ pedon_ui <- function(id) {
                      shiny::strong(i18n("pedon.horizons_click_edit")),
                      shiny::div(
                        class = "d-flex gap-2",
-                       shiny::downloadButton(ns("download_hz"), i18n("pedon.csv"),
-                                             icon = shiny::icon("download"),
+                       bslib::tooltip(
+                         shiny::downloadButton(ns("download_hz"), i18n("pedon.csv"),
+                                               icon = shiny::icon("download"),
+                                               class = "btn-sm btn-outline-secondary"),
+                         "Save the current table as a CSV to edit offline or re-upload later."),
+                       bslib::tooltip(
+                         shiny::actionButton(ns("add_row"), i18n("pedon.add_row"),
+                                             icon = shiny::icon("plus"),
                                              class = "btn-sm btn-outline-secondary"),
-                       shiny::actionButton(ns("add_row"), i18n("pedon.add_row"),
-                                           icon = shiny::icon("plus"),
-                                           class = "btn-sm btn-outline-secondary")))
+                         "Append a new horizon below, continuing from the deepest depth.")))
         ),
         bslib::card_body(
+          shiny::helpText("Click any cell to edit it. Depths are in centimetres; leave a lab value blank if unmeasured."),
           DT::DTOutput(ns("hz_table")),
           shiny::uiOutput(ns("geom_status")))
       ),
@@ -102,9 +145,11 @@ pedon_ui <- function(id) {
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
                      shiny::strong(i18n("pedon.depth_profile")),
-                     shiny::selectInput(ns("plot_attr"), NULL,
-                                        choices = pro_numeric_attrs(),
-                                        selected = "clay_pct", width = "180px"))
+                     bslib::tooltip(
+                       shiny::selectInput(ns("plot_attr"), NULL,
+                                          choices = pro_numeric_attrs(),
+                                          selected = "clay_pct", width = "180px"),
+                       "Choose which lab attribute to plot against depth."))
         ),
         bslib::card_body(plotly::plotlyOutput(ns("profile"), height = "320px"))
       )

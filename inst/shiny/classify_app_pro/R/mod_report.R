@@ -12,20 +12,35 @@ report_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 300,
-      shiny::h5(i18n("report.title")),
-      shiny::textInput(ns("title"), i18n("report.report_title_label"), "soilKey classification"),
-      shiny::helpText(
-        i18n("report.help_runs_all_keys")
+      sk_section(
+        i18n("report.title"),
+        desc = "Build a shareable report of the classification and download it.",
+        icon = "file-arrow-down",
+        shiny::textInput(
+          ns("title"),
+          sk_label(
+            i18n("report.report_title_label"),
+            "A heading printed at the top of the report -- use the site, profile, or project name."),
+          "soilKey classification"),
+        shiny::helpText(i18n("report.help_runs_all_keys"))
       ),
-      shiny::tags$hr(),
-      shiny::downloadButton(ns("html"), i18n("report.download_html"),
-                            icon = shiny::icon("file-code"),
-                            class = "btn-primary w-100"),
-      shiny::tags$br(), shiny::tags$br(),
-      shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
-                            icon = shiny::icon("file-pdf"),
-                            class = "btn-secondary w-100"),
-      shiny::helpText(i18n("report.pdf_needs_latex"))
+      sk_section(
+        "Download",
+        desc = "HTML opens in any browser; PDF needs a LaTeX install.",
+        icon = "download",
+        bslib::tooltip(
+          shiny::downloadButton(ns("html"), i18n("report.download_html"),
+                                icon = shiny::icon("file-code"),
+                                class = "btn-primary w-100"),
+          "Build and download a self-contained HTML report: the WRB / SiBCS / USDA names, key trace, and evidence grade."),
+        shiny::tags$br(), shiny::tags$br(),
+        bslib::tooltip(
+          shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
+                                icon = shiny::icon("file-pdf"),
+                                class = "btn-secondary w-100"),
+          "Build and download the same report as a PDF. Requires a LaTeX installation (e.g. the tinytex package)."),
+        shiny::helpText(i18n("report.pdf_needs_latex"))
+      )
     ),
     shiny::uiOutput(ns("body"))
   )

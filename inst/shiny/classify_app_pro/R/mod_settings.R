@@ -14,62 +14,104 @@ settings_ui <- function(id) {
     bslib::card(
       bslib::card_header(i18n("settings.diagnostic_engine")),
       bslib::card_body(
-        shinyWidgets::radioGroupButtons(
-          ns("engine"), i18n("settings.threshold_engine"),
-          choices = stats::setNames(
-            c("soilkey", "aqp"),
-            c(i18n("settings.engine_soilkey"),
-              i18n("settings.engine_aqp"))
+        shiny::helpText(
+          "These options set how every classifier reads horizon data. ",
+          "They apply globally to all tabs of this session."
+        ),
+
+        sk_section(
+          i18n("settings.threshold_engine"),
+          desc = "Which set of numeric thresholds decides whether a horizon meets each diagnostic criterion.",
+          icon = "gear",
+          shinyWidgets::radioGroupButtons(
+            ns("engine"),
+            sk_label(i18n("settings.threshold_engine"),
+                     "soilKey uses the package's built-in thresholds; aqp defers to the aqp package where it has a matching rule."),
+            choices = stats::setNames(
+              c("soilkey", "aqp"),
+              c(i18n("settings.engine_soilkey"),
+                i18n("settings.engine_aqp"))
+            ),
+            selected = "soilkey", justified = TRUE
           ),
-          selected = "soilkey", justified = TRUE
+          shiny::helpText(
+            i18n("settings.engine_help")
+          )
         ),
-        shiny::helpText(
-          i18n("settings.engine_help")
-        ),
-        shiny::tags$hr(),
-        shinyWidgets::materialSwitch(
-          ns("strict"), i18n("settings.strict_mode"),
-          value = FALSE, status = "danger"
-        ),
-        shiny::helpText(
-          i18n("settings.strict_help")
-        ),
-        shinyWidgets::materialSwitch(
-          ns("specifiers"), i18n("settings.specifiers"),
-          value = FALSE, status = "primary"
-        ),
-        shiny::helpText(
-          i18n("settings.specifiers_help")
+
+        sk_section(
+          i18n("settings.strict_mode"),
+          desc = "How deep the classification goes below the reference group or order.",
+          icon = "sliders",
+          shinyWidgets::materialSwitch(
+            ns("strict"),
+            sk_label(i18n("settings.strict_mode"),
+                     "When on, a class is only assigned if every required diagnostic is met; borderline profiles stay unclassified rather than being forced."),
+            value = FALSE, status = "danger"
+          ),
+          shiny::helpText(
+            i18n("settings.strict_help")
+          ),
+          shinyWidgets::materialSwitch(
+            ns("specifiers"),
+            sk_label(i18n("settings.specifiers"),
+                     "Add WRB principal and supplementary qualifiers (the words before and after the reference group) to the result."),
+            value = FALSE, status = "primary"
+          ),
+          shiny::helpText(
+            i18n("settings.specifiers_help")
+          )
         )
       )
     ),
     bslib::card(
       bslib::card_header(i18n("settings.missing_data_policy")),
       bslib::card_body(
-        shinyWidgets::radioGroupButtons(
-          ns("on_missing"), i18n("settings.on_missing_label"),
-          choices = stats::setNames(
-            c("warn", "silent", "error"),
-            c(i18n("settings.on_missing_warn"),
-              i18n("settings.on_missing_silent"),
-              i18n("settings.on_missing_error"))
+        shiny::helpText(
+          "Control how missing measurements are handled and how much taxonomic ",
+          "detail the classifiers report."
+        ),
+
+        sk_section(
+          i18n("settings.on_missing_label"),
+          desc = "What the classifier does when a horizon lacks a value a rule needs.",
+          icon = "flask",
+          shinyWidgets::radioGroupButtons(
+            ns("on_missing"),
+            sk_label(i18n("settings.on_missing_label"),
+                     "Warn keeps going but flags gaps; Silent skips the affected rules quietly; Error stops so nothing is guessed."),
+            choices = stats::setNames(
+              c("warn", "silent", "error"),
+              c(i18n("settings.on_missing_warn"),
+                i18n("settings.on_missing_silent"),
+                i18n("settings.on_missing_error"))
+            ),
+            selected = "silent", justified = TRUE
           ),
-          selected = "silent", justified = TRUE
+          shiny::helpText(
+            i18n("settings.on_missing_help")
+          )
         ),
-        shiny::helpText(
-          i18n("settings.on_missing_help")
-        ),
-        shiny::tags$hr(),
-        shiny::checkboxInput(
-          ns("include_familia"), i18n("settings.include_familia"),
-          value = TRUE
-        ),
-        shiny::checkboxInput(
-          ns("include_family"), i18n("settings.include_family"),
-          value = FALSE
-        ),
-        shiny::helpText(
-          i18n("settings.family_help")
+
+        sk_section(
+          i18n("settings.include_familia"),
+          desc = "Whether to resolve the deepest, lowest-level categories in each taxonomy.",
+          icon = "layer-group",
+          shiny::checkboxInput(
+            ns("include_familia"),
+            sk_label(i18n("settings.include_familia"),
+                     "Also derive the SiBCS 'família' level (texture, mineralogy and other family attributes) beneath the subgroup."),
+            value = TRUE
+          ),
+          shiny::checkboxInput(
+            ns("include_family"),
+            sk_label(i18n("settings.include_family"),
+                     "Also derive the USDA Soil Taxonomy family level (particle-size, mineralogy and temperature classes) beneath the subgroup."),
+            value = FALSE
+          ),
+          shiny::helpText(
+            i18n("settings.family_help")
+          )
         )
       )
     )

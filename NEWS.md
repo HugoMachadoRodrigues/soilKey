@@ -1,3 +1,23 @@
+# soilKey 0.9.162 (2026-06-30)
+
+A full professional redesign of the Pro app (\code{run_classify_app()}) so it is
+ready to share with the community. No change to the classification engine.
+
+\itemize{
+  \item \strong{Refined design system.} A new earth-tone palette (topsoil brown,
+        terracotta subsoil, moss, plus a slate accent for data cues), clearer
+        typographic hierarchy, softer cards, and a consistent look across every
+        tab (\code{www/soilkey.css} + the \code{bs_theme()} palette).
+  \item \strong{Every control is explained.} A shared set of UI helpers
+        (\code{sk_section()}, \code{sk_label()}, \code{sk_tip()}) groups each tab
+        into titled sections with one-line descriptions and adds an info tooltip
+        to every input and action button, in plain English.
+  \item \strong{All 11 modules redesigned} - Pedon, Classify, Photo, Spectra,
+        Spatial, Map (Point / Batch / Grid), Uncertainty, Report and Settings -
+        with tidy, professional layouts and panel intros.
+  \item The soilKey logo sits in the navbar; the active tab is underlined.
+}
+
 # soilKey 0.9.161 (2026-06-30)
 
 Pro app (\code{run_classify_app()}) UX fixes.

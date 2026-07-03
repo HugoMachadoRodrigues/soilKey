@@ -50,11 +50,21 @@ library(soilKey)
 # UI -- a per-session function so i18n() picks up the current language.
 # ----------------------------------------------------------------------------
 
-# A soil-science palette layered on flatly (see www/soilkey.css for the rest).
+# A refined soil-science palette layered on flatly (see www/soilkey.css for the
+# full design system). Earth tones (topsoil brown, terracotta subsoil, moss)
+# with a cool slate `info` accent for measurement/data cues.
 sk_theme <- bslib::bs_theme(
   version = 5, bootswatch = "flatly",
-  primary = "#6B4423", secondary = "#A0522D", success = "#4F772D",
-  "navbar-bg" = "#6B4423"
+  primary   = "#7A5230",   # topsoil brown (buttons, active nav)
+  secondary = "#B5652E",   # terracotta subsoil (accents)
+  success   = "#5E7B3B",   # vegetation moss (positive states)
+  info      = "#4E6E81",   # slate (data / measurement cues)
+  warning   = "#C9962F",   # ochre
+  danger    = "#A63D40",   # oxidised red
+  "navbar-bg"          = "#4A3226",   # deep espresso
+  "border-radius"      = "0.55rem",
+  "border-radius-lg"   = "0.8rem",
+  "card-cap-bg"        = "#F3ECE2"
 )
 
 ui <- function(request) {

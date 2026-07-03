@@ -11,28 +11,52 @@ classify_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 300,
-      shiny::h5(i18n("classify.run_classification")),
-      shiny::checkboxGroupInput(
-        ns("systems"), i18n("classify.systems"),
-        choices  = c("WRB 2022" = "wrb2022", "SiBCS 5" = "sibcs",
-                     "USDA ST 13" = "usda"),
-        selected = c("wrb2022", "sibcs", "usda")
+      # ---- Which systems to run, and the run trigger --------------------
+      sk_section(
+        i18n("classify.run_classification"),
+        icon = "play",
+        desc = "Choose which classification systems to run on the current pedon, then start the key.",
+        shiny::checkboxGroupInput(
+          ns("systems"),
+          sk_label(
+            i18n("classify.systems"),
+            "Tick every system you want a name for; each is scored independently from the same pedon."
+          ),
+          choices  = c("WRB 2022" = "wrb2022", "SiBCS 5" = "sibcs",
+                       "USDA ST 13" = "usda"),
+          selected = c("wrb2022", "sibcs", "usda")
+        ),
+        bslib::tooltip(
+          shiny::actionButton(ns("run"), i18n("classify.run"),
+                              icon = shiny::icon("play"),
+                              class = "btn-primary w-100"),
+          "Run the deterministic keys and show the WRB, SiBCS and USDA names with their decision traces."
+        )
       ),
-      shiny::actionButton(ns("run"), i18n("classify.run"),
-                          icon = shiny::icon("play"),
-                          class = "btn-primary w-100"),
       shiny::tags$hr(),
       # The two deepest-level options live on the Settings tab, but they are
       # surfaced here too so the user can discover and flip them without
       # leaving Classify. Both switches two-way-sync with the shared rv, so
       # they stay identical to the Settings tab's controls.
-      shiny::h6(i18n("classify.deepest_level")),
-      shinyWidgets::materialSwitch(
-        ns("include_family"), i18n("classify.usda_family"),
-        value = FALSE, status = "primary"),
-      shinyWidgets::materialSwitch(
-        ns("specifiers"), i18n("classify.wrb_depth_specifiers"),
-        value = FALSE, status = "primary"),
+      sk_section(
+        i18n("classify.deepest_level"),
+        icon = "sliders",
+        desc = "Optional finer levels. These stay in sync with the same switches on the Settings tab.",
+        shinyWidgets::materialSwitch(
+          ns("include_family"),
+          sk_label(
+            i18n("classify.usda_family"),
+            "Add the USDA family level (texture, mineralogy, temperature) below the subgroup when data allow."
+          ),
+          value = FALSE, status = "primary"),
+        shinyWidgets::materialSwitch(
+          ns("specifiers"),
+          sk_label(
+            i18n("classify.wrb_depth_specifiers"),
+            "Append WRB depth specifiers (e.g. Epi-, Endo-) that record where a qualifier occurs in the profile."
+          ),
+          value = FALSE, status = "primary")
+      ),
       shiny::tags$hr(),
       shiny::helpText(
         i18n("classify.key_deterministic")

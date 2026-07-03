@@ -11,20 +11,55 @@ spatial_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5(i18n("spatial.title")),
-      shiny::uiOutput(ns("coords")),
-      shiny::textInput(ns("source_url"), i18n("spatial.raster_path_label"),
-                       placeholder = i18n("spatial.raster_path_placeholder")),
-      shiny::helpText(
-        i18n("spatial.raster_help")
+      sk_section(
+        i18n("spatial.title"),
+        desc = "Sample a SoilGrids WRB raster around the point for a spatial prior to cross-check the key.",
+        icon = "map-location-dot",
+        shiny::uiOutput(ns("coords"))
       ),
-      shiny::numericInput(ns("buffer"), i18n("spatial.buffer_label"), 250,
-                          min = 100, max = 5000, step = 50),
-      shiny::numericInput(ns("topn"), i18n("spatial.topn_label"), 10,
-                          min = 1, max = 30, step = 1),
-      shiny::actionButton(ns("run"), i18n("spatial.run"),
-                          icon = shiny::icon("satellite"),
-                          class = "btn-primary w-100"),
+      sk_section(
+        i18n("spatial.raster_path_label"),
+        desc = "Point to a local SoilGrids MostProbable raster; leave blank to use the packaged default.",
+        icon = "layer-group",
+        shiny::textInput(
+          ns("source_url"),
+          sk_label(
+            i18n("spatial.raster_path_label"),
+            "File path or URL of a SoilGrids MostProbable WRB raster. Leave empty to use the built-in source."
+          ),
+          placeholder = i18n("spatial.raster_path_placeholder")
+        ),
+        shiny::helpText(
+          i18n("spatial.raster_help")
+        )
+      ),
+      sk_section(
+        i18n("spatial.buffer_label"),
+        desc = "Set how the raster is sampled around the point and how many classes to report.",
+        icon = "sliders",
+        shiny::numericInput(
+          ns("buffer"),
+          sk_label(
+            i18n("spatial.buffer_label"),
+            "Radius in metres of the neighbourhood sampled around the point; larger values average over more terrain."
+          ),
+          250, min = 100, max = 5000, step = 50
+        ),
+        shiny::numericInput(
+          ns("topn"),
+          sk_label(
+            i18n("spatial.topn_label"),
+            "How many of the most probable reference soil groups to keep and display in the results."
+          ),
+          10, min = 1, max = 30, step = 1
+        )
+      ),
+      bslib::tooltip(
+        shiny::actionButton(ns("run"), i18n("spatial.run"),
+                            icon = shiny::icon("satellite"),
+                            class = "btn-primary w-100"),
+        "Query the raster at the coordinates and show the spatial distribution of reference soil groups."
+      ),
       shiny::helpText(i18n("spatial.requires_terra"))
     ),
     shiny::uiOutput(ns("body"))

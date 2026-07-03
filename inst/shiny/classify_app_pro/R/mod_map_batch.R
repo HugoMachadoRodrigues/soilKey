@@ -130,48 +130,101 @@ map_batch_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 330,
-      shiny::h5(i18n("mbatch.title")),
-      shinyWidgets::radioGroupButtons(
-        ns("source"),
+
+      # ---- 1. Where the profiles come from ----------------------------------
+      sk_section(
         i18n("mbatch.point_source"),
-        choices = stats::setNames(
-          c("demo", "upload"),
-          c(i18n("mbatch.source_demo"), i18n("mbatch.source_upload"))),
-        selected = "demo", justified = TRUE, size = "sm"),
-      shiny::conditionalPanel(
-        sprintf("input['%s'] == 'demo'", ns("source")),
-        shiny::numericInput(ns("n_demo"), i18n("mbatch.n_demo"), 12,
-                            min = 1, max = 60, step = 1)),
-      shiny::conditionalPanel(
-        sprintf("input['%s'] == 'upload'", ns("source")),
-        shiny::fileInput(ns("csv"), i18n("mbatch.long_csv"), accept = ".csv"),
-        shiny::helpText(
-          i18n("mbatch.csv_help"))),
-      shiny::selectInput(ns("system"), i18n("mbatch.colour_by_system"),
-                         choices = c("WRB 2022"  = "wrb",
-                                     "SiBCS 5"    = "sibcs",
-                                     "USDA ST 13" = "usda"),
-                         selected = "wrb"),
-      shiny::actionButton(ns("run"), i18n("mbatch.run"),
-                          icon = shiny::icon("layer-group"),
-                          class = "btn-primary w-100"),
-      shiny::downloadButton(ns("export"), i18n("mbatch.export"),
-                            class = "btn-outline-secondary w-100 mt-2"),
-      shiny::helpText(i18n("mbatch.deterministic_help"))
+        icon = "map-location-dot",
+        desc = "Choose the set of described profiles to classify and map.",
+        shinyWidgets::radioGroupButtons(
+          ns("source"),
+          sk_label(
+            i18n("mbatch.point_source"),
+            paste("Demo spreads canonical fixture profiles across Brazil;",
+                  "Upload reads your own long-format CSV of horizons.")),
+          choices = stats::setNames(
+            c("demo", "upload"),
+            c(i18n("mbatch.source_demo"), i18n("mbatch.source_upload"))),
+          selected = "demo", justified = TRUE, size = "sm"),
+        shiny::conditionalPanel(
+          sprintf("input['%s'] == 'demo'", ns("source")),
+          shiny::numericInput(
+            ns("n_demo"),
+            sk_label(
+              i18n("mbatch.n_demo"),
+              paste("How many demo profiles to place. They are spread",
+                    "deterministically over Brazil, so the map is reproducible.")),
+            12, min = 1, max = 60, step = 1)),
+        shiny::conditionalPanel(
+          sprintf("input['%s'] == 'upload'", ns("source")),
+          shiny::fileInput(
+            ns("csv"),
+            sk_label(
+              i18n("mbatch.long_csv"),
+              paste("Long-format CSV: one row per horizon, with an id column,",
+                    "lat/lon, and top_cm/bottom_cm plus horizon attributes.")),
+            accept = ".csv"),
+          shiny::helpText(i18n("mbatch.csv_help")))
+      ),
+
+      # ---- 2. How to colour the map -----------------------------------------
+      sk_section(
+        i18n("mbatch.colour_by_system"),
+        icon = "sliders",
+        desc = "Pick which classification system drives the map colours and legend.",
+        shiny::selectInput(
+          ns("system"),
+          sk_label(
+            i18n("mbatch.colour_by_system"),
+            paste("Every point is classified under all three systems;",
+                  "this only chooses which one colours the markers.")),
+          choices = c("WRB 2022"  = "wrb",
+                      "SiBCS 5"    = "sibcs",
+                      "USDA ST 13" = "usda"),
+          selected = "wrb")
+      ),
+
+      # ---- 3. Run + export ---------------------------------------------------
+      sk_section(
+        i18n("mbatch.run"),
+        icon = "play",
+        desc = "Classify the point set, then export the result for GIS.",
+        bslib::tooltip(
+          shiny::actionButton(
+            ns("run"), i18n("mbatch.run"),
+            icon = shiny::icon("layer-group"),
+            class = "btn-primary w-100"),
+          "Build one profile per point, classify each under all three systems, and plot them on the map."),
+        bslib::tooltip(
+          shiny::downloadButton(
+            ns("export"), i18n("mbatch.export"),
+            class = "btn-outline-secondary w-100 mt-2"),
+          "Save the classified points as a GeoPackage (.gpkg) you can open in QGIS or ArcGIS."),
+        shiny::helpText(i18n("mbatch.deterministic_help"))
+      )
     ),
     bslib::layout_column_wrap(
       width = 1, heights_equal = "row",
       bslib::card(
         bslib::card_header(i18n("mbatch.soil_map")),
-        bslib::card_body(padding = 0,
-                         leaflet::leafletOutput(ns("map"), height = "440px"))
+        bslib::card_body(
+          padding = 0,
+          shiny::helpText(
+            class = "px-3 pt-2 mb-1",
+            paste("Each marker is a classified profile, coloured by the chosen",
+                  "system. Click a point to see its WRB, SiBCS and USDA names.")),
+          leaflet::leafletOutput(ns("map"), height = "440px"))
       ),
       bslib::card(
         bslib::card_header(
           shiny::div(class = "d-flex justify-content-between align-items-center",
                      shiny::strong(i18n("mbatch.classified_points")),
                      shiny::uiOutput(ns("count"), inline = TRUE))),
-        bslib::card_body(DT::DTOutput(ns("table")))
+        bslib::card_body(
+          shiny::helpText(
+            paste("One row per mapped profile, with the class name it received",
+                  "in each of the three systems.")),
+          DT::DTOutput(ns("table")))
       )
     )
   )
