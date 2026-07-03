@@ -113,16 +113,13 @@ ui <- function(request) {
     bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
     bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo")),
     bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
-    # The former standalone "Spatial" tab was merged here: its SoilGrids
-    # class-prior-at-a-point is exactly what the "Point prior" sub-tab does
-    # (and more -- click-to-place, multiple systems, typical attributes).
+    # v0.9.174: the three former sub-tabs (Point prior / Batch / Grid) are now
+    # ONE square map driven by a mode selector, all centred on the same point,
+    # with a shared SoilGrids overlay -- so the point, its neighbours and the
+    # SoilGrids prior are seen together instead of on three unsynced maps.
     bslib::nav_panel(
       i18n("nav.map"), icon = icon("map-location-dot"),
-      bslib::navset_card_tab(
-        bslib::nav_panel(i18n("map.tab_point"), map_ui("map")),
-        bslib::nav_panel(i18n("map.tab_batch"), map_batch_ui("map_batch")),
-        bslib::nav_panel(i18n("map.tab_grid"),  map_grid_ui("map_grid"))
-      )
+      map_ui("map")
     ),
     bslib::nav_panel(i18n("nav.uncertainty"), icon = icon("dice"),         uncertainty_ui("uncertainty")),
     bslib::nav_panel(i18n("nav.report"),      icon = icon("file-arrow-down"), report_ui("report")),
@@ -263,9 +260,7 @@ server <- function(input, output, session) {
   classify_server("classify",      rv, settings)
   photo_server("photo",            rv)
   spectra_server("spectra",        rv)
-  map_server("map",                rv, settings)
-  map_batch_server("map_batch",    rv, settings)
-  map_grid_server("map_grid",      rv, settings)
+  map_server("map",                rv, settings)  # unified: point / batch / grid
   uncertainty_server("uncertainty", rv, settings)
   report_server("report",          rv, settings)
 

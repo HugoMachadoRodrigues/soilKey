@@ -185,6 +185,18 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   white-space: nowrap; border: 0;
 }
 
+/* ---- unified Map tab: keep the map square, not a wide banner ----------- */
+.sk-map-square {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+}
+.sk-map-square .leaflet-container {
+  height: 100% !important;
+  border-radius: 8px;
+}
+
 /* ---- responsive: usable down to a phone (~375px) ----------------------- */
 @media (max-width: 768px) {
   .leaflet-container, .plotly.html-widget,
