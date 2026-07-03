@@ -1,3 +1,18 @@
+# soilKey 0.9.159 (2026-06-30)
+
+\itemize{
+  \item \strong{New runnable example script} \code{inst/examples/exemplo_soilKey.R}
+        (PT-BR): a linear, loop-free, self-verifying tour of the main user-facing
+        functions -- build a \code{PedonRecord}, validate horizon geometry,
+        classify in WRB 2022 / SiBCS / USDA (single and combined), read the
+        evidence grade and key trace, per-attribute provenance, canonical
+        reference profiles, USDA/SiBCS family, within-pedon gap-fill, Vis-NIR ->
+        Munsell, cross-system correlation, coverage and an HTML report. Locate it
+        after install with \code{system.file("examples", "exemplo_soilKey.R",
+        package = "soilKey")}. Documentation only; no code or classification
+        change.
+}
+
 # soilKey 0.9.158 (2026-06-30)
 
 Follow-up refinements to the v0.9.156 Munsell-from-spectra fix, on further
