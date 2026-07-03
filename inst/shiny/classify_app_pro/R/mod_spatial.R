@@ -75,14 +75,23 @@ spatial_server <- function(id, rv, settings) {
       }
       if (inherits(p, "error")) {
         return(bslib::card(
-          bslib::card_header(i18n("spatial.unavailable_header")),
-          bslib::card_body(
-            shiny::tags$p(class = "text-danger", conditionMessage(p)),
+          class = "sk-empty-state",
+          bslib::card_body(shiny::div(
+            class = "text-center",
+            shiny::icon("earth-americas", class = "fa-2x text-secondary mb-2"),
+            shiny::tags$h5(i18n("spatial.unavailable_header")),
+            shiny::tags$p(class = "text-body-secondary mx-auto",
+                          style = "max-width: 46ch;",
+                          i18n("spatial.unavailable_body")),
             shiny::helpText(
               i18n("spatial.provide_raster_pre"),
               shiny::tags$code("options(soilKey.test_raster = '...')"),
-              i18n("spatial.provide_raster_post"))
-          )
+              i18n("spatial.provide_raster_post")),
+            shiny::tags$details(
+              class = "small text-muted mt-2 d-inline-block text-start",
+              shiny::tags$summary(i18n("spatial.unavailable_details")),
+              shiny::tags$code(conditionMessage(p)))
+          ))
         ))
       }
       bslib::layout_column_wrap(

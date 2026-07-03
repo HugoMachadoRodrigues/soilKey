@@ -60,6 +60,8 @@ sk_theme <- bslib::bs_theme(
 ui <- function(request) {
   bslib::page_navbar(
     title  = tags$span(class = "navbar-brand-inner",
+                       tags$img(src = "logo.png", class = "sk-logo",
+                                alt = "soilKey", height = "34"),
                        "soil", tags$span(class = "sk-mark", "Key"),
                        i18n("app.brand_suffix")),
     id     = "main_nav",

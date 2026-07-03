@@ -19,6 +19,17 @@
   letter-spacing: 0.2px;
 }
 .navbar-brand .sk-mark { color: var(--sk-terra); }
+.navbar-brand-inner { display: inline-flex; align-items: center; }
+.sk-logo {
+  height: 34px;
+  width: auto;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  /* the hex sticker sits on a cream background; a soft ring lifts it off the
+     dark navbar without a hard box. */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+@media (max-width: 768px) { .sk-logo { height: 28px; } }
 
 /* ---- the pedon ribbon (global status bar under the navbar) -------------- */
 .sk-ribbon {
@@ -124,3 +135,11 @@
   .sk-ribbon { flex-direction: column; align-items: flex-start; }
   .navbar-brand-inner { font-size: 1rem; }
 }
+
+/* ---- empty-state panels (optional-feature placeholders) ----------------- */
+.sk-empty-state {
+  border: 1px dashed var(--bs-border-color, #d9cfc4);
+  background: #faf8f5;
+}
+.sk-empty-state .card-body { padding: 2.25rem 1.5rem; }
+.sk-empty-state summary { cursor: pointer; }
