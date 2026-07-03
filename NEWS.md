@@ -1,3 +1,23 @@
+# soilKey 0.9.171 (2026-07-03)
+
+App polish and a fix to the gridded SoilGrids prediction.
+
+\itemize{
+  \item \strong{Dark mode.} The Pro app now follows the operating-system colour
+        scheme automatically and adds a sun/moon toggle in the navbar to switch
+        light/dark by hand. The dark palette keeps every text/background pair
+        above WCAG AA (labels and headings ~16:1, secondary text ~8:1).
+  \item \strong{Browser-tab icon.} The soilKey logo is now the app's favicon.
+  \item \strong{Gridded "SoilGrids covariates" prediction fixed.} The method
+        appeared broken because it sampled the six covariates at two depths
+        \emph{serially} over the network -- twelve \code{/vsicurl} reads at
+        ~30-60 s each, i.e. several minutes of apparent freeze. The reads now run
+        in parallel (a PSOCK cluster) with GDAL \code{/vsicurl} tuning, cutting a
+        run to about a minute; an injected sampler (offline tests) still runs
+        serially. The help text sets the expectation that it samples SoilGrids
+        live.
+}
+
 # soilKey 0.9.170 (2026-07-03)
 
 Two small app fixes.

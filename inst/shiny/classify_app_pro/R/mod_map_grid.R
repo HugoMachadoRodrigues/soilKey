@@ -54,6 +54,98 @@
                             quantile = "mean")
 }
 
+# SoilGrids /vsicurl COGs are slow to OPEN (~30-60s each) because GDAL lists the
+# remote directory by default. These settings skip that and enable HTTP/2 +
+# caching, roughly halving each open.
+.grid_set_gdal_fast <- function() {
+  if (!requireNamespace("terra", quietly = TRUE)) return(invisible())
+  for (cfg in c("GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR",
+                "GDAL_HTTP_VERSION=2", "GDAL_HTTP_MULTIPLEX=YES",
+                "VSI_CACHE=TRUE", "GDAL_HTTP_TIMEOUT=45",
+                "CPL_VSIL_CURL_ALLOWED_EXTENSIONS=.vrt,.tif"))
+    try(terra::setGDALconfig(cfg), silent = TRUE)
+  invisible()
+}
+
+# SoilGrids integer -> conventional-unit scale (matches lookup_soilgrids, so the
+# parallel path returns the same units). Covariate properties are all 0.1; the
+# others are kept for correctness if the covariate map changes.
+.GRID_SG_SCALE <- c(clay = 0.1, sand = 0.1, silt = 0.1, phh2o = 0.1,
+                    soc = 0.1, cec = 0.1, bdod = 0.01, nitrogen = 0.01,
+                    cfvo = 0.1, ocd = 0.1, ocs = 0.1)
+
+# Sample the (property x depth) SoilGrids layers over the whole grid IN PARALLEL
+# (PSOCK): the reads are independent and each ~30s, so serial takes minutes.
+# The worker uses ONLY terra (NOT soilKey) so PSOCK workers start fast and do
+# not thrash the machine loading the full package; it re-implements the thin
+# /vsicurl read + conventional-unit scaling of lookup_soilgrids(). Returns a
+# list of numeric vectors in `tasks` row order (conventional units), or NULL if
+# a cluster cannot be created / the run fails. PSOCK (not fork) because
+# terra/GDAL is not fork-safe.
+.grid_sample_parallel <- function(coords, tasks, depths) {
+  if (!requireNamespace("parallel", quietly = TRUE) ||
+      !requireNamespace("terra", quietly = TRUE)) return(NULL)
+  base  <- "https://files.isric.org/soilgrids/latest/data"
+  urls  <- sprintf("/vsicurl/%s/%s/%s_%s_mean.vrt", base, tasks$pn, tasks$pn,
+                   vapply(tasks$dn, function(d) depths[[d]], character(1)))
+  scl   <- unname(.GRID_SG_SCALE[tasks$pn]); scl[is.na(scl)] <- 0.1
+  cdf   <- as.data.frame(coords)                       # cols x (lon), y (lat)
+  names(cdf)[1:2] <- c("x", "y")
+  jobs  <- lapply(seq_len(nrow(tasks)),
+                  function(i) list(url = urls[i], scale = scl[i]))
+  n_work <- min(nrow(tasks), max(2L, min(6L, parallel::detectCores() - 1L)))
+  cl <- tryCatch(parallel::makeCluster(n_work, type = "PSOCK"),
+                 error = function(e) NULL)
+  if (is.null(cl)) return(NULL)
+  on.exit(try(parallel::stopCluster(cl), silent = TRUE), add = TRUE)
+  worker <- function(job, cdf) {
+    if (!requireNamespace("terra", quietly = TRUE))
+      return(rep(NA_real_, nrow(cdf)))
+    for (cfg in c("GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR",
+                  "GDAL_HTTP_VERSION=2", "VSI_CACHE=TRUE",
+                  "GDAL_HTTP_TIMEOUT=45",
+                  "CPL_VSIL_CURL_ALLOWED_EXTENSIONS=.vrt,.tif"))
+      try(terra::setGDALconfig(cfg), silent = TRUE)
+    r <- tryCatch(terra::rast(job$url), error = function(e) NULL)
+    if (is.null(r)) return(rep(NA_real_, nrow(cdf)))
+    pts <- terra::project(
+      terra::vect(cdf, geom = c("x", "y"), crs = "EPSG:4326"), terra::crs(r))
+    suppressWarnings(as.numeric(terra::extract(r, pts)[[2]])) * job$scale
+  }
+  tryCatch(parallel::parLapply(cl, jobs, worker, cdf = cdf),
+           error = function(e) NULL)
+}
+
+# Sample all properties x depths into samp[[pn]][[dn]] (conventional units x the
+# covariate-map scale). The live SoilGrids sampler is read in PARALLEL; a custom
+# injected sampler (tests) runs serially and offline.
+.grid_sample_all <- function(coords, cmap, depths,
+                             sampler = .grid_soilgrids_sampler, bump = NULL) {
+  tasks <- expand.grid(pn = names(cmap), dn = names(depths),
+                       stringsAsFactors = FALSE)
+  vals <- NULL
+  if (identical(sampler, .grid_soilgrids_sampler)) {
+    .grid_set_gdal_fast()
+    if (is.function(bump)) bump(0.05, i18n("mgrid.progress_sampling"))
+    vals <- .grid_sample_parallel(coords, tasks, depths)     # NULL on failure
+  }
+  if (is.null(vals)) {                                       # serial (tests / fallback)
+    vals <- lapply(seq_len(nrow(tasks)), function(i) {
+      v <- suppressWarnings(as.numeric(
+        sampler(coords, tasks$pn[i], depths[[tasks$dn[i]]])))
+      if (is.function(bump))
+        bump(i / nrow(tasks) * 0.5, i18n("mgrid.progress_sampling"))
+      v
+    })
+  }
+  samp <- stats::setNames(vector("list", length(cmap)), names(cmap))
+  for (i in seq_len(nrow(tasks))) {
+    pn <- tasks$pn[i]; dn <- tasks$dn[i]
+    samp[[pn]][[dn]] <- as.numeric(vals[[i]]) * cmap[[pn]]$scale
+  }
+  samp
+}
+
 # Method 1: classify SoilGrids covariates with the deterministic key.
 # `sampler(coords, property, depth)` is injectable so this is testable offline.
 .grid_classify_covariates <- function(coords, system = "wrb2022",
@@ -61,17 +153,10 @@
                                       bump = NULL) {
   cmap   <- .grid_covariate_map()
   depths <- c(top = "5-15cm", sub = "60-100cm")
-  # Sample every property at both depths (each call covers the whole grid).
-  samp <- list(); i <- 0L; total <- length(cmap) * length(depths)
-  for (pn in names(cmap)) {
-    samp[[pn]] <- list()
-    for (dn in names(depths)) {
-      v <- suppressWarnings(as.numeric(sampler(coords, pn, depths[[dn]])))
-      samp[[pn]][[dn]] <- v * cmap[[pn]]$scale
-      i <- i + 1L
-      if (is.function(bump)) bump(i / total * 0.5, i18n("mgrid.progress_sampling"))
-    }
-  }
+  # Sample every property x depth over the whole grid. The live SoilGrids reads
+  # run in parallel (each ~30s; serial would take minutes); an injected sampler
+  # (tests) runs serially and offline.
+  samp <- .grid_sample_all(coords, cmap, depths, sampler = sampler, bump = bump)
   classify_fun <- switch(system,
     wrb2022 = soilKey::classify_wrb2022,
     sibcs   = soilKey::classify_sibcs,
