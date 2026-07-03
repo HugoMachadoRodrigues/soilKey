@@ -1,3 +1,30 @@
+# soilKey 0.9.166 (2026-07-02)
+
+Pro-app usability pass. No change to the classification engine.
+
+\itemize{
+  \item \strong{Spatial tab merged into Map.} The standalone "Spatial" tab
+        duplicated the Map tab's "Point prior" (both sample a SoilGrids class
+        prior at a coordinate), so it was removed; Point prior covers it and
+        more (click-to-place, three systems, typical attributes). The map now
+        \strong{defaults to satellite} imagery.
+  \item \strong{Support actually does something.} The navbar "Support" item now
+        opens an in-app dialog (with a "Compose email" button and a link to
+        GitHub Issues) instead of a bare mail link that silently did nothing in
+        some browsers. The address is still assembled in JavaScript at click
+        time, so it never appears as visible text or a hoverable link.
+  \item \strong{New "Thanks" tab} -- an Acknowledgements & references page
+        crediting the classification standards (WRB 2022, Keys to Soil Taxonomy
+        13, SiBCS 5), the R packages soilKey builds on, the data sources that
+        test it, and reviewers, each with the specific contribution.
+  \item \strong{Richer footer.} Replaced the single-line tagline with version,
+        a short descriptor, and links (Docs, GitHub, CRAN, licence).
+  \item \strong{Fuller blank profile.} The blank horizon template grew from 10
+        to 26 attributes (Munsell colour moist + dry, the exchange complex,
+        bulk density, structure, lower boundary), so data entry no longer stops
+        at \code{bs_pct}. Loading a fixture still exposes the full schema.
+}
+
 # soilKey 0.9.165 (2026-07-02)
 
 Bug fix for the decision-trace display, plus a small new helper.

@@ -19,10 +19,12 @@
 #     tab is useful on its own -- soil_classes_at_location() needs only lat/lon.
 # =============================================================================
 
-# Default provider tiles offered in the basemap selector.
+# Default provider tiles offered in the basemap selector. Satellite leads and
+# is the default -- it best shows the actual field, landform and land cover
+# around a point, which is what this (formerly the "Spatial") tab is for.
 .map_basemaps <- function() {
-  c("Streets (OSM)"        = "OpenStreetMap",
-    "Satellite (Esri)"     = "Esri.WorldImagery",
+  c("Satellite (Esri)"     = "Esri.WorldImagery",
+    "Streets (OSM)"        = "OpenStreetMap",
     "Light (CartoDB)"      = "CartoDB.Positron",
     "Topographic"          = "OpenTopoMap")
 }
@@ -49,8 +51,8 @@ map_ui <- function(id) {
         shiny::selectInput(
           ns("basemap"),
           sk_label(i18n("mpoint.base_map"),
-                   "Background tile layer for the map. Satellite helps you spot the exact field or landform."),
-          choices = .map_basemaps(), selected = "OpenStreetMap")
+                   "Background tile layer for the map. Satellite (the default) helps you spot the exact field or landform."),
+          choices = .map_basemaps(), selected = "Esri.WorldImagery")
       ),
 
       sk_section(
@@ -156,7 +158,7 @@ map_server <- function(id, rv, settings) {
     # ---- base map (rendered once; everything else via leafletProxy) --------
     output$map <- leaflet::renderLeaflet({
       cc   <- shiny::isolate(coords_r())
-      prov <- shiny::isolate(input$basemap) %||% "OpenStreetMap"
+      prov <- shiny::isolate(input$basemap) %||% "Esri.WorldImagery"
       m <- leaflet::leaflet() |>
         leaflet::addProviderTiles(prov)
       if (!is.null(cc)) {

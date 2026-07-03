@@ -7,14 +7,33 @@
 # stores it in the shared rv$pedon.
 # =============================================================================
 
-# Blank horizon template -- one empty row in canonical column order.
+# Blank horizon template -- one empty row spanning the attributes a field
+# description usually records: depth, texture, Munsell colour (moist + dry),
+# the main chemistry, the exchange complex, bulk density, structure and the
+# lower boundary. Built from horizon_column_spec() so every column is valid and
+# correctly typed; the table scrolls horizontally, so entry no longer stops at
+# bs_pct. (Loading a fixture still exposes the full ~110-column schema.)
+.pedon_common_cols <- function() {
+  c("top_cm", "bottom_cm", "designation",
+    "clay_pct", "silt_pct", "sand_pct", "coarse_fragments_pct",
+    "munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist",
+    "munsell_hue_dry", "munsell_value_dry", "munsell_chroma_dry",
+    "ph_h2o", "ph_kcl", "oc_pct",
+    "cec_cmol", "bs_pct", "al_sat_pct",
+    "ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
+    "bulk_density_g_cm3", "structure_grade", "boundary_distinctness")
+}
+
 .pedon_blank_template <- function() {
-  data.frame(
-    top_cm = 0, bottom_cm = 20, designation = "A",
-    clay_pct = NA_real_, silt_pct = NA_real_, sand_pct = NA_real_,
-    ph_h2o = NA_real_, oc_pct = NA_real_, cec_cmol = NA_real_,
-    bs_pct = NA_real_, stringsAsFactors = FALSE
-  )
+  spec <- soilKey::horizon_column_spec()
+  cols <- intersect(.pedon_common_cols(), names(spec))   # valid columns only
+  row  <- lapply(cols, function(cn)
+    if (identical(spec[[cn]], "character")) NA_character_ else NA_real_)
+  names(row) <- cols
+  df <- as.data.frame(row, stringsAsFactors = FALSE)
+  # Seed the first horizon so the editor is immediately usable.
+  df$top_cm <- 0; df$bottom_cm <- 20; df$designation <- "A"
+  df
 }
 
 .pedon_starter_csv <- paste(
