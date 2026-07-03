@@ -121,14 +121,23 @@ spectra_server <- function(id, rv) {
     })
 
     # Bundled demo spectrum -- a one-click way to see the gap-fill pipeline run
-    # without any data (matches the example Ferralsol's 5 horizons).
+    # without any data. The demo matrix is sized to the CURRENT pedon's horizon
+    # count (recycling the bundled rows), so it works whatever the pedon is --
+    # e.g. after a photo extraction has changed the horizon count.
     shiny::observeEvent(input$demo_spectrum, {
-      p <- .pro_demo_asset("demo_spectrum.csv")
-      if (is.null(p)) {
+      if (is.null(rv$pedon)) {
+        shiny::showNotification(i18n("spectra.build_pedon_first"), type = "warning")
+        return(invisible())
+      }
+      m <- .pro_demo_spectrum(nrow(rv$pedon$horizons))
+      if (is.null(m)) {
         shiny::showNotification(i18n("spectra.demo_missing"), type = "error")
         return(invisible())
       }
-      do_attach(p)
+      rv$pedon$spectra <- list(vnir = m)
+      rv$pedon <- rv$pedon
+      shiny::showNotification(
+        i18n("spectra.attached_matrix", nrow(m), ncol(m)), type = "message")
     })
 
     # ---- gap-fill ---------------------------------------------------------

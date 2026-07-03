@@ -278,3 +278,21 @@ sk_empty <- function(icon, title, body = NULL, ...) {
     return(normalizePath(p, mustWork = FALSE))
   NULL
 }
+
+# Build an n-row Vis-NIR demo-spectrum matrix by recycling the bundled 5-row
+# demo, so it ALWAYS matches the current pedon's horizon count (a pedon can have
+# any number of horizons -- e.g. a photo extraction may add some). Returns NULL
+# if the bundled demo cannot be read.
+.pro_demo_spectrum <- function(n_horizons) {
+  path <- .pro_demo_asset("demo_spectrum.csv")
+  if (is.null(path)) return(NULL)
+  m <- tryCatch({
+    mm <- as.matrix(utils::read.csv(path, check.names = FALSE))
+    storage.mode(mm) <- "double"
+    mm
+  }, error = function(e) NULL)
+  if (is.null(m) || nrow(m) == 0L) return(NULL)
+  n   <- max(1L, as.integer(n_horizons))
+  idx <- ((seq_len(n) - 1L) %% nrow(m)) + 1L      # recycle rows to length n
+  m[idx, , drop = FALSE]
+}

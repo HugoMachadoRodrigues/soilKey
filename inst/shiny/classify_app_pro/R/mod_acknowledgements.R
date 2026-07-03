@@ -84,7 +84,10 @@ acknowledgements_ui <- function(id) {
           "Brazilian profiles with Munsell colours used for benchmarking."),
         .ack_item(
           "Embrapa Solos -- BDSolos and the SmartSolos SiBCS classifier API (Glauber dos S. Vaz).",
-          "A national soil database and an independent SiBCS reference to cross-check soilKey against.")),
+          "A national soil database and an independent SiBCS reference to cross-check soilKey against."),
+        .ack_item(
+          "Glauber J. Vaz, Alberto F. Silva Jr & Luis de F. da Silva Neto (2023) -- 'Brazilian soil data for taxonomic classification', Embrapa Redape (DOI 10.48432/PYKKA7).",
+          "A curated set of ~96 hand-reviewed Brazilian soil profiles, shared as a gold-standard benchmark used to test and calibrate the classifiers.")),
 
       # ---- 4. Review & feedback -------------------------------------------
       .ack_card(
