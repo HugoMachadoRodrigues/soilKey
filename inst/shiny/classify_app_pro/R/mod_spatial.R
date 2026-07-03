@@ -62,6 +62,17 @@ spatial_ui <- function(id) {
       ),
       shiny::helpText(i18n("spatial.requires_terra"))
     ),
+    # The location map is ALWAYS shown -- base tiles + the profile point and its
+    # sampling buffer. The SoilGrids class prior (optional) is overlaid below it
+    # when a raster is configured; otherwise a small caption explains it.
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(shiny::icon("map-location-dot"), " Location"),
+      bslib::card_body(
+        leaflet::leafletOutput(ns("map"), height = "360px"),
+        class = "p-0"
+      )
+    ),
     shiny::uiOutput(ns("body"))
   )
 }
@@ -99,38 +110,59 @@ spatial_server <- function(id, rv, settings) {
                  sprintf("%s, %s", format(lat), format(lon)))
     })
 
+    # The location map is ALWAYS rendered: base tiles + the profile point and its
+    # sampling buffer. It does not depend on a SoilGrids raster, so the Spatial
+    # tab never shows a blank / error-only screen.
+    output$map <- leaflet::renderLeaflet({
+      lat <- if (!is.null(rv$pedon)) suppressWarnings(as.numeric(rv$pedon$site$lat)) else NA_real_
+      lon <- if (!is.null(rv$pedon)) suppressWarnings(as.numeric(rv$pedon$site$lon)) else NA_real_
+      m <- leaflet::leaflet() |> leaflet::addProviderTiles("CartoDB.Positron")
+      if (is.finite(lat) && is.finite(lon)) {
+        buf <- suppressWarnings(as.numeric(input$buffer)); if (!is.finite(buf)) buf <- 250
+        id  <- rv$pedon$site$id %||% "pedon"
+        m |>
+          leaflet::setView(lng = lon, lat = lat, zoom = 9) |>
+          leaflet::addCircles(lng = lon, lat = lat, radius = buf,
+                              color = "#B5652E", weight = 1, fillOpacity = 0.12) |>
+          leaflet::addCircleMarkers(lng = lon, lat = lat, radius = 6,
+                              color = "#4A3226", weight = 1.5,
+                              fillColor = "#7A5230", fillOpacity = 0.95,
+                              label = sprintf("%s  (%.3f, %.3f)", id, lat, lon))
+      } else {
+        m |> leaflet::setView(lng = -51, lat = -14, zoom = 3)   # Brazil default
+      }
+    })
+
     output$body <- shiny::renderUI({
       ns <- session$ns
-      if (is.null(rv$pedon)) return(pro_no_pedon_msg())
+      if (is.null(rv$pedon)) {
+        return(shiny::helpText(class = "mt-3", i18n("spatial.no_pedon_yet")))
+      }
       p <- prior()
       if (is.null(p)) {
-        return(shiny::div(class = "text-muted p-4 text-center",
-                          shiny::icon("satellite"),
-                          i18n("spatial.press_to_run")))
+        return(shiny::helpText(class = "mt-3",
+                               shiny::icon("satellite"), " ",
+                               i18n("spatial.press_to_run")))
       }
       if (inherits(p, "error")) {
-        return(bslib::card(
-          class = "sk-empty-state",
-          bslib::card_body(shiny::div(
-            class = "text-center",
-            shiny::icon("earth-americas", class = "fa-2x text-secondary mb-2"),
-            shiny::tags$h5(i18n("spatial.unavailable_header")),
-            shiny::tags$p(class = "text-body-secondary mx-auto",
-                          style = "max-width: 46ch;",
-                          i18n("spatial.unavailable_body")),
-            shiny::helpText(
-              i18n("spatial.provide_raster_pre"),
-              shiny::tags$code("options(soilKey.test_raster = '...')"),
-              i18n("spatial.provide_raster_post")),
-            shiny::tags$details(
-              class = "small text-muted mt-2 d-inline-block text-start",
-              shiny::tags$summary(i18n("spatial.unavailable_details")),
-              shiny::tags$code(conditionMessage(p)))
-          ))
+        # A small caption BELOW the always-present map -- never a full-screen
+        # error. The prior is optional; the map above still shows the point.
+        return(shiny::div(
+          class = "alert alert-light border small mt-3",
+          shiny::icon("circle-info", class = "text-secondary"), " ",
+          shiny::tags$strong(i18n("spatial.unavailable_header")), " ",
+          i18n("spatial.unavailable_body"), " ",
+          i18n("spatial.provide_raster_pre"),
+          shiny::tags$code("options(soilKey.test_raster = '...')"),
+          i18n("spatial.provide_raster_post"),
+          shiny::tags$details(
+            class = "mt-1",
+            shiny::tags$summary(i18n("spatial.unavailable_details")),
+            shiny::tags$code(conditionMessage(p)))
         ))
       }
       bslib::layout_column_wrap(
-        width = 1 / 2,
+        width = 1 / 2, class = "mt-3",
         bslib::card(
           bslib::card_header(i18n("spatial.rsg_probabilities")),
           bslib::card_body(DT::DTOutput(ns("table")))
