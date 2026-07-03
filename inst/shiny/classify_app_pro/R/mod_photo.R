@@ -79,32 +79,55 @@ photo_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 320,
-      shiny::h5(i18n("photo.step1_provider")),
-      shinyWidgets::radioGroupButtons(
-        ns("provider"), NULL,
-        choices = stats::setNames(
-          c("mock", "live"),
-          c(i18n("photo.provider_demo"), i18n("photo.provider_live"))
+
+      sk_section(
+        i18n("photo.step1_provider"),
+        icon = "camera",
+        desc = "Choose whether the image is read by the offline demo or a live vision-language model.",
+        shinyWidgets::radioGroupButtons(
+          ns("provider"), NULL,
+          choices = stats::setNames(
+            c("mock", "live"),
+            c(i18n("photo.provider_demo"), i18n("photo.provider_live"))
+          ),
+          selected = "mock", justified = TRUE, size = "sm"
         ),
-        selected = "mock", justified = TRUE, size = "sm"
+        shiny::helpText(
+          i18n("photo.provider_help")
+        )
       ),
-      shiny::helpText(
-        i18n("photo.provider_help")
+
+      sk_section(
+        i18n("photo.step2_munsell"),
+        icon = "eye-dropper",
+        desc = "Read Munsell colour per horizon from a profile photo; only the PedonRecord is filled, never the key.",
+        shiny::fileInput(
+          ns("profile_img"),
+          sk_label(i18n("photo.profile_photograph"),
+                   "A JPG or PNG of the soil profile, ideally with a Munsell card in frame for reference."),
+          accept = c(".jpg", ".jpeg", ".png")),
+        bslib::tooltip(
+          shiny::actionButton(ns("run_munsell"), i18n("photo.extract_munsell"),
+                              icon = shiny::icon("eye-dropper"),
+                              class = "btn-primary w-100"),
+          "Read per-horizon Munsell colour from the photo and merge it into the pedon, with a confidence for each value.")
       ),
-      shiny::tags$hr(),
-      shiny::h5(i18n("photo.step2_munsell")),
-      shiny::fileInput(ns("profile_img"), i18n("photo.profile_photograph"),
-                       accept = c(".jpg", ".jpeg", ".png")),
-      shiny::actionButton(ns("run_munsell"), i18n("photo.extract_munsell"),
-                          icon = shiny::icon("eye-dropper"),
-                          class = "btn-primary w-100"),
-      shiny::tags$hr(),
-      shiny::h5(i18n("photo.step3_site")),
-      shiny::fileInput(ns("sheet_img"), i18n("photo.field_sheet_image"),
-                       accept = c(".jpg", ".jpeg", ".png")),
-      shiny::actionButton(ns("run_site"), i18n("photo.extract_site"),
-                          icon = shiny::icon("map-pin"),
-                          class = "btn-secondary w-100")
+
+      sk_section(
+        i18n("photo.step3_site"),
+        icon = "location-dot",
+        desc = "Read site metadata (coordinates, elevation, drainage) from a scanned field sheet.",
+        shiny::fileInput(
+          ns("sheet_img"),
+          sk_label(i18n("photo.field_sheet_image"),
+                   "A JPG or PNG of the field description sheet; legible handwriting improves extraction."),
+          accept = c(".jpg", ".jpeg", ".png")),
+        bslib::tooltip(
+          shiny::actionButton(ns("run_site"), i18n("photo.extract_site"),
+                              icon = shiny::icon("map-pin"),
+                              class = "btn-secondary w-100"),
+          "Read coordinates, elevation and drainage from the field sheet and merge them into the pedon site record.")
+      )
     ),
     shiny::uiOutput(ns("body"))
   )

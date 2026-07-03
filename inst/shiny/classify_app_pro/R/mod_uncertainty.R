@@ -11,28 +11,59 @@ uncertainty_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
-      width = 300,
-      shiny::h5(i18n("uncert.analysis_title")),
-      shiny::selectInput(ns("system"), i18n("uncert.system"),
-                         choices = c("WRB 2022" = "wrb2022",
-                                     "SiBCS 5" = "sibcs",
-                                     "USDA ST 13" = "usda"),
-                         selected = "wrb2022"),
-      shiny::radioButtons(ns("level"), i18n("uncert.compare_at"),
-                          choices = stats::setNames(
-                            c("rsg", "name"),
-                            c(i18n("uncert.level_rsg_order"),
-                              i18n("uncert.level_full_name"))),
-                          selected = "rsg"),
-      shiny::sliderInput(ns("n"), i18n("uncert.mc_runs"), min = 25, max = 500,
-                         value = 50, step = 25),
-      shiny::checkboxInput(ns("sensitivity"),
-                           i18n("uncert.compute_sensitivity"), value = TRUE),
-      shiny::actionButton(ns("run"), i18n("uncert.run_analysis"),
-                          icon = shiny::icon("dice"),
-                          class = "btn-primary w-100"),
-      shiny::helpText(
-        i18n("uncert.perturb_help")
+      width = 320,
+
+      sk_section(
+        i18n("uncert.analysis_title"),
+        desc = "Choose which taxonomy and level the stability of the class is measured at.",
+        icon = "sliders",
+        shiny::selectInput(
+          ns("system"),
+          sk_label(i18n("uncert.system"),
+                   "Taxonomy the profile is re-classified in on every Monte-Carlo run."),
+          choices = c("WRB 2022" = "wrb2022",
+                      "SiBCS 5" = "sibcs",
+                      "USDA ST 13" = "usda"),
+          selected = "wrb2022"),
+        shiny::radioButtons(
+          ns("level"),
+          sk_label(i18n("uncert.compare_at"),
+                   "Compare runs at the broad group, or at the full name including all qualifiers."),
+          choices = stats::setNames(
+            c("rsg", "name"),
+            c(i18n("uncert.level_rsg_order"),
+              i18n("uncert.level_full_name"))),
+          selected = "rsg")
+      ),
+
+      sk_section(
+        i18n("uncert.mc_runs"),
+        desc = "How the inputs are jittered and how many times the key is re-run.",
+        icon = "dice",
+        shiny::sliderInput(
+          ns("n"),
+          sk_label(i18n("uncert.mc_runs"),
+                   "Number of perturbed re-runs. More runs give a smoother, more reliable distribution but take longer."),
+          min = 25, max = 500, value = 50, step = 25),
+        shiny::checkboxInput(
+          ns("sensitivity"),
+          sk_label(i18n("uncert.compute_sensitivity"),
+                   "Also rank which inputs drive instability by muting each attribute in turn."),
+          value = TRUE)
+      ),
+
+      sk_section(
+        i18n("uncert.run_analysis"),
+        desc = "Perturb the inputs within their measurement uncertainty and re-run the key.",
+        icon = "play",
+        bslib::tooltip(
+          shiny::actionButton(ns("run"), i18n("uncert.run_analysis"),
+                              icon = shiny::icon("dice"),
+                              class = "btn-primary w-100"),
+          "Run the Monte-Carlo uncertainty analysis and report how stable the classification is."),
+        shiny::helpText(
+          i18n("uncert.perturb_help")
+        )
       )
     ),
     shiny::uiOutput(ns("body"))

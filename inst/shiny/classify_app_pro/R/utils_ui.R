@@ -213,3 +213,55 @@ pro_no_pedon_msg <- function() {
     i18n("ui.build_pedon_on"), shiny::strong(i18n("ui.pedon_tab")), i18n("ui.tab_first")
   )
 }
+
+
+# =============================================================================
+# v0.9.162 design-system helpers -- consistent sections, labels + tooltips.
+# All three are used across every module so the app reads as one product.
+# =============================================================================
+
+# A small info "i" that reveals `text` on hover / keyboard focus. Place it after
+# a control label so every input carries a one-line, plain-English explanation.
+sk_tip <- function(text, placement = "top") {
+  bslib::tooltip(
+    shiny::icon("circle-info", class = "sk-tip"),
+    text, placement = placement
+  )
+}
+
+# A control label with an inline help tooltip (returns a tagList for `label=`).
+sk_label <- function(label, help = NULL) {
+  if (is.null(help) || !nzchar(help)) return(label)
+  shiny::tagList(label, " ", sk_tip(help))
+}
+
+# A titled panel: icon + title, an optional one-line description, then content.
+# Gives every sidebar block a clear, professional header.
+sk_section <- function(title, ..., desc = NULL, icon = NULL) {
+  shiny::div(
+    class = "sk-section",
+    shiny::div(
+      class = "sk-section-head",
+      if (!is.null(icon)) shiny::icon(icon, class = "sk-section-ic"),
+      shiny::span(class = "sk-section-title", title)
+    ),
+    if (!is.null(desc)) shiny::p(class = "sk-section-desc", desc),
+    ...
+  )
+}
+
+# A centred empty-state / hero panel (icon, heading, explanation, extra tags).
+sk_empty <- function(icon, title, body = NULL, ...) {
+  bslib::card(
+    class = "sk-empty-state",
+    bslib::card_body(shiny::div(
+      class = "text-center",
+      shiny::icon(icon, class = "fa-2x text-secondary mb-2"),
+      shiny::tags$h5(class = "mb-2", title),
+      if (!is.null(body))
+        shiny::p(class = "text-body-secondary mx-auto",
+                 style = "max-width: 54ch;", body),
+      ...
+    ))
+  )
+}

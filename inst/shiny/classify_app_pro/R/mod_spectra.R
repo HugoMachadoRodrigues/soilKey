@@ -12,35 +12,59 @@ spectra_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 320,
-      shiny::h5(i18n("spectra.step1_attach")),
-      shiny::fileInput(ns("vnir_csv"), i18n("spectra.vnir_csv_label"),
-                       accept = c(".csv")),
-      shiny::helpText(
-        i18n("spectra.help_one_row")
+      sk_section(
+        i18n("spectra.step1_attach"),
+        icon = "wave-square",
+        desc = "Upload a Vis-NIR reflectance CSV and attach it to the current pedon.",
+        shiny::fileInput(
+          ns("vnir_csv"),
+          sk_label(i18n("spectra.vnir_csv_label"),
+                   "CSV of reflectance: one row per horizon, columns are wavelengths (nm). Row order must match the pedon's horizons."),
+          accept = c(".csv")),
+        shiny::helpText(
+          i18n("spectra.help_one_row")
+        ),
+        bslib::tooltip(
+          shiny::actionButton(ns("attach"), i18n("spectra.attach_to_pedon"),
+                              icon = shiny::icon("paperclip"),
+                              class = "btn-secondary w-100"),
+          "Attach the uploaded spectra matrix to the pedon so it can be used for prediction.")
       ),
-      shiny::actionButton(ns("attach"), i18n("spectra.attach_to_pedon"),
-                          icon = shiny::icon("paperclip"),
-                          class = "btn-secondary w-100"),
       shiny::tags$hr(),
-      shiny::h5(i18n("spectra.step2_gapfill")),
-      shiny::selectInput(ns("method"), i18n("spectra.prediction_method"),
-                         choices = stats::setNames(
-                           c("mbl", "plsr_local", "pretrained"),
-                           c(i18n("spectra.method_mbl"),
-                             i18n("spectra.method_plsr_local"),
-                             i18n("spectra.method_pretrained"))),
-                         selected = "mbl"),
-      shiny::selectInput(ns("region"), i18n("spectra.ossl_region"),
-                         choices = c("global", "south_america",
-                                     "north_america", "europe", "africa"),
-                         selected = "global"),
-      shiny::checkboxInput(ns("overwrite"), i18n("spectra.overwrite_existing"),
-                           value = FALSE),
-      shiny::actionButton(ns("fill"), i18n("spectra.gapfill_from_spectra"),
-                          icon = shiny::icon("wand-magic-sparkles"),
-                          class = "btn-primary w-100"),
-      shiny::helpText(
-        i18n("spectra.help_first_use")
+      sk_section(
+        i18n("spectra.step2_gapfill"),
+        icon = "wand-magic-sparkles",
+        desc = "Predict missing horizon attributes from the attached spectra via OSSL.",
+        shiny::selectInput(
+          ns("method"),
+          sk_label(i18n("spectra.prediction_method"),
+                   "How predictions are made: memory-based learning, a local PLSR fit, or a pretrained OSSL model."),
+          choices = stats::setNames(
+            c("mbl", "plsr_local", "pretrained"),
+            c(i18n("spectra.method_mbl"),
+              i18n("spectra.method_plsr_local"),
+              i18n("spectra.method_pretrained"))),
+          selected = "mbl"),
+        shiny::selectInput(
+          ns("region"),
+          sk_label(i18n("spectra.ossl_region"),
+                   "OSSL subset used as reference. A region closer to your samples usually predicts better than global."),
+          choices = c("global", "south_america",
+                      "north_america", "europe", "africa"),
+          selected = "global"),
+        shiny::checkboxInput(
+          ns("overwrite"),
+          sk_label(i18n("spectra.overwrite_existing"),
+                   "If ticked, spectral predictions replace measured values; otherwise only empty attributes are filled."),
+          value = FALSE),
+        bslib::tooltip(
+          shiny::actionButton(ns("fill"), i18n("spectra.gapfill_from_spectra"),
+                              icon = shiny::icon("wand-magic-sparkles"),
+                              class = "btn-primary w-100"),
+          "Run the OSSL spectral engine and fill missing attributes; filled values are tagged predicted_spectra in the provenance ledger."),
+        shiny::helpText(
+          i18n("spectra.help_first_use")
+        )
       )
     ),
     shiny::uiOutput(ns("body"))

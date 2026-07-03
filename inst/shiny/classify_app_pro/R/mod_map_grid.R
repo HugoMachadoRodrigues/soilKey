@@ -150,43 +150,94 @@ map_grid_ui <- function(id) {
   bslib::layout_sidebar(
     sidebar = bslib::sidebar(
       width = 340,
-      shiny::h5(i18n("mgrid.grid_prediction")),
-      shinyWidgets::radioGroupButtons(
-        ns("method"), i18n("mgrid.method"),
-        choices = stats::setNames(
-          c("covariates", "interpolate", "overlay"),
-          c(i18n("mgrid.method_covariates"),
-            i18n("mgrid.method_interpolate"),
-            i18n("mgrid.method_overlay"))),
-        selected = "overlay", direction = "vertical", size = "sm"),
-      shiny::selectInput(ns("system"), i18n("mgrid.classification_system"),
-                         choices = c("WRB 2022"  = "wrb2022",
-                                     "SiBCS 5"    = "sibcs",
-                                     "USDA ST 13" = "usda"),
-                         selected = "wrb2022"),
-      shiny::div(class = "small text-muted mb-1", i18n("mgrid.area_of_interest")),
-      shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lat_max"), i18n("mgrid.lat_max"), -5, step = 1)),
-        shiny::column(6, shiny::numericInput(ns("lat_min"), i18n("mgrid.lat_min"), -30, step = 1))),
-      shiny::fluidRow(
-        shiny::column(6, shiny::numericInput(ns("lon_min"), i18n("mgrid.lon_min"), -60, step = 1)),
-        shiny::column(6, shiny::numericInput(ns("lon_max"), i18n("mgrid.lon_max"), -40, step = 1))),
-      shiny::actionButton(ns("use_view"), i18n("mgrid.use_current_view"),
-                          icon = shiny::icon("crop"),
-                          class = "btn-outline-secondary btn-sm w-100 mb-2"),
-      shiny::sliderInput(ns("res"), i18n("mgrid.cells_per_side"), min = 8, max = 40,
-                         value = 24, step = 1),
-      shiny::uiOutput(ns("ncell_note")),
-      shiny::conditionalPanel(
-        sprintf("input['%s'] != 'interpolate'", ns("method")),
-        shiny::textInput(ns("source_url"), i18n("mgrid.soilgrids_raster"),
-                         placeholder = i18n("mgrid.raster_placeholder"))),
-      shiny::actionButton(ns("run"), i18n("mgrid.predict_grid"),
-                          icon = shiny::icon("table-cells"),
-                          class = "btn-primary w-100"),
-      shiny::downloadButton(ns("export"), i18n("mgrid.export_geotiff"),
-                            class = "btn-outline-secondary w-100 mt-2"),
-      shiny::uiOutput(ns("method_help"))
+
+      sk_section(
+        i18n("mgrid.grid_prediction"),
+        desc = "Predict a soil-class map over an area, then review it on the map and in the summary table.",
+        icon = "map-location-dot",
+        shinyWidgets::radioGroupButtons(
+          ns("method"),
+          sk_label(i18n("mgrid.method"),
+                   "How each grid cell gets its class: from SoilGrids covariates run through the key, interpolated from your classified points, or read off the SoilGrids overlay."),
+          choices = stats::setNames(
+            c("covariates", "interpolate", "overlay"),
+            c(i18n("mgrid.method_covariates"),
+              i18n("mgrid.method_interpolate"),
+              i18n("mgrid.method_overlay"))),
+          selected = "overlay", direction = "vertical", size = "sm"),
+        shiny::selectInput(
+          ns("system"),
+          sk_label(i18n("mgrid.classification_system"),
+                   "Which soil taxonomy the predicted classes are named in: WRB 2022, SiBCS, or USDA Soil Taxonomy."),
+          choices = c("WRB 2022"  = "wrb2022",
+                      "SiBCS 5"    = "sibcs",
+                      "USDA ST 13" = "usda"),
+          selected = "wrb2022")
+      ),
+
+      sk_section(
+        i18n("mgrid.area_of_interest"),
+        desc = "Set the latitude / longitude bounding box to map, or grab it from the current map view.",
+        icon = "location-dot",
+        shiny::fluidRow(
+          shiny::column(6, shiny::numericInput(
+            ns("lat_max"),
+            sk_label(i18n("mgrid.lat_max"), "Northern edge of the area, in decimal degrees (must be above the minimum latitude)."),
+            -5, step = 1)),
+          shiny::column(6, shiny::numericInput(
+            ns("lat_min"),
+            sk_label(i18n("mgrid.lat_min"), "Southern edge of the area, in decimal degrees (must be below the maximum latitude)."),
+            -30, step = 1))),
+        shiny::fluidRow(
+          shiny::column(6, shiny::numericInput(
+            ns("lon_min"),
+            sk_label(i18n("mgrid.lon_min"), "Western edge of the area, in decimal degrees (must be left of the maximum longitude)."),
+            -60, step = 1)),
+          shiny::column(6, shiny::numericInput(
+            ns("lon_max"),
+            sk_label(i18n("mgrid.lon_max"), "Eastern edge of the area, in decimal degrees (must be right of the minimum longitude)."),
+            -40, step = 1))),
+        bslib::tooltip(
+          shiny::actionButton(ns("use_view"), i18n("mgrid.use_current_view"),
+                              icon = shiny::icon("crop"),
+                              class = "btn-outline-secondary btn-sm w-100 mb-2"),
+          "Fill the bounding box from what is currently shown in the map viewport.")
+      ),
+
+      sk_section(
+        i18n("mgrid.cells_per_side"),
+        desc = "Grid resolution. Finer grids sample more cells, so prediction takes longer.",
+        icon = "table-cells",
+        shiny::sliderInput(
+          ns("res"),
+          sk_label(i18n("mgrid.cells_per_side"),
+                   "Number of cells along each side of the grid; the total cell count is this squared and is capped for speed."),
+          min = 8, max = 40, value = 24, step = 1),
+        shiny::uiOutput(ns("ncell_note")),
+        shiny::conditionalPanel(
+          sprintf("input['%s'] != 'interpolate'", ns("method")),
+          shiny::textInput(
+            ns("source_url"),
+            sk_label(i18n("mgrid.soilgrids_raster"),
+                     "Optional URL of a SoilGrids raster to sample; leave blank to use the default source for the chosen method."),
+            placeholder = i18n("mgrid.raster_placeholder")))
+      ),
+
+      sk_section(
+        i18n("mgrid.predict_grid"),
+        desc = "Run the prediction, then export the resulting class raster.",
+        icon = "play",
+        bslib::tooltip(
+          shiny::actionButton(ns("run"), i18n("mgrid.predict_grid"),
+                              icon = shiny::icon("table-cells"),
+                              class = "btn-primary w-100"),
+          "Predict the soil class for every grid cell and draw it as a raster on the map."),
+        bslib::tooltip(
+          shiny::downloadButton(ns("export"), i18n("mgrid.export_geotiff"),
+                                class = "btn-outline-secondary w-100 mt-2"),
+          "Download the predicted class grid as a categorical GeoTIFF for use in GIS."),
+        shiny::uiOutput(ns("method_help"))
+      )
     ),
     bslib::layout_column_wrap(
       width = 1, heights_equal = "row",
@@ -196,7 +247,9 @@ map_grid_ui <- function(id) {
                          leaflet::leafletOutput(ns("map"), height = "460px"))),
       bslib::card(
         bslib::card_header(i18n("mgrid.class_summary")),
-        bslib::card_body(DT::DTOutput(ns("summary"))))
+        bslib::card_body(
+          shiny::helpText("Share of grid cells assigned to each predicted soil class."),
+          DT::DTOutput(ns("summary"))))
     )
   )
 }
