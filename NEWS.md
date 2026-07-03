@@ -1,3 +1,30 @@
+# soilKey 0.9.174 (2026-07-03)
+
+Map tab reformulated into one synchronised map (Pro app).
+
+\itemize{
+  \item \strong{One map, three modes.} The three separate, unsynchronised
+    sub-tabs (Point prior / Batch classify / Grid prediction) are replaced by a
+    single square map with a mode selector. Every mode is centred on the same
+    point, so the pedon, its neighbouring demo profiles and the SoilGrids prior
+    are seen together instead of on three disconnected maps.
+  \item \strong{The SoilGrids overlay now shows.} A shared "SoilGrids overlay"
+    toggle draws the WRB class prior for the area around the point. It defaults
+    to a small bundled demo raster (\code{soilgrids_wrb_demo.tif}), so it works
+    with zero configuration; a pasted raster path/URL overrides it.
+  \item \strong{The demo shows point + neighbours + SoilGrids together.} Loading
+    the example profile centres the map on it (Rio de Janeiro), drops the
+    surrounding demo profiles as context, and overlays the SoilGrids classes for
+    that area -- the whole point of the demonstration, on first paint.
+  \item \strong{Squarer, not a wide banner.} The map is capped to a square
+    (max 680 px), addressing the "map is too wide" feedback.
+  \item Robustness: the initial view, points and overlay are baked into the map
+    render (not applied by post-render callbacks that could be dropped before
+    the map exists); the overlay window no longer follows the map bounds (which
+    could re-fire in a loop); neighbour points are shown without a full
+    three-system classification (which had stalled the first paint).
+}
+
 # soilKey 0.9.173 (2026-07-03)
 
 Spectra and Photo tab fixes.
