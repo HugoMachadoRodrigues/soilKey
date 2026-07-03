@@ -101,14 +101,15 @@ test_that("report_server's config reactive tracks settings", {
   })
 })
 
-test_that("uncertainty / spatial / photo / spectra servers initialise without error", {
+test_that("uncertainty / photo / spectra servers initialise without error", {
   skip_on_cran()
   .pro_skip_unless_deps()
   env <- .pro_srv_env()
   rv <- shiny::reactiveValues(pedon = soilKey::make_ferralsol_canonical(),
                               include_family = FALSE, specifiers = FALSE)
   # Each server should at least instantiate and render its no-action UI.
-  for (mod in c("uncertainty_server", "spatial_server")) {
+  # (The former standalone spatial_server was merged into the Map tab.)
+  for (mod in c("uncertainty_server")) {
     srv <- get(mod, envir = env)
     shiny::testServer(srv, args = list(rv = rv, settings = .pro_settings_stub()), {
       expect_true(TRUE)   # server body evaluated without error

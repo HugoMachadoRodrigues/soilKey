@@ -110,7 +110,9 @@ ui <- function(request) {
     bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
     bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo")),
     bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
-    bslib::nav_panel(i18n("nav.spatial"),  icon = icon("location-dot"), spatial_ui("spatial")),
+    # The former standalone "Spatial" tab was merged here: its SoilGrids
+    # class-prior-at-a-point is exactly what the "Point prior" sub-tab does
+    # (and more -- click-to-place, multiple systems, typical attributes).
     bslib::nav_panel(
       i18n("nav.map"), icon = icon("map-location-dot"),
       bslib::navset_card_tab(
@@ -121,6 +123,7 @@ ui <- function(request) {
     ),
     bslib::nav_panel(i18n("nav.uncertainty"), icon = icon("dice"),         uncertainty_ui("uncertainty")),
     bslib::nav_panel(i18n("nav.report"),      icon = icon("file-arrow-down"), report_ui("report")),
+    bslib::nav_panel(i18n("nav.thanks"),      icon = icon("heart"),        acknowledgements_ui("thanks")),
     bslib::nav_spacer(),
     bslib::nav_panel(i18n("nav.settings"),    icon = icon("gear"),         settings_ui("settings")),
     bslib::nav_item(
@@ -141,24 +144,29 @@ ui <- function(request) {
              target = "_blank")
     ),
     bslib::nav_item(
-      # "Report a problem": opens the user's mail client, pre-addressed to
-      # support with a template. The address is assembled in JS at click time,
-      # so it is never rendered as visible text or a hoverable href.
-      tags$a(
-        icon("life-ring"), " ", i18n("nav.support"),
-        href = "#", class = "nav-link",
-        title = i18n("nav.support_tip"),
-        onclick = paste0(
-          "var a=['rodrigues.h','ufl.edu'].join(String.fromCharCode(64));",
-          "var s=encodeURIComponent('soilKey Pro — problem report');",
-          "var b=encodeURIComponent('Please describe the problem and what you ",
-          "were doing when it happened:\\n\\n\\n\\n--- soilKey Pro');",
-          "window.location.href='mailto:'+a+'?subject='+s+'&body='+b;",
-          "return false;"))
+      # "Support": opens an in-app modal with contact guidance and a button that
+      # composes an email. The address is assembled in JS at click time, so it
+      # is never rendered as visible text or a hoverable href.
+      actionLink("support",
+                 label = tagList(icon("life-ring"), i18n("nav.support")),
+                 class = "nav-link", title = i18n("nav.support_tip"))
     ),
     footer = tags$div(
-      class = "text-muted small px-3 py-2",
-      i18n("app.footer", as.character(utils::packageVersion("soilKey")))
+      class = "sk-footer",
+      tags$img(src = "logo.png", height = "22", alt = "", class = "sk-footer-logo"),
+      tags$span(class = "sk-footer-title", "soilKey ",
+                tags$span(class = "sk-footer-ver",
+                          as.character(utils::packageVersion("soilKey")))),
+      tags$span(class = "sk-footer-tag", i18n("app.footer_tag")),
+      tags$span(
+        class = "sk-footer-links",
+        tags$a(href = "https://hugomachadorodrigues.github.io/soilKey/",
+               target = "_blank", rel = "noopener", i18n("nav.docs")),
+        tags$a(href = "https://github.com/HugoMachadoRodrigues/soilKey",
+               target = "_blank", rel = "noopener", "GitHub"),
+        tags$a(href = "https://CRAN.R-project.org/package=soilKey",
+               target = "_blank", rel = "noopener", "CRAN"),
+        tags$span(class = "sk-footer-lic", i18n("app.footer_license")))
     )
   )
 }
@@ -243,7 +251,6 @@ server <- function(input, output, session) {
   classify_server("classify",      rv, settings)
   photo_server("photo",            rv)
   spectra_server("spectra",        rv)
-  spatial_server("spatial",        rv, settings)
   map_server("map",                rv, settings)
   map_batch_server("map_batch",    rv, settings)
   map_grid_server("map_grid",      rv, settings)
@@ -338,6 +345,39 @@ server <- function(input, output, session) {
     removeModal(); mark_welcomed()
     rv$example_request <- rv$example_request + 1L
     bslib::nav_select("main_nav", "Classify")
+  })
+
+  # ---- Support modal ------------------------------------------------------
+  # Opens an in-app dialog (so the click always does something visible) with a
+  # "Compose email" button. The support address is assembled in JS at click
+  # time, so it never appears as visible text or a hoverable href in the DOM.
+  observeEvent(input$support, {
+    showModal(modalDialog(
+      title = tagList(icon("life-ring"), " ", i18n("support.title")),
+      easyClose = TRUE, size = "m",
+      tags$p(i18n("support.body")),
+      tags$ul(
+        tags$li(i18n("support.bullet_email")),
+        tags$li(HTML(sprintf(
+          '%s <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues" target="_blank" rel="noopener">GitHub Issues</a>.',
+          i18n("support.bullet_issues"))))
+      ),
+      footer = tagList(
+        modalButton(i18n("support.close")),
+        tags$a(
+          class = "btn btn-primary",
+          icon("envelope"), " ", i18n("support.compose"),
+          href = "#",
+          onclick = paste0(
+            "var a=['rodrigues.h','ufl.edu'].join(String.fromCharCode(64));",
+            "var s=encodeURIComponent('soilKey Pro — support request');",
+            "var b=encodeURIComponent('Please describe your question or the ",
+            "problem and what you were doing when it happened:",
+            "\\n\\n\\n\\n--- soilKey Pro');",
+            "window.location.href='mailto:'+a+'?subject='+s+'&body='+b;",
+            "return false;"))
+      )
+    ))
   })
 }
 

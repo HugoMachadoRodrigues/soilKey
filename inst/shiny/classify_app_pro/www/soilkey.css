@@ -200,3 +200,30 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   .sk-ribbon { flex-direction: column; align-items: flex-start; }
   .navbar-brand-inner { font-size: 1rem; }
 }
+
+/* ---- footer (richer, replaces the old one-line tagline) ---------------- */
+.sk-footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.9rem;
+  padding: 0.55rem 1rem; border-top: 1px solid var(--sk-line);
+  background: var(--sk-sand); font-size: 0.8rem; color: var(--sk-muted);
+}
+.sk-footer-logo { opacity: 0.92; }
+.sk-footer-title { font-weight: 600; color: var(--sk-espresso); }
+.sk-footer-ver { font-weight: 400; color: var(--sk-terra); }
+.sk-footer-tag { color: var(--sk-muted); }
+.sk-footer-links { margin-left: auto; display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.sk-footer-links a { color: var(--sk-brown); text-decoration: none; }
+.sk-footer-links a:hover { text-decoration: underline; }
+.sk-footer-lic { color: #9a8b7b; }
+
+/* ---- acknowledgements tab --------------------------------------------- */
+.sk-ack-head h3 { color: var(--sk-espresso); margin-bottom: 0.25rem; font-weight: 700; }
+.sk-ack-head { margin-bottom: 0.75rem; }
+.sk-ack-card .card-header { font-weight: 600; color: var(--sk-espresso); background: var(--sk-sand); }
+.sk-ack-list { list-style: none; margin: 0; padding: 0; }
+.sk-ack-item { padding: 0.5rem 0; border-bottom: 1px dashed var(--sk-line); }
+.sk-ack-item:last-child { border-bottom: none; }
+.sk-ack-lead { display: block; font-weight: 600; color: var(--sk-brown); }
+.sk-ack-contrib { display: block; color: var(--sk-muted); font-size: 0.9rem; margin-top: 0.1rem; }
+.sk-ack-note { margin-top: 1rem; padding: 0.6rem 0.85rem; background: #faf6ef;
+  border: 1px solid var(--sk-line); border-radius: 0.5rem; }
