@@ -110,7 +110,11 @@ photo_ui <- function(id) {
           shiny::actionButton(ns("run_munsell"), i18n("photo.extract_munsell"),
                               icon = shiny::icon("eye-dropper"),
                               class = "btn-primary w-100"),
-          "Read per-horizon Munsell colour from the photo and merge it into the pedon, with a confidence for each value.")
+          "Read per-horizon Munsell colour from the photo and merge it into the pedon, with a confidence for each value."),
+        shiny::div(
+          class = "mt-2 small",
+          shiny::actionLink(ns("demo_photo"), i18n("photo.use_demo"),
+                            icon = shiny::icon("wand-magic-sparkles")))
       ),
 
       sk_section(
@@ -139,13 +143,33 @@ photo_server <- function(id, rv) {
     log_msg <- shiny::reactiveVal(character(0))
     add_log <- function(...) log_msg(c(log_msg(), paste0(...)))
 
+    # Demo photo: a bundled illustrative profile image so the tab is usable
+    # without uploading anything (the offline reader returns a canned response,
+    # so the image is purely illustrative). A real upload always overrides it.
+    demo_active <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$demo_photo, demo_active(TRUE))
+    shiny::observeEvent(input$profile_img, demo_active(FALSE), ignoreInit = TRUE)
+    active_profile <- shiny::reactive({
+      f <- input$profile_img
+      if (!is.null(f))
+        return(list(path = f$datapath, name = f$name,
+                    type = f$type %||% "image/jpeg"))
+      if (isTRUE(demo_active())) {
+        p <- .pro_demo_asset("demo_profile.jpg")
+        if (!is.null(p))
+          return(list(path = p, name = i18n("photo.demo_name"),
+                      type = "image/jpeg"))
+      }
+      NULL
+    })
+
     # ---- Munsell extraction ----------------------------------------------
     shiny::observeEvent(input$run_munsell, {
       if (is.null(rv$pedon)) {
         shiny::showNotification(i18n("photo.build_pedon_first"), type = "warning")
         return(invisible())
       }
-      f <- input$profile_img
+      f <- active_profile()
       if (is.null(f)) {
         shiny::showNotification(i18n("photo.choose_profile_photo_first"),
                                 type = "warning")
@@ -162,7 +186,7 @@ photo_server <- function(id, rv) {
       }
       shiny::withProgress(message = i18n("photo.extracting_munsell"), value = 0.5, {
         res <- tryCatch(
-          soilKey::extract_munsell_from_photo(rv$pedon, f$datapath, provider),
+          soilKey::extract_munsell_from_photo(rv$pedon, f$path, provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {
@@ -264,12 +288,12 @@ photo_server <- function(id, rv) {
     # path is Shiny's own upload temp file (owned by the fileInput) or our
     # cached transparent placeholder -- neither should be deleted after serving.
     output$profile_preview <- shiny::renderImage({
-      f <- input$profile_img
+      f <- active_profile()
       if (is.null(f)) {
         return(list(src = blank_png(), contentType = "image/png",
                     width = 1, height = 1, alt = i18n("photo.alt_no_photo")))
       }
-      list(src = f$datapath,
+      list(src = f$path,
            contentType = f$type %||% "image/jpeg",
            width = "100%", alt = i18n("photo.alt_uploaded_photo"))
     }, deleteFile = FALSE)
@@ -277,7 +301,7 @@ photo_server <- function(id, rv) {
     # Caption: filename + the mean extraction confidence as a coloured badge,
     # once a Munsell extraction has populated the horizons.
     output$img_caption <- shiny::renderUI({
-      f <- input$profile_img
+      f <- active_profile()
       if (is.null(f))
         return(shiny::div(class = "small text-muted mb-2",
                           i18n("photo.upload_in_sidebar")))
