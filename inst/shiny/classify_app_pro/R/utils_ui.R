@@ -265,3 +265,16 @@ sk_empty <- function(icon, title, body = NULL, ...) {
     ))
   )
 }
+
+# Resolve a bundled www/ asset (demo photo, demo spectrum) to an on-disk path,
+# working both when the app runs from its installed location (cwd = app dir) and
+# from source. Returns NULL if the asset cannot be found.
+.pro_demo_asset <- function(name) {
+  cands <- c(
+    file.path("www", name),                                       # cwd = app dir
+    system.file("shiny", "classify_app_pro", "www", name,
+                package = "soilKey"))                              # installed
+  for (p in cands) if (nzchar(p) && file.exists(p))
+    return(normalizePath(p, mustWork = FALSE))
+  NULL
+}

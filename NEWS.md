@@ -1,3 +1,19 @@
+# soilKey 0.9.167 (2026-07-02)
+
+One-click demos for the Photo and Spectra tabs, so both can be exercised with
+no user data. No change to the classification engine.
+
+\itemize{
+  \item \strong{Photo tab: "Use the illustrative demo photo".} A bundled,
+        clearly-labelled soil-profile image (drawn in R, not a photograph) that
+        loads into the preview and runs the offline Munsell extraction, so a
+        first-time user sees the Photo pipeline work without uploading anything.
+  \item \strong{Spectra tab: "Use the demo spectrum".} A bundled Vis-NIR
+        spectrum (five horizons, matching the example Ferralsol) that attaches
+        in one click, so the OSSL gap-fill pipeline is demonstrable with no
+        data. A real upload still overrides either demo.
+}
+
 # soilKey 0.9.166 (2026-07-02)
 
 Pro-app usability pass. No change to the classification engine.

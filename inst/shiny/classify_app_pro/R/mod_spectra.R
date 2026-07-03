@@ -28,7 +28,13 @@ spectra_ui <- function(id) {
           shiny::actionButton(ns("attach"), i18n("spectra.attach_to_pedon"),
                               icon = shiny::icon("paperclip"),
                               class = "btn-secondary w-100"),
-          "Attach the uploaded spectra matrix to the pedon so it can be used for prediction.")
+          "Attach the uploaded spectra matrix to the pedon so it can be used for prediction."),
+        shiny::div(
+          class = "mt-2 small",
+          bslib::tooltip(
+            shiny::actionLink(ns("demo_spectrum"), i18n("spectra.use_demo"),
+                              icon = shiny::icon("wand-magic-sparkles")),
+            "Attaches a bundled Vis-NIR demo spectrum (5 horizons -- matches the example Ferralsol)."))
       ),
       shiny::tags$hr(),
       sk_section(
@@ -74,19 +80,18 @@ spectra_ui <- function(id) {
 spectra_server <- function(id, rv) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # ---- attach an uploaded spectrum -------------------------------------
-    shiny::observeEvent(input$attach, {
+    # ---- attach a spectrum (shared by the upload and the demo) -----------
+    do_attach <- function(path) {
       if (is.null(rv$pedon)) {
         shiny::showNotification(i18n("spectra.build_pedon_first"), type = "warning")
         return(invisible())
       }
-      f <- input$vnir_csv
-      if (is.null(f)) {
+      if (is.null(path) || !file.exists(path)) {
         shiny::showNotification(i18n("spectra.choose_vnir_csv_first"), type = "warning")
         return(invisible())
       }
       mat <- tryCatch({
-        m <- as.matrix(utils::read.csv(f$datapath, check.names = FALSE))
+        m <- as.matrix(utils::read.csv(path, check.names = FALSE))
         storage.mode(m) <- "double"
         m
       }, error = function(e) e)
@@ -108,6 +113,22 @@ spectra_server <- function(id, rv) {
       shiny::showNotification(
         i18n("spectra.attached_matrix", nrow(mat), ncol(mat)),
         type = "message")
+    }
+
+    shiny::observeEvent(input$attach, {
+      f <- input$vnir_csv
+      do_attach(if (is.null(f)) NULL else f$datapath)
+    })
+
+    # Bundled demo spectrum -- a one-click way to see the gap-fill pipeline run
+    # without any data (matches the example Ferralsol's 5 horizons).
+    shiny::observeEvent(input$demo_spectrum, {
+      p <- .pro_demo_asset("demo_spectrum.csv")
+      if (is.null(p)) {
+        shiny::showNotification(i18n("spectra.demo_missing"), type = "error")
+        return(invisible())
+      }
+      do_attach(p)
     })
 
     # ---- gap-fill ---------------------------------------------------------
