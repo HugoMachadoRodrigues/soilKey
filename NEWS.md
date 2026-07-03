@@ -1,3 +1,27 @@
+# soilKey 0.9.165 (2026-07-02)
+
+Bug fix for the decision-trace display, plus a small new helper.
+
+\itemize{
+  \item \strong{Fixed: the key trace crashed for SiBCS and USDA.} The decision
+        trace has a system-dependent shape -- a flat list of steps for WRB 2022,
+        but a nested list of phases (orders, suborders, great groups, ...) for
+        the hierarchical SiBCS and USDA keys, whose leaves include assigned-taxon
+        records, family attributes and bare labels. Consumers that walked the
+        trace as a flat list of steps therefore errored with
+        \code{"$ operator is invalid for atomic vectors"} (the Shiny app's Key
+        trace tab and \code{report_pdf()} for SiBCS) or rendered garbled
+        \code{"?? -- NA"} rows (\code{report_html()} and \code{print()}).
+  \item \strong{New \code{key_trace_table()}.} A single helper normalises any
+        trace shape into one ordered data frame (columns \code{phase}, \code{code},
+        \code{name}, \code{status}, \code{missing}, \code{n_missing}). All four
+        consumers -- \code{print()}, the HTML and PDF reports, and the app -- now
+        render the trace through it, so none special-cases a system. The app's
+        Key trace tab gains a \emph{level} column for the hierarchical systems and
+        marks assigned taxa distinctly. WRB output (including the reports) is
+        byte-identical to before.
+}
+
 # soilKey 0.9.164 (2026-07-02)
 
 Four usability features for the Pro app (\code{run_classify_app()}), aimed at

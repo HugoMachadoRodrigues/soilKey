@@ -156,23 +156,29 @@ report_pdf <- function(x,
   qual_principal <- res$qualifiers$principal     %||% character()
   qual_suppl     <- res$qualifiers$supplementary %||% character()
 
-  trace_lines <- if (length(res$trace) == 0) {
+  # v0.9.165: normalise the system-dependent trace (flat for WRB, nested phases
+  # for SiBCS/USDA) into one ordered table before rendering. Dropping `info`
+  # rows keeps the trace to genuine decision steps; assigned-taxon rows render
+  # like a passing step. WRB output is byte-identical to the previous rendering.
+  tt <- .flatten_key_trace(res$trace)
+  tt <- tt[tt$status != "info", , drop = FALSE]
+  trace_lines <- if (nrow(tt) == 0) {
     paste0("_", .report_msg("report.no_trace"), "_")
   } else {
-    paste(vapply(seq_along(res$trace), function(i) {
-      t <- res$trace[[i]]
-      sym <- if (isTRUE(t$passed))      paste0("**", .report_msg("report.trace_passed"), "**")
-             else if (isFALSE(t$passed)) .report_msg("report.trace_failed")
-             else                        .report_msg("report.trace_indeterminate")
+    paste(vapply(seq_len(nrow(tt)), function(i) {
+      st  <- tt$status[i]
+      sym <- if (st %in% c("passed", "selected"))
+               paste0("**", .report_msg("report.trace_passed"), "**")
+             else if (st == "failed") .report_msg("report.trace_failed")
+             else                      .report_msg("report.trace_indeterminate")
       sprintf("%2d. `%-3s` %-20s -- %s%s",
                 i,
-                t$code %||% "?",
-                t$name %||% "",
+                if (nzchar(tt$code[i])) tt$code[i] else "?",
+                tt$name[i],
                 sym,
-                if (!isTRUE(t$passed) &&
-                       length(t$missing %||% character()) > 0)
+                if (st %in% c("failed", "indeterminate") && tt$n_missing[i] > 0)
                   sprintf(.report_msg("report.attrs_missing_pdf"),
-                            length(t$missing))
+                            tt$n_missing[i])
                 else "")
     }, character(1)), collapse = "  \n")
   }
