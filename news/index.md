@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.174 (2026-07-03)
+
+Map tab reformulated into one synchronised map (Pro app).
+
 ## soilKey 0.9.173 (2026-07-03)
 
 Spectra and Photo tab fixes.
