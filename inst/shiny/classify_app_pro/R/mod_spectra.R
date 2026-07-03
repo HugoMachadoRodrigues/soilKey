@@ -73,7 +73,31 @@ spectra_ui <- function(id) {
         )
       )
     ),
-    shiny::uiOutput(ns("body"))
+    # v0.9.173: the result cards are STATIC (not inside a renderUI). Nesting the
+    # plotly spectrum plot inside output$body (a renderUI depending on rv$pedon)
+    # tore its DOM node down every time the demo/attach reassigned rv$pedon, so
+    # the plot rendered blank. Kept static, the plotly node is created once and
+    # simply redraws; a conditionalPanel on the has_pedon flag swaps the
+    # no-pedon placeholder in/out without touching the plot node.
+    shiny::conditionalPanel(
+      "!output.has_pedon", ns = ns,
+      pro_no_pedon_msg()),
+    shiny::conditionalPanel(
+      "output.has_pedon", ns = ns,
+      bslib::layout_column_wrap(
+        width = 1,
+        bslib::card(
+          bslib::card_header(i18n("spectra.card_status")),
+          bslib::card_body(shiny::verbatimTextOutput(ns("status")))),
+        bslib::card(
+          bslib::card_header(i18n("spectra.card_attached_spectrum")),
+          bslib::card_body(
+            plotly::plotlyOutput(ns("spectrum"), height = "300px"))),
+        bslib::card(
+          bslib::card_header(i18n("spectra.card_attributes")),
+          bslib::card_body(DT::DTOutput(ns("attr_table"))))
+      )
+    )
   )
 }
 
@@ -173,26 +197,9 @@ spectra_server <- function(id, rv) {
                               type = "message")
     })
 
-    # ---- body -------------------------------------------------------------
-    output$body <- shiny::renderUI({
-      ns <- session$ns
-      if (is.null(rv$pedon)) return(pro_no_pedon_msg())
-      bslib::layout_column_wrap(
-        width = 1,
-        bslib::card(
-          bslib::card_header(i18n("spectra.card_status")),
-          bslib::card_body(shiny::verbatimTextOutput(ns("status")))
-        ),
-        bslib::card(
-          bslib::card_header(i18n("spectra.card_attached_spectrum")),
-          bslib::card_body(plotly::plotlyOutput(ns("spectrum"), height = "300px"))
-        ),
-        bslib::card(
-          bslib::card_header(i18n("spectra.card_attributes")),
-          bslib::card_body(DT::DTOutput(ns("attr_table")))
-        )
-      )
-    })
+    # ---- has-pedon flag drives the static conditionalPanels ---------------
+    output$has_pedon <- shiny::reactive(!is.null(rv$pedon))
+    shiny::outputOptions(output, "has_pedon", suspendWhenHidden = FALSE)
 
     # ---- the attached spectrum, one trace per horizon ---------------------
     output$spectrum <- plotly::renderPlotly({
