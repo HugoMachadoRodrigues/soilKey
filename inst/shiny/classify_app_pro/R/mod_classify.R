@@ -199,7 +199,13 @@ classify_server <- function(id, rv, settings) {
       res <- results()
       shiny::req(res)
       r <- res[[input$trace_sys %||% "wrb"]]
-      if (is.null(r) || is.null(r$trace) || length(r$trace) == 0L) {
+      # v0.9.165: the trace shape differs by system (flat for WRB, nested phases
+      # for SiBCS/USDA). key_trace_table() normalises every shape to one ordered
+      # data frame, so this renderer no longer crashes on the SiBCS/USDA trace
+      # ("$ operator is invalid for atomic vectors").
+      tr <- if (is.null(r)) NULL
+            else tryCatch(soilKey::key_trace_table(r), error = function(e) NULL)
+      if (is.null(tr) || nrow(tr) == 0L) {
         return(DT::datatable(
           stats::setNames(data.frame(i18n("classify.no_trace_available")),
                           i18n("classify.note_col")),
@@ -207,31 +213,33 @@ classify_server <- function(id, rv, settings) {
       }
       pass_lbl <- i18n("classify.status_pass")
       fail_lbl <- i18n("classify.status_fail")
-      tr <- do.call(rbind, lapply(r$trace, function(t) {
-        data.frame(
-          code    = t$code   %||% "?",
-          name    = t$name   %||% "?",
-          status  = {
-            p <- t$passed %||% t$status
-            if (isTRUE(p)) pass_lbl
-            else if (isFALSE(p)) fail_lbl
-            else as.character(p %||% i18n("classify.status_indeterminate"))
-          },
-          missing = paste(t$missing %||% character(0), collapse = ", "),
-          stringsAsFactors = FALSE
-        )
-      }))
-      DT::datatable(tr, rownames = FALSE,
-                    colnames = c(i18n("classify.col_code"),
-                                 i18n("classify.col_name"),
-                                 i18n("classify.col_status"),
-                                 i18n("classify.col_missing")),
+      lbl <- c(passed        = pass_lbl,
+               failed        = fail_lbl,
+               indeterminate = i18n("classify.status_indeterminate"),
+               selected      = i18n("classify.status_selected"),
+               info          = i18n("classify.status_info"))
+      disp <- data.frame(
+        code    = tr$code,
+        name    = tr$name,
+        status  = unname(lbl[tr$status]),
+        missing = tr$missing,
+        stringsAsFactors = FALSE)
+      # Show the phase / level column only when it carries information: the
+      # hierarchical SiBCS / USDA keys fill it; the flat WRB trace leaves it
+      # blank, so WRB keeps the original four-column table.
+      has_phase <- any(nzchar(tr$phase))
+      if (has_phase)
+        disp <- cbind(phase = tr$phase, disp, stringsAsFactors = FALSE)
+      colnames_loc <- c(if (has_phase) i18n("classify.col_phase"),
+                        i18n("classify.col_code"), i18n("classify.col_name"),
+                        i18n("classify.col_status"), i18n("classify.col_missing"))
+      DT::datatable(disp, rownames = FALSE, colnames = colnames_loc,
                     options = list(pageLength = 15, dom = "tip")) |>
         DT::formatStyle(
           "status",
           backgroundColor = DT::styleEqual(
-            c(pass_lbl, fail_lbl), c("#d1e7dd", "#f8d7da"))
-        )
+            c(pass_lbl, fail_lbl, lbl[["selected"]]),
+            c("#d1e7dd", "#f8d7da", "#cfe2ff")))
     })
 
     output$ambiguities <- shiny::renderUI({

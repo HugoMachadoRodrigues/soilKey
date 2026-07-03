@@ -116,25 +116,25 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       cli::cli_h3("Key trace")
       n_tested <- length(self$trace)
       cli::cli_text("({n_tested} RSGs tested before assignment)")
-      for (i in seq_along(self$trace)) {
-        t <- self$trace[[i]]
-        # v0.9.52: nested classify_sibcs() trace contains scalar /
-        # NULL / data.frame entries (e.g. familia, color_undetermined).
-        # Skip them in the per-RSG dump rather than crashing.
-        if (!is.list(t) || inherits(t, "data.frame")) next
-        sym <- if (isTRUE(t$passed)) "PASSED"
-               else if (isFALSE(t$passed)) "failed"
-               else "NA"
-        n_missing <- length(t$missing %||% character(0))
-        suffix <- if (n_missing > 0L && !isTRUE(t$passed)) {
-          sprintf(" (%d attrs missing)", n_missing)
-        } else ""
+      # v0.9.165: the trace is flat for WRB but nested for SiBCS/USDA (phases of
+      # candidate steps, assigned records, family attributes, bare labels).
+      # .flatten_key_trace() normalises every shape to one ordered table, so the
+      # per-step dump no longer produces "?? -- NA" rows (or crashes) for the
+      # hierarchical systems. WRB output is unchanged.
+      tt <- .flatten_key_trace(self$trace)
+      sym_of <- c(passed = "PASSED", failed = "failed",
+                  indeterminate = "NA", selected = "assigned", info = "info")
+      for (i in seq_len(nrow(tt))) {
+        sym    <- sym_of[[tt$status[i]]]
+        suffix <- if (tt$n_missing[i] > 0L &&
+                      tt$status[i] %in% c("failed", "indeterminate"))
+                    sprintf(" (%d attrs missing)", tt$n_missing[i]) else ""
         cli::cli_text(sprintf("  %2d. %-3s %-14s -- %s%s",
-                               i,
-                               t$code %||% "??",
-                               t$name %||% "",
-                               sym,
-                               suffix))
+                              i,
+                              if (nzchar(tt$code[i])) tt$code[i] else "??",
+                              tt$name[i],
+                              sym,
+                              suffix))
       }
       invisible(self)
     },

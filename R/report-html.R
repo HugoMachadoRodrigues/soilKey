@@ -242,34 +242,33 @@ report <- function(x,
         character(1))
   )
 
-  trace_rows <- if (length(res$trace) == 0) {
+  # v0.9.165: normalise the system-dependent trace (flat for WRB, nested phases
+  # for SiBCS/USDA) into one ordered table, then render the decision steps.
+  # `info` rows (family attributes / bare labels) are not key steps, so they
+  # are dropped here; assigned-taxon rows render like a passing step. WRB output
+  # is byte-identical to the previous flat rendering.
+  tt <- .flatten_key_trace(res$trace)
+  tt <- tt[tt$status != "info", , drop = FALSE]
+  trace_rows <- if (nrow(tt) == 0) {
     sprintf("<tr><td colspan=\"4\" class=\"muted\">%s</td></tr>",
             .report_msg("report.no_trace"))
   } else {
-    paste0(vapply(seq_along(res$trace), function(i) {
-      t <- res$trace[[i]]
-      # v0.9.11: tolerate atomic / non-list trace entries (some
-      # diagnostics return a bare logical when no metadata is
-      # available). Promote to a minimal list so the field accesses
-      # below are uniform.
-      if (!is.list(t)) {
-        t <- list(passed = if (is.logical(t)) t else NA,
-                  code = NA_character_, name = NA_character_,
-                  missing = character(0))
-      }
-      passed <- t$passed
-      sym <- if (isTRUE(passed))      paste0('class="passed">', .report_msg("report.trace_passed"))
-             else if (isFALSE(passed)) paste0('class="failed">', .report_msg("report.trace_failed"))
-             else                      paste0('class="indeterminate">', .report_msg("report.trace_indeterminate"))
+    paste0(vapply(seq_len(nrow(tt)), function(i) {
+      st  <- tt$status[i]
+      sym <- if (st %in% c("passed", "selected"))
+               paste0('class="passed">', .report_msg("report.trace_passed"))
+             else if (st == "failed")
+               paste0('class="failed">', .report_msg("report.trace_failed"))
+             else
+               paste0('class="indeterminate">', .report_msg("report.trace_indeterminate"))
       sprintf(
         '<tr><td>%d</td><td><code>%s</code></td><td>%s</td><td><span %s</span>%s</td></tr>',
         i,
-        .html_escape(t$code %||% "?"),
-        .html_escape(t$name %||% ""),
+        .html_escape(if (nzchar(tt$code[i])) tt$code[i] else "?"),
+        .html_escape(tt$name[i]),
         sym,
-        if (!isTRUE(passed) && length(t$missing %||% character()) > 0)
-          sprintf(.report_msg("report.attrs_missing"),
-                    length(t$missing))
+        if (st %in% c("failed", "indeterminate") && tt$n_missing[i] > 0)
+          sprintf(.report_msg("report.attrs_missing"), tt$n_missing[i])
         else "")
     }, character(1)), collapse = "\n")
   }
