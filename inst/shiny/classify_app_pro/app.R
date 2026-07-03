@@ -129,6 +129,22 @@ ui <- function(request) {
              href   = "https://hugomachadorodrigues.github.io/soilKey/",
              target = "_blank")
     ),
+    bslib::nav_item(
+      # "Report a problem": opens the user's mail client, pre-addressed to
+      # support with a template. The address is assembled in JS at click time,
+      # so it is never rendered as visible text or a hoverable href.
+      tags$a(
+        icon("life-ring"), " ", i18n("nav.support"),
+        href = "#", class = "nav-link",
+        title = i18n("nav.support_tip"),
+        onclick = paste0(
+          "var a=['rodrigues.h','ufl.edu'].join(String.fromCharCode(64));",
+          "var s=encodeURIComponent('soilKey Pro — problem report');",
+          "var b=encodeURIComponent('Please describe the problem and what you ",
+          "were doing when it happened:\\n\\n\\n\\n--- soilKey Pro');",
+          "window.location.href='mailto:'+a+'?subject='+s+'&body='+b;",
+          "return false;"))
+    ),
     footer = tags$div(
       class = "text-muted small px-3 py-2",
       i18n("app.footer", as.character(utils::packageVersion("soilKey")))

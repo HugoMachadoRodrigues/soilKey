@@ -1,3 +1,17 @@
+# soilKey 0.9.163 (2026-06-30)
+
+\itemize{
+  \item \strong{The Spatial tab always shows a map.} A location map (base tiles +
+        the profile point and its sampling buffer) now renders whenever a pedon
+        exists, independent of any SoilGrids raster. The optional "no raster"
+        note shrank to a small caption beneath the map, so the tab is never a
+        blank / error-only screen.
+  \item \strong{Support / report-a-problem.} A new "Support" item in the navbar
+        opens the user's mail client, pre-addressed to the maintainer with a
+        template. The address is assembled client-side so it is never rendered
+        as visible text or a hoverable link.
+}
+
 # soilKey 0.9.162 (2026-06-30)
 
 A full professional redesign of the Pro app (\code{run_classify_app()}) so it is
