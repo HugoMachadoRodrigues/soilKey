@@ -29,15 +29,19 @@
 }
 
 # Build N demo PedonRecords from fixtures, spread deterministically across
-# Brazil via a golden-ratio scatter (no RNG -> reproducible).
+# Brazil via the R2 low-discrepancy sequence (no RNG -> reproducible). The two
+# multipliers are 1/g and 1/g^2 for the plastic number g = 1.3247179572...,
+# which give two *independent* dimensions -- unlike a golden-ratio pair
+# (0.618 / 0.382 = 1 - 0.618), whose points collapse onto a single line.
 .batch_demo_pedons <- function(n = 12L, loader = pro_load_fixture) {
   fx <- .batch_demo_fixtures()
   n  <- max(1L, as.integer(n))
   out <- vector("list", n)
   for (i in seq_len(n)) {
     p   <- loader(fx[[((i - 1L) %% length(fx)) + 1L]])
-    lat <- -5  - 25 * ((i * 0.6180339887) %% 1)   # ~ -5 .. -30
-    lon <- -40 - 20 * ((i * 0.3819660113) %% 1)   # ~ -40 .. -60
+    # R2 sequence over a Brazil-ish land box (lat -8..-28, lon -42..-58).
+    lat <- -8  - 20 * ((i * 0.7548776662) %% 1)   # dim 1 (1/g)
+    lon <- -42 - 16 * ((i * 0.5698402910) %% 1)   # dim 2 (1/g^2)
     p$site$id  <- sprintf("demo-%02d", i)
     p$site$lat <- round(lat, 4)
     p$site$lon <- round(lon, 4)

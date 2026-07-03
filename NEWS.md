@@ -1,3 +1,24 @@
+# soilKey 0.9.161 (2026-06-30)
+
+Pro app (\code{run_classify_app()}) UX fixes.
+
+\itemize{
+  \item \strong{Demo map points no longer fall on a line.} The batch-map demo
+        scattered points via a golden-ratio pair (\code{0.618} / \code{0.382 =
+        1 - 0.618}) whose two dimensions are perfectly anti-correlated, so every
+        point landed on a single diagonal. Switched to the R2 low-discrepancy
+        sequence (plastic-number multipliers \code{1/g}, \code{1/g^2}), giving a
+        genuine 2-D scatter across Brazil.
+  \item \strong{The soilKey logo} now appears in the navbar.
+  \item \strong{Friendlier "no raster" states.} The Spatial and Map/Grid tabs
+        used to show a red error when no (optional) SoilGrids raster is
+        configured. They now show a calm empty-state that explains the feature
+        is optional, that the raster is not bundled (the global grid is large),
+        how to enable it, and that the classification key and Batch classify
+        work without it. The raw technical message is tucked into a collapsible
+        detail. (EN + PT.)
+}
+
 # soilKey 0.9.160 (2026-06-30)
 
 The "**one file, one line**" onboarding release - making the simplest path
