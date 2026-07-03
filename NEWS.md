@@ -1,3 +1,29 @@
+# soilKey 0.9.173 (2026-07-03)
+
+Spectra and Photo tab fixes.
+
+\itemize{
+  \item \strong{The demo spectrum now plots.} Clicking "Use the demo spectrum"
+        showed nothing: the plot lived inside a \code{renderUI} that was torn
+        down and rebuilt every time the spectrum was attached, so the plotly
+        node rendered blank. The result cards are now static, so the plot draws
+        reliably -- one reflectance trace per horizon.
+  \item \strong{Photo: a free local model, no API key.} The provider is now
+        Demo / \strong{Local model (Ollama)} / Cloud, each explained. The Local
+        option runs a free open-source vision model on your own machine via
+        Ollama + \pkg{ellmer} (default \code{llama3.2-vision}); it detects a
+        running server and, if none is found, tells you how to start one. No
+        paid API, and no image leaves the computer.
+  \item \strong{Photo: the demo photo loads with the demo.} When the one-click
+        example profile is loaded, the Photo tab now opens with the illustrative
+        demo photo already in place.
+  \item \strong{Photo: the colour extraction is explained.} A panel states that
+        colour is read per horizon from the matching depth band and converted to
+        Munsell through the CIE-anchored \pkg{munsellinterpol} (Glenn Davis)
+        path, and a new "Where each colour was read" panel lists the photo
+        region each horizon's colour was sampled from.
+}
+
 # soilKey 0.9.172 (2026-07-03)
 
 Classify-tab clarity and a navbar contrast fix.

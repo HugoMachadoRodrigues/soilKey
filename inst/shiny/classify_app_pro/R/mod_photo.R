@@ -54,6 +54,19 @@
   mean(vals)
 }
 
+# Distinct "source quotes" (photo regions the colours were read from), from the
+# provenance ledger (columns: horizon_idx, attribute, source, confidence,
+# notes). Empty before any VLM extraction.
+.photo_source_quotes <- function(pedon) {
+  if (is.null(pedon) || is.null(pedon$provenance)) return(character(0))
+  pr <- as.data.frame(pedon$provenance)
+  if (!all(c("attribute", "source", "notes") %in% names(pr)))
+    return(character(0))
+  keep <- grepl("^munsell_", pr$attribute) & pr$source == "extracted_vlm"
+  q <- pr$notes[keep]
+  unique(q[nzchar(q) & !is.na(q)])
+}
+
 # Map a [0,1] confidence to the same A-E evidence ladder the badges use, so a
 # VLM extraction reads on the same scale as the rest of the app.
 .photo_confidence_grade <- function(conf) {
@@ -62,14 +75,25 @@
     if (conf >= 0.55) "C" else if (conf >= 0.40) "D" else "E"
 }
 
-# Resolve the provider: a live ellmer chat from options, else a mock.
+# Resolve the vision provider for the chosen mode:
+#   "mock"  -> offline canned demo (no model, no key).
+#   "local" -> a FREE open-source vision model on the user's own machine via
+#              Ollama + ellmer (no API key, nothing leaves the computer).
+#   "live"  -> a cloud ellmer chat preconfigured in options(soilKey.vlm_chat=).
 .photo_provider <- function(mode, mock_responses) {
   if (identical(mode, "live")) {
     live <- getOption("soilKey.vlm_chat", default = NULL)
-    if (is.null(live)) {
-      stop(i18n("photo.live_needs_chat"), call. = FALSE)
-    }
+    if (is.null(live)) stop(i18n("photo.live_needs_chat"), call. = FALSE)
     return(live)
+  }
+  if (identical(mode, "local")) {
+    if (!requireNamespace("ellmer", quietly = TRUE))
+      stop(i18n("photo.ellmer_missing"), call. = FALSE)
+    running <- isTRUE(tryCatch(soilKey::ollama_is_running(),
+                               error = function(e) FALSE))
+    if (!running) stop(i18n("photo.ollama_not_running"), call. = FALSE)
+    model <- getOption("soilKey.ollama_vision_model", "llama3.2-vision")
+    return(ellmer::chat_ollama(model = model))
   }
   soilKey::MockVLMProvider$new(responses = mock_responses)
 }
@@ -83,18 +107,23 @@ photo_ui <- function(id) {
       sk_section(
         i18n("photo.step1_provider"),
         icon = "camera",
-        desc = "Choose whether the image is read by the offline demo or a live vision-language model.",
-        shinyWidgets::radioGroupButtons(
+        desc = i18n("photo.provider_desc"),
+        shiny::radioButtons(
           ns("provider"), NULL,
-          choices = stats::setNames(
-            c("mock", "live"),
-            c(i18n("photo.provider_demo"), i18n("photo.provider_live"))
-          ),
-          selected = "mock", justified = TRUE, size = "sm"
-        ),
-        shiny::helpText(
-          i18n("photo.provider_help")
-        )
+          choiceNames = list(
+            shiny::tagList(shiny::strong(i18n("photo.provider_demo")),
+                           shiny::tags$span(class = "text-muted small",
+                                            i18n("photo.provider_demo_hint"))),
+            shiny::tagList(shiny::strong(i18n("photo.provider_local")),
+                           shiny::tags$span(class = "text-muted small",
+                                            i18n("photo.provider_local_hint"))),
+            shiny::tagList(shiny::strong(i18n("photo.provider_live")),
+                           shiny::tags$span(class = "text-muted small",
+                                            i18n("photo.provider_live_hint")))),
+          choiceValues = c("mock", "local", "live"),
+          selected = "mock"),
+        shiny::uiOutput(ns("ollama_status")),
+        shiny::helpText(i18n("photo.provider_help"))
       ),
 
       sk_section(
@@ -149,6 +178,31 @@ photo_server <- function(id, rv) {
     demo_active <- shiny::reactiveVal(FALSE)
     shiny::observeEvent(input$demo_photo, demo_active(TRUE))
     shiny::observeEvent(input$profile_img, demo_active(FALSE), ignoreInit = TRUE)
+    # Auto-show the illustrative demo photo when the one-click demo pedon (the
+    # canonical Ferralsol) is loaded and the user hasn't uploaded a real photo,
+    # so the Photo tab is populated straight from the "Load example" flow. Only
+    # ever turns the demo ON -- a real upload or a manual link still control it.
+    shiny::observeEvent(rv$pedon, {
+      if (is.null(input$profile_img) &&
+          identical(tryCatch(rv$pedon$site$id, error = function(e) NULL),
+                    "FR-canonical-01"))
+        demo_active(TRUE)
+    })
+
+    # Live status of a local Ollama server when the Local provider is chosen.
+    output$ollama_status <- shiny::renderUI({
+      if (!identical(input$provider, "local")) return(NULL)
+      ok <- isTRUE(tryCatch(soilKey::ollama_is_running(),
+                            error = function(e) FALSE))
+      if (ok)
+        shiny::div(class = "small mt-1", style = "color:#3f6024;",
+                   shiny::icon("circle-check"), " ",
+                   i18n("photo.ollama_detected"))
+      else
+        shiny::div(class = "small mt-1 alert alert-warning py-1 px-2",
+                   shiny::icon("triangle-exclamation"), " ",
+                   i18n("photo.ollama_not_running"))
+    })
     active_profile <- shiny::reactive({
       f <- input$profile_img
       if (!is.null(f))
@@ -247,24 +301,45 @@ photo_server <- function(id, rv) {
     output$body <- shiny::renderUI({
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
-      bslib::layout_column_wrap(
-        width = 1 / 2,
-        bslib::card(
-          bslib::card_header(i18n("photo.card_profile_photo")),
-          bslib::card_body(
-            shiny::uiOutput(ns("img_caption")),
-            shiny::imageOutput(ns("profile_preview"), height = "260px")
-          )
-        ),
-        bslib::card(
-          bslib::card_header(i18n("photo.card_munsell_in_pedon")),
-          bslib::card_body(DT::DTOutput(ns("munsell_table")))
-        ),
-        bslib::card(
-          bslib::card_header(i18n("photo.card_extraction_log")),
-          bslib::card_body(shiny::verbatimTextOutput(ns("log")))
+      shiny::tagList(
+        # How the colour is read -- colour work must be transparent, so this
+        # names the sampling (per-horizon depth band) and the CIE-anchored
+        # Munsell conversion via Glenn Davis's munsellinterpol.
+        shiny::div(
+          class = "alert alert-light border small mb-2",
+          shiny::icon("circle-info", class = "text-secondary"), " ",
+          shiny::HTML(i18n("photo.extract_explainer"))),
+        bslib::layout_column_wrap(
+          width = 1 / 2,
+          bslib::card(
+            bslib::card_header(i18n("photo.card_profile_photo")),
+            bslib::card_body(
+              shiny::uiOutput(ns("img_caption")),
+              shiny::imageOutput(ns("profile_preview"), height = "260px"))),
+          bslib::card(
+            bslib::card_header(i18n("photo.card_munsell_in_pedon")),
+            bslib::card_body(DT::DTOutput(ns("munsell_table")))),
+          bslib::card(
+            bslib::card_header(i18n("photo.card_where_read")),
+            bslib::card_body(shiny::uiOutput(ns("source_quotes")))),
+          bslib::card(
+            bslib::card_header(i18n("photo.card_extraction_log")),
+            bslib::card_body(shiny::verbatimTextOutput(ns("log"))))
         )
       )
+    })
+
+    # "Where each colour was read" -- the per-horizon source quotes returned by
+    # the reader, so the colour has a visible provenance.
+    output$source_quotes <- shiny::renderUI({
+      shiny::req(rv$pedon)
+      q <- .photo_source_quotes(rv$pedon)
+      if (!length(q))
+        return(shiny::div(class = "small text-muted",
+                          i18n("photo.where_read_none")))
+      shiny::tags$ul(class = "small", lapply(q, function(s)
+        shiny::tags$li(shiny::icon("crop-simple", class = "text-secondary"),
+                       " ", s)))
     })
 
     # A small transparent PNG, written once via base graphics, shown before any
