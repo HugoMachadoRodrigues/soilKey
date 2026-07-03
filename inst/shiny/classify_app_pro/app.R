@@ -91,7 +91,18 @@ ui <- function(request) {
           "new MutationObserver(function(){",
           "var p=document.getElementById('shiny-notification-panel');",
           "if(p&&!p.getAttribute('aria-live')){p.setAttribute('aria-live','polite');p.setAttribute('role','status');}",
-          "}).observe(document.body,{childList:true,subtree:true});});"))
+          "}).observe(document.body,{childList:true,subtree:true});});")),
+        # Welcome tour: on the first connection from this browser (no
+        # localStorage flag yet) ask the server to open the guided tour. The
+        # server marks the browser as welcomed via a custom message so the tour
+        # never auto-opens again -- users can replay it from Help.
+        tags$script(htmltools::HTML(paste0(
+          "$(document).on('shiny:connected',function(){try{",
+          "if(!window.localStorage.getItem('soilkey_welcomed')){",
+          "Shiny.setInputValue('show_welcome',(new Date()).getTime(),{priority:'event'});",
+          "}}catch(e){}});",
+          "Shiny.addCustomMessageHandler('soilkey_mark_welcomed',function(x){",
+          "try{window.localStorage.setItem('soilkey_welcomed','1');}catch(e){}});")))
       ),
       uiOutput("pedon_ribbon")
     ),
@@ -150,6 +161,55 @@ ui <- function(request) {
       i18n("app.footer", as.character(utils::packageVersion("soilKey")))
     )
   )
+}
+
+# ----------------------------------------------------------------------------
+# Welcome tour -- a dependency-free, step-by-step onboarding modal shown on the
+# first open (localStorage-gated) and replayable from the Help menu. Each step
+# is one facet of the workflow; the final step offers the two on-ramps (load
+# the example and classify, or start a blank profile).
+# ----------------------------------------------------------------------------
+.PRO_WELCOME_STEPS <- 4L
+
+.pro_welcome_modal <- function(step) {
+  step <- max(1L, min(.PRO_WELCOME_STEPS, as.integer(step)))
+  head_line <- switch(
+    step,
+    tagList(icon("hand-sparkles"), " ", i18n("welcome.title")),
+    tagList(icon("layer-group"),   " ", i18n("welcome.s2_title")),
+    tagList(icon("sitemap"),       " ", i18n("welcome.s3_title")),
+    tagList(icon("compass"),       " ", i18n("welcome.s4_title")))
+  body <- switch(
+    step,
+    tags$p(i18n("welcome.s1_body")),
+    tags$p(i18n("welcome.s2_body")),
+    tags$p(i18n("welcome.s3_body")),
+    tags$p(i18n("welcome.s4_body")))
+  dots <- tags$div(
+    class = "sk-welcome-dots",
+    lapply(seq_len(.PRO_WELCOME_STEPS), function(i)
+      tags$span(class = if (i == step) "sk-dot sk-dot-on" else "sk-dot")))
+  back <- if (step > 1L)
+    actionButton("welcome_back", i18n("welcome.back"),
+                 icon = icon("arrow-left"), class = "btn-outline-secondary")
+  nxt  <- if (step < .PRO_WELCOME_STEPS)
+    actionButton("welcome_next", i18n("welcome.next"),
+                 icon = icon("arrow-right"), class = "btn-primary")
+  ctas <- if (step == .PRO_WELCOME_STEPS)
+    tagList(
+      actionButton("welcome_scratch", i18n("welcome.start_scratch"),
+                   icon = icon("pen"), class = "btn-outline-secondary"),
+      actionButton("welcome_example", i18n("welcome.load_example"),
+                   icon = icon("flask"), class = "btn-primary"))
+  modalDialog(
+    title = head_line, easyClose = FALSE, size = "l",
+    tags$div(class = "text-muted small mb-2",
+             i18n("welcome.step_of", step, .PRO_WELCOME_STEPS)),
+    body, dots,
+    footer = tagList(
+      actionButton("welcome_skip", i18n("welcome.skip"),
+                   class = "btn-link text-muted"),
+      back, nxt, ctas))
 }
 
 # ----------------------------------------------------------------------------
@@ -243,12 +303,39 @@ server <- function(input, output, session) {
                      as.character(utils::packageVersion("soilKey")))),
       footer = tagList(
         modalButton(i18n("help.close")),
+        actionButton("about_tour", i18n("welcome.take_tour"),
+                     icon = icon("compass"), class = "btn-outline-primary"),
         actionButton("about_example", i18n("help.load_classify"),
                      icon = icon("flask"), class = "btn-primary"))
     ))
   })
   observeEvent(input$about_example, {
     removeModal()
+    rv$example_request <- rv$example_request + 1L
+    bslib::nav_select("main_nav", "Classify")
+  })
+
+  # ---- welcome tour (first open + replay from Help) -----------------------
+  welcome_step <- reactiveVal(1L)
+  mark_welcomed <- function() session$sendCustomMessage("soilkey_mark_welcomed", TRUE)
+  open_welcome <- function() { welcome_step(1L); showModal(.pro_welcome_modal(1L)) }
+
+  observeEvent(input$show_welcome, open_welcome())          # first open (JS)
+  observeEvent(input$about_tour,  { removeModal(); open_welcome() })  # replay
+  observeEvent(input$welcome_next, {
+    s <- min(.PRO_WELCOME_STEPS, welcome_step() + 1L)
+    welcome_step(s); showModal(.pro_welcome_modal(s))
+  })
+  observeEvent(input$welcome_back, {
+    s <- max(1L, welcome_step() - 1L)
+    welcome_step(s); showModal(.pro_welcome_modal(s))
+  })
+  observeEvent(input$welcome_skip, { removeModal(); mark_welcomed() })
+  observeEvent(input$welcome_scratch, {
+    removeModal(); mark_welcomed(); bslib::nav_select("main_nav", "Pedon")
+  })
+  observeEvent(input$welcome_example, {
+    removeModal(); mark_welcomed()
     rv$example_request <- rv$example_request + 1L
     bslib::nav_select("main_nav", "Classify")
   })

@@ -50,6 +50,19 @@
   out
 }
 
+# Long-format starter table (two profiles, a few horizons each) so the upload
+# path is self-documenting: id + lat/lon repeated per horizon, then depths and
+# the canonical horizon attributes.
+.batch_starter_csv <- paste(
+  "profile_id,lat,lon,top_cm,bottom_cm,designation,clay_pct,silt_pct,sand_pct,ph_h2o,oc_pct,cec_cmol,bs_pct",
+  "P01,-22.75,-43.68,0,15,A,50,15,35,4.8,2.0,8.0,24",
+  "P01,-22.75,-43.68,15,45,Bw,58,12,30,4.7,0.7,5.5,15",
+  "P01,-22.75,-43.68,45,120,Bo,62,10,28,4.9,0.3,4.8,12",
+  "P02,-12.40,-45.10,0,20,A,18,10,72,5.6,1.1,4.0,40",
+  "P02,-12.40,-45.10,20,80,Bt,32,12,56,5.4,0.4,6.0,55",
+  sep = "\n"
+)
+
 # Find the first present name (case-insensitive) from a set of candidates.
 .batch_pick_col <- function(nms, candidates) {
   hit <- which(tolower(nms) %in% tolower(candidates))
@@ -164,7 +177,8 @@ map_batch_ui <- function(id) {
               paste("Long-format CSV: one row per horizon, with an id column,",
                     "lat/lon, and top_cm/bottom_cm plus horizon attributes.")),
             accept = ".csv"),
-          shiny::helpText(i18n("mbatch.csv_help")))
+          shiny::helpText(i18n("mbatch.csv_help")),
+          shiny::downloadLink(ns("template"), i18n("mbatch.download_template")))
       ),
 
       # ---- 2. How to colour the map -----------------------------------------
@@ -246,8 +260,11 @@ map_batch_server <- function(id, rv, settings) {
           if (identical(input$source, "upload")) {
             f <- input$csv
             if (is.null(f)) return(simpleError(i18n("mbatch.upload_first")))
-            .batch_parse_csv(utils::read.csv(f$datapath,
-                                             stringsAsFactors = FALSE))
+            raw <- tryCatch(
+              utils::read.csv(f$datapath, stringsAsFactors = FALSE),
+              error = function(e)
+                stop(i18n("mbatch.csv_read_failed", conditionMessage(e))))
+            .batch_parse_csv(raw)
           } else {
             .batch_demo_pedons(input$n_demo %||% 12L)
           }
@@ -331,6 +348,12 @@ map_batch_server <- function(id, rv, settings) {
       DT::datatable(show, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
+
+    # ---- long-format CSV template (self-documents the upload layout) --------
+    output$template <- shiny::downloadHandler(
+      filename = function() "soilKey_batch_template.csv",
+      content  = function(file) writeLines(.batch_starter_csv, file)
+    )
 
     # ---- GeoPackage export --------------------------------------------------
     output$export <- shiny::downloadHandler(
