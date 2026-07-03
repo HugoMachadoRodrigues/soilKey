@@ -1,3 +1,26 @@
+# soilKey 0.9.160 (2026-06-30)
+
+The "**one file, one line**" onboarding release - making the simplest path
+obvious so new users do not have to hand-build a \code{PedonRecord}.
+
+\itemize{
+  \item \strong{\code{read_pedon_csv(file)}} reads a horizon spreadsheet
+        (one row per horizon, canonical column names) into a
+        \code{\link{PedonRecord}}; site metadata is an optional \code{site =}
+        argument.
+  \item \strong{\code{classify_csv(file)}} goes all the way from a CSV/TSV file
+        to a one-row \code{data.frame} of the WRB 2022 / SiBCS / USDA names -
+        the shortest path from a spreadsheet to an answer. The full
+        \code{ClassificationResult} objects and the parsed pedon are attached as
+        attributes.
+  \item \strong{Bundled template} \code{inst/extdata/perfil_exemplo.csv} (a real
+        red Latossolo) to copy and edit: \code{classify_csv(system.file(
+        "extdata", "perfil_exemplo.csv", package = "soilKey"))}.
+  \item The example script \code{inst/examples/exemplo_soilKey.R} now leads with
+        this one-line path (and \code{run_classify_app()} for the no-code route);
+        building a pedon by hand is demoted to an optional "under the hood" step.
+}
+
 # soilKey 0.9.159 (2026-06-30)
 
 \itemize{

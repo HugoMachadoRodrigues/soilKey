@@ -18,10 +18,29 @@ cat("=== soilKey", as.character(packageVersion("soilKey")), "===\n\n")
 
 
 # -----------------------------------------------------------------------------
-# 1. Construir um PedonRecord a partir dos SEUS proprios dados
+# 0. O JEITO MAIS SIMPLES - voce so precisa de uma planilha (CSV)
+# -----------------------------------------------------------------------------
+# Nao quer escrever codigo?  run_classify_app()  abre um app: suba um CSV,
+# clique em Classify, pronto.  Quer em uma linha de R?  Ponha seu perfil num
+# CSV (uma linha por horizonte; colunas com os nomes canonicos) e chame
+# classify_csv().  Ha um CSV-modelo dentro do pacote para voce copiar:
+cat("[0] O jeito mais simples: um CSV -> resultado, em uma linha\n")
+
+modelo <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
+print(classify_csv(modelo))     # WRB / SiBCS / USDA de uma vez
+cat("    (copie", basename(modelo), "-> edite com os SEUS dados -> classify_csv())\n\n")
+
+# O resto do script mostra o que da para fazer alem disso (proveniencia, trace,
+# familia, espectros, relatorio...). Mas, para o uso do dia a dia, o passo 0
+# acima ja basta.
+
+
+# -----------------------------------------------------------------------------
+# 1. (Opcional) Construir um PedonRecord na mao - para entender o modelo
 # -----------------------------------------------------------------------------
 # A estrutura central e o PedonRecord: metadados de sitio + tabela de horizontes.
-# Aqui, um Latossolo Vermelho distrofico tipico (Cerrado / Mata Atlantica).
+# Voce quase nunca precisa digitar isto (use um CSV, passo 0) - esta aqui so
+# para mostrar o que ha por baixo. Um Latossolo Vermelho distrofico tipico:
 cat("[1] Construindo um PedonRecord (Latossolo Vermelho distrofico)\n")
 
 meu_pedon <- PedonRecord$new(
