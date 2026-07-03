@@ -83,6 +83,9 @@ ui <- function(request) {
     # Stylesheet + the global pedon ribbon render above the tab content.
     header = tagList(
       tags$head(
+        # Browser-tab icon (favicon): the soilKey logo.
+        tags$link(rel = "icon", type = "image/png", href = "logo.png"),
+        tags$link(rel = "apple-touch-icon", href = "logo.png"),
         tags$link(rel = "stylesheet", type = "text/css", href = "soilkey.css"),
         # a11y: announce transient showNotification() toasts to screen readers
         # (the panel is created on demand, so tag it once it appears).
@@ -133,6 +136,15 @@ ui <- function(request) {
           choices  = c("EN" = "en", "PT" = "pt"),
           selected = .sk_app_lang(), size = "sm"),
         role = "group", "aria-label" = i18n("a11y.language"))
+    ),
+    # Light/dark theme toggle (sun/moon). Defaults to following the user's OS
+    # colour scheme; the dark palette + contrast live in www/soilkey.css under
+    # [data-bs-theme="dark"].
+    bslib::nav_item(
+      htmltools::tagAppendAttributes(
+        bslib::input_dark_mode(id = "color_mode"),
+        title = i18n("a11y.theme_toggle"),
+        "aria-label" = i18n("a11y.theme_toggle"))
     ),
     bslib::nav_item(
       actionLink("about", label = tagList(icon("circle-question"), i18n("nav.help")),

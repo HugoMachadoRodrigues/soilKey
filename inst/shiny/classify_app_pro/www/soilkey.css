@@ -227,3 +227,70 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-ack-contrib { display: block; color: var(--sk-muted); font-size: 0.9rem; margin-top: 0.1rem; }
 .sk-ack-note { margin-top: 1rem; padding: 0.6rem 0.85rem; background: #faf6ef;
   border: 1px solid var(--sk-line); border-radius: 0.5rem; }
+
+/* =========================================================================
+   DARK MODE (v0.9.171)
+   Activated by bslib::input_dark_mode() (sets data-bs-theme="dark" on <html>)
+   and by the OS preference. Remaps the structural palette to dark and fixes the
+   handful of hardcoded light colours. Brand accents are brightened so text and
+   controls keep AA contrast on the dark background.
+   ========================================================================= */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bs-theme="light"]) {
+    --sk-brown: #cf9c67; --sk-terra: #dd8f52; --sk-clay: #d8b487;
+    --sk-moss: #9cbd71;  --sk-slate: #94b6cb;
+    --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
+    --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
+    --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+    color-scheme: dark;
+  }
+}
+[data-bs-theme="dark"] {
+  --sk-brown: #cf9c67; --sk-terra: #dd8f52; --sk-clay: #d8b487;
+  --sk-moss: #9cbd71;  --sk-slate: #94b6cb;
+  --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
+  --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
+  --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+  color-scheme: dark;
+}
+
+/* Apply the same overrides whether dark comes from the toggle or the OS. */
+[data-bs-theme="dark"] body,
+:root:not([data-bs-theme="light"]) body {
+  background: var(--sk-cream); color: var(--sk-ink);
+}
+[data-bs-theme="dark"] code, [data-bs-theme="dark"] pre { background: #2a2119; color: var(--sk-terra); }
+[data-bs-theme="dark"] .card { background: #211a13; }
+[data-bs-theme="dark"] .card > .card-header { background: #2a2119; color: var(--sk-ink); }
+[data-bs-theme="dark"] .bslib-sidebar-layout > .sidebar { background: #1c1610; border-right-color: var(--sk-line); }
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .selectize-input,
+[data-bs-theme="dark"] .selectize-dropdown {
+  background: #241d15; color: var(--sk-ink); border-color: var(--sk-line);
+}
+[data-bs-theme="dark"] .selectize-dropdown .active { background: var(--sk-brown); color: #17120d; }
+[data-bs-theme="dark"] .sk-ribbon { background: linear-gradient(90deg, #241d15, #1c1610); border-bottom-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-ribbon .sk-chip { background: #2a2119; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-ribbon .sk-built { color: #9cc27a; }              /* AA on dark */
+[data-bs-theme="dark"] table.dataTable thead th { background: #2a2119; color: var(--sk-ink); }
+[data-bs-theme="dark"] table.dataTable tbody tr { background: #211a13; }
+[data-bs-theme="dark"] table.dataTable tbody tr:hover { background: #2a2119; }
+[data-bs-theme="dark"] table.dataTable tbody td { color: var(--sk-ink); border-color: var(--sk-line); }
+[data-bs-theme="dark"] .dataTables_wrapper,
+[data-bs-theme="dark"] .dataTables_info,
+[data-bs-theme="dark"] .dataTables_filter,
+[data-bs-theme="dark"] .dataTables_length { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-empty-state { background: #1f1912; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-empty-state .card-body { color: var(--sk-ink); }
+[data-bs-theme="dark"] .sk-welcome-dots .sk-dot { background: #4a3d30; }
+[data-bs-theme="dark"] .modal-content { background: #211a13; color: var(--sk-ink); }
+[data-bs-theme="dark"] .modal-header, [data-bs-theme="dark"] .modal-footer { border-color: var(--sk-line); }
+/* Text uses of --sk-espresso (kept dark for the tooltip bg) must go light. */
+[data-bs-theme="dark"] .sk-footer-title,
+[data-bs-theme="dark"] .sk-ack-head h3,
+[data-bs-theme="dark"] .sk-ack-card .card-header { color: var(--sk-ink); }
+[data-bs-theme="dark"] .sk-footer-lic { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-ack-note { background: #1f1912; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .btn-primary { color: #17120d; }                      /* dark text on light-brown btn */
+[data-bs-theme="dark"] .btn-group .btn.active, [data-bs-theme="dark"] .radiobtn.active { color: #17120d; }
