@@ -1,3 +1,20 @@
+# soilKey 0.9.179 (2026-07-07)
+
+Pro app -- Assistant becomes a drawer; two chrome fixes.
+
+\itemize{
+  \item \strong{The Assistant is now a right-side drawer available on every tab}
+    (a floating button opens it; the header X, the backdrop or Esc close it),
+    not a separate nav tab -- so you can ask about the current profile without
+    leaving whatever you are doing. The API-key field and the photo upload are
+    removed: the model key comes from \code{GROQ_API_KEY} (else the grounded
+    scripted assistant), and the chat is just a clean conversation box.
+  \item \strong{The browser-tab title now reads "soilKey Pro"} (it was rendering
+    the mangled navbar wordmark markup).
+  \item \strong{The Thanks page scrolls} instead of clipping the credits inside
+    the fillable panel.
+}
+
 # soilKey 0.9.178 (2026-07-07)
 
 Map tab -- five fixes to the point/overlay experience.

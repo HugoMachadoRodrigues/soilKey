@@ -363,3 +363,45 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   background: var(--sk-sand, #f3ece2); border: 1px solid var(--sk-line, #e6dbcc);
   color: var(--sk-ink, #2c2620); white-space: nowrap; }
 .sk-seq-arrow { color: var(--sk-terra, #b5652e); font-weight: 700; }
+
+/* ---- Thanks tab: let the credits page scroll inside the fillable panel -- */
+.sk-ack { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+/* ---- Assistant: floating button + right slide-out drawer (all tabs) ----- */
+.sk-assistant-fab {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 1045;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.05rem; border: none; border-radius: 999px;
+  background: var(--sk-brown); color: #fff; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(74, 50, 38, 0.35); cursor: pointer;
+}
+.sk-assistant-fab:hover { filter: brightness(1.08); }
+.sk-assistant-backdrop {
+  position: fixed; inset: 0; z-index: 1046; background: rgba(0, 0, 0, 0.28);
+  opacity: 0; visibility: hidden; transition: opacity 0.2s ease;
+}
+.sk-assistant-drawer {
+  position: fixed; top: 0; right: 0; z-index: 1047; height: 100%;
+  width: min(430px, 94vw); background: var(--sk-cream, #fff);
+  border-left: 1px solid var(--sk-line); box-shadow: -6px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translateX(101%); transition: transform 0.25s ease;
+}
+body.sk-assistant-open .sk-assistant-drawer { transform: translateX(0); }
+body.sk-assistant-open .sk-assistant-backdrop { opacity: 1; visibility: visible; }
+body.sk-assistant-open .sk-assistant-fab { display: none; }
+.sk-assistant-inner {
+  display: flex; flex-direction: column; height: 100%; padding: 0.75rem;
+  gap: 0.5rem;
+}
+.sk-assistant-head {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--sk-line);
+}
+.sk-assistant-title { font-weight: 700; color: var(--sk-ink); }
+.sk-assistant-close {
+  background: none; border: none; font-size: 1.1rem; color: var(--sk-muted);
+  cursor: pointer; line-height: 1;
+}
+.sk-assistant-close:hover { color: var(--sk-ink); }
+.sk-assistant-inner .sk-chat-log { flex: 1 1 auto; min-height: 0; }
+.sk-assistant-foot { border-top: 1px solid var(--sk-line); padding-top: 0.4rem; }

@@ -115,32 +115,16 @@ test_that("chat_server: no-key send yields a scripted, grounded reply", {
 })
 
 
-test_that("chat_server: photo -> Munsell via the offline mock updates the pedon", {
+test_that("chat_ui builds the drawer content (no key field, no photo upload)", {
   skip_on_cran()
   skip_if_not_installed("shiny")
-  env         <- .chat_source_modules()
-  chat_server <- get("chat_server", envir = env)
-  rv          <- shiny::reactiveValues(pedon = .chat_demo_pedon())
-  settings    <- shiny::reactive(list(on_missing = "silent"))
-  # a REAL bundled image -- extract_munsell_from_photo reads the file before the
-  # (mock) provider answers, so a garbage file would error out first
-  img <- get(".pro_demo_asset", envir = env)("demo_profile.jpg")
-  skip_if(is.null(img) || !file.exists(img), "demo photo asset missing")
-
-  withr::with_envvar(c(GROQ_API_KEY = ""), {        # force the mock provider
-    shiny::testServer(chat_server, args = list(rv = rv, settings = settings), {
-      before <- rv$pedon
-      session$setInputs(groq_key = "",
-                        photo = list(name = "soil.jpg", datapath = img))
-      session$setInputs(read_munsell = 1)
-      # a fresh pedon reference was assigned (not the same R6 env)
-      expect_false(identical(rv$pedon, before))
-      # provenance now carries VLM-extracted munsell rows
-      prov <- tryCatch(as.data.frame(rv$pedon$provenance), error = function(e) NULL)
-      expect_true(!is.null(prov) &&
-                    any(grepl("munsell", prov$attribute, ignore.case = TRUE)))
-      # and the transcript recorded the exchange
-      expect_gte(length(history()), 2L)
-    })
-  })
+  env <- .chat_source_modules()
+  ui  <- get("chat_ui", envir = env)("chat")
+  html <- as.character(ui)
+  # the transcript + composer are present...
+  expect_true(grepl("chat-log", html))
+  expect_true(grepl("chat-msg|chat-composer|-msg", html))
+  # ...but the removed controls are gone (v0.9.179: drawer, no key/photo)
+  expect_false(grepl("groq_key", html))
+  expect_false(grepl("chat-photo|read_munsell", html))
 })
