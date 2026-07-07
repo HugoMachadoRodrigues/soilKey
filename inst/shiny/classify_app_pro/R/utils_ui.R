@@ -177,6 +177,16 @@ pro_profile_plot <- function(hz_df, attribute) {
 # wavelength (nm, parsed from the column names), Y = reflectance. The matrix is
 # horizons x wavelengths (the shape fill_from_spectra() expects). Returns a
 # plotly htmlwidget, with graceful placeholders when nothing is attached.
+# Round every numeric column of a data.frame to `digits` (default 2) for
+# display -- so shown values never carry more than 2 decimal places.
+.sk_round2 <- function(df, digits = 2L) {
+  df <- as.data.frame(df)
+  if (!ncol(df)) return(df)
+  num <- vapply(df, is.numeric, logical(1))
+  df[num] <- lapply(df[num], function(x) round(x, digits))
+  df
+}
+
 pro_spectrum_plot <- function(mat, designations = NULL, y_label = NULL) {
   if (is.null(mat) || !is.matrix(mat) || nrow(mat) == 0L || ncol(mat) == 0L) {
     return(plotly::plotly_empty(type = "scatter", mode = "lines") |>

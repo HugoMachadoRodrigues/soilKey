@@ -677,7 +677,7 @@ map_server <- function(id, rv, settings) {
                     caption = sprintf(i18n("mpoint.topn_caption"), nrow(df),
                                       round(as.numeric(input$buffer %||% 0))),
                     options = list(dom = "t", pageLength = n)) |>
-        DT::formatPercentage(i18n("mpoint.col_probability"), 1)
+        DT::formatPercentage(i18n("mpoint.col_probability"), 2)
     })
 
     # Annotate the point with a persistent popup naming the #1 class + its share,
@@ -704,7 +704,7 @@ map_server <- function(id, rv, settings) {
     output$attrs_table <- DT::renderDT({
       p <- prior(); shiny::req(p)
       shiny::validate(shiny::need(!inherits(p, "error"), i18n("mpoint.na")))
-      DT::datatable(as.data.frame(p$typical_attributes), rownames = FALSE,
+      DT::datatable(.sk_round2(p$typical_attributes), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
     output$batch_table <- DT::renderDT({
@@ -716,7 +716,7 @@ map_server <- function(id, rv, settings) {
                   drop = FALSE]
       names(show) <- c(i18n("mbatch.col_id"), i18n("mbatch.col_lat"),
                        i18n("mbatch.col_lon"), "WRB 2022", "SiBCS 5", "USDA ST 13")
-      DT::datatable(show, rownames = FALSE,
+      DT::datatable(.sk_round2(show), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
     output$grid_summary <- DT::renderDT({
@@ -734,7 +734,7 @@ map_server <- function(id, rv, settings) {
                        i18n("mgrid.col_share"))
       DT::datatable(show, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 12)) |>
-        DT::formatPercentage(i18n("mgrid.col_share"), 1)
+        DT::formatPercentage(i18n("mgrid.col_share"), 2)
     })
   })
 }

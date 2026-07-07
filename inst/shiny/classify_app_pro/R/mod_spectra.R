@@ -348,7 +348,7 @@ spectra_server <- function(id, rv) {
       cols <- intersect(c("designation", "clay_pct", "sand_pct", "silt_pct",
                           "cec_cmol", "bs_pct", "ph_h2o", "oc_pct"),
                         names(h))
-      DT::datatable(h[, cols, drop = FALSE], rownames = FALSE,
+      DT::datatable(.sk_round2(h[, cols, drop = FALSE]), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 12, scrollX = TRUE))
     })
   })

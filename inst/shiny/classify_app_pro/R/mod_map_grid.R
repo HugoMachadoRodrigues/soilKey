@@ -529,7 +529,7 @@ map_grid_server <- function(id, rv, settings) {
                                  i18n("mgrid.col_cells"),
                                  i18n("mgrid.col_share")),
                     options = list(dom = "tp", pageLength = 10)) |>
-        DT::formatPercentage("Share", 1)
+        DT::formatPercentage("Share", 2)
     })
 
     # ---- GeoTIFF export -----------------------------------------------------
