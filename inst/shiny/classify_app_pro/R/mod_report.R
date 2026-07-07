@@ -65,14 +65,27 @@ report_server <- function(id, rv, settings) {
       )
     }
 
+    # The Spectra tab records its preprocessing pipeline in rv$spectra_pp (kept
+    # off rv$pedon to avoid cross-tab churn); inject it into the pedon copy so
+    # the report shows the treatment sequence that was applied.
+    report_pedon <- function() {
+      p <- rv$pedon
+      pp <- tryCatch(rv$spectra_pp, error = function(e) NULL)
+      if (!is.null(p) && !is.null(pp) && !is.null(p$spectra$vnir)) {
+        p <- p$clone(deep = TRUE)
+        p$spectra$preprocessing <- pp
+      }
+      p
+    }
+
     output$html <- shiny::downloadHandler(
       filename = function() sprintf("soilKey_report_%s.html", safe_id()),
       content  = function(file) {
         shiny::req(rv$pedon)
         cf <- cfg()
         shiny::withProgress(message = i18n("report.rendering_html"), value = 0.5, {
-          soilKey::report(rv$pedon, file = file, format = "html",
-                          pedon = rv$pedon, title = input$title,
+          soilKey::report(report_pedon(), file = file, format = "html",
+                          pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
                           specifiers = cf$specifiers, lang = .sk_app_lang())
         })
@@ -84,8 +97,8 @@ report_server <- function(id, rv, settings) {
         cf <- cfg()
         out <- tryCatch({
           tmp <- tempfile(fileext = ".pdf")
-          soilKey::report(rv$pedon, file = tmp, format = "pdf",
-                          pedon = rv$pedon, title = input$title,
+          soilKey::report(report_pedon(), file = tmp, format = "pdf",
+                          pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
                           specifiers = cf$specifiers, lang = .sk_app_lang())
           "pdf"
@@ -98,8 +111,8 @@ report_server <- function(id, rv, settings) {
         cf <- cfg()
         shiny::withProgress(message = i18n("report.rendering_pdf"), value = 0.5, {
           ok <- tryCatch({
-            soilKey::report(rv$pedon, file = file, format = "pdf",
-                            pedon = rv$pedon, title = input$title,
+            soilKey::report(report_pedon(), file = file, format = "pdf",
+                            pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
                             specifiers = cf$specifiers, lang = .sk_app_lang())
             TRUE
@@ -108,8 +121,8 @@ report_server <- function(id, rv, settings) {
             shiny::showNotification(
               i18n("report.pdf_failed_fallback"),
               type = "warning", duration = 8)
-            soilKey::report(rv$pedon, file = file, format = "html",
-                            pedon = rv$pedon, title = input$title,
+            soilKey::report(report_pedon(), file = file, format = "html",
+                            pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
                             specifiers = cf$specifiers, lang = .sk_app_lang())
           }

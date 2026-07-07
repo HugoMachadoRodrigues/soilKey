@@ -355,3 +355,11 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   padding-top: 0.6rem; }
 .sk-chat-composer .form-group,
 .sk-chat-composer .shiny-input-container { flex: 1 1 auto; margin-bottom: 0; }
+
+/* ---- Spectra: treatment-sequence breadcrumb --------------------------- */
+.sk-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem;
+  font-size: 0.8rem; }
+.sk-seq-chip { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px;
+  background: var(--sk-sand, #f3ece2); border: 1px solid var(--sk-line, #e6dbcc);
+  color: var(--sk-ink, #2c2620); white-space: nowrap; }
+.sk-seq-arrow { color: var(--sk-terra, #b5652e); font-weight: 700; }

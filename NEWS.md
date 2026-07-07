@@ -1,3 +1,30 @@
+# soilKey 0.9.177 (2026-07-06)
+
+Spectra tab -- scientific spectral preprocessing, compact status.
+
+\itemize{
+  \item \strong{New \code{apply_spectral_preprocessing()}.} A robust, composable
+    Vis-NIR / MIR pipeline applied in the canonical order reflectance ->
+    absorbance (\eqn{A = \log_{10}(1/R)}) -> Savitzky-Golay smoothing ->
+    Savitzky-Golay 1st/2nd derivative. Reuses \code{prospectr} (with a pure-R
+    Savitzky-Golay fallback), auto-scales percent reflectance to a fraction,
+    clamps against \code{log(0)}, keeps the wavelength axis trimmed in lock-step
+    with each Savitzky-Golay pass, and returns the ordered list of applied
+    steps. Never errors on a valid spectrum -- an infeasible window is skipped
+    and recorded.
+  \item \strong{Pro app -- live preprocessing on the Spectra tab.} Tick
+    Absorbance / Savitzky-Golay smoothing / a 1st or 2nd derivative (window and
+    polynomial under an "advanced" accordion) and the spectrum is re-treated and
+    re-plotted as you go, with the treatment sequence shown as a breadcrumb.
+    This turns the noisy raw reflectance into the clean, analysis-ready form soil
+    spectroscopists actually use.
+  \item \strong{The treatment sequence is saved in the report.} The applied
+    pipeline is recorded and rendered as a "Spectral preprocessing" section in
+    the HTML/PDF report (en/pt).
+  \item \strong{Compact status.} The oversized "Spectrum status" card is
+    replaced by a slim chip in the plot card's header.
+}
+
 # soilKey 0.9.176 (2026-07-06)
 
 Pro app -- the Photo tab becomes "Talk to soilKey Pro" (a chat).
