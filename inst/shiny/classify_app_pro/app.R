@@ -115,13 +115,16 @@ ui <- function(request) {
           "try{window.localStorage.setItem('soilkey_welcomed_v2','1');}catch(e){}});",
           # clearing the flag re-arms the auto-open (used by 'Take the tour')
           "Shiny.addCustomMessageHandler('soilkey_clear_welcomed',function(x){",
-          "try{window.localStorage.removeItem('soilkey_welcomed_v2');}catch(e){}});")))
+          "try{window.localStorage.removeItem('soilkey_welcomed_v2');}catch(e){}});",
+          # scroll the chat transcript to the newest message
+          "Shiny.addCustomMessageHandler('sk_chat_scroll',function(id){",
+          "try{var d=document.getElementById(id);if(d)d.scrollTop=d.scrollHeight;}catch(e){}});")))
       ),
       uiOutput("pedon_ribbon")
     ),
     bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon")),
     bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
-    bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo")),
+    bslib::nav_panel(i18n("nav.chat"),     icon = icon("comments"),     chat_ui("chat")),
     bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
     # v0.9.174: the three former sub-tabs (Point prior / Batch / Grid) are now
     # ONE square map driven by a mode selector, all centred on the same point,
@@ -268,7 +271,7 @@ server <- function(input, output, session) {
 
   pedon_server("pedon",            rv)
   classify_server("classify",      rv, settings)
-  photo_server("photo",            rv)
+  chat_server("chat",              rv, settings)
   spectra_server("spectra",        rv)
   map_server("map",                rv, settings)  # unified: point / batch / grid
   uncertainty_server("uncertainty", rv, settings)

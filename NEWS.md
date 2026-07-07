@@ -1,3 +1,28 @@
+# soilKey 0.9.176 (2026-07-06)
+
+Pro app -- the Photo tab becomes "Talk to soilKey Pro" (a chat).
+
+\itemize{
+  \item \strong{One chat, no confusing provider menu.} The old Mock / Local
+    Ollama / Cloud selector is gone. There is now a single conversation box: ask
+    about the current profile, its WRB / SiBCS / USDA classification, missing
+    data, or soil science in general.
+  \item \strong{A free online model, or a built-in demo assistant.} Paste a free
+    Groq API key (or set \code{GROQ_API_KEY}) and it chats with a real open
+    Llama/Qwen model via ellmer -- no paid key, nothing runs on your machine.
+    With no key, a scripted assistant still answers, grounded in the current
+    pedon and its deterministic classification, so the demo is never dead.
+  \item \strong{The model never classifies.} soilKey's deterministic keys do the
+    classification; the assistant only explains the result -- it is instructed
+    never to invent or override a class.
+  \item \strong{Photo -> Munsell, folded in.} Attach a soil photo and "Read
+    colours" to extract its Munsell colours into the profile (a Groq vision
+    model when a key is present, else the offline mock), exactly as the old
+    Photo tab did.
+  \item Bilingual (en/pt) throughout; the transcript announces new replies to
+    screen readers.
+}
+
 # soilKey 0.9.175 (2026-07-06)
 
 Pro app -- fix the things that were visibly broken.
