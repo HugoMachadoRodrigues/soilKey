@@ -36,6 +36,22 @@ test_that("the perfect diffuser rounds to the neutral chip N", {
   expect_gt(rounded$munsell_value_moist, 9)
 })
 
+test_that("a neutral is hue N even in continuous notation (undefined hue at C=0)", {
+  skip_on_cran()
+  skip_if_not_installed("munsellinterpol")
+  # G. Davis' nit: at Chroma 0 the hue is undefined. munsellinterpol's numeric
+  # hue collapses to 0, which HueStringFromNumber() spells "10RP" -- a spurious
+  # reddish-purple on a grey. soilKey collapses that to "N" in the continuous
+  # path too, matching the rounded path.
+  for (level in c(1, 0.5, 0.18)) {
+    out <- predict_munsell_from_spectra(rep(level, length(wl_vis)), wl_vis,
+                                        round_chip = FALSE)
+    expect_equal(out$munsell_hue_moist, "N")
+    expect_false(grepl("RP|GY", out$munsell_string))
+    expect_match(out$munsell_string, "^N ")   # "N <value>/"
+  }
+})
+
 test_that("value climbs monotonically with reflectance up to 10", {
   skip_on_cran()
   skip_if_not_installed("munsellinterpol")

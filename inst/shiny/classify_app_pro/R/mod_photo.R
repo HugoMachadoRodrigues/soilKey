@@ -308,9 +308,11 @@ photo_server <- function(id, rv) {
           class = "alert alert-primary border small mb-2",
           shiny::icon("camera"), " ",
           shiny::HTML(i18n("photo.route_note"))),
-        # How the colour is read -- colour work must be transparent, so this
-        # names the sampling (per-horizon depth band) and the CIE-anchored
-        # Munsell conversion via Glenn Davis's munsellinterpol.
+        # How the colour is read -- colour work must be transparent. On THIS
+        # (Photo) tab the vision model estimates Munsell directly off the image;
+        # the CIE-anchored munsellinterpol conversion (reflectance -> XYZ ->
+        # Munsell) belongs to the Spectra tab, so this text keeps the two routes
+        # distinct rather than crediting munsellinterpol here.
         shiny::div(
           class = "alert alert-light border small mb-2",
           shiny::icon("circle-info", class = "text-secondary"), " ",

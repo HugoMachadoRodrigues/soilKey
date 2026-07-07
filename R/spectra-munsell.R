@@ -144,7 +144,9 @@ predict_lab_from_spectra <- function(spectra, wavelengths) {
 #' table the colorimetry integrates against (so a constant-reflectance
 #' spectrum maps to an exact neutral, and a perfect reflecting diffuser
 #' to Munsell value 10), and the conversion is vectorised over all rows
-#' of \code{spectra} at once.
+#' of \code{spectra} at once. At zero Chroma the Munsell hue is undefined,
+#' so a neutral is reported with hue \code{"N"} in both the rounded and the
+#' continuous (\code{round_chip = FALSE}) notation.
 #' \code{munsell_hue_moist}, \code{munsell_value_moist},
 #' \code{munsell_chroma_moist} ready to write into a
 #' \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
@@ -247,11 +249,21 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
           # Continuous notation (or round-chip fall-through if rounding failed).
           hs <- tryCatch(munsellinterpol::HueStringFromNumber(Hk),
                          error = function(e) rep(NA_character_, length(Hk)))
+          # Hue is undefined at Chroma 0 (G. Davis, munsellinterpol author): a
+          # flat/neutral spectrum yields H = 0, which HueStringFromNumber() spells
+          # "10RP" -- a spurious reddish-purple on a grey. Collapse those to the
+          # neutral axis "N", exactly as roundHVC(books = "soil") already does on
+          # the rounded path, so the continuous output -- and the WRB/USDA/SiBCS
+          # hue-threshold predicates it can feed -- never sees a bogus hue on a
+          # chroma-0 sample.
+          neutral <- is.finite(Ck) & Ck < 1e-4
+          hs[neutral] <- "N"
           hue[idx]    <- hs
           value[idx]  <- Vk
           chroma[idx] <- Ck
           ms[idx]     <- ifelse(is.na(hs), NA_character_,
-                                sprintf("%s %g/%g", hs, Vk, Ck))
+                                ifelse(neutral, sprintf("N %g/", Vk),
+                                       sprintf("%s %g/%g", hs, Vk, Ck)))
         }
       }
     }
