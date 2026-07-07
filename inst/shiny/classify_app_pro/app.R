@@ -72,8 +72,12 @@ ui <- function(request) {
     title  = tags$span(class = "navbar-brand-inner",
                        tags$img(src = "logo.png", class = "sk-logo",
                                 alt = "soilKey", height = "34"),
-                       "soil", tags$span(class = "sk-mark", "Key"),
-                       i18n("app.brand_suffix")),
+                       # one wordmark node built as a single HTML string so
+                       # htmltools does not insert indentation whitespace
+                       # between the pieces (which collapsed to "soil Key Pro").
+                       tags$span(class = "sk-wordmark", htmltools::HTML(paste0(
+                         "soil<span class=\"sk-mark\">Key</span>",
+                         htmltools::htmlEscape(i18n("app.brand_suffix")))))),
     id     = "main_nav",
     theme  = sk_theme,
     fillable = TRUE,
@@ -86,7 +90,10 @@ ui <- function(request) {
         # Browser-tab icon (favicon): the soilKey logo.
         tags$link(rel = "icon", type = "image/png", href = "logo.png"),
         tags$link(rel = "apple-touch-icon", href = "logo.png"),
-        tags$link(rel = "stylesheet", type = "text/css", href = "soilkey.css"),
+        # version query-string busts the browser cache when the CSS changes
+        tags$link(rel = "stylesheet", type = "text/css",
+                  href = paste0("soilkey.css?v=",
+                                as.character(utils::packageVersion("soilKey")))),
         # a11y: announce transient showNotification() toasts to screen readers
         # (the panel is created on demand, so tag it once it appears).
         tags$script(htmltools::HTML(
@@ -101,11 +108,14 @@ ui <- function(request) {
         # never auto-opens again -- users can replay it from Help.
         tags$script(htmltools::HTML(paste0(
           "$(document).on('shiny:connected',function(){try{",
-          "if(!window.localStorage.getItem('soilkey_welcomed')){",
+          "if(!window.localStorage.getItem('soilkey_welcomed_v2')){",
           "Shiny.setInputValue('show_welcome',(new Date()).getTime(),{priority:'event'});",
           "}}catch(e){}});",
           "Shiny.addCustomMessageHandler('soilkey_mark_welcomed',function(x){",
-          "try{window.localStorage.setItem('soilkey_welcomed','1');}catch(e){}});")))
+          "try{window.localStorage.setItem('soilkey_welcomed_v2','1');}catch(e){}});",
+          # clearing the flag re-arms the auto-open (used by 'Take the tour')
+          "Shiny.addCustomMessageHandler('soilkey_clear_welcomed',function(x){",
+          "try{window.localStorage.removeItem('soilkey_welcomed_v2');}catch(e){}});")))
       ),
       uiOutput("pedon_ribbon")
     ),
@@ -335,7 +345,10 @@ server <- function(input, output, session) {
   open_welcome <- function() { welcome_step(1L); showModal(.pro_welcome_modal(1L)) }
 
   observeEvent(input$show_welcome, open_welcome())          # first open (JS)
-  observeEvent(input$about_tour,  { removeModal(); open_welcome() })  # replay
+  observeEvent(input$about_tour, {                          # replay + re-arm
+    session$sendCustomMessage("soilkey_clear_welcomed", TRUE)
+    removeModal(); open_welcome()
+  })
   observeEvent(input$welcome_next, {
     s <- min(.PRO_WELCOME_STEPS, welcome_step() + 1L)
     welcome_step(s); showModal(.pro_welcome_modal(s))

@@ -132,8 +132,13 @@ spectra_server <- function(id, rv) {
           type = "error", duration = 8)
         return(invisible())
       }
-      rv$pedon$spectra <- list(vnir = mat)
-      rv$pedon <- rv$pedon
+      # PedonRecord is R6 (a reference). Mutating in place then self-assigning
+      # `rv$pedon <- rv$pedon` reassigns the SAME environment, which
+      # reactiveValues treats as identical and SUPPRESSES -> no invalidation ->
+      # the spectrum plot / status never re-render. Clone to a fresh reference.
+      p <- rv$pedon$clone(deep = TRUE)
+      p$spectra <- list(vnir = mat)
+      rv$pedon <- p
       shiny::showNotification(
         i18n("spectra.attached_matrix", nrow(mat), ncol(mat)),
         type = "message")
@@ -158,8 +163,9 @@ spectra_server <- function(id, rv) {
         shiny::showNotification(i18n("spectra.demo_missing"), type = "error")
         return(invisible())
       }
-      rv$pedon$spectra <- list(vnir = m)
-      rv$pedon <- rv$pedon
+      p <- rv$pedon$clone(deep = TRUE)   # fresh ref so the plot re-renders (R6)
+      p$spectra <- list(vnir = m)
+      rv$pedon <- p
       shiny::showNotification(
         i18n("spectra.attached_matrix", nrow(m), ncol(m)), type = "message")
     })
@@ -192,7 +198,9 @@ spectra_server <- function(id, rv) {
           type = "error", duration = 12)
         return(invisible())
       }
-      rv$pedon <- rv$pedon
+      # fill_from_spectra() mutates the pedon in place (invisible(pedon)); clone
+      # to a fresh ref so the reactive fires and the filled attributes show.
+      rv$pedon <- rv$pedon$clone(deep = TRUE)
       shiny::showNotification(i18n("spectra.gapfill_done"),
                               type = "message")
     })

@@ -1,3 +1,38 @@
+# soilKey 0.9.175 (2026-07-06)
+
+Pro app -- fix the things that were visibly broken.
+
+\itemize{
+  \item \strong{The Vis-NIR spectrum now plots.} Root cause was a reactivity
+    bug, not the plot: PedonRecord is an R6 (reference) object, so
+    \code{rv$pedon$spectra <- x; rv$pedon <- rv$pedon} self-assigned the SAME
+    object, which Shiny suppresses as identical -- so the plot/status never
+    re-rendered. The demo/attach/gap-fill handlers now clone to a fresh
+    reference. The same latent bug is fixed in the map's click handler.
+  \item \strong{The Map is no longer squished (and no longer vanishes in
+    Portuguese).} The map card was a flex-fill item that the taller point-mode
+    results panel -- and the longer Portuguese strings -- squeezed to a strip or
+    to zero height. The map now has a fixed, self-contained size (\code{fill =
+    FALSE} + a definite CSS height), so it renders identically in every mode and
+    both languages.
+  \item \strong{The SoilGrids overlay actually shows, with real class variety.}
+    The overlay was invisible because of the same zero-height trap, and the
+    bundled demo raster was ~14 km/pixel and near-uniform (so "predict"
+    collapsed to 1-2 classes). A new, finer, multi-class demo raster
+    (\code{data-raw/make_soilgrids_wrb_demo.R}) makes the overlay and the grid
+    prediction meaningful (~10 classes around the demo point).
+  \item \strong{Live vs demo SoilGrids toggle.} A switch chooses between the
+    real ISRIC SoilGrids server (read by its embedded WRB class labels, so it is
+    not affected by the old numeric-lookup mis-indexing) and the fast offline
+    demo raster; live reads fall back to the demo if the network is unavailable.
+  \item \strong{The welcome tour is back.} It was not broken -- the "seen it"
+    flag in the browser simply never reset. The flag is now versioned (so it
+    reappears) and Help > "Take the tour" clears it to re-arm the auto-open.
+  \item \strong{The brand reads "soilKey Pro"} as one wordmark again (it had
+    rendered as separated chunks); the stylesheet is now cache-busted per
+    version so CSS fixes reach returning users.
+}
+
 # soilKey 0.9.174 (2026-07-03)
 
 Map tab reformulated into one synchronised map (Pro app).

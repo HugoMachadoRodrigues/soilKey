@@ -43,7 +43,9 @@ code { padding: 0.05rem 0.3rem; }
 /* ---- navbar + wordmark ------------------------------------------------- */
 .navbar.navbar-expand-md .navbar-brand { font-weight: 750; letter-spacing: 0.2px; }
 .navbar-brand .sk-mark { color: var(--sk-clay); }
-.navbar-brand-inner { display: inline-flex; align-items: center; }
+.navbar-brand-inner { display: inline-flex; align-items: center; gap: 0.5rem; }
+/* the wordmark is one contiguous unit ("soilKey Pro"), not split chunks */
+.sk-wordmark { white-space: nowrap; }
 .sk-logo {
   height: 34px; width: auto; margin-right: 0.55rem; vertical-align: middle;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
@@ -185,15 +187,21 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   white-space: nowrap; border: 0;
 }
 
-/* ---- unified Map tab: keep the map square, not a wide banner ----------- */
+/* ---- unified Map tab: FIXED-height map, independent of flex-fill --------
+   A definite pixel height (NOT aspect-ratio, NOT height:100% of an indefinite
+   flex parent) so the leaflet gets a real height in every mode and BOTH
+   languages -- no matter how tall the results panel below it is. Previously the
+   map card was a flex-fill item that the (taller) point-mode results and the
+   longer Portuguese strings squeezed to a strip / to zero. */
 .sk-map-square {
   width: 100%;
-  max-width: 680px;
+  max-width: 640px;
+  height: 600px;
   margin: 0 auto;
-  aspect-ratio: 1 / 1;
 }
 .sk-map-square .leaflet-container {
-  height: 100% !important;
+  height: 600px !important;
+  width: 100%;
   border-radius: 8px;
 }
 

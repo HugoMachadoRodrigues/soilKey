@@ -53,6 +53,36 @@ test_that(".map_soilgrids_source() defaults to the bundled demo raster", {
     expect_identical(src_fn(NULL), "/opt/r.tif")
     expect_identical(src_fn("/user.tif"), "/user.tif")
   })
+  # kind = "live" resolves to the real ISRIC MostProbable VRT (via /vsicurl)
+  expect_match(src_fn(NULL, "live"), "files\\.isric\\.org/.*MostProbable\\.vrt$")
+  expect_match(src_fn(NULL, "live"), "^/vsicurl/")
+  expect_match(src_fn(NULL, "demo"), "soilgrids_wrb_demo\\.tif$")
+})
+
+
+test_that(".wrb_name_to_code() maps live-raster RSG labels to 2-letter codes", {
+  skip_on_cran()
+  env <- .mapu_source_modules()
+  n2c <- get(".wrb_name_to_code", envir = env)
+  expect_equal(n2c(c("Ferralsols", "Cambisols", "Plinthosols")),
+               c("FR", "CM", "PT"))
+  expect_equal(n2c("Albeluvisols"), "RT")     # legacy name -> Retisols
+  expect_equal(n2c("Umbrisols"), "UM")        # was mis-shifted by the old LUT
+  expect_equal(n2c("Vertisols"), "VR")
+  expect_true(is.na(n2c(NA)))
+  expect_identical(n2c("Nonesuch"), "Nonesuch")  # unknown label passes through
+})
+
+
+test_that("the bundled demo raster is multi-class around the demo point", {
+  skip_on_cran()
+  .mapu_skip_if_no_proj()
+  f <- file.path(.mapu_app_dir(), "www", "soilgrids_wrb_demo.tif")
+  r <- terra::rast(f)
+  # a ~1-degree window around Rio (-43.7, -22.5) must contain several classes
+  win <- terra::crop(r, terra::ext(-44.7, -42.7, -23.5, -21.5))
+  n_classes <- length(unique(stats::na.omit(terra::values(win)[, 1])))
+  expect_gt(n_classes, 3L)   # was 1 (FR only) with the old coarse raster
 })
 
 
