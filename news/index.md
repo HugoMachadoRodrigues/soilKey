@@ -1,5 +1,10 @@
 # Changelog
 
+## soilKey 0.9.183 (2026-07-07)
+
+Adopt munsellinterpol’s canonical XYZ-\>Munsell path; add the
+perfect-diffuser test.
+
 ## soilKey 0.9.182 (2026-07-07)
 
 Uncertainty per-point drill-in; Assistant logo; 2-decimal values.

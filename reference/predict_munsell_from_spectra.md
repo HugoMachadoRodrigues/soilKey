@@ -41,15 +41,17 @@ A data.frame with columns `munsell_hue_moist`, `munsell_value_moist`,
 ## Details
 
 The Munsell renotation is defined under *Illuminant C*, while the
-colorimetry here is computed under D65, so the conversion goes XYZ -\>
-CIELAB (D65) -\>
-[`munsellinterpol::LabToMunsell()`](https://rdrr.io/pkg/munsellinterpol/man/LabtoMunsell.html),
-which chromatically adapts D65 -\> C internally. Feeding D65
-chromaticities straight to `xyYtoMunsell()` would bias every colour
-toward green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
-than 0); this routine avoids that. The D65 reference white is derived
-from the same bundled CIE table the colorimetry integrates against (so a
-constant-reflectance spectrum maps to an exact neutral), and the
+colorimetry here is computed under D65, so the conversion adapts D65 -\>
+C. It calls `munsellinterpol::XYZtoMunsell(XYZ, white =)`
+(munsellinterpol \>= 3.4-0), which performs that chromatic adaptation
+internally, and falls back to the numerically identical XYZ -\>
+CIELAB(D65) -\> `LabToMunsell()` route on older versions. Feeding D65
+chromaticities straight to `xyYtoMunsell()` (with no `white`) would bias
+every colour toward green-yellow (a perfect neutral would return Chroma
+~ 0.65 rather than 0); this routine avoids that. The D65 reference white
+is derived from the same bundled CIE table the colorimetry integrates
+against (so a constant-reflectance spectrum maps to an exact neutral,
+and a perfect reflecting diffuser to Munsell value 10), and the
 conversion is vectorised over all rows of `spectra` at once.
 `munsell_hue_moist`, `munsell_value_moist`, `munsell_chroma_moist` ready
 to write into a
