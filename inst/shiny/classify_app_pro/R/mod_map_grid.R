@@ -259,6 +259,42 @@
 }
 
 
+# Recode a CROPPED SoilGrids WRB raster to contiguous integer class ids + a LUT
+# (id -> RSG code), for direct addRasterImage rendering (continuous patches).
+# Handles BOTH the live categorical raster (factor RAT; labels = RSG names ->
+# .wrb_name_to_code, incl. Albeluvisols == RT) AND the offline demo (plain
+# integer -> soilgrids_wrb_lut). Only classes present in the crop are kept, so
+# the legend stays tight. Returns the same list(raster, lut) shape as
+# .grid_to_raster so add_overlay's palette/legend code is unchanged.
+.overlay_recode <- function(rc) {
+  if (terra::is.factor(rc)) {
+    rat      <- terra::levels(rc)[[1]]           # col 1 = value, last = label
+    map_from <- suppressWarnings(as.integer(rat[[1]]))
+    map_code <- .wrb_name_to_code(as.character(rat[[ncol(rat)]]))
+    ri       <- rc; terra::levels(ri) <- NULL    # drop RAT -> plain integer grid
+  } else {
+    lut0     <- soilKey::soilgrids_wrb_lut()
+    map_from <- suppressWarnings(as.integer(names(lut0)))
+    map_code <- unname(lut0)
+    ri       <- rc
+  }
+  present <- sort(unique(suppressWarnings(
+    as.integer(terra::values(ri, mat = FALSE)))))
+  present <- present[is.finite(present)]
+  if (!length(present)) return(NULL)
+  sel  <- match(present, map_from)
+  ok   <- !is.na(sel) & !is.na(map_code[sel]) & nzchar(map_code[sel] %||% "")
+  from <- present[ok]; code <- map_code[sel][ok]
+  if (!length(from)) return(NULL)
+  uniq   <- sort(unique(code))                   # RSG codes present in the crop
+  new_id <- match(code, uniq)
+  ri <- terra::subst(ri, from = from, to = new_id, others = NA)  # exact remap
+  list(raster = ri,
+       lut    = data.frame(id = seq_along(uniq), class = uniq,
+                           stringsAsFactors = FALSE))
+}
+
+
 map_grid_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::layout_sidebar(
