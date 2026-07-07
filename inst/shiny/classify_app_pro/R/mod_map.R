@@ -101,12 +101,20 @@ map_ui <- function(id) {
           i18n("map.tab_point"), icon = "location-dot",
           desc = "Click the map to drop a point, then read the SoilGrids class prior there.",
           shiny::uiOutput(ns("coords")),
+          # The prior IS the SoilGrids WRB MostProbable raster. WRB is native;
+          # SiBCS is a published WRB->SiBCS (Schad) translation of the SAME
+          # pixels. USDA is intentionally omitted here: there is no USDA
+          # SoilGrids layer, so it would mislabel the WRB pixels. (USDA is still
+          # available from real profile data on the Classify tab.)
           shiny::selectInput(
-            ns("system"), i18n("mpoint.classification_system"),
-            choices = c("WRB 2022" = "wrb2022", "USDA ST 13" = "usda",
-                        "SiBCS 5" = "sibcs"), selected = "wrb2022"),
+            ns("system"),
+            sk_label(i18n("mpoint.prior_system"), i18n("mpoint.prior_system_help")),
+            choices = stats::setNames(
+              c("wrb2022", "sibcs"),
+              c(i18n("mpoint.prior_wrb"), i18n("mpoint.prior_sibcs"))),
+            selected = "wrb2022"),
           shiny::numericInput(ns("buffer"), i18n("mpoint.buffer_radius"),
-                              1000, min = 100, max = 20000, step = 100),
+                              5000, min = 100, max = 20000, step = 100),
           shiny::numericInput(ns("topn"), i18n("mpoint.keep_top_n"),
                               5, min = 1, max = 30, step = 1),
           bslib::tooltip(
@@ -206,6 +214,7 @@ map_ui <- function(id) {
         shiny::div(class = "sk-map-square",
                    leaflet::leafletOutput(ns("map"), height = "100%")))
     ),
+    shiny::uiOutput(ns("map_legend_help")),
     shiny::uiOutput(ns("results"))
   )
 }
@@ -245,17 +254,34 @@ map_server <- function(id, rv, settings) {
       do.call(rbind, rows)
     })
 
-    # SoilGrids WRB class raster for a fixed window around a point (or NULL).
-    # Shared by the initial render and the update observer so the overlay is
-    # identical whichever path draws it.
+    # SoilGrids WRB class raster for a window around a point (or NULL). Renders
+    # CONTINUOUS patches: crop the SOURCE raster (demo 0.04 deg / live ~250 m) to
+    # a 6-degree window at NATIVE resolution, recode to contiguous integer class
+    # ids + a LUT, and let addRasterImage draw it -- NOT a coarse point-grid
+    # resample (the old .grid_make path capped at 40x40 => ~16 km blocks).
     overlay_raster <- function(cc, src) {
       if (is.null(cc) || is.null(src)) return(NULL)
       if (!requireNamespace("terra", quietly = TRUE)) return(NULL)
-      bb <- list(lon_min = cc$lon - 3, lon_max = cc$lon + 3,
-                 lat_min = cc$lat - 3, lat_max = cc$lat + 3)
       tryCatch({
-        g <- .grid_make(bb, 60L)
-        .grid_to_raster(g$raster, .grid_overlay(g$coords, source_url = src))
+        win <- terra::ext(max(-180, cc$lon - 3), min(180, cc$lon + 3),
+                          max(-90,  cc$lat - 3), min(90,  cc$lat + 3))
+        if (grepl("vsicurl|^http", src)) .grid_set_gdal_fast()  # fast remote open
+        r  <- terra::rast(src)
+        # crop in the RASTER's own CRS (live SoilGrids = Homolosine, demo = 4326)
+        wv <- terra::project(terra::as.polygons(win, crs = "EPSG:4326"),
+                             terra::crs(r))
+        rc <- terra::crop(r, wv, snap = "out")
+        if (is.null(rc) || terra::ncell(rc) == 0) return(NULL)
+        rr <- .overlay_recode(rc)                               # int ids + LUT
+        if (is.null(rr)) return(NULL)
+        # cap the payload (leaflet addRasterImage maxBytes); modal = class-safe
+        fact <- ceiling(max(dim(rr$raster)[1:2]) / 512)
+        if (fact > 1)
+          rr$raster <- terra::aggregate(rr$raster, fact = fact, fun = "modal")
+        if (!terra::same.crs(rr$raster, "EPSG:4326"))
+          rr$raster <- terra::project(rr$raster, "EPSG:4326", method = "near")
+        if (all(is.na(terra::values(rr$raster, mat = FALSE)))) return(NULL)
+        rr
       }, error = function(e) NULL)
     }
     # Resolve the source from the live/demo toggle (+ pasted URL) and read the
@@ -278,8 +304,11 @@ map_server <- function(id, rv, settings) {
       pal <- leaflet::colorFactor("Set3", domain = lut$id, na.color = "transparent")
       # suppressWarnings: addRasterImage resamples the class grid and warns
       # "values outside the color scale" for the interpolated edges -- benign.
+      # method = "ngb": nearest-neighbour keeps hard class edges (bilinear would
+      # blend integer class ids and invent non-existent classes at boundaries).
       map <- suppressWarnings(
-        leaflet::addRasterImage(map, rr$raster, colors = pal, opacity = 0.55,
+        leaflet::addRasterImage(map, rr$raster, colors = pal, opacity = 0.6,
+                                method = "ngb", project = TRUE,
                                 group = "soilgrids"))
       leaflet::addLegend(map, "bottomleft", colors = pal(lut$id),
                          labels = lut$class, title = i18n("map.soilgrids_overlay"),
@@ -299,6 +328,19 @@ map_server <- function(id, rv, settings) {
           group = "site", label = rv$pedon$site$id %||% "point")
       map
     }
+    # Draw the query buffer as a circle of the chosen radius (point mode only),
+    # so the user SEES the ground the prior samples as they change the radius.
+    add_buffer <- function(map, cc, mode, buffer_m) {
+      buffer_m <- suppressWarnings(as.numeric(buffer_m))
+      if (!identical(mode, "point") || is.null(cc) ||
+            length(buffer_m) != 1L || !is.finite(buffer_m) || buffer_m <= 0)
+        return(map)
+      map |> leaflet::addCircles(
+        lng = cc$lon, lat = cc$lat, radius = buffer_m, group = "buffer",
+        weight = 1.5, color = "#4A3226", fillColor = "#B5652E",
+        fillOpacity = 0.08, dashArray = "4",
+        label = sprintf(i18n("mpoint.buffer_circle"), round(buffer_m)))
+    }
 
     # ---- the single base map ---------------------------------------------
     # Rendered ONCE, SELF-CONTAINED: the initial view, neighbour points, pedon
@@ -317,6 +359,7 @@ map_server <- function(id, rv, settings) {
       m <- if (!is.null(cc)) m |> leaflet::setView(cc$lon, cc$lat, zoom = 7)
            else m |> leaflet::setView(-51, -14, zoom = 4)
       m <- add_points(m, cc, nb, mode)
+      m <- add_buffer(m, cc, mode, shiny::isolate(input$buffer))
       if (isTRUE(shiny::isolate(input$show_soilgrids)))
         m <- add_overlay(m, overlay_for(cc, shiny::isolate(input$sg_source),
                                         shiny::isolate(input$source_url))$rr)
@@ -368,6 +411,13 @@ map_server <- function(id, rv, settings) {
       add_points(proxy, cc, nbr(), mode)
     }, ignoreInit = TRUE)
 
+    # ---- query buffer ring: redraw live as the radius / point / mode change.
+    # Depends only on the point + buffer (NOT map bounds -> no feedback loop).
+    shiny::observeEvent(list(input$buffer, coords_r(), input$mode), {
+      proxy <- leaflet::leafletProxy("map", session) |> leaflet::clearGroup("buffer")
+      add_buffer(proxy, coords_r(), input$mode %||% "point", input$buffer)
+    }, ignoreInit = TRUE, ignoreNULL = FALSE)
+
     # ---- SoilGrids overlay for the visible area (all modes) --------------
     output$overlay_note <- shiny::renderUI({
       if (nzchar(input$source_url %||% "")) return(NULL)   # custom URL: no note
@@ -378,6 +428,35 @@ map_server <- function(id, rv, settings) {
       else
         shiny::helpText(shiny::icon("circle-info"), " ", i18n("map.using_demo_raster"))
     })
+
+    # ---- "What am I looking at?" -- explains the legends beside the map -----
+    output$map_legend_help <- shiny::renderUI({
+      mode <- input$mode %||% "point"
+      show <- isTRUE(input$show_soilgrids)
+      paras <- list()
+      if (show) {
+        src_line <- if (identical(input$sg_source %||% "demo", "live"))
+          i18n("map.legend_overlay_live") else i18n("map.legend_overlay_demo")
+        paras <- c(paras, list(shiny::p(
+          shiny::strong(i18n("map.soilgrids_overlay")), " ",
+          i18n("map.legend_overlay_body"), " ",
+          shiny::tags$em(src_line))))
+      }
+      if (mode == "grid") {
+        sysname <- c(wrb2022 = "WRB 2022", sibcs = "SiBCS 5",
+                     usda = "USDA ST 13")[input$grid_system %||% "wrb2022"]
+        paras <- c(paras, list(shiny::p(
+          shiny::strong(i18n("mgrid.predicted_class_raster")), " ",
+          sprintf(i18n("map.legend_grid_body"), sysname %||% "WRB 2022"))))
+      } else if (mode == "point") {
+        paras <- c(paras, list(shiny::p(i18n("map.legend_point_body"))))
+      }
+      bslib::card(
+        class = "mt-2", bslib::card_header(shiny::icon("circle-question"), " ",
+                                           i18n("map.legend_help_title")),
+        bslib::card_body(class = "small", paras))
+    })
+
     # Redraw the overlay on later toggles/point changes. The FIRST paint is
     # baked into renderLeaflet above; this only handles updates (map is live).
     # The bbox is a fixed window around the point, NOT input$map_bounds --
@@ -406,7 +485,15 @@ map_server <- function(id, rv, settings) {
     # ======================================================================
     #  POINT MODE -- SoilGrids class prior at the point
     # ======================================================================
-    prior <- shiny::eventReactive(input$run_point, {
+    # The button gates the FIRST query (so placing a point / toggling the system
+    # never fires a network read before the user asks). After the first run,
+    # input$system becomes a live dependency, so toggling WRB <-> SiBCS re-queries
+    # immediately -- the fix for "nothing happens when I switch the system".
+    ran_point_once <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$run_point, ran_point_once(TRUE))
+    prior <- shiny::eventReactive(
+      list(input$run_point,
+           if (isTRUE(ran_point_once())) input$system else NULL), {
       cc <- coords_r()
       if (is.null(cc)) return(simpleError(i18n("mpoint.place_point_first")))
       if (!requireNamespace("terra", quietly = TRUE))
@@ -418,7 +505,7 @@ map_server <- function(id, rv, settings) {
           buffer_m = input$buffer, source_url = src,
           top_n = input$topn, verbose = FALSE), error = function(e) e)
       })
-    })
+    }, ignoreInit = TRUE)
 
     # ======================================================================
     #  BATCH MODE -- classify many profiles, colour by class
@@ -572,11 +659,45 @@ map_server <- function(id, rv, settings) {
         if (inherits(p, "error")) conditionMessage(p) else i18n("mpoint.na")))
       df <- as.data.frame(p$distribution)
       shiny::validate(shiny::need(nrow(df) > 0L, i18n("mpoint.no_pixels_buffer")))
-      cols <- intersect(c("rsg_code", "rsg_name", "probability"), names(df))
-      df <- df[, cols, drop = FALSE]
-      DT::datatable(df, rownames = FALSE, options = list(dom = "tp", pageLength = 8)) |>
-        DT::formatPercentage("probability", 1)
+      n <- suppressWarnings(as.integer(input$topn %||% 5L))
+      if (!is.finite(n) || n < 1L) n <- nrow(df)
+      df <- df[order(-df$probability), , drop = FALSE]   # rank by probability
+      df <- utils::head(df, n)
+      show <- data.frame(rank = seq_len(nrow(df)),
+                         rsg_name = df$rsg_name %||% df$rsg_code,
+                         rsg_code = df$rsg_code,
+                         probability = df$probability,
+                         stringsAsFactors = FALSE)
+      names(show) <- c(i18n("mpoint.col_rank"), i18n("mpoint.col_class"),
+                       i18n("mpoint.col_code"), i18n("mpoint.col_probability"))
+      DT::datatable(show, rownames = FALSE,
+                    caption = sprintf(i18n("mpoint.topn_caption"), nrow(df),
+                                      round(as.numeric(input$buffer %||% 0))),
+                    options = list(dom = "t", pageLength = n)) |>
+        DT::formatPercentage(i18n("mpoint.col_probability"), 1)
     })
+
+    # Annotate the point with a persistent popup naming the #1 class + its share,
+    # on its own group so the site/neighbour redraw does not wipe it.
+    shiny::observeEvent(prior(), {
+      p <- prior()
+      if (inherits(p, "error") || is.null(p)) return()
+      df <- as.data.frame(p$distribution); if (!nrow(df)) return()
+      cc <- coords_r(); if (is.null(cc)) return()
+      top1 <- df[order(-df$probability), , drop = FALSE][1, ]
+      popup <- sprintf(i18n("mpoint.popup_top_class"),
+                       rv$pedon$site$id %||% i18n("mpoint.point_label"),
+                       top1$rsg_name %||% top1$rsg_code,
+                       100 * as.numeric(top1$probability),
+                       round(as.numeric(input$buffer %||% 0)))
+      leaflet::leafletProxy("map", session) |>
+        leaflet::clearGroup("site_prior") |>
+        leaflet::addCircleMarkers(
+          lng = cc$lon, lat = cc$lat, radius = 8, weight = 2, color = "#4A3226",
+          fillColor = "#B5652E", fillOpacity = 0.95, group = "site_prior",
+          popup = popup,
+          popupOptions = leaflet::popupOptions(closeOnClick = FALSE))
+    }, ignoreInit = TRUE)
     output$attrs_table <- DT::renderDT({
       p <- prior(); shiny::req(p)
       shiny::validate(shiny::need(!inherits(p, "error"), i18n("mpoint.na")))

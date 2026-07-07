@@ -1,3 +1,28 @@
+# soilKey 0.9.178 (2026-07-07)
+
+Map tab -- five fixes to the point/overlay experience.
+
+\itemize{
+  \item \strong{The classification-system toggle is live again.} In "Explore
+    point", switching WRB <-> SiBCS now re-queries immediately (it was gated on
+    the button, so toggling did nothing). The prior is the SoilGrids WRB layer;
+    WRB is native and SiBCS is an honest WRB->SiBCS crosswalk of the same pixels
+    -- USDA is no longer offered here (there is no USDA SoilGrids layer, so it
+    was mislabelling pixels).
+  \item \strong{The SoilGrids overlay renders as continuous soil-class patches}
+    instead of a few coarse pixels. It now crops the source raster to the view
+    at native resolution and draws it directly (nearest-neighbour, hard class
+    edges) rather than resampling to a 40x40 point grid. The bundled demo raster
+    is finer (~2.2 km) with smaller patches.
+  \item \strong{Legend explanations beside the map.} A "What am I looking at?"
+    panel explains the SoilGrids overlay and the predicted-class raster per mode.
+  \item \strong{The query buffer is drawn} as a ring of the chosen radius,
+    updating live as you change it.
+  \item \strong{Top-N classes are shown ranked with percentages} (rank / class /
+    code / probability, capped at N) plus a persistent popup naming the #1 class
+    and its share.
+}
+
 # soilKey 0.9.177 (2026-07-06)
 
 Spectra tab -- scientific spectral preprocessing, compact status.
