@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.181 (2026-07-07)
+
+Photo tab restored; spectra preprocessing made resilient.
+
 ## soilKey 0.9.180 (2026-07-07)
 
 Uncertainty tab – analyse a whole group of points.
