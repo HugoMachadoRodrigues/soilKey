@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.183</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.184</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -212,7 +212,7 @@
 <h3 id="id_51-pedonrecord-r6-class">5.1 <code>PedonRecord</code> (R6 class)<a class="anchor" aria-label="anchor" href="#id_51-pedonrecord-r6-class"></a></h3>
 <p>The central structure carries everything about a profile — site, horizons, spectra, images, documents, and the provenance of each attribute.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">PedonRecord</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://r6.r-lib.org/reference/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"PedonRecord"</span>,</span>
+<code class="sourceCode R"><span><span class="va">PedonRecord</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://rdrr.io/pkg/R6/man/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"PedonRecord"</span>,</span>
 <span>  public <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span></span>
 <span>    <span class="co"># ---- data ----</span></span>
@@ -273,7 +273,7 @@
 <a class="anchor" aria-label="anchor" href="#id_52-diagnosticresult"></a></h3>
 <p>Returned by every diagnostic function. Never just <code>TRUE</code>/<code>FALSE</code> — it always carries evidence.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">DiagnosticResult</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://r6.r-lib.org/reference/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"DiagnosticResult"</span>,</span>
+<code class="sourceCode R"><span><span class="va">DiagnosticResult</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://rdrr.io/pkg/R6/man/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"DiagnosticResult"</span>,</span>
 <span>  public <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    name      <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># "argic"</span></span>
 <span>    passed    <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># TRUE/FALSE/NA (NA = missing attributes prevented test)</span></span>
@@ -290,7 +290,7 @@
 <a class="anchor" aria-label="anchor" href="#id_53-classificationresult"></a></h3>
 <p>Final output of <code><a href="reference/classify_wrb2022.html">classify_wrb2022()</a></code> or <code><a href="reference/classify_sibcs.html">classify_sibcs()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ClassificationResult</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://r6.r-lib.org/reference/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"ClassificationResult"</span>,</span>
+<code class="sourceCode R"><span><span class="va">ClassificationResult</span> <span class="op">&lt;-</span> <span class="fu">R6</span><span class="fu">::</span><span class="kw"><a href="https://rdrr.io/pkg/R6/man/R6Class.html" class="external-link">R6Class</a></span><span class="op">(</span><span class="st">"ClassificationResult"</span>,</span>
 <span>  public <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    system         <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># "WRB 2022" | "SiBCS 5"</span></span>
 <span>    name           <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># "Rhodic Ferralsol (Clayic, Humic, Dystric)"</span></span>

@@ -52,9 +52,11 @@ every colour toward green-yellow (a perfect neutral would return Chroma
 is derived from the same bundled CIE table the colorimetry integrates
 against (so a constant-reflectance spectrum maps to an exact neutral,
 and a perfect reflecting diffuser to Munsell value 10), and the
-conversion is vectorised over all rows of `spectra` at once.
-`munsell_hue_moist`, `munsell_value_moist`, `munsell_chroma_moist` ready
-to write into a
+conversion is vectorised over all rows of `spectra` at once. At zero
+Chroma the Munsell hue is undefined, so a neutral is reported with hue
+`"N"` in both the rounded and the continuous (`round_chip = FALSE`)
+notation. `munsell_hue_moist`, `munsell_value_moist`,
+`munsell_chroma_moist` ready to write into a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 via the pedon's `add_measurement` method (see also
 [`fill_munsell_from_spectra`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.md)).

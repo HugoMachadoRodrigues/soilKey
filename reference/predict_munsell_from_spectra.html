@@ -13,7 +13,7 @@ Returns hue (e.g. "7.5YR"), value (0..10) and chroma
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.183</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.184</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,9 @@ that. The D65 reference white is derived from the same bundled CIE
 table the colorimetry integrates against (so a constant-reflectance
 spectrum maps to an exact neutral, and a perfect reflecting diffuser
 to Munsell value 10), and the conversion is vectorised over all rows
-of <code>spectra</code> at once.
+of <code>spectra</code> at once. At zero Chroma the Munsell hue is undefined,
+so a neutral is reported with hue <code>"N"</code> in both the rounded and the
+continuous (<code>round_chip = FALSE</code>) notation.
 <code>munsell_hue_moist</code>, <code>munsell_value_moist</code>,
 <code>munsell_chroma_moist</code> ready to write into a
 <code><a href="PedonRecord.html">PedonRecord</a></code> via the pedon's <code>add_measurement</code>

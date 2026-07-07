@@ -1,5 +1,10 @@
 # Changelog
 
+## soilKey 0.9.184 (2026-07-07)
+
+Neutral hue is “N” in continuous notation too; Photo-tab colour-route
+text corrected.
+
 ## soilKey 0.9.183 (2026-07-07)
 
 Adopt munsellinterpol’s canonical XYZ-\>Munsell path; add the
