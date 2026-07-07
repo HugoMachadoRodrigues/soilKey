@@ -69,12 +69,8 @@ COPY NEWS.md README.md LICENSE ./
 #       report module falls back to HTML)
 #   * misc used by modules: DBI, RSQLite, maps, withr
 #
-# NOT installed here:
-#   * ellmer -- the live VLM/Assistant client. It postdates this image's frozen
-#       CRAN snapshot (rocker/r-ver:4.4.0 ~ 2024-04), so it isn't available. The
-#       Photo and Assistant tabs are requireNamespace-guarded and default to the
-#       offline mock provider, so the app runs fine without it. To enable the
-#       live Assistant later, install ellmer from a newer repo in a follow-up.
+# ellmer (the live Assistant + online Photo VLM client) is installed separately
+# below -- it postdates this image's frozen CRAN snapshot. NOT installed:
 #   * foreign -- ships with R as a "recommended" package (already present);
 #       listing it explicitly makes pak's solver conflict on its pinned version.
 RUN R -e "pak::pkg_install(c( \
@@ -91,11 +87,17 @@ RUN R -e "pak::pkg_install(c( \
       'DBI','RSQLite','maps','withr' \
     ))"
 
+# ellmer (LLM client for the Assistant chat + online Photo VLM) postdates the
+# frozen snapshot above, so install it from the current Posit PM binary repo.
+RUN R -e "options(repos = c(PPM = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); \
+  pak::pkg_install('ellmer')"
+
 # Build-time smoke check: the package loads and every hard-required app package
-# is importable. Fails the build early if the dependency set is wrong.
+# (incl. ellmer for the live Assistant) is importable. Fails the build early if
+# the dependency set is wrong.
 RUN R -e "library(soilKey); \
   stopifnot(is.function(soilKey::run_classify_app)); \
-  need <- c('shiny','bslib','DT','plotly','shinyWidgets','leaflet'); \
+  need <- c('shiny','bslib','DT','plotly','shinyWidgets','leaflet','ellmer'); \
   ok <- vapply(need, requireNamespace, logical(1), quietly = TRUE); \
   if (!all(ok)) stop('missing: ', paste(need[!ok], collapse=', ')); \
   cat('soilKey', as.character(packageVersion('soilKey')), 'app deps OK\n')"

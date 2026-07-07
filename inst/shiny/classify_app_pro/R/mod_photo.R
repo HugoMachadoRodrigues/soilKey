@@ -76,24 +76,22 @@
 }
 
 # Resolve the vision provider for the chosen mode:
-#   "mock"  -> offline canned demo (no model, no key).
-#   "local" -> a FREE open-source vision model on the user's own machine via
-#              Ollama + ellmer (no API key, nothing leaves the computer).
-#   "live"  -> a cloud ellmer chat preconfigured in options(soilKey.vlm_chat=).
+#   "live" -> an online cloud vision model. Uses an explicit preconfigured chat
+#             (options(soilKey.vlm_chat=)) when set, else builds a Groq vision
+#             chat from GROQ_API_KEY. This is the default.
+#   "mock" -> offline canned demo (no model, no key), for a network-free demo.
 .photo_provider <- function(mode, mock_responses) {
   if (identical(mode, "live")) {
     live <- getOption("soilKey.vlm_chat", default = NULL)
-    if (is.null(live)) stop(i18n("photo.live_needs_chat"), call. = FALSE)
-    return(live)
-  }
-  if (identical(mode, "local")) {
+    if (!is.null(live)) return(live)
     if (!requireNamespace("ellmer", quietly = TRUE))
       stop(i18n("photo.ellmer_missing"), call. = FALSE)
-    running <- isTRUE(tryCatch(soilKey::ollama_is_running(),
-                               error = function(e) FALSE))
-    if (!running) stop(i18n("photo.ollama_not_running"), call. = FALSE)
-    model <- getOption("soilKey.ollama_vision_model", "llama3.2-vision")
-    return(ellmer::chat_ollama(model = model))
+    key <- Sys.getenv("GROQ_API_KEY", "")
+    if (!nzchar(key)) stop(i18n("photo.live_needs_key"), call. = FALSE)
+    model <- getOption("soilKey.groq_vision_model",
+                       "meta-llama/llama-4-scout-17b-16e-instruct")
+    return(suppressWarnings(ellmer::chat_groq(
+      model = model, api_key = key, echo = "none")))
   }
   soilKey::MockVLMProvider$new(responses = mock_responses)
 }
@@ -108,21 +106,19 @@ photo_ui <- function(id) {
         i18n("photo.step1_provider"),
         icon = "camera",
         desc = i18n("photo.provider_desc"),
-        # Two clear options only: an offline demo, or a FREE local model
-        # (Ollama). The old preconfigured-cloud option was dropped -- it
-        # confused more than it helped.
+        # Two options: the online AI (default) or an offline demo. The local
+        # Ollama option was removed -- the deployed app always uses online AI.
         shiny::radioButtons(
           ns("provider"), NULL,
           choiceNames = list(
+            shiny::tagList(shiny::strong(i18n("photo.provider_live")),
+                           shiny::tags$span(class = "text-muted small",
+                                            i18n("photo.provider_live_hint"))),
             shiny::tagList(shiny::strong(i18n("photo.provider_demo")),
                            shiny::tags$span(class = "text-muted small",
-                                            i18n("photo.provider_demo_hint"))),
-            shiny::tagList(shiny::strong(i18n("photo.provider_local")),
-                           shiny::tags$span(class = "text-muted small",
-                                            i18n("photo.provider_local_hint")))),
-          choiceValues = c("mock", "local"),
-          selected = "mock"),
-        shiny::uiOutput(ns("ollama_status")),
+                                            i18n("photo.provider_demo_hint")))),
+          choiceValues = c("live", "mock"),
+          selected = "live"),
         shiny::helpText(i18n("photo.provider_help"))
       ),
 
@@ -189,20 +185,6 @@ photo_server <- function(id, rv) {
         demo_active(TRUE)
     })
 
-    # Live status of a local Ollama server when the Local provider is chosen.
-    output$ollama_status <- shiny::renderUI({
-      if (!identical(input$provider, "local")) return(NULL)
-      ok <- isTRUE(tryCatch(soilKey::ollama_is_running(),
-                            error = function(e) FALSE))
-      if (ok)
-        shiny::div(class = "small mt-1", style = "color:#3f6024;",
-                   shiny::icon("circle-check"), " ",
-                   i18n("photo.ollama_detected"))
-      else
-        shiny::div(class = "small mt-1 alert alert-warning py-1 px-2",
-                   shiny::icon("triangle-exclamation"), " ",
-                   i18n("photo.ollama_not_running"))
-    })
     active_profile <- shiny::reactive({
       f <- input$profile_img
       if (!is.null(f))
