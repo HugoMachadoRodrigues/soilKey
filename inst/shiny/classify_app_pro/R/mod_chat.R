@@ -114,51 +114,38 @@
 }
 
 
+# The chat now lives in a right-side slide-out DRAWER available on every tab
+# (mounted in app.R), not a nav tab. This builds the drawer's inner content: a
+# header, the transcript, and the composer. No API-key field and no photo upload
+# -- the key comes from GROQ_API_KEY (else the grounded scripted assistant).
 chat_ui <- function(id) {
   ns <- shiny::NS(id)
-  bslib::layout_sidebar(
-    sidebar = bslib::sidebar(
-      width = 330, open = "closed",
-      sk_section(
-        i18n("chat.settings"), icon = "gear",
-        desc = "Free online model + photo colour reading -- all optional.",
-        shiny::uiOutput(ns("backend_status")),
-        shiny::passwordInput(
-          ns("groq_key"),
-          sk_label(i18n("chat.groq_key"), i18n("chat.groq_key_help")),
-          value = ""),
-        shiny::tags$a(href = "https://console.groq.com/keys", target = "_blank",
-                      rel = "noopener", class = "small",
-                      shiny::icon("up-right-from-square"), " ",
-                      i18n("chat.get_key")),
-        shiny::tags$hr(),
-        shiny::fileInput(
-          ns("photo"),
-          sk_label(i18n("chat.attach_photo"), i18n("chat.attach_photo_help")),
-          accept = c(".jpg", ".jpeg", ".png")),
-        bslib::tooltip(
-          shiny::actionButton(ns("read_munsell"), i18n("chat.read_munsell"),
-                              icon = shiny::icon("eye-dropper"),
-                              class = "btn-secondary w-100"),
-          "Read the Munsell colours from the attached photo into the pedon."),
-        shiny::helpText(i18n("chat.grounding_note"))
-      )
-    ),
+  shiny::div(
+    class = "sk-assistant-inner",
     shiny::div(
-      class = "sk-chat-wrap",
-      shiny::div(id = ns("log"), class = "sk-chat-log",
-                 role = "log", `aria-live` = "polite",
-                 shiny::uiOutput(ns("messages"))),
+      class = "sk-assistant-head",
       shiny::div(
-        class = "sk-chat-composer",
-        shiny::textAreaInput(ns("msg"), NULL, width = "100%", rows = 2,
-                             placeholder = i18n("chat.placeholder")),
-        bslib::tooltip(
-          shiny::actionButton(ns("send"), i18n("chat.send"),
-                              icon = shiny::icon("paper-plane"),
-                              class = "btn-primary"),
-          "Send your message."))
-    )
+        shiny::span(class = "sk-assistant-title",
+                    shiny::icon("comments"), " ", i18n("chat.drawer_title")),
+        shiny::uiOutput(ns("backend_status"), inline = TRUE)),
+      shiny::tags$button(
+        id = "sk_assistant_close", class = "sk-assistant-close",
+        type = "button", `aria-label` = i18n("chat.close"),
+        shiny::icon("xmark"))),
+    shiny::div(id = ns("log"), class = "sk-chat-log",
+               role = "log", `aria-live` = "polite",
+               shiny::uiOutput(ns("messages"))),
+    shiny::div(
+      class = "sk-chat-composer",
+      shiny::textAreaInput(ns("msg"), NULL, width = "100%", rows = 2,
+                           placeholder = i18n("chat.placeholder")),
+      bslib::tooltip(
+        shiny::actionButton(ns("send"), i18n("chat.send"),
+                            icon = shiny::icon("paper-plane"),
+                            class = "btn-primary"),
+        "Send your message.")),
+    shiny::div(class = "sk-assistant-foot small text-muted",
+               i18n("chat.grounding_note"))
   )
 }
 
@@ -235,42 +222,6 @@ chat_server <- function(id, rv, settings) {
         add("assistant", paste0(i18n("chat.groq_failed"), "\n\n",
                                 .chat_scripted_reply(msg, ctx)))
       else add("assistant", reply)
-    })
-
-    # ---- photo -> Munsell (folded into the chat) -------------------------
-    shiny::observeEvent(input$read_munsell, {
-      if (is.null(rv$pedon)) {
-        shiny::showNotification(i18n("chat.need_pedon"), type = "warning"); return()
-      }
-      f <- input$photo
-      if (is.null(f)) {
-        shiny::showNotification(i18n("chat.attach_first"), type = "warning"); return()
-      }
-      add("user", i18n("chat.user_asked_munsell", f$name))
-      key <- .chat_groq_key(input$groq_key)
-      provider <- if (nzchar(key) && requireNamespace("ellmer", quietly = TRUE)) {
-        suppressWarnings(ellmer::chat_groq(
-          model = getOption("soilKey.groq_vision_model", .GROQ_VISION_MODEL),
-          api_key = key, echo = "none"))
-      } else {
-        soilKey::MockVLMProvider$new(
-          responses = rep(list(.photo_mock_munsell()), 5L))
-      }
-      res <- shiny::withProgress(
-        message = i18n("chat.reading_colour"), value = 0.5,
-        tryCatch({
-          p <- rv$pedon$clone(deep = TRUE)   # fresh ref so downstream refreshes
-          # returns the (mutated) pedon carrying attr(., "vlm_extraction")
-          soilKey::extract_munsell_from_photo(p, f$datapath, provider)
-        }, error = function(e) e))
-      if (inherits(res, "error")) {
-        add("assistant", i18n("chat.munsell_failed", conditionMessage(res)))
-        return()
-      }
-      rv$pedon <- res
-      ex <- attr(res, "vlm_extraction")
-      n  <- tryCatch(as.integer(length(ex$fields_added)), error = function(e) 0L)
-      add("assistant", i18n("chat.munsell_ok", as.character(n %||% 0L)))
     })
   })
 }

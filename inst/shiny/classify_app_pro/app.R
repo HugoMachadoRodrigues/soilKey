@@ -81,6 +81,9 @@ ui <- function(request) {
     id     = "main_nav",
     theme  = sk_theme,
     fillable = TRUE,
+    # Explicit browser-tab title: the `title` arg is an HTML wordmark, so without
+    # this the document <title> renders the mangled tag text ("soil Key Pro").
+    window_title = "soilKey Pro",
     # a11y: the document language follows the chosen interface language so
     # screen readers use the right pronunciation rules.
     lang   = .sk_app_lang(),
@@ -118,13 +121,30 @@ ui <- function(request) {
           "try{window.localStorage.removeItem('soilkey_welcomed_v2');}catch(e){}});",
           # scroll the chat transcript to the newest message
           "Shiny.addCustomMessageHandler('sk_chat_scroll',function(id){",
-          "try{var d=document.getElementById(id);if(d)d.scrollTop=d.scrollHeight;}catch(e){}});")))
+          "try{var d=document.getElementById(id);if(d)d.scrollTop=d.scrollHeight;}catch(e){}});",
+          # the Assistant drawer: a right-side panel that opens on ANY tab. Pure
+          # client-side toggle (a FAB opens it, the header X / Esc / backdrop
+          # closes it) so it is available everywhere without a server round-trip.
+          "document.addEventListener('DOMContentLoaded',function(){",
+          "var open=function(){document.body.classList.add('sk-assistant-open');};",
+          "var close=function(){document.body.classList.remove('sk-assistant-open');};",
+          "document.addEventListener('click',function(e){",
+          "if(e.target.closest('#sk_assistant_fab')){open();}",
+          "else if(e.target.closest('#sk_assistant_close')||e.target.closest('#sk_assistant_backdrop')){close();}});",
+          "document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});});")))
       ),
-      uiOutput("pedon_ribbon")
+      uiOutput("pedon_ribbon"),
+      # ---- the Assistant: a floating button + a right-side slide-out drawer,
+      # persistent across every tab (position:fixed, so outside the nav flow).
+      tags$button(id = "sk_assistant_fab", class = "sk-assistant-fab",
+                  type = "button", `aria-label` = i18n("chat.open_assistant"),
+                  icon("comments"), tags$span(i18n("chat.assistant"))),
+      tags$div(id = "sk_assistant_backdrop", class = "sk-assistant-backdrop"),
+      tags$aside(class = "sk-assistant-drawer", `aria-label` = i18n("chat.assistant"),
+                 chat_ui("chat"))
     ),
     bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon")),
     bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
-    bslib::nav_panel(i18n("nav.chat"),     icon = icon("comments"),     chat_ui("chat")),
     bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
     # v0.9.174: the three former sub-tabs (Point prior / Batch / Grid) are now
     # ONE square map driven by a mode selector, all centred on the same point,
