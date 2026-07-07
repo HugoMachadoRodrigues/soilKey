@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.176 (2026-07-06)
+
+Pro app – the Photo tab becomes “Talk to soilKey Pro” (a chat).
+
 ## soilKey 0.9.175 (2026-07-06)
 
 Pro app – fix the things that were visibly broken.
