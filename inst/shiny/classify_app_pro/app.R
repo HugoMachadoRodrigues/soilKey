@@ -138,7 +138,9 @@ ui <- function(request) {
       # persistent across every tab (position:fixed, so outside the nav flow).
       tags$button(id = "sk_assistant_fab", class = "sk-assistant-fab",
                   type = "button", `aria-label` = i18n("chat.open_assistant"),
-                  icon("comments"), tags$span(i18n("chat.assistant"))),
+                  tags$img(src = "logo.png", class = "sk-assistant-fab-logo",
+                           alt = "soilKey"),
+                  tags$span(i18n("chat.assistant"))),
       tags$div(id = "sk_assistant_backdrop", class = "sk-assistant-backdrop"),
       tags$aside(class = "sk-assistant-drawer", `aria-label` = i18n("chat.assistant"),
                  chat_ui("chat"))

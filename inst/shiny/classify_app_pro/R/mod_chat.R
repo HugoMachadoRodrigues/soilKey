@@ -126,7 +126,9 @@ chat_ui <- function(id) {
       class = "sk-assistant-head",
       shiny::div(
         shiny::span(class = "sk-assistant-title",
-                    shiny::icon("comments"), " ", i18n("chat.drawer_title")),
+                    shiny::tags$img(src = "logo.png", class = "sk-assistant-logo",
+                                    alt = "soilKey"), " ",
+                    i18n("chat.drawer_title")),
         shiny::uiOutput(ns("backend_status"), inline = TRUE)),
       shiny::tags$button(
         id = "sk_assistant_close", class = "sk-assistant-close",

@@ -1,3 +1,18 @@
+# soilKey 0.9.182 (2026-07-07)
+
+Uncertainty per-point drill-in; Assistant logo; 2-decimal values.
+
+\itemize{
+  \item \strong{Click a point to see its full uncertainty.} In the Uncertainty
+    group mode, clicking a row in the per-point table now opens that point's full
+    posterior distribution and its per-attribute sensitivity ranking.
+  \item \strong{The soilKey logo is on the Assistant} -- both the floating button
+    and the drawer header during the conversation.
+  \item \strong{Displayed numbers are rounded to two decimal places} throughout
+    (posterior probabilities, entropy, mean confidence, sensitivity importances,
+    the SoilGrids class shares, and the attribute tables).
+}
+
 # soilKey 0.9.181 (2026-07-07)
 
 Photo tab restored; spectra preprocessing made resilient.

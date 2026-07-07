@@ -405,3 +405,9 @@ body.sk-assistant-open .sk-assistant-fab { display: none; }
 .sk-assistant-close:hover { color: var(--sk-ink); }
 .sk-assistant-inner .sk-chat-log { flex: 1 1 auto; min-height: 0; }
 .sk-assistant-foot { border-top: 1px solid var(--sk-line); padding-top: 0.4rem; }
+
+/* ---- soilKey logo on the Assistant button + drawer header -------------- */
+.sk-assistant-fab-logo { height: 20px; width: auto;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3)); }
+.sk-assistant-logo { height: 22px; width: auto; vertical-align: middle;
+  margin-right: 0.15rem; }
