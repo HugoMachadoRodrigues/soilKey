@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.179 (2026-07-07)
+
+Pro app – Assistant becomes a drawer; two chrome fixes.
+
 ## soilKey 0.9.178 (2026-07-07)
 
 Map tab – five fixes to the point/overlay experience.
