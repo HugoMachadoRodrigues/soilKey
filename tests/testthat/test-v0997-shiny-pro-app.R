@@ -27,16 +27,17 @@ test_that("every classify_app_pro source file parses without syntax errors", {
   }
 })
 
-test_that("classify_app_pro ships the eleven expected modules", {
+test_that("classify_app_pro ships the twelve expected modules", {
   app_dir <- .pro_app_dir()
   mods <- list.files(file.path(app_dir, "R"), pattern = "^mod_.*\\.R$")
-  # v0.9.166: the standalone Spatial module was merged into the Map tab, and an
-  # Acknowledgements module was added -- still eleven mod_* files.
+  # v0.9.176: the Photo tab became the "Talk to soilKey Pro" chat (mod_chat.R);
+  # mod_photo.R stays for its helpers (.photo_mock_munsell, the demo photo) that
+  # the chat's photo->Munsell fold-in reuses -- so twelve mod_* files now.
   expect_setequal(
     mods,
-    c("mod_pedon.R", "mod_classify.R", "mod_photo.R", "mod_spectra.R",
-      "mod_acknowledgements.R", "mod_map.R", "mod_map_batch.R", "mod_map_grid.R",
-      "mod_uncertainty.R", "mod_report.R", "mod_settings.R")
+    c("mod_pedon.R", "mod_classify.R", "mod_photo.R", "mod_chat.R",
+      "mod_spectra.R", "mod_acknowledgements.R", "mod_map.R", "mod_map_batch.R",
+      "mod_map_grid.R", "mod_uncertainty.R", "mod_report.R", "mod_settings.R")
   )
 })
 
@@ -67,8 +68,8 @@ test_that("module UI builders produce valid Shiny tags", {
                        full.names = TRUE)) {
     sys.source(f, envir = env)
   }
-  for (builder in c("pedon_ui", "classify_ui", "photo_ui", "spectra_ui",
-                    "map_ui", "map_batch_ui", "map_grid_ui",
+  for (builder in c("pedon_ui", "classify_ui", "photo_ui", "chat_ui",
+                    "spectra_ui", "map_ui", "map_batch_ui", "map_grid_ui",
                     "uncertainty_ui", "report_ui", "settings_ui",
                     "acknowledgements_ui")) {
     ui <- get(builder, envir = env)("t")
