@@ -203,19 +203,48 @@
   as.character(pts[[class_col]][idx])
 }
 
+# Full WRB Reference Soil Group name -> 2-letter code. The live ISRIC raster is
+# categorical and its extract returns the RSG name (incl. the legacy
+# "Albeluvisols" == Retisols), so we map names, not integers. Unknown labels
+# pass through unchanged so nothing is silently dropped.
+.wrb_name_to_code <- function(x) {
+  m <- c(Acrisols = "AC", Albeluvisols = "RT", Retisols = "RT", Alisols = "AL",
+         Andosols = "AN", Arenosols = "AR", Calcisols = "CL", Cambisols = "CM",
+         Chernozems = "CH", Cryosols = "CR", Durisols = "DU", Ferralsols = "FR",
+         Fluvisols = "FL", Gleysols = "GL", Gypsisols = "GY", Histosols = "HS",
+         Kastanozems = "KS", Leptosols = "LP", Lixisols = "LX", Luvisols = "LV",
+         Nitisols = "NT", Phaeozems = "PH", Planosols = "PL", Plinthosols = "PT",
+         Podzols = "PZ", Regosols = "RG", Solonchaks = "SC", Solonetz = "SN",
+         Stagnosols = "ST", Technosols = "TC", Umbrisols = "UM", Vertisols = "VR")
+  x <- as.character(x)
+  out <- unname(m[x])
+  keep <- is.na(out) & !is.na(x) & nzchar(x)
+  out[keep] <- x[keep]
+  out
+}
+
 # Method 3: sample the SoilGrids MostProbable WRB raster on the grid.
+# Handles BOTH the offline demo (plain integer raster -> numeric LUT) and the
+# live ISRIC raster (categorical -> extract returns the RSG label -> name map).
 .grid_overlay <- function(coords, source_url = NULL) {
   src <- source_url
   if (is.null(src) || !nzchar(src))
     src <- getOption("soilKey.test_raster", default = NULL)
   if (is.null(src) || !nzchar(src))
     stop(i18n("mgrid.err_no_raster_source"))
+  if (grepl("vsicurl|^http", src)) .grid_set_gdal_fast()   # fast remote open
   r   <- terra::rast(src)
   pts <- terra::vect(coords, type = "points", crs = "EPSG:4326")
   pp  <- terra::project(pts, terra::crs(r))
-  vals <- suppressWarnings(as.numeric(terra::extract(r, pp)[[2]]))
-  lut <- soilKey::soilgrids_wrb_lut()
-  unname(lut[as.character(round(vals))])
+  raw <- terra::extract(r, pp)[[2]]
+  if (terra::is.factor(r) || is.factor(raw) || is.character(raw)) {
+    # live categorical raster: labels are the RSG names
+    .wrb_name_to_code(raw)
+  } else {
+    lut  <- soilKey::soilgrids_wrb_lut()
+    vals <- suppressWarnings(as.numeric(raw))
+    unname(lut[as.character(round(vals))])
+  }
 }
 
 # Reduce a vector of class codes over a grid to a categorical SpatRaster + LUT.

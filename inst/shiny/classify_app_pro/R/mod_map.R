@@ -33,13 +33,21 @@
     lon >= -180 && lon <= 180
 }
 
-# Resolve the SoilGrids raster source: a pasted URL, else the test-raster
-# option, else the bundled demo COG (so the overlay shows with no config).
-.map_soilgrids_source <- function(user_url = NULL) {
+# The real ISRIC SoilGrids WRB "MostProbable" class raster (global, 250 m). Read
+# through /vsicurl so terra streams only the needed pixels. Categorical: its
+# embedded RAT carries the RSG names, so it is read by LABEL, not the numeric LUT.
+.SOILGRIDS_LIVE_VRT <-
+  "/vsicurl/https://files.isric.org/soilgrids/latest/data/wrb/MostProbable.vrt"
+
+# Resolve the SoilGrids raster source. Priority: a pasted URL, else the
+# test-raster option, else the chosen `kind` -- "live" = real ISRIC raster,
+# anything else = the bundled offline demo COG (so the overlay always shows).
+.map_soilgrids_source <- function(user_url = NULL, kind = "demo") {
   u <- if (!is.null(user_url) && nzchar(trimws(user_url))) trimws(user_url) else NULL
   if (!is.null(u)) return(u)
   opt <- getOption("soilKey.test_raster", default = NULL)
   if (!is.null(opt) && nzchar(opt)) return(opt)
+  if (identical(kind, "live")) return(.SOILGRIDS_LIVE_VRT)
   .pro_demo_asset("soilgrids_wrb_demo.tif")
 }
 
@@ -72,10 +80,16 @@ map_ui <- function(id) {
         desc = "Draw the SoilGrids WRB class prior for the visible area on the map.",
         shiny::checkboxInput(ns("show_soilgrids"),
                              i18n("map.show_soilgrids"), value = TRUE),
+        shinyWidgets::radioGroupButtons(
+          ns("sg_source"),
+          label = sk_label(i18n("map.sg_source"), i18n("map.sg_source_help")),
+          choices = stats::setNames(c("demo", "live"),
+                                    c(i18n("map.sg_demo"), i18n("map.sg_live"))),
+          selected = "demo", justified = TRUE, size = "sm"),
         shiny::textInput(
           ns("source_url"),
           sk_label(i18n("mpoint.soilgrids_raster"),
-                   "Optional path/URL of a WRB class raster. Blank uses the bundled demo raster."),
+                   "Optional path/URL of a WRB class raster. Overrides the choice above."),
           placeholder = i18n("mpoint.raster_placeholder")),
         shiny::uiOutput(ns("overlay_note"))
       ),
@@ -180,11 +194,15 @@ map_ui <- function(id) {
         ))
     ),
     # ---- one square map + a results panel that changes by mode ------------
+    # fill = FALSE (card + body): take the map card OUT of the layout_sidebar
+    # flex-fill column, so it sizes to the fixed-height .sk-map-square instead
+    # of stretching/shrinking against the results panel below it. This is what
+    # makes the map render at a stable size in every mode and both languages.
     bslib::card(
-      full_screen = TRUE,
+      full_screen = TRUE, fill = FALSE,
       bslib::card_header(shiny::icon("map-location-dot"), " ", i18n("mpoint.location")),
       bslib::card_body(
-        padding = 0,
+        padding = 0, fill = FALSE, fillable = FALSE,
         shiny::div(class = "sk-map-square",
                    leaflet::leafletOutput(ns("map"), height = "100%")))
     ),
@@ -240,6 +258,20 @@ map_server <- function(id, rv, settings) {
         .grid_to_raster(g$raster, .grid_overlay(g$coords, source_url = src))
       }, error = function(e) NULL)
     }
+    # Resolve the source from the live/demo toggle (+ pasted URL) and read the
+    # overlay, falling back to the offline demo raster if the live ISRIC fetch
+    # fails or returns nothing (network blocked/slow) so the map is never empty.
+    sg_fellback <- shiny::reactiveVal(FALSE)
+    overlay_for <- function(cc, kind, url) {
+      kind <- kind %||% "demo"
+      rr <- overlay_raster(cc, .map_soilgrids_source(url, kind))
+      fell <- FALSE
+      if (is.null(rr) && identical(kind, "live") && !nzchar(url %||% "")) {
+        rr <- overlay_raster(cc, .map_soilgrids_source(NULL, "demo"))
+        fell <- !is.null(rr)
+      }
+      list(rr = rr, fell_back = fell)
+    }
     add_overlay <- function(map, rr) {
       if (is.null(rr)) return(map)
       lut <- rr$lut
@@ -286,8 +318,8 @@ map_server <- function(id, rv, settings) {
            else m |> leaflet::setView(-51, -14, zoom = 4)
       m <- add_points(m, cc, nb, mode)
       if (isTRUE(shiny::isolate(input$show_soilgrids)))
-        m <- add_overlay(m, overlay_raster(cc, .map_soilgrids_source(
-          shiny::isolate(input$source_url))))
+        m <- add_overlay(m, overlay_for(cc, shiny::isolate(input$sg_source),
+                                        shiny::isolate(input$source_url))$rr)
       if (requireNamespace("htmlwidgets", quietly = TRUE))
         m <- htmlwidgets::onRender(m, "function(el, x) {
           var map = this;
@@ -321,7 +353,10 @@ map_server <- function(id, rv, settings) {
       pt <- input$map_click
       if (is.null(pt) || !.map_valid_ll(pt$lat, pt$lng)) return()
       if (!is.null(rv$pedon)) {
-        p <- rv$pedon; p$site$lat <- pt$lat; p$site$lon <- pt$lng; rv$pedon <- p
+        # clone: PedonRecord is R6, so `p <- rv$pedon` shares the ref and the
+        # self-assign would be a no-op (reactiveValues suppresses identical).
+        p <- rv$pedon$clone(deep = TRUE)
+        p$site$lat <- pt$lat; p$site$lon <- pt$lng; rv$pedon <- p
       } else clicked(list(lat = pt$lat, lon = pt$lng))
     })
 
@@ -335,26 +370,29 @@ map_server <- function(id, rv, settings) {
 
     # ---- SoilGrids overlay for the visible area (all modes) --------------
     output$overlay_note <- shiny::renderUI({
-      src <- .map_soilgrids_source(input$source_url)
-      if (is.null(src))
-        shiny::helpText(i18n("map.no_source"))
-      else if (!nzchar(input$source_url %||% ""))
+      if (nzchar(input$source_url %||% "")) return(NULL)   # custom URL: no note
+      if (identical(input$sg_source %||% "demo", "live"))
+        shiny::helpText(shiny::icon("globe"), " ",
+          if (isTRUE(sg_fellback())) i18n("map.live_fell_back")
+          else i18n("map.using_live"))
+      else
         shiny::helpText(shiny::icon("circle-info"), " ", i18n("map.using_demo_raster"))
-      else NULL
     })
     # Redraw the overlay on later toggles/point changes. The FIRST paint is
     # baked into renderLeaflet above; this only handles updates (map is live).
     # The bbox is a fixed window around the point, NOT input$map_bounds --
     # observing bounds while drawing would re-fire in a loop and saturate R.
     shiny::observeEvent(
-      list(input$show_soilgrids, input$source_url, coords_r()), {
+      list(input$show_soilgrids, input$sg_source, input$source_url, coords_r()), {
         proxy <- leaflet::leafletProxy("map", session) |>
           leaflet::clearGroup("soilgrids") |>
           leaflet::removeControl("sg_legend")
         if (!isTRUE(input$show_soilgrids)) return(invisible())
-        rr <- overlay_raster(coords_r(),
-                             .map_soilgrids_source(input$source_url))
-        add_overlay(proxy, rr)
+        res <- shiny::withProgress(
+          message = i18n("map.loading_soilgrids"), value = 0.5,
+          overlay_for(coords_r(), input$sg_source, input$source_url))
+        sg_fellback(res$fell_back)
+        add_overlay(proxy, res$rr)
       }, ignoreInit = TRUE, ignoreNULL = FALSE)
 
     output$coords <- shiny::renderUI({
@@ -373,7 +411,7 @@ map_server <- function(id, rv, settings) {
       if (is.null(cc)) return(simpleError(i18n("mpoint.place_point_first")))
       if (!requireNamespace("terra", quietly = TRUE))
         return(simpleError(i18n("mpoint.terra_not_installed")))
-      src <- .map_soilgrids_source(input$source_url)
+      src <- .map_soilgrids_source(input$source_url, input$sg_source)
       shiny::withProgress(message = i18n("mpoint.querying_prior"), value = 0.5, {
         tryCatch(soilKey::soil_classes_at_location(
           lat = cc$lat, lon = cc$lon, system = input$system,
@@ -460,7 +498,7 @@ map_server <- function(id, rv, settings) {
         list(lon_min = cc$lon - 2, lon_max = cc$lon + 2,
              lat_min = cc$lat - 2, lat_max = cc$lat + 2) else NULL)
       if (is.null(bb)) return(simpleError(i18n("mgrid.err_invalid_bbox")))
-      src <- .map_soilgrids_source(input$source_url)
+      src <- .map_soilgrids_source(input$source_url, input$sg_source)
       shiny::withProgress(message = i18n("mgrid.predicting_grid"), value = 0, {
         tryCatch({
           g <- .grid_make(bb, min(40L, input$grid_res %||% 20L))
