@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.182 (2026-07-07)
+
+Uncertainty per-point drill-in; Assistant logo; 2-decimal values.
+
 ## soilKey 0.9.181 (2026-07-07)
 
 Photo tab restored; spectra preprocessing made resilient.
