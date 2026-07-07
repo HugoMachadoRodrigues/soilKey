@@ -1,3 +1,24 @@
+# soilKey 0.9.184 (2026-07-07)
+
+Neutral hue is "N" in continuous notation too; Photo-tab colour-route text corrected.
+
+\itemize{
+  \item \strong{A chroma-0 neutral now reports hue \code{"N"} in the continuous
+    (\code{round_chip = FALSE}) notation as well}, not just the rounded chip. At
+    zero Chroma the Munsell hue is undefined (per G. Davis); the numeric hue
+    collapses to 0, which \code{HueStringFromNumber()} spells \code{"10RP"} -- a
+    spurious reddish-purple on a grey. \code{predict_munsell_from_spectra()} now
+    collapses that to \code{"N"}, matching \code{roundHVC(books = "soil")} and
+    keeping the WRB/USDA/SiBCS hue-threshold predicates from ever seeing a bogus
+    hue on a neutral sample.
+  \item \strong{Pro app -- the Photo tab no longer credits munsellinterpol.} The
+    Photo tab reads Munsell by asking a vision model to estimate hue/value/chroma
+    directly from the image; the CIE-anchored \code{munsellinterpol} conversion
+    (reflectance -> XYZ -> Munsell) is the \emph{Spectra} route. The on-screen
+    text (EN + PT) now states this plainly so the two colour routes are not
+    conflated.
+}
+
 # soilKey 0.9.183 (2026-07-07)
 
 Adopt munsellinterpol's canonical XYZ->Munsell path; add the perfect-diffuser test.

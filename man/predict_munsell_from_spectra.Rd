@@ -46,7 +46,9 @@ that. The D65 reference white is derived from the same bundled CIE
 table the colorimetry integrates against (so a constant-reflectance
 spectrum maps to an exact neutral, and a perfect reflecting diffuser
 to Munsell value 10), and the conversion is vectorised over all rows
-of \code{spectra} at once.
+of \code{spectra} at once. At zero Chroma the Munsell hue is undefined,
+so a neutral is reported with hue \code{"N"} in both the rounded and the
+continuous (\code{round_chip = FALSE}) notation.
 \code{munsell_hue_moist}, \code{munsell_value_moist},
 \code{munsell_chroma_moist} ready to write into a
 \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
