@@ -1672,6 +1672,9 @@ plus auxiliaries) used in the test suite.
 - [`apply_soilgrids_depth_prior()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_soilgrids_depth_prior.md)
   : Fill missing horizon attributes from a SoilGrids depth prior
 
+- [`apply_spectral_preprocessing()`](https://hugomachadorodrigues.github.io/soilKey/reference/apply_spectral_preprocessing.md)
+  : Apply a step-by-step Vis-NIR / MIR preprocessing pipeline
+
 - [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
   : Format a WRB 2022 soil name with qualifiers
 

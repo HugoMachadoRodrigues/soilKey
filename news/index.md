@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.177 (2026-07-06)
+
+Spectra tab – scientific spectral preprocessing, compact status.
+
 ## soilKey 0.9.176 (2026-07-06)
 
 Pro app – the Photo tab becomes “Talk to soilKey Pro” (a chat).
