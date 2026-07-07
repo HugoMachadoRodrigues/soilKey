@@ -257,19 +257,32 @@ spectra_server <- function(id, rv) {
       window        = as.integer(input$pp_window %||% 11L),
       poly          = as.integer(input$pp_poly   %||% 2L)))
 
+    # Resolve the preprocessing engine from the LOADED soilKey namespace -- via
+    # asNamespace so it works whether the function is exported or internal, and
+    # returns NULL (rather than erroring) if an OLD soilKey without the engine is
+    # installed. Prevents the ugly "'apply_spectral_preprocessing' is not an
+    # exported object" breadcrumb; the plot then just shows raw reflectance.
+    .preproc_fn <- function() {
+      ns <- tryCatch(asNamespace("soilKey"), error = function(e) NULL)
+      if (!is.null(ns) &&
+          exists("apply_spectral_preprocessing", envir = ns, inherits = FALSE))
+        get("apply_spectral_preprocessing", envir = ns)
+      else NULL
+    }
+
     # the treated spectrum (matrix + wavelengths + ordered step labels)
     treated <- shiny::reactive({
       shiny::req(rv$pedon)
       mat <- rv$pedon$spectra$vnir
       if (is.null(mat)) return(NULL)
+      fn <- .preproc_fn()
+      raw <- list(X = mat, wavelengths = NULL, steps = "Reflectance")
+      if (is.null(fn)) return(raw)         # old soilKey -> show raw, no error
       o <- pp_opts()
       tryCatch(
-        soilKey::apply_spectral_preprocessing(
-          mat, absorbance = o$absorbance, sg_smooth = o$sg_smooth,
-          sg_derivative = o$sg_derivative, window = o$window, poly = o$poly),
-        error = function(e)
-          list(X = mat, wavelengths = NULL,
-               steps = c("Reflectance", paste("error:", conditionMessage(e)))))
+        fn(mat, absorbance = o$absorbance, sg_smooth = o$sg_smooth,
+           sg_derivative = o$sg_derivative, window = o$window, poly = o$poly),
+        error = function(e) raw)           # any failure -> clean raw fallback
     })
 
     # y-axis label follows the deepest transform applied
