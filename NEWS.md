@@ -1,3 +1,21 @@
+# soilKey 0.9.183 (2026-07-07)
+
+Adopt munsellinterpol's canonical XYZ->Munsell path; add the perfect-diffuser test.
+
+\itemize{
+  \item \strong{Spectra->Munsell now calls \code{munsellinterpol::XYZtoMunsell(XYZ, white=)}}
+    (munsellinterpol >= 3.4-0), the canonical conversion that performs the
+    D65 -> Illuminant-C chromatic adaptation internally -- the exact path the
+    munsellinterpol author (G. Davis) documents. The previous
+    XYZ -> CIELAB(D65) -> \code{LabToMunsell()} route is kept as a numerically
+    identical fallback for older munsellinterpol, so nothing changes on the
+    output side (all colour fixtures are byte-identical).
+  \item \strong{New colorimetry sanity test:} a perfect reflecting diffuser
+    (100\% constant reflectance) maps to Munsell value 10 and a pure neutral,
+    on G. Davis' suggestion. It pins the top of the value scale that the
+    lower-reflectance neutral tests only approached.
+}
+
 # soilKey 0.9.182 (2026-07-07)
 
 Uncertainty per-point drill-in; Assistant logo; 2-decimal values.

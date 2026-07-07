@@ -8,18 +8,20 @@
 #   Y = k * sum( S(lambda) * R(lambda) * ybar(lambda) )
 #   Z = k * sum( S(lambda) * R(lambda) * zbar(lambda) )
 #   k = 100 / sum( S(lambda) * ybar(lambda) )       (so Y = 100 for white)
-#   XYZ --> CIELAB (D65 white)
-#   Munsell HVC = munsellinterpol::LabToMunsell( Lab, white = D65 )
+#   Munsell HVC = munsellinterpol::XYZtoMunsell( XYZ, white = D65 )
 #
 # IMPORTANT (fixed v0.9.148, per G. Davis, munsellinterpol author): the
 # Munsell renotation is anchored to *Illuminant C* (Munsell 1943), not
 # D65. Our colorimetry is computed under D65, so a chromatic adaptation
 # D65 -> C is mandatory before interpolating Munsell -- without it every
 # sample picks up a slight green-yellow tint (a perfect neutral returns
-# Chroma ~ 0.65 instead of 0). We therefore go XYZ -> Lab (D65) and call
-# munsellinterpol::LabToMunsell(), which converts Lab -> XYZ and
-# chromatically adapts D65 -> C internally (via spacesXYZ), hiding the
-# messy details. We do NOT feed D65 xyY straight to xyYtoMunsell().
+# Chroma ~ 0.65 instead of 0). Since v0.9.183 we call the canonical
+# munsellinterpol::XYZtoMunsell( XYZ, white = D65 ) (munsellinterpol
+# >= 3.4-0, published 2026-07-03), which performs that adaptation
+# internally -- the exact path G. Davis documents in its Examples. On
+# older munsellinterpol we fall back to the numerically identical
+# XYZ -> Lab (D65) -> LabToMunsell(). We do NOT feed D65 xyY straight to
+# xyYtoMunsell() (with no white=), which would keep the green-yellow bias.
 #
 # CIE inputs are bundled as internal data .cie_d65_5nm (81 rows from
 # 380 to 780 nm, columns: wavelength, xbar, ybar, zbar, D65) so no
@@ -130,15 +132,19 @@ predict_lab_from_spectra <- function(spectra, wavelengths) {
 #' (0..20) per sample, plus the soilKey fields
 #'
 #' The Munsell renotation is defined under \emph{Illuminant C}, while
-#' the colorimetry here is computed under D65, so the conversion goes
-#' XYZ -> CIELAB (D65) -> \code{munsellinterpol::LabToMunsell()}, which
-#' chromatically adapts D65 -> C internally. Feeding D65 chromaticities
-#' straight to \code{xyYtoMunsell()} would bias every colour toward
-#' green-yellow (a perfect neutral would return Chroma ~ 0.65 rather
-#' than 0); this routine avoids that. The D65 reference white is derived
-#' from the same bundled CIE table the colorimetry integrates against
-#' (so a constant-reflectance spectrum maps to an exact neutral), and
-#' the conversion is vectorised over all rows of \code{spectra} at once.
+#' the colorimetry here is computed under D65, so the conversion adapts
+#' D65 -> C. It calls \code{munsellinterpol::XYZtoMunsell(XYZ, white =)}
+#' (munsellinterpol >= 3.4-0), which performs that chromatic adaptation
+#' internally, and falls back to the numerically identical
+#' XYZ -> CIELAB(D65) -> \code{LabToMunsell()} route on older versions.
+#' Feeding D65 chromaticities straight to \code{xyYtoMunsell()} (with no
+#' \code{white}) would bias every colour toward green-yellow (a perfect
+#' neutral would return Chroma ~ 0.65 rather than 0); this routine avoids
+#' that. The D65 reference white is derived from the same bundled CIE
+#' table the colorimetry integrates against (so a constant-reflectance
+#' spectrum maps to an exact neutral, and a perfect reflecting diffuser
+#' to Munsell value 10), and the conversion is vectorised over all rows
+#' of \code{spectra} at once.
 #' \code{munsell_hue_moist}, \code{munsell_value_moist},
 #' \code{munsell_chroma_moist} ready to write into a
 #' \code{\link{PedonRecord}} via the pedon's \code{add_measurement}
@@ -189,22 +195,30 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
 
   xyz <- predict_xyz_from_spectra(spectra, wavelengths)
   n   <- nrow(xyz)
-  lab <- .cielab_from_xyz(xyz$X, xyz$Y, xyz$Z, white = white_D65)
 
   hue <- rep(NA_character_, n); value <- rep(NA_real_, n)
   chroma <- rep(NA_real_, n);   ms <- rep(NA_character_, n)
 
-  # Evaluate only rows with a usable colour (positive Y, finite Lab). All the
+  # Evaluate only rows with a usable colour (finite XYZ, positive Y). All the
   # munsellinterpol conversions are vectorised over a matrix of rows, so the
   # whole batch is a handful of calls rather than one-per-spectrum.
-  valid <- is.finite(xyz$Y) & xyz$Y > 0 &
-             is.finite(lab$L) & is.finite(lab$a) & is.finite(lab$b)
+  valid <- is.finite(xyz$X) & is.finite(xyz$Y) & is.finite(xyz$Z) & xyz$Y > 0
   if (any(valid)) {
-    # One Lab -> Munsell call for every valid row. LabToMunsell() adapts
-    # D65 -> Illuminant C internally.
-    labm <- cbind(lab$L[valid], lab$a[valid], lab$b[valid])
-    hvc  <- tryCatch(munsellinterpol::LabToMunsell(labm, white = white_D65),
-                     error = function(e) NULL)
+    XYZm <- cbind(xyz$X[valid], xyz$Y[valid], xyz$Z[valid])
+    # Direct XYZ -> Munsell. munsellinterpol (>= 3.4-0) performs the mandatory
+    # D65 -> Illuminant-C chromatic adaptation internally, given white=; this is
+    # the canonical path documented in munsellinterpol::XYZtoMunsell() (G. Davis,
+    # 2026). It is numerically identical to the older XYZ -> CIELAB(D65) ->
+    # LabToMunsell() route, which is kept as a fallback for munsellinterpol
+    # < 3.4-0 (where XYZtoMunsell() has no white= argument).
+    hvc <- tryCatch(munsellinterpol::XYZtoMunsell(XYZm, white = white_D65),
+                    error = function(e) NULL)
+    if (is.null(hvc)) {
+      lab <- .cielab_from_xyz(XYZm[, 1], XYZm[, 2], XYZm[, 3], white = white_D65)
+      hvc <- tryCatch(munsellinterpol::LabToMunsell(
+                        cbind(lab$L, lab$a, lab$b), white = white_D65),
+                      error = function(e) NULL)
+    }
     if (!is.null(hvc)) {
       Hk <- hvc[, "H"]; Vk <- hvc[, "V"]; Ck <- hvc[, "C"]
       fin <- is.finite(Hk) & is.finite(Vk) & is.finite(Ck)
