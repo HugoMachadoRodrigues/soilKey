@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.178 (2026-07-07)
+
+Map tab – five fixes to the point/overlay experience.
+
 ## soilKey 0.9.177 (2026-07-06)
 
 Spectra tab – scientific spectral preprocessing, compact status.
