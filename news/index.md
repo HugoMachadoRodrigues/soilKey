@@ -1,5 +1,9 @@
 # Changelog
 
+## soilKey 0.9.180 (2026-07-07)
+
+Uncertainty tab – analyse a whole group of points.
+
 ## soilKey 0.9.179 (2026-07-07)
 
 Pro app – Assistant becomes a drawer; two chrome fixes.
