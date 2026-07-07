@@ -13,6 +13,21 @@ uncertainty_ui <- function(id) {
     sidebar = bslib::sidebar(
       width = 320,
 
+      # Analyse the single active profile, or the whole group of points entered
+      # on the Map tab (Batch mode). The group option lights up only when a
+      # batch has been loaded; a note reports how many points are available.
+      sk_section(
+        i18n("uncert.source_title"), icon = "layer-group",
+        desc = "Analyse the active profile, or every point in a loaded group.",
+        shinyWidgets::radioGroupButtons(
+          ns("source"),
+          choices = stats::setNames(c("active", "group"),
+                                    c(i18n("uncert.source_active"),
+                                      i18n("uncert.source_group"))),
+          selected = "active", justified = TRUE, size = "sm"),
+        shiny::uiOutput(ns("group_note"))
+      ),
+
       sk_section(
         i18n("uncert.analysis_title"),
         desc = "Choose which taxonomy and level the stability of the class is measured at.",
@@ -89,8 +104,91 @@ uncertainty_server <- function(id, rv, settings) {
       })
     })
 
+    # ---- group of points (from the Map Batch tab, shared via rv) ----------
+    group_pedons <- shiny::reactive(tryCatch(rv$batch_pedons, error = function(e) NULL))
+    n_group <- shiny::reactive({
+      bp <- group_pedons(); if (is.null(bp)) 0L else length(bp)
+    })
+
+    output$group_note <- shiny::renderUI({
+      n <- n_group()
+      if (n == 0L)
+        shiny::helpText(shiny::icon("circle-info"), " ", i18n("uncert.group_none"))
+      else
+        shiny::helpText(shiny::icon("layer-group"), " ",
+                        sprintf(i18n("uncert.group_available"), n))
+    })
+
+    # Per-point uncertainty over the whole group. Sensitivity is skipped (it is a
+    # per-point extra pass -> too slow x N); n is capped for a responsive table.
+    group_unc <- shiny::eventReactive(input$run, {
+      bp <- group_pedons()
+      if (is.null(bp) || !length(bp))
+        return(simpleError(i18n("uncert.group_none")))
+      npp <- min(as.integer(input$n %||% 50L), 100L)
+      shiny::withProgress(message = i18n("uncert.running_group"), value = 0, {
+        rows <- lapply(seq_along(bp), function(i) {
+          shiny::incProgress(1 / length(bp))
+          p  <- bp[[i]]
+          id <- tryCatch(p$site$id, error = function(e) NULL) %||% sprintf("p%02d", i)
+          u  <- tryCatch(soilKey::classify_with_uncertainty(
+            p, n = npp, system = input$system, level = input$level,
+            sensitivity = FALSE), error = function(e) NULL)
+          if (is.null(u) || (length(u$posterior) == 1L && is.na(u$posterior[[1L]])))
+            data.frame(id = id, top1 = NA_character_, prob = NA_real_,
+                       entropy = NA_real_, stringsAsFactors = FALSE)
+          else
+            data.frame(id = id, top1 = u$top1 %||% NA_character_,
+                       prob = as.numeric(u$posterior[1L]), entropy = u$entropy,
+                       stringsAsFactors = FALSE)
+        })
+        do.call(rbind, rows)
+      })
+    })
+
     output$body <- shiny::renderUI({
       ns <- session$ns
+      # -- group mode: a per-point uncertainty table + summary ---------------
+      if (identical(input$source, "group")) {
+        if (n_group() == 0L)
+          return(shiny::div(class = "text-muted p-4 text-center",
+                            shiny::icon("layer-group"), " ",
+                            i18n("uncert.group_none_body")))
+        g <- group_unc()
+        if (is.null(g))
+          return(shiny::div(class = "text-muted p-4 text-center",
+                            shiny::icon("dice"), " ", i18n("uncert.press_run")))
+        if (inherits(g, "error"))
+          return(bslib::card(bslib::card_header(i18n("uncert.analysis_failed")),
+                             bslib::card_body(shiny::tags$p(class = "text-danger",
+                                                            conditionMessage(g)))))
+        ok <- g[is.finite(g$prob), , drop = FALSE]
+        mean_conf <- if (nrow(ok)) mean(ok$prob) else NA_real_
+        mean_ent  <- if (nrow(ok)) mean(ok$entropy) else NA_real_
+        n_stable  <- sum(ok$prob >= 0.8, na.rm = TRUE)
+        return(shiny::tagList(
+          bslib::layout_column_wrap(
+            width = 1 / 3,
+            bslib::value_box(
+              title = i18n("uncert.group_n_points"), value = nrow(g),
+              showcase = shiny::icon("layer-group"), theme = "primary"),
+            bslib::value_box(
+              title = i18n("uncert.group_mean_conf"),
+              value = if (is.na(mean_conf)) i18n("uncert.na") else sprintf("%.0f%%", 100 * mean_conf),
+              showcase = shiny::icon("percent"),
+              theme = if (isTRUE(mean_conf >= 0.8)) "success"
+                      else if (isTRUE(mean_conf >= 0.5)) "warning" else "danger"),
+            bslib::value_box(
+              title = i18n("uncert.group_stable"),
+              value = sprintf("%d / %d", n_stable, nrow(g)),
+              showcase = shiny::icon("shield-halved"),
+              theme = "secondary")),
+          bslib::card(
+            bslib::card_header(i18n("uncert.group_per_point")),
+            bslib::card_body(DT::DTOutput(ns("group_table"))))
+        ))
+      }
+      # -- single active-profile mode (unchanged) ----------------------------
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
       u <- unc()
       if (is.null(u)) {
@@ -142,6 +240,28 @@ uncertainty_server <- function(id, rv, settings) {
             bslib::card_body(DT::DTOutput(ns("sensitivity"))))
         )
       )
+    })
+
+    # per-point uncertainty table (group mode)
+    output$group_table <- DT::renderDT({
+      g <- group_unc(); shiny::req(g)
+      shiny::validate(shiny::need(!inherits(g, "error"),
+        if (inherits(g, "error")) conditionMessage(g) else i18n("uncert.na")))
+      show <- data.frame(
+        id = g$id, top1 = g$top1 %||% NA_character_,
+        prob = g$prob, entropy = round(g$entropy, 2),
+        stringsAsFactors = FALSE)
+      show <- show[order(-show$prob), , drop = FALSE]
+      names(show) <- c(i18n("uncert.col_point"), i18n("uncert.most_likely_class"),
+                       i18n("uncert.posterior_probability"), i18n("uncert.entropy"))
+      DT::datatable(show, rownames = FALSE,
+                    options = list(dom = "tp", pageLength = 12, scrollX = TRUE)) |>
+        DT::formatPercentage(i18n("uncert.posterior_probability"), 0) |>
+        DT::formatStyle(
+          i18n("uncert.posterior_probability"),
+          color = DT::styleInterval(c(0.5, 0.8),
+                                    c("#b02a37", "#997404", "#3f6024")),
+          fontWeight = "bold")
     })
 
     output$posterior <- plotly::renderPlotly({

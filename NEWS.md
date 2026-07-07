@@ -1,3 +1,18 @@
+# soilKey 0.9.180 (2026-07-07)
+
+Uncertainty tab -- analyse a whole group of points.
+
+\itemize{
+  \item \strong{Per-point uncertainty for a group.} The Uncertainty tab gains an
+    "Active profile / Group of points" switch. In group mode it runs the
+    Monte-Carlo analysis on every profile of the group entered on the Map tab
+    (Batch mode) and reports, per point, the most-likely class, its posterior
+    probability and the Shannon entropy -- in a ranked table plus summary boxes
+    (number of points, mean confidence, how many are stable). The batch of
+    profiles is now shared app-wide (\code{rv$batch_pedons}) so the two tabs
+    work on the same points.
+}
+
 # soilKey 0.9.179 (2026-07-07)
 
 Pro app -- Assistant becomes a drawer; two chrome fixes.

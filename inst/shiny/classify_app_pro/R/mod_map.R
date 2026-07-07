@@ -523,6 +523,9 @@ map_server <- function(id, rv, settings) {
         }, error = function(e) e)
         if (inherits(peds, "error")) return(peds)
         batch_pedons(peds)
+        # share the group of profiles app-wide so the Uncertainty tab can run
+        # a per-point analysis over the same points the user entered here.
+        rv$batch_pedons <- peds
         .batch_classify(peds, on_missing = on_missing,
                         bump = function(i, n) shiny::incProgress(1 / n))
       })
