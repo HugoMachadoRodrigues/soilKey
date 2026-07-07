@@ -1,3 +1,25 @@
+# soilKey 0.9.181 (2026-07-07)
+
+Photo tab restored; spectra preprocessing made resilient.
+
+\itemize{
+  \item \strong{The Photo tab is back as its own tab} (it is no longer folded
+    into the Assistant). It reads soil colour per horizon from a profile photo
+    and fills only the profile record, with a clear explanation that the sampled
+    colour is converted to Munsell via the \code{munsellinterpol} package (Glenn
+    Davis). A prominent note disambiguates the two colour routes: \strong{this
+    tab reads colour FROM THE PHOTO}, while the Spectra tab has a separate,
+    physics-based route (a Vis-NIR spectrum to colour). The provider is
+    simplified to two clear options -- an offline demo, or a free local model
+    (Ollama) -- dropping the confusing cloud option.
+  \item \strong{Spectra preprocessing no longer errors on an old install.} The
+    Spectra tab resolves \code{apply_spectral_preprocessing} from the loaded
+    namespace defensively; if an older soilKey without the engine is installed
+    it simply shows the raw reflectance instead of the
+    "not an exported object" message. (The engine is exported from 0.9.177 on --
+    the fix is belt-and-braces for a stale install.)
+}
+
 # soilKey 0.9.180 (2026-07-07)
 
 Uncertainty tab -- analyse a whole group of points.

@@ -108,6 +108,9 @@ photo_ui <- function(id) {
         i18n("photo.step1_provider"),
         icon = "camera",
         desc = i18n("photo.provider_desc"),
+        # Two clear options only: an offline demo, or a FREE local model
+        # (Ollama). The old preconfigured-cloud option was dropped -- it
+        # confused more than it helped.
         shiny::radioButtons(
           ns("provider"), NULL,
           choiceNames = list(
@@ -116,11 +119,8 @@ photo_ui <- function(id) {
                                             i18n("photo.provider_demo_hint"))),
             shiny::tagList(shiny::strong(i18n("photo.provider_local")),
                            shiny::tags$span(class = "text-muted small",
-                                            i18n("photo.provider_local_hint"))),
-            shiny::tagList(shiny::strong(i18n("photo.provider_live")),
-                           shiny::tags$span(class = "text-muted small",
-                                            i18n("photo.provider_live_hint")))),
-          choiceValues = c("mock", "local", "live"),
+                                            i18n("photo.provider_local_hint")))),
+          choiceValues = c("mock", "local"),
           selected = "mock"),
         shiny::uiOutput(ns("ollama_status")),
         shiny::helpText(i18n("photo.provider_help"))
@@ -302,6 +302,12 @@ photo_server <- function(id, rv) {
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
       shiny::tagList(
+        # Disambiguate the TWO colour routes so it is clear this tab reads colour
+        # from the PHOTO (not from a spectrum).
+        shiny::div(
+          class = "alert alert-primary border small mb-2",
+          shiny::icon("camera"), " ",
+          shiny::HTML(i18n("photo.route_note"))),
         # How the colour is read -- colour work must be transparent, so this
         # names the sampling (per-horizon depth band) and the CIE-anchored
         # Munsell conversion via Glenn Davis's munsellinterpol.
