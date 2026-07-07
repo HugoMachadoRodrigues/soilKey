@@ -177,7 +177,7 @@ pro_profile_plot <- function(hz_df, attribute) {
 # wavelength (nm, parsed from the column names), Y = reflectance. The matrix is
 # horizons x wavelengths (the shape fill_from_spectra() expects). Returns a
 # plotly htmlwidget, with graceful placeholders when nothing is attached.
-pro_spectrum_plot <- function(mat, designations = NULL) {
+pro_spectrum_plot <- function(mat, designations = NULL, y_label = NULL) {
   if (is.null(mat) || !is.matrix(mat) || nrow(mat) == 0L || ncol(mat) == 0L) {
     return(plotly::plotly_empty(type = "scatter", mode = "lines") |>
              plotly::layout(title = list(
@@ -199,7 +199,7 @@ pro_spectrum_plot <- function(mat, designations = NULL) {
   plotly::layout(
     p,
     xaxis  = list(title = i18n("ui.wavelength_nm")),
-    yaxis  = list(title = i18n("ui.reflectance")),
+    yaxis  = list(title = y_label %||% i18n("ui.reflectance")),
     legend = list(orientation = "h", y = -0.2),
     margin = list(l = 60, r = 20, t = 20, b = 60)
   )

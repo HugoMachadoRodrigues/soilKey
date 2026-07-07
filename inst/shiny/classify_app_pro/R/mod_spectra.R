@@ -37,6 +37,43 @@ spectra_ui <- function(id) {
             "Attaches a bundled Vis-NIR demo spectrum (5 horizons -- matches the example Ferralsol)."))
       ),
       shiny::tags$hr(),
+      # ---- spectral preprocessing (live preview; saved for the report) -----
+      sk_section(
+        i18n("spectra.step_preproc"),
+        icon = "sliders",
+        desc = "Treat the spectrum: absorbance, then Savitzky-Golay smoothing / derivative. It re-plots as you tick, and the sequence is saved for the report.",
+        shiny::checkboxInput(
+          ns("pp_absorbance"),
+          sk_label(i18n("spectra.pp_absorbance"),
+                   "Convert reflectance R to absorbance A = log10(1/R) (auto-scales % to a 0-1 fraction)."),
+          value = FALSE),
+        shiny::checkboxInput(
+          ns("pp_smooth"),
+          sk_label(i18n("spectra.pp_smooth"),
+                   "Savitzky-Golay smoothing, applied before any derivative."),
+          value = FALSE),
+        shiny::radioButtons(
+          ns("pp_deriv"), i18n("spectra.pp_derivative"),
+          choices = stats::setNames(
+            c("none", "1", "2"),
+            c(i18n("spectra.pp_deriv_none"), i18n("spectra.pp_deriv_1"),
+              i18n("spectra.pp_deriv_2"))),
+          selected = "none", inline = TRUE),
+        bslib::accordion(
+          open = FALSE, class = "mt-1",
+          bslib::accordion_panel(
+            i18n("spectra.pp_advanced"), icon = shiny::icon("gear"),
+            shiny::numericInput(
+              ns("pp_window"),
+              sk_label(i18n("spectra.pp_window"),
+                       "Savitzky-Golay window (odd, >= poly + 2). Wider = smoother."),
+              value = 11, min = 5, max = 51, step = 2),
+            shiny::numericInput(
+              ns("pp_poly"),
+              sk_label(i18n("spectra.pp_poly"), "Savitzky-Golay polynomial order."),
+              value = 2, min = 1, max = 5, step = 1)))
+      ),
+      shiny::tags$hr(),
       sk_section(
         i18n("spectra.step2_gapfill"),
         icon = "wand-magic-sparkles",
@@ -86,13 +123,16 @@ spectra_ui <- function(id) {
       "output.has_pedon", ns = ns,
       bslib::layout_column_wrap(
         width = 1,
+        # spectrum card: the status is a slim chip in the header (no big card),
+        # and the applied treatment sequence sits just under the header.
         bslib::card(
-          bslib::card_header(i18n("spectra.card_status")),
-          bslib::card_body(shiny::verbatimTextOutput(ns("status")))),
-        bslib::card(
-          bslib::card_header(i18n("spectra.card_attached_spectrum")),
+          bslib::card_header(shiny::div(
+            class = "d-flex justify-content-between align-items-center",
+            shiny::span(i18n("spectra.card_attached_spectrum")),
+            shiny::uiOutput(ns("status_chip"), inline = TRUE))),
           bslib::card_body(
-            plotly::plotlyOutput(ns("spectrum"), height = "300px"))),
+            shiny::uiOutput(ns("preproc_sequence")),
+            plotly::plotlyOutput(ns("spectrum"), height = "320px"))),
         bslib::card(
           bslib::card_header(i18n("spectra.card_attributes")),
           bslib::card_body(DT::DTOutput(ns("attr_table"))))
@@ -209,26 +249,85 @@ spectra_server <- function(id, rv) {
     output$has_pedon <- shiny::reactive(!is.null(rv$pedon))
     shiny::outputOptions(output, "has_pedon", suspendWhenHidden = FALSE)
 
-    # ---- the attached spectrum, one trace per horizon ---------------------
-    output$spectrum <- plotly::renderPlotly({
+    # ---- spectral preprocessing pipeline (live preview) -------------------
+    pp_opts <- shiny::reactive(list(
+      absorbance    = isTRUE(input$pp_absorbance),
+      sg_smooth     = isTRUE(input$pp_smooth),
+      sg_derivative = switch(input$pp_deriv %||% "none", "1" = 1L, "2" = 2L, 0L),
+      window        = as.integer(input$pp_window %||% 11L),
+      poly          = as.integer(input$pp_poly   %||% 2L)))
+
+    # the treated spectrum (matrix + wavelengths + ordered step labels)
+    treated <- shiny::reactive({
       shiny::req(rv$pedon)
-      sp <- rv$pedon$spectra
-      mat <- if (!is.null(sp)) sp$vnir else NULL
-      desig <- if (!is.null(rv$pedon$horizons))
-        as.data.frame(rv$pedon$horizons)$designation else NULL
-      pro_spectrum_plot(mat, designations = desig)
+      mat <- rv$pedon$spectra$vnir
+      if (is.null(mat)) return(NULL)
+      o <- pp_opts()
+      tryCatch(
+        soilKey::apply_spectral_preprocessing(
+          mat, absorbance = o$absorbance, sg_smooth = o$sg_smooth,
+          sg_derivative = o$sg_derivative, window = o$window, poly = o$poly),
+        error = function(e)
+          list(X = mat, wavelengths = NULL,
+               steps = c("Reflectance", paste("error:", conditionMessage(e)))))
     })
 
-    output$status <- shiny::renderText({
+    # y-axis label follows the deepest transform applied
+    pp_ylab <- function(o) {
+      if (o$sg_derivative == 1L) return(i18n("spectra.ylab_deriv1"))
+      if (o$sg_derivative == 2L) return(i18n("spectra.ylab_deriv2"))
+      if (isTRUE(o$absorbance))  return(i18n("spectra.ylab_absorbance"))
+      NULL  # pro_spectrum_plot defaults to Reflectance
+    }
+
+    output$spectrum <- plotly::renderPlotly({
       shiny::req(rv$pedon)
-      sp <- rv$pedon$spectra
-      if (is.null(sp) || is.null(sp$vnir)) {
-        i18n("spectra.status_none")
-      } else {
-        m <- sp$vnir
-        i18n("spectra.status_attached", nrow(m), ncol(m))
-      }
+      tr <- treated()
+      mat <- if (!is.null(tr)) tr$X else NULL
+      desig <- if (!is.null(rv$pedon$horizons))
+        as.data.frame(rv$pedon$horizons)$designation else NULL
+      pro_spectrum_plot(mat, designations = desig, y_label = pp_ylab(pp_opts()))
     })
+
+    # the applied treatment sequence, as arrow-joined chips under the header
+    output$preproc_sequence <- shiny::renderUI({
+      shiny::req(rv$pedon)
+      tr <- treated(); if (is.null(tr)) return(NULL)
+      steps <- tr$steps %||% "Reflectance"
+      chips <- lapply(seq_along(steps), function(i) {
+        shiny::tagList(
+          if (i > 1L) shiny::span(class = "sk-seq-arrow", "→"),
+          shiny::span(class = "sk-seq-chip", steps[i]))
+      })
+      shiny::div(class = "sk-seq mb-2", chips)
+    })
+
+    # slim status chip in the card header (replaces the big status card)
+    output$status_chip <- shiny::renderUI({
+      shiny::req(rv$pedon)
+      m <- rv$pedon$spectra$vnir
+      if (is.null(m))
+        shiny::span(class = "badge rounded-pill bg-secondary-subtle text-secondary-emphasis",
+                    i18n("spectra.status_none_short"))
+      else
+        shiny::span(class = "badge rounded-pill bg-success-subtle text-success-emphasis",
+                    shiny::icon("wave-square"),
+                    sprintf(" %d × %d", nrow(m), ncol(m)))
+    })
+
+    # record the pipeline (debounced) in a LIGHTWEIGHT shared field the report
+    # reads -- NOT on rv$pedon, so ticking a box here does not churn the map /
+    # classify observers on other tabs. The report module injects it into the
+    # pedon copy at render time.
+    pp_debounced <- shiny::debounce(pp_opts, 600)
+    shiny::observeEvent(pp_debounced(), {
+      if (is.null(rv$pedon) || is.null(rv$pedon$spectra$vnir)) {
+        rv$spectra_pp <- NULL; return()
+      }
+      tr <- treated()
+      rv$spectra_pp <- list(opts  = pp_debounced(),
+                            steps = if (!is.null(tr)) tr$steps else NULL)
+    }, ignoreInit = FALSE)
 
     output$attr_table <- DT::renderDT({
       shiny::req(rv$pedon)

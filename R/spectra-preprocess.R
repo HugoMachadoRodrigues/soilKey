@@ -175,6 +175,151 @@ preprocess_spectra <- function(X,
 }
 
 
+#' Generic Savitzky-Golay filter (smoothing or derivative)
+#'
+#' Generalises \code{.sg1} to any derivative order \code{m} (0 = pure
+#' smoothing, 1 = first derivative, 2 = second derivative). Delegates to
+#' \code{prospectr::savitzkyGolay} when available, otherwise convolves
+#' with coefficients from \code{.sg_coefficients}. Trims
+#' \code{(w - 1) / 2} columns from each edge and carries the retained
+#' wavelength column names through.
+#'
+#' @noRd
+.sg_filter <- function(X, w, p, m) {
+  if (requireNamespace("prospectr", quietly = TRUE)) {
+    out <- tryCatch(as.matrix(prospectr::savitzkyGolay(X = X, m = m, p = p, w = w)),
+                    error = function(e) NULL)
+    if (!is.null(out)) return(out)
+  }
+  coefs  <- .sg_coefficients(w = w, p = p, m = m)
+  half   <- (w - 1L) %/% 2L
+  n_cols <- ncol(X)
+  out_cols <- n_cols - 2L * half
+  out <- matrix(NA_real_, nrow = nrow(X), ncol = out_cols)
+  if (!is.null(colnames(X)))
+    colnames(out) <- colnames(X)[(half + 1L):(n_cols - half)]
+  for (j in seq_len(out_cols)) {
+    win <- X[, j:(j + w - 1L), drop = FALSE]
+    out[, j] <- as.numeric(win %*% coefs)
+  }
+  out
+}
+
+
+#' Apply a step-by-step Vis-NIR / MIR preprocessing pipeline
+#'
+#' Composes the canonical soil-spectroscopy sequence, each step optional
+#' and applied in this fixed scientific order:
+#' reflectance \eqn{\to} (absorbance) \eqn{\to} (Savitzky-Golay
+#' smoothing) \eqn{\to} (Savitzky-Golay 1st or 2nd derivative). Each
+#' Savitzky-Golay pass trims \code{(window - 1) / 2} columns from each
+#' edge; the wavelength axis is trimmed to match and returned so callers
+#' can plot the treated spectrum on the correct axis.
+#'
+#' The transform is robust: reflectance that looks like a percentage
+#' (maximum \code{> 1.5}) is rescaled to a 0--1 fraction before the
+#' absorbance log, values are clamped away from zero to avoid
+#' \code{log(0)}, and a Savitzky-Golay step that cannot fit the requested
+#' window into the available wavelengths is skipped (recorded in
+#' \code{steps}) rather than erroring.
+#'
+#' @param X Numeric matrix (rows = samples/horizons, columns =
+#'        wavelengths) or a numeric vector (treated as one sample).
+#' @param wavelengths Optional numeric wavelength axis. Defaults to the
+#'        numeric part of \code{colnames(X)}, else \code{1:ncol(X)}.
+#' @param absorbance Logical; apply \eqn{A = \log_{10}(1 / R)}.
+#' @param sg_smooth Logical; apply Savitzky-Golay smoothing
+#'        (\code{m = 0}).
+#' @param sg_derivative Integer \code{0}, \code{1} or \code{2};
+#'        Savitzky-Golay derivative order (\code{0} = none).
+#' @param window Odd Savitzky-Golay window (default \code{11});
+#'        coerced to a valid odd value in \code{[3, ncol)}.
+#' @param poly Savitzky-Golay polynomial order (default \code{2});
+#'        clamped to \code{[1, window - 1]}.
+#' @return A list with \code{X} (the treated numeric matrix, wavelength
+#'         column names trimmed to match), \code{wavelengths} (numeric)
+#'         and \code{steps} (an ordered character vector describing the
+#'         transforms actually applied, starting with
+#'         \code{"Reflectance"}).
+#' @seealso \code{\link{preprocess_spectra}}
+#' @export
+#' @examples
+#' X <- matrix(seq(0.1, 0.5, length.out = 3 * 60), nrow = 3, byrow = TRUE)
+#' colnames(X) <- seq(400, 2400, length.out = 60)
+#' res <- apply_spectral_preprocessing(X, absorbance = TRUE,
+#'                                     sg_smooth = TRUE, sg_derivative = 1L)
+#' res$steps          # ordered treatment labels
+#' dim(res$X)         # columns trimmed by the two SG passes
+apply_spectral_preprocessing <- function(X, wavelengths = NULL,
+                                         absorbance = FALSE,
+                                         sg_smooth = FALSE,
+                                         sg_derivative = 0L,
+                                         window = 11L, poly = 2L) {
+  if (is.null(X)) rlang::abort("apply_spectral_preprocessing(): X is NULL")
+  if (is.data.frame(X)) X <- as.matrix(X)
+  if (!is.matrix(X)) X <- matrix(as.numeric(X), nrow = 1L)
+  storage.mode(X) <- "double"
+
+  if (is.null(wavelengths)) {
+    wl <- suppressWarnings(as.numeric(gsub("[^0-9.]", "", colnames(X))))
+    if (length(wl) != ncol(X) || all(is.na(wl))) wl <- seq_len(ncol(X))
+  } else {
+    wl <- as.numeric(wavelengths)
+  }
+  colnames(X) <- as.character(wl)
+
+  sg_derivative <- as.integer(sg_derivative %||% 0L)
+  if (length(sg_derivative) != 1L || is.na(sg_derivative) ||
+        !sg_derivative %in% 0:2)
+    rlang::abort("apply_spectral_preprocessing(): sg_derivative must be 0, 1 or 2")
+  steps <- "Reflectance"
+
+  # ---- 1. absorbance A = log10(1/R) -------------------------------------
+  if (isTRUE(absorbance)) {
+    R <- X
+    if (suppressWarnings(max(R, na.rm = TRUE)) > 1.5) R <- R / 100  # % -> fraction
+    R <- pmin(pmax(R, 1e-5), 1)                                     # avoid log(0)
+    X <- log10(1 / R)
+    colnames(X) <- as.character(wl)
+    steps <- c(steps, "Absorbance (log 1/R)")
+  }
+
+  # ---- validate the SG window/poly against what is available -------------
+  # A window that cannot fit the current spectrum is reported as skipped (see
+  # apply_sg) rather than silently resized -- the requested window is a
+  # scientific choice, so we do not change it behind the user's back. Only an
+  # even window is nudged to odd (SG requires odd), and poly is clamped < window.
+  sg_ok <- function(nc) {
+    w <- as.integer(round(window)); p <- as.integer(round(poly))
+    if (w %% 2L == 0L) w <- w + 1L      # SG windows must be odd
+    if (w < 3L || w >= nc) return(NULL) # cannot fit -> caller records "skipped"
+    p <- max(1L, min(p, w - 1L))
+    list(w = w, p = p)
+  }
+  apply_sg <- function(m, label) {
+    cfg <- sg_ok(ncol(X))
+    if (is.null(cfg)) { steps <<- c(steps, sprintf("%s skipped: too few bands", label)); return() }
+    half <- (cfg$w - 1L) %/% 2L
+    Xt <- .sg_filter(X, w = cfg$w, p = cfg$p, m = m)
+    wl <<- wl[(half + 1L):(length(wl) - half)]
+    colnames(Xt) <- as.character(wl)
+    X  <<- Xt
+    steps <<- c(steps, sprintf("%s (w=%d, p=%d)", label, cfg$w, cfg$p))
+  }
+
+  # ---- 2. Savitzky-Golay smoothing (m = 0) ------------------------------
+  if (isTRUE(sg_smooth)) apply_sg(0L, "SG smoothing")
+
+  # ---- 3. Savitzky-Golay derivative (m = 1 or 2) ------------------------
+  if (sg_derivative %in% c(1L, 2L))
+    apply_sg(sg_derivative,
+             sprintf("SG %s derivative",
+                     if (sg_derivative == 1L) "1st" else "2nd"))
+
+  list(X = X, wavelengths = wl, steps = steps)
+}
+
+
 #' Compute Savitzky-Golay coefficients for a derivative
 #'
 #' Solves the standard SG least-squares system to derive the kernel

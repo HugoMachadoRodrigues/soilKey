@@ -432,6 +432,24 @@ report <- function(x,
   )
 }
 
+#' Render the spectral preprocessing sequence, if one was recorded.
+#'
+#' The Pro app stores the applied Vis-NIR treatment pipeline in
+#' \code{pedon$spectra$preprocessing$steps} (an ordered character vector).
+#' Returns an empty string when no spectrum/pipeline is present.
+#' @noRd
+.html_spectra_preprocess <- function(pedon) {
+  pp <- tryCatch(pedon$spectra$preprocessing, error = function(e) NULL)
+  steps <- pp$steps
+  if (is.null(steps) || !length(steps)) return("")
+  seq_html <- paste(vapply(as.character(steps), .html_escape, character(1)),
+                    collapse = ' <span class="seq-arrow">&rarr;</span> ')
+  paste0(
+    sprintf("<h2>%s</h2>\n", .report_msg("report.spectra_preprocess")),
+    sprintf("<p>%s</p>\n", .report_msg("report.spectra_preprocess_desc")),
+    sprintf('<p class="spectra-seq">%s</p>\n', seq_html))
+}
+
 #' Render site metadata header.
 #' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -625,6 +643,7 @@ report_html <- function(x,
     paste(vapply(results, .html_classification_card, character(1)),
             collapse = "\n"),
     .html_horizons_table(pedon),
+    .html_spectra_preprocess(pedon),
     .html_provenance_table(pedon),
     "<footer>\n",
     .report_msg("report.footer"),
