@@ -105,6 +105,17 @@ All three keys are deterministic R code driven from versioned YAML rules.
 
 The whole pipeline, in the browser, **no install required**: **[soilkeypro.com](https://soilkeypro.com)** (or run it locally with `run_classify_app()`). A bilingual (EN/PT) `bslib` interface built straight on the package — the same deterministic keys, nothing re-implemented.
 
+<p align="center">
+  <img src="man/figures/app-classify.png" alt="soilKey Pro — Classify tab: WRB 2022, SiBCS 5 and USDA Soil Taxonomy side by side, each with an evidence grade and the full key trace" width="100%" /><br/>
+  <sub><b>Classify</b> — the three systems at once, each with its evidence grade and the full decision trace.</sub>
+</p>
+
+<p align="center">
+  <img src="man/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="49%" />
+  <img src="man/figures/app-assistant.png" alt="soilKey Pro — Assistant: an online AI that explains the deterministic classification, grounded in the key" width="49%" /><br/>
+  <sub><b>Map</b> — the SoilGrids class prior over the site &nbsp;·&nbsp; <b>Assistant</b> — an online AI that <i>explains</i> the result, grounded in the key.</sub>
+</p>
+
 * **Pedon** — build a profile from a canonical fixture, a CSV, or from scratch, with a live horizon editor and depth-profile plot.
 * **Classify** — WRB 2022 / SiBCS 5 / USDA ST 13 side by side, each with its full key trace, evidence grade, and missing-data hints.
 * **Photo → Munsell** — read per-horizon Munsell colour from a profile photograph with an online vision model; only the `PedonRecord` is filled, never the key.
