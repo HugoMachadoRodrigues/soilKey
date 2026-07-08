@@ -2,6 +2,8 @@
 
 ## soilKey 0.9.184 (2026-07-07)
 
+CRAN release: 2026-07-07
+
 Neutral hue is “N” in continuous notation too; Photo-tab colour-route
 text corrected.
 

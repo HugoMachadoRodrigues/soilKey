@@ -31,6 +31,13 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 > provenance — without ever delegating the taxonomic key to a language
 > model.
 
+**▶ Try it live — no install: [soilkeypro.com](https://soilkeypro.com)**
+ ·  on CRAN (`install.packages("soilKey")`)  ·  development on GitHub.
+
+[![soilKey Pro — transparent, deterministic soil classification (WRB
+2022 · SiBCS 5 · USDA Soil Taxonomy), live at
+soilkeypro.com](reference/figures/og-preview.png)](https://soilkeypro.com)
+
 ------------------------------------------------------------------------
 
 ## ✦ Status at a glance
@@ -49,7 +56,7 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **SiBCS 5 — Family (5th level)** | ✅ shipped | Up to 15 orthogonal adjectival dimensions. |
 | **USDA Soil Taxonomy 13 — Path C** | ✅ shipped (v0.9.113) | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / **2003 of 2715** canonical subgroups, 73.8% — by-name [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md); +829 in v0.9.113, +57 colour/contact in v0.9.121, +25 intergrades in v0.9.123). |
 | **USDA Soil Taxonomy 13 — Family** | ✅ shipped (v0.9.104) | 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via `classify_usda(include_family = TRUE)`. Series (6th) needs the NRCS database — out of scope. |
-| **Multimodal extraction (VLM)** | ✅ shipped | Local-first via `ellmer` + Gemma 4 (Ollama). Schema-validated; LLM never touches the key. |
+| **Multimodal extraction (VLM)** | ✅ shipped | Schema-validated via `ellmer`; the LLM never touches the key. Local-first in the package (Ollama / any provider); the hosted app uses an online provider (Groq). |
 | **OSSL spectral gap-fill** | ✅ shipped | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones). |
 | **Within-pedon gap-fill** | ✅ shipped (v0.9.120) | [`gapfill_within_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/gapfill_within_pedon.md) / `classify_*(gapfill = TRUE)`: interpolates *interior* missing horizon values from the profile’s own measured layers (never extrapolates). Opt-in, byte-identical when off, tagged `inferred_prior` (grade C). |
 | **Spatial priors** | ✅ shipped | SoilGrids WCS + national soil maps; consistency check, never overrides the key. |
@@ -61,7 +68,9 @@ Twitter](https://img.shields.io/badge/X-%40Hugo__MRodrigues-000000.svg?style=fla
 | **SiBCS accuracy uplift** | ✅ shipped (v0.9.107) | Benchmark-guided recovery of four zero-recall SiBCS orders on the Redape gold standard (Gleissolos/Plintossolos/Vertissolos to full recall, Chernossolos partial), via Redape-scoped morphology-suffix promotion + a stacked chernic-A fix. **Redape order accuracy 45.7% → 59.6% (+13 profiles)**; 44 canonical fixtures unchanged. |
 | **SmartSolos Expert API bridge** | ✅ shipped | [`classify_via_smartsolos_api()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_via_smartsolos_api.md) cross-validates against Embrapa’s authoritative reference. |
 | **Lazy-fetch benchmark caches** | ✅ shipped (v0.9.94) | Four large `.rds` samples downloaded on demand from a versioned GitHub Release. |
-| **CRAN release** | 🟡 in queue | v0.9.96 submitted to CRAN on 2026-05-19; auto-check pre-test passing. |
+| **CRAN release** | ✅ on CRAN (0.9.184) | `install.packages("soilKey")` — CRAN, GitHub, and the live app all at 0.9.184. |
+| **Live web app — soilkeypro.com** | ✅ shipped | The Pro app in the browser, no install: [soilkeypro.com](https://soilkeypro.com) (Google Cloud Run, HTTPS, `www` → apex). |
+| **Online AI assistant** | ✅ shipped | In-app assistant (Groq via `ellmer`) that *explains* the deterministic result and reads Munsell from photos — grounded in the key, never inventing a class. |
 | **R Shiny web app** | ✅ shipped (v0.9.97) | [`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md) — nine-tab `bslib` interface: interactive pedon builder, tri-system classify, VLM photo, OSSL spectra, SoilGrids prior, interactive `leaflet` map, MC uncertainty, HTML/PDF report. |
 | **Pro app polish** | ✅ shipped (v0.9.108) | Soil-palette theme + `www/soilkey.css`, a global pedon ribbon, a “Getting started” modal with a one-click **Load example & classify**, Vis-NIR spectrum + photo previews, lat/lon validation, USDA-family / WRB-specifier toggles in the Classify sidebar, and a [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md) that honours both depth-level options (additive, default-off). |
 | **Bilingual Pro app (i18n)** | ✅ shipped (v0.9.114) | English + Brazilian Portuguese, dependency-free: a 352-string catalogue (`inst/i18n/translations.yaml`) + an `i18n()` helper + a navbar EN/PT selector; `run_classify_app(lang = "pt")`. English is the default and holds the strings verbatim, so the app is byte-identical by default. |
@@ -117,6 +126,77 @@ All three keys are deterministic R code driven from versioned YAML
 rules.
 
 ------------------------------------------------------------------------
+
+## ✦ The web app — [soilkeypro.com](https://soilkeypro.com)
+
+The whole pipeline, in the browser, **no install required**:
+**[soilkeypro.com](https://soilkeypro.com)** (or run it locally with
+[`run_classify_app()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_classify_app.md)).
+A bilingual (EN/PT) `bslib` interface built straight on the package —
+the same deterministic keys, nothing re-implemented.
+
+![soilKey Pro — Classify tab: WRB 2022, SiBCS 5 and USDA Soil Taxonomy
+side by side, each with an evidence grade and the full key
+trace](reference/figures/app-classify.png)  
+_(**Classify** — the three systems at once, each with its evidence grade and the full decision trace.)
+
+![soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a
+satellite base map, with a
+legend](reference/figures/app-map.png)![soilKey Pro — Assistant: an
+online AI that explains the deterministic classification, grounded in
+the key](reference/figures/app-assistant.png)  
+_(**Map** — the SoilGrids class prior over the site  ·  **Assistant** — an online AI that *explains* the result, grounded in the key.)
+
+- **Pedon** — build a profile from a canonical fixture, a CSV, or from
+  scratch, with a live horizon editor and depth-profile plot.
+- **Classify** — WRB 2022 / SiBCS 5 / USDA ST 13 side by side, each with
+  its full key trace, evidence grade, and missing-data hints.
+- **Photo → Munsell** — read per-horizon Munsell colour from a profile
+  photograph with an online vision model; only the `PedonRecord` is
+  filled, never the key.
+- **Spectra** — gap-fill horizon attributes from a Vis-NIR spectrum
+  (OSSL), with live absorbance + Savitzky–Golay preprocessing.
+- **Map** — click to query the SoilGrids class prior at a point,
+  batch-classify many profiles, or render a gridded class map (GeoTIFF
+  export).
+- **Uncertainty** — Monte-Carlo robustness of the classification, with
+  per-point drill-in.
+- **Report** — download a self-contained HTML or PDF cross-system
+  report.
+- **Assistant** — an in-app AI assistant (online, via `ellmer`) that
+  *explains* the deterministic result and answers soil-science
+  questions. It is grounded in the key trace and never invents a
+  classification.
+
+Hosting is a shared container image (`deploy/`) on Google Cloud Run —
+HTTPS, `www` → apex, always-on.
+
+------------------------------------------------------------------------
+
+## ✦ What’s new since v0.9.110 (through v0.9.184, 2026-07)
+
+soilKey reached CRAN and the Pro app went to production. Highlights
+(full detail in
+[`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md)):
+
+- **On CRAN** — `install.packages("soilKey")` (0.9.184); CRAN, GitHub,
+  and the live app are all in sync.
+- **Live web app at [soilkeypro.com](https://soilkeypro.com)** — the Pro
+  app deployed on Cloud Run with an **online AI assistant**, plus a
+  launch-time UX pass across every tab (v0.9.172–184): live Vis-NIR
+  preprocessing on Spectra, a unified Map tab, a standalone Photo tab,
+  per-point uncertainty drill-in, and a right-side Assistant drawer on
+  every tab.
+- **Accuracy & completeness** — benchmark-methodology fixes and
+  diagnostic corrections (argic ≠ Regosol, Al-saturation defaults), USDA
+  subgroup completeness to **2003/2715**, plus WRB-qualifier and
+  SiBCS-subgroup gap-filling.
+- **Colour science** — Vis-NIR → Munsell now uses `munsellinterpol`’s
+  `XYZtoMunsell(white=)` with a D65→Illuminant-C fix (thanks to Glenn
+  Davis), a perfect-diffuser `Value = 10` test, and a neutral “N” hue at
+  zero chroma.
+- **Spectral ingest & gap-fill** — a spectral-ingest scaffold and a
+  taxon/attribute gap-fill family, all provenance-tagged.
 
 ## ✦ What’s new in v0.9.109 (2026-06-11)
 
@@ -857,4 +937,4 @@ see the DOI for details.
 
 ------------------------------------------------------------------------
 
-_(**Status (v0.9.96, 2026-05-09)**: CRAN-submit-ready. `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers deliverable, 5 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 003 of 2 715 subgroups = 73.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)
+_(**Status (v0.9.184, 2026-07-08)**: on CRAN (0.9.184) + live web app at [soilkeypro.com](https://soilkeypro.com). `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers deliverable, 5 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 003 of 2 715 subgroups = 73.8%; run [`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md) for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).)

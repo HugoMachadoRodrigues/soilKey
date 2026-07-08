@@ -1,5 +1,5 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   v01_getting_started_pt: v01_getting_started_pt.html
@@ -15,7 +15,7 @@ articles:
   v10_shiny_pro: v10_shiny_pro.html
   v11_photo_only: v11_photo_only.html
   v12_uncertainty: v12_uncertainty.html
-last_built: 2026-07-07T18:02Z
+last_built: 2026-07-08T12:14Z
 urls:
   reference: https://hugomachadorodrigues.github.io/soilKey/reference
   article: https://hugomachadorodrigues.github.io/soilKey/articles
