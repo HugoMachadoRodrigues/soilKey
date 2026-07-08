@@ -24,6 +24,8 @@ soilKey.Rcheck/
 # (these can be hundreds of GB; never bake them into the image).
 soil_data/
 *.tif
+# ...but keep the bundled demo raster the Pro app's Map tab renders.
+!inst/shiny/classify_app_pro/www/soilgrids_wrb_demo.tif
 *.shp
 *.dbf
 *.shx

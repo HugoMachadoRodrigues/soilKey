@@ -93,6 +93,23 @@ ui <- function(request) {
         # Browser-tab icon (favicon): the soilKey logo.
         tags$link(rel = "icon", type = "image/png", href = "logo.png"),
         tags$link(rel = "apple-touch-icon", href = "logo.png"),
+        # Social share card (Open Graph + Twitter): a pasted link shows a rich
+        # preview with title, description and the branded og-preview.png. Absolute
+        # URLs are required -- scrapers do not resolve relative paths.
+        tags$meta(name = "description", content = "Automated soil-profile classification under WRB 2022, SiBCS 5 and USDA Soil Taxonomy with transparent, deterministic keys, a full key trace and a provenance-aware evidence grade."),
+        tags$meta(property = "og:type", content = "website"),
+        tags$meta(property = "og:site_name", content = "soilKey Pro"),
+        tags$meta(property = "og:title", content = "soilKey Pro -- transparent soil classification"),
+        tags$meta(property = "og:description", content = "Classify a soil profile under WRB 2022, SiBCS 5 and USDA Soil Taxonomy at once -- deterministic keys, a full decision trace, and an honest evidence grade. Never a black box."),
+        tags$meta(property = "og:url", content = "https://soilkeypro.com"),
+        tags$meta(property = "og:image", content = "https://soilkeypro.com/og-preview.png"),
+        tags$meta(property = "og:image:width", content = "1200"),
+        tags$meta(property = "og:image:height", content = "630"),
+        tags$meta(property = "og:image:alt", content = "soilKey Pro -- WRB 2022, SiBCS 5 and USDA Soil Taxonomy"),
+        tags$meta(name = "twitter:card", content = "summary_large_image"),
+        tags$meta(name = "twitter:title", content = "soilKey Pro -- transparent soil classification"),
+        tags$meta(name = "twitter:description", content = "WRB 2022 + SiBCS 5 + USDA Soil Taxonomy at once, with deterministic keys and a full decision trace."),
+        tags$meta(name = "twitter:image", content = "https://soilkeypro.com/og-preview.png"),
         # version query-string busts the browser cache when the CSS changes
         tags$link(rel = "stylesheet", type = "text/css",
                   href = paste0("soilkey.css?v=",

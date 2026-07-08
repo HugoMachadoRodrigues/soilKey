@@ -31,6 +31,7 @@
 ^\.claude$
 ^\.dockerignore$
 ^Dockerfile$
+^deploy$
 ^soil_data$
 ^data-raw$
 ^inst/extdata/afsp_sample\.rds$

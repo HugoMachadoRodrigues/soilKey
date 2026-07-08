@@ -1,0 +1,21 @@
+# =============================================================================
+# Cloud Build: build the soilKey Pro app image and push to Artifact Registry.
+#
+# Uses the shared, host-agnostic deploy/fly/Dockerfile (it just runs the Shiny
+# app on $PORT). Submit from the repository root:
+#
+#   gcloud builds submit --config deploy/cloudrun/cloudbuild.yaml \
+#     --substitutions _IMAGE=us-east1-docker.pkg.dev/soilkeypro/soilkey/app:latest \
+#     --project soilkeypro .
+#
+# A larger builder machine + 1 h timeout because the R + GDAL + ~38-package
+# image takes a while (Posit binaries keep it reasonable).
+# =============================================================================
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'deploy/fly/Dockerfile', '-t', '${_IMAGE}', '.']
+images:
+  - '${_IMAGE}'
+timeout: '3600s'
+options:
+  machineType: 'E2_HIGHCPU_8'
