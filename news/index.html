@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.184</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.185</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.185" id="soilkey-09185-2026-07-08">soilKey 0.9.185 (2026-07-08)<a class="anchor" aria-label="anchor" href="#soilkey-09185-2026-07-08"></a></h2>
+<div class="section level3">
+<h3 id="colour-science--the-neutral-axis-is-exact-0-9-185">Colour science – the neutral axis is exact<a class="anchor" aria-label="anchor" href="#colour-science--the-neutral-axis-is-exact-0-9-185"></a></h3>
+<ul><li><p><strong><code><a href="../reference/predict_munsell_from_spectra.html">predict_munsell_from_spectra()</a></code> now reports an exact zero chroma on the neutral axis.</strong> Following the exchange with Glenn Davis (author of <code>munsellinterpol</code>): the <code>C &lt; 1e-4</code> guard added in v0.9.184 already collapsed the undefined hue to <code>"N"</code>, but the <em>reported</em> chroma was still the raw residual – a dark flat grey keys out at <code>C ~ 7e-15</code> here – so a row whose hue already said <code>"N"</code> carried a non-zero chroma beside it. That is internally inconsistent, and it is the wedge a platform with a larger BLAS residual would use to leak a chromatic hue back in. Chroma is now clamped to exactly <code>0</code> there, so the invariant no longer depends on local floating-point noise. Genuinely chromatic spectra are untouched, and the Munsell string is unchanged (the neutral notation never used the chroma). New tests pin <code>identical(chroma, 0)</code> across the reflectance range, including the dark end.</p></li>
+<li><p>Dropped a stale code comment that credited G. Davis’s white-point sketch with omitting the D65 weighting. The sketch he sent includes the weighting, and it is what soilKey has shipped since v0.9.158.</p></li>
+<li><p><strong>Considered and declined</strong> replacing the hand-rolled continuous notation with <code><a href="https://rdrr.io/pkg/munsellinterpol/man/MunsellNameFromHVC.html" class="external-link">munsellinterpol::MunsellNameFromHVC()</a></code>. It is not a byte-safe drop-in: its <code>digits</code> argument is forwarded to the hue <em>and</em> the value <em>and</em> the chroma, so <code>digits = 6</code> reproduces soilKey’s value/chroma exactly but widens the hue (<code>4.3R</code> -&gt; <code>4.33793R</code>, not a Munsell page notation, and inconsistent with the <code>munsell_hue_moist</code> column beside it), while its default <code>digits = 2</code> truncates the value/chroma. Its achromatic test is also a strict <code>0 &lt; C</code> with no tolerance, so adopting it would have re-introduced the very <code>10RP</code>-on-a-grey leak that v0.9.184 fixed.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.184" id="soilkey-09184-2026-07-07">soilKey 0.9.184 (2026-07-07)<a class="anchor" aria-label="anchor" href="#soilkey-09184-2026-07-07"></a></h2><p class="text-muted">CRAN release: 2026-07-07</p>
 <p>Neutral hue is “N” in continuous notation too; Photo-tab colour-route text corrected.</p>
@@ -294,7 +303,7 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.124" id="soilkey-09124-2026-06-13">soilKey 0.9.124 (2026-06-13)<a class="anchor" aria-label="anchor" href="#soilkey-09124-2026-06-13"></a></h2>
-<p>The “<strong>USDA predicate correctness audit, Phase 1</strong>” release. A systematic review of the <strong>102 USDA core diagnostic predicates</strong> against their verbatim KST 13th-edition criteria (<code><a href="https://rdrr.io/pkg/SoilTaxonomy/man/ST_criteria_13th.html" class="external-link">SoilTaxonomy::ST_criteria_13th</a></code>; KST Ch. 3), each flagged divergence then  to refute false positives.</p>
+<p>The “<strong>USDA predicate correctness audit, Phase 1</strong>” release. A systematic review of the <strong>102 USDA core diagnostic predicates</strong> against their verbatim KST 13th-edition criteria (<code><a href="http://ncss-tech.github.io/SoilTaxonomy/reference/ST_criteria_13th.html" class="external-link">SoilTaxonomy::ST_criteria_13th</a></code>; KST Ch. 3), each flagged divergence then  to refute false positives.</p>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.123" id="soilkey-09123-2026-06-13">soilKey 0.9.123 (2026-06-13)<a class="anchor" aria-label="anchor" href="#soilkey-09123-2026-06-13"></a></h2>

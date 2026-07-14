@@ -1,5 +1,40 @@
 # Changelog
 
+## soilKey 0.9.185 (2026-07-08)
+
+### Colour science – the neutral axis is exact
+
+- **[`predict_munsell_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_munsell_from_spectra.md)
+  now reports an exact zero chroma on the neutral axis.** Following the
+  exchange with Glenn Davis (author of `munsellinterpol`): the
+  `C < 1e-4` guard added in v0.9.184 already collapsed the undefined hue
+  to `"N"`, but the *reported* chroma was still the raw residual – a
+  dark flat grey keys out at `C ~ 7e-15` here – so a row whose hue
+  already said `"N"` carried a non-zero chroma beside it. That is
+  internally inconsistent, and it is the wedge a platform with a larger
+  BLAS residual would use to leak a chromatic hue back in. Chroma is now
+  clamped to exactly `0` there, so the invariant no longer depends on
+  local floating-point noise. Genuinely chromatic spectra are untouched,
+  and the Munsell string is unchanged (the neutral notation never used
+  the chroma). New tests pin `identical(chroma, 0)` across the
+  reflectance range, including the dark end.
+
+- Dropped a stale code comment that credited G. Davis’s white-point
+  sketch with omitting the D65 weighting. The sketch he sent includes
+  the weighting, and it is what soilKey has shipped since v0.9.158.
+
+- **Considered and declined** replacing the hand-rolled continuous
+  notation with
+  [`munsellinterpol::MunsellNameFromHVC()`](https://rdrr.io/pkg/munsellinterpol/man/MunsellNameFromHVC.html).
+  It is not a byte-safe drop-in: its `digits` argument is forwarded to
+  the hue *and* the value *and* the chroma, so `digits = 6` reproduces
+  soilKey’s value/chroma exactly but widens the hue (`4.3R` -\>
+  `4.33793R`, not a Munsell page notation, and inconsistent with the
+  `munsell_hue_moist` column beside it), while its default `digits = 2`
+  truncates the value/chroma. Its achromatic test is also a strict
+  `0 < C` with no tolerance, so adopting it would have re-introduced the
+  very `10RP`-on-a-grey leak that v0.9.184 fixed.
+
 ## soilKey 0.9.184 (2026-07-07)
 
 CRAN release: 2026-07-07
@@ -353,7 +388,7 @@ every workflow flag was checked against the , which proved decisive.
 The “**USDA predicate correctness audit, Phase 1**” release. A
 systematic review of the **102 USDA core diagnostic predicates** against
 their verbatim KST 13th-edition criteria
-([`SoilTaxonomy::ST_criteria_13th`](https://rdrr.io/pkg/SoilTaxonomy/man/ST_criteria_13th.html);
+([`SoilTaxonomy::ST_criteria_13th`](http://ncss-tech.github.io/SoilTaxonomy/reference/ST_criteria_13th.md);
 KST Ch. 3), each flagged divergence then to refute false positives.
 
 ## soilKey 0.9.123 (2026-06-13)
