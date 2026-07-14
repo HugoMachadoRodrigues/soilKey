@@ -188,9 +188,9 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
   # by the *same* table's D65 SPD that predict_xyz_from_spectra() integrates
   # against, scaled to Y = 100. Using this rather than the textbook
   # c(95.047, 100, 108.883) makes a constant-reflectance spectrum map to an exact
-  # neutral (Chroma 0), because the Lab reference white then matches the white
-  # the XYZ are implicitly relative to. (Suggested by G. Davis; his sketch
-  # omitted the D65 weighting, which would instead give the equal-energy white.)
+  # neutral (Chroma 0) at Value exactly 10, because the Lab reference white then
+  # matches the white the XYZ are implicitly relative to. (Suggested by
+  # G. Davis, munsellinterpol author.)
   cie <- .cie_d65_5nm
   white_D65 <- colSums(cbind(cie$xbar, cie$ybar, cie$zbar) * cie$D65)
   white_D65 <- 100 * white_D65 / white_D65[2L]
@@ -258,6 +258,12 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
           # chroma-0 sample.
           neutral <- is.finite(Ck) & Ck < 1e-4
           hs[neutral] <- "N"
+          # Report an exact 0 on the neutral axis instead of the raw residual (a
+          # dark flat grey can key out at C ~ 7e-15). The hue already says "N",
+          # so a non-zero chroma beside it is internally inconsistent -- and it
+          # is the wedge a larger BLAS residual would use to leak a chromatic
+          # hue back in. (G. Davis.)
+          Ck[neutral] <- 0
           hue[idx]    <- hs
           value[idx]  <- Vk
           chroma[idx] <- Ck
