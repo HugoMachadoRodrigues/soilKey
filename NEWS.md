@@ -1,3 +1,34 @@
+# soilKey 0.9.185 (2026-07-08)
+
+## Colour science -- the neutral axis is exact
+
+* **`predict_munsell_from_spectra()` now reports an exact zero chroma on the
+  neutral axis.** Following the exchange with Glenn Davis (author of
+  `munsellinterpol`): the `C < 1e-4` guard added in v0.9.184 already collapsed
+  the undefined hue to `"N"`, but the *reported* chroma was still the raw
+  residual -- a dark flat grey keys out at `C ~ 7e-15` here -- so a row whose
+  hue already said `"N"` carried a non-zero chroma beside it. That is internally
+  inconsistent, and it is the wedge a platform with a larger BLAS residual would
+  use to leak a chromatic hue back in. Chroma is now clamped to exactly `0`
+  there, so the invariant no longer depends on local floating-point noise.
+  Genuinely chromatic spectra are untouched, and the Munsell string is unchanged
+  (the neutral notation never used the chroma). New tests pin
+  `identical(chroma, 0)` across the reflectance range, including the dark end.
+
+* Dropped a stale code comment that credited G. Davis's white-point sketch with
+  omitting the D65 weighting. The sketch he sent includes the weighting, and it
+  is what soilKey has shipped since v0.9.158.
+
+* **Considered and declined** replacing the hand-rolled continuous notation with
+  `munsellinterpol::MunsellNameFromHVC()`. It is not a byte-safe drop-in: its
+  `digits` argument is forwarded to the hue *and* the value *and* the chroma, so
+  `digits = 6` reproduces soilKey's value/chroma exactly but widens the hue
+  (`4.3R` -> `4.33793R`, not a Munsell page notation, and inconsistent with the
+  `munsell_hue_moist` column beside it), while its default `digits = 2` truncates
+  the value/chroma. Its achromatic test is also a strict `0 < C` with no
+  tolerance, so adopting it would have re-introduced the very `10RP`-on-a-grey
+  leak that v0.9.184 fixed.
+
 # soilKey 0.9.184 (2026-07-07)
 
 Neutral hue is "N" in continuous notation too; Photo-tab colour-route text corrected.
