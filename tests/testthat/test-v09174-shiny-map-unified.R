@@ -108,6 +108,11 @@ test_that("map_server point mode renders the map and draws the overlay", {
 
   env        <- .mapu_source_modules()
   map_server <- get("map_server", envir = env)
+  # Pull the module-internal helper into a test-local: a bareword internal is
+  # not on the search path of an *installed* package (only under load_all), so
+  # referencing it inside testServer fails under R CMD check. As a test-local it
+  # resolves through the expr's lexical environment.
+  .map_src   <- get(".map_soilgrids_source", envir = env)
 
   pr <- soilKey::PedonRecord$new(
     site = list(id = "map-unified", lat = -22.5, lon = -43.7, crs = 4326))
@@ -123,7 +128,7 @@ test_that("map_server point mode renders the map and draws the overlay", {
     expect_equal(coords_r()$src, "pedon")
 
     # the overlay raster helper resolves the bundled demo raster for this point
-    rr <- overlay_raster(coords_r(), .map_soilgrids_source(""))
+    rr <- overlay_raster(coords_r(), .map_src(""))
     expect_false(is.null(rr))
     expect_true(all(c("id", "class") %in% names(rr$lut)))
 
