@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.185</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.186</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,35 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.186" id="soilkey-09186-2026-07-15">soilKey 0.9.186 (2026-07-15)<a class="anchor" aria-label="anchor" href="#soilkey-09186-2026-07-15"></a></h2>
+<div class="section level3">
+<h3 id="wrb-diagnostic-completeness-is-now-auditable-not-hand-asserted-0-9-186">WRB 2022 diagnostic completeness is now auditable, not hand-asserted<a class="anchor" aria-label="anchor" href="#wrb-diagnostic-completeness-is-now-auditable-not-hand-asserted-0-9-186"></a></h3>
+<p>The README previously carried hand-maintained “diagnostic horizons 32/32, properties 17/17, materials 16/16” tallies. <code><a href="../reference/coverage_report.html">coverage_report()</a></code> audited USDA levels and WRB qualifiers by name, but <strong>not</strong> the WRB diagnostic horizons/properties/materials – so those three headline numbers were asserted, not measured, and two of them were wrong (an <em>undercount</em>: the official WRB 2022 4th-edition Chapter 3 lists <strong>40</strong> diagnostic horizons and <strong>19</strong> diagnostic materials, not 32 and 16).</p>
+<ul><li><p><strong>New canonical reference.</strong> <code>inst/extdata/canonical/wrb2022_diagnostics.csv</code> transcribes the official Chapter 3 section headers – 40 horizons + 17 properties + 19 materials – and crosswalks each to its implementing soilKey function (built by <code>data-raw/wrb2022_diagnostics_canonical.R</code>).</p></li>
+<li><p><strong><code><a href="../reference/coverage_report.html">coverage_report()</a></code> gains four WRB axes:</strong> <code>"wrb_horizons"</code>, <code>"wrb_properties"</code>, <code>"wrb_materials"</code> and <code>"wrb_rsg"</code>. Each diffs the canonical set against the implemented functions, exactly like the existing USDA/qualifier axes: “covered” means the mapped function exists <strong>and</strong> has a genuine body (not an unconditional <code>passed = NA</code> stub). The tallies are now reproducible from a single command; the README cites them accordingly.</p></li>
+<li>
+<p><strong>Two genuinely-missing horizons implemented</strong> (they were the only real gaps the audit surfaced), faithful to the manual’s criteria:</p>
+<ul><li>
+<code><a href="../reference/cohesic.html">cohesic()</a></code> – WRB 2022 3.1.7, the kaolinitic, hard-setting subsurface horizon of the Brazilian coastal “Tabuleiros” (SiBCS <em>carater coeso</em>): &lt; 0.5% organic carbon, &gt;= 15% clay, CEC &lt; 24 cmol_c/kg clay, massive or weak subangular blocky, not cemented, at least hard when dry, &gt;= 10 cm.</li>
+<li>
+<code><a href="../reference/folic.html">folic()</a></code> – WRB 2022 3.1.12, the aerobic twin of the histic horizon: organic material saturated with water &lt; 30 consecutive days and &gt;= 10 cm.</li>
+<li>
+<code><a href="../reference/cryic_horizon.html">cryic_horizon()</a></code> – WRB 2022 3.1.8, a thin wrapper exposing the existing <code><a href="../reference/cryic_conditions.html">cryic_conditions()</a></code> permafrost logic under the canonical horizon name.</li>
+</ul></li>
+<li><p><strong>Contract test over all 76 canonical diagnostics.</strong> A new test proves every crosswalked function is callable on a valid pedon and returns a well-formed <code>DiagnosticResult</code>, retiring the “untested diagnostics” gap with a whole-set safety net (plus targeted positive/negative tests for the three new horizons).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="corrected-regenerated-numbers-all-reproduced-from-this-release-0-9-186">Corrected, regenerated numbers (all reproduced from this release)<a class="anchor" aria-label="anchor" href="#corrected-regenerated-numbers-all-reproduced-from-this-release-0-9-186"></a></h3>
+<ul><li>
+<strong>WRB qualifier coverage: 233/234</strong> (224 implemented + 9 specifier-derived), <strong>one</strong> honest gap (Novic), <strong>zero</strong> inert stubs – the README’s stale “229/234, 5 gaps” is corrected.</li>
+<li>
+<strong>USDA subgroup coverage: 2049/2715 (75.5%)</strong> by name – corrected from the stale 2003/2715 (73.8%) and the self-referential “1288/1288” table cell.</li>
+<li>
+<strong>Ferralsol showcase corrected.</strong> The canonical Ferralsol classifies to <code>Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</code> – the README previously showed a spurious <em>Chromic</em> qualifier and <em>Dystric</em> base status. It is <strong>Eutric</strong> under WRB (exchangeable bases &gt;= exchangeable Al in the major part of 20-100 cm) yet <em>Distrofico</em> under SiBCS (base saturation &lt; 50%): a legitimate divergence between two different base-status definitions, not a bug. The full WRB/USDA/SiBCS names are now pinned in a test so they cannot silently drift.</li>
+</ul><p>No classification behaviour changed: all pre-existing fixtures remain byte-identical. The new functions and coverage axes are purely additive.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.185" id="soilkey-09185-2026-07-08">soilKey 0.9.185 (2026-07-08)<a class="anchor" aria-label="anchor" href="#soilkey-09185-2026-07-08"></a></h2>
 <div class="section level3">

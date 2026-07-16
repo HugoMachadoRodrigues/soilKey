@@ -17,7 +17,7 @@ principal + supplementary qualifier set from wrb2022_canonical."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.185</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.186</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ principal + supplementary qualifier set from <code><a href="wrb2022_canonical.ht
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">coverage_report</span><span class="op">(</span></span>
 <span>  system <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"usda_subgroup"</span>, <span class="st">"usda_great_group"</span>, <span class="st">"usda_suborder"</span>, <span class="st">"wrb_qualifiers"</span>,</span>
-<span>    <span class="st">"sibcs"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"wrb_horizons"</span>, <span class="st">"wrb_properties"</span>, <span class="st">"wrb_materials"</span>, <span class="st">"wrb_rsg"</span>, <span class="st">"sibcs"</span><span class="op">)</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  report_dir <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -90,10 +90,15 @@ principal + supplementary qualifier set from <code><a href="wrb2022_canonical.ht
 <dd><p>Which axis to measure. USDA taxon levels against the Soil
 Taxonomy 13th-edition code set (<code><a href="kst13_codes.html">kst13_codes</a></code>):
 <code>"usda_subgroup"</code> (default), <code>"usda_great_group"</code>,
-<code>"usda_suborder"</code>. WRB 2022 qualifiers against
-<code><a href="wrb2022_canonical.html">wrb2022_canonical</a></code>: <code>"wrb_qualifiers"</code> – here "covered"
-means the <code>qual_*</code> function exists <em>and</em> is a genuine
-implementation (not an unconditional <code>passed = NA</code> stub), and the
+<code>"usda_suborder"</code>. WRB 2022 against <code><a href="wrb2022_canonical.html">wrb2022_canonical</a></code>
+and the canonical diagnostic reference
+(<code>inst/extdata/canonical/wrb2022_diagnostics.csv</code>):
+<code>"wrb_qualifiers"</code>, <code>"wrb_horizons"</code> (40 diagnostic horizons),
+<code>"wrb_properties"</code> (17 diagnostic properties), <code>"wrb_materials"</code>
+(19 diagnostic materials), and <code>"wrb_rsg"</code> (32 Reference Soil Groups,
+diffed against <code>inst/rules/wrb2022/key.yaml</code>). For the qualifier and
+diagnostic axes "covered" means the mapped function exists <em>and</em> is a
+genuine implementation (not an unconditional <code>passed = NA</code> stub); the
 inert ones are returned in <code>$stubs</code>. <code>"sibcs"</code> has no external
 canonical class list, so it honestly reports registered class counts per
 level only (no percentage).</p></dd>

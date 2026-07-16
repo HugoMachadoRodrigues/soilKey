@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.185</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.186</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,28 +111,28 @@
 <tbody>
 <tr>
 <td><strong>WRB 2022 — diagnostic horizons</strong></td>
-<td>✅ shipped (32 / 32)</td>
-<td>All 32 horizons of Chapter 3.1 implemented with per-diagnostic regression tests.</td>
+<td>✅ shipped (40 / 40)</td>
+<td>All 40 horizons of Chapter 3.1; audited by <code>coverage_report("wrb_horizons")</code> against the canonical set, with per-diagnostic tests plus a whole-set contract test.</td>
 </tr>
 <tr>
 <td><strong>WRB 2022 — diagnostic properties</strong></td>
 <td>✅ shipped (17 / 17)</td>
-<td>Chapter 3.2 complete.</td>
+<td>All 17 properties of Chapter 3.2; audited by <code>coverage_report("wrb_properties")</code>.</td>
 </tr>
 <tr>
 <td><strong>WRB 2022 — diagnostic materials</strong></td>
-<td>✅ shipped (16 / 16)</td>
-<td>Chapter 3.3 complete.</td>
+<td>✅ shipped (19 / 19)</td>
+<td>All 19 materials of Chapter 3.3; audited by <code>coverage_report("wrb_materials")</code>.</td>
 </tr>
 <tr>
 <td><strong>WRB 2022 — RSG key</strong></td>
 <td>✅ shipped (32 / 32)</td>
-<td>All Reference Soil Groups in canonical Chapter 4 order.</td>
+<td>All Reference Soil Groups in canonical Chapter 4 order; audited by <code>coverage_report("wrb_rsg")</code>.</td>
 </tr>
 <tr>
 <td><strong>WRB 2022 — qualifiers</strong></td>
-<td>✅ shipped (229/234)</td>
-<td>229 of 234 canonical qualifiers deliverable (217 implemented + 12 specifier-derived); 5 honest gaps, all schema-blocked (Claric/Panpaic/Sideralic/Novic/“etrosalic”). <code>coverage_report("wrb_qualifiers")</code> counts genuine implementations only, following one level of delegation (Fibric/Hemic/Sapric delegate to a real decomposition helper).</td>
+<td>✅ shipped (233/234)</td>
+<td>233 of 234 canonical qualifiers deliverable (224 implemented + 9 specifier-derived); 1 honest gap (Novic, schema-blocked). <code>coverage_report("wrb_qualifiers")</code> counts genuine implementations only, following one level of delegation.</td>
 </tr>
 <tr>
 <td><strong>SiBCS 5 — Order</strong></td>
@@ -162,7 +162,7 @@
 <tr>
 <td><strong>USDA Soil Taxonomy 13 — Path C</strong></td>
 <td>✅ shipped (v0.9.113)</td>
-<td>Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / <strong>2003 of 2715</strong> canonical subgroups, 73.8% — by-name <code><a href="reference/coverage_report.html">coverage_report()</a></code>; +829 in v0.9.113, +57 colour/contact in v0.9.121, +25 intergrades in v0.9.123).</td>
+<td>Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / <strong>2049 of 2715</strong> canonical subgroups, 75.5% — by-name <code><a href="reference/coverage_report.html">coverage_report()</a></code>; +829 in v0.9.113, +57 colour/contact in v0.9.121, +25 intergrades in v0.9.123).</td>
 </tr>
 <tr>
 <td><strong>USDA Soil Taxonomy 13 — Family</strong></td>
@@ -318,15 +318,15 @@
 <span></span>
 <span><span class="co"># WRB 2022 — full Chapter 6 name (RSG + qualifiers + specifiers)</span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span>
 <span></span>
 <span><span class="co"># SiBCS 5 — 4th level (Subgroup) + Family (5th level)</span></span>
 <span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"</span></span>
 <span></span>
-<span><span class="co"># USDA Soil Taxonomy 13 — Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup -&gt; Family</span></span>
-<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span>, include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "fine, kaolinitic, isohyperthermic Rhodic Hapludox"</span></span></code></pre></div>
+<span><span class="co"># USDA Soil Taxonomy 13 — Order -&gt; Suborder -&gt; Great Group -&gt; Subgroup</span></span>
+<span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
+<span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
 <ul>
 <li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order, with optional <strong>depth specifiers</strong> (Epi-/Endo-/Bathy-/…, via <code>classify_wrb2022(specifiers = TRUE)</code>).</li>
 <li>SiBCS descends through <strong>all four hierarchical levels (Order → Suborder → Great Group → Subgroup)</strong> plus a <strong>5th-level Family</strong> with up to 15 orthogonal adjectival dimensions.</li>
@@ -375,7 +375,7 @@
 <li>
 <strong>Live web app at <a href="https://soilkeypro.com" class="external-link">soilkeypro.com</a></strong> — the Pro app deployed on Cloud Run with an <strong>online AI assistant</strong>, plus a launch-time UX pass across every tab (v0.9.172–184): live Vis-NIR preprocessing on Spectra, a unified Map tab, a standalone Photo tab, per-point uncertainty drill-in, and a right-side Assistant drawer on every tab.</li>
 <li>
-<strong>Accuracy &amp; completeness</strong> — benchmark-methodology fixes and diagnostic corrections (argic ≠ Regosol, Al-saturation defaults), USDA subgroup completeness to <strong>2003/2715</strong>, plus WRB-qualifier and SiBCS-subgroup gap-filling.</li>
+<strong>Accuracy &amp; completeness</strong> — benchmark-methodology fixes and diagnostic corrections (argic ≠ Regosol, Al-saturation defaults), USDA subgroup completeness to <strong>2049/2715</strong>, plus WRB-qualifier and SiBCS-subgroup gap-filling.</li>
 <li>
 <strong>Colour science</strong> — Vis-NIR → Munsell now uses <code>munsellinterpol</code>’s <code>XYZtoMunsell(white=)</code> with a D65→Illuminant-C fix (thanks to Glenn Davis), a perfect-diffuser <code>Value = 10</code> test, and a neutral “N” hue at zero chroma.</li>
 <li>
@@ -584,7 +584,7 @@
 <tr>
 <td align="left">Ch 3.1</td>
 <td align="left">Diagnostic horizons</td>
-<td align="left"><strong>32 / 32</strong></td>
+<td align="left"><strong>40 / 40</strong></td>
 </tr>
 <tr>
 <td align="left">Ch 3.2</td>
@@ -594,7 +594,7 @@
 <tr>
 <td align="left">Ch 3.3</td>
 <td align="left">Diagnostic materials</td>
-<td align="left"><strong>16 / 16</strong></td>
+<td align="left"><strong>19 / 19</strong></td>
 </tr>
 <tr>
 <td align="left">Ch 4</td>
@@ -650,6 +650,10 @@
 <h3 id="usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete">USDA Soil Taxonomy (13th edition, Soil Survey Staff 2022) — Path C complete<a class="anchor" aria-label="anchor" href="#usda-soil-taxonomy-13th-edition-soil-survey-staff-2022--path-c-complete"></a>
 </h3>
 <table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
 <thead><tr>
 <th align="left">Level</th>
 <th align="left">Coverage</th>
@@ -669,7 +673,8 @@
 </tr>
 <tr>
 <td align="left">Subgroup</td>
-<td align="left"><strong>1288 / 1288</strong></td>
+<td align="left">
+<strong>2049 / 2715</strong> (75.5%, by-name <code>coverage_report("usda_subgroup")</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -893,7 +898,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
 <p>The VLM extracts a JSON-Schema-validated <code>PedonRecord</code> from a field-report PDF (or photo); the deterministic key takes it from there. The schema rejects any LLM hallucination of class names — extraction is restricted to per-attribute observations.</p>
 <hr>
 </div>
@@ -1034,7 +1039,7 @@
 <p><strong>MIT</strong> © 2026 Hugo Rodrigues. CRAN-style template at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE" class="external-link"><code>LICENSE</code></a>; full text at <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/LICENSE.md" class="external-link"><code>LICENSE.md</code></a>.</p>
 <p>The package source is MIT. The bundled benchmark caches retain their respective upstream licenses (ISRIC AfSP / WoSIS public-domain; NCSS Lab Data Mart public-domain US Federal data). The Redape SiBCS dataset is published by Vaz et al. (2023) under their original repository terms — see the DOI for details.</p>
 <hr>
-<p><sub><strong>Status (v0.9.184, 2026-07-08)</strong>: on CRAN (0.9.184) + live web app at <a href="https://soilkeypro.com" class="external-link">soilkeypro.com</a>. <code>R CMD check --as-cran</code> returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to <code>main</code> since v0.9.65. <strong>All three classification systems wired end-to-end down to the deepest categorical level.</strong> WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers deliverable, 5 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 003 of 2 715 subgroups = 73.8%; run <code><a href="reference/coverage_report.html">coverage_report()</a></code> for the live by-name diff at every level). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
+<p><sub><strong>Status (v0.9.186, 2026-07-15)</strong>: on CRAN (0.9.184) + live web app at <a href="https://soilkeypro.com" class="external-link">soilkeypro.com</a>. <code>R CMD check --as-cran</code> returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to <code>main</code> since v0.9.65. <strong>All three classification systems wired end-to-end down to the deepest categorical level.</strong> WRB 2022 (32 RSGs, 40 diagnostic horizons + 17 properties + 19 materials, 233 of 234 canonical qualifiers deliverable, 1 honest gap — all auditable by <code><a href="reference/coverage_report.html">coverage_report()</a></code>), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 049 of 2 715 subgroups = 75.5%; run <code><a href="reference/coverage_report.html">coverage_report()</a></code> for the live by-name diff at every level). <strong>DOI</strong>: <a href="https://doi.org/10.5281/zenodo.19930112" class="external-link uri">https://doi.org/10.5281/zenodo.19930112</a> (resolves to the latest version on Zenodo). Per-release changes in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a>; roadmap in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md" class="external-link"><code>ARCHITECTURE.md</code></a>; CRAN submission instructions in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md" class="external-link"><code>inst/cran-submission/HOW_TO_SUBMIT.md</code></a>.</sub></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

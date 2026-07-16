@@ -14,7 +14,7 @@ qualifier set from
 ``` r
 coverage_report(
   system = c("usda_subgroup", "usda_great_group", "usda_suborder", "wrb_qualifiers",
-    "sibcs"),
+    "wrb_horizons", "wrb_properties", "wrb_materials", "wrb_rsg", "sibcs"),
   write = FALSE,
   report_dir = NULL
 )
@@ -28,13 +28,19 @@ coverage_report(
   13th-edition code set
   ([`kst13_codes`](https://hugomachadorodrigues.github.io/soilKey/reference/kst13_codes.md)):
   `"usda_subgroup"` (default), `"usda_great_group"`, `"usda_suborder"`.
-  WRB 2022 qualifiers against
-  [`wrb2022_canonical`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md):
-  `"wrb_qualifiers"` – here "covered" means the `qual_*` function exists
-  *and* is a genuine implementation (not an unconditional `passed = NA`
-  stub), and the inert ones are returned in `$stubs`. `"sibcs"` has no
-  external canonical class list, so it honestly reports registered class
-  counts per level only (no percentage).
+  WRB 2022 against
+  [`wrb2022_canonical`](https://hugomachadorodrigues.github.io/soilKey/reference/wrb2022_canonical.md)
+  and the canonical diagnostic reference
+  (`inst/extdata/canonical/wrb2022_diagnostics.csv`):
+  `"wrb_qualifiers"`, `"wrb_horizons"` (40 diagnostic horizons),
+  `"wrb_properties"` (17 diagnostic properties), `"wrb_materials"` (19
+  diagnostic materials), and `"wrb_rsg"` (32 Reference Soil Groups,
+  diffed against `inst/rules/wrb2022/key.yaml`). For the qualifier and
+  diagnostic axes "covered" means the mapped function exists *and* is a
+  genuine implementation (not an unconditional `passed = NA` stub); the
+  inert ones are returned in `$stubs`. `"sibcs"` has no external
+  canonical class list, so it honestly reports registered class counts
+  per level only (no percentage).
 
 - write:
 

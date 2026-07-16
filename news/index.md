@@ -1,5 +1,78 @@
 # Changelog
 
+## soilKey 0.9.186 (2026-07-15)
+
+### WRB 2022 diagnostic completeness is now auditable, not hand-asserted
+
+The README previously carried hand-maintained “diagnostic horizons
+32/32, properties 17/17, materials 16/16” tallies.
+[`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md)
+audited USDA levels and WRB qualifiers by name, but **not** the WRB
+diagnostic horizons/properties/materials – so those three headline
+numbers were asserted, not measured, and two of them were wrong (an
+*undercount*: the official WRB 2022 4th-edition Chapter 3 lists **40**
+diagnostic horizons and **19** diagnostic materials, not 32 and 16).
+
+- **New canonical reference.**
+  `inst/extdata/canonical/wrb2022_diagnostics.csv` transcribes the
+  official Chapter 3 section headers – 40 horizons + 17 properties + 19
+  materials – and crosswalks each to its implementing soilKey function
+  (built by `data-raw/wrb2022_diagnostics_canonical.R`).
+
+- **[`coverage_report()`](https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.md)
+  gains four WRB axes:** `"wrb_horizons"`, `"wrb_properties"`,
+  `"wrb_materials"` and `"wrb_rsg"`. Each diffs the canonical set
+  against the implemented functions, exactly like the existing
+  USDA/qualifier axes: “covered” means the mapped function exists
+  **and** has a genuine body (not an unconditional `passed = NA` stub).
+  The tallies are now reproducible from a single command; the README
+  cites them accordingly.
+
+- **Two genuinely-missing horizons implemented** (they were the only
+  real gaps the audit surfaced), faithful to the manual’s criteria:
+
+  - [`cohesic()`](https://hugomachadorodrigues.github.io/soilKey/reference/cohesic.md)
+    – WRB 2022 3.1.7, the kaolinitic, hard-setting subsurface horizon of
+    the Brazilian coastal “Tabuleiros” (SiBCS *carater coeso*): \< 0.5%
+    organic carbon, \>= 15% clay, CEC \< 24 cmol_c/kg clay, massive or
+    weak subangular blocky, not cemented, at least hard when dry, \>= 10
+    cm.
+  - [`folic()`](https://hugomachadorodrigues.github.io/soilKey/reference/folic.md)
+    – WRB 2022 3.1.12, the aerobic twin of the histic horizon: organic
+    material saturated with water \< 30 consecutive days and \>= 10 cm.
+  - [`cryic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_horizon.md)
+    – WRB 2022 3.1.8, a thin wrapper exposing the existing
+    [`cryic_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.md)
+    permafrost logic under the canonical horizon name.
+
+- **Contract test over all 76 canonical diagnostics.** A new test proves
+  every crosswalked function is callable on a valid pedon and returns a
+  well-formed `DiagnosticResult`, retiring the “untested diagnostics”
+  gap with a whole-set safety net (plus targeted positive/negative tests
+  for the three new horizons).
+
+### Corrected, regenerated numbers (all reproduced from this release)
+
+- **WRB qualifier coverage: 233/234** (224 implemented + 9
+  specifier-derived), **one** honest gap (Novic), **zero** inert stubs –
+  the README’s stale “229/234, 5 gaps” is corrected.
+- **USDA subgroup coverage: 2049/2715 (75.5%)** by name – corrected from
+  the stale 2003/2715 (73.8%) and the self-referential “1288/1288” table
+  cell.
+- **Ferralsol showcase corrected.** The canonical Ferralsol classifies
+  to
+  `Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)`
+  – the README previously showed a spurious *Chromic* qualifier and
+  *Dystric* base status. It is **Eutric** under WRB (exchangeable bases
+  \>= exchangeable Al in the major part of 20-100 cm) yet *Distrofico*
+  under SiBCS (base saturation \< 50%): a legitimate divergence between
+  two different base-status definitions, not a bug. The full
+  WRB/USDA/SiBCS names are now pinned in a test so they cannot silently
+  drift.
+
+No classification behaviour changed: all pre-existing fixtures remain
+byte-identical. The new functions and coverage axes are purely additive.
+
 ## soilKey 0.9.185 (2026-07-08)
 
 ### Colour science – the neutral axis is exact

@@ -120,6 +120,12 @@ Benchmark drivers and KSSL/NASIS label normalisers.
 - [`calcic()`](https://hugomachadorodrigues.github.io/soilKey/reference/calcic.md)
   : Calcic horizon (WRB 2022)
 
+- [`cohesic()`](https://hugomachadorodrigues.github.io/soilKey/reference/cohesic.md)
+  : Cohesic horizon (WRB 2022, Chapter 3.1.7)
+
+- [`cryic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_horizon.md)
+  : Cryic horizon (WRB 2022, Chapter 3.1.8)
+
 - [`duric_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/duric_horizon.md)
   : Duric horizon (WRB 2022)
 
@@ -128,6 +134,9 @@ Benchmark drivers and KSSL/NASIS label normalisers.
 
 - [`ferric()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferric.md)
   : Ferric horizon (WRB 2022)
+
+- [`folic()`](https://hugomachadorodrigues.github.io/soilKey/reference/folic.md)
+  : Folic horizon (WRB 2022, Chapter 3.1.12)
 
 - [`fragic()`](https://hugomachadorodrigues.github.io/soilKey/reference/fragic.md)
   :
