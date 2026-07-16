@@ -1,3 +1,42 @@
+# soilKey 0.9.187 (2026-07-15)
+
+## Horizon-designation morphological inference (opt-in) -- large accuracy gain on legacy data
+
+Legacy soil archives record a field pedologist's horizon **designation** (Bt,
+Bw, Bi, ...) far more often than the quantitative lab attributes a diagnostic
+horizon test needs (a measured clay gradient, CEC per clay, ...). A benchmark
+post-mortem found that on such profiles the quantitative tests could not fire
+and the key fell through to the catch-all order (Neossolos / Regosols): on the
+FEBR repository, most Argissolos and Latossolos were being reported as
+Neossolos purely because a 2-sample legacy profile cannot express an
+A-to-B clay increase, even though its "Bt"/"Bw" designation states the diagnosis.
+
+* **New `R/designation-inference.R`.** `.designation_indicates()` maps the
+  subordinate letters of a subsurface designation to the diagnostic horizon the
+  surveyor recorded (t -> argic, w/o -> ferralic, i -> cambic, h/s -> spodic,
+  n -> natric, g -> gleyic, f -> plinthic, ss/v -> vertic), with a precedence
+  that lets the order-defining process win (e.g. Btn = natric, Btf/Btg keep
+  argic, a bare Bf/Bg keys plinthic/gleyic). `.apply_morph_inference()` then
+  lets a diagnostic pass on that morphology, at a downgraded evidence grade and
+  a `"morphological_designation"` provenance tag, **only when the quantitative
+  test could not fire**.
+
+* **Opt-in via `options(soilKey.morphological_inference = TRUE)`** (default
+  `FALSE`). Wired into `argic()` and `ferralic()` -- which are shared by SiBCS
+  (Argissolo/Latossolo) and WRB (Acrisol/Lixisol/Luvisol/Ferralsol), so a single
+  change lifts both systems.
+
+* **Measured effect** (order/RSG level, on the classifiable subset -- profiles
+  that actually carry a diagnostic designation or >= 2 clay values):
+  SiBCS FEBR 30.1 -> 60.4%, SiBCS Redape (curated gold standard) 63.8 -> 70.2%,
+  WRB FEBR 32.9 -> 39.0%; per-order, Argissolos 20 -> 83% and Cambissolos
+  55 -> 90%, with Neossolo recall held at 83-85% (no over-firing).
+
+Default (`FALSE`) is **byte-identical**: all 44 canonical fixtures unchanged,
+full suite green. This is the first step of a cross-system accuracy pass;
+follow-ups extend the same mechanism to the remaining diagnostics (spodic,
+natric, gleyic, plinthic) and to USDA.
+
 # soilKey 0.9.186 (2026-07-15)
 
 ## WRB 2022 diagnostic completeness is now auditable, not hand-asserted

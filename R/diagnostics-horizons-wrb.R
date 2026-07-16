@@ -202,6 +202,14 @@ argic <- function(pedon, min_thickness = 7.5,
     final_passed <- agg$passed
   }
 
+  # v0.9.187 -- designation-driven morphological fallback (opt-in). A "Bt"
+  # horizon records field-observed clay illuviation; accept it as argic when the
+  # quantitative clay-increase data is absent (common in legacy 2-sample
+  # profiles), at a downgraded morphological grade. Unlike the films-based path
+  # above it does not require a recorded clay_films qualifier.
+  mi <- .apply_morph_inference("argic", h, final_passed, final_layers, tests)
+  final_passed <- mi$passed; final_layers <- mi$layers; tests <- mi$evidence
+
   DiagnosticResult$new(
     name      = "argic",
     passed    = final_passed,
@@ -294,6 +302,14 @@ ferralic <- function(pedon,
 
   agg <- aggregate_subtests(tests)
 
+  # v0.9.187 -- designation-driven morphological fallback (opt-in). A "Bw"/"Bo"
+  # horizon is the field pedologist's call of an in-situ, strongly-weathered
+  # (latossolic/ferralic) B; accept it when the quantitative CEC-per-clay /
+  # texture data is missing or borderline, at a downgraded morphological grade.
+  ev  <- c(tests, list(engine = engine, max_cec_used = max_cec))
+  mi  <- .apply_morph_inference("ferralic", h, agg$passed, agg$layers, ev,
+                                min_top = 25)
+
   notes_str <- paste0(
     "v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic. ",
     "v0.9.67 engine=", engine, " threshold = ", max_cec, " cmol_c/kg clay."
@@ -301,9 +317,9 @@ ferralic <- function(pedon,
 
   DiagnosticResult$new(
     name      = "ferralic",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = c(tests, list(engine = engine, max_cec_used = max_cec)),
+    passed    = mi$passed,
+    layers    = mi$layers,
+    evidence  = mi$evidence,
     missing   = agg$missing,
     reference = paste("IUSS Working Group WRB (2022), Chapter 3.1.10,",
                        "Ferralic horizon (p. 44)",
