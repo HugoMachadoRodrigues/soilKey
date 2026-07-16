@@ -6,7 +6,7 @@
 \usage{
 coverage_report(
   system = c("usda_subgroup", "usda_great_group", "usda_suborder", "wrb_qualifiers",
-    "sibcs"),
+    "wrb_horizons", "wrb_properties", "wrb_materials", "wrb_rsg", "sibcs"),
   write = FALSE,
   report_dir = NULL
 )
@@ -15,10 +15,15 @@ coverage_report(
 \item{system}{Which axis to measure. USDA taxon levels against the Soil
 Taxonomy 13th-edition code set (\code{\link{kst13_codes}}):
 \code{"usda_subgroup"} (default), \code{"usda_great_group"},
-\code{"usda_suborder"}. WRB 2022 qualifiers against
-\code{\link{wrb2022_canonical}}: \code{"wrb_qualifiers"} -- here "covered"
-means the \code{qual_*} function exists \emph{and} is a genuine
-implementation (not an unconditional \code{passed = NA} stub), and the
+\code{"usda_suborder"}. WRB 2022 against \code{\link{wrb2022_canonical}}
+and the canonical diagnostic reference
+(\code{inst/extdata/canonical/wrb2022_diagnostics.csv}):
+\code{"wrb_qualifiers"}, \code{"wrb_horizons"} (40 diagnostic horizons),
+\code{"wrb_properties"} (17 diagnostic properties), \code{"wrb_materials"}
+(19 diagnostic materials), and \code{"wrb_rsg"} (32 Reference Soil Groups,
+diffed against \code{inst/rules/wrb2022/key.yaml}). For the qualifier and
+diagnostic axes "covered" means the mapped function exists \emph{and} is a
+genuine implementation (not an unconditional \code{passed = NA} stub); the
 inert ones are returned in \code{$stubs}. \code{"sibcs"} has no external
 canonical class list, so it honestly reports registered class counts per
 level only (no percentage).}

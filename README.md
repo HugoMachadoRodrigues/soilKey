@@ -29,17 +29,17 @@
 
 | Domain                              | Stage                | Notes                                                                                            |
 |-------------------------------------|----------------------|--------------------------------------------------------------------------------------------------|
-| **WRB 2022 — diagnostic horizons**  | ✅ shipped (32 / 32) | All 32 horizons of Chapter 3.1 implemented with per-diagnostic regression tests.                  |
-| **WRB 2022 — diagnostic properties**| ✅ shipped (17 / 17) | Chapter 3.2 complete.                                                                              |
-| **WRB 2022 — diagnostic materials** | ✅ shipped (16 / 16) | Chapter 3.3 complete.                                                                              |
-| **WRB 2022 — RSG key**              | ✅ shipped (32 / 32) | All Reference Soil Groups in canonical Chapter 4 order.                                            |
-| **WRB 2022 — qualifiers**           | ✅ shipped (229/234) | 229 of 234 canonical qualifiers deliverable (217 implemented + 12 specifier-derived); 5 honest gaps, all schema-blocked (Claric/Panpaic/Sideralic/Novic/"etrosalic"). `coverage_report("wrb_qualifiers")` counts genuine implementations only, following one level of delegation (Fibric/Hemic/Sapric delegate to a real decomposition helper). |
+| **WRB 2022 — diagnostic horizons**  | ✅ shipped (40 / 40) | All 40 horizons of Chapter 3.1; audited by `coverage_report("wrb_horizons")` against the canonical set, with per-diagnostic tests plus a whole-set contract test. |
+| **WRB 2022 — diagnostic properties**| ✅ shipped (17 / 17) | All 17 properties of Chapter 3.2; audited by `coverage_report("wrb_properties")`. |
+| **WRB 2022 — diagnostic materials** | ✅ shipped (19 / 19) | All 19 materials of Chapter 3.3; audited by `coverage_report("wrb_materials")`. |
+| **WRB 2022 — RSG key**              | ✅ shipped (32 / 32) | All Reference Soil Groups in canonical Chapter 4 order; audited by `coverage_report("wrb_rsg")`. |
+| **WRB 2022 — qualifiers**           | ✅ shipped (233/234) | 233 of 234 canonical qualifiers deliverable (224 implemented + 9 specifier-derived); 1 honest gap (Novic, schema-blocked). `coverage_report("wrb_qualifiers")` counts genuine implementations only, following one level of delegation. |
 | **SiBCS 5 — Order**                 | ✅ shipped (13 / 13) | All 13 SiBCS Orders.                                                                               |
 | **SiBCS 5 — Suborder**              | ✅ shipped (44 / 44) | All 44 Suborders.                                                                                  |
 | **SiBCS 5 — Great Group**           | ✅ shipped (192 / 192)| All 192 Great Groups.                                                                              |
 | **SiBCS 5 — Subgroup**              | ✅ shipped (938 / 938)| All 938 Subgroups; full leaf-level resolution.                                                     |
 | **SiBCS 5 — Family (5th level)**    | ✅ shipped           | Up to 15 orthogonal adjectival dimensions.                                                         |
-| **USDA Soil Taxonomy 13 — Path C**  | ✅ shipped (v0.9.113) | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / **2003 of 2715** canonical subgroups, 73.8% — by-name `coverage_report()`; +829 in v0.9.113, +57 colour/contact in v0.9.121, +25 intergrades in v0.9.123). |
+| **USDA Soil Taxonomy 13 — Path C**  | ✅ shipped (v0.9.113) | Order → Suborder → Great Group → Subgroup (12 / 68 / 339 / **2049 of 2715** canonical subgroups, 75.5% — by-name `coverage_report()`; +829 in v0.9.113, +57 colour/contact in v0.9.121, +25 intergrades in v0.9.123). |
 | **USDA Soil Taxonomy 13 — Family**  | ✅ shipped (v0.9.104) | 5th-level family modifiers (particle-size, mineralogy, CEC-activity, reaction, temperature, depth), prepended to the subgroup via `classify_usda(include_family = TRUE)`. Series (6th) needs the NRCS database — out of scope. |
 | **Multimodal extraction (VLM)**     | ✅ shipped           | Schema-validated via `ellmer`; the LLM never touches the key. Local-first in the package (Ollama / any provider); the hosted app uses an online provider (Groq). |
 | **OSSL spectral gap-fill**          | ✅ shipped           | Vis-NIR / SWIR / MIR via `prospectr` + `resemble` (MBL / PLSR-local / pretrained backbones).      |
@@ -82,15 +82,15 @@ pedon <- make_ferralsol_canonical()
 
 # WRB 2022 — full Chapter 6 name (RSG + qualifiers + specifiers)
 classify_wrb2022(pedon)$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 
 # SiBCS 5 — 4th level (Subgroup) + Family (5th level)
 classify_sibcs(pedon, include_familia = TRUE)$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
 
-# USDA Soil Taxonomy 13 — Order -> Suborder -> Great Group -> Subgroup -> Family
-classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, kaolinitic, isohyperthermic Rhodic Hapludox"
+# USDA Soil Taxonomy 13 — Order -> Suborder -> Great Group -> Subgroup
+classify_usda(pedon)$name
+#> [1] "Rhodic Hapludox"
 ```
 
 * WRB delivers the **complete Chapter 6 name** — four principal qualifiers + five supplementary qualifiers in canonical order, with optional **depth specifiers** (Epi-/Endo-/Bathy-/…, via `classify_wrb2022(specifiers = TRUE)`).
@@ -135,7 +135,7 @@ soilKey reached CRAN and the Pro app went to production. Highlights (full detail
 
 * **On CRAN** — `install.packages("soilKey")` (0.9.184); CRAN, GitHub, and the live app are all in sync.
 * **Live web app at [soilkeypro.com](https://soilkeypro.com)** — the Pro app deployed on Cloud Run with an **online AI assistant**, plus a launch-time UX pass across every tab (v0.9.172–184): live Vis-NIR preprocessing on Spectra, a unified Map tab, a standalone Photo tab, per-point uncertainty drill-in, and a right-side Assistant drawer on every tab.
-* **Accuracy & completeness** — benchmark-methodology fixes and diagnostic corrections (argic ≠ Regosol, Al-saturation defaults), USDA subgroup completeness to **2003/2715**, plus WRB-qualifier and SiBCS-subgroup gap-filling.
+* **Accuracy & completeness** — benchmark-methodology fixes and diagnostic corrections (argic ≠ Regosol, Al-saturation defaults), USDA subgroup completeness to **2049/2715**, plus WRB-qualifier and SiBCS-subgroup gap-filling.
 * **Colour science** — Vis-NIR → Munsell now uses `munsellinterpol`'s `XYZtoMunsell(white=)` with a D65→Illuminant-C fix (thanks to Glenn Davis), a perfect-diffuser `Value = 10` test, and a neutral "N" hue at zero chroma.
 * **Spectral ingest & gap-fill** — a spectral-ingest scaffold and a taxon/attribute gap-fill family, all provenance-tagged.
 
@@ -287,9 +287,9 @@ soilKey faithfully reproduces three canonical books, with versioned YAML rules c
 
 | Chapter | Component                                | Coverage      |
 | :------ | :--------------------------------------- | :------------ |
-| Ch 3.1  | Diagnostic horizons                      | **32 / 32**   |
+| Ch 3.1  | Diagnostic horizons                      | **40 / 40**   |
 | Ch 3.2  | Diagnostic properties                    | **17 / 17**   |
-| Ch 3.3  | Diagnostic materials                     | **16 / 16**   |
+| Ch 3.3  | Diagnostic materials                     | **19 / 19**   |
 | Ch 4    | Reference Soil Groups (RSGs)             | **32 / 32**   |
 | Ch 6    | Principal + supplementary qualifiers      | **all wired** |
 
@@ -310,7 +310,7 @@ soilKey faithfully reproduces three canonical books, with versioned YAML rules c
 | Order         | **12 / 12**   |
 | Suborder      | **68 / 68**   |
 | Great Group   | **339 / 339** |
-| Subgroup      | **1288 / 1288** |
+| Subgroup      | **2049 / 2715** (75.5%, by-name `coverage_report("usda_subgroup")`) |
 
 ---
 
@@ -501,7 +501,7 @@ pedon <- extract_pedon_from_pdf(
 )
 
 classify_wrb2022(pedon)$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 ```
 
 The VLM extracts a JSON-Schema-validated `PedonRecord` from a field-report PDF (or photo); the deterministic key takes it from there. The schema rejects any LLM hallucination of class names — extraction is restricted to per-attribute observations.
@@ -596,4 +596,4 @@ The package source is MIT. The bundled benchmark caches retain their respective 
 
 ---
 
-<sub>**Status (v0.9.184, 2026-07-08)**: on CRAN (0.9.184) + live web app at [soilkeypro.com](https://soilkeypro.com). `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs + 229 of 234 canonical qualifiers deliverable, 5 honest gaps), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 003 of 2 715 subgroups = 73.8%; run `coverage_report()` for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).</sub>
+<sub>**Status (v0.9.186, 2026-07-15)**: on CRAN (0.9.184) + live web app at [soilkeypro.com](https://soilkeypro.com). `R CMD check --as-cran` returns 0 errors / 0 warnings / 2 trivial NOTEs. All seven CI matrix runs (macOS, Ubuntu × 3 R versions, Windows, pkgdown, test-coverage) green on every PR merged to `main` since v0.9.65. **All three classification systems wired end-to-end down to the deepest categorical level.** WRB 2022 (32 RSGs, 40 diagnostic horizons + 17 properties + 19 materials, 233 of 234 canonical qualifiers deliverable, 1 honest gap — all auditable by `coverage_report()`), SiBCS 5 (Order → Suborder → Great Group → Subgroup → Family; 13 / 44 / 192 / 938 registered classes), USDA Soil Taxonomy 13 (Order → Suborder → Great Group → Subgroup, 339/339 great groups + 2 049 of 2 715 subgroups = 75.5%; run `coverage_report()` for the live by-name diff at every level). **DOI**: <https://doi.org/10.5281/zenodo.19930112> (resolves to the latest version on Zenodo). Per-release changes in [`NEWS.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md); roadmap in [`ARCHITECTURE.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/ARCHITECTURE.md); CRAN submission instructions in [`inst/cran-submission/HOW_TO_SUBMIT.md`](https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/cran-submission/HOW_TO_SUBMIT.md).</sub>
