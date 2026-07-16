@@ -164,6 +164,90 @@
        extra   = character(0))
 }
 
+#' Does a diagnostic function have a genuine body (not an unconditional
+#' \code{passed = NA} stub)? A real diagnostic computes its verdict -- it calls
+#' the \code{test_*} predicate helpers, aggregates sub-tests/alternatives, or
+#' assigns \code{passed} from a computation (including delegation such as
+#' \code{passed = r$passed}). Mirrors \code{.qualifier_is_implemented} for the
+#' horizon/property/material families.
+#' @noRd
+.diagnostic_body_is_real <- function(fn) {
+  b <- paste(deparse(body(fn)), collapse = " ")
+  grepl("aggregate_subtests|aggregate_alternatives|\\.subtest_result|test_[a-z]|\\.q_presence",
+        b) ||
+    grepl("passed\\s*(<-|=)\\s*(?!NA[,)[:space:]])", b, perl = TRUE)
+}
+
+#' WRB 2022 diagnostic coverage (canonical vs genuinely-implemented functions).
+#'
+#' Diffs, for one category, the official WRB 2022 diagnostic set -- transcribed
+#' from IUSS Working Group WRB (2022) Chapter 3 section headers into
+#' \code{inst/extdata/canonical/wrb2022_diagnostics.csv} (40 horizons + 17
+#' properties + 19 materials) -- against the soilKey functions crosswalked to
+#' each name. "covered" means the mapped function exists in the namespace AND
+#' has a real body (not an unconditional \code{passed = NA} stub); the CSV
+#' crosswalk is the auditable artefact that replaces the hand-asserted README
+#' tallies. Comparison is by canonical NAME, never by code.
+#' @noRd
+.coverage_wrb_diagnostics <- function(category = c("horizon", "property", "material")) {
+  category <- match.arg(category)
+  csv <- system.file("extdata", "canonical", "wrb2022_diagnostics.csv",
+                     package = "soilKey")
+  if (!nzchar(csv) || !file.exists(csv))
+    stop("canonical WRB 2022 diagnostics CSV not found; ",
+         "run data-raw/wrb2022_diagnostics_canonical.R")
+  d <- utils::read.csv(csv, stringsAsFactors = FALSE)
+  d <- d[d$category == category, , drop = FALSE]
+  d$fn <- ifelse(is.na(d$soilkey_fn) | !nzchar(d$soilkey_fn), NA_character_, d$soilkey_fn)
+  ns <- asNamespace("soilKey")
+  d$cat <- vapply(seq_len(nrow(d)), function(i) {
+    fn <- d$fn[i]
+    if (is.na(fn) || !exists(fn, where = ns, mode = "function")) return("no_function")
+    if (.diagnostic_body_is_real(get(fn, ns))) "implemented" else "genuine_stub"
+  }, character(1))
+  d$covered <- d$cat == "implemented"
+
+  plural   <- c(horizon = "horizons", property = "properties",
+                material = "materials")[[category]]
+  by_group <- data.frame(group = plural, canonical_n = nrow(d),
+                         covered_n = sum(d$covered), missing_n = sum(!d$covered),
+                         pct = round(100 * mean(d$covered), 1), stringsAsFactors = FALSE)
+  overall  <- data.frame(system = "wrb2022", level = paste0(category, " (diagnostic)"),
+                         canonical_n = nrow(d), registered_n = sum(d$covered),
+                         covered_n = sum(d$covered), missing_n = sum(!d$covered),
+                         pct = round(100 * mean(d$covered), 1), stringsAsFactors = FALSE)
+  list(overall = overall, by_group = by_group,
+       missing = sort(d$official[!d$covered]),
+       stubs   = sort(d$official[d$cat == "genuine_stub"]),
+       extra   = character(0))
+}
+
+#' WRB 2022 Reference Soil Group coverage (key.yaml vs canonical 32 RSGs).
+#'
+#' "covered" means the RSG appears, by NAME, in the deterministic key
+#' (\code{inst/rules/wrb2022/key.yaml}). The canonical set is the 32 RSGs of
+#' \code{\link{wrb2022_canonical}} (\code{$rsg}).
+#' @noRd
+.coverage_wrb_rsg <- function() {
+  canon <- sort(unique(toupper(trimws(wrb2022_canonical()$rsg$reference_soil_group))))
+  k <- yaml::read_yaml(system.file("rules", "wrb2022", "key.yaml", package = "soilKey"))
+  reg <- toupper(trimws(vapply(k$rsgs,
+    function(e) e$name %||% e$rsg %||% NA_character_, character(1))))
+  reg <- reg[!is.na(reg)]
+  covered <- canon %in% reg
+
+  by_group <- data.frame(group = "rsg", canonical_n = length(canon),
+                         covered_n = sum(covered), missing_n = sum(!covered),
+                         pct = round(100 * mean(covered), 1), stringsAsFactors = FALSE)
+  overall  <- data.frame(system = "wrb2022", level = "reference soil group",
+                         canonical_n = length(canon), registered_n = length(unique(reg)),
+                         covered_n = sum(covered), missing_n = sum(!covered),
+                         pct = round(100 * mean(covered), 1), stringsAsFactors = FALSE)
+  list(overall = overall, by_group = by_group,
+       missing = canon[!covered],
+       extra   = sort(setdiff(reg, canon)))
+}
+
 #' Names registered under a USDA level YAML directory (great-groups / suborders).
 #' @noRd
 .coverage_registered_usda_level <- function(subdir, yaml_key) {
@@ -248,10 +332,15 @@
 #' @param system Which axis to measure. USDA taxon levels against the Soil
 #'   Taxonomy 13th-edition code set (\code{\link{kst13_codes}}):
 #'   \code{"usda_subgroup"} (default), \code{"usda_great_group"},
-#'   \code{"usda_suborder"}. WRB 2022 qualifiers against
-#'   \code{\link{wrb2022_canonical}}: \code{"wrb_qualifiers"} -- here "covered"
-#'   means the \code{qual_*} function exists \emph{and} is a genuine
-#'   implementation (not an unconditional \code{passed = NA} stub), and the
+#'   \code{"usda_suborder"}. WRB 2022 against \code{\link{wrb2022_canonical}}
+#'   and the canonical diagnostic reference
+#'   (\code{inst/extdata/canonical/wrb2022_diagnostics.csv}):
+#'   \code{"wrb_qualifiers"}, \code{"wrb_horizons"} (40 diagnostic horizons),
+#'   \code{"wrb_properties"} (17 diagnostic properties), \code{"wrb_materials"}
+#'   (19 diagnostic materials), and \code{"wrb_rsg"} (32 Reference Soil Groups,
+#'   diffed against \code{inst/rules/wrb2022/key.yaml}). For the qualifier and
+#'   diagnostic axes "covered" means the mapped function exists \emph{and} is a
+#'   genuine implementation (not an unconditional \code{passed = NA} stub); the
 #'   inert ones are returned in \code{$stubs}. \code{"sibcs"} has no external
 #'   canonical class list, so it honestly reports registered class counts per
 #'   level only (no percentage).
@@ -275,7 +364,9 @@
 #'
 #' @export
 coverage_report <- function(system = c("usda_subgroup", "usda_great_group",
-                                       "usda_suborder", "wrb_qualifiers", "sibcs"),
+                                       "usda_suborder", "wrb_qualifiers",
+                                       "wrb_horizons", "wrb_properties",
+                                       "wrb_materials", "wrb_rsg", "sibcs"),
                             write = FALSE, report_dir = NULL) {
   system <- match.arg(system)
   res <- switch(system,
@@ -283,6 +374,10 @@ coverage_report <- function(system = c("usda_subgroup", "usda_great_group",
     usda_great_group = .coverage_usda_named_level(3L, "great-groups", "great_groups", "great_group"),
     usda_suborder    = .coverage_usda_named_level(2L, "suborders", "suborders", "suborder"),
     wrb_qualifiers   = .coverage_wrb_qualifiers(),
+    wrb_horizons     = .coverage_wrb_diagnostics("horizon"),
+    wrb_properties   = .coverage_wrb_diagnostics("property"),
+    wrb_materials    = .coverage_wrb_diagnostics("material"),
+    wrb_rsg          = .coverage_wrb_rsg(),
     sibcs            = .coverage_sibcs())
 
   o <- res$overall
