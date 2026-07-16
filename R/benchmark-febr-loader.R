@@ -171,10 +171,22 @@ load_febr_pedons <- function(path,
 #'
 #' @keywords internal
 .SIBCS_LEGACY_ORDER_MAP <- c(
-  "Podzolicos" = "Argissolos",
-  "Gleis"      = "Gleissolos",
-  "Aluviais"   = "Neossolos",
-  "Solos"      = NA_character_
+  # legacy / old-nomenclature names
+  "Podzolicos"    = "Argissolos",    # Podzolico Vermelho-Amarelo (old)
+  "Podzois"       = "Espodossolos",  # Podzol (NB: distinct from Podzolico above)
+  "Gleis"         = "Gleissolos",
+  "Gleys"         = "Gleissolos",
+  "Aluviais"      = "Neossolos",     # Solos Aluviais (old)
+  "Areias"        = "Neossolos",     # Areias Quartzosas -> Neossolos Quartzarenicos
+  "Lateritas"     = "Plintossolos",  # Laterita Hidromorfica -> plinthite
+  # v0.9.187 -- dense national archives (BDsolos) carry OCR/legacy typos that
+  # were scored as misses purely because the reference string was malformed.
+  "Latosolos"     = "Latossolos",    # single-S typo
+  "Gleiossolos"   = "Gleissolos",    # extra-i typo
+  "Cambissoos"    = "Cambissolos",   # dropped-L typo
+  "Cambissolicos" = "Cambissolos",
+  "Esposdossolos" = "Espodossolos",  # transposition typo
+  "Solos"         = NA_character_    # bare "Solos ..." -> unrecoverable
 )
 
 

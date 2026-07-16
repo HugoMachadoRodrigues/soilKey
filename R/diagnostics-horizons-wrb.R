@@ -202,6 +202,14 @@ argic <- function(pedon, min_thickness = 7.5,
     final_passed <- agg$passed
   }
 
+  # v0.9.187 -- designation-driven morphological fallback (opt-in). A "Bt"
+  # horizon records field-observed clay illuviation; accept it as argic when the
+  # quantitative clay-increase data is absent (common in legacy 2-sample
+  # profiles), at a downgraded morphological grade. Unlike the films-based path
+  # above it does not require a recorded clay_films qualifier.
+  mi <- .apply_morph_inference("argic", h, final_passed, final_layers, tests)
+  final_passed <- mi$passed; final_layers <- mi$layers; tests <- mi$evidence
+
   DiagnosticResult$new(
     name      = "argic",
     passed    = final_passed,
@@ -294,6 +302,14 @@ ferralic <- function(pedon,
 
   agg <- aggregate_subtests(tests)
 
+  # v0.9.187 -- designation-driven morphological fallback (opt-in). A "Bw"/"Bo"
+  # horizon is the field pedologist's call of an in-situ, strongly-weathered
+  # (latossolic/ferralic) B; accept it when the quantitative CEC-per-clay /
+  # texture data is missing or borderline, at a downgraded morphological grade.
+  ev  <- c(tests, list(engine = engine, max_cec_used = max_cec))
+  mi  <- .apply_morph_inference("ferralic", h, agg$passed, agg$layers, ev,
+                                min_top = 25)
+
   notes_str <- paste0(
     "v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic. ",
     "v0.9.67 engine=", engine, " threshold = ", max_cec, " cmol_c/kg clay."
@@ -301,9 +317,9 @@ ferralic <- function(pedon,
 
   DiagnosticResult$new(
     name      = "ferralic",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = c(tests, list(engine = engine, max_cec_used = max_cec)),
+    passed    = mi$passed,
+    layers    = mi$layers,
+    evidence  = mi$evidence,
     missing   = agg$missing,
     reference = paste("IUSS Working Group WRB (2022), Chapter 3.1.10,",
                        "Ferralic horizon (p. 44)",
@@ -856,7 +872,8 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 
   # v0.9.72 -- designation-suffix morphological inference
   designation_inference_enabled <- isTRUE(
-    getOption("soilKey.plinthic_designation_inference", default = FALSE))
+    getOption("soilKey.plinthic_designation_inference", default = FALSE)) ||
+    .morph_inference_enabled()   # v0.9.187: also under the global morph mode
   inferred_layers <- integer(0)
   inference_path  <- list(passed = NA, layers = integer(0), source = "off")
   if (designation_inference_enabled && !isTRUE(agg$passed)) {
@@ -1157,11 +1174,16 @@ spodic <- function(pedon,
 
   agg <- aggregate_subtests(tests)
 
+  # v0.9.187 -- designation fallback (opt-in): a Bh/Bs records field-observed
+  # illuvial humus/sesquioxides; accept it when Al/Fe-oxalate AND the albic /
+  # pH / OC corroboration the strict v0.9.19 path needs are all missing.
+  mi <- .apply_morph_inference("spodic", h, agg$passed, agg$layers, tests)
+
   DiagnosticResult$new(
     name      = "spodic",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
+    passed    = mi$passed,
+    layers    = mi$layers,
+    evidence  = mi$evidence,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon",
     notes     = "v0.9.19: + morphological inference path when Al/Fe oxalate missing"
@@ -1306,7 +1328,8 @@ duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
   arg <- argic(pedon)
   designation_inference_enabled <- isTRUE(
-    getOption("soilKey.natric_designation_inference", default = FALSE))
+    getOption("soilKey.natric_designation_inference", default = FALSE)) ||
+    .morph_inference_enabled()   # v0.9.187: also under the global morph mode
 
   # ---- canonical path: argic + ESP >= min_esp on argic layers ----
   if (isTRUE(arg$passed)) {
