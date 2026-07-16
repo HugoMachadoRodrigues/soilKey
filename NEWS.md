@@ -37,7 +37,19 @@ A-to-B clay increase, even though its "Bt"/"Bw" designation states the diagnosis
 Default (`FALSE`) is **byte-identical**: all 44 canonical fixtures unchanged,
 full suite green (+21 new tests). This is the first step of a cross-system
 accuracy pass; follow-ups extend the mechanism to USDA and add fair-denominator
-benchmark reporting plus dirty-label normalization for the national archives.
+benchmark reporting.
+
+## Benchmark harness -- dirty reference-label normalization
+
+The dense national archives (Embrapa BDsolos) carry OCR/legacy typos and old
+nomenclature in their `reference_sibcs` strings that were scored as misses
+purely because the *reference* was malformed, not the prediction.
+`.SIBCS_LEGACY_ORDER_MAP` (used by `normalise_febr_sibcs()`, shared by the FEBR
+and BDsolos benchmark loaders) now maps them: `Latosolos`->Latossolos and
+`Cambissoos`/`Gleiossolos`/`Esposdossolos` (typos), and `Podzois`->Espodossolos,
+`Gleys`->Gleissolos, `Areias`->Neossolos, `Lateritas`->Plintossolos (legacy
+names). Modern labels are unchanged; this only affects benchmark scoring, never
+classification.
 
 # soilKey 0.9.186 (2026-07-15)
 
