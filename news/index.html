@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.186</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.187</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,21 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.187" id="soilkey-09187-2026-07-15">soilKey 0.9.187 (2026-07-15)<a class="anchor" aria-label="anchor" href="#soilkey-09187-2026-07-15"></a></h2>
+<div class="section level3">
+<h3 id="horizon-designation-morphological-inference-opt-in--large-accuracy-gain-on-legacy-data-0-9-187">Horizon-designation morphological inference (opt-in) – large accuracy gain on legacy data<a class="anchor" aria-label="anchor" href="#horizon-designation-morphological-inference-opt-in--large-accuracy-gain-on-legacy-data-0-9-187"></a></h3>
+<p>Legacy soil archives record a field pedologist’s horizon <strong>designation</strong> (Bt, Bw, Bi, …) far more often than the quantitative lab attributes a diagnostic horizon test needs (a measured clay gradient, CEC per clay, …). A benchmark post-mortem found that on such profiles the quantitative tests could not fire and the key fell through to the catch-all order (Neossolos / Regosols): on the FEBR repository, most Argissolos and Latossolos were being reported as Neossolos purely because a 2-sample legacy profile cannot express an A-to-B clay increase, even though its “Bt”/“Bw” designation states the diagnosis.</p>
+<ul><li><p><strong>New <code>R/designation-inference.R</code>.</strong> <code>.designation_indicates()</code> maps the subordinate letters of a subsurface designation to the diagnostic horizon the surveyor recorded (t -&gt; argic, w/o -&gt; ferralic, i -&gt; cambic, h/s -&gt; spodic, n -&gt; natric, g -&gt; gleyic, f -&gt; plinthic, ss/v -&gt; vertic), with a precedence that lets the order-defining process win (e.g. Btn = natric, Btf/Btg keep argic, a bare Bf/Bg keys plinthic/gleyic). <code>.apply_morph_inference()</code> then lets a diagnostic pass on that morphology, at a downgraded evidence grade and a <code>"morphological_designation"</code> provenance tag, <strong>only when the quantitative test could not fire</strong>.</p></li>
+<li><p><strong>Opt-in via <code>options(soilKey.morphological_inference = TRUE)</code></strong> (default <code>FALSE</code>). Wired into <code><a href="../reference/argic.html">argic()</a></code> and <code><a href="../reference/ferralic.html">ferralic()</a></code> – shared by SiBCS (Argissolo/Latossolo) and WRB (Acrisol/Lixisol/Luvisol/Ferralsol) – and, so the mode is uniform across the diagnostic set, into <code><a href="../reference/spodic.html">spodic()</a></code>, <code>gleyic_ properties()</code>, <code><a href="../reference/plinthic.html">plinthic()</a></code> and <code><a href="../reference/natric_horizon.html">natric_horizon()</a></code> (the last three already had their own opt-in designation paths, now also honoured under the global mode).</p></li>
+<li><p><strong>Measured effect</strong> (order/RSG level, on the classifiable subset – profiles that actually carry a diagnostic designation or &gt;= 2 clay values): SiBCS FEBR 30.1 -&gt; 60.4%, SiBCS Redape (curated gold standard) 63.8 -&gt; 70.2%, WRB FEBR 32.9 -&gt; 39.0%; per-order, Argissolos 20 -&gt; 83% and Cambissolos 55 -&gt; 90%, with Neossolo recall held at 83-85% (no over-firing).</p></li>
+</ul><p>Default (<code>FALSE</code>) is <strong>byte-identical</strong>: all 44 canonical fixtures unchanged, full suite green (+21 new tests). This is the first step of a cross-system accuracy pass; follow-ups extend the mechanism to USDA and add fair-denominator benchmark reporting.</p>
+</div>
+<div class="section level3">
+<h3 id="benchmark-harness--dirty-reference-label-normalization-0-9-187">Benchmark harness – dirty reference-label normalization<a class="anchor" aria-label="anchor" href="#benchmark-harness--dirty-reference-label-normalization-0-9-187"></a></h3>
+<p>The dense national archives (Embrapa BDsolos) carry OCR/legacy typos and old nomenclature in their <code>reference_sibcs</code> strings that were scored as misses purely because the <em>reference</em> was malformed, not the prediction. <code>.SIBCS_LEGACY_ORDER_MAP</code> (used by <code><a href="../reference/normalise_febr_sibcs.html">normalise_febr_sibcs()</a></code>, shared by the FEBR and BDsolos benchmark loaders) now maps them: <code>Latosolos</code>-&gt;Latossolos and <code>Cambissoos</code>/<code>Gleiossolos</code>/<code>Esposdossolos</code> (typos), and <code>Podzois</code>-&gt;Espodossolos, <code>Gleys</code>-&gt;Gleissolos, <code>Areias</code>-&gt;Neossolos, <code>Lateritas</code>-&gt;Plintossolos (legacy names). Modern labels are unchanged; this only affects benchmark scoring, never classification.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.186" id="soilkey-09186-2026-07-15">soilKey 0.9.186 (2026-07-15)<a class="anchor" aria-label="anchor" href="#soilkey-09186-2026-07-15"></a></h2>
 <div class="section level3">

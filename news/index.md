@@ -1,5 +1,72 @@
 # Changelog
 
+## soilKey 0.9.187 (2026-07-15)
+
+### Horizon-designation morphological inference (opt-in) – large accuracy gain on legacy data
+
+Legacy soil archives record a field pedologist’s horizon **designation**
+(Bt, Bw, Bi, …) far more often than the quantitative lab attributes a
+diagnostic horizon test needs (a measured clay gradient, CEC per clay,
+…). A benchmark post-mortem found that on such profiles the quantitative
+tests could not fire and the key fell through to the catch-all order
+(Neossolos / Regosols): on the FEBR repository, most Argissolos and
+Latossolos were being reported as Neossolos purely because a 2-sample
+legacy profile cannot express an A-to-B clay increase, even though its
+“Bt”/“Bw” designation states the diagnosis.
+
+- **New `R/designation-inference.R`.** `.designation_indicates()` maps
+  the subordinate letters of a subsurface designation to the diagnostic
+  horizon the surveyor recorded (t -\> argic, w/o -\> ferralic, i -\>
+  cambic, h/s -\> spodic, n -\> natric, g -\> gleyic, f -\> plinthic,
+  ss/v -\> vertic), with a precedence that lets the order-defining
+  process win (e.g. Btn = natric, Btf/Btg keep argic, a bare Bf/Bg keys
+  plinthic/gleyic). `.apply_morph_inference()` then lets a diagnostic
+  pass on that morphology, at a downgraded evidence grade and a
+  `"morphological_designation"` provenance tag, **only when the
+  quantitative test could not fire**.
+
+- **Opt-in via `options(soilKey.morphological_inference = TRUE)`**
+  (default `FALSE`). Wired into
+  [`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
+  and
+  [`ferralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md)
+  – shared by SiBCS (Argissolo/Latossolo) and WRB
+  (Acrisol/Lixisol/Luvisol/Ferralsol) – and, so the mode is uniform
+  across the diagnostic set, into
+  [`spodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/spodic.md),
+  `gleyic_ properties()`,
+  [`plinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthic.md)
+  and
+  [`natric_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/natric_horizon.md)
+  (the last three already had their own opt-in designation paths, now
+  also honoured under the global mode).
+
+- **Measured effect** (order/RSG level, on the classifiable subset –
+  profiles that actually carry a diagnostic designation or \>= 2 clay
+  values): SiBCS FEBR 30.1 -\> 60.4%, SiBCS Redape (curated gold
+  standard) 63.8 -\> 70.2%, WRB FEBR 32.9 -\> 39.0%; per-order,
+  Argissolos 20 -\> 83% and Cambissolos 55 -\> 90%, with Neossolo recall
+  held at 83-85% (no over-firing).
+
+Default (`FALSE`) is **byte-identical**: all 44 canonical fixtures
+unchanged, full suite green (+21 new tests). This is the first step of a
+cross-system accuracy pass; follow-ups extend the mechanism to USDA and
+add fair-denominator benchmark reporting.
+
+### Benchmark harness – dirty reference-label normalization
+
+The dense national archives (Embrapa BDsolos) carry OCR/legacy typos and
+old nomenclature in their `reference_sibcs` strings that were scored as
+misses purely because the *reference* was malformed, not the prediction.
+`.SIBCS_LEGACY_ORDER_MAP` (used by
+[`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md),
+shared by the FEBR and BDsolos benchmark loaders) now maps them:
+`Latosolos`-\>Latossolos and `Cambissoos`/`Gleiossolos`/`Esposdossolos`
+(typos), and `Podzois`-\>Espodossolos, `Gleys`-\>Gleissolos,
+`Areias`-\>Neossolos, `Lateritas`-\>Plintossolos (legacy names). Modern
+labels are unchanged; this only affects benchmark scoring, never
+classification.
+
 ## soilKey 0.9.186 (2026-07-15)
 
 ### WRB 2022 diagnostic completeness is now auditable, not hand-asserted
