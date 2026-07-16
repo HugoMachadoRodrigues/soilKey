@@ -22,9 +22,11 @@ A-to-B clay increase, even though its "Bt"/"Bw" designation states the diagnosis
   test could not fire**.
 
 * **Opt-in via `options(soilKey.morphological_inference = TRUE)`** (default
-  `FALSE`). Wired into `argic()` and `ferralic()` -- which are shared by SiBCS
-  (Argissolo/Latossolo) and WRB (Acrisol/Lixisol/Luvisol/Ferralsol), so a single
-  change lifts both systems.
+  `FALSE`). Wired into `argic()` and `ferralic()` -- shared by SiBCS
+  (Argissolo/Latossolo) and WRB (Acrisol/Lixisol/Luvisol/Ferralsol) -- and, so
+  the mode is uniform across the diagnostic set, into `spodic()`, `gleyic_
+  properties()`, `plinthic()` and `natric_horizon()` (the last three already had
+  their own opt-in designation paths, now also honoured under the global mode).
 
 * **Measured effect** (order/RSG level, on the classifiable subset -- profiles
   that actually carry a diagnostic designation or >= 2 clay values):
@@ -33,9 +35,9 @@ A-to-B clay increase, even though its "Bt"/"Bw" designation states the diagnosis
   55 -> 90%, with Neossolo recall held at 83-85% (no over-firing).
 
 Default (`FALSE`) is **byte-identical**: all 44 canonical fixtures unchanged,
-full suite green. This is the first step of a cross-system accuracy pass;
-follow-ups extend the same mechanism to the remaining diagnostics (spodic,
-natric, gleyic, plinthic) and to USDA.
+full suite green (+21 new tests). This is the first step of a cross-system
+accuracy pass; follow-ups extend the mechanism to USDA and add fair-denominator
+benchmark reporting plus dirty-label normalization for the national archives.
 
 # soilKey 0.9.186 (2026-07-15)
 

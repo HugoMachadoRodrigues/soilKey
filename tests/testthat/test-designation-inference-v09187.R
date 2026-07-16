@@ -75,3 +75,31 @@ test_that("inference does not fire without a diagnostic B/E designation", {
   expect_false(isTRUE(argic(p)$passed))
   expect_false(isTRUE(ferralic(p, engine = "soilkey")$passed))
 })
+
+# --- 5. the same mechanism reaches spodic / gleyic / plinthic ----------------
+test_that("inference ON reaches spodic (Bh), gleyic (Bg) and plinthic (Bf)", {
+  old <- options(soilKey.morphological_inference = TRUE); on.exit(options(old))
+
+  sp <- mk(data.frame(designation = c("E", "Bh"), top_cm = c(0, 20),
+                      bottom_cm = c(20, 60), clay_pct = c(8, 10),
+                      stringsAsFactors = FALSE))
+  expect_true(isTRUE(spodic(sp)$passed))
+
+  gl <- mk(data.frame(designation = c("Ap", "Bg"), top_cm = c(0, 20),
+                      bottom_cm = c(20, 70), clay_pct = c(20, 22),
+                      stringsAsFactors = FALSE))
+  expect_true(isTRUE(gleyic_properties(gl)$passed))
+
+  pl <- mk(data.frame(designation = c("Ap", "Bf"), top_cm = c(0, 20),
+                      bottom_cm = c(20, 80), clay_pct = c(25, 30),
+                      stringsAsFactors = FALSE))
+  expect_true(isTRUE(plinthic(pl)$passed))
+})
+
+test_that("those diagnostics stay OFF by default (byte-identical)", {
+  old <- options(soilKey.morphological_inference = FALSE); on.exit(options(old))
+  sp <- mk(data.frame(designation = c("E", "Bh"), top_cm = c(0, 20),
+                      bottom_cm = c(20, 60), clay_pct = c(8, 10),
+                      stringsAsFactors = FALSE))
+  expect_false(isTRUE(spodic(sp)$passed))
+})

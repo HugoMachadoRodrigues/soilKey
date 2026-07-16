@@ -872,7 +872,8 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 
   # v0.9.72 -- designation-suffix morphological inference
   designation_inference_enabled <- isTRUE(
-    getOption("soilKey.plinthic_designation_inference", default = FALSE))
+    getOption("soilKey.plinthic_designation_inference", default = FALSE)) ||
+    .morph_inference_enabled()   # v0.9.187: also under the global morph mode
   inferred_layers <- integer(0)
   inference_path  <- list(passed = NA, layers = integer(0), source = "off")
   if (designation_inference_enabled && !isTRUE(agg$passed)) {
@@ -1173,11 +1174,16 @@ spodic <- function(pedon,
 
   agg <- aggregate_subtests(tests)
 
+  # v0.9.187 -- designation fallback (opt-in): a Bh/Bs records field-observed
+  # illuvial humus/sesquioxides; accept it when Al/Fe-oxalate AND the albic /
+  # pH / OC corroboration the strict v0.9.19 path needs are all missing.
+  mi <- .apply_morph_inference("spodic", h, agg$passed, agg$layers, tests)
+
   DiagnosticResult$new(
     name      = "spodic",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
+    passed    = mi$passed,
+    layers    = mi$layers,
+    evidence  = mi$evidence,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 3, Spodic horizon",
     notes     = "v0.9.19: + morphological inference path when Al/Fe oxalate missing"
@@ -1322,7 +1328,8 @@ duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
   arg <- argic(pedon)
   designation_inference_enabled <- isTRUE(
-    getOption("soilKey.natric_designation_inference", default = FALSE))
+    getOption("soilKey.natric_designation_inference", default = FALSE)) ||
+    .morph_inference_enabled()   # v0.9.187: also under the global morph mode
 
   # ---- canonical path: argic + ESP >= min_esp on argic layers ----
   if (isTRUE(arg$passed)) {

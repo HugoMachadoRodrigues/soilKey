@@ -136,6 +136,11 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
                                     function(t) t$missing %||% character(0))))
   if (is.null(missing)) missing <- character(0)
 
+  # v0.9.187 -- designation fallback (opt-in): a bare Bg/Cg records field-
+  # observed gleying; accept it when the redox data is missing.
+  mi <- .apply_morph_inference("gleyic", h, passed, layers, tests)
+  passed <- mi$passed; layers <- mi$layers; tests <- mi$evidence
+
   DiagnosticResult$new(
     name      = "gleyic_properties",
     passed    = passed,
