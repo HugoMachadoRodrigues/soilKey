@@ -150,6 +150,21 @@ ui <- function(request) {
           "else if(e.target.closest('#sk_assistant_close')||e.target.closest('#sk_assistant_backdrop')){close();}});",
           "document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});});")))
       ),
+      # Cloudflare Turnstile (spam protection for the Support form). Loaded only
+      # when configured; the site key is public. The widget is rendered on
+      # demand into the Support modal via the 'sk-render-turnstile' message.
+      if (turnstile_enabled()) tags$head(
+        tags$script(src = "https://challenges.cloudflare.com/turnstile/v0/api.js",
+                    async = NA, defer = NA),
+        tags$script(htmltools::HTML(paste0(
+          "Shiny.addCustomMessageHandler('sk-render-turnstile',function(m){",
+          "var el=document.getElementById('sk-turnstile');",
+          "if(!el||!window.turnstile){return;}el.innerHTML='';",
+          "turnstile.render(el,{sitekey:m.sitekey,theme:'auto',",
+          "callback:function(t){Shiny.setInputValue('support_turnstile',t,{priority:'event'});},",
+          "'expired-callback':function(){Shiny.setInputValue('support_turnstile','',{priority:'event'});}});",
+          "});")))
+      ),
       uiOutput("pedon_ribbon"),
       # ---- the Assistant: a floating button + a right-side slide-out drawer,
       # persistent across every tab (position:fixed, so outside the nav flow).
@@ -411,37 +426,95 @@ server <- function(input, output, session) {
     bslib::nav_select("main_nav", "Classify")
   })
 
-  # ---- Support modal ------------------------------------------------------
-  # Opens an in-app dialog (so the click always does something visible) with a
-  # "Compose email" button. The support address is assembled in JS at click
-  # time, so it never appears as visible text or a hoverable href in the DOM.
+  # ---- Support (in-app contact form) --------------------------------------
+  # The message is sent from the Shiny SERVER via Resend (see R/support_email.R),
+  # so the maintainer's address never reaches the browser. Turnstile + a
+  # honeypot + a per-session rate limit guard against spam. If the backend is
+  # not configured the form is hidden and only GitHub Issues is offered, so the
+  # app still runs locally and in CI.
+  support_sent_times <- reactiveVal(numeric(0))
+
   observeEvent(input$support, {
+    gh <- HTML(sprintf(
+      '%s <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues" target="_blank" rel="noopener">GitHub Issues</a>.',
+      i18n("support.bullet_issues")))
+    if (!support_mail_enabled()) {
+      showModal(modalDialog(
+        title = tagList(icon("life-ring"), " ", i18n("support.title")),
+        easyClose = TRUE, size = "m",
+        tags$p(i18n("support.body")), tags$ul(tags$li(gh)),
+        footer = modalButton(i18n("support.close"))))
+      return(invisible())
+    }
     showModal(modalDialog(
       title = tagList(icon("life-ring"), " ", i18n("support.title")),
       easyClose = TRUE, size = "m",
-      tags$p(i18n("support.body")),
-      tags$ul(
-        tags$li(i18n("support.bullet_email")),
-        tags$li(HTML(sprintf(
-          '%s <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues" target="_blank" rel="noopener">GitHub Issues</a>.',
-          i18n("support.bullet_issues"))))
-      ),
+      tags$p(i18n("support.body_form")),
+      textInput("support_name", i18n("support.name"), width = "100%"),
+      textInput("support_email", i18n("support.email"), width = "100%",
+                placeholder = i18n("support.email_ph")),
+      textInput("support_subject", i18n("support.subject"), width = "100%"),
+      tags$label(`for` = "support_message", class = "form-label",
+                 i18n("support.message_label")),
+      tags$textarea(id = "support_message", class = "form-control", rows = 5,
+                    placeholder = i18n("support.message_ph")),
+      # Honeypot: off-screen and aria-hidden. Bots fill it; humans never see it.
+      tags$div(class = "sk-hp", `aria-hidden` = "true",
+               style = paste0("position:absolute;left:-9999px;top:auto;",
+                              "width:1px;height:1px;overflow:hidden;"),
+               tags$label(`for` = "support_hp", "Leave this field empty"),
+               textInput("support_hp", NULL)),
+      if (turnstile_enabled()) tags$div(id = "sk-turnstile", class = "my-2"),
+      tags$small(class = "text-muted d-block mt-2", i18n("support.privacy")),
+      tags$hr(),
+      tags$small(class = "text-muted", gh),
       footer = tagList(
         modalButton(i18n("support.close")),
-        tags$a(
-          class = "btn btn-primary",
-          icon("envelope"), " ", i18n("support.compose"),
-          href = "#",
-          onclick = paste0(
-            "var a=['rodrigues.h','ufl.edu'].join(String.fromCharCode(64));",
-            "var s=encodeURIComponent('soilKey Pro — support request');",
-            "var b=encodeURIComponent('Please describe your question or the ",
-            "problem and what you were doing when it happened:",
-            "\\n\\n\\n\\n--- soilKey Pro');",
-            "window.location.href='mailto:'+a+'?subject='+s+'&body='+b;",
-            "return false;"))
-      )
+        actionButton("support_send",
+                     tagList(icon("paper-plane"), " ", i18n("support.send")),
+                     class = "btn btn-primary"))
     ))
+    if (turnstile_enabled())
+      session$sendCustomMessage("sk-render-turnstile",
+                                list(sitekey = turnstile_site_key()))
+  })
+
+  observeEvent(input$support_send, {
+    if (!support_mail_enabled()) return(invisible())
+    # 1. honeypot -- silently drop (pretend success) so bots get no signal.
+    if (nzchar(trimws(input$support_hp %||% ""))) { removeModal(); return(invisible()) }
+    # 2. validation
+    em  <- trimws(input$support_email %||% "")
+    msg <- trimws(input$support_message %||% "")
+    if (!.sk_valid_email(em) || nchar(msg) < 10L) {
+      showNotification(i18n("support.err_validation"), type = "error", duration = 6)
+      return(invisible())
+    }
+    # 3. per-session rate limit: at most 3 messages / 10 minutes.
+    now    <- as.numeric(Sys.time())
+    recent <- support_sent_times()[support_sent_times() > now - 600]
+    if (length(recent) >= 3L) {
+      showNotification(i18n("support.err_rate"), type = "error", duration = 6)
+      return(invisible())
+    }
+    # 4. Turnstile (skipped only if not configured)
+    if (!isTRUE(verify_turnstile(input$support_turnstile %||% "")$ok)) {
+      showNotification(i18n("support.err_captcha"), type = "error", duration = 6)
+      return(invisible())
+    }
+    # 5. send server-side
+    sub <- trimws(input$support_subject %||% "")
+    res <- send_support_email(
+      name = trimws(input$support_name %||% ""), reply_to = em,
+      subject = if (nzchar(sub)) sub else "(no subject)", message = msg,
+      meta = list(lang = .sk_app_lang()))
+    if (isTRUE(res$ok)) {
+      support_sent_times(c(recent, now))
+      removeModal()
+      showNotification(i18n("support.ok"), type = "message", duration = 6)
+    } else {
+      showNotification(i18n("support.err_send"), type = "error", duration = 8)
+    }
   })
 }
 
