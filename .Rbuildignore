@@ -39,3 +39,4 @@
 ^inst/extdata/kssl_nasis_sample\.rds$
 ^inst/extdata/wosis_stratified_sample\.rds$
 ^\.positai$
+^\.gcloudignore$
