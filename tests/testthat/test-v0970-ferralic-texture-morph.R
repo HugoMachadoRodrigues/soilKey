@@ -52,7 +52,9 @@ test_that("v0.9.70: completely-NA-texture profile returns NA (canonical)", {
 test_that("v0.9.70: morphological fallback ON -- recovers Bw subsoil with NA texture", {
   pr <- .no_texture_pedon(with_topsoil_texture = FALSE)
   withr::with_options(list(soilKey.ferralic_texture_morphological_fallback = TRUE), {
-    res <- test_ferralic_texture(pr$horizons)
+    # v0.9.188: the Bw->ferralic-texture inference is tropical-only; pass the
+    # region explicitly (the .no_texture_pedon is a Brazilian, lat -22 profile).
+    res <- test_ferralic_texture(pr$horizons, tropical = TRUE)
     expect_true(isTRUE(res$passed))
     # Should record the source
     expect_identical(res$details$source, "morphological_fallback")
@@ -76,7 +78,8 @@ test_that("v0.9.70: morphological fallback rejects topsoil-only Bw (top_cm <= 20
   hz <- ensure_horizon_schema(hz)
   pr <- PedonRecord$new(site = list(id = "topsoil-only"), horizons = hz)
   withr::with_options(list(soilKey.ferralic_texture_morphological_fallback = TRUE), {
-    res <- test_ferralic_texture(pr$horizons)
+    # tropical = TRUE so the fallback is entered and then rejected on top_cm <= 20
+    res <- test_ferralic_texture(pr$horizons, tropical = TRUE)
     expect_true(is.na(res$passed))
   })
 })
@@ -98,7 +101,8 @@ test_that("v0.9.70: morphological fallback rejects non-Bw designations (e.g. Bt)
   hz <- ensure_horizon_schema(hz)
   pr <- PedonRecord$new(site = list(id = "Bt-not-Bw"), horizons = hz)
   withr::with_options(list(soilKey.ferralic_texture_morphological_fallback = TRUE), {
-    res <- test_ferralic_texture(pr$horizons)
+    # tropical = TRUE so the fallback is entered and then rejected: Bt is not Bw/Bo
+    res <- test_ferralic_texture(pr$horizons, tropical = TRUE)
     expect_true(is.na(res$passed))
   })
 })
@@ -144,7 +148,8 @@ test_that("v0.9.70: ferralic with morphological-fallback recovers Bw-only Latoss
     ph_h2o   = c(4.5, 4.7, 4.8)
   )
   hz <- ensure_horizon_schema(hz)
-  pr <- PedonRecord$new(site = list(id = "Bw-only"), horizons = hz)
+  # v0.9.188: Brazilian site so the region resolver reads the Bw as latossolic.
+  pr <- PedonRecord$new(site = list(id = "Bw-only", country = "BR"), horizons = hz)
   on.exit(options(soilKey.ferralic_texture_morphological_fallback = NULL))
   res_off <- ferralic(pr, engine = "aqp")
   # Off: texture passes on topsoil layer but ferralic also needs thickness

@@ -33,24 +33,24 @@ grandes_grupos:
   # ============================================================
   "LB":
     - code: "LBaf"
-      name: "Latossolos Brunos Aluminoferricos"
+      name: "Latossolos Brunos Aluminoférricos"
       tests:
         all_of:
           - carater_alitico: {}
           - carater_ferrico: {}
     - code: "LBal"
-      name: "Latossolos Brunos Aluminicos"
+      name: "Latossolos Brunos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "LBdf"
-      name: "Latossolos Brunos Distroferricos"
+      name: "Latossolos Brunos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "LBd"
-      name: "Latossolos Brunos Distroficos"
+      name: "Latossolos Brunos Distróficos"
       tests:
         all_of:
           - distrofico: {}
@@ -60,23 +60,23 @@ grandes_grupos:
   # ============================================================
   "LA":
     - code: "LAaf"
-      name: "Latossolos Amarelos Acriferricos"
+      name: "Latossolos Amarelos Acriférricos"
       tests:
         all_of:
           - carater_acrico: {}
           - carater_ferrico: {}
     - code: "LAac"
-      name: "Latossolos Amarelos Acricos"
+      name: "Latossolos Amarelos Ácricos"
       tests:
         all_of:
           - carater_acrico: {}
     - code: "LAal"
-      name: "Latossolos Amarelos Aluminicos"
+      name: "Latossolos Amarelos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "LAdf"
-      name: "Latossolos Amarelos Distroferricos"
+      name: "Latossolos Amarelos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
@@ -88,12 +88,12 @@ grandes_grupos:
           - distrofico: {}
           - carater_coeso: { max_depth_cm: 150 }
     - code: "LAd"
-      name: "Latossolos Amarelos Distroficos"
+      name: "Latossolos Amarelos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "LAe"
-      name: "Latossolos Amarelos Eutroficos"
+      name: "Latossolos Amarelos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -103,46 +103,46 @@ grandes_grupos:
   # ============================================================
   "LV":
     - code: "LVpf"
-      name: "Latossolos Vermelhos Perferricos"
+      name: "Latossolos Vermelhos Perférricos"
       tests:
         all_of:
           - carater_perferrico: {}
     - code: "LVaf"
-      name: "Latossolos Vermelhos Acriferricos"
+      name: "Latossolos Vermelhos Acriférricos"
       tests:
         all_of:
           - carater_acrico: {}
           - carater_ferrico: {}
     - code: "LVac"
-      name: "Latossolos Vermelhos Acricos"
+      name: "Latossolos Vermelhos Ácricos"
       tests:
         all_of:
           - carater_acrico: {}
     - code: "LValf"
-      name: "Latossolos Vermelhos Aluminoferricos"
+      name: "Latossolos Vermelhos Aluminoférricos"
       tests:
         all_of:
           - carater_alitico: {}
           - carater_ferrico: {}
     - code: "LVdf"
-      name: "Latossolos Vermelhos Distroferricos"
+      name: "Latossolos Vermelhos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "LVd"
-      name: "Latossolos Vermelhos Distroficos"
+      name: "Latossolos Vermelhos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "LVef"
-      name: "Latossolos Vermelhos Eutroferricos"
+      name: "Latossolos Vermelhos Eutroférricos"
       tests:
         all_of:
           - eutrofico: {}
           - carater_ferrico: {}
     - code: "LVe"
-      name: "Latossolos Vermelhos Eutroficos"
+      name: "Latossolos Vermelhos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -152,34 +152,34 @@ grandes_grupos:
   # ============================================================
   "LVA":
     - code: "LVAaf"
-      name: "Latossolos Vermelho-Amarelos Acriferricos"
+      name: "Latossolos Vermelho-Amarelos Acriférricos"
       tests:
         all_of:
           - carater_acrico: {}
           - carater_ferrico: {}
     - code: "LVAac"
-      name: "Latossolos Vermelho-Amarelos Acricos"
+      name: "Latossolos Vermelho-Amarelos Ácricos"
       tests:
         all_of:
           - carater_acrico: {}
     - code: "LVAal"
-      name: "Latossolos Vermelho-Amarelos Aluminicos"
+      name: "Latossolos Vermelho-Amarelos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "LVAdf"
-      name: "Latossolos Vermelho-Amarelos Distroferricos"
+      name: "Latossolos Vermelho-Amarelos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "LVAd"
-      name: "Latossolos Vermelho-Amarelos Distroficos"
+      name: "Latossolos Vermelho-Amarelos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "LVAe"
-      name: "Latossolos Vermelho-Amarelos Eutroficos"
+      name: "Latossolos Vermelho-Amarelos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}

@@ -37,66 +37,66 @@ subgrupos:
   # ----- 1.1 OJ Fibricos -- 4 subgrupos -----
   "OJF":
     - code: "OJFsa"
-      name: "Organossolos Tiomorficos Fibricos salinos"
+      name: "Organossolos Tiomórficos Fíbricos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "OJFso"
-      name: "Organossolos Tiomorficos Fibricos solodicos"
+      name: "Organossolos Tiomórficos Fíbricos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OJFte"
-      name: "Organossolos Tiomorficos Fibricos terricos"
+      name: "Organossolos Tiomórficos Fíbricos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OJFtp"
-      name: "Organossolos Tiomorficos Fibricos tipicos"
+      name: "Organossolos Tiomórficos Fíbricos típicos"
       tests:
         default: true
 
   # ----- 1.2 OJ Hemicos -- 4 subgrupos -----
   "OJH":
     - code: "OJHsa"
-      name: "Organossolos Tiomorficos Hemicos salinos"
+      name: "Organossolos Tiomórficos Hêmicos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "OJHso"
-      name: "Organossolos Tiomorficos Hemicos solodicos"
+      name: "Organossolos Tiomórficos Hêmicos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OJHte"
-      name: "Organossolos Tiomorficos Hemicos terricos"
+      name: "Organossolos Tiomórficos Hêmicos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OJHtp"
-      name: "Organossolos Tiomorficos Hemicos tipicos"
+      name: "Organossolos Tiomórficos Hêmicos típicos"
       tests:
         default: true
 
   # ----- 1.3 OJ Sapricos -- 4 subgrupos -----
   "OJS":
     - code: "OJSsa"
-      name: "Organossolos Tiomorficos Sapricos salinos"
+      name: "Organossolos Tiomórficos Sápricos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "OJSso"
-      name: "Organossolos Tiomorficos Sapricos solodicos"
+      name: "Organossolos Tiomórficos Sápricos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OJSte"
-      name: "Organossolos Tiomorficos Sapricos terricos"
+      name: "Organossolos Tiomórficos Sápricos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OJStp"
-      name: "Organossolos Tiomorficos Sapricos tipicos"
+      name: "Organossolos Tiomórficos Sápricos típicos"
       tests:
         default: true
 
@@ -110,66 +110,66 @@ subgrupos:
   # ----- 2.1 OO Fibricos -- 4 subgrupos -----
   "OOF":
     - code: "OOFfr"
-      name: "Organossolos Folicos Fibricos fragmentarios"
+      name: "Organossolos Fólicos Fíbricos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "OOFli"
-      name: "Organossolos Folicos Fibricos liticos"
+      name: "Organossolos Fólicos Fíbricos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "OOFcs"
-      name: "Organossolos Folicos Fibricos cambissolicos"
+      name: "Organossolos Fólicos Fíbricos cambissólicos"
       tests:
         all_of:
           - carater_cambissolico: {}
     - code: "OOFtp"
-      name: "Organossolos Folicos Fibricos tipicos"
+      name: "Organossolos Fólicos Fíbricos típicos"
       tests:
         default: true
 
   # ----- 2.2 OO Hemicos -- 4 subgrupos -----
   "OOH":
     - code: "OOHfr"
-      name: "Organossolos Folicos Hemicos fragmentarios"
+      name: "Organossolos Fólicos Hêmicos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "OOHli"
-      name: "Organossolos Folicos Hemicos liticos"
+      name: "Organossolos Fólicos Hêmicos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "OOHcs"
-      name: "Organossolos Folicos Hemicos cambissolicos"
+      name: "Organossolos Fólicos Hêmicos cambissólicos"
       tests:
         all_of:
           - carater_cambissolico: {}
     - code: "OOHtp"
-      name: "Organossolos Folicos Hemicos tipicos"
+      name: "Organossolos Fólicos Hêmicos típicos"
       tests:
         default: true
 
   # ----- 2.3 OO Sapricos -- 4 subgrupos -----
   "OOS":
     - code: "OOSfr"
-      name: "Organossolos Folicos Sapricos fragmentarios"
+      name: "Organossolos Fólicos Sápricos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "OOSli"
-      name: "Organossolos Folicos Sapricos liticos"
+      name: "Organossolos Fólicos Sápricos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "OOScs"
-      name: "Organossolos Folicos Sapricos cambissolicos"
+      name: "Organossolos Fólicos Sápricos cambissólicos"
       tests:
         all_of:
           - carater_cambissolico: {}
     - code: "OOStp"
-      name: "Organossolos Folicos Sapricos tipicos"
+      name: "Organossolos Fólicos Sápricos típicos"
       tests:
         default: true
 
@@ -182,17 +182,17 @@ subgrupos:
   # ----- 3.1 OX Fibricos -- 3 subgrupos (NAO ha "salinos") -----
   "OXF":
     - code: "OXFso"
-      name: "Organossolos Haplicos Fibricos solodicos"
+      name: "Organossolos Háplicos Fíbricos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OXFte"
-      name: "Organossolos Haplicos Fibricos terricos"
+      name: "Organossolos Háplicos Fíbricos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OXFtp"
-      name: "Organossolos Haplicos Fibricos tipicos"
+      name: "Organossolos Háplicos Fíbricos típicos"
       tests:
         default: true
 
@@ -200,37 +200,37 @@ subgrupos:
   # Ordem canonica: ca, sd, sl, sa, so, te, tp
   "OXH":
     - code: "OXHca"
-      name: "Organossolos Haplicos Hemicos carbonaticos"
+      name: "Organossolos Háplicos Hêmicos carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "OXHsd"
-      name: "Organossolos Haplicos Hemicos sodicos"
+      name: "Organossolos Háplicos Hêmicos sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "OXHsl"
-      name: "Organossolos Haplicos Hemicos salicos"
+      name: "Organossolos Háplicos Hêmicos sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "OXHsa"
-      name: "Organossolos Haplicos Hemicos salinos"
+      name: "Organossolos Háplicos Hêmicos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "OXHso"
-      name: "Organossolos Haplicos Hemicos solodicos"
+      name: "Organossolos Háplicos Hêmicos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OXHte"
-      name: "Organossolos Haplicos Hemicos terricos"
+      name: "Organossolos Háplicos Hêmicos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OXHtp"
-      name: "Organossolos Haplicos Hemicos tipicos"
+      name: "Organossolos Háplicos Hêmicos típicos"
       tests:
         default: true
 
@@ -238,22 +238,22 @@ subgrupos:
   # Ordem canonica: ca, sd, sl, sa, hst (composto), so, te, tp
   "OXS":
     - code: "OXSca"
-      name: "Organossolos Haplicos Sapricos carbonaticos"
+      name: "Organossolos Háplicos Sápricos carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "OXSsd"
-      name: "Organossolos Haplicos Sapricos sodicos"
+      name: "Organossolos Háplicos Sápricos sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "OXSsl"
-      name: "Organossolos Haplicos Sapricos salicos"
+      name: "Organossolos Háplicos Sápricos sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "OXSsa"
-      name: "Organossolos Haplicos Sapricos salinos"
+      name: "Organossolos Háplicos Sápricos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
@@ -261,23 +261,23 @@ subgrupos:
     # (Embrapa SiBCS 5a ed., Cap 14, p 250; perfil GB-48
     # Palmieri & Santos 1980).
     - code: "OXShst"
-      name: "Organossolos Haplicos Sapricos hipocarbonaticos solodicos terricos"
+      name: "Organossolos Háplicos Sápricos hipocarbonáticos solódicos térricos"
       tests:
         all_of:
           - carater_hipocarbonatico: { max_depth_cm: 150 }
           - carater_solodico: { max_depth_cm: 150 }
           - carater_terrico: {}
     - code: "OXSso"
-      name: "Organossolos Haplicos Sapricos solodicos"
+      name: "Organossolos Háplicos Sápricos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "OXSte"
-      name: "Organossolos Haplicos Sapricos terricos"
+      name: "Organossolos Háplicos Sápricos térricos"
       tests:
         all_of:
           - carater_terrico: {}
     - code: "OXStp"
-      name: "Organossolos Haplicos Sapricos tipicos"
+      name: "Organossolos Háplicos Sápricos típicos"
       tests:
         default: true

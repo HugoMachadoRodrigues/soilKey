@@ -13,32 +13,32 @@ grandes_grupos:
   # -- RL -----
   "RL":
     - code: "RLh"
-      name: "Neossolos Litolicos Histicos"
+      name: "Neossolos Litólicos Hísticos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "RLhu"
-      name: "Neossolos Litolicos Humicos"
+      name: "Neossolos Litólicos Húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "RLca"
-      name: "Neossolos Litolicos Carbonaticos"
+      name: "Neossolos Litólicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 50 }
     - code: "RLch"
-      name: "Neossolos Litolicos Chernossolicos"
+      name: "Neossolos Litólicos Chernossólicos"
       tests:
         all_of:
           - carater_chernossolico: {}
     - code: "RLd"
-      name: "Neossolos Litolicos Distroficos"
+      name: "Neossolos Litólicos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "RLe"
-      name: "Neossolos Litolicos Eutroficos"
+      name: "Neossolos Litólicos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -46,38 +46,38 @@ grandes_grupos:
   # -- RY -----
   "RY":
     - code: "RYca"
-      name: "Neossolos Fluvicos Carbonaticos"
+      name: "Neossolos Flúvicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "RYsd"
-      name: "Neossolos Fluvicos Sodicos"
+      name: "Neossolos Flúvicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "RYsl"
-      name: "Neossolos Fluvicos Salicos"
+      name: "Neossolos Flúvicos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "RYps"
-      name: "Neossolos Fluvicos Psamiticos"
+      name: "Neossolos Flúvicos Psamíticos"
       tests:
         all_of:
           - carater_psamitico: {}
     - code: "RYte"
-      name: "Neossolos Fluvicos Ta Eutroficos"
+      name: "Neossolos Flúvicos Ta Eutróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
     - code: "RYbd"
-      name: "Neossolos Fluvicos Tb Distroficos"
+      name: "Neossolos Flúvicos Tb Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "RYbe"
-      name: "Neossolos Fluvicos Tb Eutroficos"
+      name: "Neossolos Flúvicos Tb Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -85,22 +85,22 @@ grandes_grupos:
   # -- RR -----
   "RR":
     - code: "RRps"
-      name: "Neossolos Regoliticos Psamiticos"
+      name: "Neossolos Regolíticos Psamíticos"
       tests:
         all_of:
           - carater_psamitico: {}
     - code: "RRhu"
-      name: "Neossolos Regoliticos Humicos"
+      name: "Neossolos Regolíticos Húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "RRd"
-      name: "Neossolos Regoliticos Distroficos"
+      name: "Neossolos Regolíticos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "RRe"
-      name: "Neossolos Regoliticos Eutroficos"
+      name: "Neossolos Regolíticos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -108,11 +108,11 @@ grandes_grupos:
   # -- RQ -----
   "RQ":
     - code: "RQhm"
-      name: "Neossolos Quartzarenicos Hidromorficos"
+      name: "Neossolos Quartzarênicos Hidromórficos"
       tests:
         all_of:
           - carater_hidromorfico: {}
     - code: "RQo"
-      name: "Neossolos Quartzarenicos Orticos"
+      name: "Neossolos Quartzarênicos Órticos"
       tests:
         default: true

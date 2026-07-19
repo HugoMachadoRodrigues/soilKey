@@ -15,377 +15,377 @@ subgrupos:
   # -- FF Petricos -----
   "FFlp":
     - code: "FFlpAr"
-      name: "Plintossolos Petricos Litoplinticos arenicos"
+      name: "Plintossolos Pétricos Litoplínticos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "FFlpEn"
-      name: "Plintossolos Petricos Litoplinticos endicos"
+      name: "Plintossolos Pétricos Litoplínticos êndicos"
       tests:
         all_of:
           - subgrupo_plintossolo_endico_litoplintico: {}
     - code: "FFlpGl"
-      name: "Plintossolos Petricos Litoplinticos gleissolicos"
+      name: "Plintossolos Pétricos Litoplínticos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 150 }
     - code: "FFlpHu"
-      name: "Plintossolos Petricos Litoplinticos humicos"
+      name: "Plintossolos Pétricos Litoplínticos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FFlpTp"
-      name: "Plintossolos Petricos Litoplinticos tipicos"
+      name: "Plintossolos Pétricos Litoplínticos típicos"
       tests:
         default: true
 
   "FFco":
     - code: "FFcoLf"
-      name: "Plintossolos Petricos Concrecionarios fragmentarios"
+      name: "Plintossolos Pétricos Concrecionários fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "FFcoLt"
-      name: "Plintossolos Petricos Concrecionarios liticos"
+      name: "Plintossolos Pétricos Concrecionários líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "FFcoLpf"
-      name: "Plintossolos Petricos Concrecionarios leptofragmentarios"
+      name: "Plintossolos Pétricos Concrecionários leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "FFcoLp"
-      name: "Plintossolos Petricos Concrecionarios lepticos"
+      name: "Plintossolos Pétricos Concrecionários lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "FFcoEu"
-      name: "Plintossolos Petricos Concrecionarios eutricos"
+      name: "Plintossolos Pétricos Concrecionários êutricos"
       tests:
         all_of:
           - carater_eutrico: {}
     - code: "FFcoEn"
-      name: "Plintossolos Petricos Concrecionarios endicos"
+      name: "Plintossolos Pétricos Concrecionários êndicos"
       tests:
         all_of:
           - subgrupo_plintossolo_endico_concrecionario: {}
     - code: "FFcoGl"
-      name: "Plintossolos Petricos Concrecionarios gleissolicos"
+      name: "Plintossolos Pétricos Concrecionários gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 150 }
     - code: "FFcoArg"
-      name: "Plintossolos Petricos Concrecionarios argissolicos"
+      name: "Plintossolos Pétricos Concrecionários argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "FFcoLa"
-      name: "Plintossolos Petricos Concrecionarios latossolicos"
+      name: "Plintossolos Pétricos Concrecionários latossólicos"
       tests:
         all_of:
           - carater_latossolico: {}
     - code: "FFcoCa"
-      name: "Plintossolos Petricos Concrecionarios cambissolicos"
+      name: "Plintossolos Pétricos Concrecionários cambissólicos"
       tests:
         all_of:
           - carater_cambissolico_arg: {}
     - code: "FFcoHu"
-      name: "Plintossolos Petricos Concrecionarios humicos"
+      name: "Plintossolos Pétricos Concrecionários húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FFcoTp"
-      name: "Plintossolos Petricos Concrecionarios tipicos"
+      name: "Plintossolos Pétricos Concrecionários típicos"
       tests:
         default: true
 
   # -- FT Argiluvicos -----
   "FTal":
     - code: "FTalEa"
-      name: "Plintossolos Argiluvicos Aluminicos espessarenicos"
+      name: "Plintossolos Argilúvicos Alumínicos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "FTalAr"
-      name: "Plintossolos Argiluvicos Aluminicos arenicos"
+      name: "Plintossolos Argilúvicos Alumínicos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "FTalEs"
-      name: "Plintossolos Argiluvicos Aluminicos espessos"
+      name: "Plintossolos Argilúvicos Alumínicos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FTalAb"
-      name: "Plintossolos Argiluvicos Aluminicos abrupticos"
+      name: "Plintossolos Argilúvicos Alumínicos abrúpticos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
     - code: "FTalGl"
-      name: "Plintossolos Argiluvicos Aluminicos gleissolicos"
+      name: "Plintossolos Argilúvicos Alumínicos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "FTalPp"
-      name: "Plintossolos Argiluvicos Aluminicos petroplinticos"
+      name: "Plintossolos Argilúvicos Alumínicos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FTalHu"
-      name: "Plintossolos Argiluvicos Aluminicos humicos"
+      name: "Plintossolos Argilúvicos Alumínicos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FTalTp"
-      name: "Plintossolos Argiluvicos Aluminicos tipicos"
+      name: "Plintossolos Argilúvicos Alumínicos típicos"
       tests:
         default: true
 
   "FTd":
     - code: "FTdSd"
-      name: "Plintossolos Argiluvicos Distroficos solodicos"
+      name: "Plintossolos Argilúvicos Distróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FTdEa"
-      name: "Plintossolos Argiluvicos Distroficos espessarenicos"
+      name: "Plintossolos Argilúvicos Distróficos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "FTdAr"
-      name: "Plintossolos Argiluvicos Distroficos arenicos"
+      name: "Plintossolos Argilúvicos Distróficos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "FTdEs"
-      name: "Plintossolos Argiluvicos Distroficos espessos"
+      name: "Plintossolos Argilúvicos Distróficos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FTdAb"
-      name: "Plintossolos Argiluvicos Distroficos abrupticos"
+      name: "Plintossolos Argilúvicos Distróficos abrúpticos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
     - code: "FTdGl"
-      name: "Plintossolos Argiluvicos Distroficos gleissolicos"
+      name: "Plintossolos Argilúvicos Distróficos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "FTdPp"
-      name: "Plintossolos Argiluvicos Distroficos petroplinticos"
+      name: "Plintossolos Argilúvicos Distróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FTdHu"
-      name: "Plintossolos Argiluvicos Distroficos humicos"
+      name: "Plintossolos Argilúvicos Distróficos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FTdTp"
-      name: "Plintossolos Argiluvicos Distroficos tipicos"
+      name: "Plintossolos Argilúvicos Distróficos típicos"
       tests:
         default: true
 
   "FTe":
     - code: "FTeSd"
-      name: "Plintossolos Argiluvicos Eutroficos solodicos"
+      name: "Plintossolos Argilúvicos Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FTeEa"
-      name: "Plintossolos Argiluvicos Eutroficos espessarenicos"
+      name: "Plintossolos Argilúvicos Eutróficos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "FTeAr"
-      name: "Plintossolos Argiluvicos Eutroficos arenicos"
+      name: "Plintossolos Argilúvicos Eutróficos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "FTeEs"
-      name: "Plintossolos Argiluvicos Eutroficos espessos"
+      name: "Plintossolos Argilúvicos Eutróficos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FTeAb"
-      name: "Plintossolos Argiluvicos Eutroficos abrupticos"
+      name: "Plintossolos Argilúvicos Eutróficos abrúpticos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
     - code: "FTeGl"
-      name: "Plintossolos Argiluvicos Eutroficos gleissolicos"
+      name: "Plintossolos Argilúvicos Eutróficos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "FTePp"
-      name: "Plintossolos Argiluvicos Eutroficos petroplinticos"
+      name: "Plintossolos Argilúvicos Eutróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FTeTp"
-      name: "Plintossolos Argiluvicos Eutroficos tipicos"
+      name: "Plintossolos Argilúvicos Eutróficos típicos"
       tests:
         default: true
 
   # -- FX Haplicos -----
   "FXac":
     - code: "FXacSd"
-      name: "Plintossolos Haplicos Acricos solodicos"
+      name: "Plintossolos Háplicos Ácricos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FXacEs"
-      name: "Plintossolos Haplicos Acricos espessos"
+      name: "Plintossolos Háplicos Ácricos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FXacGlHu"
-      name: "Plintossolos Haplicos Acricos gleissolicos humicos"
+      name: "Plintossolos Háplicos Ácricos gleissólicos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "FXacPp"
-      name: "Plintossolos Haplicos Acricos petroplinticos"
+      name: "Plintossolos Háplicos Ácricos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FXacHu"
-      name: "Plintossolos Haplicos Acricos humicos"
+      name: "Plintossolos Háplicos Ácricos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FXacTp"
-      name: "Plintossolos Haplicos Acricos tipicos"
+      name: "Plintossolos Háplicos Ácricos típicos"
       tests:
         default: true
 
   "FXal":
     - code: "FXalLf"
-      name: "Plintossolos Haplicos Aluminicos fragmentarios"
+      name: "Plintossolos Háplicos Alumínicos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "FXalLt"
-      name: "Plintossolos Haplicos Aluminicos liticos"
+      name: "Plintossolos Háplicos Alumínicos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "FXalLpf"
-      name: "Plintossolos Haplicos Aluminicos leptofragmentarios"
+      name: "Plintossolos Háplicos Alumínicos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "FXalLp"
-      name: "Plintossolos Haplicos Aluminicos lepticos"
+      name: "Plintossolos Háplicos Alumínicos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "FXalSd"
-      name: "Plintossolos Haplicos Aluminicos solodicos"
+      name: "Plintossolos Háplicos Alumínicos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FXalPp"
-      name: "Plintossolos Haplicos Aluminicos petroplinticos"
+      name: "Plintossolos Háplicos Alumínicos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FXalHu"
-      name: "Plintossolos Haplicos Aluminicos humicos"
+      name: "Plintossolos Háplicos Alumínicos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FXalTp"
-      name: "Plintossolos Haplicos Aluminicos tipicos"
+      name: "Plintossolos Háplicos Alumínicos típicos"
       tests:
         default: true
 
   "FXd":
     - code: "FXdLf"
-      name: "Plintossolos Haplicos Distroficos fragmentarios"
+      name: "Plintossolos Háplicos Distróficos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "FXdLt"
-      name: "Plintossolos Haplicos Distroficos liticos"
+      name: "Plintossolos Háplicos Distróficos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "FXdLpf"
-      name: "Plintossolos Haplicos Distroficos leptofragmentarios"
+      name: "Plintossolos Háplicos Distróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "FXdLp"
-      name: "Plintossolos Haplicos Distroficos lepticos"
+      name: "Plintossolos Háplicos Distróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "FXdSd"
-      name: "Plintossolos Haplicos Distroficos solodicos"
+      name: "Plintossolos Háplicos Distróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FXdEs"
-      name: "Plintossolos Haplicos Distroficos espessos"
+      name: "Plintossolos Háplicos Distróficos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FXdPp"
-      name: "Plintossolos Haplicos Distroficos petroplinticos"
+      name: "Plintossolos Háplicos Distróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FXdHu"
-      name: "Plintossolos Haplicos Distroficos humicos"
+      name: "Plintossolos Háplicos Distróficos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "FXdTp"
-      name: "Plintossolos Haplicos Distroficos tipicos"
+      name: "Plintossolos Háplicos Distróficos típicos"
       tests:
         default: true
 
   "FXe":
     - code: "FXeLf"
-      name: "Plintossolos Haplicos Eutroficos fragmentarios"
+      name: "Plintossolos Háplicos Eutróficos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "FXeLt"
-      name: "Plintossolos Haplicos Eutroficos liticos"
+      name: "Plintossolos Háplicos Eutróficos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "FXeLpf"
-      name: "Plintossolos Haplicos Eutroficos leptofragmentarios"
+      name: "Plintossolos Háplicos Eutróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "FXeLp"
-      name: "Plintossolos Haplicos Eutroficos lepticos"
+      name: "Plintossolos Háplicos Eutróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "FXeSd"
-      name: "Plintossolos Haplicos Eutroficos solodicos"
+      name: "Plintossolos Háplicos Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "FXeEs"
-      name: "Plintossolos Haplicos Eutroficos espessos"
+      name: "Plintossolos Háplicos Eutróficos espessos"
       tests:
         all_of:
           - subgrupo_plintossolo_espessos: {}
     - code: "FXePp"
-      name: "Plintossolos Haplicos Eutroficos petroplinticos"
+      name: "Plintossolos Háplicos Eutróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "FXeTp"
-      name: "Plintossolos Haplicos Eutroficos tipicos"
+      name: "Plintossolos Háplicos Eutróficos típicos"
       tests:
         default: true

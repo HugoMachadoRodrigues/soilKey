@@ -19,12 +19,12 @@ grandes_grupos:
   # ============================================================
   "GJ":
     - code: "GJh"
-      name: "Gleissolos Tiomorficos Histicos"
+      name: "Gleissolos Tiomórficos Hísticos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GJo"
-      name: "Gleissolos Tiomorficos Orticos"
+      name: "Gleissolos Tiomórficos Órticos"
       tests:
         default: true
 
@@ -33,12 +33,12 @@ grandes_grupos:
   # ============================================================
   "GZ":
     - code: "GZsd"
-      name: "Gleissolos Salicos Sodicos"
+      name: "Gleissolos Sálicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "GZo"
-      name: "Gleissolos Salicos Orticos"
+      name: "Gleissolos Sálicos Órticos"
       tests:
         default: true
 
@@ -47,45 +47,45 @@ grandes_grupos:
   # ============================================================
   "GM":
     - code: "GMca"
-      name: "Gleissolos Melanicos Carbonaticos"
+      name: "Gleissolos Melânicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "GMsd"
-      name: "Gleissolos Melanicos Sodicos"
+      name: "Gleissolos Melânicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "GMtal"
-      name: "Gleissolos Melanicos Ta Aluminicos"
+      name: "Gleissolos Melânicos Ta Alumínicos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - carater_alitico: {}
     - code: "GMtd"
-      name: "Gleissolos Melanicos Ta Distroficos"
+      name: "Gleissolos Melânicos Ta Distróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - distrofico: {}
     - code: "GMte"
-      name: "Gleissolos Melanicos Ta Eutroficos"
+      name: "Gleissolos Melânicos Ta Eutróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
     - code: "GMbal"
-      name: "Gleissolos Melanicos Tb Aluminicos"
+      name: "Gleissolos Melânicos Tb Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "GMbd"
-      name: "Gleissolos Melanicos Tb Distroficos"
+      name: "Gleissolos Melânicos Tb Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "GMbe"
-      name: "Gleissolos Melanicos Tb Eutroficos"
+      name: "Gleissolos Melânicos Tb Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -95,45 +95,45 @@ grandes_grupos:
   # ============================================================
   "GX":
     - code: "GXca"
-      name: "Gleissolos Haplicos Carbonaticos"
+      name: "Gleissolos Háplicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "GXsd"
-      name: "Gleissolos Haplicos Sodicos"
+      name: "Gleissolos Háplicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "GXtal"
-      name: "Gleissolos Haplicos Ta Aluminicos"
+      name: "Gleissolos Háplicos Ta Alumínicos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - carater_alitico: {}
     - code: "GXtd"
-      name: "Gleissolos Haplicos Ta Distroficos"
+      name: "Gleissolos Háplicos Ta Distróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - distrofico: {}
     - code: "GXte"
-      name: "Gleissolos Haplicos Ta Eutroficos"
+      name: "Gleissolos Háplicos Ta Eutróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
     - code: "GXbal"
-      name: "Gleissolos Haplicos Tb Aluminicos"
+      name: "Gleissolos Háplicos Tb Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "GXbd"
-      name: "Gleissolos Haplicos Tb Distroficos"
+      name: "Gleissolos Háplicos Tb Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "GXbe"
-      name: "Gleissolos Haplicos Tb Eutroficos"
+      name: "Gleissolos Háplicos Tb Eutróficos"
       tests:
         all_of:
           - eutrofico: {}

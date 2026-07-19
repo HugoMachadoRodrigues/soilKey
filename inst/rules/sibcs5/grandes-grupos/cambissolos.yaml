@@ -40,12 +40,12 @@ grandes_grupos:
   # ============================================================
   "CH":
     - code: "CHal"
-      name: "Cambissolos Histicos Aluminicos"
+      name: "Cambissolos Hísticos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "CHd"
-      name: "Cambissolos Histicos Distroficos"
+      name: "Cambissolos Hísticos Distróficos"
       tests:
         all_of:
           - distrofico: {}
@@ -55,24 +55,24 @@ grandes_grupos:
   # ============================================================
   "CHU":
     - code: "CHUaf"
-      name: "Cambissolos Humicos Aluminoferricos"
+      name: "Cambissolos Húmicos Aluminoférricos"
       tests:
         all_of:
           - carater_alitico: {}
           - carater_ferrico: {}
     - code: "CHUal"
-      name: "Cambissolos Humicos Aluminicos"
+      name: "Cambissolos Húmicos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "CHUdf"
-      name: "Cambissolos Humicos Distroferricos"
+      name: "Cambissolos Húmicos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "CHUd"
-      name: "Cambissolos Humicos Distroficos"
+      name: "Cambissolos Húmicos Distróficos"
       tests:
         all_of:
           - distrofico: {}
@@ -82,44 +82,44 @@ grandes_grupos:
   # ============================================================
   "CY":
     - code: "CYca"
-      name: "Cambissolos Fluvicos Carbonaticos"
+      name: "Cambissolos Flúvicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "CYsd"
-      name: "Cambissolos Fluvicos Sodicos"
+      name: "Cambissolos Flúvicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "CYsl"
-      name: "Cambissolos Fluvicos Salicos"
+      name: "Cambissolos Flúvicos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "CYal"
-      name: "Cambissolos Fluvicos Aluminicos"
+      name: "Cambissolos Flúvicos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "CYtd"
-      name: "Cambissolos Fluvicos Ta Distroficos"
+      name: "Cambissolos Flúvicos Ta Distróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - distrofico: {}
     - code: "CYte"
-      name: "Cambissolos Fluvicos Ta Eutroficos"
+      name: "Cambissolos Flúvicos Ta Eutróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
     - code: "CYbd"
-      name: "Cambissolos Fluvicos Tb Distroficos"
+      name: "Cambissolos Flúvicos Tb Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "CYbe"
-      name: "Cambissolos Fluvicos Tb Eutroficos"
+      name: "Cambissolos Flúvicos Tb Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
@@ -129,69 +129,69 @@ grandes_grupos:
   # ============================================================
   "CX":
     - code: "CXca"
-      name: "Cambissolos Haplicos Carbonaticos"
+      name: "Cambissolos Háplicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "CXsd"
-      name: "Cambissolos Haplicos Sodicos"
+      name: "Cambissolos Háplicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "CXpf"
-      name: "Cambissolos Haplicos Perferricos"
+      name: "Cambissolos Háplicos Perférricos"
       tests:
         all_of:
           - carater_perferrico: {}
     - code: "CXtal"
-      name: "Cambissolos Haplicos Ta Aluminicos"
+      name: "Cambissolos Háplicos Ta Alumínicos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - carater_alitico: {}
     - code: "CXtd"
-      name: "Cambissolos Haplicos Ta Distroficos"
+      name: "Cambissolos Háplicos Ta Distróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - distrofico: {}
     - code: "CXtef"
-      name: "Cambissolos Haplicos Ta Eutroferricos"
+      name: "Cambissolos Háplicos Ta Eutroférricos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
           - carater_ferrico: {}
     - code: "CXte"
-      name: "Cambissolos Haplicos Ta Eutroficos"
+      name: "Cambissolos Háplicos Ta Eutróficos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - eutrofico: {}
     - code: "CXbal"
-      name: "Cambissolos Haplicos Tb Aluminicos"
+      name: "Cambissolos Háplicos Tb Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "CXbdf"
-      name: "Cambissolos Haplicos Tb Distroferricos"
+      name: "Cambissolos Háplicos Tb Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "CXbd"
-      name: "Cambissolos Haplicos Tb Distroficos"
+      name: "Cambissolos Háplicos Tb Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "CXbef"
-      name: "Cambissolos Haplicos Tb Eutroferricos"
+      name: "Cambissolos Háplicos Tb Eutroférricos"
       tests:
         all_of:
           - eutrofico: {}
           - carater_ferrico: {}
     - code: "CXbe"
-      name: "Cambissolos Haplicos Tb Eutroficos"
+      name: "Cambissolos Háplicos Tb Eutróficos"
       tests:
         all_of:
           - eutrofico: {}

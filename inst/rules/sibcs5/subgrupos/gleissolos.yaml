@@ -16,410 +16,410 @@ subgrupos:
   # ----- 1.1 GJh -- 5 SGs -----
   "GJh":
     - code: "GJhSd"
-      name: "Gleissolos Tiomorficos Histicos sodicos"
+      name: "Gleissolos Tiomórficos Hísticos sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "GJhSl"
-      name: "Gleissolos Tiomorficos Histicos salicos"
+      name: "Gleissolos Tiomórficos Hísticos sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "GJhSa"
-      name: "Gleissolos Tiomorficos Histicos salinos"
+      name: "Gleissolos Tiomórficos Hísticos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "GJhSo"
-      name: "Gleissolos Tiomorficos Histicos solodicos"
+      name: "Gleissolos Tiomórficos Hísticos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GJhTp"
-      name: "Gleissolos Tiomorficos Histicos tipicos"
+      name: "Gleissolos Tiomórficos Hísticos típicos"
       tests:
         default: true
 
   # ----- 1.2 GJo -- 4 SGs -----
   "GJo":
     - code: "GJoSd"
-      name: "Gleissolos Tiomorficos Orticos sodicos"
+      name: "Gleissolos Tiomórficos Órticos sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 150 }
     - code: "GJoSlSo"
-      name: "Gleissolos Tiomorficos Orticos salicos solodicos"
+      name: "Gleissolos Tiomórficos Órticos sálicos solódicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GJoSo"
-      name: "Gleissolos Tiomorficos Orticos solodicos"
+      name: "Gleissolos Tiomórficos Órticos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GJoTp"
-      name: "Gleissolos Tiomorficos Orticos tipicos"
+      name: "Gleissolos Tiomórficos Órticos típicos"
       tests:
         default: true
 
   # ----- 2.1 GZsd -- 5 SGs -----
   "GZsd":
     - code: "GZsdTn"
-      name: "Gleissolos Salicos Sodicos tionicos"
+      name: "Gleissolos Sálicos Sódicos tiônicos"
       tests:
         all_of:
           - carater_tionico: {}
     - code: "GZsdVs"
-      name: "Gleissolos Salicos Sodicos vertissolicos"
+      name: "Gleissolos Sálicos Sódicos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GZsdPs"
-      name: "Gleissolos Salicos Sodicos planossolicos"
+      name: "Gleissolos Sálicos Sódicos planossólicos"
       tests:
         all_of:
           - carater_planossolico: {}
     - code: "GZsdAr"
-      name: "Gleissolos Salicos Sodicos argissolicos"
+      name: "Gleissolos Sálicos Sódicos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GZsdTp"
-      name: "Gleissolos Salicos Sodicos tipicos"
+      name: "Gleissolos Sálicos Sódicos típicos"
       tests:
         default: true
 
   # ----- 2.2 GZo -- 3 SGs -----
   "GZo":
     - code: "GZoSo"
-      name: "Gleissolos Salicos Orticos solodicos"
+      name: "Gleissolos Sálicos Órticos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GZoVs"
-      name: "Gleissolos Salicos Orticos vertissolicos"
+      name: "Gleissolos Sálicos Órticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GZoTp"
-      name: "Gleissolos Salicos Orticos tipicos"
+      name: "Gleissolos Sálicos Órticos típicos"
       tests:
         default: true
 
   # ----- 3.1 GMca -- 7 SGs -----
   "GMca":
     - code: "GMcaLf"
-      name: "Gleissolos Melanicos Carbonaticos leptofragmentarios"
+      name: "Gleissolos Melânicos Carbonáticos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GMcaLe"
-      name: "Gleissolos Melanicos Carbonaticos lepticos"
+      name: "Gleissolos Melânicos Carbonáticos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GMcaSo"
-      name: "Gleissolos Melanicos Carbonaticos solodicos"
+      name: "Gleissolos Melânicos Carbonáticos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GMcaVs"
-      name: "Gleissolos Melanicos Carbonaticos vertissolicos"
+      name: "Gleissolos Melânicos Carbonáticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GMcaCb"
-      name: "Gleissolos Melanicos Carbonaticos cambissolicos"
+      name: "Gleissolos Melânicos Carbonáticos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMcaNf"
-      name: "Gleissolos Melanicos Carbonaticos neofluvissolicos"
+      name: "Gleissolos Melânicos Carbonáticos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMcaTp"
-      name: "Gleissolos Melanicos Carbonaticos tipicos"
+      name: "Gleissolos Melânicos Carbonáticos típicos"
       tests:
         default: true
 
   # ----- 3.2 GMsd -- 4 SGs -----
   "GMsd":
     - code: "GMsdSa"
-      name: "Gleissolos Melanicos Sodicos salinos"
+      name: "Gleissolos Melânicos Sódicos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "GMsdNf"
-      name: "Gleissolos Melanicos Sodicos neofluvissolicos"
+      name: "Gleissolos Melânicos Sódicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMsdOg"
-      name: "Gleissolos Melanicos Sodicos organossolicos"
+      name: "Gleissolos Melânicos Sódicos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMsdTp"
-      name: "Gleissolos Melanicos Sodicos tipicos"
+      name: "Gleissolos Melânicos Sódicos típicos"
       tests:
         default: true
 
   # ----- 3.3 GMtal -- 6 SGs -----
   "GMtal":
     - code: "GMtalTn"
-      name: "Gleissolos Melanicos Ta Aluminicos tionicos"
+      name: "Gleissolos Melânicos Ta Alumínicos tiônicos"
       tests:
         all_of:
           - carater_tionico: {}
     - code: "GMtalCb"
-      name: "Gleissolos Melanicos Ta Aluminicos cambissolicos"
+      name: "Gleissolos Melânicos Ta Alumínicos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMtalNf"
-      name: "Gleissolos Melanicos Ta Aluminicos neofluvissolicos"
+      name: "Gleissolos Melânicos Ta Alumínicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMtalOg"
-      name: "Gleissolos Melanicos Ta Aluminicos organossolicos"
+      name: "Gleissolos Melânicos Ta Alumínicos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMtalHu"
-      name: "Gleissolos Melanicos Ta Aluminicos humicos"
+      name: "Gleissolos Melânicos Ta Alumínicos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "GMtalTp"
-      name: "Gleissolos Melanicos Ta Aluminicos tipicos"
+      name: "Gleissolos Melânicos Ta Alumínicos típicos"
       tests:
         default: true
 
   # ----- 3.4 GMtd -- 9 SGs -----
   "GMtd":
     - code: "GMtdLf"
-      name: "Gleissolos Melanicos Ta Distroficos leptofragmentarios"
+      name: "Gleissolos Melânicos Ta Distróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GMtdLe"
-      name: "Gleissolos Melanicos Ta Distroficos lepticos"
+      name: "Gleissolos Melânicos Ta Distróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GMtdTn"
-      name: "Gleissolos Melanicos Ta Distroficos tionicos"
+      name: "Gleissolos Melânicos Ta Distróficos tiônicos"
       tests:
         all_of:
           - carater_tionico: {}
     - code: "GMtdPl"
-      name: "Gleissolos Melanicos Ta Distroficos plintossolicos"
+      name: "Gleissolos Melânicos Ta Distróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "GMtdCb"
-      name: "Gleissolos Melanicos Ta Distroficos cambissolicos"
+      name: "Gleissolos Melânicos Ta Distróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMtdNf"
-      name: "Gleissolos Melanicos Ta Distroficos neofluvissolicos"
+      name: "Gleissolos Melânicos Ta Distróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMtdOg"
-      name: "Gleissolos Melanicos Ta Distroficos organossolicos"
+      name: "Gleissolos Melânicos Ta Distróficos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMtdHu"
-      name: "Gleissolos Melanicos Ta Distroficos humicos"
+      name: "Gleissolos Melânicos Ta Distróficos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "GMtdTp"
-      name: "Gleissolos Melanicos Ta Distroficos tipicos"
+      name: "Gleissolos Melânicos Ta Distróficos típicos"
       tests:
         default: true
 
   # ----- 3.5 GMte -- 10 SGs -----
   "GMte":
     - code: "GMteLf"
-      name: "Gleissolos Melanicos Ta Eutroficos leptofragmentarios"
+      name: "Gleissolos Melânicos Ta Eutróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GMteLe"
-      name: "Gleissolos Melanicos Ta Eutroficos lepticos"
+      name: "Gleissolos Melânicos Ta Eutróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GMteSo"
-      name: "Gleissolos Melanicos Ta Eutroficos solodicos"
+      name: "Gleissolos Melânicos Ta Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GMteVs"
-      name: "Gleissolos Melanicos Ta Eutroficos vertissolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GMteLu"
-      name: "Gleissolos Melanicos Ta Eutroficos luvissolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos luvissólicos"
       tests:
         all_of:
           - B_textural: {}
     - code: "GMteCb"
-      name: "Gleissolos Melanicos Ta Eutroficos cambissolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMteNf"
-      name: "Gleissolos Melanicos Ta Eutroficos neofluvissolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMteOg"
-      name: "Gleissolos Melanicos Ta Eutroficos organossolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMteCh"
-      name: "Gleissolos Melanicos Ta Eutroficos chernossolicos"
+      name: "Gleissolos Melânicos Ta Eutróficos chernossólicos"
       tests:
         all_of:
           - horizonte_A_chernozemico: {}
     - code: "GMteTp"
-      name: "Gleissolos Melanicos Ta Eutroficos tipicos"
+      name: "Gleissolos Melânicos Ta Eutróficos típicos"
       tests:
         default: true
 
   # ----- 3.6 GMbal -- 6 SGs -----
   "GMbal":
     - code: "GMbalSo"
-      name: "Gleissolos Melanicos Tb Aluminicos solodicos"
+      name: "Gleissolos Melânicos Tb Alumínicos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GMbalCb"
-      name: "Gleissolos Melanicos Tb Aluminicos cambissolicos"
+      name: "Gleissolos Melânicos Tb Alumínicos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMbalNf"
-      name: "Gleissolos Melanicos Tb Aluminicos neofluvissolicos"
+      name: "Gleissolos Melânicos Tb Alumínicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMbalOg"
-      name: "Gleissolos Melanicos Tb Aluminicos organossolicos"
+      name: "Gleissolos Melânicos Tb Alumínicos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMbalHu"
-      name: "Gleissolos Melanicos Tb Aluminicos humicos"
+      name: "Gleissolos Melânicos Tb Alumínicos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "GMbalTp"
-      name: "Gleissolos Melanicos Tb Aluminicos tipicos"
+      name: "Gleissolos Melânicos Tb Alumínicos típicos"
       tests:
         default: true
 
   # ----- 3.7 GMbd -- 8 SGs -----
   "GMbd":
     - code: "GMbdPp"
-      name: "Gleissolos Melanicos Tb Distroficos petroplinticos"
+      name: "Gleissolos Melânicos Tb Distróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "GMbdPl"
-      name: "Gleissolos Melanicos Tb Distroficos plintossolicos"
+      name: "Gleissolos Melânicos Tb Distróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "GMbdAr"
-      name: "Gleissolos Melanicos Tb Distroficos argissolicos"
+      name: "Gleissolos Melânicos Tb Distróficos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GMbdCb"
-      name: "Gleissolos Melanicos Tb Distroficos cambissolicos"
+      name: "Gleissolos Melânicos Tb Distróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMbdNf"
-      name: "Gleissolos Melanicos Tb Distroficos neofluvissolicos"
+      name: "Gleissolos Melânicos Tb Distróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMbdOg"
-      name: "Gleissolos Melanicos Tb Distroficos organossolicos"
+      name: "Gleissolos Melânicos Tb Distróficos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMbdHu"
-      name: "Gleissolos Melanicos Tb Distroficos humicos"
+      name: "Gleissolos Melânicos Tb Distróficos húmicos"
       tests:
         all_of:
           - horizonte_A_humico: {}
     - code: "GMbdTp"
-      name: "Gleissolos Melanicos Tb Distroficos tipicos"
+      name: "Gleissolos Melânicos Tb Distróficos típicos"
       tests:
         default: true
 
   # ----- 3.8 GMbe -- 10 SGs -----
   "GMbe":
     - code: "GMbeLf"
-      name: "Gleissolos Melanicos Tb Eutroficos leptofragmentarios"
+      name: "Gleissolos Melânicos Tb Eutróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GMbeLe"
-      name: "Gleissolos Melanicos Tb Eutroficos lepticos"
+      name: "Gleissolos Melânicos Tb Eutróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GMbeSa"
-      name: "Gleissolos Melanicos Tb Eutroficos salinos"
+      name: "Gleissolos Melânicos Tb Eutróficos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "GMbeSo"
-      name: "Gleissolos Melanicos Tb Eutroficos solodicos"
+      name: "Gleissolos Melânicos Tb Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GMbePl"
-      name: "Gleissolos Melanicos Tb Eutroficos plintossolicos"
+      name: "Gleissolos Melânicos Tb Eutróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "GMbeAr"
-      name: "Gleissolos Melanicos Tb Eutroficos argissolicos"
+      name: "Gleissolos Melânicos Tb Eutróficos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GMbeCb"
-      name: "Gleissolos Melanicos Tb Eutroficos cambissolicos"
+      name: "Gleissolos Melânicos Tb Eutróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GMbeNf"
-      name: "Gleissolos Melanicos Tb Eutroficos neofluvissolicos"
+      name: "Gleissolos Melânicos Tb Eutróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GMbeOg"
-      name: "Gleissolos Melanicos Tb Eutroficos organossolicos"
+      name: "Gleissolos Melânicos Tb Eutróficos organossólicos"
       tests:
         all_of:
           - horizonte_histico: {}
     - code: "GMbeTp"
-      name: "Gleissolos Melanicos Tb Eutroficos tipicos"
+      name: "Gleissolos Melânicos Tb Eutróficos típicos"
       tests:
         default: true
 
@@ -430,270 +430,270 @@ subgrupos:
   # ----- 4.1 GXca -- 6 SGs -----
   "GXca":
     - code: "GXcaLf"
-      name: "Gleissolos Haplicos Carbonaticos leptofragmentarios"
+      name: "Gleissolos Háplicos Carbonáticos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GXcaLe"
-      name: "Gleissolos Haplicos Carbonaticos lepticos"
+      name: "Gleissolos Háplicos Carbonáticos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GXcaVs"
-      name: "Gleissolos Haplicos Carbonaticos vertissolicos"
+      name: "Gleissolos Háplicos Carbonáticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GXcaCb"
-      name: "Gleissolos Haplicos Carbonaticos cambissolicos"
+      name: "Gleissolos Háplicos Carbonáticos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXcaNf"
-      name: "Gleissolos Haplicos Carbonaticos neofluvissolicos"
+      name: "Gleissolos Háplicos Carbonáticos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXcaTp"
-      name: "Gleissolos Haplicos Carbonaticos tipicos"
+      name: "Gleissolos Háplicos Carbonáticos típicos"
       tests:
         default: true
 
   # ----- 4.2 GXsd -- 4 SGs -----
   "GXsd":
     - code: "GXsdSa"
-      name: "Gleissolos Haplicos Sodicos salinos"
+      name: "Gleissolos Háplicos Sódicos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "GXsdVs"
-      name: "Gleissolos Haplicos Sodicos vertissolicos"
+      name: "Gleissolos Háplicos Sódicos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GXsdNf"
-      name: "Gleissolos Haplicos Sodicos neofluvissolicos"
+      name: "Gleissolos Háplicos Sódicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXsdTp"
-      name: "Gleissolos Haplicos Sodicos tipicos"
+      name: "Gleissolos Háplicos Sódicos típicos"
       tests:
         default: true
 
   # ----- 4.3 GXtal -- 4 SGs -----
   "GXtal":
     - code: "GXtalAr"
-      name: "Gleissolos Haplicos Ta Aluminicos argissolicos"
+      name: "Gleissolos Háplicos Ta Alumínicos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GXtalCb"
-      name: "Gleissolos Haplicos Ta Aluminicos cambissolicos"
+      name: "Gleissolos Háplicos Ta Alumínicos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXtalNf"
-      name: "Gleissolos Haplicos Ta Aluminicos neofluvissolicos"
+      name: "Gleissolos Háplicos Ta Alumínicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXtalTp"
-      name: "Gleissolos Haplicos Ta Aluminicos tipicos"
+      name: "Gleissolos Háplicos Ta Alumínicos típicos"
       tests:
         default: true
 
   # ----- 4.4 GXtd -- 6 SGs -----
   "GXtd":
     - code: "GXtdLf"
-      name: "Gleissolos Haplicos Ta Distroficos leptofragmentarios"
+      name: "Gleissolos Háplicos Ta Distróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GXtdLe"
-      name: "Gleissolos Haplicos Ta Distroficos lepticos"
+      name: "Gleissolos Háplicos Ta Distróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GXtdAr"
-      name: "Gleissolos Haplicos Ta Distroficos argissolicos"
+      name: "Gleissolos Háplicos Ta Distróficos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GXtdCb"
-      name: "Gleissolos Haplicos Ta Distroficos cambissolicos"
+      name: "Gleissolos Háplicos Ta Distróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXtdNf"
-      name: "Gleissolos Haplicos Ta Distroficos neofluvissolicos"
+      name: "Gleissolos Háplicos Ta Distróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXtdTp"
-      name: "Gleissolos Haplicos Ta Distroficos tipicos"
+      name: "Gleissolos Háplicos Ta Distróficos típicos"
       tests:
         default: true
 
   # ----- 4.5 GXte -- 9 SGs -----
   "GXte":
     - code: "GXteLf"
-      name: "Gleissolos Haplicos Ta Eutroficos leptofragmentarios"
+      name: "Gleissolos Háplicos Ta Eutróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GXteLe"
-      name: "Gleissolos Haplicos Ta Eutroficos lepticos"
+      name: "Gleissolos Háplicos Ta Eutróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GXteTn"
-      name: "Gleissolos Haplicos Ta Eutroficos tionicos"
+      name: "Gleissolos Háplicos Ta Eutróficos tiônicos"
       tests:
         all_of:
           - carater_tionico: {}
     - code: "GXteSo"
-      name: "Gleissolos Haplicos Ta Eutroficos solodicos"
+      name: "Gleissolos Háplicos Ta Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GXteVs"
-      name: "Gleissolos Haplicos Ta Eutroficos vertissolicos"
+      name: "Gleissolos Háplicos Ta Eutróficos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "GXteLu"
-      name: "Gleissolos Haplicos Ta Eutroficos luvissolicos"
+      name: "Gleissolos Háplicos Ta Eutróficos luvissólicos"
       tests:
         all_of:
           - B_textural: {}
     - code: "GXteCb"
-      name: "Gleissolos Haplicos Ta Eutroficos cambissolicos"
+      name: "Gleissolos Háplicos Ta Eutróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXteNf"
-      name: "Gleissolos Haplicos Ta Eutroficos neofluvissolicos"
+      name: "Gleissolos Háplicos Ta Eutróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXteTp"
-      name: "Gleissolos Haplicos Ta Eutroficos tipicos"
+      name: "Gleissolos Háplicos Ta Eutróficos típicos"
       tests:
         default: true
 
   # ----- 4.6 GXbal -- 4 SGs -----
   "GXbal":
     - code: "GXbalAr"
-      name: "Gleissolos Haplicos Tb Aluminicos argissolicos"
+      name: "Gleissolos Háplicos Tb Alumínicos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GXbalCb"
-      name: "Gleissolos Haplicos Tb Aluminicos cambissolicos"
+      name: "Gleissolos Háplicos Tb Alumínicos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXbalNf"
-      name: "Gleissolos Haplicos Tb Aluminicos neofluvissolicos"
+      name: "Gleissolos Háplicos Tb Alumínicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXbalTp"
-      name: "Gleissolos Haplicos Tb Aluminicos tipicos"
+      name: "Gleissolos Háplicos Tb Alumínicos típicos"
       tests:
         default: true
 
   # ----- 4.7 GXbd -- 9 SGs -----
   "GXbd":
     - code: "GXbdLf"
-      name: "Gleissolos Haplicos Tb Distroficos leptofragmentarios"
+      name: "Gleissolos Háplicos Tb Distróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GXbdLe"
-      name: "Gleissolos Haplicos Tb Distroficos lepticos"
+      name: "Gleissolos Háplicos Tb Distróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GXbdPp"
-      name: "Gleissolos Haplicos Tb Distroficos petroplinticos"
+      name: "Gleissolos Háplicos Tb Distróficos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "GXbdPl"
-      name: "Gleissolos Haplicos Tb Distroficos plintossolicos"
+      name: "Gleissolos Háplicos Tb Distróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "GXbdPs"
-      name: "Gleissolos Haplicos Tb Distroficos planossolicos"
+      name: "Gleissolos Háplicos Tb Distróficos planossólicos"
       tests:
         all_of:
           - carater_planossolico: {}
     - code: "GXbdAr"
-      name: "Gleissolos Haplicos Tb Distroficos argissolicos"
+      name: "Gleissolos Háplicos Tb Distróficos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GXbdCb"
-      name: "Gleissolos Haplicos Tb Distroficos cambissolicos"
+      name: "Gleissolos Háplicos Tb Distróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXbdNf"
-      name: "Gleissolos Haplicos Tb Distroficos neofluvissolicos"
+      name: "Gleissolos Háplicos Tb Distróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXbdTp"
-      name: "Gleissolos Haplicos Tb Distroficos tipicos"
+      name: "Gleissolos Háplicos Tb Distróficos típicos"
       tests:
         default: true
 
   # ----- 4.8 GXbe -- 9 SGs -----
   "GXbe":
     - code: "GXbeLf"
-      name: "Gleissolos Haplicos Tb Eutroficos leptofragmentarios"
+      name: "Gleissolos Háplicos Tb Eutróficos leptofragmentários"
       tests:
         all_of:
           - carater_leptofragmentario: {}
     - code: "GXbeLe"
-      name: "Gleissolos Haplicos Tb Eutroficos lepticos"
+      name: "Gleissolos Háplicos Tb Eutróficos lépticos"
       tests:
         all_of:
           - carater_leptico: {}
     - code: "GXbeSa"
-      name: "Gleissolos Haplicos Tb Eutroficos salinos"
+      name: "Gleissolos Háplicos Tb Eutróficos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "GXbeSo"
-      name: "Gleissolos Haplicos Tb Eutroficos solodicos"
+      name: "Gleissolos Háplicos Tb Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
     - code: "GXbePl"
-      name: "Gleissolos Haplicos Tb Eutroficos plintossolicos"
+      name: "Gleissolos Háplicos Tb Eutróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "GXbeAr"
-      name: "Gleissolos Haplicos Tb Eutroficos argissolicos"
+      name: "Gleissolos Háplicos Tb Eutróficos argissólicos"
       tests:
         all_of:
           - carater_argiluvico: {}
     - code: "GXbeCb"
-      name: "Gleissolos Haplicos Tb Eutroficos cambissolicos"
+      name: "Gleissolos Háplicos Tb Eutróficos cambissólicos"
       tests:
         all_of:
           - B_incipiente: {}
     - code: "GXbeNf"
-      name: "Gleissolos Haplicos Tb Eutroficos neofluvissolicos"
+      name: "Gleissolos Háplicos Tb Eutróficos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "GXbeTp"
-      name: "Gleissolos Haplicos Tb Eutroficos tipicos"
+      name: "Gleissolos Háplicos Tb Eutróficos típicos"
       tests:
         default: true

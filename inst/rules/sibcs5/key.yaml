@@ -156,22 +156,22 @@ subordens:
   # -----------------------------------------------------------
   "C":
     - code: "CH"
-      name: "Cambissolos Histicos"
+      name: "Cambissolos Hísticos"
       tests:
         all_of:
           - cambissolo_histico: {}
     - code: "CHU"
-      name: "Cambissolos Humicos"
+      name: "Cambissolos Húmicos"
       tests:
         all_of:
           - cambissolo_humico: {}
     - code: "CY"
-      name: "Cambissolos Fluvicos"
+      name: "Cambissolos Flúvicos"
       tests:
         all_of:
           - cambissolo_fluvico: {}
     - code: "CX"
-      name: "Cambissolos Haplicos"
+      name: "Cambissolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Cambissolos."
@@ -181,22 +181,22 @@ subordens:
   # -----------------------------------------------------------
   "M":
     - code: "MD"
-      name: "Chernossolos Rendzicos"
+      name: "Chernossolos Rêndzicos"
       tests:
         all_of:
           - chernossolo_rendzico: {}
     - code: "ME"
-      name: "Chernossolos Ebanicos"
+      name: "Chernossolos Ebânicos"
       tests:
         all_of:
           - chernossolo_ebanico: {}
     - code: "MT"
-      name: "Chernossolos Argiluvicos"
+      name: "Chernossolos Argilúvicos"
       tests:
         all_of:
           - chernossolo_argiluvico: {}
     - code: "MX"
-      name: "Chernossolos Haplicos"
+      name: "Chernossolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Chernossolos."
@@ -206,17 +206,17 @@ subordens:
   # -----------------------------------------------------------
   "E":
     - code: "EK"
-      name: "Espodossolos Humiluvicos"
+      name: "Espodossolos Humilúvicos"
       tests:
         all_of:
           - espodossolo_humiluvico: {}
     - code: "EJ"
-      name: "Espodossolos Ferriluvicos"
+      name: "Espodossolos Ferrilúvicos"
       tests:
         all_of:
           - espodossolo_ferriluvico: {}
     - code: "ES"
-      name: "Espodossolos Ferri-humiluvicos"
+      name: "Espodossolos Ferri-humilúvicos"
       tests:
         default: true
       notes: "Catch-all final dos Espodossolos."
@@ -226,22 +226,22 @@ subordens:
   # -----------------------------------------------------------
   "G":
     - code: "GJ"
-      name: "Gleissolos Tiomorficos"
+      name: "Gleissolos Tiomórficos"
       tests:
         all_of:
           - gleissolo_tiomorfico: {}
     - code: "GZ"
-      name: "Gleissolos Salicos"
+      name: "Gleissolos Sálicos"
       tests:
         all_of:
           - gleissolo_salico: {}
     - code: "GM"
-      name: "Gleissolos Melanicos"
+      name: "Gleissolos Melânicos"
       tests:
         all_of:
           - gleissolo_melanico: {}
     - code: "GX"
-      name: "Gleissolos Haplicos"
+      name: "Gleissolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Gleissolos."
@@ -276,12 +276,12 @@ subordens:
   # -----------------------------------------------------------
   "T":
     - code: "TC"
-      name: "Luvissolos Cromicos"
+      name: "Luvissolos Crômicos"
       tests:
         all_of:
           - luvissolo_cromico: {}
     - code: "TX"
-      name: "Luvissolos Haplicos"
+      name: "Luvissolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Luvissolos."
@@ -291,22 +291,22 @@ subordens:
   # -----------------------------------------------------------
   "R":
     - code: "RL"
-      name: "Neossolos Litolicos"
+      name: "Neossolos Litólicos"
       tests:
         all_of:
           - neossolo_litolico: {}
     - code: "RY"
-      name: "Neossolos Fluvicos"
+      name: "Neossolos Flúvicos"
       tests:
         all_of:
           - neossolo_fluvico: {}
     - code: "RQ"
-      name: "Neossolos Quartzarenicos"
+      name: "Neossolos Quartzarênicos"
       tests:
         all_of:
           - neossolo_quartzarenico: {}
     - code: "RR"
-      name: "Neossolos Regoliticos"
+      name: "Neossolos Regolíticos"
       tests:
         default: true
       notes: "Catch-all final dos Neossolos."
@@ -326,7 +326,7 @@ subordens:
         all_of:
           - nitossolo_vermelho: {}
     - code: "NX"
-      name: "Nitossolos Haplicos"
+      name: "Nitossolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Nitossolos."
@@ -336,17 +336,17 @@ subordens:
   # -----------------------------------------------------------
   "O":
     - code: "OJ"
-      name: "Organossolos Tiomorficos"
+      name: "Organossolos Tiomórficos"
       tests:
         all_of:
           - organossolo_tiomorfico: {}
     - code: "OO"
-      name: "Organossolos Folicos"
+      name: "Organossolos Fólicos"
       tests:
         all_of:
           - organossolo_folico: {}
     - code: "OX"
-      name: "Organossolos Haplicos"
+      name: "Organossolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Organossolos."
@@ -356,12 +356,12 @@ subordens:
   # -----------------------------------------------------------
   "S":
     - code: "SN"
-      name: "Planossolos Natricos"
+      name: "Planossolos Nátricos"
       tests:
         all_of:
           - planossolo_natrico: {}
     - code: "SX"
-      name: "Planossolos Haplicos"
+      name: "Planossolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Planossolos."
@@ -371,17 +371,17 @@ subordens:
   # -----------------------------------------------------------
   "F":
     - code: "FF"
-      name: "Plintossolos Petricos"
+      name: "Plintossolos Pétricos"
       tests:
         all_of:
           - plintossolo_petrico: {}
     - code: "FT"
-      name: "Plintossolos Argiluvicos"
+      name: "Plintossolos Argilúvicos"
       tests:
         all_of:
           - plintossolo_argiluvico: {}
     - code: "FX"
-      name: "Plintossolos Haplicos"
+      name: "Plintossolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Plintossolos."
@@ -391,17 +391,17 @@ subordens:
   # -----------------------------------------------------------
   "V":
     - code: "VG"
-      name: "Vertissolos Hidromorficos"
+      name: "Vertissolos Hidromórficos"
       tests:
         all_of:
           - vertissolo_hidromorfico: {}
     - code: "VE"
-      name: "Vertissolos Ebanicos"
+      name: "Vertissolos Ebânicos"
       tests:
         all_of:
           - vertissolo_ebanico: {}
     - code: "VX"
-      name: "Vertissolos Haplicos"
+      name: "Vertissolos Háplicos"
       tests:
         default: true
       notes: "Catch-all final dos Vertissolos."

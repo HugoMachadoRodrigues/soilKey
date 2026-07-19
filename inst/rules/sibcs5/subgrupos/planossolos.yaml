@@ -14,275 +14,275 @@ subgrupos:
   # -- SN Natricos -----
   "SNca":
     - code: "SNcaVt"
-      name: "Planossolos Natricos Carbonaticos vertissolicos"
+      name: "Planossolos Nátricos Carbonáticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "SNcaTp"
-      name: "Planossolos Natricos Carbonaticos tipicos"
+      name: "Planossolos Nátricos Carbonáticos típicos"
       tests:
         default: true
 
   "SNs":
     - code: "SNsEa"
-      name: "Planossolos Natricos Salicos espessarenicos"
+      name: "Planossolos Nátricos Sálicos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "SNsAr"
-      name: "Planossolos Natricos Salicos arenicos"
+      name: "Planossolos Nátricos Sálicos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SNsEs"
-      name: "Planossolos Natricos Salicos espessos"
+      name: "Planossolos Nátricos Sálicos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SNsMe"
-      name: "Planossolos Natricos Salicos mesicos"
+      name: "Planossolos Nátricos Sálicos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SNsDu"
-      name: "Planossolos Natricos Salicos duricos"
+      name: "Planossolos Nátricos Sálicos dúricos"
       tests:
         all_of:
           - carater_durico: { max_depth_cm: 150 }
     - code: "SNsNf"
-      name: "Planossolos Natricos Salicos neofluvissolicos"
+      name: "Planossolos Nátricos Sálicos neofluvissólicos"
       tests:
         all_of:
           - carater_fluvico: {}
     - code: "SNsTp"
-      name: "Planossolos Natricos Salicos tipicos"
+      name: "Planossolos Nátricos Sálicos típicos"
       tests:
         default: true
 
   "SNo":
     - code: "SNoSn"
-      name: "Planossolos Natricos Orticos salinos"
+      name: "Planossolos Nátricos Órticos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "SNoEa"
-      name: "Planossolos Natricos Orticos espessarenicos"
+      name: "Planossolos Nátricos Órticos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "SNoAr"
-      name: "Planossolos Natricos Orticos arenicos"
+      name: "Planossolos Nátricos Órticos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SNoEs"
-      name: "Planossolos Natricos Orticos espessos"
+      name: "Planossolos Nátricos Órticos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SNoMe"
-      name: "Planossolos Natricos Orticos mesicos"
+      name: "Planossolos Nátricos Órticos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SNoDu"
-      name: "Planossolos Natricos Orticos duricos"
+      name: "Planossolos Nátricos Órticos dúricos"
       tests:
         all_of:
           - carater_durico: { max_depth_cm: 150 }
     - code: "SNoVt"
-      name: "Planossolos Natricos Orticos vertissolicos"
+      name: "Planossolos Nátricos Órticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "SNoGl"
-      name: "Planossolos Natricos Orticos gleissolicos"
+      name: "Planossolos Nátricos Órticos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SNoPl"
-      name: "Planossolos Natricos Orticos plintossolicos"
+      name: "Planossolos Nátricos Órticos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "SNoTp"
-      name: "Planossolos Natricos Orticos tipicos"
+      name: "Planossolos Nátricos Órticos típicos"
       tests:
         default: true
 
   # -- SX Haplicos -----
   "SXca":
     - code: "SXcaSd"
-      name: "Planossolos Haplicos Carbonaticos solodicos"
+      name: "Planossolos Háplicos Carbonáticos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "SXcaVt"
-      name: "Planossolos Haplicos Carbonaticos vertissolicos"
+      name: "Planossolos Háplicos Carbonáticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "SXcaTp"
-      name: "Planossolos Haplicos Carbonaticos tipicos"
+      name: "Planossolos Háplicos Carbonáticos típicos"
       tests:
         default: true
 
   "SXs":
     - code: "SXsSd"
-      name: "Planossolos Haplicos Salicos solodicos"
+      name: "Planossolos Háplicos Sálicos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "SXsAr"
-      name: "Planossolos Haplicos Salicos arenicos"
+      name: "Planossolos Háplicos Sálicos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SXsEs"
-      name: "Planossolos Haplicos Salicos espessos"
+      name: "Planossolos Háplicos Sálicos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SXsMe"
-      name: "Planossolos Haplicos Salicos mesicos"
+      name: "Planossolos Háplicos Sálicos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SXsVt"
-      name: "Planossolos Haplicos Salicos vertissolicos"
+      name: "Planossolos Háplicos Sálicos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "SXsGl"
-      name: "Planossolos Haplicos Salicos gleissolicos"
+      name: "Planossolos Háplicos Sálicos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SXsTp"
-      name: "Planossolos Haplicos Salicos tipicos"
+      name: "Planossolos Háplicos Sálicos típicos"
       tests:
         default: true
 
   "SXal":
     - code: "SXalAr"
-      name: "Planossolos Haplicos Aluminicos arenicos"
+      name: "Planossolos Háplicos Alumínicos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SXalEs"
-      name: "Planossolos Haplicos Aluminicos espessos"
+      name: "Planossolos Háplicos Alumínicos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SXalMe"
-      name: "Planossolos Haplicos Aluminicos mesicos"
+      name: "Planossolos Háplicos Alumínicos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SXalGl"
-      name: "Planossolos Haplicos Aluminicos gleissolicos"
+      name: "Planossolos Háplicos Alumínicos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SXalTp"
-      name: "Planossolos Haplicos Aluminicos tipicos"
+      name: "Planossolos Háplicos Alumínicos típicos"
       tests:
         default: true
 
   "SXd":
     - code: "SXdSd"
-      name: "Planossolos Haplicos Distroficos solodicos"
+      name: "Planossolos Háplicos Distróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "SXdEa"
-      name: "Planossolos Haplicos Distroficos espessarenicos"
+      name: "Planossolos Háplicos Distróficos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "SXdArGl"
-      name: "Planossolos Haplicos Distroficos arenicos gleissolicos"
+      name: "Planossolos Háplicos Distróficos arênicos gleissólicos"
       tests:
         all_of:
           - carater_arenico: {}
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SXdAr"
-      name: "Planossolos Haplicos Distroficos arenicos"
+      name: "Planossolos Háplicos Distróficos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SXdEs"
-      name: "Planossolos Haplicos Distroficos espessos"
+      name: "Planossolos Háplicos Distróficos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SXdMe"
-      name: "Planossolos Haplicos Distroficos mesicos"
+      name: "Planossolos Háplicos Distróficos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SXdGl"
-      name: "Planossolos Haplicos Distroficos gleissolicos"
+      name: "Planossolos Háplicos Distróficos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SXdPl"
-      name: "Planossolos Haplicos Distroficos plintossolicos"
+      name: "Planossolos Háplicos Distróficos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "SXdTp"
-      name: "Planossolos Haplicos Distroficos tipicos"
+      name: "Planossolos Háplicos Distróficos típicos"
       tests:
         default: true
 
   "SXe":
     - code: "SXeSn"
-      name: "Planossolos Haplicos Eutroficos salinos"
+      name: "Planossolos Háplicos Eutróficos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 150 }
     - code: "SXeSd"
-      name: "Planossolos Haplicos Eutroficos solodicos"
+      name: "Planossolos Háplicos Eutróficos solódicos"
       tests:
         all_of:
           - carater_solodico: {}
     - code: "SXeEa"
-      name: "Planossolos Haplicos Eutroficos espessarenicos"
+      name: "Planossolos Háplicos Eutróficos espessarênicos"
       tests:
         all_of:
           - carater_espessarenico: {}
     - code: "SXeAr"
-      name: "Planossolos Haplicos Eutroficos arenicos"
+      name: "Planossolos Háplicos Eutróficos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "SXeEs"
-      name: "Planossolos Haplicos Eutroficos espessos"
+      name: "Planossolos Háplicos Eutróficos espessos"
       tests:
         all_of:
           - subgrupo_planossolo_espessos: {}
     - code: "SXeMe"
-      name: "Planossolos Haplicos Eutroficos mesicos"
+      name: "Planossolos Háplicos Eutróficos mésicos"
       tests:
         all_of:
           - subgrupo_planossolo_mesicos: {}
     - code: "SXeVt"
-      name: "Planossolos Haplicos Eutroficos vertissolicos"
+      name: "Planossolos Háplicos Eutróficos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "SXeGl"
-      name: "Planossolos Haplicos Eutroficos gleissolicos"
+      name: "Planossolos Háplicos Eutróficos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 100 }
     - code: "SXeCh"
-      name: "Planossolos Haplicos Eutroficos chernossolicos"
+      name: "Planossolos Háplicos Eutróficos chernossólicos"
       tests:
         all_of:
           - carater_chernossolico: {}
     - code: "SXeTp"
-      name: "Planossolos Haplicos Eutroficos tipicos"
+      name: "Planossolos Háplicos Eutróficos típicos"
       tests:
         default: true

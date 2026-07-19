@@ -83,7 +83,7 @@ test_that("saturacao_bases: eutrofico quando V media >= 50", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_saturacao_bases(pr)
-  expect_equal(fa$value, "eutrofico")
+  expect_equal(fa$value, "eutrófico")
 })
 
 test_that("saturacao_bases: distrofico quando V media < 50", {
@@ -98,7 +98,7 @@ test_that("saturacao_bases: distrofico quando V media < 50", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_saturacao_bases(pr)
-  expect_equal(fa$value, "distrofico")
+  expect_equal(fa$value, "distrófico")
 })
 
 test_that("saturacao_bases: NULL e missing reportado quando bs_pct todo NA", {
@@ -134,7 +134,7 @@ test_that("alico: 'epialico' quando primeira camada B com Al passa < 50 cm", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_saturacao_aluminio(pr)
-  expect_equal(fa$value, "epialico")
+  expect_equal(fa$value, "epiálico")
 })
 
 test_that("alico: 'mesoalico' quando primeira camada B com Al passa em [50,100)", {
@@ -150,7 +150,7 @@ test_that("alico: 'mesoalico' quando primeira camada B com Al passa em [50,100)"
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_saturacao_aluminio(pr)
-  expect_equal(fa$value, "mesoalico")
+  expect_equal(fa$value, "mesoálico")
 })
 
 test_that("alico: 'endoalico' quando primeira camada B com Al passa >= 100", {
@@ -166,7 +166,7 @@ test_that("alico: 'endoalico' quando primeira camada B com Al passa >= 100", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_saturacao_aluminio(pr)
-  expect_equal(fa$value, "endoalico")
+  expect_equal(fa$value, "endoálico")
 })
 
 test_that("alico: NULL quando nenhuma camada satisfaz al_sat>=50 + al_cmol>0.5", {
@@ -205,7 +205,7 @@ test_that("motor: ordem G inclui saturacao_bases e saturacao_aluminio", {
   out <- classify_sibcs_familia(pr, ordem_code = "G")
   expect_true("saturacao_bases" %in% names(out))
   expect_true("saturacao_aluminio" %in% names(out))
-  expect_equal(out$saturacao_bases$value, "distrofico")
+  expect_equal(out$saturacao_bases$value, "distrófico")
 })
 
 test_that("motor: ordem L (Latossolos) skipa saturacao_bases e alico", {

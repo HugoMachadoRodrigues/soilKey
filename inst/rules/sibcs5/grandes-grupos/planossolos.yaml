@@ -11,43 +11,43 @@ grandes_grupos:
   # -- SN Natricos -----
   "SN":
     - code: "SNca"
-      name: "Planossolos Natricos Carbonaticos"
+      name: "Planossolos Nátricos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "SNs"
-      name: "Planossolos Natricos Salicos"
+      name: "Planossolos Nátricos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "SNo"
-      name: "Planossolos Natricos Orticos"
+      name: "Planossolos Nátricos Órticos"
       tests:
         default: true
 
   # -- SX Haplicos -----
   "SX":
     - code: "SXca"
-      name: "Planossolos Haplicos Carbonaticos"
+      name: "Planossolos Háplicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "SXs"
-      name: "Planossolos Haplicos Salicos"
+      name: "Planossolos Háplicos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 150 }
     - code: "SXal"
-      name: "Planossolos Haplicos Aluminicos"
+      name: "Planossolos Háplicos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "SXd"
-      name: "Planossolos Haplicos Distroficos"
+      name: "Planossolos Háplicos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "SXe"
-      name: "Planossolos Haplicos Eutroficos"
+      name: "Planossolos Háplicos Eutróficos"
       tests:
         default: true

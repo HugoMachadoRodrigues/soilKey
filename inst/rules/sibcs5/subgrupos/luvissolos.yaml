@@ -13,177 +13,177 @@ subgrupos:
 
   "TCca":
     - code: "TCcaVs"
-      name: "Luvissolos Cromicos Carbonaticos vertissolicos"
+      name: "Luvissolos Crômicos Carbonáticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: { max_depth_cm: 100 }
     - code: "TCcaPs"
-      name: "Luvissolos Cromicos Carbonaticos planossolicos"
+      name: "Luvissolos Crômicos Carbonáticos planossólicos"
       tests:
         all_of:
           - carater_planossolico: { max_depth_cm: 100 }
     - code: "TCcaTp"
-      name: "Luvissolos Cromicos Carbonaticos tipicos"
+      name: "Luvissolos Crômicos Carbonáticos típicos"
       tests:
         default: true
 
   "TCp":
     - code: "TCpSp"
-      name: "Luvissolos Cromicos Palicos saproliticos"
+      name: "Luvissolos Crômicos Pálicos saprolíticos"
       tests:
         all_of:
           - carater_saprolitico: {}
     - code: "TCpAr"
-      name: "Luvissolos Cromicos Palicos arenicos"
+      name: "Luvissolos Crômicos Pálicos arênicos"
       tests:
         all_of:
           - carater_arenico: {}
     - code: "TCpAbPl"
-      name: "Luvissolos Cromicos Palicos abrupticos plintossolicos"
+      name: "Luvissolos Crômicos Pálicos abrúpticos plintossólicos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
           - carater_plintico: {}
     - code: "TCpAb"
-      name: "Luvissolos Cromicos Palicos abrupticos"
+      name: "Luvissolos Crômicos Pálicos abrúpticos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
     - code: "TCpVs"
-      name: "Luvissolos Cromicos Palicos vertissolicos"
+      name: "Luvissolos Crômicos Pálicos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: {}
     - code: "TCpPp"
-      name: "Luvissolos Cromicos Palicos petroplinticos"
+      name: "Luvissolos Crômicos Pálicos petroplínticos"
       tests:
         all_of:
           - carater_petroplintico: {}
     - code: "TCpPs"
-      name: "Luvissolos Cromicos Palicos planossolicos"
+      name: "Luvissolos Crômicos Pálicos planossólicos"
       tests:
         all_of:
           - carater_planossolico: {}
     - code: "TCpCb"
-      name: "Luvissolos Cromicos Palicos cambissolicos"
+      name: "Luvissolos Crômicos Pálicos cambissólicos"
       tests:
         all_of:
           - carater_cambissolico_arg: {}
     - code: "TCpTp"
-      name: "Luvissolos Cromicos Palicos tipicos"
+      name: "Luvissolos Crômicos Pálicos típicos"
       tests:
         default: true
 
   "TCo":
     - code: "TCoFr"
-      name: "Luvissolos Cromicos Orticos fragmentarios"
+      name: "Luvissolos Crômicos Órticos fragmentários"
       tests:
         all_of:
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "TCoLi"
-      name: "Luvissolos Cromicos Orticos liticos"
+      name: "Luvissolos Crômicos Órticos líticos"
       tests:
         all_of:
           - contato_litico: { max_depth_cm: 50 }
     - code: "TCoSa"
-      name: "Luvissolos Cromicos Orticos salinos"
+      name: "Luvissolos Crômicos Órticos salinos"
       tests:
         all_of:
           - carater_salino: { max_depth_cm: 100 }
     - code: "TCoSoVs"
-      name: "Luvissolos Cromicos Orticos solodicos vertissolicos"
+      name: "Luvissolos Crômicos Órticos solódicos vertissólicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 100 }
           - carater_vertissolico: { max_depth_cm: 100 }
     - code: "TCoSoPs"
-      name: "Luvissolos Cromicos Orticos solodicos planossolicos"
+      name: "Luvissolos Crômicos Órticos solódicos planossólicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 100 }
           - carater_planossolico: { max_depth_cm: 100 }
     - code: "TCoSo"
-      name: "Luvissolos Cromicos Orticos solodicos"
+      name: "Luvissolos Crômicos Órticos solódicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 100 }
     - code: "TCoVsPs"
-      name: "Luvissolos Cromicos Orticos vertissolicos planossolicos"
+      name: "Luvissolos Crômicos Órticos vertissólicos planossólicos"
       tests:
         all_of:
           - carater_vertissolico: { max_depth_cm: 100 }
           - carater_planossolico: { max_depth_cm: 100 }
     - code: "TCoVs"
-      name: "Luvissolos Cromicos Orticos vertissolicos"
+      name: "Luvissolos Crômicos Órticos vertissólicos"
       tests:
         all_of:
           - carater_vertissolico: { max_depth_cm: 100 }
     - code: "TCoPs"
-      name: "Luvissolos Cromicos Orticos planossolicos"
+      name: "Luvissolos Crômicos Órticos planossólicos"
       tests:
         all_of:
           - carater_planossolico: { max_depth_cm: 100 }
     - code: "TCoTp"
-      name: "Luvissolos Cromicos Orticos tipicos"
+      name: "Luvissolos Crômicos Órticos típicos"
       tests:
         default: true
 
   "TXp":
     - code: "TXpHC"
-      name: "Luvissolos Haplicos Palicos hipocarbonaticos"
+      name: "Luvissolos Háplicos Pálicos hipocarbonáticos"
       tests:
         all_of:
           - carater_hipocarbonatico: { max_depth_cm: 150 }
     - code: "TXpSoPl"
-      name: "Luvissolos Haplicos Palicos solodicos plintossolicos"
+      name: "Luvissolos Háplicos Pálicos solódicos plintossólicos"
       tests:
         all_of:
           - carater_solodico: { max_depth_cm: 150 }
           - carater_plintico: {}
     - code: "TXpAbPl"
-      name: "Luvissolos Haplicos Palicos abrupticos plintossolicos"
+      name: "Luvissolos Háplicos Pálicos abrúpticos plintossólicos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
           - carater_plintico: {}
     - code: "TXpAb"
-      name: "Luvissolos Haplicos Palicos abrupticos"
+      name: "Luvissolos Háplicos Pálicos abrúpticos"
       tests:
         all_of:
           - mudanca_textural_abrupta: {}
     - code: "TXpFrPl"
-      name: "Luvissolos Haplicos Palicos fragipanicos plintossolicos"
+      name: "Luvissolos Háplicos Pálicos fragipânicos plintossólicos"
       tests:
         all_of:
           - fragipa: {}
           - carater_plintico: {}
     - code: "TXpGl"
-      name: "Luvissolos Haplicos Palicos gleissolicos"
+      name: "Luvissolos Háplicos Pálicos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: {}
     - code: "TXpPl"
-      name: "Luvissolos Haplicos Palicos plintossolicos"
+      name: "Luvissolos Háplicos Pálicos plintossólicos"
       tests:
         all_of:
           - carater_plintico: {}
     - code: "TXpTp"
-      name: "Luvissolos Haplicos Palicos tipicos"
+      name: "Luvissolos Háplicos Pálicos típicos"
       tests:
         default: true
 
   "TXo":
     - code: "TXoGl"
-      name: "Luvissolos Haplicos Orticos gleissolicos"
+      name: "Luvissolos Háplicos Órticos gleissólicos"
       tests:
         all_of:
           - carater_gleissolico: { max_depth_cm: 80 }
     - code: "TXoPs"
-      name: "Luvissolos Haplicos Orticos planossolicos"
+      name: "Luvissolos Háplicos Órticos planossólicos"
       tests:
         all_of:
           - carater_planossolico: { max_depth_cm: 100 }
     - code: "TXoTp"
-      name: "Luvissolos Haplicos Orticos tipicos"
+      name: "Luvissolos Háplicos Órticos típicos"
       tests:
         default: true

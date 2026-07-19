@@ -14,7 +14,13 @@ mk <- function(h) PedonRecord$new(site = list(id = "t"), horizons = h)
 test_that(".designation_indicates maps subordinate letters to diagnostics", {
   di <- soilKey:::.designation_indicates
   expect_equal(di(c("Bt", "Bt2", "BA")),      c("argic", "argic", NA))
-  expect_equal(di(c("Bw", "Bwo", "Bo")),      c("ferralic", "ferralic", "ferralic"))
+  # v0.9.188: Bw/Bo is region-aware -- cambic by default (temperate/unknown),
+  # latossolic-ferralic only when the pedon is tropical.
+  expect_equal(di(c("Bw", "Bwo", "Bo")),      c("cambic", "cambic", "cambic"))
+  expect_equal(di(c("Bw", "Bwo", "Bo"), tropical = TRUE),
+               c("ferralic", "ferralic", "ferralic"))
+  expect_equal(di(c("Bw", "Bwo", "Bo"), tropical = FALSE),
+               c("cambic", "cambic", "cambic"))
   expect_equal(di("Bi"),                       "cambic")
   expect_equal(di(c("Bh", "Bs", "Bhs")),      c("spodic", "spodic", "spodic"))
   expect_equal(di(c("Bn", "Btn")),            c("natric", "natric"))   # sodium wins over t
@@ -52,17 +58,34 @@ test_that("with inference ON, a Bt is accepted as argic by morphology", {
                "morphological_designation")
 })
 
-test_that("a Bw with borderline CEC/clay is ferralic only when inference is ON", {
+test_that("a tropical Bw with borderline CEC/clay is ferralic only when inference is ON", {
   # CEC/clay = 11/0.60 = 18.3 > 16 (soilkey ferralic ceiling) -> quantitative fails
-  p <- mk(data.frame(designation = c("Ap", "Bw"), top_cm = c(0, 25),
-                     bottom_cm = c(25, 90), clay_pct = c(45, 60),
-                     cec_cmol = c(9, 11), stringsAsFactors = FALSE))
+  # v0.9.188: ferralic reading of a Bw requires a tropical regime -> country = BR.
+  hz <- data.frame(designation = c("Ap", "Bw"), top_cm = c(0, 25),
+                   bottom_cm = c(25, 90), clay_pct = c(45, 60),
+                   cec_cmol = c(9, 11), stringsAsFactors = FALSE)
+  p <- PedonRecord$new(site = list(id = "t", country = "BR"), horizons = hz)
   old <- options(soilKey.morphological_inference = FALSE)
   expect_false(isTRUE(ferralic(p, engine = "soilkey")$passed))   # OFF: fails
   options(soilKey.morphological_inference = TRUE); on.exit(options(old))
   r <- ferralic(p, engine = "soilkey")
   expect_true(isTRUE(r$passed))                                   # ON: morphology
   expect_equal(r$evidence$morphological_inference$diagnostic, "ferralic")
+})
+
+test_that("a temperate Bw is NOT read as ferralic even with inference ON (region-aware)", {
+  # v0.9.188: identical borderline Bw, but an Austrian (temperate) site -> the
+  # Bw is the cambic B, so the ferralic morphological inference must NOT fire.
+  hz <- data.frame(designation = c("Ap", "Bw"), top_cm = c(0, 25),
+                   bottom_cm = c(25, 90), clay_pct = c(45, 60),
+                   cec_cmol = c(9, 11), stringsAsFactors = FALSE)
+  p <- PedonRecord$new(site = list(id = "t", country = "AT", lat = 47.3),
+                       horizons = hz)
+  old <- options(soilKey.morphological_inference = TRUE); on.exit(options(old))
+  expect_false(isTRUE(ferralic(p, engine = "soilkey")$passed))
+  # and the canonical temperate Cambisol keys to Cambisol under inference ON
+  expect_equal(classify_wrb2022(make_cambisol_canonical())$rsg_or_order,
+               "Cambisols")
 })
 
 # --- 4. it does not over-fire ------------------------------------------------

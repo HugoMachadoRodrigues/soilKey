@@ -1,6 +1,15 @@
 # v0.9.129 -- WRB 2022 base-status qualifiers redefined from base saturation
-# to exchangeable Al vs exchangeable bases (WRB 2022 Ch 5, p131-133), strict
-# (no base-saturation fallback).
+# to exchangeable Al vs exchangeable bases, strict (no base-saturation
+# fallback).
+#
+# CANONICAL BASIS (verified against the official WRB 2022 4th-edition PDF,
+# IUSS Working Group WRB 2022, section "Definitions of qualifiers"):
+#   Dystric (p.130-131): one or more layers within 20-100 cm with exchangeable
+#     Al > exchangeable (Ca+Mg+K+Na) in HALF OR MORE of their combined thickness.
+#   Eutric  (p.131-132): same window with exchangeable bases >= exchangeable Al
+#     in the MAJOR PART.
+# Base saturation (>=/< 50%) was the WRB 2014 rule and is NOT the WRB 2022
+# criterion; these tests guard against a regression back to it.
 
 mk <- function(df) {
   PedonRecord$new(horizons = ensure_horizon_schema(data.table::as.data.table(df)))
@@ -76,4 +85,23 @@ test_that("the variable-charge Ferralsol is Eutric under WRB 2022 (showcase)", {
   fr <- make_ferralsol_canonical()
   expect_true(qual_eutric(fr)$passed)
   expect_false(isTRUE(qual_dystric(fr)$passed))
+})
+
+test_that("WRB 2022 discriminator: base-dominated but low-base-saturation -> Eutric", {
+  # Self-contained anti-regression guard (independent of any fixture).
+  # A variable-charge subsoil: exchangeable bases (Ca+Mg+K+Na = 3.1 cmol_c/kg)
+  # clearly exceed exchangeable Al (0.3), so WRB 2022 keys EUTRIC. Yet the CEC
+  # at pH 7 is high (pH-dependent charge), so base saturation is well below 50%
+  # -- the WRB *2014* rule would have called this Dystric. This test fails if
+  # anyone reintroduces a base-saturation criterion.  (WRB 2022 p.131-132.)
+  vc <- mk(data.frame(
+    top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 100),
+    al_cmol = c(0.3, 0.3, 0.2),
+    ca_cmol = c(2.0, 1.8, 1.6), mg_cmol = c(0.8, 0.7, 0.6),
+    k_cmol  = c(0.2, 0.2, 0.2), na_cmol = c(0.1, 0.1, 0.1),
+    cec_cmol = c(12, 11, 10),   # high pH-7 CEC -> base saturation ~ 26% (< 50)
+    bs_pct   = c(26, 25, 24)
+  ))
+  expect_true(qual_eutric(vc)$passed)          # WRB 2022: bases >> Al -> Eutric
+  expect_false(isTRUE(qual_dystric(vc)$passed)) # a bs<50 rule would say Dystric
 })

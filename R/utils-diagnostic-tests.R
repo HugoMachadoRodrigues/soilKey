@@ -600,8 +600,12 @@ test_ferralic_thickness <- function(h, min_cm = 30, candidate_layers = NULL) {
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @param tropical Single logical (or `NA`) from \code{\link{.pedon_is_tropical}}.
+#'   v0.9.188: the Bw/Bo-implies-ferralic-texture inference is only valid in a
+#'   tropical regime; it is suppressed unless `tropical` is `TRUE`, so a
+#'   temperate data-poor Bw is no longer read as a deeply-weathered subsoil.
 #' @noRd
-test_ferralic_texture <- function(h, candidate_layers = NULL) {
+test_ferralic_texture <- function(h, candidate_layers = NULL, tropical = NA) {
   res <- test_texture_argic(h, candidate_layers = candidate_layers)
   if (!is.na(res$passed)) return(res)
   # v0.9.89: engine="aqp" auto-enables the texture-morphological
@@ -617,6 +621,10 @@ test_ferralic_texture <- function(h, candidate_layers = NULL) {
     identical(engine_opt, "aqp")
   }
   if (!morph_fallback) return(res)
+  # v0.9.188: a Bw/Bo subsoil implies ferralic texture only under a tropical
+  # regime; without a tropical signal the temperate cambic reading applies and
+  # the fallback is not taken.
+  if (!isTRUE(tropical)) return(res)
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L) return(res)
   desig <- if (!is.null(h$designation)) as.character(h$designation)

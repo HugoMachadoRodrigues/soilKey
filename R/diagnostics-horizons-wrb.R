@@ -293,9 +293,12 @@ ferralic <- function(pedon,
                             default = if (engine == "aqp") 20 else 16)
 
   h <- pedon$horizons
+  # v0.9.188 -- region governs the ambiguous Bw/Bo designation: it is the
+  # latossolic (ferralic) B in the tropics but the cambic B in temperate usage.
+  tropical <- .pedon_is_tropical(pedon)
 
   tests <- list()
-  tests$texture       <- test_ferralic_texture(h)
+  tests$texture       <- test_ferralic_texture(h, tropical = tropical)
   tests$cec_per_clay  <- test_cec_per_clay(h,
                                              max_cmol_per_kg_clay = max_cec)
   tests$thickness     <- test_ferralic_thickness(h, min_cm = min_thickness)
@@ -306,9 +309,12 @@ ferralic <- function(pedon,
   # horizon is the field pedologist's call of an in-situ, strongly-weathered
   # (latossolic/ferralic) B; accept it when the quantitative CEC-per-clay /
   # texture data is missing or borderline, at a downgraded morphological grade.
+  # v0.9.188: region-gated -- Bw/Bo indicates ferralic only in a tropical
+  # regime (see .pedon_is_tropical); a temperate Bw is cambic, handled by
+  # cambic().
   ev  <- c(tests, list(engine = engine, max_cec_used = max_cec))
   mi  <- .apply_morph_inference("ferralic", h, agg$passed, agg$layers, ev,
-                                min_top = 25)
+                                min_top = 25, tropical = tropical)
 
   notes_str <- paste0(
     "v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic. ",

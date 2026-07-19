@@ -395,7 +395,11 @@ qual_luvic <- function(pedon) {
     evidence = list(dystric_frac = f$dystric, eutric_frac = f$eutric,
                     na_frac = f$na),
     missing = if (is.na(passed)) miss else character(0),
-    reference = paste0("WRB (2022) Ch 5, ", name))
+    reference = paste0("WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): ",
+                       "exchangeable Al vs exchangeable bases over 20-100 cm; ",
+                       "Dystric = Al > bases in >= half, Eutric = bases >= Al in ",
+                       "the major part. Not base saturation (that was WRB 2014). ",
+                       name))
 }
 
 # Build a Hyper- result: factor-1 dominance THROUGHOUT + factor-4 in major part.
@@ -430,7 +434,11 @@ qual_luvic <- function(pedon) {
     evidence = list(through_frac = through, contrary_frac = other,
                     strong_major_frac = major4),
     missing = if (is.na(passed)) miss else character(0),
-    reference = paste0("WRB (2022) Ch 5, ", name))
+    reference = paste0("WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): ",
+                       "exchangeable Al vs exchangeable bases over 20-100 cm; ",
+                       "Dystric = Al > bases in >= half, Eutric = bases >= Al in ",
+                       "the major part. Not base saturation (that was WRB 2014). ",
+                       name))
 }
 
 #' Dystric qualifier (dy), WRB 2022 Ch 5.

@@ -25,18 +25,18 @@ grandes_grupos:
   # ============================================================
   "MD":
     - code: "MDpc"
-      name: "Chernossolos Rendzicos Petrocalcicos"
+      name: "Chernossolos Rêndzicos Petrocálcicos"
       tests:
         all_of:
           - horizonte_petrocalcico: {}
     - code: "MDli"
-      name: "Chernossolos Rendzicos Liticos"
+      name: "Chernossolos Rêndzicos Líticos"
       tests:
         any_of:
           - contato_litico: { max_depth_cm: 50 }
           - contato_litico_fragmentario: { max_depth_cm: 50 }
     - code: "MDo"
-      name: "Chernossolos Rendzicos Orticos"
+      name: "Chernossolos Rêndzicos Órticos"
       tests:
         default: true
 
@@ -45,12 +45,12 @@ grandes_grupos:
   # ============================================================
   "ME":
     - code: "MEca"
-      name: "Chernossolos Ebanicos Carbonaticos"
+      name: "Chernossolos Ebânicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "MEo"
-      name: "Chernossolos Ebanicos Orticos"
+      name: "Chernossolos Ebânicos Órticos"
       tests:
         default: true
 
@@ -59,18 +59,18 @@ grandes_grupos:
   # ============================================================
   "MT":
     - code: "MTfe"
-      name: "Chernossolos Argiluvicos Ferricos"
+      name: "Chernossolos Argilúvicos Férricos"
       tests:
         any_of:
           - carater_ferrico: {}
           - carater_perferrico: {}
     - code: "MTca"
-      name: "Chernossolos Argiluvicos Carbonaticos"
+      name: "Chernossolos Argilúvicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "MTo"
-      name: "Chernossolos Argiluvicos Orticos"
+      name: "Chernossolos Argilúvicos Órticos"
       tests:
         default: true
 
@@ -79,17 +79,17 @@ grandes_grupos:
   # ============================================================
   "MX":
     - code: "MXfe"
-      name: "Chernossolos Haplicos Ferricos"
+      name: "Chernossolos Háplicos Férricos"
       tests:
         any_of:
           - carater_ferrico: {}
           - carater_perferrico: {}
     - code: "MXca"
-      name: "Chernossolos Haplicos Carbonaticos"
+      name: "Chernossolos Háplicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 150 }
     - code: "MXo"
-      name: "Chernossolos Haplicos Orticos"
+      name: "Chernossolos Háplicos Órticos"
       tests:
         default: true

@@ -12,60 +12,60 @@ grandes_grupos:
   # -- VG Hidromorficos -----
   "VG":
     - code: "VGca"
-      name: "Vertissolos Hidromorficos Carbonaticos"
+      name: "Vertissolos Hidromórficos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "VGsd"
-      name: "Vertissolos Hidromorficos Sodicos"
+      name: "Vertissolos Hidromórficos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "VGsl"
-      name: "Vertissolos Hidromorficos Salicos"
+      name: "Vertissolos Hidromórficos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 100 }
     - code: "VGo"
-      name: "Vertissolos Hidromorficos Orticos"
+      name: "Vertissolos Hidromórficos Órticos"
       tests:
         default: true
 
   # -- VE Ebanicos -----
   "VE":
     - code: "VEca"
-      name: "Vertissolos Ebanicos Carbonaticos"
+      name: "Vertissolos Ebânicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "VEsd"
-      name: "Vertissolos Ebanicos Sodicos"
+      name: "Vertissolos Ebânicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "VEo"
-      name: "Vertissolos Ebanicos Orticos"
+      name: "Vertissolos Ebânicos Órticos"
       tests:
         default: true
 
   # -- VX Haplicos -----
   "VX":
     - code: "VXca"
-      name: "Vertissolos Haplicos Carbonaticos"
+      name: "Vertissolos Háplicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "VXsd"
-      name: "Vertissolos Haplicos Sodicos"
+      name: "Vertissolos Háplicos Sódicos"
       tests:
         all_of:
           - carater_sodico: { max_depth_cm: 100 }
     - code: "VXsl"
-      name: "Vertissolos Haplicos Salicos"
+      name: "Vertissolos Háplicos Sálicos"
       tests:
         all_of:
           - carater_salico: { max_depth_cm: 100 }
     - code: "VXo"
-      name: "Vertissolos Haplicos Orticos"
+      name: "Vertissolos Háplicos Órticos"
       tests:
         default: true
