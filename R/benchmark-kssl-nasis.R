@@ -245,6 +245,17 @@ load_kssl_pedons_with_nasis <- function(gpkg,
             else if (pct < 50)       "many"
             else                     "continuous"
         }
+        # v0.9.189: NASIS pvsfdistinct (Faint/Distinct/Prominent) was SELECTed
+        # but discarded -- map it to clay_films_strength (the SiBCS/WRB
+        # cerosidade "grau" signal), taking the strongest expression over the
+        # matched clay-films rows. Mirrors the Redape CEROSIDADE_GRAU fix.
+        if (nrow(cf) > 0L && is.na(h$clay_films_strength[j])) {
+          dist <- tolower(trimws(as.character(cf$pvsfdistinct)))
+          rk   <- c(faint = 1L, distinct = 2L, prominent = 3L)[dist]
+          rk   <- rk[!is.na(rk)]
+          if (length(rk) > 0L)
+            h$clay_films_strength[j] <- c("weak", "moderate", "strong")[max(rk)]
+        }
         ss <- jp[!is.na(jp$pvsfkind) &
                    grepl("slickensides", jp$pvsfkind, ignore.case = TRUE), ]
         if (nrow(ss) > 0L && is.na(h$slickensides[j])) {

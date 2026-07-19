@@ -1,3 +1,44 @@
+# soilKey 0.9.189 (2026-07-18)
+
+## Redape loader: capture soil structure and clay films (real accuracy gain)
+
+* **The Redape (SiBCS) benchmark loader was silently discarding soil structure.**
+  `.redape_horizon_to_soilkey()` set `structure_grade/size/type = NA` with a
+  "numeric code -> categorical TBD" placeholder, so every Redape profile was
+  classified *without* its structure even though the source GeoTab carries
+  `ESTRUTURA_GRAU/TAMANHO/TIPO` integer codes (and `CEROSIDADE_*` clay-films
+  codes). This release maps those codes to the categorical strings the
+  diagnostic engine consumes (via `.redape_code_to_str()` and the
+  `.REDAPE_STRUCT_*` / `.REDAPE_CEROS_*` vocabularies — the inverse of the
+  `.smartsolos_struct_*` encoders). Structure is now populated on 284 of 444
+  Redape horizons (previously 0). Effect on the Redape gold-standard benchmark:
+  **Order accuracy 63.8% -> 67.0% (strict), 67.0% -> 69.1% (morphological)**;
+  the deeper levels also improve. The strict lab-only default elsewhere is
+  unchanged. This was surfaced by a soilKey-vs-SmartSolos-Expert cross-check:
+  the two rule engines agreed on 63.8% of Redape orders, and closing the
+  structure gap that SmartSolos's native input did not have lifted agreement to
+  67.0%.
+
+* **KSSL+NASIS loader: capture the clay-films distinctness (cerosidade grade).**
+  `load_kssl_pedons_with_nasis()` already SELECTed `phpvsf.pvsfdistinct`
+  (Faint/Distinct/Prominent) but discarded it, leaving `clay_films_strength`
+  empty. It is now mapped (Faint -> weak, Distinct -> moderate, Prominent ->
+  strong, strongest expression per horizon), the same pattern as the Redape
+  fix. This is a correctness fix that feeds the SiBCS/WRB cerosidade
+  (clay-films-grade) evidence path; it is **benchmark-neutral for the USDA
+  KSSL+NASIS panel** (no USDA diagnostic reads clay-film strength — the argillic
+  path uses clay-film *amount*, which was already captured), verified by a
+  controlled injection test (0 of 99 order labels change).
+
+* **Scope note (audited, data-density-dependent).** The "map all available
+  morphology" audit was run on the WRB (AfSP, WoSIS) and USDA (KSSL+NASIS)
+  loaders. KSSL already maps NASIS structure (grade/size/type); WoSIS carries no
+  structure in its source. The AfSP loader copies raw FAO-ISRIC structure codes
+  verbatim, but decoding them did **not** improve WRB agreement on AfSP (its
+  structure is sparse and the reference is RSG-level), so it was left unchanged.
+  The take-away: closing structure/clay-film data-loss is a real gain only where
+  the source morphology is dense (SiBCS/Redape), not a universal rule.
+
 # soilKey 0.9.188 (2026-07-18)
 
 ## Correctness & orthography (three targeted fixes; no change to the strict lab-only default)
