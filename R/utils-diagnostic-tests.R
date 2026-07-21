@@ -621,10 +621,14 @@ test_ferralic_texture <- function(h, candidate_layers = NULL, tropical = NA) {
     identical(engine_opt, "aqp")
   }
   if (!morph_fallback) return(res)
-  # v0.9.188: a Bw/Bo subsoil implies ferralic texture only under a tropical
-  # regime; without a tropical signal the temperate cambic reading applies and
-  # the fallback is not taken.
-  if (!isTRUE(tropical)) return(res)
+  # v0.9.188: region-aware gate. A Bw/Bo subsoil implies ferralic texture in a
+  # tropical regime, but designates the temperate cambic horizon elsewhere. We
+  # therefore suppress this fallback only when the pedon is KNOWN to be temperate
+  # (`tropical` is FALSE); a tropical (TRUE) or unknown (NA) region leaves the
+  # fallback in place. In the default engine = "soilkey" path this gate is never
+  # reached (the block above returns first), so the region logic that drives the
+  # benchmarks lives in the designation-inference path, not here.
+  if (isFALSE(tropical)) return(res)
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L) return(res)
   desig <- if (!is.null(h$designation)) as.character(h$designation)
