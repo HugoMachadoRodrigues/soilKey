@@ -45,7 +45,7 @@ pedon <- make_ferralsol_canonical()   # Latossolo Vermelho canônico
 classify_wrb2022(pedon, on_missing = "silent")$name
 #> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 classify_sibcs(pedon)$name
-#> [1] "Latossolos Vermelhos Distroficos tipicos"
+#> [1] "Latossolos Vermelhos Distróficos típicos"
 classify_usda(pedon, on_missing = "silent")$name
 #> [1] "Rhodic Hapludox"
 ```
@@ -131,7 +131,7 @@ res_usda  <- classify_usda(meu_pedon,  on_missing = "silent")
 res_wrb$name
 #> [1] "Chromic Ferralsol (Clayic, Ochric, Rubic)"
 res_sibcs$name
-#> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
+#> [1] "Latossolos Vermelhos Distróficos típicos, argilosa, moderado"
 res_usda$name
 #> [1] "Typic Hapludox"
 ```
@@ -145,7 +145,7 @@ todos$summary
 #>                                         wrb
 #> 1 Chromic Ferralsol (Clayic, Ochric, Rubic)
 #>                                                          sibcs           usda
-#> 1 Latossolos Vermelhos Distroficos tipicos, argilosa, moderado Typic Hapludox
+#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
 ```
 
 [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
@@ -1691,7 +1691,7 @@ data.frame(
 )
 #>        Sistema                                                         Nome
 #> 1     WRB 2022                    Chromic Ferralsol (Clayic, Ochric, Rubic)
-#> 2 SiBCS 5ª ed. Latossolos Vermelhos Distroficos tipicos, argilosa, moderado
+#> 2 SiBCS 5ª ed. Latossolos Vermelhos Distróficos típicos, argilosa, moderado
 #> 3   USDA ST 13                                               Typic Hapludox
 ```
 

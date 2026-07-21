@@ -74,5 +74,5 @@ em `$trace`.
 pedon <- make_latossolo_canonical()
 res <- classify_sibcs(pedon)
 res$name
-#> [1] "Latossolos Vermelhos Distroficos tipicos"
+#> [1] "Latossolos Vermelhos Distróficos típicos"
 ```

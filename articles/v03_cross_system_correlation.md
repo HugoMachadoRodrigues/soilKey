@@ -31,7 +31,7 @@ data.frame(
 #> 3     USDA    Oxisols
 #>                                                                   Full
 #> 1 Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
-#> 2                             Latossolos Vermelhos Distroficos tipicos
+#> 2                             Latossolos Vermelhos Distróficos típicos
 #> 3                                                      Rhodic Hapludox
 ```
 

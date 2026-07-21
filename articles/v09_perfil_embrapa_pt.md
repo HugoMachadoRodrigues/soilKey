@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55b8d0607f00>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x557df519df00>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -152,7 +152,7 @@ print(res$sibcs)
 #> 
 #> ── ClassificationResult (SiBCS 5a edicao) ──
 #> 
-#> Name: Argissolos Vermelhos Distroficos tipicos, argilosa, moderado, Tmob
+#> Name: Argissolos Vermelhos Distróficos típicos, argilosa, moderado, Tmob
 #> RSG/Order: Argissolos
 #> Evidence grade: A
 #> 
@@ -185,24 +185,24 @@ print(res$sibcs)
 #> 16. PA Argissolos Amarelos -- failed
 #> 17. PV Argissolos Vermelhos -- PASSED
 #> 18. PV Argissolos Vermelhos -- assigned
-#> 19. PVtal Argissolos Vermelhos Ta Aluminicos -- failed
-#> 20. PVal Argissolos Vermelhos Aluminicos -- failed
-#> 21. PVtd Argissolos Vermelhos Ta Distroficos -- failed
-#> 22. PVd Argissolos Vermelhos Distroficos -- PASSED
-#> 23. PVd Argissolos Vermelhos Distroficos -- assigned
-#> 24. PVdEs Argissolos Vermelhos Distroficos espessarenicos -- failed
-#> 25. PVdAr Argissolos Vermelhos Distroficos arenicos -- failed
-#> 26. PVdAbPl Argissolos Vermelhos Distroficos abrupticos plintossolicos --
+#> 19. PVtal Argissolos Vermelhos Ta Alumínicos -- failed
+#> 20. PVal Argissolos Vermelhos Alumínicos -- failed
+#> 21. PVtd Argissolos Vermelhos Ta Distróficos -- failed
+#> 22. PVd Argissolos Vermelhos Distróficos -- PASSED
+#> 23. PVd Argissolos Vermelhos Distróficos -- assigned
+#> 24. PVdEs Argissolos Vermelhos Distróficos espessarênicos -- failed
+#> 25. PVdAr Argissolos Vermelhos Distróficos arênicos -- failed
+#> 26. PVdAbPl Argissolos Vermelhos Distróficos abrúpticos plintossólicos --
 #> failed (1 attrs missing)
-#> 27. PVdAb Argissolos Vermelhos Distroficos abrupticos -- failed
-#> 28. PVdPl Argissolos Vermelhos Distroficos plintossolicos -- NA (1 attrs
+#> 27. PVdAb Argissolos Vermelhos Distróficos abrúpticos -- failed
+#> 28. PVdPl Argissolos Vermelhos Distróficos plintossólicos -- NA (1 attrs
 #> missing)
-#> 29. PVdPs Argissolos Vermelhos Distroficos planossolicos -- failed
-#> 30. PVdNi Argissolos Vermelhos Distroficos nitossolicos -- failed (1 attrs
+#> 29. PVdPs Argissolos Vermelhos Distróficos planossólicos -- failed
+#> 30. PVdNi Argissolos Vermelhos Distróficos nitossólicos -- failed (1 attrs
 #> missing)
-#> 31. PVdLa Argissolos Vermelhos Distroficos latossolicos -- failed
-#> 32. PVdTp Argissolos Vermelhos Distroficos tipicos -- PASSED
-#> 33. PVdTp Argissolos Vermelhos Distroficos tipicos -- assigned
+#> 31. PVdLa Argissolos Vermelhos Distróficos latossólicos -- failed
+#> 32. PVdTp Argissolos Vermelhos Distróficos típicos -- PASSED
+#> 33. PVdTp Argissolos Vermelhos Distróficos típicos -- assigned
 #> 34. grupamento_textural argilosa -- info
 #> 35. distribuicao_cascalhos distribuicao_cascalhos -- info
 #> 36. constituicao_esqueletica constituicao_esqueletica -- info
@@ -371,7 +371,7 @@ data.frame(
 #> 2    WRB 2022
 #> 3 USDA-ST 13a
 #>                                                                                Classe
-#> 1                  Argissolos Vermelhos Distroficos tipicos, argilosa, moderado, Tmob
+#> 1                  Argissolos Vermelhos Distróficos típicos, argilosa, moderado, Tmob
 #> 2 Ferralic Cutanic Acrisol (Clayic, Loamic, Eutric, Ochric, Profondic, Rhodic, Rubic)
 #> 3                                                                  Rhodic Kandiudults
 #>   EvidGrade

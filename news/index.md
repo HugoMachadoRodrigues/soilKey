@@ -1,6 +1,97 @@
 # Changelog
 
-## soilKey 0.9.187 (2026-07-15)
+## soilKey 0.9.189 (2026-07-18)
+
+### Redape loader: capture soil structure and clay films (real accuracy gain)
+
+- **The Redape (SiBCS) benchmark loader was silently discarding soil
+  structure.** `.redape_horizon_to_soilkey()` set
+  `structure_grade/size/type = NA` with a “numeric code -\> categorical
+  TBD” placeholder, so every Redape profile was classified *without* its
+  structure even though the source GeoTab carries
+  `ESTRUTURA_GRAU/TAMANHO/TIPO` integer codes (and `CEROSIDADE_*`
+  clay-films codes). This release maps those codes to the categorical
+  strings the diagnostic engine consumes (via `.redape_code_to_str()`
+  and the `.REDAPE_STRUCT_*` / `.REDAPE_CEROS_*` vocabularies — the
+  inverse of the `.smartsolos_struct_*` encoders). Structure is now
+  populated on 284 of 444 Redape horizons (previously 0). Effect on the
+  Redape gold-standard benchmark: **Order accuracy 63.8% -\> 67.0%
+  (strict), 67.0% -\> 69.1% (morphological)**; the deeper levels also
+  improve. The strict lab-only default elsewhere is unchanged. This was
+  surfaced by a soilKey-vs-SmartSolos-Expert cross-check: the two rule
+  engines agreed on 63.8% of Redape orders, and closing the structure
+  gap that SmartSolos’s native input did not have lifted agreement to
+  67.0%.
+
+- **KSSL+NASIS loader: capture the clay-films distinctness (cerosidade
+  grade).**
+  [`load_kssl_pedons_with_nasis()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_pedons_with_nasis.md)
+  already SELECTed `phpvsf.pvsfdistinct` (Faint/Distinct/Prominent) but
+  discarded it, leaving `clay_films_strength` empty. It is now mapped
+  (Faint -\> weak, Distinct -\> moderate, Prominent -\> strong,
+  strongest expression per horizon), the same pattern as the Redape fix.
+  This is a correctness fix that feeds the SiBCS/WRB cerosidade
+  (clay-films-grade) evidence path; it is **benchmark-neutral for the
+  USDA KSSL+NASIS panel** (no USDA diagnostic reads clay-film strength —
+  the argillic path uses clay-film *amount*, which was already
+  captured), verified by a controlled injection test (0 of 99 order
+  labels change).
+
+- **Scope note (audited, data-density-dependent).** The “map all
+  available morphology” audit was run on the WRB (AfSP, WoSIS) and USDA
+  (KSSL+NASIS) loaders. KSSL already maps NASIS structure
+  (grade/size/type); WoSIS carries no structure in its source. The AfSP
+  loader copies raw FAO-ISRIC structure codes verbatim, but decoding
+  them did **not** improve WRB agreement on AfSP (its structure is
+  sparse and the reference is RSG-level), so it was left unchanged. The
+  take-away: closing structure/clay-film data-loss is a real gain only
+  where the source morphology is dense (SiBCS/Redape), not a universal
+  rule.
+
+## soilKey 0.9.188 (2026-07-18)
+
+### Correctness & orthography (three targeted fixes; no change to the strict lab-only default)
+
+- **Region-aware `Bw`/`Bo` designation inference.** The
+  horizon-designation -\> diagnostic mapping (`.designation_indicates`)
+  now reads a `Bw`/`Bo` designation as the *cambic* horizon by default
+  (temperate/USDA usage) and as the latossolic *ferralic* B only in a
+  tropical regime, resolved per pedon by a new internal
+  `.pedon_is_tropical()` (Brazil, or \|lat\| \<= 23.5). Previously
+  `Bw`/`Bo` mapped unconditionally to ferralic, so under the opt-in
+  morphological-inference mode a *temperate* `Bw` fired
+  [`ferralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md),
+  whose presence tripped the
+  [`cambic()`](https://hugomachadorodrigues.github.io/soilKey/reference/cambic.md)
+  `not_ferralic` exclusion and mis-routed the profile to Ferralsol
+  instead of Cambisol. The same region gate is applied to the
+  `test_ferralic_texture()` `engine="aqp"` fallback. Brazilian
+  latossolic fixtures are unchanged (they classify on measured
+  CEC/clay); the strict lab-only default is byte-identical.
+- **WRB 2022 Dystric/Eutric confirmed and hardened (no behaviour
+  change).** An audit against the official WRB 2022 4th-edition text
+  confirmed that Dystric/Eutric are defined by *exchangeable Al vs
+  exchangeable bases* over 20-100 cm (Dystric p.130-131, Eutric
+  p.131-132) – **not** base saturation, which was the WRB 2014 rule
+  removed in v0.9.129. The implementation already matches the 2022
+  criterion; this release adds page citations to the code reference
+  string and a self-contained anti-regression test so the criterion
+  cannot silently revert to a base-saturation rule.
+- **SiBCS names now emitted with correct Portuguese diacritics
+  (UTF-8).** All 1,159 taxon labels in `inst/rules/sibcs5/` and the
+  5th-level *família* value strings now carry their accents. For example
+  `classify_sibcs(...)$name` now returns
+  `Latossolos Vermelhos Distróficos típicos` (previously the
+  ASCII-folded `Latossolos Vermelhos Distroficos tipicos`). The labels
+  were never transliterated at run time — they had simply been authored
+  without accents; they are added at source (`inst/` UTF-8 data; família
+  value literals in R use `\uXXXX` escapes to keep the R source
+  ASCII-portable). Benchmark scoring is unaffected because the reference
+  and prediction are accent-folded symmetrically. Internal dimension
+  keys and the strict lab-only classifications are unchanged. Two
+  subgroup terms (`êndicos`, `êutricos`) are accented per the Portuguese
+  proparoxytone rule but were not confirmable against an official SiBCS
+  taxon list — flagged for author review.
 
 ### Horizon-designation morphological inference (opt-in) – large accuracy gain on legacy data
 

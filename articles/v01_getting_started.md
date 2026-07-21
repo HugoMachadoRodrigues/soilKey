@@ -39,7 +39,7 @@ pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
 classify_wrb2022(pedon, on_missing = "silent")$name
 #> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
 classify_sibcs(pedon)$name
-#> [1] "Latossolos Vermelhos Distroficos tipicos"
+#> [1] "Latossolos Vermelhos Distróficos típicos"
 classify_usda(pedon, on_missing = "silent")$name
 #> [1] "Rhodic Hapludox"
 ```

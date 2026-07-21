@@ -65,5 +65,5 @@ classify_csv(f)
 #>                                         wrb
 #> 1 Chromic Ferralsol (Clayic, Ochric, Rubic)
 #>                                                          sibcs           usda
-#> 1 Latossolos Vermelhos Distroficos tipicos, argilosa, moderado Typic Hapludox
+#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
 ```
