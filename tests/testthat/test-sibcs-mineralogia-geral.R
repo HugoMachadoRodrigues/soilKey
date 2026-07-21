@@ -39,21 +39,21 @@ make_pedon_with_sulfuric <- function(ta = NA_real_, ki = NA_real_,
 test_that("familia_mineralogia_argila_geral assigns 'esmectitica' when T_argila >= 27", {
   pr <- make_pedon_with_sulfuric(ta = 35)
   res <- familia_mineralogia_argila_geral(pr)
-  expect_equal(res$value, "esmectitica")
+  expect_equal(res$value, "esmectítica")
 })
 
 
 test_that("familia_mineralogia_argila_geral assigns 'oxidica' when Kr < 0.75", {
   pr <- make_pedon_with_sulfuric(ta = 10, ki = 0.5, kr = 0.4)
   res <- familia_mineralogia_argila_geral(pr)
-  expect_equal(res$value, "oxidica")
+  expect_equal(res$value, "oxídica")
 })
 
 
 test_that("familia_mineralogia_argila_geral assigns 'caulinitica' when Ki/Kr both >= 0.75 and T low", {
   pr <- make_pedon_with_sulfuric(ta = 12, ki = 1.5, kr = 1.0)
   res <- familia_mineralogia_argila_geral(pr)
-  expect_equal(res$value, "caulinitica")
+  expect_equal(res$value, "caulinítica")
 })
 
 

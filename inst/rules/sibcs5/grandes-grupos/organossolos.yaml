@@ -20,17 +20,17 @@ grandes_grupos:
   # ----------------------------------------------------------
   "OJ":
     - code: "OJF"
-      name: "Organossolos Tiomorficos Fibricos"
+      name: "Organossolos Tiomórficos Fíbricos"
       tests:
         all_of:
           - fibrico: {}
     - code: "OJH"
-      name: "Organossolos Tiomorficos Hemicos"
+      name: "Organossolos Tiomórficos Hêmicos"
       tests:
         all_of:
           - hemico: {}
     - code: "OJS"
-      name: "Organossolos Tiomorficos Sapricos"
+      name: "Organossolos Tiomórficos Sápricos"
       tests:
         all_of:
           - saprico: {}
@@ -40,17 +40,17 @@ grandes_grupos:
   # ----------------------------------------------------------
   "OO":
     - code: "OOF"
-      name: "Organossolos Folicos Fibricos"
+      name: "Organossolos Fólicos Fíbricos"
       tests:
         all_of:
           - fibrico: {}
     - code: "OOH"
-      name: "Organossolos Folicos Hemicos"
+      name: "Organossolos Fólicos Hêmicos"
       tests:
         all_of:
           - hemico: {}
     - code: "OOS"
-      name: "Organossolos Folicos Sapricos"
+      name: "Organossolos Fólicos Sápricos"
       tests:
         all_of:
           - saprico: {}
@@ -60,17 +60,17 @@ grandes_grupos:
   # ----------------------------------------------------------
   "OX":
     - code: "OXF"
-      name: "Organossolos Haplicos Fibricos"
+      name: "Organossolos Háplicos Fíbricos"
       tests:
         all_of:
           - fibrico: {}
     - code: "OXH"
-      name: "Organossolos Haplicos Hemicos"
+      name: "Organossolos Háplicos Hêmicos"
       tests:
         all_of:
           - hemico: {}
     - code: "OXS"
-      name: "Organossolos Haplicos Sapricos"
+      name: "Organossolos Háplicos Sápricos"
       tests:
         all_of:
           - saprico: {}

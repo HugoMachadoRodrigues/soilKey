@@ -175,7 +175,7 @@ familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
   classe <- if (sand - clay > 70) "arenosa"
             else if (clay > 60) "muito_argilosa"
             else if (clay >= 35 && clay <= 60) "argilosa"
-            else if (clay < 35 && sand > 15) "media"
+            else if (clay < 35 && sand > 15) "m\u00e9dia"
             else if (clay < 35 && sand < 15) "siltosa"
             else NULL  # zona nao classificavel (raro)
   FamilyAttribute$new(
@@ -336,7 +336,7 @@ familia_constituicao_esqueletica <- function(pedon, max_depth_cm = 200) {
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 48"
     ))
   }
-  classe <- if (cf > 35 && cf < 90) "esqueletica" else NULL
+  classe <- if (cf > 35 && cf < 90) "esquel\u00e9tica" else NULL
   FamilyAttribute$new(
     name = "constituicao_esqueletica", value = classe,
     evidence = list(coarse_fragments_pct_avg = cf,
@@ -375,9 +375,9 @@ familia_tipo_horizonte_superficial <- function(pedon) {
   pr <- horizonte_A_proeminente(pedon)
   mo <- horizonte_A_moderado(pedon)
   fr <- horizonte_A_fraco(pedon)
-  classe <- if (isTRUE(hi$passed)) "histico"
-            else if (isTRUE(ch$passed)) "chernozemico"
-            else if (isTRUE(hu$passed)) "humico"
+  classe <- if (isTRUE(hi$passed)) "h\u00edstico"
+            else if (isTRUE(ch$passed)) "chernoz\u00eamico"
+            else if (isTRUE(hu$passed)) "h\u00famico"
             else if (isTRUE(pr$passed)) "proeminente"
             else if (isTRUE(mo$passed)) "moderado"
             else if (isTRUE(fr$passed)) "fraco"
@@ -746,7 +746,7 @@ familia_saturacao_bases <- function(pedon, max_depth_cm = 150,
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 31"
     ))
   }
-  classe <- if (v >= threshold) "eutrofico" else "distrofico"
+  classe <- if (v >= threshold) "eutr\u00f3fico" else "distr\u00f3fico"
   FamilyAttribute$new(
     name = "saturacao_bases", value = classe,
     evidence = list(bs_pct_avg = v, threshold = threshold,
@@ -820,7 +820,7 @@ familia_saturacao_aluminio <- function(pedon,
   }
   passing_layers <- layers_b[passes]
   prefixo <- .classifica_prefixo_profundidade(h$top_cm[passing_layers])
-  classe <- if (is.null(prefixo)) "alico" else paste0(prefixo, "alico")
+  classe <- if (is.null(prefixo)) "\u00e1lico" else paste0(prefixo, "\u00e1lico")
   FamilyAttribute$new(
     name = "saturacao_aluminio", value = classe,
     evidence = list(passing_layers = passing_layers,
@@ -878,7 +878,9 @@ familia_mineralogia_areia <- function(pedon, max_depth_cm = 200,
     # Se mais de um qualifica, retorna o de maior valor
     vals <- unlist(pcts)
     vals[!qualifying] <- -Inf
-    classe <- names(vals)[which.max(vals)]
+    key <- names(vals)[which.max(vals)]
+    classe <- c(micacea = "mic\u00e1cea", anfibolitica = "anfibol\u00edtica",
+                feldspatica = "feldsp\u00e1tica")[[key]]
   } else {
     # Fallback: coluna qualitativa sand_mineralogy
     sm <- h$sand_mineralogy
@@ -890,8 +892,8 @@ familia_mineralogia_areia <- function(pedon, max_depth_cm = 200,
       if (any(ok)) {
         candidates <- unique(sm[ok])
         candidates <- candidates[candidates %in%
-                                     c("micacea", "anfibolitica",
-                                       "feldspatica")]
+                                     c("mic\u00e1cea", "anfibol\u00edtica",
+                                       "feldsp\u00e1tica")]
         if (length(candidates) >= 1) classe <- candidates[1]
       }
     }
@@ -958,9 +960,9 @@ familia_mineralogia_argila_latossolo <- function(pedon,
   ki <- compute_ki(sio2, al2o3)
   kr <- compute_kr(sio2, al2o3, fe2o3)
   classe <- if (is.na(ki) || is.na(kr)) NULL
-            else if (ki > 0.75 && kr > 0.75) "caulinitico"
-            else if (ki > 0.75 && kr <= 0.75) "caulinitico-oxidico"
-            else if (ki <= 0.75 && kr <= 0.75) "gibsitico-oxidico"
+            else if (ki > 0.75 && kr > 0.75) "caulin\u00edtico"
+            else if (ki > 0.75 && kr <= 0.75) "caulin\u00edtico-ox\u00eddico"
+            else if (ki <= 0.75 && kr <= 0.75) "gibs\u00edtico-ox\u00eddico"
             else NULL
   FamilyAttribute$new(
     name = "mineralogia_argila", value = classe,
@@ -1039,12 +1041,12 @@ familia_mineralogia_argila_geral <- function(pedon,
   }
 
   classe <- if (!is.na(ta) && ta >= ta_threshold) {
-    "esmectitica"
+    "esmect\u00edtica"
   } else if (!is.na(kr) && kr < kr_caulinitico_min) {
-    "oxidica"
+    "ox\u00eddica"
   } else if (!is.na(ki) && ki >= ki_caulinitico_min &&
               !is.na(kr) && kr >= kr_caulinitico_min) {
-    "caulinitica"
+    "caulin\u00edtica"
   } else {
     "mista"
   }
@@ -1168,10 +1170,10 @@ familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p 42"
     ))
   }
-  classe <- if (fe_avg < 8) "hipoferrico"
-            else if (fe_avg < 18) "mesoferrico"
-            else if (fe_avg < 36) "ferrico"
-            else "perferrico"
+  classe <- if (fe_avg < 8) "hipof\u00e9rrico"
+            else if (fe_avg < 18) "mesof\u00e9rrico"
+            else if (fe_avg < 36) "f\u00e9rrico"
+            else "perf\u00e9rrico"
   FamilyAttribute$new(
     name = "oxidos_ferro", value = classe,
     evidence = list(fe2o3_sulfuric_pct_avg = fe_avg,
@@ -1227,7 +1229,7 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
               !is.na(pret) & pret >= min_pret &
               !is.na(alox) & !is.na(feox) &
               (alox + 0.5 * feox) >= min_aloxfeox
-  classe <- if (any(passes)) "andico" else NULL
+  classe <- if (any(passes)) "\u00e2ndico" else NULL
   FamilyAttribute$new(
     name = "andico", value = classe,
     evidence = list(passing_layers = which(passes),

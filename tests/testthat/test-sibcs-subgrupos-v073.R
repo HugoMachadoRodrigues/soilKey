@@ -101,7 +101,7 @@ test_that("cada GG tem catch-all 'tipico' como ultima entrada", {
     expect_true(isTRUE(last$tests$default),
                   info = sprintf("GG %s deveria terminar com default:true; got %s",
                                   gg, last$code))
-    expect_match(last$name, "tipicos$",
+    expect_match(last$name, "típicos$",
                    info = sprintf("GG %s catch-all deveria ter nome 'tipicos'", gg))
   }
 })
@@ -126,7 +126,7 @@ test_that("run_sibcs_subgrupo falls back to tipico when no specific match", {
   pr <- .make_organossolo_subgrupo("OJ", fiber_rubbed = 60)
   res <- run_sibcs_subgrupo(pr, "OJF")
   expect_match(res$assigned$code, "tp$")
-  expect_match(res$assigned$name, "tipicos$")
+  expect_match(res$assigned$name, "típicos$")
 })
 
 

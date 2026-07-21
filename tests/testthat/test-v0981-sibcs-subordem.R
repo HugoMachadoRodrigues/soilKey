@@ -107,9 +107,12 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   # v0.9.107: order accuracy 59.6% (56/94). v0.9.135: the fluvic-material proxy
   # fix (reversal-based texture stratification) lifts it to 63.8% (60/94) by no
   # longer mislabelling monotone-clay Argissolos as Neossolos Fluvicos.
+  # v0.9.189: the Redape loader now decodes the field soil-structure codes it
+  # previously discarded, lifting order accuracy to 67.0% (63/94). This is a
+  # benchmark-input change, not a key change (see NEWS 0.9.189).
   # Pinned with a +/- tolerance to catch unintended drift.
-  expect_gt(res$accuracy, 0.60)
-  expect_lt(res$accuracy, 0.66)
+  expect_gt(res$accuracy, 0.63)
+  expect_lt(res$accuracy, 0.71)
   expect_equal(res$n_compared, 94L)
 })
 

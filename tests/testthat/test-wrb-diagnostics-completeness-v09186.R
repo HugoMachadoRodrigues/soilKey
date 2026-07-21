@@ -127,10 +127,10 @@ test_that("the canonical Ferralsol classifies to the documented full names", {
   expect_equal(classify_wrb2022(p)$name,
                "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)")
   expect_equal(classify_usda(p)$name, "Rhodic Hapludox")
-  expect_equal(classify_sibcs(p)$name, "Latossolos Vermelhos Distroficos tipicos")
+  expect_equal(classify_sibcs(p)$name, "Latossolos Vermelhos Distróficos típicos")
   # the WRB (Eutric) / SiBCS (Distrofico) base-status split is real and stable
   expect_match(classify_wrb2022(p)$name, "Eutric")
-  expect_match(classify_sibcs(p)$name, "Distroficos")
+  expect_match(classify_sibcs(p)$name, "Distróficos")
 })
 
 # =============================================================================

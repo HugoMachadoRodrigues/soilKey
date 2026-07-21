@@ -15,82 +15,82 @@ grandes_grupos:
 
   "NB":
     - code: "NBaf"
-      name: "Nitossolos Brunos Aluminoferricos"
+      name: "Nitossolos Brunos Aluminoférricos"
       tests:
         all_of:
           - carater_alitico: {}
           - carater_ferrico: {}
     - code: "NBal"
-      name: "Nitossolos Brunos Aluminicos"
+      name: "Nitossolos Brunos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "NBdf"
-      name: "Nitossolos Brunos Distroferricos"
+      name: "Nitossolos Brunos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "NBd"
-      name: "Nitossolos Brunos Distroficos"
+      name: "Nitossolos Brunos Distróficos"
       tests:
         all_of:
           - distrofico: {}
 
   "NV":
     - code: "NVtal"
-      name: "Nitossolos Vermelhos Ta Aluminicos"
+      name: "Nitossolos Vermelhos Ta Alumínicos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - carater_alitico: {}
     - code: "NVal"
-      name: "Nitossolos Vermelhos Aluminicos"
+      name: "Nitossolos Vermelhos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "NVdf"
-      name: "Nitossolos Vermelhos Distroferricos"
+      name: "Nitossolos Vermelhos Distroférricos"
       tests:
         all_of:
           - distrofico: {}
           - carater_ferrico: {}
     - code: "NVd"
-      name: "Nitossolos Vermelhos Distroficos"
+      name: "Nitossolos Vermelhos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "NVef"
-      name: "Nitossolos Vermelhos Eutroferricos"
+      name: "Nitossolos Vermelhos Eutroférricos"
       tests:
         all_of:
           - eutrofico: {}
           - carater_ferrico: {}
     - code: "NVe"
-      name: "Nitossolos Vermelhos Eutroficos"
+      name: "Nitossolos Vermelhos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}
 
   "NX":
     - code: "NXtal"
-      name: "Nitossolos Haplicos Ta Aluminicos"
+      name: "Nitossolos Háplicos Ta Alumínicos"
       tests:
         all_of:
           - atividade_argila_alta: {}
           - carater_alitico: {}
     - code: "NXal"
-      name: "Nitossolos Haplicos Aluminicos"
+      name: "Nitossolos Háplicos Alumínicos"
       tests:
         all_of:
           - carater_alitico: {}
     - code: "NXd"
-      name: "Nitossolos Haplicos Distroficos"
+      name: "Nitossolos Háplicos Distróficos"
       tests:
         all_of:
           - distrofico: {}
     - code: "NXe"
-      name: "Nitossolos Haplicos Eutroficos"
+      name: "Nitossolos Háplicos Eutróficos"
       tests:
         all_of:
           - eutrofico: {}

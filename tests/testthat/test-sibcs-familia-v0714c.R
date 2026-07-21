@@ -17,7 +17,7 @@ test_that("mineralogia_areia: 'micacea' quando sand_mica_pct >= 15", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_mineralogia_areia(pr)
-  expect_equal(fa$value, "micacea")
+  expect_equal(fa$value, "micácea")
 })
 
 test_that("mineralogia_areia: 'feldspatica' via maior valor quando varios passam", {
@@ -31,7 +31,7 @@ test_that("mineralogia_areia: 'feldspatica' via maior valor quando varios passam
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_mineralogia_areia(pr)
-  expect_equal(fa$value, "feldspatica")
+  expect_equal(fa$value, "feldspática")
 })
 
 test_that("mineralogia_areia: NULL quando todos < threshold", {
@@ -52,14 +52,14 @@ test_that("mineralogia_areia: fallback para sand_mineralogy quando %s NA", {
   hz <- data.table::data.table(
     top_cm = 0, bottom_cm = 200,
     designation = "B",
-    sand_mineralogy = "anfibolitica"
+    sand_mineralogy = "anfibolítica"
   )
   pr <- PedonRecord$new(
     site = list(id="t", lat=0, lon=0, country="BR", parent_material="t"),
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_mineralogia_areia(pr)
-  expect_equal(fa$value, "anfibolitica")
+  expect_equal(fa$value, "anfibolítica")
 })
 
 # ------------------------------------------------------------------
@@ -80,7 +80,7 @@ test_that("mineralogia_argila: 'caulinitico' quando Ki>0.75 e Kr>0.75", {
   fa <- familia_mineralogia_argila_latossolo(pr)
   ki <- fa$evidence$ki; kr <- fa$evidence$kr
   expect_true(!is.na(ki) && ki > 0.75)
-  expect_equal(fa$value, "caulinitico")
+  expect_equal(fa$value, "caulinítico")
 })
 
 test_that("mineralogia_argila: 'gibsitico-oxidico' quando Ki<=0.75 e Kr<=0.75", {
@@ -98,7 +98,7 @@ test_that("mineralogia_argila: 'gibsitico-oxidico' quando Ki<=0.75 e Kr<=0.75", 
   fa <- familia_mineralogia_argila_latossolo(pr)
   ki <- fa$evidence$ki; kr <- fa$evidence$kr
   expect_true(ki <= 0.75 && kr <= 0.75)
-  expect_equal(fa$value, "gibsitico-oxidico")
+  expect_equal(fa$value, "gibsítico-oxídico")
 })
 
 test_that("mineralogia_argila: missing reportado quando sulfurico todo NA", {
@@ -188,7 +188,7 @@ test_that("oxidos_ferro: hipoferrico quando Fe2O3 < 8%", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_oxidos_ferro(pr)
-  expect_equal(fa$value, "hipoferrico")
+  expect_equal(fa$value, "hipoférrico")
 })
 
 test_that("oxidos_ferro: mesoferrico quando 8 <= Fe2O3 < 18", {
@@ -201,7 +201,7 @@ test_that("oxidos_ferro: mesoferrico quando 8 <= Fe2O3 < 18", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_oxidos_ferro(pr)
-  expect_equal(fa$value, "mesoferrico")
+  expect_equal(fa$value, "mesoférrico")
 })
 
 test_that("oxidos_ferro: ferrico quando 18 <= Fe2O3 < 36", {
@@ -214,7 +214,7 @@ test_that("oxidos_ferro: ferrico quando 18 <= Fe2O3 < 36", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_oxidos_ferro(pr)
-  expect_equal(fa$value, "ferrico")
+  expect_equal(fa$value, "férrico")
 })
 
 test_that("oxidos_ferro: perferrico quando Fe2O3 >= 36", {
@@ -227,7 +227,7 @@ test_that("oxidos_ferro: perferrico quando Fe2O3 >= 36", {
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_oxidos_ferro(pr)
-  expect_equal(fa$value, "perferrico")
+  expect_equal(fa$value, "perférrico")
 })
 
 # ------------------------------------------------------------------
@@ -249,7 +249,7 @@ test_that("andico: passa quando todas 3 condicoes satisfeitas em alguma camada",
     horizons = ensure_horizon_schema(hz)
   )
   fa <- familia_andico(pr)
-  expect_equal(fa$value, "andico")
+  expect_equal(fa$value, "ândico")
 })
 
 test_that("andico: NULL quando densidade > 0.9", {
@@ -302,7 +302,7 @@ test_that("motor: ordem C (Cambissolos) inclui mineralogia_areia e andico (Histi
     bottom_cm = c(30, 100),
     designation = c("A", "Bi"),
     clay_pct = c(20, 30), silt_pct = c(30, 30), sand_pct = c(50, 40),
-    sand_mineralogy = c(NA, "micacea")
+    sand_mineralogy = c(NA, "micácea")
   )
   pr <- PedonRecord$new(
     site = list(id="t", lat=0, lon=0, country="BR", parent_material="t"),
@@ -310,7 +310,7 @@ test_that("motor: ordem C (Cambissolos) inclui mineralogia_areia e andico (Histi
   )
   out <- classify_sibcs_familia(pr, ordem_code = "C")
   expect_true("mineralogia_areia" %in% names(out))
-  expect_equal(out$mineralogia_areia$value, "micacea")
+  expect_equal(out$mineralogia_areia$value, "micácea")
   expect_true("andico" %in% names(out))
 })
 

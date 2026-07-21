@@ -138,6 +138,26 @@ download_redape_dataset <- function(dest_dir,
 }
 
 
+#' Map a SmartSolos/GeoTab integer field code to the soilKey categorical string.
+#' Inverse of the `.smartsolos_struct_*` / `.smartsolos_clay_films_*` encoders.
+#' @noRd
+.redape_code_to_str <- function(code, vec) {
+  code <- suppressWarnings(as.integer(code))
+  if (length(code) != 1L || is.na(code) || code < 1L || code > length(vec))
+    return(NA_character_)
+  vec[code]
+}
+
+# GeoTab code vocabularies (SiBCS field-description codes), matched to the
+# categorical strings the soilKey diagnostic engine consumes.
+.REDAPE_STRUCT_GRADE <- c("weak", "moderate", "strong")                 # ESTRUTURA_GRAU 1..3
+.REDAPE_STRUCT_SIZE  <- c("very fine", "fine", "medium",
+                          "coarse", "very coarse")                       # ESTRUTURA_TAMANHO 1..5
+.REDAPE_STRUCT_TYPE  <- c("granular", "angular blocky", "subangular blocky",
+                          "prismatic", "columnar", "platy")              # ESTRUTURA_TIPO 1..6
+.REDAPE_CEROS_GRADE  <- c("weak", "moderate", "strong")                 # CEROSIDADE_GRAU 1..3
+.REDAPE_CEROS_AMT    <- c("few", "common", "many")                      # CEROSIDADE_QUANTIDADE 1..3
+
 #' Convert one Redape GeoTab horizon record to a soilKey horizon row
 #' @noRd
 .redape_horizon_to_soilkey <- function(h) {
@@ -214,9 +234,16 @@ download_redape_dataset <- function(dest_dir,
                                 "common" else NA_character_,
     cracks_width_cm         = if (grepl("[A-Z][a-z0-9]*v", h$SIMB_HORIZ %||% ""))
                                 1 else NA_real_,
-    structure_grade         = NA_character_,  # numeric code -> categorical TBD
-    structure_size          = NA_character_,
-    structure_type          = NA_character_,
+    # v0.9.189: map the GeoTab ESTRUTURA_* integer codes to the categorical
+    # strings the diagnostic engine consumes (previously dropped as "TBD", so
+    # every Redape profile classified without structure -- a real information
+    # loss relative to the native SmartSolos input). Same for CEROSIDADE (clay
+    # films), the SiBCS argillic (B textural) illuviation signal.
+    structure_grade         = .redape_code_to_str(h$ESTRUTURA_GRAU,    .REDAPE_STRUCT_GRADE),
+    structure_size          = .redape_code_to_str(h$ESTRUTURA_TAMANHO, .REDAPE_STRUCT_SIZE),
+    structure_type          = .redape_code_to_str(h$ESTRUTURA_TIPO,    .REDAPE_STRUCT_TYPE),
+    clay_films_strength     = .redape_code_to_str(h$CEROSIDADE_GRAU,       .REDAPE_CEROS_GRADE),
+    clay_films_amount       = .redape_code_to_str(h$CEROSIDADE_QUANTIDADE, .REDAPE_CEROS_AMT),
     cordic_horizon          = isTRUE(h$COESO),
     saprolite_pct           = if (isTRUE(h$FRAGMENTARIO)) 50 else NA_real_
   )

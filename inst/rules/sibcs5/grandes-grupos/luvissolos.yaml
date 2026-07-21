@@ -10,27 +10,27 @@ grandes_grupos:
 
   "TC":
     - code: "TCca"
-      name: "Luvissolos Cromicos Carbonaticos"
+      name: "Luvissolos Crômicos Carbonáticos"
       tests:
         all_of:
           - carater_carbonatico: { max_depth_cm: 100 }
     - code: "TCp"
-      name: "Luvissolos Cromicos Palicos"
+      name: "Luvissolos Crômicos Pálicos"
       tests:
         all_of:
           - carater_palico: {}
     - code: "TCo"
-      name: "Luvissolos Cromicos Orticos"
+      name: "Luvissolos Crômicos Órticos"
       tests:
         default: true
 
   "TX":
     - code: "TXp"
-      name: "Luvissolos Haplicos Palicos"
+      name: "Luvissolos Háplicos Pálicos"
       tests:
         all_of:
           - carater_palico: {}
     - code: "TXo"
-      name: "Luvissolos Haplicos Orticos"
+      name: "Luvissolos Háplicos Órticos"
       tests:
         default: true

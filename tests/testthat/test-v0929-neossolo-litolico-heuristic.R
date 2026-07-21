@@ -128,5 +128,5 @@ test_that("classify_sibcs returns 'Neossolos Litolicos' on FEBR-style shallow si
   )
   res <- classify_sibcs(p, on_missing = "silent")
   expect_match(res$rsg_or_order %||% "", "Neossolos")
-  expect_match(res$name %||% "", "Litolicos|Litolico")
+  expect_match(res$name %||% "", "Litólicos|Litólico")
 })

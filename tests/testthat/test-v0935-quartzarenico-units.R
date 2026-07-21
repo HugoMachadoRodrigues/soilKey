@@ -87,5 +87,5 @@ test_that("classify_sibcs returns 'Neossolos Quartzarenicos' on sandy single-A p
   )
   res <- classify_sibcs(p, on_missing = "silent")
   expect_match(res$rsg_or_order %||% "", "Neossolos")
-  expect_match(res$name %||% "", "Quartzarenicos")
+  expect_match(res$name %||% "", "Quartzarênicos")
 })
