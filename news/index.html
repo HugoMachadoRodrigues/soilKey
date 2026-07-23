@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.190</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.191</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.191" id="soilkey-09191-2026-07-23">soilKey 0.9.191 (2026-07-23)<a class="anchor" aria-label="anchor" href="#soilkey-09191-2026-07-23"></a></h2>
+<p>An audit of what the deployed web app actually does at runtime found the spectroscopy module reporting placeholder values as OSSL predictions. The numbers were never wrong by accident – the synthetic predictor is deliberate and documented in <code>inst/benchmarks/reports/audit_ossl_2026-04-30.md</code> – but nothing that reached the user said so.</p>
+<div class="section level3">
+<h3 id="the-provenance-ledger-now-names-the-backend-that-actually-ran-0-9-191">The provenance ledger now names the backend that actually ran<a class="anchor" aria-label="anchor" href="#the-provenance-ledger-now-names-the-backend-that-actually-ran-0-9-191"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/fill_from_spectra.html">fill_from_spectra()</a></code> labelled every note <code>OSSL/&lt;method&gt;/&lt;region&gt;</code>, regardless of backend.</strong> Without an <code>ossl_library</code> (the default, and what the Shiny app passes) the values come from <code>.predict_synthetic()</code>: <code><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif()</a></code> draws inside plausibility ranges, not spectral predictions. Recording those as OSSL is the one thing a provenance ledger must not do. Notes now read <code>SYNTHETIC/&lt;method&gt;/&lt;region&gt;</code> whenever the placeholder backend runs, and <code>OSSL/...</code> only when <code>resemble</code> or pre-trained models genuinely produced the number.</li>
+<li>
+<strong>The backend is now visible to callers</strong> as <code>pedon$spectra$gapfill_backend</code> (<code>"synthetic"</code>, <code>"resemble"</code> or <code>"pretrained"</code>), so a caller that suppresses <code>verbose</code> can still tell the two apart.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="soilkey-pro-tells-the-user-what-it-did-0-9-191">soilKey Pro tells the user what it did<a class="anchor" aria-label="anchor" href="#soilkey-pro-tells-the-user-what-it-did-0-9-191"></a></h3>
+<ul><li>
+<strong>The app called <code>fill_from_spectra(verbose = FALSE)</code></strong>, so the existing “NOT real spectral predictions” warning never reached a web user – gap-fill reported a plain green success either way. The Spectra tab now raises a 15-second warning when the placeholder backend ran, and keeps the success message for a real prediction.</li>
+<li>
+<strong>A UI string promised something no code path delivered.</strong> “First use downloads an OSSL cache; this can take a minute and needs network access” described a download the app never performs. Both locales now state that no OSSL reference library ships with soilKey and what that means for the values.</li>
+</ul><p>Regression tests pin all of it (<code>test-v09191-spectra-backend-label.R</code>), and the v0.9.190 test that asserted the <code>OSSL/</code> prefix was corrected – it had pinned the wrong label.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.190" id="soilkey-09190-2026-07-21">soilKey 0.9.190 (2026-07-21)<a class="anchor" aria-label="anchor" href="#soilkey-09190-2026-07-21"></a></h2>
 <p>Field-testing feedback from David G. Rossiter on the soilKey Pro web app surfaced a cluster of problems around Technosols. Diagnosing them turned up two genuine defects in the key itself, not only in the interface.</p>
