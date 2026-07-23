@@ -1474,7 +1474,13 @@ make_technosol_canonical <- function() {
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),
-    artefacts_pct              = c(30,   12,   3),
+    # v0.9.190: raised so the exemplar actually satisfies the WRB 2022
+    # Technosol criterion. The previous 30/12/3 gave a weighted average of only
+    # 16.5 % over the upper 100 cm -- below the required 20 % -- and passed only
+    # because soilKey then tested "any single layer >= 20 %". With the corrected
+    # weighted-average test the fill now averages 24.1 %, which is what an urban
+    # rubble fill of this description should carry.
+    artefacts_pct              = c(35,   25,   3),
     duripan_pct                = c(0,    0,    0),
     bulk_density_g_cm3         = c(1.55, 1.65, 1.70)
   )

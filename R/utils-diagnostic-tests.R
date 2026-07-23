@@ -1997,38 +1997,76 @@ test_bulk_density_below <- function(h, max_g_cm3 = 0.9,
 }
 
 
-#' Test that artefacts_pct >= threshold within the upper max_top_cm
+#' Test that artefacts reach a threshold as a weighted average in the upper depth
 #'
-#' Default 20\% by volume (Technosols criterion, WRB 2022).
+#' WRB 2022 keys Technosols on artefacts of \strong{>= 20 \% by volume, as a
+#' weighted average, in the upper 100 cm} (Chapter 5, Technosols). Up to
+#' v0.9.189 this was implemented as "any single layer >= 20 \%", which is a
+#' different -- and more permissive -- criterion: a thin 5 cm lens of pure
+#' rubble over clean soil satisfied it, although its weighted average over the
+#' upper 100 cm is only about 5 \%. v0.9.190 computes the thickness-weighted
+#' average the standard actually asks for.
 #'
-#' @param h Numeric threshold or option (see Details).
-#' @param min_pct Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
-#' @param candidate_layers Numeric threshold or option (see Details).
+#' Missing values are handled by interval reasoning rather than by guessing.
+#' The unmeasured thickness is bounded below by 0 \% and above by 100 \%
+#' artefacts, giving the lowest and highest averages still compatible with the
+#' data. The test returns \code{TRUE} when even the lowest possible average
+#' reaches the threshold, \code{FALSE} when even the highest cannot, and
+#' \code{NA} (data needed) only when the gap genuinely straddles the threshold.
+#'
+#' @param h Horizon table.
+#' @param min_pct Threshold in percent by volume (default 20).
+#' @param max_top_cm Bottom of the evaluation window in cm (default 100).
+#' @param candidate_layers Optional restriction of the layers considered.
 #' @noRd
 test_artefacts_concentration <- function(h, min_pct = 20, max_top_cm = 100,
                                             candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
-  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
+  top <- suppressWarnings(as.numeric(h$top_cm))
+  bot <- suppressWarnings(as.numeric(h$bottom_cm))
+  # Thickness of each layer that falls inside the 0..max_top_cm window.
+  overlap <- rep(0, length(top))
+  ok_geom <- !is.na(top) & !is.na(bot) & bot > top
+  overlap[ok_geom] <- pmax(0, pmin(bot[ok_geom], max_top_cm) - pmax(top[ok_geom], 0))
+  cl <- cl[overlap[cl] > 0]
+
+  known_sum <- 0; t_known <- 0; t_unknown <- 0
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
-    val <- h$artefacts_pct[i]
+    val <- suppressWarnings(as.numeric(h$artefacts_pct[i]))
     if (is.na(val)) {
+      t_unknown <- t_unknown + overlap[i]
       missing <- c(missing, "artefacts_pct")
       next
     }
+    known_sum <- known_sum + val * overlap[i]
+    t_known   <- t_known + overlap[i]
+    if (val >= min_pct) passing <- c(passing, i)   # layers driving the average
     details[[as.character(i)]] <- list(
-      idx = i, artefacts_pct = val,
-      threshold = min_pct, passed = val >= min_pct
+      idx = i, artefacts_pct = val, thickness_cm = overlap[i]
     )
-    if (val >= min_pct) passing <- c(passing, i)
   }
-  evaluated <- length(details)
-  passed <- if (length(passing) > 0L) TRUE
-            else if (evaluated == 0L && length(missing) > 0L) NA
-            else FALSE
-  .subtest_result(passed = passed, layers = passing,
-                   missing = missing, details = details)
+  t_total <- t_known + t_unknown
+  if (t_total <= 0) {
+    # No described material inside the window: nothing to average.
+    return(.subtest_result(passed = NA, layers = integer(0),
+                            missing = "artefacts_pct", details = details))
+  }
+  lower <- known_sum / t_total                        # unmeasured assumed 0 %
+  upper <- (known_sum + 100 * t_unknown) / t_total    # unmeasured assumed 100 %
+  passed <- if (lower >= min_pct) TRUE
+            else if (upper < min_pct) FALSE
+            else NA
+  details$summary <- list(
+    weighted_mean_pct = if (t_known > 0) known_sum / t_total else NA_real_,
+    lower_bound_pct = lower, upper_bound_pct = upper,
+    window_cm = c(0, max_top_cm), thickness_evaluated_cm = t_known,
+    thickness_unmeasured_cm = t_unknown, threshold = min_pct
+  )
+  .subtest_result(passed = passed,
+                   layers  = if (isTRUE(passed)) passing else integer(0),
+                   missing = if (is.na(passed)) unique(missing) else character(0),
+                   details = details)
 }
 
 
