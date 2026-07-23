@@ -87,6 +87,26 @@ RUN R -e "pak::pkg_install(c( \
       'DBI','RSQLite','maps','withr' \
     ))"
 
+# Restore the WoSIS stratified sample into the installed package (v0.9.190).
+#
+# pak installs soilKey from 'local::./', which runs R CMD build first, so
+# .Rbuildignore applies -- and the four large benchmark caches are ignored
+# there to keep the CRAN tarball under 5 MB. The Pro app's WoSIS profile
+# picker reads this one through soilKey::load_wosis_stratified_sample(), and
+# the lazy-fetch fallback cannot rescue it here: interactive() is FALSE in the
+# container, so the fetch errors out and the picker would render empty
+# forever. Copy the file straight from the build context into the installed
+# package's extdata/. The other three caches (afsp, kssl, kssl_nasis) are not
+# read by the app, so they stay out of the image.
+RUN R -e "d <- system.file('extdata', package = 'soilKey'); \
+  stopifnot(nzchar(d)); \
+  src <- '/opt/soilKey/inst/extdata/wosis_stratified_sample.rds'; \
+  stopifnot(file.exists(src)); \
+  stopifnot(file.copy(src, d, overwrite = TRUE)); \
+  n <- length(soilKey::load_wosis_stratified_sample()[['pedons']]); \
+  stopifnot(n > 0); \
+  cat('WoSIS picker sample restored:', n, 'pedons\n')"
+
 # ellmer (LLM client for the Assistant chat + online Photo VLM) postdates the
 # frozen snapshot above, so install it from the current Posit PM binary repo.
 RUN R -e "options(repos = c(PPM = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); \
