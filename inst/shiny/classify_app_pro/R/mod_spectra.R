@@ -241,8 +241,17 @@ spectra_server <- function(id, rv) {
       # fill_from_spectra() mutates the pedon in place (invisible(pedon)); clone
       # to a fresh ref so the reactive fires and the filled attributes show.
       rv$pedon <- rv$pedon$clone(deep = TRUE)
-      shiny::showNotification(i18n("spectra.gapfill_done"),
-                              type = "message")
+      # We call fill_from_spectra() with verbose = FALSE, so its console warning
+      # about the synthetic backend never reaches a Shiny user. Without an OSSL
+      # library the values are placeholders, not spectral predictions, and
+      # saying "done" in green would misrepresent them (v0.9.191).
+      if (identical(rv$pedon$spectra$gapfill_backend, "synthetic")) {
+        shiny::showNotification(i18n("spectra.gapfill_synthetic"),
+                                type = "warning", duration = 15)
+      } else {
+        shiny::showNotification(i18n("spectra.gapfill_done"),
+                                type = "message")
+      }
     })
 
     # ---- has-pedon flag drives the static conditionalPanels ---------------

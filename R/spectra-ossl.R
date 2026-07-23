@@ -185,6 +185,12 @@ fill_from_spectra <- function(pedon,
   }
 
   # 3. Merge into pedon (pedon$add_measurement handles overwrite policy)
+  #
+  # The provenance note names the backend that actually produced the number.
+  # Up to v0.9.190 it read "OSSL/..." unconditionally, so a synthetic
+  # placeholder was recorded in the ledger as an OSSL prediction -- the one
+  # thing a provenance ledger must never do (v0.9.191).
+  backend_tag <- if (identical(backend, "synthetic")) "SYNTHETIC" else "OSSL"
   n_written <- 0L
   n_skipped <- 0L
   for (i in seq_len(nrow(preds))) {
@@ -195,8 +201,8 @@ fill_from_spectra <- function(pedon,
     }
     conf <- pi_to_confidence(r$pi95_low, r$pi95_high, r$value)
     notes <- sprintf(
-      "OSSL/%s/%s; PI95=[%.3g, %.3g]%s",
-      method, region, r$pi95_low, r$pi95_high,
+      "%s/%s/%s; PI95=[%.3g, %.3g]%s",
+      backend_tag, method, region, r$pi95_low, r$pi95_high,
       if (!is.na(r$n_neighbors)) sprintf("; k=%d", r$n_neighbors) else ""
     )
     before <- nrow(pedon$provenance)
@@ -218,6 +224,11 @@ fill_from_spectra <- function(pedon,
       "fill_from_spectra(): wrote {n_written} cell(s), skipped {n_skipped} (existing measurements / unknown columns)"
     ))
   }
+
+  # Record which backend ran so callers that suppress `verbose` -- notably the
+  # Shiny app -- can still tell the user they got placeholders, instead of
+  # reporting a plain success.
+  pedon$spectra$gapfill_backend <- backend
 
   invisible(pedon)
 }
