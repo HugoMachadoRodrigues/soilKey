@@ -21,7 +21,14 @@
     "ph_h2o", "ph_kcl", "oc_pct",
     "cec_cmol", "bs_pct", "al_sat_pct",
     "ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
-    "bulk_density_g_cm3", "structure_grade", "boundary_distinctness")
+    "bulk_density_g_cm3", "structure_grade", "boundary_distinctness",
+    # v0.9.190: the anthropogenic attributes the Technosol key needs. Without
+    # these in the starter table a user building a profile from scratch could
+    # never specify a Technosol -- the criteria were only reachable by loading a
+    # fixture, which exposes the full schema (David Rossiter, pers. comm.).
+    # `geomembrane_present` is asked once at site level instead (see the
+    # Construction section) and written onto the horizons at build time.
+    "artefacts_pct", "technic_hardmaterial_pct")
 }
 
 .pedon_blank_template <- function() {
@@ -46,6 +53,152 @@
   sep = "\n"
 )
 
+# ---------------------------------------------------------------------------
+# Robust yes/no parsing for logical columns of the editable table (v0.9.190).
+#
+# DT::editData() coerces an edited cell to the column's storage type, so a
+# logical column receives as.logical(<typed text>). as.logical("no") is NA --
+# not FALSE -- so a user answering "no" to a yes/no attribute silently produced
+# a missing value and the key went on reporting "data needed" for that
+# criterion no matter how many times they answered it. We accept the ordinary
+# spellings in both app languages and return NULL when the text is genuinely
+# uninterpretable, so the caller can flag it instead of swallowing it.
+.sk_parse_logical <- function(x) {
+  if (is.logical(x)) return(x)
+  s <- tolower(trimws(as.character(x)))
+  if (!nzchar(s) || s %in% c("na", "null", "-", "?")) return(NA)
+  if (s %in% c("true", "t", "yes", "y", "1", "sim", "s", "verdadeiro", "v"))
+    return(TRUE)
+  if (s %in% c("false", "f", "no", "n", "0", "nao", "não", "falso"))
+    return(FALSE)
+  NULL                                  # uninterpretable -> caller warns
+}
+
+# Write the site-level technic (anthropogenic) answers onto the horizons (v0.9.190).
+#
+# WRB 2022 keys Technosols on three alternatives -- >=20 % artefacts by volume
+# in the upper 100 cm, a constructed geomembrane starting within 100 cm, or
+# technic hard material at the surface -- and the engine reads all three from
+# horizon columns. Two things made that unusable from the app:
+#
+#   * a geomembrane is a fact about how the site was built, not about each
+#     layer, so answering it layer-by-layer was tedious and error-prone; and
+#   * artefacts and technic hard material are *exceptional* features. A field
+#     description that does not mention them means they are absent, but leaving
+#     the cells empty made every ordinary profile report the Technosol criteria
+#     as "data needed" forever (David Rossiter, pers. comm.).
+#
+# The app therefore asks once, at site level, and materialises the answer:
+#   technic = "none"    -> artefacts 0 %, hard material 0 %, geomembrane FALSE.
+#                          Technosols are ruled out cleanly and the key stops
+#                          asking, which is what a normal field description means.
+#   technic = "present" -> the geomembrane answer below is applied and artefacts
+#                          / hard material are taken from the horizon table.
+#   technic = "unknown" -> nothing is written. NA is the honest state and the key
+#                          correctly reports the criteria as still needing data.
+# An explicit answer overrides whatever a loaded fixture carried, because the
+# user has just answered the question directly.
+.sk_apply_site_technic <- function(df, technic = "unknown",
+                                   geomembrane = "unknown",
+                                   depth_cm = NA_real_) {
+  if (is.null(df) || nrow(df) == 0L) return(df)
+  technic <- tolower(trimws(technic %||% "unknown"))
+
+  if (identical(technic, "none")) {
+    df$artefacts_pct            <- 0
+    df$technic_hardmaterial_pct <- 0
+    df$geomembrane_present      <- FALSE
+    return(df)
+  }
+  if (!identical(technic, "present")) return(df)   # "unknown" -> untouched
+
+  geomembrane <- tolower(trimws(geomembrane %||% "unknown"))
+  if (identical(geomembrane, "unknown")) return(df)
+  df$geomembrane_present <- FALSE
+  if (identical(geomembrane, "yes")) {
+    d   <- suppressWarnings(as.numeric(depth_cm))
+    top <- suppressWarnings(as.numeric(df$top_cm))
+    bot <- suppressWarnings(as.numeric(df$bottom_cm))
+    hit <- if (!is.na(d))
+             which(!is.na(top) & !is.na(bot) & top <= d & bot > d)
+           else integer(0)
+    if (!length(hit)) hit <- 1L        # no/non-matching depth -> topmost horizon
+    df$geomembrane_present[hit[1L]] <- TRUE
+  }
+  df
+}
+
+# ---------------------------------------------------------------------------
+# WoSIS profile picker (v0.9.190).
+#
+# ISRIC's WoSIS is the obvious source of real, already-harmonised profiles, and
+# its structure maps directly onto the horizon table plus site metadata the app
+# needs (David Rossiter, pers. comm.). We browse the stratified WoSIS sample the
+# package already ships, so the picker works offline once the sample is cached
+# and needs no credentials. Both the pedon list and the summary table are cached
+# for the session, because the first call may fetch the sample.
+.sk_wosis_cache <- new.env(parent = emptyenv())
+
+.sk_wosis_pedons <- function() {
+  if (is.null(.sk_wosis_cache$pedons)) {
+    p <- tryCatch(soilKey::load_wosis_stratified_sample()$pedons,
+                  error = function(e) NULL)
+    .sk_wosis_cache$pedons <- if (is.null(p)) list() else p
+  }
+  .sk_wosis_cache$pedons
+}
+
+# One row per WoSIS profile, in the same order as .sk_wosis_pedons(), so the
+# selected table row indexes the pedon directly.
+.sk_wosis_catalogue <- function() {
+  if (is.null(.sk_wosis_cache$cat)) {
+    ps <- .sk_wosis_pedons()
+    .sk_wosis_cache$cat <-
+      if (!length(ps)) data.frame()
+      else do.call(rbind, lapply(seq_along(ps), function(i) {
+        s <- ps[[i]]$site
+        num <- function(v) {
+          v <- suppressWarnings(as.numeric(v %||% NA)); if (length(v)) round(v[1], 3) else NA_real_
+        }
+        data.frame(
+          Profile  = as.character(s$id %||% NA_character_)[1],
+          Country  = as.character(s$country %||% NA_character_)[1],
+          WRB      = as.character(s$reference_wrb %||% s$wosis_rsg %||% NA_character_)[1],
+          Lat      = num(s$lat),
+          Lon      = num(s$lon),
+          Horizons = nrow(ps[[i]]$horizons),
+          stringsAsFactors = FALSE)
+      }))
+  }
+  .sk_wosis_cache$cat
+}
+
+# Repopulate the site inputs from a pedon's own `$site` (v0.9.190).
+#
+# Loading a fixture used to bring in its horizons and silently drop its site
+# metadata, so the Site panel kept showing the previous profile's coordinates
+# (David Rossiter, pers. comm.). Only fields the source actually carries are
+# written -- nothing is invented.
+.sk_fill_site_inputs <- function(session, site) {
+  if (is.null(site)) return(invisible(NULL))
+  num_ok <- function(v) !is.null(v) && length(v) && !all(is.na(v))
+  if (!is.null(site$id))
+    shiny::updateTextInput(session, "site_id", value = as.character(site$id)[1])
+  if (num_ok(site$lat))
+    shiny::updateNumericInput(session, "lat",
+                              value = suppressWarnings(as.numeric(site$lat)[1]))
+  if (num_ok(site$lon))
+    shiny::updateNumericInput(session, "lon",
+                              value = suppressWarnings(as.numeric(site$lon)[1]))
+  if (!is.null(site$country))
+    shiny::updateTextInput(session, "country",
+                           value = as.character(site$country)[1])
+  if (!is.null(site$parent_material))
+    shiny::updateTextInput(session, "pm",
+                           value = as.character(site$parent_material)[1])
+  invisible(NULL)
+}
+
 pedon_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::layout_sidebar(
@@ -58,9 +211,9 @@ pedon_ui <- function(id) {
         shinyWidgets::radioGroupButtons(
           ns("source"), NULL,
           choices = stats::setNames(
-            c("fixture", "upload", "blank"),
-            c(i18n("pedon.source_fixture"), i18n("pedon.source_upload"),
-              i18n("pedon.source_blank"))),
+            c("fixture", "wosis", "upload", "blank"),
+            c(i18n("pedon.source_fixture"), i18n("pedon.source_wosis"),
+              i18n("pedon.source_upload"), i18n("pedon.source_blank"))),
           selected = "fixture", justified = TRUE, size = "sm"
         ),
         shiny::conditionalPanel(
@@ -73,6 +226,12 @@ pedon_ui <- function(id) {
             selected = "make_ferralsol_canonical",
             options  = list(`live-search` = TRUE)
           )
+        ),
+        # v0.9.190: browse real ISRIC WoSIS profiles and load one directly.
+        shiny::conditionalPanel(
+          sprintf("input['%s'] == 'wosis'", ns("source")),
+          shiny::helpText(i18n("pedon.wosis_hint")),
+          DT::DTOutput(ns("wosis_table"))
         ),
         shiny::conditionalPanel(
           sprintf("input['%s'] == 'upload'", ns("source")),
@@ -120,6 +279,40 @@ pedon_ui <- function(id) {
             sk_label(i18n("pedon.parent_material"),
                      "The rock or deposit the soil formed on, e.g. gneiss, basalt, alluvium."),
             "gneiss"))
+        ),
+        # v0.9.190: site-level technic (anthropogenic) attributes. These are
+        # facts about how the site was built, not per-layer lab values, so they
+        # are asked once here and written onto the horizons at build time.
+        shiny::selectInput(
+          ns("technic"),
+          sk_label(i18n("pedon.technic"),
+                   paste("Artefacts, a constructed geomembrane or technic hard material",
+                         "key a profile to Technosols (WRB 2022). Choose 'None' for an",
+                         "ordinary soil so the key stops asking; 'Unknown' leaves the",
+                         "criteria open.")),
+          choices  = stats::setNames(
+            c("unknown", "none", "present"),
+            c(i18n("pedon.technic_unknown"), i18n("pedon.technic_none"),
+              i18n("pedon.technic_present"))),
+          selected = "unknown"),
+        shiny::conditionalPanel(
+          condition = sprintf("input['%s'] == 'present'", ns("technic")),
+          shiny::fluidRow(
+            shiny::column(6, shiny::selectInput(
+              ns("geomembrane"),
+              sk_label(i18n("pedon.geomembrane"),
+                       "A constructed geomembrane starting within 100 cm keys the profile to Technosols."),
+              choices  = stats::setNames(
+                c("unknown", "no", "yes"),
+                c(i18n("pedon.geo_unknown"), i18n("pedon.geo_no"), i18n("pedon.geo_yes"))),
+              selected = "unknown")),
+            shiny::column(6, shiny::numericInput(
+              ns("geomembrane_depth"),
+              sk_label(i18n("pedon.geomembrane_depth"),
+                       "Depth in cm at which the geomembrane starts. Used only when the answer is Yes."),
+              value = NA, min = 0, step = 1))
+          ),
+          shiny::helpText(i18n("pedon.technic_hint"))
         )
       ),
       sk_section(
@@ -259,7 +452,13 @@ pedon_server <- function(id, rv) {
             lat             = suppressWarnings(as.numeric(input$lat)),
             lon             = suppressWarnings(as.numeric(input$lon)),
             country         = input$country %||% NA_character_,
-            parent_material = input$pm %||% NA_character_
+            parent_material = input$pm %||% NA_character_,
+            # v0.9.190: site-level construction answers, so a reopened session
+            # restores them too. The pedon schema does not restrict additional
+            # site properties, so this stays valid for validate_pedon_json().
+            technic              = input$technic %||% "unknown",
+            geomembrane          = input$geomembrane %||% "unknown",
+            geomembrane_depth_cm = suppressWarnings(as.numeric(input$geomembrane_depth))
           ),
           horizons = horizon_rows
         )
@@ -307,13 +506,28 @@ pedon_server <- function(id, rv) {
       shiny::updateTextInput(session, "country", value = site$country %||% "")
       shiny::updateTextInput(session, "pm",
                              value = site$parent_material %||% "")
+      # v0.9.190: restore the site-level construction answers (absent in
+      # sessions saved by earlier versions -> fall back to "unknown").
+      shiny::updateSelectInput(session, "technic",
+                               selected = site$technic %||% "unknown")
+      shiny::updateSelectInput(session, "geomembrane",
+                               selected = site$geomembrane %||% "unknown")
+      if (!is.null(site$geomembrane_depth_cm))
+        shiny::updateNumericInput(
+          session, "geomembrane_depth",
+          value = suppressWarnings(as.numeric(site$geomembrane_depth_cm)))
       hz(hzdf)
       hz_reload(hz_reload() + 1L)
 
       # Try to rebuild the pedon immediately so every tab is usable on reopen;
       # if geometry is off, leave the editor populated and ask for a Build.
       built <- tryCatch({
-        h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(hzdf))
+        # Apply the restored site-level construction answers, exactly as the
+        # Build button does, so a reopened session classifies identically.
+        hz_built <- .sk_apply_site_technic(
+          hzdf, site$technic %||% "unknown",
+          site$geomembrane %||% "unknown", site$geomembrane_depth_cm)
+        h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(hz_built))
         soilKey::PedonRecord$new(
           site = list(
             id              = site$id %||% "pedon",
@@ -356,6 +570,10 @@ pedon_server <- function(id, rv) {
 
     # ---- load horizons from the chosen source -----------------------------
     shiny::observeEvent(input$load, {
+      # v0.9.190: carry the source profile's own site metadata across, instead
+      # of loading its horizons and leaving the Site panel showing the previous
+      # profile's coordinates (David Rossiter, pers. comm.).
+      loaded_site <- NULL
       df <- switch(
         input$source,
         fixture = {
@@ -366,6 +584,20 @@ pedon_server <- function(id, rv) {
                                     type = "error")
             return(invisible())
           }
+          loaded_site <- p$site
+          as.data.frame(p$horizons)
+        },
+        wosis = {
+          sel <- input$wosis_table_rows_selected
+          if (!length(sel)) {
+            shiny::showNotification(i18n("pedon.wosis_select_first"),
+                                    type = "warning")
+            return(invisible())
+          }
+          ps <- .sk_wosis_pedons()
+          if (sel[1] > length(ps)) return(invisible())
+          p <- ps[[sel[1]]]
+          loaded_site <- p$site        # WoSIS carries real site metadata
           as.data.frame(p$horizons)
         },
         upload = {
@@ -394,6 +626,7 @@ pedon_server <- function(id, rv) {
       df    <- df[, c(keep, extra), drop = FALSE]
       hz(df)
       hz_reload(hz_reload() + 1L)
+      .sk_fill_site_inputs(session, loaded_site)
       shiny::showNotification(
         i18n("pedon.loaded_n", nrow(df)), type = "message")
     })
@@ -413,6 +646,17 @@ pedon_server <- function(id, rv) {
       hz_reload(hz_reload() + 1L)
     })
 
+    # ---- WoSIS profile picker --------------------------------------------
+    output$wosis_table <- DT::renderDT({
+      cat_df <- .sk_wosis_catalogue()
+      shiny::validate(shiny::need(nrow(cat_df) > 0L,
+                                  i18n("pedon.wosis_unavailable")))
+      DT::datatable(
+        cat_df, rownames = FALSE, selection = "single",
+        options = list(pageLength = 8, scrollX = TRUE, dom = "ftip")
+      )
+    })
+
     # ---- editable table ---------------------------------------------------
     output$hz_table <- DT::renderDT({
       hz_reload()                          # re-render only on load / add
@@ -427,10 +671,34 @@ pedon_server <- function(id, rv) {
       )
     })
 
+    # v0.9.190: parse yes/no text before DT coerces it. Logical columns used to
+    # swallow anything DT could not read as a literal TRUE/FALSE -- "no" became
+    # NA -- so an answered criterion stayed "data needed". Now the ordinary
+    # spellings are understood in both languages and an unreadable entry is
+    # reported instead of being silently discarded.
     shiny::observeEvent(input$hz_table_cell_edit, {
       df <- hz()
       if (is.null(df)) return(invisible())
-      hz(DT::editData(df, input$hz_table_cell_edit, rownames = FALSE))
+      info <- input$hz_table_cell_edit
+      bad  <- character(0)
+      for (k in seq_len(nrow(info))) {
+        j <- info$col[k] + 1L            # rownames = FALSE -> 0-based columns
+        if (is.na(j) || j < 1L || j > ncol(df)) next
+        cn <- names(df)[j]
+        if (!is.logical(df[[cn]])) next
+        parsed <- .sk_parse_logical(info$value[k])
+        if (is.null(parsed)) {
+          bad <- c(bad, cn)
+          info$value[k] <- NA
+        } else {
+          info$value[k] <- if (is.na(parsed)) NA else as.character(parsed)
+        }
+      }
+      hz(DT::editData(df, info, rownames = FALSE))
+      if (length(bad))
+        shiny::showNotification(
+          i18n("pedon.logical_not_understood", paste(unique(bad), collapse = ", ")),
+          type = "warning", duration = 8)
     })
 
     # ---- depth profile ----------------------------------------------------
@@ -498,6 +766,13 @@ pedon_server <- function(id, rv) {
           i18n("pedon.longitude_range"), type = "error")
         return(invisible())
       }
+      # v0.9.190: write the site-level construction answers onto the horizons the
+      # key actually reads. This is what lets "no geomembrane" resolve the
+      # Technosol criterion instead of leaving it permanently "data needed".
+      # The editor table itself is left untouched, so nothing is rewritten
+      # behind the user's back.
+      df <- .sk_apply_site_technic(df, input$technic, input$geomembrane,
+                                   input$geomembrane_depth)
       built <- tryCatch({
         h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(df))
         soilKey::PedonRecord$new(
