@@ -1,3 +1,41 @@
+# soilKey 0.9.191 (2026-07-23)
+
+An audit of what the deployed web app actually does at runtime found the
+spectroscopy module reporting placeholder values as OSSL predictions. The
+numbers were never wrong by accident -- the synthetic predictor is deliberate
+and documented in `inst/benchmarks/reports/audit_ossl_2026-04-30.md` -- but
+nothing that reached the user said so.
+
+## The provenance ledger now names the backend that actually ran
+
+* **`fill_from_spectra()` labelled every note `OSSL/<method>/<region>`,
+  regardless of backend.** Without an `ossl_library` (the default, and what the
+  Shiny app passes) the values come from `.predict_synthetic()`: `runif()` draws
+  inside plausibility ranges, not spectral predictions. Recording those as OSSL
+  is the one thing a provenance ledger must not do. Notes now read
+  `SYNTHETIC/<method>/<region>` whenever the placeholder backend runs, and
+  `OSSL/...` only when `resemble` or pre-trained models genuinely produced the
+  number.
+* **The backend is now visible to callers** as `pedon$spectra$gapfill_backend`
+  (`"synthetic"`, `"resemble"` or `"pretrained"`), so a caller that suppresses
+  `verbose` can still tell the two apart.
+
+## soilKey Pro tells the user what it did
+
+* **The app called `fill_from_spectra(verbose = FALSE)`**, so the existing
+  "NOT real spectral predictions" warning never reached a web user -- gap-fill
+  reported a plain green success either way. The Spectra tab now raises a
+  15-second warning when the placeholder backend ran, and keeps the success
+  message for a real prediction.
+* **A UI string promised something no code path delivered.** "First use
+  downloads an OSSL cache; this can take a minute and needs network access"
+  described a download the app never performs. Both locales now state that no
+  OSSL reference library ships with soilKey and what that means for the values.
+
+Regression tests pin all of it (`test-v09191-spectra-backend-label.R`), and the
+v0.9.190 test that asserted the `OSSL/` prefix was corrected -- it had pinned
+the wrong label.
+
 # soilKey 0.9.190 (2026-07-21)
 
 Field-testing feedback from David G. Rossiter on the soilKey Pro web app

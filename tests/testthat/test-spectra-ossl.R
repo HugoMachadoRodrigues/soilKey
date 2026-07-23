@@ -208,6 +208,9 @@ test_that("fill_from_spectra() notes carry method/region/PI metadata", {
     properties = "clay_pct", k_neighbors = 75L, verbose = FALSE
   )
   notes <- pedon$provenance$notes
-  expect_true(any(grepl("OSSL/mbl/south_america", notes)))
+  # No ossl_library is supplied here, so the synthetic predictor runs and the
+  # note must say so. Before v0.9.191 this asserted an "OSSL/" prefix, which
+  # pinned the ledger to a label the values had not earned.
+  expect_true(any(grepl("SYNTHETIC/mbl/south_america", notes)))
   expect_true(any(grepl("k=75", notes)))
 })
