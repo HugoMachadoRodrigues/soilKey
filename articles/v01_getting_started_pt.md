@@ -510,7 +510,29 @@ res_wrb$trace
 #> [1] "artefacts_pct"
 #> 
 #> $TC$evidence[[1]]$evidence$artefacts$artefacts$details
-#> list()
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$weighted_mean_pct
+#> [1] NA
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$lower_bound_pct
+#> [1] 0
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$upper_bound_pct
+#> [1] 100
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$window_cm
+#> [1]   0 100
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$thickness_evaluated_cm
+#> [1] 0
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$thickness_unmeasured_cm
+#> [1] 100
+#> 
+#> $TC$evidence[[1]]$evidence$artefacts$artefacts$details$summary$threshold
+#> [1] 20
+#> 
+#> 
 #> 
 #> $TC$evidence[[1]]$evidence$artefacts$artefacts$notes
 #> [1] NA

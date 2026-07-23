@@ -1,5 +1,61 @@
 # Changelog
 
+## soilKey 0.9.190 (2026-07-21)
+
+Field-testing feedback from David G. Rossiter on the soilKey Pro web app
+surfaced a cluster of problems around Technosols. Diagnosing them turned
+up two genuine defects in the key itself, not only in the interface.
+
+### WRB fidelity: artefacts are a weighted average, not any single layer
+
+- **`test_artefacts_concentration()` implemented the wrong criterion.**
+  WRB 2022 keys Technosols on artefacts of “\>= 20 % (by volume, by
+  weighted average) in the upper 100 cm”; soilKey tested “any single
+  layer \>= 20 %”. A 5 cm lens of pure rubble over clean soil (weighted
+  average 5 %) therefore keyed to Technosols. The test now computes the
+  thickness-weighted average over the 0-100 cm window. Missing values
+  are bounded rather than guessed: the unmeasured thickness is bracketed
+  between 0 % and 100 % artefacts, so the test answers TRUE when even
+  the lowest possible average clears the threshold, FALSE when even the
+  highest cannot, and only reports “data needed” when the gap genuinely
+  straddles it.
+- **The canonical Technosol fixture did not meet the criterion.** It
+  carried 30/12/3 % artefacts, a weighted average of 16.5 %, and passed
+  only because of the looser rule. It is now 35/25/3 % (24.1 %), so the
+  exemplar keys to Technosols on its merits. All 31 canonical fixtures
+  still resolve to their expected class.
+
+### soilKey Pro: the Technosol criteria are now reachable at all
+
+- **Site-level technic (anthropogenic) features.** A new site control
+  asks once whether the profile has technic features – None / Present /
+  Unknown – and, if present, whether a constructed geomembrane starts
+  within 100 cm and at what depth. The answers are written onto the
+  horizons at build time, preserving the depth semantics the key needs.
+  Answering “None” sets artefacts and technic hard material to 0 % and
+  the geomembrane to FALSE, which is what an ordinary field description
+  means; previously every ordinary profile reported the Technosol
+  criteria as “data needed” indefinitely, with no way to answer them.
+- **Yes/no cells no longer swallow the answer.**
+  [`DT::editData()`](https://rdrr.io/pkg/DT/man/editData.html) coerces
+  an edited cell to the column type, and `as.logical("no")` is NA, so
+  answering “no” to a logical attribute silently produced a missing
+  value. The editor now understands the ordinary spellings in both app
+  languages and reports an unreadable entry instead of discarding it.
+- **Anthropogenic attributes in the starter table.** `artefacts_pct` and
+  `technic_hardmaterial_pct` are part of the blank horizon template, so
+  a Technosol can be specified without loading a fixture first.
+- **Loading a profile now brings its site metadata.** Fixtures (and the
+  new WoSIS picker) populate the Site panel from the source’s own
+  `$site` instead of leaving the previous profile’s coordinates in
+  place. Only fields the source actually carries are written.
+- **WoSIS profile picker.** A new source browses the ISRIC WoSIS
+  stratified sample – profile, country, WoSIS reference WRB class,
+  coordinates and horizon count – and loads the chosen profile’s
+  horizons and site metadata directly. The panel states that many of
+  these legacy profiles are attribute-sparse, so the key often stops at
+  a catch-all class.
+
 ## soilKey 0.9.189 (2026-07-18)
 
 ### Redape loader: capture soil structure and clay films (real accuracy gain)

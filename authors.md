@@ -8,17 +8,17 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.189/inst/CITATION)
+[`inst/CITATION`](https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.190/inst/CITATION)
 
 Rodrigues, H. (2026). soilKey: Automated soil profile classification per
-WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13. R package version 0.9.189.
+WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13. R package version 0.9.190.
 https://github.com/HugoMachadoRodrigues/soilKey
 
     @Manual{,
       title = {soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13},
       author = {Hugo Rodrigues},
       year = {2026},
-      note = {R package version 0.9.189},
+      note = {R package version 0.9.190},
       doi = {10.5281/zenodo.19930112},
       url = {https://github.com/HugoMachadoRodrigues/soilKey},
     }
