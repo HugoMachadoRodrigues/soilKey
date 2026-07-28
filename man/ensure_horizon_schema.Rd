@@ -17,8 +17,19 @@ A \code{data.table} with the canonical horizon columns present, in
 Adds any missing canonical columns as NAs of the right type and reorders
 canonical columns first. Extra user-supplied columns are preserved at the
 end. Coerces character values to numeric where the schema requires it.
+
+Column names are recognised tolerantly before coercion: an exact canonical
+name always wins, but names differing only in capitalisation or separators
+(\code{pH_H2O}, \code{PH.H2O} -> \code{ph_h2o}) and a small table of common
+analytical abbreviations (\code{Clay} -> \code{clay_pct}, \code{SOC} ->
+\code{oc_pct}, \code{CEC} -> \code{cec_cmol}, ...) are mapped to their
+canonical form rather than silently ignored. See \code{inst/ATTRIBUTES.md}
+for the complete list of recognised names and accepted aliases.
 }
 \examples{
 h <- ensure_horizon_schema(data.frame(top_cm = 0, bottom_cm = 20))
 "designation" \%in\% names(h)
+# capitalisation and common abbreviations are recognised:
+h2 <- ensure_horizon_schema(data.frame(pH_H2O = 5.4, Clay = 32, SOC = 1.1))
+h2$ph_h2o
 }

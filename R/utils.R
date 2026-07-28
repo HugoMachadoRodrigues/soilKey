@@ -186,11 +186,128 @@ make_empty_horizons <- function(n = 0L) {
   data.table::as.data.table(cols)
 }
 
+#' Normalise a column-name string to a match key
+#'
+#' Lower-cases and collapses runs of \code{.}, \code{-} and whitespace to a
+#' single underscore, so \code{"pH_H2O"}, \code{"pH.H2O"}, \code{"pH H2O"} and
+#' \code{"PH-H2O"} all share one key (\code{"ph_h2o"}). Vectorised.
+#'
+#' @param x Character vector of names.
+#' @return Character vector of normalised keys.
+#' @noRd
+.norm_name_key <- function(x) {
+  x <- tolower(trimws(x))
+  x <- gsub("[[:space:].-]+", "_", x)
+  gsub("_+", "_", x)
+}
+
+#' Common analytical-attribute aliases -> canonical horizon column names
+#'
+#' A small, deliberately conservative table of widely-used abbreviations and
+#' alternate spellings for the analytical attributes soilKey reads, keyed by the
+#' \code{\link{.norm_name_key}} form (lower-case, separators collapsed to
+#' \code{_}). Values are exact canonical names from
+#' \code{\link{horizon_column_spec}}. Ambiguous single letters (e.g. bare
+#' \code{v}/\code{m}) are intentionally excluded so recognition never silently
+#' mis-maps. Every entry here is reproduced in the user-facing attribute
+#' reference (see \code{inst/ATTRIBUTES.md}).
+#'
+#' @return A named character vector: normalised alias -> canonical name.
+#' @noRd
+.horizon_name_aliases <- function() {
+  c(
+    # ---- geometry ----
+    top = "top_cm", depth_top = "top_cm", top_depth = "top_cm",
+    upper_depth = "top_cm",
+    bottom = "bottom_cm", depth_bottom = "bottom_cm",
+    bottom_depth = "bottom_cm", lower_depth = "bottom_cm",
+    horizon = "designation", hzn = "designation",
+    hzn_desgn = "designation", horizon_designation = "designation",
+    # ---- texture ----
+    clay = "clay_pct", silt = "silt_pct", sand = "sand_pct",
+    coarse_fragments = "coarse_fragments_pct", gravel = "coarse_fragments_pct",
+    cf = "coarse_fragments_pct", rock_fragments = "coarse_fragments_pct",
+    # ---- acidity (pH in water is the soilKey default when unqualified) ----
+    ph = "ph_h2o", ph_water = "ph_h2o", ph_h20 = "ph_h2o", phw = "ph_h2o",
+    # ---- organics ----
+    oc = "oc_pct", soc = "oc_pct", org_c = "oc_pct",
+    organic_carbon = "oc_pct", corg = "oc_pct", c_org = "oc_pct",
+    n_tot = "n_total_pct", total_n = "n_total_pct", n_total = "n_total_pct",
+    tn = "n_total_pct", nitrogen = "n_total_pct",
+    # ---- exchange complex ----
+    cec = "cec_cmol", ctc = "cec_cmol",              # ctc = CEC (pt-BR / Embrapa)
+    ecec = "ecec_cmol",
+    bs = "bs_pct", base_saturation = "bs_pct", v_pct = "bs_pct",   # V% (SiBCS)
+    al_sat = "al_sat_pct", al_saturation = "al_sat_pct",
+    m_pct = "al_sat_pct",                             # m% (SiBCS)
+    ca = "ca_cmol", mg = "mg_cmol", k = "k_cmol",
+    na = "na_cmol", al = "al_cmol",
+    exch_ca = "ca_cmol", exch_mg = "mg_cmol", exch_k = "k_cmol",
+    exch_na = "na_cmol", exch_al = "al_cmol",
+    # ---- carbonates / gypsum ----
+    caco3 = "caco3_pct", carbonates = "caco3_pct", carbonate = "caco3_pct",
+    caso4 = "caso4_pct", gypsum = "caso4_pct",
+    # ---- physical ----
+    bulk_density = "bulk_density_g_cm3", bd = "bulk_density_g_cm3",
+    db = "bulk_density_g_cm3",
+    # ---- salinity ----
+    ec = "ec_dS_m", ece = "ec_dS_m", conductivity = "ec_dS_m"
+  )
+}
+
+#' Canonicalise user-supplied horizon column names
+#'
+#' Maps provided column names onto the canonical schema
+#' (\code{\link{horizon_column_spec}}) tolerantly, so that data prepared with
+#' natural capitalisation or common abbreviations are recognised instead of
+#' silently dropped. Matching is attempted in order:
+#' \enumerate{
+#'   \item exact canonical name (always wins, untouched);
+#'   \item case- and separator-insensitive match to a canonical name
+#'     (e.g. \code{pH_H2O}, \code{PH.H2O} -> \code{ph_h2o});
+#'   \item a common alias (\code{\link{.horizon_name_aliases}}, e.g.
+#'     \code{Clay} -> \code{clay_pct}, \code{SOC} -> \code{oc_pct}).
+#' }
+#' A column is never renamed onto a name that is already present, so an exact
+#' canonical column is never clobbered and each canonical target receives at
+#' most one source column (first match wins). Unrecognised columns are left
+#' verbatim.
+#'
+#' @param h    A \code{data.table} of horizons (modified in place).
+#' @param spec The canonical spec (defaults to \code{horizon_column_spec()}).
+#' @return \code{h}, with recognised columns renamed to canonical form.
+#' @noRd
+.canonicalize_horizon_names <- function(h, spec = horizon_column_spec()) {
+  canon    <- names(spec)
+  lc_canon <- canon
+  names(lc_canon) <- .norm_name_key(canon)
+  aliases  <- .horizon_name_aliases()
+  for (nm in names(h)) {
+    if (nm %in% canon) next                    # already canonical -> keep as-is
+    key    <- .norm_name_key(nm)
+    target <- if (key %in% names(lc_canon)) lc_canon[[key]]
+              else if (key %in% names(aliases)) aliases[[key]]
+              else NULL
+    if (is.null(target)) next                  # unrecognised -> preserve verbatim
+    if (target %in% names(h)) next             # target already present -> don't clobber
+    data.table::setnames(h, nm, target)
+  }
+  h
+}
+
 #' Coerce a horizons-like data.frame to the canonical schema
 #'
 #' Adds any missing canonical columns as NAs of the right type and reorders
 #' canonical columns first. Extra user-supplied columns are preserved at the
 #' end. Coerces character values to numeric where the schema requires it.
+#'
+#' Column names are recognised tolerantly before coercion: an exact canonical
+#' name always wins, but names differing only in capitalisation or separators
+#' (\code{pH_H2O}, \code{PH.H2O} -> \code{ph_h2o}) and a small table of common
+#' analytical abbreviations (\code{Clay} -> \code{clay_pct}, \code{SOC} ->
+#' \code{oc_pct}, \code{CEC} -> \code{cec_cmol}, ...) are mapped to their
+#' canonical form rather than silently ignored. See \code{inst/ATTRIBUTES.md}
+#' for the complete list of recognised names and accepted aliases.
 #'
 #' @param h Input data.frame or data.table.
 #' @return A \code{data.table} with the canonical horizon columns present, in
@@ -198,11 +315,15 @@ make_empty_horizons <- function(n = 0L) {
 #' @examples
 #' h <- ensure_horizon_schema(data.frame(top_cm = 0, bottom_cm = 20))
 #' "designation" %in% names(h)
+#' # capitalisation and common abbreviations are recognised:
+#' h2 <- ensure_horizon_schema(data.frame(pH_H2O = 5.4, Clay = 32, SOC = 1.1))
+#' h2$ph_h2o
 #' @export
 ensure_horizon_schema <- function(h) {
   if (is.null(h)) return(make_empty_horizons(0L))
   if (!data.table::is.data.table(h)) h <- data.table::as.data.table(h)
   spec <- horizon_column_spec()
+  h <- .canonicalize_horizon_names(h, spec)
   n <- nrow(h)
   for (col in names(spec)) {
     if (!col %in% names(h)) {
