@@ -6,6 +6,27 @@
 # ambiguities, and the measurements that would refine the result.
 # =============================================================================
 
+# How much of a horizon attribute the pedon actually carries, as "5 / 7".
+#
+# The "Missing data" list names an attribute as soon as ONE predicate could not
+# read it in ONE horizon. A user who filled the attribute in every horizon but
+# the bottom two then sees its name listed and reasonably concludes the upload
+# was rejected -- reported from ISRIC on a profile whose lowest two horizons had
+# no laboratory data. Returns NULL when the attribute is not a horizon column
+# (site fields, composite hints such as "al_sat_pct (or ca+mg+...)") or when the
+# pedon carries none of it, in which case "missing" is the whole story.
+.classify_attr_coverage <- function(attr, pedon) {
+  if (is.null(pedon) || is.null(pedon$horizons)) return(NULL)
+  h <- pedon$horizons
+  if (!attr %in% names(h)) return(NULL)
+  n <- nrow(h)
+  if (!n) return(NULL)
+  v <- h[[attr]]
+  filled <- sum(!is.na(v) & !(is.character(v) & !nzchar(as.character(v))))
+  if (filled == 0L) return(NULL)
+  list(filled = filled, n = n)
+}
+
 # Turn a raw horizon/site attribute name into a readable label with its unit,
 # for the "Missing data" list (e.g. "clay_pct" -> "Clay (%)").
 .classify_pretty_attr <- function(x) {
@@ -339,10 +360,17 @@ classify_server <- function(id, rv, settings) {
           class = "mb-3",
           shiny::tags$strong(c(wrb = "WRB 2022", sibcs = "SiBCS 5",
                                usda = "USDA ST 13")[[nm]]),
-          shiny::tags$ul(class = "sk-missing-list", lapply(m, function(a)
+          shiny::tags$ul(class = "sk-missing-list", lapply(m, function(a) {
+            cov <- .classify_attr_coverage(a, rv$pedon)
             shiny::tags$li(
               .classify_pretty_attr(a),
-              shiny::tags$code(class = "ms-2", a)))))
+              shiny::tags$code(class = "ms-2", a),
+              # Say WHERE it is missing when the pedon has it somewhere, so a
+              # partially-filled column never reads as a rejected upload.
+              if (!is.null(cov)) shiny::tags$span(
+                class = "text-muted small ms-2",
+                sprintf(i18n("classify.attr_coverage"), cov$filled, cov$n)))
+          })))
       }
       if (length(blocks) == 0L)
         return(shiny::div(class = "text-muted p-2",

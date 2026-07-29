@@ -247,6 +247,18 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
         }
         if (!done) {
           # Continuous notation (or round-chip fall-through if rounding failed).
+          #
+          # TO REPLACE, once munsellinterpol >= 3.5.0 is on CRAN: this whole
+          # block becomes MunsellNameFromHVC(HVC, digits = c(2, 6, 6),
+          # ctol = 1e-4). v0.9.185 declined that swap because `digits` was a
+          # single value applied to hue, value AND chroma, and the achromatic
+          # test was a strict 0 < C with no tolerance -- which would have
+          # re-introduced the 10RP-on-a-grey leak fixed just below. G. Davis
+          # fixed both in 3.5-0 (per-component digits, plus ctol), and it now
+          # reproduces this block byte-for-byte on 28 fixtures, including
+          # HVC(0, 6, 1e-15) -> "N 6/". Blocked only on the CRAN release: soilKey
+          # is on CRAN and cannot depend on an unpublished version. Keep the
+          # fixtures as the regression guard when the swap happens.
           hs <- tryCatch(munsellinterpol::HueStringFromNumber(Hk),
                          error = function(e) rep(NA_character_, length(Hk)))
           # Hue is undefined at Chroma 0 (G. Davis, munsellinterpol author): a
