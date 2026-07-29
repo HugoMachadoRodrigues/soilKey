@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.191</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.192</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,9 +49,27 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.191/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.192" id="soilkey-09192-2026-07-28">soilKey 0.9.192 (2026-07-28)<a class="anchor" aria-label="anchor" href="#soilkey-09192-2026-07-28"></a></h2>
+<p>A usability report from Jelle Janssen (ISRIC – World Soil Information) found that a column named <code>pH_H2O</code> was silently ignored while <code>ph_h2o</code> worked. The schema gate matched attribute names with an exact, case-sensitive comparison, so any capitalisation the user chose that did not match the canonical name was dropped without warning – the data simply never reached the keys.</p>
+<div class="section level3">
+<h3 id="attribute-names-are-now-recognised-tolerantly-0-9-192">Attribute names are now recognised tolerantly<a class="anchor" aria-label="anchor" href="#attribute-names-are-now-recognised-tolerantly-0-9-192"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/ensure_horizon_schema.html">ensure_horizon_schema()</a></code> no longer requires exact-case column names.</strong> Provided names are matched to the canonical schema case-insensitively and separator-insensitively, so <code>pH_H2O</code>, <code>PH.H2O</code>, <code>ph h2o</code> and <code>pH-H2O</code> are all recognised as <code>ph_h2o</code>. This is the gate every path goes through (<code>PedonRecord$new()</code>, <code><a href="../reference/classify_csv.html">classify_csv()</a></code>, the Pro app CSV upload), so the fix reaches the R API and the web app alike.</li>
+<li>
+<strong>A small, documented table of common abbreviations is accepted</strong> (the “accepted aliases” column of the new reference): <code>Clay</code> -&gt; <code>clay_pct</code>, <code>SOC</code>/<code>OC</code> -&gt; <code>oc_pct</code>, <code>CEC</code> -&gt; <code>cec_cmol</code>, <code>BS</code> -&gt; <code>bs_pct</code>, <code>Ca</code>/<code>Mg</code>/<code>K</code> -&gt; <code>*_cmol</code>, <code>CaCO3</code> -&gt; <code>caco3_pct</code>, <code>BD</code> -&gt; <code>bulk_density_g_cm3</code>, and so on. Ambiguous single letters are deliberately excluded so recognition never silently mis-maps a column onto the wrong attribute.</li>
+<li>
+<strong>Recognition is non-destructive.</strong> An exact canonical name always wins and is never overwritten; each canonical target receives at most one source column (first match wins); unrecognised columns are preserved verbatim and simply not read by the keys.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="an-authoritative-attribute-reference-ships-with-the-package-0-9-192">An authoritative attribute reference ships with the package<a class="anchor" aria-label="anchor" href="#an-authoritative-attribute-reference-ships-with-the-package-0-9-192"></a></h3>
+<ul><li>
+<strong><code>inst/ATTRIBUTES.md</code></strong> lists every recognised attribute (110 of them), grouped by theme, with its canonical name, unit, R type, meaning, and accepted aliases. It is generated straight from <code><a href="../reference/horizon_column_spec.html">horizon_column_spec()</a></code> and the alias table (<code>data-raw/generate_attributes_doc.R</code>) with a coverage assertion, so it can never drift from the code. <code><a href="../reference/horizon_column_spec.html">soilKey::horizon_column_spec()</a></code> remains the programmatic source of the canonical names and types.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.191" id="soilkey-09191-2026-07-23">soilKey 0.9.191 (2026-07-23)<a class="anchor" aria-label="anchor" href="#soilkey-09191-2026-07-23"></a></h2>
 <p>An audit of what the deployed web app actually does at runtime found the spectroscopy module reporting placeholder values as OSSL predictions. The numbers were never wrong by accident – the synthetic predictor is deliberate and documented in <code>inst/benchmarks/reports/audit_ossl_2026-04-30.md</code> – but nothing that reached the user said so.</p>

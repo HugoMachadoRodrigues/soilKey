@@ -1,5 +1,48 @@
 # Changelog
 
+## soilKey 0.9.192 (2026-07-28)
+
+A usability report from Jelle Janssen (ISRIC – World Soil Information)
+found that a column named `pH_H2O` was silently ignored while `ph_h2o`
+worked. The schema gate matched attribute names with an exact,
+case-sensitive comparison, so any capitalisation the user chose that did
+not match the canonical name was dropped without warning – the data
+simply never reached the keys.
+
+### Attribute names are now recognised tolerantly
+
+- **[`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
+  no longer requires exact-case column names.** Provided names are
+  matched to the canonical schema case-insensitively and
+  separator-insensitively, so `pH_H2O`, `PH.H2O`, `ph h2o` and `pH-H2O`
+  are all recognised as `ph_h2o`. This is the gate every path goes
+  through (`PedonRecord$new()`,
+  [`classify_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.md),
+  the Pro app CSV upload), so the fix reaches the R API and the web app
+  alike.
+- **A small, documented table of common abbreviations is accepted** (the
+  “accepted aliases” column of the new reference): `Clay` -\>
+  `clay_pct`, `SOC`/`OC` -\> `oc_pct`, `CEC` -\> `cec_cmol`, `BS` -\>
+  `bs_pct`, `Ca`/`Mg`/`K` -\> `*_cmol`, `CaCO3` -\> `caco3_pct`, `BD`
+  -\> `bulk_density_g_cm3`, and so on. Ambiguous single letters are
+  deliberately excluded so recognition never silently mis-maps a column
+  onto the wrong attribute.
+- **Recognition is non-destructive.** An exact canonical name always
+  wins and is never overwritten; each canonical target receives at most
+  one source column (first match wins); unrecognised columns are
+  preserved verbatim and simply not read by the keys.
+
+### An authoritative attribute reference ships with the package
+
+- **`inst/ATTRIBUTES.md`** lists every recognised attribute (110 of
+  them), grouped by theme, with its canonical name, unit, R type,
+  meaning, and accepted aliases. It is generated straight from
+  [`horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md)
+  and the alias table (`data-raw/generate_attributes_doc.R`) with a
+  coverage assertion, so it can never drift from the code.
+  [`soilKey::horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md)
+  remains the programmatic source of the canonical names and types.
+
 ## soilKey 0.9.191 (2026-07-23)
 
 An audit of what the deployed web app actually does at runtime found the
