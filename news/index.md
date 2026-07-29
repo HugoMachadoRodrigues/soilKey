@@ -1,5 +1,42 @@
 # Changelog
 
+## soilKey 0.9.195 (2026-07-29)
+
+A report from ISRIC on reference profile ZW005: six attributes –
+`clay_pct`, `silt_pct`, `sand_pct`, `oc_pct`, `cec_cmol`, `caco3_pct` –
+were listed as missing on the Classification page although the upload
+carried them, which read as the app rejecting numeric composition
+fields.
+
+### Nothing was rejected – the panel was under-reporting
+
+The values arrived intact and numeric, drove the keys, and produced a
+sensible name (Mollic Luvisol (Clayic, Chromic)). They appear in the
+list because the profile’s two lowest horizons (BCk, CBk) carry no
+laboratory data, and a predicate that scans the whole profile records an
+attribute as soon as **one** horizon lacks it. Isolated by re-running
+the same profile three ways: as sent, all six are listed; with the
+bottom two horizons filled, none are; with the bottom two removed, none
+are.
+
+- **Each “Missing data” entry now says how much of the attribute the
+  pedon actually carries** – “you provided this in 5 of 7 horizons”. An
+  attribute the profile never carries is left unannotated, so the badge
+  marks exactly the case that used to be ambiguous: a partially-filled
+  column, previously indistinguishable from one that had been thrown
+  away. Bilingual (en / pt-BR), and purely additive – no predicate,
+  trace or classification changes.
+
+### Also
+
+- A pointer at the hand-rolled continuous Munsell notation recording
+  that
+  `munsellinterpol::MunsellNameFromHVC(digits = c(2, 6, 6), ctol = 1e-4)`
+  is now a verified byte-safe drop-in (28/28 fixtures, including the
+  residual-chroma neutral `HVC(0, 6, 1e-15)` -\> `"N 6/"`), blocked only
+  on that release reaching CRAN. v0.9.185 declined the swap for two
+  reasons G. Davis has since fixed.
+
 ## soilKey 0.9.194 (2026-07-29)
 
 v0.9.193 fixed the retired-model HTTP 404, but verifying the deployed

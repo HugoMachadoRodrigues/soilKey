@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.194</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.195</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,20 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.195" id="soilkey-09195-2026-07-29">soilKey 0.9.195 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09195-2026-07-29"></a></h2>
+<p>A report from ISRIC on reference profile ZW005: six attributes – <code>clay_pct</code>, <code>silt_pct</code>, <code>sand_pct</code>, <code>oc_pct</code>, <code>cec_cmol</code>, <code>caco3_pct</code> – were listed as missing on the Classification page although the upload carried them, which read as the app rejecting numeric composition fields.</p>
+<div class="section level3">
+<h3 id="nothing-was-rejected--the-panel-was-under-reporting-0-9-195">Nothing was rejected – the panel was under-reporting<a class="anchor" aria-label="anchor" href="#nothing-was-rejected--the-panel-was-under-reporting-0-9-195"></a></h3>
+<p>The values arrived intact and numeric, drove the keys, and produced a sensible name (Mollic Luvisol (Clayic, Chromic)). They appear in the list because the profile’s two lowest horizons (BCk, CBk) carry no laboratory data, and a predicate that scans the whole profile records an attribute as soon as <strong>one</strong> horizon lacks it. Isolated by re-running the same profile three ways: as sent, all six are listed; with the bottom two horizons filled, none are; with the bottom two removed, none are.</p>
+<ul><li>
+<strong>Each “Missing data” entry now says how much of the attribute the pedon actually carries</strong> – “you provided this in 5 of 7 horizons”. An attribute the profile never carries is left unannotated, so the badge marks exactly the case that used to be ambiguous: a partially-filled column, previously indistinguishable from one that had been thrown away. Bilingual (en / pt-BR), and purely additive – no predicate, trace or classification changes.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="also-0-9-195">Also<a class="anchor" aria-label="anchor" href="#also-0-9-195"></a></h3>
+<ul><li>A pointer at the hand-rolled continuous Munsell notation recording that <code>munsellinterpol::MunsellNameFromHVC(digits = c(2, 6, 6), ctol = 1e-4)</code> is now a verified byte-safe drop-in (28/28 fixtures, including the residual-chroma neutral <code>HVC(0, 6, 1e-15)</code> -&gt; <code>"N 6/"</code>), blocked only on that release reaching CRAN. v0.9.185 declined the swap for two reasons G. Davis has since fixed.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.194" id="soilkey-09194-2026-07-29">soilKey 0.9.194 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09194-2026-07-29"></a></h2>
 <p>v0.9.193 fixed the retired-model HTTP 404, but verifying the deployed app through its real code path showed photo extraction still failed – now with HTTP 413 <code>Request too large</code>. One error had been traded for another. Measured against the live endpoint, a single Munsell extraction asked for <strong>15,597 tokens</strong> against a free-tier ceiling of <strong>8,000 per minute</strong>, so the request was rejected before the model ever ran. Three changes bring it to <strong>3,546</strong>.</p>
