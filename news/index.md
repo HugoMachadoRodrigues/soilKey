@@ -1,5 +1,55 @@
 # Changelog
 
+## soilKey 0.9.193 (2026-07-28)
+
+A second report from Jelle Janssen (ISRIC – World Soil Information):
+both Photo-tab extractions (Munsell colour, site metadata) failed with
+
+``` R
+VLM provider call failed on attempt 1: HTTP 404 Not Found.
+The model `meta-llama/llama-4-scout-17b-16e-instruct` does not exist
+or you do not have access to it.
+```
+
+Groq retired that model. Querying the live models endpoint with the
+deployed key confirmed it is gone, and that no Llama-4 vision model
+remains available on it. Three separate defects were found and fixed.
+
+### The vision model is repointed – and repointable without a rebuild
+
+- **The default is now `qwen/qwen3.6-27b`**, verified against the
+  deployed key: it reads colour correctly (blue/green control images
+  identified) and returns a schema-valid three-horizon extraction from
+  the real Munsell prompt.
+- **The model is no longer hardcoded.** `.groq_vision_model()` resolves
+  `options(soilKey.groq_vision_model=)` \> `$GROQ_VISION_MODEL` \>
+  default, at call time, so the next retirement is a config change
+  rather than a new image. `mod_chat.R` no longer carries its own copy
+  of the name.
+
+### The extractor survives a reasoning model
+
+- **Qwen3 is a reasoning model: it emits `<think>...</think>` before the
+  JSON.** `strip_code_fence()` only removed
+  \`\``fences, so a perfectly good extraction would have failed the JSON parse.`strip_reasoning_block()\`
+  now removes those blocks first, including an unterminated one
+  (response truncated at the token cap).
+- **`extract_json_object()`** rescues an object wrapped in prose (“Here
+  is the extraction: {…}”) on the same attempt instead of burning a
+  retry. Output still has to parse *and* validate against the schema, so
+  robustness does not become permissiveness – a response with no JSON at
+  all still fails.
+
+### Photos are downscaled before they are sent
+
+- **A phone photo blew the free-tier request cap.** Groq’s on-demand
+  tier allows 8,000 tokens per minute; a full-size upload plus the
+  injected schema exceeded it and failed with “Request too large” even
+  once the model was right. Photos are now resized to a 768 px long edge
+  (1024 px for field sheets, which are handwriting) before the call.
+  Best-effort: without , or on any error, the original file is sent
+  exactly as before.
+
 ## soilKey 0.9.192 (2026-07-28)
 
 A usability report from Jelle Janssen (ISRIC – World Soil Information)
