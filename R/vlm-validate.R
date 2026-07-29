@@ -27,15 +27,52 @@ as_chat_text <- function(x) {
 }
 
 
+#' Strip a reasoning model's chain-of-thought block
+#'
+#' Reasoning models (Qwen3, DeepSeek-R1, and the like) emit their thinking
+#' inside \code{<think>...</think>} before the answer, which is not valid JSON
+#' and would fail the parse even though the JSON that follows is perfect.
+#' Removes every such block, including an unterminated one (the model hit the
+#' token cap mid-thought), in which case nothing usable remains anyway.
+#'
+#' @noRd
+strip_reasoning_block <- function(text) {
+  text <- gsub("(?s)<think>.*?</think>", "", text, perl = TRUE)
+  # unterminated <think> (truncated response): drop from the tag onwards
+  text <- sub("(?s)<think>.*$", "", text, perl = TRUE)
+  trimws(text)
+}
+
+
+#' Extract the outermost JSON object from a noisy response
+#'
+#' Last-resort rescue for models that wrap the JSON in prose ("Here is the
+#' extraction: {...} Let me know if..."). Returns the substring from the first
+#' \code{\{} to the last \code{\}} when both are present, else the input
+#' unchanged. Deliberately blunt: the result still has to parse and validate,
+#' so a wrong guess simply fails the way it would have anyway.
+#'
+#' @noRd
+extract_json_object <- function(text) {
+  first <- regexpr("\\{", text, perl = TRUE)
+  if (first < 1L) return(text)
+  last <- max(gregexpr("\\}", text, perl = TRUE)[[1]])
+  if (last < first) return(text)
+  substr(text, first, last)
+}
+
+
 #' Strip surrounding code fences from a model response
 #'
 #' Some models wrap JSON output in \code{```json ... ```} fences
 #' despite being told not to. This helper removes a single leading
 #' and trailing fence pair if present, leaving the inner content.
+#' A reasoning block, when present, is removed first: the fence markers
+#' otherwise sit behind the chain-of-thought and never match.
 #'
 #' @noRd
 strip_code_fence <- function(text) {
-  text <- trimws(text)
+  text <- strip_reasoning_block(trimws(text))
   text <- sub("^```(?:json)?\\s*\\n?", "", text, perl = TRUE)
   text <- sub("\\n?```\\s*$", "", text, perl = TRUE)
   trimws(text)
@@ -110,10 +147,20 @@ validate_or_retry <- function(provider,
 
     raw_text <- strip_code_fence(as_chat_text(raw_response))
 
-    # 1. Must be parseable JSON.
+    # 1. Must be parseable JSON. If the model wrapped the object in prose,
+    #    retry once on the outermost {...} before spending a whole attempt.
     parsed <- tryCatch(
       jsonlite::fromJSON(raw_text, simplifyVector = FALSE),
       error = function(e) {
+        rescued <- extract_json_object(raw_text)
+        if (!identical(rescued, raw_text)) {
+          alt <- tryCatch(jsonlite::fromJSON(rescued, simplifyVector = FALSE),
+                          error = function(e2) NULL)
+          if (!is.null(alt)) {
+            raw_text <<- rescued   # validate the same text we parsed
+            return(alt)
+          }
+        }
         last_error <<- sprintf("Response is not valid JSON: %s",
                                  conditionMessage(e))
         NULL
