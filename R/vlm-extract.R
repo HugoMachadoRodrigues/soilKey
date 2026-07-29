@@ -65,18 +65,42 @@ unpack_vlm_attr <- function(x) {
 #'
 #' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
-find_or_append_horizon <- function(pedon, top_cm, bottom_cm) {
+#' @param match How to recognise an existing row. \code{"exact"} (default)
+#'        requires both boundaries within 1 cm -- right for a source that
+#'        \emph{reads} depths, such as a description PDF. \code{"overlap"}
+#'        takes the existing horizon sharing the most depth with the extracted
+#'        band, provided they share at least half of the shorter of the two --
+#'        right for a source that \emph{estimates} depths, such as a
+#'        photograph, where a 1 cm agreement essentially never happens and the
+#'        exact rule silently appended a duplicate beside every horizon.
+find_or_append_horizon <- function(pedon, top_cm, bottom_cm,
+                                    match = c("exact", "overlap")) {
+  how <- base::match.arg(match)
   h <- pedon$horizons
   n <- nrow(h)
 
   if (n > 0L && !is.null(top_cm) && !is.null(bottom_cm) &&
       !is.na(top_cm) && !is.na(bottom_cm)) {
-    match_idx <- which(
-      !is.na(h$top_cm) & !is.na(h$bottom_cm) &
-      abs(h$top_cm    - top_cm)    <= 1 &
-      abs(h$bottom_cm - bottom_cm) <= 1
-    )
-    if (length(match_idx) > 0L) return(match_idx[1L])
+    usable <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+
+    if (identical(how, "exact")) {
+      match_idx <- which(
+        usable &
+        abs(h$top_cm    - top_cm)    <= 1 &
+        abs(h$bottom_cm - bottom_cm) <= 1
+      )
+      if (length(match_idx) > 0L) return(match_idx[1L])
+    } else {
+      # Depth shared between the extracted band and each existing horizon.
+      overlap <- pmax(0, pmin(h$bottom_cm, bottom_cm) - pmax(h$top_cm, top_cm))
+      overlap[!usable] <- 0
+      # Judge it against the SHORTER interval, so a thin band inside a thick
+      # horizon still matches, and a band spanning two horizons picks the one
+      # it covers best rather than the merely-widest.
+      shorter <- pmin(h$bottom_cm - h$top_cm, bottom_cm - top_cm)
+      frac <- ifelse(is.finite(shorter) & shorter > 0, overlap / shorter, 0)
+      if (any(frac >= 0.5)) return(which.max(frac))
+    }
   }
 
   # Append a new empty row.
@@ -149,7 +173,9 @@ horizon_simple_attr_map <- function() {
 apply_horizons_extraction <- function(pedon,
                                        parsed,
                                        overwrite = FALSE,
-                                       source_label = "extracted_vlm") {
+                                       source_label = "extracted_vlm",
+                                       match = c("exact", "overlap")) {
+  match <- base::match.arg(match)
 
   added <- 0L
   if (is.null(parsed$horizons) || length(parsed$horizons) == 0L) {
@@ -163,7 +189,8 @@ apply_horizons_extraction <- function(pedon,
     bottom_cm <- hz$bottom_cm %||% NA_real_
     idx <- find_or_append_horizon(pedon,
                                    top_cm    = top_cm,
-                                   bottom_cm = bottom_cm)
+                                   bottom_cm = bottom_cm,
+                                   match     = match)
 
     # designation: simple field, no value/confidence wrapper.
     if (!is.null(hz$designation) && !is.na(hz$designation)) {
@@ -492,7 +519,14 @@ extract_munsell_from_photo <- function(pedon,
     })
   }
 
-  added <- apply_horizons_extraction(pedon, res$data, overwrite = overwrite)
+  # Overlap matching, not the 1 cm rule the PDF route uses: a model reading a
+  # photograph estimates boundaries from pixels and cannot know the surveyor's
+  # measured depths, so "within 1 cm on both sides" essentially never held and
+  # every extracted band was appended as a duplicate -- leaving the user's own
+  # horizons colourless beside a second, overlapping set that carried the
+  # colour.
+  added <- apply_horizons_extraction(pedon, res$data, overwrite = overwrite,
+                                     match = "overlap")
 
   if (is.null(pedon$images)) pedon$images <- list()
   pedon$images[[length(pedon$images) + 1L]] <- list(

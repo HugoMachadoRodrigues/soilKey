@@ -391,11 +391,23 @@ PedonRecord <- R6::R6Class("PedonRecord",
         prior <- self$provenance[
           self$provenance$horizon_idx == .target_hz_idx &
           self$provenance$attribute   == .target_attr, ]
-        if (nrow(prior) > 0L) {
-          best <- max(provenance_authority(prior$source), na.rm = TRUE)
-          if (provenance_authority(source) < best) {
-            return(invisible(self))
-          }
+        best <- if (nrow(prior) > 0L) {
+          max(provenance_authority(prior$source), na.rm = TRUE)
+        } else if (!is.na(self$horizons[[attribute]][horizon_idx])) {
+          # A value with no provenance row came in with the horizons table --
+          # the user typed or uploaded it. Treat it as `measured`: it is the
+          # highest-trust source we have, so an extraction or a prior cannot
+          # quietly replace it, while a genuine `measured` write still ties and
+          # proceeds. Before v0.9.196 the absent provenance row read as "no
+          # prior at all" and anything could overwrite it -- invisible while
+          # extraction only ever appended fresh rows, and a real data-loss path
+          # as soon as it started merging into the user's own horizons.
+          provenance_authority("measured")
+        } else {
+          NA_integer_
+        }
+        if (!is.na(best) && provenance_authority(source) < best) {
+          return(invisible(self))
         }
       }
 
