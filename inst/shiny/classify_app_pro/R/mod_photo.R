@@ -75,6 +75,50 @@
     if (conf >= 0.55) "C" else if (conf >= 0.40) "D" else "E"
 }
 
+# The Groq vision model, resolved at CALL time so a discontinued model can be
+# repointed without rebuilding the image:
+#   options(soilKey.groq_vision_model=) > $GROQ_VISION_MODEL > default.
+#
+# The default moved to qwen/qwen3.6-27b in v0.9.193: Groq retired
+# meta-llama/llama-4-scout-17b-16e-instruct and every call started returning
+# HTTP 404 (reported from ISRIC). Qwen3 is a REASONING model -- it emits a
+# <think> block before the JSON -- which the extractor now strips
+# (strip_reasoning_block() in R/vlm-validate.R).
+.GROQ_VISION_MODEL_DEFAULT <- "qwen/qwen3.6-27b"
+
+.groq_vision_model <- function() {
+  opt <- getOption("soilKey.groq_vision_model", default = NULL)
+  if (!is.null(opt) && nzchar(opt)) return(opt)
+  env <- Sys.getenv("GROQ_VISION_MODEL", "")
+  if (nzchar(env)) return(env)
+  .GROQ_VISION_MODEL_DEFAULT
+}
+
+# Downscale a photo before it goes to the vision model.
+#
+# A phone photo is several megapixels; base64'd into the request it dominates
+# the token count, and Groq's free tier caps a request at 8,000 tokens per
+# minute -- a full-size upload fails with "Request too large" even when the
+# model is right. Long edge 768 px is plenty to read horizon colour and to read
+# a field sheet, and keeps a request well inside the cap.
+#
+# Best-effort: without magick, or if anything fails, the original path is
+# returned and the call proceeds exactly as before.
+.photo_downscale <- function(path, max_px = 768L) {
+  if (is.null(path) || !nzchar(path) || !file.exists(path)) return(path)
+  if (!requireNamespace("magick", quietly = TRUE)) return(path)
+  tryCatch({
+    img  <- magick::image_read(path)
+    info <- magick::image_info(img)
+    if (max(info$width[1], info$height[1]) <= max_px) return(path)
+    out <- tempfile(fileext = ".jpg")
+    magick::image_write(
+      magick::image_resize(img, paste0(max_px, "x", max_px, ">")),
+      path = out, format = "jpeg", quality = 85L)
+    if (file.exists(out)) out else path
+  }, error = function(e) path)
+}
+
 # Resolve the vision provider for the chosen mode:
 #   "live" -> an online cloud vision model. Uses an explicit preconfigured chat
 #             (options(soilKey.vlm_chat=)) when set, else builds a Groq vision
@@ -88,8 +132,7 @@
       stop(i18n("photo.ellmer_missing"), call. = FALSE)
     key <- Sys.getenv("GROQ_API_KEY", "")
     if (!nzchar(key)) stop(i18n("photo.live_needs_key"), call. = FALSE)
-    model <- getOption("soilKey.groq_vision_model",
-                       "meta-llama/llama-4-scout-17b-16e-instruct")
+    model <- .groq_vision_model()
     return(suppressWarnings(ellmer::chat_groq(
       model = model, api_key = key, echo = "none")))
   }
@@ -222,7 +265,8 @@ photo_server <- function(id, rv) {
       }
       shiny::withProgress(message = i18n("photo.extracting_munsell"), value = 0.5, {
         res <- tryCatch(
-          soilKey::extract_munsell_from_photo(rv$pedon, f$path, provider),
+          soilKey::extract_munsell_from_photo(
+            rv$pedon, .photo_downscale(f$path), provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {
@@ -263,7 +307,10 @@ photo_server <- function(id, rv) {
       }
       shiny::withProgress(message = i18n("photo.extracting_site"), value = 0.5, {
         res <- tryCatch(
-          soilKey::extract_site_from_fieldsheet(rv$pedon, f$datapath, provider),
+          # a field sheet is handwriting, so it keeps more resolution than the
+          # colour photo does -- still far below a raw phone upload.
+          soilKey::extract_site_from_fieldsheet(
+            rv$pedon, .photo_downscale(f$datapath, max_px = 1024L), provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {

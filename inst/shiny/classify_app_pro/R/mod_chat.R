@@ -12,14 +12,17 @@
 #     never dead.
 #
 # The model NEVER classifies: soilKey's deterministic keys do that, and the
-# assistant only explains the result. Photo -> Munsell extraction is folded in:
-# attach a soil photo and it reads the colours (a Groq vision model if a key is
-# present, else the offline mock), landing them in the pedon exactly like the
-# old Photo tab.
+# assistant only explains the result. This module is text-only -- photo ->
+# Munsell / site extraction lives in the standalone Photo tab (mod_photo.R,
+# restored in v0.9.181).
 # =============================================================================
 
 .GROQ_TEXT_MODEL   <- "llama-3.3-70b-versatile"
-.GROQ_VISION_MODEL <- "meta-llama/llama-4-scout-17b-16e-instruct"
+# Groq retired meta-llama/llama-4-scout-17b-16e-instruct (every call 404'd,
+# reported from ISRIC). The vision model is resolved by .groq_vision_model()
+# in mod_photo.R -- a FUNCTION, called at use time, so this module does not
+# depend on module source order and an operator can repoint the model with
+# options(soilKey.groq_vision_model=) / $GROQ_VISION_MODEL without a rebuild.
 
 # Resolve the Groq key: the in-app field wins, else the GROQ_API_KEY env var.
 .chat_groq_key <- function(field) {
