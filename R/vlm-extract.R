@@ -445,7 +445,7 @@ extract_munsell_from_photo <- function(pedon,
                                         max_retries = 3L,
                                         overwrite   = FALSE,
                                         prompt_name = "extract_munsell_from_photo",
-                                        schema_name = "horizon") {
+                                        schema_name = "munsell") {
 
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("`pedon` must be a PedonRecord")
