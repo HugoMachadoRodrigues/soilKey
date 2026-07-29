@@ -11,7 +11,7 @@ extract_munsell_from_photo(
   max_retries = 3L,
   overwrite = FALSE,
   prompt_name = "extract_munsell_from_photo",
-  schema_name = "horizon"
+  schema_name = "munsell"
 )
 }
 \arguments{
@@ -31,7 +31,12 @@ to clobber higher-authority ones. Default \code{FALSE}.}
 \item{prompt_name}{Override the default prompt template
 (\code{"extract_horizons"}).}
 
-\item{schema_name}{Override the default schema (\code{"horizon"}).}
+\item{schema_name}{Override the default schema (\code{"munsell"}, a
+colour-only subset of the horizon schema: geometry, designation
+and Munsell only). Since v0.9.194 -- the full horizon schema was
+injected into the prompt and all but those fields discarded, which
+on a token-metered endpoint cost roughly 2,500 tokens per call for
+attributes a photograph cannot show.}
 }
 \value{
 Invisibly, the mutated \code{pedon}, with the photo added

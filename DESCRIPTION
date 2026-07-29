@@ -46,7 +46,7 @@ Suggests:
     pls,
     prospectr,
     resemble,
-    ellmer,
+    ellmer (>= 0.3.2),
     httr,
     jsonlite,
     jsonvalidate,

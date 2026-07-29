@@ -440,6 +440,12 @@ extract_horizons_from_pdf <- function(pedon,
 #' If the model returns one anyway, it is silently dropped.
 #'
 #' @inheritParams extract_horizons_from_pdf
+#' @param schema_name Override the default schema (\code{"munsell"}, a
+#'        colour-only subset of the horizon schema: geometry, designation
+#'        and Munsell only). Since v0.9.194 -- the full horizon schema was
+#'        injected into the prompt and all but those fields discarded, which
+#'        on a token-metered endpoint cost roughly 2,500 tokens per call for
+#'        attributes a photograph cannot show.
 #' @param image_path Path to the image file (JPG / PNG).
 #' @return Invisibly, the mutated \code{pedon}, with the photo added
 #'         to \code{pedon$images}.
