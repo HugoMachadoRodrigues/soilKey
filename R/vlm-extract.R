@@ -268,9 +268,15 @@ apply_site_extraction <- function(pedon, parsed, overwrite = FALSE) {
   added <- 0L
   if (is.null(pedon$site)) pedon$site <- list()
 
-  # id and crs are flat strings/integers in the schema.
+  # id and crs are declared flat (string / integer), but every OTHER site field
+  # uses the {value, confidence, source_quote} envelope, so models wrap these
+  # two as well -- consistently enough that the site route used to fail schema
+  # validation on the first attempt every time, and on a rate-limited tier the
+  # retry never landed. The schema now accepts either shape; unwrap here so a
+  # wrapped value cannot be written into site$id as a raw list.
   for (flat_field in c("id", "crs")) {
     val <- parsed$site[[flat_field]]
+    if (is.list(val)) val <- unpack_vlm_attr(val)$value
     if (!is.null(val) && (overwrite || is.null(pedon$site[[flat_field]]))) {
       pedon$site[[flat_field]] <- val
       added <- added + 1L

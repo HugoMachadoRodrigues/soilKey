@@ -80,3 +80,41 @@ test_that("the Munsell extraction still works end to end on the slim schema", {
   expect_true("10YR" %in% res$horizons$munsell_hue_moist)
   expect_true("7.5YR" %in% res$horizons$munsell_hue_moist)
 })
+
+
+# ---- site route: the {value, confidence, source_quote} envelope -------------
+#
+# 12 of the 14 site fields use that envelope, so a model wraps `id` and `crs`
+# too. The schema declared those two flat, so the site route failed validation
+# on the FIRST attempt every time -- and on a rate-limited tier the retry never
+# landed, which is how it reached the ISRIC user as a hard failure.
+
+test_that("the site schema accepts id/crs both flat and wrapped", {
+  flat <- '{"site":{"id":"P1","crs":4326}}'
+  expect_true(validate_against_schema(flat, "site")$valid)
+  wrapped <- paste0(
+    '{"site":{"id":{"value":"P1","confidence":1,"source_quote":"ID: P1"},',
+    '"crs":{"value":4326,"confidence":1,"source_quote":"WGS84"}}}')
+  expect_true(validate_against_schema(wrapped, "site")$valid)
+})
+
+test_that("a wrapped id lands on the pedon as a plain value, not a list", {
+  pr <- PedonRecord$new(site = list())
+  parsed <- jsonlite::fromJSON(paste0(
+    '{"site":{"id":{"value":"ISRIC-01","confidence":1,"source_quote":"q"},',
+    '"lat":{"value":-22.74,"confidence":1,"source_quote":"q"}}}'),
+    simplifyVector = FALSE)
+  apply_site_extraction(pr, parsed)
+  expect_identical(pr$site$id, "ISRIC-01")
+  expect_true(is.character(pr$site$id))
+  expect_equal(pr$site$lat, -22.74)
+})
+
+test_that("a flat id still works (no regression)", {
+  pr <- PedonRecord$new(site = list())
+  parsed <- jsonlite::fromJSON('{"site":{"id":"P1","crs":4326}}',
+                               simplifyVector = FALSE)
+  apply_site_extraction(pr, parsed)
+  expect_identical(pr$site$id, "P1")
+  expect_identical(pr$site$crs, 4326L)
+})
