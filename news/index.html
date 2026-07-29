@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.193</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.194</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.194" id="soilkey-09194-2026-07-29">soilKey 0.9.194 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09194-2026-07-29"></a></h2>
+<p>v0.9.193 fixed the retired-model HTTP 404, but verifying the deployed app through its real code path showed photo extraction still failed – now with HTTP 413 <code>Request too large</code>. One error had been traded for another. Measured against the live endpoint, a single Munsell extraction asked for <strong>15,597 tokens</strong> against a free-tier ceiling of <strong>8,000 per minute</strong>, so the request was rejected before the model ever ran. Three changes bring it to <strong>3,546</strong>.</p>
+<div class="section level3">
+<h3 id="the-photo-route-asks-for-colour-not-for-the-whole-horizon-0-9-194">The photo route asks for colour, not for the whole horizon<a class="anchor" aria-label="anchor" href="#the-photo-route-asks-for-colour-not-for-the-whole-horizon-0-9-194"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/extract_munsell_from_photo.html">extract_munsell_from_photo()</a></code> injected the full 35-property horizon schema and then discarded all but five fields</strong> – the function already narrowed its result to <code>top_cm</code>, <code>bottom_cm</code>, <code>designation</code>, <code>munsell_moist</code>, <code>munsell_dry</code>. The prompt now carries <code>inst/schemas/munsell.json</code>, a strict subset (12,868 -&gt; 2,946 bytes, ~2,480 tokens saved), <strong>derived</strong> from <code>horizon.json</code> by <code>data-raw/generate_munsell_schema.R</code> so the field definitions cannot drift. <code>additionalProperties</code> stays unrestricted, so a model that volunteers extra attributes is still accepted.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="the-request-no-longer-reserves-tokens-it-never-uses-0-9-194">The request no longer reserves tokens it never uses<a class="anchor" aria-label="anchor" href="#the-request-no-longer-reserves-tokens-it-never-uses-0-9-194"></a></h3>
+<ul><li>
+<strong><code>max_tokens</code> is charged as reserved, not as used.</strong> ellmer’s default alone accounted for roughly 7,000 of those 15,597 tokens. The app now sets <code>max_tokens = 1500</code>, comfortably above what a Munsell or site JSON needs.</li>
+<li>
+<strong><code>reasoning_effort = "none"</code></strong> turns off Qwen3’s <code>&lt;think&gt;</code> preamble. It spent output tokens on reasoning the task does not need, and at a low <code>max_tokens</code> it could consume the whole allowance and truncate the JSON mid-object. (The v0.9.193 <code>&lt;think&gt;</code> stripping stays: it is what makes any reasoning model safe here, including one an operator repoints to.)</li>
+<li>
+<strong>Photos are downscaled to 512 px</strong> (768 px for field sheets). Measured, the image alone costs ~2,300 tokens at 256 px and ~2,950 at 512 px.</li>
+</ul><p>Verified end to end through the app’s own provider path against the deployed key: the extraction now succeeds <strong>on the first attempt</strong> and returns three horizons with plausible colours.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.193" id="soilkey-09193-2026-07-28">soilKey 0.9.193 (2026-07-28)<a class="anchor" aria-label="anchor" href="#soilkey-09193-2026-07-28"></a></h2>
 <p>A second report from Jelle Janssen (ISRIC – World Soil Information): both Photo-tab extractions (Munsell colour, site metadata) failed with</p>

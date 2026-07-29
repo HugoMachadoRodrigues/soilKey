@@ -16,7 +16,7 @@ extract_munsell_from_photo(
   max_retries = 3L,
   overwrite = FALSE,
   prompt_name = "extract_munsell_from_photo",
-  schema_name = "horizon"
+  schema_name = "munsell"
 )
 ```
 
@@ -52,7 +52,11 @@ extract_munsell_from_photo(
 
 - schema_name:
 
-  Override the default schema (`"horizon"`).
+  Override the default schema (`"munsell"`, a colour-only subset of the
+  horizon schema: geometry, designation and Munsell only). Since
+  v0.9.194 – the full horizon schema was injected into the prompt and
+  all but those fields discarded, which on a token-metered endpoint cost
+  roughly 2,500 tokens per call for attributes a photograph cannot show.
 
 ## Value
 

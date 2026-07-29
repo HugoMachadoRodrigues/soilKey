@@ -1,5 +1,47 @@
 # Changelog
 
+## soilKey 0.9.194 (2026-07-29)
+
+v0.9.193 fixed the retired-model HTTP 404, but verifying the deployed
+app through its real code path showed photo extraction still failed –
+now with HTTP 413 `Request too large`. One error had been traded for
+another. Measured against the live endpoint, a single Munsell extraction
+asked for **15,597 tokens** against a free-tier ceiling of **8,000 per
+minute**, so the request was rejected before the model ever ran. Three
+changes bring it to **3,546**.
+
+### The photo route asks for colour, not for the whole horizon
+
+- **[`extract_munsell_from_photo()`](https://hugomachadorodrigues.github.io/soilKey/reference/extract_munsell_from_photo.md)
+  injected the full 35-property horizon schema and then discarded all
+  but five fields** – the function already narrowed its result to
+  `top_cm`, `bottom_cm`, `designation`, `munsell_moist`, `munsell_dry`.
+  The prompt now carries `inst/schemas/munsell.json`, a strict subset
+  (12,868 -\> 2,946 bytes, ~2,480 tokens saved), **derived** from
+  `horizon.json` by `data-raw/generate_munsell_schema.R` so the field
+  definitions cannot drift. `additionalProperties` stays unrestricted,
+  so a model that volunteers extra attributes is still accepted.
+
+### The request no longer reserves tokens it never uses
+
+- **`max_tokens` is charged as reserved, not as used.** ellmer’s default
+  alone accounted for roughly 7,000 of those 15,597 tokens. The app now
+  sets `max_tokens = 1500`, comfortably above what a Munsell or site
+  JSON needs.
+- **`reasoning_effort = "none"`** turns off Qwen3’s `<think>` preamble.
+  It spent output tokens on reasoning the task does not need, and at a
+  low `max_tokens` it could consume the whole allowance and truncate the
+  JSON mid-object. (The v0.9.193 `<think>` stripping stays: it is what
+  makes any reasoning model safe here, including one an operator
+  repoints to.)
+- **Photos are downscaled to 512 px** (768 px for field sheets).
+  Measured, the image alone costs ~2,300 tokens at 256 px and ~2,950 at
+  512 px.
+
+Verified end to end through the app’s own provider path against the
+deployed key: the extraction now succeeds **on the first attempt** and
+returns three horizons with plausible colours.
+
 ## soilKey 0.9.193 (2026-07-28)
 
 A second report from Jelle Janssen (ISRIC – World Soil Information):

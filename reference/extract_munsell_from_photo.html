@@ -17,7 +17,7 @@ per the prompt specification."><meta property="og:image" content="https://hugoma
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.193</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.194</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@ per the prompt specification.</p>
 <span>  max_retries <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prompt_name <span class="op">=</span> <span class="st">"extract_munsell_from_photo"</span>,</span>
-<span>  schema_name <span class="op">=</span> <span class="st">"horizon"</span></span>
+<span>  schema_name <span class="op">=</span> <span class="st">"munsell"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,7 +118,12 @@ to clobber higher-authority ones. Default <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-schema-name">schema_name<a class="anchor" aria-label="anchor" href="#arg-schema-name"></a></dt>
-<dd><p>Override the default schema (<code>"horizon"</code>).</p></dd>
+<dd><p>Override the default schema (<code>"munsell"</code>, a
+colour-only subset of the horizon schema: geometry, designation
+and Munsell only). Since v0.9.194 – the full horizon schema was
+injected into the prompt and all but those fields discarded, which
+on a token-metered endpoint cost roughly 2,500 tokens per call for
+attributes a photograph cannot show.</p></dd>
 
 </dl></div>
     <div class="section level2">
