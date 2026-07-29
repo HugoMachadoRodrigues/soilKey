@@ -20,3 +20,6 @@ vignettes/*_files/
 .Renviron
 /soil_data/
 .positai
+# Local working material, not part of the package (kept out of sync)
+/Manuscript/
+/munsellinterpol-conditions/
