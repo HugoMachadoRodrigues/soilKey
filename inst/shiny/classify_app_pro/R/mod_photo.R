@@ -97,14 +97,16 @@
 # Downscale a photo before it goes to the vision model.
 #
 # A phone photo is several megapixels; base64'd into the request it dominates
-# the token count, and Groq's free tier caps a request at 8,000 tokens per
-# minute -- a full-size upload fails with "Request too large" even when the
-# model is right. Long edge 768 px is plenty to read horizon colour and to read
-# a field sheet, and keeps a request well inside the cap.
+# the token count, and Groq's free tier caps consumption at 8,000 tokens per
+# MINUTE -- a full-size upload fails with "Request too large" even when the
+# model is right. Measured against the live endpoint, the image alone costs
+# ~2,300 tokens at 256 px and ~2,950 at 512 px, so the long edge is a direct
+# lever on whether the call fits at all. 512 px still resolves horizon
+# boundaries and colour.
 #
 # Best-effort: without magick, or if anything fails, the original path is
 # returned and the call proceeds exactly as before.
-.photo_downscale <- function(path, max_px = 768L) {
+.photo_downscale <- function(path, max_px = 512L) {
   if (is.null(path) || !nzchar(path) || !file.exists(path)) return(path)
   if (!requireNamespace("magick", quietly = TRUE)) return(path)
   tryCatch({
@@ -133,8 +135,26 @@
     key <- Sys.getenv("GROQ_API_KEY", "")
     if (!nzchar(key)) stop(i18n("photo.live_needs_key"), call. = FALSE)
     model <- .groq_vision_model()
+    # Two settings keep the call inside Groq's 8,000-tokens-per-minute free
+    # tier. Measured end to end against the live endpoint, they take one
+    # extraction from 15,597 tokens (rejected before the model ever ran) to
+    # 3,546 (accepted, three horizons returned):
+    #
+    #   max_tokens        -- not just an output cap. Groq charges the RESERVED
+    #                        completion against the budget, so ellmer's generous
+    #                        default alone accounted for ~7k of that 15.6k.
+    #   reasoning_effort  -- "none" turns off Qwen3's <think> preamble. It cost
+    #                        output tokens for reasoning the task does not need
+    #                        (reading colour off an image), and at a low
+    #                        max_tokens it could consume the whole allowance and
+    #                        truncate the JSON mid-object.
+    #
+    # api_args passes reasoning_effort straight through to the endpoint; a
+    # provider that does not know the field ignores it.
     return(suppressWarnings(ellmer::chat_groq(
-      model = model, api_key = key, echo = "none")))
+      model = model, api_key = key, echo = "none",
+      params   = ellmer::params(max_tokens = 1500L, temperature = 0),
+      api_args = list(reasoning_effort = "none"))))
   }
   soilKey::MockVLMProvider$new(responses = mock_responses)
 }
@@ -310,7 +330,7 @@ photo_server <- function(id, rv) {
           # a field sheet is handwriting, so it keeps more resolution than the
           # colour photo does -- still far below a raw phone upload.
           soilKey::extract_site_from_fieldsheet(
-            rv$pedon, .photo_downscale(f$datapath, max_px = 1024L), provider),
+            rv$pedon, .photo_downscale(f$datapath, max_px = 768L), provider),
           error = function(e) e)
       })
       if (inherits(res, "error")) {
