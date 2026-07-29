@@ -1,5 +1,39 @@
 # Changelog
 
+## soilKey 0.9.196 (2026-07-29)
+
+Photo extraction merged its results *beside* the user’s horizons instead
+of into them, and fixing that surfaced a latent data-loss path in the
+provenance authority check.
+
+### A photograph’s estimated depths now find the horizons they describe
+
+- **`find_or_append_horizon()` recognised an existing row only when BOTH
+  boundaries agreed within 1 cm.** That is right for a description PDF,
+  where the depths are *read*. A model looking at a photograph
+  *estimates* them from pixels and cannot know the surveyor’s measured
+  boundaries, so the rule essentially never held: every extracted band
+  was appended as a duplicate. A 3-horizon pedon came back with 6 – the
+  user’s three carrying no colour at all, beside three overlapping new
+  ones that carried it, a profile that is not even geometrically valid.
+  The photo route now matches on depth **overlap** (best-overlapping
+  horizon, needing at least half of the shorter interval); the
+  surveyor’s depths are kept and the model contributes only colour. The
+  PDF route keeps the exact rule, so its fixtures are unchanged.
+
+### A value you typed is no longer silently replaceable
+
+- **`PedonRecord$add_measurement()`’s authority check consulted only the
+  provenance table.** A value supplied directly in the `horizons` table
+  – typed in the app, uploaded in a CSV – has no provenance row, so the
+  check read it as “nothing here” and any source could overwrite it even
+  with `overwrite = FALSE`. Invisible while extraction only ever
+  appended fresh rows; a real data-loss path the moment it began merging
+  into the user’s own horizons, where an extracted `H1` replaced a typed
+  `A`. An unprovenanced value now counts as `measured`, the
+  highest-trust source: an extraction or a spatial prior cannot displace
+  it, while a genuine `measured` write still proceeds.
+
 ## soilKey 0.9.195 (2026-07-29)
 
 A report from ISRIC on reference profile ZW005: six attributes –

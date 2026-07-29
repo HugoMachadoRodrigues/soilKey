@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.195</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.196</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,20 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.196" id="soilkey-09196-2026-07-29">soilKey 0.9.196 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09196-2026-07-29"></a></h2>
+<p>Photo extraction merged its results <em>beside</em> the user’s horizons instead of into them, and fixing that surfaced a latent data-loss path in the provenance authority check.</p>
+<div class="section level3">
+<h3 id="a-photographs-estimated-depths-now-find-the-horizons-they-describe-0-9-196">A photograph’s estimated depths now find the horizons they describe<a class="anchor" aria-label="anchor" href="#a-photographs-estimated-depths-now-find-the-horizons-they-describe-0-9-196"></a></h3>
+<ul><li>
+<strong><code>find_or_append_horizon()</code> recognised an existing row only when BOTH boundaries agreed within 1 cm.</strong> That is right for a description PDF, where the depths are <em>read</em>. A model looking at a photograph <em>estimates</em> them from pixels and cannot know the surveyor’s measured boundaries, so the rule essentially never held: every extracted band was appended as a duplicate. A 3-horizon pedon came back with 6 – the user’s three carrying no colour at all, beside three overlapping new ones that carried it, a profile that is not even geometrically valid. The photo route now matches on depth <strong>overlap</strong> (best-overlapping horizon, needing at least half of the shorter interval); the surveyor’s depths are kept and the model contributes only colour. The PDF route keeps the exact rule, so its fixtures are unchanged.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="a-value-you-typed-is-no-longer-silently-replaceable-0-9-196">A value you typed is no longer silently replaceable<a class="anchor" aria-label="anchor" href="#a-value-you-typed-is-no-longer-silently-replaceable-0-9-196"></a></h3>
+<ul><li>
+<strong><code>PedonRecord$add_measurement()</code>’s authority check consulted only the provenance table.</strong> A value supplied directly in the <code>horizons</code> table – typed in the app, uploaded in a CSV – has no provenance row, so the check read it as “nothing here” and any source could overwrite it even with <code>overwrite = FALSE</code>. Invisible while extraction only ever appended fresh rows; a real data-loss path the moment it began merging into the user’s own horizons, where an extracted <code>H1</code> replaced a typed <code>A</code>. An unprovenanced value now counts as <code>measured</code>, the highest-trust source: an extraction or a spatial prior cannot displace it, while a genuine <code>measured</code> write still proceeds.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.195" id="soilkey-09195-2026-07-29">soilKey 0.9.195 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09195-2026-07-29"></a></h2>
 <p>A report from ISRIC on reference profile ZW005: six attributes – <code>clay_pct</code>, <code>silt_pct</code>, <code>sand_pct</code>, <code>oc_pct</code>, <code>cec_cmol</code>, <code>caco3_pct</code> – were listed as missing on the Classification page although the upload carried them, which read as the app rejecting numeric composition fields.</p>
