@@ -107,6 +107,49 @@ predict_lab_from_spectra <- function(spectra, wavelengths) {
 }
 
 
+# Continuous Munsell notation ("4.3R 5.2/14", "N 6/") from HVC.
+#
+# Delegated to munsellinterpol::MunsellNameFromHVC() where available. soilKey
+# spelled this out by hand until v0.9.197 because that function could not
+# reproduce it: `digits` was a single value applied to the hue AND the value AND
+# the chroma (6 widened the hue to 4.33793R, 2 truncated value and chroma -- no
+# setting matched), and the achromatic test was a strict 0 < C with no
+# tolerance, which would have re-introduced the "10RP on a grey" leak that
+# v0.9.184 fixed. G. Davis addressed both in munsellinterpol 3.5-0
+# (per-component `digits`, plus `ctol`), and 3.5-1 reached CRAN on 2026-07-29.
+#
+# Verified against the CRAN build before adopting: byte-identical on 28
+# fixtures, including HVC(0, 6, 1e-15) -> "N 6/", and across a sweep of the
+# achromatic boundary (C = 0, 1e-15, 5e-5, 9.99e-5, 1e-4, 1.01e-4, 2e-4) --
+# `ctol` compares strictly, exactly as the `C < 1e-4` test beside it does, so
+# the two agree even at the threshold itself.
+#
+# munsellinterpol is a Suggests, so the hand-rolled spelling stays as the
+# fallback for an older or absent install; the two are equivalent, and
+# test-v09197 asserts that on every release where the newer one is present.
+#
+# @param H,V,C  numeric vectors of hue number, value, chroma (C already zeroed
+#        on the neutral axis by the caller).
+# @param hs     the hue strings the caller derived, "N" on the neutral axis.
+# @param neutral logical, which entries are on the neutral axis.
+.munsell_notation <- function(H, V, C, hs, neutral) {
+  if (requireNamespace("munsellinterpol", quietly = TRUE) &&
+      utils::packageVersion("munsellinterpol") >= "3.5.1") {
+    out <- tryCatch(
+      munsellinterpol::MunsellNameFromHVC(cbind(H, V, C),
+                                          digits = c(2, 6, 6), ctol = 1e-4),
+      error = function(e) NULL)
+    # Only accept a well-formed, complete answer; anything else falls through
+    # to the spelling below rather than putting a partial result in the pedon.
+    if (!is.null(out) && length(out) == length(H))
+      return(ifelse(is.na(hs), NA_character_, as.character(out)))
+  }
+  ifelse(is.na(hs), NA_character_,
+         ifelse(neutral, sprintf("N %g/", V),
+                sprintf("%s %g/%g", hs, V, C)))
+}
+
+
 # CIE 1976 L*a*b* from XYZ under a given white point (default D65, Y=100).
 # Vectorised over X/Y/Z. Verified identical to spacesXYZ::LabfromXYZ to
 # ~1e-14, so it is reused for the Munsell adaptation chain without adding
@@ -247,18 +290,6 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
         }
         if (!done) {
           # Continuous notation (or round-chip fall-through if rounding failed).
-          #
-          # TO REPLACE, once munsellinterpol >= 3.5.0 is on CRAN: this whole
-          # block becomes MunsellNameFromHVC(HVC, digits = c(2, 6, 6),
-          # ctol = 1e-4). v0.9.185 declined that swap because `digits` was a
-          # single value applied to hue, value AND chroma, and the achromatic
-          # test was a strict 0 < C with no tolerance -- which would have
-          # re-introduced the 10RP-on-a-grey leak fixed just below. G. Davis
-          # fixed both in 3.5-0 (per-component digits, plus ctol), and it now
-          # reproduces this block byte-for-byte on 28 fixtures, including
-          # HVC(0, 6, 1e-15) -> "N 6/". Blocked only on the CRAN release: soilKey
-          # is on CRAN and cannot depend on an unpublished version. Keep the
-          # fixtures as the regression guard when the swap happens.
           hs <- tryCatch(munsellinterpol::HueStringFromNumber(Hk),
                          error = function(e) rep(NA_character_, length(Hk)))
           # Hue is undefined at Chroma 0 (G. Davis, munsellinterpol author): a
@@ -279,9 +310,7 @@ predict_munsell_from_spectra <- function(spectra, wavelengths,
           hue[idx]    <- hs
           value[idx]  <- Vk
           chroma[idx] <- Ck
-          ms[idx]     <- ifelse(is.na(hs), NA_character_,
-                                ifelse(neutral, sprintf("N %g/", Vk),
-                                       sprintf("%s %g/%g", hs, Vk, Ck)))
+          ms[idx]     <- .munsell_notation(Hk, Vk, Ck, hs, neutral)
         }
       }
     }
