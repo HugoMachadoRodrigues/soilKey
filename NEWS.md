@@ -1,3 +1,26 @@
+# soilKey 0.9.197 (2026-07-29)
+
+## The continuous Munsell notation is now the canonical one
+
+* **`munsellinterpol::MunsellNameFromHVC()` produces the continuous notation**
+  where it is available. soilKey spelled it out by hand because until
+  munsellinterpol 3.5-0 that function could not reproduce it: `digits` was a
+  single value applied to the hue *and* the value *and* the chroma (6 widened
+  the hue to `4.33793R`, 2 truncated value and chroma -- no setting matched),
+  and the achromatic test was a strict `0 < C` with no tolerance, which would
+  have re-introduced the `10RP`-on-a-grey leak fixed in v0.9.184. v0.9.185
+  declined the swap for exactly those two reasons; G. Davis addressed both
+  (per-component `digits`, plus `ctol`), and 3.5-1 reached CRAN.
+* **Verified against the CRAN build before adopting**, not against the
+  pre-release: byte-identical on 28 fixtures including `HVC(0, 6, 1e-15)` ->
+  `"N 6/"`, and across a sweep of the achromatic boundary (C = 0, 1e-15, 5e-5,
+  9.99e-5, 1e-4, 1.01e-4, 2e-4). `ctol` compares strictly, exactly as the
+  `C < 1e-4` test beside it does, so the two agree even at the threshold itself.
+* **No hard version floor.** munsellinterpol is a Suggests and the hand-rolled
+  spelling stays as the fallback, so an older or absent install is not broken --
+  the version is checked at call time instead. Both paths are exercised, and
+  `test-v09197` asserts they agree wherever the newer function is present.
+
 # soilKey 0.9.196 (2026-07-29)
 
 Photo extraction merged its results *beside* the user's horizons instead of
