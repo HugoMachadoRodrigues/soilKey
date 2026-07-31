@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.196</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.197</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.197" id="soilkey-09197-2026-07-29">soilKey 0.9.197 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09197-2026-07-29"></a></h2>
+<div class="section level3">
+<h3 id="the-continuous-munsell-notation-is-now-the-canonical-one-0-9-197">The continuous Munsell notation is now the canonical one<a class="anchor" aria-label="anchor" href="#the-continuous-munsell-notation-is-now-the-canonical-one-0-9-197"></a></h3>
+<ul><li>
+<strong><code><a href="https://rdrr.io/pkg/munsellinterpol/man/MunsellNameFromHVC.html" class="external-link">munsellinterpol::MunsellNameFromHVC()</a></code> produces the continuous notation</strong> where it is available. soilKey spelled it out by hand because until munsellinterpol 3.5-0 that function could not reproduce it: <code>digits</code> was a single value applied to the hue <em>and</em> the value <em>and</em> the chroma (6 widened the hue to <code>4.33793R</code>, 2 truncated value and chroma – no setting matched), and the achromatic test was a strict <code>0 &lt; C</code> with no tolerance, which would have re-introduced the <code>10RP</code>-on-a-grey leak fixed in v0.9.184. v0.9.185 declined the swap for exactly those two reasons; G. Davis addressed both (per-component <code>digits</code>, plus <code>ctol</code>), and 3.5-1 reached CRAN.</li>
+<li>
+<strong>Verified against the CRAN build before adopting</strong>, not against the pre-release: byte-identical on 28 fixtures including <code>HVC(0, 6, 1e-15)</code> -&gt; <code>"N 6/"</code>, and across a sweep of the achromatic boundary (C = 0, 1e-15, 5e-5, 9.99e-5, 1e-4, 1.01e-4, 2e-4). <code>ctol</code> compares strictly, exactly as the <code>C &lt; 1e-4</code> test beside it does, so the two agree even at the threshold itself.</li>
+<li>
+<strong>No hard version floor.</strong> munsellinterpol is a Suggests and the hand-rolled spelling stays as the fallback, so an older or absent install is not broken – the version is checked at call time instead. Both paths are exercised, and <code>test-v09197</code> asserts they agree wherever the newer function is present.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.196" id="soilkey-09196-2026-07-29">soilKey 0.9.196 (2026-07-29)<a class="anchor" aria-label="anchor" href="#soilkey-09196-2026-07-29"></a></h2>
 <p>Photo extraction merged its results <em>beside</em> the user’s horizons instead of into them, and fixing that surfaced a latent data-loss path in the provenance authority check.</p>
