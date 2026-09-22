@@ -1,0 +1,98 @@
+# Render a soilKey classification report
+
+Produces a pedologist-facing report from one or more
+[`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
+objects, optionally including the source
+[`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
+The HTML output is fully self-contained (single file, inline CSS); the
+PDF output goes through
+[`rmarkdown::render()`](https://pkgs.rstudio.com/rmarkdown/reference/render.html)
+and therefore requires a working LaTeX install (or one of the
+alternative engines accepted by `rmarkdown`).
+
+## Usage
+
+``` r
+report(
+  x,
+  file,
+  format = c("auto", "html", "pdf"),
+  pedon = NULL,
+  title = NULL,
+  include_family = FALSE,
+  specifiers = FALSE,
+  lang = c("en", "pt"),
+  ...
+)
+```
+
+## Arguments
+
+- x:
+
+  A `ClassificationResult`, a list of `ClassificationResult`s, or a
+  `PedonRecord` (in which case all three keys are run automatically).
+
+- file:
+
+  Output path. The format is inferred from the extension (`.html` or
+  `.pdf`) unless `format` is given explicitly.
+
+- format:
+
+  One of `"auto"`, `"html"`, `"pdf"`.
+
+- pedon:
+
+  Optional `PedonRecord`; when provided, its horizons table and
+  provenance log are included.
+
+- title:
+
+  Optional report title.
+
+- include_family:
+
+  When `x` is a `PedonRecord` (so the three keys are run here), passes
+  through to
+  [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  to append the USDA family (5th category) to the subgroup. Default
+  `FALSE` keeps the output byte-identical to earlier versions.
+
+- specifiers:
+
+  When `x` is a `PedonRecord`, passes through to
+  [`classify_wrb2022`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
+  to attach WRB depth specifiers (Epi-/Endo-/...) to depth-anchored
+  qualifiers. Default `FALSE`. Both flags are ignored when `x` is
+  already a (list of) `ClassificationResult`.
+
+- lang:
+
+  Report language; `"en"` (default) or `"pt"` (Brazilian Portuguese).
+
+- ...:
+
+  Passed to method-specific renderers.
+
+## Value
+
+The output path, invisibly.
+
+## Details
+
+This is an S3 generic with methods for `ClassificationResult`, `list`,
+and `PedonRecord`. Most users call `report()` directly with a list of
+three results
+(`list(classify_wrb2022(p), classify_sibcs(p), classify_usda(p))`) to
+get a cross-system one-pager.
+
+## Examples
+
+``` r
+pedon <- make_ferralsol_canonical()
+out <- file.path(tempdir(), "soilkey_report.html")
+report(pedon, file = out, pedon = pedon)
+file.exists(out)
+#> [1] TRUE
+```

@@ -1,0 +1,28 @@
+# Shrink-swell cracks (WRB 2022 Ch 3.2.12) – per-pedon test wrapping `test_shrink_swell_cracks`.
+
+Shrink-swell cracks (WRB 2022 Ch 3.2.12) – per-pedon test wrapping
+`test_shrink_swell_cracks`.
+
+## Usage
+
+``` r
+shrink_swell_cracks(pedon, min_width_cm = 0.5)
+```
+
+## Arguments
+
+- pedon:
+
+  A
+  [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
+
+- min_width_cm:
+
+  Numeric threshold or option (see Details).
+
+## Value
+
+A
+[`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
+recording whether the diagnostic is present, the qualifying layers, and
+the supporting evidence.
