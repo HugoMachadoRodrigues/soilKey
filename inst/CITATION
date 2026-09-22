@@ -1,0 +1,180 @@
+## CITATION file -- canonical citation for the soilKey package.
+## Falls back to "dev" when soilKey isn't installed (so pkgdown /
+## roxygen2 / R CMD check during early development don't blow up
+## on an unfound package).
+
+.soilkey_ver <- tryCatch(
+  utils::packageVersion("soilKey"),
+  error = function(e) "dev"
+)
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13",
+  author   = person("Hugo", "Rodrigues",
+                    email   = "rodrigues.machado.hugo@gmail.com",
+                    role    = c("aut", "cre"),
+                    comment = c(ORCID = "0000-0002-8070-8126")),
+  year     = format(Sys.Date(), "%Y"),
+  note     = sprintf("R package version %s", .soilkey_ver),
+  doi      = "10.5281/zenodo.19930112",
+  url      = "https://github.com/HugoMachadoRodrigues/soilKey",
+  textVersion = paste(
+    "Rodrigues, H. (",
+    format(Sys.Date(), "%Y"),
+    "). soilKey: Automated soil profile classification per WRB 2022, ",
+    "SiBCS 5, and USDA Soil Taxonomy 13. R package version ",
+    .soilkey_ver,
+    ". https://github.com/HugoMachadoRodrigues/soilKey",
+    sep = ""
+  )
+)
+
+
+# ---- SmartSolos Expert API + Vaz et al. curated Redape dataset ----
+# When using classify_via_smartsolos_api() or benchmark_redape(),
+# please ALSO cite the underlying Embrapa work by Glauber J. Vaz
+# and colleagues:
+
+bibentry(
+  bibtype  = "Article",
+  title    = "SmartSolos Expert: an expert system for Brazilian soil classification",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("L. de F. da", "Silva Neto"),
+    person("Jayme", "G. A. Barbedo")
+  ),
+  journal  = "Smart Agricultural Technology",
+  year     = 2025,
+  volume   = 10,
+  pages    = "100735",
+  doi      = "10.1016/j.atech.2024.100735",
+  url      = "https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025). ",
+    "SmartSolos Expert: an expert system for Brazilian soil ",
+    "classification. Smart Agricultural Technology, 10, 100735. ",
+    "doi:10.1016/j.atech.2024.100735"
+  )
+)
+
+bibentry(
+  bibtype  = "InProceedings",
+  title    = "Uma API para a classificacao de solos do Brasil",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("L. de F. da", "Silva Neto"),
+    person("R. N.", "Lima"),
+    person("S. R. de M.", "Oliveira")
+  ),
+  booktitle = "Anais do 12 Congresso Brasileiro de Agroinformatica (SBIAGRO 2019)",
+  year     = 2019,
+  pages    = "63--72",
+  address  = "Indaiatuba, SP, Brazil",
+  publisher = "SBIAGRO",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira, ",
+    "S. R. de M. (2019). Uma API para a classificacao de solos do ",
+    "Brasil. In: 12 Congresso Brasileiro de Agroinformatica, ",
+    "Indaiatuba. Anais, p. 63-72. SBIAGRO, Ponta Grossa."
+  )
+)
+
+bibentry(
+  bibtype  = "Misc",
+  title    = "Brazilian soil data for taxonomic classification",
+  author   = c(
+    person("Glauber", "J. Vaz"),
+    person("A. F.", "Silva Jr"),
+    person("L. de F. da", "Silva Neto")
+  ),
+  year     = 2023,
+  doi      = "10.48432/PYKKA7",
+  note     = "Redape (Embrapa Research Data Repository), V1",
+  textVersion = paste0(
+    "Vaz, G. J., Silva Jr, A. F., & Silva Neto, L. de F. da (2023). ",
+    "Brazilian soil data for taxonomic classification. Redape, V1. ",
+    "doi:10.48432/PYKKA7"
+  )
+)
+
+
+# ---- AfSP (Africa Soil Profiles Database) ----
+# Cite when using benchmark_afsp() or load_afsp_pedons().
+# Note: AfSP is from ISRIC and is DISTINCT from AfSIS (Africa Soil
+# Information Service). soilKey uses only AfSP, not AfSIS.
+
+bibentry(
+  bibtype  = "TechReport",
+  title    = "Africa Soil Profiles Database, Version 1.2",
+  author   = c(
+    person("J. G. B.", "Leenaars"),
+    person("A. J. M.", "van Oostrum"),
+    person("M.", "Ruiperez Gonzalez")
+  ),
+  institution = "ISRIC -- World Soil Information",
+  address  = "Wageningen, NL",
+  number   = "ISRIC Report 2014/01",
+  year     = 2014,
+  url      = "https://isric.org/projects/africa-soil-profiles-database-afsp",
+  textVersion = paste0(
+    "Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, ",
+    "M. (2014). Africa Soil Profiles Database, Version 1.2. ISRIC ",
+    "Report 2014/01. ISRIC -- World Soil Information, Wageningen."
+  )
+)
+
+
+# ---- LUCAS-SOIL-2018 (EU topsoil benchmark) ----
+# Cite the JRC data report (the canonical attribution for the dataset
+# consumed by benchmark_lucas_2018()), and optionally the EJSS review.
+
+bibentry(
+  bibtype  = "TechReport",
+  title    = "LUCAS 2018 SOIL Component: sampling intensity, harmonisation and procedures for the collection of soil samples",
+  author   = c(
+    person("O.", "Fernandez-Ugalde"),
+    person("S.", "Scarpa"),
+    person("A.", "Orgiazzi"),
+    person("P.", "Panagos"),
+    person("M.", "Van Liedekerke"),
+    person("A.", "Marechal"),
+    person("A.", "Jones")
+  ),
+  institution = "European Commission, Joint Research Centre",
+  address  = "Ispra, IT",
+  number   = "JRC Technical Report 130218",
+  year     = 2022,
+  doi      = "10.2760/215013",
+  textVersion = paste0(
+    "Fernandez-Ugalde, O., Scarpa, S., Orgiazzi, A., Panagos, P., ",
+    "Van Liedekerke, M., Marechal, A., & Jones, A. (2022). LUCAS 2018 ",
+    "SOIL Component: sampling intensity, harmonisation and procedures ",
+    "for the collection of soil samples. JRC Technical Report 130218. ",
+    "doi:10.2760/215013"
+  )
+)
+
+bibentry(
+  bibtype  = "Article",
+  title    = "LUCAS Soil, the largest expandable soil dataset for Europe: a review",
+  author   = c(
+    person("A.", "Orgiazzi"),
+    person("C.", "Ballabio"),
+    person("P.", "Panagos"),
+    person("A.", "Jones"),
+    person("O.", "Fernandez-Ugalde")
+  ),
+  journal  = "European Journal of Soil Science",
+  year     = 2018,
+  volume   = 69,
+  number   = 1,
+  pages    = "140--153",
+  doi      = "10.1111/ejss.12499",
+  textVersion = paste0(
+    "Orgiazzi, A., Ballabio, C., Panagos, P., Jones, A., & ",
+    "Fernandez-Ugalde, O. (2018). LUCAS Soil, the largest expandable ",
+    "soil dataset for Europe: a review. European Journal of Soil ",
+    "Science, 69(1), 140-153. doi:10.1111/ejss.12499"
+  )
+)

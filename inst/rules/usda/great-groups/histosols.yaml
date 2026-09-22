@@ -1,0 +1,119 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)
+# Histosols Great Groups -- Chapter 10
+# =============================================================
+# 19 GGs:
+#   Folists:  4 (Cryofolists, Torrifolists, Ustifolists, Udifolists)
+#   Wassists: 3 (Frasiwassists, Sulfiwassists, Haplowassists)
+#   Fibrists: 3 (Cryofibrists, Sphagnofibrists, Haplofibrists)
+#   Saprists: 4 (Sulfosaprists, Sulfisaprists, Cryosaprists, Haplosaprists)
+#   Hemists:  5 (Sulfohemists, Sulfihemists, Luvihemists, Cryohemists,
+#                Haplohemists)
+# =============================================================
+
+great_groups:
+
+  # ---- Folists (BA) ----
+  "BA":
+    - code: "BAA"
+      name: "Cryofolists"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "BAB"
+      name: "Torrifolists"
+      tests:
+        all_of:
+          - smr_torric_usda: {}
+    - code: "BAC"
+      name: "Ustifolists"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "BAD"
+      name: "Udifolists"
+      tests:
+        default: true
+
+  # ---- Wassists (BB) ----
+  "BB":
+    - code: "BBA"
+      name: "Frasiwassists"
+      tests:
+        all_of:
+          - frasic_qualifying_usda: {}
+    - code: "BBB"
+      name: "Sulfiwassists"
+      tests:
+        all_of:
+          - sulfidic_materials_usda: { max_top_cm: 50 }
+    - code: "BBC"
+      name: "Haplowassists"
+      tests:
+        default: true
+
+  # ---- Fibrists (BC) ----
+  "BC":
+    - code: "BCA"
+      name: "Cryofibrists"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "BCB"
+      name: "Sphagnofibrists"
+      tests:
+        all_of:
+          - sphagnic_usda: { max_top_cm: 90 }
+    - code: "BCC"
+      name: "Haplofibrists"
+      tests:
+        default: true
+
+  # ---- Saprists (BD) ----
+  "BD":
+    - code: "BDA"
+      name: "Sulfosaprists"
+      tests:
+        all_of:
+          - sulfuric_horizon_usda: { max_top_cm: 50 }
+    - code: "BDB"
+      name: "Sulfisaprists"
+      tests:
+        all_of:
+          - sulfidic_materials_usda: {}
+    - code: "BDC"
+      name: "Cryosaprists"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "BDD"
+      name: "Haplosaprists"
+      tests:
+        default: true
+
+  # ---- Hemists (BE) ----
+  "BE":
+    - code: "BEA"
+      name: "Sulfohemists"
+      tests:
+        all_of:
+          - sulfuric_horizon_usda: { max_top_cm: 50 }
+    - code: "BEB"
+      name: "Sulfihemists"
+      tests:
+        all_of:
+          - sulfidic_materials_usda: {}
+    - code: "BEC"
+      name: "Luvihemists"
+      tests:
+        all_of:
+          - humilluvic_subgroup_usda: {}
+    - code: "BED"
+      name: "Cryohemists"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "BEE"
+      name: "Haplohemists"
+      tests:
+        default: true

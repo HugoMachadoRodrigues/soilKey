@@ -1,0 +1,56 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Andisols Suborders -- Cap 6, p 117
+# =============================================================
+# 8 Suborders:
+#   DA. Aquands  -- aquic conditions
+#   DB. Gelands  -- gelic STR
+#   DC. Cryands  -- cryic STR
+#   DD. Torrands -- aridic SMR
+#   DE. Xerands  -- xeric SMR
+#   DF. Vitrands -- low water retention (vitric proxy)
+#   DG. Ustands  -- ustic SMR
+#   DH. Udands   -- catch-all (udic)
+# =============================================================
+
+suborders:
+
+  "AD":
+    - code: "DA"
+      name: "Aquands"
+      tests:
+        all_of:
+          - aquand_qualifying_usda: {}
+    - code: "DB"
+      name: "Gelands"
+      tests:
+        all_of:
+          - str_gelic_usda: {}
+    - code: "DC"
+      name: "Cryands"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "DD"
+      name: "Torrands"
+      tests:
+        all_of:
+          - smr_aridic_usda: {}
+    - code: "DE"
+      name: "Xerands"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "DF"
+      name: "Vitrands"
+      tests:
+        all_of:
+          - vitrand_qualifying_usda: {}
+    - code: "DG"
+      name: "Ustands"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "DH"
+      name: "Udands"
+      tests:
+        default: true

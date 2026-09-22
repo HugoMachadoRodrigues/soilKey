@@ -1,0 +1,40 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)
+# Histosols Suborders -- Chapter 10, p 199
+# =============================================================
+# 5 Suborders:
+#   BA. Folists  -- well-drained organic
+#   BB. Wassists -- water table 2 cm above surface
+#   BC. Fibrists -- fibric soil materials predominant
+#   BD. Saprists -- sapric materials predominant
+#   BE. Hemists  -- hemic (catch-all)
+# =============================================================
+
+suborders:
+
+  "HI":
+    - code: "BA"
+      name: "Folists"
+      tests:
+        all_of:
+          - folist_qualifying_usda: {}
+    - code: "BB"
+      name: "Wassists"
+      tests:
+        all_of:
+          - wassist_qualifying_usda: {}
+    - code: "BC"
+      name: "Fibrists"
+      tests:
+        all_of:
+          - fibric_predominant_usda: {}
+    - code: "BD"
+      name: "Saprists"
+      tests:
+        all_of:
+          - sapric_predominant_usda: {}
+    - code: "BE"
+      name: "Hemists"
+      tests:
+        default: true
+      notes: "Catch-all (hemic predominant)."

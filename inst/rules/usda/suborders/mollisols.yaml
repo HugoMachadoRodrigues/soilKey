@@ -1,0 +1,49 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Mollisols Suborders -- Cap 12
+# =============================================================
+# 8 Suborders: IA Albolls, IB Aquolls, IC Rendolls, ID Gelolls,
+#              IE Cryolls, IF Xerolls, IG Ustolls, IH Udolls
+# =============================================================
+
+suborders:
+
+  "MO":
+    - code: "IA"
+      name: "Albolls"
+      tests:
+        all_of:
+          - alboll_qualifying_usda: {}
+    - code: "IB"
+      name: "Aquolls"
+      tests:
+        all_of:
+          - aquoll_qualifying_usda: {}
+    - code: "IC"
+      name: "Rendolls"
+      tests:
+        all_of:
+          - rendoll_qualifying_usda: {}
+    - code: "ID"
+      name: "Gelolls"
+      tests:
+        all_of:
+          - str_gelic_usda: {}
+    - code: "IE"
+      name: "Cryolls"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "IF"
+      name: "Xerolls"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "IG"
+      name: "Ustolls"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "IH"
+      name: "Udolls"
+      tests:
+        default: true

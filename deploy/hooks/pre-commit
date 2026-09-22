@@ -1,0 +1,50 @@
+#!/bin/sh
+# Refuse to commit credentials.
+#
+# .gitignore is not protection: it stops `git add .` but not `git add -f`, and
+# it does not follow a file that gets renamed. This hook inspects what is
+# actually staged, so it catches both.
+#
+# Two independent checks:
+#   1. file NAMES that credentials habitually use
+#   2. file CONTENT matching the shape of a live key
+#
+# Content matching targets VALUES, never variable names: this repository legit-
+# imately mentions GROQ_API_KEY and SOILKEY_COOKIE_SECRET in source and docs,
+# and flagging those would train you to bypass the hook, which defeats it.
+#
+# Deliberate override, when you really mean it:  git commit --no-verify
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$staged" ] && exit 0
+
+bad_name=$(printf '%s\n' "$staged" | grep -iE \
+  '(^|/)([^/]*(backup_code|recovery_code|recovery-codes|2fa_backup)[^/]*)$|\.pem$|\.p12$|\.pfx$|(^|/)id_rsa$|(^|/)\.env$|(^|/)credentials\.json$|(^|/)service[-_]account.*\.json$')
+
+bad_content=""
+for f in $staged; do
+  [ -f "$f" ] || continue
+  # binary files are skipped: a match there is noise, not a leaked key
+  git diff --cached -- "$f" | grep -qI . 2>/dev/null || continue
+  hit=$(git show ":$f" 2>/dev/null | grep -nE \
+    'sk_live_[A-Za-z0-9]{16,}|rk_live_[A-Za-z0-9]{16,}|gsk_[A-Za-z0-9]{40,}|re_[A-Za-z0-9_-]{24,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----' \
+    | head -1)
+  [ -n "$hit" ] && bad_content="$bad_content\n  $f: $(printf '%s' "$hit" | cut -c1-70)"
+done
+
+if [ -n "$bad_name" ] || [ -n "$bad_content" ]; then
+  echo ""
+  echo "COMMIT BLOCKED -- this looks like a credential."
+  [ -n "$bad_name" ] && { echo ""; echo "Files whose name says credential:"; printf '%s\n' "$bad_name" | sed 's/^/  /'; }
+  [ -n "$bad_content" ] && { echo ""; echo "Files whose content matches a live key:"; printf "$bad_content\n"; }
+  echo ""
+  echo "Credentials belong in a password manager or Secret Manager, not in a"
+  echo "repository -- once committed they are in the history for good, and this"
+  echo "working tree is inside a cloud-synced folder."
+  echo ""
+  echo "  git restore --staged <file>     unstage it"
+  echo "  git commit --no-verify          override, if you genuinely mean it"
+  echo ""
+  exit 1
+fi
+exit 0

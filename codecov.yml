@@ -1,0 +1,40 @@
+# Codecov configuration for soilKey.
+# Driven by .github/workflows/test-coverage.yaml -- the workflow runs
+# covr::package_coverage() and uploads cobertura.xml here.
+#
+# Soft gates: coverage is for visibility, not a release blocker.
+# A drop > 1 pp on a PR triggers a warning but does not fail CI.
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto         # compare to base branch
+        threshold: 1%        # allow up to 1 pp drop without failing
+        if_ci_failed: success
+    patch:
+      default:
+        target: 70%          # new code should be at least 70 % covered
+        threshold: 5%        # 5 pp grace
+        if_ci_failed: success
+
+# Codecov should not annotate diffs with "missing line" comments on
+# files we explicitly do not test (auto-generated docs, vignettes,
+# benchmark drivers).
+ignore:
+  - "man/"
+  - "vignettes/"
+  - "inst/doc/"
+  - "inst/benchmarks/"
+  - "tests/"
+  - "data-raw/"
+  - "R/zzz.R"
+
+# Comment behavior on PRs: render coverage diff once per PR.
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+  show_carryforward_flags: false

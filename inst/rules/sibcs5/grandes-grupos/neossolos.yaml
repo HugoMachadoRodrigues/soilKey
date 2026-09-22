@@ -1,0 +1,118 @@
+# =============================================================
+# SiBCS 5a edicao -- Neossolos (Cap 12, pp 219-232)
+#
+# Grandes grupos -- 19 classes em 4 subordens:
+#   RL Litolicos:        6 GGs (Histico/Humico/Carbonatico/Chernossolico/D/E)
+#   RY Fluvicos:         7 GGs (Carbonatico/Sodico/Salico/Psamitico/TaE/TbD/TbE)
+#   RR Regoliticos:      4 GGs (Psamitico/Humico/Distrofico/Eutrofico)
+#   RQ Quartzarenicos:   2 GGs (Hidromorfico/Ortico)
+# =============================================================
+
+grandes_grupos:
+
+  # -- RL -----
+  "RL":
+    - code: "RLh"
+      name: "Neossolos Litólicos Hísticos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "RLhu"
+      name: "Neossolos Litólicos Húmicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "RLca"
+      name: "Neossolos Litólicos Carbonáticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 50 }
+    - code: "RLch"
+      name: "Neossolos Litólicos Chernossólicos"
+      tests:
+        all_of:
+          - carater_chernossolico: {}
+    - code: "RLd"
+      name: "Neossolos Litólicos Distróficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "RLe"
+      name: "Neossolos Litólicos Eutróficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # -- RY -----
+  "RY":
+    - code: "RYca"
+      name: "Neossolos Flúvicos Carbonáticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "RYsd"
+      name: "Neossolos Flúvicos Sódicos"
+      tests:
+        all_of:
+          - carater_sodico: { max_depth_cm: 150 }
+    - code: "RYsl"
+      name: "Neossolos Flúvicos Sálicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "RYps"
+      name: "Neossolos Flúvicos Psamíticos"
+      tests:
+        all_of:
+          - carater_psamitico: {}
+    - code: "RYte"
+      name: "Neossolos Flúvicos Ta Eutróficos"
+      tests:
+        all_of:
+          - atividade_argila_alta: {}
+          - eutrofico: {}
+    - code: "RYbd"
+      name: "Neossolos Flúvicos Tb Distróficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "RYbe"
+      name: "Neossolos Flúvicos Tb Eutróficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # -- RR -----
+  "RR":
+    - code: "RRps"
+      name: "Neossolos Regolíticos Psamíticos"
+      tests:
+        all_of:
+          - carater_psamitico: {}
+    - code: "RRhu"
+      name: "Neossolos Regolíticos Húmicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "RRd"
+      name: "Neossolos Regolíticos Distróficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "RRe"
+      name: "Neossolos Regolíticos Eutróficos"
+      tests:
+        all_of:
+          - eutrofico: {}
+
+  # -- RQ -----
+  "RQ":
+    - code: "RQhm"
+      name: "Neossolos Quartzarênicos Hidromórficos"
+      tests:
+        all_of:
+          - carater_hidromorfico: {}
+    - code: "RQo"
+      name: "Neossolos Quartzarênicos Órticos"
+      tests:
+        default: true

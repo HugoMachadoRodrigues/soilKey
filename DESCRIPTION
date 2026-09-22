@@ -1,0 +1,72 @@
+Package: soilKey
+Type: Package
+Title: Automated Soil Profile Classification per WRB 2022, 'SiBCS' 5 and USDA Soil Taxonomy 13
+Version: 0.9.204
+Date: 2026-09-22
+Authors@R:
+    person("Hugo", "Rodrigues",
+           email = "rodrigues.machado.hugo@gmail.com",
+           role  = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0002-8070-8126"))
+Description: Implements deterministic classification keys for the World
+    Reference Base for Soil Resources 2022 (4th edition) and the Brazilian
+    System of Soil Classification ('SiBCS', 5th edition). Provides a unified
+    profile representation with explicit per-attribute provenance, multimodal
+    extraction from field reports and photos via vision-language models,
+    spatial priors from 'SoilGrids' and national soil maps, and gap-filling of
+    soil attributes from Vis-NIR or MIR spectra via the Open Soil Spectral
+    Library ('OSSL'). The taxonomic key itself is never delegated to a language
+    model; LLMs are restricted to schema-validated extraction. Each
+    classification result reports a key trace, a provenance-aware evidence
+    grade, and ambiguities that further measurement would resolve.
+License: MIT + file LICENSE
+URL: https://github.com/HugoMachadoRodrigues/soilKey,
+    https://hugomachadorodrigues.github.io/soilKey/
+BugReports: https://github.com/HugoMachadoRodrigues/soilKey/issues
+Encoding: UTF-8
+LazyData: true
+LazyDataCompression: xz
+Depends:
+    R (>= 4.1)
+Imports:
+    R6,
+    data.table,
+    yaml,
+    cli,
+    rlang
+Suggests:
+    aqp,
+    SoilTaxonomy (>= 0.2.8),
+    mpspline2,
+    terra,
+    foreign,
+    sf,
+    chromote,
+    munsellinterpol,
+    pls,
+    prospectr,
+    resemble,
+    ellmer (>= 0.3.2),
+    httr,
+    jsonlite,
+    jsonvalidate,
+    pdftools,
+    magick,
+    shiny (>= 1.7.0),
+    DT,
+    bslib,
+    shinyWidgets,
+    plotly,
+    leaflet,
+    htmltools,
+    withr,
+    DBI,
+    RSQLite,
+    base64enc,
+    maps,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

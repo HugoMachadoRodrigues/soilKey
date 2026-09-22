@@ -1,0 +1,29 @@
+# =============================================================
+# USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)
+# Gelisols Suborders -- Chapter 9, p 189
+# =============================================================
+#
+# 3 Suborders, in canonical key order:
+#   AA. Histels  -- organic Gelisols (40+ cm organic in 0-50)
+#   AB. Turbels  -- with cryoturbation evidence
+#   AC. Orthels  -- catch-all
+# =============================================================
+
+suborders:
+
+  "GE":
+    - code: "AA"
+      name: "Histels"
+      tests:
+        all_of:
+          - histel_qualifying_usda: {}
+    - code: "AB"
+      name: "Turbels"
+      tests:
+        all_of:
+          - cryoturbation_usda: {}
+    - code: "AC"
+      name: "Orthels"
+      tests:
+        default: true
+      notes: "Catch-all for Gelisols not meeting Histels or Turbels."

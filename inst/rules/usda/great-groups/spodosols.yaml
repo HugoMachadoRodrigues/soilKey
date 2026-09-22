@@ -1,0 +1,132 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Spodosols Great Groups -- Cap 14
+# =============================================================
+# 22 GGs total:
+#   Aquods (CA): 7
+#   Gelods (CB): 2
+#   Cryods (CC): 4
+#   Humods (CD): 4
+#   Orthods (CE): 5
+# =============================================================
+
+great_groups:
+
+  # ---- Aquods (CA) ----
+  "CA":
+    - code: "CAA"
+      name: "Cryaquods"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "CAB"
+      name: "Alaquods"
+      tests:
+        all_of:
+          - al_rich_spodic_usda: {}
+    - code: "CAC"
+      name: "Fragiaquods"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "CAD"
+      name: "Placaquods"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "CAE"
+      name: "Duraquods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CAF"
+      name: "Epiaquods"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "CAG"
+      name: "Endoaquods"
+      tests:
+        default: true
+
+  # ---- Gelods (CB) ----
+  "CB":
+    - code: "CBA"
+      name: "Humigelods"
+      tests:
+        all_of:
+          - humic_spodic_usda: {}
+    - code: "CBB"
+      name: "Haplogelods"
+      tests:
+        default: true
+
+  # ---- Cryods (CC) ----
+  "CC":
+    - code: "CCA"
+      name: "Placocryods"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "CCB"
+      name: "Duricryods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CCC"
+      name: "Humicryods"
+      tests:
+        all_of:
+          - humic_spodic_usda: {}
+    - code: "CCD"
+      name: "Haplocryods"
+      tests:
+        default: true
+
+  # ---- Humods (CD) ----
+  "CD":
+    - code: "CDA"
+      name: "Placohumods"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "CDB"
+      name: "Durihumods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CDC"
+      name: "Fragihumods"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "CDD"
+      name: "Haplohumods"
+      tests:
+        default: true
+
+  # ---- Orthods (CE) ----
+  "CE":
+    - code: "CEA"
+      name: "Placorthods"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "CEB"
+      name: "Durorthods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CEC"
+      name: "Fragiorthods"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "CED"
+      name: "Alorthods"
+      tests:
+        all_of:
+          - al_rich_spodic_usda: {}
+    - code: "CEE"
+      name: "Haplorthods"
+      tests:
+        default: true

@@ -1,0 +1,247 @@
+version: "WRB 2022 (4th edition)"
+implementation_status: "soilKey v0.9.15 -- 32/32 RSGs canonical, 7 v0.3 simplifications closed"
+source: |
+  IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
+  International soil classification system for naming soils and creating
+  legends for soil maps. 4th edition. International Union of Soil Sciences,
+  Vienna.
+
+# All 32 RSGs are wired in canonical WRB 2022 key order (Ch 4, pp 95-126).
+# The first whose tests pass is assigned. Default catch-all is RG (Regosols).
+#
+# v0.3.2 reordering: PL (Planosols) and ST (Stagnosols) moved from positions
+# 15-16 to their canonical positions 13-14 (between PT and NT). FL
+# (Fluvisols) and AR (Arenosols) swapped (canonical: FL=30, AR=31). All 31
+# canonical fixtures still classify to their intended RSG.
+#
+# v0.9.15 closure of v0.3 simplifications (each diagnostic now offers
+# OR-alternative paths that match WRB 2022 verbatim):
+#   - Histosols: histic_horizon now offers (a) the contiguous 10-cm
+#     surface path AND (b) the cumulative >= 40 cm within upper 80 cm
+#     path (folic / mossy variants).
+#   - Anthrosols: anthric_horizons now offers (a) designation match
+#     hortic|irragric|plaggic|pretic|terric AND (b) property-based
+#     surface-horizon test (Munsell value <= 4 + P-Mehlich >= 50 +
+#     thickness >= 20 cm).
+#   - Technosols: technic_features now offers (a) artefacts >= 20%
+#     within 100 cm, (b) continuous geomembrane within 100 cm, OR
+#     (c) technic hard material >= 95% within upper 5 cm.
+#   - Cryosols: cryic_conditions now offers (a) explicit
+#     permafrost_temp_C <= 0 within 100 cm AND (b) the designation
+#     fallback (^Cf, -f suffix, perma-).
+#   - Leptosols: leptic_features now offers (a) R / Cr designation
+#     within 25 cm AND (b) coarse_fragments_pct >= 90 within 25 cm.
+#   - Solonetz: natric_horizon = argic + ESP >= 15.
+#   - Andosols: andic_properties now offers (a) (Al_ox + 0.5*Fe_ox)
+#     >= 2 AND BD <= 0.9 on the same layer, (b) phosphate retention
+#     >= 70%, OR (c) volcanic glass >= 30% in 0.02-2 mm sand fraction.
+#   - Nitisols: nitic_horizon now AND-combines the original clay >=
+#     30 + Fe_DCB >= 4 + thickness >= 30 with three supplementary
+#     tests (polyhedral / nutty structure, shiny ped surfaces,
+#     gradual clay-decrease with depth). Supplementary tests are
+#     permissive on missing data; conclusively FALSE evidence
+#     forces the diagnostic to fail.
+#   - Planosols: planic_features = clay-doubling + abrupt boundary.
+#   - Stagnosols: stagnic_properties = redox in shallow + decay
+#     with depth (perched-water signature). gleyic_properties was
+#     refined in v0.3 to require non-decay so GL and ST are mutually
+#     exclusive.
+#   - Retisols: retic_properties detects via glossic|retic|albeluvic
+#     designation pattern.
+#   - Fluvisols: fluvic_material = stratified texture + non-monotone
+#     OC; the < 100-year-age criterion is implicit.
+
+rsgs:
+
+  - code: HS
+    name: Histosols
+    tests:
+      all_of:
+        - histic_horizon: {}
+
+  - code: AT
+    name: Anthrosols
+    tests:
+      all_of:
+        - anthric_horizons: {}
+
+  - code: TC
+    name: Technosols
+    tests:
+      all_of:
+        - technic_features: {}
+
+  - code: CR
+    name: Cryosols
+    tests:
+      all_of:
+        - cryic_conditions: {}
+
+  - code: LP
+    name: Leptosols
+    tests:
+      all_of:
+        - leptic_features: {}
+
+  - code: SN
+    name: Solonetz
+    tests:
+      all_of:
+        - natric_horizon: {}
+
+  - code: VR
+    name: Vertisols
+    tests:
+      all_of:
+        - vertisol: {}                  # v0.3.4: strict gate (vertic horizon + clay-throughout + cracks)
+
+  - code: SC
+    name: Solonchaks
+    tests:
+      all_of:
+        - salic: {}
+
+  - code: GL
+    name: Gleysols
+    tests:
+      all_of:
+        - gleysol: {}                   # v0.3.4: strict gate (gleyic + reducing + thickness)
+
+  - code: AN
+    name: Andosols
+    tests:
+      all_of:
+        - andosol: {}                   # v0.3.4: strict gate (andic OR vitric, thickness, exclusions)
+
+  - code: PZ
+    name: Podzols
+    tests:
+      all_of:
+        - spodic: {}
+
+  - code: PT
+    name: Plinthosols
+    tests:
+      all_of:
+        - plinthic: {}
+
+  - code: PL
+    name: Planosols
+    tests:
+      all_of:
+        - planosol: {}                  # v0.3.4: strict gate (abrupt + stagnic + reducing)
+
+  - code: ST
+    name: Stagnosols
+    tests:
+      all_of:
+        - stagnic_properties: {}
+
+  - code: NT
+    name: Nitisols
+    tests:
+      all_of:
+        - nitic_horizon: {}
+
+  - code: FR
+    name: Ferralsols
+    tests:
+      all_of:
+        - ferralsol: {}                 # v0.3.4: strict gate (ferralic + argic-exclusion with WDC/dpH/SOC paths)
+
+  - code: CH
+    name: Chernozems
+    tests:
+      all_of:
+        - chernozem_strict: {}          # v0.3.4: strict gate (chernic + protocalcic/calcic + BS >= 50)
+
+  - code: KS
+    name: Kastanozems
+    tests:
+      all_of:
+        - kastanozem_strict: {}         # v0.3.4: strict gate (mollic + protocalcic/calcic <= 70 cm + BS >= 50)
+
+  - code: PH
+    name: Phaeozems
+    tests:
+      all_of:
+        - phaeozem: {}
+
+  - code: UM
+    name: Umbrisols
+    tests:
+      all_of:
+        - umbric_horizon: {}
+
+  - code: DU
+    name: Durisols
+    tests:
+      all_of:
+        - duric_horizon: {}
+
+  - code: GY
+    name: Gypsisols
+    tests:
+      all_of:
+        - gypsic: {}
+
+  - code: CL
+    name: Calcisols
+    tests:
+      all_of:
+        - calcic: {}
+
+  - code: RT
+    name: Retisols
+    tests:
+      all_of:
+        - retic_properties: {}
+
+  - code: AC
+    name: Acrisols
+    tests:
+      all_of:
+        - acrisol: {}
+
+  - code: LX
+    name: Lixisols
+    tests:
+      all_of:
+        - lixisol: {}
+
+  - code: AL
+    name: Alisols
+    tests:
+      all_of:
+        - alisol: {}
+
+  - code: LV
+    name: Luvisols
+    tests:
+      all_of:
+        - luvisol: {}
+
+  - code: CM
+    name: Cambisols
+    tests:
+      all_of:
+        - cambic: {}
+
+  - code: FL
+    name: Fluvisols
+    tests:
+      all_of:
+        - fluvic_material: {}
+
+  - code: AR
+    name: Arenosols
+    tests:
+      all_of:
+        - arenic_texture: {}
+
+  - code: RG
+    name: Regosols
+    tests:
+      default: true
+    notes: "Catch-all for mineral soils that do not match any prior RSG."
+

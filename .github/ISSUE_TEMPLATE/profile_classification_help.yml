@@ -1,0 +1,86 @@
+name: 🌱 Soil profile classification help
+description: I have a real soil profile that classifies in a way I think is wrong -- help me debug
+title: "[CLASSIFY] "
+labels: ["question", "classification-debug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        soilKey aims for transparent, deterministic classification with
+        full key-trace. If you've classified a profile and disagree with
+        the result, this template helps us trace WHY soilKey reached
+        that conclusion.
+
+        We can almost always explain a disagreement by inspecting the
+        diagnostic that fired (or didn't).
+
+  - type: textarea
+    id: profile
+    attributes:
+      label: Profile horizons
+      description: |
+        Paste a CSV with one row per horizon. Required columns:
+        `top_cm`, `bottom_cm`, `designation`. Strongly suggested:
+        `clay_pct`, `sand_pct`, `silt_pct`, `ph_h2o`, `oc_pct`,
+        `bs_pct`, `cec_cmol`, plus Munsell columns when available.
+
+        Don't share private / unpublished data. Use synthetic numbers
+        that approximate the real profile.
+      render: csv
+      placeholder: |
+        top_cm,bottom_cm,designation,clay_pct,sand_pct,silt_pct,ph_h2o,oc_pct
+        0,15,A,30,50,20,5.2,2.5
+        15,40,Bt,55,30,15,5.5,1.0
+        40,80,Bt2,60,28,12,5.8,0.5
+    validations:
+      required: true
+
+  - type: textarea
+    id: site
+    attributes:
+      label: Site metadata
+      placeholder: |
+        Country, lat/lon (approximate is fine), parent material, climate
+        regime, elevation, original surveyor's classification.
+
+  - type: dropdown
+    id: system
+    attributes:
+      label: Which system are you classifying for?
+      multiple: true
+      options:
+        - "WRB 2022"
+        - "SiBCS 5ª edição"
+        - "USDA Soil Taxonomy 13ed"
+
+  - type: input
+    id: expected
+    attributes:
+      label: Expected classification (per surveyor / textbook / source)
+      placeholder: e.g. "Argissolo Vermelho-Amarelo Distrófico típico" or "Mollic Calcaric Phaeozem (Loamic)"
+    validations:
+      required: true
+
+  - type: input
+    id: got
+    attributes:
+      label: What soilKey returned
+      placeholder: e.g. "Cambissolo Háplico Tb Distrófico" or "Calcic Cambisol"
+
+  - type: textarea
+    id: trace
+    attributes:
+      label: Key trace (if you can capture it)
+      description: |
+        Run with `on_missing = "silent"` and inspect `result$trace`. Paste
+        the abbreviated trace (which RSGs / Orders were tested, which
+        diagnostics fired or NA'd).
+      render: text
+
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else?
+      placeholder: |
+        Local pedology context, special features (saline, gleyed, fragipan,
+        etc.), known limitations of the dataset, ...

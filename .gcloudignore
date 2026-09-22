@@ -1,0 +1,18 @@
+# Keep the Cloud Build source upload lean (gitignore syntax).
+# NOTE: do NOT exclude inst/ (holds the Shiny app + demo raster), R/, data/,
+# DESCRIPTION or NAMESPACE -- the image is built from them.
+.git/
+.github/
+.claude/
+.Rproj.user/
+.Rhistory
+.RData
+*.Rcheck/
+*.tar.gz
+docs/
+data-raw/
+revdep/
+soil_data/
+paper/
+pkgdown/favicon/
+.DS_Store

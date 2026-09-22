@@ -1,0 +1,158 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Aridisols Great Groups -- Cap 7
+# =============================================================
+# 27 GGs total:
+#   Cryids (GA): 6 / Salids (GB): 2 / Durids (GC): 3 / Gypsids (GD): 5 /
+#   Argids (GE): 6 / Calcids (GF): 2 / Cambids (GG): 3
+# =============================================================
+
+great_groups:
+
+  # ---- Cryids (GA) ----
+  "GA":
+    - code: "GAA"
+      name: "Salicryids"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "GAB"
+      name: "Petrocryids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GAC"
+      name: "Gypsicryids"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "GAD"
+      name: "Argicryids"
+      tests:
+        all_of:
+          - argic_aridisol_usda: {}
+    - code: "GAE"
+      name: "Calcicryids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GAF"
+      name: "Haplocryids"
+      tests:
+        default: true
+
+  # ---- Salids (GB) ----
+  "GB":
+    - code: "GBA"
+      name: "Aquisalids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GBB"
+      name: "Haplosalids"
+      tests:
+        default: true
+
+  # ---- Durids (GC) ----
+  "GC":
+    - code: "GCA"
+      name: "Natridurids"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "GCB"
+      name: "Argidurids"
+      tests:
+        all_of:
+          - argic_aridisol_usda: {}
+    - code: "GCC"
+      name: "Haplodurids"
+      tests:
+        default: true
+
+  # ---- Gypsids (GD) ----
+  "GD":
+    - code: "GDA"
+      name: "Petrogypsids"
+      tests:
+        all_of:
+          - petrogypsic_subgroup_usda: {}
+    - code: "GDB"
+      name: "Natrigypsids"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "GDC"
+      name: "Argigypsids"
+      tests:
+        all_of:
+          - argic_aridisol_usda: {}
+    - code: "GDD"
+      name: "Calcigypsids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GDE"
+      name: "Haplogypsids"
+      tests:
+        default: true
+
+  # ---- Argids (GE) ----
+  "GE":
+    - code: "GEA"
+      name: "Petroargids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GEB"
+      name: "Natrargids"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "GEC"
+      name: "Paleargids"
+      tests:
+        all_of:
+          - paleargid_qualifying_usda: {}
+    - code: "GED"
+      name: "Gypsiargids"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "GEE"
+      name: "Calciargids"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "GEF"
+      name: "Haplargids"
+      tests:
+        default: true
+
+  # ---- Calcids (GF) ----
+  "GF":
+    - code: "GFA"
+      name: "Petrocalcids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GFB"
+      name: "Haplocalcids"
+      tests:
+        default: true
+
+  # ---- Cambids (GG) ----
+  "GG":
+    - code: "GGA"
+      name: "Aquicambids"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "GGB"
+      name: "Petrocambids"
+      tests:
+        all_of:
+          - petrocalcic_subgroup_usda: {}
+    - code: "GGC"
+      name: "Haplocambids"
+      tests:
+        default: true

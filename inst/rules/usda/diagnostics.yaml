@@ -1,0 +1,66 @@
+version: "USDA Soil Taxonomy 13th edition (Soil Survey Staff, 2022)"
+implementation_status: "soilKey v0.8.x -- diagnostic epipedons (Ch 3) + 12 orders wired"
+
+diagnostics:
+
+  oxic_usda:
+    function: oxic_usda
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-usda.R
+    delegates_to: ferralic
+    reference: "Soil Survey Staff (2014), Ch. 3, oxic horizon"
+    v02_notes: |
+      Delegates to WRB ferralic(). The two diagnostics agree on the
+      central tendency (low-activity clay, low CEC/clay, low
+      weatherable-mineral content). Differences in edge-case
+      criteria (water-dispersible-clay test, specific cement
+      thresholds) are scheduled for v0.8.
+
+  argillic_usda:
+    function: argillic_usda
+    status: implemented_via_delegation
+    file: R/diagnostics-horizons-usda.R
+    delegates_to: argic
+    reference: "Soil Survey Staff (2014), Ch. 3, argillic horizon"
+    v02_notes: |
+      Delegates to WRB argic(). Real USDA argillic also requires
+      illuviation evidence (clay films / clay bridges on >= 1% of
+      surfaces); v0.8 will enforce this against clay_films_amount column.
+
+  # ----- v0.8.1 USDA epipedons (Ch 3, KST 13ed) -----
+  histic_epipedon_usda:         { function: histic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 14-15" }
+  folistic_epipedon_usda:       { function: folistic_epipedon_usda,  status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 13-14" }
+  melanic_epipedon_usda:        { function: melanic_epipedon_usda,   status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-16" }
+  mollic_epipedon_usda:         { function: mollic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-17" }
+  ochric_epipedon_usda:         { function: ochric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, p 17" }
+  umbric_epipedon_usda:         { function: umbric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 18-20" }
+  anthropic_epipedon_usda:      { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria not yet captured in schema" }
+  plaggen_epipedon_usda:        { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria" }
+
+  # ----- v0.8.2 USDA diagnostic characteristics (Ch 3, KST 13ed) -----
+  aquic_conditions_usda:        { function: aquic_conditions_usda,        status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, pp 41-44" }
+  anhydrous_conditions_usda:    { function: anhydrous_conditions_usda,    status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 33" }
+  cryoturbation_usda:           { function: cryoturbation_usda,           status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 43" }
+  glacic_layer_usda:            { function: glacic_layer_usda,            status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 45" }
+  permafrost_within_usda:       { function: permafrost_within_usda,       status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, p 47" }
+
+  # ----- planned v0.8.x -----
+  kandic:                       { status: planned, target_version: v0.8 }
+  kandic:                       { status: planned, target_version: v0.8 }
+  spodic_usda:                  { status: planned, target_version: v0.8 }
+  cambic_usda:                  { status: planned, target_version: v0.8 }
+  calcic_usda:                  { status: planned, target_version: v0.8 }
+  gypsic_usda:                  { status: planned, target_version: v0.8 }
+  duripan:                      { status: planned, target_version: v0.8 }
+  fragipan:                     { status: planned, target_version: v0.8 }
+  placic:                       { status: planned, target_version: v0.8 }
+  albic:                        { status: planned, target_version: v0.8 }
+  petrocalcic:                  { status: planned, target_version: v0.8 }
+  petrogypsic:                  { status: planned, target_version: v0.8 }
+  gelic_conditions:             { status: planned, target_version: v0.8 }
+  organic_materials_usda:       { status: planned, target_version: v0.8 }
+  andic_properties_usda:        { status: planned, target_version: v0.8 }
+  vertic_features_usda:         { status: planned, target_version: v0.8 }
+  aridic_moisture_regime:       { status: planned, target_version: v0.8 }
+  argillic_low_bs:              { status: planned, target_version: v0.8 }
+  argillic_high_bs:             { status: planned, target_version: v0.8 }

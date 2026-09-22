@@ -1,0 +1,394 @@
+# =============================================================
+# SiBCS 5a edicao -- Neossolos (Cap 12, pp 223-232)
+# Subgrupos -- 75 classes em 19 GGs.
+# =============================================================
+
+subgrupos:
+
+  # -- RL -----
+  "RLh":
+    - code: "RLhTp"
+      name: "Neossolos Litólicos Hísticos típicos"
+      tests:
+        default: true
+  "RLhu":
+    - code: "RLhuEp"
+      name: "Neossolos Litólicos Húmicos espodossólicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "RLhuTp"
+      name: "Neossolos Litólicos Húmicos típicos"
+      tests:
+        default: true
+  "RLca":
+    - code: "RLcaFr"
+      name: "Neossolos Litólicos Carbonáticos fragmentários"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: {}
+    - code: "RLcaTp"
+      name: "Neossolos Litólicos Carbonáticos típicos"
+      tests:
+        default: true
+  "RLch":
+    - code: "RLchFr"
+      name: "Neossolos Litólicos Chernossólicos fragmentários"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: {}
+    - code: "RLchTp"
+      name: "Neossolos Litólicos Chernossólicos típicos"
+      tests:
+        default: true
+  "RLd":
+    - code: "RLdFr"
+      name: "Neossolos Litólicos Distróficos fragmentários"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: {}
+    - code: "RLdTp"
+      name: "Neossolos Litólicos Distróficos típicos"
+      tests:
+        default: true
+  "RLe":
+    - code: "RLeFr"
+      name: "Neossolos Litólicos Eutróficos fragmentários"
+      tests:
+        all_of:
+          - contato_litico_fragmentario: {}
+    - code: "RLeTp"
+      name: "Neossolos Litólicos Eutróficos típicos"
+      tests:
+        default: true
+
+  # -- RY -----
+  "RYca":
+    - code: "RYcaTp"
+      name: "Neossolos Flúvicos Carbonáticos típicos"
+      tests:
+        default: true
+  "RYsd":
+    - code: "RYsdSl"
+      name: "Neossolos Flúvicos Sódicos sálicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "RYsdSa"
+      name: "Neossolos Flúvicos Sódicos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "RYsdVs"
+      name: "Neossolos Flúvicos Sódicos vertissólicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "RYsdTp"
+      name: "Neossolos Flúvicos Sódicos típicos"
+      tests:
+        default: true
+  "RYsl":
+    - code: "RYslSo"
+      name: "Neossolos Flúvicos Sálicos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RYslTp"
+      name: "Neossolos Flúvicos Sálicos típicos"
+      tests:
+        default: true
+  "RYps":
+    - code: "RYpsEu"
+      name: "Neossolos Flúvicos Psamíticos êutricos"
+      tests:
+        all_of:
+          - carater_eutrico: {}
+    - code: "RYpsGl"
+      name: "Neossolos Flúvicos Psamíticos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RYpsEp"
+      name: "Neossolos Flúvicos Psamíticos espodossólicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "RYpsTp"
+      name: "Neossolos Flúvicos Psamíticos típicos"
+      tests:
+        default: true
+  "RYte":
+    - code: "RYteSa"
+      name: "Neossolos Flúvicos Ta Eutróficos salinos"
+      tests:
+        all_of:
+          - carater_salino: { max_depth_cm: 150 }
+    - code: "RYteHC"
+      name: "Neossolos Flúvicos Ta Eutróficos hipocarbonáticos"
+      tests:
+        all_of:
+          - carater_hipocarbonatico: { max_depth_cm: 150 }
+    - code: "RYteSoVs"
+      name: "Neossolos Flúvicos Ta Eutróficos solódicos vertissólicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - carater_vertissolico: {}
+    - code: "RYteSo"
+      name: "Neossolos Flúvicos Ta Eutróficos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RYteVs"
+      name: "Neossolos Flúvicos Ta Eutróficos vertissólicos"
+      tests:
+        all_of:
+          - carater_vertissolico: {}
+    - code: "RYteGl"
+      name: "Neossolos Flúvicos Ta Eutróficos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RYteTp"
+      name: "Neossolos Flúvicos Ta Eutróficos típicos"
+      tests:
+        default: true
+  "RYbd":
+    - code: "RYbdGl"
+      name: "Neossolos Flúvicos Tb Distróficos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RYbdTp"
+      name: "Neossolos Flúvicos Tb Distróficos típicos"
+      tests:
+        default: true
+  "RYbe":
+    - code: "RYbeSo"
+      name: "Neossolos Flúvicos Tb Eutróficos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RYbeGl"
+      name: "Neossolos Flúvicos Tb Eutróficos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RYbeTp"
+      name: "Neossolos Flúvicos Tb Eutróficos típicos"
+      tests:
+        default: true
+
+  # -- RR -----
+  "RRps":
+    - code: "RRpsLf"
+      name: "Neossolos Regolíticos Psamíticos leptofragmentários"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "RRpsLe"
+      name: "Neossolos Regolíticos Psamíticos lépticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "RRpsSo"
+      name: "Neossolos Regolíticos Psamíticos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RRpsFr"
+      name: "Neossolos Regolíticos Psamíticos fragipânicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "RRpsTp"
+      name: "Neossolos Regolíticos Psamíticos típicos"
+      tests:
+        default: true
+  "RRhu":
+    - code: "RRhuLf"
+      name: "Neossolos Regolíticos Húmicos leptofragmentários"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "RRhuLe"
+      name: "Neossolos Regolíticos Húmicos lépticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "RRhuTp"
+      name: "Neossolos Regolíticos Húmicos típicos"
+      tests:
+        default: true
+  "RRd":
+    - code: "RRdLf"
+      name: "Neossolos Regolíticos Distróficos leptofragmentários"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "RRdLeFr"
+      name: "Neossolos Regolíticos Distróficos lépticos fragipânicos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+          - fragipa: {}
+    - code: "RRdLe"
+      name: "Neossolos Regolíticos Distróficos lépticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "RRdFr"
+      name: "Neossolos Regolíticos Distróficos fragipânicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "RRdGl"
+      name: "Neossolos Regolíticos Distróficos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RRdTp"
+      name: "Neossolos Regolíticos Distróficos típicos"
+      tests:
+        default: true
+  "RRe":
+    - code: "RReLf"
+      name: "Neossolos Regolíticos Eutróficos leptofragmentários"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "RReLeSo"
+      name: "Neossolos Regolíticos Eutróficos lépticos solódicos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RReLeFr"
+      name: "Neossolos Regolíticos Eutróficos lépticos fragipânicos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+          - fragipa: {}
+    - code: "RReLe"
+      name: "Neossolos Regolíticos Eutróficos lépticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "RReSoFr"
+      name: "Neossolos Regolíticos Eutróficos solódicos fragipânicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+          - fragipa: {}
+    - code: "RReSo"
+      name: "Neossolos Regolíticos Eutróficos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RReFr"
+      name: "Neossolos Regolíticos Eutróficos fragipânicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "RReGl"
+      name: "Neossolos Regolíticos Eutróficos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RReTp"
+      name: "Neossolos Regolíticos Eutróficos típicos"
+      tests:
+        default: true
+
+  # -- RQ -----
+  "RQhm":
+    - code: "RQhmPl"
+      name: "Neossolos Quartzarênicos Hidromórficos plintossólicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "RQhmEp"
+      name: "Neossolos Quartzarênicos Hidromórficos espodossólicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "RQhmNf"
+      name: "Neossolos Quartzarênicos Hidromórficos neofluvissólicos"
+      tests:
+        all_of:
+          - carater_fluvico: {}
+    - code: "RQhmOg"
+      name: "Neossolos Quartzarênicos Hidromórficos organossólicos"
+      tests:
+        all_of:
+          - horizonte_histico: {}
+    - code: "RQhmTp"
+      name: "Neossolos Quartzarênicos Hidromórficos típicos"
+      tests:
+        default: true
+  "RQo":
+    - code: "RQoLf"
+      name: "Neossolos Quartzarênicos Órticos leptofragmentários"
+      tests:
+        all_of:
+          - carater_leptofragmentario: {}
+    - code: "RQoLe"
+      name: "Neossolos Quartzarênicos Órticos lépticos"
+      tests:
+        all_of:
+          - carater_leptico: {}
+    - code: "RQoSo"
+      name: "Neossolos Quartzarênicos Órticos solódicos"
+      tests:
+        all_of:
+          - carater_solodico: { max_depth_cm: 150 }
+    - code: "RQoEu"
+      name: "Neossolos Quartzarênicos Órticos êutricos"
+      tests:
+        all_of:
+          - carater_eutrico: {}
+    - code: "RQoFr"
+      name: "Neossolos Quartzarênicos Órticos fragipânicos"
+      tests:
+        all_of:
+          - fragipa: {}
+    - code: "RQoGl"
+      name: "Neossolos Quartzarênicos Órticos gleissólicos"
+      tests:
+        all_of:
+          - carater_gleissolico: {}
+    - code: "RQoPl"
+      name: "Neossolos Quartzarênicos Órticos plintossólicos"
+      tests:
+        all_of:
+          - carater_plintico: {}
+    - code: "RQoEp"
+      name: "Neossolos Quartzarênicos Órticos espodossólicos"
+      tests:
+        all_of:
+          - carater_espodico: {}
+    - code: "RQoAr"
+      name: "Neossolos Quartzarênicos Órticos argissólicos"
+      tests:
+        all_of:
+          - carater_argiluvico: {}
+    - code: "RQoLa"
+      name: "Neossolos Quartzarênicos Órticos latossólicos"
+      tests:
+        all_of:
+          - carater_latossolico: {}
+    - code: "RQoEh"
+      name: "Neossolos Quartzarênicos Órticos espesso-húmicos"
+      tests:
+        all_of:
+          - carater_humico_espesso: {}
+    - code: "RQoHu"
+      name: "Neossolos Quartzarênicos Órticos húmicos"
+      tests:
+        all_of:
+          - horizonte_A_humico: {}
+    - code: "RQoTp"
+      name: "Neossolos Quartzarênicos Órticos típicos"
+      tests:
+        default: true

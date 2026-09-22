@@ -1,0 +1,625 @@
+url: https://hugomachadorodrigues.github.io/soilKey/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#FF6B35"
+    base_font:    {google: "Source Sans Pro"}
+    heading_font: {google: "Source Serif Pro"}
+    code_font:    {google: "JetBrains Mono"}
+
+home:
+  title: "soilKey -- Automated soil profile classification"
+  description: >
+    Deterministic classification keys for WRB 2022 (4th ed.),
+    SiBCS 5ª ed. (Embrapa, 2018), and USDA Soil Taxonomy (13th ed.,
+    2022). Multimodal extraction, OSSL spectroscopy, SoilGrids spatial
+    prior, and explicit per-attribute provenance -- without ever
+    delegating the taxonomic key to a language model.
+  links:
+    - text: "Browse the canonical books"
+      href: "#references"
+    - text: "WoSIS benchmark report"
+      href: "articles/v06_wosis_benchmark.html"
+
+navbar:
+  structure:
+    left:  [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    articles:
+      text: "Articles"
+      menu:
+        - text: "Getting started"
+          href: "articles/v01_getting_started.html"
+        - text: "Começando com soilKey (PT-BR)"
+          href: "articles/v01_getting_started_pt.html"
+        - text: "WRB 2022 end-to-end"
+          href: "articles/v02_classify_wrb_end_to_end.html"
+        - text: "Cross-system correspondence"
+          href: "articles/v03_cross_system_correlation.html"
+        - text: "VLM extraction (Module 2)"
+          href: "articles/v04_vlm_extraction.html"
+        - text: "Spatial + spectra pipeline (Modules 3 + 4)"
+          href: "articles/v05_spatial_spectra_pipeline.html"
+        - text: "WoSIS benchmark"
+          href: "articles/v06_wosis_benchmark.html"
+        - text: "End-to-end pipeline"
+          href: "articles/v07_end_to_end_pipeline.html"
+        - text: "KSSL+NASIS multi-level USDA benchmark"
+          href: "articles/v08_kssl_nasis_multilevel.html"
+        - text: "Shiny Pro app"
+          href: "articles/v10_shiny_pro.html"
+        - text: "Field-photo-only classification"
+          href: "articles/v11_photo_only.html"
+        - text: "Provenance-weighted uncertainty"
+          href: "articles/v12_uncertainty.html"
+    github:
+      icon: fa-github
+      href: https://github.com/HugoMachadoRodrigues/soilKey
+      aria-label: GitHub
+
+reference:
+
+  - title: "Core data structures"
+    desc: >
+      The unified profile carrier. Every classification, every
+      provenance tag, every key-trace lives on one of these objects.
+    contents:
+      - PedonRecord
+      - DiagnosticResult
+      - ClassificationResult
+      - FamilyAttribute
+      - horizon_column_spec
+      - make_empty_horizons
+      - ensure_horizon_schema
+      - validate_horizon_geometry
+
+  - title: "Classification entry points"
+    desc: >
+      One function per system. Each returns a `ClassificationResult`
+      with the assigned name, the full key trace, the per-attribute
+      provenance log, and the evidence grade.
+    contents:
+      - classify_wrb2022
+      - classify_sibcs
+      - classify_sibcs_familia
+      - classify_usda
+      - classify_all
+      - classify_csv
+      - classify_from_documents
+      - classify_from_photos
+      - classify_by_spectral_neighbours
+      - soil_classes_at_location
+      - apply_soilgrids_depth_prior
+      - gapfill_within_pedon
+      - gapfill_derive_horizon
+      - build_taxon_profiles
+      - gapfill_by_predicted_taxon
+      - compute_per_attribute_evidence_grade
+
+  - title: "Interoperability"
+    desc: >
+      Conversion to / from the canonical R soil-data ecosystem:
+      `aqp::SoilProfileCollection`. Round-trip preserving.
+    contents:
+      - as_aqp
+      - from_aqp
+
+  - title: "Interactive Shiny app"
+    desc: >
+      Drag-and-drop CSV web interface; renders all three classifications
+      side-by-side and exports a self-contained HTML report.
+    contents:
+      - run_classify_app
+
+  - title: "USDA Soil Taxonomy 13ed -- diagnostic helpers"
+    desc: >
+      Soil Taxonomy diagnostic helpers used by the v0.9.27+ argillic
+      / clay-films logic.
+    contents:
+      - argillic_clay_films_test
+
+  - title: "Benchmark utilities"
+    desc: >
+      Benchmark drivers and KSSL/NASIS label normalisers.
+    contents:
+      - canonicalise_kst13ed_gg
+      - normalise_kssl_subgroup
+
+  - title: "WRB 2022 -- diagnostic horizons (Ch 3.1)"
+    desc: "32/32 diagnostic horizons per IUSS Working Group WRB (2022) Ch 3.1."
+    contents:
+      - argic
+      - albic
+      - cambic
+      - calcic
+      - cohesic
+      - cryic_horizon
+      - duric_horizon
+      - ferralic
+      - ferric
+      - folic
+      - fragic
+      - gypsic
+      - histic_horizon
+      - mollic
+      - natric_horizon
+      - nitic_horizon
+      - petrocalcic
+      - petroduric
+      - petrogypsic
+      - petroplinthic
+      - pisoplinthic
+      - plinthic
+      - salic
+      - sombric
+      - spodic
+      - thionic
+      - umbric_horizon
+      - vertic_horizon
+      - chernic
+      - tsitelic
+      - panpaic
+      - limonic
+      - protovertic
+      - anthraquic
+      - hydragric
+      - hortic
+      - irragric
+      - plaggic
+      - pretic
+      - terric
+
+  - title: "WRB 2022 -- diagnostic properties (Ch 3.2)"
+    contents:
+      - abrupt_textural_difference
+      - albeluvic_glossae
+      - andic_properties
+      - anthric_horizons
+      - continuous_rock
+      - gleyic_properties
+      - lithic_discontinuity
+      - protocalcic_properties
+      - protogypsic_properties
+      - reducing_conditions
+      - retic_properties
+      - shrink_swell_cracks
+      - sideralic_properties
+      - stagnic_properties
+      - takyric_properties
+      - vertic_properties
+      - vitric_properties
+      - yermic_properties
+
+  - title: "WRB 2022 -- diagnostic materials (Ch 3.3)"
+    contents:
+      - aeolic_material
+      - artefacts
+      - calcaric_material
+      - claric_material
+      - dolomitic_material
+      - fluvic_material
+      - gypsiric_material
+      - hypersulfidic_material
+      - hyposulfidic_material
+      - limnic_material
+      - mineral_material
+      - mulmic_material
+      - organic_material
+      - organotechnic_material
+      - ornithogenic_material
+      - soil_organic_carbon
+      - solimovic_material
+      - technic_features
+      - tephric_material
+
+  - title: "WRB 2022 -- RSG-level gates"
+    contents:
+      - has_concept("rsg-gates-wrb")
+      - acrisol
+      - alisol
+      - lixisol
+      - luvisol
+      - chernozem
+      - kastanozem
+      - phaeozem
+      - andosol
+      - chernozem_strict
+      - kastanozem_strict
+
+  - title: "SiBCS 5ª ed. -- horizontes B diagnósticos (Cap 2)"
+    desc: >
+      Os gates de horizonte B públicos. As demais gates da chave SiBCS
+      (carater_*, horizonte_*, atributos, qualifiers WRB, e os
+      dispatchers por Ordem) são o motor determinístico interno,
+      despachado por `classify_sibcs()` / `classify_wrb2022()`; veja a
+      seção "Internal -- motor taxonômico" no fim da referência.
+    contents:
+      - B_textural
+      - B_latossolico
+      - B_nitico
+      - B_espodico
+      - B_incipiente
+      - B_planico
+
+  - title: "SiBCS 5ª ed. -- Família (5º nível, Cap 18)"
+    desc: >
+      O 5º nível categórico (família), via
+      `classify_sibcs(include_familia = TRUE)`.
+    contents:
+      - classify_sibcs_familia
+
+  - title: "USDA Soil Taxonomy 13ed -- Família (5º nível)"
+    desc: >
+      Os modificadores de família (particle-size, mineralogy, CEC-activity,
+      reaction, temperature, depth) via
+      `classify_usda(pedon, include_family = TRUE)`. Os gates de
+      Ordem -> Subgrupo são internos (veja "Internal").
+    contents:
+      - classify_usda_family
+
+  - title: "Module 2 -- VLM extraction"
+    desc: >
+      Schema-validated multimodal extraction via `ellmer`. The VLM
+      never classifies; every extracted value carries provenance =
+      `extracted_vlm`.
+    contents:
+      - vlm_provider
+      - MockVLMProvider
+      - extract_horizons_from_pdf
+      - extract_munsell_from_photo
+      - extract_site_from_fieldsheet
+
+  - title: "Module 3 -- Spatial prior"
+    desc: >
+      SoilGrids + Embrapa raster. Used as a sanity-check; never
+      overrides the deterministic key.
+    contents:
+      - spatial_prior
+      - spatial_prior_soilgrids
+      - spatial_prior_embrapa
+      - prior_consistency_check
+
+  - title: "Module 4 -- OSSL spectroscopy"
+    desc: >
+      Vis-NIR / MIR gap-fill. Predicted attributes carry provenance
+      = `predicted_spectra`, which downgrades the evidence grade
+      from A to B.
+    contents:
+      - preprocess_spectra
+      - predict_ossl_mbl
+      - predict_ossl_plsr_local
+      - predict_ossl_pretrained
+      - fill_from_spectra
+      - read_spectral_library
+      - pedons_from_spectral_table
+      - benchmark_spectral_fill
+      - pi_to_confidence
+
+  - title: "Reporting"
+    desc: "Render a complete pedologist-facing report from one or more `ClassificationResult` objects."
+    contents:
+      - report
+      - report_html
+      - report_pdf
+      - report_to_qgis
+      - key_trace_table
+
+  - title: "Layperson on-ramp"
+    desc: >
+      Zero-code Shiny GUI plus auto-detect helpers that remove the
+      friction non-coders hit on a fresh install.
+    contents:
+      - run_demo
+      - read_pedon_csv
+      - auto_set_proj_env
+      - vlm_pick_provider
+      - ollama_is_running
+
+  - title: "Real-data benchmarks (v0.9.15+)"
+    desc: >
+      Loaders for the three external validation sets soilKey is
+      benchmarked against in the v1.0 methods paper, plus FEBR /
+      BDsolos label-normalisation helpers (v0.9.16).
+    contents:
+      - load_kssl_pedons
+      - load_kssl_pedons_gpkg
+      - load_kssl_pedons_with_nasis
+      - load_lucas_pedons
+      - load_embrapa_pedons
+      - load_febr_pedons
+      - normalise_febr_sibcs
+      - normalise_febr_wrb
+      - normalise_febr_usda
+      - benchmark_run_classification
+
+  - title: "Canonical fixtures"
+    desc: "One-call constructors for the 31 canonical fixtures (one per WRB RSG, plus auxiliaries) used in the test suite."
+    contents:
+      - matches("^make_.*_canonical$")
+
+  - title: "Helpers and miscellaneous"
+    contents:
+      - matches("^run_")
+      - matches("^compute_")
+      - matches("^load_")
+      - matches("^apply_")
+      - matches("^format_")
+      - matches("^validate_")
+      - matches("^strip_")
+      - matches("^as_chat_")
+      - matches("_features$")
+      - matches("_properties$")
+      - "%||%"
+      - arenic_texture
+      - cerosidade
+      - combine_priors
+      - cryic_conditions
+      - distrofico
+      - duripa
+      - eutrofico
+      - evaluate_rsg_tests
+      - fibrico
+      - fragipa
+      - hemico
+      - oxic_usda
+      - vertic_horizon
+      - protovertic
+      - panpaic
+      - tsitelic
+      - limonic
+      - make_synthetic_pedon_with_spectra
+      - mudanca_textural_abrupta
+      - ossl_library_template
+      - clear_ossl_cache
+      - download_ossl_subset
+      - download_ossl_subset_with_labels
+      - familia_mineralogia_argila_geral
+      - ossl_demo_sa
+      - planosol
+      - posterior_classify
+      - resolve_wrb_qualifiers
+      - saprico
+      - soilgrids_usda_lut
+      - soilgrids_wrb_lut
+      - subgrupo_planossolo_espessos
+      - subgrupo_planossolo_mesicos
+      - subgrupo_plintossolo_endico_concrecionario
+      - subgrupo_plintossolo_endico_litoplintico
+      - subgrupo_plintossolo_espessos
+
+  - title: "RSG-level gates and other materials"
+    contents:
+      - ferralsol
+      - gleysol
+      - vertisol
+      - acrisol
+      - alisol
+      - lixisol
+      - luvisol
+      - chernozem
+      - chernozem_strict
+      - kastanozem
+      - kastanozem_strict
+      - phaeozem
+      - andosol
+      - calcaric_material
+      - dolomitic_material
+      - hypersulfidic_material
+      - hyposulfidic_material
+      - solimovic_material
+      - technic_hard_material
+      - tephric_material
+
+  - title: "Engine selection and dispatch (v0.9.65)"
+    desc: >
+      Per-pedon engine-selection heuristic, engine-aware dispatch
+      (soilKey vs aqp), and side-by-side comparators.
+    contents:
+      - pick_engine
+      - pick_engine_batch
+      - classify_with_engine_heuristic
+      - compare_engines
+      - argic_aqp
+      - cambic_aqp
+
+  - title: "Canonical references (v0.9.62 -- v0.9.65)"
+    desc: >
+      Vendored WRB 2022 / KST 13 / Soil Taxonomy criteria and shared
+      lookup helpers for pkg vs vendored data sources.
+    contents:
+      - canonical_reference
+      - wrb2022_canonical
+      - kst13_canonical
+      - kst13_codes
+      - kst13_criteria
+      - st_features_canonical
+      - clear_kst13_cache
+      - coverage_report
+
+  - title: "SmartSolos / Embrapa AgroAPI integration (v0.9.54)"
+    desc: >
+      Cross-validation against Embrapa's PROLOG SiBCS classifier.
+    contents:
+      - classify_via_smartsolos_api
+      - compare_smartsolos
+
+  - title: "BDsolos loader and benchmarks (v0.9.55 -- v0.9.60)"
+    contents:
+      - benchmark_bdsolos
+      - download_bdsolos
+      - inspect_bdsolos_csv
+
+  - title: "Argic strong-films audit (v0.9.83)"
+    desc: >
+      Empirical audit of the SiBCS Cap 18 latossolic-vs-argic
+      precedence rule. Extracts the strong-clay-films decision into
+      a reusable helper so the rule can be validated on any
+      benchmark dataset (BDsolos RJ: 0.9% Latossolo false-positive
+      exclusion rate, 37.6% Argissolo correct retention rate).
+    contents:
+      - argic_with_strong_clay_films
+      - audit_argic_strong_films
+
+  - title: "Lazy-fetch benchmark caches (v0.9.94)"
+    desc: >
+      The four large benchmark caches (AfSP, KSSL, KSSL+NASIS, WoSIS
+      stratified, ~1 MB each) are no longer bundled in the CRAN
+      source tarball. They are downloaded on demand from a versioned
+      GitHub Release into the user cache (~/Library/Application
+      Support/.../soilKey/data on macOS) on first call.
+    contents:
+      - download_extdata_cache
+
+  - title: "FEBR loader (v0.9.57)"
+    desc: >
+      UFSM Free Brazilian Repository readers (~249 datasets,
+      ~36k horizons).
+    contents:
+      - read_febr_pedons
+      - febr_index_munsell
+
+  - title: "Redape curated GeoTab dataset (v0.9.71)"
+    desc: >
+      Embrapa Redape repository (DOI 10.48432/PYKKA7) -- 96 hand-
+      reviewed Brazilian soil profiles, suitable as a gold-standard
+      benchmark for SiBCS classification.
+    contents:
+      - download_redape_dataset
+      - load_redape_pedons
+      - benchmark_redape
+
+  - title: "WoSIS stratified WRB benchmark (v0.9.73)"
+    desc: >
+      ISRIC WoSIS bundled cache, 130 profiles balanced across 26
+      WRB Reference Soil Groups (5 per RSG). The first WRB benchmark
+      with profile depth (analog of Redape but for WRB), pulled via
+      RSG-filtered GraphQL queries.
+    contents:
+      - load_wosis_stratified_sample
+      - read_wosis_profiles_graphql
+      - wosis_profile_to_pedon
+
+  - title: "USDA Soil Taxonomy <-> WRB cross-walk (v0.9.74)"
+    desc: >
+      KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6
+      USDA Order/Suborder -> WRB RSG correlation. Provides the
+      richest WRB benchmark to date (CEC 65%, Ca/Mg/K/Na 40-56%
+      vs WoSIS-stratified ~30%).
+    contents:
+      - usda_to_wrb_rsg
+      - annotate_wrb_from_usda
+      - benchmark_wrb_vs_usda
+      - load_kssl_sample
+
+  - title: "KSSL + NASIS morphological-enriched sample (v0.9.75)"
+    desc: >
+      Joins KSSL lab gpkg with NASIS Morphological sqlite -- adds
+      Munsell colours, structure, clay films, slickensides
+      (Munsell 0% -> 89.6% vs lab-only).
+    contents:
+      - load_kssl_nasis_sample
+
+  - title: "Africa Soil Profiles (AfSP) WRB benchmark (v0.9.77)"
+    desc: >
+      ISRIC AfSP v1.2 (Leenaars et al. 2014) -- 18,533 georeferenced
+      African profiles, ~7000 with WRB 2006 RSG. Loader + bundled
+      120-pedon stratified sample (5 per RSG x 24 RSGs). Achieves
+      28% Order accuracy with strong Cambisol/Histosol (100%) and
+      Ferralsol/Solonetz (80%) recall.
+    contents:
+      - load_afsp_pedons
+      - load_afsp_sample
+      - benchmark_afsp
+      - wrb06_code_to_rsg
+
+  - title: "LUCAS Soil 2018 (v0.9.49 -- v0.9.50)"
+    contents:
+      - benchmark_lucas_2018
+      - attach_lucas_spectra
+
+  - title: "Unified benchmark and robustness (v0.9.61)"
+    contents:
+      - benchmark_unified
+      - run_all_benchmarks
+      - benchmark_performance
+      - batch_robustness
+      - classification_robustness
+      - classify_with_uncertainty
+      - get_perturbation_scale
+
+  - title: "OSSL spectra: PLS training and prediction"
+    desc: >
+      Build PLS regressors from OSSL Vis-NIR/SWIR spectra and predict
+      lab properties / Munsell / XYZ / generic targets.
+    contents:
+      - train_pls_from_ossl
+      - predict_from_spectra
+      - predict_lab_from_spectra
+      - predict_munsell_from_spectra
+      - predict_xyz_from_spectra
+      - predict.soilKey_pls_model
+      - print.soilKey_pls_model
+      - fill_munsell_from_spectra
+
+  - title: "Spatial / database lookups"
+    desc: >
+      ESDB attributes, SoilGrids and MapBiomas-Solos pulls.
+    contents:
+      - available_esdb_attributes
+      - lookup_esdb
+      - lookup_soilgrids
+      - lookup_mapbiomas_solos
+
+  - title: "GlobalSoilMap depth harmonisation and aqp helpers"
+    contents:
+      - GSM_DEPTHS
+      - harmonize_to_gsm
+      - pedon_to_spc
+      - pedon_json_schema
+      - texture_class_from_pct
+
+  - title: "Internal -- motor taxonômico"
+    desc: >
+      Os preditores atômicos do motor determinístico -- qualifiers WRB
+      (`qual_*`), gates de Subgrupo/Grande-Grupo USDA (`*_usda`), atributos
+      e horizontes diagnósticos SiBCS (`carater_*`, `horizonte_*`), e os
+      dispatchers por Ordem. Continuam exportados e chamáveis, mas são
+      despachados por nome pela chave (`classify_*`); não fazem parte da
+      API pública curada.
+    contents:
+      - has_keyword("internal")
+
+articles:
+  - title: "Vignettes"
+    navbar: ~
+    contents:
+      - v01_getting_started
+      - v01_getting_started_pt
+      - v02_classify_wrb_end_to_end
+      - v03_cross_system_correlation
+      - v04_vlm_extraction
+      - v05_spatial_spectra_pipeline
+      - v06_wosis_benchmark
+      - v07_end_to_end_pipeline
+      - v08_kssl_nasis_multilevel
+      - v09_perfil_embrapa_pt
+      - v10_shiny_pro
+      - v11_photo_only
+      - v12_uncertainty
+
+news:
+  releases:
+    - text: "v0.9.8"
+      href: "https://github.com/HugoMachadoRodrigues/soilKey/releases/tag/v0.9.8"
+
+footer:
+  structure:
+    left:  developed_by
+    right: built_with
+  components:
+    developed_by: >
+      Developed by [Hugo Rodrigues](https://orcid.org/0000-0002-8070-8126)
+      at [UFRRJ -- Departamento de Solos](https://institutos.ufrrj.br/ia/).

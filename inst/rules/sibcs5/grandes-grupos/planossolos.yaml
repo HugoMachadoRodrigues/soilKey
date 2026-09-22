@@ -1,0 +1,53 @@
+# =============================================================
+# SiBCS 5a edicao -- Planossolos (Cap 15, pp 251-260)
+#
+# Grandes grupos -- 8 classes em 2 subordens:
+#   SN Natricos: 3 GGs (Carbonaticos / Salicos / Orticos)
+#   SX Haplicos: 5 GGs (Carbonaticos / Salicos / Aluminicos / Distroficos / Eutroficos)
+# =============================================================
+
+grandes_grupos:
+
+  # -- SN Natricos -----
+  "SN":
+    - code: "SNca"
+      name: "Planossolos Nátricos Carbonáticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "SNs"
+      name: "Planossolos Nátricos Sálicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "SNo"
+      name: "Planossolos Nátricos Órticos"
+      tests:
+        default: true
+
+  # -- SX Haplicos -----
+  "SX":
+    - code: "SXca"
+      name: "Planossolos Háplicos Carbonáticos"
+      tests:
+        all_of:
+          - carater_carbonatico: { max_depth_cm: 150 }
+    - code: "SXs"
+      name: "Planossolos Háplicos Sálicos"
+      tests:
+        all_of:
+          - carater_salico: { max_depth_cm: 150 }
+    - code: "SXal"
+      name: "Planossolos Háplicos Alumínicos"
+      tests:
+        all_of:
+          - carater_alitico: {}
+    - code: "SXd"
+      name: "Planossolos Háplicos Distróficos"
+      tests:
+        all_of:
+          - distrofico: {}
+    - code: "SXe"
+      name: "Planossolos Háplicos Eutróficos"
+      tests:
+        default: true

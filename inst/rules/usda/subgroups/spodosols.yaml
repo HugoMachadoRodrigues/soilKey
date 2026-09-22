@@ -1,0 +1,658 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Spodosols Subgroups -- Cap 14, pp 311-320
+# =============================================================
+# 121 SGs total: 40 Aquods + 10 Gelods + 24 Cryods + 9 Humods +
+#                38 Orthods.
+# =============================================================
+
+subgroups:
+
+  # ====== AQUODS Subgroups ======
+
+  "CAA":  # Cryaquods (6)
+    - code: "CAAA"
+      name: "Lithic Cryaquods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CAAB"
+      name: "Placic Cryaquods"
+      tests:
+        all_of:
+          - placic_horizon_usda: {}
+    - code: "CAAC"
+      name: "Duric Cryaquods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CAAD"
+      name: "Andic Cryaquods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CAAE"
+      name: "Entic Cryaquods"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "CAAF"
+      name: "Typic Cryaquods"
+      tests:
+        default: true
+
+  "CAB":  # Alaquods (12)
+    - code: "CABA"
+      name: "Lithic Alaquods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CABB"
+      name: "Duric Alaquods"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "CABC"
+      name: "Histic Alaquods"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "CABD"
+      name: "Alfic Arenic Alaquods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "CABE"
+      name: "Arenic Ultic Alaquods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "CABF"
+      name: "Arenic Umbric Alaquods"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+          - arenic_subgroup_usda: {}
+    - code: "CABG"
+      name: "Arenic Alaquods"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "CABH"
+      name: "Grossarenic Alaquods"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+    - code: "CABI"
+      name: "Alfic Alaquods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+    - code: "CABJ"
+      name: "Ultic Alaquods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "CABK"
+      name: "Aeric Alaquods"
+      tests:
+        all_of:
+          - aeric_subgroup_usda: {}
+    - code: "CABL"
+      name: "Typic Alaquods"
+      tests:
+        default: true
+
+  "CAC":  # Fragiaquods (4)
+    - code: "CACA"
+      name: "Histic Fragiaquods"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "CACB"
+      name: "Haploplaggic Fragiaquods"
+      tests:
+        default: false
+      notes: "v0.8: Plaggen partial; deferred to v0.9 (anthropic)."
+    - code: "CACC"
+      name: "Argic Fragiaquods"
+      tests:
+        all_of:
+          - argic_subgroup_usda: {}
+    - code: "CACD"
+      name: "Typic Fragiaquods"
+      tests:
+        default: true
+
+  "CAD":  # Placaquods (2)
+    - code: "CADA"
+      name: "Andic Placaquods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CADB"
+      name: "Typic Placaquods"
+      tests:
+        default: true
+
+  "CAE":  # Duraquods (3)
+    - code: "CAEA"
+      name: "Histic Duraquods"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "CAEB"
+      name: "Andic Duraquods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CAEC"
+      name: "Typic Duraquods"
+      tests:
+        default: true
+
+  "CAF":  # Epiaquods (7)
+    - code: "CAFA"
+      name: "Lithic Epiaquods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CAFB"
+      name: "Histic Epiaquods"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "CAFC"
+      name: "Andic Epiaquods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CAFD"
+      name: "Alfic Epiaquods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+    - code: "CAFE"
+      name: "Ultic Epiaquods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "CAFF"
+      name: "Umbric Epiaquods"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "CAFG"
+      name: "Typic Epiaquods"
+      tests:
+        default: true
+
+  "CAG":  # Endoaquods (6)
+    - code: "CAGA"
+      name: "Lithic Endoaquods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CAGB"
+      name: "Histic Endoaquods"
+      tests:
+        all_of:
+          - histic_subgroup_usda: {}
+    - code: "CAGC"
+      name: "Andic Endoaquods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CAGD"
+      name: "Argic Endoaquods"
+      tests:
+        all_of:
+          - argic_subgroup_usda: {}
+    - code: "CAGE"
+      name: "Umbric Endoaquods"
+      tests:
+        all_of:
+          - umbric_subgroup_usda: {}
+    - code: "CAGF"
+      name: "Typic Endoaquods"
+      tests:
+        default: true
+
+  # ====== GELODS Subgroups ======
+
+  "CBA":  # Humigelods (5)
+    - code: "CBAA"
+      name: "Lithic Humigelods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CBAB"
+      name: "Andic Humigelods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CBAC"
+      name: "Aquic Humigelods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CBAD"
+      name: "Turbic Humigelods"
+      tests:
+        all_of:
+          - turbic_subgroup_usda: {}
+    - code: "CBAE"
+      name: "Typic Humigelods"
+      tests:
+        default: true
+
+  "CBB":  # Haplogelods (5)
+    - code: "CBBA"
+      name: "Lithic Haplogelods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CBBB"
+      name: "Andic Haplogelods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CBBC"
+      name: "Aquic Haplogelods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CBBD"
+      name: "Turbic Haplogelods"
+      tests:
+        all_of:
+          - turbic_subgroup_usda: {}
+    - code: "CBBE"
+      name: "Typic Haplogelods"
+      tests:
+        default: true
+
+  # ====== CRYODS Subgroups ======
+
+  "CCA":  # Placocryods (3)
+    - code: "CCAA"
+      name: "Andic Placocryods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CCAB"
+      name: "Humic Placocryods"
+      tests:
+        all_of:
+          - humic_subgroup_usda: {}
+    - code: "CCAC"
+      name: "Typic Placocryods"
+      tests:
+        default: true
+
+  "CCB":  # Duricryods (6)
+    - code: "CCBA"
+      name: "Aquandic Duricryods"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "CCBB"
+      name: "Andic Duricryods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CCBC"
+      name: "Aquic Duricryods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CCBD"
+      name: "Oxyaquic Duricryods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CCBE"
+      name: "Humic Duricryods"
+      tests:
+        all_of:
+          - humic_subgroup_usda: {}
+    - code: "CCBF"
+      name: "Typic Duricryods"
+      tests:
+        default: true
+
+  "CCC":  # Humicryods (7)
+    - code: "CCCA"
+      name: "Lithic Humicryods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CCCB"
+      name: "Aquandic Humicryods"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "CCCC"
+      name: "Andic Humicryods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CCCD"
+      name: "Folistic Humicryods"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "CCCE"
+      name: "Aquic Humicryods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CCCF"
+      name: "Oxyaquic Humicryods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CCCG"
+      name: "Typic Humicryods"
+      tests:
+        default: true
+
+  "CCD":  # Haplocryods (8)
+    - code: "CCDA"
+      name: "Lithic Haplocryods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CCDB"
+      name: "Aquandic Haplocryods"
+      tests:
+        all_of:
+          - aquandic_subgroup_usda: {}
+    - code: "CCDC"
+      name: "Andic Haplocryods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CCDD"
+      name: "Folistic Haplocryods"
+      tests:
+        all_of:
+          - folistic_subgroup_usda: {}
+    - code: "CCDE"
+      name: "Aquic Haplocryods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CCDF"
+      name: "Oxyaquic Haplocryods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CCDG"
+      name: "Entic Haplocryods"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "CCDH"
+      name: "Typic Haplocryods"
+      tests:
+        default: true
+
+  # ====== HUMODS Subgroups ======
+
+  "CDA":  # Placohumods (2)
+    - code: "CDAA"
+      name: "Andic Placohumods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CDAB"
+      name: "Typic Placohumods"
+      tests:
+        default: true
+
+  "CDB":  # Durihumods (2)
+    - code: "CDBA"
+      name: "Andic Durihumods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CDBB"
+      name: "Typic Durihumods"
+      tests:
+        default: true
+
+  "CDC":  # Fragihumods (1)
+    - code: "CDCA"
+      name: "Typic Fragihumods"
+      tests:
+        default: true
+
+  "CDD":  # Haplohumods (4)
+    - code: "CDDA"
+      name: "Lithic Haplohumods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CDDB"
+      name: "Andic Haplohumods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CDDC"
+      name: "Haploplaggic Haplohumods"
+      tests:
+        default: false
+      notes: "v0.8: Plaggen partial; deferred."
+    - code: "CDDD"
+      name: "Typic Haplohumods"
+      tests:
+        default: true
+
+  # ====== ORTHODS Subgroups ======
+
+  "CEA":  # Placorthods (1)
+    - code: "CEAA"
+      name: "Typic Placorthods"
+      tests:
+        default: true
+
+  "CEB":  # Durorthods (2)
+    - code: "CEBA"
+      name: "Andic Durorthods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CEBB"
+      name: "Typic Durorthods"
+      tests:
+        default: true
+
+  "CEC":  # Fragiorthods (8)
+    - code: "CECA"
+      name: "Aquic Fragiorthods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CECB"
+      name: "Alfic Oxyaquic Fragiorthods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+          - oxyaquic_subgroup_usda: {}
+    - code: "CECC"
+      name: "Oxyaquic Fragiorthods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CECD"
+      name: "Haploplaggic Fragiorthods"
+      tests:
+        default: false
+      notes: "v0.8: Plaggen partial; deferred."
+    - code: "CECE"
+      name: "Alfic Fragiorthods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+    - code: "CECF"
+      name: "Ultic Fragiorthods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "CECG"
+      name: "Entic Fragiorthods"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "CECH"
+      name: "Typic Fragiorthods"
+      tests:
+        default: true
+
+  "CED":  # Alorthods (10)
+    - code: "CEDA"
+      name: "Oxyaquic Alorthods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CEDB"
+      name: "Arenic Ultic Alorthods"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+          - ultic_subgroup_usda: {}
+    - code: "CEDC"
+      name: "Arenic Alorthods"
+      tests:
+        all_of:
+          - arenic_subgroup_usda: {}
+    - code: "CEDD"
+      name: "Entic Grossarenic Alorthods"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+          - entic_subgroup_usda: {}
+    - code: "CEDE"
+      name: "Entic Alorthods"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "CEDF"
+      name: "Grossarenic Alorthods"
+      tests:
+        all_of:
+          - grossarenic_subgroup_usda: {}
+    - code: "CEDG"
+      name: "Haploplaggic Alorthods"
+      tests:
+        default: false
+      notes: "v0.8: Plaggen partial; deferred."
+    - code: "CEDH"
+      name: "Alfic Alorthods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+    - code: "CEDI"
+      name: "Ultic Alorthods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "CEDJ"
+      name: "Typic Alorthods"
+      tests:
+        default: true
+
+  "CEE":  # Haplorthods (17)
+    - code: "CEEA"
+      name: "Entic Lithic Haplorthods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - entic_subgroup_usda: {}
+    - code: "CEEB"
+      name: "Lithic Haplorthods"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "CEEC"
+      name: "Fragiaquic Haplorthods"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+          - aquic_subgroup_usda: {}
+    - code: "CEED"
+      name: "Aqualfic Haplorthods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - alfic_subgroup_usda: {}
+    - code: "CEEE"
+      name: "Aquentic Haplorthods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+          - entic_subgroup_usda: {}
+    - code: "CEEF"
+      name: "Aquic Haplorthods"
+      tests:
+        all_of:
+          - aquic_subgroup_usda: {}
+    - code: "CEEG"
+      name: "Alfic Oxyaquic Haplorthods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+          - oxyaquic_subgroup_usda: {}
+    - code: "CEEH"
+      name: "Oxyaquic Ultic Haplorthods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+          - ultic_subgroup_usda: {}
+    - code: "CEEI"
+      name: "Fragic Haplorthods"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "CEEJ"
+      name: "Lamellic Oxyaquic Haplorthods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+          - lamellic_subgroup_usda: {}
+    - code: "CEEK"
+      name: "Lamellic Haplorthods"
+      tests:
+        all_of:
+          - lamellic_subgroup_usda: {}
+    - code: "CEEL"
+      name: "Oxyaquic Haplorthods"
+      tests:
+        all_of:
+          - oxyaquic_subgroup_usda: {}
+    - code: "CEEM"
+      name: "Andic Haplorthods"
+      tests:
+        all_of:
+          - andic_subgroup_usda: {}
+    - code: "CEEN"
+      name: "Alfic Haplorthods"
+      tests:
+        all_of:
+          - alfic_subgroup_usda: {}
+    - code: "CEEO"
+      name: "Ultic Haplorthods"
+      tests:
+        all_of:
+          - ultic_subgroup_usda: {}
+    - code: "CEEP"
+      name: "Entic Haplorthods"
+      tests:
+        all_of:
+          - entic_subgroup_usda: {}
+    - code: "CEEQ"
+      name: "Typic Haplorthods"
+      tests:
+        default: true

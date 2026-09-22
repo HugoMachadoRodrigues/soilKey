@@ -1,0 +1,59 @@
+{
+  "title": "soilKey: Automated soil profile classification per WRB 2022, SiBCS 5, and USDA Soil Taxonomy 13",
+  "description": "soilKey implements deterministic classification keys for the World Reference Base for Soil Resources 2022 (4th edition), the Brazilian System of Soil Classification (SiBCS, 5th edition), and USDA Soil Taxonomy (13th edition, Path C). It provides a unified profile representation with explicit per-attribute provenance, multimodal extraction from field reports and photos via vision-language models, spatial priors from SoilGrids and national soil maps, and gap-filling of soil attributes from Vis-NIR or MIR spectra via the Open Soil Spectral Library (OSSL). The taxonomic key itself is never delegated to a language model.",
+  "creators": [
+    {
+      "name": "Rodrigues, Hugo",
+      "affiliation": "Universidade Federal Rural do Rio de Janeiro (UFRRJ), Departamento de Solos",
+      "orcid": "0000-0002-8070-8126"
+    }
+  ],
+  "keywords": [
+    "soil classification",
+    "WRB 2022",
+    "Soil Taxonomy",
+    "SiBCS",
+    "Brazilian Soil Classification System",
+    "pedology",
+    "pedometrics",
+    "visible-near-infrared spectroscopy",
+    "OSSL",
+    "SoilGrids",
+    "vision-language models",
+    "R package",
+    "open science"
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "language": "eng",
+  "communities": [
+    {"identifier": "soil-science"}
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "url",
+      "identifier": "https://github.com/HugoMachadoRodrigues/soilKey",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "scheme": "doi",
+      "identifier": "10.4060/i3794en",
+      "relation": "references",
+      "resource_type": "publication-book"
+    },
+    {
+      "scheme": "url",
+      "identifier": "https://www.embrapa.br/solos/sibcs",
+      "relation": "references",
+      "resource_type": "publication-book"
+    },
+    {
+      "scheme": "url",
+      "identifier": "https://www.nrcs.usda.gov/sites/default/files/2022-09/Keys-to-Soil-Taxonomy.pdf",
+      "relation": "references",
+      "resource_type": "publication-book"
+    }
+  ]
+}

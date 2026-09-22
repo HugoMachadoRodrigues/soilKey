@@ -1,0 +1,957 @@
+# ============================================================================
+# SiBCS 5a edicao (Embrapa, 2018) -- Diagnosticos do 2o nivel categorico
+# (subordens), Caps 5-17.
+#
+# 44 subordens distribuidas em 13 ordens. Cada funcao testa o criterio
+# diferenciador da subordem -- assumindo que o pedon ja passou no
+# diagnostico da ordem (1o nivel). A funcao retorna um DiagnosticResult.
+#
+# A ordem das subordens dentro de cada ordem segue a chave do livro
+# (Cap 5-17): a primeira subordem que satisfaz o criterio captura o
+# perfil; "Haplicos" (ou equivalente) e o catch-all da ordem.
+# ============================================================================
+
+
+# Helper: extrai o B-horizon-like layer principal para testes Munsell
+# tipicos (matiz/valor/croma na maior parte do horizonte B).
+.b_layers <- function(pedon) {
+  h <- pedon$horizons
+  desg <- h$designation
+  if (any(!is.na(desg))) {
+    b <- which(grepl("^B[wt]?", desg, ignore.case = FALSE) &
+                 !grepl("^BC|^Bt0", desg))
+    if (length(b) > 0L) return(b)
+  }
+  # Fallback: 2nd horizon and below (excludes A surface).
+  if (nrow(h) >= 2L) seq.int(2L, nrow(h)) else integer(0)
+}
+
+# Helper: hue-name predicate. Aceita patterns como "5YR" ou cores mais
+# vermelhas/amarelas. WRB uses 7.5R, 5R, 2.5YR, 5YR, 7.5YR, 10YR, 2.5Y,
+# 5Y, 10Y.
+.hue_redder_or_eq <- function(hues, target_hue) {
+  ladder <- c("10R" = 10, "7.5R" = 9, "5R" = 8, "2.5R" = 7,
+              "10YR" = 6, "7.5YR" = 5, "5YR" = 4, "2.5YR" = 3,
+              "10Y" = 2, "7.5Y" = 1.5, "5Y" = 1, "2.5Y" = 0)
+  # NOTE: index goes redder -> yellower; invert for "redder than".
+  red_score <- function(h) {
+    if (is.na(h)) return(NA_real_)
+    key <- toupper(trimws(h))
+    if (key %in% names(ladder)) ladder[[key]] else NA_real_
+  }
+  target <- red_score(target_hue)
+  vapply(hues, function(h) {
+    s <- red_score(h)
+    if (is.na(s) || is.na(target)) NA else s >= target
+  }, logical(1))
+}
+
+
+# ============================================================
+# 1. ARGISSOLOS (Cap 5) -- 5 subordens
+# ============================================================
+
+#' Argissolos Bruno-Acinzentados (SiBCS Cap 5)
+#'
+#' Argissolos com horizonte B textural, com matiz \\>= 5YR e cor escura
+#' (valor \\<= 4 + croma \\<= 4 umidos) na maior parte do B (inclusive
+#' BA).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+argissolo_bruno_acinzentado <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- !is.na(hues) & !is.na(vals) & !is.na(chrs) &
+          .hue_redder_or_eq(hues, "5YR") &
+          vals <= 4 & chrs <= 4
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "argissolo_bruno_acinzentado",
+    passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(b_layers = bl, hues = hues,
+                     values = vals, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, Argissolos -- Bruno-Acinzentados"
+  )
+}
+
+
+#' Argissolos Acinzentados (SiBCS Cap 5)
+#'
+#' Matiz \\>= 7.5YR, valor \\>= 5, croma \\< 4 (cores mais cinzentas /
+#' palidas), na maior parte do B (inclusive BA).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+argissolo_acinzentado <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- !is.na(hues) & !is.na(vals) & !is.na(chrs) &
+          .hue_redder_or_eq(hues, "7.5YR") &
+          vals >= 5 & chrs < 4
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "argissolo_acinzentado",
+    passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(b_layers = bl, hues = hues,
+                     values = vals, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, Argissolos -- Acinzentados"
+  )
+}
+
+
+#' Argissolos Amarelos (SiBCS Cap 5)
+#'
+#' Matiz \\>= 7.5YR (mais amarelo) na maior parte do B, sem ser
+#' Acinzentado (croma \\>= 4).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+argissolo_amarelo <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- !is.na(hues) & .hue_redder_or_eq(hues, "7.5YR") &
+          (is.na(chrs) | chrs >= 4)
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "argissolo_amarelo", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(b_layers = bl, hues = hues, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, Argissolos -- Amarelos"
+  )
+}
+
+
+#' Argissolos Vermelhos (SiBCS Cap 5)
+#'
+#' Matiz \\<= 2.5YR (mais vermelho) na maior parte do B.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+argissolo_vermelho <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  ok <- !is.na(hues) & sapply(hues, function(hu) {
+    if (is.na(hu)) FALSE else
+      grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R)\\b", hu, ignore.case = TRUE)
+  })
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "argissolo_vermelho", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(b_layers = bl, hues = hues),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, Argissolos -- Vermelhos"
+  )
+}
+
+
+#' Argissolos Vermelho-Amarelos (catch-all dos Argissolos)
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+argissolo_vermelho_amarelo <- function(pedon) {
+  DiagnosticResult$new(
+    name = "argissolo_vermelho_amarelo", passed = TRUE,
+    layers = .b_layers(pedon),
+    evidence = list(catch_all = TRUE),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 5, Argissolos -- Vermelho-Amarelos (catch-all)"
+  )
+}
+
+
+# ============================================================
+# 2. CAMBISSOLOS (Cap 6) -- 4 subordens
+# ============================================================
+
+#' Cambissolos Histicos (Cap 6): horizonte histico sem espessura para Organossolo.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cambissolo_histico <- function(pedon) {
+  h <- horizonte_histico(pedon)
+  passed <- isTRUE(h$passed) && !isTRUE(organossolo(pedon)$passed)
+  DiagnosticResult$new(
+    name = "cambissolo_histico", passed = passed,
+    layers = h$layers, evidence = list(histico = h),
+    missing = h$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 6, Cambissolos -- Histicos"
+  )
+}
+
+#' Cambissolos Humicos (Cap 6): horizonte A humico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cambissolo_humico <- function(pedon) {
+  h <- horizonte_A_humico(pedon)
+  DiagnosticResult$new(
+    name = "cambissolo_humico", passed = h$passed,
+    layers = h$layers, evidence = list(a_humico = h),
+    missing = h$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 6, Cambissolos -- Humicos"
+  )
+}
+
+#' Cambissolos Fluvicos (Cap 6): carater fluvico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cambissolo_fluvico <- function(pedon) {
+  h <- carater_fluvico(pedon)
+  DiagnosticResult$new(
+    name = "cambissolo_fluvico", passed = h$passed,
+    layers = h$layers, evidence = list(fluvico = h),
+    missing = h$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 6, Cambissolos -- Fluvicos"
+  )
+}
+
+#' Cambissolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cambissolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "cambissolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 6, Cambissolos -- Haplicos (catch-all)"
+  )
+}
+
+
+# ============================================================
+# 3. CHERNOSSOLOS (Cap 7) -- 4 subordens
+# ============================================================
+
+#' Chernossolos Rendzicos (Cap 7): A chernozemico + (calcico/petrocalcico
+#' OR carater carbonatico).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+chernossolo_rendzico <- function(pedon) {
+  cal <- horizonte_calcico(pedon)
+  pet <- horizonte_petrocalcico(pedon)
+  cb  <- carater_carbonatico(pedon)
+  passed <- isTRUE(cal$passed) || isTRUE(pet$passed) || isTRUE(cb$passed)
+  DiagnosticResult$new(
+    name = "chernossolo_rendzico", passed = passed,
+    layers = unique(c(cal$layers, pet$layers, cb$layers)),
+    evidence = list(calcico = cal, petrocalcico = pet, carbonatico = cb),
+    missing = unique(c(cal$missing, pet$missing, cb$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 7, Chernossolos -- Rendzicos"
+  )
+}
+
+#' Chernossolos Ebanicos (Cap 7): caracter ebanico em B.
+#' v0.7.1: detecta via Munsell em B - hue 7.5YR ou mais amarelo: V<4 +
+#' C<3 umido; OR hue mais vermelho 7.5YR: preto/cinza muito escuro.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+chernossolo_ebanico <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- mapply(function(hu, v, c) {
+    if (is.na(v) || is.na(c)) return(FALSE)
+    if (!is.na(hu) && grepl("(7\\.5YR|10YR|2\\.5Y|5Y|10Y)", hu,
+                                 ignore.case = TRUE)) {
+      v < 4 && c < 3
+    } else {
+      v <= 3 && c <= 2  # darker / more reddish
+    }
+  }, hues, vals, chrs)
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "chernossolo_ebanico", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues, values = vals, chromas = chrs),
+    missing = if (all(is.na(vals))) "munsell_value_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 7, Chernossolos -- Ebanicos"
+  )
+}
+
+#' Chernossolos Argiluvicos (Cap 7): B textural abaixo do A chernozemico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+chernossolo_argiluvico <- function(pedon) {
+  bt <- B_textural(pedon)
+  DiagnosticResult$new(
+    name = "chernossolo_argiluvico", passed = bt$passed,
+    layers = bt$layers, evidence = list(b_textural = bt),
+    missing = bt$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 7, Chernossolos -- Argiluvicos"
+  )
+}
+
+#' Chernossolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+chernossolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "chernossolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 7, Chernossolos -- Haplicos (catch-all)"
+  )
+}
+
+
+# ============================================================
+# 4. ESPODOSSOLOS (Cap 8) -- 3 subordens
+# ============================================================
+
+# v0.7.1: separamos via designation pattern. Bh = Humilúvico,
+# Bs/Bhs = Ferrilúvico/Ferri-humilúvico. Mais robusto seria checar
+# Al-Fe-OC ratios mas v5 usa o B espódico subtype.
+
+#' Espodossolos Humiluvicos (Cap 8): B espodico tipo Bh (org. + Al,
+#' pouco/sem Fe).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+espodossolo_humiluvico <- function(pedon) {
+  h <- pedon$horizons
+  has_bh <- any(!is.na(h$designation) & grepl("^Bh\\b", h$designation))
+  has_bhs_or_bs <- any(!is.na(h$designation) &
+                          grepl("^Bhs|^Bs", h$designation))
+  passed <- has_bh && !has_bhs_or_bs
+  DiagnosticResult$new(
+    name = "espodossolo_humiluvico", passed = passed,
+    layers = which(grepl("^Bh\\b", h$designation %||% character(0))),
+    evidence = list(has_bh = has_bh, has_bhs_or_bs = has_bhs_or_bs),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Humiluvicos"
+  )
+}
+
+#' Espodossolos Ferriluvicos (Cap 8): B espodico tipo Bs (Fe + Al, baixo
+#' OC iluvial).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+espodossolo_ferriluvico <- function(pedon) {
+  h <- pedon$horizons
+  has_bs <- any(!is.na(h$designation) & grepl("^Bs\\b", h$designation))
+  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", h$designation))
+  passed <- has_bs && !has_bhs
+  DiagnosticResult$new(
+    name = "espodossolo_ferriluvico", passed = passed,
+    layers = which(grepl("^Bs\\b", h$designation %||% character(0))),
+    evidence = list(has_bs = has_bs, has_bhs = has_bhs),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Ferriluvicos"
+  )
+}
+
+#' Espodossolos Ferri-humiluvicos (Cap 8): B espodico tipo Bhs OR
+#' catch-all dos espodossolos.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+espodossolo_ferri_humiluvico <- function(pedon) {
+  h <- pedon$horizons
+  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", h$designation))
+  passed <- has_bhs ||
+              # catch-all: passa se nao casou nas duas primeiras
+              (!isTRUE(espodossolo_humiluvico(pedon)$passed) &&
+                 !isTRUE(espodossolo_ferriluvico(pedon)$passed))
+  DiagnosticResult$new(
+    name = "espodossolo_ferri_humiluvico", passed = passed,
+    layers = which(grepl("^Bhs", h$designation %||% character(0))),
+    evidence = list(has_bhs = has_bhs),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Ferri-humiluvicos (or catch-all)"
+  )
+}
+
+
+# ============================================================
+# 5. GLEISSOLOS (Cap 9) -- 4 subordens
+# ============================================================
+
+#' Gleissolos Tiomorficos (Cap 9): materiais sulfidricos OR horizonte
+#' sulfurico em < 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+gleissolo_tiomorfico <- function(pedon) {
+  hs <- horizonte_sulfurico(pedon)
+  passed <- isTRUE(hs$passed)
+  DiagnosticResult$new(
+    name = "gleissolo_tiomorfico", passed = passed,
+    layers = hs$layers, evidence = list(sulfurico = hs),
+    missing = hs$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 9, Gleissolos -- Tiomorficos"
+  )
+}
+
+#' Gleissolos Salicos (Cap 9): caracter salico em < 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+gleissolo_salico <- function(pedon) {
+  cs <- carater_salico(pedon)
+  DiagnosticResult$new(
+    name = "gleissolo_salico", passed = cs$passed,
+    layers = cs$layers, evidence = list(salico = cs),
+    missing = cs$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 9, Gleissolos -- Salicos"
+  )
+}
+
+#' Gleissolos Melanicos (Cap 9): horizonte hístico < 40 cm OR A humico,
+#' proeminente, chernozemico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+gleissolo_melanico <- function(pedon) {
+  h <- horizonte_histico(pedon)
+  ah <- horizonte_A_humico(pedon)
+  ap <- horizonte_A_proeminente(pedon)
+  ac <- horizonte_A_chernozemico(pedon)
+  passed <- isTRUE(h$passed) || isTRUE(ah$passed) ||
+              isTRUE(ap$passed) || isTRUE(ac$passed)
+  DiagnosticResult$new(
+    name = "gleissolo_melanico", passed = passed,
+    layers = unique(c(h$layers, ah$layers, ap$layers, ac$layers)),
+    evidence = list(histico = h, a_humico = ah,
+                     a_proeminente = ap, a_chernozemico = ac),
+    missing = unique(c(h$missing, ah$missing, ap$missing, ac$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 9, Gleissolos -- Melanicos"
+  )
+}
+
+#' Gleissolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+gleissolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "gleissolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 9, Gleissolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 6. LATOSSOLOS (Cap 10) -- 4 subordens
+# ============================================================
+
+#' Latossolos Brunos (Cap 10): matiz \\>= 7.5YR + valor \\<= 4 + croma
+#' \\<= 5 (cores brunadas) OR caracter retratil.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+latossolo_bruno <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- !is.na(hues) & !is.na(vals) & !is.na(chrs) &
+          .hue_redder_or_eq(hues, "7.5YR") & vals <= 4 & chrs <= 5
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "latossolo_bruno", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues, values = vals, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, Latossolos -- Brunos"
+  )
+}
+
+#' Latossolos Amarelos (Cap 10): matiz \\>= 7.5YR (mais amarelo).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+latossolo_amarelo <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  ok <- !is.na(hues) & .hue_redder_or_eq(hues, "7.5YR")
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "latossolo_amarelo", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, Latossolos -- Amarelos"
+  )
+}
+
+#' Latossolos Vermelhos (Cap 10): matiz \\<= 2.5YR (mais vermelho).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+latossolo_vermelho <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  ok <- !is.na(hues) & sapply(hues, function(hu) {
+    if (is.na(hu)) FALSE else
+      grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R)\\b", hu, ignore.case = TRUE)
+  })
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "latossolo_vermelho", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, Latossolos -- Vermelhos"
+  )
+}
+
+#' Latossolos Vermelho-Amarelos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+latossolo_vermelho_amarelo <- function(pedon) {
+  DiagnosticResult$new(
+    name = "latossolo_vermelho_amarelo", passed = TRUE,
+    layers = .b_layers(pedon),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 10, Latossolos -- Vermelho-Amarelos"
+  )
+}
+
+
+# ============================================================
+# 7. LUVISSOLOS (Cap 11) -- 2 subordens
+# ============================================================
+
+#' Luvissolos Cromicos (Cap 11): caracter cromico (cores fortes em B).
+#' Aplicado pela presenca de Munsell vermelho-amarelado em B com cromas
+#' altos.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+luvissolo_cromico <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  # caracter cromico: B com cores definidas (ver SiBCS Cap 1, Caracter cromico)
+  # 5YR ou mais vermelho com V>=3 e C>=4; OR matiz 5YR-10YR V>=4 C>=4;
+  # OR matiz 10YR-5Y V>=5 C>4
+  ok <- mapply(function(hu, v, c) {
+    if (is.na(hu) || is.na(v) || is.na(c)) return(FALSE)
+    if (grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R|5YR)", hu,
+                  ignore.case = TRUE)) v >= 3 && c >= 4
+    else if (grepl("^(7\\.5YR|10YR)", hu, ignore.case = TRUE)) v >= 4 && c >= 4
+    # SiBCS Cap 1 (c): only matiz mais amarelo que 10YR ate 5Y (2.5Y/5Y);
+    # the catch-all else previously applied (c) to ANY other hue, incl. hues
+    # yellower than 5Y.
+    else if (grepl("^(2\\.5Y|5Y)", hu, ignore.case = TRUE)) v >= 5 && c > 4
+    else FALSE
+  }, hues, vals, chrs)
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "luvissolo_cromico", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues, values = vals, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 11, Luvissolos -- Cromicos"
+  )
+}
+
+#' Luvissolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+luvissolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "luvissolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 11, Luvissolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 8. NEOSSOLOS (Cap 12) -- 4 subordens
+# ============================================================
+
+#' Neossolos Litolicos (Cap 12): contato litico ou litico fragmentario
+#' \\<= 50 cm.
+#'
+#' v0.9.29 adds an "implicit lithic contact" heuristic for the FEBR /
+#' BDsolos snapshot, where the surveyor often documents Neossolos
+#' Litolicos by simply stopping the profile description at the rock
+#' boundary (max profile depth \\<= 50 cm with no horizon explicitly
+#' marked R / Cr / Rk and no B horizon described). Per SiBCS Cap 12
+#' (p 219), Neossolos Litolicos are defined by lithic contact within
+#' 50 cm of the surface; in FEBR, this is signalled by the depth of
+#' the deepest described horizon rather than by an explicit pseudo-R
+#' record.
+#'
+#' The heuristic fires only when:
+#' \enumerate{
+#'   \item the deepest \code{bottom_cm} value is \\<= 50 cm,
+#'   \item no horizon designation begins with \code{B} (so we don't
+#'         accidentally flag shallow Argissolos / Latossolos / etc.
+#'         that have a Bt or Bw within 50 cm), AND
+#'   \item the canonical \code{contato_litico} / \code{contato_litico_
+#'         fragmentario} tests have NOT explicitly returned FALSE
+#'         (i.e. the surveyor did not describe a non-rock material
+#'         deeper than 50 cm).
+#' }
+#' Empirically, the heuristic flips ~190 of the 191 FEBR Litolicos
+#' from "neossolos regoliticos" (catch-all) to "neossolos litolicos"
+#' (correct), at the cost of a few false-positive Regoliticos that
+#' happen to be shallow (the FEBR confusion analysis showed only ~30
+#' shallow Regoliticos).
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+neossolo_litolico <- function(pedon) {
+  cl <- contato_litico(pedon)
+  cf <- contato_litico_fragmentario(pedon)
+  h <- pedon$horizons
+
+  # Direct evidence: explicit lithic / lithic-fragmentary contact
+  # within 50 cm.
+  shallow <- any(h$top_cm <= 50, na.rm = TRUE)
+  direct_pass <- (isTRUE(cl$passed) || isTRUE(cf$passed)) && shallow
+
+  # v0.9.29 implicit-contact heuristic. We deliberately do NOT
+  # require contato_litico to be TRUE / NA -- in FEBR snapshots
+  # contato_litico returns FALSE because the surveyor never entered
+  # an explicit "R" pseudo-horizon, even though the soil ends on
+  # rock. The heuristic conditions are:
+  #   * max profile depth <= 50 cm (shallow stop, suggestive of
+  #     rock contact)
+  #   * no B-horizon designation anywhere in the described horizons
+  #     (so we don't accidentally flag shallow Cambissolos /
+  #     Argissolos with a thin Bt or Bw within 50 cm)
+  #   * a non-empty bottom_cm column (otherwise we have no signal)
+  has_B_des <- !is.null(h$designation) &&
+                  any(!is.na(h$designation) &
+                        grepl("^[0-9]*B", h$designation))
+  any_bottom <- length(h$bottom_cm) > 0L && any(!is.na(h$bottom_cm))
+  max_depth <- if (any_bottom) max(h$bottom_cm, na.rm = TRUE) else NA_real_
+  shallow_no_B <- isTRUE(any_bottom) &&
+                    !is.na(max_depth) && max_depth <= 50 &&
+                    !isTRUE(has_B_des)
+
+  passed <- direct_pass || isTRUE(shallow_no_B)
+  evidence <- list(
+    litico              = cl,
+    litico_fragmentario = cf,
+    direct_pass         = direct_pass,
+    shallow_no_B_proxy  = shallow_no_B,
+    max_profile_depth_cm = max_depth,
+    has_B_designation    = has_B_des
+  )
+  DiagnosticResult$new(
+    name = "neossolo_litolico", passed = passed,
+    layers = unique(c(cl$layers, cf$layers)),
+    evidence = evidence,
+    missing = unique(c(cl$missing, cf$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Litolicos (p 219)"
+  )
+}
+
+#' Neossolos Fluvicos (Cap 12): caracter fluvico em < 150 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+neossolo_fluvico <- function(pedon) {
+  cf <- carater_fluvico(pedon)
+  DiagnosticResult$new(
+    name = "neossolo_fluvico", passed = cf$passed,
+    layers = cf$layers, evidence = list(fluvico = cf),
+    missing = cf$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Fluvicos"
+  )
+}
+
+#' Neossolos Quartzarenicos (Cap 12): textura areia/areia franca em
+#' todos os horizontes ate 150 cm + 95\% quartzo.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+neossolo_quartzarenico <- function(pedon) {
+  h <- pedon$horizons
+  layers_in_150 <- which(h$top_cm <= 150)
+  if (length(layers_in_150) == 0L) {
+    return(DiagnosticResult$new(
+      name = "neossolo_quartzarenico", passed = FALSE,
+      layers = integer(0), evidence = list(),
+      missing = character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Quartzarenicos"
+    ))
+  }
+  sand <- h$sand_pct[layers_in_150]
+  clay <- h$clay_pct[layers_in_150]
+  # SiBCS Cap 1 textural classes are defined in g/kg (areia >= 700 g/kg
+  # AND clay < 150-200 g/kg). v0.9.35: our schema stores sand_pct and
+  # clay_pct in PERCENT (0-100), so convert thresholds: sand >= 70 %,
+  # clay < 20 % (areia franca; the more permissive of the two textura
+  # arenosa cutoffs). The pre-v0.9.35 code used 700/200 unconverted,
+  # which never fired on properly-loaded FEBR data and caused the 9
+  # FEBR Quartzarenicos to be misrouted to Regoliticos.
+  is_arenoso <- !is.na(sand) & !is.na(clay) &
+                  sand >= 70 & clay < 20
+  passed <- length(is_arenoso) > 0L && all(is_arenoso, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "neossolo_quartzarenico", passed = passed,
+    layers = if (passed) layers_in_150 else integer(0),
+    evidence = list(sand = sand, clay = clay),
+    missing = if (all(is.na(sand))) "sand_pct" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Quartzarenicos"
+  )
+}
+
+#' Neossolos Regoliticos (catch-all dos Neossolos).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+neossolo_regolitico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "neossolo_regolitico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 12, Neossolos -- Regoliticos"
+  )
+}
+
+
+# ============================================================
+# 9. NITOSSOLOS (Cap 13) -- 3 subordens
+# ============================================================
+
+#' Nitossolos Brunos (Cap 13): matiz \\>= 7.5YR + valor <= 4 + croma <= 5.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+nitossolo_bruno <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  vals <- h$munsell_value_moist[bl]
+  chrs <- h$munsell_chroma_moist[bl]
+  ok <- !is.na(hues) & !is.na(vals) & !is.na(chrs) &
+          .hue_redder_or_eq(hues, "7.5YR") & vals <= 4 & chrs <= 5
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "nitossolo_bruno", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues, values = vals, chromas = chrs),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, Nitossolos -- Brunos"
+  )
+}
+
+#' Nitossolos Vermelhos (Cap 13): matiz \\<= 2.5YR.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+nitossolo_vermelho <- function(pedon) {
+  h <- pedon$horizons
+  bl <- .b_layers(pedon)
+  hues <- h$munsell_hue_moist[bl]
+  ok <- !is.na(hues) & sapply(hues, function(hu) {
+    if (is.na(hu)) FALSE else
+      grepl("^(2\\.5YR|10R|7\\.5R|5R|2\\.5R)\\b", hu, ignore.case = TRUE)
+  })
+  passed <- any(ok, na.rm = TRUE)
+  DiagnosticResult$new(
+    name = "nitossolo_vermelho", passed = passed,
+    layers = bl[which(ok)],
+    evidence = list(hues = hues),
+    missing = if (all(is.na(hues))) "munsell_hue_moist" else character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, Nitossolos -- Vermelhos"
+  )
+}
+
+#' Nitossolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+nitossolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "nitossolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 13, Nitossolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 10. ORGANOSSOLOS (Cap 14) -- 3 subordens
+# ============================================================
+
+#' Organossolos Tiomorficos (Cap 14): materiais sulfidricos OR
+#' horizonte sulfurico em < 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+organossolo_tiomorfico <- function(pedon) {
+  hs <- horizonte_sulfurico(pedon)
+  DiagnosticResult$new(
+    name = "organossolo_tiomorfico", passed = hs$passed,
+    layers = hs$layers, evidence = list(sulfurico = hs),
+    missing = hs$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, Organossolos -- Tiomorficos"
+  )
+}
+
+#' Organossolos Folicos (Cap 14): horizonte O histico (drenado).
+#' Detectado via designation pattern \"^O\".
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+organossolo_folico <- function(pedon) {
+  h <- pedon$horizons
+  ok <- !is.na(h$designation) & grepl("^O[ahde]?", h$designation)
+  passed <- any(ok)
+  DiagnosticResult$new(
+    name = "organossolo_folico", passed = passed,
+    layers = which(ok),
+    evidence = list(designations = h$designation),
+    missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, Organossolos -- Folicos"
+  )
+}
+
+#' Organossolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+organossolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "organossolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 14, Organossolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 11. PLANOSSOLOS (Cap 15) -- 2 subordens
+# ============================================================
+
+#' Planossolos Natricos (Cap 15): caracter sodico em \\< 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+planossolo_natrico <- function(pedon) {
+  cs <- carater_sodico(pedon)
+  DiagnosticResult$new(
+    name = "planossolo_natrico", passed = cs$passed,
+    layers = cs$layers, evidence = list(sodico = cs),
+    missing = cs$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 15, Planossolos -- Natricos"
+  )
+}
+
+#' Planossolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+planossolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "planossolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 15, Planossolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 12. PLINTOSSOLOS (Cap 16) -- 3 subordens
+# ============================================================
+
+#' Plintossolos Petricos (Cap 16): horizonte concrecionario OR
+#' litoplintico (sem horizonte plintico precedendo).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+plintossolo_petrico <- function(pedon) {
+  hc <- horizonte_concrecionario(pedon)
+  hl <- horizonte_litoplintico(pedon)
+  hp <- horizonte_plintico(pedon)
+  passed <- (isTRUE(hc$passed) || isTRUE(hl$passed)) &&
+              !(isTRUE(hp$passed) &&
+                  any(pedon$horizons$top_cm[hp$layers] <
+                          min(c(hc$layers, hl$layers), Inf), na.rm = TRUE))
+  DiagnosticResult$new(
+    name = "plintossolo_petrico", passed = passed,
+    layers = unique(c(hc$layers, hl$layers)),
+    evidence = list(concrecionario = hc, litoplintico = hl,
+                     plintico_above = hp),
+    missing = unique(c(hc$missing, hl$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16, Plintossolos -- Petricos"
+  )
+}
+
+#' Plintossolos Argiluvicos (Cap 16): horizonte plintico + B textural OR
+#' carater argiluvico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+plintossolo_argiluvico <- function(pedon) {
+  hp <- horizonte_plintico(pedon)
+  bt <- B_textural(pedon)
+  passed <- isTRUE(hp$passed) && isTRUE(bt$passed)
+  DiagnosticResult$new(
+    name = "plintossolo_argiluvico", passed = passed,
+    layers = intersect(hp$layers, bt$layers),
+    evidence = list(plintico = hp, b_textural = bt),
+    missing = unique(c(hp$missing, bt$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16, Plintossolos -- Argiluvicos"
+  )
+}
+
+#' Plintossolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+plintossolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "plintossolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 16, Plintossolos -- Haplicos"
+  )
+}
+
+
+# ============================================================
+# 13. VERTISSOLOS (Cap 17) -- 3 subordens
+# ============================================================
+
+#' Vertissolos Hidromorficos (Cap 17): horizonte glei OR caracter
+#' redoxico.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+vertissolo_hidromorfico <- function(pedon) {
+  hg <- horizonte_glei(pedon)
+  cr <- carater_redoxico(pedon)
+  passed <- isTRUE(hg$passed) || isTRUE(cr$passed)
+  DiagnosticResult$new(
+    name = "vertissolo_hidromorfico", passed = passed,
+    layers = unique(c(hg$layers, cr$layers)),
+    evidence = list(glei = hg, redoxico = cr),
+    missing = unique(c(hg$missing, cr$missing)),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 17, Vertissolos -- Hidromorficos"
+  )
+}
+
+#' Vertissolos Ebanicos (Cap 17): caracter ebanico em B (cores escuras
+#' dominantes).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+vertissolo_ebanico <- function(pedon) {
+  # reuse the ebanico Munsell test from chernossolo_ebanico but layers
+  # already vertic.
+  ce <- chernossolo_ebanico(pedon)
+  DiagnosticResult$new(
+    name = "vertissolo_ebanico", passed = ce$passed,
+    layers = ce$layers, evidence = list(ebanico = ce),
+    missing = ce$missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 17, Vertissolos -- Ebanicos"
+  )
+}
+
+#' Vertissolos Haplicos (catch-all).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+vertissolo_haplico <- function(pedon) {
+  DiagnosticResult$new(
+    name = "vertissolo_haplico", passed = TRUE,
+    layers = seq_len(nrow(pedon$horizons)),
+    evidence = list(catch_all = TRUE), missing = character(0),
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 17, Vertissolos -- Haplicos"
+  )
+}

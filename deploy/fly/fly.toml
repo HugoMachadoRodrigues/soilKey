@@ -1,0 +1,43 @@
+# =============================================================================
+# Fly.io configuration for the public soilKey Pro Shiny app (soilkeypro.com).
+#
+#   fly launch --config deploy/fly/fly.toml --no-deploy   # first time (creates app)
+#   fly deploy --config deploy/fly/fly.toml .             # build (remote) + release
+#   fly certs add soilkeypro.com --config deploy/fly/fly.toml
+#
+# `app` must be globally unique on Fly; if "soilkeypro" is taken, `fly launch`
+# will prompt for another name (the public custom domain is unaffected).
+# =============================================================================
+
+app            = "soilkeypro"
+primary_region = "gru"            # Sao Paulo -- lowest latency for BR users
+
+[build]
+  dockerfile = "deploy/fly/Dockerfile"
+
+[http_service]
+  internal_port       = 8080
+  force_https         = true
+  auto_start_machines = true
+  auto_stop_machines  = "off"     # always-on: no cold start on first visit
+  min_machines_running = 1
+
+  # Shiny holds one long-lived websocket per user, so cap concurrency modestly
+  # and count live connections rather than requests.
+  [http_service.concurrency]
+    type       = "connections"
+    soft_limit = 20
+    hard_limit = 25
+
+  # The R runtime + soilKey + spatial stack take ~15-30 s to start listening,
+  # so give the first health check a generous grace period.
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval     = "30s"
+    timeout      = "5s"
+    method       = "GET"
+    path         = "/"
+
+[[vm]]
+  size   = "shared-cpu-1x"
+  memory = "1gb"                   # bump to 2gb if the app OOMs under load

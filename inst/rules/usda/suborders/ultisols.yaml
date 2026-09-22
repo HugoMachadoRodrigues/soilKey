@@ -1,0 +1,34 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Ultisols Suborders -- Cap 15
+# =============================================================
+# 5 Suborders: HA Aquults, HB Humults, HC Udults, HD Ustults, HE Xerults
+# =============================================================
+
+suborders:
+
+  "UT":
+    - code: "HA"
+      name: "Aquults"
+      tests:
+        all_of:
+          - aquult_qualifying_usda: {}
+    - code: "HB"
+      name: "Humults"
+      tests:
+        all_of:
+          - humult_qualifying_usda: {}
+    - code: "HD"
+      name: "Ustults"
+      tests:
+        all_of:
+          - smr_ustic_usda: {}
+    - code: "HE"
+      name: "Xerults"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "HC"
+      name: "Udults"
+      tests:
+        default: true
+      notes: "Catch-all (udic SMR; default when SMR not provided)."

@@ -1,0 +1,175 @@
+version: "SiBCS 5a edicao (Embrapa, 2018)"
+implementation_status: "soilKey v0.7.2 -- 13 ordens + 44 subordens + 7 pendentes implementados"
+
+# Inventario dos diagnosticos SiBCS implementados em v0.7. Cada entrada
+# aponta para a funcao R que aplica o gate canonico.
+
+diagnostics:
+
+  # =========================================================================
+  # Atributos diagnosticos (Cap 1, pp 29-48)
+  # =========================================================================
+
+  atividade_argila_alta:        { function: atividade_argila_alta,        status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  eutrofico:                    { function: eutrofico,                    status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  distrofico:                   { function: distrofico,                   status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_alitico:              { function: carater_alitico,              status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_carbonatico:          { function: carater_carbonatico,          status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_hipocarbonatico:      { function: carater_hipocarbonatico,      status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_eutrico:              { function: carater_eutrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_fluvico:              { function: carater_fluvico,              status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_plintico:             { function: carater_plintico,             status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_redoxico:             { function: carater_redoxico,             status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_sodico:               { function: carater_sodico,               status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_solodico:             { function: carater_solodico,             status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_salico:               { function: carater_salico,               status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  carater_salino:               { function: carater_salino,               status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  mudanca_textural_abrupta:     { function: mudanca_textural_abrupta,     status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  contato_litico:               { function: contato_litico,               status: implemented, file: R/diagnostics-atributos-sibcs.R }
+  contato_litico_fragmentario:  { function: contato_litico_fragmentario,  status: implemented, file: R/diagnostics-atributos-sibcs.R }
+
+  # ----- v0.7.2 pendentes implementados -----
+  carater_acrico:               { function: carater_acrico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_ebanico:              { function: carater_ebanico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_retratil:             { function: carater_retratil,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  carater_espodico:             { function: carater_espodico,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  cerosidade:                   { function: cerosidade,                   status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  saprico:                      { function: saprico,                      status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  hemico:                       { function: hemico,                       status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  fibrico:                      { function: fibrico,                      status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  latossolo_ki_kr:              { function: latossolo_ki_kr,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.2 }
+  # compute_ki / compute_kr sao utilitarios molares, consumidos por latossolo_ki_kr
+
+  # ----- v0.7.3 SiBCS Cap 14 (Organossolos) Subgrupos -----
+  carater_terrico:              { function: carater_terrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
+  carater_cambissolico:         { function: carater_cambissolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.3 }
+
+  # ----- v0.7.4 SiBCS Cap 5 (Argissolos) Grandes Grupos -----
+  carater_coeso:                { function: carater_coeso,                status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_ferrico:              { function: carater_ferrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
+  # ----- v0.7.4.B.1 SiBCS Cap 5 PBAC Subgrupos -----
+  carater_humico_espesso:       { function: carater_humico_espesso,       status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
+  # ----- v0.7.4.B.2 SiBCS Cap 5 PAC Subgrupos -----
+  carater_arenico:              { function: carater_arenico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_durico:               { function: carater_durico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_latossolico:          { function: carater_latossolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
+  # ----- v0.7.4.B.3 SiBCS Cap 5 PVA Subgrupos -----
+  carater_espessarenico:        { function: carater_espessarenico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_petroplintico:        { function: carater_petroplintico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_planossolico:         { function: carater_planossolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_nitossolico:          { function: carater_nitossolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_leptico:              { function: carater_leptico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_leptofragmentario:    { function: carater_leptofragmentario,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_saprolitico:          { function: carater_saprolitico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_luvissolico:          { function: carater_luvissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_chernossolico:        { function: carater_chernossolico,        status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
+  # ----- v0.7.4.C SiBCS Cap 5 PA + PV Subgrupos -----
+  carater_gleissolico:          { function: carater_gleissolico,          status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_cambissolico_arg:     { function: carater_cambissolico_arg,     status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_placico:              { function: carater_placico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+  carater_sombrico:             { function: carater_sombrico,             status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.4 }
+
+  # ----- v0.7.5.A SiBCS Cap 6 Cambissolos Grandes Grupos + Subgrupos -----
+  carater_perferrico:           { function: carater_perferrico,           status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+  carater_vertissolico:         { function: carater_vertissolico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+  carater_argiluvico:           { function: carater_argiluvico,           status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+
+  # ----- v0.7.5.D SiBCS Cap 8 Espodossolos Grandes Grupos -----
+  carater_espodico_profundo:    { function: carater_espodico_profundo,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+  carater_hidromorfico:         { function: carater_hidromorfico,         status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.5 }
+
+  # ----- v0.7.6 SiBCS Cap 9 Gleissolos Subgrupos -----
+  carater_tionico:              { function: carater_tionico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.6 }
+
+  # ----- v0.7.7 SiBCS Cap 10 Latossolos -----
+  carater_rubrico:              { function: carater_rubrico,              status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.7 }
+  carater_psamitico:            { function: carater_psamitico,            status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.7 }
+
+  # ----- v0.7.8 SiBCS Cap 11 Luvissolos -----
+  carater_palico:               { function: carater_palico,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.8 }
+
+  # ----- v0.7.11 SiBCS Cap 15 Planossolos -----
+  subgrupo_planossolo_espessos: { function: subgrupo_planossolo_espessos, status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.11 }
+  subgrupo_planossolo_mesicos:  { function: subgrupo_planossolo_mesicos,  status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.11 }
+
+  # ----- v0.7.12 SiBCS Cap 16 Plintossolos -----
+  subgrupo_plintossolo_espessos:               { function: subgrupo_plintossolo_espessos,               status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+  subgrupo_plintossolo_endico_litoplintico:    { function: subgrupo_plintossolo_endico_litoplintico,    status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+  subgrupo_plintossolo_endico_concrecionario:  { function: subgrupo_plintossolo_endico_concrecionario,  status: implemented, file: R/diagnostics-atributos-sibcs.R, since: v0.7.12 }
+
+  # =========================================================================
+  # Horizontes diagnosticos superficiais (Cap 2, pp 49-54)
+  # =========================================================================
+
+  horizonte_histico:            { function: horizonte_histico,            status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_chernozemico:     { function: horizonte_A_chernozemico,     status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_humico:           { function: horizonte_A_humico,           status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_proeminente:      { function: horizonte_A_proeminente,      status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_antropico:        { function: horizonte_A_antropico,        status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_fraco:            { function: horizonte_A_fraco,            status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_A_moderado:         { function: horizonte_A_moderado,         status: implemented, file: R/diagnostics-horizons-sibcs.R }
+
+  # =========================================================================
+  # Horizontes diagnosticos subsuperficiais (Cap 2, pp 54-74)
+  # =========================================================================
+
+  B_textural:                   { function: B_textural,                   status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  B_latossolico:                { function: B_latossolico,                status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  B_incipiente:                 { function: B_incipiente,                 status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  B_nitico:                     { function: B_nitico,                     status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  B_espodico:                   { function: B_espodico,                   status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  B_planico:                    { function: B_planico,                    status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_E_albico:           { function: horizonte_E_albico,           status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_plintico:           { function: horizonte_plintico,           status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_concrecionario:     { function: horizonte_concrecionario,     status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_litoplintico:       { function: horizonte_litoplintico,       status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_glei:               { function: horizonte_glei,               status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_calcico:            { function: horizonte_calcico,            status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_petrocalcico:       { function: horizonte_petrocalcico,       status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_sulfurico:          { function: horizonte_sulfurico,          status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  horizonte_vertico:            { function: horizonte_vertico,            status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  fragipa:                      { function: fragipa,                      status: implemented, file: R/diagnostics-horizons-sibcs.R }
+  duripa:                       { function: duripa,                       status: implemented, file: R/diagnostics-horizons-sibcs.R }
+
+  # =========================================================================
+  # 13 ordens (Cap 4, pp 110-114) -- diagnosticos RSG-level
+  # =========================================================================
+
+  organossolo:                  { function: organossolo,                  status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  neossolo:                     { function: neossolo,                     status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  vertissolo:                   { function: vertissolo,                   status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  espodossolo:                  { function: espodossolo,                  status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  planossolo:                   { function: planossolo,                   status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  gleissolo:                    { function: gleissolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  latossolo:                    { function: latossolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  chernossolo:                  { function: chernossolo,                  status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  cambissolo:                   { function: cambissolo,                   status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  plintossolo:                  { function: plintossolo,                  status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  luvissolo:                    { function: luvissolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  nitossolo:                    { function: nitossolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
+  argissolo:                    { function: argissolo,                    status: implemented, file: R/diagnostics-rsg-sibcs.R }
+
+  # =========================================================================
+  # v0.7.x deliveries (atualizado 2026-04-29)
+  # =========================================================================
+  # v0.7.0 -- 13 ordens (1o nivel) wirados via R/diagnostics-rsg-sibcs.R
+  # v0.7.1 -- 44 subordens (2o nivel) wirados via
+  #           R/diagnostics-subordens-sibcs.R + bloco subordens em key.yaml
+  # v0.7.2 -- engine refactor (run_taxa_list helper); migracao
+  #           clay_films -> clay_films_amount + clay_films_strength;
+  #           7 atributos pendentes implementados: carater acrico,
+  #           ebanico, retratil, espodico, cerosidade, saprico/hemico/
+  #           fibrico, latossolo_ki_kr (Cap 1, 7, 10, 13, 14, 17).
+  #
+  # =========================================================================
+  # Roadmap aberto
+  # =========================================================================
+  # - 3o nivel (Grandes Grupos, ~150 classes): em desenvolvimento, Caps 5-17
+  # - 4o nivel (Subgrupos, ~600-800 classes): planejado para v0.8
+  # - 5o nivel (Familia, motor de adjetivos): planejado para v0.9
+  # - Diagnosticos auxiliares (cerosidade ja parametrizada -- B_nitico
+  #   pode migrar para usar cerosidade() em vez do check inline em B_nitico)

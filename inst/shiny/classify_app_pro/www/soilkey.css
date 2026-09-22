@@ -1,0 +1,413 @@
+/* =========================================================================
+   soilKey Pro -- design system (v0.9.162)
+   A refined soil-science identity: earth-tone palette, clear typographic
+   hierarchy, consistent sections + tooltips, and quiet, professional cards.
+   Colours are kept in sync with the bs_theme() palette in app.R.
+   ========================================================================= */
+
+:root {
+  /* ---- palette ---- */
+  --sk-espresso:  #4A3226;   /* navbar / darkest */
+  --sk-brown:     #7A5230;   /* primary  -- topsoil */
+  --sk-terra:     #B5652E;   /* secondary -- subsoil / accent */
+  --sk-clay:      #C89B6B;   /* warm mid clay */
+  --sk-moss:      #5E7B3B;   /* success  -- vegetation */
+  --sk-slate:     #4E6E81;   /* info -- water / data cues */
+  --sk-sand:      #F3ECE2;   /* light wash (card caps) */
+  --sk-cream:     #FBF9F5;   /* page background */
+  --sk-line:      #E6DBCC;   /* hairline borders */
+  --sk-ink:       #2C2620;   /* headings / strong text */
+  --sk-muted:     #6F6256;   /* secondary text */
+
+  --sk-shadow:    0 1px 2px rgba(74, 50, 38, 0.06),
+                  0 2px 8px rgba(74, 50, 38, 0.06);
+}
+
+/* ---- base + typography ------------------------------------------------- */
+body {
+  background: var(--sk-cream);
+  color: var(--sk-ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  font-feature-settings: "kern", "liga";
+}
+h1, h2, h3, h4, h5, h6 { color: var(--sk-ink); font-weight: 650; letter-spacing: 0.1px; }
+h5 { font-size: 1.02rem; }
+h6 { font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--sk-muted); }
+a { color: var(--sk-terra); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--sk-brown); }
+.text-body-secondary, .text-muted { color: var(--sk-muted) !important; }
+code, pre { color: var(--sk-terra); background: #f6efe6; border-radius: 4px; }
+code { padding: 0.05rem 0.3rem; }
+
+/* ---- navbar + wordmark ------------------------------------------------- */
+.navbar.navbar-expand-md .navbar-brand { font-weight: 750; letter-spacing: 0.2px; }
+.navbar-brand .sk-mark { color: var(--sk-clay); }
+.navbar-brand-inner { display: inline-flex; align-items: center; gap: 0.5rem; }
+/* the wordmark is one contiguous unit ("soilKey Pro"), not split chunks */
+.sk-wordmark { white-space: nowrap; }
+.sk-logo {
+  height: 34px; width: auto; margin-right: 0.55rem; vertical-align: middle;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+.navbar .nav-link { font-weight: 500; opacity: 0.86; }
+.navbar .nav-link:hover, .navbar .nav-link.active { opacity: 1; }
+.navbar .nav-link.active { box-shadow: inset 0 -3px 0 var(--sk-clay); }
+@media (max-width: 768px) { .sk-logo { height: 28px; } }
+
+/* ---- the pedon ribbon (global status bar under the navbar) ------------- */
+.sk-ribbon {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(90deg, var(--sk-sand), #fff);
+  border-bottom: 1px solid var(--sk-line);
+  font-size: 0.875rem;
+}
+.sk-ribbon .sk-chip {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.12rem 0.55rem; border-radius: 999px;
+  background: #fff; border: 1px solid var(--sk-line); white-space: nowrap;
+}
+.sk-ribbon .sk-chip .sk-key { color: var(--sk-brown); font-weight: 600; }
+.sk-ribbon .sk-built { color: #3f6024; font-weight: 600; }   /* WCAG AA */
+.sk-ribbon .sk-empty { color: var(--sk-muted); }
+
+/* ---- sections (sk_section helper) -------------------------------------- */
+.sk-section { margin-bottom: 1.25rem; }
+.sk-section + .sk-section { padding-top: 1rem; border-top: 1px solid var(--sk-line); }
+.sk-section-head { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.15rem; }
+.sk-section-ic { color: var(--sk-terra); font-size: 0.95rem; }
+.sk-section-title { font-weight: 650; color: var(--sk-ink); font-size: 0.98rem; }
+.sk-section-desc { margin: 0.1rem 0 0.7rem; font-size: 0.82rem; color: var(--sk-muted); line-height: 1.4; }
+
+/* ---- tooltips (sk_tip helper) ------------------------------------------ */
+.sk-tip { color: var(--sk-slate); opacity: 0.72; cursor: help; font-size: 0.82em; }
+.sk-tip:hover, .sk-tip:focus { opacity: 1; }
+.tooltip.show { opacity: 1; }
+.tooltip-inner {
+  background: var(--sk-espresso); color: #fff;
+  max-width: 280px; text-align: left; font-size: 0.8rem; line-height: 1.4;
+  padding: 0.5rem 0.65rem; border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+.tooltip .tooltip-arrow::before { border-top-color: var(--sk-espresso); }
+
+/* ---- form controls ----------------------------------------------------- */
+.form-label, label.control-label, .shiny-input-container > label {
+  font-weight: 600; color: var(--sk-ink); margin-bottom: 0.25rem;
+}
+.form-control, .form-select, .selectize-input {
+  border-color: var(--sk-line); border-radius: 0.5rem; background: #fff;
+}
+.form-control:focus, .form-select:focus, .selectize-input.focus {
+  border-color: var(--sk-terra);
+  box-shadow: 0 0 0 0.2rem rgba(181, 101, 46, 0.15);
+}
+.form-text, .help-block, .shiny-input-container .help-block {
+  color: var(--sk-muted); font-size: 0.8rem;
+}
+
+/* ---- cards ------------------------------------------------------------- */
+.card {
+  border: 1px solid var(--sk-line);
+  border-radius: 0.8rem;
+  box-shadow: var(--sk-shadow);
+  background: #fff;
+}
+.card > .card-header {
+  background: var(--sk-sand);
+  border-bottom: 1px solid var(--sk-line);
+  font-weight: 650; color: var(--sk-ink);
+  letter-spacing: 0.1px;
+}
+.bslib-sidebar-layout > .sidebar { background: #fffdfa; border-right: 1px solid var(--sk-line); }
+
+/* ---- buttons ----------------------------------------------------------- */
+.btn { border-radius: 0.5rem; font-weight: 600; letter-spacing: 0.1px; }
+.btn-primary {
+  background: var(--sk-brown); border-color: var(--sk-brown);
+  transition: filter 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn-primary:hover { filter: brightness(1.07); box-shadow: 0 3px 10px rgba(122, 82, 48, 0.28); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-outline-primary { color: var(--sk-brown); border-color: var(--sk-brown); }
+.btn-outline-primary:hover { background: var(--sk-brown); border-color: var(--sk-brown); }
+.btn-secondary { background: var(--sk-terra); border-color: var(--sk-terra); }
+.btn-lg, .btn-block, .w-100.btn { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+
+/* radio-group buttons (shinyWidgets) -> segmented control look */
+.btn-group .btn.active, .radiobtn.active { background: var(--sk-brown); border-color: var(--sk-brown); color: #fff; }
+
+/* ---- badges + tables --------------------------------------------------- */
+.badge { border-radius: 999px; letter-spacing: 0.2px; font-weight: 600; }
+table.dataTable thead th { background: var(--sk-sand); color: var(--sk-ink); border-bottom: 2px solid var(--sk-line) !important; }
+table.dataTable tbody tr:hover { background: #fbf6ee; }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--sk-brown) !important; color: #fff !important; border-radius: 0.4rem; }
+
+/* ---- nav pills / sub-tabs (Map: Point / Batch / Grid) ------------------ */
+.nav-pills .nav-link { color: var(--sk-brown); font-weight: 600; }
+.nav-pills .nav-link.active { background: var(--sk-brown); }
+.nav-tabs .nav-link.active { color: var(--sk-brown); border-bottom-color: var(--sk-terra); font-weight: 600; }
+
+/* ---- empty-state panels (optional-feature placeholders) ---------------- */
+.sk-empty-state { border: 1px dashed var(--sk-line); background: #faf8f5; box-shadow: none; }
+.sk-empty-state .card-body { padding: 2.5rem 1.5rem; }
+.sk-empty-state summary { cursor: pointer; color: var(--sk-slate); }
+
+/* ---- soft busy state: dim + spinner over any recalculating output ------ */
+.recalculating { position: relative; opacity: 0.45; transition: opacity 0.2s ease; }
+.recalculating::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 28px; height: 28px; margin: -14px 0 0 -14px;
+  border: 3px solid rgba(122, 82, 48, 0.22); border-top-color: var(--sk-terra);
+  border-radius: 50%; animation: sk-spin 0.7s linear infinite;
+}
+@keyframes sk-spin { to { transform: rotate(360deg); } }
+
+/* ---- getting-started modal + step lists -------------------------------- */
+.sk-steps { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.sk-steps li { margin-bottom: 0.3rem; }
+
+/* ---- welcome tour: step progress dots ---------------------------------- */
+.sk-welcome-dots { display: flex; gap: 0.4rem; justify-content: center;
+  margin-top: 0.75rem; }
+.sk-welcome-dots .sk-dot { width: 8px; height: 8px; border-radius: 50%;
+  background: #d8ccbd; transition: background 0.2s, transform 0.2s; }
+.sk-welcome-dots .sk-dot-on { background: var(--sk-brown); transform: scale(1.25); }
+
+/* ---- a11y: reduced motion + screen-reader-only utility ----------------- */
+@media (prefers-reduced-motion: reduce) {
+  .recalculating::after { animation: none; }
+  .btn-primary { transition: none; }
+  .btn-primary:active { transform: none; }
+}
+.sk-sr-only {
+  position: absolute !important; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* ---- unified Map tab: FIXED-height map, independent of flex-fill --------
+   A definite pixel height (NOT aspect-ratio, NOT height:100% of an indefinite
+   flex parent) so the leaflet gets a real height in every mode and BOTH
+   languages -- no matter how tall the results panel below it is. Previously the
+   map card was a flex-fill item that the (taller) point-mode results and the
+   longer Portuguese strings squeezed to a strip / to zero. */
+.sk-map-square {
+  width: 100%;
+  max-width: 640px;
+  height: 600px;
+  margin: 0 auto;
+}
+.sk-map-square .leaflet-container {
+  height: 600px !important;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* ---- responsive: usable down to a phone (~375px) ----------------------- */
+@media (max-width: 768px) {
+  .leaflet-container, .plotly.html-widget,
+  .shiny-plot-output > img, .shiny-image-output > img {
+    max-height: 48vh !important; height: auto !important;
+  }
+  .card > .card-body { padding: 0.85rem; }
+  .sk-ribbon { gap: 0.5rem; padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+  .bslib-column-wrap { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .leaflet-container, .plotly.html-widget { max-height: 40vh !important; }
+  .sk-ribbon { flex-direction: column; align-items: flex-start; }
+  .navbar-brand-inner { font-size: 1rem; }
+}
+
+/* ---- footer (richer, replaces the old one-line tagline) ---------------- */
+.sk-footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.9rem;
+  padding: 0.55rem 1rem; border-top: 1px solid var(--sk-line);
+  background: var(--sk-sand); font-size: 0.8rem; color: var(--sk-muted);
+}
+.sk-footer-logo { opacity: 0.92; }
+.sk-footer-title { font-weight: 600; color: var(--sk-espresso); }
+.sk-footer-ver { font-weight: 400; color: var(--sk-terra); }
+.sk-footer-tag { color: var(--sk-muted); }
+.sk-footer-links { margin-left: auto; display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.sk-footer-links a { color: var(--sk-brown); text-decoration: none; }
+.sk-footer-links a:hover { text-decoration: underline; }
+.sk-footer-lic { color: #9a8b7b; }
+
+/* ---- acknowledgements tab --------------------------------------------- */
+.sk-ack-head h3 { color: var(--sk-espresso); margin-bottom: 0.25rem; font-weight: 700; }
+.sk-ack-head { margin-bottom: 0.75rem; }
+.sk-ack-card .card-header { font-weight: 600; color: var(--sk-espresso); background: var(--sk-sand); }
+.sk-ack-list { list-style: none; margin: 0; padding: 0; }
+.sk-ack-item { padding: 0.5rem 0; border-bottom: 1px dashed var(--sk-line); }
+.sk-ack-item:last-child { border-bottom: none; }
+.sk-ack-lead { display: block; font-weight: 600; color: var(--sk-brown); }
+.sk-ack-contrib { display: block; color: var(--sk-muted); font-size: 0.9rem; margin-top: 0.1rem; }
+.sk-ack-note { margin-top: 1rem; padding: 0.6rem 0.85rem; background: #faf6ef;
+  border: 1px solid var(--sk-line); border-radius: 0.5rem; }
+
+/* =========================================================================
+   DARK MODE (v0.9.171)
+   Activated by bslib::input_dark_mode() (sets data-bs-theme="dark" on <html>)
+   and by the OS preference. Remaps the structural palette to dark and fixes the
+   handful of hardcoded light colours. Brand accents are brightened so text and
+   controls keep AA contrast on the dark background.
+   ========================================================================= */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bs-theme="light"]) {
+    --sk-brown: #cf9c67; --sk-terra: #dd8f52; --sk-clay: #d8b487;
+    --sk-moss: #9cbd71;  --sk-slate: #94b6cb;
+    --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
+    --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
+    --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+    color-scheme: dark;
+  }
+}
+[data-bs-theme="dark"] {
+  --sk-brown: #cf9c67; --sk-terra: #dd8f52; --sk-clay: #d8b487;
+  --sk-moss: #9cbd71;  --sk-slate: #94b6cb;
+  --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
+  --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
+  --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+  color-scheme: dark;
+}
+
+/* Apply the same overrides whether dark comes from the toggle or the OS. */
+[data-bs-theme="dark"] body,
+:root:not([data-bs-theme="light"]) body {
+  background: var(--sk-cream); color: var(--sk-ink);
+}
+[data-bs-theme="dark"] code, [data-bs-theme="dark"] pre { background: #2a2119; color: var(--sk-terra); }
+[data-bs-theme="dark"] .card { background: #211a13; }
+[data-bs-theme="dark"] .card > .card-header { background: #2a2119; color: var(--sk-ink); }
+[data-bs-theme="dark"] .bslib-sidebar-layout > .sidebar { background: #1c1610; border-right-color: var(--sk-line); }
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .selectize-input,
+[data-bs-theme="dark"] .selectize-dropdown {
+  background: #241d15; color: var(--sk-ink); border-color: var(--sk-line);
+}
+[data-bs-theme="dark"] .selectize-dropdown .active { background: var(--sk-brown); color: #17120d; }
+[data-bs-theme="dark"] .sk-ribbon { background: linear-gradient(90deg, #241d15, #1c1610); border-bottom-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-ribbon .sk-chip { background: #2a2119; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-ribbon .sk-built { color: #9cc27a; }              /* AA on dark */
+[data-bs-theme="dark"] table.dataTable thead th { background: #2a2119; color: var(--sk-ink); }
+[data-bs-theme="dark"] table.dataTable tbody tr { background: #211a13; }
+[data-bs-theme="dark"] table.dataTable tbody tr:hover { background: #2a2119; }
+[data-bs-theme="dark"] table.dataTable tbody td { color: var(--sk-ink); border-color: var(--sk-line); }
+[data-bs-theme="dark"] .dataTables_wrapper,
+[data-bs-theme="dark"] .dataTables_info,
+[data-bs-theme="dark"] .dataTables_filter,
+[data-bs-theme="dark"] .dataTables_length { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-empty-state { background: #1f1912; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .sk-empty-state .card-body { color: var(--sk-ink); }
+[data-bs-theme="dark"] .sk-welcome-dots .sk-dot { background: #4a3d30; }
+[data-bs-theme="dark"] .modal-content { background: #211a13; color: var(--sk-ink); }
+[data-bs-theme="dark"] .modal-header, [data-bs-theme="dark"] .modal-footer { border-color: var(--sk-line); }
+/* Text uses of --sk-espresso (kept dark for the tooltip bg) must go light. */
+[data-bs-theme="dark"] .sk-footer-title,
+[data-bs-theme="dark"] .sk-ack-head h3,
+[data-bs-theme="dark"] .sk-ack-card .card-header { color: var(--sk-ink); }
+[data-bs-theme="dark"] .sk-footer-lic { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-ack-note { background: #1f1912; border-color: var(--sk-line); }
+[data-bs-theme="dark"] .btn-primary { color: #17120d; }                      /* dark text on light-brown btn */
+[data-bs-theme="dark"] .btn-group .btn.active, [data-bs-theme="dark"] .radiobtn.active { color: #17120d; }
+
+/* ---- navbar language selector (EN/PT) + dark-mode toggle (v0.9.172) -------
+   The navbar is always the dark espresso colour (both themes), so these are
+   theme-independent: high-contrast light text/borders, a warm clay pill for the
+   selected language. Fixes the near-invisible EN/PT buttons. */
+.navbar .btn-group { border-radius: 0.45rem; overflow: hidden; }
+.navbar .btn-group .btn, .navbar .radiobtn {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  font-weight: 700; letter-spacing: 0.3px; padding: 0.12rem 0.6rem;
+}
+.navbar .btn-group .btn:hover, .navbar .radiobtn:hover {
+  background: rgba(255, 255, 255, 0.16); color: #fff;
+}
+.navbar .btn-group .btn.active, .navbar .radiobtn.active {
+  background: var(--sk-clay); color: var(--sk-espresso) !important;
+  border-color: var(--sk-clay);
+}
+/* the sun/moon dark-mode toggle: keep it visible on the espresso navbar */
+.navbar bslib-input-dark-mode { color: #fff; opacity: 0.9; margin-left: 0.25rem; }
+.navbar bslib-input-dark-mode:hover { opacity: 1; }
+
+/* ---- Talk to soilKey Pro chat ----------------------------------------- */
+.sk-chat-wrap { display: flex; flex-direction: column;
+  height: 68vh; max-height: 720px; min-height: 380px; }
+.sk-chat-log { flex: 1 1 auto; overflow-y: auto; padding: 0.75rem;
+  background: var(--bs-body-bg); border: 1px solid var(--bs-border-color);
+  border-radius: 10px; }
+.sk-bubble-row { display: flex; margin: 0.35rem 0; }
+.sk-bubble { max-width: 82%; border-radius: 0.9rem; padding: 0.5rem 0.8rem;
+  line-height: 1.42; overflow-wrap: anywhere; }
+.sk-bubble-user { margin-left: auto; background: var(--sk-clay, #B5652E);
+  color: #fff; }
+.sk-bubble-bot { margin-right: auto; background: var(--bs-light, #f1ece6);
+  border: 1px solid var(--bs-border-color); }
+.sk-bubble p:last-child, .sk-bubble ul:last-child { margin-bottom: 0; }
+.sk-chat-composer { display: flex; gap: 0.5rem; align-items: flex-end;
+  padding-top: 0.6rem; }
+.sk-chat-composer .form-group,
+.sk-chat-composer .shiny-input-container { flex: 1 1 auto; margin-bottom: 0; }
+
+/* ---- Spectra: treatment-sequence breadcrumb --------------------------- */
+.sk-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem;
+  font-size: 0.8rem; }
+.sk-seq-chip { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px;
+  background: var(--sk-sand, #f3ece2); border: 1px solid var(--sk-line, #e6dbcc);
+  color: var(--sk-ink, #2c2620); white-space: nowrap; }
+.sk-seq-arrow { color: var(--sk-terra, #b5652e); font-weight: 700; }
+
+/* ---- Thanks tab: let the credits page scroll inside the fillable panel -- */
+.sk-ack { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+/* ---- Assistant: floating button + right slide-out drawer (all tabs) ----- */
+.sk-assistant-fab {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 1045;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.05rem; border: none; border-radius: 999px;
+  background: var(--sk-brown); color: #fff; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(74, 50, 38, 0.35); cursor: pointer;
+}
+.sk-assistant-fab:hover { filter: brightness(1.08); }
+.sk-assistant-backdrop {
+  position: fixed; inset: 0; z-index: 1046; background: rgba(0, 0, 0, 0.28);
+  opacity: 0; visibility: hidden; transition: opacity 0.2s ease;
+}
+.sk-assistant-drawer {
+  position: fixed; top: 0; right: 0; z-index: 1047; height: 100%;
+  width: min(430px, 94vw); background: var(--sk-cream, #fff);
+  border-left: 1px solid var(--sk-line); box-shadow: -6px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translateX(101%); transition: transform 0.25s ease;
+}
+body.sk-assistant-open .sk-assistant-drawer { transform: translateX(0); }
+body.sk-assistant-open .sk-assistant-backdrop { opacity: 1; visibility: visible; }
+body.sk-assistant-open .sk-assistant-fab { display: none; }
+.sk-assistant-inner {
+  display: flex; flex-direction: column; height: 100%; padding: 0.75rem;
+  gap: 0.5rem;
+}
+.sk-assistant-head {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--sk-line);
+}
+.sk-assistant-title { font-weight: 700; color: var(--sk-ink); }
+.sk-assistant-close {
+  background: none; border: none; font-size: 1.1rem; color: var(--sk-muted);
+  cursor: pointer; line-height: 1;
+}
+.sk-assistant-close:hover { color: var(--sk-ink); }
+.sk-assistant-inner .sk-chat-log { flex: 1 1 auto; min-height: 0; }
+.sk-assistant-foot { border-top: 1px solid var(--sk-line); padding-top: 0.4rem; }
+
+/* ---- soilKey logo on the Assistant button + drawer header -------------- */
+.sk-assistant-fab-logo { height: 20px; width: auto;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3)); }
+.sk-assistant-logo { height: 22px; width: auto; vertical-align: middle;
+  margin-right: 0.15rem; }

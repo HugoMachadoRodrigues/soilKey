@@ -1,0 +1,215 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Alfisols Great Groups -- Cap 5
+# =============================================================
+# 39 GGs total:
+#   Aqualfs (JA): 11 / Cryalfs (JB): 3 / Ustalfs (JC): 8 /
+#   Xeralfs (JD): 7 / Udalfs (JE): 10
+# =============================================================
+
+great_groups:
+
+  # ---- Aqualfs (JA) ----
+  "JA":
+    - code: "JAA"
+      name: "Plinthaqualfs"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "JAB"
+      name: "Cryaqualfs"
+      tests:
+        all_of:
+          - str_cryic_usda: {}
+    - code: "JAC"
+      name: "Natraqualfs"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "JAD"
+      name: "Fragiaqualfs"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "JAE"
+      name: "Kandiaqualfs"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "JAF"
+      name: "Vermaqualfs"
+      tests:
+        all_of:
+          - vermic_subgroup_usda: {}
+    - code: "JAG"
+      name: "Albaqualfs"
+      tests:
+        all_of:
+          - albaquult_qualifying_usda: {}
+    - code: "JAH"
+      name: "Glossaqualfs"
+      tests:
+        all_of:
+          - glossic_subgroup_usda: {}
+    - code: "JAI"
+      name: "Duraqualfs"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "JAJ"
+      name: "Epiaqualfs"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "JAK"
+      name: "Endoaqualfs"
+      tests:
+        default: true
+
+  # ---- Cryalfs (JB) ----
+  "JB":
+    - code: "JBA"
+      name: "Palecryalfs"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "JBB"
+      name: "Glossocryalfs"
+      tests:
+        all_of:
+          - glossic_subgroup_usda: {}
+    - code: "JBC"
+      name: "Haplocryalfs"
+      tests:
+        default: true
+
+  # ---- Ustalfs (JC) ----
+  "JC":
+    - code: "JCA"
+      name: "Durustalfs"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "JCB"
+      name: "Plinthustalfs"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "JCC"
+      name: "Natrustalfs"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "JCD"
+      name: "Kandiustalfs"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "JCE"
+      name: "Kanhaplustalfs"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "JCF"
+      name: "Paleustalfs"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "JCG"
+      name: "Rhodustalfs"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
+    - code: "JCH"
+      name: "Haplustalfs"
+      tests:
+        default: true
+
+  # ---- Xeralfs (JD) ----
+  "JD":
+    - code: "JDA"
+      name: "Durixeralfs"
+      tests:
+        all_of:
+          - duripan_usda: {}
+    - code: "JDB"
+      name: "Natrixeralfs"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "JDC"
+      name: "Fragixeralfs"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "JDD"
+      name: "Plinthoxeralfs"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: {}
+    - code: "JDE"
+      name: "Rhodoxeralfs"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
+    - code: "JDF"
+      name: "Palexeralfs"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "JDG"
+      name: "Haploxeralfs"
+      tests:
+        default: true
+
+  # ---- Udalfs (JE) ----
+  "JE":
+    - code: "JEA"
+      name: "Natrudalfs"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "JEB"
+      name: "Ferrudalfs"
+      tests:
+        all_of:
+          - ferric_subgroup_usda: {}
+    - code: "JEC"
+      name: "Fraglossudalfs"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+          - glossic_subgroup_usda: {}
+    - code: "JED"
+      name: "Fragiudalfs"
+      tests:
+        all_of:
+          - fragipan_usda: {}
+    - code: "JEE"
+      name: "Kandiudalfs"
+      tests:
+        all_of:
+          - kandic_horizon_usda: {}
+    - code: "JEF"
+      name: "Kanhapludalfs"
+      tests:
+        all_of:
+          - kanhapl_qualifying_usda: {}
+    - code: "JEG"
+      name: "Paleudalfs"
+      tests:
+        all_of:
+          - pale_qualifying_usda: {}
+    - code: "JEH"
+      name: "Rhodudalfs"
+      tests:
+        all_of:
+          - rhodic_subgroup_usda: {}
+    - code: "JEI"
+      name: "Glossudalfs"
+      tests:
+        all_of:
+          - glossic_subgroup_usda: {}
+    - code: "JEJ"
+      name: "Hapludalfs"
+      tests:
+        default: true

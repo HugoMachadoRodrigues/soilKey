@@ -1,0 +1,145 @@
+# =============================================================
+# USDA Soil Taxonomy 13ed -- Vertisols Great Groups -- Cap 16
+# =============================================================
+# 24 GGs total:
+#   Aquerts (FA): 8
+#   Cryerts (FB): 2
+#   Xererts (FC): 3
+#   Torrerts (FD): 4
+#   Usterts (FE): 5
+#   Uderts (FF): 2
+# =============================================================
+
+great_groups:
+
+  # ---- Aquerts (FA) ----
+  "FA":
+    - code: "FAA"
+      name: "Sulfaquerts"
+      tests:
+        all_of:
+          - sulfuric_horizon_usda: {}
+    - code: "FAB"
+      name: "Salaquerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FAC"
+      name: "Duraquerts"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "FAD"
+      name: "Natraquerts"
+      tests:
+        all_of:
+          - natric_subgroup_usda: {}
+    - code: "FAE"
+      name: "Calciaquerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FAF"
+      name: "Dystraquerts"
+      tests:
+        all_of:
+          - dystric_subgroup_usda: {}
+    - code: "FAG"
+      name: "Epiaquerts"
+      tests:
+        all_of:
+          - episaturation_usda: {}
+    - code: "FAH"
+      name: "Endoaquerts"
+      tests:
+        default: true
+
+  # ---- Cryerts (FB) ----
+  "FB":
+    - code: "FBA"
+      name: "Humicryerts"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "FBB"
+      name: "Haplocryerts"
+      tests:
+        default: true
+
+  # ---- Xererts (FC) ----
+  "FC":
+    - code: "FCA"
+      name: "Durixererts"
+      tests:
+        all_of:
+          - duric_subgroup_usda: {}
+    - code: "FCB"
+      name: "Calcixererts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FCC"
+      name: "Haploxererts"
+      tests:
+        default: true
+
+  # ---- Torrerts (FD) ----
+  "FD":
+    - code: "FDA"
+      name: "Salitorrerts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FDB"
+      name: "Gypsitorrerts"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "FDC"
+      name: "Calcitorrerts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FDD"
+      name: "Haplotorrerts"
+      tests:
+        default: true
+
+  # ---- Usterts (FE) ----
+  "FE":
+    - code: "FEA"
+      name: "Dystrusterts"
+      tests:
+        all_of:
+          - dystric_subgroup_usda: {}
+    - code: "FEB"
+      name: "Salusterts"
+      tests:
+        all_of:
+          - salic_subgroup_usda: {}
+    - code: "FEC"
+      name: "Gypsiusterts"
+      tests:
+        all_of:
+          - gypsic_subgroup_usda: {}
+    - code: "FED"
+      name: "Calciusterts"
+      tests:
+        all_of:
+          - calcic_subgroup_usda: {}
+    - code: "FEE"
+      name: "Haplusterts"
+      tests:
+        default: true
+
+  # ---- Uderts (FF) ----
+  "FF":
+    - code: "FFA"
+      name: "Dystruderts"
+      tests:
+        all_of:
+          - dystric_subgroup_usda: {}
+    - code: "FFB"
+      name: "Hapluderts"
+      tests:
+        default: true

@@ -1,0 +1,131 @@
+---
+title: "Field-photo-only classification"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Field-photo-only classification}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  eval     = FALSE
+)
+```
+
+`classify_from_photos()` answers a field-realistic question: *given only a
+photograph of a soil profile and a GPS fix, what is this soil?* No augered
+samples, no laboratory sheet -- just what a phone camera and a coordinate can
+provide. It is a screening tool, not a replacement for a described and sampled
+profile, and the result is graded accordingly.
+
+# The pipeline
+
+```
+profile photo  --VLM-->  Munsell colour per horizon
+field sheet    --VLM-->  site metadata (optional)
+GPS fix        --SoilGrids-->  depth-resolved clay / sand / silt / pH / OC / CEC
+                         |
+                         v
+              assembled PedonRecord
+                         |
+                         v
+        WRB 2022  +  SiBCS 5  +  USDA ST 13
+```
+
+Three things never happen here: the taxonomic key is never delegated to the
+model; quantitative non-colour attributes are never read off a photograph
+(that is a hard prompt-level rule); and a SoilGrids prior never silently
+displaces a measured value -- the `PedonRecord` authority order forbids it.
+
+# A minimal run
+
+```{r run}
+library(soilKey)
+
+res <- classify_from_photos(
+  images   = list(profile = "perfil.jpg", fieldsheet = "ficha.jpg"),
+  lat      = -22.74,
+  lon      = -43.68,
+  country  = "BR",
+  provider = ellmer::chat_anthropic()   # any ellmer chat object
+)
+
+res$wrb$name            # e.g. "Rhodic Ferralsol (Clayic, ...)"
+res$wrb$evidence_grade  # "D" -- VLM-extracted; or "C" with a prior
+res$summary             # one row per system
+```
+
+`images` can also be a plain character vector of profile photos when there is
+no field sheet:
+
+```{r images-vector}
+res <- classify_from_photos("perfil.jpg", lat = -22.74, lon = -43.68,
+                            provider = ellmer::chat_anthropic())
+```
+
+# The `provider` argument is required
+
+There is deliberately no default provider. Passing a real classification
+back from canned data by accident would be worse than an error, so you must
+supply either a live [ellmer](https://ellmer.tidyverse.org/) chat object or a
+`MockVLMProvider` for testing:
+
+```{r provider}
+# Testing / offline: a mock provider returning a canned, schema-valid response
+mock <- MockVLMProvider$new(responses = list(my_canned_munsell_json))
+classify_from_photos("perfil.jpg", lat = -22.7, lon = -43.6, provider = mock)
+```
+
+# The SoilGrids depth prior
+
+A Munsell colour alone rarely keys past the data-poor catch-all
+(Regosols / Neossolos / Entisols). `classify_from_photos()` therefore
+back-fills the missing horizon attributes from a SoilGrids depth prior, on by
+default. `apply_soilgrids_depth_prior()` does the work and can be called on
+its own:
+
+```{r soilgrids}
+p <- make_cambisol_canonical()
+p$horizons$clay_pct <- NA_real_
+
+# Live: fetch the six SoilGrids 2.0 depth slices via the ISRIC REST API.
+apply_soilgrids_depth_prior(p)
+
+# Offline / reproducible: pass the six-slice profiles directly.
+apply_soilgrids_depth_prior(
+  p,
+  depth_profiles = list(clay_pct = c(18, 20, 24, 28, 30, 30)))
+```
+
+For each horizon the value is interpolated at the mid-depth from the
+0-5 / 5-15 / 15-30 / 30-60 / 60-100 / 100-200 cm slices and recorded with
+`source = "inferred_prior"`. Skip it with `soilgrids = FALSE` if you only
+want the Munsell-driven result.
+
+# Reading the evidence grade
+
+Because every value came from a photograph or a prior, the classification's
+evidence grade is low by construction -- `D` where a VLM-extracted attribute
+was used, `C` where only a SoilGrids prior contributed. For a cell-by-cell
+view use `compute_per_attribute_evidence_grade()`:
+
+```{r grade}
+grades <- compute_per_attribute_evidence_grade(res$pedon)
+grades            # data.table(horizon_idx, attribute, grade)
+```
+
+The five-grade scale is: **A** measured, **B** spectra-predicted,
+**C** prior-inferred, **D** VLM-extracted, **E** user-assumed. A photo-only
+classification will never report grade A or B -- and that is the point: the
+grade tells the user exactly how much trust the result has earned.
+
+# When to use it
+
+`classify_from_photos()` is built for reconnaissance: a quick, georeferenced,
+multi-system first guess from a field visit, to be confirmed later by
+description and sampling. The handful of horizons it can see, the colour it
+can estimate, and the regional prior it can fetch are genuinely informative --
+but the evidence grade is the honest headline, and it is never an A.
