@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.208</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.209</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,26 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.209" id="soilkey-09209-2026-10-07">soilKey 0.9.209 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09209-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="in-the-pro-app-one-users-long-computation-no-longer-freezes-everyone-else-0-9-209">In the Pro app, one user’s long computation no longer freezes everyone else<a class="anchor" aria-label="anchor" href="#in-the-pro-app-one-users-long-computation-no-longer-freezes-everyone-else-0-9-209"></a></h3>
+<p>The app runs as one R process per server instance, and every session on that instance waited while any one of them computed. Measured on a laptop (Cloud Run’s single vCPU is slower): a classification with SoilGrids gap-fill took 78 s, the Map’s class prior at a point 49 s, an uncertainty analysis 15-20 s, the same over a group of 12 points 15 s, a Map batch of 12 profiles 4 s, and a reply from the Assistant several seconds.</p>
+<ul><li>
+<strong>These handlers now run in the background.</strong> Classify, Uncertainty (one profile, a group, and the per-point drill-in), and the Map’s point prior and batch are <code><a href="https://rdrr.io/pkg/shiny/man/ExtendedTask.html" class="external-link">shiny::ExtendedTask</a></code> objects whose work runs in background R processes (two mirai workers, about 90 MB each when idle); the Shiny process only hands the job over and draws the result. The Assistant awaits Groq with <code>ellmer</code>’s asynchronous call, which needs no worker. Their buttons show that they are busy, and the Assistant shows a “Thinking…” bubble.</li>
+<li>
+<strong>Measured with two sessions on one local app:</strong> while session A ran an uncertainty analysis (200 runs with sensitivity, 18.6 s), loading the example profile in session B took 11.0 s before this change and 0.39 s after it (0.25 s with nothing else running). While the Assistant waited for Groq, the same step in session B took 0.40 s.</li>
+<li>
+<strong>Without mirai</strong> (a local install that lacks it, or <code>options(soilKey.app_workers = 0)</code>), the work runs in the app’s own process as before. Workers are new R processes that see a fresh session’s library paths; where mirai is not on them, <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> waits for ever, so the app checks with a fresh R first and, until a worker has connected, runs jobs in its own process. The deployment image installs mirai and its build check starts a worker.</li>
+<li>
+<strong>The gap-fill fallback never ran.</strong> When a gap-fill failed (no internet for SoilGrids, no spectra attached), Classify was meant to classify without it and say so. <code><a href="../reference/classify_all.html">classify_all()</a></code> turns each system’s failure into a warning and a <code>NULL</code> result, so the error never reached that fallback and the result cards came back empty. The failure is now read from those warnings: a system lost to gap-fill is classified again without it, and the notification gives the reason.</li>
+<li>
+<strong>At Groq’s per-minute limit the Assistant asks the user to wait a minute.</strong> Since v0.9.207 another model, gpt-oss-120b, answered whenever Qwen was at its limit, with a note saying so. In live use it got the SiBCS rules wrong where Qwen had them right (it called Distrófico “a ferralic horizon without clay increase”), so a wrong answer is no longer offered as a stand-in for a right one. gpt-oss is still used if Groq offers no Qwen model at all.</li>
+<li>
+<strong>Groq calls fail fast.</strong> The app sets <code>options(ellmer_max_tries = 1)</code>. ellmer otherwise waits out Groq’s <code>Retry-After</code>, up to a minute, before trying again, and a synchronous call (Photo) held the process meanwhile.</li>
+<li>Still synchronous, each taking a few seconds: Photo extraction, the WoSIS search and profile load, the PDF report, and the Map’s SoilGrids overlay and prediction grid.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.208" id="soilkey-09208-2026-10-07">soilKey 0.9.208 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09208-2026-10-07"></a></h2>
 <div class="section level3">
