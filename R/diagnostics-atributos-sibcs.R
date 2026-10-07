@@ -106,8 +106,12 @@ eutrofico <- function(pedon, min_v = 50) {
                                         passed = v >= min_v)
     if (v >= min_v) passing <- c(passing, i)
   }
+  # Nothing evaluated is "no data", not "not eutrophic": with no layer to read,
+  # FALSE here made distrofico() (its negation) pass, and an empty profile came
+  # out Distrofico.
+  if (length(details) == 0L && length(missing) == 0L) missing <- "bs_pct"
   passed <- if (length(passing) > 0L) TRUE
-            else if (length(details) == 0L && length(missing) > 0L) NA
+            else if (length(details) == 0L) NA
             else FALSE
   DiagnosticResult$new(
     name = "eutrofico",

@@ -99,6 +99,7 @@ classify_wrb2022 <- function(pedon,
                                specifiers      = FALSE,
                                gapfill         = FALSE) {
   on_missing <- match.arg(on_missing)
+  .classify_require_horizons(pedon, "classify_wrb2022")
   rules      <- rules %||% load_rules("wrb2022")
 
   # Opt-in within-pedon gap-fill (default off => byte-identical). Operates on a

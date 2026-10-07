@@ -125,6 +125,7 @@ classify_usda <- function(pedon,
                             infer_temperature = TRUE,
                             gapfill    = FALSE) {
   on_missing <- match.arg(on_missing)
+  .classify_require_horizons(pedon, "classify_usda")
   rules      <- rules %||% load_rules("usda")
 
   # Opt-in within-pedon gap-fill (default off => byte-identical). Deep copy,

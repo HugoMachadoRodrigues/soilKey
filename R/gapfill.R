@@ -390,6 +390,23 @@ gapfill_by_predicted_taxon <- function(pedon, taxon_profiles,
   invisible(pedon)
 }
 
+# A profile with no horizons gives a key nothing to test. Every class failed or
+# passed on emptiness, the key ended at its catch-all (Haplic Regosol, Neossolos
+# Regoliticos Distroficos tipicos, Typic Udorthents), and the evidence grade came
+# out A, because a pedon with no provenance recorded is read as measured. The
+# keys refuse it instead, as PedonRecord$validate() ("No horizons defined") and
+# pedon_to_spc() already do. classify_all() turns the refusal into a warning and
+# a NULL result per system, like any other failure.
+.classify_require_horizons <- function(pedon, fn) {
+  h <- tryCatch(pedon$horizons, error = function(e) NULL)
+  if (is.null(h) || !nrow(h))
+    rlang::abort(
+      sprintf(paste0("%s(): the profile has no horizons, so there is nothing to ",
+                     "classify. Add at least one horizon (top_cm, bottom_cm)."), fn),
+      class = "soilKey_no_horizons")
+  invisible(TRUE)
+}
+
 # -----------------------------------------------------------------------------
 # Classifier hook.
 #

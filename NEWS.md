@@ -1,3 +1,30 @@
+# soilKey 0.9.208 (2026-10-07)
+
+## A profile with no horizons is refused, not classified with grade A
+
+* `classify_all()` on a `PedonRecord` with zero horizons answered Haplic
+  Regosol, Neossolos Regolíticos Distróficos típicos and Typic Udorthents, all
+  with evidence grade A. With no layer to read, every class failed or passed on
+  emptiness, each key ended at its catch-all group, and the grade came out A
+  because a pedon with no provenance recorded is read as measured.
+  `classify_wrb2022()`, `classify_sibcs()` and `classify_usda()` now stop with
+  an error of class `soilKey_no_horizons`, as `PedonRecord$validate()` ("No
+  horizons defined") and `pedon_to_spc()` already did for the same input.
+  `classify_all()` reports it as a warning and a `NULL` result per system, like
+  any other failure, and the benchmark functions count such a profile as an
+  error rather than a prediction.
+* **SiBCS asserted low base saturation with no base saturation at all.**
+  `eutrofico()` answered `FALSE` when it had no layer to read, and
+  `distrofico()`, its negation, then passed. It now answers `NA` with `bs_pct`
+  missing, as it already did when layers existed but carried no value.
+* Unchanged for every profile with horizons: the 45 exported example profiles
+  classify byte-identically before and after (names, orders, evidence grades
+  and missing data, in all three systems).
+* Not changed here: a profile with horizons but no measured properties still
+  classifies with grade A, its trace showing every class it could not check.
+  The grade describes the provenance of the values present; how to grade the
+  absence of values is left as a separate decision.
+
 # soilKey 0.9.207 (2026-10-07)
 
 ## The Photo tab and the Assistant work again, and the Assistant sticks to the evidence
