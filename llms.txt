@@ -2145,8 +2145,12 @@ Soil Groups (5 per RSG). The first WRB benchmark with profile depth
   : Load the bundled WoSIS stratified RSG-balanced sample (v0.9.73)
 - [`read_wosis_profiles_graphql()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_profiles_graphql.md)
   : Query WoSIS profiles live from ISRIC
+- [`read_wosis_layers_graphql()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.md)
+  : Read one WoSIS profile's layers live from ISRIC
 - [`wosis_profile_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_profile_to_pedon.md)
-  : Turn one WoSIS profile row into a PedonRecord
+  : Turn one WoSIS profile into a PedonRecord, with its horizons
+- [`wosis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_citation.md)
+  : Citation for data read from WoSIS-latest
 
 ## USDA Soil Taxonomy \<-\> WRB cross-walk (v0.9.74)
 

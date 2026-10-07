@@ -1,5 +1,64 @@
 # Changelog
 
+## soilKey 0.9.206 (2026-10-06)
+
+### The WoSIS picker works, and stays within ISRIC’s terms
+
+The Pro app’s WoSIS source has listed nothing in production since
+v0.9.202, and even a listed profile would have loaded with no horizons.
+Both are fixed, and the picker now does what it was meant to: browse
+real ISRIC profiles, load one with its horizons, and classify it.
+
+- **The search asked for more than ISRIC allows.** With the licence
+  filter on it requested 200 profiles in one go; ISRIC accepts at most
+  100 and answered HTTP 400, so every search in the app failed. Earlier
+  tests passed because they used a small `n_max` the app never uses.
+  Profiles are now read in pages of 100, in a stable order, examining at
+  most 300 per search.
+- **A listed profile loaded no horizons.**
+  [`wosis_profile_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_profile_to_pedon.md)
+  built the site only. The new
+  [`read_wosis_layers_graphql()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.md)
+  reads the profile’s layers and maps them onto the soilKey schema with
+  units taken from ISRIC’s own catalogue (`wosisLatestObservations`):
+  organic carbon, total nitrogen and carbonate equivalent arrive in g/kg
+  and become %. Only properties whose method matches the soilKey column
+  are mapped (volumetric coarse fragments, saturated-paste EC,
+  gravimetric water retention, CEC at pH 7; bulk density from BDFI33,
+  else BDFIOD), and every value carries a provenance note with its WoSIS
+  code, unit and analytical method. WoSIS serves no exchangeable bases,
+  base saturation or Fe/Al oxides, so those stay empty and are reported
+  as missing, not invented.
+- **A profile with no layers crashed the search.** It is now left out
+  and counted.
+- **Light on a free service.** ISRIC’s database cancels statements that
+  run over about 30 seconds, and cost grows with layers x properties.
+  Layers are counted first with a cheap query and then read in pages
+  of 10. Profiles recorded as fine depth increments (one has 90
+  one-centimetre layers) are not loaded in the app, and the message says
+  why; `max_layers` lifts the limit in R. Queries identify soilKey in
+  the User-Agent.
+- **The listing shows layers and depth,** from one light query, so a
+  single topsoil sample can be told from a full profile before loading
+  it.
+- **User input is sent as a GraphQL variable**, never pasted into the
+  query text, so a country name with quotes cannot alter the query sent
+  to ISRIC.
+- **Attribution, as the ISRIC data policy requires.**
+  [`wosis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_citation.md)
+  returns the citation ISRIC asks for, with the date the data were read.
+  The app shows the source, the licence (linked) and the citation above
+  the horizon table whenever WoSIS data is loaded, flags NonCommercial
+  profiles, writes all of it into the pedon, and the HTML and PDF
+  reports print it. When the layers carry a more restrictive licence
+  than the listing reported, the stricter one is kept.
+- **An unknown licence was labelled “CC BY 3.0”.** `nzchar(NA)` is TRUE,
+  so a missing licence fell through to the last branch. It now shows as
+  unknown.
+- Verified against the live endpoint across six countries: 16 of 18
+  profiles loaded and classified, 0 errors, about 3 seconds each; the
+  other two were depth-increment profiles, refused with an explanation.
+
 ## soilKey 0.9.205 (2026-10-06)
 
 ### Three things the Pro app got wrong in the navigation bar
@@ -6049,8 +6108,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

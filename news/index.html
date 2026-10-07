@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.205</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.206</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,30 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.206" id="soilkey-09206-2026-10-06">soilKey 0.9.206 (2026-10-06)<a class="anchor" aria-label="anchor" href="#soilkey-09206-2026-10-06"></a></h2>
+<div class="section level3">
+<h3 id="the-wosis-picker-works-and-stays-within-isrics-terms-0-9-206">The WoSIS picker works, and stays within ISRIC’s terms<a class="anchor" aria-label="anchor" href="#the-wosis-picker-works-and-stays-within-isrics-terms-0-9-206"></a></h3>
+<p>The Pro app’s WoSIS source has listed nothing in production since v0.9.202, and even a listed profile would have loaded with no horizons. Both are fixed, and the picker now does what it was meant to: browse real ISRIC profiles, load one with its horizons, and classify it.</p>
+<ul><li>
+<strong>The search asked for more than ISRIC allows.</strong> With the licence filter on it requested 200 profiles in one go; ISRIC accepts at most 100 and answered HTTP 400, so every search in the app failed. Earlier tests passed because they used a small <code>n_max</code> the app never uses. Profiles are now read in pages of 100, in a stable order, examining at most 300 per search.</li>
+<li>
+<strong>A listed profile loaded no horizons.</strong> <code><a href="../reference/wosis_profile_to_pedon.html">wosis_profile_to_pedon()</a></code> built the site only. The new <code><a href="../reference/read_wosis_layers_graphql.html">read_wosis_layers_graphql()</a></code> reads the profile’s layers and maps them onto the soilKey schema with units taken from ISRIC’s own catalogue (<code>wosisLatestObservations</code>): organic carbon, total nitrogen and carbonate equivalent arrive in g/kg and become %. Only properties whose method matches the soilKey column are mapped (volumetric coarse fragments, saturated-paste EC, gravimetric water retention, CEC at pH 7; bulk density from BDFI33, else BDFIOD), and every value carries a provenance note with its WoSIS code, unit and analytical method. WoSIS serves no exchangeable bases, base saturation or Fe/Al oxides, so those stay empty and are reported as missing, not invented.</li>
+<li>
+<strong>A profile with no layers crashed the search.</strong> It is now left out and counted.</li>
+<li>
+<strong>Light on a free service.</strong> ISRIC’s database cancels statements that run over about 30 seconds, and cost grows with layers x properties. Layers are counted first with a cheap query and then read in pages of 10. Profiles recorded as fine depth increments (one has 90 one-centimetre layers) are not loaded in the app, and the message says why; <code>max_layers</code> lifts the limit in R. Queries identify soilKey in the User-Agent.</li>
+<li>
+<strong>The listing shows layers and depth,</strong> from one light query, so a single topsoil sample can be told from a full profile before loading it.</li>
+<li>
+<strong>User input is sent as a GraphQL variable</strong>, never pasted into the query text, so a country name with quotes cannot alter the query sent to ISRIC.</li>
+<li>
+<strong>Attribution, as the ISRIC data policy requires.</strong> <code><a href="../reference/wosis_citation.html">wosis_citation()</a></code> returns the citation ISRIC asks for, with the date the data were read. The app shows the source, the licence (linked) and the citation above the horizon table whenever WoSIS data is loaded, flags NonCommercial profiles, writes all of it into the pedon, and the HTML and PDF reports print it. When the layers carry a more restrictive licence than the listing reported, the stricter one is kept.</li>
+<li>
+<strong>An unknown licence was labelled “CC BY 3.0”.</strong> <code>nzchar(NA)</code> is TRUE, so a missing licence fell through to the last branch. It now shows as unknown.</li>
+<li>Verified against the live endpoint across six countries: 16 of 18 profiles loaded and classified, 0 errors, about 3 seconds each; the other two were depth-increment profiles, refused with an explanation.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.205" id="soilkey-09205-2026-10-06">soilKey 0.9.205 (2026-10-06)<a class="anchor" aria-label="anchor" href="#soilkey-09205-2026-10-06"></a></h2>
 <div class="section level3">
@@ -4465,7 +4489,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>

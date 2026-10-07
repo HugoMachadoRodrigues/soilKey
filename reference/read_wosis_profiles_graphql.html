@@ -11,7 +11,7 @@ made by you, to ISRIC, under ISRIC's terms."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.205</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.206</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,8 @@ made by you, to ISRIC, under ISRIC's terms.</p>
 <span>  wrb_rsg <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_max <span class="op">=</span> <span class="fl">25L</span>,</span>
 <span>  licence_filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"permissive"</span>, <span class="st">"any"</span><span class="op">)</span>,</span>
-<span>  timeout <span class="op">=</span> <span class="fl">30</span></span>
+<span>  timeout <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  max_scan <span class="op">=</span> <span class="fl">300L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,7 +88,7 @@ made by you, to ISRIC, under ISRIC's terms.</p>
 
 
 <dt id="arg-n-max">n_max<a class="anchor" aria-label="anchor" href="#arg-n-max"></a></dt>
-<dd><p>Maximum profiles to return (default 25).</p></dd>
+<dd><p>Maximum profiles to return (default 25, at most 100).</p></dd>
 
 
 <dt id="arg-licence-filter">licence_filter<a class="anchor" aria-label="anchor" href="#arg-licence-filter"></a></dt>
@@ -95,17 +96,24 @@ made by you, to ISRIC, under ISRIC's terms.</p>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>Seconds to wait for ISRIC (default 30).</p></dd>
+<dd><p>Seconds to wait for each request (default 30).</p></dd>
+
+
+<dt id="arg-max-scan">max_scan<a class="anchor" aria-label="anchor" href="#arg-max-scan"></a></dt>
+<dd><p>Most profiles examined per call (default 300).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame, one row per profile, with <code>profile_id</code>,
   <code>profile_code</code>, <code>country</code>, <code>lat</code>, <code>lon</code>,
-  <code>wrb_rsg</code>, <code>usda_order</code>, <code>dataset</code>, <code>licence</code> and
-  <code>licence_short</code>. Zero rows if nothing matched. Never throws on a
-  network failure: it returns zero rows with a <code>"wosis_error"</code>
-  attribute, since an unreachable server is an expected condition.</p>
+  <code>wrb_rsg</code>, <code>usda_order</code>, <code>dataset</code>, <code>licence</code>,
+  <code>licence_short</code>, <code>n_layers</code> and <code>depth_cm</code>. Zero rows if
+  nothing matched. Never throws on a network failure: it returns zero rows
+  with a <code>"wosis_error"</code> attribute, since an unreachable server is an
+  expected condition. Attributes <code>"wosis_excluded"</code> and
+  <code>"wosis_excluded_licences"</code> report what the licence filter withheld,
+  and <code>"wosis_no_layers"</code> how many profiles had no layers at all.</p>
     </div>
     <div class="section level2">
     <h2 id="licence">Licence<a class="anchor" aria-label="anchor" href="#licence"></a></h2>
@@ -116,20 +124,37 @@ about half of it carries a NonCommercial restriction. <code>licence_filter =
 "permissive"</code> (the default) returns only profiles free of that restriction
 (CC BY, or public domain); <code>"any"</code> returns everything. Either way the
 licence and the source dataset travel with every profile, because CC BY
-requires attribution when you reuse the data.</p>
+requires attribution when you reuse the data. Cite the data with
+<code><a href="wosis_citation.html">wosis_citation</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="load-on-isric">Load on ISRIC<a class="anchor" aria-label="anchor" href="#load-on-isric"></a></h2>
+
+
+<p>The endpoint accepts at most 100 profiles per request, so profiles are read
+in pages of 100, in a stable order, and at most <code>max_scan</code> are examined
+per call. The number of layers and the depth of each listed profile come
+from one light query on the layers table, which lets a caller tell a full
+profile from a single topsoil sample before loading it.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="wosis_profile_to_pedon.html">wosis_profile_to_pedon</a></code> to turn a row into a
-  <code><a href="PedonRecord.html">PedonRecord</a></code>.</p></div>
+  <code><a href="PedonRecord.html">PedonRecord</a></code> with its horizons.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Requires network access to ISRIC.</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">read_wosis_profiles_graphql</span><span class="op">(</span>country <span class="op">=</span> <span class="st">"Brazil"</span>, n_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://ncss-tech.github.io/aqp/reference/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="va">p</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"profile_code"</span>, <span class="st">"wrb_rsg"</span>, <span class="st">"licence_short"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">read_wosis_profiles_graphql</span><span class="op">(</span>country <span class="op">=</span> <span class="st">"Argentina"</span>, n_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://ncss-tech.github.io/aqp/reference/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="va">p</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"profile_code"</span>, <span class="st">"wrb_rsg"</span>, <span class="st">"n_layers"</span>, <span class="st">"licence_short"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      profile_code   wrb_rsg n_layers licence_short</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        AR SC.P7   Luvisol        4     CC BY 3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        AR SJ.87 Solonchak        1     CC BY 3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     AR RN.C.331  Calcisol        4     CC BY 3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AR SE.BBAJADA  Solonetz        3     CC BY 3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 AR SE.VFIGUEROA  Fluvisol        3     CC BY 3.0</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
