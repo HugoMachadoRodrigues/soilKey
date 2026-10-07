@@ -119,13 +119,22 @@ settings_ui <- function(id) {
 settings_server <- function(id, rv) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # Push engine + strict mode into package options whenever they change.
+    # Engine and strict mode are THIS session's: kept in session$userData and
+    # applied to its classifications (utils_async.R, .sk_session_opts()). They
+    # used to be written with options(), which every session in the process
+    # shares, so one visitor's switch changed every other visitor's results.
+    set_opt <- function(name, value) {
+      o <- session$userData$sk_opts
+      if (!is.list(o)) o <- list()
+      o[[name]] <- value
+      session$userData$sk_opts <- o
+    }
     shiny::observeEvent(input$engine, {
-      options(soilKey.diagnostic_engine = input$engine)
+      set_opt("soilKey.diagnostic_engine", input$engine)
     }, ignoreInit = FALSE)
 
     shiny::observeEvent(input$strict, {
-      options(soilKey.rsg_strict = isTRUE(input$strict))
+      set_opt("soilKey.rsg_strict", isTRUE(input$strict))
     }, ignoreInit = FALSE)
 
     # ---- two-way sync of the depth-level toggles with the shared rv ---------

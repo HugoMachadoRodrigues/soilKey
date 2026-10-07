@@ -1,3 +1,21 @@
+# soilKey 0.9.211 (2026-10-07)
+
+## In the Pro app, Settings belong to the visitor who chose them
+
+* The Settings tab wrote the diagnostic engine and Tier-3 strict mode with
+  `options()`, and R options are per process. On the hosted app, where one R
+  process serves several visitors, switching the engine to "aqp" or turning
+  strict mode on changed the classifications every other visitor on that
+  server got, with nothing on their screen to say so. A profile with about 18
+  cmolc of CEC per kg clay, for instance, is a Ferralsol under one engine and a
+  Nitisol under the other.
+* Both settings now live in the session and are applied around each
+  classification that session runs: in the background workers (with the job's
+  other options) and in the Shiny process (the Assistant's context, the HTML
+  and PDF reports, the Map's multi-profile report), restored afterwards. The
+  process options remain the default for sessions that have not chosen.
+* Same fix as the interface language in 0.9.210.
+
 # soilKey 0.9.210 (2026-10-07)
 
 ## What a visitor of the Pro app saw wrong

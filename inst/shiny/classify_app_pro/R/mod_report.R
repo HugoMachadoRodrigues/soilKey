@@ -20,6 +20,10 @@
           isTRUE(tryCatch(tinytex::is_tinytex(), error = function(e) FALSE))))
 }
 
+# soilKey::report() runs the three keys in this process: under this session's
+# Settings (engine, strict mode), not whatever another visitor last chose.
+.sk_report <- function(...) .sk_with_session_opts(soilKey::report(...))
+
 report_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::layout_sidebar(
@@ -78,7 +82,7 @@ report_server <- function(id, rv, settings) {
         shiny::req(rv$pedon)
         cf <- cfg()
         shiny::withProgress(message = i18n("report.rendering_html"), value = 0.5, {
-          soilKey::report(report_pedon(), file = file, format = "html",
+          .sk_report(report_pedon(), file = file, format = "html",
                           pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
                           specifiers = cf$specifiers, lang = .sk_app_lang())
@@ -91,7 +95,7 @@ report_server <- function(id, rv, settings) {
         cf <- cfg()
         out <- tryCatch({
           tmp <- tempfile(fileext = ".pdf")
-          soilKey::report(report_pedon(), file = tmp, format = "pdf",
+          .sk_report(report_pedon(), file = tmp, format = "pdf",
                           pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
                           specifiers = cf$specifiers, lang = .sk_app_lang())
@@ -105,7 +109,7 @@ report_server <- function(id, rv, settings) {
         cf <- cfg()
         shiny::withProgress(message = i18n("report.rendering_pdf"), value = 0.5, {
           ok <- tryCatch({
-            soilKey::report(report_pedon(), file = file, format = "pdf",
+            .sk_report(report_pedon(), file = file, format = "pdf",
                             pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
                             specifiers = cf$specifiers, lang = .sk_app_lang())
@@ -115,7 +119,7 @@ report_server <- function(id, rv, settings) {
             shiny::showNotification(
               i18n("report.pdf_failed_fallback"),
               type = "warning", duration = 8)
-            soilKey::report(report_pedon(), file = file, format = "html",
+            .sk_report(report_pedon(), file = file, format = "html",
                             pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
                             specifiers = cf$specifiers, lang = .sk_app_lang())
