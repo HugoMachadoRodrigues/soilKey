@@ -32,6 +32,7 @@ test_that("uncertainty group mode runs a per-point analysis over rv$batch_pedons
                       n = 30, sensitivity = FALSE)
     expect_equal(n_group(), length(peds))
     session$setInputs(run = 1)
+    .settle(session)
     g <- group_unc()
     expect_false(inherits(g, "error"))
     expect_equal(nrow(g), length(peds))               # one row per point
@@ -57,6 +58,7 @@ test_that("uncertainty group mode reports an empty group cleanly", {
     expect_equal(n_group(), 0L)
     expect_error(output$group_note, NA)               # the "no group" note renders
     session$setInputs(run = 1)
+    .settle(session)
     expect_true(inherits(group_unc(), "error"))       # nothing to analyse
   })
 })

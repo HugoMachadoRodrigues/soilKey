@@ -68,11 +68,13 @@ test_that("point-mode prior re-queries live when the system changes after a run"
                       sg_source = "demo", source_url = .mfx_demo(),
                       buffer = 8000, topn = 5)
     session$setInputs(run_point = 1)
+    .settle(session)
     p1 <- prior()
     expect_false(inherits(p1, "error"))
     d1 <- as.data.frame(p1$distribution)
     # switch the system WITHOUT pressing the button -> prior must re-fire
     session$setInputs(system = "sibcs")
+    .settle(session)
     p2 <- prior()
     expect_false(inherits(p2, "error"))
     d2 <- as.data.frame(p2$distribution)

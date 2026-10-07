@@ -107,6 +107,7 @@ test_that("map_server queries the prior at the pedon coordinate (offline raster)
       expect_equal(coords_r()$src, "pedon")
 
       session$setInputs(run_point = 1)
+      .settle(session)
       res <- prior()
       expect_false(inherits(res, "error"))
       df <- as.data.frame(res$distribution)

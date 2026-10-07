@@ -1,3 +1,48 @@
+# soilKey 0.9.209 (2026-10-07)
+
+## In the Pro app, one user's long computation no longer freezes everyone else
+
+The app runs as one R process per server instance, and every session on that
+instance waited while any one of them computed. Measured on a laptop (Cloud
+Run's single vCPU is slower): a classification with SoilGrids gap-fill took
+78 s, the Map's class prior at a point 49 s, an uncertainty analysis 15-20 s,
+the same over a group of 12 points 15 s, a Map batch of 12 profiles 4 s, and a
+reply from the Assistant several seconds.
+
+* **These handlers now run in the background.** Classify, Uncertainty (one
+  profile, a group, and the per-point drill-in), and the Map's point prior and
+  batch are `shiny::ExtendedTask` objects whose work runs in background R
+  processes (two mirai workers, about 90 MB each when idle); the Shiny process
+  only hands the job over and draws the result. The Assistant awaits Groq with
+  `ellmer`'s asynchronous call, which needs no worker. Their buttons show that
+  they are busy, and the Assistant shows a "Thinking..." bubble.
+* **Measured with two sessions on one local app:** while session A ran an
+  uncertainty analysis (200 runs with sensitivity, 18.6 s), loading the example
+  profile in session B took 11.0 s before this change and 0.39 s after it
+  (0.25 s with nothing else running). While the Assistant waited for Groq, the
+  same step in session B took 0.40 s.
+* **Without mirai** (a local install that lacks it, or
+  `options(soilKey.app_workers = 0)`), the work runs in the app's own process
+  as before. Workers are new R processes that see a fresh session's library
+  paths; where mirai is not on them, `mirai::daemons()` waits for ever, so the
+  app checks with a fresh R first and, until a worker has connected, runs jobs
+  in its own process. The deployment image installs mirai and its build check
+  starts a worker.
+* **The gap-fill fallback never ran.** When a gap-fill failed (no internet for
+  SoilGrids, no spectra attached), Classify was meant to classify without it
+  and say so. `classify_all()` turns each system's failure into a warning and
+  a `NULL` result, so the error never reached that fallback and the result
+  cards came back empty. The failure is now read from those warnings: a system
+  lost to gap-fill is classified again without it, and the notification gives
+  the reason.
+* **Groq calls fail fast.** The app sets `options(ellmer_max_tries = 1)`.
+  ellmer otherwise waits out Groq's `Retry-After`, up to a minute, before
+  trying again; the Assistant now hands the question to the next model at once,
+  and a Photo extraction at the limit says so instead of holding the process.
+* Still synchronous, each taking a few seconds: Photo extraction, the WoSIS
+  search and profile load, the PDF report, and the Map's SoilGrids overlay and
+  prediction grid.
+
 # soilKey 0.9.208 (2026-10-07)
 
 ## A profile with no horizons is refused, not classified with grade A

@@ -63,9 +63,10 @@ classify_ui <- function(id) {
           selected = c("wrb2022", "sibcs", "usda")
         ),
         bslib::tooltip(
-          shiny::actionButton(ns("run"), i18n("classify.run"),
-                              icon = shiny::icon("play"),
-                              class = "btn-primary w-100"),
+          bslib::input_task_button(ns("run"), i18n("classify.run"),
+                                   icon = shiny::icon("play"),
+                                   label_busy = i18n("classify.classifying"),
+                                   type = "primary", class = "w-100"),
           "Run the deterministic keys and show the WRB, SiBCS and USDA names with their decision traces."
         ),
         # Tells the user whether the shown results reflect the current settings,
@@ -130,6 +131,48 @@ classify_ui <- function(id) {
   )
 }
 
+# The classification run, done in a background worker (.sk_async()): it may use
+# only its arguments and package functions. Gap-fill can fail (no internet for
+# SoilGrids, no attached spectra). classify_all() turns that into a warning and
+# a NULL result for the system, so the error never reached the tryCatch that
+# was meant to catch it, and the cards came back empty. The failures are now
+# read from those warnings: a system lost to gap-fill is classified again
+# without it, and the reason rides along as attr(, "gapfill_error").
+.classify_job <- function(pedon, systems, on_missing, include_familia,
+                          include_family, specifiers, gapfill_methods) {
+  run_all <- function(gapfill_arg) soilKey::classify_all(
+    pedon,
+    systems         = systems,
+    on_missing      = on_missing,
+    include_familia = include_familia,
+    include_family  = include_family,
+    specifiers      = specifiers,
+    gapfill         = gapfill_arg)
+  if (length(gapfill_methods) == 0L) return(run_all(FALSE))
+  why <- character(0)
+  res <- tryCatch(
+    withCallingHandlers(
+      run_all(list(method = gapfill_methods)),
+      warning = function(w) {
+        m <- conditionMessage(w)
+        if (grepl("^classify_[a-z0-9]+ failed: ", m)) {
+          why <<- c(why, sub("^classify_[a-z0-9]+ failed: ", "", m))
+          invokeRestart("muffleWarning")
+        }
+      }),
+    error = function(e) { why <<- c(why, conditionMessage(e)); NULL })
+  keys <- c(wrb2022 = "wrb", sibcs = "sibcs", usda = "usda")[systems]
+  lost <- if (is.null(res)) keys else keys[vapply(keys, function(k) is.null(res[[k]]),
+                                                    logical(1))]
+  if (!length(lost)) return(res)
+  plain <- run_all(FALSE)
+  if (is.null(res)) res <- plain
+  for (k in lost) res[k] <- list(plain[[k]])
+  res$summary <- plain$summary
+  attr(res, "gapfill_error") <- why[1] %||% "gap-fill failed"
+  res
+}
+
 classify_server <- function(id, rv, settings) {
   shiny::moduleServer(id, function(input, output, session) {
 
@@ -167,43 +210,45 @@ classify_server <- function(id, rv, settings) {
     # (endless spinner). has_run only becomes TRUE once Classify is pressed.
     has_run <- shiny::reactiveVal(FALSE)
     stale   <- shiny::reactiveVal(FALSE)
-    shiny::observeEvent(input$run, { has_run(TRUE); stale(FALSE) })
     shiny::observeEvent(
       list(input$systems, input$gapfill_methods, input$include_family,
            input$specifiers, rv$pedon),
       { if (has_run()) stale(TRUE) }, ignoreInit = TRUE)
 
-    results <- shiny::eventReactive(input$run, {
+    # The keys run in a background worker (utils_async.R): with SoilGrids
+    # gap-fill a run reads the network for over a minute, and in this process it
+    # froze every other session on the instance. The button stays busy while it
+    # runs; results() waits for it.
+    classify_task <- shiny::ExtendedTask$new(function(args)
+      .sk_async(.classify_job, args))
+    bslib::bind_task_button(classify_task, "run")
+    shiny::observeEvent(input$run, {
       shiny::req(rv$pedon)
       cfg <- settings()
-      sys <- input$systems
-      if (length(sys) == 0L) {
+      if (length(input$systems) == 0L) {
         shiny::showNotification(i18n("classify.pick_one_system"), type = "warning")
-        return(NULL)
+        return()
       }
-      gf <- input$gapfill_methods
-      run_all <- function(gapfill_arg) soilKey::classify_all(
-        rv$pedon,
-        systems         = sys,
+      has_run(TRUE); stale(FALSE)
+      classify_task$invoke(list(
+        pedon           = rv$pedon,
+        systems         = input$systems,
         on_missing      = cfg$on_missing,
         include_familia = cfg$include_familia,
         include_family  = isTRUE(cfg$include_family),
         specifiers      = isTRUE(cfg$specifiers),
-        gapfill         = gapfill_arg)
-      shiny::withProgress(message = i18n("classify.classifying"), value = 0.5, {
-        if (length(gf) == 0L) return(run_all(FALSE))
-        # Gap-fill can fail (no internet for SoilGrids, no attached spectra):
-        # fall back to classifying as-is rather than erroring the whole tab.
-        tryCatch(
-          run_all(list(method = gf)),
-          error = function(e) {
-            shiny::showNotification(
-              sprintf("Gap-fill could not run (%s) - classified without it.",
-                      conditionMessage(e)),
-              type = "warning", duration = 8)
-            run_all(FALSE)
-          })
-      })
+        gapfill_methods = input$gapfill_methods))
+    })
+    results <- shiny::reactive(.sk_task_value(classify_task))
+    # Gap-fill can fail (no internet for SoilGrids, no attached spectra); the
+    # job then classifies as-is and says why.
+    shiny::observe({
+      msg <- attr(tryCatch(classify_task$result(), error = function(e) NULL),
+                  "gapfill_error")
+      if (!is.null(msg))
+        shiny::showNotification(
+          sprintf("Gap-fill could not run (%s) - classified without it.", msg),
+          type = "warning", duration = 8)
     })
 
     output$engine_note <- shiny::renderUI({
@@ -242,6 +287,10 @@ classify_server <- function(id, rv, settings) {
                           shiny::icon("play"),
                           i18n("classify.press_classify")))
       }
+      if (inherits(results(), "error"))
+        return(shiny::div(class = "alert alert-danger m-3",
+                          shiny::icon("triangle-exclamation"), " ",
+                          conditionMessage(results())))
       shiny::tagList(
         if (isTRUE(stale())) shiny::div(
           class = "alert alert-warning py-2 px-3 small mb-2 d-flex align-items-center gap-2",
@@ -278,7 +327,7 @@ classify_server <- function(id, rv, settings) {
 
     output$trace_table <- DT::renderDT({
       res <- results()
-      shiny::req(res)
+      shiny::req(res, !inherits(res, "error"))
       r <- res[[input$trace_sys %||% "wrb"]]
       # v0.9.165: the trace shape differs by system (flat for WRB, nested phases
       # for SiBCS/USDA). key_trace_table() normalises every shape to one ordered
@@ -328,7 +377,7 @@ classify_server <- function(id, rv, settings) {
 
     output$ambiguities <- shiny::renderUI({
       res <- results()
-      shiny::req(res)
+      shiny::req(res, !inherits(res, "error"))
       amb <- res$wrb$ambiguities %||% list()
       if (length(amb) == 0L) {
         return(shiny::div(class = "text-muted p-2",
@@ -348,7 +397,7 @@ classify_server <- function(id, rv, settings) {
 
     output$missing <- shiny::renderUI({
       res <- results()
-      shiny::req(res)
+      shiny::req(res, !inherits(res, "error"))
       # Per-system so the user sees which measurement each key still wants.
       blocks <- list()
       for (nm in c("wrb", "sibcs", "usda")) {

@@ -72,9 +72,10 @@ uncertainty_ui <- function(id) {
         desc = "Perturb the inputs within their measurement uncertainty and re-run the key.",
         icon = "play",
         bslib::tooltip(
-          shiny::actionButton(ns("run"), i18n("uncert.run_analysis"),
-                              icon = shiny::icon("dice"),
-                              class = "btn-primary w-100"),
+          bslib::input_task_button(ns("run"), i18n("uncert.run_analysis"),
+                                   icon = shiny::icon("dice"),
+                                   label_busy = i18n("uncert.running_mc"),
+                                   type = "primary", class = "w-100"),
           "Run the Monte-Carlo uncertainty analysis and report how stable the classification is."),
         shiny::helpText(
           i18n("uncert.perturb_help")
@@ -85,24 +86,35 @@ uncertainty_ui <- function(id) {
   )
 }
 
+# The Monte-Carlo jobs, run in a background worker (.sk_async()): they may use
+# only their arguments and package functions.
+.uncert_job <- function(pedon, n, system, level, sensitivity) {
+  soilKey::classify_with_uncertainty(pedon, n = n, system = system,
+                                     level = level, sensitivity = sensitivity)
+}
+
+# One row per point: most likely class, its probability, entropy.
+.uncert_group_job <- function(pedons, n, system, level) {
+  rows <- lapply(seq_along(pedons), function(i) {
+    p  <- pedons[[i]]
+    id <- tryCatch(p$site$id, error = function(e) NULL)
+    if (is.null(id)) id <- sprintf("p%02d", i)
+    u  <- tryCatch(soilKey::classify_with_uncertainty(
+      p, n = n, system = system, level = level, sensitivity = FALSE),
+      error = function(e) NULL)
+    if (is.null(u) || (length(u$posterior) == 1L && is.na(u$posterior[[1L]])))
+      data.frame(id = id, top1 = NA_character_, prob = NA_real_,
+                 entropy = NA_real_, stringsAsFactors = FALSE)
+    else
+      data.frame(id = id, top1 = if (is.null(u$top1)) NA_character_ else u$top1,
+                 prob = as.numeric(u$posterior[1L]), entropy = u$entropy,
+                 stringsAsFactors = FALSE)
+  })
+  do.call(rbind, rows)
+}
+
 uncertainty_server <- function(id, rv, settings) {
   shiny::moduleServer(id, function(input, output, session) {
-
-    unc <- shiny::eventReactive(input$run, {
-      shiny::req(rv$pedon)
-      shiny::withProgress(message = i18n("uncert.running_mc"),
-                          value = 0.4, {
-        tryCatch(
-          soilKey::classify_with_uncertainty(
-            rv$pedon,
-            n           = input$n,
-            system      = input$system,
-            level       = input$level,
-            sensitivity = isTRUE(input$sensitivity)
-          ),
-          error = function(e) e)
-      })
-    })
 
     # ---- group of points (from the Map Batch tab, shared via rv) ----------
     group_pedons <- shiny::reactive(tryCatch(rv$batch_pedons, error = function(e) NULL))
@@ -119,31 +131,40 @@ uncertainty_server <- function(id, rv, settings) {
                         sprintf(i18n("uncert.group_available"), n))
     })
 
-    # Per-point uncertainty over the whole group. Sensitivity is skipped (it is a
-    # per-point extra pass -> too slow x N); n is capped for a responsive table.
-    group_unc <- shiny::eventReactive(input$run, {
+    # The Monte-Carlo runs (15-20 s for one profile, as long again over a group)
+    # run in a background worker (utils_async.R), so other sessions on the
+    # instance are not frozen while they do. One button, two tasks: the source
+    # picked when Run is pressed decides which one runs.
+    unc_task   <- shiny::ExtendedTask$new(function(args) .sk_async(.uncert_job, args))
+    group_task <- shiny::ExtendedTask$new(function(args)
+      .sk_async(.uncert_group_job, args))
+    bslib::bind_task_button(unc_task, "run")
+    bslib::bind_task_button(group_task, "run")
+    ran <- shiny::reactiveValues(single = FALSE, group = FALSE)
+    shiny::observeEvent(input$run, {
+      if (identical(input$source, "group")) {
+        bp <- group_pedons()
+        if (is.null(bp) || !length(bp)) return()
+        ran$group <- TRUE
+        # Sensitivity is skipped (it is a per-point extra pass -> too slow x N);
+        # n is capped for a responsive table.
+        group_task$invoke(list(
+          pedons = bp, n = min(as.integer(input$n %||% 50L), 100L),
+          system = input$system, level = input$level))
+      } else {
+        shiny::req(rv$pedon)
+        ran$single <- TRUE
+        unc_task$invoke(list(
+          pedon = rv$pedon, n = input$n, system = input$system,
+          level = input$level, sensitivity = isTRUE(input$sensitivity)))
+      }
+    })
+    unc <- shiny::reactive(if (isTRUE(ran$single)) .sk_task_value(unc_task))
+    group_unc <- shiny::reactive({
       bp <- group_pedons()
       if (is.null(bp) || !length(bp))
         return(simpleError(i18n("uncert.group_none")))
-      npp <- min(as.integer(input$n %||% 50L), 100L)
-      shiny::withProgress(message = i18n("uncert.running_group"), value = 0, {
-        rows <- lapply(seq_along(bp), function(i) {
-          shiny::incProgress(1 / length(bp))
-          p  <- bp[[i]]
-          id <- tryCatch(p$site$id, error = function(e) NULL) %||% sprintf("p%02d", i)
-          u  <- tryCatch(soilKey::classify_with_uncertainty(
-            p, n = npp, system = input$system, level = input$level,
-            sensitivity = FALSE), error = function(e) NULL)
-          if (is.null(u) || (length(u$posterior) == 1L && is.na(u$posterior[[1L]])))
-            data.frame(id = id, top1 = NA_character_, prob = NA_real_,
-                       entropy = NA_real_, stringsAsFactors = FALSE)
-          else
-            data.frame(id = id, top1 = u$top1 %||% NA_character_,
-                       prob = as.numeric(u$posterior[1L]), entropy = u$entropy,
-                       stringsAsFactors = FALSE)
-        })
-        do.call(rbind, rows)
-      })
+      if (isTRUE(ran$group)) .sk_task_value(group_task)
     })
 
     output$body <- shiny::renderUI({
@@ -271,12 +292,14 @@ uncertainty_server <- function(id, rv, settings) {
     })
 
     # ---- per-point drill-in: click a row -> full analysis for that point ----
-    drill <- shiny::eventReactive(input$group_table_rows_selected, {
+    drill_task <- shiny::ExtendedTask$new(function(args) .sk_async(.uncert_job, args))
+    drill_id   <- shiny::reactiveVal(NULL)
+    shiny::observeEvent(input$group_table_rows_selected, {
       sel <- input$group_table_rows_selected
       g   <- group_unc()
-      if (is.null(sel) || is.null(g) || inherits(g, "error")) return(NULL)
+      if (is.null(sel) || is.null(g) || inherits(g, "error")) return(drill_id(NULL))
       gs  <- g[order(-g$prob), , drop = FALSE]        # same order the table shows
-      if (sel > nrow(gs)) return(NULL)
+      if (sel > nrow(gs)) return(drill_id(NULL))
       id  <- gs$id[sel]
       bp  <- group_pedons()
       ped <- NULL
@@ -285,12 +308,16 @@ uncertainty_server <- function(id, rv, settings) {
         if (identical(as.character(pid), as.character(id))) { ped <- p; break }
       }
       if (is.null(ped) && sel <= length(bp)) ped <- bp[[sel]]   # index fallback
-      if (is.null(ped)) return(NULL)
-      list(id = id, u = shiny::withProgress(
-        message = i18n("uncert.running_mc"), value = 0.4,
-        tryCatch(soilKey::classify_with_uncertainty(
-          ped, n = input$n, system = input$system, level = input$level,
-          sensitivity = isTRUE(input$sensitivity)), error = function(e) e)))
+      if (is.null(ped)) return(drill_id(NULL))
+      drill_id(id)
+      drill_task$invoke(list(
+        pedon = ped, n = input$n, system = input$system, level = input$level,
+        sensitivity = isTRUE(input$sensitivity)))
+    }, ignoreNULL = FALSE)
+    drill <- shiny::reactive({
+      id <- drill_id()
+      if (is.null(id)) return(NULL)
+      list(id = id, u = .sk_task_value(drill_task))
     })
 
     output$drill_detail <- shiny::renderUI({

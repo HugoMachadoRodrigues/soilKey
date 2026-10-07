@@ -153,6 +153,7 @@ test_that("map_server batch mode classifies demo points with coordinates", {
     session$setInputs(mode = "batch", batch_source = "demo", n_demo = 3,
                       batch_system = "wrb", show_soilgrids = FALSE)
     session$setInputs(run_batch = 1)
+    .settle(session)
     res <- batch()
     expect_false(inherits(res, "error"))
     expect_true(all(c("id", "lat", "lon", "wrb_name") %in% names(res)))

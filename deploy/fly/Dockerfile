@@ -100,19 +100,25 @@ RUN R -e "pak::pkg_install(c( \
 # ISRIC under their terms and mount it at the path
 # load_wosis_stratified_sample() reads.
 
-# ellmer (LLM client for the Assistant chat + online Photo VLM) postdates the
-# frozen snapshot above, so install it from the current Posit PM binary repo.
+# ellmer (LLM client for the Assistant chat + online Photo VLM) and mirai (the
+# background R workers that run the app's slow handlers, so one user's long
+# computation does not freeze the other sessions) postdate the frozen snapshot
+# above, so install them from the current Posit PM binary repo.
 RUN R -e "options(repos = c(PPM = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); \
-  pak::pkg_install('ellmer')"
+  pak::pkg_install(c('ellmer', 'mirai'))"
 
 # Build-time smoke check: the package loads and every hard-required app package
 # (incl. ellmer for the live Assistant) is importable. Fails the build early if
 # the dependency set is wrong.
 RUN R -e "library(soilKey); \
   stopifnot(is.function(soilKey::run_classify_app)); \
-  need <- c('shiny','bslib','DT','plotly','shinyWidgets','leaflet','ellmer'); \
+  need <- c('shiny','bslib','DT','plotly','shinyWidgets','leaflet','ellmer','mirai'); \
   ok <- vapply(need, requireNamespace, logical(1), quietly = TRUE); \
   if (!all(ok)) stop('missing: ', paste(need[!ok], collapse=', ')); \
+  stopifnot(is.function(shiny::ExtendedTask\$new), is.function(bslib::bind_task_button)); \
+  mirai::daemons(1); \
+  stopifnot(identical(mirai::call_mirai(mirai::mirai(soilKey::make_ferralsol_canonical()\$site\$id))\$data, 'FR-canonical-01')); \
+  mirai::daemons(0); \
   cat('soilKey', as.character(packageVersion('soilKey')), 'app deps OK\n')"
 
 EXPOSE 8080
