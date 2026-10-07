@@ -65,6 +65,7 @@ test_that("classify_server runs the three keys on a pedon", {
   shiny::testServer(classify_server,
                     args = list(rv = rv, settings = .pro_settings_stub()), {
     session$setInputs(systems = c("wrb2022", "sibcs", "usda"), run = 1)
+    .settle(session)
     res <- session$returned()      # returned() invokes the results eventReactive
     expect_true(is.list(res))
     expect_true(any(c("wrb", "sibcs", "usda") %in% names(res)))

@@ -27,8 +27,8 @@
 # Text: on 2026-10-07 the same grounded questions went to both candidates.
 # Qwen3 stayed with the evidence; gpt-oss-120b twice put Alisols after Luvisols
 # in the WRB key (they come before, and the trace said so) and made up SiBCS
-# rules. gpt-oss stays second: it has its own rate limit, so it answers when
-# Qwen is at its per-minute limit (.groq_rate_limited()).
+# rules. gpt-oss is used only if Groq offers no Qwen at all; when Qwen is at its
+# per-minute limit the user is asked to wait (.groq_rate_limited()).
 .GROQ_PREFS <- list(
   vision = c("^qwen/qwen3\\.[0-9]+-27b$",
              "^meta-llama/llama-4-maverick",
@@ -42,9 +42,8 @@
              "^meta-llama/llama-4"))
 
 # Used only when Groq's list cannot be read at all (network down, key rejected):
-# the last models verified to work, on 2026-10-07, in order of preference.
-.GROQ_FALLBACK <- list(vision = "qwen/qwen3.8-27b",
-                       text   = c("qwen/qwen3.8-27b", "openai/gpt-oss-120b"))
+# the last models verified to work, on 2026-10-07.
+.GROQ_FALLBACK <- list(vision = "qwen/qwen3.8-27b", text = "qwen/qwen3.8-27b")
 
 .groq_cache <- new.env(parent = emptyenv())
 
@@ -103,22 +102,15 @@
 # The model to use for `kind` ("vision" or "text"): an explicit choice if Groq
 # still offers it, else the best available, else NA when nothing suitable is
 # offered. If the list cannot be read, the explicit choice or the last verified
-# default is returned and the call itself will say whether it works. `exclude`
-# names models not to use this time (one at its rate limit).
+# default is returned and the call itself will say whether it works.
 .groq_model <- function(kind = c("vision", "text"),
-                        key = Sys.getenv("GROQ_API_KEY", ""),
-                        exclude = character(0)) {
+                        key = Sys.getenv("GROQ_API_KEY", "")) {
   kind <- match.arg(kind)
   opt <- getOption(sprintf("soilKey.groq_%s_model", kind), default = NULL)
   env <- Sys.getenv(sprintf("GROQ_%s_MODEL", toupper(kind)), "")
-  wanted <- setdiff(c(if (!is.null(opt) && nzchar(opt)) opt, if (nzchar(env)) env),
-                    exclude)
+  wanted <- c(if (!is.null(opt) && nzchar(opt)) opt, if (nzchar(env)) env)
   ids <- .groq_available_models(key)
-  if (is.null(ids)) {
-    pick <- c(wanted, setdiff(.GROQ_FALLBACK[[kind]], exclude))
-    return(if (length(pick)) pick[1] else NA_character_)
-  }
-  ids <- setdiff(ids, exclude)
+  if (is.null(ids)) return(if (length(wanted)) wanted[1] else .GROQ_FALLBACK[[kind]])
   for (w in wanted) if (w %in% ids) return(w)
   .groq_pick(ids, .GROQ_PREFS[[kind]])
 }
@@ -131,8 +123,7 @@
 }
 
 # Did this error come from Groq's per-minute limits (requests, tokens, or
-# output tokens)? Waiting for them would hold the whole R process, and every
-# session on it, for up to a minute; another model has its own allowance.
+# output tokens)? Then the Assistant asks the user to try again in a minute.
 .groq_rate_limited <- function(err) {
   msg <- if (inherits(err, "condition")) conditionMessage(err) else as.character(err)
   grepl("\\b429\\b|rate limit|too many requests|request too large|per minute",

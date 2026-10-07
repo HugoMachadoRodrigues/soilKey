@@ -68,22 +68,6 @@ test_that("an explicit choice wins only while Groq still offers it", {
   expect_identical(e$.groq_model("text", key = "k"), "qwen/qwen3.8-27b")
 })
 
-test_that("a model at its limit can be set aside for the next in line", {
-  skip_if_not_installed("shiny")
-  e <- .groq_env()
-  e$.groq_available_models <- function(key, ttl = 3600) .oct_2026
-  expect_identical(e$.groq_model("text", "k", exclude = "qwen/qwen3.8-27b"),
-                   "openai/gpt-oss-120b")
-  expect_identical(e$.groq_model("text", "k",
-                                 exclude = c("qwen/qwen3.8-27b", "openai/gpt-oss-120b")),
-                   "openai/gpt-oss-20b")
-  # an explicit choice that is set aside does not come back
-  withr::local_options(soilKey.groq_text_model = "openai/gpt-oss-120b")
-  expect_identical(e$.groq_model("text", "k"), "openai/gpt-oss-120b")
-  expect_identical(e$.groq_model("text", "k", exclude = "openai/gpt-oss-120b"),
-                   "qwen/qwen3.8-27b")
-})
-
 test_that("if the list cannot be read, the explicit choice or last good default is used", {
   skip_if_not_installed("shiny")
   e <- .groq_env()
@@ -93,13 +77,9 @@ test_that("if the list cannot be read, the explicit choice or last good default 
   expect_identical(e$.groq_model("vision", key = "k"), e$.GROQ_FALLBACK$vision)
   withr::local_options(soilKey.groq_vision_model = "my/model")
   expect_identical(e$.groq_model("vision", key = "k"), "my/model")
-  # the text defaults come in order, so one can stand in for the other
   withr::local_options(soilKey.groq_text_model = NULL)
   withr::local_envvar(GROQ_TEXT_MODEL = "")
   expect_identical(e$.groq_model("text", key = "k"), "qwen/qwen3.8-27b")
-  expect_identical(e$.groq_model("text", key = "k", exclude = "qwen/qwen3.8-27b"),
-                   "openai/gpt-oss-120b")
-  expect_true(is.na(e$.groq_model("text", key = "k", exclude = e$.GROQ_FALLBACK$text)))
 })
 
 test_that("Groq's retirement error is recognised; other errors are not", {

@@ -118,9 +118,10 @@ map_ui <- function(id) {
           shiny::numericInput(ns("topn"), i18n("mpoint.keep_top_n"),
                               5, min = 1, max = 30, step = 1),
           bslib::tooltip(
-            shiny::actionButton(ns("run_point"), i18n("mpoint.query_prior"),
-                                icon = shiny::icon("satellite"),
-                                class = "btn-primary w-100"),
+            bslib::input_task_button(ns("run_point"), i18n("mpoint.query_prior"),
+                                     icon = shiny::icon("satellite"),
+                                     label_busy = i18n("mpoint.querying_prior"),
+                                     type = "primary", class = "w-100"),
             "Read the class prior at the current point and rank the classes.")
         )),
 
@@ -151,9 +152,10 @@ map_ui <- function(id) {
             choices = c("WRB 2022" = "wrb", "SiBCS 5" = "sibcs",
                         "USDA ST 13" = "usda"), selected = "wrb"),
           bslib::tooltip(
-            shiny::actionButton(ns("run_batch"), i18n("mbatch.run"),
-                                icon = shiny::icon("layer-group"),
-                                class = "btn-primary w-100"),
+            bslib::input_task_button(ns("run_batch"), i18n("mbatch.run"),
+                                     icon = shiny::icon("layer-group"),
+                                     label_busy = i18n("mbatch.classifying"),
+                                     type = "primary", class = "w-100"),
             "Classify each point under all three systems and map them by class."),
           bslib::tooltip(
             shiny::downloadButton(ns("batch_export"), i18n("mbatch.export"),
@@ -217,6 +219,14 @@ map_ui <- function(id) {
     shiny::uiOutput(ns("map_legend_help")),
     shiny::uiOutput(ns("results"))
   )
+}
+
+# The class prior at a point, read from SoilGrids in a background worker
+# (.sk_async()): only its arguments and package functions.
+.map_prior_job <- function(lat, lon, system, buffer_m, source_url, top_n) {
+  soilKey::soil_classes_at_location(
+    lat = lat, lon = lon, system = system, buffer_m = buffer_m,
+    source_url = source_url, top_n = top_n, verbose = FALSE)
 }
 
 map_server <- function(id, rv, settings) {
@@ -489,46 +499,65 @@ map_server <- function(id, rv, settings) {
     # never fires a network read before the user asks). After the first run,
     # input$system becomes a live dependency, so toggling WRB <-> SiBCS re-queries
     # immediately -- the fix for "nothing happens when I switch the system".
+    # The SoilGrids read takes up to a minute, so it runs in a background
+    # worker (utils_async.R) and the other sessions on the instance carry on.
     ran_point_once <- shiny::reactiveVal(FALSE)
-    shiny::observeEvent(input$run_point, ran_point_once(TRUE))
-    prior <- shiny::eventReactive(
-      list(input$run_point,
-           if (isTRUE(ran_point_once())) input$system else NULL), {
+    prior_task <- shiny::ExtendedTask$new(function(args) .sk_async(.map_prior_job, args))
+    bslib::bind_task_button(prior_task, "run_point")
+    prior_msg  <- shiny::reactiveVal(NULL)   # a problem found before any query
+    invoke_prior <- function() {
       cc <- coords_r()
-      if (is.null(cc)) return(simpleError(i18n("mpoint.place_point_first")))
+      if (is.null(cc)) return(prior_msg(simpleError(i18n("mpoint.place_point_first"))))
       if (!requireNamespace("terra", quietly = TRUE))
-        return(simpleError(i18n("mpoint.terra_not_installed")))
-      src <- .map_soilgrids_source(input$source_url, input$sg_source)
-      shiny::withProgress(message = i18n("mpoint.querying_prior"), value = 0.5, {
-        tryCatch(soilKey::soil_classes_at_location(
-          lat = cc$lat, lon = cc$lon, system = input$system,
-          buffer_m = input$buffer, source_url = src,
-          top_n = input$topn, verbose = FALSE), error = function(e) e)
-      })
+        return(prior_msg(simpleError(i18n("mpoint.terra_not_installed"))))
+      prior_msg(NULL)
+      prior_task$invoke(list(
+        lat = cc$lat, lon = cc$lon, system = input$system,
+        buffer_m = input$buffer,
+        source_url = .map_soilgrids_source(input$source_url, input$sg_source),
+        top_n = input$topn))
+    }
+    shiny::observeEvent(input$run_point, {
+      ran_point_once(TRUE)
+      invoke_prior()
     }, ignoreInit = TRUE)
+    shiny::observeEvent(input$system, {
+      if (isTRUE(ran_point_once())) invoke_prior()
+    }, ignoreInit = TRUE)
+    prior <- shiny::reactive({
+      m <- prior_msg()
+      if (!is.null(m)) return(m)
+      .sk_task_value(prior_task)
+    })
 
     # ======================================================================
     #  BATCH MODE -- classify many profiles, colour by class
     # ======================================================================
     batch_pedons <- shiny::reactiveVal(NULL)
-    batch <- shiny::eventReactive(input$run_batch, {
+    # Classifying the points runs in a background worker (utils_async.R).
+    batch_task <- shiny::ExtendedTask$new(function(args) .sk_async(.batch_classify, args))
+    bslib::bind_task_button(batch_task, "run_batch")
+    batch_msg  <- shiny::reactiveVal(NULL)   # a problem found before classifying
+    shiny::observeEvent(input$run_batch, {
       on_missing <- tryCatch(settings()$on_missing, error = function(e) NULL) %||% "silent"
-      shiny::withProgress(message = i18n("mbatch.classifying"), value = 0, {
-        peds <- tryCatch({
-          if (identical(input$batch_source, "upload")) {
-            f <- input$batch_csv
-            if (is.null(f)) return(simpleError(i18n("mbatch.upload_first")))
-            .batch_parse_csv(utils::read.csv(f$datapath, stringsAsFactors = FALSE))
-          } else .batch_demo_pedons(input$n_demo %||% 12L)
-        }, error = function(e) e)
-        if (inherits(peds, "error")) return(peds)
-        batch_pedons(peds)
-        # share the group of profiles app-wide so the Uncertainty tab can run
-        # a per-point analysis over the same points the user entered here.
-        rv$batch_pedons <- peds
-        .batch_classify(peds, on_missing = on_missing,
-                        bump = function(i, n) shiny::incProgress(1 / n))
-      })
+      peds <- if (identical(input$batch_source, "upload")) {
+        f <- input$batch_csv
+        if (is.null(f)) simpleError(i18n("mbatch.upload_first"))
+        else tryCatch(.batch_parse_csv(utils::read.csv(f$datapath, stringsAsFactors = FALSE)),
+                      error = function(e) e)
+      } else tryCatch(.batch_demo_pedons(input$n_demo %||% 12L), error = function(e) e)
+      if (inherits(peds, "error")) return(batch_msg(peds))
+      batch_msg(NULL)
+      batch_pedons(peds)
+      # share the group of profiles app-wide so the Uncertainty tab can run
+      # a per-point analysis over the same points the user entered here.
+      rv$batch_pedons <- peds
+      batch_task$invoke(list(pedons = peds, on_missing = on_missing))
+    })
+    batch <- shiny::reactive({
+      m <- batch_msg()
+      if (!is.null(m)) return(m)
+      .sk_task_value(batch_task)
     })
     shiny::observeEvent(batch(), {
       res <- batch(); sysc <- paste0(input$batch_system %||% "wrb", "_class")

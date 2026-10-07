@@ -46,6 +46,20 @@
 library(shiny)
 library(soilKey)
 
+# Background R workers for the slow handlers (classification with gap-fill,
+# uncertainty, the Map's SoilGrids prior and batch), so one user's long run no
+# longer freezes every other session in this process. Without mirai, or with
+# options(soilKey.app_workers = 0), the work runs in this process as before.
+# See R/utils_async.R.
+.sk_async_start()
+shiny::onStop(.sk_async_stop)
+
+# Groq calls (Assistant, Photo) fail fast at the free tier's per-minute limits.
+# ellmer otherwise waits out Retry-After, up to a minute, and tries again: a
+# synchronous call holds this process meanwhile, and the Assistant would rather
+# hand the question to the next model at once (R/mod_chat.R).
+options(ellmer_max_tries = 1L)
+
 # ----------------------------------------------------------------------------
 # UI -- a per-session function so i18n() picks up the current language.
 # ----------------------------------------------------------------------------

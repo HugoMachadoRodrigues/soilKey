@@ -43,13 +43,19 @@
     error = function(e) NULL)
 }
 
-# One question to a chat, failing fast. ellmer would otherwise wait out Groq's
-# Retry-After (up to a minute) and try again, holding the R process, and with
-# it every session on the instance; the caller turns to another model instead.
-.chat_ask <- function(chat, msg) {
-  old <- options(ellmer_max_tries = 1L)
-  on.exit(options(old), add = TRUE)
-  tryCatch(as.character(chat$chat(msg)), error = function(e) e)
+# One question to a chat, without holding the R process while Groq answers
+# (seconds per reply, every other session on the instance waited). A promise of
+# the reply text or of the error, resolved either way so the caller decides.
+# Calls fail fast at Groq's limits: app.R sets options(ellmer_max_tries = 1),
+# or ellmer would wait out Groq's Retry-After and try again; the user is told
+# to try again in a minute instead.
+.chat_ask_async <- function(chat, msg) {
+  p <- tryCatch(chat$chat_async(msg),
+                error = function(e) promises::promise_resolve(e))
+  promises::then(p,
+                 onFulfilled = function(x) if (inherits(x, "condition")) x
+                                           else as.character(x),
+                 onRejected  = function(e) e)
 }
 
 # The evidence the assistant may explain from. Without it the model was handed
@@ -400,30 +406,31 @@
        results  = res)
 }
 
-# When the model is at its per-minute limit, the next models in line answer,
-# each with its own allowance and the conversation so far, and the answer joins
-# the main chat's history. `b` is the backend (chat, model, key). Returns
-# list(reply, note); reply is "rate_limited" when every model tried is at its
-# limit, an error condition for any other failure.
-.chat_past_limits <- function(r, b, msg, system_prompt, max_alternates = 2L) {
-  note  <- NULL
-  tried <- b$model
-  while (inherits(r, "error") && .groq_rate_limited(r) && !is.null(b$chat) &&
-         length(tried) <= max_alternates) {
-    alt <- .groq_model("text", b$key, exclude = tried)
-    if (is.na(alt)) break
-    tried <- c(tried, alt)
-    alt_chat <- .chat_make_groq(b$key, alt, system_prompt)
-    if (is.null(alt_chat)) next
-    alt_chat$set_turns(b$chat$get_turns())
-    r <- .chat_ask(alt_chat, msg)
-    if (!inherits(r, "error")) {
-      b$chat$set_turns(alt_chat$get_turns())
-      note <- i18n("chat.answered_by_fallback", alt, b$model)
+# A question to the live model, start to finish. A model retired since Groq's
+# list was last read is replaced (the list is read again, the conversation
+# carried over) and asked once more. A model at its per-minute limit is NOT
+# replaced: the user is asked to wait a minute. Until v0.9.209 another model
+# (gpt-oss-120b) answered in its place, and in live use it got SiBCS rules
+# wrong where Qwen had them right. A promise of list(reply, backend, msg):
+# reply is the text, "rate_limited", or an error condition; backend is the one
+# to keep (it changes after a retirement).
+.chat_converse_async <- function(b, msg, system_prompt) {
+  settle <- function(r, b) list(
+    reply   = if (inherits(r, "error") && .groq_rate_limited(r)) "rate_limited" else r,
+    backend = b, msg = msg)
+  promises::then(.chat_ask_async(b$chat, msg), function(r) {
+    if (inherits(r, "error") && .groq_model_gone(r)) {
+      .groq_forget_models()
+      model <- .groq_model("text", b$key)
+      chat  <- if (!is.na(model)) .chat_make_groq(b$key, model, system_prompt)
+      if (!is.null(chat)) {
+        chat$set_turns(b$chat$get_turns())
+        b <- list(chat = chat, model = model, key = b$key)
+        return(promises::then(.chat_ask_async(chat, msg), function(r2) settle(r2, b)))
+      }
     }
-  }
-  if (inherits(r, "error") && .groq_rate_limited(r)) r <- "rate_limited"
-  list(reply = r, note = note)
+    settle(r, b)
+  })
 }
 
 # What the live model is told: the instructions, the classification and the
@@ -510,9 +517,10 @@ chat_ui <- function(id) {
       shiny::textAreaInput(ns("msg"), NULL, width = "100%", rows = 2,
                            placeholder = i18n("chat.placeholder")),
       bslib::tooltip(
-        shiny::actionButton(ns("send"), i18n("chat.send"),
-                            icon = shiny::icon("paper-plane"),
-                            class = "btn-primary"),
+        bslib::input_task_button(ns("send"), i18n("chat.send"),
+                               icon = shiny::icon("paper-plane"),
+                               label_busy = i18n("chat.thinking"),
+                               type = "primary"),
         "Send your message.")),
     shiny::div(class = "sk-assistant-foot small text-muted",
                i18n("chat.grounding_note"))
@@ -580,47 +588,58 @@ chat_server <- function(id, rv, settings) {
       if (!length(h))
         return(shiny::div(class = "text-muted p-3 text-center",
                           i18n("chat.empty")))
-      shiny::tagList(lapply(h, function(m) .chat_bubble(m$role, m$text)))
+      shiny::tagList(
+        lapply(h, function(m) .chat_bubble(m$role, m$text)),
+        # while the live model answers
+        if (identical(chat_task$status(), "running"))
+          .chat_bubble("assistant", paste0("*", i18n("chat.thinking"), "*")))
     })
 
     # ---- send a text message ---------------------------------------------
+    # The live model answers through an ExtendedTask: the reply is awaited
+    # without holding the R process, so other sessions are not frozen for the
+    # seconds each answer takes. The Send button stays busy meanwhile, and a
+    # second message waits its turn.
+    chat_task <- shiny::ExtendedTask$new(function(b, msg, sys)
+      .chat_converse_async(b, msg, sys))
+    bslib::bind_task_button(chat_task, "send")
+    asked <- shiny::reactiveVal("")
     shiny::observeEvent(input$send, {
       msg <- trimws(input$msg %||% "")
       if (!nzchar(msg)) return()
       add("user", msg)
       shiny::updateTextAreaInput(session, "msg", value = "")
-      ctx     <- .chat_pedon_context(rv$pedon, tryCatch(settings(), error = function(e) NULL))
       backend <- get_backend()
       if (identical(backend$kind, "scripted") || is.null(backend$chat)) {
+        ctx <- .chat_pedon_context(rv$pedon, tryCatch(settings(), error = function(e) NULL))
         add("assistant", .chat_scripted_reply(msg, ctx))
         return()
       }
-      out <- shiny::withProgress(
-        message = i18n("chat.thinking"), value = 0.5, {
-          b <- backend
-          r <- .chat_ask(b$chat, msg)
-          # The model was retired since Groq's list was last read: read it
-          # again, rebuild the chat on another model, and ask once more.
-          if (inherits(r, "error") && .groq_model_gone(r)) {
-            .groq_forget_models()
-            chat_obj(NULL); chat_sig("")
-            b <- get_backend()
-            r <- if (!is.null(b$chat)) .chat_ask(b$chat, msg) else r
-            model_check(model_check() + 1L)
-          }
-          .chat_past_limits(r, b, msg, chat_sys())
-        })
-      reply <- out$reply
-      if (identical(reply, "rate_limited")) {
-        add("assistant", i18n("chat.rate_limited"))
-        return()
+      asked(msg)
+      chat_task$invoke(backend, msg, chat_sys())
+    })
+    shiny::observeEvent(chat_task$status(), {
+      if (!chat_task$status() %in% c("success", "error")) return()
+      out <- tryCatch(chat_task$result(), error = function(e) list(reply = e))
+      # a retired model was replaced: keep the new chat for the next question
+      b <- out$backend
+      if (!is.null(b$chat) && !identical(b$chat, chat_obj())) {
+        chat_obj(b$chat)
+        chat_sig(paste(rv$pedon$site$id %||% "none", b$model, TRUE, sep = "|"))
+        model_check(model_check() + 1L)
       }
-      if (inherits(reply, "error")) reply <- NULL
-      if (is.null(reply) || !nzchar(reply))
-        add("assistant", paste0(i18n("chat.groq_failed"), "\n\n",
-                                .chat_scripted_reply(msg, ctx)))
-      else add("assistant", paste0(reply, if (!is.null(out$note))
-                                       paste0("\n\n*", out$note, "*")))
+      reply <- out$reply
+      if (identical(reply, "rate_limited")) return(add("assistant", i18n("chat.rate_limited")))
+      if (inherits(reply, "error") || is.null(reply) || !nzchar(reply)) {
+        ctx <- .chat_pedon_context(rv$pedon, tryCatch(settings(), error = function(e) NULL))
+        return(add("assistant", paste0(i18n("chat.groq_failed"), "\n\n",
+                                       .chat_scripted_reply(out$msg %||% asked(), ctx))))
+      }
+      add("assistant", reply)
+    })
+    shiny::observeEvent(chat_task$status(), {
+      if (identical(chat_task$status(), "running"))
+        session$sendCustomMessage("sk_chat_scroll", ns("log"))
     })
   })
 }

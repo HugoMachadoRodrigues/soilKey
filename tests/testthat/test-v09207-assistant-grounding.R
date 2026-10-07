@@ -164,51 +164,87 @@ test_that("the evidence reader handles R6 results, lists and odd names", {
 
 
 # ---- a model at its per-minute limit hands the question on -------------------
+# (v0.9.209: the calls are asynchronous, so the helpers return promises.)
 
-# A stand-in for an ellmer chat: answers, or fails as Groq does at its limit.
+# Wait for a promise in a test.
+.await <- function(p, timeout = 5) {
+  out <- NULL; done <- FALSE
+  promises::then(p, function(v) { out <<- v; done <<- TRUE },
+                 function(e) { out <<- e; done <<- TRUE })
+  t0 <- Sys.time()
+  while (!done && difftime(Sys.time(), t0, units = "secs") < timeout)
+    later::run_now(0.05)
+  out
+}
+
+# A stand-in for an ellmer chat: answers, or fails as Groq does at its limit or
+# after retiring the model.
 .fake_chat <- function(model, state) {
   turns <- list()
   list(model = model,
-       chat = function(msg) {
+       chat_async = function(msg) {
+         if (model %in% state$gone)
+           return(promises::promise_reject(simpleError(paste0(
+             "HTTP 404 Not Found. The model `", model, "` does not exist"))))
          if (model %in% state$busy)
-           stop("HTTP 429 Too Many Requests. Rate limit reached for model `", model,
-                "` on input tokens per minute (ITPM): Limit 7000")
+           return(promises::promise_reject(simpleError(paste0(
+             "HTTP 429 Too Many Requests. Rate limit reached for model `", model,
+             "` on input tokens per minute (ITPM): Limit 7000"))))
          turns <<- c(turns, list(msg, paste("answer from", model)))
-         paste("answer from", model)
+         promises::promise_resolve(paste("answer from", model))
        },
        get_turns = function() turns,
        set_turns = function(x) turns <<- x)
 }
 
-test_that("the next model answers, with the conversation, and says so", {
+.fake_backend <- function(e, state, models = c("qwen/qwen3.8-27b", "openai/gpt-oss-120b",
+                                              "openai/gpt-oss-20b")) {
+  e$.groq_available_models <- function(key, ttl = 3600) setdiff(models, state$gone)
+  e$.chat_make_groq <- function(key, model, system_prompt) .fake_chat(model, state)
+  main <- .fake_chat("qwen/qwen3.8-27b", state)
+  main$set_turns(list("earlier question", "earlier answer"))
+  list(chat = main, model = "qwen/qwen3.8-27b", key = "k")
+}
+
+test_that("a model at its limit asks the user to wait; no other model answers", {
   skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .grounding_env()
-  state <- new.env()
-  state$busy <- "qwen/qwen3.8-27b"
-  e$.groq_available_models <- function(key, ttl = 3600)
-    c("qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b")
-  e$.chat_make_groq <- function(key, model, system_prompt) .fake_chat(model, state)
+  state <- new.env(); state$busy <- "qwen/qwen3.8-27b"; state$gone <- character(0)
+  b <- .fake_backend(e, state)
+  made <- 0L
+  e$.chat_make_groq <- function(...) { made <<- made + 1L; NULL }
 
-  main <- .fake_chat("qwen/qwen3.8-27b", state)
-  main$set_turns(list("earlier question", "earlier answer"))
-  b <- list(chat = main, model = "qwen/qwen3.8-27b", key = "k")
-  first <- e$.chat_ask(main, "why?")
-  expect_true(e$.groq_rate_limited(first))
-
-  out <- e$.chat_past_limits(first, b, "why?", "sys")
-  expect_identical(out$reply, "answer from openai/gpt-oss-120b")
-  expect_match(out$note, "openai/gpt-oss-120b", fixed = TRUE)
-  expect_match(out$note, "qwen/qwen3.8-27b", fixed = TRUE)
-  # the stand-in saw the earlier turns, and its answer is in the main history
-  expect_identical(main$get_turns(), list("earlier question", "earlier answer",
-                                          "why?", "answer from openai/gpt-oss-120b"))
-
-  # with every model at its limit, the user is told to wait, not handed a summary
-  state$busy <- c("qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b")
-  out <- e$.chat_past_limits(e$.chat_ask(main, "and?"), b, "and?", "sys")
+  out <- .await(e$.chat_converse_async(b, "why?", "sys"))
+  # v0.9.209: gpt-oss-120b used to stand in, and got SiBCS rules wrong in live use
   expect_identical(out$reply, "rate_limited")
+  expect_identical(out$msg, "why?")
+  expect_equal(made, 0L)
   expect_null(out$note)
+  # the conversation is untouched, ready for the next try
+  expect_identical(b$chat$get_turns(), list("earlier question", "earlier answer"))
+  expect_match(e$i18n("chat.rate_limited", lang = "en"), "minute", fixed = TRUE)
+  expect_match(e$i18n("chat.rate_limited", lang = "pt"), "minuto", fixed = TRUE)
+
+  # when the model has room again, it answers
+  state$busy <- character(0)
+  out <- .await(e$.chat_converse_async(b, "why?", "sys"))
+  expect_identical(out$reply, "answer from qwen/qwen3.8-27b")
+})
+
+test_that("a retired model is replaced and the conversation carried over", {
+  skip_on_cran()
+  skip_if_not_installed("shiny")
+  e <- .grounding_env()
+  state <- new.env(); state$busy <- character(0)
+  state$gone <- "qwen/qwen3.8-27b"
+  b <- .fake_backend(e, state)
+  e$.groq_forget_models()
+  out <- .await(e$.chat_converse_async(b, "why?", "sys"))
+  expect_identical(out$reply, "answer from openai/gpt-oss-120b")
+  expect_identical(out$backend$model, "openai/gpt-oss-120b")    # kept for next time
+  expect_identical(out$backend$chat$get_turns()[1:2],
+                   list("earlier question", "earlier answer"))
 })
 
 test_that("other failures are passed through, not mistaken for a limit", {
@@ -217,21 +253,22 @@ test_that("other failures are passed through, not mistaken for a limit", {
   e <- .grounding_env()
   made <- 0L
   e$.chat_make_groq <- function(...) { made <<- made + 1L; NULL }
-  b <- list(chat = list(), model = "qwen/qwen3.8-27b", key = "k")
-  err <- simpleError("HTTP 500 Internal Server Error")
-  out <- e$.chat_past_limits(err, b, "why?", "sys")
-  expect_identical(out$reply, err)
+  chat <- list(chat_async = function(msg)
+    promises::promise_reject(simpleError("HTTP 500 Internal Server Error")),
+    get_turns = function() list(), set_turns = function(x) NULL)
+  out <- .await(e$.chat_converse_async(list(chat = chat, model = "m", key = "k"),
+                                       "why?", "sys"))
+  expect_s3_class(out$reply, "error")
+  expect_match(conditionMessage(out$reply), "500")
   expect_equal(made, 0L)
 })
 
-test_that("a failing call does not wait out Groq's Retry-After", {
+test_that("Groq calls fail fast instead of waiting out Retry-After", {
   skip_on_cran()
-  skip_if_not_installed("shiny")
-  e <- .grounding_env()
-  seen <- NULL
-  ch <- list(chat = function(msg) { seen <<- getOption("ellmer_max_tries"); "ok" })
-  withr::local_options(ellmer_max_tries = 3L)
-  expect_identical(e$.chat_ask(ch, "q"), "ok")
-  expect_identical(seen, 1L)
-  expect_identical(getOption("ellmer_max_tries"), 3L)   # restored afterwards
+  d <- system.file("shiny", "classify_app_pro", package = "soilKey")
+  if (!nzchar(d) || !dir.exists(d)) d <- file.path("inst", "shiny", "classify_app_pro")
+  # ellmer's default retries a 429 after the wait Groq asks for; a synchronous
+  # call held the R process meanwhile, and the Assistant hands the question on.
+  expect_true(any(grepl("options(ellmer_max_tries = 1L)",
+                        readLines(file.path(d, "app.R")), fixed = TRUE)))
 })
