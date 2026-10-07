@@ -92,6 +92,28 @@
   e
 }
 
+# The soilKey options this session chose on the Settings tab (the diagnostic
+# engine, strict mode), or an empty list outside a session. They live in the
+# session, not in options(): R options are per PROCESS, and a Cloud Run
+# instance serves several visitors from one process -- until v0.9.211 one
+# visitor's engine or strict-mode switch changed every other visitor's results.
+.sk_session_opts <- function() {
+  s <- if (requireNamespace("shiny", quietly = TRUE)) shiny::getDefaultReactiveDomain()
+  o <- if (!is.null(s)) tryCatch(s$userData$sk_opts, error = function(e) NULL)
+  if (is.list(o)) o else list()
+}
+
+# Evaluate `expr` -- a classification in this process -- under this session's
+# options, restored afterwards. Safe because R runs one session's handler at a
+# time and these calls do not yield to the event loop.
+.sk_with_session_opts <- function(expr) {
+  o <- .sk_session_opts()
+  if (!length(o)) return(force(expr))
+  old <- options(o)
+  on.exit(options(old), add = TRUE)
+  force(expr)
+}
+
 # Run fun(<args>) in a worker; returns a promise of its value. An error inside
 # the job comes back as the condition object, so a failed job renders the way a
 # failed synchronous call did (the modules already show error objects).
@@ -99,12 +121,13 @@
 # `fun` travels WITHOUT its enclosing environment (unless it belongs to a
 # package): it may use only its arguments, package functions (soilKey::...) and
 # `%||%`, never other app helpers or reactives, or serialising it would drag the
-# Shiny session along. The soilKey.* options of this process travel with the
-# job: the Settings tab keeps the diagnostic engine and strict mode there, and
-# a worker would not see them.
+# Shiny session along. The soilKey.* options travel with the job, this
+# session's Settings (.sk_session_opts()) over the process defaults: a worker
+# would not see either.
 .sk_async <- function(fun, args = list(), helpers = list()) {
   if (!isNamespace(environment(fun))) environment(fun) <- .sk_job_env(helpers)
-  opts <- options()[grepl("^soilKey\\.", names(options()))]
+  opts <- utils::modifyList(options()[grepl("^soilKey\\.", names(options()))],
+                           .sk_session_opts())
   run <- function(fun, args, opts) {
     old <- options(opts)
     on.exit(options(old), add = TRUE)

@@ -677,7 +677,7 @@ map_server <- function(id, rv, settings) {
       content = function(file) {
         peds <- batch_pedons()
         if (is.null(peds) || !length(peds)) stop(i18n("mbatch.no_profiles_report"))
-        soilKey::report_html(peds, file = file)
+        .sk_with_session_opts(soilKey::report_html(peds, file = file))
       })
 
     # ======================================================================
