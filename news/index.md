@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.205 (2026-10-06)
+
+### Three things the Pro app got wrong in the navigation bar
+
+- **A hovered link in the navbar disappeared.** Bootstrap sets
+  `--bs-nav-link-hover-color` to the theme brown, `#7A5230`, which is
+  the exact colour this navbar is painted with, so hovering Settings (or
+  any tab) turned the text the colour of its own bar. Navbar links now
+  stay white on hover and focus.
+- **The Assistant button covered the footer.** It is fixed to the bottom
+  right, and the footer’s links and copyright ran underneath it. The
+  footer now reserves that lane, and on phones the button gets its own
+  row.
+- **The logo was not a way home.** It is now a link back to the first
+  tab, with a keyboard focus ring and a localized label.
+
 ## soilKey 0.9.204 (2026-09-22)
 
 ### soilKey ships no third-party data
