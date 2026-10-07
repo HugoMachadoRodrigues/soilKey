@@ -9,7 +9,8 @@ read_wosis_profiles_graphql(
   wrb_rsg = NULL,
   n_max = 25L,
   licence_filter = c("permissive", "any"),
-  timeout = 30
+  timeout = 30,
+  max_scan = 300L
 )
 }
 \arguments{
@@ -17,19 +18,24 @@ read_wosis_profiles_graphql(
 
 \item{wrb_rsg}{Optional WRB Reference Soil Group, e.g. \code{"Ferralsols"}.}
 
-\item{n_max}{Maximum profiles to return (default 25).}
+\item{n_max}{Maximum profiles to return (default 25, at most 100).}
 
 \item{licence_filter}{\code{"permissive"} (default) or \code{"any"}.}
 
-\item{timeout}{Seconds to wait for ISRIC (default 30).}
+\item{timeout}{Seconds to wait for each request (default 30).}
+
+\item{max_scan}{Most profiles examined per call (default 300).}
 }
 \value{
 A data.frame, one row per profile, with \code{profile_id},
   \code{profile_code}, \code{country}, \code{lat}, \code{lon},
-  \code{wrb_rsg}, \code{usda_order}, \code{dataset}, \code{licence} and
-  \code{licence_short}. Zero rows if nothing matched. Never throws on a
-  network failure: it returns zero rows with a \code{"wosis_error"}
-  attribute, since an unreachable server is an expected condition.
+  \code{wrb_rsg}, \code{usda_order}, \code{dataset}, \code{licence},
+  \code{licence_short}, \code{n_layers} and \code{depth_cm}. Zero rows if
+  nothing matched. Never throws on a network failure: it returns zero rows
+  with a \code{"wosis_error"} attribute, since an unreachable server is an
+  expected condition. Attributes \code{"wosis_excluded"} and
+  \code{"wosis_excluded_licences"} report what the licence filter withheld,
+  and \code{"wosis_no_layers"} how many profiles had no layers at all.
 }
 \description{
 Reads soil profiles straight from ISRIC's WoSIS GraphQL endpoint. Nothing is
@@ -43,17 +49,27 @@ about half of it carries a NonCommercial restriction. \code{licence_filter =
 "permissive"} (the default) returns only profiles free of that restriction
 (CC BY, or public domain); \code{"any"} returns everything. Either way the
 licence and the source dataset travel with every profile, because CC BY
-requires attribution when you reuse the data.
+requires attribution when you reuse the data. Cite the data with
+\code{\link{wosis_citation}}.
+}
+
+\section{Load on ISRIC}{
+
+The endpoint accepts at most 100 profiles per request, so profiles are read
+in pages of 100, in a stable order, and at most \code{max_scan} are examined
+per call. The number of layers and the depth of each listed profile come
+from one light query on the layers table, which lets a caller tell a full
+profile from a single topsoil sample before loading it.
 }
 
 \examples{
 \donttest{
 # Requires network access to ISRIC.
-p <- read_wosis_profiles_graphql(country = "Brazil", n_max = 5)
-if (nrow(p)) p[, c("profile_code", "wrb_rsg", "licence_short")]
+p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
+if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
 }
 }
 \seealso{
 \code{\link{wosis_profile_to_pedon}} to turn a row into a
-  \code{\link{PedonRecord}}.
+  \code{\link{PedonRecord}} with its horizons.
 }

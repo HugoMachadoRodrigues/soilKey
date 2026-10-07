@@ -430,3 +430,15 @@ body.sk-assistant-open .sk-assistant-fab { display: none; }
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3)); }
 .sk-assistant-logo { height: 22px; width: auto; vertical-align: middle;
   margin-right: 0.15rem; }
+
+/* Where the horizons came from (WoSIS): attribution, licence and citation. */
+.sk-data-source {
+  margin: 0 0 0.6rem; padding: 0.5rem 0.75rem; line-height: 1.45;
+  border-left: 3px solid var(--sk-terra); border-radius: 4px;
+  background: var(--sk-sand); color: var(--sk-espresso);
+}
+.sk-data-source a { color: var(--sk-brown); }
+.sk-data-source-nc { color: #9a3412; font-weight: 600; margin-top: 0.15rem; }
+[data-bs-theme="dark"] .sk-data-source { background: rgba(255, 255, 255, 0.05); color: inherit; }
+[data-bs-theme="dark"] .sk-data-source a { color: #e0a370; }
+[data-bs-theme="dark"] .sk-data-source-nc { color: #fdba74; }

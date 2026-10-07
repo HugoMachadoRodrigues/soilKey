@@ -2,20 +2,36 @@
 % Please edit documentation in R/wosis-graphql.R
 \name{wosis_profile_to_pedon}
 \alias{wosis_profile_to_pedon}
-\title{Turn one WoSIS profile row into a PedonRecord}
+\title{Turn one WoSIS profile into a PedonRecord, with its horizons}
 \usage{
-wosis_profile_to_pedon(row)
+wosis_profile_to_pedon(row, fetch_layers = TRUE, timeout = 30, progress = NULL)
 }
 \arguments{
 \item{row}{One row of \code{\link{read_wosis_profiles_graphql}}.}
+
+\item{fetch_layers}{If \code{TRUE} (default) the layers are read from ISRIC;
+\code{FALSE} builds the site metadata only, with no network call.}
+
+\item{timeout}{Seconds to wait for ISRIC (default 30).}
+
+\item{progress}{Optional \code{function(done, total)} passed to
+\code{\link{read_wosis_layers_graphql}}.}
 }
 \value{
-A \code{\link{PedonRecord}} with site metadata and no horizons; the
-  profile's layers are not fetched here.
+A \code{\link{PedonRecord}}. If the layers could not be read, it has
+  no horizons and \code{site$wosis_error} says why.
 }
 \description{
-The licence and source dataset are carried onto the record's site metadata,
-so that attribution survives into anything the user later exports. CC BY
-requires it, and an extract that drops it turns a licensed use into an
-unattributed one.
+Fetches the profile's layers live from ISRIC
+(\code{\link{read_wosis_layers_graphql}}) and builds a
+\code{\link{PedonRecord}}. Every value carries a provenance note naming its
+WoSIS code, unit and method. The site metadata carries the licence, the source
+dataset, the date the data were read and the citation ISRIC asks for
+(\code{\link{wosis_citation}}), so attribution survives into anything the
+user later exports. CC BY requires it, and an extract that drops it turns a
+licensed use into an unattributed one.
+}
+\details{
+When the layers carry a more restrictive licence than the profile listing
+reported, the more restrictive one is kept.
 }

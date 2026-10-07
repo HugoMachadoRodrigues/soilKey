@@ -224,7 +224,8 @@ pedon_ui <- function(id) {
                               icon = shiny::icon("magnifying-glass"),
                               class = "btn-outline-secondary btn-sm w-100 mb-2"),
           shiny::uiOutput(ns("wosis_status")),
-          DT::DTOutput(ns("wosis_table"))
+          DT::DTOutput(ns("wosis_table")),
+          shiny::helpText(class = "small", i18n("pedon.wosis_layers_hint"))
         ),
         shiny::conditionalPanel(
           sprintf("input['%s'] == 'upload'", ns("source")),
@@ -361,6 +362,10 @@ pedon_ui <- function(id) {
         ),
         bslib::card_body(
           shiny::helpText("Click any cell to edit it. Depths are in centimetres; leave a lab value blank if unmeasured."),
+          # Where the horizons came from, with the licence and the citation the
+          # provider asks for. Shown whenever WoSIS data is in the editor: the
+          # ISRIC data policy requires web services to reference the provider.
+          shiny::uiOutput(ns("data_source_note")),
           DT::DTOutput(ns("hz_table")),
           shiny::uiOutput(ns("geom_status")))
       ),
@@ -578,6 +583,7 @@ pedon_server <- function(id, rv) {
             return(invisible())
           }
           loaded_site <- p$site
+          data_source(NULL)
           as.data.frame(p$horizons)
         },
         wosis = {
@@ -589,9 +595,29 @@ pedon_server <- function(id, rv) {
           }
           h <- wosis_hits()
           if (sel[1] > nrow(h)) return(invisible())
-          p <- soilKey::wosis_profile_to_pedon(h[sel[1], , drop = FALSE])
+          # The layers are read live, a page at a time, with a progress bar.
+          p <- shiny::withProgress(message = i18n("pedon.wosis_loading_layers"),
+                                   value = 0, {
+            soilKey::wosis_profile_to_pedon(
+              h[sel[1], , drop = FALSE],
+              progress = function(done, total)
+                shiny::setProgress(value = done / max(total, 1),
+                                   detail = sprintf("%d / %d", done, total)))
+          })
+          if (is.null(p$horizons) || !nrow(p$horizons)) {
+            shiny::showNotification(
+              sprintf(i18n("pedon.wosis_not_loaded"), p$site$wosis_error %||% ""),
+              type = "warning", duration = 15)
+            return(invisible())
+          }
           # site carries licence + attribution, so they survive into any export
           loaded_site <- p$site
+          data_source(c(
+            p$site[intersect(
+              c("source", "dataset", "licence", "licence_short", "accessed",
+                "citation", "attribution", "wosis_profile_id", "depth_note"),
+              names(p$site))],
+            list(wosis_profile_code = p$site$id)))
           as.data.frame(p$horizons)
         },
         upload = {
@@ -601,6 +627,7 @@ pedon_server <- function(id, rv) {
             return(invisible())
           }
           sep <- if (grepl("\\.tsv$", f$name, ignore.case = TRUE)) "\t" else ","
+          data_source(NULL)
           tryCatch(utils::read.csv(f$datapath, sep = sep,
                                    stringsAsFactors = FALSE),
                    error = function(e) {
@@ -610,7 +637,7 @@ pedon_server <- function(id, rv) {
                      NULL
                    })
         },
-        blank = .pedon_blank_template()
+        blank = { data_source(NULL); .pedon_blank_template() }
       )
       if (is.null(df)) return(invisible())
       # Keep only columns soilKey understands, in canonical order.
@@ -641,6 +668,12 @@ pedon_server <- function(id, rv) {
     })
 
     # ---- WoSIS profile picker --------------------------------------------
+    # Where the horizons in the editor came from, when that is WoSIS: provider,
+    # dataset, licence, date read and citation. NULL for fixtures, uploads and
+    # blank sheets. It is shown above the table and written into the pedon's
+    # site, so the attribution travels into the classification and the report.
+    data_source <- shiny::reactiveVal(NULL)
+
     # The live result, held in a reactive for as long as the user is looking at
     # it and never written anywhere. Triggered by the button, not by typing, so
     # ISRIC is not queried on every keystroke.
@@ -668,7 +701,10 @@ pedon_server <- function(id, rv) {
         if (n_ex > 0L) shiny::div(
           class = "small text-muted",
           sprintf(i18n("pedon.wosis_withheld"), n_ex,
-                  paste(attr(h, "wosis_excluded_licences"), collapse = ", "))))
+                  paste(attr(h, "wosis_excluded_licences"), collapse = ", "))),
+        if ((attr(h, "wosis_no_layers") %||% 0L) > 0L) shiny::div(
+          class = "small text-muted",
+          sprintf(i18n("pedon.wosis_no_layers_listed"), attr(h, "wosis_no_layers"))))
     })
 
     output$wosis_table <- DT::renderDT({
@@ -678,11 +714,37 @@ pedon_server <- function(id, rv) {
       # and the user should see what they are taking before they take it.
       DT::datatable(
         h[, c("profile_code", "country", "wrb_rsg", "usda_order",
-              "dataset", "licence_short")],
-        colnames = c("Profile", "Country", "WRB", "USDA", "Dataset", "Licence"),
+              "n_layers", "depth_cm", "dataset", "licence_short")],
+        colnames = c(i18n("pedon.wosis_col_profile"), i18n("pedon.wosis_col_country"),
+                     "WRB", "USDA", i18n("pedon.wosis_col_layers"),
+                     i18n("pedon.wosis_col_depth"), i18n("pedon.wosis_col_dataset"),
+                     i18n("pedon.wosis_col_licence")),
         rownames = FALSE, selection = "single",
         options = list(pageLength = 8, scrollX = TRUE, dom = "ftip")
       )
+    })
+
+    output$data_source_note <- shiny::renderUI({
+      ds <- data_source()
+      if (is.null(ds)) return(NULL)
+      lic <- ds$licence %||% ""
+      url <- regmatches(lic, regexpr("https?://[^ ,;]+", lic))
+      lic_label <- ds$licence_short %||% lic
+      # Built from the fields rather than the one-line attribution string, so the
+      # licence appears once, as a link to its text.
+      shiny::div(
+        class = "sk-data-source small",
+        shiny::tags$strong(paste0(i18n("pedon.data_source_title"), ":")), " ",
+        sprintf("%s (%s), ISRIC WoSIS-latest, %s.",
+                ds$wosis_profile_code %||% "", ds$dataset %||% "", ds$accessed %||% ""),
+        " ", if (length(url))
+          shiny::tags$a(href = url, target = "_blank", rel = "noopener", lic_label)
+        else lic_label,
+        if (!isTRUE(soilKey:::.wosis_is_permissive(lic)))
+          shiny::div(class = "sk-data-source-nc", i18n("pedon.data_source_nc")),
+        shiny::div(shiny::tags$em(paste0(i18n("pedon.data_source_cite"), ":")), " ",
+                   ds$citation %||% ""),
+        if (!is.null(ds$depth_note)) shiny::div(ds$depth_note))
     })
 
     # ---- editable table ---------------------------------------------------
@@ -803,16 +865,17 @@ pedon_server <- function(id, rv) {
                                    input$geomembrane_depth)
       built <- tryCatch({
         h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(df))
-        soilKey::PedonRecord$new(
-          site = list(
-            id              = input$site_id %||% "pedon",
-            lat             = input$lat,
-            lon             = input$lon,
-            country         = input$country,
-            parent_material = input$pm
-          ),
-          horizons = h_dt
+        site <- list(
+          id              = input$site_id %||% "pedon",
+          lat             = input$lat,
+          lon             = input$lon,
+          country         = input$country,
+          parent_material = input$pm
         )
+        # WoSIS data keeps its provenance: source, licence, date and citation
+        # go into the pedon, and from there into the report.
+        if (!is.null(data_source())) site <- utils::modifyList(site, data_source())
+        soilKey::PedonRecord$new(site = site, horizons = h_dt)
       }, error = function(e) e)
 
       if (inherits(built, "error")) {
