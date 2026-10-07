@@ -14,8 +14,8 @@ fill_from_spectra(
   preprocess = "snv+sg1",
   k_neighbors = 100L,
   overwrite = FALSE,
-  ossl_library = NULL,
-  ossl_models = NULL,
+  ossl_library = getOption("soilKey.ossl_library"),
+  ossl_models = getOption("soilKey.ossl_models"),
   verbose = TRUE
 )
 }
@@ -46,10 +46,15 @@ WRB/SiBCS-relevant attributes.}
 existing provenance is weaker than \code{predicted_spectra}.}
 
 \item{ossl_library}{Optional OSSL library object (see
-\code{\link{predict_ossl_mbl}}).}
+\code{\link{predict_ossl_mbl}}). Defaults to
+\code{getOption("soilKey.ossl_library")}, so a library set once
+reaches every call, including gap-fill from
+\code{\link{classify_all}(gapfill = list(method = "spectra"))}.
+Without one the predictions are synthetic placeholders.}
 
 \item{ossl_models}{Optional named list of pretrained models (see
-\code{\link{predict_ossl_pretrained}}).}
+\code{\link{predict_ossl_pretrained}}). Defaults to
+\code{getOption("soilKey.ossl_models")}.}
 
 \item{verbose}{If \code{TRUE}, prints a cli summary.}
 }

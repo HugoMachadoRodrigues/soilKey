@@ -181,17 +181,17 @@ photo_ui <- function(id) {
       sk_section(
         i18n("photo.step2_munsell"),
         icon = "eye-dropper",
-        desc = "Read Munsell colour per horizon from a profile photo; only the PedonRecord is filled, never the key.",
+        desc = i18n("photo.desc_munsell"),
         shiny::fileInput(
           ns("profile_img"),
           sk_label(i18n("photo.profile_photograph"),
-                   "A JPG or PNG of the soil profile, ideally with a Munsell card in frame for reference."),
+                   i18n("photo.help_profile_photo")),
           accept = c(".jpg", ".jpeg", ".png")),
         bslib::tooltip(
           shiny::actionButton(ns("run_munsell"), i18n("photo.extract_munsell"),
                               icon = shiny::icon("eye-dropper"),
                               class = "btn-primary w-100"),
-          "Read per-horizon Munsell colour from the photo and merge it into the pedon, with a confidence for each value."),
+          i18n("photo.tip_extract_munsell")),
         shiny::div(
           class = "mt-2 small",
           shiny::actionLink(ns("demo_photo"), i18n("photo.use_demo"),
@@ -201,17 +201,17 @@ photo_ui <- function(id) {
       sk_section(
         i18n("photo.step3_site"),
         icon = "location-dot",
-        desc = "Read site metadata (coordinates, elevation, drainage) from a scanned field sheet.",
+        desc = i18n("photo.desc_site"),
         shiny::fileInput(
           ns("sheet_img"),
           sk_label(i18n("photo.field_sheet_image"),
-                   "A JPG or PNG of the field description sheet; legible handwriting improves extraction."),
+                   i18n("photo.help_sheet")),
           accept = c(".jpg", ".jpeg", ".png")),
         bslib::tooltip(
           shiny::actionButton(ns("run_site"), i18n("photo.extract_site"),
                               icon = shiny::icon("map-pin"),
                               class = "btn-secondary w-100"),
-          "Read coordinates, elevation and drainage from the field sheet and merge them into the pedon site record.")
+          i18n("photo.tip_extract_site"))
       )
     ),
     shiny::uiOutput(ns("body"))
@@ -467,12 +467,12 @@ photo_server <- function(id, rv) {
                           "munsell_hue_moist", "munsell_value_moist",
                           "munsell_chroma_moist"), names(h))
       if (length(cols) == 0L) {
-        return(DT::datatable(
+        return(sk_datatable(
           stats::setNames(data.frame(i18n("photo.no_horizons")),
                           i18n("photo.note_col")),
           rownames = FALSE, options = list(dom = "t")))
       }
-      DT::datatable(h[, cols, drop = FALSE], rownames = FALSE,
+      sk_datatable(h[, cols, drop = FALSE], rownames = FALSE,
                     options = list(dom = "tp", pageLength = 10))
     })
 

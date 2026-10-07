@@ -360,11 +360,11 @@
 .chat_pedon_context <- function(pedon, settings = NULL) {
   if (is.null(pedon)) return(NULL)
   st <- tryCatch(settings, error = function(e) NULL)
-  res <- tryCatch(soilKey::classify_all(
+  res <- tryCatch(.sk_with_session_opts(soilKey::classify_all(
     pedon, on_missing = "silent",
     include_familia = isTRUE(st$include_familia),
     include_family  = isTRUE(st$include_family),
-    specifiers      = isTRUE(st$specifiers)),
+    specifiers      = isTRUE(st$specifiers))),
     error = function(e) NULL)
   h <- tryCatch(as.data.frame(pedon$horizons), error = function(e) NULL)
   site <- pedon$site %||% list()
@@ -521,7 +521,7 @@ chat_ui <- function(id) {
                                icon = shiny::icon("paper-plane"),
                                label_busy = i18n("chat.thinking"),
                                type = "primary"),
-        "Send your message.")),
+        i18n("chat.tip_send"))),
     shiny::div(class = "sk-assistant-foot small text-muted",
                i18n("chat.grounding_note"))
   )

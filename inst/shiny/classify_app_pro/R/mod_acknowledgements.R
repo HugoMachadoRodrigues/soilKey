@@ -43,61 +43,61 @@ acknowledgements_ui <- function(id) {
         i18n("thanks.s_standards"), "book",
         .ack_item(
           "IUSS Working Group WRB (2022). World Reference Base for Soil Resources 2022, 4th edition. International Union of Soil Sciences, Vienna.",
-          "The reference-soil-group key, qualifiers and diagnostic horizons/properties/materials implemented for the WRB system."),
+          i18n("thanks.c_wrb")),
         .ack_item(
           "Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th edition. USDA-NRCS, Washington, DC.",
-          "The order-to-subgroup keys and diagnostic criteria for USDA Soil Taxonomy."),
+          i18n("thanks.c_usda")),
         .ack_item(
           "Santos, H.G. dos, Jacomine, P.K.T., Anjos, L.H.C. dos, et al. (2018). Sistema Brasileiro de Classificacao de Solos (SiBCS), 5th edition. Embrapa, Brasilia.",
-          "The ordem-to-subgrupo keys, atributos diagnosticos and familia criteria for the Brazilian system.")),
+          i18n("thanks.c_sibcs"))),
 
       # ---- 2. R packages soilKey builds on --------------------------------
       .ack_card(
         i18n("thanks.s_packages"), "cubes",
         .ack_item(
           "aqp -- the ncss-tech team (Dylan E. Beaudette, Andrew G. Brown, and colleagues).",
-          "Horizon-geometry algorithms, argillic/cambic boundary detection, and the SoilProfileCollection the app interoperates with."),
+          i18n("thanks.c_aqp")),
         .ack_item(
           "SoilTaxonomy -- Andrew G. Brown, Dylan E. Beaudette and colleagues (ncss-tech).",
-          "The vendored Keys to Soil Taxonomy and WRB 2022 criteria tables used to audit soilKey's own predicates."),
+          i18n("thanks.c_soiltaxonomy")),
         .ack_item(
           "munsellinterpol -- Glenn Davis.",
-          "CIE-anchored Munsell <-> XYZ conversion, and identifying the D65->Illuminant C chromatic adaptation and correct roundHVC() usage in soilKey's spectra-to-colour path."),
+          i18n("thanks.c_munsellinterpol")),
         .ack_item(
           "mpspline2 -- Brendan Malone and colleagues.",
-          "Mass-preserving spline harmonisation of horizon data to standard depths."),
+          i18n("thanks.c_mpspline2")),
         .ack_item(
-          "terra, sf, leaflet, shiny, bslib, DT, plotly, ellmer and the wider R ecosystem.",
-          "Spatial analysis, the interactive map, the application framework, and optional vision-language extraction.")),
+          i18n("thanks.l_ecosystem"),
+          i18n("thanks.c_ecosystem"))),
 
       # ---- 3. Data sources & services -------------------------------------
       .ack_card(
         i18n("thanks.s_data"), "database",
         .ack_item(
           "SoilGrids / ISRIC - World Soil Information.",
-          "Global soil-property and WRB class-probability priors sampled by the Map tab."),
+          i18n("thanks.c_soilgrids")),
         .ack_item(
           "Open Soil Spectral Library (OSSL) -- Woodwell Climate Research Center, ISRIC and partners.",
-          "Vis-NIR / MIR spectra with paired laboratory labels for the spectral gap-fill engine."),
+          i18n("thanks.c_ossl")),
         .ack_item(
           "FEBR -- Free Brazilian Repository for Open Soil Data -- Alessandro Samuel-Rosa and contributors.",
-          "Brazilian profiles with Munsell colours used for benchmarking."),
+          i18n("thanks.c_febr")),
         .ack_item(
           "Embrapa Solos -- BDSolos and the SmartSolos SiBCS classifier API (Glauber dos S. Vaz).",
-          "A national soil database and an independent SiBCS reference to cross-check soilKey against."),
+          i18n("thanks.c_embrapa")),
         .ack_item(
           "Glauber J. Vaz, Alberto F. Silva Jr & Luis de F. da Silva Neto (2023) -- 'Brazilian soil data for taxonomic classification', Embrapa Redape (DOI 10.48432/PYKKA7).",
-          "A curated set of ~96 hand-reviewed Brazilian soil profiles, shared as a gold-standard benchmark used to test and calibrate the classifiers.")),
+          i18n("thanks.c_redape"))),
 
       # ---- 4. Review & feedback -------------------------------------------
       .ack_card(
         i18n("thanks.s_feedback"), "comments",
         .ack_item(
-          "Glenn Davis (author of munsellinterpol).",
-          "Colorimetry corrections to the spectra-to-Munsell path (chromatic adaptation and rounding)."),
+          i18n("thanks.l_glenn"),
+          i18n("thanks.c_glenn")),
         .ack_item(
-          "CRAN and Uwe Ligges.",
-          "Package review and publication."))
+          i18n("thanks.l_cran"),
+          i18n("thanks.c_cran")))
     ),
 
     shiny::div(

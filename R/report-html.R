@@ -185,7 +185,7 @@ report <- function(x,
 .html_head <- function(title) {
   paste0(
     '<!DOCTYPE html>\n',
-    '<html lang="en"><head>\n',
+    '<html lang="', .report_lang(), '"><head>\n',
     '<meta charset="utf-8">\n',
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n',
     '<title>', .html_escape(title), '</title>\n',
@@ -231,11 +231,24 @@ report <- function(x,
     '.profile-page{margin-top:1.6rem;padding-top:.4rem;}\n',
     '.profile-page h2:first-child{border-left:none;padding-left:0;color:#4A3226;',
     'border-bottom:2px solid #e3ddd0;}\n',
+    # v0.9.210: a print button at the top (the app's web build has no LaTeX,
+    # so this is how a report becomes a PDF), kept off the printed page; badge
+    # colours survive printing; A4 margins.
+    '.print-bar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin:0 0 1rem;',
+    'padding:.55rem .8rem;background:#faf6ef;border:1px solid #e3ddd0;border-radius:8px;}\n',
+    '.print-bar button{font:inherit;font-weight:600;padding:.35rem .9rem;border-radius:6px;',
+    'border:1px solid #7A5230;background:#7A5230;color:#fff;cursor:pointer;}\n',
+    '@page{size:A4;margin:15mm;}\n',
     '@media print{body{max-width:none;margin:0;}h2{page-break-after:avoid;}',
     '.system-card,.map-card{page-break-inside:avoid;}',
-    '.profile-page{page-break-before:always;}}\n',
+    '.profile-page{page-break-before:always;}',
+    '.print-bar{display:none;}',
+    '*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}\n',
     '</style>\n',
-    '</head>\n<body>\n'
+    '</head>\n<body>\n',
+    '<div class="print-bar"><button type="button" onclick="window.print()">',
+    .html_escape(.report_msg("report.print_button")), '</button>',
+    '<span class="muted">', .html_escape(.report_msg("report.print_hint")), '</span></div>\n'
   )
 }
 

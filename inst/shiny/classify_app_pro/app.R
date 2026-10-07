@@ -82,6 +82,12 @@ sk_theme <- bslib::bs_theme(
 )
 
 ui <- function(request) {
+  # the page is built in the language its URL asks for (?lang=pt), so one
+  # visitor's choice never changes another's
+  .sk_with_lang(.sk_lang_for(request$QUERY_STRING), sk_page())
+}
+
+sk_page <- function() {
   bslib::page_navbar(
     # The brand is a link back to the first tab: people expect a logo to take
     # them home, and this app had no way back other than the tab strip.
@@ -185,23 +191,23 @@ ui <- function(request) {
       tags$aside(class = "sk-assistant-drawer", `aria-label` = i18n("chat.assistant"),
                  chat_ui("chat"))
     ),
-    bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon")),
-    bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify")),
-    bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo")),
-    bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra")),
+    bslib::nav_panel(i18n("nav.pedon"),    icon = icon("layer-group"),  pedon_ui("pedon"),       value = "pedon"),
+    bslib::nav_panel(i18n("nav.classify"), icon = icon("sitemap"),      classify_ui("classify"), value = "classify"),
+    bslib::nav_panel(i18n("nav.photo"),    icon = icon("camera"),       photo_ui("photo"),       value = "photo"),
+    bslib::nav_panel(i18n("nav.spectra"),  icon = icon("wave-square"),  spectra_ui("spectra"),   value = "spectra"),
     # v0.9.174: the three former sub-tabs (Point prior / Batch / Grid) are now
     # ONE square map driven by a mode selector, all centred on the same point,
     # with a shared SoilGrids overlay -- so the point, its neighbours and the
     # SoilGrids prior are seen together instead of on three unsynced maps.
     bslib::nav_panel(
       i18n("nav.map"), icon = icon("map-location-dot"),
-      map_ui("map")
+      map_ui("map"), value = "map"
     ),
-    bslib::nav_panel(i18n("nav.uncertainty"), icon = icon("dice"),         uncertainty_ui("uncertainty")),
-    bslib::nav_panel(i18n("nav.report"),      icon = icon("file-arrow-down"), report_ui("report")),
-    bslib::nav_panel(i18n("nav.thanks"),      icon = icon("heart"),        acknowledgements_ui("thanks")),
+    bslib::nav_panel(i18n("nav.uncertainty"), icon = icon("dice"),         uncertainty_ui("uncertainty"), value = "uncertainty"),
+    bslib::nav_panel(i18n("nav.report"),      icon = icon("file-arrow-down"), report_ui("report"), value = "report"),
+    bslib::nav_panel(i18n("nav.thanks"),      icon = icon("heart"),        acknowledgements_ui("thanks"), value = "thanks"),
     bslib::nav_spacer(),
-    bslib::nav_panel(i18n("nav.settings"),    icon = icon("gear"),         settings_ui("settings")),
+    bslib::nav_panel(i18n("nav.settings"),    icon = icon("gear"),         settings_ui("settings"), value = "settings"),
     bslib::nav_item(
       htmltools::tagAppendAttributes(
         shinyWidgets::radioGroupButtons(
@@ -311,11 +317,16 @@ ui <- function(request) {
 
 server <- function(input, output, session) {
 
-  # ---- language selector: flip the option + reload so ui() rebuilds --------
+  # ---- this session's language: the one its URL asks for --------------------
+  session$userData$sk_lang <- .sk_lang_for(isolate(session$clientData$url_search))
+
+  # ---- language selector: put the choice in the URL and reload, so ui()
+  # rebuilds in it. The URL keeps it per visitor (and bookmarkable); changing
+  # the process-wide option here used to switch every other visitor too.
   observeEvent(input$app_lang_sel, {
     sel <- input$app_lang_sel
     if (!is.null(sel) && sel %in% c("en", "pt") && !identical(sel, .sk_app_lang())) {
-      options(soilKey.app_lang = sel)
+      updateQueryString(paste0("?lang=", sel), mode = "replace")
       session$reload()
     }
   }, ignoreInit = TRUE)
@@ -367,10 +378,12 @@ server <- function(input, output, session) {
                 tags$span(class = "sk-key", i18n("ribbon.site")), coord))
   })
 
+  # Tabs are selected by a fixed value, not their title: the title is
+  # translated, and nav_select("main_nav", "Pedon") did nothing in Portuguese.
   # ---- one-click example: ask the Pedon tab to load the demo profile ------
   load_example <- function() {
     rv$example_request <- rv$example_request + 1L
-    bslib::nav_select("main_nav", "Pedon")
+    bslib::nav_select("main_nav", "pedon")
   }
   observeEvent(input$ribbon_example, load_example())
 
@@ -403,7 +416,7 @@ server <- function(input, output, session) {
   observeEvent(input$about_example, {
     removeModal()
     rv$example_request <- rv$example_request + 1L
-    bslib::nav_select("main_nav", "Classify")
+    bslib::nav_select("main_nav", "classify")
   })
 
   # ---- welcome tour (first open + replay from Help) -----------------------
@@ -426,12 +439,12 @@ server <- function(input, output, session) {
   })
   observeEvent(input$welcome_skip, { removeModal(); mark_welcomed() })
   observeEvent(input$welcome_scratch, {
-    removeModal(); mark_welcomed(); bslib::nav_select("main_nav", "Pedon")
+    removeModal(); mark_welcomed(); bslib::nav_select("main_nav", "pedon")
   })
   observeEvent(input$welcome_example, {
     removeModal(); mark_welcomed()
     rv$example_request <- rv$example_request + 1L
-    bslib::nav_select("main_nav", "Classify")
+    bslib::nav_select("main_nav", "classify")
   })
 
   # ---- Support modal ------------------------------------------------------
@@ -457,10 +470,9 @@ server <- function(input, output, session) {
           href = "#",
           onclick = paste0(
             "var a=['rodrigues.h','ufl.edu'].join(String.fromCharCode(64));",
-            "var s=encodeURIComponent('soilKey Pro — support request');",
-            "var b=encodeURIComponent('Please describe your question or the ",
-            "problem and what you were doing when it happened:",
-            "\\n\\n\\n\\n--- soilKey Pro');",
+            "var s=encodeURIComponent(", jsonlite::toJSON(i18n("support.mail_subject"), auto_unbox = TRUE), ");",
+            "var b=encodeURIComponent(", jsonlite::toJSON(i18n("support.mail_body"), auto_unbox = TRUE),
+            "+'\\n\\n\\n\\n--- soilKey Pro');",
             "window.location.href='mailto:'+a+'?subject='+s+'&body='+b;",
             "return false;"))
       )

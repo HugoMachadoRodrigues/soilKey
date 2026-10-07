@@ -94,9 +94,14 @@ pi_to_confidence <- function(pi95_low, pi95_high, value = NULL) {
 #' @param overwrite If \code{FALSE} (default), only fill cells whose
 #'        existing provenance is weaker than \code{predicted_spectra}.
 #' @param ossl_library Optional OSSL library object (see
-#'        \code{\link{predict_ossl_mbl}}).
+#'        \code{\link{predict_ossl_mbl}}). Defaults to
+#'        \code{getOption("soilKey.ossl_library")}, so a library set once
+#'        reaches every call, including gap-fill from
+#'        \code{\link{classify_all}(gapfill = list(method = "spectra"))}.
+#'        Without one the predictions are synthetic placeholders.
 #' @param ossl_models Optional named list of pretrained models (see
-#'        \code{\link{predict_ossl_pretrained}}).
+#'        \code{\link{predict_ossl_pretrained}}). Defaults to
+#'        \code{getOption("soilKey.ossl_models")}.
 #' @param verbose If \code{TRUE}, prints a cli summary.
 #' @return The mutated pedon, invisibly. Provenance entries with
 #'         \code{source = "predicted_spectra"} are added per
@@ -119,8 +124,8 @@ fill_from_spectra <- function(pedon,
                                 preprocess  = "snv+sg1",
                                 k_neighbors = 100L,
                                 overwrite   = FALSE,
-                                ossl_library = NULL,
-                                ossl_models  = NULL,
+                                ossl_library = getOption("soilKey.ossl_library"),
+                                ossl_models  = getOption("soilKey.ossl_models"),
                                 verbose     = TRUE) {
   if (!inherits(pedon, "PedonRecord")) {
     rlang::abort("fill_from_spectra(): 'pedon' must be a PedonRecord")

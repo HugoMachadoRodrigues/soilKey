@@ -271,7 +271,11 @@
     rat      <- terra::levels(rc)[[1]]           # col 1 = value, last = label
     map_from <- suppressWarnings(as.integer(rat[[1]]))
     map_code <- .wrb_name_to_code(as.character(rat[[ncol(rat)]]))
-    ri       <- rc; terra::levels(ri) <- NULL    # drop RAT -> plain integer grid
+    # drop the RAT -> plain integer grid. Base `levels<-` (terra's S4 method
+    # dispatches): `terra::levels(ri) <- NULL` calls `terra::levels<-`, which
+    # terra does not export, so on a current terra the live SoilGrids overlay
+    # failed every time and the map silently showed the offline demo instead.
+    ri       <- rc; levels(ri) <- NULL
   } else {
     lut0     <- soilKey::soilgrids_wrb_lut()
     map_from <- suppressWarnings(as.integer(names(lut0)))
@@ -524,7 +528,7 @@ map_grid_server <- function(id, rv, settings) {
       tab$share <- tab$cells / sum(tab$cells)
       show <- tab[order(-tab$cells), c("class", "cells", "share")]
       names(show) <- c("Class", "Cells", "Share")
-      DT::datatable(show, rownames = FALSE,
+      sk_datatable(show, rownames = FALSE,
                     colnames = c(i18n("mgrid.col_class"),
                                  i18n("mgrid.col_cells"),
                                  i18n("mgrid.col_share")),

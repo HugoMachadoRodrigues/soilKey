@@ -7,8 +7,8 @@
 # Catalogue of canonical fixtures, grouped for shinyWidgets::pickerInput.
 # Display label -> exported make_*_canonical() function name.
 pro_fixture_catalog <- function() {
-  list(
-    "WRB 2022 reference soil groups" = c(
+  cat <- list(
+    wrb = c(
       "Acrisol"                = "make_acrisol_canonical",
       "Alisol"                 = "make_alisol_canonical",
       "Andosol (volcanic ash)" = "make_andosol_canonical",
@@ -41,7 +41,7 @@ pro_fixture_catalog <- function() {
       "Umbrisol"               = "make_umbrisol_canonical",
       "Vertisol"               = "make_vertisol_canonical"
     ),
-    "SiBCS 5 ordens" = c(
+    sibcs = c(
       "Argissolo"   = "make_argissolo_canonical",
       "Cambissolo"  = "make_cambissolo_canonical",
       "Chernossolo" = "make_chernossolo_canonical",
@@ -57,6 +57,10 @@ pro_fixture_catalog <- function() {
       "Vertissolo"  = "make_vertissolo_canonical"
     )
   )
+  # the two descriptive labels, in the session's language
+  names(cat$wrb)[cat$wrb == "make_andosol_canonical"] <- i18n("fixture.andosol")
+  names(cat$wrb)[cat$wrb == "make_cryosol_canonical"] <- i18n("fixture.cryosol")
+  stats::setNames(cat, c(i18n("fixture.group_wrb"), i18n("fixture.group_sibcs")))
 }
 
 # Resolve a make_*_canonical() name to a PedonRecord. Works whether the
@@ -305,4 +309,26 @@ sk_empty <- function(icon, title, body = NULL, ...) {
   n   <- max(1L, as.integer(n_horizons))
   idx <- ((seq_len(n) - 1L) %% nrow(m)) + 1L      # recycle rows to length n
   m[idx, , drop = FALSE]
+}
+
+
+# DT::datatable() in the session's language. DataTables draws its own controls
+# ("Search:", "Showing 1 to 10 of 25 entries", "Previous", "Next"); in English
+# they are left to DataTables' defaults, in Portuguese they come from the
+# catalogue.
+sk_datatable <- function(data, ..., options = list()) {
+  if (identical(.sk_app_lang(), "pt") && is.null(options$language))
+    options$language <- list(
+      search         = i18n("dt.search"),
+      lengthMenu     = i18n("dt.length_menu"),
+      info           = i18n("dt.info"),
+      infoEmpty      = i18n("dt.info_empty"),
+      infoFiltered   = i18n("dt.info_filtered"),
+      zeroRecords    = i18n("dt.zero_records"),
+      emptyTable     = i18n("dt.empty_table"),
+      loadingRecords = i18n("dt.loading"),
+      processing     = i18n("dt.processing"),
+      paginate       = list(first = i18n("dt.first"), previous = i18n("dt.previous"),
+                            `next` = i18n("dt.next"), last = i18n("dt.last")))
+  DT::datatable(data, ..., options = options)
 }
