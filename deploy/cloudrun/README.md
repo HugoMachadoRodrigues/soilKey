@@ -23,6 +23,11 @@ gcloud builds submit --config deploy/cloudrun/cloudbuild.yaml \
   --project soilkeypro .
 ```
 
+The build runs on Cloud Build's default machine (e2-standard-2), the only type
+in its free tier of 2,500 build-minutes a month per billing account. Builds
+count against the US$1 monthly cap below, and the larger E2_HIGHCPU_8 used
+until October 2026 cost US$0.016 a minute (about US$0.36 for one slow build).
+
 ## 2. Deploy to Cloud Run
 
 Request-based billing, scaling to zero. CPU is allocated only while a request is
