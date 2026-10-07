@@ -75,23 +75,14 @@
     if (conf >= 0.55) "C" else if (conf >= 0.40) "D" else "E"
 }
 
-# The Groq vision model, resolved at CALL time so a discontinued model can be
-# repointed without rebuilding the image:
-#   options(soilKey.groq_vision_model=) > $GROQ_VISION_MODEL > default.
-#
-# The default moved to qwen/qwen3.6-27b in v0.9.193: Groq retired
-# meta-llama/llama-4-scout-17b-16e-instruct and every call started returning
-# HTTP 404 (reported from ISRIC). Qwen3 is a REASONING model -- it emits a
-# <think> block before the JSON -- which the extractor now strips
-# (strip_reasoning_block() in R/vlm-validate.R).
-.GROQ_VISION_MODEL_DEFAULT <- "qwen/qwen3.6-27b"
-
-.groq_vision_model <- function() {
-  opt <- getOption("soilKey.groq_vision_model", default = NULL)
-  if (!is.null(opt) && nzchar(opt)) return(opt)
-  env <- Sys.getenv("GROQ_VISION_MODEL", "")
-  if (nzchar(env)) return(env)
-  .GROQ_VISION_MODEL_DEFAULT
+# The Groq vision model, resolved at CALL time from Groq's own list of models
+# available to the key (see utils_groq.R). Fixed names broke this tab twice:
+# meta-llama/llama-4-scout-17b-16e-instruct (August 2026, reported from ISRIC)
+# and qwen/qwen3.6-27b (October 2026) were each retired and every call returned
+# HTTP 404. An explicit options(soilKey.groq_vision_model=) or
+# $GROQ_VISION_MODEL still wins while Groq offers it.
+.groq_vision_model <- function(key = Sys.getenv("GROQ_API_KEY", "")) {
+  .groq_model("vision", key)
 }
 
 # Downscale a photo before it goes to the vision model.
@@ -134,7 +125,8 @@
       stop(i18n("photo.ellmer_missing"), call. = FALSE)
     key <- Sys.getenv("GROQ_API_KEY", "")
     if (!nzchar(key)) stop(i18n("photo.live_needs_key"), call. = FALSE)
-    model <- .groq_vision_model()
+    model <- .groq_vision_model(key)
+    if (is.na(model)) stop(i18n("photo.no_vision_model"), call. = FALSE)
     # Two settings keep the call inside Groq's 8,000-tokens-per-minute free
     # tier. Measured end to end against the live endpoint, they take one
     # extraction from 15,597 tokens (rejected before the model ever ran) to
@@ -149,12 +141,13 @@
     #                        max_tokens it could consume the whole allowance and
     #                        truncate the JSON mid-object.
     #
-    # api_args passes reasoning_effort straight through to the endpoint; a
-    # provider that does not know the field ignores it.
+    # api_args passes reasoning_effort straight through to the endpoint, and
+    # only for a Qwen model (.groq_api_args): another family may reject the
+    # field instead of ignoring it.
     return(suppressWarnings(ellmer::chat_groq(
       model = model, api_key = key, echo = "none",
       params   = ellmer::params(max_tokens = 1500L, temperature = 0),
-      api_args = list(reasoning_effort = "none"))))
+      api_args = .groq_api_args(model))))
   }
   soilKey::MockVLMProvider$new(responses = mock_responses)
 }
@@ -284,10 +277,20 @@ photo_server <- function(id, rv) {
         return(invisible())
       }
       shiny::withProgress(message = i18n("photo.extracting_munsell"), value = 0.5, {
-        res <- tryCatch(
+        run <- function(pr) tryCatch(
           soilKey::extract_munsell_from_photo(
-            rv$pedon, .photo_downscale(f$path), provider),
+            rv$pedon, .photo_downscale(f$path), pr),
           error = function(e) e)
+        res <- run(provider)
+        # The model was retired since Groq's list was last read: read it
+        # again, pick another model, and try once more.
+        if (inherits(res, "error") && .groq_model_gone(res)) {
+          .groq_forget_models()
+          provider <- tryCatch(.photo_provider(input$provider,
+                                 rep(list(.photo_mock_munsell()), 3L)),
+                               error = function(e) e)
+          if (!inherits(provider, "error")) res <- run(provider)
+        }
       })
       if (inherits(res, "error")) {
         shiny::showNotification(
@@ -326,12 +329,20 @@ photo_server <- function(id, rv) {
         return(invisible())
       }
       shiny::withProgress(message = i18n("photo.extracting_site"), value = 0.5, {
-        res <- tryCatch(
+        run <- function(pr) tryCatch(
           # a field sheet is handwriting, so it keeps more resolution than the
           # colour photo does -- still far below a raw phone upload.
           soilKey::extract_site_from_fieldsheet(
-            rv$pedon, .photo_downscale(f$datapath, max_px = 768L), provider),
+            rv$pedon, .photo_downscale(f$datapath, max_px = 768L), pr),
           error = function(e) e)
+        res <- run(provider)
+        if (inherits(res, "error") && .groq_model_gone(res)) {
+          .groq_forget_models()
+          provider <- tryCatch(.photo_provider(input$provider,
+                                 rep(list(.photo_mock_site()), 3L)),
+                               error = function(e) e)
+          if (!inherits(provider, "error")) res <- run(provider)
+        }
       })
       if (inherits(res, "error")) {
         shiny::showNotification(

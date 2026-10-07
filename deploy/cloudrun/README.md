@@ -37,9 +37,18 @@ gcloud run deploy soilkeypro \
   --region us-east1 --project soilkeypro \
   --allow-unauthenticated \
   --port 8080 --cpu 1 --memory 2Gi \
-  --cpu-throttling --min-instances 0 --max-instances 1 \
+  --cpu-throttling --min-instances 0 --max-instances 3 --session-affinity \
   --concurrency 40 --timeout 3600
 ```
+
+Up to three instances, with session affinity. Each instance is one R process,
+and an open Shiny session holds a request (its websocket) for as long as the tab
+is open. With a single instance, 40 open tabs, or one heavy computation, left
+new visitors with HTTP 429 "no available instance". Extra instances start only
+under load and stop when idle, so a quiet month costs the same. Session
+affinity keeps each browser on the instance that holds its session, which
+Shiny needs for downloads and widget data. Sessions that share an instance
+still wait for each other's computations: that is R, not Cloud Run.
 
 ## 3. Spending cap
 
@@ -61,6 +70,7 @@ gcloud run services add-iam-policy-binding soilkeypro --region us-east1 \
 The configuration above stays within the free tier for light academic use. The
 earlier always-on setup (`--min-instances 1 --no-cpu-throttling`) cost about
 US$8-15 a month and is not needed: request-based billing was tested and keeps
-sessions working. To serve more concurrent users, raise `--max-instances` **and**
-add `--session-affinity`. Bump `--memory` if the app runs out of memory
-(`gcloud run services logs read soilkeypro --region us-east1`).
+sessions working. To serve more concurrent users, raise `--max-instances`
+(keep `--session-affinity`). Every instance counts against the US$1 cap, so a
+burst of visitors can reach it sooner. Bump `--memory` if the app runs out of
+memory (`gcloud run services logs read soilkeypro --region us-east1`).
