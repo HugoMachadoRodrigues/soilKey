@@ -356,7 +356,7 @@ map_batch_server <- function(id, rv, settings) {
       names(show) <- c(i18n("mbatch.col_id"), i18n("mbatch.col_lat"),
                        i18n("mbatch.col_lon"), "WRB 2022", "SiBCS 5",
                        "USDA ST 13")
-      DT::datatable(show, rownames = FALSE,
+      sk_datatable(show, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
 

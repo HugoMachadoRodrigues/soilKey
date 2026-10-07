@@ -2,10 +2,23 @@
 # soilKey Pro -- Report module (v0.9.97).
 #
 # Renders a self-contained cross-system report (WRB / SiBCS / USDA plus the
-# horizon table and provenance log) and offers it as an HTML or PDF download.
-# PDF needs a working LaTeX install; if it is missing the module falls back
-# to HTML and tells the user.
+# horizon table and provenance log) and offers it as an HTML download, and as a
+# PDF where a LaTeX engine is installed. The hosted app has none, so there the
+# PDF button is not shown: the HTML report carries a Print / Save as PDF button
+# instead (v0.9.210). Until then a "Download PDF" button handed over an HTML
+# file. The download buttons sit in the body of the tab: in the sidebar they
+# were out of sight whenever it was collapsed.
 # =============================================================================
+
+# Can soilKey::report(format = "pdf") work here? It renders with rmarkdown and
+# xelatex.
+.report_pdf_available <- function() {
+  requireNamespace("rmarkdown", quietly = TRUE) &&
+    isTRUE(tryCatch(rmarkdown::pandoc_available(), error = function(e) FALSE)) &&
+    (nzchar(Sys.which("xelatex")) ||
+       (requireNamespace("tinytex", quietly = TRUE) &&
+          isTRUE(tryCatch(tinytex::is_tinytex(), error = function(e) FALSE))))
+}
 
 report_ui <- function(id) {
   ns <- shiny::NS(id)
@@ -14,32 +27,13 @@ report_ui <- function(id) {
       width = 300,
       sk_section(
         i18n("report.title"),
-        desc = "Build a shareable report of the classification and download it.",
+        desc = i18n("report.desc_section"),
         icon = "file-arrow-down",
         shiny::textInput(
           ns("title"),
-          sk_label(
-            i18n("report.report_title_label"),
-            "A heading printed at the top of the report -- use the site, profile, or project name."),
-          "soilKey classification"),
+          sk_label(i18n("report.report_title_label"), i18n("report.help_title")),
+          i18n("report.default_title")),
         shiny::helpText(i18n("report.help_runs_all_keys"))
-      ),
-      sk_section(
-        "Download",
-        desc = "HTML opens in any browser; PDF needs a LaTeX install.",
-        icon = "download",
-        bslib::tooltip(
-          shiny::downloadButton(ns("html"), i18n("report.download_html"),
-                                icon = shiny::icon("file-code"),
-                                class = "btn-primary w-100"),
-          "Build and download a self-contained HTML report: the WRB / SiBCS / USDA names, key trace, and evidence grade."),
-        shiny::tags$br(), shiny::tags$br(),
-        bslib::tooltip(
-          shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
-                                icon = shiny::icon("file-pdf"),
-                                class = "btn-secondary w-100"),
-          "Build and download the same report as a PDF. Requires a LaTeX installation (e.g. the tinytex package)."),
-        shiny::helpText(i18n("report.pdf_needs_latex"))
       )
     ),
     shiny::uiOutput(ns("body"))
@@ -133,9 +127,25 @@ report_server <- function(id, rv, settings) {
     output$body <- shiny::renderUI({
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
+      pdf_ok <- .report_pdf_available()
       bslib::card(
         bslib::card_header(i18n("report.preview")),
         bslib::card_body(
+          # the downloads, where they cannot be hidden by a collapsed sidebar
+          shiny::div(
+            class = "d-flex flex-wrap gap-2 mb-2",
+            bslib::tooltip(
+              shiny::downloadButton(ns("html"), i18n("report.download_html"),
+                                    icon = shiny::icon("file-code"),
+                                    class = "btn-primary"),
+              i18n("report.tip_html")),
+            if (pdf_ok) bslib::tooltip(
+              shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
+                                    icon = shiny::icon("file-pdf"),
+                                    class = "btn-secondary"),
+              i18n("report.tip_pdf"))),
+          if (!pdf_ok) shiny::helpText(shiny::icon("print"), " ",
+                                       i18n("report.pdf_via_print")),
           shiny::p(i18n("report.bundles_intro")),
           shiny::tags$ul(
             shiny::tags$li(i18n("report.bundle_results")),
@@ -152,6 +162,11 @@ report_server <- function(id, rv, settings) {
         )
       )
     })
+
+    # the buttons live in renderUI'd UI; keep their links bound even while
+    # the tab is hidden
+    shiny::outputOptions(output, "html", suspendWhenHidden = FALSE)
+    shiny::outputOptions(output, "pdf", suspendWhenHidden = FALSE)
 
     # Render one row per optional setting with a check/cross icon.
     output$opts <- shiny::renderUI({

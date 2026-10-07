@@ -75,13 +75,20 @@
   isTRUE(.sk_async_env$started) && isTRUE(.sk_async_env$verified)
 }
 
-# The environment a job function runs in: global, plus the app's `%||%` (the
-# one helper the jobs use; base R only has it from 4.4.0).
-.sk_job_env <- function() {
+# The environment a job function runs in: global, plus the app's `%||%` (base R
+# only has it from 4.4.0) and any app helpers the job names. Helpers travel the
+# same way as the job, without their own environment, so they too may use only
+# their arguments, package functions and each other.
+.sk_job_env <- function(helpers = list()) {
   e  <- new.env(parent = globalenv())
   or <- function(a, b) if (is.null(a) || length(a) == 0L) b else a
   environment(or) <- baseenv()
   assign("%||%", or, envir = e)
+  for (n in names(helpers)) {
+    h <- helpers[[n]]
+    if (is.function(h)) environment(h) <- e      # constants travel as they are
+    assign(n, h, envir = e)
+  }
   e
 }
 
@@ -95,8 +102,8 @@
 # Shiny session along. The soilKey.* options of this process travel with the
 # job: the Settings tab keeps the diagnostic engine and strict mode there, and
 # a worker would not see them.
-.sk_async <- function(fun, args = list()) {
-  if (!isNamespace(environment(fun))) environment(fun) <- .sk_job_env()
+.sk_async <- function(fun, args = list(), helpers = list()) {
+  if (!isNamespace(environment(fun))) environment(fun) <- .sk_job_env(helpers)
   opts <- options()[grepl("^soilKey\\.", names(options()))]
   run <- function(fun, args, opts) {
     old <- options(opts)

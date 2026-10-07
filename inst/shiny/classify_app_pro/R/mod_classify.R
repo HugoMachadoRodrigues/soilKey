@@ -51,12 +51,12 @@ classify_ui <- function(id) {
       sk_section(
         i18n("classify.run_classification"),
         icon = "play",
-        desc = "Choose which classification systems to run on the current pedon, then start the key.",
+        desc = i18n("classify.desc_run"),
         shiny::checkboxGroupInput(
           ns("systems"),
           sk_label(
             i18n("classify.systems"),
-            "Tick every system you want a name for; each is scored independently from the same pedon."
+            i18n("classify.help_systems")
           ),
           choices  = c("WRB 2022" = "wrb2022", "SiBCS 5" = "sibcs",
                        "USDA ST 13" = "usda"),
@@ -67,7 +67,7 @@ classify_ui <- function(id) {
                                    icon = shiny::icon("play"),
                                    label_busy = i18n("classify.classifying"),
                                    type = "primary", class = "w-100"),
-          "Run the deterministic keys and show the WRB, SiBCS and USDA names with their decision traces."
+          i18n("classify.tip_run")
         ),
         # Tells the user whether the shown results reflect the current settings,
         # or whether an input changed and they must press Classify again.
@@ -76,21 +76,15 @@ classify_ui <- function(id) {
       shiny::tags$hr(),
       # ---- Complete a partial profile before classifying ------------------
       sk_section(
-        "Complete missing data",
+        i18n("classify.complete_missing"),
         icon = "wand-magic-sparkles",
-        desc = paste("Optional. Fill blank attributes so an incomplete profile",
-                     "can still be classified. Filled values are flagged as",
-                     "predicted, so the evidence grade drops honestly (A to B/C)."),
+        desc = i18n("classify.desc_complete"),
         shiny::checkboxGroupInput(
           ns("gapfill_methods"),
           sk_label(
-            "Fill missing attributes from",
-            paste("Applied in order, to blank cells only, on a copy of the",
-                  "pedon -- your entered values are never overwritten.")),
-          choices = c(
-            "Interpolation within the profile"      = "interp",
-            "SoilGrids at the coordinates (online)" = "soilgrids",
-            "Attached Vis-NIR spectra"              = "spectra"),
+            i18n("classify.fill_from"),
+            i18n("classify.help_fill_from")),
+          choices = .classify_gapfill_choices(),
           selected = character(0)),
         shiny::helpText(shiny::icon("arrow-up"), " ",
                         i18n("classify.applies_on_run"))
@@ -103,19 +97,19 @@ classify_ui <- function(id) {
       sk_section(
         i18n("classify.deepest_level"),
         icon = "sliders",
-        desc = "Optional finer levels. These stay in sync with the same switches on the Settings tab.",
+        desc = i18n("classify.desc_deepest"),
         shinyWidgets::materialSwitch(
           ns("include_family"),
           sk_label(
             i18n("classify.usda_family"),
-            "Add the USDA family level (texture, mineralogy, temperature) below the subgroup when data allow."
+            i18n("classify.help_usda_family")
           ),
           value = FALSE, status = "primary"),
         shinyWidgets::materialSwitch(
           ns("specifiers"),
           sk_label(
             i18n("classify.wrb_depth_specifiers"),
-            "Append WRB depth specifiers (e.g. Epi-, Endo-) that record where a qualifier occurs in the profile."
+            i18n("classify.help_specifiers")
           ),
           value = FALSE, status = "primary"),
         shiny::helpText(shiny::icon("arrow-up"), " ",
@@ -129,6 +123,18 @@ classify_ui <- function(id) {
     ),
     shiny::uiOutput(ns("body"))
   )
+}
+
+# Where the Classify tab may fill missing attributes from. Spectra only when a
+# real OSSL reference library is configured (.spectra_gapfill_available()):
+# without one, fill_from_spectra() writes placeholder values, and a profile
+# classified on them would carry an invented class.
+.classify_gapfill_choices <- function() {
+  ch <- c(interp = i18n("classify.gapfill_interp"),
+          soilgrids = i18n("classify.gapfill_soilgrids"),
+          spectra = i18n("classify.gapfill_spectra"))
+  if (!.spectra_gapfill_available()) ch <- ch[names(ch) != "spectra"]
+  stats::setNames(names(ch), unname(ch))
 }
 
 # The classification run, done in a background worker (.sk_async()): it may use
@@ -247,7 +253,7 @@ classify_server <- function(id, rv, settings) {
                   "gapfill_error")
       if (!is.null(msg))
         shiny::showNotification(
-          sprintf("Gap-fill could not run (%s) - classified without it.", msg),
+          i18n("classify.gapfill_fallback", msg),
           type = "warning", duration = 8)
     })
 
@@ -336,7 +342,7 @@ classify_server <- function(id, rv, settings) {
       tr <- if (is.null(r)) NULL
             else tryCatch(soilKey::key_trace_table(r), error = function(e) NULL)
       if (is.null(tr) || nrow(tr) == 0L) {
-        return(DT::datatable(
+        return(sk_datatable(
           stats::setNames(data.frame(i18n("classify.no_trace_available")),
                           i18n("classify.note_col")),
           rownames = FALSE, options = list(dom = "t")))
@@ -363,7 +369,7 @@ classify_server <- function(id, rv, settings) {
       colnames_loc <- c(if (has_phase) i18n("classify.col_phase"),
                         i18n("classify.col_code"), i18n("classify.col_name"),
                         i18n("classify.col_status"), i18n("classify.col_missing"))
-      DT::datatable(disp, rownames = FALSE, colnames = colnames_loc,
+      sk_datatable(disp, rownames = FALSE, colnames = colnames_loc,
                     options = list(pageLength = 15, dom = "tip")) |>
         # "not met" is the NORMAL case (most candidate classes don't apply), so
         # colour it neutral grey -- not alarming red. Only the assigned class and

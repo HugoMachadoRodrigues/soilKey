@@ -121,20 +121,25 @@ test_that("map_server point mode renders the map and draws the overlay", {
 
   shiny::testServer(map_server, args = list(rv = rv, settings = settings), {
     session$setInputs(mode = "point", basemap = "OpenStreetMap",
-                      show_soilgrids = TRUE, source_url = "",
+                      show_soilgrids = TRUE, source_url = "", sg_source = "demo",
                       system = "wrb2022", buffer = 600, topn = 5)
     # coordinate comes straight from the pedon
     expect_equal(coords_r()$lat, -22.5)
     expect_equal(coords_r()$src, "pedon")
 
-    # the overlay raster helper resolves the bundled demo raster for this point
-    rr <- overlay_raster(coords_r(), .map_src(""))
-    expect_false(is.null(rr))
-    expect_true(all(c("id", "class") %in% names(rr$lut)))
-
-    # the base map renders without error (the initial view/points/overlay are
-    # baked into renderLeaflet, so this must not raise)
+    # the base map renders without error, and without reading SoilGrids
     expect_error(output$map, NA)
+
+    # v0.9.210: once leaflet reports its bounds (the map exists on the page),
+    # the overlay is read in the background and kept for redraws
+    session$setInputs(map_bounds = list(north = -20, south = -25,
+                                        east = -40, west = -46))
+    .settle(session)
+    hit <- overlay_cache()
+    expect_false(is.null(hit$rr))
+    expect_true(all(c("id", "class") %in% names(hit$rr$lut)))
+    expect_false(isTRUE(hit$fell_back))
+    expect_identical(hit$args$src, .map_src("", "demo"))
   })
 })
 

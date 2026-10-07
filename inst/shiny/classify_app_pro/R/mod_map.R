@@ -59,7 +59,7 @@ map_ui <- function(id) {
 
       sk_section(
         i18n("map.mode_title"), icon = "layer-group",
-        desc = "One map, three ways to use it -- all centred on the same point.",
+        desc = i18n("map.desc_mode"),
         shinyWidgets::radioGroupButtons(
           ns("mode"),
           choices = stats::setNames(
@@ -70,14 +70,14 @@ map_ui <- function(id) {
         shiny::selectInput(
           ns("basemap"),
           sk_label(i18n("mpoint.base_map"),
-                   "Background tiles. Satellite (default) shows the field and landform."),
+                   i18n("map.help_basemap")),
           choices = .map_basemaps(), selected = "Esri.WorldImagery")
       ),
 
       # ---- SoilGrids overlay: shared across every mode --------------------
       sk_section(
         i18n("map.soilgrids_overlay"), icon = "map-location-dot",
-        desc = "Draw the SoilGrids WRB class prior for the visible area on the map.",
+        desc = i18n("map.desc_overlay"),
         shiny::checkboxInput(ns("show_soilgrids"),
                              i18n("map.show_soilgrids"), value = TRUE),
         shinyWidgets::radioGroupButtons(
@@ -85,11 +85,11 @@ map_ui <- function(id) {
           label = sk_label(i18n("map.sg_source"), i18n("map.sg_source_help")),
           choices = stats::setNames(c("demo", "live"),
                                     c(i18n("map.sg_demo"), i18n("map.sg_live"))),
-          selected = "demo", justified = TRUE, size = "sm"),
+          selected = "live", justified = TRUE, size = "sm"),
         shiny::textInput(
           ns("source_url"),
           sk_label(i18n("mpoint.soilgrids_raster"),
-                   "Optional path/URL of a WRB class raster. Overrides the choice above."),
+                   i18n("map.help_source_url")),
           placeholder = i18n("mpoint.raster_placeholder")),
         shiny::uiOutput(ns("overlay_note"))
       ),
@@ -99,7 +99,7 @@ map_ui <- function(id) {
         sprintf("input['%s'] == 'point'", ns("mode")),
         sk_section(
           i18n("map.tab_point"), icon = "location-dot",
-          desc = "Click the map to drop a point, then read the SoilGrids class prior there.",
+          desc = i18n("mpoint.desc"),
           shiny::uiOutput(ns("coords")),
           # The prior IS the SoilGrids WRB MostProbable raster. WRB is native;
           # SiBCS is a published WRB->SiBCS (Schad) translation of the SAME
@@ -122,7 +122,11 @@ map_ui <- function(id) {
                                      icon = shiny::icon("satellite"),
                                      label_busy = i18n("mpoint.querying_prior"),
                                      type = "primary", class = "w-100"),
-            "Read the class prior at the current point and rank the classes.")
+            i18n("mpoint.tip_query")),
+          shiny::conditionalPanel(
+            sprintf("input['%s'] == 'live'", ns("sg_source")),
+            shiny::helpText(class = "small", shiny::icon("clock"), " ",
+                            i18n("mpoint.live_slow")))
         )),
 
       # ---- Batch mode ----------------------------------------------------
@@ -130,7 +134,7 @@ map_ui <- function(id) {
         sprintf("input['%s'] == 'batch'", ns("mode")),
         sk_section(
           i18n("map.tab_batch"), icon = "layer-group",
-          desc = "Classify many profiles and colour them by class.",
+          desc = i18n("mbatch.desc"),
           shinyWidgets::radioGroupButtons(
             ns("batch_source"),
             choices = stats::setNames(c("demo", "upload"),
@@ -156,16 +160,16 @@ map_ui <- function(id) {
                                      icon = shiny::icon("layer-group"),
                                      label_busy = i18n("mbatch.classifying"),
                                      type = "primary", class = "w-100"),
-            "Classify each point under all three systems and map them by class."),
+            i18n("mbatch.tip_run")),
           bslib::tooltip(
             shiny::downloadButton(ns("batch_export"), i18n("mbatch.export"),
                                   class = "btn-outline-secondary w-100 mt-2"),
-            "Save the classified points as a GeoPackage for GIS."),
+            i18n("mbatch.tip_export")),
           bslib::tooltip(
             shiny::downloadButton(ns("batch_report"), i18n("mbatch.report"),
                                   icon = shiny::icon("file-lines"),
                                   class = "btn-outline-secondary w-100 mt-2"),
-            "Download a multi-profile HTML report (map + one page per profile).")
+            i18n("mbatch.tip_report"))
         )),
 
       # ---- Grid mode -----------------------------------------------------
@@ -173,7 +177,7 @@ map_ui <- function(id) {
         sprintf("input['%s'] == 'grid'", ns("mode")),
         sk_section(
           i18n("map.tab_grid"), icon = "table-cells",
-          desc = "Predict a soil-class raster over an area of interest.",
+          desc = i18n("mgrid.desc"),
           shiny::selectInput(
             ns("grid_method"), i18n("mgrid.method"),
             choices = stats::setNames(
@@ -188,18 +192,19 @@ map_ui <- function(id) {
             shiny::actionButton(ns("grid_use_view"), i18n("mgrid.use_current_view"),
                                 icon = shiny::icon("crop"),
                                 class = "btn-outline-secondary btn-sm w-100 mb-2"),
-            "Use the current map view as the area of interest."),
+            i18n("mgrid.tip_use_view")),
           shiny::sliderInput(ns("grid_res"), i18n("mgrid.cells_per_side"),
                              min = 8, max = 40, value = 20, step = 1),
           bslib::tooltip(
-            shiny::actionButton(ns("run_grid"), i18n("mgrid.predict_grid"),
-                                icon = shiny::icon("table-cells"),
-                                class = "btn-primary w-100"),
-            "Predict the soil class for every grid cell and draw it as a raster."),
+            bslib::input_task_button(ns("run_grid"), i18n("mgrid.predict_grid"),
+                                     icon = shiny::icon("table-cells"),
+                                     label_busy = i18n("mgrid.predicting_grid"),
+                                     type = "primary", class = "w-100"),
+            i18n("mgrid.tip_predict")),
           bslib::tooltip(
             shiny::downloadButton(ns("grid_export"), i18n("mgrid.export_geotiff"),
                                   class = "btn-outline-secondary w-100 mt-2"),
-            "Download the predicted class grid as a categorical GeoTIFF."),
+            i18n("mgrid.tip_export")),
           shiny::uiOutput(ns("grid_help"))
         ))
     ),
@@ -219,6 +224,82 @@ map_ui <- function(id) {
     shiny::uiOutput(ns("map_legend_help")),
     shiny::uiOutput(ns("results"))
   )
+}
+
+# The helpers the map jobs take to a worker (utils_async.R): the grid and
+# overlay code of mod_map_grid.R, which uses only terra, soilKey and itself.
+.map_job_helpers <- function() {
+  env <- environment(.grid_make)
+  mget(ls(env, all.names = TRUE,
+          pattern = "^[.](grid_|GRID_|wrb_name_to_code$|overlay_recode$|batch_classify$)"),
+       envir = env)
+}
+
+# A raster that came back from a worker is packed (terra objects hold external
+# pointers and cannot travel as they are).
+.map_unwrap <- function(rr) {
+  if (!is.null(rr) && inherits(rr$raster, "PackedSpatRaster"))
+    rr$raster <- terra::unwrap(rr$raster)
+  rr
+}
+
+# The SoilGrids WRB class raster for a window around a point, in a background
+# worker: the live ISRIC raster takes seconds to read, and in the Shiny process
+# that froze every session on the instance. Renders CONTINUOUS patches: crop the
+# SOURCE raster (demo 0.04 deg / live ~250 m) to a 6-degree window at NATIVE
+# resolution, recode to contiguous integer class ids + a LUT, and let
+# addRasterImage draw it -- NOT a coarse point-grid resample. Falls back to
+# `fallback_src` (the offline demo) when the first source gives nothing.
+.map_overlay_job <- function(lat, lon, src, fallback_src = NULL) {
+  read <- function(src) {
+    if (is.null(src) || !requireNamespace("terra", quietly = TRUE)) return(NULL)
+    tryCatch({
+      win <- terra::ext(max(-180, lon - 3), min(180, lon + 3),
+                        max(-90,  lat - 3), min(90,  lat + 3))
+      if (grepl("vsicurl|^http", src)) .grid_set_gdal_fast()   # fast remote open
+      r  <- terra::rast(src)
+      # crop in the RASTER's own CRS (live SoilGrids = Homolosine, demo = 4326)
+      wv <- terra::project(terra::as.polygons(win, crs = "EPSG:4326"),
+                           terra::crs(r))
+      rc <- terra::crop(r, wv, snap = "out")
+      if (is.null(rc) || terra::ncell(rc) == 0) return(NULL)
+      rr <- .overlay_recode(rc)                                # int ids + LUT
+      if (is.null(rr)) return(NULL)
+      # cap the payload (leaflet addRasterImage maxBytes); modal = class-safe
+      fact <- ceiling(max(dim(rr$raster)[1:2]) / 512)
+      if (fact > 1)
+        rr$raster <- terra::aggregate(rr$raster, fact = fact, fun = "modal")
+      if (!terra::same.crs(rr$raster, "EPSG:4326"))
+        rr$raster <- terra::project(rr$raster, "EPSG:4326", method = "near")
+      if (all(is.na(terra::values(rr$raster, mat = FALSE)))) return(NULL)
+      rr$raster <- terra::wrap(rr$raster)
+      rr
+    }, error = function(e) NULL)
+  }
+  rr <- read(src)
+  fell <- FALSE
+  if (is.null(rr) && !is.null(fallback_src)) {
+    rr <- read(fallback_src)
+    fell <- !is.null(rr)
+  }
+  list(rr = rr, fell_back = fell)
+}
+
+# A predicted soil-class grid over a bounding box, in a background worker.
+.map_grid_job <- function(bb, n, method, system, src,
+                          points_df = NULL, class_col = NULL, pedons = NULL) {
+  # interpolation without a classified batch: classify the demo points here
+  if (identical(method, "interpolate") && is.null(points_df) && length(pedons))
+    points_df <- .batch_classify(pedons, on_missing = "silent")
+  g <- .grid_make(bb, n)
+  codes <- switch(method,
+    covariates  = .grid_classify_covariates(g$coords, system = system),
+    interpolate = .grid_interpolate(g$coords, points_df, class_col),
+    overlay     = .grid_overlay(g$coords, source_url = src))
+  rr <- .grid_to_raster(g$raster, codes)
+  if (is.null(rr)) return(NULL)
+  rr$raster <- terra::wrap(rr$raster)
+  rr
 }
 
 # The class prior at a point, read from SoilGrids in a background worker
@@ -264,51 +345,10 @@ map_server <- function(id, rv, settings) {
       do.call(rbind, rows)
     })
 
-    # SoilGrids WRB class raster for a window around a point (or NULL). Renders
-    # CONTINUOUS patches: crop the SOURCE raster (demo 0.04 deg / live ~250 m) to
-    # a 6-degree window at NATIVE resolution, recode to contiguous integer class
-    # ids + a LUT, and let addRasterImage draw it -- NOT a coarse point-grid
-    # resample (the old .grid_make path capped at 40x40 => ~16 km blocks).
-    overlay_raster <- function(cc, src) {
-      if (is.null(cc) || is.null(src)) return(NULL)
-      if (!requireNamespace("terra", quietly = TRUE)) return(NULL)
-      tryCatch({
-        win <- terra::ext(max(-180, cc$lon - 3), min(180, cc$lon + 3),
-                          max(-90,  cc$lat - 3), min(90,  cc$lat + 3))
-        if (grepl("vsicurl|^http", src)) .grid_set_gdal_fast()  # fast remote open
-        r  <- terra::rast(src)
-        # crop in the RASTER's own CRS (live SoilGrids = Homolosine, demo = 4326)
-        wv <- terra::project(terra::as.polygons(win, crs = "EPSG:4326"),
-                             terra::crs(r))
-        rc <- terra::crop(r, wv, snap = "out")
-        if (is.null(rc) || terra::ncell(rc) == 0) return(NULL)
-        rr <- .overlay_recode(rc)                               # int ids + LUT
-        if (is.null(rr)) return(NULL)
-        # cap the payload (leaflet addRasterImage maxBytes); modal = class-safe
-        fact <- ceiling(max(dim(rr$raster)[1:2]) / 512)
-        if (fact > 1)
-          rr$raster <- terra::aggregate(rr$raster, fact = fact, fun = "modal")
-        if (!terra::same.crs(rr$raster, "EPSG:4326"))
-          rr$raster <- terra::project(rr$raster, "EPSG:4326", method = "near")
-        if (all(is.na(terra::values(rr$raster, mat = FALSE)))) return(NULL)
-        rr
-      }, error = function(e) NULL)
-    }
-    # Resolve the source from the live/demo toggle (+ pasted URL) and read the
-    # overlay, falling back to the offline demo raster if the live ISRIC fetch
-    # fails or returns nothing (network blocked/slow) so the map is never empty.
-    sg_fellback <- shiny::reactiveVal(FALSE)
-    overlay_for <- function(cc, kind, url) {
-      kind <- kind %||% "demo"
-      rr <- overlay_raster(cc, .map_soilgrids_source(url, kind))
-      fell <- FALSE
-      if (is.null(rr) && identical(kind, "live") && !nzchar(url %||% "")) {
-        rr <- overlay_raster(cc, .map_soilgrids_source(NULL, "demo"))
-        fell <- !is.null(rr)
-      }
-      list(rr = rr, fell_back = fell)
-    }
-    add_overlay <- function(map, rr) {
+    # `attribution` credits the source in the map's corner: SoilGrids (CC BY
+    # 4.0, which requires it) for the live raster, a plain note for the
+    # synthetic demo.
+    add_overlay <- function(map, rr, attribution = NULL) {
       if (is.null(rr)) return(map)
       lut <- rr$lut
       pal <- leaflet::colorFactor("Set3", domain = lut$id, na.color = "transparent")
@@ -319,7 +359,7 @@ map_server <- function(id, rv, settings) {
       map <- suppressWarnings(
         leaflet::addRasterImage(map, rr$raster, colors = pal, opacity = 0.6,
                                 method = "ngb", project = TRUE,
-                                group = "soilgrids"))
+                                group = "soilgrids", attribution = attribution))
       leaflet::addLegend(map, "bottomleft", colors = pal(lut$id),
                          labels = lut$class, title = i18n("map.soilgrids_overlay"),
                          opacity = 0.85, layerId = "sg_legend")
@@ -370,9 +410,7 @@ map_server <- function(id, rv, settings) {
            else m |> leaflet::setView(-51, -14, zoom = 4)
       m <- add_points(m, cc, nb, mode)
       m <- add_buffer(m, cc, mode, shiny::isolate(input$buffer))
-      if (isTRUE(shiny::isolate(input$show_soilgrids)))
-        m <- add_overlay(m, overlay_for(cc, shiny::isolate(input$sg_source),
-                                        shiny::isolate(input$source_url))$rr)
+      # the SoilGrids overlay is drawn once its background read is done (below)
       if (requireNamespace("htmlwidgets", quietly = TRUE))
         m <- htmlwidgets::onRender(m, "function(el, x) {
           var map = this;
@@ -430,8 +468,12 @@ map_server <- function(id, rv, settings) {
 
     # ---- SoilGrids overlay for the visible area (all modes) --------------
     output$overlay_note <- shiny::renderUI({
+      if (isTRUE(input$show_soilgrids) &&
+          identical(overlay_task$status(), "running"))
+        return(shiny::helpText(shiny::icon("spinner", class = "fa-spin"), " ",
+                               i18n("map.loading_soilgrids")))
       if (nzchar(input$source_url %||% "")) return(NULL)   # custom URL: no note
-      if (identical(input$sg_source %||% "demo", "live"))
+      if (identical(input$sg_source %||% "live", "live"))
         shiny::helpText(shiny::icon("globe"), " ",
           if (isTRUE(sg_fellback())) i18n("map.live_fell_back")
           else i18n("map.using_live"))
@@ -445,7 +487,7 @@ map_server <- function(id, rv, settings) {
       show <- isTRUE(input$show_soilgrids)
       paras <- list()
       if (show) {
-        src_line <- if (identical(input$sg_source %||% "demo", "live"))
+        src_line <- if (identical(input$sg_source %||% "live", "live"))
           i18n("map.legend_overlay_live") else i18n("map.legend_overlay_demo")
         paras <- c(paras, list(shiny::p(
           shiny::strong(i18n("map.soilgrids_overlay")), " ",
@@ -467,22 +509,64 @@ map_server <- function(id, rv, settings) {
         bslib::card_body(class = "small", paras))
     })
 
-    # Redraw the overlay on later toggles/point changes. The FIRST paint is
-    # baked into renderLeaflet above; this only handles updates (map is live).
-    # The bbox is a fixed window around the point, NOT input$map_bounds --
-    # observing bounds while drawing would re-fire in a loop and saturate R.
-    shiny::observeEvent(
-      list(input$show_soilgrids, input$sg_source, input$source_url, coords_r()), {
-        proxy <- leaflet::leafletProxy("map", session) |>
-          leaflet::clearGroup("soilgrids") |>
-          leaflet::removeControl("sg_legend")
-        if (!isTRUE(input$show_soilgrids)) return(invisible())
-        res <- shiny::withProgress(
-          message = i18n("map.loading_soilgrids"), value = 0.5,
-          overlay_for(coords_r(), input$sg_source, input$source_url))
-        sg_fellback(res$fell_back)
-        add_overlay(proxy, res$rr)
-      }, ignoreInit = TRUE, ignoreNULL = FALSE)
+    # ---- the SoilGrids overlay, read in a background worker ---------------
+    # The map exists on the client once leaflet reports its bounds; proxy calls
+    # made before that are dropped. Drawn from a cache when nothing it depends
+    # on changed (editing a horizon reassigns the pedon, and used to re-read the
+    # live raster); otherwise read in the background, with a note meanwhile.
+    sg_fellback <- shiny::reactiveVal(FALSE)
+    overlay_task <- shiny::ExtendedTask$new(function(args)
+      promises::then(
+        .sk_async(.map_overlay_job, args, helpers = .map_job_helpers()),
+        function(res) c(res, list(args = args))))
+    map_ready <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$map_bounds, if (!isTRUE(map_ready())) map_ready(TRUE))
+    overlay_cache   <- shiny::reactiveVal(NULL)
+    overlay_pending <- shiny::reactiveVal(NULL)
+    overlay_args <- shiny::reactive({
+      cc <- coords_r()
+      if (!isTRUE(input$show_soilgrids) || is.null(cc)) return(NULL)
+      kind <- input$sg_source %||% "live"
+      url  <- trimws(input$source_url %||% "")
+      live <- identical(kind, "live") && !nzchar(url)
+      list(lat = cc$lat, lon = cc$lon,
+           src = .map_soilgrids_source(url, kind),
+           fallback_src = if (live) .map_soilgrids_source(NULL, "demo"))
+    })
+    overlay_attribution <- function(args, fell_back) {
+      if (is.null(args)) return(NULL)
+      if (isTRUE(fell_back) ||
+          identical(args$src, .map_soilgrids_source(NULL, "demo")))
+        return(i18n("map.attr_demo"))
+      if (identical(args$src, .SOILGRIDS_LIVE_VRT)) i18n("map.attr_soilgrids")
+    }
+    draw_overlay <- function(hit) {
+      proxy <- leaflet::leafletProxy("map", session) |>
+        leaflet::clearGroup("soilgrids") |>
+        leaflet::removeControl("sg_legend")
+      if (is.null(hit)) return(invisible())
+      sg_fellback(isTRUE(hit$fell_back))
+      add_overlay(proxy, .map_unwrap(hit$rr),
+                  overlay_attribution(hit$args, hit$fell_back))
+    }
+    shiny::observeEvent(list(map_ready(), overlay_args()), {
+      if (!isTRUE(map_ready())) return()
+      a <- overlay_args()
+      if (is.null(a)) return(draw_overlay(NULL))
+      hit <- overlay_cache()
+      if (!is.null(hit) && identical(hit$args, a)) return(draw_overlay(hit))
+      if (identical(overlay_pending(), a)) return()
+      overlay_pending(a)
+      overlay_task$invoke(a)
+    }, ignoreNULL = FALSE)
+    shiny::observeEvent(overlay_task$status(), {
+      if (!identical(overlay_task$status(), "success")) return()
+      res <- overlay_task$result()
+      overlay_pending(NULL)
+      overlay_cache(res)
+      # still what the map should show? (the point or a toggle may have moved on)
+      if (identical(res$args, shiny::isolate(overlay_args()))) draw_overlay(res)
+    })
 
     output$coords <- shiny::renderUI({
       cc <- coords_r()
@@ -605,9 +689,15 @@ map_server <- function(id, rv, settings) {
       grid_bbox(list(lon_min = b$west, lon_max = b$east,
                      lat_min = b$south, lat_max = b$north))
     })
-    grid_result <- shiny::eventReactive(input$run_grid, {
+    # Predicting the grid reads SoilGrids or classifies many points: in a
+    # background worker (utils_async.R), so the other sessions carry on.
+    grid_task <- shiny::ExtendedTask$new(function(args)
+      .sk_async(.map_grid_job, args, helpers = .map_job_helpers()))
+    bslib::bind_task_button(grid_task, "run_grid")
+    grid_msg <- shiny::reactiveVal(NULL)   # a problem found before predicting
+    shiny::observeEvent(input$run_grid, {
       if (!requireNamespace("terra", quietly = TRUE))
-        return(simpleError(i18n("mgrid.err_no_terra")))
+        return(grid_msg(simpleError(i18n("mgrid.err_no_terra"))))
       cc <- coords_r()
       bb <- grid_bbox() %||% (if (!is.null(input$map_bounds)) {
         b <- input$map_bounds
@@ -616,25 +706,28 @@ map_server <- function(id, rv, settings) {
       } else if (!is.null(cc))
         list(lon_min = cc$lon - 2, lon_max = cc$lon + 2,
              lat_min = cc$lat - 2, lat_max = cc$lat + 2) else NULL)
-      if (is.null(bb)) return(simpleError(i18n("mgrid.err_invalid_bbox")))
-      src <- .map_soilgrids_source(input$source_url, input$sg_source)
-      shiny::withProgress(message = i18n("mgrid.predicting_grid"), value = 0, {
-        tryCatch({
-          g <- .grid_make(bb, min(40L, input$grid_res %||% 20L))
-          codes <- switch(input$grid_method %||% "overlay",
-            covariates = .grid_classify_covariates(
-              g$coords, system = input$grid_system,
-              bump = function(f, l) shiny::setProgress(f, detail = l)),
-            interpolate = .grid_interpolate(
-              g$coords, batch() %||% .batch_classify(.batch_demo_pedons(16L),
-                                                     on_missing = "silent"),
-              paste0(sub("2022", "", input$grid_system), "_class")),
-            overlay = .grid_overlay(g$coords, source_url = src))
-          rr <- .grid_to_raster(g$raster, codes)
-          if (is.null(rr)) return(simpleError(i18n("mgrid.err_no_classes")))
-          rr
-        }, error = function(e) e)
-      })
+      if (is.null(bb)) return(grid_msg(simpleError(i18n("mgrid.err_invalid_bbox"))))
+      method <- input$grid_method %||% "overlay"
+      pts <- if (identical(method, "interpolate"))
+        tryCatch(batch(), error = function(e) NULL)
+      if (inherits(pts, "error")) pts <- NULL
+      peds <- if (identical(method, "interpolate") && is.null(pts))
+        .batch_demo_pedons(16L)
+      grid_msg(NULL)
+      grid_task$invoke(list(
+        bb = bb, n = min(40L, input$grid_res %||% 20L), method = method,
+        system = input$grid_system,
+        src = .map_soilgrids_source(input$source_url, input$sg_source),
+        points_df = pts, pedons = peds,
+        class_col = paste0(sub("2022", "", input$grid_system), "_class")))
+    })
+    grid_result <- shiny::reactive({
+      m <- grid_msg()
+      if (!is.null(m)) return(m)
+      rr <- .sk_task_value(grid_task)
+      if (inherits(rr, "error")) return(rr)
+      if (is.null(rr)) return(simpleError(i18n("mgrid.err_no_classes")))
+      .map_unwrap(rr)
     })
     shiny::observeEvent(grid_result(), {
       rr <- grid_result()
@@ -702,7 +795,7 @@ map_server <- function(id, rv, settings) {
                          stringsAsFactors = FALSE)
       names(show) <- c(i18n("mpoint.col_rank"), i18n("mpoint.col_class"),
                        i18n("mpoint.col_code"), i18n("mpoint.col_probability"))
-      DT::datatable(show, rownames = FALSE,
+      sk_datatable(show, rownames = FALSE,
                     caption = sprintf(i18n("mpoint.topn_caption"), nrow(df),
                                       round(as.numeric(input$buffer %||% 0))),
                     options = list(dom = "t", pageLength = n)) |>
@@ -733,7 +826,7 @@ map_server <- function(id, rv, settings) {
     output$attrs_table <- DT::renderDT({
       p <- prior(); shiny::req(p)
       shiny::validate(shiny::need(!inherits(p, "error"), i18n("mpoint.na")))
-      DT::datatable(.sk_round2(p$typical_attributes), rownames = FALSE,
+      sk_datatable(.sk_round2(p$typical_attributes), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
     output$batch_table <- DT::renderDT({
@@ -745,7 +838,7 @@ map_server <- function(id, rv, settings) {
                   drop = FALSE]
       names(show) <- c(i18n("mbatch.col_id"), i18n("mbatch.col_lat"),
                        i18n("mbatch.col_lon"), "WRB 2022", "SiBCS 5", "USDA ST 13")
-      DT::datatable(.sk_round2(show), rownames = FALSE,
+      sk_datatable(.sk_round2(show), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
     output$grid_summary <- DT::renderDT({
@@ -761,7 +854,7 @@ map_server <- function(id, rv, settings) {
       show <- tab[order(-tab$cells), c("class", "cells", "share")]
       names(show) <- c(i18n("mgrid.col_class"), i18n("mgrid.col_cells"),
                        i18n("mgrid.col_share"))
-      DT::datatable(show, rownames = FALSE,
+      sk_datatable(show, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 12)) |>
         DT::formatPercentage(i18n("mgrid.col_share"), 2)
     })

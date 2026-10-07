@@ -521,7 +521,7 @@ chat_ui <- function(id) {
                                icon = shiny::icon("paper-plane"),
                                label_busy = i18n("chat.thinking"),
                                type = "primary"),
-        "Send your message.")),
+        i18n("chat.tip_send"))),
     shiny::div(class = "sk-assistant-foot small text-muted",
                i18n("chat.grounding_note"))
   )

@@ -18,7 +18,7 @@ uncertainty_ui <- function(id) {
       # batch has been loaded; a note reports how many points are available.
       sk_section(
         i18n("uncert.source_title"), icon = "layer-group",
-        desc = "Analyse the active profile, or every point in a loaded group.",
+        desc = i18n("uncert.desc_source"),
         shinyWidgets::radioGroupButtons(
           ns("source"),
           choices = stats::setNames(c("active", "group"),
@@ -30,12 +30,12 @@ uncertainty_ui <- function(id) {
 
       sk_section(
         i18n("uncert.analysis_title"),
-        desc = "Choose which taxonomy and level the stability of the class is measured at.",
+        desc = i18n("uncert.desc_analysis"),
         icon = "sliders",
         shiny::selectInput(
           ns("system"),
           sk_label(i18n("uncert.system"),
-                   "Taxonomy the profile is re-classified in on every Monte-Carlo run."),
+                   i18n("uncert.help_system")),
           choices = c("WRB 2022" = "wrb2022",
                       "SiBCS 5" = "sibcs",
                       "USDA ST 13" = "usda"),
@@ -43,7 +43,7 @@ uncertainty_ui <- function(id) {
         shiny::radioButtons(
           ns("level"),
           sk_label(i18n("uncert.compare_at"),
-                   "Compare runs at the broad group, or at the full name including all qualifiers."),
+                   i18n("uncert.help_level")),
           choices = stats::setNames(
             c("rsg", "name"),
             c(i18n("uncert.level_rsg_order"),
@@ -53,30 +53,30 @@ uncertainty_ui <- function(id) {
 
       sk_section(
         i18n("uncert.mc_runs"),
-        desc = "How the inputs are jittered and how many times the key is re-run.",
+        desc = i18n("uncert.desc_mc"),
         icon = "dice",
         shiny::sliderInput(
           ns("n"),
           sk_label(i18n("uncert.mc_runs"),
-                   "Number of perturbed re-runs. More runs give a smoother, more reliable distribution but take longer."),
+                   i18n("uncert.help_n")),
           min = 25, max = 500, value = 50, step = 25),
         shiny::checkboxInput(
           ns("sensitivity"),
           sk_label(i18n("uncert.compute_sensitivity"),
-                   "Also rank which inputs drive instability by muting each attribute in turn."),
+                   i18n("uncert.help_sensitivity")),
           value = TRUE)
       ),
 
       sk_section(
         i18n("uncert.run_analysis"),
-        desc = "Perturb the inputs within their measurement uncertainty and re-run the key.",
+        desc = i18n("uncert.desc_run"),
         icon = "play",
         bslib::tooltip(
           bslib::input_task_button(ns("run"), i18n("uncert.run_analysis"),
                                    icon = shiny::icon("dice"),
                                    label_busy = i18n("uncert.running_mc"),
                                    type = "primary", class = "w-100"),
-          "Run the Monte-Carlo uncertainty analysis and report how stable the classification is."),
+          i18n("uncert.tip_run")),
         shiny::helpText(
           i18n("uncert.perturb_help")
         )
@@ -280,7 +280,7 @@ uncertainty_server <- function(id, rv, settings) {
       show <- show[order(-show$prob), , drop = FALSE]
       names(show) <- c(i18n("uncert.col_point"), i18n("uncert.most_likely_class"),
                        i18n("uncert.posterior_probability"), i18n("uncert.entropy"))
-      DT::datatable(show, rownames = FALSE, selection = "single",
+      sk_datatable(show, rownames = FALSE, selection = "single",
                     options = list(dom = "tp", pageLength = 12, scrollX = TRUE)) |>
         DT::formatPercentage(i18n("uncert.posterior_probability"), 2) |>
         DT::formatRound(i18n("uncert.entropy"), 2) |>
@@ -364,12 +364,12 @@ uncertainty_server <- function(id, rv, settings) {
       d <- drill(); shiny::req(d, !inherits(d$u, "error"))
       s <- d$u$sensitivity
       if (is.null(s) || nrow(s) == 0L)
-        return(DT::datatable(
+        return(sk_datatable(
           stats::setNames(data.frame(i18n("uncert.sensitivity_not_computed")),
                           i18n("uncert.note_col")),
           rownames = FALSE, options = list(dom = "t")))
       df <- as.data.frame(s); df$importance <- round(df$importance, 2)
-      DT::datatable(df, rownames = FALSE,
+      sk_datatable(df, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8))
     })
 
@@ -398,14 +398,14 @@ uncertainty_server <- function(id, rv, settings) {
       shiny::req(u, !inherits(u, "error"))
       s <- u$sensitivity
       if (is.null(s) || nrow(s) == 0L) {
-        return(DT::datatable(
+        return(sk_datatable(
           stats::setNames(data.frame(i18n("uncert.sensitivity_not_computed")),
                           i18n("uncert.note_col")),
           rownames = FALSE, options = list(dom = "t")))
       }
       df <- as.data.frame(s)
       df$importance <- round(df$importance, 2)
-      DT::datatable(df, rownames = FALSE,
+      sk_datatable(df, rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8))
     })
   })

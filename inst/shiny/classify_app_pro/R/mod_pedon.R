@@ -183,7 +183,7 @@ pedon_ui <- function(id) {
       sk_section(
         i18n("pedon.seed_profile"),
         icon = "layer-group",
-        desc = "Start from a reference profile, your own CSV, or a blank sheet.",
+        desc = i18n("pedon.desc_seed"),
         shinyWidgets::radioGroupButtons(
           ns("source"), NULL,
           # The WoSIS button is offered only when there are profiles behind it.
@@ -199,7 +199,7 @@ pedon_ui <- function(id) {
           shinyWidgets::pickerInput(
             ns("fixture"),
             sk_label(i18n("pedon.canonical_profile"),
-                     "A curated, textbook profile you can load and edit as a starting point."),
+                     i18n("pedon.help_fixture")),
             choices  = pro_fixture_catalog(),
             selected = "make_ferralsol_canonical",
             options  = list(`live-search` = TRUE)
@@ -211,14 +211,12 @@ pedon_ui <- function(id) {
           shiny::helpText(i18n("pedon.wosis_hint")),
           shiny::textInput(ns("wosis_country"),
                            sk_label(i18n("pedon.wosis_country"),
-                                    "Country name as WoSIS spells it, e.g. Argentina. Leave blank for any."),
+                                    i18n("pedon.help_wosis_country")),
                            value = "", placeholder = "Argentina"),
           shinyWidgets::materialSwitch(
             ns("wosis_permissive"),
             sk_label(i18n("pedon.wosis_permissive"),
-                     paste("WoSIS is licensed per profile and about half of it is",
-                           "CC BY-NC, which forbids commercial use. On, only profiles",
-                           "free of that restriction are listed.")),
+                     i18n("pedon.help_wosis_permissive")),
             value = TRUE, status = "primary"),
           shiny::actionButton(ns("wosis_search"), i18n("pedon.wosis_search"),
                               icon = shiny::icon("magnifying-glass"),
@@ -231,7 +229,7 @@ pedon_ui <- function(id) {
           sprintf("input['%s'] == 'upload'", ns("source")),
           shiny::fileInput(ns("csv"),
                            sk_label(i18n("pedon.horizons_csv_tsv"),
-                                    "One row per horizon, with depth and lab columns. Download the starter file to see the expected layout."),
+                                    i18n("pedon.help_csv")),
                            accept = c(".csv", ".tsv", ".txt")),
           shiny::downloadLink(ns("template"), i18n("pedon.download_starter_csv"))
         ),
@@ -239,39 +237,39 @@ pedon_ui <- function(id) {
           shiny::actionButton(ns("load"), i18n("pedon.load_horizons"),
                               icon = shiny::icon("upload"),
                               class = "btn-secondary w-100"),
-          "Load the chosen source into the editable horizon table below."
+          i18n("pedon.tip_load")
         )
       ),
       sk_section(
         i18n("pedon.site_metadata"),
         icon = "location-dot",
-        desc = "Where the profile sits and what it formed on — used for regional priors.",
+        desc = i18n("pedon.desc_site"),
         shiny::textInput(ns("site_id"),
                          sk_label(i18n("pedon.profile_id"),
-                                  "A short label for this profile. It names your downloads and appears in the results."),
+                                  i18n("pedon.help_site_id")),
                          "demo-pedon-01"),
         shiny::fluidRow(
           shiny::column(6, shiny::numericInput(
             ns("lat"),
             sk_label(i18n("pedon.latitude"),
-                     "Decimal degrees, from -90 to 90. Optional, but enables the SoilGrids and climate priors."),
+                     i18n("pedon.help_lat")),
             -22.5, step = 0.01)),
           shiny::column(6, shiny::numericInput(
             ns("lon"),
             sk_label(i18n("pedon.longitude"),
-                     "Decimal degrees, from -180 to 180. Negative is west. Optional but recommended."),
+                     i18n("pedon.help_lon")),
             -43.7, step = 0.01))
         ),
         shiny::fluidRow(
           shiny::column(6, shiny::textInput(
             ns("country"),
             sk_label(i18n("pedon.country_iso2"),
-                     "Two-letter ISO country code, e.g. BR for Brazil. Helps regional defaults."),
+                     i18n("pedon.help_country")),
             "BR")),
           shiny::column(6, shiny::textInput(
             ns("pm"),
             sk_label(i18n("pedon.parent_material"),
-                     "The rock or deposit the soil formed on, e.g. gneiss, basalt, alluvium."),
+                     i18n("pedon.help_pm")),
             "gneiss"))
         ),
         # v0.9.190: site-level technic (anthropogenic) attributes. These are
@@ -280,10 +278,7 @@ pedon_ui <- function(id) {
         shiny::selectInput(
           ns("technic"),
           sk_label(i18n("pedon.technic"),
-                   paste("Artefacts, a constructed geomembrane or technic hard material",
-                         "key a profile to Technosols (WRB 2022). Choose 'None' for an",
-                         "ordinary soil so the key stops asking; 'Unknown' leaves the",
-                         "criteria open.")),
+                   i18n("pedon.help_technic")),
           choices  = stats::setNames(
             c("unknown", "none", "present"),
             c(i18n("pedon.technic_unknown"), i18n("pedon.technic_none"),
@@ -295,7 +290,7 @@ pedon_ui <- function(id) {
             shiny::column(6, shiny::selectInput(
               ns("geomembrane"),
               sk_label(i18n("pedon.geomembrane"),
-                       "A constructed geomembrane starting within 100 cm keys the profile to Technosols."),
+                       i18n("pedon.help_geomembrane")),
               choices  = stats::setNames(
                 c("unknown", "no", "yes"),
                 c(i18n("pedon.geo_unknown"), i18n("pedon.geo_no"), i18n("pedon.geo_yes"))),
@@ -303,7 +298,7 @@ pedon_ui <- function(id) {
             shiny::column(6, shiny::numericInput(
               ns("geomembrane_depth"),
               sk_label(i18n("pedon.geomembrane_depth"),
-                       "Depth in cm at which the geomembrane starts. Used only when the answer is Yes."),
+                       i18n("pedon.help_geomembrane_depth")),
               value = NA, min = 0, step = 1))
           ),
           shiny::helpText(i18n("pedon.technic_hint"))
@@ -312,12 +307,12 @@ pedon_ui <- function(id) {
       sk_section(
         i18n("pedon.build_update_pedon"),
         icon = "hammer",
-        desc = "Assemble the profile so the other tabs can classify it.",
+        desc = i18n("pedon.desc_build"),
         bslib::tooltip(
           shiny::actionButton(ns("build"), i18n("pedon.build_update_pedon"),
                               icon = shiny::icon("hammer"),
                               class = "btn-primary w-100"),
-          "Check the horizon geometry and coordinates, then build the pedon used by every other tab."
+          i18n("pedon.tip_build")
         ),
         shiny::uiOutput(ns("status"))
       ),
@@ -325,18 +320,17 @@ pedon_ui <- function(id) {
       sk_section(
         i18n("pedon.save_open_session"),
         icon = "floppy-disk",
-        desc = paste("Export the profile (site + horizons) to a JSON file, or",
-                     "reopen one to pick up exactly where you left off."),
+        desc = i18n("pedon.desc_session"),
         bslib::tooltip(
           shiny::downloadButton(
             ns("save_session"), i18n("pedon.save_session"),
             icon = shiny::icon("download"),
             class = "btn-outline-secondary w-100"),
-          "Save the current site details and horizon table as a portable .json file."),
+          i18n("pedon.tip_save_session")),
         shiny::fileInput(
           ns("session_file"),
           sk_label(i18n("pedon.open_session"),
-                   "Load a .json session saved earlier; it repopulates every field and rebuilds the pedon."),
+                   i18n("pedon.help_open_session")),
           accept = ".json")
       )
     ),
@@ -353,15 +347,15 @@ pedon_ui <- function(id) {
                          shiny::downloadButton(ns("download_hz"), i18n("pedon.csv"),
                                                icon = shiny::icon("download"),
                                                class = "btn-sm btn-outline-secondary"),
-                         "Save the current table as a CSV to edit offline or re-upload later."),
+                         i18n("pedon.tip_download_csv")),
                        bslib::tooltip(
                          shiny::actionButton(ns("add_row"), i18n("pedon.add_row"),
                                              icon = shiny::icon("plus"),
                                              class = "btn-sm btn-outline-secondary"),
-                         "Append a new horizon below, continuing from the deepest depth.")))
+                         i18n("pedon.tip_add_row"))))
         ),
         bslib::card_body(
-          shiny::helpText("Click any cell to edit it. Depths are in centimetres; leave a lab value blank if unmeasured."),
+          shiny::helpText(i18n("pedon.help_table")),
           # Where the horizons came from, with the licence and the citation the
           # provider asks for. Shown whenever WoSIS data is in the editor: the
           # ISRIC data policy requires web services to reference the provider.
@@ -377,7 +371,7 @@ pedon_ui <- function(id) {
                        shiny::selectInput(ns("plot_attr"), NULL,
                                           choices = pro_numeric_attrs(),
                                           selected = "clay_pct", width = "180px"),
-                       "Choose which lab attribute to plot against depth."))
+                       i18n("pedon.tip_plot_attr")))
         ),
         bslib::card_body(plotly::plotlyOutput(ns("profile"), height = "320px"))
       )
@@ -481,7 +475,7 @@ pedon_server <- function(id, rv) {
       if (inherits(parsed, "error") || is.null(parsed$horizons) ||
           NROW(parsed$horizons) == 0L) {
         msg <- if (inherits(parsed, "error")) conditionMessage(parsed)
-               else "no horizons found in file"
+               else i18n("pedon.no_horizons_in_file")
         shiny::showNotification(i18n("pedon.session_load_failed", msg),
                                 type = "error", duration = 8)
         return(invisible())
@@ -712,7 +706,7 @@ pedon_server <- function(id, rv) {
       shiny::validate(shiny::need(nrow(h) > 0L, i18n("pedon.wosis_unavailable")))
       # licence and dataset are shown, not hidden: CC BY requires attribution,
       # and the user should see what they are taking before they take it.
-      DT::datatable(
+      sk_datatable(
         h[, c("profile_code", "country", "wrb_rsg", "usda_order",
               "n_layers", "depth_cm", "dataset", "licence_short")],
         colnames = c(i18n("pedon.wosis_col_profile"), i18n("pedon.wosis_col_country"),
@@ -752,7 +746,7 @@ pedon_server <- function(id, rv) {
       hz_reload()                          # re-render only on load / add
       df <- shiny::isolate(hz())
       if (is.null(df)) df <- .pedon_blank_template()[0, , drop = FALSE]
-      DT::datatable(
+      sk_datatable(
         df,
         editable  = list(target = "cell"),
         rownames  = FALSE,

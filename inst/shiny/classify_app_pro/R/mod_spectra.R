@@ -2,10 +2,64 @@
 # soilKey Pro -- Spectra / OSSL gap-fill module (v0.9.97).
 #
 # Attach a Vis-NIR spectrum (rows = horizons, columns = wavelengths) to the
-# pedon, then gap-fill missing horizon attributes against the Open Soil
-# Spectral Library. Filled values enter the provenance ledger tagged
-# "predicted_spectra".
+# pedon and treat it (absorbance, Savitzky-Golay). Gap-filling missing horizon
+# attributes from it needs a reference library of the Open Soil Spectral
+# Library: without one, fill_from_spectra() writes placeholder values, not
+# predictions. None ships with soilKey, so unless the deployment configures one
+# (options(soilKey.ossl_library =, soilKey.ossl_models =)) the gap-fill step is
+# shown switched off, with the reason (v0.9.210). Until then the button ran and
+# wrote the placeholders into the profile, warning only afterwards.
 # =============================================================================
+
+# A real reference library for spectral gap-fill, if the deployment configured
+# one: list(Xr, Yr) for memory-based learning and local PLSR, a list of models
+# for the pretrained path. None ships with soilKey, and the public OSSL subsets
+# download_ossl_subset() fetched answer HTTP 404 (checked 2026-10-07).
+.spectra_methods_available <- function() {
+  lib <- getOption("soilKey.ossl_library")
+  mod <- getOption("soilKey.ossl_models")
+  c(if (is.list(lib) && !is.null(lib$Xr) && !is.null(lib$Yr)) c("mbl", "plsr_local"),
+    if (is.list(mod) && length(mod)) "pretrained")
+}
+.spectra_gapfill_available <- function() length(.spectra_methods_available()) > 0L
+
+# Step 2 of the sidebar: the gap-fill controls, or why there are none.
+.spectra_gapfill_section <- function(ns) {
+  methods <- .spectra_methods_available()
+  if (!length(methods))
+    return(sk_section(
+      i18n("spectra.step2_gapfill"), icon = "wand-magic-sparkles",
+      desc = i18n("spectra.desc_gapfill"),
+      shiny::div(class = "alert alert-secondary small mb-0",
+                 shiny::icon("circle-info"), " ", i18n("spectra.gapfill_unavailable"))))
+  labels <- c(mbl = i18n("spectra.method_mbl"),
+              plsr_local = i18n("spectra.method_plsr_local"),
+              pretrained = i18n("spectra.method_pretrained"))
+  sk_section(
+    i18n("spectra.step2_gapfill"),
+    icon = "wand-magic-sparkles",
+    desc = i18n("spectra.desc_gapfill"),
+    shiny::selectInput(
+      ns("method"),
+      sk_label(i18n("spectra.prediction_method"), i18n("spectra.help_method")),
+      choices = stats::setNames(methods, unname(labels[methods])),
+      selected = methods[1]),
+    shiny::selectInput(
+      ns("region"),
+      sk_label(i18n("spectra.ossl_region"), i18n("spectra.help_region")),
+      choices = c("global", "south_america",
+                  "north_america", "europe", "africa"),
+      selected = "global"),
+    shiny::checkboxInput(
+      ns("overwrite"),
+      sk_label(i18n("spectra.overwrite_existing"), i18n("spectra.help_overwrite")),
+      value = FALSE),
+    bslib::tooltip(
+      shiny::actionButton(ns("fill"), i18n("spectra.gapfill_from_spectra"),
+                          icon = shiny::icon("wand-magic-sparkles"),
+                          class = "btn-primary w-100"),
+      i18n("spectra.tip_fill")))
+}
 
 spectra_ui <- function(id) {
   ns <- shiny::NS(id)
@@ -15,11 +69,11 @@ spectra_ui <- function(id) {
       sk_section(
         i18n("spectra.step1_attach"),
         icon = "wave-square",
-        desc = "Upload a Vis-NIR reflectance CSV and attach it to the current pedon.",
+        desc = i18n("spectra.desc_attach"),
         shiny::fileInput(
           ns("vnir_csv"),
           sk_label(i18n("spectra.vnir_csv_label"),
-                   "CSV of reflectance: one row per horizon, columns are wavelengths (nm). Row order must match the pedon's horizons."),
+                   i18n("spectra.help_csv")),
           accept = c(".csv")),
         shiny::helpText(
           i18n("spectra.help_one_row")
@@ -28,29 +82,29 @@ spectra_ui <- function(id) {
           shiny::actionButton(ns("attach"), i18n("spectra.attach_to_pedon"),
                               icon = shiny::icon("paperclip"),
                               class = "btn-secondary w-100"),
-          "Attach the uploaded spectra matrix to the pedon so it can be used for prediction."),
+          i18n("spectra.tip_attach")),
         shiny::div(
           class = "mt-2 small",
           bslib::tooltip(
             shiny::actionLink(ns("demo_spectrum"), i18n("spectra.use_demo"),
                               icon = shiny::icon("wand-magic-sparkles")),
-            "Attaches a bundled Vis-NIR demo spectrum (5 horizons -- matches the example Ferralsol)."))
+            i18n("spectra.tip_demo")))
       ),
       shiny::tags$hr(),
       # ---- spectral preprocessing (live preview; saved for the report) -----
       sk_section(
         i18n("spectra.step_preproc"),
         icon = "sliders",
-        desc = "Treat the spectrum: absorbance, then Savitzky-Golay smoothing / derivative. It re-plots as you tick, and the sequence is saved for the report.",
+        desc = i18n("spectra.desc_preproc"),
         shiny::checkboxInput(
           ns("pp_absorbance"),
           sk_label(i18n("spectra.pp_absorbance"),
-                   "Convert reflectance R to absorbance A = log10(1/R) (auto-scales % to a 0-1 fraction)."),
+                   i18n("spectra.help_absorbance")),
           value = FALSE),
         shiny::checkboxInput(
           ns("pp_smooth"),
           sk_label(i18n("spectra.pp_smooth"),
-                   "Savitzky-Golay smoothing, applied before any derivative."),
+                   i18n("spectra.help_smooth")),
           value = FALSE),
         shiny::radioButtons(
           ns("pp_deriv"), i18n("spectra.pp_derivative"),
@@ -66,49 +120,15 @@ spectra_ui <- function(id) {
             shiny::numericInput(
               ns("pp_window"),
               sk_label(i18n("spectra.pp_window"),
-                       "Savitzky-Golay window (odd, >= poly + 2). Wider = smoother."),
+                       i18n("spectra.help_window")),
               value = 11, min = 5, max = 51, step = 2),
             shiny::numericInput(
               ns("pp_poly"),
-              sk_label(i18n("spectra.pp_poly"), "Savitzky-Golay polynomial order."),
+              sk_label(i18n("spectra.pp_poly"), i18n("spectra.help_poly")),
               value = 2, min = 1, max = 5, step = 1)))
       ),
       shiny::tags$hr(),
-      sk_section(
-        i18n("spectra.step2_gapfill"),
-        icon = "wand-magic-sparkles",
-        desc = "Predict missing horizon attributes from the attached spectra via OSSL.",
-        shiny::selectInput(
-          ns("method"),
-          sk_label(i18n("spectra.prediction_method"),
-                   "How predictions are made: memory-based learning, a local PLSR fit, or a pretrained OSSL model."),
-          choices = stats::setNames(
-            c("mbl", "plsr_local", "pretrained"),
-            c(i18n("spectra.method_mbl"),
-              i18n("spectra.method_plsr_local"),
-              i18n("spectra.method_pretrained"))),
-          selected = "mbl"),
-        shiny::selectInput(
-          ns("region"),
-          sk_label(i18n("spectra.ossl_region"),
-                   "OSSL subset used as reference. A region closer to your samples usually predicts better than global."),
-          choices = c("global", "south_america",
-                      "north_america", "europe", "africa"),
-          selected = "global"),
-        shiny::checkboxInput(
-          ns("overwrite"),
-          sk_label(i18n("spectra.overwrite_existing"),
-                   "If ticked, spectral predictions replace measured values; otherwise only empty attributes are filled."),
-          value = FALSE),
-        bslib::tooltip(
-          shiny::actionButton(ns("fill"), i18n("spectra.gapfill_from_spectra"),
-                              icon = shiny::icon("wand-magic-sparkles"),
-                              class = "btn-primary w-100"),
-          "Run the OSSL spectral engine and fill missing attributes; filled values are tagged predicted_spectra in the provenance ledger."),
-        shiny::helpText(
-          i18n("spectra.help_first_use")
-        )
-      )
+      .spectra_gapfill_section(ns)
     ),
     # v0.9.173: the result cards are STATIC (not inside a renderUI). Nesting the
     # plotly spectrum plot inside output$body (a renderUI depending on rv$pedon)
@@ -219,6 +239,11 @@ spectra_server <- function(id, rv) {
       if (is.null(rv$pedon$spectra) || is.null(rv$pedon$spectra$vnir)) {
         shiny::showNotification(i18n("spectra.attach_spectrum_first"),
                                 type = "warning")
+        return(invisible())
+      }
+      if (!.spectra_gapfill_available()) {
+        shiny::showNotification(i18n("spectra.gapfill_unavailable"), type = "warning",
+                                duration = 12)
         return(invisible())
       }
       shiny::withProgress(message = i18n("spectra.predicting_progress"), value = 0.4, {
@@ -357,7 +382,7 @@ spectra_server <- function(id, rv) {
       cols <- intersect(c("designation", "clay_pct", "sand_pct", "silt_pct",
                           "cec_cmol", "bs_pct", "ph_h2o", "oc_pct"),
                         names(h))
-      DT::datatable(.sk_round2(h[, cols, drop = FALSE]), rownames = FALSE,
+      sk_datatable(.sk_round2(h[, cols, drop = FALSE]), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 12, scrollX = TRUE))
     })
   })
