@@ -34,7 +34,7 @@ which are a published physical standard.
 |---|---|---|
 | Parsed WRB 2022 and *Keys to Soil Taxonomy* 13th-edition criteria (`WRB_4th_2022`, `ST_criteria_13th`, `ST_features`) | the [`SoilTaxonomy`](https://github.com/ncss-tech/SoilTaxonomy) R package, NCSS-tech, **GPL-3** | read from the installed package (a Suggests) by `canonical_reference()` |
 | KST 13th-edition codes and criteria (`2022_KST_codes.json`, `2022_KST_criteria_EN.json`) | [`SoilKnowledgeBase`](https://github.com/ncss-tech/SoilKnowledgeBase), NCSS-tech, **GPL-3** | downloaded on first use by `kst13_codes()` and `coverage_report()`, pinned to commit `9e78a75`, checked by MD5, cached in `tools::R_user_dir("soilKey", "cache")` |
-| WoSIS soil profiles | ISRIC — World Soil Information, licensed **per profile** by each provider (CC BY, CC BY-NC or public domain) | queried live by `read_wosis_profiles_graphql()`, which by default lists only profiles free of a NonCommercial restriction and carries each profile's licence and dataset into the pedon |
+| WoSIS soil profiles | ISRIC — World Soil Information, licensed **per profile** by each provider (CC BY, CC BY-NC or public domain) | queried live: `read_wosis_profiles_graphql()` lists profiles (by default only those free of a NonCommercial restriction) and `read_wosis_layers_graphql()` reads one profile's layers, in pages, without storing them. Each pedon carries the profile's licence, dataset, the date it was read and the citation ISRIC asks for (`wosis_citation()`); the app and the reports display them |
 
 ## Where the benchmark data comes from, and how to get it
 

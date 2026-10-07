@@ -73,12 +73,12 @@ test_that("a pedon built from a profile row carries licence and attribution", {
     dataset = "AR-SOTER",
     licence = "Attribution 3.0 International (CC BY 3.0), https://creativecommons.org/licenses/by/3.0/",
     licence_short = "CC BY 3.0", stringsAsFactors = FALSE)
-  p <- wosis_profile_to_pedon(row)
+  p <- wosis_profile_to_pedon(row, fetch_layers = FALSE)   # site only, no network
   expect_s3_class(p, "PedonRecord")
   expect_identical(p$site$id, "AR SC.P7")
   expect_identical(p$site$dataset, "AR-SOTER")
   expect_match(p$site$licence, "CC BY 3.0", fixed = TRUE)
-  expect_match(p$site$attribution, "ISRIC WoSIS", fixed = TRUE)
+  expect_match(p$site$attribution, "WoSIS", fixed = TRUE)
   expect_match(p$site$attribution, "AR-SOTER", fixed = TRUE)
 })
 

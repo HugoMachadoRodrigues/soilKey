@@ -465,6 +465,11 @@ report <- function(x,
   if (!is.null(s$elevation_m))      bits[[.report_msg("report.site_elevation")]] <- s$elevation_m
   if (!is.null(s$slope_pct))        bits[[.report_msg("report.site_slope")]]    <- s$slope_pct
   if (!is.null(s$date))             bits[[.report_msg("report.site_date")]]         <- s$date
+  # Data obtained from a provider (WoSIS) keeps its attribution and citation in
+  # the report: the ISRIC data policy requires reports that use the data to
+  # reference the provider.
+  if (!is.null(s$attribution))      bits[[.report_msg("report.site_source")]]   <- s$attribution
+  if (!is.null(s$citation))         bits[[.report_msg("report.site_citation")]] <- s$citation
   if (length(bits) == 0) return("")
   rows <- vapply(seq_along(bits), function(i)
     sprintf("<tr><th>%s</th><td>%s</td></tr>",

@@ -500,7 +500,9 @@ reference:
     contents:
       - load_wosis_stratified_sample
       - read_wosis_profiles_graphql
+      - read_wosis_layers_graphql
       - wosis_profile_to_pedon
+      - wosis_citation
 
   - title: "USDA Soil Taxonomy <-> WRB cross-walk (v0.9.74)"
     desc: >

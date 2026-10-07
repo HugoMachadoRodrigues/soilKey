@@ -341,6 +341,9 @@ report_pdf <- function(x,
   if (!is.null(s$elevation_m))     bits[[.report_msg("report.elevation_m")]]     <- s$elevation_m
   if (!is.null(s$slope_pct))       bits[[.report_msg("report.slope_pct")]]       <- s$slope_pct
   if (!is.null(s$date))            bits[[.report_msg("report.date")]]            <- s$date
+  # Keep the provider attribution and citation (ISRIC data policy).
+  if (!is.null(s$attribution))     bits[[.report_msg("report.site_source")]]     <- s$attribution
+  if (!is.null(s$citation))        bits[[.report_msg("report.site_citation")]]   <- s$citation
   if (length(bits) == 0) return("")
   rows <- vapply(seq_along(bits), function(i)
     sprintf("| %s | %s |", names(bits)[i], bits[[i]]),
