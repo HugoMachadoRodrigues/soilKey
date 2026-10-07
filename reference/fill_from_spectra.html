@@ -19,7 +19,7 @@ so that downstream classification can derive an evidence grade."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.209</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,8 +87,8 @@ so that downstream classification can derive an evidence grade.</p>
 <span>  preprocess <span class="op">=</span> <span class="st">"snv+sg1"</span>,</span>
 <span>  k_neighbors <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  ossl_library <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ossl_models <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ossl_library <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"soilKey.ossl_library"</span><span class="op">)</span>,</span>
+<span>  ossl_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"soilKey.ossl_models"</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -140,12 +140,17 @@ existing provenance is weaker than <code>predicted_spectra</code>.</p></dd>
 
 <dt id="arg-ossl-library">ossl_library<a class="anchor" aria-label="anchor" href="#arg-ossl-library"></a></dt>
 <dd><p>Optional OSSL library object (see
-<code><a href="predict_ossl_mbl.html">predict_ossl_mbl</a></code>).</p></dd>
+<code><a href="predict_ossl_mbl.html">predict_ossl_mbl</a></code>). Defaults to
+<code>getOption("soilKey.ossl_library")</code>, so a library set once
+reaches every call, including gap-fill from
+<code><a href="classify_all.html">classify_all</a>(gapfill = list(method = "spectra"))</code>.
+Without one the predictions are synthetic placeholders.</p></dd>
 
 
 <dt id="arg-ossl-models">ossl_models<a class="anchor" aria-label="anchor" href="#arg-ossl-models"></a></dt>
 <dd><p>Optional named list of pretrained models (see
-<code><a href="predict_ossl_pretrained.html">predict_ossl_pretrained</a></code>).</p></dd>
+<code><a href="predict_ossl_pretrained.html">predict_ossl_pretrained</a></code>). Defaults to
+<code>getOption("soilKey.ossl_models")</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

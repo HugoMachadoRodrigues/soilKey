@@ -1,5 +1,80 @@
 # Changelog
 
+## soilKey 0.9.211 (2026-10-07)
+
+### In the Pro app, Settings belong to the visitor who chose them
+
+- The Settings tab wrote the diagnostic engine and Tier-3 strict mode
+  with [`options()`](https://rdrr.io/r/base/options.html), and R options
+  are per process. On the hosted app, where one R process serves several
+  visitors, switching the engine to “aqp” or turning strict mode on
+  changed the classifications every other visitor on that server got,
+  with nothing on their screen to say so. A profile with about 18 cmolc
+  of CEC per kg clay, for instance, is a Ferralsol under one engine and
+  a Nitisol under the other.
+- Both settings now live in the session and are applied around each
+  classification that session runs: in the background workers (with the
+  job’s other options) and in the Shiny process (the Assistant’s
+  context, the HTML and PDF reports, the Map’s multi-profile report),
+  restored afterwards. The process options remain the default for
+  sessions that have not chosen.
+- Same fix as the interface language in 0.9.210.
+
+## soilKey 0.9.210 (2026-10-07)
+
+### What a visitor of the Pro app saw wrong
+
+- **The language was shared by everyone on a server.** The EN/PT
+  selector set a process-wide option, so on the hosted app one visitor’s
+  choice became every other visitor’s language at their next page load.
+  The language is now per session: the page asks for it in its URL
+  (`?lang=pt`, which the selector sets), and the app default
+  (`run_classify_app(lang=)`) applies otherwise.
+- **Much of the Portuguese interface was English.** About 150 help texts
+  (field explanations, button tips, section descriptions, the Thanks
+  tab’s contributions), the table controls (“Search”, “Showing 1 to 10
+  of 25”, “Previous”, “Next”) and the support e-mail template now come
+  from the catalogue in both languages. A test walks the tabs’ code and
+  fails on any help text written as an English literal.
+- **Buttons that changed tab did nothing in Portuguese.** “Load example”
+  and the welcome tour selected tabs by their title (“Pedon”,
+  “Classify”), which is translated. Tabs now have fixed values.
+- **“Download PDF” handed over an HTML file.** The web build has no
+  LaTeX. The PDF button now appears only where `report(format = "pdf")`
+  can work; the HTML report carries a Print / Save as PDF button (left
+  off the printed page), keeps its badge colours in print, prints on A4,
+  and declares its language in `<html lang>`.
+- **The report downloads sat in a sidebar that is often collapsed**,
+  where their links were not even bound. They are now in the body of the
+  Report tab.
+- **The Map opens on live SoilGrids, and reading it no longer freezes
+  the server.** The overlay and the prediction grid are read in a
+  background worker (like the other slow handlers since 0.9.209), the
+  map shows a note while it loads, and a cached overlay is redrawn
+  instead of re-read when only the profile changes. The overlay credits
+  its source in the map’s corner, as CC BY 4.0 requires: SoilGrids 2.0,
+  ISRIC; the offline raster is labelled as a synthetic demo, not
+  SoilGrids.
+- **The live overlay had never drawn on a current terra.** Recoding the
+  categorical SoilGrids raster called `terra::levels(x) <- NULL`, which
+  goes to `terra::levels<-`, a function terra does not export. Every
+  live read failed and the map fell back to the demo raster without
+  saying so. It now uses the base `levels<-` generic, which dispatches
+  to terra.
+- **Spectral gap-fill wrote placeholder values into the profile.** No
+  Open Soil Spectral Library reference ships with soilKey, and the
+  public OSSL subsets
+  [`download_ossl_subset()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_ossl_subset.md)
+  fetched now answer HTTP 404, so the Spectra tab’s gap-fill and
+  Classify’s “Attached Vis-NIR spectra” option produced invented values
+  (warning only afterwards) that a classification could then use. Both
+  are now off unless a real library is configured, and the Spectra tab
+  says why; the spectral treatment still works.
+  [`fill_from_spectra()`](https://hugomachadorodrigues.github.io/soilKey/reference/fill_from_spectra.md)
+  takes its library from
+  `options(soilKey.ossl_library =, soilKey.ossl_models =)` when none is
+  passed, so one setting reaches every path.
+
 ## soilKey 0.9.209 (2026-10-07)
 
 ### In the Pro app, one user’s long computation no longer freezes everyone else

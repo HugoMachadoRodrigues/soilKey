@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.209</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,37 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.211" id="soilkey-09211-2026-10-07">soilKey 0.9.211 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09211-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="in-the-pro-app-settings-belong-to-the-visitor-who-chose-them-0-9-211">In the Pro app, Settings belong to the visitor who chose them<a class="anchor" aria-label="anchor" href="#in-the-pro-app-settings-belong-to-the-visitor-who-chose-them-0-9-211"></a></h3>
+<ul><li>The Settings tab wrote the diagnostic engine and Tier-3 strict mode with <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>, and R options are per process. On the hosted app, where one R process serves several visitors, switching the engine to “aqp” or turning strict mode on changed the classifications every other visitor on that server got, with nothing on their screen to say so. A profile with about 18 cmolc of CEC per kg clay, for instance, is a Ferralsol under one engine and a Nitisol under the other.</li>
+<li>Both settings now live in the session and are applied around each classification that session runs: in the background workers (with the job’s other options) and in the Shiny process (the Assistant’s context, the HTML and PDF reports, the Map’s multi-profile report), restored afterwards. The process options remain the default for sessions that have not chosen.</li>
+<li>Same fix as the interface language in 0.9.210.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.210" id="soilkey-09210-2026-10-07">soilKey 0.9.210 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09210-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="what-a-visitor-of-the-pro-app-saw-wrong-0-9-210">What a visitor of the Pro app saw wrong<a class="anchor" aria-label="anchor" href="#what-a-visitor-of-the-pro-app-saw-wrong-0-9-210"></a></h3>
+<ul><li>
+<strong>The language was shared by everyone on a server.</strong> The EN/PT selector set a process-wide option, so on the hosted app one visitor’s choice became every other visitor’s language at their next page load. The language is now per session: the page asks for it in its URL (<code>?lang=pt</code>, which the selector sets), and the app default (<code>run_classify_app(lang=)</code>) applies otherwise.</li>
+<li>
+<strong>Much of the Portuguese interface was English.</strong> About 150 help texts (field explanations, button tips, section descriptions, the Thanks tab’s contributions), the table controls (“Search”, “Showing 1 to 10 of 25”, “Previous”, “Next”) and the support e-mail template now come from the catalogue in both languages. A test walks the tabs’ code and fails on any help text written as an English literal.</li>
+<li>
+<strong>Buttons that changed tab did nothing in Portuguese.</strong> “Load example” and the welcome tour selected tabs by their title (“Pedon”, “Classify”), which is translated. Tabs now have fixed values.</li>
+<li>
+<strong>“Download PDF” handed over an HTML file.</strong> The web build has no LaTeX. The PDF button now appears only where <code>report(format = "pdf")</code> can work; the HTML report carries a Print / Save as PDF button (left off the printed page), keeps its badge colours in print, prints on A4, and declares its language in <code>&lt;html lang&gt;</code>.</li>
+<li>
+<strong>The report downloads sat in a sidebar that is often collapsed</strong>, where their links were not even bound. They are now in the body of the Report tab.</li>
+<li>
+<strong>The Map opens on live SoilGrids, and reading it no longer freezes the server.</strong> The overlay and the prediction grid are read in a background worker (like the other slow handlers since 0.9.209), the map shows a note while it loads, and a cached overlay is redrawn instead of re-read when only the profile changes. The overlay credits its source in the map’s corner, as CC BY 4.0 requires: SoilGrids 2.0, ISRIC; the offline raster is labelled as a synthetic demo, not SoilGrids.</li>
+<li>
+<strong>The live overlay had never drawn on a current terra.</strong> Recoding the categorical SoilGrids raster called <code>terra::levels(x) &lt;- NULL</code>, which goes to <code>terra::levels&lt;-</code>, a function terra does not export. Every live read failed and the map fell back to the demo raster without saying so. It now uses the base <code>levels&lt;-</code> generic, which dispatches to terra.</li>
+<li>
+<strong>Spectral gap-fill wrote placeholder values into the profile.</strong> No Open Soil Spectral Library reference ships with soilKey, and the public OSSL subsets <code><a href="../reference/download_ossl_subset.html">download_ossl_subset()</a></code> fetched now answer HTTP 404, so the Spectra tab’s gap-fill and Classify’s “Attached Vis-NIR spectra” option produced invented values (warning only afterwards) that a classification could then use. Both are now off unless a real library is configured, and the Spectra tab says why; the spectral treatment still works. <code><a href="../reference/fill_from_spectra.html">fill_from_spectra()</a></code> takes its library from <code>options(soilKey.ossl_library =, soilKey.ossl_models =)</code> when none is passed, so one setting reaches every path.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.209" id="soilkey-09209-2026-10-07">soilKey 0.9.209 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09209-2026-10-07"></a></h2>
 <div class="section level3">

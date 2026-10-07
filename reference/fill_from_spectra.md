@@ -23,8 +23,8 @@ fill_from_spectra(
   preprocess = "snv+sg1",
   k_neighbors = 100L,
   overwrite = FALSE,
-  ossl_library = NULL,
-  ossl_models = NULL,
+  ossl_library = getOption("soilKey.ossl_library"),
+  ossl_models = getOption("soilKey.ossl_models"),
   verbose = TRUE
 )
 ```
@@ -74,11 +74,16 @@ fill_from_spectra(
 
   Optional OSSL library object (see
   [`predict_ossl_mbl`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_mbl.md)).
+  Defaults to `getOption("soilKey.ossl_library")`, so a library set once
+  reaches every call, including gap-fill from
+  [`classify_all`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)`(gapfill = list(method = "spectra"))`.
+  Without one the predictions are synthetic placeholders.
 
 - ossl_models:
 
   Optional named list of pretrained models (see
   [`predict_ossl_pretrained`](https://hugomachadorodrigues.github.io/soilKey/reference/predict_ossl_pretrained.md)).
+  Defaults to `getOption("soilKey.ossl_models")`.
 
 - verbose:
 
