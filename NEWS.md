@@ -1,3 +1,51 @@
+# soilKey 0.9.207 (2026-10-07)
+
+## The Photo tab and the Assistant work again, and the Assistant sticks to the evidence
+
+* **Groq retired the models both features used.** `qwen/qwen3.6-27b` (Photo)
+  and `llama-3.3-70b-versatile` (Assistant) were withdrawn, so the Photo tab
+  failed with HTTP 404 and every Assistant reply fell back to the built-in
+  summary, while its status still read "connected". It is the second time a
+  fixed model name broke the app (Groq retired Llama 4 Scout in August). The
+  model is now chosen when it is needed, from Groq's own list of what the key
+  can use (`GET /models`, which costs no tokens, read at most once an hour), by
+  an order of preference in which a newer version of the same model wins. If a
+  model is retired within that hour, the list is read again and the call is
+  retried once on another model. `options(soilKey.groq_vision_model=,
+  soilKey.groq_text_model=)` and `$GROQ_VISION_MODEL` / `$GROQ_TEXT_MODEL` still
+  pick a model, as long as Groq still offers it. The status names the model in
+  use, or says that none is available.
+* **The Assistant explained classifications it was never shown.** It was given
+  the three class names and a list of horizon depths. Asked why a profile was a
+  Ferralsol and not an Acrisol, the models invented redoximorphic features the
+  profile did not have and "higher-activity clays" for Acrisols. The answer was
+  in the key: Ferralsols come before Acrisols, so Acrisols are never tested. The
+  model now receives what the keys used: every horizon with labelled values
+  (unlabelled table columns were misread, Al saturation taken for base
+  saturation); for each of the three systems, the classes tested in key order
+  with their outcome, the criteria behind the class assigned with the
+  horizons, values and limits they were met with, and the classes after it,
+  never tested; the candidates at the lower levels; and each WRB qualifier in
+  the name with the rule soilKey applied (Eutric in WRB 2022 compares
+  exchangeable bases with exchangeable Al; it is not base saturation at pH 7).
+  The instructions now forbid thresholds or rules that are not in that evidence
+  and ask the model to say so, with the reference, when the answer is not
+  there. The site record (parent material, country, source) is passed on, and
+  with no profile loaded the model says to load one.
+* **Qwen answers; gpt-oss stands in.** The same grounded questions went to both
+  models Groq offers. Qwen 3.8 kept to the evidence. gpt-oss-120b twice placed
+  Alisols after Luvisols in the WRB key (they come before, and the trace said
+  so) and made up SiBCS rules. Both answer at temperature 0.2.
+* **Groq's free tier allows about one question a minute per model** (Qwen:
+  7,000 input and 1,000 output tokens a minute; a question with its evidence is
+  about 3,600). The Assistant no longer waits out the limit, which held the R
+  process and every session on it for up to a minute: the next model in line
+  answers at once, with the conversation so far, and the reply says which model
+  answered. When all are at their limit, it says to try again in a minute.
+* Verified live against Groq on 2026-10-07: a Photo extraction in 2.7 seconds;
+  in the app, the Ferralsol, Distrófico and Oxisol questions answered from the
+  evidence, the third by gpt-oss-120b after Qwen reached its limit.
+
 # soilKey 0.9.206 (2026-10-06)
 
 ## The WoSIS picker works, and stays within ISRIC's terms
