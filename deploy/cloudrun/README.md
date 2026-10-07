@@ -25,9 +25,11 @@ gcloud builds submit --config deploy/cloudrun/cloudbuild.yaml \
 
 ## 2. Deploy to Cloud Run
 
-Single always-on instance so Shiny sessions never migrate (no session
-affinity needed) and there is no cold start; CPU always allocated so the
-websocket/reactives stay live between requests.
+Request-based billing, scaling to zero. CPU is allocated only while a request is
+being served, which keeps an academic-traffic app inside the Cloud Run free
+tier. Verified on 0.9.204/0.9.205: a Shiny session left idle for over a minute
+stays connected and reactive, and a cold start (instance start to `Listening`)
+takes about 5 seconds.
 
 ```sh
 gcloud run deploy soilkeypro \
@@ -35,37 +37,30 @@ gcloud run deploy soilkeypro \
   --region us-east1 --project soilkeypro \
   --allow-unauthenticated \
   --port 8080 --cpu 1 --memory 2Gi \
-  --min-instances 1 --max-instances 1 --no-cpu-throttling \
+  --cpu-throttling --min-instances 0 --max-instances 1 \
   --concurrency 40 --timeout 3600
 ```
 
-`gcloud run services describe soilkeypro --region us-east1 --format='value(status.url)'`
-gives the live `https://soilkeypro-*.run.app` URL to smoke-test first.
+## 3. Spending cap
 
-## 3. Custom domain (soilkeypro.com) + managed TLS
-
-DNS is at Cloudflare. Cloud Run needs the domain verified once (Search Console
-TXT), then maps it and issues a Google-managed certificate.
-
-```sh
-gcloud beta run domain-mappings create --service soilkeypro \
-  --domain soilkeypro.com --region us-east1 --project soilkeypro
-gcloud beta run domain-mappings create --service soilkeypro \
-  --domain www.soilkeypro.com --region us-east1 --project soilkeypro
-```
-
-Add the A/AAAA records it prints in the Cloudflare DNS for `soilkeypro.com`,
-**DNS only (grey cloud)** so Google can issue the cert. Check status:
+`budget-cap/install.sh <BILLING_ACCOUNT_ID>` installs a US$1 monthly budget
+whose notifications reach a small Cloud Run function. When the month's spend
+reaches the budget, the function removes public access from the service: the
+site answers 403, compute stops, and nothing is deleted. It never disables
+billing, which Google documents can delete resources. The installer ends with an
+end-to-end test that simulates a US$2 month, checks for the 403, and restores
+the site. Restore by hand with:
 
 ```sh
-gcloud beta run domain-mappings describe --domain soilkeypro.com \
-  --region us-east1 --project soilkeypro
+gcloud run services add-iam-policy-binding soilkeypro --region us-east1 \
+  --member=allUsers --role=roles/run.invoker
 ```
 
 ## Cost / scaling knobs
 
-Always-on 1 vCPU / 2 GiB with CPU always allocated ≈ US$8-15/mo. To cut cost,
-drop `--no-cpu-throttling` and set `--min-instances 0` (adds a cold start of
-~20-40 s on the first hit). To serve more concurrent users, raise
-`--max-instances` **and** add `--session-affinity`. Bump `--memory` if the app
-OOMs (`gcloud run services logs read soilkeypro --region us-east1`).
+The configuration above stays within the free tier for light academic use. The
+earlier always-on setup (`--min-instances 1 --no-cpu-throttling`) cost about
+US$8-15 a month and is not needed: request-based billing was tested and keeps
+sessions working. To serve more concurrent users, raise `--max-instances` **and**
+add `--session-affinity`. Bump `--memory` if the app runs out of memory
+(`gcloud run services logs read soilkeypro --region us-east1`).

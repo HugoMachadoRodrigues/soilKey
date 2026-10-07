@@ -69,7 +69,11 @@ sk_theme <- bslib::bs_theme(
 
 ui <- function(request) {
   bslib::page_navbar(
-    title  = tags$span(class = "navbar-brand-inner",
+    # The brand is a link back to the first tab: people expect a logo to take
+    # them home, and this app had no way back other than the tab strip.
+    title  = tags$a(href = "#", id = "sk_brand_home",
+                    class = "navbar-brand-inner sk-brand-home",
+                    `aria-label` = i18n("app.brand_home"),
                        tags$img(src = "logo.png", class = "sk-logo",
                                 alt = "soilKey", height = "34"),
                        # one wordmark node built as a single HTML string so
@@ -148,7 +152,12 @@ ui <- function(request) {
           "document.addEventListener('click',function(e){",
           "if(e.target.closest('#sk_assistant_fab')){open();}",
           "else if(e.target.closest('#sk_assistant_close')||e.target.closest('#sk_assistant_backdrop')){close();}});",
-          "document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});});")))
+          "document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});});",
+          # clicking the brand returns to the first tab (Pedon) and scrolls up
+          "document.addEventListener('click',function(e){",
+          "if(!e.target.closest('#sk_brand_home'))return;e.preventDefault();",
+          "var t=document.querySelector('.navbar .navbar-nav a.nav-link[data-bs-toggle]');",
+          "if(t)t.click();window.scrollTo({top:0,behavior:'smooth'});});")))
       ),
       uiOutput("pedon_ribbon"),
       # ---- the Assistant: a floating button + a right-side slide-out drawer,
