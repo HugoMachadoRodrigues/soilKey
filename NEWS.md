@@ -35,10 +35,15 @@ reply from the Assistant several seconds.
   cards came back empty. The failure is now read from those warnings: a system
   lost to gap-fill is classified again without it, and the notification gives
   the reason.
+* **At Groq's per-minute limit the Assistant asks the user to wait a minute.**
+  Since v0.9.207 another model, gpt-oss-120b, answered whenever Qwen was at its
+  limit, with a note saying so. In live use it got the SiBCS rules wrong where
+  Qwen had them right (it called Distrófico "a ferralic horizon without clay
+  increase"), so a wrong answer is no longer offered as a stand-in for a right
+  one. gpt-oss is still used if Groq offers no Qwen model at all.
 * **Groq calls fail fast.** The app sets `options(ellmer_max_tries = 1)`.
   ellmer otherwise waits out Groq's `Retry-After`, up to a minute, before
-  trying again; the Assistant now hands the question to the next model at once,
-  and a Photo extraction at the limit says so instead of holding the process.
+  trying again, and a synchronous call (Photo) held the process meanwhile.
 * Still synchronous, each taking a few seconds: Photo extraction, the WoSIS
   search and profile load, the PDF report, and the Map's SoilGrids overlay and
   prediction grid.

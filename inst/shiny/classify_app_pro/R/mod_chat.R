@@ -47,8 +47,8 @@
 # (seconds per reply, every other session on the instance waited). A promise of
 # the reply text or of the error, resolved either way so the caller decides.
 # Calls fail fast at Groq's limits: app.R sets options(ellmer_max_tries = 1),
-# or ellmer would wait out Groq's Retry-After and try again, when another model
-# can answer at once.
+# or ellmer would wait out Groq's Retry-After and try again; the user is told
+# to try again in a minute instead.
 .chat_ask_async <- function(chat, msg) {
   p <- tryCatch(chat$chat_async(msg),
                 error = function(e) promises::promise_resolve(e))
@@ -406,39 +406,19 @@
        results  = res)
 }
 
-# When the model is at its per-minute limit, the next models in line answer,
-# each with its own allowance and the conversation so far, and the answer joins
-# the main chat's history. `b` is the backend (chat, model, key). A promise of
-# list(reply, note, backend): reply is the text, "rate_limited" when every model
-# tried is at its limit, or an error condition for any other failure.
-.chat_past_limits_async <- function(r, b, msg, system_prompt,
-                                    tried = b$model, max_alternates = 2L) {
-  done <- function(reply, note = NULL)
-    promises::promise_resolve(list(reply = reply, note = note, backend = b))
-  if (!(inherits(r, "error") && .groq_rate_limited(r)) || is.null(b$chat))
-    return(done(r))
-  alt <- if (length(tried) <= max_alternates)
-    .groq_model("text", b$key, exclude = tried) else NA_character_
-  if (is.na(alt)) return(done("rate_limited"))
-  tried <- c(tried, alt)
-  alt_chat <- .chat_make_groq(b$key, alt, system_prompt)
-  if (is.null(alt_chat))
-    return(.chat_past_limits_async(r, b, msg, system_prompt, tried, max_alternates))
-  alt_chat$set_turns(b$chat$get_turns())
-  promises::then(.chat_ask_async(alt_chat, msg), function(r2) {
-    if (inherits(r2, "error"))
-      return(.chat_past_limits_async(r2, b, msg, system_prompt, tried, max_alternates))
-    b$chat$set_turns(alt_chat$get_turns())
-    done(r2, i18n("chat.answered_by_fallback", alt, b$model))
-  })
-}
-
 # A question to the live model, start to finish. A model retired since Groq's
 # list was last read is replaced (the list is read again, the conversation
-# carried over) and asked once more; a model at its limit hands the question
-# on. A promise of list(reply, note, backend, msg); backend is the one to keep.
+# carried over) and asked once more. A model at its per-minute limit is NOT
+# replaced: the user is asked to wait a minute. Until v0.9.209 another model
+# (gpt-oss-120b) answered in its place, and in live use it got SiBCS rules
+# wrong where Qwen had them right. A promise of list(reply, backend, msg):
+# reply is the text, "rate_limited", or an error condition; backend is the one
+# to keep (it changes after a retirement).
 .chat_converse_async <- function(b, msg, system_prompt) {
-  out <- promises::then(.chat_ask_async(b$chat, msg), function(r) {
+  settle <- function(r, b) list(
+    reply   = if (inherits(r, "error") && .groq_rate_limited(r)) "rate_limited" else r,
+    backend = b, msg = msg)
+  promises::then(.chat_ask_async(b$chat, msg), function(r) {
     if (inherits(r, "error") && .groq_model_gone(r)) {
       .groq_forget_models()
       model <- .groq_model("text", b$key)
@@ -446,13 +426,11 @@
       if (!is.null(chat)) {
         chat$set_turns(b$chat$get_turns())
         b <- list(chat = chat, model = model, key = b$key)
-        return(promises::then(.chat_ask_async(chat, msg), function(r2)
-          .chat_past_limits_async(r2, b, msg, system_prompt)))
+        return(promises::then(.chat_ask_async(chat, msg), function(r2) settle(r2, b)))
       }
     }
-    .chat_past_limits_async(r, b, msg, system_prompt)
+    settle(r, b)
   })
-  promises::then(out, function(x) c(x, list(msg = msg)))
 }
 
 # What the live model is told: the instructions, the classification and the
@@ -657,8 +635,7 @@ chat_server <- function(id, rv, settings) {
         return(add("assistant", paste0(i18n("chat.groq_failed"), "\n\n",
                                        .chat_scripted_reply(out$msg %||% asked(), ctx))))
       }
-      add("assistant", paste0(reply, if (!is.null(out$note))
-                                       paste0("\n\n*", out$note, "*")))
+      add("assistant", reply)
     })
     shiny::observeEvent(chat_task$status(), {
       if (identical(chat_task$status(), "running"))

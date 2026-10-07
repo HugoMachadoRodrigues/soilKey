@@ -206,27 +206,30 @@ test_that("the evidence reader handles R6 results, lists and odd names", {
   list(chat = main, model = "qwen/qwen3.8-27b", key = "k")
 }
 
-test_that("the next model answers, with the conversation, and says so", {
+test_that("a model at its limit asks the user to wait; no other model answers", {
   skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .grounding_env()
   state <- new.env(); state$busy <- "qwen/qwen3.8-27b"; state$gone <- character(0)
   b <- .fake_backend(e, state)
+  made <- 0L
+  e$.chat_make_groq <- function(...) { made <<- made + 1L; NULL }
 
   out <- .await(e$.chat_converse_async(b, "why?", "sys"))
-  expect_identical(out$reply, "answer from openai/gpt-oss-120b")
-  expect_identical(out$msg, "why?")
-  expect_match(out$note, "openai/gpt-oss-120b", fixed = TRUE)
-  expect_match(out$note, "qwen/qwen3.8-27b", fixed = TRUE)
-  # the stand-in saw the earlier turns, and its answer is in the main history
-  expect_identical(b$chat$get_turns(), list("earlier question", "earlier answer",
-                                            "why?", "answer from openai/gpt-oss-120b"))
-
-  # with every model at its limit, the user is told to wait, not handed a summary
-  state$busy <- c("qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b")
-  out <- .await(e$.chat_converse_async(b, "and?", "sys"))
+  # v0.9.209: gpt-oss-120b used to stand in, and got SiBCS rules wrong in live use
   expect_identical(out$reply, "rate_limited")
+  expect_identical(out$msg, "why?")
+  expect_equal(made, 0L)
   expect_null(out$note)
+  # the conversation is untouched, ready for the next try
+  expect_identical(b$chat$get_turns(), list("earlier question", "earlier answer"))
+  expect_match(e$i18n("chat.rate_limited", lang = "en"), "minute", fixed = TRUE)
+  expect_match(e$i18n("chat.rate_limited", lang = "pt"), "minuto", fixed = TRUE)
+
+  # when the model has room again, it answers
+  state$busy <- character(0)
+  out <- .await(e$.chat_converse_async(b, "why?", "sys"))
+  expect_identical(out$reply, "answer from qwen/qwen3.8-27b")
 })
 
 test_that("a retired model is replaced and the conversation carried over", {
