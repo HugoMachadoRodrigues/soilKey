@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.207</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.208</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.208" id="soilkey-09208-2026-10-07">soilKey 0.9.208 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09208-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="a-profile-with-no-horizons-is-refused-not-classified-with-grade-a-0-9-208">A profile with no horizons is refused, not classified with grade A<a class="anchor" aria-label="anchor" href="#a-profile-with-no-horizons-is-refused-not-classified-with-grade-a-0-9-208"></a></h3>
+<ul><li>
+<code><a href="../reference/classify_all.html">classify_all()</a></code> on a <code>PedonRecord</code> with zero horizons answered Haplic Regosol, Neossolos Regolíticos Distróficos típicos and Typic Udorthents, all with evidence grade A. With no layer to read, every class failed or passed on emptiness, each key ended at its catch-all group, and the grade came out A because a pedon with no provenance recorded is read as measured. <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code>, <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> and <code><a href="../reference/classify_usda.html">classify_usda()</a></code> now stop with an error of class <code>soilKey_no_horizons</code>, as <code>PedonRecord$validate()</code> (“No horizons defined”) and <code><a href="../reference/pedon_to_spc.html">pedon_to_spc()</a></code> already did for the same input. <code><a href="../reference/classify_all.html">classify_all()</a></code> reports it as a warning and a <code>NULL</code> result per system, like any other failure, and the benchmark functions count such a profile as an error rather than a prediction.</li>
+<li>
+<strong>SiBCS asserted low base saturation with no base saturation at all.</strong> <code><a href="../reference/eutrofico.html">eutrofico()</a></code> answered <code>FALSE</code> when it had no layer to read, and <code><a href="../reference/distrofico.html">distrofico()</a></code>, its negation, then passed. It now answers <code>NA</code> with <code>bs_pct</code> missing, as it already did when layers existed but carried no value.</li>
+<li>Unchanged for every profile with horizons: the 45 exported example profiles classify byte-identically before and after (names, orders, evidence grades and missing data, in all three systems).</li>
+<li>Not changed here: a profile with horizons but no measured properties still classifies with grade A, its trace showing every class it could not check. The grade describes the provenance of the values present; how to grade the absence of values is left as a separate decision.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.207" id="soilkey-09207-2026-10-07">soilKey 0.9.207 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09207-2026-10-07"></a></h2>
 <div class="section level3">
