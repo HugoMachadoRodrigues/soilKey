@@ -16,3 +16,15 @@ soil_data/
 paper/
 pkgdown/favicon/
 .DS_Store
+
+# Local-only material. These never belong in a Cloud Build upload: the build
+# sends the whole directory to a Cloud Storage bucket, and these hold an
+# unpublished manuscript, private correspondence and recovery credentials.
+/Manuscript/
+/correspondence/
+/munsellinterpol-conditions/
+stripe_backup_code.txt
+*backup_code*
+*recovery_code*
+.env
+*.pem

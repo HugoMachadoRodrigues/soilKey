@@ -51,7 +51,18 @@ code { padding: 0.05rem 0.3rem; }
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 .navbar .nav-link { font-weight: 500; opacity: 0.86; }
-.navbar .nav-link:hover, .navbar .nav-link.active { opacity: 1; }
+/* Bootstrap sets --bs-nav-link-hover-color to the theme brown, which is the very
+   colour this navbar is painted with (#7A5230), so a hovered link took the colour
+   of its own bar and vanished. Keep the text white; opacity and the active
+   underline carry the hover instead. */
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link.active { color: #fff; opacity: 1; }
+
+/* The brand doubles as "back to the first tab". */
+.sk-brand-home { color: inherit; text-decoration: none; cursor: pointer; }
+.sk-brand-home:hover, .sk-brand-home:focus { color: inherit; text-decoration: none; }
+.sk-brand-home:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 4px; }
 .navbar .nav-link.active { box-shadow: inset 0 -3px 0 var(--sk-clay); }
 @media (max-width: 768px) { .sk-logo { height: 28px; } }
 
@@ -226,6 +237,14 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.9rem;
   padding: 0.55rem 1rem; border-top: 1px solid var(--sk-line);
   background: var(--sk-sand); font-size: 0.8rem; color: var(--sk-muted);
+  /* Reserve the lane the fixed Assistant button occupies (it is ~8.25rem wide,
+     1.25rem from the right edge), so the links and the copyright are never
+     covered by it. */
+  padding-right: 10.5rem;
+}
+@media (max-width: 575.98px) {
+  /* Too narrow for a side lane: give the button its own row below the text. */
+  .sk-footer { padding-right: 1rem; padding-bottom: 3.9rem; }
 }
 .sk-footer-logo { opacity: 0.92; }
 .sk-footer-title { font-weight: 600; color: var(--sk-espresso); }
