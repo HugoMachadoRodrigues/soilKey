@@ -400,6 +400,21 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 [data-bs-theme="dark"] .js-plotly-plot .modebar-btn path { fill: var(--sk-muted) !important; }
 [data-bs-theme="dark"] .btn-group .btn.active, [data-bs-theme="dark"] .radiobtn.active { color: #17120d; }
 
+/* ---- navbar background (v0.9.219) -----------------------------------------
+   The espresso of the bs_theme() "navbar-bg" variable, in both themes. With
+   Flatly, bslib 0.7 (the container's) paints a light navbar with $primary and a
+   dark one with $success, and page_navbar() picks light or dark from the theme
+   current when the page is built. That theme was unknown on an instance that
+   had not served a page yet, so the navbar came out brown or green depending on
+   the instance; since 0.9.218 every page knows it, and the navbar was green. */
+.navbar.navbar-default, .navbar.navbar-inverse,
+[data-bs-theme="dark"] .navbar.navbar-default,
+[data-bs-theme="dark"] .navbar.navbar-inverse {
+  --bslib-navbar-default-bg: var(--sk-espresso);
+  --bslib-navbar-inverse-bg: var(--sk-espresso);
+  background-color: var(--sk-espresso) !important;
+}
+
 /* ---- navbar language selector (EN/PT) + dark-mode toggle (v0.9.172) -------
    The navbar is always the dark espresso colour (both themes), so these are
    theme-independent: high-contrast light text/borders, a warm clay pill for the

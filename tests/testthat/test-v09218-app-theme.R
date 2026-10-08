@@ -37,3 +37,15 @@ test_that("registering the page's dependencies also makes its theme the app's th
   expect_identical(bslib::bs_get_variables(shiny::getShinyOption("bootstrapTheme"), "primary"),
                    bslib::bs_get_variables(theme, "primary"))
 })
+
+test_that("the navbar is the theme's espresso in both colour modes (v0.9.219)", {
+  # With the theme known on every page (above), bslib 0.7's Flatly painted the
+  # navbar with $success (green); the stylesheet sets the espresso it means.
+  d <- system.file("shiny", "classify_app_pro", package = "soilKey")
+  if (!nzchar(d) || !dir.exists(d)) d <- file.path("inst", "shiny", "classify_app_pro")
+  css <- paste(readLines(file.path(d, "www", "soilkey.css"), warn = FALSE), collapse = "\n")
+  expect_match(css, "--bslib-navbar-inverse-bg: var\\(--sk-espresso\\)")
+  expect_match(css, "--bslib-navbar-default-bg: var\\(--sk-espresso\\)")
+  expect_match(css, "\\[data-bs-theme=\"dark\"\\] \\.navbar\\.navbar-inverse")
+  expect_match(css, "--sk-espresso: +#4A3226")
+})
