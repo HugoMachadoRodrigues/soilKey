@@ -23,8 +23,7 @@
 }
 
 .wj_dep_names <- function(w)
-  vapply(htmltools::findDependencies(htmlwidgets:::toHTML(w, standalone = FALSE)),
-         function(d) d$name, character(1))
+  vapply(htmltools::renderTags(w)$dependencies, function(d) d$name, character(1))
 
 test_that("a widget jQuery of Shiny's version takes over the page's jQuery path", {
   skip_on_cran()
