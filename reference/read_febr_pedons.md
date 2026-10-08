@@ -52,6 +52,14 @@ the surveyor's classification when available, and one horizon per FEBR
 
 ## Details
 
+Iron (v0.9.221), from the FEBR dictionary codes (g/kg): dithionite Fe
+(`ferro_ditionito_*`, or `fe2o3_ditionito_*` converted to the element)
+goes to `fe_dcb_pct`; oxalate Fe (`ferro_oxalato_*` / `fe2o3_oxalato_*`)
+to `fe_ox_pct`; total Fe of the sulfuric attack, as the oxide
+(`fe2o3_sulfurico_*`, or `ferro_sulfurico_*` converted), to
+`fe2o3_sulfuric_pct`; all in %. Until v0.9.220 the first `fe2o3_*`
+column of any method filled `fe_dcb_pct`, unconverted.
+
 Per the May 2026 scan, ~80
 [`febr_index_munsell`](https://hugomachadorodrigues.github.io/soilKey/reference/febr_index_munsell.md)
 to get the curated list of Munsell-bearing dataset IDs.

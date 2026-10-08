@@ -19,7 +19,7 @@ to soilKey conventions."><meta property="og:image" content="https://hugomachador
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.219</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.221</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,7 +124,16 @@ join statistics.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Per the May 2026 scan, ~80<!-- % of FEBR datasets have Munsell. Use -->
+    <p>Iron (v0.9.221), from the FEBR dictionary codes (g/kg): dithionite Fe
+(<code>ferro_ditionito_*</code>, or <code>fe2o3_ditionito_*</code> converted to
+the element) goes to <code>fe_dcb_pct</code>; oxalate Fe
+(<code>ferro_oxalato_*</code> / <code>fe2o3_oxalato_*</code>) to
+<code>fe_ox_pct</code>; total Fe of the sulfuric attack, as the oxide
+(<code>fe2o3_sulfurico_*</code>, or <code>ferro_sulfurico_*</code> converted), to
+<code>fe2o3_sulfuric_pct</code>; all in %. Until v0.9.220 the first
+<code>fe2o3_*</code> column of any method filled <code>fe_dcb_pct</code>,
+unconverted.</p>
+<p>Per the May 2026 scan, ~80<!-- % of FEBR datasets have Munsell. Use -->
 <code><a href="febr_index_munsell.html">febr_index_munsell</a></code> to get the curated list of
 Munsell-bearing dataset IDs.</p>
     </div>

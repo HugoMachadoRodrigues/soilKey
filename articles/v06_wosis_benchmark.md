@@ -392,7 +392,7 @@ knitr::kable(
 | GL  | GL      | Eutric           |
 | AN  | AN      | Eutric           |
 | PZ  | PZ      | Albic            |
-| PT  | PT      | Nitic            |
+| PT  | PT      | Haplic           |
 | PL  | PL      | Eutric           |
 | ST  | ST      | Albic            |
 | NT  | NT      | Eutric           |
@@ -405,10 +405,10 @@ knitr::kable(
 | GY  | GY      | Calcaric         |
 | CL  | CL      | Cambic           |
 | RT  | RT      | Eutric           |
-| AC  | AC      | Albic            |
-| LX  | LX      | Albic            |
-| AL  | AL      | Albic            |
-| LV  | LV      | Albic            |
+| AC  | AC      | Chromic          |
+| LX  | LX      | Chromic          |
+| AL  | AL      | Haplic           |
+| LV  | LV      | Haplic           |
 | CM  | CM      | Eutric           |
 | AR  | AR      | Eutric           |
 | FL  | FL      | Pantofluvic      |

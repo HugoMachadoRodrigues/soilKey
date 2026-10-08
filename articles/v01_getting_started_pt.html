@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.219</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.221</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -889,7 +889,7 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [1] "A"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`1`$pattern</span></span>
-<span><span class="co">#&gt; [1] "^R$|^Cr|^R[a-z]"</span></span>
+<span><span class="co">#&gt; [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`1`$passed</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
@@ -903,7 +903,7 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [1] "AB"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`2`$pattern</span></span>
-<span><span class="co">#&gt; [1] "^R$|^Cr|^R[a-z]"</span></span>
+<span><span class="co">#&gt; [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`2`$passed</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
@@ -917,7 +917,7 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [1] "Bw1"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`3`$pattern</span></span>
-<span><span class="co">#&gt; [1] "^R$|^Cr|^R[a-z]"</span></span>
+<span><span class="co">#&gt; [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`3`$passed</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
@@ -931,7 +931,7 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [1] "Bw2"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`4`$pattern</span></span>
-<span><span class="co">#&gt; [1] "^R$|^Cr|^R[a-z]"</span></span>
+<span><span class="co">#&gt; [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $LP$evidence[[1]]$evidence$designation$rock_designation$details$`4`$passed</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
@@ -1031,7 +1031,6 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [fail] clay_increase</span></span>
 <span><span class="co">#&gt; [fail] thickness</span></span>
 <span><span class="co">#&gt; [fail] texture</span></span>
-<span><span class="co">#&gt; [PASS] not_albeluvic</span></span>
 <span><span class="co">#&gt; Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon</span></span>
 <span><span class="co">#&gt; Notes: No layer satisfied the clay-increase precondition</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1649,48 +1648,45 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [1] "Nitisols"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$passed</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence</span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]</span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$test_name</span></span>
-<span><span class="co">#&gt; [1] "nitic_horizon"</span></span>
+<span><span class="co">#&gt; [1] "nitisol"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$passed</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$layers</span></span>
 <span><span class="co">#&gt; integer(0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$missing</span></span>
-<span><span class="co">#&gt; character(0)</span></span>
+<span><span class="co">#&gt; [1] "structure_type"    "structure_grade"   "clay_films_amount"</span></span>
+<span><span class="co">#&gt; [4] "fe_dcb_pct"        "fe_ox_pct"        </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$evidence</span></span>
-<span><span class="co">#&gt; $NT$evidence[[1]]$evidence$ferralic</span></span>
+<span><span class="co">#&gt; $NT$evidence[[1]]$evidence$nitic_horizon</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── DiagnosticResult: ferralic</span></span>
-<span><span class="co">#&gt; Status: PASSED</span></span>
-<span><span class="co">#&gt; Layers satisfying: 2, 3, 4</span></span>
+<span><span class="co">#&gt; ── DiagnosticResult: nitic_horizon</span></span>
+<span><span class="co">#&gt; Status: NA (insufficient data)</span></span>
+<span><span class="co">#&gt; Missing attributes (5): structure_type, structure_grade, clay_films_amount,</span></span>
+<span><span class="co">#&gt; fe_dcb_pct, fe_ox_pct</span></span>
 <span><span class="co">#&gt; Sub-tests:</span></span>
-<span><span class="co">#&gt; [PASS] texture</span></span>
-<span><span class="co">#&gt; [PASS] cec_per_clay</span></span>
-<span><span class="co">#&gt; [PASS] thickness</span></span>
-<span><span class="co">#&gt; Reference: IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p.</span></span>
-<span><span class="co">#&gt; 44)</span></span>
-<span><span class="co">#&gt; Notes: v0.3.1: ECEC/clay &lt;= 12 test removed; not part of WRB 2022 ferralic.</span></span>
-<span><span class="co">#&gt; v0.9.67 engine=soilkey threshold = 16 cmol_c/kg clay.</span></span>
+<span><span class="co">#&gt; Reference: IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$reference</span></span>
-<span><span class="co">#&gt; [1] "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon"</span></span>
+<span><span class="co">#&gt; [1] "IUSS Working Group WRB (2022), Chapter 4, Nitisols"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$evidence[[1]]$notes</span></span>
-<span><span class="co">#&gt; [1] "Excluded -- profile has a ferralic horizon (Ferralsol path)"</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$missing</span></span>
-<span><span class="co">#&gt; character(0)</span></span>
+<span><span class="co">#&gt; [1] "structure_type"    "structure_grade"   "clay_films_amount"</span></span>
+<span><span class="co">#&gt; [4] "fe_dcb_pct"        "fe_ox_pct"        </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NT$notes</span></span>
 <span><span class="co">#&gt; NULL</span></span>
@@ -1743,7 +1739,6 @@ diagnóstico envolvido:</p>
 <span><span class="co">#&gt; [fail] clay_increase</span></span>
 <span><span class="co">#&gt; [fail] thickness</span></span>
 <span><span class="co">#&gt; [fail] texture</span></span>
-<span><span class="co">#&gt; [PASS] not_albeluvic</span></span>
 <span><span class="co">#&gt; Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon</span></span>
 <span><span class="co">#&gt; Notes: No layer satisfied the clay-increase precondition</span></span>
 <span><span class="co">#&gt; </span></span>

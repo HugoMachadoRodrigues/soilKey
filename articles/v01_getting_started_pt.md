@@ -790,7 +790,7 @@ res_wrb$trace
 #> [1] "A"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`1`$pattern
-#> [1] "^R$|^Cr|^R[a-z]"
+#> [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`1`$passed
 #> [1] FALSE
@@ -804,7 +804,7 @@ res_wrb$trace
 #> [1] "AB"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`2`$pattern
-#> [1] "^R$|^Cr|^R[a-z]"
+#> [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`2`$passed
 #> [1] FALSE
@@ -818,7 +818,7 @@ res_wrb$trace
 #> [1] "Bw1"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`3`$pattern
-#> [1] "^R$|^Cr|^R[a-z]"
+#> [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`3`$passed
 #> [1] FALSE
@@ -832,7 +832,7 @@ res_wrb$trace
 #> [1] "Bw2"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`4`$pattern
-#> [1] "^R$|^Cr|^R[a-z]"
+#> [1] "^[0-9]*R($|[a-z0-9]|/?Cr)"
 #> 
 #> $LP$evidence[[1]]$evidence$designation$rock_designation$details$`4`$passed
 #> [1] FALSE
@@ -932,7 +932,6 @@ res_wrb$trace
 #> [fail] clay_increase
 #> [fail] thickness
 #> [fail] texture
-#> [PASS] not_albeluvic
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon
 #> Notes: No layer satisfied the clay-increase precondition
 #> 
@@ -1550,48 +1549,45 @@ res_wrb$trace
 #> [1] "Nitisols"
 #> 
 #> $NT$passed
-#> [1] FALSE
+#> [1] NA
 #> 
 #> $NT$evidence
 #> $NT$evidence[[1]]
 #> $NT$evidence[[1]]$test_name
-#> [1] "nitic_horizon"
+#> [1] "nitisol"
 #> 
 #> $NT$evidence[[1]]$passed
-#> [1] FALSE
+#> [1] NA
 #> 
 #> $NT$evidence[[1]]$layers
 #> integer(0)
 #> 
 #> $NT$evidence[[1]]$missing
-#> character(0)
+#> [1] "structure_type"    "structure_grade"   "clay_films_amount"
+#> [4] "fe_dcb_pct"        "fe_ox_pct"        
 #> 
 #> $NT$evidence[[1]]$evidence
-#> $NT$evidence[[1]]$evidence$ferralic
+#> $NT$evidence[[1]]$evidence$nitic_horizon
 #> 
-#> ── DiagnosticResult: ferralic
-#> Status: PASSED
-#> Layers satisfying: 2, 3, 4
+#> ── DiagnosticResult: nitic_horizon
+#> Status: NA (insufficient data)
+#> Missing attributes (5): structure_type, structure_grade, clay_films_amount,
+#> fe_dcb_pct, fe_ox_pct
 #> Sub-tests:
-#> [PASS] texture
-#> [PASS] cec_per_clay
-#> [PASS] thickness
-#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p.
-#> 44)
-#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic.
-#> v0.9.67 engine=soilkey threshold = 16 cmol_c/kg clay.
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon
 #> 
 #> 
 #> $NT$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon"
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Nitisols"
 #> 
 #> $NT$evidence[[1]]$notes
-#> [1] "Excluded -- profile has a ferralic horizon (Ferralsol path)"
+#> [1] NA
 #> 
 #> 
 #> 
 #> $NT$missing
-#> character(0)
+#> [1] "structure_type"    "structure_grade"   "clay_films_amount"
+#> [4] "fe_dcb_pct"        "fe_ox_pct"        
 #> 
 #> $NT$notes
 #> NULL
@@ -1644,7 +1640,6 @@ res_wrb$trace
 #> [fail] clay_increase
 #> [fail] thickness
 #> [fail] texture
-#> [PASS] not_albeluvic
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon
 #> Notes: No layer satisfied the clay-increase precondition
 #> 

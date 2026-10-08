@@ -27,6 +27,9 @@ the supporting evidence.
 
 ## Details
 
-v0.3.5 detection: designation pattern starting with a digit other than 1
-(e.g. `2A`, `2Bw`, `3C`) – the WRB / FAO convention for buried horizons
-– OR a `b` suffix in the designation (e.g. `Ahb`, `Bwb`).
+Since v0.9.220 the four criteria of WRB 2022 Ch 3.1.23 on a buried
+surface horizon (an A designation with a `b` suffix, or below a lithic
+discontinuity, `2A`): \\\ge\\ 0.2% SOC; SOC \\\ge\\ 25% (relative) and
+\\\ge\\ 0.2% (absolute) higher than in the overlying layer; a lithic
+discontinuity at its upper limit; \\\ge\\ 5 cm thick. Until v0.9.219 any
+designation containing a `b` passed, `AB` included.

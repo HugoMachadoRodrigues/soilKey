@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55ed952f3f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x55a607c09f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -238,11 +238,11 @@ print(res$wrb)
 #> coarse_fragments_pct, FALSE, TRUE, TRUE, FALSE, FALSE, al_ox_pct, fe_ox_pct,
 #> phosphate_retention_pct, volcanic_glass_pct, FALSE, FALSE, FALSE, NA,
 #> rupture_resistance, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA,
-#> gibbsite_clay_fraction_pct, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, NA,
-#> water_saturation_days, redoximorphic_features_pct, FALSE, TRUE, NA, visible
-#> black carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct,
-#> FALSE, FALSE, rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
-#> technic_hardmaterial_pct, cementation_class, NA, artefacts_pct, NA,
+#> gibbsite_clay_fraction_pct, FALSE, TRUE, FALSE, FALSE, FALSE, fe_dcb_pct,
+#> fe_ox_pct, FALSE, NA, water_saturation_days, redoximorphic_features_pct, FALSE,
+#> TRUE, NA, visible black carbon, % of exposed area (not in the schema), FALSE,
+#> NA, saprolite_pct, FALSE, FALSE, rock_origin, FALSE, FALSE, artefacts_pct,
+#> geomembrane_present, technic_hardmaterial_pct, NA, artefacts_pct, NA,
 #> contamination_type, NA, layer_origin, artefacts_pct, FALSE, volcanic_glass_pct
 #> Evidence grade: A
 #> 
@@ -257,6 +257,7 @@ print(res$wrb)
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
+#> - NT: Indeterminate -- missing 2 attribute(s): fe_dcb_pct, fe_ox_pct
 #> - DU: Indeterminate -- missing 1 attribute(s): duripan_pct
 #> - GY: Indeterminate -- missing 1 attribute(s): caso4_pct
 #> - CL: Indeterminate -- missing 1 attribute(s): caco3_pct
@@ -265,8 +266,8 @@ print(res$wrb)
 #> p_mehlich3_mg_kg, artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
 #> permafrost_temp_C, coarse_fragments_pct, slickensides, ec_dS_m,
 #> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
-#> volcanic_glass_pct, plinthite_pct, top_cm, bottom_cm, duripan_pct, caso4_pct,
-#> caco3_pct
+#> volcanic_glass_pct, plinthite_pct, fe_dcb_pct, top_cm, bottom_cm, duripan_pct,
+#> caso4_pct, caco3_pct
 #> 
 #> ── Key trace
 #> (25 RSGs tested before assignment)
@@ -284,7 +285,7 @@ print(res$wrb)
 #> 12. PT Plinthosols -- NA (1 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- NA (1 attrs missing)
-#> 15. NT Nitisols -- failed
+#> 15. NT Nitisols -- NA (2 attrs missing)
 #> 16. FR Ferralsols -- failed
 #> 17. CH Chernozems -- failed (2 attrs missing)
 #> 18. KS Kastanozems -- failed (2 attrs missing)

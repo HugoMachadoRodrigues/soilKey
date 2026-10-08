@@ -39,6 +39,15 @@ horizon row per CSV row matching the profile id.
 
 ## Details
 
+Iron (v0.9.221): `"CDB - Ferro (g/kg)"` (dithionite-citrate-
+bicarbonate, free Fe as the element) goes to `fe_dcb_pct`, which the WRB
+Fe-dith criteria read (nitic horizon, Ferric, Ferritic);
+`"Ataque sulfurico - Fe2O3"` (total Fe of the sulfuric attack, as the
+oxide) goes to `fe2o3_sulfuric_pct`, which the SiBCS ferrico /
+perferrico classes read; `"Oxalato de Amonio - Ferro"` goes to
+`fe_ox_pct`. All three are converted from g/kg to %. Until v0.9.220 the
+sulfuric Fe2O3 filled `fe_dcb_pct`, unconverted.
+
 Profile-id columns are auto-detected: looks for any column whose
 normalised name matches
 `"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"`; falls back

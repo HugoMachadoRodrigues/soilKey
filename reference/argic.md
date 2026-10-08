@@ -16,7 +16,8 @@ argic(
   min_thickness = 7.5,
   system = c("wrb2022", "usda"),
   engine = NULL,
-  require_t = NULL
+  require_t = NULL,
+  lithic_discontinuity = NULL
 )
 ```
 
@@ -58,6 +59,16 @@ argic(
   (default) auto-picks: `TRUE` for `system = "usda"`, `FALSE` for
   `system = "wrb2022"`. Ignored when `engine = "soilkey"`.
 
+- lithic_discontinuity:
+
+  v0.9.220. Apply WRB 2022 criterion 2.a.i: a clay increase over a
+  coarser layer of another material (Ap over 2Bt, read from the
+  designations' material numbers) counts only with clay films of
+  "common" or more (illuvial clay, criterion 2.b). `NULL` (default):
+  `TRUE` for `system = "wrb2022"`. The SiBCS B textural, whose item (j)
+  accepts such an increase by its textural ratio, and the USDA keys pass
+  `FALSE`.
+
 ## Value
 
 A
@@ -77,8 +88,9 @@ Sub-tests called (each a list with `passed`, `layers`, `missing`,
 - `test_texture_argic` – texture of sandy loam or finer
   (`silt + 2 * clay >= 30`).
 
-- `test_not_albeluvic` – excludes profiles with glossic tongues (Retisol
-  path).
+Until v0.9.219 a glossic, albeluvic or retic designation anywhere voided
+the argic horizon (the WRB 2014 Albeluvisol logic); in WRB 2022 retic
+properties belong to an argic or natric horizon.
 
 v0.1 limitations: clay-increase distance (\<= 30 cm vertical, or \<= 15
 cm with abrupt textural change) is not yet enforced; that is scheduled

@@ -244,17 +244,18 @@ classify_wrb2022(ferralsol)
 #> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Ferric, Humic, FALSE, NA,
-#> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, FALSE, p_mehlich3_mg_kg,
-#> FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
-#> FALSE, top_cm, bottom_cm, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
-#> FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
-#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
-#> FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, NA, bioturbation_density,
-#> bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE, NA,
-#> water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black
-#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
-#> rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
-#> technic_hardmaterial_pct, cementation_class, NA, artefacts_pct, NA,
+#> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, structure_type,
+#> structure_grade, clay_films_amount, fe_dcb_pct, fe_ox_pct, FALSE,
+#> p_mehlich3_mg_kg, FALSE, redoximorphic_features_pct, FALSE,
+#> redoximorphic_features_pct, FALSE, FALSE, top_cm, bottom_cm, FALSE, FALSE,
+#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,
+#> fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE, NA,
+#> rupture_resistance, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE,
+#> TRUE, TRUE, NA, bioturbation_density, bulk_density_g_cm3, particles_630um_pct,
+#> FALSE, FALSE, NA, water_saturation_days, redoximorphic_features_pct, FALSE, NA,
+#> visible black carbon, % of exposed area (not in the schema), FALSE, NA,
+#> saprolite_pct, FALSE, rock_origin, FALSE, FALSE, artefacts_pct,
+#> geomembrane_present, technic_hardmaterial_pct, NA, artefacts_pct, NA,
 #> contamination_type, NA, layer_origin, artefacts_pct
 #> Evidence grade: A
 #> 
@@ -267,15 +268,17 @@ classify_wrb2022(ferralsol)
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
+#> - NT: Indeterminate -- missing 5 attribute(s): structure_type, structure_grade,
+#> clay_films_amount, fe_dcb_pct, fe_ox_pct
 #> 
 #> ── Missing data that would refine result
 #> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
 #> permafrost_temp_C, slickensides, ec_dS_m, redoximorphic_features_pct,
 #> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct,
-#> plinthite_pct
+#> plinthite_pct, structure_type, structure_grade, clay_films_amount, fe_dcb_pct
 #> 
 #> ── Warnings
-#> ! 12 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 16 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
@@ -293,7 +296,7 @@ classify_wrb2022(ferralsol)
 #> 12. PT Plinthosols -- NA (1 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- NA (1 attrs missing)
-#> 15. NT Nitisols -- failed
+#> 15. NT Nitisols -- NA (5 attrs missing)
 #> 16. FR Ferralsols -- PASSED
 ```
 

@@ -1,5 +1,159 @@
 # Changelog
 
+## soilKey 0.9.221 (2026-10-08)
+
+### BDsolos and FEBR: dithionite Fe and sulfuric-attack Fe2O3 kept apart
+
+Both loaders filled `fe_dcb_pct`, the dithionite (free) Fe that the WRB
+criteria read, with the Fe2O3 of the sulfuric attack, the total Fe as
+the oxide that the SiBCS férrico classes read. They also left it in
+g/kg, where soilKey stores %. So a BDsolos horizon with 43 g/kg Fe2O3
+was recorded with 43% free Fe, and every horizon with a sulfuric attack
+passed the WRB Fe-dith limits (4% for the nitic horizon, 10% for
+Ferritic). This affects 23,021 layers of the national BDsolos export.
+`fe2o3_sulfuric_pct` stayed empty, so the SiBCS férrico and perférrico
+classes were never reached on these data.
+
+- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md):
+  “CDB - Ferro (g/kg)” goes to `fe_dcb_pct`, “Ataque sulfúrico - Fe2O3”
+  to `fe2o3_sulfuric_pct` and “Oxalato de Amônio - Ferro” to
+  `fe_ox_pct`, all converted from g/kg to %. The CDB column (667 layers)
+  comes after the sulfuric one in the export, so it used to be dropped.
+- [`read_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.md)
+  follows the FEBR dictionary codes, all in g/kg:
+  - `ferro_ditionito_*` (or `fe2o3_ditionito_*`, converted to the
+    element) to `fe_dcb_pct`;
+  - `ferro_oxalato_*` / `fe2o3_oxalato_*` to `fe_ox_pct`;
+  - `fe2o3_sulfurico_*` (or `ferro_sulfurico_*`, converted to the oxide)
+    to `fe2o3_sulfuric_pct`.
+
+  Until now the first `fe2o3_*` column of any method filled
+  `fe_dcb_pct`: sulfuric, aqua regia, oxalate or dithionite. The map
+  also asked for a `ferro_dcb` code the dictionary does not have.
+- Readers that took the sulfuric Fe2O3 for dithionite Fe on these data:
+  the WRB nitic horizon and the Ferric and Ferritic qualifiers; the
+  SiBCS caráter espódico (Fe-dith \>= 0.5%, so every B with a sulfuric
+  attack passed that part); and the USDA Ferrudalfs (Fe-dith \>= 4%).
+
+On the national BDsolos export (8,995 profiles in the 27 state files),
+6,654 profiles load with different Fe data. Classified before and after
+in the three systems, none changes RSG, SiBCS order or USDA order, and
+the SiBCS order agreement with their BDsolos labels stays at 36.5%
+(5,563 labelled). The names change:
+
+- WRB: Ferric falls from 2,298 names to 14. All 14 have CDB Fe; 7 of
+  them get it through the CDB column that used to be dropped.
+- SiBCS: 129 names gain an iron class (94 Distroférricos, 10
+  Aluminoférricos, 10 Eutroférricos, 9 Férricos, 6 Perférricos). Of the
+  68 profiles whose BDsolos label has an iron class and whose sulfuric
+  Fe2O3 reaches 18%, 42 are now named with one (none before). 11
+  profiles lose the espodossólico subgroup (Cambissolos and Neossolos).
+- USDA: Ferrudalfs fall from 403 to 6, all 6 with CDB Fe \>= 4%. The
+  others are now Paleudalfs, Kandiudalfs, Hapludalfs or Rhodudalfs.
+
+Not changed: the REDAPE GeoTab loader maps `TEOR_FE` (values of 6-49, so
+g/kg) to `fe_dcb_pct`. The dataset does not say whether it is dithionite
+Fe or sulfuric Fe2O3, so it is left as it was until that is known. The
+sulfuric Al2O3 and SiO2 of BDsolos and FEBR (for Ki and Kr) are still
+not loaded.
+
+## soilKey 0.9.220 (2026-10-08)
+
+### WRB 2022 diagnostics checked against Chapter 3
+
+The qualifier audit of 0.9.217 found diagnostics that also decide RSGs
+and did not follow their WRB 2022 definitions. Each now reads its
+criteria: a criterion is `FALSE` when the data contradict it and `NA`
+when the data it needs are missing. Of the 44 example profiles, 8 change
+WRB name and none changes RSG; one, the Retisol, also changes SiBCS and
+USDA class (below).
+
+- **Nitic horizon** (Ch 3.1.22),
+  [`nitic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitic_horizon.md):
+  - the structure and shiny-faces criterion (2) now decides: blocky
+    (moderate or strong) or polyhedral structure, and clay films
+    (“cerosidade”) of “common” or more, the level the SiBCS B nitico
+    asks for; until now it never vetoed;
+  - Fe-ox \>= 0.2% and Fe-ox / Fe-dith \>= 0.05 (3) are read;
+  - a layer of a plinthic horizon is excluded (4), so the example
+    Plinthosols are no longer Nitic;
+  - a ferralic horizon elsewhere in the profile no longer excludes it
+    (Nitisols key out before Ferralsols);
+  - the reading of legacy profiles added in 0.9.18 (a Bt designation, a
+    CEC of 8-36 cmolc/kg clay and no albic E standing in for missing
+    structure and Fe data) now runs only with
+    `options(soilKey.morphological_inference = TRUE)`, like the other
+    designation-based readings.
+- **Nitisols** are keyed by the new
+  [`nitisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitisol.md),
+  the Chapter 4 entry: a nitic horizon starting \<= 100 cm, a clay
+  content above it at least half of its weighted average, no vertic
+  horizon above it. It replaces a non-WRB veto on a clay drop of more
+  than 8 percentage points within 50 cm.
+  - The canonical Nitisol now records oxalate Fe (0.8-0.9%).
+  - On the 219 FEBR profiles with a WRB class, which record no
+    structure, clay films or Fe fractions, the 7 Nitisols keyed
+    correctly all came from the default inference: RSG agreement goes
+    from 22.0% to 19.3%.
+  - With the option on it goes from 26.6% to 26.1%, still with 7 correct
+    Nitisols, but not the same ones. Six that matched before fail the
+    Chapter 4 clay rule (an A of 12-18% clay over a Bt of about 40%) or
+    start below 100 cm, and six others now pass.
+- **Continuous rock** (Ch 3.2.5),
+  [`continuous_rock()`](https://hugomachadorodrigues.github.io/soilKey/reference/continuous_rock.md)
+  and the Leptosol gate:
+  - R, RCr and R/Cr, also below a lithic discontinuity (2R);
+  - Cr, weathered or soft bedrock, no longer counts. It is not
+    continuous rock in WRB 2022 nor a contato litico in SiBCS 2018
+    (“rochas sas (camada R) … ou … majoritariamente por rocha dura (RCr
+    ou R/Cr)”).
+- **Technic hard material** (Ch 3.3.18),
+  [`technic_hard_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_hard_material.md):
+  - `technic_hardmaterial_pct` \>= 95 or an asphalt or concrete
+    designation;
+  - any strongly cemented layer counted before, so a petrocalcic horizon
+    or a duripan was technic, and so did a geomembrane.
+- **Claric material** (Ch 3.3.4), and the albic horizon that consists of
+  it, need the dry and the moist colour; either was enough. The example
+  Acrisol, Alisol, Lixisol and Luvisol lose Albic, and the Cryosol too:
+  their E is 5/3 moist (claric) but 6/3 dry (not).
+- **Argic horizon** (Ch 3.1.3):
+  - criterion 2.a.i: a clay increase over a coarser layer of another
+    material (Ap over 2Bt) counts only with clay films of “common” or
+    more (illuvial clay, criterion 2.b). WRB only: the SiBCS B textural,
+    whose item (j) accepts such an increase by its textural ratio, and
+    the USDA keys call `argic(lithic_discontinuity = FALSE)`;
+  - a glossic, albeluvic or retic designation no longer voids it, in any
+    system. It was the WRB 2014 Albeluvisol logic; in WRB 2022 retic
+    properties belong to an argic or natric horizon. The example Retisol
+    gains Cutanic, Differentic, Epic and Profondic. In SiBCS it goes
+    from Neossolos Regoliticos to Luvissolos Cromicos Orticos, and in
+    USDA from Aeric Epiaquepts to Typic Albaqualfs: its Btg has twice
+    the clay of the
+    5.  
+- **Panpaic horizon** (Ch 3.1.23),
+  [`panpaic()`](https://hugomachadorodrigues.github.io/soilKey/reference/panpaic.md),
+  was any designation with a “b”, AB included (matched ignoring case).
+  It is now a buried surface horizon (Ab, 2A) with \>= 0.2% SOC, \>= 25%
+  and \>= 0.2% more than the layer above, a lithic discontinuity at its
+  upper limit, \>= 5 cm; the Panpaic qualifier only adds the depth.
+- **Retic properties** (Ch 3.2.11),
+  [`retic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/retic_properties.md),
+  need an argic or natric horizon (criterion 1) and the interfingering
+  recorded at its upper limit (6); the designation stands in for the
+  criteria no column holds.
+- **Lamellic**, `qual_lamellic()`, reads lamellae from the layers:
+  0.5-7.5 cm, more clay than the layers above and below (argic 2.a) or
+  clay films, \>= 5 cm together within 50 cm. A lamella designation
+  alone gives `NA`.
+
+Not changed here: argic criteria 2.a.ii-iii (plough layer, transitional
+horizon \<= 15 cm) and the “minimum clay above” reference of the
+clay-increase test;
+[`lithic_discontinuity()`](https://hugomachadorodrigues.github.io/soilKey/reference/lithic_discontinuity.md),
+which reads a 10-point jump in coarse fragments; and the Leptosol path
+through coarse fragments (WRB: \< 20% fine earth averaged over 75 cm).
+
 ## soilKey 0.9.219 (2026-10-08)
 
 - Pro app: the navbar is the espresso brown of the theme in both colour

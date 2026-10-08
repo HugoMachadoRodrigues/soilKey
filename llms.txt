@@ -1956,6 +1956,9 @@ plus auxiliaries) used in the test suite.
 - [`ferralsol()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralsol.md)
   : Ferralsol RSG gate (WRB 2022 Ch 4, p 110)
 
+- [`nitisol()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitisol.md)
+  : Nitisol RSG gate (WRB 2022)
+
 - [`gleysol()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleysol.md)
   : Gleysol RSG gate (WRB 2022 Ch 4, p 103)
 

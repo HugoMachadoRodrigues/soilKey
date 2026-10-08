@@ -1,9 +1,32 @@
 # Nitic horizon (WRB 2022)
 
-Tests for the nitic horizon: a clay-rich (\>= 30%), Fe-rich (DCB Fe \>=
-4%) subsurface horizon at least 30 cm thick. Diagnostic of Nitisols. WRB
-2022 additionally requires polyhedral / nutty structure with shiny ped
-surfaces and a gradual (non-abrupt) clay decrease with depth.
+Tests for a nitic horizon, WRB 2022 Chapter 3.1.22, criterion by
+criterion on each layer:
+
+1.  \\\ge\\ 30% clay (`min_clay`);
+
+2.  moderate to strong angular or subangular blocky structure, or
+    polyhedral structure, with pressure faces (shiny surfaces) on
+    \\\ge\\ 25% of the aggregate surfaces. Read from `structure_type`,
+    `structure_grade` and `clay_films_amount`, "common" or more: the
+    cerosidade "comum" that the SiBCS B nitico asks for, 25-50% in KST;
+
+3.  \\\ge\\ 4% Fe-dith (`fe_dcb_pct`), \\\ge\\ 0.2% Fe-ox (`fe_ox_pct`)
+    and Fe-ox / Fe-dith \\\ge\\ 0.05;
+
+4.  not part of a plinthic horizon
+    ([`plinthic`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthic.md));
+
+5.  the layers that meet 1-4 are \\\ge\\ 30 cm thick together, as one
+    horizon (`min_thickness`).
+
+A criterion is `FALSE` when the data contradict it and `NA` when the
+data it needs are missing: a profile without Fe-ox or structure records
+gets `NA`, not a nitic horizon. With
+`options(soilKey.morphological_inference = TRUE)` missing structure and
+Fe data are read from a Bt designation with a CEC of 8-36 cmolc/kg clay
+and no albic E above (the v0.9.18 reading of legacy profiles), recorded
+in the evidence.
 
 ## Usage
 
@@ -13,8 +36,10 @@ nitic_horizon(
   min_clay = 30,
   min_fe_dcb = 4,
   min_thickness = 30,
-  max_clay_drop_pct = 8,
-  max_decrease_depth = 50
+  min_fe_ox = 0.2,
+  min_feox_fedith = 0.05,
+  max_clay_drop_pct = NULL,
+  max_decrease_depth = NULL
 )
 ```
 
@@ -31,21 +56,23 @@ nitic_horizon(
 
 - min_fe_dcb:
 
-  Minimum DCB-extractable Fe % (default 4).
+  Minimum dithionite Fe % (default 4).
 
 - min_thickness:
 
   Minimum thickness in cm (default 30).
 
-- max_clay_drop_pct:
+- min_fe_ox:
 
-  Maximum clay drop (percentage points) between adjacent layers within
-  `max_decrease_depth` before failing the gradual-decrease test (default
-  8).
+  Minimum oxalate Fe % (default 0.2).
 
-- max_decrease_depth:
+- min_feox_fedith:
 
-  Depth window (cm) for the gradual-decrease check (default 50).
+  Minimum Fe-ox / Fe-dith ratio (default 0.05).
+
+- max_clay_drop_pct, max_decrease_depth:
+
+  Unused since v0.9.220, kept so that existing calls still run.
 
 ## Value
 
@@ -54,32 +81,14 @@ A
 
 ## Details
 
-Required (AND-combined) sub-tests:
-
-- Profile does not have a ferralic horizon (Ferralsol path is canonical
-  for the clay-rich + low-CEC corner).
-
-- clay % \>= `min_clay`.
-
-- fe_dcb_pct \>= `min_fe_dcb`.
-
-- thickness \>= `min_thickness`.
-
-Supplementary (soft-AND) sub-tests – evaluated when evidence is present
-in the pedon, evaluate to NA (not a fail) when missing:
-
-- structure_type matches polyhedral / nutty / (sub)angular blocky.
-
-- slickensides / shiny ped surfaces present (proxy for WRB's "shiny ped
-  surfaces").
-
-- clay does not decrease abruptly between adjacent layers within 50 cm
-  of the surface (gradual-decrease pattern; drop \> 8 percentage points
-  fails).
-
-Supplementary tests fail (return passed = FALSE) only when evidence
-actively contradicts the criterion; missing evidence is permissive.
+Until v0.9.219 the structure and shiny-surface tests never vetoed, Fe-ox
+was not read, a plinthic horizon was not excluded, any ferralic horizon
+in the profile excluded a nitic one (WRB 2022 does not: Nitisols key out
+before Ferralsols), the Fe inference above ran by default, and a clay
+drop of more than 8 percentage points within 50 cm vetoed it. The clay
+rule of the Nitisol key is in
+[`nitisol`](https://hugomachadorodrigues.github.io/soilKey/reference/nitisol.md).
 
 ## References
 
-IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.
+IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon.

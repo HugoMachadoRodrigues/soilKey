@@ -47,7 +47,7 @@ The classification on this incomplete pedon already differs:
 
 res_partial <- classify_wrb2022(pr_partial, on_missing = "silent")
 res_partial$rsg_or_order
-#> [1] "Nitisols"
+#> [1] "Cambisols"
 res_partial$evidence_grade
 #> [1] "A"
 ```
