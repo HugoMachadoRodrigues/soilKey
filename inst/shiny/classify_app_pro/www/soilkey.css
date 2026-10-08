@@ -9,15 +9,27 @@
   /* ---- palette ---- */
   --sk-espresso:  #4A3226;   /* navbar / darkest */
   --sk-brown:     #7A5230;   /* primary  -- topsoil */
-  --sk-terra:     #B5652E;   /* secondary -- subsoil / accent */
+  --sk-terra:     #9E5626;   /* secondary -- subsoil / accent (v0.9.218: was
+                                #B5652E; white on it and it on the light washes
+                                now reach WCAG AA 4.5:1) */
   --sk-clay:      #C89B6B;   /* warm mid clay */
-  --sk-moss:      #5E7B3B;   /* success  -- vegetation */
+  --sk-moss:      #557036;   /* success  -- vegetation (v0.9.218: was #5E7B3B, AA) */
   --sk-slate:     #4E6E81;   /* info -- water / data cues */
   --sk-sand:      #F3ECE2;   /* light wash (card caps) */
   --sk-cream:     #FBF9F5;   /* page background */
   --sk-line:      #E6DBCC;   /* hairline borders */
   --sk-ink:       #2C2620;   /* headings / strong text */
   --sk-muted:     #6F6256;   /* secondary text */
+
+  /* ---- status colours, remapped for dark mode below (v0.9.218) ---- */
+  --sk-ok:        #3f6024;   /* "all good" text */
+  --sk-st-met:    #d1e7dd;   /* key trace cells: criteria met */
+  --sk-st-fail:   #eef1f3;   /*   not met (the normal case) */
+  --sk-st-sel:    #cfe2ff;   /*   the assigned class */
+  --sk-st-na:     #fff3cd;   /*   needs data */
+  --sk-prob-low:  #b02a37;   /* posterior probability < 0.5 */
+  --sk-prob-mid:  #997404;   /*   0.5 to 0.8 */
+  --sk-prob-high: #3f6024;   /*   >= 0.8 */
 
   --sk-shadow:    0 1px 2px rgba(74, 50, 38, 0.06),
                   0 2px 8px rgba(74, 50, 38, 0.06);
@@ -80,7 +92,8 @@ code { padding: 0.05rem 0.3rem; }
   background: #fff; border: 1px solid var(--sk-line); white-space: nowrap;
 }
 .sk-ribbon .sk-chip .sk-key { color: var(--sk-brown); font-weight: 600; }
-.sk-ribbon .sk-built { color: #3f6024; font-weight: 600; }   /* WCAG AA */
+.sk-ribbon .sk-built { color: var(--sk-ok); font-weight: 600; }   /* WCAG AA */
+.sk-ok { color: var(--sk-ok); }
 .sk-ribbon .sk-empty { color: var(--sk-muted); }
 
 /* ---- sections (sk_section helper) -------------------------------------- */
@@ -154,6 +167,19 @@ code { padding: 0.05rem 0.3rem; }
 table.dataTable thead th { background: var(--sk-sand); color: var(--sk-ink); border-bottom: 2px solid var(--sk-line) !important; }
 table.dataTable tbody tr:hover { background: #fbf6ee; }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--sk-brown) !important; color: #fff !important; border-radius: 0.4rem; }
+/* Flatly paints the pager green with near-white text (2.3:1); use the brown
+   palette instead, in both themes (v0.9.218). */
+.pagination {
+  --bs-pagination-color: var(--sk-brown); --bs-pagination-bg: transparent;
+  --bs-pagination-border-color: var(--sk-line);
+  --bs-pagination-hover-color: var(--sk-ink); --bs-pagination-hover-bg: var(--sk-sand);
+  --bs-pagination-hover-border-color: var(--sk-line);
+  --bs-pagination-focus-color: var(--sk-ink); --bs-pagination-focus-bg: var(--sk-sand);
+  --bs-pagination-active-color: var(--sk-cream); --bs-pagination-active-bg: var(--sk-brown);
+  --bs-pagination-active-border-color: var(--sk-brown);
+  --bs-pagination-disabled-color: var(--sk-muted); --bs-pagination-disabled-bg: transparent;
+  --bs-pagination-disabled-border-color: var(--sk-line);
+}
 
 /* ---- nav pills / sub-tabs (Map: Point / Batch / Grid) ------------------ */
 .nav-pills .nav-link { color: var(--sk-brown); font-weight: 600; }
@@ -185,6 +211,9 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-welcome-dots .sk-dot { width: 8px; height: 8px; border-radius: 50%;
   background: #d8ccbd; transition: background 0.2s, transform 0.2s; }
 .sk-welcome-dots .sk-dot-on { background: var(--sk-brown); transform: scale(1.25); }
+/* "Skip tour" is a link, but actionButton() adds btn-default, which Flatly
+   fills with the accent colour: muted text on terracotta (1.4:1). */
+#welcome_skip { background: transparent; border-color: transparent; color: var(--sk-muted) !important; }
 
 /* ---- a11y: reduced motion + screen-reader-only utility ----------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -253,7 +282,7 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-footer-links { margin-left: auto; display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
 .sk-footer-links a { color: var(--sk-brown); text-decoration: none; }
 .sk-footer-links a:hover { text-decoration: underline; }
-.sk-footer-lic { color: #9a8b7b; }
+.sk-footer-lic { color: var(--sk-muted); }
 
 /* ---- acknowledgements tab --------------------------------------------- */
 .sk-ack-head h3 { color: var(--sk-espresso); margin-bottom: 0.25rem; font-weight: 700; }
@@ -281,6 +310,9 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
     --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
     --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
     --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+    --sk-ok: #9cc27a;
+    --sk-st-met: #1f3a2a; --sk-st-fail: #2a2119; --sk-st-sel: #1d3150; --sk-st-na: #3d3010;
+    --sk-prob-low: #f08a8a; --sk-prob-mid: #e0b84a; --sk-prob-high: #9cc27a;
     color-scheme: dark;
   }
 }
@@ -290,6 +322,9 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   --sk-sand: #2a2119;  --sk-cream: #17120d; --sk-line: #3d3125;
   --sk-ink: #f3ece2;   --sk-muted: #b8a88f;
   --sk-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.45);
+  --sk-ok: #9cc27a;
+  --sk-st-met: #1f3a2a; --sk-st-fail: #2a2119; --sk-st-sel: #1d3150; --sk-st-na: #3d3010;
+  --sk-prob-low: #f08a8a; --sk-prob-mid: #e0b84a; --sk-prob-high: #9cc27a;
   color-scheme: dark;
 }
 
@@ -309,9 +344,13 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   background: #241d15; color: var(--sk-ink); border-color: var(--sk-line);
 }
 [data-bs-theme="dark"] .selectize-dropdown .active { background: var(--sk-brown); color: #17120d; }
+/* shinyWidgets pickerInput draws a Flatly btn-light (near-white) toggle (v0.9.218) */
+[data-bs-theme="dark"] .bootstrap-select > .btn-light,
+[data-bs-theme="dark"] .bootstrap-select > .btn-light:hover {
+  background: #241d15; color: var(--sk-ink); border-color: var(--sk-line);
+}
 [data-bs-theme="dark"] .sk-ribbon { background: linear-gradient(90deg, #241d15, #1c1610); border-bottom-color: var(--sk-line); }
 [data-bs-theme="dark"] .sk-ribbon .sk-chip { background: #2a2119; border-color: var(--sk-line); }
-[data-bs-theme="dark"] .sk-ribbon .sk-built { color: #9cc27a; }              /* AA on dark */
 [data-bs-theme="dark"] table.dataTable thead th { background: #2a2119; color: var(--sk-ink); }
 [data-bs-theme="dark"] table.dataTable tbody tr { background: #211a13; }
 [data-bs-theme="dark"] table.dataTable tbody tr:hover { background: #2a2119; }
@@ -332,6 +371,33 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 [data-bs-theme="dark"] .sk-footer-lic { color: var(--sk-muted); }
 [data-bs-theme="dark"] .sk-ack-note { background: #1f1912; border-color: var(--sk-line); }
 [data-bs-theme="dark"] .btn-primary { color: #17120d; }                      /* dark text on light-brown btn */
+/* v0.9.218: the same for the terracotta buttons (white on it was 2.6:1), and
+   the outline ones take the dark-mode terracotta, not Bootstrap's literal. */
+[data-bs-theme="dark"] .btn-secondary,
+[data-bs-theme="dark"] .btn-secondary:hover { color: #17120d; }
+[data-bs-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: var(--sk-terra); --bs-btn-border-color: var(--sk-terra);
+  --bs-btn-hover-color: #17120d; --bs-btn-hover-bg: var(--sk-terra);
+  --bs-btn-hover-border-color: var(--sk-terra);
+  --bs-btn-active-color: #17120d; --bs-btn-active-bg: var(--sk-terra);
+  --bs-btn-active-border-color: var(--sk-terra);
+}
+[data-bs-theme="dark"] .text-success { color: var(--sk-ok) !important; }
+/* Plotly draws a white canvas with grey text inline; restyle it for the dark
+   page (the !important beats Plotly's inline styles). */
+[data-bs-theme="dark"] .js-plotly-plot .main-svg { background: transparent !important; }
+[data-bs-theme="dark"] .js-plotly-plot .bg { fill: #211a13 !important; }
+[data-bs-theme="dark"] .js-plotly-plot .xtick text,
+[data-bs-theme="dark"] .js-plotly-plot .ytick text,
+[data-bs-theme="dark"] .js-plotly-plot .g-xtitle text,
+[data-bs-theme="dark"] .js-plotly-plot .g-ytitle text,
+[data-bs-theme="dark"] .js-plotly-plot .gtitle,
+[data-bs-theme="dark"] .js-plotly-plot .legendtext,
+[data-bs-theme="dark"] .js-plotly-plot .annotation-text { fill: var(--sk-ink) !important; }
+[data-bs-theme="dark"] .js-plotly-plot .gridlayer path,
+[data-bs-theme="dark"] .js-plotly-plot .zerolinelayer path { stroke: var(--sk-line) !important; }
+[data-bs-theme="dark"] .js-plotly-plot .legend .bg { fill: transparent !important; }
+[data-bs-theme="dark"] .js-plotly-plot .modebar-btn path { fill: var(--sk-muted) !important; }
 [data-bs-theme="dark"] .btn-group .btn.active, [data-bs-theme="dark"] .radiobtn.active { color: #17120d; }
 
 /* ---- navbar language selector (EN/PT) + dark-mode toggle (v0.9.172) -------
@@ -365,10 +431,12 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-bubble-row { display: flex; margin: 0.35rem 0; }
 .sk-bubble { max-width: 82%; border-radius: 0.9rem; padding: 0.5rem 0.8rem;
   line-height: 1.42; overflow-wrap: anywhere; }
-.sk-bubble-user { margin-left: auto; background: var(--sk-clay, #B5652E);
-  color: #fff; }
-.sk-bubble-bot { margin-right: auto; background: var(--bs-light, #f1ece6);
-  border: 1px solid var(--bs-border-color); }
+/* v0.9.218: the reply took Bootstrap's --bs-light, which stays near-white in
+   dark mode under light text (1.0:1); both bubbles now use the palette. */
+.sk-bubble-user { margin-left: auto; background: var(--sk-brown);
+  color: var(--sk-cream); }
+.sk-bubble-bot { margin-right: auto; background: var(--sk-sand);
+  color: var(--sk-ink); border: 1px solid var(--sk-line); }
 .sk-bubble p:last-child, .sk-bubble ul:last-child { margin-bottom: 0; }
 .sk-chat-composer { display: flex; gap: 0.5rem; align-items: flex-end;
   padding-top: 0.6rem; }
@@ -391,7 +459,7 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 1045;
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.6rem 1.05rem; border: none; border-radius: 999px;
-  background: var(--sk-brown); color: #fff; font-weight: 600;
+  background: var(--sk-brown); color: var(--sk-cream); font-weight: 600;
   box-shadow: 0 4px 14px rgba(74, 50, 38, 0.35); cursor: pointer;
 }
 .sk-assistant-fab:hover { filter: brightness(1.08); }

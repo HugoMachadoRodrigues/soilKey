@@ -460,7 +460,7 @@ photo_server <- function(id, rv) {
       )
     })
 
-    output$munsell_table <- DT::renderDT({
+    output$munsell_table <- sk_renderDT({
       shiny::req(rv$pedon)
       h <- as.data.frame(rv$pedon$horizons)
       cols <- intersect(c("designation", "top_cm", "bottom_cm",

@@ -405,7 +405,7 @@ map_server <- function(id, rv, settings) {
       cc   <- shiny::isolate(coords_r())
       nb   <- shiny::isolate(nbr())
       mode <- shiny::isolate(input$mode) %||% "point"
-      m <- leaflet::leaflet() |> leaflet::addProviderTiles(prov)
+      m <- sk_leaflet() |> leaflet::addProviderTiles(prov)
       m <- if (!is.null(cc)) m |> leaflet::setView(cc$lon, cc$lat, zoom = 7)
            else m |> leaflet::setView(-51, -14, zoom = 4)
       m <- add_points(m, cc, nb, mode)
@@ -777,7 +777,7 @@ map_server <- function(id, rv, settings) {
           bslib::card_body(DT::DTOutput(ns("grid_summary"))))
     })
 
-    output$dist_table <- DT::renderDT({
+    output$dist_table <- sk_renderDT({
       p <- prior(); shiny::req(p)
       shiny::validate(shiny::need(!inherits(p, "error"),
         if (inherits(p, "error")) conditionMessage(p) else i18n("mpoint.na")))
@@ -822,13 +822,13 @@ map_server <- function(id, rv, settings) {
           popup = popup,
           popupOptions = leaflet::popupOptions(closeOnClick = FALSE))
     }, ignoreInit = TRUE)
-    output$attrs_table <- DT::renderDT({
+    output$attrs_table <- sk_renderDT({
       p <- prior(); shiny::req(p)
       shiny::validate(shiny::need(!inherits(p, "error"), i18n("mpoint.na")))
       sk_datatable(.sk_round2(p$typical_attributes), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
-    output$batch_table <- DT::renderDT({
+    output$batch_table <- sk_renderDT({
       res <- batch(); shiny::req(res)
       shiny::validate(shiny::need(!inherits(res, "error"),
         if (inherits(res, "error")) conditionMessage(res) else "n/a"))
@@ -840,7 +840,7 @@ map_server <- function(id, rv, settings) {
       sk_datatable(.sk_round2(show), rownames = FALSE,
                     options = list(dom = "tp", pageLength = 8, scrollX = TRUE))
     })
-    output$grid_summary <- DT::renderDT({
+    output$grid_summary <- sk_renderDT({
       rr <- grid_result(); shiny::req(rr)
       shiny::validate(shiny::need(!inherits(rr, "error"),
         if (inherits(rr, "error")) conditionMessage(rr) else "n/a"))

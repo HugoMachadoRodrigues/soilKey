@@ -81,7 +81,7 @@ pro_numeric_attrs <- function() {
 # profile with no soil property at all (v0.9.213): no grade to show.
 pro_grade_badge <- function(grade) {
   grade <- as.character(grade %||% NA)
-  pal <- c(A = "#198754", B = "#0d6efd", C = "#fd7e14",
+  pal <- c(A = "#198754", B = "#0d6efd", C = "#b35900",  # C: AA with white text
            D = "#dc3545", E = "#6c757d")
   col <- if (!is.na(grade) && grade %in% names(pal)) pal[[grade]] else "#6c757d"
   lab <- if (is.na(grade)) i18n("ui.no_measured_data")
@@ -335,7 +335,34 @@ sk_datatable <- function(data, ..., options = list()) {
       processing     = i18n("dt.processing"),
       paginate       = list(first = i18n("dt.first"), previous = i18n("dt.previous"),
                             `next` = i18n("dt.next"), last = i18n("dt.last")))
-  DT::datatable(data, ..., options = options)
+  sk_drop_jquery(DT::datatable(data, ..., options = options))
+}
+
+# The jQuery that DT and leaflet widgets bring along, dropped (v0.9.218). The
+# page already loads Shiny's own jQuery, which the widgets use. Both widgets
+# also carry jquerylib's copy, and when the two are the same version (3.6.0,
+# with the Shiny 1.8 of the container image) they share the resource path
+# "jquery-3.6.0": rendering a widget re-points it to jquerylib's folder, which
+# has no jquery.min.js, so every page that instance served afterwards came up
+# without jQuery (HTTP 404). Local installs, on a newer Shiny, never collide.
+sk_drop_jquery <- function(widget) {
+  widget$dependencies <- Filter(function(d) !identical(d$name, "jquery"),
+                                widget$dependencies)
+  widget
+}
+
+# leaflet::leaflet() without its own jQuery (see sk_drop_jquery()).
+sk_leaflet <- function(...) sk_drop_jquery(leaflet::leaflet(...))
+
+# DT::renderDT() with the data sent in the table itself (server = FALSE), over
+# the session's websocket (v0.9.218). With server-side processing the browser
+# fetches the rows by HTTP from /session/<id>/dataobj/<table>, and Cloud Run
+# does not always route that request to the instance holding the session
+# (session affinity is best effort): the table stayed empty with a 404. The
+# app's tables are small (horizons, key traces, attribute lists).
+sk_renderDT <- function(expr, ...) {
+  DT::renderDT(substitute(expr), server = FALSE, quoted = TRUE,
+               env = parent.frame(), ...)
 }
 
 
@@ -376,7 +403,19 @@ sk_class_pal <- function(domain, na.color = "transparent") {
 # the app's theme while rendering; without it they come out unthemed, under
 # other file names. renderPage() is internal to shiny, hence the fallback to
 # the page's own dependencies if it ever changes.
+#
+# v0.9.218: the app's theme is also made every session's theme from the start.
+# Shiny records the current theme (the "bootstrapTheme" option) when it serves
+# a page while the app is running, and sessions copy the app's options when
+# they open. app.R is sourced before the app state exists (shiny::runApp()), so
+# this start-up render did not record it, and a session that Cloud Run opened
+# on an instance that had not yet served a page had no theme: DT tables fell
+# back to their default style, and selectize and bslib's component CSS were
+# rendered unthemed, re-pointing their resource paths to folders without the
+# themed files, so pages that instance served afterwards got 404s for them.
+# Set before the app state exists, the option is copied into it.
 sk_register_page_deps <- function(page, theme) {
+  shiny::shinyOptions(bootstrapTheme = theme)
   old_bs <- bslib::bs_global_set(theme)
   on.exit(bslib::bs_global_set(old_bs), add = TRUE)
   ok <- tryCatch({ shiny:::renderPage(page); TRUE }, error = function(e) FALSE)

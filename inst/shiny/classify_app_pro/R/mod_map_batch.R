@@ -298,7 +298,7 @@ map_batch_server <- function(id, rv, settings) {
 
     # ---- base map -----------------------------------------------------------
     output$map <- leaflet::renderLeaflet({
-      leaflet::leaflet() |>
+      sk_leaflet() |>
         leaflet::addProviderTiles("CartoDB.Positron") |>
         leaflet::setView(lng = -51, lat = -14, zoom = 4)
     })
@@ -342,7 +342,7 @@ map_batch_server <- function(id, rv, settings) {
                        i18n("mbatch.n_points", nrow(res)))
     })
 
-    output$table <- DT::renderDT({
+    output$table <- sk_renderDT({
       res <- results()
       shiny::req(res)
       shiny::validate(shiny::need(!inherits(res, "error"),

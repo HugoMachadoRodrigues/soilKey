@@ -608,7 +608,7 @@ chat_server <- function(id, rv, settings) {
         return(shiny::div(class = "small mb-2 alert alert-warning py-1 px-2",
                           shiny::icon("triangle-exclamation"), " ",
                           i18n("chat.backend_unavailable")))
-      shiny::div(class = "small mb-2", style = "color:#3f6024;",
+      shiny::div(class = "small mb-2 sk-ok",
                  shiny::icon("circle-check"), " ", i18n("chat.backend_groq", model))
     })
     # render eagerly so the status shows even while the settings sidebar starts

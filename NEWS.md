@@ -1,3 +1,66 @@
+# soilKey 0.9.218 (2026-10-08)
+
+## Pro app: pages no longer lose jQuery or their theme after a table or a map
+
+On the live app, an instance that had rendered a key-trace table or a map then
+served pages without jQuery (HTTP 404 for `jquery-3.6.0/jquery.min.js`), so they
+came up broken, until it was restarted. The page loads Shiny's jQuery from the
+resource path `jquery-3.6.0`; DT and leaflet widgets also carry jquerylib's
+jQuery, of the same version in the container's Shiny 1.8, under the same path,
+and rendering one re-pointed it to a folder without `jquery.min.js`. Found in
+the request logs of the 0.9.218 test revision: one instance answered 200, then
+404 from the moment a session there had rendered the table. `sk_datatable()`
+and the new `sk_leaflet()` drop the widgets' own jQuery; the page's is the one
+they use. A local install, on a newer Shiny (jQuery 3.7.1), never collides,
+which is why only the container showed it.
+
+The same test revision showed a second fault, of the multi-instance setup of
+0.9.215: a session that Cloud Run opened on an instance which had not yet served
+a page had no theme. Shiny records the theme when it serves a page with the app
+running, and app.R, where 0.9.215 renders the page at start-up, is sourced
+before that. Its tables then took DT's default style, and selectize and bslib's
+component CSS, rendered unthemed, re-pointed their resource paths to folders
+without the themed files, so pages that instance served next lost their select
+inputs' and layout's styles (404). `sk_register_page_deps()` now also makes the
+app's theme the theme of every session from start-up.
+
+Cloud Run's session affinity is best effort, and the request with which a
+server-side DT table fetches its rows (`/session/<id>/dataobj/<table>`) could
+reach an instance that did not hold the session: the table stayed empty. The
+app's tables are small, so they now send their rows with the table, over the
+session's websocket (`sk_renderDT()`, `server = FALSE`).
+
+## Pro app: readable dark mode, AA contrast in both themes
+
+A contrast check of every tab (WCAG 2.1 AA: 4.5:1 for text, 3:1 for large
+text), in dark and in light mode, found 21 failing combinations of text and
+background in dark mode and 17 in light mode. All now pass; the only text under
+4.5:1 left is the "Key" of the soilKey logotype, which WCAG exempts.
+
+* **Assistant replies were unreadable in dark mode**: light text on Bootstrap's
+  `--bs-light`, which stays near-white (1.0:1). Both chat bubbles now use the
+  app palette: the reply on the sand wash, the question on the brown (it was
+  white on light clay, 1.9:1 dark and 2.5:1 light).
+* **The key trace "criteria" cells** (met / not met / assigned / needs data)
+  kept their light pastel fills under light text in dark mode (1.0-1.1:1). The
+  fills are palette tokens now, with dark shades in dark mode; so are the
+  probability colours of the Uncertainty table.
+* **Plotly charts** (depth profile, spectrum, posterior) were white panels in
+  dark mode; they now draw on the card colour with light axis text and grid.
+* The terracotta accent is darkened from #B5652E to #9E5626 and the moss from
+  #5E7B3B to #557036 (CSS palette and `bs_theme()`), so white text on them,
+  and them as text on the light washes, reach 4.5:1 (buttons, links, the
+  footer version, `pre` output, the inactive result tabs were 3.7-4.3:1).
+* Dark mode: terracotta buttons and the Assistant button take dark text
+  (white on them was 2.4-2.6:1); outline buttons, `.text-success` and the
+  "results are up to date" style notes take the dark-mode shades (they were
+  2.4-4.2:1); the profile picker is no longer a white box.
+* Both themes: "Skip tour" is a plain link (it was muted text on a
+  terracotta button, 1.4-1.9:1); the table pager is brown, not Flatly's green with
+  near-white text (2.3:1); Docs in the navbar is styled like the other
+  navbar links (1.6:1); the footer licence line is 5:1 (2.8:1); the grade C
+  badge is a darker orange (white on it was 2.6:1).
+
 # soilKey 0.9.217 (2026-10-08)
 
 ## WRB 2022 names follow WRB 2022: Chapter 4 lists, Chapter 2.2 rules

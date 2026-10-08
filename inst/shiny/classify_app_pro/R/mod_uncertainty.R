@@ -269,7 +269,7 @@ uncertainty_server <- function(id, rv, settings) {
     })
 
     # per-point uncertainty table (group mode)
-    output$group_table <- DT::renderDT({
+    output$group_table <- sk_renderDT({
       g <- group_unc(); shiny::req(g)
       shiny::validate(shiny::need(!inherits(g, "error"),
         if (inherits(g, "error")) conditionMessage(g) else i18n("uncert.na")))
@@ -287,7 +287,8 @@ uncertainty_server <- function(id, rv, settings) {
         DT::formatStyle(
           i18n("uncert.posterior_probability"),
           color = DT::styleInterval(c(0.5, 0.8),
-                                    c("#b02a37", "#997404", "#3f6024")),
+                                    c("var(--sk-prob-low)", "var(--sk-prob-mid)",
+                                      "var(--sk-prob-high)")),
           fontWeight = "bold")
     })
 
@@ -360,7 +361,7 @@ uncertainty_server <- function(id, rv, settings) {
           yaxis = list(title = ""), margin = list(l = 140, t = 20, b = 40))
     })
 
-    output$drill_sensitivity <- DT::renderDT({
+    output$drill_sensitivity <- sk_renderDT({
       d <- drill(); shiny::req(d, !inherits(d$u, "error"))
       s <- d$u$sensitivity
       if (is.null(s) || nrow(s) == 0L)
@@ -393,7 +394,7 @@ uncertainty_server <- function(id, rv, settings) {
           margin = list(l = 140, t = 20, b = 40))
     })
 
-    output$sensitivity <- DT::renderDT({
+    output$sensitivity <- sk_renderDT({
       u <- unc()
       shiny::req(u, !inherits(u, "error"))
       s <- u$sensitivity
