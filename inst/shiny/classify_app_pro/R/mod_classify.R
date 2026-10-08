@@ -281,7 +281,7 @@ classify_server <- function(id, rv, settings) {
                           style = "color:#8a5a00;font-weight:600;",
                           shiny::icon("triangle-exclamation"), " ",
                           i18n("classify.hint_stale")))
-      shiny::div(class = "small mt-2", style = "color:#3f6024;",
+      shiny::div(class = "small mt-2 sk-ok",
                  shiny::icon("circle-check"), " ", i18n("classify.hint_current"))
     })
 
@@ -378,7 +378,9 @@ classify_server <- function(id, rv, settings) {
           "status",
           backgroundColor = DT::styleEqual(
             c(pass_lbl, fail_lbl, lbl[["selected"]], lbl[["indeterminate"]]),
-            c("#d1e7dd", "#eef1f3", "#cfe2ff", "#fff3cd")))
+            # palette tokens (soilkey.css), so dark mode has its own shades
+            c("var(--sk-st-met)", "var(--sk-st-fail)", "var(--sk-st-sel)",
+              "var(--sk-st-na)")))
     })
 
     output$ambiguities <- shiny::renderUI({

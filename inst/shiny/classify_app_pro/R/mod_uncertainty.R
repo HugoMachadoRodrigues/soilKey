@@ -287,7 +287,8 @@ uncertainty_server <- function(id, rv, settings) {
         DT::formatStyle(
           i18n("uncert.posterior_probability"),
           color = DT::styleInterval(c(0.5, 0.8),
-                                    c("#b02a37", "#997404", "#3f6024")),
+                                    c("var(--sk-prob-low)", "var(--sk-prob-mid)",
+                                      "var(--sk-prob-high)")),
           fontWeight = "bold")
     })
 

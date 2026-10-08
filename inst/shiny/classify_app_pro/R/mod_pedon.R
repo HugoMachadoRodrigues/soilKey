@@ -798,7 +798,7 @@ pedon_server <- function(id, rv) {
       if (is.null(df) || nrow(df) == 0L) return(NULL)
       lines <- .pedon_geom_lines(validate_horizon_geometry(df))
       if (length(lines$errors) == 0L && length(lines$warnings) == 0L) {
-        return(shiny::div(class = "small mt-2", style = "color:#3f6024;",
+        return(shiny::div(class = "small mt-2 sk-ok",
                           shiny::icon("circle-check"), " ", i18n("pedon.geom_ok")))
       }
       shiny::tagList(

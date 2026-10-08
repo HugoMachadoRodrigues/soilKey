@@ -81,7 +81,7 @@ pro_numeric_attrs <- function() {
 # profile with no soil property at all (v0.9.213): no grade to show.
 pro_grade_badge <- function(grade) {
   grade <- as.character(grade %||% NA)
-  pal <- c(A = "#198754", B = "#0d6efd", C = "#fd7e14",
+  pal <- c(A = "#198754", B = "#0d6efd", C = "#b35900",  # C: AA with white text
            D = "#dc3545", E = "#6c757d")
   col <- if (!is.na(grade) && grade %in% names(pal)) pal[[grade]] else "#6c757d"
   lab <- if (is.na(grade)) i18n("ui.no_measured_data")

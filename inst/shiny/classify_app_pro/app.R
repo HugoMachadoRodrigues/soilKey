@@ -70,8 +70,8 @@ options(ellmer_max_tries = 1L)
 sk_theme <- bslib::bs_theme(
   version = 5, bootswatch = "flatly",
   primary   = "#7A5230",   # topsoil brown (buttons, active nav)
-  secondary = "#B5652E",   # terracotta subsoil (accents)
-  success   = "#5E7B3B",   # vegetation moss (positive states)
+  secondary = "#9E5626",   # terracotta subsoil (accents); AA with white text
+  success   = "#557036",   # vegetation moss (positive states); AA on the washes
   info      = "#4E6E81",   # slate (data / measurement cues)
   warning   = "#C9962F",   # ochre
   danger    = "#A63D40",   # oxidised red
@@ -230,7 +230,7 @@ sk_page <- function() {
                  class = "nav-link")
     ),
     bslib::nav_item(
-      tags$a(icon("book"), i18n("nav.docs"),
+      tags$a(icon("book"), i18n("nav.docs"), class = "nav-link",
              href   = "https://hugomachadorodrigues.github.io/soilKey/",
              target = "_blank")
     ),
