@@ -124,8 +124,11 @@ test_that("cryic_horizon() delegates to cryic_conditions and renames the result"
 # =============================================================================
 test_that("the canonical Ferralsol classifies to the documented full names", {
   p <- make_ferralsol_canonical()
+  # v0.9.217: WRB 2022 Chapter 4 lists and Chapter 2.2 order (Ferric is a
+  # supplementary qualifier of Ferralsols; Humic/Ochric gives one; Rubic is
+  # not in the Ferralsol list; supplementary ones in alphabetical order)
   expect_equal(classify_wrb2022(p)$name,
-               "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)")
+               "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)")
   expect_equal(classify_usda(p)$name, "Rhodic Hapludox")
   expect_equal(classify_sibcs(p)$name, "Latossolos Vermelhos Distróficos típicos")
   # the WRB (Eutric) / SiBCS (Distrofico) base-status split is real and stable

@@ -20,13 +20,25 @@ qualifiers based on the feature's actual depth. Default
 \code{FALSE} leaves names byte-identical to earlier versions.}
 }
 \value{
-A list with \code{principal} (character vector),
-        \code{supplementary} (character vector), \code{trace}, and
-        \code{trace_supplementary}.
+A list with \code{principal} and \code{supplementary} (character
+        vectors, in the order they are written in the name), \code{trace}
+        and \code{trace_supplementary}.
 }
 \description{
-Walks the YAML qualifier list for a given RSG code and tests every
-principal / supplementary qualifier against the pedon. Returns the
-resolved canonical name pieces (principal + supplementary) plus a
-per-qualifier trace.
+Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
+Chapter 4, in \code{inst/rules/wrb2022/qualifiers.yaml}) and tests each
+qualifier against the pedon, following the rules for naming soils of
+Chapter 2.2: in a slash group (\code{"Rhodic/Xanthic"}) only the first
+qualifier that applies is used; a qualifier made redundant by another is
+left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
+where the RSG lists it and no other principal qualifier does.
+}
+\details{
+Both vectors come back in the order of the name. Principal qualifiers are
+written right to left, "the uppermost qualifier in the list is placed
+closest to the name of the RSG", so \code{principal} reads the matched list
+backwards. Supplementary qualifiers open with the texture qualifiers (top to
+bottom of the profile when specifiers make several apply), then follow the
+alphabetical order of the qualifier, not of the subqualifier. Until
+v0.9.217 both kept the order of the old lists.
 }

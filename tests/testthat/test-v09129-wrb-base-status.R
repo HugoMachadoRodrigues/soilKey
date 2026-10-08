@@ -60,13 +60,25 @@ test_that("strict: base saturation alone (no Al data) yields NA, not a fallback"
 })
 
 test_that("Epi/Endo variants restrict the Al criterion to the upper/lower part", {
-  # Al-dominated upper (20-50), base-dominated lower (50-100)
+  # WRB 2022 Ch 2.3.1, rule 3: Epi-/Endo- Dystric or Eutric means present in
+  # the major part of 20-50 (Epi) or 50-100 cm (Endo) AND absent in the major
+  # part of 20-100 cm; they go with the predominant qualifier ("Epidystric
+  # Eutric", "Endoeutric Dystric"). v0.9.217 adds the second half, which the
+  # functions did not check.
+  # Al-dominated 20-55 (35 cm), base-dominated 55-100 (45 cm): the soil is
+  # Eutric over 20-100, dystric near the top -> Epidystric, not Endoeutric
   p <- mk(data.frame(top_cm = c(0, 20, 55), bottom_cm = c(20, 55, 100),
                      al_sat_pct = c(70, 75, 10)))
   expect_true(qual_epidystric(p)$passed)
   expect_false(isTRUE(qual_endodystric(p)$passed))
-  expect_true(qual_endoeutric(p)$passed)
+  expect_false(isTRUE(qual_endoeutric(p)$passed))   # Eutric is predominant
   expect_false(isTRUE(qual_epieutric(p)$passed))
+  # Al-dominated 20-70 (50 cm), base-dominated 70-100 (30 cm): the soil is
+  # Dystric, eutric at depth -> Endoeutric
+  q <- mk(data.frame(top_cm = c(0, 20, 70), bottom_cm = c(20, 70, 100),
+                     al_sat_pct = c(70, 75, 10)))
+  expect_true(qual_endoeutric(q)$passed)
+  expect_false(isTRUE(qual_epidystric(q)$passed))   # Dystric is predominant
 })
 
 test_that("organic layers use the WRB Histosol pH branch", {

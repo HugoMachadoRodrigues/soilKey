@@ -23,7 +23,9 @@ test_that("all qualifiers in qualifiers.yaml have backing qual_* functions", {
     rq <- rsg_quals[[rsg_code]]
     all_quals <- c(all_quals, rq$principal, rq$supplementary)
   }
-  unique_quals <- unique(all_quals)
+  # v0.9.217: Chapter 4 alternatives share one entry ("Rhodic/Xanthic");
+  # Haplic is the resolver's default, not a function
+  unique_quals <- setdiff(unique(unlist(strsplit(all_quals, "/", fixed = TRUE))), "Haplic")
   ns <- ls(getNamespace("soilKey"))
   qual_fns <- ns[grepl("^qual_", ns)]
   has_fn <- function(name) paste0("qual_", tolower(name)) %in% qual_fns
@@ -105,24 +107,43 @@ test_that("qual_floatic does NOT fire on dense mineral layers", {
   expect_false(isTRUE(qual_floatic(p)$passed))
 })
 
-test_that("qual_toxic fires on extremely acidic profile (pH <= 3.5)", {
-  p <- PedonRecord$new(
+# v0.9.217: WRB 2022 Ch 5, Toxic is "toxic concentrations of organic or
+# inorganic substances other than ions of Al, Fe, Na, Ca and Mg" within 50 cm,
+# the limits being set by governments. Acidity and salts are exactly the ions
+# it leaves out, so pH <= 3.5 or EC >= 16 no longer make a soil Toxic; a
+# recorded contamination does.
+test_that("qual_toxic does not fire on acidity or salinity alone", {
+  acid <- PedonRecord$new(
     site = list(id = "toxic-1", lat = 0, lon = 0, country = "TEST"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("A", "B"),
                       ph_h2o = c(3.0, 3.2))
   )
-  expect_true(isTRUE(qual_toxic(p)$passed))
-})
-
-test_that("qual_toxic fires on hyper-saline profile (EC >= 16 dS/m)", {
-  p <- PedonRecord$new(
+  expect_false(isTRUE(qual_toxic(acid)$passed))
+  saline <- PedonRecord$new(
     site = list(id = "toxic-2", lat = 0, lon = 0, country = "TEST"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("Az", "Bz"),
                       ec_dS_m = c(20, 18))
   )
+  expect_false(isTRUE(qual_toxic(saline)$passed))
+})
+
+test_that("qual_toxic fires on a recorded contamination within 50 cm", {
+  p <- PedonRecord$new(
+    site = list(id = "toxic-3", lat = 0, lon = 0, country = "TEST"),
+    horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
+                      designation = c("A", "B"),
+                      contamination_type = c("hydrocarbons", NA))
+  )
   expect_true(isTRUE(qual_toxic(p)$passed))
+  deep <- PedonRecord$new(
+    site = list(id = "toxic-4", lat = 0, lon = 0, country = "TEST"),
+    horizons = mk_h(top_cm = c(0, 60), bottom_cm = c(60, 120),
+                      designation = c("A", "C"),
+                      contamination_type = c("none", "Pb"))
+  )
+  expect_false(isTRUE(qual_toxic(deep)$passed))   # below 50 cm
 })
 
 test_that("qual_toxic does NOT fire on benign chemistry", {

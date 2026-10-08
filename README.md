@@ -80,9 +80,9 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()
 
-# WRB 2022 — full Chapter 6 name (RSG + qualifiers + specifiers)
+# WRB 2022 — full name (RSG + qualifiers, Chapters 4 and 2.2)
 classify_wrb2022(pedon)$name
-#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 
 # SiBCS 5 — 4th level (Subgroup) + Family (5th level)
 classify_sibcs(pedon, include_familia = TRUE)$name
@@ -93,7 +93,7 @@ classify_usda(pedon)$name
 #> [1] "Rhodic Hapludox"
 ```
 
-* WRB delivers the **complete Chapter 6 name** — four principal qualifiers + five supplementary qualifiers in canonical order, with optional **depth specifiers** (Epi-/Endo-/Bathy-/…, via `classify_wrb2022(specifiers = TRUE)`).
+* WRB delivers the **complete name**: the principal qualifiers of the RSG's Chapter 4 list, written right to left, and the supplementary qualifiers in brackets (texture first, then alphabetical), by the rules of Chapter 2.2, with optional **depth specifiers** (Epi-/Endo-/Bathy-/…, via `classify_wrb2022(specifiers = TRUE)`).
 * SiBCS descends through **all four hierarchical levels (Order → Suborder → Great Group → Subgroup)** plus a **5th-level Family** with up to 15 orthogonal adjectival dimensions.
 * USDA Soil Taxonomy walks the **complete Path C** (Order → Suborder → Great Group → Subgroup) per *Keys to Soil Taxonomy 13th ed.*, plus the **5th-level family** modifiers (`include_family = TRUE`).
 
@@ -367,7 +367,7 @@ pedon <- PedonRecord$new(
 ### 2. Classify across three systems in one pass
 
 ```r
-# WRB 2022 — full Chapter 6 name
+# WRB 2022 — full name
 classify_wrb2022(pedon)$name
 
 # SiBCS 5 — 4th level (Subgroup) + 5th level (Family)
@@ -501,7 +501,7 @@ pedon <- extract_pedon_from_pdf(
 )
 
 classify_wrb2022(pedon)$name
-#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 ```
 
 The VLM extracts a JSON-Schema-validated `PedonRecord` from a field-report PDF (or photo); the deterministic key takes it from there. The schema rejects any LLM hallucination of class names — extraction is restricted to per-attribute observations.

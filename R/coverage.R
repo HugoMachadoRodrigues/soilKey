@@ -106,6 +106,11 @@
   # Al-vs-bases computation. Named explicitly, like .qual_decomp above.
   if (grepl("\\.wrb_(base|hyper)_status_result\\s*\\(\\s*pedon", b))
     return(TRUE)
+  # Epic, Endic and Dorsic (v0.9.217) delegate to the helper that reads the
+  # RSG's own diagnostic horizon and assigns `passed` from its depth.
+  if (grepl("\\.wrb_rsg_horizon_depth_qualifier\\s*\\(\\s*pedon", b) &&
+        .body_is_real(".wrb_rsg_horizon_depth_qualifier"))
+    return(TRUE)
   FALSE
 }
 

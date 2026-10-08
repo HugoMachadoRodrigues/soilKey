@@ -8,18 +8,15 @@ test_that("v0.9.1 YAML lists the canonical Bloco A principal qualifiers", {
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   qrules <- yaml::read_yaml(qfile)
 
-  expect_gt(length(qrules$rsg_qualifiers$HS$principal), 15L)
-  expect_gt(length(qrules$rsg_qualifiers$AT$principal), 12L)
-  expect_gt(length(qrules$rsg_qualifiers$TC$principal), 20L)
-  expect_gt(length(qrules$rsg_qualifiers$CR$principal), 20L)
-  expect_gt(length(qrules$rsg_qualifiers$LP$principal), 20L)
-
-  # Every Bloco A RSG must carry its anchor qualifier in canonical position.
-  expect_true("Folic"     %in% qrules$rsg_qualifiers$HS$principal)
-  expect_true("Hortic"    %in% qrules$rsg_qualifiers$AT$principal)
-  expect_true("Ekranic"   %in% qrules$rsg_qualifiers$TC$principal)
-  expect_true("Glacic"    %in% qrules$rsg_qualifiers$CR$principal)
-  expect_true("Lithic"    %in% qrules$rsg_qualifiers$LP$principal)
+  # v0.9.217: the lists are WRB 2022 Chapter 4's, shorter than the WRB 2014
+  # lists the old length checks were written for. Alternatives share one
+  # entry ("Nudilithic/Lithic"), so names are looked up in the flattened list.
+  flat <- function(x) unlist(strsplit(unlist(x), "/", fixed = TRUE))
+  expect_true("Folic"     %in% flat(qrules$rsg_qualifiers$HS$principal))
+  expect_true("Hortic"    %in% flat(qrules$rsg_qualifiers$AT$principal))
+  expect_true("Ekranic"   %in% flat(qrules$rsg_qualifiers$TC$principal))
+  expect_true("Glacic"    %in% flat(qrules$rsg_qualifiers$CR$principal))
+  expect_true("Lithic"    %in% flat(qrules$rsg_qualifiers$LP$principal))
 })
 
 
@@ -305,7 +302,10 @@ test_that("resolve_wrb_qualifiers gracefully tags missing functions", {
   # All YAML names appear in the trace.
   qfile <- system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey")
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
-  expected_names <- yaml::read_yaml(qfile)$rsg_qualifiers$HS$principal
+  # v0.9.217: every alternative of a slash group is traced; Haplic, the
+  # default, is not a test
+  expected_names <- setdiff(unlist(strsplit(unlist(
+    yaml::read_yaml(qfile)$rsg_qualifiers$HS$principal), "/", fixed = TRUE)), "Haplic")
   expect_true(all(expected_names %in% names(trace)))
 
   # v0.9.33: all qualifiers in qualifiers.yaml now have backing

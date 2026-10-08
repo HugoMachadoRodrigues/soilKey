@@ -32,13 +32,23 @@ test_that("Aceric: jarosite required where recorded", {
   expect_true(qual_aceric(mk(base))$passed)
 })
 
-test_that("Mochipic: >= 300 saturation days where measured + >= 25 cm", {
+test_that("Mochipic: a stagnic layer >= 25 cm saturated >= 300 days", {
+  # v0.9.217: WRB 2022 Ch 5, "a layer with stagnic properties, >= 25 cm thick
+  # and within 100 cm ..., that is water-saturated for >= 300 cumulative days".
+  # The stagnic properties used to be read from a mottle-pattern text; they now
+  # come from stagnic_properties(), here the example Stagnosol's Bg (15-50 cm).
+  st <- make_stagnosol_canonical()
+  sat <- function(days) {
+    h <- st$horizons; h$water_saturation_days <- days
+    PedonRecord$new(site = st$site, horizons = h)
+  }
+  expect_true(qual_mochipic(sat(320))$passed)
+  expect_false(isTRUE(qual_mochipic(sat(100))$passed))   # < 300 days
+  expect_true(is.na(qual_mochipic(st)$passed))            # days not recorded
+  # saturation without stagnic properties is not Mochipic
   base <- data.frame(top_cm = c(0, 10), bottom_cm = c(10, 60),
-                     mottle_morphology = c("mochi", "banded"))
-  dry <- base; dry$water_saturation_days <- c(100, 100)  # < 300 -> no
-  wet <- base; wet$water_saturation_days <- c(320, 320)  # >= 300, 60 cm -> yes
-  expect_false(isTRUE(qual_mochipic(mk(dry))$passed))
-  expect_true(qual_mochipic(mk(wet))$passed)
+                     water_saturation_days = c(320, 320))
+  expect_false(isTRUE(qual_mochipic(mk(base))$passed))
 })
 
 test_that("Isopteric: bulk density <= 1.3 and < 5% particles >= 630 um", {

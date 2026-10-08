@@ -11,7 +11,7 @@
 #' @field system         Character. \code{"WRB 2022"} or \code{"SiBCS 5"}.
 #' @field name           Character. Full classification name with
 #'                       qualifiers (e.g.
-#'                       \code{"Rhodic Ferralsol (Clayic, Humic, Dystric)"}).
+#'                       \code{"Rhodic Ferralsol (Clayic, Dystric, Humic)"}).
 #' @field rsg_or_order   Character. Bare RSG (WRB) or order (SiBCS), e.g.
 #'                       \code{"Ferralsols"}.
 #' @field qualifiers     List. Principal and supplementary qualifiers in

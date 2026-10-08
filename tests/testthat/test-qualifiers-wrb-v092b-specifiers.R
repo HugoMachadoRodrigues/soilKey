@@ -105,7 +105,10 @@ test_that("resolve_wrb_qualifiers dispatches specifier-prefixed names", {
                   drainage_class = "well drained"),
     horizons = ensure_horizon_schema(hz)
   )
-  res <- resolve_wrb_qualifiers(pr, "CH")
+  # v0.9.217: Endocalcic is in the Phaeozem list of WRB 2022 Chapter 4, not in
+  # the Chernozem one (protocalcic properties or a calcic horizon are part of
+  # the Chernozem definition), so it is resolved against PH.
+  res <- resolve_wrb_qualifiers(pr, "PH")
   # Endocalcic must appear in trace AND fire (Calcic passes on layer 3
   # at top 60 cm; the Endo- band 50-100 contains it).
   expect_true("Endocalcic" %in% names(res$trace))

@@ -328,12 +328,21 @@
   nm <- as.character(c(.chat_get(q, "principal"), .chat_get(q, "supplementary")))
   if (!length(nm)) return(NULL)
   ns <- asNamespace("soilKey")
+  # Epic, Endic and Dorsic are defined by the RSG's own horizon (v0.9.217)
+  # and take its code, as the resolver passes it.
+  rsg <- tryCatch({
+    rs <- get0("load_rules", envir = ns, inherits = FALSE)("wrb2022")$rsgs
+    hit <- Filter(function(x) identical(x$name, .chat_get(r, "rsg_or_order")), rs)
+    if (length(hit)) hit[[1]]$code
+  }, error = function(e) NULL)
   c("  WRB qualifiers in the name, as evaluated:",
     vapply(nm, function(x) {
       if (identical(x, "Haplic"))
         return("  - Haplic: no other principal qualifier applies")
       fn  <- get0(paste0("qual_", tolower(x)), envir = ns, inherits = FALSE)
-      res <- if (is.function(fn)) tryCatch(fn(pedon), error = function(e) NULL)
+      res <- if (is.function(fn)) tryCatch(
+        if ("rsg_code" %in% names(formals(fn))) fn(pedon, rsg_code = rsg) else fn(pedon),
+        error = function(e) NULL)
       lay <- .chat_get(res, "layers")
       ref <- .chat_get(res, "reference")
       paste0("  - ", x, ": met",

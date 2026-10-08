@@ -40,11 +40,17 @@ test_that("qual_entic = albic AND NOT spodic", {
 })
 
 
-test_that("qual_tonguic detects A/B designation patterns", {
+test_that("qual_tonguic: a mollic horizon tonguing into the layer below", {
+  # v0.9.217, WRB 2022: "tonguing of a chernic, mollic or umbric horizon into
+  # an underlying layer". An AB/BA designation (the v0.9.64 reading) is not
+  # tonguing; a tongued lower boundary of the mollic horizon is.
   p <- .pedon_minimal()
   p$horizons$designation <- c("A", "BA")
-  res <- qual_tonguic(p)
-  expect_true(isTRUE(res$passed))
+  expect_false(isTRUE(qual_tonguic(p)$passed))
+  ch <- make_chernozem_canonical()
+  h <- ch$horizons; h$boundary_topography <- "tongued"
+  expect_true(isTRUE(qual_tonguic(PedonRecord$new(site = ch$site, horizons = h))$passed))
+  expect_true(is.na(qual_tonguic(ch)$passed))     # boundary not described
 })
 
 
@@ -102,10 +108,12 @@ test_that("qual_endic returns layers in 50-100 cm window", {
 })
 
 
-test_that("qual_epic returns layers in 0-50 cm window", {
-  p <- .pedon_minimal()
-  res <- qual_epic(p)
-  expect_true(isTRUE(res$passed))
+test_that("qual_epic: the RSG's diagnostic horizon starts <= 50 cm", {
+  # v0.9.217, WRB 2022: Epic refers to "the uppermost respective diagnostic
+  # horizon of the RSG"; it passed for any horizon starting above 50 cm.
+  lv <- make_luvisol_canonical()
+  expect_true(isTRUE(qual_epic(lv, rsg_code = "LV")$passed))   # argic <= 50
+  expect_true(is.na(qual_epic(.pedon_minimal())$passed))       # no RSG given
 })
 
 
@@ -124,25 +132,39 @@ test_that("qual_hyperorganic: organic material >= 200 cm thick (WRB 2022)", {
 })
 
 
-test_that("qual_mineralic: weighted oc_pct < 12", {
-  p <- .pedon_minimal()
-  expect_true(isTRUE(qual_mineralic(p)$passed))
+test_that("qual_mineralic: mineral layers between organic ones (Histosols)", {
+  # v0.9.217, WRB 2022: mineral material, combined >= 20 cm, above or in
+  # between layers of organic material. A mineral soil (the v0.9.64 reading,
+  # weighted OC < 12) is not Mineralic.
+  expect_false(isTRUE(qual_mineralic(.pedon_minimal())$passed))
+  peat <- PedonRecord$new(site = list(id = "t", country = "TEST"), horizons = ensure_horizon_schema(data.table::data.table(
+    designation = c("Oa", "C", "Oa2"), top_cm = c(0, 40, 70),
+    bottom_cm = c(40, 70, 120), oc_pct = c(40, 1, 40),
+    clay_pct = c(NA, 20, NA), munsell_chroma_moist = c(1, 3, 1))))
+  expect_true(isTRUE(qual_mineralic(peat)$passed))
 })
 
 
-test_that("qual_alcalic: pH H2O >= 9", {
-  p <- .pedon_minimal()
-  p$horizons$ph_h2o <- c(9.5, 9.2)
+test_that("qual_alcalic: pH >= 8.5 throughout the upper 50 cm, and Eutric", {
+  # v0.9.217, WRB 2022: pHwater >= 8.5 in the upper 50 cm of the mineral soil
+  # and fulfilling the criteria of the Eutric qualifier
+  p <- PedonRecord$new(site = list(id = "t", country = "TEST"), horizons = ensure_horizon_schema(data.table::data.table(
+    designation = c("A", "B"), top_cm = c(0, 30), bottom_cm = c(30, 100),
+    ph_h2o = c(9.5, 9.2), ca_cmol = c(10, 10), mg_cmol = c(3, 3),
+    k_cmol = c(0.5, 0.5), na_cmol = c(4, 5), al_cmol = c(0, 0),
+    clay_pct = c(20, 30))))
   expect_true(isTRUE(qual_alcalic(p)$passed))
-  p2 <- .pedon_minimal()
-  expect_false(isTRUE(qual_alcalic(p2)$passed))
+  expect_false(isTRUE(qual_alcalic(.pedon_minimal())$passed))
 })
 
 
-test_that("qual_chloridic: high cl_cmol or ec_ds_m", {
+test_that("qual_chloridic: a salic horizon with chloride-dominated solution", {
+  # v0.9.217, WRB 2022: a salic horizon whose 1:1 solution has [Cl-] >
+  # 2[SO4--] > 2[HCO3-] (in Solonchaks only). soilKey stores no solution
+  # anions, so it is never TRUE; a chloride figure alone no longer makes it.
   p <- .pedon_minimal()
   p$horizons$cl_cmol <- c(5, 6)
-  expect_true(isTRUE(qual_chloridic(p)$passed))
+  expect_false(isTRUE(qual_chloridic(p)$passed))
 })
 
 
@@ -153,19 +175,27 @@ test_that("qual_columnic: columnar / prismatic structure", {
 })
 
 
-test_that("qual_differentic: clay-increase ratio 1.2-1.4x", {
+test_that("qual_differentic: an argic or natric horizon meeting criterion 2.a", {
+  # v0.9.217, WRB 2022: "an argic or natric horizon that meets diagnostic
+  # criterion 2.a of the respective horizon". A 1.2-1.4x clay ratio without an
+  # argic horizon (the v0.9.64 reading) is not Differentic.
   p <- .pedon_minimal()
-  p$horizons$clay_pct <- c(20, 26)   # ratio 1.3 -> in (1.2, 1.4)
-  expect_true(isTRUE(qual_differentic(p)$passed))
+  p$horizons$clay_pct <- c(20, 26)
+  expect_false(isTRUE(qual_differentic(p)$passed))
+  expect_true(isTRUE(qual_differentic(make_luvisol_canonical())$passed))
 })
 
 
-test_that("qual_capillaric: redox + fine texture in upper 50", {
+test_that("qual_capillaric: reducing conditions from capillary saturation", {
+  # v0.9.217, WRB 2022: a layer >= 25 cm starting <= 75 cm with so few
+  # macropores that capillary saturation causes reducing conditions. What
+  # causes the reduction is not recorded, so it is never TRUE; redox features
+  # in a fine soil (the v0.9.64 reading) do not make it so.
   p <- .pedon_minimal()
   p$horizons$redoximorphic_features_pct <- c(5, 5)
   p$horizons$clay_pct <- c(35, 35)
   p$horizons$silt_pct <- c(30, 30)
-  expect_true(isTRUE(qual_capillaric(p)$passed))
+  expect_false(isTRUE(qual_capillaric(p)$passed))
 })
 
 
@@ -184,17 +214,35 @@ test_that("qual_protoargic: clay delta 2-6 pp", {
 })
 
 
-test_that("qual_activic: KCl-Al >= 5 cmol", {
+test_that("qual_activic: an active-clay layer above the ferralic horizon", {
+  # v0.9.217, WRB 2022: "above a ferralic horizon a layer, >= 30 cm thick,
+  # with a CEC ... >= 24 cmolc kg-1 clay and < 0.6% soil organic carbon (in
+  # Ferralsols only)". Exchangeable Al (the v0.9.64 reading) is not that.
   p <- .pedon_minimal()
   p$horizons$al_kcl_cmol <- c(6, 7)
-  expect_true(isTRUE(qual_activic(p)$passed))
+  expect_false(isTRUE(qual_activic(p)$passed))
+  f <- make_ferralsol_canonical(); h <- f$horizons
+  h$cec_cmol[1:2] <- h$clay_pct[1:2] * 0.30     # 30 cmolc per kg clay, 0-35 cm
+  h$oc_pct[1:2] <- 0.5
+  expect_true(isTRUE(qual_activic(PedonRecord$new(site = f$site, horizons = h),
+                                  rsg_code = "FR")$passed))
 })
 
 
-test_that("qual_geoabruptic: lithological discontinuity (2C / 3C)", {
+test_that("qual_geoabruptic: an abrupt textural difference not at a horizon top", {
+  # v0.9.217, WRB 2022: an abrupt textural difference within 100 cm "not
+  # associated with the upper limit of an argic, natric or spodic horizon".
+  # A 2C designation alone (the v0.9.64 reading) is not that.
   p <- .pedon_minimal()
   p$horizons$designation <- c("A", "2C")
-  expect_true(isTRUE(qual_geoabruptic(p)$passed))
+  expect_false(isTRUE(qual_geoabruptic(p)$passed))
+  g <- PedonRecord$new(site = list(id = "t", country = "TEST"), horizons = ensure_horizon_schema(data.table::data.table(
+    designation = c("A", "Bt", "2C"), top_cm = c(0, 20, 60),
+    bottom_cm = c(20, 60, 100), clay_pct = c(10, 18, 45),
+    silt_pct = c(20, 22, 30), sand_pct = c(70, 60, 25),
+    na_cmol = c(0.1, 0.1, 0.1), cec_cmol = c(8, 10, 20),
+    al_ox_pct = c(0.1, 0.1, 0.1), fe_ox_pct = c(0.1, 0.1, 0.1))))
+  expect_true(isTRUE(qual_geoabruptic(g)$passed))   # at 60 cm; argic from 20
 })
 
 
@@ -205,19 +253,32 @@ test_that("qual_gilgaic: site$forma_relevo contains 'gilgai'", {
 })
 
 
-test_that("qual_mahic: high SOC + BS + P_mehlich", {
+test_that("qual_mahic: a thin artefact-rich layer in an artefact-poor soil", {
+  # v0.9.217, WRB 2022: a layer >= 10 cm, starting <= 50 cm, with >= 80%
+  # artefacts, and < 20% artefacts in the upper 100 cm (or to a limiting
+  # layer). Organic carbon, base saturation and P (the v0.9.64 reading) are
+  # not part of it.
   p <- .pedon_minimal()
   p$horizons$oc_pct <- c(5, 0.5)
-  p$horizons$base_saturation_pct <- c(60, 30)
   p$horizons$p_mehlich3_mg_kg <- c(150, 50)
-  expect_true(isTRUE(qual_mahic(p)$passed))
+  expect_false(isTRUE(qual_mahic(p)$passed))
+  m <- PedonRecord$new(site = list(id = "t", country = "TEST"), horizons = ensure_horizon_schema(data.table::data.table(
+    designation = c("Au", "C"), top_cm = c(0, 12), bottom_cm = c(12, 100),
+    artefacts_pct = c(85, 0))))
+  expect_true(isTRUE(qual_mahic(m)$passed))
 })
 
 
-test_that("qual_laxic: loose dry consistence at surface", {
+test_that("qual_laxic: bulk density <= 0.9 in a mineral layer at 25-75 cm", {
+  # v0.9.217, WRB 2022: between 25 and 75 cm a mineral layer >= 20 cm thick
+  # with a bulk density <= 0.9 kg dm-3. Loose consistence (the v0.9.64
+  # reading) is not a bulk density.
   p <- .pedon_minimal()
   p$horizons$consistence_dry <- c("loose", NA_character_)
-  expect_true(isTRUE(qual_laxic(p)$passed))
+  expect_false(isTRUE(qual_laxic(p)$passed))
+  q <- .pedon_minimal()
+  q$horizons$bulk_density_g_cm3 <- c(1.2, 0.8)
+  expect_true(isTRUE(qual_laxic(q)$passed))
 })
 
 

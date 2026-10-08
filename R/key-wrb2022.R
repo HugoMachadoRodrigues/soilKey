@@ -183,15 +183,19 @@ classify_wrb2022 <- function(pedon,
 
   # v0.9: Resolve principal qualifiers for the assigned RSG.
   # v0.9.3.A: also resolve supplementary qualifiers (parenthesised
-  # tags per WRB 2022 Ch 6 -- e.g. "Rhodic Ferralsol (Clayic, Humic,
-  # Dystric)").
+  # tags -- e.g. "Rhodic Ferralsol (Clayic, Dystric, Humic)"); v0.9.217:
+  # the lists and their order follow WRB 2022 Ch 4 and Ch 2.2.
   qual_result <- tryCatch(
     resolve_wrb_qualifiers(pedon, rsg$code, rules, specifiers = specifiers),
     error = function(e) list(principal = character(0),
                               supplementary = character(0),
                               trace = list())
   )
-  full_name <- if (length(qual_result$principal) > 0L) {
+  # v0.9.217: 16 RSGs list no Haplic, so a soil may have no principal
+  # qualifier (e.g. no data for the last entry, Dystric/Eutric); it is still
+  # named with its supplementary ones. Only when no qualifier at all could be
+  # resolved does the bare key name stand.
+  full_name <- if (length(qual_result$principal) + length(qual_result$supplementary %||% character(0)) > 0L) {
     format_wrb_name(rsg$name,
                      principal     = qual_result$principal,
                      supplementary = qual_result$supplementary %||% character(0))
