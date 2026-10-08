@@ -500,7 +500,7 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
     details[[as.character(i)]] <- list(
       idx = i, cec_cmol = cec_used, clay_pct = h$clay_pct[i],
       cec_per_clay = cpc, threshold = max_cmol_per_kg_clay,
-      cec_source = cec_source
+      inclusive = isTRUE(inclusive), cec_source = cec_source
     )
     if (is.na(cpc)) {
       if (is.na(cec_used))           missing <- c(missing, "cec_cmol")

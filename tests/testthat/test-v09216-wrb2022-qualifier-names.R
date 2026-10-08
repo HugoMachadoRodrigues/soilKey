@@ -46,3 +46,24 @@ test_that("the seven example profiles that carried them are named without", {
   expect_identical(nm(make_solonetz_canonical),
     "Albic Solonetz (Loamic, Ochric, Hypereutric)")
 })
+
+
+# ---- the Assistant is told the units and the direction of each limit -------
+
+test_that("the Assistant's evidence gives units and whether a limit is inclusive", {
+  skip_if_not_installed("shiny")
+  d <- system.file("shiny", "classify_app_pro", package = "soilKey")
+  if (!nzchar(d) || !dir.exists(d)) d <- file.path("inst", "shiny", "classify_app_pro")
+  e <- new.env(parent = globalenv())
+  for (f in list.files(file.path(d, "R"), pattern = "\\.R$", full.names = TRUE))
+    sys.source(f, envir = e)
+  ctx <- e$.chat_pedon_context(make_ferralsol_canonical(), NULL)
+  ev <- strsplit(paste(unlist(ctx[c("text", "evidence")]), collapse = "\n"), "\n")[[1]]
+  cpc <- grep("cec_per_clay: ", ev, value = TRUE)
+  # the model wrote "cmolc/kg per % clay" when the unit was missing
+  expect_true(all(grepl("cmolc/kg clay", cpc)))
+  # WRB's ferralic "< 16" and USDA's oxic "16 or less" no longer read alike
+  expect_true(any(grepl("must be below 16", cpc)))
+  expect_true(any(grepl("must be 16 or less", cpc)))
+  expect_true(any(grepl("thickness: .* cm \\(limit 30\\)", ev)))
+})

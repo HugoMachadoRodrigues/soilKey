@@ -39,7 +39,7 @@ test_that("the Ferralsol's evidence answers 'why not an Acrisol'", {
   expect_match(never, "Acrisols", fixed = TRUE)
   # the ferralic criteria with the values and the limit applied
   expect_match(.ev_lines(ctx, "- cec_per_clay:")[1],
-               "values #1=16, #2=12.5, #3=10, #4=8.33, #5=8 (limit 16)", fixed = TRUE)
+               "values #1=16, #2=12.5, #3=10, #4=8.33, #5=8 cmolc/kg clay (must be below 16)", fixed = TRUE)
   expect_match(.ev_lines(ctx, "- argic: not met")[1], "clay-increase", fixed = TRUE)
 })
 
@@ -54,7 +54,7 @@ test_that("qualifiers carry the rule soilKey applied (Eutric is not BS at pH 7)"
   expect_match(eu, "Not base saturation", fixed = TRUE)
   # SiBCS: eutrófico was tested and failed on V% -- the reason for Distróficos
   expect_match(.ev_lines(ctx, "- eutrofico: not met")[1],
-               "bs_pct values #3=14, #4=13, #5=13 (limit 50)", fixed = TRUE)
+               "bs_pct values #3=14, #4=13, #5=13 % (limit 50)", fixed = TRUE)
   expect_match(.ev_lines(ctx, "Classes after Latossolos")[1], "Argissolos", fixed = TRUE)
   expect_match(.ev_lines(ctx, "Classes after Oxisols")[1], "Ultisols", fixed = TRUE)
 })
