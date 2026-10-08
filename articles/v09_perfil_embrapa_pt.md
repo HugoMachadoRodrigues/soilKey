@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x55e949a41f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x55e8506f6f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -232,9 +232,9 @@ print(res$wrb)
 #> Rhodic, Rubic)
 #> RSG/Order: Acrisols
 #> Qualifiers: Ferralic, Cutanic, Clayic, Loamic, Eutric, Ochric, Profondic,
-#> Rhodic, Rubic, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, top_cm,
-#> bottom_cm, FALSE, FALSE, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct,
-#> FALSE, plinthite_pct, TRUE, FALSE, redoximorphic_features_pct, FALSE,
+#> Rhodic, Rubic, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, top_cm,
+#> bottom_cm, FALSE, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
+#> plinthite_pct, TRUE, FALSE, redoximorphic_features_pct, FALSE,
 #> redoximorphic_features_pct, FALSE, al_ox_pct, fe_ox_pct,
 #> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
 #> slickensides, TRUE, FALSE, FALSE, coarse_fragments_pct, FALSE, FALSE,

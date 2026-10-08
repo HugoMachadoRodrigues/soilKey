@@ -1,5 +1,56 @@
 # Changelog
 
+## soilKey 0.9.216 (2026-10-08)
+
+### No WRB qualifier that WRB 2022 does not have
+
+- Ten names in soilKey’s WRB 2022 qualifier lists do not occur anywhere
+  in the WRB 2022 text (4th edition, as corrected 18 December 2022):
+  **Vetic**, Melanic, Cumulic, Hyperalbic, Hyperskeletic, Hypersodic,
+  Hypocalcic, Hypogypsic, Hyposalic and Hyposodic. They are WRB 2014
+  qualifiers; Vetic, for instance, became Geric (“ECEC \< 6 cmolc kg-1
+  clay”). A profile could be named with a qualifier the system it claims
+  to follow does not define. All 88 entries are removed from the 32
+  lists, which are otherwise unchanged.
+- Seven of the 44 example profiles change name, each only by losing one
+  of these: the Andosol drops Melanic; the Chernozem, Gypsisol and
+  Kastanozem show Protocalcic where Hypocalcic stood (Protocalcic was
+  already further down the list); the Solonchak drops Hyposalic and
+  Hyposodic, the Solonetz Hyposodic. No class (RSG) changes. The
+  Ferralsol keeps its name: Vetic never applied to it.
+- **The lists need more than this.** Checked against WRB 2022 Chapter 4
+  with `data-raw/wrb2022_ch4_lists.py` (which extracts each RSG’s
+  principal and supplementary lists from the ISRIC PDF), soilKey’s lists
+  follow the much longer WRB 2014 lists for most RSGs: qualifiers that
+  WRB 2022 moved to the supplementary list are still principal (Ferric,
+  Hyperdystric and Plinthic for Ferralsols, whose WRB 2022 principal
+  list has 13 entries against soilKey’s 30), and some WRB 2022 principal
+  qualifiers have no function yet (Ferritic, Gibbsic, Profundihumic for
+  Ferralsols). Realigning them changes the name of most profiles and is
+  left to its own release.
+- The functions behind the ten names stay, unused by the key.
+
+### The Assistant is told units and the direction of each limit
+
+- The evidence the Assistant reads listed values without units (“values
+  [\#2](https://github.com/HugoMachadoRodrigues/soilKey/issues/2)=12.5,
+  [\#3](https://github.com/HugoMachadoRodrigues/soilKey/issues/3)=10
+  (limit 16)”), and the model filled them in: it described the CEC per
+  clay as “8 cmolc/kg per % clay”. Values now carry their unit (cmolc/kg
+  clay, cm, %), and a limit says whether it is strict: the WRB ferralic
+  horizon reads “must be below 16”, the USDA oxic horizon “must be 16 or
+  less” (0.9.212). `test_cec_per_clay()` records `inclusive` in its
+  details for this.
+
+### README
+
+- The app screenshots are retaken from the live app (0.9.216): the
+  Classify tab, the Map with the live SoilGrids overlay of Rio de
+  Janeiro, and the Assistant answering why the example profile is a
+  Ferralsol. The old ones showed 0.9.184, a GPL-3 footer and the
+  synthetic demo map; the Assistant one, removed in 0.9.213, is back
+  with a grounded answer.
+
 ## soilKey 0.9.215 (2026-10-08)
 
 ### Every app instance serves the page’s scripts and styles

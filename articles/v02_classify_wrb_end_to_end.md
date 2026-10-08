@@ -79,14 +79,14 @@ res
 #> Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,
-#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,
-#> fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE,
-#> volcanic_glass_pct, FALSE, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
-#> plinthite_pct, FALSE, top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE,
-#> FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
-#> FALSE, p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE,
-#> FALSE, TRUE, FALSE
+#> FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct,
+#> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
+#> FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
+#> top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,
+#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
+#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
+#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> TRUE, FALSE
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -183,18 +183,18 @@ trace_df <- do.call(
 )
 head(trace_df, 12)
 #>       qualifier passed note
-#> 1         Vetic  FALSE     
-#> 2         Posic  FALSE     
-#> 3         Acric  FALSE     
-#> 4         Lixic  FALSE     
-#> 5         Geric   TRUE     
-#> 6  Hyperdystric  FALSE     
-#> 7   Hypereutric  FALSE     
-#> 8        Histic  FALSE     
-#> 9         Folic  FALSE     
-#> 10        Andic  FALSE     
-#> 11       Vitric  FALSE     
-#> 12      Sombric  FALSE
+#> 1         Posic  FALSE     
+#> 2         Acric  FALSE     
+#> 3         Lixic  FALSE     
+#> 4         Geric   TRUE     
+#> 5  Hyperdystric  FALSE     
+#> 6   Hypereutric  FALSE     
+#> 7        Histic  FALSE     
+#> 8         Folic  FALSE     
+#> 9         Andic  FALSE     
+#> 10       Vitric  FALSE     
+#> 11      Sombric  FALSE     
+#> 12     Plinthic  FALSE
 ```
 
 ## 4. Inspect the supplementary qualifier resolution

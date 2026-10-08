@@ -140,9 +140,13 @@ side by side, each with an evidence grade and the full key
 trace](reference/figures/app-classify.png)  
 _(**Classify** — the three systems at once, each with its evidence grade and the full decision trace.)
 
-![soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a
-satellite base map, with a legend](reference/figures/app-map.png)  
-_(**Map** — the SoilGrids class prior over the site.)
+![soilKey Pro — Map tab: the live SoilGrids 2.0 WRB classes of Rio de
+Janeiro drawn over a satellite base map, with a legend of 19
+classes](reference/figures/app-map.png)![soilKey Pro — Assistant: asked
+why the example profile is a Ferralsol, it cites the ferralic horizon in
+horizons 3 to 5, the CEC per kg clay below 16 and WRB 2022 Chapter
+3.1.10](reference/figures/app-assistant.png)  
+_(**Map** — the live SoilGrids classes around the site  ·  **Assistant** — an online model that *explains* the result from the key’s own evidence; it never classifies.)
 
 - **Pedon** — build a profile from a canonical fixture, a CSV, or from
   scratch, with a live horizon editor and depth-profile plot.

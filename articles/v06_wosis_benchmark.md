@@ -398,7 +398,7 @@ knitr::kable(
 | NT  | NT      | Luvic            |
 | FR  | FR      | Geric            |
 | CH  | CH      | Vermic           |
-| KS  | KS      | Hypocalcic       |
+| KS  | KS      | Protocalcic      |
 | PH  | PH      | Pachic           |
 | UM  | UM      | Cambic           |
 | DU  | DU      | Duric            |

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.215</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.216</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.216" id="soilkey-09216-2026-10-08">soilKey 0.9.216 (2026-10-08)<a class="anchor" aria-label="anchor" href="#soilkey-09216-2026-10-08"></a></h2>
+<div class="section level3">
+<h3 id="no-wrb-qualifier-that-wrb-does-not-have-0-9-216">No WRB qualifier that WRB 2022 does not have<a class="anchor" aria-label="anchor" href="#no-wrb-qualifier-that-wrb-does-not-have-0-9-216"></a></h3>
+<ul><li>Ten names in soilKey’s WRB 2022 qualifier lists do not occur anywhere in the WRB 2022 text (4th edition, as corrected 18 December 2022): <strong>Vetic</strong>, Melanic, Cumulic, Hyperalbic, Hyperskeletic, Hypersodic, Hypocalcic, Hypogypsic, Hyposalic and Hyposodic. They are WRB 2014 qualifiers; Vetic, for instance, became Geric (“ECEC &lt; 6 cmolc kg-1 clay”). A profile could be named with a qualifier the system it claims to follow does not define. All 88 entries are removed from the 32 lists, which are otherwise unchanged.</li>
+<li>Seven of the 44 example profiles change name, each only by losing one of these: the Andosol drops Melanic; the Chernozem, Gypsisol and Kastanozem show Protocalcic where Hypocalcic stood (Protocalcic was already further down the list); the Solonchak drops Hyposalic and Hyposodic, the Solonetz Hyposodic. No class (RSG) changes. The Ferralsol keeps its name: Vetic never applied to it.</li>
+<li>
+<strong>The lists need more than this.</strong> Checked against WRB 2022 Chapter 4 with <code>data-raw/wrb2022_ch4_lists.py</code> (which extracts each RSG’s principal and supplementary lists from the ISRIC PDF), soilKey’s lists follow the much longer WRB 2014 lists for most RSGs: qualifiers that WRB 2022 moved to the supplementary list are still principal (Ferric, Hyperdystric and Plinthic for Ferralsols, whose WRB 2022 principal list has 13 entries against soilKey’s 30), and some WRB 2022 principal qualifiers have no function yet (Ferritic, Gibbsic, Profundihumic for Ferralsols). Realigning them changes the name of most profiles and is left to its own release.</li>
+<li>The functions behind the ten names stay, unused by the key.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="the-assistant-is-told-units-and-the-direction-of-each-limit-0-9-216">The Assistant is told units and the direction of each limit<a class="anchor" aria-label="anchor" href="#the-assistant-is-told-units-and-the-direction-of-each-limit-0-9-216"></a></h3>
+<ul><li>The evidence the Assistant reads listed values without units (“values <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/2" class="external-link">#2</a>=12.5, <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/3" class="external-link">#3</a>=10 (limit 16)”), and the model filled them in: it described the CEC per clay as “8 cmolc/kg per % clay”. Values now carry their unit (cmolc/kg clay, cm, %), and a limit says whether it is strict: the WRB ferralic horizon reads “must be below 16”, the USDA oxic horizon “must be 16 or less” (0.9.212). <code>test_cec_per_clay()</code> records <code>inclusive</code> in its details for this.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="readme-0-9-216">README<a class="anchor" aria-label="anchor" href="#readme-0-9-216"></a></h3>
+<ul><li>The app screenshots are retaken from the live app (0.9.216): the Classify tab, the Map with the live SoilGrids overlay of Rio de Janeiro, and the Assistant answering why the example profile is a Ferralsol. The old ones showed 0.9.184, a GPL-3 footer and the synthetic demo map; the Assistant one, removed in 0.9.213, is back with a grounded answer.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.215" id="soilkey-09215-2026-10-08">soilKey 0.9.215 (2026-10-08)<a class="anchor" aria-label="anchor" href="#soilkey-09215-2026-10-08"></a></h2>
 <div class="section level3">
