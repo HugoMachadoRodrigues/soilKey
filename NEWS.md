@@ -1,3 +1,11 @@
+# soilKey 0.9.214 (2026-10-07)
+
+* Pro app, Map: the class colours past 12 (0.9.212) included Polychrome 36's
+  near-white grey and pale cream. Seen live on the SoilGrids overlay of Rio de
+  Janeiro, Alisols got the grey, which in the legend's white box and on the
+  map read as "no class". Both are left out; up to 34 classes still get
+  distinct colours.
+
 # soilKey 0.9.213 (2026-10-07)
 
 ## A profile with no soil property has no evidence grade

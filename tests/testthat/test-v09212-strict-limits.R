@@ -97,6 +97,9 @@ test_that("the Map gives every class its own colour, and keeps Set3 up to 12", {
   pal <- expect_no_warning(e$sk_class_pal(ids))
   cols <- pal(ids)
   expect_length(unique(cols), 19L)
+  # v0.9.214: none of them near-white, which reads as "no class"
+  lum <- apply(grDevices::col2rgb(cols), 2, function(x) sum(x * c(.299, .587, .114)))
+  expect_true(all(lum < 220))
   # up to 12 classes: the colours leaflet's "Set3" gave before
   ids <- 1:7
   expect_identical(e$sk_class_pal(ids)(ids),
