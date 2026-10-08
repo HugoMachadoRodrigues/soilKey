@@ -1,5 +1,16 @@
 # Changelog
 
+## soilKey 0.9.219 (2026-10-08)
+
+- Pro app: the navbar is the espresso brown of the theme in both colour
+  modes. With the Flatly theme, bslib 0.7 (the container’s) paints a
+  light navbar with the primary colour and a dark one with the success
+  colour, and `page_navbar()` chooses between them from the theme
+  current when the page is built. Until 0.9.218 that theme was unknown
+  on an instance that had not served a page yet, so the navbar was brown
+  or green depending on the instance; once 0.9.218 made it known
+  everywhere, the navbar was green. `soilkey.css` now sets it.
+
 ## soilKey 0.9.218 (2026-10-08)
 
 ### Pro app: pages no longer lose jQuery or their theme after a table or a map
