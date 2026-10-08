@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.217</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.218</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,28 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.218" id="soilkey-09218-2026-10-08">soilKey 0.9.218 (2026-10-08)<a class="anchor" aria-label="anchor" href="#soilkey-09218-2026-10-08"></a></h2>
+<div class="section level3">
+<h3 id="pro-app-pages-no-longer-lose-jquery-or-their-theme-after-a-table-or-a-map-0-9-218">Pro app: pages no longer lose jQuery or their theme after a table or a map<a class="anchor" aria-label="anchor" href="#pro-app-pages-no-longer-lose-jquery-or-their-theme-after-a-table-or-a-map-0-9-218"></a></h3>
+<p>On the live app, an instance that had rendered a key-trace table or a map then served pages without jQuery (HTTP 404 for <code>jquery-3.6.0/jquery.min.js</code>), so they came up broken, until it was restarted. The page loads Shiny’s jQuery from the resource path <code>jquery-3.6.0</code>; DT and leaflet widgets also carry jquerylib’s jQuery, of the same version in the container’s Shiny 1.8, under the same path, and rendering one re-pointed it to a folder without <code>jquery.min.js</code>. Found in the request logs of the 0.9.218 test revision: one instance answered 200, then 404 from the moment a session there had rendered the table. <code>sk_datatable()</code> and the new <code>sk_leaflet()</code> drop the widgets’ own jQuery; the page’s is the one they use. A local install, on a newer Shiny (jQuery 3.7.1), never collides, which is why only the container showed it.</p>
+<p>The same test revision showed a second fault, of the multi-instance setup of 0.9.215: a session that Cloud Run opened on an instance which had not yet served a page had no theme. Shiny records the theme when it serves a page with the app running, and app.R, where 0.9.215 renders the page at start-up, is sourced before that. Its tables then took DT’s default style, and selectize and bslib’s component CSS, rendered unthemed, re-pointed their resource paths to folders without the themed files, so pages that instance served next lost their select inputs’ and layout’s styles (404). <code>sk_register_page_deps()</code> now also makes the app’s theme the theme of every session from start-up.</p>
+<p>Cloud Run’s session affinity is best effort, and the request with which a server-side DT table fetches its rows (<code>/session/&lt;id&gt;/dataobj/&lt;table&gt;</code>) could reach an instance that did not hold the session: the table stayed empty. The app’s tables are small, so they now send their rows with the table, over the session’s websocket (<code>sk_renderDT()</code>, <code>server = FALSE</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="pro-app-readable-dark-mode-aa-contrast-in-both-themes-0-9-218">Pro app: readable dark mode, AA contrast in both themes<a class="anchor" aria-label="anchor" href="#pro-app-readable-dark-mode-aa-contrast-in-both-themes-0-9-218"></a></h3>
+<p>A contrast check of every tab (WCAG 2.1 AA: 4.5:1 for text, 3:1 for large text), in dark and in light mode, found 21 failing combinations of text and background in dark mode and 17 in light mode. All now pass; the only text under 4.5:1 left is the “Key” of the soilKey logotype, which WCAG exempts.</p>
+<ul><li>
+<strong>Assistant replies were unreadable in dark mode</strong>: light text on Bootstrap’s <code>--bs-light</code>, which stays near-white (1.0:1). Both chat bubbles now use the app palette: the reply on the sand wash, the question on the brown (it was white on light clay, 1.9:1 dark and 2.5:1 light).</li>
+<li>
+<strong>The key trace “criteria” cells</strong> (met / not met / assigned / needs data) kept their light pastel fills under light text in dark mode (1.0-1.1:1). The fills are palette tokens now, with dark shades in dark mode; so are the probability colours of the Uncertainty table.</li>
+<li>
+<strong>Plotly charts</strong> (depth profile, spectrum, posterior) were white panels in dark mode; they now draw on the card colour with light axis text and grid.</li>
+<li>The terracotta accent is darkened from #B5652E to <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/9" class="external-link">#9</a>E5626 and the moss from <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/5" class="external-link">#5</a>E7B3B to <a href="https://github.com/HugoMachadoRodrigues/soilKey/issues/557036" class="external-link">#557036</a> (CSS palette and <code>bs_theme()</code>), so white text on them, and them as text on the light washes, reach 4.5:1 (buttons, links, the footer version, <code>pre</code> output, the inactive result tabs were 3.7-4.3:1).</li>
+<li>Dark mode: terracotta buttons and the Assistant button take dark text (white on them was 2.4-2.6:1); outline buttons, <code>.text-success</code> and the “results are up to date” style notes take the dark-mode shades (they were 2.4-4.2:1); the profile picker is no longer a white box.</li>
+<li>Both themes: “Skip tour” is a plain link (it was muted text on a terracotta button, 1.4-1.9:1); the table pager is brown, not Flatly’s green with near-white text (2.3:1); Docs in the navbar is styled like the other navbar links (1.6:1); the footer licence line is 5:1 (2.8:1); the grade C badge is a darker orange (white on it was 2.6:1).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.217" id="soilkey-09217-2026-10-08">soilKey 0.9.217 (2026-10-08)<a class="anchor" aria-label="anchor" href="#soilkey-09217-2026-10-08"></a></h2>
 <div class="section level3">
