@@ -2,9 +2,11 @@
 # soilKey Pro -- Settings module (v0.9.97).
 #
 # Controls the diagnostic engine, the WRB Tier-3 strict-mode toggle, and the
-# missing-data policy. Engine and strict mode are pushed to package options
-# (soilKey.diagnostic_engine, soilKey.rsg_strict) so every classifier picks
-# them up; on_missing is returned as a reactive for the Classify module.
+# missing-data policy. Engine and strict mode belong to the session (v0.9.211):
+# they are kept in session$userData$sk_opts as soilKey.diagnostic_engine and
+# soilKey.rsg_strict and applied around each classification this session runs
+# (utils_async.R), never written with options(), which every session in the
+# process shares. on_missing is returned as a reactive for the Classify module.
 # =============================================================================
 
 settings_ui <- function(id) {

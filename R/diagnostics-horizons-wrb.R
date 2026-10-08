@@ -234,9 +234,14 @@ argic <- function(pedon, min_thickness = 7.5,
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 30).
-#' @param max_cec Maximum CEC (1M NH4OAc, pH 7) per kg clay
-#'        (default \code{NULL} = 16 in soilkey engine, 20 in aqp
-#'        engine; see \code{engine}).
+#' @param max_cec CEC (1M NH4OAc, pH 7) per kg clay that a ferralic
+#'        horizon must stay below (default \code{NULL} = 16 in soilkey
+#'        engine, 20 in aqp engine; see \code{engine}).
+#' @param cec_inclusive \code{FALSE} (default): the CEC must be below
+#'        \code{max_cec}, as WRB 2022 writes it ("< 16 cmolc kg-1 clay").
+#'        \code{TRUE} accepts a value equal to the limit, as USDA's oxic
+#'        horizon does ("16 cmol(+) or less"); \code{\link{oxic_usda}} uses
+#'        it.
 #' @param engine One of \code{"soilkey"} (default; strict 16
 #'        cmol_c/kg-clay threshold per WRB 2022) or \code{"aqp"}
 #'        (relaxed 20 cmol_c/kg-clay -- a regional tolerance that
@@ -254,14 +259,16 @@ argic <- function(pedon, min_thickness = 7.5,
 #' \itemize{
 #'   \item \code{test_ferralic_texture} -- texture sandy loam or
 #'         finer.
-#'   \item \code{test_cec_per_clay} -- CEC / clay <= 16 (or 20
-#'         under \code{engine = "aqp"}) cmol_c/kg clay.
+#'   \item \code{test_cec_per_clay} -- CEC / clay < 16 (or < 20
+#'         under \code{engine = "aqp"}) cmol_c/kg clay. Until v0.9.212 a
+#'         value equal to the limit passed; WRB 2022 Ch 3.1.10 criterion 3
+#'         is "< 16 cmolc kg-1 clay".
 #'   \item \code{test_ferralic_thickness} -- thickness >= 30 cm.
 #' }
 #'
 #' v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
 #' "ECEC <= 12 cmol_c/kg clay" gate was removed because it is not in the
-#' canonical text -- only CEC (1M NH4OAc, pH 7) <= 16 is required.
+#' canonical text -- only CEC (1M NH4OAc, pH 7) < 16 is required.
 #'
 #' v0.9.67 regional tolerance: BDsolos RJ benchmark (n=722 perfis)
 #' showed 88/115 Latossolos failing the strict 16-cmol gate because
@@ -284,7 +291,8 @@ argic <- function(pedon, min_thickness = 7.5,
 ferralic <- function(pedon,
                        min_thickness = 30,
                        max_cec       = NULL,
-                       engine        = NULL) {
+                       engine        = NULL,
+                       cec_inclusive = FALSE) {
   if (is.null(engine))
     engine <- getOption("soilKey.diagnostic_engine", "soilkey")
   engine <- match.arg(engine, c("soilkey", "aqp"))
@@ -300,7 +308,8 @@ ferralic <- function(pedon,
   tests <- list()
   tests$texture       <- test_ferralic_texture(h, tropical = tropical)
   tests$cec_per_clay  <- test_cec_per_clay(h,
-                                             max_cmol_per_kg_clay = max_cec)
+                                             max_cmol_per_kg_clay = max_cec,
+                                             inclusive = isTRUE(cec_inclusive))
   tests$thickness     <- test_ferralic_thickness(h, min_cm = min_thickness)
 
   agg <- aggregate_subtests(tests)

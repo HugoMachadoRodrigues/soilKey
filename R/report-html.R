@@ -170,6 +170,14 @@ report <- function(x,
 
 #' Grade -> CSS class
 #' @noRd
+#' The evidence grade as printed: the letter, or "none" when the profile had
+#' no soil property to grade (v0.9.213).
+#' @noRd
+.grade_label <- function(g) {
+  if (is.null(g) || length(g) == 0L || is.na(g)) .report_msg("report.grade_none")
+  else as.character(g)
+}
+
 .grade_class <- function(g) {
   if (is.null(g) || is.na(g)) return("grade grade-na")
   switch(as.character(g),
@@ -347,7 +355,7 @@ report <- function(x,
               .html_escape(res$system %||% "?"),
               .html_escape(res$rsg_or_order %||% "?"),
               .grade_class(res$evidence_grade),
-              .html_escape(res$evidence_grade %||% "NA")),
+              .html_escape(.grade_label(res$evidence_grade))),
     if (length(qual_html) > 0)
       sprintf('<div class="qualifiers">%s</div>\n', paste(qual_html, collapse = "")),
     prior_html,
@@ -434,7 +442,7 @@ report <- function(x,
       .html_escape(r$system %||% "?"),
       .html_escape(r$name   %||% "(unnamed)"),
       .grade_class(r$evidence_grade),
-      .html_escape(r$evidence_grade %||% "NA")
+      .html_escape(.grade_label(r$evidence_grade))
     )
   }, character(1))
   paste0(

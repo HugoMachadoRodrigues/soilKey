@@ -29,6 +29,12 @@
 #' sand-fraction weatherable-mineral cut-offs) are tracked in the
 #' diagnostics.yaml for v0.8 refinement.
 #'
+#' The CEC limit is inclusive here: KST 13 (Ch. 3, oxic horizon, criterion
+#' 6) asks for "an apparent CEC of 16 cmol(+) or less per kg clay", where WRB
+#' 2022's ferralic horizon asks for "< 16". Since v0.9.212 \code{ferralic()}
+#' follows WRB and this function passes \code{cec_inclusive = TRUE}, so a
+#' horizon at exactly 16 is oxic but not ferralic.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Passed to \code{\link{ferralic}}.
 #' @return A \code{\link{DiagnosticResult}} (with \code{name = "oxic_usda"}).
@@ -37,7 +43,9 @@
 #'   Horizons; oxic.
 #' @export
 oxic_usda <- function(pedon, ...) {
-  res <- ferralic(pedon, ...)
+  args <- list(...)
+  if (is.null(args$cec_inclusive)) args$cec_inclusive <- TRUE
+  res <- do.call(ferralic, c(list(pedon), args))
   res$name      <- "oxic_usda"
   res$reference <- paste0("Soil Survey Staff (2014), Keys to Soil Taxonomy, ",
                             "Ch. 3, oxic horizon -- delegating to WRB ",

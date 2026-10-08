@@ -203,6 +203,7 @@ classify_usda <- function(pedon,
   missing_data <- collect_missing_attributes(key_result$trace)
 
   warnings <- character(0)
+  if (is.na(grade)) warnings <- c(warnings, .NO_PROPERTIES_WARNING)
   if (is_default) {
     warnings <- c(warnings, paste0(
       "Profile keyed to USDA Entisols catch-all. ",

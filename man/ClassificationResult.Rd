@@ -45,7 +45,10 @@ would refine or resolve the result.}
 \item{\code{evidence_grade}}{Character. \code{"A"} (measured), \code{"B"}
 (spectra-predicted), \code{"C"} (prior-inferred),
 \code{"D"} (VLM-extracted), \code{"E"}
-(user-assumed), or \code{NA_character_}.}
+(user-assumed), or \code{NA_character_} when no
+horizon carries a soil property (only depths and
+designations; since v0.9.213), so nothing in the
+class was verified.}
 
 \item{\code{prior_check}}{List or NULL. Result of the spatial-prior sanity
 check (consistent / inconsistent / not run).}

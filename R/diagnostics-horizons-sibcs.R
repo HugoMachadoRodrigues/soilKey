@@ -67,7 +67,9 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   }
   thickness <- sum(h$bottom_cm[contiguous] - h$top_cm[contiguous],
                      na.rm = TRUE)
-  pct_tissue <- max(h$worm_holes_pct[contiguous] %||% 0, na.rm = TRUE)  # proxy
+  # proxy; 0 when unrecorded (max() of all-NA warned and gave -Inf)
+  wh <- h$worm_holes_pct[contiguous]
+  pct_tissue <- if (any(!is.na(wh))) max(wh, na.rm = TRUE) else 0
   # Detect overlying contact rock or stony layer.
   next_layer <- max(contiguous) + 1L
   on_rock <- next_layer <= nrow(h) &&
@@ -520,11 +522,13 @@ B_textural <- function(pedon, ...) {
 #' de SiO2/Al2O3 lab-data nao no schema).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
-#' @param max_cec_per_clay Numeric threshold or option (see Details).
+#' @param max_cec_per_clay CEC per kg clay the horizon must stay below.
 #'   Defaults to \code{NULL} (engine-aware): 17 in soilkey engine
-#'   (the SiBCS-loose threshold, slightly more permissive than
-#'   strict WRB ferralic 16) or 20 in aqp engine (v0.9.68 regional
-#'   tolerance for Embrapa lab methodology offset).
+#'   (SiBCS Cap 2: "menor que 17 cmolc kg-1 de argila, sem correcao
+#'   para carbono"; slightly more permissive than WRB ferralic's < 16)
+#'   or 20 in aqp engine (v0.9.68 regional tolerance for Embrapa lab
+#'   methodology offset). Strict since v0.9.212: a value of exactly 17
+#'   is not latossolic, it is the B incipiente's "17 ou maior".
 #' @param engine One of \code{"soilkey"} (default) or \code{"aqp"};
 #'   \code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
 #'   Forwarded to \code{\link{ferralic}}.
@@ -558,7 +562,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
   #
   # SiBCS Cap 18 e explicito: um Latossolo pode ter B textural fraco
   # (gradacional, clay films pouca / fraca) -- desde que as features
-  # latossolicas dominem (CTC argila <= 17 cmolc/kg, ferralic, thickness
+  # latossolicas dominem (CTC argila < 17 cmolc/kg, ferralic, thickness
   # >= 50). Nesse caso a precedencia eh do B latossolico, NAO do B
   # textural. Argic forte (clay films comuns + sharp clay increase) eh
   # outra historia, mas o teste argic atual nao distingue forca, so
@@ -611,7 +615,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59",
     notes = paste0("v0.9.61: precedencia revisada -- argic concurrent ",
                      "NO LONGER exclui (per SiBCS Cap 18 latossolic ",
-                     "features dominam quando ferralic + CTC<=17 + ",
+                     "features dominam quando ferralic + CTC<17 + ",
                      "thickness>=50). plintic + gleyic + nitic ainda ",
                      "excluem (definem ordens distintas).")
   )

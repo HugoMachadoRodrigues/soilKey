@@ -70,6 +70,19 @@ gcloud run services add-iam-policy-binding soilkeypro --region us-east1 \
   --member=allUsers --role=roles/run.invoker
 ```
 
+## 4. Uptime check
+
+`.github/workflows/uptime.yaml` asks for the home page once an hour (minute 17)
+and fails if the app does not answer within three tries; GitHub e-mails a failed
+scheduled run to whoever last changed its schedule. It catches billing switched
+off (500), the spending cap above (403), a revision that does not start, and DNS
+or certificate trouble. It runs free on the public repository, and a check that
+meets a scaled-to-zero instance costs one cold start, well inside the free tier.
+Google Cloud Monitoring could do the same, but its alerting policies are billed
+per condition and would count against the US$1 cap. GitHub pauses scheduled
+workflows after 60 days without repository activity and says so by e-mail; any
+push, or "Enable workflow" in the Actions tab, resumes it.
+
 ## Cost / scaling knobs
 
 The configuration above stays within the free tier for light academic use. The

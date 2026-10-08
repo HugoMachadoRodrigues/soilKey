@@ -389,8 +389,10 @@
                             h$bottom_cm %||% "?"), collapse = "; ")))
   say <- function(r, label) {
     if (is.null(r)) return(NULL)
+    g <- r$evidence_grade %||% NA
     sprintf("%s: %s (%s; evidence grade %s)", label,
-            r$name %||% "?", r$rsg_or_order %||% "?", r$evidence_grade %||% "?")
+            r$name %||% "?", r$rsg_or_order %||% "?",
+            if (is.na(g)) "none: no horizon has a soil property, the class was reached by elimination" else g)
   }
   cls <- c(say(res$wrb, "WRB 2022"), say(res$sibcs, "SiBCS 5"),
            say(res$usda, "USDA ST"))
@@ -458,7 +460,11 @@
   if (is.null(ctx)) return(i18n("chat.scripted_need_pedon"))
   m <- tolower(msg %||% "")
   r <- ctx$results
-  grade <- function(x) if (is.null(x)) "?" else x$evidence_grade %||% "?"
+  grade <- function(x) {
+    if (is.null(x)) return("?")
+    g <- x$evidence_grade %||% NA
+    if (is.na(g)) i18n("ui.no_measured_data") else g
+  }
   if (grepl("horizon|camada|perfil|profile", m) && !grepl("wrb|sibcs|usda", m))
     return(paste0(i18n("chat.scripted_horizons"), "\n\n", ctx$text))
   if (grepl("\\bwrb\\b|world reference", m) && !is.null(r$wrb))

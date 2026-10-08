@@ -351,7 +351,7 @@ map_server <- function(id, rv, settings) {
     add_overlay <- function(map, rr, attribution = NULL) {
       if (is.null(rr)) return(map)
       lut <- rr$lut
-      pal <- leaflet::colorFactor("Set3", domain = lut$id, na.color = "transparent")
+      pal <- sk_class_pal(lut$id)
       # suppressWarnings: addRasterImage resamples the class grid and warns
       # "values outside the color scale" for the interpolated edges -- benign.
       # method = "ngb": nearest-neighbour keeps hard class edges (bilinear would
@@ -648,8 +648,7 @@ map_server <- function(id, rv, settings) {
       sysn <- paste0(input$batch_system %||% "wrb", "_name")
       proxy <- leaflet::leafletProxy("map", session) |> leaflet::clearGroup("batch")
       if (inherits(res, "error") || is.null(res) || !nrow(res)) return()
-      pal <- leaflet::colorFactor("Set3", domain = sort(unique(res[[sysc]])),
-                                  na.color = "#bdbdbd")
+      pal <- sk_class_pal(sort(unique(res[[sysc]])), na.color = "#bdbdbd")
       proxy |> leaflet::addCircleMarkers(
         lng = res$lon, lat = res$lat, radius = 7, weight = 1, color = "#333",
         fillOpacity = 0.85, fillColor = pal(res[[sysc]]), group = "batch",
@@ -735,7 +734,7 @@ map_server <- function(id, rv, settings) {
         leaflet::clearGroup("gridpred") |> leaflet::removeControl("grid_legend")
       if (inherits(rr, "error") || is.null(rr)) return()
       lut <- rr$lut  # data.frame(id, class); raster values ARE the ids
-      pal <- leaflet::colorFactor("Set3", domain = lut$id, na.color = "transparent")
+      pal <- sk_class_pal(lut$id)
       proxy |>
         leaflet::addRasterImage(rr$raster, colors = pal, opacity = 0.7,
                                 group = "gridpred") |>

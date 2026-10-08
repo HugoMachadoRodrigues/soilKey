@@ -1,0 +1,49 @@
+# Is soilkeypro.com up? Once an hour GitHub asks for the home page and fails
+# the run if the app does not answer. GitHub e-mails a failed scheduled run to
+# the person who last changed the schedule below, so an outage is noticed
+# within the hour (the September 2026 one, billing closed, went unnoticed for
+# 12 days). Free: Actions minutes cost nothing on a public repository.
+#
+# What it catches: billing switched off (HTTP 500), the US$1 spending cap
+# taking the app private (HTTP 403), a revision that fails to start, DNS or
+# certificate trouble. The app scales to zero, so a check may meet a cold
+# start (about 5-20 s); it waits up to 60 s and tries three times before
+# failing.
+#
+# GitHub pauses scheduled workflows in a repository with no activity for 60
+# days; it says so by e-mail, and one click (or any push) resumes it. Run it by
+# hand from the Actions tab ("Run workflow").
+name: uptime
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  soilkeypro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: soilkeypro.com serves the app
+        shell: bash
+        run: |
+          url="https://soilkeypro.com/"
+          for attempt in 1 2 3; do
+            code=$(curl -sS -o page.html -w '%{http_code}' --max-time 60 "$url" || true)
+            if [ "$code" = "200" ] && grep -q "soilKey" page.html; then
+              echo "OK: HTTP $code on attempt $attempt"
+              exit 0
+            fi
+            echo "attempt $attempt: HTTP ${code:-none}"
+            sleep 30
+          done
+          echo "::error::$url did not serve the app (last HTTP status: ${code:-none})"
+          exit 1

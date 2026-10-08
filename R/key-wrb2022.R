@@ -138,6 +138,7 @@ classify_wrb2022 <- function(pedon,
   missing_data <- collect_missing_attributes(key_result$trace)
 
   warnings <- character(0)
+  if (is.na(grade)) warnings <- c(warnings, .NO_PROPERTIES_WARNING)
   if (is_default) {
     passed_diag_names <- names(diags)[vapply(diags, function(d) {
       !is.null(d) && isTRUE(d$passed)
@@ -262,6 +263,13 @@ compute_v01_classification_name <- function(rsg, diags, is_default) {
 #' if any \code{"extracted_vlm"}, E if any \code{"user_assumed"}. If no
 #' provenance is recorded, defaults to A (assume measured).
 #'
+#' v0.9.213: \code{NA} when no horizon carries a soil property, only
+#' depths, designations and boundaries. Such a profile ran through every
+#' key and ended at its catch-all (Regosols, Neossolos, Entisols) by
+#' elimination, with nothing verified, and was graded A because a pedon
+#' with no provenance is read as measured. The keys add
+#' \code{.NO_PROPERTIES_WARNING} to the result's warnings.
+#'
 #' Grade E was split out from D in v0.9.99 so that a wholly assumed
 #' value is distinguishable from a VLM-extracted one; see
 #' \code{\link{compute_per_attribute_evidence_grade}} for the
@@ -270,6 +278,7 @@ compute_v01_classification_name <- function(rsg, diags, is_default) {
 #' @noRd
 #' @param pedon A \code{\link{PedonRecord}}.
 compute_evidence_grade <- function(pedon, trace) {
+  if (!.pedon_has_properties(pedon)) return(NA_character_)
   prov <- pedon$provenance
   if (is.null(prov) || nrow(prov) == 0L) {
     return("A")
@@ -281,6 +290,35 @@ compute_evidence_grade <- function(pedon, trace) {
   if ("predicted_spectra" %in% sources) return("B")
   "A"
 }
+
+
+# Columns that place and name a horizon rather than describe it.
+.HORIZON_FRAME_COLS <- c("top_cm", "bottom_cm", "designation",
+                         "boundary_distinctness", "boundary_topography")
+
+#' Does any horizon carry a soil property?
+#'
+#' TRUE when any horizon has a value outside \code{.HORIZON_FRAME_COLS}: a
+#' laboratory value, a Munsell colour, structure, consistence, any field
+#' observation.
+#' @noRd
+.pedon_has_properties <- function(pedon) {
+  h <- pedon$horizons
+  if (is.null(h) || nrow(h) == 0L) return(FALSE)
+  for (cn in setdiff(names(h), .HORIZON_FRAME_COLS)) {
+    x <- h[[cn]]
+    x <- x[!is.na(x)]
+    if (is.character(x)) x <- x[nzchar(trimws(x))]
+    if (length(x) > 0L) return(TRUE)
+  }
+  FALSE
+}
+
+.NO_PROPERTIES_WARNING <- paste(
+  "No horizon carries a soil property, only depths and designations:",
+  "the class was reached by elimination, with nothing in it verified,",
+  "so it has no evidence grade. Add measured or described properties",
+  "(texture, colour, CEC, base saturation, ...) to classify the profile.")
 
 
 #' Collect ambiguous RSG candidates from the trace

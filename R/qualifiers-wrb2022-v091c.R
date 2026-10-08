@@ -286,7 +286,7 @@ qual_geric <- function(pedon) {
 
 #' Vetic qualifier (vt): CEC (1 N NH4OAc, pH 7) by clay does not exceed
 #' 6 cmol+/kg clay in some layer at <= 100 cm. Stronger than the
-#' ferralic-CEC threshold (<= 16 cmol+/kg clay).
+#' ferralic-CEC threshold (< 16 cmol+/kg clay).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_vetic <- function(pedon) {
