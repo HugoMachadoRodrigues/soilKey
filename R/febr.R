@@ -186,8 +186,15 @@
   caco3_pct         = "^caco3(_|$)|^carbonato_calcio",
   p_mehlich3_mg_kg  = "^p_(mehlich|assim)|^fosforo_assim",
   bulk_density_g_cm3 = "^densidade_solo|^ds(_|$)|^bd(_|$)",
-  fe_dcb_pct        = "^fe2o3(_|$)|^ferro_dcb",
-  fe_ox_pct         = "^ferro_oxalato",
+  # v0.9.221: FEBR codes the determination in the name (dictionary units g/kg):
+  # ferro_ditionito_* / fe2o3_ditionito_* (free Fe, as Fe / as Fe2O3),
+  # ferro_oxalato_* / fe2o3_oxalato_*, ferro_sulfurico_* / fe2o3_sulfurico_*
+  # (total Fe of the sulfuric attack). Until v0.9.220 "^fe2o3(_|$)" filled
+  # fe_dcb_pct with whichever fe2o3_* column came first (sulfuric, aqua regia,
+  # oxalate or dithionite), unconverted from g/kg.
+  fe_dcb_pct        = "^ferro_ditionito|^fe2o3_ditionito|^ferro_dcb",
+  fe_ox_pct         = "^ferro_oxalato|^fe2o3_oxalato",
+  fe2o3_sulfuric_pct = "^fe2o3_sulfurico|^ferro_sulfurico",
   al_ox_pct         = "^aluminio_oxalato",
   clay_pct          = "^argila(_|$)|^argila_total",
   silt_pct          = "^silte(_|$)|^silte_total",
@@ -205,6 +212,16 @@
 #' 200 FEBR datasets that carry color data, parses PT-BR Munsell
 #' strings (\code{"2,5YR 3/6"}) and converts FEBR's standard units
 #' to soilKey conventions.
+#'
+#' Iron (v0.9.221), from the FEBR dictionary codes (g/kg): dithionite Fe
+#' (\code{ferro_ditionito_*}, or \code{fe2o3_ditionito_*} converted to
+#' the element) goes to \code{fe_dcb_pct}; oxalate Fe
+#' (\code{ferro_oxalato_*} / \code{fe2o3_oxalato_*}) to
+#' \code{fe_ox_pct}; total Fe of the sulfuric attack, as the oxide
+#' (\code{fe2o3_sulfurico_*}, or \code{ferro_sulfurico_*} converted), to
+#' \code{fe2o3_sulfuric_pct}; all in \%. Until v0.9.220 the first
+#' \code{fe2o3_*} column of any method filled \code{fe_dcb_pct},
+#' unconverted.
 #'
 #' Per the May 2026 scan, ~80% of FEBR datasets have Munsell. Use
 #' \code{\link{febr_index_munsell}} to get the curated list of
@@ -320,6 +337,9 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
 }
 
 
+# Mass of Fe in a unit mass of Fe2O3 (2 x 55.845 / 159.69).
+.FE_PER_FE2O3 <- 2 * 55.845 / 159.69
+
 #' Map FEBR layer-table columns to soilKey horizon column names
 #' @noRd
 .febr_match_layer_columns <- function(cols) {
@@ -353,6 +373,16 @@ read_febr_pedons <- function(dataset_codes      = c("ctb0039"),
       if (sk == "oc_pct") {
         med <- stats::median(val[is.finite(val)], na.rm = TRUE)
         if (is.finite(med) && med > 25) val <- val / 10
+      }
+      # v0.9.221: iron determinations are g/kg in the FEBR dictionary; soilKey
+      # stores %, free and oxalate Fe as the element, sulfuric Fe as Fe2O3
+      # (2 x 55.845 / 159.69 = 0.6994 g Fe per g Fe2O3).
+      if (sk %in% c("fe_dcb_pct", "fe_ox_pct", "fe2o3_sulfuric_pct")) {
+        val <- val / 10
+        if (sk %in% c("fe_dcb_pct", "fe_ox_pct") && grepl("^fe2o3_", raw))
+          val <- val * .FE_PER_FE2O3
+        if (sk == "fe2o3_sulfuric_pct" && grepl("^ferro_", raw))
+          val <- val / .FE_PER_FE2O3
       }
     } else if (type_target == "integer") {
       val <- suppressWarnings(as.integer(val))
