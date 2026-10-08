@@ -392,7 +392,19 @@ sk_class_pal <- function(domain, na.color = "transparent") {
 # the app's theme while rendering; without it they come out unthemed, under
 # other file names. renderPage() is internal to shiny, hence the fallback to
 # the page's own dependencies if it ever changes.
+#
+# v0.9.218: the app's theme is also made every session's theme from the start.
+# Shiny records the current theme (the "bootstrapTheme" option) when it serves
+# a page while the app is running, and sessions copy the app's options when
+# they open. app.R is sourced before the app state exists (shiny::runApp()), so
+# this start-up render did not record it, and a session that Cloud Run opened
+# on an instance that had not yet served a page had no theme: DT tables fell
+# back to their default style, and selectize and bslib's component CSS were
+# rendered unthemed, re-pointing their resource paths to folders without the
+# themed files, so pages that instance served afterwards got 404s for them.
+# Set before the app state exists, the option is copied into it.
 sk_register_page_deps <- function(page, theme) {
+  shiny::shinyOptions(bootstrapTheme = theme)
   old_bs <- bslib::bs_global_set(theme)
   on.exit(bslib::bs_global_set(old_bs), add = TRUE)
   ok <- tryCatch({ shiny:::renderPage(page); TRUE }, error = function(e) FALSE)

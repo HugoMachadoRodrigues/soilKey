@@ -1,6 +1,6 @@
 # soilKey 0.9.218 (2026-10-08)
 
-## Pro app: pages no longer lose jQuery after a table or a map
+## Pro app: pages no longer lose jQuery or their theme after a table or a map
 
 On the live app, an instance that had rendered a key-trace table or a map then
 served pages without jQuery (HTTP 404 for `jquery-3.6.0/jquery.min.js`), so they
@@ -13,6 +13,16 @@ the request logs of the 0.9.218 test revision: one instance answered 200, then
 and the new `sk_leaflet()` drop the widgets' own jQuery; the page's is the one
 they use. A local install, on a newer Shiny (jQuery 3.7.1), never collides,
 which is why only the container showed it.
+
+The same test revision showed a second fault, of the multi-instance setup of
+0.9.215: a session that Cloud Run opened on an instance which had not yet served
+a page had no theme. Shiny records the theme when it serves a page with the app
+running, and app.R, where 0.9.215 renders the page at start-up, is sourced
+before that. Its tables then took DT's default style, and selectize and bslib's
+component CSS, rendered unthemed, re-pointed their resource paths to folders
+without the themed files, so pages that instance served next lost their select
+inputs' and layout's styles (404). `sk_register_page_deps()` now also makes the
+app's theme the theme of every session from start-up.
 
 ## Pro app: readable dark mode, AA contrast in both themes
 
