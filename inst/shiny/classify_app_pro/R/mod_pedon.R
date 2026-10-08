@@ -701,7 +701,7 @@ pedon_server <- function(id, rv) {
           sprintf(i18n("pedon.wosis_no_layers_listed"), attr(h, "wosis_no_layers"))))
     })
 
-    output$wosis_table <- DT::renderDT({
+    output$wosis_table <- sk_renderDT({
       h <- wosis_hits()
       shiny::validate(shiny::need(nrow(h) > 0L, i18n("pedon.wosis_unavailable")))
       # licence and dataset are shown, not hidden: CC BY requires attribution,
@@ -742,7 +742,7 @@ pedon_server <- function(id, rv) {
     })
 
     # ---- editable table ---------------------------------------------------
-    output$hz_table <- DT::renderDT({
+    output$hz_table <- sk_renderDT({
       hz_reload()                          # re-render only on load / add
       df <- shiny::isolate(hz())
       if (is.null(df)) df <- .pedon_blank_template()[0, , drop = FALSE]

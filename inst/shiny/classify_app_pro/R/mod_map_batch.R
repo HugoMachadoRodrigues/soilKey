@@ -342,7 +342,7 @@ map_batch_server <- function(id, rv, settings) {
                        i18n("mbatch.n_points", nrow(res)))
     })
 
-    output$table <- DT::renderDT({
+    output$table <- sk_renderDT({
       res <- results()
       shiny::req(res)
       shiny::validate(shiny::need(!inherits(res, "error"),

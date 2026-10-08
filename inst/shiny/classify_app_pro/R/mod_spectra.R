@@ -376,7 +376,7 @@ spectra_server <- function(id, rv) {
                             steps = if (!is.null(tr)) tr$steps else NULL)
     }, ignoreInit = FALSE)
 
-    output$attr_table <- DT::renderDT({
+    output$attr_table <- sk_renderDT({
       shiny::req(rv$pedon)
       h <- as.data.frame(rv$pedon$horizons)
       cols <- intersect(c("designation", "clay_pct", "sand_pct", "silt_pct",

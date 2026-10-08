@@ -74,4 +74,8 @@ test_that("the app builds every table and map through the helpers", {
   src <- src[!grepl("sk_drop_jquery\\(DT::datatable|sk_drop_jquery\\(leaflet::leaflet", src)]
   expect_false(any(grepl("DT::datatable(", src, fixed = TRUE)))
   expect_false(any(grepl("leaflet::leaflet(", src, fixed = TRUE)))
+  # and every table sends its rows over the session's websocket (sk_renderDT,
+  # server = FALSE), not by an HTTP request another instance may answer
+  src <- src[!grepl("DT::renderDT(substitute(expr)", src, fixed = TRUE)]
+  expect_false(any(grepl("DT::renderDT(", src, fixed = TRUE)))
 })

@@ -354,6 +354,17 @@ sk_drop_jquery <- function(widget) {
 # leaflet::leaflet() without its own jQuery (see sk_drop_jquery()).
 sk_leaflet <- function(...) sk_drop_jquery(leaflet::leaflet(...))
 
+# DT::renderDT() with the data sent in the table itself (server = FALSE), over
+# the session's websocket (v0.9.218). With server-side processing the browser
+# fetches the rows by HTTP from /session/<id>/dataobj/<table>, and Cloud Run
+# does not always route that request to the instance holding the session
+# (session affinity is best effort): the table stayed empty with a 404. The
+# app's tables are small (horizons, key traces, attribute lists).
+sk_renderDT <- function(expr, ...) {
+  DT::renderDT(substitute(expr), server = FALSE, quoted = TRUE,
+               env = parent.frame(), ...)
+}
+
 
 # Colours for the Map's class layers (SoilGrids overlay, predicted grid, batch
 # points). leaflet's "Set3" has 12 colours: over more classes leaflet

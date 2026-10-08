@@ -512,7 +512,7 @@ map_grid_server <- function(id, rv, settings) {
     })
 
     # ---- class summary table ------------------------------------------------
-    output$summary <- DT::renderDT({
+    output$summary <- sk_renderDT({
       rr <- grid_result()
       shiny::req(rr)
       shiny::validate(shiny::need(!inherits(rr, "error"),

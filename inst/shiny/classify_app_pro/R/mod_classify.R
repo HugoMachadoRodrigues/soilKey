@@ -331,7 +331,7 @@ classify_server <- function(id, rv, settings) {
       )
     })
 
-    output$trace_table <- DT::renderDT({
+    output$trace_table <- sk_renderDT({
       res <- results()
       shiny::req(res, !inherits(res, "error"))
       r <- res[[input$trace_sys %||% "wrb"]]

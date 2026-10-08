@@ -24,6 +24,12 @@ without the themed files, so pages that instance served next lost their select
 inputs' and layout's styles (404). `sk_register_page_deps()` now also makes the
 app's theme the theme of every session from start-up.
 
+Cloud Run's session affinity is best effort, and the request with which a
+server-side DT table fetches its rows (`/session/<id>/dataobj/<table>`) could
+reach an instance that did not hold the session: the table stayed empty. The
+app's tables are small, so they now send their rows with the table, over the
+session's websocket (`sk_renderDT()`, `server = FALSE`).
+
 ## Pro app: readable dark mode, AA contrast in both themes
 
 A contrast check of every tab (WCAG 2.1 AA: 4.5:1 for text, 3:1 for large
