@@ -22,6 +22,9 @@
     oc_pct = c(8.0, 6.5, 2.0, 1.5, 0.6),
     bulk_density_g_cm3 = rep(NA_real_, 5),
     clay_pct = c(11, 11, 2, 32, 15),    # clay doubling at 2BA -> argic
+    # v0.9.220: the increase is across a lithic discontinuity (C over 2BA), so
+    # WRB 2022 (argic criterion 2.a.i) wants illuvial clay evidenced (2.b)
+    clay_films_amount = c(NA, NA, NA, "common", NA),
     sand_pct = c(60, 60, 75, 50, 60),
     silt_pct = c(29, 29, 23, 18, 25),
     cec_cmolc_kg = c(15, 15, 5, 20, 10),

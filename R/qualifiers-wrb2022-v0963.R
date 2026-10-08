@@ -351,21 +351,20 @@ qual_greyzemic <- function(pedon) {
        below = .q_layer_at(h, bottom))
 }
 
-# Technic hard material (WRB 2022 Ch 3.3.18) with positive evidence.
-# technic_hard_material() also accepts any strongly cemented layer, which may
-# be a natural petrocalcic or petroduric horizon: such a layer counts only when
-# recorded as >= 95% artefacts (technic hard material is artefacts, Ch 3.3.2,
-# and continuous); otherwise it is `unsure`. A designation counts when it
+# Technic hard material (WRB 2022 Ch 3.3.18) with positive evidence. A strongly
+# cemented layer may be a natural petrocalcic or petroduric horizon: it counts
+# only when recorded as >= 95% artefacts (technic hard material is artefacts,
+# Ch 3.3.2, and continuous); otherwise it is `unsure` (technic_hard_material()
+# itself no longer reads cementation since v0.9.220). A designation counts when it
 # names asphalt, concrete or cement (not a geomembrane), and so does
 # technic_hardmaterial_pct >= 95. `status`: TRUE found, FALSE none, NA unsure.
 .q_technic_hard <- function(pedon) {
   h <- pedon$horizons
   th <- technic_hard_material(pedon)
   d <- h$designation
-  named <- intersect(th$evidence$designation$layers %||% integer(0),
-                     which(!is.na(d) & grepl("asph|concrete|cement", d,
-                                             ignore.case = TRUE)))
-  cem <- th$evidence$cementation$layers %||% integer(0)
+  named <- which(!is.na(d) & grepl("asph|asfalt|concret|cement", d, ignore.case = TRUE))
+  cem <- tryCatch(test_cemented(h, min_class = "strongly")$layers,
+                  error = function(e) integer(0)) %||% integer(0)
   art <- h$artefacts_pct
   pct <- h$technic_hardmaterial_pct %||% rep(NA_real_, nrow(h))
   layers <- sort(unique(c(named, cem[!is.na(art[cem]) & art[cem] >= 95],

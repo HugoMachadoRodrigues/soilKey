@@ -214,7 +214,9 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
 
   h <- pedon$horizons
 
-  designation <- test_designation_pattern(h, pattern = "^R$|^Cr|^R[a-z]")
+  # v0.9.220: continuous rock is R, RCr or R/Cr (.WRB_ROCK_DESIGNATION); Cr,
+  # weathered or soft bedrock, made Leptosols of soils over saprolite.
+  designation <- test_designation_pattern(h, pattern = .WRB_ROCK_DESIGNATION)
   paths <- list()
   paths$designation <- list(
     rock_designation = designation,
@@ -542,32 +544,58 @@ stagnic_properties <- function(pedon, max_top_cm = 100,
 
 #' Retic properties (WRB 2022)
 #'
-#' Tests whether any horizon designation indicates retic features
-#' (glossic tongues of bleached material penetrating into a clay-
-#' enriched horizon). v0.3 detects these via designation pattern
-#' matching \code{"glossic|retic|albeluvic"} (case-insensitive).
-#' Diagnostic of Retisols.
+#' WRB 2022 Chapter 3.2.11: claric material interfingering into an argic or
+#' natric horizon from its upper limit. soilKey reads criteria 1 and 6 from
+#' the data, the finer-textured parts belonging to an argic or natric horizon
+#' (\code{\link{argic}}, \code{\link{natric_horizon}}) and the interfingering
+#' recorded at its upper limit, and stands in for criteria 2-5, 7 and 8
+#' (claric coarser parts, colour and clay contrasts, width, 10-90\% of the
+#' sections, not in a plough layer), which no column holds, by the
+#' designation the describer gave: \code{pattern} on the uppermost argic or
+#' natric layer or the layer directly above it.
+#'
+#' \code{FALSE} without an argic or natric horizon, or when designations are
+#' recorded and none shows the interfingering; \code{NA} when the argic or
+#' natric horizon cannot be established or there are no designations. Until
+#' v0.9.219 the designation alone decided, anywhere in the profile.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param pattern Regex (default
-#'        \code{"glossic|retic|albeluvic"}).
+#' @param pattern Regex (default \code{"glossic|retic|albeluvic"}).
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Retisols.
+#' @references IUSS Working Group WRB (2022), Chapter 3.2.11, Retic
+#'   properties.
 #' @export
 retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
   h <- pedon$horizons
-  tests <- list()
-  tests$retic_designation <- test_designation_pattern(h, pattern = pattern)
-
-  agg <- aggregate_subtests(tests)
-
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.2.11, Retic properties"
+  arg <- argic(pedon)
+  nat <- natric_horizon(pedon)
+  hz  <- sort(union(if (isTRUE(arg$passed)) arg$layers,
+                    if (isTRUE(nat$passed)) nat$layers))
+  desg <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+  flag <- !is.na(desg) & grepl(pattern, desg, ignore.case = TRUE)
+  if (!length(hz)) {
+    passed <- if (is.na(arg$passed) || is.na(nat$passed)) {
+      if (any(flag) || all(is.na(desg))) NA else FALSE
+    } else FALSE
+    return(DiagnosticResult$new(
+      name = "retic_properties", passed = passed, layers = integer(0),
+      evidence = list(argic = arg, natric = nat, designation_flags = which(flag)),
+      missing = if (is.na(passed)) unique(c(arg$missing, nat$missing)) else character(0),
+      reference = ref))
+  }
+  top <- hz[which.min(h$top_cm[hz])]
+  above <- which(!is.na(h$bottom_cm) & abs(h$bottom_cm - h$top_cm[top]) < 1e-6)
+  at_boundary <- intersect(which(flag), c(top, above))
+  passed <- if (length(at_boundary)) TRUE else if (all(is.na(desg))) NA else FALSE
   DiagnosticResult$new(
     name      = "retic_properties",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Retisols"
+    passed    = passed,
+    layers    = if (isTRUE(passed)) sort(union(at_boundary, top)) else integer(0),
+    evidence  = list(argic_or_natric = hz, upper_limit_layer = top,
+                     designation_flags = which(flag), argic = arg, natric = nat),
+    missing   = if (is.na(passed)) "designation" else character(0),
+    reference = ref
   )
 }
 

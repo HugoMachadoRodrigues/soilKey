@@ -57,11 +57,31 @@ test_that("clay-increase rule tiers correctly (>=50% band)", {
   expect_true(2L %in% test_clay_increase_argic(h_pass)$layers)
 })
 
-test_that("argic excluded when glossic features detected", {
+test_that("argic is not voided by glossic features (v0.9.220)", {
+  # WRB 2022: retic properties belong to an argic or natric horizon (Ch 3.2.11,
+  # criterion 1) and Retisols have an argic horizon (Ch 4). Until v0.9.219 a
+  # "glossic" designation voided the argic horizon (the WRB 2014 Albeluvisol
+  # logic).
   pr <- make_luvisol_canonical()
   pr$horizons$designation[3] <- "Btg glossic"
   res <- argic(pr)
-  expect_false(isTRUE(res$passed))
+  expect_true(isTRUE(res$passed))
+})
+
+test_that("a clay increase across a lithic discontinuity is not argic (2.a.i)", {
+  # WRB 2022 Ch 3.1.3, criterion 2.a.i: the coarser-textured layer is not
+  # separated from the argic horizon by a lithic discontinuity, unless illuvial
+  # clay is evidenced (2.b).
+  mk <- function(desg, films = NA_character_) PedonRecord$new(
+    site = list(id = "LD"),
+    horizons = ensure_horizon_schema(data.table::data.table(
+      top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 120),
+      designation = desg,
+      clay_pct = c(12, 30, 32), silt_pct = c(30, 30, 30), sand_pct = c(58, 40, 38),
+      clay_films_amount = c(NA, films, films))))
+  expect_true(isTRUE(argic(mk(c("A", "Bt1", "Bt2")))$passed))
+  expect_false(isTRUE(argic(mk(c("A", "2Bt1", "2Bt2")))$passed))
+  expect_true(isTRUE(argic(mk(c("A", "2Bt1", "2Bt2"), "common"))$passed))
 })
 
 test_that("test_minimum_thickness honours candidate_layers", {
@@ -81,8 +101,7 @@ test_that("test_minimum_thickness honours candidate_layers", {
 test_that("argic returns DiagnosticResult with named sub-tests", {
   pr <- make_luvisol_canonical()
   res <- argic(pr)
-  expect_named(res$evidence, c("clay_increase", "thickness", "texture",
-                                 "not_albeluvic"))
+  expect_named(res$evidence, c("clay_increase", "thickness", "texture"))
 })
 
 test_that("argic reference includes WRB 2022 chapter citation", {

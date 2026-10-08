@@ -507,24 +507,31 @@ solimovic_material <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 technic_hard_material <- function(pedon) {
+  # v0.9.220: WRB 2022 Ch 3.3.18, "1. is consolidated material resulting from
+  # industrial or artisanal processes; and 2. has properties substantially
+  # different from those of natural materials; and 3. is continuous or has
+  # free space covering < 5% of its horizontal extension". Read from
+  # technic_hardmaterial_pct >= 95 or an asphalt / concrete designation. Any
+  # strongly cemented layer used to count, so a petrocalcic horizon or a
+  # duripan was technic; a geomembrane (Cgeo/Cgem), which is not consolidated
+  # material, counted too.
   h <- pedon$horizons
-  tests <- list()
-  tests$designation <- test_pattern_match(h, "designation",
-                                              "Cgeo|Cgem|asph|concrete|cement")
-  tests$cementation <- test_cemented(h, min_class = "strongly")
-  if (isTRUE(tests$designation$passed) || isTRUE(tests$cementation$passed)) {
-    layers <- union(tests$designation$layers, tests$cementation$layers)
-    passed <- TRUE
-  } else if (is.na(tests$designation$passed) && is.na(tests$cementation$passed)) {
-    layers <- integer(0); passed <- NA
-  } else {
-    layers <- integer(0); passed <- FALSE
-  }
+  n <- nrow(h)
+  pct  <- h$technic_hardmaterial_pct %||% rep(NA_real_, n)
+  desg <- as.character(h$designation %||% rep(NA_character_, n))
+  by_pct  <- which(!is.na(pct) & pct >= 95)
+  by_desg <- which(!is.na(desg) & grepl("asph|asfalt|concret", desg, ignore.case = TRUE))
+  layers <- sort(union(by_pct, by_desg))
+  passed <- if (length(layers)) TRUE
+            else if (all(is.na(pct)) && all(is.na(desg))) NA
+            else FALSE
   DiagnosticResult$new(
     name = "technic_hard_material",
     passed = passed, layers = layers,
-    evidence = tests,
-    missing = unique(c(tests$designation$missing, tests$cementation$missing)),
+    evidence = list(technic_hardmaterial_pct = pct, designation = desg,
+                    by_pct = by_pct, by_designation = by_desg),
+    missing = if (is.na(passed)) c("technic_hardmaterial_pct", "designation")
+              else character(0),
     reference = "IUSS Working Group WRB (2022), Chapter 3.3.18"
   )
 }

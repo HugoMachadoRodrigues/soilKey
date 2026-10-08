@@ -47,6 +47,13 @@
 #'        (default) auto-picks: \code{TRUE} for \code{system =
 #'        "usda"}, \code{FALSE} for \code{system = "wrb2022"}.
 #'        Ignored when \code{engine = "soilkey"}.
+#' @param lithic_discontinuity v0.9.220. Apply WRB 2022 criterion 2.a.i:
+#'        a clay increase over a coarser layer of another material (Ap over
+#'        2Bt, read from the designations' material numbers) counts only
+#'        with clay films of "common" or more (illuvial clay, criterion 2.b).
+#'        \code{NULL} (default): \code{TRUE} for \code{system = "wrb2022"}.
+#'        The SiBCS B textural, whose item (j) accepts such an increase by
+#'        its textural ratio, and the USDA keys pass \code{FALSE}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
@@ -59,9 +66,10 @@
 #'         (configurable via \code{min_thickness}).
 #'   \item \code{test_texture_argic} -- texture of sandy loam or
 #'         finer (\code{silt + 2 * clay >= 30}).
-#'   \item \code{test_not_albeluvic} -- excludes profiles with glossic
-#'         tongues (Retisol path).
 #' }
+#' Until v0.9.219 a glossic, albeluvic or retic designation anywhere
+#' voided the argic horizon (the WRB 2014 Albeluvisol logic); in WRB 2022
+#' retic properties belong to an argic or natric horizon.
 #'
 #' v0.1 limitations: clay-increase distance (<= 30 cm vertical, or <= 15
 #' cm with abrupt textural change) is not yet enforced; that is scheduled
@@ -75,8 +83,12 @@
 argic <- function(pedon, min_thickness = 7.5,
                     system = c("wrb2022", "usda"),
                     engine = NULL,
-                    require_t = NULL) {
+                    require_t = NULL,
+                    lithic_discontinuity = NULL) {
   system <- match.arg(system)
+  # v0.9.220: WRB 2022 criterion 2.a.i (see below) for the WRB argic only; the
+  # SiBCS B textural (item j) and the USDA keys call this with FALSE.
+  if (is.null(lithic_discontinuity)) lithic_discontinuity <- system == "wrb2022"
   # v0.9.63: engine resolution order:
   #   1. explicit `engine` argument
   #   2. R option soilKey.diagnostic_engine (e.g. "aqp")
@@ -140,7 +152,28 @@ argic <- function(pedon, min_thickness = 7.5,
   tests <- list()
   # v0.9.26: per-system clay-increase thresholds. WRB 2022 (default)
   # uses 6/1.4/20; KST 13ed uses 3/1.2/8 (looser).
-  tests$clay_increase <- test_clay_increase_argic(h, system = system)
+  tests$clay_increase <- test_clay_increase_argic(h, system = system,
+                                                  lithic_aware = lithic_discontinuity)
+  # v0.9.220: WRB 2022 Ch 3.1.3, criterion 2.a.i. A clay increase across a
+  # lithic discontinuity (Ap over 2Bt) is not an argic horizon unless "illuvial
+  # clay is evidenced" (criterion 2.b; WRB: "if the soil shows a lithic
+  # discontinuity directly over the argic horizon ... the illuvial nature must
+  # be clearly established"), read here as clay films ("cerosidade") of
+  # "common" or more (2.b.ii: coatings on >= 15% of the aggregate surfaces).
+  if (lithic_discontinuity) {
+    across <- setdiff(test_clay_increase_argic(h, system = system)$layers,
+                      tests$clay_increase$layers)
+    if (length(across)) {
+      films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+      kept <- across[!is.na(films[across]) & films[across] >= 3L]
+      tests$clay_increase$across_lithic_discontinuity <-
+        list(layers = across, kept_by_clay_films = kept)
+      if (length(kept)) {
+        tests$clay_increase$layers <- sort(union(tests$clay_increase$layers, kept))
+        tests$clay_increase$passed <- TRUE
+      }
+    }
+  }
 
   candidate_layers <- tests$clay_increase$layers
 
@@ -149,12 +182,14 @@ argic <- function(pedon, min_thickness = 7.5,
                                                   candidate_layers = candidate_layers)
   tests$texture       <- test_texture_argic(h,
                                               candidate_layers = candidate_layers)
-  tests$not_albeluvic <- test_not_albeluvic(h)
+  # v0.9.220: no albeluvic exclusion. Until v0.9.219 a "glossic", "albeluvic"
+  # or "retic" designation anywhere voided the argic horizon (the WRB 2014
+  # Albeluvisol logic); in WRB 2022 retic properties belong to an argic or
+  # natric horizon (Ch 3.2.11, criterion 1) and Retisols have one (Ch 4).
 
   agg <- aggregate_subtests(
     tests,
-    layer_tests = c("clay_increase", "thickness", "texture"),
-    exclusions  = "not_albeluvic"
+    layer_tests = c("clay_increase", "thickness", "texture")
   )
 
   # v0.9.90 -- Designation-inference fallback (opt-in, auto-on under
@@ -1428,167 +1463,200 @@ natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
 
 #' Nitic horizon (WRB 2022)
 #'
-#' Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich (DCB
-#' Fe >= 4\%) subsurface horizon at least 30 cm thick. Diagnostic of
-#' Nitisols. WRB 2022 additionally requires polyhedral / nutty
-#' structure with shiny ped surfaces and a gradual (non-abrupt) clay
-#' decrease with depth.
-#'
-#' Required (AND-combined) sub-tests:
-#' \itemize{
-#'   \item Profile does not have a ferralic horizon (Ferralsol path
-#'         is canonical for the clay-rich + low-CEC corner).
-#'   \item clay \% >= \code{min_clay}.
-#'   \item fe_dcb_pct >= \code{min_fe_dcb}.
-#'   \item thickness >= \code{min_thickness}.
+#' Tests for a nitic horizon, WRB 2022 Chapter 3.1.22, criterion by
+#' criterion on each layer:
+#' \enumerate{
+#'   \item \eqn{\ge} 30\% clay (\code{min_clay});
+#'   \item moderate to strong angular or subangular blocky structure, or
+#'         polyhedral structure, with pressure faces (shiny surfaces) on
+#'         \eqn{\ge} 25\% of the aggregate surfaces. Read from
+#'         \code{structure_type}, \code{structure_grade} and
+#'         \code{clay_films_amount}, "common" or more: the cerosidade
+#'         "comum" that the SiBCS B nitico asks for, 25-50\% in KST;
+#'   \item \eqn{\ge} 4\% Fe-dith (\code{fe_dcb_pct}), \eqn{\ge} 0.2\%
+#'         Fe-ox (\code{fe_ox_pct}) and Fe-ox / Fe-dith \eqn{\ge} 0.05;
+#'   \item not part of a plinthic horizon (\code{\link{plinthic}});
+#'   \item the layers that meet 1-4 are \eqn{\ge} 30 cm thick together, as
+#'         one horizon (\code{min_thickness}).
 #' }
+#' A criterion is \code{FALSE} when the data contradict it and \code{NA}
+#' when the data it needs are missing: a profile without Fe-ox or structure
+#' records gets \code{NA}, not a nitic horizon. With
+#' \code{options(soilKey.morphological_inference = TRUE)} missing structure
+#' and Fe data are read from a Bt designation with a CEC of 8-36 cmolc/kg
+#' clay and no albic E above (the v0.9.18 reading of legacy profiles),
+#' recorded in the evidence.
 #'
-#' Supplementary (soft-AND) sub-tests -- evaluated when evidence is
-#' present in the pedon, evaluate to NA (not a fail) when missing:
-#' \itemize{
-#'   \item structure_type matches polyhedral / nutty / (sub)angular
-#'         blocky.
-#'   \item slickensides / shiny ped surfaces present (proxy for
-#'         WRB's "shiny ped surfaces").
-#'   \item clay does not decrease abruptly between adjacent layers
-#'         within 50 cm of the surface (gradual-decrease pattern;
-#'         drop > 8 percentage points fails).
-#' }
-#' Supplementary tests fail (return passed = FALSE) only when evidence
-#' actively contradicts the criterion; missing evidence is permissive.
+#' Until v0.9.219 the structure and shiny-surface tests never vetoed,
+#' Fe-ox was not read, a plinthic horizon was not excluded, any ferralic
+#' horizon in the profile excluded a nitic one (WRB 2022 does not:
+#' Nitisols key out before Ferralsols), the Fe inference above ran by
+#' default, and a clay drop of more than 8 percentage points within 50 cm
+#' vetoed it. The clay rule of the Nitisol key is in \code{\link{nitisol}}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Minimum clay \% (default 30).
-#' @param min_fe_dcb Minimum DCB-extractable Fe \% (default 4).
+#' @param min_fe_dcb Minimum dithionite Fe \% (default 4).
 #' @param min_thickness Minimum thickness in cm (default 30).
-#' @param max_clay_drop_pct Maximum clay drop (percentage points)
-#'        between adjacent layers within \code{max_decrease_depth}
-#'        before failing the gradual-decrease test (default 8).
-#' @param max_decrease_depth Depth window (cm) for the gradual-decrease
-#'        check (default 50).
+#' @param min_fe_ox Minimum oxalate Fe \% (default 0.2).
+#' @param min_feox_fedith Minimum Fe-ox / Fe-dith ratio (default 0.05).
+#' @param max_clay_drop_pct,max_decrease_depth Unused since v0.9.220, kept
+#'        so that existing calls still run.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon.
 #' @export
 nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
-                            min_thickness        = 30,
-                            max_clay_drop_pct    = 8,
-                            max_decrease_depth   = 50) {
+                            min_thickness   = 30,
+                            min_fe_ox       = 0.2,
+                            min_feox_fedith = 0.05,
+                            max_clay_drop_pct  = NULL,
+                            max_decrease_depth = NULL) {
   h <- pedon$horizons
+  n <- nrow(h)
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon"
+  col <- function(v, na) h[[v]] %||% rep(na, n)
+  clay <- col("clay_pct", NA_real_)
+  st   <- tolower(as.character(col("structure_type", NA_character_)))
+  gr   <- tolower(as.character(col("structure_grade", NA_character_)))
+  fed  <- col("fe_dcb_pct", NA_real_)
+  fox  <- col("fe_ox_pct", NA_real_)
+  films <- .clay_films_class(col("clay_films_amount", NA_character_))
 
-  fer <- ferralic(pedon)
-  if (isTRUE(fer$passed)) {
-    return(DiagnosticResult$new(
-      name      = "nitic_horizon",
-      passed    = FALSE,
-      layers    = integer(0),
-      evidence  = list(ferralic = fer),
-      missing   = fer$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon",
-      notes     = "Excluded -- profile has a ferralic horizon (Ferralsol path)"
-    ))
-  }
+  # 1. >= 30% clay
+  c1 <- ifelse(is.na(clay), NA, clay >= min_clay)
+  # 2. blocky (moderate or strong) or polyhedral, with shiny faces >= 25%
+  poly    <- !is.na(st) & grepl("polyhedr|poli[eé]dr|nutty|nucif", st)
+  type_ok <- ifelse(is.na(st), NA, poly | grepl("block|bloco|angular", st))
+  grade_ok <- ifelse(is.na(gr), NA,
+                ifelse(grepl("moderate|strong|moderad|forte", gr), TRUE,
+                  ifelse(grepl("weak|fraca|massive|maci|single|simples|structureless|sem estrutura",
+                               gr), FALSE, NA)))
+  shiny <- ifelse(is.na(films), NA, films >= 3L)
+  c2 <- vapply(seq_len(n), function(i)
+    if (poly[i]) .and3(shiny[i]) else .and3(type_ok[i], grade_ok[i], shiny[i]),
+    logical(1))
+  # 3. Fe-dith >= 4%, Fe-ox >= 0.2%, Fe-ox / Fe-dith >= 0.05
+  c3 <- vapply(seq_len(n), function(i) .and3(
+    if (is.na(fed[i])) NA else fed[i] >= min_fe_dcb,
+    if (is.na(fox[i])) NA else fox[i] >= min_fe_ox,
+    if (is.na(fed[i]) || is.na(fox[i]) || fed[i] <= 0) NA
+    else fox[i] / fed[i] >= min_feox_fedith), logical(1))
+  # 4. not part of a plinthic horizon (one soilKey cannot establish does not
+  #    exclude)
+  pl <- tryCatch(plinthic(pedon), error = function(e) NULL)
+  c4 <- rep(TRUE, n)
+  if (!is.null(pl) && isTRUE(pl$passed)) c4[pl$layers] <- FALSE
 
-  tests <- list()
-  tests$not_ferralic <- list(
-    passed  = !isTRUE(fer$passed),
-    layers  = if (isTRUE(fer$passed)) integer(0) else seq_len(nrow(h)),
-    missing = fer$missing %||% character(0),
-    details = list(ferralic_passed = fer$passed),
-    notes   = NA_character_
-  )
-  tests$clay   <- test_clay_above(h, min_pct = min_clay)
-  tests$fe_dcb <- test_fe_dcb_above(h, min_pct = min_fe_dcb,
-                                       candidate_layers = tests$clay$layers)
-
-  # v0.9.18: when fe_dcb_pct is missing across all clay-qualifying
-  # layers, infer plausible Fe-rich behaviour from (a) Bt designation
-  # + (b) CEC/clay activity in the 8-36 cmol/kg-clay range +
-  # (c) NO albic E horizon above the Bt (Nitisol diagnostic morphology
-  # does not include an albic E -- profiles with an E above are
-  # canonically Acrisols / Lixisols / Alisols / Luvisols / Retisols).
-  # The inference does NOT fire when fe_dcb is measured -- the
-  # canonical gate stays in charge for lab-grade profiles. Closes the
-  # FEBR Nitosols 0/14 gap diagnosed in the v0.9.17 benchmark
-  # without regressing the canonical Acrisol / Lixisol / Alisol
-  # fixtures (which all have an E horizon).
-  if (is.na(tests$fe_dcb$passed) || isFALSE(tests$fe_dcb$passed)) {
-    fe_layers <- tests$clay$layers
-    have_fe_data <- any(!is.na(h$fe_dcb_pct[fe_layers]))
-    has_albic_E <- any(!is.na(h$designation) &
-                          grepl("^E[bg]?$|^E[0-9]", h$designation))
-    if (length(fe_layers) > 0L && !have_fe_data && !has_albic_E) {
-      desg <- h$designation[fe_layers]
-      bt_pattern <- !is.na(desg) & grepl("^B[a-z]*t", desg)
-      cec_per_clay_in_range <- vapply(fe_layers, function(j) {
-        if (is.na(h$cec_cmol[j]) || is.na(h$clay_pct[j]) ||
-              h$clay_pct[j] <= 0) return(FALSE)
-        cpc <- h$cec_cmol[j] * 100 / h$clay_pct[j]
-        !is.na(cpc) && cpc >= 8 && cpc <= 36
-      }, logical(1))
-      inferred <- fe_layers[bt_pattern & cec_per_clay_in_range]
-      if (length(inferred) > 0L) {
-        tests$fe_dcb <- list(
-          passed  = TRUE,
-          layers  = inferred,
-          missing = "fe_dcb_pct",
-          details = list(source = "inferred_from_Bt_and_cec_per_clay_and_no_albic_E",
-                          note   = paste0("v0.9.18: fe_dcb_pct missing; ",
-                                           "Fe-rich behaviour inferred from ",
-                                           "Bt designation + CEC/clay in ",
-                                           "[8, 36] + no albic E")),
-          notes   = NA_character_
-        )
-      }
+  # opt-in reading of legacy profiles: missing structure and Fe data from a
+  # Bt designation with a CEC of 8-36 cmolc/kg clay and no albic E above
+  inferred <- integer(0)
+  if (.morph_inference_enabled()) {
+    desg <- as.character(col("designation", NA_character_))
+    cec  <- col("cec_cmol", NA_real_)
+    cpc  <- ifelse(is.na(cec) | is.na(clay) | clay <= 0, NA, cec * 100 / clay)
+    has_albic_e <- any(!is.na(desg) & grepl("^[0-9]*E[bg]?$|^[0-9]*E[0-9]", desg))
+    can <- which(!is.na(desg) & grepl("^[0-9]*B[a-z]*t", desg) &
+                   !is.na(cpc) & cpc >= 8 & cpc <= 36)
+    if (!has_albic_e) for (i in can) {
+      if (is.na(c2[i]) || is.na(c3[i])) inferred <- c(inferred, i)
+      if (is.na(c2[i])) c2[i] <- TRUE
+      if (is.na(c3[i])) c3[i] <- TRUE
     }
   }
 
-  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
-                                              candidate_layers = tests$fe_dcb$layers)
-
-  # Supplementary structure / morphology / pattern tests. These are
-  # AND-combined only when evidence is conclusive (passed is TRUE or
-  # FALSE). Missing evidence (passed is NA) is treated as permissive.
-  struct <- test_polyhedral_or_nutty_structure(
-              h, candidate_layers = tests$thickness$layers)
-  shiny  <- test_shiny_ped_surfaces(
-              h, candidate_layers = tests$thickness$layers)
-  clay_dec <- test_clay_decreases_with_depth(
-                h, candidate_layers = tests$thickness$layers,
-                   max_drop_pct     = max_clay_drop_pct,
-                   max_depth_cm     = max_decrease_depth)
-  if (isFALSE(struct$passed))   tests$structure        <- struct
-  if (isFALSE(shiny$passed))    tests$shiny_peds       <- shiny
-  if (isFALSE(clay_dec$passed)) tests$clay_decrease    <- clay_dec
-  # Always record the structural evidence that DID pass / NA in
-  # evidence so the trace is full.
-  tests$evidence_structure     <- struct
-  tests$evidence_shiny_peds    <- shiny
-  tests$evidence_clay_decrease <- clay_dec
-
-  agg <- aggregate_subtests(
-    tests,
-    layer_tests = c("not_ferralic", "clay", "fe_dcb", "thickness")
-  )
-  # v0.9.18: only hard-fail on a conclusively FALSE clay-decrease
-  # pattern. test_polyhedral_or_nutty_structure() and
-  # test_shiny_ped_surfaces() now return NA when evidence is missing
-  # or inconclusive (rather than FALSE), so they are evidence-only
-  # and never veto. The clay-decrease test still vetoes when there
-  # IS measured clay data showing a > 8 pp drop -- that's
-  # mineralogically incompatible with a nitic horizon.
-  if (isFALSE(clay_dec$passed)) {
-    agg$passed <- FALSE
-    agg$layers <- integer(0)
-  }
-
+  status <- vapply(seq_len(n), function(i) .and3(c1[i], c2[i], c3[i], c4[i]),
+                   logical(1))
+  # 5. >= 30 cm, as one horizon (contiguous layers)
+  runs <- .nitic_runs(h, which(status %in% TRUE))
+  may  <- .nitic_runs(h, which(status %in% TRUE | is.na(status)))
+  long <- Filter(function(r) r$thickness >= min_thickness, runs)
+  passed <- if (length(long)) TRUE
+            else if (any(vapply(may, function(r) r$thickness >= min_thickness,
+                                logical(1)))) NA
+            else FALSE
+  layers <- sort(unlist(lapply(long, `[[`, "layers")))
+  cand <- which(!(status %in% FALSE))
+  miss <- c(if (anyNA(c1[cand])) "clay_pct",
+            if (anyNA(c2[cand])) c("structure_type", "structure_grade",
+                                   "clay_films_amount"),
+            if (anyNA(c3[cand])) c("fe_dcb_pct", "fe_ox_pct"))
   DiagnosticResult$new(
     name      = "nitic_horizon",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Nitic horizon"
+    passed    = passed,
+    layers    = layers %||% integer(0),
+    evidence  = list(
+      criteria = data.frame(layer = seq_len(n), clay = c1, structure_shiny = c2,
+                            fe = c3, not_plinthic = c4, status = status),
+      plinthic = pl,
+      morphological_inference = if (length(inferred))
+        list(layers = inferred, provenance = "morphological_designation",
+             note = paste("structure and Fe criteria read from a Bt designation,",
+                          "CEC 8-36 cmolc/kg clay and no albic E (v0.9.18)"))),
+    missing   = if (isTRUE(passed)) character(0) else unique(miss),
+    reference = ref
   )
+}
+
+# Contiguous runs (by depth) of the given layers, with their thickness.
+.nitic_runs <- function(h, idx) {
+  idx <- idx[!is.na(h$top_cm[idx]) & !is.na(h$bottom_cm[idx])]
+  if (!length(idx)) return(list())
+  idx <- idx[order(h$top_cm[idx])]
+  runs <- list(); cur <- idx[1]
+  for (i in idx[-1]) {
+    if (abs(h$top_cm[i] - h$bottom_cm[cur[length(cur)]]) < 1e-6) cur <- c(cur, i)
+    else { runs[[length(runs) + 1L]] <- cur; cur <- i }
+  }
+  runs[[length(runs) + 1L]] <- cur
+  lapply(runs, function(r) list(layers = r,
+    thickness = sum(h$bottom_cm[r] - h$top_cm[r])))
+}
+
+
+#' Nitisol RSG gate (WRB 2022)
+#'
+#' The Nitisol entry of the WRB 2022 key (Chapter 4): "1. a nitic horizon
+#' starting \eqn{\le} 100 cm from the mineral soil surface; and 2. from the
+#' mineral soil surface to the nitic horizon, a clay content that is at least
+#' half of the weighted average clay content of the nitic horizon; and 3. no
+#' vertic horizon starting above or at the upper limit of the nitic horizon."
+#' Criterion 2 is read layer by layer; a vertic horizon soilKey cannot
+#' establish does not exclude.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Nitisols.
+#' @export
+nitisol <- function(pedon) {
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Nitisols"
+  nh <- nitic_horizon(pedon)
+  if (!isTRUE(nh$passed))
+    return(DiagnosticResult$new(name = "nitisol", passed = nh$passed,
+      layers = integer(0), evidence = list(nitic_horizon = nh),
+      missing = nh$missing %||% character(0), reference = ref))
+  top <- min(h$top_cm[nh$layers])
+  ms  <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  c1 <- top - ms <= 100
+  w  <- h$bottom_cm[nh$layers] - h$top_cm[nh$layers]
+  avg <- sum(h$clay_pct[nh$layers] * w) / sum(w)
+  above <- which(!is.na(h$top_cm) & h$top_cm >= ms & h$top_cm < top)
+  c2 <- if (!length(above)) TRUE
+        else .and3(ifelse(is.na(h$clay_pct[above]), NA,
+                          h$clay_pct[above] >= avg / 2))
+  vt <- tryCatch(vertic_horizon(pedon), error = function(e) NULL)
+  c3 <- !(isTRUE(vt$passed) && any(h$top_cm[vt$layers] <= top, na.rm = TRUE))
+  passed <- .and3(c1, c2, c3)
+  DiagnosticResult$new(
+    name = "nitisol", passed = passed,
+    layers = if (isTRUE(passed)) nh$layers else integer(0),
+    evidence = list(nitic_horizon = nh, nitic_top_cm = top,
+                    mineral_surface_cm = ms, starts_within_100 = c1,
+                    nitic_clay_mean = avg, clay_above_half = c2,
+                    no_vertic_above = c3, vertic_horizon = vt),
+    missing = if (is.na(passed)) "clay_pct" else character(0),
+    reference = ref)
 }
 
 

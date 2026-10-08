@@ -151,10 +151,15 @@ test_that("a soil with no principal qualifier keeps its supplementary ones", {
 # The 44 example profiles named under the Chapter 4 lists and Chapter 2.2 rules
 # (v0.9.217), after the Chapter 5 check of the qualifiers that reach names for
 # the first time. Any change to a list, a rule or a qualifier shows up here.
+# v0.9.220 (Chapter 3 diagnostics): Albic leaves the Acrisol, Alisol, Lixisol,
+# Luvisol and Cryosol (their E is 6/3 dry, not claric material, which needs the
+# dry and the moist colour); Nitic leaves the Plinthosols (a nitic horizon is
+# not part of a plinthic one); the Retisol's argic horizon is no longer voided
+# by its glossic designation.
 test_that("the 44 example profiles keep their WRB 2022 names", {
   expected <- c(
-    acrisol_canonical = "Albic Chromic Acrisol (Loamic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)",
-    alisol_canonical = "Albic Alisol (Loamic, Hyperalic, Cutanic, Differentic, Epic, Ochric, Profondic)",
+    acrisol_canonical = "Chromic Acrisol (Loamic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)",
+    alisol_canonical = "Haplic Alisol (Loamic, Hyperalic, Cutanic, Differentic, Epic, Ochric, Profondic)",
     andosol_canonical = "Eutric Umbric Hydric Vitric Silandic Andosol (Loamic, Humic, Mulmic)",
     anthrosol_canonical = "Hortic Anthrosol (Loamic)",
     arenosol_canonical = "Eutric Sideralic Arenosol (Claric, Ochric)",
@@ -164,7 +169,7 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     cambissolo_canonical = "Eutric Cambisol (Loamic, Ochric)",
     chernossolo_canonical = "Vermic Cambic Chernozem (Loamic, Humic, Pachic)",
     chernozem_canonical = "Vermic Cambic Chernozem (Loamic, Humic, Pachic)",
-    cryosol_canonical = "Skeletic Cambic Cryosol (Loamic, Albic, Epic, Humic)",
+    cryosol_canonical = "Skeletic Cambic Cryosol (Loamic, Epic, Humic)",
     durisol_canonical = "Eutric Skeletic Durisol (Loamic, Epic, Ochric)",
     espodossolo_canonical = "Albic Podzol (Arenic, Epic)",
     ferralsol_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)",
@@ -176,8 +181,8 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     kastanozem_canonical = "Cambic Kastanozem (Loamic, Humic)",
     latossolo_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)",
     leptosol_canonical = "Skeletic Lithic Leptosol (Ochric)",
-    lixisol_canonical = "Albic Chromic Lixisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
-    luvisol_canonical = "Albic Luvisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric)",
+    lixisol_canonical = "Chromic Lixisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
+    luvisol_canonical = "Haplic Luvisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric)",
     luvissolo_canonical = "Haplic Luvisol (Clayic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
     neossolo_canonical = "Umbric Leptosol",
     nitisol_canonical = "Eutric Luvic Ferritic Nitisol (Epic, Ferric, Humic)",
@@ -186,10 +191,10 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     phaeozem_canonical = "Cambic Phaeozem (Loamic, Humic, Pachic)",
     planosol_canonical = "Eutric Luvic Albic Planosol (Loamic, Ochric)",
     planossolo_canonical = "Oxygleyic Umbric Gleysol (Clayic, Abruptic, Luvic)",
-    plinthosol_canonical = "Nitic Plinthosol (Loamic, Epic, Eutric, Ochric)",
-    plintossolo_canonical = "Nitic Plinthosol (Loamic, Epic, Eutric, Ochric)",
+    plinthosol_canonical = "Haplic Plinthosol (Loamic, Epic, Eutric, Ochric)",
+    plintossolo_canonical = "Haplic Plinthosol (Loamic, Epic, Eutric, Ochric)",
     podzol_canonical = "Albic Podzol (Arenic, Epic)",
-    retisol_canonical = "Eutric Albic Retisol (Loamic, Ochric)",
+    retisol_canonical = "Eutric Albic Retisol (Loamic, Cutanic, Differentic, Epic, Ochric, Profondic)",
     solonchak_canonical = "Sodic Solonchak (Loamic, Ochric)",
     solonetz_canonical = "Albic Solonetz (Loamic, Columnic, Cutanic, Differentic, Epic, Hypernatric, Ochric)",
     stagnosol_canonical = "Albic Stagnosol (Loamic, Cambic, Ochric)",

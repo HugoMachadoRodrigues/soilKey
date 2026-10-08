@@ -129,8 +129,16 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #'   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
 #'   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 #' @noRd
-test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
+test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
+                                     lithic_aware = FALSE) {
   system <- match.arg(system)
+  # v0.9.220: with lithic_aware = TRUE (the WRB argic), a layer is not compared
+  # with a coarser layer of another material (WRB 2022 Ch 3.1.3, criterion
+  # 2.a.i: "the coarser-textured layer is not separated from the argic horizon
+  # by a lithic discontinuity"), read from the designations' material numbers
+  # (Ap over 2Bt). A layer without a designation is compared as before.
+  mat <- if (lithic_aware) .desg_material_number(h$designation %||% rep(NA_character_, nrow(h)))
+         else rep(NA_integer_, nrow(h))
   if (nrow(h) < 2L) {
     return(.subtest_result(
       passed = FALSE,
@@ -163,6 +171,10 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
       next
     }
     above_idx_set <- seq.int(1L, i - 1L)
+    if (!is.na(mat[i]))
+      above_idx_set <- above_idx_set[is.na(mat[above_idx_set]) |
+                                       mat[above_idx_set] == mat[i]]
+    if (!length(above_idx_set)) next
     above_clays   <- h$clay_pct[above_idx_set]
     has_clay      <- !is.na(above_clays)
     if (!any(has_clay)) {
@@ -175,7 +187,7 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda")) {
     above_min_idx <- above_idx_set[has_clay][which.min(above_clays[has_clay])]
     # Reference 2: immediate predecessor (back-compat with WRB
     # adjacent-layer interpretation when a thick eluvial is absent).
-    above_adj     <- h$clay_pct[i - 1L]
+    above_adj     <- if ((i - 1L) %in% above_idx_set) h$clay_pct[i - 1L] else NA_real_
 
     eval_rule <- function(above) {
       if (is.na(above)) return(list(passed = FALSE, rule = "NA above"))
@@ -387,31 +399,6 @@ test_texture_argic <- function(h, candidate_layers = NULL) {
     details = details
   )
 }
-
-#' Test for albeluvic glossic features that exclude argic (-> Retisol path)
-#'
-#' v0.1 implementation: scans horizon designations for the substrings
-#' \code{"glossic"} or \code{"albeluvic"}. A more rigorous implementation
-#' would inspect tongue features, fragic properties, and morphological
-#' descriptions; that is scheduled for v0.2.
-#'
-#' @noRd
-test_not_albeluvic <- function(h) {
-  flags <- grepl("glossic|albeluvic|retic", h$designation,
-                 ignore.case = TRUE)
-  if (any(flags, na.rm = TRUE)) {
-    .subtest_result(
-      passed = FALSE,
-      notes  = sprintf(
-        "Glossic/albeluvic/retic feature detected at horizon(s) %s -- Retisol path",
-        paste(which(flags), collapse = ", ")
-      )
-    )
-  } else {
-    .subtest_result(passed = TRUE, layers = seq_len(nrow(h)))
-  }
-}
-
 
 # ========================================================= ferralic sub-tests ====
 

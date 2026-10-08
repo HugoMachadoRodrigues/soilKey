@@ -31,6 +31,8 @@ test_that("qual_albic catches a bleached eluvial layer", {
     designation = c("A", "E", "Bt"),
     munsell_value_moist = c(3, 7, 4),
     munsell_chroma_moist = c(2, 2, 4),
+    munsell_value_dry = c(4, 8, 5),     # v0.9.220: claric material needs
+    munsell_chroma_dry = c(2, 2, 4),    # the dry colour too
     clay_pct = c(15, 12, 28), silt_pct = c(40, 50, 30),
     sand_pct = c(45, 38, 42)
   )

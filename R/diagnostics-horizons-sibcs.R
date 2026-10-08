@@ -480,7 +480,7 @@ horizonte_A_moderado <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_textural <- function(pedon, ...) {
-  res <- argic(pedon, ...)
+  res <- argic(pedon, lithic_discontinuity = FALSE, ...)
   # v0.9.138: UNION the verbatim SiBCS Cap 2 p.56 item (h) relacao-textural
   # ratio (test_ratio_textural_sibcs) with the WRB argic clay-increase. The two
   # mostly coincide -- (h) is a subset of argic EXCEPT for very sandy A horizons
@@ -575,7 +575,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
   pl <- plinthic(pedon)
   gl <- gleyic_properties(pedon)
   bn <- B_nitico(pedon)
-  bt <- argic(pedon)
+  bt <- argic(pedon, lithic_discontinuity = FALSE)
   # v0.9.61 -- argic exclui APENAS quando ha clay-films comuns/
   # abundantes em layers do B horizon. Per SiBCS Cap 18: cerosidade
   # "ausente / pouca / fraca" = Latossolo; "comum / abundante" =
@@ -657,7 +657,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   candidates <- desg_match$layers
   # Exclusoes
   fer  <- ferralic(pedon)
-  arg  <- argic(pedon)
+  arg  <- argic(pedon, lithic_discontinuity = FALSE)
   esp  <- spodic(pedon)
   plan <- planic_features(pedon)
   ver  <- vertic_horizon(pedon)

@@ -304,6 +304,8 @@ test_that("Hyperalbic accumulates only contiguous eluvial-evidence albic", {
     munsell_hue_moist = c("10YR", "10YR", "10YR", "10YR", "7.5YR"),
     munsell_value_moist = c(2, 7, 7, 7, 4),
     munsell_chroma_moist = c(1, 1, 1, 1, 4),
+    munsell_value_dry = c(3, 8, 8, 8, 5),     # v0.9.220: claric material
+    munsell_chroma_dry = c(1, 1, 1, 1, 4),    # needs the dry colour too
     oc_pct = c(20, 0.3, 0.2, 0.1, 1.5),
     al_ox_pct = c(0.05, 0.02, 0.02, 0.02, 0.5),
     fe_ox_pct = c(0.05, 0.02, 0.02, 0.02, 0.4),

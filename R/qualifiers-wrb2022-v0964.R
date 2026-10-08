@@ -573,45 +573,19 @@ qual_sideralic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_panpaic <- function(pedon) {
+  # v0.9.220: "having a panpaic horizon starting <= 100 cm from the mineral
+  # soil surface". The criteria of the horizon itself moved to panpaic().
   h <- pedon$horizons
   pp <- panpaic(pedon)
   ref <- "WRB (2022) Ch 5, Panpaic"
-  if (!isTRUE(pp$passed))
-    return(DiagnosticResult$new(name = "Panpaic",
-      passed = if (is.na(pp$passed)) NA else FALSE, layers = integer(0),
-      evidence = list(panpaic = pp), missing = pp$missing %||% character(0),
-      reference = ref))
-  d <- h$designation %||% rep(NA_character_, nrow(h))
-  num <- suppressWarnings(as.integer(ifelse(grepl("^[0-9]+", d),
-                                            sub("^([0-9]+).*", "\\1", d), "1")))
-  buried_a <- !is.na(d) & grepl("^[0-9]*A", d) &
-    (grepl("^[0-9]*A[a-z0-9]*b[0-9]*$", d) | (!is.na(num) & num >= 2))
-  ld <- tryCatch(lithic_discontinuity(pedon), error = function(e) NULL)
-  ord <- order(h$top_cm)
-  status <- rep(FALSE, nrow(h))
-  for (k in seq_along(ord)) {
-    i <- ord[k]
-    if (!(i %in% pp$layers) || !buried_a[i] || k == 1L) next
-    j <- ord[k - 1L]
-    if (is.na(h$top_cm[i]) || h$top_cm[i] > 100) next
-    thk <- h$bottom_cm[i] - h$top_cm[i]
-    disc <- if ((i %in% (ld$layers %||% integer(0))) ||
-                (!is.na(num[i]) && !is.na(num[j]) && num[i] != num[j])) TRUE
-            else if (is.null(ld) || is.na(ld$passed)) NA else FALSE
-    oc_i <- h$oc_pct[i]; oc_j <- h$oc_pct[j]
-    mineral <- if (is.na(oc_i)) NA else oc_i < 20
-    soc <- if (is.na(oc_i) || is.na(oc_j)) NA
-           else oc_i >= 0.2 && oc_i - oc_j >= 0.2 && oc_i >= 1.25 * oc_j
-    crit <- c(mineral, soc, disc, if (is.na(thk)) NA else thk >= 5)
-    status[i] <- if (any(crit %in% FALSE)) FALSE else if (all(crit %in% TRUE)) TRUE else NA
-  }
-  passed <- if (any(status %in% TRUE)) TRUE else if (anyNA(status)) NA else FALSE
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  win <- pp$layers[!is.na(h$top_cm[pp$layers]) & h$top_cm[pp$layers] - ms <= 100]
+  passed <- if (length(win)) TRUE else if (is.na(pp$passed)) NA else FALSE
   DiagnosticResult$new(
-    name = "Panpaic", passed = passed,
-    layers = which(status %in% TRUE),
-    evidence = list(panpaic = pp, lithic_discontinuity = ld,
-                    buried_a_horizon = which(buried_a), status = status),
-    missing = if (is.na(passed)) c("oc_pct", "top_cm", "bottom_cm") else character(0),
+    name = "Panpaic", passed = passed, layers = win,
+    evidence = list(panpaic = pp, mineral_surface_cm = ms),
+    missing = if (is.na(passed)) pp$missing %||% character(0) else character(0),
     reference = ref)
 }
 

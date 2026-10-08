@@ -226,7 +226,7 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 kandic_horizon_usda <- function(pedon) {
-  arg <- argic(pedon)
+  arg <- argic(pedon, lithic_discontinuity = FALSE)
   if (!isTRUE(arg$passed)) {
     return(DiagnosticResult$new(
       name = "kandic_horizon_usda", passed = FALSE, layers = integer(0),
