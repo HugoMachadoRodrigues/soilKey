@@ -499,8 +499,7 @@ map_grid_server <- function(id, rv, settings) {
         leaflet::clearImages() |>
         leaflet::clearControls()
       if (inherits(rr, "error") || is.null(rr)) return()
-      pal <- leaflet::colorFactor("Set3", domain = rr$lut$id,
-                                  na.color = "transparent")
+      pal <- sk_class_pal(rr$lut$id)
       bb  <- bbox()
       proxy |>
         leaflet::addRasterImage(rr$raster, colors = pal, opacity = 0.75,

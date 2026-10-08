@@ -304,7 +304,7 @@ soil_classes_at_location <- function(lat,
       if (code == "FR") {
         add(code, "clay_pct", ">= 30 %",
             "ferralic threshold (Ch 3.1)")
-        add(code, "cec_per_clay", "<= 16 cmolc/kg clay",
+        add(code, "cec_per_clay", "< 16 cmolc/kg clay",
             "ferralic low-CEC clay")
         add(code, "delta_pH",   ">= 0 (Geric variant)",
             "differentiates Geric Ferralsol")

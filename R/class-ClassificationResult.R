@@ -26,7 +26,10 @@
 #' @field evidence_grade Character. \code{"A"} (measured), \code{"B"}
 #'                       (spectra-predicted), \code{"C"} (prior-inferred),
 #'                       \code{"D"} (VLM-extracted), \code{"E"}
-#'                       (user-assumed), or \code{NA_character_}.
+#'                       (user-assumed), or \code{NA_character_} when no
+#'                       horizon carries a soil property (only depths and
+#'                       designations; since v0.9.213), so nothing in the
+#'                       class was verified.
 #' @field prior_check    List or NULL. Result of the spatial-prior sanity
 #'                       check (consistent / inconsistent / not run).
 #' @field warnings       Character vector. Free-form warnings.
@@ -93,6 +96,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       if (!is.na(self$evidence_grade)) {
         cli::cli_text("Evidence grade: {self$evidence_grade}")
+      } else {
+        cli::cli_text("Evidence grade: none (no soil property measured)")
       }
       if (!is.null(self$prior_check)) {
         cli::cli_text("Prior check: {self$prior_check$status %||% 'not run'}")

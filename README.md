@@ -111,9 +111,8 @@ The whole pipeline, in the browser, **no install required**: **[soilkeypro.com](
 </p>
 
 <p align="center">
-  <img src="man/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="49%" />
-  <img src="man/figures/app-assistant.png" alt="soilKey Pro — Assistant: an online AI that explains the deterministic classification, grounded in the key" width="49%" /><br/>
-  <sub><b>Map</b> — the SoilGrids class prior over the site &nbsp;·&nbsp; <b>Assistant</b> — an online AI that <i>explains</i> the result, grounded in the key.</sub>
+  <img src="man/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="100%" /><br/>
+  <sub><b>Map</b> — the SoilGrids class prior over the site.</sub>
 </p>
 
 * **Pedon** — build a profile from a canonical fixture, a CSV, or from scratch, with a live horizon editor and depth-profile plot.
@@ -235,7 +234,7 @@ There is no public, maintained, end-to-end implementation of any of the three ma
 `soilKey` closes that gap with three principles:
 
 1. **The taxonomic key is never delegated to a language model.** LLMs are restricted to schema-validated extraction. Every classification is a deterministic walk through versioned YAML rules with a full decision trace.
-2. **Every value carries a provenance tag.** `measured` · `predicted_spectra` · `extracted_vlm` · `inferred_prior` · `user_assumed`. The result's *evidence grade* (A–D) summarises that log so callers always know how robust the classification is.
+2. **Every value carries a provenance tag.** `measured` · `predicted_spectra` · `extracted_vlm` · `inferred_prior` · `user_assumed`. The result's *evidence grade* (A–E) summarises that log so callers always know how robust the classification is.
 3. **Side modules never overrule the key.** Spatial priors flag inconsistencies but cannot silently change the assigned RSG; spectral predictions fill missing attributes with explicit confidence; multimodal extraction pulls structured data without writing class names.
 
 ---
@@ -529,12 +528,16 @@ Every attribute on a `PedonRecord` carries a provenance tag:
 | `inferred_prior`     | Filled from a spatial prior (SoilGrids / national maps).      |
 | `user_assumed`       | Default the user explicitly asserted (with a provenance note).|
 
-The `ClassificationResult$evidence_grade` (A–D) summarises the trace:
+The `ClassificationResult$evidence_grade` is the weakest provenance in the profile:
 
-* **A** — every attribute the key consulted was `measured`.
-* **B** — every attribute was `measured` or `predicted_spectra` with PI95 ≤ threshold.
-* **C** — at least one attribute was `extracted_vlm` with VLM-confidence ≤ 0.85.
-* **D** — at least one attribute was `inferred_prior` or `user_assumed`.
+* **A** — every value is `measured` (or no provenance was recorded).
+* **B** — at least one value is `predicted_spectra`.
+* **C** — at least one value is `inferred_prior`.
+* **D** — at least one value is `extracted_vlm`.
+* **E** — at least one value is `user_assumed`.
+* **NA** — no horizon carries a soil property, only depths and designations, so the class was reached by elimination (since v0.9.213; the result's `$warnings` says so).
+
+`compute_per_attribute_evidence_grade()` gives the same grades cell by cell.
 
 ---
 

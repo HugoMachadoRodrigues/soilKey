@@ -77,17 +77,19 @@ pro_numeric_attrs <- function() {
     "coarse_fragments_pct")
 }
 
-# A small coloured pill for an evidence grade (A best .. E weakest).
+# A small coloured pill for an evidence grade (A best .. E weakest). NA is a
+# profile with no soil property at all (v0.9.213): no grade to show.
 pro_grade_badge <- function(grade) {
   grade <- as.character(grade %||% NA)
   pal <- c(A = "#198754", B = "#0d6efd", C = "#fd7e14",
            D = "#dc3545", E = "#6c757d")
   col <- if (!is.na(grade) && grade %in% names(pal)) pal[[grade]] else "#6c757d"
-  lab <- if (is.na(grade)) i18n("ui.na") else grade
+  lab <- if (is.na(grade)) i18n("ui.no_measured_data")
+         else paste(i18n("ui.evidence"), grade)
   shiny::tags$span(
     class = "badge",
     style = sprintf("background-color:%s;font-size:0.85rem;", col),
-    paste(i18n("ui.evidence"), lab)
+    lab
   )
 }
 
@@ -115,6 +117,9 @@ pro_result_card <- function(res, system_label) {
     ),
     bslib::card_body(
       shiny::tags$h5(res$name %||% i18n("ui.unnamed")),
+      if (is.na(res$evidence_grade %||% NA))
+        shiny::div(class = "alert alert-warning small py-2 mb-2",
+                   i18n("ui.no_measured_data_note")),
       shiny::tags$dl(
         class = "row mb-0 small",
         shiny::tags$dt(class = "col-5", i18n("ui.rsg_order")),
@@ -331,4 +336,23 @@ sk_datatable <- function(data, ..., options = list()) {
       paginate       = list(first = i18n("dt.first"), previous = i18n("dt.previous"),
                             `next` = i18n("dt.next"), last = i18n("dt.last")))
   DT::datatable(data, ..., options = options)
+}
+
+
+# Colours for the Map's class layers (SoilGrids overlay, predicted grid, batch
+# points). leaflet's "Set3" has 12 colours: over more classes leaflet
+# interpolated between them, so neighbouring classes got near-identical shades
+# (and RColorBrewer warned "n too large" in the log; the SoilGrids overlay of a
+# Brazilian state shows ~19 classes). Up to 12 classes keep Set3's colours;
+# beyond that each class gets its own colour from Polychrome 36.
+sk_class_pal <- function(domain, na.color = "transparent") {
+  n <- length(unique(domain[!is.na(domain)]))
+  cols <- if (n <= 12L) {
+    RColorBrewer::brewer.pal(max(3L, n), "Set3")[seq_len(max(1L, n))]
+  } else if (n <= 36L) {
+    unname(grDevices::palette.colors(n, "Polychrome 36"))
+  } else {
+    grDevices::hcl.colors(n, "Dynamic")
+  }
+  leaflet::colorFactor(cols, domain = domain, na.color = na.color)
 }

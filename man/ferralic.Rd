@@ -4,16 +4,22 @@
 \alias{ferralic}
 \title{Ferralic horizon (WRB 2022)}
 \usage{
-ferralic(pedon, min_thickness = 30, max_cec = NULL, engine = NULL)
+ferralic(
+  pedon,
+  min_thickness = 30,
+  max_cec = NULL,
+  engine = NULL,
+  cec_inclusive = FALSE
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Minimum thickness in cm (default 30).}
 
-\item{max_cec}{Maximum CEC (1M NH4OAc, pH 7) per kg clay
-(default \code{NULL} = 16 in soilkey engine, 20 in aqp
-engine; see \code{engine}).}
+\item{max_cec}{CEC (1M NH4OAc, pH 7) per kg clay that a ferralic
+horizon must stay below (default \code{NULL} = 16 in soilkey
+engine, 20 in aqp engine; see \code{engine}).}
 
 \item{engine}{One of \code{"soilkey"} (default; strict 16
 cmol_c/kg-clay threshold per WRB 2022) or \code{"aqp"}
@@ -25,6 +31,12 @@ accept as ferralic). \code{NULL} reads
 \code{getOption("soilKey.diagnostic_engine")}. The numeric
 threshold can also be overridden directly via
 \code{options(soilKey.ferralic_max_cec = ...)}.}
+
+\item{cec_inclusive}{\code{FALSE} (default): the CEC must be below
+\code{max_cec}, as WRB 2022 writes it ("< 16 cmolc kg-1 clay").
+\code{TRUE} accepts a value equal to the limit, as USDA's oxic
+horizon does ("16 cmol(+) or less"); \code{\link{oxic_usda}} uses
+it.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -41,14 +53,16 @@ Sub-tests called:
 \itemize{
   \item \code{test_ferralic_texture} -- texture sandy loam or
         finer.
-  \item \code{test_cec_per_clay} -- CEC / clay <= 16 (or 20
-        under \code{engine = "aqp"}) cmol_c/kg clay.
+  \item \code{test_cec_per_clay} -- CEC / clay < 16 (or < 20
+        under \code{engine = "aqp"}) cmol_c/kg clay. Until v0.9.212 a
+        value equal to the limit passed; WRB 2022 Ch 3.1.10 criterion 3
+        is "< 16 cmolc kg-1 clay".
   \item \code{test_ferralic_thickness} -- thickness >= 30 cm.
 }
 
 v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
 "ECEC <= 12 cmol_c/kg clay" gate was removed because it is not in the
-canonical text -- only CEC (1M NH4OAc, pH 7) <= 16 is required.
+canonical text -- only CEC (1M NH4OAc, pH 7) < 16 is required.
 
 v0.9.67 regional tolerance: BDsolos RJ benchmark (n=722 perfis)
 showed 88/115 Latossolos failing the strict 16-cmol gate because

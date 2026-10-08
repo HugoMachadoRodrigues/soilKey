@@ -314,8 +314,7 @@ map_batch_server <- function(id, rv, settings) {
       if (inherits(res, "error") || is.null(res) || nrow(res) == 0L) return()
 
       classes <- res[[sysc]]
-      pal <- leaflet::colorFactor("Set3", domain = sort(unique(classes)),
-                                  na.color = "#bdbdbd")
+      pal <- sk_class_pal(sort(unique(classes)), na.color = "#bdbdbd")
       popups <- sprintf(
         "<b>%s</b><br/>WRB: %s <i>(%s)</i><br/>SiBCS: %s <i>(%s)</i><br/>USDA: %s <i>(%s)</i>",
         res$id,

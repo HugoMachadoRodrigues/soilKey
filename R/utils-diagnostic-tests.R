@@ -415,9 +415,21 @@ test_not_albeluvic <- function(h) {
 
 # ========================================================= ferralic sub-tests ====
 
-#' Test CEC (1M NH4OAc, pH 7) per kg clay <= threshold
+#' Test CEC (1M NH4OAc, pH 7) per kg clay below a threshold
 #'
 #' Default threshold is 16 cmol_c/kg clay (WRB 2022 ferralic horizon).
+#'
+#' @section v0.9.212 strict limit:
+#' WRB 2022 and SiBCS write these limits as strictly below: "< 16 cmolc kg-1
+#' clay" (ferralic, Ch 3.1.10), "< 24" (cohesic, sideralic properties, the
+#' Acrisol and Lixisol argic), "menor que 17" (B latossolico, SiBCS Cap 2).
+#' The test used to accept a value equal to the limit, so a horizon at
+#' exactly 16 was ferralic, and one at exactly 24 was both below 24 (Acrisol,
+#' Lixisol) and at or above 24 (Alisol, Luvisol). It is now strict;
+#' \code{inclusive = TRUE} gives "or less", which USDA's oxic horizon uses
+#' ("16 cmol(+) or less per kg clay", KST 13 Ch 3). Values are compared
+#' after rounding to 9 decimals, so floating-point noise in cec * 100 / clay
+#' does not move a value across the limit.
 #'
 #' @section v0.9.69 ECEC fallback (opt-in):
 #' Brazilian / SOTERLAC / BDsolos profiles often record the exchange
@@ -448,9 +460,11 @@ test_not_albeluvic <- function(h) {
 #' @param h Numeric threshold or option (see Details).
 #' @param max_cmol_per_kg_clay Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @param inclusive \code{FALSE} (default): pass below the limit (WRB,
+#'   SiBCS). \code{TRUE}: pass at the limit too (USDA "or less").
 #' @noRd
 test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
-                                candidate_layers = NULL) {
+                                candidate_layers = NULL, inclusive = FALSE) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0)
   missing <- character(0)
@@ -493,8 +507,10 @@ test_cec_per_clay <- function(h, max_cmol_per_kg_clay = 16,
       if (is.na(h$clay_pct[i]))      missing <- c(missing, "clay_pct")
       next
     }
-    details[[as.character(i)]]$passed <- cpc <= max_cmol_per_kg_clay
-    if (cpc <= max_cmol_per_kg_clay) passing <- c(passing, i)
+    v  <- round(cpc, 9)
+    ok <- if (inclusive) v <= max_cmol_per_kg_clay else v < max_cmol_per_kg_clay
+    details[[as.character(i)]]$passed <- ok
+    if (ok) passing <- c(passing, i)
   }
 
   evaluated <- sum(vapply(details, function(d) !is.null(d$passed), logical(1)))
@@ -1541,8 +1557,9 @@ test_cec_per_clay_above <- function(h, min_cmol_per_kg_clay = 24,
       if (is.na(h$clay_pct[i]))  missing <- c(missing, "clay_pct")
       next
     }
-    details[[as.character(i)]]$passed <- cpc >= min_cmol_per_kg_clay
-    if (cpc >= min_cmol_per_kg_clay) passing <- c(passing, i)
+    ok <- round(cpc, 9) >= min_cmol_per_kg_clay
+    details[[as.character(i)]]$passed <- ok
+    if (ok) passing <- c(passing, i)
   }
   evaluated <- sum(vapply(details, function(d) !is.null(d$passed), logical(1)))
   passed <- if (length(passing) > 0L) TRUE
