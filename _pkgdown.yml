@@ -393,6 +393,7 @@ reference:
   - title: "RSG-level gates and other materials"
     contents:
       - ferralsol
+      - nitisol
       - gleysol
       - vertisol
       - acrisol
