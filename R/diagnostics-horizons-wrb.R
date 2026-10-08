@@ -1525,7 +1525,7 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
   # 1. >= 30% clay
   c1 <- ifelse(is.na(clay), NA, clay >= min_clay)
   # 2. blocky (moderate or strong) or polyhedral, with shiny faces >= 25%
-  poly    <- !is.na(st) & grepl("polyhedr|poli[eé]dr|nutty|nucif", st)
+  poly    <- !is.na(st) & grepl("polyhedr|poli[e\u00e9]dr|nutty|nucif", st)
   type_ok <- ifelse(is.na(st), NA, poly | grepl("block|bloco|angular", st))
   grade_ok <- ifelse(is.na(gr), NA,
                 ifelse(grepl("moderate|strong|moderad|forte", gr), TRUE,
