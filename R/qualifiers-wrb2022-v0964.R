@@ -1145,10 +1145,7 @@ qual_protoandic <- function(pedon, rsg_code = NULL) {
     if (any(x %in% FALSE)) FALSE else if (all(x %in% TRUE)) TRUE else NA
   }, logical(1))
   rule <- .q_thickness_rule(h, status, 15, win_top = 0, win_bot = 100)
-  an <- tryCatch(
-    if ("rsg_code" %in% names(formals(qual_andic))) qual_andic(pedon, rsg_code = rsg_code)
-    else qual_andic(pedon),
-    error = function(e) NULL)
+  an <- tryCatch(qual_andic(pedon), error = function(e) NULL)
   andic <- if (is.null(an)) NA else an$passed
   passed <- if (isFALSE(rule$passed) || isTRUE(andic)) FALSE
             else if (isTRUE(rule$passed) && isFALSE(andic)) TRUE else NA
@@ -1499,7 +1496,7 @@ qual_laxic <- function(pedon) {
   top <- h$top_cm; bot <- h$bottom_cm
   i <- which(!is.na(top) & !is.na(bot) & bot > top)
   none <- list(passed = FALSE, layers = integer(0), best = NA_real_)
-  if (!length(i)) return(modifyList(none, list(passed = NA)))
+  if (!length(i)) return(utils::modifyList(none, list(passed = NA)))
   i <- i[order(top[i])]
   s <- pmax(top[i], from); e <- pmin(bot[i], to)
   keep <- e > s
