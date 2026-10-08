@@ -8,30 +8,30 @@ test_that("v0.9.1 YAML lists the canonical Bloco B principal qualifiers", {
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   qrules <- yaml::read_yaml(qfile)
 
-  expect_gt(length(qrules$rsg_qualifiers$SN$principal), 18L)
-  expect_gt(length(qrules$rsg_qualifiers$VR$principal), 18L)
-  expect_gt(length(qrules$rsg_qualifiers$SC$principal), 18L)
-  expect_gt(length(qrules$rsg_qualifiers$GL$principal), 25L)
-  expect_gt(length(qrules$rsg_qualifiers$AN$principal), 25L)
-
-  # Anchor qualifiers per RSG.
-  expect_true("Mazic"     %in% qrules$rsg_qualifiers$VR$principal)
-  expect_true("Grumic"    %in% qrules$rsg_qualifiers$VR$principal)
-  expect_true("Pellic"    %in% qrules$rsg_qualifiers$VR$principal)
-  expect_true("Aluandic"  %in% qrules$rsg_qualifiers$AN$principal)
-  expect_true("Silandic"  %in% qrules$rsg_qualifiers$AN$principal)
-  expect_true("Hydric"    %in% qrules$rsg_qualifiers$AN$principal)
+  # v0.9.217: the lists are WRB 2022 Chapter 4's, shorter than the WRB 2014
+  # lists the old length checks were written for. Alternatives share one
+  # entry ("Aluandic/Silandic"), so names are looked up in the flattened list.
+  flat <- function(x) unlist(strsplit(unlist(x), "/", fixed = TRUE))
+  p <- function(r) flat(qrules$rsg_qualifiers[[r]]$principal)
+  sup <- function(r) flat(qrules$rsg_qualifiers[[r]]$supplementary)
+  expect_true("Pellic"    %in% p("VR"))
+  expect_true("Aluandic"  %in% p("AN"))
+  expect_true("Silandic"  %in% p("AN"))
+  expect_true("Hydric"    %in% p("AN"))
+  expect_true("Tidalic"   %in% p("GL"))
+  expect_true("Albic"     %in% p("SN"))
+  # supplementary in WRB 2022, principal in the WRB 2014 lists
+  expect_true("Mazic"     %in% sup("VR"))
+  expect_true("Grumic"    %in% sup("VR"))
+  expect_true("Aceric"    %in% sup("SC"))
   # v0.9.216: Melanic is a WRB 2014 qualifier, absent from WRB 2022
-  expect_false("Melanic"  %in% qrules$rsg_qualifiers$AN$principal)
-  expect_true("Aceric"    %in% qrules$rsg_qualifiers$SC$principal)
-  expect_true("Tidalic"   %in% qrules$rsg_qualifiers$GL$principal)
-  expect_true("Albic"     %in% qrules$rsg_qualifiers$SN$principal)
+  expect_false("Melanic"  %in% c(p("AN"), sup("AN")))
 
   # Gleyic / Salic are NOT principal qualifiers of GL / SC -- they are
   # the gating diagnostics of those RSGs and listing them as qualifier
   # would be redundant (per WRB Ch 4 convention).
-  expect_false("Gleyic" %in% qrules$rsg_qualifiers$GL$principal)
-  expect_false("Salic"  %in% qrules$rsg_qualifiers$SC$principal)
+  expect_false("Gleyic" %in% p("GL"))
+  expect_false("Salic"  %in% p("SC"))
 })
 
 
@@ -72,16 +72,21 @@ test_that("SC canonical fixture resolves to a Sodic Solonchak", {
   expect_match(cls$name, "Solonchak")
 })
 
-test_that("GL canonical fixture resolves to a (default) Haplic Gleysol", {
+test_that("GL canonical fixture resolves to an Oxygleyic Gleysol", {
   pr  <- make_gleysol_canonical()
   res <- resolve_wrb_qualifiers(pr, "GL")
-  # Holocene fluvial-clay Gleysol with grassland: gleyic by RSG (so
-  # Gleyic itself is not a qualifier) and no other Ch 4 principal fires.
-  expect_equal(res$principal, "Haplic")
+  # Holocene fluvial-clay Gleysol with grassland: gleyic by RSG (so Gleyic
+  # itself is not a qualifier). v0.9.217: Chapter 4 lists no Haplic for
+  # Gleysols; the Bg's gleyic properties are oximorphic mottles with no layer
+  # of reduced colours (criterion 1), which is Oxygleyic, and the soil is
+  # Eutric (exchangeable bases > Al).
+  expect_true("Oxygleyic" %in% res$principal)
+  expect_true("Eutric" %in% res$principal)
+  expect_false("Haplic" %in% res$principal)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Gleysols")
-  expect_match(cls$name, "Haplic Gleysol")
+  expect_match(cls$name, "Oxygleyic Gleysol")
 })
 
 test_that("AN canonical fixture resolves to a Silandic Hydric Andosol", {
@@ -361,7 +366,9 @@ test_that("resolve_wrb_qualifiers tags missing functions across Bloco B", {
   for (rsg in c("SN","VR","SC","GL","AN")) {
     qfile <- system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey")
     if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
-    expected <- yaml::read_yaml(qfile)$rsg_qualifiers[[rsg]]$principal
+    # v0.9.217: every alternative of a slash group is traced; Haplic is not
+    expected <- setdiff(unlist(strsplit(unlist(
+      yaml::read_yaml(qfile)$rsg_qualifiers[[rsg]]$principal), "/", fixed = TRUE)), "Haplic")
     fx <- switch(rsg,
       SN = make_solonetz_canonical(), VR = make_vertisol_canonical(),
       SC = make_solonchak_canonical(), GL = make_gleysol_canonical(),

@@ -13,7 +13,7 @@
 # (2)). The qualifier system in classify_wrb2022() filters the per-RSG
 # applicable list (Ch 4 tables) and formats the result as
 #   "<Principal>(s) <RSG> (<Supplementary>(s))"
-# per the rules of Ch 6, p 154.
+# per the rules of Ch 2.2 (p 25).
 # ============================================================================
 
 
@@ -68,9 +68,28 @@ qual_andic       <- function(pedon) {
 }
 
 #' Anthric qualifier (ak): anthric properties.
+#'
+#' v0.9.217: WRB 2022 Ch 5, "having anthric properties" (Ch 3.2.4: human-made
+#' mollic or umbric horizons -- a mollic or umbric horizon, signs of
+#' ploughing / liming or >= 430 mg kg-1 Mehlich-3 P in the upper 20 cm, and
+#' < 5 \% traces of animal activity at its base). The v0.9 wrapper read
+#' anthric_horizons(), the Anthrosol test for hortic / irragric / plaggic /
+#' pretic / terric horizons, which is a different diagnostic. soilKey has no
+#' anthric-properties diagnostic, so the result is FALSE when there is no
+#' mollic or umbric horizon (criterion 1) and NA otherwise.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_anthric     <- function(pedon) .q_presence("Anthric",     anthric_horizons(pedon), 100, pedon)
+qual_anthric <- function(pedon) {
+  mo <- tryCatch(mollic(pedon), error = function(e) NULL)
+  um <- tryCatch(umbric_horizon(pedon), error = function(e) NULL)
+  none <- !is.null(mo) && isFALSE(mo$passed) && !is.null(um) && isFALSE(um$passed)
+  DiagnosticResult$new(
+    name = "Anthric", passed = if (none) FALSE else NA, layers = integer(0),
+    evidence = list(mollic = mo, umbric = um),
+    missing = if (none) character(0)
+              else "anthric properties (no soilKey diagnostic for WRB Ch 3.2.4)",
+    reference = "WRB (2022) Ch 5, Anthric")
+}
 
 # ---- v0.9.113: thin presence wrappers over existing diagnostics ------------
 # Each wraps a diagnostic already implemented in
@@ -627,9 +646,42 @@ qual_xanthic <- function(pedon) {
 # ---------- TEXTURE / SKELETIC QUALIFIERS ----------------------------------
 
 #' Arenic qualifier (ar): texture sand or loamy sand >= 30 cm in <= 100 cm.
+#'
+#' v0.9.217: WRB 2022 Ch 5, "consisting of mineral material and having, single
+#' or in combination, a texture class of sand or loamy sand in one or more
+#' layers with a combined thickness of >= 30 cm, occurring within 100 cm of the
+#' mineral soil surface, or in the major part between the mineral soil surface
+#' and a limiting layer starting > 10 and < 60 cm from the mineral soil
+#' surface". The v0.9 wrapper used arenic_texture(), the Arenosol test (coarse
+#' texture throughout the upper 100 cm), which misses a 30 cm sandy layer over
+#' finer material. Sand or loamy sand is silt + 2 clay < 30; organic layers
+#' (SOC >= 20 \%) do not count.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_arenic <- function(pedon) .q_presence("Arenic", arenic_texture(pedon), 100, pedon)
+qual_arenic <- function(pedon) {
+  h <- pedon$horizons
+  clay <- h$clay_pct
+  silt <- ifelse(is.na(h$silt_pct) & !is.na(h$sand_pct) & !is.na(clay),
+                 100 - h$sand_pct - clay, h$silt_pct)
+  sandy <- ifelse(is.na(clay) | is.na(silt), NA, silt + 2 * clay < 30)
+  sandy[!is.na(h$oc_pct) & h$oc_pct >= 20] <- FALSE
+  a <- .q_thickness_rule(h, sandy, 30, win_top = 0, win_bot = 100)
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  b <- if (is.na(lim) || lim <= 10 || lim >= 60) FALSE else {
+    yes <- .q_layers_thickness(h, which(sandy %in% TRUE), 0, lim)
+    may <- .q_layers_thickness(h, which(sandy %in% TRUE | is.na(sandy)), 0, lim)
+    if (yes > lim / 2) TRUE else if (may <= lim / 2) FALSE else NA
+  }
+  x <- c(a$passed, b)
+  passed <- if (any(x %in% TRUE)) TRUE else if (anyNA(x)) NA else FALSE
+  DiagnosticResult$new(
+    name = "Arenic", passed = passed,
+    layers = if (isTRUE(passed)) which(sandy %in% TRUE & !is.na(h$top_cm) &
+                                         h$top_cm < 100) else integer(0),
+    evidence = list(sandy_thickness_cm = a$thickness_cm, limiting_layer_cm = lim),
+    missing = if (is.na(passed)) c("clay_pct", "silt_pct", "sand_pct") else character(0),
+    reference = "WRB (2022) Ch 5, Arenic")
+}
 
 #' Clayic qualifier (ce), WRB 2022 Ch 5.
 #'
@@ -791,17 +843,54 @@ qual_haplic <- function(pedon) {
 # documentation for the resolve_wrb_qualifiers() function lives on
 # the function definition itself, further down this file.)
 .wrb_qualifier_families <- list(
-  salinity   = c("Hypersalic",  "Salic",        "Hyposalic"),
-  sodicity   = c("Hypersodic",  "Sodic",        "Hyposodic"),
-  calcic     = c("Hypercalcic", "Calcic",       "Hypocalcic",  "Protocalcic"),
-  gypsic     = c("Hypergypsic", "Gypsic",       "Hypogypsic",  "Protogypsic"),
+  salinity   = c("Hypersalic",  "Salic"),
+  calcic     = c("Hypercalcic", "Calcic",       "Protocalcic"),
+  gypsic     = c("Hypergypsic", "Gypsic",       "Protogypsic"),
   vertic     = c("Vertic",      "Protovertic"),
-  albic      = c("Hyperalbic",  "Albic"),
-  skeletic   = c("Hyperskeletic", "Skeletic"),
   eutric     = c("Hypereutric", "Eutric"),
   dystric    = c("Hyperdystric", "Dystric"),
   alic       = c("Hyperalic",   "Alic")
 )
+
+# v0.9.217 (WRB 2022 Ch 2.2): "Qualifiers conveying redundant information are
+# not added. This is a general rule and applies even if the slash is not used.
+# For example, Eutric is not added if the Calcaric qualifier applies." Each
+# entry: the qualifier dropped -> the qualifiers that make it redundant
+# (Dolomitic, like Calcaric, means carbonates and so a saturated complex).
+.wrb_redundant_with <- list(
+  Eutric = c("Calcaric", "Dolomitic")
+)
+
+# A redundant qualifier is dropped with its subqualifiers (Hypereutric,
+# Epieutric, Endoeutric are Eutric too).
+.drop_redundant_qualifiers <- function(names_, all_matched) {
+  drop <- names(Filter(function(by) any(by %in% all_matched),
+                       .wrb_redundant_with))
+  if (!length(drop)) return(names_)
+  pat <- paste0("(", paste(tolower(drop), collapse = "|"), ")$")
+  names_[!(names_ %in% drop | grepl(pat, tolower(names_)))]
+}
+
+# Texture qualifiers, which open the supplementary list (WRB 2022 Ch 2.2).
+.WRB_TEXTURE_QUALIFIERS <- c("Arenic", "Clayic", "Loamic", "Siltic")
+
+# The qualifier a (sub)qualifier belongs to, for the alphabetical order of the
+# supplementary qualifiers: "follow the alphabetical order of the qualifier,
+# not the subqualifier" (Ch 2.3). A prefix is stripped only when what remains
+# is itself a qualifier, so Epic, Endic or Protic keep their own name.
+.WRB_SUBQUALIFIER_PREFIXES <- c("Amphi", "Ano", "Bathy", "Endo", "Epi", "Kato",
+                                "Panto", "Poly", "Supra", "Thapto", "Hyper",
+                                "Hypo", "Proto", "Ortho")
+.wrb_base_qualifier <- function(qname, known) {
+  for (p in .WRB_SUBQUALIFIER_PREFIXES) {
+    if (startsWith(qname, p) && nchar(qname) > nchar(p)) {
+      rest <- substring(qname, nchar(p) + 1L)
+      rest <- paste0(toupper(substring(rest, 1, 1)), substring(rest, 2))
+      if (rest %in% known) return(rest)
+    }
+  }
+  qname
+}
 
 # Drop suppressed siblings within each family while preserving the
 # original YAML order of the surviving names.
@@ -821,8 +910,13 @@ qual_haplic <- function(pedon) {
 # Internal: evaluate a single qualifier name against a pedon. Returns
 # a list(passed, layers, trace_entry). Used for both principal and
 # supplementary slots.
-.evaluate_qualifier <- function(pedon, qname) {
-  spec <- .detect_specifier(qname)
+.evaluate_qualifier <- function(pedon, qname, rsg_code = NULL) {
+  # A qualifier with its own function is evaluated by it. Only otherwise is the
+  # name read as specifier + qualifier: until v0.9.217 the specifier came
+  # first, so Epic (ep) was read as Epi- + "c" and never evaluated.
+  own <- exists(paste0("qual_", tolower(qname)), envir = asNamespace("soilKey"),
+                inherits = FALSE)
+  spec <- if (own) NULL else .detect_specifier(qname)
   if (!is.null(spec)) {
     res <- tryCatch(
       .apply_specifier(pedon, spec$prefix, spec$base, spec$spec),
@@ -849,7 +943,12 @@ qual_haplic <- function(pedon) {
                 trace_entry = list(passed = NA,
                                    note = "function not implemented in v0.9")))
   }
-  res <- tryCatch(fn(pedon), error = function(e) NULL)
+  # Qualifiers defined by the RSG's own horizon (Epic, Endic, Dorsic) take the
+  # RSG being named.
+  res <- tryCatch(
+    if ("rsg_code" %in% names(formals(fn))) fn(pedon, rsg_code = rsg_code)
+    else fn(pedon),
+    error = function(e) NULL)
   if (is.null(res)) {
     return(list(passed = NA,
                 trace_entry = list(passed = NA,
@@ -863,10 +962,21 @@ qual_haplic <- function(pedon) {
 
 #' Resolve WRB 2022 qualifiers for a Reference Soil Group
 #'
-#' Walks the YAML qualifier list for a given RSG code and tests every
-#' principal / supplementary qualifier against the pedon. Returns the
-#' resolved canonical name pieces (principal + supplementary) plus a
-#' per-qualifier trace.
+#' Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
+#' Chapter 4, in \code{inst/rules/wrb2022/qualifiers.yaml}) and tests each
+#' qualifier against the pedon, following the rules for naming soils of
+#' Chapter 2.2: in a slash group (\code{"Rhodic/Xanthic"}) only the first
+#' qualifier that applies is used; a qualifier made redundant by another is
+#' left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
+#' where the RSG lists it and no other principal qualifier does.
+#'
+#' Both vectors come back in the order of the name. Principal qualifiers are
+#' written right to left, "the uppermost qualifier in the list is placed
+#' closest to the name of the RSG", so \code{principal} reads the matched list
+#' backwards. Supplementary qualifiers open with the texture qualifiers (top to
+#' bottom of the profile when specifiers make several apply), then follow the
+#' alphabetical order of the qualifier, not of the subqualifier. Until
+#' v0.9.217 both kept the order of the old lists.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rsg_code Two-letter RSG code (e.g. \code{"FR"} for Ferralsols).
@@ -876,9 +986,9 @@ qual_haplic <- function(pedon) {
 #'        (Epi-/Endo-/Bathy-/Amphi-/Panto-/Kato-) to depth-anchored
 #'        qualifiers based on the feature's actual depth. Default
 #'        \code{FALSE} leaves names byte-identical to earlier versions.
-#' @return A list with \code{principal} (character vector),
-#'         \code{supplementary} (character vector), \code{trace}, and
-#'         \code{trace_supplementary}.
+#' @return A list with \code{principal} and \code{supplementary} (character
+#'         vectors, in the order they are written in the name), \code{trace}
+#'         and \code{trace_supplementary}.
 #' @export
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
                                    specifiers = FALSE) {
@@ -899,41 +1009,69 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
                                   rsg_code)))
   }
 
-  trace_principal     <- list()
-  trace_supplementary <- list()
-  matched_principal     <- character(0)
-  matched_supplementary <- character(0)
-  layers_principal      <- list()   # qualifier name -> feature layers
-  layers_supplementary  <- list()
-
-  for (qname in per_rsg$principal %||% character(0)) {
-    ev <- .evaluate_qualifier(pedon, qname)
-    trace_principal[[qname]] <- ev$trace_entry
-    if (isTRUE(ev$passed)) {
-      matched_principal <- c(matched_principal, qname)
-      layers_principal[[qname]] <- ev$layers %||% integer(0)
+  # One list entry is one qualifier or a slash group of alternatives
+  # ("Rhodic/Xanthic"): mutually exclusive, or the later ones redundant, so
+  # only the first that applies is used (WRB 2022 Ch 2.2). Every alternative
+  # is still evaluated, so the trace shows each one's result.
+  walk <- function(entries) {
+    trace <- list(); matched <- character(0); layers <- list()
+    for (entry in entries) {
+      taken <- FALSE
+      for (qname in strsplit(entry, "/", fixed = TRUE)[[1]]) {
+        if (identical(qname, "Haplic")) next
+        ev <- .evaluate_qualifier(pedon, qname, rsg_code)
+        trace[[qname]] <- ev$trace_entry
+        if (!taken && isTRUE(ev$passed)) {
+          matched <- c(matched, qname)
+          layers[[qname]] <- ev$layers %||% integer(0)
+          taken <- TRUE
+        }
+      }
     }
+    list(trace = trace, matched = matched, layers = layers)
   }
-  for (qname in per_rsg$supplementary %||% character(0)) {
-    ev <- .evaluate_qualifier(pedon, qname)
-    trace_supplementary[[qname]] <- ev$trace_entry
-    if (isTRUE(ev$passed)) {
-      matched_supplementary <- c(matched_supplementary, qname)
-      layers_supplementary[[qname]] <- ev$layers %||% integer(0)
-    }
-  }
+  wp <- walk(per_rsg$principal %||% character(0))
+  ws <- walk(per_rsg$supplementary %||% character(0))
+  trace_principal     <- wp$trace
+  trace_supplementary <- ws$trace
+  layers_principal     <- wp$layers
+  layers_supplementary <- ws$layers
 
-  matched_principal <- .suppress_qualifier_siblings(matched_principal)
-  if (length(matched_principal) == 0L) matched_principal <- "Haplic"
-  # Apply family suppression to supplementary too -- the same logic
-  # (only the most-specific sibling survives) keeps parenthesised
-  # tags concise.
-  matched_supplementary <- .suppress_qualifier_siblings(matched_supplementary)
+  matched_principal     <- .suppress_qualifier_siblings(wp$matched)
+  matched_supplementary <- .suppress_qualifier_siblings(ws$matched)
+  all_matched <- c(matched_principal, matched_supplementary)
+  matched_principal     <- .drop_redundant_qualifiers(matched_principal, all_matched)
+  matched_supplementary <- .drop_redundant_qualifiers(matched_supplementary, all_matched)
+
+  # Haplic only where Chapter 4 lists it: "no other principal qualifier of the
+  # respective RSG applies". 16 RSGs do not list it.
+  if (length(matched_principal) == 0L && "Haplic" %in% (per_rsg$principal %||% character(0)))
+    matched_principal <- "Haplic"
+
+  # Order of the name (WRB 2022 Ch 2.2). Principal qualifiers are written right
+  # to left: "the uppermost qualifier in the list is placed closest to the name
+  # of the RSG", so the name reads the matched list backwards. Supplementary
+  # qualifiers: texture first (top to bottom of the profile when several apply
+  # with specifiers), then the rest in alphabetical order of the qualifier, not
+  # of the subqualifier.
+  matched_principal <- rev(matched_principal)
+  if (length(matched_supplementary) > 1L) {
+    known <- unique(unlist(strsplit(unlist(qrules$rsg_qualifiers), "/", fixed = TRUE)))
+    base  <- vapply(matched_supplementary, .wrb_base_qualifier, character(1),
+                    known = known)
+    is_tex <- base %in% .WRB_TEXTURE_QUALIFIERS
+    top <- vapply(matched_supplementary, function(q) {
+      ly <- layers_supplementary[[q]]
+      if (length(ly)) min(pedon$horizons$top_cm[ly], na.rm = TRUE) else Inf
+    }, numeric(1))
+    ord <- order(!is_tex, ifelse(is_tex, top, 0), tolower(base))
+    matched_supplementary <- matched_supplementary[ord]
+  }
 
   # v0.9.105: opt-in auto-attachment of WRB Ch 5 depth specifiers. Applied
-  # AFTER sibling suppression (which keys on bare family names) so it never
-  # interferes with it -- the specifier is just a prefix on the surviving
-  # name. specifiers = FALSE leaves the canonical names byte-identical.
+  # AFTER ordering (the alphabetical order follows the qualifier, not the
+  # subqualifier) so the specifier is just a prefix on the surviving name.
+  # specifiers = FALSE leaves the names without specifiers.
   if (isTRUE(specifiers)) {
     matched_principal <-
       .apply_depth_specifiers(pedon, matched_principal, layers_principal)
@@ -941,8 +1079,8 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
       .apply_depth_specifiers(pedon, matched_supplementary, layers_supplementary)
   }
 
-  list(principal     = matched_principal,
-       supplementary = matched_supplementary,
+  list(principal     = unname(matched_principal),
+       supplementary = unname(matched_supplementary),
        trace         = trace_principal,
        trace_supplementary = trace_supplementary)
 }
@@ -951,11 +1089,13 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
 #' Format a WRB 2022 soil name with qualifiers
 #'
 #' @param rsg_name Full RSG name (e.g. "Ferralsols").
-#' @param principal Character vector of principal-qualifier names.
+#' @param principal Character vector of principal-qualifier names, in the
+#'        order they are written (as \code{\link{resolve_wrb_qualifiers}}
+#'        returns them).
 #' @param supplementary Character vector of supplementary-qualifier
-#'        names (default empty in v0.9).
-#' @return Formatted string per Ch 6 p 154 ("Rhodic Ferralsol (Clayic,
-#'         Humic, Dystric)").
+#'        names, in the order they are written.
+#' @return The name as WRB 2022 Chapter 2.2 writes it, e.g. "Geric Rhodic
+#'         Ferralsol (Clayic, Eutric, Ferric, Humic)".
 #' @export
 format_wrb_name <- function(rsg_name, principal = character(0),
                               supplementary = character(0)) {

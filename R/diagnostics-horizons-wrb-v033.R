@@ -652,9 +652,22 @@ anthraquic <- function(pedon, min_thickness = 20, max_top_cm = 50) {
 hydragric <- function(pedon, min_thickness = 20) {
   h <- pedon$horizons
   tests <- list()
+  # v0.9.217: WRB 2022 Ch 3.1, Hydragric horizon, criterion 1: it "is
+  # overlain by an anthraquic horizon". Until now any Bg/Brg/Bdg horizon of
+  # 20 cm passed, so every gleyed Gleysol or Stagnosol B was "hydragric" and
+  # the soil was named Hydragric. Only layers below an anthraquic horizon count.
+  aq <- anthraquic(pedon)
+  aq_bottom <- if (isTRUE(aq$passed) && length(aq$layers))
+                 max(h$bottom_cm[aq$layers], na.rm = TRUE) else NA_real_
+  below <- if (is.finite(aq_bottom))
+             which(!is.na(h$top_cm) & h$top_cm >= aq_bottom - 1e-6) else integer(0)
+  tests$under_anthraquic <- .subtest_result(
+    passed = if (isTRUE(aq$passed)) length(below) > 0L else aq$passed,
+    layers = below, missing = aq$missing %||% character(0))
   tests$designation <- test_pattern_match(h, "designation", "^Bg|^Brg|^Bdg")
   tests$thickness   <- test_minimum_thickness(h, min_cm = min_thickness,
-                                                candidate_layers = tests$designation$layers)
+                                                candidate_layers = intersect(
+                                                  tests$designation$layers, below))
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(
     name = "hydragric", passed = agg$passed, layers = agg$layers,

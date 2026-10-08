@@ -154,7 +154,7 @@ res <- classify_from_documents(
   report   = "perfil_042.html"
 )
 res$classifications$wrb$name
-#> "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> "Geric Rhodic Ferralsol (Clayic, Dystric, Epic, Ferric, Humic)"
 
 # Cloud provider for a one-shot, production run
 res <- classify_from_documents(

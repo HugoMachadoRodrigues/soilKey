@@ -15,79 +15,86 @@ test_that("v0.9.1 YAML lists canonical principals for all 16 D+E RSGs", {
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   qrules <- yaml::read_yaml(qfile)
 
-  for (rsg in c("CH","KS","PH","UM","DU","GY","CL","RT",
-                "AC","LX","AL","LV","CM","AR","RG","FL")) {
-    p <- qrules$rsg_qualifiers[[rsg]]$principal
-    expect_gt(length(p), 14L,
-                label = sprintf("RSG %s should have >14 canonical principals", rsg))
-  }
+  # v0.9.217: the lists are WRB 2022 Chapter 4's, shorter than the WRB 2014
+  # lists the old ">14 principals" check was written for (Durisols list 7,
+  # for instance). Alternatives share one entry, so names are looked up in the
+  # flattened lists.
+  flat <- function(x) unlist(strsplit(unlist(x), "/", fixed = TRUE))
+  p   <- function(r) flat(qrules$rsg_qualifiers[[r]]$principal)
+  sup <- function(r) flat(qrules$rsg_qualifiers[[r]]$supplementary)
 
   # All 32 RSGs covered.
   expect_equal(length(qrules$rsg_qualifiers), 32L)
 
-  # Bloco D+E anchors.
-  expect_true("Vermic"   %in% qrules$rsg_qualifiers$CH$principal)
-  expect_true("Glossic"  %in% qrules$rsg_qualifiers$CH$principal)
-  expect_true("Pachic"   %in% qrules$rsg_qualifiers$KS$principal)
-  expect_true("Glossic"  %in% qrules$rsg_qualifiers$PH$principal)
-  expect_true("Hyperdystric" %in% qrules$rsg_qualifiers$UM$principal)
-  expect_true("Petric"   %in% qrules$rsg_qualifiers$DU$principal)
-  expect_true("Petrogypsic" %in% qrules$rsg_qualifiers$GY$principal)
-  expect_true("Petrocalcic" %in% qrules$rsg_qualifiers$CL$principal)
-  expect_false("Hyperalbic" %in% qrules$rsg_qualifiers$RT$principal)  # not in WRB 2022 (v0.9.216)
-
-  expect_true("Cutanic"  %in% qrules$rsg_qualifiers$AC$principal)
-  expect_true("Cutanic"  %in% qrules$rsg_qualifiers$LX$principal)
-  expect_true("Cutanic"  %in% qrules$rsg_qualifiers$AL$principal)
-  expect_true("Cutanic"  %in% qrules$rsg_qualifiers$LV$principal)
-  expect_true("Glossic"  %in% qrules$rsg_qualifiers$LV$principal)
-  expect_true("Calcaric" %in% qrules$rsg_qualifiers$CM$principal)
-  expect_true("Protic"   %in% qrules$rsg_qualifiers$AR$principal)
-  expect_true("Brunic"   %in% qrules$rsg_qualifiers$AR$principal)
-  expect_true("Solimovic" %in% qrules$rsg_qualifiers$RG$principal)
-  expect_true("Tidalic"  %in% qrules$rsg_qualifiers$FL$principal)
-  expect_true("Aceric"   %in% qrules$rsg_qualifiers$FL$principal)
+  # Bloco D+E anchors, where WRB 2022 Chapter 4 puts them.
+  expect_true("Vermic"    %in% p("CH"))
+  expect_true("Glossic"   %in% p("PH"))
+  expect_true("Petric"    %in% p("DU"))
+  expect_true("Calcaric"  %in% p("CM"))
+  expect_true("Protic"    %in% p("AR"))
+  expect_true("Brunic"    %in% p("AR"))
+  expect_true("Solimovic" %in% p("RG"))
+  expect_true("Tidalic"   %in% p("FL"))
+  expect_true("Pachic"    %in% sup("KS"))
+  expect_true("Hyperdystric" %in% sup("UM"))
+  for (r in c("AC", "LX", "AL", "LV"))
+    expect_true("Cutanic" %in% sup(r), info = r)
+  # in the WRB 2014 lists, not in WRB 2022's
+  expect_false("Glossic"     %in% c(p("CH"), sup("CH")))
+  expect_false("Glossic"     %in% c(p("LV"), sup("LV")))
+  expect_false("Petrogypsic" %in% c(p("GY"), sup("GY")))
+  expect_false("Petrocalcic" %in% c(p("CL"), sup("CL")))
+  expect_false("Aceric"      %in% c(p("FL"), sup("FL")))
+  expect_false("Hyperalbic"  %in% c(p("RT"), sup("RT")))  # not in WRB 2022 (v0.9.216)
 })
 
 
 # ---- Per-fixture qualifier resolution --------------------------------------
 
-test_that("CH canonical fixture resolves to a Vermic Chernic <...> Chernozem", {
+test_that("CH canonical fixture resolves to a Vermic Chernozem", {
   pr  <- make_chernozem_canonical()
   res <- resolve_wrb_qualifiers(pr, "CH")
   expect_true("Vermic"  %in% res$principal)
-  expect_true("Chernic" %in% res$principal)
+  # v0.9.217: the chernic horizon defines Chernozems, so WRB 2022 Chapter 4
+  # does not list Chernic for them (the WRB 2014 list did)
+  expect_false("Chernic" %in% res$principal)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Chernozems")
   expect_match(cls$name, "Vermic")
-  expect_match(cls$name, "Chernic")
 })
 
-test_that("DU canonical fixture resolves with Duric in the qualifier list", {
+test_that("DU canonical fixture: the duric horizon gives Epic, not Duric", {
   pr  <- make_durisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "DU")
-  expect_true("Duric" %in% res$principal)
+  # v0.9.217: the duric horizon defines Durisols, so Chapter 4 does not list
+  # Duric for them; where it starts is told by Epic/Endic (here <= 50 cm)
+  expect_false("Duric" %in% res$principal)
+  expect_true("Epic" %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Durisols")
-  expect_match(cls$name, "Duric")
+  expect_match(cls$name, "Durisol")
 })
 
-test_that("CL canonical fixture resolves to a Calcic Calcisol", {
+test_that("CL canonical fixture: the calcic horizon gives Epic, not Calcic", {
   pr  <- make_calcisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CL")
-  expect_true("Calcic" %in% res$principal)
+  # v0.9.217: the calcic horizon defines Calcisols, so Chapter 4 does not list
+  # Calcic for them; Epic says it starts <= 50 cm
+  expect_false("Calcic" %in% res$principal)
+  expect_true("Epic" %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Calcisols")
-  expect_match(cls$name, "Calcic")
+  expect_match(cls$name, "Calcisol")
 })
 
 test_that("AC canonical fixture resolves with Cutanic", {
   pr  <- make_acrisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AC")
-  expect_true("Cutanic" %in% res$principal)
+  # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
+  expect_true("Cutanic" %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Acrisols")
@@ -97,7 +104,8 @@ test_that("AC canonical fixture resolves with Cutanic", {
 test_that("LX canonical fixture resolves with Cutanic", {
   pr  <- make_lixisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "LX")
-  expect_true("Cutanic" %in% res$principal)
+  # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
+  expect_true("Cutanic" %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Lixisols")
@@ -107,8 +115,9 @@ test_that("LX canonical fixture resolves with Cutanic", {
 test_that("AL canonical fixture resolves with Hyperalic + Cutanic", {
   pr  <- make_alisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AL")
-  expect_true("Hyperalic" %in% res$principal)
-  expect_true("Cutanic"   %in% res$principal)
+  # v0.9.217: both are supplementary qualifiers in WRB 2022 Chapter 4
+  expect_true("Hyperalic" %in% res$supplementary)
+  expect_true("Cutanic"   %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Alisols")
@@ -118,38 +127,44 @@ test_that("AL canonical fixture resolves with Hyperalic + Cutanic", {
 test_that("LV canonical fixture resolves with Cutanic", {
   pr  <- make_luvisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "LV")
-  expect_true("Cutanic" %in% res$principal)
+  # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
+  expect_true("Cutanic" %in% res$supplementary)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Luvisols")
   expect_match(cls$name, "Cutanic")
 })
 
-test_that("CM canonical fixture resolves to a Hypereutric Cambisol (WRB 2022)", {
+test_that("CM canonical fixture resolves to a Eutric Cambisol (WRB 2022)", {
   # Under the WRB 2022 exchangeable-Al criterion the fixture (al_cmol ~0.1 vs
   # bases ~10.5, al_sat ~1%) is base-dominated by far more than 4x throughout,
   # i.e. Hypereutric -- a stricter, more-specific form than the old BS>=50
   # Eutric. The deeper bs<80 meant the old BS test could only see Eutric.
+  # v0.9.217: Chapter 4 lists Dystric/Eutric for Cambisols; Hypereutric, its
+  # optional subqualifier (Ch 2.3, rule 1), is not used in place of it.
   pr  <- make_cambisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CM")
-  expect_true("Hypereutric" %in% res$principal)
+  expect_true("Eutric" %in% res$principal)
+  expect_true(isTRUE(qual_hypereutric(pr)$passed))
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Cambisols")
-  expect_match(cls$name, "Hypereutric Cambisol")
+  expect_match(cls$name, "Eutric Cambisol")
 })
 
-test_that("AR canonical fixture resolves with Protic (no B horizon)", {
+test_that("AR canonical fixture: sideralic properties, so not Protic", {
   pr  <- make_arenosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AR")
-  expect_true("Protic" %in% res$principal)
-  # If Protic fires (no B), Brunic must NOT fire (the two are mutually
-  # exclusive: Protic = no B, Brunic = cambic-only B).
-  expect_false("Brunic" %in% res$principal)
+  # v0.9.217: WRB 2022 Protic is "showing no soil horizon development"; this
+  # Arenosol has sideralic properties (and an A horizon), so it is Sideralic
+  # and not Protic. Brunic and Protic still never come together.
+  expect_true("Sideralic" %in% res$principal)
+  expect_false("Protic" %in% res$principal)
+  expect_false(all(c("Brunic", "Protic") %in% res$principal))
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Arenosols")
-  expect_match(cls$name, "Protic")
+  expect_match(cls$name, "Sideralic Arenosol")
 })
 
 test_that("FL canonical fixture (varzea floodplain) resolves to Haplic Fluvisol", {
@@ -209,13 +224,19 @@ test_that("Brunic / Protic are exclusive on Arenosol-style profiles", {
   expect_true(isTRUE(qual_brunic(pr_br)$passed))
   expect_false(isTRUE(qual_protic(pr_br)$passed))
 
-  # The strict mutually-exclusive contract holds when no other B
-  # horizon fires; for the canonical Arenosol fixture (which has
-  # structureless / single-grain sand throughout), Protic passes and
-  # Brunic does not.
+  # v0.9.217: WRB 2022 Protic is "showing no soil horizon development". The
+  # canonical Arenosol has an A horizon and sideralic properties, so it is
+  # not Protic; a sand described as C horizons only is.
   pr_pr <- make_arenosol_canonical()
-  expect_true(isTRUE(qual_protic(pr_pr)$passed))
+  expect_false(isTRUE(qual_protic(pr_pr)$passed))
   expect_false(isTRUE(qual_brunic(pr_pr)$passed))
+  bare <- data.table::data.table(top_cm = c(0, 40), bottom_cm = c(40, 150),
+                                 designation = c("C1", "C2"),
+                                 clay_pct = c(3, 3), sand_pct = c(95, 95))
+  pr_bare <- PedonRecord$new(site = list(id = "C", country = "TEST"),
+                             horizons = ensure_horizon_schema(bare))
+  expect_true(isTRUE(qual_protic(pr_bare)$passed))
+  expect_false(isTRUE(qual_brunic(pr_bare)$passed))
 })
 
 test_that("Glossic requires mollic + albeluvic glossae", {
@@ -256,7 +277,9 @@ test_that("resolve_wrb_qualifiers reports trace for every YAML name", {
   fxs <- list(CH=make_chernozem_canonical(), AR=make_arenosol_canonical(),
               LV=make_luvisol_canonical(), FL=make_fluvisol_canonical())
   for (rsg in names(fxs)) {
-    expected <- qrules$rsg_qualifiers[[rsg]]$principal
+    # v0.9.217: every alternative of a slash group is traced; Haplic is not
+    expected <- setdiff(unlist(strsplit(unlist(
+      qrules$rsg_qualifiers[[rsg]]$principal), "/", fixed = TRUE)), "Haplic")
     res <- resolve_wrb_qualifiers(fxs[[rsg]], rsg)
     expect_true(all(expected %in% names(res$trace)),
                   info = sprintf("RSG %s: trace missing some YAML names", rsg))
@@ -314,11 +337,10 @@ test_that("v0.9.1 wires canonical Ch 4 principals for all 32 RSGs", {
   # Total 32 RSGs covered.
   expect_equal(length(qrules$rsg_qualifiers), 32L)
 
-  # Aggregate principal-qualifier count: should be in the canonical
-  # Ch 4 ballpark (each RSG has 15-32 principals; average ~22 -> ~700
-  # entries when summed across RSGs).
-  total <- sum(vapply(qrules$rsg_qualifiers,
-                       function(x) length(x$principal), integer(1)))
-  expect_gt(total, 600L)
-  expect_lt(total, 900L)
+  # Aggregate principal-qualifier count, alternatives counted one by one and
+  # Haplic (16 lists) left out: 643 in WRB 2022 Chapter 4 (v0.9.217).
+  total <- sum(vapply(qrules$rsg_qualifiers, function(x)
+    length(setdiff(unlist(strsplit(unlist(x$principal), "/", fixed = TRUE)), "Haplic")),
+    integer(1)))
+  expect_equal(total, 643L)
 })

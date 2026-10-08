@@ -163,8 +163,10 @@ test_that("resolve_wrb_qualifiers falls back to Haplic when nothing matches", {
                   parent_material = "test"),
     horizons = ensure_horizon_schema(hz)
   )
-  res <- resolve_wrb_qualifiers(pr, "RG")
-  expect_equal(res$principal, "Haplic")
+  # v0.9.217: Haplic only where Chapter 4 lists it. Luvisols do; Regosols do
+  # not (their list ends with Dystric/Eutric), so nothing applies there.
+  expect_equal(resolve_wrb_qualifiers(pr, "LV")$principal, "Haplic")
+  expect_length(resolve_wrb_qualifiers(pr, "RG")$principal, 0L)
 })
 
 

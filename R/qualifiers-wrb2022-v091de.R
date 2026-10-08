@@ -112,29 +112,42 @@ qual_brunic <- function(pedon) {
 }
 
 
-#' Protic qualifier (pr): Arenosol (or Regosol) with NO incipient
-#' subsurface horizon -- i.e. an A-over-C profile where no cambic, no
-#' argic, no spodic, no ferralic, no nitic horizon is present in the
-#' upper 100 cm. v0.9.1 implements as the conjunction of the "no B
-#' horizon" diagnostics.
+#' Protic qualifier (pr)
+#'
+#' WRB 2022, Chapter 5: "showing no soil horizon development, with the
+#' exception of a cryic horizon, which may be present". v0.9.217: the function
+#' checked only that no cambic, argic, spodic, ferralic or nitic horizon was
+#' present, so a Leptosol with an umbric horizon, an Arenosol with sideralic
+#' properties or a Technosol with a mollic horizon was Protic. Now any
+#' diagnostic horizon or property of soil formation, or a genetic horizon in
+#' the designations (O, A, E or B, bar a cryic one), rules it out; a profile
+#' with nothing to tell from is NA.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_protic <- function(pedon) {
-  cm <- cambic(pedon)
-  arg <- argic(pedon)
-  sp  <- spodic(pedon)
-  fr  <- ferralic(pedon)
-  nt  <- nitic_horizon(pedon)
-  any_b <- isTRUE(cm$passed) || isTRUE(arg$passed) ||
-             isTRUE(sp$passed) || isTRUE(fr$passed) ||
-             isTRUE(nt$passed)
-  passed <- !any_b
+  h <- pedon$horizons
+  diag <- list(
+    cambic = cambic(pedon), argic = argic(pedon), spodic = spodic(pedon),
+    ferralic = ferralic(pedon), nitic = nitic_horizon(pedon),
+    mollic = mollic(pedon), umbric = umbric_horizon(pedon),
+    chernic = chernic(pedon), natric = natric_horizon(pedon),
+    calcic = calcic(pedon), gypsic = gypsic(pedon),
+    sideralic = sideralic_properties(pedon))
+  developed <- names(Filter(function(d) isTRUE(d$passed), diag))
+  d <- h$designation
+  cryic <- tryCatch(cryic_horizon(pedon)$layers, error = function(e) integer(0))
+  genetic <- which(!is.na(d) & grepl("^[0-9]*\\s*[OAEB]", d))
+  genetic <- setdiff(genetic, cryic)
+  have_desg <- any(!is.na(d) & nzchar(trimws(d)))
+  passed <- if (length(developed) || length(genetic)) FALSE
+            else if (have_desg) TRUE
+            else NA
   DiagnosticResult$new(
     name = "Protic", passed = passed,
-    layers = if (passed) seq_len(nrow(pedon$horizons)) else integer(0),
-    evidence = list(cambic = cm, argic = arg, spodic = sp,
-                    ferralic = fr, nitic = nt),
-    missing = character(0),
+    layers = if (isTRUE(passed)) seq_len(nrow(h)) else integer(0),
+    evidence = list(developed = developed,
+                    genetic_horizons = if (length(genetic)) d[genetic] else character(0)),
+    missing = if (is.na(passed)) "designation" else character(0),
     reference = "WRB (2022) Ch 5, Protic"
   )
 }

@@ -30,22 +30,30 @@
 }
 
 
-# Helper: thin presence qualifier in a depth band [min_top, max_top].
+# Helper: an Endo- qualifier built on a diagnostic. WRB 2022 Ch 2.3.1, rule 2
+# (a qualifier referring to a layer): "Endo-: the layer starts >= 50 cm from
+# the (mineral) soil surface; and no such layer occurs < 50 cm" -- with the
+# example "Endocalcic: the calcic horizon starts >= 50 and <= 100 cm".
+# v0.9.217: the helper took any diagnostic layer starting in 50-100 cm, so a
+# calcic or gleyic layer from 30 cm that went on below 50 cm also counted.
+# It now reads where the uppermost diagnostic layer starts.
 .q_endo_presence <- function(name, base_diag, pedon,
                                 min_top_cm = 50, max_top_cm = 100) {
-  passed <- isTRUE(base_diag$passed) &&
-              length(intersect(base_diag$layers,
-                                  .in_lower_subsoil(pedon,
-                                                      min_top_cm,
-                                                      max_top_cm))) > 0L
-  layers <- if (passed) base_diag$layers else integer(0)
+  ref <- sprintf("WRB (2022) Ch 5 and Ch 2.3.1, %s", name)
+  if (!isTRUE(base_diag$passed) || !length(base_diag$layers))
+    return(DiagnosticResult$new(
+      name = name, passed = if (is.na(base_diag$passed)) NA else FALSE,
+      layers = integer(0), evidence = list(base = base_diag),
+      missing = base_diag$missing %||% character(0), reference = ref))
+  top <- suppressWarnings(min(pedon$horizons$top_cm[base_diag$layers], na.rm = TRUE))
+  passed <- is.finite(top) && top >= min_top_cm && top <= max_top_cm
   DiagnosticResult$new(
-    name = name, passed = passed, layers = layers,
-    evidence = list(base = base_diag,
-                      min_top_cm = min_top_cm,
-                      max_top_cm = max_top_cm),
+    name = name, passed = passed,
+    layers = if (passed) base_diag$layers else integer(0),
+    evidence = list(base = base_diag, top_cm = top,
+                      min_top_cm = min_top_cm, max_top_cm = max_top_cm),
     missing = base_diag$missing %||% character(0),
-    reference = "WRB (2022) Ch 5"
+    reference = ref
   )
 }
 
@@ -136,33 +144,32 @@ qual_floatic <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 qual_toxic <- function(pedon) {
+  # v0.9.217: WRB 2022 Ch 5, Toxic: "having in some layer, within 50 cm of the
+  # soil surface, toxic concentrations of organic or inorganic substances other
+  # than ions of Al, Fe, Na, Ca and Mg, or having radioactivity dangerous to
+  # humans", the limit values being "the task of governments". The function
+  # used pH <= 3.5 or EC >= 16 dS/m within 100 cm, i.e. acidity and salts --
+  # exactly the ions the definition leaves out -- so every saline Solonchak was
+  # Toxic. It now needs a recorded contamination (contamination_type) in a layer
+  # starting within 50 cm, and is NA when none was recorded.
   h <- pedon$horizons
-  cand <- .in_upper(pedon, 100)
-  if (length(cand) == 0L)
-    return(DiagnosticResult$new(name = "Toxic", passed = FALSE,
-                                  layers = integer(0),
-                                  evidence = list(reason = "no candidate layers"),
-                                  missing = character(0),
-                                  reference = "WRB (2022) Ch 5"))
-
-  ph  <- h$ph_h2o[cand]
-  ec  <- h$ec_dS_m[cand]
-  ok_ph <- !is.na(ph) & ph <= 3.5
-  ok_ec <- !is.na(ec) & ec >= 16
-  passing <- cand[ok_ph | ok_ec]
-  passed <- length(passing) > 0L
-
-  miss <- character(0)
-  if (all(is.na(ph))) miss <- c(miss, "ph_h2o")
-  if (all(is.na(ec))) miss <- c(miss, "ec_dS_m")
-
+  cand <- which(!is.na(h$top_cm) & h$top_cm < 50)
+  ct <- h$contamination_type %||% rep(NA_character_, nrow(h))
+  ct <- ct[cand]
+  if (!length(cand) || all(is.na(ct) | !nzchar(trimws(ct))))
+    return(DiagnosticResult$new(
+      name = "Toxic", passed = NA, layers = integer(0),
+      evidence = list(reason = "no contamination recorded within 50 cm"),
+      missing = "contamination_type",
+      reference = "WRB (2022) Ch 5, Toxic"))
+  hit <- !is.na(ct) & nzchar(trimws(ct)) &
+         !grepl("^(none|no|absent|nenhum|ausente)$", trimws(tolower(ct)))
+  passing <- cand[hit]
   DiagnosticResult$new(
-    name = "Toxic", passed = passed, layers = passing,
-    evidence = list(threshold_ph_max = 3.5, threshold_ec_min = 16,
-                      candidate_layers = cand),
-    missing = miss,
-    reference = "WRB (2022) Ch 4 Histosols / Cryosols / Technosols, Ch 5"
-  )
+    name = "Toxic", passed = length(passing) > 0L, layers = passing,
+    evidence = list(contamination_type = ct, depth_window_cm = c(0, 50)),
+    missing = character(0),
+    reference = "WRB (2022) Ch 5, Toxic")
 }
 
 

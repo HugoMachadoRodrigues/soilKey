@@ -125,29 +125,41 @@ test_that("Tier-3 qualifiers fire when their schema field is populated", {
   p$horizons$surface_crust_type <- c("biocrust", NA_character_)
   expect_true(isTRUE(qual_biocrustic(p)$passed))
 
-  p2 <- .pedon_minimal_v0965()
-  p2$horizons$bioturbation_density <- c("common", NA_character_)
-  expect_true(isTRUE(qual_arenicolic(p2)$passed))
-
-  p3 <- .pedon_minimal_v0965()
-  p3$horizons$saprolite_pct <- c(NA_real_, 60)
-  expect_true(isTRUE(qual_saprolithic(p3)$passed))
-
   p4 <- .pedon_minimal_v0965()
   p4$horizons$thixotropic_index <- c(NA_real_, 60)
   expect_true(isTRUE(qual_thixotropic(p4)$passed))
 
-  p5 <- .pedon_minimal_v0965()
-  p5$horizons$mottle_morphology <- c("mochi", NA_character_)
-  expect_true(isTRUE(qual_mochipic(p5)$passed))
+  # v0.9.217: Arenicolic, Saprolithic, Mochipic and Nechic now follow their
+  # WRB 2022 Chapter 5 definitions instead of a free-text field.
+  # Arenicolic: ">= 50% ... worm holes, worm casts, or filled animal burrows
+  # in a layer, >= 20 cm thick and occurring in a tidal area".
+  p2 <- .pedon_minimal_v0965()
+  p2$horizons$worm_holes_pct <- c(60, NA_real_)
+  p2$site$land_use <- "tidal flat"
+  expect_true(isTRUE(qual_arenicolic(p2)$passed))
+  p2b <- .pedon_minimal_v0965()
+  p2b$horizons$bioturbation_density <- c("common", NA_character_)
+  expect_false(isTRUE(qual_arenicolic(p2b)$passed))
 
+  # Saprolithic: ">= 30 cm, starting <= 150 cm ... rock structure >= 75% ...
+  # CEC < 24 cmolc kg-1 clay" (B: 70 cm, 6 cmolc at 30% clay = 20 per kg clay)
+  p3 <- .pedon_minimal_v0965()
+  p3$horizons$saprolite_pct <- c(NA_real_, 80)
+  expect_true(isTRUE(qual_saprolithic(p3)$passed))
+  p3$horizons$saprolite_pct <- c(NA_real_, 60)          # < 75%
+  expect_false(isTRUE(qual_saprolithic(p3)$passed))
   p6 <- .pedon_minimal_v0965()
   p6$horizons$weathering_stage <- c(NA_character_, "saprolite")
-  expect_true(isTRUE(qual_saprolithic(p6)$passed))
+  expect_false(isTRUE(qual_saprolithic(p6)$passed))      # a word is not 75%
 
+  # Mochipic needs stagnic properties and >= 300 saturation days, not a
+  # mottle word; Nechic needs pH < 5 and uncoated grains, not "loess".
+  p5 <- .pedon_minimal_v0965()
+  p5$horizons$mottle_morphology <- c("mochi", NA_character_)
+  expect_false(isTRUE(qual_mochipic(p5)$passed))
   p7 <- .pedon_minimal_v0965()
   p7$horizons$aeolian_morphology <- c("loess deposit", NA_character_)
-  expect_true(isTRUE(qual_nechic(p7)$passed))
+  expect_false(isTRUE(qual_nechic(p7)$passed))
 })
 
 

@@ -1,7 +1,7 @@
 # ============================================================================
 # WRB 2022 (4th ed.) -- Supplementary qualifier seed (v0.9.3.B)
 #
-# Adds the most commonly used SUPPLEMENTARY qualifiers per Ch 6 that
+# Adds the most commonly used SUPPLEMENTARY qualifiers per Ch 5 that
 # v0.9.1 had not yet implemented as standalone functions:
 #
 #   Aric       homogenised plough layer (designation \\code{Ap*})
@@ -31,7 +31,7 @@ qual_aric <- function(pedon) {
     return(DiagnosticResult$new(name = "Aric", passed = NA,
             layers = integer(0), evidence = list(),
             missing = "designation",
-            reference = "WRB (2022) Ch 6, Aric"))
+            reference = "WRB (2022) Ch 5, Aric"))
   d <- h$designation[ly]
   ok <- !is.na(d) & grepl("^Ap", d, ignore.case = FALSE)
   passed <- any(ok)
@@ -40,7 +40,7 @@ qual_aric <- function(pedon) {
     layers = ly[ok],
     evidence = list(designation = d),
     missing = if (all(is.na(d))) "designation" else character(0),
-    reference = "WRB (2022) Ch 6, Aric"
+    reference = "WRB (2022) Ch 5, Aric"
   )
 }
 
@@ -58,13 +58,13 @@ qual_cumulic <- function(pedon) {
     return(DiagnosticResult$new(name = "Cumulic", passed = FALSE,
             layers = integer(0), evidence = list(),
             missing = "top_cm",
-            reference = "WRB (2022) Ch 6, Cumulic"))
+            reference = "Not a WRB 2022 qualifier (out of the lists since v0.9.216)"))
   top_idx <- which(!is.na(h$top_cm) & h$top_cm <= 5)
   if (length(top_idx) == 0L)
     return(DiagnosticResult$new(name = "Cumulic", passed = FALSE,
             layers = integer(0), evidence = list(),
             missing = "top_cm",
-            reference = "WRB (2022) Ch 6, Cumulic"))
+            reference = "Not a WRB 2022 qualifier (out of the lists since v0.9.216)"))
   origin <- h$layer_origin[top_idx]
   d      <- h$designation [top_idx]
   ok_origin <- !is.na(origin) &
@@ -80,7 +80,7 @@ qual_cumulic <- function(pedon) {
     layers = top_idx[ok],
     evidence = list(layer_origin = origin, designation = d),
     missing = character(0),
-    reference = "WRB (2022) Ch 6, Cumulic",
+    reference = "Not a WRB 2022 qualifier (out of the lists since v0.9.216)",
     notes = "v0.9.3.B: proxy via layer_origin / cumulic-style designation"
   )
 }
@@ -98,7 +98,7 @@ qual_profondic <- function(pedon) {
     return(DiagnosticResult$new(name = "Profondic", passed = FALSE,
             layers = integer(0), evidence = list(argic = arg),
             missing = arg$missing %||% character(0),
-            reference = "WRB (2022) Ch 6, Profondic"))
+            reference = "WRB (2022) Ch 5, Profondic"))
   h <- pedon$horizons
   ly <- arg$layers
   ok <- !is.na(h$bottom_cm[ly]) & h$bottom_cm[ly] >= 150
@@ -108,7 +108,7 @@ qual_profondic <- function(pedon) {
     layers = ly[ok],
     evidence = list(argic = arg, bottom_cm = h$bottom_cm[ly]),
     missing = if (all(is.na(h$bottom_cm[ly]))) "bottom_cm" else character(0),
-    reference = "WRB (2022) Ch 6, Profondic"
+    reference = "WRB (2022) Ch 5, Profondic"
   )
 }
 
@@ -127,7 +127,7 @@ qual_rubic <- function(pedon) {
     return(DiagnosticResult$new(name = "Rubic", passed = NA,
             layers = integer(0), evidence = list(),
             missing = "munsell_hue_moist",
-            reference = "WRB (2022) Ch 6, Rubic"))
+            reference = "WRB (2022) Ch 5, Rubic"))
   hu <- h$munsell_hue_moist[ly]
   ch <- h$munsell_chroma_moist[ly]
   ok <- !is.na(hu) & !is.na(ch) &
@@ -139,7 +139,7 @@ qual_rubic <- function(pedon) {
     layers = ly[ok],
     evidence = list(hues = hu, chromas = ch),
     missing = if (all(is.na(hu))) "munsell_hue_moist" else character(0),
-    reference = "WRB (2022) Ch 6, Rubic"
+    reference = "WRB (2022) Ch 5, Rubic"
   )
 }
 
@@ -157,7 +157,7 @@ qual_lamellic <- function(pedon) {
     return(DiagnosticResult$new(name = "Lamellic", passed = FALSE,
             layers = integer(0), evidence = list(),
             missing = character(0),
-            reference = "WRB (2022) Ch 6, Lamellic"))
+            reference = "WRB (2022) Ch 5, Lamellic"))
   d <- h$designation[ly]
   ok <- !is.na(d) & grepl("lamell|E&Bt|&Bt|Btlam|Bt[0-9]?lam",
                               d, ignore.case = TRUE)
@@ -167,7 +167,7 @@ qual_lamellic <- function(pedon) {
     layers = ly[ok],
     evidence = list(designation = d),
     missing = character(0),
-    reference = "WRB (2022) Ch 6, Lamellic",
+    reference = "WRB (2022) Ch 5, Lamellic",
     notes = "v0.9.3.B: designation-pattern proxy; dedicated lamellae_thickness_cm scheduled for v0.9.4"
   )
 }

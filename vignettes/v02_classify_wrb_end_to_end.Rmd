@@ -1,8 +1,8 @@
 ---
-title: "End-to-end WRB 2022 classification with Ch 6 names"
+title: "End-to-end WRB 2022 classification with full names"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{End-to-end WRB 2022 classification with Ch 6 names}
+  %\VignetteIndexEntry{End-to-end WRB 2022 classification with full names}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,12 +15,12 @@ knitr::opts_chunk$set(
 library(soilKey)
 ```
 
-This vignette walks the full WRB 2022 (4th edition) classification flow on the canonical Ferralsol fixture, end to end -- from a raw `PedonRecord` to the complete Chapter 6 name with both **principal** and **supplementary** qualifiers in the canonical parenthesised form.
+This vignette walks the full WRB 2022 (4th edition) classification flow on the canonical Ferralsol fixture, end to end -- from a raw `PedonRecord` to the complete name, built by the rules of Chapter 2.2, with both **principal** and **supplementary** qualifiers in the canonical parenthesised form.
 
-The Ferralsol fixture represents a typical Brazilian *Latossolo* (gneiss-derived, Mata Atlântica). After v0.9.3, `classify_wrb2022()` resolves it to:
+The Ferralsol fixture represents a typical Brazilian *Latossolo* (gneiss-derived, Mata Atlântica). Since v0.9.217 the qualifier lists are those of WRB 2022 Chapter 4 and the name is built by the rules of Chapter 2.2, and `classify_wrb2022()` resolves it to:
 
 ```
-Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)
+Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 ```
 
 We will inspect each step that produces that name.
@@ -64,33 +64,30 @@ res
 The returned `ClassificationResult` carries:
 
 - `$rsg_or_order` -- the assigned Reference Soil Group (here, **Ferralsols**);
-- `$name`        -- the full Ch 6 name with principal and supplementary qualifiers;
+- `$name`        -- the full name with principal and supplementary qualifiers;
 - `$qualifiers`  -- the resolved principal and supplementary lists, plus the per-qualifier trace;
 - `$trace`       -- the RSG-by-RSG key trace, including which RSGs failed before the assignment;
-- `$evidence_grade` -- A through D, summarising the provenance of the classification.
+- `$evidence_grade` -- A through E (or NA when no horizon carries a soil property), summarising the provenance of the classification.
 
 # 3. Inspect the principal qualifier resolution
 
-After the RSG is assigned, the resolver walks the canonical Ch 4 principal-qualifier list for that RSG (e.g. for Ferralsols: `Vetic, Posic, Acric, Lixic, Geric, Hyperdystric, ...`) and tests each against the pedon.
+After the RSG is assigned, the resolver walks the RSG's list of principal qualifiers from WRB 2022 Chapter 4, in its ranked order. For Ferralsols (p. 110) the list is `Ferritic, Gibbsic, Rhodic/Xanthic, Geric, Nitic, Pretic, Gleyic, Stagnic, Profundihumic, Mollic/Umbric, Acric/Lixic, Skeletic, Haplic`. Qualifiers separated by a slash are mutually exclusive, or the later ones are redundant, so only the first that applies is used.
 
 ```{r resolve-principal}
 qres <- resolve_wrb_qualifiers(pr, "FR")
 qres$principal
 ```
 
-The four principals that pass the Ferralsol fixture, in canonical Ch 4 order:
+Principal qualifiers are written right to left: "the uppermost qualifier in the list is placed closest to the name of the RSG" (Chapter 2.2). Rhodic ranks above Geric, so the name reads *Geric Rhodic Ferralsol*. Their ranks in the list:
 
 ```{r principal-table, echo = FALSE}
-data.frame(
-  Qualifier   = qres$principal,
-  Why = c(
-    Geric   = "ECEC = sum of bases + Al_KCl <= 1.5 cmol+/kg fine earth in some layer of the upper 100 cm. Layer 4 (Bw1, top = 65 cm) has ECEC = 1.18 cmol+/kg.",
-    Ferric  = "Iron-rich subsoil (Fe_dcb >= 5%); fe_dcb_pct hits 8-9% in this fixture.",
-    Rhodic  = "Hue 2.5YR moist, value < 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).",
-    Chromic = "Hue redder than 7.5YR + chroma > 4 in 25-150 cm subsoil. Bw1 chroma = 6 satisfies."
-  )[qres$principal],
-  row.names = NULL
-)
+fr <- unlist(yaml::read_yaml(system.file("rules/wrb2022/qualifiers.yaml",
+                                         package = "soilKey"))$rsg_qualifiers$FR$principal)
+rank <- vapply(qres$principal, function(q)
+  which(vapply(strsplit(fr, "/", fixed = TRUE), function(a) q %in% a, logical(1)))[1],
+  integer(1))
+data.frame(Qualifier = qres$principal, `Rank in Chapter 4` = rank,
+           check.names = FALSE, row.names = NULL)
 ```
 
 The `trace` slot keeps every Ch 4 principal that was tested, including those that failed. Useful for diagnostic debugging:
@@ -110,29 +107,28 @@ head(trace_df, 12)
 
 # 4. Inspect the supplementary qualifier resolution
 
-Supplementary qualifiers are the parenthesised tags in the WRB Ch 6 name. They refine the soil description with texture / chemistry / colour information that is not strong enough to be a principal but still informative.
+Supplementary qualifiers go in brackets after the RSG name. They are not ranked: the texture qualifiers come first, the others "in the order of the alphabet", by qualifier rather than subqualifier (Chapter 2.2).
 
 ```{r resolve-suppl}
 qres$supplementary
 ```
 
-What each tag captures for this Ferralsol:
+Ochric does not appear: the Ferralsol list has `Humic/Ochric`, and Humic applies first. Each tag, with the source the resolver cites:
 
 ```{r suppl-table, echo = FALSE}
 data.frame(
   Qualifier = qres$supplementary,
-  Why = c(
-    Clayic  = "Clay >= 60 % over a layer thicker than 30 cm in the upper 100 cm; Bw1 has clay = 60% over 65 cm.",
-    Humic   = "Weighted OC >= 1 % in the upper 50 cm; weighted OC ~ 1.1 % here.",
-    Dystric = "BS < 50 % throughout 20-100 cm; BS = 13-24 % across all four upper layers.",
-    Ochric  = "OC >= 0.2 % in upper 10 cm + no mollic + no umbric; surface has OC = 2.0 %.",
-    Rubic   = "Hue <= 5YR + chroma >= 4 in upper 100 cm (less strict than Rhodic). 2.5YR / 6 satisfies."
-  )[qres$supplementary],
+  Reference = vapply(qres$supplementary, function(q) {
+    fn <- get0(paste0("qual_", tolower(q)), envir = asNamespace("soilKey"))
+    r <- tryCatch(if ("rsg_code" %in% names(formals(fn))) fn(pr, rsg_code = "FR") else fn(pr),
+                  error = function(e) NULL)
+    if (is.null(r$reference)) "" else r$reference
+  }, character(1)),
   row.names = NULL
 )
 ```
 
-# 5. Compose the Ch 6 name
+# 5. Compose the name
 
 `format_wrb_name()` glues principal and supplementary into the canonical form:
 
@@ -146,27 +142,27 @@ format_wrb_name(
 
 This is exactly the string returned by `classify_wrb2022()$name`.
 
-# 6. Family suppression
+# 6. Redundant and sibling qualifiers
 
-When several qualifiers from the same WRB family (e.g. Calcic / Hypocalcic / Protocalcic) pass the same RSG, only the most-specific sibling appears in the name. The suppression is applied **after** all candidates are evaluated and works on both the principal and supplementary lists.
+"Qualifiers conveying redundant information are not added ... For example, Eutric is not added if the Calcaric qualifier applies" (Chapter 2.2). The resolver drops Eutric, and its subqualifiers such as Hypereutric, when Calcaric or Dolomitic applies:
 
-The internal table:
+```{r redundant}
+soilKey:::.drop_redundant_qualifiers(c("Calcaric", "Hypereutric"),
+                                     c("Calcaric", "Hypereutric"))
+```
+
+When several qualifiers of one family pass (Hypercalcic, Calcic, Protocalcic), only the most specific is kept, in the principal and in the supplementary list:
 
 ```{r families}
 str(soilKey:::.wrb_qualifier_families)
-```
-
-A worked example: a synthetic Calcisol that satisfies Calcic, Hypocalcic, and Protocalcic simultaneously will collapse to just **Calcic**.
-
-```{r suppress-demo}
 soilKey:::.suppress_qualifier_siblings(
-  c("Mollic", "Calcic", "Hypocalcic", "Protocalcic", "Cambic")
+  c("Mollic", "Hypercalcic", "Calcic", "Protocalcic", "Cambic")
 )
 ```
 
 # 7. Evidence grade
 
-`classify_wrb2022()` reports an `evidence_grade` summarising the provenance of every attribute used in the classification. **A** means every used value was lab-measured; **D** means the result rests on VLM-extracted or user-assumed values.
+`classify_wrb2022()` reports an `evidence_grade` summarising the provenance of every attribute used in the classification. **A** means every value was measured; **B** to **E** mark spectra-predicted, prior-inferred, VLM-extracted and user-assumed values; **NA** means no horizon carries a soil property at all.
 
 ```{r grade}
 res$evidence_grade
@@ -174,7 +170,7 @@ res$evidence_grade
 
 The Ferralsol fixture has all measured values, so the grade is **A**. The `v01_getting_started` vignette shows how `pedon$add_measurement()` with `source = "extracted_vlm"` or `source = "predicted_spectra"` lowers the grade -- so you always know how robust the classification is.
 
-# 6. Render a self-contained pedologist-facing report
+# 8. Render a self-contained pedologist-facing report
 
 The `report()` generic takes a `ClassificationResult` (or a list of them, or a `PedonRecord` -- in which case all three keys are run automatically) and writes a single-file HTML report with inline CSS, no external network requests, suitable for archiving with a laudo. The PDF path goes through `rmarkdown::render()` and requires a working LaTeX engine.
 
@@ -196,7 +192,7 @@ report(pr, file = "perfil_ferralsol.html")
 
 The HTML output includes: the cross-system summary, the full key trace per system, qualifiers (principal + supplementary), evidence grade, ambiguities, missing data, the horizons table, and the per-source provenance summary. `ClassificationResult$report(file)` is the R6-method-style equivalent and delegates to the same code.
 
-# 7. Tier-3 strict mode for borderline pedons
+# 9. Tier-3 strict mode for borderline pedons
 
 By default the per-RSG numerical gates apply soilKey's regionally calibrated thresholds. For pedons that sit close to an RSG boundary, `classify_wrb2022()` accepts a `strict` argument that strengthens seven Tier-3 gates toward the canonical WRB 2022 Chapter 4 intent (e.g. the Vertisol overlying-clay floor rises from 30 % to 35 %, the Chernozem base-saturation floor from 50 % to 80 %).
 

@@ -24,7 +24,7 @@ biogeographical or prior-based warnings.
 
 \item{\code{name}}{Character. Full classification name with
 qualifiers (e.g.
-\code{"Rhodic Ferralsol (Clayic, Humic, Dystric)"}).}
+\code{"Rhodic Ferralsol (Clayic, Dystric, Humic)"}).}
 
 \item{\code{rsg_or_order}}{Character. Bare RSG (WRB) or order (SiBCS), e.g.
 \code{"Ferralsols"}.}

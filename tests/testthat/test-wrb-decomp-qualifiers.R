@@ -25,14 +25,15 @@ test_that("coverage_report('wrb_qualifiers') no longer flags them as stubs", {
   skip_if_no_soiltaxonomy()
   cov <- coverage_report("wrb_qualifiers")
   expect_false(any(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
-  expect_equal(cov$overall$covered_n, 233L)  # v0.9.145: +etrosalic +3 wrappers
+  expect_equal(cov$overall$covered_n, 234L)  # v0.9.217: + Novic, the last gap
 })
 
 test_that("a function that does not exist still returns NA (no over-count)", {
-  # Novic is the lone remaining genuine gap (schema-blocked: deposition age),
-  # so it has no qual_ function and must read NA, not FALSE/TRUE. (Claric was the
-  # earlier example but gained a wrapper in v0.9.145.)
-  expect_true(is.na(soilKey:::.qualifier_is_implemented("Novic")))
+  # Every WRB 2022 qualifier has a function since v0.9.217 (Novic was the last;
+  # Claric the example before it), so a made-up name stands in: it must read
+  # NA, not FALSE/TRUE.
+  expect_true(is.na(soilKey:::.qualifier_is_implemented("Nonexistentic")))
+  expect_true(soilKey:::.qualifier_is_implemented("Novic"))
 })
 
 # ---- .decomp_class measured-decomposition fallback -------------------------

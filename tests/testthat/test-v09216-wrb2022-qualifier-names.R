@@ -31,20 +31,16 @@ test_that("no example profile is named with one of them", {
     expect_false(any(grepl(paste0("\\b", n, "\\b"), names_)), info = n)
 })
 
-test_that("the seven example profiles that carried them are named without", {
-  nm <- function(f) suppressWarnings(classify_wrb2022(f(), on_missing = "silent")$name)
-  expect_identical(nm(make_andosol_canonical),
-    "Vitric Silandic Hydric Andic Umbric Cambic Andosol (Loamic, Humic, Eutric, Brunic, Hydric)")
-  expect_identical(nm(make_chernozem_canonical),
-    "Vermic Pachic Chernic Protocalcic Cambic Chernozem (Loamic, Siltic, Humic, Hypereutric, Pachic, Calcaric)")
-  expect_identical(nm(make_gypsisol_canonical),
-    "Gypsic Protocalcic Cambic Gypsisol (Loamic, Ochric, Eutric, Calcaric)")
-  expect_identical(nm(make_kastanozem_canonical),
-    "Protocalcic Cambic Kastanozem (Loamic, Humic, Hypereutric, Calcaric)")
-  expect_identical(nm(make_solonchak_canonical),
-    "Sodic Solonchak (Loamic, Ochric, Hypereutric)")
-  expect_identical(nm(make_solonetz_canonical),
-    "Albic Solonetz (Loamic, Ochric, Hypereutric)")
+test_that("the seven example profiles that carried them keep their RSG", {
+  # Their full names are pinned in test-v09217-wrb2022-ch4-names.R, after the
+  # realignment of v0.9.217 changed them again.
+  rsg <- function(f) suppressWarnings(classify_wrb2022(f(), on_missing = "silent")$rsg_or_order)
+  expect_identical(rsg(make_andosol_canonical), "Andosols")
+  expect_identical(rsg(make_chernozem_canonical), "Chernozems")
+  expect_identical(rsg(make_gypsisol_canonical), "Gypsisols")
+  expect_identical(rsg(make_kastanozem_canonical), "Kastanozems")
+  expect_identical(rsg(make_solonchak_canonical), "Solonchaks")
+  expect_identical(rsg(make_solonetz_canonical), "Solonetz")
 })
 
 

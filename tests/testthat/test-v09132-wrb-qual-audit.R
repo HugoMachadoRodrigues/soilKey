@@ -67,9 +67,19 @@ test_that("Columnic: columnar only (not prismatic) + >= 15 cm", {
   expect_false(isTRUE(qual_columnic(pri)$passed))
 })
 
-test_that("Carbonic: >= 5% OC (was 6) in a layer >= 10 cm", {
-  ok <- mk(data.frame(top_cm = 0, bottom_cm = 30, oc_pct = 5.2))
-  expect_true(qual_carbonic(ok)$passed)
+test_that("Carbonic: >= 5% organic carbon that belongs to artefacts", {
+  # v0.9.217: WRB 2022 Ch 5 asks for ">= 5% organic carbon that belongs to
+  # artefacts" in a layer >= 10 cm thick starting <= 100 cm. soilKey records
+  # organic carbon but not whose it is, so the qualifier can rule itself out
+  # (too little carbon, or no artefacts) but never confirm.
+  expect_true(is.na(qual_carbonic(mk(data.frame(top_cm = 0, bottom_cm = 30,
+                                                oc_pct = 5.2)))$passed))
+  expect_true(is.na(qual_carbonic(mk(data.frame(top_cm = 0, bottom_cm = 30,
+                                                oc_pct = 5.2, artefacts_pct = 40)))$passed))
+  expect_false(qual_carbonic(mk(data.frame(top_cm = 0, bottom_cm = 30,
+                                           oc_pct = 5.2, artefacts_pct = 0)))$passed)
+  expect_false(qual_carbonic(mk(data.frame(top_cm = 0, bottom_cm = 30,
+                                           oc_pct = 2, artefacts_pct = 40)))$passed)
   thin <- mk(data.frame(top_cm = 0, bottom_cm = 8, oc_pct = 5.2))  # 8 cm < 10
   expect_false(isTRUE(qual_carbonic(thin)$passed))
 })

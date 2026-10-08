@@ -61,7 +61,12 @@ test_that("v0.9.142: Raptic excludes a fluvic/aeolic/tephric/solimovic discontin
                        stratification_pattern = c(NA, "lithologic_break"),
                        layer_origin = c(NA, "fluvic")))
   expect_false(isTRUE(qual_raptic(prh(rp))$passed))
+  # v0.9.217: the discontinuity must be "not related to aeolic, fluvic,
+  # solimovic or tephric material" (WRB 2022 Ch 5), so the origin has to be
+  # known on both sides: with the upper side unrecorded it cannot be told.
   rp$layer_origin <- c(NA, "residual")
+  expect_true(is.na(qual_raptic(prh(rp))$passed))
+  rp$layer_origin <- c("residual", "residual")
   expect_true(isTRUE(qual_raptic(prh(rp))$passed))   # non-excluded origin
 })
 

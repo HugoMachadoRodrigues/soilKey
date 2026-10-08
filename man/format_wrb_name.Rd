@@ -13,14 +13,16 @@ format_wrb_name(
 \arguments{
 \item{rsg_name}{Full RSG name (e.g. "Ferralsols").}
 
-\item{principal}{Character vector of principal-qualifier names.}
+\item{principal}{Character vector of principal-qualifier names, in the
+order they are written (as \code{\link{resolve_wrb_qualifiers}}
+returns them).}
 
 \item{supplementary}{Character vector of supplementary-qualifier
-names (default empty in v0.9).}
+names, in the order they are written.}
 }
 \value{
-Formatted string per Ch 6 p 154 ("Rhodic Ferralsol (Clayic,
-        Humic, Dystric)").
+The name as WRB 2022 Chapter 2.2 writes it, e.g. "Geric Rhodic
+        Ferralsol (Clayic, Eutric, Ferric, Humic)".
 }
 \description{
 Format a WRB 2022 soil name with qualifiers
