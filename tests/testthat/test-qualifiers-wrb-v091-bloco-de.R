@@ -34,7 +34,7 @@ test_that("v0.9.1 YAML lists canonical principals for all 16 D+E RSGs", {
   expect_true("Petric"   %in% qrules$rsg_qualifiers$DU$principal)
   expect_true("Petrogypsic" %in% qrules$rsg_qualifiers$GY$principal)
   expect_true("Petrocalcic" %in% qrules$rsg_qualifiers$CL$principal)
-  expect_true("Hyperalbic" %in% qrules$rsg_qualifiers$RT$principal)
+  expect_false("Hyperalbic" %in% qrules$rsg_qualifiers$RT$principal)  # not in WRB 2022 (v0.9.216)
 
   expect_true("Cutanic"  %in% qrules$rsg_qualifiers$AC$principal)
   expect_true("Cutanic"  %in% qrules$rsg_qualifiers$LX$principal)

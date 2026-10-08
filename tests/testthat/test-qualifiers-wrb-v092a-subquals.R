@@ -145,12 +145,14 @@ test_that("SC fixture name no longer doubles up Sodic + Hyposodic", {
   }
 })
 
-test_that("CH fixture surfaces Hypocalcic instead of bare Calcic when caco3 < 15%", {
+test_that("CH fixture: no Hypocalcic (not WRB 2022), the carbonates show as Protocalcic", {
   pr <- make_chernozem_canonical()
   res <- resolve_wrb_qualifiers(pr, "CH")
-  # CH fixture has caco3 = 8 / 12 % in Bk / Ck (below the 15% Calcic
-  # gate but inside the 5-15% Hypocalcic band).
-  expect_true("Hypocalcic" %in% res$principal)
+  # CH fixture has caco3 = 8 / 12 % in Bk / Ck (below the 15% Calcic gate).
+  # Hypocalcic, which covered that band, is a WRB 2014 qualifier absent from
+  # WRB 2022 (v0.9.216); Protocalcic is the WRB 2022 qualifier that applies.
+  expect_false("Hypocalcic" %in% res$principal)
+  expect_true("Protocalcic" %in% res$principal)
 })
 
 

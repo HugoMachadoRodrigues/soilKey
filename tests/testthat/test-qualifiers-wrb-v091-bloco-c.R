@@ -27,16 +27,18 @@ test_that("v0.9.1 YAML lists the canonical Bloco C principal qualifiers", {
 
   # Low-CEC family on tropical RSGs
   expect_true("Geric"  %in% qrules$rsg_qualifiers$FR$principal)
-  expect_true("Vetic"  %in% qrules$rsg_qualifiers$FR$principal)
+  # v0.9.216: Vetic and Hyperalbic are WRB 2014 qualifiers, absent from
+  # WRB 2022, and no longer listed
+  expect_false("Vetic" %in% qrules$rsg_qualifiers$FR$principal)
   expect_true("Posic"  %in% qrules$rsg_qualifiers$FR$principal)
   expect_true("Geric"  %in% qrules$rsg_qualifiers$NT$principal)
-  expect_true("Vetic"  %in% qrules$rsg_qualifiers$NT$principal)
+  expect_false("Vetic" %in% qrules$rsg_qualifiers$NT$principal)
   expect_true("Geric"  %in% qrules$rsg_qualifiers$PT$principal)
 
-  # Hyperalbic for deep-bleach RSGs
-  expect_true("Hyperalbic" %in% qrules$rsg_qualifiers$PL$principal)
-  expect_true("Hyperalbic" %in% qrules$rsg_qualifiers$ST$principal)
-  expect_true("Hyperalbic" %in% qrules$rsg_qualifiers$PZ$principal)
+  # no Hyperalbic in WRB 2022
+  expect_false("Hyperalbic" %in% qrules$rsg_qualifiers$PL$principal)
+  expect_false("Hyperalbic" %in% qrules$rsg_qualifiers$ST$principal)
+  expect_false("Hyperalbic" %in% qrules$rsg_qualifiers$PZ$principal)
 
   # Sombric on FR (and not on PZ since spodic excludes sombric)
   expect_true("Sombric" %in% qrules$rsg_qualifiers$FR$principal)
