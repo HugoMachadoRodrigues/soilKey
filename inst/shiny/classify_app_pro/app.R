@@ -480,4 +480,10 @@ server <- function(input, output, session) {
   })
 }
 
+# Register the page's scripts and styles in this process now, so any instance
+# can serve them, including one that has not rendered a page yet (Cloud Run
+# routes a page load's asset requests to more than one instance). See
+# sk_register_page_deps() in R/utils_ui.R.
+sk_register_page_deps(.sk_with_lang("en", sk_page()), sk_theme)
+
 shinyApp(ui = ui, server = server)

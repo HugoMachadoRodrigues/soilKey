@@ -360,3 +360,27 @@ sk_class_pal <- function(domain, na.color = "transparent") {
   }
   leaflet::colorFactor(cols, domain = domain, na.color = na.color)
 }
+
+
+# Register the scripts and styles of `page` (jQuery, Bootstrap, bslib, Shiny's
+# own, the widgets) in this R process. Shiny registers a dependency only when it
+# renders the page, so an R process that had not rendered one answered 404 for
+# all of them. On Cloud Run, with more than one instance, the 40-odd requests of
+# one page load are not all routed to the instance that rendered the page
+# (session affinity is best effort): visitors got the page without its styles
+# or scripts, an unstyled list of links and no Shiny. app.R calls this at
+# start-up, so every instance can serve every asset.
+#
+# Outside a running app bslib builds its themed dependencies (selectize,
+# shiny-sass, bslib's component CSS) from its global theme, so that is set to
+# the app's theme while rendering; without it they come out unthemed, under
+# other file names. renderPage() is internal to shiny, hence the fallback to
+# the page's own dependencies if it ever changes.
+sk_register_page_deps <- function(page, theme) {
+  old_bs <- bslib::bs_global_set(theme)
+  on.exit(bslib::bs_global_set(old_bs), add = TRUE)
+  ok <- tryCatch({ shiny:::renderPage(page); TRUE }, error = function(e) FALSE)
+  if (!ok)
+    for (d in htmltools::renderTags(page)$dependencies) shiny::createWebDependency(d)
+  invisible(ok)
+}
