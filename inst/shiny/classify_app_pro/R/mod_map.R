@@ -405,7 +405,7 @@ map_server <- function(id, rv, settings) {
       cc   <- shiny::isolate(coords_r())
       nb   <- shiny::isolate(nbr())
       mode <- shiny::isolate(input$mode) %||% "point"
-      m <- leaflet::leaflet() |> leaflet::addProviderTiles(prov)
+      m <- sk_leaflet() |> leaflet::addProviderTiles(prov)
       m <- if (!is.null(cc)) m |> leaflet::setView(cc$lon, cc$lat, zoom = 7)
            else m |> leaflet::setView(-51, -14, zoom = 4)
       m <- add_points(m, cc, nb, mode)

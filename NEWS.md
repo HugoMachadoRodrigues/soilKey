@@ -1,5 +1,19 @@
 # soilKey 0.9.218 (2026-10-08)
 
+## Pro app: pages no longer lose jQuery after a table or a map
+
+On the live app, an instance that had rendered a key-trace table or a map then
+served pages without jQuery (HTTP 404 for `jquery-3.6.0/jquery.min.js`), so they
+came up broken, until it was restarted. The page loads Shiny's jQuery from the
+resource path `jquery-3.6.0`; DT and leaflet widgets also carry jquerylib's
+jQuery, of the same version in the container's Shiny 1.8, under the same path,
+and rendering one re-pointed it to a folder without `jquery.min.js`. Found in
+the request logs of the 0.9.218 test revision: one instance answered 200, then
+404 from the moment a session there had rendered the table. `sk_datatable()`
+and the new `sk_leaflet()` drop the widgets' own jQuery; the page's is the one
+they use. A local install, on a newer Shiny (jQuery 3.7.1), never collides,
+which is why only the container showed it.
+
 ## Pro app: readable dark mode, AA contrast in both themes
 
 A contrast check of every tab (WCAG 2.1 AA: 4.5:1 for text, 3:1 for large

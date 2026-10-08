@@ -335,8 +335,24 @@ sk_datatable <- function(data, ..., options = list()) {
       processing     = i18n("dt.processing"),
       paginate       = list(first = i18n("dt.first"), previous = i18n("dt.previous"),
                             `next` = i18n("dt.next"), last = i18n("dt.last")))
-  DT::datatable(data, ..., options = options)
+  sk_drop_jquery(DT::datatable(data, ..., options = options))
 }
+
+# The jQuery that DT and leaflet widgets bring along, dropped (v0.9.218). The
+# page already loads Shiny's own jQuery, which the widgets use. Both widgets
+# also carry jquerylib's copy, and when the two are the same version (3.6.0,
+# with the Shiny 1.8 of the container image) they share the resource path
+# "jquery-3.6.0": rendering a widget re-points it to jquerylib's folder, which
+# has no jquery.min.js, so every page that instance served afterwards came up
+# without jQuery (HTTP 404). Local installs, on a newer Shiny, never collide.
+sk_drop_jquery <- function(widget) {
+  widget$dependencies <- Filter(function(d) !identical(d$name, "jquery"),
+                                widget$dependencies)
+  widget
+}
+
+# leaflet::leaflet() without its own jQuery (see sk_drop_jquery()).
+sk_leaflet <- function(...) sk_drop_jquery(leaflet::leaflet(...))
 
 
 # Colours for the Map's class layers (SoilGrids overlay, predicted grid, batch
