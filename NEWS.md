@@ -1,3 +1,24 @@
+# soilKey 0.9.215 (2026-10-08)
+
+## Every app instance serves the page's scripts and styles
+
+* Shiny registers a page dependency (jQuery, Bootstrap, bslib, Shiny's own
+  scripts, selectize, the widgets) only when it renders the page in that R
+  process; an R process that had not rendered one answered 404 for all of them.
+  On Cloud Run, with more than one instance (up to three since 0.9.207), the
+  40-odd requests of one page load were not all routed to the instance that
+  rendered the page, because session affinity is best effort. Some visitors got
+  the page without its styles or scripts: an unstyled list of links, no Shiny.
+  The request logs of 2026-10-08 show it for one page load: 200s from one
+  instance, 404s from the other.
+* `app.R` now renders the page once at start-up through Shiny's own renderer,
+  which registers every dependency on every instance (`sk_register_page_deps()`
+  in the app's `R/utils_ui.R`). bslib builds its themed dependencies from its
+  global theme outside a running app, so the app's theme is set for that
+  render; otherwise selectize and Shiny's styles came out unthemed, under other
+  file names. Checked against a local app: before any page, 4 of the page's 40
+  scripts and styles were served; now all 40 are.
+
 # soilKey 0.9.214 (2026-10-07)
 
 * Pro app, Map: the class colours past 12 (0.9.212) included Polychrome 36's
