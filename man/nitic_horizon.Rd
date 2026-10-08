@@ -9,8 +9,10 @@ nitic_horizon(
   min_clay = 30,
   min_fe_dcb = 4,
   min_thickness = 30,
-  max_clay_drop_pct = 8,
-  max_decrease_depth = 50
+  min_fe_ox = 0.2,
+  min_feox_fedith = 0.05,
+  max_clay_drop_pct = NULL,
+  max_decrease_depth = NULL
 )
 }
 \arguments{
@@ -18,51 +20,53 @@ nitic_horizon(
 
 \item{min_clay}{Minimum clay \% (default 30).}
 
-\item{min_fe_dcb}{Minimum DCB-extractable Fe \% (default 4).}
+\item{min_fe_dcb}{Minimum dithionite Fe \% (default 4).}
 
 \item{min_thickness}{Minimum thickness in cm (default 30).}
 
-\item{max_clay_drop_pct}{Maximum clay drop (percentage points)
-between adjacent layers within \code{max_decrease_depth}
-before failing the gradual-decrease test (default 8).}
+\item{min_fe_ox}{Minimum oxalate Fe \% (default 0.2).}
 
-\item{max_decrease_depth}{Depth window (cm) for the gradual-decrease
-check (default 50).}
+\item{min_feox_fedith}{Minimum Fe-ox / Fe-dith ratio (default 0.05).}
+
+\item{max_clay_drop_pct, max_decrease_depth}{Unused since v0.9.220, kept
+so that existing calls still run.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests for the nitic horizon: a clay-rich (>= 30\%), Fe-rich (DCB
-Fe >= 4\%) subsurface horizon at least 30 cm thick. Diagnostic of
-Nitisols. WRB 2022 additionally requires polyhedral / nutty
-structure with shiny ped surfaces and a gradual (non-abrupt) clay
-decrease with depth.
+Tests for a nitic horizon, WRB 2022 Chapter 3.1.22, criterion by
+criterion on each layer:
+\enumerate{
+  \item \eqn{\ge} 30\% clay (\code{min_clay});
+  \item moderate to strong angular or subangular blocky structure, or
+        polyhedral structure, with pressure faces (shiny surfaces) on
+        \eqn{\ge} 25\% of the aggregate surfaces. Read from
+        \code{structure_type}, \code{structure_grade} and
+        \code{clay_films_amount}, "common" or more: the cerosidade
+        "comum" that the SiBCS B nitico asks for, 25-50\% in KST;
+  \item \eqn{\ge} 4\% Fe-dith (\code{fe_dcb_pct}), \eqn{\ge} 0.2\%
+        Fe-ox (\code{fe_ox_pct}) and Fe-ox / Fe-dith \eqn{\ge} 0.05;
+  \item not part of a plinthic horizon (\code{\link{plinthic}});
+  \item the layers that meet 1-4 are \eqn{\ge} 30 cm thick together, as
+        one horizon (\code{min_thickness}).
+}
+A criterion is \code{FALSE} when the data contradict it and \code{NA}
+when the data it needs are missing: a profile without Fe-ox or structure
+records gets \code{NA}, not a nitic horizon. With
+\code{options(soilKey.morphological_inference = TRUE)} missing structure
+and Fe data are read from a Bt designation with a CEC of 8-36 cmolc/kg
+clay and no albic E above (the v0.9.18 reading of legacy profiles),
+recorded in the evidence.
 }
 \details{
-Required (AND-combined) sub-tests:
-\itemize{
-  \item Profile does not have a ferralic horizon (Ferralsol path
-        is canonical for the clay-rich + low-CEC corner).
-  \item clay \% >= \code{min_clay}.
-  \item fe_dcb_pct >= \code{min_fe_dcb}.
-  \item thickness >= \code{min_thickness}.
-}
-
-Supplementary (soft-AND) sub-tests -- evaluated when evidence is
-present in the pedon, evaluate to NA (not a fail) when missing:
-\itemize{
-  \item structure_type matches polyhedral / nutty / (sub)angular
-        blocky.
-  \item slickensides / shiny ped surfaces present (proxy for
-        WRB's "shiny ped surfaces").
-  \item clay does not decrease abruptly between adjacent layers
-        within 50 cm of the surface (gradual-decrease pattern;
-        drop > 8 percentage points fails).
-}
-Supplementary tests fail (return passed = FALSE) only when evidence
-actively contradicts the criterion; missing evidence is permissive.
+Until v0.9.219 the structure and shiny-surface tests never vetoed,
+Fe-ox was not read, a plinthic horizon was not excluded, any ferralic
+horizon in the profile excluded a nitic one (WRB 2022 does not:
+Nitisols key out before Ferralsols), the Fe inference above ran by
+default, and a clay drop of more than 8 percentage points within 50 cm
+vetoed it. The clay rule of the Nitisol key is in \code{\link{nitisol}}.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 3, Nitic horizon.
+IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon.
 }

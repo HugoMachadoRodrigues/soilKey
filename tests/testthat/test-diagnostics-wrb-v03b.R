@@ -25,15 +25,37 @@ test_that("nitic_horizon passes on canonical Nitisol fixture", {
   expect_true(isTRUE(res$passed))
 })
 
-test_that("nitic_horizon excludes profiles with ferralic horizon", {
-  # The Ferralsol fixture has clay >= 30 and high Fe -- those criteria
-  # alone would let nitic pass. v0.3 added an explicit ferralic
-  # exclusion to nitic_horizon so that NT @ #13 in the WRB key does
-  # not steal the assignment from FR @ #14.
-  pr <- make_ferralsol_canonical()
-  res <- nitic_horizon(pr)
+test_that("nitic_horizon does not pass on the Ferralsol fixture", {
+  # v0.9.220: no ferralic exclusion (WRB 2022 has none; Nitisols key out before
+  # Ferralsols). The Ferralsol fixture has clay >= 30 and Fe-dith >= 4, but no
+  # Fe-ox (criterion 3) and weak, unshiny structure in the Bw (criterion 2).
+  res <- nitic_horizon(make_ferralsol_canonical())
   expect_false(isTRUE(res$passed))
-  expect_match(res$notes, "ferralic")
+  cr <- res$evidence$criteria
+  expect_true(all(cr$structure_shiny[4:5] %in% FALSE))   # Bw1, Bw2: weak
+})
+
+test_that("nitic_horizon needs Fe-ox, structure and shiny faces (v0.9.220)", {
+  pr <- make_nitisol_canonical()
+  expect_true(isTRUE(nitic_horizon(pr)$passed))
+  no_ox <- pr$clone(deep = TRUE); no_ox$horizons$fe_ox_pct <- NA_real_
+  expect_true(is.na(nitic_horizon(no_ox)$passed))
+  low_ratio <- pr$clone(deep = TRUE); low_ratio$horizons$fe_ox_pct <- c(0.3, 0.3, 0.3)
+  expect_false(isTRUE(nitic_horizon(low_ratio)$passed))   # 0.3 / 9 < 0.05
+  few <- pr$clone(deep = TRUE); few$horizons$clay_films_amount <- c(NA, "few", "few")
+  expect_false(isTRUE(nitic_horizon(few)$passed))
+  plin <- pr$clone(deep = TRUE); plin$horizons$plinthite_pct <- c(0, 30, 30)
+  expect_false(isTRUE(nitic_horizon(plin)$passed))        # part of a plinthic horizon
+  # the legacy reading, opt-in
+  withr::local_options(soilKey.morphological_inference = TRUE)
+  expect_true(isTRUE(nitic_horizon(no_ox)$passed))
+})
+
+test_that("the Nitisol key applies the Chapter 4 criteria (v0.9.220)", {
+  pr <- make_nitisol_canonical()
+  expect_true(isTRUE(nitisol(pr)$passed))
+  sandy <- pr$clone(deep = TRUE); sandy$horizons$clay_pct[1] <- 20   # < 57/2
+  expect_false(isTRUE(nitisol(sandy)$passed))
 })
 
 test_that("planic_features passes on canonical Planosol fixture", {

@@ -79,7 +79,9 @@ test_that("two sessions with different engines classify the same profile differe
   a <- classify_in("aqp")
   b <- classify_in("soilkey")
   expect_identical(a$wrb$rsg_or_order, "Ferralsols")
-  expect_identical(b$wrb$rsg_or_order, "Nitisols")
+  # v0.9.220: Cambisols, not Nitisols -- the profile has no Fe-ox and no shiny
+  # ped faces, which the nitic horizon needs (WRB 2022 Ch 3.1.22)
+  expect_identical(b$wrb$rsg_or_order, "Cambisols")
   expect_false(identical(a$usda$name, b$usda$name))
   expect_null(getOption("soilKey.diagnostic_engine"))   # neither touched it
 })
@@ -102,7 +104,7 @@ test_that("background jobs and in-process calls use their own session's settings
   ctx_a <- shiny::withReactiveDomain(a, e$.chat_pedon_context(ped, NULL))
   ctx_b <- shiny::withReactiveDomain(b, e$.chat_pedon_context(ped, NULL))
   expect_identical(ctx_a$results$wrb$rsg_or_order, "Ferralsols")
-  expect_identical(ctx_b$results$wrb$rsg_or_order, "Nitisols")
+  expect_identical(ctx_b$results$wrb$rsg_or_order, "Cambisols")   # v0.9.220
   expect_identical(getOption("soilKey.diagnostic_engine"), "soilkey")  # restored
 })
 

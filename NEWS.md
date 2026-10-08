@@ -1,3 +1,84 @@
+# soilKey 0.9.220 (2026-10-08)
+
+## WRB 2022 diagnostics checked against Chapter 3
+
+The qualifier audit of 0.9.217 found diagnostics that also decide RSGs and did
+not follow their WRB 2022 definitions. Each now reads its criteria: a
+criterion is `FALSE` when the data contradict it and `NA` when the data it
+needs are missing. Of the 44 example profiles, 8 change WRB name and none
+changes RSG; one, the Retisol, also changes SiBCS and USDA class (below).
+
+* **Nitic horizon** (Ch 3.1.22), `nitic_horizon()`:
+  - the structure and shiny-faces criterion (2) now decides: blocky
+    (moderate or strong) or polyhedral structure, and clay films
+    ("cerosidade") of "common" or more, the level the SiBCS B nitico asks for;
+    until now it never vetoed;
+  - Fe-ox >= 0.2% and Fe-ox / Fe-dith >= 0.05 (3) are read;
+  - a layer of a plinthic horizon is excluded (4), so the example Plinthosols
+    are no longer Nitic;
+  - a ferralic horizon elsewhere in the profile no longer excludes it
+    (Nitisols key out before Ferralsols);
+  - the reading of legacy profiles added in 0.9.18 (a Bt designation, a CEC
+    of 8-36 cmolc/kg clay and no albic E standing in for missing structure
+    and Fe data) now runs only with
+    `options(soilKey.morphological_inference = TRUE)`, like the other
+    designation-based readings.
+* **Nitisols** are keyed by the new `nitisol()`, the Chapter 4 entry: a nitic
+  horizon starting <= 100 cm, a clay content above it at least half of its
+  weighted average, no vertic horizon above it. It replaces a non-WRB veto on a
+  clay drop of more than 8 percentage points within 50 cm.
+  - The canonical Nitisol now records oxalate Fe (0.8-0.9%).
+  - On the 219 FEBR profiles with a WRB class, which record no structure,
+    clay films or Fe fractions, the 7 Nitisols keyed correctly all came
+    from the default inference: RSG agreement goes from 22.0% to 19.3%.
+  - With the option on it goes from 26.6% to 26.1%, still with 7 correct
+    Nitisols, but not the same ones. Six that matched before fail the
+    Chapter 4 clay rule (an A of 12-18% clay over a Bt of about 40%) or start
+    below 100 cm, and six others now pass.
+* **Continuous rock** (Ch 3.2.5), `continuous_rock()` and the Leptosol gate:
+  - R, RCr and R/Cr, also below a lithic discontinuity (2R);
+  - Cr, weathered or soft bedrock, no longer counts. It is not continuous
+    rock in WRB 2022 nor a contato litico in SiBCS 2018 ("rochas sas
+    (camada R) ... ou ... majoritariamente por rocha dura (RCr ou R/Cr)").
+* **Technic hard material** (Ch 3.3.18), `technic_hard_material()`:
+  - `technic_hardmaterial_pct` >= 95 or an asphalt or concrete designation;
+  - any strongly cemented layer counted before, so a petrocalcic horizon or
+    a duripan was technic, and so did a geomembrane.
+* **Claric material** (Ch 3.3.4), and the albic horizon that consists of it,
+  need the dry and the moist colour; either was enough. The example Acrisol,
+  Alisol, Lixisol and Luvisol lose Albic, and the Cryosol too: their E is 5/3
+  moist (claric) but 6/3 dry (not).
+* **Argic horizon** (Ch 3.1.3):
+  - criterion 2.a.i: a clay increase over a coarser layer of another
+    material (Ap over 2Bt) counts only with clay films of "common" or more
+    (illuvial clay, criterion 2.b). WRB only: the SiBCS B textural, whose
+    item (j) accepts such an increase by its textural ratio, and the USDA
+    keys call `argic(lithic_discontinuity = FALSE)`;
+  - a glossic, albeluvic or retic designation no longer voids it, in any
+    system. It was the WRB 2014 Albeluvisol logic; in WRB 2022 retic
+    properties belong to an argic or natric horizon. The example Retisol
+    gains Cutanic, Differentic, Epic and Profondic. In SiBCS it goes from
+    Neossolos Regoliticos to Luvissolos Cromicos Orticos, and in USDA from
+    Aeric Epiaquepts to Typic Albaqualfs: its Btg has twice the clay of the
+    E.
+* **Panpaic horizon** (Ch 3.1.23), `panpaic()`, was any designation with a "b",
+  AB included (matched ignoring case). It is now a buried surface horizon
+  (Ab, 2A) with >= 0.2% SOC, >= 25% and >= 0.2% more than the layer above, a
+  lithic discontinuity at its upper limit, >= 5 cm; the Panpaic qualifier only
+  adds the depth.
+* **Retic properties** (Ch 3.2.11), `retic_properties()`, need an argic or
+  natric horizon (criterion 1) and the interfingering recorded at its upper
+  limit (6); the designation stands in for the criteria no column holds.
+* **Lamellic**, `qual_lamellic()`, reads lamellae from the layers: 0.5-7.5 cm,
+  more clay than the layers above and below (argic 2.a) or clay films, >= 5 cm
+  together within 50 cm. A lamella designation alone gives `NA`.
+
+Not changed here: argic criteria 2.a.ii-iii (plough layer, transitional
+horizon <= 15 cm) and the "minimum clay above" reference of the clay-increase
+test; `lithic_discontinuity()`, which reads a 10-point jump in coarse
+fragments; and the Leptosol path through coarse fragments (WRB: < 20% fine
+earth averaged over 75 cm).
+
 # soilKey 0.9.219 (2026-10-08)
 
 * Pro app: the navbar is the espresso brown of the theme in both colour modes.

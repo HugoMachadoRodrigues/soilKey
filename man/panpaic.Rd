@@ -19,8 +19,11 @@ younger material). Used by the Panpaic qualifier and by the Cambisols
 / Anthrosols branches.
 }
 \details{
-v0.3.5 detection: designation pattern starting with a digit other
-than 1 (e.g. \code{2A}, \code{2Bw}, \code{3C}) -- the WRB / FAO
-convention for buried horizons -- OR a \code{b} suffix in the
-designation (e.g. \code{Ahb}, \code{Bwb}).
+Since v0.9.220 the four criteria of WRB 2022 Ch 3.1.23 on a buried
+surface horizon (an A designation with a \code{b} suffix, or below a
+lithic discontinuity, \code{2A}): \eqn{\ge} 0.2\% SOC; SOC
+\eqn{\ge} 25\% (relative) and \eqn{\ge} 0.2\% (absolute) higher
+than in the overlying layer; a lithic discontinuity at its upper limit;
+\eqn{\ge} 5 cm thick. Until v0.9.219 any designation containing a
+\code{b} passed, \code{AB} included.
 }

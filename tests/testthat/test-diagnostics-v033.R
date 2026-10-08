@@ -46,15 +46,22 @@ test_that("test_cemented respects the ordinal ladder", {
 })
 
 test_that("test_claric_munsell catches a clearly bleached eluvial layer", {
-  # WRB Ch 3.3.4: light colours -- value high, chroma low.
+  # WRB Ch 3.3.4: light colours -- value high, chroma low, dry AND moist
+  # (v0.9.220: either one used to be enough).
   h <- data.table::data.table(
-    munsell_value_moist  = c(7, 5, 3),
-    munsell_chroma_moist = c(2, 2, 2)
+    munsell_value_moist  = c(7, 5, 3, 5, 6),
+    munsell_chroma_moist = c(2, 2, 2, 3, 2),
+    munsell_value_dry    = c(8, 7, 5, 6, NA),
+    munsell_chroma_dry   = c(2, 2, 2, 3, NA)
   )
   res <- soilKey:::test_claric_munsell(h)
-  expect_true(1L %in% res$layers)   # value=7, chroma=2 hits (>=6, <=4)
-  expect_true(2L %in% res$layers)   # value=5, chroma=2 hits (>=5, <=3)
-  expect_false(3L %in% res$layers)  # value=3 too dark -- not claric
+  expect_true(1L %in% res$layers)   # 7/2 moist (>=6, <=4), 8/2 dry (>=7, <=3)
+  expect_true(2L %in% res$layers)   # 5/2 moist (>=5, <=3), 7/2 dry
+  expect_false(3L %in% res$layers)  # 3/2 moist too dark
+  expect_false(4L %in% res$layers)  # 5/3 moist is claric, 6/3 dry is not
+  expect_false(5L %in% res$layers)  # no dry colour: not established
+  expect_true(isFALSE(res$details[["4"]]$passed))
+  expect_true(is.na(res$details[["5"]]$passed))
 })
 
 test_that("test_alfe_ox_above sums Al + 0.5 Fe correctly", {
@@ -80,6 +87,8 @@ test_that("albic catches a bleached E horizon (claric Munsell + thickness)", {
     designation           = c("Ah", "E",   "Bt"),
     munsell_value_moist   = c(3,  7,    4),
     munsell_chroma_moist  = c(2,  2,    4),
+    munsell_value_dry     = c(4,  8,    5),   # v0.9.220: claric material
+    munsell_chroma_dry    = c(2,  2,    4),   # needs the dry colour too
     clay_pct              = c(15, 12,   28),
     silt_pct              = c(40, 50,   30),
     sand_pct              = c(45, 38,   42),
@@ -355,16 +364,39 @@ test_that("tsitelic catches a red, formed horizon (Mediterranean / basaltic)", {
   expect_false(1L %in% res$layers)   # 10YR hue rejected
 })
 
-test_that("panpaic detects buried-horizon designation pattern", {
+test_that("panpaic detects a buried surface horizon by the WRB 2022 criteria", {
+  # WRB 2022 Ch 3.1.23: a buried surface horizon with >= 0.2% SOC, >= 25%
+  # (relative) and >= 0.2% (absolute) more than the layer above, a lithic
+  # discontinuity at its upper limit, >= 5 cm thick. v0.9.220: until v0.9.219
+  # any designation with a "b" passed, AB included.
   pr <- build_pedon(
     top_cm    = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
-    designation = c("A", "AB", "2Bw"),  # 2Bw = buried older B
+    designation = c("A", "C", "2Ab"),
+    oc_pct = c(1.0, 0.3, 0.9),
     clay_pct = c(25, 30, 35), silt_pct = c(40, 35, 35), sand_pct = c(35, 35, 30)
   )
   res <- panpaic(pr)
   expect_true(isTRUE(res$passed))
-  expect_true(3L %in% res$layers)
+  expect_equal(res$layers, 3L)
+  # an AB horizon and a buried B are not buried surface horizons
+  pr2 <- build_pedon(
+    top_cm    = c(0, 30, 80),
+    bottom_cm = c(30, 80, 150),
+    designation = c("A", "AB", "2Bw"),
+    oc_pct = c(1.0, 0.6, 0.3),
+    clay_pct = c(25, 30, 35), silt_pct = c(40, 35, 35), sand_pct = c(35, 35, 30)
+  )
+  expect_false(isTRUE(panpaic(pr2)$passed))
+  # not enough more SOC than the layer above
+  pr3 <- build_pedon(
+    top_cm    = c(0, 30, 80),
+    bottom_cm = c(30, 80, 150),
+    designation = c("A", "C", "2Ab"),
+    oc_pct = c(1.0, 0.8, 0.9),
+    clay_pct = c(25, 30, 35), silt_pct = c(40, 35, 35), sand_pct = c(35, 35, 30)
+  )
+  expect_false(isTRUE(panpaic(pr3)$passed))
 })
 
 test_that("limonic catches meadow-redox horizon", {

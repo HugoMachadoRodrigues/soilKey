@@ -945,27 +945,60 @@ tsitelic <- function(pedon, min_thickness = 10) {
 #' younger material). Used by the Panpaic qualifier and by the Cambisols
 #' / Anthrosols branches.
 #'
-#' v0.3.5 detection: designation pattern starting with a digit other
-#' than 1 (e.g. \code{2A}, \code{2Bw}, \code{3C}) -- the WRB / FAO
-#' convention for buried horizons -- OR a \code{b} suffix in the
-#' designation (e.g. \code{Ahb}, \code{Bwb}).
+#' Since v0.9.220 the four criteria of WRB 2022 Ch 3.1.23 on a buried
+#' surface horizon (an A designation with a \code{b} suffix, or below a
+#' lithic discontinuity, \code{2A}): \eqn{\ge} 0.2\% SOC; SOC
+#' \eqn{\ge} 25\% (relative) and \eqn{\ge} 0.2\% (absolute) higher
+#' than in the overlying layer; a lithic discontinuity at its upper limit;
+#' \eqn{\ge} 5 cm thick. Until v0.9.219 any designation containing a
+#' \code{b} passed, \code{AB} included.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 panpaic <- function(pedon) {
+  # v0.9.220: WRB 2022 Ch 3.1.23, "a buried surface horizon consisting of
+  # mineral material and has: 1. >= 0.2% soil organic carbon; and 2. a content
+  # of soil organic carbon >= 25% (relative) and >= 0.2% (absolute) higher than
+  # in the overlying layer; and 3. a lithic discontinuity at its upper limit;
+  # and 4. a thickness of >= 5 cm". A buried surface horizon is an A
+  # designation with a "b" suffix or below a lithic discontinuity (2A). Until
+  # v0.9.219 any designation with a "b" anywhere passed, AB included (the
+  # pattern was matched ignoring case), with none of the four criteria.
   h <- pedon$horizons
-  tests <- list()
-  tests$buried_pattern <- test_pattern_match(
-    h, "designation",
-    "^[2-9][A-Z]|^[2-9]\\d?[A-Z]|b$|^[A-Z]+b"
-  )
-  agg <- aggregate_subtests(tests)
+  n <- nrow(h)
+  d <- as.character(h$designation %||% rep(NA_character_, n))
+  num <- .desg_material_number(d)
+  buried_a <- !is.na(d) & grepl("^[0-9]*A", d) &
+    (grepl("^[0-9]*A[a-z0-9]*b[0-9]*$", d) | (!is.na(num) & num >= 2))
+  ld <- tryCatch(lithic_discontinuity(pedon), error = function(e) NULL)
+  ord <- order(h$top_cm)
+  status <- rep(FALSE, n)
+  for (k in seq_along(ord)) {
+    i <- ord[k]
+    if (!buried_a[i] || k == 1L) next
+    j <- ord[k - 1L]
+    thk <- h$bottom_cm[i] - h$top_cm[i]
+    disc <- if ((i %in% (ld$layers %||% integer(0))) ||
+                (!is.na(num[i]) && !is.na(num[j]) && num[i] != num[j])) TRUE
+            else if (is.null(ld) || is.na(ld$passed)) NA else FALSE
+    oc_i <- h$oc_pct[i]; oc_j <- h$oc_pct[j]
+    mineral <- if (is.na(oc_i)) NA else oc_i < 20
+    soc <- if (is.na(oc_i) || is.na(oc_j)) NA
+           else oc_i >= 0.2 && oc_i - oc_j >= 0.2 && oc_i >= 1.25 * oc_j
+    status[i] <- .and3(mineral, soc, disc, if (is.na(thk)) NA else thk >= 5)
+  }
+  passed <- if (any(status %in% TRUE)) TRUE
+            else if (anyNA(status)) NA
+            else if (all(is.na(d))) NA
+            else FALSE
   DiagnosticResult$new(
-    name = "panpaic", passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Panpaic horizon",
-    notes = "v0.3.5: buried-horizon designation pattern (2*, 3*, or *b suffix)"
+    name = "panpaic", passed = passed, layers = which(status %in% TRUE),
+    evidence = list(buried_surface_horizon = which(buried_a), status = status,
+                    lithic_discontinuity = ld),
+    missing = if (is.na(passed)) c("designation", "oc_pct", "top_cm", "bottom_cm")
+              else character(0),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.23, Panpaic horizon"
   )
 }
 

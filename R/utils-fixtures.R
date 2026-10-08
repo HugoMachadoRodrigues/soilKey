@@ -1762,6 +1762,10 @@ make_nitisol_canonical <- function() {
     # threshold, which combined with high CTC clay activity made
     # B_nitico fail.
     fe_dcb_pct                 = c(7.0,  9.0, 10.0),
+    # v0.9.220: oxalate Fe, which the nitic horizon needs (WRB 2022 Ch 3.1.22,
+    # criterion 3: Fe-ox >= 0.2% and Fe-ox / Fe-dith >= 0.05); typical of
+    # Nitisols, whose "active" Fe sets them apart from Ferralsols.
+    fe_ox_pct                  = c(0.8,  0.9,  0.9),
     plinthite_pct              = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),

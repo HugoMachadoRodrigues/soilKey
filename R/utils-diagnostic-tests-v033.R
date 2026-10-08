@@ -187,46 +187,50 @@ test_cemented <- function(h, min_class = "moderately",
 #'
 #' @noRd
 test_claric_munsell <- function(h, candidate_layers = NULL) {
+  # v0.9.220: WRB 2022 Ch 3.3.4 asks for BOTH colours, "1. ... a Munsell
+  # colour, dry, with one or both of the following ... and 2. ... a Munsell
+  # colour, moist, with one or more of the following". Either one used to be
+  # enough. A colour that is not recorded makes the layer NA (unless the other
+  # one already fails), and the moist path 2.d (hue 5YR or redder, value >= 4,
+  # chroma <= 3) also needs >= 25% uncoated sand and coarse silt grains, which
+  # soilKey does not record, so on its own it gives NA.
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
+  status <- logical(0)
+  col <- function(v) h[[v]] %||% rep(NA, nrow(h))
   for (i in cl) {
-    vm <- h$munsell_value_moist[i]
-    cm <- h$munsell_chroma_moist[i]
-    vd <- h$munsell_value_dry[i]
-    cd <- h$munsell_chroma_dry[i]
-    hu <- h$munsell_hue_moist[i]
+    vm <- col("munsell_value_moist")[i]
+    cm <- col("munsell_chroma_moist")[i]
+    vd <- col("munsell_value_dry")[i]
+    cd <- col("munsell_chroma_dry")[i]
+    hu <- col("munsell_hue_moist")[i]
     have_moist <- !is.na(vm) && !is.na(cm)
     have_dry   <- !is.na(vd) && !is.na(cd)
-    if (!have_moist && !have_dry) {
-      missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist")
-      next
-    }
-    moist_ok <- have_moist && (
-      (vm >= 6 && cm <= 4) ||
-      (vm >= 5 && cm <= 3) ||
-      (vm >= 4 && cm <= 2) ||
-      (!is.na(hu) && grepl("^(5YR|2\\.5YR|10R|7\\.5R|5R|2\\.5R)",
-                              hu, ignore.case = TRUE) &&
-         vm >= 4 && cm <= 3)
-    )
-    dry_ok <- have_dry && (
-      (vd >= 7 && cd <= 3) ||
-      (vd >= 5 && cd <= 2)
-    )
-    layer_pass <- isTRUE(moist_ok) || isTRUE(dry_ok)
+    dry_ok <- if (!have_dry) NA else (vd >= 7 && cd <= 3) || (vd >= 5 && cd <= 2)
+    moist_ok <- if (!have_moist) NA
+      else if ((vm >= 6 && cm <= 4) || (vm >= 5 && cm <= 3) || (vm >= 4 && cm <= 2)) TRUE
+      else if (!is.na(hu) && grepl("^(5YR|2\\.5YR|10R|7\\.5R|5R|2\\.5R)", hu,
+                                   ignore.case = TRUE) && vm >= 4 && cm <= 3) NA
+      else FALSE
+    layer_pass <- .and3(dry_ok, moist_ok)
+    if (is.na(layer_pass))
+      missing <- c(missing,
+                   if (!have_dry) c("munsell_value_dry", "munsell_chroma_dry"),
+                   if (!have_moist) c("munsell_value_moist", "munsell_chroma_moist"),
+                   if (have_moist && is.na(moist_ok)) "uncoated_grains")
     details[[as.character(i)]] <- list(
       idx = i, moist = c(value = vm, chroma = cm),
       dry = c(value = vd, chroma = cd),
       moist_ok = moist_ok, dry_ok = dry_ok, passed = layer_pass
     )
-    if (layer_pass) passing <- c(passing, i)
+    status <- c(status, layer_pass)
+    if (isTRUE(layer_pass)) passing <- c(passing, i)
   }
-  evaluated <- length(details)
   passed <- if (length(passing) > 0L) TRUE
-            else if (evaluated == 0L && length(missing) > 0L) NA
+            else if (anyNA(status) || (!length(status) && length(cl))) NA
             else FALSE
   .subtest_result(passed = passed, layers = passing,
-                   missing = missing, details = details)
+                   missing = unique(missing), details = details)
 }
 
 

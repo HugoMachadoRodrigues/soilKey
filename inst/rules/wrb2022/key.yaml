@@ -141,7 +141,7 @@ rsgs:
     name: Nitisols
     tests:
       all_of:
-        - nitic_horizon: {}
+        - nitisol: {}                   # v0.9.220: Ch 4 gate (nitic <= 100 cm, clay above >= half, no vertic above)
 
   - code: FR
     name: Ferralsols

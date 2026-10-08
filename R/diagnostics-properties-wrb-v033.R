@@ -119,8 +119,11 @@ albeluvic_glossae <- function(pedon) {
 continuous_rock <- function(pedon) {
   h <- pedon$horizons
   tests <- list()
+  # v0.9.220: R, RCr and R/Cr only (also below a lithic discontinuity, 2R).
+  # Cr, weathered or soft bedrock, does not "remain intact when an air-dried
+  # specimen ... is submerged in water for 1 hour" (Ch 3.2.5); it counted.
   tests$designation <- test_pattern_match(h, "designation",
-                                              "^R$|^Cr|^Rk")
+                                              .WRB_ROCK_DESIGNATION)
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(
     name = "continuous_rock", passed = agg$passed, layers = agg$layers,
