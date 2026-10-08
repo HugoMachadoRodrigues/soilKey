@@ -344,13 +344,17 @@ sk_datatable <- function(data, ..., options = list()) {
 # interpolated between them, so neighbouring classes got near-identical shades
 # (and RColorBrewer warned "n too large" in the log; the SoilGrids overlay of a
 # Brazilian state shows ~19 classes). Up to 12 classes keep Set3's colours;
-# beyond that each class gets its own colour from Polychrome 36.
+# beyond that each class gets its own colour from Polychrome 36, less its
+# near-white grey and pale cream (v0.9.214): on the map and in the legend's
+# white box those read as "no class".
+.SK_POLYCHROME <- setdiff(unname(grDevices::palette.colors(36, "Polychrome 36")),
+                          c("#E4E1E3", "#F7E1A0"))
 sk_class_pal <- function(domain, na.color = "transparent") {
   n <- length(unique(domain[!is.na(domain)]))
   cols <- if (n <= 12L) {
     RColorBrewer::brewer.pal(max(3L, n), "Set3")[seq_len(max(1L, n))]
-  } else if (n <= 36L) {
-    unname(grDevices::palette.colors(n, "Polychrome 36"))
+  } else if (n <= length(.SK_POLYCHROME)) {
+    .SK_POLYCHROME[seq_len(n)]
   } else {
     grDevices::hcl.colors(n, "Dynamic")
   }
