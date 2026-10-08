@@ -6,7 +6,7 @@
   soilKey](https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started.md):
 - [Começando com soilKey
   (PT-BR)](https://hugomachadorodrigues.github.io/soilKey/articles/v01_getting_started_pt.md):
-- [End-to-end WRB 2022 classification with Ch 6
+- [End-to-end WRB 2022 classification with full
   names](https://hugomachadorodrigues.github.io/soilKey/articles/v02_classify_wrb_end_to_end.md):
 - [Cross-system classification: WRB 2022, SiBCS 5, USDA Soil
   Taxonomy](https://hugomachadorodrigues.github.io/soilKey/articles/v03_cross_system_correlation.md):

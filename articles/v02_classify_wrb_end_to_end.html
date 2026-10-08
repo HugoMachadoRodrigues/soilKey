@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>End-to-end WRB 2022 classification with Ch 6 names • soilKey</title>
+<title>End-to-end WRB 2022 classification with full names • soilKey</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <link href="../deps/Source_Serif_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="End-to-end WRB 2022 classification with Ch 6 names">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="End-to-end WRB 2022 classification with full names">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.216</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.217</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>End-to-end WRB 2022 classification with Ch 6 names</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>End-to-end WRB 2022 classification with full names</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/vignettes/v02_classify_wrb_end_to_end.Rmd" class="external-link"><code>vignettes/v02_classify_wrb_end_to_end.Rmd</code></a></small>
@@ -93,13 +93,16 @@
     
 <p>This vignette walks the full WRB 2022 (4th edition) classification
 flow on the canonical Ferralsol fixture, end to end – from a raw
-<code>PedonRecord</code> to the complete Chapter 6 name with both
-<strong>principal</strong> and <strong>supplementary</strong> qualifiers
-in the canonical parenthesised form.</p>
+<code>PedonRecord</code> to the complete name, built by the rules of
+Chapter 2.2, with both <strong>principal</strong> and
+<strong>supplementary</strong> qualifiers in the canonical parenthesised
+form.</p>
 <p>The Ferralsol fixture represents a typical Brazilian
-<em>Latossolo</em> (gneiss-derived, Mata Atlântica). After v0.9.3,
-<code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> resolves it to:</p>
-<pre><code>Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)</code></pre>
+<em>Latossolo</em> (gneiss-derived, Mata Atlântica). Since v0.9.217 the
+qualifier lists are those of WRB 2022 Chapter 4 and the name is built by
+the rules of Chapter 2.2, and <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> resolves
+it to:</p>
+<pre><code>Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)</code></pre>
 <p>We will inspect each step that produces that name.</p>
 <div class="section level2">
 <h2 id="build-the-pedon">1. Build the pedon<a class="anchor" aria-label="anchor" href="#build-the-pedon"></a>
@@ -251,17 +254,21 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
+<span><span class="co">#&gt; Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
-<span><span class="co">#&gt; Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct,</span></span>
-<span><span class="co">#&gt; phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,</span></span>
-<span><span class="co">#&gt; top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,</span></span>
-<span><span class="co">#&gt; FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
-<span><span class="co">#&gt; TRUE, FALSE</span></span>
+<span><span class="co">#&gt; Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Ferric, Humic, FALSE, NA,</span></span>
+<span><span class="co">#&gt; gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, FALSE, p_mehlich3_mg_kg,</span></span>
+<span><span class="co">#&gt; FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, top_cm, bottom_cm, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,</span></span>
+<span><span class="co">#&gt; volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, NA, bioturbation_density,</span></span>
+<span><span class="co">#&gt; bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE, NA,</span></span>
+<span><span class="co">#&gt; water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black</span></span>
+<span><span class="co">#&gt; carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,</span></span>
+<span><span class="co">#&gt; rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,</span></span>
+<span><span class="co">#&gt; technic_hardmaterial_pct, cementation_class, NA, artefacts_pct, NA,</span></span>
+<span><span class="co">#&gt; contamination_type, NA, layer_origin, artefacts_pct</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
@@ -307,8 +314,8 @@ gate is satisfied.</p>
 <code>$rsg_or_order</code> – the assigned Reference Soil Group
 (here, <strong>Ferralsols</strong>);</li>
 <li>
-<code>$name</code> – the full Ch 6 name with principal and
-supplementary qualifiers;</li>
+<code>$name</code> – the full name with principal and supplementary
+qualifiers;</li>
 <li>
 <code>$qualifiers</code> – the resolved principal and supplementary
 lists, plus the per-qualifier trace;</li>
@@ -316,31 +323,31 @@ lists, plus the per-qualifier trace;</li>
 <code>$trace</code> – the RSG-by-RSG key trace, including which RSGs
 failed before the assignment;</li>
 <li>
-<code>$evidence_grade</code> – A through D, summarising the
-provenance of the classification.</li>
+<code>$evidence_grade</code> – A through E (or NA when no horizon
+carries a soil property), summarising the provenance of the
+classification.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="inspect-the-principal-qualifier-resolution">3. Inspect the principal qualifier resolution<a class="anchor" aria-label="anchor" href="#inspect-the-principal-qualifier-resolution"></a>
 </h2>
-<p>After the RSG is assigned, the resolver walks the canonical Ch 4
-principal-qualifier list for that RSG (e.g. for Ferralsols:
-<code>Vetic, Posic, Acric, Lixic, Geric, Hyperdystric, ...</code>) and
-tests each against the pedon.</p>
+<p>After the RSG is assigned, the resolver walks the RSG’s list of
+principal qualifiers from WRB 2022 Chapter 4, in its ranked order. For
+Ferralsols (p. 110) the list is
+<code>Ferritic, Gibbsic, Rhodic/Xanthic, Geric, Nitic, Pretic, Gleyic, Stagnic, Profundihumic, Mollic/Umbric, Acric/Lixic, Skeletic, Haplic</code>.
+Qualifiers separated by a slash are mutually exclusive, or the later
+ones are redundant, so only the first that applies is used.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qres</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resolve_wrb_qualifiers.html">resolve_wrb_qualifiers</a></span><span class="op">(</span><span class="va">pr</span>, <span class="st">"FR"</span><span class="op">)</span></span>
 <span><span class="va">qres</span><span class="op">$</span><span class="va">principal</span></span>
-<span><span class="co">#&gt; [1] "Geric"  "Ferric" "Rhodic"</span></span></code></pre></div>
-<p>The four principals that pass the Ferralsol fixture, in canonical Ch
-4 order:</p>
-<pre><code><span><span class="co">#&gt;   Qualifier</span></span>
-<span><span class="co">#&gt; 1     Geric</span></span>
-<span><span class="co">#&gt; 2    Ferric</span></span>
-<span><span class="co">#&gt; 3    Rhodic</span></span>
-<span><span class="co">#&gt;                                                                                                                                               Why</span></span>
-<span><span class="co">#&gt; 1 ECEC = sum of bases + Al_KCl &lt;= 1.5 cmol+/kg fine earth in some layer of the upper 100 cm. Layer 4 (Bw1, top = 65 cm) has ECEC = 1.18 cmol+/kg.</span></span>
-<span><span class="co">#&gt; 2                                                                         Iron-rich subsoil (Fe_dcb &gt;= 5%); fe_dcb_pct hits 8-9% in this fixture.</span></span>
-<span><span class="co">#&gt; 3                                   Hue 2.5YR moist, value &lt; 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).</span></span></code></pre>
+<span><span class="co">#&gt; [1] "Geric"  "Rhodic"</span></span></code></pre></div>
+<p>Principal qualifiers are written right to left: “the uppermost
+qualifier in the list is placed closest to the name of the RSG” (Chapter
+2.2). Rhodic ranks above Geric, so the name reads <em>Geric Rhodic
+Ferralsol</em>. Their ranks in the list:</p>
+<pre><code><span><span class="co">#&gt;   Qualifier Rank in Chapter 4</span></span>
+<span><span class="co">#&gt; 1     Geric                 4</span></span>
+<span><span class="co">#&gt; 2    Rhodic                 3</span></span></code></pre>
 <p>The <code>trace</code> slot keeps every Ch 4 principal that was
 tested, including those that failed. Useful for diagnostic
 debugging:</p>
@@ -355,46 +362,48 @@ debugging:</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">trace_df</span>, <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       qualifier passed note</span></span>
-<span><span class="co">#&gt; 1         Posic  FALSE     </span></span>
-<span><span class="co">#&gt; 2         Acric  FALSE     </span></span>
-<span><span class="co">#&gt; 3         Lixic  FALSE     </span></span>
-<span><span class="co">#&gt; 4         Geric   TRUE     </span></span>
-<span><span class="co">#&gt; 5  Hyperdystric  FALSE     </span></span>
-<span><span class="co">#&gt; 6   Hypereutric  FALSE     </span></span>
-<span><span class="co">#&gt; 7        Histic  FALSE     </span></span>
-<span><span class="co">#&gt; 8         Folic  FALSE     </span></span>
-<span><span class="co">#&gt; 9         Andic  FALSE     </span></span>
-<span><span class="co">#&gt; 10       Vitric  FALSE     </span></span>
-<span><span class="co">#&gt; 11      Sombric  FALSE     </span></span>
-<span><span class="co">#&gt; 12     Plinthic  FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;        qualifier passed note</span></span>
+<span><span class="co">#&gt; 1       Ferritic  FALSE     </span></span>
+<span><span class="co">#&gt; 2        Gibbsic     NA     </span></span>
+<span><span class="co">#&gt; 3         Rhodic   TRUE     </span></span>
+<span><span class="co">#&gt; 4        Xanthic  FALSE     </span></span>
+<span><span class="co">#&gt; 5          Geric   TRUE     </span></span>
+<span><span class="co">#&gt; 6          Nitic  FALSE     </span></span>
+<span><span class="co">#&gt; 7         Pretic  FALSE     </span></span>
+<span><span class="co">#&gt; 8         Gleyic  FALSE     </span></span>
+<span><span class="co">#&gt; 9        Stagnic  FALSE     </span></span>
+<span><span class="co">#&gt; 10 Profundihumic  FALSE     </span></span>
+<span><span class="co">#&gt; 11        Mollic  FALSE     </span></span>
+<span><span class="co">#&gt; 12        Umbric  FALSE</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-the-supplementary-qualifier-resolution">4. Inspect the supplementary qualifier resolution<a class="anchor" aria-label="anchor" href="#inspect-the-supplementary-qualifier-resolution"></a>
 </h2>
-<p>Supplementary qualifiers are the parenthesised tags in the WRB Ch 6
-name. They refine the soil description with texture / chemistry / colour
-information that is not strong enough to be a principal but still
-informative.</p>
+<p>Supplementary qualifiers go in brackets after the RSG name. They are
+not ranked: the texture qualifiers come first, the others “in the order
+of the alphabet”, by qualifier rather than subqualifier (Chapter
+2.2).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
-<span><span class="co">#&gt; [1] "Clayic" "Humic"  "Eutric" "Ochric" "Rubic"</span></span></code></pre></div>
-<p>What each tag captures for this Ferralsol:</p>
+<span><span class="co">#&gt; [1] "Clayic" "Epic"   "Eutric" "Ferric" "Humic"</span></span></code></pre></div>
+<p>Ochric does not appear: the Ferralsol list has
+<code>Humic/Ochric</code>, and Humic applies first. Each tag, with the
+source the resolver cites:</p>
 <pre><code><span><span class="co">#&gt;   Qualifier</span></span>
 <span><span class="co">#&gt; 1    Clayic</span></span>
-<span><span class="co">#&gt; 2     Humic</span></span>
+<span><span class="co">#&gt; 2      Epic</span></span>
 <span><span class="co">#&gt; 3    Eutric</span></span>
-<span><span class="co">#&gt; 4    Ochric</span></span>
-<span><span class="co">#&gt; 5     Rubic</span></span>
-<span><span class="co">#&gt;                                                                                                Why</span></span>
-<span><span class="co">#&gt; 1 Clay &gt;= 60 % over a layer thicker than 30 cm in the upper 100 cm; Bw1 has clay = 60% over 65 cm.</span></span>
-<span><span class="co">#&gt; 2                                 Weighted OC &gt;= 1 % in the upper 50 cm; weighted OC ~ 1.1 % here.</span></span>
-<span><span class="co">#&gt; 3                                                                                             &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4                      OC &gt;= 0.2 % in upper 10 cm + no mollic + no umbric; surface has OC = 2.0 %.</span></span>
-<span><span class="co">#&gt; 5         Hue &lt;= 5YR + chroma &gt;= 4 in upper 100 cm (less strict than Rhodic). 2.5YR / 6 satisfies.</span></span></code></pre>
+<span><span class="co">#&gt; 4    Ferric</span></span>
+<span><span class="co">#&gt; 5     Humic</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                               Reference</span></span>
+<span><span class="co">#&gt; 1                                                                                                                                                                                                               WRB (2022) Ch 5, Clayic</span></span>
+<span><span class="co">#&gt; 2                                                                                                                                                                                                                 WRB (2022) Ch 5, Epic</span></span>
+<span><span class="co">#&gt; 3 WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): exchangeable Al vs exchangeable bases over 20-100 cm; Dystric = Al &gt; bases in &gt;= half, Eutric = bases &gt;= Al in the major part. Not base saturation (that was WRB 2014). Eutric</span></span>
+<span><span class="co">#&gt; 4                                                                                                                                                                                                                       WRB (2022) Ch 5</span></span>
+<span><span class="co">#&gt; 5                                                                                                                                                                                                                WRB (2022) Ch 5, Humic</span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="compose-the-ch-6-name">5. Compose the Ch 6 name<a class="anchor" aria-label="anchor" href="#compose-the-ch-6-name"></a>
+<h2 id="compose-the-name">5. Compose the name<a class="anchor" aria-label="anchor" href="#compose-the-name"></a>
 </h2>
 <p><code><a href="../reference/format_wrb_name.html">format_wrb_name()</a></code> glues principal and supplementary into
 the canonical form:</p>
@@ -404,40 +413,38 @@ the canonical form:</p>
 <span>  principal     <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">principal</span>,</span>
 <span>  supplementary <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"</span></span></code></pre></div>
 <p>This is exactly the string returned by
 <code>classify_wrb2022()$name</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="family-suppression">6. Family suppression<a class="anchor" aria-label="anchor" href="#family-suppression"></a>
+<h2 id="redundant-and-sibling-qualifiers">6. Redundant and sibling qualifiers<a class="anchor" aria-label="anchor" href="#redundant-and-sibling-qualifiers"></a>
 </h2>
-<p>When several qualifiers from the same WRB family (e.g. Calcic /
-Hypocalcic / Protocalcic) pass the same RSG, only the most-specific
-sibling appears in the name. The suppression is applied
-<strong>after</strong> all candidates are evaluated and works on both
-the principal and supplementary lists.</p>
-<p>The internal table:</p>
+<p>“Qualifiers conveying redundant information are not added … For
+example, Eutric is not added if the Calcaric qualifier applies” (Chapter
+2.2). The resolver drops Eutric, and its subqualifiers such as
+Hypereutric, when Calcaric or Dolomitic applies:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">.drop_redundant_qualifiers</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Calcaric"</span>, <span class="st">"Hypereutric"</span><span class="op">)</span>,</span>
+<span>                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Calcaric"</span>, <span class="st">"Hypereutric"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Calcaric"</span></span></code></pre></div>
+<p>When several qualifiers of one family pass (Hypercalcic, Calcic,
+Protocalcic), only the most specific is kept, in the principal and in
+the supplementary list:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">soilKey</span><span class="fu">:::</span><span class="va">.wrb_qualifier_families</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 10</span></span>
-<span><span class="co">#&gt;  $ salinity: chr [1:3] "Hypersalic" "Salic" "Hyposalic"</span></span>
-<span><span class="co">#&gt;  $ sodicity: chr [1:3] "Hypersodic" "Sodic" "Hyposodic"</span></span>
-<span><span class="co">#&gt;  $ calcic  : chr [1:4] "Hypercalcic" "Calcic" "Hypocalcic" "Protocalcic"</span></span>
-<span><span class="co">#&gt;  $ gypsic  : chr [1:4] "Hypergypsic" "Gypsic" "Hypogypsic" "Protogypsic"</span></span>
+<span><span class="co">#&gt; List of 7</span></span>
+<span><span class="co">#&gt;  $ salinity: chr [1:2] "Hypersalic" "Salic"</span></span>
+<span><span class="co">#&gt;  $ calcic  : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"</span></span>
+<span><span class="co">#&gt;  $ gypsic  : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"</span></span>
 <span><span class="co">#&gt;  $ vertic  : chr [1:2] "Vertic" "Protovertic"</span></span>
-<span><span class="co">#&gt;  $ albic   : chr [1:2] "Hyperalbic" "Albic"</span></span>
-<span><span class="co">#&gt;  $ skeletic: chr [1:2] "Hyperskeletic" "Skeletic"</span></span>
 <span><span class="co">#&gt;  $ eutric  : chr [1:2] "Hypereutric" "Eutric"</span></span>
 <span><span class="co">#&gt;  $ dystric : chr [1:2] "Hyperdystric" "Dystric"</span></span>
-<span><span class="co">#&gt;  $ alic    : chr [1:2] "Hyperalic" "Alic"</span></span></code></pre></div>
-<p>A worked example: a synthetic Calcisol that satisfies Calcic,
-Hypocalcic, and Protocalcic simultaneously will collapse to just
-<strong>Calcic</strong>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">.suppress_qualifier_siblings</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mollic"</span>, <span class="st">"Calcic"</span>, <span class="st">"Hypocalcic"</span>, <span class="st">"Protocalcic"</span>, <span class="st">"Cambic"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  $ alic    : chr [1:2] "Hyperalic" "Alic"</span></span>
+<span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">.suppress_qualifier_siblings</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mollic"</span>, <span class="st">"Hypercalcic"</span>, <span class="st">"Calcic"</span>, <span class="st">"Protocalcic"</span>, <span class="st">"Cambic"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Mollic" "Calcic" "Cambic"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Mollic"      "Hypercalcic" "Cambic"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="evidence-grade">7. Evidence grade<a class="anchor" aria-label="anchor" href="#evidence-grade"></a>
@@ -445,8 +452,10 @@ Hypocalcic, and Protocalcic simultaneously will collapse to just
 <p><code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code> reports an
 <code>evidence_grade</code> summarising the provenance of every
 attribute used in the classification. <strong>A</strong> means every
-used value was lab-measured; <strong>D</strong> means the result rests
-on VLM-extracted or user-assumed values.</p>
+value was measured; <strong>B</strong> to <strong>E</strong> mark
+spectra-predicted, prior-inferred, VLM-extracted and user-assumed
+values; <strong>NA</strong> means no horizon carries a soil property at
+all.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">evidence_grade</span></span>
 <span><span class="co">#&gt; [1] "A"</span></span></code></pre></div>
@@ -458,7 +467,7 @@ how <code>pedon$add_measurement()</code> with
 always know how robust the classification is.</p>
 </div>
 <div class="section level2">
-<h2 id="render-a-self-contained-pedologist-facing-report">6. Render a self-contained pedologist-facing report<a class="anchor" aria-label="anchor" href="#render-a-self-contained-pedologist-facing-report"></a>
+<h2 id="render-a-self-contained-pedologist-facing-report">8. Render a self-contained pedologist-facing report<a class="anchor" aria-label="anchor" href="#render-a-self-contained-pedologist-facing-report"></a>
 </h2>
 <p>The <code><a href="../reference/report.html">report()</a></code> generic takes a
 <code>ClassificationResult</code> (or a list of them, or a
@@ -488,7 +497,7 @@ provenance summary. <code>ClassificationResult$report(file)</code> is
 the R6-method-style equivalent and delegates to the same code.</p>
 </div>
 <div class="section level2">
-<h2 id="tier-3-strict-mode-for-borderline-pedons">7. Tier-3 strict mode for borderline pedons<a class="anchor" aria-label="anchor" href="#tier-3-strict-mode-for-borderline-pedons"></a>
+<h2 id="tier-3-strict-mode-for-borderline-pedons">9. Tier-3 strict mode for borderline pedons<a class="anchor" aria-label="anchor" href="#tier-3-strict-mode-for-borderline-pedons"></a>
 </h2>
 <p>By default the per-RSG numerical gates apply soilKey’s regionally
 calibrated thresholds. For pedons that sit close to an RSG boundary,
@@ -514,10 +523,10 @@ evidence.</p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)</span></span>
+<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)</span></span>
 <span><span class="co">#&gt; Assigned RSG  : Ferralsols</span></span>
-<span><span class="co">#&gt; Principal     : Geric, Ferric, Rhodic</span></span>
-<span><span class="co">#&gt; Supplementary : Clayic, Humic, Eutric, Ochric, Rubic</span></span>
+<span><span class="co">#&gt; Principal     : Geric, Rhodic</span></span>
+<span><span class="co">#&gt; Supplementary : Clayic, Epic, Eutric, Ferric, Humic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span></code></pre>
 <p>The <code>v03_cross_system_correlation</code> vignette runs the same
 profile through the Brazilian SiBCS and the USDA Soil Taxonomy keys and

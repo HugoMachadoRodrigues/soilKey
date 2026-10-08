@@ -381,37 +381,37 @@ knitr::kable(
 
 |     | fixture | principal_prefix |
 |:----|:--------|:-----------------|
-| HS  | HS      | Floatic          |
+| HS  | HS      | Ombric           |
 | AT  | AT      | Hortic           |
-| TC  | TC      | Mollic           |
-| CR  | CR      | Cambic           |
-| LP  | LP      | Lithic           |
+| TC  | TC      | NA               |
+| CR  | CR      | Skeletic         |
+| LP  | LP      | Skeletic         |
 | SN  | SN      | Albic            |
-| VR  | VR      | Protocalcic      |
+| VR  | VR      | Haplic           |
 | SC  | SC      | Sodic            |
-| GL  | GL      | Haplic           |
-| AN  | AN      | Vitric           |
+| GL  | GL      | Eutric           |
+| AN  | AN      | Eutric           |
 | PZ  | PZ      | Albic            |
-| PT  | PT      | Plinthic         |
-| PL  | PL      | Albic            |
+| PT  | PT      | Nitic            |
+| PL  | PL      | Eutric           |
 | ST  | ST      | Albic            |
-| NT  | NT      | Luvic            |
+| NT  | NT      | Eutric           |
 | FR  | FR      | Geric            |
 | CH  | CH      | Vermic           |
-| KS  | KS      | Protocalcic      |
-| PH  | PH      | Pachic           |
+| KS  | KS      | Cambic           |
+| PH  | PH      | Cambic           |
 | UM  | UM      | Cambic           |
-| DU  | DU      | Duric            |
-| GY  | GY      | Gypsic           |
-| CL  | CL      | Calcic           |
-| RT  | RT      | Albic            |
+| DU  | DU      | Eutric           |
+| GY  | GY      | Calcaric         |
+| CL  | CL      | Cambic           |
+| RT  | RT      | Eutric           |
 | AC  | AC      | Albic            |
-| LX  | LX      | Hypereutric      |
-| AL  | AL      | Hyperalic        |
-| LV  | LV      | Hypereutric      |
-| CM  | CM      | Hypereutric      |
-| AR  | AR      | Protic           |
-| FL  | FL      | Haplic           |
+| LX  | LX      | Albic            |
+| AL  | AL      | Albic            |
+| LV  | LV      | Albic            |
+| CM  | CM      | Eutric           |
+| AR  | AR      | Eutric           |
+| FL  | FL      | Pantofluvic      |
 
 Most-specific principal qualifier per canonical fixture. {.table}
 

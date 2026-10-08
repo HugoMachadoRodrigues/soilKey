@@ -58,8 +58,8 @@ to go straight from a file to the three classifications;
 f <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
 pedon <- read_pedon_csv(f)
 classify_all(pedon)$summary
-#>                                         wrb
-#> 1 Chromic Ferralsol (Clayic, Ochric, Rubic)
+#>                                       wrb
+#> 1 Haplic Ferralsol (Clayic, Epic, Ochric)
 #>                                                          sibcs           usda
 #> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
 ```

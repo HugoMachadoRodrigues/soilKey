@@ -1,16 +1,19 @@
-# End-to-end WRB 2022 classification with Ch 6 names
+# End-to-end WRB 2022 classification with full names
 
 This vignette walks the full WRB 2022 (4th edition) classification flow
 on the canonical Ferralsol fixture, end to end – from a raw
-`PedonRecord` to the complete Chapter 6 name with both **principal** and
-**supplementary** qualifiers in the canonical parenthesised form.
+`PedonRecord` to the complete name, built by the rules of Chapter 2.2,
+with both **principal** and **supplementary** qualifiers in the
+canonical parenthesised form.
 
 The Ferralsol fixture represents a typical Brazilian *Latossolo*
-(gneiss-derived, Mata Atlântica). After v0.9.3,
+(gneiss-derived, Mata Atlântica). Since v0.9.217 the qualifier lists are
+those of WRB 2022 Chapter 4 and the name is built by the rules of
+Chapter 2.2, and
 [`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
 resolves it to:
 
-    Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)
+    Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 
 We will inspect each step that produces that name.
 
@@ -76,17 +79,21 @@ res
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
+#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,
-#> FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct,
-#> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
-#> FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
-#> top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,
-#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
-#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
-#> TRUE, FALSE
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Ferric, Humic, FALSE, NA,
+#> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, FALSE, p_mehlich3_mg_kg,
+#> FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
+#> FALSE, top_cm, bottom_cm, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
+#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
+#> FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, NA, bioturbation_density,
+#> bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE, NA,
+#> water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black
+#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
+#> rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
+#> technic_hardmaterial_pct, cementation_class, NA, artefacts_pct, NA,
+#> contamination_type, NA, layer_origin, artefacts_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -132,40 +139,38 @@ The returned `ClassificationResult` carries:
 
 - `$rsg_or_order` – the assigned Reference Soil Group (here,
   **Ferralsols**);
-- `$name` – the full Ch 6 name with principal and supplementary
-  qualifiers;
+- `$name` – the full name with principal and supplementary qualifiers;
 - `$qualifiers` – the resolved principal and supplementary lists, plus
   the per-qualifier trace;
 - `$trace` – the RSG-by-RSG key trace, including which RSGs failed
   before the assignment;
-- `$evidence_grade` – A through D, summarising the provenance of the
-  classification.
+- `$evidence_grade` – A through E (or NA when no horizon carries a soil
+  property), summarising the provenance of the classification.
 
 ## 3. Inspect the principal qualifier resolution
 
-After the RSG is assigned, the resolver walks the canonical Ch 4
-principal-qualifier list for that RSG (e.g. for Ferralsols:
-`Vetic, Posic, Acric, Lixic, Geric, Hyperdystric, ...`) and tests each
-against the pedon.
+After the RSG is assigned, the resolver walks the RSG’s list of
+principal qualifiers from WRB 2022 Chapter 4, in its ranked order. For
+Ferralsols (p. 110) the list is
+`Ferritic, Gibbsic, Rhodic/Xanthic, Geric, Nitic, Pretic, Gleyic, Stagnic, Profundihumic, Mollic/Umbric, Acric/Lixic, Skeletic, Haplic`.
+Qualifiers separated by a slash are mutually exclusive, or the later
+ones are redundant, so only the first that applies is used.
 
 ``` r
 
 qres <- resolve_wrb_qualifiers(pr, "FR")
 qres$principal
-#> [1] "Geric"  "Ferric" "Rhodic"
+#> [1] "Geric"  "Rhodic"
 ```
 
-The four principals that pass the Ferralsol fixture, in canonical Ch 4
-order:
+Principal qualifiers are written right to left: “the uppermost qualifier
+in the list is placed closest to the name of the RSG” (Chapter 2.2).
+Rhodic ranks above Geric, so the name reads *Geric Rhodic Ferralsol*.
+Their ranks in the list:
 
-    #>   Qualifier
-    #> 1     Geric
-    #> 2    Ferric
-    #> 3    Rhodic
-    #>                                                                                                                                               Why
-    #> 1 ECEC = sum of bases + Al_KCl <= 1.5 cmol+/kg fine earth in some layer of the upper 100 cm. Layer 4 (Bw1, top = 65 cm) has ECEC = 1.18 cmol+/kg.
-    #> 2                                                                         Iron-rich subsoil (Fe_dcb >= 5%); fe_dcb_pct hits 8-9% in this fixture.
-    #> 3                                   Hue 2.5YR moist, value < 4 in 25-150 cm. Bw1 has value = 4 (failing in some layers but BA satisfies value 3).
+    #>   Qualifier Rank in Chapter 4
+    #> 1     Geric                 4
+    #> 2    Rhodic                 3
 
 The `trace` slot keeps every Ch 4 principal that was tested, including
 those that failed. Useful for diagnostic debugging:
@@ -182,50 +187,50 @@ trace_df <- do.call(
   })
 )
 head(trace_df, 12)
-#>       qualifier passed note
-#> 1         Posic  FALSE     
-#> 2         Acric  FALSE     
-#> 3         Lixic  FALSE     
-#> 4         Geric   TRUE     
-#> 5  Hyperdystric  FALSE     
-#> 6   Hypereutric  FALSE     
-#> 7        Histic  FALSE     
-#> 8         Folic  FALSE     
-#> 9         Andic  FALSE     
-#> 10       Vitric  FALSE     
-#> 11      Sombric  FALSE     
-#> 12     Plinthic  FALSE
+#>        qualifier passed note
+#> 1       Ferritic  FALSE     
+#> 2        Gibbsic     NA     
+#> 3         Rhodic   TRUE     
+#> 4        Xanthic  FALSE     
+#> 5          Geric   TRUE     
+#> 6          Nitic  FALSE     
+#> 7         Pretic  FALSE     
+#> 8         Gleyic  FALSE     
+#> 9        Stagnic  FALSE     
+#> 10 Profundihumic  FALSE     
+#> 11        Mollic  FALSE     
+#> 12        Umbric  FALSE
 ```
 
 ## 4. Inspect the supplementary qualifier resolution
 
-Supplementary qualifiers are the parenthesised tags in the WRB Ch 6
-name. They refine the soil description with texture / chemistry / colour
-information that is not strong enough to be a principal but still
-informative.
+Supplementary qualifiers go in brackets after the RSG name. They are not
+ranked: the texture qualifiers come first, the others “in the order of
+the alphabet”, by qualifier rather than subqualifier (Chapter 2.2).
 
 ``` r
 
 qres$supplementary
-#> [1] "Clayic" "Humic"  "Eutric" "Ochric" "Rubic"
+#> [1] "Clayic" "Epic"   "Eutric" "Ferric" "Humic"
 ```
 
-What each tag captures for this Ferralsol:
+Ochric does not appear: the Ferralsol list has `Humic/Ochric`, and Humic
+applies first. Each tag, with the source the resolver cites:
 
     #>   Qualifier
     #> 1    Clayic
-    #> 2     Humic
+    #> 2      Epic
     #> 3    Eutric
-    #> 4    Ochric
-    #> 5     Rubic
-    #>                                                                                                Why
-    #> 1 Clay >= 60 % over a layer thicker than 30 cm in the upper 100 cm; Bw1 has clay = 60% over 65 cm.
-    #> 2                                 Weighted OC >= 1 % in the upper 50 cm; weighted OC ~ 1.1 % here.
-    #> 3                                                                                             <NA>
-    #> 4                      OC >= 0.2 % in upper 10 cm + no mollic + no umbric; surface has OC = 2.0 %.
-    #> 5         Hue <= 5YR + chroma >= 4 in upper 100 cm (less strict than Rhodic). 2.5YR / 6 satisfies.
+    #> 4    Ferric
+    #> 5     Humic
+    #>                                                                                                                                                                                                                               Reference
+    #> 1                                                                                                                                                                                                               WRB (2022) Ch 5, Clayic
+    #> 2                                                                                                                                                                                                                 WRB (2022) Ch 5, Epic
+    #> 3 WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): exchangeable Al vs exchangeable bases over 20-100 cm; Dystric = Al > bases in >= half, Eutric = bases >= Al in the major part. Not base saturation (that was WRB 2014). Eutric
+    #> 4                                                                                                                                                                                                                       WRB (2022) Ch 5
+    #> 5                                                                                                                                                                                                                WRB (2022) Ch 5, Humic
 
-## 5. Compose the Ch 6 name
+## 5. Compose the name
 
 [`format_wrb_name()`](https://hugomachadorodrigues.github.io/soilKey/reference/format_wrb_name.md)
 glues principal and supplementary into the canonical form:
@@ -237,56 +242,54 @@ format_wrb_name(
   principal     = qres$principal,
   supplementary = qres$supplementary
 )
-#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 ```
 
 This is exactly the string returned by `classify_wrb2022()$name`.
 
-## 6. Family suppression
+## 6. Redundant and sibling qualifiers
 
-When several qualifiers from the same WRB family (e.g. Calcic /
-Hypocalcic / Protocalcic) pass the same RSG, only the most-specific
-sibling appears in the name. The suppression is applied **after** all
-candidates are evaluated and works on both the principal and
-supplementary lists.
+“Qualifiers conveying redundant information are not added … For example,
+Eutric is not added if the Calcaric qualifier applies” (Chapter 2.2).
+The resolver drops Eutric, and its subqualifiers such as Hypereutric,
+when Calcaric or Dolomitic applies:
 
-The internal table:
+``` r
+
+soilKey:::.drop_redundant_qualifiers(c("Calcaric", "Hypereutric"),
+                                     c("Calcaric", "Hypereutric"))
+#> [1] "Calcaric"
+```
+
+When several qualifiers of one family pass (Hypercalcic, Calcic,
+Protocalcic), only the most specific is kept, in the principal and in
+the supplementary list:
 
 ``` r
 
 str(soilKey:::.wrb_qualifier_families)
-#> List of 10
-#>  $ salinity: chr [1:3] "Hypersalic" "Salic" "Hyposalic"
-#>  $ sodicity: chr [1:3] "Hypersodic" "Sodic" "Hyposodic"
-#>  $ calcic  : chr [1:4] "Hypercalcic" "Calcic" "Hypocalcic" "Protocalcic"
-#>  $ gypsic  : chr [1:4] "Hypergypsic" "Gypsic" "Hypogypsic" "Protogypsic"
+#> List of 7
+#>  $ salinity: chr [1:2] "Hypersalic" "Salic"
+#>  $ calcic  : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"
+#>  $ gypsic  : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"
 #>  $ vertic  : chr [1:2] "Vertic" "Protovertic"
-#>  $ albic   : chr [1:2] "Hyperalbic" "Albic"
-#>  $ skeletic: chr [1:2] "Hyperskeletic" "Skeletic"
 #>  $ eutric  : chr [1:2] "Hypereutric" "Eutric"
 #>  $ dystric : chr [1:2] "Hyperdystric" "Dystric"
 #>  $ alic    : chr [1:2] "Hyperalic" "Alic"
-```
-
-A worked example: a synthetic Calcisol that satisfies Calcic,
-Hypocalcic, and Protocalcic simultaneously will collapse to just
-**Calcic**.
-
-``` r
-
 soilKey:::.suppress_qualifier_siblings(
-  c("Mollic", "Calcic", "Hypocalcic", "Protocalcic", "Cambic")
+  c("Mollic", "Hypercalcic", "Calcic", "Protocalcic", "Cambic")
 )
-#> [1] "Mollic" "Calcic" "Cambic"
+#> [1] "Mollic"      "Hypercalcic" "Cambic"
 ```
 
 ## 7. Evidence grade
 
 [`classify_wrb2022()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
 reports an `evidence_grade` summarising the provenance of every
-attribute used in the classification. **A** means every used value was
-lab-measured; **D** means the result rests on VLM-extracted or
-user-assumed values.
+attribute used in the classification. **A** means every value was
+measured; **B** to **E** mark spectra-predicted, prior-inferred,
+VLM-extracted and user-assumed values; **NA** means no horizon carries a
+soil property at all.
 
 ``` r
 
@@ -299,7 +302,7 @@ The `v01_getting_started` vignette shows how `pedon$add_measurement()`
 with `source = "extracted_vlm"` or `source = "predicted_spectra"` lowers
 the grade – so you always know how robust the classification is.
 
-## 6. Render a self-contained pedologist-facing report
+## 8. Render a self-contained pedologist-facing report
 
 The
 [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
@@ -333,7 +336,7 @@ ambiguities, missing data, the horizons table, and the per-source
 provenance summary. `ClassificationResult$report(file)` is the
 R6-method-style equivalent and delegates to the same code.
 
-## 7. Tier-3 strict mode for borderline pedons
+## 9. Tier-3 strict mode for borderline pedons
 
 By default the per-RSG numerical gates apply soilKey’s regionally
 calibrated thresholds. For pedons that sit close to an RSG boundary,
@@ -362,10 +365,10 @@ its `DiagnosticResult` evidence.
 
 ## Summary
 
-    #> WRB 2022 name : Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
+    #> WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
     #> Assigned RSG  : Ferralsols
-    #> Principal     : Geric, Ferric, Rhodic
-    #> Supplementary : Clayic, Humic, Eutric, Ochric, Rubic
+    #> Principal     : Geric, Rhodic
+    #> Supplementary : Clayic, Epic, Eutric, Ferric, Humic
     #> Evidence grade: A
 
 The `v03_cross_system_correlation` vignette runs the same profile

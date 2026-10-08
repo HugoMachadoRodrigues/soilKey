@@ -37,7 +37,7 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
 classify_wrb2022(pedon, on_missing = "silent")$name
-#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 classify_sibcs(pedon)$name
 #> [1] "Latossolos Vermelhos Distróficos típicos"
 classify_usda(pedon, on_missing = "silent")$name
@@ -241,17 +241,21 @@ classify_wrb2022(ferralsol)
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
+#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Ferric, Rhodic, Clayic, Humic, Eutric, Ochric, Rubic, FALSE,
-#> FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct,
-#> phosphate_retention_pct, volcanic_glass_pct, FALSE, volcanic_glass_pct, FALSE,
-#> FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE, plinthite_pct, FALSE,
-#> top_cm, bottom_cm, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,
-#> redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE, FALSE,
-#> p_mehlich3_mg_kg, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
-#> TRUE, FALSE
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Ferric, Humic, FALSE, NA,
+#> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, FALSE, p_mehlich3_mg_kg,
+#> FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct, FALSE,
+#> FALSE, top_cm, bottom_cm, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+#> FALSE, FALSE, FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
+#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
+#> FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, NA, bioturbation_density,
+#> bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE, NA,
+#> water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black
+#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
+#> rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
+#> technic_hardmaterial_pct, cementation_class, NA, artefacts_pct, NA,
+#> contamination_type, NA, layer_origin, artefacts_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities

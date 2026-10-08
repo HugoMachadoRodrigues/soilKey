@@ -105,7 +105,7 @@ res <- classify_from_documents(
 )
 
 res$classifications$wrb$name
-#> [1] "Geric Ferric Rhodic Chromic Ferralsol (Clayic, Humic, Dystric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Dystric, Epic, Ferric, Humic)"
 res$classifications$sibcs$name
 #> [1] "Latossolos Vermelhos Distroficos tipicos, argilosa, moderado"
 res$classifications$usda$name
@@ -183,7 +183,7 @@ cls_sibcs <- classify_sibcs(pedon, include_familia = TRUE)
 cls_usda  <- classify_usda(pedon)
 
 cls_wrb$name
-#> [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 cls_sibcs$name
 #> [1] "Latossolos Vermelhos Distróficos típicos, argilosa, moderado"
 cls_usda$name

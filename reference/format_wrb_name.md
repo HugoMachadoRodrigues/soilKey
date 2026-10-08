@@ -20,14 +20,17 @@ format_wrb_name(
 
 - principal:
 
-  Character vector of principal-qualifier names.
+  Character vector of principal-qualifier names, in the order they are
+  written (as
+  [`resolve_wrb_qualifiers`](https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.md)
+  returns them).
 
 - supplementary:
 
-  Character vector of supplementary-qualifier names (default empty in
-  v0.9).
+  Character vector of supplementary-qualifier names, in the order they
+  are written.
 
 ## Value
 
-Formatted string per Ch 6 p 154 ("Rhodic Ferralsol (Clayic, Humic,
-Dystric)").
+The name as WRB 2022 Chapter 2.2 writes it, e.g. "Geric Rhodic Ferralsol
+(Clayic, Eutric, Ferric, Humic)".

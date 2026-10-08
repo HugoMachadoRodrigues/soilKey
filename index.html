@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.216</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.217</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -316,9 +316,9 @@
 <span></span>
 <span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># WRB 2022 — full Chapter 6 name (RSG + qualifiers + specifiers)</span></span>
+<span><span class="co"># WRB 2022 — full name (RSG + qualifiers, Chapters 4 and 2.2)</span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span>
+<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"</span></span>
 <span></span>
 <span><span class="co"># SiBCS 5 — 4th level (Subgroup) + Family (5th level)</span></span>
 <span><span class="fu"><a href="reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span>, include_familia <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
@@ -328,7 +328,7 @@
 <span><span class="fu"><a href="reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Rhodic Hapludox"</span></span></code></pre></div>
 <ul>
-<li>WRB delivers the <strong>complete Chapter 6 name</strong> — four principal qualifiers + five supplementary qualifiers in canonical order, with optional <strong>depth specifiers</strong> (Epi-/Endo-/Bathy-/…, via <code>classify_wrb2022(specifiers = TRUE)</code>).</li>
+<li>WRB delivers the <strong>complete name</strong>: the principal qualifiers of the RSG’s Chapter 4 list, written right to left, and the supplementary qualifiers in brackets (texture first, then alphabetical), by the rules of Chapter 2.2, with optional <strong>depth specifiers</strong> (Epi-/Endo-/Bathy-/…, via <code>classify_wrb2022(specifiers = TRUE)</code>).</li>
 <li>SiBCS descends through <strong>all four hierarchical levels (Order → Suborder → Great Group → Subgroup)</strong> plus a <strong>5th-level Family</strong> with up to 15 orthogonal adjectival dimensions.</li>
 <li>USDA Soil Taxonomy walks the <strong>complete Path C</strong> (Order → Suborder → Great Group → Subgroup) per <em>Keys to Soil Taxonomy 13th ed.</em>, plus the <strong>5th-level family</strong> modifiers (<code>include_family = TRUE</code>).</li>
 </ul>
@@ -732,7 +732,7 @@
 <h3 id="id_2-classify-across-three-systems-in-one-pass">2. Classify across three systems in one pass<a class="anchor" aria-label="anchor" href="#id_2-classify-across-three-systems-in-one-pass"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># WRB 2022 — full Chapter 6 name</span></span>
+<code class="sourceCode R"><span><span class="co"># WRB 2022 — full name</span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
 <span><span class="co"># SiBCS 5 — 4th level (Subgroup) + 5th level (Family)</span></span>
@@ -898,7 +898,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"</span></span></code></pre></div>
 <p>The VLM extracts a JSON-Schema-validated <code>PedonRecord</code> from a field-report PDF (or photo); the deterministic key takes it from there. The schema rejects any LLM hallucination of class names — extraction is restricted to per-attribute observations.</p>
 <hr>
 </div>

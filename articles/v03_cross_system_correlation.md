@@ -29,10 +29,10 @@ data.frame(
 #> 1 WRB 2022 Ferralsols
 #> 2  SiBCS 5 Latossolos
 #> 3     USDA    Oxisols
-#>                                                                   Full
-#> 1 Geric Ferric Rhodic Ferralsol (Clayic, Humic, Eutric, Ochric, Rubic)
-#> 2                             Latossolos Vermelhos Distróficos típicos
-#> 3                                                      Rhodic Hapludox
+#>                                                           Full
+#> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
+#> 2                     Latossolos Vermelhos Distróficos típicos
+#> 3                                              Rhodic Hapludox
 ```
 
 The three systems converge on the same conceptual unit:
@@ -137,10 +137,10 @@ u  <- classify_usda  (pr, on_missing = "silent")
 
 cat("WRB principal qualifiers:    ",
     paste(w$qualifiers$principal,     collapse = ", "), "\n")
-#> WRB principal qualifiers:     Geric, Ferric, Rhodic
+#> WRB principal qualifiers:     Geric, Rhodic
 cat("WRB supplementary qualifiers:",
     paste(w$qualifiers$supplementary, collapse = ", "), "\n")
-#> WRB supplementary qualifiers: Clayic, Humic, Eutric, Ochric, Rubic
+#> WRB supplementary qualifiers: Clayic, Epic, Eutric, Ferric, Humic
 cat("SiBCS subordem (2nd level):  ", s$rsg_or_order,    "\n")
 #> SiBCS subordem (2nd level):   Latossolos
 cat("USDA suborder / great group: ", u$rsg_or_order,    "\n")

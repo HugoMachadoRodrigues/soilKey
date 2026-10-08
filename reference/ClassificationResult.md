@@ -24,7 +24,7 @@ biogeographical or prior-based warnings.
 - `name`:
 
   Character. Full classification name with qualifiers (e.g.
-  `"Rhodic Ferralsol (Clayic, Humic, Dystric)"`).
+  `"Rhodic Ferralsol (Clayic, Dystric, Humic)"`).
 
 - `rsg_or_order`:
 

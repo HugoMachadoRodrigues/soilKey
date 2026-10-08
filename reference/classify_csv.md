@@ -62,8 +62,8 @@ wants to dig deeper.
 ``` r
 f <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
 classify_csv(f)
-#>                                         wrb
-#> 1 Chromic Ferralsol (Clayic, Ochric, Rubic)
+#>                                       wrb
+#> 1 Haplic Ferralsol (Clayic, Epic, Ochric)
 #>                                                          sibcs           usda
 #> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
 ```

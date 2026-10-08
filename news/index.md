@@ -1,5 +1,151 @@
 # Changelog
 
+## soilKey 0.9.217 (2026-10-08)
+
+### WRB 2022 names follow WRB 2022: Chapter 4 lists, Chapter 2.2 rules
+
+soilKey called its WRB names “WRB 2022”, but for most RSGs the qualifier
+lists were the longer WRB 2014 lists, and a list became a name by rules
+that were not WRB 2022’s. Both are now the text’s. **43 of the 44
+example profiles change WRB name (the Neossolo, an Umbric Leptosol,
+keeps it); none changes RSG**, and SiBCS and USDA names are untouched.
+Names cited from earlier versions (the README, papers) need updating:
+the example Ferralsol, for instance, was “Geric Ferric Rhodic Ferralsol
+(Clayic, Humic, Eutric, Ochric, Rubic)” and is now “Geric Rhodic
+Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)”.
+
+- **The 32 lists are Chapter 4’s.** `inst/rules/wrb2022/qualifiers.yaml`
+  is generated from the corrected text (18 December 2022) by
+  `data-raw/wrb2022_ch4_lists.py` and
+  `data-raw/wrb2022_qualifiers_yaml.py`: each RSG’s principal qualifiers
+  in their ranked order and its supplementary ones, with alternatives
+  kept as WRB writes them (“Rhodic/Xanthic”). Ferralsols had 29
+  principal qualifiers (Ferric, Hyperdystric, Plinthic, Histic and
+  Vitric among them) against WRB 2022’s 13: Ferritic, Gibbsic,
+  Rhodic/Xanthic, Geric, Nitic, Pretic, Gleyic, Stagnic, Profundihumic,
+  Mollic/Umbric, Acric/Lixic, Skeletic, Haplic. Qualifiers that define
+  the RSG (Chernic for Chernozems, Calcic for Calcisols, Plinthic for
+  Plinthosols, Duric for Durisols, Stagnic for Planosols) are no longer
+  in its own list.
+- **The rules for naming soils (Chapter 2.2)**, in
+  [`resolve_wrb_qualifiers()`](https://hugomachadorodrigues.github.io/soilKey/reference/resolve_wrb_qualifiers.md):
+  - principal qualifiers are written right to left, “the uppermost
+    qualifier in the list is placed closest to the name of the RSG”;
+  - supplementary qualifiers start with texture, then follow “the order
+    of the alphabet”, by qualifier, not subqualifier (they kept the list
+    order);
+  - in a slash group only the first qualifier that applies is used (the
+    example Ferralsol had both Humic and Ochric); every alternative is
+    still evaluated and traced;
+  - “Qualifiers conveying redundant information are not added … Eutric
+    is not added if the Calcaric qualifier applies”, nor its
+    subqualifiers (Hypereutric, Epieutric, Endoeutric), and likewise
+    with Dolomitic;
+  - Haplic, “no other principal qualifier of the respective RSG
+    applies”, only where the RSG lists it: 16 RSGs do not (their last
+    entry, e.g. Dystric/Eutric, applies to any soil with the data). A
+    soil with no principal qualifier in such an RSG is still written
+    with its supplementary ones (“Technosol (Loamic, Humic, Irragric,
+    Mollic, Terric)”).
+- \*\*A qualifier’s own function is tried before reading its name as
+  specifier
+  - qualifier.\*\* Epic (ep) was read as Epi- + “c” and never evaluated.
+- **Epic, Endic and Dorsic** refer to “the uppermost respective
+  diagnostic horizon of the RSG” (the ferralic horizon in a Ferralsol,
+  the argic in a Luvisol, the cryic in a Cryosol) and now get the RSG
+  from the resolver. Epic passed for any profile with a horizon starting
+  above 50 cm, and Dorsic read a “ridge” microrelief field.
+- **Novic**, the one Chapter 4 qualifier without a function, is added (a
+  5-50 cm layer over a buried soil, read from the designation suffix
+  `b`). `coverage_report("wrb_qualifiers")` is 234 of 234.
+
+### The qualifiers that now reach names were checked against Chapter 5
+
+96 qualifiers of the WRB 2022 lists had never been in soilKey’s lists;
+their functions, written from the qualifier’s name in v0.9.63-64, now
+decide names. Each was compared with its Chapter 5 definition (and the
+diagnostic horizons, properties and materials it refers to): 68 were
+rewritten, 23 now return `NA` when soilKey holds no data for what the
+definition needs (and `FALSE` when the data rule it out), 5 were already
+right. A few of what they did:
+
+- Gibbsic took Al2O3 from sulfuric attack \>= 25% for gibbsite \>= 25%,
+  which many clayey Ferralsols reach; it is now `NA` without a gibbsite
+  figure.
+- Oxyaquic passed on \>= 5% redox features without a gley colour; WRB
+  2022 asks for a saturated layer and “not having gleyic properties and
+  not having stagnic properties” within 100 cm.
+- Epieutric passed on 29 of the 44 example profiles, ignoring “absent in
+  the major part between 20 and 100 cm” (Ch 2.3.1, rule 3); Mineralic on
+  42, Neocambic on 18, Tonguic on 11 (any AB or BA horizon, or an
+  irregular boundary) and Panpaic on 9 (the panpaic diagnostic read an
+  AB horizon as buried).
+- Carbonic counted any organic carbon \>= 5% (“that belongs to
+  artefacts” in WRB 2022), Fractic any shrink-swell crack (remnants of a
+  broken-up petro- horizon), Nechic any loess or dune description
+  (uncoated grains in a darker matrix at pH \< 5).
+- New in the example names: Differentic on the Acrisol, Alisol, Lixisol,
+  Luvisol and Solonetz (“an argic or natric horizon that meets
+  diagnostic criterion 2.a”; it passed on a clay ratio of 1.2-1.4
+  between any two horizons), Ferritic on the Nitisol, Hypernatric on the
+  Solonetz, Pantofluvic on the Fluvisol.
+
+Where the definition needs data soilKey cannot hold (soil-solution
+anions, gibbsite, uncoated grains, black carbon, subsurface water flow,
+…) the qualifier is never `TRUE`; each function’s comment quotes the
+definition and names what is missing.
+
+### Diagnostics and qualifiers corrected on the way
+
+- [`hydragric()`](https://hugomachadorodrigues.github.io/soilKey/reference/hydragric.md):
+  WRB 2022 Ch 3.1, criterion 1, the horizon “is overlain by an
+  anthraquic horizon”. Any Bg/Brg/Bdg horizon of 20 cm passed (the
+  example Gleysols and Stagnosol did), and Chapter 4 lists Hydragric for
+  Gleysols and Stagnosols, so they would have been named as paddy soils.
+- Toxic: “toxic concentrations of organic or inorganic substances other
+  than ions of Al, Fe, Na, Ca and Mg”. It passed on pH \<= 3.5 or EC \>=
+  16 dS/m, the acidity and salts the definition leaves out (the example
+  Solonchak passed; Chapter 4 lists Toxic for every RSG but Chernozems,
+  Kastanozems and Phaeozems). It now needs a recorded
+  `contamination_type` within 50 cm.
+- Protic: “showing no soil horizon development, with the exception of a
+  cryic horizon”. It only checked for five subsurface horizons (cambic,
+  argic, spodic, ferralic, nitic), so the example Arenosol (sideralic
+  properties) was named Protic, and the function also passed on a
+  Leptosol with an umbric horizon and the Technosol with a mollic one.
+- Endo- qualifiers built on a diagnostic (Endocalcic, Endogleyic,
+  Endostagnic): “the layer starts \>= 50 cm …; and no such layer occurs
+  \< 50 cm” (Ch 2.3.1). A horizon starting at 30 cm counted when one of
+  its layers started between 50 and 100 cm. `qual_endocalcic()` was also
+  defined twice, the copy in force taking any calcic layer between 50
+  and 200 cm; one definition remains.
+- Endoeutric used the presence-only test that the audit replaced for
+  Endodystric, Epidystric and Epieutric.
+
+### Not changed here
+
+- The diagnostics the qualifiers call were reused as they are. The audit
+  found some that deserve their own review because they also decide
+  RSGs:
+  [`nitic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitic_horizon.md)
+  accepts a horizon without the shiny ped faces WRB requires (the
+  example Plinthosol is named Nitic);
+  [`continuous_rock()`](https://hugomachadorodrigues.github.io/soilKey/reference/continuous_rock.md)
+  counts Cr (weathered rock);
+  [`technic_hard_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/technic_hard_material.md)
+  accepts any strongly cemented layer;
+  [`claric_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/claric_material.md)
+  needs the dry or the moist colour, not both;
+  [`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
+  does not check criterion 2.a.i (no lithic discontinuity).
+- The BDsolos and FEBR loaders put Fe2O3 from sulfuric attack into
+  `fe_dcb_pct` (dithionite Fe), which WRB’s Ferric and Ferritic read and
+  SiBCS’s ferrico does not.
+- Optional subqualifiers (Ch 2.3, rule 1, e.g. Hypereutric for Eutric)
+  are not used in place of the qualifier, and qualifiers that apply but
+  are not in the RSG’s list are not added as supplementary (Ch 2.2, for
+  polygenetic soils).
+
 ## soilKey 0.9.216 (2026-10-08)
 
 ### No WRB qualifier that WRB 2022 does not have
