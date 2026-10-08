@@ -102,7 +102,15 @@
   # ---- physics ----
   bulk_density_g_cm3 = "(densidade_solo_aparente|densidade_solo|densidade_aparente|^ds$|^bd$)",
   # ---- iron / aluminium oxides ----
-  fe_dcb_pct        = "(cdb_ferro|ataque_sulfurico_fe2o3|fe2o3|ferro_dcb|fe_dcb)",
+  # v0.9.221: dithionite (CDB) Fe and sulfuric-attack Fe2O3 are different
+  # determinations. "Ataque sulfurico - Fe2O3" (total Fe as oxide, g/kg; what
+  # the SiBCS ferrico / perferrico classes read) goes to fe2o3_sulfuric_pct;
+  # "CDB - Ferro (g/kg)" (free Fe, element; what WRB's Fe-dith criteria read)
+  # to fe_dcb_pct. Until v0.9.220 the sulfuric column, which comes first in the
+  # export, filled fe_dcb_pct, unconverted (43 g/kg read as 43%), and the CDB
+  # column was dropped.
+  fe_dcb_pct        = "(cdb_ferro|ferro_dcb|fe_dcb)",
+  fe2o3_sulfuric_pct = "(^ataque_sulfurico_fe2o3$)",
   fe_ox_pct         = "(oxalato_de_amonio_ferro)",
   al_ox_pct         = "(oxalato_de_amonio_aluminio)",
   si_ox_pct         = "(oxalato_de_amonio_silica)",
@@ -439,6 +447,15 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' schema. Texture (argila / silte / areia) is converted from g/kg to
 #' percent (BDsolos canonical unit).
 #'
+#' Iron (v0.9.221): \code{"CDB - Ferro (g/kg)"} (dithionite-citrate-
+#' bicarbonate, free Fe as the element) goes to \code{fe_dcb_pct}, which
+#' the WRB Fe-dith criteria read (nitic horizon, Ferric, Ferritic);
+#' \code{"Ataque sulfurico - Fe2O3"} (total Fe of the sulfuric attack, as
+#' the oxide) goes to \code{fe2o3_sulfuric_pct}, which the SiBCS
+#' ferrico / perferrico classes read; \code{"Oxalato de Amonio - Ferro"}
+#' goes to \code{fe_ox_pct}. All three are converted from g/kg to \%.
+#' Until v0.9.220 the sulfuric Fe2O3 filled \code{fe_dcb_pct}, unconverted.
+#'
 #' Profile-id columns are auto-detected: looks for any column whose
 #' normalised name matches
 #' \code{"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"};
@@ -651,6 +668,12 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       } else if (sk == "oc_pct") {
         med <- stats::median(val[is.finite(val)], na.rm = TRUE)
         if (is.finite(med) && med > 25) val <- val / 10
+      }
+      # v0.9.221: BDsolos reports the iron determinations in g/kg ("CDB -
+      # Ferro (g/kg)", "Ataque sulfurico - Fe2O3"); soilKey stores %.
+      if (sk %in% c("fe_dcb_pct", "fe_ox_pct", "fe2o3_sulfuric_pct") &&
+            grepl("(g_kg|^ataque_sulfurico|^cdb_)", raw_norm)) {
+        val <- val / 10  # g/kg -> %
       }
     } else if (type_target == "integer") {
       val <- suppressWarnings(as.integer(val))

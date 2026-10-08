@@ -46,6 +46,16 @@ strings (\code{"2,5YR 3/6"}) and converts FEBR's standard units
 to soilKey conventions.
 }
 \details{
+Iron (v0.9.221), from the FEBR dictionary codes (g/kg): dithionite Fe
+(\code{ferro_ditionito_*}, or \code{fe2o3_ditionito_*} converted to
+the element) goes to \code{fe_dcb_pct}; oxalate Fe
+(\code{ferro_oxalato_*} / \code{fe2o3_oxalato_*}) to
+\code{fe_ox_pct}; total Fe of the sulfuric attack, as the oxide
+(\code{fe2o3_sulfurico_*}, or \code{ferro_sulfurico_*} converted), to
+\code{fe2o3_sulfuric_pct}; all in \%. Until v0.9.220 the first
+\code{fe2o3_*} column of any method filled \code{fe_dcb_pct},
+unconverted.
+
 Per the May 2026 scan, ~80% of FEBR datasets have Munsell. Use
 \code{\link{febr_index_munsell}} to get the curated list of
 Munsell-bearing dataset IDs.

@@ -30,6 +30,15 @@ schema. Texture (argila / silte / areia) is converted from g/kg to
 percent (BDsolos canonical unit).
 }
 \details{
+Iron (v0.9.221): \code{"CDB - Ferro (g/kg)"} (dithionite-citrate-
+bicarbonate, free Fe as the element) goes to \code{fe_dcb_pct}, which
+the WRB Fe-dith criteria read (nitic horizon, Ferric, Ferritic);
+\code{"Ataque sulfurico - Fe2O3"} (total Fe of the sulfuric attack, as
+the oxide) goes to \code{fe2o3_sulfuric_pct}, which the SiBCS
+ferrico / perferrico classes read; \code{"Oxalato de Amonio - Ferro"}
+goes to \code{fe_ox_pct}. All three are converted from g/kg to \%.
+Until v0.9.220 the sulfuric Fe2O3 filled \code{fe_dcb_pct}, unconverted.
+
 Profile-id columns are auto-detected: looks for any column whose
 normalised name matches
 \code{"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"};
