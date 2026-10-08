@@ -171,9 +171,19 @@
   trimws(ref)
 }
 
+# Units of the per-horizon values the tests record. Without them the model
+# guessed, and wrote the CEC per kg clay as "cmolc/kg per % clay".
+.CHAT_UNITS <- c(cec_per_clay = "cmolc/kg clay", ecec_per_clay = "cmolc/kg clay",
+                 ecec_per_kg_clay = "cmolc/kg clay",
+                 ta_cmolc_per_kg_clay = "cmolc/kg clay",
+                 thickness = "cm", thickness_cm = "cm", clay_pct = "%",
+                 bs_pct = "%", al_sat_pct = "%", oc_pct = "%", caco3_pct = "%")
+
 # The per-horizon values a test computed, with the limit it applied: the value
 # named like the test (cec_per_clay, thickness), else the only one it recorded
 # (bs_pct for SiBCS eutrófico). Tests keep them in $details or $evidence$layers.
+# A test that records whether its limit is inclusive (the CEC per clay: WRB
+# "< 16", USDA "16 or less") says so, so the two read differently.
 .chat_values <- function(node, label) {
   d <- .chat_get(node, "details")
   if (!is.list(d) || !length(d)) d <- .chat_get(.chat_get(node, "evidence"), "layers")
@@ -191,9 +201,16 @@
   ok  <- !is.na(v) & !is.na(idx)
   if (!any(ok)) return(NULL)
   th  <- unique(stats::na.omit(vapply(d, one, numeric(1), k = "threshold")))
+  inc <- unique(unlist(lapply(d, function(x) {
+    y <- .chat_get(x, "inclusive"); if (is.logical(y) && length(y) == 1L) y })))
+  unit <- if (f %in% names(.CHAT_UNITS)) paste0(" ", .CHAT_UNITS[[f]]) else ""
+  lim <- if (length(th) != 1L) NULL
+         else if (identical(inc, FALSE)) paste0(" (must be below ", th, ")")
+         else if (identical(inc, TRUE)) paste0(" (must be ", th, " or less)")
+         else paste0(" (limit ", th, ")")
   paste0(if (!identical(f, label)) paste0(f, " "), "values ",
          paste(sprintf("#%d=%s", as.integer(idx[ok]), signif(v[ok], 3)), collapse = ", "),
-         if (length(th) == 1L) paste0(" (limit ", th, ")"))
+         unit, lim)
 }
 
 # A criterion as evaluated, with the criteria under it.

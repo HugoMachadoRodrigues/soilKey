@@ -111,8 +111,9 @@ The whole pipeline, in the browser, **no install required**: **[soilkeypro.com](
 </p>
 
 <p align="center">
-  <img src="man/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="100%" /><br/>
-  <sub><b>Map</b> — the SoilGrids class prior over the site.</sub>
+  <img src="man/figures/app-map.png" alt="soilKey Pro — Map tab: the live SoilGrids 2.0 WRB classes of Rio de Janeiro drawn over a satellite base map, with a legend of 19 classes" width="49%" />
+  <img src="man/figures/app-assistant.png" alt="soilKey Pro — Assistant: asked why the example profile is a Ferralsol, it cites the ferralic horizon in horizons 3 to 5, the CEC per kg clay below 16 and WRB 2022 Chapter 3.1.10" width="49%" /><br/>
+  <sub><b>Map</b> — the live SoilGrids classes around the site &nbsp;·&nbsp; <b>Assistant</b> — an online model that <i>explains</i> the result from the key's own evidence; it never classifies.</sub>
 </p>
 
 * **Pedon** — build a profile from a canonical fixture, a CSV, or from scratch, with a live horizon editor and depth-profile plot.

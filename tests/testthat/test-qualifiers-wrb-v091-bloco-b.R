@@ -21,7 +21,8 @@ test_that("v0.9.1 YAML lists the canonical Bloco B principal qualifiers", {
   expect_true("Aluandic"  %in% qrules$rsg_qualifiers$AN$principal)
   expect_true("Silandic"  %in% qrules$rsg_qualifiers$AN$principal)
   expect_true("Hydric"    %in% qrules$rsg_qualifiers$AN$principal)
-  expect_true("Melanic"   %in% qrules$rsg_qualifiers$AN$principal)
+  # v0.9.216: Melanic is a WRB 2014 qualifier, absent from WRB 2022
+  expect_false("Melanic"  %in% qrules$rsg_qualifiers$AN$principal)
   expect_true("Aceric"    %in% qrules$rsg_qualifiers$SC$principal)
   expect_true("Tidalic"   %in% qrules$rsg_qualifiers$GL$principal)
   expect_true("Albic"     %in% qrules$rsg_qualifiers$SN$principal)
@@ -83,13 +84,13 @@ test_that("GL canonical fixture resolves to a (default) Haplic Gleysol", {
   expect_match(cls$name, "Haplic Gleysol")
 })
 
-test_that("AN canonical fixture resolves to a Silandic Hydric Melanic Andosol", {
+test_that("AN canonical fixture resolves to a Silandic Hydric Andosol", {
   pr  <- make_andosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AN")
   expect_true("Vitric"   %in% res$principal)
   expect_true("Silandic" %in% res$principal)
   expect_true("Hydric"   %in% res$principal)
-  expect_true("Melanic"  %in% res$principal)
+  expect_false("Melanic" %in% res$principal)   # not in WRB 2022 (v0.9.216)
   # Aluandic and Silandic are mutually exclusive -- AN fixture is Si-rich.
   expect_false("Aluandic" %in% res$principal)
   # Eutrosilic gates on BS >= 50%; AN fixture has BS=15-18% -> no.
@@ -101,7 +102,7 @@ test_that("AN canonical fixture resolves to a Silandic Hydric Melanic Andosol", 
   expect_equal(cls$rsg_or_order, "Andosols")
   expect_match(cls$name, "Silandic")
   expect_match(cls$name, "Hydric")
-  expect_match(cls$name, "Melanic")
+  expect_false(grepl("Melanic", cls$name))
 })
 
 
