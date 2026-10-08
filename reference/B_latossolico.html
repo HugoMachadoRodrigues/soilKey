@@ -29,7 +29,7 @@ de SiO2/Al2O3 lab-data nao no schema)."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.213</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,11 +113,13 @@ de SiO2/Al2O3 lab-data nao no schema).</p>
 
 
 <dt id="arg-max-cec-per-clay">max_cec_per_clay<a class="anchor" aria-label="anchor" href="#arg-max-cec-per-clay"></a></dt>
-<dd><p>Numeric threshold or option (see Details).
+<dd><p>CEC per kg clay the horizon must stay below.
 Defaults to <code>NULL</code> (engine-aware): 17 in soilkey engine
-(the SiBCS-loose threshold, slightly more permissive than
-strict WRB ferralic 16) or 20 in aqp engine (v0.9.68 regional
-tolerance for Embrapa lab methodology offset).</p></dd>
+(SiBCS Cap 2: "menor que 17 cmolc kg-1 de argila, sem correcao
+para carbono"; slightly more permissive than WRB ferralic's &lt; 16)
+or 20 in aqp engine (v0.9.68 regional tolerance for Embrapa lab
+methodology offset). Strict since v0.9.212: a value of exactly 17
+is not latossolic, it is the B incipiente's "17 ou maior".</p></dd>
 
 
 <dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>

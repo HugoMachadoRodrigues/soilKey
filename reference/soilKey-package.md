@@ -77,4 +77,9 @@ Useful links:
 ## Author
 
 **Maintainer**: Hugo Rodrigues <rodrigues.machado.hugo@gmail.com>
-([ORCID](https://orcid.org/0000-0002-8070-8126))
+([ORCID](https://orcid.org/0000-0002-8070-8126)) \[copyright holder\]
+
+Authors:
+
+- Hugo Rodrigues <rodrigues.machado.hugo@gmail.com>
+  ([ORCID](https://orcid.org/0000-0002-8070-8126)) \[copyright holder\]

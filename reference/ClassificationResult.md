@@ -53,7 +53,9 @@ biogeographical or prior-based warnings.
 
   Character. `"A"` (measured), `"B"` (spectra-predicted), `"C"`
   (prior-inferred), `"D"` (VLM-extracted), `"E"` (user-assumed), or
-  `NA_character_`.
+  `NA_character_` when no horizon carries a soil property (only depths
+  and designations; since v0.9.213), so nothing in the class was
+  verified.
 
 - `prior_check`:
 

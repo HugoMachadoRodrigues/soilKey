@@ -46,11 +46,13 @@ B_latossolico(
 
 - max_cec_per_clay:
 
-  Numeric threshold or option (see Details). Defaults to `NULL`
-  (engine-aware): 17 in soilkey engine (the SiBCS-loose threshold,
-  slightly more permissive than strict WRB ferralic 16) or 20 in aqp
-  engine (v0.9.68 regional tolerance for Embrapa lab methodology
-  offset).
+  CEC per kg clay the horizon must stay below. Defaults to `NULL`
+  (engine-aware): 17 in soilkey engine (SiBCS Cap 2: "menor que 17 cmolc
+  kg-1 de argila, sem correcao para carbono"; slightly more permissive
+  than WRB ferralic's \< 16) or 20 in aqp engine (v0.9.68 regional
+  tolerance for Embrapa lab methodology offset). Strict since v0.9.212:
+  a value of exactly 17 is not latossolic, it is the B incipiente's "17
+  ou maior".
 
 - engine:
 

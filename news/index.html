@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.213</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,47 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.213" id="soilkey-09213-2026-10-07">soilKey 0.9.213 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09213-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="a-profile-with-no-soil-property-has-no-evidence-grade-0-9-213">A profile with no soil property has no evidence grade<a class="anchor" aria-label="anchor" href="#a-profile-with-no-soil-property-has-no-evidence-grade-0-9-213"></a></h3>
+<ul><li>Horizons with only depths and designations ran through every key and ended at its catch-all: an “A / Bt1 / Bt2” profile came out Haplic Regosol, Neossolos Regoliticos and Typic Udorthents, each with <strong>evidence grade A</strong>, because a pedon with no provenance recorded is read as measured. Nothing in those classes was verified; they were reached by elimination.</li>
+<li>
+<code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code>, <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code> and <code><a href="../reference/classify_usda.html">classify_usda()</a></code> now return <code>evidence_grade = NA</code> for such a profile and add a warning that says why. The class itself is unchanged and still returned: depths and designations are kept as they are, and refusing the profile (as 0.9.208 does for one with no horizons) would hide what little it says. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows “Evidence grade: none”.</li>
+<li>A profile counts as having properties as soon as any horizon has a value outside depth, designation and boundary: a laboratory value, a Munsell colour, structure, consistence, any field observation. One is enough for the grade to be read from provenance as before, so every profile that had a property keeps its grade.</li>
+<li>SiBCS turned a missing grade into “C” when the colour of the B horizon was unknown; a profile without properties now stays without a grade.</li>
+<li>The Pro app shows “No measured data” / “Sem dados medidos” instead of a letter, with a note in the result card; the HTML and PDF reports print “none (no soil property measured)”; the Assistant is told the same.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="also-0-9-213">Also<a class="anchor" aria-label="anchor" href="#also-0-9-213"></a></h3>
+<ul><li>
+<code>horizonte_histico()</code> took the maximum of an all-missing column on every organic profile and warned “no non-missing arguments to max”. The value only fed a comparison it could not pass either way; no result changes.</li>
+<li>README: the evidence-grade section described an A-D scale with rules the code does not follow; it now gives the A-E scale as computed, and the new NA. The Assistant screenshot is removed: it showed an answer from a model Groq has since retired that explained the Ferralsol wrongly (“Geric” as a clay content, a ferric horizon as diagnostic of Ferralsols). The logo is stored at 320 px instead of 1254 px and the remaining screenshots with a 256-colour palette, taking the tarball from 8.4 to 5.5 MB.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.212" id="soilkey-09212-2026-10-07">soilKey 0.9.212 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09212-2026-10-07"></a></h2>
+<div class="section level3">
+<h3 id="a-cec-limit-the-books-write-as-less-than-no-longer-accepts-the-limit-itself-0-9-212">A CEC limit the books write as “less than” no longer accepts the limit itself<a class="anchor" aria-label="anchor" href="#a-cec-limit-the-books-write-as-less-than-no-longer-accepts-the-limit-itself-0-9-212"></a></h3>
+<ul><li>
+<strong>WRB 2022 and SiBCS write these limits strictly; soilKey read them as “or less”.</strong> The ferralic horizon needs a CEC (1 M NH4OAc, pH 7) “&lt; 16 cmolc kg-1 clay” (WRB 2022, Ch 3.1.10, criterion 3); the cohesic horizon, sideralic properties and the argic horizon of Acrisols and Lixisols “&lt; 24”; the SiBCS B latossolico “menor que 17 cmolc kg-1 de argila” (Cap 2), whose complement, the B incipiente, is “17 … ou maior”. The shared test accepted a value equal to the limit, so a horizon at exactly 16 was ferralic, one at exactly 17 was latossolic, and an argic horizon at exactly 24 was low-activity (Acrisol, Lixisol) and high-activity (Alisol, Luvisol, “&gt;= 24”) at once, the key order deciding which. The test is now strict.</li>
+<li>
+<strong>USDA keeps “or less”.</strong> The oxic horizon asks for “16 cmol(+) or less per kg clay” (KST 13, Ch 3, criterion 6), and <code><a href="../reference/oxic_usda.html">oxic_usda()</a></code> delegates to <code><a href="../reference/ferralic.html">ferralic()</a></code>. <code><a href="../reference/ferralic.html">ferralic()</a></code> gains <code>cec_inclusive = FALSE</code>; <code><a href="../reference/oxic_usda.html">oxic_usda()</a></code> passes <code>TRUE</code>, so a horizon at exactly 16 is now oxic (USDA) but not ferralic (WRB), as the two texts say.</li>
+<li>Values are compared after rounding to 9 decimals: <code>cec * 100 / clay</code> is 15.999999999999998 for 2.32 cmolc and 14.5% clay, which would otherwise pass a strict 16, and 16.000000000000004 for 1.12 and 7%, which would fail an inclusive one.</li>
+<li>Only values exactly at a limit change. The example Ferralsol’s A horizon is one (8.0 cmolc, 50% clay: 16.0); it no longer counts as ferralic, which changes no class because the B horizons below it qualify.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="pro-app-0-9-212">Pro app<a class="anchor" aria-label="anchor" href="#pro-app-0-9-212"></a></h3>
+<ul><li>
+<strong>Map classes each have their own colour.</strong> leaflet’s “Set3” palette has 12 colours; with more classes (the SoilGrids overlay of Rio de Janeiro shows 19) leaflet interpolated between them, so neighbouring classes got near-identical shades and the server log carried RColorBrewer’s “n too large” warning. Up to 12 classes keep Set3’s colours; beyond that each class gets a distinct colour from Polychrome 36.</li>
+<li>The Settings module’s header comment still said the engine and strict mode were written to <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>; it now describes the per-session storage of 0.9.211.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="hosting-0-9-212">Hosting<a class="anchor" aria-label="anchor" href="#hosting-0-9-212"></a></h3>
+<ul><li>
+<strong>soilkeypro.com is checked every hour.</strong> A scheduled GitHub Actions workflow (<code>.github/workflows/uptime.yaml</code>) asks for the home page, allows for a cold start, and fails if the app does not answer; GitHub e-mails the failure. Free on a public repository. The September outage (billing closed) went unnoticed for 12 days.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.211" id="soilkey-09211-2026-10-07">soilKey 0.9.211 (2026-10-07)<a class="anchor" aria-label="anchor" href="#soilkey-09211-2026-10-07"></a></h2>
 <div class="section level3">
@@ -6253,7 +6294,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <li>Regosols: 3/9 (33.3 %)</li>
 <li>Fluvisols: 2/7 (28.6 %)</li>
 <li>All other RSGs: 0% (most fall through to Regosol or Arenosol).</li>
-</ul><p>This is the honest empirical baseline. The mismatch is dominated by attribute coverage: WoSIS provides texture + OC + CEC + pH + caco3 per layer but no Munsell colours, no slickensides, no clay films, no fe_dcb_pct, no BS — and many soilKey diagnostics depend on those. The next iteration will (a) widen the GraphQL query to include Munsell + base saturation + dominant chemistry; (b) derive BS from sum-of-bases / CEC; (c) provide a “WoSIS-curated” attribute shim that maps available WoSIS variables into soilKey’s expected schema. Tracked in <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/inst/benchmarks/reports/wosis_graphql_2026-04-30.md" class="external-link"><code>inst/benchmarks/reports/wosis_graphql_2026-04-30.md</code></a>.</p>
+</ul><p>This is the honest empirical baseline. The mismatch is dominated by attribute coverage: WoSIS provides texture + OC + CEC + pH + caco3 per layer but no Munsell colours, no slickensides, no clay films, no fe_dcb_pct, no BS — and many soilKey diagnostics depend on those. The next iteration will (a) widen the GraphQL query to include Munsell + base saturation + dominant chemistry; (b) derive BS from sum-of-bases / CEC; (c) provide a “WoSIS-curated” attribute shim that maps available WoSIS variables into soilKey’s expected schema. Tracked in <code>inst/benchmarks/reports/wosis_graphql_2026-04-30.md</code> (removed in 0.9.204 with the other benchmark reports).</p>
 </div>
 <div class="section level3">
 <h3 id="documentation-0-9-11">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-9-11"></a></h3>

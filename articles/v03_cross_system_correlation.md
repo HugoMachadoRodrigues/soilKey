@@ -74,10 +74,6 @@ tab <- do.call(rbind, lapply(names(fxs), function(nm) {
     USDA    = classify_usda  (pr, on_missing = "silent")$rsg_or_order
   )
 }))
-#> Warning in max(h$worm_holes_pct[contiguous] %||% 0, na.rm = TRUE): no
-#> non-missing arguments to max; returning -Inf
-#> Warning in max(h$worm_holes_pct[contiguous] %||% 0, na.rm = TRUE): no
-#> non-missing arguments to max; returning -Inf
 knitr::kable(tab)
 ```
 
@@ -184,10 +180,6 @@ actual <- vapply(names(sibcs_expectations), function(nm) {
   fx <- get(paste0("make_", tolower(nm), "_canonical"))()
   classify_sibcs(fx, on_missing = "silent")$rsg_or_order
 }, character(1))
-#> Warning in max(h$worm_holes_pct[contiguous] %||% 0, na.rm = TRUE): no
-#> non-missing arguments to max; returning -Inf
-#> Warning in max(h$worm_holes_pct[contiguous] %||% 0, na.rm = TRUE): no
-#> non-missing arguments to max; returning -Inf
 
 data.frame(
   fixture       = names(sibcs_expectations),

@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.213</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -343,7 +343,7 @@
 <p align="center">
 <img src="reference/figures/app-classify.png" alt="soilKey Pro — Classify tab: WRB 2022, SiBCS 5 and USDA Soil Taxonomy side by side, each with an evidence grade and the full key trace" width="100%"><br><sub><b>Classify</b> — the three systems at once, each with its evidence grade and the full decision trace.</sub></p>
 <p align="center">
-<img src="reference/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="49%"><img src="reference/figures/app-assistant.png" alt="soilKey Pro — Assistant: an online AI that explains the deterministic classification, grounded in the key" width="49%"><br><sub><b>Map</b> — the SoilGrids class prior over the site  ·  <b>Assistant</b> — an online AI that <i>explains</i> the result, grounded in the key.</sub></p>
+<img src="reference/figures/app-map.png" alt="soilKey Pro — Map tab: the SoilGrids WRB class prior drawn over a satellite base map, with a legend" width="100%"><br><sub><b>Map</b> — the SoilGrids class prior over the site.</sub></p>
 <ul>
 <li>
 <strong>Pedon</strong> — build a profile from a canonical fixture, a CSV, or from scratch, with a live horizon editor and depth-profile plot.</li>
@@ -525,7 +525,7 @@
 <li>
 <strong>The taxonomic key is never delegated to a language model.</strong> LLMs are restricted to schema-validated extraction. Every classification is a deterministic walk through versioned YAML rules with a full decision trace.</li>
 <li>
-<strong>Every value carries a provenance tag.</strong> <code>measured</code> · <code>predicted_spectra</code> · <code>extracted_vlm</code> · <code>inferred_prior</code> · <code>user_assumed</code>. The result’s <em>evidence grade</em> (A–D) summarises that log so callers always know how robust the classification is.</li>
+<strong>Every value carries a provenance tag.</strong> <code>measured</code> · <code>predicted_spectra</code> · <code>extracted_vlm</code> · <code>inferred_prior</code> · <code>user_assumed</code>. The result’s <em>evidence grade</em> (A–E) summarises that log so callers always know how robust the classification is.</li>
 <li>
 <strong>Side modules never overrule the key.</strong> Spatial priors flag inconsistencies but cannot silently change the assigned RSG; spectral predictions fill missing attributes with explicit confidence; multimodal extraction pulls structured data without writing class names.</li>
 </ol>
@@ -953,17 +953,22 @@
 </tr>
 </tbody>
 </table>
-<p>The <code>ClassificationResult$evidence_grade</code> (A–D) summarises the trace:</p>
+<p>The <code>ClassificationResult$evidence_grade</code> is the weakest provenance in the profile:</p>
 <ul>
 <li>
-<strong>A</strong> — every attribute the key consulted was <code>measured</code>.</li>
+<strong>A</strong> — every value is <code>measured</code> (or no provenance was recorded).</li>
 <li>
-<strong>B</strong> — every attribute was <code>measured</code> or <code>predicted_spectra</code> with PI95 ≤ threshold.</li>
+<strong>B</strong> — at least one value is <code>predicted_spectra</code>.</li>
 <li>
-<strong>C</strong> — at least one attribute was <code>extracted_vlm</code> with VLM-confidence ≤ 0.85.</li>
+<strong>C</strong> — at least one value is <code>inferred_prior</code>.</li>
 <li>
-<strong>D</strong> — at least one attribute was <code>inferred_prior</code> or <code>user_assumed</code>.</li>
+<strong>D</strong> — at least one value is <code>extracted_vlm</code>.</li>
+<li>
+<strong>E</strong> — at least one value is <code>user_assumed</code>.</li>
+<li>
+<strong>NA</strong> — no horizon carries a soil property, only depths and designations, so the class was reached by elimination (since v0.9.213; the result’s <code>$warnings</code> says so).</li>
 </ul>
+<p><code><a href="reference/compute_per_attribute_evidence_grade.html">compute_per_attribute_evidence_grade()</a></code> gives the same grades cell by cell.</p>
 <hr>
 </div>
 <div class="section level2">

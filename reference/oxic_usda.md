@@ -32,6 +32,15 @@ A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
 (with `name = "oxic_usda"`).
 
+## Details
+
+The CEC limit is inclusive here: KST 13 (Ch. 3, oxic horizon, criterion
+6) asks for "an apparent CEC of 16 cmol(+) or less per kg clay", where
+WRB 2022's ferralic horizon asks for "\< 16". Since v0.9.212
+[`ferralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md)
+follows WRB and this function passes `cec_inclusive = TRUE`, so a
+horizon at exactly 16 is oxic but not ferralic.
+
 ## References
 
 Soil Survey Staff (2014). *Keys to Soil Taxonomy*, 12th edition.

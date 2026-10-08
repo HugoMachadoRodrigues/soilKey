@@ -15,7 +15,7 @@ the Ferralsol RSG.'><meta property="og:image" content="https://hugomachadorodrig
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.213</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,13 @@ the Ferralsol RSG.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferralic</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">30</span>, max_cec <span class="op">=</span> <span class="cn">NULL</span>, engine <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferralic</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  min_thickness <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  max_cec <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  engine <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cec_inclusive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,9 +93,9 @@ the Ferralsol RSG.</p>
 
 
 <dt id="arg-max-cec">max_cec<a class="anchor" aria-label="anchor" href="#arg-max-cec"></a></dt>
-<dd><p>Maximum CEC (1M NH4OAc, pH 7) per kg clay
-(default <code>NULL</code> = 16 in soilkey engine, 20 in aqp
-engine; see <code>engine</code>).</p></dd>
+<dd><p>CEC (1M NH4OAc, pH 7) per kg clay that a ferralic
+horizon must stay below (default <code>NULL</code> = 16 in soilkey
+engine, 20 in aqp engine; see <code>engine</code>).</p></dd>
 
 
 <dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
@@ -104,6 +110,14 @@ accept as ferralic). <code>NULL</code> reads
 threshold can also be overridden directly via
 <code>options(soilKey.ferralic_max_cec = ...)</code>.</p></dd>
 
+
+<dt id="arg-cec-inclusive">cec_inclusive<a class="anchor" aria-label="anchor" href="#arg-cec-inclusive"></a></dt>
+<dd><p><code>FALSE</code> (default): the CEC must be below
+<code>max_cec</code>, as WRB 2022 writes it ("&lt; 16 cmolc kg-1 clay").
+<code>TRUE</code> accepts a value equal to the limit, as USDA's oxic
+horizon does ("16 cmol(+) or less"); <code><a href="oxic_usda.html">oxic_usda</a></code> uses
+it.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -113,12 +127,14 @@ threshold can also be overridden directly via
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sub-tests called:</p><ul><li><p><code>test_ferralic_texture</code> – texture sandy loam or
         finer.</p></li>
-<li><p><code>test_cec_per_clay</code> – CEC / clay &lt;= 16 (or 20
-        under <code>engine = "aqp"</code>) cmol_c/kg clay.</p></li>
+<li><p><code>test_cec_per_clay</code> – CEC / clay &lt; 16 (or &lt; 20
+        under <code>engine = "aqp"</code>) cmol_c/kg clay. Until v0.9.212 a
+        value equal to the limit passed; WRB 2022 Ch 3.1.10 criterion 3
+        is "&lt; 16 cmolc kg-1 clay".</p></li>
 <li><p><code>test_ferralic_thickness</code> – thickness &gt;= 30 cm.</p></li>
 </ul><p>v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older
 "ECEC &lt;= 12 cmol_c/kg clay" gate was removed because it is not in the
-canonical text – only CEC (1M NH4OAc, pH 7) &lt;= 16 is required.</p>
+canonical text – only CEC (1M NH4OAc, pH 7) &lt; 16 is required.</p>
 <p>v0.9.67 regional tolerance: BDsolos RJ benchmark (n=722 perfis)
 showed 88/115 Latossolos failing the strict 16-cmol gate because
 Embrapa lab methodology often reads CEC at 17-20 on profiles that

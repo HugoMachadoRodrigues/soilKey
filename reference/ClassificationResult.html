@@ -9,7 +9,7 @@ ClassificationResult: structured outcome of running a key"><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.211</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.213</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,7 +113,10 @@ would refine or resolve the result.</p></dd>
 <dd><p>Character. <code>"A"</code> (measured), <code>"B"</code>
 (spectra-predicted), <code>"C"</code> (prior-inferred),
 <code>"D"</code> (VLM-extracted), <code>"E"</code>
-(user-assumed), or <code>NA_character_</code>.</p></dd>
+(user-assumed), or <code>NA_character_</code> when no
+horizon carries a soil property (only depths and
+designations; since v0.9.213), so nothing in the
+class was verified.</p></dd>
 
 
 <dt><code>prior_check</code></dt>

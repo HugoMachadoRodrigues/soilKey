@@ -9,7 +9,13 @@ Ferralsol RSG.
 ## Usage
 
 ``` r
-ferralic(pedon, min_thickness = 30, max_cec = NULL, engine = NULL)
+ferralic(
+  pedon,
+  min_thickness = 30,
+  max_cec = NULL,
+  engine = NULL,
+  cec_inclusive = FALSE
+)
 ```
 
 ## Arguments
@@ -25,8 +31,9 @@ ferralic(pedon, min_thickness = 30, max_cec = NULL, engine = NULL)
 
 - max_cec:
 
-  Maximum CEC (1M NH4OAc, pH 7) per kg clay (default `NULL` = 16 in
-  soilkey engine, 20 in aqp engine; see `engine`).
+  CEC (1M NH4OAc, pH 7) per kg clay that a ferralic horizon must stay
+  below (default `NULL` = 16 in soilkey engine, 20 in aqp engine; see
+  `engine`).
 
 - engine:
 
@@ -39,6 +46,14 @@ ferralic(pedon, min_thickness = 30, max_cec = NULL, engine = NULL)
   threshold can also be overridden directly via
   `options(soilKey.ferralic_max_cec = ...)`.
 
+- cec_inclusive:
+
+  `FALSE` (default): the CEC must be below `max_cec`, as WRB 2022 writes
+  it ("\< 16 cmolc kg-1 clay"). `TRUE` accepts a value equal to the
+  limit, as USDA's oxic horizon does ("16 cmol(+) or less");
+  [`oxic_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_usda.md)
+  uses it.
+
 ## Value
 
 A
@@ -50,14 +65,16 @@ Sub-tests called:
 
 - `test_ferralic_texture` – texture sandy loam or finer.
 
-- `test_cec_per_clay` – CEC / clay \<= 16 (or 20 under `engine = "aqp"`)
-  cmol_c/kg clay.
+- `test_cec_per_clay` – CEC / clay \< 16 (or \< 20 under
+  `engine = "aqp"`) cmol_c/kg clay. Until v0.9.212 a value equal to the
+  limit passed; WRB 2022 Ch 3.1.10 criterion 3 is "\< 16 cmolc kg-1
+  clay".
 
 - `test_ferralic_thickness` – thickness \>= 30 cm.
 
 v0.3.1 alignment with WRB 2022 Ch 3.1.10 (p. 44): the older "ECEC \<= 12
 cmol_c/kg clay" gate was removed because it is not in the canonical text
-– only CEC (1M NH4OAc, pH 7) \<= 16 is required.
+– only CEC (1M NH4OAc, pH 7) \< 16 is required.
 
 v0.9.67 regional tolerance: BDsolos RJ benchmark (n=722 perfis) showed
 88/115 Latossolos failing the strict 16-cmol gate because Embrapa lab
