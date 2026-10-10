@@ -1,7 +1,7 @@
 # Load the bundled AfSP stratified sample (v0.9.77)
 
-Returns a 130-profile snapshot from AfSP v1.2 stratified by WRB RSG (5
-profiles per RSG x 26 RSGs), pre-built so users can run the African WRB
+Returns a 120-profile snapshot from AfSP v1.2 stratified by WRB RSG (5
+profiles per RSG x 24 RSGs), pre-built so users can run the African WRB
 benchmark offline without the 35 MB ZIP download.
 
 ## Usage
@@ -12,7 +12,11 @@ load_afsp_sample()
 
 ## Value
 
-A list with `pedons`, `pulled_on`, `source`, `filter`.
+A list with `pedons` (the
+[`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
+objects), `pulled_on`, `source`, `filter`.
+[`benchmark_afsp`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.md)
+takes this list as it is, or its `$pedons`.
 
 ## Details
 

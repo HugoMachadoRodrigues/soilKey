@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.222</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.223</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,19 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.223" id="soilkey-09223-2026-10-10">soilKey 0.9.223 (2026-10-10)<a class="anchor" aria-label="anchor" href="#soilkey-09223-2026-10-10"></a></h2>
+<div class="section level3">
+<h3 id="the-afsp-row-of-the-benchmark-suite-0-9-223">The AfSP row of the benchmark suite<a class="anchor" aria-label="anchor" href="#the-afsp-row-of-the-benchmark-suite-0-9-223"></a></h3>
+<p><code><a href="../reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> has a row for the AfSP sample (WRB, Africa), and it was never there. <code><a href="../reference/load_afsp_sample.html">load_afsp_sample()</a></code> returns a list that holds the 120 profiles in <code>$pedons</code>, beside the date, source and filter of the snapshot. The suite cut that whole list to <code>max_n</code> and handed it to <code><a href="../reference/benchmark_afsp.html">benchmark_afsp()</a></code>, which stopped with “$ operator is invalid for atomic vectors”. The suite dropped the error and went on without the row, and without a word (seen in 0.9.187 and 0.9.222).</p>
+<ul><li>
+<code><a href="../reference/benchmark_afsp.html">benchmark_afsp()</a></code> takes the list <code><a href="../reference/load_afsp_sample.html">load_afsp_sample()</a></code> returns, or its <code>$pedons</code>. Anything that is not a list of <code>PedonRecord</code> objects is refused with a message that says so.</li>
+<li>The suite scores the sample’s profiles and applies <code>max_n</code> to them. With the sample cached, the summary has the row: n = 120, RSG agreement 25.0% [17.5, 32.5], kappa 0.218 in the strict mode.</li>
+<li>A sample that is present but cannot be scored is reported (“AfSP sample present but could not be scored: …”). An absent sample is skipped as before, with a note when <code>verbose = TRUE</code>.</li>
+<li>The help of <code><a href="../reference/load_afsp_sample.html">load_afsp_sample()</a></code> said 130 profiles over 26 RSGs. The sample has 120 over 24.</li>
+</ul><p>It went unseen because the AfSP tests only run with the sample in <code>inst/extdata</code>, and the suite test asked for “only the canonical row”, which the missing row satisfied. That test now accepts the AfSP row, and the new tests use a three-profile stand-in for the sample.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.222" id="soilkey-09222-2026-10-10">soilKey 0.9.222 (2026-10-10)<a class="anchor" aria-label="anchor" href="#soilkey-09222-2026-10-10"></a></h2>
 <div class="section level3">

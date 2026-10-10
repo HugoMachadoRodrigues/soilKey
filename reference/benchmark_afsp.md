@@ -12,12 +12,15 @@ benchmark_afsp(pedons, verbose = TRUE)
 
 - pedons:
 
-  List of
+  A list of
   [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
-  from
+  objects, as
   [`load_afsp_pedons`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
-  or
-  [`load_afsp_sample`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md).
+  returns, or the list that
+  [`load_afsp_sample`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md)
+  returns (the profiles are then taken from its `$pedons`; until
+  v0.9.222 that list stopped with "\$ operator is invalid for atomic
+  vectors").
 
 - verbose:
 
