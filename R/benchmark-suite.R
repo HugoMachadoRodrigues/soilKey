@@ -187,12 +187,28 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
              if (n_tot > 0L) n_ok / n_tot else NA_real_, confusion = NULL)
 }
 
-# AfSP offline sample, classified under WRB.
+# AfSP offline sample, classified under WRB. `load_afsp_sample()` returns a
+# list that holds the profiles in `$pedons`. Until v0.9.222 that whole list was
+# cut to `max_n` and handed to `benchmark_afsp()`, which stopped on it; the
+# error was dropped and the suite had no AfSP row, without a word.
 .suite_run_afsp <- function(max_n, verbose) {
-  peds <- tryCatch(load_afsp_sample(), error = function(e) NULL)
-  if (is.null(peds) || !length(peds)) return(NULL)
-  if (!is.null(max_n)) peds <- peds[seq_len(min(max_n, length(peds)))]
-  res <- tryCatch(benchmark_afsp(peds, verbose = FALSE), error = function(e) NULL)
+  smp <- tryCatch(load_afsp_sample(), error = function(e) NULL)
+  if (is.null(smp) || !length(smp)) {
+    if (isTRUE(verbose))
+      cli::cli_alert_info(
+        "Skipping AfSP (sample not available: see ?download_extdata_cache)")
+    return(NULL)
+  }
+  # the sample is there: a failure to score it is a fault, not an absence
+  res <- tryCatch({
+    peds <- .afsp_as_pedons(smp)
+    if (!is.null(max_n)) peds <- peds[seq_len(min(max_n, length(peds)))]
+    benchmark_afsp(peds, verbose = FALSE)
+  }, error = function(e) {
+    cli::cli_alert_warning(
+      "AfSP sample present but could not be scored: {conditionMessage(e)}")
+    NULL
+  })
   if (is.null(res)) return(NULL)
   # AfSP carries its own confusion matrix -> gets the full metric set, making it
   # a second independent OFFLINE WRB benchmark (Africa, RSG level) alongside FEBR.

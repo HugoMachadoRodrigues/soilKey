@@ -30,8 +30,11 @@ test_that("auto-detection skips absent datasets without error", {
                 lucas_csv = empty, esdb_root = empty, redape = empty)
   res <- expect_no_error(suppressWarnings(
     run_all_benchmarks(datasets = "auto", paths = paths, verbose = FALSE)))
-  # only the canonical row survives (external datasets skipped, no error)
-  expect_true(all(res$summary$dataset == "canonical"))
+  # the external datasets are skipped, no error: the canonical row survives,
+  # with the AfSP row where its release sample is cached (v0.9.223; until
+  # then that row was always missing, see test-v09223-afsp-suite-row.R)
+  expect_true("canonical" %in% res$summary$dataset)
+  expect_true(all(res$summary$dataset %in% c("canonical", "afsp_sample")))
 })
 
 
