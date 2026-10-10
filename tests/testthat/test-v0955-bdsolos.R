@@ -402,13 +402,10 @@ test_that("load_bdsolos_csv does not include NA-id rows in any pedon (regression
 })
 
 
-# ---- v0.9.59 read.csv2 fallback ----------------------------------------
+# ---- v0.9.59 read.csv2 reader ------------------------------------------
 
-test_that("load_bdsolos_csv falls back to read.csv2 when fread errors out", {
+test_that("load_bdsolos_csv reads a file with a preamble and unquoted fields", {
   skip_on_cran()
-  # Simulate a fread-malformed file: a row contains a literal embedded
-  # newline / unbalanced quote that trips data.table::fread but is OK
-  # for utils::read.csv2.
   tf <- tempfile(fileext = ".csv")
   hdr <- paste(c("Codigo PA", "Simbolo Horizonte",
                    "Profundidade Superior", "Profundidade Inferior",
@@ -419,34 +416,15 @@ test_that("load_bdsolos_csv falls back to read.csv2 when fread errors out", {
   )
   writeLines(c("preamble", "", hdr, rows), tf)
   on.exit(unlink(tf), add = TRUE)
-  # Direct path: fread should succeed on this benign fixture.
   pedons <- load_bdsolos_csv(tf, verbose = FALSE)
   expect_length(pedons, 1L)
   expect_equal(pedons[[1L]]$site$id, "100")
   expect_equal(nrow(pedons[[1L]]$horizons), 2L)
 })
 
-
-test_that("load_bdsolos_csv source carries the read.csv2 fallback", {
-  skip_on_cran()
-  # Regression sentinel for the v0.9.59 fix that destrava DF/MT/PA/PB/
-  # PE/RN/SP. Without this fallback, ~18% of BDsolos UF exports fail
-  # to load (~1,646 perfis lost).
-  candidates <- c(
-    file.path("R", "bdsolos.R"),
-    file.path("..", "..", "R", "bdsolos.R"),
-    file.path("..", "..", "..", "R", "bdsolos.R")
-  )
-  src <- NULL
-  for (p in candidates) if (file.exists(p)) { src <- readLines(p, warn = FALSE); break }
-  if (is.null(src)) {
-    fn <- get("load_bdsolos_csv", envir = asNamespace("soilKey"))
-    src <- deparse(fn, width.cutoff = 500L)
-  }
-  txt <- paste(src, collapse = "\n")
-  expect_match(txt, "read\\.csv2", perl = TRUE)
-  expect_match(txt, "(?s)tryCatch.*fread.*error.*read\\.csv2", perl = TRUE)
-})
+# The v0.9.59 sentinel here asked for a fread() call with a read.csv2()
+# fallback. Since v0.9.222 read.csv2() reads every file: see
+# test-v09222-bdsolos-reader.R.
 
 
 # ---- Live network test (opt-in) ---------------------------------------
