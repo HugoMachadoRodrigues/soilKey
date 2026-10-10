@@ -1,3 +1,31 @@
+# soilKey 0.9.223 (2026-10-10)
+
+## The AfSP row of the benchmark suite
+
+`run_all_benchmarks()` has a row for the AfSP sample (WRB, Africa), and it was
+never there. `load_afsp_sample()` returns a list that holds the 120 profiles in
+`$pedons`, beside the date, source and filter of the snapshot. The suite cut
+that whole list to `max_n` and handed it to `benchmark_afsp()`, which stopped
+with "$ operator is invalid for atomic vectors". The suite dropped the error
+and went on without the row, and without a word (seen in 0.9.187 and 0.9.222).
+
+* `benchmark_afsp()` takes the list `load_afsp_sample()` returns, or its
+  `$pedons`. Anything that is not a list of `PedonRecord` objects is refused
+  with a message that says so.
+* The suite scores the sample's profiles and applies `max_n` to them. With the
+  sample cached, the summary has the row: n = 120, RSG agreement 25.0%
+  [17.5, 32.5], kappa 0.218 in the strict mode.
+* A sample that is present but cannot be scored is reported ("AfSP sample
+  present but could not be scored: ..."). An absent sample is skipped as
+  before, with a note when `verbose = TRUE`.
+* The help of `load_afsp_sample()` said 130 profiles over 26 RSGs. The sample
+  has 120 over 24.
+
+It went unseen because the AfSP tests only run with the sample in
+`inst/extdata`, and the suite test asked for "only the canonical row", which
+the missing row satisfied. That test now accepts the AfSP row, and the new
+tests use a three-profile stand-in for the sample.
+
 # soilKey 0.9.222 (2026-10-10)
 
 ## BDsolos: every export read by one reader; loading several files no longer hangs

@@ -7,8 +7,11 @@
 benchmark_afsp(pedons, verbose = TRUE)
 }
 \arguments{
-\item{pedons}{List of \code{\link{PedonRecord}} from
-\code{\link{load_afsp_pedons}} or \code{\link{load_afsp_sample}}.}
+\item{pedons}{A list of \code{\link{PedonRecord}} objects, as
+\code{\link{load_afsp_pedons}} returns, or the list that
+\code{\link{load_afsp_sample}} returns (the profiles are then
+taken from its \code{$pedons}; until v0.9.222 that list stopped
+with "$ operator is invalid for atomic vectors").}
 
 \item{verbose}{Print progress.}
 }

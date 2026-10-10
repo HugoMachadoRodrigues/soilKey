@@ -7,12 +7,14 @@
 load_afsp_sample()
 }
 \value{
-A list with \code{pedons}, \code{pulled_on}, \code{source},
-  \code{filter}.
+A list with \code{pedons} (the \code{\link{PedonRecord}}
+  objects), \code{pulled_on}, \code{source}, \code{filter}.
+  \code{\link{benchmark_afsp}} takes this list as it is, or its
+  \code{$pedons}.
 }
 \description{
-Returns a 130-profile snapshot from AfSP v1.2 stratified by WRB
-RSG (5 profiles per RSG x 26 RSGs), pre-built so users can run
+Returns a 120-profile snapshot from AfSP v1.2 stratified by WRB
+RSG (5 profiles per RSG x 24 RSGs), pre-built so users can run
 the African WRB benchmark offline without the 35 MB ZIP download.
 }
 \details{

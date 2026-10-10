@@ -247,18 +247,40 @@ load_afsp_pedons <- function(afsp_dir,
 }
 
 
+#' The profiles of an AfSP object
+#'
+#' \code{\link{load_afsp_sample}} returns a list that holds the profiles in
+#' \code{$pedons}, beside the date, source and filter of the snapshot;
+#' \code{\link{load_afsp_pedons}} returns the profiles themselves. This takes
+#' either and returns the list of \code{\link{PedonRecord}} objects, or stops
+#' when it is something else.
+#' @noRd
+.afsp_as_pedons <- function(x) {
+  if (is.list(x) && !is.null(x[["pedons"]])) x <- x[["pedons"]]
+  if (!is.list(x) ||
+        !all(vapply(x, inherits, logical(1L), what = "PedonRecord"))) {
+    stop("benchmark_afsp(): `pedons` must be a list of PedonRecord objects ",
+         "(load_afsp_pedons()) or the list load_afsp_sample() returns.",
+         call. = FALSE)
+  }
+  x
+}
+
+
 #' Load the bundled AfSP stratified sample (v0.9.77)
 #'
-#' Returns a 130-profile snapshot from AfSP v1.2 stratified by WRB
-#' RSG (5 profiles per RSG x 26 RSGs), pre-built so users can run
+#' Returns a 120-profile snapshot from AfSP v1.2 stratified by WRB
+#' RSG (5 profiles per RSG x 24 RSGs), pre-built so users can run
 #' the African WRB benchmark offline without the 35 MB ZIP download.
 #'
 #' This is the African analogue of
 #' \code{\link{load_wosis_stratified_sample}} (global WoSIS) and
 #' \code{\link{load_kssl_nasis_sample}} (US KSSL+NASIS).
 #'
-#' @return A list with \code{pedons}, \code{pulled_on}, \code{source},
-#'   \code{filter}.
+#' @return A list with \code{pedons} (the \code{\link{PedonRecord}}
+#'   objects), \code{pulled_on}, \code{source}, \code{filter}.
+#'   \code{\link{benchmark_afsp}} takes this list as it is, or its
+#'   \code{$pedons}.
 #'
 #' @section Reference:
 #' Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
@@ -278,14 +300,18 @@ load_afsp_sample <- function() {
 
 #' Benchmark soilKey WRB predictions against AfSP ground truth
 #'
-#' @param pedons List of \code{\link{PedonRecord}} from
-#'        \code{\link{load_afsp_pedons}} or \code{\link{load_afsp_sample}}.
+#' @param pedons A list of \code{\link{PedonRecord}} objects, as
+#'        \code{\link{load_afsp_pedons}} returns, or the list that
+#'        \code{\link{load_afsp_sample}} returns (the profiles are then
+#'        taken from its \code{$pedons}; until v0.9.222 that list stopped
+#'        with "$ operator is invalid for atomic vectors").
 #' @param verbose Print progress.
 #'
 #' @return List with \code{accuracy}, \code{n_compared}, \code{confusion},
 #'   \code{per_class_recall}.
 #' @export
 benchmark_afsp <- function(pedons, verbose = TRUE) {
+  pedons <- .afsp_as_pedons(pedons)
   if (length(pedons) == 0L) stop("Empty pedon list.")
   if (isTRUE(verbose))
     cat(sprintf("[afsp] benchmarking %d pedons\n", length(pedons)))
