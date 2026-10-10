@@ -456,6 +456,16 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' goes to \code{fe_ox_pct}. All three are converted from g/kg to \%.
 #' Until v0.9.220 the sulfuric Fe2O3 filled \code{fe_dcb_pct}, unconverted.
 #'
+#' Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
+#' export quotes every field, and its free-text fields hold line breaks and,
+#' in some states, quotation marks of their own; \code{read.csv2} returns
+#' the export's records for all 27 state files. \code{data.table::fread},
+#' used until v0.9.221, split such records at the line breaks (in BA, GO, PI
+#' and RS, where the lines of text became profiles of their own) or stopped
+#' with an error that left the next \code{fread()} of the R session waiting
+#' forever (after DF, MT, PA, PB or SP). An empty text field is \code{NA} in
+#' every file; a quotation mark inside a text field is dropped.
+#'
 #' Profile-id columns are auto-detected: looks for any column whose
 #' normalised name matches
 #' \code{"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"};
@@ -482,41 +492,7 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     sep <- .bdsolos_detect_sep(path, header_line = hdr_line)
   }
   skip <- max(0L, hdr_line - 1L)
-  # data.table::fread is fast but strict; ~25% of real BDsolos UF
-  # exports (DF, MT, PA, PB, PE, RN, SP in the May 2026 audit)
-  # contain malformed UTF-8 sequences that trip fread with
-  # "attempt to set index N/N in SET_STRING_ELT". Fall back to
-  # base R utils::read.csv2 (much slower, much more lenient) when
-  # fread errors out.
-  d <- tryCatch(
-    suppressWarnings(suppressMessages(
-      data.table::fread(path, sep = sep, encoding = "UTF-8",
-                          skip = skip, header = TRUE,
-                          fill = TRUE, blank.lines.skip = TRUE)
-    )),
-    error = function(e) NULL
-  )
-  if (is.null(d) || nrow(d) == 0L) {
-    if (isTRUE(verbose)) {
-      cli::cli_alert_info(
-        "fread failed on this file; falling back to utils::read.csv2 (slower).")
-    }
-    d <- tryCatch(
-      data.table::as.data.table(
-        utils::read.csv2(path, skip = skip, header = TRUE,
-                          fileEncoding = "UTF-8",
-                          stringsAsFactors = FALSE,
-                          sep = sep,
-                          na.strings = c("", "NA", "n.d.", "ND"))
-      ),
-      error = function(e) {
-        stop(sprintf(
-          "load_bdsolos_csv(): both fread and read.csv2 failed on '%s': %s",
-          path, conditionMessage(e)
-        ))
-      }
-    )
-  }
+  d <- .bdsolos_read_table(path, sep = sep, skip = skip)
   if (is.null(d) || nrow(d) == 0L) {
     stop("load_bdsolos_csv(): CSV is empty.")
   }
@@ -627,6 +603,42 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     ))
   }
   out
+}
+
+
+#' Read the table of a BDsolos CSV export
+#'
+#' Base R's reader, for every file. The export quotes every field, and its
+#' free-text fields hold line breaks and, in some states, quotation marks of
+#' their own. \code{utils::read.csv2} returns the export's records for all 27
+#' state files of the national export (checked against its record terminator,
+#' \code{";} at the end of a line).
+#'
+#' \code{data.table::fread} does not, so it is not used here (v0.9.222):
+#' \itemize{
+#'   \item with quotation marks inside a field it gives up on quoted line
+#'         breaks and returns one row per line of text (RS: 3,853 rows for
+#'         897 records), without an error;
+#'   \item on other such files it stops with "attempt to set index N/N in
+#'         SET_STRING_ELT" from inside an OpenMP critical section, which
+#'         stays locked: the next \code{fread()} in the R session never
+#'         returns (data.table 1.18.4).
+#' }
+#' @noRd
+.bdsolos_read_table <- function(path, sep, skip) {
+  tryCatch(
+    data.table::as.data.table(
+      utils::read.csv2(path, skip = skip, header = TRUE,
+                        fileEncoding = "UTF-8",
+                        stringsAsFactors = FALSE,
+                        sep = sep,
+                        na.strings = c("", "NA", "n.d.", "ND"))
+    ),
+    error = function(e) {
+      stop(sprintf("load_bdsolos_csv(): could not read '%s': %s",
+                   path, conditionMessage(e)), call. = FALSE)
+    }
+  )
 }
 
 

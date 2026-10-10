@@ -1,3 +1,64 @@
+# soilKey 0.9.222 (2026-10-10)
+
+## BDsolos: every export read by one reader; loading several files no longer hangs
+
+`load_bdsolos_csv()` read each file with `data.table::fread()` and fell back
+to `utils::read.csv2()` when that failed. The export quotes every field. Its
+free-text fields hold line breaks and, in 11 of the 27 state files of the
+national export, quotation marks of their own (`formação "Camaquã"`). On those
+files `fread()` did one of two things:
+
+* **It split the records at the line breaks**, with a warning the loader
+  silenced. BA, GO, PI and RS were read this way: RS gave 3,853 rows for its
+  897 records. Lines of text became profiles of their own, 1,281 of the 8,995
+  "profiles" of the national export (553 in BA, 248 in GO, 69 in PI, 411 in
+  RS), and the real profiles of those states got broken horizons and, often,
+  no reference class.
+* **It stopped** with "attempt to set index N/N in SET_STRING_ELT" (DF, MT,
+  PA, PB, SP). The loader then used `read.csv2()`, which read the file right.
+  But the error came from inside an OpenMP critical section of `fread()`, which
+  stayed locked: the next `fread()` of the R session never returned. Loading
+  the state files in a loop, as `benchmark_unified()` and the
+  `download_bdsolos()` example do, hung at the first file after DF
+  (data.table 1.18.4).
+
+`read.csv2()` now reads every file (`.bdsolos_read_table()`), and the loader
+no longer calls `fread()`. Checked against the export's own structure, where a
+record ends with `";` at the end of a line: the same 8,550,304 cells in the 27
+files, except that it drops the quotation marks inside 231 text fields. The 27
+files load in one R session, with the same result as one session per file.
+
+What changes in the loaded data:
+
+* The national export has 7,714 profiles, not 8,995.
+* BA, GO, PI and RS have 1,424 profiles (were 2,705) with 5,344 horizons (were
+  13,045). 1,373 of them have a SiBCS reference class (were 1,017), and the
+  SiBCS order agrees with it in 33.5% (was 20.5%).
+* DF, MT, PA, PB, PE, RN and SP are identical.
+* In the other 16 states the profiles and their numbers are the same, and an
+  empty text field is now `NA`, as it already was in the 7 states above. It
+  was `""` (91,528 cells), which the keys took for a recorded value:
+  - 56 profiles go from Regosols to Cambisols, and 56 (54 of them the same)
+    from Entisols to Inceptisols (52) or Aridisols (4): a B horizon without
+    a structure description (`structure_grade` of `""`) counted as
+    structureless and failed the cambic horizon; it is now missing data;
+  - 220 profiles without a Munsell hue got a colour suborder by default
+    (Argissolos Vermelho-Amarelos 181, Latossolos Vermelho-Amarelos 22,
+    Luvissolos Háplicos 17) and are now "(cor a determinar)";
+  - 54 other SiBCS names change, 3 of them in the order (Neossolos to
+    Chernossolos), and 33 other WRB names in their qualifiers. The SiBCS
+    order agreement of these states stays at 39.6%.
+  - A line break inside a text field is `\n`; `fread()` kept the file's
+    `\r\n` (13 site fields).
+* Over the national export the SiBCS order agrees with the reference class in
+  38.6% (2,871 of 7,442 labelled profiles); it was 37.0% (2,619 of 7,086).
+
+The loader's comment blamed malformed UTF-8 for the `fread()` failures. The 27
+files are valid UTF-8.
+
+Earlier BDsolos figures in this file (8,995 profiles, n = 7,086) include the
+1,281 lines of text read as profiles.
+
 # soilKey 0.9.221 (2026-10-08)
 
 ## BDsolos and FEBR: dithionite Fe and sulfuric-attack Fe2O3 kept apart

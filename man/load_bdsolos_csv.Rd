@@ -39,6 +39,16 @@ ferrico / perferrico classes read; \code{"Oxalato de Amonio - Ferro"}
 goes to \code{fe_ox_pct}. All three are converted from g/kg to \%.
 Until v0.9.220 the sulfuric Fe2O3 filled \code{fe_dcb_pct}, unconverted.
 
+Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
+export quotes every field, and its free-text fields hold line breaks and,
+in some states, quotation marks of their own; \code{read.csv2} returns
+the export's records for all 27 state files. \code{data.table::fread},
+used until v0.9.221, split such records at the line breaks (in BA, GO, PI
+and RS, where the lines of text became profiles of their own) or stopped
+with an error that left the next \code{fread()} of the R session waiting
+forever (after DF, MT, PA, PB or SP). An empty text field is \code{NA} in
+every file; a quotation mark inside a text field is dropped.
+
 Profile-id columns are auto-detected: looks for any column whose
 normalised name matches
 \code{"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"};
