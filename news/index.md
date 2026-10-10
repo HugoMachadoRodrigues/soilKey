@@ -1,5 +1,135 @@
 # Changelog
 
+## soilKey 0.9.222 (2026-10-10)
+
+### BDsolos: every export read by one reader; loading several files no longer hangs
+
+[`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+read each file with
+[`data.table::fread()`](https://rdrr.io/pkg/data.table/man/fread.html)
+and fell back to
+[`utils::read.csv2()`](https://rdrr.io/r/utils/read.table.html) when
+that failed. The export quotes every field. Its free-text fields hold
+line breaks and, in 11 of the 27 state files of the national export,
+quotation marks of their own (`formação "Camaquã"`). On those files
+`fread()` did one of two things:
+
+- **It split the records at the line breaks**, with a warning the loader
+  silenced. BA, GO, PI and RS were read this way: RS gave 3,853 rows for
+  its 897 records. Lines of text became profiles of their own, 1,281 of
+  the 8,995 “profiles” of the national export (553 in BA, 248 in GO, 69
+  in PI, 411 in RS), and the real profiles of those states got broken
+  horizons and, often, no reference class.
+- **It stopped** with “attempt to set index N/N in SET_STRING_ELT” (DF,
+  MT, PA, PB, SP). The loader then used
+  [`read.csv2()`](https://rdrr.io/r/utils/read.table.html), which read
+  the file right. But the error came from inside an OpenMP critical
+  section of `fread()`, which stayed locked: the next `fread()` of the R
+  session never returned. Loading the state files in a loop, as
+  [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
+  and the
+  [`download_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/download_bdsolos.md)
+  example do, hung at the first file after DF (data.table 1.18.4).
+
+[`read.csv2()`](https://rdrr.io/r/utils/read.table.html) now reads every
+file (`.bdsolos_read_table()`), and the loader no longer calls
+`fread()`. Checked against the export’s own structure, where a record
+ends with `";` at the end of a line: the same 8,550,304 cells in the 27
+files, except that it drops the quotation marks inside 231 text fields.
+The 27 files load in one R session, with the same result as one session
+per file.
+
+What changes in the loaded data:
+
+- The national export has 7,714 profiles, not 8,995.
+- BA, GO, PI and RS have 1,424 profiles (were 2,705) with 5,344 horizons
+  (were 13,045). 1,373 of them have a SiBCS reference class (were
+  1,017), and the SiBCS order agrees with it in 33.5% (was 20.5%).
+- DF, MT, PA, PB, PE, RN and SP are identical.
+- In the other 16 states the profiles and their numbers are the same,
+  and an empty text field is now `NA`, as it already was in the 7 states
+  above. It was `""` (91,528 cells), which the keys took for a recorded
+  value:
+  - 56 profiles go from Regosols to Cambisols, and 56 (54 of them the
+    same) from Entisols to Inceptisols (52) or Aridisols (4): a B
+    horizon without a structure description (`structure_grade` of `""`)
+    counted as structureless and failed the cambic horizon; it is now
+    missing data;
+  - 220 profiles without a Munsell hue got a colour suborder by default
+    (Argissolos Vermelho-Amarelos 181, Latossolos Vermelho-Amarelos 22,
+    Luvissolos Háplicos 17) and are now “(cor a determinar)”;
+  - 54 other SiBCS names change, 3 of them in the order (Neossolos to
+    Chernossolos), and 33 other WRB names in their qualifiers. The SiBCS
+    order agreement of these states stays at 39.6%.
+  - A line break inside a text field is `\n`; `fread()` kept the file’s
+    `\r\n` (13 site fields).
+- Over the national export the SiBCS order agrees with the reference
+  class in 38.6% (2,871 of 7,442 labelled profiles); it was 37.0% (2,619
+  of 7,086).
+
+The loader’s comment blamed malformed UTF-8 for the `fread()` failures.
+The 27 files are valid UTF-8.
+
+Earlier BDsolos figures in this file (8,995 profiles, n = 7,086) include
+the 1,281 lines of text read as profiles.
+
+## soilKey 0.9.221 (2026-10-08)
+
+### BDsolos and FEBR: dithionite Fe and sulfuric-attack Fe2O3 kept apart
+
+Both loaders filled `fe_dcb_pct`, the dithionite (free) Fe that the WRB
+criteria read, with the Fe2O3 of the sulfuric attack, the total Fe as
+the oxide that the SiBCS férrico classes read. They also left it in
+g/kg, where soilKey stores %. So a BDsolos horizon with 43 g/kg Fe2O3
+was recorded with 43% free Fe, and every horizon with a sulfuric attack
+passed the WRB Fe-dith limits (4% for the nitic horizon, 10% for
+Ferritic). This affects 23,021 layers of the national BDsolos export.
+`fe2o3_sulfuric_pct` stayed empty, so the SiBCS férrico and perférrico
+classes were never reached on these data.
+
+- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md):
+  “CDB - Ferro (g/kg)” goes to `fe_dcb_pct`, “Ataque sulfúrico - Fe2O3”
+  to `fe2o3_sulfuric_pct` and “Oxalato de Amônio - Ferro” to
+  `fe_ox_pct`, all converted from g/kg to %. The CDB column (667 layers)
+  comes after the sulfuric one in the export, so it used to be dropped.
+- [`read_febr_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.md)
+  follows the FEBR dictionary codes, all in g/kg:
+  - `ferro_ditionito_*` (or `fe2o3_ditionito_*`, converted to the
+    element) to `fe_dcb_pct`;
+  - `ferro_oxalato_*` / `fe2o3_oxalato_*` to `fe_ox_pct`;
+  - `fe2o3_sulfurico_*` (or `ferro_sulfurico_*`, converted to the oxide)
+    to `fe2o3_sulfuric_pct`.
+
+  Until now the first `fe2o3_*` column of any method filled
+  `fe_dcb_pct`: sulfuric, aqua regia, oxalate or dithionite. The map
+  also asked for a `ferro_dcb` code the dictionary does not have.
+- Readers that took the sulfuric Fe2O3 for dithionite Fe on these data:
+  the WRB nitic horizon and the Ferric and Ferritic qualifiers; the
+  SiBCS caráter espódico (Fe-dith \>= 0.5%, so every B with a sulfuric
+  attack passed that part); and the USDA Ferrudalfs (Fe-dith \>= 4%).
+
+On the national BDsolos export (8,995 profiles in the 27 state files),
+6,654 profiles load with different Fe data. Classified before and after
+in the three systems, none changes RSG, SiBCS order or USDA order, and
+the SiBCS order agreement with their BDsolos labels stays at 36.5%
+(5,563 labelled). The names change:
+
+- WRB: Ferric falls from 2,298 names to 14. All 14 have CDB Fe; 7 of
+  them get it through the CDB column that used to be dropped.
+- SiBCS: 129 names gain an iron class (94 Distroférricos, 10
+  Aluminoférricos, 10 Eutroférricos, 9 Férricos, 6 Perférricos). Of the
+  68 profiles whose BDsolos label has an iron class and whose sulfuric
+  Fe2O3 reaches 18%, 42 are now named with one (none before). 11
+  profiles lose the espodossólico subgroup (Cambissolos and Neossolos).
+- USDA: Ferrudalfs fall from 403 to 6, all 6 with CDB Fe \>= 4%. The
+  others are now Paleudalfs, Kandiudalfs, Hapludalfs or Rhodudalfs.
+
+Not changed: the REDAPE GeoTab loader maps `TEOR_FE` (values of 6-49, so
+g/kg) to `fe_dcb_pct`. The dataset does not say whether it is dithionite
+Fe or sulfuric Fe2O3, so it is left as it was until that is known. The
+sulfuric Al2O3 and SiO2 of BDsolos and FEBR (for Ki and Kr) are still
+not loaded.
+
 ## soilKey 0.9.220 (2026-10-08)
 
 ### WRB 2022 diagnostics checked against Chapter 3
