@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.227</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.228</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,50 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.228" id="soilkey-09228-2026-10-11">soilKey 0.9.228 (2026-10-11)<a class="anchor" aria-label="anchor" href="#soilkey-09228-2026-10-11"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-a-horizon-is-read-without-the-number-of-its-material-0-9-228">SiBCS key: a horizon is read without the number of its material<a class="anchor" aria-label="anchor" href="#sibcs-key-a-horizon-is-read-without-the-number-of-its-material-0-9-228"></a></h3>
+<p>A horizon below a lithologic discontinuity is written with the number of its material in front: “2Bt1” today, “IIBt1” in the surveys that numbered the materials in Roman numerals. The SiBCS diagnostics chose their horizons with patterns such as <code>^B</code> and <code>^A</code>, which neither form matches, so a “IIBt” was not a B horizon for them. In the national BDsolos export 1,984 horizons of 874 profiles carry such a number, 670 of them B horizons. The clearest loss was in Planossolos, whose B plânico is very often the top of a second material (“A1 A3 IIBt IIC”): the abrupt textural change passed in 186 of the 291 profiles with that reference order and the B plânico in 56.</p>
+<ul><li>The new internal <code>.desg_master()</code> gives a designation without the number of the material, Arabic or Roman (“2Bt1” and “IIBt1” are “Bt1”). The 56 designation patterns of the SiBCS diagnostics, in 39 functions of the order, suborder, attribute and family levels, now read it. All of them ask whether a horizon is a B, an A, a C, an R or an O, or a B with some suffix; none looks for the number. The horizon data keep the designation as written.</li>
+<li>Three of those functions already accepted an Arabic number (<code>^[0-9]*A</code>) but not a Roman one.</li>
+</ul><p>The canonical fixtures have no numbered horizon and classify as before. Their SiBCS order no longer depends on the number: with the subsoil of each fixture written as a second material (“II” or “2” in front of its horizons), 18 of the 44 changed order before this version (the canonical Planossolo became Gleissolos, the Luvissolo Argissolos) and none does now.</p>
+<p>On the national BDsolos export (7,593 profiles with a reference order), default mode:</p>
+<table class="table"><thead><tr><th></th>
+<th align="right">0.9.227</th>
+<th align="right">0.9.228</th>
+</tr></thead><tbody><tr><td>Order agreement (count)</td>
+<td align="right">3,245</td>
+<td align="right">3,299</td>
+</tr><tr><td>Order agreement</td>
+<td align="right">42.7%</td>
+<td align="right">43.4%</td>
+</tr><tr><td>Reference Planossolos agreed (291)</td>
+<td align="right">56</td>
+<td align="right">95</td>
+</tr><tr><td>Reference Luvissolos agreed (130)</td>
+<td align="right">52</td>
+<td align="right">67</td>
+</tr><tr><td>Reference Cambissolos agreed (651)</td>
+<td align="right">119</td>
+<td align="right">124</td>
+</tr><tr><td>Reference Nitossolos agreed (347)</td>
+<td align="right">78</td>
+<td align="right">80</td>
+</tr><tr><td>Reference Chernossolos agreed (116)</td>
+<td align="right">22</td>
+<td align="right">23</td>
+</tr><tr><td>Reference Argissolos agreed (2,083)</td>
+<td align="right">1,194</td>
+<td align="right">1,186</td>
+</tr></tbody></table><p>163 profiles change order, all of them with a numbered horizon (859 of the labelled profiles have one): 62 now agree with their reference, 8 no longer do and 93 go from one disagreeing order to another. Most of the 93 go from Argissolos to Luvissolos (95 profiles in all, 15 of them gains): in 88 of those the profile has no B horizon without a number, so the tests of clay activity and base saturation found no B horizon, answered no, and the profile fell to Argissolos, the end of the key for a B textural. They now read the IIBt.</p>
+<p>Other benchmarks, before and after:</p>
+<ul><li>BDsolos panel of the EJSS article (798 scored): 335 to 339 in the default mode (42.0% to 42.5%), 396 to 400 in the morphological mode (49.6% to 50.1%). The article’s own figures are of v0.9.189 and do not change.</li>
+<li>FEBR (1,000 profiles): 387 and 496, unchanged.</li>
+<li>Redape (94 profiles): 61 to 63 in the default mode, 65 to 67 in the morphological mode.</li>
+</ul><p>Not changed here: the tests shared with WRB and USDA (<code>^Bw|^Bo|^Boi</code>, <code>^[BE]</code> and the like in <code>utils-diagnostic-tests.R</code> and <code>designation-inference.R</code>), whose benchmarks, KSSL above all, are full of “2Bt”; and <code>.desg_material_number()</code>, which reads the number of the material for the WRB tests and reads Arabic numbers only.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.227" id="soilkey-09227-2026-10-11">soilKey 0.9.227 (2026-10-11)<a class="anchor" aria-label="anchor" href="#soilkey-09227-2026-10-11"></a></h2>
 <div class="section level3">
