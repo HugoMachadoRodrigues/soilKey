@@ -461,15 +461,15 @@ sk_register_widget_deps <- function() {
 }
 
 # leaflet::addProviderTiles(), for a map or a map proxy, with the provider
-# scripts served from a folder of the app's own (v0.9.224).
+# scripts taken from sk_provider_deps(), the list the start-up registration
+# uses, so both point to the same folders (v0.9.224).
 #
-# With the leaflet of the container image the provider list is a file that
-# leaflet writes to the R session's temporary folder, and Shiny serves the
-# folder a dependency is in, whole: once a map was drawn, any file of the
-# temporary folder could be requested under /leaflet-providers-<version>/.
-# sk_provider_deps() moves such a dependency to a folder that holds its
-# scripts and nothing else, once per process, so the start-up registration
-# and every map point to the same place.
+# Shiny serves the folder a dependency is in, whole. leaflet takes the
+# provider list from the installed leaflet.providers package folder (so in the
+# container image, checked inside it), and has a fallback that writes the list
+# to the R session's temporary folder. sk_provider_deps() moves a dependency
+# found there to a folder that holds its scripts and nothing else, so the
+# temporary folder is never served.
 sk_provider_tiles <- function(map, provider, layerId = NULL, group = NULL,
                               options = leaflet::providerTileOptions()) {
   if (!provider %in% names(leaflet::providers))

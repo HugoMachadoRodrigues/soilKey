@@ -89,9 +89,11 @@ test_that("sk_provider_tiles() makes the call leaflet::addProviderTiles() makes"
 test_that("a dependency in the temporary folder is served from a folder of its own", {
   skip_on_cran()
   skip_if_not_installed("shiny")
-  # The leaflet of the container image writes the provider list to the R
-  # session's temporary folder, and Shiny serves the folder a dependency is
-  # in, whole: any file there could be requested under the prefix.
+  # Shiny serves the folder a dependency is in, whole. leaflet has a fallback
+  # that writes the provider list to the R session's temporary folder (not
+  # taken in the container image, where the list comes from the
+  # leaflet.providers package folder): any file there could then be requested
+  # under the prefix.
   e <- .wd_env()
   js <- file.path(tempdir(), "leaflet-providers_9.9.9.js")
   other <- file.path(tempdir(), "wd-not-for-serving.txt")
