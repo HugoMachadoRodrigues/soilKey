@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.223</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.224</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,19 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.224" id="soilkey-09224-2026-10-10">soilKey 0.9.224 (2026-10-10)<a class="anchor" aria-label="anchor" href="#soilkey-09224-2026-10-10"></a></h2>
+<div class="section level3">
+<h3 id="pro-app-every-instance-serves-the-scripts-a-drawn-widget-brings-0-9-224">Pro app: every instance serves the scripts a drawn widget brings<a class="anchor" aria-label="anchor" href="#pro-app-every-instance-serves-the-scripts-a-drawn-widget-brings-0-9-224"></a></h3>
+<p>The Map tab could come up as a grey box, without base map or overlay, when Cloud Run had a second instance up. A map with provider tiles brings two scripts when it is drawn, the provider list and leaflet’s plugin for it. They are not in the page, so the start-up registration of 0.9.215 left them out. Shiny registered them only in the R process that drew a map, and a request routed to another instance got HTTP 404. Seen on 2026-10-10 in the request logs of the live 0.9.222 and of a 0.9.223 test revision, with two sessions open at once: page and websocket on one instance, the two 404s on another.</p>
+<p>A local run through every tab, with each resource path logged, found the same for two other widgets: DT’s DataTables core and plotly’s plotly.js bundle are registered when the first table or plot is drawn. No 404 was seen for those.</p>
+<ul><li>
+<code>sk_register_widget_deps()</code>, called at start-up after the page is rendered, registers what a table, a plot and a map with provider tiles bring: 34 prefixes at start-up in the local run, against 28. Only prefixes that are not registered yet are added, so nothing of the page is re-pointed, and a widget’s own jQuery is left out.</li>
+<li>Maps and map proxies get their provider tiles through <code>sk_provider_tiles()</code>.</li>
+<li>The provider scripts are served from a folder that holds only them. With the leaflet of the container image the provider list is a file leaflet writes to the R session’s temporary folder, and Shiny serves the folder a dependency is in, whole: once a map was drawn, a file of the temporary folder could be requested by name under <code>/leaflet-providers-2.0.0/</code>.</li>
+</ul><p>Checked in a fresh local process, before any session: the two provider scripts answered 404 and now answer 200. In a session through every tab no prefix is re-pointed, and the only new one is the jQuery of plotly’s crosstalk, which the browser does not ask for (the page’s jQuery is there). The base map loads and changes with the selector.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.223" id="soilkey-09223-2026-10-10">soilKey 0.9.223 (2026-10-10)<a class="anchor" aria-label="anchor" href="#soilkey-09223-2026-10-10"></a></h2>
 <div class="section level3">
