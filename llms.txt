@@ -2322,6 +2322,8 @@ pública curada.
   : Versioned GitHub Release tag where the lazy-fetch caches are pinned
 - [`.WRB_LV1_NAME_BY_CODE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-WRB_LV1_NAME_BY_CODE.md)
   : WRB Reference Soil Group code-to-name table
+- [`.sibcs_stated_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sibcs_stated_order.md)
+  : The order a SiBCS label states, when it is not the order of its name
 - [`soilKey`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
   [`soilKey-package`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
   : soilKey: Automated Soil Profile Classification per WRB 2022 and

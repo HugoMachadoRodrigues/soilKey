@@ -1,0 +1,61 @@
+# The order a SiBCS label states, when it is not the order of its name
+
+Applied by
+[`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
+after the order of the name has been read. Three kinds of label state
+attributes that SiBCS 5 (Santos et al., 2018) places in another order
+than the one the name maps to:
+
+## Usage
+
+``` r
+.sibcs_stated_order(order, label)
+```
+
+## Arguments
+
+- order:
+
+  The order read from the name (one of `.SIBCS_ORDERS`).
+
+- label:
+
+  The label in upper case and without accents.
+
+## Value
+
+The order the label states, or `order`.
+
+## Details
+
+- **Podzolico Vermelho-Amarelo or Vermelho-Escuro, Eutrofico, with
+  high-activity clay** ("Ta", "argila de atividade alta") -\>
+  `Luvissolos`. Anexo I (p. 342) lists under Luvissolos the "Podzolicos
+  Vermelho-Amarelos Eutroficos Ta" and the "Podzolicos Vermelho-Escuros
+  Eutroficos Ta"; `.SIBCS_LEGACY_ORDER_MAP` reads every Podzolico as
+  Argissolos. The "Podzolicos Amarelos" are Argissolos in Anexo I
+  without condition, and stay so.
+
+- **A label that begins with "Argissolo" and states Eutrofico and
+  high-activity clay** -\> `Luvissolos`. The label contradicts itself:
+  an Argissolo has a B textural "de argila de atividade baixa, ou
+  atividade alta desde que conjugada com saturacao por bases baixa ou
+  com carater aluminico" (p. 87), and a B textural with high-activity
+  clay and high base saturation is a Luvissolo (p. 95). Such labels (36
+  in the national BDsolos export, 19 of them from Acre) read as the old
+  Podzolico names with the first word replaced; the attributes stated
+  are taken, not the word.
+
+- **Cambissolo in the old form, Eutrofico, with high-activity clay and A
+  chernozemico** -\> `Chernossolos`: the exception of Anexo I ("exceto
+  os Cambissolos Eutroficos com horizonte A chernozemico e com argila de
+  atividade alta"; p. 90). A label whose second word is a present
+  suborder (Haplico, Humico, Fluvico, Histico) was written in SiBCS and
+  is left as it is.
+
+"Eutrofico" is the word itself: "Epieutrofico", "Endoeutrofico" and the
+like state the base saturation of part of the profile and do not count.
+A label that states both "Ta" and "Tb" is left with the order of its
+name, and so is one that states "Eutrofico" (or "Equivalente Eutrofico")
+without the clay activity: the book places it in Luvissolos if Ta and in
+Argissolos if Tb, and the label does not say.

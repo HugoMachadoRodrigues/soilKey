@@ -54,6 +54,14 @@ order followed by the next word of the label, which is not a suborder of
 SiBCS 5 in general: the old names are for comparisons at the order
 level.
 
+Since v0.9.229 the order of the name is not the last word when the label
+states attributes that SiBCS 5 places elsewhere: a Podzolico
+Vermelho-Amarelo or Vermelho-Escuro, or a label that begins with
+"Argissolo", that states "Eutrofico" and high-activity clay is
+Luvissolos, and a Cambissolo in the old form that states "Eutrofico",
+high-activity clay and "A chernozemico" is Chernossolos. See
+[`.sibcs_stated_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sibcs_stated_order.md).
+
 ## See also
 
 [`normalise_febr_wrb`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_wrb.md),

@@ -1,5 +1,85 @@
 # Changelog
 
+## soilKey 0.9.229 (2026-10-11)
+
+### SiBCS benchmarks: a label is read by what it states, when that places it in another order
+
+The label map read every “Podzólico” as Argissolos and every
+“Cambissolo” as Cambissolos. Anexo I of SiBCS 2018 (p. 342) is finer,
+and three kinds of label state attributes that the book places in
+another order than their name. The new internal
+[`.sibcs_stated_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sibcs_stated_order.md)
+reads them, after the order of the name.
+
+- **Podzólico Vermelho-Amarelo or Vermelho-Escuro that states Eutrófico
+  and high-activity clay** (“Ta”, “argila de atividade alta”) is
+  Luvissolos: Anexo I lists the “Podzólicos Vermelho-Amarelos Eutróficos
+  Ta” and the “Podzólicos Vermelho-Escuros Eutróficos Ta” under
+  Luvissolos. 31 labels of the national BDsolos export. The “Podzólicos
+  Amarelos” are Argissolos in Anexo I without condition and stay so.
+- **A label that begins with “Argissolo” and states Eutrófico and
+  high-activity clay** is read as Luvissolos. Such a label contradicts
+  itself: an Argissolo has a B textural “de argila de atividade baixa,
+  ou atividade alta desde que conjugada com saturação por bases baixa ou
+  com caráter alumínico” (p. 87), and a B textural with high-activity
+  clay and high base saturation is a Luvissolo (p. 95). The 36 labels of
+  this kind, 19 of them from Acre (“ARGISSOLO VERMELHO-AMARELO Eutrófico
+  argila de atividade alta A moderado textura argilosa.”), read as the
+  old Podzólico names with the first word replaced. The attributes
+  stated are taken, not the word.
+- **Cambissolo in the old form that states Eutrófico, high-activity clay
+  and A chernozêmico** is Chernossolos: the exception of Anexo I
+  (“exceto os Cambissolos Eutróficos com horizonte A chernozêmico e com
+  argila de atividade alta”). 11 labels. A label whose second word is a
+  present suborder (“CAMBISSOLO HÁPLICO Eutrófico Ta A chernozêmico”, 2
+  labels) was written in SiBCS and is left as it is.
+
+“Eutrófico” is the word itself: “Epieutrófico” and the like do not
+count. A label that states both “Ta” and “Tb” keeps the order of its
+name.
+
+Left as they were, on purpose:
+
+- the 52 “Podzólico … Eutrófico” or “Equivalente Eutrófico” labels that
+  do not state the clay activity: the book places them in Luvissolos if
+  Ta and in Argissolos if Tb, and the label does not say;
+- the “plíntico” labels under Podzólico (93), Latossolo (32) and Glei
+  (4): the book sends “parte” or “alguns” of them to Plintossolos;
+- the Podzólicos Vermelho-Escuros Tb (51), “alguns” of which the book
+  sends to Nitossolos.
+
+The key does not change; only the reference order of 78 labels does. On
+the national BDsolos export (7,593 profiles with a reference order),
+default mode:
+
+|                                 |       0.9.228 |       0.9.229 |
+|---------------------------------|--------------:|--------------:|
+| Order agreement (count)         |         3,299 |         3,341 |
+| Order agreement                 |         43.4% |         44.0% |
+| Reference Luvissolos (agreed)   |      130 (67) |     197 (113) |
+| Reference Chernossolos (agreed) |      116 (23) |      127 (26) |
+| Reference Argissolos (agreed)   | 2,083 (1,186) | 2,016 (1,179) |
+| Reference Cambissolos (agreed)  |     651 (124) |     640 (124) |
+
+49 of the 78 profiles now agree with their reference. 7 no longer do:
+they are among the 36 “Argissolo” labels, and the key returns Argissolos
+for them. None of the 42 Podzólico and Cambissolo profiles agreed
+before.
+
+Other benchmarks:
+
+- BDsolos panel of the EJSS article (798 scored): 339 to 351 in the
+  default mode (42.5% to 44.0%), 400 to 412 in the morphological mode
+  (50.1% to 51.6%). Acre is one of its three states. The article’s own
+  figures are of v0.9.189 and do not change.
+- FEBR: its 1,442 labels are an order and a suborder, none states the
+  clay activity, and all are read exactly as before.
+- Redape does not go through this function.
+
+At `level = "subordem"` the stated order is followed by the next word of
+the label, as for the old names: it is not a suborder of SiBCS 5 in
+general.
+
 ## soilKey 0.9.228 (2026-10-11)
 
 ### SiBCS key: a horizon is read without the number of its material
