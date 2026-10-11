@@ -25,6 +25,23 @@
 #' @noRd
 .WRB_ROCK_DESIGNATION <- "^[0-9]*R($|[a-z0-9]|/?Cr)"
 
+#' A term of a field description in lower case and without accents, so that a
+#' pattern written in ASCII matches it whatever the language and the typing of
+#' the source (the accented "Prismatica que se desfaz" of a Brazilian field
+#' sheet is "prismatica que se desfaz").
+#' Vectorised; NA stays NA.
+#' @noRd
+.field_term <- function(x) {
+  x <- as.character(x)
+  x <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]", "a", x)
+  x <- gsub("[\u00C9\u00CA\u00E9\u00EA]",                         "e", x)
+  x <- gsub("[\u00CD\u00ED]",                                     "i", x)
+  x <- gsub("[\u00D3\u00D4\u00D5\u00F3\u00F4\u00F5]",             "o", x)
+  x <- gsub("[\u00DA\u00FA]",                                     "u", x)
+  x <- gsub("[\u00C7\u00E7]",                                     "c", x)
+  tolower(trimws(x))
+}
+
 #' Ordinal class of the clay films ("cerosidade") recorded for a layer: 0 none,
 #' 1 very few, 2 few, 3 common, 4 many / abundant / dominant, NA unrecorded or
 #' unreadable. English (KST, FAO) and Portuguese (Manual de descricao e coleta)

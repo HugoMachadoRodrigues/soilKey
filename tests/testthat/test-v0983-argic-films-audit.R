@@ -185,14 +185,19 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # for their profiles is counted: "Latossolo-Amarelo distrofico ..." (keyed
   # Cambissolos; 43 -> 44) and "Podzolcio Vermelho-Amarelo ..." (keyed
   # Argissolos; 175 -> 176). The key did not change.
+  # v0.9.227: B_nitico() reads the cerosidade of the RJ profiles ("Comum",
+  # "Abundante"), and eight reference Argissolos whose data meet it are keyed
+  # Nitossolos: three that were keyed Argissolos (176 -> 173) and five that
+  # were keyed Neossolos (50 -> 45).
   expect_equal(conf["Latossolos","Latossolos"], 17L)
   expect_equal(conf["Latossolos","Argissolos"], 17L)
   expect_equal(conf["Latossolos","Cambissolos"], 44L)
   expect_equal(conf["Latossolos","Neossolos"], 37L)
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 176L)
+  expect_equal(conf["Argissolos","Argissolos"], 173L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
-  expect_equal(conf["Argissolos","Neossolos"], 50L)
+  expect_equal(conf["Argissolos","Neossolos"], 45L)
+  expect_equal(conf["Argissolos","Nitossolos"], 8L)
 })
 
 
