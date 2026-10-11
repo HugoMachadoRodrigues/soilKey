@@ -190,6 +190,20 @@ load_febr_pedons <- function(path,
 )
 
 
+#' The orders of SiBCS 5 (2018)
+#'
+#' As \code{classify_sibcs()$rsg_or_order} names them. A reference label that
+#' is none of these after \code{.SIBCS_LEGACY_ORDER_MAP} has no class the key
+#' can return, so \code{\link{normalise_febr_sibcs}} gives \code{NA} for it.
+#'
+#' @keywords internal
+.SIBCS_ORDERS <- c(
+  "Argissolos", "Cambissolos", "Chernossolos", "Espodossolos", "Gleissolos",
+  "Latossolos", "Luvissolos", "Neossolos", "Nitossolos", "Organossolos",
+  "Planossolos", "Plintossolos", "Vertissolos"
+)
+
+
 #' Canonicalise FEBR SiBCS names to match soilKey rule outputs.
 #'
 #' FEBR ships SiBCS labels in mixed legacy/modern form
@@ -198,11 +212,23 @@ load_febr_pedons <- function(path,
 #' \code{run_sibcs_key()} so that benchmark accuracies can be computed
 #' without false negatives.
 #'
+#' A label is read by its first word, with any punctuation around it dropped
+#' (\code{"ESPODOSSOLO."} is Espodossolos). Since v0.9.225 the result must be
+#' one of the 13 orders of SiBCS 5 after the legacy map; otherwise it is
+#' \code{NA}. Until then the first word came out whatever it was, so
+#' \code{"CLASSIFICACAO ? CAMBISSOLO ..."} became the class "Classificacaos",
+#' \code{"ALISSOLO CROMICO"} "Alissolos" and \code{"LATOSOL AMARELO"}
+#' "Latosois": labels no prediction can equal, which the benchmarks counted
+#' as scored profiles and as errors (631 of the 7,694 labels of the national
+#' BDsolos export, in 79 forms).
+#'
 #' @param x Character vector of FEBR SiBCS names.
 #' @param level One of \code{"order"} (default) or \code{"subordem"}.
 #' @return Character vector of normalised SiBCS names; \code{NA} for
-#'   labels that are out-of-scope for the comparison
-#'   (e.g.\ legacy \code{"Solos"} category).
+#'   labels that are out-of-scope for the comparison: the legacy
+#'   \code{"Solos"} category, and any label whose first word is not an order
+#'   of SiBCS 5 after the legacy map (old names without an entry there,
+#'   names of other systems, text that is not a class).
 #' @seealso \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
 #' @export
 normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
@@ -245,13 +271,20 @@ normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
   out <- character(length(s))
   for (i in seq_along(s)) {
     if (is.na(s[i])) { out[i] <- NA_character_; next }
-    parts <- strsplit(s[i], "\\s+", fixed = FALSE)[[1]]
+    parts <- strsplit(trimws(s[i]), "\\s+", fixed = FALSE)[[1]]
+    if (length(parts) == 0L) { out[i] <- NA_character_; next }
+    # v0.9.225: punctuation around the first word is not part of the name
+    # ("ESPODOSSOLO.", "PLANOSSOLO(???)").
+    parts[1] <- gsub("^[^A-Z0-9]+|[^A-Z0-9]+$", "", parts[1])
     ordem <- pluralise(parts[1])
     ordem_t <- title(ordem)
     ordem_t <- apply_legacy_map(ordem_t)
     # If the Order itself is out-of-scope (legacy map -> NA, e.g.
     # "SOLOS HALOMORFICOS"), the entire output is NA, not "NA <sub>".
-    if (is.na(ordem_t)) { out[i] <- NA_character_; next }
+    # v0.9.225: so is a first word that is not an order of SiBCS 5.
+    if (is.na(ordem_t) || !(ordem_t %in% .SIBCS_ORDERS)) {
+      out[i] <- NA_character_; next
+    }
     if (level == "order" || length(parts) < 2L) {
       out[i] <- ordem_t
     } else {
