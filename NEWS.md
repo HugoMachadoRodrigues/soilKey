@@ -1,3 +1,38 @@
+# soilKey 0.9.224 (2026-10-10)
+
+## Pro app: every instance serves the scripts a drawn widget brings
+
+The Map tab could come up as a grey box, without base map or overlay, when
+Cloud Run had a second instance up. A map with provider tiles brings two
+scripts when it is drawn, the provider list and leaflet's plugin for it. They
+are not in the page, so the start-up registration of 0.9.215 left them out.
+Shiny registered them only in the R process that drew a map, and a request
+routed to another instance got HTTP 404. Seen on 2026-10-10 in the request
+logs of the live 0.9.222 and of a 0.9.223 test revision, with two sessions
+open at once: page and websocket on one instance, the two 404s on another.
+
+A local run through every tab, with each resource path logged, found the same
+for two other widgets: DT's DataTables core and plotly's plotly.js bundle are
+registered when the first table or plot is drawn. No 404 was seen for those.
+
+* `sk_register_widget_deps()`, called at start-up after the page is rendered,
+  registers what a table, a plot and a map with provider tiles bring: 34
+  prefixes at start-up in the local run, against 28. Only prefixes that are not
+  registered yet are added, so nothing of the page is re-pointed, and a
+  widget's own jQuery is left out.
+* Maps and map proxies get their provider tiles through `sk_provider_tiles()`.
+* The provider scripts are served from a folder that holds only them. With the
+  leaflet of the container image the provider list is a file leaflet writes to
+  the R session's temporary folder, and Shiny serves the folder a dependency is
+  in, whole: once a map was drawn, a file of the temporary folder could be
+  requested by name under `/leaflet-providers-2.0.0/`.
+
+Checked in a fresh local process, before any session: the two provider scripts
+answered 404 and now answer 200. In a session through every tab no prefix is
+re-pointed, and the only new one is the jQuery of plotly's crosstalk, which the
+browser does not ask for (the page's jQuery is there). The base map loads and
+changes with the selector.
+
 # soilKey 0.9.223 (2026-10-10)
 
 ## The AfSP row of the benchmark suite

@@ -421,5 +421,92 @@ sk_register_page_deps <- function(page, theme) {
   ok <- tryCatch({ shiny:::renderPage(page); TRUE }, error = function(e) FALSE)
   if (!ok)
     for (d in htmltools::renderTags(page)$dependencies) shiny::createWebDependency(d)
+  sk_register_widget_deps()   # under the theme: DT takes its flavour from it
   invisible(ok)
+}
+
+# The scripts that only a drawn widget brings, registered at start-up (v0.9.224).
+#
+# Not every script of the app is in its page. A widget adds some when it is
+# drawn: DT its DataTables core (in the theme's Bootstrap flavour), plotly its
+# plotly.js bundle, and a leaflet map with provider tiles the provider list and
+# its plugin. Rendering the page did not register those, and Shiny did only in
+# the R process that drew the widget. On Cloud Run, with a second instance up,
+# the browser's request for them could reach an instance that had drawn none:
+# HTTP 404. Seen on 2026-10-10 for the two provider scripts, in the request
+# log (page and websocket on one instance, the 404s on another): the Map tab
+# came up as a grey box, without tiles or overlay.
+#
+# One widget of each kind the app draws gives the list. Only prefixes that are
+# not registered yet are added, so nothing the page registered is re-pointed,
+# and a widget's own jQuery is left out, as in sk_drop_jquery().
+sk_register_widget_deps <- function() {
+  widgets <- list(
+    function() sk_datatable(data.frame(a = 1)),
+    function() plotly::plot_ly(x = 1, y = 1, type = "bar"),
+    function() sk_provider_tiles(sk_leaflet(), "CartoDB.Positron"))
+  added <- character(0)
+  for (w in widgets) {
+    deps <- tryCatch(htmltools::renderTags(w())$dependencies,
+                     error = function(e) list())
+    for (d in deps) {
+      prefix <- paste0(d$name, "-", d$version)
+      if (identical(d$name, "jquery") ||
+            prefix %in% names(shiny::resourcePaths())) next
+      shiny::createWebDependency(d)
+      added <- c(added, prefix)
+    }
+  }
+  invisible(added)
+}
+
+# leaflet::addProviderTiles(), for a map or a map proxy, with the provider
+# scripts served from a folder of the app's own (v0.9.224).
+#
+# With the leaflet of the container image the provider list is a file that
+# leaflet writes to the R session's temporary folder, and Shiny serves the
+# folder a dependency is in, whole: once a map was drawn, any file of the
+# temporary folder could be requested under /leaflet-providers-<version>/.
+# sk_provider_deps() moves such a dependency to a folder that holds its
+# scripts and nothing else, once per process, so the start-up registration
+# and every map point to the same place.
+sk_provider_tiles <- function(map, provider, layerId = NULL, group = NULL,
+                              options = leaflet::providerTileOptions()) {
+  if (!provider %in% names(leaflet::providers))
+    stop("Unknown tile provider '", provider, "'", call. = FALSE)
+  map$dependencies <- c(map$dependencies, sk_provider_deps())
+  leaflet::invokeMethod(map, leaflet::getMapData(map), "addProviderTiles",
+                        provider, layerId, group, options)
+}
+
+.sk_widget_deps <- new.env(parent = emptyenv())
+
+# The dependencies leaflet::addProviderTiles() adds to a map: what a map with
+# provider tiles has and a plain one does not.
+sk_provider_deps <- function() {
+  if (is.null(.sk_widget_deps$providers)) {
+    plain <- vapply(sk_leaflet()$dependencies, function(d) d$name, character(1))
+    deps <- leaflet::addProviderTiles(sk_leaflet(),
+                                      "CartoDB.Positron")$dependencies
+    deps <- Filter(function(d) !(d$name %in% plain), deps)
+    .sk_widget_deps$providers <-
+      lapply(htmltools::resolveDependencies(deps), sk_own_dependency)
+  }
+  .sk_widget_deps$providers
+}
+
+# A dependency whose files are in the R session's temporary folder, moved to a
+# folder that holds those files only. Any other dependency is returned as is.
+sk_own_dependency <- function(dep) {
+  dir <- dep$src$file
+  if (is.null(dir) || !is.null(dep$package) ||
+        !identical(normalizePath(dir, mustWork = FALSE),
+                   normalizePath(tempdir(), mustWork = FALSE)))
+    return(dep)
+  files <- unlist(c(dep$script, dep$stylesheet), use.names = FALSE)
+  own <- file.path(tempdir(), "sk-deps", paste0(dep$name, "-", dep$version))
+  dir.create(own, recursive = TRUE, showWarnings = FALSE)
+  file.copy(file.path(dir, files), own, overwrite = TRUE)
+  dep$src$file <- own
+  dep
 }
