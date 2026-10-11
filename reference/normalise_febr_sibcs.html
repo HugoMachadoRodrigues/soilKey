@@ -15,7 +15,7 @@ without false negatives.'><meta property="og:image" content="https://hugomachado
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.225</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.226</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,10 +89,10 @@ without false negatives.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Character vector of normalised SiBCS names; <code>NA</code> for
-  labels that are out-of-scope for the comparison: the legacy
-  <code>"Solos"</code> category, and any label whose first word is not an order
-  of SiBCS 5 after the legacy map (old names without an entry there,
-  names of other systems, text that is not a class).</p>
+  labels that are out-of-scope for the comparison: any label that is not
+  an order of SiBCS 5 after the legacy maps (old names without an entry
+  there, "Solos ..." followed by none of them, names of other systems,
+  text that is not a class).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -105,6 +105,16 @@ one of the 13 orders of SiBCS 5 after the legacy map; otherwise it is
 "Latosois": labels no prediction can equal, which the benchmarks counted
 as scored profiles and as errors (631 of the 7,694 labels of the national
 BDsolos export, in 79 forms).</p>
+<p>Since v0.9.226, when the first word gives no order the label is read once
+more as an old name: a leading "Solo" or "Solos" is set aside ("SOLO
+LITOLICO" is Neossolos, "SOLOS ORGANICOS" Organossolos), a hyphen separates
+words as a space does ("LATOSSOLO-VERMELHO", "SOLONETZ-SOLODIZADO"), and the
+names of <code>.SIBCS_LEGACY_TWO_WORD_MAP</code> ("TERRA ROXA ESTRUTURADA",
+"BRUNO NAO CALCICO") are looked up before those of
+<code>.SIBCS_LEGACY_ORDER_MAP</code>. A label the first word already places is
+read as before. At <code>level = "subordem"</code> an old name gives its order
+followed by the next word of the label, which is not a suborder of SiBCS 5
+in general: the old names are for comparisons at the order level.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

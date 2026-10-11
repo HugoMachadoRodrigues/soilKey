@@ -12,10 +12,6 @@ does not emit.
 .SIBCS_LEGACY_ORDER_MAP
 ```
 
-## Format
-
-An object of class `character` of length 4.
-
 ## Details
 
 BDsolos exports collected before the SiBCS 5a edicao (2018) carry
@@ -45,3 +41,26 @@ Aplicado em `normalise_febr_sibcs(level = "order")` apos a pluralisacao
 normal. Para subordem o legacy mapping ainda nao e aplicado (ver TODO no
 v0.9.61: estender para Subordem com "Podzolico Vermelho-Amarelo" -\>
 "Argissolos Vermelho-Amarelos").
+
+Since v0.9.226 the map also holds the names of the classifications in
+use before SiBCS that the 5th edition (Santos et al., 2018) gives to one
+order, by the "Abrangencia" paragraph of each order in its chapter 3 (p.
+87-106) and its Anexo I (p. 342): Latosol, Planosol,
+Solonetz-Solodizado, Brunizem, Rendzina, Regossolo, Litosol, Solos
+Litolicos, Solos Organicos, Vertisol, Cambisol, Solos Concrecionarios
+and Rubrozem, with the misspellings of them and of the present orders
+found in the national BDsolos export. Names that take two words are in
+`.SIBCS_LEGACY_TWO_WORD_MAP`.
+
+Left out on purpose, so that their labels stay `NA`: names the 5th
+edition divides between orders by something the name does not say
+(Hidromorfico Cinzento: Gleissolos without an abrupt textural change,
+Planossolos with one; Solonchak: Gleissolos only with a glei horizon;
+Alissolo), and names that are not in its correlation (Lateritico Bruno
+Avermelhado, which is not Laterita Hidromorfica; Solos Brunos Acidos;
+Solos Coluviais; Mediterraneo Vermelho-Amarelo).
+
+The key is the first word of the label, pluralised and in Title Case, as
+[`normalise_febr_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/normalise_febr_sibcs.md)
+forms it ("LATOSOL" is "Latosois", "BRUNIZEM" "Brunizens", "SOLONETZ"
+"Solonetzs").
