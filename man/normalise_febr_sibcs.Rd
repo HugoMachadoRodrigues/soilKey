@@ -46,6 +46,14 @@ names of \code{.SIBCS_LEGACY_TWO_WORD_MAP} ("TERRA ROXA ESTRUTURADA",
 read as before. At \code{level = "subordem"} an old name gives its order
 followed by the next word of the label, which is not a suborder of SiBCS 5
 in general: the old names are for comparisons at the order level.
+
+Since v0.9.229 the order of the name is not the last word when the label
+states attributes that SiBCS 5 places elsewhere: a Podzolico
+Vermelho-Amarelo or Vermelho-Escuro, or a label that begins with
+"Argissolo", that states "Eutrofico" and high-activity clay is Luvissolos,
+and a Cambissolo in the old form that states "Eutrofico", high-activity
+clay and "A chernozemico" is Chernossolos. See
+\code{.sibcs_stated_order()}.
 }
 \seealso{
 \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}

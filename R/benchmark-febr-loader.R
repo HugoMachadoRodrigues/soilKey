@@ -309,6 +309,74 @@ load_febr_pedons <- function(path,
 )
 
 
+#' The order a SiBCS label states, when it is not the order of its name
+#'
+#' Applied by \code{normalise_febr_sibcs()} after the order of the name has
+#' been read. Three kinds of label state attributes that SiBCS 5 (Santos et
+#' al., 2018) places in another order than the one the name maps to:
+#'
+#' \itemize{
+#'   \item \strong{Podzolico Vermelho-Amarelo or Vermelho-Escuro, Eutrofico,
+#'         with high-activity clay} ("Ta", "argila de atividade alta") ->
+#'         \code{Luvissolos}. Anexo I (p. 342) lists under Luvissolos the
+#'         "Podzolicos Vermelho-Amarelos Eutroficos Ta" and the "Podzolicos
+#'         Vermelho-Escuros Eutroficos Ta"; \code{.SIBCS_LEGACY_ORDER_MAP}
+#'         reads every Podzolico as Argissolos. The "Podzolicos Amarelos" are
+#'         Argissolos in Anexo I without condition, and stay so.
+#'   \item \strong{A label that begins with "Argissolo" and states Eutrofico
+#'         and high-activity clay} -> \code{Luvissolos}. The label contradicts
+#'         itself: an Argissolo has a B textural "de argila de atividade
+#'         baixa, ou atividade alta desde que conjugada com saturacao por
+#'         bases baixa ou com carater aluminico" (p. 87), and a B textural
+#'         with high-activity clay and high base saturation is a Luvissolo
+#'         (p. 95). Such labels (36 in the national BDsolos export, 19 of
+#'         them from Acre) read as the old Podzolico names with the first
+#'         word replaced; the attributes stated are taken, not the word.
+#'   \item \strong{Cambissolo in the old form, Eutrofico, with high-activity
+#'         clay and A chernozemico} -> \code{Chernossolos}: the exception of
+#'         Anexo I ("exceto os Cambissolos Eutroficos com horizonte A
+#'         chernozemico e com argila de atividade alta"; p. 90). A label
+#'         whose second word is a present suborder (Haplico, Humico, Fluvico,
+#'         Histico) was written in SiBCS and is left as it is.
+#' }
+#'
+#' "Eutrofico" is the word itself: "Epieutrofico", "Endoeutrofico" and the
+#' like state the base saturation of part of the profile and do not count. A
+#' label that states both "Ta" and "Tb" is left with the order of its name,
+#' and so is one that states "Eutrofico" (or "Equivalente Eutrofico") without
+#' the clay activity: the book places it in Luvissolos if Ta and in Argissolos
+#' if Tb, and the label does not say.
+#'
+#' @param order The order read from the name (one of \code{.SIBCS_ORDERS}).
+#' @param label The label in upper case and without accents.
+#' @return The order the label states, or \code{order}.
+#' @keywords internal
+.sibcs_stated_order <- function(order, label) {
+  if (is.na(order) || !(order %in% c("Argissolos", "Cambissolos"))) return(order)
+  # the labels are typed by hand: "atividade  alta", line breaks
+  label <- gsub("[[:space:]]+", " ", label)
+  eutrofico <- grepl("(^|[^A-Z])EUTROFIC", label)
+  if (!eutrofico) return(order)
+  ta <- grepl("(^|[^A-Z])TA([^A-Z]|$)|ATIVIDADE ALTA", label)
+  tb <- grepl("(^|[^A-Z])TB([^A-Z]|$)|ATIVIDADE BAIXA", label)
+  if (!ta || tb) return(order)
+  name <- sub("^[^A-Z0-9]*(SOLOS? )?", "", label)
+  if (order == "Argissolos") {
+    podzolico <- grepl("^(PODZ|POZD|POZOL)", name) &&
+                   grepl("VERMELHO[- ]*(AMAREL|ESCUR)", label)
+    argissolo <- grepl("^ARGI", name)
+    if (podzolico || argissolo) return("Luvissolos")
+  } else {
+    words <- strsplit(name, " ", fixed = TRUE)[[1]]
+    present_name <- length(words) >= 2L &&
+                      grepl("^(HAPLIC|HUMIC|FLUVIC|HISTIC)", words[2])
+    if (grepl("^CAMBIS", name) && !present_name &&
+          grepl("A CHERNOZEMIC", label)) return("Chernossolos")
+  }
+  order
+}
+
+
 #' Canonicalise FEBR SiBCS names to match soilKey rule outputs.
 #'
 #' FEBR ships SiBCS labels in mixed legacy/modern form
@@ -337,6 +405,14 @@ load_febr_pedons <- function(path,
 #' read as before. At \code{level = "subordem"} an old name gives its order
 #' followed by the next word of the label, which is not a suborder of SiBCS 5
 #' in general: the old names are for comparisons at the order level.
+#'
+#' Since v0.9.229 the order of the name is not the last word when the label
+#' states attributes that SiBCS 5 places elsewhere: a Podzolico
+#' Vermelho-Amarelo or Vermelho-Escuro, or a label that begins with
+#' "Argissolo", that states "Eutrofico" and high-activity clay is Luvissolos,
+#' and a Cambissolo in the old form that states "Eutrofico", high-activity
+#' clay and "A chernozemico" is Chernossolos. See
+#' \code{.sibcs_stated_order()}.
 #'
 #' @param x Character vector of FEBR SiBCS names.
 #' @param level One of \code{"order"} (default) or \code{"subordem"}.
@@ -433,6 +509,9 @@ normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
     if (is.na(ordem_t)) {
       out[i] <- NA_character_; next
     }
+    # v0.9.229: what the label states can place it in another order than its
+    # name does ("PODZOLICO VERMELHO-AMARELO EUTROFICO Ta" is a Luvissolo).
+    ordem_t <- .sibcs_stated_order(ordem_t, s[i])
     if (level == "order" || length(rest) < 1L) {
       out[i] <- ordem_t
     } else {
