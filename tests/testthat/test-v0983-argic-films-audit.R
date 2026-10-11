@@ -196,10 +196,13 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # v0.9.228: the designations are read without the number of the material;
   # profile 11731 ("Ap A3 B1t IIB21t IIB22t IIB23t", reference Argissolos)
   # has its IIB horizons read and is keyed Nitossolos (173 -> 172, 8 -> 9).
+  # v0.9.229: four RJ labels that begin with "Argissolo" and state Eutrofico
+  # and Ta are read as Luvissolos and leave this row: two keyed Argissolos
+  # (172 -> 170) and two keyed Neossolos (45 -> 43). The key did not change.
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 172L)
+  expect_equal(conf["Argissolos","Argissolos"], 170L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
-  expect_equal(conf["Argissolos","Neossolos"], 45L)
+  expect_equal(conf["Argissolos","Neossolos"], 43L)
   expect_equal(conf["Argissolos","Nitossolos"], 9L)
 })
 
