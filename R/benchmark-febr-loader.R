@@ -169,6 +169,28 @@ load_febr_pedons <- function(path,
 #' aplicado (ver TODO no v0.9.61: estender para Subordem com
 #' "Podzolico Vermelho-Amarelo" -> "Argissolos Vermelho-Amarelos").
 #'
+#' Since v0.9.226 the map also holds the names of the classifications in use
+#' before SiBCS that the 5th edition (Santos et al., 2018) gives to one
+#' order, by the "Abrangencia" paragraph of each order in its chapter 3
+#' (p. 87-106) and its Anexo I (p. 342): Latosol, Planosol,
+#' Solonetz-Solodizado, Brunizem, Rendzina, Regossolo, Litosol, Solos
+#' Litolicos, Solos Organicos, Vertisol, Cambisol, Solos Concrecionarios and
+#' Rubrozem, with the misspellings of them and of the present orders found in
+#' the national BDsolos export. Names that take two words are in
+#' \code{.SIBCS_LEGACY_TWO_WORD_MAP}.
+#'
+#' Left out on purpose, so that their labels stay \code{NA}: names the 5th
+#' edition divides between orders by something the name does not say
+#' (Hidromorfico Cinzento: Gleissolos without an abrupt textural change,
+#' Planossolos with one; Solonchak: Gleissolos only with a glei horizon;
+#' Alissolo), and names that are not in its correlation (Lateritico Bruno
+#' Avermelhado, which is not Laterita Hidromorfica; Solos Brunos Acidos; Solos
+#' Coluviais; Mediterraneo Vermelho-Amarelo).
+#'
+#' The key is the first word of the label, pluralised and in Title Case, as
+#' \code{normalise_febr_sibcs()} forms it ("LATOSOL" is "Latosois", "BRUNIZEM"
+#' "Brunizens", "SOLONETZ" "Solonetzs").
+#'
 #' @keywords internal
 .SIBCS_LEGACY_ORDER_MAP <- c(
   # legacy / old-nomenclature names
@@ -186,7 +208,90 @@ load_febr_pedons <- function(path,
   "Cambissoos"    = "Cambissolos",   # dropped-L typo
   "Cambissolicos" = "Cambissolos",
   "Esposdossolos" = "Espodossolos",  # transposition typo
-  "Solos"         = NA_character_    # bare "Solos ..." -> unrecoverable
+  # v0.9.226 -- names of the classifications in use before SiBCS that the 5th
+  # edition gives to one order (chapter 3, "Abrangencia" of each order,
+  # p. 87-106, and Anexo I, p. 342), in the spellings of the BDsolos export.
+  "Latosois"        = "Latossolos",    # Latosol; "todos os antigos Latossolos" (p. 95)
+  "Latossois"       = "Latossolos",    # Latossol
+  "Planosois"       = "Planossolos",   # Planosol (p. 102)
+  "Planossois"      = "Planossolos",   # Planossol
+  "Solonetzs"       = "Planossolos",   # Solonetz-Solodizado (p. 102)
+  "Brunizens"       = "Chernossolos",  # Brunizem, Brunizem Avermelhado (p. 90)
+  "Rendzinas"       = "Chernossolos",  # Rendzina (p. 90)
+  "Regossolos"      = "Neossolos",     # Regossolo (p. 97)
+  "Regosois"        = "Neossolos",     # Regosol
+  "Litosois"        = "Neossolos",     # Litosol, Litossolo (p. 97)
+  "Litolicos"       = "Neossolos",     # (Solos) Litolicos (p. 97)
+  "Organicos"       = "Organossolos",  # (Solos) Organicos (p. 101)
+  "Vertisois"       = "Vertissolos",   # Vertisol (p. 106)
+  "Cambisois"       = "Cambissolos",   # Cambisol (p. 89)
+  "Concrecionarios" = "Plintossolos",  # (Solos) Concrecionarios, Concrecionarios
+                                       # Lateriticos (p. 104)
+  "Rubrozens"       = "Argissolos",    # Rubrozem (Anexo I)
+  # v0.9.226 -- misspellings, of the names above and of the present orders
+  "Planosolos"      = "Planossolos",
+  "Planossos"       = "Planossolos",
+  "Bruizens"        = "Chernossolos",  # Brunizem
+  "Chenossolos"     = "Chernossolos",
+  "Liticos"         = "Neossolos",     # Litolico
+  "Litolifos"       = "Neossolos",     # Litolico
+  "Are1as"          = "Neossolos",     # Areia Quartzosa
+  "Neo0ssolos"      = "Neossolos",
+  "Neossolis"       = "Neossolos",
+  "Neosssolos"      = "Neossolos",
+  "Vertisolos"      = "Vertissolos",
+  "Cambisolos"      = "Cambissolos",
+  "Concrecionerios" = "Plintossolos",
+  "Laterias"        = "Plintossolos",  # Laterita Hidromorfica
+  "Lateriras"       = "Plintossolos",  # Laterita Hidromorfica
+  "Plitossolos"     = "Plintossolos",
+  "Pozdolicos"      = "Argissolos",    # Podzolico, as "Podzolicos" above
+  "Pozolicos"       = "Argissolos",
+  "Podzolcios"      = "Argissolos",
+  "Podzolicas"      = "Argissolos",
+  "Podzoucos"       = "Argissolos",
+  "Argisslos"       = "Argissolos",
+  "Argilossolos"    = "Argissolos",
+  "Nitssolos"       = "Nitossolos",
+  "Gelissolos"      = "Gleissolos",    # "Gelissolo Melanico"
+  "Solos"         = NA_character_    # "Solo(s)" is not a name: old_name() in
+                                     # normalise_febr_sibcs() reads what follows
+)
+
+
+#' Old soil names that take two words to tell apart
+#'
+#' Consulted by \code{normalise_febr_sibcs()} before
+#' \code{.SIBCS_LEGACY_ORDER_MAP} when the first word of a label gives no
+#' order. The key is the first two words of the name, upper case, without
+#' accents, as written (a leading "Solo" or "Solos" is not counted, and a
+#' hyphen separates words as a space does). One word would not do: "Bruno Nao
+#' Calcico" is Luvissolos and "Solos Brunos Acidos" has no order in the
+#' correlation of the 5th edition; "Terra" and "Humic" are not names.
+#'
+#' \itemize{
+#'   \item \code{Terra Roxa} and \code{Terra Bruna} (Estruturada, Estruturada
+#'         Similar) -> \code{Nitossolos}: "na maioria" (SiBCS 2018, p. 98). A
+#'         "pequena parte", with the texture gradient of a B textural, went to
+#'         Argissolos (p. 87); the name does not say which, and the label is
+#'         read as the majority.
+#'   \item \code{Bruno Nao Calcico} -> \code{Luvissolos} (p. 95-96, Anexo I).
+#'   \item \code{Humic Glei} and \code{Low-Humic Glei} (the English names of
+#'         Glei Humico and Glei Pouco Humico) -> \code{Gleissolos} (p. 93).
+#'   \item \code{Solos Indiscriminados Concrecionarios} ->
+#'         \code{Plintossolos} (p. 104).
+#' }
+#'
+#' @keywords internal
+.SIBCS_LEGACY_TWO_WORD_MAP <- c(
+  "TERRA ROXA"                      = "Nitossolos",
+  "TERRA BRUNA"                     = "Nitossolos",
+  "BRUNO NAO"                       = "Luvissolos",
+  "BRUNOS NAO"                      = "Luvissolos",
+  "HUMIC GLEI"                      = "Gleissolos",
+  "LOW HUMIC"                       = "Gleissolos",
+  "INDISCRIMINADOS CONCRECIONARIOS" = "Plintossolos",
+  "INDISCRIMONADOS CONCRECIONARIOS" = "Plintossolos"   # misspelling
 )
 
 
@@ -222,13 +327,24 @@ load_febr_pedons <- function(path,
 #' as scored profiles and as errors (631 of the 7,694 labels of the national
 #' BDsolos export, in 79 forms).
 #'
+#' Since v0.9.226, when the first word gives no order the label is read once
+#' more as an old name: a leading "Solo" or "Solos" is set aside ("SOLO
+#' LITOLICO" is Neossolos, "SOLOS ORGANICOS" Organossolos), a hyphen separates
+#' words as a space does ("LATOSSOLO-VERMELHO", "SOLONETZ-SOLODIZADO"), and the
+#' names of \code{.SIBCS_LEGACY_TWO_WORD_MAP} ("TERRA ROXA ESTRUTURADA",
+#' "BRUNO NAO CALCICO") are looked up before those of
+#' \code{.SIBCS_LEGACY_ORDER_MAP}. A label the first word already places is
+#' read as before. At \code{level = "subordem"} an old name gives its order
+#' followed by the next word of the label, which is not a suborder of SiBCS 5
+#' in general: the old names are for comparisons at the order level.
+#'
 #' @param x Character vector of FEBR SiBCS names.
 #' @param level One of \code{"order"} (default) or \code{"subordem"}.
 #' @return Character vector of normalised SiBCS names; \code{NA} for
-#'   labels that are out-of-scope for the comparison: the legacy
-#'   \code{"Solos"} category, and any label whose first word is not an order
-#'   of SiBCS 5 after the legacy map (old names without an entry there,
-#'   names of other systems, text that is not a class).
+#'   labels that are out-of-scope for the comparison: any label that is not
+#'   an order of SiBCS 5 after the legacy maps (old names without an entry
+#'   there, "Solos ..." followed by none of them, names of other systems,
+#'   text that is not a class).
 #' @seealso \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
 #' @export
 normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
@@ -268,6 +384,29 @@ normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
     ordem_titled
   }
 
+  # v0.9.226: the order of an old name the first word alone does not give.
+  # "Solo(s)" in front is not part of the name, a hyphen separates words as a
+  # space does, and the two-word names are looked up before the one-word ones.
+  # Returns the order (NA when there is none) and the words after the name.
+  old_name <- function(label) {
+    w <- strsplit(label, "[[:space:]-]+")[[1]]
+    w <- gsub("^[^A-Z0-9]+|[^A-Z0-9]+$", "", w)
+    w <- w[nzchar(w)]
+    if (length(w) > 0L && w[1] %in% c("SOLO", "SOLOS")) w <- w[-1]
+    if (length(w) >= 2L) {
+      two <- paste(w[1], w[2])
+      if (two %in% names(.SIBCS_LEGACY_TWO_WORD_MAP))
+        return(list(order = unname(.SIBCS_LEGACY_TWO_WORD_MAP[two]),
+                    rest = w[-(1:2)]))
+    }
+    if (length(w) >= 1L) {
+      one <- apply_legacy_map(title(pluralise(w[1])))
+      if (!is.na(one) && one %in% .SIBCS_ORDERS)
+        return(list(order = one, rest = w[-1]))
+    }
+    list(order = NA_character_, rest = character(0))
+  }
+
   out <- character(length(s))
   for (i in seq_along(s)) {
     if (is.na(s[i])) { out[i] <- NA_character_; next }
@@ -279,16 +418,25 @@ normalise_febr_sibcs <- function(x, level = c("order", "subordem")) {
     ordem <- pluralise(parts[1])
     ordem_t <- title(ordem)
     ordem_t <- apply_legacy_map(ordem_t)
-    # If the Order itself is out-of-scope (legacy map -> NA, e.g.
-    # "SOLOS HALOMORFICOS"), the entire output is NA, not "NA <sub>".
-    # v0.9.225: so is a first word that is not an order of SiBCS 5.
+    rest <- parts[-1]
+    # v0.9.226: when the first word gives no order, the label may still be an
+    # old name that takes more than it ("SOLO LITOLICO", "TERRA ROXA
+    # ESTRUTURADA", "LATOSSOLO-VERMELHO").
     if (is.na(ordem_t) || !(ordem_t %in% .SIBCS_ORDERS)) {
+      old <- old_name(s[i])
+      ordem_t <- old$order
+      rest <- old$rest
+    }
+    # If the Order itself is out-of-scope (e.g. "SOLOS HALOMORFICOS"), the
+    # entire output is NA, not "NA <sub>". v0.9.225: so is a label that is
+    # not an order of SiBCS 5 by any of the readings above.
+    if (is.na(ordem_t)) {
       out[i] <- NA_character_; next
     }
-    if (level == "order" || length(parts) < 2L) {
+    if (level == "order" || length(rest) < 1L) {
       out[i] <- ordem_t
     } else {
-      sub <- pluralise(parts[2])
+      sub <- pluralise(rest[1])
       out[i] <- paste(ordem_t, title(sub))
     }
   }

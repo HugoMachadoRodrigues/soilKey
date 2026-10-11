@@ -1,3 +1,82 @@
+# soilKey 0.9.226 (2026-10-11)
+
+## SiBCS benchmarks: the old soil names of the reference labels are read as their present-day order
+
+0.9.225 left out of the scored profiles every reference label whose first word
+is not an order of SiBCS 5. Most of those labels are names of the
+classifications in use before SiBCS: 876 of the 7,694 labels of the national
+BDsolos export, counting the 252 that begin with "Solo" or "Solos". The 5th
+edition (Santos et al., 2018) says where each old class went, in the
+"Abrangência" paragraph of each order (chapter 3, p. 87 to 106) and in its
+Anexo I (p. 342). `normalise_febr_sibcs()` now follows it.
+
+* **Names the book gives to one order** are in `.SIBCS_LEGACY_ORDER_MAP`:
+  Latosol (Latossolos), Planosol and Solonetz-Solodizado (Planossolos),
+  Brunizem and Rendzina (Chernossolos), Regossolo, Litosol and Solos Litólicos
+  (Neossolos), Solos Orgânicos (Organossolos), Vertisol (Vertissolos), Cambisol
+  (Cambissolos), Solos Concrecionários and Concrecionários Lateríticos
+  (Plintossolos), Rubrozem (Argissolos), with the misspellings of these and
+  of the present orders found in the export ("PLITOSSOLO", "NEO0SSOLO",
+  "POZDÓLICO", "ARE1A QUARTZOSA"). 628 labels.
+* **Names that take two words** are in the new `.SIBCS_LEGACY_TWO_WORD_MAP`:
+  Bruno Não Cálcico (Luvissolos), Humic Glei and Low-Humic Glei (Gleissolos),
+  Solos Indiscriminados Concrecionários (Plintossolos), and Terra Roxa and
+  Terra Bruna Estruturada (Nitossolos). For the last two the book says "na
+  maioria" (p. 98), with a "pequena parte" in Argissolos (p. 87); the name does
+  not say which, and the 147 labels are read as the majority.
+* **"Solo" or "Solos" in front is not the name**: the word after it is ("SOLO
+  LITÓLICO" is Neossolos, "SOLOS ORGÂNICOS" Organossolos). A "Solos ..." label
+  followed by no name of the maps is `NA`, as before.
+* **A hyphen separates the words of a name** as a space does
+  ("LATOSSOLO-VERMELHO", "SOLONETZ-SOLODIZADO").
+
+These readings are tried only when the first word gives no order, so a label
+that was read before is read the same.
+
+Left out on purpose, and still `NA` (101 labels):
+
+* names the book divides between orders by something the name does not say:
+  Hidromórfico Cinzento (Gleissolos without an abrupt textural change,
+  Planossolos with one), Solonchak (Gleissolos only with a glei horizon),
+  Alissolo;
+* names that are not in its correlation: Laterítico Bruno Avermelhado (which
+  is not Laterita Hidromórfica), Solos Brunos Ácidos, Solos Coluviais,
+  Mediterrâneo Vermelho-Amarelo;
+* labels that begin with a Soil Taxonomy name ("Typic Haplorthox ou Latossolo
+  ..."), "aterro", and the labels the database itself marks as doubtful
+  ("\*MUDAR\*", "\*CORRIGIR\*").
+
+On the national BDsolos export (7,714 profiles, 7,694 with a label), default
+mode of `classify_sibcs()`:
+
+|                         | 0.9.225 | 0.9.226 |
+|-------------------------|--------:|--------:|
+| Scored profiles         |   6,818 |   7,593 |
+| Order agreement (count) |   2,873 |   3,182 |
+| Order agreement         |   42.1% |   41.9% |
+
+775 labels are now scored and the key agrees with 309 of them. The agreement
+goes down by 0.2 point because of the Terra Roxa and Terra Bruna profiles: the
+key places none of the 147 in Nitossolos (without them the figure would be
+42.7%). That is not particular to the old names. In this run the key returns
+Nitossolos for none of the 7,694 profiles, and agrees with none of the 306
+labelled Plintossolos or the 61 labelled Vertissolos. The reference follows
+the book; the cause on the key's side has not been looked into here.
+
+FEBR is not affected: its 1,442 labels are all present-day orders and are read
+exactly as before.
+
+On the BDsolos panel of the EJSS article (800 profiles of AC, AL and AM), run
+at this version, the scored profiles go from 785 to 798 (the two left out are
+the "Classificação ?" and "Alissolo" labels). Agreement: 320 of 785 to 326 of
+798 in the default mode (40.8% to 40.9%), 382 of 785 to 388 of 798 in the
+morphological mode (48.7% to 48.6%). The article's own figures are of v0.9.189
+and do not change.
+
+At `level = "subordem"` an old name gives its order followed by the next word
+of the label, as the names already in the map did. That word is not a suborder
+of SiBCS 5 in general: the old names are for comparisons at the order level.
+
 # soilKey 0.9.225 (2026-10-11)
 
 ## SiBCS benchmarks: a reference label counts only if it is a SiBCS order

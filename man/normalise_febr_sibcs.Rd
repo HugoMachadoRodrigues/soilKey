@@ -13,10 +13,10 @@ normalise_febr_sibcs(x, level = c("order", "subordem"))
 }
 \value{
 Character vector of normalised SiBCS names; \code{NA} for
-  labels that are out-of-scope for the comparison: the legacy
-  \code{"Solos"} category, and any label whose first word is not an order
-  of SiBCS 5 after the legacy map (old names without an entry there,
-  names of other systems, text that is not a class).
+  labels that are out-of-scope for the comparison: any label that is not
+  an order of SiBCS 5 after the legacy maps (old names without an entry
+  there, "Solos ..." followed by none of them, names of other systems,
+  text that is not a class).
 }
 \description{
 FEBR ships SiBCS labels in mixed legacy/modern form
@@ -35,6 +35,17 @@ one of the 13 orders of SiBCS 5 after the legacy map; otherwise it is
 "Latosois": labels no prediction can equal, which the benchmarks counted
 as scored profiles and as errors (631 of the 7,694 labels of the national
 BDsolos export, in 79 forms).
+
+Since v0.9.226, when the first word gives no order the label is read once
+more as an old name: a leading "Solo" or "Solos" is set aside ("SOLO
+LITOLICO" is Neossolos, "SOLOS ORGANICOS" Organossolos), a hyphen separates
+words as a space does ("LATOSSOLO-VERMELHO", "SOLONETZ-SOLODIZADO"), and the
+names of \code{.SIBCS_LEGACY_TWO_WORD_MAP} ("TERRA ROXA ESTRUTURADA",
+"BRUNO NAO CALCICO") are looked up before those of
+\code{.SIBCS_LEGACY_ORDER_MAP}. A label the first word already places is
+read as before. At \code{level = "subordem"} an old name gives its order
+followed by the next word of the label, which is not a suborder of SiBCS 5
+in general: the old names are for comparisons at the order level.
 }
 \seealso{
 \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
