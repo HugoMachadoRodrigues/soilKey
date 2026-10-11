@@ -299,7 +299,7 @@ map_batch_server <- function(id, rv, settings) {
     # ---- base map -----------------------------------------------------------
     output$map <- leaflet::renderLeaflet({
       sk_leaflet() |>
-        leaflet::addProviderTiles("CartoDB.Positron") |>
+        sk_provider_tiles("CartoDB.Positron") |>
         leaflet::setView(lng = -51, lat = -14, zoom = 4)
     })
 
