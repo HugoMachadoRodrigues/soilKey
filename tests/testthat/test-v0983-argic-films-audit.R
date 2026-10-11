@@ -193,11 +193,14 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   expect_equal(conf["Latossolos","Argissolos"], 17L)
   expect_equal(conf["Latossolos","Cambissolos"], 44L)
   expect_equal(conf["Latossolos","Neossolos"], 37L)
+  # v0.9.228: the designations are read without the number of the material;
+  # profile 11731 ("Ap A3 B1t IIB21t IIB22t IIB23t", reference Argissolos)
+  # has its IIB horizons read and is keyed Nitossolos (173 -> 172, 8 -> 9).
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 173L)
+  expect_equal(conf["Argissolos","Argissolos"], 172L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   expect_equal(conf["Argissolos","Neossolos"], 45L)
-  expect_equal(conf["Argissolos","Nitossolos"], 8L)
+  expect_equal(conf["Argissolos","Nitossolos"], 9L)
 })
 
 

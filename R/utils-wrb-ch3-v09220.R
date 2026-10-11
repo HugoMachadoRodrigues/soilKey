@@ -15,6 +15,25 @@
   suppressWarnings(as.integer(out))
 }
 
+#' The designation of a horizon without the number of its material: "2Bt1",
+#' and the "IIBt1" of the surveys that numbered the materials in Roman numerals,
+#' are both "Bt1". It is what a test of the master horizon and of its suffixes
+#' reads; the horizon data keep the designation as written. NA stays NA.
+#' @noRd
+.desg_master <- function(d) {
+  sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", trimws(as.character(d)),
+      perl = TRUE)
+}
+
+#' The horizons with their designations read by .desg_master(), for the tests
+#' that take the name of a column.
+#' @noRd
+.h_master <- function(h) {
+  h <- data.table::copy(h)
+  h$designation <- .desg_master(h$designation)
+  h
+}
+
 #' Designations of continuous rock (FAO 2006 Guidelines and KST 13: R is hard
 #' bedrock; RCr and R/Cr are mostly hard rock). Cr, weathered or soft bedrock
 #' that can be dug with a spade and slakes in water, is not continuous rock in

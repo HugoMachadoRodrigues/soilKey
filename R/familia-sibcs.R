@@ -786,7 +786,7 @@ familia_saturacao_aluminio <- function(pedon,
                                           min_al_cmol = 0.5) {
   h <- pedon$horizons
   layers_b <- which(!is.na(h$designation) &
-                       grepl("^B|^C", h$designation))
+                       grepl("^B|^C", .desg_master(h$designation)))
   if (length(layers_b) == 0L) {
     return(FamilyAttribute$new(
       name = "saturacao_aluminio", value = NULL,
@@ -1151,7 +1151,7 @@ familia_atividade_argila <- function(pedon, max_depth_cm = 150) {
 #' @noRd
 familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
   h <- pedon$horizons
-  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
   if (length(b_layers) == 0L) {
     return(FamilyAttribute$new(
       name = "oxidos_ferro", value = NULL,
@@ -1246,7 +1246,7 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
 # Helper: identifica camadas orgânicas no perfil via designation
 # H/O (horizontes organicos no SiBCS Cap 14).
 .organic_layers <- function(h) {
-  is_org <- !is.na(h$designation) & grepl("^[HO]", h$designation)
+  is_org <- !is.na(h$designation) & grepl("^[HO]", .desg_master(h$designation))
   which(is_org)
 }
 
