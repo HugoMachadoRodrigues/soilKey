@@ -2308,6 +2308,8 @@ pública curada.
   : Default DOI for the Vaz et al. 2023 curated GeoTab dataset
 - [`.SIBCS_LEGACY_ORDER_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SIBCS_LEGACY_ORDER_MAP.md)
   : Pre-2018 SiBCS Order names -\> SiBCS 5a edicao plural Title Case map
+- [`.SIBCS_ORDERS`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SIBCS_ORDERS.md)
+  : The orders of SiBCS 5 (2018)
 - [`.SMARTSOLOS_DRAINAGE_SCALE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SMARTSOLOS_DRAINAGE_SCALE.md)
   : SmartSolos drainage class scale (DRENAGEM, 1-8)
 - [`.SOILGRIDS_TO_HORIZON_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-SOILGRIDS_TO_HORIZON_MAP.md)
