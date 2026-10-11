@@ -122,7 +122,7 @@ vertissolo <- function(pedon) {
   surface_clay_ok <- !is.na(surface_clay) && surface_clay >= 30
   # Cracks tested via vertic_horizon's internal sub-test
   shallow_30 <- which(!is.na(h$top_cm) & h$top_cm <= 30)
-  has_lithic_petric <- any(grepl("^R|^Cr", h$designation[shallow_30])) ||
+  has_lithic_petric <- any(grepl("^R|^Cr", .desg_master(h$designation)[shallow_30])) ||
                          any(!is.na(h$cementation_class[shallow_30]) &
                                 h$cementation_class[shallow_30] %in%
                                   c("strongly", "indurated"))

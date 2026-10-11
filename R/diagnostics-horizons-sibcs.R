@@ -39,7 +39,7 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   # checked oc_pct >= 8 %, which falsely matched mineral A horizons of
   # high-OC andic profiles (canonical Andosol with Ah of 8 % OC was
   # being routed into Organossolos).
-  desg <- h$designation
+  desg <- .desg_master(h$designation)
   is_organic_designation <- !is.na(desg) &
                               grepl("^[OH][a-z]?", desg)
   is_dominantly_organic  <- !is.na(h$oc_pct) & h$oc_pct >= 12
@@ -74,7 +74,7 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   next_layer <- max(contiguous) + 1L
   on_rock <- next_layer <= nrow(h) &&
               !is.na(h$designation[next_layer]) &&
-              grepl("^R|^Cr", h$designation[next_layer])
+              grepl("^R|^Cr", .desg_master(h$designation)[next_layer])
   passed <- thickness >= 20 ||
               (thickness >= 40 && pct_tissue >= 75) ||
               (thickness >= 10 && on_rock)
@@ -117,7 +117,7 @@ horizonte_A_chernozemico <- function(pedon,
   candidates <- integer(0); prev_bot <- 0
   for (i in ord) {
     if (is.na(h$top_cm[i])) next
-    is_A <- grepl("^[0-9]*A", h$designation[i] %||% "")
+    is_A <- grepl("^[0-9]*A", .desg_master(h$designation)[i] %||% "")
     if (length(candidates) == 0L) {
       if (h$top_cm[i] <= 5 && is_A) {
         candidates <- i
@@ -179,7 +179,7 @@ horizonte_A_chernozemico <- function(pedon,
   #   - >= 25 cm, when the solum >= 75 cm.
   # min_thickness_cm (default 18) is retained as the fallback used only when
   # the solum depth cannot be established (no designation / bottom data).
-  desig_all <- h$designation %||% rep(NA_character_, nrow(h))
+  desig_all <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)))
   is_B    <- !is.na(desig_all) & grepl("^[0-9]*B", desig_all)
   is_rock <- !is.na(desig_all) & grepl("^[0-9]*(R|Cr|Cd)", desig_all)
   a_bottom <- if (length(passing) > 0L)
@@ -250,7 +250,7 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
     }
     # Stop accumulating at a clear B horizon.
     if (!is.na(h$designation[candidates[k]]) &&
-        grepl("^B", h$designation[candidates[k]])) {
+        grepl("^B", .desg_master(h$designation)[candidates[k]])) {
       a_layers <- candidates[seq_len(k - 1L)]
       break
     }
@@ -653,7 +653,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   # calcic / saline B horizons and is what made the canonical
   # chernozem fixture fall through chernossolo() (no Bi nor Bt
   # path) into Neossolos.
-  desg_match <- test_pattern_match(h, "designation", "^B[wikvgnzj]")
+  desg_match <- test_pattern_match(.h_master(h), "designation", "^B[wikvgnzj]")
   candidates <- desg_match$layers
   # Exclusoes
   fer  <- ferralic(pedon)
@@ -739,7 +739,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   h <- pedon$horizons
   # Step 1: textura argilosa em B
   b_layers <- which(!is.na(h$designation) &
-                      grepl("^B", h$designation))
+                      grepl("^B", .desg_master(h$designation)))
   if (length(b_layers) == 0L) {
     return(DiagnosticResult$new(
       name = "B_nitico", passed = FALSE,
@@ -751,7 +751,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   clay_ok <- b_layers[!is.na(h$clay_pct[b_layers]) &
                         h$clay_pct[b_layers] >= min_clay_pct]
   # Step 2: pequeno incremento de argila B/A
-  a_layers <- which(!is.na(h$designation) & grepl("^A", h$designation))
+  a_layers <- which(!is.na(h$designation) & grepl("^A", .desg_master(h$designation)))
   ratio <- if (length(a_layers) > 0L && length(clay_ok) > 0L)
              mean(h$clay_pct[clay_ok], na.rm = TRUE) /
                mean(h$clay_pct[a_layers], na.rm = TRUE)
@@ -801,7 +801,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # Step 5: thickness. SiBCS Cap 2 p.62 (a): >= 30 cm, EXCEPT >= 15 cm when a
   # lithic / lithic-fragmentary contact occurs within the first 50 cm.
   contact_shallow <- any(!is.na(h$designation) &
-                           grepl("^[0-9]*(R|Cr|Cd)", h$designation) &
+                           grepl("^[0-9]*(R|Cr|Cd)", .desg_master(h$designation)) &
                            !is.na(h$top_cm) & h$top_cm <= 50)
   eff_min_thick <- if (contact_shallow) 15 else min_thickness
   thk <- test_minimum_thickness(h, min_cm = eff_min_thick,
@@ -867,7 +867,7 @@ B_planico <- function(pedon) {
   h <- pedon$horizons
   abrupt <- mudanca_textural_abrupta(pedon)
   # Cor: 10YR ou mais amarelo cromas <= 3 OR 7.5YR-5YR cromas <= 2
-  b_layers <- which(!is.na(h$designation) & grepl("^B", h$designation))
+  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
   cor_ok <- integer(0)
   for (i in b_layers) {
     hue <- h$munsell_hue_moist[i]
@@ -933,7 +933,7 @@ horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
                                         min_thickness = 30) {
   h <- pedon$horizons
   # plinthite_pct as proxy for petroplintita; refine via designation Ac/Bc/Cc
-  desg <- test_pattern_match(h, "designation", "^[ABCE]c|c[g]?[fr]?$")
+  desg <- test_pattern_match(.h_master(h), "designation", "^[ABCE]c|c[g]?[fr]?$")
   pp <- test_numeric_above(h, "plinthite_pct",
                               threshold = min_petroplinthite_pct,
                               candidate_layers = desg$layers)

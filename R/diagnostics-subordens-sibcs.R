@@ -16,7 +16,7 @@
 # tipicos (matiz/valor/croma na maior parte do horizonte B).
 .b_layers <- function(pedon) {
   h <- pedon$horizons
-  desg <- h$designation
+  desg <- .desg_master(h$designation)
   if (any(!is.na(desg))) {
     b <- which(grepl("^B[wt]?", desg, ignore.case = FALSE) &
                  !grepl("^BC|^Bt0", desg))
@@ -320,13 +320,13 @@ chernossolo_haplico <- function(pedon) {
 #' @noRd
 espodossolo_humiluvico <- function(pedon) {
   h <- pedon$horizons
-  has_bh <- any(!is.na(h$designation) & grepl("^Bh\\b", h$designation))
+  has_bh <- any(!is.na(h$designation) & grepl("^Bh\\b", .desg_master(h$designation)))
   has_bhs_or_bs <- any(!is.na(h$designation) &
-                          grepl("^Bhs|^Bs", h$designation))
+                          grepl("^Bhs|^Bs", .desg_master(h$designation)))
   passed <- has_bh && !has_bhs_or_bs
   DiagnosticResult$new(
     name = "espodossolo_humiluvico", passed = passed,
-    layers = which(grepl("^Bh\\b", h$designation %||% character(0))),
+    layers = which(grepl("^Bh\\b", .desg_master(h$designation) %||% character(0))),
     evidence = list(has_bh = has_bh, has_bhs_or_bs = has_bhs_or_bs),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Humiluvicos"
@@ -339,12 +339,12 @@ espodossolo_humiluvico <- function(pedon) {
 #' @noRd
 espodossolo_ferriluvico <- function(pedon) {
   h <- pedon$horizons
-  has_bs <- any(!is.na(h$designation) & grepl("^Bs\\b", h$designation))
-  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", h$designation))
+  has_bs <- any(!is.na(h$designation) & grepl("^Bs\\b", .desg_master(h$designation)))
+  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", .desg_master(h$designation)))
   passed <- has_bs && !has_bhs
   DiagnosticResult$new(
     name = "espodossolo_ferriluvico", passed = passed,
-    layers = which(grepl("^Bs\\b", h$designation %||% character(0))),
+    layers = which(grepl("^Bs\\b", .desg_master(h$designation) %||% character(0))),
     evidence = list(has_bs = has_bs, has_bhs = has_bhs),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Ferriluvicos"
@@ -357,14 +357,14 @@ espodossolo_ferriluvico <- function(pedon) {
 #' @noRd
 espodossolo_ferri_humiluvico <- function(pedon) {
   h <- pedon$horizons
-  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", h$designation))
+  has_bhs <- any(!is.na(h$designation) & grepl("^Bhs", .desg_master(h$designation)))
   passed <- has_bhs ||
               # catch-all: passa se nao casou nas duas primeiras
               (!isTRUE(espodossolo_humiluvico(pedon)$passed) &&
                  !isTRUE(espodossolo_ferriluvico(pedon)$passed))
   DiagnosticResult$new(
     name = "espodossolo_ferri_humiluvico", passed = passed,
-    layers = which(grepl("^Bhs", h$designation %||% character(0))),
+    layers = which(grepl("^Bhs", .desg_master(h$designation) %||% character(0))),
     evidence = list(has_bhs = has_bhs),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 8, Espodossolos -- Ferri-humiluvicos (or catch-all)"
@@ -627,7 +627,7 @@ neossolo_litolico <- function(pedon) {
   #   * a non-empty bottom_cm column (otherwise we have no signal)
   has_B_des <- !is.null(h$designation) &&
                   any(!is.na(h$designation) &
-                        grepl("^[0-9]*B", h$designation))
+                        grepl("^[0-9]*B", .desg_master(h$designation)))
   any_bottom <- length(h$bottom_cm) > 0L && any(!is.na(h$bottom_cm))
   max_depth <- if (any_bottom) max(h$bottom_cm, na.rm = TRUE) else NA_real_
   shallow_no_B <- isTRUE(any_bottom) &&
@@ -797,7 +797,7 @@ organossolo_tiomorfico <- function(pedon) {
 #' @noRd
 organossolo_folico <- function(pedon) {
   h <- pedon$horizons
-  ok <- !is.na(h$designation) & grepl("^O[ahde]?", h$designation)
+  ok <- !is.na(h$designation) & grepl("^O[ahde]?", .desg_master(h$designation))
   passed <- any(ok)
   DiagnosticResult$new(
     name = "organossolo_folico", passed = passed,
