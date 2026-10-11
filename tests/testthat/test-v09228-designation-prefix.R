@@ -98,20 +98,22 @@ test_that("the order of a canonical profile does not depend on how its materials
   }
 })
 
-test_that("the designation patterns of the SiBCS diagnostics read the master horizon", {
-  # every pattern applied to `h$designation` in these files goes through
-  # .desg_master() or .h_master(): a new one that does not would bring the
-  # dependence on the number of the material back
-  dir <- system.file("R", package = "soilKey")
-  if (!nzchar(dir) || !dir.exists(dir)) dir <- file.path("..", "..", "R")
-  skip_if_not(dir.exists(dir), "package sources not available")
-  for (f in c("diagnostics-horizons-sibcs.R", "diagnostics-atributos-sibcs.R",
-              "diagnostics-rsg-sibcs.R", "diagnostics-subordens-sibcs.R",
-              "familia-sibcs.R")) {
-    src <- readLines(file.path(dir, f), warn = FALSE)
-    src <- src[!grepl("^\\s*#", src)]
-    raw <- grep('grepl\\(\\s*"[^"]*",\\s*h\\$designation|test_pattern_match\\(h, "designation"',
-                src, value = TRUE)
-    expect_identical(raw, character(0), info = f)
-  }
+test_that("a test that reads the master horizon reads no raw designation pattern", {
+  # in every function that goes through .desg_master() or .h_master(), no
+  # pattern is left applied to `h$designation` as written: one that was would
+  # bring the dependence on the number of the material back. The functions are
+  # read as loaded, so this holds for the installed package too.
+  ns <- asNamespace("soilKey")
+  src <- vapply(ls(ns, all.names = TRUE), function(f) {
+    x <- get(f, envir = ns)
+    if (is.function(x)) paste(deparse(x), collapse = "\n") else ""
+  }, character(1))
+  reads <- names(src)[grepl(".desg_master(", src, fixed = TRUE) |
+                        grepl(".h_master(", src, fixed = TRUE)]
+  reads <- setdiff(reads, c(".desg_master", ".h_master"))
+  expect_gte(length(reads), 39L)
+  raw <- 'grepl\\("[^"]*",\\s*h\\$designation|test_pattern_match\\(h, "designation"'
+  for (f in reads) expect_false(grepl(raw, src[[f]]), info = f)
+  # and the pattern does catch a raw one
+  expect_true(grepl(raw, 'which(grepl("^B",\n    h$designation))'))
 })
