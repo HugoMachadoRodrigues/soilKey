@@ -61,8 +61,9 @@
 <ul><li>
 <code>sk_register_widget_deps()</code>, called at start-up after the page is rendered, registers what a table, a plot and a map with provider tiles bring: 34 prefixes at start-up in the local run, against 28. Only prefixes that are not registered yet are added, so nothing of the page is re-pointed, and a widget’s own jQuery is left out.</li>
 <li>Maps and map proxies get their provider tiles through <code>sk_provider_tiles()</code>.</li>
-<li>The provider scripts are served from a folder that holds only them. With the leaflet of the container image the provider list is a file leaflet writes to the R session’s temporary folder, and Shiny serves the folder a dependency is in, whole: once a map was drawn, a file of the temporary folder could be requested by name under <code>/leaflet-providers-2.0.0/</code>.</li>
+<li>A provider list in the temporary folder is never served from there. Shiny serves the folder a dependency is in, whole, and leaflet has a fallback that writes the provider list to the R session’s temporary folder; <code>sk_own_dependency()</code> moves such a dependency to a folder that holds only its files. The container image does not take that fallback: there the list comes from the installed leaflet.providers package folder, so no temporary folder was served by the live app. (This note first said it was; a check inside the 0.9.224 image showed otherwise.)</li>
 </ul><p>Checked in a fresh local process, before any session: the two provider scripts answered 404 and now answer 200. In a session through every tab no prefix is re-pointed, and the only new one is the jQuery of plotly’s crosstalk, which the browser does not ask for (the page’s jQuery is there). The base map loads and changes with the selector.</p>
+<p>Checked on the container image: a fresh instance of 0.9.223 answered 404 for the five draw-time scripts before any session (the two provider scripts, the DataTables core, plotly.js and typedarray), and one of 0.9.224 answers 200. Four sessions at once, over three instances, drew every map, table and plot without a failed request.</p>
 </div>
 </div>
     <div class="section level2">

@@ -26,18 +26,26 @@ seen for those.
   is re-pointed, and a widget’s own jQuery is left out.
 - Maps and map proxies get their provider tiles through
   `sk_provider_tiles()`.
-- The provider scripts are served from a folder that holds only them.
-  With the leaflet of the container image the provider list is a file
-  leaflet writes to the R session’s temporary folder, and Shiny serves
-  the folder a dependency is in, whole: once a map was drawn, a file of
-  the temporary folder could be requested by name under
-  `/leaflet-providers-2.0.0/`.
+- A provider list in the temporary folder is never served from there.
+  Shiny serves the folder a dependency is in, whole, and leaflet has a
+  fallback that writes the provider list to the R session’s temporary
+  folder; `sk_own_dependency()` moves such a dependency to a folder that
+  holds only its files. The container image does not take that fallback:
+  there the list comes from the installed leaflet.providers package
+  folder, so no temporary folder was served by the live app. (This note
+  first said it was; a check inside the 0.9.224 image showed otherwise.)
 
 Checked in a fresh local process, before any session: the two provider
 scripts answered 404 and now answer 200. In a session through every tab
 no prefix is re-pointed, and the only new one is the jQuery of plotly’s
 crosstalk, which the browser does not ask for (the page’s jQuery is
 there). The base map loads and changes with the selector.
+
+Checked on the container image: a fresh instance of 0.9.223 answered 404
+for the five draw-time scripts before any session (the two provider
+scripts, the DataTables core, plotly.js and typedarray), and one of
+0.9.224 answers 200. Four sessions at once, over three instances, drew
+every map, table and plot without a failed request.
 
 ## soilKey 0.9.223 (2026-10-10)
 
