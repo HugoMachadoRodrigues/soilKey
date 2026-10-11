@@ -1,3 +1,75 @@
+# soilKey 0.9.227 (2026-10-11)
+
+## SiBCS key: the B nítico test reads cerosidade and structure in the language of the field sheet
+
+SiBCS 2018 (Cap. 2, p. 61-62) asks of a B nítico "cerosidade em quantidade no
+mínimo comum e com grau forte ou moderado" and "estrutura em blocos ou
+prismática". `B_nitico()` compared `clay_films_amount` with the literal English
+terms `c("common", "many", "abundant", "strong")`. The BDsolos export words the
+amount as the Brazilian field sheets do ("Comum" in 1,218 horizons, "Pouca" in
+874, "Abundante" in 523), so the criterion passed in none of its profiles: of
+the 7,694 labelled profiles of the national export, `classify_sibcs()` returned
+Nitossolos for none, although 145 of the 347 whose reference order is
+Nitossolos record cerosidade "comum" or more and "moderada" or more.
+
+* The amount is now read on the ordinal scale of `.clay_films_class()` (none,
+  few / pouca, common / comum, many or abundant / abundante), the reader the
+  WRB nitic horizon already used, in English or Portuguese and whatever the
+  case. `min_cerosidade` keeps its default; its lowest term sets the
+  threshold, and a term the scale does not know passes only if it is listed,
+  as before.
+* A range of amounts is read by its lower end: "Pouca a comum" is below
+  "comum", "Comum a abundante" meets it.
+* The type of structure is matched without depending on accents:
+  "Prismática" and "Prismática que se desfaz" (789 horizons of the export)
+  did not match the pattern `prismatic|prismatica`. The new internal
+  `.field_term()` gives a field term in lower case and without accents.
+
+Profiles described with the English terms are read exactly as before: the 44
+canonical fixtures keep their class in the three systems, and their SiBCS
+order is now the same when their terms are written in Portuguese.
+
+On the national BDsolos export (7,593 profiles with a reference order), default
+mode:
+
+|                                   | 0.9.226 | 0.9.227 |
+|-----------------------------------|--------:|--------:|
+| Order agreement (count)           |   3,182 |   3,245 |
+| Order agreement                   |   41.9% |   42.7% |
+| Reference Nitossolos agreed (347) |       0 |      78 |
+| Reference Argissolos agreed (2,083) |   1,209 |   1,194 |
+
+130 profiles change order: 83 now agree with their reference, 20 no longer do
+and 27 go from one disagreeing order to another. The key returns Nitossolos for
+121 profiles: 78 with that reference, 39 whose reference is Argissolos and 4 of
+other orders. The 39 have at least 350 g/kg of clay from the surface, a B/A
+clay ratio of 1.5 or less and cerosidade "comum" or more: by the data they
+meet the B nítico of the book. 16 of them carry the old name "Podzólico",
+which the label map reads as Argissolos; the book's Anexo I says some
+Podzólicos Vermelho-Escuros Tb and Vermelho-Amarelos Tb went to Nitossolos.
+
+The other 269 reference Nitossolos are still not reached: 160 record no
+cerosidade at all, 42 record it below the threshold, and the rest fail another
+criterion in their own data (most often a B/A ratio above 1.5).
+
+Other benchmarks, before and after:
+
+* BDsolos panel of the EJSS article (800 profiles of AC, AL and AM, 798 with a
+  reference order): 326 to 335 in the default mode (40.9% to 42.0%), 388 to 396
+  in the morphological mode (48.6% to 49.6%). The article's own figures are of
+  v0.9.189 and do not change.
+* FEBR (1,000 profiles): 387 and 496, unchanged. Its loader records no
+  cerosidade.
+* Redape (94 profiles): 61 and 65, unchanged. Its loader already translates the
+  codes of the amount into the English terms.
+
+Not changed here: the grade of cerosidade and of structure is still read by
+the pattern `moder|strong|forte`, under which "Fraca a moderada" passes (27 of
+the 121 profiles now keyed Nitossolos have that grade somewhere; 5 would not
+be Nitossolos if the range were read by its lower end). The clay-film gate of
+the B latossólico (`.argic_strong_films_match()`) reads "comum", "abundante",
+"common" and "abundant" but not "many".
+
 # soilKey 0.9.226 (2026-10-11)
 
 ## SiBCS benchmarks: the old soil names of the reference labels are read as their present-day order

@@ -713,11 +713,24 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' prismatica grau moderado/forte, cerosidade no minimo comum +
 #' moderada, espessura \\>= 30 cm. Argila ativ baixa OR ativ alta +
 #' carater aluminico.
+#'
+#' The amount of cerosidade (\code{clay_films_amount}) and the type of
+#' structure (\code{structure_type}) are read as the field sheet words them,
+#' in English or in Portuguese, whatever the case and the accents: "Comum",
+#' "Abundante" and "Prismatica que se desfaz" (written with its accent) of the
+#' Brazilian surveys count as "common", "many" and "prismatic" do. Until v0.9.226 the amount was
+#' compared with the literal English terms of \code{min_cerosidade}, so no
+#' profile described in Portuguese could have a B nitico. A range of amounts
+#' is read by its lower end: "Pouca a comum" is below "comum".
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param min_clay_pct Numeric threshold or option (see Details).
 #' @param max_b_a_ratio Numeric threshold or option (see Details).
-#' @param min_cerosidade Numeric threshold or option (see Details).
+#' @param min_cerosidade Terms of the amount of cerosidade that satisfy
+#'   criterion (c). The lowest of them on the scale none < few < common < many
+#'   sets the threshold (the default is "common", the "comum" of SiBCS), and
+#'   an amount of that class or above passes, in English or Portuguese. A
+#'   term the scale does not know passes only if it is literally listed.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
@@ -753,11 +766,13 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # or strong (not merely the type in blocks/prismatic). refine-when-present:
   # a RECORDED structure_grade must read moderate/strong; NA grade -> the layer
   # is admitted as before (byte-identical).
+  # v0.9.227: matched on the term without accents (the accented "Prismatica"
+  # and "Poliedrica" of the Brazilian field sheets did not match).
   type_match <- !is.na(h$structure_type[clay_ok]) &
                   grepl(paste0("blocks|block|blocos|bloco|",
                                  "prismatic|prismatica|",
                                  "polyhedral|polyedric|poliedric"),
-                          h$structure_type[clay_ok], ignore.case = TRUE)
+                          .field_term(h$structure_type[clay_ok]))
   grade_ok   <- is.na(h$structure_grade[clay_ok]) |
                   grepl("moder|strong|forte", h$structure_grade[clay_ok],
                           ignore.case = TRUE)
@@ -767,8 +782,18 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # Latossolos (which carry at most "pouca e fraca" clay-skins). The prior test
   # checked only quantity; refine-when-present adds the grade gate via
   # clay_films_strength (NA strength -> byte-identical).
-  ceros_amount  <- !is.na(h$clay_films_amount[clay_ok]) &
-                     h$clay_films_amount[clay_ok] %in% min_cerosidade
+  # v0.9.227: the amount is read on the ordinal scale of .clay_films_class(),
+  # which knows the Portuguese terms beside the English ones. The literal
+  # comparison with `min_cerosidade` let only "common", "many", "abundant" and
+  # "strong" through, so "Comum" and "Abundante" never passed.
+  amt       <- h$clay_films_amount[clay_ok]
+  amt_class <- .clay_films_class(.field_term(amt))
+  min_class <- suppressWarnings(min(.clay_films_class(min_cerosidade),
+                                      na.rm = TRUE))
+  ceros_amount  <- !is.na(amt) &
+                     (amt %in% min_cerosidade |
+                        (is.finite(min_class) & !is.na(amt_class) &
+                           amt_class >= min_class))
   ceros_grade   <- is.na(h$clay_films_strength[clay_ok]) |
                      grepl("moder|strong|forte", h$clay_films_strength[clay_ok],
                              ignore.case = TRUE)
