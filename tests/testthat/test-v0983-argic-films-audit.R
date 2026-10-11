@@ -181,12 +181,16 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # stratification -- a monotone A->Bt clay increase is no longer "stratified")
   # stops false-fluvic Argissolos: Argissolo recall lifts 166 -> 175 and
   # Argissolo->Neossolo confusion drops 60 -> 50.
+  # v0.9.226: two reference labels of RJ are now read, and the key's output
+  # for their profiles is counted: "Latossolo-Amarelo distrofico ..." (keyed
+  # Cambissolos; 43 -> 44) and "Podzolcio Vermelho-Amarelo ..." (keyed
+  # Argissolos; 175 -> 176). The key did not change.
   expect_equal(conf["Latossolos","Latossolos"], 17L)
   expect_equal(conf["Latossolos","Argissolos"], 17L)
-  expect_equal(conf["Latossolos","Cambissolos"], 43L)
+  expect_equal(conf["Latossolos","Cambissolos"], 44L)
   expect_equal(conf["Latossolos","Neossolos"], 37L)
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 175L)
+  expect_equal(conf["Argissolos","Argissolos"], 176L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   expect_equal(conf["Argissolos","Neossolos"], 50L)
 })

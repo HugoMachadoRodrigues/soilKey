@@ -20,8 +20,8 @@ test_that("a first word that is not an order of SiBCS 5 gives NA", {
   not_a_class <- c(
     "CLASSIFICAÇÃO ? CAMBISSOLO HÁPLICO bd Petroplíntico",  # text, not a class
     "Alissolo Crômico Argilúvico plíntico",   # an order of the 1999 edition
-    "LATOSOL AMARELO",                         # an old name without an entry in the map
-    "Terra Roxa estruturada",
+    "HIDROMÓRFICO CINZENTO ÁLICO",             # an old name without an entry in the map
+    "Laterítico Bruno Avermelhado",            # (LATOSOL and Terra Roxa have one since v0.9.226)
     "Typic Umbriorthox ou LATOSSOLO Vermelho Amarelo",   # another system first
     "Pastagem natural.", "*MUDAR*--- Solos Litossólicos", "...", "-", "")
   for (level in c("order", "subordem"))
