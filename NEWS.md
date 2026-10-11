@@ -1,3 +1,45 @@
+# soilKey 0.9.225 (2026-10-11)
+
+## SiBCS benchmarks: a reference label counts only if it is a SiBCS order
+
+`normalise_febr_sibcs()` reads a reference label by its first word, and that
+word came out whatever it was. "CLASSIFICAÇÃO ? CAMBISSOLO HÁPLICO ..." was
+the class "Classificacaos", "Alissolo Crômico" was "Alissolos", "LATOSOL
+AMARELO" was "Latosois" and "ESPODOSSOLO." was "Espodossolo.s". No prediction
+can equal those, yet the benchmarks counted them as scored profiles and as
+errors: 631 of the 7,694 labels of the national BDsolos export, in 79 forms.
+
+* The result must now be one of the 13 orders of SiBCS 5 (the new internal
+  `.SIBCS_ORDERS`) after the legacy map. Anything else is `NA`, so the profile
+  is left out of the scored ones, as a label of the "Solos ..." kind already
+  was.
+* Punctuation around the first word is dropped first, so "ESPODOSSOLO.",
+  "Vertissolo." and "PLANOSSOLO(???)" are read as their orders.
+
+On the national BDsolos export (7,714 profiles, 7,694 with a label):
+
+|                         | 0.9.224 | 0.9.225 |
+|-------------------------|--------:|--------:|
+| Scored profiles         |   7,442 |   6,818 |
+| Order agreement (count) |   2,871 |   2,873 |
+| Order agreement         |   38.6% |   42.1% |
+
+624 labels stop being scored and 7 are now read as an order. The agreement
+rises because the 624 were errors by construction; the key did not change.
+Most of them are names of older editions that have a present-day order and no
+entry in `.SIBCS_LEGACY_ORDER_MAP` yet: "Terra Roxa ..." and other "Terra"
+names (147), "Latosol" (139), "Planosol" (54), "Brunizem" (43), "Bruno Não
+Cálcico" (40). They are left out here, not mapped: which order each one
+belongs to is a pedological decision for the map.
+
+FEBR is not affected: its 1,442 labels are all orders already.
+
+On the BDsolos panel of the EJSS article (800 profiles of AC, AL and AM), run
+at this version, the scored profiles go from 787 to 785: the "Classificação ?"
+and "Alissolo" labels are left out, and "ESPODOSSOLO." is read as Espodossolos
+(a hit in the morphological mode: 381 to 382 of them agree). The article's own
+numbers are those of v0.9.189 and do not change.
+
 # soilKey 0.9.224 (2026-10-10)
 
 ## Pro app: every instance serves the scripts a drawn widget brings

@@ -13,8 +13,10 @@ normalise_febr_sibcs(x, level = c("order", "subordem"))
 }
 \value{
 Character vector of normalised SiBCS names; \code{NA} for
-  labels that are out-of-scope for the comparison
-  (e.g.\ legacy \code{"Solos"} category).
+  labels that are out-of-scope for the comparison: the legacy
+  \code{"Solos"} category, and any label whose first word is not an order
+  of SiBCS 5 after the legacy map (old names without an entry there,
+  names of other systems, text that is not a class).
 }
 \description{
 FEBR ships SiBCS labels in mixed legacy/modern form
@@ -22,6 +24,17 @@ FEBR ships SiBCS labels in mixed legacy/modern form
 Portuguese accents). This helper folds them to the form produced by
 \code{run_sibcs_key()} so that benchmark accuracies can be computed
 without false negatives.
+}
+\details{
+A label is read by its first word, with any punctuation around it dropped
+(\code{"ESPODOSSOLO."} is Espodossolos). Since v0.9.225 the result must be
+one of the 13 orders of SiBCS 5 after the legacy map; otherwise it is
+\code{NA}. Until then the first word came out whatever it was, so
+\code{"CLASSIFICACAO ? CAMBISSOLO ..."} became the class "Classificacaos",
+\code{"ALISSOLO CROMICO"} "Alissolos" and \code{"LATOSOL AMARELO"}
+"Latosois": labels no prediction can equal, which the benchmarks counted
+as scored profiles and as errors (631 of the 7,694 labels of the national
+BDsolos export, in 79 forms).
 }
 \seealso{
 \code{\link{normalise_febr_wrb}}, \code{\link{normalise_febr_usda}}
