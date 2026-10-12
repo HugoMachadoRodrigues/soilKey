@@ -877,11 +877,17 @@ B_planico <- function(pedon) {
   b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
   cor_ok <- integer(0)
   for (i in b_layers) {
-    hue <- h$munsell_hue_moist[i]
+    # v0.9.233: SiBCS 2018, Cap 2, p. 65-66, requirement (a): "Matiz 10YR ou
+    # mais amarelo, cromas <= 3" or "Matizes 7,5YR ou 5YR, cromas <= 2". The
+    # hue is read as a number and a family: the pattern "10YR|2\\.5Y|5Y" also
+    # matched "5YR", "7.5YR" and "2.5YR", which all contain "5Y", so that
+    # those hues passed with chroma 3.
+    hue <- .munsell_hue_parts(h$munsell_hue_moist[i])
     cm  <- h$munsell_chroma_moist[i]
-    if (is.na(hue) || is.na(cm)) next
-    if (grepl("10YR|2\\.5Y|5Y", hue) && cm <= 3) cor_ok <- c(cor_ok, i)
-    else if (grepl("7\\.5YR|5YR", hue) && cm <= 2) cor_ok <- c(cor_ok, i)
+    if (is.na(hue$family) || is.na(cm)) next
+    yellow <- (hue$family == "YR" && hue$number >= 10) || hue$family == "Y"
+    brown  <- hue$family == "YR" && hue$number >= 5 && hue$number < 10
+    if ((yellow && cm <= 3) || (brown && cm <= 2)) cor_ok <- c(cor_ok, i)
   }
   layers_pass <- intersect(abrupt$layers %||% integer(0), cor_ok)
   passed <- length(layers_pass) > 0L

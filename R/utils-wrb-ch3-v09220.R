@@ -105,6 +105,21 @@
   !is.na(x) & (x %in% levels | (is.finite(thr) & !is.na(cls) & cls >= thr))
 }
 
+#' The number and the family of a Munsell hue ("7.5YR" is 7.5 and "YR"), read
+#' with a dot or a comma and whatever the spaces and the case. "N" is the
+#' family "N" with no number. What is not a hue gives NA for both.
+#' @noRd
+.munsell_hue_parts <- function(hue) {
+  none <- list(number = NA_real_, family = NA_character_)
+  x <- toupper(gsub("[[:space:]]", "", as.character(hue)))
+  if (length(x) != 1L || is.na(x) || !nzchar(x)) return(none)
+  if (grepl("^N", x)) return(list(number = NA_real_, family = "N"))
+  m <- regmatches(x, regexec("^([0-9]+(?:[.,][0-9]+)?)(YR|GY|BG|PB|RP|R|Y|G|B|P)$",
+                              x, perl = TRUE))[[1]]
+  if (length(m) < 3L) return(none)
+  list(number = as.numeric(sub(",", ".", m[2], fixed = TRUE)), family = m[3])
+}
+
 #' Tri-state AND: FALSE if any is FALSE, TRUE if all are TRUE, else NA.
 #' @noRd
 .and3 <- function(...) {
