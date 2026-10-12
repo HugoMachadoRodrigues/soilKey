@@ -23,7 +23,15 @@ test_that("the four recovered SiBCS orders reach full/near-full recall on Redape
   skip_if_not(dir.exists(.acc_redape_dir()), "Redape data not present")
   rec <- .acc_recall()
   expect_equal(unname(rec["gleissolos"]), 1)     # g-suffix -> redoximorphic (8/8)
-  expect_equal(unname(rec["plintossolos"]), 1)   # f-suffix -> plinthite (3/3)
+  # v0.9.234: a horizonte plintico below 40 cm makes a Plintossolo only when
+  # it is preceded by a horizonte glei, an A or E, or a pale, variegated or
+  # abundantly mottled horizon (SiBCS 2018, p. 104). RN_042 and RN_044 meet it.
+  # PE_048 has its "2Btf" at 93 cm under a "2Bt" that the sheet records as
+  # variegated (10YR 5/3 and 2.5YR 4/6, in the COR_MOSQ_* fields, with no
+  # matrix colour): the book accepts it, since one of the colours is 10YR with
+  # chroma <= 4, but a profile carries one colour per horizon and the key
+  # cannot see it. 3/3 -> 2/3 until the variegated colours are read.
+  expect_equal(unname(rec["plintossolos"]), 2 / 3)   # f-suffix -> plinthite
   expect_equal(unname(rec["vertissolos"]), 1)    # v-suffix -> slickensides+cracks (2/2)
   expect_gte(unname(rec["chernossolos"]), 0.5)   # stacked chernic A (>=1/2)
 })

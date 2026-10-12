@@ -11,5 +11,11 @@ A \code{\link{PedonRecord}} populated with the canonical horizons and site metad
 }
 \description{
 Reusa fixture WRB Plinthosol -- horizonte plintico iniciando
-dentro de 40 cm.
+dentro de 40 cm. The WRB fixture writes its plinthic horizons "Btv" and
+"Cv", as KST and FAO do. In the Brazilian notation "v" marks vertic
+features and plinthite is "f", which for KST and FAO is frozen soil: a
+suffix read one way by one key is read another way by the next. This
+profile is classified by the three keys (it is one of the demonstration
+profiles of the app), so its horizons carry neither letter ("Bt", "C") and
+its plinthite is the measured one.
 }

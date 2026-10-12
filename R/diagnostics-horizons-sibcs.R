@@ -928,6 +928,26 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
                                   min_thickness = 15) {
   res <- plinthic(pedon, min_thickness = min_thickness,
                     min_plinthite_pct = min_plinthite_pct)
+  # v0.9.234: the Brazilian surveys before the present notation wrote
+  # plinthite as "pl" (B21pl, Cpl) where "f" is written today (Btf). The
+  # morphological mode reads the "f" in plinthic(); here it reads the "pl"
+  # too, with the same thickness.
+  if (.morph_inference_enabled() && !isTRUE(res$passed)) {
+    h  <- pedon$horizons
+    d  <- .desg_master(h$designation)
+    pl <- which(!is.na(d) & grepl("^[A-Z][a-z0-9]*pl", d))
+    thk <- sum(pmax(h$bottom_cm[pl] - h$top_cm[pl], 0), na.rm = TRUE)
+    if (length(pl) > 0L && thk >= min_thickness) {
+      res$passed <- TRUE
+      res$layers <- pl
+      ev <- res$evidence
+      ev$designation_inference <- list(
+        passed = TRUE, layers = pl, source = "designation_pl",
+        details = list(matched_designations = as.character(h$designation[pl]),
+                       total_thickness_cm = thk, min_thickness = min_thickness))
+      res$evidence <- ev
+    }
+  }
   res$name <- "horizonte_plintico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 67-68"
   res
@@ -1122,6 +1142,14 @@ horizonte_vertico <- function(pedon, ...) {
   # 0.5 cm). Pass min_crack_width_cm = 1.0 so the SiBCS vertico is stricter on
   # the field-crack path; the COLE and 'v'-designation paths are unaffected, so
   # a Vertissolo recorded via COLE or a v-modifier designation still passes.
+  # v0.9.234: in the Brazilian notation the suffix "v" marks vertic features
+  # (Bv, Cv, Biv) and the morphological mode reads it. vertic_horizon() keeps
+  # that reading behind an option of its own because it serves WRB and USDA
+  # too, where "v" is plinthite (KST, FAO); it is turned on here, for SiBCS.
+  if (.morph_inference_enabled()) {
+    old <- options(soilKey.vertic_designation_inference = TRUE)
+    on.exit(options(old), add = TRUE)
+  }
   res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0, ...)
   res$name <- "horizonte_vertico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 73"
