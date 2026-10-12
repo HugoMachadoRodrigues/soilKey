@@ -1,5 +1,103 @@
 # Changelog
 
+## soilKey 0.9.234 (2026-10-12)
+
+### SiBCS key: the morphological mode reads “v” and “pl”, and a Plintossolo needs its plinthic horizon where the book says
+
+The morphological mode
+(`options(soilKey.morphological_inference = TRUE)`) lets a horizon
+designation stand for a diagnostic the data cannot test. Two letters of
+the Brazilian notation were not read by it, and reading one of them
+brought out a rule that was looser than the book.
+
+- **“v”, vertic features** (Bv, Cv, Biv).
+  [`vertic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
+  reads the suffix only under an option of its own, because it also
+  serves WRB and USDA, where “v” is plinthite (KST, FAO).
+  `horizonte_vertico()`, the SiBCS wrapper, now turns that reading on in
+  the morphological mode. For WRB and USDA nothing changes.
+- **“pl”, plinthite in the older surveys** (B21pl, Cpl), where “f” is
+  written today. `horizonte_plintico()` reads it in the morphological
+  mode, with the thickness it asks of “f”. Of the 331 profiles of the
+  national BDsolos export whose reference order is Plintossolos, 80
+  carry “pl” and 64 carry “f”.
+- **Where the plinthic horizon starts.** `plintossolo()` accepted a
+  plinthic, litoplinthic or concretionary horizon that started anywhere
+  within 200 cm. The definition (SiBCS 2018, Cap. 3, p. 104; key, Cap.
+  4, p. 113) accepts it within 40 cm, or within 200 cm only “quando
+  precedidos de horizonte glei ou situados imediatamente abaixo do
+  horizonte A ou E ou de outro horizonte que apresente cores pálidas,
+  variegadas ou com mosqueados em quantidade abundante”. The new
+  internal `.plinthic_preceded()` tests that: a glei horizon above; or,
+  in the horizon immediately above, an A or an E, mottles in abundant
+  amount (more than 20%), or a pale colour. For the pale colour the book
+  gives the hue and the chroma (5Y; or 7.5YR, 10YR or 2.5Y with chroma 4
+  or less) and no number for the lightness; a moist value of 5 or more
+  is taken, so that a brown 10YR 4/4 is not pale. Variegated colours are
+  not recorded and not tested.
+- **Cambissolos.** `cambissolo()` excluded a profile with any plinthic
+  horizon, at any depth. The book excludes the ones that meet “os
+  requisitos estabelecidos para serem enquadrados” as Plintossolos (Cap.
+  3, p. 88); the test now asks `plintossolo()`.
+- **The canonical Plintossolo.**
+  [`make_plintossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_plintossolo_canonical.md)
+  reuses the WRB fixture, whose plinthic horizons are written “Btv” and
+  “Cv”. In the Brazilian notation that “v” is vertic, and the Brazilian
+  “f” is frozen soil for KST and FAO. The profile is classified by the
+  three keys (it is one of the demonstration profiles of the app), so
+  its horizons are now “A”, “Bt”, “C”, with the plinthite it has
+  measured. Its class does not change in any of the three systems.
+
+In the default mode, no profile of the national BDsolos export changes
+order (the export records no volume of plinthite). The 44 canonical
+fixtures keep their class in the three systems.
+
+In the morphological mode, on the national BDsolos export (7,593
+profiles with a reference order):
+
+|                                     | 0.9.233 | 0.9.234 |
+|-------------------------------------|--------:|--------:|
+| Order agreement (count)             |   3,855 |   3,957 |
+| Order agreement                     |   50.8% |   52.1% |
+| Reference Plintossolos agreed (331) |      60 |     118 |
+| Profiles keyed Plintossolos         |     155 |     176 |
+| … of which reference Plintossolos   |     39% |     67% |
+| Reference Vertissolos agreed (72)   |      10 |      20 |
+| Reference Argissolos agreed (2,016) |   1,298 |   1,332 |
+
+185 profiles change order: 125 now agree with their reference, 23 no
+longer do, 37 go from one disagreeing order to another. Reading “pl”
+under the old depth rule would have gained 67 Plintossolos and lost 57
+Argissolos, whose plinthite lies deep in a B textural (“B21 B22pl”); the
+rule of the book keeps 58 of those Plintossolos and returns the
+Argissolos. The three losses of the “v” are intergrades (“Chernossolo …
+vertissólico”, “Gleissolo … vertissólico”).
+
+Other benchmarks:
+
+- BDsolos panel of the EJSS article (798 scored): 351 in the default
+  mode, unchanged; 412 to 458 in the morphological mode (51.6% to
+  57.4%). Amazonas, one of its three states, holds most of the “Laterita
+  Hidromórfica” profiles written with “pl”. The article’s own figures
+  are of v0.9.189.
+- FEBR (1,000 profiles): 387 and 496, unchanged.
+- Redape (94 profiles): 67 and 71, the same totals, with two profiles
+  that change in both modes because its loader brings plinthite: a
+  reference Plintossolos whose “2Btf” starts at 93 cm under a “2Bt” no
+  longer agrees, and a reference Argissolos with “Btf” deep under “Bt2”
+  now does. The first is a limit of what a profile carries, not of the
+  rule: the sheet records that “2Bt” as variegated (10YR 5/3 and 2.5YR
+  4/6), which the book accepts (“pelo menos uma das cores deve
+  satisfazer aos itens (a) e (b)”), and a profile holds one colour per
+  horizon. In the national BDsolos export a variegated colour is
+  recorded just above the first plinthic designation in 11 profiles.
+
+Two canonical fixtures written in the notation of KST change SiBCS order
+in the morphological mode, which reads the Brazilian notation: the
+Cryosol, whose “f” (frozen) was read as plinthite at depth, is no longer
+keyed Plintossolos; the WRB Plinthosol, with its “Btv”, is keyed
+Vertissolos.
+
 ## soilKey 0.9.233 (2026-10-12)
 
 ### SiBCS key: the colour of the B plânico is the one the book lists
