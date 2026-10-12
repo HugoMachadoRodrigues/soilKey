@@ -57,22 +57,27 @@
 
 
 #' Map a soilKey \code{structure_grade} string to the SmartSolos integer
-#' (\code{ESTRUTURA_GRAU}: 1=fraca, 2=moderada, 3=forte).
+#' (\code{ESTRUTURA_GRAU}, "de ausente (1) a forte (4)": 1 = ausente,
+#' 2 = fraca, 3 = moderada, 4 = forte). Until v0.9.236 the grade was sent on a
+#' scale of three, so that a weak structure reached the service as an absent
+#' one and a strong one as a moderate one.
 #' @noRd
 .smartsolos_struct_grade <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
   out <- switch(s,
-    "weak"        = 1L, "fraca"     = 1L, "fraco" = 1L,
-    "moderate"    = 2L, "moderada"  = 2L, "moderado" = 2L,
-    "strong"      = 3L, "forte"     = 3L,
+    "structureless" = 1L, "absent" = 1L, "ausente" = 1L,
+    "weak"        = 2L, "fraca"     = 2L, "fraco" = 2L,
+    "moderate"    = 3L, "moderada"  = 3L, "moderado" = 3L,
+    "strong"      = 4L, "forte"     = 4L,
     NA_integer_)
   out
 }
 
 
-#' Map \code{structure_size} (very fine .. very coarse) to SmartSolos
-#' \code{ESTRUTURA_TAMANHO} (1..5).
+#' Map \code{structure_size} (very fine .. extremely coarse) to SmartSolos
+#' \code{ESTRUTURA_TAMANHO} ("de muito pequeno (1) a extremamente grande
+#' (6)").
 #' @noRd
 .smartsolos_struct_size <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
@@ -83,21 +88,26 @@
     "medium"     = 3L, "media"           = 3L, "media"           = 3L,
     "coarse"     = 4L, "grande"          = 4L,
     "very coarse"= 5L, "muito grande"    = 5L,
+    "extremely coarse" = 6L, "extremamente grande" = 6L,
     NA_integer_)
 }
 
 
-#' Map \code{structure_type} to SmartSolos \code{ESTRUTURA_TIPO} (1..6).
+#' Map \code{structure_type} to SmartSolos \code{ESTRUTURA_TIPO}: "laminar
+#' (1), prismatica (2), colunar (3), blocos angulares (4), blocos subangulares
+#' (5), granular (6), grumosa (7)". Until v0.9.236 the types were sent in
+#' another order (granular as 1, subangular blocks as 3, columnar as 5).
 #' @noRd
 .smartsolos_struct_type <- function(x) {
   if (is.null(x) || is.na(x)) return(NA_integer_)
   s <- tolower(trimws(as.character(x)))
-  if (grepl("granular", s)) return(1L)
-  if (grepl("subangular", s)) return(3L)
-  if (grepl("angular", s))    return(2L)
-  if (grepl("prism",     s))  return(4L)
-  if (grepl("column",    s) || grepl("colunar", s)) return(5L)
-  if (grepl("lamin",     s))  return(6L)
+  if (grepl("lamin|platy", s)) return(1L)
+  if (grepl("prism",     s))  return(2L)
+  if (grepl("column",    s) || grepl("colunar", s)) return(3L)
+  if (grepl("subangular", s)) return(5L)
+  if (grepl("angular", s))    return(4L)
+  if (grepl("granular", s)) return(6L)
+  if (grepl("crumb|grumos", s)) return(7L)
   NA_integer_
 }
 
