@@ -388,13 +388,23 @@ cambissolo <- function(pedon) {
 #' abundante".
 #'
 #' Read from the profile: a glei horizon above; or, in the layer immediately
-#' above, an A or an E horizon, mottles in abundant amount ("> 20% em
-#' volume"), or a pale colour. The book gives the hue and the chroma of a
-#' pale layer ("Matiz 5Y; ou Matizes 7,5YR, 10YR ou 2,5Y com croma menor ou
-#' igual a 4") and calls it "acinzentada ou amarelado clara" without a
-#' number for the lightness; a moist value of 5 or more is taken here, so
-#' that a brown 10YR 4/4 is not pale. Variegated colours are not recorded in
-#' the profiles and are not tested.
+#' above, an A or an E horizon, a pale colour, variegated colours or mottles
+#' in abundant amount. The three kinds of colour answer to the same two
+#' items, "a) Matiz 5Y; ou b) Matizes 7,5YR, 10YR ou 2,5Y com croma menor ou
+#' igual a 4" (`.plintossolo_items_a_b()`):
+#'
+#' * a pale layer "devera ter matizes e cromas de acordo com os itens (a) e
+#'   (b)". The book calls it "acinzentada ou amarelado clara" without a
+#'   number for the lightness; a moist value of 5 or more is taken here, so
+#'   that a brown 10YR 4/4 is not pale;
+#' * of a variegated layer, "pelo menos uma das cores deve satisfazer aos
+#'   itens (a) e (b)" (`variegated_colors`; hue and chroma only, as written);
+#' * mottles "deverao ocorrer em quantidade abundante (> 20% em volume) numa
+#'   matriz de coloracao avermelhada ou amarelada e deverao apresentar
+#'   matizes e cromas conforme os itens (a) e (b)". The amount is asked
+#'   always; the colour, when the sheet records it (`mottle_colors`), of at
+#'   least one of the mottles. The colour of the matrix is not tested: the
+#'   book gives no hue for "avermelhada ou amarelada".
 #' @noRd
 .plinthic_preceded <- function(pedon, layers) {
   h <- pedon$horizons
@@ -409,18 +419,39 @@ cambissolo <- function(pedon) {
   above <- o[pos - 1L]
   d <- .desg_master(h$designation[above])
   if (!is.na(d) && grepl("^[AE]", d)) return(TRUE)
+  # mottles: abundant, and of a colour that satisfies (a) or (b) when the
+  # sheet records their colours
   mott <- h$redoximorphic_features_pct[above]
-  if (!is.na(mott) && mott > 20) return(TRUE)
-  hue <- .munsell_hue_parts(h$munsell_hue_moist[above])
-  cm  <- h$munsell_chroma_moist[above]
-  vm  <- h$munsell_value_moist[above]
-  if (!is.na(hue$family) && !is.na(vm) && vm >= 5) {
-    if (hue$family == "Y" && hue$number == 5) return(TRUE)
-    if (!is.na(cm) && cm <= 4 &&
-          ((hue$family == "YR" && hue$number %in% c(7.5, 10)) ||
-             (hue$family == "Y" && hue$number == 2.5))) return(TRUE)
+  if (!is.na(mott) && mott > 20) {
+    mc <- .munsell_notations(h$mottle_colors[above])
+    if (nrow(mc) == 0L ||
+          any(.plintossolo_items_a_b(mc$number, mc$family, mc$chroma))) return(TRUE)
   }
+  # pale colour: (a) or (b), with a moist value of 5 or more
+  hue <- .munsell_hue_parts(h$munsell_hue_moist[above])
+  vm  <- h$munsell_value_moist[above]
+  if (!is.na(vm) && vm >= 5 &&
+        .plintossolo_items_a_b(hue$number, hue$family,
+                               h$munsell_chroma_moist[above])) return(TRUE)
+  # variegated colours: at least one of them satisfies (a) or (b)
+  vc <- .munsell_notations(h$variegated_colors[above])
+  if (nrow(vc) > 0L &&
+        any(.plintossolo_items_a_b(vc$number, vc$family, vc$chroma))) return(TRUE)
   FALSE
+}
+
+
+#' Items (a) and (b) of the definition of Plintossolos (SiBCS 2018, Cap 3,
+#' p. 104), for a colour given by the number and the family of its hue and by
+#' its chroma: "a) Matiz 5Y; ou b) Matizes 7,5YR, 10YR ou 2,5Y com croma menor
+#' ou igual a 4". Vectorised; a colour that is not recorded does not satisfy.
+#' @noRd
+.plintossolo_items_a_b <- function(number, family, chroma) {
+  known <- !is.na(number) & !is.na(family)
+  item_a <- known & family == "Y" & number == 5
+  item_b <- known & !is.na(chroma) & chroma <= 4 &
+    ((family == "YR" & number %in% c(7.5, 10)) | (family == "Y" & number == 2.5))
+  item_a | item_b
 }
 
 

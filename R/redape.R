@@ -185,6 +185,16 @@ download_redape_dataset <- function(dest_dir,
   # OC: g/kg -> %
   oc_g <- h$C_ORG %||% NA_real_
   oc_pct <- if (!is.na(oc_g)) oc_g / 10 else NA_real_
+  # v0.9.235: GeoTab gives up to three more colours in COR_MOSQ_*. Beside a
+  # matrix colour (COR_UMIDA_*) they are the colours of the mottles; when the
+  # horizon has no matrix colour it is variegated and they are its colours.
+  one <- function(x) if (is.null(x) || length(x) != 1L) NA else x
+  more <- .munsell_notation_list(
+    c(one(h$COR_MOSQ_MATIZ_1), one(h$COR_MOSQ_MATIZ_2), one(h$COR_MOSQ_MATIZ_3)),
+    c(one(h$COR_MOSQ_VALOR_1), one(h$COR_MOSQ_VALOR_2), one(h$COR_MOSQ_VALOR_3)),
+    c(one(h$COR_MOSQ_CROMA_1), one(h$COR_MOSQ_CROMA_2), one(h$COR_MOSQ_CROMA_3)))
+  matrix_hue <- one(h$COR_UMIDA_MATIZ)
+  has_matrix <- !is.na(matrix_hue) && nzchar(trimws(as.character(matrix_hue)))
 
   list(
     top_cm                  = h$LIMITE_SUP %||% NA_real_,
@@ -196,6 +206,8 @@ download_redape_dataset <- function(dest_dir,
     munsell_hue_dry         = h$COR_SECA_MATIZ %||% NA_character_,
     munsell_value_dry       = h$COR_SECA_VALOR %||% NA_real_,
     munsell_chroma_dry      = h$COR_SECA_CROMA %||% NA_real_,
+    variegated_colors       = if (has_matrix) NA_character_ else more,
+    mottle_colors           = if (has_matrix) more else NA_character_,
     clay_pct                = if (!is.na(argila_g))    argila_g / 10 else NA_real_,
     silt_pct                = if (!is.na(silte_g))     silte_g  / 10 else NA_real_,
     sand_pct                = sand_pct,

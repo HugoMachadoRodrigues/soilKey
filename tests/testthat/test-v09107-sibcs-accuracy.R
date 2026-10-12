@@ -29,9 +29,10 @@ test_that("the four recovered SiBCS orders reach full/near-full recall on Redape
   # PE_048 has its "2Btf" at 93 cm under a "2Bt" that the sheet records as
   # variegated (10YR 5/3 and 2.5YR 4/6, in the COR_MOSQ_* fields, with no
   # matrix colour): the book accepts it, since one of the colours is 10YR with
-  # chroma <= 4, but a profile carries one colour per horizon and the key
-  # cannot see it. 3/3 -> 2/3 until the variegated colours are read.
-  expect_equal(unname(rec["plintossolos"]), 2 / 3)   # f-suffix -> plinthite
+  # chroma <= 4. A profile carried one colour per horizon and the key could
+  # not see it (3/3 -> 2/3).
+  # v0.9.235: the variegated colours are loaded and read (2/3 -> 3/3).
+  expect_equal(unname(rec["plintossolos"]), 1)   # f-suffix -> plinthite
   expect_equal(unname(rec["vertissolos"]), 1)    # v-suffix -> slickensides+cracks (2/2)
   expect_gte(unname(rec["chernossolos"]), 0.5)   # stacked chernic A (>=1/2)
 })
