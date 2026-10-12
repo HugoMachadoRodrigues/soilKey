@@ -42,3 +42,5 @@
 ^share$
 ^inst/extdata/wosis_sa_sample\.rds$
 ^\.gcloudignore$
+^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$

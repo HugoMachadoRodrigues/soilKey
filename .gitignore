@@ -16,6 +16,9 @@ vignettes/*.html
 vignettes/*_files/
 # R CMD check scratch dirs (regenerated each run)
 *.Rcheck/
+# testthat failure artefacts (written by any test run that has a failure)
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
 # Local-only PROJ/GDAL env (.Rbuildignore'd; per-machine paths)
 .Renviron
 /soil_data/
