@@ -61,5 +61,12 @@ and "Prismatica que se desfaz" (written with its accent) of the
 Brazilian surveys count as "common", "many" and "prismatic" do. Until
 v0.9.226 the amount was compared with the literal English terms of
 `min_cerosidade`, so no profile described in Portuguese could have a B
-nitico. A range of amounts is read by its lower end: "Pouca a comum" is
-below "comum".
+nitico.
+
+The criteria of the B nitico are minima ("cerosidade em quantidade no
+minimo comum e com grau forte ou moderado", "estrutura ... de grau de
+desenvolvimento moderado ou forte"), and a range meets a minimum only if
+all of it does: an amount or a grade written as a range is read by its
+lower end. "Pouca a comum" is below "comum" and, since v0.9.231, "Fraca
+a moderada" is below "moderada" for the cerosidade and for the
+structure.

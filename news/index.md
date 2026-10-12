@@ -1,5 +1,45 @@
 # Changelog
 
+## soilKey 0.9.231 (2026-10-12)
+
+### SiBCS key: in the B nítico, a grade written as a range is read by its lower end
+
+SiBCS 2018 states the criteria of the B nítico as minima: structure “de
+grau de desenvolvimento moderado ou forte”, cerosidade “em quantidade no
+mínimo comum e com grau forte ou moderado” (Cap. 2, p. 61-62). A range
+meets a minimum only if all of it does. The amount of cerosidade has
+been read that way since 0.9.227 (“Pouca a comum” is below “comum”); the
+two grades were read with the pattern `moder|strong|forte`, which “Fraca
+a moderada” matches.
+
+- The new internal `.grade_class()` reads a grade of development on the
+  scale weak / fraca, moderate / moderada, strong / forte, in English or
+  Portuguese, and a range by its lower end.
+  [`B_nitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_nitico.md)
+  uses it for the grade of the structure and for the grade of the
+  cerosidade. “Moderada a forte” passes; “Fraca a moderada” and “weak to
+  moderate” do not. A grade that was not recorded does not fail the
+  layer, as before.
+
+The other kind of criterion is a maximum, and there a range counts by
+its upper end: the B latossólico admits “no máximo cerosidade pouca e
+fraca” (p. 58-59), so “Pouca a comum” exceeds it. The clay-film gate of
+the B latossólico already reads it so and is not changed.
+
+The 44 canonical fixtures keep their class in the three systems.
+
+On the national BDsolos export (7,593 profiles with a reference order),
+default mode, seven profiles change order: two reference Nitossolos are
+no longer reached (PR 6654, SC 11902), two reference Argissolos are no
+longer keyed Nitossolos and agree (MT 6184, MT 10801), one reference
+Argissolos goes from Argissolos to Neossolos (MG 5916), and two go from
+one disagreeing order to another. Order agreement 3,341 to 3,340;
+reference Nitossolos agreed 80 to 78, Argissolos 1,179 to 1,180.
+
+The other benchmarks do not change: the BDsolos panel of the EJSS
+article (351 and 412 of 798), FEBR (387 and 496 of 1,000) and Redape (67
+and 71 of 94).
+
 ## soilKey 0.9.230 (2026-10-12)
 
 ### SiBCS key: the clay-film gate of the B latossólico reads “many”

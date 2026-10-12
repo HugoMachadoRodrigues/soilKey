@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.230</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.231</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.231" id="soilkey-09231-2026-10-12">soilKey 0.9.231 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09231-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-in-the-b-nítico-a-grade-written-as-a-range-is-read-by-its-lower-end-0-9-231">SiBCS key: in the B nítico, a grade written as a range is read by its lower end<a class="anchor" aria-label="anchor" href="#sibcs-key-in-the-b-n%C3%ADtico-a-grade-written-as-a-range-is-read-by-its-lower-end-0-9-231"></a></h3>
+<p>SiBCS 2018 states the criteria of the B nítico as minima: structure “de grau de desenvolvimento moderado ou forte”, cerosidade “em quantidade no mínimo comum e com grau forte ou moderado” (Cap. 2, p. 61-62). A range meets a minimum only if all of it does. The amount of cerosidade has been read that way since 0.9.227 (“Pouca a comum” is below “comum”); the two grades were read with the pattern <code>moder|strong|forte</code>, which “Fraca a moderada” matches.</p>
+<ul><li>The new internal <code>.grade_class()</code> reads a grade of development on the scale weak / fraca, moderate / moderada, strong / forte, in English or Portuguese, and a range by its lower end. <code><a href="../reference/B_nitico.html">B_nitico()</a></code> uses it for the grade of the structure and for the grade of the cerosidade. “Moderada a forte” passes; “Fraca a moderada” and “weak to moderate” do not. A grade that was not recorded does not fail the layer, as before.</li>
+</ul><p>The other kind of criterion is a maximum, and there a range counts by its upper end: the B latossólico admits “no máximo cerosidade pouca e fraca” (p. 58-59), so “Pouca a comum” exceeds it. The clay-film gate of the B latossólico already reads it so and is not changed.</p>
+<p>The 44 canonical fixtures keep their class in the three systems.</p>
+<p>On the national BDsolos export (7,593 profiles with a reference order), default mode, seven profiles change order: two reference Nitossolos are no longer reached (PR 6654, SC 11902), two reference Argissolos are no longer keyed Nitossolos and agree (MT 6184, MT 10801), one reference Argissolos goes from Argissolos to Neossolos (MG 5916), and two go from one disagreeing order to another. Order agreement 3,341 to 3,340; reference Nitossolos agreed 80 to 78, Argissolos 1,179 to 1,180.</p>
+<p>The other benchmarks do not change: the BDsolos panel of the EJSS article (351 and 412 of 798), FEBR (387 and 496 of 1,000) and Redape (67 and 71 of 94).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.230" id="soilkey-09230-2026-10-12">soilKey 0.9.230 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09230-2026-10-12"></a></h2>
 <div class="section level3">
