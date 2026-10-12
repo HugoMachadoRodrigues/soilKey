@@ -264,7 +264,7 @@ test_shrink_swell_cracks <- function(h, min_width_cm = 0.5,
         path = "measured", passed = layer_pass
       )
     } else if ((!is.na(desg) && grepl("ss|Vss", desg)) ||
-               (!is.na(sl) && sl %in% c("common", "many", "continuous"))) {
+               (!is.na(sl) && .amount_at_least(sl, c("common", "many", "continuous")))) {
       layer_pass <- TRUE
       details[[as.character(i)]] <- list(
         idx = i, designation = desg, slickensides = sl,

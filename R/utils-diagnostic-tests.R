@@ -1361,7 +1361,9 @@ test_slickensides_present <- function(h,
       missing <- c(missing, "slickensides")
       next
     }
-    ok <- val %in% levels
+    # v0.9.232: the amount is read in either language ("Comum", "Abundante"
+    # of the Brazilian field sheets), a range by its lower end.
+    ok <- .amount_at_least(val, levels)
     details[[as.character(i)]] <- list(
       idx = i, slickensides = val,
       accepted_levels = levels, passed = ok
