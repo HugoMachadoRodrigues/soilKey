@@ -779,11 +779,11 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                                  "prismatic|prismatica|",
                                  "polyhedral|polyedric|poliedric"),
                           .field_term(h$structure_type[clay_ok]))
-  # v0.9.231: the grade is read on the scale of .grade_class(), where a range
+  # v0.9.231: the grade is read on the scale of .field_grade_class(), where a range
   # counts by its lower end: "Fraca a moderada" is not "moderado ou forte".
   # The pattern "moder|strong|forte" let it through.
   grade_ok   <- is.na(h$structure_grade[clay_ok]) |
-                  .grade_class(h$structure_grade[clay_ok]) %in% 2:3
+                  .field_grade_class(h$structure_grade[clay_ok]) %in% 2:3
   struct_ok  <- any(type_match & grade_ok)
   # Step 4: cerosidade. SiBCS Cap 2 p.62 (c): quantity >= "comum" AND GRADE
   # >= moderate ("grau forte ou moderado") -- the critical discriminant vs
@@ -803,7 +803,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                         (is.finite(min_class) & !is.na(amt_class) &
                            amt_class >= min_class))
   ceros_grade   <- is.na(h$clay_films_strength[clay_ok]) |
-                     .grade_class(h$clay_films_strength[clay_ok]) %in% 2:3
+                     .field_grade_class(h$clay_films_strength[clay_ok]) %in% 2:3
   cerosidade_ok <- any(ceros_amount & ceros_grade)
   # Step 5: thickness. SiBCS Cap 2 p.62 (a): >= 30 cm, EXCEPT >= 15 cm when a
   # lithic / lithic-fragmentary contact occurs within the first 50 cm.
