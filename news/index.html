@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.232</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.233</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,19 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.233" id="soilkey-09233-2026-10-12">soilKey 0.9.233 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09233-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-the-colour-of-the-b-plânico-is-the-one-the-book-lists-0-9-233">SiBCS key: the colour of the B plânico is the one the book lists<a class="anchor" aria-label="anchor" href="#sibcs-key-the-colour-of-the-b-pl%C3%A2nico-is-the-one-the-book-lists-0-9-233"></a></h3>
+<p>SiBCS 2018 (Cap. 2, p. 65-66) asks of a B plânico a matrix colour of “Matiz 10YR ou mais amarelo, cromas ≤ 3” or of “Matizes 7,5YR ou 5YR, cromas ≤ 2”. <code><a href="../reference/B_planico.html">B_planico()</a></code> tested the first with the pattern <code>10YR|2\.5Y|5Y</code>, which “5YR”, “7.5YR” and “2.5YR” also match, because all three contain “5Y”. A B horizon of hue 5YR or 7.5YR passed with chroma 3, and one of hue 2.5YR passed at all.</p>
+<ul><li>The hue is now read as a number and a family by the new internal <code>.munsell_hue_parts()</code> (“7.5YR” and “7,5YR” are 7.5 and “YR”). 10YR and the Y hues pass with chroma 3 or less; from 5YR up to, not including, 10YR, with chroma 2 or less; a redder hue does not pass.</li>
+<li>Neutral and gley hues (N, GY, G, B) are not among the requirements the book lists and do not pass, as before.</li>
+</ul><p>The alternatives (b) and (c) of the book, a variegated colour and a matrix of chroma 4 or more with mottles of low chroma, need the colours of the mottles, which the profiles do not carry; they are not tested, as before.</p>
+<p>The 44 canonical fixtures keep their class in the three systems.</p>
+<p>On the national BDsolos export (7,593 profiles with a reference order), nineteen profiles change order in the default mode: seven now agree with their reference, six no longer do and six go from one disagreeing order to another. Order agreement 3,348 to 3,349; reference Planossolos agreed 95 to 91, Chernossolos 26 to 29, Argissolos 1,180 to 1,182. In the morphological mode, 3,854 to 3,855.</p>
+<p>The other benchmarks do not change: the BDsolos panel of the EJSS article (351 and 412 of 798), FEBR (387 and 496 of 1,000) and Redape (67 and 71 of 94).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.232" id="soilkey-09232-2026-10-12">soilKey 0.9.232 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09232-2026-10-12"></a></h2>
 <div class="section level3">
