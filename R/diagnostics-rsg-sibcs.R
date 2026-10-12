@@ -362,8 +362,11 @@ cambissolo <- function(pedon) {
   pl <- horizonte_plintico(pedon)
   co <- horizonte_concrecionario(pedon)
   li <- horizonte_litoplintico(pedon)
-  is_plintossolo <- any(c(isTRUE(pl$passed), isTRUE(co$passed),
-                            isTRUE(li$passed)))
+  # v0.9.234: a Cambissolo is excluded when it meets "os requisitos
+  # estabelecidos para serem enquadrados" as a Plintossolo (SiBCS 2018, Cap 3,
+  # p. 88), which include where the plinthic horizon starts; any plinthic
+  # horizon, at any depth, used to exclude it.
+  is_plintossolo <- isTRUE(plintossolo(pedon)$passed)
   passed <- !is_plintossolo
   DiagnosticResult$new(
     name = "cambissolo", passed = passed, layers = bi$layers,
@@ -374,6 +377,50 @@ cambissolo <- function(pedon) {
     missing = bi$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
   )
+}
+
+
+#' Whether a plinthic, litoplinthic or concretionary horizon that starts below
+#' 40 cm is preceded as condition (b) of the definition of Plintossolos asks
+#' (SiBCS 2018, Cap 3, p. 104): "precedidos de horizonte glei ou situados
+#' imediatamente abaixo do horizonte A ou E ou de outro horizonte que
+#' apresente cores palidas, variegadas ou com mosqueados em quantidade
+#' abundante".
+#'
+#' Read from the profile: a glei horizon above; or, in the layer immediately
+#' above, an A or an E horizon, mottles in abundant amount ("> 20% em
+#' volume"), or a pale colour. The book gives the hue and the chroma of a
+#' pale layer ("Matiz 5Y; ou Matizes 7,5YR, 10YR ou 2,5Y com croma menor ou
+#' igual a 4") and calls it "acinzentada ou amarelado clara" without a
+#' number for the lightness; a moist value of 5 or more is taken here, so
+#' that a brown 10YR 4/4 is not pale. Variegated colours are not recorded in
+#' the profiles and are not tested.
+#' @noRd
+.plinthic_preceded <- function(pedon, layers) {
+  h <- pedon$horizons
+  if (length(layers) == 0L) return(FALSE)
+  o <- order(h$top_cm)
+  first <- layers[which.min(h$top_cm[layers])]
+  pos <- match(first, o)
+  top <- h$top_cm[first]
+  gl <- horizonte_glei(pedon)
+  if (isTRUE(gl$passed) && any(h$top_cm[gl$layers] < top, na.rm = TRUE)) return(TRUE)
+  if (is.na(pos) || pos < 2L) return(FALSE)
+  above <- o[pos - 1L]
+  d <- .desg_master(h$designation[above])
+  if (!is.na(d) && grepl("^[AE]", d)) return(TRUE)
+  mott <- h$redoximorphic_features_pct[above]
+  if (!is.na(mott) && mott > 20) return(TRUE)
+  hue <- .munsell_hue_parts(h$munsell_hue_moist[above])
+  cm  <- h$munsell_chroma_moist[above]
+  vm  <- h$munsell_value_moist[above]
+  if (!is.na(hue$family) && !is.na(vm) && vm >= 5) {
+    if (hue$family == "Y" && hue$number == 5) return(TRUE)
+    if (!is.na(cm) && cm <= 4 &&
+          ((hue$family == "YR" && hue$number %in% c(7.5, 10)) ||
+             (hue$family == "Y" && hue$number == 2.5))) return(TRUE)
+  }
+  FALSE
 }
 
 
@@ -410,7 +457,13 @@ plintossolo <- function(pedon) {
   all_layers <- unique(c(pl$layers, co$layers, li$layers))
   pl_top <- min(h$top_cm[all_layers], na.rm = TRUE)
   in_40 <- pl_top <= 40
-  in_200 <- pl_top <= 200
+  # v0.9.234: condition (b) of the definition (SiBCS 2018, Cap 3, p. 104; key,
+  # Cap 4, p. 113): within 200 cm only "quando precedidos de horizonte glei ou
+  # situados imediatamente abaixo do horizonte A ou E ou de outro horizonte
+  # que apresente cores palidas, variegadas ou com mosqueados em quantidade
+  # abundante". The depth alone was taken, so that plinthite deep in a B
+  # textural made a Plintossolo.
+  in_200 <- pl_top <= 200 && .plinthic_preceded(pedon, all_layers)
   # Exclusao: B planico de carater sodico
   excluded <- isTRUE(bp$passed) && isTRUE(sod$passed) &&
                 length(intersect(all_layers, bp$layers)) > 0L
