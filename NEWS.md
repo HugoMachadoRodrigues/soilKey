@@ -1,3 +1,36 @@
+# soilKey 0.9.233 (2026-10-12)
+
+## SiBCS key: the colour of the B plânico is the one the book lists
+
+SiBCS 2018 (Cap. 2, p. 65-66) asks of a B plânico a matrix colour of "Matiz
+10YR ou mais amarelo, cromas ≤ 3" or of "Matizes 7,5YR ou 5YR, cromas ≤ 2".
+`B_planico()` tested the first with the pattern `10YR|2\.5Y|5Y`, which "5YR",
+"7.5YR" and "2.5YR" also match, because all three contain "5Y". A B horizon of
+hue 5YR or 7.5YR passed with chroma 3, and one of hue 2.5YR passed at all.
+
+* The hue is now read as a number and a family by the new internal
+  `.munsell_hue_parts()` ("7.5YR" and "7,5YR" are 7.5 and "YR"). 10YR and the
+  Y hues pass with chroma 3 or less; from 5YR up to, not including, 10YR,
+  with chroma 2 or less; a redder hue does not pass.
+* Neutral and gley hues (N, GY, G, B) are not among the requirements the book
+  lists and do not pass, as before.
+
+The alternatives (b) and (c) of the book, a variegated colour and a matrix of
+chroma 4 or more with mottles of low chroma, need the colours of the mottles,
+which the profiles do not carry; they are not tested, as before.
+
+The 44 canonical fixtures keep their class in the three systems.
+
+On the national BDsolos export (7,593 profiles with a reference order),
+nineteen profiles change order in the default mode: seven now agree with
+their reference, six no longer do and six go from one disagreeing order to
+another. Order agreement 3,348 to 3,349; reference Planossolos agreed 95 to
+91, Chernossolos 26 to 29, Argissolos 1,180 to 1,182. In the morphological
+mode, 3,854 to 3,855.
+
+The other benchmarks do not change: the BDsolos panel of the EJSS article (351
+and 412 of 798), FEBR (387 and 496 of 1,000) and Redape (67 and 71 of 94).
+
 # soilKey 0.9.232 (2026-10-12)
 
 ## BDsolos loader: slickensides, gravel in per cent, hues with a dot

@@ -199,8 +199,11 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # v0.9.229: four RJ labels that begin with "Argissolo" and state Eutrofico
   # and Ta are read as Luvissolos and leave this row: two keyed Argissolos
   # (172 -> 170) and two keyed Neossolos (45 -> 43). The key did not change.
+  # v0.9.233: the colour of the B planico follows the book; two reference
+  # Argissolos of RJ whose B is 5YR or 7.5YR with chroma 3 are no longer keyed
+  # Planossolos and agree (170 -> 172).
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 170L)
+  expect_equal(conf["Argissolos","Argissolos"], 172L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
