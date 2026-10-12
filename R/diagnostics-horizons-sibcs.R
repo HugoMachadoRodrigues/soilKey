@@ -720,8 +720,14 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' "Abundante" and "Prismatica que se desfaz" (written with its accent) of the
 #' Brazilian surveys count as "common", "many" and "prismatic" do. Until v0.9.226 the amount was
 #' compared with the literal English terms of \code{min_cerosidade}, so no
-#' profile described in Portuguese could have a B nitico. A range of amounts
-#' is read by its lower end: "Pouca a comum" is below "comum".
+#' profile described in Portuguese could have a B nitico.
+#'
+#' The criteria of the B nitico are minima ("cerosidade em quantidade no
+#' minimo comum e com grau forte ou moderado", "estrutura ... de grau de
+#' desenvolvimento moderado ou forte"), and a range meets a minimum only if
+#' all of it does: an amount or a grade written as a range is read by its
+#' lower end. "Pouca a comum" is below "comum" and, since v0.9.231, "Fraca a
+#' moderada" is below "moderada" for the cerosidade and for the structure.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param min_clay_pct Numeric threshold or option (see Details).
@@ -773,9 +779,11 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                                  "prismatic|prismatica|",
                                  "polyhedral|polyedric|poliedric"),
                           .field_term(h$structure_type[clay_ok]))
+  # v0.9.231: the grade is read on the scale of .grade_class(), where a range
+  # counts by its lower end: "Fraca a moderada" is not "moderado ou forte".
+  # The pattern "moder|strong|forte" let it through.
   grade_ok   <- is.na(h$structure_grade[clay_ok]) |
-                  grepl("moder|strong|forte", h$structure_grade[clay_ok],
-                          ignore.case = TRUE)
+                  .grade_class(h$structure_grade[clay_ok]) %in% 2:3
   struct_ok  <- any(type_match & grade_ok)
   # Step 4: cerosidade. SiBCS Cap 2 p.62 (c): quantity >= "comum" AND GRADE
   # >= moderate ("grau forte ou moderado") -- the critical discriminant vs
@@ -795,8 +803,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                         (is.finite(min_class) & !is.na(amt_class) &
                            amt_class >= min_class))
   ceros_grade   <- is.na(h$clay_films_strength[clay_ok]) |
-                     grepl("moder|strong|forte", h$clay_films_strength[clay_ok],
-                             ignore.case = TRUE)
+                     .grade_class(h$clay_films_strength[clay_ok]) %in% 2:3
   cerosidade_ok <- any(ceros_amount & ceros_grade)
   # Step 5: thickness. SiBCS Cap 2 p.62 (a): >= 30 cm, EXCEPT >= 15 cm when a
   # lithic / lithic-fragmentary contact occurs within the first 50 cm.

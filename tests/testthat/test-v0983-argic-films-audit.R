@@ -202,8 +202,11 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   expect_equal(conf["Argissolos","Latossolos"], 5L)
   expect_equal(conf["Argissolos","Argissolos"], 170L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
-  expect_equal(conf["Argissolos","Neossolos"], 43L)
-  expect_equal(conf["Argissolos","Nitossolos"], 9L)
+  # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
+  # moderada"; the grade is read by its lower end, its B nitico no longer
+  # passes and it goes from Nitossolos to Neossolos (43 -> 44, 9 -> 8).
+  expect_equal(conf["Argissolos","Neossolos"], 44L)
+  expect_equal(conf["Argissolos","Nitossolos"], 8L)
 })
 
 
