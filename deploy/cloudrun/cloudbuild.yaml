@@ -10,7 +10,7 @@
 #
 # The default builder machine (e2-standard-2: 2 vCPU, 8 GB), not a larger one:
 # it is the only type covered by Cloud Build's free tier (2,500 build-minutes a
-# month per billing account), and builds count against the project's US$1
+# month per billing account), and builds count against the project's US$2
 # monthly cap. E2_HIGHCPU_8 cost US$0.016 a minute: the 0.9.209 build ran 22
 # minutes on a slow Ubuntu mirror, about US$0.36. The 1 h timeout leaves room
 # for the slower machine.
