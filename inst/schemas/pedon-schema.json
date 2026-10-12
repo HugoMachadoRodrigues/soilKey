@@ -410,6 +410,12 @@
           },
           "jarosite_present": {
             "type": ["boolean", "null"]
+          },
+          "variegated_colors": {
+            "type": ["string", "null"]
+          },
+          "mottle_colors": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

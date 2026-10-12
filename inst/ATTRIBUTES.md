@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.192)
+# soilKey -- recognised horizon attribute names (v0.9.235)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -221,7 +221,14 @@ these columns; anything else is preserved but ignored by the keys.
 | `particles_630um_pct` | % | numeric | % particles >= 630 um; WRB 2022 Isopteric needs < 5% (Ch 5) | - |
 | `jarosite_present` | - | logical | jarosite mineral present; WRB 2022 Aceric requires it beside pH 3.5-5 (Ch 5) | - |
 
+## The colours a horizon has beside its matrix colour
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `variegated_colors` | - | character | Munsell notations (moist) of the colours of a variegated horizon (coloracao variegada), which has no single matrix colour, separated by ";" ("10YR 5/3; 2.5YR 4/6"); SiBCS Plintossolos (Cap 3, p. 104) | - |
+| `mottle_colors` | - | character | Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by ";" ("10YR 6/2; 5YR 5/8"); SiBCS Plintossolos (Cap 3, p. 104) | - |
+
 ---
 
-_Generated from `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.192._
+_Generated from `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.235._
 

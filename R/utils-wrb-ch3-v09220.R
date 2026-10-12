@@ -120,6 +120,57 @@
   list(number = as.numeric(sub(",", ".", m[2], fixed = TRUE)), family = m[3])
 }
 
+#' A list of colours written as Munsell notations, separated by ";"
+#' ("10YR 5/3; 2.5YR 4/6"), as the columns `variegated_colors` and
+#' `mottle_colors` hold them. `hue`, `value` and `chroma` are vectors with
+#' one element per colour; a colour with no hue is left out, and a missing
+#' value or chroma leaves its place empty ("10YR 5/"). NA when no colour is
+#' left.
+#' @noRd
+.munsell_notation_list <- function(hue, value, chroma) {
+  txt <- function(x) { x <- trimws(as.character(x)); x[is.na(x)] <- ""; x }
+  n <- max(length(hue), length(value), length(chroma))
+  pad <- function(x) c(txt(x), rep("", n - length(x)))
+  hue <- gsub("[[:space:]]+", "", pad(hue))
+  hue <- toupper(sub("^([0-9]+),([0-9]+)", "\\1.\\2", hue))
+  value <- sub(",", ".", pad(value), fixed = TRUE)
+  chroma <- sub(",", ".", pad(chroma), fixed = TRUE)
+  keep <- nzchar(hue)
+  if (!any(keep)) return(NA_character_)
+  paste(sprintf("%s %s/%s", hue[keep], value[keep], chroma[keep]), collapse = "; ")
+}
+
+#' The colours of such a list, one row per colour: the number and the family
+#' of the hue (as `.munsell_hue_parts()` gives them), the value and the
+#' chroma. What is not a notation gives a row of NA; NA or "" gives no row.
+#' @noRd
+.munsell_notations <- function(x) {
+  none <- data.frame(number = numeric(0), family = character(0),
+                     value = numeric(0), chroma = numeric(0),
+                     stringsAsFactors = FALSE)
+  if (length(x) != 1L || is.na(x) || !nzchar(trimws(x))) return(none)
+  parts <- trimws(strsplit(as.character(x), ";", fixed = TRUE)[[1]])
+  parts <- parts[nzchar(parts)]
+  if (length(parts) == 0L) return(none)
+  num <- "([0-9]+(?:[.,][0-9]+)?)"
+  pat <- paste0("^(N|[0-9]+(?:[.,][0-9]+)?[[:space:]]*[A-Za-z]{1,2})[[:space:]]*",
+                num, "?[[:space:]]*(?:/[[:space:]]*", num, "?)?$")
+  as_num <- function(v) if (length(v) != 1L || is.na(v) || !nzchar(v)) NA_real_ else
+    as.numeric(sub(",", ".", v, fixed = TRUE))
+  rows <- lapply(parts, function(p) {
+    m <- regmatches(p, regexec(pat, p, perl = TRUE))[[1]]
+    if (length(m) < 4L)
+      return(data.frame(number = NA_real_, family = NA_character_,
+                        value = NA_real_, chroma = NA_real_,
+                        stringsAsFactors = FALSE))
+    hue <- .munsell_hue_parts(m[2])
+    data.frame(number = hue$number, family = hue$family,
+               value = as_num(m[3]), chroma = as_num(m[4]),
+               stringsAsFactors = FALSE)
+  })
+  do.call(rbind, rows)
+}
+
 #' Tri-state AND: FALSE if any is FALSE, TRUE if all are TRUE, else NA.
 #' @noRd
 .and3 <- function(...) {

@@ -121,7 +121,18 @@
   # BDsolos export ordinal "pouco / comum / abundante" -> percent via
   # .bdsolos_mosqueado_to_pct(). Used by gleyic_properties / glei_horizon
   # to fire Gleissolos diagnostics on perfis hidromorficos.
-  mottles_quantity_ord = "(mosqueado_quantidade|qtd_mosqueado|mosq_qtd)"
+  mottles_quantity_ord = "(mosqueado_quantidade|qtd_mosqueado|mosq_qtd)",
+  # ---- v0.9.235: the colours of a variegated horizon and of the mottles
+  # ("Variegado - Matiz / Valor / Croma", "Mosqueado - Matiz / Valor /
+  # Croma"). A cell lists one entry per colour, separated by ":" ("10YR:5YR",
+  # "6:5", "3:6"); .bdsolos_colour_list() joins the three cells into the
+  # notations of `variegated_colors` and `mottle_colors`.
+  variegated_hue_raw    = "(^variegado_matiz$)",
+  variegated_value_raw  = "(^variegado_valor$)",
+  variegated_chroma_raw = "(^variegado_croma$)",
+  mottle_hue_raw        = "(^mosqueado_matiz$)",
+  mottle_value_raw      = "(^mosqueado_valor$)",
+  mottle_chroma_raw     = "(^mosqueado_croma$)"
 )
 
 
@@ -655,14 +666,40 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
 }
 
 
+#' The colours of a variegated horizon, or of its mottles, as the BDsolos
+#' export gives them: three cells (hue, value, chroma), each listing one entry
+#' per colour separated by ":" ("10YR:5YR", "6:5", "3:6"). Returns, for each
+#' horizon, the Munsell notations separated by ";" ("10YR 6/3; 5YR 5/6"), or
+#' NA when no hue is recorded. Any of the three may be NULL (column absent).
+#' @noRd
+.bdsolos_colour_list <- function(hue, value, chroma) {
+  n <- max(length(hue), length(value), length(chroma))
+  if (n == 0L) return(character(0))
+  cell <- function(x, i) {
+    if (is.null(x) || is.na(x[i])) return(character(0))
+    strsplit(as.character(x[i]), ":", fixed = TRUE)[[1]]
+  }
+  vapply(seq_len(n), function(i)
+    .munsell_notation_list(cell(hue, i), cell(value, i), cell(chroma, i)),
+    character(1))
+}
+
+
 #' Convert a subset of BDsolos rows (one perfil) to a soilKey horizons table
 #' @noRd
 .bdsolos_rows_to_horizons <- function(rows, sk_map) {
   spec <- horizon_column_spec()
   hz_list <- list()
+  colour_raw <- list()
   for (raw in names(sk_map)) {
     sk <- sk_map[[raw]]
     val <- rows[[raw]]
+    # v0.9.235: the three cells of the variegated colours, and of the mottle
+    # colours, are joined after the loop.
+    if (grepl("^(variegated|mottle)_(hue|value|chroma)_raw$", sk)) {
+      colour_raw[[sk]] <- val
+      next
+    }
     # v0.9.61: BDsolos "Mosqueado - Quantidade" is an ordinal class
     # (pouco / comum / abundante). Map to representative percent and
     # write to the schema column `redoximorphic_features_pct` so that
@@ -719,6 +756,16 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       val <- as.logical(val)
     }
     hz_list[[sk]] <- val
+  }
+  if (!is.null(colour_raw$variegated_hue_raw)) {
+    hz_list[["variegated_colors"]] <- .bdsolos_colour_list(
+      colour_raw$variegated_hue_raw, colour_raw$variegated_value_raw,
+      colour_raw$variegated_chroma_raw)
+  }
+  if (!is.null(colour_raw$mottle_hue_raw)) {
+    hz_list[["mottle_colors"]] <- .bdsolos_colour_list(
+      colour_raw$mottle_hue_raw, colour_raw$mottle_value_raw,
+      colour_raw$mottle_chroma_raw)
   }
   if (length(hz_list) == 0L) {
     return(make_empty_horizons(nrow(rows)))
