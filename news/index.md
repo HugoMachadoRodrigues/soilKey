@@ -1,5 +1,68 @@
 # Changelog
 
+## soilKey 0.9.232 (2026-10-12)
+
+### BDsolos loader: slickensides, gravel in per cent, hues with a dot
+
+Three things the BDsolos export records and the profiles did not carry
+as the diagnostics read them.
+
+- **Slickensides.** “Superfície de fricção - Quantidade” (filled in 53
+  profiles of the national export) was not loaded, so the vertic horizon
+  had no slickensides to test: the key agreed with none of the 72
+  profiles whose reference order is Vertissolos. The column now goes to
+  `slickensides`, as the sheet words it (“Pouca”, “Comum”, “Abundante”).
+- **Reading the amount.** `test_slickensides_present()` and the crack
+  test that stands on it compared the amount with the literal English
+  terms. They now read it through the new internal `.amount_at_least()`,
+  in English or Portuguese, a range by its lower end: SiBCS asks for
+  slickensides “em quantidade no mínimo comum” (Cap. 2, p. 73). Amounts
+  in English are read as before.
+- **Gravel.** “Frações da amostra total - Cascalho (g/kg)” went into
+  `coarse_fragments_pct` as it came, so that 560 g/kg read as 560 %:
+  2,677 horizons of 1,285 profiles had more than “100 %”. It is now
+  divided by 10, as the clay, silt and sand of the same export already
+  were.
+- **Hue.** The export types the Munsell hue with a decimal comma
+  (“7,5YR”, “2,5YR”) in 7,492 horizons of 3,430 profiles, and the
+  patterns of the diagnostics are written with a dot.
+  [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+  now gives “7.5YR”, as the FEBR loader already did.
+
+The 44 canonical fixtures keep their class in the three systems.
+
+On the national BDsolos export (7,593 profiles with a reference order),
+default mode:
+
+|                                   | 0.9.231 | 0.9.232 |
+|-----------------------------------|--------:|--------:|
+| Order agreement (count)           |   3,340 |   3,348 |
+| Order agreement                   |   44.0% |   44.1% |
+| Reference Vertissolos agreed (72) |       0 |      10 |
+
+Sixteen profiles change order, all to Vertissolos and all through the
+slickensides: ten agree with their reference, two no longer do (a
+reference Gleissolos and a reference Luvissolos with slickensides
+“comum” or more) and four go from one disagreeing order to another. The
+gravel and the hue change no order.
+
+The hue changes the second level of 1,079 profiles whose order stays the
+same. With a hue it could not read, the key left the colour suborder at
+“Vermelho-Amarelos”; it now follows the hue (Argissolos
+Vermelho-Amarelos to Amarelos in 287 profiles and to Vermelhos in 232,
+Latossolos Vermelho-Amarelos to Vermelhos in 201 and to Amarelos in 178,
+Luvissolos Háplicos to Crômicos in 71). Against the reference labels
+that carry a present-day order name (5,461), the second level agrees in
+1,088 profiles where it agreed in 1,059: 211 profiles gained and 182
+lost. Latossolos keyed in the right order have the right suborder in 362
+profiles (305 before), Argissolos in 190 (241 before):
+“Vermelho-Amarelo” is the most frequent suborder of the reference
+Argissolos, and the default coincided with it.
+
+The other benchmarks do not change at the order level: the BDsolos panel
+of the EJSS article (351 and 412 of 798), FEBR (387 and 496 of 1,000)
+and Redape (67 and 71 of 94).
+
 ## soilKey 0.9.231 (2026-10-12)
 
 ### SiBCS key: in the B nítico, a grade written as a range is read by its lower end

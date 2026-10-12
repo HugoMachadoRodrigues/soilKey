@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.231</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.232</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,38 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.232" id="soilkey-09232-2026-10-12">soilKey 0.9.232 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09232-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="bdsolos-loader-slickensides-gravel-in-per-cent-hues-with-a-dot-0-9-232">BDsolos loader: slickensides, gravel in per cent, hues with a dot<a class="anchor" aria-label="anchor" href="#bdsolos-loader-slickensides-gravel-in-per-cent-hues-with-a-dot-0-9-232"></a></h3>
+<p>Three things the BDsolos export records and the profiles did not carry as the diagnostics read them.</p>
+<ul><li>
+<strong>Slickensides.</strong> “Superfície de fricção - Quantidade” (filled in 53 profiles of the national export) was not loaded, so the vertic horizon had no slickensides to test: the key agreed with none of the 72 profiles whose reference order is Vertissolos. The column now goes to <code>slickensides</code>, as the sheet words it (“Pouca”, “Comum”, “Abundante”).</li>
+<li>
+<strong>Reading the amount.</strong> <code>test_slickensides_present()</code> and the crack test that stands on it compared the amount with the literal English terms. They now read it through the new internal <code>.amount_at_least()</code>, in English or Portuguese, a range by its lower end: SiBCS asks for slickensides “em quantidade no mínimo comum” (Cap. 2, p. 73). Amounts in English are read as before.</li>
+<li>
+<strong>Gravel.</strong> “Frações da amostra total - Cascalho (g/kg)” went into <code>coarse_fragments_pct</code> as it came, so that 560 g/kg read as 560 %: 2,677 horizons of 1,285 profiles had more than “100 %”. It is now divided by 10, as the clay, silt and sand of the same export already were.</li>
+<li>
+<strong>Hue.</strong> The export types the Munsell hue with a decimal comma (“7,5YR”, “2,5YR”) in 7,492 horizons of 3,430 profiles, and the patterns of the diagnostics are written with a dot. <code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> now gives “7.5YR”, as the FEBR loader already did.</li>
+</ul><p>The 44 canonical fixtures keep their class in the three systems.</p>
+<p>On the national BDsolos export (7,593 profiles with a reference order), default mode:</p>
+<table class="table"><thead><tr><th></th>
+<th align="right">0.9.231</th>
+<th align="right">0.9.232</th>
+</tr></thead><tbody><tr><td>Order agreement (count)</td>
+<td align="right">3,340</td>
+<td align="right">3,348</td>
+</tr><tr><td>Order agreement</td>
+<td align="right">44.0%</td>
+<td align="right">44.1%</td>
+</tr><tr><td>Reference Vertissolos agreed (72)</td>
+<td align="right">0</td>
+<td align="right">10</td>
+</tr></tbody></table><p>Sixteen profiles change order, all to Vertissolos and all through the slickensides: ten agree with their reference, two no longer do (a reference Gleissolos and a reference Luvissolos with slickensides “comum” or more) and four go from one disagreeing order to another. The gravel and the hue change no order.</p>
+<p>The hue changes the second level of 1,079 profiles whose order stays the same. With a hue it could not read, the key left the colour suborder at “Vermelho-Amarelos”; it now follows the hue (Argissolos Vermelho-Amarelos to Amarelos in 287 profiles and to Vermelhos in 232, Latossolos Vermelho-Amarelos to Vermelhos in 201 and to Amarelos in 178, Luvissolos Háplicos to Crômicos in 71). Against the reference labels that carry a present-day order name (5,461), the second level agrees in 1,088 profiles where it agreed in 1,059: 211 profiles gained and 182 lost. Latossolos keyed in the right order have the right suborder in 362 profiles (305 before), Argissolos in 190 (241 before): “Vermelho-Amarelo” is the most frequent suborder of the reference Argissolos, and the default coincided with it.</p>
+<p>The other benchmarks do not change at the order level: the BDsolos panel of the EJSS article (351 and 412 of 798), FEBR (387 and 496 of 1,000) and Redape (67 and 71 of 94).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.231" id="soilkey-09231-2026-10-12">soilKey 0.9.231 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09231-2026-10-12"></a></h2>
 <div class="section level3">
