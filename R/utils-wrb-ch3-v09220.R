@@ -93,6 +93,18 @@
   out
 }
 
+#' Whether an amount recorded on a field sheet (of clay films, of
+#' slickensides) is one of `levels`, or at or above the lowest of them on the
+#' scale of .clay_films_class() (few < common < many), in English or
+#' Portuguese. A range is read by its lower end. A term the scale does not
+#' know ("continuous") counts only when it is listed. Vectorised over `x`.
+#' @noRd
+.amount_at_least <- function(x, levels) {
+  cls <- .clay_films_class(.field_term(x))
+  thr <- suppressWarnings(min(.clay_films_class(levels), na.rm = TRUE))
+  !is.na(x) & (x %in% levels | (is.finite(thr) & !is.na(cls) & cls >= thr))
+}
+
 #' Tri-state AND: FALSE if any is FALSE, TRUE if all are TRUE, else NA.
 #' @noRd
 .and3 <- function(...) {

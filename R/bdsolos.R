@@ -73,6 +73,9 @@
   structure_type    = "(estrutura_tipo|tipo_estrutura|^forma_1)",
   clay_films_amount = "(cerosidade_quantidade|cerosidade_qtd)",
   clay_films_strength = "(cerosidade_grau|grau_cerosidade|cerosidade_grau_de_desenvolvimento)",
+  # v0.9.232: "Superficie de friccao - Quantidade" (Pouca / Comum / Abundante),
+  # kept as written; test_slickensides_present() reads both languages.
+  slickensides      = "(superficies?_de_friccao_quantidade)",
   consistence_dry   = "(consistencia_seco|consistencia_seca|grau_de_consistencia_seca)",
   consistence_moist = "(consistencia_umido|consistencia_umida|grau_de_consistencia_umida)",
   # ---- texture (BDsolos g/kg -> soilKey %)
@@ -642,6 +645,16 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
 }
 
 
+#' A Munsell hue as the BDsolos export types it, in the notation the
+#' diagnostics read: no spaces, and a dot for the decimal comma ("7,5YR" and
+#' "7,5 YR" are "7.5YR"). Anything else is left as it is.
+#' @noRd
+.bdsolos_hue <- function(x) {
+  x <- gsub("[[:space:]]+", "", as.character(x))
+  sub("^([0-9]+),([0-9]+)", "\\1.\\2", x)
+}
+
+
 #' Convert a subset of BDsolos rows (one perfil) to a soilKey horizons table
 #' @noRd
 .bdsolos_rows_to_horizons <- function(rows, sk_map) {
@@ -687,10 +700,21 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
             grepl("(g_kg|^ataque_sulfurico|^cdb_)", raw_norm)) {
         val <- val / 10  # g/kg -> %
       }
+      # v0.9.232: "Fracoes da amostra total - Cascalho (g/kg)" is a mass
+      # fraction in g/kg too; it was stored as it came, so that 560 g/kg of
+      # gravel read as 560 %.
+      if (sk == "coarse_fragments_pct" && grepl("g_kg", raw_norm)) {
+        val <- val / 10  # g/kg -> %
+      }
     } else if (type_target == "integer") {
       val <- suppressWarnings(as.integer(val))
     } else if (type_target == "character") {
       val <- as.character(val)
+      # v0.9.232: a Munsell hue typed with a decimal comma ("7,5YR") is the
+      # hue "7.5YR", as the FEBR loader already reads it.
+      if (sk %in% c("munsell_hue_moist", "munsell_hue_dry")) {
+        val <- .bdsolos_hue(val)
+      }
     } else if (type_target == "logical") {
       val <- as.logical(val)
     }
