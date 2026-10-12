@@ -1,5 +1,106 @@
 # Changelog
 
+## soilKey 0.9.235 (2026-10-12)
+
+### SiBCS key: the variegated colours and the colours of the mottles are read in the depth rule of Plintossolos
+
+A plinthic horizon that starts below 40 cm makes a Plintossolo when it
+lies immediately below a horizon “que apresente cores pálidas,
+variegadas ou com mosqueados em quantidade abundante” (SiBCS 2018, Cap.
+3, p. 104). Since 0.9.234 the key tested the pale colour and the amount
+of the mottles. It could not test the rest, because a profile held one
+colour per horizon: a variegated horizon, which has no single matrix
+colour, reached the key with no colour at all, and the mottles counted
+by their amount whatever their colour.
+
+- **Two new columns of the profile**, `variegated_colors` and
+  `mottle_colors`: the Munsell notations the field sheet lists,
+  separated by “;” (`"10YR 5/3; 2.5YR 4/6"`). They are in
+  [`horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md),
+  in the JSON schema of the profile and in `inst/ATTRIBUTES.md`, and are
+  read only when present.
+- **BDsolos loader.** The export has “Variegado - Matiz / Valor / Croma”
+  and “Mosqueado - Matiz / Valor / Croma”, each cell listing one entry
+  per colour separated by “:” (“10YR:5YR”, “6:5”, “3:6”). They are
+  joined into the notations. In the national export, 975 horizons of 654
+  profiles are variegated (947 of them have no matrix colour) and 2,649
+  horizons of 1,395 profiles have the colours of their mottles.
+- **Redape loader.** GeoTab gives up to three more colours in
+  `COR_MOSQ_*`. Beside a matrix colour they are read as the colours of
+  the mottles (15 horizons); in a horizon with no matrix colour, as its
+  variegated colours (7 horizons of 4 profiles).
+- **The rule**, in the internal `.plinthic_preceded()`, with the two
+  items the three kinds of colour answer to (“a) Matiz 5Y; ou b) Matizes
+  7,5YR, 10YR ou 2,5Y com croma menor ou igual a 4”) in the new internal
+  `.plintossolo_items_a_b()`:
+  - variegated: “pelo menos uma das cores deve satisfazer aos itens (a)
+    e (b)”. Hue and chroma only, as the book writes; the moist value of
+    5 or more that 0.9.234 asks of a pale matrix colour is not asked
+    here. No profile of BDsolos or Redape differs between the two
+    readings.
+  - mottles: “deverão ocorrer em quantidade abundante (\> 20% em volume)
+    numa matriz de coloração avermelhada ou amarelada e deverão
+    apresentar matizes e cromas conforme os itens (a) e (b)”. The amount
+    is asked as before; the colour, of at least one of the mottles, when
+    the sheet records it. A horizon with abundant mottles and no colour
+    recorded passes as before. The colour of the matrix is not tested:
+    the book gives no hue for “avermelhada ou amarelada”.
+
+#### Effect
+
+The 44 canonical fixtures keep their class in the three systems, in the
+default and in the morphological mode. Reloaded with the new loader,
+each of the 7,714 profiles of the national BDsolos export is identical
+to the one of 0.9.234 in every column that existed.
+
+National BDsolos export, 7,593 profiles with a reference order. In the
+default mode no profile changes (3,349; the export records no volume of
+plinthite). In the morphological mode:
+
+|                                     | 0.9.234 | 0.9.235 |
+|-------------------------------------|--------:|--------:|
+| Order agreement (count)             |   3,957 |   3,959 |
+| Reference Plintossolos agreed (331) |     118 |     121 |
+| Profiles keyed Plintossolos         |     176 |     180 |
+| Reference Argissolos agreed (2,016) |   1,332 |   1,331 |
+
+Six profiles change order, and no other changes its second level or its
+name:
+
+- three reference Plintossolos now agree, each with a variegated horizon
+  above its plinthic one: AM 10006 and AM 12796 (“Btg” 2.5Y 7/1 and 10YR
+  6/8 above “Btfg” at 100 cm) and PE 5860 (“2Bt” 10YR 5/3 and 2.5YR 4/6
+  above “2Btf” at 93 cm);
+- two reference Argissolos are now keyed Plintossolos, for the same
+  reason: AM 10788 (“B21” 10YR 7/3 and 7.5YR 5/8 above “B22pl” at 70 cm)
+  and BA 8469 (“B21t” 5YR 4/6 and 10YR 6/4 above “B22tpl” at 120 cm).
+  Both labels are old “Podzólico Vermelho-Amarelo … plíntico”, a class
+  the book places in part among the Plintossolos (Abrangência, p. 104);
+- one reference Argissolos is no longer keyed Plintossolos: PA 9609,
+  whose “B2t” (7.5YR 5/8) has abundant mottles of colour 5YR 6/8, which
+  satisfies neither item.
+
+Other benchmarks:
+
+- Redape (94 profiles): 67 to 68 in the default mode and 71 to 72 in the
+  morphological mode. The profile is `GeoTab_PE_048_Goiana` (the PE 5860
+  of BDsolos), the limit 0.9.234 left: its “2Bt” is variegated and one
+  of its colours is 10YR with chroma 3. The Redape recall of
+  Plintossolos pinned in `test-v09107-sibcs-accuracy.R` is 3 of 3 again.
+- BDsolos panel of the EJSS article (798 scored): 351 in the default
+  mode, unchanged; 458 to 459 in the morphological mode (the three
+  profiles of Amazonas above). The article’s own figures are of
+  v0.9.189.
+- FEBR (1,000 profiles): 387 and 496, unchanged; its loader does not
+  bring these colours.
+
+Not changed: a horizon with abundant mottles also makes a horizonte glei
+in some profiles (`redoximorphic_features_pct` is what the gleyic test
+reads), and a glei horizon above the plinthic one satisfies the rule by
+itself, whatever the colour of the mottles. The other tests that read a
+colour (B plânico, horizonte glei, the colour suborders) still see no
+colour in a variegated horizon.
+
 ## soilKey 0.9.234 (2026-10-12)
 
 ### SiBCS key: the morphological mode reads “v” and “pl”, and a Plintossolo needs its plinthic horizon where the book says
