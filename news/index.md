@@ -1,5 +1,39 @@
 # Changelog
 
+## soilKey 0.9.230 (2026-10-12)
+
+### SiBCS key: the clay-film gate of the B latossólico reads “many”
+
+A B latossólico gives way to a B textural when the layers with the clay
+increase have cerosidade “comum” or “abundante” (SiBCS Cap. 18, in
+[`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
+since 0.9.61). The gate, `.argic_strong_films_match()`, read “comum”,
+“abundante”, “common” and “abundant”, but not “many”: the term the
+English field sheets (KST, FAO) use for the class above “common”, and
+the one the Redape loader writes for its code of “abundante”. A profile
+whose films were “many” kept its B latossólico and keyed out as
+Latossolos.
+
+- `.argic_strong_films_match()` now reads “many” as a strong amount, as
+  a word (“very many” too, “germany” not).
+
+The 44 canonical fixtures keep their class in the three systems.
+
+On Redape (94 profiles), four profiles of Rio Grande do Norte whose
+reference is Argissolos and whose clay films are “many” go from
+Latossolos to Argissolos:
+
+|               |    0.9.229 |    0.9.230 |
+|---------------|-----------:|-----------:|
+| Default mode  | 63 (67.0%) | 67 (71.3%) |
+| Morphological | 67 (71.3%) | 71 (75.5%) |
+
+No profile is lost. The other benchmarks do not change: the national
+BDsolos export (its amounts are in Portuguese; the same order for each
+of the 7,694 labelled profiles), the BDsolos panel of the EJSS article
+(351 and 412 of 798) and FEBR (387 and 496 of 1,000; its loader records
+no cerosidade). The article’s own figures are of v0.9.189.
+
 ## soilKey 0.9.229 (2026-10-11)
 
 ### SiBCS benchmarks: a label is read by what it states, when that places it in another order

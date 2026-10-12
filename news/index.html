@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.229</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.230</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,27 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.230" id="soilkey-09230-2026-10-12">soilKey 0.9.230 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09230-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-the-clay-film-gate-of-the-b-latossólico-reads-many-0-9-230">SiBCS key: the clay-film gate of the B latossólico reads “many”<a class="anchor" aria-label="anchor" href="#sibcs-key-the-clay-film-gate-of-the-b-latoss%C3%B3lico-reads-many-0-9-230"></a></h3>
+<p>A B latossólico gives way to a B textural when the layers with the clay increase have cerosidade “comum” or “abundante” (SiBCS Cap. 18, in <code><a href="../reference/B_latossolico.html">B_latossolico()</a></code> since 0.9.61). The gate, <code>.argic_strong_films_match()</code>, read “comum”, “abundante”, “common” and “abundant”, but not “many”: the term the English field sheets (KST, FAO) use for the class above “common”, and the one the Redape loader writes for its code of “abundante”. A profile whose films were “many” kept its B latossólico and keyed out as Latossolos.</p>
+<ul><li>
+<code>.argic_strong_films_match()</code> now reads “many” as a strong amount, as a word (“very many” too, “germany” not).</li>
+</ul><p>The 44 canonical fixtures keep their class in the three systems.</p>
+<p>On Redape (94 profiles), four profiles of Rio Grande do Norte whose reference is Argissolos and whose clay films are “many” go from Latossolos to Argissolos:</p>
+<table class="table"><thead><tr><th></th>
+<th align="right">0.9.229</th>
+<th align="right">0.9.230</th>
+</tr></thead><tbody><tr><td>Default mode</td>
+<td align="right">63 (67.0%)</td>
+<td align="right">67 (71.3%)</td>
+</tr><tr><td>Morphological</td>
+<td align="right">67 (71.3%)</td>
+<td align="right">71 (75.5%)</td>
+</tr></tbody></table><p>No profile is lost. The other benchmarks do not change: the national BDsolos export (its amounts are in Portuguese; the same order for each of the 7,694 labelled profiles), the BDsolos panel of the EJSS article (351 and 412 of 798) and FEBR (387 and 496 of 1,000; its loader records no cerosidade). The article’s own figures are of v0.9.189.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.229" id="soilkey-09229-2026-10-11">soilKey 0.9.229 (2026-10-11)<a class="anchor" aria-label="anchor" href="#soilkey-09229-2026-10-11"></a></h2>
 <div class="section level3">
