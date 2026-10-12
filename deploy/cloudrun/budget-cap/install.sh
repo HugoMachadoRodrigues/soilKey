@@ -1,9 +1,9 @@
 #!/bin/sh
-# Install the US$1 spending cap for soilkeypro.com. Run once billing is enabled:
+# Install the US$2 spending cap for soilkeypro.com. Run once billing is enabled:
 #
 #   sh deploy/cloudrun/budget-cap/install.sh <BILLING_ACCOUNT_ID>
 #
-# When the month's spend reaches US$1 the cap removes public access from the
+# When the month's spend reaches US$2 the cap removes public access from the
 # Cloud Run service (the site answers 403). It never disables billing and never
 # deletes anything. Restore with:
 #   gcloud run services add-iam-policy-binding soilkeypro --region us-east1 \
@@ -43,13 +43,13 @@ gcloud run services add-iam-policy-binding budget-cap --region $REGION --project
   --member="serviceAccount:$SA" --role=roles/run.invoker >/dev/null
 
 gcloud billing budgets create --billing-account "$BA" \
-  --display-name "soilkeypro: take the site offline at US\$1" \
-  --budget-amount 1USD --filter-projects "projects/$PROJ" \
+  --display-name "soilkeypro: take the site offline at US\$2" \
+  --budget-amount 2USD --filter-projects "projects/$PROJ" \
   --threshold-rule percent=0.5 --threshold-rule percent=1.0 \
   --notifications-rule-pubsub-topic "projects/$PROJ/topics/budget-cap"
 
-echo "--- end-to-end test: pretend the month cost US\$2 ---"
-MSG=$(printf '{"costAmount": 2.0, "budgetAmount": 1.0}')
+echo "--- end-to-end test: pretend the month cost US\$3 ---"
+MSG=$(printf '{"costAmount": 3.0, "budgetAmount": 2.0}')
 gcloud pubsub topics publish budget-cap --project $PROJ --message "$MSG" >/dev/null
 for i in $(seq 1 30); do
   code=$(curl -s -o /dev/null -w "%{http_code}" https://soilkeypro.com)

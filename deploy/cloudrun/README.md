@@ -25,7 +25,7 @@ gcloud builds submit --config deploy/cloudrun/cloudbuild.yaml \
 
 The build runs on Cloud Build's default machine (e2-standard-2), the only type
 in its free tier of 2,500 build-minutes a month per billing account. Builds
-count against the US$1 monthly cap below, and the larger E2_HIGHCPU_8 used
+count against the US$2 monthly cap below, and the larger E2_HIGHCPU_8 used
 until October 2026 cost US$0.016 a minute (about US$0.36 for one slow build).
 
 ## 2. Deploy to Cloud Run
@@ -57,13 +57,22 @@ still wait for each other's computations: that is R, not Cloud Run.
 
 ## 3. Spending cap
 
-`budget-cap/install.sh <BILLING_ACCOUNT_ID>` installs a US$1 monthly budget
-whose notifications reach a small Cloud Run function. When the month's spend
-reaches the budget, the function removes public access from the service: the
-site answers 403, compute stops, and nothing is deleted. It never disables
-billing, which Google documents can delete resources. The installer ends with an
-end-to-end test that simulates a US$2 month, checks for the 403, and restores
-the site. Restore by hand with:
+`budget-cap/install.sh <BILLING_ACCOUNT_ID>` installs a US$2 monthly budget
+(US$1 until October 2026) whose notifications reach a small Cloud Run function.
+When the month's spend reaches the budget, the function removes public access
+from the service: the site answers 403, compute stops, and nothing is deleted.
+It never disables billing, which Google documents can delete resources. The
+function reads the budget from each notification, so changing the amount of the
+budget is all it takes to move the cap:
+
+```sh
+gcloud billing budgets list --billing-account <BILLING_ACCOUNT_ID>
+gcloud billing budgets update <BUDGET_ID> --billing-account <BILLING_ACCOUNT_ID> \
+  --budget-amount 2USD
+```
+
+The installer ends with an end-to-end test that simulates a US$3 month, checks
+for the 403, and restores the site. Restore by hand with:
 
 ```sh
 gcloud run services add-iam-policy-binding soilkeypro --region us-east1 \
@@ -79,9 +88,50 @@ off (500), the spending cap above (403), a revision that does not start, and DNS
 or certificate trouble. It runs free on the public repository, and a check that
 meets a scaled-to-zero instance costs one cold start, well inside the free tier.
 Google Cloud Monitoring could do the same, but its alerting policies are billed
-per condition and would count against the US$1 cap. GitHub pauses scheduled
+per condition and would count against the US$2 cap. GitHub pauses scheduled
 workflows after 60 days without repository activity and says so by e-mail; any
 push, or "Enable workflow" in the Actions tab, resumes it.
+
+## 5. Image clean-up
+
+Every build pushes an image of about 1.2 GB to Artifact Registry, where storage
+is billed by the gigabyte. Until October 2026 the repository kept every tagged
+image, and each release is tagged with its version: by 2026-10-12 it held 21
+images, about 24 GB, which cost about US$0.05 a day and had taken the month to
+US$0.94 of the US$1 cap of the time. `cleanup-policy.json` keeps what the
+service can need and lets the registry delete the rest:
+
+| Rule | What it does |
+|---|---|
+| `keep-live` | keeps the image tagged `live` |
+| `keep-2-most-recent` | keeps the two newest images, whatever their tags: the release and the one before it, for a rollback |
+| `delete-the-rest` | deletes any other image more than a day old |
+
+A keep rule wins over a delete rule. Apply it once; it replaces the policies the
+repository has:
+
+```sh
+gcloud artifacts repositories set-cleanup-policies soilkey \
+  --location us-east1 --project soilkeypro \
+  --policy deploy/cloudrun/cleanup-policy.json --no-dry-run
+gcloud artifacts repositories list-cleanup-policies soilkey \
+  --location us-east1 --project soilkeypro
+```
+
+The `live` tag is what protects the image in production. After a release takes
+the traffic, move the tag to it:
+
+```sh
+gcloud artifacts docker tags add \
+  us-east1-docker.pkg.dev/soilkeypro/soilkey/app:<version> \
+  us-east1-docker.pkg.dev/soilkeypro/soilkey/app:live
+```
+
+Without the tag, the image in production is safe only while it is one of the two
+newest. Two builds pushed and not promoted would let the registry delete it, and
+the next instance of the service would fail to start. A tag that was not moved
+after a release stays on the previous image, which is then kept as well: more
+storage, no outage.
 
 ## Cost / scaling knobs
 
@@ -89,6 +139,6 @@ The configuration above stays within the free tier for light academic use. The
 earlier always-on setup (`--min-instances 1 --no-cpu-throttling`) cost about
 US$8-15 a month and is not needed: request-based billing was tested and keeps
 sessions working. To serve more concurrent users, raise `--max-instances`
-(keep `--session-affinity`). Every instance counts against the US$1 cap, so a
+(keep `--session-affinity`). Every instance counts against the US$2 cap, so a
 burst of visitors can reach it sooner. Bump `--memory` if the app runs out of
 memory (`gcloud run services logs read soilkeypro --region us-east1`).

@@ -4,7 +4,7 @@
 # within the hour (the September 2026 one, billing closed, went unnoticed for
 # 12 days). Free: Actions minutes cost nothing on a public repository.
 #
-# What it catches: billing switched off (HTTP 500), the US$1 spending cap
+# What it catches: billing switched off (HTTP 500), the US$2 spending cap
 # taking the app private (HTTP 403), a revision that fails to start, DNS or
 # certificate trouble. The app scales to zero, so a check may meet a cold
 # start (about 5-20 s); it waits up to 60 s and tries three times before
