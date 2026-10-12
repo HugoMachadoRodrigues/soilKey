@@ -7,8 +7,9 @@
 #   * Latossolic features dominate when ferralic + CTC argila <= 17 +
 #     thickness >= 50 AND argic-passing layers have only "ausente",
 #     "pouca", or "fraca" clay films.
-#   * Strong clay films ("comum"/"abundante") in argic-passing layers
-#     reroute the profile to Argissolo regardless of latossolic features.
+#   * Strong clay films ("comum"/"abundante", "common"/"many"/"abundant")
+#     in argic-passing layers reroute the profile to Argissolo regardless
+#     of latossolic features.
 #
 # v0.9.83 extracts the strong-films decision into a standalone helper so
 # that (a) the rule can be audited on any benchmark dataset and (b)
@@ -29,7 +30,10 @@
 #' the v0.9.61 \code{B_latossolico()} latossolic-vs-argic precedence
 #' rule. Strips Portuguese accents and matches the standard SiBCS Cap
 #' 18 "strong" terminology: \emph{comum}, \emph{abundante},
-#' \emph{common}, \emph{abundant}.
+#' \emph{common}, \emph{abundant} and, since v0.9.230, \emph{many}: the
+#' term of the English field sheets (KST, FAO) for the class above
+#' "common", which the gate did not read, so that a profile whose clay
+#' films were "many" kept its B latossolico.
 #'
 #' "Pouca", "fraca", "few", "weak" do NOT count as strong (they are
 #' the weak end of the SiBCS clay-film scale that allows latossolic
@@ -48,7 +52,7 @@
   norm <- tolower(trimws(films_chr))
   norm <- gsub("[\u00C1\u00C0\u00C2\u00C3\u00E1\u00E0\u00E2\u00E3]",
                 "a", norm)
-  any(grepl("\\babunda|\\bcomu|\\bcommon|\\babundan", norm))
+  any(grepl("\\babunda|\\bcomu|\\bcommon|\\babundan|\\bmany\\b", norm))
 }
 
 

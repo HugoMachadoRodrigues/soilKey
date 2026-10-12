@@ -110,9 +110,12 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   # v0.9.189: the Redape loader now decodes the field soil-structure codes it
   # previously discarded, lifting order accuracy to 67.0% (63/94). This is a
   # benchmark-input change, not a key change (see NEWS 0.9.189).
+  # v0.9.230: the clay-film gate of the B latossolico reads "many", the term
+  # the Redape loader writes for its code of "abundante": four Argissolos of
+  # Rio Grande do Norte are no longer keyed Latossolos, 71.3% (67/94).
   # Pinned with a +/- tolerance to catch unintended drift.
-  expect_gt(res$accuracy, 0.63)
-  expect_lt(res$accuracy, 0.71)
+  expect_gt(res$accuracy, 0.67)
+  expect_lt(res$accuracy, 0.75)
   expect_equal(res$n_compared, 94L)
 })
 
