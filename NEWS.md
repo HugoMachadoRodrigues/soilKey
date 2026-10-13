@@ -1,3 +1,77 @@
+# soilKey 0.9.253 (2026-10-13)
+
+## SiBCS key: the histic horizon with the whole of its thickness, and the thickness the key asks of it
+
+The horizonte hístico (SiBCS 2018, Cap. 2, p. 49-50) results from plant
+residues laid down at the surface, "ainda que, no presente, possa
+encontrar-se recoberto por horizontes ou depósitos minerais", and has to be
+20 cm thick or more, or 10 cm or more over a lithic contact. The
+Organossolos (Cap. 4, p. 111) have a horizonte hístico of "20 cm ou mais,
+quando sobrejacente a um contato lítico", or of "40 cm ou mais, contínuo ou
+cumulativo nos primeiros 80 cm a partir da superfície do solo".
+
+Two things in the code were not that:
+
+* **Only a layer that starts within 5 cm of the surface was looked at.** A
+  horizon described in sub-horizons counted the first of them alone (BDsolos
+  ES 8651: Oo1 0-15, Oo2 15-32, Oo3 32-80 cm, with 39 to 45% of organic
+  carbon, keyed Neossolos by the 15 cm of its Oo1), and a buried horizon was
+  not seen (SE 6560: 2Hdz from 22 cm down).
+* **Any horizonte hístico made an Organossolo.** One of 20 to 39 cm over a
+  mineral horizon did, although the key asks 40 cm of it and places those
+  soils further down (Gleissolos Melânicos, Cambissolos Hísticos).
+
+Now:
+
+* `horizonte_histico()` takes the organic layers wherever they lie; adjoining
+  ones make one horizon, with the thickness of all of them; a horizon passes
+  with 20 cm, or with 10 cm when the layer right below it is an R or a Cr.
+  What makes a layer organic is as before. The evidence lists each run of
+  adjoining organic layers with its limits and its thickness.
+* The Organossolos step asks (a) 20 cm or more of a horizon that lies on a
+  lithic contact, or (b) 40 cm or more of horizonte hístico within the first
+  80 cm, in one section or added up.
+* Not tested, as before: the volume of plant tissue is no column of the
+  profile, so the greater thickness asked where it makes 75% or more of the
+  horizon (40 cm in the horizon, 60 cm in the key) is not asked. The earlier
+  code read it from the column of worm holes, which is not that, in a test
+  that could not change the result.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.252 | 0.9.253 |
+|---|---|---|
+| default mode | 3,989 (52.5%) | 4,001 (52.7%) |
+| morphological mode | 4,949 (65.2%) | 4,965 (65.4%) |
+| complete profiles, default | 2,886 of 4,674 (61.7%) | 2,900 (62.0%) |
+| complete profiles, morphological | 3,297 (70.5%) | 3,313 (70.9%) |
+
+27 profiles change order in each mode. Default: 16 reach their reference, 4
+leave it, 7 move between two other orders. Morphological: 20, 4 and 3. The
+Organossolos of the reference that are keyed so go from 17 to 27 of 44, and
+the profiles keyed Organossolos that are of another order from 13 to 4.
+
+The four that leave their reference, by what the sheet records:
+
+* MG 7482 (Solo Orgânico): 20 cm at the surface and organic layers again
+  from 61 cm down, 39 cm within the first 80.
+* PR 6848 (Solo Orgânico): one layer described, of 20 cm.
+* SC 13649 (Organossolo Háplico): 20 cm at the surface, nothing described
+  from 20 to 80 cm.
+* RJ 13006 (Glei Húmico): an H recorded from 30 to 80 cm, inside a 2Cgn
+  recorded from 20 to 80 cm.
+
+In the second level, 2 profiles (default) and 3 (morphological) go from
+Gleissolos Háplicos to Gleissolos Melânicos, by a horizonte hístico that was
+not seen.
+
+Panel of complete profiles (781): 428 to 429 and 513 to 514, one Latossolo
+with an A of 14.5% of organic carbon that was keyed Organossolos. FEBR
+(1,000): 376 and 501, unchanged. Redape: 77 and 84 of 94, unchanged. The 44
+canonical profiles are identical in the three systems.
+
 # soilKey 0.9.252 (2026-10-13)
 
 ## SiBCS key: item (c) of the Neossolos step by its letter
