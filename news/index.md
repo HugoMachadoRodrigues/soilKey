@@ -1,5 +1,73 @@
 # Changelog
 
+## soilKey 0.9.238 (2026-10-12)
+
+### SiBCS key: the B plânico is tested for its structure and for the colours of a variegated or mottled horizon
+
+SiBCS 2018 (Cap. 2, p. 65-66) describes the B plânico by more than the
+key tested. It “Apresenta estrutura prismática, colunar ou em blocos
+angulares e subangulares grandes ou médios e, às vezes, estrutura
+maciça”, and its colours “devem atender a pelo menos um dos seguintes
+requisitos”: (a) the matrix colour; (b) “Coloração variegada com pelo
+menos uma cor apresentando matiz e croma conforme especificado no item
+(a)”; (c) “matiz 10YR ou mais amarelo, cromas ≥ 4, combinado com
+mosqueado de croma conforme especificado no item (a)”.
+[`B_planico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_planico.md)
+tested an abrupt textural change and item (a). A B horizon with small
+subangular blocks was a B plânico, and a variegated one, which has no
+matrix colour, was none.
+
+- **Structure.** Where the sheet records it, the structure has to be one
+  of those the definition describes: prismatic, columnar or massive; or
+  blocks, angular or subangular, that are medium or larger. A size
+  written as a range is read by its lower end (“Pequena a média” is
+  small), as the other minima are. A structure that is not recorded
+  passes, and so do blocks with no size. The new internal
+  `.structure_size_class()` reads the size in both languages.
+- **Item (b)** reads `variegated_colors`, and **item (c)**
+  `mottle_colors`: a matrix of hue 10YR or yellower and chroma 4 or
+  more, with a mottle whose colour satisfies item (a).
+
+Of the reference Planossolos of the national BDsolos export that have a
+B plânico and a recorded structure, 84 of 90 have one of the list; the
+six that do not are in small blocks.
+
+#### Effect
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                     |        Default |  Morphological |
+|-------------------------------------|---------------:|---------------:|
+| Order agreement                     | 3,349 to 3,355 | 3,959 to 3,967 |
+| Reference Planossolos agreed (291)  |       91 to 98 |       89 to 96 |
+| Profiles keyed Planossolos          |     153 to 153 |     141 to 141 |
+| Reference Argissolos agreed (2,016) | 1,182 to 1,184 | 1,331 to 1,334 |
+| Reference Luvissolos agreed (197)   |     112 to 109 |     124 to 121 |
+
+In the default mode 66 profiles change order: 22 now agree with their
+reference, 16 no longer do, 28 go from one disagreeing order to another.
+The same number of profiles is keyed Planossolos, and more of them are
+(59% to 64%): the structure takes out B horizons in small blocks, most
+of them reference Argissolos with an abrupt change, and items (b) and
+(c) bring in Planossolos whose B is variegated. Measured apart, items
+(b) and (c) alone gave 13 gains and 13 losses, and the structure alone 9
+gains and 6 losses.
+
+Other benchmarks:
+
+- Redape (94 profiles): 69 to 70 in the default mode and 73 to 74 in the
+  morphological mode. `GeoTab_PE_041_Pombos`, a reference Planossolos
+  with a variegated “2Btn”, is now keyed Planossolos.
+- BDsolos panel of the EJSS article (798 scored): 351 to 350 in the
+  default mode and 459 to 458 in the morphological mode.
+- FEBR (1,000 profiles): 387 and 496, unchanged.
+- The 44 canonical fixtures keep their class in the three systems, in
+  both modes.
+
+The precedence of the plinthic horizon is as it was: a B plânico that
+coincides with a plinthic horizon, without the sodic character, is no B
+plânico of a Planossolo (key, Cap. 4, p. 112; Cap. 2, p. 68).
+
 ## soilKey 0.9.237 (2026-10-12)
 
 ### Redape and SmartSolos: the structure codes are read on the scales the service documents
