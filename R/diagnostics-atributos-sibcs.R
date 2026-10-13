@@ -2713,10 +2713,15 @@ carater_durico <- function(pedon, max_depth_cm = 150) {
 #' latossolicos de Argissolos (Cap 5: PAC, PA, PV, PVA) -- transicao
 #' entre Argissolo e Latossolo dentro do mesmo perfil.
 #'
-#' Implementacao: requer (1) \code{B_textural()} passa, (2)
-#' \code{B_latossolico()} passa, e (3) ao menos uma camada com
-#' B latossolico tem \code{top_cm} maior que o \code{top_cm} maximo
-#' das camadas com B textural (i.e., latossolico ocorre abaixo).
+#' Implementacao: requer (1) \code{B_textural()} passa e (2) um
+#' B latossolico abaixo dele, dentro de \code{max_depth_cm}.
+#'
+#' v0.9.241: the B textural is tested by the items of the book, and its
+#' evidence lies in the upper sub-horizons of the B (the control section of
+#' the relacao textural, the layers with the cerosidade of item i). The
+#' B latossolico is looked for in the sub-horizons below those, with the
+#' requirements of \code{\link{B_latossolico}}: texture, cation exchange
+#' capacity, cerosidade at most few and weak, 50 cm of adjoining layers.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_depth_cm Profundidade maxima do B latossolico (default 150).
@@ -2735,7 +2740,12 @@ carater_latossolico <- function(pedon, max_depth_cm = 150) {
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 5"
     ))
   }
-  bl <- B_latossolico(pedon)
+  # the sub-horizons of the B textural that carry its evidence; all of its
+  # layers when the test gives no such list (a profile with no designation)
+  bt_upper <- bt$evidence$upper_layers %||% bt$layers
+  if (length(bt_upper) == 0L) bt_upper <- bt$layers
+  bl <- .b_latossolico_core(pedon, min_thickness = 50, max_cec_per_clay = 17,
+                             not_latossolic = bt_upper, B_textural = bt)
   if (!isTRUE(bl$passed)) {
     return(DiagnosticResult$new(
       name = "carater_latossolico", passed = FALSE, layers = integer(0),
@@ -2746,7 +2756,7 @@ carater_latossolico <- function(pedon, max_depth_cm = 150) {
     ))
   }
   h <- pedon$horizons
-  bt_tops <- h$top_cm[bt$layers]
+  bt_tops <- h$top_cm[bt_upper]
   if (all(is.na(bt_tops))) {
     return(DiagnosticResult$new(
       name = "carater_latossolico", passed = NA, layers = integer(0),

@@ -6,6 +6,9 @@
 # horizons (clay < ~7.5%), where the ratio (>1.80) is a smaller absolute jump
 # than argic's +6 pp. The union therefore can only ADD a B_textural pass, never
 # remove one; on FEBR/Redape/BDsolos it is benchmark-neutral.
+#
+# v0.9.241: B_textural() is no longer that union. It is tested by the items of
+# the book, of which (h) is one, and the means of footnote 4 are arithmetic.
 
 mkh <- function(df) ensure_horizon_schema(data.table::as.data.table(df))
 prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
@@ -59,16 +62,26 @@ test_that("v0.9.138: a thick A (>=15cm) uses a 2x-A-thickness B window", {
 
 test_that("v0.9.138: B_textural fires via (h) on a sandy A that argic misses", {
   # A 5%, B 10%: argic (+6 pp absolute) fails (only +5); (h) ratio 2.0 > 1.80.
+  # v0.9.241: the B textural has texture francoarenosa or finer, so the silt
+  # is given (10% of clay and 15% of silt: 35 >= 30).
   sd <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 70),
-                   designation = c("A", "Bt"), clay_pct = c(5, 10))
+                   designation = c("A", "Bt"), clay_pct = c(5, 10),
+                   silt_pct = c(10, 15), sand_pct = c(85, 75))
   expect_false(isTRUE(argic(prh(mkh(sd)))$passed))
-  expect_true(isTRUE(B_textural(prh(mkh(sd)))$passed))
+  r <- B_textural(prh(mkh(sd)))
+  expect_true(isTRUE(r$passed))
+  expect_true(r$evidence$item_h)
+  # with the clay alone the texture cannot be told, and neither can the horizon
+  sd$silt_pct <- NULL; sd$sand_pct <- NULL
+  expect_true(is.na(B_textural(prh(mkh(sd)))$passed))
 })
 
-test_that("v0.9.138: the union never removes an argic pass (canonical Argissolo)", {
+test_that("v0.9.138: the canonical Argissolo has a B textural by item (h)", {
   pr <- make_argissolo_canonical()
   expect_true(isTRUE(argic(pr)$passed))
-  expect_true(isTRUE(B_textural(pr)$passed))
+  r <- B_textural(pr)
+  expect_true(isTRUE(r$passed))
+  expect_true(r$evidence$item_h)
   # and the order classification is unchanged
   expect_equal(classify_sibcs(pr, on_missing = "silent")$rsg_or_order, "Argissolos")
 })

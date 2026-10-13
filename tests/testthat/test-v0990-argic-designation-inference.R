@@ -154,7 +154,18 @@ test_that("v0.9.90: BDsolos RJ Argissolo recall lifts past 175 with engine=aqp",
       benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
   })
   cf <- res$per_system$sibcs$confusion
-  expect_gte(cf["Argissolos","Argissolos"], 180L)
-  # Order accuracy must lift past 46% (we observed 46.6% in audit).
+  # v0.9.241: the SiBCS B textural is tested by the items of the book and no
+  # longer goes through argic(), so that the engine, and the inference from
+  # "Bt" with clay films that it bundled, do not reach it: the reference
+  # Argissolos of RJ agree in the same number under both engines (168; 181
+  # with engine = "aqp" before). A "t" the data do not show is read by the
+  # morphological mode.
+  res_def <- suppressMessages(suppressWarnings(
+    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+  expect_equal(cf["Argissolos","Argissolos"],
+               res_def$per_system$sibcs$confusion["Argissolos","Argissolos"])
+  expect_equal(cf["Argissolos","Argissolos"], 168L)
+  # Order accuracy must lift past 46% (we observed 46.6% in audit; 60.1% at
+  # v0.9.241, with the B latossolico of the "aqp" engine).
   expect_gte(res$per_system$sibcs$accuracy, 0.46)
 })

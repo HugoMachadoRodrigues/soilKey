@@ -40,12 +40,12 @@ organossolo <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 neossolo <- function(pedon) {
-  # v0.9.10: when `carater_fluvico` is TRUE, the apparent B-textural
-  # pattern is depositional / allochthonous (Neossolos Fluvicos), not a
-  # pedogenic B horizon. We therefore short-circuit the has-B exclusion
-  # for fluvic profiles -- otherwise the canonical Fluvisol fixture is
-  # rejected by neossolo() (because argic-via-clay-jump triggers on the
-  # C1->C2 stratification) and falls through to Luvissolos.
+  # v0.9.241: a profile with a diagnostic B is no Neossolo ("Outros solos sem
+  # horizonte B diagnostico", p. 111), with or without carater fluvico. From
+  # v0.9.10 the carater fluvico set the B aside, because the clay increase of
+  # the WRB argic horizon fired between the stratified C layers of the
+  # canonical Fluvisol; the B textural of the book is looked for in B
+  # horizons, and that profile has none.
   fluv <- carater_fluvico(pedon)
   has_b <- any(c(
     isTRUE(B_textural(pedon)$passed),
@@ -55,7 +55,7 @@ neossolo <- function(pedon) {
     isTRUE(B_espodico(pedon)$passed),
     isTRUE(B_planico(pedon)$passed)
   ))
-  if (has_b && !isTRUE(fluv$passed)) {
+  if (has_b) {
     return(DiagnosticResult$new(
       name = "neossolo", passed = FALSE,
       layers = integer(0),
@@ -297,10 +297,21 @@ latossolo <- function(pedon, max_top_cm = 200) {
   }
   h <- pedon$horizons
   lat_top <- min(h$top_cm[res$layers], na.rm = TRUE)
-  passed <- lat_top <= max_top_cm
+  # v0.9.241: "o primeiro horizonte diagnostico de subsuperficie, a contar da
+  # superficie, tem prevalencia [...] nas classes Argissolos e Nitossolos, pode
+  # ocorrer, abaixo dos horizontes B textural e do B nitico respectivamente, o
+  # horizonte B latossolico. Este, quando situado apos aqueles, nao tem
+  # significado taxonomico no 1o nivel categorico" (Cap 4, p. 110). A
+  # B latossolico in the lower sub-horizons of a profile with a B textural (a
+  # thick BC, for instance) makes no Latossolo; a B nitico already excludes
+  # the B latossolico.
+  bt <- B_textural(pedon)
+  below_b_textural <- isTRUE(bt$passed)
+  passed <- lat_top <= max_top_cm && !below_b_textural
   DiagnosticResult$new(
     name = "latossolo", passed = passed, layers = res$layers,
-    evidence = list(latossolico = res, top_cm = lat_top),
+    evidence = list(latossolico = res, top_cm = lat_top,
+                    below_b_textural = below_b_textural),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
   )

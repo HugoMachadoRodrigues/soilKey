@@ -26,6 +26,12 @@ A list with:
 \description{
 Wraps \code{\link{argic}()} and inspects the
 \code{clay_films_amount} field at the argic-passing layers. Returns
-a structured result that \code{\link{B_latossolico}()} uses to
-decide whether the SiBCS Cap 18 strong-films exclusion fires.
+a structured result that \code{\link{B_latossolico}()} used, from
+v0.9.61 to v0.9.240, to decide whether a B textural excluded it.
+}
+\details{
+Since v0.9.241 the SiBCS key does not use this rule: the B textural is
+tested by the items of the book and excludes the B latossolico, whose
+cerosidade is tested layer by layer (see \code{\link{B_textural}} and
+\code{\link{B_latossolico}}). The function is kept to inspect a dataset.
 }

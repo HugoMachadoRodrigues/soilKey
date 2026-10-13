@@ -189,10 +189,15 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # "Abundante"), and eight reference Argissolos whose data meet it are keyed
   # Nitossolos: three that were keyed Argissolos (176 -> 173) and five that
   # were keyed Neossolos (50 -> 45).
-  expect_equal(conf["Latossolos","Latossolos"], 17L)
-  expect_equal(conf["Latossolos","Argissolos"], 17L)
-  expect_equal(conf["Latossolos","Cambissolos"], 44L)
-  expect_equal(conf["Latossolos","Neossolos"], 37L)
+  # v0.9.241: the B textural and the B latossolico are tested by the items of
+  # the book (this test no longer shows a rule preserved; it pins the cells).
+  # The 50 cm of the B latossolico are those of the horizon, and the layers of
+  # a B textural are no B latossolico: Latossolos agreed 17 -> 25, keyed
+  # Argissolos 17 -> 6, Cambissolos 44 -> 43, Neossolos 37 -> 41.
+  expect_equal(conf["Latossolos","Latossolos"], 25L)
+  expect_equal(conf["Latossolos","Argissolos"], 6L)
+  expect_equal(conf["Latossolos","Cambissolos"], 43L)
+  expect_equal(conf["Latossolos","Neossolos"], 41L)
   # v0.9.228: the designations are read without the number of the material;
   # profile 11731 ("Ap A3 B1t IIB21t IIB22t IIB23t", reference Argissolos)
   # has its IIB horizons read and is keyed Nitossolos (173 -> 172, 8 -> 9).
@@ -210,13 +215,16 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # v0.9.239: the glei horizon is read by the colours of the book and the
   # drainage class of the site. Four reference Argissolos of RJ, mottled and
   # with no colour of reduction, are no longer keyed Gleissolos: 170 -> 174.
-  expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 174L)
+  # v0.9.241: reference Argissolos of RJ whose relacao textural is below item
+  # (h) and that record no cerosidade of item (i) have no B textural by the
+  # data: agreed 174 -> 168, keyed Latossolos 5 -> 1, Neossolos 44 -> 54.
+  expect_equal(conf["Argissolos","Latossolos"], 1L)
+  expect_equal(conf["Argissolos","Argissolos"], 168L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
   # passes and it goes from Nitossolos to Neossolos (43 -> 44, 9 -> 8).
-  expect_equal(conf["Argissolos","Neossolos"], 44L)
+  expect_equal(conf["Argissolos","Neossolos"], 54L)
   expect_equal(conf["Argissolos","Nitossolos"], 8L)
 })
 

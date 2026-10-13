@@ -76,6 +76,12 @@
   # v0.9.232: "Superficie de friccao - Quantidade" (Pouca / Comum / Abundante),
   # kept as written; test_slickensides_present() reads both languages.
   slickensides      = "(superficies?_de_friccao_quantidade)",
+  # v0.9.241: "Transicao de horizonte subjacente - Nitidez" (Abrupta / Clara /
+  # Gradual / Difusa) and "- Topografia", of the transition to the horizon
+  # below; kept as written. The distance of a mudanca textural abrupta
+  # (7.5 cm) is read from the first.
+  boundary_distinctness = "(^transicao.*nitidez)",
+  boundary_topography   = "(^transicao.*topografia)",
   consistence_dry   = "(consistencia_seco|consistencia_seca|grau_de_consistencia_seca)",
   consistence_moist = "(consistencia_umido|consistencia_umida|grau_de_consistencia_umida)",
   # ---- texture (BDsolos g/kg -> soilKey %)

@@ -7,6 +7,12 @@
 # use for the class above "common", and the one the Redape loader writes. A
 # profile whose films were "many" kept its B latossolico and keyed out as
 # Latossolos: four of the 94 Redape profiles, all with reference Argissolos.
+#
+# v0.9.241: B_latossolico() no longer uses that gate. What these tests show
+# holds by the book: with cerosidade common or more, a clayey B of blocky
+# structure of moderate or strong grade is a B textural (item i3), and a
+# layer with more than "pouca e fraca" is no B latossolico (item h, p. 59).
+# .argic_strong_films_match() and the audit are kept as tools.
 
 .films_profile <- function(films) {
   # the canonical Latossolo with the clay increase of a B textural (B/A above

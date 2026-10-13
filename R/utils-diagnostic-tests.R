@@ -260,8 +260,8 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
 #' A horizons (clay < ~7.5\%), where the ratio test is a smaller absolute jump
 #' than argic's +6 pp.
 #'
-#' Control section (footnote 4): A clay = thickness-weighted mean of the A
-#' horizons; B clay = thickness-weighted mean of the B horizons (excluding BC)
+#' Control section (footnote 4): A clay = arithmetic mean of the A
+#' horizons; B clay = arithmetic mean of the B horizons (excluding BC)
 #' within a window from the top of B equal to 30 cm if the A is < 15 cm thick,
 #' or twice the A thickness if the A is \\>= 15 cm thick. Thresholds:
 #' ratio \\> 1.50 if A clay \\> 400 g/kg; \\> 1.70 if 150-400 g/kg; \\> 1.80 if
@@ -272,11 +272,12 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
 #'   \code{details}).
 #' @noRd
 test_ratio_textural_sibcs <- function(h) {
-  desig <- h$designation
+  # v0.9.241: the designations are read by .desg_master() ("IIBt", "(B)21"),
+  # and BC is the transitional horizon, not any "c" after a "B" ("Btc").
+  desig <- .desg_master(h$designation)
   has_d <- !is.na(desig)
-  a_idx <- which(has_d & grepl("^[0-9]*A", desig))
-  b_idx <- which(has_d & grepl("^[0-9]*B", desig) &
-                   !grepl("BC", desig, ignore.case = TRUE))
+  a_idx <- which(has_d & grepl("^A", desig))
+  b_idx <- which(has_d & grepl("^B", desig) & !grepl("^B/?C", desig))
   if (length(a_idx) == 0L || length(b_idx) == 0L) {
     return(.subtest_result(passed = FALSE,
                            notes = "no A or B horizon for relacao textural"))
@@ -284,7 +285,10 @@ test_ratio_textural_sibcs <- function(h) {
   a_thk  <- h$bottom_cm[a_idx] - h$top_cm[a_idx]
   a_clay <- h$clay_pct[a_idx]
   if (all(is.na(a_clay))) return(.subtest_result(passed = FALSE, missing = "clay_pct"))
-  a_mean <- stats::weighted.mean(a_clay, a_thk, na.rm = TRUE)
+  # v0.9.241: footnote 4 asks for the "media aritmetica do teor de argila
+  # total do horizonte B (excluido o BC)" over the "media de argila total de
+  # A"; the means were weighted by the thickness of the sub-horizons.
+  a_mean <- mean(a_clay, na.rm = TRUE)
   a_thick_total <- sum(a_thk, na.rm = TRUE)
   # B control section per footnote 4.
   b_top  <- min(h$top_cm[b_idx], na.rm = TRUE)
@@ -293,9 +297,7 @@ test_ratio_textural_sibcs <- function(h) {
   if (length(b_ctrl) == 0L) b_ctrl <- b_idx
   b_clay <- h$clay_pct[b_ctrl]
   if (all(is.na(b_clay))) return(.subtest_result(passed = FALSE, missing = "clay_pct"))
-  b_mean <- stats::weighted.mean(b_clay,
-                                 pmax(h$bottom_cm[b_ctrl] - h$top_cm[b_ctrl], 0),
-                                 na.rm = TRUE)
+  b_mean <- mean(b_clay, na.rm = TRUE)
   if (is.na(a_mean) || is.na(b_mean) || a_mean <= 0) {
     return(.subtest_result(passed = FALSE, missing = "clay_pct"))
   }
@@ -316,15 +318,50 @@ test_ratio_textural_sibcs <- function(h) {
 #' For each candidate layer, checks \code{bottom_cm - top_cm >= min_cm}.
 #' Used by argic (default 7.5), ferralic (30), mollic (20), and others.
 #'
+#' With \code{adjoining = TRUE} (v0.9.241) the thickness is that of the
+#' horizon: the candidate layers that adjoin (the top of one at the bottom of
+#' the one above, or above it) are taken together, and all the layers of a
+#' group that reaches \code{min_cm} pass. A diagnostic horizon is described
+#' in sub-horizons (B1, B21, B22), and its minimum thickness is asked of the
+#' horizon. Used by the SiBCS B latossolico.
+#'
 #' @param h Horizons data.table.
 #' @param min_cm Minimum thickness in cm.
 #' @param candidate_layers Integer vector of horizon indices to test.
 #'                         If NULL, all layers are tested.
+#' @param adjoining \code{FALSE} (default): each layer on its own.
+#'   \code{TRUE}: adjoining candidate layers taken together.
 #' @noRd
-test_minimum_thickness <- function(h, min_cm = 7.5, candidate_layers = NULL) {
+test_minimum_thickness <- function(h, min_cm = 7.5, candidate_layers = NULL,
+                                     adjoining = FALSE) {
   cl <- .candidate_layers(h, candidate_layers)
   if (length(cl) == 0L) {
     return(.subtest_result(passed = FALSE, layers = integer(0)))
+  }
+  if (isTRUE(adjoining)) {
+    known <- cl[!is.na(h$top_cm[cl]) & !is.na(h$bottom_cm[cl])]
+    missing <- if (length(known) < length(cl)) c("top_cm", "bottom_cm")
+               else character(0)
+    known <- known[order(h$top_cm[known])]
+    passing <- integer(0); details <- list()
+    if (length(known) > 0L) {
+      group <- cumsum(c(TRUE, h$top_cm[known][-1L] >
+                                h$bottom_cm[known][-length(known)]))
+      for (g in unique(group)) {
+        m <- known[group == g]
+        thick <- max(h$bottom_cm[m]) - min(h$top_cm[m])
+        ok <- thick >= min_cm
+        details[[length(details) + 1L]] <- list(
+          layers = m, top = min(h$top_cm[m]), bottom = max(h$bottom_cm[m]),
+          thickness = thick, threshold = min_cm, passed = ok)
+        if (ok) passing <- c(passing, m)
+      }
+    }
+    passed <- if (length(passing) > 0L) TRUE
+              else if (length(details) == 0L && length(missing) > 0L) NA
+              else FALSE
+    return(.subtest_result(passed = passed, layers = sort(passing),
+                           missing = missing, details = details))
   }
 
   passing <- integer(0)
