@@ -33,7 +33,8 @@ organossolo <- function(pedon) {
 #' Neossolos (SiBCS Cap 4, p 111-112; conceito Cap 3, p 96-97)
 #'
 #' Solos pouco evoluidos: SEM horizonte B diagnostico + ausencia de:
-#' (a) glei dentro 150 cm, (b) plintico dentro 40 cm, (c) vertico
+#' (a) glei dentro 50 cm, exceto textura areia ou areia franca, (b)
+#' plintico dentro 40 cm, (c) vertico
 #' imediatamente abaixo de A, (d) A chernozemico conjugado com
 #' carbonatico ou cálcico.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -65,9 +66,13 @@ neossolo <- function(pedon) {
     ))
   }
   h <- pedon$horizons
-  glei_dentro_150 <- isTRUE(horizonte_glei(pedon)$passed) &&
-                       any(h$top_cm[horizonte_glei(pedon)$layers] <= 150,
-                              na.rm = TRUE)
+  # v0.9.239: "a) Ausencia de horizonte glei dentro de 50 cm a partir da
+  # superficie, exceto no caso de solos de textura areia e areia franca"
+  # (SiBCS 2018, Cap 4, p. 111). 150 cm was tested, with no exception.
+  hg <- horizonte_glei(pedon)
+  glei_dentro_50 <- isTRUE(hg$passed) &&
+                      any(h$top_cm[hg$layers] <= 50, na.rm = TRUE) &&
+                      !.textura_areia_ou_areia_franca(h)
   plint_dentro_40 <- isTRUE(horizonte_plintico(pedon)$passed) &&
                        any(h$top_cm[horizonte_plintico(pedon)$layers] <= 40,
                               na.rm = TRUE)
@@ -77,7 +82,7 @@ neossolo <- function(pedon) {
   chern_calc <- isTRUE(horizonte_A_chernozemico(pedon)$passed) &&
                   (isTRUE(carater_carbonatico(pedon)$passed) ||
                      isTRUE(horizonte_calcico(pedon)$passed))
-  exclusion_failed <- glei_dentro_150 || plint_dentro_40 ||
+  exclusion_failed <- glei_dentro_50 || plint_dentro_40 ||
                         vert_below_a || chern_calc
   passed <- !exclusion_failed
   DiagnosticResult$new(
@@ -85,7 +90,7 @@ neossolo <- function(pedon) {
     layers = if (passed) seq_len(nrow(h)) else integer(0),
     evidence = list(
       no_b_diagnostic = !has_b,
-      glei_dentro_150 = glei_dentro_150,
+      glei_dentro_50 = glei_dentro_50,
       plintico_dentro_40 = plint_dentro_40,
       vertico_below_a = vert_below_a,
       chernozemic_carbonatic = chern_calc
@@ -236,7 +241,19 @@ gleissolo <- function(pedon) {
   h <- pedon$horizons
   glei_top <- min(h$top_cm[g$layers], na.rm = TRUE)
   in_50  <- glei_top <= 50
-  in_150 <- glei_top <= 150
+  # v0.9.239: between 50 and 150 cm the glei horizon counts "desde que
+  # imediatamente subjacente a horizontes A ou E ou a horizonte histico com
+  # menos de 40 cm de espessura" (SiBCS 2018, Cap 4, p. 112-113); any glei
+  # horizon within 150 cm used to count.
+  in_150 <- FALSE
+  if (!in_50 && glei_top <= 150) {
+    o <- order(h$top_cm)
+    first <- g$layers[which.min(h$top_cm[g$layers])]
+    pos <- match(first, o)
+    above <- if (!is.na(pos) && pos > 1L)
+      .desg_master(h$designation[o[pos - 1L]]) else NA_character_
+    in_150 <- !is.na(above) && grepl("^[AEHO]", above)
+  }
   # Exclusoes: plintico/concrecionario/litoplintico dentro de 200 cm
   pl <- horizonte_plintico(pedon)
   co <- horizonte_concrecionario(pedon)
@@ -377,6 +394,18 @@ cambissolo <- function(pedon) {
     missing = bi$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
   )
+}
+
+
+#' Whether every horizon that starts within `max_cm` and has its texture
+#' recorded is of the classes areia or areia franca (silt + 2 x clay < 30,
+#' in per cent), and at least one has. The exception of the Neossolos step to
+#' the absence of a glei horizon within 50 cm.
+#' @noRd
+.textura_areia_ou_areia_franca <- function(h, max_cm = 150) {
+  i <- which(!is.na(h$top_cm) & h$top_cm < max_cm &
+               !is.na(h$clay_pct) & !is.na(h$silt_pct))
+  length(i) > 0L && all(h$silt_pct[i] + 2 * h$clay_pct[i] < 30)
 }
 
 

@@ -207,8 +207,11 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # change are now keyed Planossolos (12683 and 12692, variegated; 13061, a
   # yellowish matrix with a grey mottle), and one whose B is in small blocks
   # is no longer (13069): 172 -> 170.
+  # v0.9.239: the glei horizon is read by the colours of the book and the
+  # drainage class of the site. Four reference Argissolos of RJ, mottled and
+  # with no colour of reduction, are no longer keyed Gleissolos: 170 -> 174.
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 170L)
+  expect_equal(conf["Argissolos","Argissolos"], 174L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
