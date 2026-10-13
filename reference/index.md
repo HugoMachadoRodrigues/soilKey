@@ -477,7 +477,7 @@ veja a seção “Internal – motor taxonômico” no fim da referência.
 - [`B_incipiente()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_incipiente.md)
   : Horizonte B incipiente (SiBCS Cap 2, p 59-61; v0.7)
 - [`B_planico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_planico.md)
-  : Horizonte B planico (SiBCS Cap 2, p 65-66; v0.7)
+  : Horizonte B planico (SiBCS Cap 2, p 65-66)
 
 ## SiBCS 5ª ed. – Família (5º nível, Cap 18)
 
