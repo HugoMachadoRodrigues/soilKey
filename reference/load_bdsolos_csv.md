@@ -48,6 +48,12 @@ perferrico classes read; `"Oxalato de Amonio - Ferro"` goes to
 `fe_ox_pct`. All three are converted from g/kg to %. Until v0.9.220 the
 sulfuric Fe2O3 filled `fe_dcb_pct`, unconverted.
 
+Silica and alumina (v0.9.243): `"Ataque sulfurico - SiO2"` and
+`"- Al2O3"` go to `sio2_sulfuric_pct` and `al2o3_sulfuric_pct`,
+converted from g/kg to %. The Ki index (molecular SiO2 / Al2O3), which
+SiBCS asks of the B latossolico, is computed from them; it reproduces
+the Ki column of the export.
+
 Reading (v0.9.222): the file is read with
 [`utils::read.csv2`](https://rdrr.io/r/utils/read.table.html). The
 export quotes every field, and its free-text fields hold line breaks

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.242</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.243</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,32 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.243" id="soilkey-09243-2026-10-13">soilKey 0.9.243 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09243-2026-10-13"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-the-b-latossólico-is-asked-for-its-ki-0-9-243">SiBCS key: the B latossólico is asked for its Ki<a class="anchor" aria-label="anchor" href="#sibcs-key-the-b-latoss%C3%B3lico-is-asked-for-its-ki-0-9-243"></a></h3>
+<p>The book (SiBCS 2018, Cap. 2, p. 59, item e) asks of the B latossólico a “Relação molecular SiO2/Al2O3 (Ki) igual ou inferior a 2,2, sendo normalmente menor que 2,0”, and tells the B incipiente from it by a Ki “maior que 2,2” (p. 61). The item was not tested. The profile schema has the silica and the alumina of the sulfuric attack, from which <code><a href="../reference/compute_ki.html">compute_ki()</a></code> gives the index, but the BDsolos loader did not read them, although the export records them in 71% of its rows.</p>
+<ul><li>
+<code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> reads “Ataque sulfúrico - SiO2” and “- Al2O3” into <code>sio2_sulfuric_pct</code> and <code>al2o3_sulfuric_pct</code>, converted from g/kg to %. The index computed from them reproduces the Ki column of the export (99.1% of the rows of one state within 0.05).</li>
+<li>In <code><a href="../reference/B_latossolico.html">B_latossolico()</a></code> a layer whose Ki is recorded above 2.20 is no B latossólico. The horizon is what is left: the adjoining sub-horizons that meet every requirement still have to make 50 cm. Where the sulfuric attack is not recorded the horizon is tested as before.</li>
+</ul><p>The limit is read as written and by sub-horizon, as decided on 2026-10-13 after the alternatives were measured (the limit at one decimal, so that 2.24 counts as 2.2, cost 16 profiles where this costs 23).</p>
+<div class="section level4">
+<h4 id="measured-0-9-243">Measured<a class="anchor" aria-label="anchor" href="#measured-0-9-243"></a></h4>
+<p>National BDsolos export, 7,593 profiles with a reference order:</p>
+<table class="table"><thead><tr><th></th>
+<th>0.9.242</th>
+<th>0.9.243</th>
+</tr></thead><tbody><tr><td>default mode</td>
+<td>3,952 (52.0%)</td>
+<td>3,929 (51.7%)</td>
+</tr><tr><td>morphological mode</td>
+<td>4,844 (63.8%)</td>
+<td>4,817 (63.4%)</td>
+</tr></tbody></table><p><strong>The agreement goes down, and it is the book that takes it down.</strong> In the default mode 83 profiles lose their B latossólico: 34 reference Latossolos (1,041 agreed before, 1,007 now), of which 16 have every B sub-horizon above 2.2 and 18 have one that breaks the 50 cm; 11 reference Cambissolos reach their order (394 to 405); the other 38 go from one wrong order to another (29 of them reference Argissolos that were keyed Latossolos). Of the profiles keyed Latossolos, 70.6% had that reference before (1,041 of 1,474) and 72.4% now (1,007 of 1,391).</p>
+<p>Panel of complete profiles (781): 418 to 416 in the default mode and 504 to 502 in the morphological mode. FEBR (1,000: 376 and 501, confusion matrices identical) and Redape (94: 77 and 84, no profile changes) do not change. The 44 canonical profiles keep their class in the three systems, in both modes.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.242" id="soilkey-09242-2026-10-13">soilKey 0.9.242 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09242-2026-10-13"></a></h2>
 <div class="section level3">
