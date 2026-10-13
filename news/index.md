@@ -1,5 +1,39 @@
 # Changelog
 
+## soilKey 0.9.247 (2026-10-13)
+
+### SiBCS key: the “ir” of the older surveys is a B espódico in the morphological mode
+
+The surveys that predate the present horizon notation write the illuvial
+iron of a B horizon “ir” (Bir, B2ir, B22irx), where the present notation
+writes “s”. The morphological mode, which reads the diagnostic horizon
+from the designation where the analyses do not show it, read “h” and “s”
+as the B espódico. A B with “ir” and no “h” was not read.
+
+[`B_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_espodico.md)
+reads it now, in that mode only. In the national BDsolos export 26
+profiles carry “ir” in a horizon designation, and all 26 have a
+reference in Espodossolos. In the morphological mode 19 of them keyed
+there already and 25 do now; the other one, with 16.5% of organic carbon
+in an A of 40 cm, keys Organossolos (AM 10502).
+
+The reading is that of SiBCS only:
+[`spodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/spodic.md),
+which serves WRB and USDA, is not changed.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order,
+morphological mode: 4,854 to 4,860 (63.9% to 64.0%). Six profiles change
+order, all six to their reference: Espodossolos that keyed Cambissolos
+(3), Neossolos (2) and Gleissolos (1). Reference Espodossolos agreed 66
+to 72 of 98.
+
+The default mode does not read designations and is identical, profile by
+profile. The panel of complete profiles (428 and 511 of 781), FEBR (376
+and 501 of 1,000), Redape (77 and 84 of 94) and the 44 canonical
+profiles are identical in both modes.
+
 ## soilKey 0.9.246 (2026-10-13)
 
 ### SiBCS key: the minimum thickness of a horizon is that of its adjoining sub-horizons

@@ -28,3 +28,10 @@ A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
 recording whether the diagnostic is present, the qualifying layers, and
 the supporting evidence.
+
+## Details
+
+In the morphological mode the horizon is also read from its designation.
+Since v0.9.247 that includes the "ir" of the older surveys (`Bir`,
+`B2ir`, `B22irx`), the illuvial iron that the present notation writes
+"s": the mode read "h" and "s" only.
