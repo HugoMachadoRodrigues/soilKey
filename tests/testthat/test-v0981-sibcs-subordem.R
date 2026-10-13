@@ -113,9 +113,13 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   # v0.9.230: the clay-film gate of the B latossolico reads "many", the term
   # the Redape loader writes for its code of "abundante": four Argissolos of
   # Rio Grande do Norte are no longer keyed Latossolos, 71.3% (67/94).
+  # v0.9.241: the B textural and the B latossolico are tested by the items of
+  # the book, and a diagnostic B is one with or without carater fluvico:
+  # 81.9% (77/94). Seventeen profiles change order, eleven of them to their
+  # reference.
   # Pinned with a +/- tolerance to catch unintended drift.
-  expect_gt(res$accuracy, 0.67)
-  expect_lt(res$accuracy, 0.75)
+  expect_gt(res$accuracy, 0.78)
+  expect_lt(res$accuracy, 0.86)
   expect_equal(res$n_compared, 94L)
 })
 

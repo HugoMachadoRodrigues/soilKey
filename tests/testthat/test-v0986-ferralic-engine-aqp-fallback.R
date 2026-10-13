@@ -98,7 +98,10 @@ test_that("v0.9.86: BDsolos RJ Latossolo recall lifts from 17 to ~32 with engine
   res_def <- suppressMessages(suppressWarnings(
     benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
   cf_def <- res_def$per_system$sibcs$confusion
-  expect_equal(cf_def["Latossolos","Latossolos"], 17L)
+  # v0.9.241: the 50 cm of the B latossolico are those of the horizon, and
+  # the layers of a B textural are none: 17 -> 25 in the default engine, and
+  # 41 with engine = "aqp" (32 before).
+  expect_equal(cf_def["Latossolos","Latossolos"], 25L)
 
   res_aqp <- withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     suppressMessages(suppressWarnings(

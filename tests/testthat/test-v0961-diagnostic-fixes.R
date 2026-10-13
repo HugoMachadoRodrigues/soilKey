@@ -7,6 +7,12 @@
 #   2. test_gleyic_features Munsell-hue path -- gleyic via N / 5GY / 10G hues
 #   3. B_latossolico clay-films guard -- argic excludes Latossolos only when
 #      clay films are common+ (per SiBCS Cap 18)
+#
+# v0.9.241: the third group holds by another rule. The B latossolico has
+# "cerosidade, se presente, no maximo pouca e fraca" (SiBCS 2018, Cap 2,
+# p. 59, item h), tested layer by layer, and the layers of a B textural, now
+# tested by the items of the book, are no B latossolico. Cap 18 deals with
+# families and series.
 # =============================================================================
 
 
@@ -154,12 +160,13 @@ test_that("B_latossolico fails when clay films are common+ (Argissolo)", {
 })
 
 
-test_that("B_latossolico evidence captures argic for traceability", {
+test_that("B_latossolico evidence records its tests and the B textural", {
   p <- .make_latossolo_pedon(clay_films = "Pouca", argic_strong = FALSE)
   res <- B_latossolico(p)
-  # The argic info is preserved even when not used to exclude
-  expect_true("argic_concurrent" %in% names(res$evidence))
-  expect_true("ferralic" %in% names(res$evidence))
+  # v0.9.241: the requirements tested, and the B textural that would exclude it
+  expect_true(all(c("texture", "cec_per_clay", "thickness", "B_textural",
+                    "excluded_by") %in% names(res$evidence)))
+  expect_false(isTRUE(res$evidence$B_textural$passed))
 })
 
 

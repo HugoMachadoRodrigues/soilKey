@@ -23,7 +23,11 @@
     ph_h2o   = c(5.0, 5.1, 5.2, 5.3),
     structure_grade = c("moderate", "moderate", "moderate", "weak"),
     structure_type  = c("granular", "subangular blocky", "subangular blocky", "blocky"),
-    structure_size  = c("small", "small", "small", "medium")
+    structure_size  = c("small", "small", "small", "medium"),
+    # v0.9.241: the transitions of a Latossolo. Its B has 20 points of clay
+    # more than its A, which is a mudanca textural abrupta, and so a
+    # B textural, only if it takes place within 7.5 cm.
+    boundary_distinctness = c("gradual", "diffuse", "diffuse", NA)
   )
   hz <- ensure_horizon_schema(hz)
   PedonRecord$new(

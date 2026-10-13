@@ -93,6 +93,22 @@ test_that("the order of a canonical profile does not depend on how its materials
     for (prefix in c("II", "2")) {
       q <- .with_material(p, prefix)
       if (is.null(q)) next
+      # v0.9.241: the number of the material is not only a way of writing. A
+      # discontinuity between the A or E and the B is item (j) of the
+      # B textural (SiBCS 2018, Cap 2, p. 56-57): the horizon then needs the
+      # relacao textural of item (h) or the cerosidade of item (i). The B of
+      # the canonical Solonetz is a B textural by its E horizon alone (item
+      # f), and written as a second material it is none.
+      ev <- B_textural(p)$evidence
+      by_item_f_alone <- isTRUE(ev$item_f) && !isTRUE(ev$item_h) &&
+        is.na(ev$item_i %||% NA_character_)
+      if (by_item_f_alone) {
+        expect_true(isTRUE(B_textural(p)$passed), info = paste(f, prefix))
+        r <- B_textural(q)
+        expect_true(r$evidence$item_j, info = paste(f, prefix))
+        expect_false(isTRUE(r$passed), info = paste(f, prefix))
+        next
+      }
       expect_equal(order_of(q), order_of(p), info = paste(f, prefix))
     }
   }

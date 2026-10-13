@@ -25,12 +25,15 @@ A \code{data.frame} with columns
 \description{
 Applies \code{\link{argic_with_strong_clay_films}()} to every
 pedon in \code{pedons} and returns a per-pedon table summarising
-how the v0.9.61 \code{B_latossolico()} latossolic-vs-argic rule
-resolves on the benchmark sample.
+how the rule that \code{B_latossolico()} applied from v0.9.61 to
+v0.9.240 resolves on the benchmark sample: a B textural (the WRB argic
+horizon, then) excluded the B latossolico only when its clay films were
+common or more.
 }
 \details{
-Useful for empirical validation of the SiBCS Cap 18 precedence
-rule on field-described datasets such as BDsolos and Redape, where
+Since v0.9.241 the SiBCS key does not use that rule (see
+\code{\link{B_latossolico}}); the audit shows what it would have done
+on field-described datasets such as BDsolos and Redape, where
 clay-film qualifiers are recorded in mixed Portuguese / English
 tokenisation. The audit is read-only and never invokes
 \code{\link{classify_sibcs}()}.

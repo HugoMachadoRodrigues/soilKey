@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostics-horizons-sibcs.R
 \name{B_latossolico}
 \alias{B_latossolico}
-\title{Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)}
+\title{Horizonte B latossolico (SiBCS Cap 2, p 57-59)}
 \usage{
 B_latossolico(
   pedon,
@@ -15,19 +15,17 @@ B_latossolico(
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_thickness}{Numeric threshold or option (see Details).}
+\item{min_thickness}{Minimum thickness of the horizon, in cm (50).}
 
 \item{max_cec_per_clay}{CEC per kg clay the horizon must stay below.
 Defaults to \code{NULL} (engine-aware): 17 in soilkey engine
 (SiBCS Cap 2: "menor que 17 cmolc kg-1 de argila, sem correcao
-para carbono"; slightly more permissive than WRB ferralic's < 16)
-or 20 in aqp engine (v0.9.68 regional tolerance for Embrapa lab
-methodology offset). Strict since v0.9.212: a value of exactly 17
-is not latossolic, it is the B incipiente's "17 ou maior".}
+para carbono") or 20 in aqp engine (v0.9.68 regional tolerance for
+Embrapa lab methodology offset). Strict since v0.9.212: a value of
+exactly 17 is not latossolic, it is the B incipiente's "17 ou maior".}
 
 \item{engine}{One of \code{"soilkey"} (default) or \code{"aqp"};
-\code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
-Forwarded to \code{\link{ferralic}}.}
+\code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.}
 
 \item{...}{Reserved for future arguments.}
 }
@@ -35,18 +33,34 @@ Forwarded to \code{\link{ferralic}}.}
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Adicionalmente a \code{\link{ferralic}} (WRB), o B latossolico
-SiBCS exige:
+The requirements of the book that the data of a profile can show
+(v0.9.241):
 \itemize{
-  \item Espessura minima de 50 cm;
-  \item Textura francoarenosa ou mais fina;
-  \item Estrutura granular muito pequena/pequena ou em blocos
-        subangulares fraco/moderado;
-  \item < 5\% volume mostrando estrutura da rocha original;
-  \item Ki \\<= 2.2 (geralmente \\<= 2.0);
-  \item Cerosidade no maximo pouca e fraca.
+  \item (d) texture francoarenosa or finer;
+  \item (g) cation exchange capacity below 17 cmolc per kg of clay, with no
+        correction for carbon;
+  \item (h) cerosidade, if present, at most few and weak: a layer with a
+        larger amount or a higher grade is no B latossolico (a range
+        counts by its upper end, the requirement being a maximum);
+  \item (b) a thickness of 50 cm or more, of the horizon: of the adjoining
+        sub-horizons that meet the other requirements, taken together;
+  \item it "nao apresenta caracteristicas diagnosticas de horizontes glei,
+        B textural, B nitico e plintico": the layers of a
+        \code{\link{B_textural}} are no B latossolico, and a plinthic or
+        gleyic horizon or a \code{\link{B_nitico}} in the profile excludes
+        it, as before.
 }
-v0.7 enforce thickness, texture, e ausencia de estrutura primaria
-herdada via designation e clay; Ki/Kr quantitativos sao v0.8 (precisa
-de SiO2/Al2O3 lab-data nao no schema).
+Where the designations are recorded, only B horizons are candidates: the
+B latossolico is a subsurface horizon below the A. Items (a) structure,
+(c) rock structure, (e) Ki and (f) weatherable minerals are not tested.
+}
+\details{
+Until v0.9.240 the 50 cm were asked of each layer on its own, so that a
+B latossolico described as B1, B21 and B22 of 35 cm each was none; and
+since v0.9.61 a B textural did not exclude it unless its clay films were
+common or more, on a rule the comments attributed to Cap 18 of the book,
+which deals with families and series.
+
+In the morphological mode a "Bw" or "Bo" of a tropical profile stands for
+the B latossolico when the data do not show it.
 }

@@ -461,77 +461,283 @@ horizonte_A_moderado <- function(pedon) {
 # ============================================================================
 
 
-#' Horizonte B textural (SiBCS Cap 2, p 54-57; v0.7 strict)
+#' Horizonte B textural (SiBCS Cap 2, p 54-57)
 #'
-#' Horizonte mineral subsuperficial com incremento de argila + cerosidade
-#' OR aumento gradativo, satisfazendo criterios de espessura e relacao
-#' textural B/A. v0.7 enforce as alternativas (a)-(j) do SiBCS por
-#' delegacao parcial ao WRB \code{\link{argic}} (criterios de
-#' clay-increase essencialmente identicos) acrescidos de:
+#' The B textural as the book states it: a subsurface horizon of texture
+#' francoarenosa or finer, at least 7.5 cm thick (thickness items a to e),
+#' that meets one or more of the items below (v0.9.241).
 #' \itemize{
-#'   \item espessura \\>= 7.5 cm OR \\>= 10\% da soma das espessuras
-#'         dos sobrejacentes; e
-#'   \item textura \\>= francoarenosa.
+#'   \item (f) an E horizon above the B, the B having more clay than the
+#'         horizons above it and being no B espodico, plintico or planico;
+#'   \item (g) a mudanca textural abrupta from the A or E to the B (Cap 1,
+#'         p 30-31): at least twice the clay when the A or E has less than
+#'         200 g/kg, 200 g/kg more otherwise, within 7.5 cm. The distance is
+#'         read from the distinctness of the transition
+#'         (\code{boundary_distinctness}: abrupt or clear); where it is not
+#'         recorded the two layers are compared;
+#'   \item (h) the relacao textural B/A of footnote 4, above 1.50, 1.70 or
+#'         1.80 according to the clay of the A
+#'         (\code{test_ratio_textural_sibcs});
+#'   \item (i) where the increase is below item (h), the cerosidade of one or
+#'         more sub-horizons of the upper part of the B (read as its upper
+#'         half): (1) texture media with no macroaggregates and cerosidade of
+#'         moderate grade; (2) texture media with prismatic or blocky
+#'         structure of moderate or strong grade and cerosidade of at least
+#'         moderate grade; (3) texture argilosa or muito argilosa with that
+#'         structure and cerosidade at least common and weak or few and
+#'         moderate; (4) relacao textural of 1.4 or more with a fragipa
+#'         within 200 cm, the B being no B espodico;
+#'   \item (j) with a discontinuity of parent material between the A or E and
+#'         the B, or with only a ploughed layer above the B, items (h) or (i)
+#'         are needed.
 #' }
-#' Refinamentos pendentes para v0.8: cerosidade obrigatoria sob certas
-#' estruturas (criterio i.1 / i.2 / i.3); lamelas \\>= 15 cm combinadas.
+#' Amounts and grades written as ranges are read by their lower end, the
+#' requirements being minima. Lamellae (item d) are not tested.
+#'
+#' Until v0.9.240 this function was the WRB \code{\link{argic}} horizon, whose
+#' clay increase (6 percentage points, a ratio of 1.4 or 20 points, between a
+#' layer and the least clayey layer anywhere above it) is not the one of the
+#' book, joined to item (h); items (f), (g) and (i) were not tested.
+#'
+#' The layers returned are the B sub-horizons (BC excluded) of texture
+#' francoarenosa or finer; \code{evidence$upper_layers} are those that carry
+#' the evidence, from the top of the B down.
+#'
+#' The items are stated for the A, E and B horizons. A profile with no horizon
+#' designation at all (depth slices, for instance) cannot be read by them and
+#' is tested as before, by the clay increase between layers.
+#'
+#' In the morphological mode
+#' (\code{options(soilKey.morphological_inference = TRUE)}) a "t" in the
+#' designation of a B horizon stands for the B textural when the items do not
+#' show it. The diagnostic engine
+#' (\code{options(soilKey.diagnostic_engine = "aqp")}) does not change this
+#' test: it changed the argic horizon that this function used to be.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param ... Reserved for future arguments.
+#' @param ... Passed to \code{\link{argic}} for a profile with no horizon
+#'   designation; ignored otherwise.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_textural <- function(pedon, ...) {
-  res <- argic(pedon, lithic_discontinuity = FALSE, ...)
-  # v0.9.138: UNION the verbatim SiBCS Cap 2 p.56 item (h) relacao-textural
-  # ratio (test_ratio_textural_sibcs) with the WRB argic clay-increase. The two
-  # mostly coincide -- (h) is a subset of argic EXCEPT for very sandy A horizons
-  # (clay < ~7.5%), where the ratio (>1.80) is a smaller absolute jump than
-  # argic's +6 pp. The union therefore only ADDS sandy-A B-textural cases argic
-  # misses; it can never remove an argic pass. Other paths -- (f) E-horizon,
-  # (g) abrupt change, (i) cerosidade, (j) lithologic discontinuity -- remain
-  # delegated/deferred (cerosidade morphology is data-sparse).
-  h_ratio <- test_ratio_textural_sibcs(pedon$horizons)
-  if (isTRUE(h_ratio$passed)) {
-    res$layers <- union(res$layers %||% integer(0), h_ratio$layers)
-    res$passed <- length(res$layers) > 0L
-    res$evidence <- c(res$evidence %||% list(),
-                       list(relacao_textural_sibcs = h_ratio))
+  d <- pedon$horizons$designation
+  if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
+    res <- argic(pedon, lithic_discontinuity = FALSE, ...)
+    res$name      <- "B_textural"
+    res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
+    res$notes     <- paste0("no horizon designation: tested by the clay ",
+                            "increase between layers (WRB argic)")
+    return(res)
   }
-  res$name      <- "B_textural"
-  res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
-  res$notes     <- paste0("v0.9.138: clay-increase via WRB argic UNION SiBCS ",
-                            "relacao-textural (h); cerosidade (i)/lamelas em v0.8")
-  res
+  .b_textural_sibcs(pedon)
 }
 
 
-#' Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)
+#' The B textural by the items of SiBCS 2018, Cap 2, p. 54-57, for a profile
+#' with horizon designations. See \code{\link{B_textural}}.
+#' @noRd
+.b_textural_sibcs <- function(pedon) {
+  h   <- pedon$horizons
+  dm  <- .desg_master(h$designation)
+  ref <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
+  hm  <- data.table::copy(h); hm$designation <- dm
+  out <- function(passed, layers = integer(0), evidence = list(),
+                  missing = character(0)) {
+    # the morphological mode: a "t" in the designation of a B horizon
+    if (!isTRUE(passed) && .morph_inference_enabled()) {
+      ml <- .morph_layers(hm, "argic")
+      if (length(ml) > 0L) {
+        evidence$morphological_inference <- list(
+          passed = TRUE, layers = ml, diagnostic = "argic",
+          provenance = "morphological_designation")
+        passed <- TRUE; layers <- ml
+      }
+    }
+    DiagnosticResult$new(name = "B_textural", passed = passed, layers = layers,
+                         evidence = evidence, missing = missing,
+                         reference = ref)
+  }
+  is_a <- !is.na(dm) & grepl("^A", dm)
+  is_e <- !is.na(dm) & grepl("^E", dm)
+  is_b <- !is.na(dm) & grepl("^B", dm) & !grepl("^B/?C", dm)
+  b <- which(is_b & !is.na(h$top_cm))
+  b <- b[order(h$top_cm[b])]
+  if (length(b) == 0L) return(out(FALSE, evidence = list(reason = "no B horizon")))
+
+  # texture francoarenosa or finer
+  tex <- .francoarenosa_or_finer(h$silt_pct[b], h$clay_pct[b])
+  bt <- b[!is.na(tex) & tex]
+  if (length(bt) == 0L) {
+    unknown <- all(is.na(tex))
+    return(out(if (unknown) NA else FALSE,
+               evidence = list(reason = "texture"),
+               missing = if (unknown) c("sand_pct", "silt_pct", "clay_pct")
+                         else character(0)))
+  }
+  # thickness, items (a) to (e): 7.5 cm in every case
+  thickness <- sum(h$bottom_cm[bt] - h$top_cm[bt], na.rm = TRUE)
+  if (!(thickness >= 7.5))
+    return(out(FALSE, evidence = list(reason = "thickness",
+                                      thickness_cm = thickness)))
+
+  b_top <- min(h$top_cm[b])
+  ord   <- order(h$top_cm)
+  pos   <- match(b[1], ord)
+  up    <- if (!is.na(pos) && pos > 1L) ord[pos - 1L] else NA_integer_
+  above <- which((is_a | is_e) & !is.na(h$top_cm) & h$top_cm < b_top)
+
+  # (h) relacao textural
+  rt <- test_ratio_textural_sibcs(h)
+  item_h <- isTRUE(rt$passed)
+  ratio  <- rt$details$ratio %||% NA_real_
+
+  # (g) mudanca textural abrupta, from the A or E to the B: the increase of
+  # clay "em uma distancia vertical <= 7,5 cm". The distance is what the
+  # field sheet records as the distinctness of the transition to the horizon
+  # below (abrupt, under 2.5 cm; clear, 2.5 to 7.5 cm); where it is recorded
+  # as gradual or diffuse there is no abrupt change, and where it is not
+  # recorded the two layers are compared.
+  item_g <- FALSE
+  if (!is.na(up) && (is_a[up] || is_e[up]) &&
+        !is.na(h$clay_pct[up]) && !is.na(h$clay_pct[b[1]])) {
+    jump <- if (h$clay_pct[up] < 20) h$clay_pct[b[1]] >= 2 * h$clay_pct[up]
+            else h$clay_pct[b[1]] - h$clay_pct[up] >= 20
+    within <- .boundary_within_7_5_cm(h$boundary_distinctness[up])
+    item_g <- jump && !isFALSE(within)
+  }
+
+  # (f) an E horizon above the B
+  item_f <- FALSE
+  if (any(is_e[above])) {
+    b_clay <- suppressWarnings(max(h$clay_pct[bt], na.rm = TRUE))
+    a_clay <- suppressWarnings(max(h$clay_pct[above], na.rm = TRUE))
+    item_f <- is.finite(b_clay) && is.finite(a_clay) && b_clay > a_clay &&
+      !isTRUE(B_espodico(pedon)$passed) &&
+      !isTRUE(horizonte_plintico(pedon)$passed) &&
+      !isTRUE(B_planico(pedon)$passed)
+  }
+
+  # (i) cerosidade, where the increase is below item (h)
+  item_i <- NA_character_
+  i_layers <- integer(0)
+  if (!item_h) {
+    b_thick <- max(h$bottom_cm[b], na.rm = TRUE) - b_top
+    upper   <- bt[h$top_cm[bt] < b_top + b_thick / 2]
+    for (j in upper) {
+      it <- .b_textural_item_i(h$clay_pct[j], h$structure_type[j],
+                                h$structure_grade[j], h$clay_films_amount[j],
+                                h$clay_films_strength[j])
+      if (!is.na(it)) {
+        if (is.na(item_i)) item_i <- it
+        i_layers <- c(i_layers, j)
+      }
+    }
+    if (is.na(item_i) && is.finite(ratio) && ratio >= 1.4 &&
+          isTRUE(fragipa(pedon)$passed) && !isTRUE(B_espodico(pedon)$passed))
+      item_i <- "i4"
+  }
+
+  # (j) a discontinuity of parent material between the A or E and the B, or
+  # only a ploughed layer above the B: items (h) or (i) are needed
+  mat <- .desg_material_sibcs(h$designation)
+  discontinuity <- !is.na(up) && !is.na(mat[up]) && !is.na(mat[b[1]]) &&
+    mat[up] != mat[b[1]]
+  over_b <- which(!is.na(h$top_cm) & h$top_cm < b_top)
+  only_ap <- length(over_b) == 1L && !is.na(dm[over_b]) &&
+    grepl("^Ap", dm[over_b])
+  item_j <- discontinuity || only_ap
+
+  passed <- item_h || !is.na(item_i) ||
+    (!item_j && (item_f || item_g))
+
+  # the sub-horizons that carry the evidence, from the top of the B down
+  deepest <- -Inf
+  if (item_h) deepest <- max(deepest, h$top_cm[rt$layers %||% integer(0)])
+  if (length(i_layers)) deepest <- max(deepest, h$top_cm[i_layers])
+  if (!is.finite(deepest)) deepest <- b_top
+  upper_layers <- bt[h$top_cm[bt] <= deepest]
+
+  out(passed, if (passed) bt else integer(0),
+      evidence = list(item_f = item_f, item_g = item_g, item_h = item_h,
+                      item_i = item_i, item_j = item_j,
+                      relacao_textural = rt, ratio = ratio,
+                      thickness_cm = thickness,
+                      upper_layers = if (passed) upper_layers else integer(0)))
+}
+
+
+#' Which condition of item (i) of the B textural a B sub-horizon meets, by its
+#' texture, structure and cerosidade (SiBCS 2018, Cap 2, p. 56): "i1", "i2",
+#' "i3" or NA. Texture media is read as less than 35% of clay, argilosa and
+#' muito argilosa as 35% or more. Amounts and grades written as ranges count
+#' by their lower end.
+#' @noRd
+.b_textural_item_i <- function(clay, structure_type, structure_grade,
+                                films_amount, films_grade) {
+  if (is.na(clay)) return(NA_character_)
+  st  <- .field_term(structure_type)
+  sg  <- .field_grade_class(structure_grade)
+  amt <- .clay_films_class(.field_term(films_amount))
+  gr  <- .field_grade_class(films_grade)
+  if (is.na(amt) || amt < 1L) return(NA_character_)
+  # a cerosidade that is present is at least weak: "comum e fraca" asks no
+  # more of the grade, so that an unrecorded grade does not fail it
+  weak_or_more <- is.na(gr) || gr >= 1L
+  gr <- if (is.na(gr)) 0L else gr
+  blocky <- !is.na(st) && !is.na(sg) && sg >= 2L &&
+    grepl("bloc|block|prism|polyhedr|polyedr|poliedr", st)
+  no_macro <- !is.na(st) &&
+    grepl("graos? simples|single grain|macica|massive", st)
+  if (clay < 35) {
+    if (no_macro && gr >= 2L) return("i1")
+    if (blocky && gr >= 2L) return("i2")
+  } else if (blocky && ((amt >= 3L && weak_or_more) || (amt >= 2L && gr >= 2L))) {
+    return("i3")
+  }
+  NA_character_
+}
+
+
+#' Horizonte B latossolico (SiBCS Cap 2, p 57-59)
 #'
-#' Adicionalmente a \code{\link{ferralic}} (WRB), o B latossolico
-#' SiBCS exige:
+#' The requirements of the book that the data of a profile can show
+#' (v0.9.241):
 #' \itemize{
-#'   \item Espessura minima de 50 cm;
-#'   \item Textura francoarenosa ou mais fina;
-#'   \item Estrutura granular muito pequena/pequena ou em blocos
-#'         subangulares fraco/moderado;
-#'   \item < 5\% volume mostrando estrutura da rocha original;
-#'   \item Ki \\<= 2.2 (geralmente \\<= 2.0);
-#'   \item Cerosidade no maximo pouca e fraca.
+#'   \item (d) texture francoarenosa or finer;
+#'   \item (g) cation exchange capacity below 17 cmolc per kg of clay, with no
+#'         correction for carbon;
+#'   \item (h) cerosidade, if present, at most few and weak: a layer with a
+#'         larger amount or a higher grade is no B latossolico (a range
+#'         counts by its upper end, the requirement being a maximum);
+#'   \item (b) a thickness of 50 cm or more, of the horizon: of the adjoining
+#'         sub-horizons that meet the other requirements, taken together;
+#'   \item it "nao apresenta caracteristicas diagnosticas de horizontes glei,
+#'         B textural, B nitico e plintico": the layers of a
+#'         \code{\link{B_textural}} are no B latossolico, and a plinthic or
+#'         gleyic horizon or a \code{\link{B_nitico}} in the profile excludes
+#'         it, as before.
 #' }
-#' v0.7 enforce thickness, texture, e ausencia de estrutura primaria
-#' herdada via designation e clay; Ki/Kr quantitativos sao v0.8 (precisa
-#' de SiO2/Al2O3 lab-data nao no schema).
+#' Where the designations are recorded, only B horizons are candidates: the
+#' B latossolico is a subsurface horizon below the A. Items (a) structure,
+#' (c) rock structure, (e) Ki and (f) weatherable minerals are not tested.
+#'
+#' Until v0.9.240 the 50 cm were asked of each layer on its own, so that a
+#' B latossolico described as B1, B21 and B22 of 35 cm each was none; and
+#' since v0.9.61 a B textural did not exclude it unless its clay films were
+#' common or more, on a rule the comments attributed to Cap 18 of the book,
+#' which deals with families and series.
+#'
+#' In the morphological mode a "Bw" or "Bo" of a tropical profile stands for
+#' the B latossolico when the data do not show it.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_thickness Minimum thickness of the horizon, in cm (50).
 #' @param max_cec_per_clay CEC per kg clay the horizon must stay below.
 #'   Defaults to \code{NULL} (engine-aware): 17 in soilkey engine
 #'   (SiBCS Cap 2: "menor que 17 cmolc kg-1 de argila, sem correcao
-#'   para carbono"; slightly more permissive than WRB ferralic's < 16)
-#'   or 20 in aqp engine (v0.9.68 regional tolerance for Embrapa lab
-#'   methodology offset). Strict since v0.9.212: a value of exactly 17
-#'   is not latossolic, it is the B incipiente's "17 ou maior".
+#'   para carbono") or 20 in aqp engine (v0.9.68 regional tolerance for
+#'   Embrapa lab methodology offset). Strict since v0.9.212: a value of
+#'   exactly 17 is not latossolic, it is the B incipiente's "17 ou maior".
 #' @param engine One of \code{"soilkey"} (default) or \code{"aqp"};
 #'   \code{NULL} reads \code{getOption("soilKey.diagnostic_engine")}.
-#'   Forwarded to \code{\link{ferralic}}.
 #' @param ... Reserved for future arguments.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
@@ -543,82 +749,152 @@ B_latossolico <- function(pedon, min_thickness = 50,
   engine <- match.arg(engine, c("soilkey", "aqp"))
   if (is.null(max_cec_per_clay))
     max_cec_per_clay <- if (engine == "aqp") 20 else 17
-  fer <- ferralic(pedon, min_thickness = min_thickness,
-                    max_cec = max_cec_per_clay, engine = engine, ...)
-  if (!isTRUE(fer$passed)) {
-    fer$name      <- "B_latossolico"
-    fer$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59"
-    return(fer)
-  }
-  # v0.9.61 -- precedencia revisada conforme SiBCS Cap 18.
-  #
-  # Antes (v0.7): excluia layers que tambem passassem argic / B_nitico
-  # / plintico / gleyic. Para Latossolos com B horizon que casualmente
-  # tinha clay increase marginal (~6 pp ou >= 1.4x), o argic test
-  # passava e B_latossolico falhava -- caindo na pedra Argissolos
-  # catch-all do key.yaml. Resultado empirico: 24 / 114 Latossolos do
-  # BDsolos RJ.csv re-classificados erroneamente como Argissolos
-  # (v0.9.60 RJ benchmark, 2026-05-06).
-  #
-  # SiBCS Cap 18 e explicito: um Latossolo pode ter B textural fraco
-  # (gradacional, clay films pouca / fraca) -- desde que as features
-  # latossolicas dominem (CTC argila < 17 cmolc/kg, ferralic, thickness
-  # >= 50). Nesse caso a precedencia eh do B latossolico, NAO do B
-  # textural. Argic forte (clay films comuns + sharp clay increase) eh
-  # outra historia, mas o teste argic atual nao distingue forca, so
-  # threshold-pass.
-  #
-  # Plintico e gleyic continuam excludentes (sao diagnostic horizons
-  # que definem ordens distintas -- Plintossolos e Gleissolos -- e a
-  # ordem do key.yaml ja os coloca antes de Latossolos). B nitico
-  # idem (Nitossolos).
+  bt <- B_textural(pedon)
+  d  <- pedon$horizons$designation
+  described <- any(!is.na(d) & nzchar(trimws(as.character(d))))
+  # a profile with no horizon designation has its B textural tested by the
+  # clay increase between layers, which did not exclude the B latossolico
+  not_latossolic <- if (described && isTRUE(bt$passed)) bt$layers
+                    else integer(0)
+  .b_latossolico_core(pedon, min_thickness, max_cec_per_clay,
+                       not_latossolic = not_latossolic, B_textural = bt)
+}
+
+
+#' The B latossolico of a profile, given the layers that are not latossolic
+#' because they are a B textural. \code{\link{B_latossolico}} gives all the
+#' layers of the B textural; \code{carater_latossolico()}, which looks for a
+#' B latossolico below a B textural, gives its upper sub-horizons only.
+#' @noRd
+.b_latossolico_core <- function(pedon, min_thickness, max_cec_per_clay,
+                                 not_latossolic = integer(0),
+                                 B_textural = NULL) {
+  h  <- pedon$horizons
+  dm <- .desg_master(h$designation)
+  tropical <- .pedon_is_tropical(pedon)
+  tests <- list()
+  tests$texture      <- test_ferralic_texture(h, tropical = tropical)
+  tests$cec_per_clay <- test_cec_per_clay(h,
+                                          max_cmol_per_kg_clay = max_cec_per_clay)
+  tex_layers <- union(tests$texture$layers %||% integer(0),
+                      which(.francoarenosa_or_finer(h$silt_pct, h$clay_pct)))
+  cand <- intersect(tex_layers, tests$cec_per_clay$layers %||% integer(0))
+  # a subsurface horizon below the A: B horizons, where designations exist
+  cand <- cand[is.na(dm[cand]) | !nzchar(dm[cand]) | grepl("^B", dm[cand])]
+
   pl <- plinthic(pedon)
   gl <- gleyic_properties(pedon)
   bn <- B_nitico(pedon)
-  bt <- argic(pedon, lithic_discontinuity = FALSE)
-  # v0.9.61 -- argic exclui APENAS quando ha clay-films comuns/
-  # abundantes em layers do B horizon. Per SiBCS Cap 18: cerosidade
-  # "ausente / pouca / fraca" = Latossolo; "comum / abundante" =
-  # Argissolo. Ferralic + CTC<=17 + thickness>=50 + cerosidade fraca
-  # = Latossolo mesmo com clay increase marginal.
-  #
-  # v0.9.83: the strong-clay-films decision is delegated to
-  # argic_with_strong_clay_films() so the same rule can be audited
-  # with audit_argic_strong_films(). Behaviour is bit-for-bit
-  # identical: bt is the same DiagnosticResult, the films are pulled
-  # from the same bt$layers, and the strong-qualifier match is the
-  # same Portuguese-aware regex.
-  argic_films <- argic_with_strong_clay_films(pedon)
-  argic_with_strong_films <- isTRUE(argic_films$passed)
-  pass_layers <- function(d) if (isTRUE(d$passed)) d$layers
-                              else integer(0)
-  argic_excluded <- argic_films$layers
-  excluded_layers <- unique(c(
-    pass_layers(pl), pass_layers(gl), pass_layers(bn),
-    argic_excluded
-  ))
-  layers_remaining <- setdiff(fer$layers, excluded_layers)
-  passed <- length(layers_remaining) > 0L &&
-              !isTRUE(pl$passed) && !isTRUE(gl$passed) &&
-              !isTRUE(bn$passed) &&
-              !argic_with_strong_films
+  pass_layers <- function(x) if (isTRUE(x$passed)) x$layers else integer(0)
+  # (h) cerosidade at most few and weak
+  films_over <- which(.films_above_few_and_weak(h$clay_films_amount,
+                                                h$clay_films_strength))
+  excluded <- unique(c(not_latossolic, pass_layers(pl), pass_layers(gl),
+                       pass_layers(bn), films_over))
+  cand <- setdiff(cand, excluded)
+
+  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
+                                            candidate_layers = cand,
+                                            adjoining = TRUE)
+  layers <- tests$thickness$layers %||% integer(0)
+  no_other <- !isTRUE(pl$passed) && !isTRUE(gl$passed) && !isTRUE(bn$passed)
+  passed <- length(layers) > 0L && no_other
+  missing <- unique(c(tests$texture$missing, tests$cec_per_clay$missing,
+                      tests$thickness$missing))
+  if (length(layers) == 0L &&
+        (is.na(tests$texture$passed) || is.na(tests$cec_per_clay$passed)) &&
+        length(missing) > 0L)
+    passed <- NA
+
+  evidence <- c(tests, list(
+    max_cec_used = max_cec_per_clay,
+    B_textural   = B_textural,
+    films_above_few_and_weak = films_over,
+    excluded_by  = list(plintico = pl, gleyic = gl, B_nitico = bn)))
+
+  # the morphological mode: a "Bw" or "Bo" of a tropical profile
+  if (!isTRUE(passed) && .morph_inference_enabled()) {
+    hm <- data.table::copy(h); hm$designation <- dm
+    ml <- setdiff(.morph_layers(hm, "ferralic", min_top = 25,
+                                tropical = tropical), excluded)
+    if (length(ml) > 0L) {
+      evidence$morphological_inference <- list(
+        passed = TRUE, layers = ml, diagnostic = "ferralic",
+        provenance = "morphological_designation")
+      layers <- ml
+      passed <- no_other
+    }
+  }
+
   DiagnosticResult$new(
-    name = "B_latossolico",
-    passed = passed,
-    layers = layers_remaining,
-    evidence = list(
-      ferralic        = fer,
-      argic_concurrent = bt,                # v0.9.61: NOT excluding
-      excluded_by     = list(plintico = pl, gleyic = gl, B_nitico = bn)
-    ),
-    missing = fer$missing,
-    reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59",
-    notes = paste0("v0.9.61: precedencia revisada -- argic concurrent ",
-                     "NO LONGER exclui (per SiBCS Cap 18 latossolic ",
-                     "features dominam quando ferralic + CTC<17 + ",
-                     "thickness>=50). plintic + gleyic + nitic ainda ",
-                     "excluem (definem ordens distintas).")
+    name = "B_latossolico", passed = passed,
+    layers = if (isTRUE(passed)) layers else integer(0),
+    evidence = evidence, missing = missing,
+    reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 57-59"
   )
+}
+
+
+#' Whether the cerosidade recorded for a layer is above "pouca e fraca", the
+#' most a B latossolico may have (SiBCS 2018, Cap 2, p. 59, item h): an
+#' amount of common or more, or a grade of moderate or more. The requirement
+#' is a maximum, so that a range counts by its upper end ("Pouca a comum",
+#' "Fraca a moderada"). FALSE where nothing is recorded or the cerosidade is
+#' recorded as absent. Vectorised.
+#' @noRd
+.films_above_few_and_weak <- function(amount, grade) {
+  a <- .field_term(amount)
+  g <- .field_term(grade)
+  present <- !is.na(a) & nzchar(a) &
+    !grepl("^(none|absent|no|nenhuma|ausente|sem)\\b", a)
+  amount_over <- present &
+    grepl("comu|common|abundan|\\bmany\\b|muita|dominan", a)
+  grade_over <- present & !is.na(g) & grepl("moder|fort|strong", g)
+  amount_over | grade_over
+}
+
+
+#' Whether the texture of a layer is francoarenosa or finer: silt plus twice
+#' the clay of 30% or more. With 15% of clay or more it is so whatever the
+#' silt, which a sheet may lack; NA where the two cannot tell. Vectorised.
+#' @noRd
+.francoarenosa_or_finer <- function(silt, clay) {
+  out <- silt + 2 * clay >= 30
+  out[!is.na(clay) & clay >= 15] <- TRUE
+  out
+}
+
+
+#' Whether the transition to the horizon below, as its distinctness is
+#' recorded on the field sheet, takes place within 7.5 cm: TRUE for abrupt
+#' ("abrupta", under 2.5 cm) and clear ("clara", 2.5 to 7.5 cm), FALSE for
+#' gradual and diffuse ("difusa"), NA where it is not recorded or not read.
+#' The limit is a maximum, so that a range counts by its wider end ("Clara a
+#' gradual" is FALSE). Vectorised.
+#' @noRd
+.boundary_within_7_5_cm <- function(x) {
+  t <- .field_term(x)
+  out <- rep(NA, length(t))
+  out[!is.na(t) & grepl("abrupt|clear|clara|sharp", t)] <- TRUE
+  out[!is.na(t) & grepl("gradual|diffuse|difus", t)] <- FALSE
+  out
+}
+
+
+#' The number of the material a designation records, the Roman numerals of
+#' the older surveys included ("IIBt" and "2Bt" are 2, "Bt" is 1). NA where
+#' there is no designation.
+#' @noRd
+.desg_material_sibcs <- function(d) {
+  d <- trimws(as.character(d))
+  out <- rep(1L, length(d))
+  ar <- grepl("^[0-9]+", d)
+  out[ar] <- suppressWarnings(as.integer(sub("^([0-9]+).*", "\\1", d[ar])))
+  ro <- !ar & grepl("^[IVX]+(?=[A-HJ-UWYZ(])", d, perl = TRUE)
+  out[ro] <- suppressWarnings(as.integer(utils::as.roman(
+    sub("^([IVX]+).*", "\\1", d[ro]))))
+  out[is.na(d) | !nzchar(d)] <- NA_integer_
+  out
 }
 
 
@@ -656,8 +932,12 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   desg_match <- test_pattern_match(.h_master(h), "designation", "^B[wikvgnzj]")
   candidates <- desg_match$layers
   # Exclusoes
-  fer  <- ferralic(pedon)
-  arg  <- argic(pedon, lithic_discontinuity = FALSE)
+  # v0.9.241: item (a), "nao satisfazer aos requisitos estabelecidos para
+  # caracterizar um horizonte B textural, B nitico, B espodico, B planico e
+  # B latossolico": the B textural and the B latossolico of this system. The
+  # WRB argic and ferralic horizons (30 cm, 16 cmolc) were tested.
+  fer  <- B_latossolico(pedon)
+  arg  <- B_textural(pedon)
   esp  <- spodic(pedon)
   plan <- planic_features(pedon)
   ver  <- vertic_horizon(pedon)
@@ -673,8 +953,8 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   fra  <- fragic(pedon)
   pli  <- plinthic(pedon)
   gle  <- gleyic_properties(pedon)
-  excluded <- unique(c(fer$layers %||% integer(0),
-                        arg$layers %||% integer(0),
+  excluded <- unique(c(if (isTRUE(fer$passed)) fer$layers else integer(0),
+                        if (isTRUE(arg$passed)) arg$layers else integer(0),
                         esp$layers %||% integer(0),
                         plan$layers %||% integer(0),
                         ver$layers %||% integer(0),
@@ -693,7 +973,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
     evidence = list(
       designation = desg_match,
       thickness   = thick_test,
-      excluded_by = list(ferralic = fer$layers, argic = arg$layers,
+      excluded_by = list(B_latossolico = fer$layers, B_textural = arg$layers,
                            spodic = esp$layers, planic = plan$layers,
                            vertic = ver$layers, duric = dur$layers,
                            petrocalcic = pet$layers, fragic = fra$layers,
