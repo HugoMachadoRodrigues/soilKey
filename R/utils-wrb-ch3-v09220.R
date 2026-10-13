@@ -36,6 +36,11 @@
 #' comes after the letters ("Bt1"), and "A1, A2" beside "Bt1, Bt2" are two
 #' parts of an A. \code{profile} gives the designations of the whole profile
 #' when \code{d} is only some of them.
+#'
+#' v0.9.256: the older notation is also known by an A or a C followed by two
+#' figures ("A11", "A21", "C11") and by the suffixes "ir" in a B and "pl" in
+#' a B or a C, so that "A1, A21, A22, Bhir" and "A1, A2, Bh, Bhir" have their
+#' E read.
 #' @noRd
 .desg_master <- function(d, profile = d) {
   d <- trimws(as.character(d))
@@ -51,13 +56,30 @@
 
 #' Whether the designations of a profile are in the notation in use until
 #' 1988: a B followed at once by a number ("B1", "B21t", "IIB3"), or a "(B)".
+#'
+#' Since v0.9.256 also (decided on 2026-10-13):
+#' \itemize{
+#'   \item an A or a C followed at once by two figures ("A11", "A12", "A21",
+#'         "C11"): the older notation numbers the parts of a horizon after
+#'         the figure of the horizon, the present one counts them from 1
+#'         after the letters;
+#'   \item the suffix "ir" in a B ("Bir", "Bhir", "B2ir"), the illuvial iron
+#'         that is written "s" today;
+#'   \item the suffix "pl" in a B or a C ("Bpl", "B21pl", "Cpl"), the
+#'         plinthite that is written "f" today.
+#' }
+#' The suffix "cn" of the concretions is not taken for a mark: it is found in
+#' profiles otherwise written in the present notation ("A1, A2, AB, BA, Bw1,
+#' Bw2, BC, C1, Ccn"), where the A2 is the second part of the A.
 #' @noRd
 .desg_old_notation <- function(d) {
   d <- trimws(as.character(d))
   d <- d[!is.na(d)]
   if (length(d) == 0L) return(FALSE)
   m <- sub("^(?:[0-9]+(?=[A-Z(])|[IVX]+(?=[A-HJ-UWYZ(]))", "", d, perl = TRUE)
-  any(grepl("^\\(\\s*B", m) | grepl("^B[0-9]", m))
+  any(grepl("^\\(\\s*B", m) | grepl("^B[0-9]", m) |
+        grepl("^[AC][0-9][0-9]", m) |
+        grepl("^B[^A-Z]*ir", m) | grepl("^[BC][^A-Z]*pl", m))
 }
 
 #' The horizons with their designations read by .desg_master(), for the tests
