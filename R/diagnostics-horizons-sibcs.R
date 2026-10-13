@@ -1215,12 +1215,47 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
 #' Since v0.9.247 that includes the "ir" of the older surveys (\code{Bir},
 #' \code{B2ir}, \code{B22irx}), the illuvial iron that the present notation
 #' writes "s": the mode read "h" and "s" only.
+#'
+#' Since v0.9.255 a horizon that the WRB test does not find is looked for by
+#' item (a) of the book (p. 65), in both modes. The B espodico has an
+#' "acumulacao iluvial de compostos organometalicos" and, by that item, "um
+#' horizonte E (albico ou nao) sobrejacente e cores umidas de acordo com um
+#' dos itens a seguir: 1) matiz 5YR ou mais vermelho; 2) matiz 7,5YR com valor
+#' 5 ou menor e croma 4 ou menor; 3) matiz 10YR, com valor e croma 3 ou menor;
+#' 4) cores neutras com valor 3 ou menor". A B layer of 2.5 cm or more passes
+#' when:
+#' \itemize{
+#'   \item an E lies above it in the profile;
+#'   \item its moist colour is one of the four;
+#'   \item its organic carbon is 0.5\% or more and at least twice that of
+#'         the nearest E above it; and
+#'   \item no cerosidade is recorded in it.
+#' }
+#' The last two stand for the illuvial accumulation, which the sheets do not
+#' measure where there is no oxalate extraction. The first takes the form the
+#' book gives in item (b)(3) for aluminium and iron by oxalate, "valor 0,50 ou
+#' maior, sendo este valor pelo menos o dobro do encontrado no horizonte
+#' sobrejacente"; the second keeps out the B whose illuvial material is clay.
+#' It is a reading by analogy, decided on 2026-10-13, and not the letter of
+#' the book: the colours alone are those of the B textural of many an
+#' Argissolo below an E. Items (b) and (c), the cementation and the ortstein,
+#' are not tested.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_espodico <- function(pedon, ...) {
   res <- spodic(pedon, ...)
+  if (!isTRUE(res$passed)) {
+    it <- .b_espodico_item_a(pedon$horizons)
+    if (length(it$layers) > 0L) {
+      ev <- res$evidence
+      ev$item_a <- it
+      res$evidence <- ev
+      res$passed <- TRUE
+      res$layers <- it$layers
+    }
+  }
   if (.morph_inference_enabled() && !isTRUE(res$passed)) {
     dm <- .desg_master(pedon$horizons$designation)
     ir <- which(!is.na(dm) & grepl("^B[^A-Z]*ir", dm))
@@ -1239,6 +1274,60 @@ B_espodico <- function(pedon, ...) {
   res$name      <- "B_espodico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 62-65"
   res
+}
+
+
+#' Item (a) of the B espodico (SiBCS Cap 2, p 65), with the illuvial
+#' accumulation read from the organic carbon: the B layers, of 2.5 cm or more,
+#' that lie below an E, have one of the moist colours of the item, hold 0.5\%
+#' of organic carbon or more and at least twice that of the nearest E above
+#' them, and have no cerosidade recorded. Returns the layers and, for each,
+#' the E it was compared with and the two carbon contents.
+#' @noRd
+.b_espodico_item_a <- function(h) {
+  none <- list(layers = integer(0), e_above = integer(0),
+               oc_pct = numeric(0), oc_e_pct = numeric(0))
+  dm <- .desg_master(h$designation)
+  known <- !is.na(dm) & !is.na(h$top_cm)
+  e <- which(known & grepl("^E", dm))
+  b <- which(known & grepl("^B", dm) & !grepl("^B/?C", dm))
+  if (length(e) == 0L || length(b) == 0L) return(none)
+  out <- none
+  for (i in b) {
+    above <- e[h$top_cm[e] < h$top_cm[i]]
+    if (length(above) == 0L) next
+    if (is.na(h$bottom_cm[i]) || h$bottom_cm[i] - h$top_cm[i] < 2.5) next
+    hp <- .munsell_hue_parts(h$munsell_hue_moist[i])
+    if (!isTRUE(.b_espodico_colour_a(hp$number, hp$family,
+                                     h$munsell_value_moist[i],
+                                     h$munsell_chroma_moist[i]))) next
+    up <- above[which.max(h$top_cm[above])]
+    oc_b <- h$oc_pct[i]; oc_e <- h$oc_pct[up]
+    if (is.na(oc_b) || is.na(oc_e)) next
+    if (oc_b < 0.5 || oc_b < 2 * oc_e) next
+    if (isTRUE(.amount_at_least(h$clay_films_amount[i], "few"))) next
+    out$layers <- c(out$layers, i); out$e_above <- c(out$e_above, up)
+    out$oc_pct <- c(out$oc_pct, oc_b); out$oc_e_pct <- c(out$oc_e_pct, oc_e)
+  }
+  out
+}
+
+#' The moist colours of item (a) of the B espodico (p. 65): hue 5YR or redder;
+#' 7.5YR with value 5 or less and chroma 4 or less; 10YR with value and chroma
+#' 3 or less; neutral with value 3 or less. A hue between two of them takes
+#' the limits of the yellower one; one yellower than 10YR is none of them.
+#' One colour at a time.
+#' @noRd
+.b_espodico_colour_a <- function(number, family, value, chroma) {
+  if (is.na(family)) return(FALSE)
+  if (family == "N") return(!is.na(value) && value <= 3)
+  if (family == "R") return(TRUE)
+  if (family != "YR" || is.na(number)) return(FALSE)
+  if (number <= 5) return(TRUE)
+  if (is.na(value) || is.na(chroma)) return(FALSE)
+  if (number <= 7.5) return(value <= 5 && chroma <= 4)
+  if (number <= 10) return(value <= 3 && chroma <= 3)
+  FALSE
 }
 
 
