@@ -17,7 +17,7 @@ percent (BDsolos canonical unit)."><meta property="og:image" content="https://hu
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.241</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.242</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,6 +121,14 @@ and RS, where the lines of text became profiles of their own) or stopped
 with an error that left the next <code>fread()</code> of the R session waiting
 forever (after DF, MT, PA, PB or SP). An empty text field is <code>NA</code> in
 every file; a quotation mark inside a text field is dropped.</p>
+<p>Kind of sampling point (v0.9.242): the column <code>"Tipo"</code> of the export
+goes to <code>site$sampling_type</code>, as written: <code>"Perfil completo"</code>,
+<code>"Perfil parcial"</code> or <code>"Amostra extra"</code>. An extra sample is, in
+most cases, two sampled layers of a point (a topsoil and a subsoil sample,
+often with a gap between them), not a described profile: the thickness of
+its layers is that of the samples. About a third of the records of the
+national export are extra samples; <code><a href="benchmark_bdsolos.html">benchmark_bdsolos</a></code>
+reports the kinds apart.</p>
 <p>Profile-id columns are auto-detected: looks for any column whose
 normalised name matches
 <code>"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"</code>;

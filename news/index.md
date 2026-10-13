@@ -1,5 +1,59 @@
 # Changelog
 
+## soilKey 0.9.242 (2026-10-13)
+
+### BDsolos: the loader reads the kind of sampling point, and the benchmark reports by it
+
+The export marks each record, in its column “Tipo”, as “Perfil
+completo”, “Perfil parcial” or “Amostra extra”. The loader did not read
+the column. Of the 7,593 records of the national export with a reference
+order, 4,674 are complete profiles, 332 partial profiles and 2,587 extra
+samples. An extra sample is, in most cases, two sampled layers of a
+point (a topsoil and a subsoil sample, often with a gap between them):
+the thickness recorded is that of the samples, and a horizon that is
+asked for 50 cm cannot be shown by it. One figure for the three mixed
+what the key does on a described profile with what it can do on two
+samples.
+
+- [`load_bdsolos_csv()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+  puts the column in `site$sampling_type`, as written (the double space
+  of “Perfil parcial” made one).
+- [`benchmark_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)
+  gains `sampling_type = "Perfil completo"`: the figures of each system
+  (`accuracy`, `n_compared`, `n_correct`, `confusion`, `per_class`) are
+  those of the complete profiles, and the new `by_sampling_type` gives
+  the counts of every kind and of all the records together.
+  `sampling_type = NULL` counts every record, as the function did.
+  Pedons that carry no `site$sampling_type` (another source, a hand-made
+  list, a file with no “Tipo” column) are all counted, as before.
+- The BDsolos row of
+  [`run_all_benchmarks()`](https://hugomachadorodrigues.github.io/soilKey/reference/run_all_benchmarks.md)
+  and of
+  [`benchmark_unified()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.md)
+  is drawn from complete profiles: extra samples and partial profiles
+  are left out before the cap.
+
+The key is not changed. On the national export, at this version:
+
+| Kind of point   | n     | default mode  | morphological mode |
+|-----------------|-------|---------------|--------------------|
+| Perfil completo | 4,674 | 2,850 (61.0%) | 3,228 (69.1%)      |
+| Perfil parcial  | 332   | 111 (33.4%)   | 233 (70.2%)        |
+| Amostra extra   | 2,587 | 991 (38.3%)   | 1,383 (53.5%)      |
+| all             | 7,593 | 3,952 (52.0%) | 4,844 (63.8%)      |
+
+**The panel of the EJSS article is another sample now.** It was a draw
+of 800 of the 984 labelled records of the first three files (Acre,
+Alagoas, Amazonas), extra samples included. It is a draw of 800 of the
+1,111 labelled complete profiles of the first five (Acre, Alagoas,
+Amazonas, Amapá, Bahia): 418 of 781 in the default mode and 504 of 781
+in the morphological mode (19 of the 800 carry a label that names no
+order). At 0.9.241 the old panel gave 361 and 495 of 798. The two are
+different samples and their figures are not to be compared as a gain of
+the key.
+
+FEBR, Redape and the 44 canonical profiles are not touched.
+
 ## soilKey 0.9.241 (2026-10-13)
 
 ### SiBCS key: the B textural and the B latossólico are tested by the items of the book

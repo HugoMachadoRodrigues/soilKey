@@ -22,7 +22,8 @@ benchmark_bdsolos(
   systems = c("wrb2022", "sibcs", "usda"),
   sibcs_level = c("order", "subordem"),
   max_n = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  sampling_type = "Perfil completo"
 )
 ```
 
@@ -54,14 +55,25 @@ benchmark_bdsolos(
 
   If `TRUE` (default), emits cli progress messages.
 
+- sampling_type:
+
+  The kinds of sampling point the figures of each system are computed
+  on, as `site$sampling_type` words them. Default `"Perfil completo"`.
+  `NULL` counts every record, as the function did until v0.9.241.
+  Ignored when no pedon carries the field.
+
 ## Value
 
 A list with elements:
 
 - `per_system` – named list (one entry per requested system) of
-  `list(accuracy, n_compared, n_correct, n_errors, confusion, per_class)`
+  `list(accuracy, n_compared, n_correct, n_errors, confusion, per_class, by_sampling_type, sampling_type)`
   (or `list(accuracy = NA_real_, message)` when no reference labels were
-  present).
+  present). `by_sampling_type` is a data frame with one row per kind of
+  point and one for all the records (`n_compared`, `n_correct`,
+  `accuracy`), or `NULL` when no pedon carries the field;
+  `sampling_type` is the kinds the main figures were computed on (`NULL`
+  for all).
 
 - `coverage` – named list of `list(n_with_ref, n_total, pct)` per
   system.
@@ -103,6 +115,20 @@ other two systems). If a system has zero pedons with a reference label,
 the corresponding `$per_system` entry has `accuracy = NA_real_` and
 `message = "no_reference_labels"`. Classifier errors are caught
 per-pedon and recorded in `n_errors`; they do not abort the run.
+
+## Kinds of sampling point
+
+The export marks each record as `"Perfil completo"`, `"Perfil parcial"`
+or `"Amostra extra"` (`site$sampling_type`, read by
+[`load_bdsolos_csv`](https://hugomachadorodrigues.github.io/soilKey/reference/load_bdsolos_csv.md)
+since v0.9.242). An extra sample is not a described profile: in most
+cases it is two sampled layers, and the thickness a diagnostic horizon
+is asked for cannot be read from it. The figures of each system
+(`accuracy`, `n_compared`, `n_correct`, `confusion`, `per_class`) are
+therefore those of the complete profiles by default, and
+`by_sampling_type` gives the same counts for every kind and for all the
+records together. Pedons that carry no `site$sampling_type` (another
+source, a hand-made list) are all counted, as before.
 
 ## See also
 

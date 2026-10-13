@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.241</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.242</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,41 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.242" id="soilkey-09242-2026-10-13">soilKey 0.9.242 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09242-2026-10-13"></a></h2>
+<div class="section level3">
+<h3 id="bdsolos-the-loader-reads-the-kind-of-sampling-point-and-the-benchmark-reports-by-it-0-9-242">BDsolos: the loader reads the kind of sampling point, and the benchmark reports by it<a class="anchor" aria-label="anchor" href="#bdsolos-the-loader-reads-the-kind-of-sampling-point-and-the-benchmark-reports-by-it-0-9-242"></a></h3>
+<p>The export marks each record, in its column “Tipo”, as “Perfil completo”, “Perfil parcial” or “Amostra extra”. The loader did not read the column. Of the 7,593 records of the national export with a reference order, 4,674 are complete profiles, 332 partial profiles and 2,587 extra samples. An extra sample is, in most cases, two sampled layers of a point (a topsoil and a subsoil sample, often with a gap between them): the thickness recorded is that of the samples, and a horizon that is asked for 50 cm cannot be shown by it. One figure for the three mixed what the key does on a described profile with what it can do on two samples.</p>
+<ul><li>
+<code><a href="../reference/load_bdsolos_csv.html">load_bdsolos_csv()</a></code> puts the column in <code>site$sampling_type</code>, as written (the double space of “Perfil parcial” made one).</li>
+<li>
+<code><a href="../reference/benchmark_bdsolos.html">benchmark_bdsolos()</a></code> gains <code>sampling_type = "Perfil completo"</code>: the figures of each system (<code>accuracy</code>, <code>n_compared</code>, <code>n_correct</code>, <code>confusion</code>, <code>per_class</code>) are those of the complete profiles, and the new <code>by_sampling_type</code> gives the counts of every kind and of all the records together. <code>sampling_type = NULL</code> counts every record, as the function did. Pedons that carry no <code>site$sampling_type</code> (another source, a hand-made list, a file with no “Tipo” column) are all counted, as before.</li>
+<li>The BDsolos row of <code><a href="../reference/run_all_benchmarks.html">run_all_benchmarks()</a></code> and of <code><a href="../reference/benchmark_unified.html">benchmark_unified()</a></code> is drawn from complete profiles: extra samples and partial profiles are left out before the cap.</li>
+</ul><p>The key is not changed. On the national export, at this version:</p>
+<table class="table"><thead><tr><th>Kind of point</th>
+<th>n</th>
+<th>default mode</th>
+<th>morphological mode</th>
+</tr></thead><tbody><tr><td>Perfil completo</td>
+<td>4,674</td>
+<td>2,850 (61.0%)</td>
+<td>3,228 (69.1%)</td>
+</tr><tr><td>Perfil parcial</td>
+<td>332</td>
+<td>111 (33.4%)</td>
+<td>233 (70.2%)</td>
+</tr><tr><td>Amostra extra</td>
+<td>2,587</td>
+<td>991 (38.3%)</td>
+<td>1,383 (53.5%)</td>
+</tr><tr><td>all</td>
+<td>7,593</td>
+<td>3,952 (52.0%)</td>
+<td>4,844 (63.8%)</td>
+</tr></tbody></table><p><strong>The panel of the EJSS article is another sample now.</strong> It was a draw of 800 of the 984 labelled records of the first three files (Acre, Alagoas, Amazonas), extra samples included. It is a draw of 800 of the 1,111 labelled complete profiles of the first five (Acre, Alagoas, Amazonas, Amapá, Bahia): 418 of 781 in the default mode and 504 of 781 in the morphological mode (19 of the 800 carry a label that names no order). At 0.9.241 the old panel gave 361 and 495 of 798. The two are different samples and their figures are not to be compared as a gain of the key.</p>
+<p>FEBR, Redape and the 44 canonical profiles are not touched.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.241" id="soilkey-09241-2026-10-13">soilKey 0.9.241 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09241-2026-10-13"></a></h2>
 <div class="section level3">

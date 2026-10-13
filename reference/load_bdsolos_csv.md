@@ -60,6 +60,16 @@ stopped with an error that left the next `fread()` of the R session
 waiting forever (after DF, MT, PA, PB or SP). An empty text field is
 `NA` in every file; a quotation mark inside a text field is dropped.
 
+Kind of sampling point (v0.9.242): the column `"Tipo"` of the export
+goes to `site$sampling_type`, as written: `"Perfil completo"`,
+`"Perfil parcial"` or `"Amostra extra"`. An extra sample is, in most
+cases, two sampled layers of a point (a topsoil and a subsoil sample,
+often with a gap between them), not a described profile: the thickness
+of its layers is that of the samples. About a third of the records of
+the national export are extra samples;
+[`benchmark_bdsolos`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)
+reports the kinds apart.
+
 Profile-id columns are auto-detected: looks for any column whose
 normalised name matches
 `"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"`; falls back
