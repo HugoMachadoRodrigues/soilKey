@@ -1,5 +1,71 @@
 # Changelog
 
+## soilKey 0.9.240 (2026-10-13)
+
+### SiBCS key: the “(B)” of the old horizon notation is read as the B incipiente it names
+
+Until 1988 the B incipiente was written “(B)” in Brazil: “A (B) C”, “A1
+(B)1 (B)2 C”, “A II(B)21 II(B)22”. Larach et al. (1988, “Definição e
+notação de horizontes e camadas do solo”, the reference of SiBCS 2018
+for the notation) replaced it by “Bi”, which the book uses (“O horizonte
+B incipiente (Bi)”, Cap. 3).
+[`B_incipiente()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_incipiente.md)
+takes its candidate layers from the designation, and `.desg_master()`,
+which every SiBCS test of the master horizon reads, left “(B)” as
+written: for the key it was not a B horizon. In the national BDsolos
+export 552 layers of 333 profiles carry it, and 293 of them are among
+the 640 profiles whose reference order is Cambissolos. With no
+diagnostic B found, they were keyed Neossolos.
+
+`.desg_master()` now reads “(B)”, “(B)21”, “(B1)” and “II(B)22” as “Bi”,
+“Bi21”, “Bi1” and “Bi22”. The horizon data keep the designation as
+written, and a parenthesis that does not open the designation (“A3/(B)”,
+“B(2)”) is left alone. Nothing else of the B incipiente changes: the
+layer still has to be 10 cm thick and not to be a B textural,
+latossólico, espódico or plânico, so that a “(B)” that the data show to
+be a B latossólico is one. The reader serves the SiBCS key only; WRB and
+USDA read the designation by patterns of their own and are not touched.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                    | before        | after         |
+|--------------------|---------------|---------------|
+| default mode       | 3,579 (47.1%) | 3,783 (49.8%) |
+| morphological mode | 4,249 (56.0%) | 4,452 (58.6%) |
+
+In the default mode 234 profiles change order: 212 reach their
+reference, 8 leave it and 14 go from one wrong order to another.
+Cambissolos: 134 of 640 agreed before, 342 after. The 8 that leave their
+reference are profiles labelled Neossolos (six of them by the old names
+Solo Litólico and Solo Aluvial) with a “(B)” of 10 cm or more, which by
+the book is a B incipiente: “Admitem um horizonte B em início de
+formação, cuja espessura não satisfaz a nenhum tipo de horizonte B
+diagnóstico” (Neossolos Litólicos, Cap. 12).
+
+Panel of the EJSS article (798 profiles): 367 to 387 in the default mode
+and 489 to 507 in the morphological mode; only the row of the reference
+Cambissolos moves (15 to 35 agreed in the default mode). FEBR (1,000)
+keeps its confusion matrices (387 and 498 agreed) and no profile of
+Redape (94) changes (69 and 74). The 44 canonical profiles keep their
+class in the three systems, in both modes.
+
+#### Found on the way, not changed here
+
+- The export has a column “Tipo” that the loader does not read: of the
+  7,593 profiles with a reference order, 4,674 are “Perfil completo”,
+  332 “Perfil parcial” and 2,587 “Amostra extra”, in most cases two
+  sampled layers, often with a gap between them. The order agreement of
+  the three groups is 54.7%, 34.9% and 35.1% in the default mode.
+- The minimum thickness of a diagnostic horizon is asked of each
+  sub-horizon on its own: a Latossolo described as B1, B21 and B22 of 35
+  cm each has no B latossólico of 50 cm for the key.
+- [`B_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
+  is the WRB argic horizon with its thresholds, joined to item
+  8.  of the book; items (f), (g) and (i) are not tested, and the B
+      latossólico does not exclude the B textural.
+
 ## soilKey 0.9.239 (2026-10-12)
 
 ### SiBCS key: the glei horizon is read by the colours of the book, with the drainage class as the record of its saturation
