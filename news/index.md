@@ -1,5 +1,151 @@
 # Changelog
 
+## soilKey 0.9.241 (2026-10-13)
+
+### SiBCS key: the B textural and the B latossólico are tested by the items of the book
+
+Three things in the two horizons that separate most of the profiles of
+Brazil were not the book’s (SiBCS 2018, Cap. 2, p. 54-59), and one in
+the Neossolos step followed from them.
+
+- [`B_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
+  was the WRB argic horizon: a layer with 6 percentage points of clay, a
+  ratio of 1.4 or 20 points more than the least clayey layer anywhere
+  above it. Item (h) of the book, the relação textural, had been joined
+  to it; items (f), (g) and (i) were not tested.
+- [`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
+  asked its 50 cm of each layer on its own: a B latossólico described as
+  B1, B21 and B22 of 35 cm each was none.
+- Since 0.9.61 a B textural did not exclude the B latossólico unless its
+  clay films were common or more, on a rule the comments attributed to
+  Cap. 18 of the book, which deals with families and series. The book
+  (p. 59): the B latossólico “não apresenta características diagnósticas
+  de horizontes glei, B textural, B nítico e plíntico”. The first defect
+  hid this one: with the thickness alone corrected, 168 reference
+  Argissolos of the national BDsolos export became Latossolos.
+- `neossolo()` set a diagnostic B aside when the profile had caráter
+  flúvico (0.9.10), because the clay increase of the argic horizon fired
+  between the stratified C layers of the canonical Fluvisol.
+
+#### The B textural
+
+A profile with horizon designations is tested by the items of p. 55-56:
+a B horizon (BC excluded) of texture francoarenosa or finer and 7.5 cm
+or more, with one or more of
+
+- **(f)** an E horizon above it, the B having more clay and being no B
+  espódico, plíntico or plânico;
+- **(g)** a mudança textural abrupta from the A or E to the B (Cap. 1,
+  p. 30-31): twice the clay when the A or E has less than 200 g/kg, 200
+  g/kg more otherwise, “em uma distância vertical ≤ 7,5 cm”. The
+  distance is read from the distinctness of the transition, which the
+  BDsolos loader now brings (`boundary_distinctness`: “Abrupta” and
+  “Clara” are within 7.5 cm, “Gradual” and “Difusa” are not); where it
+  is not recorded the two layers are compared;
+- **(h)** the relação textural above 1.50, 1.70 or 1.80 according to the
+  clay of the A. Footnote 4 asks for the “média aritmética do teor de
+  argila total do horizonte B (excluído o BC)”; the means were weighted
+  by the thickness. The designations are read with their material number
+  and the old “(B)”;
+- **(i)** where the increase is below item (h), the cerosidade of a
+  sub-horizon of the upper part of the B (read as its upper half):
+  texture média with no macroaggregates and cerosidade of moderate
+  grade; texture média with prismatic or blocky structure of moderate or
+  strong grade and cerosidade of at least moderate grade; texture
+  argilosa or muito argilosa with that structure and cerosidade at least
+  common and weak or few and moderate; or a relação textural of 1.4 with
+  a fragipã;
+- **(j)** across a discontinuity of parent material, or with only a
+  ploughed layer above the B, items (h) or (i) are needed.
+
+A profile with no horizon designation at all (depth slices) cannot be
+read by these items and is tested as before, by the clay increase
+between layers. In the morphological mode a “t” in the designation of a
+B horizon stands for the B textural the data do not show, now with a
+material number in front too (“IIBt”).
+
+#### The B latossólico
+
+Texture francoarenosa or finer, less than 17 cmolc per kg of clay,
+cerosidade at most few and weak (item h, layer by layer; a range counts
+by its upper end), in B horizons where the designations are recorded,
+and 50 cm of the horizon: of the adjoining sub-horizons that meet those
+requirements, taken together
+(`test_minimum_thickness(adjoining = TRUE)`). The layers of a B textural
+are no B latossólico. A plinthic or gleyic horizon or a B nítico in the
+profile exclude it as before.
+
+The Latossolos step asks that no B textural lie above the B latossólico:
+“o primeiro horizonte diagnóstico de subsuperfície, a contar da
+superfície, tem prevalência” (Cap. 4, p. 110), so that a thick BC of
+low-activity clay below a B textural makes no Latossolo.
+
+[`B_incipiente()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_incipiente.md)
+excludes the layers of this B textural and of this B latossólico (item
+a, p. 60); it excluded those of the WRB argic and ferralic horizons (30
+cm, 16 cmolc). `carater_latossolico()` looks for the B latossólico below
+the sub-horizons that carry the evidence of the B textural. `neossolo()`
+no longer sets a diagnostic B aside: the B textural is looked for in B
+horizons, and the canonical Fluvisol has none.
+
+[`argic_with_strong_clay_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic_with_strong_clay_films.md)
+and
+[`audit_argic_strong_films()`](https://hugomachadorodrigues.github.io/soilKey/reference/audit_argic_strong_films.md)
+are kept as tools; the key no longer uses their rule.
+
+The SiBCS B textural no longer goes through
+[`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md),
+so that `options(soilKey.diagnostic_engine = "aqp")` does not change it,
+nor does the inference from “Bt” with clay films that the engine bundled
+(in the RJ file the reference Argissolos agreed were 181 with that
+engine and are 168 with either now). The engine still gives the B
+latossólico its limit of 20 cmolc and its fallbacks; a “t” the data do
+not show is read by the morphological mode.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                    | 0.9.240       | 0.9.241       |
+|------------------------------------|---------------|---------------|
+| default mode                       | 3,783 (49.8%) | 3,952 (52.0%) |
+| morphological mode                 | 4,452 (58.6%) | 4,844 (63.8%) |
+| complete profiles (4,674), default | 56.7%         | 61.0%         |
+| complete profiles, morphological   | 62.7%         | 69.1%         |
+| extra samples (2,587), default     | 39.3%         | 38.3%         |
+| extra samples, morphological       | 50.1%         | 53.5%         |
+
+Default mode: 1,780 profiles change order, 677 reach their reference,
+508 leave it. By reference order: Latossolos 899 to 1,041 agreed,
+Neossolos 690 to 856, Cambissolos 342 to 394, Argissolos 1,256 to 1,086,
+Luvissolos 125 to 101. Of the profiles keyed Argissolos, 58% had that
+reference before and 71% now; of those keyed Latossolos, 62% and 71%.
+
+**What it costs.** In the default mode 385 reference Argissolos leave
+their order and 215 enter it. Those that leave have a relação textural
+below item (h) and no cerosidade recorded: the data do not show the B
+textural the surveyor saw; 181 of them carry the old name Podzólico.
+They are concentrated in the Amazon: in Amazonas 184 of 254 reference
+Argissolos agreed before and 94 now, in Pará 165 and 115. The panel of
+the EJSS article is the first 800 profiles of the export, which are
+those of Acre, Alagoas and Amazonas, and it goes down: 387 to 361 in the
+default mode and 507 to 495 in the morphological mode. FEBR (1,000): 387
+to 376 and 498 to 501.
+
+Redape (94 profiles of the correlation meetings, with cerosidade and
+structure recorded): 69 to 77 in the default mode and 74 to 84 in the
+morphological mode. The 44 canonical profiles keep their class in the
+three systems, in both modes.
+
+#### Not tested, and why
+
+Items (a) structure, (c) rock structure, (e) Ki and (f) weatherable
+minerals of the B latossólico: the profile schema has no Ki, although
+the BDsolos export records it in 71% of its rows. Lamellae (item d of
+the B textural). A B argiloso with cerosidade common or more and a
+structure of weak grade is covered by no condition of item (i): it is no
+B textural, and by item (h) of the B latossólico it is none either.
+
 ## soilKey 0.9.240 (2026-10-13)
 
 ### SiBCS key: the “(B)” of the old horizon notation is read as the B incipiente it names

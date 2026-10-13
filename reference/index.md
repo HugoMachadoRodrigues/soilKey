@@ -467,9 +467,9 @@ por Ordem) são o motor determinístico interno, despachado por
 veja a seção “Internal – motor taxonômico” no fim da referência.
 
 - [`B_textural()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
-  : Horizonte B textural (SiBCS Cap 2, p 54-57; v0.7 strict)
+  : Horizonte B textural (SiBCS Cap 2, p 54-57)
 - [`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
-  : Horizonte B latossolico (SiBCS Cap 2, p 57-59; v0.7 strict)
+  : Horizonte B latossolico (SiBCS Cap 2, p 57-59)
 - [`B_nitico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_nitico.md)
   : Horizonte B nitico (SiBCS Cap 2, p 61-62; v0.7)
 - [`B_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_espodico.md)

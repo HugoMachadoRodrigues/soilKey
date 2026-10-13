@@ -9,7 +9,7 @@ permeabilidade lenta + cores neutras/escurecidas + cromas baixos."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.240</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.241</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +77,23 @@ permeabilidade lenta + cores neutras/escurecidas + cromas baixos.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code> recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The structure (p. 65): "Apresenta estrutura prismatica, colunar ou em
+blocos angulares e subangulares grandes ou medios e, as vezes, estrutura
+macica". It is tested where the sheet records it
+(<code>structure_type</code>, <code>structure_size</code>): a prismatic, columnar or
+massive structure passes; blocks pass when medium or larger, or when
+their size is not recorded; any other recorded structure does not pass.</p>
+<p>The colours "devem atender a pelo menos um dos seguintes requisitos"
+(p. 65-66):</p><ul><li><p>(a) the matrix colour, with or without mottles: "Matiz 10YR ou mais
+        amarelo, cromas &lt;= 3" or "Matizes 7,5YR ou 5YR, cromas &lt;= 2";</p></li>
+<li><p>(b) "Coloracao variegada com pelo menos uma cor apresentando matiz
+        e croma conforme especificado no item (a)" (<code>variegated_colors</code>);</p></li>
+<li><p>(c) "matiz 10YR ou mais amarelo, cromas &gt;= 4, combinado com
+        mosqueado de croma conforme especificado no item (a)": a mottle
+        colour (<code>mottle_colors</code>) that satisfies item (a).</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

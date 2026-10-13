@@ -5,7 +5,8 @@ Wraps
 and inspects the `clay_films_amount` field at the argic-passing layers.
 Returns a structured result that
 [`B_latossolico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)
-uses to decide whether the SiBCS Cap 18 strong-films exclusion fires.
+used, from v0.9.61 to v0.9.240, to decide whether a B textural excluded
+it.
 
 ## Usage
 
@@ -38,3 +39,13 @@ A list with:
 
 - `films` – character vector of the `clay_films_amount` values at the
   argic-passing layers.
+
+## Details
+
+Since v0.9.241 the SiBCS key does not use this rule: the B textural is
+tested by the items of the book and excludes the B latossolico, whose
+cerosidade is tested layer by layer (see
+[`B_textural`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
+and
+[`B_latossolico`](https://hugomachadorodrigues.github.io/soilKey/reference/B_latossolico.md)).
+The function is kept to inspect a dataset.
