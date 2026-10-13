@@ -54,6 +54,19 @@ converted from g/kg to %. The Ki index (molecular SiO2 / Al2O3), which
 SiBCS asks of the B latossolico, is computed from them; it reproduces
 the Ki column of the export.
 
+Text of the horizon description (v0.9.245): the column
+`"Descricao Original"` holds the field description of each horizon as
+the survey wrote it. Two things are read from it where the structured
+columns are empty, and the text itself is not kept: the amount of
+slickensides written beside the term
+(`"''slickenside'' comum e moderado"` fills `slickensides` with
+`"Comum"`; a mention with no amount fills nothing), and a wedge-shaped
+or parallelepipedic structure (`"cuneiforme"`, `"paralelepipedica"`,
+added to `structure_type`; a structure "com tendencia a
+paralelepipedica" is not one). SiBCS knows the vertic horizon by these
+two features, and the surveys that predate the structured sheet describe
+them only there.
+
 Reading (v0.9.222): the file is read with
 [`utils::read.csv2`](https://rdrr.io/r/utils/read.table.html). The
 export quotes every field, and its free-text fields hold line breaks

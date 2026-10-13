@@ -17,7 +17,7 @@ percent (BDsolos canonical unit)."><meta property="og:image" content="https://hu
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.244</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.245</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,6 +117,17 @@ Until v0.9.220 the sulfuric Fe2O3 filled <code>fe_dcb_pct</code>, unconverted.</
 <code>al2o3_sulfuric_pct</code>, converted from g/kg to %. The Ki index
 (molecular SiO2 / Al2O3), which SiBCS asks of the B latossolico, is
 computed from them; it reproduces the Ki column of the export.</p>
+<p>Text of the horizon description (v0.9.245): the column
+<code>"Descricao Original"</code> holds the field description of each horizon
+as the survey wrote it. Two things are read from it where the structured
+columns are empty, and the text itself is not kept: the amount of
+slickensides written beside the term (<code>"''slickenside'' comum e
+moderado"</code> fills <code>slickensides</code> with <code>"Comum"</code>; a mention with
+no amount fills nothing), and a wedge-shaped or parallelepipedic
+structure (<code>"cuneiforme"</code>, <code>"paralelepipedica"</code>, added to
+<code>structure_type</code>; a structure "com tendencia a paralelepipedica" is
+not one). SiBCS knows the vertic horizon by these two features, and the
+surveys that predate the structured sheet describe them only there.</p>
 <p>Reading (v0.9.222): the file is read with <code><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">utils::read.csv2</a></code>. The
 export quotes every field, and its free-text fields hold line breaks and,
 in some states, quotation marks of their own; <code>read.csv2</code> returns
