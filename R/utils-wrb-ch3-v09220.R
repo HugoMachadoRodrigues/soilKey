@@ -26,11 +26,38 @@
 #' SiBCS 2018 for the notation): "(B)", "(B)21", "(B1)" and "II(B)22" are
 #' "Bi", "Bi21", "Bi1" and "Bi22". A parenthesis elsewhere in the designation
 #' is left as written.
+#'
+#' v0.9.250: in a profile written in that older notation the "A2" is the
+#' eluvial horizon, the E of today, and the "B3" is the horizon of transition
+#' to the C, the BC of today: "A2", "A21" and "B3t" are read "E", "E1" and
+#' "BCt". A profile is taken to be in the older notation when one of its
+#' horizons is a B followed at once by a number ("B1", "B21t", "IIB3") or a
+#' "(B)" (\code{.desg_old_notation()}); in the present notation the number
+#' comes after the letters ("Bt1"), and "A1, A2" beside "Bt1, Bt2" are two
+#' parts of an A. \code{profile} gives the designations of the whole profile
+#' when \code{d} is only some of them.
 #' @noRd
-.desg_master <- function(d) {
+.desg_master <- function(d, profile = d) {
   d <- trimws(as.character(d))
+  old <- .desg_old_notation(profile)
   d <- sub("^([0-9]*|[IVX]*)\\(\\s*B\\s*([0-9a-z]*)\\s*\\)\\s*", "\\1Bi\\2", d)
-  sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", d, perl = TRUE)
+  out <- sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", d, perl = TRUE)
+  if (old) {
+    out <- sub("^A2", "E", out)
+    out <- sub("^B3", "BC", out)
+  }
+  out
+}
+
+#' Whether the designations of a profile are in the notation in use until
+#' 1988: a B followed at once by a number ("B1", "B21t", "IIB3"), or a "(B)".
+#' @noRd
+.desg_old_notation <- function(d) {
+  d <- trimws(as.character(d))
+  d <- d[!is.na(d)]
+  if (length(d) == 0L) return(FALSE)
+  m <- sub("^(?:[0-9]+(?=[A-Z(])|[IVX]+(?=[A-HJ-UWYZ(]))", "", d, perl = TRUE)
+  any(grepl("^\\(\\s*B", m) | grepl("^B[0-9]", m))
 }
 
 #' The horizons with their designations read by .desg_master(), for the tests
