@@ -1,3 +1,58 @@
+# soilKey 0.9.252 (2026-10-13)
+
+## SiBCS key: item (c) of the Neossolos step by its letter
+
+The Neossolos are soils with no diagnostic B that satisfy, among others
+(SiBCS 2018, Cap. 4, p. 112), "c) Ausência de horizonte vértico
+imediatamente abaixo de horizonte A". The step tested a vertic horizon that
+begins within 50 cm, whatever lay between it and the A.
+
+Decided on 2026-10-13: by the letter.
+
+* The first layer of the vertic horizon has to be right below an A. The
+  horizons of transition from the A (AB, AC) count with the A, as they do in
+  the thickness of the A chernozêmico (p. 51).
+* A vertic horizon that begins at the surface is there too.
+* A profile with no horizon designation is tested as before.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.251 | 0.9.252 |
+|---|---|---|
+| default mode | 3,998 (52.7%) | 3,989 (52.5%) |
+| morphological mode | 4,958 (65.3%) | 4,949 (65.2%) |
+| complete profiles, default | 2,895 of 4,674 (61.9%) | 2,886 (61.7%) |
+| complete profiles, morphological | 3,306 (70.7%) | 3,297 (70.5%) |
+
+**The agreement goes down, by the book.** Default mode: 13 profiles change
+order, all to Neossolos; none reaches its reference, 9 leave it and 4 go
+from one wrong order to another. The 9 are reference Vertissolos with a C
+between the A and the first vertic layer, a C1 with few slickensides or
+with none recorded (BA 8974: A, C1, then the vertic C2 from 35 cm).
+Reference Vertissolos agreed 41 to 32 of 72. Morphological mode: 11 change,
+the same 9 leave their reference; 45 to 36 of 72.
+
+Two of the four others had no order of their own: with a vertic horizon
+within 50 cm they were kept out of the Neossolos, met no later step and
+fell to the last one, Argissolos (CE 8114, MA 9946).
+
+Panel of complete profiles (781): 432 to 428 and 517 to 513. FEBR (1,000):
+376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile
+changes. The 44 canonical profiles keep their class in the three systems, in
+both modes.
+
+### Tried and left out
+
+The vertic horizon "tem precedência diagnóstica sobre os horizontes B
+incipiente, B nítico e glei" (Cap. 2, p. 73). Taking the layers of the
+vertic horizon out of the glei and of the B nítico was measured: one
+profile changed order, from one wrong order to another, and Vertissolos
+Hidromórficos lost their suborder, which asks for a horizonte glei in the
+layers that are also vertic. At the first level the precedence is already
+that of the order of the key. It is not in this version.
+
 # soilKey 0.9.251 (2026-10-13)
 
 ## BDsolos: the cerosidade written in the text of the horizon is read
