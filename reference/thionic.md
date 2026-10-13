@@ -6,7 +6,13 @@ Requires sulfidic_s_pct \>= 0.01 AND pH(H2O) \<= 4.
 ## Usage
 
 ``` r
-thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
+thionic(
+  pedon,
+  min_thickness = 15,
+  max_pH = 4,
+  min_sulfidic_s = 0.01,
+  adjoining = FALSE
+)
 ```
 
 ## Arguments
@@ -27,6 +33,12 @@ thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
 - min_sulfidic_s:
 
   Numeric threshold or option (see Details).
+
+- adjoining:
+
+  `FALSE` (default): the thickness is asked of each layer. `TRUE`: of
+  adjoining layers taken together, as the SiBCS horizonte sulfurico
+  reads it since v0.9.246.
 
 ## Value
 

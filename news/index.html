@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.245</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.246</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,27 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.246" id="soilkey-09246-2026-10-13">soilKey 0.9.246 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09246-2026-10-13"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-the-minimum-thickness-of-a-horizon-is-that-of-its-adjoining-sub-horizons-0-9-246">SiBCS key: the minimum thickness of a horizon is that of its adjoining sub-horizons<a class="anchor" aria-label="anchor" href="#sibcs-key-the-minimum-thickness-of-a-horizon-is-that-of-its-adjoining-sub-horizons-0-9-246"></a></h3>
+<p>The book states each minimum of the horizon: the B incipiente “deve ter no mínimo 10 cm de espessura” (SiBCS 2018, Cap. 2, p. 60), the B nítico “Espessura de 30 cm ou mais” (p. 62), the horizonte glei “com espessura de 15 cm ou mais” (p. 69), the concrecionário “no mínimo 30 cm de espessura” (p. 68), the sulfúrico “15 cm ou mais de espessura” (p. 72). Each was asked of one layer of the description, so that a horizon described in two sub-horizons thinner than the minimum did not pass, whatever the two made together. The B latossólico is read by its adjoining sub-horizons since 0.9.241 and the vertic horizon since 0.9.245; the five above are now read the same way.</p>
+<p>The horizonte sulfúrico is read so on its two paths: with jarosite, and with sulfidic material, which is tested by the WRB <code><a href="../reference/thionic.html">thionic()</a></code>. That function takes a new argument, <code>adjoining</code>, <code>FALSE</code> by default: the WRB thionic horizon is tested as before.</p>
+<p>The horizons that reach SiBCS through a WRB function (plíntico, espódico, cálcico) are not changed.</p>
+<div class="section level4">
+<h4 id="a-correction-to-0-9-246">A correction to 0.9.244<a class="anchor" aria-label="anchor" href="#a-correction-to-0-9-246"></a></h4>
+<p><code><a href="../reference/mudanca_textural_abrupta.html">mudanca_textural_abrupta()</a></code> and <code><a href="../reference/B_planico.html">B_planico()</a></code> took a BC for the first B sub-horizon when it came before any other B. The note of 0.9.244 says that the BC is left out of the B, as in item (h) of the B textural; the code did not leave it out, and now does. Of the national export, 7 profiles have a BC as their first B; none had an abrupt change or a B plânico by it, and no figure of 0.9.244 changes.</p>
+</div>
+<div class="section level4">
+<h4 id="measured-0-9-246">Measured<a class="anchor" aria-label="anchor" href="#measured-0-9-246"></a></h4>
+<p>National BDsolos export, 7,593 profiles with a reference order: 3,969 in the default mode and 4,854 in the morphological mode, as before. The agreement is the same and the profiles are not: 10 change order in the default mode, 4 reach their reference, 4 leave it and 2 go from one wrong order to another.</p>
+<ul><li>9 by the horizonte glei, all keyed Gleissolos now. In each a glei horizon is made of two or more sub-horizons under 15 cm (an A of 8 cm over an AB of 13 cm, a C1g of 10 cm over a C2g of 14 cm). 4 are reference Gleissolos that keyed Neossolos; 3 leave their reference, a Cambissolo Háplico gleico (AM 5263) and two alluvial soils (PA 9509, RS 8852); 2 are reference Plintossolos that keyed elsewhere.</li>
+<li>1 by the B nítico: a reference Argissolo Bruno-Acinzentado (SC 5445) with a BA of 13 cm, a Bt of 27 cm and a BC of 13 cm keys Nitossolos.</li>
+<li>None by the B incipiente, the concrecionário or the sulfúrico.</li>
+</ul><p>Morphological mode: 8 change, 4 to their reference and 4 from it. Panel of complete profiles (781): 429 to 428 and 512 to 511, the Cambissolo gleico. FEBR (1,000): 376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile changes. The 44 canonical profiles keep their class in the three systems, in both modes.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.245" id="soilkey-09245-2026-10-13">soilKey 0.9.245 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09245-2026-10-13"></a></h2>
 <div class="section level3">

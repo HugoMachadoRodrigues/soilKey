@@ -40,7 +40,8 @@ an E; and the distance is read from the distinctness of the transition
 (`boundary_distinctness` of the horizon above: abrupt, under 2.5 cm, or
 clear, 2.5 to 7.5 cm). Where it is recorded as gradual or diffuse there
 is no abrupt change; where it is not recorded the two horizons are
-compared. The layer returned is the first B horizon.
+compared. The layer returned is the first B horizon. A BA is a B horizon
+here and a BC is not, as in item (h) of the B textural.
 
 Until v0.9.243 the function was the WRB
 [`abrupt_textural_difference`](https://hugomachadorodrigues.github.io/soilKey/reference/abrupt_textural_difference.md),
