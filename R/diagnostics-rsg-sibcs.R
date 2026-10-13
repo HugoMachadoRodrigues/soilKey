@@ -337,11 +337,18 @@ latossolo <- function(pedon, max_top_cm = 200) {
   # the B latossolico.
   bt <- B_textural(pedon)
   below_b_textural <- isTRUE(bt$passed)
-  passed <- lat_top <= max_top_cm && !below_b_textural
+  # v0.9.249: the same for a B nitico above the B latossolico. Until
+  # v0.9.248 a B nitico anywhere voided the B latossolico itself; it now
+  # takes out its own layers only, and the rule of the key is applied here.
+  bn <- res$evidence$excluded_by$B_nitico
+  below_b_nitico <- isTRUE(bn$passed) && length(bn$layers) > 0L &&
+    min(h$top_cm[bn$layers], na.rm = TRUE) <= lat_top
+  passed <- lat_top <= max_top_cm && !below_b_textural && !below_b_nitico
   DiagnosticResult$new(
     name = "latossolo", passed = passed, layers = res$layers,
     evidence = list(latossolico = res, top_cm = lat_top,
-                    below_b_textural = below_b_textural),
+                    below_b_textural = below_b_textural,
+                    below_b_nitico = below_b_nitico),
     missing = character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
   )

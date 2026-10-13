@@ -50,9 +50,13 @@ The requirements of the book that the data of a profile can show
         sub-horizons that meet the other requirements, taken together;
   \item it "nao apresenta caracteristicas diagnosticas de horizontes glei,
         B textural, B nitico e plintico": the layers of a
-        \code{\link{B_textural}} are no B latossolico, and a plinthic or
-        gleyic horizon or a \code{\link{B_nitico}} in the profile excludes
-        it, as before.
+        \code{\link{B_textural}}, of a horizonte glei, of a horizonte
+        plintico and of a \code{\link{B_nitico}} are no B latossolico.
+        Since v0.9.249 they take out their own layers only: until then the
+        glei and the plinthic horizon were those of WRB (gleyic
+        properties, plinthic horizon), and one of them, or a B nitico,
+        anywhere in the profile voided the B latossolico of the whole
+        profile.
 }
 Where the designations are recorded, only B horizons are candidates: the
 B latossolico is a subsurface horizon below the A. Items (a) structure,

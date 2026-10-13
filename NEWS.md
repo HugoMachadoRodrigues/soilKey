@@ -1,3 +1,55 @@
+# soilKey 0.9.249 (2026-10-13)
+
+## SiBCS key: the horizons the B latossólico does not present take out their own layers
+
+The book (SiBCS 2018, Cap. 2, p. 59): "o horizonte B latossólico é um
+horizonte subsuperficial que não apresenta características diagnósticas de
+horizontes glei, B textural, B nítico e plíntico". The sentence is about the
+horizon. `B_latossolico()` voided the B latossólico of the whole profile
+when one of three things was found in any layer: the gleyic properties of
+WRB (mottles of 5% or more in a layer that begins within 50 cm), the
+plinthic horizon of WRB, or a B nítico.
+
+Decided on 2026-10-13: those horizons take out their own layers only.
+
+* The layers of a horizonte glei, of a horizonte plíntico and of a B nítico,
+  as SiBCS defines them, are no part of the B latossólico, with those of
+  the B textural, which were already left out. The layers that are left
+  make the horizon if they make its 50 cm.
+* Mottles alone make no horizonte glei, so that a red B with common mottles
+  keeps its B latossólico.
+* `latossolo()` applies to the B nítico the rule it applied to the
+  B textural (Cap. 4, p. 110): a B latossólico below a B nítico makes no
+  Latossolo.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.248 | 0.9.249 |
+|---|---|---|
+| default mode | 3,969 (52.3%) | 3,984 (52.5%) |
+| morphological mode | 4,922 (64.8%) | 4,953 (65.2%) |
+| complete profiles, default | 2,866 of 4,674 (61.3%) | 2,882 (61.7%) |
+| complete profiles, morphological | 3,274 (70.0%) | 3,301 (70.6%) |
+
+Default mode: 41 profiles change order, all of them to Latossolos. 17 reach
+their reference (Latossolos that keyed Neossolos, 9, and Cambissolos, 8), 2
+leave it (reference Cambissolos) and 22 go from one wrong order to another:
+12 reference Argissolos, 6 Plintossolos, 2 Cambissolos and 2 Gleissolos that
+keyed Neossolos or Cambissolos. Of the profiles keyed Latossolos, 72.4% had
+that reference before (1,007 of 1,391) and 71.5% now (1,024 of 1,432).
+
+Morphological mode: 48 change, 35 reach their reference (30 Latossolos, 5
+Plintossolos) and 4 leave it. Two of the four are reference Latossolos
+"plíntico" whose layer written "p1" is no longer part of the B latossólico,
+which leaves 30 and 40 cm of it (GO 6062, PA 8626).
+
+Panel of complete profiles (781): 428 to 431 and 511 to 516. FEBR (1,000):
+376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile
+changes. The 44 canonical profiles keep their class in the three systems, in
+both modes.
+
 # soilKey 0.9.248 (2026-10-13)
 
 ## SiBCS key: the "p1" of B and C horizons is the "pl" of plinthite

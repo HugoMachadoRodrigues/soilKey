@@ -709,9 +709,13 @@ B_textural <- function(pedon, ...) {
 #'         sub-horizons that meet the other requirements, taken together;
 #'   \item it "nao apresenta caracteristicas diagnosticas de horizontes glei,
 #'         B textural, B nitico e plintico": the layers of a
-#'         \code{\link{B_textural}} are no B latossolico, and a plinthic or
-#'         gleyic horizon or a \code{\link{B_nitico}} in the profile excludes
-#'         it, as before.
+#'         \code{\link{B_textural}}, of a horizonte glei, of a horizonte
+#'         plintico and of a \code{\link{B_nitico}} are no B latossolico.
+#'         Since v0.9.249 they take out their own layers only: until then the
+#'         glei and the plinthic horizon were those of WRB (gleyic
+#'         properties, plinthic horizon), and one of them, or a B nitico,
+#'         anywhere in the profile voided the B latossolico of the whole
+#'         profile.
 #' }
 #' Where the designations are recorded, only B horizons are candidates: the
 #' B latossolico is a subsurface horizon below the A. Items (a) structure,
@@ -779,8 +783,15 @@ B_latossolico <- function(pedon, min_thickness = 50,
   # a subsurface horizon below the A: B horizons, where designations exist
   cand <- cand[is.na(dm[cand]) | !nzchar(dm[cand]) | grepl("^B", dm[cand])]
 
-  pl <- plinthic(pedon)
-  gl <- gleyic_properties(pedon)
+  # v0.9.249: "nao apresenta caracteristicas diagnosticas de horizontes glei,
+  # B textural, B nitico e plintico" (p. 59) is said of the horizon. The
+  # layers of those horizons, as this system defines them, are no part of
+  # the B latossolico; the layers that are left make it if they make its
+  # 50 cm. Until v0.9.248 the horizons tested were those of WRB (gleyic
+  # properties, plinthic horizon), and one of them anywhere in the profile
+  # voided the B latossolico of the whole profile.
+  pl <- horizonte_plintico(pedon)
+  gl <- horizonte_glei(pedon)
   bn <- B_nitico(pedon)
   pass_layers <- function(x) if (isTRUE(x$passed)) x$layers else integer(0)
   # (h) cerosidade at most few and weak
@@ -798,8 +809,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
                                             candidate_layers = cand,
                                             adjoining = TRUE)
   layers <- tests$thickness$layers %||% integer(0)
-  no_other <- !isTRUE(pl$passed) && !isTRUE(gl$passed) && !isTRUE(bn$passed)
-  passed <- length(layers) > 0L && no_other
+  passed <- length(layers) > 0L
   missing <- unique(c(tests$texture$missing, tests$cec_per_clay$missing,
                       tests$thickness$missing))
   if (length(layers) == 0L &&
@@ -812,7 +822,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
     B_textural   = B_textural,
     films_above_few_and_weak = films_over,
     ki = ki, ki_above_2_2 = ki_over,
-    excluded_by  = list(plintico = pl, gleyic = gl, B_nitico = bn)))
+    excluded_by  = list(plintico = pl, glei = gl, B_nitico = bn)))
 
   # the morphological mode: a "Bw" or "Bo" of a tropical profile
   if (!isTRUE(passed) && .morph_inference_enabled()) {
@@ -824,7 +834,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
         passed = TRUE, layers = ml, diagnostic = "ferralic",
         provenance = "morphological_designation")
       layers <- ml
-      passed <- no_other
+      passed <- TRUE
     }
   }
 
