@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.236</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.237</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,34 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.237" id="soilkey-09237-2026-10-12">soilKey 0.9.237 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09237-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="redape-and-smartsolos-the-structure-codes-are-read-on-the-scales-the-service-documents-0-9-237">Redape and SmartSolos: the structure codes are read on the scales the service documents<a class="anchor" aria-label="anchor" href="#redape-and-smartsolos-the-structure-codes-are-read-on-the-scales-the-service-documents-0-9-237"></a></h3>
+<p>The GeoTab files of Redape, and the SmartSolos Expert service they were made for, record the soil structure as integer codes. The service describes them (<a href="https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1" class="external-link uri">https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1</a>):</p>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Field</th>
+<th>Description</th>
+</tr></thead><tbody><tr><td><code>ESTRUTURA_GRAU</code></td>
+<td>“de ausente (1) a forte (4)”</td>
+</tr><tr><td><code>ESTRUTURA_TAMANHO</code></td>
+<td>“de muito pequeno (1) a extremamente grande (6)”</td>
+</tr><tr><td><code>ESTRUTURA_TIPO</code></td>
+<td>“laminar (1), prismática (2), colunar (3), blocos angulares (4), blocos subangulares (5), granular (6), grumosa (7)”</td>
+</tr></tbody></table><p>Since 0.9.189 the Redape loader read the grade on a scale of three (“weak” for 1) and the type in another order (“granular” for 1, “columnar” for 5). Of the 444 horizons of the 94 profiles: the 137 with subangular blocks were read as columnar, the 79 with angular blocks as prismatic, the 63 granular ones as platy; the 211 of weak grade were read as moderate, the 73 moderate ones as strong, and the 24 strong ones had no grade at all. The encoders that send a profile to the service (<code><a href="../reference/classify_via_smartsolos_api.html">classify_via_smartsolos_api()</a></code>, since 0.9.54) made the same two mistakes the other way round.</p>
+<ul><li>
+<code><a href="../reference/load_redape_pedons.html">load_redape_pedons()</a></code> decodes the three fields on the documented scales. A grade of 1 is “structureless”, a size of 6 “extremely coarse”, a type of 7 “crumb”.</li>
+<li>The payload sent to the service encodes them on the same scales, so that what the loader decodes the encoder sends back as the same code.</li>
+<li>A structure recorded as absent is now a grade below weak. It was read as not recorded, which passes a minimum such as the “grau moderado ou forte” of the B nítico. No profile of Redape or BDsolos records one.</li>
+</ul><p>The documented scales were checked against the data: 35 horizons of 7 Redape profiles are also in the BDsolos export, which keeps the words of the field sheet. Code 5 is “Blocos subangulares” there in 18 of 18 horizons, 6 is “Granular” in 6 of 6, 2 is “Prismática” in the one case; grade 2 is “Fraca” in 20 of 22 and grade 3 “Moderada” in 6 of 7.</p>
+<p><code>CEROSIDADE_GRAU</code> is described the same way, “de ausente (1) a forte (4)”, and is left on the scale of three it was read with (1 weak, 2 moderate, 3 strong). The files hold 1, 2 and 3 only, and 1 comes with an amount of clay films in 12 of 13 horizons, which “ausente” would not; no shared profile records clay films to settle it. It is an open question for the authors of the files.</p>
+<div class="section level4">
+<h4 id="effect-0-9-237">Effect<a class="anchor" aria-label="anchor" href="#effect-0-9-237"></a></h4>
+<ul><li>Redape (94 profiles): 68 to 69 in the default mode and 72 to 73 in the morphological mode. The profile is <code>GeoTab_PE_045_Cabo_de_Santo_Agostinho</code>, a reference Nitossolos whose B horizons are in subangular blocks of moderate grade (codes 5 and 3). Read as columnar, they failed the structure of the B nítico, and the profile was keyed Latossolos, or Argissolos in the morphological mode. The Redape figures reported from 0.9.189 to 0.9.235 were computed with the structure read the old way.</li>
+<li>The national BDsolos export (7,593 profiles), its panel of the EJSS article and FEBR do not change, in either mode: they do not go through these codes. The 44 canonical fixtures keep their class in the three systems.</li>
+<li>The service itself was not called to verify the encoders; they follow its published description.</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.236" id="soilkey-09236-2026-10-12">soilKey 0.9.236 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09236-2026-10-12"></a></h2>
 <div class="section level3">
