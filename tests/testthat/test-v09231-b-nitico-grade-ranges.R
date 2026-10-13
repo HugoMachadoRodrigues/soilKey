@@ -26,15 +26,15 @@
   q
 }
 
-test_that(".grade_class() reads a grade in both languages, and a range by its lower end", {
+test_that(".field_grade_class() reads a grade in both languages, and a range by its lower end", {
   grade <- c("Fraca", "Moderada", "Forte", "weak", "moderate", "strong",
              "MODERADA", "Muito forte", "very weak")
-  expect_equal(.grade_class(grade), c(1L, 2L, 3L, 1L, 2L, 3L, 2L, 3L, 1L))
-  expect_equal(.grade_class(c("Fraca a moderada", "Moderada a forte",
+  expect_equal(.field_grade_class(grade), c(1L, 2L, 3L, 1L, 2L, 3L, 2L, 3L, 1L))
+  expect_equal(.field_grade_class(c("Fraca a moderada", "Moderada a forte",
                               "weak to moderate", "moderate to strong")),
                c(1L, 2L, 1L, 2L))
   # not a grade, or not recorded
-  expect_true(all(is.na(.grade_class(c("massive", "Maciça", "", NA)))))
+  expect_true(all(is.na(.field_grade_class(c("massive", "Maciça", "", NA)))))
 })
 
 test_that("a structure grade that only reaches 'moderada' is not 'moderada ou forte'", {

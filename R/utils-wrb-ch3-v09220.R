@@ -84,7 +84,7 @@
 #' SiBCS asks for a minimum ("grau moderado ou forte"), and a range meets a
 #' minimum only if all of it does.
 #' @noRd
-.grade_class <- function(x) {
+.field_grade_class <- function(x) {
   x <- .field_term(x)
   out <- rep(NA_integer_, length(x))
   out[grepl("^(very weak|weak|muito frac|frac)", x)] <- 1L
