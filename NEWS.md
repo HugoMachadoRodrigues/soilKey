@@ -1,3 +1,62 @@
+# soilKey 0.9.250 (2026-10-13)
+
+## SiBCS key: in a profile of the older notation the A2 is the E and the B3 is the BC
+
+The notation in use in Brazil until 1988 named the eluvial horizon "A2" and
+the horizon of transition from the B to the C "B3"; the present notation
+writes them "E" and "BC". The book asks about both by their present names:
+an E above the B makes a B textural (SiBCS 2018, Cap. 2, p. 55, item f), and
+the BC is left out of the B in the textural ratio (p. 56, note 4). The key
+read the A2 as an A and the B3 as a B.
+
+Decided on 2026-10-13: both are read by what they name.
+
+* A profile is taken to be in the older notation when one of its horizons
+  is a B followed at once by a number ("B1", "B21t", "IIB3") or a "(B)". In
+  the present notation the number comes after the letters ("Bt1"), and "A1,
+  A2" beside "Bt1, Bt2" stay two parts of an A. Of the 7,593 profiles of the
+  national BDsolos export with a reference order, 3,167 are in the older
+  notation; 250 of them have an A2 and 853 a B3.
+* In such a profile "A2", "A21" and "B3t" are read "E", "E1" and "BCt", by
+  every test of the SiBCS key that reads a designation. The horizon data
+  keep the designation as written, and WRB and USDA are not changed.
+
+That the A2 is the eluvial horizon and the B3 the transition to the C is the
+notation as I know it from the surveys; SiBCS 2018 does not state the
+correspondence, and it is for confirmation.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.249 | 0.9.250 |
+|---|---|---|
+| default mode | 3,984 (52.5%) | 3,993 (52.6%) |
+| morphological mode | 4,953 (65.2%) | 4,956 (65.3%) |
+| complete profiles, default | 2,882 of 4,674 (61.7%) | 2,890 (61.8%) |
+| complete profiles, morphological | 3,301 (70.6%) | 3,304 (70.7%) |
+
+Default mode: 45 profiles change order, 18 reach their reference, 9 leave it
+and 18 go from one wrong order to another.
+
+* The A2 read as E, measured alone on 0.9.247: 22 profiles change, 14 reach
+  their reference and none leaves it. They are mostly reference Argissolos
+  that keyed Latossolos or Neossolos, with an eluvial horizon above a B
+  whose clay does not make the ratio of item (h).
+* The B3 read as BC, measured alone: 24 change, 5 reach their reference and
+  9 leave it. The 9 are reference Argissolos whose B3 has more clay than
+  their B2: without it the mean of the B no longer makes the ratio, and 8
+  of them have no cerosidade recorded.
+
+The lower levels change in 67 profiles that keep their order.
+
+Morphological mode: 27 change, 11 to their reference and 8 from it.
+
+Panel of complete profiles (781): 431 to 432 and 516 to 517. FEBR (1,000):
+376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile
+changes. The 44 canonical profiles keep their class in the three systems, in
+both modes.
+
 # soilKey 0.9.249 (2026-10-13)
 
 ## SiBCS key: the horizons the B latossólico does not present take out their own layers

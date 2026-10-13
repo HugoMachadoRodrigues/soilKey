@@ -281,7 +281,8 @@ gleissolo <- function(pedon) {
     first <- g$layers[which.min(h$top_cm[g$layers])]
     pos <- match(first, o)
     above <- if (!is.na(pos) && pos > 1L)
-      .desg_master(h$designation[o[pos - 1L]]) else NA_character_
+      .desg_master(h$designation[o[pos - 1L]], profile = h$designation)
+    else NA_character_
     in_150 <- !is.na(above) && grepl("^[AEHO]", above)
   }
   # Exclusoes: plintico/concrecionario/litoplintico dentro de 200 cm
@@ -494,7 +495,7 @@ cambissolo <- function(pedon) {
   if (isTRUE(gl$passed) && any(h$top_cm[gl$layers] < top, na.rm = TRUE)) return(TRUE)
   if (is.na(pos) || pos < 2L) return(FALSE)
   above <- o[pos - 1L]
-  d <- .desg_master(h$designation[above])
+  d <- .desg_master(h$designation[above], profile = h$designation)
   if (!is.na(d) && grepl("^[AE]", d)) return(TRUE)
   # mottles: abundant, and of a colour that satisfies (a) or (b) when the
   # sheet records their colours
