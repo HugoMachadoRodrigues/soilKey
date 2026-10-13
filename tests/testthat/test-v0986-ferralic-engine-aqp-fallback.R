@@ -96,7 +96,8 @@ test_that("v0.9.86: BDsolos RJ Latossolo recall lifts from 17 to ~32 with engine
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
   res_def <- suppressMessages(suppressWarnings(
-    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   cf_def <- res_def$per_system$sibcs$confusion
   # v0.9.241: the 50 cm of the B latossolico are those of the horizon, and
   # the layers of a B textural are none: 17 -> 25 in the default engine, and
@@ -105,7 +106,8 @@ test_that("v0.9.86: BDsolos RJ Latossolo recall lifts from 17 to ~32 with engine
 
   res_aqp <- withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     suppressMessages(suppressWarnings(
-      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   })
   cf_aqp <- res_aqp$per_system$sibcs$confusion
   # Engine=aqp should auto-enable ECEC fallback and lift Latossolos

@@ -151,7 +151,8 @@ test_that("v0.9.90: BDsolos RJ Argissolo recall lifts past 175 with engine=aqp",
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
   res <- withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     suppressMessages(suppressWarnings(
-      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   })
   cf <- res$per_system$sibcs$confusion
   # v0.9.241: the SiBCS B textural is tested by the items of the book and no
@@ -161,7 +162,8 @@ test_that("v0.9.90: BDsolos RJ Argissolo recall lifts past 175 with engine=aqp",
   # with engine = "aqp" before). A "t" the data do not show is read by the
   # morphological mode.
   res_def <- suppressMessages(suppressWarnings(
-    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   expect_equal(cf["Argissolos","Argissolos"],
                res_def$per_system$sibcs$confusion["Argissolos","Argissolos"])
   expect_equal(cf["Argissolos","Argissolos"], 168L)

@@ -67,6 +67,20 @@
 #' Classifier errors are caught per-pedon and recorded in
 #' \code{n_errors}; they do not abort the run.
 #'
+#' @section Kinds of sampling point:
+#'
+#' The export marks each record as \code{"Perfil completo"}, \code{"Perfil
+#' parcial"} or \code{"Amostra extra"} (\code{site$sampling_type}, read by
+#' \code{\link{load_bdsolos_csv}} since v0.9.242). An extra sample is not a
+#' described profile: in most cases it is two sampled layers, and the
+#' thickness a diagnostic horizon is asked for cannot be read from it. The
+#' figures of each system (\code{accuracy}, \code{n_compared},
+#' \code{n_correct}, \code{confusion}, \code{per_class}) are therefore those
+#' of the complete profiles by default, and \code{by_sampling_type} gives the
+#' same counts for every kind and for all the records together. Pedons that
+#' carry no \code{site$sampling_type} (another source, a hand-made list) are
+#' all counted, as before.
+#'
 #' @param pedons A list of \code{\link{PedonRecord}} objects, typically
 #'        produced by \code{\link{load_bdsolos_csv}}.
 #' @param systems Character vector. Any subset of \code{c("wrb2022",
@@ -78,13 +92,24 @@
 #'        \code{max_n} pedons. \code{NULL} (default) classifies every
 #'        pedon.
 #' @param verbose If \code{TRUE} (default), emits cli progress messages.
+#' @param sampling_type The kinds of sampling point the figures of each
+#'        system are computed on, as \code{site$sampling_type} words them.
+#'        Default \code{"Perfil completo"}. \code{NULL} counts every record,
+#'        as the function did until v0.9.241. Ignored when no pedon carries
+#'        the field.
 #' @return A list with elements:
 #'   \itemize{
 #'     \item \code{per_system} -- named list (one entry per requested
 #'           system) of \code{list(accuracy, n_compared, n_correct,
-#'           n_errors, confusion, per_class)} (or
+#'           n_errors, confusion, per_class, by_sampling_type,
+#'           sampling_type)} (or
 #'           \code{list(accuracy = NA_real_, message)} when no
-#'           reference labels were present).
+#'           reference labels were present). \code{by_sampling_type} is a
+#'           data frame with one row per kind of point and one for all the
+#'           records (\code{n_compared}, \code{n_correct},
+#'           \code{accuracy}), or \code{NULL} when no pedon carries the
+#'           field; \code{sampling_type} is the kinds the main figures were
+#'           computed on (\code{NULL} for all).
 #'     \item \code{coverage} -- named list of
 #'           \code{list(n_with_ref, n_total, pct)} per system.
 #'     \item \code{config} -- named list capturing
@@ -114,7 +139,8 @@ benchmark_bdsolos <- function(pedons,
                                  systems     = c("wrb2022", "sibcs", "usda"),
                                  sibcs_level = c("order", "subordem"),
                                  max_n       = NULL,
-                                 verbose     = TRUE) {
+                                 verbose     = TRUE,
+                                 sampling_type = "Perfil completo") {
   if (!is.list(pedons) || length(pedons) == 0L) {
     stop("benchmark_bdsolos(): `pedons` must be a non-empty list of ",
          "PedonRecord objects.", call. = FALSE)
@@ -202,16 +228,29 @@ benchmark_bdsolos <- function(pedons,
                        error = function(e) { n_errors <<- n_errors + 1L; NULL })
       pred_raw <- pred_field(sys, cls)
       pred <- if (is.na(pred_raw)) NA_character_ else pred_raw
+      kind <- p$site[["sampling_type"]] %||% NA_character_
       rows[[j]] <- list(id   = p$site$id,
                           ref  = ref,
-                          pred = pred)
-      if (!is.na(pred) && !is.na(ref)) {
-        n_compared <- n_compared + 1L
-        if (identical(pred, ref)) n_correct <- n_correct + 1L
-      }
+                          pred = pred,
+                          kind = if (length(kind) == 1L) as.character(kind)
+                                 else NA_character_)
     }
     n_errors_total <- n_errors_total + n_errors
     pp <- do.call(rbind, lapply(rows, as.data.frame))
+    # v0.9.242: the kinds of sampling point. Every record is classified; the
+    # figures of the system are those of the kinds asked for, and the table
+    # by kind gives them all.
+    by_kind <- .benchmark_by_sampling_type(pp)
+    kinds_used <- NULL
+    if (!is.null(by_kind) && !is.null(sampling_type)) {
+      keep <- !is.na(pp$kind) &
+        .field_term(pp$kind) %in% .field_term(sampling_type)
+      pp <- pp[keep, , drop = FALSE]
+      kinds_used <- sampling_type
+    }
+    scored <- !is.na(pp$pred) & !is.na(pp$ref)
+    n_compared <- sum(scored)
+    n_correct  <- sum(scored & pp$pred == pp$ref)
     # NA-safe: replace NA in ref / pred with the literal string
     # "<unmapped>" so table() and downstream data.frame() do not
     # choke on missing factor levels (some BDsolos USDA labels do
@@ -244,14 +283,19 @@ benchmark_bdsolos <- function(pedons,
       n_errors   = n_errors,
       confusion  = cm,
       per_class  = per_class,
+      by_sampling_type = by_kind,
+      sampling_type    = kinds_used,
       message    = NA_character_
     )
     if (isTRUE(verbose))
       cli::cli_alert_success(sprintf(
-        "benchmark_bdsolos[%s]: accuracy = %.1f%% (%d / %d), errors = %d",
+        "benchmark_bdsolos[%s]: accuracy = %.1f%% (%d / %d)%s, errors = %d",
         sys,
         100 * (out_per_system[[sys]]$accuracy %||% NA_real_),
-        n_correct, n_compared, n_errors))
+        n_correct, n_compared,
+        if (is.null(kinds_used)) ""
+        else sprintf(" on %s", paste(kinds_used, collapse = ", ")),
+        n_errors))
   }
 
   list(
@@ -261,9 +305,35 @@ benchmark_bdsolos <- function(pedons,
       n_pedons        = length(pedons),
       systems         = systems,
       sibcs_level     = sibcs_level,
+      sampling_type   = sampling_type,
       n_errors_total  = n_errors_total,
       soilKey_version = as.character(utils::packageVersion("soilKey")),
       timestamp       = Sys.time()
     )
   )
+}
+
+
+#' The counts of a BDsolos benchmark by kind of sampling point: one row per
+#' kind recorded in \code{site$sampling_type} and one for all the records.
+#' \code{NULL} when no pedon carries the field.
+#' @param pp Data frame of the scored pedons (\code{ref}, \code{pred},
+#'   \code{kind}), before the unmapped labels are renamed.
+#' @noRd
+.benchmark_by_sampling_type <- function(pp) {
+  if (is.null(pp) || nrow(pp) == 0L || all(is.na(pp$kind))) return(NULL)
+  one <- function(i, label) {
+    s <- i & !is.na(pp$pred) & !is.na(pp$ref)
+    hit <- sum(s & pp$pred == pp$ref)
+    data.frame(sampling_type = label, n_compared = sum(s), n_correct = hit,
+               accuracy = if (sum(s) > 0L) hit / sum(s) else NA_real_,
+               stringsAsFactors = FALSE)
+  }
+  kinds <- names(sort(table(pp$kind), decreasing = TRUE))
+  out <- lapply(kinds, function(k) one(!is.na(pp$kind) & pp$kind == k, k))
+  if (anyNA(pp$kind)) out <- c(out, list(one(is.na(pp$kind), "(not recorded)")))
+  out <- c(out, list(one(rep(TRUE, nrow(pp)), "all")))
+  out <- do.call(rbind, out)
+  rownames(out) <- NULL
+  out
 }

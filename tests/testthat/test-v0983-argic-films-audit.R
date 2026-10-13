@@ -175,8 +175,13 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   skip_if_not(file.exists(RJ), "BDsolos RJ.csv not available")
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
   res <- suppressMessages(suppressWarnings(
-    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+    benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   conf <- res$per_system$sibcs$confusion
+  # v0.9.242: benchmark_bdsolos() reports the complete profiles by default;
+  # the cells below are those of every record of the file, complete profiles,
+  # partial profiles and extra samples (sampling_type = NULL), as they were
+  # pinned.
   # v0.9.135: the fluvic-material proxy fix (reversal-based texture
   # stratification -- a monotone A->Bt clay increase is no longer "stratified")
   # stops false-fluvic Argissolos: Argissolo recall lifts 166 -> 175 and

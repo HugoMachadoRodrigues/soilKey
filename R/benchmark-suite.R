@@ -289,7 +289,8 @@ run_all_benchmarks <- function(datasets = "auto", paths = NULL, max_n = 300L,
           "`benchmark_lucas_2018(pedons, fill_subsoil_from = \"soilgrids\")`."),
     paste("- **kssl/usda** uses a head-N (not random) sample of the gpkg;",
           "**bdsolos** accumulates leading (state-clustered) CSVs until the",
-          "label cap is met. Both are documented samples, not full random",
-          "draws."))
+          "label cap is met, counting complete profiles only (extra samples",
+          "and partial profiles are left out). Both are documented samples,",
+          "not full random draws."))
   lines
 }
