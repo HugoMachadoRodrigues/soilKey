@@ -22,7 +22,12 @@ test_that("the four recovered SiBCS orders reach full/near-full recall on Redape
   skip_on_cran()
   skip_if_not(dir.exists(.acc_redape_dir()), "Redape data not present")
   rec <- .acc_recall()
-  expect_equal(unname(rec["gleissolos"]), 1)     # g-suffix -> redoximorphic (8/8)
+  # v0.9.239: the glei horizon is read by its colours, and Redape records no
+  # drainage class, so that a layer has to show mottles, a neutral or gley hue
+  # or a variegated colour. RN_021 ("AP 11C1g 111C2") has no chroma in its
+  # "C1g" and no mottles in its "C2" (5Y 5/1): 8/8 -> 7/8. The morphological
+  # mode reads its "g".
+  expect_equal(unname(rec["gleissolos"]), 7 / 8)   # g-suffix -> redoximorphic
   # v0.9.234: a horizonte plintico below 40 cm makes a Plintossolo only when
   # it is preceded by a horizonte glei, an A or E, or a pale, variegated or
   # abundantly mottled horizon (SiBCS 2018, p. 104). RN_042 and RN_044 meet it.

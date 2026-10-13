@@ -1068,35 +1068,150 @@ horizonte_litoplintico <- function(pedon, min_thickness = 10) {
 }
 
 
-#' Horizonte glei (SiBCS Cap 2, p 69-71; v0.7)
+#' Horizonte glei (SiBCS Cap 2, p 69-71)
 #'
-#' Subsuperficial (ou eventualmente superficial) com cores neutras /
-#' azuladas / esverdeadas devido a reducao de Fe; espessura \\>= 15 cm.
-#' Reuso de \code{\link{gleyic_properties}} (WRB) com nomenclatura
-#' SiBCS.
+#' "Em sintese, o horizonte glei e um horizonte mineral, com espessura minima
+#' de 15 cm, com menos de 15% de plintita e e saturado com agua por influencia
+#' do lencol freatico durante algum periodo ou o ano todo [...], apresentando
+#' evidencias de processos de reducao, com ou sem segregacao de ferro,
+#' caracterizadas por um ou mais dos seguintes requisitos" (p. 70-71):
+#' \itemize{
+#'   \item (a) the dominant colour, moist: 1) neutral, or bluer than 10Y; 2)
+#'         hues redder than 5YR with value 4 or more, chroma 1 or less; 3)
+#'         hues 5YR or yellower with value 4 or more, chroma 2 or less, or 3
+#'         in a hue 10YR or yellower when the chroma decreases in the horizon
+#'         below; 4) any hue and value, chroma 2 or less, with mottles;
+#'   \item (b) "Coloracao variegada com pelo menos uma das cores de acordo com
+#'         um dos itens anteriores" (\code{variegated_colors});
+#'   \item (c) reduced iron shown by a field test, which no profile records.
+#' }
+#'
+#' The saturation is not measured. What a survey records of it is the
+#' drainage class of the site (\code{site$drainage}), and Anexo B of the book
+#' (p. 315) describes the classes: in a "mal drenado" soil "o lencol freatico
+#' comumente esta a superficie ou proximo dela durante uma consideravel parte
+#' do ano", in a "muito mal drenado" one "durante a maior parte do ano", while
+#' an "imperfeitamente drenado" soil shows "indicios de gleizacao nos seus
+#' horizontes mais profundos". The colours count as a glei horizon when the
+#' site is "mal drenado" or "muito mal drenado". A class written as a range
+#' counts by its wetter end ("imperfeitamente a mal drenado" is "mal
+#' drenado").
+#'
+#' When the drainage class is not recorded, the sign of the saturation is
+#' asked of the layer itself, beside its colours: mottles ("O horizonte sendo
+#' saturado com agua periodicamente ou o solo tendo sido drenado deve
+#' apresentar algum mosqueado", p. 70), a neutral, bluish or greenish colour
+#' (item a1), or a variegated colour (item b). Without it, a greyish A or a
+#' pale E of any soil would satisfy item (a3).
+#'
+#' In the morphological mode the "g" of a horizon designation (Cg, Btg) is the
+#' surveyor's record of the gleying and stands for the colours and for the
+#' saturation.
+#'
+#' Until v0.9.238 this was the WRB test of gleyic properties: redoximorphic
+#' features of 5% or more in a layer that starts within 50 cm, with no colour
+#' asked.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_thickness Numeric threshold or option (see Details).
+#' @param min_thickness Minimum thickness of a glei layer, in cm (default 15).
 #' @noRd
 horizonte_glei <- function(pedon, min_thickness = 15) {
-  gl <- gleyic_properties(pedon)
-  if (!isTRUE(gl$passed)) {
-    return(DiagnosticResult$new(
-      name = "horizonte_glei", passed = gl$passed,
-      layers = gl$layers, evidence = list(gleyic = gl),
-      missing = gl$missing,
-      reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 69-71"
-    ))
-  }
   h <- pedon$horizons
+  colour <- .glei_colour_layers(pedon)
+  term <- pedon$site[["drainage"]] %||% pedon$site[["drainage_class"]] %||%
+    NA_character_
+  drainage <- .drainage_class(term, end = "wetter")
+  saturated <- if (is.na(drainage)) NA else drainage >= 7L
+  layers <- if (isTRUE(saturated)) {
+    colour$layers
+  } else if (is.na(saturated)) {
+    colour$layers[colour$mottled | colour$items %in% c("a1", "b")]
+  } else {
+    integer(0)
+  }
+  by_letter <- integer(0)
+  if (.morph_inference_enabled()) {
+    d <- .desg_master(h$designation)
+    by_letter <- which(!is.na(d) & grepl("^[A-Z][a-z0-9]*g", d))
+    layers <- union(layers, by_letter)
+  }
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
-                                   candidate_layers = gl$layers)
+                                candidate_layers = sort(layers))
+  no_colour <- nrow(h) > 0L && all(is.na(h$munsell_hue_moist)) &&
+    all(is.na(h$variegated_colors))
   DiagnosticResult$new(
-    name = "horizonte_glei", passed = thk$passed,
+    name = "horizonte_glei", passed = isTRUE(thk$passed),
     layers = thk$layers,
-    evidence = list(gleyic = gl, thickness = thk),
-    missing = thk$missing,
+    evidence = list(colour_layers = colour$layers, colour_items = colour$items,
+                     drainage = list(recorded = term, class = drainage,
+                                     saturated = saturated),
+                     designation_g = by_letter, thickness = thk),
+    missing = if (no_colour) "munsell_hue_moist" else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 69-71"
   )
+}
+
+
+#' Which item of requirement (a) of the glei horizon a colour satisfies (SiBCS
+#' 2018, Cap 2, p. 70-71), "a1" to "a4", or NA. The colour is given by the
+#' number and the family of its hue, its value and its chroma; `mottled` says
+#' whether the horizon has mottles (item 4), and `chroma_below` is the chroma
+#' of the horizon below (the chroma 3 that item 3 admits "devera diminuir no
+#' horizonte subjacente").
+#' @noRd
+.glei_colour_item <- function(number, family, value, chroma,
+                              mottled = FALSE, chroma_below = NA_real_) {
+  if (is.na(family)) return(NA_character_)
+  if (family %in% c("N", "GY", "G", "BG", "B", "PB")) return("a1")
+  if (is.na(chroma)) return(NA_character_)
+  redder <- family %in% c("R", "RP") ||
+    (family == "YR" && !is.na(number) && number < 5)
+  yellower <- (family == "YR" && !is.na(number) && number >= 5) || family == "Y"
+  light <- !is.na(value) && value >= 4
+  if (redder && light && chroma <= 1) return("a2")
+  if (yellower && light && chroma <= 2) return("a3")
+  yellow10 <- (family == "YR" && !is.na(number) && number >= 10) || family == "Y"
+  if (yellow10 && light && chroma <= 3 &&
+        !is.na(chroma_below) && chroma_below < chroma) return("a3")
+  if (chroma <= 2 && isTRUE(mottled)) return("a4")
+  NA_character_
+}
+
+
+#' The mineral layers with less than 15% of plinthite whose colours satisfy
+#' requirement (a) or (b) of the glei horizon, the item each one satisfies
+#' ("a1" to "a4", or "b" for a variegated layer) and whether it has mottles
+#' recorded (an amount of redoximorphic features, or the colours of mottles).
+#' @noRd
+.glei_colour_layers <- function(pedon) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  if (n == 0L) return(list(layers = integer(0), items = character(0),
+                           mottled = logical(0)))
+  o <- order(h$top_cm)
+  d <- .desg_master(h$designation)
+  item <- rep(NA_character_, n)
+  has_mottles <- (!is.na(h$redoximorphic_features_pct) &
+                    h$redoximorphic_features_pct > 0) | !is.na(h$mottle_colors)
+  for (k in seq_len(n)) {
+    i <- o[k]
+    if (!is.na(h$plinthite_pct[i]) && h$plinthite_pct[i] >= 15) next
+    if (!is.na(d[i]) && grepl("^[OH]", d[i])) next
+    mottled <- has_mottles[i]
+    below <- if (k < n) h$munsell_chroma_moist[o[k + 1L]] else NA_real_
+    hue <- .munsell_hue_parts(h$munsell_hue_moist[i])
+    item[i] <- .glei_colour_item(hue$number, hue$family,
+                                 h$munsell_value_moist[i],
+                                 h$munsell_chroma_moist[i], mottled, below)
+    if (is.na(item[i])) {
+      vc <- .munsell_notations(h$variegated_colors[i])
+      for (r in seq_len(nrow(vc))) {
+        if (!is.na(.glei_colour_item(vc$number[r], vc$family[r], vc$value[r],
+                                     vc$chroma[r]))) { item[i] <- "b"; break }
+      }
+    }
+  }
+  ok <- which(!is.na(item))
+  list(layers = ok, items = item[ok], mottled = has_mottles[ok])
 }
 
 

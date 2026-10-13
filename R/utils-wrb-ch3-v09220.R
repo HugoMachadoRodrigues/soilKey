@@ -129,6 +129,36 @@
   out
 }
 
+#' Ordinal class of the drainage of a site, in the eight classes of Anexo B of
+#' SiBCS 2018 (p. 314-316): 1 excessivamente, 2 fortemente, 3 acentuadamente,
+#' 4 bem, 5 moderadamente, 6 imperfeitamente, 7 mal, 8 muito mal drenado; NA
+#' unrecorded or unreadable. English and Portuguese terms. A class written as
+#' a range ("imperfeitamente a mal drenado") is read by the end asked for:
+#' the drier one by default, as a range meets a minimum only if all of it
+#' does, or the wetter one.
+#' @noRd
+.drainage_class <- function(x, end = c("drier", "wetter")) {
+  end <- match.arg(end)
+  t <- .field_term(x)
+  if (length(t) != 1L || is.na(t) || !nzchar(t)) return(NA_integer_)
+  one <- function(p) {
+    p <- trimws(p)
+    if (grepl("^(excessiv|excessively)", p)) return(1L)
+    if (grepl("^(fortemente|somewhat excessively)", p)) return(2L)
+    if (grepl("^acentuad", p)) return(3L)
+    if (grepl("^(bem|well)", p)) return(4L)
+    if (grepl("^(moderad|moderately)", p)) return(5L)
+    if (grepl("^(imperfeit|imperfectly|somewhat poorly)", p)) return(6L)
+    if (grepl("^(muito mal|very poorly)", p)) return(8L)
+    if (grepl("^(mal|poorly)", p)) return(7L)
+    NA_integer_
+  }
+  k <- vapply(strsplit(t, " a | to ")[[1]], one, 0L)
+  k <- k[!is.na(k)]
+  if (length(k) == 0L) return(NA_integer_)
+  if (end == "wetter") max(k) else min(k)
+}
+
 #' The number and the family of a Munsell hue ("7.5YR" is 7.5 and "YR"), read
 #' with a dot or a comma and whatever the spaces and the case. "N" is the
 #' family "N" with no number. What is not a hue gives NA for both.

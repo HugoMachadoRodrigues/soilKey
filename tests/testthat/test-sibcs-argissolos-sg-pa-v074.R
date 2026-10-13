@@ -13,6 +13,11 @@ test_that("carater_gleissolico passes when horizonte_glei within depth", {
     top_cm    = c(0,    20,   60),
     bottom_cm = c(20,   60,  150),
     designation = c("A", "Btg", "Cg"),
+    # v0.9.239: the glei horizon is read by its colours (SiBCS 2018, Cap 2,
+    # p. 70-71), so the fixture carries the hue and the value too. It had the
+    # chroma and the mottles only, which made a glei horizon of the WRB test.
+    munsell_hue_moist = c("10YR", "2.5Y", "5Y"),
+    munsell_value_moist = c(4, 6, 6),
     munsell_chroma_moist = c(2, 1, 1),    # gleyic colors
     redoximorphic_features_pct = c(NA_real_, 30, 40),
     clay_pct = c(20, 35, 30)
@@ -23,11 +28,8 @@ test_that("carater_gleissolico passes when horizonte_glei within depth", {
     horizons = ensure_horizon_schema(hz)
   )
   res <- carater_gleissolico(pr)
-  if (isTRUE(horizonte_glei(pr)$passed)) {
-    expect_true(isTRUE(res$passed))
-  } else {
-    skip("horizonte_glei nao casa para esta fixture")
-  }
+  expect_true(isTRUE(horizonte_glei(pr)$passed))
+  expect_true(isTRUE(res$passed))
 })
 
 test_that("carater_cambissolico_arg passes for B com >= 5% frag rocha", {
