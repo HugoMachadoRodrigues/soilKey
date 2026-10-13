@@ -867,37 +867,107 @@ B_espodico <- function(pedon, ...) {
 #'
 #' Tipo especial de B textural com mudanca textural abrupta +
 #' permeabilidade lenta + cores neutras/escurecidas + cromas baixos.
+#'
+#' The structure (p. 65): "Apresenta estrutura prismatica, colunar ou em
+#' blocos angulares e subangulares grandes ou medios e, as vezes, estrutura
+#' macica". It is tested where the sheet records it
+#' (\code{structure_type}, \code{structure_size}): a prismatic, columnar or
+#' massive structure passes; blocks pass when medium or larger, or when
+#' their size is not recorded; any other recorded structure does not pass.
+#'
+#' The colours "devem atender a pelo menos um dos seguintes requisitos"
+#' (p. 65-66):
+#' \itemize{
+#'   \item (a) the matrix colour, with or without mottles: "Matiz 10YR ou mais
+#'         amarelo, cromas <= 3" or "Matizes 7,5YR ou 5YR, cromas <= 2";
+#'   \item (b) "Coloracao variegada com pelo menos uma cor apresentando matiz
+#'         e croma conforme especificado no item (a)" (\code{variegated_colors});
+#'   \item (c) "matiz 10YR ou mais amarelo, cromas >= 4, combinado com
+#'         mosqueado de croma conforme especificado no item (a)": a mottle
+#'         colour (\code{mottle_colors}) that satisfies item (a).
+#' }
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_planico <- function(pedon) {
   h <- pedon$horizons
   abrupt <- mudanca_textural_abrupta(pedon)
-  # Cor: 10YR ou mais amarelo cromas <= 3 OR 7.5YR-5YR cromas <= 2
   b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
   cor_ok <- integer(0)
+  cor_item <- character(0)
   for (i in b_layers) {
-    # v0.9.233: SiBCS 2018, Cap 2, p. 65-66, requirement (a): "Matiz 10YR ou
-    # mais amarelo, cromas <= 3" or "Matizes 7,5YR ou 5YR, cromas <= 2". The
-    # hue is read as a number and a family: the pattern "10YR|2\\.5Y|5Y" also
-    # matched "5YR", "7.5YR" and "2.5YR", which all contain "5Y", so that
-    # those hues passed with chroma 3.
+    # v0.9.233: the hue is read as a number and a family: the pattern
+    # "10YR|2\\.5Y|5Y" also matched "5YR", "7.5YR" and "2.5YR", which all
+    # contain "5Y", so that those hues passed with chroma 3.
     hue <- .munsell_hue_parts(h$munsell_hue_moist[i])
     cm  <- h$munsell_chroma_moist[i]
-    if (is.na(hue$family) || is.na(cm)) next
-    yellow <- (hue$family == "YR" && hue$number >= 10) || hue$family == "Y"
-    brown  <- hue$family == "YR" && hue$number >= 5 && hue$number < 10
-    if ((yellow && cm <= 3) || (brown && cm <= 2)) cor_ok <- c(cor_ok, i)
+    item <- NA_character_
+    if (isTRUE(.b_planico_item_a(hue$number, hue$family, cm))) {
+      item <- "a"
+    } else {
+      # v0.9.238: items (b) and (c), which need the colours a horizon has
+      # beside its matrix colour.
+      vc <- .munsell_notations(h$variegated_colors[i])
+      mc <- .munsell_notations(h$mottle_colors[i])
+      yellow4 <- !is.na(hue$family) && !is.na(cm) && cm >= 4 &&
+        ((hue$family == "YR" && hue$number >= 10) || hue$family == "Y")
+      if (nrow(vc) > 0L &&
+            any(.b_planico_item_a(vc$number, vc$family, vc$chroma))) {
+        item <- "b"
+      } else if (yellow4 && nrow(mc) > 0L &&
+                   any(.b_planico_item_a(mc$number, mc$family, mc$chroma))) {
+        item <- "c"
+      }
+    }
+    if (!is.na(item)) {
+      cor_ok <- c(cor_ok, i)
+      cor_item <- c(cor_item, item)
+    }
   }
-  layers_pass <- intersect(abrupt$layers %||% integer(0), cor_ok)
+  # v0.9.238: the structure the definition describes, where it is recorded
+  estrutura_ok <- b_layers[.b_planico_structure_ok(h$structure_type[b_layers],
+                                                    h$structure_size[b_layers])]
+  layers_pass <- intersect(intersect(abrupt$layers %||% integer(0), cor_ok),
+                           estrutura_ok)
   passed <- length(layers_pass) > 0L
   DiagnosticResult$new(
     name = "B_planico", passed = passed,
     layers = layers_pass,
-    evidence = list(abrupt = abrupt, cor_ok = cor_ok),
+    evidence = list(abrupt = abrupt, cor_ok = cor_ok, cor_item = cor_item,
+                     estrutura_ok = estrutura_ok),
     missing = abrupt$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 65-66"
   )
+}
+
+
+#' Whether a recorded structure is one the definition of the B planico
+#' describes (SiBCS 2018, Cap 2, p. 65): "prismatica, colunar ou em blocos
+#' angulares e subangulares grandes ou medios e, as vezes, estrutura macica".
+#' English and Portuguese terms. A structure that is not recorded passes, and
+#' so do blocks whose size is not recorded. Vectorised.
+#' @noRd
+.b_planico_structure_ok <- function(type, size) {
+  t <- .field_term(type)
+  k <- .structure_size_class(size)
+  unrecorded <- is.na(t) | !nzchar(t)
+  shaped <- grepl("prismat|colun|column|macic|massive", t)
+  blocks <- grepl("bloco|blocky", t) & (is.na(k) | k >= 3L)
+  unrecorded | shaped | blocks
+}
+
+
+#' Item (a) of the colours of the B planico (SiBCS 2018, Cap 2, p. 65-66), for
+#' a colour given by the number and the family of its hue and by its chroma:
+#' "Matiz 10YR ou mais amarelo, cromas <= 3" or "Matizes 7,5YR ou 5YR, cromas
+#' <= 2". Neutral and gley hues are not among them. Vectorised; a colour that
+#' is not recorded does not satisfy.
+#' @noRd
+.b_planico_item_a <- function(number, family, chroma) {
+  known <- !is.na(family) & !is.na(chroma)
+  yellow <- known & ((family == "YR" & !is.na(number) & number >= 10) | family == "Y")
+  brown  <- known & family == "YR" & !is.na(number) & number >= 5 & number < 10
+  (yellow & chroma <= 3) | (brown & chroma <= 2)
 }
 
 

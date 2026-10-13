@@ -202,8 +202,13 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # v0.9.233: the colour of the B planico follows the book; two reference
   # Argissolos of RJ whose B is 5YR or 7.5YR with chroma 3 are no longer keyed
   # Planossolos and agree (170 -> 172).
+  # v0.9.238: the B planico is tested for its structure and for the colours of
+  # a variegated or mottled B. Three reference Argissolos of RJ with an abrupt
+  # change are now keyed Planossolos (12683 and 12692, variegated; 13061, a
+  # yellowish matrix with a grey mottle), and one whose B is in small blocks
+  # is no longer (13069): 172 -> 170.
   expect_equal(conf["Argissolos","Latossolos"], 5L)
-  expect_equal(conf["Argissolos","Argissolos"], 172L)
+  expect_equal(conf["Argissolos","Argissolos"], 170L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
