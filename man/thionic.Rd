@@ -5,7 +5,13 @@
 \title{Thionic horizon (WRB 2022): post-oxidation acid sulfate horizon.
 Requires sulfidic_s_pct >= 0.01 AND pH(H2O) <= 4.}
 \usage{
-thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
+thionic(
+  pedon,
+  min_thickness = 15,
+  max_pH = 4,
+  min_sulfidic_s = 0.01,
+  adjoining = FALSE
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -15,6 +21,10 @@ thionic(pedon, min_thickness = 15, max_pH = 4, min_sulfidic_s = 0.01)
 \item{max_pH}{Numeric threshold or option (see Details).}
 
 \item{min_sulfidic_s}{Numeric threshold or option (see Details).}
+
+\item{adjoining}{\code{FALSE} (default): the thickness is asked of each
+layer. \code{TRUE}: of adjoining layers taken together, as the SiBCS
+horizonte sulfurico reads it since v0.9.246.}
 }
 \value{
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.

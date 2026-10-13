@@ -447,10 +447,13 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param max_pH Numeric threshold or option (see Details).
 #' @param min_sulfidic_s Numeric threshold or option (see Details).
+#' @param adjoining \code{FALSE} (default): the thickness is asked of each
+#'   layer. \code{TRUE}: of adjoining layers taken together, as the SiBCS
+#'   horizonte sulfurico reads it since v0.9.246.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 thionic <- function(pedon, min_thickness = 15, max_pH = 4,
-                       min_sulfidic_s = 0.01) {
+                       min_sulfidic_s = 0.01, adjoining = FALSE) {
   h <- pedon$horizons
   tests <- list()
   tests$pH       <- test_ph_below(h, max_ph = max_pH)
@@ -458,7 +461,8 @@ thionic <- function(pedon, min_thickness = 15, max_pH = 4,
                                           threshold = min_sulfidic_s,
                                           candidate_layers = tests$pH$layers)
   tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
-                                               candidate_layers = tests$sulfidic$layers)
+                                               candidate_layers = tests$sulfidic$layers,
+                                               adjoining = adjoining)
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(
     name = "thionic", passed = agg$passed, layers = agg$layers,

@@ -61,6 +61,34 @@ test_that("it is an increase: no clay over no clay is none", {
   expect_true(isTRUE(mudanca_textural_abrupta(.ab(c("A", "E", "Bt"), c(0, 10, 60), c(10, 60, 90), c(1, 0, 18)))$passed))
 })
 
+test_that("a BC is no first B sub-horizon (v0.9.246)", {
+  # item (h) of the B textural leaves the BC out of the B, and the B planico
+  # refers to it; a BC that comes before any other B was taken for the first
+  bc <- .ab(c("A", "BC", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30))
+  r <- mudanca_textural_abrupta(bc)
+  expect_false(isTRUE(r$passed))
+  expect_true(is.na(r$evidence$first_b))
+  for (d in c("B/C", "BC1", "BCg"))
+    expect_false(isTRUE(mudanca_textural_abrupta(
+      .ab(c("A", d, "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30)))$passed), info = d)
+  # a BA is a B sub-horizon, and "Btc" is a Bt with concretions, not a BC
+  expect_true(isTRUE(mudanca_textural_abrupta(
+    .ab(c("A", "BA", "Bt"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 40)))$passed))
+  expect_true(isTRUE(mudanca_textural_abrupta(
+    .ab(c("A", "Btc", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30)))$passed))
+  # with a BC between the A and the Bt, the Bt is the first B and the horizon
+  # immediately above it is no A or E
+  r <- mudanca_textural_abrupta(.ab(c("A", "BC", "Bt"), c(0, 20, 50), c(20, 50, 120), c(12, 14, 40)))
+  expect_false(isTRUE(r$passed))
+  expect_equal(r$evidence$first_b, 3L)
+  # the colour and the structure of a B planico in a BC make none
+  p <- .ab(c("A", "BC", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30),
+           munsell_hue_moist = "10YR", munsell_value_moist = 4,
+           munsell_chroma_moist = 2, structure_type = "Prismatica",
+           structure_size = "Media")
+  expect_false(isTRUE(B_planico(p)$passed))
+})
+
 test_that("the rows are read in the order of their depths", {
   p <- .ab(c("Bt", "A"), c(30, 0), c(90, 30), c(24, 12))
   r <- mudanca_textural_abrupta(p)

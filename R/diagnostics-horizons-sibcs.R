@@ -969,8 +969,12 @@ B_incipiente <- function(pedon, min_thickness = 10) {
                         pli$layers %||% integer(0),
                         gle$layers %||% integer(0)))
   layers_ok <- setdiff(candidates, excluded)
+  # v0.9.246: "deve ter no minimo 10 cm de espessura" is said of the horizon:
+  # the thickness is that of its adjoining sub-horizons, as in the
+  # B latossolico since v0.9.241.
   thick_test <- test_minimum_thickness(h, min_cm = min_thickness,
-                                          candidate_layers = layers_ok)
+                                          candidate_layers = layers_ok,
+                                          adjoining = TRUE)
   passed <- isTRUE(thick_test$passed) && length(thick_test$layers) > 0L
   DiagnosticResult$new(
     name = "B_incipiente", passed = passed,
@@ -1096,8 +1100,10 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                            grepl("^[0-9]*(R|Cr|Cd)", .desg_master(h$designation)) &
                            !is.na(h$top_cm) & h$top_cm <= 50)
   eff_min_thick <- if (contact_shallow) 15 else min_thickness
+  # v0.9.246: the thickness of the horizon, made of adjoining sub-horizons
   thk <- test_minimum_thickness(h, min_cm = eff_min_thick,
-                                   candidate_layers = clay_ok)
+                                   candidate_layers = clay_ok,
+                                   adjoining = TRUE)
   # Step 6: argila atividade baixa OR (atividade alta + carater aluminico).
   # v0.9.137: this is the VERBATIM SiBCS Cap 2 p.62 criterion (d) -- there is
   # no "ferric / high-Fe" alternative path in the B nitico DEFINITION. The
@@ -1370,8 +1376,11 @@ horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
   pp <- test_numeric_above(h, "plinthite_pct",
                               threshold = min_petroplinthite_pct,
                               candidate_layers = desg$layers)
+  # v0.9.246: "deve apresentar no minimo 30 cm de espessura", of adjoining
+  # sub-horizons
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
-                                   candidate_layers = pp$layers)
+                                   candidate_layers = pp$layers,
+                                   adjoining = TRUE)
   passed <- isTRUE(thk$passed)
   DiagnosticResult$new(
     name = "horizonte_concrecionario", passed = passed,
@@ -1442,7 +1451,8 @@ horizonte_litoplintico <- function(pedon, min_thickness = 10) {
 #' features of 5% or more in a layer that starts within 50 cm, with no colour
 #' asked.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_thickness Minimum thickness of a glei layer, in cm (default 15).
+#' @param min_thickness Minimum thickness of the glei horizon, in cm (default
+#'   15); since v0.9.246 that of its adjoining layers.
 #' @noRd
 horizonte_glei <- function(pedon, min_thickness = 15) {
   h <- pedon$horizons
@@ -1464,8 +1474,10 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
     by_letter <- which(!is.na(d) & grepl("^[A-Z][a-z0-9]*g", d))
     layers <- union(layers, by_letter)
   }
+  # v0.9.246: "com espessura de 15 cm ou mais", of adjoining sub-horizons
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
-                                candidate_layers = sort(layers))
+                                candidate_layers = sort(layers),
+                                adjoining = TRUE)
   no_colour <- nrow(h) > 0L && all(is.na(h$munsell_hue_moist)) &&
     all(is.na(h$variegated_colors))
   DiagnosticResult$new(
@@ -1611,7 +1623,9 @@ horizonte_petrocalcico <- function(pedon, ...) {
 #' @param ... Reserved for future arguments.
 #' @noRd
 horizonte_sulfurico <- function(pedon, ...) {
-  res <- thionic(pedon, max_pH = 3.5, ...)
+  # v0.9.246: the 15 cm are those of the horizon, of adjoining sub-horizons,
+  # on this path and on the jarosite path below
+  res <- thionic(pedon, max_pH = 3.5, adjoining = TRUE, ...)
   # SiBCS Cap 2 p.72-73: sulfurico = thickness >= 15 cm + pH(H2O 1:2.5) <= 3.5
   # AND >= 1 of (a) jarosite, (b) sulfidic material immediately below,
   # (c) >= 0.05% water-soluble sulfate. thionic encodes only the sulfidic-
@@ -1626,7 +1640,8 @@ horizonte_sulfurico <- function(pedon, ...) {
     jar_layers <- which(jar %in% TRUE)
     cand       <- intersect(ph_low$layers, jar_layers)
     if (length(cand)) {
-      thk <- test_minimum_thickness(h, min_cm = 15, candidate_layers = cand)
+      thk <- test_minimum_thickness(h, min_cm = 15, candidate_layers = cand,
+                                    adjoining = TRUE)
       if (isTRUE(thk$passed)) {
         return(DiagnosticResult$new(
           name = "horizonte_sulfurico", passed = TRUE, layers = thk$layers,

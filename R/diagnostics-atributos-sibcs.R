@@ -520,7 +520,8 @@ carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
 #' (\code{boundary_distinctness} of the horizon above: abrupt, under 2.5 cm,
 #' or clear, 2.5 to 7.5 cm). Where it is recorded as gradual or diffuse there
 #' is no abrupt change; where it is not recorded the two horizons are
-#' compared. The layer returned is the first B horizon.
+#' compared. The layer returned is the first B horizon. A BA is a B horizon
+#' here and a BC is not, as in item (h) of the B textural.
 #'
 #' Until v0.9.243 the function was the WRB
 #' \code{\link{abrupt_textural_difference}}, which compares every pair of
@@ -570,7 +571,11 @@ mudanca_textural_abrupta <- function(pedon) {
   out <- list(passed = FALSE, first_b = NA_integer_, above = NA_integer_,
               jump = NA, within_7_5_cm = NA, abrupt_transition = NA,
               ratio = NA_real_, ratio_limit = NA_real_, missing = character(0))
-  b <- which(!is.na(dm) & grepl("^B", dm) & !is.na(h$top_cm))
+  # v0.9.246: the BC is no B sub-horizon here, as in item (h) of the
+  # B textural ("excluido o BC"), to which the B planico refers; a BC was
+  # taken for the first B when it came before any other.
+  b <- which(!is.na(dm) & grepl("^B", dm) & !grepl("^B/?C", dm) &
+               !is.na(h$top_cm))
   if (length(b) == 0L) return(out)
   b <- b[order(h$top_cm[b])]
   out$first_b <- b[1]
