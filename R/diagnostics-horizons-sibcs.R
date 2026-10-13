@@ -1623,7 +1623,9 @@ horizonte_petrocalcico <- function(pedon, ...) {
 #' @param ... Reserved for future arguments.
 #' @noRd
 horizonte_sulfurico <- function(pedon, ...) {
-  res <- thionic(pedon, max_pH = 3.5, ...)
+  # v0.9.246: the 15 cm are those of the horizon, of adjoining sub-horizons,
+  # on this path and on the jarosite path below
+  res <- thionic(pedon, max_pH = 3.5, adjoining = TRUE, ...)
   # SiBCS Cap 2 p.72-73: sulfurico = thickness >= 15 cm + pH(H2O 1:2.5) <= 3.5
   # AND >= 1 of (a) jarosite, (b) sulfidic material immediately below,
   # (c) >= 0.05% water-soluble sulfate. thionic encodes only the sulfidic-

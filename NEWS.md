@@ -13,8 +13,22 @@ together. The B latossólico is read by its adjoining sub-horizons since
 0.9.241 and the vertic horizon since 0.9.245; the five above are now read
 the same way.
 
+The horizonte sulfúrico is read so on its two paths: with jarosite, and with
+sulfidic material, which is tested by the WRB `thionic()`. That function
+takes a new argument, `adjoining`, `FALSE` by default: the WRB thionic
+horizon is tested as before.
+
 The horizons that reach SiBCS through a WRB function (plíntico, espódico,
 cálcico) are not changed.
+
+### A correction to 0.9.244
+
+`mudanca_textural_abrupta()` and `B_planico()` took a BC for the first B
+sub-horizon when it came before any other B. The note of 0.9.244 says that
+the BC is left out of the B, as in item (h) of the B textural; the code did
+not leave it out, and now does. Of the national export, 7 profiles have a BC
+as their first B; none had an abrupt change or a B plânico by it, and no
+figure of 0.9.244 changes.
 
 ### Measured
 

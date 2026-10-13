@@ -12,7 +12,7 @@
 
 .rows <- function(p, idx, designation, top, bottom) {
   # the layers `idx` of a profile, in that order, with new names and depths
-  h <- data.table::copy(p$horizons)[idx]
+  h <- data.table::copy(p$horizons)[idx, ]
   h$designation <- designation; h$top_cm <- top; h$bottom_cm <- bottom
   q <- p$clone(deep = TRUE); q$horizons <- h
   q
@@ -105,6 +105,27 @@ test_that("horizonte sulfurico with jarosite: two adjoining sub-horizons of 8 cm
   expect_equal(r$layers, 2:3)
   expect_false(isTRUE(horizonte_sulfurico(
     mk(c("A", "Bj", "C"), c(0, 20, 28), c(20, 28, 120), c(5, 3.2, 5), c(FALSE, TRUE, FALSE)))$passed))
+})
+
+test_that("horizonte sulfurico with sulfidic material: the same, and the WRB thionic horizon as before", {
+  mk <- function(designation, top, bottom, ph, s) {
+    hz <- data.table::data.table(designation = designation, top_cm = top,
+                                 bottom_cm = bottom, clay_pct = 30, ph_h2o = ph,
+                                 sulfidic_s_pct = s)
+    PedonRecord$new(site = list(id = "s", country = "BR"),
+                    horizons = ensure_horizon_schema(hz))
+  }
+  q <- mk(c("A", "Cj1", "Cj2", "C"), c(0, 20, 28, 36), c(20, 28, 36, 120),
+          c(5, 3.2, 3.3, 5), c(0, 0.5, 0.6, 0))
+  r <- horizonte_sulfurico(q)
+  expect_true(isTRUE(r$passed))
+  expect_equal(r$layers, 2:3)
+  # 8 cm alone
+  expect_false(isTRUE(horizonte_sulfurico(
+    mk(c("A", "Cj", "C"), c(0, 20, 28), c(20, 28, 120), c(5, 3.2, 5), c(0, 0.5, 0)))$passed))
+  # the WRB function asks its thickness of each layer unless told otherwise
+  expect_false(isTRUE(thionic(q)$passed))
+  expect_true(isTRUE(thionic(q, adjoining = TRUE)$passed))
 })
 
 test_that("the canonical profiles keep their horizons", {
