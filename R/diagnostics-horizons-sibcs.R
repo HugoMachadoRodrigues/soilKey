@@ -1142,12 +1142,32 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
 #' espessura \\>= 2.5 cm. Tipos: Bs, Bhs, Bh, ortstein. Reuso de
 #' \code{\link{spodic}} (WRB) que ja codifica criterios essencialmente
 #' identicos.
+#'
+#' In the morphological mode the horizon is also read from its designation.
+#' Since v0.9.247 that includes the "ir" of the older surveys (\code{Bir},
+#' \code{B2ir}, \code{B22irx}), the illuvial iron that the present notation
+#' writes "s": the mode read "h" and "s" only.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_espodico <- function(pedon, ...) {
   res <- spodic(pedon, ...)
+  if (.morph_inference_enabled() && !isTRUE(res$passed)) {
+    dm <- .desg_master(pedon$horizons$designation)
+    ir <- which(!is.na(dm) & grepl("^B[^A-Z]*ir", dm))
+    if (length(ir) > 0L) {
+      ev <- res$evidence
+      ev$morphological_inference <- list(
+        passed = TRUE, layers = ir, diagnostic = "spodic",
+        provenance = "morphological_designation",
+        note = paste0("v0.9.247: the designation carries 'ir', the ",
+                      "illuvial iron of the older notation"))
+      res$evidence <- ev
+      res$passed <- TRUE
+      res$layers <- ir
+    }
+  }
   res$name      <- "B_espodico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 62-65"
   res

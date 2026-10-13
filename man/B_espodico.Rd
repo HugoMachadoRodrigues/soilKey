@@ -20,3 +20,9 @@ espessura \\>= 2.5 cm. Tipos: Bs, Bhs, Bh, ortstein. Reuso de
 \code{\link{spodic}} (WRB) que ja codifica criterios essencialmente
 identicos.
 }
+\details{
+In the morphological mode the horizon is also read from its designation.
+Since v0.9.247 that includes the "ir" of the older surveys (\code{Bir},
+\code{B2ir}, \code{B22irx}), the illuvial iron that the present notation
+writes "s": the mode read "h" and "s" only.
+}
