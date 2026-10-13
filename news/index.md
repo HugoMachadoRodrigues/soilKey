@@ -1,5 +1,124 @@
 # Changelog
 
+## soilKey 0.9.239 (2026-10-12)
+
+### SiBCS key: the glei horizon is read by the colours of the book, with the drainage class as the record of its saturation
+
+`horizonte_glei()` was the WRB test of gleyic properties under another
+name: redoximorphic features of 5% or more in a layer that starts within
+50 cm, with no colour asked. A mottled Argissolo was a Gleissolo, and a
+grey Cg with no amount of mottles recorded was not. In the national
+BDsolos export the key called 468 profiles Gleissolos, of which 123 had
+that reference, and 141 reference Gleissolos were keyed Neossolos.
+
+The book (SiBCS 2018, Cap. 2, p. 70-71): “o horizonte glei é um
+horizonte mineral, com espessura mínima de 15 cm, com menos de 15% de
+plintita e é saturado com água por influência do lençol freático durante
+algum período ou o ano todo \[…\], apresentando evidências de processos
+de redução, com ou sem segregação de ferro, caracterizadas por um ou
+mais dos seguintes requisitos”: (a) the dominant colour, by four items;
+(b) “Coloração variegada com pelo menos uma das cores de acordo com um
+dos itens anteriores”; (c) reduced iron shown by a field test.
+
+- **Colours.** A layer qualifies by item (a1), neutral or bluer than
+  10Y; (a2), hues redder than 5YR with value 4 or more and chroma 1 or
+  less; (a3), hues 5YR or yellower with value 4 or more and chroma 2 or
+  less, or 3 in a hue 10YR or yellower when the chroma decreases in the
+  horizon below; (a4), any hue and value with chroma 2 or less and
+  mottles; or (b), a variegated layer (`variegated_colors`) with one
+  colour of those items. Organic layers and layers with 15% of plinthite
+  or more do not qualify. Item (c) is recorded by no profile.
+- **Saturation.** It is not measured. What a survey records of it is the
+  drainage class of the site, and Anexo B (p. 315) describes the
+  classes: in a “mal drenado” soil “o lençol freático comumente está à
+  superfície ou próximo dela durante uma considerável parte do ano”,
+  while an “imperfeitamente drenado” one shows “indícios de gleização
+  nos seus horizontes mais profundos”. The colours make a glei horizon
+  when the site is “mal drenado” or “muito mal drenado”. A class written
+  as a range counts by its wetter end (“imperfeitamente a mal drenado”
+  is “mal drenado”), an exception to the rule that a range is read by
+  its lower end. The field is read as `site$drainage` (the BDsolos
+  loader) or `site$drainage_class`.
+- **No drainage class recorded.** The layer itself has to show the
+  saturation, beside its colours: mottles (“O horizonte sendo saturado
+  com água periodicamente ou o solo tendo sido drenado deve apresentar
+  algum mosqueado”, p. 70), a colour of item (a1), or a variegated
+  colour. Without that, the greyish A and the pale E of any soil satisfy
+  item (a3).
+- **Morphological mode.** The “g” of a designation (Cg, Btg) stands for
+  the colours and for the saturation, as before.
+- **Gleissolos** (key, Cap. 4, p. 112-113): the glei horizon within 50
+  cm, or between 50 and 150 cm “desde que imediatamente subjacente a
+  horizontes A ou E ou a horizonte hístico com menos de 40 cm de
+  espessura”. Any glei horizon within 150 cm used to count.
+- **Neossolos** (p. 111): “Ausência de horizonte glei dentro de 50 cm a
+  partir da superfície, exceto no caso de solos de textura areia e areia
+  franca”. 150 cm was tested, with no exception.
+
+The new internals are `.glei_colour_item()`, `.glei_colour_layers()`,
+`.drainage_class()` and `.textura_areia_ou_areia_franca()`. The WRB
+test,
+[`gleyic_properties()`](https://hugomachadorodrigues.github.io/soilKey/reference/gleyic_properties.md),
+is not changed.
+
+#### Effect
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                     |        Default |  Morphological |
+|-------------------------------------|---------------:|---------------:|
+| Order agreement (count)             | 3,355 to 3,579 | 3,967 to 4,249 |
+| Order agreement                     | 44.2% to 47.1% | 52.2% to 56.0% |
+| Profiles keyed Gleissolos           |     467 to 309 |     434 to 404 |
+| … of which reference Gleissolos     |     123 to 226 |     135 to 307 |
+| Reference Gleissolos agreed (373)   |     33% to 61% |     36% to 82% |
+| Reference Argissolos agreed (2,016) | 1,184 to 1,256 | 1,334 to 1,400 |
+| Reference Neossolos agreed (930)    |     679 to 698 |     676 to 691 |
+| Reference Luvissolos agreed (197)   |     109 to 125 |     121 to 138 |
+| Reference Cambissolos agreed (640)  |     124 to 134 |     113 to 124 |
+| Reference Chernossolos agreed (127) |       29 to 34 |       34 to 39 |
+| Reference Plintossolos agreed (331) |         0 to 0 |     122 to 119 |
+
+In the default mode 539 profiles change order: 270 now agree with their
+reference, 46 no longer do, 223 go from one disagreeing order to
+another. Most of the gains outside the Gleissolos are profiles with
+mottles and good drainage that are no longer keyed Gleissolos. Among the
+profiles whose order does not change, 51 change their name at the third
+or fourth level (80 in the morphological mode), where a subgroup asks
+for a glei horizon.
+
+Measured before the choice was made: the colours with no drainage asked
+keyed 1,028 profiles Gleissolos, every pale E among them (3,358 in the
+default mode); asking for “imperfeitamente drenado” or wetter gave
+3,555, with 99 reference Plintossolos and 73 Planossolos keyed
+Gleissolos.
+
+Other benchmarks:
+
+- BDsolos panel of the EJSS article (798 scored): 350 to 367 in the
+  default mode (43.9% to 46.0%) and 458 to 489 in the morphological mode
+  (57.4% to 61.3%). The article’s own figures are of v0.9.189.
+- FEBR (1,000 profiles): 387 in the default mode, unchanged; 496 to 498
+  in the morphological mode.
+- Redape (94 profiles), which records no drainage class: 70 to 69 in the
+  default mode, 74 unchanged in the morphological mode. The profile is
+  `GeoTab_RN_021_Ceara_Mirim`, a reference Gleissolos (“AP 11C1g 111C2”)
+  whose “C1g” has no chroma recorded and whose “C2”, 5Y 5/1, has no
+  mottles. In the morphological mode its “g” is read. The Redape recall
+  of Gleissolos pinned in `test-v09107-sibcs-accuracy.R` goes from 8 of
+  8 to 7 of 8.
+- The 44 canonical fixtures keep their class in the three systems, in
+  both modes.
+
+Not changed, and worth knowing:
+
+- The thickness of 15 cm is asked of each layer; two adjoining glei
+  layers of 10 cm are not added up, as before.
+- The key of the Gleissolos also asks for no “outro horizonte
+  diagnóstico acima do horizonte glei”; that is not tested, as before.
+- A mottle amount written as a range (“Comum a abundante”) is still
+  loaded by its upper end.
+
 ## soilKey 0.9.238 (2026-10-12)
 
 ### SiBCS key: the B plânico is tested for its structure and for the colours of a variegated or mottled horizon

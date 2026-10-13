@@ -66,11 +66,11 @@ A zero-row data frame with those columns when the trace is empty.
 ``` r
 res <- classify_sibcs(make_ferralsol_canonical())
 head(key_trace_table(res))
-#>    phase code         name        status                    missing n_missing
-#> 1 ordens    O Organossolos        failed                                    0
-#> 2 ordens    R    Neossolos        failed                                    0
-#> 3 ordens    V  Vertissolos indeterminate               slickensides         1
-#> 4 ordens    E Espodossolos indeterminate       al_ox_pct, fe_ox_pct         2
-#> 5 ordens    S  Planossolos        failed                                    0
-#> 6 ordens    G   Gleissolos indeterminate redoximorphic_features_pct         1
+#>    phase code         name        status              missing n_missing
+#> 1 ordens    O Organossolos        failed                              0
+#> 2 ordens    R    Neossolos        failed                              0
+#> 3 ordens    V  Vertissolos indeterminate         slickensides         1
+#> 4 ordens    E Espodossolos indeterminate al_ox_pct, fe_ox_pct         2
+#> 5 ordens    S  Planossolos        failed                              0
+#> 6 ordens    G   Gleissolos        failed                              0
 ```

@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x56240fe09f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5563dd120f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -159,11 +159,10 @@ print(res$sibcs)
 #> ── Ambiguities
 #> - V: Indeterminate -- missing 1 attribute(s): slickensides
 #> - E: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
-#> - G: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
 #> - F: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> 
 #> ── Missing data that would refine result
-#> slickensides, al_ox_pct, fe_ox_pct, redoximorphic_features_pct, plinthite_pct
+#> slickensides, al_ox_pct, fe_ox_pct, plinthite_pct
 #> 
 #> ── Key trace
 #> (10 RSGs tested before assignment)
@@ -172,7 +171,7 @@ print(res$sibcs)
 #> 3. V Vertissolos -- NA (1 attrs missing)
 #> 4. E Espodossolos -- NA (2 attrs missing)
 #> 5. S Planossolos -- failed
-#> 6. G Gleissolos -- NA (1 attrs missing)
+#> 6. G Gleissolos -- failed
 #> 7. L Latossolos -- failed
 #> 8. M Chernossolos -- failed
 #> 9. C Cambissolos -- failed
