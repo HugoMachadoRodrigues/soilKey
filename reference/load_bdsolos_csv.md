@@ -65,7 +65,10 @@ or parallelepipedic structure (`"cuneiforme"`, `"paralelepipedica"`,
 added to `structure_type`; a structure "com tendencia a
 paralelepipedica" is not one). SiBCS knows the vertic horizon by these
 two features, and the surveys that predate the structured sheet describe
-them only there.
+them only there. Since v0.9.251 the amount and the grade of the
+cerosidade are read the same way (`"cerosidade comum e moderada"` fills
+`clay_films_amount` with `"Comum"` and `clay_films_strength` with
+`"Moderada"`), each where its own cell is empty.
 
 Reading (v0.9.222): the file is read with
 [`utils::read.csv2`](https://rdrr.io/r/utils/read.table.html). The
