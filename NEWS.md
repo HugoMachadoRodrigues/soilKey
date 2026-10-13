@@ -1,3 +1,44 @@
+# soilKey 0.9.246 (2026-10-13)
+
+## SiBCS key: the minimum thickness of a horizon is that of its adjoining sub-horizons
+
+The book states each minimum of the horizon: the B incipiente "deve ter no
+mínimo 10 cm de espessura" (SiBCS 2018, Cap. 2, p. 60), the B nítico
+"Espessura de 30 cm ou mais" (p. 62), the horizonte glei "com espessura de
+15 cm ou mais" (p. 69), the concrecionário "no mínimo 30 cm de espessura"
+(p. 68), the sulfúrico "15 cm ou mais de espessura" (p. 72). Each was asked
+of one layer of the description, so that a horizon described in two
+sub-horizons thinner than the minimum did not pass, whatever the two made
+together. The B latossólico is read by its adjoining sub-horizons since
+0.9.241 and the vertic horizon since 0.9.245; the five above are now read
+the same way.
+
+The horizons that reach SiBCS through a WRB function (plíntico, espódico,
+cálcico) are not changed.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order: 3,969 in the
+default mode and 4,854 in the morphological mode, as before. The agreement
+is the same and the profiles are not: 10 change order in the default mode,
+4 reach their reference, 4 leave it and 2 go from one wrong order to another.
+
+* 9 by the horizonte glei, all keyed Gleissolos now. In each a glei
+  horizon is made of two or more sub-horizons under 15 cm (an A of 8 cm
+  over an AB of 13 cm, a C1g of 10 cm over a C2g of 14 cm). 4 are reference
+  Gleissolos that keyed Neossolos; 3 leave their reference, a Cambissolo
+  Háplico gleico (AM 5263) and two alluvial soils (PA 9509, RS 8852); 2 are
+  reference Plintossolos that keyed elsewhere.
+* 1 by the B nítico: a reference Argissolo Bruno-Acinzentado (SC 5445)
+  with a BA of 13 cm, a Bt of 27 cm and a BC of 13 cm keys Nitossolos.
+* None by the B incipiente, the concrecionário or the sulfúrico.
+
+Morphological mode: 8 change, 4 to their reference and 4 from it. Panel of
+complete profiles (781): 429 to 428 and 512 to 511, the Cambissolo gleico.
+FEBR (1,000): 376 and 501, confusion matrices identical. Redape (94): 77 and
+84, no profile changes. The 44 canonical profiles keep their class in the
+three systems, in both modes.
+
 # soilKey 0.9.245 (2026-10-13)
 
 ## SiBCS key: the vertic horizon by the features of the book, read also from the text of the description
