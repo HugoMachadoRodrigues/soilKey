@@ -39,6 +39,10 @@ The requirements of the book that the data of a profile can show
   \item (d) texture francoarenosa or finer;
   \item (g) cation exchange capacity below 17 cmolc per kg of clay, with no
         correction for carbon;
+  \item (e) a molecular ratio SiO2/Al2O3 (Ki) of 2.2 or less, where the
+        sulfuric attack is recorded (\code{sio2_sulfuric_pct},
+        \code{al2o3_sulfuric_pct}): a layer with a Ki above 2.20 is no
+        B latossolico (v0.9.243);
   \item (h) cerosidade, if present, at most few and weak: a layer with a
         larger amount or a higher grade is no B latossolico (a range
         counts by its upper end, the requirement being a maximum);
@@ -52,7 +56,7 @@ The requirements of the book that the data of a profile can show
 }
 Where the designations are recorded, only B horizons are candidates: the
 B latossolico is a subsurface horizon below the A. Items (a) structure,
-(c) rock structure, (e) Ki and (f) weatherable minerals are not tested.
+(c) rock structure and (f) weatherable minerals are not tested.
 }
 \details{
 Until v0.9.240 the 50 cm were asked of each layer on its own, so that a

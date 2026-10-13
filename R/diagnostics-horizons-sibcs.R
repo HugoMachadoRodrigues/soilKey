@@ -705,6 +705,10 @@ B_textural <- function(pedon, ...) {
 #'   \item (d) texture francoarenosa or finer;
 #'   \item (g) cation exchange capacity below 17 cmolc per kg of clay, with no
 #'         correction for carbon;
+#'   \item (e) a molecular ratio SiO2/Al2O3 (Ki) of 2.2 or less, where the
+#'         sulfuric attack is recorded (\code{sio2_sulfuric_pct},
+#'         \code{al2o3_sulfuric_pct}): a layer with a Ki above 2.20 is no
+#'         B latossolico (v0.9.243);
 #'   \item (h) cerosidade, if present, at most few and weak: a layer with a
 #'         larger amount or a higher grade is no B latossolico (a range
 #'         counts by its upper end, the requirement being a maximum);
@@ -718,7 +722,7 @@ B_textural <- function(pedon, ...) {
 #' }
 #' Where the designations are recorded, only B horizons are candidates: the
 #' B latossolico is a subsurface horizon below the A. Items (a) structure,
-#' (c) rock structure, (e) Ki and (f) weatherable minerals are not tested.
+#' (c) rock structure and (f) weatherable minerals are not tested.
 #'
 #' Until v0.9.240 the 50 cm were asked of each layer on its own, so that a
 #' B latossolico described as B1, B21 and B22 of 35 cm each was none; and
@@ -789,8 +793,12 @@ B_latossolico <- function(pedon, min_thickness = 50,
   # (h) cerosidade at most few and weak
   films_over <- which(.films_above_few_and_weak(h$clay_films_amount,
                                                 h$clay_films_strength))
+  # (e) "Relacao molecular SiO2/Al2O3 (Ki) igual ou inferior a 2,2": a layer
+  # whose Ki is recorded above it is no B latossolico (v0.9.243)
+  ki <- compute_ki(h$sio2_sulfuric_pct, h$al2o3_sulfuric_pct)
+  ki_over <- which(!is.na(ki) & round(ki, 2) > 2.2)
   excluded <- unique(c(not_latossolic, pass_layers(pl), pass_layers(gl),
-                       pass_layers(bn), films_over))
+                       pass_layers(bn), films_over, ki_over))
   cand <- setdiff(cand, excluded)
 
   tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
@@ -810,6 +818,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
     max_cec_used = max_cec_per_clay,
     B_textural   = B_textural,
     films_above_few_and_weak = films_over,
+    ki = ki, ki_above_2_2 = ki_over,
     excluded_by  = list(plintico = pl, gleyic = gl, B_nitico = bn)))
 
   # the morphological mode: a "Bw" or "Bo" of a tropical profile

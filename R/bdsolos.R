@@ -120,6 +120,11 @@
   # column was dropped.
   fe_dcb_pct        = "(cdb_ferro|ferro_dcb|fe_dcb)",
   fe2o3_sulfuric_pct = "(^ataque_sulfurico_fe2o3$)",
+  # v0.9.243: "Ataque sulfurico - SiO2" and "- Al2O3" (g/kg), from which the
+  # Ki index is computed (compute_ki). The export has a Ki column of its own,
+  # which the computed index reproduces.
+  sio2_sulfuric_pct  = "(^ataque_sulfurico_sio2$)",
+  al2o3_sulfuric_pct = "(^ataque_sulfurico_al2o3$)",
   fe_ox_pct         = "(oxalato_de_amonio_ferro)",
   al_ox_pct         = "(oxalato_de_amonio_aluminio)",
   si_ox_pct         = "(oxalato_de_amonio_silica)",
@@ -479,6 +484,12 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' goes to \code{fe_ox_pct}. All three are converted from g/kg to \%.
 #' Until v0.9.220 the sulfuric Fe2O3 filled \code{fe_dcb_pct}, unconverted.
 #'
+#' Silica and alumina (v0.9.243): \code{"Ataque sulfurico - SiO2"} and
+#' \code{"- Al2O3"} go to \code{sio2_sulfuric_pct} and
+#' \code{al2o3_sulfuric_pct}, converted from g/kg to \%. The Ki index
+#' (molecular SiO2 / Al2O3), which SiBCS asks of the B latossolico, is
+#' computed from them; it reproduces the Ki column of the export.
+#'
 #' Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
 #' export quotes every field, and its free-text fields hold line breaks and,
 #' in some states, quotation marks of their own; \code{read.csv2} returns
@@ -752,7 +763,8 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       }
       # v0.9.221: BDsolos reports the iron determinations in g/kg ("CDB -
       # Ferro (g/kg)", "Ataque sulfurico - Fe2O3"); soilKey stores %.
-      if (sk %in% c("fe_dcb_pct", "fe_ox_pct", "fe2o3_sulfuric_pct") &&
+      if (sk %in% c("fe_dcb_pct", "fe_ox_pct", "fe2o3_sulfuric_pct",
+                    "sio2_sulfuric_pct", "al2o3_sulfuric_pct") &&
             grepl("(g_kg|^ataque_sulfurico|^cdb_)", raw_norm)) {
         val <- val / 10  # g/kg -> %
       }
