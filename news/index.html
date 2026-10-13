@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.235</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.236</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.236" id="soilkey-09236-2026-10-12">soilKey 0.9.236 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09236-2026-10-12"></a></h2>
+<div class="section level3">
+<h3 id="html-report-the-evidence-grade-badge-has-its-colour-again-0-9-236">HTML report: the evidence-grade badge has its colour again<a class="anchor" aria-label="anchor" href="#html-report-the-evidence-grade-badge-has-its-colour-again-0-9-236"></a></h3>
+<p>The report colours the evidence grade of each classification with a class of its own (<code>grade grade-a</code> to <code>grade grade-d</code>), given by an internal <code>.grade_class()</code>. 0.9.231 added an internal function of the same name, to read the grade of a soil structure (“Fraca”, “moderate”), in a file that is loaded later. It replaced the report’s function, and from 0.9.231 to 0.9.235 every badge was written with <code>class="NA"</code>: the letter was there, without its colour. The report was otherwise unaffected, and no classification changed.</p>
+<ul><li>The reader of field grades is now <code>.field_grade_class()</code>; the report has its <code>.grade_class()</code> back.</li>
+<li>A new test parses the package sources and fails when a name is defined twice. Files are loaded in alphabetical order, and a second definition replaces the first without a word; this was the only such name among 1,343.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.235" id="soilkey-09235-2026-10-12">soilKey 0.9.235 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09235-2026-10-12"></a></h2>
 <div class="section level3">

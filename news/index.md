@@ -1,5 +1,25 @@
 # Changelog
 
+## soilKey 0.9.236 (2026-10-12)
+
+### HTML report: the evidence-grade badge has its colour again
+
+The report colours the evidence grade of each classification with a
+class of its own (`grade grade-a` to `grade grade-d`), given by an
+internal `.grade_class()`. 0.9.231 added an internal function of the
+same name, to read the grade of a soil structure (“Fraca”, “moderate”),
+in a file that is loaded later. It replaced the report’s function, and
+from 0.9.231 to 0.9.235 every badge was written with `class="NA"`: the
+letter was there, without its colour. The report was otherwise
+unaffected, and no classification changed.
+
+- The reader of field grades is now `.field_grade_class()`; the report
+  has its `.grade_class()` back.
+- A new test parses the package sources and fails when a name is defined
+  twice. Files are loaded in alphabetical order, and a second definition
+  replaces the first without a word; this was the only such name among
+  1,343.
+
 ## soilKey 0.9.235 (2026-10-12)
 
 ### SiBCS key: the variegated colours and the colours of the mottles are read in the depth rule of Plintossolos
