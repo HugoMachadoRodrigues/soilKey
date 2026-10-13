@@ -76,9 +76,27 @@ neossolo <- function(pedon) {
   plint_dentro_40 <- isTRUE(horizonte_plintico(pedon)$passed) &&
                        any(h$top_cm[horizonte_plintico(pedon)$layers] <= 40,
                               na.rm = TRUE)
-  vert_below_a <- isTRUE(horizonte_vertico(pedon)$passed) &&
-                    any(h$top_cm[horizonte_vertico(pedon)$layers] <= 50,
-                           na.rm = TRUE)
+  # v0.9.252: "c) Ausencia de horizonte vertico imediatamente abaixo de
+  # horizonte A" (Cap 4, p. 112). A vertic horizon that begins within 50 cm
+  # was tested, whatever lay between it and the A. Decided on 2026-10-13: the
+  # first vertic layer has to be right below an A; the horizons of transition
+  # from the A (AB, AC) count with the A, as they do in the thickness of the
+  # A chernozemico (p. 51). A vertic horizon that begins at the surface is
+  # there too. A profile with no horizon designation is tested as before.
+  vh <- horizonte_vertico(pedon)
+  vert_below_a <- FALSE
+  if (isTRUE(vh$passed) && length(vh$layers) > 0L) {
+    dmv <- .desg_master(h$designation)
+    if (all(is.na(dmv) | !nzchar(dmv))) {
+      vert_below_a <- any(h$top_cm[vh$layers] <= 50, na.rm = TRUE)
+    } else {
+      o     <- order(h$top_cm)
+      first <- vh$layers[which.min(h$top_cm[vh$layers])]
+      pos   <- match(first, o)
+      above <- if (!is.na(pos) && pos > 1L) dmv[o[pos - 1L]] else NA_character_
+      vert_below_a <- isTRUE(pos == 1L) || (!is.na(above) && grepl("^A", above))
+    }
+  }
   chern_calc <- isTRUE(horizonte_A_chernozemico(pedon)$passed) &&
                   (isTRUE(carater_carbonatico(pedon)$passed) ||
                      isTRUE(horizonte_calcico(pedon)$passed))
