@@ -1,3 +1,66 @@
+# soilKey 0.9.256 (2026-10-13)
+
+## SiBCS key: more marks of the older notation of horizons
+
+Since 0.9.250 the "A2" of a profile written in the notation in use until
+1988 is read as the E of today, and its "B3" as the BC. The profile was known
+to be in that notation by a B followed at once by a number ("B1", "B21t") or
+by a "(B)". A podzol described "A1, A21, A22, Bhir" has neither: its A2 was
+read as a part of the A, and with no E above it its Bhir was no B espódico by
+item (a) of the book (0.9.255).
+
+Decided on 2026-10-13: three more marks.
+
+* An A or a C followed at once by two figures ("A11", "A12", "A21", "C11").
+  The older notation numbers the parts of a horizon after the figure of the
+  horizon; the present one counts them from 1 after the letters.
+* The suffix "ir" in a B ("Bir", "Bhir", "B2ir"), the illuvial iron that is
+  written "s" today.
+* The suffix "pl" in a B or a C ("Bpl", "B21pl", "Cpl"), the plinthite that
+  is written "f" today.
+
+**The suffix "cn" of the concretions is not a mark.** It was measured with
+the other three and is found in profiles otherwise written in the present
+notation: GO 12592, a Latossolo Vermelho described "A1, A2, AB, BA, Bw1,
+Bw2, BC, C1, Ccn, C2", whose A2 has 43% of clay and 1.6% of organic carbon
+and is the second part of the A, would have had it read as an E and left its
+order.
+
+Like the correspondence of the A2 and of the B3 itself, these marks are not
+in SiBCS 2018, which gives the present notation only.
+
+### Measured
+
+National BDsolos export. 154 of its 7,694 classified profiles are newly taken
+for the older notation (116 by the two figures, 16 by "ir", 31 by "pl"); 34
+of them have an A2 or a B3 to read.
+
+Of the 7,593 with a reference order:
+
+| | 0.9.255 | 0.9.256 |
+|---|---|---|
+| default mode | 4,022 (53.0%) | 4,029 (53.1%) |
+| morphological mode | 4,967 (65.4%) | 4,967 (65.4%) |
+| complete profiles, default | 2,918 of 4,674 (62.4%) | 2,925 (62.6%) |
+| complete profiles, morphological | 3,313 (70.9%) | 3,313 (70.9%) |
+
+Default mode: 9 profiles change order; 7 reach their reference and none
+leaves it. The 7 are Espodossolos keyed Neossolos, Gleissolos, Argissolos
+and Planossolos, whose E is now seen above the B (AM 10913: A1, A21, A22,
+Bhir; MG 8112: A1, A2, Bh, Bhir; PB 7844: A1, A2, Bp, Bhir). Reference
+Espodossolos keyed so: 23 to 30 of 98. Two go from one other order to
+another: DF 7017, a Podzol Hidromórfico whose Bh has 0.1% of organic carbon,
+and PA 10278, a Plintossolo "A1, A2, A3, Bpl", both to Argissolos.
+
+Morphological mode: no profile changes its order or its name. That mode
+already read the B espódico of these profiles from the "h" and the "ir" of
+its designation.
+
+Panel of complete profiles (781): 435 to 437 in the default mode, two
+Espodossolos keyed Argissolos and Planossolos; 514 unchanged in the
+morphological. FEBR (1,000): 376 and 501, unchanged. Redape (94): 79 and 84,
+unchanged. The 44 canonical profiles are identical in the three systems.
+
 # soilKey 0.9.255 (2026-10-13)
 
 ## SiBCS key: item (a) of the B espódico
