@@ -22,13 +22,10 @@ The requirements of the book that the data of a profile can show
 
 - it "nao apresenta caracteristicas diagnosticas de horizontes glei, B
   textural, B nitico e plintico": the layers of a
-  [`B_textural`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md),
-  of a horizonte glei, of a horizonte plintico and of a
+  [`B_textural`](https://hugomachadorodrigues.github.io/soilKey/reference/B_textural.md)
+  are no B latossolico, and a plinthic or gleyic horizon or a
   [`B_nitico`](https://hugomachadorodrigues.github.io/soilKey/reference/B_nitico.md)
-  are no B latossolico. Since v0.9.249 they take out their own layers
-  only: until then the glei and the plinthic horizon were those of WRB
-  (gleyic properties, plinthic horizon), and one of them, or a B nitico,
-  anywhere in the profile voided the B latossolico of the whole profile.
+  in the profile excludes it, as before.
 
 Where the designations are recorded, only B horizons are candidates: the
 B latossolico is a subsurface horizon below the A. Items (a) structure,
