@@ -1,3 +1,89 @@
+# soilKey 0.9.244 (2026-10-13)
+
+## SiBCS key: the mudança textural abrupta and the B plânico as the book states them
+
+`mudanca_textural_abrupta()` was the WRB abrupt textural difference under
+another name: every pair of adjoining layers was compared, in the order of the
+rows, and no distance was asked. A jump of clay between two B horizons, or
+from a B to a C, was an abrupt change, and `B_planico()` took any layer with
+such a jump for the B plânico.
+
+The book (SiBCS 2018, Cap. 1, p. 30-31): the mudança textural abrupta is "um
+considerável aumento no teor de argila em pequena distância na zona de
+transição entre o horizonte A ou E e o horizonte subjacente B", twice the
+clay when the A or E has less than 200 g/kg and 200 g/kg more otherwise, "em
+uma distância vertical ≤ 7,5 cm". And the B plânico (Cap. 2, p. 65) is "um
+tipo especial de horizonte B textural [...] subjacente a horizontes A ou E,
+apresentando mudança textural abrupta ou transição abrupta associada à
+relação textural com valor dentro do especificado para o horizonte B textural
+(subitem h), porém calculado entre o primeiro sub-horizonte B e o horizonte
+imediatamente acima (A ou E)".
+
+* **Mudança textural abrupta.** The first B horizon is compared with the
+  horizon immediately above it, which has to be an A or an E. The distance
+  is read from the distinctness of the transition, which the BDsolos loader
+  brings since 0.9.241: abrupt or clear is within 7.5 cm, gradual or diffuse
+  is not; where it is not recorded the two horizons are compared. The
+  subgroups that ask for the attribute ("abrúpticos") read it the same way.
+* **B plânico.** It is looked for in the first B sub-horizon, by one of the
+  two ways of the book: the mudança textural abrupta, or a transition
+  recorded as abrupt with the clay of that sub-horizon over the clay of the
+  horizon above beyond the limit of item (h) (1.50, 1.70 or 1.80). The second
+  way was not tested.
+* **Its texture.** As a type of B textural, that sub-horizon has a texture
+  francoarenosa or finer (p. 54). The WRB property asked 15% of clay of the
+  lower layer; the attribute of the book asks none, and without the texture
+  the sandy Bh of 9 reference Espodossolos, 2 to 7% of clay below an E with
+  0 to 3%, was a B plânico in the default mode.
+* **Where the colour and the structure are asked.** In that first
+  sub-horizon, as decided on 2026-10-13. Measured before the texture was
+  asked: of any B sub-horizon, 216 profiles keyed Planossolos with 122 of
+  that reference; of the first, 178 with 109.
+* Item (g) of the B textural reads the transition by the same function.
+
+The first B sub-horizon is the first horizon whose designation begins with B,
+a BA or the B1 of the old notation included, as in item (h), which leaves out
+of the B only the BC. The other reading, with those as the horizon above, was
+measured: the B plânico changes in 20 profiles, 6 reference Planossolos lose
+it and 1 gains it.
+
+A profile with no horizon designation at all is tested as before. The WRB
+`abrupt_textural_difference()` is not changed.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.243 | 0.9.244 |
+|---|---|---|
+| default mode | 3,929 (51.7%) | 3,938 (51.9%) |
+| morphological mode | 4,817 (63.4%) | 4,828 (63.6%) |
+
+Default mode: 50 profiles change order, 24 reach their reference, 15 leave
+it and 11 go from one wrong order to another. Reference Planossolos agreed
+98 to 109 of 291; profiles keyed Planossolos 153 (98 of that reference) to
+169 (109).
+
+The 15 that leave their reference:
+
+* 7 reference Planossolos. In 4 the jump of clay is inside the B, below its
+  first sub-horizon; in 2 the transition where the jump is was recorded as
+  gradual; in 1 the first B sub-horizon has no colour recorded.
+* 6 reference Luvissolos and 2 reference Argissolos, now with a B plânico.
+  In 4 by the second way (abrupt transition and the ratio of item h); in 3
+  the B begins at 6 to 8 cm, and the WRB property asked the lower layer to
+  begin at 10 cm or below; in 1 the B has 7% of clay and 32% of silt.
+  All have the colours and the structure of the definition.
+
+The fourth level changes in 157 profiles that keep their first three, by the
+attribute of the "abrúpticos".
+
+Morphological mode: 41 change, 24 to their reference and 13 from it.
+Panel of complete profiles (781): 416 to 419 and 502 to 506. FEBR (1,000):
+376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile
+changes. The 44 canonical profiles keep their class in the three systems, in
+both modes.
+
 # soilKey 0.9.243 (2026-10-13)
 
 ## SiBCS key: the B latossólico is asked for its Ki

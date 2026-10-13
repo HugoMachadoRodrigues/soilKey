@@ -166,7 +166,8 @@ test_that("v0.9.90: BDsolos RJ Argissolo recall lifts past 175 with engine=aqp",
                       sampling_type = NULL)))
   expect_equal(cf["Argissolos","Argissolos"],
                res_def$per_system$sibcs$confusion["Argissolos","Argissolos"])
-  expect_equal(cf["Argissolos","Argissolos"], 168L)
+  # v0.9.244: 169, with profile 12692 no longer keyed Planossolos.
+  expect_equal(cf["Argissolos","Argissolos"], 169L)
   # Order accuracy must lift past 46% (we observed 46.6% in audit; 60.1% at
   # v0.9.241, with the B latossolico of the "aqp" engine).
   expect_gte(res$per_system$sibcs$accuracy, 0.46)

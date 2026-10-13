@@ -596,14 +596,7 @@ B_textural <- function(pedon, ...) {
   # below (abrupt, under 2.5 cm; clear, 2.5 to 7.5 cm); where it is recorded
   # as gradual or diffuse there is no abrupt change, and where it is not
   # recorded the two layers are compared.
-  item_g <- FALSE
-  if (!is.na(up) && (is_a[up] || is_e[up]) &&
-        !is.na(h$clay_pct[up]) && !is.na(h$clay_pct[b[1]])) {
-    jump <- if (h$clay_pct[up] < 20) h$clay_pct[b[1]] >= 2 * h$clay_pct[up]
-            else h$clay_pct[b[1]] - h$clay_pct[up] >= 20
-    within <- .boundary_within_7_5_cm(h$boundary_distinctness[up])
-    item_g <- jump && !isFALSE(within)
-  }
+  item_g <- isTRUE(.mudanca_abrupta_a_b(h)$passed)
 
   # (f) an E horizon above the B
   item_f <- FALSE
@@ -1152,10 +1145,30 @@ B_espodico <- function(pedon, ...) {
 }
 
 
-#' Horizonte B planico (SiBCS Cap 2, p 65-66; v0.7)
+#' Horizonte B planico (SiBCS Cap 2, p 65-66)
 #'
-#' Tipo especial de B textural com mudanca textural abrupta +
-#' permeabilidade lenta + cores neutras/escurecidas + cromas baixos.
+#' "E um tipo especial de horizonte B textural, com ou sem carater sodico,
+#' subjacente a horizontes A ou E, apresentando mudanca textural abrupta ou
+#' transicao abrupta associada a relacao textural com valor dentro do
+#' especificado para o horizonte B textural (subitem h), porem calculado entre
+#' o primeiro sub-horizonte B e o horizonte imediatamente acima (A ou E)".
+#'
+#' Since v0.9.244 the horizon is looked for where the book puts it, in the
+#' first B sub-horizon, below an A or an E, by one of the two:
+#' \itemize{
+#'   \item a \code{\link{mudanca_textural_abrupta}} from the A or E to it; or
+#'   \item a transition recorded as abrupt (\code{boundary_distinctness}) with
+#'         a ratio of its clay to that of the horizon above over the limit of
+#'         item (h) of the B textural (1.50, 1.70 or 1.80).
+#' }
+#' As a type of B textural, that sub-horizon has a texture francoarenosa or
+#' finer (p. 54): one known to be coarser is no B planico, whatever its clay
+#' over that of the E. The structure and the colours below are asked of that
+#' first sub-horizon.
+#' Until v0.9.243 any layer with a jump of clay over the layer above it could
+#' be the B planico, the second way was not tested, and the structure and the
+#' colours were asked of the layer with the jump. A profile with no horizon
+#' designation at all is still tested that way.
 #'
 #' The structure (p. 65): "Apresenta estrutura prismatica, colunar ou em
 #' blocos angulares e subangulares grandes ou medios e, as vezes, estrutura
@@ -1181,6 +1194,9 @@ B_espodico <- function(pedon, ...) {
 B_planico <- function(pedon) {
   h <- pedon$horizons
   abrupt <- mudanca_textural_abrupta(pedon)
+  described <- any(!is.na(h$designation) &
+                     nzchar(trimws(as.character(h$designation))))
+  ab <- if (described) .mudanca_abrupta_a_b(h) else NULL
   b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
   cor_ok <- integer(0)
   cor_item <- character(0)
@@ -1216,13 +1232,35 @@ B_planico <- function(pedon) {
   # v0.9.238: the structure the definition describes, where it is recorded
   estrutura_ok <- b_layers[.b_planico_structure_ok(h$structure_type[b_layers],
                                                     h$structure_size[b_layers])]
-  layers_pass <- intersect(intersect(abrupt$layers %||% integer(0), cor_ok),
-                           estrutura_ok)
+  texture_ok <- NA
+  if (!described) {
+    layers_pass <- intersect(intersect(abrupt$layers %||% integer(0), cor_ok),
+                             estrutura_ok)
+    by_ratio <- FALSE
+  } else {
+    # the first B sub-horizon, below an A or an E: an abrupt textural change,
+    # or an abrupt transition with the textural ratio of item (h)
+    by_ratio <- isTRUE(ab$abrupt_transition) && is.finite(ab$ratio) &&
+      ab$ratio > ab$ratio_limit
+    # "um tipo especial de horizonte B textural", which has a texture
+    # francoarenosa or finer: the sandy Bh below the E of an Espodossolo,
+    # 4% of clay over 1%, has twice the clay and is none
+    if (!is.na(ab$first_b))
+      texture_ok <- !isFALSE(.francoarenosa_or_finer(h$silt_pct[ab$first_b],
+                                                     h$clay_pct[ab$first_b]))
+    first_b <- if (!is.na(ab$above) && texture_ok &&
+                     (isTRUE(ab$passed) || by_ratio))
+      ab$first_b else integer(0)
+    layers_pass <- intersect(intersect(first_b, cor_ok), estrutura_ok)
+  }
   passed <- length(layers_pass) > 0L
   DiagnosticResult$new(
     name = "B_planico", passed = passed,
     layers = layers_pass,
-    evidence = list(abrupt = abrupt, cor_ok = cor_ok, cor_item = cor_item,
+    evidence = list(abrupt = abrupt, transition = ab,
+                     abrupt_transition_with_ratio = by_ratio,
+                     texture_ok = texture_ok,
+                     cor_ok = cor_ok, cor_item = cor_item,
                      estrutura_ok = estrutura_ok),
     missing = abrupt$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 65-66"
