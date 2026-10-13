@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.248</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.250</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,76 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.250" id="soilkey-09250-2026-10-13">soilKey 0.9.250 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09250-2026-10-13"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-in-a-profile-of-the-older-notation-the-a2-is-the-e-and-the-b3-is-the-bc-0-9-250">SiBCS key: in a profile of the older notation the A2 is the E and the B3 is the BC<a class="anchor" aria-label="anchor" href="#sibcs-key-in-a-profile-of-the-older-notation-the-a2-is-the-e-and-the-b3-is-the-bc-0-9-250"></a></h3>
+<p>The notation in use in Brazil until 1988 named the eluvial horizon “A2” and the horizon of transition from the B to the C “B3”; the present notation writes them “E” and “BC”. The book asks about both by their present names: an E above the B makes a B textural (SiBCS 2018, Cap. 2, p. 55, item f), and the BC is left out of the B in the textural ratio (p. 56, note 4). The key read the A2 as an A and the B3 as a B.</p>
+<p>Decided on 2026-10-13: both are read by what they name.</p>
+<ul><li>A profile is taken to be in the older notation when one of its horizons is a B followed at once by a number (“B1”, “B21t”, “IIB3”) or a “(B)”. In the present notation the number comes after the letters (“Bt1”), and “A1, A2” beside “Bt1, Bt2” stay two parts of an A. Of the 7,593 profiles of the national BDsolos export with a reference order, 3,167 are in the older notation; 250 of them have an A2 and 853 a B3.</li>
+<li>In such a profile “A2”, “A21” and “B3t” are read “E”, “E1” and “BCt”, by every test of the SiBCS key that reads a designation. The horizon data keep the designation as written, and WRB and USDA are not changed.</li>
+</ul><p>That the A2 is the eluvial horizon and the B3 the transition to the C is the notation as I know it from the surveys; SiBCS 2018 does not state the correspondence, and it is for confirmation.</p>
+<div class="section level4">
+<h4 id="measured-0-9-250">Measured<a class="anchor" aria-label="anchor" href="#measured-0-9-250"></a></h4>
+<p>National BDsolos export, 7,593 profiles with a reference order:</p>
+<table class="table"><thead><tr><th></th>
+<th>0.9.249</th>
+<th>0.9.250</th>
+</tr></thead><tbody><tr><td>default mode</td>
+<td>3,984 (52.5%)</td>
+<td>3,993 (52.6%)</td>
+</tr><tr><td>morphological mode</td>
+<td>4,953 (65.2%)</td>
+<td>4,956 (65.3%)</td>
+</tr><tr><td>complete profiles, default</td>
+<td>2,882 of 4,674 (61.7%)</td>
+<td>2,890 (61.8%)</td>
+</tr><tr><td>complete profiles, morphological</td>
+<td>3,301 (70.6%)</td>
+<td>3,304 (70.7%)</td>
+</tr></tbody></table><p>Default mode: 45 profiles change order, 18 reach their reference, 9 leave it and 18 go from one wrong order to another.</p>
+<ul><li>The A2 read as E, measured alone on 0.9.247: 22 profiles change, 14 reach their reference and none leaves it. They are mostly reference Argissolos that keyed Latossolos or Neossolos, with an eluvial horizon above a B whose clay does not make the ratio of item (h).</li>
+<li>The B3 read as BC, measured alone: 24 change, 5 reach their reference and 9 leave it. The 9 are reference Argissolos whose B3 has more clay than their B2: without it the mean of the B no longer makes the ratio, and 8 of them have no cerosidade recorded.</li>
+</ul><p>The lower levels change in 67 profiles that keep their order.</p>
+<p>Morphological mode: 27 change, 11 to their reference and 8 from it.</p>
+<p>Panel of complete profiles (781): 431 to 432 and 516 to 517. FEBR (1,000): 376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile changes. The 44 canonical profiles keep their class in the three systems, in both modes.</p>
+</div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.249" id="soilkey-09249-2026-10-13">soilKey 0.9.249 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09249-2026-10-13"></a></h2>
+<div class="section level3">
+<h3 id="sibcs-key-the-horizons-the-b-latossólico-does-not-present-take-out-their-own-layers-0-9-249">SiBCS key: the horizons the B latossólico does not present take out their own layers<a class="anchor" aria-label="anchor" href="#sibcs-key-the-horizons-the-b-latoss%C3%B3lico-does-not-present-take-out-their-own-layers-0-9-249"></a></h3>
+<p>The book (SiBCS 2018, Cap. 2, p. 59): “o horizonte B latossólico é um horizonte subsuperficial que não apresenta características diagnósticas de horizontes glei, B textural, B nítico e plíntico”. The sentence is about the horizon. <code><a href="../reference/B_latossolico.html">B_latossolico()</a></code> voided the B latossólico of the whole profile when one of three things was found in any layer: the gleyic properties of WRB (mottles of 5% or more in a layer that begins within 50 cm), the plinthic horizon of WRB, or a B nítico.</p>
+<p>Decided on 2026-10-13: those horizons take out their own layers only.</p>
+<ul><li>The layers of a horizonte glei, of a horizonte plíntico and of a B nítico, as SiBCS defines them, are no part of the B latossólico, with those of the B textural, which were already left out. The layers that are left make the horizon if they make its 50 cm.</li>
+<li>Mottles alone make no horizonte glei, so that a red B with common mottles keeps its B latossólico.</li>
+<li>
+<code>latossolo()</code> applies to the B nítico the rule it applied to the B textural (Cap. 4, p. 110): a B latossólico below a B nítico makes no Latossolo.</li>
+</ul><div class="section level4">
+<h4 id="measured-0-9-249">Measured<a class="anchor" aria-label="anchor" href="#measured-0-9-249"></a></h4>
+<p>National BDsolos export, 7,593 profiles with a reference order:</p>
+<table class="table"><thead><tr><th></th>
+<th>0.9.248</th>
+<th>0.9.249</th>
+</tr></thead><tbody><tr><td>default mode</td>
+<td>3,969 (52.3%)</td>
+<td>3,984 (52.5%)</td>
+</tr><tr><td>morphological mode</td>
+<td>4,922 (64.8%)</td>
+<td>4,953 (65.2%)</td>
+</tr><tr><td>complete profiles, default</td>
+<td>2,866 of 4,674 (61.3%)</td>
+<td>2,882 (61.7%)</td>
+</tr><tr><td>complete profiles, morphological</td>
+<td>3,274 (70.0%)</td>
+<td>3,301 (70.6%)</td>
+</tr></tbody></table><p>Default mode: 41 profiles change order, all of them to Latossolos. 17 reach their reference (Latossolos that keyed Neossolos, 9, and Cambissolos, 8), 2 leave it (reference Cambissolos) and 22 go from one wrong order to another: 12 reference Argissolos, 6 Plintossolos, 2 Cambissolos and 2 Gleissolos that keyed Neossolos or Cambissolos. Of the profiles keyed Latossolos, 72.4% had that reference before (1,007 of 1,391) and 71.5% now (1,024 of 1,432).</p>
+<p>Morphological mode: 48 change, 35 reach their reference (30 Latossolos, 5 Plintossolos) and 4 leave it. Two of the four are reference Latossolos “plíntico” whose layer written “p1” is no longer part of the B latossólico, which leaves 30 and 40 cm of it (GO 6062, PA 8626).</p>
+<p>Panel of complete profiles (781): 428 to 431 and 511 to 516. FEBR (1,000): 376 and 501, confusion matrices identical. Redape (94): 77 and 84, no profile changes. The 44 canonical profiles keep their class in the three systems, in both modes.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.248" id="soilkey-09248-2026-10-13">soilKey 0.9.248 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09248-2026-10-13"></a></h2>
 <div class="section level3">
