@@ -1,3 +1,51 @@
+# soilKey 0.9.243 (2026-10-13)
+
+## SiBCS key: the B latossólico is asked for its Ki
+
+The book (SiBCS 2018, Cap. 2, p. 59, item e) asks of the B latossólico a
+"Relação molecular SiO2/Al2O3 (Ki) igual ou inferior a 2,2, sendo normalmente
+menor que 2,0", and tells the B incipiente from it by a Ki "maior que 2,2"
+(p. 61). The item was not tested. The profile schema has the silica and the
+alumina of the sulfuric attack, from which `compute_ki()` gives the index,
+but the BDsolos loader did not read them, although the export records them in
+71% of its rows.
+
+* `load_bdsolos_csv()` reads "Ataque sulfúrico - SiO2" and "- Al2O3" into
+  `sio2_sulfuric_pct` and `al2o3_sulfuric_pct`, converted from g/kg to %. The
+  index computed from them reproduces the Ki column of the export (99.1% of
+  the rows of one state within 0.05).
+* In `B_latossolico()` a layer whose Ki is recorded above 2.20 is no
+  B latossólico. The horizon is what is left: the adjoining sub-horizons that
+  meet every requirement still have to make 50 cm. Where the sulfuric attack
+  is not recorded the horizon is tested as before.
+
+The limit is read as written and by sub-horizon, as decided on 2026-10-13
+after the alternatives were measured (the limit at one decimal, so that 2.24
+counts as 2.2, cost 16 profiles where this costs 23).
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.242 | 0.9.243 |
+|---|---|---|
+| default mode | 3,952 (52.0%) | 3,929 (51.7%) |
+| morphological mode | 4,844 (63.8%) | 4,817 (63.4%) |
+
+**The agreement goes down, and it is the book that takes it down.** In the
+default mode 83 profiles lose their B latossólico: 34 reference Latossolos
+(1,041 agreed before, 1,007 now), of which 16 have every B sub-horizon above
+2.2 and 18 have one that breaks the 50 cm; 11 reference Cambissolos reach
+their order (394 to 405); the other 38 go from one wrong order to another (29 of them
+reference Argissolos that were keyed Latossolos). Of the
+profiles keyed Latossolos, 70.6% had that reference before (1,041 of 1,474)
+and 72.4% now (1,007 of 1,391).
+
+Panel of complete profiles (781): 418 to 416 in the default mode and 504 to
+502 in the morphological mode. FEBR (1,000: 376 and 501, confusion matrices
+identical) and Redape (94: 77 and 84, no profile changes) do not change. The
+44 canonical profiles keep their class in the three systems, in both modes.
+
 # soilKey 0.9.242 (2026-10-13)
 
 ## BDsolos: the loader reads the kind of sampling point, and the benchmark reports by it

@@ -223,13 +223,16 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # v0.9.241: reference Argissolos of RJ whose relacao textural is below item
   # (h) and that record no cerosidade of item (i) have no B textural by the
   # data: agreed 174 -> 168, keyed Latossolos 5 -> 1, Neossolos 44 -> 54.
-  expect_equal(conf["Argissolos","Latossolos"], 1L)
+  # v0.9.243: the B latossolico is asked for its Ki. Profile 14713, a
+  # reference Argissolo that was keyed Latossolos, has a Ki above 2.2 in its B
+  # and is keyed Neossolos (1 -> 0, and 54 -> 55 below).
+  expect_equal(conf["Argissolos","Latossolos"], 0L)
   expect_equal(conf["Argissolos","Argissolos"], 168L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
   # passes and it goes from Nitossolos to Neossolos (43 -> 44, 9 -> 8).
-  expect_equal(conf["Argissolos","Neossolos"], 54L)
+  expect_equal(conf["Argissolos","Neossolos"], 55L)
   expect_equal(conf["Argissolos","Nitossolos"], 8L)
 })
 
