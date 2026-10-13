@@ -45,6 +45,18 @@ Silica and alumina (v0.9.243): \code{"Ataque sulfurico - SiO2"} and
 (molecular SiO2 / Al2O3), which SiBCS asks of the B latossolico, is
 computed from them; it reproduces the Ki column of the export.
 
+Text of the horizon description (v0.9.245): the column
+\code{"Descricao Original"} holds the field description of each horizon
+as the survey wrote it. Two things are read from it where the structured
+columns are empty, and the text itself is not kept: the amount of
+slickensides written beside the term (\code{"''slickenside'' comum e
+moderado"} fills \code{slickensides} with \code{"Comum"}; a mention with
+no amount fills nothing), and a wedge-shaped or parallelepipedic
+structure (\code{"cuneiforme"}, \code{"paralelepipedica"}, added to
+\code{structure_type}; a structure "com tendencia a paralelepipedica" is
+not one). SiBCS knows the vertic horizon by these two features, and the
+surveys that predate the structured sheet describe them only there.
+
 Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
 export quotes every field, and its free-text fields hold line breaks and,
 in some states, quotation marks of their own; \code{read.csv2} returns

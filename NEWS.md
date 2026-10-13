@@ -1,3 +1,88 @@
+# soilKey 0.9.245 (2026-10-13)
+
+## SiBCS key: the vertic horizon by the features of the book, read also from the text of the description
+
+Of the 72 profiles of the national BDsolos export with a reference in
+Vertissolos, 10 keyed there in the default mode. The book (SiBCS 2018, Cap. 2,
+p. 73) knows the vertic horizon by "superfícies de fricção (slickensides) em
+quantidade no mínimo comum, e/ou unidades estruturais cuneiformes e/ou
+paralelepipédicas", asks of it "uma espessura mínima de 20 cm", and gives it
+"precedência diagnóstica sobre os horizontes B incipiente, B nítico e glei".
+`horizonte_vertico()` was the WRB horizon with other limits: slickensides
+only, and 20 cm of one layer. And the surveys older than the structured
+field sheet wrote the slickensides and the structure in the text of the
+horizon, which the loader did not read.
+
+* **The loader reads the text of the horizon description.** The column
+  "Descrição Original" of the export is read for two things, where the
+  structured columns are empty, and is not kept. The amount of slickensides
+  is the one written beside the term ("''slickenside'' comum e moderado",
+  "abundantes superfícies de fricção"); a mention with no amount fills
+  nothing, as decided on 2026-10-13, and neither does an amount that belongs
+  to another feature ("cerosidade forte e abundante apresentando
+  slickensides") or a comparison ("mais abundantes que o horizonte
+  superior"). A wedge-shaped or parallelepipedic structure is added to the
+  structure of the horizon; a structure "com tendência a paralelepipédica"
+  is not one. The terms are read in the spellings the export has
+  ("slikenside", "silkensides", "paralelepédica"). The reader was checked
+  against every phrase of the export that holds the terms: 127 different
+  ones for the slickensides, 36 for the structure. It reads an amount in
+  212 layers and the structure in 41.
+* **The vertic horizon.** A layer with 300 g/kg of clay or more is vertic by
+  slickensides in amount of common or more, or by wedge-shaped or
+  parallelepipedic structural units, with cracks of 1 cm where their width
+  is recorded; the 20 cm are those of adjoining layers.
+* **Its precedence.** `B_incipiente()` left out the layers of the WRB vertic
+  horizon; it leaves out those of this one.
+* **The Vertissolos step** (Cap. 4, p. 112) asks what its first words ask,
+  a "relação textural insuficiente para identificar um B textural": a
+  profile whose B textural is identified by the textural ratio of item (h)
+  is no Vertissolo. One identified by its cerosidade alone, with a ratio
+  known to be below the limit, is not kept out. Where the ratio cannot be
+  computed, the B textural keeps the profile out.
+* **Item (a) of the step**, "Teor de argila, após mistura e homogeneização
+  do material de solo, nos 20 cm superficiais, de no mínimo 300 g kg-1", is
+  the clay of each layer weighted by what it has within the upper 20 cm.
+  The plain mean of the layers that begin at 20 cm or above was tested.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.244 | 0.9.245 |
+|---|---|---|
+| default mode | 3,938 (51.9%) | 3,969 (52.3%) |
+| morphological mode | 4,828 (63.6%) | 4,854 (63.9%) |
+
+Default mode: 38 profiles change order, 32 reach their reference, 1 leaves
+it and 5 go from one wrong order to another. Reference Vertissolos agreed
+10 to 41 of 72; profiles keyed Vertissolos 16 (10 of that reference) to 50
+(41). Of the 35 that become Vertissolos, all by what the text says: 23 by
+the amount of slickensides alone, 6 by the structure alone, 6 by both.
+
+The one that leaves its reference is a Gleissolo Háplico vertissólico with
+"slickensides moderado e comum" from 60 cm (SE 6459): the step takes a
+vertic horizon that begins within 100 cm, and Vertissolos key before
+Gleissolos.
+
+Morphological mode: 31 change, 27 to their reference and 1 from it, a
+Bruno Não Cálcico with common slickensides from 12 cm and a textural ratio
+of 1.32 (BA 8520). Reference Vertissolos agreed 19 to 45.
+
+Panel of complete profiles (781): 419 to 429 and 506 to 512. FEBR (1,000):
+376 and 501, confusion matrices identical. Redape (94): 77 and 84, no
+profile changes. The 44 canonical profiles keep their class in the three
+systems, in both modes.
+
+### Not changed, and measured
+
+Item (c) of the Neossolos step, "Ausência de horizonte vértico imediatamente
+abaixo de horizonte A", is tested as a vertic horizon that begins within
+50 cm. By the letter, with the first vertic layer right below an A, 14
+profiles change order in the default mode: 10 reference Vertissolos with a
+C or an AC between the A and the first vertic layer go to Neossolos, and no
+profile reaches its reference.
+
 # soilKey 0.9.244 (2026-10-13)
 
 ## SiBCS key: the mudança textural abrupta and the B plânico as the book states them

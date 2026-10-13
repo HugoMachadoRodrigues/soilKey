@@ -108,6 +108,10 @@ neossolo <- function(pedon) {
 #' Horizonte vertico iniciando \\<= 100 cm + clay \\>= 30\% nos 20 cm
 #' superficiais + fendas verticais + ausencia de contato litico /
 #' petrocalcico / duripa nos 30 cm + COLE \\>= 0.06.
+#'
+#' Since v0.9.245 the step also asks what its first words ask, a "relacao
+#' textural insuficiente para identificar um B textural", and the clay of
+#' the upper 20 cm is that of the mixed material (item a).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertissolo <- function(pedon) {
@@ -123,7 +127,16 @@ vertissolo <- function(pedon) {
   h <- pedon$horizons
   vert_top <- min(h$top_cm[v$layers], na.rm = TRUE)
   starts_in_100 <- vert_top <= 100
-  surface_clay <- mean(h$clay_pct[h$top_cm <= 20], na.rm = TRUE)
+  # v0.9.245: "a) Teor de argila, apos mistura e homogeneizacao do material de
+  # solo, nos 20 cm superficiais, de no minimo 300 g kg-1": the clay of each
+  # layer weighted by what it has within the upper 20 cm. The plain mean of
+  # the layers that begin at 20 cm or above was tested, which gave an A of
+  # 12 cm the weight of the B below it, and took a layer that begins at
+  # 20 cm for the surface.
+  within_20 <- pmax(0, pmin(h$bottom_cm, 20) - pmax(h$top_cm, 0))
+  within_20[is.na(within_20) | is.na(h$clay_pct)] <- 0
+  surface_clay <- if (sum(within_20) > 0)
+    sum(h$clay_pct * within_20, na.rm = TRUE) / sum(within_20) else NA_real_
   surface_clay_ok <- !is.na(surface_clay) && surface_clay >= 30
   # Cracks tested via vertic_horizon's internal sub-test
   shallow_30 <- which(!is.na(h$top_cm) & h$top_cm <= 30)
@@ -136,14 +149,31 @@ vertissolo <- function(pedon) {
   # V precedes S in the order cascade, so without this guard a `Btv` Planossolo
   # would flip to Vertissolo once vertic morphology is inferred from the suffix.
   no_b_planico <- !isTRUE(B_planico(pedon)$passed)
-  passed <- starts_in_100 && surface_clay_ok && !has_lithic_petric && no_b_planico
+  # v0.9.245: "Outros solos com relacao textural insuficiente para identificar
+  # um B textural e que apresentam horizonte vertico" (Cap 4, p. 112); the
+  # concept (Cap 3): "pequena variacao textural ao longo do perfil,
+  # insuficiente para caracterizar um horizonte B textural". It is the
+  # textural ratio, item (h) of the B textural, that the step asks about: a
+  # B textural identified by its cerosidade alone, with a ratio known to be
+  # below the limit, does not keep the profile out. Where the ratio cannot
+  # be computed (no clay in the A, or a profile with no horizon designation)
+  # the B textural keeps it out.
+  bt <- B_textural(pedon)
+  ratio <- suppressWarnings(as.numeric(bt$evidence$ratio %||% NA_real_))
+  ratio_insufficient <- length(ratio) == 1L && is.finite(ratio) &&
+    !isTRUE(bt$evidence$item_h)
+  no_b_textural <- !isTRUE(bt$passed) || ratio_insufficient
+  passed <- starts_in_100 && surface_clay_ok && !has_lithic_petric &&
+    no_b_planico && no_b_textural
   DiagnosticResult$new(
     name = "vertissolo", passed = passed, layers = v$layers,
     evidence = list(
       vertico = v, vert_top_cm = vert_top,
       surface_clay_pct = surface_clay,
       no_lithic_petric_in_30 = !has_lithic_petric,
-      no_b_planico = no_b_planico
+      no_b_planico = no_b_planico,
+      no_b_textural = no_b_textural,
+      textural_ratio = ratio
     ),
     missing = v$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 112"
