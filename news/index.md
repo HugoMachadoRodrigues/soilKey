@@ -1,5 +1,144 @@
 # Changelog
 
+## soilKey 0.9.255 (2026-10-13)
+
+### SiBCS key: item (a) of the B espódico
+
+The B espódico (SiBCS 2018, Cap. 2, p. 62-65) is a horizon “com
+acumulação iluvial de compostos organometálicos” that has one or more of
+three characteristics, the first being “a) Um horizonte E (álbico ou
+não) sobrejacente e cores úmidas de acordo com um dos itens a seguir: 1)
+Matiz 5YR ou mais vermelho; 2) Matiz 7,5YR com valor 5 ou menor e croma
+4 ou menor; 3) Matiz 10YR, com valor e croma 3 ou menor; 4) Cores
+neutras com valor 3 ou menor (N 3/)”.
+
+[`B_espodico()`](https://hugomachadorodrigues.github.io/soilKey/reference/B_espodico.md)
+was the spodic horizon of the WRB, which asks for aluminium and iron by
+oxalate, or for a horizon named Bh or Bs under an albic one. The items
+of the book were not tested. The sheets of the Brazilian surveys seldom
+have the oxalate extraction: of the 98 Espodossolos of the BDsolos
+export the default mode keyed 4 as such.
+
+The colours of the item cannot stand alone. “5YR ou mais vermelho” is
+the colour of the B textural of many an Argissolo that lies below an E,
+and the Espodossolos come before the Argissolos in the key; what tells
+the two apart is the illuvial accumulation of the heading, which the
+sheets do not measure. Three ways of asking for it were measured on the
+389 profiles with an E:
+
+| the B, below an E and with a colour of the item, has | default mode | morphological mode |
+|----|----|----|
+| 0.5% of organic carbon or more and a pH under 5.9, the limits of the WRB, which the book cites as its source | 19 reach their reference, 17 leave it | 0 and 18 |
+| 0.5% or more and at least twice that of the E | 18 and 2 | 1 and 2 |
+| the same, with no cerosidade recorded | 18 and 0 | 1 and 0 |
+
+Decided on 2026-10-13: the third. Where the WRB test does not find the
+horizon, a B layer of 2.5 cm or more is a B espódico when
+
+- an E lies above it;
+- its moist colour is one of the four of item (a);
+- its organic carbon is 0.5% or more and at least twice that of the
+  nearest E above it, the form the book gives in item (b)(3) for
+  aluminium and iron by oxalate (“valor 0,50 ou maior, sendo este valor
+  pelo menos o dobro do encontrado no horizonte sobrejacente”); and
+- no cerosidade is recorded in it, which is the mark of illuvial clay.
+
+**This is a reading by analogy, not the letter of the book.** It is so
+stated in the documentation of the function. Items (b) and (c), the
+cementation and the ortstein, are not tested. The reading is the same in
+both modes; the morphological mode goes on reading the designation as
+well.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                  | 0.9.254                | 0.9.255       |
+|----------------------------------|------------------------|---------------|
+| default mode                     | 4,003 (52.7%)          | 4,022 (53.0%) |
+| morphological mode               | 4,966 (65.4%)          | 4,967 (65.4%) |
+| complete profiles, default       | 2,900 of 4,674 (62.0%) | 2,918 (62.4%) |
+| complete profiles, morphological | 3,312 (70.9%)          | 3,313 (70.9%) |
+
+Default mode: 20 profiles change order, all to Espodossolos; 19 reach
+their reference and none leaves it. They were keyed Neossolos (12),
+Gleissolos (3), Planossolos (3) and Argissolos (1): sandy profiles with
+a Bh of massive or single-grain structure (RJ 5339: Bh2 with 3% of clay;
+BA 13385: E of 140 cm over a Bh 10YR 2/2 with 2.4% of organic carbon).
+Reference Espodossolos keyed so: 4 to 23 of 98. Morphological mode,
+where the horizon was already read from its designation: 2 change, 1
+reaches its reference (RJ 13200, a Podzol whose horizon is written
+“B2”); 73 to 74 of 98.
+
+The one profile that goes from one other order to another, in both
+modes: MT 11357, a Plintossolo Pétrico whose “B22cn”, 5YR 6/8, is
+recorded with 3.4% of organic carbon below an “A21cn” with 0.6%.
+
+The three Argissolos abrúpticos that the doubling of the carbon alone
+took (MT 11249, SC 5444, PE 9019: a Bt of 30 to 51% of clay below a
+sandy E) all have cerosidade recorded in that Bt, and stay where they
+were.
+
+Panel of complete profiles (781): 429 to 435 in the default mode, 514
+unchanged in the morphological. FEBR (1,000): 376 and 501, unchanged.
+Redape (94): 77 to 79 in the default mode, two Espodossolos keyed
+Argissolos (PE 022 Igarassu: Ap, E1, E2, Bh, Bhsm; RN 020 Baía Formosa:
+A, AE, E, Bh, Bhs); 84 unchanged in the morphological. The 44 canonical
+profiles are identical in the three systems.
+
+## soilKey 0.9.254 (2026-10-13)
+
+### SiBCS key: an O or H layer recorded upward from the mineral soil is part of the histic horizon
+
+The older descriptions give the organic layers that lie on a mineral
+soil upward from its top: “O 120-0”, or “Hd 110-60” above “Hoj 60-0”,
+over a “Cg 0-10”. With an upper depth greater than the lower one, such a
+layer had a thickness below zero and was never part of the horizonte
+hístico. BDsolos RJ 14357, an Organossolo Háplico whose one layer is “O
+120-0” with 17% of organic carbon, keyed Neossolos.
+
+Decided on 2026-10-13: the layer is counted.
+
+- In `horizonte_histico()` an O or H layer whose upper depth is greater
+  than its lower one lies above the mineral surface, with the thickness
+  between its two figures; layers so recorded adjoin one another and the
+  mineral soil as they are written.
+- The 80 cm of the Organossolos step (0.9.253) are counted from the
+  surface of the soil, the top of the uppermost of those layers.
+- The depths of the profile are not changed, and no other test reads
+  them this way. A layer that is no O or H is not read upward: a mineral
+  horizon with its depths the wrong way round is a slip of the sheet.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                  | 0.9.253                | 0.9.254       |
+|----------------------------------|------------------------|---------------|
+| default mode                     | 4,001 (52.7%)          | 4,003 (52.7%) |
+| morphological mode               | 4,965 (65.4%)          | 4,966 (65.4%) |
+| complete profiles, default       | 2,900 of 4,674 (62.0%) | 2,900 (62.0%) |
+| complete profiles, morphological | 3,313 (70.9%)          | 3,312 (70.9%) |
+
+Three profiles change order, to Organossolos. Two reach their reference:
+RJ 14357 and RJ 5333 (Organossolo Tiomórfico: “Hd 110-60”, “Hoj 60-0”,
+“Cg 0-10”). The third leaves it in the morphological mode and goes from
+one other order to another in the default mode: MG 7435, a Glei Húmico
+with an “O1 44-0” of 8.3% of organic carbon written over an “A 0-20”,
+which may be a slip for “4-0”; as recorded it is 44 cm of organic
+material. Reference Organossolos keyed so: 27 to 29 of 44.
+
+224 profiles of the export have a layer recorded this way; in 172 of
+them it is under 10 cm, the litter over a mineral soil, which is no
+horizonte hístico. In the second level, RJ 13045 and RJ 13091 (“H 30-0”
+over a Cg) get the class their horizonte hístico of 30 cm gives:
+Gleissolos Melânicos, and for RJ 13091 in the default mode, where it
+keys Neossolos, Neossolos Litólicos Hísticos.
+
+Panel of complete profiles (781): 429 and 514, unchanged. FEBR (1,000):
+376 and 501, unchanged. Redape: 77 and 84 of 94, unchanged. The 44
+canonical profiles are identical in the three systems.
+
 ## soilKey 0.9.253 (2026-10-13)
 
 ### SiBCS key: the histic horizon with the whole of its thickness, and the thickness the key asks of it
