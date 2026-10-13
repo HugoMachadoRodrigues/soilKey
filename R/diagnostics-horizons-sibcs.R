@@ -42,6 +42,16 @@
 #' \code{thickness_cm} and \code{on_rock} are those of the thickest horizon
 #' that passes, or of the thickest run when none does.
 #'
+#' Since v0.9.254 an O or H layer whose upper depth is greater than its lower
+#' one ("O 120-0"; "Hd 110-60" above "Hoj 60-0") is read as the older
+#' descriptions record it, upward from the top of the mineral soil: it lies
+#' above the mineral surface and has the thickness between its two figures.
+#' Until v0.9.253 such a layer, of a thickness below zero, was never part of
+#' the horizon. \code{surface_cm} in the evidence is the top of the soil in
+#' the depths of the description: zero, or the top of the uppermost layer
+#' recorded upward (minus 120 for "O 120-0"). The depths of the profile are
+#' not changed, and a layer that is no O or H is not read this way.
+#'
 #' Not tested: the volume of plant tissue is no column of the profile, so the
 #' 40 cm asked where it makes 75\% or more of the horizon (item b) are not
 #' asked; and a layer with 90\% or more of its volume in fragments over 2 mm
@@ -65,7 +75,9 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   is_organic_designation <- !is.na(desg) &
                               grepl("^[OH][a-z]?", desg)
   is_dominantly_organic  <- !is.na(h$oc_pct) & h$oc_pct >= 12
-  top <- h$top_cm; bottom <- h$bottom_cm
+  # v0.9.254: an O or H layer recorded upward from the mineral surface
+  dp <- .histico_depths(h, is_organic_designation)
+  top <- dp$top; bottom <- dp$bottom
   candidates <- which((is_organic_designation | is_dominantly_organic) &
                         !is.na(h$oc_pct) & h$oc_pct >= min_oc_pct &
                         !is.na(top) & !is.na(bottom) & bottom > top)
@@ -112,10 +124,26 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
     evidence = list(thickness_cm = hz$thickness_cm[best],
                      on_rock = hz$on_rock[best],
                      contiguous_layers = layers,
-                     horizons = hz),
+                     horizons = hz,
+                     surface_cm = min(0, top[dp$upward]),
+                     recorded_upward = dp$upward),
     missing = character(0),
     reference = ref
   )
+}
+
+
+#' The depths of the layers as the histic horizon reads them. An O or H layer
+#' whose upper depth is greater than its lower one is recorded upward from the
+#' top of the mineral soil ("O 120-0"): it lies above that surface, from minus
+#' its first figure to minus its second. Every other layer keeps its depths.
+#' Returns \code{top}, \code{bottom} and \code{upward}, the layers read so.
+#' @noRd
+.histico_depths <- function(h, organic) {
+  top <- h$top_cm; bottom <- h$bottom_cm
+  up <- organic & !is.na(top) & !is.na(bottom) & top > bottom
+  top[up] <- -h$top_cm[up]; bottom[up] <- -h$bottom_cm[up]
+  list(top = top, bottom = bottom, upward = which(up))
 }
 
 
