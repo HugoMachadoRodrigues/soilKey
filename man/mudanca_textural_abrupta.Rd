@@ -13,15 +13,28 @@ mudanca_textural_abrupta(pedon)
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Aumento consideravel de argila em pequena distancia vertical
-(\\<= 7.5 cm) na transicao A/E -> B:
+"Consiste em um consideravel aumento no teor de argila em pequena distancia
+na zona de transicao entre o horizonte A ou E e o horizonte subjacente B":
 \itemize{
-  \item argila A < 200 g/kg: argila B \\>= 2x A; OR
-  \item argila A 200-400 g/kg: incremento absoluto \\>= 200 g/kg
-        (i.e. de 300 -> 500); OR
-  \item argila A \\>= 400 g/kg: incremento absoluto \\>= 220 g/kg
-        (i.e. de 420 -> 640).
+  \item A or E with less than 200 g/kg of clay: the B has at least twice
+        as much;
+  \item A or E with 200 g/kg or more: the B has 200 g/kg more or above
+        ("de 300 para no minimo 500, ou de 220 para no minimo 420"),
 }
-Reuso de \code{\link{abrupt_textural_difference}} (WRB Ch 3.2.1)
-que ja codifica criterios essencialmente equivalentes.
+"em uma distancia vertical <= 7,5 cm".
+}
+\details{
+Since v0.9.244 the test is that of the book: the first B horizon is
+compared with the horizon immediately above it, which has to be an A or
+an E; and the distance is read from the distinctness of the transition
+(\code{boundary_distinctness} of the horizon above: abrupt, under 2.5 cm,
+or clear, 2.5 to 7.5 cm). Where it is recorded as gradual or diffuse there
+is no abrupt change; where it is not recorded the two horizons are
+compared. The layer returned is the first B horizon.
+
+Until v0.9.243 the function was the WRB
+\code{\link{abrupt_textural_difference}}, which compares every pair of
+adjoining layers, in the order of the rows: a jump of clay between two B
+horizons, or from a B to a C, was an abrupt change. A profile with no
+horizon designation at all is still tested that way.
 }

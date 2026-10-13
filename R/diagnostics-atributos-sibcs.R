@@ -504,28 +504,99 @@ carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
 
 #' Mudanca textural abrupta (SiBCS Cap 1, p 30-31)
 #'
-#' Aumento consideravel de argila em pequena distancia vertical
-#' (\\<= 7.5 cm) na transicao A/E -> B:
+#' "Consiste em um consideravel aumento no teor de argila em pequena distancia
+#' na zona de transicao entre o horizonte A ou E e o horizonte subjacente B":
 #' \itemize{
-#'   \item argila A < 200 g/kg: argila B \\>= 2x A; OR
-#'   \item argila A 200-400 g/kg: incremento absoluto \\>= 200 g/kg
-#'         (i.e. de 300 -> 500); OR
-#'   \item argila A \\>= 400 g/kg: incremento absoluto \\>= 220 g/kg
-#'         (i.e. de 420 -> 640).
+#'   \item A or E with less than 200 g/kg of clay: the B has at least twice
+#'         as much;
+#'   \item A or E with 200 g/kg or more: the B has 200 g/kg more or above
+#'         ("de 300 para no minimo 500, ou de 220 para no minimo 420"),
 #' }
-#' Reuso de \code{\link{abrupt_textural_difference}} (WRB Ch 3.2.1)
-#' que ja codifica criterios essencialmente equivalentes.
+#' "em uma distancia vertical <= 7,5 cm".
+#'
+#' Since v0.9.244 the test is that of the book: the first B horizon is
+#' compared with the horizon immediately above it, which has to be an A or
+#' an E; and the distance is read from the distinctness of the transition
+#' (\code{boundary_distinctness} of the horizon above: abrupt, under 2.5 cm,
+#' or clear, 2.5 to 7.5 cm). Where it is recorded as gradual or diffuse there
+#' is no abrupt change; where it is not recorded the two horizons are
+#' compared. The layer returned is the first B horizon.
+#'
+#' Until v0.9.243 the function was the WRB
+#' \code{\link{abrupt_textural_difference}}, which compares every pair of
+#' adjoining layers, in the order of the rows: a jump of clay between two B
+#' horizons, or from a B to a C, was an abrupt change. A profile with no
+#' horizon designation at all is still tested that way.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 mudanca_textural_abrupta <- function(pedon) {
-  res <- abrupt_textural_difference(pedon)
+  d <- pedon$horizons$designation
+  if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
+    res <- abrupt_textural_difference(pedon)
+    return(DiagnosticResult$new(
+      name = "mudanca_textural_abrupta",
+      passed = res$passed, layers = res$layers,
+      evidence = list(abrupt = res), missing = res$missing,
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30-31"
+    ))
+  }
+  ab <- .mudanca_abrupta_a_b(pedon$horizons)
   DiagnosticResult$new(
     name = "mudanca_textural_abrupta",
-    passed = res$passed, layers = res$layers,
-    evidence = list(abrupt = res), missing = res$missing,
+    passed = ab$passed, layers = if (isTRUE(ab$passed)) ab$first_b else integer(0),
+    evidence = ab, missing = ab$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30-31"
   )
+}
+
+
+#' The transition from the A or E to the first B horizon of a profile, as the
+#' mudanca textural abrupta and the B planico read it (SiBCS 2018, Cap 1,
+#' p. 30-31; Cap 2, p. 65).
+#'
+#' Returns a list: \code{first_b} and \code{above}, the layers compared
+#' (\code{above} is NA when the layer over the first B is no A or E);
+#' \code{jump}, whether the clay of the B is twice that of the layer above
+#' (under 20\%) or 20 percentage points more; \code{within_7_5_cm}, from the
+#' distinctness of the transition (NA when not recorded); \code{passed}, the
+#' abrupt change (the jump, within 7.5 cm where the distance is recorded);
+#' \code{abrupt_transition}, a transition recorded as abrupt; \code{ratio}
+#' and \code{ratio_limit}, the clay of the first B over that of the layer
+#' above and the limit of item (h) of the B textural for it.
+#' @noRd
+.mudanca_abrupta_a_b <- function(h) {
+  dm <- .desg_master(h$designation)
+  out <- list(passed = FALSE, first_b = NA_integer_, above = NA_integer_,
+              jump = NA, within_7_5_cm = NA, abrupt_transition = NA,
+              ratio = NA_real_, ratio_limit = NA_real_, missing = character(0))
+  b <- which(!is.na(dm) & grepl("^B", dm) & !is.na(h$top_cm))
+  if (length(b) == 0L) return(out)
+  b <- b[order(h$top_cm[b])]
+  out$first_b <- b[1]
+  ord <- order(h$top_cm)
+  pos <- match(b[1], ord)
+  up  <- if (!is.na(pos) && pos > 1L) ord[pos - 1L] else NA_integer_
+  if (is.na(up) || is.na(dm[up]) || !grepl("^[AE]", dm[up])) return(out)
+  out$above <- up
+  ca <- h$clay_pct[up]; cb <- h$clay_pct[b[1]]
+  if (is.na(ca) || is.na(cb)) {
+    out$passed <- NA
+    out$missing <- "clay_pct"
+    return(out)
+  }
+  # an increase: with no clay in the A or E, twice as much is any amount
+  out$jump <- cb > ca && (if (ca < 20) cb >= 2 * ca else cb - ca >= 20)
+  out$within_7_5_cm <- .boundary_within_7_5_cm(h$boundary_distinctness[up])
+  out$passed <- isTRUE(out$jump) && !isFALSE(out$within_7_5_cm)
+  bd <- .field_term(h$boundary_distinctness[up])
+  out$abrupt_transition <- if (is.na(bd) || !nzchar(bd)) NA
+    else grepl("abrupt", bd) && !grepl("clear|clara|gradual|difus|diffuse", bd)
+  if (ca > 0) {
+    out$ratio <- cb / ca
+    out$ratio_limit <- if (ca > 40) 1.5 else if (ca >= 15) 1.7 else 1.8
+  }
+  out
 }
 
 

@@ -227,7 +227,10 @@ test_that("v0.9.83: B_latossolico Latossolo / Argissolo confusion preserved bit-
   # reference Argissolo that was keyed Latossolos, has a Ki above 2.2 in its B
   # and is keyed Neossolos (1 -> 0, and 54 -> 55 below).
   expect_equal(conf["Argissolos","Latossolos"], 0L)
-  expect_equal(conf["Argissolos","Argissolos"], 168L)
+  # v0.9.244: the B planico is the first B sub-horizon below an abrupt change
+  # from the A or E. Profile 12692, a reference Argissolo, had its jump of
+  # clay inside the B and is no longer keyed Planossolos (168 -> 169).
+  expect_equal(conf["Argissolos","Argissolos"], 169L)
   expect_equal(conf["Argissolos","Cambissolos"], 1L)
   # v0.9.231: profile 14603 has cerosidade "Comum" of grade "Fraca a
   # moderada"; the grade is read by its lower end, its B nitico no longer
