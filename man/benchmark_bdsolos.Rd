@@ -9,7 +9,8 @@ benchmark_bdsolos(
   systems = c("wrb2022", "sibcs", "usda"),
   sibcs_level = c("order", "subordem"),
   max_n = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  sampling_type = "Perfil completo"
 )
 }
 \arguments{
@@ -28,15 +29,27 @@ produced by \code{\link{load_bdsolos_csv}}.}
 pedon.}
 
 \item{verbose}{If \code{TRUE} (default), emits cli progress messages.}
+
+\item{sampling_type}{The kinds of sampling point the figures of each
+system are computed on, as \code{site$sampling_type} words them.
+Default \code{"Perfil completo"}. \code{NULL} counts every record,
+as the function did until v0.9.241. Ignored when no pedon carries
+the field.}
 }
 \value{
 A list with elements:
   \itemize{
     \item \code{per_system} -- named list (one entry per requested
           system) of \code{list(accuracy, n_compared, n_correct,
-          n_errors, confusion, per_class)} (or
+          n_errors, confusion, per_class, by_sampling_type,
+          sampling_type)} (or
           \code{list(accuracy = NA_real_, message)} when no
-          reference labels were present).
+          reference labels were present). \code{by_sampling_type} is a
+          data frame with one row per kind of point and one for all the
+          records (\code{n_compared}, \code{n_correct},
+          \code{accuracy}), or \code{NULL} when no pedon carries the
+          field; \code{sampling_type} is the kinds the main figures were
+          computed on (\code{NULL} for all).
     \item \code{coverage} -- named list of
           \code{list(n_with_ref, n_total, pct)} per system.
     \item \code{config} -- named list capturing
@@ -92,6 +105,22 @@ label, the corresponding \code{$per_system} entry has
 \code{accuracy = NA_real_} and \code{message = "no_reference_labels"}.
 Classifier errors are caught per-pedon and recorded in
 \code{n_errors}; they do not abort the run.
+}
+
+\section{Kinds of sampling point}{
+
+
+The export marks each record as \code{"Perfil completo"}, \code{"Perfil
+parcial"} or \code{"Amostra extra"} (\code{site$sampling_type}, read by
+\code{\link{load_bdsolos_csv}} since v0.9.242). An extra sample is not a
+described profile: in most cases it is two sampled layers, and the
+thickness a diagnostic horizon is asked for cannot be read from it. The
+figures of each system (\code{accuracy}, \code{n_compared},
+\code{n_correct}, \code{confusion}, \code{per_class}) are therefore those
+of the complete profiles by default, and \code{by_sampling_type} gives the
+same counts for every kind and for all the records together. Pedons that
+carry no \code{site$sampling_type} (another source, a hand-made list) are
+all counted, as before.
 }
 
 \examples{

@@ -89,7 +89,8 @@ test_that("v0.9.89: BDsolos RJ Latossolo recall reaches 33 with engine=aqp", {
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(RJ, verbose = FALSE)))
   res_aqp <- withr::with_options(list(soilKey.diagnostic_engine = "aqp"), {
     suppressMessages(suppressWarnings(
-      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE)))
+      benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
+                      sampling_type = NULL)))
   })
   cf_aqp <- res_aqp$per_system$sibcs$confusion
   # Engine=aqp now bundles ECEC + texture fallback; Latossolo recall

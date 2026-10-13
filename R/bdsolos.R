@@ -198,6 +198,9 @@
   reference_wrb   = "(^classificacao_fao_wrb$|^classificacao_wrb$|^taxon_wrb$)",
   reference_st    = "(^classificacao_soil_taxonomy$|^taxon_st$|^taxon_soil_taxonomy$)",
   drainage        = "(^classe_de_drenagem$|^drenagem$)",
+  # v0.9.242: "Tipo", the kind of sampling point: "Perfil completo", "Perfil
+  # parcial" or "Amostra extra".
+  sampling_type   = "(^tipo$)",
   parent_material = "(^material_de_origem$|^material_origem$)",
   vegetacao       = "(^uso_atual$|^vegetacao$|^fase_de_vegetacao_primaria$)",
   lat_graus       = "(^latitude_graus$)",
@@ -486,6 +489,15 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' forever (after DF, MT, PA, PB or SP). An empty text field is \code{NA} in
 #' every file; a quotation mark inside a text field is dropped.
 #'
+#' Kind of sampling point (v0.9.242): the column \code{"Tipo"} of the export
+#' goes to \code{site$sampling_type}, as written: \code{"Perfil completo"},
+#' \code{"Perfil parcial"} or \code{"Amostra extra"}. An extra sample is, in
+#' most cases, two sampled layers of a point (a topsoil and a subsoil sample,
+#' often with a gap between them), not a described profile: the thickness of
+#' its layers is that of the samples. About a third of the records of the
+#' national export are extra samples; \code{\link{benchmark_bdsolos}}
+#' reports the kinds apart.
+#'
 #' Profile-id columns are auto-detected: looks for any column whose
 #' normalised name matches
 #' \code{"id_perfil|profile_id|cod_perfil|^perfil$|sample_id|^id$"};
@@ -601,6 +613,7 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       reference_wrb   = safe_field(site_cols$reference_wrb),
       reference_st    = safe_field(site_cols$reference_st),
       drainage        = safe_field(site_cols$drainage),
+      sampling_type   = gsub("\\s+", " ", safe_field(site_cols$sampling_type)),
       parent_material = safe_field(site_cols$parent_material),
       land_cover      = safe_field(site_cols$vegetacao),
       reference_source = "Embrapa BDsolos"

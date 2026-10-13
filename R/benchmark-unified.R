@@ -407,11 +407,21 @@ benchmark_unified <- function(
     # left the sparse WRB/USDA labels near-empty; this stops at max_n *labelled*
     # pedons instead. Sampling is by leading CSV (state-clustered) -- noted in
     # the report -- and `.benchmark_filter_then_cap` applies the final cap.
+    # v0.9.242: the panel is made of complete profiles. The export marks a
+    # third of its records as extra samples (two sampled layers, in most
+    # cases) and some as partial profiles; they are left out before the cap,
+    # so that `max_n` counts described profiles. Files that do not record the
+    # kind of point are taken whole, as before.
+    is_profile <- function(p) {
+      k <- p$site[["sampling_type"]] %||% NA_character_
+      is.na(k) || identical(.field_term(k), "perfil completo")
+    }
     pedons <- list()
     for (f in csvs) {
       pp <- tryCatch(load_bdsolos_csv(f, verbose = FALSE),
                       error = function(e) NULL)
-      if (!is.null(pp)) pedons <- c(pedons, pp)
+      if (!is.null(pp))
+        pedons <- c(pedons, pp[vapply(pp, is_profile, logical(1L))])
       if (!is.null(max_n) &&
           sum(vapply(pedons, .benchmark_has_reference, logical(1L),
                      sys = sys)) >= max_n)
