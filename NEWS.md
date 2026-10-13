@@ -56,6 +56,11 @@ Morphological mode: no profile changes its order or its name. That mode
 already read the B espódico of these profiles from the "h" and the "ir" of
 its designation.
 
+Panel of complete profiles (781): 435 to 437 in the default mode, two
+Espodossolos keyed Argissolos and Planossolos; 514 unchanged in the
+morphological. FEBR (1,000): 376 and 501, unchanged. Redape (94): 79 and 84,
+unchanged. The 44 canonical profiles are identical in the three systems.
+
 # soilKey 0.9.255 (2026-10-13)
 
 ## SiBCS key: item (a) of the B espódico
