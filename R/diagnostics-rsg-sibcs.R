@@ -29,6 +29,9 @@
 #' soils further down the key (Gleissolos Melanicos, Cambissolos Histicos).
 #' Item (c), the 60 cm asked where plant tissue makes 75\% or more of the
 #' horizon, is not tested: that volume is no column of the profile.
+#' The 80 cm are counted from the surface of the soil: where O or H layers
+#' are recorded upward from the mineral soil ("O 120-0"), from the top of the
+#' uppermost of them (v0.9.254).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 organossolo <- function(pedon) {
@@ -45,8 +48,12 @@ organossolo <- function(pedon) {
   hz <- hz[hz$passed, , drop = FALSE]
   # (a) 20 cm or more over a lithic contact
   over_rock <- any(hz$thickness_cm >= 20 & hz$on_rock)
-  # (b) 40 cm or more, in one section or added up, in the first 80 cm
-  in_80 <- sum(pmax(0, pmin(hz$bottom_cm, 80) - pmax(hz$top_cm, 0)))
+  # (b) 40 cm or more, in one section or added up, in the first 80 cm from
+  # the surface of the soil, which lies above the zero of the description
+  # where organic layers are recorded upward (v0.9.254)
+  surface <- res$evidence$surface_cm
+  in_80 <- sum(pmax(0, pmin(hz$bottom_cm, surface + 80) -
+                         pmax(hz$top_cm, surface)))
   passed <- over_rock || in_80 >= 40
   DiagnosticResult$new(
     name = "organossolo", passed = passed,

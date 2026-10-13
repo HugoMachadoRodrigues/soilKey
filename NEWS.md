@@ -1,3 +1,56 @@
+# soilKey 0.9.254 (2026-10-13)
+
+## SiBCS key: an O or H layer recorded upward from the mineral soil is part of the histic horizon
+
+The older descriptions give the organic layers that lie on a mineral soil
+upward from its top: "O 120-0", or "Hd 110-60" above "Hoj 60-0", over a
+"Cg 0-10". With an upper depth greater than the lower one, such a layer had a
+thickness below zero and was never part of the horizonte hístico. BDsolos
+RJ 14357, an Organossolo Háplico whose one layer is "O 120-0" with 17% of
+organic carbon, keyed Neossolos.
+
+Decided on 2026-10-13: the layer is counted.
+
+* In `horizonte_histico()` an O or H layer whose upper depth is greater than
+  its lower one lies above the mineral surface, with the thickness between
+  its two figures; layers so recorded adjoin one another and the mineral
+  soil as they are written.
+* The 80 cm of the Organossolos step (0.9.253) are counted from the surface
+  of the soil, the top of the uppermost of those layers.
+* The depths of the profile are not changed, and no other test reads them
+  this way. A layer that is no O or H is not read upward: a mineral horizon
+  with its depths the wrong way round is a slip of the sheet.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.253 | 0.9.254 |
+|---|---|---|
+| default mode | 4,001 (52.7%) | 4,003 (52.7%) |
+| morphological mode | 4,965 (65.4%) | 4,966 (65.4%) |
+| complete profiles, default | 2,900 of 4,674 (62.0%) | 2,900 (62.0%) |
+| complete profiles, morphological | 3,313 (70.9%) | 3,312 (70.9%) |
+
+Three profiles change order, to Organossolos. Two reach their reference:
+RJ 14357 and RJ 5333 (Organossolo Tiomórfico: "Hd 110-60", "Hoj 60-0",
+"Cg 0-10"). The third leaves it in the morphological mode and goes from one
+other order to another in the default mode: MG 7435, a Glei Húmico with an
+"O1 44-0" of 8.3% of organic carbon written over an "A 0-20", which may be a
+slip for "4-0"; as recorded it is 44 cm of organic material. Reference
+Organossolos keyed so: 27 to 29 of 44.
+
+224 profiles of the export have a layer recorded this way; in 172 of them it
+is under 10 cm, the litter over a mineral soil, which is no horizonte
+hístico. In the second level, RJ 13045 and RJ 13091 ("H 30-0" over a Cg) get
+the class their horizonte hístico of 30 cm gives: Gleissolos Melânicos, and
+for RJ 13091 in the default mode, where it keys Neossolos, Neossolos
+Litólicos Hísticos.
+
+Panel of complete profiles (781): 429 and 514, unchanged. FEBR (1,000): 376
+and 501, unchanged. Redape: 77 and 84 of 94, unchanged. The 44 canonical
+profiles are identical in the three systems.
+
 # soilKey 0.9.253 (2026-10-13)
 
 ## SiBCS key: the histic horizon with the whole of its thickness, and the thickness the key asks of it
