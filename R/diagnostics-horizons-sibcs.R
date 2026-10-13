@@ -942,7 +942,10 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   arg  <- B_textural(pedon)
   esp  <- spodic(pedon)
   plan <- planic_features(pedon)
-  ver  <- vertic_horizon(pedon)
+  # v0.9.245: the vertic horizon of this system (20 cm, cracks of 1 cm, the
+  # structure of the book), which "tem precedencia diagnostica sobre os
+  # horizontes B incipiente, B nitico e glei" (p. 73); the WRB one was tested.
+  ver  <- horizonte_vertico(pedon)
   # v0.9.137: SiBCS Cap 2 p.60 (a) -- B incipiente must ALSO NOT show
   # cementation/hardening (duripa, petrocalcico), fragipa brittleness, the
   # plinthite of a plintico, nor distinct gleyic reduction. The prior list
@@ -959,7 +962,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
                         if (isTRUE(arg$passed)) arg$layers else integer(0),
                         esp$layers %||% integer(0),
                         plan$layers %||% integer(0),
-                        ver$layers %||% integer(0),
+                        if (isTRUE(ver$passed)) ver$layers else integer(0),
                         dur$layers %||% integer(0),
                         pet$layers %||% integer(0),
                         fra$layers %||% integer(0),
@@ -1646,6 +1649,12 @@ horizonte_sulfurico <- function(pedon, ...) {
 #' criterios essencialmente identicos: clay \\>= 30\%, slickensides,
 #' fendas \\>= 1 cm, espessura \\>= 20 cm. v0.7 SiBCS additional gate:
 #' COLE \\>= 0.06 (proxy via shrink-swell).
+#'
+#' Since v0.9.245 the horizon also passes by the features of the book that
+#' \code{vertic_horizon()} does not read
+#' (\code{.horizonte_vertico_sibcs()}): wedge-shaped or parallelepipedic
+#' structural units in place of the slickensides ("e/ou"), and 20 cm made
+#' of adjoining layers.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param ... Reserved for future arguments.
 #' @noRd
@@ -1663,9 +1672,46 @@ horizonte_vertico <- function(pedon, ...) {
     on.exit(options(old), add = TRUE)
   }
   res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0, ...)
+  # v0.9.245: the features of the book. vertic_horizon(), which serves WRB
+  # and USDA too, asks for slickensides and 20 cm of one layer; the book
+  # (p. 73) gives "superficies de friccao (slickensides) em quantidade no
+  # minimo comum, e/ou unidades estruturais cuneiformes e/ou
+  # paralelepipedicas", and its 20 cm are those of the horizon.
+  own <- .horizonte_vertico_sibcs(pedon)
+  if (isTRUE(own$passed)) {
+    res$layers <- if (isTRUE(res$passed))
+      sort(unique(c(res$layers, own$layers))) else own$layers
+    res$passed <- TRUE
+  }
+  ev <- res$evidence
+  ev$sibcs <- own
+  res$evidence <- ev
   res$name <- "horizonte_vertico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 73"
   res
+}
+
+
+#' The vertic horizon by the features of SiBCS 2018 (Cap 2, p. 73): layers
+#' with 300 g/kg of clay or more that have slickensides in amount of common
+#' or more, and/or wedge-shaped or parallelepipedic structural units, with
+#' cracks of 1 cm where their width is recorded, and 20 cm of adjoining
+#' layers. Returns a list (\code{passed}, \code{layers}, and the layers with
+#' each feature).
+#' @noRd
+.horizonte_vertico_sibcs <- function(pedon, min_clay = 30, min_thickness = 20,
+                                      min_crack_width_cm = 1) {
+  h <- pedon$horizons
+  clay  <- !is.na(h$clay_pct) & h$clay_pct >= min_clay
+  slick <- .amount_at_least(h$slickensides, c("common", "many", "continuous"))
+  st    <- .field_term(h$structure_type)
+  wedge <- !is.na(st) & grepl("cuneiform|paralelepip|parallelepiped|wedge", st)
+  cracks_ok <- is.na(h$cracks_width_cm) | h$cracks_width_cm >= min_crack_width_cm
+  cand <- which(clay & (slick | wedge) & cracks_ok)
+  thk <- test_minimum_thickness(h, min_cm = min_thickness,
+                                candidate_layers = cand, adjoining = TRUE)
+  list(passed = isTRUE(thk$passed), layers = thk$layers %||% integer(0),
+       slickensides = which(slick), structure = which(wedge), thickness = thk)
 }
 
 

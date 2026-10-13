@@ -82,14 +82,24 @@ test_that("slickensides worded in Portuguese are slickensides for the vertic hor
   pt$horizons$cracks_width_cm <- NA_real_      # the export has no cracks: the slickensides stand for them
   expect_true(isTRUE(horizonte_vertico(pt)$passed))
   expect_equal(classify_sibcs(pt, on_missing = "silent")$rsg_or_order, "Vertissolos")
-  # the book asks for "no minimo comum"
+  # the book asks for "no minimo comum". v0.9.245: "e/ou unidades estruturais
+  # cuneiformes", which the canonical profile has; with them the horizon is
+  # vertic whatever its slickensides, so they are taken out here.
   for (low in c("Pouca", "Pouca a comum")) {
-    q <- pt$clone(deep = TRUE); q$horizons$slickensides <- c(NA, low, low)
+    q <- pt$clone(deep = TRUE)
+    hq <- data.table::copy(q$horizons); hq$slickensides <- c(NA, low, low)
+    q$horizons <- hq
+    expect_true(isTRUE(horizonte_vertico(q)$passed), info = low)
+    hq$structure_type <- c("subangular blocky", "prismatic", "prismatic")
+    q$horizons <- hq
     expect_false(isTRUE(horizonte_vertico(q)$passed), info = low)
   }
   # the English terms are read as before
-  en <- p$clone(deep = TRUE); en$horizons$slickensides <- c("absent", "few", "few")
-  en$horizons$cracks_width_cm <- NA_real_
+  en <- p$clone(deep = TRUE)
+  he <- data.table::copy(en$horizons); he$slickensides <- c("absent", "few", "few")
+  he$cracks_width_cm <- NA_real_
+  he$structure_type <- c("subangular blocky", "prismatic", "prismatic")
+  en$horizons <- he
   expect_false(isTRUE(horizonte_vertico(en)$passed))
 })
 

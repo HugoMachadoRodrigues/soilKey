@@ -76,6 +76,11 @@
   # v0.9.232: "Superficie de friccao - Quantidade" (Pouca / Comum / Abundante),
   # kept as written; test_slickensides_present() reads both languages.
   slickensides      = "(superficies?_de_friccao_quantidade)",
+  # v0.9.245: "Descricao Original", the text of the field description of the
+  # horizon. It is not stored; the slickensides and the wedge-shaped or
+  # parallelepipedic structure it names are read from it where the
+  # structured columns are empty (.bdsolos_description_reads()).
+  description_raw   = "(^descricao_original$)",
   # v0.9.241: "Transicao de horizonte subjacente - Nitidez" (Abrupta / Clara /
   # Gradual / Difusa) and "- Topografia", of the transition to the horizon
   # below; kept as written. The distance of a mudanca textural abrupta
@@ -490,6 +495,18 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' (molecular SiO2 / Al2O3), which SiBCS asks of the B latossolico, is
 #' computed from them; it reproduces the Ki column of the export.
 #'
+#' Text of the horizon description (v0.9.245): the column
+#' \code{"Descricao Original"} holds the field description of each horizon
+#' as the survey wrote it. Two things are read from it where the structured
+#' columns are empty, and the text itself is not kept: the amount of
+#' slickensides written beside the term (\code{"''slickenside'' comum e
+#' moderado"} fills \code{slickensides} with \code{"Comum"}; a mention with
+#' no amount fills nothing), and a wedge-shaped or parallelepipedic
+#' structure (\code{"cuneiforme"}, \code{"paralelepipedica"}, added to
+#' \code{structure_type}; a structure "com tendencia a paralelepipedica" is
+#' not one). SiBCS knows the vertic horizon by these two features, and the
+#' surveys that predate the structured sheet describe them only there.
+#'
 #' Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
 #' export quotes every field, and its free-text fields hold line breaks and,
 #' in some states, quotation marks of their own; \code{read.csv2} returns
@@ -726,7 +743,8 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     val <- rows[[raw]]
     # v0.9.235: the three cells of the variegated colours, and of the mottle
     # colours, are joined after the loop.
-    if (grepl("^(variegated|mottle)_(hue|value|chroma)_raw$", sk)) {
+    if (grepl("^(variegated|mottle)_(hue|value|chroma)_raw$", sk) ||
+          identical(sk, "description_raw")) {
       colour_raw[[sk]] <- val
       next
     }
@@ -797,6 +815,27 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
     hz_list[["mottle_colors"]] <- .bdsolos_colour_list(
       colour_raw$mottle_hue_raw, colour_raw$mottle_value_raw,
       colour_raw$mottle_chroma_raw)
+  }
+  # v0.9.245: what the text of the description says and the structured
+  # columns do not
+  if (!is.null(colour_raw$description_raw)) {
+    rd <- .bdsolos_description_reads(colour_raw$description_raw)
+    if (any(!is.na(rd$slickensides))) {
+      sl <- hz_list[["slickensides"]] %||% rep(NA_character_, nrow(rows))
+      fill <- (is.na(sl) | !nzchar(trimws(sl))) & !is.na(rd$slickensides)
+      sl[fill] <- rd$slickensides[fill]
+      hz_list[["slickensides"]] <- sl
+    }
+    if (any(!is.na(rd$structure))) {
+      st <- hz_list[["structure_type"]] %||% rep(NA_character_, nrow(rows))
+      add <- !is.na(rd$structure) &
+        !grepl("cuneiform|paralelepip", .field_term(st))
+      blank <- is.na(st) | !nzchar(trimws(st))
+      st[add & blank]  <- rd$structure[add & blank]
+      st[add & !blank] <- paste(st[add & !blank], rd$structure[add & !blank],
+                                sep = "; ")
+      hz_list[["structure_type"]] <- st
+    }
   }
   if (length(hz_list) == 0L) {
     return(make_empty_horizons(nrow(rows)))
@@ -1091,4 +1130,95 @@ download_bdsolos <- function(out_path,
   out <- chromote_session$Runtime$evaluate(js, returnByValue = TRUE)
   if (is.null(out$result)) return(NULL)
   out$result$value
+}
+
+
+#' What the text of a horizon description says of slickensides and of
+#' wedge-shaped or parallelepipedic structure (v0.9.245).
+#'
+#' The export of BDsolos carries, beside its structured columns, the text of
+#' the field description of each horizon ("Descricao Original"). The surveys
+#' that predate the structured sheet describe there what the vertic horizon
+#' is known by: "''slickenside'' comum e moderado", "superficies de friccao
+#' abundantes", "moderada media paralelepipedica composta de blocos".
+#'
+#' \code{slickensides}: the amount written beside the term, as the
+#' structured column words it ("Pouca", "Comum", "Abundante"; "muito" is
+#' read as abundant). See \code{.bdsolos_amount_beside()}. A mention with no
+#' amount gives NA: the vertic horizon asks for an amount, and a term alone
+#' states none.
+#'
+#' \code{structure}: "cuneiforme", "paralelepipedica" or both, where the text
+#' names them as the structure of the horizon. A structure "com tendencia a
+#' paralelepipedica" is not one, nor is one the text denies.
+#'
+#' The terms are matched in the spellings the export has ("slikenside",
+#' "silkensides", "suoerficies de friccao", "paralelepedica"). Vectorised
+#' over the rows.
+#' @noRd
+.bdsolos_description_reads <- function(x) {
+  t <- gsub("[[:space:]]+", " ", .field_term(x))
+  n <- length(t)
+  amount <- rep(NA_character_, n)
+  structure <- rep(NA_character_, n)
+  term  <- .BDSOLOS_SLICKENSIDES_TERM
+  shape <- "cuneiform|paralelep[a-z]*d"
+  for (i in which(!is.na(t) & (grepl(term, t) | grepl(shape, t)))) {
+    phrases <- strsplit(t[i], "[;.]")[[1]]
+    for (p in phrases[grepl(term, phrases)]) {
+      parts <- strsplit(p, ",")[[1]]
+      for (q in parts[grepl(term, parts)]) {
+        a <- .bdsolos_amount_beside(q, term)
+        if (!is.na(a)) { amount[i] <- a; break }
+      }
+      if (!is.na(amount[i])) break
+    }
+    ph <- phrases[grepl(shape, phrases)]
+    # up to the next comma, what a tendency or a denial is said of
+    ph <- gsub("(tend(e|em|encia|endo)|sem|ausencia de|nao ha|nao apresenta) [^,]*",
+               " ", ph)
+    wedge <- any(grepl("cuneiform", ph))
+    paral <- any(grepl("paralelep[a-z]*d", ph))
+    if (wedge && paral) structure[i] <- "cuneiforme e paralelepipedica"
+    else if (wedge) structure[i] <- "cuneiforme"
+    else if (paral) structure[i] <- "paralelepipedica"
+  }
+  list(slickensides = amount, structure = structure)
+}
+
+#' The slickensides of a horizon description, in the spellings of the
+#' export: "slickenside(s)", "slikenside", "silkensides", "slikeside",
+#' "superficie(s) de friccao", "suoerficies de friccao".
+#' @noRd
+.BDSOLOS_SLICKENSIDES_TERM <-
+  "s[lit][a-z]{1,4}k[a-z]{0,3}sides?|su[a-z]{1,2}erficies? de fricc?[a-z]+"
+
+#' The amount written beside a term in a part of a horizon description:
+#' directly before the term ("abundantes superficies de friccao", "muitos
+#' slickensides", "presenca comum de superficies de friccao") or after it
+#' ("slickenside comum e moderado", "fraco e pouco"). NA when the part
+#' denies the feature, compares it ("mais abundantes que o horizonte
+#' superior") or states no amount. An amount that stands before the term
+#' with other words between is that of another feature ("cerosidade forte e
+#' abundante apresentando slickensides") and is not read.
+#' @noRd
+.bdsolos_amount_beside <- function(q, term) {
+  if (grepl(paste0("(sem|ausencia de|nao ha|nao apresenta) [^,;]*(", term, ")"), q))
+    return(NA_character_)
+  amt <- "(pouc|rar|comu|a?bund|muit)[a-z]*"
+  q <- gsub(paste0("\\b(mais|menos) ", amt), " ", q)
+  # a "muito" that qualifies a grade, a size or a consistence is no amount
+  q <- gsub("\\bmuit[oa]s? (fort|frac|moderad|pequen|grand|dur|firm|plast|pegaj|coerent|coes|argil)",
+            "\\1", q)
+  cls <- function(w) {
+    if (grepl("^(a?bund|muit)", w)) "Abundante"
+    else if (grepl("^comu", w)) "Comum"
+    else "Pouca"
+  }
+  m <- regmatches(q, regexpr(paste0("\\b", amt, " (de )?[^a-z]*(", term, ")"), q))
+  if (length(m)) return(cls(m))
+  after <- sub(paste0("^.*?(", term, ")"), "", q, perl = TRUE)
+  w <- regmatches(after, regexpr(paste0("\\b", amt), after))
+  if (length(w)) return(cls(w))
+  NA_character_
 }

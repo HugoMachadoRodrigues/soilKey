@@ -27,6 +27,8 @@
   h <- p$horizons
   h$designation <- c("A", "Bv", "Cv")
   h$slickensides <- NA_character_
+  # v0.9.245: nor the wedge-shaped structure, which is a vertic feature too
+  h$structure_type <- c("subangular blocky", "prismatic", "prismatic")
   h$cracks_width_cm <- NA_real_
   if ("cracks_depth_cm" %in% names(h)) h$cracks_depth_cm <- NA_real_
   if ("cole_value" %in% names(h)) h$cole_value <- NA_real_
