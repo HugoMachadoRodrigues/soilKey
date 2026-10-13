@@ -91,7 +91,8 @@ test_that("a 'pl' that is not 15 cm thick, or not there, is no plinthic horizon"
   thin$horizons$top_cm <- c(0, 20, 30); thin$horizons$bottom_cm <- c(20, 30, 150)
   expect_false(isTRUE(horizonte_plintico(thin)$passed))
   expect_false(isTRUE(horizonte_plintico(.plinthic_by_letters(c("Ap", "Bt", "C")))$passed))
-  # "Ap" and "Bp1" are not "pl"
+  # "Ap" is not "pl", nor is the "p1" of a series that goes on to "p2"
+  # (v0.9.248 reads the "p1" that stands alone: test-v09248)
   expect_false(isTRUE(horizonte_plintico(.plinthic_by_letters(c("Ap", "Bp1", "Bp2")))$passed))
 })
 

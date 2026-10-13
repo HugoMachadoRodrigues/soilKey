@@ -1,3 +1,39 @@
+# soilKey 0.9.248 (2026-10-13)
+
+## SiBCS key: the "p1" of B and C horizons is the "pl" of plinthite
+
+The surveys before the present notation wrote plinthite "pl" (B21pl, Cpl),
+which the morphological mode reads as the horizonte plíntico since 0.9.234.
+The BDsolos export has it also as "p1", the letter "l" written as the figure
+1: B2tp1, B22tp1, Cp1, B2tp1cn, in 219 horizons of 145 profiles. Of those
+profiles, 135 have "plíntico", "laterita" or "concrecionário" in their
+reference name, and 95 have a reference in Plintossolos.
+
+`horizonte_plintico()` reads the "p1" of a B or C horizon as "pl", in the
+morphological mode only, with the same 15 cm. It is not read where the
+profile numbers such horizons on ("Bp1" beside "Bp2"): no B or C of the
+export is written with "p2", so that the "p1" there is not the first of a
+series. "Ap1" is a ploughed layer and stays one.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order,
+morphological mode: 4,860 to 4,922 (64.0% to 64.8%); complete profiles
+3,248 to 3,274 of 4,674 (69.5% to 70.0%). Reference Plintossolos agreed 118
+to 195 of 331; profiles keyed Plintossolos 178 to 273.
+
+96 profiles change order: 77 reach their reference, all of them Plintossolos
+(44 keyed Argissolos, 14 Planossolos, 10 Luvissolos, 9 others), 15 leave it
+and 4 go from one wrong order to another. The 15 are 13 reference Argissolos
+and 2 reference Cambissolos, every one "plíntico" in its reference name
+("Podzólico Vermelho-Amarelo Tb Álico plíntico"): their plinthic horizon,
+once read, meets the position the Plintossolos step asks for.
+
+The default mode does not read designations and is identical, profile by
+profile. The panel of complete profiles (428 and 511 of 781), FEBR (376 and
+501 of 1,000), Redape (77 and 84 of 94) and the 44 canonical profiles are
+identical in both modes.
+
 # soilKey 0.9.247 (2026-10-13)
 
 ## SiBCS key: the "ir" of the older surveys is a B espódico in the morphological mode

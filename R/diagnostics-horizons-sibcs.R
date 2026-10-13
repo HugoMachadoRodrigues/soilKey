@@ -1358,10 +1358,16 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
   # plinthite as "pl" (B21pl, Cpl) where "f" is written today (Btf). The
   # morphological mode reads the "f" in plinthic(); here it reads the "pl"
   # too, with the same thickness.
+  # v0.9.248: and the "p1" that stands for it in B and C horizons (B2tp1,
+  # Cp1, B2tp1cn), the letter "l" written as the figure 1. It is read so
+  # unless the profile numbers such horizons on ("p2"), in which case the
+  # "p1" is the first of a series. "Ap1" is a ploughed layer.
   if (.morph_inference_enabled() && !isTRUE(res$passed)) {
     h  <- pedon$horizons
     d  <- .desg_master(h$designation)
-    pl <- which(!is.na(d) & grepl("^[A-Z][a-z0-9]*pl", d))
+    numbered <- any(!is.na(d) & grepl("^[BC][a-z0-9]*p[2-9]", d))
+    pl <- which(!is.na(d) & (grepl("^[A-Z][a-z0-9]*pl", d) |
+                               (!numbered & grepl("^[BC][a-z0-9]*p1", d))))
     thk <- sum(pmax(h$bottom_cm[pl] - h$top_cm[pl], 0), na.rm = TRUE)
     if (length(pl) > 0L && thk >= min_thickness) {
       res$passed <- TRUE
