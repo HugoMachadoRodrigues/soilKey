@@ -109,6 +109,26 @@
   !is.na(x) & (x %in% levels | (is.finite(thr) & !is.na(cls) & cls >= thr))
 }
 
+#' Ordinal class of the size of the structural units: 0 ultrapequena, 1 very
+#' fine / muito pequena, 2 fine / pequena, 3 medium / media, 4 coarse /
+#' grande, 5 very coarse / muito grande; NA unrecorded or unreadable. English
+#' and Portuguese terms. A range is read by its lower end ("Pequena a media"
+#' is 2, "Media a grande" 3): the size is used where SiBCS asks for a minimum
+#' ("blocos ... grandes ou medios"), and a range meets a minimum only if all
+#' of it does.
+#' @noRd
+.structure_size_class <- function(x) {
+  x <- .field_term(x)
+  out <- rep(NA_integer_, length(x))
+  out[grepl("^(ultra ?pequena|extremely fine)", x)] <- 0L
+  out[is.na(out) & grepl("^(muito pequena|very fine)", x)] <- 1L
+  out[is.na(out) & grepl("^(pequena|fine)", x)] <- 2L
+  out[is.na(out) & grepl("^(media|medium)", x)] <- 3L
+  out[is.na(out) & grepl("^(muito grande|very coarse|extremely coarse)", x)] <- 5L
+  out[is.na(out) & grepl("^(grande|coarse|thick)", x)] <- 4L
+  out
+}
+
 #' The number and the family of a Munsell hue ("7.5YR" is 7.5 and "YR"), read
 #' with a dot or a comma and whatever the spaces and the case. "N" is the
 #' family "N" with no number. What is not a hue gives NA for both.
