@@ -25,11 +25,33 @@
 #'   \item espessura \\>= 10 cm sobre contato litico/fragmentario OR
 #'         camada com \\>= 90\% material > 2 mm.
 #' }
+#'
+#' Since v0.9.253 the horizon is read wherever it lies and with the whole of
+#' its thickness. The book says of it that it is so "ainda que, no presente,
+#' possa encontrar-se recoberto por horizontes ou depositos minerais" (p. 49),
+#' and its thickness is that of the horizon, made of its adjoining
+#' sub-horizons (Oo1, Oo2, Oo3; Hd, Hod1, Hod2). Until v0.9.252 only a layer
+#' starting within 5 cm of the surface was looked at, so that a horizon
+#' described in sub-horizons counted the first of them alone, and a buried
+#' one was not seen.
+#'
+#' The layers returned are those of every horizon that meets one of the
+#' thicknesses. The evidence gives, for each run of adjoining organic layers
+#' (\code{horizons}), its limits, its thickness, whether it lies on a lithic
+#' contact (a layer R or Cr right below it) and whether it passes;
+#' \code{thickness_cm} and \code{on_rock} are those of the thickest horizon
+#' that passes, or of the thickest run when none does.
+#'
+#' Not tested: the volume of plant tissue is no column of the profile, so the
+#' 40 cm asked where it makes 75\% or more of the horizon (item b) are not
+#' asked; and a layer with 90\% or more of its volume in fragments over 2 mm
+#' is not told from the weight of gravel the sheets record.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_oc_g_kg Numeric threshold or option (see Details).
 #' @noRd
 horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   h <- pedon$horizons
+  ref <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 49-50"
   # Convert g/kg threshold to %.
   min_oc_pct <- min_oc_g_kg / 10
   # v0.9.10: candidate layers must EITHER carry an organic-horizon
@@ -43,9 +65,10 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   is_organic_designation <- !is.na(desg) &
                               grepl("^[OH][a-z]?", desg)
   is_dominantly_organic  <- !is.na(h$oc_pct) & h$oc_pct >= 12
+  top <- h$top_cm; bottom <- h$bottom_cm
   candidates <- which((is_organic_designation | is_dominantly_organic) &
                         !is.na(h$oc_pct) & h$oc_pct >= min_oc_pct &
-                        !is.na(h$top_cm) & h$top_cm <= 5)
+                        !is.na(top) & !is.na(bottom) & bottom > top)
   if (length(candidates) == 0L) {
     have_oc <- !all(is.na(h$oc_pct))
     return(DiagnosticResult$new(
@@ -54,37 +77,44 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
       layers = integer(0),
       evidence = list(),
       missing = if (!have_oc) "oc_pct" else character(0),
-      reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 49"
+      reference = ref
     ))
   }
-  # Spessura accumulating from surface, contiguous high-OC layers.
-  contiguous <- candidates
-  for (k in seq_along(candidates)[-1]) {
-    if (candidates[k] - candidates[k - 1L] != 1L) {
-      contiguous <- candidates[seq_len(k - 1L)]
-      break
-    }
+  # v0.9.253: the horizon is made of its adjoining sub-horizons, wherever
+  # they lie in the profile
+  cs <- candidates[order(top[candidates])]
+  run <- integer(length(cs)); reach <- -Inf; k <- 0L
+  for (j in seq_along(cs)) {
+    if (top[cs[j]] > reach + 1e-6) k <- k + 1L
+    run[j] <- k
+    reach <- max(reach, bottom[cs[j]])
   }
-  thickness <- sum(h$bottom_cm[contiguous] - h$top_cm[contiguous],
-                     na.rm = TRUE)
-  # proxy; 0 when unrecorded (max() of all-NA warned and gave -Inf)
-  wh <- h$worm_holes_pct[contiguous]
-  pct_tissue <- if (any(!is.na(wh))) max(wh, na.rm = TRUE) else 0
-  # Detect overlying contact rock or stony layer.
-  next_layer <- max(contiguous) + 1L
-  on_rock <- next_layer <= nrow(h) &&
-              !is.na(h$designation[next_layer]) &&
-              grepl("^R|^Cr", .desg_master(h$designation)[next_layer])
-  passed <- thickness >= 20 ||
-              (thickness >= 40 && pct_tissue >= 75) ||
-              (thickness >= 10 && on_rock)
+  known <- which(!is.na(top))
+  by_depth <- known[order(top[known])]
+  hz <- do.call(rbind, lapply(seq_len(k), function(g) {
+    L <- cs[run == g]
+    g_top <- min(top[L]); g_bottom <- max(bottom[L])
+    # the layer right below the horizon: a lithic contact?
+    below <- by_depth[!(by_depth %in% L) & top[by_depth] >= g_bottom - 1e-6]
+    on_rock <- length(below) > 0L && !is.na(desg[below[1L]]) &&
+                 grepl("^R|^Cr", desg[below[1L]])
+    data.frame(top_cm = g_top, bottom_cm = g_bottom,
+               thickness_cm = g_bottom - g_top, on_rock = on_rock)
+  }))
+  hz$passed <- hz$thickness_cm >= 20 | (hz$thickness_cm >= 10 & hz$on_rock)
+  layers <- sort(cs[run %in% which(hz$passed)])
+  best <- if (any(hz$passed))
+            which(hz$passed)[which.max(hz$thickness_cm[hz$passed])]
+          else which.max(hz$thickness_cm)
   DiagnosticResult$new(
     name = "horizonte_histico",
-    passed = passed, layers = contiguous,
-    evidence = list(thickness_cm = thickness, on_rock = on_rock,
-                     contiguous_layers = contiguous),
+    passed = any(hz$passed), layers = layers,
+    evidence = list(thickness_cm = hz$thickness_cm[best],
+                     on_rock = hz$on_rock[best],
+                     contiguous_layers = layers,
+                     horizons = hz),
     missing = character(0),
-    reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 49"
+    reference = ref
   )
 }
 

@@ -15,15 +15,45 @@
 #' espessura: \\>= 20 cm sobre rocha, \\>= 40 cm continuo OR cumulativo
 #' nos 80 cm superficiais, OR \\>= 60 cm se \\>= 75\% volume tecido
 #' vegetal.
+#'
+#' Since v0.9.253 the step asks for the thickness the key states (p. 111):
+#' \itemize{
+#'   \item (a) "20 cm ou mais, quando sobrejacente a um contato litico": a
+#'         horizon of 20 cm or more with a layer R or Cr right below it; or
+#'   \item (b) "40 cm ou mais, continuo ou cumulativo nos primeiros 80 cm a
+#'         partir da superficie do solo": the thickness of the horizon, or
+#'         of the horizons, that lies within 80 cm of the surface.
+#' }
+#' Until v0.9.252 any \code{\link{horizonte_histico}} made an Organossolo, so
+#' that one of 20 to 39 cm over a mineral horizon did; the book places those
+#' soils further down the key (Gleissolos Melanicos, Cambissolos Histicos).
+#' Item (c), the 60 cm asked where plant tissue makes 75\% or more of the
+#' horizon, is not tested: that volume is no column of the profile.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 organossolo <- function(pedon) {
   res <- horizonte_histico(pedon)
+  ref <- "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 111"
+  if (!isTRUE(res$passed)) {
+    return(DiagnosticResult$new(
+      name = "organossolo", passed = res$passed,
+      layers = res$layers, evidence = list(histico = res),
+      missing = res$missing, reference = ref
+    ))
+  }
+  hz <- res$evidence$horizons
+  hz <- hz[hz$passed, , drop = FALSE]
+  # (a) 20 cm or more over a lithic contact
+  over_rock <- any(hz$thickness_cm >= 20 & hz$on_rock)
+  # (b) 40 cm or more, in one section or added up, in the first 80 cm
+  in_80 <- sum(pmax(0, pmin(hz$bottom_cm, 80) - pmax(hz$top_cm, 0)))
+  passed <- over_rock || in_80 >= 40
   DiagnosticResult$new(
-    name = "organossolo", passed = res$passed,
-    layers = res$layers, evidence = list(histico = res),
-    missing = res$missing,
-    reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 111"
+    name = "organossolo", passed = passed,
+    layers = if (passed) res$layers else integer(0),
+    evidence = list(histico = res, over_lithic_contact = over_rock,
+                    within_80_cm = in_80),
+    missing = res$missing, reference = ref
   )
 }
 
