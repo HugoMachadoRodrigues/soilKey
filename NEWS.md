@@ -1,3 +1,57 @@
+# soilKey 0.9.251 (2026-10-13)
+
+## BDsolos: the cerosidade written in the text of the horizon is read
+
+The export has the cerosidade in two structured columns, its amount and its
+grade, and also as the survey wrote it, in the text of the horizon
+("Descrição Original"). The key asks for both: the B textural by its
+cerosidade (SiBCS 2018, Cap. 2, p. 56, item i), the B nítico "em quantidade
+no mínimo comum e com grau forte ou moderado" (p. 62), the B latossólico "no
+máximo pouca e fraca" (p. 59). In 142 horizons the text names the cerosidade
+and the two columns are empty.
+
+`load_bdsolos_csv()` reads the amount and the grade from the text, each
+where its own cell is empty, by the rule decided on 2026-10-13 for the
+slickensides: what is written beside the term.
+
+* The words right after "cerosidade" are read as long as they are amounts,
+  grades or words that join them ("cerosidade comum e moderada",
+  "cerosidade fraca e pouca"), or the one word right before it ("pouca
+  cerosidade"). Two grades or two amounts are a range ("fraca a moderada").
+* Nothing is read from a bare mention ("presença de cerosidade"), a denial
+  ("sem cerosidade"), or words that are of something else ("cor da
+  cerosidade (10YR 4/4) com mosqueado pouco", "comum e moderada muito
+  firme").
+* The spellings of the export are read ("serosidade", "crosidade").
+
+The reader was checked against the structured columns, in the horizons that
+have both: the amount is the same in 2,150 of 2,190 (98.2%) and the grade in
+2,172 of 2,208 (98.4%). Where they differ the text and the cell say different things ("comum
+e fraca" beside a cell "Pouca"); the cell is kept. In the horizons with empty
+cells every phrase was read: the loader fills the amount in 123 layers and
+the grade in 123, 127 layers of 111 profiles in all.
+
+### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+| | 0.9.250 | 0.9.251 |
+|---|---|---|
+| default mode | 3,993 (52.6%) | 3,998 (52.7%) |
+| morphological mode | 4,956 (65.3%) | 4,958 (65.3%) |
+
+Default mode: 13 profiles change order, 6 reach their reference (4
+Argissolos that keyed Latossolos, 1 Neossolo and 1 Nitossolo), 1 leaves it
+(a Latossolo with "cerosidade comum e fraca" in its B, RS 8704) and 6 go
+from one wrong order to another. Morphological mode: 6 change, 3 to their
+reference and 1 from it.
+
+Panel of complete profiles (781): 432 and 517, as before (one profile of
+the default mode goes from one wrong order to another). FEBR (1,000): 376 and
+501, confusion matrices identical. Redape (94): 77 and 84, no profile
+changes. The 44 canonical profiles keep their class in the three systems, in
+both modes.
+
 # soilKey 0.9.250 (2026-10-13)
 
 ## SiBCS key: in a profile of the older notation the A2 is the E and the B3 is the BC

@@ -56,6 +56,11 @@ structure (\code{"cuneiforme"}, \code{"paralelepipedica"}, added to
 \code{structure_type}; a structure "com tendencia a paralelepipedica" is
 not one). SiBCS knows the vertic horizon by these two features, and the
 surveys that predate the structured sheet describe them only there.
+Since v0.9.251 the amount and the grade of the cerosidade are read the
+same way (\code{"cerosidade comum e moderada"} fills
+\code{clay_films_amount} with \code{"Comum"} and
+\code{clay_films_strength} with \code{"Moderada"}), each where its own
+cell is empty.
 
 Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
 export quotes every field, and its free-text fields hold line breaks and,

@@ -506,6 +506,11 @@ inspect_bdsolos_csv <- function(path, sep = NULL) {
 #' \code{structure_type}; a structure "com tendencia a paralelepipedica" is
 #' not one). SiBCS knows the vertic horizon by these two features, and the
 #' surveys that predate the structured sheet describe them only there.
+#' Since v0.9.251 the amount and the grade of the cerosidade are read the
+#' same way (\code{"cerosidade comum e moderada"} fills
+#' \code{clay_films_amount} with \code{"Comum"} and
+#' \code{clay_films_strength} with \code{"Moderada"}), each where its own
+#' cell is empty.
 #'
 #' Reading (v0.9.222): the file is read with \code{utils::read.csv2}. The
 #' export quotes every field, and its free-text fields hold line breaks and,
@@ -835,6 +840,18 @@ load_bdsolos_csv <- function(path, sep = NULL, verbose = TRUE) {
       st[add & !blank] <- paste(st[add & !blank], rd$structure[add & !blank],
                                 sep = "; ")
       hz_list[["structure_type"]] <- st
+    }
+    # v0.9.251: the cerosidade, its amount and its grade, each where its
+    # own cell is empty
+    fr <- .bdsolos_films_reads(colour_raw$description_raw)
+    for (k in c("amount", "grade")) {
+      col <- c(amount = "clay_films_amount", grade = "clay_films_strength")[[k]]
+      if (any(!is.na(fr[[k]]))) {
+        v <- hz_list[[col]] %||% rep(NA_character_, nrow(rows))
+        fill <- (is.na(v) | !nzchar(trimws(v))) & !is.na(fr[[k]])
+        v[fill] <- fr[[k]][fill]
+        hz_list[[col]] <- v
+      }
     }
   }
   if (length(hz_list) == 0L) {
@@ -1221,4 +1238,75 @@ download_bdsolos <- function(out_path,
   w <- regmatches(after, regexpr(paste0("\\b", amt), after))
   if (length(w)) return(cls(w))
   NA_character_
+}
+
+
+#' Cerosidade in the spellings of the export ("serosidade", "crosidade").
+#' @noRd
+.BDSOLOS_FILMS_TERM <- "[cs]e?rosidade"
+
+#' The amount and the grade of cerosidade written beside the term in the text
+#' of a horizon description (v0.9.251): "cerosidade comum e moderada",
+#' "cerosidade fraca e pouca", "pouca cerosidade". Returns
+#' \code{list(amount, grade)}, as the structured columns word them ("Pouca",
+#' "Comum", "Abundante"; "Fraca", "Moderada", "Forte"; two of them as a
+#' range, "Fraca a moderada"). NA where the text states none: a bare mention,
+#' a denial, or words that are of something else ("cor da cerosidade (10YR
+#' 4/4) com mosqueado pouco"). Vectorised over the rows.
+#' @noRd
+.bdsolos_films_reads <- function(x) {
+  t <- gsub("[[:space:]]+", " ", .field_term(x))
+  n <- length(t); amount <- rep(NA_character_, n); grade <- rep(NA_character_, n)
+  for (i in which(!is.na(t) & grepl(.BDSOLOS_FILMS_TERM, t))) {
+    for (p in strsplit(t[i], "[;.]")[[1]]) {
+      if (!grepl(.BDSOLOS_FILMS_TERM, p)) next
+      for (q in strsplit(p, ",")[[1]]) {
+        if (!grepl(.BDSOLOS_FILMS_TERM, q)) next
+        r <- .bdsolos_films_beside(q)
+        if (is.na(amount[i])) amount[i] <- r[1]
+        if (is.na(grade[i]))  grade[i]  <- r[2]
+      }
+      if (!is.na(amount[i]) || !is.na(grade[i])) break
+    }
+  }
+  list(amount = amount, grade = grade)
+}
+
+#' The amount and the grade written beside "cerosidade" in a part of a
+#' horizon description: the words right after the term, as long as they are
+#' amounts, grades or words that join them, or the one word right before it.
+#' @noRd
+.bdsolos_films_beside <- function(q) {
+  none <- c(NA_character_, NA_character_)
+  term <- .BDSOLOS_FILMS_TERM
+  if (grepl(paste0("(sem|ausencia de|nao ha|nao apresenta|nao foi observada|nao se observ[a-z]*) [^,;]*(", term, ")"), q)) return(none)
+  # the words right after the term, up to the first sign that is no letter
+  # (a parenthesis, a figure, a dash) or the first word that is neither an
+  # amount, a grade nor a word that joins them
+  after  <- sub(paste0("^.*?(", term, ")"), "", q, perl = TRUE)
+  after  <- sub("[^a-z ].*$", "", after)
+  before <- sub(paste0("(", term, ").*$"), "", q)
+  w  <- strsplit(trimws(after), " +")[[1]]; w <- w[nzchar(w)]
+  wb <- strsplit(trimws(gsub("[^a-z ]", " ", before)), " +")[[1]]; wb <- wb[nzchar(wb)]
+  is_amt <- function(z) grepl("^(pouc[ao]s?|rar[ao]s?|comum|comuns|abundantes?|muit[ao]s?)$", z)
+  is_grd <- function(z) grepl("^(frac[ao]s?|moderad[ao]s?|fortes?)$", z)
+  fill   <- function(z) z %in% c("e", "a", "ou") | grepl("^(des)?continu[ao]s?$", z)
+  run <- character(0); j <- 1L
+  while (j <= length(w) && (is_amt(w[j]) || is_grd(w[j]) || fill(w[j]))) {
+    # "muito" counts when what follows is still of the description of the
+    # cerosidade ("muita e moderada", "muito pouca"), not of something else
+    # ("comum e moderada muito firme")
+    if (grepl("^muit", w[j]) && j < length(w) && !(is_amt(w[j + 1L]) || is_grd(w[j + 1L]) || fill(w[j + 1L]))) break
+    run <- c(run, w[j]); j <- j + 1L
+  }
+  if (!length(run) && length(wb) && (is_amt(wb[length(wb)]) || is_grd(wb[length(wb)]))) run <- wb[length(wb)]
+  if (!length(run)) return(none)
+  # "muito" before a grade or before "pouca" qualifies it; alone it is an amount
+  amt <- character(0); grd <- character(0)
+  for (m in seq_along(run)) { z <- run[m]; nx <- if (m < length(run)) run[m + 1L] else ""
+    if (grepl("^muit", z)) { if (is_grd(nx) || grepl("^pouc", nx)) next else amt <- c(amt, "Abundante") }
+    else if (grepl("^(pouc|rar)", z)) amt <- c(amt, "Pouca") else if (grepl("^comu", z)) amt <- c(amt, "Comum") else if (grepl("^abund", z)) amt <- c(amt, "Abundante")
+    else if (grepl("^frac", z)) grd <- c(grd, "Fraca") else if (grepl("^moderad", z)) grd <- c(grd, "Moderada") else if (grepl("^fort", z)) grd <- c(grd, "Forte") }
+  rng <- function(v, lv) { v <- unique(v); if (!length(v)) return(NA_character_); v <- v[order(match(v, lv))]; if (length(v) == 1L) v else paste0(v[1], " a ", tolower(v[length(v)])) }
+  c(rng(amt, c("Pouca", "Comum", "Abundante")), rng(grd, c("Fraca", "Moderada", "Forte")))
 }
