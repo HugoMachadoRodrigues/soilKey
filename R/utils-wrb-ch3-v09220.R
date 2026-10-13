@@ -77,16 +77,20 @@
   out
 }
 
-#' Ordinal class of a grade of development, of structure or of clay films: 1
-#' weak / fraca, 2 moderate / moderada, 3 strong / forte, NA unrecorded or
-#' unreadable. English and Portuguese terms. A range is read by its lower end
-#' ("Fraca a moderada" is 1, "Moderada a forte" 2): the grade is used where
+#' Ordinal class of a grade of development, of structure or of clay films: 0
+#' structureless / absent / ausente, 1 weak / fraca, 2 moderate / moderada, 3
+#' strong / forte, NA unrecorded or unreadable. English and Portuguese terms.
+#' A range is read by its lower end ("Fraca a moderada" is 1, "Moderada a
+#' forte" 2): the grade is used where
 #' SiBCS asks for a minimum ("grau moderado ou forte"), and a range meets a
 #' minimum only if all of it does.
 #' @noRd
 .field_grade_class <- function(x) {
   x <- .field_term(x)
   out <- rep(NA_integer_, length(x))
+  # v0.9.237: a grade recorded as absent is a grade, below weak; it used to be
+  # read as not recorded, which passes a minimum.
+  out[grepl("^(structureless|absent|ausente|sem estrutura)", x)] <- 0L
   out[grepl("^(very weak|weak|muito frac|frac)", x)] <- 1L
   out[grepl("^(moderate|moderad)", x)] <- 2L
   out[grepl("^(very strong|strong|muito fort|fort)", x)] <- 3L

@@ -46,12 +46,15 @@
 
 # ---- Mapping helpers ----------------------------------------------------
 
-test_that(".smartsolos_struct_grade maps PT/EN strings to 1..3", {
+test_that(".smartsolos_struct_grade maps PT/EN strings to the service's 1..4", {
+  # v0.9.237: ESTRUTURA_GRAU is "de ausente (1) a forte (4)" in the service's
+  # description; the grade used to be sent on a scale of three.
   skip_on_cran()
-  expect_equal(soilKey:::.smartsolos_struct_grade("weak"),     1L)
-  expect_equal(soilKey:::.smartsolos_struct_grade("Fraca"),    1L)
-  expect_equal(soilKey:::.smartsolos_struct_grade("moderate"), 2L)
-  expect_equal(soilKey:::.smartsolos_struct_grade("forte"),    3L)
+  expect_equal(soilKey:::.smartsolos_struct_grade("weak"),     2L)
+  expect_equal(soilKey:::.smartsolos_struct_grade("Fraca"),    2L)
+  expect_equal(soilKey:::.smartsolos_struct_grade("moderate"), 3L)
+  expect_equal(soilKey:::.smartsolos_struct_grade("forte"),    4L)
+  expect_equal(soilKey:::.smartsolos_struct_grade("structureless"), 1L)
   expect_true(is.na(soilKey:::.smartsolos_struct_grade(NA)))
   expect_true(is.na(soilKey:::.smartsolos_struct_grade("???")))
 })
@@ -60,12 +63,14 @@ test_that(".smartsolos_struct_grade maps PT/EN strings to 1..3", {
 test_that(".smartsolos_struct_type recognises subangular before angular", {
   skip_on_cran()
   # 'subangular blocky' must match SUBANGULAR (3), not ANGULAR (2).
-  expect_equal(soilKey:::.smartsolos_struct_type("subangular blocky"), 3L)
-  expect_equal(soilKey:::.smartsolos_struct_type("angular blocky"),    2L)
-  expect_equal(soilKey:::.smartsolos_struct_type("granular"),          1L)
-  expect_equal(soilKey:::.smartsolos_struct_type("prismatic"),         4L)
-  expect_equal(soilKey:::.smartsolos_struct_type("colunar"),           5L)
-  expect_equal(soilKey:::.smartsolos_struct_type("laminar"),           6L)
+  expect_equal(soilKey:::.smartsolos_struct_type("subangular blocky"), 5L)
+  expect_equal(soilKey:::.smartsolos_struct_type("angular blocky"),    4L)
+  expect_equal(soilKey:::.smartsolos_struct_type("granular"),          6L)
+  expect_equal(soilKey:::.smartsolos_struct_type("prismatic"),         2L)
+  expect_equal(soilKey:::.smartsolos_struct_type("colunar"),           3L)
+  expect_equal(soilKey:::.smartsolos_struct_type("laminar"),           1L)
+  expect_equal(soilKey:::.smartsolos_struct_type("platy"),             1L)
+  expect_equal(soilKey:::.smartsolos_struct_type("crumb"),             7L)
 })
 
 
@@ -137,8 +142,8 @@ test_that(".smartsolos_pedon_to_payload encodes subangular blocky correctly", {
   p <- .make_argissolo_for_smartsolos()
   pl <- soilKey:::.smartsolos_pedon_to_payload(p)
   hz3 <- pl$items[[1L]]$HORIZONTES[[3L]]
-  expect_equal(hz3$ESTRUTURA_TIPO, 3L)   # subangular blocky -> 3
-  expect_equal(hz3$ESTRUTURA_GRAU, 3L)   # strong -> 3
+  expect_equal(hz3$ESTRUTURA_TIPO, 5L)   # subangular blocky -> 5
+  expect_equal(hz3$ESTRUTURA_GRAU, 4L)   # strong -> 4
 })
 
 

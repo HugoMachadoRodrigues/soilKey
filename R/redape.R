@@ -148,14 +148,31 @@ download_redape_dataset <- function(dest_dir,
   vec[code]
 }
 
-# GeoTab code vocabularies (SiBCS field-description codes), matched to the
-# categorical strings the soilKey diagnostic engine consumes.
-.REDAPE_STRUCT_GRADE <- c("weak", "moderate", "strong")                 # ESTRUTURA_GRAU 1..3
-.REDAPE_STRUCT_SIZE  <- c("very fine", "fine", "medium",
-                          "coarse", "very coarse")                       # ESTRUTURA_TAMANHO 1..5
-.REDAPE_STRUCT_TYPE  <- c("granular", "angular blocky", "subangular blocky",
-                          "prismatic", "columnar", "platy")              # ESTRUTURA_TIPO 1..6
-.REDAPE_CEROS_GRADE  <- c("weak", "moderate", "strong")                 # CEROSIDADE_GRAU 1..3
+# GeoTab code vocabularies, as the SmartSolos Expert API describes its fields
+# (https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1):
+#   ESTRUTURA_GRAU     "de ausente (1) a forte (4)"
+#   ESTRUTURA_TAMANHO  "de muito pequeno (1) a extremamente grande (6)"
+#   ESTRUTURA_TIPO     "laminar (1), prismatica (2), colunar (3), blocos
+#                      angulares (4), blocos subangulares (5), granular (6),
+#                      grumosa (7)"
+#   CEROSIDADE_QUANTIDADE "de pouco (1) a abundante (3)"
+# v0.9.237: until then the grade was read on a scale of three ("weak" for 1)
+# and the type in another order ("granular" for 1, "columnar" for 5), so that
+# a weak structure in subangular blocks (2, 5) became a moderate columnar one,
+# and a strong grade (4) was dropped. Checked against the profiles the
+# BDsolos export also has, horizon by horizon: code 5 is "Blocos subangulares"
+# there, 6 "Granular", 2 "Prismatica"; grade 2 is "Fraca", 3 "Moderada".
+.REDAPE_STRUCT_GRADE <- c("structureless", "weak", "moderate", "strong")  # ESTRUTURA_GRAU 1..4
+.REDAPE_STRUCT_SIZE  <- c("very fine", "fine", "medium", "coarse",
+                          "very coarse", "extremely coarse")              # ESTRUTURA_TAMANHO 1..6
+.REDAPE_STRUCT_TYPE  <- c("platy", "prismatic", "columnar", "angular blocky",
+                          "subangular blocky", "granular", "crumb")       # ESTRUTURA_TIPO 1..7
+# CEROSIDADE_GRAU is described the same way, "de ausente (1) a forte (4)", but
+# it is left on the scale of three it was read with: the files hold 1, 2 and 3
+# only, and 1 comes with an amount of clay films in twelve of thirteen
+# horizons, which "ausente" would not. No profile shared with BDsolos records
+# clay films to settle it.
+.REDAPE_CEROS_GRADE  <- c("weak", "moderate", "strong")                   # CEROSIDADE_GRAU 1..3
 .REDAPE_CEROS_AMT    <- c("few", "common", "many")                      # CEROSIDADE_QUANTIDADE 1..3
 
 #' Convert one Redape GeoTab horizon record to a soilKey horizon row
