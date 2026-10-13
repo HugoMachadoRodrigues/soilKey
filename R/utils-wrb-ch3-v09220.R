@@ -19,10 +19,18 @@
 #' and the "IIBt1" of the surveys that numbered the materials in Roman numerals,
 #' are both "Bt1". It is what a test of the master horizon and of its suffixes
 #' reads; the horizon data keep the designation as written. NA stays NA.
+#'
+#' v0.9.240: the "(B)" of the notation in use in Brazil until 1988, the B
+#' incipiente, is read as the "Bi" that replaced it (Larach et al., 1988,
+#' "Definicao e notacao de horizontes e camadas do solo", the reference of
+#' SiBCS 2018 for the notation): "(B)", "(B)21", "(B1)" and "II(B)22" are
+#' "Bi", "Bi21", "Bi1" and "Bi22". A parenthesis elsewhere in the designation
+#' is left as written.
 #' @noRd
 .desg_master <- function(d) {
-  sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", trimws(as.character(d)),
-      perl = TRUE)
+  d <- trimws(as.character(d))
+  d <- sub("^([0-9]*|[IVX]*)\\(\\s*B\\s*([0-9a-z]*)\\s*\\)\\s*", "\\1Bi\\2", d)
+  sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", d, perl = TRUE)
 }
 
 #' The horizons with their designations read by .desg_master(), for the tests
