@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.257</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.258</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.258" id="soilkey-09258-2026-10-14">soilKey 0.9.258 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09258-2026-10-14"></a></h2>
+<div class="section level3">
+<h3 id="news-no-link-to-a-file-the-package-does-not-ship-0-9-258">NEWS: no link to a file the package does not ship<a class="anchor" aria-label="anchor" href="#news-no-link-to-a-file-the-package-does-not-ship-0-9-258"></a></h3>
+<p>The CRAN pre-test of 0.9.213 (2026-10-08) gave one NOTE, on Debian and on Windows: “Found the following (possibly) invalid file URI: URI: inst/benchmarks/reports/embrapa_febr_2026-05-01.md From: NEWS.md”. The entry of 0.9.16 linked to a benchmark report that left the repository with the other reports when it was made public on 2026-09-22. The entry names the report as text now, and says it is no longer part of the package.</p>
+<p>The only other link of the package without a scheme, <code>inst/DATA-PROVENANCE.md</code> in the README, is to a file that ships.</p>
+<p>No code changes.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.257" id="soilkey-09257-2026-10-13">soilKey 0.9.257 (2026-10-13)<a class="anchor" aria-label="anchor" href="#soilkey-09257-2026-10-13"></a></h2>
 <div class="section level3">
@@ -7469,7 +7478,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 <td align="right"><strong>34.0 %</strong></td>
 <td>[30.8 %, 37.5 %]</td>
 </tr></tbody></table><p>Per-Order accuracy reveals a clear pattern: <strong>soilKey is excellent on the Ferralsol / Latossolo / Oxisol cluster</strong> (WRB Ferralsols 22/22 = 100 %, USDA Oxisols 179/192 = 93.2 %), but the <strong>Argillic / Kandic discriminator</strong> is the principal failure mode (USDA Ultisols 0/270, WRB Acrisols 0/10, all routed to Oxisols / Ferralsols). A second failure cluster is <strong>mollic / umbric horizon detection</strong> (USDA Mollisols 0/34, WRB Phaeozems 0/6).</p>
-<p>These per-Order findings are the v1.0 roadmap. See <a href="inst/benchmarks/reports/embrapa_febr_2026-05-01.html">inst/benchmarks/reports/embrapa_febr_2026-05-01.md</a> for the full breakdown.</p>
+<p>These per-Order findings are the v1.0 roadmap. The full breakdown was written to <code>inst/benchmarks/reports/embrapa_febr_2026-05-01.md</code>, a report that is no longer part of the package.</p>
 </div>
 <div class="section level3">
 <h3 id="new-code-0-9-16">New code<a class="anchor" aria-label="anchor" href="#new-code-0-9-16"></a></h3>
