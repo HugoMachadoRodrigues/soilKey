@@ -117,9 +117,15 @@ test_that("v0.9.81: benchmark_redape preserves the Order accuracy bit-for-bit", 
   # the book, and a diagnostic B is one with or without carater fluvico:
   # 81.9% (77/94). Seventeen profiles change order, eleven of them to their
   # reference.
+  # v0.9.255: item (a) of the B espodico finds two Espodossolos that were
+  # keyed Argissolos: 84.0% (79/94).
+  # v0.9.257: the activity of the clay and the base saturation are judged in
+  # the larger part of the first 100 cm of the B, and two Argissolos with one
+  # eutrophic layer of high activity are no longer keyed Luvissolos: 86.2%
+  # (81/94).
   # Pinned with a +/- tolerance to catch unintended drift.
-  expect_gt(res$accuracy, 0.78)
-  expect_lt(res$accuracy, 0.86)
+  expect_gt(res$accuracy, 0.82)
+  expect_lt(res$accuracy, 0.90)
   expect_equal(res$n_compared, 94L)
 })
 
