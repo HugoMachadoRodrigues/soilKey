@@ -1,7 +1,8 @@
 # =============================================================================
-# soilKey Pro -- the visitor counter in the footer (v0.9.260): how many people
-# are on the site now, how many have come and from which countries, with a
-# small map. The counting is in R/utils_visitors.R.
+# soilKey Pro -- the visitor counter in the footer (v0.9.261): how many people
+# are on the site now, how many have come and from which countries. The
+# numbers take one line of the footer; the map of the countries opens above
+# it on a click. The counting is in R/utils_visitors.R.
 # =============================================================================
 
 # The countries the map can place (ISO code, a point, the name in en and pt);
@@ -19,31 +20,64 @@
 
 # A number written the way the language writes it (1,234 / 1.234).
 .vis_fmt <- function(x, lang) {
-  formatC(as.numeric(x), format = "d", big.mark = if (identical(lang, "pt")) "." else ",")
+  pt <- identical(lang, "pt")
+  formatC(as.numeric(x), format = "d", big.mark = if (pt) "." else ",",
+          decimal.mark = if (pt) "," else ".")
 }
 
 visitors_ui <- function(id) {
   ns <- NS(id)
   tags$div(
     class = "sk-visitors",
-    tags$div(class = "sk-visitors-text",
-             uiOutput(ns("numbers"), inline = TRUE),
-             tags$span(class = "sk-visitors-note", i18n("visitors.note")),
-             tags$span(class = "sk-visitors-credit", HTML(sprintf(
-               '%s <a href="https://db-ip.com" target="_blank" rel="noopener">DB-IP</a>',
-               htmltools::htmlEscape(i18n("visitors.credit")))))),
-    tags$div(class = "sk-visitors-map",
-             leaflet::leafletOutput(ns("map"), height = "130px")),
+    uiOutput(ns("numbers"), inline = TRUE),
+    # The map waits, hidden, above the footer: the footer is on screen in every
+    # tab, and a map in it took the height the tabs' own tables need (with a
+    # 790 px window the key trace of Classify had none left and was not drawn).
+    tags$div(
+      id = ns("panel"), class = "sk-visitors-panel", hidden = NA,
+      role = "region", `aria-label` = i18n("visitors.map_title"),
+      tags$div(class = "sk-visitors-panel-title", i18n("visitors.map_title")),
+      leaflet::leafletOutput(ns("map"), height = "210px"),
+      tags$div(class = "sk-visitors-note", i18n("visitors.note"), " ",
+               tags$span(class = "sk-visitors-credit", HTML(sprintf(
+                 '%s <a href="https://db-ip.com" target="_blank" rel="noopener">DB-IP</a>.',
+                 htmltools::htmlEscape(i18n("visitors.credit"))))))),
     # A first visit tells the server once; a later one only opens a session.
-    # The mark is kept in this browser and carries no identifier.
+    # The mark is kept in this browser and carries no identifier. The button of
+    # the numbers opens and closes the map; a click elsewhere or Escape closes
+    # it. Shiny draws the map when it is shown ('shown'), at its size.
     tags$script(HTML(sprintf(
-      "$(document).on('shiny:connected', function() {
-         var first = false;
-         try { if (!window.localStorage.getItem('soilkey_seen')) {
-                 first = true; window.localStorage.setItem('soilkey_seen', '1'); } }
-         catch (e) { first = false; }
-         Shiny.setInputValue('%s', first, {priority: 'event'});
-       });", ns("first_visit"))))
+      "(function() {
+         var panel = '#%s', btn = '.sk-visitors-toggle';
+         function isOpen() { return !$(panel).is('[hidden]'); }
+         function setOpen(open) {
+           var p = $(panel); if (!p.length) return;
+           if (open) {
+             p.css('bottom', ($('.sk-footer').outerHeight() + 8) + 'px').removeAttr('hidden');
+             p.trigger('shown');
+             setTimeout(function() { $(window).trigger('resize'); }, 60);
+           } else { p.attr('hidden', ''); p.trigger('hidden'); }
+           $(btn).attr('aria-expanded', open ? 'true' : 'false');
+         }
+         $(document).on('click', btn, function(e) { e.stopPropagation(); setOpen(!isOpen()); });
+         $(document).on('click', function(e) {
+           if (isOpen() && !$(e.target).closest(panel + ',' + btn).length) setOpen(false);
+         });
+         $(document).on('keydown', function(e) {
+           if (e.key === 'Escape' && isOpen()) { setOpen(false); $(btn).trigger('focus'); }
+         });
+         $(document).on('shiny:value', function(e) {
+           if (e.name === '%s') setTimeout(function() {
+             $(btn).attr('aria-expanded', isOpen() ? 'true' : 'false'); }, 0);
+         });
+         $(document).on('shiny:connected', function() {
+           var first = false;
+           try { if (!window.localStorage.getItem('soilkey_seen')) {
+                   first = true; window.localStorage.setItem('soilkey_seen', '1'); } }
+           catch (e) { first = false; }
+           Shiny.setInputValue('%s', first, {priority: 'event'});
+         });
+       })();", ns("panel"), ns("numbers"), ns("first_visit"))))
   )
 }
 
@@ -80,11 +114,17 @@ visitors_server <- function(id) {
         tags$span(class = "sk-visitors-online", tags$span(class = "sk-visitors-dot"),
                   i18n("visitors.online", .vis_fmt(max(s$online, 1L), lang))),
         tags$span(i18n("visitors.people", .vis_fmt(s$visitors, lang))),
-        tags$span(i18n("visitors.countries", .vis_fmt(length(s$countries), lang))),
+        tags$button(type = "button", class = "sk-visitors-toggle",
+                    `aria-controls` = session$ns("panel"), `aria-expanded` = "false",
+                    title = i18n("visitors.map_show"),
+                    i18n("visitors.countries", .vis_fmt(length(s$countries), lang)),
+                    shiny::icon("earth-americas", `aria-hidden` = "true")),
         if (!is.na(s$since)) tags$span(class = "sk-visitors-since",
                                         i18n("visitors.since", format(as.Date(s$since),
                                              if (identical(lang, "pt")) "%d/%m/%Y" else "%Y-%m-%d"))))
     })
+    # the line is hidden while it is empty, so it must be drawn while hidden
+    outputOptions(output, "numbers", suspendWhenHidden = FALSE)
 
     output$map <- leaflet::renderLeaflet({
       s <- stats()
@@ -97,9 +137,10 @@ visitors_server <- function(id) {
       # scripts are those every instance registered at start-up; Esri's gray
       # canvas, with its attribution (CARTO's tiles now ask for a key)
       m <- sk_leaflet(options = leaflet::leafletOptions(
-             zoomControl = FALSE, worldCopyJump = TRUE, minZoom = 0)) |>
+             zoomControl = FALSE, worldCopyJump = TRUE, minZoom = 0,
+             zoomSnap = 0.25)) |>
         sk_provider_tiles("Esri.WorldGrayCanvas") |>
-        leaflet::setView(lng = 0, lat = 20, zoom = 0)
+        leaflet::fitBounds(lng1 = -160, lat1 = -55, lng2 = 180, lat2 = 72)
       if (nrow(d)) m <- leaflet::addCircleMarkers(
         m, lng = d$lon, lat = d$lat, radius = 3 + 2.5 * sqrt(d$n),
         stroke = FALSE, fillColor = "#9E5626", fillOpacity = 0.75,

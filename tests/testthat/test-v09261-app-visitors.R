@@ -1,4 +1,4 @@
-# v0.9.260: the visitor counter of the Pro app's footer (R/utils_visitors.R,
+# v0.9.261: the visitor counter of the Pro app's footer (R/utils_visitors.R,
 # R/mod_visitors.R). The parts that do not need Firestore or a browser.
 
 .vis_app_env <- function() {
@@ -179,7 +179,44 @@ test_that("the footer's strings exist in both languages with the same placeholde
   if (is.null(y)) y <- yaml::read_yaml(file.path("inst", "i18n", "translations.yaml"))
   k <- grep("^visitors\\.", names(y$en), value = TRUE)
   expect_setequal(k, c("visitors.online", "visitors.people", "visitors.countries",
-                       "visitors.since", "visitors.note", "visitors.credit"))
+                       "visitors.since", "visitors.note", "visitors.credit",
+                       "visitors.map_show", "visitors.map_title"))
   ph <- function(x) regmatches(x, gregexpr("%[sd]", x))[[1]]
   for (key in k) expect_identical(ph(y$en[[key]]), ph(y$pt[[key]]), info = key)
+})
+
+test_that("numbers are written the language's way, with no warning", {
+  skip_on_cran()
+  e <- .vis_app_env()
+  sys.source(file.path(e$app_dir, "R", "mod_visitors.R"), envir = e)
+  expect_no_warning(pt <- e$.vis_fmt(c(7, 1234, 1234567), "pt"))
+  expect_equal(pt, c("7", "1.234", "1.234.567"))
+  expect_equal(e$.vis_fmt(1234567, "en"), "1,234,567")
+})
+
+test_that("the footer keeps the map in a panel that opens on a click", {
+  skip_on_cran()
+  skip_if_not_installed("shiny"); skip_if_not_installed("leaflet")
+  d <- .vis_app_env()$app_dir
+  # the module's UI, built where shiny's functions are found, as in the app
+  e <- new.env(parent = asNamespace("shiny"))
+  sys.source(file.path(d, "R", "utils_visitors.R"), envir = e)
+  sys.source(file.path(d, "R", "mod_visitors.R"), envir = e)
+  e$i18n <- function(key, ...) key
+  ui <- as.character(e$visitors_ui("visitors"))
+  # the panel starts hidden and holds the map, the note and the credit
+  expect_match(ui, '<div id="visitors-panel" class="sk-visitors-panel" hidden', fixed = TRUE)
+  expect_match(ui, 'id="visitors-map"', fixed = TRUE)
+  expect_match(ui, "https://db-ip.com", fixed = TRUE)
+  # the script opens it from the numbers' button and draws the map when shown
+  expect_match(ui, "var panel = '#visitors-panel', btn = '.sk-visitors-toggle';", fixed = TRUE)
+  expect_match(ui, "p.trigger('shown')", fixed = TRUE)
+  expect_match(ui, "Shiny.setInputValue('visitors-first_visit'", fixed = TRUE)
+})
+
+test_that("the app ships the visitor module, and Classify's key trace is not a fill item", {
+  skip_on_cran()
+  e <- .vis_app_env()
+  cls <- readLines(file.path(e$app_dir, "R", "mod_classify.R"), warn = FALSE)
+  expect_true(any(grepl('DT::DTOutput(ns("trace_table"), fill = FALSE)', cls, fixed = TRUE)))
 })

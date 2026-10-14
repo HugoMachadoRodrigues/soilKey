@@ -107,7 +107,7 @@ RUN R -e "pak::pkg_install(c( \
 RUN R -e "options(repos = c(PPM = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); \
   pak::pkg_install(c('ellmer', 'mirai'))"
 
-# The country of a visitor's address, for the counter in the footer (v0.9.260):
+# The country of a visitor's address, for the counter in the footer (v0.9.261):
 # DB-IP's "IP to Country Lite" table (CC BY 4.0, credited in the footer), of
 # this month or, when it is not out yet, of the last one, built into the
 # compact table the app reads (R/utils_visitors.R). The addresses are looked up

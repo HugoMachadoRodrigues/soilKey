@@ -2,9 +2,10 @@
 
 ## Pro app: a visitor counter in the footer
 
-The footer of the hosted app (soilkeypro.com) says how many people are on the
-site now, how many have visited and from how many countries, with a small map
-of them. Asked for by the maintainer.
+The footer of the hosted app (soilkeypro.com) says, in one line, how many
+people are on the site now, how many have visited and from how many countries;
+a click on the countries opens a map of them above the footer. Asked for by the
+maintainer.
 
 * **A person is counted once.** On the first visit the browser keeps a mark in
   its own storage (no identifier) and tells the server it is a new visitor; a
@@ -27,9 +28,19 @@ of them. Asked for by the maintainer.
   `/websocket/` answered with 101, a visitor a distinct address. The logs
   begin on 2026-10-07, when the site came back online.
 
+* **The map waits for a click.** The footer is on screen in every tab, and a
+  map in it (190 px in all) took the height the tabs' own tables need: with a
+  790 px window the key trace of Classify had none left, and DT does not draw a
+  table of height 0. The map now opens in a panel above the footer from the
+  line's "from N countries" button and closes on a second click, a click
+  elsewhere or Escape; the footer grows by one line only.
+* **Classify's key trace** is drawn at its own height, not the height left over
+  in its card (`DTOutput(fill = FALSE)`). With a short window, or a footer one
+  line taller, it was 36 px or less before.
+
 New files: `R/utils_visitors.R` and `R/mod_visitors.R` in the app, its country
 table `data/countries.csv` (built by `data-raw/visitor_countries.R`; see
-`inst/DATA-PROVENANCE.md`), the image step in `deploy/fly/Dockerfile`, and six
+`inst/DATA-PROVENANCE.md`), the image step in `deploy/fly/Dockerfile`, and eight
 strings in each language. The classification keys do not change.
 
 # soilKey 0.9.260 (2026-10-14)

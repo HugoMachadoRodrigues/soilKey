@@ -1,5 +1,5 @@
 # =============================================================================
-# soilKey Pro -- the visitor counter of the footer (v0.9.260).
+# soilKey Pro -- the visitor counter of the footer (v0.9.261).
 #
 # The footer says how many people are on the site now, how many have come, and
 # from which countries, with a small map of them.

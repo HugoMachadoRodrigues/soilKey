@@ -1,6 +1,6 @@
 # =============================================================================
 # soilKey Pro -- fill the visitor counter with the sessions the request logs
-# still hold, from before the counter was deployed (v0.9.260). Run once.
+# still hold, from before the counter was deployed (v0.9.261). Run once.
 #
 # Cloud Run keeps 30 days of request logs. A Shiny session is a request to
 # /websocket/ answered with 101. From those of the public host, before

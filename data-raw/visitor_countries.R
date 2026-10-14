@@ -1,4 +1,4 @@
-# The country table of the visitor counter of soilKey Pro (v0.9.260):
+# The country table of the visitor counter of soilKey Pro (v0.9.261):
 # inst/shiny/classify_app_pro/data/countries.csv, with the ISO 3166 code, a
 # point inside the country for the map, and its name in English and in
 # Portuguese.
