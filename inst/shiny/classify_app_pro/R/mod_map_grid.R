@@ -488,7 +488,7 @@ map_grid_server <- function(id, rv, settings) {
     # ---- base map -----------------------------------------------------------
     output$map <- leaflet::renderLeaflet({
       sk_leaflet() |>
-        sk_provider_tiles("CartoDB.Positron") |>
+        sk_provider_tiles("Esri.WorldGrayCanvas") |>
         leaflet::setView(lng = -51, lat = -14, zoom = 4)
     })
 
