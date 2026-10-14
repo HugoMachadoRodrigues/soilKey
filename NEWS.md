@@ -1,3 +1,19 @@
+# soilKey 0.9.258 (2026-10-14)
+
+## NEWS: no link to a file the package does not ship
+
+The CRAN pre-test of 0.9.213 (2026-10-08) gave one NOTE, on Debian and on
+Windows: "Found the following (possibly) invalid file URI: URI:
+inst/benchmarks/reports/embrapa_febr_2026-05-01.md From: NEWS.md". The entry
+of 0.9.16 linked to a benchmark report that left the repository with the
+other reports when it was made public on 2026-09-22. The entry names the
+report as text now, and says it is no longer part of the package.
+
+The only other link of the package without a scheme, `inst/DATA-PROVENANCE.md`
+in the README, is to a file that ships.
+
+No code changes.
+
 # soilKey 0.9.257 (2026-10-13)
 
 ## SiBCS key: the activity of the clay and the base saturation in the larger part of the first 100 cm of the B
@@ -13803,9 +13819,9 @@ WRB Acrisols 0/10, all routed to Oxisols / Ferralsols). A second
 failure cluster is **mollic / umbric horizon detection** (USDA
 Mollisols 0/34, WRB Phaeozems 0/6).
 
-These per-Order findings are the v1.0 roadmap. See
-[inst/benchmarks/reports/embrapa_febr_2026-05-01.md](inst/benchmarks/reports/embrapa_febr_2026-05-01.md)
-for the full breakdown.
+These per-Order findings are the v1.0 roadmap. The full breakdown was
+written to `inst/benchmarks/reports/embrapa_febr_2026-05-01.md`, a report
+that is no longer part of the package.
 
 ## New code
 
