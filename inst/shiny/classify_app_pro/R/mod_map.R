@@ -20,10 +20,12 @@
 # =============================================================================
 
 # Provider tiles offered in the basemap selector (satellite leads).
+# v0.9.260: the light map is Esri's gray canvas. CARTO's "Positron" now answers
+# every tile without an API key with an image that says "API KEY REQUIRED".
 .map_basemaps <- function() {
   c("Satellite (Esri)" = "Esri.WorldImagery",
     "Streets (OSM)"     = "OpenStreetMap",
-    "Light (CartoDB)"   = "CartoDB.Positron",
+    "Light (Esri)"      = "Esri.WorldGrayCanvas",
     "Topographic"       = "OpenTopoMap")
 }
 

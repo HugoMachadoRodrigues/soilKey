@@ -444,7 +444,7 @@ sk_register_widget_deps <- function() {
   widgets <- list(
     function() sk_datatable(data.frame(a = 1)),
     function() plotly::plot_ly(x = 1, y = 1, type = "bar"),
-    function() sk_provider_tiles(sk_leaflet(), "CartoDB.Positron"))
+    function() sk_provider_tiles(sk_leaflet(), "Esri.WorldGrayCanvas"))
   added <- character(0)
   for (w in widgets) {
     deps <- tryCatch(htmltools::renderTags(w())$dependencies,
@@ -487,7 +487,7 @@ sk_provider_deps <- function() {
   if (is.null(.sk_widget_deps$providers)) {
     plain <- vapply(sk_leaflet()$dependencies, function(d) d$name, character(1))
     deps <- leaflet::addProviderTiles(sk_leaflet(),
-                                      "CartoDB.Positron")$dependencies
+                                      "Esri.WorldGrayCanvas")$dependencies
     deps <- Filter(function(d) !(d$name %in% plain), deps)
     .sk_widget_deps$providers <-
       lapply(htmltools::resolveDependencies(deps), sk_own_dependency)
