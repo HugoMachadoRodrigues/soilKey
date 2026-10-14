@@ -1,5 +1,105 @@
 # Changelog
 
+## soilKey 0.9.257 (2026-10-13)
+
+### SiBCS key: the activity of the clay and the base saturation in the larger part of the first 100 cm of the B
+
+The key gives the Luvissolos a “horizonte B textural com argila de
+atividade alta e saturação por bases alta na maior parte dos primeiros
+100 cm do horizonte B (inclusive BA)” (SiBCS 2018, Cap. 4, p. 113), asks
+the same section of the Nitossolos (p. 114), and the definitions of the
+classes of the lower levels repeat it. Cap. 1 (p. 30) takes the activity
+of the clay “no horizonte B (inclusive BA e exclusive BC) ou no
+horizonte C (inclusive CA), quando não existe B”, and does not apply it
+to “materiais de solo das classes texturais areia e areia franca”.
+
+`atividade_argila_alta()` and
+[`eutrofico()`](https://hugomachadorodrigues.github.io/soilKey/reference/eutrofico.md)
+passed with **one layer** of B or of C, anywhere in the profile:
+
+- the C of a profile, with little clay and a high ratio of CEC to clay,
+  made the clay of the whole profile one of high activity;
+- one eutrophic layer, the C as often as not, made the profile
+  eutrophic;
+- the two did not have to be found in the same part of the profile.
+
+With both, an Argissolo with a B of low base saturation keyed Luvissolos
+(AC 10374, an Argissolo Álico of high activity: B1, B2 and B3 with V of
+49, 40 and 37%, and a C with 76%). The same reading kept a B nítico from
+being one, as it asks for clay of low activity, and sent to the
+Luvissolos the Nitossolos that come after them in the key. Of the 260
+complete profiles keyed Luvissolos in the default mode, 86 had that
+reference.
+
+Now, in a profile with a B horizon:
+
+- The section is the first 100 cm of the B: the B layers, the BA with
+  them and the BC not, that begin within 100 cm of the top of the
+  uppermost one, each with the thickness it has inside the section.
+- The activity is high, or the base saturation is, when the layers where
+  it is so make **more than half** of the thickness of the section,
+  among the layers that say. Half is not the larger part. A layer with
+  no CEC, no clay or no V recorded is left out of both sides of the
+  count.
+- A layer of areia or of areia franca is left out of the activity. It is
+  told by its sand, silt and clay. It was told by a clay under 15%,
+  which also left out the franco-arenosa and the franca with little
+  clay.
+
+A profile with no B is read as before, in its C layers. The sections
+that the book gives for those classes, each its own (Gleissolos: “dentro
+de 100 cm a partir da superfície”), are not in this version.
+
+The two functions are read by the Chernossolos and Luvissolos steps, by
+the B nítico, and by the classes of the third level (Eutróficos,
+Distróficos, Ta, Tb) of every order, which follow the same section.
+
+#### Measured
+
+National BDsolos export, 7,593 profiles with a reference order:
+
+|                                  | 0.9.256                | 0.9.257       |
+|----------------------------------|------------------------|---------------|
+| default mode                     | 4,029 (53.1%)          | 4,098 (54.0%) |
+| morphological mode               | 4,967 (65.4%)          | 5,044 (66.4%) |
+| complete profiles, default       | 2,925 of 4,674 (62.6%) | 2,992 (64.0%) |
+| complete profiles, morphological | 3,313 (70.9%)          | 3,386 (72.4%) |
+
+Default mode: 110 profiles change order; 76 reach their reference, 7
+leave it and 27 go from one other order to another. 84 go from
+Luvissolos to Argissolos and 13 from Luvissolos to Nitossolos. Reference
+Argissolos keyed so: 1,099 to 1,161 of 2,016; Nitossolos, 79 to 91 of
+347; Luvissolos, 98 to 94 of 197. Morphological mode: 117 change, 84
+reach their reference and the same 7 leave it.
+
+The seven that leave their reference, by what the sheets record:
+
+- RN 6022 and RN 7434 (one profile under two names, a Luvissolo
+  Crômico): activity of 31.9 in the first 22 cm of the B, 26.7 in the
+  next 50 and 29.6 below. High in 50 of the first 100 cm, which is half.
+- PE 9076 (Luvissolo Crômico): 27.0 in the 10 cm of the IIB21t and 25.7
+  in the 20 cm of the IIB22t.
+- MG 7400 (Podzólico Vermelho-Amarelo Eutrófico Ta): 22.2, 19.8 and 24.3
+  in its B, under the 27 of the book.
+- RN 9776 (Argissolo equivalente eutrófico, argila de atividade alta): V
+  of 36, 43 and 81% in its B; high in 39 of 83 cm.
+- PR 5728 and PR 6773 (one profile, a Cambissolo Tb Eutrófico with an A
+  chernozêmico): the Bi has 13% of clay and 37% of silt, a franca, and
+  an activity of 61.5. It was left out by its clay under 15%; read, it
+  is of high activity and the profile a Chernossolo.
+
+Third level. The name changes in 215 profiles that keep their order
+(default mode). Where the reference states the base saturation and the
+order is right before and after, the name agrees with it in 1,005 then
+1,015 of 1,022 profiles; for the activity of the clay, in 295 then 304
+of 357. Morphological mode: 1,269 then 1,284 of 1,309, and 325 then 334
+of 400.
+
+Panel of complete profiles (781): 437 to 447 and 514 to 524. Redape
+(94): 79 to 81 and 84 to 87, Argissolos that were keyed Luvissolos. FEBR
+(1,000): 376 and 501, unchanged. The 44 canonical profiles are identical
+in the three systems.
+
 ## soilKey 0.9.256 (2026-10-13)
 
 ### SiBCS key: more marks of the older notation of horizons
