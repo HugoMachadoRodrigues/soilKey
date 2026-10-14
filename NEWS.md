@@ -31,9 +31,11 @@ maintainer.
 * **The map waits for a click.** The footer is on screen in every tab, and a
   map in it (190 px in all) took the height the tabs' own tables need: with a
   790 px window the key trace of Classify had none left, and DT does not draw a
-  table of height 0. The map now opens in a panel above the footer from the
-  line's "from N countries" button and closes on a second click, a click
-  elsewhere or Escape; the footer grows by one line only.
+  table of height 0. The map now opens in a panel above the line's "from N
+  countries" button (below it when there is no room above) and closes on a
+  second click, a click elsewhere, Escape or, on a phone, a scroll of the page;
+  the footer grows by one line only. On a phone the map keeps its 210 px (the
+  app's narrow-screen rule sets every map's height to "auto").
 * **Classify's key trace** is drawn at its own height, not the height left over
   in its card (`DTOutput(fill = FALSE)`). With a short window, or a footer one
   line taller, it was 36 px or less before.
