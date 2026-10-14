@@ -317,7 +317,10 @@ classify_server <- function(id, rv, settings) {
                                choices = c("WRB" = "wrb", "SiBCS" = "sibcs",
                                            "USDA" = "usda"),
                                selected = "wrb"),
-            DT::DTOutput(ns("trace_table"))
+            # v0.9.261: drawn at its own height, not the height left over in
+            # the card. With a 790 px window and a taller footer nothing was
+            # left over, and DT does not draw a table of height 0.
+            DT::DTOutput(ns("trace_table"), fill = FALSE)
           ),
           bslib::nav_panel(
             i18n("classify.ambiguities"),
