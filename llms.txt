@@ -845,7 +845,7 @@ to cross-validate against Embrapa’s SmartSolos Expert REST API:
 > SBIAGRO, Ponta Grossa.
 >
 > The API is publicly available at
-> <https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi>.
+> `https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi`.
 
 When you use
 **[`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)**

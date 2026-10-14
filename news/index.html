@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.258</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.259</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,32 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.259" id="soilkey-09259-2026-10-14">soilKey 0.9.259 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09259-2026-10-14"></a></h2>
+<div class="section level3">
+<h3 id="tests-the-slow-ones-run-off-cran-0-9-259">Tests: the slow ones run off CRAN<a class="anchor" aria-label="anchor" href="#tests-the-slow-ones-run-off-cran-0-9-259"></a></h3>
+<p>The CRAN pre-test of 0.9.258 (2026-10-14) did not pass automatically on r-devel-windows-x86_64: “Overall checktime 14 min &gt; 10 min”, mainly from the tests, 461 s on Windows (158 s on Debian). The CRAN team asked to reduce the test timings, among other ways by running less important tests only off CRAN.</p>
+<p>Every test that took more than 0.03 s on CRAN’s terms (<code>NOT_CRAN</code> unset, the installed package) on a fast machine now starts with <code>skip_on_cran()</code>: 457 tests in 137 files. They run as before with <code>devtools::test()</code> and wherever <code>NOT_CRAN=true</code>. The core of the three keys stays on CRAN, slow as it is: the tests that the canonical profiles classify to their WRB Reference Soil Group, to their SiBCS order, and to their USDA order.</p>
+<table class="table"><thead><tr><th></th>
+<th>before</th>
+<th>now</th>
+</tr></thead><tbody><tr><td>tests run on CRAN</td>
+<td>1,821</td>
+<td>1,354</td>
+</tr><tr><td>time of the tests on CRAN’s terms, this machine</td>
+<td>87 s</td>
+<td>21 s</td>
+</tr><tr><td>the same, the whole test process</td>
+<td>98 s</td>
+<td>28 s</td>
+</tr></tbody></table><p>Windows ran the tests of 0.9.258 about five times slower than this machine; by that ratio they take about 150 s there now.</p>
+</div>
+<div class="section level3">
+<h3 id="the-links-to-embrapas-agroapi-are-text-0-9-259">The links to Embrapa’s AgroAPI are text<a class="anchor" aria-label="anchor" href="#the-links-to-embrapas-agroapi-are-text-0-9-259"></a></h3>
+<p>The check of this version found the three addresses of Embrapa’s AgroAPI (<code>www.agroapi.cnptia.embrapa.br</code>) out of reach: the server did not answer in 60 s, and the incoming check waited for it. The addresses stay, written as text and no longer as links: in the NEWS entry of 0.9.237, in the README, and in <code>inst/CITATION</code>, where the entry of the SmartSolos Expert article loses its <code>url</code> and keeps its DOI. As for the data servers in 0.9.155.</p>
+<p>No code changes; the classification of every profile is the same.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.258" id="soilkey-09258-2026-10-14">soilKey 0.9.258 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09258-2026-10-14"></a></h2>
 <div class="section level3">
@@ -808,7 +834,7 @@
 <h2 class="pkg-version" data-toc-text="0.9.237" id="soilkey-09237-2026-10-12">soilKey 0.9.237 (2026-10-12)<a class="anchor" aria-label="anchor" href="#soilkey-09237-2026-10-12"></a></h2>
 <div class="section level3">
 <h3 id="redape-and-smartsolos-the-structure-codes-are-read-on-the-scales-the-service-documents-0-9-237">Redape and SmartSolos: the structure codes are read on the scales the service documents<a class="anchor" aria-label="anchor" href="#redape-and-smartsolos-the-structure-codes-are-read-on-the-scales-the-service-documents-0-9-237"></a></h3>
-<p>The GeoTab files of Redape, and the SmartSolos Expert service they were made for, record the soil structure as integer codes. The service describes them (<a href="https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1" class="external-link uri">https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1</a>):</p>
+<p>The GeoTab files of Redape, and the SmartSolos Expert service they were made for, record the soil structure as integer codes. The service describes them (<code>https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1</code>):</p>
 <table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Field</th>
 <th>Description</th>
 </tr></thead><tbody><tr><td><code>ESTRUTURA_GRAU</code></td>
