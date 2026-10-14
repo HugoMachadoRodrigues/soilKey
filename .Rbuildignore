@@ -44,3 +44,10 @@
 ^\.gcloudignore$
 ^tests/testthat/_problems$
 ^tests/testthat/testthat-problems\.rds$
+^correspondence$
+^Manuscript$
+^munsellinterpol-conditions$
+^\.Rhistory$
+^\.RData$
+^[^/]*\.txt$
+^[^/]*\.png$
