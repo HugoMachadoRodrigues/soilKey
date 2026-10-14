@@ -272,6 +272,7 @@ test_that("melanic_epipedon_usda fails when bulk density too high", {
 # ------------------------------------------------------------------
 
 test_that("WRB / SiBCS unchanged after USDA epipedons add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

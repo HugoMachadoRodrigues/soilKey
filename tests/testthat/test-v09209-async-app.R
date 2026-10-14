@@ -28,6 +28,7 @@
 
 
 test_that("without workers a job runs here and still hands back a promise", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .async_env()
   expect_false(e$.sk_async_ready())

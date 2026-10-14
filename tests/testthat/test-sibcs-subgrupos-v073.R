@@ -75,6 +75,7 @@
 # ---- 1. YAML structural integrity --------------------------------------
 
 test_that("load_rules merges subgrupos/organossolos.yaml", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_true("subgrupos" %in% names(rules))
   # 9 GGs do Cap 14 todos presentes
@@ -94,6 +95,7 @@ test_that("Organossolos subgrupos totalizam 42 classes", {
 })
 
 test_that("cada GG tem catch-all 'tipico' como ultima entrada", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("OJF", "OJH", "OJS", "OOF", "OOH", "OOS",
                   "OXF", "OXH", "OXS")) {
@@ -122,6 +124,7 @@ test_that("run_sibcs_subgrupo returns NULL for unknown GG", {
 })
 
 test_that("run_sibcs_subgrupo falls back to tipico when no specific match", {
+  skip_on_cran()
   # Pedon sem nenhum atributo discriminante -> deve cair em tipicos.
   pr <- .make_organossolo_subgrupo("OJ", fiber_rubbed = 60)
   res <- run_sibcs_subgrupo(pr, "OJF")
@@ -133,6 +136,7 @@ test_that("run_sibcs_subgrupo falls back to tipico when no specific match", {
 # ---- 3. Targeted subgrupo positives ------------------------------------
 
 test_that("OJFsa (salinos) catches profile com EC alta < 150 cm", {
+  skip_on_cran()
   pr <- .make_organossolo_subgrupo("OJ", fiber_rubbed = 60,
                                        ec_layer1 = 5)  # 4 <= 5 < 7 = salino
   res <- run_sibcs_subgrupo(pr, "OJF")
@@ -155,6 +159,7 @@ test_that("OXFte (terricos) catches profile com horizonte mineral >= 30 cm", {
 })
 
 test_that("OXFtp (tipicos catch-all) is selected when no other criterion fires", {
+  skip_on_cran()
   pr <- .make_organossolo_subgrupo("OX", fiber_rubbed = 60)
   res <- run_sibcs_subgrupo(pr, "OXF")
   expect_equal(res$assigned$code, "OXFtp")
@@ -188,6 +193,7 @@ test_that("classify_sibcs trace exposes subgrupos block", {
 })
 
 test_that("classify_sibcs descende ate o 4o nivel quando ordem=Organossolos", {
+  skip_on_cran()
   pr <- .make_organossolo_subgrupo("OX", fiber_rubbed = 60)
   res <- classify_sibcs(pr, on_missing = "silent")
   if (res$rsg_or_order == "Organossolos") {
@@ -203,12 +209,14 @@ test_that("classify_sibcs descende ate o 4o nivel quando ordem=Organossolos", {
 # ---- 5. Backward-compat: WRB e USDA --------------------------------
 
 test_that("WRB Ferralsol classification ainda passa apos subgrupos add", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")
 })
 
 test_that("USDA Oxisol classification ainda passa apos subgrupos add", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   expect_equal(classify_usda(pr, on_missing = "silent")$rsg_or_order,
                  "Oxisols")

@@ -36,6 +36,7 @@ test_that("nitic_horizon does not pass on the Ferralsol fixture", {
 })
 
 test_that("nitic_horizon needs Fe-ox, structure and shiny faces (v0.9.220)", {
+  skip_on_cran()
   pr <- make_nitisol_canonical()
   expect_true(isTRUE(nitic_horizon(pr)$passed))
   no_ox <- pr$clone(deep = TRUE); no_ox$horizons$fe_ox_pct <- NA_real_

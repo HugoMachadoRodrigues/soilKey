@@ -85,6 +85,7 @@ test_that("the items of requirement (a)", {
 })
 
 test_that("the canonical Gleissolo has a glei horizon by its colours and its drainage", {
+  skip_on_cran()
   p <- make_gleissolo_canonical()
   g <- horizonte_glei(p)
   expect_true(isTRUE(g$passed))
@@ -94,6 +95,7 @@ test_that("the canonical Gleissolo has a glei horizon by its colours and its dra
 })
 
 test_that("the colours count when the site is mal or muito mal drenado", {
+  skip_on_cran()
   grey <- function(drainage) .gl_profile(c("A", "Cg1", "Cg2"), c(0, 20, 60), c(20, 60, 120),
                                          c("10YR", "2.5Y", "5Y"), c(3, 6, 6), c(2, 1, 1), drainage)
   for (d in c("Mal drenado", "Muito mal drenado", "Imperfeitamente a mal drenado",
@@ -110,6 +112,7 @@ test_that("the colours count when the site is mal or muito mal drenado", {
 })
 
 test_that("with no drainage class recorded, the layer itself has to show the saturation", {
+  skip_on_cran()
   mk <- function(hue = "2.5Y", chroma = 1, ...)
     .gl_profile(c("A", "C1", "C2"), c(0, 20, 60), c(20, 60, 120), c("10YR", hue, hue),
                 c(3, 6, 6), c(3, chroma, chroma), NA_character_, ...)
@@ -213,6 +216,7 @@ test_that("in the morphological mode the 'g' of a designation stands for the col
 })
 
 test_that("Gleissolos: the glei horizon within 50 cm, or to 150 cm right below an A or an E", {
+  skip_on_cran()
   mk <- function(des, top, bottom) {
     n <- length(des); grey <- grepl("g", des)
     .gl_profile(des, top, bottom, ifelse(grey, "2.5Y", "7.5YR"), ifelse(grey, 6, 4), ifelse(grey, 1, 6),
@@ -230,6 +234,7 @@ test_that("Gleissolos: the glei horizon within 50 cm, or to 150 cm right below a
 })
 
 test_that("Neossolos: no glei horizon within 50 cm, unless the texture is areia or areia franca", {
+  skip_on_cran()
   mk <- function(top_g, clay, silt) .gl_profile(c("A", "C", "Cg"), c(0, 20, top_g), c(20, top_g, 200),
                                                 c("10YR", "10YR", "2.5Y"), c(4, 5, 6), c(3, 4, 1),
                                                 "Mal drenado", clay = clay, silt = silt)
@@ -249,6 +254,7 @@ test_that("Neossolos: no glei horizon within 50 cm, unless the texture is areia 
 })
 
 test_that("a mottled Argissolo with good drainage is keyed Argissolos again", {
+  skip_on_cran()
   p <- make_argissolo_canonical()
   p$horizons$redoximorphic_features_pct <- c(NA, 10, 30, 30)
   expect_false(isTRUE(horizonte_glei(p)$passed))

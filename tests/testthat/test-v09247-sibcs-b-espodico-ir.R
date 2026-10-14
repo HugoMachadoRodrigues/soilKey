@@ -20,6 +20,7 @@
 }
 
 test_that("a B with 'ir' is a B espodico in the morphological mode", {
+  skip_on_cran()
   old <- .ir_morph(TRUE); on.exit(options(old), add = TRUE)
   p <- .ir_profile(c("A1", "A2", "B2ir", "C"))
   r <- B_espodico(p)
@@ -30,6 +31,7 @@ test_that("a B with 'ir' is a B espodico in the morphological mode", {
 })
 
 test_that("the designations of the export are read", {
+  skip_on_cran()
   old <- .ir_morph(TRUE); on.exit(options(old), add = TRUE)
   for (d in c("Bir", "B2ir", "B21ir", "B22irx", "B21irh", "IIB23ir", "B'ir"))
     expect_true(isTRUE(B_espodico(.ir_profile(c("A1", "A2", d, "C")))$passed), info = d)
@@ -45,6 +47,7 @@ test_that("a B incipiente, a Bw and a C with the letters are not", {
 })
 
 test_that("the default mode does not read the letters", {
+  skip_on_cran()
   old <- .ir_morph(FALSE); on.exit(options(old), add = TRUE)
   p <- .ir_profile(c("A1", "A2", "B2ir", "C"))
   expect_false(isTRUE(B_espodico(p)$passed))
@@ -52,6 +55,7 @@ test_that("the default mode does not read the letters", {
 })
 
 test_that("the letters 'h' and 's' are read as before, and the canonical Espodossolo keeps its class", {
+  skip_on_cran()
   old <- .ir_morph(TRUE); on.exit(options(old), add = TRUE)
   for (d in c("Bh", "Bs", "Bhs", "Bhir"))
     expect_true(isTRUE(B_espodico(.ir_profile(c("A1", "E", d, "C")))$passed), info = d)

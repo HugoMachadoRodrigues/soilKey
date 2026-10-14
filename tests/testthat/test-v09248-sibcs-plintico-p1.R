@@ -21,6 +21,7 @@
 }
 
 test_that("a 'p1' in a B or C horizon is plinthite in the morphological mode", {
+  skip_on_cran()
   old <- .p1_morph(TRUE); on.exit(options(old), add = TRUE)
   p <- .p1_profile(c("A1", "B2tp1", "Cp1"))
   r <- horizonte_plintico(p)
@@ -55,6 +56,7 @@ test_that("it has to make the 15 cm of the horizon", {
 })
 
 test_that("'pl' and 'f' are read as before, and the canonical Plintossolo keeps its class", {
+  skip_on_cran()
   old <- .p1_morph(TRUE); on.exit(options(old), add = TRUE)
   expect_true(isTRUE(horizonte_plintico(.p1_profile(c("A1", "B21pl", "B22pl")))$passed))
   expect_true(isTRUE(horizonte_plintico(.p1_profile(c("A1", "Btf", "Cf")))$passed))

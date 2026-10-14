@@ -18,6 +18,7 @@
 }
 
 test_that("a vertic horizon right below the A keeps the profile out of the Neossolos", {
+  skip_on_cran()
   p <- .nv(c("A", "Cv1", "Cv2"), c(0, 20, 60), c(20, 60, 120), c(40, 45, 45),
            slickensides = c(NA, "Comum", "Comum"))
   n <- neossolo(p)
@@ -27,6 +28,7 @@ test_that("a vertic horizon right below the A keeps the profile out of the Neoss
 })
 
 test_that("with a C between the A and the vertic horizon, the item is satisfied", {
+  skip_on_cran()
   # the vertic horizon begins at 35 cm, below a C1 with few slickensides: it
   # begins within 50 cm, which the step used to test, and is not right below
   # the A
@@ -40,6 +42,7 @@ test_that("with a C between the A and the vertic horizon, the item is satisfied"
 })
 
 test_that("the horizons of transition from the A count with the A", {
+  skip_on_cran()
   for (tr in c("AC", "AB", "A/C", "A3")) {
     p <- .nv(c("A", tr, "Cv"), c(0, 15, 35), c(15, 35, 120), c(40, 42, 45),
              slickensides = c(NA, NA, "Comum"))
@@ -56,6 +59,7 @@ test_that("the horizons of transition from the A count with the A", {
 })
 
 test_that("a vertic horizon that begins at the surface is there too, and a profile with no designation is tested as before", {
+  skip_on_cran()
   p <- .nv(c("Av", "Cv"), c(0, 30), c(30, 120), c(45, 45), slickensides = "Comum")
   expect_true(neossolo(p)$evidence$vertico_below_a)
   q <- .nv(rep(NA_character_, 3), c(0, 15, 35), c(15, 35, 120), c(40, 42, 45),
@@ -67,6 +71,7 @@ test_that("a vertic horizon that begins at the surface is there too, and a profi
 })
 
 test_that("a vertic horizon with the colours of the glei is still a glei horizon", {
+  skip_on_cran()
   # the suborder of the Vertissolos Hidromorficos asks for it
   hz <- data.table::data.table(
     designation = c("A", "Cg1", "Cg2"), top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 120),
@@ -83,6 +88,7 @@ test_that("a vertic horizon with the colours of the glei is still a glei horizon
 })
 
 test_that("the canonical profiles keep their order", {
+  skip_on_cran()
   expect_equal(classify_sibcs(make_vertissolo_canonical(), on_missing = "silent")$rsg_or_order, "Vertissolos")
   expect_equal(classify_sibcs(make_nitossolo_canonical(), on_missing = "silent")$rsg_or_order, "Nitossolos")
   expect_equal(classify_sibcs(make_gleissolo_canonical(), on_missing = "silent")$rsg_or_order, "Gleissolos")

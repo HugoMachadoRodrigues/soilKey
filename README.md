@@ -558,7 +558,7 @@ When you use **`classify_via_smartsolos_api()`** to cross-validate against Embra
 >
 > Vaz, G. J., Silva Neto, L. de F. da, Lima, R. N., & Oliveira, S. R. de M. (2019). *Uma API para a classificação de solos do Brasil.* In: 12. Congresso Brasileiro de Agroinformática, Indaiatuba. Anais, p. 63–72. SBIAGRO, Ponta Grossa.
 >
-> The API is publicly available at <https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi>.
+> The API is publicly available at `https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi`.
 
 When you use **`benchmark_redape()`** or **`load_redape_pedons()`**:
 

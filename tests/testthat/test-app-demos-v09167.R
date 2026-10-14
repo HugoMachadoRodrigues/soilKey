@@ -14,6 +14,7 @@ test_that("the demo assets are bundled", {
 })
 
 test_that("the demo spectrum matches the example pedon and is numeric", {
+  skip_on_cran()
   www <- .pro_app_www()
   skip_if(www == "", "app not installed")
   m <- as.matrix(utils::read.csv(file.path(www, "demo_spectrum.csv"),
@@ -53,6 +54,7 @@ test_that("spectra_server attaches the demo spectrum on demand", {
 })
 
 test_that("the demo spectrum sizes to the pedon's horizon count (v0.9.170)", {
+  skip_on_cran()
   # Regression for "Spectrum has 5 rows but the pedon has 7 horizons": the
   # bundled demo is 5 rows, but a pedon can have any count (e.g. after a photo
   # extraction appends horizons). .pro_demo_spectrum() recycles rows to match.

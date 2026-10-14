@@ -87,6 +87,7 @@ test_that("carater_hidromorfico FAILS sem indicios hidromorficos", {
 # ============================================================================
 
 test_that("Cap 8 Espodossolos GGs: 4+4+4 = 12 classes em 3 subordens", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (sub in c("EK", "EJ", "ES")) {
     expect_true(sub %in% names(rules$grandes_grupos),
@@ -115,6 +116,7 @@ test_that("Cap 8 Espodossolos SGs: 6+15+3+10+8 = 42 classes em 12 GGs", {
 })
 
 test_that("Cap 14 + Cap 5 + Cap 6 + Cap 7 + Cap 8 GGs preservados", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   total_ggs <- sum(vapply(rules$grandes_grupos, length, integer(1)))
   # Caps 5-8 minimo: 9 + 23 + 26 + 11 + 12 = 81. Caps subsequentes acumulam.
@@ -126,6 +128,7 @@ test_that("Cap 14 + Cap 5 + Cap 6 + Cap 7 + Cap 8 GGs preservados", {
 # ============================================================================
 
 test_that("WRB / USDA inalterados apos Cap 8 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

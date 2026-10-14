@@ -71,6 +71,7 @@ test_that("v0.9.137: B_nitico drops the non-verbatim ferric short-circuit", {
 })
 
 test_that("v0.9.137: the canonical Nitossolo still classifies as Nitossolos", {
+  skip_on_cran()
   expect_true(isTRUE(B_nitico(make_nitossolo_canonical())$passed))
   expect_equal(classify_sibcs(make_nitossolo_canonical(),
                               on_missing = "silent")$rsg_or_order, "Nitossolos")

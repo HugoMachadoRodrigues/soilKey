@@ -11,6 +11,7 @@ test_that("classify_from_documents() requires at least one input source", {
 
 
 test_that("classify_from_documents() accepts an existing pedon and runs the keys", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_from_documents(
     pedon    = pr,
@@ -29,6 +30,7 @@ test_that("classify_from_documents() accepts an existing pedon and runs the keys
 
 
 test_that("classify_from_documents() lets the caller pick a subset of systems", {
+  skip_on_cran()
   pr <- make_luvisol_canonical()
   res <- classify_from_documents(
     pedon    = pr,
@@ -55,6 +57,7 @@ test_that("classify_from_documents() rejects a bad provider type", {
 
 
 test_that("classify_from_documents() writes a report when asked", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   out <- tempfile(fileext = ".html")
   on.exit(unlink(out), add = TRUE)

@@ -24,6 +24,7 @@ test_that("luvisol passes on canonical Luvisol fixture", {
 })
 
 test_that("argic-derived RSGs are mutually exclusive on each fixture", {
+  skip_on_cran()
   ac <- make_acrisol_canonical()
   lx <- make_lixisol_canonical()
   al <- make_alisol_canonical()

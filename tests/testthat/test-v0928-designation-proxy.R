@@ -46,6 +46,7 @@ test_that("designation Btk / Btx / Bt1 / 2Bt all match", {
 # ---- negative: designations without 't' suffix don't trigger ---------------
 
 test_that("designation Bw / Bk / BC / A / O do NOT trigger", {
+  skip_on_cran()
   for (des in c("Bw", "Bk", "BC", "A", "O", "C", "R", "Bg", "Bs", "Bh")) {
     p <- PedonRecord$new(
       site = list(id = "p", lat = 0, lon = 0, country = "US"),

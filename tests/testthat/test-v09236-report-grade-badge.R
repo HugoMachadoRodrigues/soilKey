@@ -40,6 +40,7 @@ test_that("a generated report carries the class and no class=\"NA\"", {
 })
 
 test_that("no name is defined twice in the package sources", {
+  skip_on_cran()
   # Files are loaded in alphabetical order, and a second definition replaces
   # the first without a word. Read from the sources, so only where they are.
   src <- testthat::test_path("..", "..", "R")

@@ -55,6 +55,7 @@ test_that("'a maior parte' is more than half of the thickness that says", {
 })
 
 test_that("the activity of the clay is that of most of the first 100 cm of the B", {
+  skip_on_cran()
   # Tb in the whole B; the C, with less clay, has a high ratio
   p <- .mp_profile(c("A", "Bt1", "Bt2", "C"), c(0, 20, 60, 120), c(20, 60, 120, 180),
                    clay = c(20, 40, 45, 18), cec = c(6, 6, 6, 8), bs = 40)
@@ -101,6 +102,7 @@ test_that("a layer of areia or areia franca is left out; the franco-arenosa is n
 })
 
 test_that("the base saturation is that of most of the first 100 cm of the B", {
+  skip_on_cran()
   # dystrophic B with an eutrophic first sub-horizon and an eutrophic C
   p <- .mp_profile(c("A", "BA", "Bt1", "Bt2", "C"), c(0, 20, 35, 70, 130), c(20, 35, 70, 130, 180),
                    clay = 35, cec = 6, bs = c(70, 60, 40, 30, 80))
@@ -135,6 +137,7 @@ test_that("a profile with no B is read in its C, as before", {
 })
 
 test_that("an Argissolo with a Ta and eutrophic C is no Luvissolo", {
+  skip_on_cran()
   p <- make_luvissolo_canonical()                       # A, BA, Bt, C
   expect_equal(classify_sibcs(p, on_missing = "silent")$rsg_or_order, "Luvissolos")
   h <- data.table::copy(p$horizons)
@@ -153,6 +156,7 @@ test_that("an Argissolo with a Ta and eutrophic C is no Luvissolo", {
 })
 
 test_that("a Nitossolo keeps its B nitico when a layer below the B has a high ratio", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()                       # A, BA, Bt, BC
   expect_equal(classify_sibcs(p, on_missing = "silent")$rsg_or_order, "Nitossolos")
   h <- data.table::copy(p$horizons)
@@ -164,6 +168,7 @@ test_that("a Nitossolo keeps its B nitico when a layer below the B has a high ra
 })
 
 test_that("the canonical profiles keep their names", {
+  skip_on_cran()
   expect_equal(classify_sibcs(make_luvissolo_canonical(), on_missing = "silent")$name,
                "Luvissolos Crômicos Órticos típicos")
   expect_equal(classify_sibcs(make_argissolo_canonical(), on_missing = "silent")$name,

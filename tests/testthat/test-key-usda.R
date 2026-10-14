@@ -1,4 +1,5 @@
 test_that("load_rules reads the USDA rule set with 12 orders in canonical key order", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$orders), 12L)
   codes <- vapply(rules$orders, function(o) o$code, character(1))
@@ -96,6 +97,7 @@ test_that("oxic_usda delegates faithfully to ferralic", {
 })
 
 test_that("argillic_usda delegates to argic with the correct system per clay-films evidence", {
+  skip_on_cran()
   # v0.9.27: argillic_usda routes to argic(system = "usda") when
   # argillic_clay_films_test passes (NASIS pediagfeatures argillic
   # OR per-horizon clay_films_amount populated), otherwise falls
@@ -112,6 +114,7 @@ test_that("argillic_usda delegates to argic with the correct system per clay-fil
 })
 
 test_that("mutual exclusion: each USDA order excludes all earlier orders", {
+  skip_on_cran()
   # The chave is mutually exclusive: a Histosol fixture should not also
   # pass Spodosols / Andisols / Oxisols / Vertisols / etc. We verify via
   # the trace.

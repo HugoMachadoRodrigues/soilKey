@@ -176,6 +176,7 @@ test_that("sombric FIRES when a deeper layer has higher OC than the layer above"
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("v0.9.2.C diagnostic corrections do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

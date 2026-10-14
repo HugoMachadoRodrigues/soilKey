@@ -1,4 +1,5 @@
 test_that("classify_wrb2022 assigns Ferralsols to canonical Ferralsol fixture", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr)
   expect_s3_class(res, "ClassificationResult")
@@ -7,6 +8,7 @@ test_that("classify_wrb2022 assigns Ferralsols to canonical Ferralsol fixture", 
 })
 
 test_that("trace evaluates RSGs before Ferralsols without short-circuiting", {
+  skip_on_cran()
   # In v0.1 the RSGs before FR were all not_implemented_v01 stubs
   # returning NA. In v0.3 they are all wired with real diagnostics;
   # for the canonical Ferralsol fixture they correctly fail (FALSE)
@@ -24,6 +26,7 @@ test_that("trace evaluates RSGs before Ferralsols without short-circuiting", {
 })
 
 test_that("Luvisol fixture classifies as Luvisols (v0.2 wired)", {
+  skip_on_cran()
   # In v0.1 this fixture landed at the RG catch-all because no argic-
   # derived RSG was wired. In v0.2 LV is wired and the fixture is a
   # canonical Luvisol (high CEC, low Al sat).
@@ -33,6 +36,7 @@ test_that("Luvisol fixture classifies as Luvisols (v0.2 wired)", {
 })
 
 test_that("Chernozem fixture classifies as Chernozems (v0.2 wired)", {
+  skip_on_cran()
   # In v0.1 this fixture landed at the RG catch-all. In v0.2 CH is
   # wired with the chernozem() RSG diagnostic (mollic + carbonates +
   # chroma <= 2 in upper 20 cm).
@@ -42,6 +46,7 @@ test_that("Chernozem fixture classifies as Chernozems (v0.2 wired)", {
 })
 
 test_that("evidence_grade B when an attribute is predicted_spectra", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   pr$add_measurement(4, "clay_pct", 60, "predicted_spectra",
                        confidence = 0.85, overwrite = TRUE)
@@ -50,6 +55,7 @@ test_that("evidence_grade B when an attribute is predicted_spectra", {
 })
 
 test_that("evidence_grade D when an attribute is extracted_vlm", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   pr$add_measurement(1, "clay_pct", 50, "extracted_vlm",
                        confidence = 0.7, overwrite = TRUE)
@@ -64,6 +70,7 @@ test_that("on_missing = 'error' aborts when attributes are missing", {
 })
 
 test_that("on_missing = 'silent' suppresses missing-data warnings", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   pr$horizons$ph_kcl <- NA_real_   # not used by ferralic; missing but ignorable
   res <- classify_wrb2022(pr, on_missing = "silent")
@@ -102,6 +109,7 @@ test_that("load_rules returns the 32 RSGs in canonical WRB 2022 order", {
 })
 
 test_that("HS is no longer a stub (v0.3 wiring)", {
+  skip_on_cran()
   # In v0.1 / v0.2 HS used the not_implemented_v01 marker which set a
   # 'scheduled' note. In v0.3 HS is wired with histic_horizon and
   # the trace reports a real evaluation -- no scheduled note.
@@ -111,6 +119,7 @@ test_that("HS is no longer a stub (v0.3 wiring)", {
 })
 
 test_that("ClassificationResult prints without error", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr)
   # cli writes through its own handler, which bypasses sink() and

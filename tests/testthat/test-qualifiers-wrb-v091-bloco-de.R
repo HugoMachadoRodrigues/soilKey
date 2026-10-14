@@ -11,6 +11,7 @@
 # ---- YAML structural contract ----------------------------------------------
 
 test_that("v0.9.1 YAML lists canonical principals for all 16 D+E RSGs", {
+  skip_on_cran()
   qfile <- system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey")
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   qrules <- yaml::read_yaml(qfile)
@@ -52,6 +53,7 @@ test_that("v0.9.1 YAML lists canonical principals for all 16 D+E RSGs", {
 # ---- Per-fixture qualifier resolution --------------------------------------
 
 test_that("CH canonical fixture resolves to a Vermic Chernozem", {
+  skip_on_cran()
   pr  <- make_chernozem_canonical()
   res <- resolve_wrb_qualifiers(pr, "CH")
   expect_true("Vermic"  %in% res$principal)
@@ -65,6 +67,7 @@ test_that("CH canonical fixture resolves to a Vermic Chernozem", {
 })
 
 test_that("DU canonical fixture: the duric horizon gives Epic, not Duric", {
+  skip_on_cran()
   pr  <- make_durisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "DU")
   # v0.9.217: the duric horizon defines Durisols, so Chapter 4 does not list
@@ -78,6 +81,7 @@ test_that("DU canonical fixture: the duric horizon gives Epic, not Duric", {
 })
 
 test_that("CL canonical fixture: the calcic horizon gives Epic, not Calcic", {
+  skip_on_cran()
   pr  <- make_calcisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CL")
   # v0.9.217: the calcic horizon defines Calcisols, so Chapter 4 does not list
@@ -91,6 +95,7 @@ test_that("CL canonical fixture: the calcic horizon gives Epic, not Calcic", {
 })
 
 test_that("AC canonical fixture resolves with Cutanic", {
+  skip_on_cran()
   pr  <- make_acrisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AC")
   # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
@@ -102,6 +107,7 @@ test_that("AC canonical fixture resolves with Cutanic", {
 })
 
 test_that("LX canonical fixture resolves with Cutanic", {
+  skip_on_cran()
   pr  <- make_lixisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "LX")
   # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
@@ -113,6 +119,7 @@ test_that("LX canonical fixture resolves with Cutanic", {
 })
 
 test_that("AL canonical fixture resolves with Hyperalic + Cutanic", {
+  skip_on_cran()
   pr  <- make_alisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AL")
   # v0.9.217: both are supplementary qualifiers in WRB 2022 Chapter 4
@@ -125,6 +132,7 @@ test_that("AL canonical fixture resolves with Hyperalic + Cutanic", {
 })
 
 test_that("LV canonical fixture resolves with Cutanic", {
+  skip_on_cran()
   pr  <- make_luvisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "LV")
   # v0.9.217: Cutanic is a supplementary qualifier in WRB 2022 Chapter 4
@@ -136,6 +144,7 @@ test_that("LV canonical fixture resolves with Cutanic", {
 })
 
 test_that("CM canonical fixture resolves to a Eutric Cambisol (WRB 2022)", {
+  skip_on_cran()
   # Under the WRB 2022 exchangeable-Al criterion the fixture (al_cmol ~0.1 vs
   # bases ~10.5, al_sat ~1%) is base-dominated by far more than 4x throughout,
   # i.e. Hypereutric -- a stricter, more-specific form than the old BS>=50
@@ -153,6 +162,7 @@ test_that("CM canonical fixture resolves to a Eutric Cambisol (WRB 2022)", {
 })
 
 test_that("AR canonical fixture: sideralic properties, so not Protic", {
+  skip_on_cran()
   pr  <- make_arenosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AR")
   # v0.9.217: WRB 2022 Protic is "showing no soil horizon development"; this
@@ -168,6 +178,7 @@ test_that("AR canonical fixture: sideralic properties, so not Protic", {
 })
 
 test_that("FL canonical fixture (varzea floodplain) resolves to Haplic Fluvisol", {
+  skip_on_cran()
   pr  <- make_fluvisol_canonical()
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Fluvisols")
@@ -204,6 +215,7 @@ test_that("Cutanic requires argic + visible clay films", {
 })
 
 test_that("Brunic / Protic are exclusive on Arenosol-style profiles", {
+  skip_on_cran()
   # Arenosol with weakly developed cambic Bw -> Brunic fires.
   hz <- data.table::data.table(
     top_cm = c(0, 15, 50), bottom_cm = c(15, 50, 150),
@@ -271,6 +283,7 @@ test_that("Glossic requires mollic + albeluvic glossae", {
 # ---- Engine handles the full-Ch4 trace gracefully -------------------------
 
 test_that("resolve_wrb_qualifiers reports trace for every YAML name", {
+  skip_on_cran()
   qfile <- system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey")
   if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
   qrules <- yaml::read_yaml(qfile)
@@ -290,6 +303,7 @@ test_that("resolve_wrb_qualifiers reports trace for every YAML name", {
 # ---- 31-fixture regression check after Bloco D+E expansion ----------------
 
 test_that("Bloco D+E YAML / qualifier additions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

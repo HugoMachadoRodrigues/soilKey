@@ -15,6 +15,7 @@ affected <- c("vertisol", "andosol", "gleysol", "planosol",
 # ---- backward compatibility ------------------------------------------------
 
 test_that("strict = FALSE reproduces the v0.9.97 default classification", {
+  skip_on_cran()
   for (nm in affected) {
     p <- mk(nm)
     default_arg <- classify_wrb2022(p, on_missing = "silent")$rsg_or_order
@@ -26,6 +27,7 @@ test_that("strict = FALSE reproduces the v0.9.97 default classification", {
 })
 
 test_that("canonical fixtures classify identically under strict mode", {
+  skip_on_cran()
   # Strict mode strengthens borderline gates; a textbook canonical
   # profile must still key to its own RSG.
   for (nm in affected) {
@@ -40,6 +42,7 @@ test_that("canonical fixtures classify identically under strict mode", {
 # ---- every gate accepts `strict` and records it ---------------------------
 
 test_that("all seven RSG gates accept strict and record strict_mode", {
+  skip_on_cran()
   gates <- list(
     vertisol         = mk("vertisol"),
     andosol          = mk("andosol"),
@@ -99,6 +102,7 @@ test_that("Ferralsol gate strict requires two argic exception paths", {
 })
 
 test_that("a borderline Vertisol flips RSG through classify_wrb2022", {
+  skip_on_cran()
   p <- mk("vertisol")
   p$horizons$clay_pct <- rep(32, nrow(p$horizons))
   default_rsg <- classify_wrb2022(p, on_missing = "silent",

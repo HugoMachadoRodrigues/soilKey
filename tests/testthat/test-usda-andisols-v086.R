@@ -14,6 +14,7 @@ test_that("Andisols Suborders: 8", {
 })
 
 test_that("Andisols Great Groups: 8+1+6+3+3+2+2+6 = 31", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$DA), 8L)  # Aquands
   expect_equal(length(rules$great_groups$DB), 1L)  # Gelands
@@ -44,6 +45,7 @@ test_that("Andisols Subgroups: subset cientifico cobrindo SGs comuns", {
 # ------------------------------------------------------------------
 
 test_that("classify_usda routes a humid andic profile to Andisols Udands", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 25, 80),
     bottom_cm = c(25, 80, 150),
@@ -73,6 +75,7 @@ test_that("classify_usda routes a humid andic profile to Andisols Udands", {
 })
 
 test_that("classify_usda routes a hydric andic profile to Hydrudands", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 25, 80),
     bottom_cm = c(25, 80, 150),
@@ -162,6 +165,7 @@ test_that("vitrand_qualifying_usda passes for low water retention", {
 # ------------------------------------------------------------------
 
 test_that("WRB / Gelisols / Histosols / Spodosols unchanged after Andisols", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

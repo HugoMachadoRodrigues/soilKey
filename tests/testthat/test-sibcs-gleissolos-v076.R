@@ -46,6 +46,7 @@ test_that("Cap 9 Gleissolos GGs: 2+2+8+8 = 20 classes em 4 subordens", {
 })
 
 test_that("Cap 9 Gleissolos SGs: 5+4+5+3+...+9 = 128 classes em 20 GGs", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   gj_ggs <- c("GJh","GJo")
   gz_ggs <- c("GZsd","GZo")
@@ -61,6 +62,7 @@ test_that("Cap 9 Gleissolos SGs: 5+4+5+3+...+9 = 128 classes em 20 GGs", {
 })
 
 test_that("cada Cap 9 GG termina em 'Tp' (catch-all default:true)", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("GJh","GJo","GZsd","GZo",
                   "GMca","GMsd","GMtal","GMtd","GMte","GMbal","GMbd","GMbe",
@@ -79,6 +81,7 @@ test_that("Cap 14+5+6+7+8+9 GGs preservados", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 9 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

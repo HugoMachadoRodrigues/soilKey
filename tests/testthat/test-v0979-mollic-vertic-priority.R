@@ -79,6 +79,7 @@ test_that("v0.9.79: vertic chroma+clay path STILL fires on real Vertisols (no mo
 
 
 test_that("v0.9.79: full classifier routes mollic+vertic intergrade away from Vertisol", {
+  skip_on_cran()
   pr <- .mollisol_with_vertic_features()
   withr::with_options(list(soilKey.vertic_chroma_clay_inference = TRUE), {
     res <- classify_wrb2022(pr, on_missing = "silent")

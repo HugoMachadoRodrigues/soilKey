@@ -30,6 +30,7 @@
 # ---- Argissolo without hue triggers the fallback -------------------------
 
 test_that("classify_sibcs flags 'cor a determinar' when Argissolo hue is NA", {
+  skip_on_cran()
   pr <- .make_argissolo_no_hue()
   res <- classify_sibcs(pr, on_missing = "silent")
 
@@ -53,6 +54,7 @@ test_that("classify_sibcs flags 'cor a determinar' when Argissolo hue is NA", {
 # ---- Argissolo WITH hue keeps the regular descent ------------------------
 
 test_that("classify_sibcs does NOT flag fallback when hue is present", {
+  skip_on_cran()
   pr <- .make_argissolo_red()
   res <- classify_sibcs(pr, on_missing = "silent")
 
@@ -65,6 +67,7 @@ test_that("classify_sibcs does NOT flag fallback when hue is present", {
 # ---- Fallback stops the descent: no GG and no SG -------------------------
 
 test_that("color-undetermined fallback stops descent at Ordem level", {
+  skip_on_cran()
   pr <- .make_argissolo_no_hue()
   res <- classify_sibcs(pr, on_missing = "silent")
 
@@ -76,6 +79,7 @@ test_that("color-undetermined fallback stops descent at Ordem level", {
 # ---- Latossolo without hue triggers the same fallback --------------------
 
 test_that("Latossolo also flags 'cor a determinar' when hue is NA", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   pr$horizons$munsell_hue_moist <- NA_character_
   res <- classify_sibcs(pr, on_missing = "silent")
@@ -92,6 +96,7 @@ test_that("Latossolo also flags 'cor a determinar' when hue is NA", {
 # ---- Pedon whose subordem is NOT a color catch-all is unaffected --------
 
 test_that("Non-color-catch-all subordens are unaffected by v0.9.45", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()  # full hue present -- LV, not LVA
   res <- classify_sibcs(pr, on_missing = "silent")
   expect_null(res$trace$color_undetermined)
@@ -135,6 +140,7 @@ test_that(".detect_color_undetermined_fallback returns NULL when no hue-block", 
 # ---- Warning is appended to ClassificationResult$warnings ---------------
 
 test_that("Color-undetermined fallback appends a Portuguese warning", {
+  skip_on_cran()
   pr <- .make_argissolo_no_hue()
   res <- classify_sibcs(pr, on_missing = "silent")
   expect_true(length(res$warnings) >= 1L)

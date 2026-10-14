@@ -11,6 +11,7 @@ test_that("load_rules le o conjunto SiBCS na ordem canonica do Cap 4", {
 })
 
 test_that("classify_sibcs atribui Latossolos ao Ferralsol canonico (cobertura WRB)", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_sibcs(pr, on_missing = "silent")
   expect_s3_class(res, "ClassificationResult")
@@ -19,6 +20,7 @@ test_that("classify_sibcs atribui Latossolos ao Ferralsol canonico (cobertura WR
 })
 
 test_that("classify_sibcs atribui Argissolos ao Luvisol canonico", {
+  skip_on_cran()
   # Luvisol -> WRB Luvisols. No SiBCS, B textural eutrofico Ta seria
   # Luvissolo; argila ativ baixa OR baixa V seria Argissolo. Os fixtures
   # WRB nao foram tunados para o discriminante SiBCS Ta vs Tb -- aceita

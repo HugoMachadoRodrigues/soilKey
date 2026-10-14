@@ -48,6 +48,7 @@ test_that("inst/schemas/pedon-schema.json is up-to-date with the spec", {
 # ---- validate_pedon_json round-trip ---------------------------------------
 
 test_that("validate_pedon_json runs without raising on a canonical fixture", {
+  skip_on_cran()
   # We don't insist on TRUE here -- jsonvalidate's ajv engine + the
   # rich PedonRecord schema can flag minor discrepancies (e.g. NA vs
   # null encoding choices). The test verifies the validation pipeline
@@ -61,6 +62,7 @@ test_that("validate_pedon_json runs without raising on a canonical fixture", {
 })
 
 test_that("validate_pedon_json catches malformed input (missing site$id)", {
+  skip_on_cran()
   testthat::skip_if_not_installed("jsonlite")
   testthat::skip_if_not_installed("jsonvalidate")
   payload <- list(

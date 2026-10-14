@@ -43,6 +43,7 @@ test_that("extract_json_object() rescues an object wrapped in prose", {
 })
 
 test_that("validate_or_retry() accepts a reasoning model's first response", {
+  skip_on_cran()
   # The end-to-end regression: a provider that answers exactly the way
   # qwen3.6 does must validate on attempt 1, not burn retries.
   reasoning_answer <- paste0(

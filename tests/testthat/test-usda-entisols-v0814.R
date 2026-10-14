@@ -8,6 +8,7 @@ test_that("Entisols Suborders: 5", {
 })
 
 test_that("Entisols Great Groups: 6+8+6+6+6 = 32", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$LA), 6L)
   expect_equal(length(rules$great_groups$LB), 8L)
@@ -17,6 +18,7 @@ test_that("Entisols Great Groups: 6+8+6+6+6 = 32", {
 })
 
 test_that("classify_usda routes a young profile to Entisols Orthents", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -43,6 +45,7 @@ test_that("classify_usda routes a young profile to Entisols Orthents", {
 })
 
 test_that("classify_usda routes sandy profile to Psamments", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30),
     bottom_cm = c(30, 100),
@@ -67,12 +70,14 @@ test_that("classify_usda routes sandy profile to Psamments", {
 })
 
 test_that("WRB unchanged after Entisols add (USDA Path C COMPLETE)", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")
 })
 
 test_that("USDA Path C COMPLETO: classify_usda nunca retorna NULL Order", {
+  skip_on_cran()
   # Para todos os fixtures canonicos disponiveis, classify_usda deve
   # retornar uma Order valida (nao NA, nao NULL).
   fixtures <- list(

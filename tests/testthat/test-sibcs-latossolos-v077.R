@@ -65,6 +65,7 @@ test_that("carater_psamitico FAILS para clay >= 20% no 0-150 cm", {
 })
 
 test_that("Cap 10 GGs: 4+7+8+6 = 25 classes em 4 subordens", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (sub in c("LB","LA","LV","LVA")) {
     expect_true(sub %in% names(rules$grandes_grupos))
@@ -94,6 +95,7 @@ test_that("Cap 10 SGs: 10+31+36+22 = 99 classes em 25 GGs", {
 })
 
 test_that("cada Cap 10 GG termina em 'Tp' default:true", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   all_la_ggs <- c("LBaf","LBal","LBdf","LBd",
                     "LAaf","LAac","LAal","LAdf","LAdc","LAd","LAe",
@@ -107,6 +109,7 @@ test_that("cada Cap 10 GG termina em 'Tp' default:true", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 10 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

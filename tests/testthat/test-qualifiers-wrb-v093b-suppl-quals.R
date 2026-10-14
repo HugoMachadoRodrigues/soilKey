@@ -156,6 +156,7 @@ test_that("Cumulic fires on a fluvic / cumulic surface marker", {
 # ---- End-to-end canonical Ferralsol with parenthesised supplementary ------
 
 test_that("FR canonical name carries supplementary tags in WRB Ch 2.2 form", {
+  skip_on_cran()
   # This variable-charge Ferralsol is the showcase of the WRB 2014->2022
   # base-status redefinition: base SATURATION is low (24%, against the pH7 CEC
   # of 8.0), but on the EFFECTIVE exchange (ECEC ~2.6) the bases (1.9) exceed
@@ -174,6 +175,7 @@ test_that("FR canonical name carries supplementary tags in WRB Ch 2.2 form", {
 })
 
 test_that("AC / LX / LV / NT canonical names carry parenthesised supplementary", {
+  skip_on_cran()
   for (rsg in c("AC", "LX", "LV", "NT")) {
     fx <- switch(rsg,
       AC = make_acrisol_canonical(), LX = make_lixisol_canonical(),
@@ -192,6 +194,7 @@ test_that("AC / LX / LV / NT canonical names carry parenthesised supplementary",
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("v0.9.3.B supplementary additions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

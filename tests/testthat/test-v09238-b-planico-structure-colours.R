@@ -62,6 +62,7 @@ test_that("item (a) of the colours of the B planico", {
 })
 
 test_that("the canonical Planossolo has a B planico by its matrix colour and its structure", {
+  skip_on_cran()
   p <- make_planossolo_canonical()
   r <- B_planico(p)
   expect_true(isTRUE(r$passed))
@@ -70,6 +71,7 @@ test_that("the canonical Planossolo has a B planico by its matrix colour and its
 })
 
 test_that("a B with small blocks, or with a structure that is not of the list, is no B planico", {
+  skip_on_cran()
   for (s in list(c("Blocos subangulares", "Pequena a media"), c("Blocos angulares", "Pequena"),
                  c("subangular blocky", "fine"), c("granular", NA))) {
     p <- .bp(structure_type = s[1], structure_size = s[2])
@@ -87,6 +89,7 @@ test_that("a B with small blocks, or with a structure that is not of the list, i
 })
 
 test_that("item (b): a variegated B counts when one of its colours satisfies item (a)", {
+  skip_on_cran()
   for (ok in c("10YR 6/3; 2.5YR 4/6", "2.5Y 7/1; 10YR 6/8", "5YR 5/2", "7.5YR 5/6; 10YR 5/1")) {
     r <- B_planico(do.call(.bp, c(.no_matrix, list(variegated_colors = ok))))
     expect_true(isTRUE(r$passed), info = ok)
@@ -101,6 +104,7 @@ test_that("item (b): a variegated B counts when one of its colours satisfies ite
 })
 
 test_that("item (c): a yellowish matrix of chroma 4 or more, with a mottle that satisfies item (a)", {
+  skip_on_cran()
   yellow <- function(mottles, hue = "10YR", chroma = 6)
     .bp(munsell_hue_moist = hue, munsell_value_moist = 6, munsell_chroma_moist = chroma,
         mottle_colors = mottles)

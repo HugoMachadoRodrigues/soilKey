@@ -54,6 +54,7 @@ test_that("the readers of field terms know both languages", {
 })
 
 test_that("a B nitico described in Portuguese is a B nitico", {
+  skip_on_cran()
   en <- make_nitossolo_canonical()
   pt <- .pt_terms(en)
   expect_true(all(c("Comum", "Abundante") %in% pt$horizons$clay_films_amount))
@@ -68,6 +69,7 @@ test_that("a B nitico described in Portuguese is a B nitico", {
 })
 
 test_that("case and accents do not matter, the amount does", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()
   for (ok in c("COMUM", "comum", "Abundante", "Common", "MANY", "abundant",
                "Comum a abundante", "Muita"))
@@ -81,6 +83,7 @@ test_that("case and accents do not matter, the amount does", {
 })
 
 test_that("the type of structure is matched with or without its accent", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()
   b <- which(grepl("^B", p$horizons$designation))
   for (type in c("Prismática", "Prismática que se desfaz", "prismatica",

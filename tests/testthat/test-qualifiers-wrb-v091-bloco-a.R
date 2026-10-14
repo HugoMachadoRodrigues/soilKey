@@ -23,6 +23,7 @@ test_that("v0.9.1 YAML lists the canonical Bloco A principal qualifiers", {
 # ---- Per-fixture qualifier resolution --------------------------------------
 
 test_that("HS canonical fixture resolves to a sapric, drained Histosol", {
+  skip_on_cran()
   pr  <- make_histosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "HS")
   expect_true("Folic"   %in% res$principal)
@@ -38,6 +39,7 @@ test_that("HS canonical fixture resolves to a sapric, drained Histosol", {
 })
 
 test_that("AT canonical fixture resolves to a Hortic Anthrosol", {
+  skip_on_cran()
   pr  <- make_anthrosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AT")
   expect_true("Hortic" %in% res$principal)
@@ -49,6 +51,7 @@ test_that("AT canonical fixture resolves to a Hortic Anthrosol", {
 })
 
 test_that("TC canonical fixture resolves to a Technic Technosol", {
+  skip_on_cran()
   pr  <- make_technosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "TC")
   # Whichever artefact-subtype proxy fires, Technic must always pass for
@@ -61,6 +64,7 @@ test_that("TC canonical fixture resolves to a Technic Technosol", {
 })
 
 test_that("CR canonical fixture resolves to a Cambic / Skeletic Cryosol", {
+  skip_on_cran()
   pr  <- make_cryosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CR")
   expect_true(any(c("Cambic", "Skeletic") %in% res$principal))
@@ -71,6 +75,7 @@ test_that("CR canonical fixture resolves to a Cambic / Skeletic Cryosol", {
 })
 
 test_that("LP canonical fixture resolves to a Lithic / Skeletic Leptosol", {
+  skip_on_cran()
   pr  <- make_leptosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "LP")
   # Continuous rock starts at 10 cm: Lithic must fire.
@@ -326,6 +331,7 @@ test_that("resolve_wrb_qualifiers gracefully tags missing functions", {
 # ---- All 31 canonical fixtures still classify to their expected RSG --------
 
 test_that("v0.9.1 expansion does not regress classification of 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

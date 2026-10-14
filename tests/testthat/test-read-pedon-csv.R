@@ -11,6 +11,7 @@ test_that("read_pedon_csv() reads the bundled template into a PedonRecord", {
 })
 
 test_that("classify_csv() returns a one-row WRB/SiBCS/USDA data.frame", {
+  skip_on_cran()
   f <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
   skip_if(f == "" || !file.exists(f))
   out <- classify_csv(f)

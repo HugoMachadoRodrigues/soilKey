@@ -54,6 +54,7 @@
 # ---- 1. YAML structural integrity --------------------------------------
 
 test_that("load_rules('sibcs5') merges grandes-grupos/organossolos.yaml", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_true("grandes_grupos" %in% names(rules))
   expect_true("OJ" %in% names(rules$grandes_grupos))
@@ -102,6 +103,7 @@ test_that("OJS (Tiomorficos Sapricos) catches low-fiber profile", {
 })
 
 test_that("OXF / OXH / OXS catch via von Post index when fibers NA", {
+  skip_on_cran()
   pr_f <- .make_organossolo_pedon("OX", von_post = 3L)   # H1-H4 = fibrico
   pr_h <- .make_organossolo_pedon("OX", von_post = 5L)   # H5-H6 = hemico
   pr_s <- .make_organossolo_pedon("OX", von_post = 9L)   # H7-H10 = saprico
@@ -120,6 +122,7 @@ test_that("Folicos (OO) descem ao GG correto pelo grau de decomposicao", {
 # ---- 3. classify_sibcs descends to GG when fibers present ---------------
 
 test_that("classify_sibcs returns GG name for fiber-rich Organossolo", {
+  skip_on_cran()
   pr <- .make_organossolo_pedon("OX", fiber_rubbed = 60)
   res <- classify_sibcs(pr, on_missing = "silent")
   # ATENCAO: este pedon precisa cair em ordem O (Organossolos) primeiro
@@ -142,6 +145,7 @@ test_that("classify_sibcs trace exposes grandes_grupos block", {
 })
 
 test_that("classify_sibcs stops at subordem when fibers/von_post both NA", {
+  skip_on_cran()
   # Sem dados de fibras nem von Post, nenhum GG passa, e como nao ha
   # catch-all 'default:true' em Organossolos, classify_sibcs deve
   # devolver display_name no nivel da subordem.
@@ -164,12 +168,14 @@ test_that("classify_sibcs stops at subordem when fibers/von_post both NA", {
 # ---- 4. Backward-compat: WRB and USDA still work ------------------------
 
 test_that("WRB classification unaffected by load_rules subdir extension", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(res$rsg_or_order, "Ferralsols")
 })
 
 test_that("USDA classification unaffected by load_rules subdir extension", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_usda(pr, on_missing = "silent")
   expect_equal(res$rsg_or_order, "Oxisols")

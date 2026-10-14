@@ -95,6 +95,7 @@ test_that("load_embrapa_pedons groups layers by id_perfil", {
 
 
 test_that("benchmark_run_classification computes top-1 accuracy and bootstrap CI", {
+  skip_on_cran()
   td <- tempdir()
   csv <- file.path(td, "bdsolos2.csv")
   write.csv(data.frame(

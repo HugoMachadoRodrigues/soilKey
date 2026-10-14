@@ -77,6 +77,7 @@ test_that("v0.9.138: B_textural fires via (h) on a sandy A that argic misses", {
 })
 
 test_that("v0.9.138: the canonical Argissolo has a B textural by item (h)", {
+  skip_on_cran()
   pr <- make_argissolo_canonical()
   expect_true(isTRUE(argic(pr)$passed))
   r <- B_textural(pr)

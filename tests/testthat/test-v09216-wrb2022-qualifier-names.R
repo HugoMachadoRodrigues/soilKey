@@ -22,6 +22,7 @@ test_that("no WRB 2022 list names a qualifier WRB 2022 does not have", {
 })
 
 test_that("no example profile is named with one of them", {
+  skip_on_cran()
   fx <- grep("^make_.*_canonical$", ls(asNamespace("soilKey")), value = TRUE)
   names_ <- vapply(fx, function(f) {
     p <- get(f, envir = asNamespace("soilKey"))()
@@ -32,6 +33,7 @@ test_that("no example profile is named with one of them", {
 })
 
 test_that("the seven example profiles that carried them keep their RSG", {
+  skip_on_cran()
   # Their full names are pinned in test-v09217-wrb2022-ch4-names.R, after the
   # realignment of v0.9.217 changed them again.
   rsg <- function(f) suppressWarnings(classify_wrb2022(f(), on_missing = "silent")$rsg_or_order)
@@ -47,6 +49,7 @@ test_that("the seven example profiles that carried them keep their RSG", {
 # ---- the Assistant is told the units and the direction of each limit -------
 
 test_that("the Assistant's evidence gives units and whether a limit is inclusive", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   d <- system.file("shiny", "classify_app_pro", package = "soilKey")
   if (!nzchar(d) || !dir.exists(d)) d <- file.path("inst", "shiny", "classify_app_pro")

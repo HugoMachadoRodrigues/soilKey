@@ -16,6 +16,7 @@ test_that(".report_pedon_points keeps only finite coordinates", {
 })
 
 test_that("the locator map is a self-contained PNG data URI (or empty)", {
+  skip_on_cran()
   skip_if_not_installed("base64enc")
   uri <- soilKey:::.report_map_data_uri(list(.mk_pedon("A", -22.5, -43.7)))
   expect_true(startsWith(uri, "data:image/png;base64,"))
@@ -26,6 +27,7 @@ test_that("the locator map is a self-contained PNG data URI (or empty)", {
 })
 
 test_that("single-profile HTML report has a branded header and a map, and stays self-contained", {
+  skip_on_cran()
   p   <- .mk_pedon("FR-canonical-01", -22.5, -43.7)
   out <- tempfile(fileext = ".html")
   report_html(p, file = out, pedon = p)
@@ -39,6 +41,7 @@ test_that("single-profile HTML report has a branded header and a map, and stays 
 })
 
 test_that("a list of PedonRecords produces a multi-profile report", {
+  skip_on_cran()
   peds <- list(.mk_pedon("P01", -22.7, -43.6),
                .mk_pedon("P02", -12.4, -45.1),
                .mk_pedon("P03", -30.0, -51.2))
@@ -55,6 +58,7 @@ test_that("a list of PedonRecords produces a multi-profile report", {
 })
 
 test_that("a single ClassificationResult is NOT treated as multi-profile", {
+  skip_on_cran()
   r <- classify_wrb2022(make_ferralsol_canonical())
   expect_false(soilKey:::.report_multi_pedons(r))
   expect_false(soilKey:::.report_multi_pedons(list(r)))  # list of results, not pedons

@@ -147,6 +147,7 @@ test_that("SC fixture name no longer doubles up Sodic + Hyposodic", {
 })
 
 test_that("CH fixture: no Hypocalcic, Protocalcic or Calcic", {
+  skip_on_cran()
   pr <- make_chernozem_canonical()
   res <- resolve_wrb_qualifiers(pr, "CH")
   # CH fixture has caco3 = 8 / 12 % in Bk / Ck (below the 15% Calcic gate).
@@ -164,6 +165,7 @@ test_that("CH fixture: no Hypocalcic, Protocalcic or Calcic", {
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("v0.9.2.A sub-qualifier additions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

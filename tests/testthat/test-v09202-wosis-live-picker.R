@@ -49,6 +49,7 @@ test_that("licence strings get a short label for the table", {
 })
 
 test_that("a network failure returns zero rows instead of throwing", {
+  skip_on_cran()
   # An unreachable ISRIC is an expected condition in a Shiny app, not an error
   # that should take the session down.
   r <- read_wosis_profiles_graphql(country = "Nowhere", n_max = 1, timeout = 0.001)

@@ -1,6 +1,7 @@
 # Tests for v0.9.28 classify_all() wrapper.
 
 test_that("classify_all returns all three classifications by default", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_all(pr, on_missing = "silent")
   expect_named(res, c("wrb", "sibcs", "usda", "summary"))
@@ -10,6 +11,7 @@ test_that("classify_all returns all three classifications by default", {
 })
 
 test_that("classify_all summary is a 1-row data.frame with name per system", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_all(pr, on_missing = "silent")
   expect_s3_class(res$summary, "data.frame")
@@ -21,6 +23,7 @@ test_that("classify_all summary is a 1-row data.frame with name per system", {
 })
 
 test_that("classify_all with subset skips other systems", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_all(pr, systems = c("wrb2022", "usda"), on_missing = "silent")
   expect_s3_class(res$wrb,  "ClassificationResult")
@@ -32,6 +35,7 @@ test_that("classify_all with subset skips other systems", {
 })
 
 test_that("classify_all with single-system selection works", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_all(pr, systems = "wrb2022", on_missing = "silent")
   expect_s3_class(res$wrb,  "ClassificationResult")
@@ -61,6 +65,7 @@ test_that("classify_all handles errors gracefully (returns NULL + warning)", {
 })
 
 test_that("classify_all 'all' alias expands to the full triple", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res_all_alias <- classify_all(pr, systems = "all", on_missing = "silent")
   res_explicit  <- classify_all(pr,

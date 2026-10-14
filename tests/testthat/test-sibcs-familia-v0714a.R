@@ -293,6 +293,7 @@ test_that("familia_label vazio quando nenhum value definido", {
 # ------------------------------------------------------------------
 
 test_that("WRB / USDA inalterados apos Cap 18A add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

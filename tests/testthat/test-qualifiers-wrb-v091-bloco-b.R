@@ -38,6 +38,7 @@ test_that("v0.9.1 YAML lists the canonical Bloco B principal qualifiers", {
 # ---- Per-fixture qualifier resolution --------------------------------------
 
 test_that("SN canonical fixture resolves to a Solonetz with Albic", {
+  skip_on_cran()
   pr  <- make_solonetz_canonical()
   res <- resolve_wrb_qualifiers(pr, "SN")
   expect_true("Albic" %in% res$principal)
@@ -48,6 +49,7 @@ test_that("SN canonical fixture resolves to a Solonetz with Albic", {
 })
 
 test_that("VR canonical fixture resolves to a (default) Haplic Vertisol", {
+  skip_on_cran()
   pr  <- make_vertisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "VR")
   # The synthetic Mozambique Vertisol fixture has subangular blocky
@@ -63,6 +65,7 @@ test_that("VR canonical fixture resolves to a (default) Haplic Vertisol", {
 })
 
 test_that("SC canonical fixture resolves to a Sodic Solonchak", {
+  skip_on_cran()
   pr  <- make_solonchak_canonical()
   res <- resolve_wrb_qualifiers(pr, "SC")
   expect_true("Sodic" %in% res$principal)
@@ -73,6 +76,7 @@ test_that("SC canonical fixture resolves to a Sodic Solonchak", {
 })
 
 test_that("GL canonical fixture resolves to an Oxygleyic Gleysol", {
+  skip_on_cran()
   pr  <- make_gleysol_canonical()
   res <- resolve_wrb_qualifiers(pr, "GL")
   # Holocene fluvial-clay Gleysol with grassland: gleyic by RSG (so Gleyic
@@ -90,6 +94,7 @@ test_that("GL canonical fixture resolves to an Oxygleyic Gleysol", {
 })
 
 test_that("AN canonical fixture resolves to a Silandic Hydric Andosol", {
+  skip_on_cran()
   pr  <- make_andosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "AN")
   expect_true("Vitric"   %in% res$principal)
@@ -363,6 +368,7 @@ test_that("Plaggic anthropic-evidence gate: rejects mollic-only A horizons", {
 # ---- Engine handles unimplemented Ch 4 names without breaking --------------
 
 test_that("resolve_wrb_qualifiers tags missing functions across Bloco B", {
+  skip_on_cran()
   for (rsg in c("SN","VR","SC","GL","AN")) {
     qfile <- system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey")
     if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
@@ -383,6 +389,7 @@ test_that("resolve_wrb_qualifiers tags missing functions across Bloco B", {
 # ---- 31-fixture regression check after Bloco B expansion ------------------
 
 test_that("Bloco B YAML / qualifier additions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

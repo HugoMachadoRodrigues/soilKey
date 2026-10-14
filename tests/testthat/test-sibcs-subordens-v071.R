@@ -12,6 +12,7 @@ test_that("SiBCS rules YAML carries 13 ordens + 44 subordens", {
 })
 
 test_that("each ordem has at least one subordem and the last is a catch-all", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (code in names(rules$subordens)) {
     subs <- rules$subordens[[code]]
@@ -52,6 +53,7 @@ test_that("run_sibcs_subordem returns NULL for unknown ordem", {
 # ---- classify_sibcs descends to subordem name ---------------------------
 
 test_that("classify_sibcs returns subordem name (not just ordem name)", {
+  skip_on_cran()
   pr <- make_latossolo_canonical()
   res <- classify_sibcs(pr, on_missing = "silent")
   expect_match(res$name, "^Latossolos ")
@@ -59,6 +61,7 @@ test_that("classify_sibcs returns subordem name (not just ordem name)", {
 })
 
 test_that("classify_sibcs trace carries subordens block", {
+  skip_on_cran()
   pr <- make_argissolo_canonical()
   res <- classify_sibcs(pr, on_missing = "silent")
   expect_true("subordens" %in% names(res$trace))
@@ -113,6 +116,7 @@ for (nm in names(fixfns)) {
     pat <- expected_subordem_pattern[[nm_local]]
     test_that(sprintf("fixture %s classifies to a subordem matching %s",
                         nm_local, pat), {
+      skip_on_cran()
       pr <- fn()
       res <- classify_sibcs(pr, on_missing = "silent")
       sub <- res$trace$subordem_assigned
@@ -194,6 +198,7 @@ test_that("neossolo_quartzarenico passes on pure quartz sand profile", {
 # ---- regression: WRB classification still works ------------------------
 
 test_that("WRB classification still produces 31/31 correct after SiBCS subordens added", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

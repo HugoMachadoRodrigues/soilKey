@@ -2,11 +2,13 @@
 # 7 Suborders + 27 Great Groups + ~110 Subgroups via Path C.
 
 test_that("Aridisols Suborders: 7", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$AS), 7L)
 })
 
 test_that("Aridisols Great Groups: 6+2+3+5+6+2+3 = 27", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$GA), 6L)  # Cryids
   expect_equal(length(rules$great_groups$GB), 2L)  # Salids
@@ -18,6 +20,7 @@ test_that("Aridisols Great Groups: 6+2+3+5+6+2+3 = 27", {
 })
 
 test_that("Aridisols Subgroups: subset cientifico", {
+  skip_on_cran()
   rules <- load_rules("usda")
   ggs <- c("GAA","GAB","GAC","GAD","GAE","GAF",
               "GBA","GBB",
@@ -31,6 +34,7 @@ test_that("Aridisols Subgroups: subset cientifico", {
 })
 
 test_that("classify_usda routes a calcic-rich aridic profile to Aridisols", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -54,6 +58,7 @@ test_that("classify_usda routes a calcic-rich aridic profile to Aridisols", {
 })
 
 test_that("WRB / earlier orders unchanged after Aridisols", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

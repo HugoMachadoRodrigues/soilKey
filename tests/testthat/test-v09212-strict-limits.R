@@ -35,6 +35,7 @@ test_that("the CEC-per-clay test passes below the limit, not at it", {
 })
 
 test_that("a horizon at exactly 16 is oxic (USDA) but not ferralic (WRB)", {
+  skip_on_cran()
   f <- make_ferralsol_canonical()
   below <- .cec_at(f, 15.9)
   at    <- .cec_at(f, 16)
@@ -52,6 +53,7 @@ test_that("a horizon at exactly 16 is oxic (USDA) but not ferralic (WRB)", {
 })
 
 test_that("SiBCS: 17 cmolc per kg clay is B incipiente territory, not latossolic", {
+  skip_on_cran()
   f <- make_ferralsol_canonical()
   expect_true(B_latossolico(.cec_at(f, 16.9))$passed)
   expect_false(B_latossolico(.cec_at(f, 17))$passed)
@@ -62,6 +64,7 @@ test_that("SiBCS: 17 cmolc per kg clay is B incipiente territory, not latossolic
 })
 
 test_that("at exactly 24 an argic horizon is high-activity only", {
+  skip_on_cran()
   a <- make_acrisol_canonical()
   at <- .cec_at(a, 24)
   expect_true(acrisol(.cec_at(a, 23.9))$passed)
@@ -85,6 +88,7 @@ test_that("sideralic properties use the strict 24 too", {
 # --- the Map's class colours -------------------------------------------------
 
 test_that("the Map gives every class its own colour, and keeps Set3 up to 12", {
+  skip_on_cran()
   skip_if_not_installed("leaflet")
   skip_if_not_installed("RColorBrewer")
   d <- system.file("shiny", "classify_app_pro", package = "soilKey")

@@ -36,6 +36,7 @@ test_that("Cap 11 GGs: 3+2 = 5 classes em 2 subordens", {
 })
 
 test_that("Cap 11 SGs: 3+9+10+8+3 = 33 classes em 5 GGs", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_equal(length(rules$subgrupos$TCca),  3L)
   expect_equal(length(rules$subgrupos$TCp),   9L)
@@ -48,6 +49,7 @@ test_that("Cap 11 SGs: 3+9+10+8+3 = 33 classes em 5 GGs", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 11 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

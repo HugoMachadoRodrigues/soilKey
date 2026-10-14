@@ -31,6 +31,7 @@
 }
 
 test_that("a B below an E, with the colour and the carbon, is a B espodico", {
+  skip_on_cran()
   p <- .esp_profile()
   expect_false(isTRUE(spodic(p)$passed))        # no oxalate, no Bh or Bs
   r <- B_espodico(p)
@@ -66,6 +67,7 @@ test_that("the carbon is compared with that of the nearest E above the B", {
 })
 
 test_that("the moist colours are those of the item", {
+  skip_on_cran()
   col <- function(hue, value, chroma) {
     hp <- .munsell_hue_parts(hue)
     .b_espodico_colour_a(hp$number, hp$family, value, chroma)
@@ -88,6 +90,7 @@ test_that("the moist colours are those of the item", {
 })
 
 test_that("a B with cerosidade is no B espodico by this item", {
+  skip_on_cran()
   # the Bt of an Argissolo abruptico below its E: red, with more carbon than
   # the E, and with clay films (as BDsolos MT 11249, SC 5444)
   p <- .esp_profile(designation = c("A", "E", "Bt1", "Bt2"),
@@ -116,6 +119,7 @@ test_that("no E above, a B under 2.5 cm, or a transition to the C: not the item"
 })
 
 test_that("the item is read in both modes, and the canonical profiles keep their horizons", {
+  skip_on_cran()
   p <- .esp_profile()
   withr::with_options(list(soilKey.morphological_inference = TRUE), {
     expect_true(isTRUE(B_espodico(p)$passed))

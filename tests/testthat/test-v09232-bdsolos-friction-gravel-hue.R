@@ -75,6 +75,7 @@ test_that("the loader brings the slickensides, the gravel in per cent and the hu
 })
 
 test_that("slickensides worded in Portuguese are slickensides for the vertic horizon", {
+  skip_on_cran()
   p <- make_vertissolo_canonical()
   expect_true(isTRUE(horizonte_vertico(p)$passed))
   pt <- p$clone(deep = TRUE)

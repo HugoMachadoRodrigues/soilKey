@@ -16,6 +16,7 @@
 
 
 test_that("a profile with only depths and designations gets no grade", {
+  skip_on_cran()
   p <- .depth_only()
   for (r in list(classify_wrb2022(p, on_missing = "silent"),
                  classify_sibcs(p, on_missing = "silent"),
@@ -32,6 +33,7 @@ test_that("a profile with only depths and designations gets no grade", {
 })
 
 test_that("one described or measured property is enough for a grade", {
+  skip_on_cran()
   base <- .depth_only()
   for (col in list(list("munsell_hue_moist", "10YR"), list("clay_pct", 30),
                    list("structure_type", "granular"))) {
@@ -49,6 +51,7 @@ test_that("one described or measured property is enough for a grade", {
 })
 
 test_that("profiles with properties keep their grades", {
+  skip_on_cran()
   for (f in c("make_ferralsol_canonical", "make_luvisol_canonical",
               "make_acrisol_canonical")) {
     p <- get(f)()
@@ -59,6 +62,7 @@ test_that("profiles with properties keep their grades", {
 })
 
 test_that("the HTML report prints 'none' for the missing grade", {
+  skip_on_cran()
   r <- classify_wrb2022(.depth_only(), on_missing = "silent")
   f <- tempfile(fileext = ".html")
   on.exit(unlink(f), add = TRUE)
@@ -69,6 +73,7 @@ test_that("the HTML report prints 'none' for the missing grade", {
 })
 
 test_that("the Pro app shows 'No measured data' and explains it", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   d <- system.file("shiny", "classify_app_pro", package = "soilKey")

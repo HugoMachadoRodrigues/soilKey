@@ -123,6 +123,7 @@ test_that("cryic_horizon() delegates to cryic_conditions and renames the result"
 #     definitions -- not a bug. Guard the full strings so they cannot drift.
 # =============================================================================
 test_that("the canonical Ferralsol classifies to the documented full names", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   # v0.9.217: WRB 2022 Chapter 4 lists and Chapter 2.2 order (Ferric is a
   # supplementary qualifier of Ferralsols; Humic/Ochric gives one; Rubic is
@@ -164,6 +165,7 @@ test_that("every crosswalked function exists and has a genuine body", {
 })
 
 test_that("coverage_report() reports genuine 100% for every WRB diagnostic axis", {
+  skip_on_cran()
   skip_if_no_soiltaxonomy()
   for (axis in c("wrb_horizons", "wrb_properties", "wrb_materials", "wrb_rsg")) {
     r <- suppressMessages(coverage_report(axis))
@@ -174,6 +176,7 @@ test_that("coverage_report() reports genuine 100% for every WRB diagnostic axis"
 })
 
 test_that("the WRB diagnostic denominators match the official WRB 2022 totals", {
+  skip_on_cran()
   skip_if_no_soiltaxonomy()
   expect_equal(suppressMessages(coverage_report("wrb_horizons"))$overall$canonical_n,   40L)
   expect_equal(suppressMessages(coverage_report("wrb_properties"))$overall$canonical_n, 17L)

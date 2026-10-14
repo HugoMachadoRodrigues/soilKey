@@ -26,6 +26,7 @@
 # ---- 3. language per session, and no English left in the Portuguese UI -------
 
 test_that("the language comes from the session, not from the process", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .vf_env()
   withr::local_options(soilKey.app_lang = "en")
@@ -83,6 +84,7 @@ test_that("the selector puts the language in the URL, never in a global option",
 }
 
 test_that("no help text in the mounted tabs is an English literal", {
+  skip_on_cran()
   mounted <- c("mod_pedon.R", "mod_classify.R", "mod_photo.R", "mod_spectra.R",
                "mod_map.R", "mod_uncertainty.R", "mod_report.R", "mod_settings.R",
                "mod_chat.R", "mod_acknowledgements.R", "utils_ui.R")
@@ -93,6 +95,7 @@ test_that("no help text in the mounted tabs is an English literal", {
 })
 
 test_that("every catalogue key exists in both languages with the same placeholders", {
+  skip_on_cran()
   path <- system.file("i18n", "translations.yaml", package = "soilKey")
   if (!nzchar(path)) path <- file.path("inst", "i18n", "translations.yaml")
   y <- yaml::read_yaml(path)
@@ -108,6 +111,7 @@ test_that("every catalogue key exists in both languages with the same placeholde
 })
 
 test_that("tables speak the session's language", {
+  skip_on_cran()
   skip_if_not_installed("shiny"); skip_if_not_installed("DT")
   e <- .vf_env()
   pt <- e$.sk_with_lang("pt", e$sk_datatable(data.frame(a = 1)))
@@ -121,6 +125,7 @@ test_that("tables speak the session's language", {
 # ---- 1, 2. report: a PDF only where one can be made; downloads in sight --------
 
 test_that("the HTML report prints to PDF, in the report's language", {
+  skip_on_cran()
   f <- tempfile(fileext = ".html")
   report(make_ferralsol_canonical(), file = f, format = "html", lang = "pt")
   h <- paste(readLines(f, warn = FALSE), collapse = "\n")
@@ -152,6 +157,7 @@ test_that("the Report tab offers PDF only with LaTeX, and its downloads sit in t
 # ---- 5. spectra: no placeholder values written into a profile -----------------
 
 test_that("spectral gap-fill is off without a real OSSL library, and says why", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .vf_env()
   withr::local_options(soilKey.ossl_library = NULL, soilKey.ossl_models = NULL)
@@ -223,6 +229,7 @@ test_that("a categorical raster like live SoilGrids' recodes (it fell back to th
 })
 
 test_that("the map opens on live SoilGrids and credits the source", {
+  skip_on_cran()
   e <- .vf_env()
   ui <- readLines(file.path(.vf_dir(), "R", "mod_map.R"), warn = FALSE)
   expect_true(any(grepl('selected = "live", justified = TRUE', ui, fixed = TRUE)))

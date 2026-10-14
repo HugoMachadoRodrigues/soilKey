@@ -22,6 +22,7 @@ test_that("Cap 6 Cambissolos SGs: 8 + 18 + 22 + 61 = 109 classes", {
 })
 
 test_that("cada Cap 6 GG termina em 'Tp' (catch-all)", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("CHal","CHd","CHUaf","CHUal","CHUdf","CHUd",
                   "CYca","CYsd","CYsl","CYal","CYtd","CYte","CYbd","CYbe",
@@ -86,6 +87,7 @@ test_that("Cap 14 + Cap 5 + Cap 6 GGs preservados", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 6 SGs add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

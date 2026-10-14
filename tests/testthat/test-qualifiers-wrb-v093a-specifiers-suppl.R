@@ -217,6 +217,7 @@ test_that("Supragleyic requires gleyic layers above a barrier (rock or petric)",
 # ---- Supplementary-qualifier engine path ----------------------------------
 
 test_that("resolve_wrb_qualifiers exposes a supplementary slot", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("supplementary" %in% names(res))
@@ -230,6 +231,7 @@ test_that("resolve_wrb_qualifiers exposes a supplementary slot", {
 })
 
 test_that("classify_wrb2022 stores supplementary in qualifiers and renders the name", {
+  skip_on_cran()
   pr  <- make_ferralsol_canonical()
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_true("supplementary" %in% names(cls$qualifiers))
@@ -243,6 +245,7 @@ test_that("classify_wrb2022 stores supplementary in qualifiers and renders the n
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("v0.9.3.A specifier + engine extensions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

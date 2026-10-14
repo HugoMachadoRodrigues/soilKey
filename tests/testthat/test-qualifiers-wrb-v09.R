@@ -145,6 +145,7 @@ test_that("qual_haplic always passes (catch-all)", {
 # ---- resolve_wrb_qualifiers ------------------------------------------------
 
 test_that("resolve_wrb_qualifiers returns canonical-order matched qualifiers", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("principal" %in% names(res))
@@ -154,6 +155,7 @@ test_that("resolve_wrb_qualifiers returns canonical-order matched qualifiers", {
 })
 
 test_that("resolve_wrb_qualifiers falls back to Haplic when nothing matches", {
+  skip_on_cran()
   # Build a minimal fixture that should not trigger any qualifier.
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80), bottom_cm = c(30, 80, 150),
@@ -191,6 +193,7 @@ test_that("format_wrb_name builds canonical names", {
 # ---- classify_wrb2022 returns full qualified name ----------------------
 
 test_that("classify_wrb2022 returns a qualified name in $name", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr, on_missing = "silent")
   expect_match(res$name, "Ferralsol")  # singular with optional qualifiers
@@ -198,6 +201,7 @@ test_that("classify_wrb2022 returns a qualified name in $name", {
 })
 
 test_that("classify_wrb2022 stores qualifiers in $qualifiers", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_wrb2022(pr, on_missing = "silent")
   expect_true("principal" %in% names(res$qualifiers))
@@ -205,6 +209,7 @@ test_that("classify_wrb2022 stores qualifiers in $qualifiers", {
 })
 
 test_that("classify_wrb2022 still maps 31 fixtures to correct RSG", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

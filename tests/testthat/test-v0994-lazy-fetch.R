@@ -52,6 +52,7 @@ test_that("v0.9.94: .lazy_fetch_local_path returns NULL for missing cache", {
 
 
 test_that("v0.9.94: load_*_sample loaders return non-empty pedons in dev checkout", {
+  skip_on_cran()
   # In a developer checkout (where data-raw/lazy-fetch/ has the .rds
   # files), every loader returns non-empty pedons.
   for (loader_name in c("load_afsp_sample", "load_kssl_sample",

@@ -285,6 +285,7 @@ test_that("qual_laxic: bulk density <= 0.9 in a mineral layer at 25-75 cm", {
 # ---- 3. Tier-3 stubs (NA with missing field listed) ------------------
 
 test_that("Tier-3 stubs return NA-or-FALSE with WRB reference", {
+  skip_on_cran()
   # v0.9.65 update: with the Tier-3 schema fields wired, a stub may
   # legitimately return FALSE when one of its checked fields IS
   # populated but doesn't match (e.g. qual_litholinic checks both

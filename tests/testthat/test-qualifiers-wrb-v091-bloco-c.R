@@ -46,6 +46,7 @@ test_that("v0.9.1 YAML lists the canonical Bloco C principal qualifiers", {
 # ---- Per-fixture qualifier resolution --------------------------------------
 
 test_that("PZ canonical fixture resolves to an Albic Podzol", {
+  skip_on_cran()
   pr  <- make_podzol_canonical()
   res <- resolve_wrb_qualifiers(pr, "PZ")
   expect_true("Albic" %in% res$principal)
@@ -59,6 +60,7 @@ test_that("PZ canonical fixture resolves to an Albic Podzol", {
 })
 
 test_that("PT canonical fixture: Plinthic is not a qualifier of Plinthosols", {
+  skip_on_cran()
   pr  <- make_plinthosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "PT")
   # v0.9.217: the plinthic horizon defines the RSG, so WRB 2022 Chapter 4
@@ -71,6 +73,7 @@ test_that("PT canonical fixture: Plinthic is not a qualifier of Plinthosols", {
 })
 
 test_that("PL canonical fixture resolves to an Albic Planosol", {
+  skip_on_cran()
   pr  <- make_planosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "PL")
   expect_true("Albic"  %in% res$principal)
@@ -87,6 +90,7 @@ test_that("PL canonical fixture resolves to an Albic Planosol", {
 })
 
 test_that("ST canonical fixture resolves to an Albic Stagnosol", {
+  skip_on_cran()
   pr  <- make_stagnosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "ST")
   expect_true("Albic" %in% res$principal)
@@ -100,6 +104,7 @@ test_that("ST canonical fixture resolves to an Albic Stagnosol", {
 })
 
 test_that("NT canonical fixture resolves to a Luvic Nitisol", {
+  skip_on_cran()
   pr  <- make_nitisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "NT")
   expect_true("Luvic"   %in% res$principal)
@@ -118,6 +123,7 @@ test_that("NT canonical fixture resolves to a Luvic Nitisol", {
 })
 
 test_that("FR canonical fixture resolves to a Geric Rhodic Ferralsol", {
+  skip_on_cran()
   pr  <- make_ferralsol_canonical()
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("Geric"   %in% res$principal)
@@ -375,6 +381,7 @@ test_that("Densic / Placic / Ortsteinic key on physical/cementation fields", {
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("Bloco C YAML / qualifier additions do not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

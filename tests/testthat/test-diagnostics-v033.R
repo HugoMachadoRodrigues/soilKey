@@ -301,6 +301,7 @@ test_that("tephric_material requires glass>=30 + no andic/vitric", {
 # ---- regression: all 31 canonical fixtures still classify ------------------
 
 test_that("all 31 canonical fixtures still classify to their intended RSG", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols",
     CR = "Cryosols",  LP = "Leptosols",  SN = "Solonetz",

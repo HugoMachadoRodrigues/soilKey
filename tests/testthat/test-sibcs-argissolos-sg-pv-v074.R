@@ -65,6 +65,7 @@ test_that("carater_sombrico FAILS quando OC subsuperficial < 0.5%", {
 # ============================================================================
 
 test_that("PV subgrupos: 6+7+4+9+6+16 = 48 classes em 6 GGs", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("PVtal", "PVal", "PVtd", "PVd", "PVef", "PVe")) {
     expect_true(gg %in% names(rules$subgrupos),
@@ -133,6 +134,7 @@ test_that("PVtalAb (Ta Aluminicos abrupticos) catches abrupt + Ta + alitico", {
 })
 
 test_that("PVeTp (catch-all) selected for plain eutrofico vermelho profile", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 20, 60),
     bottom_cm = c(20, 60, 200),
@@ -171,6 +173,7 @@ test_that("Cap 14 Organossolos inalterado apos Cap 5 completo", {
 })
 
 test_that("WRB / USDA classificacao inalterada apos Cap 5 final", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

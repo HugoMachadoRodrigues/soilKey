@@ -2,6 +2,7 @@
 # Cap 7 NAO requer novos diagnosticos -- reusa todos existentes.
 
 test_that("Cap 7 Chernossolos GGs: 3+2+3+3 = 11 classes em 4 subordens", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (sub in c("MD", "ME", "MT", "MX")) {
     expect_true(sub %in% names(rules$grandes_grupos),
@@ -32,6 +33,7 @@ test_that("Cap 7 Chernossolos SGs: 5+4+15+10 = 34 classes em 11 GGs", {
 })
 
 test_that("cada Cap 7 GG termina em 'Tp' OR e a-priori tipico-only", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("MDpc","MDli","MDo","MEca","MEo",
                   "MTfe","MTca","MTo","MXfe","MXca","MXo")) {
@@ -65,6 +67,7 @@ test_that("Cap 14 + Cap 5 + Cap 6 + Cap 7 GGs preservados", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 7 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

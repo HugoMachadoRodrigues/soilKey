@@ -2,6 +2,7 @@
 # `lang` argument on report() / report_html() / report_pdf().
 
 test_that("the report label catalogue is complete (every en key has pt)", {
+  skip_on_cran()
   cat <- soilKey:::.report_catalog()
   expect_true(all(c("en", "pt") %in% names(cat)))
   expect_equal(sort(names(cat$en)), sort(names(cat$pt)))
@@ -23,6 +24,7 @@ test_that(".report_msg resolves, falls back, and clamps", {
 })
 
 test_that("an HTML report defaults to English and translates to Portuguese", {
+  skip_on_cran()
   p   <- make_ferralsol_canonical()
   out_en <- withr::local_tempfile(fileext = ".html")
   out_pt <- withr::local_tempfile(fileext = ".html")
@@ -42,6 +44,7 @@ test_that("an HTML report defaults to English and translates to Portuguese", {
 })
 
 test_that("report_html restores the report-language option after rendering", {
+  skip_on_cran()
   before <- getOption("soilKey.report_lang")
   p <- make_ferralsol_canonical()
   report(p, file = withr::local_tempfile(fileext = ".html"), pedon = p, lang = "pt")

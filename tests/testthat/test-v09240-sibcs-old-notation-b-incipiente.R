@@ -37,6 +37,7 @@ test_that("what was read before is read the same", {
 })
 
 test_that("a profile described with '(B)' has a B incipiente and is a Cambissolo", {
+  skip_on_cran()
   canonical <- classify_sibcs(make_cambissolo_canonical(), on_missing = "silent")$name
   for (d in list(c("A", "(B)", "(B)3", "C"),
                  c("A1", "(B)1", "(B)2", "C"),
@@ -53,6 +54,7 @@ test_that("a profile described with '(B)' has a B incipiente and is a Cambissolo
 })
 
 test_that("the letter is not the horizon: the other requirements are asked as before", {
+  skip_on_cran()
   # thinner than 10 cm
   thin <- .old_cambissolo(c("A", "(B)", "C1", "C2"))
   thin$horizons$top_cm    <- c(0, 15, 23, 100)
@@ -69,6 +71,7 @@ test_that("the letter is not the horizon: the other requirements are asked as be
 })
 
 test_that("the reading is the same in the morphological mode", {
+  skip_on_cran()
   old <- options(soilKey.morphological_inference = TRUE)
   on.exit(options(old), add = TRUE)
   p <- .old_cambissolo(c("A1", "(B)1", "(B)2", "C"))

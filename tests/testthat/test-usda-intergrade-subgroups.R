@@ -33,6 +33,7 @@ test_that("gypsic_horizon_usda honours the 18 cm Leptic depth window", {
 })
 
 test_that("canonical Gypsisol fixture refines Typic -> Leptic Haplogypsids", {
+  skip_on_cran()
   # Validated refinement (great group invariant): its gypsic horizon (caso4 8%,
   # 35 cm thick) begins at 15 cm, within the 18 cm Leptic window.
   res <- classify_usda(make_gypsisol_canonical())

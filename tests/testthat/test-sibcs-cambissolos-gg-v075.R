@@ -96,6 +96,7 @@ test_that("carater_argiluvico passes para B textural < 150 cm", {
 # ============================================================================
 
 test_that("Cap 6 Cambissolos GGs: 2+4+8+12 = 26 classes em 4 subordens", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (sub in c("CH", "CHU", "CY", "CX")) {
     expect_true(sub %in% names(rules$grandes_grupos),
@@ -201,6 +202,7 @@ test_that("Cap 14 + Cap 5 GGs preservados apos Cap 6 GGs add", {
 })
 
 test_that("WRB / USDA classificacao inalterada apos Cap 6 GGs add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

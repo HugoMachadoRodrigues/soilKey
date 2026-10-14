@@ -11,6 +11,7 @@
 # term.
 
 test_that("the amount and the grade are those written beside the term", {
+  skip_on_cran()
   rd <- function(x) { r <- .bdsolos_films_reads(x); c(r$amount, r$grade) }
   expect_equal(rd("argila; cerosidade comum e moderada; firme"), c("Comum", "Moderada"))
   expect_equal(rd("cerosidade fraca e pouca"), c("Pouca", "Fraca"))

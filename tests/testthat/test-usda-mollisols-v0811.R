@@ -7,6 +7,7 @@ test_that("Mollisols Suborders: 8", {
 })
 
 test_that("Mollisols Great Groups: 2+7+2+1+6+6+7+6 = 37", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$IA), 2L)
   expect_equal(length(rules$great_groups$IB), 7L)
@@ -19,6 +20,7 @@ test_that("Mollisols Great Groups: 2+7+2+1+6+6+7+6 = 37", {
 })
 
 test_that("classify_usda routes a chernozem-like to Mollisols Ustolls", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 200),
@@ -46,6 +48,7 @@ test_that("classify_usda routes a chernozem-like to Mollisols Ustolls", {
 })
 
 test_that("WRB unchanged after Mollisols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

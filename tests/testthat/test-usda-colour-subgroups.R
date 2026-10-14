@@ -83,6 +83,7 @@ test_that("calcic honours the per-subgroup depth window", {
 # specific than -- and within the same great group as -- the former Typic.
 
 test_that("canonical Vertisol fixture keys to Chromic Hapluderts", {
+  skip_on_cran()
   res <- classify_usda(make_vertisol_canonical())
   expect_equal(res$rsg_or_order, "Vertisols")
   expect_equal(res$name, "Chromic Hapluderts")

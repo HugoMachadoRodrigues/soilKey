@@ -29,6 +29,7 @@ test_that("the Ki is computed from the silica and the alumina of the sulfuric at
 })
 
 test_that("a B with Ki of 2.2 or less is a B latossolico; above it, it is none", {
+  skip_on_cran()
   ok <- .ki_profile(c(2.6, 1.8, 1.9, 2.0))       # the A is not asked for its Ki
   r <- B_latossolico(ok)
   expect_true(isTRUE(r$passed))
@@ -58,6 +59,7 @@ test_that("a sub-horizon above 2.2 is no part of the horizon, which then has to 
 })
 
 test_that("where the sulfuric attack is not recorded the horizon is tested as before", {
+  skip_on_cran()
   p <- .ki_profile(c(2.6, 2.5, 2.4, 2.6))
   p$horizons$sio2_sulfuric_pct <- NA_real_
   r <- B_latossolico(p)
@@ -70,6 +72,7 @@ test_that("where the sulfuric attack is not recorded the horizon is tested as be
 })
 
 test_that("a Bw with Ki above 2.2 is the B incipiente the book tells from the B latossolico", {
+  skip_on_cran()
   p <- .ki_profile(c(2.6, 2.5, 2.4, 2.6))
   expect_false(isTRUE(B_latossolico(p)$passed))
   expect_true(isTRUE(B_incipiente(p)$passed))

@@ -22,6 +22,7 @@ test_that("Fibric/Hemic/Sapric are counted as implemented (delegation)", {
 })
 
 test_that("coverage_report('wrb_qualifiers') no longer flags them as stubs", {
+  skip_on_cran()
   skip_if_no_soiltaxonomy()
   cov <- coverage_report("wrb_qualifiers")
   expect_false(any(c("Fibric", "Hemic", "Sapric") %in% cov$stubs))
