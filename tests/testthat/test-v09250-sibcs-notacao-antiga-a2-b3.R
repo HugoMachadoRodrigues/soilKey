@@ -44,6 +44,7 @@ test_that("in such a profile the A2 is read E and the B3 is read BC", {
 })
 
 test_that("an A2 above the B makes a B textural by item (f)", {
+  skip_on_cran()
   # A1 12%, A2 10%, B2t 16%: a ratio of 1.45, under the 1.80 of item (h), no
   # abrupt change and no cerosidade
   p <- .on(c("A1", "A2", "B21t", "B22t", "C"), c(0, 15, 40, 80, 130), c(15, 40, 80, 130, 180),

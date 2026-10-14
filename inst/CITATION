@@ -49,7 +49,6 @@ bibentry(
   volume   = 10,
   pages    = "100735",
   doi      = "10.1016/j.atech.2024.100735",
-  url      = "https://www.agroapi.cnptia.embrapa.br/store/apis/info?name=SmartSolosExpert&version=v1&provider=agroapi",
   textVersion = paste0(
     "Vaz, G. J., Silva Neto, L. de F. da, & Barbedo, J. G. A. (2025). ",
     "SmartSolos Expert: an expert system for Brazilian soil ",

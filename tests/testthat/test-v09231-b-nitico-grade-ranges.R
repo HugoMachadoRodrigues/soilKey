@@ -38,6 +38,7 @@ test_that(".field_grade_class() reads a grade in both languages, and a range by 
 })
 
 test_that("a structure grade that only reaches 'moderada' is not 'moderada ou forte'", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()
   expect_true(isTRUE(B_nitico(p)$passed))
   for (ok in c("Moderada", "Forte", "Moderada a forte", "moderate", "strong",
@@ -50,6 +51,7 @@ test_that("a structure grade that only reaches 'moderada' is not 'moderada ou fo
 })
 
 test_that("the same holds for the grade of the cerosidade", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()
   for (ok in c("Moderada", "Forte", "Moderada a forte", "moderate", "strong"))
     expect_true(B_nitico(.with_grades(p, films = ok))$evidence$cerosidade_ok, info = ok)

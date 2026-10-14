@@ -9,6 +9,7 @@
 .trace_cols <- c("phase", "code", "name", "status", "missing", "n_missing")
 
 test_that("key_trace_table returns the documented columns for every system", {
+  skip_on_cran()
   p <- make_ferralsol_canonical()
   for (sys in c("wrb", "sibcs", "usda")) {
     res <- classify_all(p, systems = sys, on_missing = "silent")[[sys]]
@@ -27,6 +28,7 @@ test_that("key_trace_table returns the documented columns for every system", {
 })
 
 test_that("the nested SiBCS/USDA trace never crashes and is not garbled", {
+  skip_on_cran()
   fx <- c("make_ferralsol_canonical", "make_gleysol_canonical",
           "make_histosol_canonical", "make_vertisol_canonical",
           "make_arenosol_canonical", "make_planosol_canonical")
@@ -47,6 +49,7 @@ test_that("the nested SiBCS/USDA trace never crashes and is not garbled", {
 })
 
 test_that("WRB flat trace has an empty phase and real step codes", {
+  skip_on_cran()
   res <- classify_wrb2022(make_ferralsol_canonical())
   tt  <- key_trace_table(res)
   expect_true(all(!nzchar(tt$phase)))            # flat trace -> no level column
@@ -95,6 +98,7 @@ test_that("a synthetic trace exercises every node shape deterministically", {
 })
 
 test_that("real FamilyAttribute rows surface as 'info' when the family level runs", {
+  skip_on_cran()
   res  <- classify_sibcs(make_ferralsol_canonical(), include_familia = TRUE)
   tt   <- key_trace_table(res)
   info <- tt[tt$status == "info", , drop = FALSE]
@@ -104,6 +108,7 @@ test_that("real FamilyAttribute rows surface as 'info' when the family level run
 })
 
 test_that("key_trace_table accepts a raw trace list, not only a result", {
+  skip_on_cran()
   res <- classify_sibcs(make_ferralsol_canonical())
   expect_identical(key_trace_table(res$trace), key_trace_table(res))
 })

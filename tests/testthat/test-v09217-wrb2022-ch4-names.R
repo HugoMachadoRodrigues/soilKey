@@ -40,6 +40,7 @@ test_that("the lists are Chapter 4's (spot checks against the printed text)", {
 })
 
 test_that("principal qualifiers are written right to left, the first in the list next to the RSG", {
+  skip_on_cran()
   r <- resolve_wrb_qualifiers(make_ferralsol_canonical(), "FR")
   # Chapter 4 ranks Rhodic/Xanthic (3rd) above Geric (4th): "Geric Rhodic Ferralsol"
   expect_identical(r$principal, c("Geric", "Rhodic"))
@@ -48,6 +49,7 @@ test_that("principal qualifiers are written right to left, the first in the list
 })
 
 test_that("supplementary qualifiers: texture first, then alphabetical by qualifier", {
+  skip_on_cran()
   r <- resolve_wrb_qualifiers(make_ferralsol_canonical(), "FR")
   s <- r$supplementary
   expect_identical(s[1], "Clayic")
@@ -60,6 +62,7 @@ test_that("supplementary qualifiers: texture first, then alphabetical by qualifi
 })
 
 test_that("a slash group gives at most one qualifier: Humic/Ochric", {
+  skip_on_cran()
   for (f in c("make_ferralsol_canonical", "make_luvisol_canonical", "make_acrisol_canonical")) {
     p <- get(f)()
     nm <- classify_wrb2022(p, on_missing = "silent")$name
@@ -119,6 +122,7 @@ test_that("Novic: a 5-50 cm layer over a buried soil", {
 })
 
 test_that("a hydragric horizon needs an anthraquic horizon above it", {
+  skip_on_cran()
   for (f in c("make_gleysol_canonical", "make_stagnosol_canonical")) {
     p <- get(f)()
     expect_false(isTRUE(hydragric(p)$passed), info = f)
@@ -131,6 +135,7 @@ test_that("a hydragric horizon needs an anthraquic horizon above it", {
 })
 
 test_that("Toxic needs a recorded contamination, not salts or acidity", {
+  skip_on_cran()
   sc <- make_solonchak_canonical()
   expect_false(isTRUE(soilKey:::qual_toxic(sc)$passed))
   expect_false(grepl("Toxic", classify_wrb2022(sc, on_missing = "silent")$name))
@@ -139,6 +144,7 @@ test_that("Toxic needs a recorded contamination, not salts or acidity", {
 })
 
 test_that("a soil with no principal qualifier keeps its supplementary ones", {
+  skip_on_cran()
   # 16 RSGs list no Haplic; the name is still formatted, not the bare key name
   nm <- classify_wrb2022(make_technosol_canonical(), on_missing = "silent")$name
   expect_false(identical(nm, "Technosols"))
@@ -157,6 +163,7 @@ test_that("a soil with no principal qualifier keeps its supplementary ones", {
 # not part of a plinthic one); the Retisol's argic horizon is no longer voided
 # by its glossic designation.
 test_that("the 44 example profiles keep their WRB 2022 names", {
+  skip_on_cran()
   expected <- c(
     acrisol_canonical = "Chromic Acrisol (Loamic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)",
     alisol_canonical = "Haplic Alisol (Loamic, Hyperalic, Cutanic, Differentic, Epic, Ochric, Profondic)",

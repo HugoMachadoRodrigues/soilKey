@@ -29,6 +29,7 @@ test_that("the translation catalogue ships and parses with en + pt sections", {
 })
 
 test_that("every English key has a Portuguese translation (no gaps)", {
+  skip_on_cran()
   cat <- yaml::read_yaml(.i18n_catalog_path())
   missing_pt <- setdiff(names(cat$en), names(cat$pt))
   expect_equal(missing_pt, character(0))
@@ -40,6 +41,7 @@ test_that("every English key has a Portuguese translation (no gaps)", {
 })
 
 test_that("sprintf placeholders match between en and pt", {
+  skip_on_cran()
   cat <- yaml::read_yaml(.i18n_catalog_path())
   ph <- function(s) {
     m <- regmatches(s, gregexpr("%[-0-9.]*[sdfg]", s))[[1]]
@@ -52,6 +54,7 @@ test_that("sprintf placeholders match between en and pt", {
 })
 
 test_that("i18n() resolves, falls back, and formats", {
+  skip_on_cran()
   env <- .source_i18n_helper()
   i18n <- get("i18n", envir = env)
   withr::with_options(list(soilKey.app_lang = "en"), {

@@ -1,19 +1,28 @@
-# cran-comments.md -- soilKey 0.9.258
+# cran-comments.md -- soilKey 0.9.259
 
 ## Resubmission
 
-This is a resubmission. The previous submission, 0.9.213 (2026-10-08), was
-archived after its pre-test gave one NOTE, on Debian and on Windows:
+This is a resubmission. The previous submission, 0.9.258 (2026-10-14), did
+not pass the incoming checks automatically:
 
-    Found the following (possibly) invalid file URI:
-      URI: inst/benchmarks/reports/embrapa_febr_2026-05-01.md
-        From: NEWS.md
+    Flavor: r-devel-windows-x86_64
+    Check: Overall checktime, Result: NOTE
+      Overall checktime 14 min > 10 min
 
-The NEWS entry of 0.9.16 linked to a benchmark report that is no longer part
-of the package. The entry now names the report as text, with no link
-(0.9.258). It was the only link of the package to a file that does not ship:
-the one other link without a scheme, `inst/DATA-PROVENANCE.md` in the README,
-is to a file in the package.
+mainly from the tests (461 s on Windows). As asked, the less important tests
+now run only off CRAN: every test that took more than 0.03 s on CRAN's terms
+(`NOT_CRAN` unset) on a fast machine starts with `skip_on_cran()`, 457 tests
+in 137 files. The core of the three classification keys stays on CRAN: the
+canonical profiles are classified to their WRB Reference Soil Group, SiBCS
+order and USDA order. On this machine the tests now take 30 s on CRAN's
+terms (98 s before); by the ratio of the 0.9.258 pre-test, about 150 s on
+Windows. There are no code changes.
+
+The three links to Embrapa's AgroAPI (`www.agroapi.cnptia.embrapa.br`), whose
+server did not answer during the check of this version, are now plain text.
+
+Before that, 0.9.213 (2026-10-08) was archived after one NOTE of its
+pre-test, an invalid file URI in NEWS.md; it was removed in 0.9.258.
 
 ## Submission summary
 
@@ -47,12 +56,12 @@ non-additive way. DESCRIPTION is unchanged apart from Version and Date.
 * macOS 27 (arm64), R 4.6.1: `R CMD check --as-cran` on the built tarball.
 * GitHub Actions, `R CMD check` with `--as-cran`: ubuntu-latest R-devel,
   R-release and R-oldrel-1; macos-latest and windows-latest R-release.
-* The pre-test of 0.9.213 on R-devel (Debian) and R-release (Windows) gave
-  only the NOTE fixed here.
+* The pre-tests of 0.9.213 and 0.9.258 on R-devel (Debian and Windows) gave
+  only the two issues fixed here.
 
 ## R CMD check --as-cran results
 
-On the built tarball of 0.9.258 (R 4.6.1, macOS), with
+On the built tarball of 0.9.259 (R 4.6.1, macOS), with
 `_R_CHECK_CRAN_INCOMING_REMOTE_=true`, the vignettes and the PDF and HTML
 manuals: **0 errors | 0 warnings | 1 note**.
 
@@ -66,8 +75,7 @@ manuals: **0 errors | 0 warnings | 1 note**.
   macOS ships an old `tidy`; the CRAN servers have a current one, and the
   pre-test of 0.9.213 did not give this note.
 
-The tests take 98 s on this machine (111 s on Debian and 193 s on Windows in
-the pre-test of 0.9.213). The tarball is 6.0 MB; the installed size, 11.5 MB,
+The tests take 30 s on this machine. The tarball is 6.0 MB; the installed size, 11.5 MB,
 is reported as INFO.
 
 ## Notes for the CRAN team

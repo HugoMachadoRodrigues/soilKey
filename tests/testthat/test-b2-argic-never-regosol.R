@@ -26,6 +26,7 @@
 }
 
 test_that("a high-activity argic with no Al-sat defaults to Luvisol, not Regosol", {
+  skip_on_cran()
   p  <- .b2_argic_pedon()                     # al_sat + all bases NA
   lv <- soilKey:::luvisol(p)
   expect_true(isTRUE(soilKey:::argic(p)$passed))
@@ -39,6 +40,7 @@ test_that("a high-activity argic with no Al-sat defaults to Luvisol, not Regosol
 })
 
 test_that("a measured Alisol (al_sat >= 50) is not overridden by the default", {
+  skip_on_cran()
   p <- .b2_argic_pedon(al_sat = 60, ca = 1, mg = 1, k = 0.2, na = 0.1,
                        al_cmol = 6)
   expect_true(isTRUE(soilKey:::alisol(p)$passed))
@@ -49,6 +51,7 @@ test_that("a measured Alisol (al_sat >= 50) is not overridden by the default", {
 })
 
 test_that("a measured Luvisol (al_sat < 50) passes the canonical path, not the default", {
+  skip_on_cran()
   p  <- .b2_argic_pedon(al_sat = 20, ca = 4, mg = 2, k = 0.3, na = 0.1,
                         al_cmol = 1)
   lv <- soilKey:::luvisol(p)
@@ -75,6 +78,7 @@ test_that("the default does NOT fire on a stratified clay increase in a C layer"
 })
 
 test_that("canonical fixtures with measured chemistry are byte-identical", {
+  skip_on_cran()
   # The fallback fires only on is.na(al_sat); every argic-derived fixture
   # carries measured or computable al_sat/BS, so none flips.
   expect_equal(classify_wrb2022(make_luvisol_canonical())$rsg_or_order, "Luvisols")

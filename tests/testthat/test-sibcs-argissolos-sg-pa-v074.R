@@ -104,6 +104,7 @@ test_that("carater_placico FAILS para 'weakly' (insuficiente para placico)", {
 # ============================================================================
 
 test_that("PA subgrupos: 6+5+21+6+8+6 = 52 classes em 6 GGs", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("PAtal", "PAal", "PAdc", "PAd", "PAec", "PAe")) {
     expect_true(gg %in% names(rules$subgrupos),
@@ -121,6 +122,7 @@ test_that("PA subgrupos: 6+5+21+6+8+6 = 52 classes em 6 GGs", {
 })
 
 test_that("cada PA GG termina em 'Tp' (catch-all)", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("PAtal", "PAal", "PAdc", "PAd", "PAec", "PAe")) {
     last <- rules$subgrupos[[gg]][[length(rules$subgrupos[[gg]])]]
@@ -177,6 +179,7 @@ test_that("PAdcAb (abrupticos simples) catches mudanca abrupta + distrofico + co
 })
 
 test_that("PAdcTp catch-all for simple distrocoeso profile sem criterio adicional", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm    = c(0,    20,   60),
     bottom_cm = c(20,   60,   200),
@@ -204,6 +207,7 @@ test_that("PAdcTp catch-all for simple distrocoeso profile sem criterio adiciona
 # ============================================================================
 
 test_that("Cap 14 / PBAC / PAC / PVA inalterados apos PA SGs add", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_equal(length(rules$subgrupos$PBACtal), 4L)
   expect_equal(length(rules$subgrupos$PACdc),   9L)

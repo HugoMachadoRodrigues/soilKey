@@ -74,6 +74,7 @@ test_that("a tropical Bw with borderline CEC/clay is ferralic only when inferenc
 })
 
 test_that("a temperate Bw is NOT read as ferralic even with inference ON (region-aware)", {
+  skip_on_cran()
   # v0.9.188: identical borderline Bw, but an Austrian (temperate) site -> the
   # Bw is the cambic B, so the ferralic morphological inference must NOT fire.
   hz <- data.frame(designation = c("Ap", "Bw"), top_cm = c(0, 25),

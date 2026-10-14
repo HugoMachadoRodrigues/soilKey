@@ -14,10 +14,12 @@ expect_classifies_as <- function(fixture, expected_rsg) {
 }
 
 test_that("Ferralsol fixture -> Ferralsols", {
+  skip_on_cran()
   expect_classifies_as(make_ferralsol_canonical(), "Ferralsols")
 })
 
 test_that("Vertisol fixture -> Vertisols", {
+  skip_on_cran()
   expect_classifies_as(make_vertisol_canonical(), "Vertisols")
 })
 
@@ -26,10 +28,12 @@ test_that("Solonchak fixture -> Solonchaks", {
 })
 
 test_that("Gleysol fixture -> Gleysols", {
+  skip_on_cran()
   expect_classifies_as(make_gleysol_canonical(), "Gleysols")
 })
 
 test_that("Podzol fixture -> Podzols", {
+  skip_on_cran()
   expect_classifies_as(make_podzol_canonical(), "Podzols")
 })
 
@@ -38,42 +42,52 @@ test_that("Plinthosol fixture -> Plinthosols", {
 })
 
 test_that("Chernozem fixture -> Chernozems", {
+  skip_on_cran()
   expect_classifies_as(make_chernozem_canonical(), "Chernozems")
 })
 
 test_that("Kastanozem fixture -> Kastanozems", {
+  skip_on_cran()
   expect_classifies_as(make_kastanozem_canonical(), "Kastanozems")
 })
 
 test_that("Phaeozem fixture -> Phaeozems", {
+  skip_on_cran()
   expect_classifies_as(make_phaeozem_canonical(), "Phaeozems")
 })
 
 test_that("Gypsisol fixture -> Gypsisols", {
+  skip_on_cran()
   expect_classifies_as(make_gypsisol_canonical(), "Gypsisols")
 })
 
 test_that("Calcisol fixture -> Calcisols", {
+  skip_on_cran()
   expect_classifies_as(make_calcisol_canonical(), "Calcisols")
 })
 
 test_that("Acrisol fixture -> Acrisols", {
+  skip_on_cran()
   expect_classifies_as(make_acrisol_canonical(), "Acrisols")
 })
 
 test_that("Lixisol fixture -> Lixisols", {
+  skip_on_cran()
   expect_classifies_as(make_lixisol_canonical(), "Lixisols")
 })
 
 test_that("Alisol fixture -> Alisols", {
+  skip_on_cran()
   expect_classifies_as(make_alisol_canonical(), "Alisols")
 })
 
 test_that("Luvisol fixture -> Luvisols", {
+  skip_on_cran()
   expect_classifies_as(make_luvisol_canonical(), "Luvisols")
 })
 
 test_that("Cambisol fixture -> Cambisols", {
+  skip_on_cran()
   expect_classifies_as(make_cambisol_canonical(), "Cambisols")
 })
 
@@ -84,58 +98,72 @@ test_that("Histosol fixture -> Histosols", {
 })
 
 test_that("Anthrosol fixture -> Anthrosols", {
+  skip_on_cran()
   expect_classifies_as(make_anthrosol_canonical(), "Anthrosols")
 })
 
 test_that("Technosol fixture -> Technosols", {
+  skip_on_cran()
   expect_classifies_as(make_technosol_canonical(), "Technosols")
 })
 
 test_that("Cryosol fixture -> Cryosols", {
+  skip_on_cran()
   expect_classifies_as(make_cryosol_canonical(), "Cryosols")
 })
 
 test_that("Leptosol fixture -> Leptosols", {
+  skip_on_cran()
   expect_classifies_as(make_leptosol_canonical(), "Leptosols")
 })
 
 test_that("Solonetz fixture -> Solonetz", {
+  skip_on_cran()
   expect_classifies_as(make_solonetz_canonical(), "Solonetz")
 })
 
 test_that("Andosol fixture -> Andosols", {
+  skip_on_cran()
   expect_classifies_as(make_andosol_canonical(), "Andosols")
 })
 
 test_that("Nitisol fixture -> Nitisols", {
+  skip_on_cran()
   expect_classifies_as(make_nitisol_canonical(), "Nitisols")
 })
 
 test_that("Planosol fixture -> Planosols", {
+  skip_on_cran()
   expect_classifies_as(make_planosol_canonical(), "Planosols")
 })
 
 test_that("Stagnosol fixture -> Stagnosols", {
+  skip_on_cran()
   expect_classifies_as(make_stagnosol_canonical(), "Stagnosols")
 })
 
 test_that("Umbrisol fixture -> Umbrisols", {
+  skip_on_cran()
   expect_classifies_as(make_umbrisol_canonical(), "Umbrisols")
 })
 
 test_that("Durisol fixture -> Durisols", {
+  skip_on_cran()
   expect_classifies_as(make_durisol_canonical(), "Durisols")
 })
 
 test_that("Retisol fixture -> Retisols", {
+  skip_on_cran()
   expect_classifies_as(make_retisol_canonical(), "Retisols")
 })
 
 test_that("Arenosol fixture -> Arenosols", {
+  skip_on_cran()
   expect_classifies_as(make_arenosol_canonical(), "Arenosols")
 })
 
 test_that("Fluvisol fixture -> Fluvisols", {
+  skip_on_cran()
   expect_classifies_as(make_fluvisol_canonical(), "Fluvisols")
 })
 
@@ -188,6 +216,7 @@ test_that("All 30 canonical fixtures classify to their intended RSG", {
 })
 
 test_that("Evidence grade is A for all canonical fixtures (no provenance log)", {
+  skip_on_cran()
   fixtures <- list(
     make_ferralsol_canonical(),  make_luvisol_canonical(),
     make_chernozem_canonical(),  make_calcisol_canonical(),
@@ -205,6 +234,7 @@ test_that("Evidence grade is A for all canonical fixtures (no provenance log)", 
 })
 
 test_that("Trace length grows with how deep the assignment is in the key", {
+  skip_on_cran()
   # Vertisols (VR) is position 7 in the canonical key
   vr <- classify_wrb2022(make_vertisol_canonical(), on_missing = "silent")
   expect_equal(vr$trace[[length(vr$trace)]]$code, "VR")

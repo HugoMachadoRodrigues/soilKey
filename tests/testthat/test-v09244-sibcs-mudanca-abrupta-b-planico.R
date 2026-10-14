@@ -62,6 +62,7 @@ test_that("it is an increase: no clay over no clay is none", {
 })
 
 test_that("a BC is no first B sub-horizon (v0.9.246)", {
+  skip_on_cran()
   # item (h) of the B textural leaves the BC out of the B, and the B planico
   # refers to it; a BC that comes before any other B was taken for the first
   bc <- .ab(c("A", "BC", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30))
@@ -97,6 +98,7 @@ test_that("the rows are read in the order of their depths", {
 })
 
 test_that("the distance of 7.5 cm is read from the distinctness of the transition", {
+  skip_on_cran()
   g <- function(b) .ab(c("A", "Bt"), c(0, 30), c(30, 90), c(12, 30), boundary = c(b, NA))
   for (b in c("abrupt", "clear", "Abrupta", "Clara"))
     expect_true(isTRUE(mudanca_textural_abrupta(g(b))$passed), info = b)
@@ -129,6 +131,7 @@ test_that("with no clay in one of the two horizons the answer is NA, and a profi
 }
 
 test_that("the B planico is the first B sub-horizon, below an abrupt textural change", {
+  skip_on_cran()
   p <- .pl(c("A", "E", "Bt1", "Bt2"), c(0, 15, 40, 70), c(15, 40, 70, 120), c(14, 10, 30, 35))
   r <- B_planico(p)
   expect_true(isTRUE(r$passed))
@@ -180,6 +183,7 @@ test_that("a jump of clay inside the B is no B planico", {
 })
 
 test_that("an abrupt transition with the textural ratio of item (h) makes one too", {
+  skip_on_cran()
   # A 25%, Bt 44%: 19 points and a ratio of 1.76, above the 1.70 of item (h)
   g <- function(b, clay_b = 44) .pl(c("A", "Bt"), c(0, 30), c(30, 90), c(25, clay_b),
                                     boundary = c(b, NA))

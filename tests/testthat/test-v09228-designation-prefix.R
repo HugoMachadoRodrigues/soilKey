@@ -42,6 +42,7 @@ test_that(".desg_master() drops the number of the material, Arabic or Roman", {
 })
 
 test_that("a B planico that is the top of a second material is a B planico", {
+  skip_on_cran()
   p <- make_planossolo_canonical()
   expect_true(isTRUE(B_planico(p)$passed))
   for (prefix in c("II", "2")) {
@@ -115,6 +116,7 @@ test_that("the order of a canonical profile does not depend on how its materials
 })
 
 test_that("a test that reads the master horizon reads no raw designation pattern", {
+  skip_on_cran()
   # in every function that goes through .desg_master() or .h_master(), no
   # pattern is left applied to `h$designation` as written: one that was would
   # bring the dependence on the number of the material back. The functions are

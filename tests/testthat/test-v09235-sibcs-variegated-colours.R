@@ -153,6 +153,7 @@ test_that("the Redape loader reads COR_MOSQ_* as variegated colours or as mottle
 }
 
 test_that("a variegated horizon above the plinthic one counts when one of its colours satisfies (a) or (b)", {
+  skip_on_cran()
   expect_false(isTRUE(plintossolo(.deep_plinthite_under())$passed))
   for (ok in c("10YR 5/3; 2.5YR 4/6",          # Redape GeoTab_PE_048_Goiana
                "2.5Y 7/1; 10YR 6/8",           # BDsolos AM 10006
@@ -190,6 +191,7 @@ test_that("a variegated horizon above the plinthic one counts when one of its co
 }
 
 test_that("an Argissolo with deep plinthite is a Plintossolo when the horizon above is so coloured", {
+  skip_on_cran()
   key <- function(p) classify_sibcs(p, on_missing = "silent")$rsg_or_order
   plain <- .argissolo_deep_plinthite()
   expect_true(isTRUE(horizonte_plintico(plain)$passed))
@@ -203,6 +205,7 @@ test_that("an Argissolo with deep plinthite is a Plintossolo when the horizon ab
 })
 
 test_that("abundant mottles count by their colour, when the sheet records it", {
+  skip_on_cran()
   mott <- function(pct, colours = NA_character_)
     .deep_plinthite_under(list(redoximorphic_features_pct = pct, mottle_colors = colours))
   # no colour recorded: the amount decides, as before
@@ -225,6 +228,7 @@ test_that("abundant mottles count by their colour, when the sheet records it", {
 })
 
 test_that("the canonical fixtures carry neither column and are read as before", {
+  skip_on_cran()
   ns <- asNamespace("soilKey")
   for (f in c("make_plintossolo_canonical", "make_argissolo_canonical", "make_gleissolo_canonical")) {
     p <- get(f, envir = ns)()

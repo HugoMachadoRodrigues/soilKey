@@ -7,6 +7,7 @@ test_that("Oxisols Suborders: 5", {
 })
 
 test_that("Oxisols Great Groups: 4+3+5+5+5 = 22", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$EA), 4L)  # Aquox
   expect_equal(length(rules$great_groups$EB), 3L)  # Torrox
@@ -27,6 +28,7 @@ test_that("Oxisols Subgroups: subset cientifico cobrindo principais SGs", {
 })
 
 test_that("classify_usda routes a tropical highly-weathered profile to Oxisols", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 200),

@@ -50,6 +50,7 @@ test_that("eutrofico() with nothing to read says 'no data', so distrofico() does
 })
 
 test_that("a profile with horizons still classifies, and base status still works", {
+  skip_on_cran()
   # unchanged behaviour: one horizon is enough to run the keys
   p <- PedonRecord$new(site = list(id = "one"),
                        horizons = data.frame(top_cm = 0, bottom_cm = 30,

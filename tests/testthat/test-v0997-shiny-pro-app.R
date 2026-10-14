@@ -17,6 +17,7 @@ test_that("classify_app_pro directory ships app.R and its R/ modules", {
 })
 
 test_that("every classify_app_pro source file parses without syntax errors", {
+  skip_on_cran()
   app_dir <- .pro_app_dir()
   files <- c(file.path(app_dir, "app.R"),
              list.files(file.path(app_dir, "R"), pattern = "\\.R$",
@@ -55,6 +56,7 @@ test_that("run_classify_app errors clearly when a pro dependency is missing", {
 })
 
 test_that("module UI builders produce valid Shiny tags", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("shinyWidgets")

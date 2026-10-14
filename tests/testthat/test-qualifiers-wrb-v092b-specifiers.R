@@ -75,6 +75,7 @@ test_that(".apply_specifier filters base qualifier layers by depth band", {
 # ---- resolve_wrb_qualifiers handles specifier-prefixed YAML names ---------
 
 test_that("resolve_wrb_qualifiers dispatches specifier-prefixed names", {
+  skip_on_cran()
   # Synthetic Chernozem-like profile with calcic at depth (60+ cm).
   hz <- data.table::data.table(
     top_cm = c(0, 30, 60, 100),
@@ -132,6 +133,7 @@ test_that("Family suppression operates after specifier dispatch", {
 # ---- 31-fixture regression check ------------------------------------------
 
 test_that("v0.9.2.B specifier infrastructure does not regress 31 fixtures", {
+  skip_on_cran()
   expected <- c(
     HS = "Histosols", AT = "Anthrosols", TC = "Technosols", CR = "Cryosols",
     LP = "Leptosols", SN = "Solonetz",   VR = "Vertisols", SC = "Solonchaks",

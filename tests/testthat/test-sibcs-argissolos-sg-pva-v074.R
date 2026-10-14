@@ -151,6 +151,7 @@ test_that("carater_chernossolico FAILS sem A chernozemico", {
 # ============================================================================
 
 test_that("PVA subgrupos: 5+5+4+11+11 = 36 classes em 5 GGs", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("PVAtal", "PVAal", "PVAtd", "PVAd", "PVAe")) {
     expect_true(gg %in% names(rules$subgrupos),
@@ -167,6 +168,7 @@ test_that("PVA subgrupos: 5+5+4+11+11 = 36 classes em 5 GGs", {
 })
 
 test_that("cada PVA GG termina em 'Tp' (catch-all)", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   for (gg in c("PVAtal", "PVAal", "PVAtd", "PVAd", "PVAe")) {
     last <- rules$subgrupos[[gg]][[length(rules$subgrupos[[gg]])]]
@@ -240,6 +242,7 @@ test_that("PVAdTp (catch-all) selected for plain distrofico profile", {
 # ============================================================================
 
 test_that("WRB / USDA / Cap 14 / PBAC / PAC inalterados apos PVA SGs add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

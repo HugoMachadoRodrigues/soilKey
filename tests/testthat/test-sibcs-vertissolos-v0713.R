@@ -25,6 +25,7 @@ test_that("Cap 17 SGs: 9+8+25 = 42 classes em 11 GGs", {
 })
 
 test_that("WRB / USDA inalterados apos Cap 17 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

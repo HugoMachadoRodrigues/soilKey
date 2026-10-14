@@ -59,6 +59,7 @@ test_that("Vinheta v09 parses sem erros de sintaxe Rmd", {
 # ---- ClassificationResult$print: defensive when trace has non-list entries ----
 
 test_that("ClassificationResult$print does not error on scalar/NULL trace entries", {
+  skip_on_cran()
   res <- ClassificationResult$new(
     system = "WRB 2022",
     name   = "Cambisols",
@@ -97,6 +98,7 @@ test_that("ClassificationResult$print does not error on scalar/NULL trace entrie
 
 
 test_that("classify_all produces a non-crashing print on a real Argissolo profile", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm    = c(0,    20,   55,   115, 170),
     bottom_cm = c(20,   55,   115,  170, 220),

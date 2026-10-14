@@ -58,6 +58,7 @@ test_that("subgrupo_plintossolo_endico_concrecionario FAILS quando topo < 40", {
 # ------------------------------------------------------------------
 
 test_that("Cap 16 GGs: 2+3+4 = 9 classes em 3 subordens", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_equal(length(rules$grandes_grupos$FF), 2L)
   expect_equal(length(rules$grandes_grupos$FT), 3L)
@@ -85,6 +86,7 @@ test_that("Cap 16 SGs: 17+25+31 = 73 classes em 9 GGs", {
 # ------------------------------------------------------------------
 
 test_that("WRB / USDA inalterados apos Cap 16 add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

@@ -13,6 +13,7 @@ test_that("Spodosols Suborders: 5 (Aquods, Gelods, Cryods, Humods, Orthods)", {
 })
 
 test_that("Spodosols Great Groups: 7+2+4+4+5 = 22", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$CA), 7L)
   expect_equal(length(rules$great_groups$CB), 2L)
@@ -22,6 +23,7 @@ test_that("Spodosols Great Groups: 7+2+4+4+5 = 22", {
 })
 
 test_that("Spodosols Subgroups: 40+10+24+9+38 = 121", {
+  skip_on_cran()
   rules <- load_rules("usda")
   ca_ggs <- c("CAA","CAB","CAC","CAD","CAE","CAF","CAG")
   cb_ggs <- c("CBA","CBB")
@@ -40,6 +42,7 @@ test_that("Spodosols Subgroups: 40+10+24+9+38 = 121", {
 # ------------------------------------------------------------------
 
 test_that("classify_usda routes a podzol-like profile to Spodosols Orthods", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -65,6 +68,7 @@ test_that("classify_usda routes a podzol-like profile to Spodosols Orthods", {
 })
 
 test_that("classify_usda routes Al-rich spodic to Alorthods great group", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -166,6 +170,7 @@ test_that("entic_subgroup_usda passes for thin or low-OC spodic", {
 # ------------------------------------------------------------------
 
 test_that("WRB / SiBCS / Gelisols / Histosols unchanged after Spodosols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

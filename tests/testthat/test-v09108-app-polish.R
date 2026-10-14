@@ -24,6 +24,7 @@
 }
 
 test_that("pro_spectrum_plot returns a plotly widget for a matrix and for NULL", {
+  skip_on_cran()
   skip_if_not_installed("plotly")
   env <- .source_pro_app()
   m <- matrix(stats::runif(4 * 6), nrow = 4,

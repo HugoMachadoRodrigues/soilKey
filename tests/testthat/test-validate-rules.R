@@ -3,6 +3,7 @@
 # degrade to a silent NA at classification time).
 
 test_that("every rule-base predicate exists, for all three systems", {
+  skip_on_cran()
   for (sys in c("wrb2022", "usda", "sibcs5")) {
     res <- soilKey:::.validate_rules(sys)
     expect_gt(res$n, 0L)

@@ -48,6 +48,7 @@ test_that("in a profile so marked the A2 is the E and the B3 the BC", {
 })
 
 test_that("a podzol described A1, A21, A22, Bhir has its E above the B espodico", {
+  skip_on_cran()
   hz <- data.table::data.table(
     designation = c("A1", "A21", "A22", "Bhir"),
     top_cm = c(0, 35, 70, 100), bottom_cm = c(35, 70, 100, 160),

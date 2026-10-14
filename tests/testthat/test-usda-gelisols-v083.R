@@ -7,6 +7,7 @@
 # ------------------------------------------------------------------
 
 test_that("Gelisols Suborders: 3 (Histels, Turbels, Orthels)", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$GE), 3L)
   codes <- vapply(rules$suborders$GE, function(s) s$code, character(1))
@@ -14,6 +15,7 @@ test_that("Gelisols Suborders: 3 (Histels, Turbels, Orthels)", {
 })
 
 test_that("Gelisols Great Groups: 5 + 7 + 8 = 20", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$AA), 5L)  # Histels
   expect_equal(length(rules$great_groups$AB), 7L)  # Turbels
@@ -21,6 +23,7 @@ test_that("Gelisols Great Groups: 5 + 7 + 8 = 20", {
 })
 
 test_that("Gelisols Subgroups: 24 (Histels) + 45 (Turbels) + 60 (Orthels) = 129", {
+  skip_on_cran()
   rules <- load_rules("usda")
   histels_ggs  <- c("AAA","AAB","AAC","AAD","AAE")
   turbels_ggs  <- c("ABA","ABB","ABC","ABD","ABE","ABF","ABG")
@@ -42,6 +45,7 @@ test_that("Gelisols Subgroups: 24 (Histels) + 45 (Turbels) + 60 (Orthels) = 129"
 # ------------------------------------------------------------------
 
 test_that("classify_usda routes a Turbel pedon to Typic Aquiturbels", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -66,6 +70,7 @@ test_that("classify_usda routes a Turbel pedon to Typic Aquiturbels", {
 })
 
 test_that("classify_usda routes a Histel pedon to Folistels (drained organic)", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 60),
     bottom_cm = c(30, 60, 150),
@@ -84,6 +89,7 @@ test_that("classify_usda routes a Histel pedon to Folistels (drained organic)", 
 })
 
 test_that("classify_usda routes a default Orthel to Typic Haplorthels", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 25, 80),
     bottom_cm = c(25, 80, 150),
@@ -201,6 +207,7 @@ test_that("psammentic_subgroup_usda passes for sandy throughout", {
 # ------------------------------------------------------------------
 
 test_that("WRB / SiBCS unchanged after Cap 9 Gelisols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

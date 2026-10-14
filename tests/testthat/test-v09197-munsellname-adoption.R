@@ -36,6 +36,7 @@
 
 
 test_that("the notation matches the hand-rolled spelling on every fixture", {
+  skip_on_cran()
   skip_if_not_installed("munsellinterpol")
   d <- .mn_fixtures()
   expect_identical(

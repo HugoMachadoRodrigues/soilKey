@@ -54,6 +54,7 @@ test_that("train_pls_from_ossl rejects malformed ossl_library", {
 # ---- train_pls_from_ossl() trains a model and reports diagnostics -------
 
 test_that("train_pls_from_ossl trains a model from synthetic data", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib,
@@ -81,6 +82,7 @@ test_that("train_pls_from_ossl trains a model from synthetic data", {
 # ---- predict.soilKey_pls_model() returns the right schema ---------------
 
 test_that("predict.soilKey_pls_model returns value/pi95_low/pi95_high", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib,
@@ -102,6 +104,7 @@ test_that("predict.soilKey_pls_model returns value/pi95_low/pi95_high", {
 # ---- predict_from_spectra() with raw matrix ----------------------------
 
 test_that("predict_from_spectra accepts a raw matrix and returns long-form", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",
@@ -120,6 +123,7 @@ test_that("predict_from_spectra accepts a raw matrix and returns long-form", {
 # ---- predict_from_spectra() with PedonRecord delegates -----------------
 
 test_that("predict_from_spectra(PedonRecord) writes to provenance", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",
@@ -150,6 +154,7 @@ test_that("predict_from_spectra errors when models is NULL or empty", {
 # ---- predict_from_spectra() rejects unknown properties ------------------
 
 test_that("predict_from_spectra rejects properties not in models", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",
@@ -166,6 +171,7 @@ test_that("predict_from_spectra rejects properties not in models", {
 # ---- save_ossl_models() / load_ossl_models() round-trip ----------------
 
 test_that("save/load_ossl_models round-trips a model list", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",
@@ -206,6 +212,7 @@ test_that("load_ossl_models errors when the file does not exist", {
 # ---- predict.soilKey_pls_model() ncol mismatch error -------------------
 
 test_that("predict.soilKey_pls_model errors on ncol mismatch", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",
@@ -221,6 +228,7 @@ test_that("predict.soilKey_pls_model errors on ncol mismatch", {
 # ---- print method shows useful summary ---------------------------------
 
 test_that("print.soilKey_pls_model prints a summary line", {
+  skip_on_cran()
   skip_if_not_installed("pls")
   lib <- .make_synth_ossl_lib()
   models <- train_pls_from_ossl(lib, properties = "clay_pct",

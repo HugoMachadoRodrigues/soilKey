@@ -46,6 +46,7 @@
 }
 
 test_that("the 'v' of a Brazilian designation is a vertic horizon in the morphological mode", {
+  skip_on_cran()
   p <- .vertic_by_letter()
   old <- .morph(FALSE); on.exit(options(old), add = TRUE)
   expect_false(isTRUE(horizonte_vertico(p)$passed))
@@ -68,6 +69,7 @@ test_that("for WRB and USDA the 'v' is still not vertic", {
 })
 
 test_that("the old 'pl' is plinthite in the morphological mode, as 'f' is", {
+  skip_on_cran()
   old <- .morph(FALSE); on.exit(options(old), add = TRUE)
   pl <- .plinthic_by_letters(c("A1", "B21pl", "B22pl"))
   f  <- .plinthic_by_letters(c("A", "Btf", "Cf"))
@@ -97,6 +99,7 @@ test_that("a 'pl' that is not 15 cm thick, or not there, is no plinthic horizon"
 })
 
 test_that("measured plinthite needs no letter and no mode", {
+  skip_on_cran()
   old <- .morph(FALSE); on.exit(options(old), add = TRUE)
   p <- make_plintossolo_canonical()
   expect_true(isTRUE(horizonte_plintico(p)$passed))
@@ -125,6 +128,7 @@ test_that("measured plinthite needs no letter and no mode", {
 }
 
 test_that("the canonical Plintossolo has its plinthic horizon within 40 cm", {
+  skip_on_cran()
   p <- make_plintossolo_canonical()
   r <- plintossolo(p)
   expect_true(isTRUE(r$passed))
@@ -133,6 +137,7 @@ test_that("the canonical Plintossolo has its plinthic horizon within 40 cm", {
 })
 
 test_that("plinthite that starts below 40 cm under a B horizon makes no Plintossolo", {
+  skip_on_cran()
   p <- .deep_plinthite()
   expect_true(isTRUE(horizonte_plintico(p)$passed))
   r <- plintossolo(p)
@@ -143,6 +148,7 @@ test_that("plinthite that starts below 40 cm under a B horizon makes no Plintoss
 })
 
 test_that("it does when the horizon above is an A or an E", {
+  skip_on_cran()
   for (d in c("E", "A2", "AB", "2E")) {
     p <- .deep_plinthite(list(designation = d))
     expect_true(isTRUE(plintossolo(p)$passed), info = d)
@@ -154,6 +160,7 @@ test_that("it does when the horizon above is an A or an E", {
 })
 
 test_that("it does when the horizon above is pale, or has mottles in abundant amount", {
+  skip_on_cran()
   pale <- list(c("10YR", 6, 3), c("7.5YR", 5, 4), c("2.5Y", 6, 2), c("5Y", 5, 6))
   for (x in pale) {
     p <- .deep_plinthite(list(munsell_hue_moist = x[1], munsell_value_moist = as.numeric(x[2]),
@@ -181,6 +188,7 @@ test_that("below 200 cm no plinthic horizon makes a Plintossolo", {
 })
 
 test_that("a Cambissolo is excluded by the requirements of Plintossolos, not by any plinthite", {
+  skip_on_cran()
   cam <- make_cambissolo_canonical()        # A, Bw, BC, C; the C starts at 100 cm
   expect_true(isTRUE(cambissolo(cam)$passed))
   n <- nrow(cam$horizons)

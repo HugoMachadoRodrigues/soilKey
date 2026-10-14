@@ -46,6 +46,7 @@ test_that("the loader reads the kind of sampling point as the export words it", 
 })
 
 test_that("a file with no 'Tipo' column gives no kind, and the benchmark counts every record", {
+  skip_on_cran()
   q <- function(...) paste0(paste0('"', c(...), '"', collapse = ";"), ";")
   hdr <- q("Código PA", "UF", "Classificação Atual", "Símbolo Horizonte",
            "Profundidade Superior", "Profundidade Inferior")
@@ -62,6 +63,7 @@ test_that("a file with no 'Tipo' column gives no kind, and the benchmark counts 
 })
 
 test_that("the figures of the benchmark are those of the complete profiles, with the table by kind beside them", {
+  skip_on_cran()
   peds <- .st_peds()
   r <- suppressMessages(benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE))$per_system$sibcs
   # two complete profiles: the Neossolo agrees, the "Latossolo" with no B does not
@@ -79,6 +81,7 @@ test_that("the figures of the benchmark are those of the complete profiles, with
 })
 
 test_that("sampling_type = NULL counts every record, as before, and other kinds can be asked for", {
+  skip_on_cran()
   peds <- .st_peds()
   a <- suppressMessages(benchmark_bdsolos(peds, systems = "sibcs", verbose = FALSE,
                                            sampling_type = NULL))$per_system$sibcs
@@ -99,6 +102,7 @@ test_that("sampling_type = NULL counts every record, as before, and other kinds 
 })
 
 test_that("pedons that carry no kind are all counted (another source, a hand-made list)", {
+  skip_on_cran()
   p <- make_latossolo_canonical()
   p$site$reference_sibcs <- "LATOSSOLO VERMELHO Distrofico tipico"
   r <- suppressMessages(benchmark_bdsolos(list(p), systems = "sibcs", verbose = FALSE))$per_system$sibcs

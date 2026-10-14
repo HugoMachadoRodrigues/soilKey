@@ -1,3 +1,39 @@
+# soilKey 0.9.259 (2026-10-14)
+
+## Tests: the slow ones run off CRAN
+
+The CRAN pre-test of 0.9.258 (2026-10-14) did not pass automatically on
+r-devel-windows-x86_64: "Overall checktime 14 min > 10 min", mainly from the
+tests, 461 s on Windows (158 s on Debian). The CRAN team asked to reduce the
+test timings, among other ways by running less important tests only off CRAN.
+
+Every test that took more than 0.03 s on CRAN's terms (`NOT_CRAN` unset, the
+installed package) on a fast machine now starts with `skip_on_cran()`: 457
+tests in 137 files. They run as before with `devtools::test()` and wherever
+`NOT_CRAN=true`. The core of the three keys stays on CRAN, slow as it is:
+the tests that the canonical profiles classify to their WRB Reference Soil
+Group, to their SiBCS order, and to their USDA order.
+
+| | before | now |
+|---|---|---|
+| tests run on CRAN | 1,821 | 1,354 |
+| time of the tests on CRAN's terms, this machine | 87 s | 21 s |
+| the same, the whole test process | 98 s | 28 s |
+
+Windows ran the tests of 0.9.258 about five times slower than this machine;
+by that ratio they take about 150 s there now.
+
+## The links to Embrapa's AgroAPI are text
+
+The check of this version found the three addresses of Embrapa's AgroAPI
+(`www.agroapi.cnptia.embrapa.br`) out of reach: the server did not answer in
+60 s, and the incoming check waited for it. The addresses stay, written as
+text and no longer as links: in the NEWS entry of 0.9.237, in the README, and
+in `inst/CITATION`, where the entry of the SmartSolos Expert article loses its
+`url` and keeps its DOI. As for the data servers in 0.9.155.
+
+No code changes; the classification of every profile is the same.
+
 # soilKey 0.9.258 (2026-10-14)
 
 ## NEWS: no link to a file the package does not ship
@@ -1367,7 +1403,7 @@ plânico of a Planossolo (key, Cap. 4, p. 112; Cap. 2, p. 68).
 
 The GeoTab files of Redape, and the SmartSolos Expert service they were made
 for, record the soil structure as integer codes. The service describes them
-(<https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1>):
+(`https://www.agroapi.cnptia.embrapa.br/store/api-docs/agroapi/SmartSolosExpert/v1`):
 
 | Field | Description |
 |---|---|

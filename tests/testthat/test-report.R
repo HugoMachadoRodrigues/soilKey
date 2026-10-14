@@ -121,6 +121,7 @@ test_that("report_html() shows trace, ambiguities, missing data and warnings", {
 })
 
 test_that("report_html() includes horizons table when a PedonRecord is supplied", {
+  skip_on_cran()
   pedon <- PedonRecord$new(
     site = list(id = "test-pedon", lat = -22.5, lon = -43.7,
                 country = "BR", parent_material = "gneiss"),
@@ -200,6 +201,7 @@ test_that("report_pdf() round-trips through rmarkdown when available", {
 }
 
 test_that("report() default is byte-identical to classify_usda()/wrb() defaults", {
+  skip_on_cran()
   p   <- make_ferralsol_canonical()
   out <- tempfile(fileext = ".html")
   on.exit(unlink(out), add = TRUE)
@@ -212,6 +214,7 @@ test_that("report() default is byte-identical to classify_usda()/wrb() defaults"
 })
 
 test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
+  skip_on_cran()
   p    <- make_ferralsol_canonical()
   out0 <- tempfile(fileext = ".html")
   out1 <- tempfile(fileext = ".html")
@@ -229,6 +232,7 @@ test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
 })
 
 test_that("report(specifiers=TRUE) is accepted and stays valid HTML", {
+  skip_on_cran()
   p   <- make_ferralsol_canonical()
   out <- tempfile(fileext = ".html")
   on.exit(unlink(out), add = TRUE)

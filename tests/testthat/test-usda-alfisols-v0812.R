@@ -2,11 +2,13 @@
 # 5 Suborders + 39 Great Groups + ~140 Subgroups via Path C.
 
 test_that("Alfisols Suborders: 5", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$AF), 5L)
 })
 
 test_that("Alfisols Great Groups: 11+3+8+7+10 = 39", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$JA), 11L)
   expect_equal(length(rules$great_groups$JB), 3L)
@@ -16,6 +18,7 @@ test_that("Alfisols Great Groups: 11+3+8+7+10 = 39", {
 })
 
 test_that("classify_usda routes ochric+argillic+highBS to Alfisols Udalfs", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 200),
@@ -44,6 +47,7 @@ test_that("classify_usda routes ochric+argillic+highBS to Alfisols Udalfs", {
 })
 
 test_that("WRB unchanged after Alfisols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

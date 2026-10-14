@@ -24,6 +24,7 @@
 }
 
 test_that("'many' is a strong amount of clay films, as 'common' and 'abundant' are", {
+  skip_on_cran()
   for (strong in c("many", "Many", "MANY", "very many", "many (60%)",
                    "common", "abundant", "comum", "Abundante"))
     expect_true(.argic_strong_films_match(strong), info = strong)
@@ -36,6 +37,7 @@ test_that("'many' is a strong amount of clay films, as 'common' and 'abundant' a
 })
 
 test_that("clay films 'many' in the B textural exclude the B latossolico", {
+  skip_on_cran()
   few <- .films_profile("few")
   expect_true(isTRUE(argic(few, lithic_discontinuity = FALSE)$passed))
   expect_false(isTRUE(argic_with_strong_clay_films(few)$passed))

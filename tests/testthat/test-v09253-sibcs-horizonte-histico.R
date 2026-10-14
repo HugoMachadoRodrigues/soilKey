@@ -23,6 +23,7 @@
 }
 
 test_that("the sub-horizons of a histic horizon make its thickness", {
+  skip_on_cran()
   # Oo1 of 15 cm alone is under the 20 cm; with Oo2 and Oo3 the horizon has 80
   p <- .org_profile(c("Oo1", "Oo2", "Oo3", "2Cg"), c(0, 15, 32, 80),
                     c(15, 32, 80, 110), c(39, 45, 44, 0.5))
@@ -73,6 +74,7 @@ test_that("layers that do not adjoin are two runs, each with its own thickness",
 })
 
 test_that("a histic horizon of 20 to 39 cm over a mineral horizon is no Organossolo", {
+  skip_on_cran()
   p <- .org_profile(c("H", "Cg"), c(0, 35), c(35, 100), c(19, 1.5))
   expect_true(isTRUE(horizonte_histico(p)$passed))
   o <- organossolo(p)
@@ -142,6 +144,7 @@ test_that("what makes a layer organic is as before", {
 })
 
 test_that("a histic horizon under 40 cm is that of the classes further down the key", {
+  skip_on_cran()
   # H of 30 cm over a glei horizon: Gleissolo Melanico, by its histic horizon
   hz <- data.table::data.table(
     designation = c("H", "Cg1", "Cg2"), top_cm = c(0, 30, 70), bottom_cm = c(30, 70, 130),
@@ -159,6 +162,7 @@ test_that("a histic horizon under 40 cm is that of the classes further down the 
 })
 
 test_that("the canonical Organossolo keeps its order, with its three H sub-horizons", {
+  skip_on_cran()
   p <- make_organossolo_canonical()
   r <- horizonte_histico(p)
   expect_true(isTRUE(r$passed))

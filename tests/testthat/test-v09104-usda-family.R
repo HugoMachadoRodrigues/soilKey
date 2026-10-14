@@ -105,6 +105,7 @@ test_that("family_label_usda joins modifiers in canonical order", {
 
 
 test_that("classify_usda(include_family) prepends the family; default unchanged", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   base <- classify_usda(pr)
   withf <- classify_usda(pr, include_family = TRUE)
@@ -122,6 +123,7 @@ test_that("classify_usda(include_family) prepends the family; default unchanged"
 
 
 test_that("classify_all forwards include_family to the USDA slot", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   out <- classify_all(pr, include_family = TRUE)
   expect_match(out$usda$name, "Rhodic Hapludox$")

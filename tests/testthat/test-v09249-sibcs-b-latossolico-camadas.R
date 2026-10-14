@@ -22,6 +22,7 @@
 }
 
 test_that("mottles in a layer near the surface do not void the B latossolico", {
+  skip_on_cran()
   # 10% of mottles from the B1 down, in a red B: gleyic properties for WRB,
   # no horizonte glei
   p <- .lc(c("A", "Bw1", "Bw2", "Bw3"), c(0, 20, 60, 120), c(20, 60, 120, 200),
@@ -49,6 +50,7 @@ test_that("a glei horizon below the B latossolico takes out its own layers", {
 })
 
 test_that("a plinthic layer inside the B is no part of it; what is left has to make 50 cm", {
+  skip_on_cran()
   p <- .lc(c("A", "Bw1", "Bwf", "Bw2"), c(0, 20, 80, 100), c(20, 80, 100, 180),
            cec = c(8, 4, 4, 4), plinthite_pct = c(0, 0, 30, 0))
   expect_equal(horizonte_plintico(p)$layers, 3L)
@@ -63,6 +65,7 @@ test_that("a plinthic layer inside the B is no part of it; what is left has to m
 })
 
 test_that("a B latossolico below a B nitico makes no Latossolo", {
+  skip_on_cran()
   # a B nitico with its cerosidade in the lower B (so that it is no
   # B textural by item i) over a less clayey layer that meets the
   # B latossolico: the first diagnostic horizon prevails (Cap 4, p. 110)
@@ -87,6 +90,7 @@ test_that("a B latossolico below a B nitico makes no Latossolo", {
 })
 
 test_that("the canonical profiles keep their order", {
+  skip_on_cran()
   expect_equal(classify_sibcs(make_latossolo_canonical(), on_missing = "silent")$rsg_or_order, "Latossolos")
   expect_equal(classify_sibcs(make_nitossolo_canonical(), on_missing = "silent")$rsg_or_order, "Nitossolos")
   expect_equal(classify_sibcs(make_gleissolo_canonical(), on_missing = "silent")$rsg_or_order, "Gleissolos")

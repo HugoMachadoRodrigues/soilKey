@@ -32,6 +32,7 @@ test_that("an O recorded upward has the thickness between its two figures", {
 })
 
 test_that("two H layers recorded upward adjoin and make one horizon over the mineral soil", {
+  skip_on_cran()
   # as in BDsolos RJ 5333: Cg 0-10, Hoj 60-0, Hd 110-60
   p <- .up_profile(c("Cg", "Hoj", "Hd"), c(0, 60, 110), c(10, 0, 60), c(NA, 21.8, 24.3))
   r <- horizonte_histico(p)

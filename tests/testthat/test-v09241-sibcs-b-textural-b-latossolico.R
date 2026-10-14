@@ -106,6 +106,7 @@ test_that("item (h) reads the designations with a material number, '(B)' and 'Bt
 # ---- B textural: item (g) -----------------------------------------------------
 
 test_that("item (g): an abrupt change from the A to the B, within 7.5 cm", {
+  skip_on_cran()
   # A 40% and B 60%: ratio 1.50, below the 1.70 of item (h); 20 points more
   g <- function(boundary) .bx(c("A1", "A3", "Bt"), c(0, 15, 30), c(15, 30, 90),
                              c(40, 40, 60),
@@ -173,6 +174,7 @@ test_that("item (f): an E horizon above a B with more clay", {
 }
 
 test_that("item (i3): clayey B, blocky structure, cerosidade common and weak or few and moderate", {
+  skip_on_cran()
   yes <- list(c("Comum", "Fraca"), c("Pouca", "Moderada"), c("Abundante", "Forte"),
               c("common", "weak"), c("few", "moderate"), c("Comum", NA))
   for (x in yes) {
@@ -216,6 +218,7 @@ test_that("item (i) is asked of the upper part of the B", {
 # ---- B textural: item (j), no B, no designation, the morphological mode --------
 
 test_that("item (j): with only a ploughed layer above, or a discontinuity, items (h) or (i) are needed", {
+  skip_on_cran()
   g <- function(d) .bx(d, c(0, 30), c(30, 90), c(40, 60),
                        boundary_distinctness = c("abrupt", NA))
   expect_true(isTRUE(B_textural(g(c("A", "Bt")))$passed))            # item (g)
@@ -233,6 +236,7 @@ test_that("item (j): with only a ploughed layer above, or a discontinuity, items
 })
 
 test_that("a clay increase between C layers is no B textural, and the Fluvisol needs no exception", {
+  skip_on_cran()
   p <- make_fluvisol_canonical()           # Ah, C1, C2, C3, stratified
   expect_true(isTRUE(argic(p, lithic_discontinuity = FALSE)$passed))
   expect_true(isTRUE(carater_fluvico(p)$passed))
@@ -244,6 +248,7 @@ test_that("a clay increase between C layers is no B textural, and the Fluvisol n
 })
 
 test_that("a diagnostic B is one, with or without carater fluvico", {
+  skip_on_cran()
   # the stratified profile above with its second and third layers described
   # as a B textural: the carater fluvico no longer sets the B aside
   p <- make_fluvisol_canonical()
@@ -266,6 +271,7 @@ test_that("a profile with no designation at all is tested by the clay increase b
 })
 
 test_that("in the morphological mode the 't' stands for the B textural the data do not show", {
+  skip_on_cran()
   old <- options(soilKey.morphological_inference = FALSE)
   on.exit(options(old), add = TRUE)
   for (d in list(c("A", "Bt"), c("A", "IIBt"), c("A1", "B2t"))) {
@@ -291,6 +297,7 @@ test_that("in the morphological mode the 't' stands for the B textural the data 
 }
 
 test_that("the 50 cm are those of the horizon, not of each sub-horizon", {
+  skip_on_cran()
   p <- .lat()                                # B1 25 cm, B21 35 cm, B22 35 cm
   r <- B_latossolico(p)
   expect_true(isTRUE(r$passed))
@@ -318,6 +325,7 @@ test_that("only B horizons make the B latossolico, where the designations are re
 })
 
 test_that("cerosidade above 'pouca e fraca' is no B latossolico (item h)", {
+  skip_on_cran()
   f <- function(amount, grade) .lat(clay_films_amount = c(NA, rep(amount, 3)),
                                     clay_films_strength = c(NA, rep(grade, 3)))
   expect_true(isTRUE(B_latossolico(f("Pouca", "Fraca"))$passed))
@@ -327,6 +335,7 @@ test_that("cerosidade above 'pouca e fraca' is no B latossolico (item h)", {
 })
 
 test_that("the layers of a B textural are no B latossolico", {
+  skip_on_cran()
   # low-activity clay throughout, and a relacao textural of 2.25
   p <- .lat(clay = c(20, 45, 45, 45), cec = c(4, 4, 4, 4))
   expect_true(isTRUE(B_textural(p)$passed))
@@ -337,6 +346,7 @@ test_that("the layers of a B textural are no B latossolico", {
 })
 
 test_that("a B latossolico below a B textural makes no Latossolo", {
+  skip_on_cran()
   # "o primeiro horizonte diagnostico de subsuperficie, a contar da
   # superficie, tem prevalencia" (Cap 4, p. 110). A relacao textural of 1.89
   # in the Bt, and a BC of 50 cm of low-activity clay, which is no layer of
@@ -366,6 +376,7 @@ test_that("the canonical Latossolo and Argissolo keep their horizons", {
 # ---- B incipiente and the latossolic character ---------------------------------
 
 test_that("the B incipiente is what is no B textural and no B latossolico of this system", {
+  skip_on_cran()
   # two Bi of 30 cm with 16.5 cmolc per kg of clay: a B latossolico of 60 cm
   # (below 17), which the WRB ferralic horizon (below 16) was not
   p <- .bx(c("A", "Bi1", "Bi2"), c(0, 20, 50), c(20, 50, 80), c(38, 40, 40),

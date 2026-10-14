@@ -59,6 +59,7 @@ test_that("extract_munsell_from_photo() defaults to the slim schema", {
 })
 
 test_that("the Munsell extraction still works end to end on the slim schema", {
+  skip_on_cran()
   # Mock provider returning exactly what a vision model gives us: the pipeline
   # must validate and land the colours on the pedon.
   pr <- PedonRecord$new(
@@ -90,6 +91,7 @@ test_that("the Munsell extraction still works end to end on the slim schema", {
 # landed, which is how it reached the ISRIC user as a hard failure.
 
 test_that("the site schema accepts id/crs both flat and wrapped", {
+  skip_on_cran()
   flat <- '{"site":{"id":"P1","crs":4326}}'
   expect_true(validate_against_schema(flat, "site")$valid)
   wrapped <- paste0(

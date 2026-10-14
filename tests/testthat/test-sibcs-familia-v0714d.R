@@ -171,6 +171,7 @@ test_that("motor: ordem O inclui as 3 dimensoes Organossolo", {
 # ------------------------------------------------------------------
 
 test_that("classify_sibcs include_familia=FALSE (default) nao adiciona familia", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   res <- classify_sibcs(pr_fr, on_missing = "silent")
   expect_null(res$trace$familia)
@@ -179,6 +180,7 @@ test_that("classify_sibcs include_familia=FALSE (default) nao adiciona familia",
 })
 
 test_that("classify_sibcs include_familia=TRUE adiciona familia ao trace e ao name", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   res <- classify_sibcs(pr_fr, on_missing = "silent",
                           include_familia = TRUE)
@@ -195,6 +197,7 @@ test_that("classify_sibcs include_familia=TRUE adiciona familia ao trace e ao na
 # ------------------------------------------------------------------
 
 test_that("WRB / USDA inalterados apos Cap 18D add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

@@ -67,6 +67,7 @@ test_that("neossolo_quartzarenico does NOT fire if any layer fails", {
 })
 
 test_that("classify_sibcs returns 'Neossolos Quartzarenicos' on sandy single-A profile", {
+  skip_on_cran()
   # End-to-end: shallow sandy profile that should NOT route to Litolico
   # (deep) NOR to Fluvico (no fluvic) NOR to Regolitico (catch-all if
   # all else fails). Per SiBCS Cap 12 priority, Quartzarenico must fire

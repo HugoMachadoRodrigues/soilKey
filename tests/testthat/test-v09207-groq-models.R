@@ -32,6 +32,7 @@ test_that("versions are compared as numbers, newest first", {
 })
 
 test_that("today's list gives a vision and a text model that exist", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .groq_env()
   expect_identical(e$.groq_pick(.oct_2026, e$.GROQ_PREFS$vision), "qwen/qwen3.8-27b")

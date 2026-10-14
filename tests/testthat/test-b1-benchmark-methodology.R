@@ -31,6 +31,7 @@ test_that(".benchmark_has_reference detects only a usable label", {
 })
 
 test_that(".benchmark_filter_then_cap filters to the label THEN caps", {
+  skip_on_cran()
   fcap <- soilKey:::.benchmark_filter_then_cap
   peds <- c(lapply(1:18, function(i) .b1_mk_pedon(paste0("p", i),
                                                   "reference_usda", "Hapludox")),
@@ -55,6 +56,7 @@ test_that(".benchmark_normalise_febr_ref reduces WRB/USDA labels to order level"
 })
 
 test_that("filter-then-cap is reproducible and RNG-state-preserving", {
+  skip_on_cran()
   fcap <- soilKey:::.benchmark_filter_then_cap
   peds <- lapply(1:50, function(i) .b1_mk_pedon(paste0("p", i),
                                                 "reference_sibcs", "Latossolos"))
@@ -119,6 +121,7 @@ test_that("metrics handle NULL / empty input", {
 # ---- Step 2: reproducible bootstrap CIs -----------------------------------
 
 test_that("bootstrap CIs bracket the point, are reproducible and RNG-safe", {
+  skip_on_cran()
   mfc  <- soilKey:::.benchmark_metrics_from_confusion
   boot <- soilKey:::.benchmark_bootstrap_metrics
   cm   <- .b1_cm(c(40,5,5, 3,42,5, 6,4,40), c("A","B","C"))
@@ -147,6 +150,7 @@ test_that("bootstrap returns NA CIs on degenerate input", {
 # ---- Step 3: report writer (flags + new columns) --------------------------
 
 test_that(".suite_report_md renders the new metric columns and flags", {
+  skip_on_cran()
   srow <- soilKey:::.suite_row
   smd  <- soilKey:::.suite_report_md
   cm   <- .b1_cm(c(40,5,5, 3,42,5, 6,4,40), c("A","B","C"))
@@ -171,6 +175,7 @@ test_that(".suite_report_md renders the new metric columns and flags", {
 })
 
 test_that(".suite_row keeps the displayed accuracy consistent with its CI", {
+  skip_on_cran()
   srow <- soilKey:::.suite_row
   cm   <- .b1_cm(c(40,5,5, 3,42,5, 6,4,40), c("A","B","C"))
   # accuracy passed deliberately wrong (0.10) -> overridden by cm-derived 0.81

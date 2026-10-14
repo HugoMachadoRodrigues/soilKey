@@ -208,6 +208,7 @@ test_that("the layers of the two readings are joined", {
 # ---- precedence over the B incipiente ----------------------------------------------
 
 test_that("a vertic layer is no B incipiente", {
+  skip_on_cran()
   p <- .vt(c("A", "Bi1", "Bi2"), c(0, 20, 60), c(20, 60, 110), c(40, 45, 45),
            structure = c("Granular", "Blocos angulares; cuneiforme", "Blocos angulares; cuneiforme"),
            munsell_hue_moist = "10YR", munsell_value_moist = 4, munsell_chroma_moist = 3,
@@ -220,6 +221,7 @@ test_that("a vertic layer is no B incipiente", {
 # ---- the Vertissolos step ----------------------------------------------------------
 
 test_that("a textural ratio that identifies a B textural keeps the profile out", {
+  skip_on_cran()
   # A 32%, Bt 60%: 1.88, over the 1.70 of item (h)
   p <- .vt(c("A", "Btv1", "Btv2"), c(0, 20, 60), c(20, 60, 110), c(32, 60, 60),
            slickensides = c(NA, "Comum", "Comum"),
@@ -234,6 +236,7 @@ test_that("a textural ratio that identifies a B textural keeps the profile out",
 })
 
 test_that("a B textural identified by its cerosidade, with a ratio below the limit, does not", {
+  skip_on_cran()
   # A 54%, B 64 and 81%: 1.34, under the 1.50 of item (h); cerosidade common
   # and moderate in blocks
   p <- .vt(c("Ap", "Bt", "Bv"), c(0, 20, 50), c(20, 50, 120), c(54, 64, 81),
@@ -285,6 +288,7 @@ test_that("the clay of the upper 20 cm is that of the mixed material", {
 })
 
 test_that("the canonical Vertissolo keeps its class", {
+  skip_on_cran()
   p <- make_vertissolo_canonical()
   expect_true(isTRUE(horizonte_vertico(p)$passed))
   expect_true(isTRUE(vertissolo(p)$passed))

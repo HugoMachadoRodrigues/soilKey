@@ -3,6 +3,7 @@
 # =============================================================================
 
 test_that("benchmark_performance returns the documented schema", {
+  skip_on_cran()
   bench <- benchmark_performance(n = 5L, verbose = FALSE)
   expect_type(bench, "list")
   expect_named(bench, c("summary", "per_pedon", "config"))
@@ -20,6 +21,7 @@ test_that("benchmark_performance returns the documented schema", {
 
 
 test_that("benchmark_performance honours the systems filter", {
+  skip_on_cran()
   bench <- benchmark_performance(n = 3L, systems = "wrb2022",
                                     verbose = FALSE)
   expect_equal(unique(bench$per_pedon$system), "wrb2022")
@@ -28,6 +30,7 @@ test_that("benchmark_performance honours the systems filter", {
 
 
 test_that("benchmark_performance is deterministic at fixed seed", {
+  skip_on_cran()
   b1 <- benchmark_performance(n = 3L, seed = 1L, verbose = FALSE)
   b2 <- benchmark_performance(n = 3L, seed = 1L, verbose = FALSE)
   expect_equal(b1$per_pedon$system, b2$per_pedon$system)
@@ -36,6 +39,7 @@ test_that("benchmark_performance is deterministic at fixed seed", {
 
 
 test_that("benchmark_performance config carries platform metadata", {
+  skip_on_cran()
   bench <- benchmark_performance(n = 2L, verbose = FALSE)
   expect_true(nzchar(bench$config$soilKey_version))
   expect_true(nzchar(bench$config$R_version))
@@ -50,6 +54,7 @@ test_that("benchmark_performance errors on n < 1", {
 
 
 test_that("benchmark_performance reports well-formed, non-negative timings", {
+  skip_on_cran()
   # This deliberately does NOT assert an absolute wall-clock threshold.
   # "< N seconds" depends on the host CPU and BLAS, so it is unreliable across
   # CRAN's build farm -- an absolute "< 5 s/pedon" assertion here was the source

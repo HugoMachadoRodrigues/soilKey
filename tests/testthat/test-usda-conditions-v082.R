@@ -230,6 +230,7 @@ test_that("permafrost_within_usda respects max_top_cm parameter", {
 # ------------------------------------------------------------------
 
 test_that("WRB unchanged after USDA conditions add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

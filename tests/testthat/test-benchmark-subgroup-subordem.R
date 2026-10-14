@@ -26,6 +26,7 @@ make_test_pedons <- function(refs_subgroup,
 
 
 test_that("benchmark level='subgroup' uses reference_usda_subgroup", {
+  skip_on_cran()
   # Make 4 fake pedons. classify_usda on the canonical Ferralsol
   # always returns "Rhodic Hapludox" / "Oxisols". Three references
   # match (after lowercasing); one doesn't.
@@ -44,6 +45,7 @@ test_that("benchmark level='subgroup' uses reference_usda_subgroup", {
 
 
 test_that("benchmark level='subordem' compares first 2 tokens (SiBCS)", {
+  skip_on_cran()
   # When the surveyor labels at SiBCS Subordem level
   # ("Latossolos Vermelhos") and the classifier emits the full
   # 4-token name ("Latossolos Vermelhos Distroficos tipicos"), the
@@ -68,6 +70,7 @@ test_that("benchmark level='subordem' compares first 2 tokens (SiBCS)", {
 
 
 test_that("benchmark level='order' comparison still works (no regression)", {
+  skip_on_cran()
   peds <- make_test_pedons(
     refs_subgroup = c("Rhodic Hapludox"))
   peds[[1]]$site$reference_usda <- "Oxisols"

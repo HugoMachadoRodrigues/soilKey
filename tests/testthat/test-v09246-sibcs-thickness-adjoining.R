@@ -19,6 +19,7 @@
 }
 
 test_that("B incipiente: two adjoining sub-horizons of 6 cm make its 10 cm", {
+  skip_on_cran()
   p <- make_cambissolo_canonical()                      # A, Bw, BC, C
   q <- .rows(p, c(1, 2, 2, 3, 4), c("A", "Bw1", "Bw2", "BC", "C"),
              c(0, 15, 21, 27, 100), c(15, 21, 27, 100, 150))

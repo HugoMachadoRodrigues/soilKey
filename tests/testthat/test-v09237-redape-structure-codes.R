@@ -51,6 +51,7 @@ test_that("the clay films are decoded as before", {
 })
 
 test_that("what the loader decodes, the encoder sends back as the same code", {
+  skip_on_cran()
   for (k in 1:7) expect_equal(.smartsolos_struct_type(.rs_hz(ESTRUTURA_TIPO = k)$structure_type), k)
   for (k in 1:4) expect_equal(.smartsolos_struct_grade(.rs_hz(ESTRUTURA_GRAU = k)$structure_grade), k)
   for (k in 1:6) expect_equal(.smartsolos_struct_size(.rs_hz(ESTRUTURA_TAMANHO = k)$structure_size), k)

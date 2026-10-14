@@ -157,6 +157,7 @@ test_that("a network failure returns zero rows with the reason", {
 }
 
 test_that("the search never asks ISRIC for more than 100 profiles at once", {
+  skip_on_cran()
   # Regression: it asked for 200 and ISRIC answered HTTP 400, so the picker
   # listed nothing in the app.
   calls <- new.env(); calls$log <- list()
@@ -173,6 +174,7 @@ test_that("the search never asks ISRIC for more than 100 profiles at once", {
 })
 
 test_that("the scan stops at max_scan", {
+  skip_on_cran()
   calls <- new.env(); calls$log <- list()
   nc <- "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
   local_mocked_bindings(.wosis_post = .fake_isric(

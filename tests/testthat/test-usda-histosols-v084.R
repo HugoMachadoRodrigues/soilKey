@@ -6,6 +6,7 @@
 # ------------------------------------------------------------------
 
 test_that("Histosols Suborders: 5 (Folists, Wassists, Fibrists, Saprists, Hemists)", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$HI), 5L)
   codes <- vapply(rules$suborders$HI, function(s) s$code, character(1))
@@ -13,6 +14,7 @@ test_that("Histosols Suborders: 5 (Folists, Wassists, Fibrists, Saprists, Hemist
 })
 
 test_that("Histosols Great Groups: 4+3+3+4+5 = 19", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$BA), 4L)  # Folists
   expect_equal(length(rules$great_groups$BB), 3L)  # Wassists
@@ -22,6 +24,7 @@ test_that("Histosols Great Groups: 4+3+3+4+5 = 19", {
 })
 
 test_that("Histosols Subgroups: 8+13+20+17+17 = 75", {
+  skip_on_cran()
   rules <- load_rules("usda")
   ba_ggs <- c("BAA","BAB","BAC","BAD")
   bb_ggs <- c("BBA","BBB","BBC")
@@ -46,6 +49,7 @@ test_that("Histosols Subgroups: 8+13+20+17+17 = 75", {
 # ------------------------------------------------------------------
 
 test_that("classify_usda routes a Saprist pedon to Haplosaprists", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -67,6 +71,7 @@ test_that("classify_usda routes a Saprist pedon to Haplosaprists", {
 })
 
 test_that("classify_usda routes a drained-organic pedon to Folists Suborder", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 60),
     bottom_cm = c(30, 60, 150),
@@ -168,6 +173,7 @@ test_that("halic_subgroup_usda passes for high EC layer >= 30 cm thick", {
 # ------------------------------------------------------------------
 
 test_that("WRB / Gelisols / SiBCS unchanged after Histosols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

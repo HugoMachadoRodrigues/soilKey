@@ -7,6 +7,7 @@ test_that("Ultisols Suborders: 5", {
 })
 
 test_that("Ultisols Great Groups: 9+6+7+6+2 = 30", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$HA), 9L)
   expect_equal(length(rules$great_groups$HB), 6L)
@@ -16,6 +17,7 @@ test_that("Ultisols Great Groups: 9+6+7+6+2 = 30", {
 })
 
 test_that("classify_usda routes a tropical udic argillic + low BS to Ultisols", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 200),
@@ -42,6 +44,7 @@ test_that("classify_usda routes a tropical udic argillic + low BS to Ultisols", 
 })
 
 test_that("WRB unchanged after Ultisols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

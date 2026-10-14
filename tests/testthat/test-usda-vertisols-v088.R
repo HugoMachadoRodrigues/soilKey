@@ -2,11 +2,13 @@
 # 6 Suborders + 24 Great Groups + ~85 Subgroups via Path C.
 
 test_that("Vertisols Suborders: 6", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$VE), 6L)
 })
 
 test_that("Vertisols Great Groups: 8+2+3+4+5+2 = 24", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$FA), 8L)
   expect_equal(length(rules$great_groups$FB), 2L)
@@ -17,6 +19,7 @@ test_that("Vertisols Great Groups: 8+2+3+4+5+2 = 24", {
 })
 
 test_that("Vertisols Subgroups: subset cientifico", {
+  skip_on_cran()
   rules <- load_rules("usda")
   ggs <- c("FAA","FAB","FAC","FAD","FAE","FAF","FAG","FAH",
               "FBA","FBB",
@@ -29,6 +32,7 @@ test_that("Vertisols Subgroups: subset cientifico", {
 })
 
 test_that("classify_usda routes a vertic pedon to Vertisols Usterts", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -56,6 +60,7 @@ test_that("classify_usda routes a vertic pedon to Vertisols Usterts", {
 })
 
 test_that("WRB / earlier orders unchanged after Vertisols", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

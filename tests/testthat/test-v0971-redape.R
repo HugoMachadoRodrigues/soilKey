@@ -134,6 +134,7 @@ test_that("v0.9.71: load_redape_pedons dedupes by ID_PONTO across files", {
 
 
 test_that("v0.9.71: benchmark_redape runs end-to-end on a single fixture", {
+  skip_on_cran()
   tmpdir <- tempfile()
   dir.create(tmpdir)
   on.exit(unlink(tmpdir, recursive = TRUE), add = TRUE)

@@ -174,6 +174,7 @@ test_that("PBACdTp catch-all assigned for profile sem mudanca abrupta", {
 # ============================================================================
 
 test_that("WRB / USDA / Cap 14 nao quebraram apos PBAC subgrupos add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

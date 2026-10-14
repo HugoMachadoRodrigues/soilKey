@@ -2,11 +2,13 @@
 # 6 Suborders + 36 Great Groups + ~110 Subgroups via Path C.
 
 test_that("Inceptisols Suborders: 6", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$suborders$IN), 6L)
 })
 
 test_that("Inceptisols Great Groups: 11+3+4+6+5+7 = 36", {
+  skip_on_cran()
   rules <- load_rules("usda")
   expect_equal(length(rules$great_groups$KA), 11L)
   expect_equal(length(rules$great_groups$KB), 3L)
@@ -17,6 +19,7 @@ test_that("Inceptisols Great Groups: 11+3+4+6+5+7 = 36", {
 })
 
 test_that("classify_usda routes a cambic-only profile to Inceptisols Udepts", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 150),
@@ -46,6 +49,7 @@ test_that("classify_usda routes a cambic-only profile to Inceptisols Udepts", {
 })
 
 test_that("WRB unchanged after Inceptisols add", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

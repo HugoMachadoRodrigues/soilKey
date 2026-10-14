@@ -159,6 +159,7 @@ test_that("kastanozem_strict requires carbonate within 70 cm", {
 # ---- regression: 31 fixtures still classify after strict-gate wiring -----
 
 test_that("strict-gate wiring preserves 31-fixture classification", {
+  skip_on_cran()
   expected <- list(
     HS="Histosols", AT="Anthrosols", TC="Technosols", CR="Cryosols",
     LP="Leptosols", SN="Solonetz",   VR="Vertisols", SC="Solonchaks",

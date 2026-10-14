@@ -284,6 +284,7 @@ test_that("PVtd (Ta Distroficos) catches Ta + distrofico (sem alitico)", {
 # ============================================================================
 
 test_that("classify_sibcs alcanca o 3o nivel para Argissolo Vermelho Eutroferrico", {
+  skip_on_cran()
   pr <- .make_argissolo_pedon(
     hue = "2.5YR",        # vermelho
     bs_pct_b = 75,
@@ -306,6 +307,7 @@ test_that("classify_sibcs alcanca o 3o nivel para Argissolo Vermelho Eutroferric
 # ============================================================================
 
 test_that("WRB e USDA classification ainda passam apos Argissolos GGs add", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")
