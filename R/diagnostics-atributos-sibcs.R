@@ -25,16 +25,63 @@
 #' horizonte B (incl. BA, exc. BC) ou no horizonte C (incl. CA), quando
 #' nao existe B.
 #'
+#' Since v0.9.257 the activity is judged where the book judges it. The key
+#' and the definitions of the classes ask for it "na maior parte dos primeiros
+#' 100 cm do horizonte B (inclusive BA)" (Cap. 4, p. 113-114, and the classes
+#' of the lower levels), and Cap. 1 (p. 30) takes it "no horizonte B
+#' (inclusive BA e exclusive BC) ou no horizonte C (inclusive CA), quando nao
+#' existe B". In a profile with a B the attribute passes when the layers with
+#' high activity make more than half of the thickness of that section, among
+#' the layers where the activity can be told (\code{.sibcs_maior_parte()}).
+#' A layer of the textural classes areia and areia franca is left out, as the
+#' criterion "nao se aplica" to it; it is told by its sand, silt and clay, and
+#' no longer by a clay under 15\%, which also left out the franco-arenosa.
+#' Until v0.9.256 one layer of B or of C with high activity was enough: the C
+#' of a profile, with little clay and a high ratio, made a Luvissolo of an
+#' Argissolo, and kept a B nitico from being one.
+#' In a profile with no B the attribute is read as before, in its C layers.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @return Um \code{\link{DiagnosticResult}}; \code{passed = TRUE} sse
-#'   pelo menos um horizonte B ou C tem Ta. \code{layers} = horizontes
-#'   com atividade alta (Ta).
+#' @return Um \code{\link{DiagnosticResult}}; \code{passed = TRUE} sse a
+#'   atividade e alta na maior parte dos primeiros 100 cm do horizonte B, ou,
+#'   sem horizonte B, em pelo menos um horizonte C. \code{layers} =
+#'   horizontes com atividade alta (Ta).
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 1, "Atividade da fracao
 #'   argila", p. 30.
 #' @param min_ta Numeric threshold or option (see Details).
 #' @noRd
 atividade_argila_alta <- function(pedon, min_ta = 27) {
   h <- pedon$horizons
+  ref <- "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30"
+  sec <- .sibcs_b_first_100(h)
+  if (!is.null(sec)) {
+    L <- sec$layers
+    cec <- h$cec_cmol[L]; clay <- h$clay_pct[L]
+    ta <- ifelse(!is.na(cec) & !is.na(clay) & clay > 0, cec * 100 / clay, NA_real_)
+    # "Este criterio nao se aplica a materiais de solo das classes texturais
+    # areia e areia franca"
+    applies <- .francoarenosa_or_finer(h$silt_pct[L], clay)
+    holds <- ifelse(!is.na(ta) & applies %in% TRUE, ta >= min_ta, NA)
+    mp <- .sibcs_maior_parte(sec, holds)
+    # one entry for each layer of the section that says, as the readers of
+    # the evidence expect them (the report, the assistant of the app)
+    details <- lapply(which(!is.na(holds)), function(k) list(
+      idx = L[k], cec_cmol = cec[k], clay_pct = clay[k],
+      ta_cmolc_per_kg_clay = ta[k], threshold = min_ta, passed = holds[k]))
+    names(details) <- as.character(L[!is.na(holds)])
+    return(DiagnosticResult$new(
+      name = "atividade_argila_alta",
+      passed = mp$passed, layers = L[which(holds)],
+      evidence = list(layers = details, section = sec,
+                      ta_cmolc_per_kg_clay = ta,
+                      sandy = L[which(applies %in% FALSE)],
+                      threshold = min_ta,
+                      thickness_high_cm = mp$holding_cm,
+                      thickness_known_cm = mp$known_cm),
+      missing = if (is.na(mp$passed)) c("cec_cmol", "clay_pct") else character(0),
+      reference = ref
+    ))
+  }
   layers_b_c <- which(!is.na(h$designation) &
                         grepl("^(B|C)", .desg_master(h$designation), ignore.case = FALSE))
   if (length(layers_b_c) == 0L) {
@@ -42,7 +89,7 @@ atividade_argila_alta <- function(pedon, min_ta = 27) {
       name = "atividade_argila_alta", passed = NA, layers = integer(0),
       evidence = list(reason = "no B or C horizons in profile"),
       missing = "designation",
-      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30"
+      reference = ref
     ))
   }
   details <- list(); passing <- integer(0); missing <- character(0)
@@ -75,8 +122,41 @@ atividade_argila_alta <- function(pedon, min_ta = 27) {
     passed = passed, layers = passing,
     evidence = list(layers = details),
     missing = unique(missing),
-    reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30"
+    reference = ref
   )
+}
+
+
+#' The first 100 cm of the B horizon, the section in which SiBCS judges the
+#' activity of the clay, the base saturation and other attributes of a class:
+#' "na maior parte dos primeiros 100 cm do horizonte B (inclusive BA)". The B
+#' layers (BA with them, BC and B/C not) that begin within 100 cm of the top
+#' of the uppermost of them, each with the thickness it has inside that
+#' section. NULL when the profile has no B layer with its two depths.
+#' @noRd
+.sibcs_b_first_100 <- function(h, depth_cm = 100) {
+  dm <- .desg_master(h$designation)
+  b <- which(!is.na(dm) & grepl("^B", dm) & !grepl("^B/?C", dm) &
+               !is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > h$top_cm)
+  if (length(b) == 0L) return(NULL)
+  top <- min(h$top_cm[b]); limit <- top + depth_cm
+  b <- b[h$top_cm[b] < limit]
+  b <- b[order(h$top_cm[b])]
+  list(layers = b, top_cm = top, limit_cm = limit,
+       thickness_cm = pmin(h$bottom_cm[b], limit) - h$top_cm[b])
+}
+
+#' Whether a condition holds "na maior parte" of a section: in more than half
+#' of the thickness of the layers where it can be told. \code{holds} has one
+#' value for each layer of the section, NA where the layer does not say.
+#' \code{passed} is NA when no layer says.
+#' @noRd
+.sibcs_maior_parte <- function(sec, holds) {
+  known <- !is.na(holds)
+  known_cm <- sum(sec$thickness_cm[known])
+  holding_cm <- sum(sec$thickness_cm[known & holds %in% TRUE])
+  list(passed = if (!any(known)) NA else holding_cm > known_cm / 2,
+       holding_cm = holding_cm, known_cm = known_cm)
 }
 
 
@@ -87,12 +167,43 @@ atividade_argila_alta <- function(pedon, min_ta = 27) {
 #' Returns TRUE se a saturacao por bases (V\%) >= 50\% no horizonte
 #' diagnostico subsuperficial (B ou C). 65\% para A chernozemico.
 #'
+#' Since v0.9.257, in a profile with a B horizon the base saturation is
+#' judged as the key and the definitions of the classes ask for it, "na maior
+#' parte dos primeiros 100 cm do horizonte B (inclusive BA)": it is high when
+#' the B layers with V of \code{min_v} or more make more than half of the
+#' thickness of that section, among the layers where V is recorded. The BC is
+#' not part of the section. Until v0.9.256 one layer of B or of C with a high
+#' V was enough. A profile with no B is read as before, in its C layers, or in
+#' all of its layers when it has no C either.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_v Numeric threshold or option (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 eutrofico <- function(pedon, min_v = 50) {
   h <- pedon$horizons
+  sec <- .sibcs_b_first_100(h)
+  if (!is.null(sec)) {
+    L <- sec$layers
+    holds <- ifelse(is.na(h$bs_pct[L]), NA, h$bs_pct[L] >= min_v)
+    mp <- .sibcs_maior_parte(sec, holds)
+    # one entry for each layer of the section that says, as the readers of
+    # the evidence expect them (the report, the assistant of the app)
+    details <- lapply(which(!is.na(holds)), function(k) list(
+      idx = L[k], bs_pct = h$bs_pct[L[k]], threshold = min_v,
+      passed = holds[k]))
+    names(details) <- as.character(L[!is.na(holds)])
+    return(DiagnosticResult$new(
+      name = "eutrofico",
+      passed = mp$passed, layers = L[which(holds)],
+      evidence = list(layers = details, section = sec,
+                      bs_pct = h$bs_pct[L], threshold = min_v,
+                      thickness_high_cm = mp$holding_cm,
+                      thickness_known_cm = mp$known_cm),
+      missing = if (is.na(mp$passed)) "bs_pct" else character(0),
+      reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30"
+    ))
+  }
   # Procurar horizontes B (preferencial) ou C
   candidates <- which(!is.na(h$designation) &
                         grepl("^B|^C", .desg_master(h$designation)))
