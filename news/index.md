@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.260 (2026-10-14)
+
+### Pro app: the light base map is Esri’s; CARTO’s asks for a key
+
+CARTO’s base maps now answer a request without an API key with a tile
+that says “API KEY REQUIRED”. The app used CARTO’s light map,
+“Positron”, as the base of the Batch and Grid maps and as the “Light”
+choice of the Map tab, so those showed the notice in place of a map. The
+checks of each release counted the tiles that loaded, not what they
+showed, and did not see it.
+
+The light map is now Esri’s light gray canvas (`Esri.WorldGrayCanvas`),
+with its attribution, in the three places and in the list the app
+registers its map scripts from. The Map tab’s choice reads “Light
+(Esri)”. Nothing else changes.
+
 ## soilKey 0.9.259 (2026-10-14)
 
 ### Tests: the slow ones run off CRAN

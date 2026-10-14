@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.259</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.260</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,14 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.260" id="soilkey-09260-2026-10-14">soilKey 0.9.260 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09260-2026-10-14"></a></h2>
+<div class="section level3">
+<h3 id="pro-app-the-light-base-map-is-esris-cartos-asks-for-a-key-0-9-260">Pro app: the light base map is Esri’s; CARTO’s asks for a key<a class="anchor" aria-label="anchor" href="#pro-app-the-light-base-map-is-esris-cartos-asks-for-a-key-0-9-260"></a></h3>
+<p>CARTO’s base maps now answer a request without an API key with a tile that says “API KEY REQUIRED”. The app used CARTO’s light map, “Positron”, as the base of the Batch and Grid maps and as the “Light” choice of the Map tab, so those showed the notice in place of a map. The checks of each release counted the tiles that loaded, not what they showed, and did not see it.</p>
+<p>The light map is now Esri’s light gray canvas (<code>Esri.WorldGrayCanvas</code>), with its attribution, in the three places and in the list the app registers its map scripts from. The Map tab’s choice reads “Light (Esri)”. Nothing else changes.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.259" id="soilkey-09259-2026-10-14">soilKey 0.9.259 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09259-2026-10-14"></a></h2>
 <div class="section level3">
