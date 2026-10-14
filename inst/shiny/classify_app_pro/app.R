@@ -244,6 +244,8 @@ sk_page <- function() {
     ),
     footer = tags$div(
       class = "sk-footer",
+      # v0.9.260: who is here now, how many have come, from where
+      visitors_ui("visitors"),
       tags$img(src = "logo.png", height = "22", alt = "", class = "sk-footer-logo"),
       tags$span(class = "sk-footer-title", "soilKey ",
                 tags$span(class = "sk-footer-ver",
@@ -342,6 +344,9 @@ server <- function(input, output, session) {
                        include_family = FALSE, specifiers = FALSE)
 
   settings <- settings_server("settings", rv)
+
+  # the visitor counter of the footer (R/mod_visitors.R)
+  visitors_server("visitors")
 
   pedon_server("pedon",            rv)
   classify_server("classify",      rv, settings)

@@ -107,6 +107,22 @@ RUN R -e "pak::pkg_install(c( \
 RUN R -e "options(repos = c(PPM = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); \
   pak::pkg_install(c('ellmer', 'mirai'))"
 
+# The country of a visitor's address, for the counter in the footer (v0.9.260):
+# DB-IP's "IP to Country Lite" table (CC BY 4.0, credited in the footer), of
+# this month or, when it is not out yet, of the last one, built into the
+# compact table the app reads (R/utils_visitors.R). The addresses are looked up
+# in this file only; none is sent anywhere or kept.
+RUN R -e "src <- function(m) sprintf('https://download.db-ip.com/free/dbip-country-lite-%s.csv.gz', m); \
+  now <- Sys.Date(); m <- c(format(now, '%Y-%m'), format(as.Date(format(now, '%Y-%m-01')) - 1, '%Y-%m')); \
+  ok <- FALSE; for (x in m) if (!ok) ok <- tryCatch(download.file(src(x), '/tmp/dbip.csv.gz', mode = 'wb', quiet = TRUE) == 0, error = function(e) FALSE); \
+  if (!ok) stop('DB-IP country table not available'); \
+  source('inst/shiny/classify_app_pro/R/utils_visitors.R'); dir.create('/opt/soilkey-geo', showWarnings = FALSE); \
+  g <- .vis_geo_build('/tmp/dbip.csv.gz', '/opt/soilkey-geo/dbip-country.rds', 'DB-IP IP to Country Lite'); \
+  unlink('/tmp/dbip.csv.gz'); Sys.setenv(SOILKEY_GEOIP = '/opt/soilkey-geo/dbip-country.rds'); \
+  stopifnot(identical(.vis_country('8.8.8.8'), 'US'), is.na(.vis_country('192.168.0.1'))); \
+  cat('DB-IP country table:', nrow(g\$v4), 'IPv4 and', nrow(g\$v6), 'IPv6 ranges\n')"
+ENV SOILKEY_GEOIP=/opt/soilkey-geo/dbip-country.rds
+
 # Build-time smoke check: the package loads and every hard-required app package
 # (incl. ellmer for the live Assistant) is importable. Fails the build early if
 # the dependency set is wrong.

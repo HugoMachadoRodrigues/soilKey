@@ -284,6 +284,24 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 .sk-footer-links a:hover { text-decoration: underline; }
 .sk-footer-lic { color: var(--sk-muted); }
 
+/* ---- visitor counter (v0.9.260): a row of its own on top of the footer -- */
+.sk-visitors {
+  flex-basis: 100%; display: flex; align-items: center; flex-wrap: wrap;
+  gap: 0.5rem 1.25rem; padding-bottom: 0.45rem; margin-bottom: 0.2rem;
+  border-bottom: 1px dashed var(--sk-line);
+}
+.sk-visitors-text { display: flex; flex-direction: column; gap: 0.2rem; flex: 1 1 16rem; }
+.sk-visitors-text > div:first-child, .sk-visitors-text > span:first-child {
+  display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; color: var(--sk-espresso); font-weight: 600; }
+.sk-visitors-dot { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%;
+  background: var(--bs-success); margin-right: 0.35rem; vertical-align: 0.05rem; }
+.sk-visitors-since { font-weight: 400; color: var(--sk-muted); }
+.sk-visitors-note, .sk-visitors-credit { font-size: 0.72rem; color: var(--sk-muted); }
+.sk-visitors-credit a { color: var(--sk-brown); }
+.sk-visitors-map { flex: 0 1 22rem; min-width: 14rem; border-radius: 0.5rem; overflow: hidden;
+  border: 1px solid var(--sk-line); }
+@media (max-width: 575.98px) { .sk-visitors-map { flex-basis: 100%; } }
+
 /* ---- acknowledgements tab --------------------------------------------- */
 .sk-ack-head h3 { color: var(--sk-espresso); margin-bottom: 0.25rem; font-weight: 700; }
 .sk-ack-head { margin-bottom: 0.75rem; }
@@ -369,6 +387,9 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
 [data-bs-theme="dark"] .sk-ack-head h3,
 [data-bs-theme="dark"] .sk-ack-card .card-header { color: var(--sk-ink); }
 [data-bs-theme="dark"] .sk-footer-lic { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-visitors-text > div:first-child,
+[data-bs-theme="dark"] .sk-visitors-text > span:first-child { color: var(--sk-ink); }
+[data-bs-theme="dark"] .sk-visitors-dot { background: #7fb069; }
 [data-bs-theme="dark"] .sk-ack-note { background: #1f1912; border-color: var(--sk-line); }
 [data-bs-theme="dark"] .btn-primary { color: #17120d; }                      /* dark text on light-brown btn */
 /* v0.9.218: the same for the terracotta buttons (white on it was 2.6:1), and
