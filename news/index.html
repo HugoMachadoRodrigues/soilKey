@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.261</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.259</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,32 +49,9 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.259/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.261" id="soilkey-09261-2026-10-14">soilKey 0.9.261 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09261-2026-10-14"></a></h2>
-<div class="section level3">
-<h3 id="pro-app-a-visitor-counter-in-the-footer-0-9-261">Pro app: a visitor counter in the footer<a class="anchor" aria-label="anchor" href="#pro-app-a-visitor-counter-in-the-footer-0-9-261"></a></h3>
-<p>The footer of the hosted app (soilkeypro.com) says, in one line, how many people are on the site now, how many have visited and from how many countries; a click on the countries opens a map of them above the footer. Asked for by the maintainer.</p>
-<ul><li><p><strong>A person is counted once.</strong> On the first visit the browser keeps a mark in its own storage (no identifier) and tells the server it is a new visitor; a later visit from the same browser counts as a session only. Nothing that identifies the visitor is sent or kept.</p></li>
-<li><p><strong>The country</strong> comes from the address of the request, looked up in DB-IP’s <em>IP to Country Lite</em> table (CC BY 4.0), which the image downloads when it is built and the footer credits. The address is read for that and kept nowhere.</p></li>
-<li><p><strong>Not counted:</strong> automated browsers (headless Chrome, crawlers, command-line clients, the capacity test, the Claude app’s browser), and pages that never open a Shiny session.</p></li>
-<li><p><strong>The numbers</strong> are kept in Firestore, in the app’s own Google Cloud project: one document of totals (visitors, sessions, visitors by country, the day counting began) and one document per running instance with how many sessions it holds, written every 30 s. “Online now” adds up the instances that wrote in the last 90 s. Only soilkeypro.com writes to these; a tagged revision writes to separate test collections, and a local run to none.</p></li>
-<li><p><strong>Before the counter</strong>, the request logs of Cloud Run (30 days) are read once by <code>deploy/cloudrun/visitors-backfill.R</code>: a session is a request to <code>/websocket/</code> answered with 101, a visitor a distinct address. The logs begin on 2026-10-07, when the site came back online.</p></li>
-<li><p><strong>The map waits for a click.</strong> The footer is on screen in every tab, and a map in it (190 px in all) took the height the tabs’ own tables need: with a 790 px window the key trace of Classify had none left, and DT does not draw a table of height 0. The map now opens in a panel above the line’s “from N countries” button (below it when there is no room above) and closes on a second click, a click elsewhere, Escape or, on a phone, a scroll of the page; the footer grows by one line only. On a phone the map keeps its 210 px (the app’s narrow-screen rule sets every map’s height to “auto”).</p></li>
-<li><p><strong>Classify’s key trace</strong> is drawn at its own height, not the height left over in its card (<code>DTOutput(fill = FALSE)</code>). With a short window, or a footer one line taller, it was 36 px or less before.</p></li>
-</ul><p>New files: <code>R/utils_visitors.R</code> and <code>R/mod_visitors.R</code> in the app, its country table <code>data/countries.csv</code> (built by <code>data-raw/visitor_countries.R</code>; see <code>inst/DATA-PROVENANCE.md</code>), the image step in <code>deploy/fly/Dockerfile</code>, and eight strings in each language. The classification keys do not change.</p>
-</div>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.260" id="soilkey-09260-2026-10-14">soilKey 0.9.260 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09260-2026-10-14"></a></h2>
-<div class="section level3">
-<h3 id="pro-app-the-light-base-map-is-esris-cartos-asks-for-a-key-0-9-260">Pro app: the light base map is Esri’s; CARTO’s asks for a key<a class="anchor" aria-label="anchor" href="#pro-app-the-light-base-map-is-esris-cartos-asks-for-a-key-0-9-260"></a></h3>
-<p>CARTO’s base maps now answer a request without an API key with a tile that says “API KEY REQUIRED”. The app used CARTO’s light map, “Positron”, as the base of the Batch and Grid maps and as the “Light” choice of the Map tab, so those showed the notice in place of a map. The checks of each release counted the tiles that loaded, not what they showed, and did not see it.</p>
-<p>The light map is now Esri’s light gray canvas (<code>Esri.WorldGrayCanvas</code>), with its attribution, in the three places and in the list the app registers its map scripts from. The Map tab’s choice reads “Light (Esri)”. Nothing else changes.</p>
-</div>
-</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.259" id="soilkey-09259-2026-10-14">soilKey 0.9.259 (2026-10-14)<a class="anchor" aria-label="anchor" href="#soilkey-09259-2026-10-14"></a></h2><p class="text-muted">CRAN release: 2026-10-14</p>
 <div class="section level3">
