@@ -45,15 +45,21 @@ visitors_ui <- function(id) {
     # A first visit tells the server once; a later one only opens a session.
     # The mark is kept in this browser and carries no identifier. The button of
     # the numbers opens and closes the map; a click elsewhere or Escape closes
-    # it. Shiny draws the map when it is shown ('shown'), at its size.
+    # it, and so does scrolling the page. Shiny draws the map when it is shown
+    # ('shown'), at its size.
     tags$script(HTML(sprintf(
       "(function() {
          var panel = '#%s', btn = '.sk-visitors-toggle';
          function isOpen() { return !$(panel).is('[hidden]'); }
          function setOpen(open) {
-           var p = $(panel); if (!p.length) return;
+           var p = $(panel), b = $(btn).first(); if (!p.length || !b.length) return;
            if (open) {
-             p.css('bottom', ($('.sk-footer').outerHeight() + 8) + 'px').removeAttr('hidden');
+             // above the button, or below it when there is no room above (a
+             // phone scrolls the page, so the footer is not always at the bottom)
+             p.removeAttr('hidden');
+             var r = b[0].getBoundingClientRect(), h = p.outerHeight();
+             if (r.top - h - 8 >= 8) p.css({top: 'auto', bottom: (window.innerHeight - r.top + 8) + 'px'});
+             else p.css({bottom: 'auto', top: Math.max(8, Math.min(r.bottom + 8, window.innerHeight - h - 8)) + 'px'});
              p.trigger('shown');
              setTimeout(function() { $(window).trigger('resize'); }, 60);
            } else { p.attr('hidden', ''); p.trigger('hidden'); }
@@ -63,6 +69,7 @@ visitors_ui <- function(id) {
          $(document).on('click', function(e) {
            if (isOpen() && !$(e.target).closest(panel + ',' + btn).length) setOpen(false);
          });
+         $(window).on('scroll', function() { if (isOpen()) setOpen(false); });
          $(document).on('keydown', function(e) {
            if (e.key === 'Escape' && isOpen()) { setOpen(false); $(btn).trigger('focus'); }
          });

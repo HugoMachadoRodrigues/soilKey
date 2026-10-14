@@ -310,7 +310,10 @@ table.dataTable tbody tr:hover { background: #fbf6ee; }
   padding: 0.6rem; border: 1px solid var(--sk-line); border-radius: 0.6rem;
   background: var(--bs-body-bg); box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18); }
 .sk-visitors-panel-title { font-weight: 600; color: var(--sk-espresso); margin-bottom: 0.4rem; }
-.sk-visitors-panel .leaflet-container { border-radius: 0.4rem; }
+/* its own height: the phone rule above (height: auto !important on every
+   .leaflet-container) would leave this map, which has no content height, at 0 */
+.sk-visitors-panel .leaflet-container { border-radius: 0.4rem;
+  height: 210px !important; max-height: 40vh !important; }
 .sk-visitors-note { font-size: 0.72rem; color: var(--sk-muted); margin-top: 0.4rem; }
 .sk-visitors-credit a { color: var(--sk-brown); }
 
