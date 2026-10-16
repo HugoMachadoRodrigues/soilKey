@@ -1,5 +1,16 @@
 # Changelog
 
+## soilKey 0.9.262 (2026-10-15)
+
+### The WRB 2022 reference points to the 2022 edition
+
+The README and the Portuguese getting-started vignette gave, for WRB
+2022 (IUSS Working Group WRB, 4th edition), an FAO OpenKnowledge PDF
+that is the 2014 edition: its own title reads “World reference base for
+soil resources 2014”. Both now give the 2022 edition at ISRIC,
+`https://files.isric.org/public/documents/WRB_fourth_edition_2022-12-18.pdf`.
+The classification keys do not change.
+
 ## soilKey 0.9.261 (2026-10-14)
 
 ### Pro app: a visitor counter in the footer
