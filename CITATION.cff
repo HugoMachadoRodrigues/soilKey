@@ -16,10 +16,10 @@ authors:
   - family-names: "Rodrigues"
     given-names: "Hugo"
     email: "rodrigues.machado.hugo@gmail.com"
-    affiliation: "Universidade Federal Rural do Rio de Janeiro (UFRRJ), Departamento de Solos"
+    affiliation: "University of Florida, Range Cattle Research and Education Center"
     orcid: "https://orcid.org/0000-0002-8070-8126"
-version: "0.9.109"
-date-released: "2026-06-11"
+version: "0.9.259"
+date-released: "2026-10-14"
 doi: "10.5281/zenodo.19930112"
 license: "MIT"
 repository-code: "https://github.com/HugoMachadoRodrigues/soilKey"
@@ -50,7 +50,7 @@ preferred-citation:
       given-names: "Hugo"
       email: "rodrigues.machado.hugo@gmail.com"
       orcid: "https://orcid.org/0000-0002-8070-8126"
-  version: "0.9.109"
+  version: "0.9.259"
   year: 2026
   doi: "10.5281/zenodo.19930112"
   url: "https://github.com/HugoMachadoRodrigues/soilKey"
@@ -63,7 +63,7 @@ references:
     publisher:
       name: "International Union of Soil Sciences"
       city: "Vienna"
-    url: "https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content"
+    url: "https://files.isric.org/public/documents/WRB_fourth_edition_2022-12-18.pdf"
   - type: book
     title: "Keys to Soil Taxonomy, 13th edition"
     authors:
@@ -162,8 +162,8 @@ references:
       name: "Redape (Embrapa Research Data Repository)"
     doi: "10.48432/PYKKA7"
     notes: >
-      The 96-profile curated GeoTab dataset bundled with soilKey via
-      load_redape_pedons() and benchmark_redape(). Pedologists
+      The 96-profile curated GeoTab dataset read by load_redape_pedons()
+      and benchmark_redape(); soilKey does not ship it. Pedologists
       hand-reviewed every profile, making the dataset a gold-standard
       benchmark for classify_sibcs() and classify_via_smartsolos_api().
       Cite this DOI when reporting Redape benchmark numbers.
@@ -184,8 +184,9 @@ references:
     url: "https://isric.org/projects/africa-soil-profiles-database-afsp"
     notes: >
       The Africa Soil Profiles (AfSP) database consumed by
-      benchmark_afsp() and load_afsp_pedons(). The bundled cache
-      ships ~120 stratified pedons. Note: AfSP is from ISRIC and is
+      benchmark_afsp() and load_afsp_pedons(), read from a copy the user
+      obtains from ISRIC (soilKey ships no third-party observations).
+      Note: AfSP is from ISRIC and is
       DISTINCT from AfSIS (Africa Soil Information Service); soilKey
       uses only AfSP, not AfSIS.
   - type: report
