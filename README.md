@@ -568,7 +568,7 @@ When you use **`benchmark_redape()`** or **`load_redape_pedons()`**:
 
 ## ✦ References (canonical books + datasets)
 
-* **WRB 2022** — IUSS Working Group WRB (2022). *World Reference Base for Soil Resources, 4th edition.* International Union of Soil Sciences, Vienna, Austria. FAO OpenKnowledge PDF (`https://openknowledge.fao.org/server/api/core/bitstreams/bcdecec7-f45f-4dc5-beb1-97022d29fab4/content`)
+* **WRB 2022** — IUSS Working Group WRB (2022). *World Reference Base for Soil Resources, 4th edition.* International Union of Soil Sciences, Vienna, Austria. PDF at ISRIC (`https://files.isric.org/public/documents/WRB_fourth_edition_2022-12-18.pdf`)
 * **SiBCS 5** — Santos, H. G. *et al.* (2018). *Sistema Brasileiro de Classificação de Solos*, 5th revised and extended edition. Embrapa, Brasília.
 * **USDA Soil Taxonomy 13** — Soil Survey Staff (2022). *Keys to Soil Taxonomy*, 13th edition. USDA-NRCS, Washington, DC.
 * **OSSL** — Sanderman, J., Savage, K., & Dangal, S. R. S. (2020). *Mid-infrared spectroscopy for prediction of soil health indicators in the United States.* Soil Science Society of America Journal, 84(1), 251–261.
