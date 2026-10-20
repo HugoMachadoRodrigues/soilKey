@@ -84,12 +84,13 @@ def main():
     latest = rec["id"]
     print("Latest version on Zenodo: %s (%s)" % (rec["metadata"].get("version"), rec["doi"]))
 
+    s, dep = call("GET", "%s/deposit/depositions/%s" % (API, latest))
+    need(s, dep, (200,), "reading the latest deposition with the token")
+    print("The token works and owns the record.")
+
     if tag in archived_versions(latest):
         print("%s is already on Zenodo; nothing to do." % tag)
         return
-
-    s, dep = call("GET", "%s/deposit/depositions/%s" % (API, latest))
-    need(s, dep, (200,), "reading the latest deposition with the token")
 
     md = metadata(tag, date)
     print("Zip: %s (%d bytes)" % (zip_path, os.path.getsize(zip_path)))
