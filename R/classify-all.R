@@ -24,6 +24,7 @@
 #'
 #' Pass \code{systems = c("wrb2022", "sibcs")} (or any other subset) to skip
 #' systems you don't need. Default \code{systems = "all"} runs all three.
+#' The systems and their aliases come from \code{\link{soilkey_systems}}.
 #'
 #' @section Errors and partial results:
 #'
@@ -39,9 +40,10 @@
 #' attach any side-channel state.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param systems Character vector. Any subset of \code{c("wrb2022",
-#'        "sibcs", "usda")}, or the literal \code{"all"} (default) to run
-#'        every system.
+#' @param systems Character vector. Any subset of the registered systems
+#'        (\code{"wrb2022"}, \code{"sibcs"}, \code{"usda"}; ids and aliases
+#'        as listed by \code{\link{soilkey_systems}}), or the literal
+#'        \code{"all"} (default) to run every default system.
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}. Forwarded verbatim to each classifier.
 #' @param include_familia Forwarded to \code{\link{classify_sibcs}} (default
@@ -90,40 +92,33 @@ classify_all <- function(pedon,
   on_missing <- match.arg(on_missing)
 
   if (length(systems) == 1L && identical(systems, "all"))
-    systems <- c("wrb2022", "sibcs", "usda")
-  systems <- match.arg(systems, c("wrb2022", "sibcs", "usda"),
-                          several.ok = TRUE)
+    systems <- .system_ids(default_only = TRUE)
+  systems <- .system_resolve(systems, several.ok = TRUE)
 
-  out <- list(wrb = NULL, sibcs = NULL, usda = NULL)
+  # One slot per default system (NULL when skipped), plus any other system
+  # asked for, in registry order.
+  run   <- .system_ids()[.system_ids() %in% systems]
+  shown <- .system_ids()[.system_ids() %in%
+                           union(.system_ids(default_only = TRUE), run)]
+  slots <- vapply(shown, function(id) .system_get(id)$result_slot,
+                  character(1), USE.NAMES = FALSE)
+  out <- stats::setNames(vector("list", length(slots)), slots)
 
-  if ("wrb2022" %in% systems) {
-    out$wrb <- tryCatch(
-      classify_wrb2022(pedon, on_missing = on_missing,
-                         specifiers = specifiers, gapfill = gapfill),
+  env <- environment()
+  for (id in run) {
+    sys <- .system_get(id)
+    # The call reads classify_<id>(pedon, on_missing = on_missing,
+    # <option> = <option>, gapfill = gapfill), evaluated here, so each
+    # classifier receives exactly the arguments it always did.
+    opts <- sys$classify_all_options
+    cl <- as.call(c(list(as.name(sys$classifier), quote(pedon),
+                         on_missing = quote(on_missing)),
+                    stats::setNames(lapply(unlist(opts), as.name), names(opts)),
+                    list(gapfill = quote(gapfill))))
+    out[[sys$result_slot]] <- tryCatch(
+      eval(cl, envir = env),
       error = function(e) {
-        warning(sprintf("classify_wrb2022 failed: %s", conditionMessage(e)),
-                  call. = FALSE)
-        NULL
-      }
-    )
-  }
-  if ("sibcs" %in% systems) {
-    out$sibcs <- tryCatch(
-      classify_sibcs(pedon, on_missing = on_missing,
-                       include_familia = include_familia, gapfill = gapfill),
-      error = function(e) {
-        warning(sprintf("classify_sibcs failed: %s", conditionMessage(e)),
-                  call. = FALSE)
-        NULL
-      }
-    )
-  }
-  if ("usda" %in% systems) {
-    out$usda <- tryCatch(
-      classify_usda(pedon, on_missing = on_missing,
-                      include_family = include_family, gapfill = gapfill),
-      error = function(e) {
-        warning(sprintf("classify_usda failed: %s", conditionMessage(e)),
+        warning(sprintf("%s failed: %s", sys$classifier, conditionMessage(e)),
                   call. = FALSE)
         NULL
       }
@@ -132,12 +127,10 @@ classify_all <- function(pedon,
 
   pick_name <- function(res) if (is.null(res)) NA_character_
                               else res$name %||% NA_character_
-  out$summary <- data.frame(
-    wrb   = pick_name(out$wrb),
-    sibcs = pick_name(out$sibcs),
-    usda  = pick_name(out$usda),
-    stringsAsFactors = FALSE
-  )
+  out$summary <- do.call(data.frame, c(
+    stats::setNames(lapply(slots, function(s) pick_name(out[[s]])), slots),
+    list(stringsAsFactors = FALSE, check.names = FALSE)
+  ))
 
   out
 }

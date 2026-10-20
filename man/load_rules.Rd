@@ -4,13 +4,14 @@
 \alias{load_rules}
 \title{Load a soilKey rule set (YAML)}
 \usage{
-load_rules(system = c("wrb2022", "usda", "sibcs5"), package = "soilKey")
+load_rules(system = "wrb2022", package = "soilKey")
 }
 \arguments{
-\item{system}{One of \code{"wrb2022"} (full WRB 2022 key, v0.2 wires
-16/32 RSGs), \code{"usda"} (USDA Soil Taxonomy, v0.2 scaffold
-with one delegating diagnostic), or \code{"sibcs5"} (SiBCS
-5th edition, v0.2 scaffold with one delegating diagnostic).}
+\item{system}{Id of a registered classification system (see
+\code{\link{soilkey_systems}}): \code{"wrb2022"} (WRB 2022, the
+default), \code{"sibcs5"} (SiBCS 5th edition) or \code{"usda"}
+(Keys to Soil Taxonomy, 13th edition). Aliases such as
+\code{"wrb"} and \code{"sibcs"} are accepted.}
 
 \item{package}{Package owning the rule files (default \code{"soilKey"}).}
 }

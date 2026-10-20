@@ -1,0 +1,22 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: usda
+order: 3
+aliases: []
+legacy: true
+default: true
+status: stable
+classifier: classify_usda
+result_slot: usda
+top_level: orders
+levels: [orders, suborders, great_groups, subgroups]
+classify_all_options:
+  include_family: include_family
+display:
+  en: "USDA Soil Taxonomy"
+  pt: "Soil Taxonomy (USDA)"
+  native: "Keys to Soil Taxonomy, 13th edition"
+  result: "USDA Soil Taxonomy"
+edition: "13th edition (2022)"
+citation: >
+  Soil Survey Staff (2022). Keys to Soil Taxonomy. 13th edition.
+  USDA Natural Resources Conservation Service, Washington, DC.

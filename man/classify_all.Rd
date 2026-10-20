@@ -18,9 +18,10 @@ classify_all(
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{systems}{Character vector. Any subset of \code{c("wrb2022",
-"sibcs", "usda")}, or the literal \code{"all"} (default) to run
-every system.}
+\item{systems}{Character vector. Any subset of the registered systems
+(\code{"wrb2022"}, \code{"sibcs"}, \code{"usda"}; ids and aliases
+as listed by \code{\link{soilkey_systems}}), or the literal
+\code{"all"} (default) to run every default system.}
 
 \item{on_missing}{One of \code{"warn"} (default), \code{"silent"},
 \code{"error"}. Forwarded verbatim to each classifier.}
@@ -73,6 +74,7 @@ homogenised. The wrapper exists for ergonomics, not abstraction.
 
 Pass \code{systems = c("wrb2022", "sibcs")} (or any other subset) to skip
 systems you don't need. Default \code{systems = "all"} runs all three.
+The systems and their aliases come from \code{\link{soilkey_systems}}.
 }
 
 \section{Errors and partial results}{

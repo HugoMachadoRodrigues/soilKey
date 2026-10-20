@@ -27,8 +27,8 @@
 
 # Check that every predicate referenced by a system's rules exists as a
 # function in the soilKey namespace. Returns a list(system, n, missing).
-.validate_rules <- function(system = c("wrb2022", "usda", "sibcs5")) {
-  system <- match.arg(system)
+.validate_rules <- function(system = "wrb2022") {
+  system <- .system_resolve(system)
   rules  <- load_rules(system)
   preds  <- unique(.collect_rule_predicates(rules))
   preds  <- sort(preds[nzchar(preds)])

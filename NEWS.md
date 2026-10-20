@@ -1,3 +1,22 @@
+# soilKey 0.9.263 (2026-10-20)
+
+## A registry of classification systems
+
+Each classification system is now a folder `inst/rules/<id>/` holding its key
+and a `system.yaml` entry: id, aliases, classifier, levels, display names,
+edition, citation and status. `load_rules()`, `classify_all()` and the rule
+validator read that registry instead of repeating the three ids, and the new
+`soilkey_systems()` lists it. This is the first step towards the national
+systems (Canada, Australia, New Zealand and others): a new system will be added
+by adding its folder.
+
+Nothing else changes. The 44 canonical fixtures give the same names, key
+traces, evidence grades and warnings as in 0.9.262, and every id or alias
+accepted so far still works, including the partial ones such as `"wrb"`.
+`classify_all(systems = "sibcs5")` is now accepted as well as `"sibcs"`.
+`load_rules()` now writes its default as `"wrb2022"`; it was the vector of the
+three ids, of which the first was used.
+
 # soilKey 0.9.262 (2026-10-15)
 
 ## The WRB 2022 reference points to the 2022 edition
