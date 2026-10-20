@@ -1,0 +1,458 @@
+# Metadata of the canonical horizon attributes (one entry per column of
+# horizon_column_spec(), in its order). Read by horizon_attribute_spec(); the
+# attribute reference inst/ATTRIBUTES.md is generated from it
+# (data-raw/generate_attributes_doc.R) and a test keeps the two in step.
+#
+# Fields: name, section, unit, description. Optional, for the national
+# systems: systems (registry ids of the keys that read the attribute),
+# allowed (the values of a categorical attribute), min and max (the range of
+# a numeric one).
+attributes:
+  - name: top_cm
+    section: "Geometry & boundaries"
+    unit: "cm"
+    description: "Upper depth of the horizon (from the soil surface)."
+  - name: bottom_cm
+    section: "Geometry & boundaries"
+    unit: "cm"
+    description: "Lower depth of the horizon."
+  - name: designation
+    section: "Geometry & boundaries"
+    unit: "-"
+    description: "Horizon designation / symbol (e.g. A, Bt, Bw, E, C, R)."
+  - name: boundary_distinctness
+    section: "Geometry & boundaries"
+    unit: "-"
+    description: "Distinctness of the lower boundary (abrupt / clear / gradual / diffuse)."
+  - name: boundary_topography
+    section: "Geometry & boundaries"
+    unit: "-"
+    description: "Topography of the lower boundary (smooth / wavy / irregular / broken)."
+  - name: munsell_hue_moist
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell hue, moist (e.g. \"7.5YR\", \"10R\", \"N\")."
+  - name: munsell_value_moist
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell value, moist (0-10)."
+  - name: munsell_chroma_moist
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell chroma, moist."
+  - name: munsell_hue_dry
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell hue, dry."
+  - name: munsell_value_dry
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell value, dry (0-10)."
+  - name: munsell_chroma_dry
+    section: "Color (Munsell)"
+    unit: "Munsell"
+    description: "Munsell chroma, dry."
+  - name: structure_grade
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Grade of structure (structureless / weak / moderate / strong)."
+  - name: structure_size
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Size class of structural units (very fine / fine / medium / coarse / very coarse)."
+  - name: structure_type
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Type of structure (granular / blocky / prismatic / platy / single-grain / massive)."
+  - name: consistence_moist
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Consistence when moist (loose / very friable / friable / firm / very firm / extremely firm)."
+  - name: consistence_wet
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Consistence when wet (stickiness and plasticity)."
+  - name: clay_films_amount
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Abundance of clay coatings / films (none / few / common / many)."
+  - name: clay_films_strength
+    section: "Structure & consistence"
+    unit: "-"
+    description: "Distinctness / thickness of clay films (faint / distinct / prominent)."
+  - name: coarse_fragments_pct
+    section: "Structure & consistence"
+    unit: "% (vol)"
+    description: "Coarse fragments (> 2 mm) by volume."
+  - name: clay_pct
+    section: "Texture"
+    unit: "% (mass)"
+    description: "Clay content of the fine earth (< 2 um)."
+  - name: silt_pct
+    section: "Texture"
+    unit: "% (mass)"
+    description: "Silt content of the fine earth."
+  - name: sand_pct
+    section: "Texture"
+    unit: "% (mass)"
+    description: "Sand content of the fine earth."
+  - name: ph_h2o
+    section: "Acidity"
+    unit: "-"
+    description: "pH measured in water (1:2.5 or as reported). soilKey's default pH."
+  - name: ph_kcl
+    section: "Acidity"
+    unit: "-"
+    description: "pH measured in 1 M KCl."
+  - name: ph_cacl2
+    section: "Acidity"
+    unit: "-"
+    description: "pH measured in 0.01 M CaCl2."
+  - name: oc_pct
+    section: "Organics"
+    unit: "% (mass)"
+    description: "Organic carbon of the fine earth."
+  - name: n_total_pct
+    section: "Organics"
+    unit: "% (mass)"
+    description: "Total nitrogen."
+  - name: cec_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Cation exchange capacity (of the fine earth)."
+  - name: ecec_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Effective CEC (sum of exchangeable bases + exchangeable Al)."
+  - name: bs_pct
+    section: "Exchange complex"
+    unit: "%"
+    description: "Base saturation (SiBCS V%)."
+  - name: al_sat_pct
+    section: "Exchange complex"
+    unit: "%"
+    description: "Aluminium saturation (SiBCS m%)."
+  - name: ca_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable calcium."
+  - name: mg_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable magnesium."
+  - name: k_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable potassium."
+  - name: na_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable sodium."
+  - name: al_cmol
+    section: "Exchange complex"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable (KCl) aluminium."
+  - name: caco3_pct
+    section: "Carbonates / sulphates"
+    unit: "% (mass)"
+    description: "Calcium carbonate equivalent."
+  - name: secondary_carbonates_pct
+    section: "Carbonates / sulphates"
+    unit: "%"
+    description: "identifiable SECONDARY carbonates by volume (soft masses / pseudomycelia / pendents / nodules). The morphological OR-path of the calcic horizon: WRB 2022 3.1.4 protocalcic / USDA KST >= 5% by-volume secondary carbonates, beside the +5%-vs-underlying enrichment"
+  - name: caso4_pct
+    section: "Carbonates / sulphates"
+    unit: "% (mass)"
+    description: "Gypsum (calcium sulphate)."
+  - name: fe_dcb_pct
+    section: "Iron / aluminum oxides"
+    unit: "% Fe"
+    description: "Dithionite-citrate-bicarbonate extractable Fe (free/pedogenic iron oxides)."
+  - name: fe_ox_pct
+    section: "Iron / aluminum oxides"
+    unit: "% Fe"
+    description: "Acid ammonium-oxalate extractable Fe (active/amorphous iron; andic)."
+  - name: al_ox_pct
+    section: "Iron / aluminum oxides"
+    unit: "% Al"
+    description: "Acid ammonium-oxalate extractable Al (active/amorphous aluminium; andic)."
+  - name: si_ox_pct
+    section: "Iron / aluminum oxides"
+    unit: "% Si"
+    description: "Acid ammonium-oxalate extractable Si (andic properties)."
+  - name: bulk_density_g_cm3
+    section: "Physical"
+    unit: "g/cm3"
+    description: "Bulk density of the fine earth."
+  - name: water_content_33kpa
+    section: "Physical"
+    unit: "% (water)"
+    description: "Gravimetric water content at 33 kPa (field capacity)."
+  - name: water_content_1500kpa
+    section: "Physical"
+    unit: "% (water)"
+    description: "Gravimetric water content at 1500 kPa (permanent wilting point)."
+  - name: ec_dS_m
+    section: "Salinity, redoximorphism, vertic"
+    unit: "dS/m"
+    description: "Electrical conductivity (saturated paste, 25 C)."
+  - name: plinthite_pct
+    section: "Salinity, redoximorphism, vertic"
+    unit: "%"
+    description: "volume % of plinthite (Fe-rich nodules / mottles)"
+  - name: redoximorphic_features_pct
+    section: "Salinity, redoximorphism, vertic"
+    unit: "%"
+    description: "volume % of Fe/Mn redox features"
+  - name: slickensides
+    section: "Salinity, redoximorphism, vertic"
+    unit: "-"
+    description: "absent / few / common / many / continuous"
+  - name: artefacts_pct
+    section: "Technic, duric"
+    unit: "%"
+    description: "volume % of human artefacts (for Technosols)"
+  - name: geomembrane_present
+    section: "Technic, duric"
+    unit: "-"
+    description: "WRB 2022 Ch 5 Technosols: continuous geomembrane within 100 cm"
+  - name: technic_hardmaterial_pct
+    section: "Technic, duric"
+    unit: "%"
+    description: "WRB 2022 Ch 5 Technosols: % concrete/asphalt/mine spoil at surface (>= 95% within 5 cm)"
+  - name: duripan_pct
+    section: "Technic, duric"
+    unit: "%"
+    description: "volume % of Si-cemented duripan (for Durisols)"
+  - name: cementation_class
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants)"
+  - name: p_mehlich3_mg_kg
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "mg/kg"
+    description: "plant-available P (anthric / hortic / pretic / ornithogenic)"
+  - name: worm_holes_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "volume % of worm holes / casts / coprolites (chernic / vermic / arenicolic)"
+  - name: water_dispersible_clay_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "WDC / total clay (Ferralsols 'activic' check)"
+  - name: sulfidic_s_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "inorganic sulfidic S (hypersulfidic / hyposulfidic / thionic)"
+  - name: volcanic_glass_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "% volcanic glass in 0.02-2 mm fraction (vitric / tephric)"
+  - name: phosphate_retention_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "P retention (vitric / andic threshold)"
+  - name: artefacts_industrial_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "subset of artefacts: industrial-process glasses, slag, ash (organotechnic)"
+  - name: artefacts_urbic_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "subset of artefacts: rubble / refuse from human settlements (Technosols urbic)"
+  - name: rock_origin
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'fluviatile' / 'marine' / 'lacustrine' / 'aeolian' / 'colluvial' / 'pyroclastic' / NA"
+  - name: permafrost_temp_C
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "deg C"
+    description: "mean annual soil temp at this depth (gelic / cryic)"
+  - name: cracks_width_cm
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "cm"
+    description: "width of shrink-swell cracks when soil dry (vertic horizon / shrink_swell_cracks)"
+  - name: cracks_depth_cm
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "cm"
+    description: "depth to which the crack extends from the surface"
+  - name: polygonal_cracks_spacing_cm
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "cm"
+    description: "avg horizontal spacing of polygonal cracks (takyric properties)"
+  - name: desert_pavement_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "% surface coverage by coarse fragments (yermic properties)"
+  - name: varnish_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "% of coarse fragments with desert varnish (yermic)"
+  - name: ventifact_pct
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "%"
+    description: "% of coarse fragments wind-shaped (yermic)"
+  - name: vesicular_pores
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'absent' / 'few' / 'common' / 'many' (yermic)"
+  - name: rupture_resistance
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'loose' / 'soft' / 'slightly hard' / 'hard' / 'very hard' / 'extremely hard'"
+  - name: plasticity
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'non-plastic' / 'slightly plastic' / 'moderately plastic' / 'very plastic'"
+  - name: al_kcl_cmol
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "cmol(+)/kg"
+    description: "KCl-extractable Al (Alisols criterion)"
+  - name: layer_origin
+    section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
+    unit: "-"
+    description: "'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating)"
+  - name: fiber_content_rubbed_pct
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "%"
+    description: "SiBCS Cap 14: % fibras apos esfregamento (Saprico < 17, Hemico 17-40, Fibrico >= 40)"
+  - name: fiber_content_unrubbed_pct
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "%"
+    description: "SiBCS Cap 14: % fibras antes do esfregamento (auxiliar)"
+  - name: von_post_index
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "-"
+    description: "Indice de decomposicao von Post 1924 (H1-H10): H1-H4 Fibrico / H5-H6 Hemico / H7-H10 Saprico"
+  - name: cole_value
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "-"
+    description: "Coefficient of Linear Extensibility (1500 kPa moist -> oven dry); SiBCS retratil >= 0.06"
+  - name: sio2_sulfuric_pct
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "%"
+    description: "SiO2 por ataque sulfurico-NaOH (Embrapa Manual de Metodos), para Ki/Kr"
+  - name: al2o3_sulfuric_pct
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "%"
+    description: "Al2O3 por ataque sulfurico, para Ki = (SiO2/60.08)/(Al2O3/101.96) molar"
+  - name: fe2o3_sulfuric_pct
+    section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
+    unit: "%"
+    description: "Fe2O3 por ataque sulfurico, para Kr = SiO2/(Al2O3+Fe2O3) molar (Latossolos Acriferricos)"
+  - name: sand_mica_pct
+    section: "SiBCS Cap 18 mineralogia da fracao areia"
+    unit: "%"
+    description: "SiBCS Cap 18 p 286: % volume de micas na fracao areia (>= 15% -> Familia \"micacea\")"
+  - name: sand_amphibole_pct
+    section: "SiBCS Cap 18 mineralogia da fracao areia"
+    unit: "%"
+    description: "SiBCS Cap 18 p 286: % volume de anfibolios (>= 15% -> Familia \"anfibolitica\")"
+  - name: sand_feldspar_pct
+    section: "SiBCS Cap 18 mineralogia da fracao areia"
+    unit: "%"
+    description: "SiBCS Cap 18 p 286: % volume de feldspatos (>= 15% -> Familia \"feldspatica\")"
+  - name: sand_mineralogy
+    section: "SiBCS Cap 18 mineralogia da fracao areia"
+    unit: "-"
+    description: "SiBCS Cap 18 p 286 fallback: 'micacea' / 'anfibolitica' / 'feldspatica' / 'quartzosa' / NA (atalho qualitativo)"
+  - name: woody_fragments_pct
+    section: "SiBCS Cap 18 Organossolos"
+    unit: "%"
+    description: "SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos)"
+  - name: surface_crust_type
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Biocrustic / Pelocrustic / Evapocrustic / Puffic): biological / clay / evaporite / puffed crust morphology"
+  - name: bioturbation_density
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Arenicolic / Isopteric): faunal burrow density (none / few / common / many) -- proxy for invertebrate-driven mixing"
+  - name: cordic_horizon
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Cordic): presence of cordic horizon (cemented but not duripan/petrocalcic)"
+  - name: microrelief_form
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Dorsic / Gilgaic): microrelief form (gilgai / dorsal-ridge / hummocky / smooth)"
+  - name: weathering_stage
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Saprolithic / Naramic / Lapiadic): weathering stage of parent material (fresh / moderately weathered / saprolite / completely weathered)"
+  - name: salt_crust_pattern
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Naramic): salt crust morphology (efflorescent / crusty / hardpan)"
+  - name: contamination_type
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Immissic): pollution / contamination class (heavy_metals / hydrocarbons / atmospheric_immission / NA)"
+  - name: stratification_pattern
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Litholinic / Raptic): stratification description (continuous / interrupted / lithologic_break / NA)"
+  - name: aeolian_morphology
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Nechic): aeolian / loess deposition pattern (loess / dune / sandsheet / NA)"
+  - name: mottle_morphology
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Mochipic): mottle pattern qualitative (mochi / banded / patchy / NA)"
+  - name: surface_puff_layer
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Kalaic / Puffic): seasonal puffed surface layer (TRUE / FALSE / NA)"
+  - name: thixotropic_index
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Thixotropic): thixotropic-behaviour index (0-100) from slurry test"
+  - name: saprolite_pct
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "%"
+    description: "WRB Ch 5 (Saprolithic): % by volume of in-situ weathered saprolite material"
+  - name: water_regime_pattern
+    section: "Tier-3 schema fields for WRB SQ qualifiers"
+    unit: "-"
+    description: "WRB Ch 5 (Uterquic): bidirectional / single / aquic regime classification"
+  - name: water_content_1500kpa_undried
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "-"
+    description: "1500 kPa water retention on UNDRIED samples; Vitrands/Vitrandic need < 30% undried beside < 15% air-dried (KST 13ed Ch 6)"
+  - name: particles_002_2mm_pct
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "%"
+    description: "% of the FINE-EARTH fraction in the 0.02-2.0 mm size class; Vitrandic subgroup crit 2 needs >= 30% (KST 13ed Ch 9)"
+  - name: cracks_top_cm
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "cm"
+    description: "depth (cm) of the UPPER boundary of shrink-swell cracks; Vertic subgroup needs cracks within 125 cm (KST 13ed)"
+  - name: incubation_ph
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "-"
+    description: "pH after the WRB 8-week aerobic incubation test; hypersulfidic drops < 4, hyposulfidic stays >= 4 (WRB 2022 Ch 3.3.8/3.3.9)"
+  - name: ice_pct
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "%"
+    description: "volume % ice (related to whole soil); WRB 2022 Glacic needs >= 75% (Ch 5)"
+  - name: water_saturation_days
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "days"
+    description: "cumulative days/year water-saturated; WRB 2022 Mochipic needs >= 300 days (Ch 5)"
+  - name: particles_630um_pct
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "%"
+    description: "% particles >= 630 um; WRB 2022 Isopteric needs < 5% (Ch 5)"
+  - name: jarosite_present
+    section: "Fields that unlock schema-blocked predicates"
+    unit: "-"
+    description: "jarosite mineral present; WRB 2022 Aceric requires it beside pH 3.5-5 (Ch 5)"
+  - name: variegated_colors
+    section: "The colours a horizon has beside its matrix colour"
+    unit: "-"
+    description: "Munsell notations (moist) of the colours of a variegated horizon (coloracao variegada), which has no single matrix colour, separated by \";\" (\"10YR 5/3; 2.5YR 4/6\"); SiBCS Plintossolos (Cap 3, p. 104)"
+  - name: mottle_colors
+    section: "The colours a horizon has beside its matrix colour"
+    unit: "-"
+    description: "Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by \";\" (\"10YR 6/2; 5YR 5/8\"); SiBCS Plintossolos (Cap 3, p. 104)"

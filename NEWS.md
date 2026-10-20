@@ -1,3 +1,18 @@
+# soilKey 0.9.266 (2026-10-20)
+
+## One file of metadata for the horizon attributes
+
+The section, unit and description of each of the 112 canonical horizon
+columns now live in `inst/schemas/horizon-attributes.yaml`, and the new
+`horizon_attribute_spec()` returns them as a table with each column's type
+and accepted aliases. The file also has room for what the national systems
+will need: the keys that read an attribute, the values of a categorical one
+and the range of a numeric one. The attribute reference `inst/ATTRIBUTES.md`
+is generated from it (before, the generator parsed the comments of
+`R/utils.R` and kept its own table of units), and a test fails when the file
+and the reference fall out of step. The reference's tables are unchanged.
+No classification changes.
+
 # soilKey 0.9.265 (2026-10-20)
 
 ## A generic classifier for ordered keys
