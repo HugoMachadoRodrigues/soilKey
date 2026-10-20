@@ -2,9 +2,9 @@
 # function. Catches a typo'd predicate name in a rule (which would otherwise
 # degrade to a silent NA at classification time).
 
-test_that("every rule-base predicate exists, for all three systems", {
+test_that("every rule-base predicate exists, for every registered system", {
   skip_on_cran()
-  for (sys in c("wrb2022", "usda", "sibcs5")) {
+  for (sys in soilkey_systems()$id) {
     res <- soilKey:::.validate_rules(sys)
     expect_gt(res$n, 0L)
     expect_equal(res$missing, character(0),

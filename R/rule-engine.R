@@ -24,18 +24,19 @@
 
 #' Load a soilKey rule set (YAML)
 #'
-#' @param system One of \code{"wrb2022"} (full WRB 2022 key, v0.2 wires
-#'        16/32 RSGs), \code{"usda"} (USDA Soil Taxonomy, v0.2 scaffold
-#'        with one delegating diagnostic), or \code{"sibcs5"} (SiBCS
-#'        5th edition, v0.2 scaffold with one delegating diagnostic).
+#' @param system Id of a registered classification system (see
+#'        \code{\link{soilkey_systems}}): \code{"wrb2022"} (WRB 2022, the
+#'        default), \code{"sibcs5"} (SiBCS 5th edition) or \code{"usda"}
+#'        (Keys to Soil Taxonomy, 13th edition). Aliases such as
+#'        \code{"wrb"} and \code{"sibcs"} are accepted.
 #' @param package Package owning the rule files (default \code{"soilKey"}).
 #' @return A parsed YAML list with elements \code{version},
 #'         \code{source}, and a system-specific taxa list
 #'         (\code{rsgs}, \code{orders}, or \code{ordens}).
 #' @export
-load_rules <- function(system = c("wrb2022", "usda", "sibcs5"),
+load_rules <- function(system = "wrb2022",
                          package = "soilKey") {
-  system <- match.arg(system)
+  system <- .system_resolve(system)
   path <- system.file("rules", system, "key.yaml", package = package)
   if (path == "" || !file.exists(path)) {
     rlang::abort(sprintf(

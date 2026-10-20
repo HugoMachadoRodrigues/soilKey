@@ -87,6 +87,7 @@ reference:
       - classify_sibcs_familia
       - classify_usda
       - classify_all
+      - soilkey_systems
       - classify_csv
       - classify_from_documents
       - classify_from_photos

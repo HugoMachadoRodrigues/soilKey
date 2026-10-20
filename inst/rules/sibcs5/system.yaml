@@ -1,0 +1,22 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: sibcs5
+order: 2
+aliases: [sibcs]
+legacy: true
+default: true
+status: stable
+classifier: classify_sibcs
+result_slot: sibcs
+top_level: ordens
+levels: [ordens, subordens, grandes_grupos, subgrupos]
+classify_all_options:
+  include_familia: include_familia
+display:
+  en: "SiBCS, 5th edition"
+  pt: "SiBCS, 5ª edição"
+  native: "Sistema Brasileiro de Classificação de Solos, 5ª edição"
+  result: "SiBCS 5a edicao"
+edition: "5th edition (2018)"
+citation: >
+  Santos, H. G. et al. (2018). Sistema Brasileiro de Classificação de Solos.
+  5ª ed. rev. e ampl. Embrapa, Brasília.

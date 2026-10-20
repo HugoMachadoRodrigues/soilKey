@@ -1,0 +1,22 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: wrb2022
+order: 1
+aliases: [wrb]
+legacy: true
+default: true
+status: stable
+classifier: classify_wrb2022
+result_slot: wrb
+top_level: rsgs
+levels: [rsgs]
+classify_all_options:
+  specifiers: specifiers
+display:
+  en: "WRB 2022"
+  pt: "WRB 2022"
+  native: "World Reference Base for Soil Resources, 4th edition"
+  result: "WRB 2022"
+edition: "4th edition (2022)"
+citation: >
+  IUSS Working Group WRB (2022). World Reference Base for Soil Resources.
+  4th edition. International Union of Soil Sciences, Vienna.
