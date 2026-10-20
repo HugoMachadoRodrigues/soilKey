@@ -344,6 +344,7 @@ classify_sibcs <- function(pedon,
     missing_data   = missing_data,
     evidence_grade = grade,
     prior_check    = NULL,
-    warnings       = warnings
+    warnings       = warnings,
+    system_id      = "sibcs5"
   )
 }

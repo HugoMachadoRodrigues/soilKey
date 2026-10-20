@@ -33,6 +33,21 @@
 #' @field prior_check    List or NULL. Result of the spatial-prior sanity
 #'                       check (consistent / inconsistent / not run).
 #' @field warnings       Character vector. Free-form warnings.
+#' @field system_id      Character. Registry id of the system (see
+#'                       \code{\link{soilkey_systems}}), e.g.
+#'                       \code{"wrb2022"}; since v0.9.265.
+#' @field levels         \code{data.frame} with one row per level of the
+#'                       key that assigned a class (\code{level},
+#'                       \code{code}, \code{name}), top level first; set by
+#'                       the generic classifier of ordered keys and
+#'                       \code{NULL} for WRB, SiBCS and USDA, whose levels
+#'                       are in \code{trace}.
+#' @field provisional_because Character vector. In a first-match key a class
+#'                       that could not be decided for lack of data, tested
+#'                       before the one assigned, makes the assignment
+#'                       provisional; these are those classes, as
+#'                       \code{"<level>:<code>"}. Empty when the assignment
+#'                       is firm or the classifier does not report it.
 #'
 #' @export
 ClassificationResult <- R6::R6Class("ClassificationResult",
@@ -48,6 +63,9 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     evidence_grade = NULL,
     prior_check    = NULL,
     warnings       = NULL,
+    system_id      = NULL,
+    levels         = NULL,
+    provisional_because = NULL,
 
     #' @description Build a ClassificationResult.
     #' @param system System name.
@@ -60,6 +78,10 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     #' @param evidence_grade Single character A/B/C/D or NA.
     #' @param prior_check List or NULL.
     #' @param warnings Character vector.
+    #' @param system_id Registry id of the system, or NULL.
+    #' @param levels Assigned class per level (data.frame), or NULL.
+    #' @param provisional_because Character vector of undecided classes
+    #'        tested before the assigned ones.
     initialize = function(system,
                           name,
                           rsg_or_order   = NA_character_,
@@ -69,7 +91,10 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                           missing_data   = character(0),
                           evidence_grade = NA_character_,
                           prior_check    = NULL,
-                          warnings       = character(0)) {
+                          warnings       = character(0),
+                          system_id      = NULL,
+                          levels         = NULL,
+                          provisional_because = character(0)) {
       self$system         <- system
       self$name           <- name
       self$rsg_or_order   <- rsg_or_order
@@ -80,6 +105,9 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       self$evidence_grade <- evidence_grade
       self$prior_check    <- prior_check
       self$warnings       <- as.character(warnings)
+      self$system_id      <- system_id
+      self$levels         <- levels
+      self$provisional_because <- as.character(provisional_because)
     },
 
     #' @description Pretty-print the result with key trace, ambiguities, and
@@ -90,6 +118,14 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       cli::cli_text("Name: {self$name}")
       if (!is.na(self$rsg_or_order)) {
         cli::cli_text("RSG/Order: {self$rsg_or_order}")
+      }
+      if (is.data.frame(self$levels) && nrow(self$levels) > 1L) {
+        cli::cli_text("Levels: {paste(sprintf('%s %s', self$levels$code,
+                                                self$levels$name),
+                                       collapse = ' > ')}")
+      }
+      if (length(self$provisional_because) > 0L) {
+        cli::cli_text("Provisional: undecided before it, {paste(self$provisional_because, collapse = ', ')}")
       }
       if (length(self$qualifiers) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(self$qualifiers), collapse = ', ')}")
@@ -119,14 +155,21 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         for (w in self$warnings) cli::cli_alert_warning(w)
       }
       cli::cli_h3("Key trace")
-      n_tested <- length(self$trace)
-      cli::cli_text("({n_tested} RSGs tested before assignment)")
       # v0.9.165: the trace is flat for WRB but nested for SiBCS/USDA (phases of
       # candidate steps, assigned records, family attributes, bare labels).
       # .flatten_key_trace() normalises every shape to one ordered table, so the
       # per-step dump no longer produces "?? -- NA" rows (or crashes) for the
       # hierarchical systems. WRB output is unchanged.
       tt <- .flatten_key_trace(self$trace)
+      # v0.9.265: count the classes actually tested (for a nested trace,
+      # length(trace) counted phases and assigned records), and call them
+      # RSGs only for WRB.
+      n_tested <- sum(tt$status %in% c("passed", "failed", "indeterminate"))
+      tested_what <- if (identical(self$system_id, "wrb2022") ||
+                         (is.null(self$system_id) &&
+                          startsWith(self$system %||% "", "WRB"))) "RSGs"
+                     else "classes"
+      cli::cli_text("({n_tested} {tested_what} tested before assignment)")
       sym_of <- c(passed = "PASSED", failed = "failed",
                   indeterminate = "NA", selected = "assigned", info = "info")
       for (i in seq_len(nrow(tt))) {
