@@ -1,3 +1,31 @@
+# soilKey 0.9.264 (2026-10-20)
+
+## The rule engine reads nested blocks and `none_of`
+
+National keys say things such as "other soils that have A, and B or C, and
+not D". The rule engine now reads that in YAML: an entry of an `all_of`,
+`any_of` or `none_of` list may itself be one of these blocks, and `none_of`
+(no test may pass) joins `all_of` and `any_of`, with the same three-valued
+logic (an undecided test leaves the block undecided unless the outcome is
+already settled). A nested block appears in the key trace as a test of its
+own, with its sub-results as evidence.
+
+The lower levels of a key are now read from the folders that the system's
+registry entry names (`great_groups` from `great-groups/`), not from a fixed
+list of six folder names. The rule validator also reports blocks that name
+more than one combinator (the engine reads only one of them), combinators
+written as a mapping instead of a list, class codes and names that are not
+quoted strings (YAML reads an unquoted `N` as a logical and `11` as a number),
+codes listed twice in one list or one level, and, for systems added after the
+registry, predicates without the system's suffix, so that a Canadian
+Chernozemic gate can never be WRB's `chernozem()`. The helpers that
+every key shares (evidence grade, ambiguities, missing attributes) move from
+`R/key-wrb2022.R` to `R/key-common.R`, unchanged.
+
+No result changes: the 44 canonical fixtures give identical names, key traces,
+evidence grades and warnings, and no rule of the three systems nests, mixes
+combinators or uses `none_of`.
+
 # soilKey 0.9.263 (2026-10-20)
 
 ## A registry of classification systems
