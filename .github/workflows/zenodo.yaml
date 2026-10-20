@@ -1,0 +1,69 @@
+# Archive each GitHub release on Zenodo. A published release becomes a new
+# version of the concept record 10.5281/zenodo.19930112, the DOI that the README
+# badge, CITATION.cff and inst/CITATION cite, so the concept DOI always resolves
+# to the latest release. Zenodo's own GitHub switch cannot be turned on for this
+# repository (Zenodo still ties its name to the old, now private, repository), so
+# the deposit goes through the Zenodo API instead.
+#
+# Setup, once: a Zenodo personal token with the deposit:write and
+# deposit:actions scopes, stored as the repository secret ZENODO_TOKEN.
+#
+# The deposit is the source tree of the tag (git archive, the same files as
+# GitHub's own zip of the tag) with the metadata of .zenodo.json; the version is
+# the tag name and the date is the release date. Pre-releases are skipped, and a
+# tag that Zenodo already holds is skipped too, so running it twice is harmless.
+#
+# Run it by hand from the Actions tab ("Run workflow") with dry_run on to check
+# the token and see the metadata without creating anything; with dry_run off it
+# archives the release named in "tag" (for a release that the automatic run
+# missed).
+name: zenodo
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to archive, e.g. v0.9.262
+        required: true
+      dry_run:
+        description: Only check the token and show the metadata
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zenodo
+  cancel-in-progress: false
+
+jobs:
+  deposit:
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Release date and source archive
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          date=$(gh release view "$TAG" --json publishedAt -q '.publishedAt[0:10]')
+          git archive --format=zip --prefix="soilKey-${TAG#v}/" -o "soilKey-${TAG}.zip" "refs/tags/${TAG}"
+          echo "RELEASE_DATE=${date}" >> "$GITHUB_ENV"
+          echo "ZIP=soilKey-${TAG}.zip" >> "$GITHUB_ENV"
+          ls -l "soilKey-${TAG}.zip"
+
+      - name: Deposit on Zenodo
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        run: python3 .github/scripts/zenodo_release.py
