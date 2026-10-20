@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.262</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.263</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,14 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.263" id="soilkey-09263-2026-10-20">soilKey 0.9.263 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09263-2026-10-20"></a></h2>
+<div class="section level3">
+<h3 id="a-registry-of-classification-systems-0-9-263">A registry of classification systems<a class="anchor" aria-label="anchor" href="#a-registry-of-classification-systems-0-9-263"></a></h3>
+<p>Each classification system is now a folder <code>inst/rules/&lt;id&gt;/</code> holding its key and a <code>system.yaml</code> entry: id, aliases, classifier, levels, display names, edition, citation and status. <code><a href="../reference/load_rules.html">load_rules()</a></code>, <code><a href="../reference/classify_all.html">classify_all()</a></code> and the rule validator read that registry instead of repeating the three ids, and the new <code><a href="../reference/soilkey_systems.html">soilkey_systems()</a></code> lists it. This is the first step towards the national systems (Canada, Australia, New Zealand and others): a new system will be added by adding its folder.</p>
+<p>Nothing else changes. The 44 canonical fixtures give the same names, key traces, evidence grades and warnings as in 0.9.262, and every id or alias accepted so far still works, including the partial ones such as <code>"wrb"</code>. <code>classify_all(systems = "sibcs5")</code> is now accepted as well as <code>"sibcs"</code>. <code><a href="../reference/load_rules.html">load_rules()</a></code> now writes its default as <code>"wrb2022"</code>; it was the vector of the three ids, of which the first was used.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.262" id="soilkey-09262-2026-10-15">soilKey 0.9.262 (2026-10-15)<a class="anchor" aria-label="anchor" href="#soilkey-09262-2026-10-15"></a></h2>
 <div class="section level3">

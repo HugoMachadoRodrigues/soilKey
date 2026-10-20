@@ -34,8 +34,10 @@ classify_all(
 
 - systems:
 
-  Character vector. Any subset of `c("wrb2022", "sibcs", "usda")`, or
-  the literal `"all"` (default) to run every system.
+  Character vector. Any subset of the registered systems (`"wrb2022"`,
+  `"sibcs"`, `"usda"`; ids and aliases as listed by
+  [`soilkey_systems`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md)),
+  or the literal `"all"` (default) to run every default system.
 
 - on_missing:
 
@@ -104,7 +106,9 @@ homogenised. The wrapper exists for ergonomics, not abstraction.
 ## Selecting a subset of systems
 
 Pass `systems = c("wrb2022", "sibcs")` (or any other subset) to skip
-systems you don't need. Default `systems = "all"` runs all three.
+systems you don't need. Default `systems = "all"` runs all three. The
+systems and their aliases come from
+[`soilkey_systems`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md).
 
 ## Errors and partial results
 

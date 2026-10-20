@@ -13,7 +13,7 @@ per system (plus a summary table that's handy for reports)."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.262</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.263</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,9 +89,10 @@ per system (plus a <code>summary</code> table that's handy for reports).</p>
 
 
 <dt id="arg-systems">systems<a class="anchor" aria-label="anchor" href="#arg-systems"></a></dt>
-<dd><p>Character vector. Any subset of <code>c("wrb2022",
-"sibcs", "usda")</code>, or the literal <code>"all"</code> (default) to run
-every system.</p></dd>
+<dd><p>Character vector. Any subset of the registered systems
+(<code>"wrb2022"</code>, <code>"sibcs"</code>, <code>"usda"</code>; ids and aliases
+as listed by <code><a href="soilkey_systems.html">soilkey_systems</a></code>), or the literal
+<code>"all"</code> (default) to run every default system.</p></dd>
 
 
 <dt id="arg-on-missing">on_missing<a class="anchor" aria-label="anchor" href="#arg-on-missing"></a></dt>
@@ -151,7 +152,8 @@ homogenised. The wrapper exists for ergonomics, not abstraction.</p>
 
 
 <p>Pass <code>systems = c("wrb2022", "sibcs")</code> (or any other subset) to skip
-systems you don't need. Default <code>systems = "all"</code> runs all three.</p>
+systems you don't need. Default <code>systems = "all"</code> runs all three.
+The systems and their aliases come from <code><a href="soilkey_systems.html">soilkey_systems</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="errors-and-partial-results">Errors and partial results<a class="anchor" aria-label="anchor" href="#errors-and-partial-results"></a></h2>
