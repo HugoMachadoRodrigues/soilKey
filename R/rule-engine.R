@@ -6,10 +6,13 @@
 # and for each RSG evaluates its tests by resolving named diagnostic
 # functions in the soilKey namespace.
 #
-# Three test combinators are recognised:
+# Test combinators:
 #   - all_of: every test must pass
 #   - any_of: at least one test must pass
+#   - none_of: no test may pass (v0.9.264)
 #   - default: catch-all (used for the last RSG, e.g. Regosols)
+# Since v0.9.264 an entry of an all_of / any_of / none_of list may itself be
+# one of these blocks, so a key can say "A and (B or C) and not D" in YAML.
 #
 # A pseudo-combinator `not_implemented_v01:` marks RSGs whose
 # diagnostics are scheduled for a later release. The engine returns NA
@@ -54,21 +57,17 @@ load_rules <- function(system = "wrb2022",
   # Suborders / Great Groups / Subgroups (Path C, v0.8+).
   # Backward-compatible: WRB without subdirs keeps current behavior.
   #
-  # Mapping subdir -> rules block:
-  #   grandes-grupos/ (SiBCS) -> rules$grandes_grupos
-  #   subgrupos/      (SiBCS) -> rules$subgrupos
-  #   subordens/      (SiBCS) -> rules$subordens (currently in key.yaml,
-  #                              future-proofing)
-  #   suborders/      (USDA)  -> rules$suborders
-  #   great-groups/   (USDA)  -> rules$great_groups
-  #   subgroups/      (USDA)  -> rules$subgroups
-  for (subdir_name in c("grandes-grupos", "subgrupos", "subordens",
-                          "suborders", "great-groups", "subgroups")) {
+  # v0.9.264: the levels below the top come from the system's registry
+  # entry (system.yaml), in their order, and each is read from the folder
+  # named after it with "_" written "-": great_groups -> great-groups/,
+  # grandes_grupos -> grandes-grupos/. A level without a folder is skipped
+  # (the SiBCS subordens live in key.yaml).
+  for (yaml_key in .system_get(system)$levels[-1L]) {
+    subdir_name <- gsub("_", "-", yaml_key)
     sub_path <- system.file("rules", system, subdir_name, package = package)
     if (!nzchar(sub_path) || !dir.exists(sub_path)) next
     files <- list.files(sub_path, pattern = "\\.yaml$", full.names = TRUE)
     if (length(files) == 0L) next
-    yaml_key <- gsub("-", "_", subdir_name)
     merged <- list()
     for (f in files) {
       content <- yaml::read_yaml(f)
@@ -199,6 +198,7 @@ evaluate_rsg_tests <- function(pedon, tests) {
 
   combinator <- if (!is.null(tests$any_of)) "any_of"
                  else if (!is.null(tests$all_of)) "all_of"
+                 else if (!is.null(tests$none_of)) "none_of"
                  else NULL
 
   if (is.null(combinator)) {
@@ -206,7 +206,7 @@ evaluate_rsg_tests <- function(pedon, tests) {
       passed   = NA,
       evidence = list(),
       missing  = character(0),
-      notes    = "Malformed test block: no any_of / all_of / default"
+      notes    = "Malformed test block: no any_of / all_of / none_of / default"
     ))
   }
 
@@ -220,6 +220,10 @@ evaluate_rsg_tests <- function(pedon, tests) {
     if (any(passed_vec)) TRUE
     else if (any(na_vec)) NA
     else FALSE
+  } else if (combinator == "none_of") {
+    if (any(passed_vec)) FALSE
+    else if (any(na_vec)) NA
+    else TRUE
   } else { # all_of
     if (all(passed_vec)) TRUE
     else if (any(na_vec) && all(passed_vec | na_vec)) NA
@@ -264,6 +268,22 @@ run_single_test <- function(pedon, test_spec) {
   }
 
   test_name <- names(test_spec)[1L]
+
+  # v0.9.264: a nested all_of / any_of / none_of block is evaluated as a
+  # test of its own; its outcome joins the enclosing block like any
+  # diagnostic, with its sub-results kept as evidence.
+  if (test_name %in% .RULE_COMBINATORS) {
+    block <- evaluate_rsg_tests(pedon, test_spec[1L])
+    return(list(
+      test_name = test_name,
+      passed    = block$passed,
+      layers    = integer(0),
+      missing   = block$missing %||% character(0),
+      evidence  = block$evidence,
+      notes     = block$notes
+    ))
+  }
+
   test_args <- test_spec[[1L]]
   if (is.null(test_args) ||
       (is.list(test_args) && length(test_args) == 0L)) {
