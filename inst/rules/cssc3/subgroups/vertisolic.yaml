@@ -1,0 +1,46 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, p. 40, for the Vertisolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "CA":
+    - code: "CAA"
+      name: Gleysolic Vertisol
+      tests:
+        all_of:
+          - vertisolic_mottles_cssc: {contrast: prominent}
+      notes: "Prominent mottles within 50 cm of the mineral surface (p. 40)."
+
+    - code: "CAB"
+      name: Gleyed Vertisol
+      tests:
+        all_of:
+          - vertisolic_mottles_cssc: {contrast: faint_distinct}
+      notes: "Faint to distinct mottles within 50 cm of the mineral surface (p. 40)."
+
+    - code: "CAC"
+      name: Orthic Vertisol
+      tests:
+        default: true
+      notes: "Other Vertisols (p. 40)."
+
+  "CB":
+    - code: "CBA"
+      name: Gleysolic Humic Vertisol
+      tests:
+        all_of:
+          - vertisolic_mottles_cssc: {contrast: prominent}
+      notes: "Prominent mottles within 50 cm of the mineral surface (p. 40)."
+
+    - code: "CBB"
+      name: Gleyed Humic Vertisol
+      tests:
+        all_of:
+          - vertisolic_mottles_cssc: {contrast: faint_distinct}
+      notes: "Faint to distinct mottles within 50 cm of the mineral surface (p. 40)."
+
+    - code: "CBC"
+      name: Orthic Humic Vertisol
+      tests:
+        default: true
+      notes: "Other Humic Vertisols (p. 40)."

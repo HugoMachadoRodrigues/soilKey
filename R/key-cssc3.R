@@ -1,11 +1,44 @@
 # =============================================================================
 # v0.9.267 -- the Canadian System of Soil Classification, 3rd edition: the
 # first national system on the registry, keyed to the ten orders (Ch 3,
-# pp. 33-34); v0.9.268 adds the 31 great groups (pp. 35-36). Subgroups
-# follow. The system is experimental and opt-in: classify_all() runs it only
-# when asked.
+# pp. 33-34); v0.9.268 adds the 31 great groups (pp. 35-36) and v0.9.269 the
+# subgroups of the Cryosolic, Organic and Vertisolic orders (pp. 37-40). The
+# other subgroups follow. The system is experimental and opt-in:
+# classify_all() runs it only when asked.
 # =============================================================================
 
+
+# The pedon as the Canadian key reads it: rows in depth order (by top, a
+# stable sort), and a horizon with no bottom depth ending where the next
+# horizon down begins (the deepest one keeps its missing bottom). Works on a
+# copy, made only when something changes, so the caller's pedon is never
+# altered; the layer numbers of the trace refer to the rows in depth order.
+.cssc_prepare_pedon <- function(pedon) {
+  h <- pedon$horizons
+  if (is.null(h) || nrow(h) == 0L) return(pedon)
+  ord <- order(h$top_cm, na.last = TRUE, method = "radix")
+  unsorted <- !identical(ord, seq_len(nrow(h)))
+  hs <- h
+  if (unsorted) {
+    hs <- data.table::copy(h)
+    data.table::setorderv(hs, "top_cm", na.last = TRUE)
+  }
+  miss <- which(is.na(hs$bottom_cm) & !is.na(hs$top_cm))
+  fill <- vapply(miss, function(i) {
+    below <- hs$top_cm[!is.na(hs$top_cm) & hs$top_cm > hs$top_cm[i]]
+    if (length(below)) min(below) else NA_real_
+  }, numeric(1))
+  if (!unsorted && all(is.na(fill))) return(pedon)
+  p <- pedon$clone(deep = TRUE)
+  h2 <- data.table::copy(hs)
+  if (any(!is.na(fill))) {
+    data.table::set(h2, j = "bottom_cm", value = as.numeric(h2$bottom_cm))
+    data.table::set(h2, i = miss[!is.na(fill)], j = "bottom_cm",
+                    value = as.numeric(fill[!is.na(fill)]))
+  }
+  p$horizons <- h2
+  p
+}
 
 # Routes of the tests that passed for a taxon, read from its trace entry.
 .passing_routes <- function(entry) {
@@ -29,10 +62,12 @@
 #' Keys a \code{\link{PedonRecord}} through the Canadian System of Soil
 #' Classification, 3rd edition (Soil Classification Working Group 1998).
 #' \strong{Experimental}: this release keys the ten orders (Key to Soil
-#' Orders, Ch 3, pp. 33-34) and their 31 great groups (Key to Soil Great
-#' Groups, pp. 35-36); subgroups follow in a later release, so the name is
-#' the great group (e.g. "Humo-Ferric Podzol") and the order is in
-#' \code{rsg_or_order}.
+#' Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
+#' pp. 35-36) and the subgroups of the Cryosolic, Organic and Vertisolic
+#' orders (Key to Soil Subgroups, pp. 37-40). The name is the deepest class
+#' assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
+#' keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
+#' in \code{rsg_or_order} and every level in \code{levels}.
 #'
 #' The Canadian keys are written largely in terms of horizon designations,
 #' which the book defines partly by measurable properties. Each diagnostic
@@ -58,8 +93,8 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cssc3"}, the great group in \code{name}, the order in
-#'   \code{rsg_or_order}, both in \code{levels}, the key trace, and
+#'   \code{"cssc3"}, the deepest class assigned in \code{name}, the order in
+#'   \code{rsg_or_order}, every level in \code{levels}, the key trace, and
 #'   \code{provisional_because}.
 #' @references Soil Classification Working Group (1998). The Canadian System
 #'   of Soil Classification, 3rd ed. Agriculture and Agri-Food Canada
@@ -73,6 +108,7 @@ classify_cssc3 <- function(pedon, rules = NULL,
                            on_missing = c("warn", "silent", "error"),
                            gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
+  if (inherits(pedon, "PedonRecord")) pedon <- .cssc_prepare_pedon(pedon)
   res <- classify_hierarchical("cssc3", pedon, rules = rules,
                                on_missing = on_missing, gapfill = gapfill)
   if (nrow(res$levels) > 0L) {
@@ -92,10 +128,11 @@ classify_cssc3 <- function(pedon, rules = NULL,
 #'
 #' Small, plausible profiles written for the tests and examples, one per
 #' order of the Canadian System of Soil Classification, with designations in
-#' the Canadian notation and the properties the order and great-group keys
-#' read: a Turbic Cryosol, a Mesisol, a Vertisol, a Humo-Ferric Podzol, a
-#' Humic Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, a
-#' Eutric Brunisol and a Regosol. They are not records of real pedons.
+#' the Canadian notation and the properties the order, great-group and
+#' subgroup keys read: a Brunisolic Dystric Turbic Cryosol, a Terric Humic
+#' Mesisol, an Orthic Vertisol, a Humo-Ferric Podzol, a Humic Gleysol, a
+#' Solonetz, a Dark Brown Chernozem, a Gray Luvisol, a Eutric Brunisol and a
+#' Regosol. They are not records of real pedons.
 #'
 #' @param order One of \code{"cryosolic"}, \code{"organic"},
 #'   \code{"vertisolic"}, \code{"podzolic"}, \code{"gleysolic"},
@@ -119,7 +156,7 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
       designation = c("Ahy", "Bmy", "Cz"), top_cm = c(0, 8, 35), bottom_cm = c(8, 35, 80),
       munsell_hue_moist = c("10YR", "10YR", "2.5Y"), munsell_value_moist = c(3, 4, 4),
       munsell_chroma_moist = c(2, 3, 2), clay_pct = c(18, 20, 22), oc_pct = c(4, 1.2, 0.8),
-      permafrost_temp_C = c(NA, NA, -1.5)),
+      ph_cacl2 = c(5.0, 5.2, 5.6), permafrost_temp_C = c(NA, NA, -1.5)),
     organic = hz(
       designation = c("Of", "Om", "Oh", "C"), top_cm = c(0, 30, 100, 130),
       bottom_cm = c(30, 100, 130, 160), oc_pct = c(46, 42, 38, 0.6),

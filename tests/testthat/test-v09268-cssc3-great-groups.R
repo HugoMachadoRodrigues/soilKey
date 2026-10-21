@@ -1,11 +1,15 @@
 # v0.9.268: the 31 great groups of the Canadian System of Soil
 # Classification, 3rd ed. (Key to Soil Great Groups, Ch 3, pp. 35-36).
 
+# The great groups are tested without the subgroup level (keyed from
+# v0.9.269), so that the name is the great group.
+.rules_gg <- local({ r <- load_rules("cssc3"); r$subgroups <- NULL; r })
+
 .gg <- function(h, site = list()) {
   site <- utils::modifyList(list(id = "t", country = "CA"), site)
   p <- PedonRecord$new(site = site, horizons = ensure_horizon_schema(
     data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
-  classify_cssc3(p, on_missing = "silent")
+  classify_cssc3(p, rules = .rules_gg, on_missing = "silent")
 }
 
 test_that("the rules list 31 great groups under the ten orders", {
@@ -23,8 +27,8 @@ test_that("each example pedon keys to its great group", {
             brunisolic = "Eutric Brunisol", regosolic = "Regosol")
   for (o in names(want)) {
     r <- classify_cssc3(make_cssc3_example(o), on_missing = "silent")
-    expect_identical(r$name, want[[o]], info = o)
-    expect_identical(r$levels$level, c("orders", "great_groups"), info = o)
+    expect_identical(r$levels$name[r$levels$level == "great_groups"], want[[o]], info = o)
+    expect_identical(r$levels$level[1:2], c("orders", "great_groups"), info = o)
     expect_length(r$provisional_because, 0L)
   }
 })
@@ -54,12 +58,12 @@ test_that("Vertisolic great groups follow the surface colour and drainage", {
   skip_on_cran()
   p <- make_cssc3_example("vertisolic")
   p$horizons$munsell_value_dry[1] <- 3
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Humic Vertisol")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Humic Vertisol")
   # poorly drained: the Ah thickness decides
   p$site$drainage_class <- "poorly drained"
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Humic Vertisol")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Humic Vertisol")
   p$horizons$bottom_cm[1] <- 8; p$horizons$top_cm[2] <- 8
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Vertisol")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Vertisol")
 })
 
 test_that("Podzolic great groups follow the Bh and Bhf thickness", {
@@ -108,14 +112,14 @@ test_that("Chernozemic great groups follow the dry colour of the A", {
   skip_on_cran()
   p <- make_cssc3_example("chernozemic")
   p$horizons$munsell_value_dry[1] <- 5
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Brown Chernozem")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Brown Chernozem")
   p$horizons$munsell_value_dry[1] <- 3
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Black Chernozem")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Black Chernozem")
   # chroma 1.5 or less with an Ahe: Dark Gray
   p$horizons$munsell_value_dry[1] <- 4
   p$horizons$munsell_chroma_dry[1] <- 1
   p$horizons$designation[1] <- "Ahe"
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Dark Gray Chernozem")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Dark Gray Chernozem")
 })
 
 test_that("Luvisolic, Brunisolic and Regosolic great groups", {
@@ -222,7 +226,7 @@ test_that("Vertisolic drainage classes and cultivated surfaces", {
   skip_on_cran()
   p <- make_cssc3_example("vertisolic")
   p$site$drainage_class <- "rapidly drained"
-  r <- classify_cssc3(p, on_missing = "silent")
+  r <- classify_cssc3(p, rules = .rules_gg, on_missing = "silent")
   expect_identical(r$name, "Vertisol")
   expect_length(r$provisional_because, 0L)
   # a range across the two groups is undecided when the branches disagree
@@ -230,14 +234,14 @@ test_that("Vertisolic drainage classes and cultivated surfaces", {
   p$site$drainage_class <- "imperfectly to poorly drained"
   p$horizons$munsell_value_dry[1] <- 3
   p$horizons$bottom_cm[1] <- 8; p$horizons$top_cm[2] <- 8
-  expect_true(is.na(classify_cssc3(p, on_missing = "silent")$trace$great_groups$CA$passed))
+  expect_true(is.na(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$trace$great_groups$CA$passed))
   # poorly drained and cultivated: the Ch 13 rule for the Ap
   p <- make_cssc3_example("vertisolic"); p$site$drainage_class <- "poorly drained"
   p$horizons$designation[1] <- "Ap"; p$horizons$bottom_cm[1] <- 20; p$horizons$top_cm[2] <- 20
   p$horizons$munsell_value_moist[1] <- 2; p$horizons$oc_pct[1] <- 4
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Humic Vertisol")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Humic Vertisol")
   p$horizons$oc_pct[1] <- 1.5
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Vertisol")
+  expect_identical(classify_cssc3(p, rules = .rules_gg, on_missing = "silent")$name, "Vertisol")
 })
 
 test_that("Folisol folic material starts at the surface and lies on the rock", {

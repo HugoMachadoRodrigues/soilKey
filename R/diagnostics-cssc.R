@@ -44,16 +44,24 @@
 
 # Horizons of a pedon with their parsed designations and depths below the
 # mineral surface. A horizon is organic by its designation (O, L, F, H) or,
-# without one, by more than 17 % organic C; anything else is mineral.
+# without one, by more than 17 % organic C; anything else is mineral. In
+# another notation the masters that mean the same everywhere are read: W
+# (water) and R (rock) are never mineral horizons, and an O or H is organic
+# unless its organic C says otherwise.
 .cssc_horizons <- function(pedon) {
   h <- pedon$horizons
   pp <- .cssc_parsed(pedon)
   parsed <- pp$parsed
   mineral <- .cssc_is_mineral(parsed)
   organic_by_oc <- !is.na(h$oc_pct) & h$oc_pct > 17
-  mineral <- ifelse(is.na(mineral), !organic_by_oc, mineral)
-  first_mineral <- which(mineral & !is.na(h$top_cm))[1L]
-  ms <- if (is.na(first_mineral)) NA_real_ else h$top_cm[first_mineral]
+  other <- substr(.cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)),
+                                      pp$notation$ok), 1L, 1L)
+  mineral <- ifelse(!is.na(mineral), mineral,
+             ifelse(other %in% c("W", "R"), FALSE,
+             ifelse(other %in% c("O", "H") & is.na(h$oc_pct), FALSE, !organic_by_oc)))
+  # the shallowest mineral horizon, whatever the order of the rows
+  cand <- which(mineral & !is.na(h$top_cm))
+  ms <- if (length(cand) == 0L) NA_real_ else min(h$top_cm[cand])
   list(h = h, parsed = parsed, notation = pp$notation, mineral = mineral,
        ms = ms, top_ms = h$top_cm - ms, bottom_ms = h$bottom_cm - ms,
        thick = h$bottom_cm - h$top_cm,
@@ -371,48 +379,90 @@ vertisolic_cssc <- function(pedon, max_top_cm = 100) {
 #' Gleysolic gleying features (CSSC)
 #'
 #' Within \code{max_top_cm} of the mineral surface, a horizon other than an
-#' Ah, Ap or Ae (as Ch 7 specifies; an Ae over 20 cm thick reaching below
-#' 60 cm still counts; without designations, the uppermost mineral horizon is
-#' taken for the A) whose moist colours show reduction: chroma <= 1 in a grey
+#' Ah, Ap or Ae (as Ch 7 specifies; an Ae or E over 20 cm thick reaching below
+#' 60 cm still counts; an undesignated surface horizon is taken for the A;
+#' when the surface A is more than 50 cm thick, the mineral horizon right
+#' below it is tested instead) whose moist colours show reduction: chroma <= 1 in a grey
 #' matrix (value 4 or more: a dark, humus-stained horizon does not turn
 #' brighter when oxidised); or, in hues 10YR and 7.5YR, chroma <= 2 with
 #' prominent mottles; or, in hues yellower than 10YR, chroma <= 3 with
 #' prominent mottles; or a hue bluer than 10Y; or, in red materials (hue 5YR
 #' or redder), distinct or prominent mottles covering at least 2 %. A
 #' neutral hue (N) has chroma 0. Unknown colours or mottle contrast leave a
-#' horizon undecided. Otherwise a strong g (or gf) in such a horizon's
-#' designation, the 2016 key's test.
+#' horizon undecided by its colours; such a horizon is then read from its own
+#' designation (a strong g or gf, the 2016 key's test), and stays undecided
+#' when it has none.
 #' @noRd
 gleying_cssc <- function(pedon, max_top_cm = 50) {
-  x <- .cssc_horizons(pedon); h <- x$h
-  ahp <- .cssc_is(x$parsed, "A", "h", "any") | .cssc_is(x$parsed, "A", "p", "any")
-  ae  <- .cssc_is(x$parsed, "A", "e", "any")
-  deep_ae <- ae %in% TRUE & !is.na(x$thick) & x$thick > 20 &
-             !is.na(x$bottom_ms) & x$bottom_ms > 60
-  excluded <- (ahp %in% TRUE) | ((ae %in% TRUE) & !deep_ae)
-  if (!any(x$desig_known)) {
-    # no designations: the uppermost mineral horizon stands for the A
-    excluded <- x$mineral & !is.na(x$top_ms) & abs(x$top_ms) < 0.01
-  }
-  thick_a <- which(ahp %in% TRUE & !is.na(x$thick) & x$thick > 50)
-  in_depth <- !is.na(x$top_ms) & x$top_ms <= max_top_cm
-  if (length(thick_a) > 0L) in_depth <- seq_len(nrow(h)) == thick_a[1L] + 1L
-  cand <- in_depth & !excluded & x$mineral
-  gley <- .cssc_gley_colours(h)
-  by_props <- if (any(cand)) .any3(gley[cand]) else FALSE
-  g <- .cssc_has_suffix(x$parsed, "g", weak = "no")
-  by_desig <- if (any(cand & (g %in% TRUE))) TRUE
-              else if (!any(x$desig_known)) NA else FALSE
-  r <- .cssc_route(by_props, by_desig)
-  .cssc_result("gleying_cssc", r$passed,
-               which(cand & (if (r$route == "properties") gley %in% TRUE else g %in% TRUE)),
-               list(route = r$route, by_properties = by_props,
-                    by_designations = by_desig, notation = x$notation$why),
-               if (is.na(r$passed)) c("munsell_hue_moist", "munsell_chroma_moist",
-                                      "munsell_value_moist", "mottle_contrast",
-                                      "designation")
+  gr <- .cssc_gley_rows(pedon, max_top_cm)
+  x <- gr$x
+  cand <- gr$cand
+  passed <- if (any(cand)) .any3(gr$row[cand]) else FALSE
+  by_props <- if (any(cand)) .any3(gr$gley[cand]) else FALSE
+  route <- if (isTRUE(passed)) {
+             if (any(cand & gr$gley %in% TRUE)) "properties" else "designations"
+           } else if (identical(passed, FALSE)) {
+             if (all(!is.na(gr$gley[cand]))) "properties" else "designations"
+           } else "none"
+  .cssc_result("gleying_cssc", passed, which(cand & gr$row %in% TRUE),
+               list(route = route, by_properties = by_props,
+                    notation = x$notation$why),
+               if (is.na(passed)) c("munsell_hue_moist", "munsell_chroma_moist",
+                                    "munsell_value_moist", "mottle_contrast",
+                                    "designation")
                else character(0),
                "Ch 3 key E, p. 34; Ch 7, pp. 81-82")
+}
+
+# The horizons gleying_cssc() tests and, for each, whether it is gleyed: by
+# its colours when they decide, otherwise by its own designation (a strong g
+# or gf, when it is designated), otherwise NA. Deciding horizon by horizon
+# keeps a horizon with no data from being read as not gleyed, and a horizon
+# with unknown colours from overriding measured ones elsewhere.
+.cssc_gley_rows <- function(pedon, max_top_cm = 50) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  d <- trimws(as.character(h$designation %||% rep(NA_character_, nrow(h))))
+  other_full <- .cssc_other_masters(d, x$notation$ok)
+  other <- substr(other_full, 1L, 1L)
+  other[nchar(other_full) > 1L] <- NA_character_   # transitions (AB, BC) are neither
+  # buried horizons (b), in the Canadian notation or another one
+  buried <- (.cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE) |
+            (!is.na(other_full) & grepl("^[0-9]*[A-Z]+[a-z0-9]*b", d))
+  ahp <- (.cssc_is(x$parsed, "A", "h", "any") | .cssc_is(x$parsed, "A", "p", "any")) %in% TRUE
+  ae  <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) | (other %in% "E")
+  # an Ae (or an E) more than 20 cm thick reaching below 60 cm is tested
+  deep_ae <- ae & !is.na(x$thick) & x$thick > 20 & !is.na(x$bottom_ms) & x$bottom_ms > 60
+  excluded <- ahp | (ae & !deep_ae) | (other %in% "A")
+  # a surface horizon with no designation stands for the A
+  undesignated <- !x$desig_known & is.na(other_full)
+  surface_undes <- x$mineral & undesignated & !is.na(x$top_ms) & abs(x$top_ms) < 0.01
+  excluded <- excluded | surface_undes
+  # the surface A (adjacent Ah and Ap horizons from the mineral surface, an A
+  # in another notation, or the undesignated surface horizon taken for it; a
+  # buried A does not count): when it is more than 50 cm thick, the mineral
+  # horizon right below it is tested instead, whatever it is (Ch 7, p. 81),
+  # a gap in the record allowed
+  a_row <- ((ahp | other %in% "A") & !buried) | surface_undes
+  ord <- order(h$top_cm)
+  a_cm <- 0; a_base <- x$ms
+  if (!is.na(x$ms)) {
+    for (i in ord) {
+      if (is.na(h$top_cm[i]) || h$top_cm[i] < x$ms - 0.01 || !x$mineral[i]) next
+      if (!a_row[i] || !isTRUE(abs(h$top_cm[i] - a_base) < 0.01) || is.na(h$bottom_cm[i])) break
+      a_cm <- a_cm + x$thick[i]; a_base <- h$bottom_cm[i]
+    }
+  }
+  in_depth <- !is.na(x$top_ms) & x$top_ms <= max_top_cm
+  cand <- in_depth & !excluded & x$mineral
+  if (a_cm > 50) {
+    nxt <- which(x$mineral & !is.na(h$top_cm) & h$top_cm >= a_base - 0.01)
+    below <- if (length(nxt)) nxt[which.min(h$top_cm[nxt])] else NA_integer_
+    cand <- seq_len(nrow(h)) %in% below
+  }
+  gley <- .cssc_gley_colours(h)
+  g <- .cssc_has_suffix(x$parsed, "g", weak = "no")
+  row <- ifelse(!is.na(gley), gley, ifelse(x$desig_known, g %in% TRUE, NA))
+  list(x = x, cand = cand, gley = gley, g = g, row = row)
 }
 
 
@@ -492,7 +542,9 @@ organic_soil_cssc <- function(pedon) {
       i <- ord[k]
       ok <- isTRUE(organic[i]) || (accept && is.na(organic[i]))
       if (!ok || !isTRUE(h$top_cm[i] <= depth + 0.01)) break
-      depth <- max(depth, h$bottom_cm[i], na.rm = TRUE)
+      # an organic layer with no bottom depth may go on indefinitely
+      if (is.na(h$bottom_cm[i])) return(if (accept) Inf else depth)
+      depth <- max(depth, h$bottom_cm[i])
     }
     depth
   }
@@ -527,7 +579,9 @@ organic_soil_cssc <- function(pedon) {
   by_peat <- if (is.na(peat_k)) FALSE else {
     from <- h$top_cm[peat_row]
     lo <- peat_test(col_end(peat_k, FALSE) - from)
-    hi <- peat_test(col_end(peat_k, TRUE) - from)
+    # an open organic layer is read as possibly organic all the way down
+    hi_end <- col_end(peat_k, TRUE)
+    hi <- if (is.infinite(hi_end)) peat_test(1e6) else peat_test(hi_end - from)
     if (identical(lo, hi)) lo else NA
   }
   # option 1
@@ -565,13 +619,20 @@ organic_soil_cssc <- function(pedon) {
   # option 2: a mineral layer within 40 cm of the surface
   mineral_within_40 <- any(organic %in% FALSE & !is.na(h$top_cm) & h$top_cm - top0 < 40)
   in80 <- pmax(0, pmin(h$bottom_cm, top0 + 80) - pmax(h$top_cm, top0))
-  org80 <- sum(in80[organic %in% TRUE], na.rm = TRUE)
+  # a layer with no bottom depth may fill the rest of the upper 80 cm
+  open80 <- ifelse(is.na(in80) & !is.na(h$top_cm) & h$top_cm < top0 + 80,
+                   top0 + 80 - pmax(h$top_cm, top0), 0)
+  in80[is.na(in80)] <- 0
+  org80 <- sum(in80[organic %in% TRUE])
+  org80_hi <- org80 + sum(open80[!(organic %in% FALSE)]) + sum(in80[is.na(organic)])
   under_mineral <- if (identical(organic[s], FALSE) && !is.na(thick[s]) && thick[s] < 40) {
     tot <- 0
     for (i in ord[-1L]) if (isTRUE(organic[i])) tot <- tot + thick[i] else break
     tot >= 40
   } else TRUE
-  b2 <- .and3(mineral_within_40, org80 > 40, under_mineral)
+  b2 <- .and3(mineral_within_40,
+              if (org80 > 40) TRUE else if (org80_hi > 40) NA else FALSE,
+              under_mineral)
   unknown <- all(is.na(organic))
   passed <- if (isTRUE(b1) || isTRUE(b2)) TRUE
             else if (unknown || is.na(b1) || is.na(b2)) NA else FALSE
