@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.265</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.266</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,13 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.266" id="soilkey-09266-2026-10-20">soilKey 0.9.266 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09266-2026-10-20"></a></h2>
+<div class="section level3">
+<h3 id="one-file-of-metadata-for-the-horizon-attributes-0-9-266">One file of metadata for the horizon attributes<a class="anchor" aria-label="anchor" href="#one-file-of-metadata-for-the-horizon-attributes-0-9-266"></a></h3>
+<p>The section, unit and description of each of the 112 canonical horizon columns now live in <code>inst/schemas/horizon-attributes.yaml</code>, and the new <code><a href="../reference/horizon_attribute_spec.html">horizon_attribute_spec()</a></code> returns them as a table with each column’s type and accepted aliases. The file also has room for what the national systems will need: the keys that read an attribute, the values of a categorical one and the range of a numeric one. The attribute reference <code>inst/ATTRIBUTES.md</code> is generated from it (before, the generator parsed the comments of <code>R/utils.R</code> and kept its own table of units), and a test fails when the file and the reference fall out of step. The reference’s tables are unchanged. No classification changes.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.265" id="soilkey-09265-2026-10-20">soilKey 0.9.265 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09265-2026-10-20"></a></h2>
 <div class="section level3">

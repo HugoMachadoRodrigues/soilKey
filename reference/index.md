@@ -15,6 +15,8 @@ every key-trace lives on one of these objects.
   : Classe S4-like para atributos de Familia (5o nivel SiBCS)
 - [`horizon_column_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_column_spec.md)
   : Canonical horizon column specification
+- [`horizon_attribute_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_attribute_spec.md)
+  : Metadata of the horizon attributes
 - [`make_empty_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.md)
   : Build an empty horizons data.table with the canonical schema
 - [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)
