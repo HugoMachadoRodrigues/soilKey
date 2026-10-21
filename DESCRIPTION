@@ -1,7 +1,7 @@
 Package: soilKey
 Type: Package
 Title: Automated Soil Profile Classification per WRB 2022, 'SiBCS' 5 and USDA Soil Taxonomy 13
-Version: 0.9.272
+Version: 0.9.273
 Date: 2026-10-21
 Authors@R:
     person("Hugo", "Rodrigues",
@@ -67,6 +67,7 @@ Suggests:
     RSQLite,
     base64enc,
     maps,
+    parallel,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown

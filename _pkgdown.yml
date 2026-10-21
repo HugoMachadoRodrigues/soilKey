@@ -504,6 +504,17 @@ reference:
       - load_redape_pedons
       - benchmark_redape
 
+  - title: "National Pedon Database of Canada (v0.9.273)"
+    desc: >
+      The NPDB of Agriculture and Agri-Food Canada (Open Government
+      Licence - Canada), read into pedon records with the survey's
+      Canadian classification, as a benchmark for classify_cssc3().
+      The data are not shipped: download the CSV files from the Open
+      Government Portal.
+    contents:
+      - load_npdb_pedons
+      - benchmark_npdb
+
   - title: "WoSIS stratified WRB benchmark (v0.9.73)"
     desc: >
       ISRIC WoSIS bundled cache, 130 profiles balanced across 26
