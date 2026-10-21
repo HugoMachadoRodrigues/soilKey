@@ -33,7 +33,7 @@ test_that("the rules list all 231 subgroups, 101 of them under F, G and H", {
   # the Dark Gray Chernozems have no Eluviated subgroups
   expect_false(any(grepl("Eluviated", vapply(r$subgroups$GD, `[[`, "", "name"))))
   expect_length(yaml::read_yaml(system.file("rules", "cssc3", "readings.yaml",
-                                            package = "soilKey"))$readings, 57L)
+                                            package = "soilKey"))$readings, 58L)  # 58 since v0.9.274
 })
 
 test_that("the example pedons of the three orders reach a subgroup", {

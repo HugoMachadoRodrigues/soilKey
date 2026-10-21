@@ -190,9 +190,18 @@ gleysolic_cryosol_cssc <- function(pedon) {
   win <- win[order(h$top_cm[win])]
   a <- .cssc_surface_a(x)
   first_after <- function(a_rows) {
-    skip <- desig_a | (undes & seq_len(nrow(h)) %in% a_rows & !(gr$gley %in% TRUE))
-    c1 <- win[!skip[win]]
-    if (length(c1) == 0L) FALSE else gr$row[c1[1L]]
+    in_a <- undes & seq_len(nrow(h)) %in% a_rows
+    pick <- function(skip, val) {
+      c1 <- win[!skip[win]]
+      if (length(c1) == 0L) FALSE else val[c1[1L]]
+    }
+    # an undesignated horizon of undecided gley colours may or may not be
+    # part of the A: as not gleyed it is part of it, as gleyed it is the
+    # horizon tested; decided only when both readings agree
+    r1 <- pick(desig_a | (in_a & !(gr$gley %in% TRUE)), gr$row)
+    r2 <- pick(desig_a | (in_a & gr$gley %in% FALSE),
+               ifelse(in_a & is.na(gr$gley), TRUE, gr$row))
+    if (identical(r1, r2)) r1 else NA
   }
   res <- if (isTRUE(a$undecidable)) list(NA)
          else lapply(a$prefixes, function(pf) first_after(pf$rows))

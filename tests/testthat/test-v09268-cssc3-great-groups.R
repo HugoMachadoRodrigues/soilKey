@@ -206,9 +206,11 @@ test_that("the surface A is read by properties where it has no designation", {
   r <- .gg(unk, list(country = "US"))
   expect_true(is.na(r$trace$great_groups$EB$passed))
   expect_true("great_groups:EB" %in% r$provisional_because)
-  # without designations, an A split in two counts in full (7 + 7 cm)
+  # without designations, an A split in two counts in full (7 + 7 cm); the
+  # clay rules out a Bt (v0.9.274: gley colours must be in a Bt within 50 cm)
   split <- list(designation = NA_character_, top_cm = c(0, 7, 14, 50),
                 bottom_cm = c(7, 14, 50, 100), oc_pct = c(6, 4, 0.8, 0.4),
+                clay_pct = 20,
                 munsell_hue_moist = c("10YR", "10YR", "2.5Y", "5Y"),
                 munsell_value_moist = c(2, 2, 5, 5), munsell_chroma_moist = c(1, 1, 1, 1))
   expect_identical(.gg(split, list(country = "US"))$name, "Humic Gleysol")
@@ -306,6 +308,7 @@ test_that("the surface A in another notation and with undecided horizons", {
   # 0-20 (organic C below 2 %), so the Humic Gleysol is undecided
   wm <- list(designation = NA_character_, top_cm = c(0, 6, 12, 20, 50),
              bottom_cm = c(6, 12, 20, 50, 100), oc_pct = c(1.5, 4, 0.5, 0.4, 0.4),
+             clay_pct = 20,
              munsell_hue_moist = c("10YR", "10YR", "10YR", "5Y", "5Y"),
              munsell_value_moist = c(2, NA, 2.5, 5, 5), munsell_chroma_moist = c(1, 1, 1, 1, 1))
   expect_true(is.na(.gg(wm, list(country = "US"))$trace$great_groups$EB$passed))

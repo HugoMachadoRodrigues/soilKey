@@ -637,7 +637,7 @@ ferro_humic_podzol_cssc <- function(pedon) {
 luvic_gleysol_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon)
   bt <- bt_horizon_cssc(pedon)
-  gley <- .cssc_gley_colours(x$h)
+  gley <- .cssc_gley_by_colour(x)
   # gley colours on the Bt layers, or on layers that may be part of the Bt
   g_sure <- gley[bt$layers]; g_maybe <- gley[bt$evidence$maybe_rows %||% integer(0)]
   by_props <- if (identical(bt$passed, FALSE)) FALSE
