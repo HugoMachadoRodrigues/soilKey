@@ -139,8 +139,10 @@
 # FALSE otherwise. The runs are formed before the depth limit is applied, so
 # a run that begins within the limit counts with its parts below it.
 # $rows: the rows of the certain runs that pass; $maybe_rows: the rows of
-# the runs that may pass.
-.cssc_run_test <- function(x, ok, min_cm, max_top_cm = NULL) {
+# the runs that may pass. With `need`, a run passes only when it holds one
+# of those rows, and may pass when it holds one of them or of `maybe_need`.
+.cssc_run_test <- function(x, ok, min_cm, max_top_cm = NULL, need = NULL,
+                           maybe_need = integer(0)) {
   top_ok <- function(r) {
     if (is.null(max_top_cm)) return(TRUE)
     t <- x$top_ms[r[1L]]
@@ -149,12 +151,13 @@
   sure <- .cssc_run_groups(x, ok %in% TRUE)
   pass <- vapply(sure, function(r) {
     th <- .cssc_run_span(x, r); if (is.na(th)) th <- sum(x$thick[r], na.rm = TRUE)
-    th >= min_cm && isTRUE(top_ok(r))
+    th >= min_cm && isTRUE(top_ok(r)) && (is.null(need) || any(r %in% need))
   }, logical(1))
   maybe <- .cssc_run_groups(x, !(ok %in% FALSE))
   could <- vapply(maybe, function(r) {
     long <- anyNA(x$thick[r]) || .cssc_run_span(x, r) >= min_cm
-    long && !identical(top_ok(r), FALSE)
+    long && !identical(top_ok(r), FALSE) &&
+      (is.null(need) || any(r %in% c(need, maybe_need)))
   }, logical(1))
   list(passed = if (any(pass)) TRUE else if (any(could)) NA else FALSE,
        rows = sort(unlist(sure[pass])), maybe_rows = sort(unlist(maybe[could])))
@@ -308,7 +311,7 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
                list(route = route, by_properties = by_props,
                     by_designations = by_desig, notation = x$notation$why,
                     maybe_rows = setdiff(rt$maybe_rows, rt$rows),
-                    by_properties_rows = props),
+                    by_properties_rows = props, rows_status = row),
                miss, "Ch 2, p. 15 (suffix t); Ch 3 key, p. 34")
 }
 
@@ -519,47 +522,174 @@ vertisolic_cssc <- function(pedon, max_top_cm = 100) {
   cc <- clause(!is.na(pos) & pos > 20 & pos <= 30 & chroma <= 3, prominent)
   d <- !is.na(pos) & pos > 30
   rr <- clause(red, ifelse(is.na(redox), NA, redox >= 2) & dist_prom)
-  ifelse(!colour_known, NA,
-         ifelse(a %in% TRUE | b %in% TRUE | cc %in% TRUE | d | rr %in% TRUE, TRUE,
-                ifelse(is.na(a) | is.na(b) | is.na(cc) | is.na(rr), NA, FALSE)))
+  out <- ifelse(!colour_known, NA,
+                ifelse(a %in% TRUE | b %in% TRUE | cc %in% TRUE | d | rr %in% TRUE, TRUE,
+                       ifelse(is.na(a) | is.na(b) | is.na(cc) | is.na(rr), NA, FALSE)))
+  # rows gleyed by clause a alone (chroma 1 or less, no mottles needed), and
+  # among them those another clause may still pass (mottles unknown)
+  a_only <- out %in% TRUE & a %in% TRUE & !(b %in% TRUE) & !(cc %in% TRUE) &
+            !d & !(rr %in% TRUE)
+  attr(out, "a_only") <- a_only
+  attr(out, "others_open") <- a_only & (is.na(b) | is.na(cc) | is.na(rr))
+  out
+}
+
+# Gley colours of each horizon with the proviso of clause a: chromas of 1 or
+# less count only "in materials that develop higher chromas under oxidizing
+# conditions" (Ch 3 key E, p. 34), which the colour alone cannot show. A
+# horizon gleyed by clause a alone is therefore gleyed when its designation
+# says so (a strong g, in the Canadian notation or another one) and not when
+# it is designated without one: the describer has judged whether its low
+# chroma comes from reduction or from the material (a pale calcareous C, a
+# grey parent material). With no designation it is gleyed, unless it holds
+# carbonates (2 % CaCO3 or more, whose pale colours need not come from
+# reduction), and then undecided. A horizon designated without g whose
+# mottles are unknown stays undecided: prominent mottles would pass clause b
+# or c whatever its designation.
+.cssc_gley_by_colour <- function(x) {
+  h <- x$h
+  col <- .cssc_gley_colours(h)
+  a_only <- attr(col, "a_only")
+  g_can <- .cssc_has_suffix(x$parsed, "g", weak = "no")
+  osfx <- .cssc_other_suffix(x)
+  g_oth <- ifelse(!is.na(osfx), grepl("g", osfx), NA)
+  g <- ifelse(!is.na(g_can), g_can, g_oth)
+  calcareous <- !is.na(h$caco3_pct) & h$caco3_pct >= 2
+  open <- attr(col, "others_open")
+  out <- as.logical(col)
+  out[a_only] <- ifelse(g[a_only] %in% TRUE, TRUE,
+                 ifelse(g[a_only] %in% FALSE, ifelse(open[a_only], NA, FALSE),
+                 ifelse(calcareous[a_only], NA, TRUE)))
+  out
 }
 
 #' Gleysolic gleying features (CSSC)
 #'
-#' Within \code{max_top_cm} of the mineral surface, a horizon other than an
-#' Ah, Ap or Ae (as Ch 7 specifies; an Ae or E over 20 cm thick reaching below
-#' 60 cm still counts; an undesignated surface horizon is taken for the A;
-#' when the surface A is more than 50 cm thick, the mineral horizon right
-#' below it is tested instead) whose moist colours show reduction: chroma <= 1 in a grey
-#' matrix (value 4 or more: a dark, humus-stained horizon does not turn
-#' brighter when oxidised); or, in hues 10YR and 7.5YR, chroma <= 2 with
+#' A horizon whose upper boundary is within \code{max_top_cm} of the mineral
+#' surface, other than an Ah, Ap or Ae (as Ch 7 specifies; an
+#' Ae or E over 20 cm thick reaching below 60 cm still counts; an
+#' undesignated surface horizon is taken for the A; when the surface A is
+#' more than 50 cm thick, the mineral horizon right below it is tested
+#' instead), whose moist colours show reduction: chroma <= 1 in a grey matrix
+#' (value 4 or more) of a material that develops higher chromas when oxidised
+#' (\code{.cssc_gley_by_colour}); or, in hues 10YR and 7.5YR, chroma <= 2 with
 #' prominent mottles; or, in hues yellower than 10YR, chroma <= 3 with
 #' prominent mottles; or a hue bluer than 10Y; or, in red materials (hue 5YR
-#' or redder), distinct or prominent mottles covering at least 2 %. A
+#' or redder), distinct or prominent mottles covering at least 2 \%. A
 #' neutral hue (N) has chroma 0. Unknown colours or mottle contrast leave a
 #' horizon undecided by its colours; such a horizon is then read from its own
-#' designation (a strong g or gf, the 2016 key's test), and stays undecided
-#' when it has none.
+#' designation (a strong g or gf), and stays undecided when it has none.
+#'
+#' In a soil with a Bt horizon within 50 cm (a Luvisolic soil), the gley
+#' colours must be in the Bt: Ch 7 (p. 83) classifies such a soil as a Luvic
+#' Gleysol when they occur in the Btg within 50 cm, and as a Gleyed subgroup of
+#' the Luvisolic order when they occur only in the Aeg or below 50 cm. A
+#' gleyed run of horizons that holds part of the Bt is enough. A soil with a
+#' solonetzic B (a Bn or Bnt) is left out of this rule: Ch 7 (p. 83) places
+#' it in the Gleysolic order by its gleying. When the Bt is undecided, each
+#' way its undecided horizons may go is tried (\code{.cssc_gley_bt_open}).
 #' @noRd
 gleying_cssc <- function(pedon, max_top_cm = 50) {
   gr <- .cssc_gley_rows(pedon, max_top_cm)
   x <- gr$x
-  cand <- gr$cand
-  passed <- if (any(cand)) .any3(gr$row[cand]) else FALSE
-  by_props <- if (any(cand)) .any3(gr$gley[cand]) else FALSE
+  n <- nrow(x$h)
+  if (gr$thick_a) {
+    # a surface A over 50 cm thick: the run must begin with the horizon below it
+    b <- gr$below
+    after <- if (is.na(b)) rep(FALSE, n)
+             else seq_len(n) == b | (gr$eligible & !is.na(x$h$top_cm) & x$h$top_cm > x$h$top_cm[b])
+    lim <- if (is.na(b)) max_top_cm else x$top_ms[b]
+  } else {
+    after <- gr$eligible
+    lim <- max_top_cm
+  }
+  ok <- ifelse(after, gr$row, FALSE)
+  # runs of gleyed horizons whose top is within the limit; no minimum
+  # thickness (Ch 7's 10 cm is not in the key, and the depth recorded for the
+  # deepest horizon is often only the sampling depth)
+  ok_props <- ifelse(after, gr$gley, FALSE)
+  none <- list(passed = NA, rows = integer(0))
+  # the Luvisolic note of Ch 7 (p. 83): with a Bt within 50 cm, the gley
+  # colours must be in it; a soil with a solonetzic B (Bn, Bnt) is Gleysolic
+  # by its gleying wherever it is (the Solonetzic note, p. 83)
+  bt50 <- sz <- NULL
+  if (!identical(.cssc_run_test(x, ok, 0, lim)$passed, FALSE) ||
+      !identical(.cssc_run_test(x, ok_props, 0, lim)$passed, FALSE)) {
+    bt50 <- bt_horizon_cssc(pedon, max_top_cm = 50)
+    if (!identical(bt50$passed, FALSE)) sz <- solonetzic_b_cssc(pedon)
+  }
+  decide <- function(okv) {
+    general <- .cssc_run_test(x, okv, 0, lim)
+    if (identical(general$passed, FALSE) || is.null(bt50) || identical(bt50$passed, FALSE))
+      return(general)
+    in_bt <- if (isTRUE(bt50$passed)) {
+               .cssc_run_test(x, okv, 0, lim, need = bt50$layers,
+                              maybe_need = bt50$evidence$maybe_rows %||% integer(0))
+             } else .cssc_gley_bt_open(x, okv, lim, general, bt50)
+    if (is.null(sz) || isTRUE(sz$passed)) general
+    else if (identical(sz$passed, FALSE)) in_bt
+    else if (identical(in_bt$passed, general$passed)) general
+    else none
+  }
+  res <- decide(ok)
+  passed <- res$passed
+  gl <- if (isTRUE(passed)) res$rows else which(ok %in% TRUE)
+  by_props <- decide(ok_props)$passed
+  tested <- after & !is.na(x$top_ms) & x$top_ms <= lim
   route <- if (isTRUE(passed)) {
-             if (any(cand & gr$gley %in% TRUE)) "properties" else "designations"
+             if (any(gr$gley[gl] %in% TRUE)) "properties" else "designations"
            } else if (identical(passed, FALSE)) {
-             if (all(!is.na(gr$gley[cand]))) "properties" else "designations"
+             if (all(!is.na(gr$gley[tested]))) "properties" else "designations"
            } else "none"
-  .cssc_result("gleying_cssc", passed, which(cand & gr$row %in% TRUE),
+  .cssc_result("gleying_cssc", passed, gl,
                list(route = route, by_properties = by_props,
+                    bt_within_50 = if (is.null(bt50)) NA else bt50$passed,
+                    solonetzic_b = if (is.null(sz)) NA else sz$passed,
                     notation = x$notation$why),
                if (is.na(passed)) c("munsell_hue_moist", "munsell_chroma_moist",
                                     "munsell_value_moist", "mottle_contrast",
-                                    "designation")
+                                    "designation", "clay_pct")
                else character(0),
-               "Ch 3 key E, p. 34; Ch 7, pp. 81-82")
+               "Ch 3 key E, p. 34; Ch 7, pp. 81-83")
+}
+
+# The Bt rule of gleying_cssc() when the Bt itself is undecided: each way
+# its undecided horizons may go is tried (up to 2^max_open of them) and the
+# gleying is decided only when every way agrees; with more undecided
+# horizons, it passes only if no run that may be a Bt (5 cm or more from
+# within 50 cm) lies outside the gleyed runs that pass, and is undecided
+# otherwise.
+.cssc_gley_bt_open <- function(x, ok, lim, general, bt50, max_open = 10L) {
+  status <- bt50$evidence$rows_status
+  none <- list(passed = NA, rows = integer(0))
+  if (is.null(status)) return(none)
+  open <- which(is.na(status))
+  if (length(open) > max_open) {
+    outside <- ifelse(seq_along(status) %in% general$rows, FALSE, status)
+    if (isTRUE(general$passed) && identical(.cssc_run_test(x, outside, 5, 50)$passed, FALSE))
+      return(general)
+    return(none)
+  }
+  out <- NULL
+  for (k in seq_len(2^length(open)) - 1L) {
+    s <- status
+    s[open] <- bitwAnd(k, as.integer(2^(seq_along(open) - 1L))) > 0L
+    bt <- .cssc_run_test(x, s, 5, 50)
+    # with the Bt's own thickness or top unknown, there may be no Bt, or any
+    # run that may be one may be it
+    rs <- if (identical(bt$passed, FALSE)) list(general)
+          else if (isTRUE(bt$passed)) list(.cssc_run_test(x, ok, 0, lim, need = bt$rows))
+          else c(list(general),
+                 lapply(Filter(function(r) any(r %in% bt$maybe_rows),
+                               .cssc_run_groups(x, s %in% TRUE)),
+                        function(r) .cssc_run_test(x, ok, 0, lim, need = r)))
+    for (r in rs) {
+      if (is.na(r$passed)) return(none)
+      if (is.null(out)) out <- r
+      else if (!identical(out$passed, r$passed)) return(none)
+    }
+  }
+  out
 }
 
 # The horizons gleying_cssc() tests and, for each, whether it is gleyed: by
@@ -601,17 +731,21 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
     }
   }
   in_depth <- !is.na(x$top_ms) & x$top_ms <= max_top_cm
-  cand <- in_depth & !excluded & x$mineral
+  eligible <- !excluded & x$mineral
+  cand <- in_depth & eligible
+  below <- NA_integer_
   if (a_cm > 50) {
     nxt <- which(x$mineral & !is.na(h$top_cm) & h$top_cm >= a_base - 0.01)
     below <- if (length(nxt)) nxt[which.min(h$top_cm[nxt])] else NA_integer_
     cand <- seq_len(nrow(h)) %in% below
   }
-  gley <- .cssc_gley_colours(h)
+  gley <- .cssc_gley_by_colour(x)
   g <- .cssc_has_suffix(x$parsed, "g", weak = "no")
   row <- ifelse(!is.na(gley), gley, ifelse(x$desig_known, g %in% TRUE, NA))
-  list(x = x, cand = cand, gley = gley, g = g, row = row)
+  list(x = x, cand = cand, eligible = eligible, thick_a = a_cm > 50, below = below,
+       gley = gley, g = g, row = row)
 }
+
 
 
 # ---- Organic order (Ch 3 key B, pp. 33-34) ----------------------------------
@@ -870,6 +1004,66 @@ cryosolic_cssc <- function(pedon) {
        temperature = temp_ok, moisture = moist_ok)
 }
 
+# Exchange data of the chernozemic A as read by criterion 6: negative
+# amounts and pH values outside 0-14 are no data, and the KCl-extractable Al
+# stands in for the exchangeable Al.
+.cssc_exchange <- function(h, rows) {
+  nonneg <- function(v) ifelse(!is.na(v) & v >= 0, v, NA_real_)
+  ph <- function(v) ifelse(!is.na(v) & v > 0 & v <= 14, v, NA_real_)
+  col <- function(nm) h[[nm]][rows] %||% rep(NA_real_, length(rows))
+  al <- nonneg(col("al_cmol"))
+  list(ca = nonneg(col("ca_cmol")), mg = nonneg(col("mg_cmol")), k = nonneg(col("k_cmol")),
+       na = nonneg(col("na_cmol")), al = ifelse(is.na(al), nonneg(col("al_kcl_cmol")), al),
+       ecec = nonneg(col("ecec_cmol")), cec = nonneg(col("cec_cmol")),
+       bs = nonneg(col("bs_pct")), cacl2 = ph(col("ph_cacl2")), h2o = ph(col("ph_h2o")))
+}
+
+# Base saturation by a neutral (unbuffered) salt, the measure criterion 6 of
+# the chernozemic A names (Ch 2, p. 16), as a range per horizon: $lo and $hi
+# bound the value; a horizon with nothing that bounds it is NA and, as for
+# the other properties of the A, left out of the mean.
+#   * The sum of Ca, Mg, K and Na over the effective CEC (ecec_cmol) is the
+#     value; with a base missing it is a lower bound.
+#   * The sum of the four bases over that sum plus the exchangeable Al
+#     (al_cmol, or al_kcl_cmol) is an upper bound (the exchangeable H is
+#     left out); with nothing else, the lower bound is 0.
+#   * The base saturation at pH 7 (bs_pct, or the bases over cec_cmol, a
+#     CEC buffered at pH 7, whichever is higher) is a lower bound: the CEC
+#     at the soil's own pH, below 7, is smaller.
+#   * A pH (CaCl2) of 5.5 or more, or without it a pH in water of 6.0 or
+#     more, places it above 80 %: the book reads a high base saturation from
+#     that pH (Ch 4), and exchangeable Al, the acidity an unbuffered salt
+#     extracts, is negligible there.
+# Bounds that contradict each other, like the bad values .cssc_exchange()
+# drops, are read as no data.
+.cssc_bs_neutral_salt <- function(h, rows) {
+  if (length(rows) == 0L) return(list(lo = numeric(0), hi = numeric(0)))
+  e <- .cssc_exchange(h, rows)
+  b <- cbind(e$ca, e$mg, e$k, e$na)
+  n_known <- rowSums(!is.na(b))
+  sb <- ifelse(n_known > 0L, rowSums(b, na.rm = TRUE), NA_real_)
+  all_b <- n_known == 4L
+  ecec <- e$ecec; cec <- e$cec; al <- e$al
+  e_ecec <- ifelse(!is.na(sb) & !is.na(ecec) & ecec > 0, pmin(100 * sb / ecec, 100), NA_real_)
+  exact <- all_b & !is.na(e_ecec)
+  e_al <- ifelse(all_b & !is.na(al) & sb + al > 0, 100 * sb / (sb + al), NA_real_)
+  bs_cec <- ifelse(!is.na(sb) & !is.na(cec) & cec > 0, 100 * sb / cec, NA_real_)
+  bs7 <- suppressWarnings(pmax(e$bs, bs_cec, na.rm = TRUE))
+  bs7 <- pmin(bs7, 100)
+  cacl2 <- e$cacl2; w <- e$h2o
+  ph_high <- ifelse(!is.na(cacl2), cacl2 >= 5.5, !is.na(w) & w >= 6.0)
+  lo_cand <- cbind(e_ecec, bs7, ifelse(ph_high, 80 + 1e-6, NA_real_))
+  lo <- suppressWarnings(apply(lo_cand, 1L, function(v) if (all(is.na(v))) NA_real_ else max(v, na.rm = TRUE)))
+  hi <- ifelse(!is.na(e_al), e_al, 100)
+  lo <- ifelse(is.na(lo) & !is.na(e_al), 0, lo)
+  lo <- ifelse(exact, e_ecec, lo); hi <- ifelse(exact, e_ecec, hi)
+  # contradictory data are read as no data
+  conflict <- !is.na(lo) & lo > hi
+  lo[conflict] <- NA_real_
+  hi[is.na(lo)] <- NA_real_
+  list(lo = unname(lo), hi = unname(hi))
+}
+
 #' Chernozemic A horizon (CSSC)
 #'
 #' The Ah, Ahe or Ap at the mineral surface (or the uppermost mineral horizon
@@ -877,7 +1071,10 @@ cryosolic_cssc <- function(pedon) {
 #' at least 10 cm thick; dry value < 5.5, moist value < 3.5 and moist chroma <
 #' 3.5; at least one value unit darker than the parent material (the IC: the
 #' lowest C of the first material, when its colour is recorded); organic C
-#' 1-17 % and C:N < 17; base saturation > 80 % with Ca the dominant cation;
+#' 1-17 % and C:N < 17; base saturation (neutral salt) > 80 % with Ca the
+#' dominant cation (\code{.cssc_bs_neutral_salt}: measured on the effective
+#' CEC, or bounded from below by the base saturation at pH 7 or by the pH and
+#' from above by the bases over the bases plus the exchangeable Al);
 #' not massive and hard nor single-grained when that is recorded; and a soil
 #' climate of at least 0 C and drier than humid.
 #' @noRd
@@ -917,6 +1114,8 @@ chernozemic_a_cssc <- function(pedon) {
   rr <- tolower(as.character(h$rupture_resistance[rows]))
   # each threshold is read on its own (a mean moves monotonically between the
   # two weights), then the criteria join them three-valued
+  bsn <- .cssc_bs_neutral_salt(h, rows)
+  ex <- .cssc_exchange(h, rows)
   atoms <- function(w) {
     wmean <- function(v) { ok <- !is.na(v) & w > 0
       if (!any(ok)) NA_real_ else sum(v[ok] * w[ok]) / sum(w[ok]) }
@@ -924,15 +1123,15 @@ chernozemic_a_cssc <- function(pedon) {
     val_dry <- wmean(h$munsell_value_dry[rows]); val_moist <- wmean(h$munsell_value_moist[rows])
     chr_moist <- wmean(h$munsell_chroma_moist[rows])
     oc <- wmean(h$oc_pct[rows]); n <- wmean(h$n_total_pct[rows])
-    bs <- wmean(h$bs_pct[rows]); ca <- wmean(h$ca_cmol[rows])
-    others <- c(mg = wmean(h$mg_cmol[rows]), k = wmean(h$k_cmol[rows]),
-                na = wmean(h$na_cmol[rows]), al = wmean(h$al_cmol[rows]))
+    bs_lo <- wmean(bsn$lo); bs_hi <- wmean(bsn$hi); ca <- wmean(ex$ca)
+    others <- c(mg = wmean(ex$mg), k = wmean(ex$k), na = wmean(ex$na), al = wmean(ex$al))
     pv <- if (is.na(ic)) NA_real_ else h$munsell_value_moist[ic]
     c(list(vd = lt(val_dry, 5.5), vm = lt(val_moist, 3.5), cm = lt(chr_moist, 3.5),
            darker = if (is.na(pv) || is.na(val_moist)) TRUE else val_moist <= pv - 1,
            oc_lo = if (is.na(oc)) NA else oc >= 1, oc_hi = if (is.na(oc)) NA else oc <= 17,
            cn = if (is.na(oc) || is.na(n) || n <= 0) NA else oc / n < 17,
-           bs = if (is.na(bs)) NA else bs > 80),
+           bs = if (is.na(bs_lo)) NA else if (bs_lo > 80) TRUE
+                else if (bs_hi <= 80) FALSE else NA),
       # Ca the dominant cation: each other cation recorded is not above it
       lapply(others, function(o) if (is.na(ca) || is.na(o)) TRUE else ca >= o))
   }
@@ -955,7 +1154,7 @@ chernozemic_a_cssc <- function(pedon) {
   vals <- unlist(crit)
   passed <- if (any(vals %in% FALSE)) FALSE else if (all(vals %in% TRUE)) TRUE else NA
   miss <- c(colour = "munsell_value_dry", organic_c = "oc_pct", c_to_n = "n_total_pct",
-            base_saturation = "bs_pct",
+            base_saturation = "ecec_cmol / bs_pct / ph_cacl2",
             climate = "site$mean_annual_soil_temp_C / site$soil_moisture_subclass")
   .cssc_result("chernozemic_a_cssc", passed, rows,
                c(list(route = "properties", notation = x$notation$why,

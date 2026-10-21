@@ -89,7 +89,11 @@ test_that("a dark Ah is not read as gleyed", {
   p <- make_cssc3_example("brunisolic")
   p$horizons$munsell_chroma_moist[1] <- 1
   expect_false(soilKey:::gleying_cssc(p)$passed)
+  # chroma 1 in a grey matrix is gley colour where the horizon is a Bg; a
+  # Bm (designated without g) is a material grey of its own (v0.9.274)
   p$horizons$munsell_chroma_moist[2] <- 1
+  expect_false(soilKey:::gleying_cssc(p)$passed)
+  p$horizons$designation[2] <- "Bg"
   expect_true(soilKey:::gleying_cssc(p)$passed)
 })
 

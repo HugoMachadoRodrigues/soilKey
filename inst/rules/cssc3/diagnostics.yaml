@@ -7,7 +7,7 @@ diagnostics:
   - {function: vertisolic_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, pp. 15-17; Ch 13, p. 131"}
   - {function: podzolic_b_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, pp. 13-14 and 17; Ch 10, p. 108"}
   - {function: bt_horizon_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, p. 15 (suffix t); Ch 3 key, p. 34"}
-  - {function: gleying_cssc,         file: R/diagnostics-cssc.R, reference: "Ch 3 key E, p. 34; Ch 7, pp. 81-82"}
+  - {function: gleying_cssc,         file: R/diagnostics-cssc.R, reference: "Ch 3 key E, p. 34; Ch 7, pp. 81-83"}
   - {function: solonetzic_b_cssc,    file: R/diagnostics-cssc.R, reference: "Ch 2, p. 17; Ch 12, p. 122"}
   - {function: chernozemic_a_cssc,   file: R/diagnostics-cssc.R, reference: "Ch 2, p. 16; Ch 5, pp. 61-62"}
   - {function: chernozemic_ae_cssc,  file: R/diagnostics-cssc.R, reference: "Ch 3 key G, p. 34"}
