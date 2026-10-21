@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.263</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.264</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,16 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.264" id="soilkey-09264-2026-10-20">soilKey 0.9.264 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09264-2026-10-20"></a></h2>
+<div class="section level3">
+<h3 id="the-rule-engine-reads-nested-blocks-and-none_of-0-9-264">The rule engine reads nested blocks and <code>none_of</code>
+<a class="anchor" aria-label="anchor" href="#the-rule-engine-reads-nested-blocks-and-none_of-0-9-264"></a></h3>
+<p>National keys say things such as “other soils that have A, and B or C, and not D”. The rule engine now reads that in YAML: an entry of an <code>all_of</code>, <code>any_of</code> or <code>none_of</code> list may itself be one of these blocks, and <code>none_of</code> (no test may pass) joins <code>all_of</code> and <code>any_of</code>, with the same three-valued logic (an undecided test leaves the block undecided unless the outcome is already settled). A nested block appears in the key trace as a test of its own, with its sub-results as evidence.</p>
+<p>The lower levels of a key are now read from the folders that the system’s registry entry names (<code>great_groups</code> from <code>great-groups/</code>), not from a fixed list of six folder names. The rule validator also reports blocks that name more than one combinator (the engine reads only one of them), combinators written as a mapping instead of a list, class codes and names that are not quoted strings (YAML reads an unquoted <code>N</code> as a logical and <code>11</code> as a number), codes listed twice in one list or one level, and, for systems added after the registry, predicates without the system’s suffix, so that a Canadian Chernozemic gate can never be WRB’s <code><a href="../reference/chernozem.html">chernozem()</a></code>. The helpers that every key shares (evidence grade, ambiguities, missing attributes) move from <code>R/key-wrb2022.R</code> to <code>R/key-common.R</code>, unchanged.</p>
+<p>No result changes: the 44 canonical fixtures give identical names, key traces, evidence grades and warnings, and no rule of the three systems nests, mixes combinators or uses <code>none_of</code>.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.263" id="soilkey-09263-2026-10-20">soilKey 0.9.263 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09263-2026-10-20"></a></h2>
 <div class="section level3">
