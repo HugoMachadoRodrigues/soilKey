@@ -31,6 +31,9 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       # Network/benchmark tests are opt-IN via SOILKEY_NETWORK_TESTS (left
       # unset here), so they skip on CI by default -- no skip flag needed.
+      # chromote is not installed on CI (see below), so a missing suggested
+      # package must not fail the check.
+      _R_CHECK_FORCE_SUGGESTS_: false
 
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +77,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          # chromote (Suggests, only for download_bdsolos()) pulls chromium
+          # from a Launchpad PPA on Ubuntu; it is left out of CI so an outage
+          # there cannot fail the checks (its test skips without it).
+          extra-packages: any::rcmdcheck, chromote=?ignore
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2

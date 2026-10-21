@@ -38,7 +38,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          # chromote (Suggests, only for download_bdsolos()) pulls chromium
+          # from a Launchpad PPA on Ubuntu; it is left out of CI so an outage
+          # there cannot fail the checks (its test skips without it).
+          extra-packages: any::pkgdown, local::., chromote=?ignore
           needs: website
 
       - name: Check pkgdown reference is complete
