@@ -456,3 +456,23 @@ attributes:
     section: "The colours a horizon has beside its matrix colour"
     unit: "-"
     description: "Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by \";\" (\"10YR 6/2; 5YR 5/8\"); SiBCS Plintossolos (Cap 3, p. 104)"
+  - name: fe_pyro_pct
+    section: "Canadian system (CSSC 3rd ed.)"
+    unit: "% Fe"
+    description: "Sodium-pyrophosphate-extractable Fe (organically complexed iron); CSSC podzolic B, Bf, Bhf and Bh horizons."
+    systems: [cssc3]
+    min: 0
+    max: 100
+  - name: al_pyro_pct
+    section: "Canadian system (CSSC 3rd ed.)"
+    unit: "% Al"
+    description: "Sodium-pyrophosphate-extractable Al (organically complexed aluminium); CSSC podzolic B, Bf and Bhf horizons."
+    systems: [cssc3]
+    min: 0
+    max: 100
+  - name: mottle_contrast
+    section: "Canadian system (CSSC 3rd ed.)"
+    unit: "-"
+    description: "Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying."
+    systems: [cssc3]
+    allowed: [faint, distinct, prominent]

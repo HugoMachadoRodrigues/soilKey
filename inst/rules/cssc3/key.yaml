@@ -1,0 +1,87 @@
+version: "The Canadian System of Soil Classification, 3rd edition (1998)"
+implementation_status: "soilKey v0.9.267 -- 10/10 orders (Ch 3 Key to Soil Orders, pp. 33-34); great groups and subgroups to follow"
+source: |
+  Soil Classification Working Group (1998). The Canadian System of Soil
+  Classification. 3rd ed. Agriculture and Agri-Food Canada Publication 1646.
+  NRC Research Press, Ottawa. Key to Soil Orders, Chapter 3, pp. 33-34.
+
+# The Key to Soil Orders in its own order (letters A to J). Each order is
+# "other soils that have ...", so a gate tests only its own criterion: the
+# key's order supplies the exclusions. The provisional Anthroposolic order of
+# the 2016 field key is not part of the 3rd edition and is not keyed here.
+# Criteria are summarised from the book; see R/diagnostics-cssc.R and
+# readings.yaml for the choices where the text is silent.
+
+orders:
+
+  - code: "A"
+    name: Cryosolic
+    tests:
+      all_of:
+        - cryosolic_cssc: {}
+    notes: "Permafrost within 1 m of the surface, or within 2 m if strongly cryoturbated (p. 33)."
+
+  - code: "B"
+    name: Organic
+    tests:
+      all_of:
+        - organic_soil_cssc: {}
+    notes: "Organic horizons (> 17 % organic C) to the depths of item B (pp. 33-34)."
+
+  - code: "C"
+    name: Vertisolic
+    tests:
+      all_of:
+        - vertisolic_cssc: {max_top_cm: 100}
+    notes: "A vertic horizon and a slickenside horizon whose top lies within 1 m of the mineral surface (p. 34)."
+
+  - code: "D"
+    name: Podzolic
+    tests:
+      all_of:
+        - podzolic_b_cssc: {}
+        - none_of:
+            - bt_horizon_cssc: {max_top_cm: 50}
+    notes: "A podzolic B horizon and no Bt horizon within 50 cm of the mineral surface (p. 34)."
+
+  - code: "E"
+    name: Gleysolic
+    tests:
+      all_of:
+        - gleying_cssc: {max_top_cm: 50}
+    notes: "Saturated and reducing, shown by the gley colours of item E within 50 cm of the mineral surface (p. 34)."
+
+  - code: "F"
+    name: Solonetzic
+    tests:
+      all_of:
+        - solonetzic_b_cssc: {}
+    notes: "A solonetzic B horizon (p. 34)."
+
+  - code: "G"
+    name: Chernozemic
+    tests:
+      all_of:
+        - chernozemic_a_cssc: {}
+        - chernozemic_ae_cssc: {}
+    notes: "A chernozemic A horizon and one of the Ae conditions of item G (p. 34)."
+
+  - code: "H"
+    name: Luvisolic
+    tests:
+      all_of:
+        - bt_horizon_cssc: {}
+    notes: "A Bt horizon (p. 34)."
+
+  - code: "I"
+    name: Brunisolic
+    tests:
+      all_of:
+        - brunisolic_b_cssc: {}
+    notes: "Bm, Btj or Bfj horizons at least 5 cm thick, or a Bf thinner than 10 cm (p. 34)."
+
+  - code: "J"
+    name: Regosolic
+    tests:
+      default: true
+    notes: "Other soils (p. 34)."

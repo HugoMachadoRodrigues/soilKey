@@ -1,3 +1,43 @@
+# soilKey 0.9.267 (2026-10-20)
+
+## The Canadian System of Soil Classification, to the order (experimental)
+
+The first national system on the registry: `classify_cssc3()` keys a profile
+through the Key to Soil Orders of the Canadian System of Soil Classification,
+3rd edition (Soil Classification Working Group 1998, Ch 3, pp. 33-34), from
+Cryosolic to Regosolic. Great groups and subgroups follow in later releases,
+so the name is the order. The system is experimental and opt-in:
+`classify_all()` and the Pro app keep running WRB, SiBCS and USDA by default;
+`classify_all(systems = c("wrb2022", "sibcs5", "usda", "cssc3"))` runs it
+beside them, and `classify_cssc3()` alone.
+
+The Canadian keys are written largely in terms of horizon designations, which
+Chapter 2 defines partly by measurable properties. Each diagnostic reads the
+measured properties first (podzolic B chemistry, the Bt clay increase with
+clay films, the solonetzic B Ca/Na ratio, the chernozemic A, the gley
+colours) and the designations second, in the Canadian notation, where f is an
+illuvial Fe-Al-organic accumulation, m a slightly altered B, v a vertic
+horizon, ss slickensides, y cryoturbation, z permafrost and j a weak
+expression of the suffix before it. Measured properties decide whenever they
+can, pass or fail; designations decide only what they leave open, and only
+when the profile's notation is Canadian (declared in
+`site$designation_system`, a Canadian site, or no sign of the FAO/USDA
+notation), because the same letters mean other things there. The trace
+records which route decided, and a warning says when the order rests on
+designations alone. The
+chernozemic A includes a soil-climate criterion (mean annual soil temperature
+at least 0 C, moisture subclass drier than humid), read from the new site
+fields `mean_annual_soil_temp_C` and `soil_moisture_subclass` or approximated
+from the USDA regimes; without it, the orders keyed after Chernozemic are
+reported as provisional. The choices where the book is silent are listed in
+`inst/rules/cssc3/readings.yaml`.
+
+Three horizon attributes are added for the Canadian key and read by no other:
+`fe_pyro_pct` and `al_pyro_pct` (sodium-pyrophosphate-extractable Fe and Al)
+and `mottle_contrast` (faint, distinct, prominent). `make_cssc3_example()`
+builds one example profile per order. WRB, SiBCS and USDA results do not
+change: the 44 canonical fixtures are identical.
+
 # soilKey 0.9.266 (2026-10-20)
 
 ## One file of metadata for the horizon attributes
