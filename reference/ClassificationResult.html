@@ -9,7 +9,7 @@ ClassificationResult: structured outcome of running a key"><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.264</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.265</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,6 +128,30 @@ check (consistent / inconsistent / not run).</p></dd>
 <dd><p>Character vector. Free-form warnings.</p></dd>
 
 
+<dt><code>system_id</code></dt>
+<dd><p>Character. Registry id of the system (see
+<code><a href="soilkey_systems.html">soilkey_systems</a></code>), e.g.
+<code>"wrb2022"</code>; since v0.9.265.</p></dd>
+
+
+<dt><code>levels</code></dt>
+<dd><p><code>data.frame</code> with one row per level of the
+key that assigned a class (<code>level</code>,
+<code>code</code>, <code>name</code>), top level first; set by
+the generic classifier of ordered keys and
+<code>NULL</code> for WRB, SiBCS and USDA, whose levels
+are in <code>trace</code>.</p></dd>
+
+
+<dt><code>provisional_because</code></dt>
+<dd><p>Character vector. In a first-match key a class
+that could not be decided for lack of data, tested
+before the one assigned, makes the assignment
+provisional; these are those classes, as
+<code>"&lt;level&gt;:&lt;code&gt;"</code>. Empty when the assignment
+is firm or the classifier does not report it.</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -155,7 +179,10 @@ check (consistent / inconsistent / not run).</p></dd>
 <span>  missing_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  evidence_grade <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  prior_check <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  warnings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span>  warnings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  system_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  provisional_because <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -199,6 +226,19 @@ check (consistent / inconsistent / not run).</p></dd>
 
 <dt><code>warnings</code></dt>
 <dd><p>Character vector.</p></dd>
+
+
+<dt><code>system_id</code></dt>
+<dd><p>Registry id of the system, or NULL.</p></dd>
+
+
+<dt><code>levels</code></dt>
+<dd><p>Assigned class per level (data.frame), or NULL.</p></dd>
+
+
+<dt><code>provisional_because</code></dt>
+<dd><p>Character vector of undecided classes
+tested before the assigned ones.</p></dd>
 
 
 </dl><p></p></div>

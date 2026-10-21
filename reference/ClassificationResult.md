@@ -66,6 +66,27 @@ biogeographical or prior-based warnings.
 
   Character vector. Free-form warnings.
 
+- `system_id`:
+
+  Character. Registry id of the system (see
+  [`soilkey_systems`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md)),
+  e.g. `"wrb2022"`; since v0.9.265.
+
+- `levels`:
+
+  `data.frame` with one row per level of the key that assigned a class
+  (`level`, `code`, `name`), top level first; set by the generic
+  classifier of ordered keys and `NULL` for WRB, SiBCS and USDA, whose
+  levels are in `trace`.
+
+- `provisional_because`:
+
+  Character vector. In a first-match key a class that could not be
+  decided for lack of data, tested before the one assigned, makes the
+  assignment provisional; these are those classes, as
+  `"<level>:<code>"`. Empty when the assignment is firm or the
+  classifier does not report it.
+
 ## Methods
 
 ### Public methods
@@ -98,7 +119,10 @@ Build a ClassificationResult.
       missing_data = character(0),
       evidence_grade = NA_character_,
       prior_check = NULL,
-      warnings = character(0)
+      warnings = character(0),
+      system_id = NULL,
+      levels = NULL,
+      provisional_because = character(0)
     )
 
 #### Arguments
@@ -142,6 +166,18 @@ Build a ClassificationResult.
 - `warnings`:
 
   Character vector.
+
+- `system_id`:
+
+  Registry id of the system, or NULL.
+
+- `levels`:
+
+  Assigned class per level (data.frame), or NULL.
+
+- `provisional_because`:
+
+  Character vector of undecided classes tested before the assigned ones.
 
 ------------------------------------------------------------------------
 

@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5600af594f20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558305ef7f20>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -165,7 +165,7 @@ print(res$sibcs)
 #> slickensides, al_ox_pct, fe_ox_pct, plinthite_pct
 #> 
 #> ── Key trace
-#> (10 RSGs tested before assignment)
+#> (30 classes tested before assignment)
 #> 1. O Organossolos -- failed
 #> 2. R Neossolos -- failed
 #> 3. V Vertissolos -- NA (1 attrs missing)
@@ -318,7 +318,7 @@ print(res$usda)
 #> site$soil_moisture_regime
 #> 
 #> ── Key trace
-#> (9 RSGs tested before assignment)
+#> (31 classes tested before assignment)
 #> 1. GE Gelisols -- failed (1 attrs missing)
 #> 2. HI Histosols -- failed (1 attrs missing)
 #> 3. SP Spodosols -- failed (2 attrs missing)
