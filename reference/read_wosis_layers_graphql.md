@@ -85,10 +85,5 @@ if (nrow(p)) {
   h <- read_wosis_layers_graphql(p$profile_id[1])
   h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
 }
-#>   top_cm bottom_cm designation clay_pct oc_pct
-#> 1      0         7           A       20   0.97
-#> 2      7        23          2B       53   1.19
-#> 3     23        45         3C1       54   1.40
-#> 4     45       100         3C2       39   0.68
 # }
 ```

@@ -11,7 +11,7 @@ made by you, to ISRIC, under ISRIC's terms."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.268</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.270</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,12 +149,6 @@ profile from a single topsoil sample before loading it.</p>
 <span class="r-in"><span><span class="co"># Requires network access to ISRIC.</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">read_wosis_profiles_graphql</span><span class="op">(</span>country <span class="op">=</span> <span class="st">"Argentina"</span>, n_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://ncss-tech.github.io/aqp/reference/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="va">p</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"profile_code"</span>, <span class="st">"wrb_rsg"</span>, <span class="st">"n_layers"</span>, <span class="st">"licence_short"</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      profile_code   wrb_rsg n_layers licence_short</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        AR SC.P7   Luvisol        4     CC BY 3.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        AR SJ.87 Solonchak        1     CC BY 3.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     AR RN.C.331  Calcisol        4     CC BY 3.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   AR SE.BBAJADA  Solonetz        3     CC BY 3.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 AR SE.VFIGUEROA  Fluvisol        3     CC BY 3.0</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

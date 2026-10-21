@@ -4,10 +4,13 @@ Keys a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 through the Canadian System of Soil Classification, 3rd edition (Soil
 Classification Working Group 1998). **Experimental**: this release keys
-the ten orders (Key to Soil Orders, Ch 3, pp. 33-34) and their 31 great
-groups (Key to Soil Great Groups, pp. 35-36); subgroups follow in a
-later release, so the name is the great group (e.g. "Humo-Ferric
-Podzol") and the order is in `rsg_or_order`.
+the ten orders (Key to Soil Orders, Ch 3, pp. 33-34), their 31 great
+groups (Key to Soil Great Groups, pp. 35-36) and the subgroups of seven
+orders: Cryosolic, Organic, Vertisolic, Podzolic, Gleysolic, Brunisolic
+and Regosolic (Key to Soil Subgroups, pp. 37-51). The name is the
+deepest class assigned: a subgroup (e.g. "Terric Mesisol") where the
+subgroups are keyed, otherwise the great group (e.g. "Humo-Ferric
+Podzol"); the order is in `rsg_or_order` and every level in `levels`.
 
 ## Usage
 
@@ -44,8 +47,8 @@ classify_cssc3(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"cssc3"`, the great group in `name`, the order in
-`rsg_or_order`, both in `levels`, the key trace, and
+with `system_id` `"cssc3"`, the deepest class assigned in `name`, the
+order in `rsg_or_order`, every level in `levels`, the key trace, and
 `provisional_because`.
 
 ## Details
@@ -84,5 +87,5 @@ Classification, 3rd ed. Agriculture and Agri-Food Canada Publication
 ``` r
 res <- classify_cssc3(make_cssc3_example("podzolic"), on_missing = "silent")
 res$name
-#> [1] "Humo-Ferric Podzol"
+#> [1] "Orthic Humo-Ferric Podzol"
 ```

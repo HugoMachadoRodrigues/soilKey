@@ -1,5 +1,92 @@
 # Changelog
 
+## soilKey 0.9.270 (2026-10-21)
+
+### The Canadian subgroups: Podzolic, Gleysolic, Brunisolic and Regosolic (experimental)
+
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+now keys the subgroups of four more orders of the Canadian System of
+Soil Classification, 3rd edition (Key to Soil Subgroups, Ch 3,
+pp. 40-51), 67 more, 130 of the 231 in all, so the name goes down to the
+subgroup in seven orders (“Ortstein Humo-Ferric Podzol”, “Fera Humic
+Gleysol”, “Gleyed Eluviated Dystric Brunisol”, “Cumulic Regosol”); the
+Solonetzic, Chernozemic and Luvisolic orders still stop at the great
+group. The subgroups read, as before, measured properties first and the
+Canadian designations second:
+
+- Podzolic: an ortstein (no depth limit), placic and duric horizons and
+  a fragipan within the control section (cementation class, or a c in
+  the designation), a deep Bt, an Ah of 10 cm, distinct to prominent
+  mottles within 1 m;
+- Gleysolic: a slickenside horizon, a solonetzic B, a fragipan below the
+  Btg, the Humic Gleysol A, a Bgf horizon (dithionite Fe over the parent
+  material, or gf), no B of 10 cm;
+- Brunisolic: a duric horizon, an Ae or Aej of 2 cm, gleying mottles
+  within 50 cm or at 50-100 cm;
+- Regosolic: cumulic layering (colour value, organic C with depth, or a
+  buried A) and faint to distinct mottles within 50 cm.
+
+The readings where the book is silent are added to
+`inst/rules/cssc3/readings.yaml` (now 54). The Vertic Solonetz great
+group now reads its slickenside horizon horizon by horizon, as the
+Vertic Gleysol subgroups do: a horizon with no designation and no
+slickenside record is undecided instead of ‘none’, and a designation in
+the FAO or USDA notation is read (an ss counts, a designation without ss
+fails). The surface A of the great groups no longer takes in a buried A
+(b) under it, so an Ah over an Ahb is measured by the Ah alone. WRB,
+SiBCS and USDA results do not change.
+
+## soilKey 0.9.269 (2026-10-21)
+
+### The Canadian subgroups: Cryosolic, Organic and Vertisolic (experimental)
+
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+now keys the subgroups of three orders of the Canadian System of Soil
+Classification, 3rd edition (Key to Soil Subgroups, Ch 3, pp. 37-40), 63
+of the 231, so the name goes down to the subgroup there (“Terric Humic
+Mesisol”, “Brunisolic Dystric Turbic Cryosol”, “Gleyed Vertisol”); the
+other orders still stop at the great group. The subgroups read, as the
+orders and great groups do, measured properties first and the Canadian
+designations second:
+
+- Cryosolic: ice layers, the mineral contact and the peat above it, the
+  dominant peat below 40 cm, gleying, organic horizons over 15 cm, the
+  pH of the B horizons, the thickness of the Bm, a Bt under an eluvial
+  horizon;
+- Organic: O horizons under folic ones, woody material, the dominant
+  folic horizon, hydric, terric, limnic and cumulic layers, and the
+  thickness of each kind of peat;
+- Vertisolic: prominent, or faint to distinct, mottles within 50 cm.
+
+The readings where the book is silent are added to
+`inst/rules/cssc3/readings.yaml` (now 46). The Cryosolic example pedon
+gains pH values. WRB, SiBCS and USDA results do not change.
+
+Fixes to the orders and great groups of 0.9.267 and 0.9.268:
+
+- the Organic great groups leave limnic and folic layers out of the peat
+  tally (they are neither fibric, mesic nor humic); a limnic layer is
+  not a terric contact, and a middle tier of limnic material only is
+  read with the surface tier;
+- gleying (Gleysolic order) is decided horizon by horizon: a horizon’s
+  measured colours outrank its own g, and a horizon with no colours and
+  no designation is undecided instead of ‘not gleyed’;
+- the rows are read in depth order whatever the order they are given in
+  (on a copy; the layer numbers of the trace follow that order);
+- the thick-A rule of the gleying test reads the whole surface A
+  (adjacent Ah and Ap from the mineral surface; a buried A, b, never
+  counts) and tests the mineral horizon right below it, whatever it is,
+  a gap in the record allowed; in another notation the A masters are
+  left out of the test and the E masters as the Ae are (a thick, deep E
+  is tested);
+- a horizon with no bottom depth ends where the next one down begins,
+  and the deepest one may go on (both options of the Organic order, the
+  organic column and the peat tally read it as possibly deep);
+- limnic layers are read from whole words of their recorded origin, not
+  on rock, and from the L master of the FAO and USDA notations;
+- in designations of another notation, W and R are never mineral
+  horizons, and an O or H without organic C is organic.
+
 ## soilKey 0.9.268 (2026-10-21)
 
 ### The Canadian great groups (experimental)

@@ -2,11 +2,12 @@
 
 Small, plausible profiles written for the tests and examples, one per
 order of the Canadian System of Soil Classification, with designations
-in the Canadian notation and the properties the order and great-group
-keys read: a Turbic Cryosol, a Mesisol, a Vertisol, a Humo-Ferric
-Podzol, a Humic Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray
-Luvisol, a Eutric Brunisol and a Regosol. They are not records of real
-pedons.
+in the Canadian notation and the properties the order, great-group and
+subgroup keys read: a Brunisolic Dystric Turbic Cryosol, a Terric Humic
+Mesisol, an Orthic Vertisol, an Orthic Humo-Ferric Podzol, an Orthic
+Humic Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, an
+Orthic Eutric Brunisol and an Orthic Regosol. They are not records of
+real pedons.
 
 ## Usage
 
