@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.267</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.268</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,29 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.268" id="soilkey-09268-2026-10-21">soilKey 0.9.268 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09268-2026-10-21"></a></h2>
+<div class="section level3">
+<h3 id="the-canadian-great-groups-experimental-0-9-268">The Canadian great groups (experimental)<a class="anchor" aria-label="anchor" href="#the-canadian-great-groups-experimental-0-9-268"></a></h3>
+<p><code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> now keys the 31 great groups of the Canadian System of Soil Classification, 3rd edition (Key to Soil Great Groups, Ch 3, pp. 35-36), under the ten orders of 0.9.267, so the name is the great group (“Humo-Ferric Podzol”, “Dark Brown Chernozem”) and the order is in <code>rsg_or_order</code>. The great groups read, as the orders do, measured properties first and the Canadian designations second:</p>
+<ul><li>Cryosolic: organic material over permafrost, cryoturbation (y);</li>
+<li>Organic: the folic thickness of Ch 9 (L, F, H), the dominant material of the middle tier (fibric, mesic or humic, by rubbed fibre, then designation), widened to the surface tier only by a terric, lithic or hydric layer;</li>
+<li>Vertisolic: surface dry value or Ah thickness, by drainage class, and the Ch 13 rule for the Ap of a poorly drained cultivated soil;</li>
+<li>Podzolic: at least 10 cm of Bh or Bhf chemistry;</li>
+<li>Gleysolic: a gleyed Bt (Btg), a humic Ah or Ap with at least 2 % organic C;</li>
+<li>Solonetzic: a slickenside horizon, an Ae of at least 2 cm, an AB or BA;</li>
+<li>Chernozemic: the dry value and chroma of the chernozemic A and signs of eluviation;</li>
+<li>Luvisolic: a forest mull Ah and a mean annual soil temperature of 8 C;</li>
+<li>Brunisolic: a thick dark Ah or Ap and the pH (CaCl2) of the upper B;</li>
+<li>Regosolic: an Ah or Ap of 10 cm.</li>
+</ul><p>The last great group of each order is the key’s “other soils”. The readings where the book is silent are added to <code>inst/rules/cssc3/readings.yaml</code> (now 33). The per-layer readings of podzolic B chemistry and of gley colours are factored out of the order diagnostics without changing them. The example pedons now reach a great group each. WRB, SiBCS and USDA results do not change.</p>
+<p>Fixes to the 0.9.267 order key, all in the Organic order:</p>
+<ul><li>a folic layer (L, F, H) lying on peat is read as litter over peat, so F 0-5 cm over Om 5-160 cm is an Organic soil (it was keyed as Regosolic); the litter is not counted towards the peat limits;</li>
+<li>the kind of the surface organic layer is read from measured rubbed fibre before its designation (an Om with 60 % rubbed fibre is fibric);</li>
+<li>a layer of unknown organic status leaves the order undecided where it could change the answer, instead of failing it;</li>
+<li>in designations of another notation, the masters A, B, C and E are read as mineral, R as rock and W as water when organic C is missing.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.267" id="soilkey-09267-2026-10-20">soilKey 0.9.267 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09267-2026-10-20"></a></h2>
 <div class="section level3">
