@@ -1,3 +1,38 @@
+# soilKey 0.9.270 (2026-10-21)
+
+## The Canadian subgroups: Podzolic, Gleysolic, Brunisolic and Regosolic (experimental)
+
+`classify_cssc3()` now keys the subgroups of four more orders of the
+Canadian System of Soil Classification, 3rd edition (Key to Soil Subgroups,
+Ch 3, pp. 40-51), 67 more, 130 of the 231 in all, so the name goes down to
+the subgroup in seven orders ("Ortstein Humo-Ferric Podzol", "Fera Humic
+Gleysol", "Gleyed Eluviated Dystric Brunisol", "Cumulic Regosol"); the
+Solonetzic, Chernozemic and Luvisolic orders still stop at the great group.
+The subgroups read, as before, measured properties first and the Canadian
+designations second:
+
+* Podzolic: an ortstein (no depth limit), placic and duric horizons and a
+  fragipan within the control section (cementation class, or a c in the
+  designation), a deep Bt, an Ah of 10 cm, distinct to prominent mottles
+  within 1 m;
+* Gleysolic: a slickenside horizon, a solonetzic B, a fragipan below the
+  Btg, the Humic Gleysol A, a Bgf horizon (dithionite Fe over the parent
+  material, or gf), no B of 10 cm;
+* Brunisolic: a duric horizon, an Ae or Aej of 2 cm, gleying mottles within
+  50 cm or at 50-100 cm;
+* Regosolic: cumulic layering (colour value, organic C with depth, or a
+  buried A) and faint to distinct mottles within 50 cm.
+
+The readings where the book is silent are added to
+`inst/rules/cssc3/readings.yaml` (now 54). The Vertic Solonetz great group
+now reads its slickenside horizon horizon by horizon, as the Vertic Gleysol
+subgroups do: a horizon with no designation and no slickenside record is
+undecided instead of 'none', and a designation in the FAO or USDA notation
+is read (an ss counts, a designation without ss fails). The surface A of
+the great groups no longer takes in a buried A (b) under it, so an Ah over
+an Ahb is measured by the Ah alone. WRB, SiBCS and USDA results do not
+change.
+
 # soilKey 0.9.269 (2026-10-21)
 
 ## The Canadian subgroups: Cryosolic, Organic and Vertisolic (experimental)

@@ -1,0 +1,136 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 49-50, for the Brunisolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+# The book letters the Sombric Brunisol subgroups ICA, ICB, ICB, ICC, ICD; codes must be
+# unique, so they are ICA-ICE here (the names are the book's).
+
+subgroups:
+  "IA":
+    - code: "IAA"
+      name: Gleyed Eluviated Melanic Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+          - gleyed_brunisol_cssc: {}
+      notes: "An Ae or Aej 2 cm or more and gleying mottles (pp. 49-50)."
+
+    - code: "IAB"
+      name: Eluviated Melanic Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+      notes: "An Ae or Aej 2 cm or more (pp. 49-50)."
+
+    - code: "IAC"
+      name: Gleyed Melanic Brunisol
+      tests:
+        all_of:
+          - gleyed_brunisol_cssc: {}
+      notes: "Faint to distinct mottles within 50 cm, or distinct to prominent at 50-100 cm (pp. 49-50)."
+
+    - code: "IAD"
+      name: Orthic Melanic Brunisol
+      tests:
+        default: true
+      notes: "Other Melanic Brunisols (pp. 49-50)."
+
+  "IB":
+    - code: "IBA"
+      name: Gleyed Eluviated Eutric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+          - gleyed_brunisol_cssc: {}
+      notes: "An Ae or Aej 2 cm or more and gleying mottles (pp. 49-50)."
+
+    - code: "IBB"
+      name: Eluviated Eutric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+      notes: "An Ae or Aej 2 cm or more (pp. 49-50)."
+
+    - code: "IBC"
+      name: Gleyed Eutric Brunisol
+      tests:
+        all_of:
+          - gleyed_brunisol_cssc: {}
+      notes: "Faint to distinct mottles within 50 cm, or distinct to prominent at 50-100 cm (pp. 49-50)."
+
+    - code: "IBD"
+      name: Orthic Eutric Brunisol
+      tests:
+        default: true
+      notes: "Other Eutric Brunisols (pp. 49-50)."
+
+  "IC":
+    - code: "ICA"
+      name: Duric Sombric Brunisol
+      tests:
+        all_of:
+          - duric_cssc: {}
+      notes: "A duric horizon within the control section (pp. 49-50)."
+
+    - code: "ICB"
+      name: Gleyed Eluviated Sombric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+          - gleyed_brunisol_cssc: {}
+      notes: "An Ae or Aej 2 cm or more and gleying mottles (pp. 49-50)."
+
+    - code: "ICC"
+      name: Eluviated Sombric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+      notes: "An Ae or Aej 2 cm or more (pp. 49-50). The book letters it ICB a second time."
+
+    - code: "ICD"
+      name: Gleyed Sombric Brunisol
+      tests:
+        all_of:
+          - gleyed_brunisol_cssc: {}
+      notes: "Faint to distinct mottles within 50 cm, or distinct to prominent at 50-100 cm (pp. 49-50). Lettered ICC in the book."
+
+    - code: "ICE"
+      name: Orthic Sombric Brunisol
+      tests:
+        default: true
+      notes: "Other Sombric Brunisols (pp. 49-50). Lettered ICD in the book."
+
+  "ID":
+    - code: "IDA"
+      name: Duric Dystric Brunisol
+      tests:
+        all_of:
+          - duric_cssc: {}
+      notes: "A duric horizon within the control section (pp. 49-50)."
+
+    - code: "IDB"
+      name: Gleyed Eluviated Dystric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+          - gleyed_brunisol_cssc: {}
+      notes: "An Ae or Aej 2 cm or more and gleying mottles (pp. 49-50)."
+
+    - code: "IDC"
+      name: Eluviated Dystric Brunisol
+      tests:
+        all_of:
+          - ae_horizon_cssc: {}
+      notes: "An Ae or Aej 2 cm or more (pp. 49-50)."
+
+    - code: "IDD"
+      name: Gleyed Dystric Brunisol
+      tests:
+        all_of:
+          - gleyed_brunisol_cssc: {}
+      notes: "Faint to distinct mottles within 50 cm, or distinct to prominent at 50-100 cm (pp. 49-50)."
+
+    - code: "IDE"
+      name: Orthic Dystric Brunisol
+      tests:
+        default: true
+      notes: "Other Dystric Brunisols (pp. 49-50)."

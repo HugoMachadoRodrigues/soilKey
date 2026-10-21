@@ -1,7 +1,8 @@
 # =============================================================================
 # v0.9.269 -- subgroups of the Canadian System of Soil Classification, 3rd
-# edition (Key to Soil Subgroups, Ch 3, pp. 37-40): the Cryosolic, Organic and
-# Vertisolic orders. Same conventions as R/diagnostics-cssc.R and
+# edition (Key to Soil Subgroups, Ch 3, pp. 37-51): the Cryosolic, Organic and
+# Vertisolic orders (v0.9.269); the Podzolic, Gleysolic, Brunisolic and
+# Regosolic orders (v0.9.270). Same conventions as R/diagnostics-cssc.R and
 # R/diagnostics-cssc-great-groups.R: measured properties first, designations
 # in the Canadian notation second, NA when neither decides; readings in
 # inst/rules/cssc3/readings.yaml. Depths of organic soils are measured from
@@ -558,37 +559,524 @@ organic_layer_cssc <- function(pedon, material = c("fibric", "mesic", "humic"),
 
 # ---- C. Vertisolic subgroups (p. 40; Ch 13) ---------------------------------
 
-#' Mottles within 50 cm of the mineral surface (CSSC subgroups CAA, CAB,
-#' CBA, CBB)
-#'
-#' contrast = "prominent" (Gleysolic subgroups) or "faint_distinct" (Gleyed
-#' subgroups), in the mineral horizons whose top is within 50 cm of the
-#' mineral surface (50 cm included, as for the gley colours). Each horizon is
-#' read from its mottle_contrast (mottles recorded as absent, by
-#' redoximorphic_features_pct of 0, rule it out), otherwise from its own
-#' designation, a strong g standing for prominent mottles and a weak g (gj)
-#' for faint to distinct ones (Ch 2, p. 14; Ch 13, p. 133); a horizon with
-#' neither is undecided.
-#' @noRd
-vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_distinct"),
-                                    max_cm = 50) {
-  contrast <- match.arg(contrast)
-  x <- .cssc_horizons(pedon); h <- x$h
-  win <- x$mineral & !is.na(x$top_ms) & x$top_ms >= 0 & x$top_ms <= max_cm
+# Mottles of the given contrasts in the mineral horizons of a depth window
+# below the mineral surface, horizon by horizon: by mottle_contrast (mottles
+# recorded as absent, by redoximorphic_features_pct of 0, rule a horizon
+# out); otherwise by the horizon's own Canadian designation, a strong g
+# standing for prominent mottles and a weak g (gj) for faint to distinct
+# ones (Ch 2, p. 14; the 2016 key reads the Gleyed Podzols as a gj horizon);
+# otherwise undecided. The window holds the horizons whose top lies from
+# `from` to `to` cm (both included) or, with overlap = TRUE, the horizons
+# that reach into it.
+.cssc_mottles <- function(x, contrast, from = 0, to = 50, overlap = FALSE) {
+  h <- x$h
+  win <- if (overlap) x$mineral & !is.na(x$top_ms) & x$top_ms < to &
+                      !((x$bottom_ms <= from) %in% TRUE)
+         else x$mineral & !is.na(x$top_ms) & x$top_ms >= from - 0.01 & x$top_ms <= to
   ct <- tolower(trimws(as.character(h$mottle_contrast)))
   absent <- !is.na(h$redoximorphic_features_pct) & h$redoximorphic_features_pct == 0
-  want <- if (contrast == "prominent") "prominent" else c("faint", "distinct")
-  other <- setdiff(c("faint", "distinct", "prominent"), want)
-  prop <- ifelse(ct %in% want, TRUE, ifelse(ct %in% other | absent, FALSE, NA))
-  g <- .cssc_has_suffix(x$parsed, "g", weak = if (contrast == "prominent") "no" else "yes")
-  row <- ifelse(!is.na(prop), prop, ifelse(x$desig_known, g %in% TRUE, NA))
+  other <- setdiff(c("faint", "distinct", "prominent"), contrast)
+  prop <- ifelse(ct %in% contrast, TRUE, ifelse(ct %in% other | absent, FALSE, NA))
+  g_strong <- .cssc_has_suffix(x$parsed, "g", weak = "no") %in% TRUE
+  g_weak <- .cssc_has_suffix(x$parsed, "g", weak = "yes") %in% TRUE
+  des <- (g_strong & "prominent" %in% contrast) |
+         (g_weak & any(c("faint", "distinct") %in% contrast))
+  row <- ifelse(!is.na(prop), prop, ifelse(x$desig_known, des, NA))
   passed <- if (any(win)) .any3(row[win]) else FALSE
   route <- if (isTRUE(passed)) {
              if (any(win & prop %in% TRUE)) "properties" else "designations"
            } else if (identical(passed, FALSE) && all(!is.na(prop[win]))) "properties"
            else "designations"
-  .cssc_result("vertisolic_mottles_cssc", passed, which(win & row %in% TRUE),
-               list(route = route, contrast = contrast),
-               if (is.na(passed)) c("mottle_contrast", "designation") else character(0),
+  list(passed = passed, route = route, rows = which(win & row %in% TRUE))
+}
+
+#' Mottles within 50 cm of the mineral surface (CSSC subgroups CAA, CAB,
+#' CBA, CBB)
+#'
+#' contrast = "prominent" (Gleysolic subgroups) or "faint_distinct" (Gleyed
+#' subgroups), in the mineral horizons whose top is within 50 cm of the
+#' mineral surface (50 cm included, as for the gley colours), read horizon by
+#' horizon (.cssc_mottles).
+#' @noRd
+vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_distinct"),
+                                    max_cm = 50) {
+  contrast <- match.arg(contrast)
+  x <- .cssc_horizons(pedon)
+  set <- if (contrast == "prominent") "prominent" else c("faint", "distinct")
+  m <- .cssc_mottles(x, set, 0, max_cm)
+  .cssc_result("vertisolic_mottles_cssc", m$passed, m$rows,
+               list(route = m$route, contrast = contrast),
+               if (is.na(m$passed)) c("mottle_contrast", "designation") else character(0),
                "Ch 3, p. 40; Ch 13, pp. 133-134")
+}
+
+
+# ---- shared readings of the mineral orders -----------------------------------
+
+# Suffix letters of designations written in another notation (the lowercase
+# letters after the master), NA where there is none or the designations are
+# read as Canadian.
+.cssc_other_suffix <- function(x) {
+  d <- trimws(as.character(x$h$designation %||% rep(NA_character_, nrow(x$h))))
+  if (isTRUE(x$notation$ok)) return(rep(NA_character_, length(d)))
+  out <- gsub("[^a-z]", "", sub("^[0-9]*[A-Z]+", "", sub("/.*$", "", d)))
+  out[is.na(d) | is.na(.cssc_raw_master(x))] <- NA_character_
+  out
+}
+
+# Depth of the control section of mineral soils below the mineral surface
+# (Ch 2, p. 11): 25 cm below the top of the C (or the IIC), or 2 m, whichever
+# is less; 1 m when the C begins within 75 cm; down to a lithic contact
+# between 10 cm and 1 m. The top of the C may be uncertain: an undesignated
+# mineral horizon above the first designated C may be the C, and in a profile
+# with no C designated the C begins at or below the deepest horizon
+# described. The result is the shortest and the longest section the profile
+# allows.
+.cssc_control_section_range <- function(x) {
+  f <- function(ctop) if (ctop < 75) 100 else min(ctop + 25, 200)
+  rock <- (.cssc_is(x$parsed, "R") %in% TRUE) | (.cssc_raw_master(x) %in% "R")
+  rtop <- suppressWarnings(min(x$top_ms[rock], na.rm = TRUE))
+  if (is.finite(rtop) && rtop >= 10 && rtop < 100) return(c(rtop, rtop))
+  is_c <- (.cssc_is(x$parsed, "C", weak = "any") %in% TRUE) | (.cssc_raw_master(x) %in% "C")
+  is_c <- is_c & x$mineral
+  undes <- x$mineral & !x$desig_known & is.na(.cssc_raw_master(x))
+  ctop_d <- suppressWarnings(min(x$top_ms[is_c], na.rm = TRUE))
+  c_top_unknown <- any(is_c & is.na(x$top_ms))
+  cand <- x$top_ms[undes & !is.na(x$top_ms) & (if (is.finite(ctop_d)) x$top_ms < ctop_d else TRUE)]
+  if (is.finite(ctop_d)) {
+    lo <- f(min(c(ctop_d, cand)))
+    hi <- if (c_top_unknown) 200 else f(ctop_d)
+  } else {
+    deepest <- suppressWarnings(max(x$bottom_ms[x$mineral], na.rm = TRUE))
+    starts <- c(cand, if (is.finite(deepest)) deepest)
+    lo <- if (length(starts)) f(min(starts)) else 100
+    hi <- 200
+  }
+  c(lo, max(lo, hi))
+}
+
+.cssc_control_section <- function(x) {
+  r <- .cssc_control_section_range(x)
+  if (r[1L] == r[2L]) r[1L] else NA_real_
+}
+
+# Whether each horizon begins within the control section: TRUE above the
+# shortest section the profile allows, FALSE below the longest, NA between.
+.cssc_in_control_section <- function(x) {
+  r <- .cssc_control_section_range(x)
+  ifelse(is.na(x$top_ms), NA, ifelse(x$top_ms < r[1L], TRUE, ifelse(x$top_ms >= r[2L], FALSE, NA)))
+}
+
+# Strongly cemented horizons, horizon by horizon: by cementation_class when
+# recorded (strongly or very strongly cemented, or indurated; weakly,
+# moderately or not cemented fail),
+# otherwise by a c in the Canadian notation (Ch 2, p. 12; a weak cj is not
+# strongly cemented: Ch 10, p. 116 writes the ortstein Bfcgj over a Bfjcjgj)
+# or an m in another notation, otherwise NA.
+.cssc_cemented <- function(x) {
+  cc <- tolower(trimws(as.character(x$h$cementation_class)))
+  # weak words first: "extremely weakly cemented" is the weakest class
+  prop <- ifelse(grepl("weak|moder|^none|^non|^not|^un", cc), FALSE,
+          ifelse(grepl("strong|indurat", cc), TRUE, NA))
+  can <- .cssc_has_suffix(x$parsed, "c", weak = "no")
+  osfx <- .cssc_other_suffix(x)
+  des <- ifelse(!is.na(can), can, ifelse(!is.na(osfx), grepl("m", osfx), NA))
+  ifelse(!is.na(prop), prop, des)
+}
+
+# Podzolic B material, horizon by horizon: by the podzolic B chemistry and
+# colour of each layer (.cssc_podzolic_layers) when they decide, otherwise by
+# a strong h, hf or f in a Canadian B designation (a Bs or Bh in another
+# notation), otherwise NA.
+.cssc_podzolic_kind <- function(pedon, x) {
+  pl <- .cssc_podzolic_layers(x)
+  osfx <- .cssc_other_suffix(x)
+  raw <- .cssc_raw_master(x)
+  oth <- ifelse(!is.na(raw), raw == "B" & !is.na(osfx) & grepl("[sh]", gsub("ss", "", osfx)), NA)
+  des <- ifelse(!is.na(pl$d_any), pl$d_any, oth)
+  out <- ifelse(!is.na(pl$any), pl$any, des)
+  out[!x$mineral] <- FALSE   # organic layers are not podzolic B material
+  out
+}
+
+# Elementwise three-valued and / or.
+.cssc_and3v <- function(a, b) ifelse(a %in% FALSE | b %in% FALSE, FALSE,
+                                ifelse(a %in% TRUE & b %in% TRUE, TRUE, NA))
+.cssc_or3v <- function(a, b) ifelse(a %in% TRUE | b %in% TRUE, TRUE,
+                               ifelse(a %in% FALSE & b %in% FALSE, FALSE, NA))
+
+# Horizons of fragipan character: an x in a designation (Canadian or other
+# notation), NA where a horizon has no designation read.
+.cssc_fragic_rows <- function(x) {
+  can <- .cssc_has_suffix(x$parsed, "x", weak = "any")
+  osfx <- .cssc_other_suffix(x)
+  ifelse(!is.na(can), can, ifelse(!is.na(osfx), grepl("x", osfx), NA))
+}
+
+# Thickness of the largest run of adjacent rows, certain (ok TRUE) and
+# possible (ok TRUE or NA).
+.cssc_run_lo_hi <- function(x, ok) {
+  ord <- order(x$h$top_cm)
+  lo <- .cssc_runs((ok %in% TRUE)[ord], x$thick[ord])
+  hi <- .cssc_runs((!(ok %in% FALSE))[ord], x$thick[ord])
+  list(lo = lo$thickness, hi = hi$thickness, rows = ord[lo$rows])
+}
+
+
+# ---- D. Podzolic subgroups (pp. 40-41; Ch 10) -------------------------------
+
+#' Ortstein (CSSC subgroups DAA, DBA, DBB, DCA, DCB)
+#'
+#' A strongly cemented podzolic B (Bhc, Bhfc, Bfc; Ch 2, p. 17) at least 3 cm
+#' thick, adjacent layers added up. The book's "more than one-third of the
+#' exposed face" is not recorded by any attribute and is not read.
+#' @noRd
+ortstein_cssc <- function(pedon, min_cm = 3) {
+  x <- .cssc_horizons(pedon)
+  pod <- .cssc_podzolic_kind(pedon, x)
+  cem <- .cssc_cemented(x)
+  r <- .cssc_run_lo_hi(x, .cssc_and3v(pod, cem))
+  passed <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  .cssc_result("ortstein_cssc", passed, r$rows,
+               list(route = "properties+designations", ortstein_cm = r$lo, ortstein_cm_max = r$hi),
+               if (is.na(passed)) c("cementation_class", "designation") else character(0),
+               "Ch 3, pp. 40-41; Ch 2, p. 17; Ch 10, pp. 111-116")
+}
+
+#' Placic horizon within the control section (CSSC subgroups DAB, DBC, DCC)
+#'
+#' A thin, strongly cemented layer or series of layers cemented by Fe,
+#' Al-organic complexes or Fe and Mn oxides (Bhfc, Bfc, Bgfc; Ch 2, p. 17):
+#' read as a strongly cemented podzolic B, or a strongly cemented B with gf,
+#' beginning within the control section, each layer thinner than 3 cm (a
+#' thicker cemented layer is an ortstein or a duric horizon).
+#' @noRd
+placic_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  pod <- .cssc_podzolic_kind(pedon, x)
+  gf <- .cssc_is(x$parsed, "B", "gf", "any")
+  gf[is.na(gf) & !is.na(.cssc_raw_master(x))] <- FALSE   # not read in other notations
+  cem <- .cssc_cemented(x)
+  cs <- .cssc_in_control_section(x)
+  b <- .cssc_b_rows(x) & x$mineral   # a placic horizon is a B (Bhfc, Bfc, Bgfc)
+  kind <- .cssc_and3v(.cssc_and3v(b | is.na(b), .cssc_or3v(pod, gf)), cs)
+  kind[b %in% FALSE] <- FALSE
+  # a placic horizon is a thin layer or a series of thin layers (Ch 2, p. 17):
+  # a cemented layer 3 cm thick or more is an ortstein or a duric horizon
+  kind[(x$thick <= 0 | x$thick >= 3) %in% TRUE] <- FALSE
+  passed <- .cssc_some(cem, which(kind %in% TRUE), which(is.na(kind)))
+  .cssc_result("placic_cssc", passed, which(kind %in% TRUE & cem %in% TRUE),
+               list(route = "properties+designations"),
+               if (is.na(passed)) c("cementation_class", "designation") else character(0),
+               "Ch 3, pp. 40-41; Ch 2, p. 17")
+}
+
+#' Duric horizon within the control section (CSSC subgroups DAC, DBD, DCD,
+#' ICA, IDA)
+#'
+#' A strongly cemented B, BC or C horizon that is not a podzolic B (Ch 2,
+#' p. 16), beginning within the control section. A horizon whose podzolic
+#' status is undecided may be an ortstein or placic layer instead, and leaves
+#' the test undecided when it is cemented.
+#' @noRd
+duric_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  pod <- .cssc_podzolic_kind(pedon, x)
+  cem <- .cssc_cemented(x)
+  can_a <- .cssc_is(x$parsed, "A", weak = "any") %in% TRUE
+  raw <- .cssc_raw_master(x)
+  cs <- .cssc_in_control_section(x)
+  not_a <- x$mineral & !can_a & !(raw %in% c("A", "E"))
+  kind <- .cssc_and3v(.cssc_and3v(!pod, not_a), cs)
+  kind[(x$thick <= 0) %in% TRUE] <- FALSE   # a layer of no thickness
+  passed <- .cssc_some(cem, which(kind %in% TRUE), which(is.na(kind)))
+  .cssc_result("duric_cssc", passed, which(kind %in% TRUE & cem %in% TRUE),
+               list(route = "properties+designations"),
+               if (is.na(passed)) c("cementation_class", "designation") else character(0),
+               "Ch 3, pp. 40-41 and 50; Ch 2, p. 16; Ch 4, p. 58")
+}
+
+#' Fragipan within the control section (CSSC subgroups DAD, DBE, DCE)
+#'
+#' A horizon of fragipan character (an x in its designation; Ch 2, p. 16)
+#' beginning within the control section. No attribute records the fragipan's
+#' brittleness or slaking, so it is read from the designations.
+#' @noRd
+fragipan_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  fr <- .cssc_fragic_rows(x)
+  cs <- .cssc_in_control_section(x)
+  passed <- .cssc_some(fr, which(x$mineral & cs %in% TRUE), which(x$mineral & is.na(cs)))
+  .cssc_result("fragipan_cssc", passed, which(fr %in% TRUE),
+               list(route = "designations"),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, pp. 40-41; Ch 2, p. 16")
+}
+
+#' Mottles (CSSC subgroups: Gleyed Podzols, Brunisols, Regosols)
+#'
+#' contrast is a set of contrast classes (faint, distinct, prominent) read in
+#' the mineral horizons whose top lies from `from` to `to` cm below the
+#' mineral surface, or that reach into that window when overlap = TRUE
+#' (.cssc_mottles).
+#' @noRd
+mottles_cssc <- function(pedon, contrast = c("distinct", "prominent"), from = 0, to = 100,
+                         overlap = FALSE) {
+  x <- .cssc_horizons(pedon)
+  m <- .cssc_mottles(x, contrast, from, to, overlap)
+  .cssc_result("mottles_cssc", m$passed, m$rows,
+               list(route = m$route, contrast = contrast, window_cm = c(from, to)),
+               if (is.na(m$passed)) c("mottle_contrast", "designation") else character(0),
+               "Ch 3, pp. 40-51")
+}
+
+#' Gleyed Brunisols (CSSC subgroups IAA, IAC, IBA, IBC, ICB, ICD, IDB, IDD)
+#'
+#' Faint to distinct mottles within 50 cm of the mineral surface, or distinct
+#' to prominent mottles at depths of 50-100 cm (horizons that reach into
+#' that window).
+#' @noRd
+gleyed_brunisol_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  m1 <- .cssc_mottles(x, c("faint", "distinct"), 0, 50)
+  m2 <- .cssc_mottles(x, c("distinct", "prominent"), 50, 100, overlap = TRUE)
+  passed <- .any3(c(m1$passed, m2$passed))
+  .cssc_result("gleyed_brunisol_cssc", passed, union(m1$rows, m2$rows),
+               list(route = if (isTRUE(m1$passed)) m1$route else m2$route),
+               if (is.na(passed)) c("mottle_contrast", "designation") else character(0),
+               "Ch 3, pp. 49-50; Ch 4, pp. 55-59")
+}
+
+#' Deep Bt horizon (CSSC subgroups DBF, DCF)
+#'
+#' A Bt horizon (bt_horizon_cssc) whose upper boundary is more than 50 cm
+#' below the mineral surface.
+#' @noRd
+deep_bt_cssc <- function(pedon, min_top_cm = 50) {
+  x <- .cssc_horizons(pedon)
+  bt <- bt_horizon_cssc(pedon)
+  passed <- if (identical(bt$passed, FALSE)) FALSE
+            else if (isTRUE(bt$passed)) {
+              t <- suppressWarnings(min(x$top_ms[bt$layers], na.rm = TRUE))
+              if (!is.finite(t)) NA else t > min_top_cm
+            } else NA
+  .cssc_result("deep_bt_cssc", passed, bt$layers,
+               list(route = bt$evidence$route %||% "properties+designations"),
+               if (is.na(passed)) c("clay_pct", "designation") else character(0),
+               "Ch 3, p. 41; Ch 10, pp. 113-116")
+}
+
+#' Sombric Podzols (CSSC subgroups DBG, DBH, DCG, DCH)
+#'
+#' An Ah horizon at least 10 cm thick: the Ah and Ahe horizons of the surface
+#' A (.cssc_surface_a). The key writes Ah, so an Ap does not count.
+#' @noRd
+thick_ah_cssc <- function(pedon, min_cm = 10) {
+  x <- .cssc_horizons(pedon)
+  a <- .cssc_surface_a(x)
+  passed <- .cssc_over_a(a, function(s) if (is.na(s$ah_cm)) NA else s$ah_cm >= min_cm)
+  .cssc_result("thick_ah_cssc", passed, a$rows,
+               list(route = if (any(x$desig_known)) "designations+properties" else "properties",
+                    ah_cm = a$ah_cm),
+               if (is.na(passed)) c("designation", "munsell_value_moist", "oc_pct") else character(0),
+               "Ch 3, p. 41; Ch 10, pp. 114-116")
+}
+
+
+# ---- E. Gleysolic subgroups (p. 42; Ch 7) -----------------------------------
+
+#' Slickenside horizon within 1 m (CSSC subgroups EAA, EBA, ECA; great group FA)
+#'
+#' Horizon by horizon, within `max_top_cm` of the mineral surface: an ss in
+#' a designation (more than two slickensides, Ch 2, p. 15; ss also means
+#' slickensides in the FAO and USDA notations) passes; otherwise common, many
+#' or continuous slickensides pass and any other record fails, as in the
+#' order test; otherwise a horizon designated without ss fails and one with
+#' no designation is undecided.
+#' @noRd
+slickenside_horizon_cssc <- function(pedon, max_top_cm = 100) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  in_depth <- x$mineral & !is.na(x$top_ms) & x$top_ms <= max_top_cm
+  osfx <- .cssc_other_suffix(x)
+  ss_desig <- (.cssc_has_suffix(x$parsed, "ss", weak = "any") %in% TRUE) |
+              (!is.na(osfx) & grepl("ss", osfx))
+  sl <- tolower(trimws(as.character(h$slickensides)))
+  # as the order test reads them: more than two slickensides are common,
+  # many or continuous
+  prop <- ifelse(is.na(h$slickensides), NA, sl %in% c("common", "many", "continuous"))
+  row <- ifelse(ss_desig, TRUE, ifelse(!is.na(prop), prop,
+                 ifelse(x$desig_known | !is.na(osfx), FALSE, NA)))
+  passed <- if (any(in_depth)) .any3(row[in_depth]) else FALSE
+  list(passed = passed, rows = which(row %in% TRUE & in_depth))
+}
+
+#' @noRd
+vertic_subgroup_cssc <- function(pedon) {
+  r <- slickenside_horizon_cssc(pedon)
+  .cssc_result("vertic_subgroup_cssc", r$passed, r$rows,
+               list(route = "properties+designations"),
+               if (is.na(r$passed)) c("slickensides", "designation") else character(0),
+               "Ch 3, p. 42; Ch 7, pp. 84-86")
+}
+
+#' Fragic Luvic Gleysol (CSSC subgroup EAC)
+#'
+#' A fragipan (an x in a designation) within or below the Btg horizon: in a
+#' horizon whose top lies at or below the top of the Bt (bt_horizon_cssc).
+#' @noRd
+fragic_luvic_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  bt <- bt_horizon_cssc(pedon)
+  fr <- .cssc_fragic_rows(x)
+  bt_top <- suppressWarnings(min(x$top_ms[bt$layers], na.rm = TRUE))
+  if (!is.finite(bt_top)) {
+    btd <- .cssc_is(x$parsed, "B", "t", "any") %in% TRUE
+    bt_top <- suppressWarnings(min(x$top_ms[btd], na.rm = TRUE))
+  }
+  below <- x$mineral & !is.na(x$top_ms) & (if (is.finite(bt_top)) x$top_ms >= bt_top - 0.01 else TRUE)
+  passed <- .cssc_some(fr, which(below), integer(0))
+  .cssc_result("fragic_luvic_cssc", passed, which(fr %in% TRUE & below),
+               list(route = "designations"),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, p. 42; Ch 7, p. 84")
+}
+
+# Bgf horizons, horizon by horizon: by dithionite-extractable Fe at least 1
+# percentage point above that of the parent material (the lowest C of the
+# first material, IC; Ch 2, pp. 13-14) on a B horizon (or an undesignated
+# mineral horizon) when both are measured; otherwise by a gf in a Canadian
+# designation (Bgf, Btgf); otherwise NA.
+.cssc_bgf_rows <- function(x) {
+  h <- x$h
+  ord <- order(h$top_cm)
+  is_c <- (.cssc_is(x$parsed, "C", weak = "any") %in% TRUE) | (.cssc_raw_master(x) %in% "C")
+  roman <- vapply(x$parsed, function(cmp) if (length(cmp)) cmp[[1]]$roman else "", "")
+  d <- as.character(h$designation)
+  ic_cand <- ord[is_c[ord] & roman[ord] %in% c("", "I") & !grepl("^[0-9]", d[ord] %||% "")]
+  ic <- if (length(ic_cand)) ic_cand[length(ic_cand)] else NA_integer_
+  fe_ic <- if (is.na(ic)) NA_real_ else h$fe_dcb_pct[ic]
+  b <- .cssc_b_rows(x) & x$mineral
+  cand <- b %in% TRUE | (is.na(b) & x$mineral)
+  prop <- ifelse(cand & !is.na(h$fe_dcb_pct) & !is.na(fe_ic), h$fe_dcb_pct >= fe_ic + 1, NA)
+  gf <- .cssc_is(x$parsed, "B", "gf", "any")
+  ifelse(!is.na(prop), prop, ifelse(!is.na(gf), gf, ifelse(b %in% FALSE, FALSE, NA)))
+}
+
+#' Fera Gleysols (CSSC subgroups EAE, EBC, ECC)
+#'
+#' A Bgf horizon at least 10 cm thick (adjacent Bgf horizons added up), or,
+#' for the Luvic Gleysols (btgf = TRUE), also a Btgf horizon of any
+#' thickness.
+#' @noRd
+fera_gleysol_cssc <- function(pedon, btgf = FALSE, min_cm = 10) {
+  x <- .cssc_horizons(pedon)
+  bgf <- .cssc_bgf_rows(x)
+  r <- .cssc_run_lo_hi(x, bgf)
+  thick <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  passed <- if (btgf) {
+    # a Btgf counts when its own Bgf reading holds (measured Fe first)
+    btgf_row <- .cssc_is(x$parsed, "B", c("t", "gf"), "any") %in% TRUE
+    .any3(c(thick, if (any(btgf_row)) .any3(bgf[btgf_row]) else FALSE))
+  } else thick
+  .cssc_result("fera_gleysol_cssc", passed, r$rows,
+               list(route = "properties+designations", bgf_cm = r$lo),
+               if (is.na(passed)) c("fe_dcb_pct", "designation") else character(0),
+               "Ch 3, p. 42; Ch 2, pp. 13-14; Ch 7, pp. 85-87")
+}
+
+#' Rego Gleysols (CSSC subgroups EBD, ECD)
+#'
+#' No B horizon 10 cm or more thick (adjacent B horizons added up; a
+#' transition such as BC is not a B). Undesignated mineral horizons below the
+#' surface A may be B horizons.
+#' @noRd
+no_thick_b_cssc <- function(pedon, min_cm = 10) {
+  x <- .cssc_horizons(pedon)
+  b <- .cssc_b_rows(x) & x$mineral
+  a <- .cssc_surface_a(x)
+  b[a$rows] <- ifelse(is.na(b[a$rows]), FALSE, b[a$rows])
+  r <- .cssc_run_lo_hi(x, b)
+  has_b <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  passed <- if (is.na(has_b)) NA else !has_b
+  .cssc_result("no_thick_b_cssc", passed, r$rows,
+               list(route = "designations", b_cm = r$lo, b_cm_max = r$hi),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, p. 42; Ch 7, pp. 86-87")
+}
+
+
+# ---- I. Brunisolic subgroups (pp. 49-50; Ch 4) ------------------------------
+
+#' Eluviated Brunisols (CSSC subgroups IAA, IAB, IBA, IBB, ICB, ICC, IDB, IDC)
+#'
+#' An Ae or Aej horizon at least 2 cm thick (not an Ahe; an E in another
+#' notation), adjacent ones added up.
+#' @noRd
+ae_horizon_cssc <- function(pedon, min_cm = 2) {
+  x <- .cssc_horizons(pedon)
+  can_ae <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) &
+            !(.cssc_is(x$parsed, "A", "h", "any") %in% TRUE)
+  raw <- .cssc_raw_master(x)
+  ae <- ifelse(x$desig_known, can_ae, ifelse(!is.na(raw), raw == "E", NA))
+  ae[!x$mineral] <- FALSE
+  r <- .cssc_run_lo_hi(x, ae)
+  passed <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  .cssc_result("ae_horizon_cssc", passed, r$rows,
+               list(route = "designations", ae_cm = r$lo),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, pp. 49-50; Ch 4, pp. 55-59")
+}
+
+
+# ---- J. Regosolic subgroups (pp. 50-51; Ch 11) ------------------------------
+
+#' Cumulic Regosols (CSSC subgroups JAA, JAB, JBA, JBB)
+#'
+#' Layers below the Ah horizon (below the surface A, or the mineral surface
+#' when there is none) within the control section that differ in moist colour
+#' value by one unit or more, or organic C that varies irregularly with depth
+#' (some layer holding at least 0.2 percentage points more than the one above
+#' it); otherwise a buried A (b) below the surface in the designations. With
+#' fewer than two such layers nothing can vary, and only a buried A designated
+#' as such makes the soil cumulic. Layers of unknown depth may be among them, and every surface
+#' A the profile allows is tried (.cssc_surface_a).
+#' @noRd
+cumulic_regosol_cssc <- function(pedon, min_value_diff = 1, min_oc_rise = 0.2) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  a <- .cssc_surface_a(x)
+  cs_in <- .cssc_in_control_section(x)
+  buried <- .cssc_has_suffix(x$parsed, "b", weak = "any")
+  osfx <- .cssc_other_suffix(x)
+  buried <- ifelse(!is.na(buried), buried, ifelse(!is.na(osfx), grepl("b", osfx), NA))
+  lost <- which(x$mineral & is.na(x$top_ms))   # layers of unknown depth
+  at <- function(a_rows) {
+    base <- if (length(a_rows)) max(h$bottom_cm[a_rows]) - x$ms else 0
+    if (is.na(base)) return(NA)
+    rows <- which(x$mineral & !is.na(x$top_ms) & x$top_ms >= base - 0.01 & !(cs_in %in% FALSE))
+    rows <- rows[order(h$top_cm[rows])]
+    n_all <- length(rows) + length(lost)
+    v <- h$munsell_value_moist[rows]
+    oc <- h$oc_pct[rows]
+    rises <- if (length(rows) >= 2L) diff(oc) else numeric(0)
+    complete <- length(lost) == 0L && all(cs_in[rows] %in% TRUE)
+    colour <- if (sum(!is.na(v)) >= 2L && diff(range(v, na.rm = TRUE)) >= min_value_diff) TRUE
+              else if (n_all < 2L || (complete && !anyNA(v))) FALSE else NA
+    irregular <- if (any(rises >= min_oc_rise, na.rm = TRUE)) TRUE
+                 else if (n_all < 2L || (complete && !anyNA(oc))) FALSE else NA
+    by_props <- .any3(c(colour, irregular))
+    b_rows <- c(rows, lost)
+    by_desig <- if (any(buried[b_rows] %in% TRUE)) TRUE
+                else if (length(b_rows) == 0L || all(!is.na(buried[b_rows]))) FALSE else NA
+    # with fewer than two layers nothing varies: only a buried A designated as
+    # such makes the soil cumulic
+    if (n_all < 2L) return(isTRUE(by_desig))
+    .cssc_route(by_props, by_desig)$passed
+  }
+  res <- if (isTRUE(a$undecidable)) list(NA) else lapply(a$prefixes, function(pf) at(pf$rows))
+  passed <- if (all(vapply(res, identical, logical(1), res[[1L]]))) res[[1L]] else NA
+  .cssc_result("cumulic_regosol_cssc", passed, integer(0),
+               list(route = "properties+designations"),
+               if (is.na(passed)) c("munsell_value_moist", "oc_pct", "designation")
+               else character(0),
+               "Ch 3, pp. 50-51; Ch 11, pp. 118-119")
 }

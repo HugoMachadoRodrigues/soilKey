@@ -1,0 +1,62 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 50-51, for the Regosolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "JA":
+    - code: "JAA"
+      name: Gleyed Cumulic Humic Regosol
+      tests:
+        all_of:
+          - cumulic_regosol_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Cumulic layering and faint to distinct mottles within 50 cm (p. 50)."
+
+    - code: "JAB"
+      name: Cumulic Humic Regosol
+      tests:
+        all_of:
+          - cumulic_regosol_cssc: {}
+      notes: "Cumulic layering below the Ah (p. 50)."
+
+    - code: "JAC"
+      name: Gleyed Humic Regosol
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (p. 50)."
+
+    - code: "JAD"
+      name: Orthic Humic Regosol
+      tests:
+        default: true
+      notes: "Other Humic Regosols (p. 50)."
+
+  "JB":
+    - code: "JBA"
+      name: Gleyed Cumulic Regosol
+      tests:
+        all_of:
+          - cumulic_regosol_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Cumulic layering and faint to distinct mottles within 50 cm (p. 51)."
+
+    - code: "JBB"
+      name: Cumulic Regosol
+      tests:
+        all_of:
+          - cumulic_regosol_cssc: {}
+      notes: "Cumulic layering below the Ah (p. 51)."
+
+    - code: "JBC"
+      name: Gleyed Regosol
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (p. 51)."
+
+    - code: "JBD"
+      name: Orthic Regosol
+      tests:
+        default: true
+      notes: "Other Regosols (p. 51)."
