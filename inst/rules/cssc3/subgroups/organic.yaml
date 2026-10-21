@@ -1,0 +1,228 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 38-40, for the Organic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "BA":
+    - code: "BAA"
+      name: Histic Folisol
+      tests:
+        all_of:
+          - histic_folisol_cssc: {}
+      notes: "An O horizon over 10 cm thick below the F or H horizons (p. 38; Ch 9, p. 105)."
+
+    - code: "BAB"
+      name: Lignic Folisol
+      tests:
+        all_of:
+          - lignic_folisol_cssc: {}
+      notes: "F or H horizons mainly of woody material (p. 38; Ch 9, p. 105)."
+
+    - code: "BAC"
+      name: Hemic Folisol
+      tests:
+        all_of:
+          - folisol_horizon_cssc: {horizon: "F"}
+      notes: "Mainly moderately decomposed F horizon (p. 38; Ch 9, p. 104)."
+
+    - code: "BAD"
+      name: Humic Folisol
+      tests:
+        all_of:
+          - folisol_horizon_cssc: {horizon: "H"}
+      notes: "Mainly well-decomposed H horizon (p. 38; Ch 9, p. 104)."
+
+  "BB":
+    - code: "BBA"
+      name: Hydric Fibrisol
+      tests:
+        all_of:
+          - hydric_layer_cssc: {}
+      notes: "A hydric layer (Ch 2, p. 19)."
+
+    - code: "BBB"
+      name: Terric Humic Fibrisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: humic, min_cm: 12, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; humic layer over 12 cm in the control section (pp. 38-40)."
+
+    - code: "BBC"
+      name: Terric Mesic Fibrisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: mesic, min_cm: 25, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; mesic layer over 25 cm in the control section (pp. 38-40)."
+
+    - code: "BBD"
+      name: Terric Fibrisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+      notes: "Terric layer of 30 cm or more beneath the surface tier (pp. 38-40)."
+
+    - code: "BBE"
+      name: Limnic Fibrisol
+      tests:
+        all_of:
+          - limnic_layer_cssc: {}
+      notes: "Limnic layer over 5 cm beneath the surface tier (pp. 38-40)."
+
+    - code: "BBF"
+      name: Cumulic Fibrisol
+      tests:
+        all_of:
+          - cumulic_layers_cssc: {}
+      notes: "Cumulic layers over 5 cm in all beneath the surface tier (pp. 38-40)."
+
+    - code: "BBG"
+      name: Humic Fibrisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: humic, min_cm: 12, from: 40}
+      notes: "Humic layer over 12 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BBH"
+      name: Mesic Fibrisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: mesic, min_cm: 25, from: 40}
+      notes: "Mesic layer over 25 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BBI"
+      name: Typic Fibrisol
+      tests:
+        default: true
+      notes: "Other Fibrisols (pp. 38-40)."
+
+  "BC":
+    - code: "BCA"
+      name: Hydric Mesisol
+      tests:
+        all_of:
+          - hydric_layer_cssc: {}
+      notes: "A hydric layer (Ch 2, p. 19)."
+
+    - code: "BCB"
+      name: Terric Humic Mesisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: humic, min_cm: 25, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; humic layer over 25 cm in the control section (pp. 38-40)."
+
+    - code: "BCC"
+      name: Terric Fibric Mesisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: fibric, min_cm: 25, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; fibric layer over 25 cm in the control section (pp. 38-40)."
+
+    - code: "BCD"
+      name: Terric Mesisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+      notes: "Terric layer of 30 cm or more beneath the surface tier (pp. 38-40)."
+
+    - code: "BCE"
+      name: Limnic Mesisol
+      tests:
+        all_of:
+          - limnic_layer_cssc: {}
+      notes: "Limnic layer over 5 cm beneath the surface tier (pp. 38-40)."
+
+    - code: "BCF"
+      name: Cumulic Mesisol
+      tests:
+        all_of:
+          - cumulic_layers_cssc: {}
+      notes: "Cumulic layers over 5 cm in all beneath the surface tier (pp. 38-40)."
+
+    - code: "BCG"
+      name: Humic Mesisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: humic, min_cm: 25, from: 40}
+      notes: "Humic layer over 25 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BCH"
+      name: Fibric Mesisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: fibric, min_cm: 25, from: 40}
+      notes: "Fibric layer over 25 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BCI"
+      name: Typic Mesisol
+      tests:
+        default: true
+      notes: "Other Mesisols (pp. 38-40)."
+
+  "BD":
+    - code: "BDA"
+      name: Hydric Humisol
+      tests:
+        all_of:
+          - hydric_layer_cssc: {}
+      notes: "A hydric layer (Ch 2, p. 19)."
+
+    - code: "BDB"
+      name: Terric Fibric Humisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: fibric, min_cm: 12, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; fibric layer over 12 cm in the control section (pp. 38-40)."
+
+    - code: "BDC"
+      name: Terric Mesic Humisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+          - organic_layer_cssc: {material: mesic, min_cm: 25, from: 0}
+      notes: "Terric layer of 30 cm or more beneath the surface tier; mesic layer over 25 cm in the control section (pp. 38-40)."
+
+    - code: "BDD"
+      name: Terric Humisol
+      tests:
+        all_of:
+          - terric_layer_cssc: {}
+      notes: "Terric layer of 30 cm or more beneath the surface tier (pp. 38-40)."
+
+    - code: "BDE"
+      name: Limnic Humisol
+      tests:
+        all_of:
+          - limnic_layer_cssc: {}
+      notes: "Limnic layer over 5 cm beneath the surface tier (pp. 38-40)."
+
+    - code: "BDF"
+      name: Cumulic Humisol
+      tests:
+        all_of:
+          - cumulic_layers_cssc: {}
+      notes: "Cumulic layers over 5 cm in all beneath the surface tier (pp. 38-40)."
+
+    - code: "BDG"
+      name: Fibric Humisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: fibric, min_cm: 12, from: 40}
+      notes: "Fibric layer over 12 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BDH"
+      name: Mesic Humisol
+      tests:
+        all_of:
+          - organic_layer_cssc: {material: mesic, min_cm: 25, from: 40}
+      notes: "Mesic layer over 25 cm in the middle or bottom tier (pp. 38-40)."
+
+    - code: "BDI"
+      name: Typic Humisol
+      tests:
+        default: true
+      notes: "Other Humisols (pp. 38-40)."

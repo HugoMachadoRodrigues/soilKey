@@ -6,9 +6,52 @@ diagnostics:
   - {function: organic_soil_cssc,    file: R/diagnostics-cssc.R, reference: "Ch 3 key B, pp. 33-34; Ch 2, pp. 17-20"}
   - {function: vertisolic_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, pp. 15-17; Ch 13, p. 131"}
   - {function: podzolic_b_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, pp. 13-14 and 17; Ch 10, p. 108"}
-  - {function: bt_horizon_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, p. 15"}
+  - {function: bt_horizon_cssc,      file: R/diagnostics-cssc.R, reference: "Ch 2, p. 15 (suffix t); Ch 3 key, p. 34"}
   - {function: gleying_cssc,         file: R/diagnostics-cssc.R, reference: "Ch 3 key E, p. 34; Ch 7, pp. 81-82"}
   - {function: solonetzic_b_cssc,    file: R/diagnostics-cssc.R, reference: "Ch 2, p. 17; Ch 12, p. 122"}
   - {function: chernozemic_a_cssc,   file: R/diagnostics-cssc.R, reference: "Ch 2, p. 16; Ch 5, pp. 61-62"}
   - {function: chernozemic_ae_cssc,  file: R/diagnostics-cssc.R, reference: "Ch 3 key G, p. 34"}
   - {function: brunisolic_b_cssc,    file: R/diagnostics-cssc.R, reference: "Ch 3 key I, p. 34; Ch 2, p. 14"}
+  # great groups (Ch 3, pp. 35-36): R/diagnostics-cssc-great-groups.R
+  - {function: organic_cryosol_cssc,      file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 6, p. 79"}
+  - {function: turbic_cryosol_cssc,       file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 6, p. 74"}
+  - {function: folisol_cssc,              file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 9, pp. 98-99 and 104"}
+  - {function: fibrisol_cssc,             file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 9, pp. 99-100"}
+  - {function: mesisol_cssc,              file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 9, p. 101"}
+  - {function: humisol_cssc,              file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 9, p. 102"}
+  - {function: vertisol_cssc,             file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 13, pp. 132-133"}
+  - {function: humic_podzol_cssc,         file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 10, p. 110"}
+  - {function: ferro_humic_podzol_cssc,   file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 10, p. 112"}
+  - {function: luvic_gleysol_cssc,        file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 7, p. 84"}
+  - {function: humic_gleysol_cssc,        file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 35; Ch 7, p. 85"}
+  - {function: vertic_solonetz_cssc,      file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 12, p. 128"}
+  - {function: solod_cssc,                file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 12, p. 126"}
+  - {function: solodized_solonetz_cssc,   file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 12, p. 124"}
+  - {function: brown_chernozem_cssc,      file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 5, p. 63"}
+  - {function: dark_brown_chernozem_cssc, file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 5, p. 66"}
+  - {function: black_chernozem_cssc,      file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 5, p. 68"}
+  - {function: dark_gray_chernozem_cssc,  file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 5, pp. 69-70"}
+  - {function: gray_brown_luvisol_cssc,   file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 8, p. 91"}
+  - {function: melanic_brunisol_cssc,     file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 4, p. 55"}
+  - {function: eutric_brunisol_cssc,      file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 4, p. 56"}
+  - {function: sombric_brunisol_cssc,     file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 4, p. 57"}
+  - {function: humic_regosol_cssc,        file: R/diagnostics-cssc-great-groups.R, reference: "Ch 3, p. 36; Ch 11, p. 119"}
+  # subgroups (Ch 3, pp. 37-40): R/diagnostics-cssc-subgroups.R
+  - {function: glacic_layer_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 37; Ch 6, p. 79"}
+  - {function: terric_organic_cryosol_cssc, file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 37; Ch 6, p. 79"}
+  - {function: organic_below_40_cssc,       file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 37; Ch 6, p. 79"}
+  - {function: gleysolic_cryosol_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 37-38; Ch 6, pp. 76 and 78"}
+  - {function: histic_cryosol_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 37-38; Ch 6, pp. 76-78"}
+  - {function: b_ph_cssc,                   file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 37-38; Ch 6, pp. 74-78"}
+  - {function: no_b_horizon_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 37-38"}
+  - {function: bm_horizon_cssc,             file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 37-38; Ch 6, pp. 74-77"}
+  - {function: luvisolic_cryosol_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 38; Ch 6, pp. 77-78"}
+  - {function: histic_folisol_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 38; Ch 9, p. 105"}
+  - {function: lignic_folisol_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 38; Ch 9, p. 105"}
+  - {function: folisol_horizon_cssc,        file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 38; Ch 9, pp. 104-105"}
+  - {function: hydric_layer_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-39; Ch 2, p. 19"}
+  - {function: terric_layer_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 2, p. 19"}
+  - {function: limnic_layer_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 2, p. 19"}
+  - {function: cumulic_layers_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 2, p. 19"}
+  - {function: organic_layer_cssc,          file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 9, pp. 100-103"}
+  - {function: vertisolic_mottles_cssc,     file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 40; Ch 13, pp. 133-134"}

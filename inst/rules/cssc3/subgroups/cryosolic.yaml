@@ -1,0 +1,201 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 37-38, for the Cryosolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "AA":
+    - code: "AAA"
+      name: Glacic Organic Cryosol
+      tests:
+        all_of:
+          - glacic_layer_cssc: {}
+      notes: "Ice layer more than 30 cm thick, top within 1 m (p. 37; Ch 6, p. 79)."
+
+    - code: "AAB"
+      name: Terric Fibric Organic Cryosol
+      tests:
+        all_of:
+          - terric_organic_cryosol_cssc: {material: fibric}
+      notes: "Mineral contact within 1 m, mainly fibric material above it (p. 37)."
+
+    - code: "AAC"
+      name: Terric Mesic Organic Cryosol
+      tests:
+        all_of:
+          - terric_organic_cryosol_cssc: {material: mesic}
+      notes: "Mineral contact within 1 m, mainly mesic material above it (p. 37)."
+
+    - code: "AAD"
+      name: Terric Humic Organic Cryosol
+      tests:
+        all_of:
+          - terric_organic_cryosol_cssc: {material: humic}
+      notes: "Mineral contact within 1 m, mainly humic material above it (p. 37)."
+
+    - code: "AAE"
+      name: Fibric Organic Cryosol
+      tests:
+        all_of:
+          - organic_below_40_cssc: {material: fibric}
+      notes: "Organic material dominantly fibric below 40 cm (p. 37)."
+
+    - code: "AAF"
+      name: Mesic Organic Cryosol
+      tests:
+        all_of:
+          - organic_below_40_cssc: {material: mesic}
+      notes: "Organic material dominantly mesic below 40 cm (p. 37)."
+
+    - code: "AAG"
+      name: Humic Organic Cryosol
+      tests:
+        all_of:
+          - organic_below_40_cssc: {material: humic}
+      notes: "Organic material dominantly humic below 40 cm (p. 37)."
+
+  "AB":
+    - code: "ABA"
+      name: Gleysolic Turbic Cryosol
+      tests:
+        all_of:
+          - gleysolic_cryosol_cssc: {}
+      notes: "A gleyed layer as in the Gleysolic order (p. 37; Ch 6, p. 76)."
+
+    - code: "ABB"
+      name: Histic Eutric Turbic Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - b_ph_cssc: {high: true}
+      notes: "Organic horizons over 15 cm in the upper 1 m; pH 5.5 or more in some B (p. 37)."
+
+    - code: "ABC"
+      name: Histic Dystric Turbic Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - b_ph_cssc: {high: false}
+      notes: "Organic horizons over 15 cm in the upper 1 m; pH below 5.5 in the B (p. 37)."
+
+    - code: "ABD"
+      name: Histic Regosolic Turbic Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - no_b_horizon_cssc: {}
+      notes: "Organic horizons over 15 cm in the upper 1 m; no B horizon (p. 37)."
+
+    - code: "ABE"
+      name: Brunisolic Eutric Turbic Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: true}
+          - b_ph_cssc: {high: true}
+      notes: "Bm 10 cm or more; pH 5.5 or more in some B (p. 37)."
+
+    - code: "ABF"
+      name: Brunisolic Dystric Turbic Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: true}
+          - b_ph_cssc: {high: false}
+      notes: "Bm 10 cm or more; pH below 5.5 in the B (p. 37)."
+
+    - code: "ABG"
+      name: Orthic Eutric Turbic Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: false}
+          - b_ph_cssc: {high: true}
+      notes: "Bm thinner than 10 cm; pH 5.5 or more in some B (p. 37)."
+
+    - code: "ABH"
+      name: Orthic Dystric Turbic Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: false}
+          - b_ph_cssc: {high: false}
+      notes: "Bm thinner than 10 cm; pH below 5.5 in the B (p. 37)."
+
+    - code: "ABI"
+      name: Regosolic Turbic Cryosol
+      tests:
+        default: true
+      notes: "Other Turbic Cryosols (p. 37)."
+
+  "AC":
+    - code: "ACA"
+      name: Gleysolic Static Cryosol
+      tests:
+        all_of:
+          - gleysolic_cryosol_cssc: {}
+      notes: "A gleyed layer as in the Gleysolic order (p. 38; Ch 6, p. 78)."
+
+    - code: "ACB"
+      name: Histic Eutric Static Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - b_ph_cssc: {high: true}
+      notes: "Organic horizons over 15 cm in the upper 1 m; pH 5.5 or more in some B (p. 38)."
+
+    - code: "ACC"
+      name: Histic Dystric Static Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - b_ph_cssc: {high: false}
+      notes: "Organic horizons over 15 cm in the upper 1 m; pH below 5.5 in the B (p. 38)."
+
+    - code: "ACD"
+      name: Histic Regosolic Static Cryosol
+      tests:
+        all_of:
+          - histic_cryosol_cssc: {}
+          - no_b_horizon_cssc: {}
+      notes: "Organic horizons over 15 cm in the upper 1 m; no B horizon (p. 38)."
+
+    - code: "ACE"
+      name: Luvisolic Static Cryosol
+      tests:
+        all_of:
+          - luvisolic_cryosol_cssc: {}
+      notes: "An eluvial horizon and a Bt 10 cm or more (p. 38; Ch 6, pp. 77-78)."
+
+    - code: "ACF"
+      name: Brunisolic Eutric Static Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: true}
+          - b_ph_cssc: {high: true}
+      notes: "Bm 10 cm or more; pH 5.5 or more in some B (p. 38)."
+
+    - code: "ACG"
+      name: Brunisolic Dystric Static Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: true}
+          - b_ph_cssc: {high: false}
+      notes: "Bm 10 cm or more; pH below 5.5 in the B (p. 38)."
+
+    - code: "ACH"
+      name: Orthic Eutric Static Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: false}
+          - b_ph_cssc: {high: true}
+      notes: "Bm thinner than 10 cm; pH 5.5 or more in some B (p. 38)."
+
+    - code: "ACI"
+      name: Orthic Dystric Static Cryosol
+      tests:
+        all_of:
+          - bm_horizon_cssc: {thick: false}
+          - b_ph_cssc: {high: false}
+      notes: "Bm thinner than 10 cm; pH below 5.5 in the B (p. 38)."
+
+    - code: "ACJ"
+      name: Regosolic Static Cryosol
+      tests:
+        default: true
+      notes: "Other Static Cryosols (p. 38)."

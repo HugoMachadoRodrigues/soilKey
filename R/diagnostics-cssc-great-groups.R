@@ -185,7 +185,11 @@
 # layers, as the Organic order reads them. The organic column runs from the
 # surface through the organic layers; base is where it certainly ends and
 # base_max where it would end if the layers of unknown organic status below
-# it were organic.
+# it were organic (Inf when it ends on a layer with no bottom depth). Limnic layers (Ch 2, p. 19): coprogenous earth (Oco), an L
+# master in another notation (a limnic layer in FAO/USDA), or a layer that is
+# not rock and whose origin is recorded as limnic, coprogenous,
+# diatomaceous, marl or gyttja (diatomaceous earth and marl are designated C
+# and Ck, so the designation alone does not tell them from mineral layers).
 .cssc_organic_column <- function(pedon) {
   h <- pedon$horizons
   pp <- .cssc_parsed(pedon); parsed <- pp$parsed
@@ -197,14 +201,21 @@
     depth <- top0
     for (i in ord) {
       ok <- isTRUE(organic[i]) || (accept_unknown && is.na(organic[i]))
-      if (ok && isTRUE(h$top_cm[i] <= depth + 0.01))
-        depth <- max(depth, h$bottom_cm[i], na.rm = TRUE)
-      else break
+      if (!ok || !isTRUE(h$top_cm[i] <= depth + 0.01)) break
+      # a layer with no bottom depth may go on indefinitely
+      if (is.na(h$bottom_cm[i])) return(if (accept_unknown) Inf else max(depth, h$top_cm[i]))
+      depth <- max(depth, h$bottom_cm[i])
     }
     depth
   }
   base <- walk(FALSE); base_max <- walk(TRUE)
+  origin <- tolower(paste(as.character(h$layer_origin %||% NA), as.character(h$rock_origin %||% NA)))
+  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)), pp$notation$ok)
+  limnic <- (.cssc_is(parsed, "O", "co", "any") %in% TRUE) | (other %in% "L") |
+            (grepl("(^|[^a-z])(limnic|coprogenous|diatomaceous|diatomite|marl|gyttja)([^a-z]|$)", origin) &
+               !lk$rock)
   list(h = h, parsed = parsed, notation = pp$notation, organic = organic,
+       limnic = limnic,
        ord = ord, top0 = top0, organic_cm = base - top0, base = base,
        organic_cm_max = base_max - top0, base_max = base_max,
        rock = lk$rock, water = lk$water, folic = lk$folic,
@@ -383,7 +394,7 @@ folisol_cssc <- function(pedon) {
     l <- ord[seq_along(ord) > pos]
     l[!is.na(rel_top[l]) & rel_top[l] < 160]
   }
-  cand <- !(oc$organic %in% TRUE) & !oc$rock & !oc$water
+  cand <- !(oc$organic %in% TRUE) & !oc$rock & !oc$water & !oc$limnic
   k <- 1L
   while (k <= length(ord)) {
     if (!cand[ord[k]]) { k <- k + 1L; next }
@@ -416,49 +427,92 @@ folisol_cssc <- function(pedon) {
   out
 }
 
+# Kind (fibric, mesic, humic) of every layer, NA where it is not peat or not
+# known (.cssc_organic_kind).
+.cssc_kinds <- function(oc) {
+  vapply(seq_len(nrow(oc$h)), function(i) .cssc_organic_kind(oc, i), character(1))
+}
+
+# The dominant material among thicknesses by kind: with two materials, the
+# one making up more than half; with three, the thickest (Ch 9, p. 100,
+# stated for fibric and applied to all three).
+.cssc_pick_dominant <- function(t) {
+  if (length(t[t > 0]) == 0L) return(NA_character_)
+  if (length(t[t > 0]) <= 2L) {
+    k <- names(t)[which.max(t)]
+    if (t[[k]] > sum(t) / 2) k else NA_character_
+  } else {
+    m <- max(t); k <- names(t)[t == m]
+    if (length(k) == 1L) k else NA_character_
+  }
+}
+
+# Thickness of peat by kind between depths `from` and `to` below the surface,
+# with the thickness that could be peat of any kind (organic layers of unknown
+# kind, layers of unknown organic status) and, by kind, the thickness that a
+# peat layer with no bottom depth could add (open_cm: it may reach the end of
+# the window); the dominant kind is given only when no such unknown can
+# change it. Limnic and folic (L, F, H) layers are not fibric, mesic or humic
+# material and are left out.
+.cssc_kind_tally <- function(oc, from, to, kind = .cssc_kinds(oc)) {
+  h <- oc$h
+  rel_top <- h$top_cm - oc$top0
+  overlap <- pmax(0, pmin(h$bottom_cm - oc$top0, to) - pmax(rel_top, from))
+  open <- ifelse(is.na(overlap) & !is.na(rel_top) & rel_top < to, to - pmax(rel_top, from), 0)
+  overlap[is.na(overlap)] <- 0
+  peat_ok <- !oc$limnic & !oc$folic & !oc$rock & !oc$water
+  org <- oc$organic %in% TRUE & peat_ok
+  kinds <- c("fibric", "mesic", "humic")
+  tot <- vapply(kinds, function(k) sum(overlap[org & kind %in% k]), numeric(1))
+  open_cm <- vapply(kinds, function(k) sum(open[org & kind %in% k]), numeric(1))
+  unk_layer <- is.na(oc$organic) & peat_ok
+  unknown <- sum(overlap[org & is.na(kind)]) + sum(overlap[unk_layer]) +
+             sum(open[(org & is.na(kind)) | unk_layer])
+  # every reading the unknowns allow must give the same dominant kind: open
+  # layers at their least (an open layer that starts in the window has some
+  # thickness in it), one at a time at their most, or all at once, and the
+  # unknown thickness added to each kind in turn
+  base <- tot
+  for (k in kinds[open_cm > 0]) {
+    starts_in <- any(org & kind %in% k & open > 0 & rel_top >= from)
+    if (starts_in) base[[k]] <- base[[k]] + 1e-6
+  }
+  scen <- list(base)
+  for (k in kinds[open_cm > 0]) { t2 <- base; t2[[k]] <- tot[[k]] + open_cm[[k]]; scen <- c(scen, list(t2)) }
+  if (sum(open_cm > 0) > 1L) scen <- c(scen, list(tot + open_cm))
+  alts <- unlist(lapply(scen, function(t) {
+    if (unknown > 0) vapply(kinds, function(k) { t2 <- t; t2[[k]] <- t2[[k]] + unknown; .cssc_pick_dominant(t2) }, "")
+    else .cssc_pick_dominant(t)
+  }))
+  dom <- if (length(unique(alts)) == 1L) alts[[1L]] else NA_character_
+  any_peat <- any(tot > 0) || any(open_cm > 0)
+  list(dominant = dom, thickness = tot, open_cm = open_cm, unknown_cm = unknown,
+       window = c(from, to),
+       decided = !is.na(dom) || (unknown == 0 && sum(open_cm) == 0 && any(tot > 0)),
+       empty = !any_peat && unknown == 0)
+}
+
 # The dominant organic material of the middle tier (40-120 cm from the
 # surface), or of the surface and middle tiers together (0-120 cm) when a
 # terric, lithic or hydric layer (.cssc_organic_contacts) begins above
-# 120 cm (Ch 9, pp. 99-102). With two materials, the dominant one makes up
-# more than half; with three, it is the thickest.
+# 120 cm (Ch 9, pp. 99-102).
 .cssc_tier_dominant <- function(pedon) {
   oc <- .cssc_organic_column(pedon); h <- oc$h
-  kind <- vapply(seq_len(nrow(h)), function(i) .cssc_organic_kind(oc, i), character(1))
+  kind <- .cssc_kinds(oc)
   rel_top <- h$top_cm - oc$top0
   contact <- .cssc_organic_contacts(oc)
   reach <- !is.na(rel_top) & rel_top < 120
-  pick <- function(t) {
-    if (length(t[t > 0]) == 0L) return(NA_character_)
-    if (length(t[t > 0]) <= 2L) {
-      k <- names(t)[which.max(t)]
-      if (t[[k]] > sum(t) / 2) k else NA_character_
-    } else {
-      m <- max(t); k <- names(t)[t == m]
-      if (length(k) == 1L) k else NA_character_
-    }
+  if (any(contact[reach] %in% TRUE)) return(.cssc_kind_tally(oc, 0, 120, kind))
+  r <- .cssc_kind_tally(oc, 40, 120, kind)
+  # a middle tier of limnic material only, with no peat: the surface and
+  # middle tiers are read together, as with a contact
+  lim_mid <- oc$limnic & !is.na(rel_top) & rel_top < 120 &
+             !((h$bottom_cm - oc$top0 <= 40) %in% TRUE)
+  if (isTRUE(r$empty) && any(lim_mid)) {
+    return(.cssc_kind_tally(oc, 0, 120, kind))
   }
-  over <- function(lo) {
-    overlap <- pmax(0, pmin(h$bottom_cm - oc$top0, 120) - pmax(rel_top, lo))
-    overlap[is.na(overlap)] <- 0
-    org <- oc$organic %in% TRUE & overlap > 0
-    tot <- vapply(c("fibric", "mesic", "humic"), function(k)
-      sum(overlap[org & kind %in% k]), numeric(1))
-    # organic layers of unknown kind, and layers that may be organic
-    unk_layer <- is.na(oc$organic) & !oc$rock & !oc$water & overlap > 0
-    unknown <- sum(overlap[org & is.na(kind)]) + sum(overlap[unk_layer])
-    dom <- pick(tot)
-    # an unknown thickness that could change the answer leaves it undecided
-    if (unknown > 0) {
-      alts <- vapply(names(tot), function(k) { t2 <- tot; t2[[k]] <- t2[[k]] + unknown; pick(t2) }, "")
-      if (!all(alts %in% dom) || is.na(dom)) dom <- NA_character_
-    }
-    list(dominant = dom, thickness = tot, unknown_cm = unknown, window = c(lo, 120),
-         decided = !is.na(dom) || (unknown == 0 && any(tot > 0)))
-  }
-  if (any(contact[reach] %in% TRUE)) return(over(0))
-  r <- over(40)
   if (anyNA(contact[reach])) {
-    r0 <- over(0)
+    r0 <- .cssc_kind_tally(oc, 0, 120, kind)
     if (!identical(r0$dominant, r$dominant) || !identical(r0$decided, r$decided)) {
       r$dominant <- NA_character_; r$decided <- FALSE
     }
@@ -753,6 +807,14 @@ gray_brown_luvisol_cssc <- function(pedon) {
 
 # ---- I. Brunisolic order (p. 36; Ch 4) --------------------------------------
 
+# pH 5.5 or more (0.01 M CaCl2) on each of the rows, TRUE, FALSE or NA;
+# without pH in CaCl2, pH in water of 6.5 or more is high and below 5.5 low.
+.cssc_ph_high <- function(h, rows) {
+  ph <- h$ph_cacl2[rows]; pw <- h$ph_h2o[rows]
+  ifelse(!is.na(ph), ph >= 5.5, ifelse(!is.na(pw) & pw >= 6.5, TRUE,
+         ifelse(!is.na(pw) & pw < 5.5, FALSE, NA)))
+}
+
 # pH (0.01 M CaCl2) in the uppermost 25 cm of the B (or of the B and the
 # material below it to 25 cm): "high" when some part reaches 5.5, "low" when
 # all of it is below 5.5. Without pH in CaCl2, pH in water stands in: 6.5 or
@@ -767,9 +829,7 @@ gray_brown_luvisol_cssc <- function(pedon) {
     if (is.na(b_top)) return(none)
     win <- !is.na(h$top_cm) & h$top_cm < b_top + 25 & !(h$bottom_cm %in% NA) &
            h$bottom_cm > b_top
-    ph <- h$ph_cacl2[win]; pw <- h$ph_h2o[win]
-    high <- ifelse(!is.na(ph), ph >= 5.5, ifelse(!is.na(pw) & pw >= 6.5, TRUE,
-                   ifelse(!is.na(pw) & pw < 5.5, FALSE, NA)))
+    high <- .cssc_ph_high(h, which(win))
     if (length(high) == 0L) return(none)
     some_high <- .any3(high)
     list(high = some_high, low = if (is.na(some_high)) NA else !some_high)
