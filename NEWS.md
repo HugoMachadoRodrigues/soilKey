@@ -1,3 +1,27 @@
+# soilKey 0.9.265 (2026-10-20)
+
+## A generic classifier for ordered keys
+
+Most of the national systems on the roadmap (Canada, Australia, New Zealand,
+Japan, Hungary, China) are ordered keys of the USDA kind: at each level the
+first class whose tests pass is assigned. Their classifiers will be thin
+wrappers around a new internal engine, `classify_hierarchical()`, that walks
+the levels named in the system's registry entry. Two rules differ from the
+three older keys, on purpose: a class is assigned only when its tests pass (a
+`default: true` entry passes by definition), so a level where nothing passes
+stays unassigned instead of falling back to the last class of its list (with
+a warning saying where the name stopped); and a class that could not be
+decided for lack of data, tested before the one assigned, makes the
+assignment provisional. Run on the USDA rules, it gives
+the same name, order and evidence grade as `classify_usda()` for all 44
+canonical fixtures.
+
+`ClassificationResult` gains three fields: `system_id` (the registry id; WRB,
+SiBCS, USDA and SmartSolos results now carry it), `levels` (the class assigned at each
+level) and `provisional_because`. Its `print()` counts the classes actually
+tested (for SiBCS and USDA it counted the phases of the nested trace) and
+calls them RSGs only for WRB. No classification changes.
+
 # soilKey 0.9.264 (2026-10-20)
 
 ## The rule engine reads nested blocks and `none_of`

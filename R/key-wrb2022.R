@@ -216,7 +216,8 @@ classify_wrb2022 <- function(pedon,
     missing_data   = missing_data,
     evidence_grade = grade,
     prior_check    = prior_check,
-    warnings       = warnings
+    warnings       = warnings,
+    system_id      = "wrb2022"
   )
 }
 

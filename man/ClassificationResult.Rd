@@ -54,6 +54,24 @@ class was verified.}
 check (consistent / inconsistent / not run).}
 
 \item{\code{warnings}}{Character vector. Free-form warnings.}
+
+\item{\code{system_id}}{Character. Registry id of the system (see
+\code{\link{soilkey_systems}}), e.g.
+\code{"wrb2022"}; since v0.9.265.}
+
+\item{\code{levels}}{\code{data.frame} with one row per level of the
+key that assigned a class (\code{level},
+\code{code}, \code{name}), top level first; set by
+the generic classifier of ordered keys and
+\code{NULL} for WRB, SiBCS and USDA, whose levels
+are in \code{trace}.}
+
+\item{\code{provisional_because}}{Character vector. In a first-match key a class
+that could not be decided for lack of data, tested
+before the one assigned, makes the assignment
+provisional; these are those classes, as
+\code{"<level>:<code>"}. Empty when the assignment
+is firm or the classifier does not report it.}
 }
 \if{html}{\out{</div>}}
 }
@@ -83,7 +101,10 @@ Build a ClassificationResult.
   missing_data = character(0),
   evidence_grade = NA_character_,
   prior_check = NULL,
-  warnings = character(0)
+  warnings = character(0),
+  system_id = NULL,
+  levels = NULL,
+  provisional_because = character(0)
 )}\if{html}{\out{</div>}}
 }
 
@@ -109,6 +130,13 @@ Build a ClassificationResult.
 \item{\code{prior_check}}{List or NULL.}
 
 \item{\code{warnings}}{Character vector.}
+
+\item{\code{system_id}}{Registry id of the system, or NULL.}
+
+\item{\code{levels}}{Assigned class per level (data.frame), or NULL.}
+
+\item{\code{provisional_because}}{Character vector of undecided classes
+tested before the assigned ones.}
 }
 \if{html}{\out{</div>}}
 }
