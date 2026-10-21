@@ -1,0 +1,25 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Cryosolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "A":
+    - code: "AA"
+      name: Organic Cryosol
+      tests:
+        all_of:
+          - organic_cryosol_cssc: {}
+      notes: "Formed mainly in organic material, permafrost within 1 m (p. 35; Ch 6, p. 79)."
+
+    - code: "AB"
+      name: Turbic Cryosol
+      tests:
+        all_of:
+          - turbic_cryosol_cssc: {}
+      notes: "Mineral; marked cryoturbation and permafrost within 2 m (p. 35; Ch 6, p. 74)."
+
+    - code: "AC"
+      name: Static Cryosol
+      tests:
+        default: true
+      notes: "Other Cryosolic soils: mineral, no marked cryoturbation, permafrost within 1 m (p. 35)."

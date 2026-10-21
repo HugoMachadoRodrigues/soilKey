@@ -1,3 +1,48 @@
+# soilKey 0.9.268 (2026-10-21)
+
+## The Canadian great groups (experimental)
+
+`classify_cssc3()` now keys the 31 great groups of the Canadian System of Soil
+Classification, 3rd edition (Key to Soil Great Groups, Ch 3, pp. 35-36), under
+the ten orders of 0.9.267, so the name is the great group ("Humo-Ferric
+Podzol", "Dark Brown Chernozem") and the order is in `rsg_or_order`. The great
+groups read, as the orders do, measured properties first and the Canadian
+designations second:
+
+* Cryosolic: organic material over permafrost, cryoturbation (y);
+* Organic: the folic thickness of Ch 9 (L, F, H), the dominant material of
+  the middle tier (fibric, mesic or humic, by rubbed fibre, then designation),
+  widened to the surface tier only by a terric, lithic or hydric layer;
+* Vertisolic: surface dry value or Ah thickness, by drainage class, and the
+  Ch 13 rule for the Ap of a poorly drained cultivated soil;
+* Podzolic: at least 10 cm of Bh or Bhf chemistry;
+* Gleysolic: a gleyed Bt (Btg), a humic Ah or Ap with at least 2 % organic C;
+* Solonetzic: a slickenside horizon, an Ae of at least 2 cm, an AB or BA;
+* Chernozemic: the dry value and chroma of the chernozemic A and signs of
+  eluviation;
+* Luvisolic: a forest mull Ah and a mean annual soil temperature of 8 C;
+* Brunisolic: a thick dark Ah or Ap and the pH (CaCl2) of the upper B;
+* Regosolic: an Ah or Ap of 10 cm.
+
+The last great group of each order is the key's "other soils". The readings
+where the book is silent are added to `inst/rules/cssc3/readings.yaml` (now
+33). The per-layer readings of podzolic B chemistry and of gley colours are
+factored out of the order diagnostics without changing them. The example
+pedons now reach a great group each. WRB, SiBCS and USDA results do not
+change.
+
+Fixes to the 0.9.267 order key, all in the Organic order:
+
+* a folic layer (L, F, H) lying on peat is read as litter over peat, so
+  F 0-5 cm over Om 5-160 cm is an Organic soil (it was keyed as Regosolic);
+  the litter is not counted towards the peat limits;
+* the kind of the surface organic layer is read from measured rubbed fibre
+  before its designation (an Om with 60 % rubbed fibre is fibric);
+* a layer of unknown organic status leaves the order undecided where it
+  could change the answer, instead of failing it;
+* in designations of another notation, the masters A, B, C and E are read as
+  mineral, R as rock and W as water when organic C is missing.
+
 # soilKey 0.9.267 (2026-10-20)
 
 ## The Canadian System of Soil Classification, to the order (experimental)

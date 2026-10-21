@@ -33,15 +33,15 @@ test_that("each example pedon keys to its order", {
               "solonetzic", "chernozemic", "luvisolic", "brunisolic",
               "regosolic")) {
     r <- classify_cssc3(make_cssc3_example(o), on_missing = "silent")
-    expect_identical(tolower(r$name), o, info = o)
+    expect_identical(tolower(r$rsg_or_order), o, info = o)
     expect_identical(r$system_id, "cssc3")
-    expect_identical(r$levels$level, "orders")
+    expect_identical(r$levels$level[1], "orders")
   }
 })
 
 test_that("the podzolic example keys to the Podzolic order on CRAN too", {
   r <- classify_cssc3(make_cssc3_example("podzolic"), on_missing = "silent")
-  expect_identical(r$name, "Podzolic")
+  expect_identical(r$rsg_or_order, "Podzolic")
 })
 
 test_that("a Bt within 50 cm takes a podzolic B out of the Podzolic order", {
@@ -51,7 +51,7 @@ test_that("a Bt within 50 cm takes a podzolic B out of the Podzolic order", {
   p$horizons$clay_pct[4] <- 14
   p$horizons$clay_films_amount[4] <- "common"
   r <- classify_cssc3(p, on_missing = "silent")
-  expect_identical(r$name, "Luvisolic")
+  expect_identical(r$rsg_or_order, "Luvisolic")
   expect_false(isTRUE(r$trace$orders$D$passed))
 })
 
@@ -61,7 +61,7 @@ test_that("designations decide when the properties are missing, and say so", {
   p$horizons$fe_pyro_pct <- NA_real_
   p$horizons$al_pyro_pct <- NA_real_
   r <- classify_cssc3(p, on_missing = "silent")
-  expect_identical(r$name, "Podzolic")
+  expect_identical(r$rsg_or_order, "Podzolic")
   expect_true(any(grepl("surveyor's horizon designations", r$warnings)))
   d <- soilKey:::podzolic_b_cssc(p)
   expect_identical(d$evidence$route, "designations")
@@ -76,12 +76,12 @@ test_that("an unknown soil climate leaves the Chernozemic order undecided", {
   p$site$mean_annual_soil_temp_C <- NULL
   p$site$soil_moisture_subclass <- NULL
   r <- classify_cssc3(p, on_missing = "silent")
-  expect_identical(r$name, "Brunisolic")
-  expect_identical(r$provisional_because, "orders:G")
+  expect_identical(r$rsg_or_order, "Brunisolic")
+  expect_true("orders:G" %in% r$provisional_because)
   # the USDA regimes stand in when the Canadian fields are absent
   p$site$soil_temperature_regime <- "frigid"
   p$site$soil_moisture_regime <- "ustic"
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Chernozemic")
+  expect_identical(classify_cssc3(p, on_missing = "silent")$rsg_or_order, "Chernozemic")
 })
 
 test_that("a dark Ah is not read as gleyed", {
@@ -100,7 +100,7 @@ test_that("classify_all runs the Canadian system only when asked", {
   expect_named(res, c("wrb", "sibcs", "usda", "summary"))
   res <- classify_all(p, systems = c("wrb", "cssc"), on_missing = "silent")
   expect_named(res, c("wrb", "sibcs", "usda", "cssc3", "summary"))
-  expect_identical(res$summary$cssc3, "Luvisolic")
+  expect_identical(res$summary$cssc3, "Gray Luvisol")
   expect_identical(load_rules("cssc"), load_rules("cssc3"))
 })
 
@@ -121,7 +121,7 @@ test_that("Organic option 2 needs a mineral layer within 40 cm; folic over rock 
   # folic material more than twice a thin mineral layer over rock (p. 33, B.1.c)
   p <- .mk_cssc(list(designation = c("LFH", "Bm", "R"), top_cm = c(0, 20, 28),
                      bottom_cm = c(20, 28, 40), oc_pct = c(40, 1, NA)))
-  expect_identical(classify_cssc3(p, on_missing = "silent")$name, "Organic")
+  expect_identical(classify_cssc3(p, on_missing = "silent")$rsg_or_order, "Organic")
 })
 
 test_that("measured properties that fail beat a designation", {

@@ -1,0 +1,33 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Organic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "B":
+    - code: "BA"
+      name: Folisol
+      tests:
+        all_of:
+          - folisol_cssc: {}
+      notes: "Mainly upland folic (L, F, H) material, rarely saturated (p. 35)."
+
+    - code: "BB"
+      name: Fibrisol
+      tests:
+        all_of:
+          - fibrisol_cssc: {}
+      notes: "Middle tier dominantly fibric (p. 35; Ch 9, pp. 99-100)."
+
+    - code: "BC"
+      name: Mesisol
+      tests:
+        all_of:
+          - mesisol_cssc: {}
+      notes: "Middle tier dominantly mesic (p. 35; Ch 9, p. 101)."
+
+    - code: "BD"
+      name: Humisol
+      tests:
+        all_of:
+          - humisol_cssc: {}
+      notes: "Middle tier dominantly humic (p. 35; Ch 9, p. 102)."

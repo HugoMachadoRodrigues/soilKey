@@ -24,15 +24,18 @@ classify_cssc3(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"cssc3"}, the order in \code{name}, \code{rsg_or_order} and
-  \code{levels}, the key trace, and \code{provisional_because}.
+  \code{"cssc3"}, the great group in \code{name}, the order in
+  \code{rsg_or_order}, both in \code{levels}, the key trace, and
+  \code{provisional_because}.
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the Canadian System of Soil
 Classification, 3rd edition (Soil Classification Working Group 1998).
 \strong{Experimental}: this release keys the ten orders (Key to Soil
-Orders, Ch 3, pp. 33-34); great groups and subgroups follow in later
-releases, so the name is the order.
+Orders, Ch 3, pp. 33-34) and their 31 great groups (Key to Soil Great
+Groups, pp. 35-36); subgroups follow in a later release, so the name is
+the great group (e.g. "Humo-Ferric Podzol") and the order is in
+\code{rsg_or_order}.
 }
 \details{
 The Canadian keys are written largely in terms of horizon designations,
