@@ -69,3 +69,12 @@ diagnostics:
   - {function: no_thick_b_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 42; Ch 7, pp. 86-87"}
   - {function: ae_horizon_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 49-50; Ch 4, pp. 55-59"}
   - {function: cumulic_regosol_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 50-51; Ch 11, pp. 118-119"}
+  - {function: solonetzic_a_colour_cssc,  file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 42-45; Ch 12, pp. 123-129"}
+  - {function: alkaline_a_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 44; Ch 12, p. 124"}
+  - {function: weak_solonetzic_b_cssc,    file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 45-49; Ch 2, p. 14"}
+  - {function: eluvial_horizon_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 45-47; Ch 5, pp. 64-69"}
+  - {function: calcareous_b_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 45-47; Ch 2, pp. 13-14; Ch 5, pp. 64-70"}
+  - {function: gleyed_luvisol_cssc,       file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 48-49; Ch 8, pp. 92-95"}
+  - {function: podzolic_luvisol_cssc,     file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 48-49; Ch 8, pp. 92-94"}
+  - {function: brunisolic_luvisol_cssc,   file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 48-49; Ch 8, pp. 92-94"}
+  - {function: dark_gray_luvisol_cssc,    file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 49; Ch 8, p. 94"}

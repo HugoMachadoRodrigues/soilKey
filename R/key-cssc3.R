@@ -64,12 +64,13 @@
 #' Classification, 3rd edition (Soil Classification Working Group 1998).
 #' \strong{Experimental}: this release keys the ten orders (Key to Soil
 #' Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
-#' pp. 35-36) and the subgroups of seven orders: Cryosolic, Organic,
-#' Vertisolic, Podzolic, Gleysolic, Brunisolic and Regosolic (Key to Soil
-#' Subgroups, pp. 37-51). The name is the deepest class
-#' assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
-#' keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
-#' in \code{rsg_or_order} and every level in \code{levels}.
+#' pp. 35-36) and their 231 subgroups (Key to Soil Subgroups, pp. 37-51).
+#' The name is the deepest class assigned: the subgroup (e.g. "Terric
+#' Mesisol"), or the great group (e.g. "Solonetz") when no subgroup can be
+#' given: the Solonetzic subgroups are named by the colour of the A, and the
+#' key has no other subgroup for a Solonetzic soil without an A (one eroded
+#' down to its solonetzic B); the order is in \code{rsg_or_order} and every
+#' level in \code{levels}.
 #'
 #' The Canadian keys are written largely in terms of horizon designations,
 #' which the book defines partly by measurable properties. Each diagnostic
@@ -86,7 +87,9 @@
 #' from \code{site$mean_annual_soil_temp_C} and
 #' \code{site$soil_moisture_subclass}, or approximated from the USDA regimes.
 #' Without it the Chernozemic order is undecided and any order keyed after it
-#' is reported as provisional (\code{$provisional_because}).
+#' is reported as provisional (\code{$provisional_because}). The Gray and
+#' Dark Gray subgroups of the Solods and Solodized Solonetz also ask for a
+#' subhumid climate (\code{site$soil_moisture_subclass}).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set (\code{load_rules("cssc3")}).
@@ -133,9 +136,9 @@ classify_cssc3 <- function(pedon, rules = NULL,
 #' the Canadian notation and the properties the order, great-group and
 #' subgroup keys read: a Brunisolic Dystric Turbic Cryosol, a Terric Humic
 #' Mesisol, an Orthic Vertisol, an Orthic Humo-Ferric Podzol, an Orthic Humic
-#' Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, an Orthic
-#' Eutric Brunisol and an Orthic Regosol. They are not records of real
-#' pedons.
+#' Gleysol, a Dark Brown Solonetz, an Orthic Dark Brown Chernozem, an Orthic
+#' Gray Luvisol, an Orthic Eutric Brunisol and an Orthic Regosol. They are not
+#' records of real pedons.
 #'
 #' @param order One of \code{"cryosolic"}, \code{"organic"},
 #'   \code{"vertisolic"}, \code{"podzolic"}, \code{"gleysolic"},
@@ -186,8 +189,9 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
     solonetzic = hz(
       designation = c("Ah", "Bnt", "Csk"), top_cm = c(0, 12, 35), bottom_cm = c(12, 35, 80),
       munsell_hue_moist = c("10YR", "10YR", "2.5Y"), munsell_value_moist = c(3, 3, 5),
-      munsell_chroma_moist = c(2, 2, 3), clay_pct = c(18, 32, 28),
-      ca_cmol = c(12, 8, 10), na_cmol = c(0.5, 4, 6),
+      munsell_chroma_moist = c(2, 2, 3), munsell_value_dry = c(4, 4, 6),
+      munsell_chroma_dry = c(2, 2, 3), clay_pct = c(18, 32, 28),
+      ca_cmol = c(12, 8, 10), na_cmol = c(0.5, 4, 6), ph_h2o = c(7.2, 8.4, 8.6),
       structure_type = c("granular", "columnar", "massive"),
       rupture_resistance = c("soft", "very hard", "hard"), oc_pct = c(3, 0.9, 0.4)),
     chernozemic = hz(

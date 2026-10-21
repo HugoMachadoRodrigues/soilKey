@@ -1,5 +1,5 @@
 version: "The Canadian System of Soil Classification, 3rd edition (1998)"
-implementation_status: "soilKey v0.9.270 -- 10/10 orders (pp. 33-34), 31/31 great groups (pp. 35-36, in great-groups/), 130/231 subgroups (Cryosolic, Organic, Vertisolic, Podzolic, Gleysolic, Brunisolic, Regosolic; pp. 37-51, in subgroups/); the Solonetzic, Chernozemic and Luvisolic subgroups to follow"
+implementation_status: "soilKey v0.9.271 -- 10/10 orders (pp. 33-34), 31/31 great groups (pp. 35-36, in great-groups/), 231/231 subgroups (pp. 37-51, in subgroups/)"
 source: |
   Soil Classification Working Group (1998). The Canadian System of Soil
   Classification. 3rd ed. Agriculture and Agri-Food Canada Publication 1646.

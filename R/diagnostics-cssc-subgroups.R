@@ -2,7 +2,8 @@
 # v0.9.269 -- subgroups of the Canadian System of Soil Classification, 3rd
 # edition (Key to Soil Subgroups, Ch 3, pp. 37-51): the Cryosolic, Organic and
 # Vertisolic orders (v0.9.269); the Podzolic, Gleysolic, Brunisolic and
-# Regosolic orders (v0.9.270). Same conventions as R/diagnostics-cssc.R and
+# Regosolic orders (v0.9.270); the Solonetzic, Chernozemic and Luvisolic
+# orders (v0.9.271). Same conventions as R/diagnostics-cssc.R and
 # R/diagnostics-cssc-great-groups.R: measured properties first, designations
 # in the Canadian notation second, NA when neither decides; readings in
 # inst/rules/cssc3/readings.yaml. Depths of organic soils are measured from
@@ -714,11 +715,14 @@ vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_dist
 }
 
 # Thickness of the largest run of adjacent rows, certain (ok TRUE) and
-# possible (ok TRUE or NA).
+# possible (ok TRUE or NA). A row of unknown thickness (the deepest horizon
+# with no bottom, which may go on) adds nothing to the certain run and has no
+# limit in the possible one.
 .cssc_run_lo_hi <- function(x, ok) {
   ord <- order(x$h$top_cm)
-  lo <- .cssc_runs((ok %in% TRUE)[ord], x$thick[ord])
-  hi <- .cssc_runs((!(ok %in% FALSE))[ord], x$thick[ord])
+  th <- x$thick[ord]
+  lo <- .cssc_runs((ok %in% TRUE)[ord], ifelse(is.na(th), 0, th))
+  hi <- .cssc_runs((!(ok %in% FALSE))[ord], ifelse(is.na(th), Inf, th))
   list(lo = lo$thickness, hi = hi$thickness, rows = ord[lo$rows])
 }
 
@@ -1010,7 +1014,7 @@ no_thick_b_cssc <- function(pedon, min_cm = 10) {
 #' Eluviated Brunisols (CSSC subgroups IAA, IAB, IBA, IBB, ICB, ICC, IDB, IDC)
 #'
 #' An Ae or Aej horizon at least 2 cm thick (not an Ahe; an E in another
-#' notation), adjacent ones added up.
+#' notation), adjacent ones added up; a buried horizon (b) is not one.
 #' @noRd
 ae_horizon_cssc <- function(pedon, min_cm = 2) {
   x <- .cssc_horizons(pedon)
@@ -1018,7 +1022,7 @@ ae_horizon_cssc <- function(pedon, min_cm = 2) {
             !(.cssc_is(x$parsed, "A", "h", "any") %in% TRUE)
   raw <- .cssc_raw_master(x)
   ae <- ifelse(x$desig_known, can_ae, ifelse(!is.na(raw), raw == "E", NA))
-  ae[!x$mineral] <- FALSE
+  ae[!x$mineral | .cssc_buried_rows(x)] <- FALSE
   r <- .cssc_run_lo_hi(x, ae)
   passed <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
   .cssc_result("ae_horizon_cssc", passed, r$rows,
@@ -1079,4 +1083,357 @@ cumulic_regosol_cssc <- function(pedon, min_value_diff = 1, min_oc_rise = 0.2) {
                if (is.na(passed)) c("munsell_value_moist", "oc_pct", "designation")
                else character(0),
                "Ch 3, pp. 50-51; Ch 11, pp. 118-119")
+}
+
+
+# ---- F. Solonetzic subgroups (pp. 42-45; Ch 12) -----------------------------
+
+# A subhumid soil climate: from site$soil_moisture_subclass (subhumid passes;
+# the other subclasses of the same scale, perhumid, humid, semiarid, subarid
+# and arid, fail; the aquic subclasses and other words leave it undecided);
+# without it, the USDA aridic or torric regimes and the perudic one fail and
+# the others leave it undecided.
+.cssc_subhumid <- function(site) {
+  m <- gsub("[^a-z]", "", tolower(as.character(site$soil_moisture_subclass %||% NA)[1L]))
+  if (!is.na(m) && nzchar(m)) {
+    if (m == "subhumid") return(TRUE)
+    if (m %in% c("perhumid", "humid", "semiarid", "subarid", "arid")) return(FALSE)
+    return(NA)
+  }
+  r <- tolower(as.character(site$soil_moisture_regime %||% NA)[1L])
+  if (!is.na(r) && grepl("arid|torric|perudic", r)) FALSE else NA
+}
+
+# Range of the thickness-weighted mean of a column (or of `values`, one per
+# row) over rows when the rows with no value may hold anything from `lo` to
+# `hi`: c(min, max), or NA when a row has no thickness.
+.cssc_wmean_range <- function(x, col, rows, lo, hi, values = NULL) {
+  if (length(rows) == 0L) return(c(NA_real_, NA_real_))
+  v <- (if (is.null(values)) x$h[[col]] else values)[rows]; w <- pmax(0, x$thick[rows])
+  if (anyNA(w) || sum(w) == 0) return(c(NA_real_, NA_real_))
+  known <- sum(v[!is.na(v)] * w[!is.na(v)]); unk <- sum(w[is.na(v)])
+  c(known + lo * unk, known + hi * unk) / sum(w)
+}
+
+#' Colour of the A of the Solonetzic subgroups (CSSC subgroups FAA-FDG)
+#'
+#' The Ah, Ahe or Ap horizons at the surface (.cssc_surface_a), by their dry
+#' colour (thickness-weighted means over the whole A; a horizon of the A with
+#' no value may hold any, so the class is decided only when every value it
+#' may hold gives the same answer): colour = "brown" (value above 4.5),
+#' "dark_brown" (3.5 to 4.5), "black" (below 3.5), "dark_gray" (3.5 to 4.5)
+#' or "gray" (above 4.5). The key's chroma limits say 'usually' and are read
+#' only to tell the Brown and Dark Brown subgroups (chroma above 1.5) from the
+#' Gray and Dark Gray ones (chroma 1.5 or less, dry, or moist when the dry one
+#' is missing, as Ch 12 writes 'moist or dry'; with a subhumid climate): a low
+#' chroma under a climate that is not subhumid stays Brown or Dark Brown. The
+#' Black subgroups take any chroma, and so do all the subgroups of the great
+#' groups that have no Gray ones (gray_split = FALSE: the Vertic Solonetz and
+#' the Solonetz). Where there is no Ah, Ahe or Ap at the surface (an LFH over
+#' an Ae under forest), the key gives no colour class; the Gray subgroups then
+#' read the Ae at the mineral surface, as Ch 12 (pp. 125 and 127) words them
+#' ("an Ahe, Ae or Ap horizon").
+#' @noRd
+solonetzic_a_colour_cssc <- function(pedon, colour = c("brown", "dark_brown", "black",
+                                                        "dark_gray", "gray"),
+                                     gray_split = TRUE) {
+  colour <- match.arg(colour)
+  if (!gray_split && colour %in% c("dark_gray", "gray"))
+    stop("the gray colours need gray_split = TRUE", call. = FALSE)
+  x <- .cssc_horizons(pedon)
+  a <- .cssc_surface_a(x)
+  sub <- .cssc_subhumid(pedon$site)
+  bands <- c("low", "mid", "high")
+  band <- function(v) if (v > 4.5) 3L else if (v >= 3.5) 2L else 1L
+  want <- match(switch(colour, brown = "high", gray = "high", dark_brown = "mid",
+                       dark_gray = "mid", black = "low"), bands)
+  chroma <- ifelse(!is.na(x$h$munsell_chroma_dry), x$h$munsell_chroma_dry,
+                   x$h$munsell_chroma_moist)
+  passed <- .cssc_over_a(a, function(s) {
+    if (length(s$rows) == 0L) {
+      if (colour != "gray") return(FALSE)
+      ae <- .cssc_surface_ae(x)
+      if (ae$undecided) return(NA)
+      if (length(ae$rows) == 0L) return(FALSE)
+      s <- list(rows = ae$rows)
+    }
+    v <- .cssc_wmean_range(x, "munsell_value_dry", s$rows, 0, 10)
+    if (anyNA(v)) return(NA)
+    b <- c(band(v[1]), band(v[2]))
+    band_ok <- if (b[1] == b[2]) b[1] == want else if (want >= b[1] && want <= b[2]) NA else FALSE
+    if (identical(band_ok, FALSE) || colour == "black" || !gray_split) return(band_ok)
+    ch <- .cssc_wmean_range(x, NULL, s$rows, 0, 20, values = chroma)
+    low <- if (anyNA(ch)) NA else if (ch[2] <= 1.5) TRUE else if (ch[1] > 1.5) FALSE else NA
+    grayish <- .and3(low, sub)
+    .and3(band_ok, if (colour %in% c("brown", "dark_brown")) !grayish else grayish)
+  })
+  .cssc_result("solonetzic_a_colour_cssc", passed, a$rows,
+               list(route = "properties+designations", colour = colour,
+                    gray_split = gray_split, subhumid = sub),
+               if (is.na(passed)) c("munsell_value_dry", "munsell_chroma_dry",
+                                    "site$soil_moisture_subclass") else character(0),
+               "Ch 3, pp. 42-45; Ch 12, pp. 123-129")
+}
+
+# The Ae horizons at the mineral surface: the adjacent Ae (or Aej; an E in
+# another notation; not a buried one) from the mineral surface down. A
+# horizon with no designation on the way may or may not be one, and makes
+# the result undecided ($undecided).
+.cssc_surface_ae <- function(x) {
+  ae <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) &
+        !(.cssc_is(x$parsed, "A", "h", "any") %in% TRUE)
+  ae <- (ae | (.cssc_raw_master(x) %in% "E")) & !.cssc_buried_rows(x)
+  undes <- !x$desig_known & is.na(.cssc_raw_master(x))
+  ord <- order(x$top_ms); ord <- ord[x$mineral[ord] & !is.na(x$top_ms[ord])]
+  rows <- integer(0); depth <- 0; undecided <- FALSE
+  for (i in ord) {
+    if (!isTRUE(abs(x$top_ms[i] - depth) < 0.01)) break
+    if (undes[i]) { undecided <- TRUE; break }
+    if (!ae[i]) break
+    rows <- c(rows, i); depth <- x$bottom_ms[i]
+    if (is.na(depth)) break
+  }
+  list(rows = rows, undecided = undecided)
+}
+
+# Buried horizons: a b in a designation (Canadian or another notation).
+.cssc_buried_rows <- function(x) {
+  (.cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE) |
+    grepl("^[0-9]*[A-Z]+[a-z0-9]*b", trimws(as.character(x$h$designation)))
+}
+
+# A horizons of the profile itself (not buried): an A master in the Canadian
+# notation, an A or E in another notation. A horizon with no designation is
+# an A when it belongs to the surface A (.cssc_surface_a); below it, it may be
+# an A (an Ae) down to the first horizon known not to be one (a B or C master
+# in either notation, or a solonetzic B by its properties), and is not one
+# from there down.
+.cssc_a_rows <- function(x, pedon = NULL) {
+  raw <- .cssc_raw_master(x)
+  buried <- .cssc_buried_rows(x)
+  can_a <- .cssc_is(x$parsed, "A", weak = "any")
+  a <- ifelse(!is.na(can_a), can_a, ifelse(!is.na(raw), raw %in% c("A", "E"), NA))
+  surf <- .cssc_surface_a(x)
+  not_a <- (.cssc_is(x$parsed, c("B", "C"), weak = "any") %in% TRUE) | (raw %in% c("B", "C"))
+  if (!is.null(pedon)) {
+    sb <- solonetzic_b_cssc(pedon)
+    if (identical(sb$evidence$route, "properties") && isTRUE(sb$passed))
+      not_a[sb$layers] <- TRUE
+  }
+  first_not_a <- suppressWarnings(min(x$top_ms[not_a & x$mineral], na.rm = TRUE))
+  undes <- which(is.na(a))
+  below <- !is.na(x$top_ms[undes]) & x$top_ms[undes] >= first_not_a
+  a[undes] <- ifelse(undes %in% surf$rows & !isTRUE(surf$undecidable), TRUE,
+                     ifelse(below, FALSE, NA))
+  a[buried | !x$mineral] <- FALSE
+  a
+}
+
+#' Alkaline Solonetz (CSSC subgroup FDA)
+#'
+#' A strongly alkaline A horizon: pH in water above 8.5 (the key's figure;
+#' Ch 12 writes 8.5 or more) in an A horizon of the profile (.cssc_a_rows).
+#' @noRd
+alkaline_a_cssc <- function(pedon, min_ph = 8.5) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  is_a <- .cssc_a_rows(x, pedon)
+  pass <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o > min_ph)
+  passed <- .cssc_some(pass, which(is_a %in% TRUE), which(is.na(is_a)))
+  .cssc_result("alkaline_a_cssc", passed, which(is_a %in% TRUE & pass %in% TRUE),
+               list(route = "properties"),
+               if (is.na(passed)) "ph_h2o" else character(0),
+               "Ch 3, p. 44; Ch 12, p. 124")
+}
+
+
+# ---- G. Chernozemic subgroups (pp. 45-47; Ch 5) -----------------------------
+
+#' Weak solonetzic B (CSSC Solonetzic subgroups of the Chernozems and the
+#' Gray Luvisols)
+#'
+#' A Bnj, Bnjtj or Btnj horizon (a B whose n is weakly expressed); with
+#' t = TRUE, a Btnj (the Gray Luvisols: a strong t and a weak n in the same
+#' horizon, a Bnjtj is not one). Read from the designations: no
+#' attribute separates the weak expression of the n from its absence. In
+#' another notation n has no weak form, so a B with an n (and a t, for the
+#' Gray Luvisols) is undecided and any other horizon is not one; the horizons
+#' of the surface A are not one either.
+#' @noRd
+weak_solonetzic_b_cssc <- function(pedon, t = FALSE) {
+  x <- .cssc_horizons(pedon)
+  n_weak <- vapply(x$parsed, function(comps) {
+    if (length(comps) == 0L) return(NA)
+    any(vapply(comps, function(cmp) {
+      sx <- .cssc_suffix_set(cmp)
+      cmp$master == "B" && "n" %in% sx && "n" %in% cmp$weak &&
+        (!t || ("t" %in% sx && !"t" %in% cmp$weak))
+    }, logical(1)))
+  }, logical(1))
+  raw <- .cssc_raw_master(x); suf <- .cssc_other_suffix(x)
+  other <- ifelse(is.na(raw), NA,
+                  ifelse(raw == "B" & grepl("n", suf) & (!t | grepl("t", suf)), NA, FALSE))
+  row <- ifelse(x$desig_known, n_weak %in% TRUE, other)
+  row[!x$mineral | .cssc_buried_rows(x)] <- FALSE
+  row[.cssc_surface_a(x)$rows] <- FALSE
+  passed <- if (any(row %in% TRUE)) TRUE else if (anyNA(row[x$mineral])) NA else FALSE
+  .cssc_result("weak_solonetzic_b_cssc", passed, which(row %in% TRUE),
+               list(route = "designations"),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, pp. 45-49; Ch 2, p. 14")
+}
+
+#' Eluviated Chernozems (CSSC subgroups GAE, GAF, GBE, GBF, GCE, GCF)
+#'
+#' Eluvial horizons (Ahe, Ae or Aej; an E in another notation) at least 2 cm
+#' thick, adjacent ones added up; a buried horizon (b) is not one.
+#' @noRd
+eluvial_horizon_cssc <- function(pedon, min_cm = 2) {
+  x <- .cssc_horizons(pedon)
+  can_e <- .cssc_is(x$parsed, "A", "e", "any") %in% TRUE
+  raw <- .cssc_raw_master(x)
+  e <- ifelse(x$desig_known, can_e, ifelse(!is.na(raw), raw == "E", NA))
+  e[!x$mineral | .cssc_buried_rows(x)] <- FALSE
+  r <- .cssc_run_lo_hi(x, e)
+  passed <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  .cssc_result("eluvial_horizon_cssc", passed, r$rows,
+               list(route = "designations", eluvial_cm = r$lo),
+               if (is.na(passed)) "designation" else character(0),
+               "Ch 3, pp. 45-47; Ch 5, pp. 64-69")
+}
+
+#' Calcareous Chernozems (CSSC subgroups GAG, GAH, GBG, GBH, GCG, GCH, GDE, GDF)
+#'
+#' A Bmk horizon at least 5 cm thick: a Bm from which primary carbonates have
+#' not been removed (Ch 2, pp. 13-14; the k is "visible effervescence" with dilute
+#' HCl). A Bm (or a B that may be one) is calcareous by measured
+#' carbonates when they decide: 0.5 % CaCO3 equivalent or more passes (the
+#' level at which effervescence is visible, as in protocalcic_properties()),
+#' none fails; otherwise by a k in its designation.
+#' @noRd
+calcareous_b_cssc <- function(pedon, min_cm = 5, min_caco3_pct = 0.5) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  bm <- .cssc_is(x$parsed, "B", "m", "any")
+  b <- .cssc_b_rows(x) & x$mineral
+  cand <- ifelse(!is.na(bm), bm, ifelse(b %in% FALSE, FALSE, NA))
+  cand[.cssc_surface_a(x)$rows] <- FALSE
+  prop <- ifelse(is.na(h$caco3_pct), NA,
+                 ifelse(h$caco3_pct >= min_caco3_pct, TRUE,
+                        ifelse(h$caco3_pct <= 0, FALSE, NA)))
+  k <- .cssc_has_suffix(x$parsed, "k", weak = "any")
+  carb <- ifelse(!is.na(prop), prop, k)
+  r <- .cssc_run_lo_hi(x, .cssc_and3v(cand, carb))
+  passed <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  .cssc_result("calcareous_b_cssc", passed, r$rows,
+               list(route = "properties+designations", bmk_cm = r$lo),
+               if (is.na(passed)) c("caco3_pct", "designation") else character(0),
+               "Ch 3, pp. 45-47; Ch 2, pp. 13-14; Ch 5, pp. 64-70")
+}
+
+
+# ---- H. Luvisolic subgroups (pp. 48-49; Ch 8) -------------------------------
+
+#' Gleyed Luvisols (CSSC subgroups HAC, HAE, HAG, HBC, HBE, HBG, HBI, HBK, HBM)
+#'
+#' Distinct (or prominent) mottles within 50 cm of the mineral surface, or
+#' prominent mottles at depths of 50-100 cm (horizons that reach into that
+#' window). The Gleyed Vertic subgroups use the key's own "faint to distinct
+#' within 50 cm" instead (mottles_cssc).
+#' @noRd
+gleyed_luvisol_cssc <- function(pedon) {
+  x <- .cssc_horizons(pedon)
+  m1 <- .cssc_mottles(x, c("distinct", "prominent"), 0, 50)
+  m2 <- .cssc_mottles(x, "prominent", 50, 100, overlap = TRUE)
+  passed <- .any3(c(m1$passed, m2$passed))
+  .cssc_result("gleyed_luvisol_cssc", passed, union(m1$rows, m2$rows),
+               list(route = if (isTRUE(m1$passed)) m1$route else m2$route),
+               if (is.na(passed)) c("mottle_contrast", "designation") else character(0),
+               "Ch 3, pp. 48-49; Ch 8, pp. 92-95")
+}
+
+#' Podzolic Luvisols (CSSC subgroups HAC, HAD, HBE, HBF)
+#'
+#' A podzolic B at least 10 cm thick in the upper solum, read as podzolic B
+#' material (layer by layer, .cssc_podzolic_kind) in adjacent layers above
+#' the top of the Bt, and a Bt whose top is within 50 cm of the mineral
+#' surface.
+#' @noRd
+podzolic_luvisol_cssc <- function(pedon, max_bt_top_cm = 50, min_cm = 10) {
+  x <- .cssc_horizons(pedon)
+  bt <- bt_horizon_cssc(pedon)
+  bt_top <- suppressWarnings(min(x$top_ms[bt$layers], na.rm = TRUE))
+  bt_ok <- if (identical(bt$passed, FALSE)) FALSE
+           else if (isTRUE(bt$passed) && is.finite(bt_top)) bt_top <= max_bt_top_cm else NA
+  pod <- .cssc_podzolic_kind(pedon, x)
+  above <- if (is.finite(bt_top)) ifelse(is.na(x$top_ms), NA, x$top_ms < bt_top) else NA
+  pod <- .cssc_and3v(pod, above)
+  r <- .cssc_run_lo_hi(x, pod)
+  pb_ok <- .cssc_thick_test(r$lo, r$hi, min_cm, strict = FALSE)
+  passed <- .and3(pb_ok, bt_ok)
+  .cssc_result("podzolic_luvisol_cssc", passed, r$rows,
+               list(route = "properties+designations", podzolic_b = pb_ok,
+                    podzolic_cm = r$lo, bt_within_50 = bt_ok),
+               if (is.na(passed)) c("fe_pyro_pct", "al_pyro_pct", "designation") else character(0),
+               "Ch 3, pp. 48-49; Ch 8, pp. 92-94")
+}
+
+#' Brunisolic Luvisols (CSSC subgroups HAE, HAF, HBK, HBL)
+#'
+#' In the upper solum, a Bm at least 5 cm thick with a moist chroma of 3 or
+#' more (dry chroma when the moist one is missing), or podzolic B material
+#' (a Bf) thinner than 10 cm in all that does not reach below 15 cm of the
+#' mineral surface. The upper solum is read as above the Bt.
+#' @noRd
+brunisolic_luvisol_cssc <- function(pedon, min_bm_cm = 5) {
+  x <- .cssc_horizons(pedon); h <- x$h
+  bt <- bt_horizon_cssc(pedon)
+  bt_top <- suppressWarnings(min(x$top_ms[bt$layers], na.rm = TRUE))
+  limit <- if (is.finite(bt_top)) bt_top else 50
+  upper <- ifelse(is.na(x$top_ms), NA, x$top_ms < limit)
+  bm <- .cssc_is(x$parsed, "B", "m", "any")
+  raw <- .cssc_raw_master(x)
+  bm <- ifelse(!is.na(bm), bm, ifelse(!is.na(raw), ifelse(raw == "B", NA, FALSE), NA))
+  bm[!x$mineral] <- FALSE
+  bm <- .cssc_and3v(bm, upper)
+  chroma <- ifelse(!is.na(h$munsell_chroma_moist), h$munsell_chroma_moist, h$munsell_chroma_dry)
+  bm3 <- .cssc_and3v(bm, ifelse(is.na(chroma), NA, chroma >= 3))
+  r <- .cssc_run_lo_hi(x, bm3)
+  by_bm <- .cssc_thick_test(r$lo, r$hi, min_bm_cm, strict = FALSE)
+  # a thin Bf: podzolic B material above the Bt, less than 10 cm in all and
+  # all of it ending at 15 cm or less
+  pod <- .cssc_and3v(.cssc_podzolic_kind(pedon, x), upper)
+  sure <- pod %in% TRUE; maybe <- is.na(pod)
+  th_lo <- sum(x$thick[sure], na.rm = TRUE)
+  th_hi <- if (anyNA(x$thick[sure | maybe])) Inf else sum(x$thick[sure | maybe])
+  # how deep the material certainly reaches (a missing bottom counts from the
+  # top) and how deep it may reach (a missing bottom has no limit)
+  deep_lo <- function(rows) if (!any(rows)) -Inf
+                            else max(ifelse(is.na(x$bottom_ms[rows]), x$top_ms[rows],
+                                            x$bottom_ms[rows]), na.rm = TRUE)
+  deep_hi <- function(rows) if (!any(rows)) -Inf
+                            else if (anyNA(x$bottom_ms[rows])) Inf
+                            else max(x$bottom_ms[rows])
+  by_bf <- if (!any(sure) && !any(maybe)) FALSE
+           else if (th_lo >= 10 || deep_lo(sure) > 15) FALSE
+           else if (any(sure) && th_hi < 10 && deep_hi(sure | maybe) <= 15) TRUE
+           else NA
+  passed <- .any3(c(by_bm, by_bf))
+  .cssc_result("brunisolic_luvisol_cssc", passed, union(r$rows, which(sure)),
+               list(route = "properties+designations", bm = by_bm, thin_bf = by_bf),
+               if (is.na(passed)) c("munsell_chroma_moist", "designation") else character(0),
+               "Ch 3, pp. 48-49; Ch 8, pp. 92-94")
+}
+
+#' Dark Gray Luvisols (CSSC subgroups HBG, HBH)
+#'
+#' An Ah or Ahe at least 5 cm thick: the Ah and Ahe horizons of the surface A
+#' (an Ap does not count, as the key names Ah and Ahe).
+#' @noRd
+dark_gray_luvisol_cssc <- function(pedon, min_cm = 5) {
+  x <- .cssc_horizons(pedon)
+  a <- .cssc_surface_a(x)
+  passed <- .cssc_over_a(a, function(s) if (is.na(s$ah_cm)) NA else s$ah_cm >= min_cm)
+  .cssc_result("dark_gray_luvisol_cssc", passed, a$rows,
+               list(route = "designations+properties", ah_cm = a$ah_cm),
+               if (is.na(passed)) c("designation", "munsell_value_moist", "oc_pct") else character(0),
+               "Ch 3, p. 49; Ch 8, p. 94")
 }

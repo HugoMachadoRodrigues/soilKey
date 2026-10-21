@@ -1,0 +1,167 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 48-49, for the Luvisolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "HA":
+    - code: "HAA"
+      name: Gleyed Vertic Gray Brown Luvisol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m and faint to distinct mottles within 50 cm (p. 48)."
+
+    - code: "HAB"
+      name: Vertic Gray Brown Luvisol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (p. 48)."
+
+    - code: "HAC"
+      name: Gleyed Podzolic Gray Brown Luvisol
+      tests:
+        all_of:
+          - podzolic_luvisol_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "A podzolic B 10 cm or more over a Bt within 50 cm, and gleying mottles (p. 48)."
+
+    - code: "HAD"
+      name: Podzolic Gray Brown Luvisol
+      tests:
+        all_of:
+          - podzolic_luvisol_cssc: {}
+      notes: "A podzolic B 10 cm or more over a Bt within 50 cm (p. 48)."
+
+    - code: "HAE"
+      name: Gleyed Brunisolic Gray Brown Luvisol
+      tests:
+        all_of:
+          - brunisolic_luvisol_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "A Bm 5 cm or more of chroma 3 or more, or a thin Bf within 15 cm, and gleying mottles (p. 48)."
+
+    - code: "HAF"
+      name: Brunisolic Gray Brown Luvisol
+      tests:
+        all_of:
+          - brunisolic_luvisol_cssc: {}
+      notes: "A Bm 5 cm or more of chroma 3 or more, or a thin Bf within 15 cm (p. 48)."
+
+    - code: "HAG"
+      name: Gleyed Gray Brown Luvisol
+      tests:
+        all_of:
+          - gleyed_luvisol_cssc: {}
+      notes: "Distinct mottles within 50 cm or prominent mottles at 50-100 cm (p. 48)."
+
+    - code: "HAH"
+      name: Orthic Gray Brown Luvisol
+      tests:
+        default: true
+      notes: "Other Gray Brown Luvisols (p. 48)."
+
+  "HB":
+    - code: "HBA"
+      name: Gleyed Vertic Gray Luvisol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m and faint to distinct mottles within 50 cm (p. 48)."
+
+    - code: "HBB"
+      name: Vertic Gray Luvisol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (p. 48)."
+
+    - code: "HBC"
+      name: Gleyed Fragic Gray Luvisol
+      tests:
+        all_of:
+          - fragic_luvic_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "A fragipan within or below the Bt, and gleying mottles (p. 48)."
+
+    - code: "HBD"
+      name: Fragic Gray Luvisol
+      tests:
+        all_of:
+          - fragic_luvic_cssc: {}
+      notes: "A fragipan within or below the Bt (p. 48)."
+
+    - code: "HBE"
+      name: Gleyed Podzolic Gray Luvisol
+      tests:
+        all_of:
+          - podzolic_luvisol_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "A podzolic B 10 cm or more over a Bt within 50 cm, and gleying mottles (p. 48)."
+
+    - code: "HBF"
+      name: Podzolic Gray Luvisol
+      tests:
+        all_of:
+          - podzolic_luvisol_cssc: {}
+      notes: "A podzolic B 10 cm or more over a Bt within 50 cm (p. 49)."
+
+    - code: "HBG"
+      name: Gleyed Dark Gray Luvisol
+      tests:
+        all_of:
+          - dark_gray_luvisol_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "An Ah or Ahe 5 cm or more, and gleying mottles (p. 49)."
+
+    - code: "HBH"
+      name: Dark Gray Luvisol
+      tests:
+        all_of:
+          - dark_gray_luvisol_cssc: {}
+      notes: "An Ah or Ahe 5 cm or more (p. 49)."
+
+    - code: "HBI"
+      name: Gleyed Solonetzic Gray Luvisol
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {t: true}
+          - gleyed_luvisol_cssc: {}
+      notes: "A Btnj horizon, and gleying mottles (p. 49)."
+
+    - code: "HBJ"
+      name: Solonetzic Gray Luvisol
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {t: true}
+      notes: "A Btnj horizon (p. 49)."
+
+    - code: "HBK"
+      name: Gleyed Brunisolic Gray Luvisol
+      tests:
+        all_of:
+          - brunisolic_luvisol_cssc: {}
+          - gleyed_luvisol_cssc: {}
+      notes: "A Bm 5 cm or more of chroma 3 or more, or a thin Bf within 15 cm, and gleying mottles (p. 49)."
+
+    - code: "HBL"
+      name: Brunisolic Gray Luvisol
+      tests:
+        all_of:
+          - brunisolic_luvisol_cssc: {}
+      notes: "A Bm 5 cm or more of chroma 3 or more, or a thin Bf within 15 cm (p. 49)."
+
+    - code: "HBM"
+      name: Gleyed Gray Luvisol
+      tests:
+        all_of:
+          - gleyed_luvisol_cssc: {}
+      notes: "Distinct mottles within 50 cm or prominent mottles at 50-100 cm (p. 49)."
+
+    - code: "HBN"
+      name: Orthic Gray Luvisol
+      tests:
+        default: true
+      notes: "Other Gray Luvisols (p. 49)."

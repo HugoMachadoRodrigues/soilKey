@@ -24,9 +24,9 @@ order of the Canadian System of Soil Classification, with designations in
 the Canadian notation and the properties the order, great-group and
 subgroup keys read: a Brunisolic Dystric Turbic Cryosol, a Terric Humic
 Mesisol, an Orthic Vertisol, an Orthic Humo-Ferric Podzol, an Orthic Humic
-Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, an Orthic
-Eutric Brunisol and an Orthic Regosol. They are not records of real
-pedons.
+Gleysol, a Dark Brown Solonetz, an Orthic Dark Brown Chernozem, an Orthic
+Gray Luvisol, an Orthic Eutric Brunisol and an Orthic Regosol. They are not
+records of real pedons.
 }
 \examples{
 p <- make_cssc3_example("chernozemic")

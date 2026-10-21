@@ -26,9 +26,9 @@ test_that("the example pedons of the three orders reach a subgroup", {
     expect_identical(r$levels$level, c("orders", "great_groups", "subgroups"), info = o)
     expect_length(r$provisional_because, 0L)
   }
-  # an order without subgroups still stops at the great group
+  # since v0.9.271 every order keys its subgroups
   r <- classify_cssc3(make_cssc3_example("solonetzic"), on_missing = "silent")
-  expect_identical(r$name, "Solonetz")
+  expect_identical(r$name, "Dark Brown Solonetz")
 })
 
 test_that("Organic Cryosol subgroups", {
@@ -312,6 +312,6 @@ test_that("third review fixes: buried A, deep E, open layers, row order", {
   # rows given bottom-up are read in depth order; the pedon is not changed
   p <- make_cssc3_example("luvisolic")
   q <- PedonRecord$new(site = p$site, horizons = data.table::copy(p$horizons)[4:1, ])
-  expect_identical(classify_cssc3(q, on_missing = "silent")$name, "Gray Luvisol")
+  expect_identical(classify_cssc3(q, on_missing = "silent")$name, "Orthic Gray Luvisol")
   expect_identical(q$horizons$designation, c("Ck", "Bt", "Ae", "LFH"))
 })
