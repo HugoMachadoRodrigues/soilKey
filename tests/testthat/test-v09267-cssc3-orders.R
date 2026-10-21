@@ -100,7 +100,7 @@ test_that("classify_all runs the Canadian system only when asked", {
   expect_named(res, c("wrb", "sibcs", "usda", "summary"))
   res <- classify_all(p, systems = c("wrb", "cssc"), on_missing = "silent")
   expect_named(res, c("wrb", "sibcs", "usda", "cssc3", "summary"))
-  expect_identical(res$summary$cssc3, "Gray Luvisol")
+  expect_identical(res$summary$cssc3, "Orthic Gray Luvisol")
   expect_identical(load_rules("cssc"), load_rules("cssc3"))
 })
 

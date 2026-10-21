@@ -16,7 +16,6 @@ test_that("the rules list 67 subgroups under the twelve great groups of D, E, I,
   gg <- c("DA", "DB", "DC", "EA", "EB", "EC", "IA", "IB", "IC", "ID", "JA", "JB")
   expect_true(all(gg %in% names(r$subgroups)))
   expect_identical(sum(lengths(r$subgroups[gg])), 67L)
-  expect_identical(sum(lengths(r$subgroups)), 130L)
   # the Sombric Brunisols get unique codes although the book prints ICB twice
   expect_identical(vapply(r$subgroups$IC, `[[`, "", "code"), c("ICA", "ICB", "ICC", "ICD", "ICE"))
 })

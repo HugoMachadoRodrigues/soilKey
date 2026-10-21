@@ -1,0 +1,346 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 45-47, for the Chernozemic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+# The Dark Gray Chernozems have no Eluviated subgroups.
+
+subgroups:
+  "GA":
+    - code: "GAA"
+      name: Gleyed Vertic Brown Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m, and faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAB"
+      name: Vertic Brown Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (p. 45)."
+
+    - code: "GAC"
+      name: Gleyed Solonetzic Brown Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bnj, Bnjtj or Btnj horizon, and faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAD"
+      name: Solonetzic Brown Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+      notes: "A Bnj, Bnjtj or Btnj horizon (p. 45)."
+
+    - code: "GAE"
+      name: Gleyed Eluviated Brown Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more, and faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAF"
+      name: Eluviated Brown Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more (p. 45)."
+
+    - code: "GAG"
+      name: Gleyed Calcareous Brown Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bmk 5 cm or more, and faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAH"
+      name: Calcareous Brown Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+      notes: "A Bmk 5 cm or more (p. 45)."
+
+    - code: "GAI"
+      name: Gleyed Rego Brown Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "No B horizon, or a B thinner than 5 cm, and faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAJ"
+      name: Rego Brown Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+      notes: "No B horizon, or a B thinner than 5 cm (p. 45)."
+
+    - code: "GAK"
+      name: Gleyed Brown Chernozem
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (p. 45)."
+
+    - code: "GAL"
+      name: Orthic Brown Chernozem
+      tests:
+        default: true
+      notes: "Other Brown Chernozems (p. 45)."
+
+  "GB":
+    - code: "GBA"
+      name: Gleyed Vertic Dark Brown Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m, and faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBB"
+      name: Vertic Dark Brown Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (pp. 45-46)."
+
+    - code: "GBC"
+      name: Gleyed Solonetzic Dark Brown Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bnj, Bnjtj or Btnj horizon, and faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBD"
+      name: Solonetzic Dark Brown Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+      notes: "A Bnj, Bnjtj or Btnj horizon (pp. 45-46)."
+
+    - code: "GBE"
+      name: Gleyed Eluviated Dark Brown Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more, and faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBF"
+      name: Eluviated Dark Brown Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more (pp. 45-46)."
+
+    - code: "GBG"
+      name: Gleyed Calcareous Dark Brown Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bmk 5 cm or more, and faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBH"
+      name: Calcareous Dark Brown Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+      notes: "A Bmk 5 cm or more (pp. 45-46)."
+
+    - code: "GBI"
+      name: Gleyed Rego Dark Brown Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "No B horizon, or a B thinner than 5 cm, and faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBJ"
+      name: Rego Dark Brown Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+      notes: "No B horizon, or a B thinner than 5 cm (pp. 45-46)."
+
+    - code: "GBK"
+      name: Gleyed Dark Brown Chernozem
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (pp. 45-46)."
+
+    - code: "GBL"
+      name: Orthic Dark Brown Chernozem
+      tests:
+        default: true
+      notes: "Other Dark Brown Chernozems (pp. 45-46)."
+
+  "GC":
+    - code: "GCA"
+      name: Gleyed Vertic Black Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m, and faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCB"
+      name: Vertic Black Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (pp. 46-47)."
+
+    - code: "GCC"
+      name: Gleyed Solonetzic Black Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bnj, Bnjtj or Btnj horizon, and faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCD"
+      name: Solonetzic Black Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+      notes: "A Bnj, Bnjtj or Btnj horizon (pp. 46-47)."
+
+    - code: "GCE"
+      name: Gleyed Eluviated Black Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more, and faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCF"
+      name: Eluviated Black Chernozem
+      tests:
+        all_of:
+          - eluvial_horizon_cssc: {}
+      notes: "Ahe, Ae or Aej horizons 2 cm or more (pp. 46-47)."
+
+    - code: "GCG"
+      name: Gleyed Calcareous Black Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bmk 5 cm or more, and faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCH"
+      name: Calcareous Black Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+      notes: "A Bmk 5 cm or more (pp. 46-47)."
+
+    - code: "GCI"
+      name: Gleyed Rego Black Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "No B horizon, or a B thinner than 5 cm, and faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCJ"
+      name: Rego Black Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+      notes: "No B horizon, or a B thinner than 5 cm (pp. 46-47)."
+
+    - code: "GCK"
+      name: Gleyed Black Chernozem
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (pp. 46-47)."
+
+    - code: "GCL"
+      name: Orthic Black Chernozem
+      tests:
+        default: true
+      notes: "Other Black Chernozems (pp. 46-47)."
+
+  "GD":
+    - code: "GDA"
+      name: Gleyed Vertic Dark Gray Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A slickenside horizon within 1 m, and faint to distinct mottles within 50 cm (p. 47)."
+
+    - code: "GDB"
+      name: Vertic Dark Gray Chernozem
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m (p. 47)."
+
+    - code: "GDC"
+      name: Gleyed Solonetzic Dark Gray Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bnj, Bnjtj or Btnj horizon, and faint to distinct mottles within 50 cm (p. 47)."
+
+    - code: "GDD"
+      name: Solonetzic Dark Gray Chernozem
+      tests:
+        all_of:
+          - weak_solonetzic_b_cssc: {}
+      notes: "A Bnj, Bnjtj or Btnj horizon (p. 47)."
+
+    - code: "GDE"
+      name: Gleyed Calcareous Dark Gray Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "A Bmk 5 cm or more, and faint to distinct mottles within 50 cm (p. 47)."
+
+    - code: "GDF"
+      name: Calcareous Dark Gray Chernozem
+      tests:
+        all_of:
+          - calcareous_b_cssc: {}
+      notes: "A Bmk 5 cm or more (p. 47)."
+
+    - code: "GDG"
+      name: Gleyed Rego Dark Gray Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "No B horizon, or a B thinner than 5 cm, and faint to distinct mottles within 50 cm (p. 47)."
+
+    - code: "GDH"
+      name: Rego Dark Gray Chernozem
+      tests:
+        all_of:
+          - no_thick_b_cssc: {min_cm: 5}
+      notes: "No B horizon, or a B thinner than 5 cm (p. 47)."
+
+    - code: "GDI"
+      name: Gleyed Dark Gray Chernozem
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "Faint to distinct mottles within 50 cm (p. 47)."
+
+    - code: "GDJ"
+      name: Orthic Dark Gray Chernozem
+      tests:
+        default: true
+      notes: "Other Dark Gray Chernozems (p. 47)."

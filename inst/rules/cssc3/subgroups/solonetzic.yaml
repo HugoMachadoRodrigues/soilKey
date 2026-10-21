@@ -1,0 +1,258 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 42-45, for the Solonetzic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+# None of the four great groups has a last 'other' subgroup in the key.
+# The Vertic Solonetz and the Solonetz have no Gray subgroups, so their colour
+# tests read the dry value alone (gray_split: false).
+
+subgroups:
+  "FA":
+    - code: "FAA"
+      name: Gleyed Brown Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5, faint to distinct mottles within 50 cm (pp. 42-43)."
+
+    - code: "FAB"
+      name: Brown Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5 (pp. 42-43)."
+
+    - code: "FAC"
+      name: Gleyed Dark Brown Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, faint to distinct mottles within 50 cm (pp. 42-43)."
+
+    - code: "FAD"
+      name: Dark Brown Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5 (pp. 42-43)."
+
+    - code: "FAE"
+      name: Gleyed Black Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5, faint to distinct mottles within 50 cm (pp. 42-43)."
+
+    - code: "FAF"
+      name: Black Vertic Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5 (pp. 42-43)."
+
+  "FB":
+    - code: "FBA"
+      name: Gleyed Brown Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5, faint to distinct mottles within 50 cm (p. 43)."
+
+    - code: "FBB"
+      name: Brown Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5 (p. 43)."
+
+    - code: "FBC"
+      name: Gleyed Dark Brown Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, faint to distinct mottles within 50 cm (p. 43)."
+
+    - code: "FBD"
+      name: Dark Brown Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5 (p. 43)."
+
+    - code: "FBE"
+      name: Gleyed Black Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5, faint to distinct mottles within 50 cm (p. 43)."
+
+    - code: "FBF"
+      name: Black Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5 (p. 43)."
+
+    - code: "FBG"
+      name: Gleyed Dark Gray Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_gray}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, chroma usually below 2, subhumid climate, faint to distinct mottles within 50 cm (p. 43)."
+
+    - code: "FBH"
+      name: Dark Gray Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_gray}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, chroma usually below 2, subhumid climate (p. 43)."
+
+    - code: "FBI"
+      name: Gleyed Gray Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: gray}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap (with none, the Ae: Ch 12, pp. 125 and 127) of dry value above 4.5, chroma usually below 2, subhumid climate, faint to distinct mottles within 50 cm (p. 43)."
+
+    - code: "FBJ"
+      name: Gray Solod
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: gray}
+      notes: "An Ah, Ahe or Ap (with none, the Ae: Ch 12, pp. 125 and 127) of dry value above 4.5, chroma usually below 2, subhumid climate (p. 43)."
+
+  "FC":
+    - code: "FCA"
+      name: Gleyed Brown Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5, faint to distinct mottles within 50 cm (p. 44)."
+
+    - code: "FCB"
+      name: Brown Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5 (p. 44)."
+
+    - code: "FCC"
+      name: Gleyed Dark Brown Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, faint to distinct mottles within 50 cm (p. 44)."
+
+    - code: "FCD"
+      name: Dark Brown Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5 (p. 44)."
+
+    - code: "FCE"
+      name: Gleyed Black Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5, faint to distinct mottles within 50 cm (p. 44)."
+
+    - code: "FCF"
+      name: Black Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5 (p. 44)."
+
+    - code: "FCG"
+      name: Gleyed Dark Gray Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_gray}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, chroma usually below 2, subhumid climate, faint to distinct mottles within 50 cm (p. 44)."
+
+    - code: "FCH"
+      name: Dark Gray Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_gray}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, chroma usually below 2, subhumid climate (p. 44)."
+
+    - code: "FCI"
+      name: Gleyed Gray Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: gray}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap (with none, the Ae: Ch 12, pp. 125 and 127) of dry value above 4.5, chroma usually below 2, subhumid climate, faint to distinct mottles within 50 cm (p. 44)."
+
+    - code: "FCJ"
+      name: Gray Solodized Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: gray}
+      notes: "An Ah, Ahe or Ap (with none, the Ae: Ch 12, pp. 125 and 127) of dry value above 4.5, chroma usually below 2, subhumid climate (p. 44)."
+
+  "FD":
+    - code: "FDA"
+      name: Alkaline Solonetz
+      tests:
+        all_of:
+          - alkaline_a_cssc: {}
+      notes: "A strongly alkaline A horizon, pH (H2O) above 8.5 (p. 44)."
+
+    - code: "FDB"
+      name: Gleyed Brown Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5, faint to distinct mottles within 50 cm (pp. 44-45)."
+
+    - code: "FDC"
+      name: Brown Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: brown, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value above 4.5 (pp. 44-45)."
+
+    - code: "FDD"
+      name: Gleyed Dark Brown Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5, faint to distinct mottles within 50 cm (pp. 44-45)."
+
+    - code: "FDE"
+      name: Dark Brown Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: dark_brown, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value 3.5-4.5 (pp. 44-45)."
+
+    - code: "FDF"
+      name: Gleyed Black Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black, gray_split: false}
+          - mottles_cssc: {contrast: [faint, distinct], from: 0, to: 50}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5, faint to distinct mottles within 50 cm (pp. 44-45)."
+
+    - code: "FDG"
+      name: Black Solonetz
+      tests:
+        all_of:
+          - solonetzic_a_colour_cssc: {colour: black, gray_split: false}
+      notes: "An Ah, Ahe or Ap of dry value below 3.5 (pp. 44-45)."
