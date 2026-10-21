@@ -178,6 +178,66 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
 
 # ---- Podzolic B horizon (Ch 2, pp. 13-14, 17) -------------------------------
 
+# Per-layer reading of podzolic B material (Ch 2, pp. 13-14 and 17), used by
+# the Podzolic order and its great groups. By properties: bh, bhf and bf are
+# the Bh, Bhf and Bf chemistries with the colour of the definition, on B
+# horizons (or horizons without a designation), each TRUE, FALSE or NA;
+# any = podzolic B material of either kind. By designations: strong h, hf or
+# f suffixes on B horizons.
+.cssc_podzolic_layers <- function(x) {
+  h <- x$h
+  is_b <- .cssc_is(x$parsed, "B")
+  b_or_unknown <- is.na(is_b) | is_b
+  oc <- h$oc_pct; fe <- h$fe_pyro_pct; al <- h$al_pyro_pct; clay <- h$clay_pct
+  val <- h$munsell_value_moist; chr <- h$munsell_chroma_moist
+  pos <- .cssc_hue_pos(h$munsell_hue_moist)
+  sands <- !is.na(h$sand_pct) & h$sand_pct >= 85
+  # colour: black, or 10YR or redder with chroma > 3 or value <= 3
+  black <- !is.na(val) & !is.na(chr) & val <= 2.5 & chr <= 2
+  colour <- ifelse(black, TRUE,
+            ifelse(is.na(pos) | is.na(val) | is.na(chr), NA,
+                   pos <= 20 & (chr > 3 | val <= 3)))
+  # Bh chemistry (three-valued), with moist value and chroma <= 3 (Ch 10)
+  bh <- ifelse(is.na(oc) | is.na(fe), NA,
+               oc > 1 & fe < 0.3 & (fe == 0 | oc / fe >= 20))
+  bh <- ifelse(bh %in% TRUE & !is.na(val) & !is.na(chr), val <= 3 & chr <= 3,
+               ifelse(bh %in% TRUE, NA, bh))
+  # Bf/Bhf chemistry (three-valued)
+  alfe <- al + fe
+  bf <- ifelse(is.na(oc) | is.na(fe) | is.na(al) | is.na(clay), NA,
+               oc > 0.5 & alfe >= ifelse(sands, 0.4, 0.6) &
+                 (clay == 0 | alfe / clay > 0.05) &
+                 (fe >= 0.3 | (fe > 0 & oc / fe < 20)))
+  layer <- function(chem) ifelse(!b_or_unknown, FALSE,
+                         ifelse(chem %in% FALSE | colour %in% FALSE, FALSE,
+                                ifelse(chem %in% TRUE & colour %in% TRUE, TRUE, NA)))
+  chem_any <- ifelse(bh %in% TRUE | bf %in% TRUE, TRUE,
+                     ifelse(is.na(bh) | is.na(bf), NA, FALSE))
+  bhf_chem <- ifelse(bf %in% TRUE, ifelse(is.na(oc), NA, oc > 5), bf)
+  list(any = layer(chem_any), bh = layer(bh), bhf = layer(bhf_chem),
+       d_any = .cssc_is(x$parsed, "B", "h", "no") | .cssc_is(x$parsed, "B", "hf", "no") |
+               .cssc_is(x$parsed, "B", "f", "no"),
+       d_bh = .cssc_is(x$parsed, "B", "h", "no"),
+       d_bhf = .cssc_is(x$parsed, "B", "hf", "no"))
+}
+
+# At least `min_cm` of one kind of podzolic material (props_kind and
+# desig_kind name elements of .cssc_podzolic_layers()), properties first.
+.cssc_podzolic_run <- function(x, props_kind, desig_kind, min_cm = 10) {
+  L <- .cssc_podzolic_layers(x)
+  ok <- L[[props_kind]]
+  run <- .cssc_runs(ok %in% TRUE, x$thick)
+  by_props <- if (run$thickness >= min_cm) TRUE
+              else if (any(is.na(ok))) NA else FALSE
+  drun <- .cssc_runs(L[[desig_kind]] %in% TRUE, x$thick)
+  by_desig <- if (drun$thickness >= min_cm) TRUE
+              else if (!any(x$desig_known)) NA else FALSE
+  r <- .cssc_route(by_props, by_desig)
+  list(passed = r$passed, route = r$route, by_props = by_props,
+       by_desig = by_desig, rows = if (r$route == "properties") run$rows else drun$rows,
+       thickness_properties = run$thickness, thickness_designations = drun$thickness)
+}
+
 #' Podzolic B horizon (CSSC)
 #'
 #' At least 10 cm of Bh, Bhf or Bf material. By properties, each layer meets
@@ -190,52 +250,16 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
 #' strong h, hf or f suffixes on B horizons totalling 10 cm.
 #' @noRd
 podzolic_b_cssc <- function(pedon) {
-  x <- .cssc_horizons(pedon); h <- x$h
-  is_b <- .cssc_is(x$parsed, "B")
-  b_or_unknown <- is.na(is_b) | is_b
-  oc <- h$oc_pct; fe <- h$fe_pyro_pct; al <- h$al_pyro_pct; clay <- h$clay_pct
-  val <- h$munsell_value_moist; chr <- h$munsell_chroma_moist
-  pos <- .cssc_hue_pos(h$munsell_hue_moist)
-  sands <- !is.na(h$sand_pct) & h$sand_pct >= 85
-  # colour: black, or 10YR or redder with chroma > 3 or value <= 3
-  black <- !is.na(val) & !is.na(chr) & val <= 2.5 & chr <= 2
-  colour <- ifelse(black, TRUE,
-            ifelse(is.na(pos) | is.na(val) | is.na(chr), NA,
-                   pos <= 20 & (chr > 3 | val <= 3)))
-  # Bh chemistry (three-valued)
-  bh <- ifelse(is.na(oc) | is.na(fe), NA,
-               oc > 1 & fe < 0.3 & (fe == 0 | oc / fe >= 20))
-  bh <- ifelse(bh %in% TRUE & !is.na(val) & !is.na(chr), val <= 3 & chr <= 3,
-               ifelse(bh %in% TRUE, NA, bh))
-  # Bf/Bhf chemistry (three-valued)
-  alfe <- al + fe
-  bf <- ifelse(is.na(oc) | is.na(fe) | is.na(al) | is.na(clay), NA,
-               oc > 0.5 & alfe >= ifelse(sands, 0.4, 0.6) &
-                 (clay == 0 | alfe / clay > 0.05) &
-                 (fe >= 0.3 | (fe > 0 & oc / fe < 20)))
-  chem <- ifelse(bh %in% TRUE | bf %in% TRUE, TRUE,
-                 ifelse(is.na(bh) | is.na(bf), NA, FALSE))
-  ok <- ifelse(!b_or_unknown, FALSE,
-               ifelse(chem %in% FALSE | colour %in% FALSE, FALSE,
-                      ifelse(chem %in% TRUE & colour %in% TRUE, TRUE, NA)))
-  run <- .cssc_runs(ok %in% TRUE, x$thick)
-  by_props <- if (run$thickness >= 10) TRUE
-              else if (any(is.na(ok))) NA else FALSE
-  pod <- .cssc_is(x$parsed, "B", "h", "no") | .cssc_is(x$parsed, "B", "hf", "no") |
-         .cssc_is(x$parsed, "B", "f", "no")
-  drun <- .cssc_runs(pod %in% TRUE, x$thick)
-  by_desig <- if (drun$thickness >= 10) TRUE
-              else if (!any(x$desig_known)) NA else FALSE
-  r <- .cssc_route(by_props, by_desig)
+  x <- .cssc_horizons(pedon)
+  r <- .cssc_podzolic_run(x, "any", "d_any")
   miss <- if (is.na(r$passed)) c("oc_pct", "fe_pyro_pct", "al_pyro_pct", "clay_pct",
                                  "munsell_value_moist", "designation")
           else character(0)
-  .cssc_result("podzolic_b_cssc", r$passed,
-               if (r$route == "properties") run$rows else drun$rows,
-               list(route = r$route, by_properties = by_props,
-                    by_designations = by_desig, notation = x$notation$why,
-                    thickness_properties = run$thickness,
-                    thickness_designations = drun$thickness),
+  .cssc_result("podzolic_b_cssc", r$passed, r$rows,
+               list(route = r$route, by_properties = r$by_props,
+                    by_designations = r$by_desig, notation = x$notation$why,
+                    thickness_properties = r$thickness_properties,
+                    thickness_designations = r$thickness_designations),
                miss, "Ch 2, pp. 13-14 and 17; Ch 10, p. 108")
 }
 
@@ -315,6 +339,35 @@ vertisolic_cssc <- function(pedon, max_top_cm = 100) {
 
 # ---- Gleying (Ch 3 key E, p. 34; Ch 7, p. 81) -------------------------------
 
+# Gley colours per layer (Ch 3 key E, p. 34), TRUE, FALSE or NA, on every
+# layer whatever its depth or kind; see gleying_cssc() for the clauses.
+.cssc_gley_colours <- function(h) {
+  neutral <- .cssc_is_neutral(h$munsell_hue_moist)
+  pos <- .cssc_hue_pos(h$munsell_hue_moist)
+  chroma <- ifelse(neutral & is.na(h$munsell_chroma_moist), 0, h$munsell_chroma_moist)
+  value <- h$munsell_value_moist
+  contrast <- tolower(trimws(as.character(h$mottle_contrast)))
+  redox <- h$redoximorphic_features_pct
+  mottles_known_absent <- (!is.na(redox) & redox == 0)
+  prominent <- ifelse(contrast %in% "prominent", TRUE,
+               ifelse(contrast %in% c("faint", "distinct") | mottles_known_absent, FALSE, NA))
+  dist_prom <- ifelse(contrast %in% c("distinct", "prominent"), TRUE,
+               ifelse(contrast %in% "faint" | mottles_known_absent, FALSE, NA))
+  red <- !is.na(pos) & pos <= 15
+  colour_known <- (neutral | !is.na(pos)) & !is.na(chroma)
+  clause <- function(cond, extra = TRUE) ifelse(cond %in% FALSE, FALSE,
+                                         ifelse(cond %in% TRUE, extra, NA))
+  a <- clause((neutral | (!red & !is.na(pos))) & chroma <= 1,
+              ifelse(is.na(value), NA, value >= 4))
+  b <- clause(!is.na(pos) & pos >= 17.5 & pos <= 20 & chroma <= 2, prominent)
+  cc <- clause(!is.na(pos) & pos > 20 & pos <= 30 & chroma <= 3, prominent)
+  d <- !is.na(pos) & pos > 30
+  rr <- clause(red, ifelse(is.na(redox), NA, redox >= 2) & dist_prom)
+  ifelse(!colour_known, NA,
+         ifelse(a %in% TRUE | b %in% TRUE | cc %in% TRUE | d | rr %in% TRUE, TRUE,
+                ifelse(is.na(a) | is.na(b) | is.na(cc) | is.na(rr), NA, FALSE)))
+}
+
 #' Gleysolic gleying features (CSSC)
 #'
 #' Within \code{max_top_cm} of the mineral surface, a horizon other than an
@@ -345,31 +398,7 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
   in_depth <- !is.na(x$top_ms) & x$top_ms <= max_top_cm
   if (length(thick_a) > 0L) in_depth <- seq_len(nrow(h)) == thick_a[1L] + 1L
   cand <- in_depth & !excluded & x$mineral
-
-  neutral <- .cssc_is_neutral(h$munsell_hue_moist)
-  pos <- .cssc_hue_pos(h$munsell_hue_moist)
-  chroma <- ifelse(neutral & is.na(h$munsell_chroma_moist), 0, h$munsell_chroma_moist)
-  value <- h$munsell_value_moist
-  contrast <- tolower(trimws(as.character(h$mottle_contrast)))
-  redox <- h$redoximorphic_features_pct
-  mottles_known_absent <- (!is.na(redox) & redox == 0)
-  prominent <- ifelse(contrast %in% "prominent", TRUE,
-               ifelse(contrast %in% c("faint", "distinct") | mottles_known_absent, FALSE, NA))
-  dist_prom <- ifelse(contrast %in% c("distinct", "prominent"), TRUE,
-               ifelse(contrast %in% "faint" | mottles_known_absent, FALSE, NA))
-  red <- !is.na(pos) & pos <= 15
-  colour_known <- (neutral | !is.na(pos)) & !is.na(chroma)
-  clause <- function(cond, extra = TRUE) ifelse(cond %in% FALSE, FALSE,
-                                         ifelse(cond %in% TRUE, extra, NA))
-  a <- clause((neutral | (!red & !is.na(pos))) & chroma <= 1,
-              ifelse(is.na(value), NA, value >= 4))
-  b <- clause(!is.na(pos) & pos >= 17.5 & pos <= 20 & chroma <= 2, prominent)
-  cc <- clause(!is.na(pos) & pos > 20 & pos <= 30 & chroma <= 3, prominent)
-  d <- !is.na(pos) & pos > 30
-  rr <- clause(red, ifelse(is.na(redox), NA, redox >= 2) & dist_prom)
-  gley <- ifelse(!colour_known, NA,
-          ifelse(a %in% TRUE | b %in% TRUE | cc %in% TRUE | d | rr %in% TRUE, TRUE,
-          ifelse(is.na(a) | is.na(b) | is.na(cc) | is.na(rr), NA, FALSE)))
+  gley <- .cssc_gley_colours(h)
   by_props <- if (any(cand)) .any3(gley[cand]) else FALSE
   g <- .cssc_has_suffix(x$parsed, "g", weak = "no")
   by_desig <- if (any(cand & (g %in% TRUE))) TRUE
@@ -389,71 +418,150 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
 
 # ---- Organic order (Ch 3 key B, pp. 33-34) ----------------------------------
 
-#' Organic soil (CSSC Key to Soil Orders, item B)
-#'
-#' Option 1: organic horizons (organic C > 17 %, or O, L, F, H designations)
-#' from the surface to 60 cm when the surface layer is fibric (Of, or rubbed
-#' fibre >= 40 %, bulk density below 0.075 g/cm3), to 40 cm when it is mesic
-#' or humic; folic material (L, F, H) to more than 40 cm, or at least 10 cm
-#' when a lithic contact (R) follows, any mineral layer between them being
-#' thinner than 20 cm and less than half the folic thickness. Option 2, only
-#' when a mineral layer starts within 40 cm of the surface: more than 40 cm
-#' of organic material in the upper 80 cm, and at least 40 cm of it under a
-#' surface mineral layer when there is one.
-#' @noRd
-organic_soil_cssc <- function(pedon) {
-  h <- pedon$horizons
-  if (nrow(h) == 0L) return(.cssc_result("organic_soil_cssc", FALSE, where = "Ch 3, p. 33"))
-  pp <- .cssc_parsed(pedon); parsed <- pp$parsed
+# Master letters of designations written in another notation (FAO/USDA),
+# which the Canadian reading leaves aside; callers read only the masters
+# that mean the same in every notation. All NA when the designations are
+# read as Canadian.
+.cssc_other_masters <- function(designation, notation_ok) {
+  n <- length(designation)
+  if (isTRUE(notation_ok)) return(rep(NA_character_, n))
+  d <- trimws(as.character(designation))
+  d <- sub("^[0-9]+", "", sub("/.*$", "", d))
+  m <- regmatches(d, regexec("^([A-Z]+)", d))
+  vapply(seq_len(n), function(i) {
+    if (is.na(d[i]) || length(m[[i]]) < 2L) NA_character_ else m[[i]][2L]
+  }, character(1))
+}
+
+# Kinds of layers for the Organic order and its great groups. Organic: more
+# than 17 % organic C or, without organic C, an O, L, F or H designation in
+# the Canadian notation. Rock (R) and water (W). In another notation, an A,
+# B, C or E master is mineral, R rock and W water (L there is a limnic layer
+# and is not read as folic).
+.cssc_layer_kinds <- function(h, pp) {
+  parsed <- pp$parsed
   master_in <- function(set) vapply(parsed, function(comps) {
     if (length(comps) == 0L) return(NA)
     any(vapply(comps, function(cmp)
       all(strsplit(cmp$master, "")[[1]] %in% set), logical(1)))
   }, logical(1))
+  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)),
+                               pp$notation$ok)
+  rock <- (master_in("R") %in% TRUE) | (other %in% "R")
+  water <- (master_in("W") %in% TRUE) | (other %in% "W")
   o_desig <- master_in(c("O", "L", "F", "H"))
-  organic <- ifelse(!is.na(h$oc_pct), h$oc_pct > 17, o_desig)
-  folic <- master_in(c("L", "F", "H")) %in% TRUE
-  rock <- master_in("R") %in% TRUE
+  o_desig[is.na(o_desig) & (substr(other, 1L, 1L) %in% c("A", "B", "C", "E") | rock | water)] <- FALSE
+  list(organic = ifelse(!is.na(h$oc_pct), h$oc_pct > 17, o_desig),
+       folic = master_in(c("L", "F", "H")) %in% TRUE, rock = rock, water = water)
+}
+
+#' Organic soil (CSSC Key to Soil Orders, item B)
+#'
+#' Option 1: organic horizons (organic C > 17 %, or O, L, F, H designations)
+#' from the surface to 60 cm when the surface layer is fibric (rubbed fibre
+#' >= 40 % or, unmeasured, an Of; bulk density below 0.075 g/cm3), to 40 cm
+#' when it is mesic or humic; folic material (L, F, H) to more than 40 cm, or
+#' at least 10 cm when a lithic contact (R) follows, any mineral layer between
+#' them being thinner than 20 cm and less than half the folic thickness. A
+#' folic surface layer lying directly on an O horizon is litter over peat:
+#' the peat limits then apply too, to the organic material from the top of
+#' that O horizon, whose kind is the surface kind. Option 2, only
+#' when a mineral layer starts within 40 cm of the surface: more than 40 cm
+#' of organic material in the upper 80 cm, and at least 40 cm of it under a
+#' surface mineral layer when there is one. A layer of unknown organic status
+#' leaves the order undecided when it could change the answer.
+#' @noRd
+organic_soil_cssc <- function(pedon) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) return(.cssc_result("organic_soil_cssc", FALSE, where = "Ch 3, p. 33"))
+  pp <- .cssc_parsed(pedon); parsed <- pp$parsed
+  lk <- .cssc_layer_kinds(h, pp)
+  organic <- lk$organic; folic <- lk$folic; rock <- lk$rock
   thick <- h$bottom_cm - h$top_cm
   top0 <- min(h$top_cm, na.rm = TRUE)
   ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord])]
+  if (length(ord) == 0L) return(.cssc_result("organic_soil_cssc", NA,
+                                             missing = "top_cm", where = "Ch 3, p. 33"))
   s <- ord[1L]
-  # continuous organic material from the surface
-  depth_cont <- top0
-  for (i in ord) {
-    if (isTRUE(organic[i]) && !is.na(h$top_cm[i]) && h$top_cm[i] <= depth_cont + 0.01)
-      depth_cont <- max(depth_cont, h$bottom_cm[i], na.rm = TRUE)
-    else break
+  # where continuous organic material starting at position k0 ends; with
+  # accept, layers of unknown organic status continue it
+  col_end <- function(k0, accept) {
+    depth <- h$top_cm[ord[k0]]
+    for (k in seq.int(k0, length(ord))) {
+      i <- ord[k]
+      ok <- isTRUE(organic[i]) || (accept && is.na(organic[i]))
+      if (!ok || !isTRUE(h$top_cm[i] <= depth + 0.01)) break
+      depth <- max(depth, h$bottom_cm[i], na.rm = TRUE)
+    }
+    depth
   }
-  cont <- depth_cont - top0
-  # the kind of surface organic material (Ch 3, p. 33)
-  fib <- h$fiber_content_rubbed_pct[s]; bd <- h$bulk_density_g_cm3[s]
-  surf_fibric <- if (.cssc_is(parsed[s], "O", "f", "any") %in% TRUE) TRUE
-                 else if (.cssc_is(parsed[s], "O", "m", "any") %in% TRUE ||
-                          .cssc_is(parsed[s], "O", "h", "any") %in% TRUE) FALSE
-                 else if (!is.na(fib)) fib >= 40
-                 else if (!is.na(bd)) bd < 0.075 else NA
-  if (isTRUE(surf_fibric) && !is.na(bd) && bd >= 0.075) surf_fibric <- FALSE
+  cont <- col_end(1L, FALSE) - top0
   surf_folic <- isTRUE(folic[s])
+  # the peat surface layer: the surface horizon, or the layer right under a
+  # folic (L, F, H) surface layer when it may be peat (litter over peat)
+  n_folic <- sum(cumprod(folic[ord]))
+  peat_k <- if (!surf_folic) 1L
+            else if (n_folic < length(ord) && !(organic[ord[n_folic + 1L]] %in% FALSE) &&
+                     !folic[ord[n_folic + 1L]]) n_folic + 1L
+            else NA_integer_
+  peat_row <- if (is.na(peat_k)) NA_integer_ else ord[peat_k]
+  # the kind of surface organic material (Ch 3, p. 33): measured rubbed fibre
+  # first, then the designation, then the bulk density
+  surf_fibric <- NA
+  if (!is.na(peat_row)) {
+    fib <- h$fiber_content_rubbed_pct[peat_row]; bd <- h$bulk_density_g_cm3[peat_row]
+    surf_fibric <- if (!is.na(fib)) fib >= 40
+                   else if (.cssc_is(parsed[peat_row], "O", "f", "any") %in% TRUE) TRUE
+                   else if (.cssc_is(parsed[peat_row], "O", "m", "any") %in% TRUE ||
+                            .cssc_is(parsed[peat_row], "O", "h", "any") %in% TRUE) FALSE
+                   else if (!is.na(bd)) bd < 0.075 else NA
+    if (isTRUE(surf_fibric) && !is.na(bd) && bd >= 0.075) surf_fibric <- FALSE
+  }
+  peat_test <- function(cm) {
+    if (is.na(cm)) return(NA)
+    need <- if (isTRUE(surf_fibric)) 60 else if (identical(surf_fibric, FALSE)) 40
+            else if (cm >= 60) 60 else if (cm < 40) 40 else NA
+    if (is.na(need)) NA else cm >= need
+  }
+  by_peat <- if (is.na(peat_k)) FALSE else {
+    from <- h$top_cm[peat_row]
+    lo <- peat_test(col_end(peat_k, FALSE) - from)
+    hi <- peat_test(col_end(peat_k, TRUE) - from)
+    if (identical(lo, hi)) lo else NA
+  }
   # option 1
-  b1 <- if (!isTRUE(organic[s])) FALSE
+  b1 <- if (identical(organic[s], FALSE)) FALSE
         else if (surf_folic) {
-          folic_cm <- 0
-          for (i in ord) if (folic[i]) folic_cm <- folic_cm + thick[i] else break
-          rest <- ord[seq_along(ord) > sum(cumprod(folic[ord]))]
-          mineral_cm <- 0; on_rock <- FALSE
-          for (i in rest) {
-            if (rock[i]) { on_rock <- TRUE; break }
-            if (identical(organic[i], FALSE)) mineral_cm <- mineral_cm + thick[i] else break
+          # with Canadian designations, an undesignated layer that may be
+          # organic can continue the folic run (it may be an F or H)
+          desig <- vapply(parsed, length, integer(1)) > 0L
+          may_folic <- folic | (!desig & !(organic %in% FALSE) & !rock & !lk$water)
+          n_hi <- if (any(desig)) sum(cumprod(may_folic[ord])) else n_folic
+          by_run <- function(n_run) {
+            folic_cm <- sum(thick[ord[seq_len(n_run)]])
+            mineral_cm <- 0; on_rock <- FALSE; unknown_between <- FALSE
+            for (i in ord[seq_along(ord) > n_run]) {
+              if (rock[i]) { on_rock <- TRUE; break }
+              if (identical(organic[i], FALSE)) mineral_cm <- mineral_cm + thick[i]
+              else if (is.na(organic[i])) {
+                unknown_between <- TRUE; mineral_cm <- mineral_cm + thick[i]
+              } else break
+            }
+            over_rock <- function(rock_here) {
+              if (!rock_here) return(FALSE)
+              .and3(folic_cm >= 10,
+                    .any3(c(mineral_cm == 0, mineral_cm < 20 && folic_cm > 2 * mineral_cm)))
+            }
+            lo <- .any3(c(folic_cm > 40, over_rock(on_rock && !unknown_between)))
+            hi <- .any3(c(folic_cm > 40, over_rock(on_rock)))
+            if (identical(lo, hi)) lo else NA
           }
-          folic_cm > 40 ||
-            (on_rock && folic_cm >= 10 &&
-               (mineral_cm == 0 || (mineral_cm < 20 && folic_cm > 2 * mineral_cm)))
-        } else {
-          need <- if (isTRUE(surf_fibric)) 60 else if (identical(surf_fibric, FALSE)) 40
-                  else if (cont >= 60) 60 else if (cont < 40) 40 else NA
-          if (is.na(need)) NA else cont >= need
-        }
+          f_lo <- by_run(n_folic); f_hi <- by_run(n_hi)
+          by_folic <- if (identical(f_lo, f_hi)) f_lo else NA
+          if (isTRUE(by_folic) || isTRUE(by_peat)) TRUE
+          else if (is.na(by_folic) || is.na(by_peat)) NA else FALSE
+        } else by_peat
   # option 2: a mineral layer within 40 cm of the surface
   mineral_within_40 <- any(organic %in% FALSE & !is.na(h$top_cm) & h$top_cm - top0 < 40)
   in80 <- pmax(0, pmin(h$bottom_cm, top0 + 80) - pmax(h$top_cm, top0))
@@ -463,9 +571,10 @@ organic_soil_cssc <- function(pedon) {
     for (i in ord[-1L]) if (isTRUE(organic[i])) tot <- tot + thick[i] else break
     tot >= 40
   } else TRUE
-  b2 <- mineral_within_40 && org80 > 40 && under_mineral
+  b2 <- .and3(mineral_within_40, org80 > 40, under_mineral)
   unknown <- all(is.na(organic))
-  passed <- if (isTRUE(b1) || b2) TRUE else if (unknown || is.na(b1)) NA else FALSE
+  passed <- if (isTRUE(b1) || isTRUE(b2)) TRUE
+            else if (unknown || is.na(b1) || is.na(b2)) NA else FALSE
   .cssc_result("organic_soil_cssc", passed, which(organic %in% TRUE),
                list(route = if (any(!is.na(h$oc_pct))) "properties" else "designations",
                     notation = pp$notation$why,

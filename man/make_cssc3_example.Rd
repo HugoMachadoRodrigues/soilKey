@@ -21,8 +21,10 @@ A \code{\link{PedonRecord}}.
 \description{
 Small, plausible profiles written for the tests and examples, one per
 order of the Canadian System of Soil Classification, with designations in
-the Canadian notation and the properties the order key reads. They are not
-records of real pedons.
+the Canadian notation and the properties the order and great-group keys
+read: a Turbic Cryosol, a Mesisol, a Vertisol, a Humo-Ferric Podzol, a
+Humic Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, a
+Eutric Brunisol and a Regosol. They are not records of real pedons.
 }
 \examples{
 p <- make_cssc3_example("chernozemic")

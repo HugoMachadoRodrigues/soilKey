@@ -1,0 +1,18 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Regosolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "J":
+    - code: "JA"
+      name: Humic Regosol
+      tests:
+        all_of:
+          - humic_regosol_cssc: {}
+      notes: "An Ah or Ap at least 10 cm thick (p. 36)."
+
+    - code: "JB"
+      name: Regosol
+      tests:
+        default: true
+      notes: "Other Regosolic soils (p. 36)."

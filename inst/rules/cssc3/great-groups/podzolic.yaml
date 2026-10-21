@@ -1,0 +1,25 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Podzolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "D":
+    - code: "DA"
+      name: Humic Podzol
+      tests:
+        all_of:
+          - humic_podzol_cssc: {}
+      notes: "A Bh horizon at least 10 cm thick (p. 35)."
+
+    - code: "DB"
+      name: Ferro-Humic Podzol
+      tests:
+        all_of:
+          - ferro_humic_podzol_cssc: {}
+      notes: "A Bhf horizon at least 10 cm thick (p. 35)."
+
+    - code: "DC"
+      name: Humo-Ferric Podzol
+      tests:
+        default: true
+      notes: "Other Podzolic soils (p. 35)."

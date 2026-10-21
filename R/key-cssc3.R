@@ -1,8 +1,9 @@
 # =============================================================================
 # v0.9.267 -- the Canadian System of Soil Classification, 3rd edition: the
-# first national system on the registry. This release keys the ten orders
-# (Ch 3, pp. 33-34); great groups and subgroups follow. The system is
-# experimental and opt-in: classify_all() runs it only when asked.
+# first national system on the registry, keyed to the ten orders (Ch 3,
+# pp. 33-34); v0.9.268 adds the 31 great groups (pp. 35-36). Subgroups
+# follow. The system is experimental and opt-in: classify_all() runs it only
+# when asked.
 # =============================================================================
 
 
@@ -28,8 +29,10 @@
 #' Keys a \code{\link{PedonRecord}} through the Canadian System of Soil
 #' Classification, 3rd edition (Soil Classification Working Group 1998).
 #' \strong{Experimental}: this release keys the ten orders (Key to Soil
-#' Orders, Ch 3, pp. 33-34); great groups and subgroups follow in later
-#' releases, so the name is the order.
+#' Orders, Ch 3, pp. 33-34) and their 31 great groups (Key to Soil Great
+#' Groups, pp. 35-36); subgroups follow in a later release, so the name is
+#' the great group (e.g. "Humo-Ferric Podzol") and the order is in
+#' \code{rsg_or_order}.
 #'
 #' The Canadian keys are written largely in terms of horizon designations,
 #' which the book defines partly by measurable properties. Each diagnostic
@@ -55,8 +58,9 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cssc3"}, the order in \code{name}, \code{rsg_or_order} and
-#'   \code{levels}, the key trace, and \code{provisional_because}.
+#'   \code{"cssc3"}, the great group in \code{name}, the order in
+#'   \code{rsg_or_order}, both in \code{levels}, the key trace, and
+#'   \code{provisional_because}.
 #' @references Soil Classification Working Group (1998). The Canadian System
 #'   of Soil Classification, 3rd ed. Agriculture and Agri-Food Canada
 #'   Publication 1646. NRC Research Press, Ottawa.
@@ -88,8 +92,10 @@ classify_cssc3 <- function(pedon, rules = NULL,
 #'
 #' Small, plausible profiles written for the tests and examples, one per
 #' order of the Canadian System of Soil Classification, with designations in
-#' the Canadian notation and the properties the order key reads. They are not
-#' records of real pedons.
+#' the Canadian notation and the properties the order and great-group keys
+#' read: a Turbic Cryosol, a Mesisol, a Vertisol, a Humo-Ferric Podzol, a
+#' Humic Gleysol, a Solonetz, a Dark Brown Chernozem, a Gray Luvisol, a
+#' Eutric Brunisol and a Regosol. They are not records of real pedons.
 #'
 #' @param order One of \code{"cryosolic"}, \code{"organic"},
 #'   \code{"vertisolic"}, \code{"podzolic"}, \code{"gleysolic"},
@@ -115,8 +121,8 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
       munsell_chroma_moist = c(2, 3, 2), clay_pct = c(18, 20, 22), oc_pct = c(4, 1.2, 0.8),
       permafrost_temp_C = c(NA, NA, -1.5)),
     organic = hz(
-      designation = c("Of", "Om", "Oh", "C"), top_cm = c(0, 30, 80, 130),
-      bottom_cm = c(30, 80, 130, 160), oc_pct = c(46, 42, 38, 0.6),
+      designation = c("Of", "Om", "Oh", "C"), top_cm = c(0, 30, 100, 130),
+      bottom_cm = c(30, 100, 130, 160), oc_pct = c(46, 42, 38, 0.6),
       fiber_content_rubbed_pct = c(60, 25, 8, NA),
       bulk_density_g_cm3 = c(0.06, 0.12, 0.2, 1.5)),
     vertisolic = hz(
@@ -124,6 +130,7 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
       bottom_cm = c(15, 50, 95, 130), clay_pct = c(62, 65, 66, 64),
       munsell_hue_moist = c("10YR", "10YR", "2.5Y", "2.5Y"),
       munsell_value_moist = c(3, 3, 4, 4), munsell_chroma_moist = c(2, 2, 2, 2),
+      munsell_value_dry = c(4, 4, 5, 5),
       slickensides = c(NA, "few", "many", "common"), oc_pct = c(3, 1.5, 0.8, 0.5)),
     podzolic = hz(
       designation = c("LFH", "Ae", "Bf", "BC", "C"), top_cm = c(0, 5, 12, 35, 60),
@@ -161,7 +168,8 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
     brunisolic = hz(
       designation = c("Ah", "Bm", "C"), top_cm = c(0, 8, 40), bottom_cm = c(8, 40, 90),
       munsell_hue_moist = c("10YR", "7.5YR", "10YR"), munsell_value_moist = c(3, 4, 5),
-      munsell_chroma_moist = c(3, 4, 3), clay_pct = c(14, 15, 14), oc_pct = c(3, 0.8, 0.3)),
+      munsell_chroma_moist = c(3, 4, 3), clay_pct = c(14, 15, 14), oc_pct = c(3, 0.8, 0.3),
+      ph_cacl2 = c(5.6, 5.9, 6.4)),
     regosolic = hz(
       designation = c("Ah", "C"), top_cm = c(0, 6), bottom_cm = c(6, 100),
       munsell_hue_moist = c("10YR", "10YR"), munsell_value_moist = c(3, 5),
@@ -172,5 +180,6 @@ make_cssc3_example <- function(order = c("cryosolic", "organic", "vertisolic",
     site$soil_moisture_subclass <- "subhumid"
   }
   if (order == "cryosolic") { site$lat <- 64.06; site$lon <- -139.43 }
+  if (order == "vertisolic") site$drainage_class <- "well drained"
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(h))
 }

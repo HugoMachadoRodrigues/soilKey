@@ -1,0 +1,32 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Solonetzic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "F":
+    - code: "FA"
+      name: Vertic Solonetz
+      tests:
+        all_of:
+          - vertic_solonetz_cssc: {}
+      notes: "A slickenside horizon within 1 m of the mineral surface (p. 36)."
+
+    - code: "FB"
+      name: Solod
+      tests:
+        all_of:
+          - solod_cssc: {}
+      notes: "An Ae of 2 cm or more and a distinct AB or BA horizon (p. 36)."
+
+    - code: "FC"
+      name: Solodized Solonetz
+      tests:
+        all_of:
+          - solodized_solonetz_cssc: {}
+      notes: "An Ae at least 2 cm thick (p. 36)."
+
+    - code: "FD"
+      name: Solonetz
+      tests:
+        default: true
+      notes: "Other Solonetzic soils (p. 36)."

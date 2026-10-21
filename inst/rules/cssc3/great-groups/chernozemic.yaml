@@ -1,0 +1,33 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Chernozemic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "G":
+    - code: "GA"
+      name: Brown Chernozem
+      tests:
+        all_of:
+          - brown_chernozem_cssc: {}
+      notes: "Surface dry value 4.5-5.5 (p. 36)."
+
+    - code: "GB"
+      name: Dark Brown Chernozem
+      tests:
+        all_of:
+          - dark_brown_chernozem_cssc: {}
+      notes: "Surface dry value 3.5-4.5, chroma usually > 1.5 (p. 36)."
+
+    - code: "GC"
+      name: Black Chernozem
+      tests:
+        all_of:
+          - black_chernozem_cssc: {}
+      notes: "Surface dry value < 3.5 (p. 36)."
+
+    - code: "GD"
+      name: Dark Gray Chernozem
+      tests:
+        all_of:
+          - dark_gray_chernozem_cssc: {}
+      notes: "Surface dry value 3.5-4.5 (Ap to 5.0), chroma <= 1.5, eluviation under forest (p. 36)."

@@ -1,0 +1,25 @@
+# Key to Soil Great Groups, CSSC 3rd ed., Ch 3, pp. 35-36, for the Gleysolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-great-groups.R
+# and inst/rules/cssc3/readings.yaml.
+
+great_groups:
+  "E":
+    - code: "EA"
+      name: Luvic Gleysol
+      tests:
+        all_of:
+          - luvic_gleysol_cssc: {}
+      notes: "A Btg horizon (p. 35)."
+
+    - code: "EB"
+      name: Humic Gleysol
+      tests:
+        all_of:
+          - humic_gleysol_cssc: {}
+      notes: "An Ah >= 10 cm or an Ap >= 15 cm with >= 2 % organic C (p. 35)."
+
+    - code: "EC"
+      name: Gleysol
+      tests:
+        default: true
+      notes: "Other Gleysolic soils (p. 35)."
