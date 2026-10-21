@@ -101,6 +101,16 @@ reference:
       - gapfill_by_predicted_taxon
       - compute_per_attribute_evidence_grade
 
+  - title: "Canadian System of Soil Classification (experimental)"
+    desc: >
+      The first national system on the registry: the ten orders of the
+      3rd edition (1998), read from measured properties first and from
+      the Canadian horizon designations second. Great groups and
+      subgroups follow.
+    contents:
+      - classify_cssc3
+      - make_cssc3_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

@@ -416,6 +416,15 @@
           },
           "mottle_colors": {
             "type": ["string", "null"]
+          },
+          "fe_pyro_pct": {
+            "type": ["number", "null"]
+          },
+          "al_pyro_pct": {
+            "type": ["number", "null"]
+          },
+          "mottle_contrast": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

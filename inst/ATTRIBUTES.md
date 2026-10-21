@@ -230,6 +230,14 @@ these columns; anything else is preserved but ignored by the keys.
 | `variegated_colors` | - | character | Munsell notations (moist) of the colours of a variegated horizon (coloracao variegada), which has no single matrix colour, separated by ";" ("10YR 5/3; 2.5YR 4/6"); SiBCS Plintossolos (Cap 3, p. 104) | - |
 | `mottle_colors` | - | character | Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by ";" ("10YR 6/2; 5YR 5/8"); SiBCS Plintossolos (Cap 3, p. 104) | - |
 
+## Canadian system (CSSC 3rd ed.)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `fe_pyro_pct` | % Fe | numeric | Sodium-pyrophosphate-extractable Fe (organically complexed iron); CSSC podzolic B, Bf, Bhf and Bh horizons. | - |
+| `al_pyro_pct` | % Al | numeric | Sodium-pyrophosphate-extractable Al (organically complexed aluminium); CSSC podzolic B, Bf and Bhf horizons. | - |
+| `mottle_contrast` | - | character | Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying. | - |
+
 ---
 
 _Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.266._

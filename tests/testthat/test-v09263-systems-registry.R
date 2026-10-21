@@ -5,10 +5,10 @@
 test_that("the registry lists the three systems in run order", {
   s <- soilkey_systems()
   expect_s3_class(s, "data.frame")
-  expect_identical(s$id, c("wrb2022", "sibcs5", "usda"))
-  expect_identical(s$classifier,
+  expect_identical(s$id[1:3], c("wrb2022", "sibcs5", "usda"))
+  expect_identical(s$classifier[1:3],
                    c("classify_wrb2022", "classify_sibcs", "classify_usda"))
-  expect_true(all(s$default))
+  expect_identical(s$id[s$default], c("wrb2022", "sibcs5", "usda"))
   expect_true(all(nzchar(s$name) & nzchar(s$edition) & nzchar(s$levels)))
   expect_identical(names(s), c("id", "name", "edition", "status",
                                "classifier", "levels", "aliases", "default"))

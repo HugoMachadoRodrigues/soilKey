@@ -164,7 +164,12 @@ horizon_column_spec <- function() {
     # Munsell notations (moist), separated by ";", as the field sheet lists
     # them: "10YR 5/3; 2.5YR 4/6". Read only when present.
     variegated_colors             = "character", # Munsell notations (moist) of the colours of a variegated horizon (coloracao variegada), which has no single matrix colour, separated by ";" ("10YR 5/3; 2.5YR 4/6"); SiBCS Plintossolos (Cap 3, p. 104)
-    mottle_colors                 = "character"  # Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by ";" ("10YR 6/2; 5YR 5/8"); SiBCS Plintossolos (Cap 3, p. 104)
+    mottle_colors                 = "character", # Munsell notations (moist) of the colours of the mottles (mosqueados) of the horizon, separated by ";" ("10YR 6/2; 5YR 5/8"); SiBCS Plintossolos (Cap 3, p. 104)
+    # ---- v0.9.267 additions: the Canadian system (CSSC 3rd ed.) ----
+    # Read only by the Canadian key; absent => the other keys are unchanged.
+    fe_pyro_pct                   = "numeric",   # sodium-pyrophosphate-extractable Fe, % of the fine earth; CSSC podzolic B and Bh (Ch 2, p. 13-14, 17)
+    al_pyro_pct                   = "numeric",   # sodium-pyrophosphate-extractable Al, % of the fine earth; CSSC podzolic B (Ch 2, p. 13, 17)
+    mottle_contrast               = "character"  # contrast of the mottles with the matrix: 'faint' / 'distinct' / 'prominent'; CSSC gleying (Ch 3 key E, p. 34)
   )
 }
 

@@ -1,0 +1,22 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: cssc3
+order: 4
+aliases: [cssc]
+legacy: false
+default: false
+status: experimental
+namespace: cssc
+classifier: classify_cssc3
+result_slot: cssc3
+top_level: orders
+levels: [orders, great_groups, subgroups]
+display:
+  en: "Canadian System of Soil Classification, 3rd edition"
+  pt: "Sistema Canadense de Classificação de Solos, 3ª edição"
+  native: "The Canadian System of Soil Classification, 3rd edition"
+  result: "CSSC 3rd ed."
+edition: "3rd edition (1998)"
+citation: >
+  Soil Classification Working Group (1998). The Canadian System of Soil
+  Classification. 3rd edition. Agriculture and Agri-Food Canada Publication
+  1646. NRC Research Press, Ottawa.
