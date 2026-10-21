@@ -3,21 +3,23 @@
 Classification, 3rd edition (Soil Classification Working Group 1998).
 Experimental: this release keys the ten orders (Key to Soil
 Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
-pp. 35-36) and the subgroups of seven orders: Cryosolic, Organic,
-Vertisolic, Podzolic, Gleysolic, Brunisolic and Regosolic (Key to Soil
-Subgroups, pp. 37-51). The name is the deepest class
-assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
-keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
-in rsg_or_order and every level in levels.'><meta property="og:description" content='Keys a PedonRecord through the Canadian System of Soil
+pp. 35-36) and their 231 subgroups (Key to Soil Subgroups, pp. 37-51).
+The name is the deepest class assigned: the subgroup (e.g. "Terric
+Mesisol"), or the great group (e.g. "Solonetz") when no subgroup can be
+given: the Solonetzic subgroups are named by the colour of the A, and the
+key has no other subgroup for a Solonetzic soil without an A (one eroded
+down to its solonetzic B); the order is in rsg_or_order and every
+level in levels.'><meta property="og:description" content='Keys a PedonRecord through the Canadian System of Soil
 Classification, 3rd edition (Soil Classification Working Group 1998).
 Experimental: this release keys the ten orders (Key to Soil
 Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
-pp. 35-36) and the subgroups of seven orders: Cryosolic, Organic,
-Vertisolic, Podzolic, Gleysolic, Brunisolic and Regosolic (Key to Soil
-Subgroups, pp. 37-51). The name is the deepest class
-assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
-keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
-in rsg_or_order and every level in levels.'><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+pp. 35-36) and their 231 subgroups (Key to Soil Subgroups, pp. 37-51).
+The name is the deepest class assigned: the subgroup (e.g. "Terric
+Mesisol"), or the great group (e.g. "Solonetz") when no subgroup can be
+given: the Solonetzic subgroups are named by the colour of the A, and the
+key has no other subgroup for a Solonetzic soil without an A (one eroded
+down to its solonetzic B); the order is in rsg_or_order and every
+level in levels.'><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +27,7 @@ in rsg_or_order and every level in levels.'><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.270</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.271</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,12 +78,13 @@ in rsg_or_order and every level in levels.'><meta property="og:image" content="h
 Classification, 3rd edition (Soil Classification Working Group 1998).
 <strong>Experimental</strong>: this release keys the ten orders (Key to Soil
 Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
-pp. 35-36) and the subgroups of seven orders: Cryosolic, Organic,
-Vertisolic, Podzolic, Gleysolic, Brunisolic and Regosolic (Key to Soil
-Subgroups, pp. 37-51). The name is the deepest class
-assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
-keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
-in <code>rsg_or_order</code> and every level in <code>levels</code>.</p>
+pp. 35-36) and their 231 subgroups (Key to Soil Subgroups, pp. 37-51).
+The name is the deepest class assigned: the subgroup (e.g. "Terric
+Mesisol"), or the great group (e.g. "Solonetz") when no subgroup can be
+given: the Solonetzic subgroups are named by the colour of the A, and the
+key has no other subgroup for a Solonetzic soil without an A (one eroded
+down to its solonetzic B); the order is in <code>rsg_or_order</code> and every
+level in <code>levels</code>.</p>
     </div>
 
     <div class="section level2">
@@ -139,7 +142,9 @@ soil temperature at least 0 C, moisture subclass drier than humid), read
 from <code>site$mean_annual_soil_temp_C</code> and
 <code>site$soil_moisture_subclass</code>, or approximated from the USDA regimes.
 Without it the Chernozemic order is undecided and any order keyed after it
-is reported as provisional (<code>$provisional_because</code>).</p>
+is reported as provisional (<code>$provisional_because</code>). The Gray and
+Dark Gray subgroups of the Solods and Solodized Solonetz also ask for a
+subhumid climate (<code>site$soil_moisture_subclass</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

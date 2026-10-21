@@ -74,10 +74,9 @@ the evidence grade.
 ## Canadian System of Soil Classification (experimental)
 
 The first national system on the registry: the ten orders, the 31 great
-groups and the subgroups of seven orders of the 3rd edition (1998), read
-from measured properties first and from the Canadian horizon
-designations second. The Solonetzic, Chernozemic and Luvisolic subgroups
-follow.
+groups and the 231 subgroups of the 3rd edition (1998), read from
+measured properties first and from the Canadian horizon designations
+second.
 
 - [`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
   : Classify a pedon under the Canadian System of Soil Classification

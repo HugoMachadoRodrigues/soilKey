@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.270</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.271</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.271" id="soilkey-09271-2026-10-21">soilKey 0.9.271 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09271-2026-10-21"></a></h2>
+<div class="section level3">
+<h3 id="the-canadian-subgroups-solonetzic-chernozemic-and-luvisolic-experimental-0-9-271">The Canadian subgroups: Solonetzic, Chernozemic and Luvisolic (experimental)<a class="anchor" aria-label="anchor" href="#the-canadian-subgroups-solonetzic-chernozemic-and-luvisolic-experimental-0-9-271"></a></h3>
+<p><code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> now keys the subgroups of the last three orders of the Canadian System of Soil Classification, 3rd edition (Key to Soil Subgroups, Ch 3, pp. 42-49), 101 more, so all 231 subgroups are keyed and the name goes down to the subgroup in every order (“Dark Gray Solod”, “Calcareous Black Chernozem”, “Gleyed Brunisolic Gray Luvisol”). The subgroups read, as before, measured properties first and the Canadian designations second:</p>
+<ul><li>Solonetzic: the dry colour value of the A (Brown, Dark Brown, Black, and Gray and Dark Gray with a low chroma and a subhumid climate in the Solods and Solodized Solonetz), a strongly alkaline A (pH above 8.5), faint to distinct mottles within 50 cm;</li>
+<li>Chernozemic: a slickenside horizon, a weak solonetzic B (Bnj, Bnjtj, Btnj), eluvial horizons of 2 cm, a Bmk of 5 cm (0.5 % CaCO3 or more, or a k), no B of 5 cm, faint to distinct mottles within 50 cm;</li>
+<li>Luvisolic: a slickenside horizon, a fragipan, a podzolic B over a Bt within 50 cm, a Bm of chroma 3 or a thin Bf in the upper solum, an Ah of 5 cm, a Btnj, distinct mottles within 50 cm or prominent ones at 50-100 cm.</li>
+</ul><p>The Solonetzic great groups have no residual subgroup in the key, so a Solonetzic soil without an A stops at the great group; where an LFH lies directly over an Ae, the Gray subgroups read the Ae, as Ch 12 words them. The colour of the A is read over the whole A: a horizon with no value leaves the class undecided when it could change it. The readings where the book is silent are added to <code>inst/rules/cssc3/readings.yaml</code> (now 57). The Solonetzic example of <code><a href="../reference/make_cssc3_example.html">make_cssc3_example()</a></code> gains a dry colour and a pH, so it keys to a Dark Brown Solonetz.</p>
+<p>Two changes reach the subgroups keyed since 0.9.269: a horizon with no bottom depth (the deepest one, which may go on) no longer counts as 0 cm when horizons are added up towards a thickness, so the Rego and Eluviated subgroups are undecided instead of decided on it; and a buried Aeb is no longer the Ae of the Eluviated Brunisols. Orders and great groups do not change, and WRB, SiBCS and USDA results do not change.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.270" id="soilkey-09270-2026-10-21">soilKey 0.9.270 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09270-2026-10-21"></a></h2>
 <div class="section level3">
