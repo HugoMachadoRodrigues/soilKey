@@ -160,9 +160,11 @@
     return(list(ok = ok, why = sprintf("site$designation_system = '%s'", declared)))
   }
   d <- trimws(as.character(designation)); d <- d[!is.na(d) & nzchar(d)]
-  # the lowercase letters left once the Canadian two-letter suffixes are
-  # taken out (Cca, Csa, Oco, Bss, Bhf, Bgf are Canadian)
-  lower <- gsub("ca|cc|co|sa|ss|hf|gf", "", gsub("[^a-z]", "", d))
+  # the lowercase letters left once the word "and" of a split horizon (Ae and
+  # Bt) and the Canadian two-letter suffixes are taken out (Cca, Csa, Oco,
+  # Bss, Bhf, Bgf are Canadian)
+  lower <- gsub("ca|cc|co|sa|ss|hf|gf", "",
+                gsub("[^a-z]", "", gsub("\\s+and\\s+", "/", d, perl = TRUE)))
   foreign <- grepl("^[0-9]+[A-Z]", d) | grepl("^E|[^A-Z]E", d) |
              grepl("^O[iea]", d) | grepl("[adilorqw]", lower)
   if (any(foreign)) {

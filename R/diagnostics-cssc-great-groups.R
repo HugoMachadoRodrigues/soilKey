@@ -53,8 +53,9 @@
   ah_d <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE & !buried
   ap_d <- .cssc_is(x$parsed, "A", "p", "any") %in% TRUE & !buried
   raw <- .cssc_raw_master(x)
-  raw_p <- grepl("^[0-9]*A[a-z0-9]*p", trimws(as.character(h$designation)))
-  raw_b <- grepl("^[0-9]*[A-Z]+[a-z0-9]*b", trimws(as.character(h$designation)))
+  d_other <- .cssc_other_case(trimws(as.character(h$designation)))
+  raw_p <- grepl("^[0-9]*A[a-z0-9]*p", d_other)
+  raw_b <- grepl("^[0-9]*[A-Z]+[a-z0-9]*b", d_other)
   v <- h$munsell_value_moist
   deepest <- mins[length(mins)]
   status <- function(k) {
@@ -173,11 +174,16 @@
   else if (grepl("mesic|thermic", r)) TRUE else NA
 }
 
-# Thickness of the Ae horizons (A with e, strong or weak, not an Ahe).
+# Thickness of the Ae horizons (A with e, strong or weak, not an Ahe; an E
+# in another notation; not a buried one).
 .cssc_ae_cm <- function(x) {
-  if (!any(x$desig_known)) return(NA_real_)
-  ae <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) &
-        !(.cssc_is(x$parsed, "A", "h", "any") %in% TRUE)
+  raw <- .cssc_raw_master(x)
+  if (!any(x$desig_known) && all(is.na(raw))) return(NA_real_)
+  ae <- if (any(x$desig_known))
+          (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) &
+            !(.cssc_is(x$parsed, "A", "h", "any") %in% TRUE)
+        else raw %in% "E"
+  ae <- ae & !.cssc_buried_rows(x)
   sum(x$thick[ae], na.rm = TRUE)
 }
 
@@ -632,11 +638,28 @@ luvic_gleysol_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon)
   bt <- bt_horizon_cssc(pedon)
   gley <- .cssc_gley_colours(x$h)
+  # gley colours on the Bt layers, or on layers that may be part of the Bt
+  g_sure <- gley[bt$layers]; g_maybe <- gley[bt$evidence$maybe_rows %||% integer(0)]
   by_props <- if (identical(bt$passed, FALSE)) FALSE
-              else if (isTRUE(bt$passed) && length(bt$layers)) .any3(gley[bt$layers])
-              else NA
+              else if (any(g_sure %in% TRUE)) TRUE
+              else if (!isTRUE(bt$passed) || anyNA(g_sure) || any(!(g_maybe %in% FALSE))) NA
+              else FALSE
+  # a Btg: a Bt by designation (adjacent Bt horizons at least 5 cm in all, as
+  # for the Bt; the deepest horizon with no bottom may go on; a mineral
+  # horizon with no designation may be one) of which a part is a Btg
   btg <- .cssc_is(x$parsed, "B", c("t", "g"), "no")
-  by_desig <- if (any(btg %in% TRUE)) TRUE else if (!any(x$desig_known)) NA else FALSE
+  bt_d <- .cssc_is(x$parsed, "B", "t", "no")
+  bt_d[!x$mineral] <- FALSE
+  rt <- .cssc_run_test(x, bt_d, 5)
+  # runs that may reach 5 cm and may hold a Btg (a Btg, or a horizon with no
+  # designation)
+  maybe_btg <- vapply(.cssc_run_groups(x, !(bt_d %in% FALSE)), function(r) {
+    long <- anyNA(x$thick[r]) || isTRUE(.cssc_run_span(x, r) >= 5)
+    long && (any(btg[r] %in% TRUE) || anyNA(bt_d[r]))
+  }, logical(1))
+  by_desig <- if (!any(x$desig_known)) NA
+              else if (isTRUE(rt$passed) && any(btg[rt$rows] %in% TRUE)) TRUE
+              else if (any(maybe_btg)) NA else FALSE
   r <- .cssc_route(by_props, by_desig)
   .cssc_result("luvic_gleysol_cssc", r$passed,
                if (r$route == "properties") bt$layers else which(btg %in% TRUE),
@@ -693,6 +716,9 @@ solod_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon)
   ae <- .cssc_ae_cm(x)
   ab <- .cssc_is(x$parsed, c("AB", "BA"), weak = "any")
+  # in another notation the transition between the E and the B (EB, BE) is
+  # the Canadian AB or BA
+  ab <- ifelse(!is.na(ab), ab, .cssc_raw_master(x) %in% c("AB", "BA", "EB", "BE"))
   passed <- if (is.na(ae)) NA else ae >= 2 && any(ab %in% TRUE)
   .cssc_result("solod_cssc", passed, which(ab %in% TRUE),
                list(route = "designations", ae_cm = ae),
