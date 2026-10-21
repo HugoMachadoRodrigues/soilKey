@@ -1,0 +1,116 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, p. 42, for the Gleysolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+
+subgroups:
+  "EA":
+    - code: "EAA"
+      name: Vertic Luvic Gleysol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m of the mineral surface (p. 42)."
+
+    - code: "EAB"
+      name: Solonetzic Luvic Gleysol
+      tests:
+        all_of:
+          - solonetzic_b_cssc: {}
+      notes: "A solonetzic B horizon (p. 42)."
+
+    - code: "EAC"
+      name: Fragic Luvic Gleysol
+      tests:
+        all_of:
+          - fragic_luvic_cssc: {}
+      notes: "A fragipan within or below the Btg (p. 42)."
+
+    - code: "EAD"
+      name: Humic Luvic Gleysol
+      tests:
+        all_of:
+          - humic_gleysol_cssc: {}
+      notes: "An Ah or Ap meeting the Humic Gleysol requirements (p. 42)."
+
+    - code: "EAE"
+      name: Fera Luvic Gleysol
+      tests:
+        all_of:
+          - fera_gleysol_cssc: {btgf: true}
+      notes: "A Bgf 10 cm or more with the Btg, or a Btgf (p. 42)."
+
+    - code: "EAF"
+      name: Orthic Luvic Gleysol
+      tests:
+        default: true
+      notes: "Other Luvic Gleysols (p. 42)."
+
+  "EB":
+    - code: "EBA"
+      name: Vertic Humic Gleysol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m of the mineral surface (p. 42)."
+
+    - code: "EBB"
+      name: Solonetzic Humic Gleysol
+      tests:
+        all_of:
+          - solonetzic_b_cssc: {}
+      notes: "A solonetzic B horizon (p. 42)."
+
+    - code: "EBC"
+      name: Fera Humic Gleysol
+      tests:
+        all_of:
+          - fera_gleysol_cssc: {}
+      notes: "A Bgf 10 cm or more (p. 42)."
+
+    - code: "EBD"
+      name: Rego Humic Gleysol
+      tests:
+        all_of:
+          - no_thick_b_cssc: {}
+      notes: "No B horizon 10 cm or more thick (p. 42)."
+
+    - code: "EBE"
+      name: Orthic Humic Gleysol
+      tests:
+        default: true
+      notes: "Other Humic Gleysols (p. 42)."
+
+  "EC":
+    - code: "ECA"
+      name: Vertic Gleysol
+      tests:
+        all_of:
+          - vertic_subgroup_cssc: {}
+      notes: "A slickenside horizon within 1 m of the mineral surface (p. 42)."
+
+    - code: "ECB"
+      name: Solonetzic Gleysol
+      tests:
+        all_of:
+          - solonetzic_b_cssc: {}
+      notes: "A solonetzic B horizon (p. 42)."
+
+    - code: "ECC"
+      name: Fera Gleysol
+      tests:
+        all_of:
+          - fera_gleysol_cssc: {}
+      notes: "A Bgf 10 cm or more (p. 42)."
+
+    - code: "ECD"
+      name: Rego Gleysol
+      tests:
+        all_of:
+          - no_thick_b_cssc: {}
+      notes: "No B horizon 10 cm or more thick (p. 42)."
+
+    - code: "ECE"
+      name: Orthic Gleysol
+      tests:
+        default: true
+      notes: "Other Gleysols (p. 42)."

@@ -33,8 +33,9 @@ Keys a \code{\link{PedonRecord}} through the Canadian System of Soil
 Classification, 3rd edition (Soil Classification Working Group 1998).
 \strong{Experimental}: this release keys the ten orders (Key to Soil
 Orders, Ch 3, pp. 33-34), their 31 great groups (Key to Soil Great Groups,
-pp. 35-36) and the subgroups of the Cryosolic, Organic and Vertisolic
-orders (Key to Soil Subgroups, pp. 37-40). The name is the deepest class
+pp. 35-36) and the subgroups of seven orders: Cryosolic, Organic,
+Vertisolic, Podzolic, Gleysolic, Brunisolic and Regosolic (Key to Soil
+Subgroups, pp. 37-51). The name is the deepest class
 assigned: a subgroup (e.g. "Terric Mesisol") where the subgroups are
 keyed, otherwise the great group (e.g. "Humo-Ferric Podzol"); the order is
 in \code{rsg_or_order} and every level in \code{levels}.

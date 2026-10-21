@@ -23,9 +23,9 @@
 # surface (Ch 2, pp. 12-13). A horizon is read
 #   - from its designation in the Canadian notation;
 #   - in another notation, from its master letter: an A (an Ap when it carries
-#     a p) is tested as below; B, C, E, O, H, L, M, R, W or a transition (AB,
-#     BC) ends the A; a letter those notations do not use is read as no
-#     designation;
+#     a p) is tested as below; B, C, E, O, H, L, M, R, W, a transition (AB,
+#     BC) or a buried A (b) ends the A; a letter those notations do not use
+#     is read as no designation;
 #   - with no designation, by the Ah definition: at least one moist value unit
 #     darker than the mineral horizon below it, or at least 0.5 percentage
 #     points more organic C than the deepest mineral horizon. Below the first
@@ -48,10 +48,13 @@
   }
   ord <- order(h$top_cm)
   mins <- ord[x$mineral[ord] & !is.na(h$top_cm[ord]) & h$top_cm[ord] >= x$ms - 0.01]
-  ah_d <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE
-  ap_d <- .cssc_is(x$parsed, "A", "p", "any") %in% TRUE
+  # a buried A (b) is not part of the surface A
+  buried <- .cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE
+  ah_d <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE & !buried
+  ap_d <- .cssc_is(x$parsed, "A", "p", "any") %in% TRUE & !buried
   raw <- .cssc_raw_master(x)
   raw_p <- grepl("^[0-9]*A[a-z0-9]*p", trimws(as.character(h$designation)))
+  raw_b <- grepl("^[0-9]*[A-Z]+[a-z0-9]*b", trimws(as.character(h$designation)))
   v <- h$munsell_value_moist
   deepest <- mins[length(mins)]
   status <- function(k) {
@@ -60,7 +63,7 @@
     foreign <- !is.na(raw[i]) &&
       (raw[i] == "A" || nchar(raw[i]) > 1L ||
          raw[i] %in% c("B", "C", "E", "O", "H", "L", "M", "R", "W"))
-    if (foreign && raw[i] != "A") return("no")
+    if (foreign && (raw[i] != "A" || raw_b[i])) return("no")
     if (foreign && raw_p[i]) return("ap")
     below <- if (k < length(mins)) mins[k + 1L] else NA_integer_
     darker <- if (is.na(below) || is.na(v[i]) || is.na(v[below])) NA
@@ -668,21 +671,15 @@ humic_gleysol_cssc <- function(pedon) {
 
 #' Vertic Solonetz (CSSC great group FA)
 #'
-#' A slickenside horizon (ss in a designation, or common, many or continuous
-#' slickensides) whose top lies within 1 m of the mineral surface.
+#' A slickenside horizon whose top lies within 1 m of the mineral surface,
+#' read horizon by horizon (slickenside_horizon_cssc): an ss in a designation,
+#' or common, many or continuous slickensides.
 #' @noRd
 vertic_solonetz_cssc <- function(pedon) {
-  x <- .cssc_horizons(pedon); h <- x$h
-  in_depth <- !is.na(x$top_ms) & x$top_ms <= 100
-  ss_desig <- .cssc_has_suffix(x$parsed, "ss", weak = "any") %in% TRUE
-  sl <- tolower(trimws(as.character(h$slickensides)))
-  ss_prop <- ifelse(is.na(h$slickensides), NA, sl %in% c("common", "many", "continuous"))
-  ss <- ifelse(ss_desig, TRUE, ss_prop)
-  passed <- if (any(in_depth)) .any3(ss[in_depth]) else FALSE
-  if (is.na(passed) && any(x$desig_known)) passed <- FALSE
-  .cssc_result("vertic_solonetz_cssc", passed, which(ss %in% TRUE & in_depth),
+  r <- slickenside_horizon_cssc(pedon, 100)
+  .cssc_result("vertic_solonetz_cssc", r$passed, r$rows,
                list(route = "properties+designations"),
-               if (is.na(passed)) c("slickensides", "designation") else character(0),
+               if (is.na(r$passed)) c("slickensides", "designation") else character(0),
                "Ch 3, p. 36; Ch 12, p. 128")
 }
 

@@ -55,3 +55,17 @@ diagnostics:
   - {function: cumulic_layers_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 2, p. 19"}
   - {function: organic_layer_cssc,          file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 38-40; Ch 9, pp. 100-103"}
   - {function: vertisolic_mottles_cssc,     file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 40; Ch 13, pp. 133-134"}
+  - {function: ortstein_cssc,             file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 40-41; Ch 2, p. 16; Ch 10, pp. 111-116"}
+  - {function: placic_cssc,               file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 40-41; Ch 2, p. 16"}
+  - {function: duric_cssc,                file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 40-41 and 50; Ch 2, p. 16; Ch 4, p. 58"}
+  - {function: fragipan_cssc,             file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 40-41; Ch 2, pp. 15-16"}
+  - {function: mottles_cssc,              file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 40-51"}
+  - {function: gleyed_brunisol_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 49-50; Ch 4, pp. 55-59"}
+  - {function: deep_bt_cssc,              file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 41; Ch 10, pp. 113-116"}
+  - {function: thick_ah_cssc,             file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 41; Ch 10, pp. 114-116"}
+  - {function: vertic_subgroup_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 42; Ch 7, pp. 84-86"}
+  - {function: fragic_luvic_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 42; Ch 7, p. 84"}
+  - {function: fera_gleysol_cssc,         file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 42; Ch 2, pp. 13-14; Ch 7, pp. 85-87"}
+  - {function: no_thick_b_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, p. 42; Ch 7, pp. 86-87"}
+  - {function: ae_horizon_cssc,           file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 49-50; Ch 4, pp. 55-59"}
+  - {function: cumulic_regosol_cssc,      file: R/diagnostics-cssc-subgroups.R, reference: "Ch 3, pp. 50-51; Ch 11, pp. 118-119"}

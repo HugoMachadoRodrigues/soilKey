@@ -9,11 +9,11 @@
   classify_cssc3(p, on_missing = "silent")
 }
 
-test_that("the rules list 63 subgroups under nine great groups", {
+test_that("the rules list 63 subgroups under the nine great groups of A, B, C", {
   r <- load_rules("cssc3")
-  expect_identical(sort(names(r$subgroups)),
-                   c("AA", "AB", "AC", "BA", "BB", "BC", "BD", "CA", "CB"))
-  expect_identical(sum(lengths(r$subgroups)), 63L)
+  gg <- c("AA", "AB", "AC", "BA", "BB", "BC", "BD", "CA", "CB")
+  expect_true(all(gg %in% names(r$subgroups)))
+  expect_identical(sum(lengths(r$subgroups[gg])), 63L)
 })
 
 test_that("the example pedons of the three orders reach a subgroup", {
@@ -26,9 +26,9 @@ test_that("the example pedons of the three orders reach a subgroup", {
     expect_identical(r$levels$level, c("orders", "great_groups", "subgroups"), info = o)
     expect_length(r$provisional_because, 0L)
   }
-  # the other orders still stop at the great group
-  r <- classify_cssc3(make_cssc3_example("podzolic"), on_missing = "silent")
-  expect_identical(r$name, "Humo-Ferric Podzol")
+  # an order without subgroups still stops at the great group
+  r <- classify_cssc3(make_cssc3_example("solonetzic"), on_missing = "silent")
+  expect_identical(r$name, "Solonetz")
 })
 
 test_that("Organic Cryosol subgroups", {

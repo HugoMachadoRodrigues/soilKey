@@ -1,0 +1,184 @@
+# Key to Soil Subgroups, CSSC 3rd ed., Ch 3, pp. 40-41, for the Podzolic order.
+# Criteria are summarised from the book; see R/diagnostics-cssc-subgroups.R
+# and inst/rules/cssc3/readings.yaml.
+# The 1998 OCR prints 'Durit'; the HTML edition and the 2016 key write Duric.
+
+subgroups:
+  "DA":
+    - code: "DAA"
+      name: Ortstein Humic Podzol
+      tests:
+        all_of:
+          - ortstein_cssc: {}
+      notes: "Ortstein 3 cm or more (p. 40)."
+
+    - code: "DAB"
+      name: Placic Humic Podzol
+      tests:
+        all_of:
+          - placic_cssc: {}
+      notes: "A placic horizon within the control section (pp. 40-41)."
+
+    - code: "DAC"
+      name: Duric Humic Podzol
+      tests:
+        all_of:
+          - duric_cssc: {}
+      notes: "A duric horizon within the control section (pp. 40-41)."
+
+    - code: "DAD"
+      name: Fragic Humic Podzol
+      tests:
+        all_of:
+          - fragipan_cssc: {}
+      notes: "A fragipan within the control section (pp. 40-41)."
+
+    - code: "DAE"
+      name: Orthic Humic Podzol
+      tests:
+        default: true
+      notes: "Other Humic Podzols (pp. 40-41)."
+
+  "DB":
+    - code: "DBA"
+      name: Gleyed Ortstein Ferro-Humic Podzol
+      tests:
+        all_of:
+          - ortstein_cssc: {}
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "Ortstein 3 cm or more and distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DBB"
+      name: Ortstein Ferro-Humic Podzol
+      tests:
+        all_of:
+          - ortstein_cssc: {}
+      notes: "Ortstein 3 cm or more (pp. 40-41)."
+
+    - code: "DBC"
+      name: Placic Ferro-Humic Podzol
+      tests:
+        all_of:
+          - placic_cssc: {}
+      notes: "A placic horizon within the control section (pp. 40-41)."
+
+    - code: "DBD"
+      name: Duric Ferro-Humic Podzol
+      tests:
+        all_of:
+          - duric_cssc: {}
+      notes: "A duric horizon within the control section (pp. 40-41)."
+
+    - code: "DBE"
+      name: Fragic Ferro-Humic Podzol
+      tests:
+        all_of:
+          - fragipan_cssc: {}
+      notes: "A fragipan within the control section (pp. 40-41)."
+
+    - code: "DBF"
+      name: Luvisolic Ferro-Humic Podzol
+      tests:
+        all_of:
+          - deep_bt_cssc: {}
+      notes: "A Bt horizon whose top is more than 50 cm below the mineral surface (pp. 40-41)."
+
+    - code: "DBG"
+      name: Gleyed Sombric Ferro-Humic Podzol
+      tests:
+        all_of:
+          - thick_ah_cssc: {}
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "An Ah 10 cm or more and distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DBH"
+      name: Sombric Ferro-Humic Podzol
+      tests:
+        all_of:
+          - thick_ah_cssc: {}
+      notes: "An Ah 10 cm or more (pp. 40-41)."
+
+    - code: "DBI"
+      name: Gleyed Ferro-Humic Podzol
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "Distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DBJ"
+      name: Orthic Ferro-Humic Podzol
+      tests:
+        default: true
+      notes: "Other Ferro-Humic Podzols (pp. 40-41)."
+
+  "DC":
+    - code: "DCA"
+      name: Gleyed Ortstein Humo-Ferric Podzol
+      tests:
+        all_of:
+          - ortstein_cssc: {}
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "Ortstein 3 cm or more and distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DCB"
+      name: Ortstein Humo-Ferric Podzol
+      tests:
+        all_of:
+          - ortstein_cssc: {}
+      notes: "Ortstein 3 cm or more (pp. 40-41)."
+
+    - code: "DCC"
+      name: Placic Humo-Ferric Podzol
+      tests:
+        all_of:
+          - placic_cssc: {}
+      notes: "A placic horizon within the control section (pp. 40-41)."
+
+    - code: "DCD"
+      name: Duric Humo-Ferric Podzol
+      tests:
+        all_of:
+          - duric_cssc: {}
+      notes: "A duric horizon within the control section (pp. 40-41)."
+
+    - code: "DCE"
+      name: Fragic Humo-Ferric Podzol
+      tests:
+        all_of:
+          - fragipan_cssc: {}
+      notes: "A fragipan within the control section (pp. 40-41)."
+
+    - code: "DCF"
+      name: Luvisolic Humo-Ferric Podzol
+      tests:
+        all_of:
+          - deep_bt_cssc: {}
+      notes: "A Bt horizon whose top is more than 50 cm below the mineral surface (pp. 40-41)."
+
+    - code: "DCG"
+      name: Gleyed Sombric Humo-Ferric Podzol
+      tests:
+        all_of:
+          - thick_ah_cssc: {}
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "An Ah 10 cm or more and distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DCH"
+      name: Sombric Humo-Ferric Podzol
+      tests:
+        all_of:
+          - thick_ah_cssc: {}
+      notes: "An Ah 10 cm or more (pp. 40-41)."
+
+    - code: "DCI"
+      name: Gleyed Humo-Ferric Podzol
+      tests:
+        all_of:
+          - mottles_cssc: {contrast: [distinct, prominent], from: 0, to: 100}
+      notes: "Distinct to prominent mottles within 1 m (pp. 40-41)."
+
+    - code: "DCJ"
+      name: Orthic Humo-Ferric Podzol
+      tests:
+        default: true
+      notes: "Other Humo-Ferric Podzols (pp. 40-41)."
