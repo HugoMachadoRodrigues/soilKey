@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.272</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.273</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,42 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.273" id="soilkey-09273-2026-10-21">soilKey 0.9.273 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09273-2026-10-21"></a></h2>
+<div class="section level3">
+<h3 id="the-national-pedon-database-of-canada-as-a-benchmark-experimental-0-9-273">The National Pedon Database of Canada as a benchmark (experimental)<a class="anchor" aria-label="anchor" href="#the-national-pedon-database-of-canada-as-a-benchmark-experimental-0-9-273"></a></h3>
+<p><code><a href="../reference/load_npdb_pedons.html">load_npdb_pedons()</a></code> reads the pre-packaged CSV files of the National Pedon Database of Canada (NPDB, version 3, Agriculture and Agri-Food Canada, CanSIS; Open Government Licence - Canada; not shipped with soilKey) into pedon records, with the survey’s classification under the Canadian System of Soil Classification as the reference, and <code><a href="../reference/benchmark_npdb.html">benchmark_npdb()</a></code> compares <code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> with it at the order, great group and subgroup levels.</p>
+<p>The reader cleans what the files hold:</p>
+<ul><li>it rebuilds the designations in the Canadian notation;</li>
+<li>it turns organic horizons recorded upward into depths above the mineral surface and repairs mineral horizons with reversed depths;</li>
+<li>it reads the coded matrix colours, telling the dry colour from the moist one pedon by pedon;</li>
+<li>it drops the no-data code and the copied values of total N and tells its units apart;</li>
+<li>it computes base saturation from the bases and the CEC where the recorded column says something else, and swaps back a dataset’s pH columns;</li>
+<li>it turns the survey’s words into the 1998 names where they name a class of the key (the Solodic subgroups as the Solonetzic ones they became).</li>
+</ul><p>The NPDB records no soil climate, which the key reads for the Chernozemic order and the Gray Brown Luvisols: the 1,239 Chernozems are reported apart. 794 of them are provisional; the other 445 are decided outside the order, mostly because a measured property of the A fails the chernozemic A, the most frequent being base saturation (neutral salt) of 80 % or less. On the other pedons with a reference:</p>
+<table class="table"><thead><tr><th>Level</th>
+<th>Pedons</th>
+<th>Agreement</th>
+<th>Decided</th>
+<th>Agreement when decided</th>
+</tr></thead><tbody><tr><td>Order</td>
+<td>7,298</td>
+<td>89.8%</td>
+<td>6,524</td>
+<td>90.5%</td>
+</tr><tr><td>Great group</td>
+<td>7,272</td>
+<td>70.7%</td>
+<td>5,327</td>
+<td>82.1%</td>
+</tr><tr><td>Subgroup</td>
+<td>4,041</td>
+<td>56.3%</td>
+<td>2,587</td>
+<td>71.3%</td>
+</tr></tbody></table><p>Most disagreements come with a provisional result, where the records lack what the key reads: the mean annual soil temperature of the Gray Brown Luvisols (all 265 are undecided), the pH in CaCl2 of the Brunisols’ B, the organic C of the Humic Gleysols. Among the decided ones, the largest group is the gleying of the Gleysolic order: Luvisols and Brunisols with a g horizon within 50 cm, which the key places in the Gleysolic order and the survey did not.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.272" id="soilkey-09272-2026-10-21">soilKey 0.9.272 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09272-2026-10-21"></a></h2>
 <div class="section level3">

@@ -817,6 +817,9 @@ plus auxiliaries) used in the test suite.
   : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
   objects
 
+- [`load_npdb_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_npdb_pedons.md)
+  : Read the National Pedon Database of Canada
+
 - [`load_redape_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_redape_pedons.md)
   : Load curated soil profiles from the Embrapa Redape GeoTab dataset
 
@@ -1205,6 +1208,18 @@ classification.
   : Load curated soil profiles from the Embrapa Redape GeoTab dataset
 - [`benchmark_redape()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.md)
   : Benchmark soilKey SiBCS predictions against the Redape gold standard
+
+## National Pedon Database of Canada (v0.9.273)
+
+The NPDB of Agriculture and Agri-Food Canada (Open Government Licence -
+Canada), read into pedon records with the survey’s Canadian
+classification, as a benchmark for classify_cssc3(). The data are not
+shipped: download the CSV files from the Open Government Portal.
+
+- [`load_npdb_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_npdb_pedons.md)
+  : Read the National Pedon Database of Canada
+- [`benchmark_npdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.md)
+  : Benchmark the Canadian key against the National Pedon Database
 
 ## WoSIS stratified WRB benchmark (v0.9.73)
 

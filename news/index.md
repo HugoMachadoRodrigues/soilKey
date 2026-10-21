@@ -1,5 +1,57 @@
 # Changelog
 
+## soilKey 0.9.273 (2026-10-21)
+
+### The National Pedon Database of Canada as a benchmark (experimental)
+
+[`load_npdb_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_npdb_pedons.md)
+reads the pre-packaged CSV files of the National Pedon Database of
+Canada (NPDB, version 3, Agriculture and Agri-Food Canada, CanSIS; Open
+Government Licence - Canada; not shipped with soilKey) into pedon
+records, with the survey’s classification under the Canadian System of
+Soil Classification as the reference, and
+[`benchmark_npdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.md)
+compares
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+with it at the order, great group and subgroup levels.
+
+The reader cleans what the files hold:
+
+- it rebuilds the designations in the Canadian notation;
+- it turns organic horizons recorded upward into depths above the
+  mineral surface and repairs mineral horizons with reversed depths;
+- it reads the coded matrix colours, telling the dry colour from the
+  moist one pedon by pedon;
+- it drops the no-data code and the copied values of total N and tells
+  its units apart;
+- it computes base saturation from the bases and the CEC where the
+  recorded column says something else, and swaps back a dataset’s pH
+  columns;
+- it turns the survey’s words into the 1998 names where they name a
+  class of the key (the Solodic subgroups as the Solonetzic ones they
+  became).
+
+The NPDB records no soil climate, which the key reads for the
+Chernozemic order and the Gray Brown Luvisols: the 1,239 Chernozems are
+reported apart. 794 of them are provisional; the other 445 are decided
+outside the order, mostly because a measured property of the A fails the
+chernozemic A, the most frequent being base saturation (neutral salt) of
+80 % or less. On the other pedons with a reference:
+
+| Level       | Pedons | Agreement | Decided | Agreement when decided |
+|-------------|--------|-----------|---------|------------------------|
+| Order       | 7,298  | 89.8%     | 6,524   | 90.5%                  |
+| Great group | 7,272  | 70.7%     | 5,327   | 82.1%                  |
+| Subgroup    | 4,041  | 56.3%     | 2,587   | 71.3%                  |
+
+Most disagreements come with a provisional result, where the records
+lack what the key reads: the mean annual soil temperature of the Gray
+Brown Luvisols (all 265 are undecided), the pH in CaCl2 of the
+Brunisols’ B, the organic C of the Humic Gleysols. Among the decided
+ones, the largest group is the gleying of the Gleysolic order: Luvisols
+and Brunisols with a g horizon within 50 cm, which the key places in the
+Gleysolic order and the survey did not.
+
 ## soilKey 0.9.272 (2026-10-21)
 
 ### The Canadian orders and great groups: open bottoms, other notations, climate (experimental)
