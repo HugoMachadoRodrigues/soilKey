@@ -171,14 +171,15 @@ test_that("gley details: Bgf, neutral hue, unknown mottle contrast, dark AB", {
 
 test_that("an Aej thinner than the Ah above meets the Chernozemic Ae condition", {
   skip_on_cran()
-  p <- make_cssc3_example("chernozemic")
-  h <- p$horizons
-  h <- rbind(h[1], h[1], h[2:3])
-  h$designation <- c("Ah", "Aej", "Bm", "Cca")
-  h$top_cm <- c(0, 15, 19, 40); h$bottom_cm <- c(15, 19, 40, 90)
-  h$munsell_value_dry[2] <- NA
-  p$horizons <- h
+  p <- .mk_cssc(list(designation = c("Ah", "Aej", "Bm", "Cca"),
+                     top_cm = c(0, 15, 19, 40), bottom_cm = c(15, 19, 40, 90),
+                     munsell_value_dry = c(4, NA, 5, 7)))
   expect_true(soilKey:::chernozemic_ae_cssc(p)$passed)
+  # an Aej thicker than the Ah, with no dry value, leaves it undecided
+  p <- .mk_cssc(list(designation = c("Ah", "Aej", "Bm", "Cca"),
+                     top_cm = c(0, 5, 19, 40), bottom_cm = c(5, 19, 40, 90),
+                     munsell_value_dry = c(4, NA, 5, 7)))
+  expect_true(is.na(soilKey:::chernozemic_ae_cssc(p)$passed))
 })
 
 test_that("slickensides recorded absent rule out the Vertisolic order", {
