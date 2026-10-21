@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.266</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.267</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.267" id="soilkey-09267-2026-10-20">soilKey 0.9.267 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09267-2026-10-20"></a></h2>
+<div class="section level3">
+<h3 id="the-canadian-system-of-soil-classification-to-the-order-experimental-0-9-267">The Canadian System of Soil Classification, to the order (experimental)<a class="anchor" aria-label="anchor" href="#the-canadian-system-of-soil-classification-to-the-order-experimental-0-9-267"></a></h3>
+<p>The first national system on the registry: <code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> keys a profile through the Key to Soil Orders of the Canadian System of Soil Classification, 3rd edition (Soil Classification Working Group 1998, Ch 3, pp. 33-34), from Cryosolic to Regosolic. Great groups and subgroups follow in later releases, so the name is the order. The system is experimental and opt-in: <code><a href="../reference/classify_all.html">classify_all()</a></code> and the Pro app keep running WRB, SiBCS and USDA by default; <code>classify_all(systems = c("wrb2022", "sibcs5", "usda", "cssc3"))</code> runs it beside them, and <code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> alone.</p>
+<p>The Canadian keys are written largely in terms of horizon designations, which Chapter 2 defines partly by measurable properties. Each diagnostic reads the measured properties first (podzolic B chemistry, the Bt clay increase with clay films, the solonetzic B Ca/Na ratio, the chernozemic A, the gley colours) and the designations second, in the Canadian notation, where f is an illuvial Fe-Al-organic accumulation, m a slightly altered B, v a vertic horizon, ss slickensides, y cryoturbation, z permafrost and j a weak expression of the suffix before it. Measured properties decide whenever they can, pass or fail; designations decide only what they leave open, and only when the profile’s notation is Canadian (declared in <code>site$designation_system</code>, a Canadian site, or no sign of the FAO/USDA notation), because the same letters mean other things there. The trace records which route decided, and a warning says when the order rests on designations alone. The chernozemic A includes a soil-climate criterion (mean annual soil temperature at least 0 C, moisture subclass drier than humid), read from the new site fields <code>mean_annual_soil_temp_C</code> and <code>soil_moisture_subclass</code> or approximated from the USDA regimes; without it, the orders keyed after Chernozemic are reported as provisional. The choices where the book is silent are listed in <code>inst/rules/cssc3/readings.yaml</code>.</p>
+<p>Three horizon attributes are added for the Canadian key and read by no other: <code>fe_pyro_pct</code> and <code>al_pyro_pct</code> (sodium-pyrophosphate-extractable Fe and Al) and <code>mottle_contrast</code> (faint, distinct, prominent). <code><a href="../reference/make_cssc3_example.html">make_cssc3_example()</a></code> builds one example profile per order. WRB, SiBCS and USDA results do not change: the 44 canonical fixtures are identical.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.266" id="soilkey-09266-2026-10-20">soilKey 0.9.266 (2026-10-20)<a class="anchor" aria-label="anchor" href="#soilkey-09266-2026-10-20"></a></h2>
 <div class="section level3">

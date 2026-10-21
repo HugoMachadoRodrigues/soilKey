@@ -34,12 +34,19 @@ in that system), `levels` and `aliases` (both comma-separated), and
 
 ``` r
 soilkey_systems()
-#>        id               name             edition status       classifier
-#> 1 wrb2022           WRB 2022  4th edition (2022) stable classify_wrb2022
-#> 2  sibcs5 SiBCS, 5th edition  5th edition (2018) stable   classify_sibcs
-#> 3    usda USDA Soil Taxonomy 13th edition (2022) stable    classify_usda
+#>        id                                                name
+#> 1 wrb2022                                            WRB 2022
+#> 2  sibcs5                                  SiBCS, 5th edition
+#> 3    usda                                  USDA Soil Taxonomy
+#> 4   cssc3 Canadian System of Soil Classification, 3rd edition
+#>               edition       status       classifier
+#> 1  4th edition (2022)       stable classify_wrb2022
+#> 2  5th edition (2018)       stable   classify_sibcs
+#> 3 13th edition (2022)       stable    classify_usda
+#> 4  3rd edition (1998) experimental   classify_cssc3
 #>                                         levels aliases default
 #> 1                                         rsgs     wrb    TRUE
 #> 2 ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE
 #> 3   orders, suborders, great_groups, subgroups            TRUE
+#> 4              orders, great_groups, subgroups    cssc   FALSE
 ```

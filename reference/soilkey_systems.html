@@ -15,7 +15,7 @@ classify_all accept; the aliases are accepted too."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.266</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.267</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,14 +91,21 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">soilkey_systems</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        id               name             edition status       classifier</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 wrb2022           WRB 2022  4th edition (2022) stable classify_wrb2022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sibcs5 SiBCS, 5th edition  5th edition (2018) stable   classify_sibcs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    usda USDA Soil Taxonomy 13th edition (2022) stable    classify_usda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        id                                                name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 wrb2022                                            WRB 2022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sibcs5                                  SiBCS, 5th edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    usda                                  USDA Soil Taxonomy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   cssc3 Canadian System of Soil Classification, 3rd edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               edition       status       classifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  4th edition (2022)       stable classify_wrb2022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  5th edition (2018)       stable   classify_sibcs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 13th edition (2022)       stable    classify_usda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  3rd edition (1998) experimental   classify_cssc3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         levels aliases default</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                         rsgs     wrb    TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3   orders, suborders, great_groups, subgroups            TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4              orders, great_groups, subgroups    cssc   FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

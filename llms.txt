@@ -1027,6 +1027,17 @@ the evidence grade.
 - [`compute_per_attribute_evidence_grade()`](https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.md)
   : Per-attribute provenance-aware evidence grade
 
+## Canadian System of Soil Classification (experimental)
+
+The first national system on the registry: the ten orders of the 3rd
+edition (1998), read from measured properties first and from the
+Canadian horizon designations second. Great groups and subgroups follow.
+
+- [`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+  : Classify a pedon under the Canadian System of Soil Classification
+- [`make_cssc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cssc3_example.md)
+  : Example pedons for the Canadian orders
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

@@ -84,6 +84,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classification_robustness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.html</loc></url>
@@ -217,6 +218,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_chernossolo_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_chernozem_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cryosol_canonical.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cssc3_example.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_durisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_espodossolo_canonical.html</loc></url>
