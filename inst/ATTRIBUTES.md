@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.235)
+# soilKey -- recognised horizon attribute names (v0.9.266)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -18,8 +18,10 @@ these columns; anything else is preserved but ignored by the keys.
 * Units are as listed. Percentages are by mass unless noted `(vol)`; exchangeable
   cations and CEC are in cmol(+)/kg (= meq/100 g).
 
-> Tip (R): `soilKey::horizon_column_spec()` returns the canonical names and types
-> programmatically; `soilKey::ensure_horizon_schema(df)` normalises a table to them.
+> Tip (R): `soilKey::horizon_attribute_spec()` returns this table (names, types,
+> sections, units, descriptions and aliases); `soilKey::horizon_column_spec()`
+> the canonical names and types; `soilKey::ensure_horizon_schema(df)` normalises
+> a table to them.
 
 ## Geometry & boundaries
 
@@ -230,5 +232,5 @@ these columns; anything else is preserved but ignored by the keys.
 
 ---
 
-_Generated from `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.235._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.266._
 

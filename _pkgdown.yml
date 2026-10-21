@@ -72,6 +72,7 @@ reference:
       - ClassificationResult
       - FamilyAttribute
       - horizon_column_spec
+      - horizon_attribute_spec
       - make_empty_horizons
       - ensure_horizon_schema
       - validate_horizon_geometry
