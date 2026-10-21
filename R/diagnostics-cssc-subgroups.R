@@ -293,7 +293,9 @@ luvisolic_cryosol_cssc <- function(pedon, min_cm = 10) {
   bt <- bt_horizon_cssc(pedon)
   bt_ok <- if (identical(bt$passed, FALSE)) FALSE
            else if (isTRUE(bt$passed)) {
-             th <- sum(x$thick[bt$layers]); if (is.na(th)) NA else th >= min_cm
+             cv <- .cssc_cover(x, bt$layers)
+             hi <- .cssc_cover(x, union(bt$layers, bt$evidence$maybe_rows))
+             if (cv$cm >= min_cm) TRUE else if (hi$open || hi$cm >= min_cm) NA else FALSE
            } else NA
   passed <- .and3(has_e, bt_ok)
   .cssc_result("luvisolic_cryosol_cssc", passed, bt$layers,
@@ -618,7 +620,7 @@ vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_dist
 # letters after the master), NA where there is none or the designations are
 # read as Canadian.
 .cssc_other_suffix <- function(x) {
-  d <- trimws(as.character(x$h$designation %||% rep(NA_character_, nrow(x$h))))
+  d <- .cssc_other_case(trimws(as.character(x$h$designation %||% rep(NA_character_, nrow(x$h)))))
   if (isTRUE(x$notation$ok)) return(rep(NA_character_, length(d)))
   out <- gsub("[^a-z]", "", sub("^[0-9]*[A-Z]+", "", sub("/.*$", "", d)))
   out[is.na(d) | is.na(.cssc_raw_master(x))] <- NA_character_
@@ -693,7 +695,7 @@ vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_dist
   pl <- .cssc_podzolic_layers(x)
   osfx <- .cssc_other_suffix(x)
   raw <- .cssc_raw_master(x)
-  oth <- ifelse(!is.na(raw), raw == "B" & !is.na(osfx) & grepl("[sh]", gsub("ss", "", osfx)), NA)
+  oth <- ifelse(!is.na(raw), raw == "B" & !is.na(osfx) & grepl("[sh]", gsub("ss|se", "", osfx)), NA)
   des <- ifelse(!is.na(pl$d_any), pl$d_any, oth)
   out <- ifelse(!is.na(pl$any), pl$any, des)
   out[!x$mineral] <- FALSE   # organic layers are not podzolic B material
@@ -1199,7 +1201,7 @@ solonetzic_a_colour_cssc <- function(pedon, colour = c("brown", "dark_brown", "b
 # Buried horizons: a b in a designation (Canadian or another notation).
 .cssc_buried_rows <- function(x) {
   (.cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE) |
-    grepl("^[0-9]*[A-Z]+[a-z0-9]*b", trimws(as.character(x$h$designation)))
+    grepl("^[0-9]*[A-Z]+[a-z0-9]*b", .cssc_other_case(trimws(as.character(x$h$designation))))
 }
 
 # A horizons of the profile itself (not buried): an A master in the Canadian
@@ -1361,8 +1363,8 @@ podzolic_luvisol_cssc <- function(pedon, max_bt_top_cm = 50, min_cm = 10) {
   x <- .cssc_horizons(pedon)
   bt <- bt_horizon_cssc(pedon)
   bt_top <- suppressWarnings(min(x$top_ms[bt$layers], na.rm = TRUE))
-  bt_ok <- if (identical(bt$passed, FALSE)) FALSE
-           else if (isTRUE(bt$passed) && is.finite(bt_top)) bt_top <= max_bt_top_cm else NA
+  # a Bt within 50 cm as the order key reads it (a run beginning there)
+  bt_ok <- bt_horizon_cssc(pedon, max_top_cm = max_bt_top_cm)$passed
   pod <- .cssc_podzolic_kind(pedon, x)
   above <- if (is.finite(bt_top)) ifelse(is.na(x$top_ms), NA, x$top_ms < bt_top) else NA
   pod <- .cssc_and3v(pod, above)

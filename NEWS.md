@@ -1,3 +1,45 @@
+# soilKey 0.9.272 (2026-10-21)
+
+## The Canadian orders and great groups: open bottoms, other notations, climate (experimental)
+
+`classify_cssc3()` reads, at the order and great-group levels, what the
+subgroups already read since 0.9.271:
+
+* the deepest horizon with no bottom depth may go on: the Bt, the podzolic B,
+  the chernozemic A, the Brunisolic B and the Btg of the Luvic Gleysols are
+  undecided when their thickness could change the answer, so a profile such
+  as LFH, Ae, Bt (20 cm, no bottom) is no longer a decided Orthic Regosol;
+* the Bt is decided horizon by horizon, by its properties when they decide
+  and otherwise by its designation: the clay increase is measured against
+  the eluvial horizon above (Ch 2, p. 15), not against any lower-clay
+  horizon; a horizon fails when its clay films are recorded as absent or
+  when every clay needed shows no increase, and is undecided when the clay
+  it should be compared with is missing; the 5 cm are then reached by
+  adjacent Bt horizons added up, a Bt "within 50 cm" is a run that begins
+  there, and a thin Btg on top of a Bt makes a Luvic Gleysol;
+* the podzolic B is likewise decided layer by layer, so a Bf ruled out by
+  its chemistry no longer counts by its designation;
+* in the FAO and USDA notations a B with a t is a Bt and a Bs or Bh is
+  podzolic B material by designation, a B with neither is not; an A, E, C or
+  O is never podzolic B material nor a Bt; designations written in capitals
+  ("BHS") are read; an EB or BE is the AB of a Solod; an E is the Ae of the Chernozemic and
+  Solonetzic tests, so a Chernozem described as A, Bw, Bk, C reaches the
+  Chernozemic order;
+* the word "and" of a split horizon ("Ae and Bt") no longer switches the
+  Canadian notation off;
+* the soil moisture subclass is read whatever its spelling ("Sub-humid",
+  "semi-arid").
+
+In about 3,000 test profiles, 88 change order or great group: 82 described
+in another notation with a Bt, now a provisional Luvisol or Luvic Gleysol
+instead of a Regosol or Gleysol, and 6 whose designated Bt shows no clay
+increase over the eluvial horizon above, now ruled out by that measured
+clay. In Canadian-notation profiles the subgroups and great groups can also
+change where clay films are recorded as absent, where clay was given on an
+organic layer, or where the eluvial horizon has no clay recorded (the
+designation then decides). WRB, SiBCS and USDA results do not
+change.
+
 # soilKey 0.9.271 (2026-10-21)
 
 ## The Canadian subgroups: Solonetzic, Chernozemic and Luvisolic (experimental)

@@ -107,6 +107,88 @@
   if (any(x %in% TRUE)) TRUE else if (anyNA(x)) NA else FALSE
 }
 
+# Runs of adjacent rows in depth order where `keep` is TRUE; a gap in the
+# record (a top below the deepest bottom of the run so far) ends a run.
+.cssc_run_groups <- function(x, keep) {
+  ord <- order(x$h$top_cm)
+  top <- x$h$top_cm; bot <- x$h$bottom_cm
+  out <- list(); cur <- integer(0)
+  for (i in ord) {
+    deepest <- if (length(cur)) suppressWarnings(max(bot[cur], na.rm = TRUE)) else -Inf
+    gap <- length(cur) && !is.na(top[i]) && is.finite(deepest) && top[i] > deepest + 0.01
+    if (gap) { out[[length(out) + 1L]] <- cur; cur <- integer(0) }
+    if (isTRUE(keep[i])) cur <- c(cur, i)
+    else { if (length(cur)) out[[length(out) + 1L]] <- cur; cur <- integer(0) }
+  }
+  if (length(cur)) out[[length(out) + 1L]] <- cur
+  out
+}
+
+# The depth a run spans (overlapping rows are not counted twice); NA when a
+# row has no depth.
+.cssc_run_span <- function(x, r) {
+  top <- x$h$top_cm[r]; bot <- x$h$bottom_cm[r]
+  if (anyNA(top) || anyNA(bot)) NA_real_ else max(bot) - min(top)
+}
+
+# Runs of adjacent horizons in depth order, three-valued: TRUE when a run of
+# rows that certainly qualify (TRUE in `ok`) is at least `min_cm` thick and
+# begins within `max_top_cm` of the mineral surface (any depth when NULL);
+# NA when a run of rows that may qualify (TRUE or NA) could be (a row of
+# unknown thickness may go on, a run of unknown top may begin there);
+# FALSE otherwise. The runs are formed before the depth limit is applied, so
+# a run that begins within the limit counts with its parts below it.
+# $rows: the rows of the certain runs that pass; $maybe_rows: the rows of
+# the runs that may pass.
+.cssc_run_test <- function(x, ok, min_cm, max_top_cm = NULL) {
+  top_ok <- function(r) {
+    if (is.null(max_top_cm)) return(TRUE)
+    t <- x$top_ms[r[1L]]
+    if (is.na(t)) NA else t <= max_top_cm
+  }
+  sure <- .cssc_run_groups(x, ok %in% TRUE)
+  pass <- vapply(sure, function(r) {
+    th <- .cssc_run_span(x, r); if (is.na(th)) th <- sum(x$thick[r], na.rm = TRUE)
+    th >= min_cm && isTRUE(top_ok(r))
+  }, logical(1))
+  maybe <- .cssc_run_groups(x, !(ok %in% FALSE))
+  could <- vapply(maybe, function(r) {
+    long <- anyNA(x$thick[r]) || .cssc_run_span(x, r) >= min_cm
+    long && !identical(top_ok(r), FALSE)
+  }, logical(1))
+  list(passed = if (any(pass)) TRUE else if (any(could)) NA else FALSE,
+       rows = sort(unlist(sure[pass])), maybe_rows = sort(unlist(maybe[could])))
+}
+
+# Depth covered by a set of rows, overlapping rows counted once: $cm over the
+# rows with both depths, $open when a row lacks one (it may add more).
+.cssc_cover <- function(x, rows) {
+  rows <- rows[!is.na(rows)]
+  top <- x$h$top_cm[rows]; bot <- x$h$bottom_cm[rows]
+  ok <- !is.na(top) & !is.na(bot) & bot > top
+  open <- any(is.na(top) | is.na(bot))
+  if (!any(ok)) return(list(cm = 0, open = open))
+  iv <- cbind(top[ok], bot[ok])[order(top[ok]), , drop = FALSE]
+  cm <- 0; s0 <- iv[1, 1]; e0 <- iv[1, 2]
+  if (nrow(iv) > 1L) for (k in 2:nrow(iv)) {
+    if (iv[k, 1] <= e0) e0 <- max(e0, iv[k, 2])
+    else { cm <- cm + e0 - s0; s0 <- iv[k, 1]; e0 <- iv[k, 2] }
+  }
+  list(cm = cm + e0 - s0, open = open)
+}
+
+# Rows of every run of adjacent qualifying horizons (TRUE in `ok`, in depth
+# order) that is at least `min_cm` thick; a row of unknown thickness adds
+# nothing.
+.cssc_run_rows_all <- function(x, ok, min_cm) {
+  ord <- order(x$h$top_cm); out <- integer(0); cur <- integer(0)
+  flush <- function() if (length(cur) && sum(x$thick[cur], na.rm = TRUE) >= min_cm) cur else integer(0)
+  for (i in ord) {
+    if (isTRUE(ok[i])) cur <- c(cur, i) else { out <- c(out, flush()); cur <- integer(0) }
+  }
+  sort(c(out, flush()))
+}
+
 # Total thickness of runs of adjacent qualifying horizons (TRUE in `ok`);
 # returns the largest run and its rows.
 .cssc_runs <- function(ok, thick) {
@@ -136,52 +218,100 @@
 #' eluvial horizon above it (a truncated soil, or only an Ap above) or across
 #' a lithologic discontinuity, where the book accepts clay skins alone
 #' (criterion 5); there the designation decides.
+#'
+#' Each horizon is decided on its own, by its properties when they decide and
+#' otherwise by its designation; adjacent Bt horizons are then added up
+#' towards the 5 cm (.cssc_run_test), and a Bt "within" a depth is a run
+#' that begins there. By properties a horizon is compared only with the
+#' mineral horizons above it; it fails when its clay and the clay of every
+#' mineral horizon above are recorded and show no increase, or when its clay
+#' films are recorded as absent, and is undecided otherwise. The first
+#' mineral horizon has nothing to be compared with.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Upper boundary within this depth below the mineral
 #'   surface, or \code{NULL} for any depth.
 #' @noRd
 bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
-  x <- .cssc_horizons(pedon); h <- x$h
-  in_depth <- if (is.null(max_top_cm)) rep(TRUE, nrow(h))
-              else !is.na(x$top_ms) & x$top_ms <= max_top_cm
+  x <- .cssc_horizons(pedon); h <- x$h; n <- nrow(h)
+  raw <- .cssc_raw_master(x); osfx <- .cssc_other_suffix(x)
+  # a B by designation (in another notation by its master letter), or a
+  # horizon with no designation; organic layers are not
   is_b <- .cssc_is(x$parsed, "B")
-  b_or_unknown <- is.na(is_b) | is_b
-  ci <- if (nrow(h) >= 2L) test_clay_increase_argic(h, system = "usda")
-        else list(passed = FALSE, layers = integer(0), missing = character(0))
+  is_b <- ifelse(!is.na(is_b), is_b, ifelse(!is.na(raw), raw == "B", NA))
+  b_or_unknown <- (is.na(is_b) | is_b) & x$mineral
   films <- tolower(trimws(as.character(h$clay_films_amount)))
   has_films <- ifelse(is.na(films) | !nzchar(films), NA,
                       !films %in% c("none", "absent", "0", "no"))
-  cand <- intersect(ci$layers, which(b_or_unknown & in_depth &
-                                       !is.na(x$thick) & x$thick >= 5))
-  by_props <- if (length(cand) > 0L) .any3(has_films[cand])
-              else if (isTRUE(ci$passed) || identical(ci$passed, FALSE)) FALSE
-              else NA
-  bt <- .cssc_is(x$parsed, "B", "t", weak = "no")
-  desig_rows <- which(bt %in% TRUE & in_depth & !is.na(x$thick) & x$thick >= 5)
-  by_desig <- if (length(desig_rows) > 0L) TRUE
-              else if (!any(x$desig_known)) NA else FALSE
-  # a designated Bt where the clay-increase test does not apply
-  if (identical(by_props, FALSE) && length(desig_rows) > 0L) {
-    roman <- vapply(x$parsed, function(cmp) if (length(cmp)) cmp[[1]]$roman else "", "")
-    eluvial <- .cssc_is(x$parsed, "A", "e", "any") %in% TRUE
-    inapplicable <- vapply(desig_rows, function(r) {
-      above <- which(!is.na(h$bottom_cm) & h$bottom_cm <= h$top_cm[r] + 0.01)
-      !any(eluvial[above]) || any(roman[above] != roman[r])
-    }, logical(1))
-    if (any(inapplicable)) by_props <- NA
+  # the clay increase over the eluvial horizon above (Ch 2, p. 15, criterion
+  # 1), with USDA's argillic limits; a horizon is compared only with mineral
+  # horizons above it
+  clay <- h$clay_pct
+  eluvial <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) | (raw %in% "E")
+  undesignated <- !x$desig_known & is.na(raw)
+  above_of <- function(i) which(x$mineral & !is.na(h$bottom_cm) & !is.na(h$top_cm[i]) &
+                                  h$bottom_cm <= h$top_cm[i] + 0.01)
+  increase <- function(above, here) {
+    if (above < 15) here - above >= 3 else if (above < 40) here / above >= 1.2
+    else here - above >= 8
   }
-  r <- .cssc_route(by_props, by_desig)
-  layers <- if (r$route == "properties") cand[has_films[cand] %in% TRUE]
-            else desig_rows
-  miss <- c(if (is.na(by_props)) c(ci$missing, "clay_films_amount"),
-            if (is.na(by_desig)) "designation")
-  .cssc_result("bt_horizon_cssc", r$passed, layers,
-               list(route = r$route, by_properties = by_props,
+  props <- vapply(seq_len(n), function(i) {
+    if (!b_or_unknown[i]) return(FALSE)
+    if (identical(has_films[i], FALSE)) return(FALSE)
+    above <- above_of(i)
+    if (length(above) == 0L) return(FALSE)
+    # the horizon it is compared with is the eluvial one (or one that may be
+    # eluvial); with none designated, any mineral horizon above. The limits
+    # only get harder as that clay rises, so the lowest clay recorded decides
+    # a pass, and a fail once every such clay is recorded.
+    ref <- above[eluvial[above] | undesignated[above]]
+    if (length(ref) == 0L) ref <- above
+    if (is.na(clay[i])) return(NA)
+    known <- ref[!is.na(clay[ref])]
+    if (length(known) == 0L) return(NA)
+    if (increase(min(clay[known]), clay[i])) has_films[i]
+    else if (length(known) == length(ref)) FALSE else NA
+  }, logical(1))
+  # by designation: a strong t on a B (Bt, Btg, Bnt; not Btj); in another
+  # notation, where t also means illuvial clay, a B carrying a t; a horizon
+  # with no designation may be one
+  bt <- .cssc_is(x$parsed, "B", "t", weak = "no")
+  bt <- ifelse(!is.na(bt), bt, ifelse(!is.na(raw), raw == "B" & grepl("t", osfx), NA))
+  bt[!x$mineral] <- FALSE
+  known <- x$desig_known | !is.na(raw)
+  # criterion 5: a designated Bt with no eluvial horizon above it, or across
+  # a discontinuity, is not put to the clay-increase test; the clay skins it
+  # then rests on must not be recorded as absent
+  roman <- vapply(x$parsed, function(cmp) if (length(cmp)) cmp[[1]]$roman else "", "")
+  # in another notation a discontinuity is an Arabic number before the master
+  other_disc <- sub("^([0-9]*).*$", "\\1", trimws(as.character(h$designation)))
+  roman <- ifelse(x$desig_known, roman, ifelse(is.na(other_disc), "", other_disc))
+  # (a discontinuity between the eluvial horizon and the Bt: no eluvial
+  # horizon above in the Bt's own material)
+  for (r in which(bt %in% TRUE)) {
+    above <- which(!is.na(h$bottom_cm) & h$bottom_cm <= h$top_cm[r] + 0.01)
+    elu <- above[eluvial[above]]
+    if (!any(roman[elu] == roman[r]) && !identical(has_films[r], FALSE)) props[r] <- NA
+  }
+  # each horizon by its properties when they decide, otherwise by its designation
+  row <- ifelse(!is.na(props), props, bt)
+  rt <- .cssc_run_test(x, row, 5, max_top_cm)
+  by_props <- .cssc_run_test(x, props, 5, max_top_cm)$passed
+  by_desig <- if (!any(known)) NA else .cssc_run_test(x, bt, 5, max_top_cm)$passed
+  label <- function(src) if (!length(src) || all(src)) "properties"
+                        else if (!any(src)) "designations" else "properties+designations"
+  route <- if (is.na(rt$passed)) "none"
+           else if (isTRUE(rt$passed)) label(!is.na(props[rt$rows]))
+           else label(!is.na(props[b_or_unknown]))
+  miss <- if (is.na(rt$passed)) c("clay_pct", "clay_films_amount", "designation")
+          else character(0)
+  .cssc_result("bt_horizon_cssc", rt$passed, rt$rows,
+               list(route = route, by_properties = by_props,
                     by_designations = by_desig, notation = x$notation$why,
-                    clay_increase = ci$details),
-               if (is.na(r$passed)) miss else character(0),
-               "Ch 2, p. 15 (suffix t); Ch 3 key, p. 34")
+                    maybe_rows = setdiff(rt$maybe_rows, rt$rows),
+                    by_properties_rows = props),
+               miss, "Ch 2, p. 15 (suffix t); Ch 3 key, p. 34")
 }
+
 
 
 # ---- Podzolic B horizon (Ch 2, pp. 13-14, 17) -------------------------------
@@ -195,7 +325,11 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
 .cssc_podzolic_layers <- function(x) {
   h <- x$h
   is_b <- .cssc_is(x$parsed, "B")
-  b_or_unknown <- is.na(is_b) | is_b
+  # in another notation the master letter tells a B from an A, E, C or O;
+  # organic layers are never podzolic B material
+  raw <- .cssc_raw_master(x)
+  is_b <- ifelse(!is.na(is_b), is_b, ifelse(!is.na(raw), raw == "B", NA))
+  b_or_unknown <- (is.na(is_b) | is_b) & x$mineral
   oc <- h$oc_pct; fe <- h$fe_pyro_pct; al <- h$al_pyro_pct; clay <- h$clay_pct
   val <- h$munsell_value_moist; chr <- h$munsell_chroma_moist
   pos <- .cssc_hue_pos(h$munsell_hue_moist)
@@ -222,9 +356,14 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
   chem_any <- ifelse(bh %in% TRUE | bf %in% TRUE, TRUE,
                      ifelse(is.na(bh) | is.na(bf), NA, FALSE))
   bhf_chem <- ifelse(bf %in% TRUE, ifelse(is.na(oc), NA, oc > 5), bf)
+  # by designation: strong h, hf or f on a B; in another notation a Bs or Bh
+  # (any podzolic kind, but not the Bh or Bhf of the great groups)
+  osfx <- .cssc_other_suffix(x)
+  oth <- ifelse(!is.na(raw), raw == "B" & !is.na(osfx) & grepl("[sh]", gsub("ss|se", "", osfx)), NA)
+  d_any <- .cssc_is(x$parsed, "B", "h", "no") | .cssc_is(x$parsed, "B", "hf", "no") |
+           .cssc_is(x$parsed, "B", "f", "no")
   list(any = layer(chem_any), bh = layer(bh), bhf = layer(bhf_chem),
-       d_any = .cssc_is(x$parsed, "B", "h", "no") | .cssc_is(x$parsed, "B", "hf", "no") |
-               .cssc_is(x$parsed, "B", "f", "no"),
+       d_any = ifelse(!is.na(d_any), d_any, oth),
        d_bh = .cssc_is(x$parsed, "B", "h", "no"),
        d_bhf = .cssc_is(x$parsed, "B", "hf", "no"))
 }
@@ -234,15 +373,24 @@ bt_horizon_cssc <- function(pedon, max_top_cm = NULL) {
 .cssc_podzolic_run <- function(x, props_kind, desig_kind, min_cm = 10) {
   L <- .cssc_podzolic_layers(x)
   ok <- L[[props_kind]]
-  run <- .cssc_runs(ok %in% TRUE, x$thick)
-  by_props <- if (run$thickness >= min_cm) TRUE
-              else if (any(is.na(ok))) NA else FALSE
-  drun <- .cssc_runs(L[[desig_kind]] %in% TRUE, x$thick)
-  by_desig <- if (drun$thickness >= min_cm) TRUE
-              else if (!any(x$desig_known)) NA else FALSE
-  r <- .cssc_route(by_props, by_desig)
-  list(passed = r$passed, route = r$route, by_props = by_props,
-       by_desig = by_desig, rows = if (r$route == "properties") run$rows else drun$rows,
+  # by designation; a mineral horizon with no designation may be one
+  dk <- L[[desig_kind]]
+  dk[!x$mineral] <- FALSE
+  # each layer by its chemistry and colour when they decide, otherwise by its
+  # designation; then adjacent layers are added up (.cssc_run_test)
+  row <- ifelse(!is.na(ok), ok, dk)
+  rt <- .cssc_run_test(x, row, min_cm)
+  pt <- .cssc_run_test(x, ok, min_cm)
+  known <- x$desig_known | !is.na(.cssc_raw_master(x))
+  by_desig <- if (!any(known)) NA else .cssc_run_test(x, dk, min_cm)$passed
+  src <- !is.na(ok[if (isTRUE(rt$passed)) rt$rows else which(x$mineral)])
+  route <- if (is.na(rt$passed)) "none"
+           else if (!length(src) || all(src)) "properties"
+           else if (!any(src)) "designations" else "properties+designations"
+  run <- .cssc_runs(ok %in% TRUE, ifelse(is.na(x$thick), 0, x$thick))
+  drun <- .cssc_runs(dk %in% TRUE, ifelse(is.na(x$thick), 0, x$thick))
+  list(passed = rt$passed, route = route, by_props = pt$passed,
+       by_desig = by_desig, rows = rt$rows,
        thickness_properties = run$thickness, thickness_designations = drun$thickness)
 }
 
@@ -427,7 +575,7 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
   other[nchar(other_full) > 1L] <- NA_character_   # transitions (AB, BC) are neither
   # buried horizons (b), in the Canadian notation or another one
   buried <- (.cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE) |
-            (!is.na(other_full) & grepl("^[0-9]*[A-Z]+[a-z0-9]*b", d))
+            (!is.na(other_full) & grepl("^[0-9]*[A-Z]+[a-z0-9]*b", .cssc_other_case(d)))
   ahp <- (.cssc_is(x$parsed, "A", "h", "any") | .cssc_is(x$parsed, "A", "p", "any")) %in% TRUE
   ae  <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) | (other %in% "E")
   # an Ae (or an E) more than 20 cm thick reaching below 60 cm is tested
@@ -472,10 +620,25 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
 # which the Canadian reading leaves aside; callers read only the masters
 # that mean the same in every notation. All NA when the designations are
 # read as Canadian.
+# A designation written all in capitals in another notation ("BHS", "2BT1",
+# "AP") is read as its master and lowercase suffixes ("Bhs", "2Bt1", "Ap");
+# a transition (two of A, B, C, E) keeps both letters ("BCT" is "BCt", "BC"
+# stays "BC").
+.cssc_other_case <- function(d) {
+  core <- gsub("[^A-Za-z]", "", sub("/.*$", "", d))
+  caps <- !is.na(d) & nchar(core) > 1L & !grepl("[a-z]", core)
+  d[caps] <- vapply(d[caps], function(s) {
+    i <- regexpr("[A-Z]", s)
+    k <- if (grepl("^[ABCE][ABCE]", substring(s, i))) i + 1L else i
+    paste0(substr(s, 1L, k), tolower(substring(s, k + 1L)))
+  }, character(1))
+  d
+}
+
 .cssc_other_masters <- function(designation, notation_ok) {
   n <- length(designation)
   if (isTRUE(notation_ok)) return(rep(NA_character_, n))
-  d <- trimws(as.character(designation))
+  d <- .cssc_other_case(trimws(as.character(designation)))
   d <- sub("^[0-9]+", "", sub("/.*$", "", d))
   m <- regmatches(d, regexec("^([A-Z]+)", d))
   vapply(seq_len(n), function(i) {
@@ -686,17 +849,18 @@ cryosolic_cssc <- function(pedon) {
 # udic and aquic, which straddle the Canadian subhumid-humid limit or lie on
 # the other scale, leave it undecided).
 .cssc_chernozemic_climate <- function(site) {
-  t <- suppressWarnings(as.numeric(site$mean_annual_soil_temp_C %||% NA))
+  t <- suppressWarnings(as.numeric(site$mean_annual_soil_temp_C %||% NA)[1L])
   temp_ok <- if (!is.na(t)) t >= 0 else {
-    r <- tolower(as.character(site$soil_temperature_regime %||% NA))
+    r <- tolower(as.character(site$soil_temperature_regime %||% NA)[1L])
     if (is.na(r)) NA else if (grepl("pergelic|gelic", r)) FALSE else TRUE
   }
-  m <- tolower(as.character(site$soil_moisture_subclass %||% NA))
+  m <- gsub("[^a-z]", "", tolower(as.character(site$soil_moisture_subclass %||% NA)[1L]))
+  if (!is.na(m) && !nzchar(m)) m <- NA_character_
   moist_ok <- if (!is.na(m)) {
     if (m %in% c("subhumid", "semiarid", "subarid", "arid")) TRUE
     else if (m %in% c("humid", "perhumid")) FALSE else NA
   } else {
-    r <- tolower(as.character(site$soil_moisture_regime %||% NA))
+    r <- tolower(as.character(site$soil_moisture_regime %||% NA)[1L])
     if (is.na(r)) NA
     else if (grepl("arid|torric|ustic|xeric", r)) TRUE
     else if (grepl("perudic", r)) FALSE else NA
@@ -728,7 +892,7 @@ chernozemic_a_cssc <- function(pedon) {
   for (i in ord) {
     if (is.na(h$top_cm[i]) || h$top_cm[i] < x$ms) next
     a_here <- if (is.na(ahp[i])) length(rows) == 0L else ahp[i]
-    if (isTRUE(a_here) && abs(h$top_cm[i] - depth) < 0.01) {
+    if (isTRUE(a_here) && isTRUE(abs(h$top_cm[i] - depth) < 0.01)) {
       rows <- c(rows, i); depth <- h$bottom_cm[i]
     } else break
   }
@@ -739,16 +903,11 @@ chernozemic_a_cssc <- function(pedon) {
                         missing = if (!any(x$desig_known)) "designation" else character(0),
                         where = "Ch 2, p. 16"))
   }
-  w <- pmax(0, x$thick[rows]); w[is.na(w)] <- 0
-  wmean <- function(v) { ok <- !is.na(v); if (!any(ok)) NA_real_ else sum(v[ok] * w[ok]) / sum(w[ok]) }
-  thick <- sum(w)
-  val_dry <- wmean(h$munsell_value_dry[rows]); val_moist <- wmean(h$munsell_value_moist[rows])
-  chr_moist <- wmean(h$munsell_chroma_moist[rows])
-  oc <- wmean(h$oc_pct[rows]); n <- wmean(h$n_total_pct[rows])
-  bs <- wmean(h$bs_pct[rows])
-  ca <- wmean(h$ca_cmol[rows])
-  others <- c(wmean(h$mg_cmol[rows]), wmean(h$k_cmol[rows]), wmean(h$na_cmol[rows]),
-              wmean(h$al_cmol[rows]))
+  # thickness-weighted means; a horizon with no bottom (the deepest) has an
+  # unknown weight, so the criteria are read with it weighing nothing and
+  # weighing everything, and decided only where both agree
+  w0 <- pmax(0, x$thick[rows]); open_a <- anyNA(w0)
+  thick <- sum(w0, na.rm = TRUE)
   # the parent material: the lowest C of the first material (IC), not a IIC
   is_c <- .cssc_is(x$parsed, "C", weak = "any")
   roman <- vapply(x$parsed, function(cmp) if (length(cmp)) cmp[[1]]$roman else "", "")
@@ -756,22 +915,43 @@ chernozemic_a_cssc <- function(pedon) {
   ic <- if (length(ic)) ic[length(ic)] else NA_integer_
   st <- tolower(as.character(h$structure_type[rows]))
   rr <- tolower(as.character(h$rupture_resistance[rows]))
-  crit <- list(
-    thickness = thick >= 10,
-    colour = if (is.na(val_dry) || is.na(val_moist) || is.na(chr_moist)) NA
-             else val_dry < 5.5 && val_moist < 3.5 && chr_moist < 3.5,
-    darker_than_parent = if (is.na(ic)) TRUE else {
-      pv <- h$munsell_value_moist[ic]
-      if (is.na(pv) || is.na(val_moist)) TRUE else val_moist <= pv - 1
-    },
-    organic_c = if (is.na(oc)) NA else oc >= 1 && oc <= 17,
-    c_to_n = if (is.na(oc) || is.na(n) || n <= 0) NA else oc / n < 17,
-    base_saturation = if (is.na(bs)) NA else bs > 80 &&
-      (is.na(ca) || all(is.na(others)) || ca >= max(others, na.rm = TRUE)),
-    not_massive_or_loose = !any(grepl("single", st)) &&
-      !any(grepl("massive", st) & rr %in% c("hard", "very hard", "extremely hard")),
-    climate = .cssc_chernozemic_climate(pedon$site)$passed
-  )
+  # each threshold is read on its own (a mean moves monotonically between the
+  # two weights), then the criteria join them three-valued
+  atoms <- function(w) {
+    wmean <- function(v) { ok <- !is.na(v) & w > 0
+      if (!any(ok)) NA_real_ else sum(v[ok] * w[ok]) / sum(w[ok]) }
+    lt <- function(a, b) if (is.na(a) || is.na(b)) NA else a < b
+    val_dry <- wmean(h$munsell_value_dry[rows]); val_moist <- wmean(h$munsell_value_moist[rows])
+    chr_moist <- wmean(h$munsell_chroma_moist[rows])
+    oc <- wmean(h$oc_pct[rows]); n <- wmean(h$n_total_pct[rows])
+    bs <- wmean(h$bs_pct[rows]); ca <- wmean(h$ca_cmol[rows])
+    others <- c(mg = wmean(h$mg_cmol[rows]), k = wmean(h$k_cmol[rows]),
+                na = wmean(h$na_cmol[rows]), al = wmean(h$al_cmol[rows]))
+    pv <- if (is.na(ic)) NA_real_ else h$munsell_value_moist[ic]
+    c(list(vd = lt(val_dry, 5.5), vm = lt(val_moist, 3.5), cm = lt(chr_moist, 3.5),
+           darker = if (is.na(pv) || is.na(val_moist)) TRUE else val_moist <= pv - 1,
+           oc_lo = if (is.na(oc)) NA else oc >= 1, oc_hi = if (is.na(oc)) NA else oc <= 17,
+           cn = if (is.na(oc) || is.na(n) || n <= 0) NA else oc / n < 17,
+           bs = if (is.na(bs)) NA else bs > 80),
+      # Ca the dominant cation: each other cation recorded is not above it
+      lapply(others, function(o) if (is.na(ca) || is.na(o)) TRUE else ca >= o))
+  }
+  at <- if (!open_a) atoms(w0) else {
+    light <- ifelse(is.na(w0), 0, w0); heavy <- ifelse(is.na(w0), 1e6, w0)
+    ab <- atoms(heavy)
+    if (sum(light) == 0) ab else Map(function(a, b) if (identical(a, b)) a else NA, atoms(light), ab)
+  }
+  pc <- list(
+    colour = .and3(at$vd, at$vm, at$cm),
+    darker_than_parent = at$darker,
+    organic_c = .and3(at$oc_lo, at$oc_hi),
+    c_to_n = at$cn,
+    base_saturation = .and3(at$bs, at$mg, at$k, at$na, at$al))
+  crit <- c(list(thickness = if (thick >= 10) TRUE else if (open_a) NA else FALSE),
+            pc,
+            list(not_massive_or_loose = !any(grepl("single", st)) &&
+                   !any(grepl("massive", st) & rr %in% c("hard", "very hard", "extremely hard")),
+                 climate = .cssc_chernozemic_climate(pedon$site)$passed))
   vals <- unlist(crit)
   passed <- if (any(vals %in% FALSE)) FALSE else if (all(vals %in% TRUE)) TRUE else NA
   miss <- c(colour = "munsell_value_dry", organic_c = "oc_pct", c_to_n = "n_total_pct",
@@ -792,41 +972,59 @@ chernozemic_a_cssc <- function(pedon) {
 #' not look eluviated (G.3); an Ae or Aej no more than 5 cm thick under an
 #' Ahe (G.4). No Ae at all also passes (G.1). An Aej with no dry value that
 #' meets neither G.3 nor G.4 leaves the test undecided. Read from the
-#' designations.
+#' designations; in another notation an E (not a buried one) is read as an Ae
+#' of unknown strength under the A horizons above it: G.3 passes it, a dry
+#' value of 5 or more fails it (as an Ae or as an Aej), and anything else
+#' leaves it undecided.
 #' @noRd
 chernozemic_ae_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon); h <- x$h
-  if (!any(x$desig_known)) {
+  raw <- .cssc_raw_master(x)
+  if (!any(x$desig_known) && all(is.na(raw))) {
     return(.cssc_result("chernozemic_ae_cssc", NA, missing = "designation",
                         where = "Ch 3 key G, p. 34"))
   }
-  has_h <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE
-  ae_any <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) & !has_h
-  ae_weak <- ae_any & (.cssc_is(x$parsed, "A", "e", "yes") %in% TRUE)
-  ahe <- .cssc_is(x$parsed, "A", c("h", "e"), "any") %in% TRUE
-  ahp_plain <- (has_h | .cssc_is(x$parsed, "A", "p", "any") %in% TRUE) & !ahe
   thick <- x$thick
-  ae_rows <- which(ae_any)
-  each <- vapply(ae_rows, function(i) {
-    above <- which(!is.na(h$bottom_cm) & h$bottom_cm <= h$top_cm[i] + 0.01)
-    a_above <- above[ahp_plain[above]]
-    g3 <- length(a_above) > 0L && !is.na(thick[i]) &&
-          thick[i] < sum(thick[a_above], na.rm = TRUE)
-    g4 <- any(ahe[above]) && !is.na(thick[i]) && thick[i] <= 5
-    if (g3 || g4) return(TRUE)
-    if (ae_weak[i]) {
+  above_of <- function(i) which(!is.na(h$bottom_cm) & h$bottom_cm <= h$top_cm[i] + 0.01)
+  if (!any(x$desig_known)) {
+    buried <- grepl("^[0-9]*[A-Z]+[a-z0-9]*b", .cssc_other_case(trimws(as.character(h$designation))))
+    a_rows_o <- raw %in% "A" & !buried
+    ae_rows <- which(raw %in% "E" & !buried)
+    each <- vapply(ae_rows, function(i) {
+      a_above <- above_of(i)[a_rows_o[above_of(i)]]
+      if (length(a_above) > 0L && !is.na(thick[i]) &&
+          thick[i] < sum(thick[a_above], na.rm = TRUE)) return(TRUE)
       dv <- h$munsell_value_dry[i]
-      return(if (is.na(dv)) NA else dv < 5)
-    }
-    FALSE
-  }, logical(1))
+      if (!is.na(dv) && dv >= 5) FALSE else NA
+    }, logical(1))
+  } else {
+    has_h <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE
+    ae_any <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) & !has_h
+    ae_weak <- ae_any & (.cssc_is(x$parsed, "A", "e", "yes") %in% TRUE)
+    ahe <- .cssc_is(x$parsed, "A", c("h", "e"), "any") %in% TRUE
+    ahp_plain <- (has_h | .cssc_is(x$parsed, "A", "p", "any") %in% TRUE) & !ahe
+    ae_rows <- which(ae_any)
+    each <- vapply(ae_rows, function(i) {
+      above <- above_of(i)
+      a_above <- above[ahp_plain[above]]
+      g3 <- length(a_above) > 0L && !is.na(thick[i]) &&
+            thick[i] < sum(thick[a_above], na.rm = TRUE)
+      g4 <- any(ahe[above]) && !is.na(thick[i]) && thick[i] <= 5
+      if (g3 || g4) return(TRUE)
+      if (ae_weak[i]) {
+        dv <- h$munsell_value_dry[i]
+        return(if (is.na(dv)) NA else dv < 5)
+      }
+      FALSE
+    }, logical(1))
+  }
   passed <- if (length(ae_rows) == 0L) TRUE
             else if (any(each %in% FALSE)) FALSE
             else if (all(each %in% TRUE)) TRUE else NA
   .cssc_result("chernozemic_ae_cssc", passed, ae_rows,
                list(route = "designations", notation = x$notation$why,
                     ae_horizons = ae_rows),
-               if (is.na(passed)) "munsell_value_dry" else character(0),
+               if (is.na(passed)) c("munsell_value_dry", "designation") else character(0),
                "Ch 3 key G, p. 34")
 }
 
@@ -846,10 +1044,13 @@ brunisolic_b_cssc <- function(pedon) {
   bfj <- .cssc_is(x$parsed, "B", "f", "yes")
   bf  <- .cssc_is(x$parsed, "B", "f", "no")
   weak_b <- (bm %in% TRUE) | (btj %in% TRUE) | (bfj %in% TRUE)
-  t_weak <- sum(x$thick[weak_b], na.rm = TRUE)
-  t_bf <- sum(x$thick[bf %in% TRUE], na.rm = TRUE)
-  passed <- if (t_weak >= 5 || (t_bf > 0 && t_bf < 10)) TRUE
-            else if (!any(x$desig_known)) NA else FALSE
+  # depth covered (overlapping rows once); the deepest horizon with no bottom
+  # may go on
+  cw <- .cssc_cover(x, which(weak_b)); cb <- .cssc_cover(x, which(bf %in% TRUE))
+  t_weak <- cw$cm; t_bf <- cb$cm
+  open_weak <- cw$open; open_bf <- cb$open
+  passed <- if (t_weak >= 5 || (t_bf > 0 && t_bf < 10 && !open_bf)) TRUE
+            else if (open_weak || (open_bf && t_bf < 10) || !any(x$desig_known)) NA else FALSE
   .cssc_result("brunisolic_b_cssc", passed, which(weak_b | (bf %in% TRUE)),
                list(route = "designations", notation = x$notation$why,
                     bm_btj_bfj_cm = t_weak, bf_cm = t_bf),
