@@ -1,5 +1,58 @@
 # Changelog
 
+## soilKey 0.9.274 (2026-10-21)
+
+### Canadian classification: three readings raised by the NPDB benchmark (experimental)
+
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+changes three readings, each written down in
+`inst/rules/cssc3/readings.yaml` (now 58 readings). WRB, SiBCS and USDA
+results do not change.
+
+- **Chroma 1 or less.** Clause a of the gleying test (Ch 3 key E, p. 34)
+  counts only in materials that develop higher chromas when oxidised,
+  which a colour cannot show: a pale calcareous C or a grey parent
+  material is grey of its own. A horizon gleyed by clause a alone is now
+  read with its designation: gleyed with a strong g, not gleyed when
+  designated without one (a weak gj included; with mottles unknown,
+  which could pass another clause, the designation decides as for
+  unknown colours), and, with no designation, gleyed unless it holds 2 %
+  CaCO3 or more (then undecided). The other clauses still read the
+  colours alone. The Btg of the Luvic Gleysols reads its colours the
+  same way.
+- **Gleying and the Bt.** In a soil with a Bt that begins within 50 cm,
+  the gley colours must be in the Bt (Ch 7, p. 83: a Luvic Gleysol when
+  they are in the Btg within 50 cm, a Gleyed Luvisol when they are only
+  in the Aeg or below 50 cm). Soils with a solonetzic B are left out,
+  since Ch 7 places them in the Gleysolic order by their gleying. The 10
+  cm minimum of Ch 7 (p. 81), which is not in the key, stays unapplied:
+  on the NPDB it turned away 64 Gleysols the survey confirms, mostly
+  because the depth recorded for the deepest horizon is the sampling
+  depth.
+- **Base saturation (neutral salt).** Criterion 6 of the chernozemic A
+  is read as by an unbuffered salt, as the range each horizon’s data
+  allow: the bases over the effective CEC are the value; the bases over
+  the bases plus the exchangeable Al are an upper bound (the H is left
+  out); a base saturation at pH 7 is a lower bound (the unbuffered value
+  is higher); a pH in CaCl2 of 5.5 or more (without it, 6.0 in water)
+  places it above 80 %. Only a value known to be 80 % or less fails; the
+  rest is undecided. Negative amounts, pH values outside 0-14 and
+  contradictory bounds count as no data, and the KCl Al stands in for
+  the exchangeable Al.
+
+On the NPDB (Chernozems apart), agreement with the survey goes from 89.8
+% to 90.6 % at the order level (90.5 % to 91.5 % when decided), from
+70.7 % to 71.8 % at the great group level (82.1 % to 83.9 %) and from
+56.3 % to 56.6 % at the subgroup level (71.3 % to 72.3 %). Decided
+disagreements in which the key puts a surveyed soil in the Gleysolic
+order fall from 317 to 178 (Luvisols 141 to 72, Brunisols 51 to 29). In
+turn, 32 surveyed Gleysols are now decided in the Luvisolic order, 30 of
+them by the Bt rule, mostly Luvic Gleysols whose Btg or Btgj does not
+have gley colours. Base saturation no longer decides any Chernozem
+outside its order (11 still fail criterion 6 because Ca is not the
+dominant cation): 340 Chernozems (was 445) are decided outside the order
+on other criteria, and 899 (was 794) wait for the soil climate.
+
 ## soilKey 0.9.273 (2026-10-21)
 
 ### The National Pedon Database of Canada as a benchmark (experimental)
