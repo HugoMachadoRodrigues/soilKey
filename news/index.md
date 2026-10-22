@@ -1,5 +1,56 @@
 # Changelog
 
+## soilKey 0.9.278 (2026-10-22)
+
+### NatSoil (CSIRO) as a benchmark for the Australian key (experimental)
+
+NatSoil, the national soil site database of CSIRO, can now be read
+through its public API and used to check
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+against the orders the surveyors gave. The data are licensed per site,
+most under CC BY 4.0, and are not shipped:
+[`fetch_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_natsoil.md)
+saves them to a folder of your choice. WRB, SiBCS and USDA results do
+not change.
+
+- [`fetch_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_natsoil.md)
+  downloads every public site (about 150 pages) and then the horizons,
+  samples and laboratory results of each licensed site with an ASC order
+  (one request per site, about 9,800), with a pause between requests.
+  Files already on disk are kept, so a run can be resumed. Sites not
+  licensed for external use are skipped.
+- [`load_natsoil_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_natsoil_pedons.md)
+  turns the files into pedons: designations in the Australian notation,
+  field texture grades, structure, moist and dry colours, slickensides,
+  cracks, coarse fragments, calcareous segregations (records with only
+  their nature are templates and are not read), pans, effervescence,
+  plasticity type, the moisture when described, and laboratory pH, clay,
+  exchangeable cations, CEC and effective CEC (whatever the extraction
+  method, the “not recorded” methods included), ESP, organic C, free
+  iron and carbonate. Samples count for the horizons they overlap,
+  weighed by the overlap. A value below the detection limit (“\<x”) is
+  read as half the limit, unless the limit lies above one the keys read.
+  The field pH stands in only where the laboratory has no pH, and the
+  loss on ignition gives organic C only in peat. The site keeps the
+  surveyors’ classification and confidence, the drainage class, the
+  surface condition, coordinates, the licence and the citation.
+- [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
+  compares the orders: agreement for all pedons and for the decided
+  ones, by the surveyors’ confidence, recall by order, the confusion
+  table and the first order left undecided. The surveys predate the 2021
+  Arenosols, so an Arenosol given to a surveyed Tenosol or Rudosol is
+  also counted as agreement in the edition figures.
+- New horizon attribute `esp_pct`: the exchangeable sodium percentage as
+  the laboratory reports it.
+  [`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+  reads it for the sodic condition when exchangeable Na or the CEC is
+  not given.
+
+On 9,700 licensed NatSoil profiles with an ASC order, the order agrees
+for 43.4 % (45.3 % counting the Arenosols as Tenosols or Rudosols);
+1,045 are decided, with 77.8 % agreement (79.1 %); of the 450 decided
+with the surveyors’ highest confidence, 80.2 % agree (81.8 %).
+
 ## soilKey 0.9.277 (2026-10-22)
 
 ### Australian Soil Classification: the 15 orders (experimental)

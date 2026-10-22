@@ -1785,6 +1785,9 @@ plus auxiliaries) used in the test suite.
   : Load the LUCAS Soil 2018 Topsoil release as a list of PedonRecord
   objects
 
+- [`load_natsoil_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_natsoil_pedons.md)
+  : Read NatSoil profiles as pedons
+
 - [`load_npdb_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_npdb_pedons.md)
   : Read the National Pedon Database of Canada
 
@@ -2196,6 +2199,20 @@ shipped: download the CSV files from the Open Government Portal.
   : Soil climate of the Canadian system from climate normals
 - [`fetch_aafc_normals()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_aafc_normals.md)
   : Climate normals of Agriculture and Agri-Food Canada at given points
+
+## NatSoil benchmark (Australia, experimental)
+
+NatSoil, the national soil site database of CSIRO, read through its
+public API, as a benchmark for classify_asc3() against the orders the
+surveyors gave. The data are licensed per site (most under CC BY 4.0)
+and are not shipped.
+
+- [`fetch_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_natsoil.md)
+  : Download NatSoil sites and profiles (CSIRO)
+- [`load_natsoil_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_natsoil_pedons.md)
+  : Read NatSoil profiles as pedons
+- [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
+  : Benchmark the Australian order key on NatSoil
 
 ## WoSIS stratified WRB benchmark (v0.9.73)
 
