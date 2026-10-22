@@ -1,0 +1,54 @@
+# Key to the suborders of the Calcarosols, ASC 3rd ed. (online version with errata).
+# Gypsum, the carbonate classes and the calcareous horizon of the glossary;
+# see R/diagnostics-asc-suborders-special.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "CA":
+    - code: "FJ"
+      name: Hypergypsic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypergypsic}
+      notes: "Soils that dominantly consist of gypsum crystals, sand-sized or finer."
+
+    - code: "JT"
+      name: Carbonatic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: carbonatic}
+      notes: "Calcareous throughout; the upper 0.1 m of the solum is dominantly fine-earth carbonate or holds more than 40 % of it."
+
+    - code: "CV"
+      name: Hypocalcic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate evident only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate (calcrete fragments, nodules or concretions, coated gravel)."
+
+    - code: "FB"
+      name: Supracalcic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft, finely divided carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Calcarosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."

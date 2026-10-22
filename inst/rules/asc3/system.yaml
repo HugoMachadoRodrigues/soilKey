@@ -22,7 +22,7 @@ citation: >
   Online version: Soil Science Australia, www.soilscienceaustralia.org.au/asc
   (last update 25 June 2026; Appendix 8 errata of 5 November 2025).
 version: "The Australian Soil Classification, 3rd edition (2021), online version of 25 June 2026"
-implementation_status: "soilKey v0.9.280 -- 15/15 orders; suborders of 7 orders (Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols, Vertosols); the other suborders, great groups, subgroups and families to follow"
+implementation_status: "soilKey v0.9.281 -- 15/15 orders; suborders of 11 orders (Organosols, Podosols, Vertosols, Hydrosols, Kurosols, Sodosols, Chromosols, Calcarosols, Ferrosols, Dermosols, Kandosols); the suborders of the Anthroposols, Arenosols, Rudosols and Tenosols, great groups, subgroups and families to follow"
 source: |
   Isbell, R.F. and NCST (2021). The Australian Soil Classification, 3rd ed.
   CSIRO Publishing, Melbourne. Online version (Soil Science Australia), key to

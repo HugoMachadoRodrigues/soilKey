@@ -17,3 +17,11 @@ diagnostics:
   - {function: kandosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 12; Kandosols"}
   - {function: arenosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 13; Arenosols"}
   - {function: rudosol_asc,      file: R/diagnostics-asc.R, reference: "Key to orders, step 14; Rudosols"}
+  - {function: colour_suborder_asc,    file: R/diagnostics-asc-suborders.R, reference: "Colour classes (Fig. 3); suborders of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols, Vertosols"}
+  - {function: aquic_vertosol_asc,     file: R/diagnostics-asc-suborders.R, reference: "Vertosols, suborder Aquic"}
+  - {function: peat_suborder_asc,      file: R/diagnostics-asc-suborders-special.R, reference: "Organosols, suborders and Comment; glossary 'Peat'"}
+  - {function: b_saturation_asc,       file: R/diagnostics-asc-suborders-special.R, reference: "Podosols, suborders (saturation of the B horizon)"}
+  - {function: acid_sulfate_ab_asc,    file: R/diagnostics-asc-suborders-special.R, reference: "Podosols, suborders; glossary 'Sulfuric materials', 'Hypersulfidic material'"}
+  - {function: hydrosol_setting_asc,   file: R/diagnostics-asc-suborders-special.R, reference: "Hydrosols, suborders (setting of the soil)"}
+  - {function: mottled_profile_asc,    file: R/diagnostics-asc-suborders-special.R, reference: "Hydrosols, suborders Redoxic and Oxyaquic; glossary 'Mottled horizon'"}
+  - {function: carbonate_suborder_asc, file: R/diagnostics-asc-suborders-special.R, reference: "Calcarosols, suborders; glossary 'Carbonate classes', 'Calcareous horizon'"}

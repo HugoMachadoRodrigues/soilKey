@@ -174,6 +174,8 @@ horizon_column_spec <- function() {
     # Read only by the Australian key; absent => the other keys are unchanged.
     field_texture                 = "character", # field texture grade, NCST Field Handbook codes (S, LS, CS, SL, L, ZL, SCL, CL, CLS, ZCL, LC, LMC, MC, MHC, HC; sand-size prefixes F/M/K and '+'/'-' accepted); ASC textural B, Arenosols, Kandosols, Vertosols
     subplasticity                 = "character", # kneading test of clays: 'none' / 'subplastic' / 'strongly subplastic' / 'superplastic'; ASC Sodosols and Chromosols (glossary 'Strongly subplastic')
+    carbonate_soft_pct            = "numeric",   # soft, finely divided pedogenic carbonate (segregations), visual %; ASC carbonate classes
+    carbonate_hard_pct            = "numeric",   # hard pedogenic carbonate (nodules, concretions, calcrete fragments, coated gravel), visual %; ASC carbonate classes
     esp_pct                       = "numeric",   # exchangeable sodium percentage as the laboratory reports it (read when Na or the CEC is not given); ASC sodic
     soil_water_status             = "character", # moisture of the horizon when described (Field Handbook): 'dry' / 'moderately moist' / 'moist' / 'wet'; ASC Vertosols ('unless too moist')
     effervescence_class           = "character"  # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous

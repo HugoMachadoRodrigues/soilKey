@@ -432,6 +432,12 @@
           "subplasticity": {
             "type": ["string", "null"]
           },
+          "carbonate_soft_pct": {
+            "type": ["number", "null"]
+          },
+          "carbonate_hard_pct": {
+            "type": ["number", "null"]
+          },
           "esp_pct": {
             "type": ["number", "null"]
           },
