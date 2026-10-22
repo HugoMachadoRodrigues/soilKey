@@ -51,5 +51,5 @@ soilkey_systems()
 #> 2   classify_sibcs ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE
 #> 3    classify_usda   orders, suborders, great_groups, subgroups            TRUE
 #> 4   classify_cssc3              orders, great_groups, subgroups    cssc   FALSE
-#> 5    classify_asc3                                       orders     asc   FALSE
+#> 5    classify_asc3                            orders, suborders     asc   FALSE
 ```

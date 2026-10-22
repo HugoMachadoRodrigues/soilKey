@@ -42,7 +42,9 @@ A list: `n`; `accuracy` and `accuracy_edition`; `decided` (count),
 data frame by the surveyors' confidence, 1 = all necessary analytical
 data); `recall` by surveyed order; `confusion` (rows the survey, columns
 soilKey); `first_undecided` (the first order left undecided, among
-provisional pedons); and `results`, one row per pedon.
+provisional pedons); `suborders`, the same for the suborders where the
+key has them (overall, and over the pedons whose order agrees); and
+`results`, one row per pedon.
 
 ## See also
 

@@ -5,8 +5,11 @@ Keys a
 through the Australian Soil Classification, 3rd edition (Isbell and the
 National Committee on Soil and Terrain 2021), following the online
 version with its errata. **Experimental**: this release keys the 15
-orders (the key to soil orders); suborders, great groups, subgroups and
-families follow.
+orders (the key to soil orders) and the suborders of the Kurosols,
+Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols
+(colour classes, and the Aquic Vertosols); the other suborders, great
+groups, subgroups and families follow. The name is the suborder's ("Red
+Chromosol") where one is assigned; `rsg_or_order` keeps the order.
 
 ## Usage
 
@@ -43,9 +46,10 @@ classify_asc3(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"asc3"`, the order in `name` and `rsg_or_order`, the
-key trace, and `provisional_because` (orders before the assigned one
-that could not be decided).
+with `system_id` `"asc3"`, the deepest class in `name`, the order in
+`rsg_or_order`, the classes of each level in `levels`, the key trace,
+and `provisional_because` (classes before the assigned ones that could
+not be decided).
 
 ## Details
 
@@ -80,5 +84,5 @@ Online version: www.soilscienceaustralia.org.au/asc.
 ``` r
 res <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
 res$name
-#> [1] "Chromosol"
+#> [1] "Red Chromosol"
 ```
