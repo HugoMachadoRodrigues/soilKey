@@ -83,6 +83,18 @@ second.
 - [`make_cssc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cssc3_example.md)
   : Example pedons for the Canadian orders
 
+## Australian Soil Classification (experimental)
+
+The 15 orders of the 3rd edition (2021, online version with errata),
+read from field textures, the Australian horizon notation, the boundary
+between the A and the B, pH, ESP, free iron, grade of pedality,
+carbonates and the site drainage.
+
+- [`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+  : Classify a pedon under the Australian Soil Classification
+- [`make_asc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_asc3_example.md)
+  : Example pedons for the Australian orders
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

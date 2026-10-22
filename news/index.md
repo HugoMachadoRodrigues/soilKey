@@ -1,5 +1,56 @@
 # Changelog
 
+## soilKey 0.9.277 (2026-10-22)
+
+### Australian Soil Classification: the 15 orders (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+keys a pedon to the orders of the Australian Soil Classification, 3rd
+edition (Isbell and the National Committee on Soil and Terrain 2021),
+following the online version with its errata. It is the second national
+system on the registry
+([`soilkey_systems()`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md),
+alias `asc`) and, like the Canadian one, runs in
+[`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
+only when asked. Suborders, great groups, subgroups and families follow
+in later releases. WRB, SiBCS and USDA results do not change.
+
+- The key reads the Australian horizon notation of the Field Handbook
+  (A1, A2e, B21t, B3, Bhs, 2B2b …), and FAO or USDA designations by the
+  role of each horizon (an E as an A2, a Bt as a B2t).
+- New horizon attributes: `field_texture` (the Field Handbook’s texture
+  grades, such as SL, SCL or LMC, with + or -), `subplasticity`,
+  `soil_water_status` (the moisture of the horizon when described) and
+  `effervescence_class`. Where a limit is a texture grade the field
+  texture decides and lab clay stands in; where it is in % clay, lab
+  clay decides and the field texture stands in as the clay range of its
+  grade.
+- The clear or abrupt textural B (Kurosols, Sodosols, Chromosols) reads
+  the glossary’s clay figures, or its field-texture equivalents when lab
+  clay is missing on either side of the boundary.
+- From the site the key reads the drainage class and tidal flooding
+  (Hydrosols), a cracking surface condition (Vertosols) and the notation
+  of the designations.
+- [`make_asc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_asc3_example.md)
+  gives one small profile per order.
+- The choices where the text is silent are listed in
+  `inst/rules/asc3/readings.yaml` (21 readings). Two were settled on the
+  survey data below: only a very poorly drained site counts as saturated
+  for the Hydrosols (poorly drained is undecided), and the Vertosols’
+  cracks are not required in a solum described moist (the key’s “unless
+  too moist”).
+
+Checked against NatSoil (CSIRO, NatSoil v13, CC BY 4.0; the data are not
+shipped, and a reader will follow): of 9,698 profiles with an order from
+the surveys, 42.9 % get the same order (44.8 % counting the 2021
+Arenosols against the Tenosols and Rudosols of earlier editions). 988
+are decided, with no earlier order left open, and 78.6 % of them agree
+(80.1 %; 82.9 % of the 404 decided with the surveyors’ highest
+confidence). Most profiles stay provisional for missing data: the
+drainage class (Hydrosols), the designations (Podosols), the cracks
+(Vertosols), free iron (Ferrosols), carbonate records (Calcarosols) and
+exchangeable sodium (Sodosols).
+
 ## soilKey 0.9.276 (2026-10-21)
 
 ### Canadian classification: the colour of the Chernozemic great groups (experimental)

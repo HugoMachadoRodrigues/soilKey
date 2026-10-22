@@ -39,14 +39,17 @@ soilkey_systems()
 #> 2  sibcs5                                  SiBCS, 5th edition
 #> 3    usda                                  USDA Soil Taxonomy
 #> 4   cssc3 Canadian System of Soil Classification, 3rd edition
-#>               edition       status       classifier
-#> 1  4th edition (2022)       stable classify_wrb2022
-#> 2  5th edition (2018)       stable   classify_sibcs
-#> 3 13th edition (2022)       stable    classify_usda
-#> 4  3rd edition (1998) experimental   classify_cssc3
-#>                                         levels aliases default
-#> 1                                         rsgs     wrb    TRUE
-#> 2 ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE
-#> 3   orders, suborders, great_groups, subgroups            TRUE
-#> 4              orders, great_groups, subgroups    cssc   FALSE
+#> 5    asc3         Australian Soil Classification, 3rd edition
+#>                                                         edition       status
+#> 1                                            4th edition (2022)       stable
+#> 2                                            5th edition (2018)       stable
+#> 3                                           13th edition (2022)       stable
+#> 4                                            3rd edition (1998) experimental
+#> 5 3rd edition (2021), online version with errata (25 June 2026) experimental
+#>         classifier                                       levels aliases default
+#> 1 classify_wrb2022                                         rsgs     wrb    TRUE
+#> 2   classify_sibcs ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE
+#> 3    classify_usda   orders, suborders, great_groups, subgroups            TRUE
+#> 4   classify_cssc3              orders, great_groups, subgroups    cssc   FALSE
+#> 5    classify_asc3                                       orders     asc   FALSE
 ```

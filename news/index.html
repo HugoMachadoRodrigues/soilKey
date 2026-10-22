@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.276</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.277</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,21 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.277" id="soilkey-09277-2026-10-22">soilKey 0.9.277 (2026-10-22)<a class="anchor" aria-label="anchor" href="#soilkey-09277-2026-10-22"></a></h2>
+<div class="section level3">
+<h3 id="australian-soil-classification-the-orders-experimental-0-9-277">Australian Soil Classification: the 15 orders (experimental)<a class="anchor" aria-label="anchor" href="#australian-soil-classification-the-orders-experimental-0-9-277"></a></h3>
+<p><code><a href="../reference/classify_asc3.html">classify_asc3()</a></code> keys a pedon to the orders of the Australian Soil Classification, 3rd edition (Isbell and the National Committee on Soil and Terrain 2021), following the online version with its errata. It is the second national system on the registry (<code><a href="../reference/soilkey_systems.html">soilkey_systems()</a></code>, alias <code>asc</code>) and, like the Canadian one, runs in <code><a href="../reference/classify_all.html">classify_all()</a></code> only when asked. Suborders, great groups, subgroups and families follow in later releases. WRB, SiBCS and USDA results do not change.</p>
+<ul><li>The key reads the Australian horizon notation of the Field Handbook (A1, A2e, B21t, B3, Bhs, 2B2b …), and FAO or USDA designations by the role of each horizon (an E as an A2, a Bt as a B2t).</li>
+<li>New horizon attributes: <code>field_texture</code> (the Field Handbook’s texture grades, such as SL, SCL or LMC, with + or -), <code>subplasticity</code>, <code>soil_water_status</code> (the moisture of the horizon when described) and <code>effervescence_class</code>. Where a limit is a texture grade the field texture decides and lab clay stands in; where it is in % clay, lab clay decides and the field texture stands in as the clay range of its grade.</li>
+<li>The clear or abrupt textural B (Kurosols, Sodosols, Chromosols) reads the glossary’s clay figures, or its field-texture equivalents when lab clay is missing on either side of the boundary.</li>
+<li>From the site the key reads the drainage class and tidal flooding (Hydrosols), a cracking surface condition (Vertosols) and the notation of the designations.</li>
+<li>
+<code><a href="../reference/make_asc3_example.html">make_asc3_example()</a></code> gives one small profile per order.</li>
+<li>The choices where the text is silent are listed in <code>inst/rules/asc3/readings.yaml</code> (21 readings). Two were settled on the survey data below: only a very poorly drained site counts as saturated for the Hydrosols (poorly drained is undecided), and the Vertosols’ cracks are not required in a solum described moist (the key’s “unless too moist”).</li>
+</ul><p>Checked against NatSoil (CSIRO, NatSoil v13, CC BY 4.0; the data are not shipped, and a reader will follow): of 9,698 profiles with an order from the surveys, 42.9 % get the same order (44.8 % counting the 2021 Arenosols against the Tenosols and Rudosols of earlier editions). 988 are decided, with no earlier order left open, and 78.6 % of them agree (80.1 %; 82.9 % of the 404 decided with the surveyors’ highest confidence). Most profiles stay provisional for missing data: the drainage class (Hydrosols), the designations (Podosols), the cracks (Vertosols), free iron (Ferrosols), carbonate records (Calcarosols) and exchangeable sodium (Sodosols).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.276" id="soilkey-09276-2026-10-21">soilKey 0.9.276 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09276-2026-10-21"></a></h2>
 <div class="section level3">
