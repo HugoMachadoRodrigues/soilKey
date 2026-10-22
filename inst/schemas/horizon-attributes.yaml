@@ -476,3 +476,26 @@ attributes:
     description: "Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying."
     systems: [cssc3]
     allowed: [faint, distinct, prominent]
+  - name: field_texture
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Field texture grade (NCST Field Handbook codes: S, LS, CS, SL, L, ZL, SCL, CL, CLS, ZCL, LC, LMC, MC, MHC, HC; sand-size prefixes F/M/K and + or - accepted); ASC textural B, Arenosols, Kandosols and Vertosols."
+    systems: [asc3]
+  - name: subplasticity
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Kneading test of clays (none / subplastic / strongly subplastic / superplastic); ASC Sodosols and Chromosols."
+    systems: [asc3]
+    allowed: [none, subplastic, strongly subplastic, superplastic]
+  - name: soil_water_status
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Moisture of the horizon when it was described (Field Handbook: dry / moderately moist / moist / wet); ASC Vertosols, whose cracks are not required in a solum described moist."
+    systems: [asc3]
+    allowed: [dry, moderately moist, moist, wet]
+  - name: effervescence_class
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Field reaction of the fine earth with 1 M HCl (none / slight / moderate / strong / very strong); ASC calcareous soil."
+    systems: [asc3]
+    allowed: [none, slight, moderate, strong, very strong]

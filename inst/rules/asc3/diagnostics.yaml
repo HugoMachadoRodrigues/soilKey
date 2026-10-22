@@ -1,0 +1,19 @@
+# Index of the Australian diagnostics (human-readable; the engine reads key.yaml).
+system: asc3
+reference: "Isbell, R.F. and NCST (2021). The Australian Soil Classification, 3rd ed. (online version, 25 June 2026)."
+diagnostics:
+  - {function: anthroposol_asc,  file: R/diagnostics-asc.R, reference: "Key to orders, step 1; Anthroposols"}
+  - {function: organosol_asc,    file: R/diagnostics-asc.R, reference: "Key to orders, step 2; Organosols; glossary 'Organic materials'"}
+  - {function: podosol_asc,      file: R/diagnostics-asc.R, reference: "Key to orders, step 3; glossary 'Podosol diagnostic horizons'"}
+  - {function: vertosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 4; Vertosols"}
+  - {function: hydrosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 5; Hydrosols"}
+  - {function: textural_b_asc,   file: R/diagnostics-asc.R, reference: "Glossary, 'Clear or abrupt textural B horizon'"}
+  - {function: kurosol_asc,      file: R/diagnostics-asc.R, reference: "Key to orders, step 6; Kurosols; glossary 'Strongly acid'"}
+  - {function: sodosol_asc,      file: R/diagnostics-asc.R, reference: "Key to orders, step 7; Sodosols; glossary 'Sodic', 'ESP', 'Strongly subplastic'"}
+  - {function: chromosol_asc,    file: R/diagnostics-asc.R, reference: "Key to orders, step 8; Chromosols"}
+  - {function: calcarosol_asc,   file: R/diagnostics-asc.R, reference: "Key to orders, step 9; Calcarosols; glossary 'Calcareous'"}
+  - {function: ferrosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 10; Ferrosols; glossary 'Free iron oxide', 'Vertic properties'"}
+  - {function: dermosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 11; Dermosols; glossary 'Grade of pedality'"}
+  - {function: kandosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 12; Kandosols"}
+  - {function: arenosol_asc,     file: R/diagnostics-asc.R, reference: "Key to orders, step 13; Arenosols"}
+  - {function: rudosol_asc,      file: R/diagnostics-asc.R, reference: "Key to orders, step 14; Rudosols"}

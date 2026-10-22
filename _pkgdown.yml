@@ -111,6 +111,16 @@ reference:
       - classify_cssc3
       - make_cssc3_example
 
+  - title: "Australian Soil Classification (experimental)"
+    desc: >
+      The 15 orders of the 3rd edition (2021, online version with errata),
+      read from field textures, the Australian horizon notation, the
+      boundary between the A and the B, pH, ESP, free iron, grade of
+      pedality, carbonates and the site drainage.
+    contents:
+      - classify_asc3
+      - make_asc3_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

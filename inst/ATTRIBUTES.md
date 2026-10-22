@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.266)
+# soilKey -- recognised horizon attribute names (v0.9.277)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -238,7 +238,16 @@ these columns; anything else is preserved but ignored by the keys.
 | `al_pyro_pct` | % Al | numeric | Sodium-pyrophosphate-extractable Al (organically complexed aluminium); CSSC podzolic B, Bf and Bhf horizons. | - |
 | `mottle_contrast` | - | character | Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying. | - |
 
+## Australian system (ASC 3rd ed.)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `field_texture` | - | character | Field texture grade (NCST Field Handbook codes: S, LS, CS, SL, L, ZL, SCL, CL, CLS, ZCL, LC, LMC, MC, MHC, HC; sand-size prefixes F/M/K and + or - accepted); ASC textural B, Arenosols, Kandosols and Vertosols. | - |
+| `subplasticity` | - | character | Kneading test of clays (none / subplastic / strongly subplastic / superplastic); ASC Sodosols and Chromosols. | - |
+| `soil_water_status` | - | character | Moisture of the horizon when it was described (Field Handbook: dry / moderately moist / moist / wet); ASC Vertosols, whose cracks are not required in a solum described moist. | - |
+| `effervescence_class` | - | character | Field reaction of the fine earth with 1 M HCl (none / slight / moderate / strong / very strong); ASC calcareous soil. | - |
+
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.266._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.277._
 
