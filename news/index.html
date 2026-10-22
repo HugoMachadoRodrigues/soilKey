@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.274</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.275</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,20 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.275" id="soilkey-09275-2026-10-21">soilKey 0.9.275 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09275-2026-10-21"></a></h2>
+<div class="section level3">
+<h3 id="an-npdb-scenario-with-the-dry-colour-and-the-soil-climate-estimated-experimental-0-9-275">An NPDB scenario with the dry colour and the soil climate estimated (experimental)<a class="anchor" aria-label="anchor" href="#an-npdb-scenario-with-the-dry-colour-and-the-soil-climate-estimated-experimental-0-9-275"></a></h3>
+<p>The National Pedon Database of Canada records neither the dry colour of most A horizons nor the soil climate, which the Canadian key reads for the Chernozems (and the Gray Brown Luvisols and some subgroups). An optional scenario now estimates them, each as a range, and <code><a href="../reference/benchmark_npdb.html">benchmark_npdb()</a></code> classifies a pedon at the ends of its ranges, counting a class as decided only where they all agree. <code><a href="../reference/classify_cssc3.html">classify_cssc3()</a></code> itself does not change, and WRB, SiBCS and USDA results do not change.</p>
+<ul><li>
+<code><a href="../reference/fetch_aafc_normals.html">fetch_aafc_normals()</a></code> reads the climate normals of Agriculture and Agri-Food Canada (Derived Normal Climate Data, 5 km grid, Open Government Licence - Canada) at given points from the AAFC map service, without downloading files.</li>
+<li>
+<code><a href="../reference/npdb_soil_climate.html">npdb_soil_climate()</a></code> turns them into the soil climate of the book’s Tables 3 and 4: the mean annual soil temperature as the range from the air temperature to 4 degrees above it, and the climatic moisture index (growing-season precipitation over potential evapotranspiration, months of April to October above 5 degrees) with its moisture subclass. The potential evapotranspiration is computed by Thornthwaite, which matches the zones the book gives the Chernozem great groups on the NPDB, and by Hargreaves, the other end of the range.</li>
+<li>
+<code><a href="../reference/npdb_dry_colour_model.html">npdb_dry_colour_model()</a></code> fits the dry value and chroma of A horizons on their moist colour where the NPDB records both (dry value = 1.70 + 0.92 x moist value; error about one value unit), and <code><a href="../reference/npdb_scenario.html">npdb_scenario()</a></code> adds the estimates to the pedons, never replacing recorded values.</li>
+</ul><p>On the NPDB with the 1961-1990 normals, 295 of the 899 Chernozems that waited for the climate are decided, 292 of them in their own order: agreement on the Chernozems goes from 0 to 24.1 % at the order level. The error of the dry colour seldom decides the limits between the Black, Dark Brown and Brown Chernozems (7.4 % at the great group level). The Gray Brown Luvisols go from 0 to 228 of 265 in agreement (53 decided). On the other orders, agreement goes from 90.6 to 90.1 % at the order level (56 soils of other orders are now decided as Chernozems) and from 71.9 to 74.6 % at the great group level.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.274" id="soilkey-09274-2026-10-21">soilKey 0.9.274 (2026-10-21)<a class="anchor" aria-label="anchor" href="#soilkey-09274-2026-10-21"></a></h2>
 <div class="section level3">

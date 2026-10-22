@@ -2176,6 +2176,14 @@ shipped: download the CSV files from the Open Government Portal.
   : Read the National Pedon Database of Canada
 - [`benchmark_npdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.md)
   : Benchmark the Canadian key against the National Pedon Database
+- [`npdb_scenario()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_scenario.md)
+  : A scenario for the NPDB: estimated dry colour and soil climate
+- [`npdb_dry_colour_model()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_dry_colour_model.md)
+  : Dry colour of A horizons from their moist colour
+- [`npdb_soil_climate()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_soil_climate.md)
+  : Soil climate of the Canadian system from climate normals
+- [`fetch_aafc_normals()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_aafc_normals.md)
+  : Climate normals of Agriculture and Agri-Food Canada at given points
 
 ## WoSIS stratified WRB benchmark (v0.9.73)
 
@@ -2355,6 +2363,8 @@ pública curada.
   : WRB Reference Soil Group code-to-name table
 - [`.sibcs_stated_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sibcs_stated_order.md)
   : The order a SiBCS label states, when it is not the order of its name
+- [`print(`*`<npdb_dry_colour_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.npdb_dry_colour_model.md)
+  : print method for npdb_dry_colour_model
 - [`soilKey`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
   [`soilKey-package`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)
   : soilKey: Automated Soil Profile Classification per WRB 2022 and

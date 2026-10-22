@@ -11,7 +11,7 @@ classification at the level asked."><meta property="og:image" content="https://h
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.274</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.275</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,9 @@ on Windows).</p></dd>
   <code>set_aside</code>); <code>accuracy_decided</code>; <code>n_compared</code>;
   <code>n_decided</code>; <code>accuracy_all</code> (all orders); <code>set_aside</code> (a
   table of where those pedons land); <code>confusion</code>;
-  <code>per_class_recall</code>; <code>predictions</code> (one row per pedon).</p>
+  <code>per_class_recall</code>; <code>predictions</code> (one row per pedon;
+  <code>scenario</code> marks pedons classified at the ends of their ranges and
+  <code>scenario_split</code> those whose versions disagree).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -119,6 +121,13 @@ land, and left out of <code>accuracy</code>. A result is provisional when an
 undecided class comes before the one assigned (<code>$provisional_because</code>
 of <code><a href="classify_cssc3.html">classify_cssc3</a></code>); <code>accuracy_decided</code> counts only the
 results that are not provisional at the level asked or above.</p>
+<p>Pedons from <code><a href="npdb_scenario.html">npdb_scenario</a></code> carry estimates as ranges; each
+is classified at its central estimate and at every combination of the
+ends of its ranges (and of the moisture subclasses between its two
+estimates), and a class counts as decided only where every
+version gives it and none is provisional (otherwise the central class is
+reported as provisional). Run such pedons with
+<code>set_aside = character(0)</code> to include the Chernozems.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

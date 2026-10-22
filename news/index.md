@@ -1,5 +1,49 @@
 # Changelog
 
+## soilKey 0.9.275 (2026-10-21)
+
+### An NPDB scenario with the dry colour and the soil climate estimated (experimental)
+
+The National Pedon Database of Canada records neither the dry colour of
+most A horizons nor the soil climate, which the Canadian key reads for
+the Chernozems (and the Gray Brown Luvisols and some subgroups). An
+optional scenario now estimates them, each as a range, and
+[`benchmark_npdb()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.md)
+classifies a pedon at the ends of its ranges, counting a class as
+decided only where they all agree.
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+itself does not change, and WRB, SiBCS and USDA results do not change.
+
+- [`fetch_aafc_normals()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_aafc_normals.md)
+  reads the climate normals of Agriculture and Agri-Food Canada (Derived
+  Normal Climate Data, 5 km grid, Open Government Licence - Canada) at
+  given points from the AAFC map service, without downloading files.
+- [`npdb_soil_climate()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_soil_climate.md)
+  turns them into the soil climate of the book’s Tables 3 and 4: the
+  mean annual soil temperature as the range from the air temperature to
+  4 degrees above it, and the climatic moisture index (growing-season
+  precipitation over potential evapotranspiration, months of April to
+  October above 5 degrees) with its moisture subclass. The potential
+  evapotranspiration is computed by Thornthwaite, which matches the
+  zones the book gives the Chernozem great groups on the NPDB, and by
+  Hargreaves, the other end of the range.
+- [`npdb_dry_colour_model()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_dry_colour_model.md)
+  fits the dry value and chroma of A horizons on their moist colour
+  where the NPDB records both (dry value = 1.70 + 0.92 x moist value;
+  error about one value unit), and
+  [`npdb_scenario()`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_scenario.md)
+  adds the estimates to the pedons, never replacing recorded values.
+
+On the NPDB with the 1961-1990 normals, 295 of the 899 Chernozems that
+waited for the climate are decided, 292 of them in their own order:
+agreement on the Chernozems goes from 0 to 24.1 % at the order level.
+The error of the dry colour seldom decides the limits between the Black,
+Dark Brown and Brown Chernozems (7.4 % at the great group level). The
+Gray Brown Luvisols go from 0 to 228 of 265 in agreement (53 decided).
+On the other orders, agreement goes from 90.6 to 90.1 % at the order
+level (56 soils of other orders are now decided as Chernozems) and from
+71.9 to 74.6 % at the great group level.
+
 ## soilKey 0.9.274 (2026-10-21)
 
 ### Canadian classification: three readings raised by the NPDB benchmark (experimental)

@@ -51,7 +51,9 @@ benchmark_npdb(
 A list: `level`; `accuracy` (share of agreement outside `set_aside`);
 `accuracy_decided`; `n_compared`; `n_decided`; `accuracy_all` (all
 orders); `set_aside` (a table of where those pedons land); `confusion`;
-`per_class_recall`; `predictions` (one row per pedon).
+`per_class_recall`; `predictions` (one row per pedon; `scenario` marks
+pedons classified at the ends of their ranges and `scenario_split` those
+whose versions disagree).
 
 ## Details
 
@@ -64,3 +66,12 @@ undecided class comes before the one assigned (`$provisional_because` of
 [`classify_cssc3`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md));
 `accuracy_decided` counts only the results that are not provisional at
 the level asked or above.
+
+Pedons from
+[`npdb_scenario`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_scenario.md)
+carry estimates as ranges; each is classified at its central estimate
+and at every combination of the ends of its ranges (and of the moisture
+subclasses between its two estimates), and a class counts as decided
+only where every version gives it and none is provisional (otherwise the
+central class is reported as provisional). Run such pedons with
+`set_aside = character(0)` to include the Chernozems.

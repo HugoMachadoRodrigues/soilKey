@@ -1,0 +1,44 @@
+# Dry colour of A horizons from their moist colour
+
+Fits, on the A horizons of a set of pedons that record both colours, a
+linear model of the dry Munsell value on the moist value and of the dry
+chroma on the moist chroma, and estimates its error by cross-validation
+grouped by pedon (the horizons of a pedon stay in one fold): the range
+of the out-of-fold errors that holds `level` of them (from its lower to
+its upper tail). The pedons are dealt to the folds in turn, in the order
+given, so the result does not depend on the random number generator. On
+the NPDB the error is close to one value unit, so the estimate decides
+the dry value of 5.5 of the chernozemic A for most dark A horizons but
+seldom the limits of 3.5 and 4.5 between the Black, Dark Brown and Brown
+Chernozems.
+
+## Usage
+
+``` r
+npdb_dry_colour_model(pedons, level = 0.8, folds = 10L)
+```
+
+## Arguments
+
+- pedons:
+
+  A list of
+  [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
+
+- level:
+
+  Share of the cross-validated errors the range holds.
+
+- folds:
+
+  Number of folds.
+
+## Value
+
+A list of class `npdb_dry_colour_model`: `value` and `chroma` (each with
+`coef`, `band` = the error range, `rmse` out of fold, `n` horizons),
+`level`.
+
+## See also
+
+[`npdb_scenario`](https://hugomachadorodrigues.github.io/soilKey/reference/npdb_scenario.md)
