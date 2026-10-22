@@ -1,5 +1,31 @@
 # Changelog
 
+## soilKey 0.9.276 (2026-10-21)
+
+### Canadian classification: the colour of the Chernozemic great groups (experimental)
+
+The key’s chroma limits for the Chernozemic great groups say “usually”.
+[`classify_cssc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.md)
+now reads them at two more places, each written down in
+`inst/rules/cssc3/readings.yaml`:
+
+- a dry value of exactly 3.5, the limit of both the Black Chernozems
+  (“darker than 3.5”, Ch 5, p. 68) and the Dark Brown (3.5 to 4.5), is
+  Black when the dry chroma is 1.5 or less, the chroma of the Black,
+  unless an Ahe, Aej or Ae marks the eluviation of the Dark Gray, whose
+  range holds 3.5;
+- in a cultivated soil, an Ap whose own dry chroma is 1.5 or less counts
+  as the sign of eluviation of the Dark Gray Chernozems, whose Ahe the
+  plough has mixed in (the key gives that Ap its own value limit, and Ch
+  5, p. 69, admits a mixed Ap); an Ahe, Aej or Ae in the profile still
+  counts, and a buried one no longer does.
+
+The colour means are rounded to the millionth before they meet a limit.
+On the NPDB scenario of 0.9.275, of the 348 Chernozems decided at the
+order level, 116 (was 92) get the survey’s great group, 84 of them (was
+63) with the great group decided. WRB, SiBCS and USDA results do not
+change.
+
 ## soilKey 0.9.275 (2026-10-21)
 
 ### An NPDB scenario with the dry colour and the soil climate estimated (experimental)
