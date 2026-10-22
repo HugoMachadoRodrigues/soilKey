@@ -740,17 +740,43 @@ solodized_solonetz_cssc <- function(pedon) {
 
 # ---- G. Chernozemic order (p. 36; Ch 5) -------------------------------------
 
-# Dry colour of the chernozemic A, whether it is an Ap, and signs of
-# eluviation under forest (an Ahe, Aej or Ae in the profile).
+# Dry colour of the chernozemic A (means rounded to 1e-6, so that a mean of
+# 3.5 is 3.5), whether it is an Ap, and signs of eluviation under forest: an
+# Ahe, Aej or Ae in the profile (not a buried one), or a cultivated A whose
+# Ap has a dry chroma of 1.5 or less, the Ahe the plough has mixed in (the
+# key gives the Ap of the Dark Gray Chernozems its own value limit, and
+# Ch 5, p. 69, admits a mixed Ap).
 .cssc_chernozemic_colour <- function(pedon) {
   x <- .cssc_horizons(pedon)
   a <- chernozemic_a_cssc(pedon)
   rows <- a$layers
-  ap <- length(rows) > 0L && any(.cssc_is(x$parsed[rows], "A", "p", "any") %in% TRUE)
-  elu <- if (!any(x$desig_known)) NA
-         else any(.cssc_is(x$parsed, "A", "e", "any") %in% TRUE)
-  list(value = .cssc_wmean(x, "munsell_value_dry", rows),
-       chroma = .cssc_wmean(x, "munsell_chroma_dry", rows), ap = ap, eluviated = elu)
+  is_ap <- .cssc_is(x$parsed[rows], "A", "p", "any") %in% TRUE
+  ap <- length(rows) > 0L && any(is_ap)
+  r6 <- function(v) if (is.na(v)) v else round(v, 6)
+  chroma <- r6(.cssc_wmean(x, "munsell_chroma_dry", rows))
+  buried <- .cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE
+  elu_desig <- if (!any(x$desig_known)) NA
+               else any(.cssc_is(x$parsed, "A", "e", "any") %in% TRUE & !buried)
+  elu <- elu_desig; source <- if (isTRUE(elu_desig)) "designation" else NA_character_
+  if (ap && identical(elu_desig, FALSE)) {
+    ap_chroma <- r6(.cssc_wmean(x, "munsell_chroma_dry", rows[is_ap]))
+    elu <- if (is.na(ap_chroma)) NA else ap_chroma <= 1.5
+    if (isTRUE(elu)) source <- "Ap chroma"
+  }
+  list(value = r6(.cssc_wmean(x, "munsell_value_dry", rows)), chroma = chroma, ap = ap,
+       eluviated = elu, eluviated_by_designation = elu_desig, eluviation_from = source)
+}
+
+# The dry value 3.5 is the limit of both the Black ("darker than 3.5") and
+# the Dark Brown Chernozems ("3.5 to 4.5"); there the chroma decides: 1.5 or
+# less, the chroma of the Black, makes it Black, unless an Ahe, Aej or Ae
+# marks the eluviation of the Dark Gray, whose range holds 3.5 by the key.
+.cssc_black_at_limit <- function(cc) {
+  if (is.na(cc$value) || cc$value != 3.5) return(FALSE)
+  if (isTRUE(cc$eluviated_by_designation)) return(FALSE)
+  low <- if (is.na(cc$chroma)) NA else cc$chroma <= 1.5
+  if (identical(low, FALSE)) return(FALSE)
+  if (isTRUE(low) && identical(cc$eluviated_by_designation, FALSE)) TRUE else NA
 }
 
 .cssc_chern_gate <- function(pedon, name, test, where) {
@@ -758,7 +784,7 @@ solodized_solonetz_cssc <- function(pedon) {
   passed <- test(cc)
   .cssc_result(name, passed, integer(0),
                list(route = "properties", value_dry = cc$value, chroma_dry = cc$chroma,
-                    ap = cc$ap, eluviated = cc$eluviated),
+                    ap = cc$ap, eluviated = cc$eluviated, eluviation_from = cc$eluviation_from),
                if (is.na(passed)) c("munsell_value_dry", "munsell_chroma_dry") else character(0),
                where)
 }
@@ -767,10 +793,14 @@ solodized_solonetz_cssc <- function(pedon) {
 #'
 #' The dry colour of the chernozemic A: value 4.5 to 5.5 (Brown); 3.5 to 4.5
 #' (Dark Brown) unless the chroma is 1.5 or less with signs of eluviation
-#' under forest, which make it Dark Gray; below 3.5 (Black); 3.5 to 4.5, or
+#' under forest, which make it Dark Gray, or the value is 3.5 with a chroma
+#' of 1.5 or less, which makes it Black; below 3.5 (Black); 3.5 to 4.5, or
 #' to 5.0 for an Ap, with chroma 1.5 or less and signs of eluviation (Dark
-#' Gray). The chroma limits are "usually" in the key and are read only to
-#' tell Dark Brown from Dark Gray.
+#' Gray: an Ahe, Aej or Ae in the profile, not a buried one, or an Ap of
+#' chroma 1.5 or less). The chroma limits are "usually" in the key and are
+#' read only to tell Dark Brown from Dark Gray (where, in an Ap, the chroma
+#' also stands for the eluviation), and Dark Brown from Black at the value
+#' 3.5 (an Ahe, Aej or Ae keeps 3.5 for the Dark Gray).
 #' @noRd
 brown_chernozem_cssc <- function(pedon) .cssc_chern_gate(pedon, "brown_chernozem_cssc",
   function(cc) if (is.na(cc$value)) NA else cc$value >= 4.5 && cc$value <= 5.5,
@@ -781,6 +811,9 @@ dark_brown_chernozem_cssc <- function(pedon) .cssc_chern_gate(pedon, "dark_brown
   function(cc) {
     if (is.na(cc$value)) return(NA)
     if (!(cc$value >= 3.5 && cc$value <= 4.5)) return(FALSE)
+    black <- .cssc_black_at_limit(cc)
+    if (isTRUE(black)) return(FALSE)
+    if (is.na(black)) return(NA)
     gd_like <- if (is.na(cc$chroma)) NA else cc$chroma <= 1.5
     if (identical(gd_like, FALSE)) return(TRUE)
     if (identical(cc$eluviated, FALSE)) return(TRUE)
@@ -790,8 +823,11 @@ dark_brown_chernozem_cssc <- function(pedon) .cssc_chern_gate(pedon, "dark_brown
 
 #' @noRd
 black_chernozem_cssc <- function(pedon) .cssc_chern_gate(pedon, "black_chernozem_cssc",
-  function(cc) if (is.na(cc$value)) NA else cc$value < 3.5,
-  "Ch 3, p. 36; Ch 5, p. 68")
+  function(cc) {
+    if (is.na(cc$value)) return(NA)
+    if (cc$value < 3.5) return(TRUE)
+    .cssc_black_at_limit(cc)
+  }, "Ch 3, p. 36; Ch 5, p. 68")
 
 #' @noRd
 dark_gray_chernozem_cssc <- function(pedon) .cssc_chern_gate(pedon, "dark_gray_chernozem_cssc",
