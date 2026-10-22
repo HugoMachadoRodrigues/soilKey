@@ -292,29 +292,34 @@
 }
 
 # The clay increase of the textural B between the horizon above (j) and the
-# horizon below (i). With lab clay on both sides, the glossary's figures
-# decide. Otherwise its field-texture equivalents do: above sandy loam or
-# lighter, the B must be sandy clay loam or heavier with about double the
-# clay (the middle clay of each grade); above loam to clay loam, the B must
-# be light medium clay or heavier; above a clay, no contrast. A horizon with
-# neither lab clay nor a field texture leaves it undecided.
+# horizon below (i). Each horizon is read by its field texture grade when it
+# has one, and by its lab clay only when it has none: the glossary gives its
+# figures in clay with field-texture equivalents, and notes that where the
+# two disagree the field texture may be the better guide to the soil's
+# behaviour. With lab clay on both sides, the glossary's figures decide;
+# otherwise its field-texture equivalents do: above sandy loam or lighter,
+# the B must be sandy clay loam or heavier with about double the clay (the
+# middle clay of each grade); above loam to clay loam, the B must be light
+# medium clay or heavier; above a clay, no contrast. A horizon with neither
+# a field texture nor lab clay leaves it undecided.
 .asc_texture_contrast <- function(x, j, i) {
   clay <- x$h$clay_pct; tx <- x$clay$texture
-  if (!is.na(clay[j]) && !is.na(clay[i])) return(clay[i] >= .asc_clay_needed(clay[j]))
-  mid <- function(k) if (!is.na(clay[k])) clay[k] else (tx$clay_lo[k] + tx$clay_hi[k]) / 2
+  by_lab <- function(k) is.na(tx$grade[k]) || tx$grade[k] %in% c("peat", "coarse")
+  lab_j <- by_lab(j); lab_i <- by_lab(i)
+  if ((lab_j && is.na(clay[j])) || (lab_i && is.na(clay[i]))) return(NA)
+  if (lab_j && lab_i) return(clay[i] >= .asc_clay_needed(clay[j]))
   ga <- tx$grade[j]; gb <- tx$grade[i]
-  a <- mid(j); b <- mid(i)
-  if (is.na(a) || is.na(b)) return(NA)
-  above_light <- if (!is.na(clay[j])) clay[j] < 20 else ga %in% c("S", "LS", "CS", "SL")
-  above_medium <- if (!is.na(clay[j])) clay[j] >= 20 && clay[j] < 35
+  mid <- function(k, lab) if (lab) clay[k] else (tx$clay_lo[k] + tx$clay_hi[k]) / 2
+  a <- mid(j, lab_j); b <- mid(i, lab_i)
+  above_light <- if (lab_j) clay[j] < 20 else ga %in% c("S", "LS", "CS", "SL")
+  above_medium <- if (lab_j) clay[j] >= 20 && clay[j] < 35
                   else ga %in% c("L", "ZL", "SCL", "CL", "CLS", "ZCL")
   if (above_light) {
-    heavy_enough <- if (!is.na(clay[i])) clay[i] >= 20
-                    else !gb %in% c("S", "LS", "CS", "SL", "L", "ZL")
+    heavy_enough <- if (lab_i) clay[i] >= 20 else !gb %in% c("S", "LS", "CS", "SL", "L", "ZL")
     return(heavy_enough && b >= 2 * a)
   }
   if (above_medium) {
-    if (!is.na(clay[i])) return(clay[i] - a >= 20)
+    if (lab_i) return(clay[i] - a >= 20)
     if (gb %in% "C") return(NA)
     return(gb %in% c("LMC", "MC", "MHC", "HC"))
   }
@@ -326,9 +331,10 @@
 #' A B horizon (normally the B2t) whose upper boundary is clear, abrupt or
 #' sharp under a horizon more than 30 mm thick, with the clay increase of
 #' the glossary across it. The boundary is the lower boundary recorded for
-#' the horizon above (boundary_distinctness; a recorded "sharp" passes). Clay
-#' is lab clay where both horizons have it, otherwise the glossary's
-#' field-texture equivalents (\code{.asc_texture_contrast}).
+#' the horizon above (boundary_distinctness; a recorded "sharp" passes). Each
+#' horizon is read by its field texture grade (the glossary's equivalents),
+#' and by its lab clay only when it has no field texture
+#' (\code{.asc_texture_contrast}).
 #' @noRd
 textural_b_asc <- function(pedon) {
   x <- .asc_horizons(pedon); h <- x$h
