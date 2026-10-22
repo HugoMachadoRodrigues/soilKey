@@ -1,0 +1,29 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: asc3
+order: 5
+aliases: [asc]
+legacy: false
+default: false
+status: experimental
+namespace: asc
+classifier: classify_asc3
+result_slot: asc3
+top_level: orders
+levels: [orders]
+display:
+  en: "Australian Soil Classification, 3rd edition"
+  pt: "Classificação Australiana de Solos, 3ª edição"
+  native: "The Australian Soil Classification, Third Edition"
+  result: "ASC 3rd ed."
+edition: "3rd edition (2021), online version with errata (25 June 2026)"
+citation: >
+  Isbell, R.F. and the National Committee on Soil and Terrain (2021). The
+  Australian Soil Classification. 3rd edition. CSIRO Publishing, Melbourne.
+  Online version: Soil Science Australia, www.soilscienceaustralia.org.au/asc
+  (last update 25 June 2026; Appendix 8 errata of 5 November 2025).
+version: "The Australian Soil Classification, 3rd edition (2021), online version of 25 June 2026"
+implementation_status: "soilKey v0.9.277 -- 15/15 orders (key to soil orders); suborders, great groups, subgroups and families to follow"
+source: |
+  Isbell, R.F. and NCST (2021). The Australian Soil Classification, 3rd ed.
+  CSIRO Publishing, Melbourne. Online version (Soil Science Australia), key to
+  soil orders and order pages; glossary.

@@ -425,6 +425,18 @@
           },
           "mottle_contrast": {
             "type": ["string", "null"]
+          },
+          "field_texture": {
+            "type": ["string", "null"]
+          },
+          "subplasticity": {
+            "type": ["string", "null"]
+          },
+          "soil_water_status": {
+            "type": ["string", "null"]
+          },
+          "effervescence_class": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

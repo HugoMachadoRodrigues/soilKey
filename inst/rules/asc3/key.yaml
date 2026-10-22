@@ -1,0 +1,112 @@
+# The key to soil orders of the Australian Soil Classification, 3rd ed.
+# (online version with errata), in its own order. Each order after the first
+# is "other soils that ...", so a gate tests only its own criterion: the
+# key's order supplies the exclusions. The codes are the ASC's own two-letter
+# codes. Criteria are summarised from the text; see R/diagnostics-asc.R and
+# readings.yaml for the choices where the text is silent.
+
+orders:
+
+  - code: "AN"
+    name: Anthroposol
+    tests:
+      all_of:
+        - anthroposol_asc: {}
+    notes: "Soils profoundly modified, truncated or buried by human activity, or formed in human-made materials; at least 0.3 m of anthropic material over a buried soil (key step 1)."
+
+  - code: "OR"
+    name: Organosol
+    tests:
+      all_of:
+        - organosol_asc: {}
+    notes: "Not regularly flooded by saline tides; more than 0.4 m of organic materials within 0.8 m, or at least 0.1 m from the surface on rock, a hard layer, saprolite or thin mineral material (key step 2)."
+
+  - code: "PO"
+    name: Podosol
+    tests:
+      all_of:
+        - podosol_asc: {}
+    notes: "A Bs, Bhs or Bh horizon, alone or in combination (key step 3)."
+
+  - code: "VE"
+    name: Vertosol
+    tests:
+      all_of:
+        - vertosol_asc: {}
+    notes: "Clay field texture or 35 % clay or more throughout the solum, cracks 5 mm or wider in most years, slickensides and/or lenticular peds (key step 4)."
+
+  - code: "HY"
+    name: Hydrosol
+    tests:
+      all_of:
+        - hydrosol_asc: {}
+    notes: "More than half of the profile saturated for 2-3 months or more in most years, tides included (key step 5)."
+
+  - code: "KU"
+    name: Kurosol
+    tests:
+      all_of:
+        - kurosol_asc: {}
+    notes: "A clear or abrupt textural B whose upper 0.2 m of B2t is strongly acid over its major part (key step 6)."
+
+  - code: "SO"
+    name: Sodosol
+    tests:
+      all_of:
+        - sodosol_asc: {}
+    notes: "A clear or abrupt textural B whose upper 0.2 m of B2t is sodic and not strongly subplastic over its major part (key step 7)."
+
+  - code: "CH"
+    name: Chromosol
+    tests:
+      all_of:
+        - chromosol_asc: {}
+    notes: "A clear or abrupt textural B (key step 8): what Kurosols and Sodosols leave."
+
+  - code: "CA"
+    name: Calcarosol
+    tests:
+      all_of:
+        - calcarosol_asc: {}
+    notes: "Calcareous throughout the solum or from directly below the A1/Ap or 0.2 m, whichever is shallower, with pedogenic carbonate; not deep sandy (key step 9)."
+
+  - code: "FE"
+    name: Ferrosol
+    tests:
+      all_of:
+        - ferrosol_asc: {}
+    notes: "More than 5 % free iron oxide (Fe) in the fine earth of the major part of the B2, unless at least 0.3 m of the B2 has vertic properties (key step 10)."
+
+  - code: "DE"
+    name: Dermosol
+    tests:
+      all_of:
+        - dermosol_asc: {}
+    notes: "A B2 with pedality stronger than weak over its major part (key step 11)."
+
+  - code: "KA"
+    name: Kandosol
+    tests:
+      all_of:
+        - kandosol_asc: {}
+    notes: "A massive or weakly structured B2 with more than 15 % clay somewhere in it (key step 12)."
+
+  - code: "RE"
+    name: Arenosol
+    tests:
+      all_of:
+        - arenosol_asc: {}
+    notes: "Sand, loamy sand or clayey sand over at least 0.8 m of the upper 1.0 m, no other layer above 15 % clay, at most 10 % coarse fragments, no hard layer within 1.0 m (key step 13)."
+
+  - code: "RU"
+    name: Rudosol
+    tests:
+      all_of:
+        - rudosol_asc: {}
+    notes: "Negligible pedologic organisation: no B horizon or A2, an A1 that is at most weakly structured (key step 14)."
+
+  - code: "TE"
+    name: Tenosol
+    tests:
+      default: true
+    notes: "Other soils (key step 15)."

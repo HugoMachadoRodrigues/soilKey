@@ -169,7 +169,13 @@ horizon_column_spec <- function() {
     # Read only by the Canadian key; absent => the other keys are unchanged.
     fe_pyro_pct                   = "numeric",   # sodium-pyrophosphate-extractable Fe, % of the fine earth; CSSC podzolic B and Bh (Ch 2, p. 13-14, 17)
     al_pyro_pct                   = "numeric",   # sodium-pyrophosphate-extractable Al, % of the fine earth; CSSC podzolic B (Ch 2, p. 13, 17)
-    mottle_contrast               = "character"  # contrast of the mottles with the matrix: 'faint' / 'distinct' / 'prominent'; CSSC gleying (Ch 3 key E, p. 34)
+    mottle_contrast               = "character", # contrast of the mottles with the matrix: 'faint' / 'distinct' / 'prominent'; CSSC gleying (Ch 3 key E, p. 34)
+    # ---- v0.9.277 additions: the Australian Soil Classification (ASC 3rd ed.) ----
+    # Read only by the Australian key; absent => the other keys are unchanged.
+    field_texture                 = "character", # field texture grade, NCST Field Handbook codes (S, LS, CS, SL, L, ZL, SCL, CL, CLS, ZCL, LC, LMC, MC, MHC, HC; sand-size prefixes F/M/K and '+'/'-' accepted); ASC textural B, Arenosols, Kandosols, Vertosols
+    subplasticity                 = "character", # kneading test of clays: 'none' / 'subplastic' / 'strongly subplastic' / 'superplastic'; ASC Sodosols and Chromosols (glossary 'Strongly subplastic')
+    soil_water_status             = "character", # moisture of the horizon when described (Field Handbook): 'dry' / 'moderately moist' / 'moist' / 'wet'; ASC Vertosols ('unless too moist')
+    effervescence_class           = "character"  # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous
   )
 }
 
