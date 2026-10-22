@@ -214,9 +214,20 @@
   if (!length(rows) || is.na(zt) || is.na(zb) || zb <= zt) return(NA)
   top <- x$h$top_cm[rows]; bot <- x$h$bottom_cm[rows]; o <- ok[rows]
   known <- !is.na(top) & !is.na(bot)
-  w <- ifelse(known, .asc_overlap(top, bot, zt, zb), 0)
+  top <- top[known]; bot <- bot[known]; o <- o[known]
   span <- zb - zt
-  t_true <- sum(w[o %in% TRUE]); t_false <- sum(w[o %in% FALSE])
+  # the window cut at every row boundary: a segment is TRUE or FALSE when
+  # the rows covering it all say so (overlapping rows that disagree, or no
+  # row, leave it undecided), so that no depth is counted twice
+  cuts <- sort(unique(c(zt, zb, top[top > zt & top < zb], bot[bot > zt & bot < zb])))
+  t_true <- 0; t_false <- 0
+  for (k in seq_len(length(cuts) - 1L)) {
+    mid <- (cuts[k] + cuts[k + 1L]) / 2
+    v <- o[top <= mid & bot > mid]
+    if (!length(v) || anyNA(v)) next
+    if (all(v)) t_true <- t_true + (cuts[k + 1L] - cuts[k])
+    else if (!any(v)) t_false <- t_false + (cuts[k + 1L] - cuts[k])
+  }
   if (t_true > span / 2) return(TRUE)
   if (t_false >= span / 2) return(FALSE)
   NA
@@ -394,25 +405,14 @@ textural_b_asc <- function(pedon) {
 }
 
 # The upper B2t: the top 0.2 m of the B2t (the B2 horizons from the
-# textural B down, without a break; a B1 or B3 is not the B2t), or the whole
-# B2t when it is thinner. With no B2 at or below the textural B (a B3 over
-# rock, say), the textural B horizon itself.
+# textural B down; a B1 or B3 is not the B2t; a gap in the record is a part
+# of unknown value, not the end of the B2t), or the whole B2t when it is
+# thinner. With no B2 at or below the textural B (a B3 over rock, say), the
+# textural B horizon itself.
 .asc_upper_b2t <- function(x, b_row, extra = integer(0)) {
-  h <- x$h
-  zb_row <- h$top_cm[b_row]
   cand <- x$b2 %in% TRUE
   cand[extra] <- TRUE
-  rows <- which(cand & !is.na(h$top_cm) & h$top_cm >= zb_row - 0.5)
-  if (!length(rows)) rows <- b_row
-  rows <- rows[order(h$top_cm[rows])]
-  zt <- h$top_cm[rows[1L]]
-  keep <- rows[1L]; bottom <- h$bottom_cm[rows[1L]]
-  for (r in rows[-1L]) {
-    if (is.na(bottom) || is.na(h$top_cm[r]) || abs(h$top_cm[r] - bottom) > 0.5) break
-    keep <- c(keep, r); bottom <- h$bottom_cm[r]
-  }
-  zb <- if (is.na(bottom)) zt + 20 else min(zt + 20, bottom)
-  list(rows = keep, top = zt, bottom = zb)
+  .asc_window(x, cand, x$h$top_cm[b_row], 20, fallback = b_row)
 }
 
 # An order gate on the upper B2t of the textural B: the textural B must be
@@ -526,7 +526,7 @@ anthroposol_asc <- function(pedon) {
 # An O or P designation counts where organic C is not measured.
 .asc_organic_material <- function(x, pedon) {
   h <- x$h
-  wet <- .asc_long_saturation(pedon)
+  wet <- .asc_organic_saturation(pedon)
   clay <- pmin(ifelse(is.na(h$clay_pct), 60, h$clay_pct), 60)
   need_a <- 12 + 0.1 * clay
   need_a_lo <- 12 + 0.1 * pmin(ifelse(is.na(h$clay_pct), 0, h$clay_pct), 60)
@@ -543,13 +543,31 @@ anthroposol_asc <- function(pedon) {
                 ifelse(!is.na(by_tx), by_tx, NA)))
 }
 
-# Long saturation from the site drainage class: very poorly drained
-# saturates; poorly and imperfectly drained are undecided (the Field
-# Handbook's poorly drained soil stays wet for several months, which is not
-# yet saturated through most of the profile, and most poorly drained
-# profiles of the Australian surveys are not Hydrosols); moderately well
-# drained or better (rapidly drained included) do not.
+# Saturation of 2-3 months or more (Hydrosols, Aquic Vertosols) from the
+# site drainage class, whose Field Handbook definitions speak of wetness, not
+# saturation: very poorly drained (free water at or near the surface for
+# most of the year) saturates; poorly drained (all horizons wet for several
+# months) is undecided, as wet is not yet saturated (and most poorly drained
+# profiles of the Australian surveys are not Hydrosols); imperfectly drained
+# (some horizons wet for several weeks, short of 2-3 months) or better,
+# rapidly drained included, do not.
 .asc_long_saturation <- function(pedon) {
+  d <- pedon$site$drainage_class %||% NA
+  if (length(d) == 1L && !is.na(d) && grepl("^\\s*rapid", tolower(as.character(d)))) return(FALSE)
+  wet_end <- .drainage_class(d, "wetter"); dry_end <- .drainage_class(d, "drier")
+  if (!is.na(dry_end) && dry_end >= 8) return(TRUE)
+  if (!is.na(wet_end) && wet_end <= 6) return(FALSE)
+  NA
+}
+
+# Saturation "for long periods" in the definition of organic materials,
+# which the glossary says is that of Soil Taxonomy: 30 days or more,
+# cumulative, in normal years. From the drainage class: very poorly drained
+# saturates; poorly drained (wet for several months) and imperfectly drained
+# (wet for several weeks) are undecided, as weeks or months of wetness may
+# or may not be 30 days of saturation; moderately well drained (wet for up
+# to about a week) or better, rapidly drained included, do not.
+.asc_organic_saturation <- function(pedon) {
   d <- pedon$site$drainage_class %||% NA
   if (length(d) == 1L && !is.na(d) && grepl("^\\s*rapid", tolower(as.character(d)))) return(FALSE)
   wet_end <- .drainage_class(d, "wetter"); dry_end <- .drainage_class(d, "drier")
@@ -717,8 +735,8 @@ vertosol_asc <- function(pedon) {
 #' More than half of the profile saturated for 2-3 months or more in most
 #' years: from the days of saturation of the horizons (90 days or more
 #' passes, less than 60 fails, between is undecided), otherwise from the site
-#' drainage class (very poorly drained passes, poorly and imperfectly
-#' drained are undecided, better drained fail), or tidal flooding
+#' drainage class (very poorly drained passes, poorly drained is undecided,
+#' imperfectly drained or better fail), or tidal flooding
 #' (site$tidal_inundation).
 #' @noRd
 hydrosol_asc <- function(pedon) {

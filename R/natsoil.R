@@ -508,6 +508,31 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
 }
 
+# Suborder agreement, over the pedons whose surveyed suborder is one the key
+# lists for their surveyed order: the order and the suborder must both agree;
+# a pedon is decided when nothing before its order or its suborder was left
+# undecided. Also over those whose order agrees.
+.natsoil_suborder_summary <- function(res) {
+  subs <- load_rules("asc3")$suborders %||% list()
+  valid <- vapply(seq_len(nrow(res)), function(i) {
+    codes <- vapply(subs[[res$reference[i]]] %||% list(), function(t) as.character(t$code), "")
+    !is.na(res$reference_suborder[i]) && res$reference_suborder[i] %in% codes
+  }, NA)
+  r <- res[valid, , drop = FALSE]
+  if (!nrow(r)) return(NULL)
+  r$agree_sub <- r$agree & !is.na(r$predicted_suborder) & r$predicted_suborder == r$reference_suborder
+  r$decided_sub <- r$decided & !is.na(r$provisional_suborder) & !nzchar(r$provisional_suborder)
+  pct <- function(x) if (length(x)) 100 * mean(x) else NA_real_
+  g <- r$agree
+  key <- paste(r$reference, r$reference_suborder)
+  list(n = nrow(r), accuracy = pct(r$agree_sub), decided = sum(r$decided_sub),
+       decided_accuracy = pct(r$agree_sub[r$decided_sub]),
+       order_agrees = sum(g), accuracy_given_order = pct(r$agree_sub[g]),
+       decided_given_order = sum(r$decided_sub & g), decided_accuracy_given_order = pct(r$agree_sub[r$decided_sub & g]),
+       recall = vapply(split(r$agree_sub, key), pct, 0),
+       confusion_given_order = table(survey = key[g], soilKey = paste(r$predicted[g], r$predicted_suborder[g])))
+}
+
 # The ASC order codes and names.
 .ASC_ORDER_CODES <- c(AN = "Anthroposol", OR = "Organosol", PO = "Podosol", VE = "Vertosol",
                       HY = "Hydrosol", KU = "Kurosol", SO = "Sodosol", CH = "Chromosol",
@@ -536,17 +561,24 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 #'   the surveyors' confidence, 1 = all necessary analytical data); \code{recall}
 #'   by surveyed order; \code{confusion} (rows the survey, columns soilKey);
 #'   \code{first_undecided} (the first order left undecided, among
-#'   provisional pedons); and \code{results}, one row per pedon.
+#'   provisional pedons); \code{suborders}, the same for the suborders where
+#'   the key has them (overall, and over the pedons whose order agrees); and
+#'   \code{results}, one row per pedon.
 #' @seealso \code{\link{load_natsoil_pedons}}, \code{\link{classify_asc3}}.
 #' @export
 benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
   one <- function(p) {
     ref <- toupper(as.character(p$site$reference_asc_order %||% NA))
     r <- tryCatch(classify_asc3(p, on_missing = "silent"), error = function(e) NULL)
-    pred <- if (is.null(r)) NA_character_ else names(.ASC_ORDER_CODES)[match(r$name, .ASC_ORDER_CODES)]
+    pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "orders"][1L] %|NA|% NA_character_)
     prov <- if (is.null(r)) NA_character_
             else paste(sub("^orders:", "", grep("^orders:", r$provisional_because, value = TRUE)), collapse = ",")
+    sub_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "suborders"][1L] %|NA|% NA_character_)
+    sub_prov <- if (is.null(r)) NA_character_
+                else paste(sub("^suborders:", "", grep("^suborders:", r$provisional_because, value = TRUE)), collapse = ",")
     data.frame(id = p$site$id, reference = ref, predicted = pred, provisional = prov,
+               reference_suborder = toupper(as.character(p$site$reference_asc_suborder %||% NA)),
+               predicted_suborder = sub_pred, provisional_suborder = sub_prov,
                confidence = as.character(p$site$reference_asc_confidence %||% NA), stringsAsFactors = FALSE)
   }
   cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(cores))
@@ -574,6 +606,7 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     confusion = table(survey = factor(res$reference, lev), soilKey = factor(res$predicted, lev)),
     first_undecided = sort(table(sub(",.*$", "", res$provisional[!res$decided & !is.na(res$provisional)])),
                            decreasing = TRUE),
+    suborders = .natsoil_suborder_summary(res),
     results = res)
   if (verbose) {
     message(sprintf(paste("NatSoil, ASC orders: %d pedons, agreement %.1f %% (%.1f %% counting the",

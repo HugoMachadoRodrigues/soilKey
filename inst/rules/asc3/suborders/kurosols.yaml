@@ -1,0 +1,40 @@
+# Key to the suborders of the Kurosols, ASC 3rd ed. (online version with errata).
+# The colour classes are the ASC's own (Colour classes, Fig. 3); see
+# R/diagnostics-asc-suborders.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "KU":
+    - code: "AA"
+      name: Red Kurosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Red, window: upper_b2t}
+      notes: "The dominant moist colour class in the major part of the upper 0.2 m of the B2t (or the whole B2t if thinner) is Red."
+
+    - code: "AB"
+      name: Brown Kurosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Brown, window: upper_b2t}
+      notes: "The dominant moist colour class in the major part of the upper 0.2 m of the B2t (or the whole B2t if thinner) is Brown."
+
+    - code: "AC"
+      name: Yellow Kurosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Yellow, window: upper_b2t}
+      notes: "The dominant moist colour class in the major part of the upper 0.2 m of the B2t (or the whole B2t if thinner) is Yellow."
+
+    - code: "AD"
+      name: Grey Kurosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Grey, window: upper_b2t}
+      notes: "The dominant moist colour class in the major part of the upper 0.2 m of the B2t (or the whole B2t if thinner) is Grey."
+
+    - code: "AE"
+      name: Black Kurosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Black, window: upper_b2t}
+      notes: "The dominant moist colour class in the major part of the upper 0.2 m of the B2t (or the whole B2t if thinner) is Black."

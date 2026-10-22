@@ -1,3 +1,37 @@
+# soilKey 0.9.280 (2026-10-22)
+
+## Australian classification: the colour suborders (experimental)
+
+`classify_asc3()` now keys the suborders of seven orders: the Kurosols,
+Sodosols and Chromosols (the colour of the upper 0.2 m of the B2t), the
+Ferrosols, Dermosols and Kandosols (the upper 0.5 m of the B2) and the
+Vertosols (Aquic, then the colour of the upper 0.5 m of the solum). The
+name is the suborder's ("Red Chromosol"); `rsg_or_order` keeps the order.
+The other suborders follow. WRB, SiBCS and USDA results do not change.
+
+* Colour classes as the ASC defines them (Red, Brown, Yellow, Grey,
+  Black), from the moist matrix colour matched to the nearest chip; a colour
+  half way between chips of different classes is of unknown class.
+* The dominant class covers more than half of the window; when no class
+  does, the one with the largest share, as the surveyors read it (a tie is
+  undecided).
+* Aquic Vertosols: saturation days of the upper 0.5 m, otherwise the
+  drainage class as for the Hydrosols.
+* An imperfectly drained site (some horizons wet for several weeks, in the
+  Field Handbook) now counts as not saturated for 2-3 months, for the
+  Hydrosols and the Aquic Vertosols; before, it was undecided. No order
+  changes, but more are decided. Organic materials keep their own limit:
+  "saturated for long periods" is 30 days, as in Soil Taxonomy, whose
+  definition the glossary adopts, so poorly and imperfectly drained sites
+  stay undecided there.
+* `benchmark_natsoil()` also reports the suborders (`$suborders`).
+* The readings are in `inst/rules/asc3/readings.yaml` (24).
+
+On 9,700 licensed NatSoil profiles: the order agrees for 43.9 % as before,
+and 1,270 are now decided (was 1,052), 74.8 % in agreement. Of the 3,114
+profiles of these seven orders whose order agrees and whose survey gives a
+suborder, 86.3 % get the survey's suborder, and 96.6 % of the 623 decided.
+
 # soilKey 0.9.279 (2026-10-22)
 
 ## Australian classification: the field texture first in the textural B (experimental)

@@ -11,7 +11,11 @@
 #' Classification, 3rd edition (Isbell and the National Committee on Soil
 #' and Terrain 2021), following the online version with its errata.
 #' \strong{Experimental}: this release keys the 15 orders (the key to soil
-#' orders); suborders, great groups, subgroups and families follow.
+#' orders) and the suborders of the Kurosols, Sodosols, Chromosols,
+#' Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
+#' Aquic Vertosols); the other suborders, great groups, subgroups and
+#' families follow. The name is the suborder's ("Red Chromosol") where one is
+#' assigned; \code{rsg_or_order} keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
 #' grades (\code{field_texture}, NCST Field Handbook codes; lab clay stands in
@@ -35,8 +39,9 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"asc3"}, the order in \code{name} and \code{rsg_or_order}, the key
-#'   trace, and \code{provisional_because} (orders before the assigned one
+#'   \code{"asc3"}, the deepest class in \code{name}, the order in
+#'   \code{rsg_or_order}, the classes of each level in \code{levels}, the key
+#'   trace, and \code{provisional_because} (classes before the assigned ones
 #'   that could not be decided).
 #' @references Isbell, R.F. and the National Committee on Soil and Terrain
 #'   (2021). The Australian Soil Classification, 3rd ed. CSIRO Publishing,
@@ -172,6 +177,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       boundary_distinctness = c("gradual", "gradual", "gradual", NA),
       structure_grade = c("moderate", "moderate", "strong", "weak"),
       structure_type = c("granular", "blocky", "blocky", "blocky"), slickensides = "absent",
+      munsell_hue_moist = "7.5YR", munsell_value_moist = c(3, 4, 4, 5), munsell_chroma_moist = c(2, 4, 4, 4),
       ph_h2o = c(6.2, 6.5, 6.8, 7.0))),
     kandosols = mk(list(
       designation = c("A1", "A3", "B21", "B22"), top_cm = c(0, 15, 30, 70),
@@ -180,6 +186,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       boundary_distinctness = c("gradual", "gradual", "diffuse", NA),
       structure_grade = c("weak", "structureless", "structureless", "weak"),
       structure_type = c("granular", "massive", "massive", "blocky"),
+      munsell_hue_moist = c("7.5YR", "5YR", "2.5YR", "2.5YR"), munsell_value_moist = c(3, 4, 4, 4),
+      munsell_chroma_moist = c(2, 4, 6, 6),
       ph_h2o = c(6.0, 5.8, 5.9, 6.0))),
     arenosols = mk(list(
       designation = c("A1", "A3", "C1", "C2"), top_cm = c(0, 10, 40, 90),
