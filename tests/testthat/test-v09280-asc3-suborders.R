@@ -170,3 +170,19 @@ test_that("second review: overlaps, open bottoms and other horizons in the windo
                 site = list(designation_system = NULL))
   expect_true(soilKey:::colour_suborder_asc(v, "Black", "solum_50")$passed)
 })
+
+test_that("organic materials keep their own saturation limit (30 days, as Soil Taxonomy)", {
+  skip_on_cran()
+  sat <- soilKey:::.asc_organic_saturation; long <- soilKey:::.asc_long_saturation
+  p <- make_asc3_example("organosols")
+  for (d in c("very poorly drained", "poorly drained", "imperfectly drained", "moderately well drained")) {
+    p$site$drainage_class <- d
+    expect_identical(sat(p), switch(d, "very poorly drained" = TRUE, "moderately well drained" = FALSE, NA), info = d)
+  }
+  p$site$drainage_class <- "imperfectly drained"
+  expect_false(long(p))                                    # weeks: not 2-3 months
+  expect_true(is.na(sat(p)))                               # weeks: maybe 30 days
+  # 16 and 15 % organic C, imperfectly drained: organic materials undecided
+  p$horizons$oc_pct <- c(16, 15, 1.5); p$horizons$clay_pct <- c(10, 10, 38)
+  expect_true(is.na(soilKey:::organosol_asc(p)$passed))
+})

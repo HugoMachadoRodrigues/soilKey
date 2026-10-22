@@ -526,7 +526,7 @@ anthroposol_asc <- function(pedon) {
 # An O or P designation counts where organic C is not measured.
 .asc_organic_material <- function(x, pedon) {
   h <- x$h
-  wet <- .asc_long_saturation(pedon)
+  wet <- .asc_organic_saturation(pedon)
   clay <- pmin(ifelse(is.na(h$clay_pct), 60, h$clay_pct), 60)
   need_a <- 12 + 0.1 * clay
   need_a_lo <- 12 + 0.1 * pmin(ifelse(is.na(h$clay_pct), 0, h$clay_pct), 60)
@@ -543,11 +543,13 @@ anthroposol_asc <- function(pedon) {
                 ifelse(!is.na(by_tx), by_tx, NA)))
 }
 
-# Long saturation from the site drainage class: very poorly drained
-# saturates; poorly drained is undecided (the Field Handbook's poorly drained
-# soil stays wet for several months, which is not yet saturated through most
-# of the profile, and most poorly drained profiles of the Australian surveys
-# are not Hydrosols); imperfectly drained (wet for several weeks) or better,
+# Saturation of 2-3 months or more (Hydrosols, Aquic Vertosols) from the
+# site drainage class, whose Field Handbook definitions speak of wetness, not
+# saturation: very poorly drained (free water at or near the surface for
+# most of the year) saturates; poorly drained (all horizons wet for several
+# months) is undecided, as wet is not yet saturated (and most poorly drained
+# profiles of the Australian surveys are not Hydrosols); imperfectly drained
+# (some horizons wet for several weeks, short of 2-3 months) or better,
 # rapidly drained included, do not.
 .asc_long_saturation <- function(pedon) {
   d <- pedon$site$drainage_class %||% NA
@@ -555,6 +557,22 @@ anthroposol_asc <- function(pedon) {
   wet_end <- .drainage_class(d, "wetter"); dry_end <- .drainage_class(d, "drier")
   if (!is.na(dry_end) && dry_end >= 8) return(TRUE)
   if (!is.na(wet_end) && wet_end <= 6) return(FALSE)
+  NA
+}
+
+# Saturation "for long periods" in the definition of organic materials,
+# which the glossary says is that of Soil Taxonomy: 30 days or more,
+# cumulative, in normal years. From the drainage class: very poorly drained
+# saturates; poorly drained (wet for several months) and imperfectly drained
+# (wet for several weeks) are undecided, as weeks or months of wetness may
+# or may not be 30 days of saturation; moderately well drained (wet for up
+# to about a week) or better, rapidly drained included, do not.
+.asc_organic_saturation <- function(pedon) {
+  d <- pedon$site$drainage_class %||% NA
+  if (length(d) == 1L && !is.na(d) && grepl("^\\s*rapid", tolower(as.character(d)))) return(FALSE)
+  wet_end <- .drainage_class(d, "wetter"); dry_end <- .drainage_class(d, "drier")
+  if (!is.na(dry_end) && dry_end >= 8) return(TRUE)
+  if (!is.na(wet_end) && wet_end <= 5) return(FALSE)
   NA
 }
 

@@ -17,10 +17,13 @@ The other suborders follow. WRB, SiBCS and USDA results do not change.
   undecided).
 * Aquic Vertosols: saturation days of the upper 0.5 m, otherwise the
   drainage class as for the Hydrosols.
-* An imperfectly drained site (wet for several weeks, in the Field
-  Handbook) now counts as not saturated for long periods, for the
-  Hydrosols, the Aquic Vertosols and organic materials; before, it was
-  undecided. No order changes, but more are decided.
+* An imperfectly drained site (some horizons wet for several weeks, in the
+  Field Handbook) now counts as not saturated for 2-3 months, for the
+  Hydrosols and the Aquic Vertosols; before, it was undecided. No order
+  changes, but more are decided. Organic materials keep their own limit:
+  "saturated for long periods" is 30 days, as in Soil Taxonomy, whose
+  definition the glossary adopts, so poorly and imperfectly drained sites
+  stay undecided there.
 * `benchmark_natsoil()` also reports the suborders (`$suborders`).
 * The readings are in `inst/rules/asc3/readings.yaml` (24).
 
