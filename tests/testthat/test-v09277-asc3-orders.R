@@ -43,7 +43,7 @@ test_that("field texture grades carry the glossary's clay ranges", {
 
 test_that("the Chromosol example keys to its order on CRAN too", {
   r <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
-  expect_identical(r$name, "Chromosol")
+  expect_identical(r$rsg_or_order, "Chromosol")
   expect_identical(r$system_id, "asc3")
 })
 
@@ -56,7 +56,7 @@ test_that("each example pedon keys to its order, with nothing undecided", {
            arenosols = "Arenosol", rudosols = "Rudosol", tenosols = "Tenosol")
   for (o in names(ord)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
-    expect_identical(r$name, ord[[o]], info = o)
+    expect_identical(r$rsg_or_order, ord[[o]], info = o)
     expect_length(r$provisional_because, 0L)
     expect_identical(r$levels$level[1], "orders")
   }
@@ -69,9 +69,9 @@ test_that("the registry lists the ASC as an opt-in system", {
   expect_false(s$default[s$id == "asc3"])
   expect_identical(soilKey:::.system_resolve("asc"), "asc3")
   res <- classify_all(make_asc3_example("kandosols"), systems = c("wrb", "asc"), on_missing = "silent")
-  expect_identical(res$summary$asc3, "Kandosol")
+  expect_identical(res$summary$asc3, "Red Kandosol")
   expect_length(yaml::read_yaml(system.file("rules", "asc3", "readings.yaml",
-                                            package = "soilKey"))$readings, 21L)
+                                            package = "soilKey"))$readings, 24L)
 })
 
 # ---- the clear or abrupt textural B --------------------------------------------
@@ -107,11 +107,11 @@ test_that("the B2t chemistry decides among Kurosols, Sodosols and Chromosols", {
   # low charge: Na and CEC too low to compute an ESP are read as not sodic
   p <- make_asc3_example("sodosols")
   p$horizons$cec_cmol[3:5] <- 2.5; p$horizons$na_cmol[3:5] <- 0.2
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
   # a strongly subplastic sodic B2t is not a Sodosol
   p <- make_asc3_example("sodosols")
   p$horizons$subplasticity[3:4] <- "strongly subplastic"
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
   # ESP over the effective CEC where the pHw is 5.5 or less
   p <- make_asc3_example("chromosols")
   p$horizons$ph_h2o[3:5] <- 5.5; p$horizons$ph_cacl2[3:5] <- 5.0
@@ -138,7 +138,7 @@ test_that("Vertosols read cracks from the horizons or a cracking surface", {
   expect_true(v$passed); expect_identical(v$evidence$cracks_route, "described moist (waived)")
   p$horizons$soil_water_status <- NA_character_
   p$site$surface_condition <- "self-mulching; cracking"
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Vertosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Vertosol")
   expect_identical(soilKey:::vertosol_asc(p)$evidence$cracks_route, "cracking surface")
   # slickensides recorded absent everywhere and no lenticular peds rule it out
   p$horizons$slickensides <- "absent"; p$horizons$structure_type <- "blocky"
@@ -157,8 +157,8 @@ test_that("Hydrosols come from saturation days, then the drainage class", {
   expect_true(is.na(hy(p)))                                  # poorly drained: wet, not yet saturated
   p$site$drainage_class <- "very poorly drained"
   expect_true(hy(p))
-  p$site$drainage_class <- "imperfectly drained"
-  expect_true(is.na(hy(p)))
+  p$site$drainage_class <- "imperfectly drained"                 # wet for weeks, not months (0.9.280)
+  expect_false(hy(p))
   p$site$drainage_class <- "moderately well drained"
   expect_false(hy(p))
   p$site$drainage_class <- "rapidly drained"
@@ -220,7 +220,7 @@ test_that("Ferrosols need free iron, and a vertic B2 keeps a soil out", {
   p <- make_asc3_example("ferrosols")
   p$horizons$fe_dcb_pct <- NA_real_
   r <- classify_asc3(p, on_missing = "silent")
-  expect_identical(r$name, "Dermosol")
+  expect_identical(r$rsg_or_order, "Dermosol")
   expect_true("orders:FE" %in% r$provisional_because)
   p <- make_asc3_example("ferrosols")
   p$horizons$slickensides <- c("absent", "common", "common", "few")
@@ -250,7 +250,7 @@ test_that("a profile in the FAO/USDA notation keys from the roles of its horizon
   p <- make_asc3_example("chromosols")
   p$site$designation_system <- NULL
   p$horizons$designation <- c("A", "E", "Bt1", "Bt2", "BC")
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
 })
 
 # ---- cases from the review (each with the text's answer) -------------------------
@@ -271,7 +271,7 @@ test_that("a Vertisol in USDA notation is a Vertosol, not a Podosol", {
   p <- make_asc3_example("vertosols")
   p$site$designation_system <- NULL; p$site$country <- "US"
   p$horizons$designation <- c("Ap", "Bss1", "Bss2", "BCk")
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Vertosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Vertosol")
 })
 
 test_that("rock within 1 m rules out an Arenosol", {
@@ -286,7 +286,7 @@ test_that("unreadable designations leave the gates undecided", {
   p <- make_asc3_example("chromosols")
   p$horizons$designation <- tolower(p$horizons$designation)
   r <- classify_asc3(p, on_missing = "silent")
-  expect_false(identical(r$name, "Rudosol") && length(r$provisional_because) == 0L)
+  expect_false(identical(r$rsg_or_order, "Rudosol") && length(r$provisional_because) == 0L)
   expect_true(is.na(soilKey:::rudosol_asc(p)$passed))
   expect_true(is.na(soilKey:::podosol_asc(p)$passed))
 })
@@ -318,7 +318,7 @@ test_that("a buried B is not the textural B, and a thin cover is flagged", {
   p$horizons$top_cm <- c(0, 10, 20, 35); p$horizons$bottom_cm <- c(10, 20, 35, 100)
   p$horizons$structure_grade <- c("structureless", "structureless", "weak", "strong")
   r <- classify_asc3(p, on_missing = "silent")
-  expect_identical(r$name, "Rudosol")
+  expect_identical(r$rsg_or_order, "Rudosol")
   expect_true(any(grepl("buried soil", r$warnings)))
   p$horizons$designation[2] <- "A2"
   r <- classify_asc3(p, on_missing = "silent")
@@ -421,7 +421,7 @@ test_that("a boundary inside the B is not the textural B", {
                     clay_pct = c(22, 32, 55, 56), boundary_distinctness = c("gradual", "clear", "gradual", NA),
                     structure_grade = c("weak", "moderate", "strong", "strong"), ph_h2o = 6.5, fe_dcb_pct = 2))
   expect_false(soilKey:::textural_b_asc(p)$passed)
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Dermosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Dermosol")
 })
 
 test_that("a row of unknown role inside the B leaves the B2 tests open", {
@@ -478,7 +478,7 @@ test_that("rock ends the profile: no unseen organic or sandy depth below it", {
   p <- .mk_asc(list(designation = c("A1", "C", "R"), top_cm = c(0, 10, 25), bottom_cm = c(10, 25, 40),
                     field_texture = c("S", "S", NA), effervescence_class = c("strong", "strong", NA),
                     oc_pct = c(1, 0.3, NA), structure_grade = c("weak", "structureless", NA), ph_h2o = c(8.5, 8.8, NA)))
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Calcarosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Calcarosol")
 })
 
 test_that("clay lamellae keep a deep sand an Arenosol, and a cemented pan is a hard layer", {
@@ -487,7 +487,7 @@ test_that("clay lamellae keep a deep sand an Arenosol, and a cemented pan is a h
     p <- .mk_asc(list(designation = c("A1", "A2", lam, "C2"), top_cm = c(0, 10, 40, 41), bottom_cm = c(10, 40, 41, 150),
                       field_texture = c("S", "S", "SCL", "S"), structure_grade = "structureless",
                       structure_type = "single-grain", boundary_distinctness = c("gradual", "gradual", "abrupt", NA)))
-    expect_identical(classify_asc3(p, on_missing = "silent")$name, "Arenosol", info = lam)
+    expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Arenosol", info = lam)
   }
   p <- .mk_asc(list(designation = c("A1", "C1", "C2", "2Cm"), top_cm = c(0, 10, 40, 85),
                     bottom_cm = c(10, 40, 85, 120), field_texture = "S", structure_grade = "structureless"))
@@ -541,7 +541,7 @@ test_that("empty rows below the description do not open the textural B or the B2
   p <- .mk_asc(as.list(h))
   expect_false(soilKey:::textural_b_asc(p)$passed)
   r <- classify_asc3(p, on_missing = "silent")
-  expect_identical(r$name, "Dermosol"); expect_length(r$provisional_because, 0L)
+  expect_identical(r$rsg_or_order, "Dermosol"); expect_length(r$provisional_because, 0L)
 })
 
 test_that("rows of unknown role decide a major part only when every reading agrees", {
@@ -576,7 +576,7 @@ test_that("an AE in the FAO notation is read as an A2", {
   p$site$designation_system <- NULL
   p$horizons$designation <- c("A", "AE", "Bt1", "Bt2", "C")
   expect_identical(soilKey:::.asc_designations(p$horizons$designation, p$site)$role[2], "A2")
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
 })
 
 test_that("an empty row within 0.8 m leaves the Organosol open", {
@@ -603,12 +603,12 @@ test_that("a b at the surface, with no cover, is not burial; a b soil keeps its 
   skip_on_cran()
   p <- make_asc3_example("chromosols")
   p$horizons$designation <- paste0(p$horizons$designation, "b")
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
   p <- .mk_asc(list(designation = c("A1", "C", "2A1b", "2B2tb", "2BC"), top_cm = c(0, 10, 20, 35, 70),
                     bottom_cm = c(10, 20, 35, 70, 100), field_texture = c("S", "S", "SL", "MC", "LC"),
                     structure_grade = c("structureless", "structureless", "weak", "strong", "moderate")))
   expect_true(soilKey:::.asc_horizons(p)$des$buried[5])
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Rudosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Rudosol")
 })
 
 test_that("unknown rows: a second A sequence and a C cover do not hide them", {
@@ -630,7 +630,7 @@ test_that("a b inside one material, with unmarked horizons below, leaves no hole
   p <- make_asc3_example("chromosols")
   p$horizons$designation <- c("A1", "A2b", "B21t", "B22t", "BC")
   expect_false(any(soilKey:::.asc_horizons(p)$des$buried))
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Chromosol")
+  expect_identical(classify_asc3(p, on_missing = "silent")$rsg_or_order, "Chromosol")
   # a prefixed cb is burial with concretions; a 2A1b over 2A12 stays buried
   p <- .mk_asc(list(designation = c("A1", "C", "2A1b", "2A12"), top_cm = c(0, 10, 30, 45),
                     bottom_cm = c(10, 30, 45, 80)))

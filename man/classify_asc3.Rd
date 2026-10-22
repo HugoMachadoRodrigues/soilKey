@@ -24,8 +24,9 @@ classify_asc3(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"asc3"}, the order in \code{name} and \code{rsg_or_order}, the key
-  trace, and \code{provisional_because} (orders before the assigned one
+  \code{"asc3"}, the deepest class in \code{name}, the order in
+  \code{rsg_or_order}, the classes of each level in \code{levels}, the key
+  trace, and \code{provisional_because} (classes before the assigned ones
   that could not be decided).
 }
 \description{
@@ -33,7 +34,11 @@ Keys a \code{\link{PedonRecord}} through the Australian Soil
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 \strong{Experimental}: this release keys the 15 orders (the key to soil
-orders); suborders, great groups, subgroups and families follow.
+orders) and the suborders of the Kurosols, Sodosols, Chromosols,
+Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
+Aquic Vertosols); the other suborders, great groups, subgroups and
+families follow. The name is the suborder's ("Red Chromosol") where one is
+assigned; \code{rsg_or_order} keeps the order.
 }
 \details{
 The ASC is largely morphological. The diagnostics read field texture
