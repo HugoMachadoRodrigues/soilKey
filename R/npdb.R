@@ -400,6 +400,14 @@ load_npdb_pedons <- function(dir, max_n = NULL, seed = NULL, verbose = TRUE) {
 #' of \code{\link{classify_cssc3}}); \code{accuracy_decided} counts only the
 #' results that are not provisional at the level asked or above.
 #'
+#' Pedons from \code{\link{npdb_scenario}} carry estimates as ranges; each
+#' is classified at its central estimate and at every combination of the
+#' ends of its ranges (and of the moisture subclasses between its two
+#' estimates), and a class counts as decided only where every
+#' version gives it and none is provisional (otherwise the central class is
+#' reported as provisional). Run such pedons with
+#' \code{set_aside = character(0)} to include the Chernozems.
+#'
 #' @param pedons A list of \code{\link{PedonRecord}} from
 #'   \code{\link{load_npdb_pedons}}.
 #' @param level \code{"order"}, \code{"great_group"} or \code{"subgroup"}.
@@ -412,7 +420,9 @@ load_npdb_pedons <- function(dir, max_n = NULL, seed = NULL, verbose = TRUE) {
 #'   \code{set_aside}); \code{accuracy_decided}; \code{n_compared};
 #'   \code{n_decided}; \code{accuracy_all} (all orders); \code{set_aside} (a
 #'   table of where those pedons land); \code{confusion};
-#'   \code{per_class_recall}; \code{predictions} (one row per pedon).
+#'   \code{per_class_recall}; \code{predictions} (one row per pedon;
+#'   \code{scenario} marks pedons classified at the ends of their ranges and
+#'   \code{scenario_split} those whose versions disagree).
 #' @export
 benchmark_npdb <- function(pedons, level = c("order", "great_group", "subgroup"),
                            set_aside = "Chernozemic", cores = 1L, verbose = TRUE) {
@@ -425,18 +435,29 @@ benchmark_npdb <- function(pedons, level = c("order", "great_group", "subgroup")
   lvl <- c(order = "orders", great_group = "great_groups", subgroup = "subgroups")[[level]]
   above <- switch(level, order = "^orders:", great_group = "^(orders|great_groups):",
                   subgroup = ".")
+  name_of <- function(r) {
+    if (is.null(r)) NA_character_
+    else if (level == "order") r$rsg_or_order %||% NA_character_
+    else { v <- r$levels$name[r$levels$level == lvl]; if (length(v)) v[1] else NA_character_ }
+  }
   one <- function(p) {
-    r <- tryCatch(classify_cssc3(p, on_missing = "silent"), error = function(e) NULL)
-    pred <- if (is.null(r)) NA_character_
-            else if (level == "order") r$rsg_or_order %||% NA_character_
-            else { v <- r$levels$name[r$levels$level == lvl]; if (length(v)) v[1] else NA_character_ }
-    prov <- if (is.null(r)) character(0) else r$provisional_because
+    # a pedon of npdb_scenario() is classified at the ends of its ranges too;
+    # a class is decided only where every version gives it
+    vs <- .npdb_scenario_versions(p)
+    rs <- lapply(vs, function(v) tryCatch(classify_cssc3(v, on_missing = "silent"),
+                                          error = function(e) NULL))
+    preds <- vapply(rs, name_of, character(1))
+    prov <- vapply(rs, function(r) !is.null(r) && any(grepl(above, r$provisional_because)),
+                   logical(1))
+    split <- length(unique(preds)) > 1L
     data.frame(id = p$site$id %||% NA_character_,
                reference_order = p$site$reference_cssc_order %||% NA_character_,
                reference = p$site[[ref_field]] %||% NA_character_,
-               predicted = pred,
-               provisional = any(grepl(above, prov)),
-               error = is.null(r), stringsAsFactors = FALSE)
+               predicted = preds[1],
+               provisional = any(prov) || split,
+               error = is.null(rs[[1]]),
+               scenario = length(vs) > 1L, scenario_split = split,
+               stringsAsFactors = FALSE)
   }
   cores <- if (.Platform$OS.type == "windows" || !requireNamespace("parallel", quietly = TRUE)) 1L
            else max(1L, as.integer(cores))

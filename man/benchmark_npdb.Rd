@@ -31,7 +31,9 @@ A list: \code{level}; \code{accuracy} (share of agreement outside
   \code{set_aside}); \code{accuracy_decided}; \code{n_compared};
   \code{n_decided}; \code{accuracy_all} (all orders); \code{set_aside} (a
   table of where those pedons land); \code{confusion};
-  \code{per_class_recall}; \code{predictions} (one row per pedon).
+  \code{per_class_recall}; \code{predictions} (one row per pedon;
+  \code{scenario} marks pedons classified at the ends of their ranges and
+  \code{scenario_split} those whose versions disagree).
 }
 \description{
 Classifies NPDB pedons (\code{\link{load_npdb_pedons}}) with
@@ -47,4 +49,12 @@ land, and left out of \code{accuracy}. A result is provisional when an
 undecided class comes before the one assigned (\code{$provisional_because}
 of \code{\link{classify_cssc3}}); \code{accuracy_decided} counts only the
 results that are not provisional at the level asked or above.
+
+Pedons from \code{\link{npdb_scenario}} carry estimates as ranges; each
+is classified at its central estimate and at every combination of the
+ends of its ranges (and of the moisture subclasses between its two
+estimates), and a class counts as decided only where every
+version gives it and none is provisional (otherwise the central class is
+reported as provisional). Run such pedons with
+\code{set_aside = character(0)} to include the Chernozems.
 }

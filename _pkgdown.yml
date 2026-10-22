@@ -514,6 +514,10 @@ reference:
     contents:
       - load_npdb_pedons
       - benchmark_npdb
+      - npdb_scenario
+      - npdb_dry_colour_model
+      - npdb_soil_climate
+      - fetch_aafc_normals
 
   - title: "WoSIS stratified WRB benchmark (v0.9.73)"
     desc: >
