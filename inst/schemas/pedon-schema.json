@@ -432,6 +432,9 @@
           "subplasticity": {
             "type": ["string", "null"]
           },
+          "esp_pct": {
+            "type": ["number", "null"]
+          },
           "soil_water_status": {
             "type": ["string", "null"]
           },

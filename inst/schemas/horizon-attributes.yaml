@@ -487,6 +487,13 @@ attributes:
     description: "Kneading test of clays (none / subplastic / strongly subplastic / superplastic); ASC Sodosols and Chromosols."
     systems: [asc3]
     allowed: [none, subplastic, strongly subplastic, superplastic]
+  - name: esp_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Exchangeable sodium percentage as the laboratory reports it, read when exchangeable Na or the CEC is not given; ASC sodic."
+    systems: [asc3]
+    min: 0
+    max: 100
   - name: soil_water_status
     section: "Australian system (ASC 3rd ed.)"
     unit: "-"
