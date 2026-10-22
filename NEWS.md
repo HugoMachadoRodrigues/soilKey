@@ -1,3 +1,20 @@
+# soilKey 0.9.279 (2026-10-22)
+
+## Australian classification: the field texture first in the textural B (experimental)
+
+The clear or abrupt textural B of `classify_asc3()` (Kurosols, Sodosols,
+Chromosols) now reads each horizon by its field texture grade, and by its
+lab clay only when it has none. The glossary gives the limits in clay
+"and/or" field texture and notes that where the two disagree the field
+texture may be the better guide to how the soil behaves; before, lab clay
+on both sides decided. The reading is in `inst/rules/asc3/readings.yaml`.
+
+On the 9,700 licensed NatSoil profiles with an ASC order, 255 change order:
+104 of them now agree with the surveyors, 56 did before. Agreement goes from
+43.4 % to 43.9 % (45.7 % counting the Arenosols as Tenosols or Rudosols),
+with 1,052 decided at 77.4 % (78.6 %). WRB, SiBCS and USDA results do not
+change.
+
 # soilKey 0.9.278 (2026-10-22)
 
 ## NatSoil (CSIRO) as a benchmark for the Australian key (experimental)

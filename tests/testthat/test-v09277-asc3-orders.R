@@ -81,13 +81,13 @@ test_that("the registry lists the ASC as an opt-in system", {
                field_texture = tex, clay_pct = clay, boundary_distinctness = c(bnd, NA)))
 }
 
-test_that("the textural B reads lab clay first and field textures otherwise", {
+test_that("the textural B reads lab clay where no field texture is given", {
   skip_on_cran()
   tb <- function(p) soilKey:::textural_b_asc(p)$passed
-  expect_true(tb(.duplex(c("SL", "LMC"), clay = c(15, 32))))        # 15 -> 32: double and >= 20
-  expect_false(tb(.duplex(c("SL", "LMC"), clay = c(15, 28))))       # not double
-  expect_true(tb(.duplex(c("L", "MC"), clay = c(25, 46))))           # +21 points
-  expect_false(tb(.duplex(c("LC", "HC"), clay = c(36, 60))))         # no contrast within clays
+  expect_true(tb(.duplex(c(NA, NA), clay = c(15, 32))))            # 15 -> 32: double and >= 20
+  expect_false(tb(.duplex(c(NA, NA), clay = c(15, 28))))           # not double
+  expect_true(tb(.duplex(c(NA, NA), clay = c(25, 46))))            # +21 points
+  expect_false(tb(.duplex(c(NA, NA), clay = c(36, 60))))           # no contrast within clays
   # field-texture equivalents
   expect_true(tb(.duplex(c("LS", "SCL"))))                           # 5.5 -> 25
   expect_false(tb(.duplex(c("SL", "SCL"))))                          # 15 -> 25, not double
@@ -645,4 +645,18 @@ test_that("no row above the first A horizon is a possible Podosol B", {
   p <- .mk_asc(list(designation = c(NA, "A2", "B21", "B22"), top_cm = c(0, 10, 30, 60),
                     bottom_cm = c(10, 30, 60, 100), field_texture = c("SL", "SL", "SCL", "SCL")))
   expect_false(soilKey:::podosol_asc(p)$passed)
+})
+
+# ---- v0.9.279: field texture first in the textural B ------------------------------
+
+test_that("the textural B reads the field texture first, lab clay only without it", {
+  skip_on_cran()
+  tb <- function(p) soilKey:::textural_b_asc(p)$passed
+  # SL over LMC is a texture contrast by the field texture, whatever the lab says
+  expect_true(tb(.duplex(c("SL", "LMC"), clay = c(15, 28))))
+  # L over CL is not, even with lab clay of 22 over 45
+  expect_false(tb(.duplex(c("L", "CL"), clay = c(22, 45))))
+  # a horizon without a field texture is read by its lab clay
+  expect_true(tb(.duplex(c("SL", NA), clay = c(NA, 38))))
+  expect_false(tb(.duplex(c(NA, "SCL"), clay = c(19, NA))))        # 19 % above: SCL is not double
 })
