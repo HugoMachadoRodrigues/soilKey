@@ -529,6 +529,17 @@ reference:
       - npdb_soil_climate
       - fetch_aafc_normals
 
+  - title: "NatSoil benchmark (Australia, experimental)"
+    desc: >
+      NatSoil, the national soil site database of CSIRO, read through its
+      public API, as a benchmark for classify_asc3() against the orders the
+      surveyors gave. The data are licensed per site (most under CC BY 4.0)
+      and are not shipped.
+    contents:
+      - fetch_natsoil
+      - load_natsoil_pedons
+      - benchmark_natsoil
+
   - title: "WoSIS stratified WRB benchmark (v0.9.73)"
     desc: >
       ISRIC WoSIS bundled cache, 130 profiles balanced across 26

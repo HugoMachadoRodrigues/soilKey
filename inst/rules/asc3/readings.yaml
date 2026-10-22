@@ -23,7 +23,7 @@ readings:
     reading: "ph_h2o is read as the pHw (1:5 water) and decides when present (below 5.5); otherwise ph_cacl2 (below 4.6). A field pH stored in ph_h2o is read the same way."
   - topic: "Sodic and ESP"
     page: "Glossary, 'Sodic', 'ESP'"
-    reading: "ESP is exchangeable Na over the CEC, over the effective CEC (ecec_cmol) where the pHw is 5.5 or less, and over whichever is recorded when only one is. A horizon with both CEC and Na very low (CEC 3 cmol/kg or less and Na 0.3 or less), where the glossary advises against computing an ESP, is read as not sodic."
+    reading: "ESP is exchangeable Na over the CEC, over the effective CEC (ecec_cmol) where the pHw is 5.5 or less, and over whichever is recorded when only one is; without Na or either CEC, the ESP the laboratory reports (esp_pct). A horizon with both CEC and Na very low (CEC 3 cmol/kg or less and Na 0.3 or less), where the glossary advises against computing an ESP, is read as not sodic."
   - topic: "Strongly subplastic"
     page: "Glossary, 'Subplastic'; key to orders, step 7"
     reading: "Read from subplasticity ('strongly subplastic'); a horizon with no record is read as not strongly subplastic, as most descriptions do not record the plasticity type."

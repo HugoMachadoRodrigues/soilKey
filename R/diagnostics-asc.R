@@ -232,7 +232,8 @@
 }
 
 # Exchangeable sodium percentage (glossary 'ESP'): Na over the CEC, the
-# effective CEC where pHw is 5.5 or less (or the CEC is missing). Where the
+# effective CEC where pHw is 5.5 or less (or the CEC is missing); without Na
+# or a CEC, the ESP the laboratory reports (esp_pct). Where the
 # CEC and Na are both very low (CEC <= 3 and Na <= 0.3 cmol/kg) the glossary
 # advises against computing it; such a horizon is read as not sodic.
 .asc_esp <- function(h) {
@@ -240,6 +241,9 @@
   den <- ifelse(acid & !is.na(h$ecec_cmol), h$ecec_cmol,
                 ifelse(!is.na(h$cec_cmol), h$cec_cmol, h$ecec_cmol))
   esp <- ifelse(!is.na(h$na_cmol) & !is.na(den) & den > 0, 100 * h$na_cmol / den, NA_real_)
+  # an ESP the laboratory reports stands in where Na or the CEC is missing
+  lab_esp <- h$esp_pct %||% rep(NA_real_, nrow(h))
+  esp <- ifelse(is.na(esp), lab_esp, esp)
   low <- !is.na(den) & den <= 3 & !is.na(h$na_cmol) & h$na_cmol <= 0.3
   list(esp = esp, low_charge = low)
 }
