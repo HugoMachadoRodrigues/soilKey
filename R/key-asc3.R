@@ -1,7 +1,7 @@
 # =============================================================================
 # v0.9.277 -- the Australian Soil Classification, 3rd edition (Isbell & NCST
-# 2021, online version with errata of 25 June 2026), keyed to the 15 orders.
-# Suborders, great groups, subgroups and families follow. Experimental and
+# 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
+# suborders since v0.9.280. Great groups, subgroups and families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -11,10 +11,14 @@
 #' Classification, 3rd edition (Isbell and the National Committee on Soil
 #' and Terrain 2021), following the online version with its errata.
 #' \strong{Experimental}: this release keys the 15 orders (the key to soil
-#' orders) and the suborders of the Kurosols, Sodosols, Chromosols,
-#' Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
-#' Aquic Vertosols); the other suborders, great groups, subgroups and
-#' families follow. The name is the suborder's ("Red Chromosol") where one is
+#' orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+#' Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
+#' and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
+#' Podosols (saturation of the B, sulfuric and hypersulfidic material), the
+#' Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
+#' carbonate classes). The suborders of the Anthroposols, Arenosols,
+#' Rudosols and Tenosols, and the great groups, subgroups and families,
+#' follow. The name is the suborder's ("Red Chromosol") where one is
 #' assigned; \code{rsg_or_order} keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
@@ -25,10 +29,15 @@
 #' below 5.5), ESP (sodic: 6 or more), subplasticity, free iron, grade of
 #' pedality, carbonates and the moisture of the horizons when described
 #' (\code{soil_water_status}: the Vertosols' cracks are not required in a
-#' solum described moist). From the site it reads \code{drainage_class} and
+#' solum described moist), mottles, soft and hard carbonate, gypsum, the kind
+#' of peat and acid sulfate tests. From the site it reads
+#' \code{drainage_class} (Hydrosols, organic materials, Podosol suborders),
 #' \code{tidal_inundation} (Hydrosols, organic materials),
-#' \code{surface_condition} (a cracking surface, Vertosols) and
-#' \code{designation_system} (\code{"asc"} for the Australian notation). The
+#' \code{surface_condition} (a cracking
+#' surface, Vertosols; a saline one, Salic Hydrosols), \code{landform},
+#' \code{landform_element}, \code{tidal_zone}, \code{subaqueous} and
+#' \code{salinised} (Hydrosol suborders) and \code{designation_system}
+#' (\code{"asc"} for the Australian notation). The
 #' choices where the text is silent are listed in
 #' \code{system.file("rules", "asc3", "readings.yaml", package = "soilKey")}.
 #'
@@ -133,7 +142,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       bottom_cm = c(10, 45, 60, 90, 130), field_texture = c("S", "S", "LS", "S", "S"),
       clay_pct = c(3, 2, 5, 3, 2), oc_pct = c(2.0, 0.3, 1.8, 0.6, 0.1),
       structure_grade = "structureless", structure_type = c("single-grain", "single-grain", "massive", "massive", "single-grain"),
-      ph_h2o = c(5.0, 5.3, 4.9, 5.2, 5.5))),
+      ph_h2o = c(5.0, 5.3, 4.9, 5.2, 5.5)), utils::modifyList(well, list(drainage_class = "rapidly drained"))),
     vertosols = mk(list(
       designation = c("A1", "B21", "B22", "BC"), top_cm = c(0, 10, 50, 100),
       bottom_cm = c(10, 50, 100, 150), field_texture = c("MC", "HC", "HC", "MC"),
@@ -148,8 +157,10 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       clay_pct = c(30, 38, 40, 28), boundary_distinctness = c("gradual", "gradual", "diffuse", NA),
       structure_grade = c("moderate", "weak", "weak", "structureless"),
       water_saturation_days = c(120, 150, 180, 200),
+      redoximorphic_features_pct = c(0, 25, 30, 15), mottle_contrast = c(NA, "distinct", "prominent", "distinct"),
       ph_h2o = c(5.8, 6.0, 6.2, 6.5), oc_pct = c(3.0, 0.8, 0.5, 0.2)),
-      utils::modifyList(well, list(drainage_class = "poorly drained"))),
+      utils::modifyList(well, list(drainage_class = "poorly drained", landform = "alluvial plain",
+                                   surface_condition = "firm"))),
     kurosols = mk(duplex(ph = 5.0, na = 0.5)),
     sodosols = mk(duplex(ph = 8.0, na = 4.0)),
     chromosols = mk(duplex(ph = 6.5, na = 0.4)),
@@ -158,6 +169,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       bottom_cm = c(12, 40, 70, 110), field_texture = c("SL", "SCL", "SCL", "SL"),
       clay_pct = c(14, 24, 26, 18), effervescence_class = c("slight", "strong", "strong", "very strong"),
       secondary_carbonates_pct = c(0, 15, 30, 25), caco3_pct = c(2, 12, 25, 20),
+      carbonate_soft_pct = c(0, 12, 22, 18), carbonate_hard_pct = c(0, 3, 5, 5), caso4_pct = 0,
       boundary_distinctness = c("gradual", "gradual", "gradual", NA),
       structure_grade = c("weak", "weak", "weak", "structureless"),
       ph_h2o = c(8.2, 8.6, 8.8, 9.0))),

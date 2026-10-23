@@ -241,8 +241,21 @@ fetch_natsoil <- function(dir, classified_only = TRUE, max_sites = Inf, page_siz
 #' (\code{reference_asc_order}, \code{reference_asc_suborder},
 #' \code{reference_asc_great_group}, \code{reference_asc_subgroup}, the
 #' confidence \code{reference_asc_confidence}), the drainage class, the
-#' surface condition, the microrelief, coordinates (GDA94), the licence and
-#' the citation.
+#' landform pattern and element (\code{landform}, \code{landform_element}),
+#' the surface condition, the microrelief, coordinates (GDA94), the licence
+#' and the citation. Mottles (not biological or mechanical mixing, nor
+#' substrate inclusions) give \code{redoximorphic_features_pct} (abundance
+#' classes at their middle, added up) and \code{mottle_contrast} (the
+#' strongest, faint when distinct and prominent ones are 10 \% or less on
+#' their own and faint ones make up the rest); calcareous segregations and
+#' calcrete fragments give \code{carbonate_soft_pct} (soft segregations, root
+#' linings, tubules, veins and crystals) and \code{carbonate_hard_pct}
+#' (nodules, concretions, fragments and laminae, and calcrete coarse
+#' fragments), kept only where what is recorded leaves the amount within one
+#' carbonate class of the ASC glossary (a segregation of unknown form may be
+#' soft or hard, a fragment of unknown lithology calcrete; coarse fragments
+#' not recorded count as none; segregations not recorded leave the soft
+#' amount unknown, and the hard one unless calcrete alone exceeds 50 \%).
 #'
 #' @param path A folder (searched recursively for \code{.json} and
 #'   \code{.json.gz} files) or a vector of files.
@@ -305,11 +318,39 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
                "4" = "moderately well drained", "5" = "well drained", "6" = "rapidly drained"),
   cf_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35, "5" = 70, "6" = 95),
   seg_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35, "5" = 60),
+  mott_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35),
   cementation = c("0" = NA, "1" = "weakly", "2" = "moderately", "3" = "strongly", "4" = "indurated"),
   crack_cm = c("1" = 0.2, "2" = 0.5, "3" = 1, "4" = 2, "5" = 5),
   cutan_abun = c("0" = "absent", "1" = "few", "2" = "common", "3" = "many"),
   water = c(D = "dry", T = "moderately moist", M = "moist", W = "wet"),
-  plasticity = c(N = "none", U = "subplastic", T = "strongly subplastic", S = "superplastic")
+  plasticity = c(N = "none", U = "subplastic", T = "strongly subplastic", S = "superplastic"),
+  landform_pattern = c(ALF = "alluvial fan", ALP = "alluvial plain", ANA = "anastomatic plain",
+    BAD = "badlands", BAR = "bar plain", BEA = "beach ridge plain", CAL = "caldera", CHE = "chenier plain",
+    COR = "coral reef", COV = "covered plain", DEL = "delta", DUN = "dunefield", ESC = "escarpment",
+    FLO = "flood plain", HIL = "hills", KAR = "karst", LAC = "lacustrine plain", LAV = "lava plain",
+    LON = "longitudinal dunefield", LOW = "low hills", MAD = "made land", MAR = "marine plain",
+    MEA = "meander plain", MET = "meteor crater", MOU = "mountains", PAR = "parabolic dunefield",
+    PED = "pediment", PEP = "pediplain", PLA = "plain", PLT = "plateau", PLY = "playa plain",
+    PNP = "peneplain", RIS = "rises", SAN = "sand plain", SHF = "sheet-flood fan",
+    STA = "stagnant alluvial plain", TEL = "terraced land (alluvial)", TER = "terrace (alluvial)",
+    TID = "tidal flat", VOL = "volcano"),
+  landform_element = c(ALC = "alcove", BAN = "bank", BAR = "bar", BEA = "beach", BEN = "bench", BER = "berm",
+    BKP = "backplain", BOU = "blow out", BRI = "beach ridge", BRK = "breakaway", CBE = "channel bench",
+    CFS = "cliff-foot slope", CIR = "cirque", CLI = "cliff", CON = "cone", COS = "cut-over surface",
+    CRA = "crater", CUT = "cutface", DAM = "dam", DBA = "deflation basin", DDE = "drainage depression",
+    DOC = "collapse doline", DOL = "doline", DUB = "barchan dune", DUC = "dunecrest",
+    DUF = "linear or longitudinal (seif) dune", DUH = "hummocky (weakly oriented) dune", DUN = "dune",
+    DUP = "parabolic dune", DUS = "duneslope", EMB = "embankment", EST = "estuary", FAN = "fan",
+    FIL = "fill-top", FLD = "flood-out", FOO = "footslope", FOR = "foredune", GUL = "gully",
+    HCR = "hillcrest", HSL = "hillslope", ITF = "intertidal flat", LAG = "lagoon", LAK = "lake",
+    LDS = "landslide", LEV = "levee", LUN = "lunette", MAA = "maar", MOU = "mound", OXB = "ox-bow",
+    PED = "pediment", PIT = "pit", PLA = "plain", PLY = "playa", PST = "prior stream", REC = "risecrest",
+    REF = "reef flat", RER = "residual rise", RES = "riseslope", RFL = "rock flat", RPL = "rock platform",
+    SCA = "scarp", SCD = "scald", SCR = "scroll", SFS = "scarp-foot slope", SRP = "scroll plain",
+    STB = "stream bed", STC = "stream channel", STF = "supratidal flat", SUS = "summit surface",
+    SWL = "swale", SWP = "swamp", TAL = "talus", TDC = "tidal creek", TDF = "tidal flat",
+    TEF = "terrace flat", TEP = "terrace plain", TOR = "tor", TRE = "trench", TUM = "tumulus",
+    VLF = "valley flat")
 )
 
 .natsoil_map <- function(v, table) {
@@ -421,9 +462,61 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   segs <- Filter(function(z) !is.na(.ns(z, "seg_abun")) || !is.na(.ns(z, "seg_form")) || !is.na(.ns(z, "seg_size")),
                  h$z_segregations %||% list())
   kseg <- Filter(function(z) identical(.ns(z, "seg_nature"), "K"), segs)
-  seg_k <- if (length(kseg)) max(vapply(kseg, function(z) {
-    k <- as.character(.ns(z, "seg_abun")); if (!is.na(k) && k %in% names(.NATSOIL_CODES$seg_mid)) .NATSOIL_CODES$seg_mid[[k]] else 1
-  }, 0)) else if (length(segs)) 0 else NA_real_
+  seg_amt <- function(z) { k <- as.character(.ns(z, "seg_abun"))
+    if (!is.na(k) && k %in% names(.NATSOIL_CODES$seg_mid)) .NATSOIL_CODES$seg_mid[[k]] else 1 }
+  seg_k <- if (length(kseg)) max(vapply(kseg, seg_amt, 0)) else if (length(segs)) 0 else NA_real_
+  # soft and hard carbonate (ASC carbonate classes): soft segregations, root
+  # linings, tubules, veins and crystals are soft; nodules, concretions,
+  # fragments and laminae are hard, with calcrete coarse fragments. A
+  # calcareous segregation of unknown form may be either, a coarse fragment
+  # of unknown lithology may be calcrete: the amount is kept when what is
+  # recorded leaves it within one carbonate class of the glossary (soft below
+  # 2, 2 to 20, above 20 %; hard below 20, 20 to 50, above 50 %), at the
+  # middle of what is possible, and is unknown otherwise. Coarse fragments
+  # not recorded are read as none (as for the Arenosols); segregations not
+  # recorded leave the segregations unknown.
+  forms <- vapply(kseg, function(z) as.character(.ns(z, "seg_form")), "")
+  amt <- vapply(kseg, seg_amt, 0)
+  cf_amt <- vapply(cfs, function(z) {
+    k <- as.character(.ns(z, "cf_abun")); if (!is.na(k) && k %in% names(.NATSOIL_CODES$cf_mid)) .NATSOIL_CODES$cf_mid[[k]] else NA_real_
+  }, 0)
+  lith <- vapply(cfs, function(z) as.character(.ns(z, "cf_lith")), "")
+  kc_lo <- sum(cf_amt[lith %in% "KC"])
+  kc_hi <- kc_lo + sum(cf_amt[is.na(lith)])
+  unk <- sum(amt[is.na(forms)])
+  soft_lo <- sum(amt[forms %in% c("S", "R", "T", "V", "X")])
+  hard_seg <- sum(amt[forms %in% c("N", "C", "F", "L")])
+  in_class <- function(lo, hi, cuts) {
+    if (is.na(lo) || is.na(hi)) return(NA_real_)
+    lo <- min(100, lo); hi <- min(100, hi)
+    if (lo == hi) return(lo)
+    bin <- function(v) if (v < cuts[1L]) 1L else if (v <= cuts[2L]) 2L else 3L
+    if (bin(lo) == bin(hi)) (lo + hi) / 2 else NA_real_
+  }
+  seg_known <- length(segs) > 0L
+  carb_soft <- if (seg_known) in_class(soft_lo, soft_lo + unk, c(2, 20)) else NA_real_
+  carb_hard <- if (seg_known) in_class(hard_seg + kc_lo, hard_seg + unk + kc_hi, c(20, 50))
+               else in_class(kc_lo, 100, c(20, 50))
+  # mottles (type M, or of unrecorded type; biological or mechanical mixing
+  # and substrate inclusions are not mottles): abundance classes at their
+  # middle, added up. Their contrast is the strongest recorded, read as the
+  # ASC's mottled horizon reads it (more than 10 % distinct or prominent
+  # mottles): faint when the distinct and prominent ones are 10 % or less on
+  # their own and faint ones make up the rest, and unknown when mottles of
+  # unrecorded contrast could change that.
+  mots <- Filter(function(z) !(as.character(.ns(z, "mott_type")) %in% c("X", "Y", "Z")), h$z_mottles %||% list())
+  a <- vapply(mots, function(z) { k <- as.character(.ns(z, "mott_abun"))
+    if (!is.na(k) && k %in% names(.NATSOIL_CODES$mott_mid)) .NATSOIL_CODES$mott_mid[[k]] else NA_real_ }, 0)
+  ctr <- vapply(mots, function(z) as.character(.ns(z, "mott_contrast")), "")
+  mot_pct <- if (!length(mots) || anyNA(a)) NA_real_ else min(100, sum(a))
+  strongest <- if (any(ctr %in% "P")) "prominent" else if (any(ctr %in% "D")) "distinct" else NA_character_
+  dp <- ctr %in% c("D", "P"); fnt <- ctr %in% "F"
+  mot_contrast <- if (!length(mots)) NA_character_
+    else if (anyNA(a)) { if (!is.na(strongest)) strongest else if (all(fnt)) "faint" else NA_character_ }
+    else if (sum(a[dp]) > 10) strongest
+    else if (sum(a[dp]) + sum(a[!dp & !fnt]) > 10) NA_character_
+    else if (sum(a) > 10) "faint"
+    else if (!is.na(strongest)) strongest else if (all(fnt)) "faint" else NA_character_
   pans <- h$z_pans %||% list()
   cem <- if (length(pans)) {
     lv <- suppressWarnings(max(vapply(pans, function(z) suppressWarnings(as.integer(.ns(z, "pan_cementation"))), 0L), na.rm = TRUE))
@@ -463,7 +556,8 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     munsell_chroma_dry = num(cd, "col_chroma"),
     effervescence_class = .natsoil_map(.ns(h, "h_carbonate_eff"), "effervescence"),
     slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf,
-    secondary_carbonates_pct = seg_k, cementation_class = cem,
+    secondary_carbonates_pct = seg_k, carbonate_soft_pct = carb_soft, carbonate_hard_pct = carb_hard,
+    redoximorphic_features_pct = mot_pct, mottle_contrast = mot_contrast, cementation_class = cem,
     subplasticity = .natsoil_map(.ns(h, "h_plasticity_type"), "plasticity"),
     soil_water_status = .natsoil_map(.ns(h, "h_soil_water_stat"), "water"),
     clay_pct = get("clay_pct"), ph_h2o = ph, ph_cacl2 = ph_ca,
@@ -498,6 +592,8 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     lat = lat, lon = lon, crs = "EPSG:4283", country = "AU", designation_system = "asc",
     date = as.character(.ns(o, "o_date_desc")),
     drainage_class = .natsoil_map(.ns(o, "o_drainage"), "drainage"),
+    landform = .natsoil_map(.ns(s, "s_patt_type"), "landform_pattern"),
+    landform_element = .natsoil_map(.ns(s, "s_elem_type"), "landform_element"),
     surface_condition = txt(o$z_surf_conditions %||% list(), "scon_stat_desc"),
     microrelief_form = txt(o$z_micro_reliefs %||% list(), "mr_type_desc"),
     reference_asc_order = code("o_asc_ord"), reference_asc_suborder = code("o_asc_subord"),

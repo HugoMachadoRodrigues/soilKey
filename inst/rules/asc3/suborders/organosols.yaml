@@ -1,0 +1,26 @@
+# Key to the suborders of the Organosols, ASC 3rd ed. (online version with errata).
+# The kinds of peat are those of the glossary ('Peat'); see
+# R/diagnostics-asc-suborders-special.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "OR":
+    - code: "BW"
+      name: Fibric Organosol
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: fibric}
+      notes: "The dominant organic material, by thickness, is fibric peat; with no kind dominant, the most decomposed kind is taken (Comment)."
+
+    - code: "CE"
+      name: Hemic Organosol
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: hemic}
+      notes: "The dominant organic material, by thickness, is hemic peat."
+
+    - code: "EH"
+      name: Sapric Organosol
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: sapric}
+      notes: "The dominant organic material, by thickness, is sapric peat."

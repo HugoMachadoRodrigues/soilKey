@@ -1,0 +1,42 @@
+# Key to the suborders of the Podosols, ASC 3rd ed. (online version with errata).
+# Saturation of the B horizon and sulfuric or hypersulfidic material; see
+# R/diagnostics-asc-suborders-special.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "PO":
+    - code: "AL"
+      name: Aeric Podosol
+      tests:
+        all_of:
+          - b_saturation_asc: {saturation: none}
+      notes: "Free drainage (rapidly drained): no short-term saturation of the B horizon."
+
+    - code: "EJ"
+      name: Semiaquic Podosol
+      tests:
+        all_of:
+          - b_saturation_asc: {saturation: short}
+      notes: "Short-term saturation of the B horizon (several days to several weeks)."
+
+    - code: "JD"
+      name: Aquic-Sulfuric Podosol
+      tests:
+        all_of:
+          - b_saturation_asc: {saturation: long}
+          - acid_sulfate_ab_asc: {kind: sulfuric}
+      notes: "Long-term saturation of the B horizon, and sulfuric material at least 15 cm thick in the A or B horizons."
+
+    - code: "JE"
+      name: Aquic-Hypersulfidic Podosol
+      tests:
+        all_of:
+          - b_saturation_asc: {saturation: long}
+          - acid_sulfate_ab_asc: {kind: hypersulfidic}
+      notes: "Long-term saturation of the B horizon, and hypersulfidic material in the A or B horizons."
+
+    - code: "AM"
+      name: Aquic Podosol
+      tests:
+        all_of:
+          - b_saturation_asc: {saturation: long}
+      notes: "Long-term saturation of the B horizons (of the order of months)."

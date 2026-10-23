@@ -1,0 +1,69 @@
+# Key to the suborders of the Hydrosols, ASC 3rd ed. (online version with errata).
+# The first seven suborders name the setting of the soil, from the site
+# record; then the mottling of the profile. See
+# R/diagnostics-asc-suborders-special.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "HY":
+    - code: "IU"
+      name: Subtidal Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: subtidal}
+      notes: "Permanently inundated soils of tidal estuaries, bays and deltas, between Mean Low Water Springs and 2.5 m below it."
+
+    - code: "IV"
+      name: Subaqueous Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: subaqueous}
+      notes: "Soils of inland water bodies, fresh or saline, permanently under up to 2.5 m of water."
+
+    - code: "CW"
+      name: Intertidal Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: intertidal}
+      notes: "Soils of intertidal flats, regularly flooded by saline tidal waters."
+
+    - code: "EW"
+      name: Supratidal Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: supratidal}
+      notes: "Soils of supratidal flats, flooded only by the occasional spring tide, with a shallow saline water table."
+
+    - code: "BT"
+      name: Extratidal Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: extratidal}
+      notes: "Soils of the extratidal zone, flooded only by exceptional storm or cyclonic tides."
+
+    - code: "CS"
+      name: Hypersalic Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: hypersalic}
+      notes: "Soils of saline playa lakes (coastal salinas and continental playas)."
+
+    - code: "EG"
+      name: Salic Hydrosol
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: salic}
+      notes: "Salinised soils, from a rising saline water table or saline seepage."
+
+    - code: "ED"
+      name: Redoxic Hydrosol
+      tests:
+        all_of:
+          - mottled_profile_asc: {mottled: true}
+      notes: "Seasonal or permanent water table; more than half of the profile is mottled."
+
+    - code: "DT"
+      name: Oxyaquic Hydrosol
+      tests:
+        all_of:
+          - mottled_profile_asc: {mottled: false}
+      notes: "Other soils with a seasonal or permanent water table; more than half of the profile is whole coloured."

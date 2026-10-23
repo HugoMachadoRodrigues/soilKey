@@ -473,8 +473,8 @@ attributes:
   - name: mottle_contrast
     section: "Canadian system (CSSC 3rd ed.)"
     unit: "-"
-    description: "Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying."
-    systems: [cssc3]
+    description: "Contrast of the mottles with the matrix colour (faint / distinct / prominent); CSSC gleying, ASC mottled horizon."
+    systems: [cssc3, asc3]
     allowed: [faint, distinct, prominent]
   - name: field_texture
     section: "Australian system (ASC 3rd ed.)"
@@ -487,6 +487,20 @@ attributes:
     description: "Kneading test of clays (none / subplastic / strongly subplastic / superplastic); ASC Sodosols and Chromosols."
     systems: [asc3]
     allowed: [none, subplastic, strongly subplastic, superplastic]
+  - name: carbonate_soft_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Soft, finely divided pedogenic carbonate (soft segregations and the like), visual abundance; ASC carbonate classes (Calcarosol suborders)."
+    systems: [asc3]
+    min: 0
+    max: 100
+  - name: carbonate_hard_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Hard pedogenic carbonate (nodules, concretions, calcrete fragments, carbonate-coated gravel), visual abundance; ASC carbonate classes (Calcarosol suborders)."
+    systems: [asc3]
+    min: 0
+    max: 100
   - name: esp_pct
     section: "Australian system (ASC 3rd ed.)"
     unit: "%"

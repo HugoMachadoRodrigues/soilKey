@@ -70,8 +70,21 @@ The site keeps the surveyors' classification
 (\code{reference_asc_order}, \code{reference_asc_suborder},
 \code{reference_asc_great_group}, \code{reference_asc_subgroup}, the
 confidence \code{reference_asc_confidence}), the drainage class, the
-surface condition, the microrelief, coordinates (GDA94), the licence and
-the citation.
+landform pattern and element (\code{landform}, \code{landform_element}),
+the surface condition, the microrelief, coordinates (GDA94), the licence
+and the citation. Mottles (not biological or mechanical mixing, nor
+substrate inclusions) give \code{redoximorphic_features_pct} (abundance
+classes at their middle, added up) and \code{mottle_contrast} (the
+strongest, faint when distinct and prominent ones are 10 \% or less on
+their own and faint ones make up the rest); calcareous segregations and
+calcrete fragments give \code{carbonate_soft_pct} (soft segregations, root
+linings, tubules, veins and crystals) and \code{carbonate_hard_pct}
+(nodules, concretions, fragments and laminae, and calcrete coarse
+fragments), kept only where what is recorded leaves the amount within one
+carbonate class of the ASC glossary (a segregation of unknown form may be
+soft or hard, a fragment of unknown lithology calcrete; coarse fragments
+not recorded count as none; segregations not recorded leave the soft
+amount unknown, and the hard one unless calcrete alone exceeds 50 \%).
 }
 \references{
 CSIRO. CSIRO National Soil Site Database (NatSoil).
