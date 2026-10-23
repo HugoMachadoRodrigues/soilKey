@@ -3,18 +3,26 @@
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 Experimental: this release keys the 15 orders (the key to soil
-orders) and the suborders of the Kurosols, Sodosols, Chromosols,
-Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
-Aquic Vertosols); the other suborders, great groups, subgroups and
-families follow. The name is the suborder's (&quot;Red Chromosol&quot;) where one is
+orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
+and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
+Podosols (saturation of the B, sulfuric and hypersulfidic material), the
+Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
+carbonate classes). The suborders of the Anthroposols, Arenosols,
+Rudosols and Tenosols, and the great groups, subgroups and families,
+follow. The name is the suborder's (&quot;Red Chromosol&quot;) where one is
 assigned; rsg_or_order keeps the order."><meta property="og:description" content="Keys a PedonRecord through the Australian Soil
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 Experimental: this release keys the 15 orders (the key to soil
-orders) and the suborders of the Kurosols, Sodosols, Chromosols,
-Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
-Aquic Vertosols); the other suborders, great groups, subgroups and
-families follow. The name is the suborder's (&quot;Red Chromosol&quot;) where one is
+orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
+and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
+Podosols (saturation of the B, sulfuric and hypersulfidic material), the
+Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
+carbonate classes). The suborders of the Anthroposols, Arenosols,
+Rudosols and Tenosols, and the great groups, subgroups and families,
+follow. The name is the suborder's (&quot;Red Chromosol&quot;) where one is
 assigned; rsg_or_order keeps the order."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +31,7 @@ assigned; rsg_or_order keeps the order."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.280</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.281</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,10 +82,14 @@ assigned; rsg_or_order keeps the order."><meta property="og:image" content="http
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 <strong>Experimental</strong>: this release keys the 15 orders (the key to soil
-orders) and the suborders of the Kurosols, Sodosols, Chromosols,
-Ferrosols, Dermosols, Kandosols and Vertosols (colour classes, and the
-Aquic Vertosols); the other suborders, great groups, subgroups and
-families follow. The name is the suborder's ("Red Chromosol") where one is
+orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
+and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
+Podosols (saturation of the B, sulfuric and hypersulfidic material), the
+Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
+carbonate classes). The suborders of the Anthroposols, Arenosols,
+Rudosols and Tenosols, and the great groups, subgroups and families,
+follow. The name is the suborder's ("Red Chromosol") where one is
 assigned; <code>rsg_or_order</code> keeps the order.</p>
     </div>
 
@@ -131,10 +143,15 @@ horizon), the boundary between the A and the B, pH (strongly acid: pHw
 below 5.5), ESP (sodic: 6 or more), subplasticity, free iron, grade of
 pedality, carbonates and the moisture of the horizons when described
 (<code>soil_water_status</code>: the Vertosols' cracks are not required in a
-solum described moist). From the site it reads <code>drainage_class</code> and
+solum described moist), mottles, soft and hard carbonate, gypsum, the kind
+of peat and acid sulfate tests. From the site it reads
+<code>drainage_class</code> (Hydrosols, organic materials, Podosol suborders),
 <code>tidal_inundation</code> (Hydrosols, organic materials),
-<code>surface_condition</code> (a cracking surface, Vertosols) and
-<code>designation_system</code> (<code>"asc"</code> for the Australian notation). The
+<code>surface_condition</code> (a cracking
+surface, Vertosols; a saline one, Salic Hydrosols), <code>landform</code>,
+<code>landform_element</code>, <code>tidal_zone</code>, <code>subaqueous</code> and
+<code>salinised</code> (Hydrosol suborders) and <code>designation_system</code>
+(<code>"asc"</code> for the Australian notation). The
 choices where the text is silent are listed in
 <code>system.file("rules", "asc3", "readings.yaml", package = "soilKey")</code>.</p>
     </div>

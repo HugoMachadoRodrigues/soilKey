@@ -5,10 +5,14 @@ Keys a
 through the Australian Soil Classification, 3rd edition (Isbell and the
 National Committee on Soil and Terrain 2021), following the online
 version with its errata. **Experimental**: this release keys the 15
-orders (the key to soil orders) and the suborders of the Kurosols,
-Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols
-(colour classes, and the Aquic Vertosols); the other suborders, great
-groups, subgroups and families follow. The name is the suborder's ("Red
+orders (the key to soil orders) and the suborders of eleven of them: the
+Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols and
+Vertosols (colour classes, and the Aquic Vertosols), the Organosols (the
+dominant kind of peat), the Podosols (saturation of the B, sulfuric and
+hypersulfidic material), the Hydrosols (the setting, then mottling) and
+the Calcarosols (gypsum and the carbonate classes). The suborders of the
+Anthroposols, Arenosols, Rudosols and Tenosols, and the great groups,
+subgroups and families, follow. The name is the suborder's ("Red
 Chromosol") where one is assigned; `rsg_or_order` keeps the order.
 
 ## Usage
@@ -61,11 +65,14 @@ each horizon), the boundary between the A and the B, pH (strongly acid:
 pHw below 5.5), ESP (sodic: 6 or more), subplasticity, free iron, grade
 of pedality, carbonates and the moisture of the horizons when described
 (`soil_water_status`: the Vertosols' cracks are not required in a solum
-described moist). From the site it reads `drainage_class` and
-`tidal_inundation` (Hydrosols, organic materials), `surface_condition`
-(a cracking surface, Vertosols) and `designation_system` (`"asc"` for
-the Australian notation). The choices where the text is silent are
-listed in
+described moist), mottles, soft and hard carbonate, gypsum, the kind of
+peat and acid sulfate tests. From the site it reads `drainage_class`
+(Hydrosols, organic materials, Podosol suborders), `tidal_inundation`
+(Hydrosols, organic materials), `surface_condition` (a cracking surface,
+Vertosols; a saline one, Salic Hydrosols), `landform`,
+`landform_element`, `tidal_zone`, `subaqueous` and `salinised` (Hydrosol
+suborders) and `designation_system` (`"asc"` for the Australian
+notation). The choices where the text is silent are listed in
 `system.file("rules", "asc3", "readings.yaml", package = "soilKey")`.
 
 ## References

@@ -1,5 +1,60 @@
 # Changelog
 
+## soilKey 0.9.281 (2026-10-22)
+
+### Australian classification: suborders of the Organosols, Podosols, Hydrosols and Calcarosols (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+now keys the suborders of eleven of the fifteen orders. The four added
+here are read from the order pages and the glossary; the suborders of
+the Anthroposols, Arenosols, Rudosols and Tenosols follow. WRB, SiBCS
+and USDA results do not change, nor do the Australian orders.
+
+- Organosols: the kind of peat (fibric, hemic, sapric) with the greatest
+  thickness; when kinds tie, the most decomposed (the Comment). The kind
+  comes from the squeeze test of the glossary, then the rubbed fibre
+  content, a peat field texture or an Oi, Oe or Oa designation.
+- Podosols: the saturation of the B horizon, from its days of saturation
+  or from the drainage class. Rapidly drained is Aeric (the suborders
+  define free drainage so); moderately well and imperfectly drained are
+  Semiaquic; very poorly drained is Aquic; a well drained site stays
+  undecided between Aeric and Semiaquic. Sulfuric material (at least 15
+  cm, pH below 4 with jarosite or hypersulfidic material below) and
+  hypersulfidic material (incubation test) as the glossary defines them;
+  without the test they are undecided.
+- Hydrosols: the setting of the soil from the site record (tidal zone,
+  inland water, landform, a saline surface). A setting the record does
+  not mention is read as absent, as the order key already reads tidal
+  flooding. Then Redoxic (more than half of the profile mottled: more
+  than 10 % distinct or prominent mottles) or Oxyaquic (more than half
+  whole coloured).
+- Calcarosols: Hypergypsic (gypsum over 50 % in the solum; read as
+  absent when no gypsum is recorded), Carbonatic (more than 40 %
+  fine-earth carbonate in the upper 0.1 m), Hypocalcic, then the
+  carbonate classes of a calcareous horizon (Bk, BCk or 10 % or more
+  carbonate segregations): Lithocalcic, Supracalcic, Hypercalcic,
+  Calcic.
+- New horizon attributes `carbonate_soft_pct` and `carbonate_hard_pct`
+  (visual soft and hard pedogenic carbonate); `mottle_contrast` is now
+  read by the ASC too.
+- [`load_natsoil_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_natsoil_pedons.md)
+  reads the landform pattern, mottles (abundance and contrast) and the
+  soft and hard carbonate of the segregations and calcrete fragments.
+  Where a segregation of unknown form or a fragment of unknown lithology
+  leaves the amount spanning two carbonate classes, it is unknown.
+- The readings are in `inst/rules/asc3/readings.yaml` (30).
+
+On 9,700 licensed NatSoil profiles the orders are as before (43.9 %,
+1,270 decided at 74.8 %). Of the 3,396 profiles of the eleven orders
+whose order agrees and whose survey gives a 3rd-edition suborder, 81.4 %
+get the survey’s suborder, and 95.7 % of the 669 decided. For the four
+orders added here: Organosols 4 of 10 (the 4 decided agree), Podosols 27
+of 48 (26 of the 33 decided), Hydrosols 14 of 49 (6 of the 7 decided),
+Calcarosols 33 of 175 (the 2 decided agree). Most of these stay
+provisional for want of data in NatSoil: the kind of peat, the contrast
+of the mottles, the form of the carbonate segregations and laboratory
+carbonate.
+
 ## soilKey 0.9.280 (2026-10-22)
 
 ### Australian classification: the colour suborders (experimental)
