@@ -163,5 +163,5 @@
   list(notation = nota, role = role, suffixes = sfx, prefix = prefix, buried = buried,
        known = known, lamellae = lamellae,
        t = has("t"), k = has("k"), s = has("s"), h = has("h"), m = has("m"),
-       e = has("e"), p = has("p"))
+       e = has("e"), j = has("j"), p = has("p"))
 }

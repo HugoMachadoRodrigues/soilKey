@@ -32,7 +32,8 @@
   esp_pct    = list(codes = c("15N1", "15_NR_ESP")),
   oc_pct     = list(codes = c("6B2", "6B3", "6_DC", "6A1", "6Z")),
   fe_dcb_pct = list(codes = c("13C1_FE", "13_C_FE", "13C_C_FE")),
-  caco3_pct  = list(codes = c("19A1", "19B1", "19_COL", "19B_NR"))
+  caco3_pct  = list(codes = c("19A1", "19B1", "19_COL", "19B_NR")),
+  ec_1to5_dS_m = list(codes = c("3A1", "3_NR"))
 )
 
 # A value below the detection limit ("<x") is read as x / 2 unless x lies
@@ -256,6 +257,13 @@ fetch_natsoil <- function(dir, classified_only = TRUE, max_sites = Inf, page_siz
 #' soft or hard, a fragment of unknown lithology calcrete; coarse fragments
 #' not recorded count as none; segregations not recorded leave the soft
 #' amount unknown, and the hard one unless calcrete alone exceeds 50 \%).
+#' Ferruginous and bauxite nodules give \code{ferric_nodules_pct} and
+#' \code{bauxitic_nodules_pct} in the same way. Abundance classes of several
+#' records are added as ranges (each class strictly between its limits).
+#' Laboratory EC of a 1:5 extract gives \code{ec_1to5_dS_m}; the soil
+#' strength gives \code{strength_dry} or \code{strength_moist} by the moisture
+#' of its record; the size class of the first structure gives
+#' \code{ped_size_max_mm}.
 #'
 #' @param path A folder (searched recursively for \code{.json} and
 #'   \code{.json.gz} files) or a vector of files.
@@ -324,6 +332,9 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   cutan_abun = c("0" = "absent", "1" = "few", "2" = "common", "3" = "many"),
   water = c(D = "dry", T = "moderately moist", M = "moist", W = "wet"),
   plasticity = c(N = "none", U = "subplastic", T = "strongly subplastic", S = "superplastic"),
+  strength = c("0" = "loose", "1" = "very weak", "2" = "weak", "3" = "firm", "4" = "very firm", "5" = "strong",
+               "6" = "very strong", "7" = "rigid"),
+  ped_size_max = c("1" = 2, "2" = 5, "3" = 10, "4" = 20, "5" = 50, "6" = 100, "7" = 200, "8" = 500, "9" = Inf),
   landform_pattern = c(ALF = "alluvial fan", ALP = "alluvial plain", ANA = "anastomatic plain",
     BAD = "badlands", BAR = "bar plain", BEA = "beach ridge plain", CAL = "caldera", CHE = "chenier plain",
     COR = "coral reef", COV = "covered plain", DEL = "delta", DUN = "dunefield", ESC = "escarpment",
@@ -475,28 +486,77 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   # middle of what is possible, and is unknown otherwise. Coarse fragments
   # not recorded are read as none (as for the Arenosols); segregations not
   # recorded leave the segregations unknown.
+  # Each abundance class is read as lying strictly between its limits (a
+  # value on a class limit could be put in either class), and the amounts of
+  # several records are added as ranges.
+  eps <- 1e-6
+  open_iv <- function(lo, hi) if (hi > lo) c(lo + if (lo > 0) eps else 0, hi - eps) else c(lo, hi)
+  seg_iv <- function(z) {
+    k <- as.character(.ns(z, "seg_abun"))
+    b <- list("0" = c(0, 0), "1" = c(0, 2), "2" = c(2, 10), "3" = c(10, 20), "4" = c(20, 50), "5" = c(50, 100))
+    v <- if (!is.na(k) && k %in% names(b)) b[[k]] else c(0, 2)        # no abundance: very few
+    open_iv(v[1L], v[2L])
+  }
+  cf_iv <- function(z) {
+    k <- as.character(.ns(z, "cf_abun"))
+    b <- list("0" = c(0, 0), "1" = c(0, 2), "2" = c(2, 10), "3" = c(10, 20), "4" = c(20, 50), "5" = c(50, 90),
+              "6" = c(90, 100))
+    if (!is.na(k) && k %in% names(b)) open_iv(b[[k]][1L], b[[k]][2L]) else c(0, 100)
+  }
+  iv_sum <- function(ivs, keep) if (!any(keep)) c(0, 0) else
+    c(sum(vapply(ivs[keep], `[`, 0, 1L)), sum(vapply(ivs[keep], `[`, 0, 2L)))
   forms <- vapply(kseg, function(z) as.character(.ns(z, "seg_form")), "")
-  amt <- vapply(kseg, seg_amt, 0)
-  cf_amt <- vapply(cfs, function(z) {
-    k <- as.character(.ns(z, "cf_abun")); if (!is.na(k) && k %in% names(.NATSOIL_CODES$cf_mid)) .NATSOIL_CODES$cf_mid[[k]] else NA_real_
-  }, 0)
+  kiv <- lapply(kseg, seg_iv)
+  # a segregation of unrecorded or unidentified nature may be calcareous
+  useg <- Filter(function(z) { v <- as.character(.ns(z, "seg_nature")); is.na(v) || v %in% c("U", "O") }, segs)
+  uforms <- vapply(useg, function(z) as.character(.ns(z, "seg_form")), "")
+  uiv <- lapply(useg, seg_iv)
+  civ <- lapply(cfs, cf_iv)
   lith <- vapply(cfs, function(z) as.character(.ns(z, "cf_lith")), "")
-  kc_lo <- sum(cf_amt[lith %in% "KC"])
-  kc_hi <- kc_lo + sum(cf_amt[is.na(lith)])
-  unk <- sum(amt[is.na(forms)])
-  soft_lo <- sum(amt[forms %in% c("S", "R", "T", "V", "X")])
-  hard_seg <- sum(amt[forms %in% c("N", "C", "F", "L")])
+  soft_k <- iv_sum(kiv, forms %in% c("S", "R", "T", "V", "X"))
+  hard_k <- iv_sum(kiv, forms %in% c("N", "C", "F", "L"))
+  unk_k <- iv_sum(kiv, is.na(forms))
+  kc <- iv_sum(civ, lith %in% "KC"); kc_unk <- iv_sum(civ, is.na(lith))
   in_class <- function(lo, hi, cuts) {
     if (is.na(lo) || is.na(hi)) return(NA_real_)
     lo <- min(100, lo); hi <- min(100, hi)
     if (lo == hi) return(lo)
     bin <- function(v) if (v < cuts[1L]) 1L else if (v <= cuts[2L]) 2L else 3L
-    if (bin(lo) == bin(hi)) (lo + hi) / 2 else NA_real_
+    if (bin(lo) == bin(hi)) round((lo + hi) / 2, 3) else NA_real_
   }
   seg_known <- length(segs) > 0L
-  carb_soft <- if (seg_known) in_class(soft_lo, soft_lo + unk, c(2, 20)) else NA_real_
-  carb_hard <- if (seg_known) in_class(hard_seg + kc_lo, hard_seg + unk + kc_hi, c(20, 50))
-               else in_class(kc_lo, 100, c(20, 50))
+  u_soft <- iv_sum(uiv, !(uforms %in% c("N", "C", "F", "L")))[2L]
+  u_hard <- iv_sum(uiv, !(uforms %in% c("S", "R", "T", "V", "X")))[2L]
+  carb_soft <- if (seg_known) in_class(soft_k[1L], soft_k[2L] + unk_k[2L] + u_soft, c(2, 20)) else NA_real_
+  carb_hard <- if (seg_known) in_class(hard_k[1L] + kc[1L], hard_k[2L] + unk_k[2L] + u_hard + kc[2L] + kc_unk[2L], c(20, 50))
+               else in_class(kc[1L], 100, c(20, 50))
+  # ferruginous (and ferromanganiferous) and bauxite (aluminous) nodules or
+  # concretions, for the ferric and bauxitic horizons (more than 20 %): a
+  # segregation of unknown form may be a nodule, and one of unknown, other or
+  # manganiferous nature may be either kind; the amount is kept when it lies
+  # on one side of 20 % whatever they are, and is unknown when no segregation
+  # is recorded
+  nat <- vapply(segs, function(e) as.character(.ns(e, "seg_nature")), "")
+  sform <- vapply(segs, function(e) as.character(.ns(e, "seg_form")), "")
+  siv <- lapply(segs, seg_iv)
+  nod <- function(natures) {
+    if (!seg_known) return(NA_real_)
+    maybe_nat <- is.na(nat) | nat %in% c("U", "O", "M", "G")
+    nodule <- sform %in% c("N", "C"); maybe_form <- is.na(sform)
+    lo <- min(100, iv_sum(siv, nat %in% natures & nodule)[1L])
+    hi <- min(100, iv_sum(siv, (nat %in% natures | maybe_nat) & (nodule | maybe_form))[2L])
+    if (lo == hi) lo else if (lo > 20 || hi <= 20) round((lo + hi) / 2, 3) else NA_real_
+  }
+  fe_nod <- nod(c("F", "N")); bx_nod <- nod("A")
+  # soil strength by the moisture of its record (dry; moderately moist or
+  # moist), and the size of the most common peds of the first structure
+  strg <- h$z_strengths %||% list()
+  strength_at <- function(stats) {
+    z <- Filter(function(e) as.character(.ns(e, "strg_moisture_stat")) %in% stats, strg)
+    if (length(z)) .natsoil_map(.ns(z[[1L]], "strg_class"), "strength") else NA_character_
+  }
+  ped_size <- { k <- as.character(.ns(st1, "str_ped_size"))
+    if (!is.na(k) && k %in% names(.NATSOIL_CODES$ped_size_max)) .NATSOIL_CODES$ped_size_max[[k]] else NA_real_ }
   # mottles (type M, or of unrecorded type; biological or mechanical mixing
   # and substrate inclusions are not mottles): abundance classes at their
   # middle, added up. Their contrast is the strongest recorded, read as the
@@ -558,12 +618,14 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf,
     secondary_carbonates_pct = seg_k, carbonate_soft_pct = carb_soft, carbonate_hard_pct = carb_hard,
     redoximorphic_features_pct = mot_pct, mottle_contrast = mot_contrast, cementation_class = cem,
+    ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod,
+    strength_dry = strength_at("D"), strength_moist = strength_at(c("T", "M")), ped_size_max_mm = ped_size,
     subplasticity = .natsoil_map(.ns(h, "h_plasticity_type"), "plasticity"),
     soil_water_status = .natsoil_map(.ns(h, "h_soil_water_stat"), "water"),
     clay_pct = get("clay_pct"), ph_h2o = ph, ph_cacl2 = ph_ca,
     na_cmol = get("na_cmol"), ca_cmol = get("ca_cmol"), mg_cmol = get("mg_cmol"), k_cmol = get("k_cmol"),
     cec_cmol = get("cec_cmol"), ecec_cmol = get("ecec_cmol"), esp_pct = get("esp_pct"),
-    fe_dcb_pct = fe, oc_pct = oc, caco3_pct = get("caco3_pct"),
+    fe_dcb_pct = fe, oc_pct = oc, caco3_pct = get("caco3_pct"), ec_1to5_dS_m = get("ec_1to5_dS_m"),
     stringsAsFactors = FALSE)
 }
 

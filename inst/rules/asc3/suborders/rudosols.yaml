@@ -1,0 +1,67 @@
+# Key to the suborders of the Rudosols, ASC 3rd ed. (online version with errata).
+# See R/diagnostics-asc-suborders-rest.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "RU":
+    - code: "FJ"
+      name: Hypergypsic Rudosol
+      tests:
+        all_of:
+          - saline_suborder_asc: {kind: hypergypsic}
+      notes: "Not highly saline (EC 1:5 below 2 dS/m) and dominantly gypsum crystals, sand-sized or finer."
+
+    - code: "CS"
+      name: Hypersalic Rudosol
+      tests:
+        all_of:
+          - saline_suborder_asc: {kind: hypersalic}
+      notes: "Highly saline (EC 1:5 above 2 dS/m), with no permanent or seasonal water table and no evidence of episodic wetting such as mottling."
+
+    - code: "EL"
+      name: Shelly Rudosol
+      tests:
+        all_of:
+          - rudosol_origin_asc: {kind: shelly}
+      notes: "Dominantly fragments of shells and other aquatic skeletons."
+
+    - code: "HG"
+      name: Carbic Rudosol
+      tests:
+        all_of:
+          - rudosol_origin_asc: {kind: carbic}
+      notes: "The upper 0.5 m (or less if shallower) dominantly carbic materials."
+
+    - code: "CY"
+      name: Leptic Rudosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "AO"
+      name: Arenic Rudosol
+      tests:
+        all_of:
+          - material_suborder_asc: {kind: arenic}
+      notes: "Not or only slightly gravelly, loose or weakly coherent, dominantly sandy with no layer over 15 % clay, little stratification."
+
+    - code: "GV"
+      name: Lutic Rudosol
+      tests:
+        all_of:
+          - material_suborder_asc: {kind: lutic}
+      notes: "Not or only slightly gravelly, little stratification; sandy material coherent."
+
+    - code: "ER"
+      name: Stratic Rudosol
+      tests:
+        all_of:
+          - material_suborder_asc: {kind: stratic}
+      notes: "Distinct sedimentary layers or buried soils, not or only slightly gravelly, not highly saline."
+
+    - code: "HH"
+      name: Clastic Rudosol
+      tests:
+        all_of:
+          - material_suborder_asc: {kind: clastic}
+      notes: "Gravelly (more than 10 % of particles larger than 2 mm)."

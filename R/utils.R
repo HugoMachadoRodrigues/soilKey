@@ -176,6 +176,12 @@ horizon_column_spec <- function() {
     subplasticity                 = "character", # kneading test of clays: 'none' / 'subplastic' / 'strongly subplastic' / 'superplastic'; ASC Sodosols and Chromosols (glossary 'Strongly subplastic')
     carbonate_soft_pct            = "numeric",   # soft, finely divided pedogenic carbonate (segregations), visual %; ASC carbonate classes
     carbonate_hard_pct            = "numeric",   # hard pedogenic carbonate (nodules, concretions, calcrete fragments, coated gravel), visual %; ASC carbonate classes
+    ec_1to5_dS_m                  = "numeric",   # electrical conductivity of a 1:5 soil:water extract, dS/m; ASC 'highly saline' (EC > 2)
+    strength_dry                  = "character", # soil strength when dry (Field Handbook: loose / very weak / weak / firm / very firm / strong / very strong / rigid)
+    strength_moist                = "character", # soil strength when moist, same classes
+    ped_size_max_mm               = "numeric",   # upper limit (mm) of the size class of the most common peds (ASC melanic horizon: 10-20 mm or less)
+    ferric_nodules_pct            = "numeric",   # ferruginous nodules or concretions, visual %; ASC ferric horizon (> 20 %)
+    bauxitic_nodules_pct          = "numeric",   # bauxite nodules or concretions, visual %; ASC bauxitic horizon (> 20 %)
     esp_pct                       = "numeric",   # exchangeable sodium percentage as the laboratory reports it (read when Na or the CEC is not given); ASC sodic
     soil_water_status             = "character", # moisture of the horizon when described (Field Handbook): 'dry' / 'moderately moist' / 'moist' / 'wet'; ASC Vertosols ('unless too moist')
     effervescence_class           = "character"  # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous

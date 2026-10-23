@@ -145,7 +145,9 @@
 #' 0.2 m of the B2t below the clear or abrupt textural B (Kurosols, Sodosols,
 #' Chromosols); \code{"b2_50"}, the upper 0.5 m of the B2 (Ferrosols,
 #' Dermosols, Kandosols); \code{"solum_50"}, the upper 0.5 m of the solum
-#' (Vertosols); each, or the whole of it when it is thinner. Each horizon is
+#' (Vertosols); \code{"profile_100"} and \code{"profile_50"}, the upper 1.0 m
+#' (Arenosols) or 0.5 m (Tenosols) of the profile; each, or the whole of it
+#' when it is thinner. Each horizon is
 #' placed in a class by its moist matrix colour (\code{.asc_colour_class1}).
 #' The dominant class covers the major part (more than half) of the window;
 #' when no class does, the one with the largest share, a tie being undecided
@@ -153,7 +155,7 @@
 #' horizons of the window are tried in and out of it.
 #' @noRd
 colour_suborder_asc <- function(pedon, colour = .ASC_COLOUR_CLASSES,
-                                window = c("upper_b2t", "b2_50", "solum_50")) {
+                                window = c("upper_b2t", "b2_50", "solum_50", "profile_100", "profile_50")) {
   colour <- match.arg(colour); window <- match.arg(window)
   x <- .asc_horizons(pedon); h <- x$h
   cls <- .asc_colour_classes(h)
@@ -178,6 +180,15 @@ colour_suborder_asc <- function(pedon, colour = .ASC_COLOUR_CLASSES,
     t0 <- min(h$top_cm[rows], na.rm = TRUE)
     maybe <- maybe[!is.na(h$top_cm[maybe]) & h$top_cm[maybe] < t0 + 50]
     wf <- function(sub) { cand <- x$b2 %in% TRUE; cand[sub] <- TRUE; .asc_window(x, cand, -Inf, 50) }
+  } else if (window %in% c("profile_100", "profile_50")) {
+    # the soil profile from its top (an O1 litter left out), above rock and
+    # any buried soil: the upper 1.0 m (Arenosols) or 0.5 m (Tenosols), or
+    # the whole of it when thinner
+    depth <- if (window == "profile_100") 100 else 50
+    prof <- !x$des$buried & !x$rock & !(x$role %in% "O1")
+    if (!any(prof)) return(undecided(list(profile = NA)))
+    maybe <- integer(0)
+    wf <- function(sub) .asc_window(x, prof, -Inf, depth)
   } else {
     # without designations, the mineral rows (as the order key reads the solum)
     sol <- if (x$any_known) x$solum %in% TRUE else x$mineral

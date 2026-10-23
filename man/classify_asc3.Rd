@@ -34,15 +34,18 @@ Keys a \code{\link{PedonRecord}} through the Australian Soil
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 \strong{Experimental}: this release keys the 15 orders (the key to soil
-orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+orders) and the suborders of all of them: the Kurosols, Sodosols,
 Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
 and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
 Podosols (saturation of the B, sulfuric and hypersulfidic material), the
-Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
-carbonate classes). The suborders of the Anthroposols, Arenosols,
-Rudosols and Tenosols, and the great groups, subgroups and families,
-follow. The name is the suborder's ("Red Chromosol") where one is
-assigned; \code{rsg_or_order} keeps the order.
+Hydrosols (the setting, then mottling), the Calcarosols (gypsum and the
+carbonate classes), the Anthroposols (the kind of human-made material),
+the Arenosols and Tenosols (chernic horizons, bleaching, hard materials
+within 0.5 m, carbonate, nodules, then colour) and the Rudosols (salinity,
+gypsum, shells, carbic materials, hard materials, sand, gravel, layers).
+The great groups, subgroups and families follow. The name is the
+suborder's ("Red Chromosol") where one is assigned; \code{rsg_or_order}
+keeps the order.
 }
 \details{
 The ASC is largely morphological. The diagnostics read field texture
@@ -54,7 +57,8 @@ below 5.5), ESP (sodic: 6 or more), subplasticity, free iron, grade of
 pedality, carbonates and the moisture of the horizons when described
 (\code{soil_water_status}: the Vertosols' cracks are not required in a
 solum described moist), mottles, soft and hard carbonate, gypsum, the kind
-of peat and acid sulfate tests. From the site it reads
+of peat, acid sulfate tests, EC of a 1:5 extract, dry and moist strength,
+ped size and nodules. From the site it reads
 \code{drainage_class} (Hydrosols, organic materials, Podosol suborders),
 \code{tidal_inundation} (Hydrosols, organic materials),
 \code{surface_condition} (a cracking

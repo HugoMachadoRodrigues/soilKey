@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.281)
+# soilKey -- recognised horizon attribute names (v0.9.282)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -246,11 +246,17 @@ these columns; anything else is preserved but ignored by the keys.
 | `subplasticity` | - | character | Kneading test of clays (none / subplastic / strongly subplastic / superplastic); ASC Sodosols and Chromosols. | - |
 | `carbonate_soft_pct` | % | numeric | Soft, finely divided pedogenic carbonate (soft segregations and the like), visual abundance; ASC carbonate classes (Calcarosol suborders). | - |
 | `carbonate_hard_pct` | % | numeric | Hard pedogenic carbonate (nodules, concretions, calcrete fragments, carbonate-coated gravel), visual abundance; ASC carbonate classes (Calcarosol suborders). | - |
+| `ec_1to5_dS_m` | dS/m | numeric | Electrical conductivity of a 1:5 soil:water extract; ASC 'highly saline' (EC > 2 dS/m: Hypersalic, Hypergypsic and Stratic suborders). ec_dS_m is the saturated paste. | - |
+| `strength_dry` | - | character | Soil strength of the dry soil (Field Handbook classes: loose, very weak, weak, firm, very firm, strong, very strong, rigid); ASC Arenic Rudosols and the melanic horizon. | - |
+| `strength_moist` | - | character | Soil strength of the moist soil, same classes as strength_dry; ASC Arenic and Lutic Rudosols. | - |
+| `ped_size_max_mm` | mm | numeric | Upper limit of the size class of the most common peds (Field Handbook classes: 2, 5, 10, 20, 50 ... mm); ASC melanic horizon (10-20 mm or less). | - |
+| `ferric_nodules_pct` | % | numeric | Ferruginous (and ferromanganiferous) nodules or concretions, visual abundance; ASC ferric horizon (more than 20 %), Sesqui-Nodular Tenosols. | - |
+| `bauxitic_nodules_pct` | % | numeric | Bauxite (aluminous) nodules or concretions, visual abundance; ASC bauxitic horizon (more than 20 %), Sesqui-Nodular Tenosols. | - |
 | `esp_pct` | % | numeric | Exchangeable sodium percentage as the laboratory reports it, read when exchangeable Na or the CEC is not given; ASC sodic. | - |
 | `soil_water_status` | - | character | Moisture of the horizon when it was described (Field Handbook: dry / moderately moist / moist / wet); ASC Vertosols, whose cracks are not required in a solum described moist. | - |
 | `effervescence_class` | - | character | Field reaction of the fine earth with 1 M HCl (none / slight / moderate / strong / very strong); ASC calcareous soil. | - |
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.281._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.282._
 

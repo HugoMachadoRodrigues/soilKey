@@ -1,0 +1,61 @@
+# Key to the suborders of the Anthroposols, ASC 3rd ed. (online version with errata).
+# The kind of human-made material, read from the layer origin; see
+# R/diagnostics-asc-suborders-rest.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "AN":
+    - code: "IT"
+      name: Fusic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: fusic}
+      notes: "Surface layers at least 0.3 m thick of burnt peat (coloured ash) with 20 % or more fusic material."
+
+    - code: "HR"
+      name: Cumulic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: cumulic}
+      notes: "Human-deposited materials such as mill-mud, or accumulated shells and organic materials (middens), at least 0.3 m thick."
+
+    - code: "HS"
+      name: Hortic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: hortic}
+      notes: "Organic residues (wastes, composts, mulches) incorporated, obliterating pre-existing features."
+
+    - code: "HT"
+      name: Garbic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: garbic}
+      notes: "Mineral material over land fill of predominantly organic refuse."
+
+    - code: "HU"
+      name: Urbic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: urbic}
+      notes: "Mineral material over land fill of predominantly mineral, manufactured or mixed materials."
+
+    - code: "HV"
+      name: Dredgic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: dredgic}
+      notes: "Mineral materials dredged from waterways or deposited as a slurry from mining (tailings)."
+
+    - code: "HW"
+      name: Spolic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: spolic}
+      notes: "Mineral materials moved by earthmoving equipment, with too few artefacts to be urbic."
+
+    - code: "HX"
+      name: Scalpic Anthroposol
+      tests:
+        all_of:
+          - anthroposol_kind_asc: {kind: scalpic}
+      notes: "Land surfaces created by cutting away the pre-existing soil with machinery."

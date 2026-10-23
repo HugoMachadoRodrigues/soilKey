@@ -1,7 +1,8 @@
 # =============================================================================
 # v0.9.277 -- the Australian Soil Classification, 3rd edition (Isbell & NCST
 # 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
-# suborders since v0.9.280. Great groups, subgroups and families follow. Experimental and
+# suborders since v0.9.280 (all orders since v0.9.282). Great groups,
+# subgroups and families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -11,15 +12,18 @@
 #' Classification, 3rd edition (Isbell and the National Committee on Soil
 #' and Terrain 2021), following the online version with its errata.
 #' \strong{Experimental}: this release keys the 15 orders (the key to soil
-#' orders) and the suborders of eleven of them: the Kurosols, Sodosols,
+#' orders) and the suborders of all of them: the Kurosols, Sodosols,
 #' Chromosols, Ferrosols, Dermosols, Kandosols and Vertosols (colour classes,
 #' and the Aquic Vertosols), the Organosols (the dominant kind of peat), the
 #' Podosols (saturation of the B, sulfuric and hypersulfidic material), the
-#' Hydrosols (the setting, then mottling) and the Calcarosols (gypsum and the
-#' carbonate classes). The suborders of the Anthroposols, Arenosols,
-#' Rudosols and Tenosols, and the great groups, subgroups and families,
-#' follow. The name is the suborder's ("Red Chromosol") where one is
-#' assigned; \code{rsg_or_order} keeps the order.
+#' Hydrosols (the setting, then mottling), the Calcarosols (gypsum and the
+#' carbonate classes), the Anthroposols (the kind of human-made material),
+#' the Arenosols and Tenosols (chernic horizons, bleaching, hard materials
+#' within 0.5 m, carbonate, nodules, then colour) and the Rudosols (salinity,
+#' gypsum, shells, carbic materials, hard materials, sand, gravel, layers).
+#' The great groups, subgroups and families follow. The name is the
+#' suborder's ("Red Chromosol") where one is assigned; \code{rsg_or_order}
+#' keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
 #' grades (\code{field_texture}, NCST Field Handbook codes; lab clay stands in
@@ -30,7 +34,8 @@
 #' pedality, carbonates and the moisture of the horizons when described
 #' (\code{soil_water_status}: the Vertosols' cracks are not required in a
 #' solum described moist), mottles, soft and hard carbonate, gypsum, the kind
-#' of peat and acid sulfate tests. From the site it reads
+#' of peat, acid sulfate tests, EC of a 1:5 extract, dry and moist strength,
+#' ped size and nodules. From the site it reads
 #' \code{drainage_class} (Hydrosols, organic materials, Podosol suborders),
 #' \code{tidal_inundation} (Hydrosols, organic materials),
 #' \code{surface_condition} (a cracking
@@ -205,6 +210,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       designation = c("A1", "A3", "C1", "C2"), top_cm = c(0, 10, 40, 90),
       bottom_cm = c(10, 40, 90, 150), field_texture = c("S", "S", "S", "LS"),
       clay_pct = c(3, 3, 4, 6), structure_grade = "structureless", structure_type = "single-grain",
+      munsell_hue_moist = "10YR", munsell_value_moist = c(4, 6, 6, 7), munsell_chroma_moist = c(3, 6, 6, 6),
       ph_h2o = c(6.0, 6.2, 6.3, 6.5), oc_pct = c(0.8, 0.3, 0.1, 0.1))),
     rudosols = mk(list(
       designation = c("A1", "C", "R"), top_cm = c(0, 8, 35), bottom_cm = c(8, 35, 60),
@@ -216,6 +222,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       field_texture = c("LS", "SL", "LS"), clay_pct = c(7, 12, 8), fe_dcb_pct = c(0.4, 0.7, 0.3),
       boundary_distinctness = c("gradual", "gradual", NA),
       structure_grade = c("weak", "weak", "structureless"), structure_type = c("granular", "blocky", "single-grain"),
+      layer_origin = c(NA, NA, "aeolian"), ferric_nodules_pct = 0, bauxitic_nodules_pct = 0,
+      munsell_hue_moist = c("10YR", "7.5YR", "7.5YR"), munsell_value_moist = c(3, 4, 5), munsell_chroma_moist = c(3, 4, 4),
       ph_h2o = c(6.0, 6.3, 6.5), oc_pct = c(1.2, 0.4, 0.1)))
   )
 }

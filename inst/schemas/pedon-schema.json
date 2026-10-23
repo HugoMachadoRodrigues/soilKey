@@ -438,6 +438,24 @@
           "carbonate_hard_pct": {
             "type": ["number", "null"]
           },
+          "ec_1to5_dS_m": {
+            "type": ["number", "null"]
+          },
+          "strength_dry": {
+            "type": ["string", "null"]
+          },
+          "strength_moist": {
+            "type": ["string", "null"]
+          },
+          "ped_size_max_mm": {
+            "type": ["number", "null"]
+          },
+          "ferric_nodules_pct": {
+            "type": ["number", "null"]
+          },
+          "bauxitic_nodules_pct": {
+            "type": ["number", "null"]
+          },
           "esp_pct": {
             "type": ["number", "null"]
           },

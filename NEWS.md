@@ -1,3 +1,52 @@
+# soilKey 0.9.282 (2026-10-23)
+
+## Australian classification: the suborders of the Anthroposols, Arenosols, Rudosols and Tenosols (experimental)
+
+`classify_asc3()` now keys the suborders of all fifteen orders. WRB, SiBCS
+and USDA results do not change, nor do the Australian orders.
+
+* Peaty, humose, melacic and melanic horizons (Chernic suborders), as the
+  glossary defines them: organic C against clay for the humose horizon;
+  black moist colour, a dry value of 5 or less, pH and structure for the
+  melacic and melanic ones. Without organic C or a dry colour they are
+  undecided.
+* The conspicuously bleached A2: an e (not a j) in the Australian notation,
+  or the dry colour of the glossary (80 % bleached: mottles not recorded
+  leave it undecided).
+* Leptic suborders: rock, a hard layer or a calcrete pan, or a C horizon of
+  saprolite, with its top within 0.5 m; a C of unrecorded origin, or a
+  description that stops at 0.5 m or above, is undecided.
+* Arenosols: Hypergypsic, Hypersalic (EC of a 1:5 extract above 2 dS/m, no
+  water table, no mottles), Chernic, Carbonatic, Calsilic, Stratic,
+  Bleached, then the colour of the upper 1.0 m of the profile.
+* Rudosols: Hypergypsic, Hypersalic, Shelly, Carbic, Leptic, Arenic (loose
+  or weakly coherent sands), Lutic, Stratic, Clastic (gravelly).
+* Tenosols: Chernic-Leptic, Chernic, Sesqui-Nodular (a ferric or bauxitic
+  horizon over more than half of the solum), Calcenic, Bleached-Leptic,
+  Leptic, Bleached, then the colour of the upper 0.5 m of the profile.
+* Anthroposols: the kind of human-made material, from the layer origin.
+* A soil with no salinity record (no EC, no saline surface) is read as not
+  highly saline; shells, carbic materials and fusic material the record
+  does not mention are read as absent, as for the Hydrosol settings.
+* New horizon attributes `ec_1to5_dS_m`, `strength_dry`, `strength_moist`,
+  `ped_size_max_mm`, `ferric_nodules_pct`, `bauxitic_nodules_pct`.
+* `load_natsoil_pedons()` reads them (EC method 3A1, strength classes, ped
+  size, nodules from the segregations). Abundance classes are now added as
+  ranges, each class strictly between its limits, so two records of 2-10 %
+  and 10-20 % make 12-30 % (undecided at 20 %); before, their middles were
+  added. This also applies to the soft and hard carbonate of 0.9.281.
+* The readings are in `inst/rules/asc3/readings.yaml` (39).
+
+On 9,700 licensed NatSoil profiles the orders are as before (43.9 %, 1,270
+decided at 74.8 %). Of the 3,691 profiles of the fifteen orders whose order
+agrees and whose survey gives a 3rd-edition suborder, 75.9 % get the
+survey's suborder, and 95.7 % of the 679 decided. Rudosols: 20 of 61, and
+the 10 decided agree; Arenosols 1 of 12 and Tenosols 15 of 222, none
+decided. Most Tenosols stay provisional because the organic C of the upper
+0.2 m, the dry colours, the nodules or the origin of a shallow C horizon are
+not recorded; many surveyed Leptic Tenosols are described below 0.5 m with
+no rock, and the text does not make them leptic.
+
 # soilKey 0.9.281 (2026-10-22)
 
 ## Australian classification: suborders of the Organosols, Podosols, Hydrosols and Calcarosols (experimental)
