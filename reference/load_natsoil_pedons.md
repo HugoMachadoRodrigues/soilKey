@@ -105,7 +105,13 @@ recorded leaves the amount within one carbonate class of the ASC
 glossary (a segregation of unknown form may be soft or hard, a fragment
 of unknown lithology calcrete; coarse fragments not recorded count as
 none; segregations not recorded leave the soft amount unknown, and the
-hard one unless calcrete alone exceeds 50 %).
+hard one unless calcrete alone exceeds 50 %). Ferruginous and bauxite
+nodules give `ferric_nodules_pct` and `bauxitic_nodules_pct` in the same
+way. Abundance classes of several records are added as ranges (each
+class strictly between its limits). Laboratory EC of a 1:5 extract gives
+`ec_1to5_dS_m`; the soil strength gives `strength_dry` or
+`strength_moist` by the moisture of its record; the size class of the
+first structure gives `ped_size_max_mm`.
 
 ## References
 

@@ -51,9 +51,8 @@ download_bdsolos(
 
 - chromote_session:
 
-  Optional pre-built
-  [`chromote::ChromoteSession`](https://rstudio.github.io/chromote/reference/ChromoteSession.html).
-  Useful to share a session across calls.
+  Optional pre-built `chromote::ChromoteSession`. Useful to share a
+  session across calls.
 
 - verbose:
 
