@@ -1,0 +1,94 @@
+# Key to the suborders of the Tenosols, ASC 3rd ed. (online version with errata).
+# See R/diagnostics-asc-suborders-rest.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "TE":
+    - code: "BF"
+      name: Chernic-Leptic Tenosol
+      tests:
+        all_of:
+          - chernic_horizon_asc: {}
+          - leptic_asc: {}
+          - none_of:
+              - bleached_a2_asc: {}
+      notes: "A peaty, humose, melacic or melanic horizon over a calcrete pan, rock or saprolite within 0.5 m; an A2 there is unbleached."
+
+    - code: "BE"
+      name: Chernic Tenosol
+      tests:
+        all_of:
+          - chernic_horizon_asc: {}
+          - none_of:
+              - bleached_a2_asc: {}
+      notes: "A peaty, humose, melacic or melanic horizon, and no conspicuously bleached A2 horizon."
+
+    - code: "IL"
+      name: Sesqui-Nodular Tenosol
+      tests:
+        all_of:
+          - sesqui_nodular_asc: {}
+      notes: "A ferric or bauxitic horizon at least 0.2 m thick occupying more than half of the solum."
+
+    - code: "IM"
+      name: Calcenic Tenosol
+      tests:
+        all_of:
+          - calcenic_asc: {}
+      notes: "A horizon at least 0.2 m thick with more than 20 % fine-earth carbonate."
+
+    - code: "AW"
+      name: Bleached-Leptic Tenosol
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - leptic_asc: {}
+      notes: "A conspicuously bleached A2 horizon over a calcrete pan, rock or saprolite within 0.5 m."
+
+    - code: "CY"
+      name: Leptic Tenosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "AT"
+      name: Bleached Tenosol
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AA"
+      name: Red Tenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Red, window: profile_50}
+      notes: "The dominant colour class in the major part of the upper 0.5 m of the profile (or all of it if thinner) is Red."
+
+    - code: "AB"
+      name: Brown Tenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Brown, window: profile_50}
+      notes: "The dominant colour class in the major part of the upper 0.5 m of the profile (or all of it if thinner) is Brown."
+
+    - code: "AC"
+      name: Yellow Tenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Yellow, window: profile_50}
+      notes: "The dominant colour class in the major part of the upper 0.5 m of the profile (or all of it if thinner) is Yellow."
+
+    - code: "AD"
+      name: Grey Tenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Grey, window: profile_50}
+      notes: "The dominant colour class in the major part of the upper 0.5 m of the profile (or all of it if thinner) is Grey."
+
+    - code: "AE"
+      name: Black Tenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Black, window: profile_50}
+      notes: "The dominant colour class in the major part of the upper 0.5 m of the profile (or all of it if thinner) is Black."

@@ -43,8 +43,8 @@ test_that("each colour order keys to its suborder, with nothing undecided", {
     expect_identical(r$levels$level, c("orders", "suborders"))
     expect_length(r$provisional_because, 0L)
   }
-  # an order with no suborders yet keeps the order's name
-  expect_identical(classify_asc3(make_asc3_example("tenosols"), on_missing = "silent")$name, "Tenosol")
+  # every order now has suborders (0.9.282)
+  expect_identical(classify_asc3(make_asc3_example("tenosols"), on_missing = "silent")$name, "Brown Tenosol")
 })
 
 test_that("the dominant class: the major part, else the largest share, a tie undecided", {

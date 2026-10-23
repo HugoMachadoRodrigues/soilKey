@@ -25,3 +25,13 @@ diagnostics:
   - {function: hydrosol_setting_asc,   file: R/diagnostics-asc-suborders-special.R, reference: "Hydrosols, suborders (setting of the soil)"}
   - {function: mottled_profile_asc,    file: R/diagnostics-asc-suborders-special.R, reference: "Hydrosols, suborders Redoxic and Oxyaquic; glossary 'Mottled horizon'"}
   - {function: carbonate_suborder_asc, file: R/diagnostics-asc-suborders-special.R, reference: "Calcarosols, suborders; glossary 'Carbonate classes', 'Calcareous horizon'"}
+  - {function: chernic_horizon_asc,   file: R/diagnostics-asc-suborders-rest.R, reference: "Suborders Chernic; glossary 'Peaty horizon', 'Humose horizon', 'Melacic horizon', 'Melanic horizon'"}
+  - {function: bleached_a2_asc,       file: R/diagnostics-asc-suborders-rest.R, reference: "Suborders Bleached; glossary 'Conspicuously bleached A2 horizon'"}
+  - {function: leptic_asc,            file: R/diagnostics-asc-suborders-rest.R, reference: "Suborders Leptic (calcrete pan, rock or saprolite within 0.5 m)"}
+  - {function: saline_suborder_asc,   file: R/diagnostics-asc-suborders-rest.R, reference: "Suborders Hypergypsic and Hypersalic (Arenosols, Rudosols)"}
+  - {function: material_suborder_asc, file: R/diagnostics-asc-suborders-rest.R, reference: "Rudosols, suborders Arenic, Lutic, Stratic, Clastic; Arenosols, suborder Stratic"}
+  - {function: rudosol_origin_asc,    file: R/diagnostics-asc-suborders-rest.R, reference: "Rudosols, suborders Shelly and Carbic; glossary 'Carbic materials'"}
+  - {function: anthroposol_kind_asc,  file: R/diagnostics-asc-suborders-rest.R, reference: "Anthroposols, suborders"}
+  - {function: arenosol_carbonate_asc, file: R/diagnostics-asc-suborders-rest.R, reference: "Arenosols, suborders Carbonatic and Calsilic"}
+  - {function: calcenic_asc,          file: R/diagnostics-asc-suborders-rest.R, reference: "Tenosols, suborder Calcenic"}
+  - {function: sesqui_nodular_asc,    file: R/diagnostics-asc-suborders-rest.R, reference: "Tenosols, suborder Sesqui-Nodular; glossary 'Ferric horizon', 'Bauxitic horizon'"}

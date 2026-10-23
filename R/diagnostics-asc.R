@@ -127,7 +127,7 @@
     if (grepl("[cs]b$", sfx_str[i]) && !nzchar(des$prefix[i])) {
       des$buried[i] <- FALSE
       if (grepl("cb$", sfx_str[i])) des$e[i] <- TRUE
-      if (grepl("sb$", sfx_str[i])) des$s[i] <- FALSE
+      if (grepl("sb$", sfx_str[i])) { des$s[i] <- FALSE; des$j[i] <- TRUE }
     } else if (!any(!raw_b[above])) {
       des$buried[i] <- FALSE
     } else if (length(above) && identical(des$prefix[above[length(above)]], des$prefix[i]) &&

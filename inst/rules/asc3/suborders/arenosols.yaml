@@ -1,0 +1,90 @@
+# Key to the suborders of the Arenosols, ASC 3rd ed. (online version with errata).
+# See R/diagnostics-asc-suborders-rest.R and inst/rules/asc3/readings.yaml.
+
+suborders:
+  "RE":
+    - code: "FJ"
+      name: Hypergypsic Arenosol
+      tests:
+        all_of:
+          - saline_suborder_asc: {kind: hypergypsic}
+      notes: "Not highly saline (EC 1:5 below 2 dS/m) and dominantly sand-sized gypsum crystals."
+
+    - code: "CS"
+      name: Hypersalic Arenosol
+      tests:
+        all_of:
+          - saline_suborder_asc: {kind: hypersalic}
+      notes: "Highly saline (EC 1:5 above 2 dS/m), with no permanent or seasonal water table and no evidence of episodic wetting such as mottling."
+
+    - code: "BE"
+      name: Chernic Arenosol
+      tests:
+        all_of:
+          - chernic_horizon_asc: {}
+          - none_of:
+              - bleached_a2_asc: {}
+      notes: "A peaty, humose, melacic or melanic horizon, and no conspicuously bleached A2 horizon."
+
+    - code: "JT"
+      name: Carbonatic Arenosol
+      tests:
+        all_of:
+          - arenosol_carbonate_asc: {kind: carbonatic}
+      notes: "Calcareous throughout the upper 1.0 m; the upper 0.1 m dominantly fine-earth carbonate or more than 40 % of it."
+
+    - code: "JN"
+      name: Calsilic Arenosol
+      tests:
+        all_of:
+          - arenosol_carbonate_asc: {kind: calsilic}
+      notes: "Calcareous throughout the upper 1.0 m, or from below the A1 or Ap, or within 0.2 m, whichever is shallower."
+
+    - code: "ER"
+      name: Stratic Arenosol
+      tests:
+        all_of:
+          - material_suborder_asc: {kind: stratic}
+      notes: "Distinct sedimentary layers or buried soils, not or only slightly gravelly, not highly saline."
+
+    - code: "AT"
+      name: Bleached Arenosol
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AA"
+      name: Red Arenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Red, window: profile_100}
+      notes: "The dominant colour class in the major part of the upper 1.0 m of the profile is Red."
+
+    - code: "AB"
+      name: Brown Arenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Brown, window: profile_100}
+      notes: "The dominant colour class in the major part of the upper 1.0 m of the profile is Brown."
+
+    - code: "AC"
+      name: Yellow Arenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Yellow, window: profile_100}
+      notes: "The dominant colour class in the major part of the upper 1.0 m of the profile is Yellow."
+
+    - code: "AD"
+      name: Grey Arenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Grey, window: profile_100}
+      notes: "The dominant colour class in the major part of the upper 1.0 m of the profile is Grey."
+
+    - code: "AE"
+      name: Black Arenosol
+      tests:
+        all_of:
+          - colour_suborder_asc: {colour: Black, window: profile_100}
+      notes: "The dominant colour class in the major part of the upper 1.0 m of the profile is Black."

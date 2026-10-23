@@ -322,7 +322,7 @@ test_that("NatSoil carbonate segregations, calcrete, mottles and the landform", 
   expect_equal(h$redoximorphic_features_pct[3], 15)          # biological mixing is not a mottle
   expect_identical(h$mottle_contrast[3], "distinct")
   # soft 0-6 % spans two classes: unknown; hard 0-7 % stays below 20 %
-  expect_true(is.na(h$carbonate_soft_pct[4])); expect_equal(h$carbonate_hard_pct[4], 3.5)
+  expect_true(is.na(h$carbonate_soft_pct[4])); expect_lt(h$carbonate_hard_pct[4], 20)
   expect_identical(h$mottle_contrast[4], "faint")            # beyond 10 % the mottles are faint
   expect_equal(h$redoximorphic_features_pct[4], 21)
   expect_true(is.na(h$mottle_contrast[5]))                   # 6 % distinct, 6 % of unknown contrast

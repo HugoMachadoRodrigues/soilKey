@@ -501,6 +501,42 @@ attributes:
     systems: [asc3]
     min: 0
     max: 100
+  - name: ec_1to5_dS_m
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "dS/m"
+    description: "Electrical conductivity of a 1:5 soil:water extract; ASC 'highly saline' (EC > 2 dS/m: Hypersalic, Hypergypsic and Stratic suborders). ec_dS_m is the saturated paste."
+    systems: [asc3]
+    min: 0
+  - name: strength_dry
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Soil strength of the dry soil (Field Handbook classes: loose, very weak, weak, firm, very firm, strong, very strong, rigid); ASC Arenic Rudosols and the melanic horizon."
+    systems: [asc3]
+  - name: strength_moist
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Soil strength of the moist soil, same classes as strength_dry; ASC Arenic and Lutic Rudosols."
+    systems: [asc3]
+  - name: ped_size_max_mm
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "mm"
+    description: "Upper limit of the size class of the most common peds (Field Handbook classes: 2, 5, 10, 20, 50 ... mm); ASC melanic horizon (10-20 mm or less)."
+    systems: [asc3]
+    min: 0
+  - name: ferric_nodules_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Ferruginous (and ferromanganiferous) nodules or concretions, visual abundance; ASC ferric horizon (more than 20 %), Sesqui-Nodular Tenosols."
+    systems: [asc3]
+    min: 0
+    max: 100
+  - name: bauxitic_nodules_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Bauxite (aluminous) nodules or concretions, visual abundance; ASC bauxitic horizon (more than 20 %), Sesqui-Nodular Tenosols."
+    systems: [asc3]
+    min: 0
+    max: 100
   - name: esp_pct
     section: "Australian system (ASC 3rd ed.)"
     unit: "%"
