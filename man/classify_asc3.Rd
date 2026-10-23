@@ -42,10 +42,13 @@ Hydrosols (the setting, then mottling), the Calcarosols (gypsum and the
 carbonate classes), the Anthroposols (the kind of human-made material),
 the Arenosols and Tenosols (chernic horizons, bleaching, hard materials
 within 0.5 m, carbonate, nodules, then colour) and the Rudosols (salinity,
-gypsum, shells, carbic materials, hard materials, sand, gravel, layers).
-The great groups, subgroups and families follow. The name is the
-suborder's ("Red Chromosol") where one is assigned; \code{rsg_or_order}
-keeps the order.
+gypsum, shells, carbic materials, hard materials, sand, gravel, layers),
+and the great groups of the Kurosols, Sodosols, Chromosols, Ferrosols,
+Dermosols and Kandosols (pans in or under the B, structure, plasticity,
+base status, exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t). The
+great groups of the other orders, and the subgroups and families,
+follow. The name is that of the deepest class assigned ("Eutrophic Red
+Chromosol"); \code{rsg_or_order} keeps the order.
 }
 \details{
 The ASC is largely morphological. The diagnostics read field texture
@@ -58,7 +61,7 @@ pedality, carbonates and the moisture of the horizons when described
 (\code{soil_water_status}: the Vertosols' cracks are not required in a
 solum described moist), mottles, soft and hard carbonate, gypsum, the kind
 of peat, acid sulfate tests, EC of a 1:5 extract, dry and moist strength,
-ped size and nodules. From the site it reads
+ped size, nodules, pans and exchangeable bases. From the site it reads
 \code{drainage_class} (Hydrosols, organic materials, Podosol suborders),
 \code{tidal_inundation} (Hydrosols, organic materials),
 \code{surface_condition} (a cracking

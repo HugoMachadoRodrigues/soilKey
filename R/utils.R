@@ -182,6 +182,7 @@ horizon_column_spec <- function() {
     ped_size_max_mm               = "numeric",   # upper limit (mm) of the size class of the most common peds (ASC melanic horizon: 10-20 mm or less)
     ferric_nodules_pct            = "numeric",   # ferruginous nodules or concretions, visual %; ASC ferric horizon (> 20 %)
     bauxitic_nodules_pct          = "numeric",   # bauxite nodules or concretions, visual %; ASC bauxitic horizon (> 20 %)
+    pan_type                      = "character", # kind of pan in the horizon (Field Handbook: red-brown hardpan, calcrete, ferricrete, thin ironpan, silcrete ...; "none")
     esp_pct                       = "numeric",   # exchangeable sodium percentage as the laboratory reports it (read when Na or the CEC is not given); ASC sodic
     soil_water_status             = "character", # moisture of the horizon when described (Field Handbook): 'dry' / 'moderately moist' / 'moist' / 'wet'; ASC Vertosols ('unless too moist')
     effervescence_class           = "character"  # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous

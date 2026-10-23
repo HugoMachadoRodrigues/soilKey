@@ -35,3 +35,15 @@ diagnostics:
   - {function: arenosol_carbonate_asc, file: R/diagnostics-asc-suborders-rest.R, reference: "Arenosols, suborders Carbonatic and Calsilic"}
   - {function: calcenic_asc,          file: R/diagnostics-asc-suborders-rest.R, reference: "Tenosols, suborder Calcenic"}
   - {function: sesqui_nodular_asc,    file: R/diagnostics-asc-suborders-rest.R, reference: "Tenosols, suborder Sesqui-Nodular; glossary 'Ferric horizon', 'Bauxitic horizon'"}
+  - {function: pan_great_group_asc,   file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Duric, Petroferric, Placic; glossary 'Red-brown hardpan', 'Petroferric horizon', 'Thin ironpan'"}
+  - {function: petrocalcic_asc,       file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Petrocalcic; glossary 'Calcrete pan'"}
+  - {function: pedaric_asc,           file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Pedaric"}
+  - {function: subplastic_asc,        file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Subplastic"}
+  - {function: magnesic_asc,          file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Magnesic, Magnesic-Natric"}
+  - {function: natric_asc,            file: R/diagnostics-asc-great-groups-b.R, reference: "Kurosols, great group Natric"}
+  - {function: base_status_asc,       file: R/diagnostics-asc-great-groups-b.R, reference: "Great groups Dystrophic, Mesotrophic, Eutrophic; glossary 'Base status'"}
+  - {function: esp_great_group_asc,   file: R/diagnostics-asc-great-groups-b.R, reference: "Sodosols, great groups by ESP"}
+  - {function: effervescent_asc,      file: R/diagnostics-asc-great-groups-b.R, reference: "Sodosols, great group Effervescent"}
+  - {function: calcareous_b_asc,      file: R/diagnostics-asc-great-groups-b.R, reference: "Ferrosols, great group Calcareous"}
+  - {function: mellic_asc,            file: R/diagnostics-asc-great-groups-b.R, reference: "Kandosols, great group Mellic"}
+  - {function: andic_great_group_asc, file: R/diagnostics-asc-great-groups-b.R, reference: "Kandosols, great group Andic"}

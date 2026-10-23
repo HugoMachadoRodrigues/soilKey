@@ -1,0 +1,569 @@
+# Key to the great groups of the Kandosols, ASC 3rd ed. (online version with errata).
+# The order page gives one list for all the colour suborders, repeated here; see
+# R/diagnostics-asc-great-groups-b.R and inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "KA-AA":
+    - code: "BJ"
+      name: Duric Red Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Red Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Red Kandosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "EC"
+      name: Placic Red Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "CY"
+      name: Leptic Red Kandosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "DO"
+      name: Mellic Red Kandosol
+      tests:
+        all_of:
+          - mellic_asc: {}
+      notes: "Massive to weakly structured B horizons, very porous, with a weak consistence strength when moist."
+
+    - code: "AK"
+      name: Andic Red Kandosol
+      tests:
+        all_of:
+          - andic_great_group_asc: {}
+      notes: "Andic properties, formed in basaltic tephric materials."
+
+    - code: "DB"
+      name: Magnesic Red Kandosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Red Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Red Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Red Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Red Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Red Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Red Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Red Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Red Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "KA-AB":
+    - code: "BJ"
+      name: Duric Brown Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Brown Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Brown Kandosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "EC"
+      name: Placic Brown Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "CY"
+      name: Leptic Brown Kandosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "DO"
+      name: Mellic Brown Kandosol
+      tests:
+        all_of:
+          - mellic_asc: {}
+      notes: "Massive to weakly structured B horizons, very porous, with a weak consistence strength when moist."
+
+    - code: "AK"
+      name: Andic Brown Kandosol
+      tests:
+        all_of:
+          - andic_great_group_asc: {}
+      notes: "Andic properties, formed in basaltic tephric materials."
+
+    - code: "DB"
+      name: Magnesic Brown Kandosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Brown Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Brown Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Brown Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Brown Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Brown Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Brown Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Brown Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Brown Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "KA-AC":
+    - code: "BJ"
+      name: Duric Yellow Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Yellow Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Yellow Kandosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "EC"
+      name: Placic Yellow Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "CY"
+      name: Leptic Yellow Kandosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "DO"
+      name: Mellic Yellow Kandosol
+      tests:
+        all_of:
+          - mellic_asc: {}
+      notes: "Massive to weakly structured B horizons, very porous, with a weak consistence strength when moist."
+
+    - code: "AK"
+      name: Andic Yellow Kandosol
+      tests:
+        all_of:
+          - andic_great_group_asc: {}
+      notes: "Andic properties, formed in basaltic tephric materials."
+
+    - code: "DB"
+      name: Magnesic Yellow Kandosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Yellow Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Yellow Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Yellow Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Yellow Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Yellow Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Yellow Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Yellow Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Yellow Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "KA-AD":
+    - code: "BJ"
+      name: Duric Grey Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Grey Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Grey Kandosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "EC"
+      name: Placic Grey Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "CY"
+      name: Leptic Grey Kandosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "DO"
+      name: Mellic Grey Kandosol
+      tests:
+        all_of:
+          - mellic_asc: {}
+      notes: "Massive to weakly structured B horizons, very porous, with a weak consistence strength when moist."
+
+    - code: "AK"
+      name: Andic Grey Kandosol
+      tests:
+        all_of:
+          - andic_great_group_asc: {}
+      notes: "Andic properties, formed in basaltic tephric materials."
+
+    - code: "DB"
+      name: Magnesic Grey Kandosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Grey Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Grey Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Grey Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Grey Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Grey Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Grey Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Grey Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Grey Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "KA-AE":
+    - code: "BJ"
+      name: Duric Black Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Black Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Black Kandosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "EC"
+      name: Placic Black Kandosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "CY"
+      name: Leptic Black Kandosol
+      tests:
+        all_of:
+          - leptic_asc: {}
+      notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
+
+    - code: "DO"
+      name: Mellic Black Kandosol
+      tests:
+        all_of:
+          - mellic_asc: {}
+      notes: "Massive to weakly structured B horizons, very porous, with a weak consistence strength when moist."
+
+    - code: "AK"
+      name: Andic Black Kandosol
+      tests:
+        all_of:
+          - andic_great_group_asc: {}
+      notes: "Andic properties, formed in basaltic tephric materials."
+
+    - code: "DB"
+      name: Magnesic Black Kandosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Black Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Black Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Black Kandosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Black Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Black Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Black Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Black Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Black Kandosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."

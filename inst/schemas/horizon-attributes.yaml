@@ -537,6 +537,11 @@ attributes:
     systems: [asc3]
     min: 0
     max: 100
+  - name: pan_type
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "Kind of pan in the horizon (Field Handbook: red-brown hardpan, calcrete, ferricrete, alcrete, thin ironpan, silcrete, duripan, fragipan, densipan, organic pan, ortstein, other pan; 'none' when recorded absent); ASC Duric, Petroferric, Petrocalcic, Placic great groups."
+    systems: [asc3]
   - name: esp_pct
     section: "Australian system (ASC 3rd ed.)"
     unit: "%"

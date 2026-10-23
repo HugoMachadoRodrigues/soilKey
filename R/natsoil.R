@@ -335,6 +335,9 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   strength = c("0" = "loose", "1" = "very weak", "2" = "weak", "3" = "firm", "4" = "very firm", "5" = "strong",
                "6" = "very strong", "7" = "rigid"),
   ped_size_max = c("1" = 2, "2" = 5, "3" = 10, "4" = 20, "5" = 50, "6" = 100, "7" = 200, "8" = 500, "9" = Inf),
+  pan_type = c(A = "alcrete", C = "organic pan", D = "duripan", E = "ferricrete", F = "fragipan", I = "thin ironpan",
+               K = "calcrete", L = "silcrete", M = "manganiferous pan", N = "densipan", O = "other pan",
+               R = "red-brown hardpan", T = "ortstein", V = "cultivation pan", Z = "none"),
   landform_pattern = c(ALF = "alluvial fan", ALP = "alluvial plain", ANA = "anastomatic plain",
     BAD = "badlands", BAR = "bar plain", BEA = "beach ridge plain", CAL = "caldera", CHE = "chenier plain",
     COR = "coral reef", COV = "covered plain", DEL = "delta", DUN = "dunefield", ESC = "escarpment",
@@ -578,6 +581,10 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     else if (sum(a) > 10) "faint"
     else if (!is.na(strongest)) strongest else if (all(fnt)) "faint" else NA_character_
   pans <- h$z_pans %||% list()
+  # the kinds of pan recorded in the horizon ("none" when recorded absent)
+  pkinds <- unique(stats::na.omit(vapply(pans, function(z) .natsoil_map(.ns(z, "pan_type"), "pan_type"), "")))
+  pan_kind <- if (!length(pkinds)) NA_character_ else if (all(pkinds == "none")) "none"
+              else paste(setdiff(pkinds, "none"), collapse = "; ")
   cem <- if (length(pans)) {
     lv <- suppressWarnings(max(vapply(pans, function(z) suppressWarnings(as.integer(.ns(z, "pan_cementation"))), 0L), na.rm = TRUE))
     if (is.finite(lv)) .natsoil_map(lv, "cementation") else NA_character_
@@ -618,7 +625,7 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf,
     secondary_carbonates_pct = seg_k, carbonate_soft_pct = carb_soft, carbonate_hard_pct = carb_hard,
     redoximorphic_features_pct = mot_pct, mottle_contrast = mot_contrast, cementation_class = cem,
-    ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod,
+    ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod, pan_type = pan_kind,
     strength_dry = strength_at("D"), strength_moist = strength_at(c("T", "M")), ped_size_max_mm = ped_size,
     subplasticity = .natsoil_map(.ns(h, "h_plasticity_type"), "plasticity"),
     soil_water_status = .natsoil_map(.ns(h, "h_soil_water_stat"), "water"),
@@ -691,6 +698,37 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
        confusion_given_order = table(survey = key[g], soilKey = paste(r$predicted[g], r$predicted_suborder[g])))
 }
 
+# Great group agreement, over the pedons whose surveyed great group is one
+# the key lists under their surveyed order and suborder: order, suborder and
+# great group must all agree; decided when nothing before them was left
+# undecided. Also over those whose order and suborder agree.
+.natsoil_great_group_summary <- function(res) {
+  ggs <- load_rules("asc3")$great_groups %||% list()
+  if (is.null(res$reference_great_group)) return(NULL)
+  valid <- vapply(seq_len(nrow(res)), function(i) {
+    codes <- vapply(ggs[[paste(res$reference[i], res$reference_suborder[i], sep = "-")]] %||% list(),
+                    function(t) as.character(t$code), "")
+    !is.na(res$reference_great_group[i]) && res$reference_great_group[i] %in% codes
+  }, NA)
+  r <- res[valid, , drop = FALSE]
+  if (!nrow(r)) return(NULL)
+  sub_ok <- r$agree & !is.na(r$predicted_suborder) & r$predicted_suborder == r$reference_suborder
+  r$agree_gg <- sub_ok & !is.na(r$predicted_great_group) & r$predicted_great_group == r$reference_great_group
+  r$decided_gg <- r$decided & !is.na(r$provisional_suborder) & !nzchar(r$provisional_suborder) &
+                  !is.na(r$provisional_great_group) & !nzchar(r$provisional_great_group)
+  pct <- function(x) if (length(x)) 100 * mean(x) else NA_real_
+  key <- paste(r$reference, r$reference_suborder, r$reference_great_group)
+  list(n = nrow(r), accuracy = pct(r$agree_gg), decided = sum(r$decided_gg),
+       decided_accuracy = pct(r$agree_gg[r$decided_gg]),
+       suborder_agrees = sum(sub_ok), accuracy_given_suborder = pct(r$agree_gg[sub_ok]),
+       decided_given_suborder = sum(r$decided_gg & sub_ok),
+       decided_accuracy_given_suborder = pct(r$agree_gg[r$decided_gg & sub_ok]),
+       recall = vapply(split(r$agree_gg, key), pct, 0),
+       confusion_given_suborder = table(survey = key[sub_ok],
+                                        soilKey = paste(r$predicted[sub_ok], r$predicted_suborder[sub_ok],
+                                                        r$predicted_great_group[sub_ok])))
+}
+
 # The ASC order codes and names.
 .ASC_ORDER_CODES <- c(AN = "Anthroposol", OR = "Organosol", PO = "Podosol", VE = "Vertosol",
                       HY = "Hydrosol", KU = "Kurosol", SO = "Sodosol", CH = "Chromosol",
@@ -720,8 +758,10 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 #'   by surveyed order; \code{confusion} (rows the survey, columns soilKey);
 #'   \code{first_undecided} (the first order left undecided, among
 #'   provisional pedons); \code{suborders}, the same for the suborders where
-#'   the key has them (overall, and over the pedons whose order agrees); and
-#'   \code{results}, one row per pedon.
+#'   the key has them (overall, and over the pedons whose order agrees);
+#'   \code{great_groups}, the same for the great groups (overall, and over the
+#'   pedons whose order and suborder agree); and \code{results}, one row per
+#'   pedon.
 #' @seealso \code{\link{load_natsoil_pedons}}, \code{\link{classify_asc3}}.
 #' @export
 benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
@@ -734,9 +774,14 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     sub_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "suborders"][1L] %|NA|% NA_character_)
     sub_prov <- if (is.null(r)) NA_character_
                 else paste(sub("^suborders:", "", grep("^suborders:", r$provisional_because, value = TRUE)), collapse = ",")
+    gg_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "great_groups"][1L] %|NA|% NA_character_)
+    gg_prov <- if (is.null(r)) NA_character_
+               else paste(sub("^great_groups:", "", grep("^great_groups:", r$provisional_because, value = TRUE)), collapse = ",")
     data.frame(id = p$site$id, reference = ref, predicted = pred, provisional = prov,
                reference_suborder = toupper(as.character(p$site$reference_asc_suborder %||% NA)),
                predicted_suborder = sub_pred, provisional_suborder = sub_prov,
+               reference_great_group = toupper(as.character(p$site$reference_asc_great_group %||% NA)),
+               predicted_great_group = gg_pred, provisional_great_group = gg_prov,
                confidence = as.character(p$site$reference_asc_confidence %||% NA), stringsAsFactors = FALSE)
   }
   cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(cores))
@@ -765,6 +810,7 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     first_undecided = sort(table(sub(",.*$", "", res$provisional[!res$decided & !is.na(res$provisional)])),
                            decreasing = TRUE),
     suborders = .natsoil_suborder_summary(res),
+    great_groups = .natsoil_great_group_summary(res),
     results = res)
   if (verbose) {
     message(sprintf(paste("NatSoil, ASC orders: %d pedons, agreement %.1f %% (%.1f %% counting the",

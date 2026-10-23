@@ -59,7 +59,9 @@
 #' The engine behind the classifiers of ordered national keys: it walks the
 #' levels of the system's registry entry from the top, assigns at each level
 #' the first class whose tests pass, and descends into the classes listed
-#' under it.
+#' under it. The list under a class is found by the codes of the path to it
+#' joined with "-" ("CH-AA", for keys whose codes repeat under different
+#' parents), and otherwise by the code of the class alone.
 #'
 #' @param system Registry id or alias of the system.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -94,8 +96,13 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
   provisional <- character(0)
   stopped <- character(0)
   parent <- NULL
+  path <- character(0)
   for (lvl in sys$levels) {
-    taxa <- if (is.null(parent)) rules[[lvl]] else rules[[lvl]][[parent$code]]
+    # the list under the class above: by the codes of the path to it
+    # ("CH-AA", where codes repeat under different parents), else by the
+    # code of the parent alone
+    taxa <- if (is.null(parent)) rules[[lvl]]
+            else rules[[lvl]][[paste(path, collapse = "-")]] %||% rules[[lvl]][[parent$code]]
     if (length(taxa) == 0L) break
     r <- .run_level(pedon, taxa, lvl)
     trace[[lvl]] <- r$trace
@@ -114,6 +121,7 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
     }
     chosen[[lvl]] <- r$assigned
     parent <- r$assigned
+    path <- c(path, r$assigned$code)
   }
 
   levels <- data.frame(
