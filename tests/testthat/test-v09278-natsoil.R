@@ -30,7 +30,7 @@
         .ns_horizon(NULL, "A", "1", NULL, 0, 0.12, "SL", bound = "C", grade = "W", type = "GR",
                     labs = list(.ns_lab("4A1", 6.0), .ns_lab("P10_NR_C", 12), .ns_lab("6A1_UC", 1.0))),
         .ns_horizon(NULL, "A", "2", "e", 0.12, 0.30, "SL", bound = "A", grade = "V",
-                    labs = list(.ns_lab("4A1", 6.2), .ns_lab("P10_NR_C", 10))),
+                    labs = list(.ns_lab("4A1", 6.2), .ns_lab("P10_NR_C", 10)), extra = list(h_bound_shape = "T")),
         .ns_horizon(NULL, "B", "21", "t", 0.30, 0.55, "LMC", grade = "S", type = "PR", bound = "G",
                     labs = list(.ns_lab("4A1", 6.6), .ns_lab("P10_NR_C", 42), .ns_lab("15_NR_NA", 0.1, "<"),
                                 .ns_lab("15_NR_CEC", 20), .ns_lab("19B_NR", 0.1, "<")),
@@ -61,6 +61,7 @@ test_that("NatSoil records become pedons with the attributes the ASC key reads",
   expect_identical(h$designation, c("A1", "A2e", "B21t", "B22t"))
   expect_identical(h$top_cm, c(0, 12, 30, 55)); expect_identical(h$bottom_cm, c(12, 30, 55, 80))
   expect_identical(h$boundary_distinctness[1:2], c("clear", "abrupt"))
+  expect_identical(h$boundary_topography[1:2], c(NA, "tongued"))         # since 0.9.284
   expect_identical(h$structure_grade, c("weak", "structureless", "strong", "moderate"))
   expect_identical(h$structure_type[2], "massive")
   expect_equal(h$oc_pct[1], 1.3)                         # uncorrected Walkley-Black x 1.3

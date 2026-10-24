@@ -576,30 +576,12 @@ anthroposol_asc <- function(pedon) {
   NA
 }
 
-#' Organosols (ASC order, key step 2)
-#'
-#' Not regularly flooded by saline tides (site$tidal_inundation), and either
-#' more than 0.4 m of organic materials within the upper 0.8 m, or organic
-#' materials from the surface to at least 0.1 m resting directly on rock, a
-#' hard layer or saprolite, or on mineral material no thicker than the
-#' organic materials above it.
-#' @noRd
-organosol_asc <- function(pedon) {
-  x <- .asc_horizons(pedon); h <- x$h
-  om <- .asc_organic_material(x, pedon)
-  tidal <- isTRUE(as.logical(pedon$site$tidal_inundation %||% NA))
-  top <- h$top_cm; bot <- h$bottom_cm
-  w <- ifelse(!is.na(top) & !is.na(bot), .asc_overlap(top, bot, 0, 80), NA)
-  t_true <- sum(w[om %in% TRUE], na.rm = TRUE)
-  # the part of the upper 0.8 m below the description is unknown too,
-  # unless the description ends on rock or a hard layer
-  unseen <- if (.asc_ends_hard(x)) 0 else max(0, 80 - sum(w, na.rm = TRUE))
-  t_open <- sum(w[is.na(om)], na.rm = TRUE) + unseen +
-            if (any(is.na(w) & !(om %in% FALSE))) Inf else 0
-  thick <- if (t_true > 40) TRUE else if (t_true + t_open <= 40) FALSE else NA
-  # branch 2: organic materials from the surface, at least 10 cm, on rock,
-  # a hard layer, saprolite, or mineral material no thicker than them;
-  # decided only when the layers of unknown organic status do not matter
+# Definition (ii) of the Organosols: organic materials from the surface, at
+# least 10 cm, on rock, a hard layer, saprolite, or mineral material no
+# thicker than them; decided only when the layers of unknown organic status
+# do not matter.
+.asc_organic_branch2 <- function(x, om) {
+  h <- x$h; top <- h$top_cm; bot <- h$bottom_cm
   ord <- order(top, na.last = NA)
   hard <- x$hard
   branch2_with <- function(org) {
@@ -623,7 +605,32 @@ organosol_asc <- function(pedon) {
     else if (!is.na(m_thick) && m_thick > run) FALSE else NA
   }
   b_lo <- branch2_with(om %in% TRUE); b_hi <- branch2_with(!(om %in% FALSE))
-  branch2 <- if (identical(b_lo, b_hi)) b_lo else NA
+  if (identical(b_lo, b_hi)) b_lo else NA
+}
+
+#' Organosols (ASC order, key step 2)
+#'
+#' Not regularly flooded by saline tides (site$tidal_inundation), and either
+#' more than 0.4 m of organic materials within the upper 0.8 m, or organic
+#' materials from the surface to at least 0.1 m resting directly on rock, a
+#' hard layer or saprolite, or on mineral material no thicker than the
+#' organic materials above it.
+#' @noRd
+organosol_asc <- function(pedon) {
+  x <- .asc_horizons(pedon); h <- x$h
+  om <- .asc_organic_material(x, pedon)
+  tidal <- isTRUE(as.logical(pedon$site$tidal_inundation %||% NA))
+  top <- h$top_cm; bot <- h$bottom_cm
+  w <- ifelse(!is.na(top) & !is.na(bot), .asc_overlap(top, bot, 0, 80), NA)
+  t_true <- sum(w[om %in% TRUE], na.rm = TRUE)
+  # the part of the upper 0.8 m below the description is unknown too,
+  # unless the description ends on rock or a hard layer
+  unseen <- if (.asc_ends_hard(x)) 0 else max(0, 80 - sum(w, na.rm = TRUE))
+  t_open <- sum(w[is.na(om)], na.rm = TRUE) + unseen +
+            if (any(is.na(w) & !(om %in% FALSE))) Inf else 0
+  thick <- if (t_true > 40) TRUE else if (t_true + t_open <= 40) FALSE else NA
+  branch2 <- .asc_organic_branch2(x, om)
+  ord <- order(top, na.last = NA)
   run <- { r <- 0; prev <- 0
     for (i in ord) { if (!(om[i] %in% TRUE) || is.na(top[i]) || is.na(bot[i]) || abs(top[i] - prev) > 0.5) break
       r <- r + bot[i] - top[i]; prev <- bot[i] }

@@ -1,0 +1,128 @@
+# Key to the great groups of the Podosols, ASC 3rd ed. (online version with errata).
+# The lists of the order page, by suborder; see R/diagnostics-asc-great-groups-special.R and
+# inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "PO-AL":
+    - code: "EB"
+      name: Pipey Aeric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: pipey}
+      notes: "A pipey B horizon."
+
+    - code: "EK"
+      name: Sesquic Aeric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: sesquic}
+      notes: "Only a Bs horizon."
+
+    - code: "CO"
+      name: Humosesquic Aeric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humosesquic}
+      notes: "Only a Bhs horizon."
+
+    - code: "IG"
+      name: Humosesquic/Sesquic Aeric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humosesquic_sesquic}
+      notes: "A Bhs/Bs horizon."
+
+  "PO-EJ":
+    - code: "EB"
+      name: Pipey Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: pipey}
+      notes: "A pipey B horizon."
+
+    - code: "EK"
+      name: Sesquic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: sesquic}
+      notes: "Only a Bs horizon."
+
+    - code: "CO"
+      name: Humosesquic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humosesquic}
+      notes: "Only a Bhs horizon."
+
+    - code: "CG"
+      name: Humic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic}
+      notes: "Only a Bh horizon."
+
+    - code: "CJ"
+      name: Humic/Sesquic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_sesquic}
+      notes: "A Bh/Bs horizon."
+
+    - code: "CI"
+      name: Humic/Humosesquic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_humosesquic}
+      notes: "A Bh/Bhs horizon."
+
+    - code: "IH"
+      name: Humic/Alsilic Semiaquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_alsilic}
+      notes: "A Bh/Basi horizon."
+
+  "PO-JD":
+    - code: "CG"
+      name: Humic Aquic-Sulfuric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic}
+      notes: "Only a Bh horizon."
+
+    - code: "IH"
+      name: Humic/Alsilic Aquic-Sulfuric Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_alsilic}
+      notes: "A Bh/Basi horizon."
+
+  "PO-JE":
+    - code: "CG"
+      name: Humic Aquic-Hypersulfidic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic}
+      notes: "Only a Bh horizon."
+
+    - code: "IH"
+      name: Humic/Alsilic Aquic-Hypersulfidic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_alsilic}
+      notes: "A Bh/Basi horizon."
+
+  "PO-AM":
+    - code: "CG"
+      name: Humic Aquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic}
+      notes: "Only a Bh horizon."
+
+    - code: "IH"
+      name: Humic/Alsilic Aquic Podosol
+      tests:
+        all_of:
+          - podosol_gg_asc: {kind: humic_alsilic}
+      notes: "A Bh/Basi horizon."

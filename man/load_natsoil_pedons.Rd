@@ -38,7 +38,7 @@ other keys. Sites whose licence does not allow external use are left out.
 \details{
 The horizons keep their designation in the Australian notation (lithologic
 prefix, master, subdivision and suffixes), depths in cm, the field texture
-grade, boundary distinctness, the grade and type of the first structure
+grade, boundary distinctness and shape, the grade and type of the first structure
 (lenticular when any structure is), the moist and the dry matrix colours
 (a colour with no moisture status is read as moist),
 slickensides, crack width, coarse fragments (abundance classes at their
