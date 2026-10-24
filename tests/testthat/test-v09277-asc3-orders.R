@@ -71,7 +71,7 @@ test_that("the registry lists the ASC as an opt-in system", {
   res <- classify_all(make_asc3_example("kandosols"), systems = c("wrb", "asc"), on_missing = "silent")
   expect_identical(res$summary$asc3, "Mesotrophic Red Kandosol")
   expect_length(yaml::read_yaml(system.file("rules", "asc3", "readings.yaml",
-                                            package = "soilKey"))$readings, 44L)
+                                            package = "soilKey"))$readings, 48L)
 })
 
 # ---- the clear or abrupt textural B --------------------------------------------
@@ -124,7 +124,7 @@ test_that("the B2t chemistry decides among Kurosols, Sodosols and Chromosols", {
 test_that("Vertosols read cracks from the horizons or a cracking surface", {
   skip_on_cran()
   p <- make_asc3_example("vertosols")
-  p$horizons$cracks_width_cm <- NA_real_
+  p$horizons$cracks_width_cm <- NA_real_; p$site$surface_condition <- NA_character_
   r <- classify_asc3(p, on_missing = "silent")
   expect_true("orders:VE" %in% r$provisional_because)
   # a solum described dry with no crack record leaves it undecided; described
@@ -183,10 +183,10 @@ test_that("calcareous: no carbonate record and an acid pH read as not calcareous
   # no record at all: acid horizons are not calcareous, neutral ones undecided
   p <- make_asc3_example("calcarosols")
   p$horizons$effervescence_class <- NA_character_; p$horizons$secondary_carbonates_pct <- NA_real_
-  p$horizons$caco3_pct <- NA_real_; p$horizons$designation <- c("A1", "B21", "B22", "BC")
-  p$horizons$ph_h2o <- c(6.0, 6.2, 6.4, 6.5)
+  p$horizons$caco3_pct <- NA_real_; p$horizons$designation <- c("A1", "B21", "B22", "BC", "C")
+  p$horizons$ph_h2o <- c(6.0, 6.2, 6.4, 6.5, 6.6)
   expect_false(ca(p))
-  p$horizons$ph_h2o <- c(7.5, 7.8, 8.0, 8.2)
+  p$horizons$ph_h2o <- c(7.5, 7.8, 8.0, 8.2, 8.4)
   expect_true(is.na(ca(p)))
 })
 

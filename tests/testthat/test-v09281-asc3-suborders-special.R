@@ -18,8 +18,8 @@ test_that("the examples of the four orders key to a decided suborder", {
             hydrosols = "Redoxic Hydrosol", calcarosols = "Hypercalcic Calcarosol")
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
-    expect_identical(r$name, want[[o]], info = o)
-    expect_identical(r$levels$level, c("orders", "suborders"), info = o)
+    # since 0.9.284 the name may go on to the great group
+    expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
     expect_length(r$provisional_because, 0L)
   }
 })
@@ -76,7 +76,12 @@ test_that("the dominant peat by thickness; a tie goes to the more decomposed kin
 
 test_that("the saturation of the B of a Podosol from the drainage class or the days", {
   skip_on_cran()
-  sub <- function(p) { r <- classify_asc3(p, on_missing = "silent"); c(r$name, paste(r$provisional_because, collapse = ",")) }
+  # the name down to the suborder (the great groups follow since 0.9.284)
+  sub <- function(p) {
+    r <- classify_asc3(p, on_missing = "silent"); lv <- r$levels[r$levels$level != "great_groups", ]
+    c(lv$name[nrow(lv)] %||% NA_character_,
+      paste(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), collapse = ","))
+  }
   expect_identical(sub(.podo(list(drainage_class = "rapidly drained"))), c("Aeric Podosol", ""))
   expect_identical(sub(.podo(list(drainage_class = "moderately well drained"))), c("Semiaquic Podosol", ""))
   expect_identical(sub(.podo(list(drainage_class = "imperfectly drained"))), c("Semiaquic Podosol", ""))

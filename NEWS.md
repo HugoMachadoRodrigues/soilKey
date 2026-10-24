@@ -1,3 +1,48 @@
+# soilKey 0.9.284 (2026-10-24)
+
+## Australian classification: great groups of the Vertosols, Calcarosols, Podosols and Organosols (experimental)
+
+`classify_asc3()` now keys the great groups of four more orders, ten in
+all. WRB, SiBCS and USDA results do not change, nor do the Australian
+orders, suborders and the great groups of 0.9.283.
+
+* Vertosols, by the surface: Self-mulching (a moderately or strongly
+  self-mulching surface in the site record, as the text asks that the
+  group be used only when the condition is not in doubt), Epipedal (a pedal
+  A, blocky or polyhedral), Crusty (a surface crusty horizon over pedal
+  clay: a surface crust in the site record, or a surface horizon 30 mm
+  thick or less that is massive or weakly structured), Massive (massive or
+  weak blocky), Peaty. The site record is read item by item, negations
+  included; a thin organic layer at the top is passed over.
+* Calcarosols: Duric and Petrocalcic (a pan directly under the soil),
+  Rendic (the A directly over a Bk of more than 80 % soft carbonate,
+  Hypercalcic only), Argic (clay lamellae in the B), Pedal, and what the
+  soil directly overlies (Lithic, Paralithic, Marly, Regolithic), read from
+  the designation, the layer or rock origin and any pan; a C of unrecorded
+  origin, a description that stops at the base of the solum, or a row of
+  unknown role that may be part of it, leaves them undecided.
+* Podosols, by the kinds of Podosol B in the designations (Bs, Bhs, Bh,
+  and a Basi under a Bh), with each suborder's own list as printed, and
+  Pipey where an A2 has a tongued boundary. The NatSoil reader now keeps
+  the boundary shape (`boundary_topography`).
+* Organosols: Folic (freely drained, organic materials as in Definition
+  (ii)), Sulfuric, Sulfidic and the groups that replace them only with the
+  evidence (Hypersulfidic, Hyposulfidic; no monosulfidic test is
+  recorded), then Calcareous, Basic, Acidic. The upper 1.5 m includes
+  buried horizons, and a part of it not described may hold acid sulfate
+  material; sulfidic material not tested leaves the great group
+  provisional.
+* The readings are in `inst/rules/asc3/readings.yaml` (48).
+
+On 9,700 licensed NatSoil profiles, of the 465 of these orders whose order
+and suborder agree and whose survey gives a great group of the key, 75.5 %
+get the survey's great group, and 76.4 % of the 301 decided (the
+Vertosols: 324 of 418, and 220 of the 281 decided). Several surveys record
+the crust of a Crusty Vertosol as a thin A11 over a pedal A12, which is
+read as the text describes it. The Calcarosols and Organosols stay
+provisional for want of data: the suborder or what lies under the solum
+for the first, the sulfide test for the second.
+
 # soilKey 0.9.283 (2026-10-23)
 
 ## Australian classification: great groups of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols and Kandosols (experimental)

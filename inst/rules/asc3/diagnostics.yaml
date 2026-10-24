@@ -47,3 +47,7 @@ diagnostics:
   - {function: calcareous_b_asc,      file: R/diagnostics-asc-great-groups-b.R, reference: "Ferrosols, great group Calcareous"}
   - {function: mellic_asc,            file: R/diagnostics-asc-great-groups-b.R, reference: "Kandosols, great group Mellic"}
   - {function: andic_great_group_asc, file: R/diagnostics-asc-great-groups-b.R, reference: "Kandosols, great group Andic"}
+  - {function: vertosol_surface_asc,  file: R/diagnostics-asc-great-groups-special.R, reference: "Vertosols, great groups and Comment"}
+  - {function: calcarosol_gg_asc,     file: R/diagnostics-asc-great-groups-special.R, reference: "Calcarosols, great groups; glossary 'Argic horizon', 'Marl'"}
+  - {function: podosol_gg_asc,        file: R/diagnostics-asc-great-groups-special.R, reference: "Podosols, great groups; glossary 'Podosol diagnostic horizons'"}
+  - {function: organosol_gg_asc,      file: R/diagnostics-asc-great-groups-special.R, reference: "Organosols, great groups; glossary 'Sulfidic materials', 'Strongly acid'"}

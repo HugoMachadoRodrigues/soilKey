@@ -92,7 +92,8 @@ test_that("Aquic Vertosols read saturation days, then the drainage class", {
   p$site$drainage_class <- "imperfectly drained"; expect_false(aq(p))
   p$site$drainage_class <- "poorly drained"; expect_true(is.na(aq(p)))
   p$site$drainage_class <- "very poorly drained"; expect_true(aq(p))
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Aquic Vertosol")
+  lv <- classify_asc3(p, on_missing = "silent")$levels
+  expect_identical(lv$name[lv$level == "suborders"], "Aquic Vertosol")
   p$horizons$water_saturation_days <- c(20, 30, 40, 50)          # the days decide
   expect_false(aq(p))
   p$horizons$water_saturation_days <- c(20, 120, NA, NA)

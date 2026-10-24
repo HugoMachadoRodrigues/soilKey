@@ -210,7 +210,7 @@ fetch_natsoil <- function(dir, classified_only = TRUE, max_sites = Inf, page_siz
 #'
 #' The horizons keep their designation in the Australian notation (lithologic
 #' prefix, master, subdivision and suffixes), depths in cm, the field texture
-#' grade, boundary distinctness, the grade and type of the first structure
+#' grade, boundary distinctness and shape, the grade and type of the first structure
 #' (lenticular when any structure is), the moist and the dry matrix colours
 #' (a colour with no moisture status is read as moist),
 #' slickensides, crack width, coarse fragments (abundance classes at their
@@ -317,6 +317,7 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 # NatSoil code tables (Australian Soil and Land Survey Field Handbook).
 .NATSOIL_CODES <- list(
   boundary = c(A = "abrupt", C = "clear", D = "diffuse", G = "gradual", S = "sharp"),
+  shape = c(B = "broken", I = "irregular", S = "smooth", T = "tongued", W = "wavy"),
   grade = c(G = "structureless", V = "structureless", W = "weak", M = "moderate", S = "strong"),
   grade_type = c(G = "single-grain", V = "massive"),
   ped_type = c(AB = "angular blocky", CA = "cast", CO = "columnar", GR = "granular", LE = "lenticular",
@@ -616,6 +617,7 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     top_cm = round(100 * top, 4), bottom_cm = round(100 * bot, 4),     # metres to cm
     field_texture = if (is.na(tex)) NA_character_ else paste0(tex, if (!is.na(q) && q %in% c("+", "-")) q else ""),
     boundary_distinctness = .natsoil_map(.ns(h, "h_bound_distinct"), "boundary"),
+    boundary_topography = .natsoil_map(.ns(h, "h_bound_shape"), "shape"),
     structure_grade = .natsoil_map(grade_code, "grade"), structure_type = stype,
     munsell_hue_moist = as.character(.ns(cm, "col_hue")), munsell_value_moist = num(cm, "col_value"),
     munsell_chroma_moist = num(cm, "col_chroma"),
