@@ -17,10 +17,14 @@ then colour) and the Rudosols (salinity, gypsum, shells, carbic
 materials, hard materials, sand, gravel, layers), and the great groups
 of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols and
 Kandosols (pans in or under the B, structure, plasticity, base status,
-exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t). The great
-groups of the other orders, and the subgroups and families, follow. The
-name is that of the deepest class assigned ("Eutrophic Red Chromosol");
-`rsg_or_order` keeps the order.
+exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t), the Vertosols
+(the surface), Calcarosols (what the soil directly overlies, and the B),
+Podosols (the kinds of Podosol B) and Organosols (drainage, acid sulfate
+materials, carbonate and acidity). The great groups of the Hydrosols,
+Arenosols, Rudosols and Tenosols (the Anthroposols have none in the
+text), and the subgroups and families, follow. The name is that of the
+deepest class assigned ("Eutrophic Red Chromosol"); `rsg_or_order` keeps
+the order.
 
 ## Usage
 

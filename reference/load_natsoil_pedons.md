@@ -58,11 +58,11 @@ objects (names are `agency_project_site`).
 
 The horizons keep their designation in the Australian notation
 (lithologic prefix, master, subdivision and suffixes), depths in cm, the
-field texture grade, boundary distinctness, the grade and type of the
-first structure (lenticular when any structure is), the moist and the
-dry matrix colours (a colour with no moisture status is read as moist),
-slickensides, crack width, coarse fragments (abundance classes at their
-middle, added up to at most 100 %; unknown when a record has no
+field texture grade, boundary distinctness and shape, the grade and type
+of the first structure (lenticular when any structure is), the moist and
+the dry matrix colours (a colour with no moisture status is read as
+moist), slickensides, crack width, coarse fragments (abundance classes
+at their middle, added up to at most 100 %; unknown when a record has no
 abundance), calcareous segregations (a record with only its nature is a
 template and is not read; one with a form or size but no abundance
 counts as very few, 1 %), cementation of pans, effervescence, plasticity
