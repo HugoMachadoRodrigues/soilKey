@@ -14,9 +14,13 @@ Calcarosols (gypsum and the carbonate classes), the Anthroposols (the
 kind of human-made material), the Arenosols and Tenosols (chernic
 horizons, bleaching, hard materials within 0.5 m, carbonate, nodules,
 then colour) and the Rudosols (salinity, gypsum, shells, carbic
-materials, hard materials, sand, gravel, layers). The great groups,
-subgroups and families follow. The name is the suborder's ("Red
-Chromosol") where one is assigned; `rsg_or_order` keeps the order.
+materials, hard materials, sand, gravel, layers), and the great groups
+of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols and
+Kandosols (pans in or under the B, structure, plasticity, base status,
+exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t). The great
+groups of the other orders, and the subgroups and families, follow. The
+name is that of the deepest class assigned ("Eutrophic Red Chromosol");
+`rsg_or_order` keeps the order.
 
 ## Usage
 
@@ -70,13 +74,14 @@ of pedality, carbonates and the moisture of the horizons when described
 (`soil_water_status`: the Vertosols' cracks are not required in a solum
 described moist), mottles, soft and hard carbonate, gypsum, the kind of
 peat, acid sulfate tests, EC of a 1:5 extract, dry and moist strength,
-ped size and nodules. From the site it reads `drainage_class`
-(Hydrosols, organic materials, Podosol suborders), `tidal_inundation`
-(Hydrosols, organic materials), `surface_condition` (a cracking surface,
-Vertosols; a saline one, Salic Hydrosols), `landform`,
-`landform_element`, `tidal_zone`, `subaqueous` and `salinised` (Hydrosol
-suborders) and `designation_system` (`"asc"` for the Australian
-notation). The choices where the text is silent are listed in
+ped size, nodules, pans and exchangeable bases. From the site it reads
+`drainage_class` (Hydrosols, organic materials, Podosol suborders),
+`tidal_inundation` (Hydrosols, organic materials), `surface_condition`
+(a cracking surface, Vertosols; a saline one, Salic Hydrosols),
+`landform`, `landform_element`, `tidal_zone`, `subaqueous` and
+`salinised` (Hydrosol suborders) and `designation_system` (`"asc"` for
+the Australian notation). The choices where the text is silent are
+listed in
 `system.file("rules", "asc3", "readings.yaml", package = "soilKey")`.
 
 ## References
@@ -95,5 +100,5 @@ Online version: www.soilscienceaustralia.org.au/asc.
 ``` r
 res <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
 res$name
-#> [1] "Red Chromosol"
+#> [1] "Eutrophic Red Chromosol"
 ```

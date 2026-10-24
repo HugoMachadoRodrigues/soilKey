@@ -1,5 +1,44 @@
 # Changelog
 
+## soilKey 0.9.283 (2026-10-23)
+
+### Australian classification: great groups of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols and Kandosols (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+now keys a third level, the great groups, for the six orders with a B
+horizon of their own; the name is the great group’s (“Eutrophic Red
+Chromosol”). The other orders follow. WRB, SiBCS and USDA results do not
+change, nor do the Australian orders and suborders.
+
+- Pans in or under the B: Duric (red-brown hardpan), Petroferric
+  (ferricrete), Petrocalcic (a calcrete pan under a B that is not
+  calcareous), Placic (thin ironpan), from a new attribute `pan_type`
+  (NatSoil records it, “none” included) or the designation (km, sm, qm,
+  cm). A pan the record does not show is absent, as the order reads hard
+  layers; a cemented layer of unknown kind leaves it undecided.
+- The B2t or B2: Pedaric, Subplastic, Magnesic (exchangeable Ca/Mg below
+  0.1), Natric, base status (Dystrophic, Mesotrophic, Eutrophic, from
+  the exchangeable bases and clay, the clay range of the field texture
+  where no lab clay), the Sodosol ESP classes with their Mottled forms,
+  and the carbonate classes as for the Calcarosols.
+- Ferrosol Calcareous, Kandosol Leptic, Mellic and Andic.
+- Hypocalcic now needs some carbonate in the solum (the class is of
+  weakly calcareous soils); this does not change the Calcarosols.
+- The hierarchical key finds the list under a class by the codes of the
+  path to it (“CH-AA”), since the Australian suborder codes repeat from
+  order to order; other systems do not change.
+- [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
+  reports the great groups (`$great_groups`).
+- The readings are in `inst/rules/asc3/readings.yaml` (44).
+
+On 9,700 licensed NatSoil profiles, of the 2,160 of these orders whose
+order and suborder agree and whose survey gives a great group of the
+key, 21.6 % get the survey’s great group, and 80.6 % of the 98 decided.
+Most stay provisional for want of laboratory data: exchangeable Ca and
+Mg (Magnesic, before the base status classes), the bases and clay,
+mottles (the Mottled Sodosols) and, for the Kandosols, the porosity the
+Mellic great group asks.
+
 ## soilKey 0.9.282 (2026-10-23)
 
 ### Australian classification: the suborders of the Anthroposols, Arenosols, Rudosols and Tenosols (experimental)
@@ -10264,8 +10303,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

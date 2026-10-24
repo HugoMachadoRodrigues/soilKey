@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.282</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.283</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,22 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.283" id="soilkey-09283-2026-10-23">soilKey 0.9.283 (2026-10-23)<a class="anchor" aria-label="anchor" href="#soilkey-09283-2026-10-23"></a></h2>
+<div class="section level3">
+<h3 id="australian-classification-great-groups-of-the-kurosols-sodosols-chromosols-ferrosols-dermosols-and-kandosols-experimental-0-9-283">Australian classification: great groups of the Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols and Kandosols (experimental)<a class="anchor" aria-label="anchor" href="#australian-classification-great-groups-of-the-kurosols-sodosols-chromosols-ferrosols-dermosols-and-kandosols-experimental-0-9-283"></a></h3>
+<p><code><a href="../reference/classify_asc3.html">classify_asc3()</a></code> now keys a third level, the great groups, for the six orders with a B horizon of their own; the name is the great group’s (“Eutrophic Red Chromosol”). The other orders follow. WRB, SiBCS and USDA results do not change, nor do the Australian orders and suborders.</p>
+<ul><li>Pans in or under the B: Duric (red-brown hardpan), Petroferric (ferricrete), Petrocalcic (a calcrete pan under a B that is not calcareous), Placic (thin ironpan), from a new attribute <code>pan_type</code> (NatSoil records it, “none” included) or the designation (km, sm, qm, cm). A pan the record does not show is absent, as the order reads hard layers; a cemented layer of unknown kind leaves it undecided.</li>
+<li>The B2t or B2: Pedaric, Subplastic, Magnesic (exchangeable Ca/Mg below 0.1), Natric, base status (Dystrophic, Mesotrophic, Eutrophic, from the exchangeable bases and clay, the clay range of the field texture where no lab clay), the Sodosol ESP classes with their Mottled forms, and the carbonate classes as for the Calcarosols.</li>
+<li>Ferrosol Calcareous, Kandosol Leptic, Mellic and Andic.</li>
+<li>Hypocalcic now needs some carbonate in the solum (the class is of weakly calcareous soils); this does not change the Calcarosols.</li>
+<li>The hierarchical key finds the list under a class by the codes of the path to it (“CH-AA”), since the Australian suborder codes repeat from order to order; other systems do not change.</li>
+<li>
+<code><a href="../reference/benchmark_natsoil.html">benchmark_natsoil()</a></code> reports the great groups (<code>$great_groups</code>).</li>
+<li>The readings are in <code>inst/rules/asc3/readings.yaml</code> (44).</li>
+</ul><p>On 9,700 licensed NatSoil profiles, of the 2,160 of these orders whose order and suborder agree and whose survey gives a great group of the key, 21.6 % get the survey’s great group, and 80.6 % of the 98 decided. Most stay provisional for want of laboratory data: exchangeable Ca and Mg (Magnesic, before the base status classes), the bases and clay, mottles (the Mottled Sodosols) and, for the Kandosols, the porosity the Mellic great group asks.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.282" id="soilkey-09282-2026-10-23">soilKey 0.9.282 (2026-10-23)<a class="anchor" aria-label="anchor" href="#soilkey-09282-2026-10-23"></a></h2>
 <div class="section level3">
@@ -6330,7 +6346,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>
