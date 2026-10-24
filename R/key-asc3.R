@@ -1,8 +1,8 @@
 # =============================================================================
 # v0.9.277 -- the Australian Soil Classification, 3rd edition (Isbell & NCST
 # 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
-# suborders since v0.9.280 (all orders since v0.9.282). Great groups,
-# subgroups and families follow. Experimental and
+# suborders since v0.9.280 (all orders since v0.9.282); great groups since
+# v0.9.283. Subgroups and families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -20,10 +20,13 @@
 #' carbonate classes), the Anthroposols (the kind of human-made material),
 #' the Arenosols and Tenosols (chernic horizons, bleaching, hard materials
 #' within 0.5 m, carbonate, nodules, then colour) and the Rudosols (salinity,
-#' gypsum, shells, carbic materials, hard materials, sand, gravel, layers).
-#' The great groups, subgroups and families follow. The name is the
-#' suborder's ("Red Chromosol") where one is assigned; \code{rsg_or_order}
-#' keeps the order.
+#' gypsum, shells, carbic materials, hard materials, sand, gravel, layers),
+#' and the great groups of the Kurosols, Sodosols, Chromosols, Ferrosols,
+#' Dermosols and Kandosols (pans in or under the B, structure, plasticity,
+#' base status, exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t). The
+#' great groups of the other orders, and the subgroups and families,
+#' follow. The name is that of the deepest class assigned ("Eutrophic Red
+#' Chromosol"); \code{rsg_or_order} keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
 #' grades (\code{field_texture}, NCST Field Handbook codes; lab clay stands in
@@ -35,7 +38,7 @@
 #' (\code{soil_water_status}: the Vertosols' cracks are not required in a
 #' solum described moist), mottles, soft and hard carbonate, gypsum, the kind
 #' of peat, acid sulfate tests, EC of a 1:5 extract, dry and moist strength,
-#' ped size and nodules. From the site it reads
+#' ped size, nodules, pans and exchangeable bases. From the site it reads
 #' \code{drainage_class} (Hydrosols, organic materials, Podosol suborders),
 #' \code{tidal_inundation} (Hydrosols, organic materials),
 #' \code{surface_condition} (a cracking
@@ -120,14 +123,15 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
   }
   # a texture-contrast profile: sandy loam A over a clay B2t at an abrupt
   # boundary; the B2t chemistry decides among Kurosols, Sodosols, Chromosols
-  duplex <- function(ph, na) list(
+  duplex <- function(ph, na, ca, mg, k) list(
     designation = c("A1", "A2e", "B21t", "B22t", "BC"), top_cm = c(0, 12, 30, 55, 80),
     bottom_cm = c(12, 30, 55, 80, 110), field_texture = c("SL", "SL", "LMC", "MC", "LC"),
     clay_pct = c(14, 12, 42, 48, 38), boundary_distinctness = c("clear", "abrupt", "gradual", "gradual", NA),
     structure_grade = c("weak", "structureless", "strong", "moderate", "weak"),
     structure_type = c("granular", "massive", "prismatic", "blocky", "blocky"),
     ph_h2o = c(6.0, 6.0, ph, ph, ph + 0.3), cec_cmol = c(8, 5, 20, 22, 18),
-    na_cmol = c(0.1, 0.1, na, na, na), oc_pct = c(1.8, 0.5, 0.4, 0.3, 0.2),
+    na_cmol = c(0.1, 0.1, na, na, na), ca_cmol = c(4, 2, ca, ca, ca), mg_cmol = c(1, 0.5, mg, mg, mg),
+    k_cmol = c(0.4, 0.2, k, k, k), redoximorphic_features_pct = 0, oc_pct = c(1.8, 0.5, 0.4, 0.3, 0.2),
     munsell_hue_moist = c("10YR", "10YR", "2.5YR", "2.5YR", "5YR"),
     munsell_value_moist = c(3, 6, 4, 4, 5), munsell_chroma_moist = c(2, 3, 6, 6, 6))
   switch(order,
@@ -166,9 +170,9 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       ph_h2o = c(5.8, 6.0, 6.2, 6.5), oc_pct = c(3.0, 0.8, 0.5, 0.2)),
       utils::modifyList(well, list(drainage_class = "poorly drained", landform = "alluvial plain",
                                    surface_condition = "firm"))),
-    kurosols = mk(duplex(ph = 5.0, na = 0.5)),
-    sodosols = mk(duplex(ph = 8.0, na = 4.0)),
-    chromosols = mk(duplex(ph = 6.5, na = 0.4)),
+    kurosols = mk(duplex(ph = 5.0, na = 0.5, ca = 2, mg = 1.5, k = 0.3)),
+    sodosols = mk(duplex(ph = 8.0, na = 4.0, ca = 6, mg = 5, k = 0.5)),
+    chromosols = mk(duplex(ph = 6.5, na = 0.4, ca = 10, mg = 5, k = 0.5)),
     calcarosols = mk(list(
       designation = c("A1", "B21k", "B22k", "BCk"), top_cm = c(0, 12, 40, 70),
       bottom_cm = c(12, 40, 70, 110), field_texture = c("SL", "SCL", "SCL", "SL"),
@@ -182,6 +186,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       designation = c("A1", "B21", "B22", "B23"), top_cm = c(0, 15, 50, 100),
       bottom_cm = c(15, 50, 100, 150), field_texture = c("LC", "MC", "MC", "MC"),
       clay_pct = c(45, 55, 58, 60), fe_dcb_pct = c(7, 9, 10, 10),
+      ca_cmol = c(8, 6, 6, 6), mg_cmol = c(3, 3, 3, 3), k_cmol = c(0.6, 0.4, 0.4, 0.4), na_cmol = c(0.2, 0.2, 0.2, 0.2),
       boundary_distinctness = c("gradual", "diffuse", "diffuse", NA),
       structure_grade = c("strong", "strong", "moderate", "moderate"),
       structure_type = c("granular", "polyhedral", "polyhedral", "polyhedral"),
@@ -191,6 +196,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       designation = c("A1", "B21", "B22", "BC"), top_cm = c(0, 15, 50, 90),
       bottom_cm = c(15, 50, 90, 130), field_texture = c("CL", "LC", "LMC", "LC"),
       clay_pct = c(30, 38, 42, 36), fe_dcb_pct = c(1.5, 2.0, 2.2, 2.0),
+      ca_cmol = c(9, 8, 8, 8), mg_cmol = c(4, 4, 4, 4), k_cmol = c(0.6, 0.5, 0.5, 0.5), na_cmol = c(0.3, 0.3, 0.3, 0.3),
+      effervescence_class = "none",
       boundary_distinctness = c("gradual", "gradual", "gradual", NA),
       structure_grade = c("moderate", "moderate", "strong", "weak"),
       structure_type = c("granular", "blocky", "blocky", "blocky"), slickensides = "absent",
@@ -200,6 +207,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       designation = c("A1", "A3", "B21", "B22"), top_cm = c(0, 15, 30, 70),
       bottom_cm = c(15, 30, 70, 130), field_texture = c("SL", "SL", "SCL", "SCL"),
       clay_pct = c(12, 15, 24, 28), fe_dcb_pct = c(1.0, 1.2, 2.5, 2.8),
+      ca_cmol = c(2.5, 2, 2, 2), mg_cmol = c(1, 1, 1, 1), k_cmol = c(0.3, 0.2, 0.2, 0.2), na_cmol = c(0.1, 0.1, 0.1, 0.1),
+      strength_moist = c(NA, NA, "firm", "firm"),
       boundary_distinctness = c("gradual", "gradual", "diffuse", NA),
       structure_grade = c("weak", "structureless", "structureless", "weak"),
       structure_type = c("granular", "massive", "massive", "blocky"),

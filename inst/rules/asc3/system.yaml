@@ -9,7 +9,7 @@ namespace: asc
 classifier: classify_asc3
 result_slot: asc3
 top_level: orders
-levels: [orders, suborders]
+levels: [orders, suborders, great_groups]
 display:
   en: "Australian Soil Classification, 3rd edition"
   pt: "Classificação Australiana de Solos, 3ª edição"
@@ -22,7 +22,7 @@ citation: >
   Online version: Soil Science Australia, www.soilscienceaustralia.org.au/asc
   (last update 25 June 2026; Appendix 8 errata of 5 November 2025).
 version: "The Australian Soil Classification, 3rd edition (2021), online version of 25 June 2026"
-implementation_status: "soilKey v0.9.282 -- 15/15 orders and the suborders of all 15; great groups, subgroups and families to follow"
+implementation_status: "soilKey v0.9.283 -- 15/15 orders, the suborders of all 15, and the great groups of 6 (Kurosols, Sodosols, Chromosols, Ferrosols, Dermosols, Kandosols); the other great groups, subgroups and families to follow"
 source: |
   Isbell, R.F. and NCST (2021). The Australian Soil Classification, 3rd ed.
   CSIRO Publishing, Melbourne. Online version (Soil Science Australia), key to

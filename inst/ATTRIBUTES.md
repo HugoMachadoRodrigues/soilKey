@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.282)
+# soilKey -- recognised horizon attribute names (v0.9.283)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -252,11 +252,12 @@ these columns; anything else is preserved but ignored by the keys.
 | `ped_size_max_mm` | mm | numeric | Upper limit of the size class of the most common peds (Field Handbook classes: 2, 5, 10, 20, 50 ... mm); ASC melanic horizon (10-20 mm or less). | - |
 | `ferric_nodules_pct` | % | numeric | Ferruginous (and ferromanganiferous) nodules or concretions, visual abundance; ASC ferric horizon (more than 20 %), Sesqui-Nodular Tenosols. | - |
 | `bauxitic_nodules_pct` | % | numeric | Bauxite (aluminous) nodules or concretions, visual abundance; ASC bauxitic horizon (more than 20 %), Sesqui-Nodular Tenosols. | - |
+| `pan_type` | - | character | Kind of pan in the horizon (Field Handbook: red-brown hardpan, calcrete, ferricrete, alcrete, thin ironpan, silcrete, duripan, fragipan, densipan, organic pan, ortstein, other pan; 'none' when recorded absent); ASC Duric, Petroferric, Petrocalcic, Placic great groups. | - |
 | `esp_pct` | % | numeric | Exchangeable sodium percentage as the laboratory reports it, read when exchangeable Na or the CEC is not given; ASC sodic. | - |
 | `soil_water_status` | - | character | Moisture of the horizon when it was described (Field Handbook: dry / moderately moist / moist / wet); ASC Vertosols, whose cracks are not required in a solum described moist. | - |
 | `effervescence_class` | - | character | Field reaction of the fine earth with 1 M HCl (none / slight / moderate / strong / very strong); ASC calcareous soil. | - |
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.282._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.283._
 

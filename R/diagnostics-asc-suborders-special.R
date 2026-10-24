@@ -407,7 +407,13 @@ carbonate_suborder_asc <- function(pedon, class = c("hypergypsic", "carbonatic",
       weak_only <- every(.and3v(eff_weak, !visible))
       soft_low <- every(ifelse(is.na(c$soft), NA, c$soft < 2))
       hard_low <- every(ifelse(is.na(c$hard), NA, c$hard < 20))
-      .and3(.any3(c(weak_only, soft_low)), hard_low)
+      # the class is of soils whose carbonate is weak, not of soils with none
+      # (the table gives soft carbonate above 0): some horizon of the solum
+      # is calcareous (always so in a Calcarosol)
+      calc <- .asc_calcareous(x)
+      some <- if (!length(sol)) NA else if (any(calc[c(sol, maybe)] %in% TRUE)) TRUE
+              else if (all(calc[sol] %in% FALSE) && !any(is.na(calc[maybe]) | calc[maybe] %in% TRUE)) FALSE else NA
+      .and3(some, .any3(c(weak_only, soft_low)), hard_low)
     },
     {
       test <- switch(class,

@@ -1,0 +1,394 @@
+# Key to the great groups of the Sodosols, ASC 3rd ed. (online version with errata).
+# The order page gives one list for all the colour suborders, repeated here; see
+# R/diagnostics-asc-great-groups-b.R and inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "SO-AA":
+    - code: "BJ"
+      name: Duric Red Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Red Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "DZ"
+      name: Petrocalcic Red Sodosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Red Sodosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2t}
+      notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "IE"
+      name: Effervescent Red Sodosol
+      tests:
+        all_of:
+          - effervescent_asc: {}
+      notes: "The fine earth effervesces with 1 M HCl throughout the solum."
+
+    - code: "FN"
+      name: Mottled-Subnatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 6 to less than 15 in its major part."
+
+    - code: "ES"
+      name: Subnatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric}
+      notes: "Upper B2t with an ESP of 6 to less than 15 in its major part."
+
+    - code: "FO"
+      name: Mottled-Mesonatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 15 to 25 in its major part."
+
+    - code: "DP"
+      name: Mesonatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric}
+      notes: "Upper B2t with an ESP of 15 to 25 in its major part."
+
+    - code: "FP"
+      name: Mottled-Hypernatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP above 25 in its major part."
+
+    - code: "CR"
+      name: Hypernatric Red Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric}
+      notes: "Upper B2t with an ESP above 25 in its major part."
+
+  "SO-AB":
+    - code: "BJ"
+      name: Duric Brown Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Brown Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "DZ"
+      name: Petrocalcic Brown Sodosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Brown Sodosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2t}
+      notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "IE"
+      name: Effervescent Brown Sodosol
+      tests:
+        all_of:
+          - effervescent_asc: {}
+      notes: "The fine earth effervesces with 1 M HCl throughout the solum."
+
+    - code: "FN"
+      name: Mottled-Subnatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 6 to less than 15 in its major part."
+
+    - code: "ES"
+      name: Subnatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric}
+      notes: "Upper B2t with an ESP of 6 to less than 15 in its major part."
+
+    - code: "FO"
+      name: Mottled-Mesonatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 15 to 25 in its major part."
+
+    - code: "DP"
+      name: Mesonatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric}
+      notes: "Upper B2t with an ESP of 15 to 25 in its major part."
+
+    - code: "FP"
+      name: Mottled-Hypernatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP above 25 in its major part."
+
+    - code: "CR"
+      name: Hypernatric Brown Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric}
+      notes: "Upper B2t with an ESP above 25 in its major part."
+
+  "SO-AC":
+    - code: "BJ"
+      name: Duric Yellow Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Yellow Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "DZ"
+      name: Petrocalcic Yellow Sodosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Yellow Sodosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2t}
+      notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "IE"
+      name: Effervescent Yellow Sodosol
+      tests:
+        all_of:
+          - effervescent_asc: {}
+      notes: "The fine earth effervesces with 1 M HCl throughout the solum."
+
+    - code: "FN"
+      name: Mottled-Subnatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 6 to less than 15 in its major part."
+
+    - code: "ES"
+      name: Subnatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric}
+      notes: "Upper B2t with an ESP of 6 to less than 15 in its major part."
+
+    - code: "FO"
+      name: Mottled-Mesonatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 15 to 25 in its major part."
+
+    - code: "DP"
+      name: Mesonatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric}
+      notes: "Upper B2t with an ESP of 15 to 25 in its major part."
+
+    - code: "FP"
+      name: Mottled-Hypernatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP above 25 in its major part."
+
+    - code: "CR"
+      name: Hypernatric Yellow Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric}
+      notes: "Upper B2t with an ESP above 25 in its major part."
+
+  "SO-AD":
+    - code: "BJ"
+      name: Duric Grey Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Grey Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "DZ"
+      name: Petrocalcic Grey Sodosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Grey Sodosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2t}
+      notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "IE"
+      name: Effervescent Grey Sodosol
+      tests:
+        all_of:
+          - effervescent_asc: {}
+      notes: "The fine earth effervesces with 1 M HCl throughout the solum."
+
+    - code: "FN"
+      name: Mottled-Subnatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 6 to less than 15 in its major part."
+
+    - code: "ES"
+      name: Subnatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric}
+      notes: "Upper B2t with an ESP of 6 to less than 15 in its major part."
+
+    - code: "FO"
+      name: Mottled-Mesonatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 15 to 25 in its major part."
+
+    - code: "DP"
+      name: Mesonatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric}
+      notes: "Upper B2t with an ESP of 15 to 25 in its major part."
+
+    - code: "FP"
+      name: Mottled-Hypernatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP above 25 in its major part."
+
+    - code: "CR"
+      name: Hypernatric Grey Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric}
+      notes: "Upper B2t with an ESP above 25 in its major part."
+
+  "SO-AE":
+    - code: "BJ"
+      name: Duric Black Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Black Sodosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "DZ"
+      name: Petrocalcic Black Sodosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Black Sodosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2t}
+      notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "IE"
+      name: Effervescent Black Sodosol
+      tests:
+        all_of:
+          - effervescent_asc: {}
+      notes: "The fine earth effervesces with 1 M HCl throughout the solum."
+
+    - code: "FN"
+      name: Mottled-Subnatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 6 to less than 15 in its major part."
+
+    - code: "ES"
+      name: Subnatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: subnatric}
+      notes: "Upper B2t with an ESP of 6 to less than 15 in its major part."
+
+    - code: "FO"
+      name: Mottled-Mesonatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP of 15 to 25 in its major part."
+
+    - code: "DP"
+      name: Mesonatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: mesonatric}
+      notes: "Upper B2t with an ESP of 15 to 25 in its major part."
+
+    - code: "FP"
+      name: Mottled-Hypernatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric, mottled: true}
+      notes: "Upper B2t mottled, with an ESP above 25 in its major part."
+
+    - code: "CR"
+      name: Hypernatric Black Sodosol
+      tests:
+        all_of:
+          - esp_great_group_asc: {class: hypernatric}
+      notes: "Upper B2t with an ESP above 25 in its major part."

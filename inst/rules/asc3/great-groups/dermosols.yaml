@@ -1,0 +1,499 @@
+# Key to the great groups of the Dermosols, ASC 3rd ed. (online version with errata).
+# The order page gives one list for all the colour suborders, repeated here; see
+# R/diagnostics-asc-great-groups-b.R and inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "DE-AA":
+    - code: "BJ"
+      name: Duric Red Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Red Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Red Dermosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Red Dermosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2}
+      notes: "Strong blocky or polyhedral upper B2 whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "ET"
+      name: Subplastic Red Dermosol
+      tests:
+        all_of:
+          - subplastic_asc: {window: b2}
+      notes: "The major part of the B2 strongly subplastic."
+
+    - code: "DB"
+      name: Magnesic Red Dermosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Red Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Red Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Red Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Red Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Red Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Red Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Red Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Red Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "DE-AB":
+    - code: "BJ"
+      name: Duric Brown Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Brown Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Brown Dermosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Brown Dermosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2}
+      notes: "Strong blocky or polyhedral upper B2 whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "ET"
+      name: Subplastic Brown Dermosol
+      tests:
+        all_of:
+          - subplastic_asc: {window: b2}
+      notes: "The major part of the B2 strongly subplastic."
+
+    - code: "DB"
+      name: Magnesic Brown Dermosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Brown Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Brown Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Brown Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Brown Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Brown Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Brown Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Brown Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Brown Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "DE-AC":
+    - code: "BJ"
+      name: Duric Yellow Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Yellow Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Yellow Dermosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Yellow Dermosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2}
+      notes: "Strong blocky or polyhedral upper B2 whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "ET"
+      name: Subplastic Yellow Dermosol
+      tests:
+        all_of:
+          - subplastic_asc: {window: b2}
+      notes: "The major part of the B2 strongly subplastic."
+
+    - code: "DB"
+      name: Magnesic Yellow Dermosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Yellow Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Yellow Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Yellow Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Yellow Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Yellow Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Yellow Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Yellow Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Yellow Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "DE-AD":
+    - code: "BJ"
+      name: Duric Grey Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Grey Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Grey Dermosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Grey Dermosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2}
+      notes: "Strong blocky or polyhedral upper B2 whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "ET"
+      name: Subplastic Grey Dermosol
+      tests:
+        all_of:
+          - subplastic_asc: {window: b2}
+      notes: "The major part of the B2 strongly subplastic."
+
+    - code: "DB"
+      name: Magnesic Grey Dermosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Grey Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Grey Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Grey Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Grey Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Grey Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Grey Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Grey Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Grey Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."
+
+  "DE-AE":
+    - code: "BJ"
+      name: Duric Black Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "EA"
+      name: Petroferric Black Dermosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: b}
+      notes: "A B horizon containing or directly underlain by ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Black Dermosol
+      tests:
+        all_of:
+          - petrocalcic_asc: {}
+      notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
+
+    - code: "BK"
+      name: Pedaric Black Dermosol
+      tests:
+        all_of:
+          - pedaric_asc: {window: upper_b2}
+      notes: "Strong blocky or polyhedral upper B2 whose peds hold together very weakly (a spade enters very easily when dry)."
+
+    - code: "ET"
+      name: Subplastic Black Dermosol
+      tests:
+        all_of:
+          - subplastic_asc: {window: b2}
+      notes: "The major part of the B2 strongly subplastic."
+
+    - code: "DB"
+      name: Magnesic Black Dermosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
+
+    - code: "AF"
+      name: Dystrophic Black Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Black Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Black Dermosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+    - code: "CV"
+      name: Hypocalcic Black Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: Lithocalcic Black Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: Supracalcic Black Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: Hypercalcic Black Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: Calcic Black Dermosol
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "Other soils with a calcareous horizon."

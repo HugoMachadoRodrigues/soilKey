@@ -39,8 +39,9 @@ test_that("each colour order keys to its suborder, with nothing undecided", {
             vertosols = "Black Vertosol")
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
-    expect_identical(r$name, want[[o]], info = o)
-    expect_identical(r$levels$level, c("orders", "suborders"))
+    # since 0.9.283 the name goes on to the great group: the suborder is the
+    # second level
+    expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
     expect_length(r$provisional_because, 0L)
   }
   # every order now has suborders (0.9.282)

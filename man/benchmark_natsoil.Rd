@@ -23,8 +23,10 @@ A list: \code{n}; \code{accuracy} and \code{accuracy_edition};
   by surveyed order; \code{confusion} (rows the survey, columns soilKey);
   \code{first_undecided} (the first order left undecided, among
   provisional pedons); \code{suborders}, the same for the suborders where
-  the key has them (overall, and over the pedons whose order agrees); and
-  \code{results}, one row per pedon.
+  the key has them (overall, and over the pedons whose order agrees);
+  \code{great_groups}, the same for the great groups (overall, and over the
+  pedons whose order and suborder agree); and \code{results}, one row per
+  pedon.
 }
 \description{
 Classifies NatSoil pedons with \code{\link{classify_asc3}} and compares

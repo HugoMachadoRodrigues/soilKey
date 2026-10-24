@@ -1,0 +1,254 @@
+# Key to the great groups of the Kurosols, ASC 3rd ed. (online version with errata).
+# The order page gives one list for all the colour suborders, repeated here; see
+# R/diagnostics-asc-great-groups-b.R and inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "KU-AA":
+    - code: "EA"
+      name: Petroferric Red Kurosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "GP"
+      name: Magnesic-Natric Red Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t, natric: true}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t, and sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "DB"
+      name: Magnesic Red Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "FD"
+      name: Natric Red Kurosol
+      tests:
+        all_of:
+          - natric_asc: {}
+      notes: "Sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "AF"
+      name: Dystrophic Red Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Red Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Red Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+  "KU-AB":
+    - code: "EA"
+      name: Petroferric Brown Kurosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "GP"
+      name: Magnesic-Natric Brown Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t, natric: true}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t, and sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "DB"
+      name: Magnesic Brown Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "FD"
+      name: Natric Brown Kurosol
+      tests:
+        all_of:
+          - natric_asc: {}
+      notes: "Sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "AF"
+      name: Dystrophic Brown Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Brown Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Brown Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+  "KU-AC":
+    - code: "EA"
+      name: Petroferric Yellow Kurosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "GP"
+      name: Magnesic-Natric Yellow Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t, natric: true}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t, and sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "DB"
+      name: Magnesic Yellow Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "FD"
+      name: Natric Yellow Kurosol
+      tests:
+        all_of:
+          - natric_asc: {}
+      notes: "Sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "AF"
+      name: Dystrophic Yellow Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Yellow Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Yellow Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+  "KU-AD":
+    - code: "EA"
+      name: Petroferric Grey Kurosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "GP"
+      name: Magnesic-Natric Grey Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t, natric: true}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t, and sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "DB"
+      name: Magnesic Grey Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "FD"
+      name: Natric Grey Kurosol
+      tests:
+        all_of:
+          - natric_asc: {}
+      notes: "Sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "AF"
+      name: Dystrophic Grey Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Grey Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Grey Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
+
+  "KU-AE":
+    - code: "EA"
+      name: Petroferric Black Kurosol
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: petroferric, where: solum}
+      notes: "A petroferric horizon within the solum."
+
+    - code: "GP"
+      name: Magnesic-Natric Black Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t, natric: true}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t, and sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "DB"
+      name: Magnesic Black Kurosol
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "FD"
+      name: Natric Black Kurosol
+      tests:
+        all_of:
+          - natric_asc: {}
+      notes: "Sodic in the major part of the upper 0.2 m of the B2t."
+
+    - code: "AF"
+      name: Dystrophic Black Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
+
+    - code: "AG"
+      name: Mesotrophic Black Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
+
+    - code: "AH"
+      name: Eutrophic Black Kurosol
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."

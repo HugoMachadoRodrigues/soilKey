@@ -456,6 +456,9 @@
           "bauxitic_nodules_pct": {
             "type": ["number", "null"]
           },
+          "pan_type": {
+            "type": ["string", "null"]
+          },
           "esp_pct": {
             "type": ["number", "null"]
           },
