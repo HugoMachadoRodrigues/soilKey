@@ -86,7 +86,13 @@ soft or hard, a fragment of unknown lithology calcrete; coarse fragments
 not recorded count as none; segregations not recorded leave the soft
 amount unknown, and the hard one unless calcrete alone exceeds 50 \%).
 Ferruginous and bauxite nodules give \code{ferric_nodules_pct} and
-\code{bauxitic_nodules_pct} in the same way. Abundance classes of several
+\code{bauxitic_nodules_pct}; since 0.9.285 manganiferous nodules give
+\code{manganiferous_nodules_pct}, and gypseous and saline segregations
+\code{gypsum_visible_pct} and \code{halite_visible_pct}. Only what is
+recorded counts (a segregation of unrecorded nature or form is not one of
+them); the amount is NA when no segregation is recorded, and NaN when the
+recorded classes leave it on either side of 20 \% (50 \% for halite),
+which the key reads as undecided. Abundance classes of several
 records are added as ranges (each class strictly between its limits).
 Laboratory EC of a 1:5 extract gives \code{ec_1to5_dS_m}; the soil
 strength gives \code{strength_dry} or \code{strength_moist} by the moisture

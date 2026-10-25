@@ -161,10 +161,11 @@
   hard <- rock | cem %in% c("moderately", "strongly", "indurated") | des$m
   thick <- h$bottom_cm - h$top_cm
   b_role <- !is.na(role) & grepl("^B", role) & !grepl("^B/", role) | role %in% c("A/B")
-  # the solum: P, O2, A and B horizons and their transitions (AB, BA, A/B,
-  # B/A, BC, B/C); O1 is left out (glossary 'Solum')
+  # the solum: P, O2, A and B horizons and their transitions (AB, AC, BA,
+  # A/B, B/A, BC, B/C: the first letter dominates, glossary 'Transitional
+  # horizons'; AC since 0.9.285); O1 is left out (glossary 'Solum')
   solum <- ifelse(unknown_role, NA,
-                  role %in% c("P", "O2", "A1", "A2", "A3", "AB", "BA", "A/B", "B/A",
+                  role %in% c("P", "O2", "A1", "A2", "A3", "AB", "AC", "BA", "A/B", "B/A",
                               "B1", "B2", "B3", "BC", "B/C") & !des$buried)
   b2 <- ifelse(unknown_role, NA, role %in% "B2" & !des$buried & !des$lamellae)
   # where a row of unknown role may be a horizon of the present soil: from
@@ -793,16 +794,12 @@ hydrosol_asc <- function(pedon) {
   if (t_true >= need_cm) TRUE else if (t_true + t_open < need_cm) FALSE else NA
 }
 
-#' Calcarosols (ASC order, key step 9)
-#'
-#' Calcareous throughout the solum, or from the horizon directly below the A1
-#' or Ap or from 0.2 m, whichever is shallower; not a deep sandy profile
-#' (sand, loamy sand or clayey sand over 0.8 m or more of the upper 1.0 m).
-#' The carbonate is taken as pedogenic unless the layer origin says shell,
-#' coquina, limestone or marl.
-#' @noRd
-calcarosol_asc <- function(pedon) {
-  x <- .asc_horizons(pedon); h <- x$h
+# Calcareous throughout the solum, or at least directly below the A1 or Ap
+# or within 0.2 m (whichever is shallower), pedogenic carbonate only (key to
+# orders, Calcarosols; Hydrosols, great group Calcarosolic): the verdict, the
+# depth tested and the row there.
+.asc_calcarosol_calcareous <- function(x) {
+  h <- x$h
   calc <- .asc_calcareous(x)
   origin <- tolower(as.character(h$layer_origin %||% rep(NA_character_, x$n)))
   litho <- grepl("shell|coquina|limestone|marl", origin)
@@ -830,7 +827,21 @@ calcarosol_asc <- function(pedon) {
   sol <- sort(c(sol, sw)); maybe <- setdiff(maybe, sw)
   throughout <- if (!length(sol)) NA else if (any(calc[sol] %in% FALSE)) FALSE
                 else if (all(calc[c(sol, maybe)] %in% TRUE)) TRUE else NA
-  calcareous <- .any3(c(shallow, throughout))
+  list(calcareous = .any3(c(shallow, throughout)), d = d, at_d = at_d)
+}
+
+#' Calcarosols (ASC order, key step 9)
+#'
+#' Calcareous throughout the solum, or from the horizon directly below the A1
+#' or Ap or from 0.2 m, whichever is shallower; not a deep sandy profile
+#' (sand, loamy sand or clayey sand over 0.8 m or more of the upper 1.0 m).
+#' The carbonate is taken as pedogenic unless the layer origin says shell,
+#' coquina, limestone or marl.
+#' @noRd
+calcarosol_asc <- function(pedon) {
+  x <- .asc_horizons(pedon); h <- x$h
+  cc <- .asc_calcarosol_calcareous(x)
+  calcareous <- cc$calcareous; d <- cc$d; at_d <- cc$at_d
   sandy <- .asc_deep_sandy(x)
   passed <- .and3(calcareous, !sandy)
   .asc_result("calcarosol_asc", passed, if (length(at_d)) at_d[1L] else integer(0),

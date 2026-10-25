@@ -537,6 +537,39 @@ attributes:
     systems: [asc3]
     min: 0
     max: 100
+  - name: manganiferous_nodules_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Black manganiferous nodules or concretions, mostly uncemented, visual abundance; ASC manganic horizon (more than 20 %), Manganic Arenosols."
+    systems: [asc3]
+    min: 0
+    max: 100
+  - name: gypsum_visible_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Visible gypsum (segregations, crystals) of apparently pedogenic origin, visual abundance; ASC gypsic horizon (more than 20 %, at least 0.1 m)."
+    systems: [asc3]
+    min: 0
+    max: 100
+  - name: halite_visible_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Halite crystals, visual abundance; ASC Halic (more than 50 %) and Subhalic (less than 50 %) great groups of the Hypersalic suborders."
+    systems: [asc3]
+    min: 0
+    max: 100
+  - name: gritty
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "-"
+    description: "A distinct sharp gritty feel from gritty coarse sand (0.2-2 mm) and fine gravel of angular or subangular quartz or other hard rock fragments; ASC Gritty great groups. Not recorded is read as absent."
+    systems: [asc3]
+  - name: heavy_minerals_pct
+    section: "Australian system (ASC 3rd ed.)"
+    unit: "%"
+    description: "Visible heavy or opaque minerals, identifiable by wet panning in the field; ASC Gravic Arenosols (more than 3 %). Not recorded is read as absent."
+    systems: [asc3]
+    min: 0
+    max: 100
   - name: pan_type
     section: "Australian system (ASC 3rd ed.)"
     unit: "-"

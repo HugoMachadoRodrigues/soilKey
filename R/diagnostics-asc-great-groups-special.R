@@ -152,10 +152,28 @@ vertosol_surface_asc <- function(pedon, kind = c("self_mulching", "epipedal", "c
 # deepest of the rows `sol` that is not a pan (integer(0) when the
 # description ends there or goes on after a gap); `after_gap` the first rows
 # below that bottom when none starts at it.
+# A pan layer, whatever its designation: an m horizon; a horizon recorded as
+# a pan that makes up the layer (ferricrete, alcrete, silcrete, calcrete, a
+# red-brown hardpan, duripan, ortstein, or one the layer or rock origin
+# names); or one recorded with a thin or unnamed pan (a thin ironpan, a
+# manganiferous or organic pan, an 'other pan') when the horizon is
+# moderately cemented or more, since a thin pan is a band within it.
+# Fragipans, densipans and cultivation pans are not cemented.
+.asc_pan_layer <- function(x) {
+  pt <- tolower(trimws(as.character(x$h$pan_type %||% rep(NA_character_, x$n))))
+  # a pan the origin names is the layer only when the layer is cemented
+  org_kind <- .asc_pan_origin(x)
+  massive <- grepl("ferricrete|alcrete|silcrete|siliceous|calcrete|red-brown hardpan|duripan|ortstein|petroferric|petroreticul", pt) |
+             (!is.na(org_kind) & x$hard)
+  thin <- !is.na(pt) & nzchar(pt) & pt != "none" & !massive &
+          !grepl("fragipan|densipan|cultivation|plough|plow|tillage|traffic", pt)
+  (x$des$m | massive | (thin & x$hard)) & !x$rock
+}
+
 .asc_under_solum <- function(x, sol = which(x$solum %in% TRUE)) {
   h <- x$h
   none <- list(rows = integer(0), after_gap = integer(0))
-  sol <- sol[!x$des$m[sol]]
+  sol <- sol[!.asc_pan_layer(x)[sol]]
   if (!length(sol)) return(none)
   bot <- suppressWarnings(max(h$bottom_cm[sol], na.rm = TRUE))
   if (!is.finite(bot)) return(none)
@@ -178,13 +196,16 @@ vertosol_surface_asc <- function(pedon, kind = c("self_mulching", "epipedal", "c
   origin <- tolower(paste(h$layer_origin[i] %||% NA, h$rock_origin[i] %||% NA))
   pt <- tolower(trimws(as.character(h$pan_type[i] %||% NA)))
   if (x$rock[i] || x$role[i] %in% "R") return("rock")
-  uncemented <- !is.na(pt) && grepl("fragipan|densipan|cultivation|plough|plow|tillage|traffic", pt)
-  if (x$des$m[i] || (!is.na(pt) && nzchar(pt) && pt != "none" && !uncemented && !grepl("other pan", pt)))
-    return("pan")
+  # a pan layer (a thin pan is a band within the layer unless it is cemented)
+  if (.asc_pan_layer(x)[i]) return("pan")
+  # an 'other pan': a pan when the layer is cemented, else of unknown kind
+  if (!is.na(pt) && grepl("other pan", pt)) return(if (x$hard[i]) "pan" else NA_character_)
+  # saprolite named as such decides even when cemented; "residual" or "in
+  # situ" alone does not tell a cemented layer from rock
+  if (grepl("saprolit|saprock|weathered rock|decomposed rock", origin)) return("saprolite")
   if (x$hard[i]) return("hard")
-  if (!is.na(pt) && grepl("other pan", pt)) return(NA_character_)
   if (grepl("\\bmarl", origin)) return("marl")
-  if (grepl("saprolit|saprock|weathered rock|decomposed rock|residual|in situ", origin)) return("saprolite")
+  if (grepl("residual|in situ", origin)) return("saprolite")
   if (x$des$buried[i] ||
       grepl("alluv|fluvi|aeolian|aeolic|eolian|colluv|solimov|marine|lacustrine|sediment|dune|transported", origin))
     return("unconsolidated")
@@ -211,33 +232,11 @@ calcarosol_gg_asc <- function(pedon, kind = c("duric", "petrocalcic", "rendic", 
                        "Calcarosols, great groups"))
   # a lamellae horizon above the first C, D or R is B material in bands
   lam <- x$role %in% "lamellae" & !x$des$buried & !is.na(h$top_cm) & h$top_cm < x$c_top
-  sol <- which(x$solum %in% TRUE | lam)
   maybe <- which(x$maybe_soil)
-  # what the soil directly overlies, with the rows of unknown role out of the
-  # solum and then in it
-  unders <- list(.asc_under_solum(x, sol), .asc_under_solum(x, union(sol, maybe)))
-  on <- function(f) { v <- lapply(unders, f); if (identical(v[[1L]], v[[2L]])) v[[1L]] else NA }
-  over <- function(k) on(function(u) {
-    if (!length(u$rows)) return(NA)
-    sk <- vapply(u$rows, function(i) .asc_substrate_kind(x, i), "")
-    # a cemented layer is not unconsolidated, nor marl, but may be hard rock
-    # or a cemented saprolite
-    sk[sk %in% "hard"] <- if (k %in% c("unconsolidated", "marl")) "other" else NA
-    if (any(sk %in% k)) TRUE else if (anyNA(sk)) NA else FALSE
-  })
-  under <- unders[[1L]]$rows
+  under <- .asc_under_solum(x, which(x$solum %in% TRUE | lam))$rows
+  # what the soil directly overlies (R/diagnostics-asc-great-groups-rest.R)
   passed <- switch(kind,
-    duric = , petrocalcic = {
-      v <- .asc_pan_rows(x, if (kind == "duric") "red-brown hardpan" else "calcrete")
-      on(function(u) {
-        # a pan directly under the solum, or a pan designated in it
-        cand <- c(u$rows, which(x$solum %in% TRUE & x$des$m))
-        if (length(cand) && any(v[cand] %in% TRUE)) return(TRUE)
-        # after a gap in the record, a pan first below may still lie directly
-        # under the soil
-        if (anyNA(v[cand]) || any(!(v[u$after_gap] %in% FALSE))) NA else FALSE
-      })
-    },
+    duric = , petrocalcic = .asc_overlie(x, kind),
     rendic = {
       a <- which(x$role %in% c("A1", "A2", "A3", "AB", "A/B") & !x$des$buried)
       if (!length(a)) FALSE else {
@@ -262,8 +261,8 @@ calcarosol_gg_asc <- function(pedon, kind = c("duric", "petrocalcic", "rendic", 
       else if (!length(maybe)) { if (x$any_known) FALSE else NA }
       else if (all(pd[maybe] %in% FALSE)) FALSE else NA
     },
-    lithic = over("rock"), paralithic = over("saprolite"), marly = over("marl"),
-    regolithic = over("unconsolidated"))
+    lithic = .asc_overlie(x, "rock"), paralithic = .asc_overlie(x, "saprolite"), marly = .asc_overlie(x, "marl"),
+    regolithic = .asc_overlie(x, "unconsolidated"))
   .asc_result(paste0("gg_calcarosol_", kind), passed, under, list(),
               if (is.na(passed)) c("designation", "layer_origin", "pan_type", "carbonate_soft_pct", "caco3_pct",
                                    "structure_grade") else character(0),
@@ -353,37 +352,7 @@ organosol_gg_asc <- function(pedon, kind = c("folic", "monosulfidic_sulfuric", "
                                              "calcareous", "basic", "acidic")) {
   kind <- match.arg(kind)
   x <- .asc_horizons(pedon); h <- x$h
-  top0 <- .asc_profile_top(x) %|NA|% 0
-  # rock is not soil material: R horizons are not tested
-  in150 <- !is.na(h$top_cm) & h$top_cm < top0 + 150 & !x$rock
-  # the upper 1.5 m not all described (the description stops above it, a
-  # depth is missing, or the record has a gap); a description that ends on
-  # rock or a hard layer is complete below that layer, not above it
-  zb <- top0 + 150
-  if (.asc_ends_hard(x)) {
-    last <- which(!is.na(h$top_cm)); zb <- min(zb, max(h$top_cm[last]))
-  }
-  win <- which(!is.na(h$top_cm) & h$top_cm < zb & (is.na(h$bottom_cm) | h$bottom_cm > top0))
-  cover <- 0; end <- top0
-  for (i in win[order(h$top_cm[win])]) {
-    if (is.na(h$bottom_cm[i])) { cover <- NA; break }
-    a <- max(h$top_cm[i], end); b <- min(h$bottom_cm[i], zb)
-    if (b > a) { cover <- cover + b - a; end <- b }
-  }
-  unseen <- is.na(cover) || cover < zb - top0 - 0.5
-  open_below <- function(v) if (identical(v, FALSE) && unseen) NA else v
   om <- .asc_organic_material(x, pedon)
-  s_pct <- suppressWarnings(as.numeric(h$sulfidic_s_pct %||% rep(NA_real_, x$n)))
-  inc <- suppressWarnings(as.numeric(h$incubation_ph %||% rep(NA_real_, x$n)))
-  ph <- suppressWarnings(as.numeric(h$ph_h2o %||% rep(NA_real_, x$n)))
-  hyper <- .asc_hypersulfidic_rows(x)
-  # hyposulfidic: sulfidic (S 0.01 % or more), a field pH of 4 or more, and
-  # no substantial drop (0.5 unit or more) to below 4 on incubation
-  hypo <- ifelse(is.na(inc), FALSE,
-          ifelse(!is.na(s_pct) & s_pct < 0.01, FALSE,
-          ifelse(!is.na(ph) & ph < 4, FALSE,
-          ifelse(!is.na(ph) & inc < 4 & round(ph - inc, 6) >= 0.5, FALSE,
-          ifelse(is.na(ph) | is.na(s_pct), NA, TRUE)))))
   passed <- switch(kind,
     folic = {
       d <- pedon$site$drainage_class %||% NA
@@ -393,20 +362,9 @@ organosol_gg_asc <- function(pedon, kind = c("folic", "monosulfidic_sulfuric", "
               else if (!is.na(dry_end) && dry_end >= 6) FALSE else NA
       .and3(free, .asc_organic_branch2(x, om))
     },
-    monosulfidic_sulfuric = , monohypersulfidic = , monohyposulfidic = FALSE,
-    sulfuric = {
-      # a run starting within the upper 1.5 m may go on below it
-      x2 <- x; x2$top_ms <- h$top_cm - top0
-      v <- .asc_sulfuric_rows(x); v[x$rock] <- FALSE
-      open_below(.cssc_run_test(x2, v, 15, max_top_cm = 150 - 1e-6)$passed)
-    },
-    # the replacements need the incubation: untested rows are not evidence
-    hypersulfidic = .asc_any_rows(ifelse(is.na(inc), FALSE, hyper)[in150]),
-    hyposulfidic = .asc_any_rows(hypo[in150]),
-    sulfidic = {
-      sul <- ifelse(!is.na(s_pct), s_pct >= 0.01, ifelse(hyper %in% TRUE, TRUE, .asc_untested_material()))
-      open_below(.asc_any_rows(sul[in150]))
-    },
+    # the acid sulfate groups (R/diagnostics-asc-great-groups-rest.R)
+    monosulfidic_sulfuric = , sulfuric = , monohypersulfidic = , hypersulfidic = , monohyposulfidic = ,
+    hyposulfidic = , sulfidic = .asc_acid_sulfate(x, pedon, kind),
     calcareous = , basic = , acidic = {
       live <- !x$des$buried
       rows <- which(om %in% TRUE & live); maybe <- which(is.na(om) & live)

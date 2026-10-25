@@ -527,9 +527,9 @@ calcenic_asc <- function(pedon) {
 sesqui_nodular_asc <- function(pedon) {
   x <- .asc_horizons(pedon); h <- x$h
   fe <- h$ferric_nodules_pct %||% rep(NA_real_, x$n); bx <- h$bauxitic_nodules_pct %||% rep(NA_real_, x$n)
-  # nodules not recorded (no segregation record) are unknown, as for the
-  # carbonate segregations
-  one <- function(v) ifelse(is.na(v), NA, v > 20)
+  # nodules not recorded are absent (more than 20 % of them shows; since
+  # 0.9.285); an amount the record leaves on either side of 20 % is undecided
+  one <- function(v) .asc_recorded_over(v, 20)
   ok <- .any3v(one(fe), one(bx))
   ok[x$hard | x$des$buried | !x$mineral] <- FALSE
   # within the solum (cemented layers left out); rows of unknown role in the

@@ -258,7 +258,13 @@ fetch_natsoil <- function(dir, classified_only = TRUE, max_sites = Inf, page_siz
 #' not recorded count as none; segregations not recorded leave the soft
 #' amount unknown, and the hard one unless calcrete alone exceeds 50 \%).
 #' Ferruginous and bauxite nodules give \code{ferric_nodules_pct} and
-#' \code{bauxitic_nodules_pct} in the same way. Abundance classes of several
+#' \code{bauxitic_nodules_pct}; since 0.9.285 manganiferous nodules give
+#' \code{manganiferous_nodules_pct}, and gypseous and saline segregations
+#' \code{gypsum_visible_pct} and \code{halite_visible_pct}. Only what is
+#' recorded counts (a segregation of unrecorded nature or form is not one of
+#' them); the amount is NA when no segregation is recorded, and NaN when the
+#' recorded classes leave it on either side of 20 \% (50 \% for halite),
+#' which the key reads as undecided. Abundance classes of several
 #' records are added as ranges (each class strictly between its limits).
 #' Laboratory EC of a 1:5 extract gives \code{ec_1to5_dS_m}; the soil
 #' strength gives \code{strength_dry} or \code{strength_moist} by the moisture
@@ -534,24 +540,26 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   carb_soft <- if (seg_known) in_class(soft_k[1L], soft_k[2L] + unk_k[2L] + u_soft, c(2, 20)) else NA_real_
   carb_hard <- if (seg_known) in_class(hard_k[1L] + kc[1L], hard_k[2L] + unk_k[2L] + u_hard + kc[2L] + kc_unk[2L], c(20, 50))
                else in_class(kc[1L], 100, c(20, 50))
-  # ferruginous (and ferromanganiferous) and bauxite (aluminous) nodules or
-  # concretions, for the ferric and bauxitic horizons (more than 20 %): a
-  # segregation of unknown form may be a nodule, and one of unknown, other or
-  # manganiferous nature may be either kind; the amount is kept when it lies
-  # on one side of 20 % whatever they are, and is unknown when no segregation
-  # is recorded
+  # nodules and concretions recorded as ferruginous or ferromanganiferous
+  # (ferric horizon), aluminous (bauxitic) or manganiferous (manganic), more
+  # than 20 %; gypseous segregations (visible gypsum, gypsic horizon, more
+  # than 20 %) and saline ones (halite, Halic, more than 50 %). Only what is
+  # recorded counts: a segregation whose nature or form is not recorded is
+  # not one of them (not recorded is read as absent). NA when no segregation
+  # is recorded at all; NaN when the recorded classes leave the amount on
+  # either side of the limit (unknown: the key reads it as undecided)
   nat <- vapply(segs, function(e) as.character(.ns(e, "seg_nature")), "")
   sform <- vapply(segs, function(e) as.character(.ns(e, "seg_form")), "")
   siv <- lapply(segs, seg_iv)
-  nod <- function(natures) {
+  amount <- function(keep, cut) {
     if (!seg_known) return(NA_real_)
-    maybe_nat <- is.na(nat) | nat %in% c("U", "O", "M", "G")
-    nodule <- sform %in% c("N", "C"); maybe_form <- is.na(sform)
-    lo <- min(100, iv_sum(siv, nat %in% natures & nodule)[1L])
-    hi <- min(100, iv_sum(siv, (nat %in% natures | maybe_nat) & (nodule | maybe_form))[2L])
-    if (lo == hi) lo else if (lo > 20 || hi <= 20) round((lo + hi) / 2, 3) else NA_real_
+    iv <- iv_sum(siv, keep); lo <- min(100, iv[1L]); hi <- min(100, iv[2L])
+    if (lo == hi) lo else if (lo > cut || hi <= cut) round((lo + hi) / 2, 3) else NaN
   }
-  fe_nod <- nod(c("F", "N")); bx_nod <- nod("A")
+  nodule <- sform %in% c("N", "C")
+  fe_nod <- amount(nat %in% c("F", "N") & nodule, 20); bx_nod <- amount(nat %in% "A" & nodule, 20)
+  mn_nod <- amount(nat %in% "M" & nodule, 20)
+  gyp_vis <- amount(nat %in% "Y", 20); salt_vis <- amount(nat %in% "Z", 50)
   # soil strength by the moisture of its record (dry; moderately moist or
   # moist), and the size of the most common peds of the first structure
   strg <- h$z_strengths %||% list()
@@ -627,7 +635,8 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf,
     secondary_carbonates_pct = seg_k, carbonate_soft_pct = carb_soft, carbonate_hard_pct = carb_hard,
     redoximorphic_features_pct = mot_pct, mottle_contrast = mot_contrast, cementation_class = cem,
-    ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod, pan_type = pan_kind,
+    ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod, manganiferous_nodules_pct = mn_nod,
+    gypsum_visible_pct = gyp_vis, halite_visible_pct = salt_vis, pan_type = pan_kind,
     strength_dry = strength_at("D"), strength_moist = strength_at(c("T", "M")), ped_size_max_mm = ped_size,
     subplasticity = .natsoil_map(.ns(h, "h_plasticity_type"), "plasticity"),
     soil_water_status = .natsoil_map(.ns(h, "h_soil_water_stat"), "water"),
