@@ -112,16 +112,16 @@
   orun <- .asc_run_from(x, ok_o, top0)
   if (is.infinite(orun$possible))
     return(list(peaty = peaty, humose = NA, dark = NA, melacic = NA, melanic = NA, x = x))
-  # where it may lie (since 0.9.287): below the surely organic rows, at
-  # either end of a row that may be organic, at the start of a gap, or at
-  # the end of the run; a verdict holds only when it holds at each
+  # where it may lie (since 0.9.287): below the surely organic rows, at the
+  # top of a row that may be organic, at the start of a gap, or at the end
+  # of the run; a verdict holds only when it holds at each
   cand <- top0 + orun$sure
   if (orun$possible > orun$sure) {
     rr <- orun$rows
     for (k in seq_along(rr)) {
       i <- rr[k]
       if (i %in% orun$sure_rows) next
-      if (is.na(ok_o[i])) cand <- c(cand, h$top_cm[i], h$bottom_cm[i])
+      if (is.na(ok_o[i])) cand <- c(cand, h$top_cm[i])
       nxt <- if (k < length(rr)) h$top_cm[rr[k + 1L]] else orun$stop_top
       if (!is.na(nxt) && !is.na(h$bottom_cm[i]) && nxt - h$bottom_cm[i] > 0.5) cand <- c(cand, h$bottom_cm[i])
     }
@@ -145,7 +145,7 @@
   w <- if (length(win)) .asc_overlap(h$top_cm[win], h$bottom_cm[win], tm, tm + 20) else numeric(0)
   humose <- if (!length(win)) NA else if (sum(w) < 20 - 0.5) {
     if (ends_hard) FALSE else NA
-  } else if (any(om[win] %in% TRUE) || anyNA(om[win]) || anyNA(h$oc_pct[win])) NA else {
+  } else if (any(om[win] %in% TRUE) || anyNA(om[win][h$top_cm[win] > tm + 0.5]) || anyNA(h$oc_pct[win])) NA else {
     oc <- sum(h$oc_pct[win] * w) / sum(w)
     cr <- x$clay
     lo <- ifelse(is.na(cr$lo[win]), 0, pmin(cr$lo[win], 60)); hi <- ifelse(is.na(cr$hi[win]), 60, pmin(cr$hi[win], 60))
@@ -158,14 +158,18 @@
   black <- ifelse(is.na(val) | is.na(chr), NA, val <= 3 & chr <= 2)
   dark_ok <- .and3v(black, ifelse(is.na(dval), NA, dval <= 5))
   dark_ok[x$rock | om %in% TRUE] <- FALSE
+  # a row that may be organic material may end the horizon (the one at the
+  # mineral surface is mineral here: the surface lies at its top)
+  at_surface <- !is.na(h$top_cm) & abs(h$top_cm - tm) <= 0.5
+  dark_ok[is.na(om) & !at_surface & dark_ok %in% TRUE] <- NA
   tb <- tryCatch(textural_b_asc(pedon)$passed, error = function(e) NA)
   not_a <- !grepl("^A", x$role %||% "")
   if (isTRUE(tb)) {
     # within the A horizons: a row of unknown role between two A horizons is
     # one; one above the first B may be (since 0.9.287; before, it was not)
     unk <- is.na(x$role) | x$unknown_role
-    a_rows <- which(!unk & !not_a & !x$des$buried)
     b_top <- suppressWarnings(min(h$top_cm[!unk & grepl("^B", x$role %||% "") & !x$des$buried], na.rm = TRUE))
+    a_rows <- which(!unk & !not_a & !x$des$buried & !is.na(h$top_cm) & h$top_cm < b_top)
     sw <- .asc_sandwiched(x, which(unk), a_rows)
     may_a <- unk & !(seq_len(x$n) %in% sw) & !is.na(h$top_cm) & h$top_cm < b_top - 0.5
     dark_ok[not_a & !unk] <- FALSE

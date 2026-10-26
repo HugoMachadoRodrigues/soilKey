@@ -118,8 +118,11 @@ lower_b_sodic_asc <- function(pedon, part = c("b", "b2")) {
   bm <- if (part == "b") .asc_b_and_maybe(x) else .asc_b2_and_maybe(x)
   sod <- .asc_sodic(h)
   passed <- if (!length(bm$b)) {
-    # no B designated: rows of unknown role may be the B
-    if (x$any_known && (!length(bm$maybe) || all(sod[bm$maybe] %in% FALSE))) FALSE else NA
+    # no B (B2) designated: rows of unknown role may be it; with no B2 where
+    # the order leaves the B2 open (the description ends in an A or a B1),
+    # it may lie deeper
+    if (part == "b2" && is.null(.asc_b2_rows(x))) NA
+    else if (x$any_known && (!length(bm$maybe) || all(sod[bm$maybe] %in% FALSE))) FALSE else NA
   } else if (all(is.na(h$top_cm[bm$b]))) NA else {
     last <- bm$b[which.max(h$top_cm[bm$b])]
     below <- bm$maybe[!is.na(h$top_cm[bm$maybe]) & h$top_cm[bm$maybe] > h$top_cm[last]]

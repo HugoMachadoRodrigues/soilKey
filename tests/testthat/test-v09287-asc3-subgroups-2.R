@@ -155,4 +155,34 @@ test_that("a row of unknown role between two A horizons is an A horizon; rows af
   d$top_cm <- c(0, 15, 50, 100, 150, 170); d$bottom_cm <- c(15, 50, 100, 150, 170, 190); d$na_cmol[5:6] <- c(0.2, NA)
   p <- PedonRecord$new(site = f$site, horizons = ensure_horizon_schema(data.table::as.data.table(d)))
   expect_true(soilKey:::lower_b_sodic_asc(p, "b2")$passed)
+  # with no designated B2 where the order leaves the B2 open (the description ends in a B1), undecided
+  d <- as.data.frame(f$horizons)[1:2, ]; d$designation <- c("A1", "B1"); d$na_cmol <- 3
+  p <- PedonRecord$new(site = f$site, horizons = ensure_horizon_schema(data.table::as.data.table(d)))
+  expect_true(is.na(soilKey:::lower_b_sodic_asc(p, "b2")$passed))
+})
+
+test_that("rows of unknown organic status, and A horizons of a lower sequence, in the dark horizon", {
+  skip_on_cran()
+  mk <- function(des, top, bot, oc, extra = list()) {
+    n <- length(des)
+    df <- data.frame(designation = des, top_cm = top, bottom_cm = bot, oc_pct = oc,
+                     field_texture = ifelse(des %in% c("B21t", "2B2"), "MC", ifelse(is.na(oc), NA, "SL")),
+                     clay_pct = ifelse(des %in% c("B21t", "2B2"), 48, ifelse(is.na(oc), NA, 14)),
+                     boundary_distinctness = c(rep("clear", n - 1), NA), structure_grade = "moderate", structure_type = "granular",
+                     ped_size_max_mm = 10, ph_h2o = 5, munsell_hue_moist = "10YR", munsell_value_moist = 2, munsell_chroma_moist = 1,
+                     munsell_value_dry = 4, munsell_chroma_dry = 1, stringsAsFactors = FALSE)
+    for (k in names(extra)) df[[k]] <- extra[[k]]
+    PedonRecord$new(site = list(id = "t", country = "AU", designation_system = "asc", drainage_class = "well drained"),
+                    horizons = ensure_horizon_schema(data.table::as.data.table(df)))
+  }
+  # a row of unknown organic status within the A horizons may end the horizon
+  p <- mk(c("A11", NA, "A13", "B21t"), c(0, 8, 13, 21), c(8, 13, 21, 50), c(2, NA, 2, 0.5),
+          list(munsell_value_moist = c(2, 2, 2, 4), munsell_chroma_moist = c(1, 1, 1, 6), munsell_value_dry = c(4, 4, 4, NA),
+               boundary_distinctness = c("clear", "clear", "abrupt", NA)))
+  expect_true(is.na(soilKey:::.asc_chernic_parts(p)$melacic))
+  # an A horizon below the first B does not make a row above it an A horizon
+  p <- mk(c("A1", NA, "B21t", "2A1", "2B2"), c(0, 10, 20, 40, 50), c(10, 20, 40, 50, 80), c(2, 2, 0.5, 2, 0.5),
+          list(ph_h2o = 6.5, munsell_value_moist = c(2, 2, 4, 2, 4), munsell_chroma_moist = c(1, 1, 6, 1, 6),
+               munsell_value_dry = c(4, 4, NA, 4, NA), boundary_distinctness = c("clear", "abrupt", "clear", "clear", NA)))
+  expect_true(is.na(soilKey:::.asc_chernic_parts(p)$dark))
 })
