@@ -13,7 +13,7 @@ other keys. Sites whose licence does not allow external use are left out."><meta
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.284</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.285</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -158,7 +158,13 @@ soft or hard, a fragment of unknown lithology calcrete; coarse fragments
 not recorded count as none; segregations not recorded leave the soft
 amount unknown, and the hard one unless calcrete alone exceeds 50 %).
 Ferruginous and bauxite nodules give <code>ferric_nodules_pct</code> and
-<code>bauxitic_nodules_pct</code> in the same way. Abundance classes of several
+<code>bauxitic_nodules_pct</code>; since 0.9.285 manganiferous nodules give
+<code>manganiferous_nodules_pct</code>, and gypseous and saline segregations
+<code>gypsum_visible_pct</code> and <code>halite_visible_pct</code>. Only what is
+recorded counts (a segregation of unrecorded nature or form is not one of
+them); the amount is NA when no segregation is recorded, and NaN when the
+recorded classes leave it on either side of 20 % (50 % for halite),
+which the key reads as undecided. Abundance classes of several
 records are added as ranges (each class strictly between its limits).
 Laboratory EC of a 1:5 extract gives <code>ec_1to5_dS_m</code>; the soil
 strength gives <code>strength_dry</code> or <code>strength_moist</code> by the moisture

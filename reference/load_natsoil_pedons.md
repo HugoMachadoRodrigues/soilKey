@@ -106,9 +106,15 @@ glossary (a segregation of unknown form may be soft or hard, a fragment
 of unknown lithology calcrete; coarse fragments not recorded count as
 none; segregations not recorded leave the soft amount unknown, and the
 hard one unless calcrete alone exceeds 50 %). Ferruginous and bauxite
-nodules give `ferric_nodules_pct` and `bauxitic_nodules_pct` in the same
-way. Abundance classes of several records are added as ranges (each
-class strictly between its limits). Laboratory EC of a 1:5 extract gives
+nodules give `ferric_nodules_pct` and `bauxitic_nodules_pct`; since
+0.9.285 manganiferous nodules give `manganiferous_nodules_pct`, and
+gypseous and saline segregations `gypsum_visible_pct` and
+`halite_visible_pct`. Only what is recorded counts (a segregation of
+unrecorded nature or form is not one of them); the amount is NA when no
+segregation is recorded, and NaN when the recorded classes leave it on
+either side of 20 % (50 % for halite), which the key reads as undecided.
+Abundance classes of several records are added as ranges (each class
+strictly between its limits). Laboratory EC of a 1:5 extract gives
 `ec_1to5_dS_m`; the soil strength gives `strength_dry` or
 `strength_moist` by the moisture of its record; the size class of the
 first structure gives `ped_size_max_mm`.

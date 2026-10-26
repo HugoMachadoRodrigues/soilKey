@@ -1,5 +1,64 @@
 # Changelog
 
+## soilKey 0.9.285 (2026-10-24)
+
+### Australian classification: great groups of the Hydrosols, Arenosols, Rudosols and Tenosols (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+now keys the great groups of every order that has them (the Anthroposols
+have none in the text). WRB, SiBCS and USDA results do not change; three
+Australian orders change on NatSoil, because an AC horizon is now part
+of the solum (see below).
+
+- Hydrosols: the acid sulfate groups as for the Organosols (with
+  Histic-Hypersulfidic and Histic-Hyposulfidic), then by suborder:
+  Histic, Faunic, Epicalcareous and the particle-size groups for the
+  tidal and subaqueous soils; Gypsic, Halic, Epicalcareous, Mottled and
+  Haplic for the Supratidal and Hypersalic; and for the Extratidal,
+  Salic, Redoxic and Oxyaquic, Petroferric and the order the soil would
+  key to apart from wetness (Calcarosolic to Rudosolic).
+- Arenosols, Rudosols and Tenosols: what the soil directly overlies
+  (hard rock, saprolite, marl, unconsolidated material, a red-brown
+  hardpan, a calcrete pan, ferricrete, a siliceous pan, a reticulate
+  horizon, coquina), “overlie” being read as “directly overlie”; ferric,
+  bauxitic and manganic horizons; gypsic and argic horizons; Inceptic (a
+  C/B), Tephric, Andic, Gritty, Gravic, Halic and Subhalic; the
+  carbonate classes; Kandic, Tenic and Palic Arenosols; Epibasic and
+  Hypervescent Calsilic Arenosols; Arenic Tenosols; Colluvic, Fluvic and
+  Lithosolic Clastic Rudosols. In the Arenosols hard layers count only
+  below 1.0 m.
+- Nodules not recorded are read as absent (more than 20 % of nodules
+  shows); this also applies to the Sesqui-Nodular Tenosols, which read
+  them as unknown since 0.9.282. A gritty feel, heavy minerals, halite
+  and gypsum not recorded are absent too.
+- What the soil directly overlies, shared with the Calcarosols: a C or D
+  horizon of unrecorded origin is no longer read as possibly hard rock,
+  nor is sandy material read as possibly marl (Lithic and Marly
+  Calcarosols included); a cemented layer that is no pan may still be
+  rock, while one whose origin names saprolite is saprolite; a horizon
+  recorded as a pan that makes up the layer (ferricrete, calcrete and
+  the like) is a pan whatever its designation, and ferricrete or
+  silcrete named by the layer or rock origin counts; an AC horizon is
+  part of the solum, which moves three NatSoil profiles from Tenosols or
+  Rudosols to Vertosols and Calcarosols, all three now as surveyed.
+- New horizon attributes: `manganiferous_nodules_pct`,
+  `gypsum_visible_pct`, `halite_visible_pct`, `gritty`,
+  `heavy_minerals_pct`. The NatSoil reader fills the first three from
+  the segregations, counting only those recorded as nodules or
+  segregations of that kind (NaN where the recorded classes leave the
+  amount on either side of the limit, which the key reads as undecided).
+- The readings are in `inst/rules/asc3/readings.yaml` (52).
+
+On 9,700 licensed NatSoil profiles, three orders change, all three now
+as surveyed (1,273 decided, 74.8 % of them agreeing), and 51 fewer
+suborders are provisional, from the Sesqui-Nodular reading. Of the 3,536
+profiles keyed to these four orders, 398 get a great group; most stop at
+the suborder, which is itself undecided for many Tenosols, and the
+Hydrosols wait on the sulfide test. Only 42 can be compared with the
+survey (order and suborder agreeing, a great group of the key): 21 get
+the survey’s great group. Most Tenosol labels use the suborder codes of
+the editions before 2021.
+
 ## soilKey 0.9.284 (2026-10-24)
 
 ### Australian classification: great groups of the Vertosols, Calcarosols, Podosols and Organosols (experimental)
