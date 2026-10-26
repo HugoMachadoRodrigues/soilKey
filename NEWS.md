@@ -34,9 +34,11 @@ subgroups). WRB, SiBCS and USDA results do not change.
   is now read as an A horizon (before, as not black).
 * The readings are in `inst/rules/asc3/readings.yaml` (55).
 
-On 9,700 licensed NatSoil profiles the orders, suborders and great groups
-do not change; the Chernic test becomes undecided on five profiles, where a
-suborder was already provisional. Of the 799 profiles keyed to these three
+On 9,700 licensed NatSoil profiles the orders and great groups do not
+change. The Chernic test becomes undecided on five profiles, where a
+suborder was already provisional, and decided on one: a Tenosol whose A1
+(17.6 % organic C) may or may not be organic material gives a humose
+horizon either way, and is now Chernic. Of the 799 profiles keyed to these three
 orders with a great group, 549 get a subgroup. Of the 278 whose order,
 suborder and great group agree with the survey and whose survey gives a
 subgroup of the key, 213 get one and 113 (53 %) the survey's (Dermosols
