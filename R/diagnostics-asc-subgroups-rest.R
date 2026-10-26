@@ -10,7 +10,7 @@
 #'
 #' \code{prop}: "acid" (strongly acid), "not_acid" (not strongly acid),
 #' "calcareous". \code{how}: "major" (the major part, by depth), "some" (at
-#' least some part), "none" (no part). \code{part}:
+#' least some part), "none" (no part), "not_major" (not the major part). \code{part}:
 #' \itemize{
 #'   \item "upper100": the upper 1.0 m of the soil profile (Arenosols),
 #'     cut at the top of a rock or hard layer the description ends on;
@@ -27,7 +27,7 @@
 #' @noRd
 part_prop_asc <- function(pedon, prop = c("acid", "not_acid", "calcareous"),
                           part = c("upper100", "b", "b_bc_cb", "a2", "solum", "soil"),
-                          how = c("major", "some", "none")) {
+                          how = c("major", "some", "none", "not_major")) {
   prop <- match.arg(prop); part <- match.arg(part); how <- match.arg(how)
   x <- .asc_horizons(pedon); h <- x$h; n <- x$n
   acid <- .asc_strongly_acid(h)
@@ -45,9 +45,10 @@ part_prop_asc <- function(pedon, prop = c("acid", "not_acid", "calcareous"),
   }
   passed <- if (!x$any_known && part %in% c("b", "b_bc_cb", "a2", "solum")) NA else switch(part,
     upper100 = {
+      # the soil profile: buried horizons count, as for the major part
       w <- .asc_upper_window(x, 100)
-      rows <- which(live & !x$rock & !is.na(h$bottom_cm) & h$top_cm < w[2L] & h$bottom_cm > w[1L])
-      if (how == "major") .asc_upper_major(x, ok, 100)
+      rows <- which(!is.na(h$top_cm) & !x$rock & h$top_cm < w[2L] & (is.na(h$bottom_cm) | h$bottom_cm > w[1L]))
+      if (how %in% c("major", "not_major")) .asc_upper_major(x, ok, 100)
       else some_of(rows, described = .asc_described(x, w[1L], w[2L]) || .asc_ends_hard(x))
     },
     b = , b_bc_cb = , a2 = {
@@ -69,29 +70,41 @@ part_prop_asc <- function(pedon, prop = c("acid", "not_acid", "calcareous"),
         }
       }
       if (!length(rows) && !length(maybe)) FALSE
-      else if (how == "major") major_of(rows, maybe)
+      else if (how %in% c("major", "not_major")) major_of(rows, maybe)
       else some_of(rows, maybe)
     },
     solum = {
       sets <- .asc_solum_sets(x)
       if (is.null(sets) || anyNA(sets)) NA
-      else .asc_agree(vapply(sets, function(r) {
-        if (!length(r)) return(FALSE)
-        if (how == "major") {
-          if (anyNA(h$bottom_cm[r])) return(NA)
-          .asc_major_part(x, r, ok, min(h$top_cm[r]), max(h$bottom_cm[r]))
-        } else some_of(r)
-      }, NA))
+      else {
+        bv <- .asc_bottom_variants(h)
+        if (is.null(bv)) NA
+        else .asc_agree(unlist(lapply(sets, function(r) vapply(bv, function(b) {
+          if (!length(r)) return(FALSE)
+          x2 <- x; x2$h$bottom_cm <- b
+          if (how %in% c("major", "not_major")) .asc_major_part(x2, r, ok, min(h$top_cm[r]), max(b[r]))
+          else some_of(r, described = .asc_described(x2, min(h$top_cm[r]), max(b[r])))
+        }, NA))))
+      }
     },
     soil = {
-      rows <- which(live & !x$rock)
+      # the soil above rock, a hard layer or a pan (substrate) and above any
+      # buried soil
+      hard <- which(live & (x$rock | x$hard | .asc_pan_layer(x)))
+      stop_at <- if (length(hard)) min(h$top_cm[hard]) else Inf
+      rows <- which(live & !x$rock & !x$hard & !.asc_pan_layer(x) & h$top_cm < stop_at - 0.5)
+      bv <- .asc_bottom_variants(h)
       if (!length(rows)) NA
-      else if (how == "major") {
-        if (anyNA(h$bottom_cm[rows])) NA
-        else .asc_major_part(x, rows, ok, .asc_profile_top(x) %|NA|% min(h$top_cm[rows]), max(h$bottom_cm[rows]))
+      else if (how %in% c("major", "not_major")) {
+        if (is.null(bv)) NA
+        else .asc_agree(vapply(bv, function(b) {
+          x2 <- x; x2$h$bottom_cm <- b
+          .asc_major_part(x2, rows, ok, .asc_profile_top(x) %|NA|% min(h$top_cm[rows]),
+                          min(max(b[rows]), stop_at))
+        }, NA))
       } else some_of(rows)
     })
-  if (how == "none") passed <- if (is.na(passed)) NA else !passed
+  if (how %in% c("none", "not_major")) passed <- if (is.na(passed)) NA else !passed
   .asc_result(paste("sg", part, prop, how, sep = "_"), passed, integer(0), list(prop = prop, part = part, how = how),
               if (is.na(passed)) c("ph_h2o", "ph_cacl2", "effervescence_class", "caco3_pct", "designation")
               else character(0),
@@ -132,4 +145,32 @@ fusic_surface_asc <- function(pedon) {
   passed <- any(fus & surf)
   .asc_result("sg_fusic", passed, which(fus & surf), list(), character(0),
               "Hydrosols, subgroups Fusic; glossary 'Fusic material'")
+}
+
+#' Calcenic Tenosol subgroups: the calcareous horizon (the horizons of the
+#' Calcenic material, \code{.asc_calcenic_rows}) with more than 50 \% hard
+#' calcrete fragments, carbonate nodules or concretions ("lithocalcic"),
+#' 20-50 \% ("supracalcic"), or less than 20 \% ("hypercalcic"); a horizon
+#' that may belong to it may decide it.
+#' @noRd
+calcenic_sg_asc <- function(pedon, class = c("lithocalcic", "supracalcic", "hypercalcic")) {
+  class <- match.arg(class)
+  x <- .asc_horizons(pedon); h <- x$h
+  hard <- .asc_carbonate(h)$hard
+  ok <- .asc_calcenic_rows(x)
+  sure <- which(ok %in% TRUE); may <- which(is.na(ok))
+  test <- switch(class,
+    lithocalcic = ifelse(is.na(hard), NA, hard > 50),
+    supracalcic = ifelse(is.na(hard), NA, hard >= 20 & hard <= 50),
+    hypercalcic = ifelse(is.na(hard), NA, hard < 20))
+  passed <- if (class == "hypercalcic") {
+    if (any(test[sure] %in% FALSE) ) FALSE
+    else if (length(sure) && all(test[sure] %in% TRUE) && all(test[may] %in% TRUE)) TRUE else NA
+  } else {
+    if (any(test[sure] %in% TRUE)) TRUE
+    else if (anyNA(test[sure]) || any(!(test[may] %in% FALSE)) || !length(sure)) NA else FALSE
+  }
+  .asc_result(paste0("sg_calcenic_", class), passed, sure, list(),
+              if (is.na(passed)) c("carbonate_hard_pct", "caco3_pct", "carbonate_soft_pct") else character(0),
+              "Tenosols, subgroups of the Calcenic suborder; glossary 'Calcareous horizon'")
 }

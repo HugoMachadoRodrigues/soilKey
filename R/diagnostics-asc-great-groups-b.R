@@ -266,6 +266,8 @@ natric_asc <- function(pedon, window = c("upper_b2t", "upper_b2")) {
   window <- match.arg(window)
   x <- .asc_horizons(pedon)
   passed <- .asc_b_major(pedon, x, .asc_sodic(x$h), window)
+  # no B2 at all (the order reads the B2 as absent): no upper part of it
+  if (window == "upper_b2" && is.na(passed) && identical(.asc_b2_rows(x), integer(0))) passed <- FALSE
   .asc_result("gg_natric", passed, integer(0), list(),
               if (is.na(passed)) c("na_cmol", "cec_cmol", "esp_pct") else character(0),
               "Great groups Natric; glossary 'Sodic'")

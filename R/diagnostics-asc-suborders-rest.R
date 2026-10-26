@@ -591,16 +591,23 @@ arenosol_carbonate_asc <- function(pedon, kind = c("carbonatic", "calsilic")) {
 #' fine-earth carbonate (laboratory CaCO3, or more than 20 % soft carbonate
 #' segregations); a horizon that is not calcareous has none.
 #' @noRd
-calcenic_asc <- function(pedon) {
-  x <- .asc_horizons(pedon); h <- x$h
+# The horizons of the Calcenic Tenosols' calcareous material: more than
+# 20 % fine-earth carbonate (the laboratory decides; soft segregations over
+# 20 % pass; less in segregations says nothing of the fine earth).
+.asc_calcenic_rows <- function(x) {
+  h <- x$h
   c <- .asc_carbonate(h)
   calc <- .asc_calcareous(x)
   lab <- h$caco3_pct %||% rep(NA_real_, x$n)
-  # the laboratory decides; soft segregations over 20 % pass; less in
-  # segregations says nothing of the carbonate of the fine earth
   ok <- ifelse(!is.na(lab), lab > 20, ifelse(!is.na(c$soft_visual) & c$soft_visual > 20, TRUE,
                                              ifelse(calc %in% FALSE, FALSE, NA)))
   ok[x$des$buried | !x$mineral] <- FALSE
+  ok
+}
+
+calcenic_asc <- function(pedon) {
+  x <- .asc_horizons(pedon)
+  ok <- .asc_calcenic_rows(x)
   r <- .cssc_run_test(x, ok, 20)
   .asc_result("calcenic", r$passed, r$rows, list(),
               if (is.na(r$passed)) c("caco3_pct", "carbonate_soft_pct", "effervescence_class") else character(0),

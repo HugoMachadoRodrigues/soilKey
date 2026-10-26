@@ -153,21 +153,21 @@ subgroups:
       name: "Lithocalcic, {parent}"
       tests:
         all_of:
-          - carbonate_suborder_asc: {class: lithocalcic}
-      notes: "A calcareous horizon with more than 50 % hard carbonate."
+          - calcenic_sg_asc: {class: lithocalcic}
+      notes: "The calcareous horizon with more than 50 % hard calcrete fragments, carbonate nodules or concretions."
 
     - code: "FB"
       name: "Supracalcic, {parent}"
       tests:
         all_of:
-          - carbonate_suborder_asc: {class: supracalcic}
-      notes: "A calcareous horizon with 20-50 % hard carbonate."
+          - calcenic_sg_asc: {class: supracalcic}
+      notes: "The calcareous horizon with 20-50 % hard calcrete fragments, carbonate nodules or concretions."
 
     - code: "CQ"
       name: "Hypercalcic, {parent}"
       tests:
         all_of:
-          - carbonate_suborder_asc: {class: hard_below_20}
+          - calcenic_sg_asc: {class: hypercalcic}
       notes: "The calcareous horizon with less than 20 % hard calcrete fragments, carbonate nodules or concretions."
 
   "TE-AW-*":

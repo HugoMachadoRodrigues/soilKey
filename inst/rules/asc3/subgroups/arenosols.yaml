@@ -98,9 +98,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-*":
     - code: "DW"
@@ -196,9 +196,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-*":
     - code: "DW"
@@ -294,9 +294,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-*":
     - code: "DW"
@@ -392,9 +392,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-*":
     - code: "DW"
@@ -490,9 +490,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-*":
     - code: "DW"
@@ -588,9 +588,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-*":
     - code: "DW"
@@ -686,9 +686,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-CV":
     - code: "DW"
@@ -761,9 +761,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-DA":
     - code: "DW"
@@ -836,9 +836,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-FB":
     - code: "DW"
@@ -911,9 +911,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-CQ":
     - code: "DW"
@@ -986,9 +986,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-BD":
     - code: "DW"
@@ -1061,9 +1061,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-BE-DZ":
     - code: "DW"
@@ -1136,9 +1136,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-CV":
     - code: "DW"
@@ -1211,9 +1211,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-DA":
     - code: "DW"
@@ -1286,9 +1286,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-FB":
     - code: "DW"
@@ -1361,9 +1361,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-CQ":
     - code: "DW"
@@ -1436,9 +1436,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-BD":
     - code: "DW"
@@ -1511,9 +1511,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AT-DZ":
     - code: "DW"
@@ -1586,9 +1586,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-CV":
     - code: "DW"
@@ -1661,9 +1661,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-DA":
     - code: "DW"
@@ -1736,9 +1736,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-FB":
     - code: "DW"
@@ -1811,9 +1811,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-CQ":
     - code: "DW"
@@ -1886,9 +1886,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-BD":
     - code: "DW"
@@ -1961,9 +1961,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AA-DZ":
     - code: "DW"
@@ -2036,9 +2036,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-CV":
     - code: "DW"
@@ -2111,9 +2111,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-DA":
     - code: "DW"
@@ -2186,9 +2186,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-FB":
     - code: "DW"
@@ -2261,9 +2261,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-CQ":
     - code: "DW"
@@ -2336,9 +2336,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-BD":
     - code: "DW"
@@ -2411,9 +2411,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AB-DZ":
     - code: "DW"
@@ -2486,9 +2486,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-CV":
     - code: "DW"
@@ -2561,9 +2561,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-DA":
     - code: "DW"
@@ -2636,9 +2636,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-FB":
     - code: "DW"
@@ -2711,9 +2711,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-CQ":
     - code: "DW"
@@ -2786,9 +2786,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-BD":
     - code: "DW"
@@ -2861,9 +2861,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AC-DZ":
     - code: "DW"
@@ -2936,9 +2936,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-CV":
     - code: "DW"
@@ -3011,9 +3011,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-DA":
     - code: "DW"
@@ -3086,9 +3086,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-FB":
     - code: "DW"
@@ -3161,9 +3161,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-CQ":
     - code: "DW"
@@ -3236,9 +3236,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-BD":
     - code: "DW"
@@ -3311,9 +3311,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AD-DZ":
     - code: "DW"
@@ -3386,9 +3386,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-CV":
     - code: "DW"
@@ -3461,9 +3461,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-DA":
     - code: "DW"
@@ -3536,9 +3536,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-FB":
     - code: "DW"
@@ -3611,9 +3611,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-CQ":
     - code: "DW"
@@ -3686,9 +3686,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-BD":
     - code: "DW"
@@ -3761,9 +3761,9 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
 
   "RE-AE-DZ":
     - code: "DW"
@@ -3836,6 +3836,6 @@ subgroups:
       name: "Basic, {parent}"
       tests:
         all_of:
-          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
           - part_prop_asc: {prop: calcareous, part: upper100, how: none}
-      notes: "The major part of the upper 1.0 m of the soil profile not strongly acid and no part of the upper 1.0 m of the soil profile calcareous."
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."

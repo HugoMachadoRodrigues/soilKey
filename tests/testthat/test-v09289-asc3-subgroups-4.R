@@ -104,3 +104,46 @@ test_that("the sub horizons: every requirement but the thickness", {
   p$horizons$oc_pct[1] <- 7
   expect_true(soilKey:::chernic_sg_asc(p, "subhumose")$passed)
 })
+
+test_that("the soil above a pan, a B2 that is absent, horizons of unknown depth, the benchmark", {
+  skip_on_cran()
+  # a calcrete pan under the soil is substrate
+  d <- data.frame(designation = c("A1", "Ckm"), top_cm = c(0, 25), bottom_cm = c(25, 45), field_texture = c("LS", NA),
+                  clay_pct = c(6, NA), ph_h2o = c(6.5, 8.5), effervescence_class = c("none", "strong"),
+                  pan_type = c(NA, "calcrete"), structure_grade = c("structureless", NA), structure_type = c("single-grain", NA),
+                  stringsAsFactors = FALSE)
+  expect_false(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "soil", "some")$passed)
+  # no B2 at all: no upper part of it to be sodic
+  d <- data.frame(designation = c("A1", "A2", "C1g"), top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100), field_texture = "S",
+                  na_cmol = 0.1, cec_cmol = 4, stringsAsFactors = FALSE)
+  expect_false(soilKey:::natric_asc(mk_s4(d), "upper_b2")$passed)
+  # a horizon of unknown depth that agrees with the rest
+  d <- data.frame(designation = c("A1", "C"), top_cm = c(0, 10), bottom_cm = c(10, NA), ph_h2o = 5, stringsAsFactors = FALSE)
+  expect_true(soilKey:::part_prop_asc(mk_s4(d), "acid", "soil", "major")$passed)
+})
+
+test_that("Calcenic carbonate outside a B, the Arenosol Basic catch-all, buried horizons, gaps in the solum", {
+  skip_on_cran()
+  # carbonate in a C: the Calcenic horizon is read, not only B horizons
+  d <- data.frame(designation = c("A1", "A3", "C", "R"), top_cm = c(0, 15, 40, 100), bottom_cm = c(15, 40, 100, 120),
+                  ph_h2o = c(6.5, 7, 8.5, NA), effervescence_class = c("none", "none", "strong", NA),
+                  caco3_pct = c(0, 0, 35, NA), carbonate_soft_pct = c(0, 0, 35, NA), carbonate_hard_pct = c(0, 0, 5, NA),
+                  stringsAsFactors = FALSE)
+  p <- mk_s4(d)
+  expect_true(soilKey:::calcenic_asc(p)$passed)
+  expect_false(soilKey:::calcenic_sg_asc(p, "lithocalcic")$passed)
+  expect_true(soilKey:::calcenic_sg_asc(p, "hypercalcic")$passed)
+  # exactly half the upper 1.0 m strongly acid: neither Acidic nor... Basic takes it
+  a <- ex_s4("arenosols", list(ph_h2o = c(5, 5, 6.3, 6.5)))
+  pa <- soilKey:::part_prop_asc(a, "acid", "upper100", "major")$passed
+  if (identical(pa, FALSE)) expect_true(soilKey:::part_prop_asc(a, "acid", "upper100", "not_major")$passed)
+  # a buried calcareous horizon within the upper 1.0 m counts
+  d <- data.frame(designation = c("A1", "C", "2Ab", "2Cb"), top_cm = c(0, 25, 70, 90), bottom_cm = c(25, 70, 90, 150),
+                  field_texture = "S", ph_h2o = c(6.5, 6.5, 8.5, 8.5), effervescence_class = c("none", "none", "strong", "strong"),
+                  stringsAsFactors = FALSE)
+  expect_true(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "upper100", "some")$passed)
+  # a gap in the solum may hold calcareous material
+  d <- data.frame(designation = c("A1", "B2", "C"), top_cm = c(0, 25, 40), bottom_cm = c(10, 40, 90), ph_h2o = c(6, 6, 8.5),
+                  effervescence_class = c("none", "none", "strong"), stringsAsFactors = FALSE)
+  expect_true(is.na(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "solum", "some")$passed))
+})
