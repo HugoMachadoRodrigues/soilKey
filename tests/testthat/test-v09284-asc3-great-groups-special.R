@@ -11,7 +11,8 @@
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(
     data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
 }
-nm2 <- function(p) classify_asc3(p, on_missing = "silent")$name
+# the name down to the great group (the subgroups follow since 0.9.288)
+nm2 <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "subgroups", ]; lv$name[nrow(lv)] }
 
 test_that("the examples key to a decided great group", {
   skip_on_cran()
@@ -19,7 +20,7 @@ test_that("the examples key to a decided great group", {
             podosols = "Humosesquic/Sesquic, Aeric Podosol", organosols = "Acidic, Sapric Organosol")
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
-    expect_identical(r$name, want[[o]], info = o)
+    expect_identical(r$levels$name[r$levels$level == "great_groups"], want[[o]], info = o)
     expect_length(r$provisional_because, 0L)
   }
 })

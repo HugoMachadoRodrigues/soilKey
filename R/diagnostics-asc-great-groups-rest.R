@@ -128,14 +128,17 @@ acid_sulfate_gg_asc <- function(pedon, kind = c("sulfuric", "monosulfidic_sulfur
 # "petrocalcic", "petroferric", "silpanic"; by the record (absent unless the
 # record names it): "reticulate", "coquina". `below_cm` (Arenosols): a hard
 # layer (rock, saprolite, a pan) counts only from that depth down.
-.asc_overlie <- function(x, kind, from = c("solum", "b"), below_cm = 0) {
+.asc_overlie <- function(x, kind, from = c("solum", "b"), below_cm = 0, base_rows = NULL, maybe_rows = NULL) {
   from <- match.arg(from)
   h <- x$h
-  if (!x$any_known) return(NA)
+  if (!x$any_known && is.null(base_rows)) return(NA)
   top0 <- .asc_profile_top(x) %|NA|% 0
   lam <- x$role %in% "lamellae" & !x$des$buried & !is.na(h$top_cm) & h$top_cm < x$c_top
-  base <- if (from == "solum") which(x$solum %in% TRUE | lam) else union(.asc_b_rows(x), which(lam))
-  maybe <- which(x$maybe_soil)
+  # `base_rows` and `maybe_rows` (Organosol subgroups, since 0.9.288): the
+  # layers whose base is read, in place of the solum or the B
+  base <- if (!is.null(base_rows)) base_rows
+          else if (from == "solum") which(x$solum %in% TRUE | lam) else union(.asc_b_rows(x), which(lam))
+  maybe <- if (!is.null(maybe_rows)) maybe_rows else which(x$maybe_soil)
   hard_kind <- kind %in% c("rock", "saprolite", "duric", "petrocalcic", "petroferric", "silpanic")
   deep_ok <- function(i) below_cm <= 0 || (!is.na(h$top_cm[i]) && h$top_cm[i] >= top0 + below_cm - 0.5)
   origin <- tolower(paste(h$layer_origin %||% rep(NA, x$n), h$rock_origin %||% rep(NA, x$n),
@@ -445,15 +448,17 @@ sand_texture_gg_asc <- function(pedon, kind = c("kandic", "tenic", "palic")) {
               "Arenosols, great groups Kandic, Tenic, Palic")
 }
 
-#' Epibasic and Hypervescent (Calsilic Arenosols)
+#' Epibasic and Hypervescent (Calsilic Arenosols; Calcarosol subgroups)
 #'
 #' "epibasic": not calcareous in the A1 or Ap horizon at the surface, or in
 #' the upper 0.2 m without one; "hypervescent": the major part of the upper
 #' 0.1 m with more than 20 % fine-earth carbonate (visual, carbonate_soft_pct),
 #' and/or a strong effervescence, and/or more than 8 % fine-earth carbonate by
-#' analysis.
+#' analysis; "supravescent" (Calcarosol subgroups): the major part of the
+#' upper 0.1 m dominantly soft, finely divided carbonate (more than half,
+#' visual), and/or more than 40 \% of it by analysis.
 #' @noRd
-calsilic_gg_asc <- function(pedon, kind = c("epibasic", "hypervescent")) {
+calsilic_gg_asc <- function(pedon, kind = c("epibasic", "hypervescent", "supravescent")) {
   kind <- match.arg(kind)
   x <- .asc_horizons(pedon); h <- x$h
   calc <- .asc_calcareous(x)
@@ -477,6 +482,19 @@ calsilic_gg_asc <- function(pedon, kind = c("epibasic", "hypervescent")) {
       ok <- .any3v(.any3v(strong, ifelse(is.na(soft), NA, soft > 20)), ifelse(is.na(lab), NA, lab > 8))
       # no effervescence: no fine-earth carbonate to see or measure
       ok[eff %in% c("none", "nil", "non-calcareous")] <- FALSE
+      .asc_upper_major(x, ok, 10)
+    },
+    supravescent = {
+      # dominantly soft, finely divided carbonate (visual: more than half),
+      # and/or more than 40 % of it by analysis
+      eff <- tolower(as.character(h$effervescence_class %||% rep(NA_character_, x$n)))
+      soft <- h$carbonate_soft_pct %||% rep(NA_real_, x$n); lab <- h$caco3_pct %||% rep(NA_real_, x$n)
+      # read as the Carbonatic suborders read carbonate-rich material: the lab
+      # figure decides; without it, an effervescence no stronger than moderate
+      # is not dominantly carbonate
+      ok <- ifelse(is.na(soft), FALSE, soft > 50) | ifelse(is.na(lab), FALSE, lab > 40)
+      ok <- ifelse(ok, TRUE, ifelse(!is.na(lab), FALSE,
+                   ifelse(grepl("^(none|non|nil|slight|moderate)", eff), FALSE, NA)))
       .asc_upper_major(x, ok, 10)
     })
   .asc_result(paste0("gg_", kind), passed, integer(0), list(),

@@ -17,9 +17,19 @@
 #   "upper_b2"  the upper 0.2 m of the B2, or the whole of it when thinner.
 # Rows of unknown role that may be part of it are tried in and out; the
 # verdict holds only when both ways agree.
-.asc_b_major <- function(pedon, x, ok, window = c("b2", "b2t", "upper_b2t", "upper_b2")) {
+.asc_b_major <- function(pedon, x, ok, window = c("b2", "b2t", "upper_b2t", "upper_b2", "b")) {
   window <- match.arg(window)
   if (window == "b2") return(.asc_b2_major(x, ok))
+  if (window == "b") {
+    # the B horizon (subgroups, since 0.9.288): B horizons, pans left out;
+    # rows of unknown role that may be B horizons tried in and out
+    if (!x$any_known) return(NA)
+    bm <- .asc_b_and_maybe(x)
+    if (!length(bm$b) && !length(bm$maybe)) return(FALSE)
+    # no B designated: the rows that may be B horizons decide only when they all fail
+    if (!length(bm$b)) return(if (all(ok[bm$maybe] %in% FALSE)) FALSE else NA)
+    return(.asc_rows_major_open(x, bm$b, bm$maybe, ok))
+  }
   .asc_b_verdict(pedon, x, window, function(w) .asc_major_part(x, w$rows, ok, w$top, w$bottom))
 }
 
@@ -221,7 +231,7 @@ pedaric_asc <- function(pedon, window = c("upper_b2t", "upper_b2")) {
 #' Subplastic: the major part of the B2t (or B2) strongly subplastic (a
 #' horizon with no record is read as not, as for the order)
 #' @noRd
-subplastic_asc <- function(pedon, window = c("b2t", "b2")) {
+subplastic_asc <- function(pedon, window = c("b2t", "b2", "b")) {
   window <- match.arg(window)
   x <- .asc_horizons(pedon)
   passed <- .asc_b_major(pedon, x, .asc_strongly_subplastic(x$h), window)
@@ -236,7 +246,7 @@ subplastic_asc <- function(pedon, window = c("b2t", "b2")) {
 #' B2); with `natric`, also sodic in the major part of the upper 0.2 m of
 #' the B2t (Magnesic-Natric)
 #' @noRd
-magnesic_asc <- function(pedon, window = c("b2t", "b2"), natric = FALSE) {
+magnesic_asc <- function(pedon, window = c("b2t", "b2", "b"), natric = FALSE) {
   window <- match.arg(window)
   x <- .asc_horizons(pedon); h <- x$h
   ratio <- ifelse(is.na(h$ca_cmol) | is.na(h$mg_cmol), NA,

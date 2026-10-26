@@ -1,0 +1,326 @@
+# Key to the subgroups of the Vertosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "VE-*":
+    - code: "EG"
+      name: "Salic, {parent}"
+      tests:
+        all_of:
+          - hydrosol_setting_asc: {setting: salic}
+      notes: "A seasonal saline water table in the upper 0.5 m (water EC above 2 dS/m), read as for the Salic Hydrosols."
+
+    - code: "IW"
+      name: "Monosulfidic-Sulfuric, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
+      notes: "Monosulfidic and sulfuric material within the upper 1.5 m."
+
+    - code: "EV"
+      name: "Sulfuric, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: sulfuric}
+      notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
+
+    - code: "IX"
+      name: "Monohypersulfidic, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monohypersulfidic}
+      notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m."
+
+    - code: "IZ"
+      name: "Hypersulfidic, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: hypersulfidic}
+      notes: "Hypersulfidic material within the upper 1.5 m."
+
+    - code: "JA"
+      name: "Monohyposulfidic, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monohyposulfidic}
+      notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m."
+
+    - code: "JC"
+      name: "Hyposulfidic, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: hyposulfidic}
+      notes: "Hyposulfidic material within the upper 1.5 m."
+
+    - code: "EU"
+      name: "Sulfidic, {parent}"
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: sulfidic}
+      notes: "Sulfidic materials within the upper 1.5 m."
+
+    - code: "BJ"
+      name: "Duric, {parent}"
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: duric, where: b}
+      notes: "A red-brown hardpan within or directly underlying the B horizon."
+
+    - code: "DZ"
+      name: "Petrocalcic, {parent}"
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petrocalcic, from: b}
+      notes: "The B horizon directly overlying a calcrete pan."
+
+    - code: "GQ"
+      name: "Episodic-Gypsic, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "The upper 0.1 m of the solum sodic and a gypsic horizon within the B or BC horizon."
+
+    - code: "BZ"
+      name: "Gypsic, {parent}"
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A gypsic horizon within the B or BC horizon."
+
+    - code: "EP"
+      name: "Episodic-Epiacidic, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+          - solum_part_asc: {prop: acid, part: upper, how: major}
+      notes: "The upper 0.1 m of the solum sodic and the major part of the upper 0.5 m of the solum strongly acid."
+
+    - code: "GG"
+      name: "Episodic-Endoacidic, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+          - solum_part_asc: {prop: acid, part: lower, how: major}
+      notes: "The upper 0.1 m of the solum sodic and the major part of the solum below 0.5 m strongly acid."
+
+    - code: "GH"
+      name: "Episodic-Epicalcareous, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+          - solum_part_asc: {prop: calcareous, part: upper, how: major}
+      notes: "The upper 0.1 m of the solum sodic and the major part of the upper 0.5 m of the solum calcareous."
+
+    - code: "GI"
+      name: "Episodic-Endocalcareous, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+      notes: "The upper 0.1 m of the solum sodic and the major part of the solum below 0.5 m calcareous."
+
+    - code: "BN"
+      name: "Episodic, {parent}"
+      tests:
+        all_of:
+          - episodic_asc: {}
+      notes: "The upper 0.1 m of the solum sodic."
+
+    - code: "CU"
+      name: "Epihypersodic-Epiacidic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some_subsurface}
+          - solum_part_asc: {prop: acid, part: upper, how: major}
+      notes: "Some subsurface horizon within the upper 0.5 m of the solum with an ESP of 15 or more and the major part of the upper 0.5 m of the solum strongly acid."
+
+    - code: "GN"
+      name: "Epihypersodic-Endoacidic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some_subsurface}
+          - solum_part_asc: {prop: acid, part: lower, how: major}
+      notes: "Some subsurface horizon within the upper 0.5 m of the solum with an ESP of 15 or more and the major part of the solum below 0.5 m strongly acid."
+
+    - code: "GK"
+      name: "Epiacidic-Mottled, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: acid, part: upper, how: major}
+          - solum_part_asc: {prop: mottled, part: upper, how: major}
+      notes: "The major part of the upper 0.5 m of the solum strongly acid and the major part of the upper 0.5 m of the solum mottled."
+
+    - code: "GA"
+      name: "Epiacidic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: acid, part: upper, how: major}
+      notes: "The major part of the upper 0.5 m of the solum strongly acid."
+
+    - code: "GJ"
+      name: "Epicalcareous-Endoacidic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: upper, how: major}
+          - solum_part_asc: {prop: acid, part: lower, how: major}
+      notes: "The major part of the upper 0.5 m of the solum calcareous and the major part of the solum below 0.5 m strongly acid."
+
+    - code: "FM"
+      name: "Epicalcareous-Epihypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: upper, how: major}
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some_subsurface}
+      notes: "The major part of the upper 0.5 m of the solum calcareous and some subsurface horizon within the upper 0.5 m of the solum with an ESP of 15 or more."
+
+    - code: "GO"
+      name: "Epihypersodic-Endocalcareous, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some_subsurface}
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+      notes: "Some subsurface horizon within the upper 0.5 m of the solum with an ESP of 15 or more and the major part of the solum below 0.5 m calcareous."
+
+    - code: "BR"
+      name: "Epihypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some_subsurface}
+      notes: "Some subsurface horizon within the upper 0.5 m of the solum with an ESP of 15 or more."
+
+    - code: "GB"
+      name: "Epicalcareous-Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: upper, how: major}
+          - solum_part_asc: {prop: hypersodic, part: lower, how: some}
+      notes: "The major part of the upper 0.5 m of the solum calcareous and some subhorizon of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "FY"
+      name: "Epicalcareous, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: upper, how: major}
+      notes: "The major part of the upper 0.5 m of the solum calcareous."
+
+    - code: "GL"
+      name: "Endoacidic-Mottled, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: acid, part: lower, how: major}
+          - solum_part_asc: {prop: mottled, part: lower, how: major}
+      notes: "The major part of the solum below 0.5 m strongly acid and the major part of the solum below 0.5 m mottled."
+
+    - code: "BL"
+      name: "Endoacidic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: acid, part: lower, how: major}
+      notes: "The major part of the solum below 0.5 m strongly acid."
+
+    - code: "GM"
+      name: "Endocalcareous-Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+          - solum_part_asc: {prop: hypersodic, part: lower, how: some}
+      notes: "The major part of the solum below 0.5 m calcareous and some subhorizon of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "JF"
+      name: "Ferric-Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+          - solum_part_asc: {prop: hypersodic, part: lower, how: major}
+      notes: "A ferric horizon within the solum and the major part of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "JG"
+      name: "Manganic-Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+          - solum_part_asc: {prop: hypersodic, part: lower, how: major}
+      notes: "A manganic horizon within the solum and the major part of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "BP"
+      name: "Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: lower, how: some}
+      notes: "Some subhorizon of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "JH"
+      name: "Ferric-Endocalcareous, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+      notes: "A ferric horizon within the solum and the major part of the solum below 0.5 m calcareous."
+
+    - code: "JI"
+      name: "Manganic-Endocalcareous, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+      notes: "A manganic horizon within the solum and the major part of the solum below 0.5 m calcareous."
+
+    - code: "HE"
+      name: "Endocalcareous-Mottled, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+          - solum_part_asc: {prop: mottled, part: upper, how: major}
+      notes: "The major part of the solum below 0.5 m calcareous and the major part of the upper 0.5 m of the solum mottled."
+
+    - code: "FZ"
+      name: "Endocalcareous, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: calcareous, part: lower, how: major}
+      notes: "The major part of the solum below 0.5 m calcareous."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+      notes: "A ferric horizon within the solum."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "DQ"
+      name: "Mottled, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: mottled, part: upper, how: major}
+      notes: "The major part of the upper 0.5 m of the solum mottled."
+
+    - code: "CD"
+      name: "Haplic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: whole_coloured, part: upper, how: major}
+      notes: "The major part of the upper 0.5 m of the solum whole coloured."

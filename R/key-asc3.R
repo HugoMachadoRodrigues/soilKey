@@ -4,7 +4,7 @@
 # suborders since v0.9.280 (all orders since v0.9.282); great groups since
 # v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
 # subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols; Dermosols, Kandosols, Ferrosols since
-# v0.9.287). Families follow. Experimental and
+# v0.9.287; Vertosols, Calcarosols, Podosols, Organosols since v0.9.288). Families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -37,7 +37,11 @@
 #' ferric and manganic horizons, sodicity of the lower B, mottling of the
 #' B2t, base status, carbonate) and of the Dermosols, Kandosols and
 #' Ferrosols (the same features read on the B2, a strongly acid B2, argic and
-#' bauxitic horizons in the B, a snuffy A). The other subgroups and the
+#' bauxitic horizons in the B, a snuffy A), of the Vertosols and Calcarosols
+#' (acid sulfate materials, pans, sodicity, acidity, carbonate and mottling
+#' of the upper 0.5 m of the solum and below it, subplasticity, surface
+#' carbonate), the Podosols (coherence of the B, pans) and the Organosols
+#' (what the organic materials overlie). The other subgroups and the
 #' families follow. The name is that of the deepest class assigned, in the book's
 #' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
 #' Chromosol"); \code{rsg_or_order} keeps the order.
@@ -159,12 +163,16 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
     organosols = mk(list(
       designation = c("P1", "P2", "C"), top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
       field_texture = c("HP", "AP", "LC"), clay_pct = c(NA, NA, 38), oc_pct = c(38, 30, 1.5),
+      layer_origin = c(NA, NA, "alluvium"), munsell_value_moist = c(2, 2, 4), munsell_chroma_moist = c(1, 1, 2),
       sulfidic_s_pct = c(0.005, 0.005, 0.002), ph_h2o = c(4.8, 5.0, 5.5)), utils::modifyList(well, list(drainage_class = "very poorly drained"))),
     podosols = mk(list(
       designation = c("A1", "A2e", "B2hs", "B2s", "C"), top_cm = c(0, 10, 45, 60, 90),
       bottom_cm = c(10, 45, 60, 90, 130), field_texture = c("S", "S", "LS", "S", "S"),
       clay_pct = c(3, 2, 5, 3, 2), oc_pct = c(2.0, 0.3, 1.8, 0.6, 0.1),
       structure_grade = "structureless", structure_type = c("single-grain", "single-grain", "massive", "massive", "single-grain"),
+      strength_moist = c("loose", "loose", "firm", "weak", "loose"),
+      munsell_hue_moist = c("10YR", "10YR", "5YR", "7.5YR", "10YR"), munsell_value_moist = c(3, 7, 3, 5, 7),
+      munsell_chroma_moist = c(1, 1, 3, 6, 2), munsell_value_dry = c(5, 8, NA, NA, NA),
       ph_h2o = c(5.0, 5.3, 4.9, 5.2, 5.5)), utils::modifyList(well, list(drainage_class = "rapidly drained"))),
     vertosols = mk(list(
       designation = c("A1", "B21", "B22", "BC"), top_cm = c(0, 10, 50, 100),
@@ -173,6 +181,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       structure_type = c("granular", "lenticular", "lenticular", "blocky"),
       structure_grade = c("strong", "strong", "strong", "moderate"),
       cracks_width_cm = c(1.5, 1.0, NA, NA), ph_h2o = c(7.8, 8.2, 8.6, 8.8),
+      effervescence_class = c("none", "none", "slight", "moderate"), cec_cmol = 40, na_cmol = c(0.5, 1, 2, 3),
+      ca_cmol = 25, mg_cmol = 10, redoximorphic_features_pct = 0, sulfidic_s_pct = 0.002,
       munsell_hue_moist = "10YR", munsell_value_moist = c(2, 2, 3, 4), munsell_chroma_moist = c(1, 1, 2, 2)),
       utils::modifyList(well, list(surface_condition = "cracking; self-mulching"))),
     hydrosols = mk(list(
@@ -194,7 +204,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       clay_pct = c(14, 24, 26, 18, 15), effervescence_class = c("slight", "strong", "strong", "very strong", "strong"),
       secondary_carbonates_pct = c(0, 15, 30, 25, 5), caco3_pct = c(2, 12, 25, 20, 10),
       carbonate_soft_pct = c(0, 12, 22, 18, 5), carbonate_hard_pct = c(0, 3, 5, 5, 0), caso4_pct = 0,
-      layer_origin = c(NA, NA, NA, NA, "aeolian"),
+      layer_origin = c(NA, NA, NA, NA, "aeolian"), cec_cmol = 15, na_cmol = 0.3,
+      munsell_hue_moist = "7.5YR", munsell_value_moist = c(4, 5, 6, 6, 7), munsell_chroma_moist = c(3, 4, 4, 4, 4),
       boundary_distinctness = c("gradual", "gradual", "gradual", "clear", NA),
       structure_grade = c("weak", "weak", "weak", "structureless", "structureless"),
       ph_h2o = c(8.2, 8.6, 8.8, 9.0, 9.0))),
