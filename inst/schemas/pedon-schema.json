@@ -456,6 +456,21 @@
           "bauxitic_nodules_pct": {
             "type": ["number", "null"]
           },
+          "manganiferous_nodules_pct": {
+            "type": ["number", "null"]
+          },
+          "gypsum_visible_pct": {
+            "type": ["number", "null"]
+          },
+          "halite_visible_pct": {
+            "type": ["number", "null"]
+          },
+          "gritty": {
+            "type": ["boolean", "null"]
+          },
+          "heavy_minerals_pct": {
+            "type": ["number", "null"]
+          },
           "pan_type": {
             "type": ["string", "null"]
           },

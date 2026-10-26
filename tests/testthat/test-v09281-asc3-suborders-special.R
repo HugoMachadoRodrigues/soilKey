@@ -20,7 +20,7 @@ test_that("the examples of the four orders key to a decided suborder", {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
     # since 0.9.284 the name may go on to the great group
     expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
-    expect_length(r$provisional_because, 0L)
+    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
   }
 })
 
@@ -155,7 +155,7 @@ test_that("sulfuric material at least 15 cm thick, and hypersulfidic material", 
 test_that("the settings of the Hydrosols from the site record", {
   skip_on_cran()
   hs <- function(p, s) soilKey:::hydrosol_setting_asc(p, s)$passed
-  nm <- function(p) classify_asc3(p, on_missing = "silent")$name
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   expect_identical(nm(.hydro(list(tidal_zone = "intertidal"))), "Intertidal Hydrosol")
   expect_identical(nm(.hydro(list(landform = "supratidal flat"))), "Supratidal Hydrosol")
   expect_identical(nm(.hydro(list(landform = "playa"))), "Hypersalic Hydrosol")
@@ -186,13 +186,13 @@ test_that("the settings of the Hydrosols from the site record", {
   for (s in c("subtidal", "subaqueous", "intertidal", "supratidal", "extratidal", "hypersalic", "salic"))
     expect_false(hs(p, s), info = s)
   r <- classify_asc3(p, on_missing = "silent")
-  expect_identical(r$name, "Redoxic Hydrosol"); expect_length(r$provisional_because, 0L)
+  expect_identical(r$levels$name[r$levels$level == "suborders"], "Redoxic Hydrosol"); expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
 })
 
 test_that("Redoxic and Oxyaquic Hydrosols: the major part mottled or whole coloured", {
   skip_on_cran()
   mp <- function(p, m = TRUE) soilKey:::mottled_profile_asc(p, m)$passed
-  nm <- function(p) classify_asc3(p, on_missing = "silent")$name
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   expect_true(mp(.hydro()))
   # faint mottles, or 10 % or less, are not a mottled horizon
   p <- .hydro(extra = list(mottle_contrast = c(NA, "faint", "faint", "faint")))
@@ -220,7 +220,7 @@ test_that("Redoxic and Oxyaquic Hydrosols: the major part mottled or whole colou
 
 test_that("the carbonate classes of a calcareous horizon", {
   skip_on_cran()
-  nm <- function(p) classify_asc3(p, on_missing = "silent")$name
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   expect_identical(nm(.calc(c(0, 5, 10, 5), c(0, 10, 60, 20))), "Lithocalcic Calcarosol")
   expect_identical(nm(.calc(c(0, 5, 10, 5), c(0, 10, 50, 20))), "Supracalcic Calcarosol")    # 50 is 20-50
   expect_identical(nm(.calc(c(0, 5, 10, 5), c(0, 10, 20, 5))), "Supracalcic Calcarosol")     # 20 too
@@ -264,7 +264,7 @@ test_that("the calcareous horizon: k, or 10 % or more segregations in a B or BC"
 test_that("Hypocalcic, Carbonatic and Hypergypsic Calcarosols", {
   skip_on_cran()
   cs <- function(p, k) soilKey:::carbonate_suborder_asc(p, k)$passed
-  nm <- function(p) classify_asc3(p, on_missing = "silent")$name
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   # slight to moderate effervescence only, no visible carbonate, little hard carbonate
   p <- .calc(0, 0, list(effervescence_class = c("slight", "moderate", "moderate", "slight"),
                         secondary_carbonates_pct = 0, caco3_pct = c(1, 3, 4, 3)),

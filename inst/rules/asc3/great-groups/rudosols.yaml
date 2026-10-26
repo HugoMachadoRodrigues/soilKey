@@ -1,0 +1,255 @@
+# Key to the great groups of the Rudosols, ASC 3rd ed. (online version with errata).
+# No great groups for the Hypergypsic, Carbic, Lutic and Stratic suborders.
+# See R/diagnostics-asc-great-groups-rest.R and inst/rules/asc3/readings.yaml.
+
+great_groups:
+  "RU-CS":
+    - code: "IW"
+      name: Monosulfidic-Sulfuric Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
+      notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
+
+    - code: "EV"
+      name: Sulfuric Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: sulfuric}
+      notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
+
+    - code: "IX"
+      name: Monohypersulfidic Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monohypersulfidic}
+      notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
+
+    - code: "IZ"
+      name: Hypersulfidic Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: hypersulfidic}
+      notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
+
+    - code: "JA"
+      name: Monohyposulfidic Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: monohyposulfidic}
+      notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
+
+    - code: "JC"
+      name: Hyposulfidic Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: hyposulfidic}
+      notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
+
+    - code: "EU"
+      name: Sulfidic Hypersalic Rudosol
+      tests:
+        all_of:
+          - acid_sulfate_gg_asc: {kind: sulfidic}
+      notes: "Sulfidic materials within the upper 1.5 m."
+
+    - code: "BZ"
+      name: Gypsic Hypersalic Rudosol
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 50}
+      notes: "A gypsic horizon within the upper 0.5 m."
+
+    - code: "CC"
+      name: Halic Hypersalic Rudosol
+      tests:
+        all_of:
+          - halite_asc: {kind: halic}
+      notes: "The major part of the upper 0.5 m of materials dominated (more than 50 %) by halite crystals."
+
+  "RU-EL":
+    - code: "JU"
+      name: Coquinic Shelly Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: coquinic}
+      notes: "Directly overlies a coquina substrate."
+
+    - code: "DZ"
+      name: Petrocalcic Shelly Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petrocalcic}
+      notes: "Directly overlies a calcrete pan."
+
+    - code: "CZ"
+      name: Lithic Shelly Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: lithic}
+      notes: "Directly overlies hard rock."
+
+    - code: "GF"
+      name: Regolithic Shelly Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: regolithic}
+      notes: "Directly overlies unconsolidated mineral materials."
+
+  "RU-CY":
+    - code: "BJ"
+      name: Duric Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: duric}
+      notes: "Directly overlies a red-brown hardpan."
+
+    - code: "GE"
+      name: Ferric-Petroferric Leptic Rudosol
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - substrate_gg_asc: {kind: petroferric}
+      notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "EA"
+      name: Petroferric Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petroferric}
+      notes: "Other soils that directly overlie ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petrocalcic}
+      notes: "Directly overlies a calcrete pan."
+
+    - code: "EM"
+      name: Silpanic Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: silpanic}
+      notes: "Directly overlies a siliceous pan."
+
+    - code: "CZ"
+      name: Lithic Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: lithic}
+      notes: "Directly overlies hard rock."
+
+    - code: "DU"
+      name: Paralithic Leptic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: paralithic}
+      notes: "Directly overlies partially weathered or decomposed rock or saprolite."
+
+    - code: "JQ"
+      name: Gritty Leptic Rudosol
+      tests:
+        all_of:
+          - gritty_asc: {}
+      notes: "The major part of the upper 1.0 m with a distinct gritty feel."
+
+  "RU-AO":
+    - code: "BJ"
+      name: Duric Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: duric}
+      notes: "Directly overlies a red-brown hardpan."
+
+    - code: "GE"
+      name: Ferric-Petroferric Arenic Rudosol
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - substrate_gg_asc: {kind: petroferric}
+      notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "EA"
+      name: Petroferric Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petroferric}
+      notes: "Other soils that directly overlie ferricrete, a petroferric or a petroreticulate horizon."
+
+    - code: "DZ"
+      name: Petrocalcic Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petrocalcic}
+      notes: "Directly overlies a calcrete pan."
+
+    - code: "EM"
+      name: Silpanic Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: silpanic}
+      notes: "Directly overlies a siliceous pan."
+
+    - code: "CZ"
+      name: Lithic Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: lithic}
+      notes: "Directly overlies hard rock."
+
+    - code: "DU"
+      name: Paralithic Arenic Rudosol
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: paralithic}
+      notes: "Directly overlies partially weathered or decomposed rock or saprolite."
+
+    - code: "JQ"
+      name: Gritty Arenic Rudosol
+      tests:
+        all_of:
+          - gritty_asc: {}
+      notes: "The major part of the upper 1.0 m with a distinct gritty feel."
+
+  "RU-HH":
+    - code: "HF"
+      name: Tephric Clastic Rudosol
+      tests:
+        all_of:
+          - tephric_asc: {gravel: true}
+      notes: "The gravel consists dominantly of little-weathered tephric materials."
+
+    - code: "BU"
+      name: Ferric Clastic Rudosol
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "The gravelly materials contain a ferric horizon."
+
+    - code: "AS"
+      name: Bauxitic Clastic Rudosol
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: bauxitic, where: profile}
+      notes: "The gravelly materials contain a bauxitic horizon."
+
+    - code: "HI"
+      name: Colluvic Clastic Rudosol
+      tests:
+        all_of:
+          - clastic_gg_asc: {kind: colluvic}
+      notes: "Usually unsorted gravel of a wide size range: colluvial mass movement debris (scree, talus, landslide, mudflow and creep deposits)."
+
+    - code: "BX"
+      name: Fluvic Clastic Rudosol
+      tests:
+        all_of:
+          - clastic_gg_asc: {kind: fluvic}
+      notes: "Gravel of mostly rounded materials transported by streams or by wave action."
+
+    - code: "HJ"
+      name: Lithosolic Clastic Rudosol
+      tests:
+        default: true
+      notes: "Other soils whose unconsolidated mineral materials are dominated by gravel of rock or mineral fragments."

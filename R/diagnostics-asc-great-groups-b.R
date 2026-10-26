@@ -85,9 +85,35 @@
 # cemented layer with no pan recorded); FALSE otherwise: pan_type 'none', a
 # pan of another named kind, or no pan and no cemented layer recorded (a pan
 # shows: the surveyor records it, as the order reads hard layers).
+# The pan a layer or rock origin names as the material of the layer itself:
+# ferricrete (a petroferric or petroreticulate horizon) or silcrete; not a
+# loose or transported form of it (fragments, gravel, rubble, nodules or
+# pisolites, sediments derived from it). The rock origin of an A or B horizon
+# is its parent rock, not its material, and is not read.
+.asc_pan_origin <- function(x) {
+  h <- x$h
+  rock <- as.character(h$rock_origin %||% rep(NA, x$n))
+  rock[!is.na(x$role) & grepl("^[AB]", x$role)] <- NA
+  org <- tolower(paste(h$layer_origin %||% rep(NA, x$n), rock))
+  loose <- grepl(paste0("fragment|gravel|rubble|colluv|alluv|fluvi|aeolian|aeolic|eolian|marine|lacustrine|dune|",
+                        "detrit|derived|transported|sediment|\\blag\\b|",
+                        "\\bnodules?\\b|\\bpisolit(e|h)s?\\b|\\bboulders?\\b|\\bcobbles?\\b|\\bloose\\b"), org)
+  ifelse(loose, NA_character_,
+         ifelse(grepl("petroreticul", org), "petroreticulate",
+                ifelse(grepl("ferricrete|petroferric", org), "ferricrete",
+                       ifelse(grepl("silcrete|siliceous pan", org), "silcrete", NA_character_))))
+}
+
 .asc_pan_rows <- function(x, kinds) {
   h <- x$h; n <- x$n
   pt <- tolower(trimws(as.character(h$pan_type %||% rep(NA_character_, n))))
+  # a pan named by the layer or rock origin, where pan_type does not name one:
+  # the pan itself when the layer is cemented (an m horizon, moderately
+  # cemented or more, or rock), material of or from it otherwise (undecided)
+  org_kind <- .asc_pan_origin(x)
+  no_pt <- is.na(pt) | !nzchar(pt) | pt == "none"
+  org_soft <- no_pt & !is.na(org_kind) & !(x$des$m | x$hard)
+  pt <- ifelse(no_pt & !is.na(org_kind) & !org_soft, org_kind, pt)
   sfx <- x$des$suffixes
   has <- function(l) vapply(sfx, function(s) l %in% s, NA)
   des_kind <- ifelse(x$des$m & x$des$k, "calcrete",
@@ -101,7 +127,8 @@
   maybe_kind <- !is.na(pt) & ("red-brown hardpan" %in% kinds) & grepl("duripan", pt)
   other_named <- !is.na(pt) & pt != "none" & !grepl(pat, pt) & !grepl("other pan", pt) & !maybe_kind
   unknown <- (!is.na(pt) & grepl("other pan", pt)) | des_kind %in% "unknown" | maybe_kind |
-             (x$hard & !x$rock & is.na(pt) & is.na(des_kind))
+             (x$hard & !x$rock & is.na(pt) & is.na(des_kind)) |
+             (org_soft & grepl(pat, ifelse(is.na(org_kind), "", org_kind)))
   ifelse(named, TRUE, ifelse(unknown & !other_named, NA, FALSE))
 }
 
@@ -110,19 +137,23 @@
 #' Pans of the great groups: Duric (a red-brown hardpan in or directly
 #' under the B), Petroferric (ferricrete, a petroferric or, with
 #' where = "b", a petroreticulate horizon, within the solum or in or directly
-#' under the B), Placic (a thin ironpan in or directly under the B)
+#' under the B), Placic (a thin ironpan in or directly under the B); with
+#' where = "profile" (Hydrosols, Chernic Tenosols), anywhere in the profile.
 #' @noRd
-pan_great_group_asc <- function(pedon, kind = c("duric", "petroferric", "placic"), where = c("b", "solum")) {
+pan_great_group_asc <- function(pedon, kind = c("duric", "petroferric", "placic"),
+                                where = c("b", "solum", "profile")) {
   kind <- match.arg(kind); where <- match.arg(where)
   x <- .asc_horizons(pedon)
   kinds <- switch(kind, duric = "red-brown hardpan",
                   petroferric = c("ferricrete", "alcrete", "petroferric", if (where == "b") "petroreticulate"),
                   placic = "thin ironpan")
-  rows <- if (!x$any_known) integer(0)
+  rows <- if (where == "profile") seq_len(x$n)
+          else if (!x$any_known) integer(0)
           else if (where == "solum") which(x$solum %in% TRUE | x$maybe_soil)
           else c(.asc_b_rows(x, pans = TRUE), .asc_under_b(x))
   v <- .asc_pan_rows(x, kinds)
-  passed <- if (!x$any_known) { if (any(v %in% TRUE)) NA else if (all(v %in% FALSE)) FALSE else NA }
+  passed <- if (where == "profile") .asc_any_rows(v)
+            else if (!x$any_known) { if (any(v %in% TRUE)) NA else if (all(v %in% FALSE)) FALSE else NA }
             else .asc_any_rows(v[rows])
   .asc_result(paste0("gg_", kind), passed, rows[v[rows] %in% TRUE], list(where = where),
               if (is.na(passed)) c("pan_type", "designation", "cementation_class") else character(0),

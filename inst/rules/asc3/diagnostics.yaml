@@ -51,3 +51,18 @@ diagnostics:
   - {function: calcarosol_gg_asc,     file: R/diagnostics-asc-great-groups-special.R, reference: "Calcarosols, great groups; glossary 'Argic horizon', 'Marl'"}
   - {function: podosol_gg_asc,        file: R/diagnostics-asc-great-groups-special.R, reference: "Podosols, great groups; glossary 'Podosol diagnostic horizons'"}
   - {function: organosol_gg_asc,      file: R/diagnostics-asc-great-groups-special.R, reference: "Organosols, great groups; glossary 'Sulfidic materials', 'Strongly acid'"}
+  - {function: acid_sulfate_gg_asc,   file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups of the acid sulfate soils (Hydrosols, Hypersalic Arenosols and Rudosols); glossary 'Sulfidic materials', 'Sulfuric material'"}
+  - {function: substrate_gg_asc,      file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups on what the soil directly overlies (Arenosols, Rudosols, Tenosols); glossary 'Marl', 'Siliceous pan', 'Reticulate horizon', 'Coquina'"}
+  - {function: nodular_horizon_asc,   file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Ferric, Bauxitic, Manganic; glossary 'Ferric horizon', 'Bauxitic horizon', 'Manganic horizon'"}
+  - {function: gypsic_horizon_asc,    file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Gypsic; glossary 'Gypsic horizon'"}
+  - {function: argic_horizon_asc,     file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Argic; glossary 'Argic horizon'"}
+  - {function: inceptic_asc,          file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Inceptic"}
+  - {function: tephric_asc,           file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Tephric; glossary 'Tephric materials'"}
+  - {function: gritty_asc,            file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Gritty, Gritty-Lithic, Gritty-Paralithic, Gritty-Silpanic; glossary 'Gritty'"}
+  - {function: gravic_asc,            file: R/diagnostics-asc-great-groups-rest.R, reference: "Arenosols, great group Gravic; glossary 'Wet panning'"}
+  - {function: halite_asc,            file: R/diagnostics-asc-great-groups-rest.R, reference: "Great groups Halic, Subhalic"}
+  - {function: sand_texture_gg_asc,   file: R/diagnostics-asc-great-groups-rest.R, reference: "Arenosols, great groups Kandic, Tenic, Palic"}
+  - {function: calsilic_gg_asc,       file: R/diagnostics-asc-great-groups-rest.R, reference: "Arenosols, great groups Epibasic, Hypervescent"}
+  - {function: tenosol_arenic_asc,    file: R/diagnostics-asc-great-groups-rest.R, reference: "Tenosols, great group Arenic"}
+  - {function: clastic_gg_asc,        file: R/diagnostics-asc-great-groups-rest.R, reference: "Rudosols, great groups Colluvic, Fluvic"}
+  - {function: hydrosol_gg_asc,       file: R/diagnostics-asc-great-groups-rest.R, reference: "Hydrosols, great groups Histic, Faunic, Epicalcareous, Argillaceous, Lutaceous, Arenaceous, Mottled, Haplic, Calcarosolic, Sodosolic, Chromosolic"}

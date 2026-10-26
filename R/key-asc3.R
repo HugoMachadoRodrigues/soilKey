@@ -2,7 +2,8 @@
 # v0.9.277 -- the Australian Soil Classification, 3rd edition (Isbell & NCST
 # 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
 # suborders since v0.9.280 (all orders since v0.9.282); great groups since
-# v0.9.283 (ten orders since v0.9.284). Subgroups and families follow. Experimental and
+# v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285).
+# Subgroups and families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -25,10 +26,13 @@
 #' Dermosols and Kandosols (pans in or under the B, structure, plasticity,
 #' base status, exchangeable Ca/Mg, ESP and carbonate of the B2 or B2t), the
 #' Vertosols (the surface), Calcarosols (what the soil directly overlies,
-#' and the B), Podosols (the kinds of Podosol B) and Organosols (drainage,
-#' acid sulfate materials, carbonate and acidity). The great groups of the
-#' Hydrosols, Arenosols, Rudosols and Tenosols (the Anthroposols have none
-#' in the text), and the subgroups and families, follow. The name is that of the deepest class assigned ("Eutrophic Red
+#' and the B), Podosols (the kinds of Podosol B), Organosols (drainage,
+#' acid sulfate materials, carbonate and acidity), Hydrosols (acid sulfate
+#' materials, the upper 0.5 m, and the order the soil would key to apart
+#' from wetness), Arenosols, Rudosols and Tenosols (what the soil directly
+#' overlies, nodular, gypsic and argic horizons, carbonate, texture, gravel);
+#' the Anthroposols have none in the text. The subgroups and families
+#' follow. The name is that of the deepest class assigned ("Eutrophic Red
 #' Chromosol"); \code{rsg_or_order} keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture

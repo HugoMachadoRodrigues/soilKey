@@ -57,7 +57,7 @@ test_that("each example pedon keys to its order, with nothing undecided", {
   for (o in names(ord)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
     expect_identical(r$rsg_or_order, ord[[o]], info = o)
-    expect_length(r$provisional_because, 0L)
+    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
     expect_identical(r$levels$level[1], "orders")
   }
 })
@@ -71,7 +71,7 @@ test_that("the registry lists the ASC as an opt-in system", {
   res <- classify_all(make_asc3_example("kandosols"), systems = c("wrb", "asc"), on_missing = "silent")
   expect_identical(res$summary$asc3, "Mesotrophic Red Kandosol")
   expect_length(yaml::read_yaml(system.file("rules", "asc3", "readings.yaml",
-                                            package = "soilKey"))$readings, 48L)
+                                            package = "soilKey"))$readings, 52L)
 })
 
 # ---- the clear or abrupt textural B --------------------------------------------

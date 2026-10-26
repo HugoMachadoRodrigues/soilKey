@@ -18,8 +18,8 @@ test_that("the examples of the four orders key to a decided suborder", {
             rudosols = "Leptic Rudosol", tenosols = "Brown Tenosol")
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
-    expect_identical(r$name, want[[o]], info = o)
-    expect_length(r$provisional_because, 0L)
+    expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
+    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
   }
 })
 
@@ -123,7 +123,7 @@ test_that("leptic: rock, a hard layer or saprolite within 0.5 m", {
 
 test_that("the Tenosol suborders in key order", {
   skip_on_cran()
-  nm <- function(p) classify_asc3(p, on_missing = "silent")$name
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   blk <- list(munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 5), munsell_chroma_moist = c(1, 2, 4),
               munsell_value_dry = c(4, 5, 7), munsell_chroma_dry = c(1, 2, 3), ph_h2o = c(5.0, 5.2, 6.0))
   expect_identical(nm(.tenosol(blk)), "Chernic Tenosol")
@@ -193,7 +193,8 @@ test_that("Carbonatic, Calsilic and Stratic Arenosols", {
   p <- .sand(list(effervescence_class = c("none", "very strong", "very strong"), ph_h2o = c(6.5, 8.5, 8.6),
                   caco3_pct = c(0.2, 10, 12)))
   expect_false(ac(p, "carbonatic")); expect_true(ac(p, "calsilic"))
-  expect_identical(classify_asc3(p, on_missing = "silent")$name, "Calsilic Arenosol")
+  lv <- classify_asc3(p, on_missing = "silent")$levels
+  expect_identical(lv$name[lv$level == "suborders"], "Calsilic Arenosol")
   # described to 0.6 m only: undecided
   p <- .sand(c(calc, list(caco3_pct = c(45, 30, 20), designation = c("A1", "C1", "C2"), top_cm = c(0, 20, 40),
                           bottom_cm = c(20, 40, 60))))
@@ -282,9 +283,10 @@ test_that("NatSoil EC 1:5, strength, ped size and nodules", {
   expect_equal(h$ec_1to5_dS_m[1], 0.05)
   expect_identical(h$strength_dry[1], "weak"); expect_identical(h$strength_moist[2], "very firm")
   expect_equal(h$ped_size_max_mm[1], 20)
-  expect_true(is.na(h$ferric_nodules_pct[1]))           # no segregation record
+  # since 0.9.285 only what is recorded counts
+  expect_true(is.na(h$ferric_nodules_pct[1]) && !is.nan(h$ferric_nodules_pct[1]))   # no segregation record
   expect_equal(h$ferric_nodules_pct[2], 30)             # 15 + 15
-  expect_true(is.na(h$ferric_nodules_pct[3]))           # a segregation of unknown form
-  expect_true(is.na(h$ferric_nodules_pct[4]))           # may or may not be ferruginous
-  expect_true(is.na(h$ferric_nodules_pct[5]))           # 12 to 30 %
+  expect_equal(h$ferric_nodules_pct[3], 15)             # a segregation of unknown form is not counted
+  expect_equal(h$ferric_nodules_pct[4], 0)              # nor one of unidentified nature
+  expect_true(is.nan(h$ferric_nodules_pct[5]))          # 12 to 30 %: either side of 20
 })

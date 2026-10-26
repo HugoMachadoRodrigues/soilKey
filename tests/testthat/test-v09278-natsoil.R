@@ -228,3 +228,22 @@ test_that("second review: colours with no status, unusable sample depths, sliver
   expect_equal(h$caco3_pct[2], 3)                        # "<2" is unusable: the next method
   expect_true(is.na(h$oc_pct[2]))                        # "<10" x 1.3 may exceed 12 %
 })
+
+test_that("NatSoil segregations give manganiferous nodules, visible gypsum and visible salt (0.9.285)", {
+  skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  site <- .ns_sites()[[1]]
+  hz <- site$z_observations[[1]]$z_horizons
+  hz[[4]]$z_segregations <- list(list(seg_nature = "Y", seg_abun = 4, seg_form = "C"),
+                                 list(seg_nature = "M", seg_abun = 4, seg_form = "N"),
+                                 list(seg_nature = "Z", seg_abun = 1, seg_form = "C"))
+  site$z_observations[[1]]$z_horizons <- hz
+  dir <- withr::local_tempdir()
+  f <- file.path(dir, "sites.json.gz"); .ns_write(list(site), f)
+  h <- as.data.frame(load_natsoil_pedons(f, verbose = FALSE)[[1]]$horizons)
+  expect_equal(h$gypsum_visible_pct[4], 35)            # class 4 (20-50 %): above 20 whatever it is
+  expect_equal(h$manganiferous_nodules_pct[4], 35)
+  expect_equal(h$halite_visible_pct[4], 1)             # class 1 (under 2 %): below 50
+  # no segregation recorded: unknown
+  expect_true(is.na(h$gypsum_visible_pct[1]))
+})
