@@ -91,7 +91,9 @@ part_prop_asc <- function(pedon, prop = c("acid", "not_acid", "calcareous"),
       # the soil above rock, a hard layer or a pan (substrate) and above any
       # buried soil
       hard <- which(live & (x$rock | x$hard | .asc_pan_layer(x)))
-      stop_at <- if (length(hard)) min(h$top_cm[hard]) else Inf
+      bur <- which(x$des$buried & !is.na(h$top_cm))
+      stops <- c(h$top_cm[hard], h$top_cm[bur])
+      stop_at <- if (length(stops)) min(stops) else Inf
       rows <- which(live & !x$rock & !x$hard & !.asc_pan_layer(x) & h$top_cm < stop_at - 0.5)
       bv <- .asc_bottom_variants(h)
       if (!length(rows)) NA

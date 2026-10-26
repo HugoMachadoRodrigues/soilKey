@@ -852,7 +852,14 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     key <- paste(res$reference[i], res$reference_suborder[i], sep = "-")
     is.null(rules$great_groups[[key]]) && !is.null(rules$subgroups[[key]])
   }, NA)
-  mv <- no_gg & !is.na(res$reference_great_group) & is.na(res$reference_subgroup)
+  in_list <- vapply(seq_len(nrow(res)), function(i) {
+    if (!no_gg[i] || is.na(res$reference_great_group[i])) return(FALSE)
+    lst <- rules$subgroups[[paste(res$reference[i], res$reference_suborder[i], sep = "-")]]
+    res$reference_great_group[i] %in% vapply(lst, function(t) as.character(t$code), "")
+  }, NA)
+  # the great-group column holds a code of the suborder's subgroup list (the
+  # subgroup column then empty, "ZZ" for not available, or a code of no list)
+  mv <- in_list
   res$reference_subgroup[mv] <- res$reference_great_group[mv]; res$reference_great_group[mv] <- NA
   res$decided <- !is.na(res$provisional) & !nzchar(res$provisional)
   res$agree <- !is.na(res$predicted) & res$predicted == res$reference

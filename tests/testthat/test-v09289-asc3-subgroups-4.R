@@ -147,3 +147,10 @@ test_that("Calcenic carbonate outside a B, the Arenosol Basic catch-all, buried 
                   effervescence_class = c("none", "none", "strong"), stringsAsFactors = FALSE)
   expect_true(is.na(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "solum", "some")$passed))
 })
+
+test_that("the soil stops at a buried soil", {
+  skip_on_cran()
+  d <- data.frame(designation = c("A1", "C1", "2Ab", "3C"), top_cm = c(0, 10, 40, 60), bottom_cm = c(10, 40, 60, 120),
+                  ph_h2o = c(6.5, 6.5, 6.5, 8.5), effervescence_class = c("none", "none", "none", "strong"), stringsAsFactors = FALSE)
+  expect_false(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "soil", "some")$passed)
+})
