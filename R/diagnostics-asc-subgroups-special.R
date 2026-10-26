@@ -24,10 +24,17 @@
   sw <- .asc_sandwiched(x, may, sure)
   lo <- sort(c(sure, sw)); may <- setdiff(may, sw)
   if (!length(may)) return(list(lo))
-  top_lo <- if (length(lo)) min(h$top_cm[lo]) else Inf
+  if (!length(lo)) {
+    # no designated solum horizon: the solum runs from the top through any
+    # number of the rows of unknown role (or there is none)
+    ord <- may[order(h$top_cm[may])]
+    return(lapply(0:length(ord), function(k) ord[seq_len(k)]))
+  }
+  top_lo <- min(h$top_cm[lo])
   above <- may[h$top_cm[may] < top_lo]; above <- above[order(-h$top_cm[above])]   # nearest first
   below <- setdiff(may, above); below <- below[order(h$top_cm[below])]
-  above <- head(above, 6L); below <- head(below, 8L)
+  # too many ways to try: undecided
+  if ((length(above) + 1) * (length(below) + 1) > 500) return(list(NA))
   sets <- list()
   for (j in 0:length(above)) for (k in 0:length(below))
     sets[[length(sets) + 1L]] <- sort(c(lo, head(above, j), head(below, k)))
@@ -35,6 +42,21 @@
 }
 
 .asc_agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+
+# A horizon of unknown depth may be thin or as thick as the room down to
+# the next horizon allows (500 cm with none below); the verdicts here move
+# one way with its thickness, so both ends suffice.
+.asc_bottom_variants <- function(h) {
+  top <- h$top_cm; bot <- h$bottom_cm
+  thin <- ifelse(is.na(bot) & !is.na(top), top + 1, bot)
+  nxt <- vapply(seq_along(top), function(i) {
+    if (is.na(top[i])) return(NA_real_)
+    d <- top[!is.na(top) & top > top[i] + 0.5]
+    if (length(d)) min(d) else top[i] + 500
+  }, 0)
+  thick <- ifelse(is.na(bot) & !is.na(top), nxt, bot)
+  if (identical(thin, thick)) list(thin) else list(thin, thick)
+}
 
 #' Parts of the solum (Vertosol and Calcarosol subgroups)
 #'
@@ -70,12 +92,9 @@ solum_part_asc <- function(pedon, prop = c("acid", "calcareous", "mottled", "who
     if (any(v %in% TRUE)) TRUE else if (anyNA(v) || !.asc_described(x, zt, zb)) NA else FALSE
   }
   sets <- .asc_solum_sets(x)
-  # a horizon of unknown depth may be thin or thick; the verdict moves one
-  # way with its thickness, so both ends suffice
-  thin <- ifelse(is.na(h$bottom_cm), h$top_cm + 1, h$bottom_cm)
-  thick <- ifelse(is.na(h$bottom_cm), h$top_cm + 500, h$bottom_cm)
-  passed <- if (is.null(sets)) NA
-            else .asc_agree(unlist(lapply(sets, function(r) c(one(r, thin), if (anyNA(h$bottom_cm[r])) one(r, thick)))))
+  bv <- .asc_bottom_variants(h)
+  passed <- if (is.null(sets) || anyNA(sets)) NA
+            else .asc_agree(unlist(lapply(sets, function(r) vapply(bv, function(b) one(r, b), NA))))
   .asc_result(paste("sg_solum", part, prop, how, sep = "_"), passed, integer(0),
               list(prop = prop, part = part, how = how),
               if (is.na(passed)) c("ph_h2o", "ph_cacl2", "effervescence_class", "na_cmol", "cec_cmol",
@@ -91,13 +110,13 @@ solum_part_asc <- function(pedon, prop = c("acid", "calcareous", "mottled", "who
 episodic_asc <- function(pedon) {
   x <- .asc_horizons(pedon); h <- x$h
   e <- .asc_esp(h); esp <- ifelse(e$low_charge, 0, e$esp)
-  one <- function(rows) {
+  one <- function(rows, b) {
     if (!length(rows)) return(FALSE)
     st <- min(h$top_cm[rows])
-    sb <- if (anyNA(h$bottom_cm[rows])) Inf else max(h$bottom_cm[rows])
+    sb <- max(b[rows])
     zb <- min(st + 10, sb); span <- zb - st
     if (span <= 0) return(FALSE)
-    top <- h$top_cm[rows]; bot <- ifelse(is.na(h$bottom_cm[rows]), zb, h$bottom_cm[rows]); v <- esp[rows]
+    top <- h$top_cm[rows]; bot <- b[rows]; v <- esp[rows]
     # the window cut at every row boundary; overlapping rows are counted once
     # (their lowest and highest ESP bound it); a part no row covers, or a row
     # of unknown ESP, may hold any value
@@ -112,7 +131,9 @@ episodic_asc <- function(pedon) {
     if (lo / span >= 6) TRUE else if (hi / span < 6) FALSE else NA
   }
   sets <- .asc_solum_sets(x)
-  passed <- if (is.null(sets)) NA else .asc_agree(vapply(sets, one, NA))
+  bv <- .asc_bottom_variants(h)
+  passed <- if (is.null(sets) || anyNA(sets)) NA
+            else .asc_agree(unlist(lapply(sets, function(r) vapply(bv, function(b) one(r, b), NA))))
   .asc_result("sg_episodic", passed, integer(0), list(),
               if (is.na(passed)) c("na_cmol", "cec_cmol", "ecec_cmol", "esp_pct") else character(0),
               "Vertosols, subgroups Episodic; glossary 'Sodic', 'Weighted average'")
@@ -138,9 +159,11 @@ podosol_coherence_asc <- function(pedon, kind = c("strong", "weak")) {
   panlike <- grepl("ortstein|coffee ?rock|sandrock", txt) |
              ((x$des$m | (x$hard & !x$rock)) & !(.asc_pan_rows(x, "thin ironpan") %in% TRUE))
   pan_any <- x$des$m | x$hard | (!is.na(h$pan_type) & !tolower(trimws(h$pan_type)) %in% c("", "none"))
-  # a thin ironpan is no Podosol B feature (glossary, Bs horizons): its own
-  # strength does not make the B coherent, though it is a pan
-  tip <- .asc_pan_rows(x, "thin ironpan") %in% TRUE
+  # a thin ironpan is no Podosol B feature (glossary, Bs horizons): the
+  # strength of a horizon that is the pan does not make the B coherent,
+  # though it is a pan (a band within a horizon leaves that horizon's
+  # strength to count)
+  tip <- .asc_pan_rows(x, "thin ironpan") %in% TRUE & (.asc_pan_layer(x) | x$des$m | x$hard)
   strong <- ((sd %in% hi | sm %in% hi) & !tip) | panlike
   weak_rec <- (sd %in% lo | sm %in% lo | tip) & !strong
   row_strong <- ifelse(strong, TRUE, ifelse(weak_rec, FALSE, NA))
@@ -211,6 +234,8 @@ organosol_sg_asc <- function(pedon, kind = c("lithic", "paralithic", "marly", "r
   sets <- if (length(may)) list(org, sort(unique(c(org, may)))) else list(org)
   sk <- vapply(seq_len(n), function(i) .asc_substrate_kind(x, i), "")
   soil_hz <- grepl("^[AB]", x$role %||% "") & !(x$role %in% "B/C")
+  named_sap <- grepl("saprolit|saprock|weathered rock|decomposed rock",
+                     tolower(paste(h$layer_origin %||% rep(NA, n), h$rock_origin %||% rep(NA, n))))
   ends_hard <- .asc_ends_hard(x)
   last_bot <- suppressWarnings(max(h$bottom_cm[has_top], na.rm = TRUE))
   frag <- {
@@ -242,7 +267,8 @@ organosol_sg_asc <- function(pedon, kind = c("lithic", "paralithic", "marly", "r
     # saprolite but is not hard rock
     kind_of <- function(i) {
       k <- sk[i]
-      if (is.na(k) && soil_hz[i]) "unconsolidated" else k
+      # an A or B horizon is soil material unless its origin names saprolite
+      if (soil_hz[i] && (is.na(k) || (k %in% "saprolite" && !named_sap[i]))) "unconsolidated" else k
     }
     uncons <- vapply(seq_len(n), function(i) {
       if (!mineral[i]) return(FALSE)
@@ -259,6 +285,8 @@ organosol_sg_asc <- function(pedon, kind = c("lithic", "paralithic", "marly", "r
       k <- vapply(under, kind_of, "")
       if (k_want == "rock") k[is.na(k) & !is.na(x$role[under]) & !x$unknown_role[under]] <- "other"
       k[k %in% "hard"] <- if (k_want == "marl") "other" else NA
+      # sandy material is not marl
+      if (k_want == "marl") k[is.na(k) & .asc_is_sandy(h)[under] %in% TRUE] <- "other"
       if (any(k %in% k_want)) TRUE else if (anyNA(k)) NA else FALSE
     }
     switch(kind,

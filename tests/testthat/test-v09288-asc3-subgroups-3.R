@@ -199,3 +199,43 @@ test_that("the solum: rows after the description, its base at any row of unknown
                                  caco3_pct = NA_real_, carbonate_soft_pct = 0))
   expect_false(soilKey:::calsilic_gg_asc(p, "supravescent")$passed)
 })
+
+test_that("a thin ironpan band, sandy material under peat, a residual A1", {
+  skip_on_cran()
+  # an uncemented B with a thin ironpan band keeps its own strength
+  p <- ex_s3("podosols", list(designation = c("A1", "A2e", "B21hs", "B22s", "C"), pan_type = c(NA, NA, NA, "thin ironpan", NA),
+                              strength_moist = c("loose", "loose", "firm", "very firm", "loose")))
+  expect_true(soilKey:::podosol_coherence_asc(p, "strong")$passed)
+  expect_false(soilKey:::podosol_coherence_asc(p, "weak")$passed)
+  org <- function(d3, extra = list()) {
+    d <- data.frame(designation = c("P1", "P2", d3), top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 150),
+                    field_texture = c("HP", "AP", "LC"), oc_pct = c(38, 30, 1.5), munsell_value_moist = c(2, 2, 4),
+                    munsell_chroma_moist = c(1, 1, 2), stringsAsFactors = FALSE)
+    for (k in names(extra)) d[[k]] <- extra[[k]]
+    mk_s3(d, list(drainage_class = "very poorly drained"))
+  }
+  # sandy material is not marl
+  expect_false(soilKey:::organosol_sg_asc(org("C", list(field_texture = c("HP", "AP", "S"))), "marly")$passed)
+  # an A1 of residual origin is soil material, not saprolite
+  expect_false(soilKey:::organosol_sg_asc(org("A1", list(layer_origin = c(NA, NA, "residual"))), "paralithic")$passed)
+})
+
+test_that("the solum with no designated horizon, many rows of unknown role, horizons of unknown depth", {
+  skip_on_cran()
+  v <- function(des, top, bot, ph = 7, na = 1) mk_s3(data.frame(designation = des, top_cm = top, bottom_cm = bot, field_texture = "MC",
+                                                               clay_pct = 55, ph_h2o = ph, cec_cmol = 40, na_cmol = na,
+                                                               stringsAsFactors = FALSE))
+  # no designated solum horizon: the solum may be the first row alone
+  p <- v(c(NA, NA, "C"), c(0, 20, 200), c(20, 200, 250), ph = c(4.5, 7, 7))
+  expect_true(is.na(soilKey:::solum_part_asc(p, "acid", "upper", "major")$passed))
+  # many rows of unknown role below the solum are all tried
+  p <- v(c("A1", "B21", rep(NA, 9)), c(0, 10, seq(30, 100, 10), 110), c(10, 30, seq(40, 110, 10), 300),
+         ph = c(rep(7, 10), 4.5))
+  expect_true(is.na(soilKey:::solum_part_asc(p, "acid", "lower", "major")$passed))
+  # a horizon of unknown depth is no thicker than the room down to the next one
+  p <- v(c("A1", "B21", "B22", "C"), c(0, 10, 60, 150), c(10, NA, 150, 200), ph = c(7, 7, 4.5, 7))
+  expect_true(soilKey:::solum_part_asc(p, "acid", "lower", "major")$passed)
+  # Episodic: a surface horizon of unknown depth may be thin
+  p <- v(c("A1", "B21"), c(0, 8), c(NA, 30), na = c(4, 1))
+  expect_true(is.na(soilKey:::episodic_asc(p)$passed))
+})
