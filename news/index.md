@@ -1,5 +1,45 @@
 # Changelog
 
+## soilKey 0.9.286 (2026-10-26)
+
+### Australian classification: subgroups of the Kurosols, Sodosols and Chromosols (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+now keys a fourth level, the subgroups, for the Kurosols, Sodosols and
+Chromosols; the other orders follow. WRB, SiBCS and USDA results do not
+change, nor do the Australian orders, suborders and great groups, but
+their names now take the book’s form.
+
+- The names follow the general form the book gives, “Subgroup, Great
+  Group, Suborder Order”: “Bleached, Eutrophic, Red Chromosol”. The
+  great groups carry the same comma (“Eutrophic, Red Chromosol”; before,
+  “Eutrophic Red Chromosol”).
+- One list per order, as the order pages give it, applied under every
+  great group of the order: chernic horizons (peaty, humose, melacic,
+  melanic), a conspicuously bleached A2, a B with at least 0.3 m of
+  vertic properties, ferric and manganic horizons within the solum, the
+  lower part of the B sodic, the B2t mottled or whole coloured, a
+  reticulate horizon below the B2t, a gypsic horizon in the B or BC, a
+  siliceous pan in the lower A or upper B, Magnesic, base status, the
+  carbonate classes and Effervescent, combined as the lists combine them
+  (Bleached-Sodic, Mottled-Sodic, Ferric-Sodic and so on).
+- The hierarchical key finds a list for every class under a part of the
+  path (“CH-\*“) and writes a name on the name of the class above
+  (”Bleached, {parent}“); other systems do not change.
+- [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
+  reports the subgroups (`$subgroups`).
+- The readings are in `inst/rules/asc3/readings.yaml` (54).
+
+On 9,700 licensed NatSoil profiles the orders, suborders and great
+groups do not change. Of the 560 profiles keyed to these three orders
+with a great group, 294 get a subgroup. Of the 173 whose order, suborder
+and great group agree with the survey and whose survey gives a subgroup
+of the key, 79 get one and 37 (47 %) the survey’s; most of the others
+stop at Humose, which needs organic C in the upper 0.2 m, rarely
+measured. The disagreements checked are survey practice: B horizons of
+heavy clay with many slickensides and lenticular peds surveyed Haplic
+rather than Vertic.
+
 ## soilKey 0.9.285 (2026-10-24)
 
 ### Australian classification: great groups of the Hydrosols, Arenosols, Rudosols and Tenosols (experimental)

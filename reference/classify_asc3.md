@@ -24,9 +24,13 @@ materials, carbonate and acidity), Hydrosols (acid sulfate materials,
 the upper 0.5 m, and the order the soil would key to apart from
 wetness), Arenosols, Rudosols and Tenosols (what the soil directly
 overlies, nodular, gypsic and argic horizons, carbonate, texture,
-gravel); the Anthroposols have none in the text. The subgroups and
-families follow. The name is that of the deepest class assigned
-("Eutrophic Red Chromosol"); `rsg_or_order` keeps the order.
+gravel); the Anthroposols have none in the text; and the subgroups of
+the Kurosols, Sodosols and Chromosols (chernic and vertic features,
+bleaching, ferric and manganic horizons, sodicity of the lower B,
+mottling of the B2t, base status, carbonate). The other subgroups and
+the families follow. The name is that of the deepest class assigned, in
+the book's form "Subgroup, Great Group, Suborder Order" ("Bleached,
+Eutrophic, Red Chromosol"); `rsg_or_order` keeps the order.
 
 ## Usage
 
@@ -106,5 +110,5 @@ Online version: www.soilscienceaustralia.org.au/asc.
 ``` r
 res <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
 res$name
-#> [1] "Eutrophic Red Chromosol"
+#> [1] "Bleached, Eutrophic, Red Chromosol"
 ```

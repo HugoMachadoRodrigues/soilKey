@@ -45,8 +45,9 @@ soilKey); `first_undecided` (the first order left undecided, among
 provisional pedons); `suborders`, the same for the suborders where the
 key has them (overall, and over the pedons whose order agrees);
 `great_groups`, the same for the great groups (overall, and over the
-pedons whose order and suborder agree); and `results`, one row per
-pedon.
+pedons whose order and suborder agree); `subgroups`, the same for the
+subgroups (over the pedons whose order, suborder and great group agree);
+and `results`, one row per pedon.
 
 ## See also
 
