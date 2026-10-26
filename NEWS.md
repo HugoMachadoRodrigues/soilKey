@@ -1,3 +1,49 @@
+# soilKey 0.9.289 (2026-10-26)
+
+## Australian classification: subgroups of the Hydrosols, Arenosols, Rudosols and Tenosols (experimental)
+
+`classify_asc3()` keys the subgroups of the last four orders, so every
+order that has great groups now keys its subgroups. WRB, SiBCS and USDA
+results do not change, nor do the Australian orders, suborders and great
+groups, nor the subgroups of the ten orders keyed before.
+
+* Hydrosols: Fibric, Hemic and Sapric for the Histic-Hypersulfidic and
+  Histic-Hyposulfidic Intertidal Hydrosols; Episulfidic-Petrocalcic,
+  Episulfidic and Petrocalcic for the Salic ones; 40 subgroups for the
+  Redoxic and Oxyaquic ones, without the acidic subgroups for the
+  Kurosolic great groups and without the sodic and natric ones for the
+  Sodosolic, as the page says. The page sends the Rudosolic and Tenosolic
+  great groups to the Rudosol and Tenosol lists; that is not keyed yet, and
+  they keep the great group's name.
+* Arenosols: 13 subgroups for the Chernic, Bleached and coloured
+  suborders, read over the upper 1.0 m of the profile; the carbonate great
+  groups take the list without Humose-Calcareous, Melanic-Calcareous and
+  Calcareous, as the page says.
+* Rudosols: Acidic, Basic and Calcareous, read over the soil above any
+  rock, pan or buried soil; for every suborder but the Shelly and Carbic.
+  The Hypergypsic, Lutic and Stratic Rudosols have no great groups, and
+  their subgroups follow the suborder ("Basic, Lutic Rudosol"): the
+  hierarchical key skips a level only when the next one has a list named by
+  the exact path.
+* Tenosols: one list per suborder (4, 9, 6, 3, 12, 7 and 13 subgroups):
+  chernic horizons with the acidity and carbonate of the B, the A2 or the
+  solum; Subpeaty, Subhumose, Submelacic and Submelanic (every requirement
+  but the thickness); Lithocalcic, Supracalcic and Hypercalcic for the
+  Calcenic Tenosols, read on the Calcenic horizon.
+* Readings decided with Hugo: the Salic Hydrosols take only the three
+  subgroups listed; in the coloured Tenosols Basic is read as no part of
+  the solum calcareous (the page's "the A2 horizon" read as a misprint);
+  in the Chernic Tenosols "the B horizon (if present)" with no B fails.
+* `benchmark_natsoil()` reads the survey's subgroup of a suborder with no
+  great groups from its great-group column.
+* The readings are in `inst/rules/asc3/readings.yaml` (57).
+
+On 9,700 licensed NatSoil profiles, 195 of the 414 profiles of these four
+orders that reach a subgroup list get a subgroup (75 decided). Only 20 can
+be compared with the survey (5 agree): most survey labels of these orders
+use older codes, and many profiles stop at a great group the survey does
+not give.
+
 # soilKey 0.9.288 (2026-10-26)
 
 ## Australian classification: subgroups of the Vertosols, Calcarosols, Podosols and Organosols (experimental)
