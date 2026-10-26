@@ -1,0 +1,163 @@
+# Key to the subgroups of the Calcarosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "CA-*":
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FL"
+      name: "Gypsic-Subplastic, {parent}"
+      tests:
+        all_of:
+          - subplastic_asc: {window: b}
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A strongly subplastic B horizon and a gypsic horizon within the B or BC horizon."
+
+    - code: "ET"
+      name: "Subplastic, {parent}"
+      tests:
+        all_of:
+          - subplastic_asc: {window: b}
+      notes: "A strongly subplastic B horizon."
+
+    - code: "BZ"
+      name: "Gypsic, {parent}"
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A gypsic horizon within the B or BC horizon."
+
+    - code: "IB"
+      name: "Epibasic, {parent}"
+      tests:
+        all_of:
+          - calsilic_gg_asc: {kind: epibasic}
+      notes: "Not calcareous in the A1 or Ap horizon, or to 0.2 m if the A1 is only weakly developed."
+
+    - code: "HK"
+      name: "Supravescent, {parent}"
+      tests:
+        all_of:
+          - calsilic_gg_asc: {kind: supravescent}
+      notes: "The upper 0.1 m of the solum dominantly soft, finely divided carbonate, or more than 40 % of it by analysis."
+
+    - code: "CP"
+      name: "Hypervescent, {parent}"
+      tests:
+        all_of:
+          - calsilic_gg_asc: {kind: hypervescent}
+      notes: "The upper 0.1 m of the solum with more than 20 % fine-earth carbonate, a strong effervescence, or more than 8 % fine-earth carbonate by analysis."
+
+    - code: "BR"
+      name: "Epihypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some}
+      notes: "Some subhorizon within the upper 0.5 m of the solum with an ESP of 15 or more."
+
+    - code: "BP"
+      name: "Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: lower, how: some}
+      notes: "Some subhorizon of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "IC"
+      name: "Ceteric, {parent}"
+      tests:
+        default: true
+      notes: "Other soils."
+
+  "CA-JT-*":
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FL"
+      name: "Gypsic-Subplastic, {parent}"
+      tests:
+        all_of:
+          - subplastic_asc: {window: b}
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A strongly subplastic B horizon and a gypsic horizon within the B or BC horizon."
+
+    - code: "ET"
+      name: "Subplastic, {parent}"
+      tests:
+        all_of:
+          - subplastic_asc: {window: b}
+      notes: "A strongly subplastic B horizon."
+
+    - code: "BZ"
+      name: "Gypsic, {parent}"
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A gypsic horizon within the B or BC horizon."
+
+    - code: "IB"
+      name: "Epibasic, {parent}"
+      tests:
+        all_of:
+          - calsilic_gg_asc: {kind: epibasic}
+      notes: "Not calcareous in the A1 or Ap horizon, or to 0.2 m if the A1 is only weakly developed."
+
+    - code: "BR"
+      name: "Epihypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: upper, how: some}
+      notes: "Some subhorizon within the upper 0.5 m of the solum with an ESP of 15 or more."
+
+    - code: "BP"
+      name: "Endohypersodic, {parent}"
+      tests:
+        all_of:
+          - solum_part_asc: {prop: hypersodic, part: lower, how: some}
+      notes: "Some subhorizon of the solum below 0.5 m with an ESP of 15 or more."
+
+    - code: "IC"
+      name: "Ceteric, {parent}"
+      tests:
+        default: true
+      notes: "Other soils."

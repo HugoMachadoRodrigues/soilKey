@@ -1,0 +1,62 @@
+# Key to the subgroups of the Organosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "OR-*":
+    - code: "CZ"
+      name: "Lithic, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: lithic}
+      notes: "The organic materials directly overlying hard rock."
+
+    - code: "DU"
+      name: "Paralithic, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: paralithic}
+      notes: "The organic materials directly overlying partially weathered or decomposed rock or saprolite."
+
+    - code: "DD"
+      name: "Marly, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: marly}
+      notes: "A marl layer within or immediately below the section containing the organic materials."
+
+    - code: "HD"
+      name: "Rudaceous, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: rudaceous}
+      notes: "The organic materials directly overlying fragmental material whose interstices hold organic material."
+
+    - code: "IJ"
+      name: "Modic, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: modic}
+      notes: "Humose, melacic or melanic horizon material under the organic materials, over the substrate."
+
+    - code: "EC"
+      name: "Placic, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: placic}
+      notes: "A thin ironpan below the organic materials."
+
+    - code: "FS"
+      name: "Terric, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: terric}
+      notes: "A layer of unconsolidated mineral material within or below the organic materials, within 0.8 m of the surface."
+
+    - code: "GF"
+      name: "Regolithic, {parent}"
+      tests:
+        all_of:
+          - organosol_sg_asc: {kind: regolithic}
+      notes: "A layer of unconsolidated mineral material below 0.8 m."

@@ -71,7 +71,7 @@ test_that("the registry lists the ASC as an opt-in system", {
   res <- classify_all(make_asc3_example("kandosols"), systems = c("wrb", "asc"), on_missing = "silent")
   expect_identical(res$summary$asc3, "Haplic, Mesotrophic, Red Kandosol")
   expect_length(yaml::read_yaml(system.file("rules", "asc3", "readings.yaml",
-                                            package = "soilKey"))$readings, 55L)
+                                            package = "soilKey"))$readings, 56L)
 })
 
 # ---- the clear or abrupt textural B --------------------------------------------

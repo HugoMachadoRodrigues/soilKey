@@ -74,3 +74,8 @@ diagnostics:
   - {function: silpan_ab_asc,         file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Silpanic; glossary 'Siliceous pan'"}
   - {function: acidic_b2_asc,         file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Acidic; glossary 'Strongly acid'"}
   - {function: snuffy_asc,            file: R/diagnostics-asc-subgroups.R, reference: "Ferrosols, subgroup Snuffy"}
+  - {function: solum_part_asc,        file: R/diagnostics-asc-subgroups-special.R, reference: "Vertosols and Calcarosols, subgroups (upper 0.5 m of the solum, solum below 0.5 m)"}
+  - {function: episodic_asc,          file: R/diagnostics-asc-subgroups-special.R, reference: "Vertosols, subgroups Episodic; glossary 'Sodic', 'Weighted average'"}
+  - {function: podosol_coherence_asc, file: R/diagnostics-asc-subgroups-special.R, reference: "Podosols, subgroups Parapanic and Fragic; glossary 'Strongly coherent B horizon', 'Weakly coherent B horizon'"}
+  - {function: densipan_a2_asc,       file: R/diagnostics-asc-subgroups-special.R, reference: "Podosols, subgroups Densic; glossary 'Densipan'"}
+  - {function: organosol_sg_asc,      file: R/diagnostics-asc-subgroups-special.R, reference: "Organosols, subgroups; glossary 'Unconsolidated mineral materials', 'Marl'"}

@@ -1,0 +1,116 @@
+# Key to the subgroups of the Podosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "PO-*":
+    - code: "DX"
+      name: "Peaty-Parapanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - podosol_coherence_asc: {kind: strong}
+      notes: "A peaty horizon and a strongly coherent B horizon."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CN"
+      name: "Humose-Parapanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - podosol_coherence_asc: {kind: strong}
+      notes: "A humose horizon and a strongly coherent B horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DJ"
+      name: "Melacic-Parapanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - podosol_coherence_asc: {kind: strong}
+      notes: "A melacic horizon and a strongly coherent B horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "HN"
+      name: "Densic-Placic, {parent}"
+      tests:
+        all_of:
+          - densipan_a2_asc: {}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A densipan in the A2 horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "BI"
+      name: "Densic, {parent}"
+      tests:
+        all_of:
+          - densipan_a2_asc: {}
+      notes: "A densipan in the A2 horizon."
+
+    - code: "EC"
+      name: "Placic, {parent}"
+      tests:
+        all_of:
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A thin ironpan within or directly underlying the B horizon."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: silpanic, from: b}
+      notes: "A siliceous pan directly underlying the B horizon."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: b}
+      notes: "A ferric horizon within the B horizon."
+
+    - code: "DV"
+      name: "Parapanic, {parent}"
+      tests:
+        all_of:
+          - podosol_coherence_asc: {kind: strong}
+      notes: "A strongly coherent B horizon."
+
+    - code: "BY"
+      name: "Fragic, {parent}"
+      tests:
+        all_of:
+          - podosol_coherence_asc: {kind: weak}
+      notes: "A weakly coherent B horizon."
