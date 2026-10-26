@@ -713,6 +713,40 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 # the key lists under their surveyed order and suborder: order, suborder and
 # great group must all agree; decided when nothing before them was left
 # undecided. Also over those whose order and suborder agree.
+# The subgroups, over the pedons whose survey gives a subgroup of the key
+# (the list under its order, suborder and great group), and over those whose
+# order, suborder and great group agree (since 0.9.286).
+.natsoil_subgroup_summary <- function(res) {
+  rules <- load_rules("asc3"); sgs <- rules$subgroups %||% list(); ggs <- rules$great_groups %||% list()
+  if (is.null(res$reference_subgroup) || !length(sgs)) return(NULL)
+  # the survey's great group must be one of the key under its order and
+  # suborder, and its subgroup one of the list under that great group
+  valid <- vapply(seq_len(nrow(res)), function(i) {
+    gg_codes <- vapply(ggs[[paste(res$reference[i], res$reference_suborder[i], sep = "-")]] %||% list(),
+                       function(t) as.character(t$code), "")
+    if (is.na(res$reference_great_group[i]) || !(res$reference_great_group[i] %in% gg_codes)) return(FALSE)
+    lst <- .level_list(sgs, c(res$reference[i], res$reference_suborder[i], res$reference_great_group[i]),
+                       res$reference_great_group[i])
+    codes <- vapply(lst %||% list(), function(t) as.character(t$code), "")
+    !is.na(res$reference_subgroup[i]) && res$reference_subgroup[i] %in% codes
+  }, NA)
+  r <- res[valid, , drop = FALSE]
+  if (!nrow(r)) return(NULL)
+  eq <- function(a, b) !is.na(a) & !is.na(b) & a == b
+  gg_ok <- r$agree %in% TRUE & eq(r$predicted_suborder, r$reference_suborder) &
+           eq(r$predicted_great_group, r$reference_great_group)
+  r$agree_sg <- gg_ok & eq(r$predicted_subgroup, r$reference_subgroup)
+  r$decided_sg <- r$decided %in% TRUE & !is.na(r$provisional_suborder) & !nzchar(r$provisional_suborder) &
+                  !is.na(r$provisional_great_group) & !nzchar(r$provisional_great_group) &
+                  !is.na(r$provisional_subgroup) & !nzchar(r$provisional_subgroup)
+  pct <- function(x) if (length(x)) 100 * mean(x) else NA_real_
+  list(n = nrow(r), accuracy = pct(r$agree_sg), decided = sum(r$decided_sg),
+       decided_accuracy = pct(r$agree_sg[r$decided_sg]),
+       great_group_agrees = sum(gg_ok), accuracy_given_great_group = pct(r$agree_sg[gg_ok]),
+       decided_given_great_group = sum(r$decided_sg & gg_ok),
+       decided_accuracy_given_great_group = pct(r$agree_sg[r$decided_sg & gg_ok]))
+}
+
 .natsoil_great_group_summary <- function(res) {
   ggs <- load_rules("asc3")$great_groups %||% list()
   if (is.null(res$reference_great_group)) return(NULL)
@@ -771,8 +805,9 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 #'   provisional pedons); \code{suborders}, the same for the suborders where
 #'   the key has them (overall, and over the pedons whose order agrees);
 #'   \code{great_groups}, the same for the great groups (overall, and over the
-#'   pedons whose order and suborder agree); and \code{results}, one row per
-#'   pedon.
+#'   pedons whose order and suborder agree); \code{subgroups}, the same for
+#'   the subgroups (over the pedons whose order, suborder and great group
+#'   agree); and \code{results}, one row per pedon.
 #' @seealso \code{\link{load_natsoil_pedons}}, \code{\link{classify_asc3}}.
 #' @export
 benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
@@ -788,11 +823,16 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     gg_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "great_groups"][1L] %|NA|% NA_character_)
     gg_prov <- if (is.null(r)) NA_character_
                else paste(sub("^great_groups:", "", grep("^great_groups:", r$provisional_because, value = TRUE)), collapse = ",")
+    sg_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "subgroups"][1L] %|NA|% NA_character_)
+    sg_prov <- if (is.null(r)) NA_character_
+               else paste(sub("^subgroups:", "", grep("^subgroups:", r$provisional_because, value = TRUE)), collapse = ",")
     data.frame(id = p$site$id, reference = ref, predicted = pred, provisional = prov,
                reference_suborder = toupper(as.character(p$site$reference_asc_suborder %||% NA)),
                predicted_suborder = sub_pred, provisional_suborder = sub_prov,
                reference_great_group = toupper(as.character(p$site$reference_asc_great_group %||% NA)),
                predicted_great_group = gg_pred, provisional_great_group = gg_prov,
+               reference_subgroup = toupper(as.character(p$site$reference_asc_subgroup %||% NA)),
+               predicted_subgroup = sg_pred, provisional_subgroup = sg_prov,
                confidence = as.character(p$site$reference_asc_confidence %||% NA), stringsAsFactors = FALSE)
   }
   cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(cores))
@@ -822,6 +862,7 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
                            decreasing = TRUE),
     suborders = .natsoil_suborder_summary(res),
     great_groups = .natsoil_great_group_summary(res),
+    subgroups = .natsoil_subgroup_summary(res),
     results = res)
   if (verbose) {
     message(sprintf(paste("NatSoil, ASC orders: %d pedons, agreement %.1f %% (%.1f %% counting the",

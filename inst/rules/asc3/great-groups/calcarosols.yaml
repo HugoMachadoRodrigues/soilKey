@@ -5,56 +5,56 @@
 great_groups:
   "CA-JT":
     - code: "BJ"
-      name: Duric Carbonatic Calcarosol
+      name: Duric, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Carbonatic Calcarosol
+      name: Petrocalcic, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "AP"
-      name: Argic Carbonatic Calcarosol
+      name: Argic, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Carbonatic Calcarosol
+      name: Pedal, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Carbonatic Calcarosol
+      name: Lithic, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Carbonatic Calcarosol
+      name: Paralithic, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Carbonatic Calcarosol
+      name: Marly, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Carbonatic Calcarosol
+      name: Regolithic, Carbonatic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}
@@ -62,56 +62,56 @@ great_groups:
 
   "CA-CV":
     - code: "BJ"
-      name: Duric Hypocalcic Calcarosol
+      name: Duric, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Hypocalcic Calcarosol
+      name: Petrocalcic, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "AP"
-      name: Argic Hypocalcic Calcarosol
+      name: Argic, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Hypocalcic Calcarosol
+      name: Pedal, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Hypocalcic Calcarosol
+      name: Lithic, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Hypocalcic Calcarosol
+      name: Paralithic, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Hypocalcic Calcarosol
+      name: Marly, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Hypocalcic Calcarosol
+      name: Regolithic, Hypocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}
@@ -119,56 +119,56 @@ great_groups:
 
   "CA-DA":
     - code: "BJ"
-      name: Duric Lithocalcic Calcarosol
+      name: Duric, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Lithocalcic Calcarosol
+      name: Petrocalcic, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "AP"
-      name: Argic Lithocalcic Calcarosol
+      name: Argic, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Lithocalcic Calcarosol
+      name: Pedal, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Lithocalcic Calcarosol
+      name: Lithic, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Lithocalcic Calcarosol
+      name: Paralithic, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Lithocalcic Calcarosol
+      name: Marly, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Lithocalcic Calcarosol
+      name: Regolithic, Lithocalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}
@@ -176,56 +176,56 @@ great_groups:
 
   "CA-FB":
     - code: "BJ"
-      name: Duric Supracalcic Calcarosol
+      name: Duric, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Supracalcic Calcarosol
+      name: Petrocalcic, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "AP"
-      name: Argic Supracalcic Calcarosol
+      name: Argic, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Supracalcic Calcarosol
+      name: Pedal, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Supracalcic Calcarosol
+      name: Lithic, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Supracalcic Calcarosol
+      name: Paralithic, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Supracalcic Calcarosol
+      name: Marly, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Supracalcic Calcarosol
+      name: Regolithic, Supracalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}
@@ -233,63 +233,63 @@ great_groups:
 
   "CA-CQ":
     - code: "BJ"
-      name: Duric Hypercalcic Calcarosol
+      name: Duric, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Hypercalcic Calcarosol
+      name: Petrocalcic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "EE"
-      name: Rendic Hypercalcic Calcarosol
+      name: Rendic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: rendic}
       notes: "The A horizon directly overlies a Bk horizon of almost entirely soft carbonate (more than 80 %)."
 
     - code: "AP"
-      name: Argic Hypercalcic Calcarosol
+      name: Argic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Hypercalcic Calcarosol
+      name: Pedal, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Hypercalcic Calcarosol
+      name: Lithic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Hypercalcic Calcarosol
+      name: Paralithic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Hypercalcic Calcarosol
+      name: Marly, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Hypercalcic Calcarosol
+      name: Regolithic, Hypercalcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}
@@ -297,56 +297,56 @@ great_groups:
 
   "CA-BD":
     - code: "BJ"
-      name: Duric Calcic Calcarosol
+      name: Duric, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: duric}
       notes: "Directly overlying a red-brown hardpan."
 
     - code: "DZ"
-      name: Petrocalcic Calcic Calcarosol
+      name: Petrocalcic, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: petrocalcic}
       notes: "Directly overlying a calcrete pan."
 
     - code: "AP"
-      name: Argic Calcic Calcarosol
+      name: Argic, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: argic}
       notes: "An argic horizon within the B horizon."
 
     - code: "DY"
-      name: Pedal Calcic Calcarosol
+      name: Pedal, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: pedal}
       notes: "The major part of the B horizon has a grade of structure stronger than weak."
 
     - code: "CZ"
-      name: Lithic Calcic Calcarosol
+      name: Lithic, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: lithic}
       notes: "Directly overlying hard rock."
 
     - code: "DU"
-      name: Paralithic Calcic Calcarosol
+      name: Paralithic, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: paralithic}
       notes: "Directly overlying partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Calcic Calcarosol
+      name: Marly, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: marly}
       notes: "Directly overlying marl."
 
     - code: "GF"
-      name: Regolithic Calcic Calcarosol
+      name: Regolithic, Calcic Calcarosol
       tests:
         all_of:
           - calcarosol_gg_asc: {kind: regolithic}

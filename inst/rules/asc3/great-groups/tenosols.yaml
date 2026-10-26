@@ -5,14 +5,14 @@
 great_groups:
   "TE-BF":
     - code: "BJ"
-      name: Duric Chernic-Leptic Tenosol
+      name: Duric, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Overlies a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Chernic-Leptic Tenosol
+      name: Ferric-Petroferric, Chernic-Leptic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -20,35 +20,35 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Chernic-Leptic Tenosol
+      name: Petroferric, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Chernic-Leptic Tenosol
+      name: Silpanic, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Chernic-Leptic Tenosol
+      name: Petrocalcic, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "CZ"
-      name: Lithic Chernic-Leptic Tenosol
+      name: Lithic, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Overlies hard rock."
 
     - code: "DU"
-      name: Paralithic Chernic-Leptic Tenosol
+      name: Paralithic, Chernic-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
@@ -56,14 +56,14 @@ great_groups:
 
   "TE-CY":
     - code: "BJ"
-      name: Duric Leptic Tenosol
+      name: Duric, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Overlies a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Leptic Tenosol
+      name: Ferric-Petroferric, Leptic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -71,35 +71,35 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Leptic Tenosol
+      name: Petroferric, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Leptic Tenosol
+      name: Silpanic, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Leptic Tenosol
+      name: Petrocalcic, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "CZ"
-      name: Lithic Leptic Tenosol
+      name: Lithic, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Overlies hard rock."
 
     - code: "DU"
-      name: Paralithic Leptic Tenosol
+      name: Paralithic, Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
@@ -107,91 +107,91 @@ great_groups:
 
   "TE-BE":
     - code: "EA"
-      name: Petroferric Chernic Tenosol
+      name: Petroferric, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Chernic Tenosol
+      name: Silpanic, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Chernic Tenosol
+      name: Petrocalcic, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "EC"
-      name: Placic Chernic Tenosol
+      name: Placic, Chernic Tenosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: placic, where: profile}
       notes: "A thin ironpan."
 
     - code: "AK"
-      name: Andic Chernic Tenosol
+      name: Andic, Chernic Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Chernic Tenosol
+      name: Tephric, Chernic Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Other soils formed in tephric materials."
 
     - code: "AS"
-      name: Bauxitic Chernic Tenosol
+      name: Bauxitic, Chernic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "BU"
-      name: Ferric Chernic Tenosol
+      name: Ferric, Chernic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "IA"
-      name: Inceptic Chernic Tenosol
+      name: Inceptic, Chernic Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "CZ"
-      name: Lithic Chernic Tenosol
+      name: Lithic, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Overlies hard rock."
 
     - code: "DU"
-      name: Paralithic Chernic Tenosol
+      name: Paralithic, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Chernic Tenosol
+      name: Marly, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "GF"
-      name: Regolithic Chernic Tenosol
+      name: Regolithic, Chernic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic}
@@ -199,70 +199,70 @@ great_groups:
 
   "TE-IL":
     - code: "BJ"
-      name: Duric Sesqui-Nodular Tenosol
+      name: Duric, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Overlies a red-brown hardpan."
 
     - code: "EA"
-      name: Petroferric Sesqui-Nodular Tenosol
+      name: Petroferric, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EF"
-      name: Reticulate Sesqui-Nodular Tenosol
+      name: Reticulate, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "EM"
-      name: Silpanic Sesqui-Nodular Tenosol
+      name: Silpanic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Sesqui-Nodular Tenosol
+      name: Petrocalcic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "AP"
-      name: Argic Sesqui-Nodular Tenosol
+      name: Argic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: solum}
       notes: "An argic horizon within the solum."
 
     - code: "IA"
-      name: Inceptic Sesqui-Nodular Tenosol
+      name: Inceptic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "CZ"
-      name: Lithic Sesqui-Nodular Tenosol
+      name: Lithic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Overlies hard rock."
 
     - code: "DU"
-      name: Paralithic Sesqui-Nodular Tenosol
+      name: Paralithic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Overlies partially weathered or decomposed rock or saprolite."
 
     - code: "GF"
-      name: Regolithic Sesqui-Nodular Tenosol
+      name: Regolithic, Sesqui-Nodular Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic}
@@ -270,77 +270,77 @@ great_groups:
 
   "TE-IM":
     - code: "BJ"
-      name: Duric Calcenic Tenosol
+      name: Duric, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Overlies a red-brown hardpan."
 
     - code: "EM"
-      name: Silpanic Calcenic Tenosol
+      name: Silpanic, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Calcenic Tenosol
+      name: Petrocalcic, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "BU"
-      name: Ferric Calcenic Tenosol
+      name: Ferric, Calcenic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: solum}
       notes: "A ferric horizon within the solum."
 
     - code: "AK"
-      name: Andic Calcenic Tenosol
+      name: Andic, Calcenic Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Calcenic Tenosol
+      name: Tephric, Calcenic Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Other soils formed in tephric materials."
 
     - code: "AP"
-      name: Argic Calcenic Tenosol
+      name: Argic, Calcenic Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: solum}
       notes: "An argic horizon within the solum."
 
     - code: "AO"
-      name: Arenic Calcenic Tenosol
+      name: Arenic, Calcenic Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "CZ"
-      name: Lithic Calcenic Tenosol
+      name: Lithic, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Overlies hard rock."
 
     - code: "DU"
-      name: Paralithic Calcenic Tenosol
+      name: Paralithic, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Overlies partially weathered or decomposed rock or saprolite."
 
     - code: "GF"
-      name: Regolithic Calcenic Tenosol
+      name: Regolithic, Calcenic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic}
@@ -348,7 +348,7 @@ great_groups:
 
   "TE-AW":
     - code: "GE"
-      name: Ferric-Petroferric Bleached-Leptic Tenosol
+      name: Ferric-Petroferric, Bleached-Leptic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -356,14 +356,14 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Bleached-Leptic Tenosol
+      name: Petroferric, Bleached-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "JV"
-      name: Gritty-Silpanic Bleached-Leptic Tenosol
+      name: Gritty-Silpanic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -371,28 +371,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies a siliceous pan."
 
     - code: "EM"
-      name: Silpanic Bleached-Leptic Tenosol
+      name: Silpanic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Bleached-Leptic Tenosol
+      name: Petrocalcic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "BU"
-      name: Ferric Bleached-Leptic Tenosol
+      name: Ferric, Bleached-Leptic Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: a2}
       notes: "The A2 horizon contains or overlies a ferric horizon."
 
     - code: "JW"
-      name: Gritty-Lithic Bleached-Leptic Tenosol
+      name: Gritty-Lithic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -400,14 +400,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Bleached-Leptic Tenosol
+      name: Lithic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Bleached-Leptic Tenosol
+      name: Gritty-Paralithic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -415,7 +415,7 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Bleached-Leptic Tenosol
+      name: Paralithic, Bleached-Leptic Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
@@ -423,7 +423,7 @@ great_groups:
 
   "TE-AT":
     - code: "FK"
-      name: Ferric-Duric Bleached Tenosol
+      name: Ferric-Duric, Bleached Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -431,14 +431,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Bleached Tenosol
+      name: Duric, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Bleached Tenosol
+      name: Ferric-Petroferric, Bleached Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -446,28 +446,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Bleached Tenosol
+      name: Petroferric, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Bleached Tenosol
+      name: Silpanic, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Bleached Tenosol
+      name: Petrocalcic, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Bleached Tenosol
+      name: Ferric-Reticulate, Bleached Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -475,63 +475,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Bleached Tenosol
+      name: Reticulate, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Bleached Tenosol
+      name: Ferric, Bleached Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Bleached Tenosol
+      name: Bauxitic, Bleached Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Bleached Tenosol
+      name: Andic, Bleached Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Bleached Tenosol
+      name: Tephric, Bleached Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Bleached Tenosol
+      name: Argic, Bleached Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Bleached Tenosol
+      name: Arenic, Bleached Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Bleached Tenosol
+      name: Inceptic, Bleached Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Bleached Tenosol
+      name: Gritty-Lithic, Bleached Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -539,14 +539,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Bleached Tenosol
+      name: Lithic, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Bleached Tenosol
+      name: Gritty-Paralithic, Bleached Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -554,28 +554,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Bleached Tenosol
+      name: Paralithic, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Bleached Tenosol
+      name: Marly, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Bleached Tenosol
+      name: Gritty, Bleached Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Bleached Tenosol
+      name: Regolithic, Bleached Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}
@@ -583,7 +583,7 @@ great_groups:
 
   "TE-AA":
     - code: "FK"
-      name: Ferric-Duric Red Tenosol
+      name: Ferric-Duric, Red Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -591,14 +591,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Red Tenosol
+      name: Duric, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Red Tenosol
+      name: Ferric-Petroferric, Red Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -606,28 +606,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Red Tenosol
+      name: Petroferric, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Red Tenosol
+      name: Silpanic, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Red Tenosol
+      name: Petrocalcic, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Red Tenosol
+      name: Ferric-Reticulate, Red Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -635,63 +635,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Red Tenosol
+      name: Reticulate, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Red Tenosol
+      name: Ferric, Red Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Red Tenosol
+      name: Bauxitic, Red Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Red Tenosol
+      name: Andic, Red Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Red Tenosol
+      name: Tephric, Red Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Red Tenosol
+      name: Argic, Red Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Red Tenosol
+      name: Arenic, Red Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Red Tenosol
+      name: Inceptic, Red Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Red Tenosol
+      name: Gritty-Lithic, Red Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -699,14 +699,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Red Tenosol
+      name: Lithic, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Red Tenosol
+      name: Gritty-Paralithic, Red Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -714,28 +714,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Red Tenosol
+      name: Paralithic, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Red Tenosol
+      name: Marly, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Red Tenosol
+      name: Gritty, Red Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Red Tenosol
+      name: Regolithic, Red Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}
@@ -743,7 +743,7 @@ great_groups:
 
   "TE-AB":
     - code: "FK"
-      name: Ferric-Duric Brown Tenosol
+      name: Ferric-Duric, Brown Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -751,14 +751,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Brown Tenosol
+      name: Duric, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Brown Tenosol
+      name: Ferric-Petroferric, Brown Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -766,28 +766,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Brown Tenosol
+      name: Petroferric, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Brown Tenosol
+      name: Silpanic, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Brown Tenosol
+      name: Petrocalcic, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Brown Tenosol
+      name: Ferric-Reticulate, Brown Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -795,63 +795,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Brown Tenosol
+      name: Reticulate, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Brown Tenosol
+      name: Ferric, Brown Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Brown Tenosol
+      name: Bauxitic, Brown Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Brown Tenosol
+      name: Andic, Brown Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Brown Tenosol
+      name: Tephric, Brown Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Brown Tenosol
+      name: Argic, Brown Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Brown Tenosol
+      name: Arenic, Brown Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Brown Tenosol
+      name: Inceptic, Brown Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Brown Tenosol
+      name: Gritty-Lithic, Brown Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -859,14 +859,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Brown Tenosol
+      name: Lithic, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Brown Tenosol
+      name: Gritty-Paralithic, Brown Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -874,28 +874,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Brown Tenosol
+      name: Paralithic, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Brown Tenosol
+      name: Marly, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Brown Tenosol
+      name: Gritty, Brown Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Brown Tenosol
+      name: Regolithic, Brown Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}
@@ -903,7 +903,7 @@ great_groups:
 
   "TE-AC":
     - code: "FK"
-      name: Ferric-Duric Yellow Tenosol
+      name: Ferric-Duric, Yellow Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -911,14 +911,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Yellow Tenosol
+      name: Duric, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Yellow Tenosol
+      name: Ferric-Petroferric, Yellow Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -926,28 +926,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Yellow Tenosol
+      name: Petroferric, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Yellow Tenosol
+      name: Silpanic, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Yellow Tenosol
+      name: Petrocalcic, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Yellow Tenosol
+      name: Ferric-Reticulate, Yellow Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -955,63 +955,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Yellow Tenosol
+      name: Reticulate, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Yellow Tenosol
+      name: Ferric, Yellow Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Yellow Tenosol
+      name: Bauxitic, Yellow Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Yellow Tenosol
+      name: Andic, Yellow Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Yellow Tenosol
+      name: Tephric, Yellow Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Yellow Tenosol
+      name: Argic, Yellow Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Yellow Tenosol
+      name: Arenic, Yellow Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Yellow Tenosol
+      name: Inceptic, Yellow Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Yellow Tenosol
+      name: Gritty-Lithic, Yellow Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1019,14 +1019,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Yellow Tenosol
+      name: Lithic, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Yellow Tenosol
+      name: Gritty-Paralithic, Yellow Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1034,28 +1034,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Yellow Tenosol
+      name: Paralithic, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Yellow Tenosol
+      name: Marly, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Yellow Tenosol
+      name: Gritty, Yellow Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Yellow Tenosol
+      name: Regolithic, Yellow Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}
@@ -1063,7 +1063,7 @@ great_groups:
 
   "TE-AD":
     - code: "FK"
-      name: Ferric-Duric Grey Tenosol
+      name: Ferric-Duric, Grey Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1071,14 +1071,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Grey Tenosol
+      name: Duric, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Grey Tenosol
+      name: Ferric-Petroferric, Grey Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1086,28 +1086,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Grey Tenosol
+      name: Petroferric, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Grey Tenosol
+      name: Silpanic, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Grey Tenosol
+      name: Petrocalcic, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Grey Tenosol
+      name: Ferric-Reticulate, Grey Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1115,63 +1115,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Grey Tenosol
+      name: Reticulate, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Grey Tenosol
+      name: Ferric, Grey Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Grey Tenosol
+      name: Bauxitic, Grey Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Grey Tenosol
+      name: Andic, Grey Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Grey Tenosol
+      name: Tephric, Grey Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Grey Tenosol
+      name: Argic, Grey Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Grey Tenosol
+      name: Arenic, Grey Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Grey Tenosol
+      name: Inceptic, Grey Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Grey Tenosol
+      name: Gritty-Lithic, Grey Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1179,14 +1179,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Grey Tenosol
+      name: Lithic, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Grey Tenosol
+      name: Gritty-Paralithic, Grey Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1194,28 +1194,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Grey Tenosol
+      name: Paralithic, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Grey Tenosol
+      name: Marly, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Grey Tenosol
+      name: Gritty, Grey Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Grey Tenosol
+      name: Regolithic, Grey Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}
@@ -1223,7 +1223,7 @@ great_groups:
 
   "TE-AE":
     - code: "FK"
-      name: Ferric-Duric Black Tenosol
+      name: Ferric-Duric, Black Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1231,14 +1231,14 @@ great_groups:
       notes: "A ferric horizon, and overlies a red-brown hardpan."
 
     - code: "BJ"
-      name: Duric Black Tenosol
+      name: Duric, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: duric}
       notes: "Other soils that overlie a red-brown hardpan."
 
     - code: "GE"
-      name: Ferric-Petroferric Black Tenosol
+      name: Ferric-Petroferric, Black Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1246,28 +1246,28 @@ great_groups:
       notes: "A ferric horizon, and directly overlies ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EA"
-      name: Petroferric Black Tenosol
+      name: Petroferric, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petroferric}
       notes: "Other soils that overlie ferricrete, a petroferric or a petroreticulate horizon."
 
     - code: "EM"
-      name: Silpanic Black Tenosol
+      name: Silpanic, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: silpanic}
       notes: "Overlies a siliceous pan."
 
     - code: "DZ"
-      name: Petrocalcic Black Tenosol
+      name: Petrocalcic, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: petrocalcic}
       notes: "Overlies a calcrete pan."
 
     - code: "IS"
-      name: Ferric-Reticulate Black Tenosol
+      name: Ferric-Reticulate, Black Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
@@ -1275,63 +1275,63 @@ great_groups:
       notes: "A ferric horizon, and overlies a reticulate horizon."
 
     - code: "EF"
-      name: Reticulate Black Tenosol
+      name: Reticulate, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: reticulate}
       notes: "Overlies a reticulate horizon."
 
     - code: "BU"
-      name: Ferric Black Tenosol
+      name: Ferric, Black Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: ferric, where: profile}
       notes: "A ferric horizon."
 
     - code: "AS"
-      name: Bauxitic Black Tenosol
+      name: Bauxitic, Black Tenosol
       tests:
         all_of:
           - nodular_horizon_asc: {kind: bauxitic, where: profile}
       notes: "A bauxitic horizon."
 
     - code: "AK"
-      name: Andic Black Tenosol
+      name: Andic, Black Tenosol
       tests:
         all_of:
           - andic_great_group_asc: {}
       notes: "Andic properties, formed in basaltic tephric materials."
 
     - code: "HF"
-      name: Tephric Black Tenosol
+      name: Tephric, Black Tenosol
       tests:
         all_of:
           - tephric_asc: {}
       notes: "Formed in tephric materials."
 
     - code: "AP"
-      name: Argic Black Tenosol
+      name: Argic, Black Tenosol
       tests:
         all_of:
           - argic_horizon_asc: {where: profile}
       notes: "An argic horizon."
 
     - code: "AO"
-      name: Arenic Black Tenosol
+      name: Arenic, Black Tenosol
       tests:
         all_of:
           - tenosol_arenic_asc: {}
       notes: "Not or only slightly gravelly (less than 20 %) throughout, loose or weakly coherent both moist and dry, sandy (S, LS, CS) in more than 80 % of the profile, and no layer with more than 15 % clay."
 
     - code: "IA"
-      name: Inceptic Black Tenosol
+      name: Inceptic, Black Tenosol
       tests:
         all_of:
           - inceptic_asc: {}
       notes: "A transitional C/B horizon in fissures of the parent rock or saprolite."
 
     - code: "JW"
-      name: Gritty-Lithic Black Tenosol
+      name: Gritty-Lithic, Black Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1339,14 +1339,14 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies hard rock."
 
     - code: "CZ"
-      name: Lithic Black Tenosol
+      name: Lithic, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: lithic}
       notes: "Other soils that overlie hard rock."
 
     - code: "JX"
-      name: Gritty-Paralithic Black Tenosol
+      name: Gritty-Paralithic, Black Tenosol
       tests:
         all_of:
           - gritty_asc: {}
@@ -1354,28 +1354,28 @@ great_groups:
       notes: "The major part of the upper 1.0 m with a distinct gritty feel, and overlies partially weathered or decomposed rock or saprolite."
 
     - code: "DU"
-      name: Paralithic Black Tenosol
+      name: Paralithic, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: paralithic}
       notes: "Other soils that overlie partially weathered or decomposed rock or saprolite."
 
     - code: "DD"
-      name: Marly Black Tenosol
+      name: Marly, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: marly}
       notes: "Overlies marl."
 
     - code: "JQ"
-      name: Gritty Black Tenosol
+      name: Gritty, Black Tenosol
       tests:
         all_of:
           - gritty_asc: {}
       notes: "The major part of the upper 1.0 m with a distinct gritty feel."
 
     - code: "GF"
-      name: Regolithic Black Tenosol
+      name: Regolithic, Black Tenosol
       tests:
         all_of:
           - substrate_gg_asc: {kind: regolithic, from: b}

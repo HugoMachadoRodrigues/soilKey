@@ -66,3 +66,9 @@ diagnostics:
   - {function: tenosol_arenic_asc,    file: R/diagnostics-asc-great-groups-rest.R, reference: "Tenosols, great group Arenic"}
   - {function: clastic_gg_asc,        file: R/diagnostics-asc-great-groups-rest.R, reference: "Rudosols, great groups Colluvic, Fluvic"}
   - {function: hydrosol_gg_asc,       file: R/diagnostics-asc-great-groups-rest.R, reference: "Hydrosols, great groups Histic, Faunic, Epicalcareous, Argillaceous, Lutaceous, Arenaceous, Mottled, Haplic, Calcarosolic, Sodosolic, Chromosolic"}
+  - {function: chernic_sg_asc,        file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Peaty, Humose, Melacic, Melanic; glossary 'Humose horizon', 'Melacic horizon', 'Melanic horizon'"}
+  - {function: vertic_b_asc,          file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Vertic; glossary 'Vertic properties'"}
+  - {function: lower_b_sodic_asc,     file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Sodic; glossary 'Sodic'"}
+  - {function: b_colour_sg_asc,       file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Mottled and Haplic"}
+  - {function: reticulate_below_asc,  file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Reticulate; glossary 'Reticulate horizon'"}
+  - {function: silpan_ab_asc,         file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Silpanic; glossary 'Siliceous pan'"}

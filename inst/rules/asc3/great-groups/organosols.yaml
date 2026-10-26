@@ -5,77 +5,77 @@
 great_groups:
   "OR-BW":
     - code: "IF"
-      name: Folic Fibric Organosol
+      name: Folic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: folic}
       notes: "More or less freely drained, never saturated for more than several days unless rain is falling, with organic materials as in Definition (ii) of the Organosols."
 
     - code: "IW"
-      name: Monosulfidic-Sulfuric Fibric Organosol
+      name: Monosulfidic-Sulfuric, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 15 cm thick) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Fibric Organosol
+      name: Sulfuric, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material (at least 15 cm thick) within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Fibric Organosol
+      name: Monohypersulfidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Fibric Organosol
+      name: Hypersulfidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Fibric Organosol
+      name: Monohyposulfidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Fibric Organosol
+      name: Hyposulfidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Fibric Organosol
+      name: Sulfidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "BC"
-      name: Calcareous Fibric Organosol
+      name: Calcareous, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: calcareous}
       notes: "The major part of the organic materials is calcareous."
 
     - code: "AR"
-      name: Basic Fibric Organosol
+      name: Basic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: basic}
       notes: "The major part of the organic materials is not calcareous but is not strongly acid."
 
     - code: "AI"
-      name: Acidic Fibric Organosol
+      name: Acidic, Fibric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: acidic}
@@ -83,77 +83,77 @@ great_groups:
 
   "OR-CE":
     - code: "IF"
-      name: Folic Hemic Organosol
+      name: Folic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: folic}
       notes: "More or less freely drained, never saturated for more than several days unless rain is falling, with organic materials as in Definition (ii) of the Organosols."
 
     - code: "IW"
-      name: Monosulfidic-Sulfuric Hemic Organosol
+      name: Monosulfidic-Sulfuric, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 15 cm thick) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Hemic Organosol
+      name: Sulfuric, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material (at least 15 cm thick) within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Hemic Organosol
+      name: Monohypersulfidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Hemic Organosol
+      name: Hypersulfidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Hemic Organosol
+      name: Monohyposulfidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Hemic Organosol
+      name: Hyposulfidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Hemic Organosol
+      name: Sulfidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "BC"
-      name: Calcareous Hemic Organosol
+      name: Calcareous, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: calcareous}
       notes: "The major part of the organic materials is calcareous."
 
     - code: "AR"
-      name: Basic Hemic Organosol
+      name: Basic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: basic}
       notes: "The major part of the organic materials is not calcareous but is not strongly acid."
 
     - code: "AI"
-      name: Acidic Hemic Organosol
+      name: Acidic, Hemic Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: acidic}
@@ -161,77 +161,77 @@ great_groups:
 
   "OR-EH":
     - code: "IF"
-      name: Folic Sapric Organosol
+      name: Folic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: folic}
       notes: "More or less freely drained, never saturated for more than several days unless rain is falling, with organic materials as in Definition (ii) of the Organosols."
 
     - code: "IW"
-      name: Monosulfidic-Sulfuric Sapric Organosol
+      name: Monosulfidic-Sulfuric, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 15 cm thick) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Sapric Organosol
+      name: Sulfuric, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material (at least 15 cm thick) within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Sapric Organosol
+      name: Monohypersulfidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Sapric Organosol
+      name: Hypersulfidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Sapric Organosol
+      name: Monohyposulfidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Sapric Organosol
+      name: Hyposulfidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Sapric Organosol
+      name: Sulfidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "BC"
-      name: Calcareous Sapric Organosol
+      name: Calcareous, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: calcareous}
       notes: "The major part of the organic materials is calcareous."
 
     - code: "AR"
-      name: Basic Sapric Organosol
+      name: Basic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: basic}
       notes: "The major part of the organic materials is not calcareous but is not strongly acid."
 
     - code: "AI"
-      name: Acidic Sapric Organosol
+      name: Acidic, Sapric Organosol
       tests:
         all_of:
           - organosol_gg_asc: {kind: acidic}

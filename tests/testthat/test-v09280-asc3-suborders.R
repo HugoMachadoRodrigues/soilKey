@@ -42,7 +42,7 @@ test_that("each colour order keys to its suborder, with nothing undecided", {
     # since 0.9.283 the name goes on to the great group: the suborder is the
     # second level
     expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
-    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
+    expect_length(grep("^(great_groups|subgroups):", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
   }
   # every order now has suborders (0.9.282)
   lv <- classify_asc3(make_asc3_example("tenosols"), on_missing = "silent")$levels

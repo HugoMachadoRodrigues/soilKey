@@ -5,42 +5,42 @@
 great_groups:
   "FE-AA":
     - code: "CY"
-      name: Leptic Red Ferrosol
+      name: Leptic, Red Ferrosol
       tests:
         all_of:
           - leptic_asc: {}
       notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
 
     - code: "DB"
-      name: Magnesic Red Ferrosol
+      name: Magnesic, Red Ferrosol
       tests:
         all_of:
           - magnesic_asc: {window: b2}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
 
     - code: "AF"
-      name: Dystrophic Red Ferrosol
+      name: Dystrophic, Red Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2}
       notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Red Ferrosol
+      name: Mesotrophic, Red Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2}
       notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Red Ferrosol
+      name: Eutrophic, Red Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2}
       notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "BC"
-      name: Calcareous Red Ferrosol
+      name: Calcareous, Red Ferrosol
       tests:
         all_of:
           - calcareous_b_asc: {}
@@ -48,42 +48,42 @@ great_groups:
 
   "FE-AB":
     - code: "CY"
-      name: Leptic Brown Ferrosol
+      name: Leptic, Brown Ferrosol
       tests:
         all_of:
           - leptic_asc: {}
       notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
 
     - code: "DB"
-      name: Magnesic Brown Ferrosol
+      name: Magnesic, Brown Ferrosol
       tests:
         all_of:
           - magnesic_asc: {window: b2}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
 
     - code: "AF"
-      name: Dystrophic Brown Ferrosol
+      name: Dystrophic, Brown Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2}
       notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Brown Ferrosol
+      name: Mesotrophic, Brown Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2}
       notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Brown Ferrosol
+      name: Eutrophic, Brown Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2}
       notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "BC"
-      name: Calcareous Brown Ferrosol
+      name: Calcareous, Brown Ferrosol
       tests:
         all_of:
           - calcareous_b_asc: {}
@@ -91,42 +91,42 @@ great_groups:
 
   "FE-AC":
     - code: "CY"
-      name: Leptic Yellow Ferrosol
+      name: Leptic, Yellow Ferrosol
       tests:
         all_of:
           - leptic_asc: {}
       notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
 
     - code: "DB"
-      name: Magnesic Yellow Ferrosol
+      name: Magnesic, Yellow Ferrosol
       tests:
         all_of:
           - magnesic_asc: {window: b2}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
 
     - code: "AF"
-      name: Dystrophic Yellow Ferrosol
+      name: Dystrophic, Yellow Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2}
       notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Yellow Ferrosol
+      name: Mesotrophic, Yellow Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2}
       notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Yellow Ferrosol
+      name: Eutrophic, Yellow Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2}
       notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "BC"
-      name: Calcareous Yellow Ferrosol
+      name: Calcareous, Yellow Ferrosol
       tests:
         all_of:
           - calcareous_b_asc: {}
@@ -134,42 +134,42 @@ great_groups:
 
   "FE-AD":
     - code: "CY"
-      name: Leptic Grey Ferrosol
+      name: Leptic, Grey Ferrosol
       tests:
         all_of:
           - leptic_asc: {}
       notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
 
     - code: "DB"
-      name: Magnesic Grey Ferrosol
+      name: Magnesic, Grey Ferrosol
       tests:
         all_of:
           - magnesic_asc: {window: b2}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
 
     - code: "AF"
-      name: Dystrophic Grey Ferrosol
+      name: Dystrophic, Grey Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2}
       notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Grey Ferrosol
+      name: Mesotrophic, Grey Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2}
       notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Grey Ferrosol
+      name: Eutrophic, Grey Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2}
       notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "BC"
-      name: Calcareous Grey Ferrosol
+      name: Calcareous, Grey Ferrosol
       tests:
         all_of:
           - calcareous_b_asc: {}
@@ -177,42 +177,42 @@ great_groups:
 
   "FE-AE":
     - code: "CY"
-      name: Leptic Black Ferrosol
+      name: Leptic, Black Ferrosol
       tests:
         all_of:
           - leptic_asc: {}
       notes: "Underlain within 0.5 m of the surface by a calcrete pan, hard rock or other hard materials, or partially weathered rock or saprolite."
 
     - code: "DB"
-      name: Magnesic Black Ferrosol
+      name: Magnesic, Black Ferrosol
       tests:
         all_of:
           - magnesic_asc: {window: b2}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2."
 
     - code: "AF"
-      name: Dystrophic Black Ferrosol
+      name: Dystrophic, Black Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2}
       notes: "The major part of the B2 is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Black Ferrosol
+      name: Mesotrophic, Black Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2}
       notes: "The major part of the B2 is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Black Ferrosol
+      name: Eutrophic, Black Ferrosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2}
       notes: "The major part of the B2 is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "BC"
-      name: Calcareous Black Ferrosol
+      name: Calcareous, Black Ferrosol
       tests:
         all_of:
           - calcareous_b_asc: {}

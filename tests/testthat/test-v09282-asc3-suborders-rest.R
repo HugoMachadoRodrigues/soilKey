@@ -19,7 +19,7 @@ test_that("the examples of the four orders key to a decided suborder", {
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
     expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
-    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
+    expect_length(grep("^(great_groups|subgroups):", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
   }
 })
 
