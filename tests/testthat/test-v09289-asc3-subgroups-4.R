@@ -154,3 +154,14 @@ test_that("the soil stops at a buried soil", {
                   ph_h2o = c(6.5, 6.5, 6.5, 8.5), effervescence_class = c("none", "none", "none", "strong"), stringsAsFactors = FALSE)
   expect_false(soilKey:::part_prop_asc(mk_s4(d), "calcareous", "soil", "some")$passed)
 })
+
+test_that("a calcrete pan under a Calcenic Tenosol is not its calcareous horizon", {
+  skip_on_cran()
+  d <- data.frame(designation = c("A1", "B2", "BCk", "Ckm"), top_cm = c(0, 15, 40, 70), bottom_cm = c(15, 40, 70, 90),
+                  ph_h2o = c(7, 7.5, 8.5, 8.8), effervescence_class = c("none", "slight", "strong", "strong"),
+                  caco3_pct = c(0, 2, 35, 70), carbonate_soft_pct = c(0, 0, 30, 0), carbonate_hard_pct = c(0, 0, 5, 90),
+                  pan_type = c(NA, NA, NA, "calcrete"), stringsAsFactors = FALSE)
+  p <- mk_s4(d)
+  expect_false(soilKey:::calcenic_sg_asc(p, "lithocalcic")$passed)
+  expect_true(soilKey:::calcenic_sg_asc(p, "hypercalcic")$passed)
+})

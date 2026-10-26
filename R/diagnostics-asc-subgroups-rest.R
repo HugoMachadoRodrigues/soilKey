@@ -160,6 +160,8 @@ calcenic_sg_asc <- function(pedon, class = c("lithocalcic", "supracalcic", "hype
   x <- .asc_horizons(pedon); h <- x$h
   hard <- .asc_carbonate(h)$hard
   ok <- .asc_calcenic_rows(x)
+  # a pan (a calcrete under the soil) is substrate, not the calcareous horizon
+  ok[.asc_pan_layer(x) | (x$hard & !x$rock) | x$rock] <- FALSE
   sure <- which(ok %in% TRUE); may <- which(is.na(ok))
   test <- switch(class,
     lithocalcic = ifelse(is.na(hard), NA, hard > 50),
