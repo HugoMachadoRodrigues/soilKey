@@ -1,0 +1,257 @@
+# Key to the subgroups of the Dermosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "DE-*":
+    - code: "CM"
+      name: "Humose-Mottled, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "A humose horizon and the major part of the B2 horizon mottled."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "GC"
+      name: "Melacic-Reticulate, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - reticulate_below_asc: {}
+      notes: "A melacic horizon and a reticulate horizon below the B2 horizon."
+
+    - code: "DI"
+      name: "Melacic-Mottled, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "A melacic horizon and the major part of the B2 horizon mottled."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DM"
+      name: "Melanic-Mottled, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "A melanic horizon and the major part of the B2 horizon mottled."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "HA"
+      name: "Melanic-Sodic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - lower_b_sodic_asc: {}
+      notes: "A melanic horizon and at least the lower part of the B horizon sodic."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "BZ"
+      name: "Gypsic, {parent}"
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A gypsic horizon within the B or BC horizon."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the solum and the major part of the B2 horizon strongly acid."
+
+    - code: "HC"
+      name: "Ferric-Sodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+          - lower_b_sodic_asc: {}
+      notes: "A ferric horizon within the solum and at least the lower part of the B horizon sodic."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the solum."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+      notes: "A ferric horizon within the solum."
+
+    - code: "GX"
+      name: "Manganic-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+          - acidic_b2_asc: {}
+      notes: "A manganic horizon within the solum and the major part of the B2 horizon strongly acid."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the solum."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "HO"
+      name: "Acidic-Sodic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "The major part of the B2 horizon strongly acid and at least the lower part of the B horizon sodic."
+
+    - code: "AU"
+      name: "Bleached-Acidic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - acidic_b2_asc: {}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "AJ"
+      name: "Acidic-Mottled, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "The major part of the B2 horizon strongly acid and the major part of the B2 horizon mottled."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "BA"
+      name: "Bleached-Sodic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "A conspicuously bleached A2 horizon and at least the lower part of the B horizon sodic."
+
+    - code: "HB"
+      name: "Mottled-Sodic, {parent}"
+      tests:
+        all_of:
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+          - lower_b_sodic_asc: {}
+      notes: "The major part of the B2 horizon mottled and at least the lower part of the B horizon sodic."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {}
+      notes: "At least the lower part of the B horizon sodic."
+
+    - code: "AZ"
+      name: "Bleached-Mottled, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon mottled."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "DQ"
+      name: "Mottled, {parent}"
+      tests:
+        all_of:
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "The major part of the B2 horizon mottled."
+
+    - code: "CD"
+      name: "Haplic, {parent}"
+      tests:
+        all_of:
+          - b_colour_sg_asc: {kind: whole_coloured, window: b2}
+      notes: "The major part of the B2 horizon whole coloured."

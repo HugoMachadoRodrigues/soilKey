@@ -72,3 +72,5 @@ diagnostics:
   - {function: b_colour_sg_asc,       file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Mottled and Haplic"}
   - {function: reticulate_below_asc,  file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Reticulate; glossary 'Reticulate horizon'"}
   - {function: silpan_ab_asc,         file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Silpanic; glossary 'Siliceous pan'"}
+  - {function: acidic_b2_asc,         file: R/diagnostics-asc-subgroups.R, reference: "Subgroups Acidic; glossary 'Strongly acid'"}
+  - {function: snuffy_asc,            file: R/diagnostics-asc-subgroups.R, reference: "Ferrosols, subgroup Snuffy"}

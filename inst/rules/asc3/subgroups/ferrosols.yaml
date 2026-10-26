@@ -1,0 +1,108 @@
+# Key to the subgroups of the Ferrosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "FE-*":
+    - code: "EN"
+      name: "Snuffy, {parent}"
+      tests:
+        all_of:
+          - snuffy_asc: {}
+      notes: "An A horizon with a very fine granular structure (<2 mm) and a weak to very weak dry strength."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DM"
+      name: "Melanic-Mottled, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "A melanic horizon and the major part of the B2 horizon mottled."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the solum and the major part of the B2 horizon strongly acid."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+      notes: "A ferric horizon within the solum."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {part: b2}
+      notes: "At least the lower part of the B2 horizon sodic."
+
+    - code: "DQ"
+      name: "Mottled, {parent}"
+      tests:
+        all_of:
+          - b_colour_sg_asc: {kind: mottled, window: b2}
+      notes: "The major part of the B2 horizon mottled."
+
+    - code: "CD"
+      name: "Haplic, {parent}"
+      tests:
+        all_of:
+          - b_colour_sg_asc: {kind: whole_coloured, window: b2}
+      notes: "The major part of the B2 horizon whole coloured."

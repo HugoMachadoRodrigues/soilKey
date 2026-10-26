@@ -3,7 +3,8 @@
 # 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
 # suborders since v0.9.280 (all orders since v0.9.282); great groups since
 # v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
-# subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols). Families follow. Experimental and
+# subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols; Dermosols, Kandosols, Ferrosols since
+# v0.9.287). Families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -34,8 +35,10 @@
 #' the Anthroposols have none in the text; and the subgroups of the
 #' Kurosols, Sodosols and Chromosols (chernic and vertic features, bleaching,
 #' ferric and manganic horizons, sodicity of the lower B, mottling of the
-#' B2t, base status, carbonate). The other subgroups and the families
-#' follow. The name is that of the deepest class assigned, in the book's
+#' B2t, base status, carbonate) and of the Dermosols, Kandosols and
+#' Ferrosols (the same features read on the B2, a strongly acid B2, argic and
+#' bauxitic horizons in the B, a snuffy A). The other subgroups and the
+#' families follow. The name is that of the deepest class assigned, in the book's
 #' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
 #' Chromosol"); \code{rsg_or_order} keeps the order.
 #'
@@ -203,7 +206,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       boundary_distinctness = c("gradual", "diffuse", "diffuse", NA),
       structure_grade = c("strong", "strong", "moderate", "moderate"),
       structure_type = c("granular", "polyhedral", "polyhedral", "polyhedral"),
-      slickensides = "absent", ph_h2o = c(5.8, 5.6, 5.8, 6.0),
+      slickensides = "absent", ph_h2o = c(5.8, 5.6, 5.8, 6.0), ped_size_max_mm = c(5, 20, 20, 20),
+      oc_pct = c(2.5, 1.0, 0.6, 0.4), redoximorphic_features_pct = 0, cec_cmol = c(16, 12, 11, 11),
       munsell_hue_moist = "2.5YR", munsell_value_moist = 3, munsell_chroma_moist = c(4, 6, 6, 6))),
     dermosols = mk(list(
       designation = c("A1", "B21", "B22", "BC"), top_cm = c(0, 15, 50, 90),
@@ -215,6 +219,7 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       structure_grade = c("moderate", "moderate", "strong", "weak"),
       structure_type = c("granular", "blocky", "blocky", "blocky"), slickensides = "absent",
       munsell_hue_moist = "7.5YR", munsell_value_moist = c(3, 4, 4, 5), munsell_chroma_moist = c(2, 4, 4, 4),
+      oc_pct = c(2.0, 0.8, 0.5, 0.3), redoximorphic_features_pct = c(0, 0, 0, 5), cec_cmol = c(18, 16, 16, 15),
       ph_h2o = c(6.2, 6.5, 6.8, 7.0))),
     kandosols = mk(list(
       designation = c("A1", "A3", "B21", "B22"), top_cm = c(0, 15, 30, 70),
@@ -226,7 +231,8 @@ make_asc3_example <- function(order = c("anthroposols", "organosols", "podosols"
       structure_grade = c("weak", "structureless", "structureless", "weak"),
       structure_type = c("granular", "massive", "massive", "blocky"),
       munsell_hue_moist = c("7.5YR", "5YR", "2.5YR", "2.5YR"), munsell_value_moist = c(3, 4, 4, 4),
-      munsell_chroma_moist = c(2, 4, 6, 6),
+      munsell_chroma_moist = c(2, 4, 6, 6), oc_pct = c(1.2, 0.5, 0.3, 0.2), redoximorphic_features_pct = 0,
+      cec_cmol = c(5, 4, 4, 4),
       ph_h2o = c(6.0, 5.8, 5.9, 6.0))),
     arenosols = mk(list(
       designation = c("A1", "A3", "C1", "C2"), top_cm = c(0, 10, 40, 90),
