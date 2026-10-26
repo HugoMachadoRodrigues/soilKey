@@ -7,105 +7,105 @@
 great_groups:
   "HY-IU":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Subtidal Hydrosol
+      name: Monosulfidic-Sulfuric, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Subtidal Hydrosol
+      name: Sulfuric, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Subtidal Hydrosol
+      name: Monohypersulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IY"
-      name: Histic-Hypersulfidic Subtidal Hydrosol
+      name: Histic-Hypersulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hypersulfidic}
       notes: "Organic materials dominating the upper 0.5 m and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Subtidal Hydrosol
+      name: Hypersulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Subtidal Hydrosol
+      name: Monohyposulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JB"
-      name: Histic-Hyposulfidic Subtidal Hydrosol
+      name: Histic-Hyposulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hyposulfidic}
       notes: "Other soils with organic materials dominating the upper 0.5 m and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Subtidal Hydrosol
+      name: Hyposulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Subtidal Hydrosol
+      name: Sulfidic, Subtidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "CF"
-      name: Histic Subtidal Hydrosol
+      name: Histic, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: histic}
       notes: "Dominated by organic materials to a depth of 0.5 m."
 
     - code: "FW"
-      name: Faunic Subtidal Hydrosol
+      name: Faunic, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: faunic}
       notes: "Dominated by other organic-rich (non-vegetative) materials such as faunal debris to a depth of 0.5 m."
 
     - code: "FY"
-      name: Epicalcareous Subtidal Hydrosol
+      name: Epicalcareous, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: epicalcareous}
       notes: "Dominantly calcareous to a depth of 0.5 m."
 
     - code: "AQ"
-      name: Argillaceous Subtidal Hydrosol
+      name: Argillaceous, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: argillaceous}
       notes: "Dominantly clay-sized to a depth of 0.5 m."
 
     - code: "FX"
-      name: Lutaceous Subtidal Hydrosol
+      name: Lutaceous, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: lutaceous}
       notes: "Dominantly silt-sized to a depth of 0.5 m."
 
     - code: "BV"
-      name: Arenaceous Subtidal Hydrosol
+      name: Arenaceous, Subtidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: arenaceous}
@@ -113,105 +113,105 @@ great_groups:
 
   "HY-IV":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Subaqueous Hydrosol
+      name: Monosulfidic-Sulfuric, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Subaqueous Hydrosol
+      name: Sulfuric, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Subaqueous Hydrosol
+      name: Monohypersulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IY"
-      name: Histic-Hypersulfidic Subaqueous Hydrosol
+      name: Histic-Hypersulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hypersulfidic}
       notes: "Organic materials dominating the upper 0.5 m and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Subaqueous Hydrosol
+      name: Hypersulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Subaqueous Hydrosol
+      name: Monohyposulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JB"
-      name: Histic-Hyposulfidic Subaqueous Hydrosol
+      name: Histic-Hyposulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hyposulfidic}
       notes: "Other soils with organic materials dominating the upper 0.5 m and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Subaqueous Hydrosol
+      name: Hyposulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Subaqueous Hydrosol
+      name: Sulfidic, Subaqueous Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "CF"
-      name: Histic Subaqueous Hydrosol
+      name: Histic, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: histic}
       notes: "Dominated by organic materials to a depth of 0.5 m."
 
     - code: "FW"
-      name: Faunic Subaqueous Hydrosol
+      name: Faunic, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: faunic}
       notes: "Dominated by other organic-rich (non-vegetative) materials such as faunal debris to a depth of 0.5 m."
 
     - code: "FY"
-      name: Epicalcareous Subaqueous Hydrosol
+      name: Epicalcareous, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: epicalcareous}
       notes: "Dominantly calcareous to a depth of 0.5 m."
 
     - code: "AQ"
-      name: Argillaceous Subaqueous Hydrosol
+      name: Argillaceous, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: argillaceous}
       notes: "Dominantly clay-sized to a depth of 0.5 m."
 
     - code: "FX"
-      name: Lutaceous Subaqueous Hydrosol
+      name: Lutaceous, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: lutaceous}
       notes: "Dominantly silt-sized to a depth of 0.5 m."
 
     - code: "BV"
-      name: Arenaceous Subaqueous Hydrosol
+      name: Arenaceous, Subaqueous Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: arenaceous}
@@ -219,105 +219,105 @@ great_groups:
 
   "HY-CW":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Intertidal Hydrosol
+      name: Monosulfidic-Sulfuric, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Intertidal Hydrosol
+      name: Sulfuric, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Intertidal Hydrosol
+      name: Monohypersulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IY"
-      name: Histic-Hypersulfidic Intertidal Hydrosol
+      name: Histic-Hypersulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hypersulfidic}
       notes: "Organic materials dominating the upper 0.5 m and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Intertidal Hydrosol
+      name: Hypersulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Intertidal Hydrosol
+      name: Monohyposulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JB"
-      name: Histic-Hyposulfidic Intertidal Hydrosol
+      name: Histic-Hyposulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: histic_hyposulfidic}
       notes: "Other soils with organic materials dominating the upper 0.5 m and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Intertidal Hydrosol
+      name: Hyposulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Intertidal Hydrosol
+      name: Sulfidic, Intertidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "CF"
-      name: Histic Intertidal Hydrosol
+      name: Histic, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: histic}
       notes: "Dominated by organic materials to a depth of 0.5 m."
 
     - code: "FW"
-      name: Faunic Intertidal Hydrosol
+      name: Faunic, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: faunic}
       notes: "Dominated by other organic-rich (non-vegetative) materials such as faunal debris to a depth of 0.5 m."
 
     - code: "FY"
-      name: Epicalcareous Intertidal Hydrosol
+      name: Epicalcareous, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: epicalcareous}
       notes: "Dominantly calcareous to a depth of 0.5 m."
 
     - code: "AQ"
-      name: Argillaceous Intertidal Hydrosol
+      name: Argillaceous, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: argillaceous}
       notes: "Dominantly clay-sized to a depth of 0.5 m."
 
     - code: "FX"
-      name: Lutaceous Intertidal Hydrosol
+      name: Lutaceous, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: lutaceous}
       notes: "Dominantly silt-sized to a depth of 0.5 m."
 
     - code: "BV"
-      name: Arenaceous Intertidal Hydrosol
+      name: Arenaceous, Intertidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: arenaceous}
@@ -325,77 +325,77 @@ great_groups:
 
   "HY-EW":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Supratidal Hydrosol
+      name: Monosulfidic-Sulfuric, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Supratidal Hydrosol
+      name: Sulfuric, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Supratidal Hydrosol
+      name: Monohypersulfidic, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Supratidal Hydrosol
+      name: Hypersulfidic, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Supratidal Hydrosol
+      name: Monohyposulfidic, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Supratidal Hydrosol
+      name: Hyposulfidic, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Supratidal Hydrosol
+      name: Sulfidic, Supratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "BZ"
-      name: Gypsic Supratidal Hydrosol
+      name: Gypsic, Supratidal Hydrosol
       tests:
         all_of:
           - gypsic_horizon_asc: {within: 50}
       notes: "A gypsic horizon within the upper 0.5 m."
 
     - code: "FY"
-      name: Epicalcareous Supratidal Hydrosol
+      name: Epicalcareous, Supratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: epicalcareous}
       notes: "The major part of the upper 0.5 m calcareous."
 
     - code: "DQ"
-      name: Mottled Supratidal Hydrosol
+      name: Mottled, Supratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: mottled}
       notes: "The major part of the upper 0.5 m mottled."
 
     - code: "CD"
-      name: Haplic Supratidal Hydrosol
+      name: Haplic, Supratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: haplic}
@@ -403,84 +403,84 @@ great_groups:
 
   "HY-CS":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Hypersalic Hydrosol
+      name: Monosulfidic-Sulfuric, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Hypersalic Hydrosol
+      name: Sulfuric, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Hypersalic Hydrosol
+      name: Monohypersulfidic, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Hypersalic Hydrosol
+      name: Hypersulfidic, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Hypersalic Hydrosol
+      name: Monohyposulfidic, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Hypersalic Hydrosol
+      name: Hyposulfidic, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Hypersalic Hydrosol
+      name: Sulfidic, Hypersalic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "BZ"
-      name: Gypsic Hypersalic Hydrosol
+      name: Gypsic, Hypersalic Hydrosol
       tests:
         all_of:
           - gypsic_horizon_asc: {within: 50}
       notes: "A gypsic horizon within the upper 0.5 m."
 
     - code: "CC"
-      name: Halic Hypersalic Hydrosol
+      name: Halic, Hypersalic Hydrosol
       tests:
         all_of:
           - halite_asc: {kind: halic}
       notes: "The major part of the upper 0.5 m of materials dominated (more than 50 %) by halite crystals."
 
     - code: "FY"
-      name: Epicalcareous Hypersalic Hydrosol
+      name: Epicalcareous, Hypersalic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: epicalcareous}
       notes: "The major part of the upper 0.5 m calcareous."
 
     - code: "DQ"
-      name: Mottled Hypersalic Hydrosol
+      name: Mottled, Hypersalic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: mottled}
       notes: "The major part of the upper 0.5 m mottled."
 
     - code: "CD"
-      name: Haplic Hypersalic Hydrosol
+      name: Haplic, Hypersalic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: haplic}
@@ -488,112 +488,112 @@ great_groups:
 
   "HY-BT":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Extratidal Hydrosol
+      name: Monosulfidic-Sulfuric, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Extratidal Hydrosol
+      name: Sulfuric, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Extratidal Hydrosol
+      name: Monohypersulfidic, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Extratidal Hydrosol
+      name: Hypersulfidic, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Extratidal Hydrosol
+      name: Monohyposulfidic, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Extratidal Hydrosol
+      name: Hyposulfidic, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Extratidal Hydrosol
+      name: Sulfidic, Extratidal Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "EA"
-      name: Petroferric Extratidal Hydrosol
+      name: Petroferric, Extratidal Hydrosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: profile}
       notes: "A petroferric horizon within the soil profile."
 
     - code: "CB"
-      name: Calcarosolic Extratidal Hydrosol
+      name: Calcarosolic, Extratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: calcarosolic}
       notes: "Calcareous throughout, or below the A1 or Ap or from 0.2 m, and no clear or abrupt textural B horizon."
 
     - code: "CX"
-      name: Kurosolic Extratidal Hydrosol
+      name: Kurosolic, Extratidal Hydrosol
       tests:
         all_of:
           - kurosol_asc: {}
       notes: "A clear or abrupt textural B horizon, the major part of the upper 0.2 m of the B2 strongly acid."
 
     - code: "EQ"
-      name: Sodosolic Extratidal Hydrosol
+      name: Sodosolic, Extratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: sodosolic}
       notes: "A clear or abrupt textural B horizon, sodic and not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "BG"
-      name: Chromosolic Extratidal Hydrosol
+      name: Chromosolic, Extratidal Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: chromosolic}
       notes: "Other soils with a clear or abrupt textural B horizon, not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "FQ"
-      name: Dermosolic Extratidal Hydrosol
+      name: Dermosolic, Extratidal Hydrosol
       tests:
         all_of:
           - dermosol_asc: {}
       notes: "Structured B2 horizons; apart from wetness, the requirements for Dermosols."
 
     - code: "FR"
-      name: Kandosolic Extratidal Hydrosol
+      name: Kandosolic, Extratidal Hydrosol
       tests:
         all_of:
           - kandosol_asc: {}
       notes: "Other soils with B2 horizons; apart from wetness, the requirements for Kandosols."
 
     - code: "JM"
-      name: Arenosolic Extratidal Hydrosol
+      name: Arenosolic, Extratidal Hydrosol
       tests:
         all_of:
           - arenosol_asc: {}
       notes: "Apart from wetness, the requirements for Arenosols."
 
     - code: "GT"
-      name: Tenosolic Extratidal Hydrosol
+      name: Tenosolic, Extratidal Hydrosol
       tests:
         all_of:
           - none_of:
@@ -601,7 +601,7 @@ great_groups:
       notes: "Apart from wetness, the requirements for Tenosols (the other soils of the order key, after the Rudosols)."
 
     - code: "GR"
-      name: Rudosolic Extratidal Hydrosol
+      name: Rudosolic, Extratidal Hydrosol
       tests:
         all_of:
           - rudosol_asc: {}
@@ -609,112 +609,112 @@ great_groups:
 
   "HY-EG":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Salic Hydrosol
+      name: Monosulfidic-Sulfuric, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Salic Hydrosol
+      name: Sulfuric, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Salic Hydrosol
+      name: Monohypersulfidic, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Salic Hydrosol
+      name: Hypersulfidic, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Salic Hydrosol
+      name: Monohyposulfidic, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Salic Hydrosol
+      name: Hyposulfidic, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Salic Hydrosol
+      name: Sulfidic, Salic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "EA"
-      name: Petroferric Salic Hydrosol
+      name: Petroferric, Salic Hydrosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: profile}
       notes: "A petroferric horizon within the soil profile."
 
     - code: "CB"
-      name: Calcarosolic Salic Hydrosol
+      name: Calcarosolic, Salic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: calcarosolic}
       notes: "Calcareous throughout, or below the A1 or Ap or from 0.2 m, and no clear or abrupt textural B horizon."
 
     - code: "CX"
-      name: Kurosolic Salic Hydrosol
+      name: Kurosolic, Salic Hydrosol
       tests:
         all_of:
           - kurosol_asc: {}
       notes: "A clear or abrupt textural B horizon, the major part of the upper 0.2 m of the B2 strongly acid."
 
     - code: "EQ"
-      name: Sodosolic Salic Hydrosol
+      name: Sodosolic, Salic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: sodosolic}
       notes: "A clear or abrupt textural B horizon, sodic and not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "BG"
-      name: Chromosolic Salic Hydrosol
+      name: Chromosolic, Salic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: chromosolic}
       notes: "Other soils with a clear or abrupt textural B horizon, not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "FQ"
-      name: Dermosolic Salic Hydrosol
+      name: Dermosolic, Salic Hydrosol
       tests:
         all_of:
           - dermosol_asc: {}
       notes: "Structured B2 horizons; apart from wetness, the requirements for Dermosols."
 
     - code: "FR"
-      name: Kandosolic Salic Hydrosol
+      name: Kandosolic, Salic Hydrosol
       tests:
         all_of:
           - kandosol_asc: {}
       notes: "Other soils with B2 horizons; apart from wetness, the requirements for Kandosols."
 
     - code: "JM"
-      name: Arenosolic Salic Hydrosol
+      name: Arenosolic, Salic Hydrosol
       tests:
         all_of:
           - arenosol_asc: {}
       notes: "Apart from wetness, the requirements for Arenosols."
 
     - code: "GT"
-      name: Tenosolic Salic Hydrosol
+      name: Tenosolic, Salic Hydrosol
       tests:
         all_of:
           - none_of:
@@ -722,7 +722,7 @@ great_groups:
       notes: "Apart from wetness, the requirements for Tenosols (the other soils of the order key, after the Rudosols)."
 
     - code: "GR"
-      name: Rudosolic Salic Hydrosol
+      name: Rudosolic, Salic Hydrosol
       tests:
         all_of:
           - rudosol_asc: {}
@@ -730,112 +730,112 @@ great_groups:
 
   "HY-ED":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Redoxic Hydrosol
+      name: Monosulfidic-Sulfuric, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Redoxic Hydrosol
+      name: Sulfuric, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Redoxic Hydrosol
+      name: Monohypersulfidic, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Redoxic Hydrosol
+      name: Hypersulfidic, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Redoxic Hydrosol
+      name: Monohyposulfidic, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Redoxic Hydrosol
+      name: Hyposulfidic, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Redoxic Hydrosol
+      name: Sulfidic, Redoxic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "EA"
-      name: Petroferric Redoxic Hydrosol
+      name: Petroferric, Redoxic Hydrosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: profile}
       notes: "A petroferric horizon within the soil profile."
 
     - code: "CB"
-      name: Calcarosolic Redoxic Hydrosol
+      name: Calcarosolic, Redoxic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: calcarosolic}
       notes: "Calcareous throughout, or below the A1 or Ap or from 0.2 m, and no clear or abrupt textural B horizon."
 
     - code: "CX"
-      name: Kurosolic Redoxic Hydrosol
+      name: Kurosolic, Redoxic Hydrosol
       tests:
         all_of:
           - kurosol_asc: {}
       notes: "A clear or abrupt textural B horizon, the major part of the upper 0.2 m of the B2 strongly acid."
 
     - code: "EQ"
-      name: Sodosolic Redoxic Hydrosol
+      name: Sodosolic, Redoxic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: sodosolic}
       notes: "A clear or abrupt textural B horizon, sodic and not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "BG"
-      name: Chromosolic Redoxic Hydrosol
+      name: Chromosolic, Redoxic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: chromosolic}
       notes: "Other soils with a clear or abrupt textural B horizon, not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "FQ"
-      name: Dermosolic Redoxic Hydrosol
+      name: Dermosolic, Redoxic Hydrosol
       tests:
         all_of:
           - dermosol_asc: {}
       notes: "Structured B2 horizons; apart from wetness, the requirements for Dermosols."
 
     - code: "FR"
-      name: Kandosolic Redoxic Hydrosol
+      name: Kandosolic, Redoxic Hydrosol
       tests:
         all_of:
           - kandosol_asc: {}
       notes: "Other soils with B2 horizons; apart from wetness, the requirements for Kandosols."
 
     - code: "JM"
-      name: Arenosolic Redoxic Hydrosol
+      name: Arenosolic, Redoxic Hydrosol
       tests:
         all_of:
           - arenosol_asc: {}
       notes: "Apart from wetness, the requirements for Arenosols."
 
     - code: "GT"
-      name: Tenosolic Redoxic Hydrosol
+      name: Tenosolic, Redoxic Hydrosol
       tests:
         all_of:
           - none_of:
@@ -843,7 +843,7 @@ great_groups:
       notes: "Apart from wetness, the requirements for Tenosols (the other soils of the order key, after the Rudosols)."
 
     - code: "GR"
-      name: Rudosolic Redoxic Hydrosol
+      name: Rudosolic, Redoxic Hydrosol
       tests:
         all_of:
           - rudosol_asc: {}
@@ -851,112 +851,112 @@ great_groups:
 
   "HY-DT":
     - code: "IW"
-      name: Monosulfidic-Sulfuric Oxyaquic Hydrosol
+      name: Monosulfidic-Sulfuric, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monosulfidic_sulfuric}
       notes: "Monosulfidic material and sulfuric material (at least 0.15 m) within the upper 1.5 m (replaces Sulfuric where the evidence is available)."
 
     - code: "EV"
-      name: Sulfuric Oxyaquic Hydrosol
+      name: Sulfuric, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfuric}
       notes: "Sulfuric material at least 0.15 m thick within the upper 1.5 m."
 
     - code: "IX"
-      name: Monohypersulfidic Oxyaquic Hydrosol
+      name: Monohypersulfidic, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohypersulfidic}
       notes: "Monosulfidic and hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "IZ"
-      name: Hypersulfidic Oxyaquic Hydrosol
+      name: Hypersulfidic, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hypersulfidic}
       notes: "Other soils with hypersulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JA"
-      name: Monohyposulfidic Oxyaquic Hydrosol
+      name: Monohyposulfidic, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: monohyposulfidic}
       notes: "Monosulfidic and hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "JC"
-      name: Hyposulfidic Oxyaquic Hydrosol
+      name: Hyposulfidic, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: hyposulfidic}
       notes: "Other soils with hyposulfidic material within the upper 1.5 m (replaces Sulfidic where the evidence is available)."
 
     - code: "EU"
-      name: Sulfidic Oxyaquic Hydrosol
+      name: Sulfidic, Oxyaquic Hydrosol
       tests:
         all_of:
           - acid_sulfate_gg_asc: {kind: sulfidic}
       notes: "Sulfidic materials within the upper 1.5 m."
 
     - code: "EA"
-      name: Petroferric Oxyaquic Hydrosol
+      name: Petroferric, Oxyaquic Hydrosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: profile}
       notes: "A petroferric horizon within the soil profile."
 
     - code: "CB"
-      name: Calcarosolic Oxyaquic Hydrosol
+      name: Calcarosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: calcarosolic}
       notes: "Calcareous throughout, or below the A1 or Ap or from 0.2 m, and no clear or abrupt textural B horizon."
 
     - code: "CX"
-      name: Kurosolic Oxyaquic Hydrosol
+      name: Kurosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - kurosol_asc: {}
       notes: "A clear or abrupt textural B horizon, the major part of the upper 0.2 m of the B2 strongly acid."
 
     - code: "EQ"
-      name: Sodosolic Oxyaquic Hydrosol
+      name: Sodosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: sodosolic}
       notes: "A clear or abrupt textural B horizon, sodic and not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "BG"
-      name: Chromosolic Oxyaquic Hydrosol
+      name: Chromosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - hydrosol_gg_asc: {kind: chromosolic}
       notes: "Other soils with a clear or abrupt textural B horizon, not strongly acid in the major part of the upper 0.2 m of the B2."
 
     - code: "FQ"
-      name: Dermosolic Oxyaquic Hydrosol
+      name: Dermosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - dermosol_asc: {}
       notes: "Structured B2 horizons; apart from wetness, the requirements for Dermosols."
 
     - code: "FR"
-      name: Kandosolic Oxyaquic Hydrosol
+      name: Kandosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - kandosol_asc: {}
       notes: "Other soils with B2 horizons; apart from wetness, the requirements for Kandosols."
 
     - code: "JM"
-      name: Arenosolic Oxyaquic Hydrosol
+      name: Arenosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - arenosol_asc: {}
       notes: "Apart from wetness, the requirements for Arenosols."
 
     - code: "GT"
-      name: Tenosolic Oxyaquic Hydrosol
+      name: Tenosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - none_of:
@@ -964,7 +964,7 @@ great_groups:
       notes: "Apart from wetness, the requirements for Tenosols (the other soils of the order key, after the Rudosols)."
 
     - code: "GR"
-      name: Rudosolic Oxyaquic Hydrosol
+      name: Rudosolic, Oxyaquic Hydrosol
       tests:
         all_of:
           - rudosol_asc: {}

@@ -98,14 +98,14 @@
   x <- .asc_horizons(pedon); h <- x$h
   om <- .asc_organic_material(x, pedon)
   top0 <- .asc_profile_top(x)
-  if (is.na(top0)) return(list(peaty = NA, humose = NA, dark = NA, x = x))
+  if (is.na(top0)) return(list(peaty = NA, humose = NA, dark = NA, melacic = NA, melanic = NA, x = x))
   # peaty: organic materials (not litter) from the top of the profile
   ok_peat <- ifelse(x$role %in% "O1", FALSE, om)
   peaty <- .asc_run_at_least(.asc_run_from(x, ok_peat, top0), 20)
   # the mineral surface: below the organic rows at the top
   orun <- .asc_run_from(x, ifelse(om %in% TRUE & !(x$role %in% "O1"), TRUE, ifelse(is.na(om), NA, FALSE)), top0)
   if (is.infinite(orun$possible) || orun$possible > orun$sure)
-    return(list(peaty = peaty, humose = NA, dark = NA, x = x))
+    return(list(peaty = peaty, humose = NA, dark = NA, melacic = NA, melanic = NA, x = x))
   tm <- top0 + orun$sure
   ends_hard <- .asc_ends_hard(x)
   # humose: the upper 0.2 m of the mineral soil, averaged
@@ -132,6 +132,7 @@
   else if (is.na(tb)) dark_ok[not_a & dark_ok %in% TRUE] <- NA
   drun <- .asc_run_from(x, dark_ok, tm)
   dark_thick <- .asc_run_at_least(drun, 20)
+  melacic_out <- melanic_out <- FALSE
   dark <- if (identical(dark_thick, FALSE)) FALSE else {
     rows <- if (isTRUE(dark_thick)) drun$sure_rows else drun$rows
     acid <- .asc_rows_major(x, rows, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5))
@@ -143,10 +144,44 @@
     struct_ok <- ifelse(waived, TRUE, .and3v(grade_ok, size_ok))
     melanic <- .and3(!acid, .asc_rows_major(x, rows, struct_ok))
     melacic <- acid
+    # each kind on its own (subgroups): the horizon may end at any row from
+    # the last surely dark one to the last that may be dark, or at a gap in
+    # the record (which may not be dark); a verdict holds only when every
+    # possible extent gives it. An extent is continuous, so a gap inside it
+    # is part of it, of unknown kind; an extent under 0.2 m is no horizon; a
+    # run that reaches the end of the description (above no rock) may go on
+    # below it.
+    ph_acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
+    all_rows <- drun$rows; n_all <- length(all_rows); n_sure <- length(drun$sure_rows)
+    r_top <- h$top_cm[all_rows]; r_bot <- h$bottom_cm[all_rows]
+    gap_before <- if (n_all) c(r_top[1L] - tm, r_top[-1L] - r_bot[-n_all]) > 0.5 else logical(0)
+    gap_before[is.na(gap_before)] <- TRUE
+    open_end <- n_all > 0L && is.infinite(drun$possible) && !anyNA(x$thick[all_rows])
+    ends <- n_sure:n_all
+    # an extent may end at k when what follows it may not be dark
+    ends <- ends[vapply(ends, function(k) k == n_all || !(dark_ok[all_rows[k + 1L]] %in% TRUE) ||
+                                          gap_before[k + 1L], NA)]
+    # the major part of an extent from tm to the bottom of its rows, a gap counted as unknown
+    maj <- function(rr, ok, span) {
+      w <- x$thick[rr]
+      if (sum(w[ok[rr] %in% TRUE]) > span / 2) TRUE else if (sum(w[ok[rr] %in% FALSE]) >= span / 2) FALSE else NA
+    }
+    kinds <- lapply(ends, function(k) {
+      if (!k) return(c(FALSE, FALSE))
+      rr <- all_rows[seq_len(k)]
+      if (anyNA(x$thick[rr])) return(c(NA, NA))
+      span <- r_bot[k] - tm
+      if (span < 20 - 0.5) return(c(FALSE, FALSE))
+      ac <- maj(rr, ph_acid, span)
+      c(ac, .and3(!ac, maj(rr, struct_ok, span)))
+    })
+    if (open_end) kinds <- c(kinds, list(c(NA, NA)))
+    agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+    melacic_out <- agree(vapply(kinds, `[`, NA, 1L)); melanic_out <- agree(vapply(kinds, `[`, NA, 2L))
     passed <- .any3(c(melacic, melanic))
     if (isTRUE(dark_thick)) passed else if (identical(passed, FALSE)) FALSE else NA
   }
-  list(peaty = peaty, humose = humose, dark = dark, x = x)
+  list(peaty = peaty, humose = humose, dark = dark, melacic = melacic_out, melanic = melanic_out, x = x)
 }
 
 #' A peaty, humose, melacic or melanic horizon (Chernic suborders)

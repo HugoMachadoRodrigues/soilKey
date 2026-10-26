@@ -272,15 +272,26 @@ nodular_horizon_asc <- function(pedon, kind = c("ferric", "bauxitic", "manganic"
 #' glossary disregards one below 1.0 m). Without visible gypsum recorded, lab
 #' gypsum (caso4_pct) of 20 % or less rules a horizon out (the visible
 #' gypsum is part of it) and more leaves it undecided; with neither, the
-#' horizon has none, as for the Hypergypsic suborders.
+#' horizon has none, as for the Hypergypsic suborders. \code{where = "b"}
+#' (subgroups): within the B or BC horizon.
 #' @noRd
-gypsic_horizon_asc <- function(pedon, within = 100) {
+gypsic_horizon_asc <- function(pedon, within = 100, where = c("profile", "b")) {
+  where <- match.arg(where)
   x <- .asc_horizons(pedon); h <- x$h
   top0 <- .asc_profile_top(x) %|NA|% 0
   vis <- h$gypsum_visible_pct %||% rep(NA_real_, x$n); lab <- h$caso4_pct %||% rep(NA_real_, x$n)
   ok <- ifelse(is.nan(vis), NA, ifelse(!is.na(vis), vis > 20,
                ifelse(!is.na(lab), ifelse(lab <= 20, FALSE, NA), .asc_unrecorded_site())))
   ok[x$des$buried | !x$mineral | x$rock] <- FALSE
+  if (where == "b") {
+    # B horizons (BC included); a row of unknown role below the A horizons
+    # may be one, and one between two B horizons is one
+    bm <- .asc_b_and_maybe(x)
+    b <- seq_len(x$n) %in% c(bm$b, which(!is.na(x$role) & grepl("^B", x$role) & !x$des$buried))
+    may <- seq_len(x$n) %in% bm$maybe
+    ok[!(b | may)] <- FALSE
+    ok[may & ok %in% TRUE] <- NA
+  }
   x2 <- x; x2$top_ms <- h$top_cm - top0
   passed <- .cssc_run_test(x2, ok, 10, max_top_cm = min(within, 100) - 1e-6)$passed
   .asc_result("gg_gypsic", passed, which(ok %in% TRUE), list(within_cm = within),

@@ -20,7 +20,7 @@ test_that("the examples of the four orders key to a decided suborder", {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
     # since 0.9.284 the name may go on to the great group
     expect_identical(r$levels$name[r$levels$level == "suborders"], want[[o]], info = o)
-    expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
+    expect_length(grep("^(great_groups|subgroups):", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
   }
 })
 
@@ -80,7 +80,7 @@ test_that("the saturation of the B of a Podosol from the drainage class or the d
   sub <- function(p) {
     r <- classify_asc3(p, on_missing = "silent"); lv <- r$levels[r$levels$level != "great_groups", ]
     c(lv$name[nrow(lv)] %||% NA_character_,
-      paste(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), collapse = ","))
+      paste(grep("^(great_groups|subgroups):", r$provisional_because, value = TRUE, invert = TRUE), collapse = ","))
   }
   expect_identical(sub(.podo(list(drainage_class = "rapidly drained"))), c("Aeric Podosol", ""))
   expect_identical(sub(.podo(list(drainage_class = "moderately well drained"))), c("Semiaquic Podosol", ""))
@@ -186,7 +186,7 @@ test_that("the settings of the Hydrosols from the site record", {
   for (s in c("subtidal", "subaqueous", "intertidal", "supratidal", "extratidal", "hypersalic", "salic"))
     expect_false(hs(p, s), info = s)
   r <- classify_asc3(p, on_missing = "silent")
-  expect_identical(r$levels$name[r$levels$level == "suborders"], "Redoxic Hydrosol"); expect_length(grep("^great_groups:", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
+  expect_identical(r$levels$name[r$levels$level == "suborders"], "Redoxic Hydrosol"); expect_length(grep("^(great_groups|subgroups):", r$provisional_because, value = TRUE, invert = TRUE), 0L)   # great groups may wait (0.9.285)
 })
 
 test_that("Redoxic and Oxyaquic Hydrosols: the major part mottled or whole coloured", {

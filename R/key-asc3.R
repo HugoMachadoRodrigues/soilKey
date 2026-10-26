@@ -2,8 +2,8 @@
 # v0.9.277 -- the Australian Soil Classification, 3rd edition (Isbell & NCST
 # 2021, online version with errata of 25 June 2026), keyed to the 15 orders;
 # suborders since v0.9.280 (all orders since v0.9.282); great groups since
-# v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285).
-# Subgroups and families follow. Experimental and
+# v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
+# subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols). Families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -31,8 +31,12 @@
 #' materials, the upper 0.5 m, and the order the soil would key to apart
 #' from wetness), Arenosols, Rudosols and Tenosols (what the soil directly
 #' overlies, nodular, gypsic and argic horizons, carbonate, texture, gravel);
-#' the Anthroposols have none in the text. The subgroups and families
-#' follow. The name is that of the deepest class assigned ("Eutrophic Red
+#' the Anthroposols have none in the text; and the subgroups of the
+#' Kurosols, Sodosols and Chromosols (chernic and vertic features, bleaching,
+#' ferric and manganic horizons, sodicity of the lower B, mottling of the
+#' B2t, base status, carbonate). The other subgroups and the families
+#' follow. The name is that of the deepest class assigned, in the book's
+#' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
 #' Chromosol"); \code{rsg_or_order} keeps the order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture

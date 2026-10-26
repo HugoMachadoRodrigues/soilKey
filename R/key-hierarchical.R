@@ -54,6 +54,16 @@
 }
 
 
+# The list of classes under a path: the full path ("CH-AA-BG"), the parent
+# code ("BG"), then wildcard keys from the most specific ("CH-AA-*", "CH-*").
+.level_list <- function(lists, path, parent_code) {
+  keys <- c(paste(path, collapse = "-"), parent_code,
+            if (length(path) > 1L) vapply(rev(seq_len(length(path) - 1L)),
+                                          function(k) paste(c(path[seq_len(k)], "*"), collapse = "-"), ""))
+  for (k in keys) if (!is.null(lists[[k]])) return(lists[[k]])
+  NULL
+}
+
 #' Classify a pedon with an ordered (first-match) key
 #'
 #' The engine behind the classifiers of ordered national keys: it walks the
@@ -61,7 +71,8 @@
 #' the first class whose tests pass, and descends into the classes listed
 #' under it. The list under a class is found by the codes of the path to it
 #' joined with "-" ("CH-AA", for keys whose codes repeat under different
-#' parents), and otherwise by the code of the class alone.
+#' parents), otherwise by the code of the class alone, and otherwise by a
+#' list for every class under a part of the path ("CH-AA-*", then "CH-*").
 #'
 #' @param system Registry id or alias of the system.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -100,11 +111,18 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
   for (lvl in sys$levels) {
     # the list under the class above: by the codes of the path to it
     # ("CH-AA", where codes repeat under different parents), else by the
-    # code of the parent alone
-    taxa <- if (is.null(parent)) rules[[lvl]]
-            else rules[[lvl]][[paste(path, collapse = "-")]] %||% rules[[lvl]][[parent$code]]
+    # code of the parent alone, else by a list for every class under a part
+    # of the path ("CH-AA-*", then "CH-*")
+    taxa <- if (is.null(parent)) rules[[lvl]] else .level_list(rules[[lvl]], path, parent$code)
     if (length(taxa) == 0L) break
     r <- .run_level(pedon, taxa, lvl)
+    # a name written on the class above ("Bleached, {parent}"), in the trace too
+    if (!is.null(parent)) {
+      r$trace <- lapply(r$trace, function(e) {
+        if (grepl("{parent}", e$name %||% "", fixed = TRUE)) e$name <- sub("{parent}", parent$name, e$name, fixed = TRUE)
+        e
+      })
+    }
     trace[[lvl]] <- r$trace
     if (length(r$undecided) > 0L) {
       provisional <- c(provisional, paste0(lvl, ":", r$undecided))
@@ -119,6 +137,10 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
       }
       break
     }
+    # a name may be written on the name of the class above ("Bleached,
+    # {parent}", for a list shared by every class under a part of the path)
+    if (!is.null(parent) && grepl("{parent}", r$assigned$name %||% "", fixed = TRUE))
+      r$assigned$name <- sub("{parent}", parent$name, r$assigned$name, fixed = TRUE)
     chosen[[lvl]] <- r$assigned
     parent <- r$assigned
     path <- c(path, r$assigned$code)

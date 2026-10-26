@@ -1,0 +1,126 @@
+# Key to the subgroups of the Sodosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "SO-*":
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "BZ"
+      name: "Gypsic, {parent}"
+      tests:
+        all_of:
+          - gypsic_horizon_asc: {within: 100, where: b}
+      notes: "A gypsic horizon within the B or BC horizon."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: solum}
+      notes: "A ferric horizon within the solum."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2t}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2t}
+      notes: "The major part of the B2t dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2t}
+      notes: "The major part of the B2t mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2t}
+      notes: "The major part of the B2t eutrophic, the B and BC horizons not calcareous."
+
+    - code: "CV"
+      name: "Hypocalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypocalcic}
+      notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
+
+    - code: "DA"
+      name: "Lithocalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: "Supracalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: "Hypercalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hypercalcic}
+      notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
+
+    - code: "BD"
+      name: "Calcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: calcic}
+      notes: "A calcareous horizon."

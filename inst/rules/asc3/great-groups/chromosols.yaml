@@ -5,98 +5,98 @@
 great_groups:
   "CH-AA":
     - code: "BJ"
-      name: Duric Red Chromosol
+      name: Duric, Red Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: duric, where: b}
       notes: "A red-brown hardpan within or directly underlying the B horizon."
 
     - code: "EA"
-      name: Petroferric Red Chromosol
+      name: Petroferric, Red Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: solum}
       notes: "A petroferric horizon within the solum."
 
     - code: "DZ"
-      name: Petrocalcic Red Chromosol
+      name: Petrocalcic, Red Chromosol
       tests:
         all_of:
           - petrocalcic_asc: {}
       notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
 
     - code: "BK"
-      name: Pedaric Red Chromosol
+      name: Pedaric, Red Chromosol
       tests:
         all_of:
           - pedaric_asc: {window: upper_b2t}
       notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
 
     - code: "ET"
-      name: Subplastic Red Chromosol
+      name: Subplastic, Red Chromosol
       tests:
         all_of:
           - subplastic_asc: {window: b2t}
       notes: "The major part of the B2t strongly subplastic."
 
     - code: "DB"
-      name: Magnesic Red Chromosol
+      name: Magnesic, Red Chromosol
       tests:
         all_of:
           - magnesic_asc: {window: b2t}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
 
     - code: "AF"
-      name: Dystrophic Red Chromosol
+      name: Dystrophic, Red Chromosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2t}
       notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Red Chromosol
+      name: Mesotrophic, Red Chromosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2t}
       notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Red Chromosol
+      name: Eutrophic, Red Chromosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2t}
       notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "CV"
-      name: Hypocalcic Red Chromosol
+      name: Hypocalcic, Red Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypocalcic}
       notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
 
     - code: "DA"
-      name: Lithocalcic Red Chromosol
+      name: Lithocalcic, Red Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: lithocalcic}
       notes: "A calcareous horizon with more than 50 % hard carbonate."
 
     - code: "FB"
-      name: Supracalcic Red Chromosol
+      name: Supracalcic, Red Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: supracalcic}
       notes: "A calcareous horizon with 20-50 % hard carbonate."
 
     - code: "CQ"
-      name: Hypercalcic Red Chromosol
+      name: Hypercalcic, Red Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypercalcic}
       notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
 
     - code: "BD"
-      name: Calcic Red Chromosol
+      name: Calcic, Red Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: calcic}
@@ -104,98 +104,98 @@ great_groups:
 
   "CH-AB":
     - code: "BJ"
-      name: Duric Brown Chromosol
+      name: Duric, Brown Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: duric, where: b}
       notes: "A red-brown hardpan within or directly underlying the B horizon."
 
     - code: "EA"
-      name: Petroferric Brown Chromosol
+      name: Petroferric, Brown Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: solum}
       notes: "A petroferric horizon within the solum."
 
     - code: "DZ"
-      name: Petrocalcic Brown Chromosol
+      name: Petrocalcic, Brown Chromosol
       tests:
         all_of:
           - petrocalcic_asc: {}
       notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
 
     - code: "BK"
-      name: Pedaric Brown Chromosol
+      name: Pedaric, Brown Chromosol
       tests:
         all_of:
           - pedaric_asc: {window: upper_b2t}
       notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
 
     - code: "ET"
-      name: Subplastic Brown Chromosol
+      name: Subplastic, Brown Chromosol
       tests:
         all_of:
           - subplastic_asc: {window: b2t}
       notes: "The major part of the B2t strongly subplastic."
 
     - code: "DB"
-      name: Magnesic Brown Chromosol
+      name: Magnesic, Brown Chromosol
       tests:
         all_of:
           - magnesic_asc: {window: b2t}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
 
     - code: "AF"
-      name: Dystrophic Brown Chromosol
+      name: Dystrophic, Brown Chromosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2t}
       notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Brown Chromosol
+      name: Mesotrophic, Brown Chromosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2t}
       notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Brown Chromosol
+      name: Eutrophic, Brown Chromosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2t}
       notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "CV"
-      name: Hypocalcic Brown Chromosol
+      name: Hypocalcic, Brown Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypocalcic}
       notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
 
     - code: "DA"
-      name: Lithocalcic Brown Chromosol
+      name: Lithocalcic, Brown Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: lithocalcic}
       notes: "A calcareous horizon with more than 50 % hard carbonate."
 
     - code: "FB"
-      name: Supracalcic Brown Chromosol
+      name: Supracalcic, Brown Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: supracalcic}
       notes: "A calcareous horizon with 20-50 % hard carbonate."
 
     - code: "CQ"
-      name: Hypercalcic Brown Chromosol
+      name: Hypercalcic, Brown Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypercalcic}
       notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
 
     - code: "BD"
-      name: Calcic Brown Chromosol
+      name: Calcic, Brown Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: calcic}
@@ -203,98 +203,98 @@ great_groups:
 
   "CH-AC":
     - code: "BJ"
-      name: Duric Yellow Chromosol
+      name: Duric, Yellow Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: duric, where: b}
       notes: "A red-brown hardpan within or directly underlying the B horizon."
 
     - code: "EA"
-      name: Petroferric Yellow Chromosol
+      name: Petroferric, Yellow Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: solum}
       notes: "A petroferric horizon within the solum."
 
     - code: "DZ"
-      name: Petrocalcic Yellow Chromosol
+      name: Petrocalcic, Yellow Chromosol
       tests:
         all_of:
           - petrocalcic_asc: {}
       notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
 
     - code: "BK"
-      name: Pedaric Yellow Chromosol
+      name: Pedaric, Yellow Chromosol
       tests:
         all_of:
           - pedaric_asc: {window: upper_b2t}
       notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
 
     - code: "ET"
-      name: Subplastic Yellow Chromosol
+      name: Subplastic, Yellow Chromosol
       tests:
         all_of:
           - subplastic_asc: {window: b2t}
       notes: "The major part of the B2t strongly subplastic."
 
     - code: "DB"
-      name: Magnesic Yellow Chromosol
+      name: Magnesic, Yellow Chromosol
       tests:
         all_of:
           - magnesic_asc: {window: b2t}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
 
     - code: "AF"
-      name: Dystrophic Yellow Chromosol
+      name: Dystrophic, Yellow Chromosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2t}
       notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Yellow Chromosol
+      name: Mesotrophic, Yellow Chromosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2t}
       notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Yellow Chromosol
+      name: Eutrophic, Yellow Chromosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2t}
       notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "CV"
-      name: Hypocalcic Yellow Chromosol
+      name: Hypocalcic, Yellow Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypocalcic}
       notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
 
     - code: "DA"
-      name: Lithocalcic Yellow Chromosol
+      name: Lithocalcic, Yellow Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: lithocalcic}
       notes: "A calcareous horizon with more than 50 % hard carbonate."
 
     - code: "FB"
-      name: Supracalcic Yellow Chromosol
+      name: Supracalcic, Yellow Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: supracalcic}
       notes: "A calcareous horizon with 20-50 % hard carbonate."
 
     - code: "CQ"
-      name: Hypercalcic Yellow Chromosol
+      name: Hypercalcic, Yellow Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypercalcic}
       notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
 
     - code: "BD"
-      name: Calcic Yellow Chromosol
+      name: Calcic, Yellow Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: calcic}
@@ -302,98 +302,98 @@ great_groups:
 
   "CH-AD":
     - code: "BJ"
-      name: Duric Grey Chromosol
+      name: Duric, Grey Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: duric, where: b}
       notes: "A red-brown hardpan within or directly underlying the B horizon."
 
     - code: "EA"
-      name: Petroferric Grey Chromosol
+      name: Petroferric, Grey Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: solum}
       notes: "A petroferric horizon within the solum."
 
     - code: "DZ"
-      name: Petrocalcic Grey Chromosol
+      name: Petrocalcic, Grey Chromosol
       tests:
         all_of:
           - petrocalcic_asc: {}
       notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
 
     - code: "BK"
-      name: Pedaric Grey Chromosol
+      name: Pedaric, Grey Chromosol
       tests:
         all_of:
           - pedaric_asc: {window: upper_b2t}
       notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
 
     - code: "ET"
-      name: Subplastic Grey Chromosol
+      name: Subplastic, Grey Chromosol
       tests:
         all_of:
           - subplastic_asc: {window: b2t}
       notes: "The major part of the B2t strongly subplastic."
 
     - code: "DB"
-      name: Magnesic Grey Chromosol
+      name: Magnesic, Grey Chromosol
       tests:
         all_of:
           - magnesic_asc: {window: b2t}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
 
     - code: "AF"
-      name: Dystrophic Grey Chromosol
+      name: Dystrophic, Grey Chromosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2t}
       notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Grey Chromosol
+      name: Mesotrophic, Grey Chromosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2t}
       notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Grey Chromosol
+      name: Eutrophic, Grey Chromosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2t}
       notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "CV"
-      name: Hypocalcic Grey Chromosol
+      name: Hypocalcic, Grey Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypocalcic}
       notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
 
     - code: "DA"
-      name: Lithocalcic Grey Chromosol
+      name: Lithocalcic, Grey Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: lithocalcic}
       notes: "A calcareous horizon with more than 50 % hard carbonate."
 
     - code: "FB"
-      name: Supracalcic Grey Chromosol
+      name: Supracalcic, Grey Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: supracalcic}
       notes: "A calcareous horizon with 20-50 % hard carbonate."
 
     - code: "CQ"
-      name: Hypercalcic Grey Chromosol
+      name: Hypercalcic, Grey Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypercalcic}
       notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
 
     - code: "BD"
-      name: Calcic Grey Chromosol
+      name: Calcic, Grey Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: calcic}
@@ -401,98 +401,98 @@ great_groups:
 
   "CH-AE":
     - code: "BJ"
-      name: Duric Black Chromosol
+      name: Duric, Black Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: duric, where: b}
       notes: "A red-brown hardpan within or directly underlying the B horizon."
 
     - code: "EA"
-      name: Petroferric Black Chromosol
+      name: Petroferric, Black Chromosol
       tests:
         all_of:
           - pan_great_group_asc: {kind: petroferric, where: solum}
       notes: "A petroferric horizon within the solum."
 
     - code: "DZ"
-      name: Petrocalcic Black Chromosol
+      name: Petrocalcic, Black Chromosol
       tests:
         all_of:
           - petrocalcic_asc: {}
       notes: "A B horizon that is not calcareous and directly overlies a calcrete pan."
 
     - code: "BK"
-      name: Pedaric Black Chromosol
+      name: Pedaric, Black Chromosol
       tests:
         all_of:
           - pedaric_asc: {window: upper_b2t}
       notes: "Strong blocky or polyhedral upper B2t whose peds hold together very weakly (a spade enters very easily when dry)."
 
     - code: "ET"
-      name: Subplastic Black Chromosol
+      name: Subplastic, Black Chromosol
       tests:
         all_of:
           - subplastic_asc: {window: b2t}
       notes: "The major part of the B2t strongly subplastic."
 
     - code: "DB"
-      name: Magnesic Black Chromosol
+      name: Magnesic, Black Chromosol
       tests:
         all_of:
           - magnesic_asc: {window: b2t}
       notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2t."
 
     - code: "AF"
-      name: Dystrophic Black Chromosol
+      name: Dystrophic, Black Chromosol
       tests:
         all_of:
           - base_status_asc: {class: dystrophic, window: b2t}
       notes: "The major part of the B2t is dystrophic (base status below 5 cmol(+)/kg clay)."
 
     - code: "AG"
-      name: Mesotrophic Black Chromosol
+      name: Mesotrophic, Black Chromosol
       tests:
         all_of:
           - base_status_asc: {class: mesotrophic, window: b2t}
       notes: "The major part of the B2t is mesotrophic (5-15 cmol(+)/kg clay)."
 
     - code: "AH"
-      name: Eutrophic Black Chromosol
+      name: Eutrophic, Black Chromosol
       tests:
         all_of:
           - base_status_asc: {class: eutrophic, window: b2t}
       notes: "The major part of the B2t is eutrophic (above 15 cmol(+)/kg clay), and the B and BC horizons are not calcareous."
 
     - code: "CV"
-      name: Hypocalcic Black Chromosol
+      name: Hypocalcic, Black Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypocalcic}
       notes: "Carbonate only as a slight to moderate effervescence, and/or less than 2 % soft carbonate, and less than 20 % hard carbonate."
 
     - code: "DA"
-      name: Lithocalcic Black Chromosol
+      name: Lithocalcic, Black Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: lithocalcic}
       notes: "A calcareous horizon with more than 50 % hard carbonate."
 
     - code: "FB"
-      name: Supracalcic Black Chromosol
+      name: Supracalcic, Black Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: supracalcic}
       notes: "A calcareous horizon with 20-50 % hard carbonate."
 
     - code: "CQ"
-      name: Hypercalcic Black Chromosol
+      name: Hypercalcic, Black Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: hypercalcic}
       notes: "A calcareous horizon with more than 20 % mainly soft carbonate and 0-20 % hard carbonate."
 
     - code: "BD"
-      name: Calcic Black Chromosol
+      name: Calcic, Black Chromosol
       tests:
         all_of:
           - carbonate_suborder_asc: {class: calcic}

@@ -5,35 +5,35 @@
 great_groups:
   "VE-AM":
     - code: "EI"
-      name: Self-mulching Aquic Vertosol
+      name: Self-mulching, Aquic Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Aquic Vertosol
+      name: Epipedal, Aquic Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Aquic Vertosol
+      name: Crusty, Aquic Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Aquic Vertosol
+      name: Massive, Aquic Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Aquic Vertosol
+      name: Peaty, Aquic Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}
@@ -41,35 +41,35 @@ great_groups:
 
   "VE-AA":
     - code: "EI"
-      name: Self-mulching Red Vertosol
+      name: Self-mulching, Red Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Red Vertosol
+      name: Epipedal, Red Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Red Vertosol
+      name: Crusty, Red Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Red Vertosol
+      name: Massive, Red Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Red Vertosol
+      name: Peaty, Red Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}
@@ -77,35 +77,35 @@ great_groups:
 
   "VE-AB":
     - code: "EI"
-      name: Self-mulching Brown Vertosol
+      name: Self-mulching, Brown Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Brown Vertosol
+      name: Epipedal, Brown Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Brown Vertosol
+      name: Crusty, Brown Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Brown Vertosol
+      name: Massive, Brown Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Brown Vertosol
+      name: Peaty, Brown Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}
@@ -113,35 +113,35 @@ great_groups:
 
   "VE-AC":
     - code: "EI"
-      name: Self-mulching Yellow Vertosol
+      name: Self-mulching, Yellow Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Yellow Vertosol
+      name: Epipedal, Yellow Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Yellow Vertosol
+      name: Crusty, Yellow Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Yellow Vertosol
+      name: Massive, Yellow Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Yellow Vertosol
+      name: Peaty, Yellow Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}
@@ -149,35 +149,35 @@ great_groups:
 
   "VE-AD":
     - code: "EI"
-      name: Self-mulching Grey Vertosol
+      name: Self-mulching, Grey Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Grey Vertosol
+      name: Epipedal, Grey Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Grey Vertosol
+      name: Crusty, Grey Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Grey Vertosol
+      name: Massive, Grey Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Grey Vertosol
+      name: Peaty, Grey Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}
@@ -185,35 +185,35 @@ great_groups:
 
   "VE-AE":
     - code: "EI"
-      name: Self-mulching Black Vertosol
+      name: Self-mulching, Black Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: self_mulching}
       notes: "A moderately to strongly self-mulching surface."
 
     - code: "GS"
-      name: Epipedal Black Vertosol
+      name: Epipedal, Black Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: epipedal}
       notes: "A pedal (stronger than weak, blocky or polyhedral) A horizon, not or only weakly self-mulching, and no surface crusty horizon."
 
     - code: "BH"
-      name: Crusty Black Vertosol
+      name: Crusty, Black Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: crusty}
       notes: "A massive or weakly structured surface crusty horizon 30 mm or less thick over pedal clay that is not self-mulching."
 
     - code: "DF"
-      name: Massive Black Vertosol
+      name: Massive, Black Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: massive}
       notes: "A massive or weak blocky A horizon, and no surface crusty horizon."
 
     - code: "DW"
-      name: Peaty Black Vertosol
+      name: Peaty, Black Vertosol
       tests:
         all_of:
           - vertosol_surface_asc: {kind: peaty}

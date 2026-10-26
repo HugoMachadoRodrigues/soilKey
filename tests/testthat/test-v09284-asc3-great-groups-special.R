@@ -15,8 +15,8 @@ nm2 <- function(p) classify_asc3(p, on_missing = "silent")$name
 
 test_that("the examples key to a decided great group", {
   skip_on_cran()
-  want <- c(vertosols = "Self-mulching Black Vertosol", calcarosols = "Regolithic Hypercalcic Calcarosol",
-            podosols = "Humosesquic/Sesquic Aeric Podosol", organosols = "Acidic Sapric Organosol")
+  want <- c(vertosols = "Self-mulching, Black Vertosol", calcarosols = "Regolithic, Hypercalcic Calcarosol",
+            podosols = "Humosesquic/Sesquic, Aeric Podosol", organosols = "Acidic, Sapric Organosol")
   for (o in names(want)) {
     r <- classify_asc3(make_asc3_example(o), on_missing = "silent")
     expect_identical(r$name, want[[o]], info = o)
@@ -32,18 +32,18 @@ test_that("Vertosol great groups from the surface and the A horizon", {
     for (k in names(a)) p$horizons[[k]][1] <- a[[k]]
     p
   }
-  expect_identical(nm2(ve("cracking; self-mulching")), "Self-mulching Black Vertosol")
+  expect_identical(nm2(ve("cracking; self-mulching")), "Self-mulching, Black Vertosol")
   expect_identical(nm2(ve("cracking", list(structure_type = "subangular blocky", structure_grade = "moderate"))),
-                   "Epipedal Black Vertosol")
+                   "Epipedal, Black Vertosol")
   # a self-mulching surface the record does not show is not self-mulching
   expect_identical(nm2(ve(NA, list(structure_type = "polyhedral", structure_grade = "strong"))),
-                   "Epipedal Black Vertosol")
+                   "Epipedal, Black Vertosol")
   expect_identical(nm2(ve("surface crust; cracking", list(structure_type = "angular blocky", structure_grade = "strong"))),
-                   "Crusty Black Vertosol")
+                   "Crusty, Black Vertosol")
   expect_identical(nm2(ve("hard setting", list(structure_type = "massive", structure_grade = "structureless"))),
-                   "Massive Black Vertosol")
+                   "Massive, Black Vertosol")
   # self-mulching is tested first
-  expect_identical(nm2(ve("surface crust; self-mulching")), "Self-mulching Black Vertosol")
+  expect_identical(nm2(ve("surface crust; self-mulching")), "Self-mulching, Black Vertosol")
   # a strong granular A is neither pedal-blocky nor massive: no great group
   expect_identical(nm2(ve("cracking")), "Black Vertosol")
 })
@@ -62,18 +62,18 @@ test_that("a thin massive or weak surface horizon is a surface crusty horizon", 
   crusty <- function(g, t) do.call(vh, c(four, list(g, t)))
   # 2 cm of weak platy A11 over a moderate blocky A12: Crusty
   expect_identical(nm2(crusty(c("weak", "moderate", "strong", "strong"),
-                              c("platy", "angular blocky", "lenticular", "lenticular"))), "Crusty Black Vertosol")
+                              c("platy", "angular blocky", "lenticular", "lenticular"))), "Crusty, Black Vertosol")
   # the same over a weak A12: no pedal clay under the crust, and not Massive
   expect_identical(nm2(crusty(c("structureless", "weak", "strong", "strong"),
                               c("massive", "subangular blocky", "lenticular", "lenticular"))), "Black Vertosol")
   # a thin surface horizon that is itself pedal is no crust: Epipedal
   expect_identical(nm2(crusty(c("moderate", "strong", "strong", "strong"),
                               c("subangular blocky", "angular blocky", "lenticular", "lenticular"))),
-                   "Epipedal Black Vertosol")
+                   "Epipedal, Black Vertosol")
   # an AB at the surface is the A horizon
   ab <- function(t) vh(c("AB", "B21", "B22"), c(0, 10, 50), c(10, 50, 100), c("strong", "strong", "strong"),
                        c(t, "lenticular", "lenticular"), surf = "cracking")
-  expect_identical(nm2(ab("polyhedral")), "Epipedal Black Vertosol")
+  expect_identical(nm2(ab("polyhedral")), "Epipedal, Black Vertosol")
   expect_identical(nm2(ab("granular")), "Black Vertosol")
 })
 
@@ -89,9 +89,9 @@ test_that("a thin massive or weak surface horizon is a surface crusty horizon", 
 test_that("Calcarosol great groups: what the soil directly overlies, and the B", {
   skip_on_cran()
   cg <- function(p, k) soilKey:::calcarosol_gg_asc(p, k)$passed
-  expect_identical(nm2(.calc2()), "Regolithic Hypercalcic Calcarosol")
+  expect_identical(nm2(.calc2()), "Regolithic, Hypercalcic Calcarosol")
   expect_identical(nm2(.calc2(list(designation = c("A1", "B21k", "B22k", "R"), layer_origin = NA))),
-                   "Lithic Hypercalcic Calcarosol")
+                   "Lithic, Hypercalcic Calcarosol")
   expect_true(cg(.calc2(list(layer_origin = c(NA, NA, NA, "saprolite"))), "paralithic"))
   expect_true(cg(.calc2(list(layer_origin = c(NA, NA, NA, "lacustrine marl"))), "marly"))
   # a C of unrecorded origin: undecided among them
@@ -116,15 +116,15 @@ test_that("Calcarosol great groups: what the soil directly overlies, and the B",
 
 test_that("Podosol great groups from the kinds of Podosol B", {
   skip_on_cran()
-  expect_identical(nm2(.podo2(c("B21s", "B22s"))), "Sesquic Aeric Podosol")
-  expect_identical(nm2(.podo2(c("B2hs", "B2s"))), "Humosesquic/Sesquic Aeric Podosol")
-  expect_identical(nm2(.podo2(c("B21hs", "B22hs"))), "Humosesquic Aeric Podosol")
+  expect_identical(nm2(.podo2(c("B21s", "B22s"))), "Sesquic, Aeric Podosol")
+  expect_identical(nm2(.podo2(c("B2hs", "B2s"))), "Humosesquic/Sesquic, Aeric Podosol")
+  expect_identical(nm2(.podo2(c("B21hs", "B22hs"))), "Humosesquic, Aeric Podosol")
   semi <- list(drainage_class = "imperfectly drained")
-  expect_identical(nm2(.podo2(c("B21h", "B22h"), semi)), "Humic Semiaquic Podosol")
-  expect_identical(nm2(.podo2(c("B2h", "B2s"), semi)), "Humic/Sesquic Semiaquic Podosol")
+  expect_identical(nm2(.podo2(c("B21h", "B22h"), semi)), "Humic, Semiaquic Podosol")
+  expect_identical(nm2(.podo2(c("B2h", "B2s"), semi)), "Humic/Sesquic, Semiaquic Podosol")
   # a cemented B directly under the Bh: a Basi horizon
   p <- .podo2(c("B2h", "B3m"), semi, list(cementation_class = c(NA, NA, NA, "strongly", NA)))
-  expect_identical(nm2(p), "Humic/Alsilic Semiaquic Podosol")
+  expect_identical(nm2(p), "Humic/Alsilic, Semiaquic Podosol")
   # a tongued lower boundary of the A2 may be pipey
   p <- .podo2(c("B21s", "B22s"), h = list(boundary_topography = c(NA, "tongued", NA, NA, NA)))
   r <- classify_asc3(p, on_missing = "silent")
@@ -140,17 +140,17 @@ test_that("Podosol great groups from the kinds of Podosol B", {
 test_that("Organosol great groups", {
   skip_on_cran()
   og <- function(p, k) soilKey:::organosol_gg_asc(p, k)$passed
-  expect_identical(nm2(.peat2()), "Acidic Sapric Organosol")
-  expect_identical(nm2(.peat2(list(ph_h2o = c(6.2, 6.5, 6.5)))), "Basic Sapric Organosol")
-  expect_identical(nm2(.peat2(list(ph_h2o = 7.8, effervescence_class = "moderate"))), "Calcareous Sapric Organosol")
+  expect_identical(nm2(.peat2()), "Acidic, Sapric Organosol")
+  expect_identical(nm2(.peat2(list(ph_h2o = c(6.2, 6.5, 6.5)))), "Basic, Sapric Organosol")
+  expect_identical(nm2(.peat2(list(ph_h2o = 7.8, effervescence_class = "moderate"))), "Calcareous, Sapric Organosol")
   # sulfidic S of 0.01 % or more within 1.5 m
-  expect_identical(nm2(.peat2(list(sulfidic_s_pct = c(0.005, 0.2, 0.1)))), "Sulfidic Sapric Organosol")
+  expect_identical(nm2(.peat2(list(sulfidic_s_pct = c(0.005, 0.2, 0.1)))), "Sulfidic, Sapric Organosol")
   # sulfidic S not measured: undecided
   r <- classify_asc3(.peat2(list(sulfidic_s_pct = NA)), on_missing = "silent")
   expect_true("great_groups:EU" %in% r$provisional_because)
   # hypersulfidic by incubation
   p <- .peat2(list(sulfidic_s_pct = c(0.005, 0.2, 0.1), incubation_ph = c(4.6, 3.2, 3.5), ph_h2o = c(4.8, 5.0, 5.5)))
-  expect_identical(nm2(p), "Hypersulfidic Sapric Organosol")
+  expect_identical(nm2(p), "Hypersulfidic, Sapric Organosol")
   # sulfuric material at least 15 cm thick within 1.5 m (jarosite)
   p <- .peat2(list(ph_h2o = c(3.6, 3.5, 5.5), jarosite_present = c(TRUE, TRUE, NA)))
   expect_true(og(p, "sulfuric"))
@@ -170,15 +170,15 @@ test_that("the surface of a Vertosol: the record read item by item, a peat surfa
   }
   blocky <- list(structure_type = "subangular blocky", structure_grade = "moderate")
   # only a moderately or strongly self-mulching surface is Self-mulching
-  expect_identical(nm2(ve("cracking; weakly self-mulching", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; not self-mulching", blocky)), "Epipedal Black Vertosol")
+  expect_identical(nm2(ve("cracking; weakly self-mulching", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; not self-mulching", blocky)), "Epipedal, Black Vertosol")
   # a crust the record denies, and a real crust beside a salt crust
-  expect_identical(nm2(ve("cracking; no surface crust", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; non-crusting", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("surface crust; salt crust", blocky)), "Crusty Black Vertosol")
+  expect_identical(nm2(ve("cracking; no surface crust", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; non-crusting", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("surface crust; salt crust", blocky)), "Crusty, Black Vertosol")
   # "massive or weak blocky": a weak granular A is neither
   expect_identical(nm2(ve("cracking", list(structure_type = "subangular blocky", structure_grade = "weak"))),
-                   "Massive Black Vertosol")
+                   "Massive, Black Vertosol")
   expect_identical(nm2(ve("cracking", list(structure_type = "granular", structure_grade = "weak"))), "Black Vertosol")
   # a peat at the surface has no pedal or massive surface A
   vs <- function(p, k) soilKey:::vertosol_surface_asc(p, k)$passed
@@ -194,12 +194,12 @@ test_that("the surface of a Vertosol: the record read item by item, a peat surfa
   pt$horizons$bottom_cm[1] <- 25; pt$horizons$top_cm[2] <- 25; pt$horizons$oc_pct[1] <- 15
   expect_true(vs(pt, "epipedal")); expect_false(vs(pt, "peaty"))
   # more negations, and a qualifier after a comma
-  expect_identical(nm2(ve("cracking; surface crust absent", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; uncrusted", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; self-mulching, weak", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; self-mulching, weakly developed", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; self-mulching, weakly-developed", blocky)), "Epipedal Black Vertosol")
-  expect_identical(nm2(ve("cracking; self-mulching, weakly to moderately", blocky)), "Epipedal Black Vertosol")
+  expect_identical(nm2(ve("cracking; surface crust absent", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; uncrusted", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; self-mulching, weak", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; self-mulching, weakly developed", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; self-mulching, weakly-developed", blocky)), "Epipedal, Black Vertosol")
+  expect_identical(nm2(ve("cracking; self-mulching, weakly to moderately", blocky)), "Epipedal, Black Vertosol")
   # an A1 of measured peat-level organic C is a peaty horizon, not a mineral A
   pk <- ve("cracking", list(structure_type = "angular blocky", structure_grade = "strong"))
   pk$horizons$oc_pct <- c(25, 1, 0.8, 0.5); pk$horizons$bottom_cm[1] <- 25; pk$horizons$top_cm[2] <- 25
@@ -293,7 +293,7 @@ test_that("Organosols: undecided organic rows, hyposulfidic, the upper 1.5 m", {
   # a drop of less than 0.5 unit to just below 4 is hyposulfidic
   p <- .peat2(list(designation = c("P1", "P2", "Cg"), sulfidic_s_pct = c(0.005, 0.005, 0.3), incubation_ph = c(NA, NA, 3.9),
                    ph_h2o = c(4.8, 5.0, 4.2)))
-  expect_identical(nm2(p), "Hyposulfidic Sapric Organosol")
+  expect_identical(nm2(p), "Hyposulfidic, Sapric Organosol")
   # without a field pH, hyposulfidic is undecided
   p$horizons$ph_h2o[3] <- NA; p$horizons$incubation_ph[3] <- 6.5
   expect_true(is.na(og(p, "hyposulfidic")))

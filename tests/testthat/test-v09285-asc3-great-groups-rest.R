@@ -15,8 +15,8 @@ lv3 <- function(p, l) { r <- classify_asc3(p, on_missing = "silent")$levels; r$n
 
 test_that("the examples key to a great group", {
   skip_on_cran()
-  want <- c(hydrosols = "Kandosolic Redoxic Hydrosol", arenosols = "Tenic Yellow Arenosol",
-            rudosols = "Leptic Rudosol", tenosols = "Regolithic Brown Tenosol")
+  want <- c(hydrosols = "Kandosolic, Redoxic Hydrosol", arenosols = "Tenic, Yellow Arenosol",
+            rudosols = "Leptic Rudosol", tenosols = "Regolithic, Brown Tenosol")
   for (o in names(want)) expect_identical(nm3(make_asc3_example(o)), want[[o]], info = o)
   # the Tenosol example is decided; the Hydrosol one waits on the sulfide test
   expect_length(classify_asc3(make_asc3_example("tenosols"), on_missing = "silent")$provisional_because, 0L)
@@ -36,17 +36,17 @@ test_that("the examples key to a great group", {
 test_that("what a Tenosol directly overlies", {
   skip_on_cran()
   sg <- function(p, k, ...) soilKey:::substrate_gg_asc(p, k, ...)$passed
-  expect_identical(nm3(.teno3()), "Regolithic Brown Tenosol")
+  expect_identical(nm3(.teno3()), "Regolithic, Brown Tenosol")
   # rock directly under the B (at 0.6 m: not a Leptic Tenosol)
   p <- .teno3(list(designation = c("A1", "B2", "R"), layer_origin = NA))
-  expect_identical(nm3(p), "Lithic Brown Tenosol")
+  expect_identical(nm3(p), "Lithic, Brown Tenosol")
   # the same within 0.5 m is a Leptic Tenosol, which has its own list
   p2 <- p; p2$horizons$bottom_cm[2] <- 45; p2$horizons$top_cm[3] <- 45
-  expect_identical(nm3(p2), "Lithic Leptic Tenosol")
+  expect_identical(nm3(p2), "Lithic, Leptic Tenosol")
   # saprolite, marl
-  expect_identical(nm3(.teno3(list(layer_origin = c(NA, NA, "saprolite")))), "Paralithic Brown Tenosol")
+  expect_identical(nm3(.teno3(list(layer_origin = c(NA, NA, "saprolite")))), "Paralithic, Brown Tenosol")
   expect_identical(nm3(.teno3(list(layer_origin = c(NA, NA, "lacustrine marl"), field_texture = c("LS", "SL", "LC")))),
-                   "Marly Brown Tenosol")
+                   "Marly, Brown Tenosol")
   # a C over rock: the soil directly overlies the C, not the rock
   p <- .mk_g3(list(designation = c("A1", "B2", "C", "R"), top_cm = c(0, 15, 50, 90), bottom_cm = c(15, 50, 90, 110),
                    field_texture = c("LS", "SL", "LS", NA), clay_pct = c(7, 12, 8, NA), layer_origin = c(NA, NA, "aeolian", NA),
@@ -60,16 +60,16 @@ test_that("what a Tenosol directly overlies", {
   # pans directly under the solum: red-brown hardpan, ferricrete, silcrete, calcrete
   pan <- function(kind, des = "Cm") .teno3(list(designation = c("A1", "B2", des), pan_type = c(NA, NA, kind),
                                                  cementation_class = c(NA, NA, "strongly"), layer_origin = NA))
-  expect_identical(nm3(pan("red-brown hardpan")), "Duric Brown Tenosol")
-  expect_identical(nm3(pan("ferricrete")), "Petroferric Brown Tenosol")
-  expect_identical(nm3(pan("silcrete")), "Silpanic Brown Tenosol")
-  expect_identical(nm3(pan("calcrete")), "Petrocalcic Brown Tenosol")
+  expect_identical(nm3(pan("red-brown hardpan")), "Duric, Brown Tenosol")
+  expect_identical(nm3(pan("ferricrete")), "Petroferric, Brown Tenosol")
+  expect_identical(nm3(pan("silcrete")), "Silpanic, Brown Tenosol")
+  expect_identical(nm3(pan("calcrete")), "Petrocalcic, Brown Tenosol")
   # a ferric horizon over ferricrete
   p <- pan("ferricrete"); p$horizons$ferric_nodules_pct <- c(30, 0, NA)
-  expect_identical(nm3(p), "Ferric-Petroferric Brown Tenosol")
+  expect_identical(nm3(p), "Ferric-Petroferric, Brown Tenosol")
   # a reticulate horizon (named in the record), with and without a ferric horizon
   p <- .teno3(list(layer_origin = c(NA, NA, "reticulate horizon")))
-  expect_identical(nm3(p), "Reticulate Brown Tenosol")
+  expect_identical(nm3(p), "Reticulate, Brown Tenosol")
   # the Regolithic Tenosols need the B directly over the unconsolidated material
   p <- .teno3(list(designation = c("A1", "A3", "C"), structure_type = c("granular", "single-grain", "single-grain")))
   expect_false(sg(p, "regolithic", from = "b"))
@@ -88,10 +88,10 @@ test_that("Tenosol horizons: ferric, bauxitic, argic, inceptic, tephric, gritty,
     munsell_hue_moist = c("10YR", "7.5YR", "7.5YR", "7.5YR"), munsell_value_moist = c(3, 4, 4, 5),
     munsell_chroma_moist = c(3, 4, 4, 4), ph_h2o = 6.2, oc_pct = c(1.2, 0.4, 0.3, 0.1)), h))
   p <- t4(28)
-  expect_true(ng(p, "ferric")); expect_identical(nm3(p), "Ferric Brown Tenosol")
+  expect_true(ng(p, "ferric")); expect_identical(nm3(p), "Ferric, Brown Tenosol")
   # a ferric horizon less than 0.1 m thick is none
   expect_false(ng(t4(22), "ferric"))
-  expect_identical(nm3(t4(28, list(ferric_nodules_pct = 0, bauxitic_nodules_pct = c(0, 40, 0, 0)))), "Bauxitic Brown Tenosol")
+  expect_identical(nm3(t4(28, list(ferric_nodules_pct = 0, bauxitic_nodules_pct = c(0, 40, 0, 0)))), "Bauxitic, Brown Tenosol")
   # nodules not recorded are absent; an amount on either side of 20 % (NaN) is undecided
   p <- .teno3(list(ferric_nodules_pct = NA))
   expect_false(ng(p, "ferric"))
@@ -108,7 +108,7 @@ test_that("Tenosol horizons: ferric, bauxitic, argic, inceptic, tephric, gritty,
   expect_true(is.na(soilKey:::andic_great_group_asc(p)$passed))
   expect_false(soilKey:::gritty_asc(.teno3())$passed)
   p <- .teno3(list(gritty = c(TRUE, TRUE, TRUE), designation = c("A1", "B2", "R"), layer_origin = NA))
-  expect_identical(nm3(p), "Gritty-Lithic Brown Tenosol")
+  expect_identical(nm3(p), "Gritty-Lithic, Brown Tenosol")
   # Arenic: sandy in more than 80 % of the profile, loose, no layer over 15 % clay
   ar <- soilKey:::tenosol_arenic_asc
   p <- .teno3(list(field_texture = c("S", "LS", "S"), clay_pct = c(3, 6, 3), structure_type = "single-grain",
@@ -148,15 +148,15 @@ test_that("Bleached-Leptic Tenosols: a ferric horizon in or under the A2, gritty
 
 test_that("Arenosols: texture classes, hard layers below 1.0 m, carbonate", {
   skip_on_cran()
-  expect_identical(nm3(.aren3()), "Tenic Yellow Arenosol")
-  expect_identical(nm3(.aren3(list(field_texture = c("S", "S", "S", "S"), clay_pct = 3))), "Palic Yellow Arenosol")
+  expect_identical(nm3(.aren3()), "Tenic, Yellow Arenosol")
+  expect_identical(nm3(.aren3(list(field_texture = c("S", "S", "S", "S"), clay_pct = 3))), "Palic, Yellow Arenosol")
   p <- .aren3(list(designation = c("A1", "A3", "C1", "C2"), top_cm = c(0, 10, 40, 55), bottom_cm = c(10, 40, 55, 150),
                    field_texture = c("S", "S", "SL-", "S"), clay_pct = c(3, 3, 12, 3)))
-  expect_identical(nm3(p), "Kandic Yellow Arenosol")
+  expect_identical(nm3(p), "Kandic, Yellow Arenosol")
   # a layer beginning below 1.0 m does not make it Tenic
   p <- .aren3(list(designation = c("A1", "A3", "C1", "C2"), top_cm = c(0, 10, 40, 110), bottom_cm = c(10, 40, 110, 150),
                    field_texture = c("S", "S", "S", "LS")))
-  expect_identical(nm3(p), "Palic Yellow Arenosol")
+  expect_identical(nm3(p), "Palic, Yellow Arenosol")
   # rock below 1.0 m directly under the soil: Lithic
   p <- .aren3(list(designation = c("A1", "A2", "B2", "R"), top_cm = c(0, 10, 40, 110), bottom_cm = c(10, 40, 110, 130),
                    field_texture = c("S", "S", "S", NA), clay_pct = c(3, 3, 4, NA)))
@@ -218,24 +218,24 @@ test_that("Hydrosols of the inland suborders: the -solic great groups", {
   skip_on_cran()
   p <- .hydro3()
   expect_identical(lv3(p, "suborders"), "Redoxic Hydrosol")
-  expect_identical(nm3(p), "Kandosolic Redoxic Hydrosol")
+  expect_identical(nm3(p), "Kandosolic, Redoxic Hydrosol")
   # structured B2: Dermosolic
   p <- .hydro3(list(structure_grade = c("moderate", "moderate", "strong", "structureless")))
-  expect_identical(nm3(p), "Dermosolic Redoxic Hydrosol")
+  expect_identical(nm3(p), "Dermosolic, Redoxic Hydrosol")
   # calcareous throughout with no textural B: Calcarosolic
   p <- .hydro3(list(effervescence_class = "strong", ph_h2o = 8.5, caco3_pct = 10))
-  expect_identical(nm3(p), "Calcarosolic Redoxic Hydrosol")
+  expect_identical(nm3(p), "Calcarosolic, Redoxic Hydrosol")
   # a clear textural B, strongly acid; sodic and not acid; neither
   tb <- function(ph, na) .hydro3(list(field_texture = c("SL", "MC", "MC", "LC"), clay_pct = c(12, 50, 50, 42),
                                       boundary_distinctness = c("abrupt", "gradual", "diffuse", NA), ph_h2o = ph,
                                       na_cmol = na, cec_cmol = 20))
-  expect_identical(nm3(tb(5.0, 0.2)), "Kurosolic Redoxic Hydrosol")
-  expect_identical(nm3(tb(7.5, 4)), "Sodosolic Redoxic Hydrosol")
-  expect_identical(nm3(tb(7.5, 0.2)), "Chromosolic Redoxic Hydrosol")
+  expect_identical(nm3(tb(5.0, 0.2)), "Kurosolic, Redoxic Hydrosol")
+  expect_identical(nm3(tb(7.5, 4)), "Sodosolic, Redoxic Hydrosol")
+  expect_identical(nm3(tb(7.5, 0.2)), "Chromosolic, Redoxic Hydrosol")
   # a petroferric horizon anywhere in the profile
   p <- .hydro3(list(designation = c("A1", "B21g", "B22g", "Bcm"), pan_type = c(NA, NA, NA, "ferricrete"),
                     cementation_class = c(NA, NA, NA, "indurated")))
-  expect_identical(nm3(p), "Petroferric Redoxic Hydrosol")
+  expect_identical(nm3(p), "Petroferric, Redoxic Hydrosol")
 })
 
 test_that("Hydrosols of the tidal and saline suborders", {
@@ -287,7 +287,7 @@ test_that("Rudosols: Shelly, Leptic and Clastic", {
   # Leptic Rudosol on rock directly under the A
   p <- .mk_g3(list(designation = c("A1", "R"), top_cm = c(0, 20), bottom_cm = c(20, 40), field_texture = c("LS", NA),
                    clay_pct = c(6, NA), structure_grade = c("structureless", NA), structure_type = c("single-grain", NA)))
-  expect_identical(nm3(p), "Lithic Leptic Rudosol")
+  expect_identical(nm3(p), "Lithic, Leptic Rudosol")
   # the example: a gravelly C of unrecorded origin between the A and the rock
   r <- classify_asc3(make_asc3_example("rudosols"), on_missing = "silent")
   expect_identical(r$provisional_because, "great_groups:DU")
@@ -331,7 +331,7 @@ test_that("cemented layers, AC horizons, petroreticulate and cemented saprolite"
                              cementation_class = c(NA, NA, "indurated"))), "petroferric"))
   expect_true(is.na(sg(.teno3(list(layer_origin = c(NA, NA, "petroreticulate horizon"))), "petroferric")))
   # a recorded ferricrete in the solum with no cementation class is a pan
-  expect_identical(nm3(.teno3(list(pan_type = c(NA, "ferricrete", NA)))), "Petroferric Brown Tenosol")
+  expect_identical(nm3(.teno3(list(pan_type = c(NA, "ferricrete", NA)))), "Petroferric, Brown Tenosol")
 })
 
 test_that("Arenosols: reticulate and Inceptic below 1.0 m; Kandic and Tenic with a gap; solum and A2 readings", {
