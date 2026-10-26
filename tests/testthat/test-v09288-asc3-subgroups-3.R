@@ -239,3 +239,10 @@ test_that("the solum with no designated horizon, many rows of unknown role, hori
   p <- v(c("A1", "B21"), c(0, 8), c(NA, 30), na = c(4, 1))
   expect_true(is.na(soilKey:::episodic_asc(p)$passed))
 })
+
+test_that("two horizons of unknown depth may be one thin and the other thick", {
+  skip_on_cran()
+  p <- mk_s3(data.frame(designation = c("A1", "B21", NA), top_cm = c(0, 10, 30), bottom_cm = c(NA, 30, NA),
+                        field_texture = "MC", clay_pct = 55, ph_h2o = c(7, 7, NA), stringsAsFactors = FALSE))
+  expect_true(is.na(soilKey:::solum_part_asc(p, "acid", "upper", "major")$passed))
+})

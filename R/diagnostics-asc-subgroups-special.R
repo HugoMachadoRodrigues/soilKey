@@ -44,18 +44,22 @@
 .asc_agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
 
 # A horizon of unknown depth may be thin or as thick as the room down to
-# the next horizon allows (500 cm with none below); the verdicts here move
-# one way with its thickness, so both ends suffice.
+# the next horizon allows (500 cm with none below). Each verdict here moves
+# one way with the thickness of one horizon, so both ends of each, in every
+# combination, suffice (up to six such horizons; with more, NULL).
 .asc_bottom_variants <- function(h) {
   top <- h$top_cm; bot <- h$bottom_cm
-  thin <- ifelse(is.na(bot) & !is.na(top), top + 1, bot)
-  nxt <- vapply(seq_along(top), function(i) {
-    if (is.na(top[i])) return(NA_real_)
+  open <- which(is.na(bot) & !is.na(top))
+  if (!length(open)) return(list(bot))
+  if (length(open) > 6L) return(NULL)
+  nxt <- vapply(open, function(i) {
     d <- top[!is.na(top) & top > top[i] + 0.5]
     if (length(d)) min(d) else top[i] + 500
   }, 0)
-  thick <- ifelse(is.na(bot) & !is.na(top), nxt, bot)
-  if (identical(thin, thick)) list(thin) else list(thin, thick)
+  combos <- as.matrix(expand.grid(rep(list(c(FALSE, TRUE)), length(open))))
+  lapply(seq_len(nrow(combos)), function(k) {
+    b <- bot; b[open] <- ifelse(combos[k, ], nxt, top[open] + 1); b
+  })
 }
 
 #' Parts of the solum (Vertosol and Calcarosol subgroups)
@@ -93,7 +97,7 @@ solum_part_asc <- function(pedon, prop = c("acid", "calcareous", "mottled", "who
   }
   sets <- .asc_solum_sets(x)
   bv <- .asc_bottom_variants(h)
-  passed <- if (is.null(sets) || anyNA(sets)) NA
+  passed <- if (is.null(sets) || anyNA(sets) || is.null(bv)) NA
             else .asc_agree(unlist(lapply(sets, function(r) vapply(bv, function(b) one(r, b), NA))))
   .asc_result(paste("sg_solum", part, prop, how, sep = "_"), passed, integer(0),
               list(prop = prop, part = part, how = how),
@@ -132,7 +136,7 @@ episodic_asc <- function(pedon) {
   }
   sets <- .asc_solum_sets(x)
   bv <- .asc_bottom_variants(h)
-  passed <- if (is.null(sets) || anyNA(sets)) NA
+  passed <- if (is.null(sets) || anyNA(sets) || is.null(bv)) NA
             else .asc_agree(unlist(lapply(sets, function(r) vapply(bv, function(b) one(r, b), NA))))
   .asc_result("sg_episodic", passed, integer(0), list(),
               if (is.na(passed)) c("na_cmol", "cec_cmol", "ecec_cmol", "esp_pct") else character(0),
