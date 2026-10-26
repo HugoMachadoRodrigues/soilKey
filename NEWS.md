@@ -1,3 +1,53 @@
+# soilKey 0.9.287 (2026-10-26)
+
+## Australian classification: subgroups of the Dermosols, Kandosols and Ferrosols (experimental)
+
+`classify_asc3()` keys the subgroups of the Dermosols, Kandosols and
+Ferrosols, one list per order as the order pages give them (33, 29 and 14
+subgroups). WRB, SiBCS and USDA results do not change.
+
+* These pages read the B2 horizon where the Kurosols, Sodosols and
+  Chromosols read the B2t: mottled, whole coloured, and strongly acid
+  (Acidic, Humose-Acidic, Melanic-Acidic, Ferric-Acidic, Manganic-Acidic,
+  Acidic-Sodic, Bleached-Acidic, Acidic-Mottled: the major part of the B2
+  with a pHw below 5.5, or a pHCa below 4.6 without pHw).
+* New in the Kandosols: an argic or a bauxitic horizon within the B
+  (Argic, Bauxitic). New in the Ferrosols: Snuffy (an A horizon with a very
+  fine granular structure, peds under 2 mm, and a weak or very weak dry
+  strength), and Sodic read on the lower part of the B2, as printed.
+* The Kandosol page says the acidic subgroups are not required for the
+  calcareous great groups: the Hypocalcic, Lithocalcic, Supracalcic,
+  Hypercalcic and Calcic Kandosols take the list without them, as the
+  Natric Kurosols take theirs without the Sodic ones.
+* The examples of the three orders record organic C, mottles and the CEC,
+  and key to a subgroup ("Haplic, Eutrophic, Brown Dermosol").
+* The dark horizon of the Chernic suborders (melacic or melanic) is now
+  decided over every extent it may have, as the subgroups read it since
+  0.9.286. Before, a horizon 0.2 m thick in its surely black rows was read
+  on those rows only, though rows that may be black below could change its
+  major part, and a gap in the record directly above the first row that may
+  not be black was not counted as possibly black. Such a gap may likewise
+  be organic material (the peaty horizon, where the mineral surface lies) or
+  fusic material (Fusic Anthroposols); where the mineral surface may lie at
+  more than one depth, a verdict holds only when it holds at each. Over a
+  clear or abrupt textural B, a row of unknown role between two A horizons
+  is now read as an A horizon (before, as not black).
+* The readings are in `inst/rules/asc3/readings.yaml` (55).
+
+On 9,700 licensed NatSoil profiles the orders and great groups do not
+change. The Chernic test becomes undecided on five profiles, where a
+suborder was already provisional, and decided on one: a Tenosol whose A1
+(17.6 % organic C) may or may not be organic material gives a humose
+horizon either way, and is now Chernic. Of the 799 profiles keyed to these three
+orders with a great group, 549 get a subgroup. Of the 278 whose order,
+suborder and great group agree with the survey and whose survey gives a
+subgroup of the key, 213 get one and 113 (53 %) the survey's (Dermosols
+32 of 65, Kandosols 80 of 137, Ferrosols 1 of 11). Most of the others stop
+at Humose-Mottled, which needs organic C in the upper 0.2 m. The Ferrosol
+disagreements come from one survey whose profiles have 5 to 9 % organic C
+(combustion, a method the glossary names) at the surface, a humose horizon,
+but were surveyed Haplic or Acidic.
+
 # soilKey 0.9.286 (2026-10-26)
 
 ## Australian classification: subgroups of the Kurosols, Sodosols and Chromosols (experimental)

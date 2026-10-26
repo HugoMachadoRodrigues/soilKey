@@ -27,15 +27,20 @@
 # above `from` are not read): `sure` is the thickness of the rows that
 # certainly qualify, from `from` down to the first that may not; `possible`
 # the thickness of the rows that may (a gap in the record, a row of unknown
-# thickness, or the end of the description above no rock, may go on).
+# thickness, or the end of the description above no rock, may go on; a gap
+# directly above the first row that does not qualify may, since 0.9.287).
+# `stop_top` is the top of that row (NA when the run is not stopped).
 .asc_run_from <- function(x, ok, from) {
   h <- x$h; ord <- order(h$top_cm, na.last = NA)
   ord <- ord[h$top_cm[ord] >= from - 0.5]
   sure <- 0; poss <- 0; sure_rows <- integer(0); rows <- integer(0)
-  sure_on <- TRUE; prev <- from; stopped <- FALSE
+  sure_on <- TRUE; prev <- from; stopped <- FALSE; stop_top <- NA_real_
   for (i in ord) {
-    if (ok[i] %in% FALSE) { stopped <- TRUE; break }
     gap <- h$top_cm[i] - prev
+    if (ok[i] %in% FALSE) {
+      if (gap > 0.5) poss <- poss + gap
+      stopped <- TRUE; stop_top <- h$top_cm[i]; break
+    }
     if (gap > 0.5) { sure_on <- FALSE; poss <- poss + gap }
     th <- h$bottom_cm[i] - h$top_cm[i]
     rows <- c(rows, i)
@@ -47,7 +52,7 @@
   # a run that reaches the end of the description may go on below it, unless
   # the description ends on rock or a hard layer
   if (!stopped && length(rows) && !.asc_ends_hard(x)) poss <- Inf
-  list(sure = sure, possible = poss, sure_rows = sure_rows, rows = rows)
+  list(sure = sure, possible = poss, sure_rows = sure_rows, rows = rows, stop_top = stop_top)
 }
 
 .asc_run_at_least <- function(run, cm) if (run$sure >= cm) TRUE else if (run$possible < cm) FALSE else NA
@@ -103,17 +108,44 @@
   ok_peat <- ifelse(x$role %in% "O1", FALSE, om)
   peaty <- .asc_run_at_least(.asc_run_from(x, ok_peat, top0), 20)
   # the mineral surface: below the organic rows at the top
-  orun <- .asc_run_from(x, ifelse(om %in% TRUE & !(x$role %in% "O1"), TRUE, ifelse(is.na(om), NA, FALSE)), top0)
-  if (is.infinite(orun$possible) || orun$possible > orun$sure)
+  ok_o <- ifelse(om %in% TRUE & !(x$role %in% "O1"), TRUE, ifelse(is.na(om), NA, FALSE))
+  orun <- .asc_run_from(x, ok_o, top0)
+  if (is.infinite(orun$possible))
     return(list(peaty = peaty, humose = NA, dark = NA, melacic = NA, melanic = NA, x = x))
-  tm <- top0 + orun$sure
+  # where it may lie (since 0.9.287): below the surely organic rows, at the
+  # top of a row that may be organic, at the start of a gap, or at the end
+  # of the run; a verdict holds only when it holds at each
+  cand <- top0 + orun$sure
+  if (orun$possible > orun$sure) {
+    rr <- orun$rows
+    for (k in seq_along(rr)) {
+      i <- rr[k]
+      if (i %in% orun$sure_rows) next
+      if (is.na(ok_o[i])) cand <- c(cand, h$top_cm[i])
+      nxt <- if (k < length(rr)) h$top_cm[rr[k + 1L]] else orun$stop_top
+      if (!is.na(nxt) && !is.na(h$bottom_cm[i]) && nxt - h$bottom_cm[i] > 0.5) cand <- c(cand, h$bottom_cm[i])
+    }
+    cand <- c(cand, top0 + orun$possible)
+  }
+  cand <- sort(unique(round(cand[!is.na(cand)], 3)))
+  at <- lapply(cand, function(tm) .asc_chernic_at(pedon, x, om, tm))
+  agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+  one <- function(k) agree(vapply(at, function(a) a[[k]], NA))
+  list(peaty = peaty, humose = one("humose"), dark = one("dark"), melacic = one("melacic"),
+       melanic = one("melanic"), x = x)
+}
+
+# The humose, melacic and melanic horizons with the mineral surface at depth
+# `tm` (see .asc_chernic_parts).
+.asc_chernic_at <- function(pedon, x, om, tm) {
+  h <- x$h
   ends_hard <- .asc_ends_hard(x)
   # humose: the upper 0.2 m of the mineral soil, averaged
   win <- which(!is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > tm + 0.01 & h$top_cm < tm + 20 & !x$rock)
   w <- if (length(win)) .asc_overlap(h$top_cm[win], h$bottom_cm[win], tm, tm + 20) else numeric(0)
   humose <- if (!length(win)) NA else if (sum(w) < 20 - 0.5) {
     if (ends_hard) FALSE else NA
-  } else if (any(om[win] %in% TRUE) || anyNA(om[win]) || anyNA(h$oc_pct[win])) NA else {
+  } else if (any(om[win] %in% TRUE) || anyNA(om[win][h$top_cm[win] > tm + 0.5]) || anyNA(h$oc_pct[win])) NA else {
     oc <- sum(h$oc_pct[win] * w) / sum(w)
     cr <- x$clay
     lo <- ifelse(is.na(cr$lo[win]), 0, pmin(cr$lo[win], 60)); hi <- ifelse(is.na(cr$hi[win]), 60, pmin(cr$hi[win], 60))
@@ -126,51 +158,73 @@
   black <- ifelse(is.na(val) | is.na(chr), NA, val <= 3 & chr <= 2)
   dark_ok <- .and3v(black, ifelse(is.na(dval), NA, dval <= 5))
   dark_ok[x$rock | om %in% TRUE] <- FALSE
+  # a row that may be organic material may end the horizon (the one at the
+  # mineral surface is mineral here: the surface lies at its top)
+  at_surface <- !is.na(h$top_cm) & abs(h$top_cm - tm) <= 0.5
+  dark_ok[is.na(om) & !at_surface & dark_ok %in% TRUE] <- NA
   tb <- tryCatch(textural_b_asc(pedon)$passed, error = function(e) NA)
   not_a <- !grepl("^A", x$role %||% "")
-  if (isTRUE(tb)) dark_ok[not_a] <- FALSE
-  else if (is.na(tb)) dark_ok[not_a & dark_ok %in% TRUE] <- NA
+  if (isTRUE(tb)) {
+    # within the A horizons: a row of unknown role between two A horizons is
+    # one; one above the first B may be (since 0.9.287; before, it was not)
+    unk <- is.na(x$role) | x$unknown_role
+    b_top <- suppressWarnings(min(h$top_cm[!unk & grepl("^B", x$role %||% "") & !x$des$buried], na.rm = TRUE))
+    a_rows <- which(!unk & !not_a & !x$des$buried & !is.na(h$top_cm) & h$top_cm < b_top)
+    sw <- .asc_sandwiched(x, which(unk), a_rows)
+    may_a <- unk & !(seq_len(x$n) %in% sw) & !is.na(h$top_cm) & h$top_cm < b_top - 0.5
+    dark_ok[not_a & !unk] <- FALSE
+    dark_ok[unk & !(seq_len(x$n) %in% sw) & !may_a] <- FALSE
+    dark_ok[may_a & dark_ok %in% TRUE] <- NA
+  } else if (is.na(tb)) dark_ok[not_a & dark_ok %in% TRUE] <- NA
   drun <- .asc_run_from(x, dark_ok, tm)
   dark_thick <- .asc_run_at_least(drun, 20)
   melacic_out <- melanic_out <- FALSE
   dark <- if (identical(dark_thick, FALSE)) FALSE else {
-    rows <- if (isTRUE(dark_thick)) drun$sure_rows else drun$rows
-    acid <- .asc_rows_major(x, rows, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5))
     # more than a weak grade (moderate or strong), peds of 10-20 mm or less
     grade_ok <- .asc_pedal(h)
     ps <- h$ped_size_max_mm %||% rep(NA_real_, x$n)
     size_ok <- ifelse(is.na(ps), NA, ps <= 20)
     waived <- x$des$p | tolower(as.character(h$strength_dry %||% rep(NA_character_, x$n))) %in% c("loose", "very weak", "weak")
     struct_ok <- ifelse(waived, TRUE, .and3v(grade_ok, size_ok))
-    melanic <- .and3(!acid, .asc_rows_major(x, rows, struct_ok))
-    melacic <- acid
-    # each kind on its own (subgroups): the horizon may end at any row from
-    # the last surely dark one to the last that may be dark, or at a gap in
-    # the record (which may not be dark); a verdict holds only when every
-    # possible extent gives it. An extent is continuous, so a gap inside it
-    # is part of it, of unknown kind; an extent under 0.2 m is no horizon; a
-    # run that reaches the end of the description (above no rock) may go on
-    # below it.
+    # the horizon may end at any row from
+    # the last surely dark one to the last that may be dark, or within a gap
+    # in the record (which may or may not be dark); a verdict holds only
+    # when every possible extent gives it (melacic, melanic, and either of
+    # them for the suborders, since 0.9.287). An extent is continuous, so a gap
+    # inside it is part of it, of unknown kind; an extent under 0.2 m is no
+    # horizon; a run that reaches the end of the description (above no
+    # rock) may go on below it. Within a gap the verdict moves one way with
+    # the depth of the end, so its two ends suffice.
     ph_acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
     all_rows <- drun$rows; n_all <- length(all_rows); n_sure <- length(drun$sure_rows)
     r_top <- h$top_cm[all_rows]; r_bot <- h$bottom_cm[all_rows]
     gap_before <- if (n_all) c(r_top[1L] - tm, r_top[-1L] - r_bot[-n_all]) > 0.5 else logical(0)
     gap_before[is.na(gap_before)] <- TRUE
     open_end <- n_all > 0L && is.infinite(drun$possible) && !anyNA(x$thick[all_rows])
-    ends <- n_sure:n_all
-    # an extent may end at k when what follows it may not be dark
-    ends <- ends[vapply(ends, function(k) k == n_all || !(dark_ok[all_rows[k + 1L]] %in% TRUE) ||
-                                          gap_before[k + 1L], NA)]
-    # the major part of an extent from tm to the bottom of its rows, a gap counted as unknown
+    # extents: k rows from the mineral surface, ending at a depth `end`
+    ext <- list()
+    for (k in n_sure:n_all) {
+      nxt_dark <- k < n_all && dark_ok[all_rows[k + 1L]] %in% TRUE
+      # at the bottom of row k, when what follows may not be dark
+      if (k > 0L && (k == n_all || !nxt_dark || gap_before[k + 1L])) ext[[length(ext) + 1L]] <- c(k, r_bot[k])
+      # through the gap below row k (the gap may be dark down to just above
+      # the next row, even a black one)
+      if (k < n_all && gap_before[k + 1L]) ext[[length(ext) + 1L]] <- c(k, r_top[k + 1L])
+    }
+    # through a gap directly above the row that stops the run
+    last_bot <- if (n_all) r_bot[n_all] else tm
+    if (!is.na(drun$stop_top) && !is.na(last_bot) && drun$stop_top - last_bot > 0.5)
+      ext[[length(ext) + 1L]] <- c(n_all, drun$stop_top)
+    if (n_sure == 0L) ext[[length(ext) + 1L]] <- c(0, tm)
+    # the major part of an extent from tm to `end`, a gap counted as unknown
     maj <- function(rr, ok, span) {
       w <- x$thick[rr]
       if (sum(w[ok[rr] %in% TRUE]) > span / 2) TRUE else if (sum(w[ok[rr] %in% FALSE]) >= span / 2) FALSE else NA
     }
-    kinds <- lapply(ends, function(k) {
-      if (!k) return(c(FALSE, FALSE))
-      rr <- all_rows[seq_len(k)]
-      if (anyNA(x$thick[rr])) return(c(NA, NA))
-      span <- r_bot[k] - tm
+    kinds <- lapply(ext, function(e) {
+      rr <- all_rows[seq_len(e[1L])]
+      if (anyNA(x$thick[rr]) || is.na(e[2L])) return(c(NA, NA))
+      span <- e[2L] - tm
       if (span < 20 - 0.5) return(c(FALSE, FALSE))
       ac <- maj(rr, ph_acid, span)
       c(ac, .and3(!ac, maj(rr, struct_ok, span)))
@@ -178,10 +232,9 @@
     if (open_end) kinds <- c(kinds, list(c(NA, NA)))
     agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
     melacic_out <- agree(vapply(kinds, `[`, NA, 1L)); melanic_out <- agree(vapply(kinds, `[`, NA, 2L))
-    passed <- .any3(c(melacic, melanic))
-    if (isTRUE(dark_thick)) passed else if (identical(passed, FALSE)) FALSE else NA
+    agree(vapply(kinds, function(k) .any3(k), NA))
   }
-  list(peaty = peaty, humose = humose, dark = dark, melacic = melacic_out, melanic = melanic_out, x = x)
+  list(humose = humose, dark = dark, melacic = melacic_out, melanic = melanic_out)
 }
 
 #' A peaty, humose, melacic or melanic horizon (Chernic suborders)

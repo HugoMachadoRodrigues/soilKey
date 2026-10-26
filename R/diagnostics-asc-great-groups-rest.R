@@ -220,13 +220,15 @@ substrate_gg_asc <- function(pedon, kind = c("lithic", "paralithic", "marly", "r
 #' manganiferous (manganiferous_nodules_pct) nodules or concretions, not in a
 #' cemented layer and not buried. \code{where}: "profile" (anywhere),
 #' "solum" (within the solum; rows of unknown role that may belong to it are
-#' open), "a2" (the A2 horizon contains or directly overlies it). Nodules
+#' open), "a2" (the A2 horizon contains or directly overlies it), "b"
+#' (within the B horizons, subgroups; rows of unknown role that may be B
+#' horizons are open). Nodules
 #' not recorded are absent (more than 20 \% of them shows), as for the
 #' Sesqui-Nodular Tenosols; an amount the record leaves on either side of
 #' 20 \% (NaN) is undecided.
 #' @noRd
 nodular_horizon_asc <- function(pedon, kind = c("ferric", "bauxitic", "manganic"),
-                                where = c("profile", "solum", "a2")) {
+                                where = c("profile", "solum", "a2", "b")) {
   kind <- match.arg(kind); where <- match.arg(where)
   x <- .asc_horizons(pedon); h <- x$h
   v <- switch(kind, ferric = h$ferric_nodules_pct, bauxitic = h$bauxitic_nodules_pct,
@@ -242,6 +244,12 @@ nodular_horizon_asc <- function(pedon, kind = c("ferric", "bauxitic", "manganic"
     sure[sw] <- TRUE; may[sw] <- FALSE
     ok[!(sure | may)] <- FALSE
     ok[may & ok %in% TRUE] <- NA
+  } else if (where == "b") {
+    # within the B horizon (subgroups): B horizons; a row of unknown role
+    # below the A horizons may be one, and one between two B horizons is one
+    bm <- .asc_b_and_maybe(x)
+    ok[!(seq_len(x$n) %in% c(bm$b, bm$maybe))] <- FALSE
+    ok[seq_len(x$n) %in% bm$maybe & ok %in% TRUE] <- NA
   } else if (where == "a2") {
     a2 <- which(x$role %in% "A2" & !x$des$buried)
     if (!length(a2)) {

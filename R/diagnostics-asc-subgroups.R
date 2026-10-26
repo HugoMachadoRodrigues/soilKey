@@ -31,6 +31,58 @@ chernic_sg_asc <- function(pedon, kind = c("peaty", "humose", "melacic", "melani
   list(b = sort(c(b, sw)), maybe = setdiff(maybe, sw))
 }
 
+# The same for the B2 horizons (pans left out), as the order reads them:
+# rows of unknown role among the designated ones, below the A horizons, may
+# be B2 horizons (rows below the last designated one are not read); one
+# between two B2 horizons is one.
+.asc_b2_and_maybe <- function(x) {
+  b2 <- which(x$b2 %in% TRUE & !x$des$m)
+  maybe <- setdiff(.asc_b2_maybe(x), which(x$des$m))
+  sw <- .asc_sandwiched(x, maybe, b2)
+  list(b = sort(c(b2, sw)), maybe = setdiff(maybe, sw))
+}
+
+#' Acidic subgroups: the major part of the B2 horizon strongly acid (pHw
+#' below 5.5, or pHCa below 4.6 without pHw), read as the order reads the
+#' major part of the B2
+#' @noRd
+acidic_b2_asc <- function(pedon) {
+  x <- .asc_horizons(pedon)
+  passed <- .asc_b_major(pedon, x, .asc_strongly_acid(x$h), "b2")
+  .asc_result("sg_acidic", passed, integer(0), list(),
+              if (is.na(passed)) c("ph_h2o", "ph_cacl2", "designation") else character(0),
+              "Subgroups Acidic; glossary 'Strongly acid'")
+}
+
+#' Snuffy subgroup (Ferrosols): an A horizon with a very fine granular
+#' structure (peds under 2 mm; the finest size class of the Field Handbook,
+#' recorded as 2 mm at most) and a dry strength of weak or very weak. The
+#' low bulk density and water repellence the text adds ("usually", "may")
+#' are not tested.
+#' @noRd
+snuffy_asc <- function(pedon) {
+  x <- .asc_horizons(pedon); h <- x$h
+  st <- tolower(trimws(as.character(h$structure_type %||% rep(NA_character_, x$n))))
+  gr <- tolower(trimws(as.character(h$structure_grade %||% rep(NA_character_, x$n))))
+  granular <- ifelse(grepl("structureless|none|apedal", gr) | grepl("massive|single", st), FALSE,
+                     ifelse(is.na(st) | !nzchar(st), NA, grepl("granular", st)))
+  ps <- suppressWarnings(as.numeric(h$ped_size_max_mm %||% rep(NA_real_, x$n)))
+  fine <- ifelse(is.na(ps), NA, ps <= 2)
+  sd <- tolower(trimws(as.character(h$strength_dry %||% rep(NA_character_, x$n))))
+  weak <- ifelse(is.na(sd) | !nzchar(sd), NA, sd %in% c("very weak", "weak"))
+  ok <- .and3v(.and3v(granular, fine), weak)
+  a <- !is.na(x$role) & grepl("^A", x$role) & !x$des$buried
+  # a row of unknown role above the first B horizon may be an A horizon
+  b_top <- suppressWarnings(min(h$top_cm[!is.na(x$role) & grepl("^B", x$role) & !x$des$buried], na.rm = TRUE))
+  may <- x$maybe_soil & !x$trailing & !is.na(h$top_cm) & h$top_cm < b_top
+  passed <- if (!x$any_known) { if (all(ok %in% FALSE)) FALSE else NA }
+            else if (any(ok[a] %in% TRUE)) TRUE
+            else if (any(is.na(ok[a])) || any(!(ok[may] %in% FALSE))) NA else FALSE
+  .asc_result("sg_snuffy", passed, which(a & ok %in% TRUE), list(),
+              if (is.na(passed)) c("structure_type", "ped_size_max_mm", "strength_dry") else character(0),
+              "Ferrosols, subgroup Snuffy")
+}
+
 #' Vertic subgroups: a B horizon in which at least 0.3 m has vertic
 #' properties (clayey, with slickensides or lenticular peds)
 #' @noRd
@@ -56,15 +108,21 @@ vertic_b_asc <- function(pedon) {
 
 #' Sodic subgroups: at least the lower part of the B horizon is sodic (the
 #' deepest B horizon has an ESP of 6 or more; ESP as for the Sodosols). A
-#' row of unknown role below it may be the lower part of the B.
+#' row of unknown role below it may be the lower part of the B. With
+#' \code{part = "b2"} (Ferrosols): the lower part of the B2 horizon, the
+#' deepest B2.
 #' @noRd
-lower_b_sodic_asc <- function(pedon) {
+lower_b_sodic_asc <- function(pedon, part = c("b", "b2")) {
+  part <- match.arg(part)
   x <- .asc_horizons(pedon); h <- x$h
-  bm <- .asc_b_and_maybe(x)
+  bm <- if (part == "b") .asc_b_and_maybe(x) else .asc_b2_and_maybe(x)
   sod <- .asc_sodic(h)
   passed <- if (!length(bm$b)) {
-    # no B designated: rows of unknown role may be the B
-    if (x$any_known && (!length(bm$maybe) || all(sod[bm$maybe] %in% FALSE))) FALSE else NA
+    # no B (B2) designated: rows of unknown role may be it; with no B2 where
+    # the order leaves the B2 open (the description ends in an A or a B1),
+    # it may lie deeper
+    if (part == "b2" && is.null(.asc_b2_rows(x))) NA
+    else if (x$any_known && (!length(bm$maybe) || all(sod[bm$maybe] %in% FALSE))) FALSE else NA
   } else if (all(is.na(h$top_cm[bm$b]))) NA else {
     last <- bm$b[which.max(h$top_cm[bm$b])]
     below <- bm$maybe[!is.na(h$top_cm[bm$maybe]) & h$top_cm[bm$maybe] > h$top_cm[last]]
@@ -73,7 +131,7 @@ lower_b_sodic_asc <- function(pedon) {
     else if (length(below)) { if (all(c(v, sod[below]) %in% FALSE)) FALSE else if (all(c(v, sod[below]) %in% TRUE)) TRUE else NA }
     else v
   }
-  .asc_result("sg_lower_b_sodic", passed, integer(0), list(),
+  .asc_result("sg_lower_b_sodic", passed, integer(0), list(part = part),
               if (is.na(passed)) c("na_cmol", "cec_cmol", "ecec_cmol", "esp_pct", "designation") else character(0),
               "Subgroups Sodic; glossary 'Sodic'")
 }
