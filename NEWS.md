@@ -1,3 +1,21 @@
+# soilKey 0.9.290 (2026-10-26)
+
+## Australian classification: carbonate segregations recorded as none
+
+A horizon whose carbonate segregations are recorded as none (0 %), with no
+effervescence or CaCO3 recorded, was left undecided by the test of
+"calcareous", although the same horizon with nothing recorded is read by
+its pH (a pHw below 7.0 is not calcareous, as free carbonate holds the pH
+higher). A recorded 0 % of segregations says nothing of the fine-earth
+carbonate, so the pH rule now applies to it too. Found in the review of
+0.9.289.
+
+On 9,700 licensed NatSoil profiles no order or suborder changes, and 32
+more orders are decided (1,305, at 74.5 %). 98 great groups change, nearly
+all to Eutrophic, which needs B and BC horizons that are not calcareous;
+the great groups that agree with the survey go from 1,076 to 1,140 and the
+subgroups from 499 to 555. WRB, SiBCS and USDA results do not change.
+
 # soilKey 0.9.289 (2026-10-26)
 
 ## Australian classification: subgroups of the Hydrosols, Arenosols, Rudosols and Tenosols (experimental)
