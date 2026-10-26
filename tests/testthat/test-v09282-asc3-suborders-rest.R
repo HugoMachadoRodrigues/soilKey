@@ -123,7 +123,7 @@ test_that("leptic: rock, a hard layer or saprolite within 0.5 m", {
 
 test_that("the Tenosol suborders in key order", {
   skip_on_cran()
-  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "great_groups", ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
+  nm <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level %in% c("orders", "suborders"), ]; lv$name[nrow(lv)] }   # down to the suborder (0.9.285)
   blk <- list(munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 5), munsell_chroma_moist = c(1, 2, 4),
               munsell_value_dry = c(4, 5, 7), munsell_chroma_dry = c(1, 2, 3), ph_h2o = c(5.0, 5.2, 6.0))
   expect_identical(nm(.tenosol(blk)), "Chernic Tenosol")

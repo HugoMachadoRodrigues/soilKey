@@ -79,3 +79,6 @@ diagnostics:
   - {function: podosol_coherence_asc, file: R/diagnostics-asc-subgroups-special.R, reference: "Podosols, subgroups Parapanic and Fragic; glossary 'Strongly coherent B horizon', 'Weakly coherent B horizon'"}
   - {function: densipan_a2_asc,       file: R/diagnostics-asc-subgroups-special.R, reference: "Podosols, subgroups Densic; glossary 'Densipan'"}
   - {function: organosol_sg_asc,      file: R/diagnostics-asc-subgroups-special.R, reference: "Organosols, subgroups; glossary 'Unconsolidated mineral materials', 'Marl'"}
+  - {function: part_prop_asc,         file: R/diagnostics-asc-subgroups-rest.R, reference: "Subgroups Acidic, Basic, Calcareous (Hydrosols, Arenosols, Rudosols, Tenosols)"}
+  - {function: episulfidic_asc,       file: R/diagnostics-asc-subgroups-rest.R, reference: "Hydrosols, subgroups Episulfidic; glossary 'Sulfidic materials'"}
+  - {function: fusic_surface_asc,     file: R/diagnostics-asc-subgroups-rest.R, reference: "Hydrosols, subgroups Fusic; glossary 'Fusic material'"}

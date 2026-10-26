@@ -1,0 +1,901 @@
+# Key to the subgroups of the Tenosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "TE-BF-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+  "TE-BE-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: b, how: major}
+      notes: "A humose horizon and the major part of the B horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: b_bc_cb, how: some}
+      notes: "A humose horizon and at least some part of the B, BC or C/B horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: b, how: major}
+          - part_prop_asc: {prop: calcareous, part: b_bc_cb, how: none}
+      notes: "A melacic horizon and the major part of the B horizon not strongly acid and no part of the B, BC or C/B horizon calcareous."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: b, how: major}
+      notes: "A melanic horizon and the major part of the B horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: b_bc_cb, how: some}
+      notes: "A melanic horizon and at least some part of the B, BC or C/B horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+  "TE-IL-*":
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the solum."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-IM-*":
+    - code: "DA"
+      name: "Lithocalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: lithocalcic}
+      notes: "A calcareous horizon with more than 50 % hard carbonate."
+
+    - code: "FB"
+      name: "Supracalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: supracalcic}
+      notes: "A calcareous horizon with 20-50 % hard carbonate."
+
+    - code: "CQ"
+      name: "Hypercalcic, {parent}"
+      tests:
+        all_of:
+          - carbonate_suborder_asc: {class: hard_below_20}
+      notes: "The calcareous horizon with less than 20 % hard calcrete fragments, carbonate nodules or concretions."
+
+  "TE-AW-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "The major part of the A2 horizon strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+          - part_prop_asc: {prop: calcareous, part: a2, how: none}
+      notes: "The major part of the A2 horizon not strongly acid and no part of the A2 horizon calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "At least some part of the A2 horizon calcareous."
+
+  "TE-CY-*":
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "DR"
+      name: "Subhumose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subhumose}
+      notes: "All the requirements of a humose horizon except the thickness."
+
+    - code: "FF"
+      name: "Submelacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: submelacic}
+      notes: "All the requirements of a melacic horizon except the thickness."
+
+    - code: "FG"
+      name: "Submelanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: submelanic}
+      notes: "All the requirements of a melanic horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AT-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AA-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AB-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AC-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AD-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."
+
+  "TE-AE-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A humose horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A humose horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: a2, how: major}
+      notes: "A melacic horizon and the major part of the A2 horizon not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: a2, how: major}
+      notes: "A melanic horizon and the major part of the A2 horizon strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: a2, how: some}
+      notes: "A melanic horizon and at least some part of the A2 horizon calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: solum}
+      notes: "A manganic horizon within the solum."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: solum, how: major}
+      notes: "The major part of the solum strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: not_acid, part: solum, how: major}
+          - part_prop_asc: {prop: calcareous, part: solum, how: none}
+      notes: "The major part of the solum not strongly acid and no part of the solum calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: solum, how: some}
+      notes: "At least some part of the solum calcareous."

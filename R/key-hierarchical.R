@@ -108,13 +108,22 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
   stopped <- character(0)
   parent <- NULL
   path <- character(0)
-  for (lvl in sys$levels) {
+  levels <- sys$levels
+  for (li in seq_along(levels)) {
+    lvl <- levels[li]
     # the list under the class above: by the codes of the path to it
     # ("CH-AA", where codes repeat under different parents), else by the
     # code of the parent alone, else by a list for every class under a part
     # of the path ("CH-AA-*", then "CH-*")
     taxa <- if (is.null(parent)) rules[[lvl]] else .level_list(rules[[lvl]], path, parent$code)
-    if (length(taxa) == 0L) break
+    if (length(taxa) == 0L) {
+      # a class with no list at this level may still have one at the next,
+      # named by its exact path (subgroups of a suborder that has no great
+      # groups: "Calcareous, Stratic Rudosol"); the level is then skipped
+      nxt <- if (!is.null(parent) && li < length(levels)) rules[[levels[li + 1L]]][[paste(path, collapse = "-")]]
+      if (length(nxt) == 0L) break
+      next
+    }
     r <- .run_level(pedon, taxa, lvl)
     # a name written on the class above ("Bleached, {parent}"), in the trace too
     if (!is.null(parent)) {

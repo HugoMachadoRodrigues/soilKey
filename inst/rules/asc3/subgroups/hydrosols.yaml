@@ -1,0 +1,1686 @@
+# Key to the subgroups of the Hydrosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "HY-CW-IY":
+    - code: "BW"
+      name: "Fibric, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: fibric}
+      notes: "The organic materials dominated by fibric peat."
+
+    - code: "CE"
+      name: "Hemic, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: hemic}
+      notes: "The organic materials, other than fibric peat, dominated by hemic peat."
+
+    - code: "EH"
+      name: "Sapric, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: sapric}
+      notes: "The organic materials, other than fibric peat, dominated by sapric peat."
+
+  "HY-CW-JB":
+    - code: "BW"
+      name: "Fibric, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: fibric}
+      notes: "The organic materials dominated by fibric peat."
+
+    - code: "CE"
+      name: "Hemic, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: hemic}
+      notes: "The organic materials, other than fibric peat, dominated by hemic peat."
+
+    - code: "EH"
+      name: "Sapric, {parent}"
+      tests:
+        all_of:
+          - peat_suborder_asc: {peat: sapric}
+      notes: "The organic materials, other than fibric peat, dominated by sapric peat."
+
+  "HY-EG-*":
+    - code: "HM"
+      name: "Episulfidic-Petrocalcic, {parent}"
+      tests:
+        all_of:
+          - episulfidic_asc: {}
+          - substrate_gg_asc: {kind: petrocalcic, from: solum}
+      notes: "Sulfidic materials in the A or near-surface horizons and the soil directly overlying a calcrete pan."
+
+    - code: "HL"
+      name: "Episulfidic, {parent}"
+      tests:
+        all_of:
+          - episulfidic_asc: {}
+      notes: "Sulfidic materials in the A or near-surface horizons."
+
+    - code: "DZ"
+      name: "Petrocalcic, {parent}"
+      tests:
+        all_of:
+          - substrate_gg_asc: {kind: petrocalcic, from: solum}
+      notes: "The soil directly overlying a calcrete pan."
+
+  "HY-ED-*":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "HC"
+      name: "Ferric-Sodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - lower_b_sodic_asc: {}
+      notes: "A ferric horizon within the soil profile and at least the lower part of the B horizon sodic."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "GX"
+      name: "Manganic-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A manganic horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "HO"
+      name: "Acidic-Sodic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "The major part of the B2 horizon strongly acid and at least the lower part of the B horizon sodic."
+
+    - code: "AU"
+      name: "Bleached-Acidic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - acidic_b2_asc: {}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "GP"
+      name: "Magnesic-Natric, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2, natric: true, natric_window: upper_b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon and the major part of its upper 0.2 m sodic."
+
+    - code: "FD"
+      name: "Natric, {parent}"
+      tests:
+        all_of:
+          - natric_asc: {window: upper_b2}
+      notes: "The major part of the upper 0.2 m of the B2 horizon sodic."
+
+    - code: "BA"
+      name: "Bleached-Sodic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "A conspicuously bleached A2 horizon and at least the lower part of the B horizon sodic."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {}
+      notes: "At least the lower part of the B horizon sodic."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-DT-*":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "HC"
+      name: "Ferric-Sodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - lower_b_sodic_asc: {}
+      notes: "A ferric horizon within the soil profile and at least the lower part of the B horizon sodic."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "GX"
+      name: "Manganic-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A manganic horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "HO"
+      name: "Acidic-Sodic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "The major part of the B2 horizon strongly acid and at least the lower part of the B horizon sodic."
+
+    - code: "AU"
+      name: "Bleached-Acidic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - acidic_b2_asc: {}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "GP"
+      name: "Magnesic-Natric, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2, natric: true, natric_window: upper_b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon and the major part of its upper 0.2 m sodic."
+
+    - code: "FD"
+      name: "Natric, {parent}"
+      tests:
+        all_of:
+          - natric_asc: {window: upper_b2}
+      notes: "The major part of the upper 0.2 m of the B2 horizon sodic."
+
+    - code: "BA"
+      name: "Bleached-Sodic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "A conspicuously bleached A2 horizon and at least the lower part of the B horizon sodic."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {}
+      notes: "At least the lower part of the B horizon sodic."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-ED-CX":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "HC"
+      name: "Ferric-Sodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - lower_b_sodic_asc: {}
+      notes: "A ferric horizon within the soil profile and at least the lower part of the B horizon sodic."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "GP"
+      name: "Magnesic-Natric, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2, natric: true, natric_window: upper_b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon and the major part of its upper 0.2 m sodic."
+
+    - code: "FD"
+      name: "Natric, {parent}"
+      tests:
+        all_of:
+          - natric_asc: {window: upper_b2}
+      notes: "The major part of the upper 0.2 m of the B2 horizon sodic."
+
+    - code: "BA"
+      name: "Bleached-Sodic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "A conspicuously bleached A2 horizon and at least the lower part of the B horizon sodic."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {}
+      notes: "At least the lower part of the B horizon sodic."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-DT-CX":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "HC"
+      name: "Ferric-Sodic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - lower_b_sodic_asc: {}
+      notes: "A ferric horizon within the soil profile and at least the lower part of the B horizon sodic."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "GP"
+      name: "Magnesic-Natric, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2, natric: true, natric_window: upper_b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon and the major part of its upper 0.2 m sodic."
+
+    - code: "FD"
+      name: "Natric, {parent}"
+      tests:
+        all_of:
+          - natric_asc: {window: upper_b2}
+      notes: "The major part of the upper 0.2 m of the B2 horizon sodic."
+
+    - code: "BA"
+      name: "Bleached-Sodic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - lower_b_sodic_asc: {}
+      notes: "A conspicuously bleached A2 horizon and at least the lower part of the B horizon sodic."
+
+    - code: "EO"
+      name: "Sodic, {parent}"
+      tests:
+        all_of:
+          - lower_b_sodic_asc: {}
+      notes: "At least the lower part of the B horizon sodic."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-ED-EQ":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "GX"
+      name: "Manganic-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A manganic horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "AU"
+      name: "Bleached-Acidic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - acidic_b2_asc: {}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-DT-EQ":
+    - code: "IT"
+      name: "Fusic, {parent}"
+      tests:
+        all_of:
+          - fusic_surface_asc: {}
+      notes: "Surface layers that comprise more than 20 % fusic material."
+
+    - code: "GD"
+      name: "Peaty-Placic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+          - pan_great_group_asc: {kind: placic, where: b}
+      notes: "A peaty horizon and a thin ironpan within or directly underlying the B horizon."
+
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "CL"
+      name: "Humose-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - magnesic_asc: {window: b2}
+      notes: "A humose horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - acidic_b2_asc: {}
+      notes: "A humose horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - calcareous_b_asc: {}
+      notes: "A humose horizon and at least some part of the B or BC horizon calcareous."
+
+    - code: "EY"
+      name: "Humose-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - bleached_a2_asc: {}
+      notes: "A humose horizon and a conspicuously bleached A2 horizon."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "DH"
+      name: "Melacic-Magnesic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - magnesic_asc: {window: b2}
+      notes: "A melacic horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "EZ"
+      name: "Melacic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - bleached_a2_asc: {}
+      notes: "A melacic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "DL"
+      name: "Melanic-Bleached, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - bleached_a2_asc: {}
+      notes: "A melanic horizon and a conspicuously bleached A2 horizon."
+
+    - code: "DN"
+      name: "Melanic-Vertic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - vertic_b_asc: {}
+      notes: "A melanic horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - acidic_b2_asc: {}
+      notes: "A melanic horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "BB"
+      name: "Bleached-Vertic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - vertic_b_asc: {}
+      notes: "A conspicuously bleached A2 horizon and a B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "EX"
+      name: "Vertic, {parent}"
+      tests:
+        all_of:
+          - vertic_b_asc: {}
+      notes: "A B horizon in which at least 0.3 m has vertic properties."
+
+    - code: "GW"
+      name: "Ferric-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A ferric horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AV"
+      name: "Bleached-Ferric, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a ferric horizon within the soil profile."
+
+    - code: "BU"
+      name: "Ferric, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: ferric, where: profile}
+      notes: "A ferric horizon within the soil profile."
+
+    - code: "GX"
+      name: "Manganic-Acidic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+          - acidic_b2_asc: {}
+      notes: "A manganic horizon within the soil profile and the major part of the B2 horizon strongly acid."
+
+    - code: "AY"
+      name: "Bleached-Manganic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A conspicuously bleached A2 horizon and a manganic horizon within the soil profile."
+
+    - code: "DC"
+      name: "Manganic, {parent}"
+      tests:
+        all_of:
+          - nodular_horizon_asc: {kind: manganic, where: profile}
+      notes: "A manganic horizon within the soil profile."
+
+    - code: "EM"
+      name: "Silpanic, {parent}"
+      tests:
+        all_of:
+          - silpan_ab_asc: {}
+      notes: "A siliceous pan in the lower A and/or upper B horizon."
+
+    - code: "AU"
+      name: "Bleached-Acidic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - acidic_b2_asc: {}
+      notes: "A conspicuously bleached A2 horizon and the major part of the B2 horizon strongly acid."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - acidic_b2_asc: {}
+      notes: "The major part of the B2 horizon strongly acid."
+
+    - code: "EF"
+      name: "Reticulate, {parent}"
+      tests:
+        all_of:
+          - reticulate_below_asc: {}
+      notes: "A reticulate horizon below the B2 horizon."
+
+    - code: "AX"
+      name: "Bleached-Magnesic, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+          - magnesic_asc: {window: b2}
+      notes: "A conspicuously bleached A2 horizon and exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "DB"
+      name: "Magnesic, {parent}"
+      tests:
+        all_of:
+          - magnesic_asc: {window: b2}
+      notes: "Exchangeable Ca/Mg below 0.1 in the major part of the B2 horizon."
+
+    - code: "AT"
+      name: "Bleached, {parent}"
+      tests:
+        all_of:
+          - bleached_a2_asc: {}
+      notes: "A conspicuously bleached A2 horizon."
+
+    - code: "AF"
+      name: "Dystrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: dystrophic, window: b2}
+      notes: "The major part of the B2 horizon dystrophic."
+
+    - code: "AG"
+      name: "Mesotrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: mesotrophic, window: b2}
+      notes: "The major part of the B2 horizon mesotrophic."
+
+    - code: "AH"
+      name: "Eutrophic, {parent}"
+      tests:
+        all_of:
+          - base_status_asc: {class: eutrophic, window: b2}
+      notes: "The major part of the B2 horizon eutrophic, the B and BC horizons not calcareous."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - calcareous_b_asc: {}
+      notes: "At least some part of the B or BC horizon calcareous."
+
+  "HY-ED-GT": []
+
+  "HY-ED-GR": []
+
+  "HY-DT-GT": []
+
+  "HY-DT-GR": []

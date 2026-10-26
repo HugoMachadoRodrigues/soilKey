@@ -362,7 +362,7 @@ mottled_profile_asc <- function(pedon, mottled = TRUE) {
 #' soft and less than 20 % hard) and "calcic" (any other).
 #' @noRd
 carbonate_suborder_asc <- function(pedon, class = c("hypergypsic", "carbonatic", "hypocalcic", "lithocalcic",
-                                                    "supracalcic", "hypercalcic", "calcic")) {
+                                                    "supracalcic", "hypercalcic", "calcic", "hard_below_20")) {
   class <- match.arg(class)
   x <- .asc_horizons(pedon); h <- x$h
   c <- .asc_carbonate(h)
@@ -422,7 +422,9 @@ carbonate_suborder_asc <- function(pedon, class = c("hypergypsic", "carbonatic",
         hypercalcic = ifelse(!is.na(c$hard) & c$hard >= 20, FALSE,
                              ifelse(!is.na(c$soft) & c$soft <= 20, FALSE,
                                     ifelse(is.na(c$soft) | is.na(c$hard), NA, TRUE))),
-        calcic = rep(TRUE, x$n))
+        calcic = rep(TRUE, x$n),
+        # Calcenic Tenosols, Hypercalcic: less than 20 % hard carbonate
+        hard_below_20 = ifelse(is.na(c$hard), NA, c$hard < 20))
       v <- .and3v(calc_h, test)
       if (any(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
     })

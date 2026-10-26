@@ -4,7 +4,8 @@
 # suborders since v0.9.280 (all orders since v0.9.282); great groups since
 # v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
 # subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols; Dermosols, Kandosols, Ferrosols since
-# v0.9.287; Vertosols, Calcarosols, Podosols, Organosols since v0.9.288). Families follow. Experimental and
+# v0.9.287; Vertosols, Calcarosols, Podosols, Organosols since v0.9.288; Hydrosols, Arenosols, Rudosols,
+# Tenosols since v0.9.289). Families follow. Experimental and
 # opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -40,9 +41,11 @@
 #' bauxitic horizons in the B, a snuffy A), of the Vertosols and Calcarosols
 #' (acid sulfate materials, pans, sodicity, acidity, carbonate and mottling
 #' of the upper 0.5 m of the solum and below it, subplasticity, surface
-#' carbonate), the Podosols (coherence of the B, pans) and the Organosols
-#' (what the organic materials overlie). The other subgroups and the
-#' families follow. The name is that of the deepest class assigned, in the book's
+#' carbonate), the Podosols (coherence of the B, pans), the Organosols
+#' (what the organic materials overlie), and the Hydrosols, Arenosols,
+#' Rudosols and Tenosols (peat kinds, sulfidic materials near the surface,
+#' acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
+#' the soil, horizons with all but the thickness). The families follow. The name is that of the deepest class assigned, in the book's
 #' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
 #' Chromosol"); \code{rsg_or_order} keeps the order.
 #'

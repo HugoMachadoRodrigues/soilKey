@@ -1,0 +1,166 @@
+# Key to the subgroups of the Rudosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "RU-CS-*":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-CY-*":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-AO-*":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-HH-*":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-FJ":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-GV":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."
+
+  "RU-ER":
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: soil, how: major}
+      notes: "The major part of the soil strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: none}
+          - part_prop_asc: {prop: not_acid, part: soil, how: major}
+      notes: "No part of the soil calcareous and the major part of the soil not strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: soil, how: some}
+      notes: "At least some part of the soil calcareous."

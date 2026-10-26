@@ -8,16 +8,45 @@
 #' Peaty, humose, melacic and melanic horizons (subgroups)
 #'
 #' Read as for the Chernic suborders (\code{.asc_chernic_parts}), each kind on
-#' its own.
+#' its own. The "sub" kinds (Arenosol and Tenosol subgroups) have all the
+#' requirements but the thickness: peaty and dark (melacic, melanic) of any
+#' thickness from the top or the mineral surface; subhumose, the surface
+#' horizon of the mineral soil (its first horizon) with the organic C of a
+#' humose horizon.
 #' @noRd
-chernic_sg_asc <- function(pedon, kind = c("peaty", "humose", "melacic", "melanic")) {
+chernic_sg_asc <- function(pedon, kind = c("peaty", "humose", "melacic", "melanic",
+                                           "subpeaty", "subhumose", "submelacic", "submelanic")) {
   kind <- match.arg(kind)
-  p <- .asc_chernic_parts(pedon)
-  passed <- p[[kind]]
+  passed <- if (kind == "subhumose") .asc_subhumose(pedon)
+            else if (startsWith(kind, "sub")) .asc_chernic_parts(pedon, min_cm = 1)[[sub("^sub", "", kind)]]
+            else .asc_chernic_parts(pedon)[[kind]]
   .asc_result(paste0("sg_", kind), passed, integer(0), list(),
               if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist", "munsell_value_dry",
                                    "ph_h2o", "structure_grade", "ped_size_max_mm") else character(0),
-              sprintf("Subgroups; glossary '%s horizon'", tools::toTitleCase(kind)))
+              sprintf("Subgroups; glossary '%s horizon'", tools::toTitleCase(sub("^sub", "", kind))))
+}
+
+# The organic C of a humose horizon in the first horizon of the mineral
+# soil, of any thickness: its organic C above 4 % with no clay to 6 % at 60 %
+# clay or more (the clay range of the field texture; within it undecided),
+# not organic material. The mineral surface as for the Chernic suborders.
+.asc_subhumose <- function(pedon) {
+  x <- .asc_horizons(pedon); h <- x$h
+  om <- .asc_organic_material(x, pedon)
+  top0 <- .asc_profile_top(x)
+  if (is.na(top0)) return(NA)
+  ok_o <- ifelse(om %in% TRUE & !(x$role %in% "O1"), TRUE, ifelse(is.na(om), NA, FALSE))
+  orun <- .asc_run_from(x, ok_o, top0)
+  if (is.infinite(orun$possible) || orun$possible > orun$sure) return(NA)
+  tm <- top0 + orun$sure
+  first <- which(!is.na(h$top_cm) & abs(h$top_cm - tm) <= 0.5 & !x$rock & !(om %in% TRUE))
+  if (!length(first)) return(if (.asc_ends_hard(x)) FALSE else NA)
+  i <- first[1L]
+  oc <- h$oc_pct[i]
+  if (is.na(oc)) return(NA)
+  cr <- x$clay
+  lo <- if (is.na(cr$lo[i])) 0 else min(cr$lo[i], 60); hi <- if (is.na(cr$hi[i])) 60 else min(cr$hi[i], 60)
+  if (oc > 4 + 2 * hi / 60 || oc >= 6) TRUE else if (oc <= 4 + 2 * lo / 60) FALSE else NA
 }
 
 # The B horizons of the present soil (B1 to BC, pans and buried horizons left
