@@ -1,5 +1,51 @@
 # Changelog
 
+## soilKey 0.9.288 (2026-10-26)
+
+### Australian classification: subgroups of the Vertosols, Calcarosols, Podosols and Organosols (experimental)
+
+[`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+keys the subgroups of the Vertosols, Calcarosols, Podosols and
+Organosols, one list per order as the order pages give them (43, 12, 15
+and 8 subgroups). WRB, SiBCS and USDA results do not change, nor do the
+Australian orders, suborders and great groups, nor the subgroups of the
+six orders keyed before.
+
+- Vertosols: the acid sulfate subgroups as for the acid sulfate great
+  groups; Salic as for the Salic Hydrosols; Duric and Petrocalcic; the
+  upper 0.1 m of the solum sodic (Episodic, by its weighted average
+  ESP); the upper 0.5 m of the solum and the solum below it strongly
+  acid, calcareous, mottled or with an ESP of 15 or more (Epiacidic,
+  Endocalcareous, Epihypersodic and their combinations); Magnesic over
+  the B. The solum is read as described, pans left out, rows of unknown
+  role and horizons of unknown depth tried every way they may go.
+- Calcarosols: Melanic, Vertic, Subplastic and Gypsic; Epibasic and
+  Hypervescent as for the Calsilic Arenosols; Supravescent;
+  Epihypersodic and Endohypersodic; Ceteric for the others. The
+  Carbonatic Calcarosols take the list without Supravescent and
+  Hypervescent, as the page says they are not required there.
+- Podosols: a strongly or weakly coherent B (Parapanic, Fragic), a
+  densipan in the A2 (Densic), a thin ironpan in or under the B
+  (Placic), a siliceous pan under the B, a ferric horizon in the B, with
+  the peaty, humose, melacic and melanic combinations.
+- Organosols: what the organic materials directly overlie (Lithic,
+  Paralithic, Marly, Rudaceous, Modic), a thin ironpan below them, and
+  layers of unconsolidated mineral material within or below them (Terric
+  within 0.8 m, Regolithic below).
+- The examples of the four orders key to a subgroup (“Endocalcareous,
+  Self-mulching, Black Vertosol”).
+- The readings are in `inst/rules/asc3/readings.yaml` (56).
+
+On 9,700 licensed NatSoil profiles, 424 of the 533 profiles keyed to
+these four orders with a great group get a subgroup. Of the 347 whose
+order, suborder and great group agree with the survey and whose survey
+gives a subgroup of the key, 261 get one and 113 (43 %) the survey’s
+(Vertosols 100 of 239). Nearly every Vertosol subgroup stays
+provisional: the Sulfuric subgroup needs the pH of the upper 1.5 m, and
+the Sulfidic one a sulfide test, rarely recorded (read as absent, a test
+not done would decide 11 more Vertosols and leave the agreement
+unchanged).
+
 ## soilKey 0.9.287 (2026-10-26)
 
 ### Australian classification: subgroups of the Dermosols, Kandosols and Ferrosols (experimental)

@@ -29,10 +29,15 @@ the Kurosols, Sodosols and Chromosols (chernic and vertic features,
 bleaching, ferric and manganic horizons, sodicity of the lower B,
 mottling of the B2t, base status, carbonate) and of the Dermosols,
 Kandosols and Ferrosols (the same features read on the B2, a strongly
-acid B2, argic and bauxitic horizons in the B, a snuffy A). The other
-subgroups and the families follow. The name is that of the deepest class
-assigned, in the book's form "Subgroup, Great Group, Suborder Order"
-("Bleached, Eutrophic, Red Chromosol"); `rsg_or_order` keeps the order.
+acid B2, argic and bauxitic horizons in the B, a snuffy A), of the
+Vertosols and Calcarosols (acid sulfate materials, pans, sodicity,
+acidity, carbonate and mottling of the upper 0.5 m of the solum and
+below it, subplasticity, surface carbonate), the Podosols (coherence of
+the B, pans) and the Organosols (what the organic materials overlie).
+The other subgroups and the families follow. The name is that of the
+deepest class assigned, in the book's form "Subgroup, Great Group,
+Suborder Order" ("Bleached, Eutrophic, Red Chromosol"); `rsg_or_order`
+keeps the order.
 
 ## Usage
 
