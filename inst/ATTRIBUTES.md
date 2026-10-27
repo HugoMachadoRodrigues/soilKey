@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.285)
+# soilKey -- recognised horizon attribute names (v0.9.292)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -261,8 +261,10 @@ these columns; anything else is preserved but ignored by the keys.
 | `esp_pct` | % | numeric | Exchangeable sodium percentage as the laboratory reports it, read when exchangeable Na or the CEC is not given; ASC sodic. | - |
 | `soil_water_status` | - | character | Moisture of the horizon when it was described (Field Handbook: dry / moderately moist / moist / wet); ASC Vertosols, whose cracks are not required in a solum described moist. | - |
 | `effervescence_class` | - | character | Field reaction of the fine earth with 1 M HCl (none / slight / moderate / strong / very strong); ASC calcareous soil. | - |
+| `gravel_pct` | % (vol) | numeric | Gravel-sized (2-60 mm) coarse fragments, visual abundance; ASC family gravel classes (glossary 'Gravel'). Without it the family reads coarse_fragments_pct. | - |
+| `water_repellence` | - | character | Water repellence of the horizon, Field Handbook ethanol test (non-repellent / repellent / strongly repellent); ASC family water repellence of the surface soil. | - |
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.285._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.292._
 

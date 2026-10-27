@@ -4,7 +4,7 @@
 \alias{benchmark_natsoil}
 \title{Benchmark the Australian order key on NatSoil}
 \usage{
-benchmark_natsoil(pedons, cores = 1L, verbose = TRUE)
+benchmark_natsoil(pedons, cores = 1L, verbose = TRUE, family = FALSE)
 }
 \arguments{
 \item{pedons}{A list of \code{\link{PedonRecord}} from
@@ -14,6 +14,9 @@ benchmark_natsoil(pedons, cores = 1L, verbose = TRUE)
 on Windows).}
 
 \item{verbose}{Print a summary.}
+
+\item{family}{Also derive the families (\code{classify_asc3(include_family
+= TRUE)}) and compare them (since 0.9.292).}
 }
 \value{
 A list: \code{n}; \code{accuracy} and \code{accuracy_edition};
@@ -27,7 +30,10 @@ A list: \code{n}; \code{accuracy} and \code{accuracy_edition};
   \code{great_groups}, the same for the great groups (overall, and over the
   pedons whose order and suborder agree); \code{subgroups}, the same for
   the subgroups (over the pedons whose order, suborder and great group
-  agree); and \code{results}, one row per pedon.
+  agree); \code{families} (with \code{family = TRUE}), each family
+  criterion against the surveyors' family codes (\code{site$reference_asc_family}),
+  over the pedons whose order (and, for the Hydrosols, suborder) agrees;
+  and \code{results}, one row per pedon.
 }
 \description{
 Classifies NatSoil pedons with \code{\link{classify_asc3}} and compares

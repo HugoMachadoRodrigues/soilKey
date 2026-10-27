@@ -30,8 +30,9 @@ as listed by \code{\link{soilkey_systems}}), or the literal
 \code{TRUE}). Has no effect on the other systems.}
 
 \item{include_family}{Forwarded to \code{\link{classify_usda}} (default
-\code{FALSE}) to derive the USDA 5th-level family. No effect on the
-other systems.}
+\code{FALSE}) to derive the USDA 5th-level family, and to
+\code{\link{classify_asc3}} when it is run (the Australian family,
+since 0.9.292). No effect on the other systems.}
 
 \item{specifiers}{Forwarded to \code{\link{classify_wrb2022}} (default
 \code{FALSE}) to auto-attach WRB depth specifiers. No effect on the

@@ -190,7 +190,10 @@ horizon_column_spec <- function() {
     pan_type                      = "character", # kind of pan in the horizon (Field Handbook: red-brown hardpan, calcrete, ferricrete, thin ironpan, silcrete ...; "none")
     esp_pct                       = "numeric",   # exchangeable sodium percentage as the laboratory reports it (read when Na or the CEC is not given); ASC sodic
     soil_water_status             = "character", # moisture of the horizon when described (Field Handbook): 'dry' / 'moderately moist' / 'moist' / 'wet'; ASC Vertosols ('unless too moist')
-    effervescence_class           = "character"  # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous
+    effervescence_class           = "character", # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous
+    # ---- v0.9.292: the ASC families ----
+    gravel_pct                    = "numeric",   # gravel-sized (2-60 mm) coarse fragments, visual %; ASC family gravel (without it, coarse_fragments_pct)
+    water_repellence              = "character"  # Field Handbook ethanol test: 'non-repellent' / 'repellent' / 'strongly repellent'; ASC family water repellence
   )
 }
 

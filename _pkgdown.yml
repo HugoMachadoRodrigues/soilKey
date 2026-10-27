@@ -119,6 +119,7 @@ reference:
       pedality, carbonates and the site drainage.
     contents:
       - classify_asc3
+      - classify_asc3_family
       - make_asc3_example
 
   - title: "Interoperability"
