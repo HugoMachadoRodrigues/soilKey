@@ -13,7 +13,7 @@ other keys. Sites whose licence does not allow external use are left out."><meta
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.292</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -169,7 +169,14 @@ records are added as ranges (each class strictly between its limits).
 Laboratory EC of a 1:5 extract gives <code>ec_1to5_dS_m</code>; the soil
 strength gives <code>strength_dry</code> or <code>strength_moist</code> by the moisture
 of its record; the size class of the first structure gives
-<code>ped_size_max_mm</code>.</p>
+<code>ped_size_max_mm</code>. Since 0.9.292, for the families: <code>gravel_pct</code>
+(the coarse fragments of a gravel size class, 2-60 mm, or of no size
+recorded; NaN, unknown, when such a record has no abundance),
+<code>water_repellence</code>, and at the site the coarse fragments of the
+ground surface (<code>surface_coarse_fragments_pct</code>, all sizes, and
+<code>surface_gravel_pct</code>; NA when none is recorded, NaN when a record has
+no abundance) and the surveyors' family codes by position
+(<code>reference_asc_family</code>, <code>"B;E;M;O;V"</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

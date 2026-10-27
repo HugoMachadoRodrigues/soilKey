@@ -36,10 +36,12 @@ acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
 the soil, horizons with all but the thickness; the Rudosolic and
 Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
 list of the Rudosol or Tenosol suborder the soil keys to apart from
-wetness). The families follow. The name is that of the deepest class
-assigned, in the book's form &quot;Subgroup, Great Group, Suborder Order&quot;
-(&quot;Bleached, Eutrophic, Red Chromosol&quot;); rsg_or_order keeps the
-order."><meta property="og:description" content="Keys a PedonRecord through the Australian Soil
+wetness). The name is that of the deepest class assigned, in the book's
+form &quot;Subgroup, Great Group, Suborder Order&quot; (&quot;Bleached, Eutrophic, Red
+Chromosol&quot;); rsg_or_order keeps the order. With
+include_family = TRUE the family follows the name as the book
+writes it (&quot;Bleached, Eutrophic, Red Chromosol; thick, non-gravelly,
+loamy/clayey, deep&quot;): see classify_asc3_family."><meta property="og:description" content="Keys a PedonRecord through the Australian Soil
 Classification, 3rd edition (Isbell and the National Committee on Soil
 and Terrain 2021), following the online version with its errata.
 Experimental: this release keys the 15 orders (the key to soil
@@ -76,10 +78,12 @@ acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
 the soil, horizons with all but the thickness; the Rudosolic and
 Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
 list of the Rudosol or Tenosol suborder the soil keys to apart from
-wetness). The families follow. The name is that of the deepest class
-assigned, in the book's form &quot;Subgroup, Great Group, Suborder Order&quot;
-(&quot;Bleached, Eutrophic, Red Chromosol&quot;); rsg_or_order keeps the
-order."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+wetness). The name is that of the deepest class assigned, in the book's
+form &quot;Subgroup, Great Group, Suborder Order&quot; (&quot;Bleached, Eutrophic, Red
+Chromosol&quot;); rsg_or_order keeps the order. With
+include_family = TRUE the family follows the name as the book
+writes it (&quot;Bleached, Eutrophic, Red Chromosol; thick, non-gravelly,
+loamy/clayey, deep&quot;): see classify_asc3_family."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -87,7 +91,7 @@ order."><meta property="og:image" content="https://hugomachadorodrigues.github.i
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.292</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -171,10 +175,12 @@ acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
 the soil, horizons with all but the thickness; the Rudosolic and
 Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
 list of the Rudosol or Tenosol suborder the soil keys to apart from
-wetness). The families follow. The name is that of the deepest class
-assigned, in the book's form "Subgroup, Great Group, Suborder Order"
-("Bleached, Eutrophic, Red Chromosol"); <code>rsg_or_order</code> keeps the
-order.</p>
+wetness). The name is that of the deepest class assigned, in the book's
+form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
+Chromosol"); <code>rsg_or_order</code> keeps the order. With
+<code>include_family = TRUE</code> the family follows the name as the book
+writes it ("Bleached, Eutrophic, Red Chromosol; thick, non-gravelly,
+loamy/clayey, deep"): see <code><a href="classify_asc3_family.html">classify_asc3_family</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -183,7 +189,8 @@ order.</p>
 <span>  <span class="va">pedon</span>,</span>
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
-<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_family <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -208,6 +215,12 @@ order.</p>
 <dd><p>Opt-in within-pedon gap-fill, as in
 <code><a href="classify_usda.html">classify_usda</a></code>.</p></dd>
 
+
+<dt id="arg-include-family">include_family<a class="anchor" aria-label="anchor" href="#arg-include-family"></a></dt>
+<dd><p>Derive the family (<code><a href="classify_asc3_family.html">classify_asc3_family</a></code>)
+and write it after the name. Default <code>FALSE</code> (the result is
+as in earlier versions).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -215,7 +228,9 @@ order.</p>
   <code>"asc3"</code>, the deepest class in <code>name</code>, the order in
   <code>rsg_or_order</code>, the classes of each level in <code>levels</code>, the key
   trace, and <code>provisional_because</code> (classes before the assigned ones
-  that could not be decided).</p>
+  that could not be decided); with <code>include_family</code>, the family
+  criteria in <code>trace$family</code>, their names in
+  <code>trace$family_label</code> and their codes in <code>trace$family_code</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -248,7 +263,8 @@ choices where the text is silent are listed in
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="make_asc3_example.html">make_asc3_example</a></code>, <code><a href="soilkey_systems.html">soilkey_systems</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="make_asc3_example.html">make_asc3_example</a></code>, <code><a href="classify_asc3_family.html">classify_asc3_family</a></code>,
+  <code><a href="soilkey_systems.html">soilkey_systems</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -256,6 +272,9 @@ choices where the text is silent are listed in
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">classify_asc3</span><span class="op">(</span><span class="fu"><a href="make_asc3_example.html">make_asc3_example</a></span><span class="op">(</span><span class="st">"chromosols"</span><span class="op">)</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">name</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Bleached, Eutrophic, Red Chromosol"</span>
+<span class="r-in"><span><span class="fu">classify_asc3</span><span class="op">(</span><span class="fu"><a href="make_asc3_example.html">make_asc3_example</a></span><span class="op">(</span><span class="st">"chromosols"</span><span class="op">)</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span>,</span></span>
+<span class="r-in"><span>              include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Bleached, Eutrophic, Red Chromosol; thick, non-gravelly, loamy/clayey, deep"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

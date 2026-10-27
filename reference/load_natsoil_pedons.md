@@ -117,7 +117,14 @@ Abundance classes of several records are added as ranges (each class
 strictly between its limits). Laboratory EC of a 1:5 extract gives
 `ec_1to5_dS_m`; the soil strength gives `strength_dry` or
 `strength_moist` by the moisture of its record; the size class of the
-first structure gives `ped_size_max_mm`.
+first structure gives `ped_size_max_mm`. Since 0.9.292, for the
+families: `gravel_pct` (the coarse fragments of a gravel size class,
+2-60 mm, or of no size recorded; NaN, unknown, when such a record has no
+abundance), `water_repellence`, and at the site the coarse fragments of
+the ground surface (`surface_coarse_fragments_pct`, all sizes, and
+`surface_gravel_pct`; NA when none is recorded, NaN when a record has no
+abundance) and the surveyors' family codes by position
+(`reference_asc_family`, `"B;E;M;O;V"`).
 
 ## References
 

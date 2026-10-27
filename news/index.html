@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.292</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,16 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.292" id="soilkey-09292-2026-10-27">soilKey 0.9.292 (2026-10-27)<a class="anchor" aria-label="anchor" href="#soilkey-09292-2026-10-27"></a></h2>
+<div class="section level3">
+<h3 id="australian-classification-the-families-0-9-292">Australian classification: the families<a class="anchor" aria-label="anchor" href="#australian-classification-the-families-0-9-292"></a></h3>
+<p><code>classify_asc3(include_family = TRUE)</code> now places a soil in the family classes of its order and writes them after the name, as the book does: “Bleached, Eutrophic, Red Chromosol; thick, non-gravelly, loamy/clayey, deep”. The new <code><a href="../reference/classify_asc3_family.html">classify_asc3_family()</a></code> returns each criterion as a <code>FamilyAttribute</code> with its code (YY when the data cannot decide the class, ZZ when no class of the order fits); the result keeps them in <code>trace$family</code>, <code>trace$family_label</code> and <code>trace$family_code</code>. <code>classify_all(include_family = TRUE)</code> passes the option on when the Australian key is run. Without the option nothing changes.</p>
+<p>The criteria are those of each order page: the thickness of the A1, or of the whole A in the Kurosols, Sodosols and Chromosols and in the Kurosolic, Sodosolic and Chromosolic Hydrosols (the book’s general rule, where the order pages disagree); gravel (2-60 mm) of the surface and A1, the larger of the two estimates; the field texture of the A1 and the most clayey one of the B; soil depth (to rock, a cemented pan or saprolite; otherwise to the C under the B, or the depth described in a soil without a B); and water repellence. The Vertosols use laboratory clay, the Calcarosols the depth of the Bk, the Arenosols and Rudosols the surface soil, the Organosols their organic materials. The Anthroposols and the tidal Hydrosols have none. The classes and the criteria of each order are in <code>inst/rules/asc3/families.yaml</code>, the readings in <code>readings.yaml</code>.</p>
+<p>Two horizon attributes: <code>gravel_pct</code> (gravel-sized fragments) and <code>water_repellence</code>. The NatSoil reader fills them, with the coarse fragments of the ground surface and the surveyors’ family codes, and <code>benchmark_natsoil(family = TRUE)</code> compares each criterion. On the NatSoil profiles whose order agrees, the decided classes agree with the surveyors for 85 % of the thicknesses, 87 % of the A1 textures, 97 % of the B textures, 83 % of the depths and 75 % of the gravel classes. The Vertosol clay classes are mostly undecided: only 29 of 291 NatSoil Vertosols have laboratory clay.</p>
+<p>No order, suborder, great group or subgroup changes on NatSoil. WRB, SiBCS and USDA results do not change.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.291" id="soilkey-09291-2026-10-27">soilKey 0.9.291 (2026-10-27)<a class="anchor" aria-label="anchor" href="#soilkey-09291-2026-10-27"></a></h2>
 <div class="section level3">

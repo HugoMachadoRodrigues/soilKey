@@ -39,10 +39,13 @@ materials near the surface, acidity and carbonate of the upper 1.0 m,
 the B, the A2, the solum or the soil, horizons with all but the
 thickness; the Rudosolic and Tenosolic great groups of the Redoxic and
 Oxyaquic Hydrosols take the list of the Rudosol or Tenosol suborder the
-soil keys to apart from wetness). The families follow. The name is that
-of the deepest class assigned, in the book's form "Subgroup, Great
-Group, Suborder Order" ("Bleached, Eutrophic, Red Chromosol");
-`rsg_or_order` keeps the order.
+soil keys to apart from wetness). The name is that of the deepest class
+assigned, in the book's form "Subgroup, Great Group, Suborder Order"
+("Bleached, Eutrophic, Red Chromosol"); `rsg_or_order` keeps the order.
+With `include_family = TRUE` the family follows the name as the book
+writes it ("Bleached, Eutrophic, Red Chromosol; thick, non-gravelly,
+loamy/clayey, deep"): see
+[`classify_asc3_family`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.md).
 
 ## Usage
 
@@ -51,7 +54,8 @@ classify_asc3(
   pedon,
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
-  gapfill = FALSE
+  gapfill = FALSE,
+  include_family = FALSE
 )
 ```
 
@@ -75,6 +79,13 @@ classify_asc3(
   Opt-in within-pedon gap-fill, as in
   [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md).
 
+- include_family:
+
+  Derive the family
+  ([`classify_asc3_family`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.md))
+  and write it after the name. Default `FALSE` (the result is as in
+  earlier versions).
+
 ## Value
 
 A
@@ -82,7 +93,9 @@ A
 with `system_id` `"asc3"`, the deepest class in `name`, the order in
 `rsg_or_order`, the classes of each level in `levels`, the key trace,
 and `provisional_because` (classes before the assigned ones that could
-not be decided).
+not be decided); with `include_family`, the family criteria in
+`trace$family`, their names in `trace$family_label` and their codes in
+`trace$family_code`.
 
 ## Details
 
@@ -115,6 +128,7 @@ Online version: www.soilscienceaustralia.org.au/asc.
 ## See also
 
 [`make_asc3_example`](https://hugomachadorodrigues.github.io/soilKey/reference/make_asc3_example.md),
+[`classify_asc3_family`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.md),
 [`soilkey_systems`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md).
 
 ## Examples
@@ -123,4 +137,7 @@ Online version: www.soilscienceaustralia.org.au/asc.
 res <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
 res$name
 #> [1] "Bleached, Eutrophic, Red Chromosol"
+classify_asc3(make_asc3_example("chromosols"), on_missing = "silent",
+              include_family = TRUE)$name
+#> [1] "Bleached, Eutrophic, Red Chromosol; thick, non-gravelly, loamy/clayey, deep"
 ```

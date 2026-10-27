@@ -1048,6 +1048,8 @@ carbonates and the site drainage.
 
 - [`classify_asc3()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
   : Classify a pedon under the Australian Soil Classification
+- [`classify_asc3_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.md)
+  : Family of a soil under the Australian Soil Classification
 - [`make_asc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_asc3_example.md)
   : Example pedons for the Australian orders
 

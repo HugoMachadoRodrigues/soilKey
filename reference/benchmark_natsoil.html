@@ -21,7 +21,7 @@ Rudosol as agreement."><meta property="og:image" content="https://hugomachadorod
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.292</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ Rudosol as agreement.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">benchmark_natsoil</span><span class="op">(</span><span class="va">pedons</span>, cores <span class="op">=</span> <span class="fl">1L</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">benchmark_natsoil</span><span class="op">(</span><span class="va">pedons</span>, cores <span class="op">=</span> <span class="fl">1L</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, family <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -100,6 +100,11 @@ on Windows).</p></dd>
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Print a summary.</p></dd>
 
+
+<dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
+<dd><p>Also derive the families (<code>classify_asc3(include_family
+= TRUE)</code>) and compare them (since 0.9.292).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -114,7 +119,10 @@ on Windows).</p></dd>
   <code>great_groups</code>, the same for the great groups (overall, and over the
   pedons whose order and suborder agree); <code>subgroups</code>, the same for
   the subgroups (over the pedons whose order, suborder and great group
-  agree); and <code>results</code>, one row per pedon.</p>
+  agree); <code>families</code> (with <code>family = TRUE</code>), each family
+  criterion against the surveyors' family codes (<code>site$reference_asc_family</code>),
+  over the pedons whose order (and, for the Hydrosols, suborder) agrees;
+  and <code>results</code>, one row per pedon.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

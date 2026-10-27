@@ -13,7 +13,7 @@ to a surveyed Tenosol or Rudosol as agreement.
 ## Usage
 
 ``` r
-benchmark_natsoil(pedons, cores = 1L, verbose = TRUE)
+benchmark_natsoil(pedons, cores = 1L, verbose = TRUE, family = FALSE)
 ```
 
 ## Arguments
@@ -35,6 +35,11 @@ benchmark_natsoil(pedons, cores = 1L, verbose = TRUE)
 
   Print a summary.
 
+- family:
+
+  Also derive the families (`classify_asc3(include_family = TRUE)`) and
+  compare them (since 0.9.292).
+
 ## Value
 
 A list: `n`; `accuracy` and `accuracy_edition`; `decided` (count),
@@ -47,7 +52,10 @@ key has them (overall, and over the pedons whose order agrees);
 `great_groups`, the same for the great groups (overall, and over the
 pedons whose order and suborder agree); `subgroups`, the same for the
 subgroups (over the pedons whose order, suborder and great group agree);
-and `results`, one row per pedon.
+`families` (with `family = TRUE`), each family criterion against the
+surveyors' family codes (`site$reference_asc_family`), over the pedons
+whose order (and, for the Hydrosols, suborder) agrees; and `results`,
+one row per pedon.
 
 ## See also
 

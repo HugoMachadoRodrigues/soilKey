@@ -1,5 +1,48 @@
 # Changelog
 
+## soilKey 0.9.292 (2026-10-27)
+
+### Australian classification: the families
+
+`classify_asc3(include_family = TRUE)` now places a soil in the family
+classes of its order and writes them after the name, as the book does:
+“Bleached, Eutrophic, Red Chromosol; thick, non-gravelly, loamy/clayey,
+deep”. The new
+[`classify_asc3_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.md)
+returns each criterion as a `FamilyAttribute` with its code (YY when the
+data cannot decide the class, ZZ when no class of the order fits); the
+result keeps them in `trace$family`, `trace$family_label` and
+`trace$family_code`. `classify_all(include_family = TRUE)` passes the
+option on when the Australian key is run. Without the option nothing
+changes.
+
+The criteria are those of each order page: the thickness of the A1, or
+of the whole A in the Kurosols, Sodosols and Chromosols and in the
+Kurosolic, Sodosolic and Chromosolic Hydrosols (the book’s general rule,
+where the order pages disagree); gravel (2-60 mm) of the surface and A1,
+the larger of the two estimates; the field texture of the A1 and the
+most clayey one of the B; soil depth (to rock, a cemented pan or
+saprolite; otherwise to the C under the B, or the depth described in a
+soil without a B); and water repellence. The Vertosols use laboratory
+clay, the Calcarosols the depth of the Bk, the Arenosols and Rudosols
+the surface soil, the Organosols their organic materials. The
+Anthroposols and the tidal Hydrosols have none. The classes and the
+criteria of each order are in `inst/rules/asc3/families.yaml`, the
+readings in `readings.yaml`.
+
+Two horizon attributes: `gravel_pct` (gravel-sized fragments) and
+`water_repellence`. The NatSoil reader fills them, with the coarse
+fragments of the ground surface and the surveyors’ family codes, and
+`benchmark_natsoil(family = TRUE)` compares each criterion. On the
+NatSoil profiles whose order agrees, the decided classes agree with the
+surveyors for 85 % of the thicknesses, 87 % of the A1 textures, 97 % of
+the B textures, 83 % of the depths and 75 % of the gravel classes. The
+Vertosol clay classes are mostly undecided: only 29 of 291 NatSoil
+Vertosols have laboratory clay.
+
+No order, suborder, great group or subgroup changes on NatSoil. WRB,
+SiBCS and USDA results do not change.
+
 ## soilKey 0.9.291 (2026-10-27)
 
 ### Australian classification: subgroups of the Rudosolic and Tenosolic Hydrosols

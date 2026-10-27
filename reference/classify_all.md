@@ -54,7 +54,9 @@ classify_all(
 
   Forwarded to
   [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
-  (default `FALSE`) to derive the USDA 5th-level family. No effect on
+  (default `FALSE`) to derive the USDA 5th-level family, and to
+  [`classify_asc3`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.md)
+  when it is run (the Australian family, since 0.9.292). No effect on
   the other systems.
 
 - specifiers:
