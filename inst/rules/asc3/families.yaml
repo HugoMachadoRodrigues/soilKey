@@ -1,0 +1,194 @@
+# Family criteria of the Australian Soil Classification, 3rd edition (Isbell
+# and NCST 2021, online version of 25 June 2026): the 'Family Criteria' of
+# each order page, 'Using the classification' (A and A1 horizons at the
+# family level, field textures) and the glossary ('Gravel', 'Soil depth',
+# 'Peaty horizon', 'Water repellence'). The family is not a level of the key:
+# each criterion places the soil in one class of its own. Code YY: the data
+# cannot decide the class; ZZ: no class of the order's list fits. The
+# readings are in readings.yaml (topic "Families").
+#
+# A class holds the values from `lower` (inclusive, when given) to `upper`
+# (exclusive, or inclusive with closed: true); the last class of a list
+# takes the rest. Values are in cm (thickness, depth) or % (gravel, clay).
+
+classes:
+  thickness:
+    - {code: "A", name: "thin", upper: 10}
+    - {code: "B", name: "moderately thick", upper: 30}
+    - {code: "C", name: "thick", upper: 60, closed: true}
+    - {code: "D", name: "very thick"}
+  gravel:
+    - {code: "E", name: "non-gravelly", upper: 2}
+    - {code: "F", name: "slightly gravelly", upper: 10}
+    - {code: "G", name: "gravelly", upper: 20}
+    - {code: "H", name: "moderately gravelly", upper: 50, closed: true}
+    - {code: "I", name: "very gravelly"}
+  texture:
+    - {code: "J", name: "peaty"}
+    - {code: "K", name: "sandy"}
+    - {code: "L", name: "loamy"}
+    - {code: "M", name: "clay loamy"}
+    - {code: "N", name: "silty"}
+    - {code: "O", name: "clayey"}
+  depth:
+    - {code: "T", name: "very shallow", upper: 25}
+    - {code: "U", name: "shallow", upper: 50}
+    - {code: "V", name: "moderately deep", upper: 100}
+    - {code: "W", name: "deep", upper: 150}
+    - {code: "X", name: "very deep", upper: 500, closed: true}
+    - {code: "Y", name: "giant"}
+  repellence:
+    - {code: "NR", name: "non water repellent"}
+    - {code: "WR", name: "water repellent"}
+    - {code: "SR", name: "strongly water repellent"}
+  # Vertosols: laboratory clay
+  clay:
+    - {code: "Q", name: "fine", upper: 45}
+    - {code: "R", name: "medium fine", upper: 60, closed: true}
+    - {code: "S", name: "very fine"}
+  # Organosols
+  alteration:
+    - {code: "P", name: "granular"}
+    - {code: "HZ", name: "ashy"}
+    - {code: "JZ", name: "vitric"}
+  organic_thickness:
+    # the page prints 0.1-<0.6 m for the moderately thick class, a misprint
+    # for 0.1-<0.3 m (the thick class is 0.3-0.6 m); below 0.1 m no class
+    - {code: "B", name: "moderately thick", lower: 10, upper: 30}
+    - {code: "C", name: "thick", lower: 30, upper: 60, closed: true}
+    - {code: "D", name: "very thick", lower: 60}
+  organic_type:
+    - {code: "Z", name: "surface organic material absent"}
+    - {code: "OA", name: "fibric peat"}
+    - {code: "OB", name: "hemic peat"}
+    - {code: "OC", name: "sapric peat"}
+    - {code: "OD", name: "sandy peat"}
+    - {code: "OE", name: "loamy peat"}
+    - {code: "OF", name: "clayey peat"}
+  underlying:
+    - {code: "Z", name: "texture material absent"}
+    - {code: "K", name: "sandy"}
+    - {code: "L", name: "loamy"}
+    - {code: "M", name: "clay loamy"}
+    - {code: "N", name: "silty"}
+    - {code: "O", name: "clayey"}
+
+# The criteria of each order, in the order of the book's family name. `id`
+# names the criterion in the result; `kind` its classes; `part` or `where`
+# what is measured; `classes` the codes the order lists, when not all;
+# `pair` 1 and 2 join two textures as "sandy/clayey". Thickness parts: a1,
+# the A1 horizon and any organic horizons (O2, P) over it; a, the whole A
+# (A1, A2, A3) and those organic horizons (the book's general rule for the
+# texture-contrast orders, 'Using the classification', and the Hydrosols'
+# Kurosolic, Sodosolic and Chromosolic great groups).
+orders:
+  KU:
+    - {id: thickness, kind: thickness, part: a}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, classes: ["J", "K", "L", "M", "N"], pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  SO:
+    - {id: thickness, kind: thickness, part: a}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, classes: ["K", "L", "M", "N"], pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  CH:
+    - {id: thickness, kind: thickness, part: a}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, classes: ["J", "K", "L", "M", "N"], pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  CA:
+    - {id: bk_depth, kind: thickness, part: above_bk}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: surface_texture, kind: texture, where: surface_soil, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["K", "L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  FE:
+    - {id: thickness, kind: thickness, part: a1}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  DE:
+    - {id: thickness, kind: thickness, part: a1}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["K", "L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+  KA:
+    - {id: thickness, kind: thickness, part: a1}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  PO:
+    - {id: thickness, kind: thickness, part: a1}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, classes: ["J", "K", "L", "M", "N"], pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["K", "L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  # Redoxic, Oxyaquic, Extratidal and Salic Hydrosols; the thickness is that
+  # of the whole A in the Kurosolic, Sodosolic and Chromosolic great groups
+  HY:
+    - {id: thickness, kind: thickness, part: a1, part_a_great_groups: ["CX", "EQ", "BG"], names: {B: "medium"}}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max, classes: ["K", "L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  # Supratidal and Hypersalic Hydrosols: the criteria "partly applicable",
+  # with surface soil and maximum subsoil texture
+  HY-partial:
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: surface_texture, kind: texture, where: surface_soil, pair: 1}
+    - {id: subsoil_texture, kind: texture, where: subsoil_1m, pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  VE:
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: upper_clay, kind: clay, where: upper_10, pair: 1}
+    - {id: b_clay, kind: clay, where: b_max, pair: 2}
+    - {id: depth, kind: depth}
+  RE:
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: surface_texture, kind: texture, where: surface_soil, classes: ["J", "K", "L"], pair: 1}
+    - {id: subsoil_texture, kind: texture, where: subsoil_1m, classes: ["K", "L"], pair: 2}
+    - {id: depth, kind: depth, classes: ["W", "X", "Y"]}
+    - {id: water_repellence, kind: repellence}
+  RU:
+    - {id: gravel, kind: gravel, where: surface_soil}
+    - {id: surface_texture, kind: texture, where: surface_soil, classes: ["K", "L", "M", "N", "O"]}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  TE:
+    - {id: thickness, kind: thickness, part: a1}
+    - {id: gravel, kind: gravel, where: surface_a1}
+    - {id: a1_texture, kind: texture, where: a1, pair: 1}
+    - {id: b_texture, kind: texture, where: b_max_cb, classes: ["K", "L", "M", "N", "O"], pair: 2}
+    - {id: depth, kind: depth}
+    - {id: water_repellence, kind: repellence}
+  OR:
+    - {id: alteration, kind: alteration}
+    - {id: organic_thickness, kind: organic_thickness}
+    - {id: gravel, kind: gravel, where: surface_horizon}
+    - {id: organic_type, kind: organic_type, pair: 1}
+    - {id: underlying_texture, kind: underlying, pair: 2}
+    - {id: depth, kind: depth, from: organic}
+  # Anthroposols: no families ("not formalised below the suborder level")
+
+# The Hydrosol suborders with the full criteria, and those with part of them;
+# the Subtidal, Subaqueous and Intertidal Hydrosols are not mentioned and get
+# no family.
+hydrosol_suborders:
+  full: ["BT", "EG", "ED", "DT"]
+  partial: ["EW", "CS"]

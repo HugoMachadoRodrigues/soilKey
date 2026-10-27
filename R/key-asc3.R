@@ -5,8 +5,8 @@
 # v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
 # subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols; Dermosols, Kandosols, Ferrosols since
 # v0.9.287; Vertosols, Calcarosols, Podosols, Organosols since v0.9.288; Hydrosols, Arenosols, Rudosols,
-# Tenosols since v0.9.289; the Rudosolic and Tenosolic Redoxic and Oxyaquic Hydrosols since v0.9.291).
-# Families follow.
+# Tenosols since v0.9.289; the Rudosolic and Tenosolic Redoxic and Oxyaquic Hydrosols since v0.9.291);
+# families since v0.9.292 (on request).
 # Experimental and opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -49,10 +49,12 @@
 #' the soil, horizons with all but the thickness; the Rudosolic and
 #' Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
 #' list of the Rudosol or Tenosol suborder the soil keys to apart from
-#' wetness). The families follow. The name is that of the deepest class
-#' assigned, in the book's form "Subgroup, Great Group, Suborder Order"
-#' ("Bleached, Eutrophic, Red Chromosol"); \code{rsg_or_order} keeps the
-#' order.
+#' wetness). The name is that of the deepest class assigned, in the book's
+#' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
+#' Chromosol"); \code{rsg_or_order} keeps the order. With
+#' \code{include_family = TRUE} the family follows the name as the book
+#' writes it ("Bleached, Eutrophic, Red Chromosol; thick, non-gravelly,
+#' loamy/clayey, deep"): see \code{\link{classify_asc3_family}}.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
 #' grades (\code{field_texture}, NCST Field Handbook codes; lab clay stands in
@@ -81,22 +83,30 @@
 #'        \code{"error"}.
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
+#' @param include_family Derive the family (\code{\link{classify_asc3_family}})
+#'        and write it after the name. Default \code{FALSE} (the result is
+#'        as in earlier versions).
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
 #'   \code{"asc3"}, the deepest class in \code{name}, the order in
 #'   \code{rsg_or_order}, the classes of each level in \code{levels}, the key
 #'   trace, and \code{provisional_because} (classes before the assigned ones
-#'   that could not be decided).
+#'   that could not be decided); with \code{include_family}, the family
+#'   criteria in \code{trace$family}, their names in
+#'   \code{trace$family_label} and their codes in \code{trace$family_code}.
 #' @references Isbell, R.F. and the National Committee on Soil and Terrain
 #'   (2021). The Australian Soil Classification, 3rd ed. CSIRO Publishing,
 #'   Melbourne. Online version: www.soilscienceaustralia.org.au/asc.
-#' @seealso \code{\link{make_asc3_example}}, \code{\link{soilkey_systems}}.
+#' @seealso \code{\link{make_asc3_example}}, \code{\link{classify_asc3_family}},
+#'   \code{\link{soilkey_systems}}.
 #' @examples
 #' res <- classify_asc3(make_asc3_example("chromosols"), on_missing = "silent")
 #' res$name
+#' classify_asc3(make_asc3_example("chromosols"), on_missing = "silent",
+#'               include_family = TRUE)$name
 #' @export
 classify_asc3 <- function(pedon, rules = NULL,
                           on_missing = c("warn", "silent", "error"),
-                          gapfill = FALSE) {
+                          gapfill = FALSE, include_family = FALSE) {
   on_missing <- match.arg(on_missing)
   if (inherits(pedon, "PedonRecord")) pedon <- .cssc_prepare_pedon(pedon)
   # .apart_from_wetness is set by the key for one walk (Rudosolic Hydrosols),
@@ -117,6 +127,22 @@ classify_asc3 <- function(pedon, rules = NULL,
         "buried soil: the ASC then classifies the buried soil, with the cover as a",
         "phase (How to classify); soilKey keyed the cover."))
     }
+  }
+  # the family, after the name as the book writes it ("...; thin, gravelly,
+  # sandy/clayey, shallow")
+  if (isTRUE(include_family) && inherits(pedon, "PedonRecord") && !is.na(res$rsg_or_order)) {
+    at <- function(l) { k <- res$levels$code[res$levels$level == l]; if (length(k)) k[1L] else NULL }
+    fam <- tryCatch(classify_asc3_family(.classify_apply_gapfill(pedon, gapfill), order = at("orders"),
+                                         suborder = at("suborders"), great_group = at("great_groups")),
+                    error = function(e) {
+                      res$warnings <- c(res$warnings, paste("The family could not be derived:", conditionMessage(e)))
+                      list()
+                    })
+    lbl <- .asc_family_label(fam)
+    res$trace$family <- fam
+    res$trace$family_label <- lbl
+    res$trace$family_code <- .asc_family_code(fam)
+    if (nzchar(lbl)) res$name <- paste0(res$name, "; ", lbl)
   }
   res
 }

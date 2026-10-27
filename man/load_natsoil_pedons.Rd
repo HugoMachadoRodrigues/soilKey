@@ -97,7 +97,14 @@ records are added as ranges (each class strictly between its limits).
 Laboratory EC of a 1:5 extract gives \code{ec_1to5_dS_m}; the soil
 strength gives \code{strength_dry} or \code{strength_moist} by the moisture
 of its record; the size class of the first structure gives
-\code{ped_size_max_mm}.
+\code{ped_size_max_mm}. Since 0.9.292, for the families: \code{gravel_pct}
+(the coarse fragments of a gravel size class, 2-60 mm, or of no size
+recorded; NaN, unknown, when such a record has no abundance),
+\code{water_repellence}, and at the site the coarse fragments of the
+ground surface (\code{surface_coarse_fragments_pct}, all sizes, and
+\code{surface_gravel_pct}; NA when none is recorded, NaN when a record has
+no abundance) and the surveyors' family codes by position
+(\code{reference_asc_family}, \code{"B;E;M;O;V"}).
 }
 \references{
 CSIRO. CSIRO National Soil Site Database (NatSoil).

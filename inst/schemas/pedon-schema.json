@@ -482,6 +482,12 @@
           },
           "effervescence_class": {
             "type": ["string", "null"]
+          },
+          "gravel_pct": {
+            "type": ["number", "null"]
+          },
+          "water_repellence": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

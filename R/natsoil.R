@@ -269,7 +269,14 @@ fetch_natsoil <- function(dir, classified_only = TRUE, max_sites = Inf, page_siz
 #' Laboratory EC of a 1:5 extract gives \code{ec_1to5_dS_m}; the soil
 #' strength gives \code{strength_dry} or \code{strength_moist} by the moisture
 #' of its record; the size class of the first structure gives
-#' \code{ped_size_max_mm}.
+#' \code{ped_size_max_mm}. Since 0.9.292, for the families: \code{gravel_pct}
+#' (the coarse fragments of a gravel size class, 2-60 mm, or of no size
+#' recorded; NaN, unknown, when such a record has no abundance),
+#' \code{water_repellence}, and at the site the coarse fragments of the
+#' ground surface (\code{surface_coarse_fragments_pct}, all sizes, and
+#' \code{surface_gravel_pct}; NA when none is recorded, NaN when a record has
+#' no abundance) and the surveyors' family codes by position
+#' (\code{reference_asc_family}, \code{"B;E;M;O;V"}).
 #'
 #' @param path A folder (searched recursively for \code{.json} and
 #'   \code{.json.gz} files) or a vector of files.
@@ -332,6 +339,7 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   drainage = c("1" = "very poorly drained", "2" = "poorly drained", "3" = "imperfectly drained",
                "4" = "moderately well drained", "5" = "well drained", "6" = "rapidly drained"),
   cf_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35, "5" = 70, "6" = 95),
+  repellence = c(N = "non-repellent", R = "repellent", S = "strongly repellent"),
   seg_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35, "5" = 60),
   mott_mid = c("0" = 0, "1" = 1, "2" = 6, "3" = 15, "4" = 35),
   cementation = c("0" = NA, "1" = "weakly", "2" = "moderately", "3" = "strongly", "4" = "indurated"),
@@ -477,6 +485,12 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     k <- as.character(.ns(z, "cf_abun")); if (!is.na(k) && k %in% names(.NATSOIL_CODES$cf_mid)) .NATSOIL_CODES$cf_mid[[k]] else NA_real_
   }, 0)
   cf <- if (!length(cfs) || anyNA(cf_each)) NA_real_ else min(100, sum(cf_each))
+  # gravel (2-60 mm, the ASC family): the records of a gravel size class, or
+  # of no size recorded (larger fragments are recorded by their size); NaN
+  # (unknown) when a gravel record has no abundance
+  cf_size <- vapply(cfs, function(z) as.character(.ns(z, "cf_size")), "")
+  grav <- is.na(cf_size) | cf_size %in% c("1", "2", "3")
+  gravel <- if (!length(cfs)) NA_real_ else if (anyNA(cf_each[grav])) NaN else min(100, sum(cf_each[grav]))
   # calcareous segregations: a record with only its nature (no abundance,
   # form or size) is a template, not an observation; one with a form or size
   # but no abundance is read as very few (1 %)
@@ -632,7 +646,8 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     munsell_hue_dry = as.character(.ns(cd, "col_hue")), munsell_value_dry = num(cd, "col_value"),
     munsell_chroma_dry = num(cd, "col_chroma"),
     effervescence_class = .natsoil_map(.ns(h, "h_carbonate_eff"), "effervescence"),
-    slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf,
+    slickensides = slick, cracks_width_cm = cw, coarse_fragments_pct = cf, gravel_pct = gravel,
+    water_repellence = .natsoil_map(.ns(h, "h_water_repellence"), "repellence"),
     secondary_carbonates_pct = seg_k, carbonate_soft_pct = carb_soft, carbonate_hard_pct = carb_hard,
     redoximorphic_features_pct = mot_pct, mottle_contrast = mot_contrast, cementation_class = cem,
     ferric_nodules_pct = fe_nod, bauxitic_nodules_pct = bx_nod, manganiferous_nodules_pct = mn_nod,
@@ -665,6 +680,19 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     if (length(v)) paste(v, collapse = "; ") else NA_character_
   }
   code <- function(k) { v <- trimws(as.character(.ns(o, k))); if (is.na(v) || !nzchar(v)) NA_character_ else v }
+  # coarse fragments on the ground surface (all sizes, and gravel: a gravel
+  # size class or no size recorded), as in the horizons
+  scf <- o$z_surface_coarse_frags %||% list()
+  scf_each <- vapply(scf, function(z) {
+    k <- as.character(.ns(z, "scf_abun")); if (!is.na(k) && k %in% names(.NATSOIL_CODES$cf_mid)) .NATSOIL_CODES$cf_mid[[k]] else NA_real_
+  }, 0)
+  scf_size <- vapply(scf, function(z) as.character(.ns(z, "scf_size")), "")
+  # no record: not recorded (NA); a record with no abundance: unknown (NaN)
+  sgrav <- is.na(scf_size) | scf_size %in% c("1", "2", "3")
+  surface_cf <- if (!length(scf)) NA_real_ else if (anyNA(scf_each)) NaN else min(100, sum(scf_each))
+  surface_gravel <- if (!length(scf)) NA_real_ else if (anyNA(scf_each[sgrav])) NaN else min(100, sum(scf_each[sgrav]))
+  # the surveyors' family codes, by position ("B;E;M;O;V")
+  fam <- vapply(1:5, function(k) { v <- code(paste0("o_asc_fam", k)); if (is.na(v)) "" else v }, "")
   lat <- suppressWarnings(as.numeric(.ns(o, "o_latitude_GDA94") %|NA|% .ns(o, "o_latitude")))
   lon <- suppressWarnings(as.numeric(.ns(o, "o_longitude_GDA94") %|NA|% .ns(o, "o_longitude")))
   site <- list(
@@ -679,6 +707,8 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     reference_asc_order = code("o_asc_ord"), reference_asc_suborder = code("o_asc_subord"),
     reference_asc_great_group = code("o_asc_gg"), reference_asc_subgroup = code("o_asc_subg"),
     reference_asc_confidence = code("o_asc_conf"),
+    reference_asc_family = if (all(!nzchar(fam))) NA_character_ else paste(fam, collapse = ";"),
+    surface_coarse_fragments_pct = surface_cf, surface_gravel_pct = surface_gravel,
     licence = as.character(.ns(s, "usage_license")), citation = as.character(.ns(s, "citation")),
     source = "NatSoil (CSIRO)")
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
@@ -821,13 +851,18 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
 #'   \code{great_groups}, the same for the great groups (overall, and over the
 #'   pedons whose order and suborder agree); \code{subgroups}, the same for
 #'   the subgroups (over the pedons whose order, suborder and great group
-#'   agree); and \code{results}, one row per pedon.
+#'   agree); \code{families} (with \code{family = TRUE}), each family
+#'   criterion against the surveyors' family codes (\code{site$reference_asc_family}),
+#'   over the pedons whose order (and, for the Hydrosols, suborder) agrees;
+#'   and \code{results}, one row per pedon.
+#' @param family Also derive the families (\code{classify_asc3(include_family
+#'   = TRUE)}) and compare them (since 0.9.292).
 #' @seealso \code{\link{load_natsoil_pedons}}, \code{\link{classify_asc3}}.
 #' @export
-benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
+benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE, family = FALSE) {
   one <- function(p) {
     ref <- toupper(as.character(p$site$reference_asc_order %||% NA))
-    r <- tryCatch(classify_asc3(p, on_missing = "silent"), error = function(e) NULL)
+    r <- tryCatch(classify_asc3(p, on_missing = "silent", include_family = family), error = function(e) NULL)
     pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "orders"][1L] %|NA|% NA_character_)
     prov <- if (is.null(r)) NA_character_
             else paste(sub("^orders:", "", grep("^orders:", r$provisional_because, value = TRUE)), collapse = ",")
@@ -840,7 +875,13 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     sg_pred <- if (is.null(r)) NA_character_ else (r$levels$code[r$levels$level == "subgroups"][1L] %|NA|% NA_character_)
     sg_prov <- if (is.null(r)) NA_character_
                else paste(sub("^subgroups:", "", grep("^subgroups:", r$provisional_because, value = TRUE)), collapse = ",")
-    data.frame(id = p$site$id, reference = ref, predicted = pred, provisional = prov,
+    fam <- if (!family) NULL else {
+      f <- if (is.null(r)) list() else r$trace$family %||% list()
+      list(reference_family = as.character(p$site$reference_asc_family %||% NA),
+           predicted_family = if (length(f)) paste(names(f), vapply(f, function(a) a$evidence$code, ""),
+                                                   sep = "=", collapse = ";") else NA_character_)
+    }
+    row <- data.frame(id = p$site$id, reference = ref, predicted = pred, provisional = prov,
                reference_suborder = toupper(as.character(p$site$reference_asc_suborder %||% NA)),
                predicted_suborder = sub_pred, provisional_suborder = sub_prov,
                reference_great_group = toupper(as.character(p$site$reference_asc_great_group %||% NA)),
@@ -848,6 +889,8 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
                reference_subgroup = toupper(as.character(p$site$reference_asc_subgroup %||% NA)),
                predicted_subgroup = sg_pred, provisional_subgroup = sg_prov,
                confidence = as.character(p$site$reference_asc_confidence %||% NA), stringsAsFactors = FALSE)
+    if (!is.null(fam)) row <- cbind(row, as.data.frame(fam, stringsAsFactors = FALSE))
+    row
   }
   cores <- if (.Platform$OS.type == "windows") 1L else max(1L, as.integer(cores))
   rows <- if (cores > 1L) parallel::mclapply(pedons, one, mc.cores = cores) else lapply(pedons, one)
@@ -893,6 +936,7 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
     suborders = .natsoil_suborder_summary(res),
     great_groups = .natsoil_great_group_summary(res),
     subgroups = .natsoil_subgroup_summary(res),
+    families = if (family) .natsoil_family_summary(res) else NULL,
     results = res)
   if (verbose) {
     message(sprintf(paste("NatSoil, ASC orders: %d pedons, agreement %.1f %% (%.1f %% counting the",
@@ -901,4 +945,63 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
                     out$decided_accuracy, out$decided_accuracy_edition))
   }
   out
+}
+
+# The families (since 0.9.292): each criterion against the surveyors' codes,
+# over the pedons whose order agrees (and, for the Hydrosols, the suborder: it
+# decides which criteria apply). The surveys write the codes in the book's
+# order, but not always the same set (older Rudosol families carry a
+# thickness and two textures). A record with no code beyond the order's
+# number of criteria is read by position (a blank or "-" is a criterion not
+# given); a longer one by kind: each criterion takes the next code, after
+# the one the previous criterion took, that is a class of its kind (a
+# thickness A-D, gravel E-I, a texture J-O ...). Water repellence and the Organosols'
+# altered materials (recorded only when present) are left out. Decided when
+# soilKey's code is not YY.
+.natsoil_family_summary <- function(res) {
+  if (is.null(res$predicted_family)) return(NULL)
+  fr <- .asc_family_rules()
+  keep <- which(res$agree & !is.na(res$reference_family))
+  rows <- list()
+  for (i in keep) {
+    o <- res$reference[i]
+    if (o == "HY" && !identical(res$predicted_suborder[i], res$reference_suborder[i])) next
+    crit <- Filter(function(cr) !cr$kind %in% c("repellence", "alteration"),
+                   .asc_family_criteria(o, res$predicted_suborder[i]) %||% list())
+    if (!length(crit)) next
+    ref <- trimws(strsplit(res$reference_family[i], ";", fixed = TRUE)[[1L]])
+    pf <- if (is.na(res$predicted_family[i])) character(0) else strsplit(res$predicted_family[i], ";", fixed = TRUE)[[1L]]
+    pred <- stats::setNames(sub("^[^=]*=", "", pf), sub("=.*$", "", pf))
+    # a record that keeps one slot per criterion (blanks and "-" included) is
+    # read by position; a longer one (an older layout) by the kinds of its codes
+    last <- max(c(0L, which(nzchar(ref) & ref != "-")))
+    positional <- last <= length(crit)
+    pos <- 0L
+    for (k in seq_along(crit)) {
+      cr <- crit[[k]]
+      valid <- vapply(fr$classes[[cr$kind]], function(z) z$code, "")
+      if (positional) {
+        if (k > length(ref) || !ref[k] %in% valid) next
+        pos <- k
+      } else {
+        hit <- which(seq_along(ref) > pos & ref %in% valid)
+        if (!length(hit)) next
+        pos <- hit[1L]
+      }
+      rows[[length(rows) + 1L]] <- data.frame(id = res$id[i], order = o, criterion = cr$id, reference = ref[pos],
+                                              predicted = if (cr$id %in% names(pred)) pred[[cr$id]] else NA_character_,
+                                              stringsAsFactors = FALSE)
+    }
+  }
+  if (!length(rows)) return(NULL)
+  d <- do.call(rbind, rows)
+  d$decided <- !is.na(d$predicted) & d$predicted != "YY"
+  d$agree <- !is.na(d$predicted) & d$predicted == d$reference
+  pct <- function(x) if (length(x)) 100 * mean(x) else NA_real_
+  by <- do.call(rbind, lapply(unique(d$criterion), function(k) {
+    s <- d$criterion == k
+    data.frame(criterion = k, n = sum(s), agreement = pct(d$agree[s]), decided = sum(s & d$decided),
+               decided_agreement = pct(d$agree[s & d$decided]), stringsAsFactors = FALSE)
+  }))
+  list(by_criterion = by, pairs = d)
 }
