@@ -731,9 +731,17 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
     }
     gg_codes <- vapply(ggs[[key2[i]]] %||% list(), function(t) as.character(t$code), "")
     if (is.na(res$reference_great_group[i]) || !(res$reference_great_group[i] %in% gg_codes)) return(FALSE)
-    lst <- .level_list(sgs, c(res$reference[i], res$reference_suborder[i], res$reference_great_group[i]),
-                       res$reference_great_group[i])
+    path <- c(res$reference[i], res$reference_suborder[i], res$reference_great_group[i])
+    lst <- .level_list(sgs, path, res$reference_great_group[i])
     codes <- vapply(lst %||% list(), function(t) as.character(t$code), "")
+    # a list taken from another order (the Rudosolic and Tenosolic Hydrosols,
+    # since 0.9.291): a code of any of that order's lists
+    from <- rules$subgroups_from[[paste(path, collapse = "-")]]
+    from <- if (is.list(from)) from$class else from
+    if (!length(codes) && length(from) == 1L) {
+      codes <- unique(unlist(lapply(sgs[startsWith(names(sgs), paste0(from, "-"))],
+                                    function(l) vapply(l, function(t) as.character(t$code), ""))))
+    }
     !is.na(res$reference_subgroup[i]) && res$reference_subgroup[i] %in% codes
   }, NA)
   r <- res[valid, , drop = FALSE]; r_no_gg <- no_gg[valid]

@@ -1684,3 +1684,16 @@ subgroups:
   "HY-DT-GT": []
 
   "HY-DT-GR": []
+
+# The Rudosolic and Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
+# subgroup lists of the Rudosols and Tenosols (Hydrosols page, subgroups of the Redoxic and
+# Oxyaquic Hydrosols). The profile is keyed, apart from wetness, under the order named here, as
+# deep as the choice of list needs (the suborder; see readings.yaml); the names are written on
+# the Hydrosol great group's ('Basic, Rudosolic, Oxyaquic Hydrosol').
+# The walk sets site$.apart_from_wetness, which only the Hypersalic suborder reads (its water
+# table and mottling are wetness).
+subgroups_from:
+  "HY-ED-GT": {class: "TE", site: {.apart_from_wetness: true}}
+  "HY-ED-GR": {class: "RU", site: {.apart_from_wetness: true}}
+  "HY-DT-GT": {class: "TE", site: {.apart_from_wetness: true}}
+  "HY-DT-GR": {class: "RU", site: {.apart_from_wetness: true}}

@@ -115,6 +115,28 @@
                                 lab, paste(twice, collapse = ", ")))
     }
   }
+  # v0.9.291: a "<level>_from" entry names a class of the top level, and the
+  # list it stands for is there and empty (else the key would never read it)
+  top_codes <- vapply(rules[[sys$top_level]] %||% list(),
+                      function(t) as.character(t$code %||% NA_character_), "")
+  for (lvl in sys$levels[-1L]) {
+    fb <- rules[[paste0(lvl, "_from")]]
+    for (k in names(fb) %||% character(0)) {
+      spec <- fb[[k]]
+      cls <- if (is.list(spec)) spec$class else spec
+      if (!ok(cls) || !(cls %in% top_codes)) {
+        probs <- c(probs, sprintf("%s_from/%s: names no class of the %s list",
+                                  lvl, k, sys$top_level))
+      }
+      if (is.list(spec) && !is.null(spec$site) && (!is.list(spec$site) || is.null(names(spec$site)))) {
+        probs <- c(probs, sprintf("%s_from/%s: site must be a mapping", lvl, k))
+      }
+      if (is.null(rules[[lvl]][[k]]) || length(rules[[lvl]][[k]]) > 0L) {
+        probs <- c(probs, sprintf("%s_from/%s: the %s list of %s must be present and empty",
+                                  lvl, k, lvl, k))
+      }
+    }
+  }
   probs
 }
 

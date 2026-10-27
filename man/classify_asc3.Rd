@@ -64,9 +64,13 @@ carbonate), the Podosols (coherence of the B, pans), the Organosols
 (what the organic materials overlie), and the Hydrosols, Arenosols,
 Rudosols and Tenosols (peat kinds, sulfidic materials near the surface,
 acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
-the soil, horizons with all but the thickness). The families follow. The name is that of the deepest class assigned, in the book's
-form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
-Chromosol"); \code{rsg_or_order} keeps the order.
+the soil, horizons with all but the thickness; the Rudosolic and
+Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
+list of the Rudosol or Tenosol suborder the soil keys to apart from
+wetness). The families follow. The name is that of the deepest class
+assigned, in the book's form "Subgroup, Great Group, Suborder Order"
+("Bleached, Eutrophic, Red Chromosol"); \code{rsg_or_order} keeps the
+order.
 }
 \details{
 The ASC is largely morphological. The diagnostics read field texture
