@@ -721,23 +721,29 @@ load_natsoil_pedons <- function(path, classified_only = TRUE, max_n = NULL, seed
   if (is.null(res$reference_subgroup) || !length(sgs)) return(NULL)
   # the survey's great group must be one of the key under its order and
   # suborder, and its subgroup one of the list under that great group
+  key2 <- paste(res$reference, res$reference_suborder, sep = "-")
+  no_gg <- vapply(key2, function(k) is.null(ggs[[k]]) && !is.null(sgs[[k]]), NA, USE.NAMES = FALSE)
   valid <- vapply(seq_len(nrow(res)), function(i) {
-    gg_codes <- vapply(ggs[[paste(res$reference[i], res$reference_suborder[i], sep = "-")]] %||% list(),
-                       function(t) as.character(t$code), "")
+    if (no_gg[i]) {
+      # a suborder with no great groups: its own list
+      codes <- vapply(sgs[[key2[i]]], function(t) as.character(t$code), "")
+      return(!is.na(res$reference_subgroup[i]) && res$reference_subgroup[i] %in% codes)
+    }
+    gg_codes <- vapply(ggs[[key2[i]]] %||% list(), function(t) as.character(t$code), "")
     if (is.na(res$reference_great_group[i]) || !(res$reference_great_group[i] %in% gg_codes)) return(FALSE)
     lst <- .level_list(sgs, c(res$reference[i], res$reference_suborder[i], res$reference_great_group[i]),
                        res$reference_great_group[i])
     codes <- vapply(lst %||% list(), function(t) as.character(t$code), "")
     !is.na(res$reference_subgroup[i]) && res$reference_subgroup[i] %in% codes
   }, NA)
-  r <- res[valid, , drop = FALSE]
+  r <- res[valid, , drop = FALSE]; r_no_gg <- no_gg[valid]
   if (!nrow(r)) return(NULL)
   eq <- function(a, b) !is.na(a) & !is.na(b) & a == b
   gg_ok <- r$agree %in% TRUE & eq(r$predicted_suborder, r$reference_suborder) &
-           eq(r$predicted_great_group, r$reference_great_group)
+           (eq(r$predicted_great_group, r$reference_great_group) | (r_no_gg & is.na(r$predicted_great_group)))
   r$agree_sg <- gg_ok & eq(r$predicted_subgroup, r$reference_subgroup)
   r$decided_sg <- r$decided %in% TRUE & !is.na(r$provisional_suborder) & !nzchar(r$provisional_suborder) &
-                  !is.na(r$provisional_great_group) & !nzchar(r$provisional_great_group) &
+                  (r_no_gg | (!is.na(r$provisional_great_group) & !nzchar(r$provisional_great_group))) &
                   !is.na(r$provisional_subgroup) & !nzchar(r$provisional_subgroup)
   pct <- function(x) if (length(x)) 100 * mean(x) else NA_real_
   list(n = nrow(r), accuracy = pct(r$agree_sg), decided = sum(r$decided_sg),
@@ -839,6 +845,22 @@ benchmark_natsoil <- function(pedons, cores = 1L, verbose = TRUE) {
   rows <- if (cores > 1L) parallel::mclapply(pedons, one, mc.cores = cores) else lapply(pedons, one)
   res <- do.call(rbind, rows)
   res <- res[res$reference %in% names(.ASC_ORDER_CODES), , drop = FALSE]
+  # a suborder with no great groups (Hypergypsic, Lutic, Stratic Rudosols):
+  # the survey gives its subgroup in the great-group column (since 0.9.289)
+  rules <- load_rules("asc3")
+  no_gg <- vapply(seq_len(nrow(res)), function(i) {
+    key <- paste(res$reference[i], res$reference_suborder[i], sep = "-")
+    is.null(rules$great_groups[[key]]) && !is.null(rules$subgroups[[key]])
+  }, NA)
+  in_list <- vapply(seq_len(nrow(res)), function(i) {
+    if (!no_gg[i] || is.na(res$reference_great_group[i])) return(FALSE)
+    lst <- rules$subgroups[[paste(res$reference[i], res$reference_suborder[i], sep = "-")]]
+    res$reference_great_group[i] %in% vapply(lst, function(t) as.character(t$code), "")
+  }, NA)
+  # the great-group column holds a code of the suborder's subgroup list (the
+  # subgroup column then empty, "ZZ" for not available, or a code of no list)
+  mv <- in_list
+  res$reference_subgroup[mv] <- res$reference_great_group[mv]; res$reference_great_group[mv] <- NA
   res$decided <- !is.na(res$provisional) & !nzchar(res$provisional)
   res$agree <- !is.na(res$predicted) & res$predicted == res$reference
   res$agree_edition <- res$agree | (res$predicted %in% "RE" & res$reference %in% c("TE", "RU"))

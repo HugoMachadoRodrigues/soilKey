@@ -1,0 +1,3841 @@
+# Key to the subgroups of the Arenosols, ASC 3rd ed. (online version with errata).
+# One list for every great group of the order, as the order page gives it; the name is written on the
+# great group's ('Bleached, Eutrophic, Red Chromosol'). See R/diagnostics-asc-subgroups.R and
+# inst/rules/asc3/readings.yaml.
+
+subgroups:
+  "RE-BE-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-*":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "GU"
+      name: "Humose-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A humose horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "FC"
+      name: "Melanic-Calcareous, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "A melanic horizon and at least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "BC"
+      name: "Calcareous, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: calcareous, part: upper100, how: some}
+      notes: "At least some part of the upper 1.0 m of the soil profile calcareous."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-BE-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AT-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AA-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AB-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AC-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AD-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-CV":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-DA":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-FB":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-CQ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-BD":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."
+
+  "RE-AE-DZ":
+    - code: "DW"
+      name: "Peaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: peaty}
+      notes: "A peaty horizon."
+
+    - code: "GY"
+      name: "Humose-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A humose horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "CK"
+      name: "Humose, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: humose}
+      notes: "A humose horizon."
+
+    - code: "FU"
+      name: "Melacic-Basic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+          - part_prop_asc: {prop: not_acid, part: upper100, how: major}
+      notes: "A melacic horizon and the major part of the upper 1.0 m of the soil profile not strongly acid."
+
+    - code: "DG"
+      name: "Melacic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melacic}
+      notes: "A melacic horizon."
+
+    - code: "FV"
+      name: "Melanic-Acidic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "A melanic horizon and the major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "DK"
+      name: "Melanic, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: melanic}
+      notes: "A melanic horizon."
+
+    - code: "ID"
+      name: "Subpeaty, {parent}"
+      tests:
+        all_of:
+          - chernic_sg_asc: {kind: subpeaty}
+      notes: "All the requirements of a peaty horizon except the thickness."
+
+    - code: "AI"
+      name: "Acidic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: major}
+      notes: "The major part of the upper 1.0 m of the soil profile strongly acid."
+
+    - code: "AR"
+      name: "Basic, {parent}"
+      tests:
+        all_of:
+          - part_prop_asc: {prop: acid, part: upper100, how: not_major}
+          - part_prop_asc: {prop: calcareous, part: upper100, how: none}
+      notes: "The upper 1.0 m of the soil profile not strongly acid (not the major part strongly acid) and no part of the upper 1.0 m of the soil profile calcareous."

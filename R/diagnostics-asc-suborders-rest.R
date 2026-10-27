@@ -99,14 +99,14 @@
 # structure with peds of 10-20 mm or less over the major part, waived for an
 # Ap or a dry strength of weak or less). The non-peaty ones start at the
 # mineral surface.
-.asc_chernic_parts <- function(pedon) {
+.asc_chernic_parts <- function(pedon, min_cm = 20) {
   x <- .asc_horizons(pedon); h <- x$h
   om <- .asc_organic_material(x, pedon)
   top0 <- .asc_profile_top(x)
   if (is.na(top0)) return(list(peaty = NA, humose = NA, dark = NA, melacic = NA, melanic = NA, x = x))
   # peaty: organic materials (not litter) from the top of the profile
   ok_peat <- ifelse(x$role %in% "O1", FALSE, om)
-  peaty <- .asc_run_at_least(.asc_run_from(x, ok_peat, top0), 20)
+  peaty <- .asc_run_at_least(.asc_run_from(x, ok_peat, top0), min_cm)
   # the mineral surface: below the organic rows at the top
   ok_o <- ifelse(om %in% TRUE & !(x$role %in% "O1"), TRUE, ifelse(is.na(om), NA, FALSE))
   orun <- .asc_run_from(x, ok_o, top0)
@@ -128,7 +128,7 @@
     cand <- c(cand, top0 + orun$possible)
   }
   cand <- sort(unique(round(cand[!is.na(cand)], 3)))
-  at <- lapply(cand, function(tm) .asc_chernic_at(pedon, x, om, tm))
+  at <- lapply(cand, function(tm) .asc_chernic_at(pedon, x, om, tm, min_cm))
   agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
   one <- function(k) agree(vapply(at, function(a) a[[k]], NA))
   list(peaty = peaty, humose = one("humose"), dark = one("dark"), melacic = one("melacic"),
@@ -137,7 +137,7 @@
 
 # The humose, melacic and melanic horizons with the mineral surface at depth
 # `tm` (see .asc_chernic_parts).
-.asc_chernic_at <- function(pedon, x, om, tm) {
+.asc_chernic_at <- function(pedon, x, om, tm, min_cm = 20) {
   h <- x$h
   ends_hard <- .asc_ends_hard(x)
   # humose: the upper 0.2 m of the mineral soil, averaged
@@ -177,7 +177,7 @@
     dark_ok[may_a & dark_ok %in% TRUE] <- NA
   } else if (is.na(tb)) dark_ok[not_a & dark_ok %in% TRUE] <- NA
   drun <- .asc_run_from(x, dark_ok, tm)
-  dark_thick <- .asc_run_at_least(drun, 20)
+  dark_thick <- .asc_run_at_least(drun, min_cm)
   melacic_out <- melanic_out <- FALSE
   dark <- if (identical(dark_thick, FALSE)) FALSE else {
     # more than a weak grade (moderate or strong), peds of 10-20 mm or less
@@ -225,7 +225,7 @@
       rr <- all_rows[seq_len(e[1L])]
       if (anyNA(x$thick[rr]) || is.na(e[2L])) return(c(NA, NA))
       span <- e[2L] - tm
-      if (span < 20 - 0.5) return(c(FALSE, FALSE))
+      if (span < min_cm - 0.5) return(c(FALSE, FALSE))
       ac <- maj(rr, ph_acid, span)
       c(ac, .and3(!ac, maj(rr, struct_ok, span)))
     })
@@ -591,16 +591,23 @@ arenosol_carbonate_asc <- function(pedon, kind = c("carbonatic", "calsilic")) {
 #' fine-earth carbonate (laboratory CaCO3, or more than 20 % soft carbonate
 #' segregations); a horizon that is not calcareous has none.
 #' @noRd
-calcenic_asc <- function(pedon) {
-  x <- .asc_horizons(pedon); h <- x$h
+# The horizons of the Calcenic Tenosols' calcareous material: more than
+# 20 % fine-earth carbonate (the laboratory decides; soft segregations over
+# 20 % pass; less in segregations says nothing of the fine earth).
+.asc_calcenic_rows <- function(x) {
+  h <- x$h
   c <- .asc_carbonate(h)
   calc <- .asc_calcareous(x)
   lab <- h$caco3_pct %||% rep(NA_real_, x$n)
-  # the laboratory decides; soft segregations over 20 % pass; less in
-  # segregations says nothing of the carbonate of the fine earth
   ok <- ifelse(!is.na(lab), lab > 20, ifelse(!is.na(c$soft_visual) & c$soft_visual > 20, TRUE,
                                              ifelse(calc %in% FALSE, FALSE, NA)))
   ok[x$des$buried | !x$mineral] <- FALSE
+  ok
+}
+
+calcenic_asc <- function(pedon) {
+  x <- .asc_horizons(pedon)
+  ok <- .asc_calcenic_rows(x)
   r <- .cssc_run_test(x, ok, 20)
   .asc_result("calcenic", r$passed, r$rows, list(),
               if (is.na(r$passed)) c("caco3_pct", "carbonate_soft_pct", "effervescence_class") else character(0),

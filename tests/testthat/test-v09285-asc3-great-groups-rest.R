@@ -10,7 +10,8 @@
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(
     data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
 }
-nm3 <- function(p) classify_asc3(p, on_missing = "silent")$name
+# the name down to the great group (the subgroups follow since 0.9.289)
+nm3 <- function(p) { lv <- classify_asc3(p, on_missing = "silent")$levels; lv <- lv[lv$level != "subgroups", ]; lv$name[nrow(lv)] }
 lv3 <- function(p, l) { r <- classify_asc3(p, on_missing = "silent")$levels; r$name[r$level == l] }
 
 test_that("the examples key to a great group", {

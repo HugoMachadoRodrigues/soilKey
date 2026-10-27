@@ -246,13 +246,15 @@ subplastic_asc <- function(pedon, window = c("b2t", "b2", "b")) {
 #' B2); with `natric`, also sodic in the major part of the upper 0.2 m of
 #' the B2t (Magnesic-Natric)
 #' @noRd
-magnesic_asc <- function(pedon, window = c("b2t", "b2", "b"), natric = FALSE) {
+magnesic_asc <- function(pedon, window = c("b2t", "b2", "b"), natric = FALSE,
+                         natric_window = c("upper_b2t", "upper_b2")) {
+  natric_window <- match.arg(natric_window)
   window <- match.arg(window)
   x <- .asc_horizons(pedon); h <- x$h
   ratio <- ifelse(is.na(h$ca_cmol) | is.na(h$mg_cmol), NA,
                   ifelse(h$mg_cmol <= 0, FALSE, h$ca_cmol / h$mg_cmol < 0.1))
   mg <- .asc_b_major(pedon, x, ratio, window)
-  passed <- if (isTRUE(natric)) .and3(mg, .asc_b_major(pedon, x, .asc_sodic(h), "upper_b2t")) else mg
+  passed <- if (isTRUE(natric)) .and3(mg, .asc_b_major(pedon, x, .asc_sodic(h), natric_window)) else mg
   .asc_result(if (isTRUE(natric)) "gg_magnesic_natric" else "gg_magnesic", passed, integer(0), list(window = window),
               if (is.na(passed)) c("ca_cmol", "mg_cmol", "na_cmol", "cec_cmol") else character(0),
               "Great groups Magnesic, Magnesic-Natric")
@@ -260,9 +262,12 @@ magnesic_asc <- function(pedon, window = c("b2t", "b2", "b"), natric = FALSE) {
 
 #' Natric (Kurosols): sodic in the major part of the upper 0.2 m of the B2t
 #' @noRd
-natric_asc <- function(pedon) {
+natric_asc <- function(pedon, window = c("upper_b2t", "upper_b2")) {
+  window <- match.arg(window)
   x <- .asc_horizons(pedon)
-  passed <- .asc_b_major(pedon, x, .asc_sodic(x$h), "upper_b2t")
+  passed <- .asc_b_major(pedon, x, .asc_sodic(x$h), window)
+  # no B2 at all (the order reads the B2 as absent): no upper part of it
+  if (window == "upper_b2" && is.na(passed) && identical(.asc_b2_rows(x), integer(0))) passed <- FALSE
   .asc_result("gg_natric", passed, integer(0), list(),
               if (is.na(passed)) c("na_cmol", "cec_cmol", "esp_pct") else character(0),
               "Great groups Natric; glossary 'Sodic'")
