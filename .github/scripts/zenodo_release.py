@@ -1,5 +1,5 @@
 """Archive a soilKey release on Zenodo as a new version of the concept record
-10.5281/zenodo.19930112. Called by .github/workflows/zenodo.yaml.
+10.5281/zenodo.19930112. Called by .github/workflows/zenodo.yaml (run by hand).
 
 Environment: ZENODO_TOKEN (deposit:write and deposit:actions scopes), TAG,
 ZIP (the git archive of the tag), RELEASE_DATE (YYYY-MM-DD), DRY_RUN
