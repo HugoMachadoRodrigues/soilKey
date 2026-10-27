@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.290</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.291" id="soilkey-09291-2026-10-27">soilKey 0.9.291 (2026-10-27)<a class="anchor" aria-label="anchor" href="#soilkey-09291-2026-10-27"></a></h2>
+<div class="section level3">
+<h3 id="australian-classification-subgroups-of-the-rudosolic-and-tenosolic-hydrosols-0-9-291">Australian classification: subgroups of the Rudosolic and Tenosolic Hydrosols<a class="anchor" aria-label="anchor" href="#australian-classification-subgroups-of-the-rudosolic-and-tenosolic-hydrosols-0-9-291"></a></h3>
+<p>The Hydrosol page points the Rudosolic and Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols to the subgroup lists of the Rudosols and Tenosols. <code><a href="../reference/classify_asc3.html">classify_asc3()</a></code> now keys such a soil, apart from wetness, through the Rudosol or Tenosol suborders, and takes the list of the suborder it keys to: “Basic, Rudosolic, Oxyaquic Hydrosol”. Those lists are the same for every great group of a suborder, so the soil is keyed to the suborder only. Apart from wetness, the Hypersalic Rudosol suborder is read by its salinity alone (its other conditions, no water table and no mottling, are wetness). A suborder with no list (Shelly, Carbic) gives no subgroup. A suborder left undecided before the one assigned makes the subgroup provisional only when it would lead to another list. The Salic Rudosolic and Tenosolic Hydrosols keep the Salic list.</p>
+<p>The rules name these great groups under <code>subgroups_from</code> in the Hydrosol subgroup file, with site fields set for the walk only (<code>.apart_from_wetness</code>); <code><a href="../reference/load_rules.html">load_rules()</a></code> reads such blocks, the rule validator checks them, and the key walks the other order as the main key would, only as deep as the choice of list needs. The walk shows in the trace as a phase of its own (“suborders, as a Rudosol”).</p>
+<p>On 9,700 licensed NatSoil profiles only the five that key to these great groups change: two get a subgroup, two stay undecided for lack of data, and one fits none of the three Rudosol subgroups (exactly half of its soil is strongly acid). Nothing else changes, at any level. WRB, SiBCS and USDA results do not change.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.290" id="soilkey-09290-2026-10-26">soilKey 0.9.290 (2026-10-26)<a class="anchor" aria-label="anchor" href="#soilkey-09290-2026-10-26"></a></h2>
 <div class="section level3">

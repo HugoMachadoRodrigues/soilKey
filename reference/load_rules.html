@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.290</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.291</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,10 @@ default), <code>"sibcs5"</code> (SiBCS 5th edition) or <code>"usda"</code>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A parsed YAML list with elements <code>version</code>,
         <code>source</code>, and a system-specific taxa list
-        (<code>rsgs</code>, <code>orders</code>, or <code>ordens</code>).</p>
+        (<code>rsgs</code>, <code>orders</code>, or <code>ordens</code>), with the lists
+        of the lower levels read from their folders and, where a level
+        file has one, its <code>&lt;level&gt;_from</code> block (classes whose list
+        at that level is taken from another class of the top level).</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

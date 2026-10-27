@@ -25,4 +25,7 @@ load_rules(system = "wrb2022", package = "soilKey")
 ## Value
 
 A parsed YAML list with elements `version`, `source`, and a
-system-specific taxa list (`rsgs`, `orders`, or `ordens`).
+system-specific taxa list (`rsgs`, `orders`, or `ordens`), with the
+lists of the lower levels read from their folders and, where a level
+file has one, its `<level>_from` block (classes whose list at that level
+is taken from another class of the top level).
