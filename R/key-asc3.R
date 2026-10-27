@@ -5,8 +5,9 @@
 # v0.9.283 (ten orders since v0.9.284, all that have them since v0.9.285);
 # subgroups since v0.9.286 (Kurosols, Sodosols, Chromosols; Dermosols, Kandosols, Ferrosols since
 # v0.9.287; Vertosols, Calcarosols, Podosols, Organosols since v0.9.288; Hydrosols, Arenosols, Rudosols,
-# Tenosols since v0.9.289). Families follow. Experimental and
-# opt-in: classify_all() runs it only when asked.
+# Tenosols since v0.9.289; the Rudosolic and Tenosolic Redoxic and Oxyaquic Hydrosols since v0.9.291).
+# Families follow.
+# Experimental and opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
 #' Classify a pedon under the Australian Soil Classification
@@ -45,9 +46,13 @@
 #' (what the organic materials overlie), and the Hydrosols, Arenosols,
 #' Rudosols and Tenosols (peat kinds, sulfidic materials near the surface,
 #' acidity and carbonate of the upper 1.0 m, the B, the A2, the solum or
-#' the soil, horizons with all but the thickness). The families follow. The name is that of the deepest class assigned, in the book's
-#' form "Subgroup, Great Group, Suborder Order" ("Bleached, Eutrophic, Red
-#' Chromosol"); \code{rsg_or_order} keeps the order.
+#' the soil, horizons with all but the thickness; the Rudosolic and
+#' Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols take the
+#' list of the Rudosol or Tenosol suborder the soil keys to apart from
+#' wetness). The families follow. The name is that of the deepest class
+#' assigned, in the book's form "Subgroup, Great Group, Suborder Order"
+#' ("Bleached, Eutrophic, Red Chromosol"); \code{rsg_or_order} keeps the
+#' order.
 #'
 #' The ASC is largely morphological. The diagnostics read field texture
 #' grades (\code{field_texture}, NCST Field Handbook codes; lab clay stands in
@@ -94,6 +99,12 @@ classify_asc3 <- function(pedon, rules = NULL,
                           gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
   if (inherits(pedon, "PedonRecord")) pedon <- .cssc_prepare_pedon(pedon)
+  # .apart_from_wetness is set by the key for one walk (Rudosolic Hydrosols),
+  # never read from the user's record
+  if (inherits(pedon, "PedonRecord") && !is.null(pedon$site$.apart_from_wetness)) {
+    pedon <- pedon$clone(deep = TRUE)
+    pedon$site$.apart_from_wetness <- NULL
+  }
   res <- classify_hierarchical("asc3", pedon, rules = rules,
                                on_missing = on_missing, gapfill = gapfill)
   if (inherits(pedon, "PedonRecord") && identical(res$rsg_or_order, "Rudosol")) {

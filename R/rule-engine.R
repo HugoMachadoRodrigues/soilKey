@@ -35,7 +35,10 @@
 #' @param package Package owning the rule files (default \code{"soilKey"}).
 #' @return A parsed YAML list with elements \code{version},
 #'         \code{source}, and a system-specific taxa list
-#'         (\code{rsgs}, \code{orders}, or \code{ordens}).
+#'         (\code{rsgs}, \code{orders}, or \code{ordens}), with the lists
+#'         of the lower levels read from their folders and, where a level
+#'         file has one, its \code{<level>_from} block (classes whose list
+#'         at that level is taken from another class of the top level).
 #' @export
 load_rules <- function(system = "wrb2022",
                          package = "soilKey") {
@@ -69,12 +72,19 @@ load_rules <- function(system = "wrb2022",
     files <- list.files(sub_path, pattern = "\\.yaml$", full.names = TRUE)
     if (length(files) == 0L) next
     merged <- list()
+    # v0.9.291: a level file may also name, under "<level>_from", classes
+    # whose list at that level is taken from another class of the top level
+    # (the Rudosolic Hydrosols take the Rudosol lists; classify_hierarchical)
+    from_key <- paste0(yaml_key, "_from")
+    from <- list()
     for (f in files) {
       content <- yaml::read_yaml(f)
       block <- content[[yaml_key]]
       if (!is.null(block)) merged <- c(merged, block)
+      if (!is.null(content[[from_key]])) from <- c(from, content[[from_key]])
     }
     rules[[yaml_key]] <- c(rules[[yaml_key]] %||% list(), merged)
+    if (length(from)) rules[[from_key]] <- c(rules[[from_key]] %||% list(), from)
   }
 
   rules

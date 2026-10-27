@@ -64,6 +64,95 @@
   NULL
 }
 
+
+# The list at level `li` taken from another class of the top level (a
+# "<level>_from" entry of a level file: a Rudosolic Hydrosol takes the list of
+# the Rudosol suborder it keys to, apart from wetness). `spec` is the code of
+# that class, or a mapping with `class` and `site`, site fields set for the
+# walk only, on a copy of the pedon. The soil is keyed under that class as the
+# main loop would key it (a level with no list is skipped when the next one
+# has a list named by the exact path), but only as deep as the choice of list
+# needs: the walk stops one level above the list when no list below the path
+# is named after the classes that follow ("RU-CY": all its great groups take
+# "RU-CY-*", so they are not keyed), and anywhere when there is no list below
+# it at all ("RU-EL"). A class left undecided before the one assigned counts only
+# when it could lead to another list. Returns the list (empty for none), the
+# trace of the walk as phases named "<level>, as a <class>", the undecided
+# classes as "<class>/<code>", and a note when nothing passed and nothing was
+# undecided.
+.key_from <- function(pedon, rules, levels, li, spec) {
+  from <- as.character(if (is.list(spec)) spec$class else spec)
+  site <- if (is.list(spec)) spec$site else NULL
+  if (length(site)) {
+    if (inherits(pedon, "R6")) pedon <- pedon$clone(deep = TRUE)
+    for (k in names(site)) pedon$site[[k]] <- site[[k]]
+  }
+  lists <- rules[[levels[li]]]
+  nm <- names(lists) %||% character(0)
+  bare <- any(!grepl("-", nm, fixed = TRUE))
+  top <- Find(function(t) identical(as.character(t$code), from), rules[[levels[1L]]])
+  top_name <- as.character(top$name %||% from)
+  # the list the main loop finds at level li under a complete path
+  at <- function(path) .level_list(lists, path, path[length(path)]) %||% list()
+  # the next level to key under `path` from level lj, skipping a level with no
+  # list as the main loop does; li when the path is complete, NA when the main
+  # loop would stop there (no list)
+  next_lj <- function(path, lj) {
+    while (lj < li) {
+      if (length(.level_list(rules[[levels[lj]]], path, path[length(path)]))) return(lj)
+      if (length(rules[[levels[lj + 1L]]][[paste(path, collapse = "-")]]) == 0L) return(NA_integer_)
+      lj <- lj + 1L
+    }
+    li
+  }
+  # the list at level li under `path` when it no longer depends on the classes
+  # that follow (read through a code no list names), else NULL: a list below
+  # the path is named after them, or lists are named by bare codes
+  resolved <- function(path, lj) {
+    k <- next_lj(path, lj)
+    if (is.na(k)) return(list(list()))
+    if (k == li) return(list(at(path)))
+    key <- paste(path, collapse = "-")
+    if (bare || any(startsWith(nm, paste0(key, "-")) & nm != paste0(key, "-*"))) return(NULL)
+    out <- at(c(path, "\001"))
+    # more than one level above, a class below might reach no list at all (the
+    # main loop stops at a level with none): walk on, unless there is no list
+    if (k < li - 1L && length(out)) return(NULL)
+    list(out)
+  }
+  path <- from
+  trace <- list()
+  undecided <- character(0)
+  done <- function(taxa, note = character(0))
+    list(taxa = taxa, trace = trace, undecided = undecided, note = note)
+  lj <- 2L
+  repeat {
+    s <- resolved(path, lj)
+    if (!is.null(s)) return(done(s[[1L]]))
+    lj <- next_lj(path, lj)
+    lvl <- levels[lj]
+    r <- .run_level(pedon, .level_list(rules[[lvl]], path, path[length(path)]), lvl)
+    trace[[sprintf("%s, as a %s", lvl, top_name)]] <- r$trace
+    if (is.null(r$assigned)) {
+      if (length(r$undecided)) undecided <- c(undecided, paste0(from, "/", r$undecided))
+      note <- if (!length(r$undecided)) sprintf(
+        "No class of the %s list of the %s passed, so no %s list was found for this class.",
+        lvl, top_name, levels[li]) else character(0)
+      return(done(list(), note))
+    }
+    if (length(r$undecided)) {
+      mine <- resolved(c(path, r$assigned$code), lj + 1L)
+      keep <- vapply(r$undecided, function(u) {
+        other <- resolved(c(path, u), lj + 1L)
+        is.null(mine) || is.null(other) || !identical(other[[1L]], mine[[1L]])
+      }, NA, USE.NAMES = FALSE)
+      if (any(keep)) undecided <- c(undecided, paste0(from, "/", r$undecided[keep]))
+    }
+    path <- c(path, r$assigned$code)
+    lj <- lj + 1L
+  }
+}
+
 #' Classify a pedon with an ordered (first-match) key
 #'
 #' The engine behind the classifiers of ordered national keys: it walks the
@@ -73,6 +162,13 @@
 #' joined with "-" ("CH-AA", for keys whose codes repeat under different
 #' parents), otherwise by the code of the class alone, and otherwise by a
 #' list for every class under a part of the path ("CH-AA-*", then "CH-*").
+#' A class with an empty list may take one from another class of the top
+#' level, named under "<level>_from" in a level file: the soil is then keyed
+#' under that class only as deep as the choice of list needs (a Rudosolic
+#' Hydrosol takes the list of the Rudosol suborder it keys to), the walk is
+#' traced as "<level>, as a <class>", and a class it leaves undecided before
+#' the one assigned makes the level provisional when it could lead to another
+#' list.
 #'
 #' @param system Registry id or alias of the system.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -116,6 +212,19 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
     # code of the parent alone, else by a list for every class under a part
     # of the path ("CH-AA-*", then "CH-*")
     taxa <- if (is.null(parent)) rules[[lvl]] else .level_list(rules[[lvl]], path, parent$code)
+    # a class whose list is taken from another class of the top level
+    # ("subgroups_from": the Rudosolic Hydrosols take the Rudosol lists)
+    from <- if (!is.null(parent) && length(taxa) == 0L) rules[[paste0(lvl, "_from")]][[paste(path, collapse = "-")]]
+    if (length(from)) {
+      k <- .key_from(pedon, rules, levels, li, from)
+      trace <- c(trace, k$trace)
+      if (length(k$undecided)) provisional <- c(provisional, paste0(lvl, ":", k$undecided))
+      if (length(k$taxa) == 0L) {
+        stopped <- c(stopped, k$note)
+        break
+      }
+      taxa <- k$taxa
+    }
     if (length(taxa) == 0L) {
       # a class with no list at this level may still have one at the next,
       # named by its exact path (subgroups of a suborder that has no great

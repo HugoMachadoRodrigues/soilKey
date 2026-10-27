@@ -377,7 +377,10 @@ leptic_asc <- function(pedon, depth = 50) {
 
 #' Hypergypsic (dominantly gypsum crystals, not highly saline) and
 #' Hypersalic (highly saline, no water table, no mottling) suborders of the
-#' Arenosols and Rudosols
+#' Arenosols and Rudosols. A Rudosolic Hydrosol is keyed through the Rudosol
+#' suborders apart from wetness (\code{site$.apart_from_wetness}, set by the
+#' key for that walk only): the water table and the mottling are then not
+#' tested.
 #' @noRd
 saline_suborder_asc <- function(pedon, kind = c("hypergypsic", "hypersalic")) {
   kind <- match.arg(kind)
@@ -399,7 +402,7 @@ saline_suborder_asc <- function(pedon, kind = c("hypergypsic", "hypersalic")) {
     # evidence of episodic wetting: mottles recorded
     m <- h$redoximorphic_features_pct %||% rep(NA_real_, x$n)
     mott <- if (any(m > 0, na.rm = TRUE)) TRUE else if (all(!is.na(m[x$mineral]))) FALSE else NA
-    .and3(high, !wt, !mott)
+    if (isTRUE(pedon$site$.apart_from_wetness)) high else .and3(high, !wt, !mott)
   }
   .asc_result(paste0("saline_", kind), passed, integer(0), list(salinity = sal),
               if (is.na(passed)) c("ec_1to5_dS_m", "caso4_pct", "site$drainage_class", "redoximorphic_features_pct")

@@ -18,7 +18,10 @@ default), \code{"sibcs5"} (SiBCS 5th edition) or \code{"usda"}
 \value{
 A parsed YAML list with elements \code{version},
         \code{source}, and a system-specific taxa list
-        (\code{rsgs}, \code{orders}, or \code{ordens}).
+        (\code{rsgs}, \code{orders}, or \code{ordens}), with the lists
+        of the lower levels read from their folders and, where a level
+        file has one, its \code{<level>_from} block (classes whose list
+        at that level is taken from another class of the top level).
 }
 \description{
 Load a soilKey rule set (YAML)
