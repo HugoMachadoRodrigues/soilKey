@@ -288,7 +288,10 @@
   yes <- eff_yes | (!is.na(seg) & seg > 0) | (!is.na(caco3) & caco3 >= 0.5) | x$des$k
   no_carb <- eff_no | (!is.na(caco3) & caco3 < 0.5 & (is.na(seg) | seg == 0))
   acid <- ifelse(!is.na(h$ph_h2o), h$ph_h2o < 7.0, !is.na(h$ph_cacl2) & h$ph_cacl2 < 6.5)
-  no_record <- is.na(seg) & is.na(caco3) & (is.na(eff) | !nzchar(eff)) & !x$des$k
+  # no carbonate seen or measured: no segregations recorded, or none (0 %),
+  # and no effervescence or CaCO3 recorded (since 0.9.290 a recorded 0 % of
+  # segregations is read as no record of them, not as undecided)
+  no_record <- (is.na(seg) | seg == 0) & is.na(caco3) & (is.na(eff) | !nzchar(eff)) & !x$des$k
   no <- !yes & (no_carb | (no_record & acid %in% TRUE))
   ifelse(yes, TRUE, ifelse(no, FALSE, NA))
 }
