@@ -37,15 +37,41 @@ Hugo decided four readings:
 * a Densipan or Perch-gley Ultic Soil that passes no subgroup keeps the group
   name, with a warning.
 
-The other readings are in `inst/rules/nzsc4/readings.yaml`, which now has 49
-topics. Two subgroup names follow their groups' spelling: Typic Sulfuric Gley
+The other readings are in `inst/rules/nzsc4/readings.yaml`. Two subgroup names follow their groups' spelling: Typic Sulfuric Gley
 Soils (the text writes "Sulphuric") and Typic Yellow Ultic Soils (the text
 writes "Soil").
 
-Outside the subgroups, "in some part" now finds a run of 10 cm that passes
-when it lies directly below a horizon left undecided (it was read as
-undecided). This can only turn an undecided order or group into a decided
-one.
+Outside the subgroups, two readings change:
+
+* "in some part" now finds a run of 10 cm that passes when it lies directly
+  below a horizon left undecided (it was read as undecided);
+* the peaty topsoil reads a horizon with a recorded mineral field texture and
+  no measured carbon as not peat (it was undecided), as the text defines it
+  by peat or peaty textures.
+
+Both can only turn an undecided order or group into a decided one.
+
+An independent review against the text of the book found six defects, all
+fixed: (f) horizons counted in the mottled profile form, which the 4th
+edition excludes; the window of the organic material measured from its top
+rather than from the soil surface; a buried podzol written with the buried
+prefix missed under litter; a B horizon ending above 60 cm left undecided in
+the Granular Acid Gley Soils; the peat reading above; and coatings of value
+5 left open in the Podzolic Yellow Ultic Soils. Recorded dark coatings now
+make a cutanic horizon without the (h) notation in the Granular Acid Gley
+Soils.
+
+A second review checked the logic with 12,500 random profiles: no errors, no
+row-order effects, and every order or group that changes against 0.9.298
+goes from undecided to decided through "in some part". Its findings are
+fixed: a buried peat under a peaty horizon that is not a topsoil was missed;
+an undesignated row under the A, nothing described under litter, a window
+the description does not reach (for sulfidic and saline material), a gap
+above the clay of the Buried-granular Yellow Ultic Soils and a densipan with
+no depths were read as absent rather than undecided; one decisive lab value
+did not settle "less silt than clay"; and a pan could pass as the argillic
+horizon of the Argillic Orthic Gley Soils. The readings file now has 50
+topics.
 
 # soilKey 0.9.298 (2026-10-28)
 

@@ -1,6 +1,6 @@
 # =============================================================================
 # v0.9.299 -- the keys to subgroups of the New Zealand Soil Classification,
-# 4th ed.: the Organic, Gley and Ultic Soils (70 subgroups of 15 groups).
+# 4th ed.: the Organic, Gley and Ultic Soils (70 subgroups of 16 groups).
 # Each subgroup after the first is "other soils that ...", so a gate tests
 # only its own criteria; the last subgroup of a group is the default, except
 # under the Densipan and Perch-gley Ultic Soils (UD, UP), which the text
@@ -29,7 +29,10 @@
   black <- !is.na(v) & v <= 2.5 & (neutral | (!is.na(ch) & ch <= 1))
   # 5Y or less red: 5Y, 10Y, GY, G, BG, B, PB (purple and red-purple are
   # redder again)
-  look <- ifelse(neutral | black, TRUE, ifelse(is.na(hue), NA, hue >= 25 & hue < 80))
+  # a redder hue with the value or chroma not recorded may still be black
+  maybe_black <- is.na(v) | (v <= 2.5 & is.na(ch))
+  look <- ifelse(neutral | black, TRUE, ifelse(is.na(hue), NA,
+          ifelse(hue >= 25 & hue < 80, TRUE, ifelse(maybe_black, NA, FALSE))))
   red <- ifelse(x$role %in% c("R", "CR"), FALSE, .nzsc_reductimorphic_rows(x))
   sign <- .and3v(red, look)
   ifelse(!is.na(s), s > 0.01, ifelse(sign %in% FALSE, FALSE, NA))
@@ -58,15 +61,30 @@
 # A shelly layer (recorded when met: shelly_layer).
 .nzsc_shelly_rows <- function(x) .nzsc_yes(x$h$shelly_layer %||% rep(NA, x$n)) %in% TRUE
 
-# Mottled profile form: a redox-mottled horizon within 30 cm of the mineral
-# soil surface, or a reductimorphic horizon with its upper boundary at 30 cm
-# or more and less than 60 cm.
+# Redox-mottled horizon of the (g) kind: 2 % or more redox segregations
+# with low-chroma colours on less than half of the matrix (notation (g)).
+# The mottled profile form and the UDM and UEM keys ask for this kind; the
+# 4th edition excludes (f) horizons from the mottled profile form (its
+# Changelog). A designated horizon is read by its notation, as the
+# reductimorphic horizon is; a row with no designation and 2 % or more
+# segregations stays undecided (the share of low-chroma colours is not
+# recorded), and one with none recorded has none (recorded when met).
+.nzsc_redox_mottled_g_rows <- function(x) {
+  pct <- x$h$redoximorphic_features_pct %||% rep(NA_real_, x$n)
+  red <- .nzsc_reductimorphic_rows(x)
+  ifelse(x$des$g_weak, TRUE, ifelse(x$known | red %in% TRUE, FALSE,
+         ifelse(is.na(pct) | pct < 2, FALSE, NA)))
+}
+
+# Mottled profile form: a redox-mottled horizon (the (g) kind) within 30 cm
+# of the mineral soil surface, or a reductimorphic horizon with its upper
+# boundary at 30 cm or more and less than 60 cm.
 .nzsc_mottled_profile_form <- function(x) {
   h <- x$h; ms <- x$ms
   if (is.na(ms)) return(NA)
   rows <- .nzsc_rows(x)
   near <- rows[h$top_cm[rows] >= ms - 0.5 & h$top_cm[rows] < ms + 30]
-  p1 <- .nzsc_any(.nzsc_redox_mottled_rows(x)[near])
+  p1 <- .nzsc_any(.nzsc_redox_mottled_g_rows(x)[near])
   # the upper boundary of the reductimorphic horizon: a row whose run does
   # not start higher up
   red <- .nzsc_reductimorphic_rows(x)
@@ -78,6 +96,18 @@
   }, NA))
   .any3(c(p1, p2))
 }
+
+# The description ends above zb (and not on rock or a hard layer): the part
+# of the window below it may be anything, as .nzsc_cum reads it.
+.nzsc_short_of <- function(x, zb) {
+  rows <- .nzsc_rows(x)
+  if (!length(rows)) return(TRUE)
+  bot <- x$h$bottom_cm[rows]
+  low <- if (anyNA(bot)) Inf else max(bot)
+  low < zb - 0.5 && !.nzsc_ends_hard(x)
+}
+# A FALSE over a window the description does not reach becomes NA.
+.nzsc_open_below <- function(v, x, zb) if (isFALSE(v) && .nzsc_short_of(x, zb)) NA else v
 
 # Rows in depth order that overlap [zt, zb).
 .nzsc_rows_in <- function(x, zt, zb) {
@@ -96,12 +126,13 @@
   ifelse(x$des$t | x$des$h | x$des$h_weak, NA, FALSE))))
 }
 
-# Dark-coloured coatings (moist value 4 or less, or value 5 with chroma 3):
-# the coatings value when recorded (value 5: undecided, as the coatings
-# chroma is not recorded); humus coatings (h, (h)) are dark by definition.
-.nzsc_dark_coatings <- function(x) {
+# Dark-coloured coatings: moist value 4 or less; `value5`: or value 5 with
+# chroma 3 (GAPH, GAH), undecided as the coatings chroma is not recorded.
+# Humus coatings (h, (h)) are dark by definition.
+.nzsc_dark_coatings <- function(x, value5 = TRUE) {
   cv <- x$h$coatings_value_moist %||% rep(NA_real_, x$n)
-  ifelse(x$des$h | x$des$h_weak, TRUE, ifelse(is.na(cv), NA, ifelse(cv <= 4, TRUE, ifelse(cv <= 5, NA, FALSE))))
+  ifelse(x$des$h | x$des$h_weak, TRUE, ifelse(is.na(cv), NA, ifelse(cv <= 4, TRUE,
+         ifelse(cv <= 5 & isTRUE(value5), NA, FALSE))))
 }
 
 # Texture class from the field texture, else from lab clay, silt and sand
@@ -120,19 +151,25 @@
 .nzsc_less_silt_than_clay <- function(x) {
   h <- x$h; cls <- .nzsc_texture_class(x)
   ifelse(!is.na(h$silt_pct) & !is.na(h$clay_pct), h$silt_pct < h$clay_pct,
+  ifelse(!is.na(h$clay_pct) & h$clay_pct > 50, TRUE,
+  ifelse(!is.na(h$silt_pct) & h$silt_pct > 50, FALSE,
   ifelse(cls %in% c("clay", "sandy clay"), TRUE,
-  ifelse(cls %in% c("silt", "silt loam", "silty clay loam", "loam"), FALSE, NA)))
+  ifelse(cls %in% c("silt", "silt loam", "silty clay loam", "loam"), FALSE, NA)))))
 }
 
-# Peat material of each row, as the peaty topsoil reads it.
+# Peat material of each row, as the peaty topsoil reads it (peat or peaty
+# textures): carbon decides when measured; otherwise a recorded mineral
+# field texture is not peat (v0.9.299).
 .nzsc_peat_rows <- function(x) {
   h <- x$h; n <- x$n
   oc <- h$oc_pct; clay <- h$clay_pct; ft <- .nzsc_txt(h$field_texture, n)
+  mineral_ft <- !is.na(ft) & nzchar(ft) & !grepl("peat", ft)
   ifelse(grepl("slightly peaty", ft), ifelse(is.na(clay), NA, clay < 18),
   ifelse(grepl("peat", ft) | x$role %in% "O", TRUE,
   ifelse(x$role %in% "L", FALSE,
   ifelse(!is.na(oc), ifelse(oc >= 17.4, TRUE,
-                     ifelse(oc >= 9.9, ifelse(is.na(clay), NA, clay < 18), FALSE)), NA))))
+                     ifelse(oc >= 9.9, ifelse(is.na(clay), NA, clay < 18), FALSE)),
+  ifelse(mineral_ft, FALSE, NA)))))
 }
 
 # A peaty topsoil at the surface, or one buried (the text: "buried by a
@@ -146,13 +183,21 @@
   h <- x$h; rows <- .nzsc_rows(x); peat <- .nzsc_peat_rows(x)
   start <- x$ord[!(x$role[x$ord] %in% "L")]
   s0 <- if (length(start)) h$top_cm[start[1L]] else NA
-  cand <- rows[h$top_cm[rows] > s0 + 0.5 & h$top_cm[rows] < z0 + 60 & !(peat[rows] %in% FALSE)]
+  # a buried topsoil is an O or A horizon (or a row of unknown role), not a
+  # designated E, B or C
+  top_like <- x$role %in% c("O", "A") | x$unknown_role
+  cand <- rows[h$top_cm[rows] > s0 + 0.5 & h$top_cm[rows] < z0 + 60 & !(peat[rows] %in% FALSE) & top_like[rows]]
   bur <- vapply(cand, function(i) {
     up <- rows[!is.na(h$bottom_cm[rows]) & abs(h$bottom_cm[rows] - h$top_cm[i]) <= 0.5]
-    # buried under material that is not peat (else the run starts higher up)
-    if (!length(up) || any(peat[up] %in% TRUE)) return(FALSE)
+    # buried under new material: the run starts higher up only when the row
+    # above is itself a peaty topsoil row (an O or A)
+    if (!length(up) || any(peat[up] %in% TRUE & top_like[up])) return(FALSE)
     v <- .nzsc_peaty_run(pedon, x, i, peat)
-    if (isTRUE(v) && any(is.na(peat[up]))) NA else v
+    if (isTRUE(v) && any(is.na(peat[up]) & top_like[up])) {
+      # the row above may be peat: the run would then start there
+      pu <- peat; pu[up] <- TRUE
+      if (isTRUE(.nzsc_peaty_run(pedon, x, up[1L], pu))) TRUE else NA
+    } else v
   }, NA)
   .any3(c(surf, bur))
 }
@@ -178,7 +223,7 @@ sulfidic_subgroup_nzsc <- function(pedon, from = c("mineral_surface", "soil_surf
   if (is.na(z0)) return(.nzsc_subgroup("sulfidic_subgroup_nzsc", NA, "sulfidic subgroups", missing = miss))
   s <- .nzsc_sulfidic_rows(x)
   rows <- .nzsc_rows_in(x, z0, z0 + 90)
-  .nzsc_subgroup("sulfidic_subgroup_nzsc", .nzsc_some_part_in(x, rows, s, z0, z0 + 90),
+  .nzsc_subgroup("sulfidic_subgroup_nzsc", .nzsc_open_below(.nzsc_some_part_in(x, rows, s, z0, z0 + 90), x, z0 + 90),
                  "sulfidic subgroups", list(from = from), miss, which(s %in% TRUE))
 }
 
@@ -189,7 +234,7 @@ saline_subgroup_nzsc <- function(pedon) {
   miss <- c("ec_1to5_dS_m", "designation")
   pre <- .nzsc_sub_ms_or_na(x, "saline_subgroup_nzsc", "saline subgroups", miss); if (!is.null(pre)) return(pre)
   s <- .nzsc_saline_rows(x)
-  .nzsc_subgroup("saline_subgroup_nzsc", .nzsc_any(s[.nzsc_rows_in(x, x$ms, x$ms + 60)]),
+  .nzsc_subgroup("saline_subgroup_nzsc", .nzsc_open_below(.nzsc_any(s[.nzsc_rows_in(x, x$ms, x$ms + 60)]), x, x$ms + 60),
                  "saline subgroups", missing = miss, layers = which(s %in% TRUE))
 }
 
@@ -202,7 +247,7 @@ fluid_subgroup_nzsc <- function(pedon, saline = FALSE) {
   pre <- .nzsc_sub_ms_or_na(x, "fluid_subgroup_nzsc", "fluid subgroups", miss); if (!is.null(pre)) return(pre)
   rows <- .nzsc_rows_in(x, x$ms, x$ms + 60)
   f <- .nzsc_any(.nzsc_fluid_rows(x)[rows])
-  s <- if (isTRUE(saline)) .nzsc_any(.nzsc_saline_rows(x)[rows]) else TRUE
+  s <- if (isTRUE(saline)) .nzsc_open_below(.nzsc_any(.nzsc_saline_rows(x)[rows]), x, x$ms + 60) else TRUE
   .nzsc_subgroup("fluid_subgroup_nzsc", .and3(c(f, s)), "fluid subgroups",
                  list(fluid = f, saline = if (isTRUE(saline)) s else NULL), miss)
 }
@@ -219,7 +264,7 @@ peaty_subgroup_nzsc <- function(pedon, from = c("soil_surface", "mineral_surface
   p <- .nzsc_peaty_or_buried(pedon, x, z0)
   s <- if (!isTRUE(sulfidic)) TRUE else if (is.na(x$ms)) NA else {
     sr <- .nzsc_sulfidic_rows(x)
-    .nzsc_some_part_in(x, .nzsc_rows_in(x, x$ms, x$ms + 90), sr, x$ms, x$ms + 90)
+    .nzsc_open_below(.nzsc_some_part_in(x, .nzsc_rows_in(x, x$ms, x$ms + 90), sr, x$ms, x$ms + 90), x, x$ms + 90)
   }
   .nzsc_subgroup("peaty_subgroup_nzsc", .and3(c(p, s)), "peaty subgroups",
                  list(peaty_topsoil = p, sulfidic = if (isTRUE(sulfidic)) s else NULL), miss)
@@ -242,7 +287,8 @@ sandy_saline_nzsc <- function(pedon) {
     g <- x$tex$group[rows]
     if (!length(rows)) NA else if (all(g %in% "sandy")) TRUE else if (!any(g %in% "sandy") && !anyNA(g)) FALSE else NA
   }
-  sal <- .nzsc_any(.nzsc_saline_rows(x)[.nzsc_rows_in(x, x$ms, x$ms + 60)])
+  if (.nzsc_short_of(x, zb)) sandy <- NA
+  sal <- .nzsc_open_below(.nzsc_any(.nzsc_saline_rows(x)[.nzsc_rows_in(x, x$ms, x$ms + 60)]), x, x$ms + 60)
   .nzsc_subgroup("sandy_saline_nzsc", .and3(c(sandy, sal)), "G, GUSQ", list(sandy = sandy, saline = sal), miss)
 }
 
@@ -252,8 +298,19 @@ acidic_subgroup_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h
   pre <- .nzsc_sub_ms_or_na(x, "acidic_subgroup_nzsc", "acidic subgroups", "ph_h2o"); if (!is.null(pre)) return(pre)
   zt <- .nzsc_a_base(x); zb <- x$ms + 60
-  passed <- if (is.na(zt)) NA else if (zt >= zb - 0.5) FALSE else
-    .nzsc_some_part_in(x, .nzsc_rows_in(x, zt, zb), ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5), zt, zb)
+  acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
+  at <- function(z) if (is.na(z)) NA else if (z >= zb - 0.5) FALSE else
+    .nzsc_some_part_in(x, .nzsc_rows_in(x, z, zb), acid, z, zb)
+  # mineral rows of unknown role directly under the A may be A too: the
+  # base may lie lower, and the verdict holds only when both agree
+  zt2 <- zt; rows <- .nzsc_rows(x)
+  while (!is.na(zt2) && is.finite(zt2)) {
+    j <- rows[abs(h$top_cm[rows] - zt2) <= 0.5 & x$unknown_role[rows] & x$mineral[rows]]
+    if (!length(j)) break
+    zt2 <- if (is.na(h$bottom_cm[j[1L]])) Inf else h$bottom_cm[j[1L]]
+  }
+  v1 <- at(zt); v2 <- at(zt2)
+  passed <- if (identical(v1, v2)) v1 else NA
   .nzsc_subgroup("acidic_subgroup_nzsc", passed, "acidic subgroups", list(from = zt, to = zb), "ph_h2o")
 }
 
@@ -306,7 +363,9 @@ mottled_subgroup_nzsc <- function(pedon) {
 # below the upper surface of the (underlying) mineral soil.
 gley_profile_subgroup_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon)
-  .nzsc_subgroup("gley_profile_subgroup_nzsc", .nzsc_gley_profile_form(x), "gley-profile subgroups",
+  v <- .nzsc_gley_profile_form(x)
+  if (!is.na(x$ms)) v <- .nzsc_open_below(v, x, x$ms + 30)
+  .nzsc_subgroup("gley_profile_subgroup_nzsc", v, "gley-profile subgroups",
                  missing = c("designation", "munsell_value_moist", "munsell_chroma_moist"))
 }
 
@@ -323,26 +382,30 @@ nodular_subgroup_nzsc <- function(pedon) {
 # Argillic subgroups (GOJ): an argillic horizon.
 argillic_subgroup_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon)
-  a <- .nzsc_argillic_rows(x)
+  # a pan (m) is not an argillic horizon
+  a <- ifelse(x$des$m, FALSE, .nzsc_argillic_rows(x))
   .nzsc_subgroup("argillic_subgroup_nzsc", .nzsc_any(a), "argillic subgroups",
                  missing = c("designation", "clay_pct", "clay_films_amount"), layers = which(a %in% TRUE))
 }
 
 # Below-a-layer subgroups of the Ultic Soils: a reductimorphic horizon below
-# the densipan (UDP) or the eluvial horizon (UEP); a redox-mottled horizon
-# immediately under the densipan (UDM) or below the eluvial horizon (UEM).
+# the densipan (UDP) or the eluvial horizon (UEP); a redox-mottled horizon of
+# the (g) kind immediately under the densipan (UDM) or below the eluvial
+# horizon (UEM).
 below_layer_subgroup_nzsc <- function(pedon, layer = c("densipan", "eluvial"),
                                       feature = c("reductimorphic", "redox_mottled"), immediately = FALSE) {
   layer <- match.arg(layer); feature <- match.arg(feature)
   x <- .nzsc_horizons(pedon); h <- x$h
   miss <- c("designation", "redoximorphic_features_pct")
   lay <- if (layer == "densipan") .nzsc_densipan_rows(x) else .nzsc_is(x, "E")
+  if (any(lay %in% TRUE & (is.na(h$top_cm) | is.na(h$bottom_cm))))
+    return(.nzsc_subgroup("below_layer_subgroup_nzsc", NA, "Ultic subgroups", missing = c(miss, "top_cm", "bottom_cm")))
   lr <- which(lay %in% TRUE & !is.na(h$top_cm))
   if (!length(lr)) return(.nzsc_subgroup("below_layer_subgroup_nzsc", if (anyNA(lay)) NA else FALSE,
                                          "Ultic subgroups", missing = miss))
   base <- max(h$bottom_cm[lr])
   if (is.na(base)) return(.nzsc_subgroup("below_layer_subgroup_nzsc", NA, "Ultic subgroups", missing = miss))
-  feat <- if (feature == "reductimorphic") .nzsc_reductimorphic_rows(x) else .nzsc_redox_mottled_rows(x)
+  feat <- if (feature == "reductimorphic") .nzsc_reductimorphic_rows(x) else .nzsc_redox_mottled_g_rows(x)
   rows <- .nzsc_rows(x)
   below <- if (isTRUE(immediately)) rows[abs(h$top_cm[rows] - base) <= 0.5] else rows[h$top_cm[rows] >= base - 0.5]
   passed <- if (!length(below)) { if (.nzsc_ends_hard(x)) FALSE else NA } else .nzsc_any(feat[below])
@@ -359,23 +422,31 @@ buried_podzol_litter_nzsc <- function(pedon) {
   miss <- c("designation", "naf_test")
   if (is.na(x$ms)) return(.nzsc_subgroup("buried_podzol_litter_nzsc", NA, "O, OLBZ", missing = miss))
   if (x$ms >= x$soil_top + 90) return(.nzsc_subgroup("buried_podzol_litter_nzsc", FALSE, "O, OLBZ"))
-  pz <- .nzsc_podzolic_b_rows(x); pl <- .nzsc_pan_rows(x, "placic")
+  # the underlying mineral soil is buried by the litter: read it whether or
+  # not its horizons carry the buried prefix (bE, bBh; FAO Eb, Bhb)
+  xu <- x; xu$des$buried <- rep(FALSE, x$n)
+  pz <- .nzsc_podzolic_b_rows(xu); pl <- .nzsc_pan_rows(x, "placic")
   ok <- ifelse(pl, TRUE, pz)
   rows <- .nzsc_rows(x); rows <- rows[x$mineral[rows] & x$h$top_cm[rows] >= x$ms - 0.5]
-  .nzsc_subgroup("buried_podzol_litter_nzsc", .nzsc_any(ok[rows]), "O, OLBZ", missing = miss,
+  # nothing described under the litter (and not on rock): undecided
+  v <- if (!length(rows)) { if (.nzsc_ends_hard(x)) FALSE else NA } else .nzsc_any(ok[rows])
+  .nzsc_subgroup("buried_podzol_litter_nzsc", v, "O, OLBZ", missing = miss,
                  layers = rows[ok[rows] %in% TRUE])
 }
 
-# The organic soil material from its upper surface to 60 cm (or to its
-# base): rows and window.
+# The organic soil material to 60 cm from the soil surface (or to its base,
+# if shallower): its rows, the window and the thickness of each row inside
+# it (mineral interlayers are left out).
 .nzsc_organic_window <- function(x) {
   h <- x$h
   om <- x$organic %in% TRUE & !(x$role %in% "L" & x$des$decomp %in% "fibric")
   org <- x$ord[om[x$ord]]
-  if (!length(org)) return(NULL)
+  if (!length(org) || is.na(x$soil_top)) return(NULL)
   zt <- h$top_cm[org[1L]]
   base <- zt; for (i in org) { if (is.na(h$bottom_cm[i])) { base <- Inf; break }; base <- max(base, h$bottom_cm[i]) }
-  list(rows = org, zt = zt, zb = min(zt + 60, base), om = om)
+  zb <- min(x$soil_top + 60, base)
+  th <- .asc_overlap(h$top_cm[org], ifelse(is.na(h$bottom_cm[org]), zb, h$bottom_cm[org]), zt, zb)
+  list(rows = org, zt = zt, zb = zb, om = om, th = th)
 }
 
 # OFS: the organic fibres to 60 cm from the soil surface (or to the base of
@@ -387,8 +458,7 @@ sphagnic_organic_nzsc <- function(pedon) {
   w <- .nzsc_organic_window(x)
   if (is.null(w)) return(.nzsc_subgroup("sphagnic_organic_nzsc", NA, "O, OFS", missing = "designation"))
   sp <- h$sphagnum_fibres_pct %||% rep(NA_real_, x$n)
-  rows <- w$rows
-  th <- .asc_overlap(h$top_cm[rows], ifelse(is.na(h$bottom_cm[rows]), w$zb, h$bottom_cm[rows]), w$zt, w$zb)
+  rows <- w$rows; th <- w$th
   passed <- if (sum(th) <= 0) NA else sum(th * ifelse(is.na(sp[rows]), 0, sp[rows])) / sum(th) > 70
   .nzsc_subgroup("sphagnic_organic_nzsc", passed, "O, OFS", list(window = c(w$zt, w$zb)))
 }
@@ -399,16 +469,17 @@ acid_organic_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h
   w <- .nzsc_organic_window(x)
   if (is.null(w)) return(.nzsc_subgroup("acid_organic_nzsc", NA, "O, acid subgroups", missing = c("designation", "ph_h2o")))
-  ok <- ifelse(w$om, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o <= 4.5), FALSE)
-  hh <- list(h = list(top_cm = h$top_cm, bottom_cm = ifelse(is.na(h$bottom_cm), w$zb, h$bottom_cm)))
-  .nzsc_subgroup("acid_organic_nzsc", .asc_major_part(hh, w$rows, ok, w$zt, w$zb), "O, acid subgroups",
-                 missing = "ph_h2o")
+  # the major part of the organic material inside the window
+  ok <- ifelse(is.na(h$ph_h2o[w$rows]), NA, h$ph_h2o[w$rows] <= 4.5)
+  tot <- sum(w$th); yes <- sum(w$th[ok %in% TRUE]); no <- sum(w$th[ok %in% FALSE])
+  passed <- if (tot <= 0) NA else if (yes > tot / 2) TRUE else if (no >= tot / 2) FALSE else NA
+  .nzsc_subgroup("acid_organic_nzsc", passed, "O, acid subgroups", missing = "ph_h2o")
 }
 
 # ---- G: Gley Soils --------------------------------------------------------------------
 
 # GAG: the major part of the B horizon to 60 cm from the mineral soil
-# surface is a clayey, moderately or strongly pedal cutanic or argillic
+# surface (or to its base, when shallower) is a clayey, moderately or strongly pedal cutanic or argillic
 # horizon with polyhedral peds of 20 mm or less.
 granular_acid_gley_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h; n <- x$n
@@ -421,9 +492,18 @@ granular_acid_gley_nzsc <- function(pedon) {
   grade <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(is.na(h$structure_grade), NA, FALSE))
   poly <- ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
   clay <- ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")
-  ca <- .any3v(.nzsc_cutanic_rows(x), .nzsc_argillic_rows(x))
+  # cutanic: the (h) notation, or recorded dark coatings (moist value 4 or
+  # less) on a B horizon, as the Diagnostics define it (only "usually"
+  # written (h))
+  films <- .nzsc_txt(h$clay_films_amount, n)
+  coated <- !is.na(films) & nzchar(films) & !grepl("^none|^no|absent", films)
+  cv <- h$coatings_value_moist %||% rep(NA_real_, n)
+  cut <- ifelse(coated & !is.na(cv) & cv <= 4, TRUE, .nzsc_cutanic_rows(x))
+  ca <- .any3v(cut, .nzsc_argillic_rows(x))
   ok <- .and3v(.and3v(.and3v(clay, grade), .and3v(ca, poly)), ifelse(is.na(size), NA, size <= 20))
-  .nzsc_subgroup("granular_acid_gley_nzsc", .nzsc_major_part_b(x, b, ok, zb = x$ms + 60), "G, GAG", missing = miss)
+  base <- if (anyNA(h$bottom_cm[b])) Inf else max(h$bottom_cm[b])
+  .nzsc_subgroup("granular_acid_gley_nzsc", .nzsc_major_part_b(x, b, ok, zb = min(x$ms + 60, base)), "G, GAG",
+                 missing = miss)
 }
 
 # GAY: in the major part of the B horizon, 10 % or more clay or humus
@@ -527,7 +607,7 @@ podzolic_yellow_ultic_nzsc <- function(pedon, mottled = FALSE) {
   acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o <= 4.8)
   e <- which(.nzsc_is(x, "E") & !is.na(h$top_cm))
   p1 <- if (length(e)) .nzsc_some_part(x, e, acid) else acid[b[1L]]
-  p2 <- .nzsc_some_part(x, b, .and3v(.nzsc_coatings_10(x), .nzsc_dark_coatings(x)))
+  p2 <- .nzsc_some_part(x, b, .and3v(.nzsc_coatings_10(x), .nzsc_dark_coatings(x, value5 = FALSE)))
   m <- if (isTRUE(mottled)) .nzsc_mottled_profile_form(x) else TRUE
   .nzsc_subgroup("podzolic_yellow_ultic_nzsc", .and3(c(p1, p2, m)), "U, UYZ/UYMZ",
                  list(acid = p1, coatings = p2, mottled = if (isTRUE(mottled)) m else NULL), miss)
@@ -551,7 +631,7 @@ buried_granular_ultic_nzsc <- function(pedon) {
   res <- vapply(cand, function(j) {
     zj <- h$top_cm[j]
     up <- rows[!is.na(h$bottom_cm[rows]) & abs(h$bottom_cm[rows] - zj) <= 0.5]
-    if (!length(up)) return(FALSE)
+    if (!length(up)) return(NA)              # a gap above the clay
     above <- rows[h$top_cm[rows] < zj - 0.5]
     hh <- list(h = list(top_cm = h$top_cm, bottom_cm = ifelse(is.na(h$bottom_cm), zj, h$bottom_cm)))
     .and3(c(clay_dark[j], silty[up[1L]], .asc_major_part(hh, above, silty, s0, zj)))

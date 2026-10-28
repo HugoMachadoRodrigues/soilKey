@@ -228,3 +228,100 @@ test_that("the mottled profile form reads its two routes", {
   expect_false(soilKey:::.nzsc_mottled_profile_form(x(designation = c("Ah", "E", "Btg1", "Btg2", "BC"),
                                                        redoximorphic_features_pct = 0)))
 })
+
+test_that("the findings of the text review stay fixed", {
+  skip_on_cran()
+  last <- function(p) { r <- classify_nzsc4(p, on_missing = "silent"); list(code = tail(r$levels$code, 1L), prov = r$provisional_because) }
+  # (f) horizons, and segregations without (g) on a designated horizon, are
+  # not the mottled profile form (the 4th edition's Changelog)
+  expect_identical(last(.nzs_u(designation = c("Ah", "E", "Bt(f)1", "Bt2", "BC")))$code, "UYT")
+  expect_identical(last(.nzs_u(redoximorphic_features_pct = c(0, 0, 5, 0, 0)))$code, "UYT")
+  expect_identical(last(.nzs_ud(c("Ah", "Ed", "Bt(f)1", "Bt2", "BC")))$code, "UD")
+  # the organic window runs to 60 cm from the soil surface, over the
+  # organic material only
+  om <- .nzs_o(designation = c("A", "Om", "Om", "C"), top_cm = c(0, 30, 50, 90), bottom_cm = c(30, 50, 90, 130),
+               field_texture = c("silt loam", "peat", "peat", "silt loam"), oc_pct = c(5, 40, 40, 2), ph_h2o = c(5, 4.3, 4.9, 5.5))
+  expect_identical(last(om)$code, "OMA")
+  # a buried podzol under the litter, written with the buried prefix
+  bz <- .nzs_mod("organic", h = list(designation = c("Lm", "Lh", "bE", "bBh"), top_cm = c(0, 20, 40, 60), bottom_cm = c(20, 40, 60, 110),
+                                     oc_pct = c(45, 40, 1, 3), field_texture = c(NA, NA, "sandy loam", "sandy loam"),
+                                     munsell_value_moist = c(2, 2, 6, 3), munsell_chroma_moist = c(2, 2, 2, 3), sulfidic_s_pct = 0),
+                 site = list(drainage_class = "well drained"))
+  expect_identical(last(bz)$code, "OLBZ")
+  # GAG: a B horizon that ends above 60 cm is read whole
+  thin <- .nzs_ga(designation = c("Ap", "Btg1", "Cg1", "Cg2", "Cg3"), top_cm = c(0, 20, 35, 75, 100), bottom_cm = c(20, 35, 75, 100, 130),
+                  clay_pct = c(22, 40, 42, 24, 20), structure_grade = c("moderate", "moderate", rep("structureless", 3)),
+                  structure_type = c("granular", "polyhedral", rep("massive", 3)), ped_size_max_mm = c(5, 10, NA, NA, NA))
+  expect_identical(last(thin)$code, "GAG")
+  # GAG: recorded dark coatings make a cutanic horizon without (h)
+  cut <- .nzs_ga(clay_pct = c(38, 40, 42, 24, 20), silt_pct = c(40, 35, 35, 62, 64), sand_pct = c(22, 25, 23, 14, 16),
+                 field_texture = c("clay loam", "clay", "clay", "silt loam", "silt loam"),
+                 structure_grade = c("moderate", "moderate", "moderate", "structureless", "structureless"),
+                 structure_type = c("granular", "polyhedral", "polyhedral", "massive", "massive"), ped_size_max_mm = c(5, 10, 10, NA, NA),
+                 clay_films_amount = c(NA, "few", "few", NA, NA), coatings_value_moist = c(NA, 3, 3, NA, NA))
+  expect_identical(last(cut)$code, "GAG")
+  # a recorded mineral texture with no carbon is not peat
+  r <- last(.nzs_g(oc_pct = c(4.5, NA, NA, NA, NA)))
+  expect_identical(r$code, "GOT")
+  expect_false(any(grepl("subgroups:GOO", r$prov)))
+  # UYZ admits coatings of value 4 or less only: value 5 fails
+  r <- last(.nzs_u(ph_h2o = c(4.8, 4.6, 5, 5.1, 5.2), coatings_value_moist = c(NA, NA, 5, 5, NA)))
+  expect_identical(r$code, "UYT")
+  expect_false(any(grepl("subgroups:UYZ", r$prov)))
+  # a reductimorphic horizon of a redder hue with its value not recorded may
+  # still be black
+  x <- soilKey:::.nzsc_horizons(.nzs_mod("gley", h = list(munsell_hue_moist = "10YR", munsell_value_moist = NA)))
+  expect_true(all(is.na(soilKey:::.nzsc_sulfidic_rows(x)[2:5])))
+})
+
+test_that("the findings of the logic review stay fixed", {
+  skip_on_cran()
+  nz <- function(h, site = list()) PedonRecord$new(
+    site = utils::modifyList(list(id = "r", country = "NZ", designation_system = "nzsc", drainage_class = "poorly drained"), site),
+    horizons = ensure_horizon_schema(data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
+  pass <- function(f, p, ...) f(p, ...)$passed
+  # a buried peat under a peaty row that is not a topsoil (here a C)
+  bur <- nz(list(designation = c("Ap", "C", "Ob", "Cg"), top_cm = c(0, 15, 25, 50), bottom_cm = c(15, 25, 50, 100),
+                 oc_pct = c(3, NA, 40, 1), field_texture = c("silt loam", "peaty sand", "peat", "silt loam"), clay_pct = c(20, 5, NA, 20)),
+            site = list(drainage_class = "very poorly drained"))
+  expect_true(pass(peaty_subgroup_nzsc, bur, "soil_surface"))
+  # ... and under an undesignated row it holds either way
+  und <- nz(list(designation = c("Ap", NA, "Ob", "Cg"), top_cm = c(0, 10, 20, 50), bottom_cm = c(10, 20, 50, 100),
+                 oc_pct = c(3, NA, 40, 1), field_texture = c("silt loam", NA, "peat", "silt loam")),
+            site = list(drainage_class = "very poorly drained"))
+  expect_true(pass(peaty_subgroup_nzsc, und, "soil_surface"))
+  # an undesignated row under the A may be A: the acidic window is open
+  ac <- function(d2) nz(list(designation = c("Ah", d2, "Bg", "Cg"), top_cm = c(0, 15, 25, 60), bottom_cm = c(15, 25, 60, 100),
+                             oc_pct = c(4, 3, 0.5, 0.2), ph_h2o = c(6.0, 5.0, 6.0, 6.2)))
+  expect_false(pass(acidic_subgroup_nzsc, ac("A2")))
+  expect_true(pass(acidic_subgroup_nzsc, ac("Bw")))
+  expect_true(is.na(pass(acidic_subgroup_nzsc, ac(NA))))
+  # nothing described under the litter: OLBZ and OLBG undecided
+  lit <- nz(list(designation = c("Lf", "Lm", "Lh"), top_cm = c(0, 10, 20), bottom_cm = c(10, 20, 50), oc_pct = 40),
+            site = list(drainage_class = "well drained"))
+  expect_true(is.na(pass(buried_podzol_litter_nzsc, lit)))
+  expect_true(is.na(pass(gley_profile_subgroup_nzsc, lit)))
+  # sulfidic and saline: a window the description does not reach is open;
+  # features recorded when met stay absent
+  sh <- nz(list(designation = c("Ap", "Bg"), top_cm = c(0, 20), bottom_cm = c(20, 40), oc_pct = 1, munsell_hue_moist = "5Y",
+                munsell_value_moist = 5, munsell_chroma_moist = 1, sulfidic_s_pct = 0, ec_1to5_dS_m = 0.2))
+  expect_true(is.na(pass(sulfidic_subgroup_nzsc, sh)))
+  expect_true(is.na(pass(saline_subgroup_nzsc, sh)))
+  expect_false(pass(fluid_subgroup_nzsc, sh))
+  expect_false(pass(concretionary_subgroup_nzsc, sh))
+  # UYBG: a gap above the clay leaves the contrast open
+  ub <- function(t3) nz(list(designation = c("Ah", "Bw", "Bt", "BC"), top_cm = c(0, 15, t3, 70), bottom_cm = c(15, 40, 70, 100),
+                             field_texture = c("silt loam", "silt loam", "clay", "clay loam"), munsell_value_moist = c(3, 5, 4, 5),
+                             oc_pct = c(5, 1, 1, 1)))
+  expect_true(pass(buried_granular_ultic_nzsc, ub(40)))
+  expect_true(is.na(pass(buried_granular_ultic_nzsc, ub(41))))
+  # a densipan with no top depth leaves UDP open
+  d <- .nzs_mod("ultic", h = list(designation = c("Ah", "Ed", "Btg1", "Bt2", "BC"), top_cm = c(0, NA, 25, 60, 115)))
+  expect_true(is.na(pass(below_layer_subgroup_nzsc, d, layer = "densipan", feature = "reductimorphic")))
+  # one decisive lab value settles less silt than clay
+  cl <- nz(list(designation = c("Ap", "Bg", "Cg"), top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100), clay_pct = c(20, 60, 20)))
+  expect_true(soilKey:::.nzsc_less_silt_than_clay(soilKey:::.nzsc_horizons(cl))[2])
+  # a pan is not an argillic horizon (GOJ)
+  pan <- .nzs_g(designation = c("Ap", "Bg1", "Bg2", "Bglm", "Cg"), clay_pct = c(22, 30, 32, 40, 20), clay_films_amount = list(`4` = "few"))
+  expect_false(pass(argillic_subgroup_nzsc, pan))
+})
