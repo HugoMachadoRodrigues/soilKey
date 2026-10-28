@@ -36,7 +36,7 @@ test_that("the registry lists the NZSC as an opt-in system with valid rules", {
   expect_length(v$missing, 0L); expect_length(v$unsuffixed, 0L); expect_length(v$codes, 0L)
   res <- classify_all(make_nzsc4_example("pallic"), systems = c("wrb", "nzsc"), on_missing = "silent")
   expect_identical(res$summary$nzsc4, "Fragic Pallic Soils")   # with its group since 0.9.298
-  expect_length(yaml::read_yaml(system.file("rules", "nzsc4", "readings.yaml", package = "soilKey"))$readings, 39L)
+  expect_length(yaml::read_yaml(system.file("rules", "nzsc4", "readings.yaml", package = "soilKey"))$readings, 49L)
 })
 
 test_that("the New Zealand notation is read", {

@@ -1,0 +1,95 @@
+# Key to subgroups of Organic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "OL":
+    - code: "OLBZ"
+      name: Buried-podzol Litter Organic Soils
+      tests:
+        all_of:
+          - buried_podzol_litter_nzsc: {}
+      notes: "The underlying mineral soil, with its top less than 90 cm from the soil surface, has a podzolic-B or placic horizon."
+
+    - code: "OLBG"
+      name: Buried-gley Litter Organic Soils
+      tests:
+        all_of:
+          - gley_profile_subgroup_nzsc: {}
+      notes: "A reductimorphic horizon less than 30 cm below the top of the underlying mineral soil."
+
+    - code: "OLO"
+      name: Orthic Litter Organic Soils
+      tests:
+        default: true
+      notes: "Other Litter Organic Soils."
+
+  "OF":
+    - code: "OFS"
+      name: Sphagnic Fibric Organic Soils
+      tests:
+        all_of:
+          - sphagnic_organic_nzsc: {}
+      notes: "The organic fibres to 60 cm (or to the base of the organic soil material) are more than 70 % Sphagnum."
+
+    - code: "OFU"
+      name: Sulfidic Fibric Organic Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: soil_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the soil surface."
+
+    - code: "OFA"
+      name: Acid Fibric Organic Soils
+      tests:
+        all_of:
+          - acid_organic_nzsc: {}
+      notes: "pH 4.5 or less in the major part of the organic soil material to 60 cm (or to its base)."
+
+    - code: "OFM"
+      name: Mellow Fibric Organic Soils
+      tests:
+        default: true
+      notes: "Other Fibric Organic Soils."
+
+  "OM":
+    - code: "OMU"
+      name: Sulfidic Mesic Organic Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: soil_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the soil surface."
+
+    - code: "OMA"
+      name: Acid Mesic Organic Soils
+      tests:
+        all_of:
+          - acid_organic_nzsc: {}
+      notes: "pH 4.5 or less in the major part of the organic soil material to 60 cm (or to its base)."
+
+    - code: "OMM"
+      name: Mellow Mesic Organic Soils
+      tests:
+        default: true
+      notes: "Other Mesic Organic Soils."
+
+  "OH":
+    - code: "OHU"
+      name: Sulfidic Humic Organic Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: soil_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the soil surface."
+
+    - code: "OHA"
+      name: Acid Humic Organic Soils
+      tests:
+        all_of:
+          - acid_organic_nzsc: {}
+      notes: "pH 4.5 or less in the major part of the organic soil material to 60 cm (or to its base)."
+
+    - code: "OHM"
+      name: Mellow Humic Organic Soils
+      tests:
+        default: true
+      notes: "Other Humic Organic Soils."

@@ -54,13 +54,15 @@
   rows <- rows[!is.na(h$top_cm[rows])]
   if (!length(rows)) return(FALSE)
   rows <- rows[order(h$top_cm[rows])]
-  best <- c(0, 0); cur <- c(0, 0); prev <- NA_real_
+  # sure: adjacent rows that hold; possible: adjacent rows none of which
+  # fails (v0.9.299: a sure run may start below an undecided row)
+  best <- c(0, 0); sure <- 0; poss <- 0; prev <- NA_real_
   for (i in rows) {
     th <- x$thick[i]; th <- if (is.na(th)) Inf else th
-    if (!is.na(prev) && abs(h$top_cm[i] - prev) > 0.5) cur <- c(0, 0)
-    if (ok[i] %in% FALSE) cur <- c(0, 0)
-    else cur <- c(if (ok[i] %in% TRUE && cur[1L] == cur[2L]) cur[1L] + th else cur[1L], cur[2L] + th)
-    best <- pmax(best, cur); prev <- h$bottom_cm[i]
+    if (!is.na(prev) && abs(h$top_cm[i] - prev) > 0.5) { sure <- 0; poss <- 0 }
+    if (ok[i] %in% FALSE) { sure <- 0; poss <- 0 }
+    else { sure <- if (ok[i] %in% TRUE) sure + th else 0; poss <- poss + th }
+    best <- pmax(best, c(sure, poss)); prev <- h$bottom_cm[i]
   }
   # a horizon (or set of rows) thinner than 10 cm in all is read whole
   tot <- sum(ifelse(is.na(x$thick[rows]), Inf, pmax(0, x$thick[rows])))

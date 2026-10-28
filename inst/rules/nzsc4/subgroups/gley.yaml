@@ -1,0 +1,291 @@
+# Key to subgroups of Gley Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "GU":
+    - code: "GUFQ"
+      name: Fluid-saline Sulfuric Gley Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {saline: true}
+      notes: "Moderately or very fluid, and saline soil material, within 60 cm of the mineral soil surface."
+
+    - code: "GUF"
+      name: Fluid Sulfuric Gley Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {}
+      notes: "Moderately or very fluid within 60 cm of the mineral soil surface."
+
+    - code: "GUO"
+      name: Peaty Sulfuric Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface}
+      notes: "A peaty topsoil at the surface or buried with its top within 60 cm of the soil surface."
+
+    - code: "GUSQ"
+      name: Sandy-saline Sulfuric Gley Soils
+      tests:
+        all_of:
+          - sandy_saline_nzsc: {}
+      notes: "Sandy by weighted average to 90 cm, and saline soil material within 60 cm, of the mineral soil surface."
+
+    - code: "GUT"
+      name: Typic Sulfuric Gley Soils
+      tests:
+        default: true
+      notes: "Other Sulfuric Gley Soils (the text writes Sulphuric)."
+
+  "GT":
+    - code: "GTO"
+      name: Peaty Tephric Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: mineral_surface}
+      notes: "A peaty topsoil at the surface or buried with its top within 60 cm of the mineral soil surface."
+
+    - code: "GTA"
+      name: Acidic Tephric Gley Soils
+      tests:
+        all_of:
+          - acidic_subgroup_nzsc: {}
+      notes: "pH below 5.5 in some part from the base of the A horizon to 60 cm."
+
+    - code: "GTT"
+      name: Typic Tephric Gley Soils
+      tests:
+        default: true
+      notes: "Other Tephric Gley Soils."
+
+  "GS":
+    - code: "GSOU"
+      name: Peaty-sulfidic Sandy Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: mineral_surface, sulfidic: true}
+      notes: "A peaty topsoil (at the surface or buried within 60 cm), and sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GSU"
+      name: Sulfidic Sandy Gley Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GSO"
+      name: Peaty Sandy Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: mineral_surface}
+      notes: "A peaty topsoil at the surface or buried with its top within 60 cm of the mineral soil surface."
+
+    - code: "GSQ"
+      name: Saline Sandy Gley Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "GSC"
+      name: Concretionary Sandy Gley Soils
+      tests:
+        all_of:
+          - concretionary_subgroup_nzsc: {}
+      notes: "More than 2 % concretions in some horizon at 60 cm or less from the mineral soil surface."
+
+    - code: "GSA"
+      name: Acidic Sandy Gley Soils
+      tests:
+        all_of:
+          - acidic_subgroup_nzsc: {}
+      notes: "pH below 5.5 in some part from the base of the A horizon to 60 cm."
+
+    - code: "GST"
+      name: Typic Sandy Gley Soils
+      tests:
+        default: true
+      notes: "Other Sandy Gley Soils."
+
+  "GX":
+    - code: "GXN"
+      name: Nodular Oxidic Gley Soils
+      tests:
+        all_of:
+          - nodular_subgroup_nzsc: {}
+      notes: "A nodular horizon with its top within 60 cm of the mineral soil surface."
+
+    - code: "GXT"
+      name: Typic Oxidic Gley Soils
+      tests:
+        default: true
+      notes: "Other Oxidic Gley Soils."
+
+  "GR":
+    - code: "GROU"
+      name: Peaty-sulfidic Recent Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface, sulfidic: true}
+      notes: "A peaty topsoil (at the surface or buried within 60 cm of the soil surface), and sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GRU"
+      name: Sulfidic Recent Gley Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GRO"
+      name: Peaty Recent Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface}
+      notes: "A peaty topsoil at the surface or buried with its top within 60 cm of the soil surface."
+
+    - code: "GRF"
+      name: Fluid Recent Gley Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {}
+      notes: "Moderately or very fluid within 60 cm of the mineral soil surface."
+
+    - code: "GRQ"
+      name: Saline Recent Gley Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "GRC"
+      name: Calcareous Recent Gley Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {shelly: true}
+      notes: "A calcareous horizon or a shelly layer within 60 cm of the mineral soil surface."
+
+    - code: "GRA"
+      name: Acidic Recent Gley Soils
+      tests:
+        all_of:
+          - acidic_subgroup_nzsc: {}
+      notes: "pH below 5.5 in some part from the base of the A horizon to 60 cm."
+
+    - code: "GRT"
+      name: Typic Recent Gley Soils
+      tests:
+        default: true
+      notes: "Other Recent Gley Soils."
+
+  "GA":
+    - code: "GAO"
+      name: Peaty Acid Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface}
+      notes: "A peaty topsoil at the surface or buried within 60 cm of the surface."
+
+    - code: "GAG"
+      name: Granular Acid Gley Soils
+      tests:
+        all_of:
+          - granular_acid_gley_nzsc: {}
+      notes: "In the major part of the B horizon to 60 cm: a clayey, moderately or strongly pedal cutanic or argillic horizon with polyhedral peds of 20 mm or less."
+
+    - code: "GAY"
+      name: Ultic Acid Gley Soils
+      tests:
+        all_of:
+          - ultic_acid_gley_nzsc: {}
+      notes: "In the major part of the B horizon: 10 % or more clay or humus coatings on ped faces, and less silt than clay."
+
+    - code: "GAPH"
+      name: Placic-humose Acid Gley Soils
+      tests:
+        all_of:
+          - humose_acid_gley_nzsc: {placic: true}
+      notes: "A placic horizon, and a B horizon with 10 % or more dark-coloured coats (moist value 4 or less, or value 5 and chroma 3)."
+
+    - code: "GAH"
+      name: Humose Acid Gley Soils
+      tests:
+        all_of:
+          - humose_acid_gley_nzsc: {}
+      notes: "A B horizon with 10 % or more dark-coloured coats (moist value 4 or less, or value 5 and chroma 3)."
+
+    - code: "GAT"
+      name: Typic Acid Gley Soils
+      tests:
+        default: true
+      notes: "Other Acid Gley Soils."
+
+  "GO":
+    - code: "GOOU"
+      name: Peaty-sulfidic Orthic Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: mineral_surface, sulfidic: true}
+      notes: "A peaty topsoil (at the surface or buried within 60 cm), and sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GOU"
+      name: Sulfidic Orthic Gley Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GOO"
+      name: Peaty Orthic Gley Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface}
+      notes: "A peaty topsoil at the surface or buried with its top within 60 cm of the soil surface."
+
+    - code: "GOQ"
+      name: Saline Orthic Gley Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "GOC"
+      name: Calcareous Orthic Gley Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {limit: at_or_less}
+      notes: "A calcareous horizon at 60 cm or less from the mineral soil surface."
+
+    - code: "GOI"
+      name: Ironstone Orthic Gley Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ironstone_pan, depth: 90}
+      notes: "An ironstone-pan at 90 cm or less from the mineral soil surface."
+
+    - code: "GOE"
+      name: Melanic Orthic Gley Soils
+      tests:
+        all_of:
+          - melanic_orthic_gley_nzsc: {}
+      notes: "The major part of the B horizon to 60 cm (or to its base): moderately or strongly pedal, moderately or very sticky, pH 5.9 or more."
+
+    - code: "GOJ"
+      name: Argillic Orthic Gley Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "GOA"
+      name: Acidic Orthic Gley Soils
+      tests:
+        all_of:
+          - acidic_subgroup_nzsc: {}
+      notes: "pH below 5.5 in some part from the base of the A horizon to 60 cm."
+
+    - code: "GOT"
+      name: Typic Orthic Gley Soils
+      tests:
+        default: true
+      notes: "Other Orthic Gley Soils."

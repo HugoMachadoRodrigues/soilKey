@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.298)
+# soilKey -- recognised horizon attribute names (v0.9.299)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -289,7 +289,9 @@ and do not warn.
 | `sulfate_s_pct` | % (mass) | numeric | Sulfate sulfur of the fine earth, dry mass; NZSC sulfuric soil material (0.05 % or more). | - |
 | `roots_abundance` | - | character | Abundance of roots in the horizon (none, very few, few, common, many); NZSC Impeded Pumice Soils (a compact, brittle layer with no roots). | - |
 | `maori_cultural_layer` | - | logical | TRUE for a horizon modified through Māori cultural practice, with additions of rock fragments, sand, shells, charcoal, ash, seaweed or similar (a cultural layer, as at midden sites); NZSC Māori Anthropic Soils. | - |
-| `coatings_value_moist` | Munsell | numeric | Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less). | - |
+| `coatings_value_moist` | Munsell | numeric | Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less); since 0.9.299 also the dark coatings of the Humose and Placic-humose Acid Gley and Podzolic Yellow Ultic Soils. | - |
+| `sphagnum_fibres_pct` | % | numeric | Share of the organic fibres that are Sphagnum (moss peat); NZSC Sphagnic Fibric Organic Soils (more than 70 % to 60 cm). Recorded when met: not recorded reads as none. | - |
+| `shelly_layer` | - | logical | TRUE for a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils (a shelly layer within 60 cm). Recorded when met: not recorded reads as none. | - |
 
 # Site properties
 
@@ -431,5 +433,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.298._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.299._
 

@@ -677,5 +677,15 @@ attributes:
   - name: coatings_value_moist
     section: "New Zealand system (NZSC 4th ed.)"
     unit: "Munsell"
-    description: "Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less)."
+    description: "Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less); since 0.9.299 also the dark coatings of the Humose and Placic-humose Acid Gley and Podzolic Yellow Ultic Soils."
+    systems: [nzsc4]
+  - name: sphagnum_fibres_pct
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "%"
+    description: "Share of the organic fibres that are Sphagnum (moss peat); NZSC Sphagnic Fibric Organic Soils (more than 70 % to 60 cm). Recorded when met: not recorded reads as none."
+    systems: [nzsc4]
+  - name: shelly_layer
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "TRUE for a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils (a shelly layer within 60 cm). Recorded when met: not recorded reads as none."
     systems: [nzsc4]

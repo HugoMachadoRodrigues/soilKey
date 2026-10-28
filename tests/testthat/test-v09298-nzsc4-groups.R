@@ -115,7 +115,9 @@ test_that("every group of the 15 orders is reached by its profile", {
   skip_on_cran()
   cases <- .nzg_cases()
   expect_length(cases, 77L)
-  got <- vapply(cases, function(p) tail(classify_nzsc4(p, on_missing = "silent")$levels$code, 1L), "")
+  # the group level (since 0.9.299 the name may go on to a subgroup)
+  got <- vapply(cases, function(p) { lv <- classify_nzsc4(p, on_missing = "silent")$levels
+                                     lv$code[lv$level == "groups"] }, "")
   expect_identical(unname(got), names(cases))
 })
 

@@ -1,3 +1,52 @@
+# soilKey 0.9.299 (2026-10-28)
+
+## New Zealand Soil Classification: the subgroups of the Organic, Gley and Ultic Soils
+
+`classify_nzsc4()` now keys the 16 groups of the Organic, Gley and Ultic
+Soils to their 70 subgroups, following the keys to subgroups of the New
+Zealand Soil Classification, 4th edition: from the Buried-podzol Litter
+Organic Soils to the Buried-granular and Typic Yellow Ultic Soils. The name of
+such a profile is now its subgroup (for example "Peaty Orthic Gley Soils",
+"Mottled Yellow Ultic Soils"); the group and the order stay in `levels`. The
+subgroups of the other 12 orders follow.
+
+* The keys live in `inst/rules/nzsc4/subgroups/`, one file per order, in the
+  book's order. The last subgroup of each group is the default, except under
+  the Densipan and Perch-gley Ultic Soils, which the text gives none.
+* The gates are in `R/diagnostics-nzsc-subgroups.R`. Criteria the groups
+  share use one gate with arguments: sulfidic, saline, fluid, peaty, acidic,
+  concretionary, calcareous, pan, mottled, nodular, argillic, and the
+  horizons below a densipan or an eluvial horizon.
+* New diagnostics: sulfidic and saline soil material, the mottled profile
+  form, buried peaty topsoils, coatings on 10 % or more of the ped faces and
+  dark coatings.
+* New horizon attributes: `sphagnum_fibres_pct` (the Sphagnic Fibric Organic
+  Soils) and `shelly_layer` (the Calcareous Recent Gley Soils).
+
+Hugo decided four readings:
+
+* sulfidic soil material that is not measured is absent when no horizon in
+  the window can look sulfidic in the field (a reductimorphic horizon with a
+  hue of 5Y or less red, or black), as the text describes it; otherwise it is
+  undecided;
+* saline soil material that is not measured is absent when the horizons are
+  designated and none carries the z suffix; with no designations it is
+  undecided;
+* the Sphagnum share of the fibres and a shelly layer are recorded when met,
+  so not recorded reads as none;
+* a Densipan or Perch-gley Ultic Soil that passes no subgroup keeps the group
+  name, with a warning.
+
+The other readings are in `inst/rules/nzsc4/readings.yaml`, which now has 49
+topics. Two subgroup names follow their groups' spelling: Typic Sulfuric Gley
+Soils (the text writes "Sulphuric") and Typic Yellow Ultic Soils (the text
+writes "Soil").
+
+Outside the subgroups, "in some part" now finds a run of 10 cm that passes
+when it lies directly below a horizon left undecided (it was read as
+undecided). This can only turn an undecided order or group into a decided
+one.
+
 # soilKey 0.9.298 (2026-10-28)
 
 ## New Zealand Soil Classification: the 77 groups
