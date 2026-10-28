@@ -1413,22 +1413,110 @@ familia_organossolo_lenhosidade <- function(pedon) {
 }
 
 
+# v0.9.296: the terms of the book for the values of each dimension. The
+# codes in FamilyAttribute$value stay as they are (code and tests read
+# them); only the label uses the book's wording (SiBCS 2018, Cap 18,
+# pp 281-288, and its example on p 81: "Latossolo Amarelo Acrico
+# petroplintico, textura argilosa cascalhenta, endoconcrecionario, A
+# moderado, ..."). A value with no entry is shown with its underscores
+# read as spaces.
+.familia_termos <- function() {
+  textura <- c(
+    "arenosa" = "arenosa", "muito_argilosa" = "muito argilosa",
+    "argilosa" = "argilosa", "m\u00e9dia" = "m\u00e9dia", "media" = "m\u00e9dia",
+    "siltosa" = "siltosa", "muito_arenosa" = "muito arenosa",
+    "arenosa-media" = "arenosa-m\u00e9dia",
+    "media-arenosa" = "m\u00e9dia-arenosa",
+    "media-argilosa" = "m\u00e9dia-argilosa",
+    "media-siltosa" = "m\u00e9dia-siltosa")
+  list(
+    grupamento_textural    = textura,
+    subgrupamento_textural = textura,
+    distribuicao_cascalhos = c("pouco_cascalhenta" = "pouco cascalhenta",
+                               "cascalhenta" = "cascalhenta",
+                               "muito_cascalhenta" = "muito cascalhenta"),
+    material_subjacente    = c("arenoso" = "arenoso",
+                               "muito_argiloso" = "muito argiloso",
+                               "argiloso" = "argiloso",
+                               "siltoso" = "siltoso",
+                               "medio" = "m\u00e9dio"),
+    lenhosidade            = c("lenhoso" = "lenhoso",
+                               "muito_lenhoso" = "muito lenhoso",
+                               "extremamente_lenhoso" = "extremamente lenhoso"))
+}
+
+# The book's term for one value of one dimension.
+.familia_termo <- function(dimensao, valor) {
+  t <- .familia_termos()[[dimensao]]
+  if (!is.null(t) && valor %in% names(t)) return(unname(t[[valor]]))
+  gsub("_", " ", valor, fixed = TRUE)
+}
+
+
 #' Constroi label textual de Familia a partir de \code{classify_sibcs_familia}
 #'
-#' Concatena os \code{value} nao-nulos como string separada por
-#' virgulas, conforme orientado no Cap 18, p 281: "as caracteristicas
-#' utilizadas para identificacao do 5o nivel categorico devem ser
-#' acrescentadas apos a designacao do 4o nivel categorico e separadas
-#' desta e entre si por virgula".
+#' Escreve as caracteristicas do 5o nivel na forma do livro (Cap 18, pp
+#' 281-288), separadas por virgula e na ordem em que o capitulo as
+#' apresenta. O grupamento (ou subgrupamento) textural vem precedido de
+#' "textura", seguido sem virgula da distribuicao de cascalhos e de
+#' "esqueletica", com a mineralogia da areia entre parenteses ("textura
+#' argilosa cascalhenta", "textura media (micacea)"); o tipo de horizonte
+#' superficial vem como "A moderado" ("horizonte histico" para o
+#' histico, decisao de Hugo de 2026-10-28); o material subjacente dos
+#' Organossolos como "material subjacente argiloso". Os demais valores
+#' ja sao os termos do livro (eutrofico, epialico, cauliniticos,
+#' mesoferrico, Tmb, andico, espesso, lenhoso).
 #'
 #' @param familia Lista de \code{\link{FamilyAttribute}}, retorno de
 #'        \code{\link{classify_sibcs_familia}}.
-#' @return String com adjetivos compostos separados por ", ", ou
-#'         vazia se nenhum adjetivo se aplica.
+#' @return String com as caracteristicas separadas por ", ", ou vazia
+#'         se nenhuma se aplica.
 #' @noRd
 familia_label <- function(familia) {
-  vals <- vapply(familia, function(fa) fa$value %||% NA_character_,
-                   character(1))
-  vals <- vals[!is.na(vals)]
-  paste(vals, collapse = ", ")
+  dims <- vapply(familia, function(fa) as.character(fa$name %||% ""),
+                 character(1))
+  vals <- lapply(familia, function(fa) fa$value)
+  val  <- function(d) {
+    i <- which(dims == d & !vapply(vals, is.null, logical(1)))
+    if (length(i)) as.character(vals[[i[1L]]]) else NULL
+  }
+  grupo_textura <- c("grupamento_textural", "subgrupamento_textural",
+                     "distribuicao_cascalhos", "constituicao_esqueletica",
+                     "mineralogia_areia")
+  textura_feita <- FALSE
+  out <- character(0)
+  for (k in seq_along(familia)) {
+    d <- dims[k]
+    v <- vals[[k]]
+    if (d %in% grupo_textura) {
+      if (textura_feita) next
+      textura_feita <- TRUE
+      tex <- val("grupamento_textural") %||% val("subgrupamento_textural")
+      tex_d <- if (!is.null(val("grupamento_textural"))) "grupamento_textural"
+               else "subgrupamento_textural"
+      partes <- c(
+        if (!is.null(tex)) paste("textura", .familia_termo(tex_d, tex)),
+        if (!is.null(val("distribuicao_cascalhos")))
+          .familia_termo("distribuicao_cascalhos", val("distribuicao_cascalhos")),
+        if (!is.null(val("constituicao_esqueletica")))
+          .familia_termo("constituicao_esqueletica", val("constituicao_esqueletica")))
+      min_areia <- val("mineralogia_areia")
+      frase <- paste(partes, collapse = " ")
+      if (!is.null(min_areia)) {
+        m <- .familia_termo("mineralogia_areia", min_areia)
+        frase <- if (nzchar(frase)) sprintf("%s (%s)", frase, m) else m
+      }
+      if (nzchar(frase)) out <- c(out, frase)
+      next
+    }
+    if (is.null(v)) next
+    v <- as.character(v)
+    out <- c(out, switch(d,
+      tipo_horizonte_superficial =
+        if (identical(v, "h\u00edstico")) "horizonte h\u00edstico" else paste("A", v),
+      material_subjacente =
+        paste("material subjacente", .familia_termo(d, v)),
+      .familia_termo(d, v)))
+  }
+  paste(out, collapse = ", ")
 }
