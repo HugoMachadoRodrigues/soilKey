@@ -17,6 +17,10 @@ every key-trace lives on one of these objects.
   : Canonical horizon column specification
 - [`horizon_attribute_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_attribute_spec.md)
   : Metadata of the horizon attributes
+- [`site_attribute_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/site_attribute_spec.md)
+  : Metadata of the site properties
+- [`unrecognised_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/unrecognised_attributes.md)
+  : Attributes that soilKey does not recognise
 - [`make_empty_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.md)
   : Build an empty horizons data.table with the canonical schema
 - [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)

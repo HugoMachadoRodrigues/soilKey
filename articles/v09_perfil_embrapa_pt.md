@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5f5da724e1a0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x62560a18c1b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -84,7 +84,7 @@ perfil <- PedonRecord$new(
     state     = "RJ",
     municipality = "Itaguai",
     parent_material = "sedimentos argilosos do Terciario",
-    survey_year = 2003,
+    date      = "2003",
     reference_source = "Embrapa Solos (2003) - Levantamento RJ"
   ),
   horizons = horizontes
@@ -93,8 +93,8 @@ perfil
 #> 
 #> ── PedonRecord ──
 #> 
-#> Site: id=RJ-1-Itaguai | (-22.8600, -43.7800) | BR | on sedimentos argilosos do
-#> Terciario
+#> Site: id=RJ-1-Itaguai | (-22.8600, -43.7800) | BR | 2003 | on sedimentos
+#> argilosos do Terciario
 #> Horizons (5):
 #> 1) A 0-20 cm clay=18.0 silt=30.0 sand=52.0 CEC=8.0 pH=5.5 OC=1.5
 #> 2) AB 20-55 cm clay=28.0 silt=25.0 sand=47.0 CEC=6.0 pH=5.3 OC=0.6

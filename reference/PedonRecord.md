@@ -28,6 +28,16 @@ the final
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
 to assign a meaningful evidence grade.
 
+Horizon columns and site properties that soilKey does not recognise are
+kept but read by no key. `PedonRecord$new()` warns about them (with the
+closest recognised names) when it is called from outside the package;
+see
+[`unrecognised_attributes`](https://hugomachadorodrigues.github.io/soilKey/reference/unrecognised_attributes.md),
+[`horizon_attribute_spec`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_attribute_spec.md)
+and
+[`site_attribute_spec`](https://hugomachadorodrigues.github.io/soilKey/reference/site_attribute_spec.md).
+`options(soilKey.warn_unrecognised = FALSE)` turns the warning off.
+
 ## Public fields
 
 - `site`:

@@ -565,7 +565,7 @@ hz <- data.table::data.table(
   clay_pct = c(35, 45, 65, 65),
   sand_pct = c(25, 20, 15, 15),
   silt_pct = c(40, 35, 20, 20),
-  cec_cmolc_kg = c(8, 6, 5, 4),
+  cec_cmol  = c(8, 6, 5, 4),
   bs_pct  = c(35, 30, 25, 20),
   oc_pct  = c(2.0, 1.0, 0.5, 0.3),
   ph_h2o  = c(5.0, 5.2, 5.3, 5.4),
@@ -973,6 +973,10 @@ every key-trace lives on one of these objects.
   : Canonical horizon column specification
 - [`horizon_attribute_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/horizon_attribute_spec.md)
   : Metadata of the horizon attributes
+- [`site_attribute_spec()`](https://hugomachadorodrigues.github.io/soilKey/reference/site_attribute_spec.md)
+  : Metadata of the site properties
+- [`unrecognised_attributes()`](https://hugomachadorodrigues.github.io/soilKey/reference/unrecognised_attributes.md)
+  : Attributes that soilKey does not recognise
 - [`make_empty_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.md)
   : Build an empty horizons data.table with the canonical schema
 - [`ensure_horizon_schema()`](https://hugomachadorodrigues.github.io/soilKey/reference/ensure_horizon_schema.md)

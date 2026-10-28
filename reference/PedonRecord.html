@@ -9,7 +9,7 @@ PedonRecord: structured representation of a single pedon"><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.293</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.294</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,12 @@ value came from (<code>measured</code>, <code>extracted_vlm</code>,
 provenance log is what allows the final
 <code><a href="ClassificationResult.html">ClassificationResult</a></code> to assign a meaningful evidence
 grade.</p>
+<p>Horizon columns and site properties that soilKey does not recognise are
+kept but read by no key. <code>PedonRecord$new()</code> warns about them (with
+the closest recognised names) when it is called from outside the package;
+see <code><a href="unrecognised_attributes.html">unrecognised_attributes</a></code>,
+<code><a href="horizon_attribute_spec.html">horizon_attribute_spec</a></code> and <code><a href="site_attribute_spec.html">site_attribute_spec</a></code>.
+<code>options(soilKey.warn_unrecognised = FALSE)</code> turns the warning off.</p>
     </div>
     <div class="section level2">
     <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>

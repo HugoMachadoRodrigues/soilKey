@@ -19,7 +19,7 @@ system.file(&quot;extdata&quot;, &quot;perfil_exemplo.csv&quot;, package = &quot
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.293</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.294</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,8 +106,12 @@ Defaults to <code>list(id = &lt;file base name&gt;)</code>.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Only recognised columns are used (any extras are carried through untouched),
-so a messy export still works - soilKey simply uses the columns it
-understands. Site metadata (id, lat/lon, soil moisture / temperature regime)
+so a messy export still works: soilKey uses the columns it understands, and
+recognises names that differ only in capitalisation or separators and common
+aliases (<code>Clay</code>, <code>SOC</code>, <code>CEC</code>, ...). Columns and site
+properties that it does not recognise are named in a warning, with the
+closest recognised names (see <code><a href="unrecognised_attributes.html">unrecognised_attributes</a></code>). Site
+metadata (id, lat/lon, soil moisture / temperature regime)
 is optional and passed via <code>site</code>; without it the profile still
 classifies, just with less specificity where site data would have refined the
 name.</p>

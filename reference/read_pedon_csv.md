@@ -39,11 +39,15 @@ A
 ## Details
 
 Only recognised columns are used (any extras are carried through
-untouched), so a messy export still works - soilKey simply uses the
-columns it understands. Site metadata (id, lat/lon, soil moisture /
-temperature regime) is optional and passed via `site`; without it the
-profile still classifies, just with less specificity where site data
-would have refined the name.
+untouched), so a messy export still works: soilKey uses the columns it
+understands, and recognises names that differ only in capitalisation or
+separators and common aliases (`Clay`, `SOC`, `CEC`, ...). Columns and
+site properties that it does not recognise are named in a warning, with
+the closest recognised names (see
+[`unrecognised_attributes`](https://hugomachadorodrigues.github.io/soilKey/reference/unrecognised_attributes.md)).
+Site metadata (id, lat/lon, soil moisture / temperature regime) is
+optional and passed via `site`; without it the profile still classifies,
+just with less specificity where site data would have refined the name.
 
 ## See also
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.293</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.294</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.294" id="soilkey-09294-2026-10-28">soilKey 0.9.294 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09294-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="a-warning-for-the-attributes-that-no-key-reads-0-9-294">A warning for the attributes that no key reads<a class="anchor" aria-label="anchor" href="#a-warning-for-the-attributes-that-no-key-reads-0-9-294"></a></h3>
+<p>A horizon column that soilKey does not recognise, or a site property it does not know, used to be kept in the <code>PedonRecord</code> and read by no key without a word, so a misspelt column (<code>organic_carbon_gkg</code>) or a site property given as a horizon column (<code>soil_moisture_regime</code>) went unnoticed. <code>PedonRecord$new()</code> now warns about them when it is called from outside the package, naming each one with the closest recognised name: “organic_carbon_gkg (did you mean oc_pct?)”, “soil_moisture_regime (a site property: site$soil_moisture_regime)”. <code><a href="../reference/read_pedon_csv.html">read_pedon_csv()</a></code> warns for the file it reads, and now also accepts a spreadsheet whose columns are all aliases (<code>Top</code>, <code>Bottom</code>, <code>Clay</code>, <code>SOC</code>), which it used to refuse. The loaders (BDsolos, FEBR, WoSIS, NatSoil, NPDB, KSSL, LUCAS, AfSP, Redape) and the other constructions inside soilKey keep extra columns on purpose and stay quiet. The warning has the class <code>soilKey_unrecognised_attributes</code>; <code>options(soilKey.warn_unrecognised = FALSE)</code> turns it off. The new <code><a href="../reference/unrecognised_attributes.html">unrecognised_attributes()</a></code> returns the same list as a table, for a pedon or for a horizon table and a site list, so a batch can be checked before it is built. Suggested by Jelle Janssen (ISRIC).</p>
+<p>The site properties now have a reference of their own, as the horizon attributes have had since 0.9.266: <code>inst/schemas/site-attributes.yaml</code>, read by the new <code><a href="../reference/site_attribute_spec.html">site_attribute_spec()</a></code>, gives each recognised property its type, unit, description, the values the keys compare it with and the keys that read it, and <code>inst/ATTRIBUTES.md</code> lists them after the horizon attributes. A test fails when the code reads a site property that the file does not list.</p>
+<p>In soilKey Pro, opening a session file keeps the site properties that soilKey recognises beyond the editor’s own fields (<code>soil_moisture_regime</code>, <code>drainage_class</code>, …): they reach the pedon and the classification and are saved again with the session. Until now they were dropped. A notice lists the horizon columns and site properties that no key reads, on opening a session and on uploading a CSV. No classification changes: the 44 canonical fixtures are identical.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.293" id="soilkey-09293-2026-10-28">soilKey 0.9.293 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09293-2026-10-28"></a></h2>
 <div class="section level3">

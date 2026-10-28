@@ -565,7 +565,7 @@ hz <- data.table::data.table(
   clay_pct = c(35, 45, 65, 65),
   sand_pct = c(25, 20, 15, 15),
   silt_pct = c(40, 35, 20, 20),
-  cec_cmolc_kg = c(8, 6, 5, 4),
+  cec_cmol  = c(8, 6, 5, 4),
   bs_pct  = c(35, 30, 25, 20),
   oc_pct  = c(2.0, 1.0, 0.5, 0.3),
   ph_h2o  = c(5.0, 5.2, 5.3, 5.4),
