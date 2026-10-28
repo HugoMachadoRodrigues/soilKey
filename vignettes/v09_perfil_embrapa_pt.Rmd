@@ -91,7 +91,7 @@ perfil <- PedonRecord$new(
     state     = "RJ",
     municipality = "Itaguai",
     parent_material = "sedimentos argilosos do Terciario",
-    survey_year = 2003,
+    date      = "2003",
     reference_source = "Embrapa Solos (2003) - Levantamento RJ"
   ),
   horizons = horizontes

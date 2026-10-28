@@ -1,3 +1,40 @@
+# soilKey 0.9.294 (2026-10-28)
+
+## A warning for the attributes that no key reads
+
+A horizon column that soilKey does not recognise, or a site property it does
+not know, used to be kept in the `PedonRecord` and read by no key without a
+word, so a misspelt column (`organic_carbon_gkg`) or a site property given as
+a horizon column (`soil_moisture_regime`) went unnoticed. `PedonRecord$new()`
+now warns about them when it is called from outside the package, naming each
+one with the closest recognised name: "organic_carbon_gkg (did you mean
+oc_pct?)", "soil_moisture_regime (a site property:
+site$soil_moisture_regime)". `read_pedon_csv()` warns for the file it reads,
+and now also accepts a spreadsheet whose columns are all aliases (`Top`,
+`Bottom`, `Clay`, `SOC`), which it used to refuse. The loaders (BDsolos, FEBR,
+WoSIS, NatSoil, NPDB, KSSL, LUCAS, AfSP, Redape) and the other constructions
+inside soilKey keep extra columns on purpose and stay quiet. The warning has
+the class `soilKey_unrecognised_attributes`;
+`options(soilKey.warn_unrecognised = FALSE)` turns it off. The new
+`unrecognised_attributes()` returns the same list as a table, for a pedon or
+for a horizon table and a site list, so a batch can be checked before it is
+built. Suggested by Jelle Janssen (ISRIC).
+
+The site properties now have a reference of their own, as the horizon
+attributes have had since 0.9.266: `inst/schemas/site-attributes.yaml`, read
+by the new `site_attribute_spec()`, gives each recognised property its type,
+unit, description, the values the keys compare it with and the keys that read
+it, and `inst/ATTRIBUTES.md` lists them after the horizon attributes. A test
+fails when the code reads a site property that the file does not list.
+
+In soilKey Pro, opening a session file keeps the site properties that
+soilKey recognises beyond the editor's own fields (`soil_moisture_regime`,
+`drainage_class`, ...): they reach the pedon and the classification and are
+saved again with the session. Until now they were dropped. A notice lists the
+horizon columns and site properties that no key reads, on opening a session
+and on uploading a CSV. No classification changes: the 44 canonical fixtures
+are identical.
+
 # soilKey 0.9.293 (2026-10-28)
 
 ## New Zealand Soil Classification: the 15 orders

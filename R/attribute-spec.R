@@ -103,7 +103,16 @@ horizon_attribute_spec <- function() {
     "This is the authoritative list of the analytical and morphological attribute",
     "names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a",
     "`data.frame`/`data.table` passed to the R API). Every classification key reads",
-    "these columns; anything else is preserved but ignored by the keys.",
+    "these columns; anything else is preserved but ignored by the keys. The site",
+    "properties (`PedonRecord$site`) follow the horizon attributes, under",
+    "[Site properties](#site-properties).",
+    "",
+    "Since v0.9.294, `PedonRecord$new()` and `read_pedon_csv()` warn about horizon",
+    "columns and site properties that are not recognised, with the closest",
+    "recognised names; `unrecognised_attributes()` returns the same list as a",
+    "table, and `options(soilKey.warn_unrecognised = FALSE)` turns the warning off.",
+    "The loaders (BDsolos, FEBR, WoSIS, NatSoil, ...) keep extra columns on purpose",
+    "and do not warn.",
     "",
     "## Naming conventions",
     "",
@@ -114,7 +123,7 @@ horizon_attribute_spec <- function() {
     "* A small table of **common abbreviations** is also accepted (see the *aliases*",
     "  column below): e.g. `Clay` -> `clay_pct`, `SOC` -> `oc_pct`, `CEC` -> `cec_cmol`.",
     "* An exact canonical name always wins and is never overwritten; unrecognised",
-    "  columns are kept verbatim and simply not read by the keys.",
+    "  columns are kept verbatim, not read by the keys, and named in a warning.",
     "* Units are as listed. Percentages are by mass unless noted `(vol)`; exchangeable",
     "  cations and CEC are in cmol(+)/kg (= meq/100 g).",
     "",
@@ -140,11 +149,49 @@ horizon_attribute_spec <- function() {
     }
     out <- c(out, "")
   }
+  out <- c(out, .site_attributes_markdown())
   c(out,
     "---",
     "",
     sprintf(paste0("_Generated from `inst/schemas/horizon-attributes.yaml`, ",
+                   "`inst/schemas/site-attributes.yaml`, ",
                    "`horizon_column_spec()` and `.horizon_name_aliases()` in ",
                    "soilKey v%s._"), version),
     "")
+}
+
+# The site part of inst/ATTRIBUTES.md: one table per section of
+# site_attribute_spec(), in the order of the YAML.
+.site_attributes_markdown <- function() {
+  s <- site_attribute_spec()
+  md_escape <- function(x) gsub("\\|", "\\\\|", x)
+  code_list <- function(x) if (nzchar(x))
+    paste0("`", strsplit(x, ", ", fixed = TRUE)[[1L]], "`", collapse = ", ")
+    else "-"
+  out <- c(
+    "# Site properties",
+    "",
+    "The named elements of `PedonRecord$site` that soilKey recognises. Give them in",
+    "the `site` list of `PedonRecord$new()` (or of `read_pedon_csv()`), not as",
+    "horizon columns. The keys that read a property are given by their registry",
+    "ids (`wrb2022`, `usda`, `sibcs5`, `cssc3`, `asc3`, `nzsc4`); the properties of",
+    "the last section are stored by the loaders and reports and read by no key.",
+    "",
+    "> Tip (R): `soilKey::site_attribute_spec()` returns this table.",
+    "")
+  for (sec in unique(s$section)) {
+    rows <- s[s$section == sec, , drop = FALSE]
+    out <- c(out, sprintf("## %s", sec), "",
+             "| Property | Unit | Type | Description | Values | Read by |",
+             "|----------|------|------|-------------|--------|---------|")
+    for (i in seq_len(nrow(rows))) {
+      out <- c(out, sprintf("| `%s` | %s | %s | %s | %s | %s |", rows$name[i],
+                            rows$unit[i], rows$type[i],
+                            md_escape(rows$description[i]),
+                            code_list(rows$allowed[i]),
+                            code_list(rows$systems[i])))
+    }
+    out <- c(out, "")
+  }
+  out
 }

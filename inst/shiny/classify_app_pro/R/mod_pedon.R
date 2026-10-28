@@ -127,6 +127,58 @@
   }
   df
 }
+
+# v0.9.294: site properties and attribute names the editor does not hold.
+#
+# The site block of a session file can carry more than the editor's own inputs
+# (soil_moisture_regime, drainage_class, ...). The ones soilKey recognises are
+# kept, reach the pedon and the classification, and are written back when the
+# session is saved; the others, and horizon columns that no key reads, are
+# listed in a notice instead of being dropped without a word.
+.SK_SITE_INPUTS <- c("id", "lat", "lon", "country", "parent_material",
+                     "technic", "geomembrane", "geomembrane_depth_cm")
+
+.sk_session_site_extra <- function(site) {
+  if (!is.list(site) || !length(site)) return(NULL)
+  known <- soilKey::site_attribute_spec()$name
+  extra <- site[setdiff(intersect(names(site), known), .SK_SITE_INPUTS)]
+  extra <- extra[!vapply(extra, function(v) is.null(v) || all(is.na(v)),
+                         logical(1))]
+  if (length(extra)) extra else NULL
+}
+
+# The notice text for unrecognised horizon columns and site properties, or
+# NULL when everything is recognised.
+.sk_unrecognised_notice <- function(df, site = NULL) {
+  tab <- tryCatch(soilKey::unrecognised_attributes(df, site = site),
+                  error = function(e) NULL)
+  if (is.null(tab) || !nrow(tab)) return(NULL)
+  item <- function(i) {
+    sug <- tab$suggestion[i]
+    if (!nzchar(sug)) return(tab$name[i])
+    sug <- strsplit(sug, ", ", fixed = TRUE)[[1L]]
+    if (identical(tab$note[i], "site property")) sug <- paste0("site$", sug)
+    sprintf("%s \u2192 %s", tab$name[i], paste(sug, collapse = " / "))
+  }
+  lines <- character()
+  for (w in c("horizons", "site")) {
+    idx <- which(tab$where == w)
+    if (length(idx)) {
+      lines <- c(lines, i18n(
+        if (w == "horizons") "pedon.unrecognised_horizons" else "pedon.unrecognised_site",
+        paste(vapply(idx, item, character(1)), collapse = ", ")))
+    }
+  }
+  paste(lines, collapse = " ")
+}
+
+# Build a PedonRecord without soilKey's console warning about unrecognised
+# attributes: the editor shows its notice instead.
+.sk_new_pedon <- function(site, horizons) {
+  withCallingHandlers(
+    soilKey::PedonRecord$new(site = site, horizons = horizons),
+    soilKey_unrecognised_attributes = function(w) invokeRestart("muffleWarning"))
+}
 # The WoSIS picker holds no corpus.
 #
 # Until v0.9.199 this file cached a bundled snapshot of ISRIC's profiles in a
@@ -454,6 +506,13 @@ pedon_server <- function(id, rv) {
           ),
           horizons = horizon_rows
         )
+        # v0.9.294: the recognised site properties beyond the editor's inputs
+        # (from a reopened session, or WoSIS provenance) are saved too.
+        extra <- data_source()
+        if (length(extra)) {
+          payload$site <- c(payload$site,
+                            extra[setdiff(names(extra), names(payload$site))])
+        }
         jsonlite::write_json(payload, file, pretty = TRUE, auto_unbox = TRUE,
                              null = "null", na = "null", digits = NA)
       }
@@ -508,6 +567,11 @@ pedon_server <- function(id, rv) {
         shiny::updateNumericInput(
           session, "geomembrane_depth",
           value = suppressWarnings(as.numeric(site$geomembrane_depth_cm)))
+      # v0.9.294: recognised site properties beyond the editor's inputs are
+      # kept for the Build (and the next save); the rest is listed.
+      site_extra <- .sk_session_site_extra(site)
+      data_source(site_extra)
+      notice <- .sk_unrecognised_notice(hzdf, site)
       hz(hzdf)
       hz_reload(hz_reload() + 1L)
 
@@ -520,13 +584,14 @@ pedon_server <- function(id, rv) {
           hzdf, site$technic %||% "unknown",
           site$geomembrane %||% "unknown", site$geomembrane_depth_cm)
         h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(hz_built))
-        soilKey::PedonRecord$new(
-          site = list(
+        .sk_new_pedon(
+          site = c(list(
             id              = site$id %||% "pedon",
             lat             = site$lat,
             lon             = site$lon,
             country         = site$country,
             parent_material = site$parent_material),
+            site_extra),
           horizons = h_dt)
       }, error = function(e) NULL)
       if (!is.null(built)) {
@@ -538,6 +603,9 @@ pedon_server <- function(id, rv) {
         shiny::showNotification(
           i18n("pedon.session_loaded", nrow(hzdf)),
           type = "message", duration = 6)
+      }
+      if (!is.null(notice)) {
+        shiny::showNotification(notice, type = "warning", duration = 15)
       }
     })
 
@@ -644,6 +712,12 @@ pedon_server <- function(id, rv) {
       .sk_fill_site_inputs(session, loaded_site)
       shiny::showNotification(
         i18n("pedon.loaded_n", nrow(df)), type = "message")
+      # Only an uploaded file can hold names soilKey does not know; a fixture
+      # or a WoSIS profile comes from soilKey itself.
+      notice <- if (identical(input$source, "upload")) .sk_unrecognised_notice(df)
+      if (!is.null(notice)) {
+        shiny::showNotification(notice, type = "warning", duration = 15)
+      }
     })
 
     shiny::observeEvent(input$add_row, {
@@ -869,7 +943,7 @@ pedon_server <- function(id, rv) {
         # WoSIS data keeps its provenance: source, licence, date and citation
         # go into the pedon, and from there into the report.
         if (!is.null(data_source())) site <- utils::modifyList(site, data_source())
-        soilKey::PedonRecord$new(site = site, horizons = h_dt)
+        .sk_new_pedon(site = site, horizons = h_dt)
       }, error = function(e) e)
 
       if (inherits(built, "error")) {

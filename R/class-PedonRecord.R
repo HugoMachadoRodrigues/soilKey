@@ -14,6 +14,13 @@
 #' \code{\link{ClassificationResult}} to assign a meaningful evidence
 #' grade.
 #'
+#' Horizon columns and site properties that soilKey does not recognise are
+#' kept but read by no key. \code{PedonRecord$new()} warns about them (with
+#' the closest recognised names) when it is called from outside the package;
+#' see \code{\link{unrecognised_attributes}},
+#' \code{\link{horizon_attribute_spec}} and \code{\link{site_attribute_spec}}.
+#' \code{options(soilKey.warn_unrecognised = FALSE)} turns the warning off.
+#'
 #' @field site       List. Site-level metadata: \code{lat}, \code{lon},
 #'                   \code{crs} (default 4326), \code{date},
 #'                   \code{country}, \code{elevation_m}, \code{slope_pct},
@@ -69,6 +76,21 @@ PedonRecord <- R6::R6Class("PedonRecord",
       self$images     <- images
       self$documents  <- documents
       self$provenance <- if (is.null(provenance)) make_empty_provenance() else provenance
+      # v0.9.294: warn about horizon columns and site properties that no key
+      # reads, when the caller is not soilKey itself (a loader or a fixture
+      # keeps extra columns on purpose). parent.frame(1) is R6's new().
+      if (isTRUE(getOption("soilKey.warn_unrecognised", TRUE))) {
+        k <- 1L
+        caller <- parent.frame(k)
+        while (identical(topenv(caller), asNamespace("R6")) &&
+                 !identical(caller, globalenv()) && k < 20L) {
+          k <- k + 1L
+          caller <- parent.frame(k)
+        }
+        if (!.sk_is_package_env(caller)) {
+          .sk_warn_unrecognised(self$horizons, self$site)
+        }
+      }
     },
 
     #' @description Validate the record against soil-physical sanity rules.
