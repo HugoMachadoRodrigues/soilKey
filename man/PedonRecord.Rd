@@ -25,6 +25,13 @@ All diagnostic functions (\code{\link{argic}}, \code{\link{ferralic}},
 provenance log is what allows the final
 \code{\link{ClassificationResult}} to assign a meaningful evidence
 grade.
+
+Horizon columns and site properties that soilKey does not recognise are
+kept but read by no key. \code{PedonRecord$new()} warns about them (with
+the closest recognised names) when it is called from outside the package;
+see \code{\link{unrecognised_attributes}},
+\code{\link{horizon_attribute_spec}} and \code{\link{site_attribute_spec}}.
+\code{options(soilKey.warn_unrecognised = FALSE)} turns the warning off.
 }
 \examples{
 # The canonical fixtures return ready-built PedonRecords:

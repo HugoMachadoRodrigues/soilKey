@@ -15,8 +15,12 @@
 #' \code{system.file("extdata", "perfil_exemplo.csv", package = "soilKey")}.
 #'
 #' Only recognised columns are used (any extras are carried through untouched),
-#' so a messy export still works - soilKey simply uses the columns it
-#' understands. Site metadata (id, lat/lon, soil moisture / temperature regime)
+#' so a messy export still works: soilKey uses the columns it understands, and
+#' recognises names that differ only in capitalisation or separators and common
+#' aliases (\code{Clay}, \code{SOC}, \code{CEC}, ...). Columns and site
+#' properties that it does not recognise are named in a warning, with the
+#' closest recognised names (see \code{\link{unrecognised_attributes}}). Site
+#' metadata (id, lat/lon, soil moisture / temperature regime)
 #' is optional and passed via \code{site}; without it the profile still
 #' classifies, just with less specificity where site data would have refined the
 #' name.
@@ -45,6 +49,10 @@ read_pedon_csv <- function(file, site = NULL, sep = "auto") {
   }
   df <- utils::read.csv(file, sep = sep, stringsAsFactors = FALSE)
   spec <- names(horizon_column_spec())
+  # v0.9.294: names are recognised as ensure_horizon_schema() recognises them
+  # (capitalisation, separators, aliases), not only when spelt canonically.
+  df <- as.data.frame(.canonicalize_horizon_names(data.table::as.data.table(df)),
+                      stringsAsFactors = FALSE)
   keep <- intersect(spec, names(df))
   if (length(keep) == 0L) {
     stop("read_pedon_csv(): no recognised horizon columns found in '", file,
@@ -57,7 +65,9 @@ read_pedon_csv <- function(file, site = NULL, sep = "auto") {
   if (is.null(site)) {
     site <- list(id = tools::file_path_sans_ext(basename(file)))
   }
-  PedonRecord$new(site = site, horizons = df)
+  pedon <- PedonRecord$new(site = site, horizons = df)
+  .sk_warn_unrecognised(pedon$horizons, pedon$site)
+  pedon
 }
 
 

@@ -73,6 +73,8 @@ reference:
       - FamilyAttribute
       - horizon_column_spec
       - horizon_attribute_spec
+      - site_attribute_spec
+      - unrecognised_attributes
       - make_empty_horizons
       - ensure_horizon_schema
       - validate_horizon_geometry

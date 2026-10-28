@@ -1,0 +1,525 @@
+# Metadata of the site properties soilKey recognises (the named elements of
+# PedonRecord$site), grouped by section. Read by site_attribute_spec();
+# PedonRecord$new(), called from outside the package, and read_pedon_csv()
+# warn about a site property that is not listed here. The attribute reference
+# inst/ATTRIBUTES.md lists these after the horizon attributes
+# (data-raw/generate_attributes_doc.R) and a test keeps the two in step.
+#
+# Fields: name, section, type (numeric, character, logical or list, as the
+# code treats the value), unit, description. Optional: systems (registry ids of
+# the keys that read the property; absent when only loaders, reports, the
+# app or the benchmarks use it) and allowed (the values the code compares a
+# categorical property with). The last section holds what the loaders store
+# and no key reads.
+attributes:
+  # ---- Identity & location ---------------------------------------------------
+  - name: id
+    section: "Identity & location"
+    type: "character"
+    unit: "-"
+    description: "Identifier of the pedon. Written by every loader and shown by print(), the reports, the app and the benchmarks; no key reads it."
+  - name: lat
+    section: "Identity & location"
+    type: "numeric"
+    unit: "decimal degrees"
+    description: "Latitude (-90 to 90; validate() flags a value outside). When the country is not Brazil, |lat| <= 23.5 marks the site as tropical, which lets a Bw or Bo designation stand for the WRB ferralic horizon (and so the USDA oxic horizon) and the SiBCS B latossolico; the USDA family soil temperature class estimates the regime from it when soil_temperature_regime is absent. Also read by the SoilGrids prior, the maps and the reports."
+    systems: [wrb2022, usda, sibcs5]
+  - name: lon
+    section: "Identity & location"
+    type: "numeric"
+    unit: "decimal degrees"
+    description: "Longitude (-180 to 180; validate() flags a value outside). Read by the SoilGrids prior, the maps and the reports; no key reads it."
+  - name: crs
+    section: "Identity & location"
+    type: "numeric"
+    unit: "EPSG code"
+    description: "Coordinate reference system of lat and lon (4326, WGS 84, when absent). Read by the SoilGrids buffer and the GeoPackage export; no key reads it."
+  - name: country
+    section: "Identity & location"
+    type: "character"
+    unit: "-"
+    description: "Country of the site, as an ISO code or a name. BR, BRA, Brazil or Brasil marks the site as tropical for the WRB ferralic horizon (and the USDA oxic horizon) and the SiBCS B latossolico. Without designation_system, CA, AU and NZ (or their ISO-3 codes and English names) tell the CSSC, ASC and NZSC keys that the designations may be in their notation, and another country tells the CSSC key that they are not."
+    systems: [wrb2022, usda, sibcs5, cssc3, asc3, nzsc4]
+  - name: date
+    section: "Identity & location"
+    type: "character"
+    unit: "-"
+    description: "Date of the description (ISO 8601, YYYY-MM-DD; the fixtures store a Date). Shown by print() and the reports; no key reads it."
+  - name: year
+    section: "Identity & location"
+    type: "numeric"
+    unit: "-"
+    description: "Year of the description. Read only by the GeoPackage export (pedon_point layer); no loader writes it."
+
+  # ---- Landscape & surface ---------------------------------------------------
+  - name: elevation_m
+    section: "Landscape & surface"
+    type: "numeric"
+    unit: "m"
+    description: "Elevation above sea level. Read by the USDA family soil temperature class, which estimates the regime from lat and elevation (0 m when absent) when soil_temperature_regime is not given; also shown by the reports."
+    systems: [usda]
+  - name: slope_pct
+    section: "Landscape & surface"
+    type: "numeric"
+    unit: "%"
+    description: "Slope gradient in percent, not degrees. Read by the WRB Inclinic qualifier (5 % or more) and the USDA Cumulic subgroups of the Mollisols (less than 25 %, or not recorded); also shown by the reports."
+    systems: [wrb2022, usda]
+  - name: aspect_deg
+    section: "Landscape & surface"
+    type: "numeric"
+    unit: "deg"
+    description: "Slope aspect in degrees clockwise from true north (0 to 360). Filled by the field-sheet extraction (VLM); no key reads it."
+  - name: landform
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces)."
+    systems: [wrb2022, asc3]
+  - name: landform_element
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Landform element, as text (NatSoil). Read with landform by the ASC Hydrosol settings; a playa element on a plain pattern counts as a playa."
+    systems: [asc3]
+  - name: microrelief_form
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Microrelief at the soil surface, as text (NatSoil writes its microrelief types); also a horizon column of the same name. Read by the WRB Gilgaic qualifier (a recorded microrelief that names no gilgai rules it out) and the Escalic qualifier (built terraces)."
+    systems: [wrb2022]
+  - name: gilgai_presence
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "Gilgai microrelief present (TRUE) or absent (FALSE). Read first by the WRB Gilgaic qualifier (Vertisols only), before the relief texts."
+    systems: [wrb2022]
+  - name: forma_relevo
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Relief form, as text (Portuguese field name). Read beside microrelief_form by the WRB Gilgaic and Escalic qualifiers; no loader writes it."
+    systems: [wrb2022]
+  - name: relevo_local
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Local relief, as text (Portuguese field name). Read beside microrelief_form by the WRB Gilgaic qualifier; no loader writes it."
+    systems: [wrb2022]
+  - name: relief_form
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Relief form, as text. Read beside microrelief_form by the WRB Gilgaic and Escalic qualifiers; no loader writes it."
+    systems: [wrb2022]
+  - name: surface_condition
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Condition of the soil surface, as text with items separated by ';' ('cracking; self-mulching'). Read by the ASC key: surface cracks for the Vertosols, self-mulching and crusts for the Vertosol great groups, and a saline or salt surface for the Salic Hydrosols and the Hypersalic and Hypergypsic suborders."
+    systems: [asc3]
+  - name: surface_gravel_pct
+    section: "Landscape & surface"
+    type: "numeric"
+    unit: "%"
+    description: "Gravel on the ground surface (NaN when recorded with no abundance). Read by the ASC family gravel class of the surface and A1, which takes the larger of it and the gravel of the A1."
+    systems: [asc3]
+  - name: surface_coarse_fragments_pct
+    section: "Landscape & surface"
+    type: "numeric"
+    unit: "%"
+    description: "Coarse fragments of all sizes on the ground surface (NaN when recorded with no abundance). Read by the ASC family gravel class in place of surface_gravel_pct when that is not given."
+    systems: [asc3]
+  - name: salinised
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "The site is salinised (TRUE) or not (FALSE). Read by the ASC key: the Salic Hydrosol setting, and the salinity of the Hypersalic and Hypergypsic suborders when no electrical conductivity is recorded."
+    systems: [asc3]
+  - name: parent_material
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); also shown by print() and the reports."
+    systems: [wrb2022, nzsc4]
+  - name: land_use
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers."
+    systems: [wrb2022]
+  - name: vegetation
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Vegetation, as text. Written by the fixtures and the field-sheet extraction (VLM); no key reads it."
+
+  # ---- Water, climate & regimes ------------------------------------------------
+  - name: drainage_class
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Drainage class, in English or Portuguese; a range ('imperfectly to poorly drained') is read by the end each test asks for. Read by the WRB Drainic, Subaquatic and Tidalic qualifiers (which also look for words such as 'artificial', 'submerged' and 'tidal'), the SiBCS horizonte glei (after drainage), the CSSC Folisol and Vertisol great groups, the ASC key (Hydrosols, organic materials, Folic Organosols, Aquic Vertosols, the Podosol and Hypersalic suborders) and the NZSC Organic Soils."
+    allowed: ["excessively drained", "somewhat excessively drained", "rapidly drained", "well drained", "moderately well drained", "imperfectly drained", "somewhat poorly drained", "poorly drained", "very poorly drained", "excessivamente drenado", "fortemente drenado", "acentuadamente drenado", "bem drenado", "moderadamente drenado", "imperfeitamente drenado", "mal drenado", "muito mal drenado"]
+    systems: [wrb2022, sibcs5, cssc3, asc3, nzsc4]
+  - name: drainage
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Drainage class as the BDsolos export writes it (classe de drenagem, in Portuguese), on the same scale as drainage_class. The SiBCS horizonte glei reads it before drainage_class; the CSSC drainage groups read it when drainage_class is absent."
+    allowed: ["excessively drained", "somewhat excessively drained", "rapidly drained", "well drained", "moderately well drained", "imperfectly drained", "somewhat poorly drained", "poorly drained", "very poorly drained", "excessivamente drenado", "fortemente drenado", "acentuadamente drenado", "bem drenado", "moderadamente drenado", "imperfeitamente drenado", "mal drenado", "muito mal drenado"]
+    systems: [sibcs5, cssc3]
+  - name: soil_moisture_regime
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "USDA soil moisture regime, compared in lower case (aridic and torric are the same). Read by the USDA key (the Aridisols, and the ustic, xeric, udic and torric suborders, great groups and subgroups) and by the CSSC key when soil_moisture_subclass is absent (Chernozemic climate, the subhumid Solonetzic subgroups)."
+    allowed: ["aquic", "aridic", "torric", "udic", "perudic", "ustic", "xeric"]
+    systems: [usda, cssc3]
+  - name: soil_moisture_subclass
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Canadian soil moisture subclass (letters only are compared, so 'sub-humid' reads as subhumid; the aquic subclasses leave the tests undecided). Read by the CSSC key: the Chernozemic climate (subhumid or drier passes, humid and perhumid fail) and the A-horizon colour of the Solonetzic subgroups (subhumid). Filled by npdb_scenario() for NPDB pedons."
+    allowed: ["arid", "subarid", "semiarid", "subhumid", "humid", "perhumid"]
+    systems: [cssc3]
+  - name: soil_temperature_regime
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic)."
+    allowed: ["gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic", "isofrigid", "isomesic", "isothermic", "isohyperthermic", "pergelic"]
+    systems: [usda, cssc3]
+  - name: mean_annual_soil_temp_C
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "deg C"
+    description: "Mean annual soil temperature. Read by the CSSC key: the Chernozemic climate (0 degrees or more) and the Gray Brown Luvisols (8 degrees or more). Filled by npdb_scenario() for NPDB pedons."
+    systems: [cssc3]
+  - name: water_table_cm_above_surface
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "cm"
+    description: "Height of a water table above the soil surface (positive above it). Read by the USDA key: the Wassents (above 0) and the Wassists (2 cm or more)."
+    systems: [usda]
+  - name: tidal_zone
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Tidal zone of the site. Read by the ASC Hydrosol settings (Subtidal, Intertidal, Supratidal and Extratidal suborders); a zone named in landform is read too."
+    allowed: ["subtidal", "intertidal", "supratidal", "extratidal"]
+    systems: [asc3]
+  - name: tidal_inundation
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "The site is subject to tidal flooding. Read by the ASC key: it makes the soil a Hydrosol, rules out the Organosols, and without tidal_zone leaves the tidal Hydrosol settings undecided."
+    systems: [asc3]
+  - name: subaqueous
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "An inland water body lies over the soil. Read by the ASC Subaqueous Hydrosol setting, before the landform text."
+    systems: [asc3]
+
+  # ---- Description & notation -------------------------------------------------
+  - name: designation_system
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders."
+    allowed: ["cssc", "cssc3", "canadian", "canada", "asc", "australian", "field handbook", "nchs", "australian field handbook", "nzsc", "nz", "new zealand"]
+    systems: [cssc3, asc3, nzsc4]
+  - name: nasis_diagnostic_features
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "Diagnostic features the surveyor recorded in NASIS (pediagfeatures featkind, one string per feature). Read by the USDA key: the argillic clay-films test and the fragipan, and as a tie-breaker that turns an undecided order test (histic, spodic, andic, vertic, argillic, kandic, natric, mollic, cambic) into a pass. Written by the KSSL NASIS loader."
+    systems: [usda]
+  - name: anthropic_truncation
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material."
+    systems: [nzsc4]
+  - name: overthickened_a
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "The surveyor recorded an overthickened A horizon (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC key: with its base at 45 cm or more, under 30 cm of anthropic material and no mottles within 30 cm, the soil enters the key at the Recent Soils."
+    systems: [nzsc4]
+
+  # ---- Soil construction (soilKey Pro) ----------------------------------------
+  - name: technic
+    section: "Soil construction (soilKey Pro)"
+    type: "character"
+    unit: "-"
+    description: "The soilKey Pro answer on artefacts, technic hard material and geomembranes, saved in the session file. 'none' writes 0 % artefacts, 0 % technic hard material and no geomembrane on every horizon; 'present' applies the geomembrane answer; 'unknown' writes nothing. The keys read the horizon columns, not this."
+    allowed: ["unknown", "none", "present"]
+  - name: geomembrane
+    section: "Soil construction (soilKey Pro)"
+    type: "character"
+    unit: "-"
+    description: "With technic 'present': 'yes' marks geomembrane_present on the horizon that holds geomembrane_depth_cm (the top one when no depth matches), 'no' marks it absent on every horizon, 'unknown' writes nothing."
+    allowed: ["unknown", "no", "yes"]
+  - name: geomembrane_depth_cm
+    section: "Soil construction (soilKey Pro)"
+    type: "numeric"
+    unit: "cm"
+    description: "Depth of the geomembrane from the soil surface; selects the horizon on which soilKey Pro marks geomembrane_present."
+
+  # ---- Reference classes & provenance (stored, read by no key) ---------------
+  - name: reference_source
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Name of the dataset the reference classes come from ('Embrapa BDsolos', 'KSSL / NCSS Lab Data Mart', ...). Written by the benchmark loaders."
+  - name: reference_wrb
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published WRB class (a Reference Soil Group, or the name the dataset gives). Written by the LUCAS-ESDB, FEBR, BDsolos and AfSP (from WRB 2006) loaders and the spectral libraries, or copied from wosis_rsg or reference_wrb_from_usda; read by the benchmarks as the WRB reference."
+  - name: reference_wrb06_full
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Full WRB 2006 name of an AfSP profile. Written by load_afsp_pedons()."
+  - name: reference_fao88
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "FAO 1988 class of an AfSP profile. Written by load_afsp_pedons()."
+  - name: reference_wrb_from_usda
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "WRB Reference Soil Group derived from reference_usda and reference_usda_suborder by annotate_wrb_from_usda(); read by benchmark_wrb_vs_usda() and copied into reference_wrb when that is missing."
+  - name: wosis_rsg
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "WRB Reference Soil Group that WoSIS reports for the profile; copied into reference_wrb when that is missing."
+  - name: reference_usda
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published USDA Soil Taxonomy class (the order, or a subgroup or series name, depending on the loader). Written by the KSSL, FEBR and AfSP loaders; read by the benchmarks and annotate_wrb_from_usda()."
+  - name: reference_usda_suborder
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published USDA suborder (KSSL samp_taxsuborder). Read by the suborder benchmark and annotate_wrb_from_usda()."
+  - name: reference_usda_grtgroup
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published USDA great group (KSSL samp_taxgrtgroup). Read by the great-group benchmark."
+  - name: reference_usda_subgroup
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published USDA subgroup (KSSL samp_taxsubgrp). Read by the subgroup benchmark."
+  - name: reference_st
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published Soil Taxonomy class under another name: the BDsolos Soil Taxonomy column, or the USDA order of a spectral library. Read as the USDA reference by the BDsolos and spectral benchmarks (the other loaders use reference_usda)."
+  - name: wosis_usda_order
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "USDA order that WoSIS reports for the profile."
+  - name: reference_sibcs
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Published SiBCS class, as the dataset writes it. Written by the FEBR, BDsolos, Embrapa and Redape loaders and the spectral libraries; read by the benchmarks and by build_taxon_profiles()."
+  - name: reference_sibcs_order
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "SiBCS order of a Redape profile (ORDEM). Read by benchmark_redape(), which composes the reference at each level."
+  - name: reference_sibcs_subordem
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "SiBCS suborder of a Redape profile (SUBORDEM). Read by benchmark_redape()."
+  - name: reference_sibcs_gg
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "SiBCS great group of a Redape profile (GDE_GRUPO). Read by benchmark_redape()."
+  - name: reference_sibcs_subgrupo
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "SiBCS subgroup of a Redape profile (SUBGRUPO). Read by benchmark_redape()."
+  - name: reference_asc_order
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC order code of a NatSoil profile. Read by benchmark_natsoil()."
+  - name: reference_asc_suborder
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC suborder code of a NatSoil profile. Read by benchmark_natsoil()."
+  - name: reference_asc_great_group
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC great group code of a NatSoil profile. Read by benchmark_natsoil()."
+  - name: reference_asc_subgroup
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC subgroup code of a NatSoil profile. Read by benchmark_natsoil()."
+  - name: reference_asc_family
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC family codes of a NatSoil profile, by position and separated by ';'. Read by benchmark_natsoil()."
+  - name: reference_asc_confidence
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' confidence code for the ASC class of a NatSoil profile. Reported by benchmark_natsoil()."
+  - name: reference_cssc_order
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "CSSC order of an NPDB profile, matched to the classes of the key. Read by benchmark_npdb()."
+  - name: reference_cssc_great_group
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "CSSC great group of an NPDB profile, matched to the classes of the key. Read by benchmark_npdb()."
+  - name: reference_cssc_subgroup
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "CSSC subgroup of an NPDB profile, matched to the classes of the key. Read by benchmark_npdb()."
+  - name: reference_cssc_raw
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NPDB order, great group and subgroup as recorded, joined by ' | '. Written by load_npdb_pedons()."
+  - name: curation_note
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Curation note of a Redape profile (CURADORIA). Written by load_redape_pedons()."
+  - name: curation_authors
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Authors of the curation of a Redape profile (AUTOR_CURADORIA). Written by load_redape_pedons()."
+  - name: source
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Provider of a profile read from a live service ('ISRIC WoSIS', 'NatSoil (CSIRO)'); soilKey Pro keeps it with the other provenance fields."
+  - name: dataset
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Code of the WoSIS source dataset of the profile; shown by soilKey Pro."
+  - name: dataset_id
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NPDB dataset identifier (DATASET_ID). Written by load_npdb_pedons()."
+  - name: wosis_profile_id
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Internal WoSIS identifier of the profile (the profile code is the id)."
+  - name: wosis_profile_code
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "WoSIS profile code, which soilKey Pro keeps with the provenance fields of a WoSIS profile and shows in its data-source note."
+  - name: accessed
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Date the WoSIS data were read (YYYY-MM-DD); shown by soilKey Pro."
+  - name: licence
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Licence of the profile data (WoSIS: the more restrictive of the profile and layer licences; NatSoil: its usage licence); shown by soilKey Pro."
+  - name: licence_short
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Short label of the WoSIS licence ('CC BY 4.0', 'CC BY-NC 3.0', 'Public domain'); shown by soilKey Pro."
+  - name: citation
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Citation the provider asks for (WoSIS, with the download date; NatSoil). Printed by the HTML and PDF reports."
+  - name: attribution
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "One-line attribution of a WoSIS profile (profile code, dataset, date read, licence). Printed by the HTML and PDF reports."
+  - name: depth_note
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Note that the WoSIS depths were shifted so the organic surface layer starts at 0 cm; shown by soilKey Pro."
+  - name: wosis_error
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Why the WoSIS layers could not be read (the pedon then has no horizons); shown by soilKey Pro."
+  - name: sampling_type
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Kind of BDsolos sampling point ('Tipo': Perfil completo, Perfil parcial or Amostra extra). The BDsolos benchmarks keep the complete profiles ('perfil completo') and the records that do not say."
+  - name: state
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Brazilian state of the profile (FEBR estado_id, BDsolos UF)."
+  - name: municipality
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Municipality of a BDsolos profile."
+  - name: province
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Canadian province of an NPDB profile."
+  - name: altitude_m
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "numeric"
+    unit: "m"
+    description: "Altitude of a BDsolos profile. The USDA family reads elevation_m, not this."
+  - name: land_cover
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Land cover or vegetation, as text (BDsolos current use or vegetation column; LUCAS LC0_Desc). The WRB qualifiers read land_use, not this."
+  - name: survey_date
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Survey date of a LUCAS 2018 point (SURVEY_DATE). The reports show date, not this."
+  - name: npdb_depth_order_mismatch
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "logical"
+    unit: "-"
+    description: "TRUE when the depth order of an NPDB profile's layers differs from their layer order. Written by load_npdb_pedons()."
+  - name: npdb_cmi
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "numeric"
+    unit: "-"
+    description: "Thornthwaite climate moisture index of an NPDB pedon, set by npdb_scenario() with soil_moisture_subclass."
+  - name: npdb_scenario
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "list"
+    unit: "-"
+    description: "A list of the ranges npdb_scenario() estimated (rows and error bands of the dry colours, the soil temperature range, the moisture subclasses between the two PET methods). Read by benchmark_npdb(), which classifies the pedon at every combination of their ends."
