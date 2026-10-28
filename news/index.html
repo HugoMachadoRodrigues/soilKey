@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.297</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.298</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.298" id="soilkey-09298-2026-10-28">soilKey 0.9.298 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09298-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="new-zealand-soil-classification-the-groups-0-9-298">New Zealand Soil Classification: the 77 groups<a class="anchor" aria-label="anchor" href="#new-zealand-soil-classification-the-groups-0-9-298"></a></h3>
+<p><code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> now keys each of the 15 orders to its groups, following the keys to groups of the New Zealand Soil Classification, 4th edition: 77 groups, from the Litter, Fibric, Mesic and Humic Organic Soils to the Hydric, Gley, Hydrothermal, Cryic, Rocky, Sandy, Fluvial, Tephric and Orthic Raw Soils. The name of a classified profile is now its group (for example “Orthic Brown Soils”, “Fragic Pallic Soils”); the order stays in <code>rsg_or_order</code> and in <code>levels</code>. Subgroups follow.</p>
+<p>The groups read diagnostics the order key did not need: sulfuric and tephric soil material, densipans, perch-gley features, redox-mottled horizons, peaty topsoils, slowly permeable layers, nodular horizons and fluvial features. They also read new horizon attributes: <code>packing_degree</code>, <code>ksat_mm_h</code>, <code>penetration_resistance_kpa</code>, <code>redox_segregations_location</code>, <code>sulfate_s_pct</code>, <code>roots_abundance</code>, <code>maori_cultural_layer</code> and <code>coatings_value_moist</code>. On the site they read <code>soil_temp_30cm_C</code>, <code>mean_annual_air_temp_C</code>, <code>surface_water</code>, <code>methane_odour</code>, <code>mechanical_mixing_depth_cm</code> and <code>artificially_drained</code>.</p>
+<p>Hugo decided four readings:</p>
+<ul><li>the new attributes are created, as above;</li>
+<li>features that a describer records when met are absent when not recorded: stratification, nodules, cracks, refuse and Maori cultural layers, permafrost, surface water and mechanical mixing;</li>
+<li>the pans that the text names as often working as slowly permeable layers count as such: fragipans, argillic horizons, densipans, humus-pans, ortstein-pans, and lithic and paralithic contacts;</li>
+<li>the hydrothermal groups compare the soil temperature at 30 cm with the air temperature, in two new site fields.</li>
+</ul><p>The other readings are in <code>inst/rules/nzsc4/readings.yaml</code>, which now has 39 topics.</p>
+<p>Two independent reviews checked the groups: one against the text of the book, one for the logic, with 3,600 random profiles. Their findings are fixed, and they changed the order key in three places:</p>
+<ul><li>clay lamellae make an argillic horizon only when they add up to 15 cm within 90 cm;</li>
+<li>outside the New Zealand notation a Cr reads as a paralithic contact;</li>
+<li>site fields are read one value at a time.</li>
+</ul><p>Outside the NZSC, <code><a href="../reference/ensure_horizon_schema.html">ensure_horizon_schema()</a></code> now reads “yes” and “no” (and y, n, 1, 0) in logical columns as TRUE and FALSE; before, they became NA. The other systems do not change: the 44 canonical fixtures are identical.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.297" id="soilkey-09297-2026-10-28">soilKey 0.9.297 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09297-2026-10-28"></a></h2>
 <div class="section level3">

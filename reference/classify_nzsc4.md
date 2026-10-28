@@ -3,11 +3,12 @@
 Keys a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 through the New Zealand Soil Classification, 4th edition (Manaaki
-Whenua - Landcare Research 2026), following its Key to Soil Orders.
-**Experimental**: this release keys the 15 orders (Organic, Gley, Ultic,
-Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic,
-Brown, Anthropic, Recent, Raw Soils); groups and subgroups follow. The
-Cryic Soils of the appendix are not keyed.
+Whenua - Landcare Research 2026), following its Key to Soil Orders and
+keys to groups. **Experimental**: this release keys the 15 orders
+(Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid,
+Oxidic, Granular, Pallic, Brown, Anthropic, Recent, Raw Soils) and their
+77 groups (since 0.9.298, e.g. Orthic Brown Soils, Perch-gley Pallic
+Soils); subgroups follow. The Cryic Soils of the appendix are not keyed.
 
 ## Usage
 
@@ -64,7 +65,16 @@ coatings, carbonate, ESP, and the field tests `naf_test`
 `strength_moist`. From the site it reads `drainage_class`,
 `parent_material` (Melanic Soils), `anthropic_truncation` and
 `overthickened_a` (the note to the key on overthickened A horizons), and
-`designation_system`. The choices where the text is silent are listed in
+`designation_system`. The groups also read the packing
+(`packing_degree`), Ksat (`ksat_mm_h`), penetration resistance, where
+the redox segregations are (`redox_segregations_location`), sulfate S,
+roots, a Maori cultural layer (`maori_cultural_layer`) and the colour of
+coatings; and, on the site, `soil_temp_30cm_C`,
+`mean_annual_air_temp_C`, `surface_water`, `methane_odour`,
+`mechanical_mixing_depth_cm` and `artificially_drained`. Features a
+describer records when met (stratification, nodules, cracks, refuse or
+cultural layers, permafrost, surface water) are absent when not
+recorded. The choices where the text is silent are listed in
 `system.file("rules", "nzsc4", "readings.yaml", package = "soilKey")`.
 
 ## References
@@ -83,5 +93,5 @@ Classification. 4th ed.
 ``` r
 res <- classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")
 res$name
-#> [1] "Brown Soils"
+#> [1] "Orthic Brown Soils"
 ```
