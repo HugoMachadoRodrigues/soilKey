@@ -90,6 +90,7 @@ reference:
       - classify_sibcs_familia
       - classify_usda
       - classify_all
+      - classify_profiles
       - soilkey_systems
       - classify_csv
       - classify_from_documents
