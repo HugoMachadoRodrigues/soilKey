@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.292</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.293</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.293" id="soilkey-09293-2026-10-28">soilKey 0.9.293 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09293-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="new-zealand-soil-classification-the-orders-0-9-293">New Zealand Soil Classification: the 15 orders<a class="anchor" aria-label="anchor" href="#new-zealand-soil-classification-the-orders-0-9-293"></a></h3>
+<p>A new, experimental and opt-in system: the New Zealand Soil Classification, 4th edition (Manaaki Whenua - Landcare Research 2026), read from its Quarto source of 7 October 2026. <code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> keys a pedon to the 15 orders of the Key to Soil Orders (Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic, Recent and Raw Soils); <code><a href="../reference/make_nzsc4_example.html">make_nzsc4_example()</a></code> gives one example profile per order. Groups and subgroups follow; the Cryic Soils of the appendix are not keyed. <code>classify_all(systems = "nzsc")</code> runs it.</p>
+<p>The diagnostics read the New Zealand horizon notation (Bw, Bt, Bg, Bh, Bs, Bo, Bx, Bw(g), the pans Bhm, Bsm, Blm, Bfm, CR, an e prefix for anthropic soil material), moist colours, texture groups, pH, P retention, bulk density, volcanic glass, coarse fragments and their origin, structure and clay coatings, and the New Zealand field tests, as five new horizon attributes: <code>naf_test</code> (reactive aluminium), <code>childs_test</code>, <code>sensitivity_class</code>, <code>fluidity_class</code> and <code>stickiness</code>. From the site: drainage class, parent material (Melanic Soils), human truncation and an overthickened A horizon (the note to the key).</p>
+<p>Three readings are Hugo’s decisions: a reductimorphic horizon in a designated profile is read from its notation (g, r, or peat), as pale B horizons of Pallic Soils have low chroma without being reduced; a measured P retention decides allophanic soil material, the field tests standing in only when it is not measured; and a reductimorphic horizon that reaches the base of the B horizon meets the depth condition of the Gley Soils. The other readings are in <code>inst/rules/nzsc4/readings.yaml</code>. WRB, SiBCS, USDA, Canadian and Australian results do not change.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.292" id="soilkey-09292-2026-10-27">soilKey 0.9.292 (2026-10-27)<a class="anchor" aria-label="anchor" href="#soilkey-09292-2026-10-27"></a></h2>
 <div class="section level3">

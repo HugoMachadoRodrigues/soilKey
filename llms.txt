@@ -1053,6 +1053,18 @@ carbonates and the site drainage.
 - [`make_asc3_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_asc3_example.md)
   : Example pedons for the Australian orders
 
+## New Zealand Soil Classification (experimental)
+
+The 15 orders of the 4th edition (2026), read from the New Zealand
+horizon notation, colours, texture, P retention, bulk density, volcanic
+glass and the New Zealand field tests (reactive-aluminium, Childs’,
+sensitivity, fluidity, stickiness, strength).
+
+- [`classify_nzsc4()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+  : Classify a pedon under the New Zealand Soil Classification
+- [`make_nzsc4_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nzsc4_example.md)
+  : Example pedons for the New Zealand orders
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

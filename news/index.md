@@ -1,5 +1,40 @@
 # Changelog
 
+## soilKey 0.9.293 (2026-10-28)
+
+### New Zealand Soil Classification: the 15 orders
+
+A new, experimental and opt-in system: the New Zealand Soil
+Classification, 4th edition (Manaaki Whenua - Landcare Research 2026),
+read from its Quarto source of 7 October 2026.
+[`classify_nzsc4()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+keys a pedon to the 15 orders of the Key to Soil Orders (Organic, Gley,
+Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular,
+Pallic, Brown, Anthropic, Recent and Raw Soils);
+[`make_nzsc4_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nzsc4_example.md)
+gives one example profile per order. Groups and subgroups follow; the
+Cryic Soils of the appendix are not keyed.
+`classify_all(systems = "nzsc")` runs it.
+
+The diagnostics read the New Zealand horizon notation (Bw, Bt, Bg, Bh,
+Bs, Bo, Bx, Bw(g), the pans Bhm, Bsm, Blm, Bfm, CR, an e prefix for
+anthropic soil material), moist colours, texture groups, pH, P
+retention, bulk density, volcanic glass, coarse fragments and their
+origin, structure and clay coatings, and the New Zealand field tests, as
+five new horizon attributes: `naf_test` (reactive aluminium),
+`childs_test`, `sensitivity_class`, `fluidity_class` and `stickiness`.
+From the site: drainage class, parent material (Melanic Soils), human
+truncation and an overthickened A horizon (the note to the key).
+
+Three readings are Hugo’s decisions: a reductimorphic horizon in a
+designated profile is read from its notation (g, r, or peat), as pale B
+horizons of Pallic Soils have low chroma without being reduced; a
+measured P retention decides allophanic soil material, the field tests
+standing in only when it is not measured; and a reductimorphic horizon
+that reaches the base of the B horizon meets the depth condition of the
+Gley Soils. The other readings are in `inst/rules/nzsc4/readings.yaml`.
+WRB, SiBCS, USDA, Canadian and Australian results do not change.
+
 ## soilKey 0.9.292 (2026-10-27)
 
 ### Australian classification: the families
