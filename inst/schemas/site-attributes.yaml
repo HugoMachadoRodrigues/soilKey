@@ -195,6 +195,31 @@ attributes:
     unit: "deg C"
     description: "Mean annual soil temperature. Read by the CSSC key: the Chernozemic climate (0 degrees or more) and the Gray Brown Luvisols (8 degrees or more). Filled by npdb_scenario() for NPDB pedons."
     systems: [cssc3]
+  - name: soil_temp_30cm_C
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "deg C"
+    description: "Mean annual soil temperature at 30 cm from the mineral soil surface. Read by the NZSC Hydrothermal Recent and Raw Soils (2.5 degrees or more above the mean annual air temperature)."
+    systems: [nzsc4]
+  - name: mean_annual_air_temp_C
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "deg C"
+    description: "Mean annual air temperature. Read by the NZSC Hydrothermal Recent and Raw Soils, against soil_temp_30cm_C."
+    systems: [nzsc4]
+  - name: surface_water
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "How often water stands on the soil surface. Read by the NZSC Hydric Raw Soils (surface water for the majority of the time, but not constantly)."
+    allowed: [constant, most of the time, occasional, none]
+    systems: [nzsc4]
+  - name: artificially_drained
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply."
+    systems: [nzsc4]
   - name: water_table_cm_above_surface
     section: "Water, climate & regimes"
     type: "numeric"
@@ -240,6 +265,18 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material."
+    systems: [nzsc4]
+  - name: mechanical_mixing_depth_cm
+    section: "Description & notation"
+    type: "numeric"
+    unit: "cm"
+    description: "Depth from the mineral soil surface to which people mechanically disturbed the original horizons (mixing, deep ripping, subsoil lifting). Read by the NZSC Mixed Anthropic Soils (more than 30 cm)."
+    systems: [nzsc4]
+  - name: methane_odour
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "A methane content that can be detected by odour. Read by the NZSC Refuse Anthropic Soils."
     systems: [nzsc4]
   - name: overthickened_a
     section: "Description & notation"

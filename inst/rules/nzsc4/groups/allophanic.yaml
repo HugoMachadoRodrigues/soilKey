@@ -1,0 +1,32 @@
+# Key to groups of Allophanic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "L":
+    - code: "LP"
+      name: Perch-gley Allophanic Soils
+      tests:
+        all_of:
+          - wet_allophanic_nzsc: {perch: true}
+      notes: "Perch-gley features; and a peaty topsoil, or within 30 cm a reductimorphic horizon or (andesitic or basaltic parent material) a redox-mottled horizon."
+
+    - code: "LG"
+      name: Gley Allophanic Soils
+      tests:
+        all_of:
+          - wet_allophanic_nzsc: {perch: false}
+      notes: "A peaty topsoil, or within 30 cm a reductimorphic horizon or (andesitic or basaltic parent material) a redox-mottled horizon."
+
+    - code: "LI"
+      name: Impeded Allophanic Soils
+      tests:
+        all_of:
+          - impeded_group_nzsc: {also: indurated}
+      notes: "A slowly permeable layer, or a horizon at least weakly indurated, within 90 cm."
+
+    - code: "LO"
+      name: Orthic Allophanic Soils
+      tests:
+        default: true
+      notes: "Other Allophanic Soils."

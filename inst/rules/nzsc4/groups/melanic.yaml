@@ -1,0 +1,39 @@
+# Key to groups of Melanic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "E":
+    - code: "EV"
+      name: Vertic Melanic Soils
+      tests:
+        all_of:
+          - vertic_melanic_nzsc: {}
+      notes: "Cracks 4 mm wide or more reaching 30 cm (cracks infilled with A material are not recorded apart from these), or a COLE of 0.09 or more with moderate or strong blocky or prismatic peds in the major part of the B; no redox segregations within 30 cm."
+
+    - code: "EP"
+      name: Perch-gley Melanic Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: peaty_or_gley}
+      notes: "A peaty topsoil or a gley profile form, and perch-gley features."
+
+    - code: "ER"
+      name: Rendzic Melanic Soils
+      tests:
+        all_of:
+          - rendzic_melanic_nzsc: {}
+      notes: "Limestone or other calcareous parent material as a lithic or paralithic contact, or as rock rubble (70 % or more coarse fragments), from 60 cm or less (the rubble below 90 cm)."
+
+    - code: "EM"
+      name: Mafic Melanic Soils
+      tests:
+        all_of:
+          - mafic_group_nzsc: {colour: melanic}
+      notes: "In the B or BC at 60 cm (or its base): value 4 or less and chroma 3 or more; or 5 % or more mafic or ultramafic coarse fragments; or exchangeable Ca:Mg 0.2 or less with Mg 1.5 cmol/kg or more."
+
+    - code: "EO"
+      name: Orthic Melanic Soils
+      tests:
+        default: true
+      notes: "Other Melanic Soils."

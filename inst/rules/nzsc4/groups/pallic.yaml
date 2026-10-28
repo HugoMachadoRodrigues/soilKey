@@ -1,0 +1,46 @@
+# Key to groups of Pallic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "P":
+    - code: "PP"
+      name: Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: gley_profile_form}
+      notes: "A gley profile form and perch-gley features."
+
+    - code: "PU"
+      name: Duric Pallic Soils
+      tests:
+        all_of:
+          - pan_group_nzsc: {kind: duripan}
+      notes: "A duripan."
+
+    - code: "PX"
+      name: Fragic Pallic Soils
+      tests:
+        all_of:
+          - pan_group_nzsc: {kind: fragipan}
+      notes: "A fragipan."
+
+    - code: "PL"
+      name: Laminar Pallic Soils
+      tests:
+        all_of:
+          - laminar_pallic_nzsc: {}
+      notes: "A brittle-B horizon and an argillic horizon predominantly of lamellae."
+
+    - code: "PJ"
+      name: Argillic Pallic Soils
+      tests:
+        all_of:
+          - argillic_pallic_nzsc: {}
+      notes: "An argillic horizon, or a cutanic horizon with sodic features within it or directly beneath it."
+
+    - code: "PI"
+      name: Immature Pallic Soils
+      tests:
+        default: true
+      notes: "Other Pallic Soils."

@@ -1,19 +1,22 @@
 # =============================================================================
 # v0.9.293 -- the New Zealand Soil Classification, 4th edition (Manaaki
 # Whenua 2026; Quarto source of 7 October 2026), keyed to the 15 orders of
-# the Key to Soil Orders. Groups and subgroups follow. Experimental and
-# opt-in: classify_all() runs it only when asked. The Cryic Soils of the
-# appendix (Antarctic soils) are not keyed.
+# the Key to Soil Orders; v0.9.298 adds the 77 groups of the keys to groups
+# (R/diagnostics-nzsc-groups.R, inst/rules/nzsc4/groups/). Subgroups follow.
+# Experimental and opt-in: classify_all() runs it only when asked. The Cryic
+# Soils of the appendix (Antarctic soils) are not keyed.
 # =============================================================================
 
 #' Classify a pedon under the New Zealand Soil Classification
 #'
 #' Keys a \code{\link{PedonRecord}} through the New Zealand Soil
 #' Classification, 4th edition (Manaaki Whenua - Landcare Research 2026),
-#' following its Key to Soil Orders. \strong{Experimental}: this release keys
-#' the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic,
-#' Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic, Recent, Raw Soils);
-#' groups and subgroups follow. The Cryic Soils of the appendix are not keyed.
+#' following its Key to Soil Orders and keys to groups. \strong{Experimental}:
+#' this release keys the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic,
+#' Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic,
+#' Recent, Raw Soils) and their 77 groups (since 0.9.298, e.g. Orthic Brown
+#' Soils, Perch-gley Pallic Soils); subgroups follow. The Cryic Soils of the
+#' appendix are not keyed.
 #'
 #' The NZSC reads horizon notations and field tests. The diagnostics read
 #' the New Zealand notation (Ah, E, Bw, Bt, Bg, Bh, Bs, Bo, Bx, Bw(g), Bhm,
@@ -29,7 +32,16 @@
 #' \code{drainage_class}, \code{parent_material} (Melanic Soils),
 #' \code{anthropic_truncation} and \code{overthickened_a} (the note to the
 #' key on overthickened A horizons), and \code{designation_system}. The
-#' choices where the text is silent are listed in
+#' groups also read the packing (\code{packing_degree}), Ksat
+#' (\code{ksat_mm_h}), penetration resistance, where the redox segregations
+#' are (\code{redox_segregations_location}), sulfate S, roots, a Maori
+#' cultural layer (\code{maori_cultural_layer}) and the colour of coatings;
+#' and, on the site, \code{soil_temp_30cm_C}, \code{mean_annual_air_temp_C},
+#' \code{surface_water}, \code{methane_odour},
+#' \code{mechanical_mixing_depth_cm} and \code{artificially_drained}. Features
+#' a describer records when met (stratification, nodules, cracks, refuse or
+#' cultural layers, permafrost, surface water) are absent when not recorded.
+#' The choices where the text is silent are listed in
 #' \code{system.file("rules", "nzsc4", "readings.yaml", package = "soilKey")}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -81,8 +93,9 @@ classify_nzsc4 <- function(pedon, rules = NULL,
 #'
 #' Small, plausible profiles written for the tests and examples, one per
 #' order of the New Zealand Soil Classification, with designations in the
-#' New Zealand notation and the properties the order key reads. They are not
-#' real profiles.
+#' New Zealand notation and the properties the order key reads. Most key to
+#' the last (Orthic or default) group of their order. They are not real
+#' profiles.
 #'
 #' @param order One of \code{"organic"}, \code{"gley"}, \code{"ultic"},
 #'   \code{"podzol"}, \code{"allophanic"}, \code{"pumice"},

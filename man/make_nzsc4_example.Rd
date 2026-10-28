@@ -22,8 +22,9 @@ A \code{\link{PedonRecord}}.
 \description{
 Small, plausible profiles written for the tests and examples, one per
 order of the New Zealand Soil Classification, with designations in the
-New Zealand notation and the properties the order key reads. They are not
-real profiles.
+New Zealand notation and the properties the order key reads. Most key to
+the last (Orthic or default) group of their order. They are not real
+profiles.
 }
 \examples{
 p <- make_nzsc4_example("pallic")

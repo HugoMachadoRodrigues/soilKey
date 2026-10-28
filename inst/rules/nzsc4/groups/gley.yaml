@@ -1,0 +1,53 @@
+# Key to groups of Gley Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "G":
+    - code: "GU"
+      name: Sulfuric Gley Soils
+      tests:
+        all_of:
+          - sulfuric_gley_nzsc: {}
+      notes: "Sulfuric soil material in some part within 90 cm of the mineral soil surface."
+
+    - code: "GT"
+      name: Tephric Gley Soils
+      tests:
+        all_of:
+          - tephric_group_nzsc: {}
+      notes: "Tephric soil material from the mineral soil surface to 30 cm or more."
+
+    - code: "GS"
+      name: Sandy Gley Soils
+      tests:
+        all_of:
+          - sandy_group_nzsc: {from: a_base}
+      notes: "Sand or loamy sand with less than 35 % coarse rock fragments in all horizons from the base of the A to 60 cm."
+
+    - code: "GX"
+      name: Oxidic Gley Soils
+      tests:
+        all_of:
+          - oxidic_gley_nzsc: {}
+      notes: "An oxidic horizon more than 30 cm thick with its top between 20 and 60 cm."
+
+    - code: "GR"
+      name: Recent Gley Soils
+      tests:
+        all_of:
+          - recent_gley_nzsc: {}
+      notes: "Stratification within 60 cm, or a buried A (an irregular carbon profile) between 30 and 120 cm; no buried B within 60 cm, no B or BC below 30 cm, no placic or ortstein, no nodules or concretions above 2 % within 60 cm."
+
+    - code: "GA"
+      name: Acid Gley Soils
+      tests:
+        all_of:
+          - acid_group_nzsc: {}
+      notes: "pH 4.8 or less in some part between 20 and 60 cm."
+
+    - code: "GO"
+      name: Orthic Gley Soils
+      tests:
+        default: true
+      notes: "Other Gley Soils."

@@ -199,7 +199,16 @@ horizon_column_spec <- function() {
     childs_test                   = "character", # Childs' test (2,2'-bipyridine) for ferrous iron: 'positive' / 'negative'; NZSC Gley Soils
     sensitivity_class             = "character", # sensitivity (smeary feel): 'insensitive' / 'slightly sensitive' / 'moderately sensitive' / 'sensitive' / 'strongly sensitive'; NZSC allophanic material
     fluidity_class                = "character", # fluidity: 'non-fluid' / 'slightly fluid' / 'moderately fluid' / 'very fluid'; NZSC Gley and Recent Soils
-    stickiness                    = "character"  # stickiness: 'non-sticky' / 'slightly sticky' / 'moderately sticky' / 'very sticky'; NZSC allophanic material, Melanic Soils
+    stickiness                    = "character", # stickiness: 'non-sticky' / 'slightly sticky' / 'moderately sticky' / 'very sticky'; NZSC allophanic material, Melanic Soils
+    # ---- v0.9.298: the groups of the New Zealand Soil Classification ----
+    packing_degree                = "character", # degree of packing: 'low' / 'moderate' / 'high' / 'very high' / 'extremely high'; NZSC slowly permeable layer
+    ksat_mm_h                     = "numeric",   # vertical saturated hydraulic conductivity, mm/h; NZSC slowly permeable layer (< 4 mm/h)
+    penetration_resistance_kpa    = "numeric",   # soil penetration resistance, kPa (moist); NZSC densipan, Pan Podzol Soils
+    redox_segregations_location   = "character", # where the redox segregations mainly are: 'within peds' / 'matrix' / 'ped faces' / 'voids' / 'skeletans'; NZSC perch-gley features
+    sulfate_s_pct                 = "numeric",   # sulfate sulfur, % (dry mass); NZSC sulfuric soil material (>= 0.05 %)
+    roots_abundance               = "character", # roots: 'none' / 'very few' / 'few' / 'common' / 'many'; NZSC Impeded Pumice Soils (a compact layer with no roots)
+    maori_cultural_layer          = "logical",   # a layer modified through Maori cultural practice (additions of rock, sand, shells, charcoal, ash, seaweed ...); NZSC Maori Anthropic Soils
+    coatings_value_moist          = "numeric"    # moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils
   )
 }
 
@@ -378,7 +387,14 @@ ensure_horizon_schema <- function(h) {
     } else if (spec[[col]] == "character" && !is.character(h[[col]])) {
       h[[col]] <- as.character(h[[col]])
     } else if (spec[[col]] == "logical" && !is.logical(h[[col]])) {
-      h[[col]] <- as.logical(h[[col]])
+      # v0.9.298: yes / no (and y, n, 1, 0) read as TRUE / FALSE
+      if (is.numeric(h[[col]])) {
+        h[[col]] <- as.logical(h[[col]])
+      } else {
+        v <- tolower(trimws(as.character(h[[col]])))
+        h[[col]] <- ifelse(v %in% c("true", "t", "yes", "y", "1"), TRUE,
+                    ifelse(v %in% c("false", "f", "no", "n", "0"), FALSE, NA))
+      }
     }
   }
   data.table::setcolorder(h, intersect(c(names(spec), names(h)), names(h)))

@@ -1,0 +1,39 @@
+# Key to groups of Anthropic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "A":
+    - code: "AT"
+      name: Truncated Anthropic Soils
+      tests:
+        all_of:
+          - truncated_anthropic_nzsc: {}
+      notes: "Truncated by people to at least the base of an in situ A or AB, with natural in situ materials within 30 cm of the soil surface."
+
+    - code: "AO"
+      name: "M\u0101ori Anthropic Soils"
+      tests:
+        all_of:
+          - maori_anthropic_nzsc: {}
+      notes: "Horizons modified through M\u0101ori cultural practice, 30 cm or more in all, from the surface or within 90 cm if buried."
+
+    - code: "AR"
+      name: Refuse Anthropic Soils
+      tests:
+        all_of:
+          - refuse_anthropic_nzsc: {}
+      notes: "A layer of organic waste or manufactured organic matter 30 cm or more thick within 90 cm, or methane detectable by odour."
+
+    - code: "AM"
+      name: Mixed Anthropic Soils
+      tests:
+        all_of:
+          - mixed_anthropic_nzsc: {}
+      notes: "Original horizons mechanically disturbed to more than 30 cm."
+
+    - code: "AF"
+      name: Fill Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Anthropic Soils."

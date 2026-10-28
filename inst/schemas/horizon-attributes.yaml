@@ -636,3 +636,46 @@ attributes:
     description: "Stickiness class: non-sticky, slightly sticky, moderately sticky, very sticky; NZSC allophanic soil material and Melanic Soils."
     systems: [nzsc4]
     allowed: [non-sticky, slightly sticky, moderately sticky, very sticky]
+  - name: packing_degree
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Degree of packing of the soil material (low, moderate, high, very high, extremely high); NZSC slowly permeable layer, with the ped size or the texture."
+    systems: [nzsc4]
+    allowed: [low, moderate, high, very high, extremely high]
+  - name: ksat_mm_h
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "mm/h"
+    description: "Measured vertical saturated hydraulic conductivity; NZSC slowly permeable layer (below 4 mm/h), which it decides when measured."
+    systems: [nzsc4]
+  - name: penetration_resistance_kpa
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "kPa"
+    description: "Soil penetration resistance, moist; NZSC densipan (more than 4,000 kPa) and Pan Podzol Soils (3,100 kPa or more)."
+    systems: [nzsc4]
+  - name: redox_segregations_location
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Where the high-chroma redox segregations (mottles) mainly are: within peds, matrix (of an apedal horizon), ped faces, voids or skeletans; NZSC perch-gley features (within peds or the matrix) and Groundwater-gley Podzol Soils (coatings on voids or skeletans)."
+    systems: [nzsc4]
+    allowed: [within peds, matrix, ped faces, voids, skeletans]
+  - name: sulfate_s_pct
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "% (mass)"
+    description: "Sulfate sulfur of the fine earth, dry mass; NZSC sulfuric soil material (0.05 % or more)."
+    systems: [nzsc4]
+  - name: roots_abundance
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Abundance of roots in the horizon (none, very few, few, common, many); NZSC Impeded Pumice Soils (a compact, brittle layer with no roots)."
+    systems: [nzsc4]
+    allowed: [none, very few, few, common, many]
+  - name: maori_cultural_layer
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "TRUE for a horizon modified through M\u0101ori cultural practice, with additions of rock fragments, sand, shells, charcoal, ash, seaweed or similar (a cultural layer, as at midden sites); NZSC M\u0101ori Anthropic Soils."
+    systems: [nzsc4]
+  - name: coatings_value_moist
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "Munsell"
+    description: "Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less)."
+    systems: [nzsc4]

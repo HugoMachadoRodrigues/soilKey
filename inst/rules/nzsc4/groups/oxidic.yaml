@@ -1,0 +1,25 @@
+# Key to groups of Oxidic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "X":
+    - code: "XP"
+      name: Perch-gley Oxidic Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: gley_profile_form}
+      notes: "A gley profile form and perch-gley features."
+
+    - code: "XN"
+      name: Nodular Oxidic Soils
+      tests:
+        all_of:
+          - nodular_oxidic_nzsc: {}
+      notes: "A nodular horizon with its top within 60 cm."
+
+    - code: "XO"
+      name: Orthic Oxidic Soils
+      tests:
+        default: true
+      notes: "Other Oxidic Soils."

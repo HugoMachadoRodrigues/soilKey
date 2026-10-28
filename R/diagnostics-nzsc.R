@@ -129,8 +129,9 @@
        thick = bot - top, soil_top = soil_top, ms = ms, ord = ord, tex = tx)
 }
 
-# Rows by role (not buried): A (A and AB), E, B (B, BA, BC and B/C read as B
-# where the key says "B horizon", with BC kept apart where it says "B or BC").
+# Rows by role (not buried). The role is the master horizon (A, E, B, C ...)
+# or the transition as written (AB, BA, BC, B/C ...): a key that names "B or
+# BC" lists both roles.
 .nzsc_is <- function(x, roles) !x$des$buried & x$role %in% roles
 
 # ---- colours ----------------------------------------------------------------------
@@ -399,13 +400,21 @@
 }
 
 # Argillic horizon of each row (a B or BC, as its notation Bt, BCt): a t
-# suffix; clay-enriched lamellae (a designation naming lamellae); or 5 % more
-# clay than the horizon above it in the same material with clay coatings, or
-# under an eluvial horizon at an abrupt or sharp boundary. A mineral row with
-# no designation may be one unless its clay shows no increase.
+# suffix; clay-enriched lamellae (a designation naming lamellae) whose
+# combined thickness within 90 cm of the mineral soil surface is 15 cm or
+# more (v0.9.298); or 5 % more clay than the horizon above it in the same
+# material with clay coatings, or under an eluvial horizon at an abrupt or
+# sharp boundary. A mineral row with no designation may be one unless its
+# clay shows no increase.
 .nzsc_argillic_rows <- function(x) {
   h <- x$h; n <- x$n; des <- x$des
-  lam <- grepl("lamell", tolower(as.character(h$designation %||% rep(NA, n))))
+  lam_row <- grepl("lamell", tolower(as.character(h$designation %||% rep(NA, n))))
+  lam_th <- if (any(lam_row) && !is.na(x$ms))
+    .asc_overlap(h$top_cm[lam_row], ifelse(is.na(h$bottom_cm[lam_row]), Inf, h$bottom_cm[lam_row]), x$ms, x$ms + 90)
+    else 0
+  lam_sum <- sum(lam_th, na.rm = TRUE)
+  lam_ok <- if (!any(lam_row)) FALSE else if (lam_sum >= 15) TRUE else if (anyNA(lam_th) || is.na(x$ms)) NA else FALSE
+  lam <- lam_row & lam_ok %in% TRUE
   films <- tolower(as.character(h$clay_films_amount %||% rep(NA, n)))
   films_yes <- nzchar(films) & !is.na(films) & !grepl("^none|^no|^absent", films)
   maybe <- x$unknown_role & x$mineral
@@ -417,7 +426,7 @@
     abrupt <- tolower(as.character(h$boundary_distinctness[j[1L]] %||% NA)) %in% c("abrupt", "sharp", "very abrupt")
     if (films_yes[i] || (x$role[j[1L]] %in% "E" && abrupt)) TRUE else NA
   }, NA)
-  ifelse(.nzsc_is(x, c("B", "BC")), ifelse(des$t | lam, TRUE, incr %in% TRUE),
+  ifelse(.nzsc_is(x, c("B", "BC")), ifelse(des$t | lam, TRUE, ifelse(lam_row & is.na(lam_ok), NA, incr %in% TRUE)),
          ifelse(maybe, ifelse(incr %in% FALSE, FALSE, NA), FALSE))
 }
 

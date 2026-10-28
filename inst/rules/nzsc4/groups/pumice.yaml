@@ -1,0 +1,25 @@
+# Key to groups of Pumice Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "M":
+    - code: "MP"
+      name: Perch-gley Pumice Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: gley_profile_form}
+      notes: "A gley profile form and perch-gley features."
+
+    - code: "MI"
+      name: Impeded Pumice Soils
+      tests:
+        all_of:
+          - impeded_group_nzsc: {also: brittle_no_roots}
+      notes: "A slowly permeable layer, or a compact layer with brittle failure and no roots, within 90 cm."
+
+    - code: "MO"
+      name: Orthic Pumice Soils
+      tests:
+        default: true
+      notes: "Other Pumice Soils."
