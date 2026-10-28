@@ -122,6 +122,16 @@ reference:
       - classify_asc3_family
       - make_asc3_example
 
+  - title: "New Zealand Soil Classification (experimental)"
+    desc: >
+      The 15 orders of the 4th edition (2026), read from the New Zealand
+      horizon notation, colours, texture, P retention, bulk density, volcanic
+      glass and the New Zealand field tests (reactive-aluminium, Childs',
+      sensitivity, fluidity, stickiness, strength).
+    contents:
+      - classify_nzsc4
+      - make_nzsc4_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

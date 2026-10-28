@@ -607,3 +607,32 @@ attributes:
     description: "Water repellence of the horizon, Field Handbook ethanol test (non-repellent / repellent / strongly repellent); ASC family water repellence of the surface soil."
     systems: [asc3]
     allowed: [non-repellent, repellent, strongly repellent]
+  - name: naf_test
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Reactive-aluminium (NaF) field test on a moist sample (none, slight, moderate, strong; New Zealand codes N, L, M, H); NZSC allophanic soil material, podzolic-B horizon, Brown Soils."
+    systems: [nzsc4]
+    allowed: [none, slight, moderate, strong]
+  - name: childs_test
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Childs' test (2,2'-bipyridine) for ferrous iron, positive or negative; NZSC Gley Soils (ironstone-pan route) and reductimorphic horizons."
+    systems: [nzsc4]
+    allowed: [positive, negative]
+  - name: sensitivity_class
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Sensitivity class (smeary, greasy feel of a remoulded sample): insensitive, slightly sensitive, moderately sensitive, sensitive, strongly sensitive; NZSC allophanic soil material."
+    systems: [nzsc4]
+  - name: fluidity_class
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Fluidity class: non-fluid, slightly fluid, moderately fluid, very fluid; NZSC Gley and Recent Soils (no moderately or very fluid horizon within 30 cm)."
+    systems: [nzsc4]
+    allowed: [non-fluid, slightly fluid, moderately fluid, very fluid]
+  - name: stickiness
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "-"
+    description: "Stickiness class: non-sticky, slightly sticky, moderately sticky, very sticky; NZSC allophanic soil material and Melanic Soils."
+    systems: [nzsc4]
+    allowed: [non-sticky, slightly sticky, moderately sticky, very sticky]

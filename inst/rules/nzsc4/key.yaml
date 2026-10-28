@@ -1,0 +1,112 @@
+# The key to soil orders of the New Zealand Soil Classification, 4th ed.,
+# in its own order. Each order after the first is "other soils that ...", so
+# a gate tests only its own criteria: the key's order supplies the
+# exclusions. The codes are the NZSC's own order letters. Criteria are
+# summarised from the text; see R/diagnostics-nzsc-orders.R and
+# readings.yaml for the choices where the text is silent.
+
+orders:
+
+  - code: "O"
+    name: Organic Soils
+    tests:
+      all_of:
+        - organic_soils_nzsc: {}
+    notes: "Organic soil material within 60 cm of the soil surface: 30 cm or more (cumulative) accumulated under wet conditions (O horizons), or 35 cm or more of partly or well decomposed litter (Lm, Lh)."
+
+  - code: "G"
+    name: Gley Soils
+    tests:
+      all_of:
+        - gley_soils_nzsc: {}
+    notes: "A gley profile form (a reductimorphic horizon from within 30 cm) with conditions on its depth, what lies under it, a distinct topsoil, fluidity and allophanic material; or an ironstone-pan within 30 cm and a positive Childs' test."
+
+  - code: "U"
+    name: Ultic Soils
+    tests:
+      all_of:
+        - ultic_soils_nzsc: {}
+    notes: "pH below 5.5 from the base of the A to 60 cm; a pedal, coated, firm, clay-dominated B with its base below 100 cm; no oxidic, cutanoxidic, allophanic or podzolic features; an eluvial horizon or a pale upper B."
+
+  - code: "Z"
+    name: Podzol Soils
+    tests:
+      all_of:
+        - podzol_soils_nzsc: {}
+    notes: "A podzolic-B horizon or an ortstein-pan with pH below 5.5 in some part, or a humus-pan."
+
+  - code: "L"
+    name: Allophanic Soils
+    tests:
+      all_of:
+        - allophanic_soils_nzsc: {}
+    notes: "35 cm or more of allophanic soil material within 60 cm (over a shallow lithic or paralithic contact, all of it, with a weathered-B)."
+
+  - code: "M"
+    name: Pumice Soils
+    tests:
+      all_of:
+        - pumice_soils_nzsc: {}
+    notes: "Vitric soil material from the surface to 25 cm or more, or 35 cm or more thick within 60 cm; and a weathered-B horizon 5 cm or more thick."
+
+  - code: "E"
+    name: Melanic Soils
+    tests:
+      all_of:
+        - melanic_soils_nzsc: {}
+    notes: "Calcareous, mafic or ultramafic parent material; a dark, well-structured A; carbonate within 60 cm or a base-rich, sticky, pedal B; and rock fragments, a non-clayey part or a pale upper B."
+
+  - code: "S"
+    name: Semiarid Soils
+    tests:
+      all_of:
+        - semiarid_soils_nzsc: {}
+    notes: "No fragipan; a calcareous horizon with pedogenic carbonate within 90 cm (150 cm if sandy), or a weathered-B with no primary carbonate and low P retention or pH 7.5 or more."
+
+  - code: "X"
+    name: Oxidic Soils
+    tests:
+      all_of:
+        - oxidic_soils_nzsc: {}
+    notes: "An oxidic horizon with its lower boundary 30 cm or more from the mineral soil surface."
+
+  - code: "N"
+    name: Granular Soils
+    tests:
+      all_of:
+        - granular_soils_nzsc: {}
+    notes: "A clayey weathered-B to 90 cm; and a cutanoxidic horizon, or a pedal cutanic or argillic horizon, with reductimorphic features near the top or fine polyhedral peds."
+
+  - code: "P"
+    name: Pallic Soils
+    tests:
+      all_of:
+        - pallic_soils_nzsc: {}
+    notes: "Fine loamy sand or finer below the A; and a reductimorphic or eluvial horizon over a pan or argillic horizon, or pale colours with a dense, pedal, sodic or eluviated B."
+
+  - code: "B"
+    name: Brown Soils
+    tests:
+      all_of:
+        - brown_soils_nzsc: {}
+    notes: "A weathered-B, argillic or cutanic horizon 10 cm or more thick reaching 30 cm; and a brown subhorizon, or an intermediate one with P retention 30 % or more or a reactive-aluminium test, or a sandy B."
+
+  - code: "A"
+    name: Anthropic Soils
+    tests:
+      all_of:
+        - anthropic_soils_nzsc: {}
+    notes: "More than 30 cm of anthropic soil material within 90 cm, or truncation by human action to the B; manufactured materials under 30 cm of soil."
+
+  - code: "R"
+    name: Recent Soils
+    tests:
+      all_of:
+        - recent_soils_nzsc: {}
+    notes: "A distinct topsoil (at the surface or buried within 60 cm), moderate structure within 15 cm, or a weathered-B; and no fluid horizon within 30 cm."
+
+  - code: "W"
+    name: Raw Soils
+    tests:
+      default: true
+    notes: "Other soils."
