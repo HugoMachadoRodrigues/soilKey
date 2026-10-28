@@ -19,6 +19,26 @@ both apply. The names keep the plural of the key's classes. The codes in
 canonical fixtures, named without the family, are identical. Seen in the
 name of an ISRIC profile sent by Jelle Janssen.
 
+# soilKey 0.9.295 (2026-10-28)
+
+## Many profiles from one horizon table
+
+`classify_profiles()` classifies every profile of a table that has one row
+per horizon and a column saying which profile each horizon belongs to, as a
+survey or a database export usually comes. Site properties such as
+`soil_moisture_regime` come from a second table (one row per profile) or a
+list named by profile id. A `map` renames columns and converts their units on
+the way in: `data.frame(from = "ORGC", to = "oc_pct", factor = 0.1)` reads an
+organic carbon in g/kg as soilKey's %. The names are checked once for the
+whole table, so a column that no key reads is named in one warning, not once
+per profile. The result has one row per profile, in the order of the table,
+with the class name in each system, the attributes the keys asked for and
+did not find, and the error of a profile that could not be classified (the
+others are classified as usual). The full `classify_all()` results and the
+pedons ride along as attributes. Asked for by Jelle Janssen (ISRIC), who
+classifies ISIS profiles this way. No classification changes: the 44
+canonical fixtures are identical.
+
 # soilKey 0.9.294 (2026-10-28)
 
 ## A warning for the attributes that no key reads
