@@ -1423,12 +1423,12 @@ familia_organossolo_lenhosidade <- function(pedon) {
 .familia_termos <- function() {
   textura <- c(
     "arenosa" = "arenosa", "muito_argilosa" = "muito argilosa",
-    "argilosa" = "argilosa", "média" = "média", "media" = "média",
+    "argilosa" = "argilosa", "m\u00e9dia" = "m\u00e9dia", "media" = "m\u00e9dia",
     "siltosa" = "siltosa", "muito_arenosa" = "muito arenosa",
-    "arenosa-media" = "arenosa-média",
-    "media-arenosa" = "média-arenosa",
-    "media-argilosa" = "média-argilosa",
-    "media-siltosa" = "média-siltosa")
+    "arenosa-media" = "arenosa-m\u00e9dia",
+    "media-arenosa" = "m\u00e9dia-arenosa",
+    "media-argilosa" = "m\u00e9dia-argilosa",
+    "media-siltosa" = "m\u00e9dia-siltosa")
   list(
     grupamento_textural    = textura,
     subgrupamento_textural = textura,
@@ -1439,7 +1439,7 @@ familia_organossolo_lenhosidade <- function(pedon) {
                                "muito_argiloso" = "muito argiloso",
                                "argiloso" = "argiloso",
                                "siltoso" = "siltoso",
-                               "medio" = "médio"),
+                               "medio" = "m\u00e9dio"),
     lenhosidade            = c("lenhoso" = "lenhoso",
                                "muito_lenhoso" = "muito lenhoso",
                                "extremamente_lenhoso" = "extremamente lenhoso"))
@@ -1513,7 +1513,7 @@ familia_label <- function(familia) {
     v <- as.character(v)
     out <- c(out, switch(d,
       tipo_horizonte_superficial =
-        if (identical(v, "hístico")) "horizonte hístico" else paste("A", v),
+        if (identical(v, "h\u00edstico")) "horizonte h\u00edstico" else paste("A", v),
       material_subjacente =
         paste("material subjacente", .familia_termo(d, v)),
       .familia_termo(d, v)))
