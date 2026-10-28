@@ -1,3 +1,24 @@
+# soilKey 0.9.296 (2026-10-28)
+
+## The SiBCS family label in the words of the book
+
+The family (5th categorical level) of a SiBCS name used to be written with
+soilKey's internal codes, as in "Latossolos Vermelhos Eutróficos típicos,
+muito_argilosa, moderado". It is now written as the SiBCS (2018, Cap 18)
+writes it: "..., textura muito argilosa, A moderado". The textural group or
+subgroup follows "textura" ("textura média-arenosa"), with the gravel class
+and "esquelética" after it with no comma and the sand mineralogy in
+parentheses ("textura argilosa pouco cascalhenta (micácea)"). The surface
+horizon follows "A" ("A moderado", "A húmico"), and the histic one reads
+"horizonte hístico". In the Organossolos, the underlying material reads
+"material subjacente argiloso", and the woodiness reads "muito lenhoso".
+Hugo decided three of these readings: "horizonte hístico", "material
+subjacente", and writing the gravel class and "esquelética" together when
+both apply. The names keep the plural of the key's classes. The codes in
+`FamilyAttribute$value` do not change, and neither does any class: the 44
+canonical fixtures, named without the family, are identical. Seen in the
+name of an ISRIC profile sent by Jelle Janssen.
+
 # soilKey 0.9.294 (2026-10-28)
 
 ## A warning for the attributes that no key reads
