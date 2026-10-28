@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.294</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.295</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,13 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.295" id="soilkey-09295-2026-10-28">soilKey 0.9.295 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09295-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="many-profiles-from-one-horizon-table-0-9-295">Many profiles from one horizon table<a class="anchor" aria-label="anchor" href="#many-profiles-from-one-horizon-table-0-9-295"></a></h3>
+<p><code><a href="../reference/classify_profiles.html">classify_profiles()</a></code> classifies every profile of a table that has one row per horizon and a column saying which profile each horizon belongs to, as a survey or a database export usually comes. Site properties such as <code>soil_moisture_regime</code> come from a second table (one row per profile) or a list named by profile id. A <code>map</code> renames columns and converts their units on the way in: <code>data.frame(from = "ORGC", to = "oc_pct", factor = 0.1)</code> reads an organic carbon in g/kg as soilKey’s %. The names are checked once for the whole table, so a column that no key reads is named in one warning, not once per profile. The result has one row per profile, in the order of the table, with the class name in each system, the attributes the keys asked for and did not find, and the error of a profile that could not be classified (the others are classified as usual). The full <code><a href="../reference/classify_all.html">classify_all()</a></code> results and the pedons ride along as attributes. Asked for by Jelle Janssen (ISRIC), who classifies ISIS profiles this way. No classification changes: the 44 canonical fixtures are identical.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.294" id="soilkey-09294-2026-10-28">soilKey 0.9.294 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09294-2026-10-28"></a></h2>
 <div class="section level3">
