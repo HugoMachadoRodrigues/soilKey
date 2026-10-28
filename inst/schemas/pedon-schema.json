@@ -488,6 +488,21 @@
           },
           "water_repellence": {
             "type": ["string", "null"]
+          },
+          "naf_test": {
+            "type": ["string", "null"]
+          },
+          "childs_test": {
+            "type": ["string", "null"]
+          },
+          "sensitivity_class": {
+            "type": ["string", "null"]
+          },
+          "fluidity_class": {
+            "type": ["string", "null"]
+          },
+          "stickiness": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

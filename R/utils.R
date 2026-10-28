@@ -193,7 +193,13 @@ horizon_column_spec <- function() {
     effervescence_class           = "character", # field reaction of the fine earth with 1 M HCl: 'none' / 'slight' / 'moderate' / 'strong' / 'very strong' (NatSoil: non / slightly / moderately / highly / very highly calcareous); ASC calcareous
     # ---- v0.9.292: the ASC families ----
     gravel_pct                    = "numeric",   # gravel-sized (2-60 mm) coarse fragments, visual %; ASC family gravel (without it, coarse_fragments_pct)
-    water_repellence              = "character"  # Field Handbook ethanol test: 'non-repellent' / 'repellent' / 'strongly repellent'; ASC family water repellence
+    water_repellence              = "character", # Field Handbook ethanol test: 'non-repellent' / 'repellent' / 'strongly repellent'; ASC family water repellence
+    # ---- v0.9.293: the New Zealand Soil Classification (NZSC 4th ed.) ----
+    naf_test                      = "character", # reactive-aluminium (NaF) field test: 'none' / 'slight' / 'moderate' / 'strong' (NZ codes N, L, M, H); NZSC allophanic material, podzolic-B, Brown Soils
+    childs_test                   = "character", # Childs' test (2,2'-bipyridine) for ferrous iron: 'positive' / 'negative'; NZSC Gley Soils
+    sensitivity_class             = "character", # sensitivity (smeary feel): 'insensitive' / 'slightly sensitive' / 'moderately sensitive' / 'sensitive' / 'strongly sensitive'; NZSC allophanic material
+    fluidity_class                = "character", # fluidity: 'non-fluid' / 'slightly fluid' / 'moderately fluid' / 'very fluid'; NZSC Gley and Recent Soils
+    stickiness                    = "character"  # stickiness: 'non-sticky' / 'slightly sticky' / 'moderately sticky' / 'very sticky'; NZSC allophanic material, Melanic Soils
   )
 }
 

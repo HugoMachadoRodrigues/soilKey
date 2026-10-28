@@ -1,0 +1,27 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: nzsc4
+order: 6
+aliases: [nzsc]
+legacy: false
+default: false
+status: experimental
+namespace: nzsc
+classifier: classify_nzsc4
+result_slot: nzsc4
+top_level: orders
+levels: [orders, groups, subgroups]
+display:
+  en: "New Zealand Soil Classification, 4th edition"
+  pt: "Classificação de Solos da Nova Zelândia, 4ª edição"
+  native: "New Zealand Soil Classification, Fourth Edition"
+  result: "NZSC 4th ed."
+edition: "4th edition (2026), Quarto source of 7 October 2026"
+citation: >
+  Manaaki Whenua - Landcare Research (2026). New Zealand Soil
+  Classification. 4th edition. Landcare Research Science Series.
+  https://doi.org/10.7931/dl1-lrss-4-2026
+version: "New Zealand Soil Classification, 4th edition (2026); source github.com/manaakiwhenua/nzsc_v4 at commit 4c559ca2 (2026-10-07)"
+implementation_status: "soilKey v0.9.293 -- 15/15 orders (Key to Soil Orders); groups and subgroups to follow; the Cryic Soils of the appendix are not keyed"
+source: |
+  Manaaki Whenua - Landcare Research (2026). New Zealand Soil Classification,
+  4th ed. Key to Soil Orders; Diagnostic horizons and other differentiae.

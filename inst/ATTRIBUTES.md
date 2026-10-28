@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.292)
+# soilKey -- recognised horizon attribute names (v0.9.293)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -264,7 +264,17 @@ these columns; anything else is preserved but ignored by the keys.
 | `gravel_pct` | % (vol) | numeric | Gravel-sized (2-60 mm) coarse fragments, visual abundance; ASC family gravel classes (glossary 'Gravel'). Without it the family reads coarse_fragments_pct. | - |
 | `water_repellence` | - | character | Water repellence of the horizon, Field Handbook ethanol test (non-repellent / repellent / strongly repellent); ASC family water repellence of the surface soil. | - |
 
+## New Zealand system (NZSC 4th ed.)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `naf_test` | - | character | Reactive-aluminium (NaF) field test on a moist sample (none, slight, moderate, strong; New Zealand codes N, L, M, H); NZSC allophanic soil material, podzolic-B horizon, Brown Soils. | - |
+| `childs_test` | - | character | Childs' test (2,2'-bipyridine) for ferrous iron, positive or negative; NZSC Gley Soils (ironstone-pan route) and reductimorphic horizons. | - |
+| `sensitivity_class` | - | character | Sensitivity class (smeary, greasy feel of a remoulded sample): insensitive, slightly sensitive, moderately sensitive, sensitive, strongly sensitive; NZSC allophanic soil material. | - |
+| `fluidity_class` | - | character | Fluidity class: non-fluid, slightly fluid, moderately fluid, very fluid; NZSC Gley and Recent Soils (no moderately or very fluid horizon within 30 cm). | - |
+| `stickiness` | - | character | Stickiness class: non-sticky, slightly sticky, moderately sticky, very sticky; NZSC allophanic soil material and Melanic Soils. | - |
+
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.292._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.293._
 
