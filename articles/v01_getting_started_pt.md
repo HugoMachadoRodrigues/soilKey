@@ -131,7 +131,7 @@ res_usda  <- classify_usda(meu_pedon,  on_missing = "silent")
 res_wrb$name
 #> [1] "Haplic Ferralsol (Clayic, Epic, Ochric)"
 res_sibcs$name
-#> [1] "Latossolos Vermelhos Distróficos típicos, argilosa, moderado"
+#> [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"
 res_usda$name
 #> [1] "Typic Hapludox"
 ```
@@ -144,8 +144,10 @@ todos <- classify_all(meu_pedon, on_missing = "silent")
 todos$summary
 #>                                       wrb
 #> 1 Haplic Ferralsol (Clayic, Epic, Ochric)
-#>                                                          sibcs           usda
-#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
+#>                                                                    sibcs
+#> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#>             usda
+#> 1 Typic Hapludox
 ```
 
 [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md)
@@ -1706,10 +1708,14 @@ data.frame(
   Sistema = c("WRB 2022", "SiBCS 5ª ed.", "USDA ST 13"),
   Nome    = c(todos$wrb$name, todos$sibcs$name, todos$usda$name)
 )
-#>        Sistema                                                         Nome
-#> 1     WRB 2022                      Haplic Ferralsol (Clayic, Epic, Ochric)
-#> 2 SiBCS 5ª ed. Latossolos Vermelhos Distróficos típicos, argilosa, moderado
-#> 3   USDA ST 13                                               Typic Hapludox
+#>        Sistema
+#> 1     WRB 2022
+#> 2 SiBCS 5ª ed.
+#> 3   USDA ST 13
+#>                                                                     Nome
+#> 1                                Haplic Ferralsol (Clayic, Epic, Ochric)
+#> 2 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#> 3                                                         Typic Hapludox
 ```
 
 Para um Latossolo Vermelho típico do Cerrado / Mata Atlântica

@@ -64,6 +64,8 @@ pedon <- read_pedon_csv(f)
 classify_all(pedon)$summary
 #>                                       wrb
 #> 1 Haplic Ferralsol (Clayic, Epic, Ochric)
-#>                                                          sibcs           usda
-#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
+#>                                                                    sibcs
+#> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#>             usda
+#> 1 Typic Hapludox
 ```

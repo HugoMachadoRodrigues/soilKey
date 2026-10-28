@@ -118,9 +118,9 @@ classify_profiles(h2, sites = s, map = m)[, c("profile_id", "wrb", "sibcs", "usd
 #>   profile_id                                                          wrb
 #> 1         p1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
 #> 2         p2                      Cambic Phaeozem (Loamic, Humic, Pachic)
-#>                                                          sibcs
-#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado
-#> 2                 Chernossolos Háplicos Órticos típicos, média
+#>                                                                    sibcs
+#> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#> 2                   Chernossolos Háplicos Órticos típicos, textura média
 #>                usda
 #> 1 Rhodic Haploperox
 #> 2 Typic Haplustolls

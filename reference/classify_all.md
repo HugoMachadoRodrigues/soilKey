@@ -139,8 +139,10 @@ all_three <- classify_all(pr)
 all_three$summary
 #>                                                            wrb
 #> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
-#>                                                          sibcs            usda
-#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Rhodic Hapludox
+#>                                                                    sibcs
+#> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#>              usda
+#> 1 Rhodic Hapludox
 
 # WRB + USDA only (skip SiBCS):
 classify_all(pr, systems = c("wrb2022", "usda"))$summary

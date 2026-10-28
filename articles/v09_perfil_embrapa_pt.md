@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x56a36308e1b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x624407b681b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -152,7 +152,8 @@ print(res$sibcs)
 #> 
 #> ── ClassificationResult (SiBCS 5a edicao) ──
 #> 
-#> Name: Argissolos Vermelhos Distróficos típicos, argilosa, moderado, Tmob
+#> Name: Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado,
+#> Tmob
 #> RSG/Order: Argissolos
 #> Evidence grade: A
 #> 
@@ -208,7 +209,7 @@ print(res$sibcs)
 #> 37. tipo_horizonte_superficial moderado -- info
 #> 38. atividade_argila Tmob -- info
 #> 39. oxidos_ferro oxidos_ferro -- info
-#> 40. ??  argilosa, moderado, Tmob -- info
+#> 40. ??  textura argilosa, A moderado, Tmob -- info
 ```
 
 A descida vai do nivel da Ordem (`Argissolos`) ate o Subgrupo, passando
@@ -374,7 +375,7 @@ data.frame(
 #> 2    WRB 2022
 #> 3 USDA-ST 13a
 #>                                                                                   Classe
-#> 1                     Argissolos Vermelhos Distróficos típicos, argilosa, moderado, Tmob
+#> 1           Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado, Tmob
 #> 2 Rhodic Ferralic Acrisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)
 #> 3                                                                     Rhodic Kandiudults
 #>   EvidGrade

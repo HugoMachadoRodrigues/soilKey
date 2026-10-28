@@ -64,6 +64,8 @@ f <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
 classify_csv(f)
 #>                                       wrb
 #> 1 Haplic Ferralsol (Clayic, Epic, Ochric)
-#>                                                          sibcs           usda
-#> 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox
+#>                                                                    sibcs
+#> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
+#>             usda
+#> 1 Typic Hapludox
 ```

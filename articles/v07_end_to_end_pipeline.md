@@ -185,7 +185,7 @@ cls_usda  <- classify_usda(pedon)
 cls_wrb$name
 #> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
 cls_sibcs$name
-#> [1] "Latossolos Vermelhos Distróficos típicos, argilosa, moderado"
+#> [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"
 cls_usda$name
 #> [1] "Rhodic Hapludox"
 

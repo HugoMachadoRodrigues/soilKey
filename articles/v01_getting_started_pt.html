@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.295</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.296</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -232,7 +232,7 @@ tem</li>
 <span><span class="va">res_wrb</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Haplic Ferralsol (Clayic, Epic, Ochric)"</span></span>
 <span><span class="va">res_sibcs</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Latossolos Vermelhos Distróficos típicos, argilosa, moderado"</span></span>
+<span><span class="co">#&gt; [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"</span></span>
 <span><span class="va">res_usda</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Typic Hapludox"</span></span></code></pre></div>
 <div class="section level3">
@@ -243,8 +243,10 @@ tem</li>
 <span><span class="va">todos</span><span class="op">$</span><span class="va">summary</span></span>
 <span><span class="co">#&gt;                                       wrb</span></span>
 <span><span class="co">#&gt; 1 Haplic Ferralsol (Clayic, Epic, Ochric)</span></span>
-<span><span class="co">#&gt;                                                          sibcs           usda</span></span>
-<span><span class="co">#&gt; 1 Latossolos Vermelhos Distróficos típicos, argilosa, moderado Typic Hapludox</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                                    sibcs</span></span>
+<span><span class="co">#&gt; 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado</span></span>
+<span><span class="co">#&gt;             usda</span></span>
+<span><span class="co">#&gt; 1 Typic Hapludox</span></span></code></pre></div>
 <p><code><a href="../reference/classify_all.html">classify_all()</a></code> retorna uma lista nomeada com
 <code>wrb</code>, <code>sibcs</code>, <code>usda</code> (cada uma um
 <code>ClassificationResult</code> completo) e um resumo
@@ -1808,10 +1810,14 @@ seja idêntico</strong>.</p>
 <span>  Sistema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WRB 2022"</span>, <span class="st">"SiBCS 5ª ed."</span>, <span class="st">"USDA ST 13"</span><span class="op">)</span>,</span>
 <span>  Nome    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">todos</span><span class="op">$</span><span class="va">wrb</span><span class="op">$</span><span class="va">name</span>, <span class="va">todos</span><span class="op">$</span><span class="va">sibcs</span><span class="op">$</span><span class="va">name</span>, <span class="va">todos</span><span class="op">$</span><span class="va">usda</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;        Sistema                                                         Nome</span></span>
-<span><span class="co">#&gt; 1     WRB 2022                      Haplic Ferralsol (Clayic, Epic, Ochric)</span></span>
-<span><span class="co">#&gt; 2 SiBCS 5ª ed. Latossolos Vermelhos Distróficos típicos, argilosa, moderado</span></span>
-<span><span class="co">#&gt; 3   USDA ST 13                                               Typic Hapludox</span></span></code></pre></div>
+<span><span class="co">#&gt;        Sistema</span></span>
+<span><span class="co">#&gt; 1     WRB 2022</span></span>
+<span><span class="co">#&gt; 2 SiBCS 5ª ed.</span></span>
+<span><span class="co">#&gt; 3   USDA ST 13</span></span>
+<span><span class="co">#&gt;                                                                     Nome</span></span>
+<span><span class="co">#&gt; 1                                Haplic Ferralsol (Clayic, Epic, Ochric)</span></span>
+<span><span class="co">#&gt; 2 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado</span></span>
+<span><span class="co">#&gt; 3                                                         Typic Hapludox</span></span></code></pre></div>
 <p>Para um Latossolo Vermelho típico do Cerrado / Mata Atlântica
 brasileira, esperamos:</p>
 <ul>
