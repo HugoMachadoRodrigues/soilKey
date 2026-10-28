@@ -8,7 +8,8 @@ classify_sibcs_familia(
   pedon,
   ordem_code = NULL,
   sg_code = NULL,
-  max_depth_cm = 200
+  max_depth_cm = 200,
+  nome_superior = NULL
 )
 }
 \arguments{
@@ -23,6 +24,11 @@ forcar subgrupamento textural em arenicos/espessarenicos).}
 
 \item{max_depth_cm}{Profundidade da secao de controle (default
 200 cm).}
+
+\item{nome_superior}{Nome da classe nos niveis mais altos (e.g. o
+nome do subgrupo). Opcional; quando ja diz Eutroficos /
+Distroficos, a saturacao por bases nao e repetida, e quando ja
+diz Aluminicos, o termo "alico" nao e repetido (Cap 18, p 285).}
 }
 \value{
 Lista nomeada de \code{\link{FamilyAttribute}}.

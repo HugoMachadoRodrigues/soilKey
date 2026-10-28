@@ -157,7 +157,7 @@ FamilyAttribute <- R6::R6Class("FamilyAttribute",
 #'             Cap 18, p. 281.
 #' @noRd
 familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
-  h <- pedon$horizons
+  h <- .mineral_horizons(pedon$horizons)
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
   sand <- .weighted_avg_in_depth(h, "sand_pct", max_depth_cm = max_depth_cm)
   if (is.na(clay) || is.na(sand)) {
@@ -221,7 +221,7 @@ familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p. 283.
 #' @noRd
 familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
-  h <- pedon$horizons
+  h <- .mineral_horizons(pedon$horizons)
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
   sand <- .weighted_avg_in_depth(h, "sand_pct", max_depth_cm = max_depth_cm)
   silt <- .weighted_avg_in_depth(h, "silt_pct", max_depth_cm = max_depth_cm)
@@ -279,7 +279,7 @@ familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
 #'             p 284.
 #' @noRd
 familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
-  h <- pedon$horizons
+  h <- .mineral_horizons(pedon$horizons)
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
                                   max_depth_cm = max_depth_cm)
   if (is.na(cf)) {
@@ -325,7 +325,7 @@ familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
 #'             p 284.
 #' @noRd
 familia_constituicao_esqueletica <- function(pedon, max_depth_cm = 200) {
-  h <- pedon$horizons
+  h <- .mineral_horizons(pedon$horizons)
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
                                   max_depth_cm = max_depth_cm)
   if (is.na(cf)) {
@@ -526,6 +526,7 @@ familia_tipo_horizonte_superficial <- function(pedon) {
                   skip_oxidos_ferro = TRUE,
                   andico = FALSE),
     "O" = list(use_subgrupamento = FALSE, skip_tipo_A = TRUE,
+                  skip_textura = TRUE,  # v0.9.297: material subjacente instead
                   skip_sat_bases = TRUE, skip_alico = FALSE,
                   mineralogia_areia = FALSE,
                   mineralogia_argila_lat = FALSE,
@@ -563,13 +564,18 @@ familia_tipo_horizonte_superficial <- function(pedon) {
 #'        forcar subgrupamento textural em arenicos/espessarenicos).
 #' @param max_depth_cm Profundidade da secao de controle (default
 #'        200 cm).
+#' @param nome_superior Nome da classe nos niveis mais altos (e.g. o
+#'        nome do subgrupo). Opcional; quando ja diz Eutroficos /
+#'        Distroficos, a saturacao por bases nao e repetida, e quando ja
+#'        diz Aluminicos, o termo "alico" nao e repetido (Cap 18, p 285).
 #' @return Lista nomeada de \code{\link{FamilyAttribute}}.
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, pp 281-288.
 #' @export
 classify_sibcs_familia <- function(pedon,
                                        ordem_code   = NULL,
                                        sg_code      = NULL,
-                                       max_depth_cm = 200) {
+                                       max_depth_cm = 200,
+                                       nome_superior = NULL) {
   if (is.null(ordem_code) && !is.null(sg_code)) {
     ordem_code <- substr(sg_code, 1L, 1L)
   }
@@ -594,27 +600,46 @@ classify_sibcs_familia <- function(pedon,
 
   out <- list()
 
-  # Dimensao 1 / 2: textura -- mutuamente exclusivas
-  if (isTRUE(cfg$use_subgrupamento)) {
-    out$subgrupamento_textural <-
-      familia_subgrupamento_textural(pedon, max_depth_cm = max_depth_cm)
-  } else {
-    out$grupamento_textural <-
-      familia_grupamento_textural(pedon, max_depth_cm = max_depth_cm)
+  # v0.9.297: the Organossolos give the texture of the material under the
+  # organic one (Cap 18, p 288; "material subjacente" below), not a
+  # textural group of the profile (Hugo's decision, 2026-10-28).
+  if (!isTRUE(cfg$skip_textura)) {
+    # Dimensao 1 / 2: textura -- mutuamente exclusivas
+    if (isTRUE(cfg$use_subgrupamento)) {
+      out$subgrupamento_textural <-
+        familia_subgrupamento_textural(pedon, max_depth_cm = max_depth_cm)
+    } else {
+      out$grupamento_textural <-
+        familia_grupamento_textural(pedon, max_depth_cm = max_depth_cm)
+    }
+
+    # Dimensao 3: cascalhos
+    out$distribuicao_cascalhos <-
+      familia_distribuicao_cascalhos(pedon, max_depth_cm = max_depth_cm)
+
+    # Dimensao 4: esqueletica
+    out$constituicao_esqueletica <-
+      familia_constituicao_esqueletica(pedon, max_depth_cm = max_depth_cm)
   }
-
-  # Dimensao 3: cascalhos
-  out$distribuicao_cascalhos <-
-    familia_distribuicao_cascalhos(pedon, max_depth_cm = max_depth_cm)
-
-  # Dimensao 4: esqueletica
-  out$constituicao_esqueletica <-
-    familia_constituicao_esqueletica(pedon, max_depth_cm = max_depth_cm)
 
   # Dimensao 5: tipo de A diagnostico
   if (!isTRUE(cfg$skip_tipo_A)) {
     out$tipo_horizonte_superficial <-
       familia_tipo_horizonte_superficial(pedon)
+  }
+
+  # v0.9.297: "exceto para as que ja a consideram em nivel categorico mais
+  # elevado" (Cap 18, p 285) is read on the class itself: a name that
+  # already says Eutroficos / Distroficos takes no base saturation, and one
+  # that already says Aluminicos takes no "alico" (Hugo's decision,
+  # 2026-10-28). Until then Gleissolos Haplicos Ta Eutroficos repeated
+  # "eutrofico".
+  nome <- if (is.null(nome_superior)) "" else paste(nome_superior, collapse = " ")
+  if (grepl("eutr(\u00f3|o)fic|distr(\u00f3|o)fic", nome, ignore.case = TRUE)) {
+    cfg$skip_sat_bases <- TRUE
+  }
+  if (grepl("alum(\u00ed|i)nic", nome, ignore.case = TRUE)) {
+    cfg$skip_alico <- TRUE
   }
 
   # Dimensao 6 (v0.7.14.B): saturacao por bases (V)
@@ -1248,6 +1273,18 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
 .organic_layers <- function(h) {
   is_org <- !is.na(h$designation) & grepl("^[HO]", .desg_master(h$designation))
   which(is_org)
+}
+
+# v0.9.297: the horizons without the organic ones (H/O), for the texture
+# of the family. The textural group, the gravel class and the skeletal
+# constitution describe mineral soil material (Cap 1, p 46-48), so an H or
+# O horizon does not enter their averages, in any order (Hugo's decision,
+# 2026-10-28).
+.mineral_horizons <- function(h) {
+  org <- .organic_layers(h)
+  if (!length(org)) return(h)
+  keep <- setdiff(seq_len(nrow(h)), org)
+  h[keep, , drop = FALSE]
 }
 
 

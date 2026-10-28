@@ -272,7 +272,11 @@ classify_sibcs <- function(pedon,
       classify_sibcs_familia(
         pedon,
         ordem_code = ordem$code,
-        sg_code = if (!is.null(sg)) sg$code else NULL
+        sg_code = if (!is.null(sg)) sg$code else NULL,
+        nome_superior = if (!is.null(sg)) sg$name
+                        else if (!is.null(gg)) gg$name
+                        else if (!is.null(subordem)) subordem$name
+                        else ordem$name
       ),
       error = function(e) list()
     )
