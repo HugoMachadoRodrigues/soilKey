@@ -1,5 +1,32 @@
 # Changelog
 
+## soilKey 0.9.297 (2026-10-28)
+
+### The SiBCS family no longer repeats the class, and reads texture from mineral material
+
+Two fixes to the family (5th level) of a SiBCS name, as Hugo decided:
+
+- A class that already states the base saturation takes none in its
+  family. The book uses the base saturation “except for the classes that
+  already consider it at a higher level” (Cap 18, p 285), and the same
+  rule holds for “álico” when the class is already Alumínica. The rule
+  used to be set per order, so the Gleissolos Háplicos Ta Eutróficos
+  repeated “eutrófico”. It is now read on the class name itself.
+  [`classify_sibcs_familia()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs_familia.md)
+  gains `nome_superior` (the name of the higher levels), which
+  [`classify_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
+  passes.
+- The textural group, the gravel class and the skeletal constitution are
+  averaged over the mineral horizons only, in every order: an H or O
+  horizon no longer enters them. The Organossolos give their texture
+  only through the underlying material (“Organossolos Háplicos, material
+  subjacente médio”), no longer through a textural group of the whole
+  profile (“textura média”).
+
+Four family labels of the 44 canonical fixtures change (two Gleissolos,
+two Organossolos); no class changes, and the fixtures, named without the
+family, are identical.
+
 ## soilKey 0.9.296 (2026-10-28)
 
 ### The SiBCS family label in the words of the book
