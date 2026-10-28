@@ -1,0 +1,46 @@
+# Key to groups of Recent Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "R":
+    - code: "RH"
+      name: Hydrothermal Recent Soils
+      tests:
+        all_of:
+          - hydrothermal_group_nzsc: {acid: true}
+      notes: "Soil at 30 cm 2.5 degrees or more above the mean annual air temperature, or pH 4.8 or less in a subsurface horizon within 60 cm."
+
+    - code: "RX"
+      name: Rocky Recent Soils
+      tests:
+        all_of:
+          - rocky_recent_nzsc: {}
+      notes: "A lithic or paralithic contact directly beneath the A, or under a weathered-B or unconsolidated C less than 10 cm thick."
+
+    - code: "RS"
+      name: Sandy Recent Soils
+      tests:
+        all_of:
+          - sandy_group_nzsc: {from: a_base, laminations: true}
+      notes: "Sand or loamy sand with less than 35 % coarse fragments in all horizons from the base of the A to 60 cm (sandy loam lamellae aside)."
+
+    - code: "RF"
+      name: Fluvial Recent Soils
+      tests:
+        all_of:
+          - fluvial_group_nzsc: {from: mineral_surface}
+      notes: "Fluvial features, not buried by more than 30 cm of material without them."
+
+    - code: "RT"
+      name: Tephric Recent Soils
+      tests:
+        all_of:
+          - tephric_group_nzsc: {}
+      notes: "Tephric soil material from the mineral soil surface to 30 cm or more."
+
+    - code: "RO"
+      name: Orthic Recent Soils
+      tests:
+        default: true
+      notes: "Other Recent Soils."

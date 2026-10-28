@@ -20,9 +20,10 @@ test_that("each example profile keys to its order, decided", {
     r <- classify_nzsc4(make_nzsc4_example(o), on_missing = "silent")
     expect_identical(r$levels$code[1], codes[[o]], info = o)
     expect_identical(r$system_id, "nzsc4", info = o)
-    expect_length(r$provisional_because, 0L)
+    # decided at the level of orders (since 0.9.298 a group may still be open)
+    expect_length(grep("^orders:", r$provisional_because, value = TRUE), 0L)
   }
-  expect_identical(classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")$name, "Brown Soils")
+  expect_identical(classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")$rsg_or_order, "Brown Soils")
 })
 
 test_that("the registry lists the NZSC as an opt-in system with valid rules", {
@@ -34,8 +35,8 @@ test_that("the registry lists the NZSC as an opt-in system with valid rules", {
   v <- soilKey:::.validate_rules("nzsc4")
   expect_length(v$missing, 0L); expect_length(v$unsuffixed, 0L); expect_length(v$codes, 0L)
   res <- classify_all(make_nzsc4_example("pallic"), systems = c("wrb", "nzsc"), on_missing = "silent")
-  expect_identical(res$summary$nzsc4, "Pallic Soils")
-  expect_length(yaml::read_yaml(system.file("rules", "nzsc4", "readings.yaml", package = "soilKey"))$readings, 19L)
+  expect_identical(res$summary$nzsc4, "Fragic Pallic Soils")   # with its group since 0.9.298
+  expect_length(yaml::read_yaml(system.file("rules", "nzsc4", "readings.yaml", package = "soilKey"))$readings, 39L)
 })
 
 test_that("the New Zealand notation is read", {
@@ -53,7 +54,9 @@ test_that("the New Zealand notation is read", {
   expect_identical(d$decomp[12:13], c("mesic", "humified"))
   expect_true(d$x[14] && !d$x_weak[14] && d$x_weak[15] && !d$x[15])
   expect_identical(which(d$duripan), 17L); expect_true(d$h_weak[18] && d$w[18])
-  expect_false(soilKey:::.nzsc_designations("Cr", list(country = "US"))$r)   # weathered rock elsewhere
+  expect_false(soilKey:::.nzsc_designations("Cr", list(country = "US"))$r)
+  # v0.9.298: outside the New Zealand notation a Cr is a paralithic contact
+  expect_identical(soilKey:::.nzsc_designations("Cr", list(country = "US"))$role, "CR")   # weathered rock elsewhere
 })
 
 test_that("Organic, Gley and Podzol gates", {

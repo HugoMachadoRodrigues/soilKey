@@ -1,0 +1,32 @@
+# Key to groups of Granular Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "N":
+    - code: "NP"
+      name: Perch-gley Granular Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: gley_profile_form}
+      notes: "A gley profile form and perch-gley features."
+
+    - code: "NE"
+      name: Melanic Granular Soils
+      tests:
+        all_of:
+          - melanic_granular_nzsc: {}
+      notes: "pH 5.9 or more in the major part of the B horizon to 60 cm."
+
+    - code: "NX"
+      name: Oxidic Granular Soils
+      tests:
+        all_of:
+          - oxidic_granular_nzsc: {}
+      notes: "A cutanoxidic horizon more than 30 cm thick with its top at 25 cm or more."
+
+    - code: "NO"
+      name: Orthic Granular Soils
+      tests:
+        default: true
+      notes: "Other Granular Soils."

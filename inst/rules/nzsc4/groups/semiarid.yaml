@@ -1,0 +1,32 @@
+# Key to groups of Semiarid Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "S":
+    - code: "SA"
+      name: Aged-argillic Semiarid Soils
+      tests:
+        all_of:
+          - aged_argillic_semiarid_nzsc: {}
+      notes: "An argillic horizon whose matrix has, in part, a hue of 7.5YR or redder, or 10YR with chroma 6 or more."
+
+    - code: "SZ"
+      name: Solonetzic Semiarid Soils
+      tests:
+        all_of:
+          - solonetzic_semiarid_nzsc: {}
+      notes: "An argillic horizon with prismatic or blocky peds, more than 10 % coatings of value 4 or less, and pH 8.6 or more in some part."
+
+    - code: "SJ"
+      name: Argillic Semiarid Soils
+      tests:
+        all_of:
+          - argillic_semiarid_nzsc: {}
+      notes: "An argillic horizon, or a cutanic horizon that is a slowly permeable layer."
+
+    - code: "SI"
+      name: Immature Semiarid Soils
+      tests:
+        default: true
+      notes: "Other Semiarid Soils."

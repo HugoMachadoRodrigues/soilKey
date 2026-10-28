@@ -1,0 +1,33 @@
+# Key to groups of Organic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "O":
+    - code: "OL"
+      name: Litter Organic Soils
+      tests:
+        all_of:
+          - litter_organic_nzsc: {}
+      notes: "Organic soil material entirely in partly or fully decomposed forest litter (Lm, Lh), not almost continually saturated."
+
+    - code: "OF"
+      name: Fibric Organic Soils
+      tests:
+        all_of:
+          - organic_decomposition_nzsc: {kind: fibric}
+      notes: "From the upper surface of the organic soil material to 60 cm (or its base), dominated by fibric material (Of) by accumulated thickness."
+
+    - code: "OM"
+      name: Mesic Organic Soils
+      tests:
+        all_of:
+          - organic_decomposition_nzsc: {kind: mesic}
+      notes: "Dominated by mesic organic soil material (Om) by accumulated thickness."
+
+    - code: "OH"
+      name: Humic Organic Soils
+      tests:
+        all_of:
+          - organic_decomposition_nzsc: {kind: humified}
+      notes: "Dominated by humified organic soil material (Oh) by accumulated thickness."

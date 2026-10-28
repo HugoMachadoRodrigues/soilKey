@@ -75,6 +75,9 @@
     role[i] <- if (nzchar(p$master2) && p$master2 != p$master)
                  paste0(p$master, if (p$intermingled) "/" else "", p$master2)
                else p$master
+    # v0.9.298: outside the New Zealand notation a Cr is weathered rock, a
+    # paralithic contact (CR)
+    if (!nota$nz && identical(role[i], "C") && "r" %in% p$strong) role[i] <- "CR"
     strong[[i]] <- p$strong; weak[[i]] <- p$weak; raw[i] <- p$raw
     pre[[i]] <- p$pre; prefix[i] <- p$prefix
   }
@@ -92,7 +95,7 @@
        prefix = prefix, buried = buried, anthropic = vapply(pre, function(s) "e" %in% s, NA),
        decomp = decomp,
        w = has("w") & !org, t = has("t") & !org, h = has("h") & !org & !pair("h", "m"),
-       s = has("s") & !org & !pair("s", "m"), o = has("o"), g = has("g"), r = has("r") & (!role %in% "C" | nota$nz),
+       s = has("s") & !org & !pair("s", "m"), o = has("o"), g = has("g"), r = has("r") & (!role %in% c("C", "CR") | nota$nz),
        g_weak = has_w("g"), f_weak = has_w("f"), h_weak = has_w("h"), x_weak = has_w("x"),
        x = has("x"), k = has("k"), d = has("d") & !org, n = has("n"), z = has("z"), i = has("i") & !org,
        p = has("p"), m = has("m") & !org,

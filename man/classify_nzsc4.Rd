@@ -32,10 +32,12 @@ A \code{\link{ClassificationResult}} with \code{system_id}
 \description{
 Keys a \code{\link{PedonRecord}} through the New Zealand Soil
 Classification, 4th edition (Manaaki Whenua - Landcare Research 2026),
-following its Key to Soil Orders. \strong{Experimental}: this release keys
-the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic,
-Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic, Recent, Raw Soils);
-groups and subgroups follow. The Cryic Soils of the appendix are not keyed.
+following its Key to Soil Orders and keys to groups. \strong{Experimental}:
+this release keys the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic,
+Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic,
+Recent, Raw Soils) and their 77 groups (since 0.9.298, e.g. Orthic Brown
+Soils, Perch-gley Pallic Soils); subgroups follow. The Cryic Soils of the
+appendix are not keyed.
 }
 \details{
 The NZSC reads horizon notations and field tests. The diagnostics read
@@ -52,7 +54,16 @@ clay coatings, carbonate, ESP, and the field tests \code{naf_test}
 \code{drainage_class}, \code{parent_material} (Melanic Soils),
 \code{anthropic_truncation} and \code{overthickened_a} (the note to the
 key on overthickened A horizons), and \code{designation_system}. The
-choices where the text is silent are listed in
+groups also read the packing (\code{packing_degree}), Ksat
+(\code{ksat_mm_h}), penetration resistance, where the redox segregations
+are (\code{redox_segregations_location}), sulfate S, roots, a Maori
+cultural layer (\code{maori_cultural_layer}) and the colour of coatings;
+and, on the site, \code{soil_temp_30cm_C}, \code{mean_annual_air_temp_C},
+\code{surface_water}, \code{methane_odour},
+\code{mechanical_mixing_depth_cm} and \code{artificially_drained}. Features
+a describer records when met (stratification, nodules, cracks, refuse or
+cultural layers, permafrost, surface water) are absent when not recorded.
+The choices where the text is silent are listed in
 \code{system.file("rules", "nzsc4", "readings.yaml", package = "soilKey")}.
 }
 \examples{

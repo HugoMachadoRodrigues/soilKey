@@ -503,6 +503,30 @@
           },
           "stickiness": {
             "type": ["string", "null"]
+          },
+          "packing_degree": {
+            "type": ["string", "null"]
+          },
+          "ksat_mm_h": {
+            "type": ["number", "null"]
+          },
+          "penetration_resistance_kpa": {
+            "type": ["number", "null"]
+          },
+          "redox_segregations_location": {
+            "type": ["string", "null"]
+          },
+          "sulfate_s_pct": {
+            "type": ["number", "null"]
+          },
+          "roots_abundance": {
+            "type": ["string", "null"]
+          },
+          "maori_cultural_layer": {
+            "type": ["boolean", "null"]
+          },
+          "coatings_value_moist": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

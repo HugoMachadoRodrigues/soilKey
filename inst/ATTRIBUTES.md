@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.294)
+# soilKey -- recognised horizon attribute names (v0.9.298)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -282,6 +282,14 @@ and do not warn.
 | `sensitivity_class` | - | character | Sensitivity class (smeary, greasy feel of a remoulded sample): insensitive, slightly sensitive, moderately sensitive, sensitive, strongly sensitive; NZSC allophanic soil material. | - |
 | `fluidity_class` | - | character | Fluidity class: non-fluid, slightly fluid, moderately fluid, very fluid; NZSC Gley and Recent Soils (no moderately or very fluid horizon within 30 cm). | - |
 | `stickiness` | - | character | Stickiness class: non-sticky, slightly sticky, moderately sticky, very sticky; NZSC allophanic soil material and Melanic Soils. | - |
+| `packing_degree` | - | character | Degree of packing of the soil material (low, moderate, high, very high, extremely high); NZSC slowly permeable layer, with the ped size or the texture. | - |
+| `ksat_mm_h` | mm/h | numeric | Measured vertical saturated hydraulic conductivity; NZSC slowly permeable layer (below 4 mm/h), which it decides when measured. | - |
+| `penetration_resistance_kpa` | kPa | numeric | Soil penetration resistance, moist; NZSC densipan (more than 4,000 kPa) and Pan Podzol Soils (3,100 kPa or more). | - |
+| `redox_segregations_location` | - | character | Where the high-chroma redox segregations (mottles) mainly are: within peds, matrix (of an apedal horizon), ped faces, voids or skeletans; NZSC perch-gley features (within peds or the matrix) and Groundwater-gley Podzol Soils (coatings on voids or skeletans). | - |
+| `sulfate_s_pct` | % (mass) | numeric | Sulfate sulfur of the fine earth, dry mass; NZSC sulfuric soil material (0.05 % or more). | - |
+| `roots_abundance` | - | character | Abundance of roots in the horizon (none, very few, few, common, many); NZSC Impeded Pumice Soils (a compact, brittle layer with no roots). | - |
+| `maori_cultural_layer` | - | logical | TRUE for a horizon modified through Māori cultural practice, with additions of rock fragments, sand, shells, charcoal, ash, seaweed or similar (a cultural layer, as at midden sites); NZSC Māori Anthropic Soils. | - |
+| `coatings_value_moist` | Munsell | numeric | Moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils (value 4 or less). | - |
 
 # Site properties
 
@@ -337,6 +345,10 @@ the last section are stored by the loaders and reports and read by no key.
 | `soil_moisture_subclass` | - | character | Canadian soil moisture subclass (letters only are compared, so 'sub-humid' reads as subhumid; the aquic subclasses leave the tests undecided). Read by the CSSC key: the Chernozemic climate (subhumid or drier passes, humid and perhumid fail) and the A-horizon colour of the Solonetzic subgroups (subhumid). Filled by npdb_scenario() for NPDB pedons. | `arid`, `subarid`, `semiarid`, `subhumid`, `humid`, `perhumid` | `cssc3` |
 | `soil_temperature_regime` | - | character | USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic). | `gelic`, `cryic`, `frigid`, `mesic`, `thermic`, `hyperthermic`, `isofrigid`, `isomesic`, `isothermic`, `isohyperthermic`, `pergelic` | `usda`, `cssc3` |
 | `mean_annual_soil_temp_C` | deg C | numeric | Mean annual soil temperature. Read by the CSSC key: the Chernozemic climate (0 degrees or more) and the Gray Brown Luvisols (8 degrees or more). Filled by npdb_scenario() for NPDB pedons. | - | `cssc3` |
+| `soil_temp_30cm_C` | deg C | numeric | Mean annual soil temperature at 30 cm from the mineral soil surface. Read by the NZSC Hydrothermal Recent and Raw Soils (2.5 degrees or more above the mean annual air temperature). | - | `nzsc4` |
+| `mean_annual_air_temp_C` | deg C | numeric | Mean annual air temperature. Read by the NZSC Hydrothermal Recent and Raw Soils, against soil_temp_30cm_C. | - | `nzsc4` |
+| `surface_water` | - | character | How often water stands on the soil surface. Read by the NZSC Hydric Raw Soils (surface water for the majority of the time, but not constantly). | `constant`, `most of the time`, `occasional`, `none` | `nzsc4` |
+| `artificially_drained` | - | logical | The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply. | - | `nzsc4` |
 | `water_table_cm_above_surface` | cm | numeric | Height of a water table above the soil surface (positive above it). Read by the USDA key: the Wassents (above 0) and the Wassists (2 cm or more). | - | `usda` |
 | `tidal_zone` | - | character | Tidal zone of the site. Read by the ASC Hydrosol settings (Subtidal, Intertidal, Supratidal and Extratidal suborders); a zone named in landform is read too. | `subtidal`, `intertidal`, `supratidal`, `extratidal` | `asc3` |
 | `tidal_inundation` | - | logical | The site is subject to tidal flooding. Read by the ASC key: it makes the soil a Hydrosol, rules out the Organosols, and without tidal_zone leaves the tidal Hydrosol settings undecided. | - | `asc3` |
@@ -349,6 +361,8 @@ the last section are stored by the loaders and reports and read by no key.
 | `designation_system` | - | character | Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders. | `cssc`, `cssc3`, `canadian`, `canada`, `asc`, `australian`, `field handbook`, `nchs`, `australian field handbook`, `nzsc`, `nz`, `new zealand` | `cssc3`, `asc3`, `nzsc4` |
 | `nasis_diagnostic_features` | - | character | Diagnostic features the surveyor recorded in NASIS (pediagfeatures featkind, one string per feature). Read by the USDA key: the argillic clay-films test and the fragipan, and as a tie-breaker that turns an undecided order test (histic, spodic, andic, vertic, argillic, kandic, natric, mollic, cambic) into a pass. Written by the KSSL NASIS loader. | - | `usda` |
 | `anthropic_truncation` | - | logical | The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material. | - | `nzsc4` |
+| `mechanical_mixing_depth_cm` | cm | numeric | Depth from the mineral soil surface to which people mechanically disturbed the original horizons (mixing, deep ripping, subsoil lifting). Read by the NZSC Mixed Anthropic Soils (more than 30 cm). | - | `nzsc4` |
+| `methane_odour` | - | logical | A methane content that can be detected by odour. Read by the NZSC Refuse Anthropic Soils. | - | `nzsc4` |
 | `overthickened_a` | - | logical | The surveyor recorded an overthickened A horizon (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC key: with its base at 45 cm or more, under 30 cm of anthropic material and no mottles within 30 cm, the soil enters the key at the Recent Soils. | - | `nzsc4` |
 
 ## Soil construction (soilKey Pro)
@@ -417,5 +431,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.294._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.298._
 

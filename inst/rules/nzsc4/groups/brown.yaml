@@ -1,0 +1,53 @@
+# Key to groups of Brown Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "B":
+    - code: "BL"
+      name: Allophanic Brown Soils
+      tests:
+        all_of:
+          - allophanic_brown_nzsc: {}
+      notes: "A subhorizon of the B or BC, 10 cm or more thick with its top at 60 cm or less, of allophanic soil material (bulk density aside)."
+
+    - code: "BS"
+      name: Sandy Brown Soils
+      tests:
+        all_of:
+          - sandy_group_nzsc: {from: a_base, laminations: true}
+      notes: "A sandy texture group with less than 35 % coarse fragments in all horizons from the base of the A to 60 cm (sandy loam laminations aside)."
+
+    - code: "BX"
+      name: Oxidic Brown Soils
+      tests:
+        all_of:
+          - oxidic_brown_nzsc: {}
+      notes: "In some part of the B within 60 cm: value 4 or less, friable or very friable failure, polyhedral peds of 10 mm or less."
+
+    - code: "BM"
+      name: Mafic Brown Soils
+      tests:
+        all_of:
+          - mafic_group_nzsc: {colour: brown}
+      notes: "In the B or BC at 60 cm (or its base): value 4 or less with moderate or strong polyhedral peds of 20 mm or less; or 5 % or more mafic or ultramafic coarse fragments; or exchangeable Ca:Mg 0.2 or less with Mg 1.5 cmol/kg or more."
+
+    - code: "BA"
+      name: Acid Brown Soils
+      tests:
+        all_of:
+          - acid_group_nzsc: {}
+      notes: "pH 4.8 or less in some part between 20 and 60 cm."
+
+    - code: "BF"
+      name: Firm Brown Soils
+      tests:
+        all_of:
+          - firm_brown_nzsc: {}
+      notes: "A fragipan, or an apedal subhorizon of the B or BC slightly firm or stronger (moist), with its top within 90 cm."
+
+    - code: "BO"
+      name: Orthic Brown Soils
+      tests:
+        default: true
+      notes: "Other Brown Soils."

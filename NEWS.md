@@ -1,3 +1,53 @@
+# soilKey 0.9.298 (2026-10-28)
+
+## New Zealand Soil Classification: the 77 groups
+
+`classify_nzsc4()` now keys each of the 15 orders to its groups, following
+the keys to groups of the New Zealand Soil Classification, 4th edition: 77
+groups, from the Litter, Fibric, Mesic and Humic Organic Soils to the Hydric,
+Gley, Hydrothermal, Cryic, Rocky, Sandy, Fluvial, Tephric and Orthic Raw
+Soils. The name of a classified profile is now its group (for example
+"Orthic Brown Soils", "Fragic Pallic Soils"); the order stays in
+`rsg_or_order` and in `levels`. Subgroups follow.
+
+The groups read diagnostics the order key did not need: sulfuric and tephric
+soil material, densipans, perch-gley features, redox-mottled horizons, peaty
+topsoils, slowly permeable layers, nodular horizons and fluvial features.
+They also read new horizon attributes: `packing_degree`, `ksat_mm_h`,
+`penetration_resistance_kpa`, `redox_segregations_location`,
+`sulfate_s_pct`, `roots_abundance`, `maori_cultural_layer` and
+`coatings_value_moist`. On the site they read `soil_temp_30cm_C`,
+`mean_annual_air_temp_C`, `surface_water`, `methane_odour`,
+`mechanical_mixing_depth_cm` and `artificially_drained`.
+
+Hugo decided four readings:
+
+* the new attributes are created, as above;
+* features that a describer records when met are absent when not recorded:
+  stratification, nodules, cracks, refuse and Maori cultural layers,
+  permafrost, surface water and mechanical mixing;
+* the pans that the text names as often working as slowly permeable layers
+  count as such: fragipans, argillic horizons, densipans, humus-pans,
+  ortstein-pans, and lithic and paralithic contacts;
+* the hydrothermal groups compare the soil temperature at 30 cm with the air
+  temperature, in two new site fields.
+
+The other readings are in `inst/rules/nzsc4/readings.yaml`, which now has 39
+topics.
+
+Two independent reviews checked the groups: one against the text of the book,
+one for the logic, with 3,600 random profiles. Their findings are fixed, and
+they changed the order key in three places:
+
+* clay lamellae make an argillic horizon only when they add up to 15 cm
+  within 90 cm;
+* outside the New Zealand notation a Cr reads as a paralithic contact;
+* site fields are read one value at a time.
+
+Outside the NZSC, `ensure_horizon_schema()` now reads "yes" and "no" (and
+y, n, 1, 0) in logical columns as TRUE and FALSE; before, they became NA. The
+other systems do not change: the 44 canonical fixtures are identical.
+
 # soilKey 0.9.297 (2026-10-28)
 
 ## The SiBCS family no longer repeats the class, and reads texture from mineral material

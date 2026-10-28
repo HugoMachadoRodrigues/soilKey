@@ -108,7 +108,7 @@
 organic_soils_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h
   s0 <- x$soil_top
-  dr <- tolower(as.character(pedon$site$drainage_class %||% NA))
+  dr <- tolower(as.character(.nzsc_site1(pedon, "drainage_class") %|NA|% .nzsc_site1(pedon, "drainage")))
   wet_site <- if (is.na(dr)) NA else if (grepl("very poor|^poor", dr)) TRUE
               else if (grepl("well|rapid|excess|imperfect|somewhat", dr)) FALSE else NA
   # accumulated under wet conditions: an O horizon; not an L horizon; an

@@ -1,0 +1,39 @@
+# Key to groups of Ultic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "U":
+    - code: "UD"
+      name: Densipan Ultic Soils
+      tests:
+        all_of:
+          - densipan_group_nzsc: {}
+      notes: "A densipan (Ed horizon)."
+
+    - code: "UE"
+      name: Albic Ultic Soils
+      tests:
+        all_of:
+          - albic_ultic_nzsc: {}
+      notes: "An Eg or Er horizon over a firm, clayey B horizon with prismatic peds and humus or clay coatings in some part."
+
+    - code: "UP"
+      name: Perch-gley Ultic Soils
+      tests:
+        all_of:
+          - perch_gley_group_nzsc: {with: gley_profile_form}
+      notes: "A gley profile form and perch-gley features."
+
+    - code: "US"
+      name: Sandy Ultic Soils
+      tests:
+        all_of:
+          - sandy_ultic_nzsc: {}
+      notes: "More than 60 % sand in the B horizon."
+
+    - code: "UY"
+      name: Yellow Ultic Soils
+      tests:
+        default: true
+      notes: "Other Ultic Soils."

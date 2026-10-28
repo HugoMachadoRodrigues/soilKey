@@ -1,0 +1,67 @@
+# Key to groups of Raw Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "W":
+    - code: "WW"
+      name: Hydric Raw Soils
+      tests:
+        all_of:
+          - hydric_raw_nzsc: {}
+      notes: "Surface water present for the majority of the time, but not constantly."
+
+    - code: "WG"
+      name: Gley Raw Soils
+      tests:
+        all_of:
+          - gley_raw_nzsc: {}
+      notes: "Within 30 cm: the top of a reductimorphic horizon, a positive Childs' test, or saturation for 30 or more consecutive days."
+
+    - code: "WH"
+      name: Hydrothermal Raw Soils
+      tests:
+        all_of:
+          - hydrothermal_group_nzsc: {acid: false}
+      notes: "Soil at 30 cm 2.5 degrees or more above the mean annual air temperature."
+
+    - code: "WC"
+      name: Cryic Raw Soils
+      tests:
+        all_of:
+          - cryic_raw_nzsc: {}
+      notes: "Permafrost or cryoturbation within 1 m of the soil surface."
+
+    - code: "WX"
+      name: Rocky Raw Soils
+      tests:
+        all_of:
+          - rocky_raw_nzsc: {}
+      notes: "A lithic or paralithic contact within 30 cm of the soil surface."
+
+    - code: "WS"
+      name: Sandy Raw Soils
+      tests:
+        all_of:
+          - sandy_group_nzsc: {from: soil_surface}
+      notes: "Sand or loamy sand with less than 35 % coarse fragments in all horizons from the soil surface to 60 cm or more."
+
+    - code: "WF"
+      name: Fluvial Raw Soils
+      tests:
+        all_of:
+          - fluvial_group_nzsc: {from: soil_surface}
+      notes: "Fluvial features, not buried by more than 30 cm of material without them."
+
+    - code: "WT"
+      name: Tephric Raw Soils
+      tests:
+        all_of:
+          - tephric_raw_nzsc: {}
+      notes: "Predominantly gravel-sized mafic or intermediate tephric material from the soil surface to 30 cm or more."
+
+    - code: "WO"
+      name: Orthic Raw Soils
+      tests:
+        default: true
+      notes: "Other Raw Soils."

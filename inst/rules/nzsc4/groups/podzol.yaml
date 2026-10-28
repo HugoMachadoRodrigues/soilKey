@@ -1,0 +1,39 @@
+# Key to groups of Podzol Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-groups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+groups:
+  "Z":
+    - code: "ZD"
+      name: Densipan Podzol Soils
+      tests:
+        all_of:
+          - densipan_group_nzsc: {}
+      notes: "A densipan (Ed horizon)."
+
+    - code: "ZP"
+      name: Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - perch_gley_podzol_nzsc: {}
+      notes: "An eluvial horizon, with low-chroma colours, a peaty topsoil, or a placic horizon with redox segregations in the eluvial horizon; and a slowly permeable layer or perch-gley features."
+
+    - code: "ZG"
+      name: Groundwater-gley Podzol Soils
+      tests:
+        all_of:
+          - groundwater_gley_podzol_nzsc: {}
+      notes: "An eluvial horizon, with low-chroma colours or a peaty topsoil; and a BC or C horizon with low-chroma colours extending below 90 cm or with redox segregations mainly as coatings on voids or skeletans."
+
+    - code: "ZX"
+      name: Pan Podzol Soils
+      tests:
+        all_of:
+          - pan_podzol_nzsc: {}
+      notes: "A subhorizon of the B horizon apedal massive, firm or stronger (moist) or 3,100 kPa or more penetration resistance."
+
+    - code: "ZO"
+      name: Orthic Podzol Soils
+      tests:
+        default: true
+      notes: "Other Podzol Soils."
