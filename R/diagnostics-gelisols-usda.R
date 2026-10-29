@@ -939,7 +939,7 @@ gypsic_horizon_usda <- function(pedon, max_top_cm = 100) {
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @noRd
 calcic_horizon_usda <- function(pedon, max_top_cm = 100) {
-  res <- calcic(pedon)
+  res <- .calcic_impl(pedon)   # v0.9.314: the reading before the WRB 2022 text (USDA)
   res$name <- "calcic_horizon_usda"
   if (isTRUE(res$passed) && length(res$layers) > 0L) {
     h <- pedon$horizons

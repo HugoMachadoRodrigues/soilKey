@@ -189,7 +189,9 @@
     return(TRUE)
   # v0.9.310: argic(), ferralic(), cambic() and natric_horizon() delegate to
   # their .<name>_impl() helpers, which the USDA and SiBCS keys also call.
-  m <- regmatches(b, regexpr("\\.[a-z_]+_impl(?=\\s*\\(\\s*pedon)", b, perl = TRUE))
+  # v0.9.314: calcic(), cambic() and fluvic_material() delegate to their WRB
+  # 2022 readings, .<name>_wrb2022().
+  m <- regmatches(b, regexpr("\\.[a-z_]+_(impl|wrb2022)(?=\\s*\\(\\s*pedon)", b, perl = TRUE))
   ns <- asNamespace("soilKey")
   length(m) == 1L && exists(m, envir = ns, mode = "function", inherits = FALSE) &&
     .diagnostic_body_is_real(get(m, envir = ns))

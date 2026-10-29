@@ -1988,56 +1988,9 @@ test_designation_pattern <- function(h, pattern,
 }
 
 
-#' Test for coarse texture throughout the upper part of the profile
-#'
-#' Default predicate: \code{silt + 2 * clay < 15} (loamy sand or
-#' coarser) in EVERY layer that intersects the upper
-#' \code{max_top_cm} (default 100). Diagnostic for Arenosols.
-#'
-#' @param h Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
-#' @param candidate_layers Numeric threshold or option (see Details).
-#' @noRd
-test_coarse_texture_throughout <- function(h, max_top_cm = 100,
-                                              candidate_layers = NULL) {
-  cl <- .candidate_layers(h, candidate_layers)
-  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
-  if (length(cl) == 0L) {
-    return(.subtest_result(passed = FALSE, layers = integer(0)))
-  }
-
-  passing <- integer(0); missing <- character(0); details <- list()
-  all_coarse <- TRUE
-  for (i in cl) {
-    s <- is_loamy_sand_or_finer(h$sand_pct[i], h$silt_pct[i], h$clay_pct[i])
-    if (is.na(s)) {
-      missing <- c(missing, "sand_pct", "silt_pct", "clay_pct")
-      all_coarse <- NA
-      next
-    }
-    is_coarse <- !s   # loamy sand boundary -- if NOT loamy-sand-or-finer, coarse
-    # Actually arenic uses "loamy sand or coarser" = NOT sandy loam or finer
-    # silt + 2*clay < 30 is "coarser than sandy loam"
-    is_coarse <- (h$silt_pct[i] + 2 * h$clay_pct[i]) < 30
-    details[[as.character(i)]] <- list(
-      idx = i, sand = h$sand_pct[i], silt = h$silt_pct[i],
-      clay = h$clay_pct[i],
-      silt_plus_2clay = h$silt_pct[i] + 2 * h$clay_pct[i],
-      is_coarse = is_coarse
-    )
-    if (is_coarse) {
-      passing <- c(passing, i)
-    } else {
-      all_coarse <- FALSE
-    }
-  }
-
-  passed <- if (isTRUE(all_coarse) && length(passing) == length(cl)) TRUE
-            else if (is.na(all_coarse) && length(missing) > 0L) NA
-            else FALSE
-  .subtest_result(passed = passed, layers = passing,
-                   missing = missing, details = details)
-}
+# v0.9.314: test_coarse_texture_throughout() (every layer above 100 cm
+# coarser than sandy loam) gave way to test_arenosol_texture(), the weighted
+# average of WRB 2022 Ch 4 (R/utils-wrb-weak-v09314.R).
 
 
 #' Test the andic Al/Fe oxalate criterion: (al_ox + 0.5*fe_ox) >= 2.0\%

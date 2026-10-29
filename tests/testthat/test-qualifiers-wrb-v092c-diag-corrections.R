@@ -21,10 +21,10 @@ test_that("cambic does NOT fire on a thick A horizon at top_cm = 0", {
     horizons = ensure_horizon_schema(hz)
   )
   res <- cambic(pr)
+  # v0.9.314: WRB 2022 Ch 3.1.5, criterion 4 read layer by layer
   expect_named(res$evidence,
-               c("subsurface", "thickness", "texture",
-                 "structure_development",
-                 "not_argic", "not_ferralic"))
+               c("subsurface", "texture", "structure_development",
+                 "not_part_of_other_horizon", "thickness"))
   expect_false(isTRUE(res$passed))
 })
 

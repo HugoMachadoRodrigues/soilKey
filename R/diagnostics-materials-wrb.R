@@ -218,22 +218,27 @@ histosol <- function(pedon) {
 
 #' Arenic texture (WRB 2022)
 #'
-#' Tests whether the upper 100 cm is uniformly coarser than sandy
-#' loam (i.e., \code{silt + 2 * clay < 30} in every layer).
-#' Diagnostic of Arenosols.
+#' Tests the texture of the Arenosols (WRB 2022 Ch 4, p. 124): within
+#' 100 cm of the mineral soil surface, a weighted average texture of loamy
+#' sand or sand (\code{silt + 2 * clay < 30}), layers of finer texture and
+#' layers with \eqn{\ge} 40\% coarse fragments each with a combined
+#' thickness of < 15 cm (v0.9.314; until then every layer had to be coarser
+#' than sandy loam). Diagnostic of Arenosols.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) of layers to be tested
 #'        (default 100, per WRB 2022).
-#' @param engine One of \code{"soilkey"} (default; strict WRB sand
-#'        threshold via \code{test_coarse_texture_throughout})
+#' @param engine One of \code{"soilkey"} (default; the WRB 2022 test,
+#'        \code{test_arenosol_texture})
 #'        or \code{"aqp"} (LUCAS-friendly fallback: passes when sand
 #'        >= 70\\% across the upper \code{max_top_cm}). \code{NULL}
 #'        reads \code{getOption("soilKey.diagnostic_engine")}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
-#' Sub-test: \code{test_coarse_texture_throughout}.
+#' Sub-test: \code{test_arenosol_texture}. A part of the 100 cm whose
+#' texture or coarse fragments are not recorded, or that is not described,
+#' leaves the result undecided (NA) when it could change it.
 #'
 #' v0.3 limitations: WRB 2022 Arenosol also requires that no other
 #' diagnostic horizon (argic, ferralic, etc.) is present, but those
@@ -249,8 +254,12 @@ arenic_texture <- function(pedon, max_top_cm = 100, engine = NULL) {
   engine <- match.arg(engine, c("soilkey", "aqp"))
 
   tests <- list()
-  tests$coarse_throughout <- test_coarse_texture_throughout(
-    h, max_top_cm = max_top_cm)
+  # v0.9.314: the Arenosols of WRB 2022 Ch 4 (p. 124): a weighted average
+  # texture of loamy sand or sand within 100 cm of the mineral soil surface,
+  # finer layers and layers with >= 40% coarse fragments < 15 cm each in all
+  # (test_arenosol_texture()). Until then every layer above max_top_cm had to
+  # be recorded and coarser than sandy loam.
+  tests$weighted_texture <- test_arenosol_texture(h, max_depth_cm = max_top_cm)
 
   # v0.9.65 engine="aqp" relaxation: also accept "sand >= 70% in
   # upper 100 cm" as an Arenosol marker, even if silt+2*clay >= 30.
@@ -270,7 +279,8 @@ arenic_texture <- function(pedon, max_top_cm = 100, engine = NULL) {
   agg <- aggregate_alternatives(list(tests))
   # aggregate_alternatives expects a list of lists; passes if any
   # sub-test passes. Restructure: each tests$* is a single subtest.
-  passed <- any(vapply(tests, function(t) isTRUE(t$passed), logical(1L)))
+  # v0.9.314: undecided (NA) when no path passes and the WRB one is undecided.
+  passed <- .wrb_any3(lapply(tests, function(t) t$passed))
   layers <- unique(unlist(lapply(tests, function(t) t$layers)))
 
   DiagnosticResult$new(
@@ -372,9 +382,33 @@ technic_features <- function(pedon,
 #' dramatic texture swings will pass; subtle alluvial sequences may
 #' miss. v0.4 will refine.
 #'
+#' @section v0.9.314:
+#' Fluvic material follows WRB 2022 Ch 3.3.6 (p. 87) layer by layer:
+#' fluviatile, marine or lacustrine origin (\code{rock_origin},
+#' \code{layer_origin}, else the site's parent material); strata that are
+#' obvious (the clay reversal above, or a sand reversal of \eqn{\ge} 15\%) OR
+#' evidenced by two or more layers with more SOC than the layer directly above
+#' (\eqn{\ge} 0.2\%, \eqn{\ge} 25\% relative and \eqn{\ge} 0.2\% absolute,
+#' not of a natric or spodic horizon); and a single grain, massive, platy or
+#' weak subangular blocky structure (granular or subangular blocky in a layer
+#' of higher SOC). The layers returned are those that meet the three. An
+#' origin, a texture or a structure that is not recorded leaves the result
+#' undecided. The SiBCS carater fluvico keeps the earlier reading.
+#'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Fluvic material.
 #' @export
 fluvic_material <- function(pedon, max_top_cm = 100, min_clay_swing = 8) {
+  # v0.9.314: WRB 2022 Ch 3.3.6 (p. 87), see .fluvic_material_wrb2022(). The
+  # SiBCS carater fluvico calls .fluvic_material_impl().
+  .fluvic_material_wrb2022(pedon, max_top_cm = max_top_cm,
+                           min_clay_swing = min_clay_swing)
+}
+
+#' The fluvic material test before v0.9.314 (texture alternation AND an
+#' irregular SOC pattern, every layer above `max_top_cm`), read by the SiBCS
+#' carater fluvico.
+#' @noRd
+.fluvic_material_impl <- function(pedon, max_top_cm = 100, min_clay_swing = 8) {
   h <- pedon$horizons
 
   tests <- list()

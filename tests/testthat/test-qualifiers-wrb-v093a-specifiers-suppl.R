@@ -71,6 +71,8 @@ test_that("Amphicalcic requires calcic in BOTH 0-50 and 50-100 bands", {
     top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
     designation = c("A", "Bk1", "Bk2"),
     caco3_pct = c(0, 22, 25),
+    # v0.9.314: calcic criterion 2.a (WRB 2022 Ch 3.1.4): secondary carbonates
+    secondary_carbonates_pct = c(0, 10, 10),
     clay_pct = c(20, 22, 22), silt_pct = c(40, 38, 38), sand_pct = c(40, 40, 40)
   )
   pr2 <- PedonRecord$new(

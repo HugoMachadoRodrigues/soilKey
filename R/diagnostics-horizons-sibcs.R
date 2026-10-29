@@ -1749,7 +1749,7 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
 #' @param ... Reserved for future arguments.
 #' @noRd
 horizonte_calcico <- function(pedon, ...) {
-  res <- calcic(pedon, ...)
+  res <- .calcic_impl(pedon, ...)   # v0.9.314: not the WRB 2022 reading of calcic()
   # v0.9.139: SiBCS Cap 2 p.71 requires the calcic horizon to carry >= 50 g/kg
   # (5% absolute) MORE CaCO3 than the subjacent layer -- and, unlike WRB/USDA,
   # SiBCS has NO protocalcic morphological alternative (the "expresso em volume"

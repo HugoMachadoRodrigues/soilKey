@@ -189,13 +189,13 @@ rsgs:
     name: Gypsisols
     tests:
       all_of:
-        - gypsic: {}
+        - gypsisol: {}                  # v0.9.314: Ch 4 p 116, gypsic/petrogypsic <= 100 cm, no argic above
 
   - code: CL
     name: Calcisols
     tests:
       all_of:
-        - calcic: {}
+        - calcisol: {}                  # v0.9.314: Ch 4 p 117, calcic/petrocalcic <= 100 cm, no argic above
 
   - code: RT
     name: Retisols
@@ -231,19 +231,19 @@ rsgs:
     name: Cambisols
     tests:
       all_of:
-        - cambic: {}
+        - cambisol: {}                  # v0.9.314: Ch 4 p 122, cambic <= 50 cm to >= 25 cm, or alternatives 2-5
 
   - code: FL
     name: Fluvisols
     tests:
       all_of:
-        - fluvic_material: {}
+        - fluvisol: {}                  # v0.9.314: Ch 4 p 123, fluvic material >= 25 cm from <= 25 cm, or below a plough layer
 
   - code: AR
     name: Arenosols
     tests:
       all_of:
-        - arenic_texture: {}
+        - arenic_texture: {}            # v0.9.314: Ch 4 p 124, weighted average texture within 100 cm
 
   - code: RG
     name: Regosols

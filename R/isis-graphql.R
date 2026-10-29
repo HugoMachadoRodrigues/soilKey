@@ -53,6 +53,12 @@
 #     groundwaterTop where the depth is 0) becomes groundwater_kind and
 #     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
 #     2022 (v0.9.312).
+#   * v0.9.314: the deposition of the parent material: fluvial (F, which ISIS
+#     describes as fluvio-glacial sediments), marine (M) and lacustrine (L)
+#     sediments, the origins of WRB 2022 fluvic material (Ch 3.3.6, criterion
+#     1), are the rock_origin of the mineral layers. Other deposits are not
+#     read, and nothing is set when a second deposit of another kind is
+#     recorded, since ISIS does not say which layers it holds.
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -110,7 +116,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     "profileCode countryCode profileId geog { latitude longitude }",
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
     "depthGroundwater groundwaterTop groundwaterKind",
-    "slopeGradientNumeric lithologyParmat cracking microreliefKind",
+    "slopeGradientNumeric lithologyParmat lithologyParmatDeposition",
+    "lithologyParmatDeposition2 cracking microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
@@ -546,6 +553,36 @@ isis_citation <- function(accessed = Sys.Date()) {
   list(horizons = out, provenance = prov, notes = notes)
 }
 
+# v0.9.314: fluviatile, marine and lacustrine parent materials
+# (lithologyParmatDeposition F, M, L) as the rock_origin of the mineral layers
+# (not O, H or R), when no second deposit of another kind is recorded.
+.ISIS_WATER_DEPOSITION <- c(F = "fluviatile", M = "marine", L = "lacustrine")
+.isis_water_deposition <- function(x, profile) {
+  h <- x$horizons
+  if (is.null(h) || !nrow(h)) return(x)
+  d1 <- .isis_code(profile$lithologyParmatDeposition)
+  d2 <- .isis_code(profile$lithologyParmatDeposition2)
+  if (is.na(d1) || !d1 %in% names(.ISIS_WATER_DEPOSITION) ||
+      (!is.na(d2) && !d2 %in% names(.ISIS_WATER_DEPOSITION))) return(x)
+  origin <- unname(.ISIS_WATER_DEPOSITION[[d1]])
+  if (!is.na(d2) && d2 != d1)
+    origin <- paste(origin, "and", .ISIS_WATER_DEPOSITION[[d2]])
+  dsg <- ifelse(is.na(h$designation), "", h$designation)
+  rows <- which(!grepl("^[0-9]*[OHR]", dsg))
+  if (!length(rows)) return(x)
+  if (is.null(h$rock_origin)) h$rock_origin <- NA_character_
+  h$rock_origin[rows] <- origin
+  x$horizons <- h
+  pv <- data.frame(horizon_idx = rows, attribute = "rock_origin", source = "measured",
+                   confidence = 1,
+                   notes = sprintf("ISIS lithologyParmatDeposition %s%s: deposition of the parent material",
+                                   d1, if (is.na(d2)) "" else paste0(" and ", d2)),
+                   stringsAsFactors = FALSE)
+  x$provenance <- if (is.null(x$provenance) || !nrow(x$provenance)) pv
+                  else rbind(x$provenance, pv)
+  x
+}
+
 #' Turn one ISIS profile into a PedonRecord
 #'
 #' Builds a \code{\link{PedonRecord}} from one profile as the ISIS GraphQL
@@ -605,6 +642,7 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
                              "Reference Collection, read through ISIS on ",
                              site$accessed, ".")
   if (length(x$notes)) site$depth_note <- paste(x$notes, collapse = " ")
+  x <- .isis_water_deposition(x, profile)
   h <- if (is.null(x$horizons)) NULL else
     ensure_horizon_schema(data.table::as.data.table(x$horizons))
   prov <- if (is.null(x$provenance) || !nrow(x$provenance)) NULL else

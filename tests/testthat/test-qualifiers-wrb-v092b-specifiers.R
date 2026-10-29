@@ -46,6 +46,8 @@ test_that(".apply_specifier filters base qualifier layers by depth band", {
     top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 100),
     designation = c("A", "AB", "Bk"),
     caco3_pct = c(0, 0, 25),
+    # v0.9.314: calcic criterion 2.a (WRB 2022 Ch 3.1.4) for the deepest layer
+    secondary_carbonates_pct = c(0, 0, 10),
     clay_pct = c(20, 22, 22), silt_pct = c(40, 38, 38),
     sand_pct = c(40, 40, 40)
   )
@@ -97,6 +99,7 @@ test_that("resolve_wrb_qualifiers dispatches specifier-prefixed names", {
     k_cmol  = c(0.5, 0.4, 0.2, 0.2), na_cmol = c(0.1, 0.1, 0.1, 0.1),
     bs_pct = c(89, 87, 97, 95),
     caco3_pct = c(0, 0, 22, 30),  # calcic only in 60+ cm
+    secondary_carbonates_pct = c(0, 0, 10, 10),  # v0.9.314: calcic criterion 2.a
     worm_holes_pct = c(60, 50, 20, 5),
     bulk_density_g_cm3 = c(1.05, 1.15, 1.30, 1.35)
   )

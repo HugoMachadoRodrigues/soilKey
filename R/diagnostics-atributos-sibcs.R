@@ -420,7 +420,7 @@ carater_eutrico <- function(pedon, min_pH = 5.7, min_s = 2.0) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 carater_fluvico <- function(pedon) {
-  res <- fluvic_material(pedon)
+  res <- .fluvic_material_impl(pedon)   # v0.9.314: not the WRB 2022 reading
   DiagnosticResult$new(
     name = "carater_fluvico", passed = res$passed,
     layers = res$layers, evidence = list(fluvic_material = res),

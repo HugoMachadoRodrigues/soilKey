@@ -704,8 +704,30 @@ mollic <- function(pedon,
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
 #' Vienna. Chapter 3 -- Calcic horizon.
 #'
+#' @section v0.9.314:
+#' The WRB calcic horizon follows WRB 2022 Ch 3.1.4 (p. 37-38) criterion by
+#' criterion: criterion 2 is protocalcic properties (secondary carbonates on
+#' \eqn{\ge} 5\% of the exposed area, \code{secondary_carbonates_pct}) or
+#' \eqn{\ge} 5\% more CaCO3 than an underlying layer with no lithic
+#' discontinuity between; a layer of a petrocalcic horizon is not calcic; the
+#' 15 cm are those of the adjoining layers. A layer whose criterion 2 cannot be
+#' decided (secondary carbonates not recorded) is undecided, not calcic. The
+#' USDA calcic horizon and the SiBCS horizonte calcico keep the earlier
+#' reading.
+#'
 #' @export
 calcic <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
+  # v0.9.314: WRB 2022 Ch 3.1.4 (p. 37-38), see .calcic_wrb2022(). The USDA
+  # calcic horizon and the SiBCS horizonte calcico call .calcic_impl().
+  .calcic_wrb2022(pedon, min_thickness = min_thickness,
+                  min_caco3_pct = min_caco3_pct)
+}
+
+#' The calcic test before v0.9.314, read by the USDA calcic horizon and the
+#' SiBCS horizonte calcico: a layer with >= 15\% CaCO3 is dropped only when
+#' its enrichment and its secondary carbonates are both disproven.
+#' @noRd
+.calcic_impl <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
   h <- pedon$horizons
 
   tests <- list()
@@ -828,10 +850,21 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' alteration" (color/structure differences from parent material,
 #' carbonate removal), are scheduled for v0.3.
 #'
+#' @section v0.9.314:
+#' The WRB cambic horizon follows WRB 2022 Ch 3.1.5 (p. 39-40): criterion 4
+#' is read layer by layer, so a layer that forms part of an argic, ferralic,
+#' calcic, mollic or other listed horizon (or of a layer with andic
+#' properties) is set aside, not the whole profile; the subsurface layers are
+#' those below the layer at the mineral soil surface that are not A horizons;
+#' the 15 cm are those of the adjoining layers; a layer whose texture or
+#' structure is not recorded leaves the result undecided. Criterion 3 is not
+#' tested. The USDA keys keep the earlier reading.
+#'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
 #' @param min_top_cm Minimum top depth (cm) for a horizon to be
 #'        considered cambic-eligible (default 5). Anchors the
-#'        candidate set to subsurface layers.
+#'        candidate set to subsurface layers. Since v0.9.314 the WRB
+#'        reading asks it only when it is given.
 #' @param engine v0.9.63+. One of \code{"soilkey"} (hand-coded path,
 #'        default for back-compat) or \code{"aqp"} (canonical NRCS
 #'        dispatch via \code{aqp::getCambicBounds}). When \code{NULL}
@@ -847,13 +880,23 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' @export
 cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
                      engine = NULL) {
-  .cambic_impl(pedon, min_thickness = min_thickness, min_top_cm = min_top_cm,
-               engine = engine, wrb2022_text = TRUE)
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
+  if (engine == "aqp")
+    return(.cambic_impl(pedon, engine = "aqp"))
+  # v0.9.314: WRB 2022 Ch 3.1.5 (p. 39-40), see .cambic_wrb2022(): the
+  # subsurface layers, criterion 4 layer by layer, the 15 cm of the horizon.
+  # min_top_cm is asked only when given. The USDA keys call .cambic_impl().
+  .cambic_wrb2022(pedon, min_thickness = min_thickness,
+                  min_top_cm = if (missing(min_top_cm)) NULL else min_top_cm)
 }
 
 #' The cambic test. It sets aside a profile with an argic or ferralic horizon;
 #' \code{wrb2022_text = FALSE} reads those two as before v0.9.310, for the USDA
-#' keys that use this cambic horizon (Inceptisols, Aridisols, Andisols).
+#' keys that use this cambic horizon (Inceptisols, Aridisols, Andisols). Since
+#' v0.9.314 the WRB cambic() reads .cambic_wrb2022() and calls this only for
+#' \code{engine = "aqp"}.
 #' @noRd
 .cambic_impl <- function(pedon, min_thickness = 15, min_top_cm = 5,
                          engine = NULL, wrb2022_text = FALSE) {

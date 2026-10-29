@@ -12,7 +12,9 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 test_that("v0.9.142: calcic core is byte-identical when secondary_carbonates absent", {
   uni <- mkh(data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
                         designation = c("A", "C1", "C2"), caco3_pct = c(20, 20, 20)))
-  expect_true(isTRUE(calcic(prh(uni))$passed))     # no morphology -> not disproven
+  # v0.9.314: the USDA / SiBCS core (.calcic_impl()); the WRB calcic() is
+  # undecided here (WRB 2022 Ch 3.1.4, test-v09314-weak.R)
+  expect_true(isTRUE(.calcic_impl(prh(uni))$passed))     # no morphology -> not disproven
 })
 
 test_that("v0.9.142: calcic core drops a uniform profile when 2a AND 2b disproven", {
@@ -21,7 +23,8 @@ test_that("v0.9.142: calcic core drops a uniform profile when 2a AND 2b disprove
   uni <- mkh(data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
                         designation = c("A", "C1", "C2"), caco3_pct = c(20, 20, 20),
                         secondary_carbonates_pct = c(2, 2, 2)))
-  expect_false(isTRUE(calcic(prh(uni))$passed))    # all layers: no +5% AND secondary < 5
+  expect_false(isTRUE(.calcic_impl(prh(uni))$passed))    # all layers: no +5% AND secondary < 5
+  expect_false(isTRUE(calcic(prh(uni))$passed))          # v0.9.314: WRB, undecided at the C2
 })
 
 test_that("v0.9.142: by-volume secondary carbonates (>=5%) rescue a calcic (protocalcic)", {
