@@ -399,7 +399,7 @@ classify_server <- function(id, rv, settings) {
         shiny::helpText(i18n("classify.amb_intro")),
         shiny::tags$ul(class = "sk-amb-list", lapply(amb, function(a) {
           shiny::tags$li(
-            shiny::strong(a$name %||% a$code %||% "?"),
+            shiny::strong(.sk_amb_label(a)),
             i18n("classify.amb_sep"),
             a$reason %||% a$note %||% i18n("classify.near_miss"))
         }))
@@ -442,4 +442,14 @@ classify_server <- function(id, rv, settings) {
     # Expose results so the Report module can reuse them.
     results
   })
+}
+
+# v0.9.306: the label of an ambiguity in the "close calls" panel. soilKey's
+# results carry rsg_name and rsg_code; the panel read name and code, so every
+# line showed "?" instead of the class (Jelle Janssen, ISRIC).
+.sk_amb_label <- function(a) {
+  nm <- a$rsg_name %||% a$name
+  cd <- a$rsg_code %||% a$code
+  if (!is.null(nm) && !is.null(cd)) sprintf("%s (%s)", nm, cd)
+  else as.character(nm %||% cd %||% "?")
 }

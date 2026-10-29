@@ -1,3 +1,22 @@
+# soilKey 0.9.306 (2026-10-29)
+
+## Pro app: the close calls name their classes, and a field for the soil moisture regime
+
+Both reported by Jelle Janssen (ISRIC).
+
+* The Ambiguities tab of the Classify page showed "?" in place of each
+  reference soil group that could not be ruled out. The panel read the
+  fields `name` and `code`, while the results carry `rsg_name` and
+  `rsg_code`. It now shows the group and its code, for example
+  "Cryosols (CR): missing permafrost_temp_C".
+* The Pedon page has a "Soil moisture regime (USDA)" field in the site
+  section (unknown, aquic, aridic (torric), udic, perudic, ustic, xeric).
+  The Soil Taxonomy key reads it: ustic leads to the Ustolls and Ustalfs,
+  xeric to the Xerolls. It is saved with the session and restored when the
+  session is reopened. A profile loaded from a fixture or from WoSIS sets
+  it from its own site data, or back to unknown, so a regime is never
+  carried over from the previous profile.
+
 # soilKey 0.9.305 (2026-10-29)
 
 ## The Hungarian diagnostic soil classification: the 15 soil types
