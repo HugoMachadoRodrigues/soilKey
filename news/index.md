@@ -1,5 +1,36 @@
 # Changelog
 
+## soilKey 0.9.304 (2026-10-29)
+
+### New Zealand Soil Classification: rows of unknown role under the A horizon and in the B
+
+Two places where
+[`classify_nzsc4()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+read a mineral row with no designation one way only now try every
+reading and keep a verdict only when all agree.
+
+- The base of the A horizon. A row with no designation directly under
+  the A may be A too, so every test measured from the base of the A is
+  read at each base the A may have (its designated base, then the bottom
+  of each such row in turn): the sandy groups (GS, RS, BS), part 1 of
+  the Ultic Soils, part 2 of the Granular Soils, parts 1 and 2(a) of the
+  Pallic Soils, the Rocky Recent Soils and the Perch-gley Typic Ultic
+  Soils. Until now such a row was read as below the A.
+- Part 2(b) of the Pallic Soils (also read by the Mottled-pallic Orthic
+  Recent Soils). Rows with no designation below the topsoil may be part
+  of the B or BC, so every choice of them is tried. Until now a B
+  thinner than 10 cm over such rows was read as not meeting part 2(b).
+
+On the 6,351 profiles of the NZSC review set, 6 change: one Argillic
+Perch-gley Pallic Soil becomes undecided at the Pallic order (its platy
+row under the A may be A, and then no fine texture lies between the A
+and 60 cm), and five Sandy Recent Soils become undecided at the sandy
+group, because a row with no designation runs below 60 cm and an A
+reaching 60 cm leaves the sandy window empty, which the sandy groups
+already read as undecided. Profiles with every row designated are
+unchanged. The readings file `inst/rules/nzsc4/readings.yaml` gains one
+topic (81 in all).
+
 ## soilKey 0.9.303 (2026-10-29)
 
 ### Pro app: uploads and downloads over the websocket, and a notice when the connection is lost
