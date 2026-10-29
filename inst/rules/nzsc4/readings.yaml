@@ -242,3 +242,6 @@ readings:
   - topic: "Groups with no subgroups"
     page: "Keys to subgroups of Recent (RH) and Raw Soils (WH, WC, WX, WF, WT, WO)"
     reading: "The text defines no subgroups for the Hydrothermal Recent Soils and the Hydrothermal, Cryic, Rocky, Fluvial, Tephric and Orthic Raw Soils: their name stays the group's, with no warning. With these, every group of the 15 orders is keyed to its subgroups (336 in all)."
+  - topic: "Rows of unknown role under the A horizon and in the B (v0.9.304)"
+    page: "Key to Soil Orders (U, N, P); keys to groups (sandy groups, RX) and subgroups (UPT)"
+    reading: "A mineral row with no designation directly under the A may be A too, so a test measured from the base of the A (the sandy groups GS, RS and BS, part 1 of the Ultic Soils, part 2 of the Granular Soils, parts 1 and 2(a) of the Pallic Soils, the Rocky Recent Soils and the Perch-gley Typic Ultic Soils) is read at every base the A may have: its designated base, then the bottom of each such row in turn; the verdict holds only when all agree. Part 2(b) of the Pallic Soils tries every choice of the undesignated mineral rows below the topsoil as part of the B or BC or not, and holds only when all agree; until v0.9.304 a B thinner than 10 cm over such rows was read as not meeting it. The entry of an over-thickened A at Recent Soils still needs the base of the A known."

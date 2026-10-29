@@ -92,6 +92,34 @@
   base
 }
 
+# Every base the A horizon may have: the base .nzsc_a_base() reads, then the
+# bottom of each mineral row of unknown role in the run directly under it,
+# since any of them may be A too (Inf when such a row has no bottom).
+.nzsc_a_base_options <- function(x) {
+  h <- x$h; rows <- .nzsc_rows(x)
+  z <- .nzsc_a_base(x); out <- z; seen <- integer(0)
+  while (!is.na(z) && is.finite(z)) {
+    j <- rows[!(rows %in% seen) & abs(h$top_cm[rows] - z) <= 0.5 & x$unknown_role[rows] & x$mineral[rows]]
+    if (!length(j)) break
+    j <- j[1L]; seen <- c(seen, j)
+    b <- h$bottom_cm[j]
+    if (is.na(b)) { out <- c(out, Inf); break }
+    if (b <= z) break
+    z <- b; out <- c(out, z)
+  }
+  out
+}
+
+# A verdict measured from the base of the A horizon, `fun(base)`, read at
+# every base the A may have: it holds only when all of them give it
+# (v0.9.304; until then an undesignated row under the A was read as not A).
+.nzsc_at_a_bases <- function(x, fun) {
+  zs <- .nzsc_a_base_options(x)
+  v <- fun(zs[1L])
+  for (z in zs[-1L]) if (!identical(fun(z), v)) return(NA)
+  v
+}
+
 # B horizon rows (role B, not buried, not a pan).
 .nzsc_b_rows <- function(x) which(.nzsc_is(x, c("B")) & !x$des$m & !is.na(x$h$top_cm))
 
@@ -217,10 +245,9 @@ ultic_soils_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h; ms <- x$ms; n <- x$n
   miss <- c("ph_h2o", "designation", "clay_pct", "silt_pct", "clay_films_amount", "strength_moist")
   if (is.na(ms)) return(.nzsc_result("ultic_soils_nzsc", NA, missing = miss, where = "Key to Soil Orders, U"))
-  ab <- .nzsc_a_base(x)
   # 1. pH below 5.5 in the major part from the base of the A to 60 cm
-  c1 <- if (is.na(ab)) NA else if (ab >= ms + 60) FALSE
-        else .asc_major_part(x, x$ord, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5), ab, ms + 60)
+  c1 <- .nzsc_at_a_bases(x, function(ab) if (is.na(ab)) NA else if (ab >= ms + 60) FALSE
+        else .asc_major_part(x, x$ord, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5), ab, ms + 60))
   # 2. the B horizon, in its major part: pedal with coatings on 10 % or more
   # of ped faces; slightly firm or stronger moist (unless sandy loam or sandy
   # clay loam); less silt than clay; loamy or clayey; and its base below 100 cm
@@ -500,9 +527,11 @@ granular_soils_nzsc <- function(pedon) {
   ms_ped <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(grepl("weak|structureless", g), FALSE, NA))
   cut <- .any3v(.nzsc_cutanoxidic_rows(x), .and3v(.any3v(.nzsc_cutanic_rows(x), .nzsc_argillic_rows(x)), ms_ped))
   has_cut <- .nzsc_any(cut)
-  red <- .nzsc_reductimorphic_rows(x); ab <- .nzsc_a_base(x)
-  lim <- max(c(ab + 15, ms + 30), na.rm = TRUE)
-  a2 <- .nzsc_any(red[!is.na(h$top_cm) & h$top_cm < lim & x$mineral])
+  red <- .nzsc_reductimorphic_rows(x)
+  a2 <- .nzsc_at_a_bases(x, function(ab) {
+    lim <- max(c(ab + 15, ms + 30), na.rm = TRUE)
+    .nzsc_any(red[!is.na(h$top_cm) & h$top_cm < lim & x$mineral])
+  })
   b <- .nzsc_b_rows(x); b <- b[h$top_cm[b] < ms + 60]
   size <- h$ped_size_max_mm %||% rep(NA_real_, n)
   fine_poly <- ifelse(grepl("polyhed", t), ifelse(is.na(size), NA, size <= 20), ifelse(is.na(h$structure_type), NA, FALSE))
@@ -542,11 +571,14 @@ pallic_soils_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h; ms <- x$ms; n <- x$n
   miss <- c("designation", "munsell_hue_moist", "phosphate_retention_pct", "structure_grade", "strength_moist")
   if (is.na(ms)) return(.nzsc_result("pallic_soils_nzsc", NA, missing = miss, where = "Key to Soil Orders, P"))
-  ab <- .nzsc_a_base(x)
+  # the window from the base of the A to 60 cm; parts 1 and 2(a) are read at
+  # every base the A may have (v0.9.304)
   bot_o <- ifelse(is.na(h$bottom_cm), Inf, h$bottom_cm)
-  win <- x$ord[!is.na(h$top_cm[x$ord]) & x$mineral[x$ord] &
-               bot_o[x$ord] > ab & h$top_cm[x$ord] < ms + 60 & !x$trailing[x$ord]]
-  c0 <- if (is.na(ab) || ab >= ms + 60) FALSE else .nzsc_some_part(x, win, x$tex$fine_loamy_sand_or_finer)
+  win_at <- function(ab) x$ord[!is.na(h$top_cm[x$ord]) & x$mineral[x$ord] &
+                               bot_o[x$ord] > ab & h$top_cm[x$ord] < ms + 60 & !x$trailing[x$ord]]
+  c0_at <- function(ab) if (is.na(ab) || ab >= ms + 60) FALSE
+                        else .nzsc_some_part(x, win_at(ab), x$tex$fine_loamy_sand_or_finer)
+  win <- win_at(.nzsc_a_base(x))
   red <- .nzsc_reductimorphic_rows(x); el <- .nzsc_eluvial_rows(x)
   frag <- .nzsc_pan_rows(x, "fragipan"); duri <- .nzsc_pan_rows(x, "duripan"); arg <- .nzsc_argillic_rows(x)
   over <- function(up, down) {
@@ -562,9 +594,10 @@ pallic_soils_nzsc <- function(pedon) {
   pr <- h$phosphate_retention_pct %||% rep(NA_real_, n)
   low_pr <- if (is.na(up_b)) NA else if (is.na(pr[up_b])) NA else pr[up_b] < 30
   row_ok <- ifelse(is.na(cc), NA, ifelse(cc == "pale", TRUE, ifelse(cc == "intermediate", low_pr, FALSE)))
-  c2a <- if (!length(win)) FALSE else .and3(row_ok[win])
+  c2a_at <- function(ab) { w <- win_at(ab); if (!length(w)) FALSE else .and3(row_ok[w]) }
   c2b <- .nzsc_pallic_2b(x)
-  passed <- .and3(c(c0, .any3(c(r1, .and3(c(c2a, c2b))))))
+  c0 <- .nzsc_at_a_bases(x, c0_at); c2a <- .nzsc_at_a_bases(x, c2a_at)
+  passed <- .nzsc_at_a_bases(x, function(ab) .and3(c(c0_at(ab), .any3(c(r1, .and3(c(c2a_at(ab), c2b)))))))
   .nzsc_result("pallic_soils_nzsc", passed, win, list(fine_texture = c0, pan_route = r1, colour = c2a, b_horizon = c2b),
                if (is.na(passed)) miss else character(0), "Key to Soil Orders, P")
 }
@@ -575,14 +608,18 @@ pallic_soils_nzsc <- function(pedon) {
 # blocky, polyhedral or prismatic subhorizon, slightly firm or stronger
 # moist; or an argillic, calcareous or cutanic horizon with sodic features in
 # or under it; or an eluvial horizon (skeletans are not recorded and are read
-# as absent).
+# as absent). Mineral rows of unknown role (the topsoil aside) may be part
+# of the B or BC: every choice of them is tried, and the verdict holds only
+# when all agree (v0.9.304; until then a B thinner than 10 cm over such rows
+# was read as not passing).
 .nzsc_pallic_2b <- function(x) {
   h <- x$h; n <- x$n
   frag <- .nzsc_pan_rows(x, "fragipan"); duri <- .nzsc_pan_rows(x, "duripan"); arg <- .nzsc_argillic_rows(x)
+  brit <- .nzsc_pan_rows(x, "brittle")
   el <- .nzsc_eluvial_rows(x)
-  bb <- which(.nzsc_is(x, c("B", "BC")) & !is.na(h$top_cm))
-  bth <- if (length(bb)) sum(x$thick[bb], na.rm = TRUE) else 0
-  bth_open <- length(bb) && anyNA(x$thick[bb])
+  b0 <- which(.nzsc_is(x, c("B", "BC")) & !is.na(h$top_cm))
+  rows <- .nzsc_rows(x); first <- rows[x$mineral[rows]][1L]
+  maybe <- .nzsc_maybe_rows(x); maybe <- maybe[!(maybe %in% c(first, b0))]
   g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
   str <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
   ped_ok <- .and3v(ifelse(grepl("moderate|strong", g),
@@ -590,17 +627,27 @@ pallic_soils_nzsc <- function(pedon) {
                           ifelse(grepl("weak|structureless", g), FALSE, NA)),
                    ifelse(is.na(str), NA, str >= 3))
   bw <- .nzsc_weathered_b_rows(x)
-  i <- .nzsc_any(frag[bb] | duri[bb] | .nzsc_pan_rows(x, "brittle")[bb])
-  ii <- .nzsc_any(.and3v(bw, ped_ok)[bb])
-  sod <- .nzsc_sodic_rows(x); hcut <- .any3v(.any3v(arg, .nzsc_calcareous_rows(x) & x$role %in% c("B", "BC")),
-                                              .nzsc_cutanic_rows(x))
+  sod <- .nzsc_sodic_rows(x); calc <- .nzsc_calcareous_rows(x)
+  arg_cut <- .any3v(arg, .nzsc_cutanic_rows(x))
   # sodic features in the horizon or in the one directly beneath it
   bel <- .nzsc_below(x)
   per <- vapply(seq_len(n), function(i) .any3(c(sod[i], if (is.na(bel[i])) NA else sod[bel[i]])), NA)
-  iii <- .nzsc_any(.and3v(hcut, per))
   iv <- .nzsc_any(el)
-  if (bth < 10 && !bth_open) { if (!length(bb) && length(.nzsc_maybe_rows(x))) NA else FALSE }
-  else { v <- .any3(c(i, ii, iii, iv)); if (bth < 10 && isTRUE(v)) NA else v }
+  # the verdict for one set of B and BC rows
+  with_b <- function(bb) {
+    bth <- if (length(bb)) sum(x$thick[bb], na.rm = TRUE) else 0
+    bth_open <- length(bb) && anyNA(x$thick[bb])
+    if (bth < 10 && !bth_open) return(FALSE)
+    i <- .nzsc_any(frag[bb] | duri[bb] | brit[bb])
+    ii <- .nzsc_any(.and3v(bw, ped_ok)[bb])
+    iii <- .nzsc_any(.and3v(.any3v(arg_cut, calc & seq_len(n) %in% bb), per))
+    v <- .any3(c(i, ii, iii, iv))
+    if (bth < 10 && isTRUE(v)) NA else v
+  }
+  k <- length(maybe)
+  if (k <= 8L) return(.nzsc_over_fillings(k, function(fill) with_b(sort(c(b0, maybe[fill])))))
+  v1 <- with_b(b0); v2 <- with_b(sort(c(b0, maybe)))
+  if (identical(v1, v2)) v1 else NA
 }
 
 # ---- B: Brown Soils ----------------------------------------------------------------------------

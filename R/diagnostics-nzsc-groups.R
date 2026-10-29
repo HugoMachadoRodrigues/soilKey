@@ -460,7 +460,9 @@ sandy_group_nzsc <- function(pedon, from = c("a_base", "soil_surface"), laminati
   } else {
     zt <- x$soil_top; zb <- x$soil_top + 60
   }
-  passed <- if (is.na(zt)) NA else .nzsc_sandy_window(x, zt, zb, lamellae = isTRUE(laminations))
+  at <- function(z) if (is.na(z)) NA else .nzsc_sandy_window(x, z, zb, lamellae = isTRUE(laminations))
+  # from the base of the A: read at every base the A may have (v0.9.304)
+  passed <- if (from == "a_base") .nzsc_at_a_bases(x, at) else at(zt)
   .nzsc_group("sandy_group_nzsc", passed, "sandy groups", list(from = zt, to = zb), miss)
 }
 
@@ -1060,9 +1062,9 @@ rocky_recent_nzsc <- function(pedon) {
   pre <- .nzsc_ms_or_na(x, "rocky_recent_nzsc", "R, RX", "designation"); if (!is.null(pre)) return(pre)
   contact <- which(x$role %in% c("R", "CR") & !is.na(h$top_cm))
   if (!length(contact)) return(.nzsc_group("rocky_recent_nzsc", FALSE, "R, RX"))
-  ab <- .nzsc_a_base(x)
-  gap <- min(h$top_cm[contact]) - ab
-  .nzsc_group("rocky_recent_nzsc", if (is.na(gap)) NA else gap < 10, "R, RX", missing = "designation")
+  # read at every base the A may have (v0.9.304)
+  v <- .nzsc_at_a_bases(x, function(ab) { gap <- min(h$top_cm[contact]) - ab; if (is.na(gap)) NA else gap < 10 })
+  .nzsc_group("rocky_recent_nzsc", v, "R, RX", missing = "designation")
 }
 
 # WG: within 30 cm, the top of a reductimorphic horizon, a positive Childs'

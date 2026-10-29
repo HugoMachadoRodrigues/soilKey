@@ -597,11 +597,13 @@ perch_gley_ultic_typic_nzsc <- function(pedon) {
   miss <- c("designation", "munsell_value_moist", "munsell_chroma_moist")
   pre <- .nzsc_sub_ms_or_na(x, "perch_gley_ultic_typic_nzsc", "U, UPT", miss); if (!is.null(pre)) return(pre)
   red <- .nzsc_reductimorphic_rows(x)
-  ab <- .nzsc_a_base(x)
-  lim <- max(c(x$ms + 30, ab + 15), na.rm = TRUE)
   rows <- .nzsc_rows(x)
-  v <- .nzsc_any(red[rows[h$top_cm[rows] >= x$ms - 0.5 & h$top_cm[rows] < lim]])
-  if (is.na(ab) && !isTRUE(v)) v <- NA
+  # read at every base the A may have (v0.9.304)
+  v <- .nzsc_at_a_bases(x, function(ab) {
+    lim <- max(c(x$ms + 30, ab + 15), na.rm = TRUE)
+    v <- .nzsc_any(red[rows[h$top_cm[rows] >= x$ms - 0.5 & h$top_cm[rows] < lim]])
+    if (is.na(ab) && !isTRUE(v)) NA else v
+  })
   .nzsc_subgroup("perch_gley_ultic_typic_nzsc", v, "U, UPT", missing = miss)
 }
 
