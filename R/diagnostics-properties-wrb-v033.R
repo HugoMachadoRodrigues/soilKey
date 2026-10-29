@@ -193,43 +193,77 @@ lithic_discontinuity <- function(pedon) {
 
 #' Protocalcic properties (WRB 2022 Ch 3.2.8)
 #'
-#' Visible secondary carbonate accumulations, less than the calcic gate.
-#' Detects via caco3_pct between 0.5 and the calcic threshold (15) AND
-#' designation effervescence pattern (\code{k}).
+#' Accumulations of secondary carbonates, visible when moist, that occupy
+#' \\>= 5\% of the exposed area with masses, nodules, concretions or
+#' filaments, or cover \\>= 10\% of the surfaces of aggregates, biopore
+#' walls or the undersides of coarse fragments (WRB 2022 3.2.8, p. 78).
+#' The test reads the recorded abundance of visible secondary carbonates,
+#' \code{secondary_carbonates_pct} (or the visual \code{carbonate_soft_pct}
+#' plus \code{carbonate_hard_pct}). Laboratory CaCO3 is not evidence of
+#' secondary carbonates: with no abundance recorded, a layer with no CaCO3
+#' (\code{caco3_pct} 0, or no effervescence) has no protocalcic properties
+#' and any other layer is undecided. A \code{k} suffix with no abundance is
+#' undecided too, unless \code{options(soilKey.morphological_inference =
+#' TRUE)}, where it is accepted as morphological evidence.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_caco3_pct Numeric threshold or option (see Details).
-#' @param max_caco3_pct Numeric threshold or option (see Details).
-#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+#' @param min_secondary_pct Minimum visible secondary carbonates, \% of the
+#'   exposed area (default 5).
+#' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic
+#'   is present, the qualifying layers, and the supporting evidence; the
+#'   per-layer status (TRUE / FALSE / NA) is in \code{evidence$layer_status}.
 #' @export
-protocalcic_properties <- function(pedon, min_caco3_pct = 0.5,
-                                      max_caco3_pct = 15) {
+protocalcic_properties <- function(pedon, min_secondary_pct = 5) {
   h <- pedon$horizons
-  tests <- list()
-  tests$caco3_low <- test_numeric_above(h, "caco3_pct",
-                                            threshold = min_caco3_pct)
-  if (isTRUE(tests$caco3_low$passed)) {
-    high <- test_numeric_above(h, "caco3_pct",
-                                  threshold = max_caco3_pct,
-                                  candidate_layers = tests$caco3_low$layers)
-    not_calcic <- setdiff(tests$caco3_low$layers, high$layers)
-    if (length(not_calcic) == 0L) {
-      tests$caco3_low$passed <- FALSE
-      tests$caco3_low$layers <- integer(0)
-    } else {
-      tests$caco3_low$layers <- not_calcic
-    }
-  }
-  desg <- test_pattern_match(h, "designation", "k|Bk|Bw\\(k\\)")
-  if (!isTRUE(tests$caco3_low$passed) && isTRUE(desg$passed)) {
-    tests$designation_proxy <- desg
-  }
-  agg <- aggregate_subtests(tests)
+  st <- .protocalcic_layer_status(h, min_secondary_pct)
+  passed <- if (nrow(h) == 0L) NA else .any3(st$status)
   DiagnosticResult$new(
     name = "protocalcic_properties",
-    passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.2.8"
+    passed = passed,
+    layers = which(st$status %in% TRUE),
+    evidence = list(layer_status = st$status, source = st$source,
+                    threshold_pct = min_secondary_pct),
+    missing = if (is.na(passed)) "secondary_carbonates_pct" else character(0),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.2.8, Protocalcic properties (p. 78)"
   )
+}
+
+# Per-layer protocalcic status, TRUE / FALSE / NA, and what decided it.
+# WRB 2022 3.2.8 (p. 78): protocalcic properties are VISIBLE secondary
+# carbonates (>= 5% of the exposed area as masses, nodules, concretions or
+# filaments, or >= 10% of aggregate surfaces, biopore walls or undersides of
+# coarse fragments), read here from the recorded abundance. Lab CaCO3 alone
+# does not show them (Hugo, 2026-10-29): it rules them out only when there is
+# no CaCO3 at all. A k suffix with no abundance is undecided, unless the
+# opt-in morphological inference is on.
+.protocalcic_layer_status <- function(h, min_pct = 5) {
+  n <- nrow(h)
+  col <- function(x) { v <- h[[x]]; if (is.null(v)) rep(NA, n) else v }
+  sc   <- suppressWarnings(as.numeric(col("secondary_carbonates_pct")))
+  soft <- suppressWarnings(as.numeric(col("carbonate_soft_pct")))
+  hard <- suppressWarnings(as.numeric(col("carbonate_hard_pct")))
+  ca   <- suppressWarnings(as.numeric(col("caco3_pct")))
+  eff  <- tolower(trimws(as.character(col("effervescence_class"))))
+  desg <- as.character(col("designation"))
+  k_suffix <- !is.na(desg) & grepl("k", gsub("[^a-z]", "", desg), fixed = TRUE)
+  status <- rep(NA, n)
+  source <- rep("not recorded", n)
+  for (i in seq_len(n)) {
+    vis <- if (is.na(soft[i]) && is.na(hard[i])) NA_real_
+           else sum(soft[i], hard[i], na.rm = TRUE)
+    vis_known <- !is.na(soft[i]) && !is.na(hard[i])
+    if (!is.na(sc[i])) {
+      status[i] <- sc[i] >= min_pct; source[i] <- "secondary_carbonates_pct"
+    } else if (!is.na(vis) && (vis >= min_pct || vis_known)) {
+      status[i] <- vis >= min_pct; source[i] <- "carbonate_soft_pct + carbonate_hard_pct"
+    } else if (!is.na(ca[i]) && ca[i] <= 0) {
+      status[i] <- FALSE; source[i] <- "no CaCO3 (caco3_pct 0)"
+    } else if (!is.na(eff[i]) && grepl("^non|^none|^nil|^n$", eff[i])) {
+      status[i] <- FALSE; source[i] <- "no effervescence"
+    } else if (k_suffix[i] && .morph_inference_enabled()) {
+      status[i] <- TRUE; source[i] <- "k suffix (morphological inference)"
+    }
+  }
+  list(status = status, source = source)
 }
 
 

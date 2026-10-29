@@ -200,10 +200,13 @@ test_that("continuous_rock detects R designation", {
 })
 
 test_that("protocalcic_properties separates from calcic", {
+  # v0.9.309: protocalcic properties are visible secondary carbonates (WRB
+  # 2022 3.2.8); the 8% recorded in the Bk shows them, the lab CaCO3 does not
   pr <- build_pedon(
     top_cm = c(0, 30), bottom_cm = c(30, 80),
     designation = c("A", "Bk"),
-    caco3_pct = c(0.2, 5),   # 5% -> protocalcic, not calcic (which needs >=15)
+    caco3_pct = c(0.2, 5),   # 5% -> not calcic (which needs >=15)
+    secondary_carbonates_pct = c(0, 8),
     clay_pct = c(20, 25), silt_pct = c(40, 40), sand_pct = c(40, 35)
   )
   res_proto <- protocalcic_properties(pr)

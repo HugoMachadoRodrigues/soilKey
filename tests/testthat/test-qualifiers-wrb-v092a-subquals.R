@@ -50,6 +50,9 @@ test_that("Hypercalcic / Hypocalcic / Protocalcic ladder", {
     top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 100),
     designation = c("A", "Bk1", "Bk2"),
     caco3_pct = c(0.8, 8, 60),  # protocalcic / hypocalcic / hypercalcic + calcic
+    # v0.9.309: protocalcic properties are visible secondary carbonates (WRB
+    # 2022 3.2.8), recorded here; the lab CaCO3 does not show them
+    secondary_carbonates_pct = c(0, 10, 20),
     clay_pct = c(20, 22, 22), silt_pct = c(40, 38, 38), sand_pct = c(40, 40, 40)
   )
   pr <- PedonRecord$new(

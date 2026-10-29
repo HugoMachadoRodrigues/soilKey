@@ -747,7 +747,8 @@ test_mollic_color <- function(h,
     # qualifies. When chroma is also missing we accept on the dry
     # value alone, because moisture darkens chroma too.
     if (has_dry) {
-      dry_ok <- vd <= max_value_dry
+      # v0.9.309: a moist value, where recorded, is tested too
+      dry_ok <- vd <= max_value_dry && (is.na(vm) || vm <= max_value_moist)
       cd <- if ("munsell_chroma_dry" %in% names(h)) h$munsell_chroma_dry[i]
             else NA_real_
       chroma_evidence <- if (!is.na(cm)) cm
@@ -773,6 +774,16 @@ test_mollic_color <- function(h,
     # fires when allow_oc_inference is TRUE (default) AND OC is
     # measured; when OC is also missing we record the field as
     # missing and the layer remains unevaluated.
+    # v0.9.309: a moist value recorded above the limit fails whatever the
+    # chroma (WRB 2022 3.1.20 crit 3, p. 52); the OC inference is for layers
+    # with no colour recorded.
+    if (!is.na(vm) && vm > max_value_moist) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "moist_value_only", value_moist = vm,
+        passed = FALSE)
+      next
+    }
+
     if (allow_oc_inference && !is.na(oc) && oc >= 1.5) {
       details[[as.character(i)]] <- list(
         idx = i, source = "oc_inferred",
@@ -783,10 +794,24 @@ test_mollic_color <- function(h,
       next
     }
 
+    # v0.9.309: moist value recorded, chroma not: the dry chroma stands in as
+    # in Path 2; with no chroma at all the layer is undecided (it used to
+    # fail, as the test looked for the column, not its value).
+    cd <- if ("munsell_chroma_dry" %in% names(h)) h$munsell_chroma_dry[i]
+          else NA_real_
+    if (!is.na(vm) && !is.na(cd)) {
+      ok <- cd <= max_chroma_moist && (vm + 1) <= max_value_dry
+      details[[as.character(i)]] <- list(
+        idx = i, source = "moist_value_dry_chroma",
+        value_moist = vm, chroma_dry = cd, passed = ok)
+      if (ok) passing <- c(passing, i)
+      next
+    }
+
     if (is.na(vm) && is.na(vd)) {
       missing <- c(missing, "munsell_value_moist", "munsell_value_dry")
     }
-    if (is.na(cm) && !"munsell_chroma_dry" %in% names(h)) {
+    if (is.na(cm) && is.na(cd)) {
       missing <- c(missing, "munsell_chroma_moist")
     }
     if (allow_oc_inference && is.na(oc)) missing <- c(missing, "oc_pct")

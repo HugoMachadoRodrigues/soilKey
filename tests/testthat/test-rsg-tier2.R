@@ -124,11 +124,13 @@ test_that("chernozem_strict passes on canonical Chernozem fixture", {
   expect_true(isTRUE(res$passed))
 })
 
-test_that("chernozem_strict fails when worm_holes_pct missing", {
+test_that("chernozem_strict does not need worm holes", {
+  # v0.9.309: worm holes are the Vermic qualifier; the chernic horizon of WRB
+  # 2022 3.1.6 does not ask for them
   pr <- make_chernozem_canonical()
   pr$horizons$worm_holes_pct <- NA_real_
   res <- chernozem_strict(pr)
-  expect_true(is.na(res$passed) || isFALSE(res$passed))
+  expect_true(isTRUE(res$passed))
 })
 
 
@@ -147,6 +149,8 @@ test_that("kastanozem_strict requires carbonate within 70 cm", {
   # and shifting the deeper layers down.
   pr$horizons$caco3_pct <- rep(0, n)
   pr$horizons$caco3_pct[n] <- 12
+  pr$horizons$secondary_carbonates_pct <- rep(0, n)
+  pr$horizons$secondary_carbonates_pct[n] <- 10
   pr$horizons$top_cm    <- seq(0, by = 30, length.out = n)
   pr$horizons$bottom_cm <- seq(30, by = 30, length.out = n)
   pr$horizons$top_cm[n]    <- 100

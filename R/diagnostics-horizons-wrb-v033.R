@@ -832,42 +832,165 @@ sombric <- function(pedon, min_thickness = 15, min_oc = 0.6,
   )
 }
 
-#' Chernic horizon (WRB 2022): the cherozemic-style mollic with very high
-#' biological activity (worm holes, casts, coprolites). v0.3.3:
-#' delegates to mollic + worm_holes_pct >= 50 (proxy for "biological
-#' homogenization").
+#' Chernic horizon (WRB 2022 3.1.6)
+#'
+#' A thick, well-structured, very dark surface horizon with a high base
+#' saturation (WRB 2022 3.1.6, pp. 40-41). Every layer of the horizon, from
+#' the mineral soil surface down, must have: (1) \\>= 50\% fine earth and no
+#' mulmic material; (2) granular structure, subangular blocky structure of
+#' average size \\<= 2 cm (very fine, fine or medium), or cloddy /
+#' agricultural structure; (3) \\>= 1\% SOC; (4) moist value \\<= 3, dry
+#' value \\<= 5 and moist chroma \\<= 2, or the carbonate-rich (15-40\%
+#' CaCO3, \\>= 1.5\% SOC) or the \\>= 40\% CaCO3 / loamy-sand (value \\<= 5,
+#' \\>= 2.5\% SOC) alternatives; (5) \\>= 1\% more SOC than a parent-material
+#' layer of moist value \\<= 4, where one is recorded; (6) BS \\>= 50\%.
+#' The layers together must be (7) \\>= 30 cm thick. Worm holes belong to the
+#' Vermic qualifier, not to this horizon.
+#'
+#' A missing dry value is taken as the moist value plus one, as in the mollic
+#' colour test. A missing BS is read from pH (Annex 2, Table 9.2).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_worm_pct Numeric threshold or option (see Details).
+#' @param min_thickness Minimum thickness in cm (default 30).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
-chernic <- function(pedon, min_worm_pct = 50) {
-  m <- mollic(pedon)
-  if (!isTRUE(m$passed)) {
-    return(DiagnosticResult$new(
-      name = "chernic",
-      passed = if (is.na(m$passed)) NA else FALSE,
-      layers = integer(0), evidence = list(mollic = m),
-      missing = m$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 3.1, Chernic horizon",
-      notes = "Failed/NA because mollic horizon test did not pass"
-    ))
-  }
+chernic <- function(pedon, min_thickness = 30) {
   h <- pedon$horizons
-  worms <- test_numeric_above(h, "worm_holes_pct",
-                                 threshold = min_worm_pct,
-                                 candidate_layers = m$layers)
-  passed <- if (is.na(worms$passed)) NA else
-            (isTRUE(m$passed) && isTRUE(worms$passed))
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.6, Chernic horizon (pp. 40-41)"
+  ms <- .q_mineral_surface_cm(h)
+  if (nrow(h) == 0L || is.na(ms)) {
+    return(DiagnosticResult$new(name = "chernic", passed = NA, layers = integer(0),
+                                evidence = list(), missing = c("top_cm", "bottom_cm"),
+                                reference = ref))
+  }
+  parent <- .chernic_parent_oc(h)
+  ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord]) & h$top_cm[ord] >= ms - 1e-6]
+  yes <- integer(0); maybe <- integer(0); undecided <- FALSE
+  last_bottom <- NA_real_; rows <- list(); missing <- character(0)
+  for (i in ord) {
+    # a surface horizon: contiguous layers from the mineral soil surface
+    if (!length(maybe)) {
+      if (h$top_cm[i] > ms + 1) break
+    } else if (is.na(last_bottom) || abs(h$top_cm[i] - last_bottom) > 1) {
+      break
+    }
+    s <- .chernic_layer(h, i, parent)
+    rows[[length(rows) + 1L]] <- c(layer = i, s$criteria)
+    if (isFALSE(s$passed)) break
+    maybe <- c(maybe, i)
+    last_bottom <- h$bottom_cm[i]
+    if (isTRUE(s$passed) && !undecided) {
+      yes <- c(yes, i)
+    } else {
+      undecided <- TRUE
+      missing <- c(missing, s$missing)
+    }
+  }
+  thk <- function(L) sum(pmax(h$bottom_cm[L] - h$top_cm[L], 0), na.rm = TRUE)
+  # 7. a thickness of >= 30 cm
+  passed <- if (thk(yes) >= min_thickness) TRUE
+            else if (thk(maybe) >= min_thickness) NA
+            else FALSE
   DiagnosticResult$new(
     name = "chernic",
     passed = passed,
-    layers = if (isTRUE(passed)) intersect(m$layers, worms$layers)
-             else integer(0),
-    evidence = list(mollic = m, worm_holes = worms),
-    missing  = unique(c(m$missing, worms$missing)),
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Chernic horizon",
-    notes = "Mollic + worm_holes_pct >= 50 (biological-homogenization proxy)"
+    layers = if (isTRUE(passed)) yes else integer(0),
+    evidence = list(
+      layers = if (length(rows)) as.data.frame(do.call(rbind, rows)) else NULL,
+      thickness_cm = thk(yes), possible_thickness_cm = thk(maybe),
+      parent_material = parent, mineral_surface_cm = ms),
+    missing = if (is.na(passed)) unique(missing) else character(0),
+    reference = ref
   )
+}
+
+# The parent-material layer of criterion 5 of the chernic horizon (3.1.6,
+# p. 41): a C layer with a recorded moist value <= 4, the shallowest one. NULL
+# when none is recorded, and the criterion is then not applied (Ch 2.1 rule 5:
+# an if-clause that is not true is ignored).
+.chernic_parent_oc <- function(h) {
+  d <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+  vm <- h$munsell_value_moist
+  c_layer <- which(!is.na(d) & grepl("^[0-9]*C", d) & !is.na(vm) & vm <= 4)
+  if (!length(c_layer)) return(NULL)
+  i <- c_layer[order(h$top_cm[c_layer])][1]
+  list(layer = i, oc_pct = h$oc_pct[i])
+}
+
+# Criteria 1-6 of the chernic horizon (3.1.6, pp. 40-41) in layer i: each
+# subhorizon must meet them (Ch 2.1 rule 7). passed is TRUE / FALSE / NA.
+.chernic_layer <- function(h, i, parent = NULL) {
+  num <- function(x) suppressWarnings(as.numeric(.wrb_hcell(h, x, i)))
+  le <- function(x, t) if (is.na(x)) NA else x <= t
+  ge <- function(x, t) if (is.na(x)) NA else x >= t
+  vm <- num("munsell_value_moist"); cm <- num("munsell_chroma_moist")
+  vd <- num("munsell_value_dry");  oc <- num("oc_pct")
+  ca <- num("caco3_pct");          cf <- num("coarse_fragments_pct")
+  if (is.na(vd) && !is.na(vm)) vd <- vm + 1   # as test_mollic_color does
+  structure <- .chernic_structure(.wrb_hcell(h, "structure_type", i),
+                                  .wrb_hcell(h, "structure_size", i))
+  # loamy sand or coarser (4c)
+  coarse <- {
+    f <- is_sandy_loam_or_finer(num("sand_pct"), num("silt_pct"), num("clay_pct"))
+    if (is.na(f)) NA else !f
+  }
+  # 1. >= 50% fine earth, and no mulmic material (3.3.12, p. 90: >= 8% SOC,
+  # single grain or blocky <= 2 cm, chroma <= 2; a granular layer is not)
+  granular <- !is.na(structure$type) && structure$type == "granular"
+  not_mulmic <- .any3(c(le(oc, 8 - 1e-9), if (!is.na(cm)) cm > 2 else NA, granular))
+  fine_earth <- .and3(le(cf, 50), not_mulmic)
+  # 4. colour: a, b or c
+  col_a <- .and3(le(vm, 3), le(vd, 5), le(cm, 2))
+  col_b <- .and3(ge(ca, 15), if (is.na(ca)) NA else ca < 40, le(vm, 3), le(cm, 2), ge(oc, 1.5))
+  col_c <- .and3(.any3(c(ge(ca, 40), coarse)), le(vm, 5), le(cm, 2), ge(oc, 2.5))
+  colour <- .any3(c(col_a, col_b, col_c))
+  # 5. >= 1% (absolute) more SOC than the parent material, where recorded
+  parent_ok <- if (is.null(parent) || identical(parent$layer, i)) TRUE
+               else if (is.na(oc) || is.na(parent$oc_pct)) NA
+               else oc >= parent$oc_pct + 1
+  # 6. base saturation >= 50% (Annex 2, Table 9.2 where BS is not recorded)
+  bs <- .wrb_bs_status(h, i, 50)$passed
+  crit <- c(fine_earth = fine_earth, structure = structure$passed,
+            organic_carbon = ge(oc, 1), colour = colour,
+            parent_material = parent_ok, base_saturation = bs)
+  miss <- list(fine_earth = "coarse_fragments_pct",
+               structure = c("structure_type", "structure_size"),
+               organic_carbon = "oc_pct",
+               colour = c(if (is.na(vm)) "munsell_value_moist",
+                          if (is.na(cm)) "munsell_chroma_moist",
+                          if (!is.na(vm) && !is.na(cm)) "caco3_pct"),
+               parent_material = "oc_pct",
+               base_saturation = c("bs_pct", "ph_h2o"))
+  list(passed = .and3(crit), criteria = crit,
+       missing = unique(unlist(miss[names(crit)[is.na(crit)]])))
+}
+
+# Criterion 2 of the chernic horizon (3.1.6, p. 40): granular, subangular
+# blocky of average size <= 2 cm (very fine, fine or medium), or cloddy /
+# agricultural structure, single or in combination in >= 90% of the volume.
+# A combination with another type leaves the share unknown (NA).
+.chernic_structure <- function(type, size) {
+  t <- tolower(trimws(as.character(type)))
+  if (length(t) != 1L || is.na(t) || !nzchar(t)) return(list(passed = NA, type = NA_character_))
+  sab <- grepl("subangular", t)
+  t2 <- gsub("subangular", "", t)
+  good <- grepl("granular|crumb|clod", t2)
+  bad <- grepl("angular|prism|column|plat|massive|single|wedge|lentic|rock|strat", t2)
+  unknown <- grepl("blocky", t2) && !sab && !grepl("angular", t2)
+  parts <- c(if (good) TRUE, if (bad) FALSE, if (unknown) NA)
+  if (sab) {
+    s <- tolower(trimws(as.character(size)))
+    k <- if (length(s) != 1L || is.na(s) || !nzchar(s)) NA_integer_
+         else .structure_size_class(trimws(strsplit(s, " to | and | a |-|/")[[1]]))
+    parts <- c(parts, if (!length(k) || anyNA(k)) NA else if (all(k <= 3L)) TRUE
+                      else if (all(k >= 4L)) FALSE else NA)
+  }
+  passed <- if (!length(parts)) NA
+            else if (all(parts %in% TRUE)) TRUE
+            else if (all(parts %in% FALSE)) FALSE
+            else NA
+  list(passed = passed,
+       type = if (good && !sab && !bad && !unknown) "granular" else t)
 }
 
 

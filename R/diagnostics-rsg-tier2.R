@@ -545,8 +545,11 @@ ferralsol <- function(pedon, strict = NULL) {
 #' WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 #' lower limit of the mollic horizon and (if a petrocalcic horizon is
 #' present) above it, a layer with protocalcic properties \\>= 5 cm thick
-#' OR a calcic horizon AND base saturation \\>= 50\% from the surface
-#' to the protocalcic / calcic layer throughout.
+#' OR a calcic horizon AND base saturation \\>= 50\% from the mineral
+#' soil surface to the protocalcic / calcic layer throughout. Protocalcic
+#' properties are visible secondary carbonates
+#' (\code{\link{protocalcic_properties}}); where BS is not recorded it is
+#' read from pH (WRB 2022 Annex 2, Table 9.2).
 #'
 #' v0.3.4 strengthens the previous v0.2 chernozem (which only required
 #' mollic + chernic_color) by adding the protocalcic / calcic gate and
@@ -562,8 +565,10 @@ ferralsol <- function(pedon, strict = NULL) {
 #' the very high base status expected of a textbook Chernozem.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_bs Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_bs Minimum base saturation \% above the carbonate layer
+#'        (default 50).
+#' @param max_top_cm Maximum depth of the carbonate layer below the lower
+#'        limit of the mollic horizon, cm (default 50).
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 80\%.
@@ -585,34 +590,39 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
       notes = "v0.3.4: chernic horizon test did not pass"
     ))
   }
+  # v0.9.309: WRB 2022 Ch 4, Chernozems (p. 111), criteria 2-3: the layer
+  # with protocalcic properties (>= 5 cm) or the calcic horizon starts <= 50
+  # cm below the lower limit of the mollic horizon (which may extend below
+  # the chernic, footnote 4) and above any petrocalcic horizon; BS >= 50%
+  # from the mineral soil surface to it, throughout (pH where BS is not
+  # recorded, footnote 5 and Annex 2 Table 9.2). A carbonate layer at the
+  # mineral soil surface leaves nothing above it to test.
   h <- pedon$horizons
-  pc  <- protocalcic_properties(pedon)
-  cal <- calcic(pedon)
-  has_carbonate_layer <- isTRUE(pc$passed) || isTRUE(cal$passed)
-  # BS >= 50% from surface down to first carbonate-bearing layer.
-  carb_layers <- union(pc$layers %||% integer(0), cal$layers %||% integer(0))
-  if (length(carb_layers) == 0L) {
-    bs_ok <- FALSE
-  } else {
-    carb_top <- min(h$top_cm[carb_layers], na.rm = TRUE)
-    above <- which(!is.na(h$top_cm) & h$top_cm < carb_top)
-    bs_ok <- length(above) > 0L &&
-              all(!is.na(h$bs_pct[above]) & h$bs_pct[above] >= min_bs)
-  }
-  passed <- isTRUE(has_carbonate_layer) && isTRUE(bs_ok)
+  mol <- mollic(pedon)
+  mol_stack <- if (isTRUE(mol$passed))
+                 mol$evidence$thickness$details$layers %||% integer(0)
+               else integer(0)
+  mollic_bottom <- max(h$bottom_cm[c(ch$layers, mol_stack)], na.rm = TRUE)
+  g <- .wrb_carbonate_bs_gate(pedon, max_top_cm = mollic_bottom + max_top_cm,
+                              min_bs = min_bs)
   DiagnosticResult$new(
     name = "chernozem_strict",
-    passed = passed,
+    passed = g$passed,
     layers = ch$layers,
     evidence = list(
       chernic                = ch,
-      protocalcic_properties = pc,
-      calcic                 = cal,
-      bs_throughout_ok       = bs_ok,
+      mollic_lower_limit_cm  = mollic_bottom,
+      protocalcic_properties = g$protocalcic,
+      calcic                 = g$calcic,
+      carbonate_layers       = g$candidates,
+      carbonate_layer        = g$layer,
+      bs_throughout_ok       = g$bs_above$passed %||% NA,
+      bs_above               = g$bs_above,
+      petrocalcic_top_cm     = g$petrocalcic_top_cm,
       bs_threshold_pct       = min_bs,
       strict_mode            = strict
     ),
-    missing  = ch$missing,
+    missing  = g$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Chernozems (p. 111)"
   )
 }
@@ -630,8 +640,10 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
 #' carbonate-depth window is left unchanged.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_bs Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_bs Minimum base saturation \% above the carbonate layer
+#'        (default 50).
+#' @param max_top_cm Maximum depth of the carbonate layer below the mineral
+#'        soil surface, cm (default 70).
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 75\%.
@@ -652,39 +664,34 @@ kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70,
       reference = "IUSS Working Group WRB (2022), Chapter 4, Kastanozems (p. 112)"
     ))
   }
+  # v0.9.309: WRB 2022 Ch 4, Kastanozems (p. 112), criteria 2-3: the layer
+  # with protocalcic properties (>= 5 cm) or the calcic horizon starts <= 70
+  # cm from the mineral soil surface and above any petrocalcic horizon; BS
+  # >= 50% from the mineral soil surface to it, throughout (pH where BS is
+  # not recorded, footnote 6 and Annex 2 Table 9.2). A carbonate layer at the
+  # mineral soil surface leaves nothing above it to test.
   h <- pedon$horizons
-  pc  <- protocalcic_properties(pedon)
-  cal <- calcic(pedon)
-  has_carbonate_layer <- isTRUE(pc$passed) || isTRUE(cal$passed)
-  carb_layers <- union(pc$layers %||% integer(0), cal$layers %||% integer(0))
-  if (length(carb_layers) == 0L) {
-    bs_ok <- FALSE
-  } else {
-    carb_top <- min(h$top_cm[carb_layers], na.rm = TRUE)
-    if (carb_top > max_top_cm) {
-      # Carbonate layer too deep -- doesn't satisfy the Kastanozem
-      # depth gate.
-      bs_ok <- FALSE
-    } else {
-      above <- which(!is.na(h$top_cm) & h$top_cm < carb_top)
-      bs_ok <- length(above) > 0L &&
-                all(!is.na(h$bs_pct[above]) & h$bs_pct[above] >= min_bs)
-    }
-  }
-  passed <- isTRUE(has_carbonate_layer) && isTRUE(bs_ok)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  g <- .wrb_carbonate_bs_gate(pedon, max_top_cm = ms + max_top_cm,
+                              min_bs = min_bs)
   DiagnosticResult$new(
     name = "kastanozem_strict",
-    passed = passed,
+    passed = g$passed,
     layers = m$layers,
     evidence = list(
       mollic                  = m,
-      protocalcic_properties  = pc,
-      calcic                  = cal,
-      bs_throughout_ok        = bs_ok,
+      protocalcic_properties  = g$protocalcic,
+      calcic                  = g$calcic,
+      carbonate_layers        = g$candidates,
+      carbonate_layer         = g$layer,
+      bs_throughout_ok        = g$bs_above$passed %||% NA,
+      bs_above                = g$bs_above,
+      petrocalcic_top_cm      = g$petrocalcic_top_cm,
       bs_threshold_pct        = min_bs,
       strict_mode             = strict
     ),
-    missing  = m$missing,
+    missing  = g$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Kastanozems (p. 112)"
   )
 }

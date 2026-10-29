@@ -984,7 +984,9 @@ make_alisol_canonical <- function() {
 #' \itemize{
 #'   \item \code{\link{mollic}}: PASSES.
 #'   \item \code{\link{kastanozem}}: PASSES.
-#'   \item \code{\link{chernozem}}, \code{\link{phaeozem}}: FAIL.
+#'   \item \code{\link{chernozem}}: FAILS.
+#'   \item \code{\link{phaeozem}}: PASSES too (WRB 2022 Phaeozems allow
+#'         carbonates); the key reaches the Kastanozems first.
 #' }
 #'
 #' @return A \code{\link{PedonRecord}}.
@@ -1020,6 +1022,9 @@ make_kastanozem_canonical <- function() {
     bs_pct                     = c(84,   87,   97,   99),
     al_sat_pct                 = c(0,    0,    0,    0),
     caco3_pct                  = c(0,    0,    7,    14),
+    # v0.9.309: the visible secondary carbonates of the Bk / Ck (WRB 2022
+    # 3.2.8, protocalcic properties): lab CaCO3 alone does not show them
+    secondary_carbonates_pct   = c(0,    0,    10,   5),
     plinthite_pct              = c(0,    0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0,    0),
     slickensides               = c("absent","absent","absent","absent"),
@@ -2173,7 +2178,10 @@ make_chernozem_canonical <- function() {
     bs_pct                = c(89,   87,   86,   97,   95),
     al_sat_pct            = c(0,    0,    0,    0,    0),
     caco3_pct             = c(0,    0,    0,    8,    12),
-    worm_holes_pct        = c(60,   55,   45,   20,   5),    # v0.3.4: chernic strict gate
+    # v0.9.309: the visible secondary carbonates (pseudomycelia) of the Bk /
+    # Ck (WRB 2022 3.2.8, protocalcic properties)
+    secondary_carbonates_pct = c(0, 0,    0,    10,   5),
+    worm_holes_pct        = c(60,   55,   45,   20,   5),    # the Vermic qualifier
     bulk_density_g_cm3    = c(1.05, 1.10, 1.20, 1.30, 1.35)
   )
 

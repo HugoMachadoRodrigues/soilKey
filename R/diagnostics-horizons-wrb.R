@@ -1247,19 +1247,22 @@ spodic <- function(pedon,
 #' horizon like mollic, but with low base saturation (< 50\%).
 #' Diagnostic of Umbrisols.
 #'
-#' Implementation reuses every mollic sub-test except the BS test,
-#' which is inverted via \code{test_bs_below}.
+#' Implementation reuses the mollic sub-tests on the contiguous stack of
+#' dark layers from the mineral soil surface (organic layers on top are
+#' not part of it), and tests the weighted average base saturation of the
+#' stack against \code{max_bs} (WRB 2022 3.1.39, pp. 69-70).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness (cm; default 20).
 #' @param min_oc Minimum SOC \% (default 0.6).
 #' @param max_bs Maximum base saturation \% (default 50; profile must
 #'        be BELOW this).
-#' @param surface_top_cm Maximum top_cm for surface-related layers
-#'        (default 5).
+#' @param surface_top_cm Maximum depth (cm) below the mineral soil
+#'        surface at which the stack may start (default 5).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric
+#'   horizon (pp. 69-70).
 #' @export
 umbric_horizon <- function(pedon,
                               min_thickness  = 20,
@@ -1267,18 +1270,46 @@ umbric_horizon <- function(pedon,
                               max_bs         = 50,
                               surface_top_cm = 5) {
   h <- pedon$horizons
-  candidate_layers <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric horizon (pp. 69-70)"
+
+  # v0.9.309: WRB 2022 3.1.39 (p. 69), "a surface horizon consisting of
+  # mineral material": the contiguous stack of dark layers from the mineral
+  # soil surface, as mollic() has used since v0.9.78, instead of each layer
+  # starting <= 5 cm on its own. Organic layers on top are skipped (Ch 2.1
+  # rule 3, p. 23).
+  stack <- .wrb_dark_surface_stack(h, surface_top_cm = surface_top_cm)
+  L <- stack$layers
+  thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
 
   tests <- list()
-  tests$color           <- test_mollic_color(h, candidate_layers = candidate_layers)
-  tests$organic_carbon  <- test_mollic_organic_carbon(h, min_pct = min_oc,
-                                                        candidate_layers = candidate_layers)
-  tests$bs_low          <- test_bs_below(h, max_pct = max_bs,
-                                            candidate_layers = candidate_layers)
-  tests$thickness       <- test_mollic_thickness(h, min_cm = min_thickness,
-                                                    candidate_layers = candidate_layers)
-  tests$structure       <- test_mollic_structure(h,
-                                                    candidate_layers = candidate_layers)
+  tests$color <- .subtest_result(
+    passed  = if (length(L)) TRUE else if (length(stack$maybe)) NA else FALSE,
+    layers  = L,
+    missing = if (!length(L)) stack$missing else character(0),
+    details = list(stack = L, undecided_below = setdiff(stack$maybe, L),
+                   mineral_surface_cm = stack$mineral_surface_cm))
+  tests$organic_carbon <- test_mollic_organic_carbon(h, min_pct = min_oc,
+                                                       candidate_layers = L)
+  # 5. "a base saturation (by 1 M NH4OAc, pH 7) of < 50% on a weighted
+  # average" (p. 70); where BS is not recorded, pH (Annex 2, Table 9.2).
+  bs <- if (length(L)) .wrb_bs_weighted_below(h, L, max_bs = max_bs)
+        else list(passed = NA, missing = character(0))
+  tests$bs_low <- .subtest_result(
+    passed  = if (length(L)) bs$passed else FALSE,
+    layers  = if (isTRUE(bs$passed)) L else integer(0),
+    missing = bs$missing %||% character(0),
+    details = list(weighted_average = bs$average, bounds = bs$bounds,
+                   layers = bs$details))
+  # 6b. >= 20 cm; undecided where layers of unknown colour could make it up
+  tests$thickness <- .subtest_result(
+    passed  = if (thk(L) >= min_thickness) TRUE
+              else if (thk(stack$maybe) >= min_thickness) NA
+              else FALSE,
+    layers  = if (thk(L) >= min_thickness) L else integer(0),
+    missing = if (thk(L) < min_thickness && thk(stack$maybe) >= min_thickness)
+                stack$missing else character(0),
+    details = list(cumulative_cm = thk(L), threshold = min_thickness))
+  tests$structure <- test_mollic_structure(h, candidate_layers = L)
 
   agg <- aggregate_subtests(tests)
 
@@ -1288,9 +1319,9 @@ umbric_horizon <- function(pedon,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Umbric horizon",
-    notes     = if (length(candidate_layers) == 0L) {
-                   "No surface-related candidate layers"
+    reference = ref,
+    notes     = if (length(stack$maybe) == 0L) {
+                   "No dark surface stack from the mineral soil surface"
                  } else NA_character_
   )
 }
